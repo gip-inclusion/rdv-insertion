@@ -1,0 +1,18 @@
+.form-container {
+  min-height: calc(100vh - 70px - 85px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-group {
+  padding: 20px;
+}
+
+form {
+  padding: 30px;
+  border: 1px solid $light-grey;
+  border-radius: 5px;
+  width: 500px;
+}

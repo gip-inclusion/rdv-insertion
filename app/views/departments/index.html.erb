@@ -1,0 +1,27 @@
+<section class="banner">
+
+  <div class="container">
+    <div class="row mb-2">
+      <h2 class="text-center">Bienvenue dans l'expérimentation d'accélération du premier rendez&#8209vous RSA</h2>
+    </div>
+    <div class="row mb-2">
+      <p>Séléctionnez votre département:</p>
+    </div>
+
+    <div class="row">
+      <% @departments.each do |department| %>
+        <div class="card-container">
+          <%= link_to department_path(department) do %>
+            <div class="card card-department mb-3" style="background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.1)), url(<%= department.photo_url %>); background-repeat: no-repeat; background-size: cover; background-position: center;">
+              <div class="card-body card-department-body">
+                <h4><%= department.name %></h4>
+                <p>Good morning <%= department.capital %>!</p>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+</section>

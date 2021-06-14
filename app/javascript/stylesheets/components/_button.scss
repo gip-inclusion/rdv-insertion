@@ -1,0 +1,14 @@
+.btn-logout {
+  height: 50px;
+  width: 150px;
+  border: 1px solid $light-grey;
+  border-radius: 5px;
+  a {
+    color: $dark-grey;
+  }
+}
+
+.btn-logout:hover {
+  background-color:  $light-grey;
+}
+
