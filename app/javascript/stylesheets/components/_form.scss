@@ -1,5 +1,5 @@
 .form-container {
-  min-height: calc(100vh - 70px - 85px);
+  min-height: calc(100vh - 200px);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -14,5 +14,5 @@ form {
   padding: 30px;
   border: 1px solid $light-grey;
   border-radius: 5px;
-  width: 500px;
+  width: 400px;
 }

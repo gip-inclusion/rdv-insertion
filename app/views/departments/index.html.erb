@@ -1,27 +1,31 @@
-<section class="banner">
-
-  <div class="container">
-    <div class="row mb-2">
+<div class="container mt-5">
+  <div class="row mt-5 justify-content-center">
+    <div class="col-8">
       <h2 class="text-center">Bienvenue dans l'expérimentation d'accélération du premier rendez&#8209vous RSA</h2>
     </div>
-    <div class="row mb-2">
-      <p>Séléctionnez votre département:</p>
-    </div>
+  </div>
 
-    <div class="row">
+  <div class="row mt-5 justify-content-center">
+    <div class="col-8">
+      <p>Sélectionnez votre département:</p>
+    </div>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-8">
       <% @departments.each do |department| %>
         <div class="card-container">
           <%= link_to department_path(department) do %>
-            <div class="card card-department mb-3" style="background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.1)), url(<%= department.photo_url %>); background-repeat: no-repeat; background-size: cover; background-position: center;">
+            <div class="card d-flex flex-row justify-content-between align-content-center card-department mb-3">
               <div class="card-body card-department-body">
                 <h4><%= department.name %></h4>
                 <p>Good morning <%= department.capital %>!</p>
               </div>
+              <%=  image_pack_tag("maps/#{department.name.parameterize}.svg") %>
             </div>
           <% end %>
         </div>
       <% end %>
     </div>
   </div>
-
-</section>
+</div>

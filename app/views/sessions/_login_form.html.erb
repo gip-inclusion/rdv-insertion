@@ -1,19 +1,17 @@
-
-    <div class="form-container">
-      <%= form_with action:"#", id: "js-login-form" do |form| %>
-        <h5 class="text-center mb-4">Identifiez-vous avec votre compte Agent de RDV-Solidarités</h5>
-        <%= form.hidden_field :department_id, value: @department_id %>
-        <div class="form-group">
-          <%= form.label :email, "Adresse email" %>
-          <%= form.email_field :email , class: "form-control"%>
-        </div>
-        <div class="form-group">
-          <%= form.label :password, "Mot de Passe" %>
-          <%= form.password_field :password, class: "form-control" %>
-        </div>
-        <div class=text-center>
-          <%= form.submit "Se connecter", class: "btn btn-primary" %>
-        </div>
-      <% end %>
+<div class="form-container">
+  <%= form_with action:"#", id: "js-login-form" do |form| %>
+    <h5 class="text-center mb-4">Identifiez-vous avec votre compte Agent de RDV-Solidarités</h5>
+    <%= form.hidden_field :department_id, value: @department_id %>
+    <div class="form-group">
+      <%= form.label :email, "Adresse email" %>
+      <%= form.email_field :email , class: "form-control"%>
     </div>
-
+    <div class="form-group">
+      <%= form.label :password, "Mot de Passe" %>
+      <%= form.password_field :password, class: "form-control" %>
+    </div>
+    <div class=text-center>
+      <%= form.submit "Se connecter", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>

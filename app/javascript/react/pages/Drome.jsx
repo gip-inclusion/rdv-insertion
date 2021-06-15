@@ -99,7 +99,7 @@ export default function Drome() {
                   <tbody>
                     {users.map((user, index) => (
                       <tr key={index}>
-                        <th>{user.affiliationNumber}</th>
+                        <td>{user.affiliationNumber}</td>
                         <td>{user.firstName}</td>
                         <td>{user.lastName}</td>
                         <td>{user.fullAddress()}</td>
