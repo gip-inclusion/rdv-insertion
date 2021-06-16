@@ -84,7 +84,7 @@ export default function Drome() {
             </div>
             <div className="row my-5 justify-content-center">
               <div className="col-8 text-center">
-                <table className="table text-center align-middle table-striped table-bordered">
+                <table className="table table-hover text-center align-middle table-striped table-bordered">
                   <thead className="align-middle">
                     <tr>
                       <th scope="col">Numéro d'allocataire</th>

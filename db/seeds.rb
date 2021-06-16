@@ -1,13 +1,22 @@
+puts "Destroying..."
+
+[Department, Agent].each(&:destroy_all)
+
+puts "Creating departments..."
+
 Department.create!(
   number: '08',
   name: 'Ardennes',
-  capital: 'Charlevilles-Mézières',
-  photo_url: 'https://www.svpcartegrise.fr/images/ardennes-grand-est.jpg'
+  capital: 'Charlevilles-Mézières'
 )
 
 Department.create!(
   number: '26',
   name: 'Drôme',
-  capital: 'Valence',
-  photo_url: 'https://media.routard.com/image/77/5/grignan-jpd.1587775.w630.jpg'
+  capital: 'Valence'
 )
+
+puts "Creating agents..."
+Agent.create!(email: "johndoe@gouv.fr", department: Department.last)
+
+puts "Done!"

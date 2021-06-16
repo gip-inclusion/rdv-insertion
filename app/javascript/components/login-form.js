@@ -1,4 +1,7 @@
+import Swal from 'sweetalert2'
+
 class LoginForm {
+
   constructor() {
     this.loginForm = document.getElementById('js-login-form');
     if (this.loginForm === null) return;
@@ -20,7 +23,6 @@ class LoginForm {
     this.setButtonPending();
     this.email = this.loginForm.querySelector("input[type=email]").value;
     this.password = this.loginForm.querySelector("input[type=password]").value;
-    this.departmentId = this.loginForm.querySelector("input[name=department_id]").value;
     this.formAuthenticityToken = this.loginForm.querySelector("input[name=authenticity_token]").value;
     this.headerAuthenticityToken = document.querySelector("meta[name=csrf-token]").content;
 
@@ -30,29 +32,42 @@ class LoginForm {
       return;
     }
 
-    let result = await this.loginToRdv()
+    let loginRdvResult = await this.loginToRdv()
 
-    if (result.body.success === false) {
-      alert(`Impossible de s'authentifier: ${result.body.errors[0]}`)
+    if (loginRdvResult.body.success === false) {
+      Swal.fire("Impossible de s'authentifier" , `${loginRdvResult.body.errors[0]}`, "warning")
       this.resetButton();
       return;
     }
-    console.log("result.body", result.body)
+
+    let rdvSolidaritesSession = {
+      accessToken:  loginRdvResult.headers.get("access-token"),
+      uid: loginRdvResult.headers.get("uid"),
+      client: loginRdvResult.headers.get("client")
+    }
+
+    let organisationsResult = await this.retrieveOrganisations(rdvSolidaritesSession)
+    console.log("organisationsResult", organisationsResult)
+
+    let organisationIds = organisationsResult.organisations.map(o => o.id)
+
     let signInResult = await this.createSession(
-      result.headers.get("access-token"),
-      result.headers.get("uid"),
-      result.headers.get("client")
+      rdvSolidaritesSession, organisationIds
     );
+
     if (signInResult.success === true) {
       window.location.href = signInResult.redirect_path;
     } else {
-      alert("Quelque chose d'inhabituel s'est produit, veuillez contacter l'équipe par mail"
-        + " à data.insertion@beta.gouv.fr pour pouvoir vous connecter")
+      Swal.fire(
+        "Une erreur s'est produite: " + signInResult.errors[0],
+        "Veuillez contacter l'équipe par mail à data.insertion@beta.gouv.fr pour pouvoir vous connecter.",
+        "warning"
+      )
       this.resetButton();
     }
   }
 
-  async createSession(accessToken, uid, client) {
+  async createSession(rdvSolidaritesSession, organisationIds) {
     let response = await fetch('/sessions', {
       method: "POST",
       credentials: 'same-origin',
@@ -61,11 +76,11 @@ class LoginForm {
         "X-CSRF-Token": this.headerAuthenticityToken
       },
       body: JSON.stringify({
-        access_token: accessToken,
-        uid: uid,
-        client: client,
-        department_id: this.departmentId,
-        authenticity_token: this.formAuthenticityToken,
+          access_token: rdvSolidaritesSession.accessToken,
+          uid: rdvSolidaritesSession.uid,
+          client: rdvSolidaritesSession.client,
+          organisation_ids: organisationIds,
+          authenticity_token: this.formAuthenticityToken,
       })
     })
     return await response.json()
@@ -79,19 +94,37 @@ class LoginForm {
     this.buttonForm.value = 'Se connecter'
   }
 
-  async loginToRdv() {
-    let rdvSolidaritesUrl = process.env.RDV_SOLIDARITES_URL
+  async retrieveOrganisations(rdvSolidaritesSession) {
+    let response = await fetch(
+      `${process.env.RDV_SOLIDARITES_URL}/api/v1/organisations`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "access-token": rdvSolidaritesSession.accessToken,
+          "uid": rdvSolidaritesSession.uid,
+          "client": rdvSolidaritesSession.client
+        },
+      }
+    )
 
-    let response = await fetch(`${rdvSolidaritesUrl}/api/v1/auth/sign_in`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: this.email,
-        password: this.password
-      })
-    });
+    return await response.json()
+  }
+
+  async loginToRdv() {
+    let response = await fetch(
+      `${process.env.RDV_SOLIDARITES_URL}/api/v1/auth/sign_in`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: this.email,
+          password: this.password
+        })
+      }
+    );
 
     return {
       body: await response.json(),
