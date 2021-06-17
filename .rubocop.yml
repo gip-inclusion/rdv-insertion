@@ -9,3 +9,15 @@ Style/StringLiterals:
 Lint/MissingSuper:
   Exclude:
     - 'app/services/**/*' # Inheriting BaseService without calling super is OK.
+
+Metrics/BlockLength:
+  Exclude:
+    - "Guardfile"
+    - "scripts/*"
+    - "spec/**/*"
+    - "config/initializers/*"
+    - "config/environments/*"
+    - "config/routes.rb"
+
+Layout/LineLength:
+  Max: 120

@@ -5,7 +5,7 @@ class FindOrCreateAgent < BaseService
   end
 
   def call
-    fail!("l'agent n'appartient à aucun département") unless belongs_to_one_department?
+    fail!("l'agent n'appartient pas à une organisation liée à un département") unless belongs_to_one_department?
     { agent: find_or_create_agent }
   end
 
@@ -20,6 +20,8 @@ class FindOrCreateAgent < BaseService
   end
 
   def agent_department
-    @agent_department ||= Department.where(rdv_solidarites_organisation_id: @organisation_ids).first
+    @agent_department ||= Department.includes(:agents)
+                                    .where(rdv_solidarites_organisation_id: @organisation_ids)
+                                    .first
   end
 end

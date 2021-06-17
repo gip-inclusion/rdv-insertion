@@ -21,7 +21,9 @@
                 <h4><%= department.name %></h4>
                 <p>Good morning <%= department.capital %>!</p>
               </div>
-              <%=  image_pack_tag("maps/#{department.name.parameterize}.svg") %>
+              <% if  image_compiled?("maps/#{department.name.parameterize}.svg") %>
+                <%=  image_pack_tag("maps/#{department.name.parameterize}.svg", alt: department.name.parameterize) %>
+              <% end %>
             </div>
           <% end %>
         </div>

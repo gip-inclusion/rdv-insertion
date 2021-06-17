@@ -1,4 +1,4 @@
 class Agent < ApplicationRecord
-  validates_uniqueness_of :email
+  validates :email, presence: true, uniqueness: true
   belongs_to :department
 end

@@ -17,4 +17,12 @@ module ApplicationHelper
   def component_name_for_department(department_name)
     department_name.parameterize.capitalize
   end
+
+  def asset_compiled?(asset_path)
+    Webpacker.manifest.lookup(asset_path).present?
+  end
+
+  def image_compiled?(image_path)
+    asset_compiled?("media/images/#{image_path}")
+  end
 end

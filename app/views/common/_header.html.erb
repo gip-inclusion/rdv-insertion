@@ -1,19 +1,19 @@
 <header>
   <nav class="navbar navbar-expand-lg">
     <%= link_to root_path do  %>
-      <%= image_pack_tag "logos/rdv-insertion.png"%>
+      <%= image_pack_tag "logos/rdv-insertion.png", alt: "Rdv insertion" %>
     <% end %>
     <div class="nav justify-content-around">
       <div class="mx-5 text-center col">
         <% if logged_in? %>
-          <%= link_to sign_out_path, method: :delete do%>
+          <%= link_to sign_out_path, method: :delete do %>
             <button class="btn btn-default btn-logout">
               Se déconnecter
             </button>
           <% end %>
         <% end %>
       </div>
-      <%= image_pack_tag "logos/republique-francaise-logo.svg", height: 50 %>
+      <%= image_pack_tag "logos/republique-francaise-logo.svg", height: 50, alt: "République francaise" %>
     </div>
   </nav>
 </header>

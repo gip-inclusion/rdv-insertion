@@ -5,19 +5,6 @@ class SessionsController < ApplicationController
 
   def new; end
 
-  def show
-    respond_to do |format|
-      format.json do
-        render json: {
-          session: {
-            department_id: session[:department_id],
-            rdv_solidarites: session[:rdv_solidarites]
-          }
-        }
-      end
-    end
-  end
-
   def create
     if find_or_create_agent.success?
       set_session
