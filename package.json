@@ -38,7 +38,7 @@
     "webpack-dev-server": "^3.11.2"
   },
   "scripts": {
-    "postinstall": "husky install",
+    "postinstall": "rm -rf .husky & husky install & npx husky add .husky/pre-commit 'yarn lint'",
     "lint": "eslint 'app/javascript/**' --quiet && rubocop"
   }
 }
