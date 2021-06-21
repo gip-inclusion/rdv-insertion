@@ -1,5 +1,17 @@
 inherit_from: .rubocop_todo.yml
 
+require:
+  - rubocop-rails
+  - rubocop-rspec
+
+AllCops:
+  Exclude:
+    - "vendor/bundle/**/*"
+    - "bin/*"
+    - "node_modules/**/*"
+    - "db/schema.rb"
+    - "db/seeds.rb"
+
 Style/Documentation:
   Enabled: false
 
@@ -8,7 +20,7 @@ Style/StringLiterals:
 
 Lint/MissingSuper:
   Exclude:
-    - 'app/services/**/*' # Inheriting BaseService without calling super is OK.
+    - "app/services/**/*" # Inheriting BaseService without calling super is OK.
 
 Metrics/BlockLength:
   Exclude:
@@ -21,3 +33,34 @@ Metrics/BlockLength:
 
 Layout/LineLength:
   Max: 120
+
+RSpec/ContextWording:
+  Enabled: False
+
+RSpec/ExampleLength:
+  Max: 30
+  Exclude:
+    - "spec/features/**/*"
+    - "spec/requests/api/**/*"
+
+RSpec/LetSetup:
+  Enabled: false
+
+RSpec/MessageSpies:
+  EnforcedStyle: receive
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+
+RSpec/NamedSubject:
+  Enabled: false
+
+RSpec/NestedGroups:
+  Max: 5
+
+RSpec/DescribeClass:
+  Exclude:
+    - "spec/features/**/*"

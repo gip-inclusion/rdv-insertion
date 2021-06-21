@@ -14,4 +14,8 @@ export default class User {
   fullAddress() {
     return `${this.address} - ${this.postalCode} - ${this.city}`;
   }
+
+  get id() {
+    return `${this.affiliationNumber} - ${this.firstName} - ${this.lastName}`;
+  }
 }

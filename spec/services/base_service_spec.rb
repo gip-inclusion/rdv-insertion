@@ -1,12 +1,18 @@
 describe BaseService, type: :service do
-  subject { BaseService.call }
-  let(:service) { double("service") }
+  subject { described_class.call }
+
+  let(:service) { instance_double("service") }
 
   describe "#self.call" do
     before do
-      allow(BaseService).to receive(:new)
+      allow(described_class).to receive(:new)
         .and_return(service)
       allow(service).to receive(:call)
+    end
+
+    it "calls the #call instance method" do
+      expect(service).to receive(:call)
+      subject
     end
 
     context "when it succeeds" do
@@ -17,9 +23,9 @@ describe BaseService, type: :service do
 
       context "when the result is a hash" do
         before do
-          expect(BaseService).to receive(:new)
+          allow(described_class).to receive(:new)
             .and_return(service)
-          expect(service).to receive(:call)
+          allow(service).to receive(:call)
             .and_return(key: "value")
         end
 
@@ -31,9 +37,9 @@ describe BaseService, type: :service do
 
     context "when it fails" do
       before do
-        expect(BaseService).to receive(:new)
+        allow(described_class).to receive(:new)
           .and_return(service)
-        expect(service).to receive(:call)
+        allow(service).to receive(:call)
           .and_raise(FailedServiceError.new("some error message"))
       end
 

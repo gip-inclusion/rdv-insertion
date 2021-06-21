@@ -32,6 +32,6 @@ module AuthenticatedControllerConcern
 
   def agent_not_authorized
     flash[:alert] = "Votre compte ne vous permet pas d'effectuer cette action"
-    redirect_to(request.referrer || root_path)
+    redirect_to(request.referer || root_path)
   end
 end

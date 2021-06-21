@@ -1,6 +1,6 @@
 // Returns the object with the keys having line breaks removed and parameterized
-export const parameterizeObjectKeys = object => {
-  return Object.keys(object).reduce((res, key) => {
+const parameterizeObjectKeys = (object) =>
+  Object.keys(object).reduce((res, key) => {
     res[
       key
         .replace(/[\n\r]+/g, " ")
@@ -14,4 +14,5 @@ export const parameterizeObjectKeys = object => {
     ] = object[key];
     return res;
   }, {});
-};
+
+export default parameterizeObjectKeys;

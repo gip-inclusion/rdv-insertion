@@ -1,11 +1,11 @@
 describe FindOrCreateAgent, type: :service do
+  subject { described_class.call(email: agent.email, organisation_ids: organisation_ids) }
+
   let(:department) { create(:department) }
   let(:agent) { create(:agent, department: department) }
   let(:email) { agent.email }
 
   let(:organisation_ids) { [] }
-
-  subject { described_class.call(email: agent.email, organisation_ids: organisation_ids) }
 
   describe "#call" do
     let(:error_message) { "l'agent n'appartient pas à une organisation liée à un département" }
@@ -48,7 +48,6 @@ describe FindOrCreateAgent, type: :service do
       it "finds or create the agent" do
         expect(Agent).to receive(:find_or_create_by)
           .with(email: email, department: department)
-          .and_return(agent)
         subject
       end
 

@@ -18,7 +18,10 @@ ActiveRecord::Schema.define(version: 2021_06_14_225114) do
   create_table "agents", force: :cascade do |t|
     t.string "email"
     t.bigint "department_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.index ["department_id"], name: "index_agents_on_department_id"
+    t.index ["email"], name: "index_agents_on_email", unique: true
   end
 
   create_table "departments", force: :cascade do |t|
@@ -28,6 +31,7 @@ ActiveRecord::Schema.define(version: 2021_06_14_225114) do
     t.integer "rdv_solidarites_organisation_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["rdv_solidarites_organisation_id"], name: "index_departments_on_rdv_solidarites_organisation_id", unique: true
   end
 
   add_foreign_key "agents", "departments"

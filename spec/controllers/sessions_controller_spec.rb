@@ -23,9 +23,16 @@ describe SessionsController, type: :controller do
           .and_return(OpenStruct.new)
       end
 
+      it "calls the service" do
+        expect(FindOrCreateAgent).to receive(:call)
+          .with(email: session_params[:uid], organisation_ids: session_params[:organisation_ids])
+
+        post :create, params: session_params.merge(format: 'json')
+      end
+
       context "when the agent is found or created" do
         before do
-          expect(FindOrCreateAgent).to receive(:call)
+          allow(FindOrCreateAgent).to receive(:call)
             .with(email: session_params[:uid], organisation_ids: session_params[:organisation_ids])
             .and_return(OpenStruct.new(success?: true, agent: agent))
         end
@@ -44,17 +51,16 @@ describe SessionsController, type: :controller do
           expect(request.session[:rdv_solidarites][:access_token]).to eq(session_params[:access_token])
         end
 
-         it "returns the redirection path" do
+        it "returns the redirection path" do
           post :create, params: session_params.merge(format: 'json')
           expect(response).to be_successful
           expect(JSON.parse(response.body)["redirect_path"]).to eq(department_path(agent.department))
         end
-
       end
 
       context "when the agent is not found nor created" do
         before do
-          expect(FindOrCreateAgent).to receive(:call)
+          allow(FindOrCreateAgent).to receive(:call)
             .with(email: session_params[:uid], organisation_ids: session_params[:organisation_ids])
             .and_return(OpenStruct.new(success?: false))
         end

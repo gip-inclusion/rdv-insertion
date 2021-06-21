@@ -8,5 +8,7 @@ class CreateDepartments < ActiveRecord::Migration[6.0]
 
       t.timestamps
     end
+
+    add_index "departments", ["rdv_solidarites_organisation_id"], unique: true
   end
 end
