@@ -18,7 +18,7 @@ Veuillez installer les outils suivants pour pouvoir lancer le projet:
   Nous conseillons l'utilisation de [`nvm`](https://github.com/nvm-sh/nvm)
 - `yarn`
   Installez avec la commande `npm install yarn -g`
-- [`overmind`](https://github.com/DarthSim/overmind)
+- [Overmind](https://github.com/DarthSim/overmind) ou [Foreman](https://github.com/ddollar/foreman)
 - `POSTGRESQL >= 12`
 
 Pour pouvoir utiliser l'application convenablement veuillez au préalable créer un compte agent

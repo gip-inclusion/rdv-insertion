@@ -12,8 +12,6 @@
     "@rails/webpacker": "5.4.0",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
     "bootstrap": "^5.0.1",
-    "crypto-js": "^4.0.0",
-    "popper.js": "^1.16.1",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
