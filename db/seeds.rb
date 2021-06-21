@@ -13,7 +13,8 @@ Department.create!(
 Department.create!(
   number: '26',
   name: 'Drôme',
-  capital: 'Valence'
+  capital: 'Valence',
+  # rdv_solidarites_organisation_id: insérez l'id de l'organisation correspondante sur RDV-Solidarites
 )
 
 puts "Creating agents..."
