@@ -11,6 +11,7 @@ AllCops:
     - "node_modules/**/*"
     - "db/schema.rb"
     - "db/seeds.rb"
+  NewCops: enable
 
 Style/Documentation:
   Enabled: false
