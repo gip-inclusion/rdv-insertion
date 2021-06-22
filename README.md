@@ -9,16 +9,13 @@ de s'interfacer facilement avec [RDV-Solidarites](https://github.com/betagouv/rd
 
 Veuillez installer les outils suivants pour pouvoir lancer le projet:
 
-- **Ruby 2.7.3**. Nous conseillons l'utilisation de [Rbenv](https://github.com/rbenv/rbenv-installer#rbenv-installer--doctor-scripts)
+- **Ruby 2.7.3**: Nous conseillons l'utilisation de [Rbenv](https://github.com/rbenv/rbenv-installer#rbenv-installer--doctor-scripts).
 
-- `bundler`.
-  Installez avec la commande `gem install bundler`
-- `node@15.X.X`.
-  Nous conseillons l'utilisation de [`nvm`](https://github.com/nvm-sh/nvm)
-- `yarn`.
-  Installez avec la commande `npm install yarn -g`
-- [overmind](https://github.com/DarthSim/overmind)
-- `POSTGRESQL >= 12`
+- **bundler**: Vous pouvez l'installer avec la commande `gem install bundler`.
+- **Node 15+**: Nous conseillons l'utilisation de [`nvm`](https://github.com/nvm-sh/nvm).
+- **yarn**: Vous pouvez l'installer avec la commande `npm install yarn -g`.
+- [**Overmind**](https://github.com/DarthSim/overmind) ou [**Foreman**](https://github.com/ddollar/foreman) pour lancer le Procfile.
+- **POSTGRESQL >= 12**.
 
 Pour pouvoir utiliser l'application convenablement veuillez au préalable créer un compte agent
 sur votre environnement local de [RDV-Solidarites](https://github.com/betagouv/rdv-solidarites.fr).
