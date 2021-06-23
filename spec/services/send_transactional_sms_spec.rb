@@ -14,7 +14,8 @@ describe SendTransactionalSms, type: :service do
             sender: "Rdv RSA",
             recipient: "+33648498119",
             content: "Bienvenue sur RDV-Solidarités",
-            type: "transactional")
+            type: "transactional"
+          )
           .and_return(send_transac_mock)
       end
 
