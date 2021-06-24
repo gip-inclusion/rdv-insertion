@@ -9,6 +9,15 @@ module AuthenticatedControllerConcern
 
   private
 
+  def set_session(agent_id, session_params)
+    session[:agent_id] = agent_id
+    session[:rdv_solidarites] = {
+      client: session_params[:client],
+      uid: session_params[:uid],
+      access_token: session_params[:access_token]
+    }
+  end
+
   def clear_session
     session.delete(:agent_id)
     @current_agent = nil

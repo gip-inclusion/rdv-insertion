@@ -21,11 +21,19 @@ class LoginForm {
     this.setButtonPending();
     this.email = this.loginForm.querySelector("input[type=email]").value;
     this.password = this.loginForm.querySelector("input[type=password]").value;
-    this.formAuthenticityToken = this.loginForm.querySelector("input[name=authenticity_token]").value;
-    this.headerAuthenticityToken = document.querySelector("meta[name=csrf-token]").content;
+    this.formAuthenticityToken = this.loginForm.querySelector(
+      "input[name=authenticity_token]"
+    ).value;
+    this.headerAuthenticityToken = document.querySelector(
+      "meta[name=csrf-token]"
+    ).content;
 
     if (this.email === "" || this.password === "") {
-      Swal.fire("L'email et le mot de passe doivent être renseignés", "", "warning");
+      Swal.fire(
+        "L'email et le mot de passe doivent être renseignés",
+        "",
+        "warning"
+      );
       this.resetButton();
       return;
     }
@@ -33,7 +41,11 @@ class LoginForm {
     const loginRdvResult = await this.loginToRdv();
 
     if (loginRdvResult.body.success === false) {
-      Swal.fire("Impossible de s'authentifier", `${loginRdvResult.body.errors[0]}`, "warning");
+      Swal.fire(
+        "Impossible de s'authentifier",
+        `${loginRdvResult.body.errors[0]}`,
+        "warning"
+      );
       this.resetButton();
       return;
     }
@@ -56,7 +68,7 @@ class LoginForm {
       Swal.fire(
         `Une erreur s'est produite: ${signInResult.errors[0]}`,
         "Veuillez contacter l'équipe par mail à data.insertion@beta.gouv.fr pour pouvoir vous connecter.",
-        "warning",
+        "warning"
       );
       this.resetButton();
     }
@@ -100,7 +112,7 @@ class LoginForm {
           uid: this.rdvSolidaritesSession.uid,
           client: this.rdvSolidaritesSession.client,
         },
-      },
+      }
     );
 
     return response.json();
@@ -118,7 +130,7 @@ class LoginForm {
           email: this.email,
           password: this.password,
         }),
-      },
+      }
     );
 
     return {

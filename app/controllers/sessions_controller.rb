@@ -2,19 +2,16 @@ class SessionsController < ApplicationController
   PERMITTED_PARAMS = [:authenticity_token, :client, :uid, :access_token, { organisation_ids: [] }].freeze
   skip_before_action :authenticate_agent!, only: [:new, :create]
   wrap_parameters false
+  respond_to :json, only: :create
 
   def new; end
 
   def create
     if find_or_create_agent.success?
-      set_session
-      respond_to do |format|
-        format.json { render json: { success: true, redirect_path: department_path(current_agent.department) } }
-      end
+      set_session(created_agent.id, session_params)
+      render json: { success: true, redirect_path: department_path(current_agent.department) }
     else
-      respond_to do |format|
-        format.json { render json: { success: false, errors: find_or_create_agent.errors } }
-      end
+      render json: { success: false, errors: find_or_create_agent.errors }
     end
   end
 
@@ -32,13 +29,8 @@ class SessionsController < ApplicationController
     )
   end
 
-  def set_session
-    session[:agent_id] = find_or_create_agent.agent.id
-    session[:rdv_solidarites] = {
-      client: session_params[:client],
-      uid: session_params[:uid],
-      access_token: session_params[:access_token]
-    }
+  def created_agent
+    find_or_create_agent.agent
   end
 
   def session_params

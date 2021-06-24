@@ -1,11 +1,23 @@
 class FailedServiceError < StandardError; end
 
 class BaseService
-  def self.call(*args, **kwargs)
-    result = new(*args, **kwargs).call
-    OpenStruct.new({ success?: true, failure?: false }.merge(result.is_a?(Hash) ? result : {}))
-  rescue FailedServiceError => e
-    OpenStruct.new(success?: false, failure?: true, errors: [e.message])
+  class << self
+    def call(*args, **kwargs)
+      result = new(*args, **kwargs).call
+      result_as_open_struct(result)
+    rescue FailedServiceError => e
+      OpenStruct.new(success?: false, failure?: true, errors: [e.message])
+    end
+
+    private
+
+    def result_as_open_struct(result)
+      return OpenStruct.new(success?: true, failure?: false) unless result.is_a? Hash
+
+      OpenStruct.new({
+        success?: result[:errors].blank?, failure?: result[:errors].present?
+      }.merge(result))
+    end
   end
 
   def call
