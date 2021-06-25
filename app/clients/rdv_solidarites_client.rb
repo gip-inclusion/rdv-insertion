@@ -12,6 +12,14 @@ class RdvSolidaritesClient
     )
   end
 
+  def get_users(organisation_id, ids = [])
+    Faraday.get(
+      "#{@url}/api/v1/organisations/#{organisation_id}/users",
+      ids.present? ? { ids: ids } : nil,
+      request_headers
+    )
+  end
+
   private
 
   def request_headers

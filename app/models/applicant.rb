@@ -4,4 +4,6 @@ class Applicant < ApplicationRecord
   validates :rdv_solidarites_user_id, uniqueness: true, allow_nil: true
 
   enum role: { demandeur: 0, conjoint: 1 }
+
+  delegate :rdv_solidarites_organisation_id, to: :department
 end

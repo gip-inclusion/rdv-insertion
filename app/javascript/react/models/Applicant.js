@@ -24,6 +24,10 @@ export default class Applicant {
     return `${this.departmentNumber} - ${this.affiliationNumber} - ${this.role}`;
   }
 
+  get uid() {
+    return this.generateUid();
+  }
+
   get createdAt() {
     return this._createdAt;
   }
@@ -40,9 +44,9 @@ export default class Applicant {
     this._invitedAt = invitedAt;
   }
 
-  augmentWithRdvSolidarites(rdvSolidaritesUser) {
-    this.createdAt = rdvSolidaritesUser.created_at;
-    this.invitedAt = rdvSolidaritesUser.invited_at;
+  addRdvSolidaritesData(user) {
+    this.createdAt = user.created_at;
+    this.invitedAt = user.invited_at;
   }
 
   fullAddress() {

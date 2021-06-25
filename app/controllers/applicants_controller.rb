@@ -5,13 +5,13 @@ class ApplicantsController < ApplicationController
   ].freeze
   respond_to :json
 
-  before_action :set_applicants, only: [:index]
+  before_action :retrieve_applicants, only: [:augment]
 
-  def index
-    if fetch_rdv_solidarites_users.success?
-      render json: { sucess: true, augmented_applicants: augmented_applicants }
+  def augment
+    if augment_applicants.success?
+      render json: { sucess: true, augmented_applicants: augment_applicants.augmented_applicants }
     else
-      render json: { success: false, errors: fetch_rdv_solidarites_users.errors }
+      render json: { success: false, errors: augment_applicants.errors }
     end
   end
 
@@ -37,23 +37,15 @@ class ApplicantsController < ApplicationController
     )
   end
 
-  def fetch_rdv_solidarites_users
-    @fetch_rdv_solidarites_users ||= FetchRdvSolidaritesUsers.call(
-      ids: @applicants.pluck(:rdv_solidarites_user_id),
+  def augment_applicants
+    @augment_applicants ||= AugmentApplicants.call(
+      applicants: @applicants,
       rdv_solidarites_session: rdv_solidarites_session
     )
   end
 
-  def set_applicants
-    @applicants = \
-      if params[:uids].present?
-        Applicant.where(uid: params[:uids])
-      else
-        Applicant.all
-      end
-  end
-
-  def created_applicant
-    create_applicant.applicant
+  def retrieve_applicants
+    params.require(:uids)
+    @applicants = Applicant.where(uid: params[:uids])
   end
 end

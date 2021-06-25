@@ -1,10 +1,13 @@
 import React, { useState, useReducer } from "react";
 
 import * as XLSX from "xlsx";
+import Swal from "sweetalert2";
+
 import FileHandler from "../components/FileHandler";
 import ApplicantList from "../components/ApplicantList";
 
 import parameterizeObjectKeys from "../lib/parameterizeObjectKeys";
+import augmentApplicants from "../actions/augmentApplicants";
 import { initReducer, reducerFactory } from "../lib/reducers";
 import { excelDateToString } from "../lib/datesHelper";
 
@@ -18,50 +21,88 @@ export default function Drome() {
   const [fileSize, setFileSize] = useState(0);
   const [applicants, dispatchApplicants] = useReducer(reducer, [], initReducer);
 
-  const handleFile = (file) => {
+  const retrieveApplicantsFromList = async (file) => {
+    const applicantsFromList = [];
+
+    await new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        const workbook = XLSX.read(event.target.result, { type: "binary" });
+        let rows = XLSX.utils.sheet_to_row_object_array(
+          workbook.Sheets[SHEET_NAME]
+        );
+        rows = rows.map((row) => parameterizeObjectKeys(row));
+        rows.forEach((row) => {
+          const applicant = new Applicant(
+            {
+              address: row.adresse,
+              lastName: row["nom-beneficiaire"],
+              firstName: row["prenom-beneficiaire"],
+              email: row["adresses-mails"],
+              birthDate: excelDateToString(row["date-de-naissance"]),
+              city:
+                row["cp-ville"].split(" ").length > 1
+                  ? row["cp-ville"].split(" ")[1]
+                  : "",
+              postalCode: row["cp-ville"].split(" ")[0],
+              affiliationNumber: row["numero-allocataire"],
+              role: row.role,
+              phoneNumber: row["numero-telephones"],
+            },
+            "08"
+          );
+          applicantsFromList.push(applicant);
+        });
+        resolve();
+      };
+      reader.readAsBinaryString(file);
+    });
+
+    return applicantsFromList;
+  };
+
+  const retrieveAugmented = async (applicantsFromList) => {
+    const uids = applicantsFromList.map((applicant) => applicant.uid);
+    let augmentedApplicants = applicantsFromList;
+
+    const result = await augmentApplicants(uids);
+    if (result.sucess) {
+      augmentedApplicants = applicantsFromList.map((applicant) => {
+        const augmentedApplicant = result.augmented_applicants.find(
+          (a) => a.uid === applicant.uid
+        );
+        if (augmentedApplicant) {
+          applicant.addRdvSolidaritesData(augmentedApplicant);
+        }
+        return applicant;
+      });
+    } else {
+      Swal.fire(
+        "Impossible de récupérer les infos des utilisateurs",
+        result.errors[0],
+        "warning"
+      );
+    }
+    return augmentedApplicants;
+  };
+
+  const handleFile = async (file) => {
     setFileSize(file.size);
 
     dispatchApplicants({ type: "reset" });
+    const applicantsFromList = await retrieveApplicantsFromList(file);
 
-    const reader = new FileReader();
-    reader.onload = function (event) {
-      const workbook = XLSX.read(event.target.result, { type: "binary" });
-      let rows = XLSX.utils.sheet_to_row_object_array(
-        workbook.Sheets[SHEET_NAME]
-      );
-      rows = rows.map((row) => parameterizeObjectKeys(row));
+    const augmentedApplicants = await retrieveAugmented(applicantsFromList);
 
-      rows.forEach((row) => {
-        const applicant = new Applicant(
-          {
-            address: row.adresse,
-            lastName: row["nom-beneficiaire"],
-            firstName: row["prenom-beneficiaire"],
-            email: row["adresses-mails"],
-            birthDate: excelDateToString(row["date-de-naissance"]),
-            city:
-              row["cp-ville"].split(" ").length > 1
-                ? row["cp-ville"].split(" ")[1]
-                : "",
-            postalCode: row["cp-ville"].split(" ")[0],
-            affiliationNumber: row["numero-allocataire"],
-            role: row.role,
-            phoneNumber: row["numero-telephones"],
-          },
-          "08"
-        );
-
-        dispatchApplicants({
-          type: "append",
-          item: {
-            applicant,
-            seed: applicant.id,
-          },
-        });
+    augmentedApplicants.forEach((applicant) => {
+      dispatchApplicants({
+        type: "append",
+        item: {
+          applicant,
+          seed: applicant.id,
+        },
       });
-    };
-
-    reader.readAsBinaryString(file);
+    });
   };
 
   return (
@@ -108,10 +149,10 @@ export default function Drome() {
                     <th scope="col">Téléphone</th>
                     <th scope="col">Date de naissance</th>
                     <th scope="col">Rôle</th>
-                    <th scope="col" style={{ "white-space": "nowrap" }}>
+                    <th scope="col" style={{ whiteSpace: "nowrap" }}>
                       Créé le
                     </th>
-                    <th scope="col" style={{ "white-space": "nowrap" }}>
+                    <th scope="col" style={{ whiteSpace: "nowrap" }}>
                       Invité le
                     </th>
                     <th scope="col">Action</th>
