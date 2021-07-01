@@ -50,6 +50,8 @@ class ApplicantsController < ApplicationController
   end
 
   def retrieve_applicants
-    @applicants = Applicant.where(uid: params.require(:applicants).require(:uids))
+    @applicants = Applicant.includes(:department)
+                           .where(uid: params.require(:applicants).require(:uids))
+                           .to_a
   end
 end
