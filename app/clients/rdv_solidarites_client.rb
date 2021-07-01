@@ -12,10 +12,10 @@ class RdvSolidaritesClient
     )
   end
 
-  def get_users(organisation_id, ids = [])
+  def get_users(organisation_id, page, ids = [])
     Faraday.get(
       "#{@url}/api/v1/organisations/#{organisation_id}/users",
-      ids.present? ? { ids: ids } : nil,
+      { page: page }.merge(ids.present? ? { ids: ids } : {}),
       request_headers
     )
   end

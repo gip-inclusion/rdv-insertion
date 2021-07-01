@@ -6,17 +6,16 @@ class CreateApplicant < BaseService
   end
 
   def call
-    @result = { errors: [] }
     create_applicant!
-    @result
+    result.augmented_applicant = AugmentedApplicant.new(applicant, result.rdv_solidarites_user)
   end
 
   private
 
   def create_applicant!
-    return unless create_applicant_transaction
+    fail! unless create_applicant_transaction
 
-    assign_rdv_solidarites_user_id
+    fail! unless assign_rdv_solidarites_user_id
   end
 
   def create_applicant_transaction
@@ -31,22 +30,19 @@ class CreateApplicant < BaseService
     end
   end
 
-  def failed?
-    @result[:errors].present?
-  end
-
   def assign_rdv_solidarites_user_id
-    applicant.rdv_solidarites_user_id = @result[:rdv_solidarites_user].id
-    return if applicant.save
+    applicant.rdv_solidarites_user_id = result.rdv_solidarites_user.id
+    return true if applicant.save
 
-    @result[:errors] << applicant.errors.full_messages.to_sentence
+    result.errors << applicant.errors.full_messages.to_sentence
+    false
   end
 
   def create_applicant_in_db
     if applicant.save
-      @result[:applicant] = applicant
+      result.applicant = applicant
     else
-      @result[:errors] << applicant.errors.full_messages.to_sentence
+      result.errors << applicant.errors.full_messages.to_sentence
     end
   end
 
@@ -56,25 +52,23 @@ class CreateApplicant < BaseService
 
   def applicant_attributes
     { department: @agent.department }.merge(
-      @applicant_data.slice(*Applicant.attribute_names).compact
+      @applicant_data.slice(*Applicant.attribute_names.map(&:to_sym)).compact
     )
   end
 
   def create_user_in_rdv_solidarites
-    if rdv_solidarites_response.success?
-      @result[:rdv_solidarites_user] = RdvSolidaritesUser.new(rdv_solidarites_response_body["user"])
+    if create_rdv_solidarites_user_service.success?
+      result.rdv_solidarites_user = create_rdv_solidarites_user_service.rdv_solidarites_user
     else
-      @result[:errors] << "erreur RDV-Solidarités: #{rdv_solidarites_response_body['errors']}"
+      result.errors += create_rdv_solidarites_user_service.errors
     end
   end
 
-  def rdv_solidarites_response_body
-    JSON.parse(rdv_solidarites_response.body)
-  end
-
-  def rdv_solidarites_response
-    @rdv_solidarites_response ||= \
-      rdv_solidarites_client.create_user(rdv_solidarites_user_attributes)
+  def create_rdv_solidarites_user_service
+    @create_rdv_solidarites_user_service ||= CreateRdvSolidaritesUser.call(
+      user_attributes: rdv_solidarites_user_attributes,
+      rdv_solidarites_session: @rdv_solidarites_session
+    )
   end
 
   def rdv_solidarites_user_attributes
@@ -88,9 +82,5 @@ class CreateApplicant < BaseService
 
     # we do not send the same email for the conjoint
     user_attributes.except(:email)
-  end
-
-  def rdv_solidarites_client
-    @rdv_solidarites_client ||= RdvSolidaritesClient.new(@rdv_solidarites_session)
   end
 end

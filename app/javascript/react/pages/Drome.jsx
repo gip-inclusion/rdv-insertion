@@ -1,13 +1,12 @@
 import React, { useState, useReducer } from "react";
 
 import * as XLSX from "xlsx";
-import Swal from "sweetalert2";
 
 import FileHandler from "../components/FileHandler";
 import ApplicantList from "../components/ApplicantList";
 
 import parameterizeObjectKeys from "../lib/parameterizeObjectKeys";
-import augmentApplicants from "../actions/augmentApplicants";
+import searchApplicants from "../actions/searchApplicants";
 import { initReducer, reducerFactory } from "../lib/reducers";
 import { excelDateToString } from "../lib/datesHelper";
 
@@ -61,28 +60,22 @@ export default function Drome() {
     return applicantsFromList;
   };
 
-  const retrieveAugmented = async (applicantsFromList) => {
+  const addStatusesToApplicants = async (applicantsFromList) => {
     const uids = applicantsFromList.map((applicant) => applicant.uid);
     let augmentedApplicants = applicantsFromList;
 
-    const result = await augmentApplicants(uids);
-    if (result.sucess) {
-      augmentedApplicants = applicantsFromList.map((applicant) => {
-        const augmentedApplicant = result.augmented_applicants.find(
-          (a) => a.uid === applicant.uid
-        );
-        if (augmentedApplicant) {
-          applicant.addRdvSolidaritesData(augmentedApplicant);
-        }
-        return applicant;
-      });
-    } else {
-      Swal.fire(
-        "Impossible de récupérer les infos des utilisateurs",
-        result.errors[0],
-        "warning"
+    const retrievedApplicants = await searchApplicants(uids);
+
+    augmentedApplicants = applicantsFromList.map((applicant) => {
+      const augmentedApplicant = retrievedApplicants.find(
+        (a) => a.uid === applicant.uid
       );
-    }
+      if (augmentedApplicant) {
+        applicant.addRdvSolidaritesData(augmentedApplicant);
+      }
+      return applicant;
+    });
+
     return augmentedApplicants;
   };
 
@@ -92,7 +85,9 @@ export default function Drome() {
     dispatchApplicants({ type: "reset" });
     const applicantsFromList = await retrieveApplicantsFromList(file);
 
-    const augmentedApplicants = await retrieveAugmented(applicantsFromList);
+    const augmentedApplicants = await addStatusesToApplicants(
+      applicantsFromList
+    );
 
     augmentedApplicants.forEach((applicant) => {
       dispatchApplicants({

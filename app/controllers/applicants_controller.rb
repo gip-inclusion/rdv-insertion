@@ -5,19 +5,23 @@ class ApplicantsController < ApplicationController
   ].freeze
   respond_to :json
 
-  before_action :retrieve_applicants, only: [:augment]
+  before_action :retrieve_applicants, only: [:search]
 
-  def augment
-    if augment_applicants.success?
-      render json: { sucess: true, augmented_applicants: augment_applicants.augmented_applicants }
+  def search
+    if retrieve_augmented_applicants.success?
+      render json: {
+        success: true,
+        augmented_applicants: retrieve_augmented_applicants.augmented_applicants,
+        next_page: retrieve_augmented_applicants.next_page
+      }
     else
-      render json: { success: false, errors: augment_applicants.errors }
+      render json: { success: false, errors: retrieve_augmented_applicants.errors }
     end
   end
 
   def create
     if create_applicant.success?
-      render json: { success: true, rdv_solidarites_user: create_applicant.rdv_solidarites_user }
+      render json: { success: true, augmented_applicant: create_applicant.augmented_applicant }
     else
       render json: { success: false, errors: create_applicant.errors }
     end
@@ -31,21 +35,21 @@ class ApplicantsController < ApplicationController
 
   def create_applicant
     @create_applicant ||= CreateApplicant.call(
-      applicant_data: applicant_params.to_h.with_indifferent_access,
+      applicant_data: applicant_params.to_h.deep_symbolize_keys,
       rdv_solidarites_session: rdv_solidarites_session,
       agent: current_agent
     )
   end
 
-  def augment_applicants
-    @augment_applicants ||= AugmentApplicants.call(
+  def retrieve_augmented_applicants
+    @retrieve_augmented_applicants ||= RetrieveAugmentedApplicants.call(
       applicants: @applicants,
-      rdv_solidarites_session: rdv_solidarites_session
+      rdv_solidarites_session: rdv_solidarites_session,
+      page: params[:page]
     )
   end
 
   def retrieve_applicants
-    params.require(:uids)
-    @applicants = Applicant.where(uid: params[:uids])
+    @applicants = Applicant.where(uid: params.require(:applicants).require(:uids))
   end
 end

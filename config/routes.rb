@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   root "departments#index"
   resources :departments, only: [:index, :show]
   resources :applicants, only: [:create] do
-    post :augment, on: :collection
+    post :search, on: :collection
   end
   resources :sessions, only: [:create]
   get '/sign_in', to: "sessions#new"

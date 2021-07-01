@@ -10,9 +10,7 @@ export default function Applicant({ applicant, dispatchApplicants }) {
     if (applicant.callToAction() === "CREER COMPTE") {
       const result = await createApplicant(applicant);
       if (result.success) {
-        const rdvSolidaritesUser = result.rdv_solidarites_user;
-
-        applicant.addRdvSolidaritesData(rdvSolidaritesUser);
+        applicant.addRdvSolidaritesData(result.augmented_applicant);
 
         dispatchApplicants({
           type: "update",
