@@ -1,13 +1,16 @@
 import React, { useState, useReducer } from "react";
 
 import * as XLSX from "xlsx";
+
 import FileHandler from "../components/FileHandler";
+import ApplicantList from "../components/ApplicantList";
 
 import parameterizeObjectKeys from "../lib/parameterizeObjectKeys";
+import searchApplicants from "../actions/searchApplicants";
 import { initReducer, reducerFactory } from "../lib/reducers";
 import { excelDateToString } from "../lib/datesHelper";
 
-import User from "../models/User";
+import Applicant from "../models/Applicant";
 
 const SHEET_NAME = "ENTRETIENS PHYSIQUES";
 
@@ -15,45 +18,86 @@ const reducer = reducerFactory("Drôme démo expé");
 
 export default function Drome() {
   const [fileSize, setFileSize] = useState(0);
-  const [users, dispatchUsers] = useReducer(reducer, [], initReducer);
+  const [applicants, dispatchApplicants] = useReducer(reducer, [], initReducer);
 
-  const handleFile = (file) => {
+  const retrieveApplicantsFromList = async (file) => {
+    const applicantsFromList = [];
+
+    await new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        const workbook = XLSX.read(event.target.result, { type: "binary" });
+        let rows = XLSX.utils.sheet_to_row_object_array(
+          workbook.Sheets[SHEET_NAME]
+        );
+        rows = rows.map((row) => parameterizeObjectKeys(row));
+        rows.forEach((row) => {
+          const applicant = new Applicant(
+            {
+              address: row.adresse,
+              lastName: row["nom-beneficiaire"],
+              firstName: row["prenom-beneficiaire"],
+              email: row["adresses-mails"],
+              birthDate: excelDateToString(row["date-de-naissance"]),
+              city:
+                row["cp-ville"].split(" ").length > 1
+                  ? row["cp-ville"].split(" ")[1]
+                  : "",
+              postalCode: row["cp-ville"].split(" ")[0],
+              affiliationNumber: row["numero-allocataire"],
+              role: row.role,
+              phoneNumber: row["numero-telephones"],
+            },
+            "08"
+          );
+          applicantsFromList.push(applicant);
+        });
+        resolve();
+      };
+      reader.readAsBinaryString(file);
+    });
+
+    return applicantsFromList;
+  };
+
+  const addStatusesToApplicants = async (applicantsFromList) => {
+    const uids = applicantsFromList.map((applicant) => applicant.uid);
+    let augmentedApplicants = applicantsFromList;
+
+    const retrievedApplicants = await searchApplicants(uids);
+
+    augmentedApplicants = applicantsFromList.map((applicant) => {
+      const augmentedApplicant = retrievedApplicants.find(
+        (a) => a.uid === applicant.uid
+      );
+      if (augmentedApplicant) {
+        applicant.addRdvSolidaritesData(augmentedApplicant);
+      }
+      return applicant;
+    });
+
+    return augmentedApplicants;
+  };
+
+  const handleFile = async (file) => {
     setFileSize(file.size);
 
-    dispatchUsers({ type: "reset" });
+    dispatchApplicants({ type: "reset" });
+    const applicantsFromList = await retrieveApplicantsFromList(file);
 
-    const reader = new FileReader();
-    reader.onload = function (event) {
-      const workbook = XLSX.read(event.target.result, { type: "binary" });
-      let rows = XLSX.utils.sheet_to_row_object_array(
-        workbook.Sheets[SHEET_NAME]
-      );
-      rows = rows.map((row) => parameterizeObjectKeys(row));
+    const augmentedApplicants = await addStatusesToApplicants(
+      applicantsFromList
+    );
 
-      rows.forEach((row) => {
-        const user = new User({
-          address: row.adresse,
-          lastName: row["nom-bénéficiaire"],
-          firstName: row["prénom-bénéficiaire"],
-          email: row["adresses-mails"],
-          birthDate: excelDateToString(row["date-de-naissance"]),
-          city:
-            row["cp-ville"].split(" ").length > 1
-              ? row["cp-ville"].split(" ")[1]
-              : "",
-          postalCode: row["cp-ville"].split(" ")[0],
-          affiliationNumber: row["numero-allocataire"],
-          phoneNumber: row["numero-téléphones"],
-        });
-
-        dispatchUsers({
-          type: "append",
-          item: user,
-        });
+    augmentedApplicants.forEach((applicant) => {
+      dispatchApplicants({
+        type: "append",
+        item: {
+          applicant,
+          seed: applicant.id,
+        },
       });
-    };
-
-    reader.readAsBinaryString(file);
+    });
   };
 
   return (
@@ -74,22 +118,21 @@ export default function Drome() {
           />
         </div>
       </div>
-      {/* <div className="row my-5"> */}
-      {users.length > 0 && (
+      {applicants.length > 0 && (
         <>
           <div className="row my-5 justify-content-center">
             <div className="col col-4 text-center">
               <button
                 type="submit"
                 className="btn btn-secondary"
-                onClick={() => dispatchUsers({ type: "reset" })}
+                onClick={() => dispatchApplicants({ type: "reset" })}
               >
                 Vider l&apos;historique
               </button>
             </div>
           </div>
           <div className="row my-5 justify-content-center">
-            <div className="col-8 text-center">
+            <div className="text-center">
               <table className="table table-hover text-center align-middle table-striped table-bordered">
                 <thead className="align-middle">
                   <tr>
@@ -100,27 +143,27 @@ export default function Drome() {
                     <th scope="col">Email</th>
                     <th scope="col">Téléphone</th>
                     <th scope="col">Date de naissance</th>
+                    <th scope="col">Rôle</th>
+                    <th scope="col" style={{ whiteSpace: "nowrap" }}>
+                      Créé le
+                    </th>
+                    <th scope="col" style={{ whiteSpace: "nowrap" }}>
+                      Invité le
+                    </th>
+                    <th scope="col">Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {users.map((user) => (
-                    <tr key={user.id}>
-                      <td>{user.affiliationNumber}</td>
-                      <td>{user.firstName}</td>
-                      <td>{user.lastName}</td>
-                      <td>{user.fullAddress()}</td>
-                      <td>{user.email}</td>
-                      <td>{user.phoneNumber}</td>
-                      <td>{user.birthDate}</td>
-                    </tr>
-                  ))}
+                  <ApplicantList
+                    applicants={applicants}
+                    dispatchApplicants={dispatchApplicants}
+                  />
                 </tbody>
               </table>
             </div>
           </div>
         </>
       )}
-      {/* </div> */}
     </div>
   );
 }

@@ -62,6 +62,9 @@ RSpec/NamedSubject:
 RSpec/NestedGroups:
   Max: 5
 
+RSpec/MessageChain:
+  Enabled: false
+
 RSpec/DescribeClass:
   Exclude:
     - "spec/features/**/*"

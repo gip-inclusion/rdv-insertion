@@ -1,5 +1,6 @@
 class Department < ApplicationRecord
-  validates :rdv_solidarites_organisation_id, uniqueness: { allow_nil: true }
+  validates :rdv_solidarites_organisation_id, uniqueness: true, allow_nil: true
   validates :name, :capital, :number, presence: true
   has_many :agents, dependent: :destroy
+  has_many :applicants, dependent: :destroy
 end

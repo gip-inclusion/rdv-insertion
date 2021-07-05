@@ -1,4 +1,4 @@
-// Returns the object with the keys having line breaks removed and parameterized
+// Equivalent of the ruby "parameterize" method
 const parameterizeObjectKeys = (object) =>
   Object.keys(object).reduce((res, key) => {
     res[
@@ -8,6 +8,8 @@ const parameterizeObjectKeys = (object) =>
         .replace(/ +(?= )/g, "")
         .replace(/'/g, "-")
         .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
         .replace("n°", "numero")
         .split(" ")
         .join("-")

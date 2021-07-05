@@ -6,7 +6,7 @@ class FindOrCreateAgent < BaseService
 
   def call
     fail!("l'agent n'appartient pas à une organisation liée à un département") unless belongs_to_one_department?
-    { agent: find_or_create_agent }
+    result.agent = find_or_create_agent
   end
 
   private
