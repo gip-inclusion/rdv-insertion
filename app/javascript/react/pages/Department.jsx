@@ -12,11 +12,11 @@ import { excelDateToString } from "../lib/datesHelper";
 
 import Applicant from "../models/Applicant";
 
-const SHEET_NAME = "ENTRETIENS PHYSIQUES";
+const reducer = reducerFactory("Expérimentation RSA");
 
-const reducer = reducerFactory("Drôme démo expé");
+export default function Department({ department, configuration }) {
+  const SHEET_NAME = configuration.sheet_name;
 
-export default function Drome() {
   const [fileSize, setFileSize] = useState(0);
   const [applicants, dispatchApplicants] = useReducer(reducer, [], initReducer);
 
@@ -27,9 +27,7 @@ export default function Drome() {
       const reader = new FileReader();
       reader.onload = function (event) {
         const workbook = XLSX.read(event.target.result, { type: "binary" });
-        let rows = XLSX.utils.sheet_to_row_object_array(
-          workbook.Sheets[SHEET_NAME]
-        );
+        let rows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[SHEET_NAME]);
         rows = rows.map((row) => parameterizeObjectKeys(row));
         rows.forEach((row) => {
           const applicant = new Applicant(
@@ -39,16 +37,13 @@ export default function Drome() {
               firstName: row["prenom-beneficiaire"],
               email: row["adresses-mails"],
               birthDate: excelDateToString(row["date-de-naissance"]),
-              city:
-                row["cp-ville"].split(" ").length > 1
-                  ? row["cp-ville"].split(" ")[1]
-                  : "",
+              city: row["cp-ville"].split(" ").length > 1 ? row["cp-ville"].split(" ")[1] : "",
               postalCode: row["cp-ville"].split(" ")[0],
               affiliationNumber: row["numero-allocataire"],
               role: row.role,
               phoneNumber: row["numero-telephones"],
             },
-            "08"
+            department.number
           );
           applicantsFromList.push(applicant);
         });
@@ -67,11 +62,11 @@ export default function Drome() {
     const retrievedApplicants = await searchApplicants(uids);
 
     augmentedApplicants = applicantsFromList.map((applicant) => {
-      const augmentedApplicant = retrievedApplicants.find(
-        (a) => a.uid === applicant.uid
-      );
+      const augmentedApplicant = retrievedApplicants.find((a) => a.uid === applicant.uid);
       if (augmentedApplicant) {
-        applicant.addRdvSolidaritesData(augmentedApplicant);
+        console.log("augmentedApplicant", augmentedApplicant);
+        applicant.augmentWith(augmentedApplicant);
+        console.log("applicant.invitationSentAt", applicant.invitationSentAt);
       }
       return applicant;
     });
@@ -85,16 +80,14 @@ export default function Drome() {
     dispatchApplicants({ type: "reset" });
     const applicantsFromList = await retrieveApplicantsFromList(file);
 
-    const augmentedApplicants = await addStatusesToApplicants(
-      applicantsFromList
-    );
+    const augmentedApplicants = await addStatusesToApplicants(applicantsFromList);
 
     augmentedApplicants.forEach((applicant) => {
       dispatchApplicants({
         type: "append",
         item: {
           applicant,
-          seed: applicant.id,
+          seed: applicant.uid,
         },
       });
     });
@@ -104,7 +97,7 @@ export default function Drome() {
     <div className="container mt-5 mb-8">
       <div className="row mt-5 mb-3 justify-content-center">
         <div className="col-4">
-          <h1>Expérimentation Drôme</h1>
+          <h1>Expérimentation {department.name}</h1>
         </div>
       </div>
       <div className="row justify-content-center">
@@ -154,10 +147,7 @@ export default function Drome() {
                   </tr>
                 </thead>
                 <tbody>
-                  <ApplicantList
-                    applicants={applicants}
-                    dispatchApplicants={dispatchApplicants}
-                  />
+                  <ApplicantList applicants={applicants} dispatchApplicants={dispatchApplicants} />
                 </tbody>
               </table>
             </div>

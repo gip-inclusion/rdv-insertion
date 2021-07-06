@@ -20,6 +20,22 @@ class RdvSolidaritesClient
     )
   end
 
+  def invite_user(user_id, request_body = {})
+    Faraday.post(
+      "#{@url}/api/v1/users/#{user_id}/invite",
+      request_body.to_json,
+      request_headers
+    )
+  end
+
+  def get_motifs(organisation_id)
+    Faraday.get(
+      "#{@url}/api/v1/organisations/#{organisation_id}/motifs",
+      {},
+      request_headers
+    )
+  end
+
   private
 
   def request_headers

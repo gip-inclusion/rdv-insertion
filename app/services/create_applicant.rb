@@ -73,7 +73,8 @@ class CreateApplicant < BaseService
 
   def rdv_solidarites_user_attributes
     user_attributes = {
-      organisation_ids: [@agent.rdv_solidarites_organisation_id]
+      organisation_ids: [@agent.rdv_solidarites_organisation_id],
+      after_accept_path: "/departement/26/4?where=Drome%2C+Auvergne-Rhône-Alpes"
     }.merge(
       @applicant_data.slice(*RdvSolidaritesUser::USER_ATTRIBUTES).compact
     ).deep_symbolize_keys

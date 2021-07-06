@@ -18,10 +18,6 @@ class BaseService
       OpenStruct.new(success?: false, failure?: true, errors: errors)
     end
 
-    def call!
-      raise FailedServiceError if call(*args, **kwargs).failure?
-    end
-
     private
 
     def format_result(result)

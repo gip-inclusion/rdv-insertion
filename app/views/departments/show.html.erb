@@ -1,4 +1,5 @@
 <%= react_component(
-  "pages/#{component_name_for_department(@department.name)}"
+  "pages/Department", {
+    department: @department, configuration: @configuration
+  }
 ) %>
-
