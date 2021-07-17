@@ -6,13 +6,12 @@ describe SendTransactionalSms, type: :service do
 
   describe "#call" do
     before do
-      allow(ENV).to receive(:[]).with("SENDINBLUE_API_V3_KEY").and_return("send_in_blue_secret")
       allow(SibApiV3Sdk::TransactionalSMSApi).to receive(:new).and_return(sib_api_mock)
       allow(SibApiV3Sdk::SendTransacSms).to receive(:new)
         .with(
-          sender: "Rdv RSA",
-          recipient: "+33648498119",
-          content: "Bienvenue sur RDV-Solidarités",
+          sender: "RdvRSA",
+          recipient: phone_number,
+          content: content,
           type: "transactional"
         )
         .and_return(send_transac_mock)

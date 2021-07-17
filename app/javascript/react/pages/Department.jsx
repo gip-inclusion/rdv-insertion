@@ -64,9 +64,7 @@ export default function Department({ department, configuration }) {
     augmentedApplicants = applicantsFromList.map((applicant) => {
       const augmentedApplicant = retrievedApplicants.find((a) => a.uid === applicant.uid);
       if (augmentedApplicant) {
-        console.log("augmentedApplicant", augmentedApplicant);
         applicant.augmentWith(augmentedApplicant);
-        console.log("applicant.invitationSentAt", applicant.invitationSentAt);
       }
       return applicant;
     });

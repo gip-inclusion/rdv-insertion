@@ -1,18 +1,18 @@
-class RetrieveInvitationToken < BaseService
+class RetrieveRdvSolidaritesUser < BaseService
   def initialize(rdv_solidarites_session:, rdv_solidarites_user_id:)
     @rdv_solidarites_session = rdv_solidarites_session
     @rdv_solidarites_user_id = rdv_solidarites_user_id
   end
 
   def call
-    retrieve_invitation_token
+    retrieve_user
   end
 
   private
 
-  def retrieve_invitation_token
+  def retrieve_user
     if rdv_solidarites_response.success?
-      result.invitation_token = rdv_solidarites_response_body['invitation_token']
+      result.user = RdvSolidaritesUser.new(rdv_solidarites_response_body['user'].deep_symbolize_keys)
     else
       result.errors << "erreur RDV-Solidarités: #{rdv_solidarites_response_body['errors']}"
     end
@@ -23,7 +23,7 @@ class RetrieveInvitationToken < BaseService
   end
 
   def rdv_solidarites_response
-    @rdv_solidarites_response ||= rdv_solidarites_client.invite_user(@rdv_solidarites_user_id)
+    @rdv_solidarites_response ||= rdv_solidarites_client.get_user(@rdv_solidarites_user_id)
   end
 
   def rdv_solidarites_client

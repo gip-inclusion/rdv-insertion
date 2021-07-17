@@ -17,10 +17,10 @@ class InvitationsController < ApplicationController
   end
 
   def invite_applicant
-    @invite_applicant ||= InviteApplicant.call(
+    @invite_applicant ||= Invitations::InviteApplicant.call(
       applicant: @applicant,
       rdv_solidarites_session: rdv_solidarites_session,
-      # should be sent by client
+      # TODO: should be sent by client
       invitation_format: department.configuration.invitation_format
     )
   end

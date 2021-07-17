@@ -12,6 +12,14 @@ class RdvSolidaritesClient
     )
   end
 
+  def get_user(user_id)
+    Faraday.get(
+      "#{@url}/api/v1/users/#{user_id}",
+      {},
+      request_headers
+    )
+  end
+
   def get_users(organisation_id, page, ids = [])
     Faraday.get(
       "#{@url}/api/v1/organisations/#{organisation_id}/users",
@@ -31,7 +39,7 @@ class RdvSolidaritesClient
   def get_motifs(organisation_id)
     Faraday.get(
       "#{@url}/api/v1/organisations/#{organisation_id}/motifs",
-      {},
+      { active: true, reservable_online: true },
       request_headers
     )
   end
