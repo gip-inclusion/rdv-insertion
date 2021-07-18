@@ -44,5 +44,15 @@ describe Invitations::SendSms, type: :service do
         .with(phone_number: phone_number, content: content)
       subject
     end
+
+    context "when the phone number is blank" do
+      let!(:phone_number) { '' }
+
+      it("is a failure") { is_a_failure }
+
+      it "returns the error" do
+        expect(subject.errors).to eq(["le téléphone doit être renseigné"])
+      end
+    end
   end
 end

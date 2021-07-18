@@ -45,8 +45,20 @@ export default function Applicant({ applicant, dispatchApplicants }) {
     setIsLoading(true);
     if (applicant.callToAction() === "CREER COMPTE") {
       await handleApplicantCreation();
-    } else if (["INVITER", "REINVITER"].includes(applicant.callToAction())) {
+    } else if (applicant.callToAction() === "INVITER") {
       await handleApplicantInvitation();
+    } else if (applicant.callToAction() === "REINVITER") {
+      const confirmation = await Swal.fire({
+        title: "êtes-vous sûr de vouloir réinviter le demandeur?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+      });
+
+      if (confirmation.isConfirmed) {
+        await handleApplicantInvitation();
+      }
     }
     setIsLoading(false);
   };

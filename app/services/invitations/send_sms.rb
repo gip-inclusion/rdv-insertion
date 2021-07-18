@@ -6,10 +6,15 @@ module Invitations
     end
 
     def call
+      check_phone_number!
       send_sms
     end
 
     private
+
+    def check_phone_number!
+      fail!("le téléphone doit être renseigné") if @phone_number.blank?
+    end
 
     def send_sms
       Rails.logger.info(content)

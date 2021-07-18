@@ -9,7 +9,7 @@ export default class Applicant {
   constructor(attributes, departmentNumber) {
     const formattedAttributes = {};
     Object.keys(attributes).forEach((key) => {
-      formattedAttributes[key] = attributes[key].toString().trim();
+      formattedAttributes[key] = attributes[key]?.toString()?.trim();
     });
     this.address = formattedAttributes.address;
     this.lastName = formattedAttributes.lastName;
@@ -22,7 +22,7 @@ export default class Applicant {
     this.affiliationNumber = formattedAttributes.affiliationNumber;
     this.phoneNumber = formattedAttributes.phoneNumber;
     this.role =
-      ROLES[formattedAttributes.role.toLowerCase()] || formattedAttributes.role.toLowerCase();
+      ROLES[formattedAttributes.role?.toLowerCase()] || formattedAttributes.role?.toLowerCase();
     this.departmentNumber = departmentNumber;
   }
 

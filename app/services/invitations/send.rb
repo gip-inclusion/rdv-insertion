@@ -8,6 +8,12 @@ module Invitations
     end
 
     def call
+      send_invitation
+    end
+
+    private
+
+    def send_invitation
       case invitation_format
       when "sms"
         Invitations::SendSms.call(invitation: @invitation, phone_number: phone_number_formatted)
@@ -15,8 +21,6 @@ module Invitations
         # should add email service when implemented
       end
     end
-
-    private
 
     def phone_number_formatted
       @rdv_solidarites_user.phone_number_formatted

@@ -15,6 +15,8 @@ class SendTransactionalSms < BaseService
   def send_transactional_sms
     api_instance = SibApiV3Sdk::TransactionalSMSApi.new
     api_instance.send_transac_sms(transactional_sms)
+  rescue SibApiV3Sdk::ApiError => e
+    fail!("une erreur est survenue en envoyant le sms. #{e.message}")
   end
 
   def transactional_sms
