@@ -8,6 +8,7 @@ class DepartmentsController < ApplicationController
 
   def show
     authorize @department
+    @configuration = @department.configuration
   end
 
   private

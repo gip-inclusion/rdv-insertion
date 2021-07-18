@@ -1,10 +1,15 @@
 import Swal from "sweetalert2";
 
+const ROLES = {
+  dem: "demandeur",
+  cjt: "conjoint",
+};
+
 export default class Applicant {
   constructor(attributes, departmentNumber) {
     const formattedAttributes = {};
     Object.keys(attributes).forEach((key) => {
-      formattedAttributes[key] = attributes[key].toString().trim();
+      formattedAttributes[key] = attributes[key]?.toString()?.trim();
     });
     this.address = formattedAttributes.address;
     this.lastName = formattedAttributes.lastName;
@@ -16,12 +21,9 @@ export default class Applicant {
     this.postalCode = formattedAttributes.postalCode;
     this.affiliationNumber = formattedAttributes.affiliationNumber;
     this.phoneNumber = formattedAttributes.phoneNumber;
-    this.role = formattedAttributes.role.toLowerCase();
+    this.role =
+      ROLES[formattedAttributes.role?.toLowerCase()] || formattedAttributes.role?.toLowerCase();
     this.departmentNumber = departmentNumber;
-  }
-
-  get id() {
-    return `${this.departmentNumber} - ${this.affiliationNumber} - ${this.role}`;
   }
 
   get uid() {
@@ -32,21 +34,31 @@ export default class Applicant {
     return this._createdAt;
   }
 
-  get invitedAt() {
-    return this._invitedAt;
+  get invitationSentAt() {
+    return this._invitationSentAt;
+  }
+
+  get id() {
+    return this._id;
   }
 
   set createdAt(createdAt) {
     this._createdAt = createdAt;
   }
 
-  set invitedAt(invitedAt) {
-    this._invitedAt = invitedAt;
+  set id(id) {
+    this._id = id;
   }
 
-  addRdvSolidaritesData(user) {
-    this.createdAt = user.created_at;
-    this.invitedAt = user.invited_at;
+  set invitationSentAt(invitatioSentAt) {
+    this._invitationSentAt = invitatioSentAt;
+  }
+
+  augmentWith(augmentedApplicant) {
+    this.createdAt = augmentedApplicant.created_at;
+    this.invitedAt = augmentedApplicant.invited_at;
+    this.id = augmentedApplicant.id;
+    this.invitationSentAt = augmentedApplicant.invitation_sent_at;
   }
 
   fullAddress() {
@@ -54,12 +66,20 @@ export default class Applicant {
   }
 
   callToAction() {
-    return this.createdAt ? "INVITER" : "CREER COMPTE";
+    if (!this.createdAt) {
+      return "CREER COMPTE";
+    }
+    if (!this.invitationSentAt) {
+      return "INVITER";
+    }
+    return "REINVITER";
   }
 
   loadingAction() {
     switch (this.callToAction()) {
       case "INVITER":
+        return "INVITATION...";
+      case "REINVITER":
         return "INVITATION...";
       case "CREER COMPTE":
         return "CREATION...";
@@ -71,9 +91,7 @@ export default class Applicant {
   generateUid() {
     // Base64 encoded "departmentNumber - affiliationNumber - role"
 
-    const attributeIsMissing = [this.affiliationNumber, this.role].some(
-      (attribute) => !attribute
-    );
+    const attributeIsMissing = [this.affiliationNumber, this.role].some((attribute) => !attribute);
     if (attributeIsMissing) {
       Swal.fire(
         "Le numéro d'allocataire et le rôle doivent être renseignés pour créer un utilisateur",
@@ -82,7 +100,7 @@ export default class Applicant {
       );
       return null;
     }
-    return btoa(this.id);
+    return btoa(`${this.departmentNumber} - ${this.affiliationNumber} - ${this.role}`);
   }
 
   asJson() {

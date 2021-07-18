@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_22_130808) do
+ActiveRecord::Schema.define(version: 2021_07_16_143900) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,6 +37,15 @@ ActiveRecord::Schema.define(version: 2021_06_22_130808) do
     t.index ["uid"], name: "index_applicants_on_uid", unique: true
   end
 
+  create_table "configurations", force: :cascade do |t|
+    t.string "sheet_name"
+    t.integer "invitation_format"
+    t.bigint "department_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["department_id"], name: "index_configurations_on_department_id"
+  end
+
   create_table "departments", force: :cascade do |t|
     t.string "name"
     t.string "number"
@@ -44,9 +53,24 @@ ActiveRecord::Schema.define(version: 2021_06_22_130808) do
     t.integer "rdv_solidarites_organisation_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "region"
+    t.string "phone_number"
     t.index ["rdv_solidarites_organisation_id"], name: "index_departments_on_rdv_solidarites_organisation_id", unique: true
+  end
+
+  create_table "invitations", force: :cascade do |t|
+    t.integer "format"
+    t.string "link"
+    t.string "token"
+    t.datetime "sent_at"
+    t.bigint "applicant_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["applicant_id"], name: "index_invitations_on_applicant_id"
   end
 
   add_foreign_key "agents", "departments"
   add_foreign_key "applicants", "departments"
+  add_foreign_key "configurations", "departments"
+  add_foreign_key "invitations", "applicants"
 end

@@ -1,28 +1,30 @@
 class SendTransactionalSms < BaseService
+  SENDER_NAME = "RdvRSA".freeze
+
   def initialize(phone_number:, content:)
     @phone_number = phone_number
     @content = content
-    @url = URI("https://api.sendinblue.com/v3/transactionalSMS/sms")
-    @sender_name = "Rdv RSA"
-    @config = SibApiV3Sdk::Configuration.new
-    @config.api_key = ENV['SENDINBLUE_API_V3_KEY']
   end
 
   def call
-    send_with_send_in_blue
+    send_transactional_sms
   end
 
   private
 
-  def send_with_send_in_blue
-    api_client = SibApiV3Sdk::ApiClient.new(@config)
-    SibApiV3Sdk::TransactionalSMSApi.new(api_client).send_transac_sms(
-      SibApiV3Sdk::SendTransacSms.new(
-        sender: @sender_name,
-        recipient: @phone_number,
-        content: @content,
-        type: "transactional"
-      )
+  def send_transactional_sms
+    api_instance = SibApiV3Sdk::TransactionalSMSApi.new
+    api_instance.send_transac_sms(transactional_sms)
+  rescue SibApiV3Sdk::ApiError => e
+    fail!("une erreur est survenue en envoyant le sms. #{e.message}")
+  end
+
+  def transactional_sms
+    SibApiV3Sdk::SendTransacSms.new(
+      sender: SENDER_NAME,
+      recipient: @phone_number,
+      content: @content,
+      type: "transactional"
     )
   end
 end

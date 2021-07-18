@@ -8,9 +8,8 @@ class AugmentedApplicant
   end
 
   def as_json(_opts = {})
-    # we want to send dates as strings
     @rdv_solidarites_user.as_json.merge(
-      uid: @applicant.uid
+      @applicant.as_json
     )
   end
 end

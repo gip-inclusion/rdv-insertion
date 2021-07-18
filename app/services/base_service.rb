@@ -7,8 +7,8 @@ class BaseService
     def call(*args, **kwargs)
       service = new(*args, **kwargs)
       service.instance_variable_set(:@result, OpenStruct.new(errors: []))
-      service.call
-      format_result(service.result)
+      output = service.call
+      format_result(output, service.result)
     rescue FailedServiceError => e
       errors = service.result.errors
       raise UnexpectedResultBehaviourError unless errors.is_a? Array
@@ -18,13 +18,19 @@ class BaseService
       OpenStruct.new(success?: false, failure?: true, errors: errors)
     end
 
-    def call!
-      raise FailedServiceError if call(*args, **kwargs).failure?
-    end
-
     private
 
-    def format_result(result)
+    def format_result(output, result)
+      # if the output is a result itself (from other service call), we consider
+      # the output instead of the result instance variable
+      if output.is_a?(OpenStruct) && !output.success?.nil? && !output.failure?.nil?
+        add_status_to(output)
+      else
+        add_status_to(result)
+      end
+    end
+
+    def add_status_to(result)
       raise UnexpectedResultBehaviourError unless result.is_a? OpenStruct
 
       result[:success?] = result.errors.blank?

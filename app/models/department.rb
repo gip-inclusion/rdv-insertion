@@ -3,4 +3,9 @@ class Department < ApplicationRecord
   validates :name, :capital, :number, presence: true
   has_many :agents, dependent: :destroy
   has_many :applicants, dependent: :destroy
+  has_one :configuration, dependent: :destroy
+
+  def name_with_region
+    "#{name}, #{region}"
+  end
 end
