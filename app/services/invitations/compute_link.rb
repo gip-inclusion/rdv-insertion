@@ -42,7 +42,7 @@ module Invitations
     def link_without_motif
       params = { where: @department.name_with_region }
       "#{ENV['RDV_SOLIDARITES_URL']}/departement/#{@department.number}/#{ENV['RDV_SOLIDARITES_RSA_SERVICE_ID']}" \
-      "?#{params.to_query}"
+        "?#{params.to_query}"
     end
 
     def motifs
