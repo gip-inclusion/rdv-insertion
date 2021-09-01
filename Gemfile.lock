@@ -275,6 +275,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  addressable
   bootsnap (>= 1.4.2)
   byebug
   capybara (>= 2.15)

@@ -39,6 +39,7 @@ gem 'sib-api-v3-sdk'
 
 # gem needed to be defined explicitely with ruby 3
 gem 'rexml'
+gem 'addressable'
 
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
