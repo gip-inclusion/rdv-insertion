@@ -195,6 +195,7 @@ GEM
     responders (3.0.1)
       actionpack (>= 5.0)
       railties (>= 5.0)
+    rexml (3.2.5)
     rspec-core (3.10.1)
       rspec-support (~> 3.10.0)
     rspec-expectations (3.10.1)
@@ -288,6 +289,7 @@ DEPENDENCIES
   rails (>= 6.0.4.1)
   react-rails
   responders
+  rexml
   rspec-rails (~> 5.0.0)
   sass-rails (>= 6)
   selenium-webdriver

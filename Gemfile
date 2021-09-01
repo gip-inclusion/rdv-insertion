@@ -37,6 +37,9 @@ gem 'responders'
 # Send SMS & emails with SendInBlue
 gem 'sib-api-v3-sdk'
 
+# gem needed to be defined explicitely with ruby 3
+gem 'rexml'
+
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
 
