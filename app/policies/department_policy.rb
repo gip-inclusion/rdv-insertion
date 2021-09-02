@@ -1,5 +1,9 @@
 class DepartmentPolicy < ApplicationPolicy
-  def show?
-    pundit_user.department == record
+  def list_applicants?
+    pundit_user.departments.include?(record)
+  end
+
+  def create_applicant?
+    list_applicants?
   end
 end

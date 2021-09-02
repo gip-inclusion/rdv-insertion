@@ -6,6 +6,12 @@ class ApplicantsController < ApplicationController
   respond_to :json
 
   before_action :retrieve_applicants, only: [:search]
+  before_action :set_department, only: [:index, :create]
+
+  def index
+    authorize @department, :list_applicants?
+    @configuration = @department.configuration
+  end
 
   def search
     if retrieve_augmented_applicants.success?
@@ -20,6 +26,7 @@ class ApplicantsController < ApplicationController
   end
 
   def create
+    authorize @department, :create_applicant?
     if create_applicant.success?
       render json: { success: true, augmented_applicant: create_applicant.augmented_applicant }
     else
@@ -37,7 +44,7 @@ class ApplicantsController < ApplicationController
     @create_applicant ||= CreateApplicant.call(
       applicant_data: applicant_params.to_h.deep_symbolize_keys,
       rdv_solidarites_session: rdv_solidarites_session,
-      agent: current_agent
+      department: @department
     )
   end
 
@@ -53,5 +60,9 @@ class ApplicantsController < ApplicationController
     @applicants = Applicant.includes(:department)
                            .where(uid: params.require(:applicants).require(:uids))
                            .to_a
+  end
+
+  def set_department
+    @department = Department.find(params[:department_id])
   end
 end

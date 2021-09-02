@@ -2,7 +2,7 @@ describe InvitationsController, type: :controller do
   describe "#create" do
     let!(:applicant_id) { "24" }
     let!(:department) { create(:department) }
-    let!(:agent) { create(:agent, department: department) }
+    let!(:agent) { create(:agent, departments: [department]) }
     let!(:configuration) { create(:configuration, department: department) }
     let!(:applicant) { create(:applicant, department: department, id: applicant_id) }
     let!(:create_params) { { applicant_id: applicant_id } }

@@ -2,11 +2,11 @@ describe CreateApplicant, type: :service do
   subject do
     described_class.call(
       applicant_data: applicant_data, rdv_solidarites_session: rdv_solidarites_session,
-      agent: agent
+      department: department
     )
   end
 
-  let(:agent) { create(:agent) }
+  let(:department) { create(:department) }
 
   let(:applicant_data) do
     {
@@ -21,7 +21,7 @@ describe CreateApplicant, type: :service do
 
   describe "#call" do
     let(:applicant_attributes) do
-      { uid: "1234xyz", role: "demandeur", affiliation_number: "aff123", department: agent.department }
+      { uid: "1234xyz", role: "demandeur", affiliation_number: "aff123", department: department }
     end
     let!(:applicant) { build(:applicant, applicant_attributes) }
     let(:rdv_solidarites_client) { instance_double(RdvSolidaritesSession) }
@@ -74,7 +74,7 @@ describe CreateApplicant, type: :service do
           first_name: "john", last_name: "doe",
           address: "16 rue de la tour", email: "johndoe@example.com",
           affiliation_number: "aff123",
-          organisation_ids: [agent.rdv_solidarites_organisation_id]
+          organisation_ids: [department.rdv_solidarites_organisation_id]
         }
       end
 

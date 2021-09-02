@@ -1,5 +1,6 @@
 describe ApplicantsController, type: :controller do
-  let!(:agent) { create(:agent) }
+  let!(:department) { create(:department) }
+  let!(:agent) { create(:agent, departments: [department]) }
 
   describe "#create" do
     let(:applicant_params) do
@@ -7,7 +8,8 @@ describe ApplicantsController, type: :controller do
         applicant: {
           uid: "123xz", first_name: "john", last_name: "doe", email: "johndoe@example.com",
           affiliation_number: "1234", role: "conjoint"
-        }
+        },
+        department_id: department.id
       }
     end
 
@@ -21,7 +23,7 @@ describe ApplicantsController, type: :controller do
     it "calls the service" do
       expect(CreateApplicant).to receive(:call)
         .with(
-          agent: agent,
+          department: department,
           applicant_data: applicant_params[:applicant],
           rdv_solidarites_session: request.session[:rdv_solidarites]
         )
@@ -65,6 +67,38 @@ describe ApplicantsController, type: :controller do
         post :create, params: applicant_params
         expect(response).to be_successful
         expect(JSON.parse(response.body)["errors"]).to eq(['some error'])
+      end
+    end
+  end
+
+  describe "GET #index" do
+    before do
+      sign_in(agent)
+    end
+
+    context "when department does not exist" do
+      it "returns an error" do
+        expect do
+          get :index, params: { department_id: "i-do-not-exist" }
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
+    context "when agent does not belong to the department" do
+      let(:other_department) { create(:department) }
+      let(:agent) { create(:agent, departments: [other_department]) }
+
+      it "redirects the agent" do
+        get :index, params: { department_id: department.id }
+        expect(response).to redirect_to(root_path)
+        expect(flash[:alert]).to include("Votre compte ne vous permet pas d'effectuer cette action")
+      end
+    end
+
+    context "when agent is authorized" do
+      it "returns a success response" do
+        get :index, params: { department_id: department.id }
+        expect(response).to be_successful
       end
     end
   end

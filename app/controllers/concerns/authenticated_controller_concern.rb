@@ -24,7 +24,10 @@ module AuthenticatedControllerConcern
   end
 
   def authenticate_agent!
-    redirect_to sign_in_path unless logged_in?
+    return if logged_in?
+
+    session[:agent_return_to] = request.env['PATH_INFO']
+    redirect_to sign_in_path
   end
 
   def logged_in?
@@ -32,7 +35,7 @@ module AuthenticatedControllerConcern
   end
 
   def current_agent
-    @current_agent ||= Agent.includes(:department).find_by(id: session[:agent_id])
+    @current_agent ||= Agent.includes(:departments).find_by(id: session[:agent_id])
   end
 
   def pundit_user
@@ -41,6 +44,6 @@ module AuthenticatedControllerConcern
 
   def agent_not_authorized
     flash[:alert] = "Votre compte ne vous permet pas d'effectuer cette action"
-    redirect_to(request.referer || root_path)
+    redirect_to root_path
   end
 end
