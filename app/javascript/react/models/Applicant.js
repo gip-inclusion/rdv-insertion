@@ -1,4 +1,5 @@
 import Swal from "sweetalert2";
+import formatPhoneNumber from "../lib/formatPhoneNumber";
 
 const ROLES = {
   dem: "demandeur",
@@ -6,7 +7,7 @@ const ROLES = {
 };
 
 export default class Applicant {
-  constructor(attributes, departmentNumber) {
+  constructor(attributes, departmentNumber, departmentConfiguration) {
     const formattedAttributes = {};
     Object.keys(attributes).forEach((key) => {
       formattedAttributes[key] = attributes[key]?.toString()?.trim();
@@ -19,11 +20,14 @@ export default class Applicant {
     this.birthName = formattedAttributes.birthName;
     this.city = formattedAttributes.city;
     this.postalCode = formattedAttributes.postalCode;
+    this.fullAddress = formattedAttributes.fullAddress || this.formatAddress();
     this.affiliationNumber = formattedAttributes.affiliationNumber;
-    this.phoneNumber = formattedAttributes.phoneNumber;
+    this.phoneNumber = formatPhoneNumber(formattedAttributes.phoneNumber);
+    this.customId = formattedAttributes.customId;
     this.role =
       ROLES[formattedAttributes.role?.toLowerCase()] || formattedAttributes.role?.toLowerCase();
     this.departmentNumber = departmentNumber;
+    this.departmentConfiguration = departmentConfiguration;
   }
 
   get uid() {
@@ -61,13 +65,20 @@ export default class Applicant {
     this.invitationSentAt = augmentedApplicant.invitation_sent_at;
   }
 
-  fullAddress() {
-    return `${this.address} - ${this.postalCode} - ${this.city}`;
+  formatAddress() {
+    return (
+      this.address +
+      (this.postalCode ? ` - ${this.postalCode}` : "") +
+      (this.city ? ` - ${this.city}` : "")
+    );
   }
 
   callToAction() {
     if (!this.createdAt) {
       return "CREER COMPTE";
+    }
+    if (!this.shouldBeInvited()) {
+      return null;
     }
     if (!this.invitationSentAt) {
       return "INVITER";
@@ -88,6 +99,10 @@ export default class Applicant {
     }
   }
 
+  shouldBeInvited() {
+    return this.departmentConfiguration.invitation_format !== "no_invitation";
+  }
+
   generateUid() {
     // Base64 encoded "departmentNumber - affiliationNumber - role"
 
@@ -106,15 +121,16 @@ export default class Applicant {
   asJson() {
     return {
       uid: this.generateUid(),
-      address: this.fullAddress(),
+      address: this.fullAddress,
       last_name: this.lastName,
       first_name: this.firstName,
-      email: this.email,
-      birth_date: this.birthDate,
-      birth_name: this.birthName,
-      affiliation_number: this.affiliationNumber,
       role: this.role,
-      phone_number: this.phoneNumber,
+      affiliation_number: this.affiliationNumber,
+      ...(this.phoneNumber && { phone_number: this.phoneNumber }),
+      ...(this.email && { email: this.email }),
+      ...(this.birthDate && { birth_date: this.birthDate }),
+      ...(this.birthName && { birth_name: this.birthName }),
+      ...(this.customId && { custom_id: this.customId }),
     };
   }
 }

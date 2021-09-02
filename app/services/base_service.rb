@@ -23,11 +23,9 @@ class BaseService
     def format_result(output, result)
       # if the output is a result itself (from other service call), we consider
       # the output instead of the result instance variable
-      if output.is_a?(OpenStruct) && !output.success?.nil? && !output.failure?.nil?
-        add_status_to(output)
-      else
-        add_status_to(result)
-      end
+      return output if output.is_a?(OpenStruct) && !output.success?.nil? && !output.failure?.nil?
+
+      add_status_to(result)
     end
 
     def add_status_to(result)
