@@ -14,7 +14,7 @@ import Applicant from "../models/Applicant";
 
 const reducer = reducerFactory("Expérimentation RSA");
 
-export default function Department({ department, configuration }) {
+export default function Applicants({ department, configuration }) {
   const SHEET_NAME = configuration.sheet_name;
 
   const [fileSize, setFileSize] = useState(0);
@@ -145,7 +145,11 @@ export default function Department({ department, configuration }) {
                   </tr>
                 </thead>
                 <tbody>
-                  <ApplicantList applicants={applicants} dispatchApplicants={dispatchApplicants} />
+                  <ApplicantList
+                    applicants={applicants}
+                    dispatchApplicants={dispatchApplicants}
+                    department={department}
+                  />
                 </tbody>
               </table>
             </div>

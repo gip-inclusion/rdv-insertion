@@ -3,11 +3,11 @@ import Swal from "sweetalert2";
 import createApplicant from "../actions/createApplicant";
 import inviteApplicant from "../actions/inviteApplicant";
 
-export default function Applicant({ applicant, dispatchApplicants }) {
+export default function Applicant({ applicant, dispatchApplicants, department }) {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleApplicantCreation = async () => {
-    const result = await createApplicant(applicant);
+    const result = await createApplicant(applicant, department.id);
     if (result.success) {
       applicant.augmentWith(result.augmented_applicant);
 

@@ -1,5 +1,5 @@
-const createApplicant = async (applicant) => {
-  const response = await fetch("/applicants", {
+const createApplicant = async (applicant, departmentId) => {
+  const response = await fetch(`/departments/${departmentId}/applicants`, {
     method: "POST",
     credentials: "same-origin",
     headers: {

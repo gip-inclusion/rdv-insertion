@@ -35,6 +35,9 @@ Metrics/BlockLength:
 Layout/LineLength:
   Max: 120
 
+Rails/HasAndBelongsToMany:
+  Enabled: false
+
 RSpec/ContextWording:
   Enabled: False
 

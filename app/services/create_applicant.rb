@@ -1,8 +1,8 @@
 class CreateApplicant < BaseService
-  def initialize(applicant_data:, rdv_solidarites_session:, agent:)
+  def initialize(applicant_data:, rdv_solidarites_session:, department:)
     @applicant_data = applicant_data
     @rdv_solidarites_session = rdv_solidarites_session
-    @agent = agent
+    @department = department
   end
 
   def call
@@ -51,7 +51,7 @@ class CreateApplicant < BaseService
   end
 
   def applicant_attributes
-    { department: @agent.department }.merge(
+    { department: @department }.merge(
       @applicant_data.slice(*Applicant.attribute_names.map(&:to_sym)).compact
     )
   end
@@ -73,7 +73,7 @@ class CreateApplicant < BaseService
 
   def rdv_solidarites_user_attributes
     user_attributes = {
-      organisation_ids: [@agent.rdv_solidarites_organisation_id]
+      organisation_ids: [@department.rdv_solidarites_organisation_id]
     }.merge(
       @applicant_data.slice(*RdvSolidaritesUser::USER_ATTRIBUTES).compact
     ).deep_symbolize_keys

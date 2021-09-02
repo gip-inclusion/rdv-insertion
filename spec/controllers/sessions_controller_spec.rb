@@ -2,7 +2,7 @@ describe SessionsController, type: :controller do
   render_views
 
   let(:department) { create(:department) }
-  let(:agent) { create(:agent, department: department) }
+  let(:agent) { create(:agent, departments: [department]) }
 
   describe "GET /sign_in" do
     it "renders the login form" do
@@ -51,10 +51,34 @@ describe SessionsController, type: :controller do
           expect(request.session[:rdv_solidarites][:access_token]).to eq(session_params[:access_token])
         end
 
-        it "returns the redirection path" do
-          post :create, params: session_params.merge(format: 'json')
-          expect(response).to be_successful
-          expect(JSON.parse(response.body)["redirect_path"]).to eq(department_path(agent.department))
+        context "when a redirect path is in the session" do
+          before do
+            request.session[:agent_return_to] = "/some_path"
+          end
+
+          it "returns the redirection path" do
+            post :create, params: session_params.merge(format: 'json')
+            expect(response).to be_successful
+            expect(JSON.parse(response.body)["redirect_path"]).to eq("/some_path")
+          end
+
+          it "deletes the path from the session" do
+            post :create, params: session_params.merge(format: 'json')
+            expect(response).to be_successful
+            expect(request.session[:agent_return_to]).to be_nil
+          end
+        end
+
+        context "when no redirect path is in the session" do
+          before do
+            request.session[:agent_return_to] = nil
+          end
+
+          it "returns the root path" do
+            post :create, params: session_params.merge(format: 'json')
+            expect(response).to be_successful
+            expect(JSON.parse(response.body)["redirect_path"]).to eq(root_path)
+          end
         end
       end
 

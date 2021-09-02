@@ -15,7 +15,7 @@
     <div class="col-8">
       <% @departments.each do |department| %>
         <div class="card-container">
-          <%= link_to department_path(department) do %>
+          <%= link_to department_applicants_path(department) do %>
             <div class="card d-flex flex-row justify-content-between align-content-center card-department mb-3">
               <div class="card-body card-department-body">
                 <h4><%= department.name %></h4>
