@@ -16,6 +16,7 @@ const reducer = reducerFactory("Expérimentation RSA");
 
 export default function Applicants({ department, configuration }) {
   const SHEET_NAME = configuration.sheet_name;
+  const columnNames = configuration.column_names;
 
   const [fileSize, setFileSize] = useState(0);
   const [applicants, dispatchApplicants] = useReducer(reducer, [], initReducer);
@@ -32,18 +33,22 @@ export default function Applicants({ department, configuration }) {
         rows.forEach((row) => {
           const applicant = new Applicant(
             {
-              address: row.adresse,
-              lastName: row["nom-beneficiaire"],
-              firstName: row["prenom-beneficiaire"],
-              email: row["adresses-mails"],
-              birthDate: excelDateToString(row["date-de-naissance"]),
-              city: row["cp-ville"].split(" ").length > 1 ? row["cp-ville"].split(" ")[1] : "",
-              postalCode: row["cp-ville"].split(" ")[0],
-              affiliationNumber: row["numero-allocataire"],
-              role: row.role,
-              phoneNumber: row["numero-telephones"],
+              lastName: row[columnNames.last_name],
+              firstName: row[columnNames.first_name],
+              affiliationNumber: row[columnNames.affiliation_number],
+              role: row[columnNames.role],
+              address: columnNames.address && row[columnNames.address],
+              fullAddress: columnNames.full_address && row[columnNames.full_address],
+              email: columnNames.email && row[columnNames.email],
+              birthDate: columnNames.birth_date && excelDateToString(row[columnNames.birth_date]),
+              city: columnNames.city && row[columnNames.city],
+              postalCode: columnNames.postal_code && row[columnNames.postal_code],
+              phoneNumber: columnNames.phone_number && row[columnNames.phone_number],
+              birthName: columnNames.birth_name && row[columnNames.birth_name],
+              customId: columnNames.custom_id && row[columnNames.custom_id],
             },
-            department.number
+            department.number,
+            configuration
           );
           applicantsFromList.push(applicant);
         });
@@ -52,7 +57,7 @@ export default function Applicants({ department, configuration }) {
       reader.readAsBinaryString(file);
     });
 
-    return applicantsFromList;
+    return applicantsFromList.reverse();
   };
 
   const addStatusesToApplicants = async (applicantsFromList) => {
@@ -131,16 +136,19 @@ export default function Applicants({ department, configuration }) {
                     <th scope="col">Prénom</th>
                     <th scope="col">Nom</th>
                     <th scope="col">Adresse</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Téléphone</th>
-                    <th scope="col">Date de naissance</th>
                     <th scope="col">Rôle</th>
+                    {columnNames.birth_date && <th scope="col">Date de naissance</th>}
+                    {columnNames.email && <th scope="col">Email</th>}
+                    {columnNames.phone_number && <th scope="col">Téléphone</th>}
+                    {columnNames.custom_id && <th scope="col">ID Editeur</th>}
                     <th scope="col" style={{ whiteSpace: "nowrap" }}>
                       Créé le
                     </th>
-                    <th scope="col" style={{ whiteSpace: "nowrap" }}>
-                      Invité le
-                    </th>
+                    {configuration.invitation_format !== "no_invitation" && (
+                      <th scope="col" style={{ whiteSpace: "nowrap" }}>
+                        Invité le
+                      </th>
+                    )}
                     <th scope="col">Action</th>
                   </tr>
                 </thead>

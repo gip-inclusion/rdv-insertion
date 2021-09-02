@@ -68,15 +68,18 @@ export default function Applicant({ applicant, dispatchApplicants, department })
       <td>{applicant.affiliationNumber}</td>
       <td>{applicant.firstName}</td>
       <td>{applicant.lastName}</td>
-      <td>{applicant.fullAddress()}</td>
-      <td>{applicant.email}</td>
-      <td>{applicant.phoneNumber}</td>
-      <td>{applicant.birthDate}</td>
+      <td>{applicant.fullAddress}</td>
       <td>{applicant.role}</td>
+      {applicant.birthDate && <td>{applicant.birthDate}</td>}
+      {applicant.email && <td>{applicant.email}</td>}
+      {applicant.phoneNumber && <td>{applicant.phoneNumber}</td>}
+      {applicant.customId && <td>{applicant.customId}</td>}
       <td className="text-nowrap">{applicant.createdAt ?? " - "}</td>
-      <td className="text-nowrap">{applicant.invitationSentAt ?? " - "}</td>
+      {applicant.shouldBeInvited() && (
+        <td className="text-nowrap">{applicant.invitationSentAt ?? " - "}</td>
+      )}
       <td>
-        {!applicant.invitedAt && (
+        {applicant.callToAction() ? (
           <button
             type="submit"
             disabled={isLoading}
@@ -85,6 +88,8 @@ export default function Applicant({ applicant, dispatchApplicants, department })
           >
             {isLoading ? applicant.loadingAction() : applicant.callToAction()}
           </button>
+        ) : (
+          " - "
         )}
       </td>
     </tr>
