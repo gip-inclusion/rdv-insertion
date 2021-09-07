@@ -24,12 +24,11 @@ module Invitations
     end
 
     def content
-      "Bonjour,\nVous êtes allocataire du RSA. Vous devez bénéficier d'un accompagnement obligatoire dans " \
-        "le cadre de vos démarches d'insertion. Le département #{department.number} (#{department.name.capitalize}) " \
-        "vous invite à prendre rendez-vous auprès d'un référent afin d'échanger sur votre situation.\n" \
-        "Vous devez prendre rendez-vous en ligne à l'adresse suivante: #{@invitation.link}\n" \
-        "En cas d'absence, une sanction pourra être prononcée. Pour tout problème, contactez " \
-        "le secrétariat au #{department.phone_number}."
+      "Bonjour,\nVous êtes allocataire du RSA. Vous bénéficiez d'un accompagenement obligatoire dans le cadre de " \
+        "vos démarches d'insertion. Le département #{department.number} (#{department.name.capitalize}) " \
+        "vous invite à prendre rendez-vous à l'adresse suivante: #{@invitation.link}\n" \
+        "En cas d'absence, une sanction pourra être prononcée. Pour tout problème ou difficultés pour prendre RDV, " \
+        "contactez le secrétariat au #{department.phone_number}."
     end
 
     def department
