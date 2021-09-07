@@ -1,7 +1,3 @@
-puts "Destroying..."
-
-[Department, Agent].each(&:destroy_all)
-
 puts "Creating departments..."
 
 Department.create!(
@@ -20,9 +16,7 @@ Department.create!(
 )
 
 puts "Creating agents..."
-agent = Agent.create!(
-  email: "johndoe@gouv.fr"
-  )
+agent = Agent.create!(email: "johndoe@gouv.fr")
 agent.department_ids = [Department.last.id]
 agent.save!
 
@@ -31,8 +25,8 @@ Configuration.create!(
   sheet_name: "ENTRETIENS PHYSIQUES",
   invitation_format: "sms",
   department_id: 2,
-  column_names:
-    {"address"=>"adresse",
+  column_names: {
+    "address"=>"adresse",
     "last_name"=>"nom-beneficiaire",
     "first_name"=>"prenom-beneficiaire",
     "email"=>"adresses-mails",
@@ -40,7 +34,8 @@ Configuration.create!(
     "postal_code"=>"cp-ville",
     "affiliation_number"=>"numero-allocataire",
     "role"=>"role",
-    "phone_number"=>"numero-telephones"}
-  )
+    "phone_number"=>"numero-telephones"
+  }
+)
 
 puts "Done!"
