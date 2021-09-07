@@ -12,4 +12,6 @@ Rails.application.routes.draw do
   resources :sessions, only: [:create]
   get '/sign_in', to: "sessions#new"
   delete '/sign_out', to: "sessions#destroy"
+
+  get '/invitations/redirect', to: "invitations#redirect"
 end

@@ -1,5 +1,6 @@
 class InvitationsController < ApplicationController
-  before_action :set_applicant
+  before_action :set_applicant, only: [:create]
+  before_action :set_invitation, only: [:redirect]
   respond_to :json
 
   def create
@@ -8,6 +9,11 @@ class InvitationsController < ApplicationController
     else
       render json: { success: false, errors: invite_applicant.errors }
     end
+  end
+
+  def redirect
+    @invitation.seen = true
+    redirect_to @invitation.link
   end
 
   private
@@ -27,5 +33,9 @@ class InvitationsController < ApplicationController
 
   def department
     @applicant.department
+  end
+
+  def set_invitation
+    @invitation = Invitation.find_by(token: params[:invitation_token])
   end
 end
