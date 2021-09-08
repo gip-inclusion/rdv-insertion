@@ -191,6 +191,7 @@ GEM
       execjs
       railties (>= 3.2)
       tilt
+    redis (4.4.0)
     regexp_parser (2.1.1)
     responders (3.0.1)
       actionpack (>= 5.0)
@@ -231,6 +232,10 @@ GEM
     sib-api-v3-sdk (7.5.0)
       json (~> 2.1, >= 2.1.0)
       typhoeus (~> 1.0, >= 1.0.1)
+    sidekiq (6.2.2)
+      connection_pool (>= 2.2.2)
+      rack (~> 2.0)
+      redis (>= 4.2.0)
     spring (2.1.1)
     spring-watcher-listen (2.0.1)
       listen (>= 2.7, < 4.0)
@@ -295,6 +300,7 @@ DEPENDENCIES
   sass-rails (>= 6)
   selenium-webdriver
   sib-api-v3-sdk
+  sidekiq
   spring
   spring-watcher-listen (~> 2.0.0)
   turbolinks (~> 5)

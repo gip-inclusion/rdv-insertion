@@ -1,7 +1,7 @@
 class ApplicantsController < ApplicationController
   PERMITTED_PARAMS = [
     :uid, :role, :first_name, :last_name, :birth_date, :email, :phone_number,
-    :birth_name, :address, :affiliation_number, :custom_id
+    :birth_name, :address, :affiliation_number, :custom_id, :title
   ].freeze
   respond_to :json
 

@@ -24,7 +24,7 @@ puts "Creating configurations..."
 Configuration.create!(
   sheet_name: "ENTRETIENS PHYSIQUES",
   invitation_format: "sms",
-  department_id: 2,
+  department_id: Department.last.id,
   column_names: {
     "address"=>"adresse",
     "last_name"=>"nom-beneficiaire",

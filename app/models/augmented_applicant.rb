@@ -8,8 +8,8 @@ class AugmentedApplicant
   end
 
   def as_json(_opts = {})
-    @rdv_solidarites_user.as_json.merge(
-      @applicant.as_json
+    @applicant.as_json.merge(
+      @rdv_solidarites_user.as_json
     )
   end
 end

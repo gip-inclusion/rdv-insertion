@@ -37,6 +37,9 @@ gem 'responders'
 # Send SMS & emails with SendInBlue
 gem 'sib-api-v3-sdk'
 
+# Queuing system
+gem 'sidekiq'
+
 # gem needed to be defined explicitely with ruby 3
 gem 'rexml'
 gem 'addressable'

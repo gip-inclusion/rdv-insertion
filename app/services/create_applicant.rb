@@ -15,7 +15,7 @@ class CreateApplicant < BaseService
   def create_applicant!
     fail! unless create_applicant_transaction
 
-    fail! unless assign_rdv_solidarites_user_id
+    fail! unless assign_rdv_solidarites_user_attributes
   end
 
   def create_applicant_transaction
@@ -30,9 +30,11 @@ class CreateApplicant < BaseService
     end
   end
 
-  def assign_rdv_solidarites_user_id
-    applicant.rdv_solidarites_user_id = result.rdv_solidarites_user.id
-    return true if applicant.save
+  def assign_rdv_solidarites_user_attributes
+    return true if applicant.update(
+      rdv_solidarites_user_id: result.rdv_solidarites_user.id,
+      phone_number_formatted: result.rdv_solidarites_user.phone_number_formatted
+    )
 
     result.errors << applicant.errors.full_messages.to_sentence
     false
@@ -73,7 +75,10 @@ class CreateApplicant < BaseService
 
   def rdv_solidarites_user_attributes
     user_attributes = {
-      organisation_ids: [@department.rdv_solidarites_organisation_id]
+      organisation_ids: [@department.rdv_solidarites_organisation_id],
+      # if we notify from rdv-insertion we don't from rdv-solidarites
+      notify_by_sms: !@department.notify_applicant?,
+      notify_by_email: !@department.notify_applicant?
     }.merge(
       @applicant_data.slice(*RdvSolidaritesUser::USER_ATTRIBUTES).compact
     ).deep_symbolize_keys

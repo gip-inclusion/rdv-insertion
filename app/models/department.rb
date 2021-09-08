@@ -5,6 +5,8 @@ class Department < ApplicationRecord
   has_many :applicants, dependent: :destroy
   has_one :configuration, dependent: :destroy
 
+  delegate :notify_applicant?, to: :configuration
+
   def name_with_region
     "#{name}, #{region}"
   end

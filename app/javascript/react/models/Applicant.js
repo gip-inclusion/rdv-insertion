@@ -6,6 +6,11 @@ const ROLES = {
   cjt: "conjoint",
 };
 
+const TITLES = {
+  mr: "monsieur",
+  mme: "madame",
+};
+
 export default class Applicant {
   constructor(attributes, departmentNumber, departmentConfiguration) {
     const formattedAttributes = {};
@@ -15,6 +20,8 @@ export default class Applicant {
     this.address = formattedAttributes.address;
     this.lastName = formattedAttributes.lastName;
     this.firstName = formattedAttributes.firstName;
+    this.title =
+      TITLES[formattedAttributes.title?.toLowerCase()] || formattedAttributes.title?.toLowerCase();
     this.email = formattedAttributes.email;
     this.birthDate = formattedAttributes.birthDate;
     this.birthName = formattedAttributes.birthName;
@@ -54,11 +61,18 @@ export default class Applicant {
     this._id = id;
   }
 
-  set invitationSentAt(invitatioSentAt) {
-    this._invitationSentAt = invitatioSentAt;
+  set invitationSentAt(invitationSentAt) {
+    this._invitationSentAt = invitationSentAt;
   }
 
   augmentWith(augmentedApplicant) {
+    // we update the attributes if they are different in RDV-Solidarités
+    // than in the file and set the new ones
+    this.firstName = augmentedApplicant.first_name;
+    this.lastName = augmentedApplicant.last_name;
+    this.email = augmentedApplicant.email;
+    this.phoneNumber = formatPhoneNumber(augmentedApplicant.phone_number);
+    this.fullAddress = augmentedApplicant.address;
     this.createdAt = augmentedApplicant.created_at;
     this.invitedAt = augmentedApplicant.invited_at;
     this.id = augmentedApplicant.id;
@@ -71,6 +85,10 @@ export default class Applicant {
       (this.postalCode ? ` - ${this.postalCode}` : "") +
       (this.city ? ` - ${this.city}` : "")
     );
+  }
+
+  shouldDisplay(attribute) {
+    return this.departmentConfiguration.column_names[attribute];
   }
 
   callToAction() {
@@ -122,6 +140,7 @@ export default class Applicant {
     return {
       uid: this.generateUid(),
       address: this.fullAddress,
+      title: this.title,
       last_name: this.lastName,
       first_name: this.firstName,
       role: this.role,

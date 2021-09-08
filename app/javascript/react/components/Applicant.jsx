@@ -66,14 +66,15 @@ export default function Applicant({ applicant, dispatchApplicants, department })
   return (
     <tr key={applicant.uid}>
       <td>{applicant.affiliationNumber}</td>
+      <td>{applicant.title}</td>
       <td>{applicant.firstName}</td>
       <td>{applicant.lastName}</td>
       <td>{applicant.fullAddress}</td>
       <td>{applicant.role}</td>
-      {applicant.birthDate && <td>{applicant.birthDate}</td>}
-      {applicant.email && <td>{applicant.email}</td>}
-      {applicant.phoneNumber && <td>{applicant.phoneNumber}</td>}
-      {applicant.customId && <td>{applicant.customId}</td>}
+      {applicant.shouldDisplay("birth_date") && <td>{applicant.birthDate ?? " - "}</td>}
+      {applicant.shouldDisplay("email") && <td>{applicant.email ?? " - "}</td>}
+      {applicant.shouldDisplay("phone_number") && <td>{applicant.phoneNumber ?? " - "}</td>}
+      {applicant.shouldDisplay("custom_id") && <td>{applicant.customId ?? " - "}</td>}
       <td className="text-nowrap">{applicant.createdAt ?? " - "}</td>
       {applicant.shouldBeInvited() && (
         <td className="text-nowrap">{applicant.invitationSentAt ?? " - "}</td>

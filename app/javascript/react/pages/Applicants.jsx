@@ -37,6 +37,7 @@ export default function Applicants({ department, configuration }) {
               firstName: row[columnNames.first_name],
               affiliationNumber: row[columnNames.affiliation_number],
               role: row[columnNames.role],
+              title: row[columnNames.title],
               address: columnNames.address && row[columnNames.address],
               fullAddress: columnNames.full_address && row[columnNames.full_address],
               email: columnNames.email && row[columnNames.email],
@@ -133,6 +134,7 @@ export default function Applicants({ department, configuration }) {
                 <thead className="align-middle">
                   <tr>
                     <th scope="col">Numéro d&apos;allocataire</th>
+                    <th scope="col">Civilité</th>
                     <th scope="col">Prénom</th>
                     <th scope="col">Nom</th>
                     <th scope="col">Adresse</th>
