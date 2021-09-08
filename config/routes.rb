@@ -13,5 +13,7 @@ Rails.application.routes.draw do
   get '/sign_in', to: "sessions#new"
   delete '/sign_out', to: "sessions#destroy"
 
-  get '/invitations/redirect', to: "invitations#redirect"
+  resources :invitations, only: [] do
+    get :redirect, on: :collection
+  end
 end

@@ -1,6 +1,7 @@
 class InvitationsController < ApplicationController
   before_action :set_applicant, only: [:create]
   before_action :set_invitation, only: [:redirect]
+  skip_before_action :authenticate_agent!, only: [:redirect]
   respond_to :json
 
   def create
@@ -13,6 +14,7 @@ class InvitationsController < ApplicationController
 
   def redirect
     @invitation.seen = true
+    @invitation.save!
     redirect_to @invitation.link
   end
 
@@ -36,6 +38,6 @@ class InvitationsController < ApplicationController
   end
 
   def set_invitation
-    @invitation = Invitation.find_by(token: params[:invitation_token])
+    @invitation = Invitation.find_by(token: params[:token])
   end
 end
