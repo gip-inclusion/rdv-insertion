@@ -14,7 +14,7 @@ class InvitationsController < ApplicationController
 
   def redirect
     @invitation.seen = true
-    @invitation.save!
+    @invitation.save
     redirect_to @invitation.link
   end
 
