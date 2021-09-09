@@ -80,6 +80,7 @@ ActiveRecord::Schema.define(version: 2021_09_08_142124) do
     t.bigint "applicant_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "seen", default: false
     t.index ["applicant_id"], name: "index_invitations_on_applicant_id"
   end
 

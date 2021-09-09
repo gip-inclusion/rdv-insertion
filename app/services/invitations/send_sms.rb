@@ -1,5 +1,7 @@
 module Invitations
   class SendSms < BaseService
+    include Rails.application.routes.url_helpers
+
     def initialize(invitation:)
       @invitation = invitation
     end
@@ -26,7 +28,8 @@ module Invitations
       "#{applicant.full_name},\nVous êtes allocataire du RSA. Vous bénéficiez d'un accompagnement personnalisé " \
         "dans le cadre de vos démarches d'insertion. Le département #{department.number} " \
         "(#{department.name.capitalize}) vous invite à prendre rendez-vous sans tarder, afin de choisir " \
-        "l'horaire qui vous convient le mieux, à l'adresse suivante : #{@invitation.link}\n" \
+        "l'horaire qui vous convient le mieux, à l'adresse suivante : " \
+        "#{redirect_invitations_url(params: { token: @invitation.token }, host: ENV['HOST'])}\n" \
         "Pour tout problème ou difficultés pour prendre RDV, contactez le secrétariat au #{department.phone_number}." \
         " Ce RDV est obligatoire, en cas d'absence une sanction pourra être prononcée."
     end

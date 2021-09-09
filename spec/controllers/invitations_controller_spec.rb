@@ -72,4 +72,22 @@ describe InvitationsController, type: :controller do
       end
     end
   end
+
+  describe "#redirect" do
+    let!(:applicant_id) { "24" }
+    let!(:department) { create(:department) }
+    let!(:applicant) { create(:applicant, department: department, id: applicant_id) }
+    let!(:invitation) { create(:invitation, applicant: applicant) }
+    let!(:invite_params) { { token: invitation.token } }
+
+    it "mark the invitation as seen" do
+      get :redirect, params: invite_params
+      expect(invitation.reload.seen).to eq(true)
+    end
+
+    it "redirects to the invitation link" do
+      get :redirect, params: invite_params
+      expect(response).to redirect_to invitation.link
+    end
+  end
 end

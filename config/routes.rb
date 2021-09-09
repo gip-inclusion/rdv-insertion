@@ -21,7 +21,9 @@ Rails.application.routes.draw do
     resources :invitations, only: [:create]
   end
 
-  resource :invitations, param: :token
+  resources :invitations, only: [] do
+    get :redirect, on: :collection
+  end
 
   resources :rdv_solidarites_webhooks, only: [:create]
 
