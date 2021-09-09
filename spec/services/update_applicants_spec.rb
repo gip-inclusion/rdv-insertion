@@ -1,4 +1,4 @@
-describe RetrieveAugmentedApplicants, type: :service do
+describe UpdateApplicants, type: :service do
   subject do
     described_class.call(
       applicants: applicants,
@@ -8,7 +8,12 @@ describe RetrieveAugmentedApplicants, type: :service do
   end
 
   let(:rdv_solidarites_user_id) { 51 }
-  let(:applicant) { create(:applicant, rdv_solidarites_user_id: rdv_solidarites_user_id, department: department) }
+  let(:applicant) do
+    create(
+      :applicant, first_name: "Bernard", last_name: "Lama",
+                  rdv_solidarites_user_id: rdv_solidarites_user_id, department: department
+    )
+  end
   let(:department) { create(:department, rdv_solidarites_organisation_id: 42) }
   let(:applicants) { [applicant] }
   let(:rdv_solidarites_session) do
@@ -18,7 +23,11 @@ describe RetrieveAugmentedApplicants, type: :service do
   let(:page) { 1 }
 
   describe "#call" do
-    let(:rdv_solidarites_user) { instance_double(RdvSolidaritesUser) }
+    let(:rdv_solidarites_user) do
+      RdvSolidaritesUser.new(
+        first_name: "Bernard", last_name: "Lamo", email: "bernardlamo@gmail.com"
+      )
+    end
 
     before do
       allow(RetrieveRdvSolidaritesUsers).to receive(:call)
@@ -39,8 +48,9 @@ describe RetrieveAugmentedApplicants, type: :service do
         is_a_success
       end
 
-      it "does store any augmented applicants" do
-        expect(subject.augmented_applicants).to eq([])
+      it "does not retrieve rdv solidarites users" do
+        expect(RetrieveRdvSolidaritesUsers).not_to receive(:call)
+        subject
       end
     end
 
@@ -54,21 +64,15 @@ describe RetrieveAugmentedApplicants, type: :service do
         subject
       end
 
-      context "when it retrieves usersr" do
-        let(:augmented_applicant) { instance_double(AugmentedApplicant) }
-
-        before do
-          allow(AugmentedApplicant).to receive(:new)
-            .with(applicant, rdv_solidarites_user)
-            .and_return(augmented_applicant)
-        end
-
+      context "when it retrieves users" do
         it "is a success" do
           is_a_success
         end
 
-        it "stores the augmented applicants" do
-          expect(subject.augmented_applicants).to eq([augmented_applicant])
+        it "updates the applicant with rdv solidarites attributes" do
+          subject
+          expect(applicant.last_name).to eq("Lamo")
+          expect(applicant.email).to eq("bernardlamo@gmail.com")
         end
 
         it "stores the next page" do
@@ -88,10 +92,6 @@ describe RetrieveAugmentedApplicants, type: :service do
 
         it "stores the error" do
           expect(subject.errors).to eq(['some error'])
-        end
-
-        it "does not store augmented applicants" do
-          expect(subject.augmented_applicants).to eq([])
         end
       end
     end

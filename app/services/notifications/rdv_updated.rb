@@ -3,7 +3,7 @@ module Notifications
     protected
 
     def content
-      "#{@applicant.full_name},\n Votre RDV d'orientation RSA a été modifié. " +
+      "#{@applicant.full_name},\nVotre RDV d'orientation RSA a été modifié. " +
         rdv_instructions +
         " En cas d’absence, vous risquez une suspension de votre allocation RSA. " \
         "Le département #{department.number} (#{department.name.capitalize})."
@@ -17,10 +17,6 @@ module Notifications
         "Un travailleur social vous appellera le #{formatted_start_date}" \
           " à partir de #{formatted_start_time} sur ce numéro."
       end
-    end
-
-    def event
-      "rdv_updated"
     end
   end
 end

@@ -1,1 +1,1 @@
-Rails.logger = Sidekiq.logger
+Rails.logger = Sidekiq.logger unless Rails.env.test?

@@ -65,18 +65,17 @@ export default class Applicant {
     this._invitationSentAt = invitationSentAt;
   }
 
-  augmentWith(augmentedApplicant) {
-    // we update the attributes if they are different in RDV-Solidarités
-    // than in the file and set the new ones
-    this.firstName = augmentedApplicant.first_name;
-    this.lastName = augmentedApplicant.last_name;
-    this.email = augmentedApplicant.email;
-    this.phoneNumber = formatPhoneNumber(augmentedApplicant.phone_number);
-    this.fullAddress = augmentedApplicant.address;
-    this.createdAt = augmentedApplicant.created_at;
-    this.invitedAt = augmentedApplicant.invited_at;
-    this.id = augmentedApplicant.id;
-    this.invitationSentAt = augmentedApplicant.invitation_sent_at;
+  updateWith(upToDateApplicant) {
+    // we update the attributes if they are different in the app than in the file
+    this.firstName = upToDateApplicant.first_name;
+    this.lastName = upToDateApplicant.last_name;
+    this.email = upToDateApplicant.email;
+    this.phoneNumber = formatPhoneNumber(upToDateApplicant.phone_number_formatted);
+    this.fullAddress = upToDateApplicant.address;
+    this.createdAt = upToDateApplicant.created_at;
+    this.invitedAt = upToDateApplicant.invited_at;
+    this.id = upToDateApplicant.id;
+    this.invitationSentAt = upToDateApplicant.invitation_sent_at;
   }
 
   formatAddress() {

@@ -25,9 +25,9 @@ describe Invitations::InviteApplicant, type: :service do
         .and_return(OpenStruct.new(success?: true, invitation_token: token))
       allow(Invitations::ComputeLink).to receive(:call)
         .and_return(OpenStruct.new(success?: true, invitation_link: invitation_link))
-      allow(RetrieveRdvSolidaritesUser).to receive(:call)
-        .and_return(OpenStruct.new(success?: true, user: rdv_solidarites_user))
-      allow(Invitations::Send).to receive(:call)
+      allow(Invitation).to receive(:new).and_return(invitation)
+      allow(invitation).to receive(:save).and_return(true)
+      allow(invitation).to receive(:send_to_applicant)
         .and_return(OpenStruct.new(success?: true))
     end
 
@@ -36,11 +36,13 @@ describe Invitations::InviteApplicant, type: :service do
     end
 
     it "creates an invitation" do
-      expect { subject }.to change(Invitation, :count).by(1)
+      expect(Invitation).to receive(:new)
+      expect(invitation).to receive(:save)
+      subject
     end
 
     it "returns the invitation" do
-      expect(subject.invitation).to be_an_instance_of(Invitation)
+      expect(subject.invitation).to eq(invitation)
     end
 
     context "retrieves an invitation token" do
@@ -105,10 +107,6 @@ describe Invitations::InviteApplicant, type: :service do
     end
 
     context "invitation creation" do
-      before do
-        allow(Invitation).to receive(:new).and_return(invitation)
-      end
-
       it "creates the invitation with the link and token" do
         expect(Invitation).to receive(:new)
           .with(
@@ -120,54 +118,15 @@ describe Invitations::InviteApplicant, type: :service do
       end
     end
 
-    context "retrieves rdv solidarites user" do
-      it "tries to compute the invitation link" do
-        expect(RetrieveRdvSolidaritesUser).to receive(:call)
-          .with(
-            rdv_solidarites_session: rdv_solidarites_session,
-            rdv_solidarites_user_id: rdv_solidarites_user_id
-          )
-        subject
-      end
-
-      context "when it fails" do
-        before do
-          allow(RetrieveRdvSolidaritesUser).to receive(:call)
-            .and_return(OpenStruct.new(success?: false, errors: ["something happened"]))
-        end
-
-        it "is a failure" do
-          is_a_failure
-        end
-
-        it "stores the error" do
-          expect(subject.errors).to eq(["something happened"])
-        end
-
-        it "does not send the invitation" do
-          expect(Invitations::Send).not_to receive(:call)
-          subject
-        end
-      end
-    end
-
     context "sends invitation" do
-      before do
-        allow(Invitation).to receive(:new).and_return(invitation)
-      end
-
       it "tries to send the invitation" do
-        expect(Invitations::Send).to receive(:call)
-          .with(
-            rdv_solidarites_user: rdv_solidarites_user,
-            invitation: invitation
-          )
+        expect(invitation).to receive(:send_to_applicant)
         subject
       end
 
       context "when it fails" do
         before do
-          allow(RetrieveRdvSolidaritesUser).to receive(:call)
+          allow(invitation).to receive(:send_to_applicant)
             .and_return(OpenStruct.new(success?: false, errors: ["something happened"]))
         end
 
@@ -191,7 +150,6 @@ describe Invitations::InviteApplicant, type: :service do
       let!(:time_it_was_sent) { Time.zone.now }
 
       before do
-        allow(Invitation).to receive(:new).and_return(invitation)
         allow(Time.zone).to receive(:now).and_return(time_it_was_sent)
       end
 

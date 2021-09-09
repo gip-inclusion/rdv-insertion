@@ -6,6 +6,8 @@ class ApplicantsController < ApplicationController
   respond_to :json
 
   before_action :retrieve_applicants, only: [:search]
+  # temporary solution to have up to date applicants
+  before_action :update_applicants, only: [:search]
   before_action :set_department, only: [:index, :create]
 
   def index
@@ -14,21 +16,17 @@ class ApplicantsController < ApplicationController
   end
 
   def search
-    if retrieve_augmented_applicants.success?
-      render json: {
-        success: true,
-        augmented_applicants: retrieve_augmented_applicants.augmented_applicants,
-        next_page: retrieve_augmented_applicants.next_page
-      }
-    else
-      render json: { success: false, errors: retrieve_augmented_applicants.errors }
-    end
+    render json: {
+      success: true,
+      applicants: @applicants,
+      next_page: update_applicants.next_page
+    }
   end
 
   def create
     authorize @department, :create_applicant?
     if create_applicant.success?
-      render json: { success: true, augmented_applicant: create_applicant.augmented_applicant }
+      render json: { success: true, applicant: create_applicant.applicant }
     else
       render json: { success: false, errors: create_applicant.errors }
     end
@@ -48,8 +46,8 @@ class ApplicantsController < ApplicationController
     )
   end
 
-  def retrieve_augmented_applicants
-    @retrieve_augmented_applicants ||= RetrieveAugmentedApplicants.call(
+  def update_applicants
+    @update_applicants ||= UpdateApplicants.call(
       applicants: @applicants,
       rdv_solidarites_session: rdv_solidarites_session,
       page: params[:page]

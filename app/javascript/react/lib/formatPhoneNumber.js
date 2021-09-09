@@ -5,6 +5,9 @@ const formatPhoneNumber = (phoneNumber) => {
     return null;
   }
 
+  if (phoneNumber[0] === "+") {
+    return phoneNumber;
+  }
   return phoneNumber[0] !== "0" ? `0${phoneNumber}` : phoneNumber;
 };
 

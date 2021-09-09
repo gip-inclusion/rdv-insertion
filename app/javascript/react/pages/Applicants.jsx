@@ -61,21 +61,21 @@ export default function Applicants({ department, configuration }) {
     return applicantsFromList.reverse();
   };
 
-  const addStatusesToApplicants = async (applicantsFromList) => {
+  const retrieveApplicantsFromApp = async (applicantsFromList) => {
     const uids = applicantsFromList.map((applicant) => applicant.uid);
-    let augmentedApplicants = applicantsFromList;
+    let upToDateApplicants = applicantsFromList;
 
     const retrievedApplicants = await searchApplicants(uids);
 
-    augmentedApplicants = applicantsFromList.map((applicant) => {
-      const augmentedApplicant = retrievedApplicants.find((a) => a.uid === applicant.uid);
-      if (augmentedApplicant) {
-        applicant.augmentWith(augmentedApplicant);
+    upToDateApplicants = applicantsFromList.map((applicant) => {
+      const upToDateApplicant = retrievedApplicants.find((a) => a.uid === applicant.uid);
+      if (upToDateApplicant) {
+        applicant.updateWith(upToDateApplicant);
       }
       return applicant;
     });
 
-    return augmentedApplicants;
+    return upToDateApplicants;
   };
 
   const handleFile = async (file) => {
@@ -84,9 +84,9 @@ export default function Applicants({ department, configuration }) {
     dispatchApplicants({ type: "reset" });
     const applicantsFromList = await retrieveApplicantsFromList(file);
 
-    const augmentedApplicants = await addStatusesToApplicants(applicantsFromList);
+    const upToDateApplicants = await retrieveApplicantsFromApp(applicantsFromList);
 
-    augmentedApplicants.forEach((applicant) => {
+    upToDateApplicants.forEach((applicant) => {
       dispatchApplicants({
         type: "append",
         item: {

@@ -9,7 +9,7 @@ export default function Applicant({ applicant, dispatchApplicants, department })
   const handleApplicantCreation = async () => {
     const result = await createApplicant(applicant, department.id);
     if (result.success) {
-      applicant.augmentWith(result.augmented_applicant);
+      applicant.updateWith(result.applicant);
 
       dispatchApplicants({
         type: "update",

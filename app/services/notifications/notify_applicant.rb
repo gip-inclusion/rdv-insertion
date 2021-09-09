@@ -27,17 +27,17 @@ module Notifications
 
     def notify_applicant
       Notification.transaction do
-        save_notification!
+        save_notification
         raise ActiveRecord::Rollback if failed?
 
-        send_sms!
+        send_sms
         raise ActiveRecord::Rollback if failed?
 
         true
       end
     end
 
-    def save_notification!
+    def save_notification
       return if notification.save
 
       result.errors += notification.errors.full_messages.to_sentence
@@ -47,16 +47,16 @@ module Notifications
       @applicant.phone_number_formatted
     end
 
-    def send_sms!
+    def send_sms
       Rails.logger.info(content)
       return if Rails.env.development?
-      return if send_sms.success?
+      return if send_sms_service.success?
 
-      result.errors += send_sms.errors
+      result.errors += send_sms_service.errors
     end
 
-    def send_sms
-      @send_sms ||= SendTransactionalSms.call(phone_number: @phone_number, content: content)
+    def send_sms_service
+      @send_sms_service ||= SendTransactionalSms.call(phone_number: @phone_number, content: content)
     end
 
     def notification

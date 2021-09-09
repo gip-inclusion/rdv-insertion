@@ -17,5 +17,9 @@ module Notifications
     def department
       @applicant.department
     end
+
+    def event
+      self.class.name.demodulize.underscore
+    end
   end
 end

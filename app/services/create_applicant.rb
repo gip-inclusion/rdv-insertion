@@ -7,15 +7,14 @@ class CreateApplicant < BaseService
 
   def call
     create_applicant!
-    result.augmented_applicant = AugmentedApplicant.new(applicant, result.rdv_solidarites_user)
+    update_applicant!
+    result.applicant = applicant
   end
 
   private
 
   def create_applicant!
     fail! unless create_applicant_transaction
-
-    fail! unless assign_rdv_solidarites_user_attributes
   end
 
   def create_applicant_transaction
@@ -30,7 +29,11 @@ class CreateApplicant < BaseService
     end
   end
 
-  def assign_rdv_solidarites_user_attributes
+  def update_applicant!
+    fail! unless update_with_rdv_soldarites_user_attributes
+  end
+
+  def update_with_rdv_soldarites_user_attributes
     return true if applicant.update(
       rdv_solidarites_user_id: result.rdv_solidarites_user.id,
       phone_number_formatted: result.rdv_solidarites_user.phone_number_formatted
