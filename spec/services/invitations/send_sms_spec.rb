@@ -21,7 +21,7 @@ describe Invitations::SendSms, type: :service do
     )
   end
   let!(:invitation) do
-    create(:invitation, applicant: applicant, link: "https://www.rdv-solidarites.fr/lieux?invitation_token=123")
+    create(:invitation, applicant: applicant, token: "123", link: "https://www.rdv-solidarites.fr/lieux?invitation_token=123")
   end
 
   describe "#call" do
@@ -30,14 +30,14 @@ describe Invitations::SendSms, type: :service do
         "le cadre de vos démarches d'insertion. Le département 26 (Drôme) " \
         "vous invite à prendre rendez-vous auprès d'un référent afin d'échanger sur votre situation.\n" \
         "Vous devez prendre rendez-vous en ligne à l'adresse suivante: "\
-        "#{redirect_invitations_url(params: { token: invitation.token }, host: ENV['HOST'])}\n" \
+        "http://www.rdv-insertion.fr/invitations/redirect?token=123\n" \
         "En cas d'absence, une sanction pourra être prononcée. Pour tout problème, contactez " \
         "le secrétariat au 0147200001."
     end
 
     before do
       allow(SendTransactionalSms).to receive(:call)
-      ENV['HOST'] = "http://localhost:8000"
+      ENV['HOST'] = "www.rdv-insertion.fr"
     end
 
     it("is a success") { is_a_success }
