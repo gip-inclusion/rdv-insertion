@@ -40,7 +40,7 @@ module Notifications
     def save_notification
       return if notification.save
 
-      result.errors += notification.errors.full_messages.to_sentence
+      result.errors << notification.errors.full_messages.to_sentence
     end
 
     def phone_number
@@ -56,7 +56,7 @@ module Notifications
     end
 
     def send_sms_service
-      @send_sms_service ||= SendTransactionalSms.call(phone_number: @phone_number, content: content)
+      @send_sms_service ||= SendTransactionalSms.call(phone_number: phone_number, content: content)
     end
 
     def notification
@@ -69,7 +69,7 @@ module Notifications
     def update_notification_sent_at!
       return if notification.update(sent_at: Time.zone.now)
 
-      result.errors << invitation.errors.full_messages.to_sentence
+      result.errors << notification.errors.full_messages.to_sentence
       fail!
     end
   end

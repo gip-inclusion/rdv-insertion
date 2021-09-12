@@ -7,7 +7,7 @@ module Notifications
     end
 
     def presential_content
-      "#{@applicant.full_name},\nVous êtes allocataire du RSA. Vous bénéficiez d’un accompagnement obligatoire" \
+      "#{@applicant.full_name},\nVous êtes allocataire du RSA. Vous bénéficiez d’un accompagnement obligatoire " \
         "dans le cadre de vos démarches d’insertion. Vous êtes attendu(e) le #{formatted_start_date} à " \
         "#{formatted_start_time} ici: #{@lieu[:name]} - #{@lieu[:address]}. En cas d’empêchement, merci "\
         "d’appeler rapidement le #{department.phone_number}. En cas d’absence, vous risquez une " \

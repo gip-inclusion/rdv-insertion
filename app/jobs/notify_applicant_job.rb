@@ -3,12 +3,12 @@ class NotificationsJobError < StandardError; end
 class NotifyApplicantJob < ApplicationJob
   def perform(applicant_id, lieu, motif, starts_at, event)
     @applicant_id = applicant_id
-    @lieu = lieu
-    @motif = motif
+    @lieu = lieu.deep_symbolize_keys
+    @motif = motif.deep_symbolize_keys
     @starts_at = starts_at
     @event = event
 
-    raise NotificationsJobError, event unless notify_applicant.success?
+    raise NotificationsJobError, notify_applicant.errors.join(" - ") unless notify_applicant.success?
   end
 
   private

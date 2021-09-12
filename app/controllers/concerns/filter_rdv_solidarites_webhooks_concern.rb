@@ -11,13 +11,13 @@ module FilterRdvSolidaritesWebhooksConcern
   def check_webhook_auth!
     return if webhook_correctly_signed?
 
-    render plain: 'auth error', status: :bad_request
+    render plain: 'webhook auth error', status: :bad_request
   end
 
   def check_if_webhook_is_supported!
     return if webhook_supported?
 
-    render plain: "event not handled", status: :ok
+    render plain: "webhook event not handled", status: :ok
   end
 
   def webhook_supported?
