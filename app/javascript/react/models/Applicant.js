@@ -80,7 +80,7 @@ export default class Applicant {
 
   formatAddress() {
     return (
-      this.address +
+      (this.address ?? "") +
       (this.postalCode ? ` - ${this.postalCode}` : "") +
       (this.city ? ` - ${this.city}` : "")
     );

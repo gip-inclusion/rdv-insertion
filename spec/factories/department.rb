@@ -6,7 +6,7 @@ FactoryBot.define do
     sequence(:capital) { |n| "Capitale n°#{n}" }
 
     after(:create) do |department|
-      create(:configuration, department: department)
+      department.configuration ||= create(:configuration, department: department)
     end
   end
 end

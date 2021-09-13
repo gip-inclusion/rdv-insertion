@@ -41,7 +41,10 @@ export default function Applicants({ department, configuration }) {
               address: columnNames.address && row[columnNames.address],
               fullAddress: columnNames.full_address && row[columnNames.full_address],
               email: columnNames.email && row[columnNames.email],
-              birthDate: columnNames.birth_date && excelDateToString(row[columnNames.birth_date]),
+              birthDate:
+                columnNames.birth_date &&
+                row[columnNames.birth_date] &&
+                excelDateToString(row[columnNames.birth_date]),
               city: columnNames.city && row[columnNames.city],
               postalCode: columnNames.postal_code && row[columnNames.postal_code],
               phoneNumber: columnNames.phone_number && row[columnNames.phone_number],

@@ -81,6 +81,10 @@ describe ProcessRdvSolidaritesWebhookJob, type: :job do
     end
 
     context "when the applicant should be notified" do
+      before do
+        allow(Department).to receive(:find_by).and_return(department)
+      end
+
       it "calls the notify applicant job" do
         expect(NotifyApplicantJob).to receive(:perform_async)
           .with(3, lieu, motif, starts_at, "created")
