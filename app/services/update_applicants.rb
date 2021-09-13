@@ -1,6 +1,6 @@
-# Takes applicants and retrieve their rdv solidarites info to return augmented applicants
-# which is the combination of these applicants infos in DB and in RDV-Solidarites
-class RetrieveAugmentedApplicants < BaseService
+# Retrieves the RDV-Solidarites users linked to the applicants and updates them
+# if they changed in RDV-Solidarites
+class UpdateApplicants < BaseService
   def initialize(applicants:, rdv_solidarites_session:, page:)
     @applicants = applicants
     @rdv_solidarites_session = rdv_solidarites_session
@@ -8,15 +8,14 @@ class RetrieveAugmentedApplicants < BaseService
   end
 
   def call
-    result.augmented_applicants = []
     return if @applicants.empty?
 
-    retrieve_augmented_applicants
+    update_applicants
   end
 
   private
 
-  def retrieve_augmented_applicants
+  def update_applicants
     retrieve_rdv_solidarites_users
     return if failed?
 
@@ -27,7 +26,10 @@ class RetrieveAugmentedApplicants < BaseService
 
       next unless rdv_solidarites_user
 
-      result.augmented_applicants << AugmentedApplicant.new(applicant, rdv_solidarites_user)
+      applicant.assign_attributes(
+        rdv_solidarites_user.attributes.slice(*Applicant::RDV_SOLIDARITES_USER_SHARED_ATTRIBUTES)
+      )
+      applicant.save if applicant.changed?
     end
   end
 

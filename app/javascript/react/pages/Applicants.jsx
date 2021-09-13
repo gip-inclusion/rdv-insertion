@@ -37,6 +37,7 @@ export default function Applicants({ department, configuration }) {
               firstName: row[columnNames.first_name],
               affiliationNumber: row[columnNames.affiliation_number],
               role: row[columnNames.role],
+              title: row[columnNames.title],
               address: columnNames.address && row[columnNames.address],
               fullAddress: columnNames.full_address && row[columnNames.full_address],
               email: columnNames.email && row[columnNames.email],
@@ -60,21 +61,21 @@ export default function Applicants({ department, configuration }) {
     return applicantsFromList.reverse();
   };
 
-  const addStatusesToApplicants = async (applicantsFromList) => {
+  const retrieveApplicantsFromApp = async (applicantsFromList) => {
     const uids = applicantsFromList.map((applicant) => applicant.uid);
-    let augmentedApplicants = applicantsFromList;
+    let upToDateApplicants = applicantsFromList;
 
     const retrievedApplicants = await searchApplicants(uids);
 
-    augmentedApplicants = applicantsFromList.map((applicant) => {
-      const augmentedApplicant = retrievedApplicants.find((a) => a.uid === applicant.uid);
-      if (augmentedApplicant) {
-        applicant.augmentWith(augmentedApplicant);
+    upToDateApplicants = applicantsFromList.map((applicant) => {
+      const upToDateApplicant = retrievedApplicants.find((a) => a.uid === applicant.uid);
+      if (upToDateApplicant) {
+        applicant.updateWith(upToDateApplicant);
       }
       return applicant;
     });
 
-    return augmentedApplicants;
+    return upToDateApplicants;
   };
 
   const handleFile = async (file) => {
@@ -83,9 +84,9 @@ export default function Applicants({ department, configuration }) {
     dispatchApplicants({ type: "reset" });
     const applicantsFromList = await retrieveApplicantsFromList(file);
 
-    const augmentedApplicants = await addStatusesToApplicants(applicantsFromList);
+    const upToDateApplicants = await retrieveApplicantsFromApp(applicantsFromList);
 
-    augmentedApplicants.forEach((applicant) => {
+    upToDateApplicants.forEach((applicant) => {
       dispatchApplicants({
         type: "append",
         item: {
@@ -133,6 +134,7 @@ export default function Applicants({ department, configuration }) {
                 <thead className="align-middle">
                   <tr>
                     <th scope="col">Numéro d&apos;allocataire</th>
+                    <th scope="col">Civilité</th>
                     <th scope="col">Prénom</th>
                     <th scope="col">Nom</th>
                     <th scope="col">Adresse</th>

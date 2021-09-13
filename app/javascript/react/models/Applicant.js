@@ -6,6 +6,11 @@ const ROLES = {
   cjt: "conjoint",
 };
 
+const TITLES = {
+  mr: "monsieur",
+  mme: "madame",
+};
+
 export default class Applicant {
   constructor(attributes, departmentNumber, departmentConfiguration) {
     const formattedAttributes = {};
@@ -15,6 +20,8 @@ export default class Applicant {
     this.address = formattedAttributes.address;
     this.lastName = formattedAttributes.lastName;
     this.firstName = formattedAttributes.firstName;
+    this.title =
+      TITLES[formattedAttributes.title?.toLowerCase()] || formattedAttributes.title?.toLowerCase();
     this.email = formattedAttributes.email;
     this.birthDate = formattedAttributes.birthDate;
     this.birthName = formattedAttributes.birthName;
@@ -54,15 +61,21 @@ export default class Applicant {
     this._id = id;
   }
 
-  set invitationSentAt(invitatioSentAt) {
-    this._invitationSentAt = invitatioSentAt;
+  set invitationSentAt(invitationSentAt) {
+    this._invitationSentAt = invitationSentAt;
   }
 
-  augmentWith(augmentedApplicant) {
-    this.createdAt = augmentedApplicant.created_at;
-    this.invitedAt = augmentedApplicant.invited_at;
-    this.id = augmentedApplicant.id;
-    this.invitationSentAt = augmentedApplicant.invitation_sent_at;
+  updateWith(upToDateApplicant) {
+    // we update the attributes if they are different in the app than in the file
+    this.firstName = upToDateApplicant.first_name;
+    this.lastName = upToDateApplicant.last_name;
+    this.email = upToDateApplicant.email;
+    this.phoneNumber = formatPhoneNumber(upToDateApplicant.phone_number_formatted);
+    this.fullAddress = upToDateApplicant.address;
+    this.createdAt = upToDateApplicant.created_at;
+    this.invitedAt = upToDateApplicant.invited_at;
+    this.id = upToDateApplicant.id;
+    this.invitationSentAt = upToDateApplicant.invitation_sent_at;
   }
 
   formatAddress() {
@@ -71,6 +84,10 @@ export default class Applicant {
       (this.postalCode ? ` - ${this.postalCode}` : "") +
       (this.city ? ` - ${this.city}` : "")
     );
+  }
+
+  shouldDisplay(attribute) {
+    return this.departmentConfiguration.column_names[attribute];
   }
 
   callToAction() {
@@ -122,6 +139,7 @@ export default class Applicant {
     return {
       uid: this.generateUid(),
       address: this.fullAddress,
+      title: this.title,
       last_name: this.lastName,
       first_name: this.firstName,
       role: this.role,

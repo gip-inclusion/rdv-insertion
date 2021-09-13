@@ -28,7 +28,7 @@ const searchApplicants = async (uids) => {
       );
       break;
     }
-    retrievedApplicants = retrievedApplicants.concat(result.augmented_applicants);
+    retrievedApplicants = retrievedApplicants.concat(result.applicants);
     nextPage = result.next_page;
   }
   return retrievedApplicants;

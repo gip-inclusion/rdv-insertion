@@ -20,12 +20,11 @@ describe CreateApplicant, type: :service do
   end
 
   describe "#call" do
-    let(:applicant_attributes) do
-      { uid: "1234xyz", role: "demandeur", affiliation_number: "aff123", department: department }
-    end
+    let!(:applicant_attributes) { applicant_data.merge(department: department) }
+
     let!(:applicant) { build(:applicant, applicant_attributes) }
     let(:rdv_solidarites_client) { instance_double(RdvSolidaritesSession) }
-    let(:rdv_solidarites_user) { instance_double(RdvSolidaritesUser) }
+    let!(:rdv_solidarites_user) { instance_double(RdvSolidaritesUser) }
 
     before do
       allow(Applicant).to receive(:new)
@@ -34,7 +33,8 @@ describe CreateApplicant, type: :service do
         .and_return(true)
       allow(CreateRdvSolidaritesUser).to receive(:call)
         .and_return(OpenStruct.new(success?: true, rdv_solidarites_user: rdv_solidarites_user))
-      allow(rdv_solidarites_user).to receive(:id)
+      allow(rdv_solidarites_user).to receive(:id).and_return(142)
+      allow(rdv_solidarites_user).to receive(:phone_number_formatted).and_return("+33782605941")
     end
 
     it "tries to create the applicant in db" do
@@ -74,6 +74,8 @@ describe CreateApplicant, type: :service do
           first_name: "john", last_name: "doe",
           address: "16 rue de la tour", email: "johndoe@example.com",
           affiliation_number: "aff123",
+          notify_by_sms: true,
+          notify_by_email: true,
           organisation_ids: [department.rdv_solidarites_organisation_id]
         }
       end
@@ -89,6 +91,23 @@ describe CreateApplicant, type: :service do
             rdv_solidarites_session: rdv_solidarites_session
           )
         subject
+      end
+
+      context "when department notifies customer from rdv insertion" do
+        before do
+          allow(department).to receive(:notify_applicant?).and_return(true)
+        end
+
+        it "does not notify with rdv solidarites" do
+          expect(CreateRdvSolidaritesUser).to receive(:call)
+            .with(
+              user_attributes: rdv_solidarites_user_attributes.merge(
+                notify_by_email: false, notify_by_sms: false
+              ),
+              rdv_solidarites_session: rdv_solidarites_session
+            )
+          subject
+        end
       end
 
       context "when the applicant is a conjoint" do
@@ -129,14 +148,6 @@ describe CreateApplicant, type: :service do
       end
 
       context "when the rdv solidarites user creation succeeds" do
-        let(:augmented_applicant) { instance_double(AugmentedApplicant) }
-
-        before do
-          allow(rdv_solidarites_user).to receive(:id).and_return(142)
-          allow(AugmentedApplicant).to receive(:new)
-            .and_return(augmented_applicant)
-        end
-
         it "stores the rdv solidarites user" do
           expect(subject.rdv_solidarites_user).to eq(rdv_solidarites_user)
         end
@@ -146,15 +157,18 @@ describe CreateApplicant, type: :service do
           expect(applicant.rdv_solidarites_user_id).to eq(142)
         end
 
+        it "assign the phone number formatted" do
+          subject
+          expect(applicant.phone_number_formatted).to eq("+33782605941")
+        end
+
         it "save the applicant" do
           expect(applicant).to receive(:save).twice
           subject
         end
 
-        it "stores the augmented applicant" do
-          expect(AugmentedApplicant).to receive(:new)
-            .with(applicant, rdv_solidarites_user)
-          expect(subject.augmented_applicant).to eq(augmented_applicant)
+        it "stores the applicant" do
+          expect(subject.applicant).to eq(applicant)
         end
       end
     end

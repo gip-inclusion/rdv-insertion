@@ -15,13 +15,7 @@ class RdvSolidaritesUser
     end
   end
 
-  def as_json(_opts = {})
-    # we want to send formatted dates
-    @attributes.merge(
-      {
-        created_at: @attributes[:created_at]&.to_date&.strftime("%m/%d/%Y"),
-        invited_at: @attributes[:invited_at]&.to_date&.strftime("%m/%d/%Y")
-      }
-    )
+  def attributes
+    @attributes.to_hash
   end
 end

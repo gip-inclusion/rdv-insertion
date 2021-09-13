@@ -31,11 +31,11 @@ describe ApplicantsController, type: :controller do
     end
 
     context "when the creation succeeds" do
-      let(:augmented_applicant) { instance_double(AugmentedApplicant) }
+      let!(:applicant) { create(:applicant) }
 
       before do
         allow(CreateApplicant).to receive(:call)
-          .and_return(OpenStruct.new(success?: true, augmented_applicant: augmented_applicant))
+          .and_return(OpenStruct.new(success?: true, applicant: applicant))
       end
 
       it "is a success" do
@@ -44,10 +44,10 @@ describe ApplicantsController, type: :controller do
         expect(JSON.parse(response.body)["success"]).to eq(true)
       end
 
-      it "renders the applicant augmented" do
+      it "renders the applicant" do
         post :create, params: applicant_params
         expect(response).to be_successful
-        expect(JSON.parse(response.body)["augmented_applicant"]).to eq(augmented_applicant.as_json)
+        expect(JSON.parse(response.body)["applicant"]["id"]).to eq(applicant.id)
       end
     end
 
@@ -104,21 +104,21 @@ describe ApplicantsController, type: :controller do
   end
 
   describe "#search" do
-    let(:search_params) { { applicants: { uids: [23] }, page: 2 } }
-    let(:applicant) { create(:applicant, uid: 23) }
+    let!(:search_params) { { applicants: { uids: [23] }, page: 2 } }
+    let!(:applicant) { create(:applicant, uid: 23, email: "borisjohnson@gov.uk") }
 
     before do
       sign_in(agent)
       set_rdv_solidarites_session
-      allow(RetrieveAugmentedApplicants).to receive(:call)
+      allow(UpdateApplicants).to receive(:call)
         .and_return(OpenStruct.new)
       allow(Applicant).to receive(:where)
         .with(uid: ['23'])
         .and_return([applicant])
     end
 
-    it "calls the service" do
-      expect(RetrieveAugmentedApplicants).to receive(:call)
+    it "calls the update service" do
+      expect(UpdateApplicants).to receive(:call)
         .with(
           applicants: [applicant],
           page: '2',
@@ -128,12 +128,9 @@ describe ApplicantsController, type: :controller do
     end
 
     context "when the service succeeds" do
-      let(:augmented_applicant) { instance_double(AugmentedApplicant) }
-      let(:augmented_applicants) { [augmented_applicant] }
-
       before do
-        allow(RetrieveAugmentedApplicants).to receive(:call)
-          .and_return(OpenStruct.new(success?: true, augmented_applicants: augmented_applicants))
+        allow(UpdateApplicants).to receive(:call)
+          .and_return(OpenStruct.new(success?: true))
       end
 
       it "is a success" do
@@ -142,29 +139,29 @@ describe ApplicantsController, type: :controller do
         expect(JSON.parse(response.body)["success"]).to eq(true)
       end
 
-      it "renders the applicants augmented" do
+      it "renders the applicants updated" do
         post :search, params: search_params
         expect(response).to be_successful
-        expect(JSON.parse(response.body)["augmented_applicants"]).to eq(augmented_applicants.map(&:as_json))
+        expect(JSON.parse(response.body)["applicants"].pluck("id")).to contain_exactly(applicant.id)
       end
     end
 
     context "when the service fails" do
       before do
-        allow(RetrieveAugmentedApplicants).to receive(:call)
+        allow(UpdateApplicants).to receive(:call)
           .and_return(OpenStruct.new(success?: false, errors: ['some error']))
       end
 
-      it "is not a success" do
+      it "is still a success" do
         post :search, params: search_params
         expect(response).to be_successful
-        expect(JSON.parse(response.body)["success"]).to eq(false)
+        expect(JSON.parse(response.body)["success"]).to eq(true)
       end
 
-      it "renders the errors" do
+      it "still renders the applicants" do
         post :search, params: search_params
         expect(response).to be_successful
-        expect(JSON.parse(response.body)["errors"]).to eq(['some error'])
+        expect(JSON.parse(response.body)["applicants"].pluck("id")).to contain_exactly(applicant.id)
       end
     end
   end

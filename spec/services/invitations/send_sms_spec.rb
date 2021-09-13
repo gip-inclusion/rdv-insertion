@@ -3,13 +3,18 @@ describe Invitations::SendSms, type: :service do
 
   subject do
     described_class.call(
-      invitation: invitation,
-      phone_number: phone_number
+      invitation: invitation
     )
   end
 
-  let!(:phone_number) { "+33728288282" }
-  let!(:applicant) { create(:applicant, department: department) }
+  let!(:phone_number_formatted) { "+33782605941" }
+  let!(:applicant) do
+    create(
+      :applicant,
+      phone_number_formatted: phone_number_formatted, department: department,
+      first_name: "John", last_name: "Doe", title: "monsieur"
+    )
+  end
   let!(:department) do
     create(
       :department,
@@ -26,13 +31,13 @@ describe Invitations::SendSms, type: :service do
 
   describe "#call" do
     let!(:content) do
-      "Bonjour,\nVous êtes allocataire du RSA. Vous devez bénéficier d'un accompagnement obligatoire dans " \
+      "Monsieur John DOE,\nVous êtes allocataire du RSA. Vous bénéficiez d'un accompagnement personnalisé dans " \
         "le cadre de vos démarches d'insertion. Le département 26 (Drôme) " \
-        "vous invite à prendre rendez-vous auprès d'un référent afin d'échanger sur votre situation.\n" \
-        "Vous devez prendre rendez-vous en ligne à l'adresse suivante: "\
+        "vous invite à prendre rendez-vous sans tarder, afin de choisir l'horaire qui vous convient le mieux, " \
+        "à l'adresse suivante : " \
         "http://www.rdv-insertion.fr/invitations/redirect?token=123\n" \
-        "En cas d'absence, une sanction pourra être prononcée. Pour tout problème, contactez " \
-        "le secrétariat au 0147200001."
+        "Pour tout problème ou difficultés pour prendre RDV, contactez le secrétariat au 0147200001." \
+        " Ce RDV est obligatoire, en cas d'absence une sanction pourra être prononcée."
     end
 
     before do
@@ -44,12 +49,12 @@ describe Invitations::SendSms, type: :service do
 
     it "calls the send transactional service" do
       expect(SendTransactionalSms).to receive(:call)
-        .with(phone_number: phone_number, content: content)
+        .with(phone_number: phone_number_formatted, content: content)
       subject
     end
 
     context "when the phone number is blank" do
-      let!(:phone_number) { '' }
+      let!(:phone_number_formatted) { '' }
 
       it("is a failure") { is_a_failure }
 

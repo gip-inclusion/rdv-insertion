@@ -10,7 +10,6 @@ module Invitations
       retrieve_invitation_token!
       compute_invitation_link!
       create_invitation!
-      retrieve_rdv_solidarites_user! # needed to send invitation
       send_invitation!
       update_invitation_sent_at!
       result.invitation = invitation
@@ -25,20 +24,6 @@ module Invitations
       fail!
     end
 
-    def retrieve_rdv_solidarites_user!
-      return if retrieve_rdv_solidarites_user.success?
-
-      result.errors += retrieve_rdv_solidarites_user.errors
-      fail!
-    end
-
-    def retrieve_rdv_solidarites_user
-      @retrieve_rdv_solidarites_user ||= RetrieveRdvSolidaritesUser.call(
-        rdv_solidarites_session: @rdv_solidarites_session,
-        rdv_solidarites_user_id: rdv_solidarites_user_id
-      )
-    end
-
     def send_invitation!
       return if send_invitation.success?
 
@@ -47,10 +32,7 @@ module Invitations
     end
 
     def send_invitation
-      @send_invitation ||= Invitations::Send.call(
-        invitation: invitation,
-        rdv_solidarites_user: retrieve_rdv_solidarites_user.user
-      )
+      @send_invitation ||= invitation.send_to_applicant
     end
 
     def create_invitation!
