@@ -15,8 +15,8 @@ class Applicant < ApplicationRecord
 
   delegate :rdv_solidarites_organisation_id, to: :department
 
-  def invitation_sent_at
-    invitations.first&.sent_at
+  def first_sent_invitation
+    invitations.find { _1.sent_at.present? }
   end
 
   def full_name
@@ -26,7 +26,7 @@ class Applicant < ApplicationRecord
   def as_json(_opts = {})
     super.merge(
       created_at: created_at&.to_date&.strftime("%d/%m/%Y"),
-      invitation_sent_at: invitation_sent_at&.to_date&.strftime("%d/%m/%Y")
+      invitation_sent_at: first_sent_invitation&.sent_at&.to_date&.strftime("%d/%m/%Y")
     )
   end
 end

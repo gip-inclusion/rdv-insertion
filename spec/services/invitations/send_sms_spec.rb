@@ -1,6 +1,4 @@
 describe Invitations::SendSms, type: :service do
-  include Rails.application.routes.url_helpers
-
   subject do
     described_class.call(
       invitation: invitation

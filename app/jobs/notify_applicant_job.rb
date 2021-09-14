@@ -4,7 +4,7 @@ class NotifyApplicantJob < ApplicationJob
   def perform(applicant_id, lieu, motif, starts_at, event)
     @applicant_id = applicant_id
     @lieu = lieu&.deep_symbolize_keys
-    @motif = motif&.deep_symbolize_keys
+    @motif = motif.deep_symbolize_keys
     @starts_at = starts_at
     @event = event
 
