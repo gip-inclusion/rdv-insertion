@@ -33,8 +33,23 @@ describe RdvSolidaritesWebhooksController, type: :controller do
     end
   end
 
-  context "when the event is not handled" do
+  context "when the model is not handled" do
     let!(:meta) { { event: "created", model: "Absence" } }
+
+    it "does not enqueue the job" do
+      request.headers["X-Lapin-Signature"] = OpenSSL::HMAC.hexdigest(
+        "SHA256", "i am secret", webhook_params.to_json
+      )
+      expect(ProcessRdvSolidaritesWebhookJob).not_to receive(:perform_async)
+        .with(meta, data)
+      post :create, params: webhook_params, as: :json
+      expect(response).to be_successful
+      expect(response.body).to eq("webhook event not handled")
+    end
+  end
+
+  context "when the event is not handled" do
+    let!(:meta) { { event: "updated", model: "Rdv" } }
 
     it "does not enqueue the job" do
       request.headers["X-Lapin-Signature"] = OpenSSL::HMAC.hexdigest(

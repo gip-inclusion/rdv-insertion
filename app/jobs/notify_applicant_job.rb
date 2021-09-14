@@ -27,7 +27,6 @@ class NotifyApplicantJob < ApplicationJob
   def service_class_for_event_type(event_type)
     {
       "created" => Notifications::RdvCreated,
-      "updated" => Notifications::RdvUpdated,
       "destroyed" => Notifications::RdvCancelled
     }[event_type]
   end
