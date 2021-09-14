@@ -9,42 +9,49 @@ module Invitations
     def call
       retrieve_invitation_token!
       compute_invitation_link!
-      create_invitation!
-      send_invitation!
+      create_invitations!
+      send_invitations!
       update_invitation_sent_at!
-      result.invitation = invitation
+      result.invitations = @invitations
     end
 
     private
 
     def update_invitation_sent_at!
-      return if invitation.update(sent_at: Time.zone.now)
+      @invitations.each do |invitation|
+        next if invitation.update(sent_at: Time.zone.now)
 
-      result.errors << invitation.errors.full_messages.to_sentence
-      fail!
+        result.errors << invitation.errors.full_messages.to_sentence
+        fail!
+      end
     end
 
-    def send_invitation!
-      return if send_invitation.success?
+    def send_invitations!
+      @invitations.each do |invitation|
+        next if send_invitation(invitation).success?
 
-      result.errors += send_invitation.errors
-      fail!
+        result.errors += send_invitation(invitation).errors
+        fail!
+      end
     end
 
-    def send_invitation
+    def send_invitation(invitation)
       @send_invitation ||= invitation.send_to_applicant
     end
 
-    def create_invitation!
-      return if invitation.save
+    def create_invitations!
+      if create_invitations.success?
+        @invitations = create_invitations.invitations
+        return
+      end
 
-      result.errors << invitation.errors.full_messages.to_sentence
+      result.errors += create_invitations.errors
       fail!
     end
 
-    def invitation
-      @invitation ||= Invitation.new(
-        applicant: @applicant, format: @invitation_format,
+    def create_invitations
+      @create_invitations ||= Invitations::CreateInvitations.call(
+        applicant: @applicant, invitation_format: @invitation_format,
         link: compute_invitation_link.invitation_link,
         token: retrieve_invitation_token.invitation_token
       )

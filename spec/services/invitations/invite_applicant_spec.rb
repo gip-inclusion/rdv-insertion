@@ -42,7 +42,7 @@ describe Invitations::InviteApplicant, type: :service do
     end
 
     it "returns the invitation" do
-      expect(subject.invitation).to eq(invitation)
+      expect(subject.invitations.first).to eq(invitation)
     end
 
     context "retrieves an invitation token" do

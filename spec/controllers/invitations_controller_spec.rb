@@ -37,7 +37,7 @@ describe InvitationsController, type: :controller do
 
       before do
         allow(Invitations::InviteApplicant).to receive(:call)
-          .and_return(OpenStruct.new(success?: true, invitation: invitation))
+          .and_return(OpenStruct.new(success?: true, invitations: [invitation]))
       end
 
       it "is a success" do
@@ -49,7 +49,7 @@ describe InvitationsController, type: :controller do
       it "renders the invitation" do
         post :create, params: create_params
         expect(response).to be_successful
-        expect(JSON.parse(response.body)["invitation"]["id"]).to eq(invitation.id)
+        expect(JSON.parse(response.body)["invitations"][0]["id"]).to eq(invitation.id)
       end
     end
 

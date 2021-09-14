@@ -26,7 +26,7 @@ export default function Applicant({ applicant, dispatchApplicants, department })
   const handleApplicantInvitation = async () => {
     const result = await inviteApplicant(applicant.id);
     if (result.success) {
-      const { invitation } = result;
+      const invitation = result.invitations[0];
       applicant.invitationSentAt = invitation.sent_at;
 
       dispatchApplicants({

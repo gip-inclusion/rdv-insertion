@@ -6,7 +6,7 @@ class InvitationsController < ApplicationController
 
   def create
     if invite_applicant.success?
-      render json: { success: true, invitation: invite_applicant.invitation }
+      render json: { success: true, invitations: invite_applicant.invitations }
     else
       render json: { success: false, errors: invite_applicant.errors }
     end
