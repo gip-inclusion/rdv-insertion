@@ -1,7 +1,9 @@
 module FilterRdvSolidaritesWebhooksConcern
   extend ActiveSupport::Concern
 
-  SUPPORTED_MODELS_TYPES = ["Rdv"].freeze
+  SUPPORTED_EVENTS_FOR_MODELS_TYPES = {
+    "Rdv" => %w[created destroyed]
+  }.freeze
 
   included do
     before_action :check_webhook_auth!
@@ -21,7 +23,11 @@ module FilterRdvSolidaritesWebhooksConcern
   end
 
   def webhook_supported?
-    SUPPORTED_MODELS_TYPES.include?(params[:meta][:model])
+    supported_events.present? && supported_events.include?(params[:meta][:event])
+  end
+
+  def supported_events
+    SUPPORTED_EVENTS_FOR_MODELS_TYPES[params[:meta][:model]]
   end
 
   def webhook_correctly_signed?
