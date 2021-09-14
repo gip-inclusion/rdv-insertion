@@ -55,7 +55,7 @@ class ApplicantsController < ApplicationController
   end
 
   def retrieve_applicants
-    @applicants = Applicant.includes(:department)
+    @applicants = Applicant.includes(:department, :invitations)
                            .where(uid: params.require(:applicants).require(:uids))
                            .to_a
   end
