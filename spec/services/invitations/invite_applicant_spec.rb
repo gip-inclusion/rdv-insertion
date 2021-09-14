@@ -25,8 +25,8 @@ describe Invitations::InviteApplicant, type: :service do
         .and_return(OpenStruct.new(success?: true, invitation_token: token))
       allow(Invitations::ComputeLink).to receive(:call)
         .and_return(OpenStruct.new(success?: true, invitation_link: invitation_link))
-      allow(Invitation).to receive(:new).and_return(invitation)
-      allow(invitation).to receive(:save).and_return(true)
+      allow(Invitations::CreateInvitations).to receive(:call)
+        .and_return(OpenStruct.new(success?: true, invitations: [invitation]))
       allow(invitation).to receive(:send_to_applicant)
         .and_return(OpenStruct.new(success?: true))
     end
@@ -35,14 +35,8 @@ describe Invitations::InviteApplicant, type: :service do
       is_a_success
     end
 
-    it "creates an invitation" do
-      expect(Invitation).to receive(:new)
-      expect(invitation).to receive(:save)
-      subject
-    end
-
-    it "returns the invitation" do
-      expect(subject.invitations.first).to eq(invitation)
+    it "returns an invitation array" do
+      expect(subject.invitations).to eq([invitation])
     end
 
     context "retrieves an invitation token" do
@@ -106,15 +100,35 @@ describe Invitations::InviteApplicant, type: :service do
       end
     end
 
-    context "invitation creation" do
-      it "creates the invitation with the link and token" do
-        expect(Invitation).to receive(:new)
+    context "invitations creation" do
+      it "tries to create invitations" do
+        expect(Invitations::CreateInvitations).to receive(:call)
           .with(
-            applicant: applicant, format: invitation_format,
-            token: token, link: invitation_link
+            applicant: applicant,
+            invitation_format: invitation_format,
+            link: invitation_link,
+            token: token
           )
-        expect(invitation).to receive(:save)
         subject
+      end
+
+      context "when it fails" do
+        before do
+          allow(Invitations::CreateInvitations).to receive(:call)
+            .and_return(OpenStruct.new(success?: false, errors: ["something happened"]))
+        end
+
+        it "is a failure" do
+          is_a_failure
+        end
+
+        it "stores the error" do
+          expect(subject.errors).to eq(["something happened"])
+        end
+
+        it "does not create an invitation" do
+          expect { subject }.to change(Invitation, :count).by(0)
+        end
       end
     end
 
