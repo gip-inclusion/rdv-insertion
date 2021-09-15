@@ -10,22 +10,32 @@
   margin-bottom: 20px;
   transition: top ease 0.25s;
   position: relative;
-  height: 200px;
   top: 0;
 
   img {
     height: 100;
     padding: 10px 20px 10px 20px
   }
-}
 
-.card:hover {
-  top: -2px;
+  &:hover {
+    top: -2px;
+  }
 }
 
 .card-department {
+  height: 200px;
   color: $light-blue;
   background-image: linear-gradient(rgba(255, 255,255, 0.4), rgba(255, 255, 255, 0.1));
   background-position: center;
   text-shadow: 0 0 1px rgba(0,0,0,0.1);
+}
+
+.card-welcome {
+  height: 100%;
+  color: black;
+  &.no-hover {
+    &:hover {
+      top: 0 !important;
+    }
+  }
 }

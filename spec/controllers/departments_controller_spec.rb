@@ -2,17 +2,24 @@ describe DepartmentsController, type: :controller do
   render_views
 
   let!(:department) { create(:department) }
+  let!(:agent) { create(:agent, departments: [department]) }
 
   describe "GET #index" do
-    it "returns a success response" do
-      get :index
-      expect(response).to be_successful
+    before do
+      sign_in(agent)
     end
 
-    it "returns a list of departments" do
-      get :index
+    context "when agent is authorized" do
+      it "returns a success response" do
+        get :index
+        expect(response).to be_successful
+      end
 
-      expect(response.body).to match(/#{department.name}/)
+      it "returns a list of departments" do
+        get :index
+
+        expect(response.body).to match(/#{department.name}/)
+      end
     end
   end
 end

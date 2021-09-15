@@ -74,10 +74,10 @@ describe SessionsController, type: :controller do
             request.session[:agent_return_to] = nil
           end
 
-          it "returns the root path" do
+          it "returns the departments path" do
             post :create, params: session_params.merge(format: 'json')
             expect(response).to be_successful
-            expect(JSON.parse(response.body)["redirect_path"]).to eq(root_path)
+            expect(JSON.parse(response.body)["redirect_path"]).to eq(departments_path)
           end
         end
       end
