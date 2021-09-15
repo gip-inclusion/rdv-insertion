@@ -146,7 +146,7 @@ export default class Applicant {
       role: this.role,
       affiliation_number: this.affiliationNumber,
       ...(this.phoneNumber && { phone_number: this.phoneNumber }),
-      ...(this.email && { email: this.email }),
+      ...(this.email && this.email.includes("@") && { email: this.email }),
       ...(this.birthDate && { birth_date: this.birthDate }),
       ...(this.birthName && { birth_name: this.birthName }),
       ...(this.customId && { custom_id: this.customId }),
