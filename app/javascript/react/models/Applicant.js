@@ -31,8 +31,9 @@ export default class Applicant {
     this.affiliationNumber = formattedAttributes.affiliationNumber;
     this.phoneNumber = formatPhoneNumber(formattedAttributes.phoneNumber);
     this.customId = formattedAttributes.customId;
-    this.role =
-      ROLES[formattedAttributes.role?.toLowerCase()] || formattedAttributes.role?.toLowerCase();
+    // CONJOINT/CONCUBIN/PACSE => conjoint
+    const formattedRole = formattedAttributes.role?.split("/")?.shift()?.toLowerCase();
+    this.role = ROLES[formattedRole] || formattedRole;
     this.departmentNumber = departmentNumber;
     this.departmentConfiguration = departmentConfiguration;
   }
