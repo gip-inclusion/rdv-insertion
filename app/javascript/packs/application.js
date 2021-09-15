@@ -9,7 +9,6 @@ import "bootstrap";
 import "stylesheets/application";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
-import { end } from "@popperjs/core";
 
 require("@rails/ujs").start();
 require("turbolinks").start();
@@ -20,7 +19,8 @@ require.context("../images", true);
 
 if (process.env.NODE_ENV === 'production') {
   Sentry.init({
-    dsn: ENV['SENTRY_DSN'],
+    dsn: process.env.SENTRY_DSN,
+    environment: process.env.SENTRY_ENVIRONMENT,
     integrations: [new Integrations.BrowserTracing()],
 
     // We recommend adjusting this value in production, or using tracesSampler
