@@ -9,6 +9,7 @@ import "bootstrap";
 import "stylesheets/application";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
+import { end } from "@popperjs/core";
 
 require("@rails/ujs").start();
 require("turbolinks").start();
@@ -17,14 +18,16 @@ require("@rails/activestorage").start();
 // this is necessary so images are compiled by webpack
 require.context("../images", true);
 
-Sentry.init({
-  dsn: "https://1741eef5f07447c5aa48ff791cd969d6@o548798.ingest.sentry.io/5958991",
-  integrations: [new Integrations.BrowserTracing()],
+if (process.env.NODE_ENV === 'production') {
+  Sentry.init({
+    dsn: ENV['SENTRY_DSN'],
+    integrations: [new Integrations.BrowserTracing()],
 
-  // We recommend adjusting this value in production, or using tracesSampler
-  // for finer control
-  tracesSampleRate: 0.5,
-});
+    // We recommend adjusting this value in production, or using tracesSampler
+    // for finer control
+    tracesSampleRate: 0.5,
+  });
+};
 
 // Uncomment to copy all static images under ../images to the output folder and reference
 // them with the image_pack_tag helper in views (e.g <%= image_pack_tag 'rails.png' %>)
