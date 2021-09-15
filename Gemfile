@@ -40,6 +40,10 @@ gem 'sib-api-v3-sdk'
 # Queuing system
 gem 'sidekiq'
 
+# Monitor errors
+gem "sentry-ruby"
+gem "sentry-rails"
+
 # gem needed to be defined explicitely with ruby 3
 gem 'rexml'
 gem 'addressable'
