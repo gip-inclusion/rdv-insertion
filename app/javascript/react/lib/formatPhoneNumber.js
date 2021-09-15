@@ -5,9 +5,6 @@ const formatPhoneNumber = (phoneNumber) => {
     return null;
   }
 
-  // 06.01.01.01.01 => 0601010101
-  phoneNumber = phoneNumber.split(".").join("");
-
   if (phoneNumber[0] === "+") {
     return phoneNumber;
   }
