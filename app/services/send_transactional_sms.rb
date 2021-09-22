@@ -16,6 +16,7 @@ class SendTransactionalSms < BaseService
     api_instance = SibApiV3Sdk::TransactionalSMSApi.new
     api_instance.send_transac_sms(transactional_sms)
   rescue SibApiV3Sdk::ApiError => e
+    Sentry.capture_exception(e, extra: { response_body: e.response_body })
     fail!("une erreur est survenue en envoyant le sms. #{e.message}")
   end
 
@@ -23,8 +24,13 @@ class SendTransactionalSms < BaseService
     SibApiV3Sdk::SendTransacSms.new(
       sender: SENDER_NAME,
       recipient: @phone_number,
-      content: @content,
+      content: formatted_content,
       type: "transactional"
     )
+  end
+
+  def formatted_content
+    @content.gsub("ô", "e")
+            .gsub("ê", "e")
   end
 end
