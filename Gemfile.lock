@@ -239,6 +239,9 @@ GEM
     sentry-ruby-core (4.7.2)
       concurrent-ruby
       faraday
+    sentry-sidekiq (4.7.2)
+      sentry-ruby-core (~> 4.7.0)
+      sidekiq (>= 3.0)
     sib-api-v3-sdk (7.5.0)
       json (~> 2.1, >= 2.1.0)
       typhoeus (~> 1.0, >= 1.0.1)
@@ -311,6 +314,7 @@ DEPENDENCIES
   selenium-webdriver
   sentry-rails
   sentry-ruby
+  sentry-sidekiq
   sib-api-v3-sdk
   sidekiq
   spring

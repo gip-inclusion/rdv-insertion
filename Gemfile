@@ -43,6 +43,7 @@ gem 'sidekiq'
 # Monitor errors
 gem "sentry-ruby"
 gem "sentry-rails"
+gem "sentry-sidekiq"
 
 # gem needed to be defined explicitely with ruby 3
 gem 'rexml'
