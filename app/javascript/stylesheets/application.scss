@@ -6,6 +6,7 @@
 @import "./components/card";
 @import "./components/form";
 @import "./components/button";
+@import "./fontawesome_imports";
 
 
 
@@ -18,6 +19,10 @@ html {
   margin-bottom: 100px;
 }
 
-a {
+a, nav-link {
   text-decoration: none;
+  color: black !important;
+  &:hover {
+    color: black !important;
+  }
 }

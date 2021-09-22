@@ -11,7 +11,7 @@ def check_auth(username, password, service)
 end
 
 Rails.application.routes.draw do
-  root "departments#index"
+  root "static_pages#welcome"
   resources :departments, only: [:index] do
     resources :applicants, only: [:index, :create]
   end
