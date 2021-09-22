@@ -5,12 +5,10 @@
 }
 
 .card {
-  box-shadow: 0 0 1px rgba(0,0,0,0.1);
   margin-bottom: 20px;
-  color: white;
-  background-color: $orange;
-  text-shadow: 0 0 1px rgba(0,0,0,0.1);
   border-radius: 3px;
+  box-shadow: 0 0 1px rgba(0,0,0,0.1);
+  text-shadow: 0 0 1px rgba(0,0,0,0.1);
   transition: top ease 0.25s;
   position: relative;
   top: 0;
@@ -31,12 +29,16 @@
 
 .card-department {
   height: 200px;
-  // background-image: linear-gradient(rgba(255, 255,255, 0.4), rgba(255, 255, 255, 0.1));
-  // background-position: center;
+  color: $light-blue;
+  background-image: linear-gradient(rgba(255, 255,255, 0.4), rgba(255, 255, 255, 0.1));
+  background-position: center;
+
 }
 
 .card-welcome {
   height: 100%;
+  background-color: $orange;
+  color: white;
   &.no-hover {
     &:hover {
       top: 0 !important;
