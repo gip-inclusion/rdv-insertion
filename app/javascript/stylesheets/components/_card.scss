@@ -5,12 +5,19 @@
 }
 
 .card {
-  border-radius: 1px;
-  box-shadow: 0 0 3px rgba(0,0,0,0.3);
+  box-shadow: 0 0 1px rgba(0,0,0,0.1);
   margin-bottom: 20px;
+  color: white;
+  background-color: $orange;
+  text-shadow: 0 0 1px rgba(0,0,0,0.1);
+  border-radius: 3px;
   transition: top ease 0.25s;
   position: relative;
   top: 0;
+
+  h4 {
+    font-weight: bold;
+  }
 
   img {
     height: 100;
@@ -24,15 +31,12 @@
 
 .card-department {
   height: 200px;
-  color: $light-blue;
-  background-image: linear-gradient(rgba(255, 255,255, 0.4), rgba(255, 255, 255, 0.1));
-  background-position: center;
-  text-shadow: 0 0 1px rgba(0,0,0,0.1);
+  // background-image: linear-gradient(rgba(255, 255,255, 0.4), rgba(255, 255, 255, 0.1));
+  // background-position: center;
 }
 
 .card-welcome {
   height: 100%;
-  color: black;
   &.no-hover {
     &:hover {
       top: 0 !important;

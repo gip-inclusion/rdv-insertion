@@ -5,15 +5,22 @@
     <% end %>
     <div class="nav justify-content-around">
       <% if logged_in? %>
-        <div class="mx-5 text-center col">
+        <div class="text-center col">
           <%= link_to sign_out_path, method: :delete do %>
-            <button class="btn btn-default btn-logout">
-              Se déconnecter
+            <button class="btn btn-default btn-logout w-100">
+              <span class="d-none d-sm-inline">Se déconnecter</span>
+              <span class="d-inline d-sm-none"><i class="fas fa-sign-out-alt"></i></span>
             </button>
           <% end %>
         </div>
       <% end %>
-      <%= image_pack_tag "logos/republique-francaise-logo.svg", height: 50, alt: "République francaise" %>
+      <div class="ml-5">
+        <% if logged_in? %>
+          <%= image_pack_tag "logos/republique-francaise-logo.svg", height: 50, alt: "République francaise", class: "d-none d-sm-inline navbar-france-logo" %>
+        <% else %>
+          <%= image_pack_tag "logos/republique-francaise-logo.svg", height: 50, alt: "République francaise", class: "navbar-france-logo" %>
+        <% end %>
+      </div>
     </div>
   </nav>
 </header>
