@@ -30,7 +30,7 @@ class SendTransactionalSms < BaseService
   end
 
   def formatted_content
-    @content.gsub("ô", "e")
+    @content.gsub("ô", "o")
             .gsub("ê", "e")
   end
 end
