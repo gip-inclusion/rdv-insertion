@@ -9,7 +9,7 @@ class ApplicantsController < ApplicationController
   def index
     @applicants = @department.applicants
     @applicants = @applicants.search_by_text(params[:search_query]) if params[:search_query].present?
-    @applicants = @applicants.page(page)
+    @applicants = @applicants.page(page).order(created_at: :desc)
     authorize_applicants
     # temporary solution to have up to date applicants with RDVS
     refresh_applicants

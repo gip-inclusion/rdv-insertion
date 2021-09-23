@@ -13,6 +13,7 @@
           <th scope="col">Adresse</th>
           <th scope="col">Email</th>
           <th scope="col">Téléphone</th>
+          <th scope="col">Invité le</th>
         </thead>
         <tbody class="">
           <% @applicants.each do |applicant| %>
@@ -21,11 +22,12 @@
                 <td><%= display_attribute applicant.affiliation_number %></td>
                 <td><%= display_attribute applicant.first_name %></td>
                 <td><%= display_attribute applicant.last_name %></td>
-                <td><%= display_attribute birth_date_formatted(applicant.birth_date) %></td>
+                <td><%= display_attribute format_date(applicant.birth_date) %></td>
                 <td><%= display_attribute applicant.role %></td>
                 <td><%= display_attribute applicant.address %></td>
                 <td><%= display_attribute applicant.email %></td>
                 <td><%= display_attribute applicant.phone_number_formatted %></td>
+                <td><%= display_attribute format_date(applicant.first_invitation_sent_at) %></td>
               </tr>
             <% end %>
           <% end %>

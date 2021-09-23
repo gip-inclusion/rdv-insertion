@@ -18,11 +18,13 @@
           Ajouter allocataires
         <% end %>
       </div>
-      <div class="text-center text-black">
-        <%= link_to department_applicants_path(@department), class: "" do %>
-          Retour à la liste
-        <% end %>
-      </div>
+      <% if display_back_to_list_button? %>
+        <div class="text-center">
+          <%= link_to department_applicants_path(@department), class: "text-primary" do %>
+            Retour à la liste
+          <% end %>
+        </div>
+      <% end %>
     </div>
   </div>
   <%= render "applicants_list" %>
