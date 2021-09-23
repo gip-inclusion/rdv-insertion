@@ -32,7 +32,7 @@ class Applicant < ApplicationRecord
   def as_json(_opts = {})
     super.merge(
       created_at: created_at&.to_date&.strftime("%d/%m/%Y"),
-      invitation_sent_at: first_sent_invitation&.to_date&.strftime("%d/%m/%Y")
+      invitation_sent_at: first_invitation_sent_at&.to_date&.strftime("%d/%m/%Y")
     )
   end
 end

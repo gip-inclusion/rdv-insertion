@@ -15,7 +15,6 @@ Rails.application.routes.draw do
   resources :departments, only: [:index] do
     resources :applicants, only: [:index, :create] do
       collection do
-        post :search
         resources :uploads, only: [:new]
       end
     end
