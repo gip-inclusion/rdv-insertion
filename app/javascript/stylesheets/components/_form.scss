@@ -4,15 +4,18 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  form {
+    padding: 30px;
+    border: 1px solid $light-grey;
+    border-radius: 5px;
+    width: 400px;
+    background-color: white;
+  }
 }
 
 .form-group {
   padding: 20px;
 }
 
-form {
-  padding: 30px;
-  border: 1px solid $light-grey;
-  border-radius: 5px;
-  width: 400px;
-}
+

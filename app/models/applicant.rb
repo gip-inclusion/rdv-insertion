@@ -3,6 +3,8 @@ class Applicant < ApplicationRecord
     :first_name, :last_name, :birth_date, :address, :email, :phone_number_formatted
   ].freeze
 
+  include SearchableConcern
+
   belongs_to :department
   has_many :invitations, dependent: :nullify
 

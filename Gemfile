@@ -34,6 +34,11 @@ gem 'responders'
 # Use Active Model has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
+# AR Pagination
+gem 'kaminari'
+# PG search
+gem 'pg_search'
+
 # Send SMS & emails with SendInBlue
 gem 'sib-api-v3-sdk'
 

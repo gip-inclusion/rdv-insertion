@@ -1,9 +1,9 @@
-describe UpdateApplicants, type: :service do
+describe RefreshApplicants, type: :service do
   subject do
     described_class.call(
       applicants: applicants,
       rdv_solidarites_session: rdv_solidarites_session,
-      page: page
+      rdv_solidarites_page: page
     )
   end
 

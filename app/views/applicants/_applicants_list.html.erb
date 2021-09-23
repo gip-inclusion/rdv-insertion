@@ -1,0 +1,41 @@
+<div class="row block-white justify-content-center">
+  <div class="col-10 text-center">
+    <% if @applicants.empty? %>
+      <h4>Aucun allocataire ne correspond à votre recherche</h4>
+    <% else %>
+      <table class="table table-hover table-responsive">
+        <thead class="light-blue">
+          <th scope="col">Numéro d'allocataire</th>
+          <th scope="col">Prénom</th>
+          <th scope="col">Nom</th>
+          <th scope="col">Date de naissance</th>
+          <th scope="col">Rôle</th>
+          <th scope="col">Adresse</th>
+          <th scope="col">Email</th>
+          <th scope="col">Téléphone</th>
+        </thead>
+        <tbody class="">
+          <% @applicants.each do |applicant| %>
+            <%= link_to root_path do %>
+              <tr>
+                <td><%= display_attribute applicant.affiliation_number %></td>
+                <td><%= display_attribute applicant.first_name %></td>
+                <td><%= display_attribute applicant.last_name %></td>
+                <td><%= display_attribute birth_date_formatted(applicant.birth_date) %></td>
+                <td><%= display_attribute applicant.role %></td>
+                <td><%= display_attribute applicant.address %></td>
+                <td><%= display_attribute applicant.email %></td>
+                <td><%= display_attribute applicant.phone_number_formatted %></td>
+              </tr>
+            <% end %>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
+    <div class="row justify-content-center">
+      <div class="col-3 justify-content-center nav-pagination">
+        <%= paginate @applicants, outer_window: 1, window: 1 %>
+      </div>
+    </div>
+  </div>
+</div>

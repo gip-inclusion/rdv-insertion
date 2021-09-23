@@ -1,0 +1,15 @@
+.light-blue {
+  color: $light-blue;
+}
+
+.dark-blue {
+  color: $dark-blue;
+}
+
+.block-white {
+  background-color: white;
+  border: 1px solid $light-grey;
+  border-radius: 5px;
+  padding: 20px;
+  box-shadow: 0 0 1px rgba(0,0,0,0.3);
+}
