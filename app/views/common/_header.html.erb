@@ -5,9 +5,9 @@
     <% end %>
     <div class="nav justify-content-around">
       <% if logged_in? %>
-        <div class="text-center col">
+        <div class="text-center mx-3 col">
           <%= link_to sign_out_path, method: :delete do %>
-            <button class="btn btn-default btn-logout w-100">
+            <button class="btn btn-default btn-logout w-100 ">
               <span class="d-none d-sm-inline">Se déconnecter</span>
               <span class="d-inline d-sm-none"><i class="fas fa-sign-out-alt"></i></span>
             </button>

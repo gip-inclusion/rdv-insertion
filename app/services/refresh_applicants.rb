@@ -1,21 +1,21 @@
 # Retrieves the RDV-Solidarites users linked to the applicants and updates them
 # if they changed in RDV-Solidarites
-class UpdateApplicants < BaseService
-  def initialize(applicants:, rdv_solidarites_session:, page:)
+class RefreshApplicants < BaseService
+  def initialize(applicants:, rdv_solidarites_session:, rdv_solidarites_page:)
     @applicants = applicants
     @rdv_solidarites_session = rdv_solidarites_session
-    @page = page
+    @rdv_solidarites_page = rdv_solidarites_page
   end
 
   def call
     return if @applicants.empty?
 
-    update_applicants
+    refresh_applicants
   end
 
   private
 
-  def update_applicants
+  def refresh_applicants
     retrieve_rdv_solidarites_users
     return if failed?
 
@@ -27,7 +27,7 @@ class UpdateApplicants < BaseService
       next unless rdv_solidarites_user
 
       applicant.assign_attributes(
-        rdv_solidarites_user.attributes.slice(*Applicant::RDV_SOLIDARITES_USER_SHARED_ATTRIBUTES)
+        rdv_solidarites_user.attributes.slice(*Applicant::RDV_SOLIDARITES_USER_SHARED_ATTRIBUTES).compact
       )
       applicant.save if applicant.changed?
     end
@@ -47,7 +47,7 @@ class UpdateApplicants < BaseService
       ids: @applicants.pluck(:rdv_solidarites_user_id),
       rdv_solidarites_session: @rdv_solidarites_session,
       organisation_id: @applicants.first.rdv_solidarites_organisation_id,
-      page: @page
+      page: @rdv_solidarites_page
     )
   end
 end

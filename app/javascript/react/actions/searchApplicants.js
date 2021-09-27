@@ -16,13 +16,13 @@ const searchApplicants = async (uids) => {
       },
       body: JSON.stringify({
         applicants: { uids },
-        page: nextPage,
+        rdv_solidarites_page: nextPage,
       }),
     });
     const result = await response.json();
     if (!result.success) {
       Swal.fire(
-        "Impossible de récupérer les infos des utilisateurs",
+        "Une erreur s'est produite en récupérant les infos utilisateurs sur le serveur",
         result.errors && result.errors.join(" - "),
         "warning"
       );

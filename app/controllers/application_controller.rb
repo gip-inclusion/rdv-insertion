@@ -21,4 +21,12 @@ class ApplicationController < ActionController::Base
   def rdv_solidarites_session
     session[:rdv_solidarites]
   end
+
+  def json_request?
+    request.format == "application/json"
+  end
+
+  def page
+    params[:page] || 1
+  end
 end

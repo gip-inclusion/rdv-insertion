@@ -25,6 +25,13 @@
   }
 }
 
+.nav-link {
+  color: black !important;
+  &:hover {
+    color: !important;
+  }
+}
+
 @media (max-width: 700px) {
   .optional-link {
     display: none;
