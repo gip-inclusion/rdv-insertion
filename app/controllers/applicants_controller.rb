@@ -7,7 +7,7 @@ class ApplicantsController < ApplicationController
   before_action :set_department, only: [:index, :create]
 
   def index
-    @applicants = @department.applicants
+    @applicants = @department.applicants.includes(:invitations)
     @applicants = @applicants.search_by_text(params[:search_query]) if params[:search_query].present?
     @applicants = @applicants.page(page).order(created_at: :desc)
     authorize_applicants
@@ -68,6 +68,6 @@ class ApplicantsController < ApplicationController
   end
 
   def set_department
-    @department = Department.find(params[:department_id])
+    @department = Department.includes(:applicants).find(params[:department_id])
   end
 end

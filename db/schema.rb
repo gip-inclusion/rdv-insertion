@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_08_142124) do
+ActiveRecord::Schema.define(version: 2021_09_27_094231) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(version: 2021_09_08_142124) do
     t.string "email"
     t.integer "title"
     t.date "birth_date"
+    t.date "invitation_accepted_at"
     t.index ["department_id"], name: "index_applicants_on_department_id"
     t.index ["rdv_solidarites_user_id"], name: "index_applicants_on_rdv_solidarites_user_id", unique: true
     t.index ["uid"], name: "index_applicants_on_uid", unique: true

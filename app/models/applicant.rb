@@ -1,6 +1,7 @@
 class Applicant < ApplicationRecord
   RDV_SOLIDARITES_USER_SHARED_ATTRIBUTES = [
-    :first_name, :last_name, :birth_date, :address, :email, :phone_number_formatted
+    :first_name, :last_name, :birth_date, :address, :email, :phone_number_formatted,
+    :invitation_accepted_at
   ].freeze
 
   include SearchableConcern
@@ -17,12 +18,12 @@ class Applicant < ApplicationRecord
 
   delegate :rdv_solidarites_organisation_id, to: :department
 
-  def first_sent_invitation
-    invitations.find { _1.sent_at.present? }
+  def last_sent_invitation
+    invitations.select(&:sent_at).max_by(&:sent_at)
   end
 
-  def first_invitation_sent_at
-    first_sent_invitation&.sent_at
+  def last_invitation_sent_at
+    last_sent_invitation&.sent_at
   end
 
   def full_name
@@ -32,7 +33,7 @@ class Applicant < ApplicationRecord
   def as_json(_opts = {})
     super.merge(
       created_at: created_at&.to_date&.strftime("%d/%m/%Y"),
-      invitation_sent_at: first_invitation_sent_at&.to_date&.strftime("%d/%m/%Y")
+      invitation_sent_at: last_invitation_sent_at&.to_date&.strftime("%d/%m/%Y")
     )
   end
 end

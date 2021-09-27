@@ -27,7 +27,7 @@ class RefreshApplicants < BaseService
       next unless rdv_solidarites_user
 
       applicant.assign_attributes(
-        rdv_solidarites_user.attributes.slice(*Applicant::RDV_SOLIDARITES_USER_SHARED_ATTRIBUTES)
+        rdv_solidarites_user.attributes.slice(*Applicant::RDV_SOLIDARITES_USER_SHARED_ATTRIBUTES).compact
       )
       applicant.save if applicant.changed?
     end

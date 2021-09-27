@@ -151,7 +151,7 @@ export default function ApplicantsUpload({ department, configuration }) {
                     </th>
                     {configuration.invitation_format !== "no_invitation" && (
                       <th scope="col" style={{ whiteSpace: "nowrap" }}>
-                        Invité le
+                        Dernière invitation
                       </th>
                     )}
                     <th scope="col">Action</th>
