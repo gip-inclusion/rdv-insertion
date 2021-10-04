@@ -1,6 +1,4 @@
 describe Invitations::SendSms, type: :service do
-  include Rails.application.routes.url_helpers
-
   subject do
     described_class.call(
       invitation: invitation
@@ -42,6 +40,7 @@ describe Invitations::SendSms, type: :service do
 
     before do
       allow(SendTransactionalSms).to receive(:call)
+      allow(Rails).to receive_message_chain(:env, :production?).and_return(true)
       ENV['HOST'] = "www.rdv-insertion.fr"
     end
 

@@ -3,23 +3,26 @@ class ApplicantsController < ApplicationController
     :uid, :role, :first_name, :last_name, :birth_date, :email, :phone_number,
     :birth_name, :address, :affiliation_number, :custom_id, :title
   ].freeze
-  respond_to :json
-
   before_action :retrieve_applicants, only: [:search]
-  # temporary solution to have up to date applicants
-  before_action :update_applicants, only: [:search]
   before_action :set_department, only: [:index, :create]
 
   def index
-    authorize @department, :list_applicants?
-    @configuration = @department.configuration
+    @applicants = @department.applicants.includes(:invitations)
+    @applicants = @applicants.search_by_text(params[:search_query]) if params[:search_query].present?
+    @applicants = @applicants.page(page).order(created_at: :desc)
+    authorize_applicants
+    # temporary solution to have up to date applicants with RDVS
+    refresh_applicants
   end
 
   def search
+    authorize_applicants
+    # temporary solution to have up to date applicants with RDVS
+    refresh_applicants
     render json: {
       success: true,
       applicants: @applicants,
-      next_page: update_applicants.next_page
+      next_page: refresh_applicants.next_page
     }
   end
 
@@ -46,21 +49,25 @@ class ApplicantsController < ApplicationController
     )
   end
 
-  def update_applicants
-    @update_applicants ||= UpdateApplicants.call(
+  def refresh_applicants
+    @refresh_applicants ||= RefreshApplicants.call(
       applicants: @applicants,
       rdv_solidarites_session: rdv_solidarites_session,
-      page: params[:page]
+      rdv_solidarites_page: params[:rdv_solidarites_page]
     )
   end
 
+  def authorize_applicants
+    @applicants.each { |a| authorize a }
+  end
+
   def retrieve_applicants
-    @applicants = Applicant.includes(:department)
+    @applicants = Applicant.includes(:department, :invitations)
                            .where(uid: params.require(:applicants).require(:uids))
                            .to_a
   end
 
   def set_department
-    @department = Department.find(params[:department_id])
+    @department = Department.includes(:applicants).find(params[:department_id])
   end
 end

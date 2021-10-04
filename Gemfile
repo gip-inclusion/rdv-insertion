@@ -34,11 +34,21 @@ gem 'responders'
 # Use Active Model has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
+# AR Pagination
+gem 'kaminari'
+# PG search
+gem 'pg_search'
+
 # Send SMS & emails with SendInBlue
 gem 'sib-api-v3-sdk'
 
 # Queuing system
 gem 'sidekiq'
+
+# Monitor errors
+gem "sentry-ruby"
+gem "sentry-rails"
+gem "sentry-sidekiq"
 
 # gem needed to be defined explicitely with ruby 3
 gem 'rexml'

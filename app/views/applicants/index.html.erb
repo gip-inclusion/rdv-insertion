@@ -1,5 +1,31 @@
-<%= react_component(
-  "pages/Applicants", {
-    department: @department, configuration: @configuration
-  }
-) %>
+<div class="container mt-5">
+  <div class="row mb-4 block-white justify-content-center">
+    <div class="col-4 justify-content-center">
+      <%= render 'search_form' %>
+    </div>
+    <div class="col-4 justify-content-center">
+      <h5 class="text-center">
+        <%= @department.name %>
+        <% if image_compiled?("maps/#{@department.name.parameterize}.svg") %>
+          <%= image_pack_tag("maps/#{@department.name.parameterize}.svg", alt: @department.name.parameterize, width: 50, height: 50) %>
+        <% end %>
+      </h5>
+    </div>
+    <div class="col-2"></div>
+    <div class="col-2 justify-content-center">
+      <div class="text-center">
+        <%= link_to new_department_upload_path(@department), class: "btn text-white mb-1 btn-secondary" do %>
+          Ajouter allocataires
+        <% end %>
+      </div>
+      <% if display_back_to_list_button? %>
+        <div class="text-center">
+          <%= link_to department_applicants_path(@department), class: "text-primary" do %>
+            Retour à la liste
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  <%= render "applicants_list" %>
+</div>

@@ -1,7 +1,6 @@
 class DepartmentsController < ApplicationController
-  skip_before_action :authenticate_agent!, only: [:index]
-
   def index
-    @departments = Department.all
+    @departments = policy_scope(Department)
+    redirect_to department_applicants_path(@departments.first) if @departments.size == 1
   end
 end

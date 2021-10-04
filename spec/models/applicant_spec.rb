@@ -57,4 +57,71 @@ describe Applicant do
       end
     end
   end
+
+  describe "#search_by_text" do
+    subject { described_class.search_by_text(query) }
+
+    let!(:applicant_jean) do
+      create(
+        :applicant,
+        first_name: "jean",
+        last_name: "dujardin",
+        email: "jean@dujardin.fr",
+        phone_number_formatted: "+33110101010",
+        affiliation_number: "1111"
+      )
+    end
+    let!(:applicant_cecile) do
+      create(
+        :applicant,
+        first_name: "cecile",
+        last_name: "defrance",
+        email: "cecile@defrance.fr",
+        phone_number_formatted: nil,
+        affiliation_number: "1111"
+      )
+    end
+    let!(:applicant_romain) do
+      create(
+        :applicant,
+        first_name: "romain",
+        last_name: "duris",
+        email: "romain@duris.fr",
+        phone_number_formatted: "+33782605941",
+        affiliation_number: "0000"
+      )
+    end
+
+    context "name query" do
+      let(:query) { "cecile" }
+
+      it { is_expected.to include(applicant_cecile) }
+      it { is_expected.not_to include(applicant_jean) }
+      it { is_expected.not_to include(applicant_romain) }
+    end
+
+    context "email query" do
+      let(:query) { "romain@duris" }
+
+      it { is_expected.to include(applicant_romain) }
+      it { is_expected.not_to include(applicant_cecile) }
+      it { is_expected.not_to include(applicant_jean) }
+    end
+
+    context "phone number query" do
+      let(:query) { "+3378" }
+
+      it { is_expected.to include(applicant_romain) }
+      it { is_expected.not_to include(applicant_cecile) }
+      it { is_expected.not_to include(applicant_jean) }
+    end
+
+    context "affiliation number query" do
+      let(:query) { "1111" }
+
+      it { is_expected.to include(applicant_jean) }
+      it { is_expected.to include(applicant_cecile) }
+      it { is_expected.not_to include(applicant_romain) }
+    end
+  end
 end

@@ -15,6 +15,6 @@ class Invitation < ApplicationRecord
   end
 
   def as_json(_opts = {})
-    super.merge(sent_at: sent_at&.to_date&.strftime("%m/%d/%Y"))
+    super.merge(sent_at: sent_at&.to_date&.strftime("%d/%m/%Y"))
   end
 end

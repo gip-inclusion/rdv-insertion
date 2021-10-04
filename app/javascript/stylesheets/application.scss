@@ -1,11 +1,14 @@
 @import "bootstrap";
 @import "./_variables";
 @import "./pages/department";
+@import "./pages/applicants";
 @import "./components/navbar";
 @import "./components/footer";
 @import "./components/card";
 @import "./components/form";
 @import "./components/button";
+@import "./components/pagination";
+@import "./fontawesome_imports";
 
 
 
@@ -20,4 +23,12 @@ html {
 
 a {
   text-decoration: none;
+  color: black;
+  &:hover {
+    color: black;
+  }
+}
+
+body {
+  background-color: $light;
 }

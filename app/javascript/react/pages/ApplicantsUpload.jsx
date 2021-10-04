@@ -14,7 +14,7 @@ import Applicant from "../models/Applicant";
 
 const reducer = reducerFactory("Expérimentation RSA");
 
-export default function Applicants({ department, configuration }) {
+export default function ApplicantsUpload({ department, configuration }) {
   const SHEET_NAME = configuration.sheet_name;
   const columnNames = configuration.column_names;
 
@@ -41,7 +41,10 @@ export default function Applicants({ department, configuration }) {
               address: columnNames.address && row[columnNames.address],
               fullAddress: columnNames.full_address && row[columnNames.full_address],
               email: columnNames.email && row[columnNames.email],
-              birthDate: columnNames.birth_date && excelDateToString(row[columnNames.birth_date]),
+              birthDate:
+                columnNames.birth_date &&
+                row[columnNames.birth_date] &&
+                excelDateToString(row[columnNames.birth_date]),
               city: columnNames.city && row[columnNames.city],
               postalCode: columnNames.postal_code && row[columnNames.postal_code],
               phoneNumber: columnNames.phone_number && row[columnNames.phone_number],
@@ -100,8 +103,8 @@ export default function Applicants({ department, configuration }) {
   return (
     <div className="container mt-5 mb-8">
       <div className="row mt-5 mb-3 justify-content-center">
-        <div className="col-4">
-          <h1>Expérimentation {department.name}</h1>
+        <div className="col-4 text-center">
+          <h1>Ajout allocataires</h1>
         </div>
       </div>
       <div className="row justify-content-center">
@@ -148,7 +151,7 @@ export default function Applicants({ department, configuration }) {
                     </th>
                     {configuration.invitation_format !== "no_invitation" && (
                       <th scope="col" style={{ whiteSpace: "nowrap" }}>
-                        Invité le
+                        Dernière invitation
                       </th>
                     )}
                     <th scope="col">Action</th>

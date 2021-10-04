@@ -43,7 +43,20 @@ module AuthenticatedControllerConcern
   end
 
   def agent_not_authorized
+    json_request? ? render_not_authorized : redirect_not_authorized
+  end
+
+  def redirect_not_authorized
     flash[:alert] = "Votre compte ne vous permet pas d'effectuer cette action"
     redirect_to root_path
+  end
+
+  def render_not_authorized
+    render(
+      status: :forbidden,
+      json: {
+        errors: ["Votre compte ne vous permet pas d'effectuer cette action"]
+      }
+    )
   end
 end

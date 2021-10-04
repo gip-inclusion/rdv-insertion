@@ -5,6 +5,7 @@ class InvitationsController < ApplicationController
   respond_to :json
 
   def create
+    authorize @applicant, :invite?
     if invite_applicant.success?
       render json: { success: true, invitations: invite_applicant.invitations }
     else
@@ -38,6 +39,6 @@ class InvitationsController < ApplicationController
   end
 
   def set_invitation
-    @invitation = Invitation.find_by(token: params[:token])
+    @invitation = Invitation.find_by!(token: params[:token])
   end
 end
