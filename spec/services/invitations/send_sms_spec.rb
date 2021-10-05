@@ -29,13 +29,10 @@ describe Invitations::SendSms, type: :service do
 
   describe "#call" do
     let!(:content) do
-      "Monsieur John DOE,\nVous êtes allocataire du RSA. Vous bénéficiez d'un accompagnement personnalisé dans " \
-        "le cadre de vos démarches d'insertion. Le département 26 (Drôme) " \
-        "vous invite à prendre rendez-vous sans tarder, afin de choisir l'horaire qui vous convient le mieux, " \
-        "à l'adresse suivante : " \
-        "http://www.rdv-insertion.fr/invitations/redirect?token=123\n" \
-        "Pour tout problème ou difficultés pour prendre RDV, contactez le secrétariat au 0147200001." \
-        " Ce RDV est obligatoire, en cas d'absence une sanction pourra être prononcée."
+      "Monsieur John DOE,\nVous êtes nouveau bénéficiaire du RSA et vous allez à ce titre bénéficier d'un "\
+        "accompagnement obligatoire. Pour pouvoir choisir la date et l'horaire de votre premier RDV, "\
+        "cliquez sur le lien suivant dans les 3 jours: http://www.rdv-insertion.fr/invitations/redirect?token=123\n"\
+        "Passé ce délai, vous recevrez une convocation. En cas de problème technique, contactez le 0147200001."
     end
 
     before do

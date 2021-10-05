@@ -1,0 +1,16 @@
+fr:
+  activerecord:
+    models:
+      applicant: Allocataire
+    attributes:
+      applicant:
+        statuses:
+          not_invited: En attente d'invitation
+          invitation_pending: En attente d'acceptation
+          rdv_creation_pending: En attente de prise de RDV
+          rdv_pending: RDV pris
+          rdv_needs_status_update: Statut du RDV à préciser
+          rdv_noshow: Absence non excusée au RDV
+          rdv_revoked: RDV annulé à l'initative du Service
+          rdv_excused: RDV annulé à l'initiative de l'allocataire
+          rdv_seen: RDV honoré

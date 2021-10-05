@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_27_094231) do
+ActiveRecord::Schema.define(version: 2021_09_30_151602) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,9 +45,16 @@ ActiveRecord::Schema.define(version: 2021_09_27_094231) do
     t.integer "title"
     t.date "birth_date"
     t.date "invitation_accepted_at"
+    t.integer "status", default: 0
     t.index ["department_id"], name: "index_applicants_on_department_id"
     t.index ["rdv_solidarites_user_id"], name: "index_applicants_on_rdv_solidarites_user_id", unique: true
     t.index ["uid"], name: "index_applicants_on_uid", unique: true
+  end
+
+  create_table "applicants_rdvs", id: false, force: :cascade do |t|
+    t.bigint "applicant_id", null: false
+    t.bigint "rdv_id", null: false
+    t.index ["applicant_id", "rdv_id"], name: "index_applicants_rdvs_on_applicant_id_and_rdv_id", unique: true
   end
 
   create_table "configurations", force: :cascade do |t|
@@ -91,11 +98,34 @@ ActiveRecord::Schema.define(version: 2021_09_27_094231) do
     t.datetime "sent_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "rdv_solidarites_rdv_id"
     t.index ["applicant_id"], name: "index_notifications_on_applicant_id"
+  end
+
+  create_table "rdvs", force: :cascade do |t|
+    t.bigint "rdv_solidarites_rdv_id"
+    t.datetime "starts_at"
+    t.integer "duration_in_min"
+    t.bigint "department_id", null: false
+    t.datetime "cancelled_at"
+    t.bigint "rdv_solidarites_motif_id"
+    t.bigint "rdv_solidarites_lieu_id"
+    t.string "uuid"
+    t.string "address"
+    t.integer "created_by"
+    t.integer "status"
+    t.text "context"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["created_by"], name: "index_rdvs_on_created_by"
+    t.index ["department_id"], name: "index_rdvs_on_department_id"
+    t.index ["rdv_solidarites_rdv_id"], name: "index_rdvs_on_rdv_solidarites_rdv_id", unique: true
+    t.index ["status"], name: "index_rdvs_on_status"
   end
 
   add_foreign_key "applicants", "departments"
   add_foreign_key "configurations", "departments"
   add_foreign_key "invitations", "applicants"
   add_foreign_key "notifications", "applicants"
+  add_foreign_key "rdvs", "departments"
 end

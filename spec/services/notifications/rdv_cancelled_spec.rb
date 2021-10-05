@@ -1,7 +1,7 @@
 describe Notifications::RdvCancelled, type: :service do
   subject do
     described_class.call(
-      applicant: applicant, lieu: lieu, starts_at: starts_at, motif: motif
+      applicant: applicant, rdv_solidarites_rdv: rdv_solidarites_rdv
     )
   end
 
@@ -16,13 +16,14 @@ describe Notifications::RdvCancelled, type: :service do
       department: department
     )
   end
+  let!(:rdv_solidarites_rdv_id) { 23 }
+  let!(:rdv_solidarites_rdv) do
+    OpenStruct.new(id: rdv_solidarites_rdv_id)
+  end
   let!(:department) do
     create(:department, phone_number: "0147200001", name: "Yonne", number: "89")
   end
   let!(:notification) { create(:notification, applicant: applicant) }
-  let!(:lieu) { { name: "DINUM", address: "20 avenue de Ségur 75011 PARIS" } }
-  let!(:motif) { { location_type: "public_office" } }
-  let!(:starts_at) { "2021-09-08 12:00:00 UTC" }
 
   describe "#call" do
     before do
@@ -34,7 +35,7 @@ describe Notifications::RdvCancelled, type: :service do
 
     it "saves the notification with the right event" do
       expect(Notification).to receive(:new)
-        .with(event: "rdv_cancelled", applicant: applicant)
+        .with(event: "rdv_cancelled", applicant: applicant, rdv_solidarites_rdv_id: rdv_solidarites_rdv_id)
       subject
     end
 

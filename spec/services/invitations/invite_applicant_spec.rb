@@ -18,7 +18,7 @@ describe Invitations::InviteApplicant, type: :service do
   describe "#call" do
     let!(:token) { "token123" }
     let!(:invitation_link) { "https://www.rdv_solidarites.com/some_params" }
-    let!(:rdv_solidarites_user) { instance_double(RdvSolidaritesUser) }
+    let!(:rdv_solidarites_user) { instance_double(RdvSolidarites::User) }
 
     before do
       allow(Invitations::RetrieveToken).to receive(:call)

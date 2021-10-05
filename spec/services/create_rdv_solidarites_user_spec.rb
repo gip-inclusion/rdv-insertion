@@ -36,13 +36,13 @@ describe CreateRdvSolidaritesUser, type: :service do
     end
 
     context "when the response is successful" do
-      let(:rdv_solidarites_user) { instance_double(RdvSolidaritesUser) }
+      let(:rdv_solidarites_user) { instance_double(RdvSolidarites::User) }
 
       before do
         allow(rdv_solidarites_client).to receive(:create_user)
           .with(user_attributes)
           .and_return(OpenStruct.new(body: response_body, success?: true))
-        allow(RdvSolidaritesUser).to receive(:new)
+        allow(RdvSolidarites::User).to receive(:new)
           .with(parsed_response['user'])
           .and_return(rdv_solidarites_user)
       end
