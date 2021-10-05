@@ -16,17 +16,9 @@ describe Invitations::InviteApplicant, type: :service do
   let!(:invitation) { create(:invitation, applicant: applicant) }
 
   describe "#call" do
-    let!(:token) { "token123" }
-    let!(:invitation_link) { "https://www.rdv_solidarites.com/some_params" }
-    let!(:rdv_solidarites_user) { instance_double(RdvSolidaritesUser) }
-
     before do
-      allow(Invitations::RetrieveToken).to receive(:call)
-        .and_return(OpenStruct.new(success?: true, invitation_token: token))
-      allow(Invitations::ComputeLink).to receive(:call)
-        .and_return(OpenStruct.new(success?: true, invitation_link: invitation_link))
-      allow(Invitations::CreateInvitations).to receive(:call)
-        .and_return(OpenStruct.new(success?: true, invitations: [invitation]))
+      allow(Invitations::CreateInvitation).to receive(:call)
+        .and_return(OpenStruct.new(success?: true, invitation: invitation))
       allow(invitation).to receive(:send_to_applicant)
         .and_return(OpenStruct.new(success?: true))
     end
@@ -35,104 +27,57 @@ describe Invitations::InviteApplicant, type: :service do
       is_a_success
     end
 
-    it "returns an invitation array" do
-      expect(subject.invitations).to eq([invitation])
+    it "returns an invitation" do
+      expect(subject.invitation).to eq(invitation)
     end
 
-    context "retrieves an invitation token" do
-      it "tries to retrieve an invitation token" do
-        expect(Invitations::RetrieveToken).to receive(:call)
-          .with(
-            rdv_solidarites_session: rdv_solidarites_session,
-            rdv_solidarites_user_id: rdv_solidarites_user_id
-          )
-        subject
+    context "invitation creation" do
+      context "when the user has no invitation with the requested format" do
+        let!(:invitation) { create(:invitation, applicant: applicant, format: "email") }
+
+        it "tries to create an invitation" do
+          expect(Invitations::CreateInvitation).to receive(:call)
+            .with(
+              applicant: applicant,
+              invitation_format: invitation_format,
+              rdv_solidarites_session: rdv_solidarites_session
+            )
+          subject
+        end
+
+        context "when it fails" do
+          before do
+            allow(Invitations::CreateInvitation).to receive(:call)
+              .and_return(OpenStruct.new(success?: false, errors: ["something happened"]))
+          end
+
+          it "is a failure" do
+            is_a_failure
+          end
+
+          it "stores the error" do
+            expect(subject.errors).to eq(["something happened"])
+          end
+
+          it "does not create an invitation" do
+            expect { subject }.to change(Invitation, :count).by(0)
+          end
+        end
       end
 
-      context "when it fails" do
-        before do
-          allow(Invitations::RetrieveToken).to receive(:call)
-            .and_return(OpenStruct.new(success?: false, errors: ["something happened"]))
-        end
-
-        it "is a failure" do
-          is_a_failure
-        end
-
-        it "stores the error" do
-          expect(subject.errors).to eq(["something happened"])
-        end
-
-        it "does not create an invitation" do
-          expect { subject }.to change(Invitation, :count).by(0)
-        end
-      end
-    end
-
-    context "compute invitation link" do
-      it "tries to compute the invitation link" do
-        expect(Invitations::ComputeLink).to receive(:call)
-          .with(
-            rdv_solidarites_session: rdv_solidarites_session,
-            invitation_token: token,
-            department: department
-          )
-        subject
-      end
-
-      context "when it fails" do
-        before do
-          allow(Invitations::ComputeLink).to receive(:call)
-            .and_return(OpenStruct.new(success?: false, errors: ["something happened"]))
-        end
-
-        it "is a failure" do
-          is_a_failure
-        end
-
-        it "stores the error" do
-          expect(subject.errors).to eq(["something happened"])
-        end
-
-        it "does not create an invitation" do
-          expect { subject }.to change(Invitation, :count).by(0)
+      context "when the user has already an invitation with the requested format" do
+        it "does not try to create an invitation" do
+          expect(Invitations::CreateInvitation).not_to receive(:call)
+          subject
         end
       end
     end
 
-    context "invitations creation" do
-      it "tries to create invitations" do
-        expect(Invitations::CreateInvitations).to receive(:call)
-          .with(
-            applicant: applicant,
-            invitation_format: invitation_format,
-            link: invitation_link,
-            token: token
-          )
-        subject
+    context "sends an invitation" do
+      before do
+        allow(applicant.invitations).to receive(:find_by).and_return(invitation)
       end
 
-      context "when it fails" do
-        before do
-          allow(Invitations::CreateInvitations).to receive(:call)
-            .and_return(OpenStruct.new(success?: false, errors: ["something happened"]))
-        end
-
-        it "is a failure" do
-          is_a_failure
-        end
-
-        it "stores the error" do
-          expect(subject.errors).to eq(["something happened"])
-        end
-
-        it "does not create an invitation" do
-          expect { subject }.to change(Invitation, :count).by(0)
-        end
-      end
-    end
-
-    context "sends invitation" do
       it "tries to send the invitation" do
         expect(invitation).to receive(:send_to_applicant)
         subject
@@ -164,6 +109,7 @@ describe Invitations::InviteApplicant, type: :service do
       let!(:time_it_was_sent) { Time.zone.now }
 
       before do
+        allow(applicant.invitations).to receive(:find_by).and_return(invitation)
         allow(Time.zone).to receive(:now).and_return(time_it_was_sent)
       end
 

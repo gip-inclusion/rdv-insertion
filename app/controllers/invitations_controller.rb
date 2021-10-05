@@ -7,7 +7,7 @@ class InvitationsController < ApplicationController
   def create
     authorize @applicant, :invite?
     if invite_applicant.success?
-      render json: { success: true, invitations: invite_applicant.invitations }
+      render json: { success: true, invitation: invite_applicant.invitation }
     else
       render json: { success: false, errors: invite_applicant.errors }
     end
@@ -29,8 +29,7 @@ class InvitationsController < ApplicationController
     @invite_applicant ||= Invitations::InviteApplicant.call(
       applicant: @applicant,
       rdv_solidarites_session: rdv_solidarites_session,
-      # TODO: should be sent by client
-      invitation_format: department.configuration.invitation_format
+      invitation_format: params[:format]
     )
   end
 

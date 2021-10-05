@@ -3,9 +3,8 @@ describe InvitationsController, type: :controller do
     let!(:applicant_id) { "24" }
     let!(:department) { create(:department) }
     let!(:agent) { create(:agent, departments: [department]) }
-    let!(:configuration) { create(:configuration, department: department) }
     let!(:applicant) { create(:applicant, department: department, id: applicant_id) }
-    let!(:create_params) { { applicant_id: applicant_id } }
+    let!(:create_params) { { applicant_id: applicant_id, format: "sms" } }
 
     before do
       sign_in(agent)
@@ -27,7 +26,7 @@ describe InvitationsController, type: :controller do
         .with(
           applicant: applicant,
           rdv_solidarites_session: request.session[:rdv_solidarites],
-          invitation_format: configuration.invitation_format
+          invitation_format: "sms"
         )
       post :create, params: create_params
     end
@@ -37,7 +36,7 @@ describe InvitationsController, type: :controller do
 
       before do
         allow(Invitations::InviteApplicant).to receive(:call)
-          .and_return(OpenStruct.new(success?: true, invitations: [invitation]))
+          .and_return(OpenStruct.new(success?: true, invitation: invitation))
       end
 
       it "is a success" do
@@ -49,7 +48,7 @@ describe InvitationsController, type: :controller do
       it "renders the invitation" do
         post :create, params: create_params
         expect(response).to be_successful
-        expect(JSON.parse(response.body)["invitations"][0]["id"]).to eq(invitation.id)
+        expect(JSON.parse(response.body)["invitation"]["id"]).to eq(invitation.id)
       end
     end
 
