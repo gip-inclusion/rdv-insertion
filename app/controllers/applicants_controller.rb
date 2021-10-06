@@ -7,7 +7,7 @@ class ApplicantsController < ApplicationController
   before_action :set_department, only: [:index, :create]
 
   def index
-    @applicants = @department.applicants.includes(:invitations)
+    @applicants = @department.applicants.includes(:invitations, :rdvs)
     @applicants = @applicants.search_by_text(params[:search_query]) if params[:search_query].present?
     @applicants = @applicants.page(page).order(created_at: :desc)
     authorize_applicants
@@ -21,8 +21,7 @@ class ApplicantsController < ApplicationController
     refresh_applicants
     render json: {
       success: true,
-      applicants: @applicants,
-      next_page: refresh_applicants.next_page
+      applicants: @applicants
     }
   end
 
@@ -52,8 +51,7 @@ class ApplicantsController < ApplicationController
   def refresh_applicants
     @refresh_applicants ||= RefreshApplicants.call(
       applicants: @applicants,
-      rdv_solidarites_session: rdv_solidarites_session,
-      rdv_solidarites_page: params[:rdv_solidarites_page]
+      rdv_solidarites_session: rdv_solidarites_session
     )
   end
 
@@ -62,12 +60,12 @@ class ApplicantsController < ApplicationController
   end
 
   def retrieve_applicants
-    @applicants = Applicant.includes(:department, :invitations)
+    @applicants = Applicant.includes(:department, :invitations, :rdvs)
                            .where(uid: params.require(:applicants).require(:uids))
                            .to_a
   end
 
   def set_department
-    @department = Department.includes(:applicants).find(params[:department_id])
+    @department = Department.includes(:applicants, :configuration).find(params[:department_id])
   end
 end

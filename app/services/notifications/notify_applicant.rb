@@ -2,11 +2,9 @@ module Notifications
   class NotifyApplicant < BaseService
     include Notifications::RdvConcern
 
-    def initialize(applicant:, lieu:, motif:, starts_at:)
+    def initialize(applicant:, rdv_solidarites_rdv:)
       @applicant = applicant
-      @lieu = lieu
-      @motif = motif
-      @starts_at = starts_at
+      @rdv_solidarites_rdv = rdv_solidarites_rdv
     end
 
     def call
@@ -62,7 +60,8 @@ module Notifications
     def notification
       @notification || Notification.new(
         event: event,
-        applicant: @applicant
+        applicant: @applicant,
+        rdv_solidarites_rdv_id: @rdv_solidarites_rdv.id
       )
     end
 

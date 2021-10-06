@@ -8,11 +8,11 @@
           <th scope="col">Numéro d'allocataire</th>
           <th scope="col">Prénom</th>
           <th scope="col">Nom</th>
-          <th scope="col">Date de naissance</th>
-          <th scope="col">Rôle</th>
           <th scope="col">Email</th>
-          <th scope="col">Téléphone</th>
-          <th scope="col">Dernière invitation</th>
+          <% if show_invitation?(@department) %>
+            <th scope="col">Dernière Invitation</th>
+          <% end %>
+          <th scope="col">Statut</th>
         </thead>
         <tbody class="">
           <% @applicants.each do |applicant| %>
@@ -20,11 +20,13 @@
               <td><%= display_attribute applicant.affiliation_number %></td>
               <td><%= display_attribute applicant.first_name %></td>
               <td><%= display_attribute applicant.last_name %></td>
-              <td><%= display_attribute format_date(applicant.birth_date) %></td>
-              <td><%= display_attribute applicant.role %></td>
               <td><%= display_attribute applicant.email %></td>
-              <td><%= display_attribute applicant.phone_number_formatted %></td>
-              <td><%= display_attribute format_date(applicant.last_invitation_sent_at) %></td>
+              <% if show_invitation?(@department) %>
+                <td><%= display_attribute format_date(applicant.last_invitation_sent_at) %></td>
+              <% end %>
+              <td class="<%= background_class_for_status(applicant.status) %>">
+                <%= I18n.t("activerecord.attributes.applicant.statuses.#{applicant.status}") %>
+              </td>
             </tr>
           <% end %>
         </tbody>

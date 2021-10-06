@@ -12,7 +12,7 @@ module Notifications
     def rdv_instructions
       if rdv_presential?
         "Vous êtes attendu(e) le #{formatted_start_date} à #{formatted_start_time}" \
-          " ici: #{@lieu[:name]} - #{@lieu[:address]}."
+          " ici: #{lieu.name} - #{lieu.address}."
       else
         "Un travailleur social vous appellera le #{formatted_start_date}" \
           " à partir de #{formatted_start_time} sur ce numéro."

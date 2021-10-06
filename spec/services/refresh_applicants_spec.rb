@@ -2,8 +2,7 @@ describe RefreshApplicants, type: :service do
   subject do
     described_class.call(
       applicants: applicants,
-      rdv_solidarites_session: rdv_solidarites_session,
-      rdv_solidarites_page: page
+      rdv_solidarites_session: rdv_solidarites_session
     )
   end
 
@@ -20,21 +19,18 @@ describe RefreshApplicants, type: :service do
     { client: "client", uid: "johndoe@example.com", access_token: "token" }
   end
 
-  let(:page) { 1 }
-
   describe "#call" do
     let(:rdv_solidarites_user) do
-      RdvSolidaritesUser.new(
+      RdvSolidarites::User.new(
         first_name: "Bernard", last_name: "Lamo", email: "bernardlamo@gmail.com"
       )
     end
 
     before do
-      allow(RetrieveRdvSolidaritesUsers).to receive(:call)
+      allow(RetrieveRdvSolidaritesResources).to receive(:call)
         .and_return(
           OpenStruct.new(
-            success?: true, rdv_solidarites_users: [rdv_solidarites_user],
-            next_page: 2
+            success?: true, users: [rdv_solidarites_user]
           )
         )
       allow(rdv_solidarites_user).to receive(:id)
@@ -49,17 +45,17 @@ describe RefreshApplicants, type: :service do
       end
 
       it "does not retrieve rdv solidarites users" do
-        expect(RetrieveRdvSolidaritesUsers).not_to receive(:call)
+        expect(RetrieveRdvSolidaritesResources).not_to receive(:call)
         subject
       end
     end
 
     context "when applicants are passed" do
       it "tries to retrieve the rdv solidarites users" do
-        expect(RetrieveRdvSolidaritesUsers).to receive(:call)
+        expect(RetrieveRdvSolidaritesResources).to receive(:call)
           .with(
-            ids: [51], rdv_solidarites_session: rdv_solidarites_session,
-            organisation_id: 42, page: page
+            additional_args: [51], rdv_solidarites_session: rdv_solidarites_session,
+            organisation_id: 42, resource_name: "users"
           )
         subject
       end
@@ -74,15 +70,11 @@ describe RefreshApplicants, type: :service do
           expect(applicant.last_name).to eq("Lamo")
           expect(applicant.email).to eq("bernardlamo@gmail.com")
         end
-
-        it "stores the next page" do
-          expect(subject.next_page).to eq(2)
-        end
       end
 
       context "when it does not retrieve users" do
         before do
-          allow(RetrieveRdvSolidaritesUsers).to receive(:call)
+          allow(RetrieveRdvSolidaritesResources).to receive(:call)
             .and_return(OpenStruct.new(success?: false, errors: ['some error']))
         end
 

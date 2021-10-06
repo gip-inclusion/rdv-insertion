@@ -7,16 +7,17 @@ end
 describe Notifications::NotifyApplicant, type: :service do
   subject do
     TestService.call(
-      applicant: applicant, lieu: lieu, starts_at: starts_at, motif: motif
+      applicant: applicant, rdv_solidarites_rdv: rdv_solidarites_rdv
     )
   end
 
   let!(:phone_number) { "+33782605941" }
+  let!(:rdv_solidarites_rdv) do
+    OpenStruct.new(id: rdv_solidarites_rdv_id)
+  end
+  let!(:rdv_solidarites_rdv_id) { 23 }
   let!(:applicant) { create(:applicant, phone_number_formatted: phone_number) }
   let!(:notification) { create(:notification, applicant: applicant) }
-  let!(:lieu) { { name: "DINUM", address: "20 avenue de Ségur" } }
-  let!(:motif) { { location_type: "public_office" } }
-  let!(:starts_at) { "2021-09-08 12:00:00 UTC" }
 
   describe "#call" do
     before do
@@ -38,7 +39,7 @@ describe Notifications::NotifyApplicant, type: :service do
 
     it "creates a notification" do
       expect(Notification).to receive(:new)
-        .with(event: "test_service", applicant: applicant)
+        .with(event: "test_service", applicant: applicant, rdv_solidarites_rdv_id: rdv_solidarites_rdv_id)
       expect(notification).to receive(:save)
       subject
     end

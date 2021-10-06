@@ -14,7 +14,7 @@ describe Agent do
         expect(agent).not_to be_valid
         expect(agent.errors.details).to eq({ email: [{ error: :taken, value: "johndoe@example.com" }] })
         expect(agent.errors.full_messages.to_sentence)
-          .to include("Email has already been taken")
+          .to include("Email est déjà utilisé")
       end
     end
   end

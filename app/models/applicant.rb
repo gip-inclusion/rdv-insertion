@@ -1,13 +1,14 @@
 class Applicant < ApplicationRecord
-  RDV_SOLIDARITES_USER_SHARED_ATTRIBUTES = [
-    :first_name, :last_name, :birth_date, :address, :email, :phone_number_formatted,
-    :invitation_accepted_at
-  ].freeze
+  SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = (
+    RdvSolidarites::User::RECORD_ATTRIBUTES - [:id, :phone_number, :birth_name, :created_at, :invited_at]
+  )
 
   include SearchableConcern
+  include HasStatusConcern
 
   belongs_to :department
   has_many :invitations, dependent: :nullify
+  has_and_belongs_to_many :rdvs
 
   validates :uid, presence: true, uniqueness: true
   validates :rdv_solidarites_user_id, uniqueness: true, allow_nil: true
@@ -15,6 +16,11 @@ class Applicant < ApplicationRecord
 
   enum role: { demandeur: 0, conjoint: 1 }
   enum title: { monsieur: 0, madame: 1 }
+  enum status: {
+    not_invited: 0, invitation_pending: 1, rdv_creation_pending: 2, rdv_pending: 3,
+    rdv_needs_status_update: 4, rdv_noshow: 5, rdv_revoked: 6, rdv_excused: 7,
+    rdv_seen: 8
+  }
 
   delegate :rdv_solidarites_organisation_id, to: :department
 
