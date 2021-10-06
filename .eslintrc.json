@@ -17,12 +17,5 @@
     "react/prop-types": 0,
     "no-underscore-dangle": ["error", { "allowAfterThis": true }],
     "no-param-reassign": "off"
-  },
-  "settings": {
-    "import/resolver": {
-      "node": {
-        "paths": ["src"]
-      }
-    }
   }
 }
