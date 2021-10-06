@@ -30,7 +30,9 @@ describe ProcessRdvSolidaritesWebhookJob, type: :job do
 
   let!(:rdv_solidarites_rdv) { OpenStruct.new(id: rdv_solidarites_rdv_id, user_ids: user_ids) }
 
-  let!(:applicant) { create(:applicant, department: department, rdv_solidarites_user_id: user_id, id: 3) }
+  let!(:applicant) { create(:applicant, department: department, id: 3) }
+  let!(:applicant2) { create(:applicant, department: department, id: 4) }
+
   let!(:configuration) { create(:configuration, department: department, notify_applicant: true) }
   let!(:department) { create(:department, rdv_solidarites_organisation_id: organisation_id) }
 
@@ -45,7 +47,7 @@ describe ProcessRdvSolidaritesWebhookJob, type: :job do
       allow(Applicant).to receive(:includes).and_return(Applicant)
       allow(Applicant).to receive(:where)
         .with(rdv_solidarites_user_id: user_ids)
-        .and_return([applicant])
+        .and_return([applicant, applicant2])
       allow(UpsertRdvJob).to receive(:perform_async)
       allow(DeleteRdvJob).to receive(:perform_async)
       allow(NotifyApplicantJob).to receive(:perform_async)
@@ -86,14 +88,14 @@ describe ProcessRdvSolidaritesWebhookJob, type: :job do
       end
     end
 
-    context "when there is a mismatch between the applicant and the department" do
+    context "when there is a mismatch between one applicant and the department" do
       let!(:another_department) { create(:department) }
-      let!(:applicant) { create(:applicant, id: 242, department: another_department, rdv_solidarites_user_id: user_id) }
+      let!(:applicant) { create(:applicant, id: 242, department: another_department) }
 
       it "raises an error" do
         expect { subject }.to raise_error(
           WebhookProcessingJobError,
-          "Applicants / Department mismatch: applicant_ids: [242] - department_id #{department.id} - "\
+          "Applicants / Department mismatch: applicant_ids: [242, 4] - department_id #{department.id} - "\
           "data: #{data} - meta: #{meta}"
         )
       end
@@ -102,7 +104,7 @@ describe ProcessRdvSolidaritesWebhookJob, type: :job do
     context "it udpates the rdv" do
       it "enqueues an upsert job" do
         expect(UpsertRdvJob).to receive(:perform_async)
-          .with(data, [applicant.id], department.id)
+          .with(data, [applicant.id, applicant2.id], department.id)
         subject
       end
 
@@ -117,7 +119,7 @@ describe ProcessRdvSolidaritesWebhookJob, type: :job do
       end
     end
 
-    context "when the applicant should not notified" do
+    context "when applicants should not be notified" do
       context "when the department does not notify applicants" do
         let!(:configuration) { create(:configuration, department: department, notify_applicant: false) }
 
@@ -142,7 +144,7 @@ describe ProcessRdvSolidaritesWebhookJob, type: :job do
       end
     end
 
-    context "when the applicant should be notified" do
+    context "when applicants should be notified" do
       before do
         allow(Department).to receive(:find_by).and_return(department)
       end
@@ -150,6 +152,8 @@ describe ProcessRdvSolidaritesWebhookJob, type: :job do
       it "calls the notify applicant job" do
         expect(NotifyApplicantJob).to receive(:perform_async)
           .with(applicant.id, data, "created")
+        expect(NotifyApplicantJob).to receive(:perform_async)
+          .with(applicant2.id, data, "created")
         subject
       end
     end

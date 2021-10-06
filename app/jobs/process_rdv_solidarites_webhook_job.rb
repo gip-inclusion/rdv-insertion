@@ -21,7 +21,7 @@ class ProcessRdvSolidaritesWebhookJob < ApplicationJob
   end
 
   def check_applicants_department!
-    return if applicants.length == 1 && applicants.first.department_id == department.id
+    return if all_applicants_belongs_to_department?
 
     raise(
       WebhookProcessingJobError,
@@ -39,6 +39,10 @@ class ProcessRdvSolidaritesWebhookJob < ApplicationJob
 
   def should_notify_applicants?
     department.notify_applicant? && event.in?(%w[created destroyed])
+  end
+
+  def all_applicants_belongs_to_department?
+    applicants.pluck(:department_id).uniq.length == 1 && applicants.first.department_id == department.id
   end
 
   def event
