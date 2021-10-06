@@ -195,11 +195,6 @@ describe ApplicantsController, type: :controller do
 
     it "calls the refresh service" do
       expect(RefreshApplicants).to receive(:call)
-        .with(
-          applicants: department.applicants,
-          rdv_solidarites_session: request.session[:rdv_solidarites],
-          rdv_solidarites_page: nil
-        )
 
       get :index, params: index_params
     end

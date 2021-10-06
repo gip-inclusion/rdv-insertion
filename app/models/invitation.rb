@@ -9,7 +9,7 @@ class Invitation < ApplicationRecord
     when "sms"
       Invitations::SendSms.call(invitation: self)
     when "email"
-      # should add email service when implemented
+      Invitations::SendEmail.call(invitation: self)
     end
   end
 

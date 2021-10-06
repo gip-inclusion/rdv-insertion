@@ -1,0 +1,8 @@
+<h1>Bonjour <%= "#{@applicant.first_name} #{@applicant.last_name.upcase}" %>,</h1>
+<p>Vous êtes nouveau bénéficiaire du RSA et vous allez à ce titre bénéficier d’un accompagnement obligatoire.</p>
+<p><span class="font-weight-bold">Pour pouvoir choisir la date et l'horaire de votre premier rendez-vous</span>, vous pouvez accéder au service RDV-Solidarités en cliquant sur le bouton suivant <span class="font-weight-bold">dans les 3 jours</span>. Passé ce délai vous recevrez une convocation.</p>
+<p class="btn-wrapper">
+  <a href="<%= @invitation.link %>" class="btn btn-primary">Je prends RDV</a>
+</p>
+<p>En cas de problème technique, contactez le <%= @applicant.department.phone_number.gsub(/\d{2}/, '\& ') %></p>
+

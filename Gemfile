@@ -39,6 +39,9 @@ gem 'kaminari'
 # PG search
 gem 'pg_search'
 
+# CSS styled emails with stylesheets
+gem 'premailer-rails'
+
 # Send SMS & emails with SendInBlue
 gem 'sib-api-v3-sdk'
 
