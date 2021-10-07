@@ -74,7 +74,9 @@ describe Invitations::CreateInvitation, type: :service do
           end
 
           it "does not create an invitation" do
-            expect { subject }.to change(Invitation, :count).by(0)
+            expect(Invitation).not_to receive(:new)
+            expect(invitation).not_to receive(:save)
+            subject
           end
         end
       end
@@ -119,7 +121,9 @@ describe Invitations::CreateInvitation, type: :service do
           end
 
           it "does not create an invitation" do
-            expect { subject }.to change(Invitation, :count).by(0)
+            expect(Invitation).not_to receive(:new)
+            expect(invitation).not_to receive(:save)
+            subject
           end
         end
       end
@@ -133,14 +137,40 @@ describe Invitations::CreateInvitation, type: :service do
     end
 
     context "invitation creation" do
-      it "creates the invitation with the link and token" do
-        expect(Invitation).to receive(:new)
-          .with(
-            applicant: applicant, format: invitation_format,
-            token: token, link: invitation_link
-          )
-        expect(invitation).to receive(:save)
-        subject
+      context "when there is no invitation for the applicant" do
+        it "creates the invitation with the link and token" do
+          expect(Invitation).to receive(:new)
+            .with(
+              applicant: applicant, format: invitation_format,
+              token: token, link: invitation_link
+            )
+          expect(invitation).to receive(:save)
+          subject
+        end
+
+        context "when it fails" do
+          before do
+            allow(invitation).to receive(:save)
+              .and_return(false)
+            allow(invitation).to receive_message_chain(:errors, :full_messages, :to_sentence)
+              .and_return("Validation failed")
+          end
+
+          it "is a failure" do
+            is_a_failure
+          end
+
+          it "stores the error" do
+            expect(subject.errors).to eq(["Validation failed"])
+          end
+        end
+      end
+
+      context "when there is an invitation for the applicant" do
+        it "does not try to retrieve an invitation token" do
+          expect(Invitations::RetrieveToken).not_to receive(:call)
+          subject
+        end
       end
     end
   end

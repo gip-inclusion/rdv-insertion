@@ -17,7 +17,7 @@ describe Invitations::InviteApplicant, type: :service do
 
   describe "#call" do
     before do
-      allow(Invitations::CreateInvitation).to receive(:call)
+      allow(Invitations::RetrieveOrCreateInvitation).to receive(:call)
         .and_return(OpenStruct.new(success?: true, invitation: invitation))
       allow(invitation).to receive(:send_to_applicant)
         .and_return(OpenStruct.new(success?: true))
@@ -31,44 +31,29 @@ describe Invitations::InviteApplicant, type: :service do
       expect(subject.invitation).to eq(invitation)
     end
 
-    context "invitation creation" do
-      context "when the user has no invitation with the requested format" do
-        let!(:invitation) { create(:invitation, applicant: applicant, format: "email") }
-
-        it "tries to create an invitation" do
-          expect(Invitations::CreateInvitation).to receive(:call)
-            .with(
-              applicant: applicant,
-              invitation_format: invitation_format,
-              rdv_solidarites_session: rdv_solidarites_session
-            )
-          subject
-        end
-
-        context "when it fails" do
-          before do
-            allow(Invitations::CreateInvitation).to receive(:call)
-              .and_return(OpenStruct.new(success?: false, errors: ["something happened"]))
-          end
-
-          it "is a failure" do
-            is_a_failure
-          end
-
-          it "stores the error" do
-            expect(subject.errors).to eq(["something happened"])
-          end
-
-          it "does not create an invitation" do
-            expect { subject }.to change(Invitation, :count).by(0)
-          end
-        end
+    context "tries to retrieve an invitation" do
+      it "calls the the retrieve_or_create_invitation service" do
+        expect(Invitations::RetrieveOrCreateInvitation).to receive(:call)
+          .with(
+            applicant: applicant,
+            invitation_format: invitation_format,
+            rdv_solidarites_session: rdv_solidarites_session
+          )
+        subject
       end
 
-      context "when the user has already an invitation with the requested format" do
-        it "does not try to create an invitation" do
-          expect(Invitations::CreateInvitation).not_to receive(:call)
-          subject
+      context "when it fails" do
+        before do
+          allow(Invitations::RetrieveOrCreateInvitation).to receive(:call)
+            .and_return(OpenStruct.new(success?: false, errors: ["something happened"]))
+        end
+
+        it "is a failure" do
+          is_a_failure
+        end
+
+        it "stores the error" do
+          expect(subject.errors).to eq(["something happened"])
         end
       end
     end

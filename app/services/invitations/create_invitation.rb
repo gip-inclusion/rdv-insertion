@@ -7,15 +7,10 @@ module Invitations
     end
 
     def call
-      if @applicant.invitations.empty?
-        retrieve_invitation_token!
-        compute_invitation_link!
-      else
-        @token = @applicant.invitations.last.token
-        @link = @applicant.invitations.last.link
-      end
+      retrieve_invitation_token! unless existing_token
+      compute_invitation_link! unless existing_token
       create_invitation!
-      result.invitation = @invitation
+      result.invitation = invitation
     end
 
     private
@@ -30,16 +25,28 @@ module Invitations
     def invitation
       @invitation ||= Invitation.new(
         applicant: @applicant, format: @invitation_format,
-        link: @link,
-        token: @token
+        link: link, token: token
       )
     end
 
+    def token
+      existing_token || retrieve_invitation_token.token
+    end
+
+    def link
+      existing_link || compute_invitation_link.link
+    end
+
+    def existing_token
+      @applicant.invitations.last&.token
+    end
+
+    def existing_link
+      @applicant.invitations.last&.link
+    end
+
     def retrieve_invitation_token!
-      if retrieve_invitation_token.success?
-        @token = retrieve_invitation_token.invitation_token
-        return
-      end
+      return if retrieve_invitation_token.success?
 
       result.errors += retrieve_invitation_token.errors
       fail!
@@ -53,10 +60,7 @@ module Invitations
     end
 
     def compute_invitation_link!
-      if compute_invitation_link.success?
-        @link = compute_invitation_link.invitation_link
-        return
-      end
+      return if compute_invitation_link.success?
 
       result.errors += compute_invitation_link.errors
       fail!
