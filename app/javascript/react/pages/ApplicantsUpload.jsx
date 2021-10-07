@@ -125,6 +125,17 @@ export default function ApplicantsUpload({ department, configuration }) {
           <h1>Ajout allocataires</h1>
         </div>
       </div>
+      <div className="row mb-5 justify-content-center">
+        <div className="col-4 text-center">
+          <button
+            type="submit"
+            className="btn btn-sm btn-secondary"
+            onClick={() => redirectToApplicantList()}
+          >
+            Retour au suivi
+          </button>
+        </div>
+      </div>
       <div className="row justify-content-center">
         <div className="col-4 text-center">
           <FileHandler
@@ -136,19 +147,9 @@ export default function ApplicantsUpload({ department, configuration }) {
           />
         </div>
       </div>
+
       {applicants.length > 0 && (
         <>
-          <div className="row my-5 justify-content-center">
-            <div className="col col-4 text-center">
-              <button
-                type="submit"
-                className="btn btn-secondary"
-                onClick={() => redirectToApplicantList()}
-              >
-                Retour à la liste
-              </button>
-            </div>
-          </div>
           <div className="row my-5 justify-content-center">
             <div className="text-center">
               <table className="table table-hover  text-center align-middle table-striped table-bordered">

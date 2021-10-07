@@ -5,8 +5,8 @@ fr:
     attributes:
       applicant:
         statuses:
-          not_invited: En attente d'invitation
-          invitation_pending: En attente d'acceptation
+          not_invited: Non invité
+          invitation_pending: Invitation en attente de réponse
           rdv_creation_pending: En attente de prise de RDV
           rdv_pending: RDV pris
           rdv_needs_status_update: Statut du RDV à préciser

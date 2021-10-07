@@ -18,7 +18,7 @@ module Migrations
         # if it is not linked to a RDVI applicant we do not save the rdv
         next if applicant_ids.empty?
 
-        UpsertRdvJob.perform_async(rdv.attributes, retrieve_applicants_ids(rdv.user_ids), department.id)
+        UpsertRdvJob.perform_async(rdv.attributes, applicant_ids, department.id)
       end
     end
 
