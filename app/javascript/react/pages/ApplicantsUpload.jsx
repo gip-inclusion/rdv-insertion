@@ -1,6 +1,7 @@
 import React, { useState, useReducer } from "react";
 
 import * as XLSX from "xlsx";
+import Swal from "sweetalert2";
 
 import FileHandler from "../components/FileHandler";
 import ApplicantList from "../components/ApplicantList";
@@ -64,11 +65,24 @@ export default function ApplicantsUpload({ department, configuration }) {
     return applicantsFromList.reverse();
   };
 
-  const retrieveApplicantsFromApp = async (applicantsFromList) => {
+  const retrieveApplicantsFromApp = async (uids) => {
+    const result = await searchApplicants(uids);
+    if (result.success) {
+      return result.applicants;
+    }
+    Swal.fire(
+      "Une erreur s'est produite en récupérant les infos utilisateurs sur le serveur",
+      result.errors && result.errors.join(" - "),
+      "warning"
+    );
+    return null;
+  };
+
+  const retrieveUpToDateApplicants = async (applicantsFromList) => {
     const uids = applicantsFromList.map((applicant) => applicant.uid);
     let upToDateApplicants = applicantsFromList;
 
-    const retrievedApplicants = await searchApplicants(uids);
+    const retrievedApplicants = await retrieveApplicantsFromApp(uids);
 
     upToDateApplicants = applicantsFromList.map((applicant) => {
       const upToDateApplicant = retrievedApplicants.find((a) => a.uid === applicant.uid);
@@ -81,13 +95,17 @@ export default function ApplicantsUpload({ department, configuration }) {
     return upToDateApplicants;
   };
 
+  const redirectToApplicantList = () => {
+    window.location.href = `/departments/${department.id}/applicants`;
+  };
+
   const handleFile = async (file) => {
     setFileSize(file.size);
 
     dispatchApplicants({ type: "reset" });
     const applicantsFromList = await retrieveApplicantsFromList(file);
 
-    const upToDateApplicants = await retrieveApplicantsFromApp(applicantsFromList);
+    const upToDateApplicants = await retrieveUpToDateApplicants(applicantsFromList);
 
     upToDateApplicants.forEach((applicant) => {
       dispatchApplicants({
@@ -107,6 +125,17 @@ export default function ApplicantsUpload({ department, configuration }) {
           <h1>Ajout allocataires</h1>
         </div>
       </div>
+      <div className="row mb-5 justify-content-center">
+        <div className="col-4 text-center">
+          <button
+            type="submit"
+            className="btn btn-sm btn-secondary"
+            onClick={() => redirectToApplicantList()}
+          >
+            Retour au suivi
+          </button>
+        </div>
+      </div>
       <div className="row justify-content-center">
         <div className="col-4 text-center">
           <FileHandler
@@ -118,22 +147,12 @@ export default function ApplicantsUpload({ department, configuration }) {
           />
         </div>
       </div>
+
       {applicants.length > 0 && (
         <>
           <div className="row my-5 justify-content-center">
-            <div className="col col-4 text-center">
-              <button
-                type="submit"
-                className="btn btn-secondary"
-                onClick={() => dispatchApplicants({ type: "reset" })}
-              >
-                Vider l&apos;historique
-              </button>
-            </div>
-          </div>
-          <div className="row my-5 justify-content-center">
             <div className="text-center">
-              <table className="table table-hover text-center align-middle table-striped table-bordered">
+              <table className="table table-hover  text-center align-middle table-striped table-bordered">
                 <thead className="align-middle">
                   <tr>
                     <th scope="col">Numéro d&apos;allocataire</th>

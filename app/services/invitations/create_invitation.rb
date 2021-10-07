@@ -30,11 +30,11 @@ module Invitations
     end
 
     def token
-      existing_token || retrieve_invitation_token.token
+      existing_token || retrieve_invitation_token.invitation_token
     end
 
     def link
-      existing_link || compute_invitation_link.link
+      existing_link || compute_invitation_link.invitation_link
     end
 
     def existing_token

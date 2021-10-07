@@ -87,7 +87,7 @@ describe ApplicantsController, type: :controller do
   end
 
   describe "#search" do
-    let!(:search_params) { { applicants: { uids: [23] }, rdv_solidarites_page: 2, format: "json" } }
+    let!(:search_params) { { applicants: { uids: [23] }, format: "json" } }
     let!(:applicant) { create(:applicant, department: department, uid: 23, email: "borisjohnson@gov.uk") }
 
     before do
@@ -104,7 +104,6 @@ describe ApplicantsController, type: :controller do
       expect(RefreshApplicants).to receive(:call)
         .with(
           applicants: [applicant],
-          rdv_solidarites_page: '2',
           rdv_solidarites_session: request.session[:rdv_solidarites]
         )
       post :search, params: search_params

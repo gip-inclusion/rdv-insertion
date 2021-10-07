@@ -36,7 +36,7 @@ describe RetrieveRdvSolidaritesUser, type: :service do
       end
 
       it "returns the user" do
-        expect(subject.user).to be_an_instance_of(RdvSolidaritesUser)
+        expect(subject.user).to be_an_instance_of(RdvSolidarites::User)
         expect(subject.user.id).to eq(5)
         expect(subject.user.phone_number_formatted).to eq('+33782122222')
       end

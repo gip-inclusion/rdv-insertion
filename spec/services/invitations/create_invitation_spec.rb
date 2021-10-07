@@ -18,7 +18,6 @@ describe Invitations::CreateInvitation, type: :service do
 
   describe "#call" do
     let!(:invitation_link) { "https://www.rdv_solidarites.com/some_params" }
-    let!(:rdv_solidarites_user) { instance_double(RdvSolidaritesUser) }
 
     before do
       allow(Invitations::RetrieveToken).to receive(:call)
@@ -82,6 +81,11 @@ describe Invitations::CreateInvitation, type: :service do
       end
 
       context "when there is an invitation for the applicant" do
+        before do
+          allow(applicant).to receive(:invitations)
+            .and_return([invitation])
+        end
+
         it "does not try to retrieve an invitation token" do
           expect(Invitations::RetrieveToken).not_to receive(:call)
           subject
@@ -129,6 +133,11 @@ describe Invitations::CreateInvitation, type: :service do
       end
 
       context "when there is an invitation for the applicant" do
+        before do
+          allow(applicant).to receive(:invitations)
+            .and_return([invitation])
+        end
+
         it "does not try to compute the invitation link" do
           expect(Invitations::ComputeLink).not_to receive(:call)
           subject
@@ -167,6 +176,11 @@ describe Invitations::CreateInvitation, type: :service do
       end
 
       context "when there is an invitation for the applicant" do
+        before do
+          allow(applicant).to receive(:invitations)
+            .and_return([invitation])
+        end
+
         it "does not try to retrieve an invitation token" do
           expect(Invitations::RetrieveToken).not_to receive(:call)
           subject

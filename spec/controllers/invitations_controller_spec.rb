@@ -79,9 +79,9 @@ describe InvitationsController, type: :controller do
     let!(:invitation) { create(:invitation, applicant: applicant) }
     let!(:invite_params) { { token: invitation.token } }
 
-    it "mark the invitation as seen" do
+    it "mark the invitation as clicked" do
       get :redirect, params: invite_params
-      expect(invitation.reload.seen).to eq(true)
+      expect(invitation.reload.clicked).to eq(true)
     end
 
     it "redirects to the invitation link" do

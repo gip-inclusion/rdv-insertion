@@ -12,7 +12,7 @@ class RetrieveRdvSolidaritesUser < BaseService
 
   def retrieve_user
     if rdv_solidarites_response.success?
-      result.user = RdvSolidaritesUser.new(rdv_solidarites_response_body['user'].deep_symbolize_keys)
+      result.user = RdvSolidarites::User.new(rdv_solidarites_response_body['user'].deep_symbolize_keys)
     else
       result.errors << "erreur RDV-Solidarités: #{rdv_solidarites_response_body['errors']}"
     end

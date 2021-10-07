@@ -83,7 +83,7 @@ class CreateApplicant < BaseService
       notify_by_sms: !@department.notify_applicant?,
       notify_by_email: !@department.notify_applicant?
     }.merge(
-      @applicant_data.slice(*RdvSolidaritesUser::USER_ATTRIBUTES).compact
+      @applicant_data.slice(*RdvSolidarites::User::RECORD_ATTRIBUTES).compact
     ).deep_symbolize_keys
 
     return user_attributes unless applicant.conjoint?

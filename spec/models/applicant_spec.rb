@@ -22,7 +22,7 @@ describe Applicant do
         expect(applicant).not_to be_valid
         expect(applicant.errors.details).to eq({ rdv_solidarites_user_id: [{ error: :taken, value: 1 }] })
         expect(applicant.errors.full_messages.to_sentence)
-          .to include("Rdv solidarites user has already been taken")
+          .to include("Rdv solidarites user est déjà utilisé")
       end
     end
   end
@@ -41,7 +41,7 @@ describe Applicant do
         expect(applicant).not_to be_valid
         expect(applicant.errors.details).to eq({ uid: [{ error: :blank }] })
         expect(applicant.errors.full_messages.to_sentence)
-          .to include("Uid can't be blank")
+          .to include("Uid doit être rempli(e)")
       end
     end
 
@@ -53,7 +53,7 @@ describe Applicant do
         expect(applicant).not_to be_valid
         expect(applicant.errors.details).to eq({ uid: [{ error: :taken, value: '123' }] })
         expect(applicant.errors.full_messages.to_sentence)
-          .to include("Uid has already been taken")
+          .to include("Uid est déjà utilisé")
       end
     end
   end
@@ -122,6 +122,88 @@ describe Applicant do
       it { is_expected.to include(applicant_jean) }
       it { is_expected.to include(applicant_cecile) }
       it { is_expected.not_to include(applicant_romain) }
+    end
+  end
+
+  describe "#set_status" do
+    subject { applicant.set_status }
+
+    context "without rdvs" do
+      context "without invitations" do
+        let!(:applicant) { create(:applicant, rdvs: [], invitations: []) }
+
+        it "is not invited" do
+          expect(subject).to eq(:not_invited)
+        end
+      end
+
+      context "with no sent invitation" do
+        let!(:invitation) { create(:invitation, sent_at: nil, applicant: applicant) }
+        let!(:applicant) { create(:applicant, rdvs: []) }
+
+        it "is not invited" do
+          expect(subject).to eq(:not_invited)
+        end
+      end
+
+      context "with sent invitation" do
+        let!(:invitation) { create(:invitation, sent_at: Date.yesterday, applicant: applicant) }
+
+        context "when invitation has not been accepted" do
+          let!(:applicant) { create(:applicant, rdvs: [], invitation_accepted_at: nil) }
+
+          it "is in invitation pending" do
+            expect(subject).to eq(:invitation_pending)
+          end
+        end
+
+        context "when invitation has been accepted" do
+          let!(:applicant) { create(:applicant, rdvs: [], invitation_accepted_at: Date.yesterday) }
+
+          it "is rdv creation pending" do
+            expect(subject).to eq(:rdv_creation_pending)
+          end
+        end
+      end
+    end
+
+    context "with rdvs" do
+      context "with a seen rdv" do
+        let!(:rdv) { create(:rdv, status: "seen") }
+        let!(:rdv2) { create(:rdv, status: "noshow") }
+        let!(:applicant) { create(:applicant, rdvs: [rdv, rdv2]) }
+
+        it "is rdv seen" do
+          expect(subject).to eq(:rdv_seen)
+        end
+      end
+
+      context "with a pending rdv" do
+        let!(:rdv) { create(:rdv, status: "unknown", starts_at: Time.zone.now + 3.days) }
+        let!(:applicant) { create(:applicant, rdvs: [rdv]) }
+
+        it "is rdv pending" do
+          expect(subject).to eq(:rdv_pending)
+        end
+      end
+
+      context "with last rdv cancelled" do
+        let!(:rdv) { create(:rdv, status: "noshow") }
+        let!(:applicant) { create(:applicant, rdvs: [rdv]) }
+
+        it "is rdv pending" do
+          expect(subject).to eq(:rdv_noshow)
+        end
+      end
+
+      context "with a past rdv with status not updated" do
+        let!(:rdv) { create(:rdv, status: "unknown", starts_at: Time.zone.now - 2.days) }
+        let!(:applicant) { create(:applicant, rdvs: [rdv]) }
+
+        it "is rdv pending" do
+          expect(subject).to eq(:rdv_needs_status_update)
+        end
+      end
     end
   end
 end
