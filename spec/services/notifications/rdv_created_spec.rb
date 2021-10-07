@@ -52,10 +52,10 @@ describe Notifications::RdvCreated, type: :service do
       end
 
       let!(:content) do
-        "Monsieur John DOE,\nVous êtes allocataire du RSA. Vous bénéficiez d’un accompagnement obligatoire " \
+        "Monsieur John DOE,\nVous êtes allocataire du RSA. Vous bénéficiez d’un accompagnement " \
           "dans le cadre de vos démarches d’insertion. Vous êtes attendu(e) le 08/09/2021 à " \
-          "12:00 ici: DINUM - 20 avenue de Ségur 75011 PARIS. En cas d’empêchement, merci "\
-          "d’appeler rapidement le 0147200001. " \
+          "12:00 ici: DINUM - 20 avenue de Ségur 75011 PARIS. Ce rendez-vous est obligatoire. "\
+          "En cas d’empêchement, merci d’appeler rapidement le 0147200001. " \
           "Le département 89 (Yonne)."
       end
 
@@ -72,10 +72,10 @@ describe Notifications::RdvCreated, type: :service do
       end
 
       let!(:content) do
-        "Monsieur John DOE,\nVous êtes allocataire du RSA. Vous bénéficiez d’un accompagnement obligatoire" \
+        "Monsieur John DOE,\nVous êtes allocataire du RSA. Vous bénéficiez d’un accompagnement" \
           " dans le cadre de vos démarches d’insertion. Un travailleur social vous appellera le 08/09/2021" \
-          " à partir de 12:00 sur ce numéro. En cas d’empêchement, merci d’appeler rapidement le " \
-          "0147200001. Le département 89 (Yonne)."
+          " à partir de 12:00 sur ce numéro. Ce rendez-vous est obligatoire. En cas d’empêchement, merci d’appeler "\
+          "rapidement le 0147200001. Le département 89 (Yonne)."
       end
 
       it "sends the sms with the right content" do
