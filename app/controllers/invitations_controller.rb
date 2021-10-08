@@ -25,6 +25,10 @@ class InvitationsController < ApplicationController
     @applicant = Applicant.find(params[:applicant_id])
   end
 
+  def set_invitation
+    @invitation = Invitation.where(token: params[:token]).find_by(format: format)
+  end
+
   def invite_applicant
     @invite_applicant ||= Invitations::InviteApplicant.call(
       applicant: @applicant,
@@ -37,7 +41,7 @@ class InvitationsController < ApplicationController
     @applicant.department
   end
 
-  def set_invitation
-    @invitation = Invitation.find_by!(token: params[:token])
+  def format
+    params[:format] || "sms" # pour garder le lien envoyé par SMS le plus court possible
   end
 end
