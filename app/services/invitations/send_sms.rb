@@ -25,7 +25,7 @@ module Invitations
     end
 
     def content
-      "#{applicant.full_name},\nVous êtes nouveau bénéficiaire du RSA et vous allez à ce titre bénéficier " \
+      "#{applicant.full_name},\nVous êtes bénéficiaire du RSA et vous allez à ce titre bénéficier " \
         "d'un accompagnement obligatoire. Pour pouvoir choisir la date et l'horaire de votre premier RDV, " \
         "cliquez sur le lien suivant dans les 3 jours: " \
         "#{redirect_invitations_url(params: { token: @invitation.token }, host: ENV['HOST'])}\n" \
