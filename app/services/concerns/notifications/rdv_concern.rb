@@ -2,16 +2,24 @@ module Notifications
   module RdvConcern
     extend ActiveSupport::Concern
 
+    def lieu
+      @rdv_solidarites_rdv.lieu
+    end
+
+    def motif
+      @rdv_solidarites_rdv.motif
+    end
+
     def rdv_presential?
-      @motif[:location_type] == "public_office"
+      @rdv_solidarites_rdv.presential?
     end
 
     def formatted_start_date
-      @starts_at.to_datetime.strftime("%d/%m/%Y")
+      @rdv_solidarites_rdv.formatted_start_date
     end
 
     def formatted_start_time
-      @starts_at.to_datetime.strftime('%H:%M')
+      @rdv_solidarites_rdv.formatted_start_time
     end
 
     def department

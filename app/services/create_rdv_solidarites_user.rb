@@ -12,7 +12,7 @@ class CreateRdvSolidaritesUser < BaseService
 
   def create_user_in_rdv_solidarites
     if rdv_solidarites_response.success?
-      result.rdv_solidarites_user = RdvSolidaritesUser.new(rdv_solidarites_response_body["user"])
+      result.rdv_solidarites_user = RdvSolidarites::User.new(rdv_solidarites_response_body["user"])
     else
       result.errors << "erreur RDV-Solidarités: #{rdv_solidarites_response_body['errors']}"
     end

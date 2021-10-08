@@ -22,7 +22,7 @@ describe Department do
         expect(department).not_to be_valid
         expect(department.errors.details).to eq({ rdv_solidarites_organisation_id: [{ error: :taken, value: 1 }] })
         expect(department.errors.full_messages.to_sentence)
-          .to include("Rdv solidarites organisation has already been taken")
+          .to include("Rdv solidarites organisation est déjà utilisé")
       end
     end
   end

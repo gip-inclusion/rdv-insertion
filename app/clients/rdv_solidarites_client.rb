@@ -44,6 +44,14 @@ class RdvSolidaritesClient
     )
   end
 
+  def get_rdvs(organisation_id, page = 1)
+    Faraday.get(
+      "#{@url}/api/v1/organisations/#{organisation_id}/rdvs",
+      { page: page },
+      request_headers
+    )
+  end
+
   private
 
   def request_headers

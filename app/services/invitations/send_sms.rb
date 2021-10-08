@@ -25,13 +25,12 @@ module Invitations
     end
 
     def content
-      "#{applicant.full_name},\nVous êtes allocataire du RSA. Vous bénéficiez d'un accompagnement personnalisé " \
-        "dans le cadre de vos démarches d'insertion. Le département #{department.number} " \
-        "(#{department.name.capitalize}) vous invite à prendre rendez-vous sans tarder, afin de choisir " \
-        "l'horaire qui vous convient le mieux, à l'adresse suivante : " \
+      "#{applicant.full_name},\nVous êtes nouveau bénéficiaire du RSA et vous allez à ce titre bénéficier " \
+        "d'un accompagnement obligatoire. Pour pouvoir choisir la date et l'horaire de votre premier RDV, " \
+        "cliquez sur le lien suivant dans les 3 jours: " \
         "#{redirect_invitations_url(params: { token: @invitation.token }, host: ENV['HOST'])}\n" \
-        "Pour tout problème ou difficultés pour prendre RDV, contactez le secrétariat au #{department.phone_number}." \
-        " Ce RDV est obligatoire, en cas d'absence une sanction pourra être prononcée."
+        "Passé ce délai, vous recevrez une convocation. En cas de problème technique, contactez le "\
+        "#{department.phone_number}."
     end
 
     def department

@@ -24,7 +24,7 @@ describe CreateApplicant, type: :service do
 
     let!(:applicant) { build(:applicant, applicant_attributes) }
     let(:rdv_solidarites_client) { instance_double(RdvSolidaritesSession) }
-    let!(:rdv_solidarites_user) { instance_double(RdvSolidaritesUser) }
+    let!(:rdv_solidarites_user) { instance_double(RdvSolidarites::User) }
 
     before do
       allow(Applicant).to receive(:new)
