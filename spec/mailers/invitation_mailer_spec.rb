@@ -20,9 +20,5 @@ RSpec.describe InvitationMailer, type: :mailer do
     it "renders the body" do
       expect(subject.body.encoded).to match("Bonjour #{applicant.first_name} #{applicant.last_name.upcase},")
     end
-
-    it "sends the invitation link" do
-      expect(subject.body).to match(invitation.link.to_s)
-    end
   end
 end

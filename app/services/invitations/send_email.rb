@@ -12,7 +12,8 @@ module Invitations
     private
 
     def check_email!
-      fail!("le mail doit être renseigné") if email.blank?
+      fail!("L'email doit être renseigné") if email.blank?
+      fail!("L'email renseigné ne semble pas être une adresse valable") if (email =~ URI::MailTo::EMAIL_REGEXP).nil?
     end
 
     def email
