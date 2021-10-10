@@ -29,8 +29,7 @@ class InvitationsController < ApplicationController
     @invite_applicant ||= Invitations::InviteApplicant.call(
       applicant: @applicant,
       rdv_solidarites_session: rdv_solidarites_session,
-      # TODO: should be sent by client
-      invitation_format: department.configuration.invitation_format
+      invitation_format: params[:format]
     )
   end
 
@@ -38,7 +37,11 @@ class InvitationsController < ApplicationController
     @applicant.department
   end
 
+  def format
+    params[:format] || "sms" # pour garder le lien envoyé par SMS le plus court possible
+  end
+
   def set_invitation
-    @invitation = Invitation.find_by!(token: params[:token])
+    @invitation = Invitation.where(format: format).find_by!(token: params[:token])
   end
 end

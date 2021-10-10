@@ -5,7 +5,8 @@ describe InvitationsController, type: :controller do
     let!(:agent) { create(:agent, departments: [department]) }
     let!(:configuration) { create(:configuration, department: department) }
     let!(:applicant) { create(:applicant, department: department, id: applicant_id) }
-    let!(:create_params) { { applicant_id: applicant_id } }
+    let!(:invitation_format) { "sms" }
+    let!(:create_params) { { applicant_id: applicant_id, format: invitation_format } }
 
     before do
       sign_in(agent)
@@ -27,7 +28,7 @@ describe InvitationsController, type: :controller do
         .with(
           applicant: applicant,
           rdv_solidarites_session: request.session[:rdv_solidarites],
-          invitation_format: configuration.invitation_format
+          invitation_format: invitation_format
         )
       post :create, params: create_params
     end

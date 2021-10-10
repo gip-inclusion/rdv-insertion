@@ -1,0 +1,6 @@
+<h5 class="text-center">
+  <%= @department.name %>
+  <% if image_compiled?("maps/#{@department.name.parameterize}.svg") %>
+    <%= image_pack_tag("maps/#{@department.name.parameterize}.svg", alt: @department.name.parameterize, width: 50, height: 50) %>
+  <% end %>
+</h5>

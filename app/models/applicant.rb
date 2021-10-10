@@ -24,22 +24,35 @@ class Applicant < ApplicationRecord
 
   delegate :rdv_solidarites_organisation_id, to: :department
 
-  def last_sent_invitation
-    invitations.select(&:sent_at).max_by(&:sent_at)
+  def last_sent_sms_invitation
+    invitations.where(format: "sms").select(&:sent_at).max_by(&:sent_at)
   end
 
-  def last_invitation_sent_at
-    last_sent_invitation&.sent_at
+  def last_sms_invitation_sent_at
+    last_sent_sms_invitation&.sent_at
+  end
+
+  def last_sent_email_invitation
+    invitations.where(format: "email").select(&:sent_at).max_by(&:sent_at)
+  end
+
+  def last_email_invitation_sent_at
+    last_sent_email_invitation&.sent_at
   end
 
   def full_name
     "#{title.capitalize} #{first_name.capitalize} #{last_name.upcase}"
   end
 
+  def short_title
+    title == "monsieur" ? "M" : "Mme"
+  end
+
   def as_json(_opts = {})
     super.merge(
       created_at: created_at&.to_date&.strftime("%d/%m/%Y"),
-      invitation_sent_at: last_invitation_sent_at&.to_date&.strftime("%d/%m/%Y")
+      sms_invitation_sent_at: last_sms_invitation_sent_at&.to_date&.strftime("%d/%m/%Y"),
+      email_invitation_sent_at: last_email_invitation_sent_at&.to_date&.strftime("%d/%m/%Y")
     )
   end
 end

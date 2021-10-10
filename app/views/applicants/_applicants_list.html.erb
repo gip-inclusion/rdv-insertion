@@ -4,13 +4,14 @@
       <h4>Aucun allocataire ne correspond à votre recherche</h4>
     <% else %>
       <table class="table table-hover table-responsive">
-        <thead class="light-blue">
+        <thead class="dark-blue">
           <th scope="col">Numéro d'allocataire</th>
           <th scope="col">Prénom</th>
           <th scope="col">Nom</th>
           <th scope="col">Email</th>
           <% if show_invitation?(@department) %>
-            <th scope="col">Dernière Invitation</th>
+            <th scope="col">Dernière invitation SMS</th>
+            <th scope="col">Dernière invitation email</th>
           <% end %>
           <th scope="col">Statut</th>
         </thead>
@@ -22,7 +23,8 @@
               <td><%= display_attribute applicant.last_name %></td>
               <td><%= display_attribute applicant.email %></td>
               <% if show_invitation?(@department) %>
-                <td><%= display_attribute format_date(applicant.last_invitation_sent_at) %></td>
+                <td><%= display_attribute format_date(applicant.last_sms_invitation_sent_at) %></td>
+                <td><%= display_attribute format_date(applicant.last_email_invitation_sent_at) %></td>
               <% end %>
               <td class="<%= background_class_for_status(applicant.status) %>">
                 <%= I18n.t("activerecord.attributes.applicant.statuses.#{applicant.status}") %>

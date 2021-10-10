@@ -4,7 +4,9 @@ import createApplicant from "../actions/createApplicant";
 import inviteApplicant from "../actions/inviteApplicant";
 
 export default function Applicant({ applicant, dispatchApplicants, department }) {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(
+    {account_creation: false, sms_invitation: false, email_invitation: false}
+  );
 
   const handleApplicantCreation = async () => {
     const result = await createApplicant(applicant, department.id);
@@ -23,11 +25,15 @@ export default function Applicant({ applicant, dispatchApplicants, department })
     }
   };
 
-  const handleApplicantInvitation = async () => {
-    const result = await inviteApplicant(applicant.id);
+  const handleApplicantInvitation = async (invitationFormat) => {
+    const result = await inviteApplicant(applicant.id, invitationFormat);
     if (result.success) {
       const { invitation } = result;
-      applicant.invitationSentAt = invitation.sent_at;
+      if (invitationFormat === "sms") {
+        applicant.smsInvitationSentAt = invitation.sent_at;
+      } else if (invitationFormat === "email") {
+        applicant.emailInvitationSentAt = invitation.sent_at;
+      }
 
       dispatchApplicants({
         type: "update",
@@ -41,58 +47,71 @@ export default function Applicant({ applicant, dispatchApplicants, department })
     }
   };
 
-  const handleClick = async () => {
-    setIsLoading(true);
-    if (applicant.callToAction() === "CREER COMPTE") {
+  const handleClick = async (action) => {
+    setIsLoading({...isLoading, [action]: true});
+    if (action === "account_creation") {
       await handleApplicantCreation();
-    } else if (applicant.callToAction() === "INVITER") {
-      await handleApplicantInvitation();
-    } else if (applicant.callToAction() === "REINVITER") {
-      const confirmation = await Swal.fire({
-        title: "êtes-vous sûr de vouloir réinviter le demandeur?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-      });
-
-      if (confirmation.isConfirmed) {
-        await handleApplicantInvitation();
-      }
+    } else if (action === "sms_invitation") {
+      await handleApplicantInvitation("sms");
+    } else if (action === "email_invitation") {
+      await handleApplicantInvitation("email");
     }
-    setIsLoading(false);
+    setIsLoading({...isLoading, [action]: false});
   };
 
   return (
     <tr key={applicant.uid}>
       <td>{applicant.affiliationNumber}</td>
-      <td>{applicant.title}</td>
+      <td>{applicant.short_title}</td>
       <td>{applicant.firstName}</td>
       <td>{applicant.lastName}</td>
       <td>{applicant.fullAddress}</td>
-      <td>{applicant.role}</td>
+      <td>{applicant.short_role}</td>
       {applicant.shouldDisplay("birth_date") && <td>{applicant.birthDate ?? " - "}</td>}
       {applicant.shouldDisplay("email") && <td>{applicant.email ?? " - "}</td>}
       {applicant.shouldDisplay("phone_number") && <td>{applicant.phoneNumber ?? " - "}</td>}
       {applicant.shouldDisplay("custom_id") && <td>{applicant.customId ?? " - "}</td>}
-      <td className="text-nowrap">{applicant.createdAt ?? " - "}</td>
-      {applicant.shouldBeInvited() && (
-        <td className="text-nowrap">{applicant.invitationSentAt ?? " - "}</td>
-      )}
       <td>
-        {applicant.callToAction() ? (
+        {applicant.createdAt ??
           <button
             type="submit"
-            disabled={isLoading}
-            className="btn btn-primary"
-            onClick={() => handleClick()}
+            disabled={isLoading.account_creation}
+            className="btn btn-primary btn-blue"
+            onClick={() => handleClick("account_creation")}
           >
-            {isLoading ? applicant.loadingAction() : applicant.callToAction()}
+            {isLoading.account_creation ? "Création..." : "Créer compte"}
           </button>
-        ) : (
-          " - "
-        )}
+        }
       </td>
+      {applicant.shouldBeInvited() && (
+        <>
+          <td>
+            {applicant.smsInvitationSentAt ??
+              <button
+                type="submit"
+                disabled={isLoading.sms_invitation}
+                className="btn btn-primary btn-blue"
+                onClick={() => handleClick("sms_invitation")}
+              >
+                {isLoading.sms_invitation ? "Invitation..." : "Inviter par SMS"}
+              </button>
+            }
+          </td>
+          <td>
+            {applicant.emailInvitationSentAt ??
+              <button
+                type="submit"
+                disabled={isLoading.email_invitation}
+                className="btn btn-primary btn-blue"
+                onClick={() => handleClick("email_invitation")}
+              >
+                {isLoading.email_invitation ? "Invitation..." : "Inviter par mail"}
+              </button>
+
+            }
+          </td>
+        </>
+      )}
     </tr>
   );
 }

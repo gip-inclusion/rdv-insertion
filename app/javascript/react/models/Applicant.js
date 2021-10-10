@@ -22,6 +22,7 @@ export default class Applicant {
     this.firstName = formattedAttributes.firstName;
     this.title =
       TITLES[formattedAttributes.title?.toLowerCase()] || formattedAttributes.title?.toLowerCase();
+    this.short_title = (this.title === "monsieur" ? "M" : "Mme");
     this.email = formattedAttributes.email;
     this.birthDate = formattedAttributes.birthDate;
     this.birthName = formattedAttributes.birthName;
@@ -34,6 +35,7 @@ export default class Applicant {
     // CONJOINT/CONCUBIN/PACSE => conjoint
     const formattedRole = formattedAttributes.role?.split("/")?.shift()?.toLowerCase();
     this.role = ROLES[formattedRole] || formattedRole;
+    this.short_role = (this.role === "demandeur" ? "D" : "C");
     this.departmentNumber = departmentNumber;
     this.departmentConfiguration = departmentConfiguration;
   }
@@ -46,8 +48,12 @@ export default class Applicant {
     return this._createdAt;
   }
 
-  get invitationSentAt() {
-    return this._invitationSentAt;
+  get emailInvitationSentAt() {
+    return this._emailInvitationSentAt;
+  }
+
+  get smsInvitationSentAt() {
+    return this._smsInvitationSentAt;
   }
 
   get id() {
@@ -62,8 +68,12 @@ export default class Applicant {
     this._id = id;
   }
 
-  set invitationSentAt(invitationSentAt) {
-    this._invitationSentAt = invitationSentAt;
+  set emailInvitationSentAt(emailInvitationSentAt) {
+    this._emailInvitationSentAt = emailInvitationSentAt;
+  }
+
+  set smsInvitationSentAt(smsInvitationSentAt) {
+    this._smsInvitationSentAt = smsInvitationSentAt;
   }
 
   updateWith(upToDateApplicant) {
@@ -76,7 +86,8 @@ export default class Applicant {
     this.createdAt = upToDateApplicant.created_at;
     this.invitedAt = upToDateApplicant.invited_at;
     this.id = upToDateApplicant.id;
-    this.invitationSentAt = upToDateApplicant.invitation_sent_at;
+    this.smsInvitationSentAt = upToDateApplicant.sms_invitation_sent_at;
+    this.emailInvitationSentAt = upToDateApplicant.email_invitation_sent_at;
   }
 
   formatAddress() {
@@ -89,32 +100,6 @@ export default class Applicant {
 
   shouldDisplay(attribute) {
     return this.departmentConfiguration.column_names[attribute];
-  }
-
-  callToAction() {
-    if (!this.createdAt) {
-      return "CREER COMPTE";
-    }
-    if (!this.shouldBeInvited()) {
-      return null;
-    }
-    if (!this.invitationSentAt) {
-      return "INVITER";
-    }
-    return "REINVITER";
-  }
-
-  loadingAction() {
-    switch (this.callToAction()) {
-      case "INVITER":
-        return "INVITATION...";
-      case "REINVITER":
-        return "INVITATION...";
-      case "CREER COMPTE":
-        return "CREATION...";
-      default:
-        return "...";
-    }
   }
 
   shouldBeInvited() {

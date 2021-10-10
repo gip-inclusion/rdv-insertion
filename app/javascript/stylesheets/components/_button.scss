@@ -9,6 +9,26 @@
 }
 
 .btn-logout:hover {
-  background-color:  $light-grey;
+  background-color: $light-grey;
 }
 
+.btn-blue {
+  background-color: $dark-blue !important;
+  border-color: $dark-blue !important;
+  color: white !important;
+  min-width: 90px;
+  &:hover {
+    border-color: $dark-blue-dim !important;
+    background-color: $dark-blue-dim !important;
+  }
+}
+
+.btn-blue-out {
+  border-color: $dark-blue !important;
+  background-color: white !important;
+  color: $dark-blue !important;
+  &:hover {
+    background-color: $dark-blue !important;
+    color: white !important;
+  }
+}
