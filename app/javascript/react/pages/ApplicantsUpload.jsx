@@ -161,15 +161,15 @@ export default function ApplicantsUpload({ department, configuration }) {
                     {columnNames.phone_number && <th scope="col">Téléphone</th>}
                     {columnNames.custom_id && <th scope="col">ID Editeur</th>}
                     <th scope="col">
-                      Créé le
+                      Création compte
                     </th>
                     {configuration.invitation_format !== "no_invitation" && (
                       <>
                         <th scope="col-3">
-                          Dernière invitation SMS
+                          Invitation SMS
                         </th>
                         <th scope="col-3">
-                          Dernière invitation mail
+                          Invitation mail
                         </th>
                       </>
                     )}

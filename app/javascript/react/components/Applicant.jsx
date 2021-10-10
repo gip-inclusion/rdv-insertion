@@ -72,7 +72,8 @@ export default function Applicant({ applicant, dispatchApplicants, department })
       {applicant.shouldDisplay("phone_number") && <td>{applicant.phoneNumber ?? " - "}</td>}
       {applicant.shouldDisplay("custom_id") && <td>{applicant.customId ?? " - "}</td>}
       <td>
-        {applicant.createdAt ??
+        {applicant.createdAt ?
+          <i className="fas fa-check green-check" /> :
           <button
             type="submit"
             disabled={isLoading.account_creation}
@@ -86,7 +87,8 @@ export default function Applicant({ applicant, dispatchApplicants, department })
       {applicant.shouldBeInvited() && (
         <>
           <td>
-            {applicant.smsInvitationSentAt ??
+            {applicant.smsInvitationSentAt ?
+              <i className="fas fa-check green-check" /> :
               <button
                 type="submit"
                 disabled={isLoading.sms_invitation}
@@ -98,7 +100,8 @@ export default function Applicant({ applicant, dispatchApplicants, department })
             }
           </td>
           <td>
-            {applicant.emailInvitationSentAt ??
+            {applicant.emailInvitationSentAt ?
+              <i className="fas fa-check green-check" /> :
               <button
                 type="submit"
                 disabled={isLoading.email_invitation}
