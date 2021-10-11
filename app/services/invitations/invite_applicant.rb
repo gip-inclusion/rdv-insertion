@@ -45,7 +45,7 @@ module Invitations
     end
 
     def retrieve_or_create_invitation
-      @retrieve_or_create_invitation ||= Invitations::RetrieveOrCreateInvitation.call(
+      @retrieve_or_create_invitation ||= Invitations::RetrieveOrCreate.call(
         applicant: @applicant, invitation_format: @invitation_format,
         rdv_solidarites_session: @rdv_solidarites_session
       )

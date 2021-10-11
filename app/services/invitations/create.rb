@@ -1,5 +1,5 @@
 module Invitations
-  class CreateInvitation < BaseService
+  class Create < BaseService
     def initialize(applicant:, rdv_solidarites_session:, invitation_format:)
       @applicant = applicant
       @rdv_solidarites_session = rdv_solidarites_session

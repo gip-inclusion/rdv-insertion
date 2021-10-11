@@ -1,4 +1,4 @@
-describe Invitations::CreateInvitation, type: :service do
+describe Invitations::Create, type: :service do
   subject do
     described_class.call(
       applicant: applicant, rdv_solidarites_session: rdv_solidarites_session,

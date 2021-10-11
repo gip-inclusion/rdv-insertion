@@ -1,5 +1,5 @@
 module Invitations
-  class RetrieveOrCreateInvitation < BaseService
+  class RetrieveOrCreate < BaseService
     def initialize(applicant:, rdv_solidarites_session:, invitation_format:)
       @applicant = applicant
       @rdv_solidarites_session = rdv_solidarites_session
@@ -29,7 +29,7 @@ module Invitations
     end
 
     def create_invitation
-      @create_invitation ||= Invitations::CreateInvitation.call(
+      @create_invitation ||= Invitations::Create.call(
         applicant: @applicant, invitation_format: @invitation_format,
         rdv_solidarites_session: @rdv_solidarites_session
       )

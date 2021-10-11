@@ -21,7 +21,7 @@ describe Invitations::InviteApplicant, type: :service do
     let!(:rdv_solidarites_user) { instance_double(RdvSolidarites::User) }
 
     before do
-      allow(Invitations::RetrieveOrCreateInvitation).to receive(:call)
+      allow(Invitations::RetrieveOrCreate).to receive(:call)
         .and_return(OpenStruct.new(success?: true, invitation: invitation))
       allow(invitation).to receive(:send_to_applicant)
         .and_return(OpenStruct.new(success?: true))
@@ -37,7 +37,7 @@ describe Invitations::InviteApplicant, type: :service do
 
     context "tries to retrieve an invitation" do
       it "calls the the retrieve_or_create_invitation service" do
-        expect(Invitations::RetrieveOrCreateInvitation).to receive(:call)
+        expect(Invitations::RetrieveOrCreate).to receive(:call)
           .with(
             applicant: applicant,
             invitation_format: invitation_format,
@@ -48,7 +48,7 @@ describe Invitations::InviteApplicant, type: :service do
 
       context "when it fails" do
         before do
-          allow(Invitations::RetrieveOrCreateInvitation).to receive(:call)
+          allow(Invitations::RetrieveOrCreate).to receive(:call)
             .and_return(OpenStruct.new(success?: false, errors: ["something happened"]))
         end
 

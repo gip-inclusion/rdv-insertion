@@ -22,7 +22,7 @@ class InvitationsController < ApplicationController
   private
 
   def set_applicant
-    @applicant = Applicant.find(params[:applicant_id])
+    @applicant = Applicant.includes(:invitations).find(params[:applicant_id])
   end
 
   def set_invitation
@@ -42,6 +42,6 @@ class InvitationsController < ApplicationController
   end
 
   def format
-    params[:format] || "sms" # pour garder le lien envoyé par SMS le plus court possible
+    params[:format] || "sms" # sms by default to keep the sms link the shortest possible
   end
 end

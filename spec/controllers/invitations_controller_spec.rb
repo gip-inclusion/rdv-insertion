@@ -11,6 +11,7 @@ describe InvitationsController, type: :controller do
       set_rdv_solidarites_session
       allow(Invitations::InviteApplicant).to receive(:call)
         .and_return(OpenStruct.new)
+      allow(Applicant).to receive(:includes).and_return(Applicant)
       allow(Applicant).to receive(:find)
         .and_return(applicant)
     end

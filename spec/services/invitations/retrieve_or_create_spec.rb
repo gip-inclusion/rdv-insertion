@@ -1,4 +1,4 @@
-describe Invitations::RetrieveOrCreateInvitation, type: :service do
+describe Invitations::RetrieveOrCreate, type: :service do
   subject do
     described_class.call(
       applicant: applicant, rdv_solidarites_session: rdv_solidarites_session,
@@ -17,7 +17,7 @@ describe Invitations::RetrieveOrCreateInvitation, type: :service do
 
   describe "#call" do
     before do
-      allow(Invitations::CreateInvitation).to receive(:call)
+      allow(Invitations::Create).to receive(:call)
         .and_return(OpenStruct.new(success?: true, invitation: invitation))
       allow(invitation).to receive(:send_to_applicant)
         .and_return(OpenStruct.new(success?: true))
@@ -36,7 +36,7 @@ describe Invitations::RetrieveOrCreateInvitation, type: :service do
         let!(:invitation) { create(:invitation, applicant: applicant, format: "email") }
 
         it "tries to create an invitation" do
-          expect(Invitations::CreateInvitation).to receive(:call)
+          expect(Invitations::Create).to receive(:call)
             .with(
               applicant: applicant,
               invitation_format: invitation_format,
@@ -47,7 +47,7 @@ describe Invitations::RetrieveOrCreateInvitation, type: :service do
 
         context "when it fails" do
           before do
-            allow(Invitations::CreateInvitation).to receive(:call)
+            allow(Invitations::Create).to receive(:call)
               .and_return(OpenStruct.new(success?: false, errors: ["something happened"]))
           end
 
@@ -67,7 +67,7 @@ describe Invitations::RetrieveOrCreateInvitation, type: :service do
 
       context "when the user has already an invitation with the requested format" do
         it "does not try to create an invitation" do
-          expect(Invitations::CreateInvitation).not_to receive(:call)
+          expect(Invitations::Create).not_to receive(:call)
           subject
         end
       end
