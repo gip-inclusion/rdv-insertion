@@ -23,8 +23,8 @@ export default function Applicant({ applicant, dispatchApplicants, department })
     }
   };
 
-  const handleApplicantInvitation = async () => {
-    const result = await inviteApplicant(applicant.id);
+  const handleApplicantInvitation = async (invitationFormat) => {
+    const result = await inviteApplicant(applicant.id, invitationFormat);
     if (result.success) {
       const { invitation } = result;
       applicant.invitationSentAt = invitation.sent_at;
@@ -46,7 +46,7 @@ export default function Applicant({ applicant, dispatchApplicants, department })
     if (applicant.callToAction() === "CREER COMPTE") {
       await handleApplicantCreation();
     } else if (applicant.callToAction() === "INVITER") {
-      await handleApplicantInvitation();
+      await handleApplicantInvitation("sms");
     } else if (applicant.callToAction() === "REINVITER") {
       const confirmation = await Swal.fire({
         title: "êtes-vous sûr de vouloir réinviter le demandeur?",
@@ -57,7 +57,7 @@ export default function Applicant({ applicant, dispatchApplicants, department })
       });
 
       if (confirmation.isConfirmed) {
-        await handleApplicantInvitation();
+        await handleApplicantInvitation("sms");
       }
     }
     setIsLoading(false);
