@@ -1,3 +1,4 @@
 /app/javascript/images/*
 /app/javascript/stylesheets/*
 /app/javascript/packs/application.js
+/app/javascript/packs/mail.js

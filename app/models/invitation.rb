@@ -2,7 +2,7 @@ class Invitation < ApplicationRecord
   belongs_to :applicant
   delegate :department, to: :applicant
 
-  enum format: { sms: 0, email: 1, link_only: 2 }
+  enum format: { sms: 0, email: 1, link_only: 2 }, _prefix: :format
   after_commit :set_applicant_status
 
   def send_to_applicant
@@ -10,8 +10,7 @@ class Invitation < ApplicationRecord
     when "sms"
       Invitations::SendSms.call(invitation: self)
     when "email"
-      # next step
-      # Invitations::SendEmail.call(invitation: self)
+      Invitations::SendEmail.call(invitation: self)
     end
   end
 

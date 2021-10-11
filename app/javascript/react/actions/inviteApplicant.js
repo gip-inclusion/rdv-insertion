@@ -8,8 +8,8 @@ const inviteApplicant = async (applicantId, invitationFormat) => {
       "X-CSRF-Token": document.querySelector("meta[name=csrf-token]").content,
     },
     body: JSON.stringify({
-        format: invitationFormat,
-      }),
+      format: invitationFormat,
+    }),
   });
 
   return response.json();
