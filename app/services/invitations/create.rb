@@ -8,7 +8,7 @@ module Invitations
 
     def call
       retrieve_invitation_token! unless existing_token
-      compute_invitation_link! unless existing_token
+      compute_invitation_link! unless existing_link
       create_invitation!
       result.invitation = invitation
     end
