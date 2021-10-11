@@ -74,20 +74,51 @@ describe InvitationsController, type: :controller do
   end
 
   describe "#redirect" do
+    subject { get :redirect, params: invite_params }
+
     let!(:applicant_id) { "24" }
     let!(:department) { create(:department) }
     let!(:applicant) { create(:applicant, department: department, id: applicant_id) }
-    let!(:invitation) { create(:invitation, applicant: applicant) }
-    let!(:invite_params) { { token: invitation.token } }
+    let!(:invitation) { create(:invitation, applicant: applicant, format: "sms") }
+    let!(:invitation2) { create(:invitation, applicant: applicant, format: "email") }
 
-    it "mark the invitation as clicked" do
-      get :redirect, params: invite_params
-      expect(invitation.reload.clicked).to eq(true)
+    context "when format is not specified" do
+      let!(:invite_params) { { token: invitation.token } }
+
+      it "marks the sms invitation as clicked" do
+        subject
+        expect(invitation.reload.clicked).to eq(true)
+        expect(invitation2.reload.clicked).to eq(false)
+      end
+
+      it "redirects to the invitation link" do
+        subject
+        expect(response).to redirect_to invitation.link
+      end
     end
 
-    it "redirects to the invitation link" do
-      get :redirect, params: invite_params
-      expect(response).to redirect_to invitation.link
+    context "when format is specified" do
+      let!(:invite_params) { { token: invitation.token, format: "email" } }
+
+      it "marks the matching format invitation as clicked" do
+        subject
+        expect(invitation2.reload.clicked).to eq(true)
+        expect(invitation.reload.clicked).to eq(false)
+      end
+
+      it "redirects to the invitation link" do
+        subject
+        expect(response).to redirect_to invitation2.link
+      end
+    end
+
+    context "when no invitation is retrieved" do
+      let!(:invitation) { create(:invitation, applicant: applicant, format: "email") }
+      let!(:invite_params) { { token: invitation.token } }
+
+      it "raises an error" do
+        expect { subject }.to raise_error(ActiveRecord::RecordNotFound)
+      end
     end
   end
 end
