@@ -5,11 +5,16 @@ module Invitations
     end
 
     def call
+      check_invitation_format!
       check_email!
       send_email
     end
 
     private
+
+    def check_invitation_format!
+      fail!("Envoi d'un email alors que le format est #{@invitation.format}") unless @invitation.format_email?
+    end
 
     def check_email!
       fail!("L'email doit être renseigné") if email.blank?
@@ -25,8 +30,6 @@ module Invitations
     end
 
     def send_email
-      return if Rails.env.development?
-
       InvitationMailer.first_invitation(@invitation, applicant).deliver_now
     end
   end

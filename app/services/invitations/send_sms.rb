@@ -7,11 +7,16 @@ module Invitations
     end
 
     def call
+      check_invitation_format!
       check_phone_number!
       send_sms
     end
 
     private
+
+    def check_invitation_format!
+      fail!("Envoi de SMS alors que le format est #{@invitation.format}") unless @invitation.format_sms?
+    end
 
     def check_phone_number!
       fail!("le téléphone doit être renseigné") if phone_number.blank?

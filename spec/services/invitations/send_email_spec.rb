@@ -7,7 +7,7 @@ describe Invitations::SendEmail, type: :service do
 
   let!(:email) { "test@test.fr" }
   let!(:applicant) { create(:applicant, email: email) }
-  let!(:invitation) { create(:invitation, applicant: applicant) }
+  let!(:invitation) { create(:invitation, applicant: applicant, format: "email") }
 
   describe "#call" do
     before do
@@ -23,6 +23,16 @@ describe Invitations::SendEmail, type: :service do
       expect(InvitationMailer).to receive(:first_invitation)
         .with(invitation, applicant)
       subject
+    end
+
+    context "when the format is not an email" do
+      let!(:invitation) { create(:invitation, applicant: applicant, format: "sms") }
+
+      it("is a failure") { is_a_failure }
+
+      it "returns the error" do
+        expect(subject.errors).to eq(["Envoi d'un email alors que le format est sms"])
+      end
     end
 
     context "when the mail is blank" do
