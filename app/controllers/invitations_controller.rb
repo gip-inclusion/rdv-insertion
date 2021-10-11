@@ -14,7 +14,7 @@ class InvitationsController < ApplicationController
   end
 
   def redirect
-    @invitation.seen = true
+    @invitation.clicked = true
     @invitation.save
     redirect_to @invitation.link
   end
@@ -22,15 +22,18 @@ class InvitationsController < ApplicationController
   private
 
   def set_applicant
-    @applicant = Applicant.find(params[:applicant_id])
+    @applicant = Applicant.includes(:invitations).find(params[:applicant_id])
+  end
+
+  def set_invitation
+    @invitation = Invitation.where(token: params[:token]).find_by(format: format)
   end
 
   def invite_applicant
     @invite_applicant ||= Invitations::InviteApplicant.call(
       applicant: @applicant,
       rdv_solidarites_session: rdv_solidarites_session,
-      # TODO: should be sent by client
-      invitation_format: department.configuration.invitation_format
+      invitation_format: params[:format]
     )
   end
 
@@ -38,7 +41,7 @@ class InvitationsController < ApplicationController
     @applicant.department
   end
 
-  def set_invitation
-    @invitation = Invitation.find_by!(token: params[:token])
+  def format
+    params[:format] || "sms" # sms by default to keep the sms link the shortest possible
   end
 end
