@@ -17,7 +17,8 @@ default: &default
   cache_manifest: false
 
   # Extract and emit a css file
-  extract_css: false
+  extract_css: true # // valeur égale à "true" nécessaire pour la configuration de premailers avec webpack
+
 
   static_assets_extensions:
     - .jpg

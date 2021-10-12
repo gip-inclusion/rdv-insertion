@@ -66,6 +66,20 @@ Rails.application.configure do
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false
 
+  config.action_mailer.default_url_options = { protocol: "https", host: ENV["HOST"].sub(%r{^https?://}, ""),
+                                               utm_source: "rdv-insertion", utm_medium: "email", utm_campaign: "auto" }
+  config.action_mailer.smtp_settings = {
+    address: "smtp-relay.sendinblue.com",
+    port: "587",
+    authentication: 'login',
+    enable_starttls_auto: true,
+    user_name: ENV["SENDINBLUE_USERNAME"],
+    password: ENV["SENDINBLUE_PASSWORD"],
+    domain: "rdv-insertion.fr"
+  }
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.asset_host = ENV["HOST"]
+
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).
   config.i18n.fallbacks = true

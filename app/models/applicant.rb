@@ -44,7 +44,7 @@ class Applicant < ApplicationRecord
   end
 
   def action_required?
-    status.in?(STATUSES_WITH_ACTION_REQUIRED)
+    status.in?(STATUSES_WITH_ACTION_REQUIRED) || (attention_needed? && invited_before_time_limit?)
   end
 
   def attention_needed?

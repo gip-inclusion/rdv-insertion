@@ -27,9 +27,7 @@ module ApplicantsHelper
 
   def background_class_for_status(applicant)
     if applicant.action_required?
-      "text-white bg-danger border-danger"
-    elsif applicant.attention_needed? && applicant.invited_before_time_limit?
-      "bg-warning border-warning"
+      applicant.attention_needed? ? "bg-warning border-warning" : "text-white bg-danger border-danger"
     elsif applicant.rdv_seen?
       "text-white bg-success border-success"
     else
