@@ -1,5 +1,5 @@
 <%= form_with method: :get, local: true, url: department_applicants_path(@department) do  |form| %>
   <%= form.text_field :search_query, placeholder: "Prénom, nom, email, numéro allocataire...", class: "form-control mb-1" %>
-  <%= form.submit "Rechercher", class: "btn btn-primary " %>
+  <%= form.submit "Rechercher", name: nil, class: "btn btn-primary" %>
 <% end %>
 

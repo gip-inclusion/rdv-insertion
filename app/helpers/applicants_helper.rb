@@ -16,15 +16,21 @@ module ApplicantsHelper
   end
 
   def display_back_to_list_button?
-    params[:search_query].present?
+    [params[:search_query], params[:status], params[:action_required]].any?(&:present?)
   end
 
-  def background_class_for_status(status)
-    if status.in?(%w[not_invited rdv_needs_status_update rdv_noshow rdv_revoked rdv_excused])
+  def options_for_select_status(statuses_count)
+    statuses_count.map do |status, count|
+      ["#{I18n.t("activerecord.attributes.applicant.statuses.#{status}")} (#{count})", status]
+    end
+  end
+
+  def background_class_for_status(applicant)
+    if applicant.action_required?
       "text-white bg-danger border-danger"
-    elsif status.in?(%w[invitation_pending rdv_creation_pending])
+    elsif applicant.attention_needed? && applicant.invited_before_time_limit?
       "bg-warning border-warning"
-    elsif status.in?(%w[rdv_seen])
+    elsif applicant.rdv_seen?
       "text-white bg-success border-success"
     else
       ""

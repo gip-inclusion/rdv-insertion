@@ -5,6 +5,8 @@ class Invitation < ApplicationRecord
   enum format: { sms: 0, email: 1, link_only: 2 }
   after_commit :set_applicant_status
 
+  scope :in_time_to_accept, -> { where("sent_at > ?", Department::TIME_TO_ACCEPT_INVITATION.ago) }
+
   def send_to_applicant
     case self.format
     when "sms"

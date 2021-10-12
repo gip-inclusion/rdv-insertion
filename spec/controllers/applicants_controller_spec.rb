@@ -178,6 +178,10 @@ describe ApplicantsController, type: :controller do
         .and_return(applicants)
       allow(Applicant).to receive(:page)
         .and_return(applicants)
+      allow(Applicant).to receive(:status)
+        .and_return(applicants)
+      allow(Applicant).to receive(:action_required)
+        .and_return(applicants)
     end
 
     it "returns a list of applicants" do
@@ -217,6 +221,26 @@ describe ApplicantsController, type: :controller do
 
       it "searches the applicants" do
         expect(Applicant).to receive(:search_by_text).with("coco")
+
+        get :index, params: index_params
+      end
+    end
+
+    context "when a status is passed" do
+      let!(:index_params) { { department_id: department.id, status: "rdv_pending" } }
+
+      it "filters by status" do
+        expect(Applicant).to receive(:status).with("rdv_pending")
+
+        get :index, params: index_params
+      end
+    end
+
+    context "when action_required is passed" do
+      let!(:index_params) { { department_id: department.id, action_required: "true" } }
+
+      it "filters by action required" do
+        expect(Applicant).to receive(:action_required)
 
         get :index, params: index_params
       end

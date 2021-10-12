@@ -24,7 +24,7 @@
               <% if show_invitation?(@department) %>
                 <td><%= display_attribute format_date(applicant.last_invitation_sent_at) %></td>
               <% end %>
-              <td class="<%= background_class_for_status(applicant.status) %>">
+              <td class="<%= background_class_for_status(applicant) %>">
                 <%= I18n.t("activerecord.attributes.applicant.statuses.#{applicant.status}") %>
               </td>
             </tr>

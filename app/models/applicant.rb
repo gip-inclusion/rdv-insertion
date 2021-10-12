@@ -2,6 +2,10 @@ class Applicant < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = (
     RdvSolidarites::User::RECORD_ATTRIBUTES - [:id, :phone_number, :birth_name, :created_at, :invited_at]
   )
+  STATUSES_WITH_ACTION_REQUIRED = %w[
+    not_invited rdv_needs_status_update rdv_noshow rdv_revoked rdv_excused
+  ].freeze
+  STATUSES_WITH_ATTENTION_NEEDED = %w[invitation_pending rdv_creation_pending].freeze
 
   include SearchableConcern
   include HasStatusConcern
@@ -22,6 +26,13 @@ class Applicant < ApplicationRecord
     rdv_seen: 8
   }
 
+  scope :status, ->(status) { where(status: status) }
+  scope :action_required, -> { status(STATUSES_WITH_ACTION_REQUIRED).or(attention_needed.invited_before_time_limit) }
+  scope :attention_needed, -> { status(STATUSES_WITH_ATTENTION_NEEDED) }
+  scope :invited_before_time_limit, lambda {
+    where.not(id: Invitation.in_time_to_accept.pluck(:applicant_id).uniq)
+  }
+
   delegate :rdv_solidarites_organisation_id, to: :department
 
   def last_sent_invitation
@@ -30,6 +41,18 @@ class Applicant < ApplicationRecord
 
   def last_invitation_sent_at
     last_sent_invitation&.sent_at
+  end
+
+  def action_required?
+    status.in?(STATUSES_WITH_ACTION_REQUIRED)
+  end
+
+  def attention_needed?
+    status.in?(STATUSES_WITH_ATTENTION_NEEDED)
+  end
+
+  def invited_before_time_limit?
+    last_invitation_sent_at && last_invitation_sent_at < Department::TIME_TO_ACCEPT_INVITATION.ago
   end
 
   def full_name

@@ -16,6 +16,7 @@
     "quotes": ["error", "double"],
     "react/prop-types": 0,
     "no-underscore-dangle": ["error", { "allowAfterThis": true }],
-    "no-param-reassign": "off"
+    "no-param-reassign": "off",
+    "class-methods-use-this": "off"
   }
 }
