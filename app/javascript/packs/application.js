@@ -6,6 +6,7 @@
 import LoginForm from "components/login-form";
 import StatusSelector from "components/status-selector"
 import ActionRequiredCheckbox from "components/action-required-checkbox"
+import initTooltip from "components/tooltip"
 
 import "bootstrap";
 import "stylesheets/application";
@@ -46,5 +47,6 @@ ReactRailsUJS.useContext(componentRequireContext);
 document.addEventListener("turbolinks:load", () => {
   new LoginForm();
   new StatusSelector();
-  new ActionRequiredCheckbox()
+  new ActionRequiredCheckbox();
+  initTooltip();
 });

@@ -22,10 +22,9 @@
           </div>
        <% end %>
     </div>
-    <div class="col-2">
-
+    <div class="col-1">
     </div>
-    <div class="col-2 justify-content-center">
+    <div class="col-3 justify-content-center">
       <div class="text-center">
         <%= link_to new_department_upload_path(@department), class: "btn text-white mb-2 btn-primary" do %>
           Ajouter allocataires
@@ -40,8 +39,9 @@
           )
         %>
       </div>
-      <div class="mt-2">
-        <%= check_box("applicants", "action_required", class: "js-action-required-checkbox") %> Intervention nécessaire
+      <div class="mt-2 text-center">
+       <%= check_box("applicants", "action_required", class: "js-action-required-checkbox") %> Intervention nécessaire
+       <small><i class="fas fa-question-circle" id="js-action-required-tooltip"></i></small>
       </div>
     </div>
   </div>
