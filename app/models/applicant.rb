@@ -27,10 +27,10 @@ class Applicant < ApplicationRecord
   }
 
   scope :status, ->(status) { where(status: status) }
-  scope :action_required, -> { status(STATUSES_WITH_ACTION_REQUIRED).or(attention_needed.invited_before_time_limit) }
+  scope :action_required, -> { status(STATUSES_WITH_ACTION_REQUIRED).or(attention_needed.invited_before_time_window) }
   scope :attention_needed, -> { status(STATUSES_WITH_ATTENTION_NEEDED) }
-  scope :invited_before_time_limit, lambda {
-    where.not(id: Invitation.in_time_to_accept.pluck(:applicant_id).uniq)
+  scope :invited_before_time_window, lambda {
+    where.not(id: Invitation.sent_in_time_window.pluck(:applicant_id).uniq)
   }
 
   delegate :rdv_solidarites_organisation_id, to: :department
@@ -44,14 +44,14 @@ class Applicant < ApplicationRecord
   end
 
   def action_required?
-    status.in?(STATUSES_WITH_ACTION_REQUIRED) || (attention_needed? && invited_before_time_limit?)
+    status.in?(STATUSES_WITH_ACTION_REQUIRED) || (attention_needed? && invited_before_time_window?)
   end
 
   def attention_needed?
     status.in?(STATUSES_WITH_ATTENTION_NEEDED)
   end
 
-  def invited_before_time_limit?
+  def invited_before_time_window?
     last_invitation_sent_at && last_invitation_sent_at < Department::TIME_TO_ACCEPT_INVITATION.ago
   end
 
