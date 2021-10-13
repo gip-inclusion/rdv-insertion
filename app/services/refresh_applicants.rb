@@ -9,15 +9,13 @@ class RefreshApplicants < BaseService
   def call
     return if @applicants.empty?
 
+    retrieve_rdv_solidarites_users!
     refresh_applicants
   end
 
   private
 
   def refresh_applicants
-    retrieve_rdv_solidarites_users!
-    return if failed?
-
     @applicants.each do |applicant|
       rdv_solidarites_user = rdv_solidarites_users.find do |rdv_user|
         rdv_user.id == applicant.rdv_solidarites_user_id
