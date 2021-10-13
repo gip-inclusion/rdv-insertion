@@ -1,4 +1,6 @@
 class Department < ApplicationRecord
+  TIME_TO_ACCEPT_INVITATION = 3.days
+
   validates :rdv_solidarites_organisation_id, uniqueness: true, allow_nil: true
   validates :name, :capital, :number, presence: true
   has_and_belongs_to_many :agents, dependent: :nullify
