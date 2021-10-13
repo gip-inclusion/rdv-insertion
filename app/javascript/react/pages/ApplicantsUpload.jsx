@@ -79,7 +79,7 @@ export default function ApplicantsUpload({ department, configuration }) {
   };
 
   const retrieveUpToDateApplicants = async (applicantsFromList) => {
-    const uids = applicantsFromList.map((applicant) => applicant.uid);
+    const uids = applicantsFromList.map((applicant) => applicant.uid).filter((uid) => uid);
     let upToDateApplicants = applicantsFromList;
 
     const retrievedApplicants = await retrieveApplicantsFromApp(uids);
@@ -159,7 +159,6 @@ export default function ApplicantsUpload({ department, configuration }) {
                     <th scope="col">Civilité</th>
                     <th scope="col">Prénom</th>
                     <th scope="col">Nom</th>
-                    <th scope="col">Adresse</th>
                     <th scope="col">Rôle</th>
                     {columnNames.birth_date && <th scope="col">Date de naissance</th>}
                     {columnNames.email && <th scope="col">Email</th>}

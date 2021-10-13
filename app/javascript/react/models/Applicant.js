@@ -28,9 +28,9 @@ export default class Applicant {
     this.city = formattedAttributes.city;
     this.postalCode = formattedAttributes.postalCode;
     this.fullAddress = formattedAttributes.fullAddress || this.formatAddress();
-    this.affiliationNumber = formattedAttributes.affiliationNumber;
-    this.phoneNumber = formatPhoneNumber(formattedAttributes.phoneNumber);
     this.customId = formattedAttributes.customId;
+    this.affiliationNumber = this.formatAffiliationNumber(formattedAttributes.affiliationNumber);
+    this.phoneNumber = formatPhoneNumber(formattedAttributes.phoneNumber);
     // CONJOINT/CONCUBIN/PACSE => conjoint
     const formattedRole = formattedAttributes.role?.split("/")?.shift()?.toLowerCase();
     this.role = ROLES[formattedRole] || formattedRole;
@@ -64,6 +64,23 @@ export default class Applicant {
 
   set invitationSentAt(invitationSentAt) {
     this._invitationSentAt = invitationSentAt;
+  }
+
+  formatAffiliationNumber(affiliationNumber) {
+    if (affiliationNumber && [13, 15].includes(affiliationNumber.length)) {
+      // This means it is a NIR, we replace it by a custom ID if present
+      if (this.customId) {
+        return `CUS-${this.customId}`;
+      }
+      Swal.fire(
+        `Un NIR a été détecté à la place du Numéro allocataire et a été filtré.
+         Ces utilisateurs ne pourront pas être créés.`,
+        "",
+        "info"
+      );
+      return null;
+    }
+    return affiliationNumber;
   }
 
   updateWith(upToDateApplicant) {
@@ -121,16 +138,17 @@ export default class Applicant {
     return this.departmentConfiguration.invitation_format !== "no_invitation";
   }
 
+  hasMissingAttributes() {
+    return [this.affiliationNumber, this.role, this.firstName, this.lastName, this.title].some(
+      (attribute) => !attribute
+    );
+  }
+
   generateUid() {
     // Base64 encoded "departmentNumber - affiliationNumber - role"
 
     const attributeIsMissing = [this.affiliationNumber, this.role].some((attribute) => !attribute);
     if (attributeIsMissing) {
-      Swal.fire(
-        "Le numéro d'allocataire et le rôle doivent être renseignés pour créer un utilisateur",
-        "",
-        "error"
-      );
       return null;
     }
     return btoa(`${this.departmentNumber} - ${this.affiliationNumber} - ${this.role}`);

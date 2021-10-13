@@ -69,7 +69,6 @@ export default function Applicant({ applicant, dispatchApplicants, department })
       <td>{applicant.title}</td>
       <td>{applicant.firstName}</td>
       <td>{applicant.lastName}</td>
-      <td>{applicant.fullAddress}</td>
       <td>{applicant.role}</td>
       {applicant.shouldDisplay("birth_date") && <td>{applicant.birthDate ?? " - "}</td>}
       {applicant.shouldDisplay("email") && <td>{applicant.email ?? " - "}</td>}
@@ -83,7 +82,7 @@ export default function Applicant({ applicant, dispatchApplicants, department })
         {applicant.callToAction() ? (
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={isLoading || applicant.hasMissingAttributes()}
             className="btn btn-primary"
             onClick={() => handleClick()}
           >
