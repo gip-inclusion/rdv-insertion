@@ -9,8 +9,8 @@ class ApplicantsController < ApplicationController
   include FilterableApplicantsConcern
 
   def index
+    authorize @department, :list_applicants?
     @applicants = @department.applicants.includes(:invitations, :rdvs)
-    authorize_applicants
     @statuses_count = @applicants.group(:status).count
     filter_applicants
     @applicants = @applicants.order(created_at: :desc)
@@ -54,7 +54,7 @@ class ApplicantsController < ApplicationController
 
   def refresh_applicants
     @refresh_applicants ||= RefreshApplicants.call(
-      applicants: @applicants,
+      applicants: @applicants.to_a,
       rdv_solidarites_session: rdv_solidarites_session
     )
   end
