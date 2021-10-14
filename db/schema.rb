@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_06_072539) do
+ActiveRecord::Schema.define(version: 2021_10_13_143756) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,6 +48,7 @@ ActiveRecord::Schema.define(version: 2021_10_06_072539) do
     t.integer "status", default: 0
     t.index ["department_id"], name: "index_applicants_on_department_id"
     t.index ["rdv_solidarites_user_id"], name: "index_applicants_on_rdv_solidarites_user_id", unique: true
+    t.index ["status"], name: "index_applicants_on_status"
     t.index ["uid"], name: "index_applicants_on_uid", unique: true
   end
 
