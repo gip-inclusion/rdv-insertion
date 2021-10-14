@@ -2,8 +2,6 @@
   <div class="row mb-4 block-white justify-content-center">
     <div class="col-4 justify-content-center">
       <%= render 'search_form' %>
-
-
     </div>
     <div class="col-4 justify-content-center">
       <div class="row">
@@ -14,16 +12,15 @@
           <% end %>
         </h5>
       </div>
-       <% if display_back_to_list_button? %>
-          <div class="row mt-4 text-center">
-            <%= link_to department_applicants_path(@department) do %>
-              <i class="fas fa-angle-left"></i> liste complète
-            <% end %>
-          </div>
-       <% end %>
+      <% if display_back_to_list_button? %>
+        <div class="row mt-4 text-center">
+          <%= link_to department_applicants_path(@department) do %>
+            <i class="fas fa-angle-left"></i> liste complète
+          <% end %>
+        </div>
+      <% end %>
     </div>
-    <div class="col-1">
-    </div>
+    <div class="col-1"></div>
     <div class="col-3 justify-content-center">
       <div class="text-center">
         <%= link_to new_department_upload_path(@department), class: "btn text-white mb-2 btn-primary" do %>
@@ -40,8 +37,8 @@
         %>
       </div>
       <div class="mt-2 text-center">
-       <%= check_box("applicant_list", "action_required", class: "js-action-required-checkbox") %> Intervention nécessaire
-       <small><i class="fas fa-question-circle" id="js-action-required-tooltip"></i></small>
+        <%= check_box("applicants_list", "action_required", class: "js-action-required-checkbox") %> Intervention nécessaire
+        <small><i class="fas fa-question-circle" id="js-action-required-tooltip"></i></small>
       </div>
     </div>
   </div>
