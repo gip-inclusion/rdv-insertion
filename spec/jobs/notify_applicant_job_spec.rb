@@ -17,7 +17,7 @@ describe NotifyApplicantJob, type: :job do
       allow(RdvSolidarites::Rdv).to receive(:new)
         .with(rdv_attributes)
         .and_return(rdv_solidarites_rdv)
-      allow(Notification).to receive(:where).and_return([])
+      allow(Notification).to receive(:find_by).and_return(nil)
       allow(Applicant).to receive_message_chain(:includes, :find).and_return(applicant)
       [Notifications::RdvCreated, Notifications::RdvUpdated, Notifications::RdvCancelled].each do |klass|
         allow(klass).to receive(:call)
@@ -45,10 +45,10 @@ describe NotifyApplicantJob, type: :job do
     end
 
     context "when the applicant is already notified" do
-      let!(:notification) { create(:notification) }
+      let!(:notification) { create(:notification, sent_at: 2.hours.ago) }
 
       before do
-        allow(Notification).to receive(:where)
+        allow(Notification).to receive(:find_by)
           .with(rdv_solidarites_rdv_id: 12, event: "rdv_created")
           .and_return(notification)
         allow(MattermostClient).to receive(:send_to_notif_channel)

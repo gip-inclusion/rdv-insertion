@@ -9,6 +9,7 @@ class Applicant < ApplicationRecord
 
   include SearchableConcern
   include HasStatusConcern
+  include NotificableConcern
 
   belongs_to :department
   has_many :invitations, dependent: :nullify

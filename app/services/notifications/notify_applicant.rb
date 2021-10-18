@@ -25,20 +25,19 @@ module Notifications
 
     def notify_applicant
       Notification.transaction do
-        save_notification
-        raise ActiveRecord::Rollback if failed?
+        raise ActiveRecord::Rollback unless save_notification
 
-        send_sms
-        raise ActiveRecord::Rollback if failed?
+        raise ActiveRecord::Rollback unless send_sms
 
         true
       end
     end
 
     def save_notification
-      return if notification.save
+      return true if notification.save
 
       result.errors << notification.errors.full_messages.to_sentence
+      false
     end
 
     def phone_number
@@ -47,10 +46,11 @@ module Notifications
 
     def send_sms
       Rails.logger.info(content)
-      return if Rails.env.development?
-      return if send_sms_service.success?
+      return true if Rails.env.development?
+      return true if send_sms_service.success?
 
       result.errors += send_sms_service.errors
+      false
     end
 
     def send_sms_service
@@ -58,7 +58,7 @@ module Notifications
     end
 
     def notification
-      @notification || Notification.new(
+      @notification || Notification.find_or_initialize_by(
         event: event,
         applicant: @applicant,
         rdv_solidarites_rdv_id: @rdv_solidarites_rdv.id
