@@ -66,13 +66,6 @@ describe Notifications::NotifyApplicant, type: :service do
         expect(SendTransactionalSms).not_to receive(:call)
       end
 
-      it "rollback the transaction" do
-        expect(Notification).to receive(:transaction) do |&block|
-          expect { block.call }.to raise_error(ActiveRecord::Rollback)
-        end.and_return(nil)
-        subject
-      end
-
       it("is a failure") { is_a_failure }
 
       it "stores the error message" do
@@ -90,13 +83,6 @@ describe Notifications::NotifyApplicant, type: :service do
 
       it "stores the error message" do
         expect(subject.errors).to eq(["bad request"])
-      end
-
-      it "rollback the transaction" do
-        expect(Notification).to receive(:transaction) do |&block|
-          expect { block.call }.to raise_error(ActiveRecord::Rollback)
-        end.and_return(nil)
-        subject
       end
 
       it "does not update the notification" do
