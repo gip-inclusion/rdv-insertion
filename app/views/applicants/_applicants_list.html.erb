@@ -12,6 +12,9 @@
           <% if show_invitation?(@department) %>
             <th scope="col">Dernière Invitation</th>
           <% end %>
+          <% if show_notification?(@department) %>
+             <th scope="col">Dernière Notification envoyée le</th>
+          <% end %>
           <th scope="col">Statut</th>
         </thead>
         <tbody class="">
@@ -23,6 +26,9 @@
               <td><%= display_attribute applicant.email %></td>
               <% if show_invitation?(@department) %>
                 <td><%= display_attribute format_date(applicant.last_invitation_sent_at) %></td>
+              <% end %>
+              <% if show_notification?(@department) %>
+                 <td><%= display_attribute format_date(applicant.last_notification_sent_at) %></td>
               <% end %>
               <td class="<%= background_class_for_status(applicant) %>">
                 <%= I18n.t("activerecord.attributes.applicant.statuses.#{applicant.status}") %>

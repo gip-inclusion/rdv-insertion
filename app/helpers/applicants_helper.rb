@@ -7,6 +7,10 @@ module ApplicantsHelper
     !department.no_invitation?
   end
 
+  def show_notification?(department)
+    department.notify_applicant?
+  end
+
   def display_attribute(attribute)
     attribute || " - "
   end
