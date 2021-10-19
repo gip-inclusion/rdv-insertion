@@ -53,9 +53,9 @@ describe Notifications::RdvCreated, type: :service do
 
       let!(:content) do
         "Monsieur John DOE,\nVous êtes allocataire du RSA. Vous bénéficiez d’un accompagnement " \
-          "dans le cadre de vos démarches d’insertion. Vous êtes attendu(e) le 08/09/2021 à " \
-          "12:00 ici: DINUM - 20 avenue de Ségur 75011 PARIS. Ce rendez-vous est obligatoire. "\
-          "En cas d’empêchement, merci d’appeler rapidement le 0147200001. " \
+          "pour vos démarches d’insertion. Vous êtes attendu(e) le 08/09/2021 à " \
+          "12:00 ici: DINUM - 20 avenue de Ségur 75011 PARIS. Ce RDV est obligatoire. "\
+          "En cas d’empêchement, appelez rapidement le 0147200001. " \
           "Le département 89 (Yonne)."
       end
 

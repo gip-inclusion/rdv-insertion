@@ -7,10 +7,10 @@ module Notifications
     end
 
     def presential_content
-      "#{@applicant.full_name},\nVous êtes allocataire du RSA. Vous bénéficiez d’un accompagnement dans le cadre " \
-        "de vos démarches d’insertion. Vous êtes attendu(e) le #{formatted_start_date} à " \
-        "#{formatted_start_time} ici: #{lieu.name} - #{lieu.address}. Ce rendez-vous est obligatoire. "\
-        "En cas d’empêchement, merci d’appeler rapidement le #{department.phone_number}. "\
+      "#{@applicant.full_name},\nVous êtes allocataire du RSA. Vous bénéficiez d’un accompagnement pour" \
+        " vos démarches d’insertion. Vous êtes attendu(e) le #{formatted_start_date} à " \
+        "#{formatted_start_time} ici: #{lieu.name} - #{lieu.address}. Ce RDV est obligatoire. "\
+        "En cas d’empêchement, appelez rapidement le #{department.phone_number}. "\
         "Le département #{department.number} (#{department.name.capitalize})."
     end
 
