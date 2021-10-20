@@ -15,7 +15,7 @@ class Applicant < ApplicationRecord
   has_many :invitations, dependent: :nullify
   has_and_belongs_to_many :rdvs
 
-  validates :uid, presence: true, uniqueness: true
+  validates :uid, uniqueness: true, allow_nil: true
   validates :rdv_solidarites_user_id, uniqueness: true, allow_nil: true
   validates :last_name, :first_name, :title, presence: true
 

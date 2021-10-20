@@ -1,5 +1,4 @@
-import Swal from "sweetalert2";
-import formatPhoneNumber from "../lib/formatPhoneNumber";
+import formatPhoneNumber from "../../lib/formatPhoneNumber";
 
 const ROLES = {
   dem: "demandeur",
@@ -72,12 +71,6 @@ export default class Applicant {
       if (this.customId) {
         return `CUS-${this.customId}`;
       }
-      Swal.fire(
-        `Un NIR a été détecté à la place du Numéro allocataire et a été filtré.
-         Ces utilisateurs ne pourront pas être créés.`,
-        "",
-        "info"
-      );
       return null;
     }
     return affiliationNumber;
@@ -139,9 +132,7 @@ export default class Applicant {
   }
 
   hasMissingAttributes() {
-    return [this.affiliationNumber, this.role, this.firstName, this.lastName, this.title].some(
-      (attribute) => !attribute
-    );
+    return [this.firstName, this.lastName, this.title].some((attribute) => !attribute);
   }
 
   generateUid() {

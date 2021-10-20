@@ -1,12 +1,35 @@
 import React, { useState } from "react";
 import Swal from "sweetalert2";
+import confirmationModal from "../../lib/confirmationModal";
 import createApplicant from "../actions/createApplicant";
 import inviteApplicant from "../actions/inviteApplicant";
 
 export default function Applicant({ applicant, dispatchApplicants, department }) {
   const [isLoading, setIsLoading] = useState(false);
 
+  const displayDuplicationWarning = async () => {
+    let warningMessage = "";
+    if (!applicant.affiliationNumber) {
+      warningMessage =
+        "Le numéro d'allocataire n'est pas spécifié (si c'est un NIR il a été filtré).";
+    } else if (!applicant.role) {
+      warningMessage = "Le rôle de l'allocataire n'est pas spécifié.";
+    }
+    return confirmationModal(
+      `${warningMessage}\nVérifiez <a class="light-blue" href="/departments/${department.id}/applicants?search_query=${applicant.lastName}" target="_blank">ici</a>` +
+        " que l'allocataire n'a pas déjà été créé avant de continuer.",
+      {
+        confirmButtonText: "Créer",
+        cancelButtonText: "Annuler",
+      }
+    );
+  };
+
   const handleApplicantCreation = async () => {
+    if (!applicant.affiliationNumber || !applicant.role) {
+      const confirmation = await displayDuplicationWarning();
+      if (!confirmation.isConfirmed) return;
+    }
     const result = await createApplicant(applicant, department.id);
     if (result.success) {
       applicant.updateWith(result.applicant);
@@ -48,13 +71,9 @@ export default function Applicant({ applicant, dispatchApplicants, department })
     } else if (applicant.callToAction() === "INVITER") {
       await handleApplicantInvitation("sms");
     } else if (applicant.callToAction() === "REINVITER") {
-      const confirmation = await Swal.fire({
-        title: "êtes-vous sûr de vouloir réinviter le demandeur?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-      });
+      const confirmation = await confirmationModal(
+        "êtes-vous sûr de vouloir réinviter le demandeur?"
+      );
 
       if (confirmation.isConfirmed) {
         await handleApplicantInvitation("sms");

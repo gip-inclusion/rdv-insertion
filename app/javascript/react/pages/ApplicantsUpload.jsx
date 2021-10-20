@@ -6,10 +6,10 @@ import Swal from "sweetalert2";
 import FileHandler from "../components/FileHandler";
 import ApplicantList from "../components/ApplicantList";
 
-import parameterizeObjectKeys from "../lib/parameterizeObjectKeys";
+import parameterizeObjectKeys from "../../lib/parameterizeObjectKeys";
 import searchApplicants from "../actions/searchApplicants";
-import { initReducer, reducerFactory } from "../lib/reducers";
-import { excelDateToString } from "../lib/datesHelper";
+import { initReducer, reducerFactory } from "../../lib/reducers";
+import { excelDateToString } from "../../lib/datesHelper";
 
 import Applicant from "../models/Applicant";
 
