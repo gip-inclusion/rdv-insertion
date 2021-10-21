@@ -42,7 +42,7 @@ class CreateApplicant < BaseService
   end
 
   def applicant_attributes
-    { department: @department }.merge(
+    { departments: [@department] }.merge(
       @applicant_data.slice(*Applicant.attribute_names.map(&:to_sym)).compact
     )
   end

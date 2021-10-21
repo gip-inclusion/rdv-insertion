@@ -30,8 +30,8 @@ describe ProcessRdvSolidaritesWebhookJob, type: :job do
 
   let!(:rdv_solidarites_rdv) { OpenStruct.new(id: rdv_solidarites_rdv_id, user_ids: user_ids) }
 
-  let!(:applicant) { create(:applicant, department: department, id: 3) }
-  let!(:applicant2) { create(:applicant, department: department, id: 4) }
+  let!(:applicant) { create(:applicant, departments: [department], id: 3) }
+  let!(:applicant2) { create(:applicant, departments: [department], id: 4) }
 
   let!(:configuration) { create(:configuration, department: department, notify_applicant: true) }
   let!(:department) { create(:department, rdv_solidarites_organisation_id: organisation_id) }
@@ -90,7 +90,7 @@ describe ProcessRdvSolidaritesWebhookJob, type: :job do
 
     context "when there is a mismatch between one applicant and the department" do
       let!(:another_department) { create(:department) }
-      let!(:applicant) { create(:applicant, id: 242, department: another_department) }
+      let!(:applicant) { create(:applicant, id: 242, departments: [another_department]) }
 
       it "raises an error" do
         expect { subject }.to raise_error(
@@ -151,9 +151,9 @@ describe ProcessRdvSolidaritesWebhookJob, type: :job do
 
       it "calls the notify applicant job" do
         expect(NotifyApplicantJob).to receive(:perform_async)
-          .with(applicant.id, data, "created")
+          .with(applicant.id, department.id, data, "created")
         expect(NotifyApplicantJob).to receive(:perform_async)
-          .with(applicant2.id, data, "created")
+          .with(applicant2.id, department.id, data, "created")
         subject
       end
     end

@@ -1,7 +1,8 @@
 describe Invitations::Create, type: :service do
   subject do
     described_class.call(
-      applicant: applicant, rdv_solidarites_session: rdv_solidarites_session,
+      applicant: applicant, department: department,
+      rdv_solidarites_session: rdv_solidarites_session,
       invitation_format: invitation_format
     )
   end
@@ -9,12 +10,12 @@ describe Invitations::Create, type: :service do
   let!(:invitation_format) { "sms" }
   let!(:rdv_solidarites_user_id) { 14 }
   let!(:department) { create(:department) }
-  let!(:applicant) { create(:applicant, department: department, rdv_solidarites_user_id: rdv_solidarites_user_id) }
+  let!(:applicant) { create(:applicant, departments: [department], rdv_solidarites_user_id: rdv_solidarites_user_id) }
   let!(:rdv_solidarites_session) do
     { client: "client", uid: "johndoe@example.com", access_token: "token" }
   end
   let!(:token) { "token123" }
-  let!(:invitation) { create(:invitation, applicant: applicant, token: token) }
+  let!(:invitation) { create(:invitation, department: department, applicant: applicant, token: token) }
 
   describe "#call" do
     let!(:invitation_link) { "https://www.rdv_solidarites.com/some_params" }
@@ -34,6 +35,10 @@ describe Invitations::Create, type: :service do
 
     it "creates an invitation" do
       expect(Invitation).to receive(:new)
+        .with(
+          applicant: applicant, department: department,
+          link: invitation_link, token: token, format: invitation_format
+        )
       expect(invitation).to receive(:save)
       subject
     end
@@ -150,7 +155,7 @@ describe Invitations::Create, type: :service do
         it "creates the invitation with the link and token" do
           expect(Invitation).to receive(:new)
             .with(
-              applicant: applicant, format: invitation_format,
+              applicant: applicant, department: department, format: invitation_format,
               token: token, link: invitation_link
             )
           expect(invitation).to receive(:save)

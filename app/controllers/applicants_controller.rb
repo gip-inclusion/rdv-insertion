@@ -3,8 +3,8 @@ class ApplicantsController < ApplicationController
     :uid, :role, :first_name, :last_name, :birth_date, :email, :phone_number,
     :birth_name, :address, :affiliation_number, :custom_id, :title
   ].freeze
+  before_action :set_department, only: [:index, :create, :search]
   before_action :retrieve_applicants, only: [:search]
-  before_action :set_department, only: [:index, :create]
 
   include FilterableApplicantsConcern
 
@@ -20,7 +20,7 @@ class ApplicantsController < ApplicationController
   end
 
   def search
-    authorize_applicants
+    authorize @department, :list_applicants?
     # temporary solution to have up to date applicants with RDVS
     refresh_applicants
     render json: {
@@ -55,18 +55,15 @@ class ApplicantsController < ApplicationController
   def refresh_applicants
     @refresh_applicants ||= RefreshApplicants.call(
       applicants: @applicants.to_a,
-      rdv_solidarites_session: rdv_solidarites_session
+      rdv_solidarites_session: rdv_solidarites_session,
+      rdv_solidarites_organisation_id: @department.rdv_solidarites_organisation_id
     )
   end
 
-  def authorize_applicants
-    @applicants.each { |a| authorize a }
-  end
-
   def retrieve_applicants
-    @applicants = Applicant.includes(:department, :invitations, :rdvs)
-                           .where(uid: params.require(:applicants).require(:uids))
-                           .to_a
+    @applicants = @department.applicants.includes(:invitations, :rdvs)
+                             .where(uid: params.require(:applicants).require(:uids))
+                             .to_a
   end
 
   def set_department

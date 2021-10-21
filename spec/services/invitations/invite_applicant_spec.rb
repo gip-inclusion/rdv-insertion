@@ -1,7 +1,7 @@
 describe Invitations::InviteApplicant, type: :service do
   subject do
     described_class.call(
-      applicant: applicant, rdv_solidarites_session: rdv_solidarites_session,
+      applicant: applicant, department: department, rdv_solidarites_session: rdv_solidarites_session,
       invitation_format: invitation_format
     )
   end
@@ -9,17 +9,13 @@ describe Invitations::InviteApplicant, type: :service do
   let!(:invitation_format) { "sms" }
   let!(:rdv_solidarites_user_id) { 14 }
   let!(:department) { create(:department) }
-  let!(:applicant) { create(:applicant, department: department, rdv_solidarites_user_id: rdv_solidarites_user_id) }
+  let!(:applicant) { create(:applicant, departments: [department], rdv_solidarites_user_id: rdv_solidarites_user_id) }
   let!(:rdv_solidarites_session) do
     { client: "client", uid: "johndoe@example.com", access_token: "token" }
   end
-  let!(:invitation) { create(:invitation, applicant: applicant) }
+  let!(:invitation) { create(:invitation, department: department, applicant: applicant) }
 
   describe "#call" do
-    let!(:token) { "token123" }
-    let!(:invitation_link) { "https://www.rdv_solidarites.com/some_params" }
-    let!(:rdv_solidarites_user) { instance_double(RdvSolidarites::User) }
-
     before do
       allow(Invitations::RetrieveOrCreate).to receive(:call)
         .and_return(OpenStruct.new(success?: true, invitation: invitation))
@@ -35,11 +31,23 @@ describe Invitations::InviteApplicant, type: :service do
       expect(subject.invitation).to eq(invitation)
     end
 
+    context "when the applicant does not belong the organisation" do
+      let!(:another_department) { create(:department) }
+      let!(:applicant) { create(:applicant, departments: [another_department]) }
+
+      it("is a failure") { is_a_failure }
+
+      it "stores the error message" do
+        expect(subject.errors).to eq(["l'allocataire ne peut être invité car il n'appartient pas à l'organisation."])
+      end
+    end
+
     context "tries to retrieve an invitation" do
       it "calls the the retrieve_or_create_invitation service" do
         expect(Invitations::RetrieveOrCreate).to receive(:call)
           .with(
             applicant: applicant,
+            department: department,
             invitation_format: invitation_format,
             rdv_solidarites_session: rdv_solidarites_session
           )
@@ -63,10 +71,6 @@ describe Invitations::InviteApplicant, type: :service do
     end
 
     context "sends an invitation" do
-      before do
-        allow(applicant.invitations).to receive(:find_by).and_return(invitation)
-      end
-
       it "tries to send the invitation" do
         expect(invitation).to receive(:send_to_applicant)
         subject

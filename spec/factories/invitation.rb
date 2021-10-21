@@ -3,5 +3,6 @@ FactoryBot.define do
     token { "some_token" }
     link { "https://www.rdv_solidarites.com/some_params" }
     format { :sms }
+    department { create(:department) }
   end
 end

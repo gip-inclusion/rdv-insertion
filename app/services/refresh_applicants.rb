@@ -1,8 +1,9 @@
 # Retrieves the RDV-Solidarites users linked to the applicants and updates them
 # if they changed in RDV-Solidarites
 class RefreshApplicants < BaseService
-  def initialize(applicants:, rdv_solidarites_session:)
+  def initialize(applicants:, rdv_solidarites_organisation_id:, rdv_solidarites_session:)
     @applicants = applicants
+    @rdv_solidarites_organisation_id = rdv_solidarites_organisation_id
     @rdv_solidarites_session = rdv_solidarites_session
   end
 
@@ -44,7 +45,7 @@ class RefreshApplicants < BaseService
   def retrieve_rdv_solidarites_users
     @retrieve_rdv_solidarites_users ||= RetrieveRdvSolidaritesResources.call(
       rdv_solidarites_session: @rdv_solidarites_session,
-      organisation_id: @applicants.first.rdv_solidarites_organisation_id,
+      organisation_id: @rdv_solidarites_organisation_id,
       resource_name: "users",
       additional_args: @applicants.pluck(:rdv_solidarites_user_id)
     )

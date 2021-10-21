@@ -1,6 +1,7 @@
 describe ApplicantsController, type: :controller do
-  let!(:department) { create(:department) }
+  let!(:department) { create(:department, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id) }
   let!(:agent) { create(:agent, departments: [department]) }
+  let!(:rdv_solidarites_organisation_id) { 52 }
 
   describe "#create" do
     let(:applicant_params) do
@@ -87,8 +88,8 @@ describe ApplicantsController, type: :controller do
   end
 
   describe "#search" do
-    let!(:search_params) { { applicants: { uids: [23] }, format: "json" } }
-    let!(:applicant) { create(:applicant, department: department, uid: 23, email: "borisjohnson@gov.uk") }
+    let!(:search_params) { { applicants: { uids: [23] }, format: "json", department_id: department.id } }
+    let!(:applicant) { create(:applicant, departments: [department], uid: 23, email: "borisjohnson@gov.uk") }
 
     before do
       sign_in(agent)
@@ -104,14 +105,15 @@ describe ApplicantsController, type: :controller do
       expect(RefreshApplicants).to receive(:call)
         .with(
           applicants: [applicant],
-          rdv_solidarites_session: request.session[:rdv_solidarites]
+          rdv_solidarites_session: request.session[:rdv_solidarites],
+          rdv_solidarites_organisation_id: rdv_solidarites_organisation_id
         )
       post :search, params: search_params
     end
 
     context "when not authorized" do
       let!(:another_department) { create(:department) }
-      let!(:applicant) { create(:applicant, department: another_department, uid: 23) }
+      let!(:agent) { create(:agent, departments: [another_department]) }
 
       it "renders forbidden in the response" do
         post :search, params: search_params
@@ -165,8 +167,8 @@ describe ApplicantsController, type: :controller do
 
   describe "#index" do
     let!(:applicants) { department.applicants }
-    let!(:applicant) { create(:applicant, department: department) }
-    let!(:applicant2) { create(:applicant, department: department) }
+    let!(:applicant) { create(:applicant, departments: [department]) }
+    let!(:applicant2) { create(:applicant, departments: [department]) }
     let!(:index_params) { { department_id: department.id } }
 
     before do

@@ -42,7 +42,7 @@ class ProcessRdvSolidaritesWebhookJob < ApplicationJob
   end
 
   def all_applicants_belongs_to_department?
-    applicants.pluck(:department_id).uniq.length == 1 && applicants.first.department_id == department.id
+    applicants.all? { |a| a.department_ids.include?(department.id) }
   end
 
   def event
@@ -58,7 +58,7 @@ class ProcessRdvSolidaritesWebhookJob < ApplicationJob
   end
 
   def applicants
-    @applicants ||= Applicant.includes(:department).where(rdv_solidarites_user_id: rdv_solidarites_user_ids)
+    @applicants ||= Applicant.where(rdv_solidarites_user_id: rdv_solidarites_user_ids)
   end
 
   def applicant_ids
@@ -85,6 +85,7 @@ class ProcessRdvSolidaritesWebhookJob < ApplicationJob
     applicants.each do |applicant|
       NotifyApplicantJob.perform_async(
         applicant.id,
+        department.id,
         @data,
         event
       )

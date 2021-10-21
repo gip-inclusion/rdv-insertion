@@ -1,7 +1,8 @@
 module Invitations
   class Create < BaseService
-    def initialize(applicant:, rdv_solidarites_session:, invitation_format:)
+    def initialize(applicant:, department:, rdv_solidarites_session:, invitation_format:)
       @applicant = applicant
+      @department = department
       @rdv_solidarites_session = rdv_solidarites_session
       @invitation_format = invitation_format
     end
@@ -25,6 +26,7 @@ module Invitations
     def invitation
       @invitation ||= Invitation.new(
         applicant: @applicant, format: @invitation_format,
+        department: @department,
         link: link, token: token
       )
     end
@@ -68,7 +70,7 @@ module Invitations
 
     def compute_invitation_link
       @compute_invitation_link ||= Invitations::ComputeLink.call(
-        department: department,
+        department: @department,
         rdv_solidarites_session: @rdv_solidarites_session,
         invitation_token: retrieve_invitation_token.invitation_token
       )
@@ -76,10 +78,6 @@ module Invitations
 
     def rdv_solidarites_user_id
       @applicant.rdv_solidarites_user_id
-    end
-
-    def department
-      @applicant.department
     end
   end
 end

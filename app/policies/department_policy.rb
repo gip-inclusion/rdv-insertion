@@ -9,6 +9,10 @@ class DepartmentPolicy < ApplicationPolicy
     pundit_user.departments.include?(record)
   end
 
+  def invite_applicant?
+    list_applicants?
+  end
+
   def create_applicant?
     list_applicants?
   end
