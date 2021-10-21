@@ -27,25 +27,14 @@ describe Applicant do
     end
   end
 
-  describe "uid uniqueness and presence" do
+  describe "uid uniqueness" do
     context "no collision" do
       let(:applicant) { build(:applicant, uid: '123') }
 
       it { expect(applicant).to be_valid }
     end
 
-    context "blank uid" do
-      let(:applicant) { build(:applicant, uid: "") }
-
-      it 'adds error' do
-        expect(applicant).not_to be_valid
-        expect(applicant.errors.details).to eq({ uid: [{ error: :blank }] })
-        expect(applicant.errors.full_messages.to_sentence)
-          .to include("Uid doit être rempli(e)")
-      end
-    end
-
-    context "colliding rdv_solidarites_user_id" do
+    context "colliding uid" do
       let!(:applicant_existing) { create(:applicant, uid: '123') }
       let(:applicant) { build(:applicant, uid: '123') }
 

@@ -52,13 +52,6 @@ describe CreateApplicant, type: :service do
           .and_return('some error')
       end
 
-      it "rollbacks the transaction" do
-        expect(Applicant).to receive(:transaction) do |&block|
-          expect { block.call }.to raise_error(ActiveRecord::Rollback)
-        end.and_return(nil)
-        subject
-      end
-
       it "is a failure" do
         is_a_failure
       end
@@ -138,20 +131,9 @@ describe CreateApplicant, type: :service do
         it "stores the error" do
           expect(subject.errors).to eq(['some error'])
         end
-
-        it "rollback the transaction" do
-          expect(Applicant).to receive(:transaction) do |&block|
-            expect { block.call }.to raise_error(ActiveRecord::Rollback)
-          end.and_return(nil)
-          subject
-        end
       end
 
       context "when the rdv solidarites user creation succeeds" do
-        it "stores the rdv solidarites user" do
-          expect(subject.rdv_solidarites_user).to eq(rdv_solidarites_user)
-        end
-
         it "assign the rdv solidarites user id" do
           subject
           expect(applicant.rdv_solidarites_user_id).to eq(142)

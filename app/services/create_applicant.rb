@@ -14,41 +14,27 @@ class CreateApplicant < BaseService
   private
 
   def create_applicant!
-    fail! unless create_applicant_transaction
-  end
-
-  def create_applicant_transaction
     Applicant.transaction do
-      create_applicant_in_db
-      raise ActiveRecord::Rollback if failed?
-
-      create_user_in_rdv_solidarites
-      raise ActiveRecord::Rollback if failed?
-
-      true
+      create_applicant_in_db!
+      create_rdv_solidarites_user!
     end
   end
 
   def update_applicant!
-    fail! unless update_with_rdv_soldarites_user_attributes
-  end
-
-  def update_with_rdv_soldarites_user_attributes
-    return true if applicant.update(
-      rdv_solidarites_user_id: result.rdv_solidarites_user.id,
-      phone_number_formatted: result.rdv_solidarites_user.phone_number_formatted
+    return if applicant.update(
+      rdv_solidarites_user_id: rdv_solidarites_user.id,
+      phone_number_formatted: rdv_solidarites_user.phone_number_formatted
     )
 
     result.errors << applicant.errors.full_messages.to_sentence
-    false
+    fail!
   end
 
-  def create_applicant_in_db
-    if applicant.save
-      result.applicant = applicant
-    else
-      result.errors << applicant.errors.full_messages.to_sentence
-    end
+  def create_applicant_in_db!
+    return if applicant.save
+
+    result.errors << applicant.errors.full_messages.to_sentence
+    fail!
   end
 
   def applicant
@@ -61,16 +47,19 @@ class CreateApplicant < BaseService
     )
   end
 
-  def create_user_in_rdv_solidarites
-    if create_rdv_solidarites_user_service.success?
-      result.rdv_solidarites_user = create_rdv_solidarites_user_service.rdv_solidarites_user
-    else
-      result.errors += create_rdv_solidarites_user_service.errors
-    end
+  def create_rdv_solidarites_user!
+    return if create_rdv_solidarites_user.success?
+
+    result.errors += create_rdv_solidarites_user.errors
+    fail!
   end
 
-  def create_rdv_solidarites_user_service
-    @create_rdv_solidarites_user_service ||= CreateRdvSolidaritesUser.call(
+  def rdv_solidarites_user
+    create_rdv_solidarites_user.rdv_solidarites_user
+  end
+
+  def create_rdv_solidarites_user
+    @create_rdv_solidarites_user ||= CreateRdvSolidaritesUser.call(
       user_attributes: rdv_solidarites_user_attributes,
       rdv_solidarites_session: @rdv_solidarites_session
     )
