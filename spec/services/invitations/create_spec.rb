@@ -10,9 +10,13 @@ describe Invitations::Create, type: :service do
   let!(:invitation_format) { "sms" }
   let!(:rdv_solidarites_user_id) { 14 }
   let!(:organisation) { create(:organisation) }
+<<<<<<< HEAD
   let!(:applicant) do
     create(:applicant, organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id)
   end
+=======
+  let!(:applicant) { create(:applicant, organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id) }
+>>>>>>> 48016c7 (refactor(app): Create and populate organisations table)
   let!(:rdv_solidarites_session) do
     { client: "client", uid: "johndoe@example.com", access_token: "token" }
   end
