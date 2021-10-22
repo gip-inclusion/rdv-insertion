@@ -1,12 +1,12 @@
-puts "Creating departments..."
+puts "Creating organisations..."
 
-Department.create!(
+Organisation.create!(
   number: '08',
   name: 'Ardennes',
   capital: 'Charlevilles-Mézières'
 )
 
-Department.create!(
+Organisation.create!(
   number: '26',
   name: 'Drôme',
   capital: 'Valence',
@@ -17,14 +17,14 @@ Department.create!(
 
 puts "Creating agents..."
 agent = Agent.create!(email: "johndoe@gouv.fr")
-agent.department_ids = [Department.last.id]
+agent.organisation_ids = [Organisation.last.id]
 agent.save!
 
 puts "Creating configurations..."
 Configuration.create!(
   sheet_name: "ENTRETIENS PHYSIQUES",
   invitation_format: "sms",
-  department_id: Department.last.id,
+  organisation_id: Organisation.last.id,
   column_names: {
     "address"=>"adresse",
     "last_name"=>"nom-beneficiaire",

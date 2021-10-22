@@ -1,12 +1,12 @@
 class InvitationsController < ApplicationController
-  before_action :set_department, only: [:create]
+  before_action :set_organisation, only: [:create]
   before_action :set_applicant, only: [:create]
   before_action :set_invitation, only: [:redirect]
   skip_before_action :authenticate_agent!, only: [:redirect]
   respond_to :json
 
   def create
-    authorize @department, :invite_applicant?
+    authorize @organisation, :invite_applicant?
     if invite_applicant.success?
       render json: { success: true, invitation: invite_applicant.invitation }
     else
@@ -23,7 +23,7 @@ class InvitationsController < ApplicationController
   private
 
   def set_applicant
-    @applicant = @department.applicants.includes(:invitations).find(params[:applicant_id])
+    @applicant = @organisation.applicants.includes(:invitations).find(params[:applicant_id])
   end
 
   def set_invitation
@@ -33,14 +33,14 @@ class InvitationsController < ApplicationController
   def invite_applicant
     @invite_applicant ||= Invitations::InviteApplicant.call(
       applicant: @applicant,
-      department: @department,
+      organisation: @organisation,
       rdv_solidarites_session: rdv_solidarites_session,
       invitation_format: params[:format]
     )
   end
 
-  def set_department
-    @department = Department.find(params[:department_id])
+  def set_organisation
+    @organisation = Organisation.find(params[:organisation_id])
   end
 
   def invitation_format

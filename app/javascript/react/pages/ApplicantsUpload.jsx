@@ -15,7 +15,7 @@ import Applicant from "../models/Applicant";
 
 const reducer = reducerFactory("Expérimentation RSA");
 
-export default function ApplicantsUpload({ department, configuration }) {
+export default function ApplicantsUpload({ organisation, configuration }) {
   const SHEET_NAME = configuration.sheet_name;
   const columnNames = configuration.column_names;
 
@@ -52,7 +52,7 @@ export default function ApplicantsUpload({ department, configuration }) {
               birthName: columnNames.birth_name && row[columnNames.birth_name],
               customId: columnNames.custom_id && row[columnNames.custom_id],
             },
-            department.number,
+            organisation.number,
             configuration
           );
           applicantsFromList.push(applicant);
@@ -66,7 +66,7 @@ export default function ApplicantsUpload({ department, configuration }) {
   };
 
   const retrieveApplicantsFromApp = async (uids) => {
-    const result = await searchApplicants(department.id, uids);
+    const result = await searchApplicants(organisation.id, uids);
     if (result.success) {
       return result.applicants;
     }
@@ -96,7 +96,7 @@ export default function ApplicantsUpload({ department, configuration }) {
   };
 
   const redirectToApplicantList = () => {
-    window.location.href = `/departments/${department.id}/applicants`;
+    window.location.href = `/organisations/${organisation.id}/applicants`;
   };
 
   const handleFile = async (file) => {
@@ -179,7 +179,7 @@ export default function ApplicantsUpload({ department, configuration }) {
                   <ApplicantList
                     applicants={applicants}
                     dispatchApplicants={dispatchApplicants}
-                    department={department}
+                    organisation={organisation}
                   />
                 </tbody>
               </table>

@@ -1,19 +1,19 @@
 describe Invitations::InviteApplicant, type: :service do
   subject do
     described_class.call(
-      applicant: applicant, department: department, rdv_solidarites_session: rdv_solidarites_session,
+      applicant: applicant, organisation: organisation, rdv_solidarites_session: rdv_solidarites_session,
       invitation_format: invitation_format
     )
   end
 
   let!(:invitation_format) { "sms" }
   let!(:rdv_solidarites_user_id) { 14 }
-  let!(:department) { create(:department) }
-  let!(:applicant) { create(:applicant, departments: [department], rdv_solidarites_user_id: rdv_solidarites_user_id) }
+  let!(:organisation) { create(:organisation) }
+  let!(:applicant) { create(:applicant, organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id) }
   let!(:rdv_solidarites_session) do
     { client: "client", uid: "johndoe@example.com", access_token: "token" }
   end
-  let!(:invitation) { create(:invitation, department: department, applicant: applicant) }
+  let!(:invitation) { create(:invitation, organisation: organisation, applicant: applicant) }
 
   describe "#call" do
     before do
@@ -32,8 +32,8 @@ describe Invitations::InviteApplicant, type: :service do
     end
 
     context "when the applicant does not belong the organisation" do
-      let!(:another_department) { create(:department) }
-      let!(:applicant) { create(:applicant, departments: [another_department]) }
+      let!(:another_organisation) { create(:organisation) }
+      let!(:applicant) { create(:applicant, organisations: [another_organisation]) }
 
       it("is a failure") { is_a_failure }
 
@@ -47,7 +47,7 @@ describe Invitations::InviteApplicant, type: :service do
         expect(Invitations::RetrieveOrCreate).to receive(:call)
           .with(
             applicant: applicant,
-            department: department,
+            organisation: organisation,
             invitation_format: invitation_format,
             rdv_solidarites_session: rdv_solidarites_session
           )

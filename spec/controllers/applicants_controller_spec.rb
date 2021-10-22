@@ -1,6 +1,6 @@
 describe ApplicantsController, type: :controller do
-  let!(:department) { create(:department, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id) }
-  let!(:agent) { create(:agent, departments: [department]) }
+  let!(:organisation) { create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id) }
+  let!(:agent) { create(:agent, organisations: [organisation]) }
   let!(:rdv_solidarites_organisation_id) { 52 }
 
   describe "#create" do
@@ -10,7 +10,7 @@ describe ApplicantsController, type: :controller do
           uid: "123xz", first_name: "john", last_name: "doe", email: "johndoe@example.com",
           affiliation_number: "1234", role: "conjoint"
         },
-        department_id: department.id,
+        organisation_id: organisation.id,
         format: "json"
       }
     end
@@ -25,7 +25,7 @@ describe ApplicantsController, type: :controller do
     it "calls the service" do
       expect(CreateApplicant).to receive(:call)
         .with(
-          department: department,
+          organisation: organisation,
           applicant_data: applicant_params[:applicant],
           rdv_solidarites_session: request.session[:rdv_solidarites]
         )
@@ -33,16 +33,16 @@ describe ApplicantsController, type: :controller do
     end
 
     context "when not authorized" do
-      let!(:another_department) { create(:department) }
+      let!(:another_organisation) { create(:organisation) }
 
       it "renders forbidden in the response" do
-        post :create, params: applicant_params.merge(department_id: another_department.id)
+        post :create, params: applicant_params.merge(organisation_id: another_organisation.id)
         expect(response).to have_http_status(:forbidden)
       end
 
       it "does not call the service" do
         expect(CreateApplicant).not_to receive(:call)
-        post :create, params: applicant_params.merge(department_id: another_department.id)
+        post :create, params: applicant_params.merge(organisation_id: another_organisation.id)
       end
     end
 
@@ -88,8 +88,8 @@ describe ApplicantsController, type: :controller do
   end
 
   describe "#search" do
-    let!(:search_params) { { applicants: { uids: [23] }, format: "json", department_id: department.id } }
-    let!(:applicant) { create(:applicant, departments: [department], uid: 23, email: "borisjohnson@gov.uk") }
+    let!(:search_params) { { applicants: { uids: [23] }, format: "json", organisation_id: organisation.id } }
+    let!(:applicant) { create(:applicant, organisations: [organisation], uid: 23, email: "borisjohnson@gov.uk") }
 
     before do
       sign_in(agent)
@@ -112,8 +112,8 @@ describe ApplicantsController, type: :controller do
     end
 
     context "when not authorized" do
-      let!(:another_department) { create(:department) }
-      let!(:agent) { create(:agent, departments: [another_department]) }
+      let!(:another_organisation) { create(:organisation) }
+      let!(:agent) { create(:agent, organisations: [another_organisation]) }
 
       it "renders forbidden in the response" do
         post :search, params: search_params
@@ -166,10 +166,10 @@ describe ApplicantsController, type: :controller do
   end
 
   describe "#index" do
-    let!(:applicants) { department.applicants }
-    let!(:applicant) { create(:applicant, departments: [department]) }
-    let!(:applicant2) { create(:applicant, departments: [department]) }
-    let!(:index_params) { { department_id: department.id } }
+    let!(:applicants) { organisation.applicants }
+    let!(:applicant) { create(:applicant, organisations: [organisation]) }
+    let!(:applicant2) { create(:applicant, organisations: [organisation]) }
+    let!(:index_params) { { organisation_id: organisation.id } }
 
     before do
       sign_in(agent)
@@ -205,7 +205,7 @@ describe ApplicantsController, type: :controller do
     end
 
     context "when a page is specified" do
-      let!(:index_params) { { department_id: department.id, page: 4 } }
+      let!(:index_params) { { organisation_id: organisation.id, page: 4 } }
 
       it "retrieves the applicants from that page" do
         expect(Applicant).to receive(:page).with("4")
@@ -215,7 +215,7 @@ describe ApplicantsController, type: :controller do
     end
 
     context "when a search query is specified" do
-      let!(:index_params) { { department_id: department.id, search_query: "coco" } }
+      let!(:index_params) { { organisation_id: organisation.id, search_query: "coco" } }
 
       it "searches the applicants" do
         expect(Applicant).to receive(:search_by_text).with("coco")
@@ -225,7 +225,7 @@ describe ApplicantsController, type: :controller do
     end
 
     context "when a status is passed" do
-      let!(:index_params) { { department_id: department.id, status: "rdv_pending" } }
+      let!(:index_params) { { organisation_id: organisation.id, status: "rdv_pending" } }
 
       it "filters by status" do
         expect(Applicant).to receive(:status).with("rdv_pending")
@@ -235,7 +235,7 @@ describe ApplicantsController, type: :controller do
     end
 
     context "when action_required is passed" do
-      let!(:index_params) { { department_id: department.id, action_required: "true" } }
+      let!(:index_params) { { organisation_id: organisation.id, action_required: "true" } }
 
       it "filters by action required" do
         expect(Applicant).to receive(:action_required)

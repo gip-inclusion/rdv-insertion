@@ -5,9 +5,9 @@ RSpec.describe InvitationMailer, type: :mailer do
 
   describe "#first_invitation" do
     let!(:rdv_solidarites_user_id) { 14 }
-    let!(:department) { create(:department, phone_number: "0123456789") }
-    let!(:applicant) { create(:applicant, departments: [department], rdv_solidarites_user_id: rdv_solidarites_user_id) }
-    let!(:invitation) { create(:invitation, department: department, applicant: applicant) }
+    let!(:organisation) { create(:organisation, phone_number: "0123456789") }
+    let!(:applicant) { create(:applicant, organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id) }
+    let!(:invitation) { create(:invitation, organisation: organisation, applicant: applicant) }
 
     it "renders the headers" do
       expect(subject.to).to eq([applicant.email])

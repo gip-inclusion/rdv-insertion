@@ -1,7 +1,7 @@
 module Invitations
   class ComputeLink < BaseService
-    def initialize(department:, rdv_solidarites_session:, invitation_token:)
-      @department = department
+    def initialize(organisation:, rdv_solidarites_session:, invitation_token:)
+      @organisation = organisation
       @rdv_solidarites_session = rdv_solidarites_session
       @invitation_token = invitation_token
     end
@@ -30,8 +30,8 @@ module Invitations
     def link_with_motif(motif)
       params = {
         search: {
-          departement: @department.number,
-          where: @department.name_with_region,
+          departement: @organisation.number,
+          where: @organisation.name_with_region,
           motif_name_with_location_type: "#{motif['name']}-#{motif['location_type']}",
           service: ENV['RDV_SOLIDARITES_RSA_SERVICE_ID']
         }
@@ -40,8 +40,8 @@ module Invitations
     end
 
     def link_without_motif
-      params = { where: @department.name_with_region }
-      "#{ENV['RDV_SOLIDARITES_URL']}/departement/#{@department.number}/#{ENV['RDV_SOLIDARITES_RSA_SERVICE_ID']}" \
+      params = { where: @organisation.name_with_region }
+      "#{ENV['RDV_SOLIDARITES_URL']}/departement/#{@organisation.number}/#{ENV['RDV_SOLIDARITES_RSA_SERVICE_ID']}" \
         "?#{params.to_query}"
     end
 
@@ -54,7 +54,7 @@ module Invitations
     end
 
     def rdv_solidarites_response
-      @rdv_solidarites_response ||= rdv_solidarites_client.get_motifs(@department.rdv_solidarites_organisation_id)
+      @rdv_solidarites_response ||= rdv_solidarites_client.get_motifs(@organisation.rdv_solidarites_organisation_id)
     end
 
     def rdv_solidarites_client

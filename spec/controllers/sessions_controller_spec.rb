@@ -1,8 +1,8 @@
 describe SessionsController, type: :controller do
   render_views
 
-  let(:department) { create(:department) }
-  let(:agent) { create(:agent, departments: [department]) }
+  let(:organisation) { create(:organisation) }
+  let(:agent) { create(:agent, organisations: [organisation]) }
 
   describe "GET /sign_in" do
     it "renders the login form" do
@@ -74,10 +74,10 @@ describe SessionsController, type: :controller do
             request.session[:agent_return_to] = nil
           end
 
-          it "returns the departments path" do
+          it "returns the organisations path" do
             post :create, params: session_params.merge(format: 'json')
             expect(response).to be_successful
-            expect(JSON.parse(response.body)["redirect_path"]).to eq(departments_path)
+            expect(JSON.parse(response.body)["redirect_path"]).to eq(organisations_path)
           end
         end
       end

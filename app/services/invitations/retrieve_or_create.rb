@@ -1,8 +1,8 @@
 module Invitations
   class RetrieveOrCreate < BaseService
-    def initialize(applicant:, department:, rdv_solidarites_session:, invitation_format:)
+    def initialize(applicant:, organisation:, rdv_solidarites_session:, invitation_format:)
       @applicant = applicant
-      @department = department
+      @organisation = organisation
       @rdv_solidarites_session = rdv_solidarites_session
       @invitation_format = invitation_format
     end
@@ -19,7 +19,7 @@ module Invitations
     end
 
     def existing_invitation
-      @applicant.invitations.find_by(format: @invitation_format, department: @department)
+      @applicant.invitations.find_by(format: @invitation_format, organisation: @organisation)
     end
 
     def create_invitation!
@@ -32,7 +32,7 @@ module Invitations
     def create_invitation
       @create_invitation ||= Invitations::Create.call(
         applicant: @applicant, invitation_format: @invitation_format,
-        department: @department,
+        organisation: @organisation,
         rdv_solidarites_session: @rdv_solidarites_session
       )
     end

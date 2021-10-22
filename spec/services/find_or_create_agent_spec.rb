@@ -19,8 +19,8 @@ describe FindOrCreateAgent, type: :service do
       end
     end
 
-    context "when the organisations does not belong to one department" do
-      let!(:department) { create(:department, rdv_solidarites_organisation_id: 31) }
+    context "when the organisations does not belong to one organisation" do
+      let!(:organisation) { create(:organisation, rdv_solidarites_organisation_id: 31) }
       let!(:organisation_ids) { [39, 52] }
 
       it "fails with an error" do
@@ -30,8 +30,8 @@ describe FindOrCreateAgent, type: :service do
       end
     end
 
-    context "when department is found" do
-      let!(:department) { create(:department, rdv_solidarites_organisation_id: 31) }
+    context "when organisation is found" do
+      let!(:organisation) { create(:organisation, rdv_solidarites_organisation_id: 31) }
       let!(:organisation_ids) { [31, 42] }
 
       before do
@@ -54,9 +54,9 @@ describe FindOrCreateAgent, type: :service do
         expect(subject.agent).to eq(agent)
       end
 
-      it "updates the agent by assigning the departments" do
+      it "updates the agent by assigning the organisations" do
         subject
-        expect(agent.departments).to eq([department])
+        expect(agent.organisations).to eq([organisation])
       end
     end
   end

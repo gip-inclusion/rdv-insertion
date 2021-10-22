@@ -2,14 +2,14 @@ module Notifications
   class NotifyApplicant < BaseService
     include Notifications::RdvConcern
 
-    def initialize(applicant:, department:, rdv_solidarites_rdv:)
+    def initialize(applicant:, organisation:, rdv_solidarites_rdv:)
       @applicant = applicant
-      @department = department
+      @organisation = organisation
       @rdv_solidarites_rdv = rdv_solidarites_rdv
     end
 
     def call
-      check_applicant_department!
+      check_applicant_organisation!
       check_phone_number!
       notify_applicant!
       update_notification_sent_at!
@@ -17,8 +17,8 @@ module Notifications
 
     protected
 
-    def check_applicant_department!
-      return if @applicant.department_ids.include?(@department.id)
+    def check_applicant_organisation!
+      return if @applicant.organisation_ids.include?(@organisation.id)
 
       fail!("l'allocataire ne peut être invité car il n'appartient pas à l'organisation.")
     end
