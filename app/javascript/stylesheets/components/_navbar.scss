@@ -11,3 +11,18 @@
 .navbar-france-logo {
   margin-left: 15px;
 }
+
+.sub-header {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  background-color: white;
+  border-top: 1px solid $dark-grey;
+  box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.07),0 1px 0 0 rgba(0, 0, 0,0.03);
+  position: relative;
+  z-index: 2;
+  p, a {
+    font-size: 12px;
+  }
+}

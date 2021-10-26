@@ -1,36 +1,56 @@
-<div class="container mt-5">
-  <div class="row mt-5 justify-content-center">
-    <div class="col-8">
-      <h2 class="text-center"><b>Bienvenue sur rdv-insertion</b></h2>
-      <p class="text-center">Ce site est une initiative de <a href="https://beta.gouv.fr/"><u>beta.gouv</u></a> et <a href="https://beta.gouv.fr/startups/data.insertion.html"><u>data.insertion</u></a>, en partenariat avec les conseils départementaux, pour accélérer la prise du premier rendez&#8209vous RSA</p>
+<div class="sub-header d-none d-md-flex marianne">
+  <%= link_to "https://communaute.inclusion.beta.gouv.fr/", class: "nav-link optional-link ", target: "_blank", rel: "noopener noreferrer" do %>
+    <p class="mb-0">Communauté de l'inclusion&nbsp;<i class="fas fa-external-link-alt"></i></p>
+  <% end %>
+  <%= link_to "Contacter l'équipe", "mailto:data.insertion@beta.gouv.fr", class: "nav-link optional-link" %>
+</div>
+
+<div class="container-fluid mt-5 marianne">
+  <div class="row justify-content-center mb-5">
+    <div class="col-sm-12 col-md-5 welcome-title ">
+      <h1 class="text-left">Diminuez le délai et le taux d'absentéisme du rendez-vous d'orientation</h1>
+    </div>
+    <div class="col-sm-12 col-md-5">
+      <%= image_pack_tag "illustrations/welcome-illustration.svg", class: "welcome-illustration", alt: "Image d'illustration de prise de rendez-vous" %>
     </div>
   </div>
 
-  <div class="row justify-content-center mt-4">
-    <div class="col-8">
-        <div class="card-container">
-          <%= link_to departments_path do %>
-            <div class="card d-flex flex-row justify-content-between align-content-center card-welcome mb-3">
-              <div class="card-body card-welcome-body">
-                <h4>Je suis agent départemental</h4>
-                <p>Je clique ici pour me connecter et accéder à l'interface de mon département.</p>
-              </div>
-            </div>
-          <% end %>
-        </div>
+  <div class="row justify-content-center">
+    <h3 class="col-10 text-left mb-5">RDV-Insertion permet aux départements de gérer facilement l'entrée des bénéficiaires en parcours d'insertion</h3>
+  </div>
+
+  <div class="row mx-5 mb-4">
+    <div class="col-sm-10 col-md-3 d-flex flex-column align-items-center mb-4 mb-md-0">
+      <%= image_pack_tag "illustrations/computer.svg", class: "welcome-illustration-sm mb-3", alt: "Image d'illustration en quelques clics" %>
+      <p class="text-center">Invitez les bénéficiaires par SMS et email en quelques clics</p>
+    </div>
+    <div class="col-sm-10 col-md-3 d-flex flex-column align-items-center mb-4 mb-md-0">
+      <%= image_pack_tag "illustrations/letter.svg", class: "welcome-illustration-sm mb-3", alt: "Image d'illustration courrier" %>
+      <p class="text-center">Diminuez les tâches administratives de gestion des courriers et d'agenda
+    </div>
+    <div class="col-sm-10 col-md-3 d-flex flex-column align-items-center mb-4 mb-md-0">
+      <%= image_pack_tag "illustrations/calendar.svg", class: "welcome-illustration-sm mb-3", alt: "Image d'illustration calendrier" %>
+      <p class="text-center">Gérez facilement les relances et le suivi des prises de rendez-vous
+    </div>
+    <div class="col-sm-10 col-md-3 d-flex flex-column align-items-center mb-4 mb-md-0">
+      <%= image_pack_tag "illustrations/choice.svg", class: "welcome-illustration-sm mb-3", alt: "Image d'illustration du choix" %>
+      <p class="text-center">Les bénéficiaires sont responsabilisés et autonomes dans leur prise de rendez-vous
     </div>
   </div>
 
-  <div class="row justify-content-center mt-4">
-    <div class="col-8">
-        <div class="card-container">
-          <div class="card d-flex flex-row justify-content-between align-content-center card-welcome no-hover mb-3">
-            <div class="card-body card-welcome-body">
-              <h4>Je suis bénéficiaire du RSA</h4>
-              <p>J'ai reçu une invitation à prendre rendez-vous. Je me réfère aux instructions fournies dans le message reçu pour accéder à la prise de rendez-vous (qui s'effectuera sur le site RDV-Solidarités).</p>
-            </div>
-          </div>
-        </div>
+  <div class="row justify-content-center background-dark-blue color-white ">
+    <p class="col-10 text-left mt-4 mb-4">Proposé par data.insertion, une équipe de beta.gouv, ce service est porté par la Direction générale de la Cohésion sociale (DGCS), la Délégation interministérielle à la prévention et à la lutte contre la pauvreté (DILP) et la Délégation générale à l'Emploi et à la Formation professionnelle (DGEFP).</p>
+  </div>
+
+  <div class="row justify-content-center card-demo">
+    <h2 class="col-10 text-center color-dark-blue bold mb-4">Ça vous intéresse&nbsp;?</h2>
+    <p class="col-10 text-left">Vous souhaitez diminuer le délai d'orientation des bénéficiaires du RSA dans votre département et réduire le taux d'absentéisme du rendez-vous d'orientation ?</p>
+    <p class="col-10 text-left">Nous sommes à votre écoute pour adapter notre service à vos besoins et vous aider à le déployer pour votre territoire.</p>
+    <div class="col-8 col-md-4 col-lg-3 text-center mt-4">
+      <%= link_to "https://calendly.com/claire-casubolo/reunion-avec-cd", target: "_blank" do %>
+        <button class="btn btn-default btn-blue w-100 ">Demander une démo</button>
+      <% end %>
     </div>
   </div>
+
 </div>
