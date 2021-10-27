@@ -34,7 +34,20 @@ Configuration.create!(
     "postal_code"=>"cp-ville",
     "affiliation_number"=>"numero-allocataire",
     "role"=>"role",
-    "phone_number"=>"numero-telephones"
+    "phone_number"=>"numero-telephones",
+    "title"=>"civilite"
+  }
+  human_column_names: {
+    "address"=>"Adresse",
+    "last_name"=>"Nom bénéficiaire",
+    "first_name"=>"Prénom bénéficiaire",
+    "email"=>"Adresses mails",
+    "birth_date"=>"Date de naissance",
+    "postal_code"=>"CP Ville",
+    "affiliation_number"=>"N° Allocataire",
+    "role"=>"Rôle",
+    "phone_number"=>"N° Téléphones",
+    "title"=>"Civilité"
   }
 )
 

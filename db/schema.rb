@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_13_143756) do
+ActiveRecord::Schema.define(version: 2021_10_27_114843) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -66,6 +66,7 @@ ActiveRecord::Schema.define(version: 2021_10_13_143756) do
     t.datetime "updated_at", precision: 6, null: false
     t.json "column_names"
     t.boolean "notify_applicant", default: false
+    t.json "human_column_names"
     t.index ["department_id"], name: "index_configurations_on_department_id"
   end
 

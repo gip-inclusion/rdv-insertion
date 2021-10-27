@@ -7,6 +7,7 @@ import FileHandler from "../components/FileHandler";
 import ApplicantList from "../components/ApplicantList";
 
 import parameterizeObjectKeys from "../../lib/parameterizeObjectKeys";
+import getKeyByValue from "../../lib/getKeyByValue";
 import searchApplicants from "../actions/searchApplicants";
 import { initReducer, reducerFactory } from "../../lib/reducers";
 import { excelDateToString } from "../../lib/datesHelper";
@@ -22,6 +23,32 @@ export default function ApplicantsUpload({ department, configuration }) {
   const [fileSize, setFileSize] = useState(0);
   const [applicants, dispatchApplicants] = useReducer(reducer, [], initReducer);
 
+  const checkColumnNames = async (uploadedColumnNames) => {
+    const missingColumnNames = [];
+
+    const expectedColumnNames = Object.values(columnNames);
+    const missingColumns =
+      expectedColumnNames.filter(colName => !uploadedColumnNames.includes(colName));
+
+    if (missingColumns.length > 0) {
+      // Récupère les noms "humains" des colonnes manquantes
+      missingColumns.forEach((col) => {
+        const missingAttribute = getKeyByValue(columnNames, col);
+        const missingColumnName = configuration.human_column_names[missingAttribute];
+        missingColumnNames.push(missingColumnName);
+      });
+
+      Swal.fire({
+        title: "Le fichier chargé ne correspond pas au format attendu",
+        html: `Veuillez vérifier que les colonnes suivantes sont présentes et correctement nommées&nbsp;:
+        <br/>
+        <strong>${missingColumnNames.join("<br />")}</strong>`,
+        icon: "error"
+      });
+    }
+    return missingColumnNames;
+  }
+
   const retrieveApplicantsFromList = async (file) => {
     const applicantsFromList = [];
 
@@ -29,33 +56,39 @@ export default function ApplicantsUpload({ department, configuration }) {
       const reader = new FileReader();
       reader.onload = function (event) {
         const workbook = XLSX.read(event.target.result, { type: "binary" });
-        let rows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[SHEET_NAME]);
+        const sheet = workbook.Sheets[SHEET_NAME] || workbook.Sheets[0];
+        let rows = XLSX.utils.sheet_to_row_object_array(sheet);
         rows = rows.map((row) => parameterizeObjectKeys(row));
-        rows.forEach((row) => {
-          const applicant = new Applicant(
-            {
-              lastName: row[columnNames.last_name],
-              firstName: row[columnNames.first_name],
-              affiliationNumber: row[columnNames.affiliation_number],
-              role: row[columnNames.role],
-              title: row[columnNames.title],
-              address: columnNames.address && row[columnNames.address],
-              fullAddress: columnNames.full_address && row[columnNames.full_address],
-              email: columnNames.email && row[columnNames.email],
-              birthDate:
-                columnNames.birth_date &&
-                row[columnNames.birth_date] &&
-                excelDateToString(row[columnNames.birth_date]),
-              city: columnNames.city && row[columnNames.city],
-              postalCode: columnNames.postal_code && row[columnNames.postal_code],
-              phoneNumber: columnNames.phone_number && row[columnNames.phone_number],
-              birthName: columnNames.birth_name && row[columnNames.birth_name],
-              customId: columnNames.custom_id && row[columnNames.custom_id],
-            },
-            department.number,
-            configuration
-          );
-          applicantsFromList.push(applicant);
+        const fileCheck = checkColumnNames(Object.keys(rows[0]));
+        fileCheck.then((missingColumnNames) => {
+          if (missingColumnNames.length === 0) {
+            rows.forEach((row) => {
+              const applicant = new Applicant(
+                {
+                  lastName: row[columnNames.last_name],
+                  firstName: row[columnNames.first_name],
+                  affiliationNumber: row[columnNames.affiliation_number],
+                  role: row[columnNames.role],
+                  title: row[columnNames.title],
+                  address: columnNames.address && row[columnNames.address],
+                  fullAddress: columnNames.full_address && row[columnNames.full_address],
+                  email: columnNames.email && row[columnNames.email],
+                  birthDate:
+                    columnNames.birth_date &&
+                    row[columnNames.birth_date] &&
+                    excelDateToString(row[columnNames.birth_date]),
+                  city: columnNames.city && row[columnNames.city],
+                  postalCode: columnNames.postal_code && row[columnNames.postal_code],
+                  phoneNumber: columnNames.phone_number && row[columnNames.phone_number],
+                  birthName: columnNames.birth_name && row[columnNames.birth_name],
+                  customId: columnNames.custom_id && row[columnNames.custom_id],
+                },
+                department.number,
+                configuration
+              );
+              applicantsFromList.push(applicant);
+            });
+          };
         });
         resolve();
       };
@@ -104,6 +137,7 @@ export default function ApplicantsUpload({ department, configuration }) {
 
     dispatchApplicants({ type: "reset" });
     const applicantsFromList = await retrieveApplicantsFromList(file);
+    if (applicantsFromList.length === 0) return;
 
     const upToDateApplicants = await retrieveUpToDateApplicants(applicantsFromList);
 
