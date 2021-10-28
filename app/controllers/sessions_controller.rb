@@ -8,7 +8,7 @@ class SessionsController < ApplicationController
 
   def create
     if find_or_create_agent.success?
-      set_session(created_agent.id, session_params)
+      set_session
       render json: { success: true, redirect_path: session.delete(:agent_return_to) || departments_path }
     else
       render json: { success: false, errors: find_or_create_agent.errors }
@@ -31,6 +31,20 @@ class SessionsController < ApplicationController
 
   def created_agent
     find_or_create_agent.agent
+  end
+
+  def set_session
+    session[:agent_id] = created_agent.id
+    session[:rdv_solidarites] = {
+      client: session_params[:client],
+      uid: session_params[:uid],
+      access_token: session_params[:access_token]
+    }
+  end
+
+  def clear_session
+    session.delete(:agent_id)
+    @current_agent = nil
   end
 
   def session_params

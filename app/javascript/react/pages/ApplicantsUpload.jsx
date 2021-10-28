@@ -6,10 +6,10 @@ import Swal from "sweetalert2";
 import FileHandler from "../components/FileHandler";
 import ApplicantList from "../components/ApplicantList";
 
-import parameterizeObjectKeys from "../lib/parameterizeObjectKeys";
+import parameterizeObjectKeys from "../../lib/parameterizeObjectKeys";
 import searchApplicants from "../actions/searchApplicants";
-import { initReducer, reducerFactory } from "../lib/reducers";
-import { excelDateToString } from "../lib/datesHelper";
+import { initReducer, reducerFactory } from "../../lib/reducers";
+import { excelDateToString } from "../../lib/datesHelper";
 
 import Applicant from "../models/Applicant";
 
@@ -79,7 +79,7 @@ export default function ApplicantsUpload({ department, configuration }) {
   };
 
   const retrieveUpToDateApplicants = async (applicantsFromList) => {
-    const uids = applicantsFromList.map((applicant) => applicant.uid);
+    const uids = applicantsFromList.map((applicant) => applicant.uid).filter((uid) => uid);
     let upToDateApplicants = applicantsFromList;
 
     const retrievedApplicants = await retrieveApplicantsFromApp(uids);
@@ -87,7 +87,6 @@ export default function ApplicantsUpload({ department, configuration }) {
     upToDateApplicants = applicantsFromList.map((applicant) => {
       const upToDateApplicant = retrievedApplicants.find((a) => a.uid === applicant.uid);
       if (upToDateApplicant) {
-        console.log(upToDateApplicant);
         applicant.updateWith(upToDateApplicant);
       }
       return applicant;
@@ -155,7 +154,6 @@ export default function ApplicantsUpload({ department, configuration }) {
                     <th scope="col">Civilité</th>
                     <th scope="col">Prénom</th>
                     <th scope="col">Nom</th>
-                    <th scope="col">Adresse</th>
                     <th scope="col">Rôle</th>
                     {columnNames.birth_date && <th scope="col">Date de naissance</th>}
                     {columnNames.email && <th scope="col">Email</th>}
@@ -164,14 +162,17 @@ export default function ApplicantsUpload({ department, configuration }) {
                     <th scope="col">
                       Création compte
                     </th>
-                    {configuration.invitation_format === ("sms" || "sms_and_email") && (
+                    {console.log(configuration.invitation_format)}
+                    {(configuration.invitation_format === "sms" ||
+                      configuration.invitation_format === "sms_and_email") && (
                       <>
                         <th scope="col-3">
                           Invitation SMS
                         </th>
                       </>
                     )}
-                    {configuration.invitation_format === ("email" || "sms_and_email") && (
+                    {(configuration.invitation_format === "email" ||
+                      configuration.invitation_format === "sms_and_email") && (
                       <>
                         <th scope="col-3">
                           Invitation mail

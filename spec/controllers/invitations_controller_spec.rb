@@ -3,16 +3,15 @@ describe InvitationsController, type: :controller do
     let!(:applicant_id) { "24" }
     let!(:department) { create(:department) }
     let!(:agent) { create(:agent, departments: [department]) }
-    let!(:configuration) { create(:configuration, department: department) }
     let!(:applicant) { create(:applicant, department: department, id: applicant_id) }
-    let!(:invitation_format) { "sms" }
-    let!(:create_params) { { applicant_id: applicant_id, format: invitation_format } }
+    let!(:create_params) { { applicant_id: applicant_id, format: "sms" } }
 
     before do
       sign_in(agent)
       set_rdv_solidarites_session
       allow(Invitations::InviteApplicant).to receive(:call)
         .and_return(OpenStruct.new)
+      allow(Applicant).to receive(:includes).and_return(Applicant)
       allow(Applicant).to receive(:find)
         .and_return(applicant)
     end
@@ -28,7 +27,7 @@ describe InvitationsController, type: :controller do
         .with(
           applicant: applicant,
           rdv_solidarites_session: request.session[:rdv_solidarites],
-          invitation_format: invitation_format
+          invitation_format: "sms"
         )
       post :create, params: create_params
     end
@@ -75,20 +74,51 @@ describe InvitationsController, type: :controller do
   end
 
   describe "#redirect" do
+    subject { get :redirect, params: invite_params }
+
     let!(:applicant_id) { "24" }
     let!(:department) { create(:department) }
     let!(:applicant) { create(:applicant, department: department, id: applicant_id) }
-    let!(:invitation) { create(:invitation, applicant: applicant) }
-    let!(:invite_params) { { token: invitation.token } }
+    let!(:invitation) { create(:invitation, applicant: applicant, format: "sms") }
+    let!(:invitation2) { create(:invitation, applicant: applicant, format: "email") }
 
-    it "mark the invitation as seen" do
-      get :redirect, params: invite_params
-      expect(invitation.reload.seen).to eq(true)
+    context "when format is not specified" do
+      let!(:invite_params) { { token: invitation.token } }
+
+      it "marks the sms invitation as clicked" do
+        subject
+        expect(invitation.reload.clicked).to eq(true)
+        expect(invitation2.reload.clicked).to eq(false)
+      end
+
+      it "redirects to the invitation link" do
+        subject
+        expect(response).to redirect_to invitation.link
+      end
     end
 
-    it "redirects to the invitation link" do
-      get :redirect, params: invite_params
-      expect(response).to redirect_to invitation.link
+    context "when format is specified" do
+      let!(:invite_params) { { token: invitation.token, format: "email" } }
+
+      it "marks the matching format invitation as clicked" do
+        subject
+        expect(invitation2.reload.clicked).to eq(true)
+        expect(invitation.reload.clicked).to eq(false)
+      end
+
+      it "redirects to the invitation link" do
+        subject
+        expect(response).to redirect_to invitation2.link
+      end
+    end
+
+    context "when no invitation is retrieved" do
+      let!(:invitation) { create(:invitation, applicant: applicant, format: "email") }
+      let!(:invite_params) { { token: invitation.token } }
+
+      it "raises an error" do
+        expect { subject }.to raise_error(ActiveRecord::RecordNotFound)
+      end
     end
   end
 end

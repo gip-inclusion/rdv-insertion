@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :notification do
     event { "rdv_created" }
-    association :applicant
+    applicant { create(:applicant) }
   end
 end

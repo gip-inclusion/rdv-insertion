@@ -17,7 +17,7 @@ class NotifyApplicantJob < ApplicationJob
   end
 
   def already_notified?
-    Notification.where(rdv_solidarites_rdv_id: @rdv_solidarites_rdv.id, event: "rdv_#{@event}").present?
+    Notification.find_by(rdv_solidarites_rdv_id: @rdv_solidarites_rdv.id, event: "rdv_#{@event}")&.sent_at.present?
   end
 
   def send_already_notified_to_mattermost

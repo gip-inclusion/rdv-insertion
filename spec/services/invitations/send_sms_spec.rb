@@ -24,12 +24,16 @@ describe Invitations::SendSms, type: :service do
     )
   end
   let!(:invitation) do
-    create(:invitation, applicant: applicant, token: "123", link: "https://www.rdv-solidarites.fr/lieux?invitation_token=123")
+    create(
+      :invitation,
+      applicant: applicant, token: "123", link: "https://www.rdv-solidarites.fr/lieux?invitation_token=123",
+      format: "sms"
+    )
   end
 
   describe "#call" do
     let!(:content) do
-      "Monsieur John DOE,\nVous êtes nouveau bénéficiaire du RSA et vous allez à ce titre bénéficier d'un "\
+      "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous allez à ce titre bénéficier d'un "\
         "accompagnement obligatoire. Pour pouvoir choisir la date et l'horaire de votre premier RDV, "\
         "cliquez sur le lien suivant dans les 3 jours: http://www.rdv-insertion.fr/invitations/redirect?token=123\n"\
         "Passé ce délai, vous recevrez une convocation. En cas de problème technique, contactez le 0147200001."
@@ -56,6 +60,18 @@ describe Invitations::SendSms, type: :service do
 
       it "returns the error" do
         expect(subject.errors).to eq(["le téléphone doit être renseigné"])
+      end
+    end
+
+    context "when the invitation format is not sms" do
+      let!(:invitation) do
+        create(:invitation, applicant: applicant, format: "email")
+      end
+
+      it("is a failure") { is_a_failure }
+
+      it "returns the error" do
+        expect(subject.errors).to eq(["Envoi de SMS alors que le format est email"])
       end
     end
   end

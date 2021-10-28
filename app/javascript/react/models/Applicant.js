@@ -1,6 +1,5 @@
-import Swal from "sweetalert2";
-import formatPhoneNumber from "../lib/formatPhoneNumber";
-import retrieveLastInvitationDate from "../lib/retrieveLastInvitationDate";
+import formatPhoneNumber from "../../lib/formatPhoneNumber";
+import retrieveLastInvitationDate from "../../lib/retrieveLastInvitationDate";
 
 const ROLES = {
   dem: "demandeur",
@@ -30,9 +29,9 @@ export default class Applicant {
     this.city = formattedAttributes.city;
     this.postalCode = formattedAttributes.postalCode;
     this.fullAddress = formattedAttributes.fullAddress || this.formatAddress();
-    this.affiliationNumber = formattedAttributes.affiliationNumber;
-    this.phoneNumber = formatPhoneNumber(formattedAttributes.phoneNumber);
     this.customId = formattedAttributes.customId;
+    this.affiliationNumber = this.formatAffiliationNumber(formattedAttributes.affiliationNumber);
+    this.phoneNumber = formatPhoneNumber(formattedAttributes.phoneNumber);
     // CONJOINT/CONCUBIN/PACSE => conjoint
     const formattedRole = formattedAttributes.role?.split("/")?.shift()?.toLowerCase();
     this.role = ROLES[formattedRole] || formattedRole;
@@ -77,6 +76,17 @@ export default class Applicant {
     this._lastSmsInvitationSentAt = lastSmsInvitationSentAt;
   }
 
+  formatAffiliationNumber(affiliationNumber) {
+    if (affiliationNumber && [13, 15].includes(affiliationNumber.length)) {
+      // This means it is a NIR, we replace it by a custom ID if present
+      if (this.customId) {
+        return `CUS-${this.customId}`;
+      }
+      return null;
+    }
+    return affiliationNumber;
+  }
+
   updateWith(upToDateApplicant) {
     // we update the attributes if they are different in the app than in the file
     this.firstName = upToDateApplicant.first_name;
@@ -106,11 +116,17 @@ export default class Applicant {
   }
 
   shouldBeInvitedBySms() {
-    return this.departmentConfiguration.invitation_format === ("sms" || "sms_and_email");
+    return (this.departmentConfiguration.invitation_format === "sms" ||
+            this.departmentConfiguration.invitation_format === "sms_and_email");
   }
 
   shouldBeInvitedByEmail() {
-    return this.departmentConfiguration.invitation_format === ("email" || "sms_and_email");
+    return (this.departmentConfiguration.invitation_format === "email" ||
+            this.departmentConfiguration.invitation_format === "sms_and_email");
+  }
+
+  hasMissingAttributes() {
+    return [this.firstName, this.lastName, this.title].some((attribute) => !attribute);
   }
 
   generateUid() {
@@ -118,11 +134,6 @@ export default class Applicant {
 
     const attributeIsMissing = [this.affiliationNumber, this.role].some((attribute) => !attribute);
     if (attributeIsMissing) {
-      Swal.fire(
-        "Le numéro d'allocataire et le rôle doivent être renseignés pour créer un utilisateur",
-        "",
-        "error"
-      );
       return null;
     }
     return btoa(`${this.departmentNumber} - ${this.affiliationNumber} - ${this.role}`);

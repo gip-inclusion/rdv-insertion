@@ -6,11 +6,15 @@ class ApplicantsController < ApplicationController
   before_action :retrieve_applicants, only: [:search]
   before_action :set_department, only: [:index, :create]
 
+  include FilterableApplicantsConcern
+
   def index
+    authorize @department, :list_applicants?
     @applicants = @department.applicants.includes(:invitations, :rdvs)
-    @applicants = @applicants.search_by_text(params[:search_query]) if params[:search_query].present?
-    @applicants = @applicants.page(page).order(created_at: :desc)
-    authorize_applicants
+    @statuses_count = @applicants.group(:status).count
+    filter_applicants
+    @applicants = @applicants.order(created_at: :desc)
+
     # temporary solution to have up to date applicants with RDVS
     refresh_applicants
   end
@@ -50,7 +54,7 @@ class ApplicantsController < ApplicationController
 
   def refresh_applicants
     @refresh_applicants ||= RefreshApplicants.call(
-      applicants: @applicants,
+      applicants: @applicants.to_a,
       rdv_solidarites_session: rdv_solidarites_session
     )
   end

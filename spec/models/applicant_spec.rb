@@ -27,25 +27,14 @@ describe Applicant do
     end
   end
 
-  describe "uid uniqueness and presence" do
+  describe "uid uniqueness" do
     context "no collision" do
       let(:applicant) { build(:applicant, uid: '123') }
 
       it { expect(applicant).to be_valid }
     end
 
-    context "blank uid" do
-      let(:applicant) { build(:applicant, uid: "") }
-
-      it 'adds error' do
-        expect(applicant).not_to be_valid
-        expect(applicant.errors.details).to eq({ uid: [{ error: :blank }] })
-        expect(applicant.errors.full_messages.to_sentence)
-          .to include("Uid doit être rempli(e)")
-      end
-    end
-
-    context "colliding rdv_solidarites_user_id" do
+    context "colliding uid" do
       let!(:applicant_existing) { create(:applicant, uid: '123') }
       let(:applicant) { build(:applicant, uid: '123') }
 
@@ -202,6 +191,46 @@ describe Applicant do
 
         it "is rdv pending" do
           expect(subject).to eq(:rdv_needs_status_update)
+        end
+      end
+    end
+  end
+
+  describe "#action_required" do
+    subject { described_class.action_required }
+
+    context "when status requires action" do
+      let!(:applicant) { create(:applicant, status: "not_invited") }
+
+      it "retrieves the applicant" do
+        expect(subject).to include(applicant)
+      end
+    end
+
+    context "when status does not require action nor attention" do
+      let!(:applicant) { create(:applicant, last_name: "renard", status: "rdv_seen") }
+
+      it "does not retrieve the applicant" do
+        expect(subject).not_to include(applicant)
+      end
+    end
+
+    context "when status needs attention" do
+      let!(:applicant) { create(:applicant, last_name: "renard", status: "invitation_pending") }
+
+      context "when the applicant has been last invited less than 3 days ago" do
+        let!(:invitation) { create(:invitation, applicant: applicant, sent_at: 2.hours.ago) }
+
+        it "does not retrieve the applicant" do
+          expect(subject).not_to include(applicant)
+        end
+      end
+
+      context "when the applicant has been invited more than 3 days ago" do
+        let!(:invitation) { create(:invitation, applicant: applicant, sent_at: 5.days.ago) }
+
+        it "does not retrieve the applicant" do
+          expect(subject).to include(applicant)
         end
       end
     end

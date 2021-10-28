@@ -21,12 +21,8 @@ describe Invitations::InviteApplicant, type: :service do
     let!(:rdv_solidarites_user) { instance_double(RdvSolidarites::User) }
 
     before do
-      allow(Invitations::RetrieveToken).to receive(:call)
-        .and_return(OpenStruct.new(success?: true, invitation_token: token))
-      allow(Invitations::ComputeLink).to receive(:call)
-        .and_return(OpenStruct.new(success?: true, invitation_link: invitation_link))
-      allow(Invitation).to receive(:new).and_return(invitation)
-      allow(invitation).to receive(:save).and_return(true)
+      allow(Invitations::RetrieveOrCreate).to receive(:call)
+        .and_return(OpenStruct.new(success?: true, invitation: invitation))
       allow(invitation).to receive(:send_to_applicant)
         .and_return(OpenStruct.new(success?: true))
     end
@@ -35,29 +31,24 @@ describe Invitations::InviteApplicant, type: :service do
       is_a_success
     end
 
-    it "creates an invitation" do
-      expect(Invitation).to receive(:new)
-      expect(invitation).to receive(:save)
-      subject
-    end
-
-    it "returns the invitation" do
+    it "returns an invitation" do
       expect(subject.invitation).to eq(invitation)
     end
 
-    context "retrieves an invitation token" do
-      it "tries to retrieve an invitation token" do
-        expect(Invitations::RetrieveToken).to receive(:call)
+    context "tries to retrieve an invitation" do
+      it "calls the the retrieve_or_create_invitation service" do
+        expect(Invitations::RetrieveOrCreate).to receive(:call)
           .with(
-            rdv_solidarites_session: rdv_solidarites_session,
-            rdv_solidarites_user_id: rdv_solidarites_user_id
+            applicant: applicant,
+            invitation_format: invitation_format,
+            rdv_solidarites_session: rdv_solidarites_session
           )
         subject
       end
 
       context "when it fails" do
         before do
-          allow(Invitations::RetrieveToken).to receive(:call)
+          allow(Invitations::RetrieveOrCreate).to receive(:call)
             .and_return(OpenStruct.new(success?: false, errors: ["something happened"]))
         end
 
@@ -68,57 +59,14 @@ describe Invitations::InviteApplicant, type: :service do
         it "stores the error" do
           expect(subject.errors).to eq(["something happened"])
         end
-
-        it "does not create an invitation" do
-          expect { subject }.to change(Invitation, :count).by(0)
-        end
       end
     end
 
-    context "compute invitation link" do
-      it "tries to compute the invitation link" do
-        expect(Invitations::ComputeLink).to receive(:call)
-          .with(
-            rdv_solidarites_session: rdv_solidarites_session,
-            invitation_token: token,
-            department: department
-          )
-        subject
+    context "sends an invitation" do
+      before do
+        allow(applicant.invitations).to receive(:find_by).and_return(invitation)
       end
 
-      context "when it fails" do
-        before do
-          allow(Invitations::ComputeLink).to receive(:call)
-            .and_return(OpenStruct.new(success?: false, errors: ["something happened"]))
-        end
-
-        it "is a failure" do
-          is_a_failure
-        end
-
-        it "stores the error" do
-          expect(subject.errors).to eq(["something happened"])
-        end
-
-        it "does not create an invitation" do
-          expect { subject }.to change(Invitation, :count).by(0)
-        end
-      end
-    end
-
-    context "invitation creation" do
-      it "creates the invitation with the link and token" do
-        expect(Invitation).to receive(:new)
-          .with(
-            applicant: applicant, format: invitation_format,
-            token: token, link: invitation_link
-          )
-        expect(invitation).to receive(:save)
-        subject
-      end
-    end
-
-    context "sends invitation" do
       it "tries to send the invitation" do
         expect(invitation).to receive(:send_to_applicant)
         subject
@@ -150,6 +98,7 @@ describe Invitations::InviteApplicant, type: :service do
       let!(:time_it_was_sent) { Time.zone.now }
 
       before do
+        allow(applicant.invitations).to receive(:find_by).and_return(invitation)
         allow(Time.zone).to receive(:now).and_return(time_it_was_sent)
       end
 
