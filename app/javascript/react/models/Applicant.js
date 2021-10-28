@@ -1,5 +1,6 @@
 import Swal from "sweetalert2";
 import formatPhoneNumber from "../lib/formatPhoneNumber";
+import retrieveLastInvitationDate from "../lib/retrieveLastInvitationDate";
 
 const ROLES = {
   dem: "demandeur",
@@ -22,7 +23,7 @@ export default class Applicant {
     this.firstName = formattedAttributes.firstName;
     this.title =
       TITLES[formattedAttributes.title?.toLowerCase()] || formattedAttributes.title?.toLowerCase();
-    this.short_title = (this.title === "monsieur" ? "M" : "Mme");
+    this.shortTitle = (this.title === "monsieur" ? "M" : "Mme");
     this.email = formattedAttributes.email;
     this.birthDate = formattedAttributes.birthDate;
     this.birthName = formattedAttributes.birthName;
@@ -35,7 +36,7 @@ export default class Applicant {
     // CONJOINT/CONCUBIN/PACSE => conjoint
     const formattedRole = formattedAttributes.role?.split("/")?.shift()?.toLowerCase();
     this.role = ROLES[formattedRole] || formattedRole;
-    this.short_role = (this.role === "demandeur" ? "D" : "C");
+    this.shortRole = (this.role === "demandeur" ? "DEM" : "CJT");
     this.departmentNumber = departmentNumber;
     this.departmentConfiguration = departmentConfiguration;
   }
@@ -48,12 +49,12 @@ export default class Applicant {
     return this._createdAt;
   }
 
-  get emailInvitationSentAt() {
-    return this._emailInvitationSentAt;
+  get lastEmailInvitationSentAt() {
+    return this._lastEmailInvitationSentAt;
   }
 
-  get smsInvitationSentAt() {
-    return this._smsInvitationSentAt;
+  get lastSmsInvitationSentAt() {
+    return this._lastSmsInvitationSentAt;
   }
 
   get id() {
@@ -68,12 +69,12 @@ export default class Applicant {
     this._id = id;
   }
 
-  set emailInvitationSentAt(emailInvitationSentAt) {
-    this._emailInvitationSentAt = emailInvitationSentAt;
+  set lastEmailInvitationSentAt(lastEmailInvitationSentAt) {
+    this._lastEmailInvitationSentAt = lastEmailInvitationSentAt;
   }
 
-  set smsInvitationSentAt(smsInvitationSentAt) {
-    this._smsInvitationSentAt = smsInvitationSentAt;
+  set lastSmsInvitationSentAt(lastSmsInvitationSentAt) {
+    this._lastSmsInvitationSentAt = lastSmsInvitationSentAt;
   }
 
   updateWith(upToDateApplicant) {
@@ -86,8 +87,10 @@ export default class Applicant {
     this.createdAt = upToDateApplicant.created_at;
     this.invitedAt = upToDateApplicant.invited_at;
     this.id = upToDateApplicant.id;
-    this.smsInvitationSentAt = upToDateApplicant.sms_invitation_sent_at;
-    this.emailInvitationSentAt = upToDateApplicant.email_invitation_sent_at;
+    this.lastSmsInvitationSentAt =
+      retrieveLastInvitationDate(upToDateApplicant.invitations, "sms");
+    this.lastEmailInvitationSentAt =
+      retrieveLastInvitationDate(upToDateApplicant.invitations, "email");
   }
 
   formatAddress() {
@@ -102,8 +105,12 @@ export default class Applicant {
     return this.departmentConfiguration.column_names[attribute];
   }
 
-  shouldBeInvited() {
-    return this.departmentConfiguration.invitation_format !== "no_invitation";
+  shouldBeInvitedBySms() {
+    return this.departmentConfiguration.invitation_format === ("sms" || "sms_and_email");
+  }
+
+  shouldBeInvitedByEmail() {
+    return this.departmentConfiguration.invitation_format === ("email" || "sms_and_email");
   }
 
   generateUid() {

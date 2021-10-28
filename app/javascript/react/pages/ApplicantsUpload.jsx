@@ -87,6 +87,7 @@ export default function ApplicantsUpload({ department, configuration }) {
     upToDateApplicants = applicantsFromList.map((applicant) => {
       const upToDateApplicant = retrievedApplicants.find((a) => a.uid === applicant.uid);
       if (upToDateApplicant) {
+        console.log(upToDateApplicant);
         applicant.updateWith(upToDateApplicant);
       }
       return applicant;
@@ -121,8 +122,9 @@ export default function ApplicantsUpload({ department, configuration }) {
   return (
     <div className="container mt-5 mb-8">
       <div className="row mb-4 block-white justify-content-center">
-        <div className="col-4 text-center">
-          <h3>Ajout allocataires</h3>
+        <div className="col-4 text-center" />
+        <div className="col-4 text-center d-flex flex-column align-items-center">
+          <h3 className="new-applicants-title">Ajout allocataires</h3>
           <FileHandler
             handleFile={handleFile}
             fileSize={fileSize}
@@ -131,7 +133,6 @@ export default function ApplicantsUpload({ department, configuration }) {
             pendingMessage="Récupération des informations, merci de patienter"
           />
         </div>
-        <div className="col-4 text-center" />
         <div className="col-4 text-center d-flex align-items-center justify-content-end">
           <button
             type="submit"
@@ -163,11 +164,15 @@ export default function ApplicantsUpload({ department, configuration }) {
                     <th scope="col">
                       Création compte
                     </th>
-                    {configuration.invitation_format !== "no_invitation" && (
+                    {configuration.invitation_format === ("sms" || "sms_and_email") && (
                       <>
                         <th scope="col-3">
                           Invitation SMS
                         </th>
+                      </>
+                    )}
+                    {configuration.invitation_format === ("email" || "sms_and_email") && (
+                      <>
                         <th scope="col-3">
                           Invitation mail
                         </th>

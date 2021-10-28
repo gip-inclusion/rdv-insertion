@@ -30,9 +30,9 @@ export default function Applicant({ applicant, dispatchApplicants, department })
     if (result.success) {
       const { invitation } = result;
       if (invitationFormat === "sms") {
-        applicant.smsInvitationSentAt = invitation.sent_at;
+        applicant.lastSmsInvitationSentAt = invitation.sent_at;
       } else if (invitationFormat === "email") {
-        applicant.emailInvitationSentAt = invitation.sent_at;
+        applicant.lastEmailInvitationSentAt = invitation.sent_at;
       }
 
       dispatchApplicants({
@@ -62,11 +62,11 @@ export default function Applicant({ applicant, dispatchApplicants, department })
   return (
     <tr key={applicant.uid}>
       <td>{applicant.affiliationNumber}</td>
-      <td>{applicant.short_title}</td>
+      <td>{applicant.shortTitle}</td>
       <td>{applicant.firstName}</td>
       <td>{applicant.lastName}</td>
       <td>{applicant.fullAddress}</td>
-      <td>{applicant.short_role}</td>
+      <td>{applicant.shortRole}</td>
       {applicant.shouldDisplay("birth_date") && <td>{applicant.birthDate ?? " - "}</td>}
       {applicant.shouldDisplay("email") && <td>{applicant.email ?? " - "}</td>}
       {applicant.shouldDisplay("phone_number") && <td>{applicant.phoneNumber ?? " - "}</td>}
@@ -84,14 +84,14 @@ export default function Applicant({ applicant, dispatchApplicants, department })
           </button>
         }
       </td>
-      {applicant.shouldBeInvited() && (
+      {applicant.shouldBeInvitedBySms() && (
         <>
           <td>
-            {applicant.smsInvitationSentAt ?
+            {applicant.lastSmsInvitationSentAt ?
               <i className="fas fa-check green-check" /> :
               <button
                 type="submit"
-                disabled={isLoading.sms_invitation}
+                disabled={isLoading.sms_invitation || !applicant.createdAt || !applicant.phoneNumber}
                 className="btn btn-primary btn-blue"
                 onClick={() => handleClick("sms_invitation")}
               >
@@ -99,12 +99,16 @@ export default function Applicant({ applicant, dispatchApplicants, department })
               </button>
             }
           </td>
+        </>
+      )}
+      {applicant.shouldBeInvitedByEmail() && (
+        <>
           <td>
-            {applicant.emailInvitationSentAt ?
+            {applicant.lastEmailInvitationSentAt ?
               <i className="fas fa-check green-check" /> :
               <button
                 type="submit"
-                disabled={isLoading.email_invitation}
+                disabled={isLoading.email_invitation || !applicant.createdAt || !applicant.email}
                 className="btn btn-primary btn-blue"
                 onClick={() => handleClick("email_invitation")}
               >

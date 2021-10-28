@@ -50,9 +50,8 @@ class Applicant < ApplicationRecord
 
   def as_json(_opts = {})
     super.merge(
-      created_at: created_at&.to_date&.strftime("%d/%m/%Y"),
-      sms_invitation_sent_at: last_sms_invitation_sent_at&.to_date&.strftime("%d/%m/%Y"),
-      email_invitation_sent_at: last_email_invitation_sent_at&.to_date&.strftime("%d/%m/%Y")
+      created_at: created_at,
+      invitations: invitations
     )
   end
 end
