@@ -5,9 +5,11 @@ import createApplicant from "../actions/createApplicant";
 import inviteApplicant from "../actions/inviteApplicant";
 
 export default function Applicant({ applicant, dispatchApplicants, department }) {
-  const [isLoading, setIsLoading] = useState(
-    {account_creation: false, sms_invitation: false, email_invitation: false}
-  );
+  const [isLoading, setIsLoading] = useState({
+    account_creation: false,
+    sms_invitation: false,
+    email_invitation: false,
+  });
 
   const displayDuplicationWarning = async () => {
     let warningMessage = "";
@@ -78,7 +80,7 @@ export default function Applicant({ applicant, dispatchApplicants, department })
   };
 
   const handleClick = async (action) => {
-    setIsLoading({...isLoading, [action]: true});
+    setIsLoading({ ...isLoading, [action]: true });
     if (action === "account_creation") {
       await handleApplicantCreation();
     } else if (action === "sms_invitation") {
@@ -86,7 +88,7 @@ export default function Applicant({ applicant, dispatchApplicants, department })
     } else if (action === "email_invitation") {
       await handleApplicantInvitation("email");
     }
-    setIsLoading({...isLoading, [action]: false});
+    setIsLoading({ ...isLoading, [action]: false });
   };
 
   return (
@@ -101,8 +103,9 @@ export default function Applicant({ applicant, dispatchApplicants, department })
       {applicant.shouldDisplay("phone_number") && <td>{applicant.phoneNumber ?? " - "}</td>}
       {applicant.shouldDisplay("custom_id") && <td>{applicant.customId ?? " - "}</td>}
       <td>
-        {applicant.createdAt ?
-          <i className="fas fa-check green-check" /> :
+        {applicant.createdAt ? (
+          <i className="fas fa-check green-check" />
+        ) : (
           <button
             type="submit"
             disabled={isLoading.account_creation}
@@ -111,13 +114,14 @@ export default function Applicant({ applicant, dispatchApplicants, department })
           >
             {isLoading.account_creation ? "Création..." : "Créer compte"}
           </button>
-        }
+        )}
       </td>
       {applicant.shouldBeInvitedBySms() && (
         <>
           <td>
-            {applicant.lastSmsInvitationSentAt ?
-              <i className="fas fa-check green-check" /> :
+            {applicant.lastSmsInvitationSentAt ? (
+              <i className="fas fa-check green-check" />
+            ) : (
               <button
                 type="submit"
                 disabled={isLoading.sms_invitation || !applicant.createdAt || !applicant.phoneNumber}
@@ -126,15 +130,16 @@ export default function Applicant({ applicant, dispatchApplicants, department })
               >
                 {isLoading.sms_invitation ? "Invitation..." : "Inviter par SMS"}
               </button>
-            }
+            )}
           </td>
         </>
       )}
       {applicant.shouldBeInvitedByEmail() && (
         <>
           <td>
-            {applicant.lastEmailInvitationSentAt ?
-              <i className="fas fa-check green-check" /> :
+            {applicant.lastEmailInvitationSentAt ? (
+              <i className="fas fa-check green-check" />
+            ) : (
               <button
                 type="submit"
                 disabled={isLoading.email_invitation || !applicant.createdAt || !applicant.email}
@@ -143,7 +148,7 @@ export default function Applicant({ applicant, dispatchApplicants, department })
               >
                 {isLoading.email_invitation ? "Invitation..." : "Inviter par mail"}
               </button>
-            }
+            )}
           </td>
         </>
       )}
