@@ -10,4 +10,8 @@ class ApplicantPolicy < ApplicationPolicy
   def invite?
     search?
   end
+
+  def show?
+    search?
+  end
 end

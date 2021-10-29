@@ -20,7 +20,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :applicants, only: [] do
+  resources :applicants, only: [:show] do
     post :search, on: :collection
     resources :invitations, only: [:create]
   end

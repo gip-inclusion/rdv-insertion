@@ -31,11 +31,72 @@ module ApplicantsHelper
 
   def background_class_for_status(applicant)
     if applicant.action_required?
-      applicant.attention_needed? ? "bg-warning border-warning" : "text-white bg-danger border-danger"
+      applicant.attention_needed? ? "bg-warning border-warning" : "bg-danger border-danger"
     elsif applicant.rdv_seen?
       "text-white bg-success border-success"
     else
       ""
     end
+  end
+
+  def bg_for_account_creation(applicant)
+    applicant.created_at ? "" : "bg-danger"
+  end
+
+  def bg_for_invitation_date(applicant, format)
+    date = get_invitation_date(applicant, format)
+
+    if applicant.invited_before_time_window? && date
+      "bg-warning"
+    elsif date && applicant.rdvs.empty?
+      "bg-success"
+    elsif !applicant.last_email_invitation_sent_at && !applicant.last_sms_invitation_sent_at
+      "bg-danger"
+    end
+  end
+
+  def get_invitation_date(applicant, format)
+    if format == "sms"
+      applicant.last_sms_invitation_sent_at
+    else
+      applicant.last_email_invitation_sent_at
+    end
+  end
+
+  def display_notice(applicant)
+    applicant.invited_before_time_window? ? " (Délai dépassé)" : ""
+  end
+
+  def account_creation_date(applicant)
+    applicant.created_at ? format_date(applicant.created_at) : "-"
+  end
+
+  def class_for_account_creation_button(applicant)
+    applicant.created_at ? "disabled" : ""
+  end
+
+  def last_sms_invitation_date(applicant)
+    applicant.last_sms_invitation_sent_at ? format_date(applicant.last_sms_invitation_sent_at) : "-"
+  end
+
+  def last_email_invitation_date(applicant)
+    applicant.last_email_invitation_sent_at ? format_date(applicant.last_email_invitation_sent_at) : "-"
+  end
+
+  def class_for_invitation_button(applicant)
+    applicant.rdvs.any? && !applicant.action_required? ? "disabled" : ""
+  end
+
+  def text_for_invitation_button(applicant, format)
+    date = get_invitation_date(applicant, format)
+    date ? "Relancer" : "Inviter"
+  end
+
+  def last_rdv_creation_date(applicant)
+    applicant.rdvs.last ? applicant.rdvs.last.created_at : "-"
+  end
+
+  def last_rdv_date(applicant)
+    applicant.rdvs.last ? applicant.rdvs.last&.formatted_start_date : "-"
   end
 end

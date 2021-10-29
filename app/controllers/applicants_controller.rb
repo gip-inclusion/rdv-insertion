@@ -5,6 +5,7 @@ class ApplicantsController < ApplicationController
   ].freeze
   before_action :retrieve_applicants, only: [:search]
   before_action :set_department, only: [:index, :create]
+  before_action :set_applicant, only: [:show]
 
   include FilterableApplicantsConcern
 
@@ -17,6 +18,10 @@ class ApplicantsController < ApplicationController
 
     # temporary solution to have up to date applicants with RDVS
     refresh_applicants
+  end
+
+  def show
+    authorize @applicant
   end
 
   def search
@@ -71,5 +76,9 @@ class ApplicantsController < ApplicationController
 
   def set_department
     @department = Department.includes(:applicants, :configuration).find(params[:department_id])
+  end
+
+  def set_applicant
+    @applicant = Applicant.find(params[:id])
   end
 end
