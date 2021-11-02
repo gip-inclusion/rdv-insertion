@@ -6,9 +6,9 @@ import inviteApplicant from "../actions/inviteApplicant";
 
 export default function Applicant({ applicant, dispatchApplicants, department }) {
   const [isLoading, setIsLoading] = useState({
-    account_creation: false,
-    sms_invitation: false,
-    email_invitation: false,
+    accountCreation: false,
+    smsInvitation: false,
+    emailInvitation: false,
   });
 
   const displayDuplicationWarning = async () => {
@@ -81,11 +81,11 @@ export default function Applicant({ applicant, dispatchApplicants, department })
 
   const handleClick = async (action) => {
     setIsLoading({ ...isLoading, [action]: true });
-    if (action === "account_creation") {
+    if (action === "accountCreation") {
       await handleApplicantCreation();
-    } else if (action === "sms_invitation") {
+    } else if (action === "smsInvitation") {
       await handleApplicantInvitation("sms");
-    } else if (action === "email_invitation") {
+    } else if (action === "emailInvitation") {
       await handleApplicantInvitation("email");
     }
     setIsLoading({ ...isLoading, [action]: false });
@@ -108,11 +108,11 @@ export default function Applicant({ applicant, dispatchApplicants, department })
         ) : (
           <button
             type="submit"
-            disabled={isLoading.account_creation}
+            disabled={isLoading.accountCreation}
             className="btn btn-primary btn-blue"
-            onClick={() => handleClick("account_creation")}
+            onClick={() => handleClick("accountCreation")}
           >
-            {isLoading.account_creation ? "Création..." : "Créer compte"}
+            {isLoading.accountCreation ? "Création..." : "Créer compte"}
           </button>
         )}
       </td>
@@ -124,11 +124,11 @@ export default function Applicant({ applicant, dispatchApplicants, department })
             ) : (
               <button
                 type="submit"
-                disabled={isLoading.sms_invitation || !applicant.createdAt || !applicant.phoneNumber}
+                disabled={isLoading.smsInvitation || !applicant.createdAt || !applicant.phoneNumber}
                 className="btn btn-primary btn-blue"
-                onClick={() => handleClick("sms_invitation")}
+                onClick={() => handleClick("smsInvitation")}
               >
-                {isLoading.sms_invitation ? "Invitation..." : "Inviter par SMS"}
+                {isLoading.smsInvitation ? "Invitation..." : "Inviter par SMS"}
               </button>
             )}
           </td>
@@ -142,11 +142,11 @@ export default function Applicant({ applicant, dispatchApplicants, department })
             ) : (
               <button
                 type="submit"
-                disabled={isLoading.email_invitation || !applicant.createdAt || !applicant.email}
+                disabled={isLoading.emailInvitation || !applicant.createdAt || !applicant.email}
                 className="btn btn-primary btn-blue"
-                onClick={() => handleClick("email_invitation")}
+                onClick={() => handleClick("emailInvitation")}
               >
-                {isLoading.email_invitation ? "Invitation..." : "Inviter par mail"}
+                {isLoading.emailInvitation ? "Invitation..." : "Inviter par mail"}
               </button>
             )}
           </td>
