@@ -6,7 +6,8 @@ import Swal from "sweetalert2";
 import FileHandler from "../components/FileHandler";
 import ApplicantList from "../components/ApplicantList";
 
-import parameterizeObjectKeys from "../../lib/parameterizeObjectKeys";
+import { parameterizeObjectKeys, parameterizeObjectValues } from "../../lib/parameterize";
+import flattenObject from "../../lib/flatten";
 import getKeyByValue from "../../lib/getKeyByValue";
 import searchApplicants from "../actions/searchApplicants";
 import { initReducer, reducerFactory } from "../../lib/reducers";
@@ -19,6 +20,8 @@ const reducer = reducerFactory("Expérimentation RSA");
 export default function ApplicantsUpload({ department, configuration }) {
   const SHEET_NAME = configuration.sheet_name;
   const columnNames = configuration.column_names;
+  const parameterizedColumnNames = parameterizeObjectValues(flattenObject(columnNames));
+  const requiredColumns = parameterizeObjectValues(columnNames.required);
 
   const [fileSize, setFileSize] = useState(0);
   const [applicants, dispatchApplicants] = useReducer(reducer, [], initReducer);
@@ -26,15 +29,15 @@ export default function ApplicantsUpload({ department, configuration }) {
   const checkColumnNames = (uploadedColumnNames) => {
     const missingColumnNames = [];
 
-    const expectedColumnNames = Object.values(columnNames);
+    const expectedColumnNames = Object.values(requiredColumns);
     const missingColumns =
       expectedColumnNames.filter(colName => !uploadedColumnNames.includes(colName));
 
     if (missingColumns.length > 0) {
       // Récupère les noms "humains" des colonnes manquantes
       missingColumns.forEach((col) => {
-        const missingAttribute = getKeyByValue(columnNames, col);
-        const missingColumnName = configuration.human_column_names[missingAttribute];
+        const missingAttribute = getKeyByValue(requiredColumns, col);
+        const missingColumnName = configuration.column_names.required[missingAttribute];
         missingColumnNames.push(missingColumnName);
       });
 
@@ -64,23 +67,28 @@ export default function ApplicantsUpload({ department, configuration }) {
           rows.forEach((row) => {
             const applicant = new Applicant(
               {
-                lastName: row[columnNames.last_name],
-                firstName: row[columnNames.first_name],
-                affiliationNumber: row[columnNames.affiliation_number],
-                role: row[columnNames.role],
-                title: row[columnNames.title],
-                address: columnNames.address && row[columnNames.address],
-                fullAddress: columnNames.full_address && row[columnNames.full_address],
-                email: columnNames.email && row[columnNames.email],
+                lastName: row[parameterizedColumnNames.last_name],
+                firstName: row[parameterizedColumnNames.first_name],
+                affiliationNumber: row[parameterizedColumnNames.affiliation_number],
+                role: row[parameterizedColumnNames.role],
+                title: row[parameterizedColumnNames.title],
+                address: parameterizedColumnNames.address && row[parameterizedColumnNames.address],
+                fullAddress: parameterizedColumnNames.full_address
+                  && row[parameterizedColumnNames.full_address],
+                email: parameterizedColumnNames.email && row[parameterizedColumnNames.email],
                 birthDate:
-                  columnNames.birth_date &&
-                  row[columnNames.birth_date] &&
-                  excelDateToString(row[columnNames.birth_date]),
-                city: columnNames.city && row[columnNames.city],
-                postalCode: columnNames.postal_code && row[columnNames.postal_code],
-                phoneNumber: columnNames.phone_number && row[columnNames.phone_number],
-                birthName: columnNames.birth_name && row[columnNames.birth_name],
-                customId: columnNames.custom_id && row[columnNames.custom_id],
+                  parameterizedColumnNames.birth_date &&
+                  row[parameterizedColumnNames.birth_date] &&
+                  excelDateToString(row[parameterizedColumnNames.birth_date]),
+                city: parameterizedColumnNames.city && row[parameterizedColumnNames.city],
+                postalCode: parameterizedColumnNames.postal_code
+                  && row[parameterizedColumnNames.postal_code],
+                phoneNumber: parameterizedColumnNames.phone_number
+                  && row[parameterizedColumnNames.phone_number],
+                birthName: parameterizedColumnNames.birth_name
+                  && row[parameterizedColumnNames.birth_name],
+                customId: parameterizedColumnNames.custom_id
+                  && row[parameterizedColumnNames.custom_id],
               },
               department.number,
               configuration

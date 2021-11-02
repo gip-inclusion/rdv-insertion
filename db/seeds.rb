@@ -26,28 +26,21 @@ Configuration.create!(
   invitation_format: "sms",
   department_id: Department.last.id,
   column_names: {
-    "address"=>"adresse",
-    "last_name"=>"nom-beneficiaire",
-    "first_name"=>"prenom-beneficiaire",
-    "email"=>"adresses-mails",
-    "birth_date"=>"date-de-naissance",
-    "postal_code"=>"cp-ville",
-    "affiliation_number"=>"numero-allocataire",
-    "role"=>"role",
-    "phone_number"=>"numero-telephones",
-    "title"=>"civilite"
-  }
-  human_column_names: {
-    "address"=>"Adresse",
-    "last_name"=>"Nom bénéficiaire",
-    "first_name"=>"Prénom bénéficiaire",
-    "email"=>"Adresses mails",
-    "birth_date"=>"Date de naissance",
-    "postal_code"=>"CP Ville",
-    "affiliation_number"=>"N° Allocataire",
-    "role"=>"Rôle",
-    "phone_number"=>"N° Téléphones",
-    "title"=>"Civilité"
+    required: {
+      "address"=>"Adresse",
+      "last_name"=>"Nom bénéficiaire",
+      "first_name"=>"Prénom bénéficiaire",
+      "email"=>"Adresses mails",
+      "birth_date"=>"Date de naissance",
+      "postal_code"=>"CP Ville",
+      "affiliation_number"=>"N° Allocataire",
+      "role"=>"Rôle",
+      "phone_number"=>"N° Téléphones",
+      "title"=>"Civilité"
+    },
+    optionnal: {
+      "custom_id"=>"code-individu-iodas"
+    }
   }
 )
 
