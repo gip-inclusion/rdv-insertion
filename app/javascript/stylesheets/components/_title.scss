@@ -1,6 +1,7 @@
 .welcome-title {
   color: $dark-blue;
-  max-width: 500px;
+  display: flex;
+  align-items: center;
   margin-bottom: 20px;
 
   h1 {
