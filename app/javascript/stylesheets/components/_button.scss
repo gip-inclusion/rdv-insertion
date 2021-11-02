@@ -12,3 +12,24 @@
   background-color:  $light-grey;
 }
 
+.btn-blue {
+  background-color: $dark-blue;
+  border-color: $dark-blue;
+  color: white;
+  min-width: 90px;
+  &:hover, &:disabled {
+    color: white;
+    border-color: $dark-blue-dim;
+    background-color: $dark-blue-dim;
+  }
+}
+
+.btn-blue-out {
+  border-color: $dark-blue;
+  background-color: white;
+  color: $dark-blue;
+  &:hover {
+    background-color: $dark-blue;
+    color: white;
+  }
+}

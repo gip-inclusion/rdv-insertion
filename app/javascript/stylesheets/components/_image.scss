@@ -1,0 +1,14 @@
+.welcome-illustration {
+  width: 100%;
+}
+
+.welcome-illustration-sm {
+  height: 100px;
+}
+
+@media (max-width: 350px) {
+  .rdvi-logo{
+    width: 150px;
+  }
+}
+
