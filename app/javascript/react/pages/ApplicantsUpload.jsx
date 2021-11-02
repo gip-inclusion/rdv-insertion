@@ -15,7 +15,7 @@ import Applicant from "../models/Applicant";
 
 const reducer = reducerFactory("Expérimentation RSA");
 
-export default function ApplicantsUpload({ organisation, configuration }) {
+export default function ApplicantsUpload({ organisation, configuration, department }) {
   const SHEET_NAME = configuration.sheet_name;
   const columnNames = configuration.column_names;
 
@@ -52,7 +52,7 @@ export default function ApplicantsUpload({ organisation, configuration }) {
               birthName: columnNames.birth_name && row[columnNames.birth_name],
               customId: columnNames.custom_id && row[columnNames.custom_id],
             },
-            organisation.number,
+            department.number,
             configuration
           );
           applicantsFromList.push(applicant);

@@ -7,8 +7,8 @@
       <div class="row">
         <h5 class="text-center">
           <%= @organisation.name %>
-          <% if image_compiled?("maps/#{@organisation.name.parameterize}.svg") %>
-            <%= image_pack_tag("maps/#{@organisation.name.parameterize}.svg", alt: @organisation.name.parameterize, width: 50, height: 50) %>
+          <% if image_compiled?("maps/#{@organisation.department_name.parameterize}.svg") %>
+            <%= image_pack_tag("maps/#{@organisation.department_name.parameterize}.svg", alt: @organisation.department_name.parameterize, width: 50, height: 50) %>
           <% end %>
         </h5>
       </div>

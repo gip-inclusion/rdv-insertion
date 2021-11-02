@@ -24,8 +24,9 @@ describe Notifications::RdvCreated, type: :service do
       formatted_start_time: starts_at.to_datetime.strftime('%H:%M')
     )
   end
+  let!(:department) { create(:department, name: "Yonne", number: "89") }
   let!(:organisation) do
-    create(:organisation, phone_number: "0147200001", name: "Yonne", number: "89")
+    create(:organisation, phone_number: "0147200001", department: department)
   end
   let!(:notification) { create(:notification, applicant: applicant) }
   let!(:lieu) { OpenStruct.new(name: "DINUM", address: "20 avenue de Ségur 75011 PARIS") }
