@@ -23,7 +23,7 @@ export default function ApplicantsUpload({ department, configuration }) {
   const [fileSize, setFileSize] = useState(0);
   const [applicants, dispatchApplicants] = useReducer(reducer, [], initReducer);
 
-  const checkColumnNames = async (uploadedColumnNames) => {
+  const checkColumnNames = (uploadedColumnNames) => {
     const missingColumnNames = [];
 
     const expectedColumnNames = Object.values(columnNames);
@@ -59,37 +59,35 @@ export default function ApplicantsUpload({ department, configuration }) {
         const sheet = workbook.Sheets[SHEET_NAME] || workbook.Sheets[0];
         let rows = XLSX.utils.sheet_to_row_object_array(sheet);
         rows = rows.map((row) => parameterizeObjectKeys(row));
-        const fileCheck = checkColumnNames(Object.keys(rows[0]));
-        fileCheck.then((missingColumnNames) => {
-          if (missingColumnNames.length === 0) {
-            rows.forEach((row) => {
-              const applicant = new Applicant(
-                {
-                  lastName: row[columnNames.last_name],
-                  firstName: row[columnNames.first_name],
-                  affiliationNumber: row[columnNames.affiliation_number],
-                  role: row[columnNames.role],
-                  title: row[columnNames.title],
-                  address: columnNames.address && row[columnNames.address],
-                  fullAddress: columnNames.full_address && row[columnNames.full_address],
-                  email: columnNames.email && row[columnNames.email],
-                  birthDate:
-                    columnNames.birth_date &&
-                    row[columnNames.birth_date] &&
-                    excelDateToString(row[columnNames.birth_date]),
-                  city: columnNames.city && row[columnNames.city],
-                  postalCode: columnNames.postal_code && row[columnNames.postal_code],
-                  phoneNumber: columnNames.phone_number && row[columnNames.phone_number],
-                  birthName: columnNames.birth_name && row[columnNames.birth_name],
-                  customId: columnNames.custom_id && row[columnNames.custom_id],
-                },
-                department.number,
-                configuration
-              );
-              applicantsFromList.push(applicant);
-            });
-          };
-        });
+        const missingColumnNames = checkColumnNames(Object.keys(rows[0]));
+        if (missingColumnNames.length === 0) {
+          rows.forEach((row) => {
+            const applicant = new Applicant(
+              {
+                lastName: row[columnNames.last_name],
+                firstName: row[columnNames.first_name],
+                affiliationNumber: row[columnNames.affiliation_number],
+                role: row[columnNames.role],
+                title: row[columnNames.title],
+                address: columnNames.address && row[columnNames.address],
+                fullAddress: columnNames.full_address && row[columnNames.full_address],
+                email: columnNames.email && row[columnNames.email],
+                birthDate:
+                  columnNames.birth_date &&
+                  row[columnNames.birth_date] &&
+                  excelDateToString(row[columnNames.birth_date]),
+                city: columnNames.city && row[columnNames.city],
+                postalCode: columnNames.postal_code && row[columnNames.postal_code],
+                phoneNumber: columnNames.phone_number && row[columnNames.phone_number],
+                birthName: columnNames.birth_name && row[columnNames.birth_name],
+                customId: columnNames.custom_id && row[columnNames.custom_id],
+              },
+              department.number,
+              configuration
+            );
+            applicantsFromList.push(applicant);
+          });
+        };
         resolve();
       };
       reader.readAsBinaryString(file);
