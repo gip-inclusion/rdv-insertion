@@ -9,7 +9,9 @@ describe Invitations::RetrieveOrCreate, type: :service do
   let!(:invitation_format) { "sms" }
   let!(:rdv_solidarites_user_id) { 14 }
   let!(:organisation) { create(:organisation) }
-  let!(:applicant) { create(:applicant, organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id) }
+  let!(:applicant) do
+    create(:applicant, organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id)
+  end
   let!(:rdv_solidarites_session) do
     { client: "client", uid: "johndoe@example.com", access_token: "token" }
   end
