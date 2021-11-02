@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_21_190749) do
+ActiveRecord::Schema.define(version: 2021_11_02_161424) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,12 +20,6 @@ ActiveRecord::Schema.define(version: 2021_10_21_190749) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["email"], name: "index_agents_on_email", unique: true
-  end
-
-  create_table "agents_departments", id: false, force: :cascade do |t|
-    t.bigint "department_id", null: false
-    t.bigint "agent_id", null: false
-    t.index ["department_id", "agent_id"], name: "index_agents_departments_on_department_id_and_agent_id", unique: true
   end
 
   create_table "agents_organisations", id: false, force: :cascade do |t|
@@ -56,12 +50,6 @@ ActiveRecord::Schema.define(version: 2021_10_21_190749) do
     t.index ["uid"], name: "index_applicants_on_uid", unique: true
   end
 
-  create_table "applicants_departments", id: false, force: :cascade do |t|
-    t.bigint "department_id", null: false
-    t.bigint "applicant_id", null: false
-    t.index ["department_id", "applicant_id"], name: "index_applicants_departments_on_department_id_and_applicant_id", unique: true
-  end
-
   create_table "applicants_organisations", id: false, force: :cascade do |t|
     t.bigint "organisation_id", null: false
     t.bigint "applicant_id", null: false
@@ -89,12 +77,9 @@ ActiveRecord::Schema.define(version: 2021_10_21_190749) do
     t.string "name"
     t.string "number"
     t.string "capital"
-    t.integer "rdv_solidarites_organisation_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "region"
-    t.string "phone_number"
-    t.index ["rdv_solidarites_organisation_id"], name: "index_departments_on_rdv_solidarites_organisation_id", unique: true
   end
 
   create_table "invitations", force: :cascade do |t|
@@ -131,6 +116,8 @@ ActiveRecord::Schema.define(version: 2021_10_21_190749) do
     t.integer "rdv_solidarites_organisation_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "department_id"
+    t.index ["department_id"], name: "index_organisations_on_department_id"
     t.index ["rdv_solidarites_organisation_id"], name: "index_organisations_on_rdv_solidarites_organisation_id", unique: true
   end
 
@@ -159,5 +146,6 @@ ActiveRecord::Schema.define(version: 2021_10_21_190749) do
   add_foreign_key "invitations", "applicants"
   add_foreign_key "invitations", "organisations"
   add_foreign_key "notifications", "applicants"
+  add_foreign_key "organisations", "departments"
   add_foreign_key "rdvs", "organisations"
 end
