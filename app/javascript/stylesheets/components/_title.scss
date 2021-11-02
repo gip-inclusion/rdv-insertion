@@ -10,3 +10,12 @@
   font-weight: 700;
   }
 }
+
+@media (max-width: 500px) {
+  .welcome-title {
+    h1 {
+      font-size: 34px;
+      line-height: 40px;
+    }
+  }
+}
