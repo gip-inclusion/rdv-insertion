@@ -21,7 +21,7 @@ describe UploadsController, type: :controller do
 
       it "redirects the agent" do
         get :new, params: { department_id: department.id }
-        expect(response).to redirect_to(root_path)
+        expect(response).to redirect_to(home_path)
         expect(flash[:alert]).to include("Votre compte ne vous permet pas d'effectuer cette action")
       end
     end
