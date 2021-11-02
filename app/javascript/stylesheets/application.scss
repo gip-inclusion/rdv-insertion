@@ -1,5 +1,6 @@
 @import "bootstrap";
 @import "./_variables";
+@import "./_fonts";
 @import "./pages/department";
 @import "./pages/applicants";
 @import "./components/navbar";
@@ -8,6 +9,9 @@
 @import "./components/form";
 @import "./components/button";
 @import "./components/pagination";
+@import "./components/image";
+@import "./components/title";
+@import "./components/color";
 @import "./fontawesome_imports";
 @import 'tippy.js/dist/tippy.css';
 
@@ -16,8 +20,8 @@ html {
   min-height: 100%;
 }
 
-.container {
-  margin-bottom: 100px;
+.container, .container-fluid {
+  margin-bottom: 85px;
 }
 
 a {

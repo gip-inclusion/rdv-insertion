@@ -1,7 +1,7 @@
 <header>
   <nav class="navbar px-3 navbar-expand-lg">
     <%= link_to root_path do  %>
-      <%= image_pack_tag "logos/rdv-insertion.png", alt: "Logo rdv insertion" %>
+      <%= image_pack_tag "logos/rdv-insertion.png", class: "rdvi-logo", alt: "Logo rdv insertion" %>
     <% end %>
     <div class="nav justify-content-around">
       <% if logged_in? %>
@@ -14,12 +14,18 @@
           <% end %>
         </div>
       <% end %>
-      <div class="ml-5">
-        <% if logged_in? %>
-          <%= image_pack_tag "logos/republique-francaise-logo.svg", height: 50, alt: "République francaise", class: "d-none d-sm-inline navbar-france-logo" %>
-        <% else %>
-          <%= image_pack_tag "logos/republique-francaise-logo.svg", height: 50, alt: "République francaise", class: "navbar-france-logo" %>
+      <div class="ml-5 d-flex align-items-center">
+        <% unless logged_in? || controller.controller_name.include?("sessions") %>
+          <div class="text-center mx-3 col">
+            <%= link_to sign_in_path do %>
+              <button class="btn btn-default btn-blue w-100 ">
+                <span class="d-none d-sm-inline">Connexion agent</span>
+                <span class="d-inline d-sm-none">Connexion</span>
+              </button>
+            <% end %>
+          </div>
         <% end %>
+        <%= image_pack_tag "logos/republique-francaise-logo.svg", height: 50, alt: "République francaise", class: "d-none d-sm-inline navbar-france-logo" %>
       </div>
     </div>
   </nav>
