@@ -12,7 +12,6 @@ end
 
 Rails.application.routes.draw do
   root "static_pages#welcome"
-  get '/home', to: "static_pages#home", as: :home
   resources :departments, only: [:index] do
     resources :applicants, only: [:index, :create] do
       collection do

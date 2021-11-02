@@ -9,15 +9,6 @@ describe StaticPagesController, type: :controller do
       get :welcome
       expect(response).to be_successful
     end
-  end
-
-  describe "GET #home" do
-    context "when the user is not logged in" do
-      it "redirects to the root_path" do
-        get :home
-        expect(response).to redirect_to(root_path)
-      end
-    end
 
     context "when the user is logged in" do
       before do
@@ -25,7 +16,7 @@ describe StaticPagesController, type: :controller do
       end
 
       it "redirects to the departments_path" do
-        get :home
+        get :welcome
         expect(response).to redirect_to(departments_path)
       end
     end

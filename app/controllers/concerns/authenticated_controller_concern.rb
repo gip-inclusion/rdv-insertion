@@ -34,7 +34,7 @@ module AuthenticatedControllerConcern
 
   def redirect_not_authorized
     flash[:alert] = "Votre compte ne vous permet pas d'effectuer cette action"
-    redirect_to home_path
+    redirect_to root_path
   end
 
   def render_not_authorized

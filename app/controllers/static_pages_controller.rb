@@ -1,13 +1,7 @@
 class StaticPagesController < ApplicationController
-  skip_before_action :authenticate_agent!, only: [:home, :welcome]
+  skip_before_action :authenticate_agent!, only: [:welcome]
 
-  def welcome; end
-
-  def home
-    if logged_in?
-      redirect_to(departments_path)
-    else
-      redirect_to(root_path)
-    end
+  def welcome
+    redirect_to(departments_path) if logged_in?
   end
 end
