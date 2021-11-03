@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_20_145820) do
+ActiveRecord::Schema.define(version: 2021_10_21_190749) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,6 +26,12 @@ ActiveRecord::Schema.define(version: 2021_10_20_145820) do
     t.bigint "department_id", null: false
     t.bigint "agent_id", null: false
     t.index ["department_id", "agent_id"], name: "index_agents_departments_on_department_id_and_agent_id", unique: true
+  end
+
+  create_table "agents_organisations", id: false, force: :cascade do |t|
+    t.bigint "organisation_id", null: false
+    t.bigint "agent_id", null: false
+    t.index ["organisation_id", "agent_id"], name: "index_agents_organisations_on_organisation_id_and_agent_id", unique: true
   end
 
   create_table "applicants", force: :cascade do |t|
@@ -56,6 +62,12 @@ ActiveRecord::Schema.define(version: 2021_10_20_145820) do
     t.index ["department_id", "applicant_id"], name: "index_applicants_departments_on_department_id_and_applicant_id", unique: true
   end
 
+  create_table "applicants_organisations", id: false, force: :cascade do |t|
+    t.bigint "organisation_id", null: false
+    t.bigint "applicant_id", null: false
+    t.index ["organisation_id", "applicant_id"], name: "index_applicants_orgas_on_orga_id_and_applicant_id", unique: true
+  end
+
   create_table "applicants_rdvs", id: false, force: :cascade do |t|
     t.bigint "applicant_id", null: false
     t.bigint "rdv_id", null: false
@@ -65,12 +77,12 @@ ActiveRecord::Schema.define(version: 2021_10_20_145820) do
   create_table "configurations", force: :cascade do |t|
     t.string "sheet_name"
     t.integer "invitation_format"
-    t.bigint "department_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.json "column_names"
     t.boolean "notify_applicant", default: false
-    t.index ["department_id"], name: "index_configurations_on_department_id"
+    t.bigint "organisation_id"
+    t.index ["organisation_id"], name: "index_configurations_on_organisation_id"
   end
 
   create_table "departments", force: :cascade do |t|
@@ -94,9 +106,9 @@ ActiveRecord::Schema.define(version: 2021_10_20_145820) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "clicked", default: false
-    t.bigint "department_id"
+    t.bigint "organisation_id"
     t.index ["applicant_id"], name: "index_invitations_on_applicant_id"
-    t.index ["department_id"], name: "index_invitations_on_department_id"
+    t.index ["organisation_id"], name: "index_invitations_on_organisation_id"
   end
 
   create_table "notifications", force: :cascade do |t|
@@ -109,11 +121,23 @@ ActiveRecord::Schema.define(version: 2021_10_20_145820) do
     t.index ["applicant_id"], name: "index_notifications_on_applicant_id"
   end
 
+  create_table "organisations", force: :cascade do |t|
+    t.string "name"
+    t.string "number"
+    t.string "capital"
+    t.string "region"
+    t.string "phone_number"
+    t.string "email"
+    t.integer "rdv_solidarites_organisation_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["rdv_solidarites_organisation_id"], name: "index_organisations_on_rdv_solidarites_organisation_id", unique: true
+  end
+
   create_table "rdvs", force: :cascade do |t|
     t.bigint "rdv_solidarites_rdv_id"
     t.datetime "starts_at"
     t.integer "duration_in_min"
-    t.bigint "department_id", null: false
     t.datetime "cancelled_at"
     t.bigint "rdv_solidarites_motif_id"
     t.bigint "rdv_solidarites_lieu_id"
@@ -124,15 +148,16 @@ ActiveRecord::Schema.define(version: 2021_10_20_145820) do
     t.text "context"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "organisation_id"
     t.index ["created_by"], name: "index_rdvs_on_created_by"
-    t.index ["department_id"], name: "index_rdvs_on_department_id"
+    t.index ["organisation_id"], name: "index_rdvs_on_organisation_id"
     t.index ["rdv_solidarites_rdv_id"], name: "index_rdvs_on_rdv_solidarites_rdv_id", unique: true
     t.index ["status"], name: "index_rdvs_on_status"
   end
 
-  add_foreign_key "configurations", "departments"
+  add_foreign_key "configurations", "organisations"
   add_foreign_key "invitations", "applicants"
-  add_foreign_key "invitations", "departments"
+  add_foreign_key "invitations", "organisations"
   add_foreign_key "notifications", "applicants"
-  add_foreign_key "rdvs", "departments"
+  add_foreign_key "rdvs", "organisations"
 end

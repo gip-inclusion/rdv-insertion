@@ -5,7 +5,7 @@ class Rdv < ApplicationRecord
   PENDING_STATUSES = %w[unknown waiting].freeze
   CANCELLED_STATUSES = %w[excused revoked noshow].freeze
 
-  belongs_to :department
+  belongs_to :organisation
 
   has_and_belongs_to_many :applicants
   after_commit :refresh_applicant_statuses, on: [:create, :update]

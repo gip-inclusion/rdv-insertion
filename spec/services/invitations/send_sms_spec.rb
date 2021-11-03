@@ -13,9 +13,9 @@ describe Invitations::SendSms, type: :service do
       first_name: "John", last_name: "Doe", title: "monsieur"
     )
   end
-  let!(:department) do
+  let!(:organisation) do
     create(
-      :department,
+      :organisation,
       rdv_solidarites_organisation_id: 27,
       number: "26",
       name: "Drôme",
@@ -26,7 +26,7 @@ describe Invitations::SendSms, type: :service do
   let!(:invitation) do
     create(
       :invitation,
-      applicant: applicant, department: department, token: "123", link: "https://www.rdv-solidarites.fr/lieux?invitation_token=123",
+      applicant: applicant, organisation: organisation, token: "123", link: "https://www.rdv-solidarites.fr/lieux?invitation_token=123",
       format: "sms"
     )
   end

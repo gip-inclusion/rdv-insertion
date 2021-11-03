@@ -5,7 +5,7 @@ FactoryBot.define do
     starts_at { Time.zone.now + 3.days }
     duration_in_min { 30 }
     sequence(:rdv_solidarites_motif_id)
-    department { create(:department) }
+    organisation { create(:organisation) }
 
     after(:build) do |rdv|
       rdv.applicants = [create(:applicant)]

@@ -1,8 +1,8 @@
 class CreateApplicant < BaseService
-  def initialize(applicant_data:, rdv_solidarites_session:, department:)
+  def initialize(applicant_data:, rdv_solidarites_session:, organisation:)
     @applicant_data = applicant_data
     @rdv_solidarites_session = rdv_solidarites_session
-    @department = department
+    @organisation = organisation
   end
 
   def call
@@ -42,7 +42,7 @@ class CreateApplicant < BaseService
   end
 
   def applicant_attributes
-    { departments: [@department] }.merge(
+    { organisations: [@organisation] }.merge(
       @applicant_data.slice(*Applicant.attribute_names.map(&:to_sym)).compact
     )
   end
@@ -67,10 +67,10 @@ class CreateApplicant < BaseService
 
   def rdv_solidarites_user_attributes
     user_attributes = {
-      organisation_ids: [@department.rdv_solidarites_organisation_id],
+      organisation_ids: [@organisation.rdv_solidarites_organisation_id],
       # if we notify from rdv-insertion we don't from rdv-solidarites
-      notify_by_sms: !@department.notify_applicant?,
-      notify_by_email: !@department.notify_applicant?
+      notify_by_sms: !@organisation.notify_applicant?,
+      notify_by_email: !@organisation.notify_applicant?
     }.merge(
       @applicant_data.slice(*RdvSolidarites::User::RECORD_ATTRIBUTES).compact
     ).deep_symbolize_keys

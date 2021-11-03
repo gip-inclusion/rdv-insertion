@@ -11,7 +11,7 @@ const TITLES = {
 };
 
 export default class Applicant {
-  constructor(attributes, departmentNumber, departmentConfiguration) {
+  constructor(attributes, departmentNumber, organisationConfiguration) {
     const formattedAttributes = {};
     Object.keys(attributes).forEach((key) => {
       formattedAttributes[key] = attributes[key]?.toString()?.trim();
@@ -34,7 +34,7 @@ export default class Applicant {
     const formattedRole = formattedAttributes.role?.split("/")?.shift()?.toLowerCase();
     this.role = ROLES[formattedRole] || formattedRole;
     this.departmentNumber = departmentNumber;
-    this.departmentConfiguration = departmentConfiguration;
+    this.organisationConfiguration = organisationConfiguration;
   }
 
   get uid() {
@@ -98,7 +98,7 @@ export default class Applicant {
   }
 
   shouldDisplay(attribute) {
-    return this.departmentConfiguration.column_names[attribute];
+    return this.organisationConfiguration.column_names[attribute];
   }
 
   callToAction() {
@@ -128,7 +128,7 @@ export default class Applicant {
   }
 
   shouldBeInvited() {
-    return this.departmentConfiguration.invitation_format !== "no_invitation";
+    return this.organisationConfiguration.invitation_format !== "no_invitation";
   }
 
   hasMissingAttributes() {

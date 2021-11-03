@@ -4,7 +4,7 @@ import confirmationModal from "../../lib/confirmationModal";
 import createApplicant from "../actions/createApplicant";
 import inviteApplicant from "../actions/inviteApplicant";
 
-export default function Applicant({ applicant, dispatchApplicants, department }) {
+export default function Applicant({ applicant, dispatchApplicants, organisation }) {
   const [isLoading, setIsLoading] = useState(false);
 
   const displayDuplicationWarning = async () => {
@@ -18,7 +18,7 @@ export default function Applicant({ applicant, dispatchApplicants, department })
     }
 
     const searchApplicantLink = new URL(
-      `${window.location.origin}/departments/${department.id}/applicants`
+      `${window.location.origin}/organisations/${organisation.id}/applicants`
     );
     searchApplicantLink.searchParams.set("search_query", applicant.lastName);
 
@@ -37,7 +37,7 @@ export default function Applicant({ applicant, dispatchApplicants, department })
       const confirmation = await displayDuplicationWarning();
       if (!confirmation.isConfirmed) return;
     }
-    const result = await createApplicant(applicant, department.id);
+    const result = await createApplicant(applicant, organisation.id);
     if (result.success) {
       applicant.updateWith(result.applicant);
 
@@ -54,7 +54,7 @@ export default function Applicant({ applicant, dispatchApplicants, department })
   };
 
   const handleApplicantInvitation = async (invitationFormat) => {
-    const result = await inviteApplicant(department.id, applicant.id, invitationFormat);
+    const result = await inviteApplicant(organisation.id, applicant.id, invitationFormat);
     if (result.success) {
       const { invitation } = result;
       applicant.invitationSentAt = invitation.sent_at;

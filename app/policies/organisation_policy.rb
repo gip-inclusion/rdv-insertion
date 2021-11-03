@@ -1,12 +1,12 @@
-class DepartmentPolicy < ApplicationPolicy
+class OrganisationPolicy < ApplicationPolicy
   class Scope < Scope
     def resolve
-      pundit_user.departments
+      pundit_user.organisations
     end
   end
 
   def list_applicants?
-    pundit_user.departments.include?(record)
+    pundit_user.organisations.include?(record)
   end
 
   def invite_applicant?

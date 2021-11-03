@@ -6,15 +6,15 @@
     <div class="col-4 justify-content-center">
       <div class="row">
         <h5 class="text-center">
-          <%= @department.name %>
-          <% if image_compiled?("maps/#{@department.name.parameterize}.svg") %>
-            <%= image_pack_tag("maps/#{@department.name.parameterize}.svg", alt: @department.name.parameterize, width: 50, height: 50) %>
+          <%= @organisation.name %>
+          <% if image_compiled?("maps/#{@organisation.name.parameterize}.svg") %>
+            <%= image_pack_tag("maps/#{@organisation.name.parameterize}.svg", alt: @organisation.name.parameterize, width: 50, height: 50) %>
           <% end %>
         </h5>
       </div>
       <% if display_back_to_list_button? %>
         <div class="row mt-4 text-center">
-          <%= link_to department_applicants_path(@department) do %>
+          <%= link_to organisation_applicants_path(@organisation) do %>
             <i class="fas fa-angle-left"></i> liste complète
           <% end %>
         </div>
@@ -23,7 +23,7 @@
     <div class="col-1"></div>
     <div class="col-3 justify-content-center">
       <div class="text-center">
-        <%= link_to new_department_upload_path(@department), class: "btn text-white mb-2 btn-primary" do %>
+        <%= link_to new_organisation_upload_path(@organisation), class: "btn text-white mb-2 btn-primary" do %>
           Ajouter allocataires
         <% end %>
       </div>

@@ -1,7 +1,7 @@
 describe Invitations::Create, type: :service do
   subject do
     described_class.call(
-      applicant: applicant, department: department,
+      applicant: applicant, organisation: organisation,
       rdv_solidarites_session: rdv_solidarites_session,
       invitation_format: invitation_format
     )
@@ -9,13 +9,15 @@ describe Invitations::Create, type: :service do
 
   let!(:invitation_format) { "sms" }
   let!(:rdv_solidarites_user_id) { 14 }
-  let!(:department) { create(:department) }
-  let!(:applicant) { create(:applicant, departments: [department], rdv_solidarites_user_id: rdv_solidarites_user_id) }
+  let!(:organisation) { create(:organisation) }
+  let!(:applicant) do
+    create(:applicant, organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id)
+  end
   let!(:rdv_solidarites_session) do
     { client: "client", uid: "johndoe@example.com", access_token: "token" }
   end
   let!(:token) { "token123" }
-  let!(:invitation) { create(:invitation, department: department, applicant: applicant, token: token) }
+  let!(:invitation) { create(:invitation, organisation: organisation, applicant: applicant, token: token) }
 
   describe "#call" do
     let!(:invitation_link) { "https://www.rdv_solidarites.com/some_params" }
@@ -36,7 +38,7 @@ describe Invitations::Create, type: :service do
     it "creates an invitation" do
       expect(Invitation).to receive(:new)
         .with(
-          applicant: applicant, department: department,
+          applicant: applicant, organisation: organisation,
           link: invitation_link, token: token, format: invitation_format
         )
       expect(invitation).to receive(:save)
@@ -110,7 +112,7 @@ describe Invitations::Create, type: :service do
             .with(
               rdv_solidarites_session: rdv_solidarites_session,
               invitation_token: token,
-              department: department
+              organisation: organisation
             )
           subject
         end
@@ -155,7 +157,7 @@ describe Invitations::Create, type: :service do
         it "creates the invitation with the link and token" do
           expect(Invitation).to receive(:new)
             .with(
-              applicant: applicant, department: department, format: invitation_format,
+              applicant: applicant, organisation: organisation, format: invitation_format,
               token: token, link: invitation_link
             )
           expect(invitation).to receive(:save)

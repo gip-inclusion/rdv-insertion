@@ -3,12 +3,12 @@ module ApplicantsHelper
     date&.strftime("%d/%m/%Y")
   end
 
-  def show_invitation?(department)
-    !department.no_invitation?
+  def show_invitation?(organisation)
+    !organisation.no_invitation?
   end
 
-  def show_notification?(department)
-    department.notify_applicant?
+  def show_notification?(organisation)
+    organisation.notify_applicant?
   end
 
   def display_attribute(attribute)

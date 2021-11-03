@@ -2,11 +2,11 @@ describe CreateApplicant, type: :service do
   subject do
     described_class.call(
       applicant_data: applicant_data, rdv_solidarites_session: rdv_solidarites_session,
-      department: department
+      organisation: organisation
     )
   end
 
-  let(:department) { create(:department) }
+  let(:organisation) { create(:organisation) }
 
   let(:applicant_data) do
     {
@@ -20,7 +20,7 @@ describe CreateApplicant, type: :service do
   end
 
   describe "#call" do
-    let!(:applicant_attributes) { applicant_data.merge(departments: [department]) }
+    let!(:applicant_attributes) { applicant_data.merge(organisations: [organisation]) }
 
     let!(:applicant) { build(:applicant, applicant_attributes) }
     let(:rdv_solidarites_client) { instance_double(RdvSolidaritesSession) }
@@ -69,7 +69,7 @@ describe CreateApplicant, type: :service do
           affiliation_number: "aff123",
           notify_by_sms: true,
           notify_by_email: true,
-          organisation_ids: [department.rdv_solidarites_organisation_id]
+          organisation_ids: [organisation.rdv_solidarites_organisation_id]
         }
       end
 
@@ -86,9 +86,9 @@ describe CreateApplicant, type: :service do
         subject
       end
 
-      context "when department notifies customer from rdv insertion" do
+      context "when organisation notifies customer from rdv insertion" do
         before do
-          allow(department).to receive(:notify_applicant?).and_return(true)
+          allow(organisation).to receive(:notify_applicant?).and_return(true)
         end
 
         it "does not notify with rdv solidarites" do

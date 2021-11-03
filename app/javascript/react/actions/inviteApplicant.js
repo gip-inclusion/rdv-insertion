@@ -1,6 +1,6 @@
-const inviteApplicant = async (departmentId, applicantId, invitationFormat) => {
+const inviteApplicant = async (organisationId, applicantId, invitationFormat) => {
   const response = await fetch(
-    `/departments/${departmentId}/applicants/${applicantId}/invitations`,
+    `/organisations/${organisationId}/applicants/${applicantId}/invitations`,
     {
       method: "POST",
       credentials: "same-origin",

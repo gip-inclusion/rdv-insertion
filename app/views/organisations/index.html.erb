@@ -1,0 +1,27 @@
+<div class="container mt-5">
+  <div class="row mt-5 justify-content-center">
+    <div class="col-8">
+      <p>Sélectionnez votre département:</p>
+    </div>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-8">
+      <% @organisations.each do |organisation| %>
+        <div class="card-container">
+          <%= link_to organisation_applicants_path(organisation) do %>
+            <div class="card d-flex flex-row justify-content-between align-content-center card-organisation mb-3">
+              <div class="card-body card-organisation-body">
+                <h4><%= organisation.name %></h4>
+                <p>Good morning <%= organisation.capital %>!</p>
+              </div>
+              <% if image_compiled?("maps/#{organisation.name.parameterize}.svg") %>
+                <%= image_pack_tag("maps/#{organisation.name.parameterize}.svg", alt: organisation.name.parameterize) %>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

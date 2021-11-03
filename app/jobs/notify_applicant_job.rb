@@ -1,9 +1,9 @@
 class NotificationsJobError < StandardError; end
 
 class NotifyApplicantJob < ApplicationJob
-  def perform(applicant_id, department_id, rdv_attributes, event)
+  def perform(applicant_id, organisation_id, rdv_attributes, event)
     @applicant_id = applicant_id
-    @department_id = department_id
+    @organisation_id = organisation_id
     @rdv_solidarites_rdv = RdvSolidarites::Rdv.new(rdv_attributes)
     @event = event
 
@@ -17,8 +17,8 @@ class NotifyApplicantJob < ApplicationJob
     @applicant ||= Applicant.find(@applicant_id)
   end
 
-  def department
-    @department ||= Department.find(@department_id)
+  def organisation
+    @organisation ||= Organisation.find(@organisation_id)
   end
 
   def already_notified?
@@ -36,7 +36,7 @@ class NotifyApplicantJob < ApplicationJob
   def notify_applicant
     service_class = service_class_for_event_type(@event)
     service_class.call(
-      applicant: applicant, department:  department,
+      applicant: applicant, organisation:  organisation,
       rdv_solidarites_rdv: @rdv_solidarites_rdv
     )
   end

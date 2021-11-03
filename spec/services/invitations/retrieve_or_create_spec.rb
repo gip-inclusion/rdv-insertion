@@ -1,19 +1,21 @@
 describe Invitations::RetrieveOrCreate, type: :service do
   subject do
     described_class.call(
-      applicant: applicant, department: department, rdv_solidarites_session: rdv_solidarites_session,
+      applicant: applicant, organisation: organisation, rdv_solidarites_session: rdv_solidarites_session,
       invitation_format: invitation_format
     )
   end
 
   let!(:invitation_format) { "sms" }
   let!(:rdv_solidarites_user_id) { 14 }
-  let!(:department) { create(:department) }
-  let!(:applicant) { create(:applicant, departments: [department], rdv_solidarites_user_id: rdv_solidarites_user_id) }
+  let!(:organisation) { create(:organisation) }
+  let!(:applicant) do
+    create(:applicant, organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id)
+  end
   let!(:rdv_solidarites_session) do
     { client: "client", uid: "johndoe@example.com", access_token: "token" }
   end
-  let!(:invitation) { create(:invitation, department: department, applicant: applicant) }
+  let!(:invitation) { create(:invitation, organisation: organisation, applicant: applicant) }
 
   describe "#call" do
     before do
@@ -33,13 +35,13 @@ describe Invitations::RetrieveOrCreate, type: :service do
 
     context "invitation creation" do
       context "when the user has no invitation with the requested format" do
-        let!(:invitation) { create(:invitation, department: department, applicant: applicant, format: "email") }
+        let!(:invitation) { create(:invitation, organisation: organisation, applicant: applicant, format: "email") }
 
         it "tries to create an invitation" do
           expect(Invitations::Create).to receive(:call)
             .with(
               applicant: applicant,
-              department: department,
+              organisation: organisation,
               invitation_format: invitation_format,
               rdv_solidarites_session: rdv_solidarites_session
             )
@@ -66,9 +68,9 @@ describe Invitations::RetrieveOrCreate, type: :service do
         end
       end
 
-      context "when the user has already an invitation from that department with the requested format" do
+      context "when the user has already an invitation from that organisation with the requested format" do
         let!(:invitation) do
-          create(:invitation, department: department, applicant: applicant, format: invitation_format)
+          create(:invitation, organisation: organisation, applicant: applicant, format: invitation_format)
         end
 
         it "does not try to create an invitation" do
