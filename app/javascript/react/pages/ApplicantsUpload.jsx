@@ -7,7 +7,6 @@ import FileHandler from "../components/FileHandler";
 import ApplicantList from "../components/ApplicantList";
 
 import { parameterizeObjectKeys, parameterizeObjectValues } from "../../lib/parameterize";
-import flattenObject from "../../lib/flatten";
 import getKeyByValue from "../../lib/getKeyByValue";
 import searchApplicants from "../actions/searchApplicants";
 import { initReducer, reducerFactory } from "../../lib/reducers";
@@ -20,22 +19,22 @@ const reducer = reducerFactory("Expérimentation RSA");
 export default function ApplicantsUpload({ department, configuration }) {
   const SHEET_NAME = configuration.sheet_name;
   const columnNames = configuration.column_names;
-  const parameterizedColumnNames = parameterizeObjectValues(flattenObject(columnNames));
-  const requiredColumns = parameterizeObjectValues(columnNames.required);
+  const parameterizedColumnNames = parameterizeObjectValues({ ...columnNames.required, ...columnNames.optional });
 
   const [fileSize, setFileSize] = useState(0);
   const [applicants, dispatchApplicants] = useReducer(reducer, [], initReducer);
 
   const checkColumnNames = (uploadedColumnNames) => {
     const missingColumnNames = [];
+    const requiredColumns = parameterizeObjectValues(columnNames.required);
 
     const expectedColumnNames = Object.values(requiredColumns);
-    const missingColumns =
+    const parameterizedMissingColumns =
       expectedColumnNames.filter(colName => !uploadedColumnNames.includes(colName));
 
-    if (missingColumns.length > 0) {
+    if (parameterizedMissingColumns.length > 0) {
       // Récupère les noms "humains" des colonnes manquantes
-      missingColumns.forEach((col) => {
+      parameterizedMissingColumns.forEach((col) => {
         const missingAttribute = getKeyByValue(requiredColumns, col);
         const missingColumnName = configuration.column_names.required[missingAttribute];
         missingColumnNames.push(missingColumnName);
