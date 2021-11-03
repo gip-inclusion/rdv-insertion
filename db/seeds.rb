@@ -1,17 +1,15 @@
 puts "Creating organisations..."
 
-Organisation.create!(
+Department.create!(
   number: '08',
   name: 'Ardennes',
   capital: 'Charlevilles-Mézières'
 )
 
 Organisation.create!(
-  number: '26',
-  name: 'Drôme',
-  capital: 'Valence',
-  region: "Auvergne-Rhône-Alpes",
-  phone_number: "0147200001"
+  name: "Plateforme mutualisée d'orientation",
+  phone_number: "0147200001",
+  department: Department.last.id
   # rdv_solidarites_organisation_id: insérez l'id de l'organisation correspondante sur RDV-Solidarites
 )
 
