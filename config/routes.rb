@@ -16,13 +16,10 @@ Rails.application.routes.draw do
     resources :applicants, only: [:index, :create] do
       collection do
         resources :uploads, only: [:new]
+        post :search
       end
+      resources :invitations, only: [:create]
     end
-  end
-
-  resources :applicants, only: [] do
-    post :search, on: :collection
-    resources :invitations, only: [:create]
   end
 
   resources :invitations, only: [] do

@@ -66,7 +66,7 @@ export default function ApplicantsUpload({ department, configuration }) {
   };
 
   const retrieveApplicantsFromApp = async (uids) => {
-    const result = await searchApplicants(uids);
+    const result = await searchApplicants(department.id, uids);
     if (result.success) {
       return result.applicants;
     }

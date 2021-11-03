@@ -1,6 +1,6 @@
 /* eslint no-await-in-loop: "off" */
-const searchApplicants = async (uids) => {
-  const response = await fetch("/applicants/search", {
+const searchApplicants = async (departmentId, uids) => {
+  const response = await fetch(`/departments/${departmentId}/applicants/search`, {
     method: "POST",
     credentials: "same-origin",
     headers: {

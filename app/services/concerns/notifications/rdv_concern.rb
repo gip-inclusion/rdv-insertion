@@ -22,10 +22,6 @@ module Notifications
       @rdv_solidarites_rdv.formatted_start_time
     end
 
-    def department
-      @applicant.department
-    end
-
     def event
       self.class.name.demodulize.underscore
     end

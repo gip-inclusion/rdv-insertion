@@ -1,7 +1,7 @@
 describe Notifications::RdvCreated, type: :service do
   subject do
     described_class.call(
-      applicant: applicant, rdv_solidarites_rdv: rdv_solidarites_rdv
+      applicant: applicant, rdv_solidarites_rdv: rdv_solidarites_rdv, department: department
     )
   end
 
@@ -13,7 +13,7 @@ describe Notifications::RdvCreated, type: :service do
       first_name: "john",
       last_name: "doe",
       title: "monsieur",
-      department: department
+      departments: [department]
     )
   end
   let!(:rdv_solidarites_rdv_id) { 23 }

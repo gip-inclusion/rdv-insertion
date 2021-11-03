@@ -9,7 +9,7 @@ describe Invitations::SendSms, type: :service do
   let!(:applicant) do
     create(
       :applicant,
-      phone_number_formatted: phone_number_formatted, department: department,
+      phone_number_formatted: phone_number_formatted,
       first_name: "John", last_name: "Doe", title: "monsieur"
     )
   end
@@ -26,7 +26,7 @@ describe Invitations::SendSms, type: :service do
   let!(:invitation) do
     create(
       :invitation,
-      applicant: applicant, token: "123", link: "https://www.rdv-solidarites.fr/lieux?invitation_token=123",
+      applicant: applicant, department: department, token: "123", link: "https://www.rdv-solidarites.fr/lieux?invitation_token=123",
       format: "sms"
     )
   end

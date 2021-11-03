@@ -20,7 +20,7 @@ describe CreateApplicant, type: :service do
   end
 
   describe "#call" do
-    let!(:applicant_attributes) { applicant_data.merge(department: department) }
+    let!(:applicant_attributes) { applicant_data.merge(departments: [department]) }
 
     let!(:applicant) { build(:applicant, applicant_attributes) }
     let(:rdv_solidarites_client) { instance_double(RdvSolidaritesSession) }
