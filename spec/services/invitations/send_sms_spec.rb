@@ -13,14 +13,20 @@ describe Invitations::SendSms, type: :service do
       first_name: "John", last_name: "Doe", title: "monsieur"
     )
   end
+  let!(:department) do
+    create(
+      :department,
+      number: "26",
+      name: "Drôme",
+      region: "Auvergne-Rhône-Alpes"
+    )
+  end
   let!(:organisation) do
     create(
       :organisation,
       rdv_solidarites_organisation_id: 27,
-      number: "26",
-      name: "Drôme",
-      region: "Auvergne-Rhône-Alpes",
-      phone_number: "0147200001"
+      phone_number: "0147200001",
+      department: department
     )
   end
   let!(:invitation) do

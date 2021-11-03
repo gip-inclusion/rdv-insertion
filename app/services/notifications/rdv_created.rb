@@ -11,7 +11,7 @@ module Notifications
         " vos démarches d’insertion. Vous êtes attendu(e) le #{formatted_start_date} à " \
         "#{formatted_start_time} ici: #{lieu.name} - #{lieu.address}. Ce RDV est obligatoire. "\
         "En cas d’empêchement, appelez rapidement le #{@organisation.phone_number}. "\
-        "Le département #{@organisation.number} (#{@organisation.name.capitalize})."
+        "Le département #{@organisation.department_number} (#{@organisation.department_name.capitalize})."
     end
 
     def remote_content
@@ -19,7 +19,8 @@ module Notifications
         " dans le cadre de vos démarches d’insertion. Un travailleur social vous appellera le #{formatted_start_date}" \
         " à partir de #{formatted_start_time} sur ce numéro. Ce rendez-vous est obligatoire. "\
         "En cas d’empêchement, merci d’appeler rapidement le " \
-        "#{@organisation.phone_number}. Le département #{@organisation.number} (#{@organisation.name.capitalize})."
+        "#{@organisation.phone_number}. Le département #{@organisation.department_number} "\
+        "(#{@organisation.department_name.capitalize})."
     end
   end
 end

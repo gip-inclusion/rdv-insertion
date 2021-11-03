@@ -30,8 +30,8 @@ module Invitations
     def link_with_motif(motif)
       params = {
         search: {
-          departement: @organisation.number,
-          where: @organisation.name_with_region,
+          departement: @organisation.department_number,
+          where: @organisation.department_name_with_region,
           motif_name_with_location_type: "#{motif['name']}-#{motif['location_type']}",
           service: ENV['RDV_SOLIDARITES_RSA_SERVICE_ID']
         }
@@ -40,9 +40,9 @@ module Invitations
     end
 
     def link_without_motif
-      params = { where: @organisation.name_with_region }
-      "#{ENV['RDV_SOLIDARITES_URL']}/departement/#{@organisation.number}/#{ENV['RDV_SOLIDARITES_RSA_SERVICE_ID']}" \
-        "?#{params.to_query}"
+      params = { where: @organisation.department_name_with_region }
+      "#{ENV['RDV_SOLIDARITES_URL']}/departement/#{@organisation.department_number}/" \
+        "#{ENV['RDV_SOLIDARITES_RSA_SERVICE_ID']}?#{params.to_query}"
     end
 
     def motifs

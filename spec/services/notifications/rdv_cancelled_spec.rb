@@ -21,8 +21,10 @@ describe Notifications::RdvCancelled, type: :service do
   let!(:rdv_solidarites_rdv) do
     OpenStruct.new(id: rdv_solidarites_rdv_id)
   end
+  let!(:department) { create(:department, name: "Yonne", number: "89") }
+
   let!(:organisation) do
-    create(:organisation, phone_number: "0147200001", name: "Yonne", number: "89")
+    create(:organisation, phone_number: "0147200001", department: department)
   end
   let!(:notification) { create(:notification, applicant: applicant) }
 
