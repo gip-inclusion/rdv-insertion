@@ -9,6 +9,7 @@ RSpec.describe InvitationMailer, type: :mailer do
     let!(:applicant) do
       create(:applicant, organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id)
     end
+
     let!(:invitation) { create(:invitation, organisation: organisation, applicant: applicant) }
 
     it "renders the headers" do

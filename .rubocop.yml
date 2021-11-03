@@ -38,6 +38,9 @@ Layout/LineLength:
 Rails/HasAndBelongsToMany:
   Enabled: false
 
+Rails/BulkChangeTable:
+  Enabled: false
+
 RSpec/ContextWording:
   Enabled: False
 
