@@ -4,7 +4,7 @@
     <%= form.submit "Rechercher", class: "btn btn-blue-out" %>
     <% if display_back_to_list_button? %>
       <div class="d-flex justify-content-start">
-        <%= link_to department_applicants_path(@department), class: "btn btn-blue-out" do %>
+        <%= link_to organisation_applicants_path(@organisation), class: "btn btn-blue-out" do %>
           Retour à la liste
         <% end %>
       </div>
