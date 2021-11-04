@@ -5,7 +5,7 @@ class FindOrCreateAgent < BaseService
   end
 
   def call
-    fail!("l'agent n'appartient pas à une organisation liée à un département") unless belongs_to_one_department?
+    fail!("l'agent n'appartient pas à une organisation liée à un département") unless belongs_to_one_organisation?
     result.agent = Agent.find_or_create_by(email: @email)
     update_agent_if_changed
   end
@@ -14,16 +14,16 @@ class FindOrCreateAgent < BaseService
 
   def update_agent_if_changed
     agent = result.agent
-    agent.departments = agent_departments
+    agent.organisations = agent_organisations
     agent.save if agent.changed?
   end
 
-  def belongs_to_one_department?
-    @organisation_ids.present? && agent_departments.present?
+  def belongs_to_one_organisation?
+    @organisation_ids.present? && agent_organisations.present?
   end
 
-  def agent_departments
-    @agent_departments ||= Department.includes(:agents)
-                                     .where(rdv_solidarites_organisation_id: @organisation_ids)
+  def agent_organisations
+    @agent_organisations ||= Organisation.includes(:agents)
+                                         .where(rdv_solidarites_organisation_id: @organisation_ids)
   end
 end

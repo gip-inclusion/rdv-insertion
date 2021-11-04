@@ -4,28 +4,28 @@ class ProcessRdvSolidaritesWebhookJob < ApplicationJob
   def perform(data, meta)
     @data = data.deep_symbolize_keys
     @meta = meta.deep_symbolize_keys
-    check_department!
+    check_organisation!
     return send_no_applicants_to_mattermost if applicants.empty?
 
-    check_applicants_department!
+    check_applicants_organisation!
     upsert_or_delete_rdv
     notify_applicants if should_notify_applicants?
   end
 
   private
 
-  def check_department!
-    return if department
+  def check_organisation!
+    return if organisation
 
-    raise WebhookProcessingJobError, "Department not found for organisation id #{rdv_solidarites_organisation_id}"
+    raise WebhookProcessingJobError, "Organisation not found for organisation id #{rdv_solidarites_organisation_id}"
   end
 
-  def check_applicants_department!
-    return if all_applicants_belongs_to_department?
+  def check_applicants_organisation!
+    return if all_applicants_belongs_to_organisation?
 
     raise(
       WebhookProcessingJobError,
-      "Applicants / Department mismatch: applicant_ids: #{applicant_ids} - department_id #{department.id} - " \
+      "Applicants / Organisation mismatch: applicant_ids: #{applicant_ids} - organisation_id #{organisation.id} - " \
       "data: #{@data} - meta: #{@meta}"
     )
   end
@@ -33,16 +33,16 @@ class ProcessRdvSolidaritesWebhookJob < ApplicationJob
   def send_no_applicants_to_mattermost
     MattermostClient.send_to_notif_channel(
       "Webhook not linked to RDVI applicants.\n" \
-      "RDV Solidarites ids: #{rdv_solidarites_user_ids} - Department id: #{department.id}\n"
+      "RDV Solidarites ids: #{rdv_solidarites_user_ids} - organisation id: #{organisation.id}\n"
     )
   end
 
   def should_notify_applicants?
-    department.notify_applicant? && event.in?(%w[created destroyed])
+    organisation.notify_applicant? && event.in?(%w[created destroyed])
   end
 
-  def all_applicants_belongs_to_department?
-    applicants.pluck(:department_id).uniq.length == 1 && applicants.first.department_id == department.id
+  def all_applicants_belongs_to_organisation?
+    applicants.all? { |a| a.organisation_ids.include?(organisation.id) }
   end
 
   def event
@@ -58,15 +58,15 @@ class ProcessRdvSolidaritesWebhookJob < ApplicationJob
   end
 
   def applicants
-    @applicants ||= Applicant.includes(:department).where(rdv_solidarites_user_id: rdv_solidarites_user_ids)
+    @applicants ||= Applicant.where(rdv_solidarites_user_id: rdv_solidarites_user_ids)
   end
 
   def applicant_ids
     applicants.pluck(:id)
   end
 
-  def department
-    @department ||= Department.find_by(rdv_solidarites_organisation_id: rdv_solidarites_organisation_id)
+  def organisation
+    @organisation ||= Organisation.find_by(rdv_solidarites_organisation_id: rdv_solidarites_organisation_id)
   end
 
   def rdv_solidarites_organisation_id
@@ -77,7 +77,7 @@ class ProcessRdvSolidaritesWebhookJob < ApplicationJob
     if event == "destroyed"
       DeleteRdvJob.perform_async(rdv_solidarites_rdv.id)
     else
-      UpsertRdvJob.perform_async(@data, applicant_ids, department.id)
+      UpsertRdvJob.perform_async(@data, applicant_ids, organisation.id)
     end
   end
 
@@ -85,6 +85,7 @@ class ProcessRdvSolidaritesWebhookJob < ApplicationJob
     applicants.each do |applicant|
       NotifyApplicantJob.perform_async(
         applicant.id,
+        organisation.id,
         @data,
         event
       )

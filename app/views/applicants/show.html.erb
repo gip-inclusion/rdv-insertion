@@ -1,9 +1,9 @@
 <div class="container applicant-attribute mt-4">
   <div class="d-flex justify-content-between mb-4">
-    <%= link_to department_applicants_path(@applicant.department) do %>
+    <%= link_to organisation_applicants_path(@organisation) do %>
       <button class="btn btn-blue-out">Retour</button>
     <% end %>
-    <%= link_to rdv_solidarites_user_url(@applicant), target: "_blank" do %>
+    <%= link_to rdv_solidarites_user_url(@organisation, @applicant), target: "_blank" do %>
       <button class="btn btn-blue">Voir sur RDV-Solidarités<i class="fas fa-external-link-alt icon-sm"></i></button>
     <% end %>
     <%#
@@ -56,10 +56,10 @@
   <%= react_component(
     "components/ApplicantTracker", {
       applicant: @applicant,
+      organisation: @organisation,
       rdvs: @applicant.rdvs,
       outOfTime: @applicant.invited_before_time_window?,
       actionRequired: @applicant.action_required?,
-      status: @applicant.status,
       textForStatus: I18n.t("activerecord.attributes.applicant.statuses.#{@applicant.status}")
     }
   ) %>

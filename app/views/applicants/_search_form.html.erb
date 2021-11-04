@@ -1,10 +1,10 @@
-<%= form_with method: :get, local: true, url: department_applicants_path(@department) do  |form| %>
+<%= form_with method: :get, local: true, url: organisation_applicants_path(@organisation) do  |form| %>
   <%= form.text_field :search_query, placeholder: "Prénom, nom, email, numéro allocataire...", class: "form-control mb-1" %>
   <div class="d-flex justify-content-between">
     <%= form.submit "Rechercher", class: "btn btn-blue-out" %>
     <% if display_back_to_list_button? %>
       <div class="d-flex justify-content-start">
-        <%= link_to department_applicants_path(@department), class: "btn btn-blue-out" do %>
+        <%= link_to organisation_applicants_path(@organisation), class: "btn btn-blue-out" do %>
           Retour à la liste
         <% end %>
       </div>

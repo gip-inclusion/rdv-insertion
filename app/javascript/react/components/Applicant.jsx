@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import handleApplicantCreation from "../actions/handleApplicantCreation"
 import handleApplicantInvitation from "../actions/handleApplicantInvitation"
 
-export default function Applicant({ applicant, dispatchApplicants, department }) {
+export default function Applicant({ applicant, dispatchApplicants, organisation }) {
   const [isLoading, setIsLoading] = useState({
     accountCreation: false,
     smsInvitation: false,
@@ -13,12 +13,12 @@ export default function Applicant({ applicant, dispatchApplicants, department })
   const handleClick = async (action) => {
     setIsLoading({ ...isLoading, [action]: true });
     if (action === "accountCreation") {
-      await handleApplicantCreation(applicant, department);
+      await handleApplicantCreation(applicant, organisation);
     } else if (action === "smsInvitation") {
-      const invitation = await handleApplicantInvitation(applicant, "sms");
+      const invitation = await handleApplicantInvitation(organisation.id, applicant.id, "sms");
       applicant.lastSmsInvitationSentAt = invitation.sent_at;
     } else if (action === "emailInvitation") {
-      const invitation = await handleApplicantInvitation(applicant, "email");
+      const invitation = await handleApplicantInvitation(organisation.id, applicant.id, "email");
       applicant.lastEmailInvitationSentAt = invitation.sent_at;
     }
 

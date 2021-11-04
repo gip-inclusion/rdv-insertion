@@ -3,12 +3,12 @@ module ApplicantsHelper
     date&.strftime("%d/%m/%Y")
   end
 
-  def show_invitation?(department)
-    !department.no_invitation?
+  def show_invitation?(organisation)
+    !organisation.no_invitation?
   end
 
-  def show_notification?(department)
-    department.notify_applicant?
+  def show_notification?(organisation)
+    organisation.notify_applicant?
   end
 
   def display_attribute(attribute)
@@ -43,8 +43,8 @@ module ApplicantsHelper
     applicant.invited_before_time_window? ? " (Délai dépassé)" : ""
   end
 
-  def rdv_solidarites_user_url(applicant)
-    department_id = applicant.department.rdv_solidarites_organisation_id
-    "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{department_id}/users/#{applicant.rdv_solidarites_user_id}"
+  def rdv_solidarites_user_url(organisation, applicant)
+    organisation_id = organisation.rdv_solidarites_organisation_id
+    "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{organisation_id}/users/#{applicant.rdv_solidarites_user_id}"
   end
 end

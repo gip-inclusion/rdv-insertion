@@ -1,7 +1,8 @@
 describe Notifications::RdvCancelled, type: :service do
   subject do
     described_class.call(
-      applicant: applicant, rdv_solidarites_rdv: rdv_solidarites_rdv
+      applicant: applicant, rdv_solidarites_rdv: rdv_solidarites_rdv,
+      organisation: organisation
     )
   end
 
@@ -13,15 +14,17 @@ describe Notifications::RdvCancelled, type: :service do
       first_name: "john",
       last_name: "doe",
       title: "monsieur",
-      department: department
+      organisations: [organisation]
     )
   end
   let!(:rdv_solidarites_rdv_id) { 23 }
   let!(:rdv_solidarites_rdv) do
     OpenStruct.new(id: rdv_solidarites_rdv_id)
   end
-  let!(:department) do
-    create(:department, phone_number: "0147200001", name: "Yonne", number: "89")
+  let!(:department) { create(:department, name: "Yonne", number: "89") }
+
+  let!(:organisation) do
+    create(:organisation, phone_number: "0147200001", department: department)
   end
   let!(:notification) { create(:notification, applicant: applicant) }
 

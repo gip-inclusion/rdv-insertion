@@ -1,13 +1,13 @@
 describe UpsertRdvJob, type: :job do
   subject do
-    described_class.new.perform(rdv_attributes, applicant_ids, department_id)
+    described_class.new.perform(rdv_attributes, applicant_ids, organisation_id)
   end
 
   let(:rdv_attributes) { { id: 1 } }
   let(:applicant_ids) { [23] }
   let(:rdv_solidarites_rdv) { instance_double(RdvSolidarites::Rdv) }
 
-  let(:department_id) { 3 }
+  let(:organisation_id) { 3 }
 
   describe "#perform" do
     before do
@@ -20,7 +20,7 @@ describe UpsertRdvJob, type: :job do
     it "calls the upsert service" do
       expect(UpsertRecord).to receive(:call)
         .with(klass: Rdv, rdv_solidarites_object: rdv_solidarites_rdv,
-              additional_attributes: { applicant_ids: applicant_ids, department_id: department_id })
+              additional_attributes: { applicant_ids: applicant_ids, organisation_id: organisation_id })
       subject
     end
   end

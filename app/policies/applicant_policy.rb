@@ -1,6 +1,6 @@
 class ApplicantPolicy < ApplicationPolicy
   def search?
-    pundit_user.department_ids.include?(record.department_id)
+    pundit_user.organisation_ids.include?(record.organisation_id)
   end
 
   def index?
@@ -12,6 +12,6 @@ class ApplicantPolicy < ApplicationPolicy
   end
 
   def show?
-    search?
+    (pundit_user.organisation_ids & record.organisations.pluck(:rdv_solidarites_organisation_id)).empty?
   end
 end

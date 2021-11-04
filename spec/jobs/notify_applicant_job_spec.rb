@@ -1,14 +1,16 @@
 describe NotifyApplicantJob, type: :job do
   subject do
-    described_class.new.perform(applicant_id, rdv_attributes, event)
+    described_class.new.perform(applicant_id, organisation_id, rdv_attributes, event)
   end
 
   let!(:applicant_id) { 23 }
+  let!(:organisation_id) { 26 }
   let!(:rdv_attributes) { { id: 12, lieu: lieu, motif: motif, starts_at: starts_at } }
   let!(:lieu) { { name: "DINUM", address: "20 avenue de Ségur" } }
   let!(:motif) { { location_type: "public_office" } }
   let!(:starts_at) { "2021-09-08 12:00:00 UTC" }
   let!(:applicant) { create(:applicant, id: applicant_id) }
+  let!(:organisation) { create(:organisation, id: organisation_id) }
   let!(:event) { "created" }
   let!(:rdv_solidarites_rdv) { OpenStruct.new(id: 12) }
 
@@ -18,7 +20,8 @@ describe NotifyApplicantJob, type: :job do
         .with(rdv_attributes)
         .and_return(rdv_solidarites_rdv)
       allow(Notification).to receive(:find_by).and_return(nil)
-      allow(Applicant).to receive_message_chain(:includes, :find).and_return(applicant)
+      allow(Applicant).to receive(:find).with(applicant_id).and_return(applicant)
+      allow(Organisation).to receive(:find).with(organisation_id).and_return(organisation)
       [Notifications::RdvCreated, Notifications::RdvUpdated, Notifications::RdvCancelled].each do |klass|
         allow(klass).to receive(:call)
           .and_return(OpenStruct.new(success?: true))
@@ -27,7 +30,7 @@ describe NotifyApplicantJob, type: :job do
 
     it "calls the appropriate service" do
       expect(Notifications::RdvCreated).to receive(:call)
-        .with(applicant: applicant, rdv_solidarites_rdv: rdv_solidarites_rdv)
+        .with(applicant: applicant, organisation: organisation, rdv_solidarites_rdv: rdv_solidarites_rdv)
       subject
     end
 

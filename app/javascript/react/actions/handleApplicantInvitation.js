@@ -1,8 +1,8 @@
 import Swal from "sweetalert2";
 import inviteApplicant from "./inviteApplicant";
 
-const handleApplicantInvitation = async (applicant, invitationFormat) => {
-  const result = await inviteApplicant(applicant.id, invitationFormat);
+const handleApplicantInvitation = async (organisationId, applicantId, invitationFormat) => {
+  const result = await inviteApplicant(organisationId, applicantId, invitationFormat);
   if (result.success) {
     const { invitation } = result;
     return invitation;

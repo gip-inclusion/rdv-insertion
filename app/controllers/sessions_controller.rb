@@ -9,7 +9,7 @@ class SessionsController < ApplicationController
   def create
     if find_or_create_agent.success?
       set_session
-      render json: { success: true, redirect_path: session.delete(:agent_return_to) || departments_path }
+      render json: { success: true, redirect_path: session.delete(:agent_return_to) || organisations_path }
     else
       render json: { success: false, errors: find_or_create_agent.errors }
     end

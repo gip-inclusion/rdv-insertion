@@ -1,6 +1,9 @@
 .card-container {
   a {
-    color: white;
+    color: $dark-blue;
+  }
+  a:hover {
+    color: $dark-blue-dim;
   }
 }
 
@@ -21,13 +24,9 @@
     height: 100;
     padding: 10px 20px 10px 20px
   }
-
-  &:hover {
-    top: -2px;
-  }
 }
 
-.card-department {
+.card-organisation {
   height: 200px;
   color: $light-blue;
   background-image: linear-gradient(rgba(255, 255,255, 0.4), rgba(255, 255, 255, 0.1));
@@ -35,12 +34,7 @@
 
 }
 
-.card-welcome {
-  height: 100%;
-  background-color: $orange;
-  &.no-hover {
-    &:hover {
-      top: 0 !important;
-    }
-  }
+.card-demo {
+  background-color: rgb(230, 243, 255);
+  padding: 60px 20px;
 }

@@ -9,3 +9,25 @@
   font-weight: 600;
   color: $dark-blue;
 }
+
+.welcome-title {
+  color: $dark-blue;
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+
+  h1 {
+    font-size: 44px;
+    line-height: 60px;
+    font-weight: 700;
+  }
+}
+
+@media (max-width: 500px) {
+  .welcome-title {
+    h1 {
+      font-size: 34px;
+      line-height: 40px;
+    }
+  }
+}

@@ -6,10 +6,10 @@ import { getFrenchFormatDateString } from "../../lib/datesHelper"
 
 export default function ApplicantTracker({
   applicant,
+  organisation,
   rdvs,
   outOfTime,
   actionRequired,
-  status,
   textForStatus
 }) {
   const [isLoading, setIsLoading] = useState({
@@ -45,13 +45,13 @@ export default function ApplicantTracker({
     const baseClass = "col-4 d-flex align-items-center justify-content-center"
 
     if (hasActionRequired &&
-      (status === "invitation_pending" || status === "rdv_creation_pending")) {
+      (applicant.status === "invitation_pending" || applicant.status === "rdv_creation_pending")) {
       return `${baseClass} text-dark-blue bg-warning border-warning`
     }
     if (hasActionRequired) {
       return `${baseClass} bg-danger border-danger`
     }
-    if (status === "rdv_seen") {
+    if (applicant.status === "rdv_seen") {
       return `${baseClass} text-white bg-success border-success`
     }
     return baseClass
@@ -61,14 +61,14 @@ export default function ApplicantTracker({
     setIsLoading({ ...isLoading, [action]: true });
 
     if (action === "smsInvitation") {
-      const invitation = await handleApplicantInvitation(applicant, "sms");
+      const invitation = await handleApplicantInvitation(organisation.id, applicant.id, "sms");
       if (invitation?.sent_at) {
         setLastSmsInvitationSentAt(invitation?.sent_at);
         setHasActionRequired(false);
         setIsOutOfTime(false);
       }
     } else if (action === "emailInvitation") {
-      const invitation = await handleApplicantInvitation(applicant, "email");
+      const invitation = await handleApplicantInvitation(organisation.id, applicant.id, "email");
       if (invitation?.sent_at) {
         setLastEmailInvitationSentAt(invitation?.sent_at);
         setHasActionRequired(false);

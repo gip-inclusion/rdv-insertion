@@ -1,7 +1,7 @@
 describe Notifications::RdvCreated, type: :service do
   subject do
     described_class.call(
-      applicant: applicant, rdv_solidarites_rdv: rdv_solidarites_rdv
+      applicant: applicant, rdv_solidarites_rdv: rdv_solidarites_rdv, organisation: organisation
     )
   end
 
@@ -13,7 +13,7 @@ describe Notifications::RdvCreated, type: :service do
       first_name: "john",
       last_name: "doe",
       title: "monsieur",
-      department: department
+      organisations: [organisation]
     )
   end
   let!(:rdv_solidarites_rdv_id) { 23 }
@@ -24,8 +24,9 @@ describe Notifications::RdvCreated, type: :service do
       formatted_start_time: starts_at.to_datetime.strftime('%H:%M')
     )
   end
-  let!(:department) do
-    create(:department, phone_number: "0147200001", name: "Yonne", number: "89")
+  let!(:department) { create(:department, name: "Yonne", number: "89") }
+  let!(:organisation) do
+    create(:organisation, phone_number: "0147200001", department: department)
   end
   let!(:notification) { create(:notification, applicant: applicant) }
   let!(:lieu) { OpenStruct.new(name: "DINUM", address: "20 avenue de Ségur 75011 PARIS") }
