@@ -7,7 +7,7 @@ end
 describe Notifications::NotifyApplicant, type: :service do
   subject do
     TestService.call(
-      applicant: applicant, rdv_solidarites_rdv: rdv_solidarites_rdv
+      applicant: applicant, rdv_solidarites_rdv: rdv_solidarites_rdv, organisation: organisation
     )
   end
 
@@ -15,8 +15,9 @@ describe Notifications::NotifyApplicant, type: :service do
   let!(:rdv_solidarites_rdv) do
     OpenStruct.new(id: rdv_solidarites_rdv_id)
   end
+  let!(:organisation) { create(:organisation) }
   let!(:rdv_solidarites_rdv_id) { 23 }
-  let!(:applicant) { create(:applicant, phone_number_formatted: phone_number) }
+  let!(:applicant) { create(:applicant, phone_number_formatted: phone_number, organisations: [organisation]) }
   let!(:notification) { create(:notification, applicant: applicant) }
 
   describe "#call" do
@@ -28,7 +29,7 @@ describe Notifications::NotifyApplicant, type: :service do
     end
 
     context "when the phone number is missing" do
-      let!(:applicant) { create(:applicant, phone_number_formatted: "") }
+      let!(:applicant) { create(:applicant, organisations: [organisation], phone_number_formatted: "") }
 
       it("is a failure") { is_a_failure }
 
@@ -53,6 +54,17 @@ describe Notifications::NotifyApplicant, type: :service do
     it "updates the notification" do
       expect(notification).to receive(:update)
       subject
+    end
+
+    context "when the applicants does not belong to the organisation" do
+      let!(:another_organisation) { create(:organisation) }
+      let!(:applicant) { create(:applicant, organisations: [another_organisation]) }
+
+      it("is a failure") { is_a_failure }
+
+      it "stores the error message" do
+        expect(subject.errors).to eq(["l'allocataire ne peut être invité car il n'appartient pas à l'organisation."])
+      end
     end
 
     context "when the notification cannot be saved" do

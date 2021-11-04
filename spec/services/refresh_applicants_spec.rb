@@ -2,7 +2,8 @@ describe RefreshApplicants, type: :service do
   subject do
     described_class.call(
       applicants: applicants,
-      rdv_solidarites_session: rdv_solidarites_session
+      rdv_solidarites_session: rdv_solidarites_session,
+      rdv_solidarites_organisation_id: rdv_solidarites_organisation_id
     )
   end
 
@@ -10,10 +11,10 @@ describe RefreshApplicants, type: :service do
   let(:applicant) do
     create(
       :applicant, first_name: "Bernard", last_name: "Lama",
-                  rdv_solidarites_user_id: rdv_solidarites_user_id, department: department
+                  rdv_solidarites_user_id: rdv_solidarites_user_id
     )
   end
-  let(:department) { create(:department, rdv_solidarites_organisation_id: 42) }
+  let!(:rdv_solidarites_organisation_id) { 42 }
   let(:applicants) { [applicant] }
   let(:rdv_solidarites_session) do
     { client: "client", uid: "johndoe@example.com", access_token: "token" }
@@ -55,7 +56,7 @@ describe RefreshApplicants, type: :service do
         expect(RetrieveRdvSolidaritesResources).to receive(:call)
           .with(
             additional_args: [51], rdv_solidarites_session: rdv_solidarites_session,
-            organisation_id: 42, resource_name: "users"
+            organisation_id: rdv_solidarites_organisation_id, resource_name: "users"
           )
         subject
       end

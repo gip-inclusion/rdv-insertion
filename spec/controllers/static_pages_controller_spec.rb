@@ -1,8 +1,8 @@
 describe StaticPagesController, type: :controller do
   render_views
 
-  let!(:department) { create(:department) }
-  let!(:agent) { create(:agent, departments: [department]) }
+  let!(:organisation) { create(:organisation) }
+  let!(:agent) { create(:agent, organisations: [organisation]) }
 
   describe "GET #welcome" do
     it "returns a success response" do
@@ -15,9 +15,9 @@ describe StaticPagesController, type: :controller do
         sign_in(agent)
       end
 
-      it "redirects to the departments_path" do
+      it "redirects to the organisations_path" do
         get :welcome
-        expect(response).to redirect_to(departments_path)
+        expect(response).to redirect_to(organisations_path)
       end
     end
   end

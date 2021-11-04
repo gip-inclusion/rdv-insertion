@@ -6,7 +6,7 @@ module Notifications
       "#{@applicant.full_name},\nVotre RDV d'orientation RSA a été modifié. " +
         rdv_instructions +
         " En cas d’absence, vous risquez une suspension de votre allocation RSA. " \
-        "Le département #{department.number} (#{department.name.capitalize})."
+        "Le département #{organisation.department_number} (#{organisation.department_name.capitalize})."
     end
 
     def rdv_instructions

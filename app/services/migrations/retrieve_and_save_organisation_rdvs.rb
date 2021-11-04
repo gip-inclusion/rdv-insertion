@@ -18,12 +18,12 @@ module Migrations
         # if it is not linked to a RDVI applicant we do not save the rdv
         next if applicant_ids.empty?
 
-        UpsertRdvJob.perform_async(rdv.attributes, applicant_ids, department.id)
+        UpsertRdvJob.perform_async(rdv.attributes, applicant_ids, organisation.id)
       end
     end
 
     def retrieve_applicants_ids(user_ids)
-      Applicant.where(rdv_solidarites_user_id: user_ids, department_id: department.id).pluck(:id)
+      Applicant.where(rdv_solidarites_user_id: user_ids, organisation_id: organisation.id).pluck(:id)
     end
 
     def retrieve_rdv_solidarites_rdvs!
@@ -37,8 +37,8 @@ module Migrations
       retrieve_rdv_solidarites_rdvs.rdvs
     end
 
-    def department
-      @department ||= Department.includes(:applicants).find_by!(rdv_solidarites_organisation_id: @organisation_id)
+    def organisation
+      @organisation ||= Organisation.includes(:applicants).find_by!(rdv_solidarites_organisation_id: @organisation_id)
     end
 
     def retrieve_rdv_solidarites_rdvs
