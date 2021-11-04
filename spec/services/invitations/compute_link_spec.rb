@@ -1,7 +1,7 @@
 describe Invitations::ComputeLink, type: :service do
   subject do
     described_class.call(
-      department: department, rdv_solidarites_session: rdv_solidarites_session,
+      organisation: organisation, rdv_solidarites_session: rdv_solidarites_session,
       invitation_token: invitation_token
     )
   end
@@ -9,10 +9,17 @@ describe Invitations::ComputeLink, type: :service do
   let!(:department) do
     create(
       :department,
-      rdv_solidarites_organisation_id: 27,
       number: "26",
       name: "Drôme",
       region: "Auvergne-Rhône-Alpes"
+    )
+  end
+
+  let!(:organisation) do
+    create(
+      :organisation,
+      rdv_solidarites_organisation_id: 27,
+      department: department
     )
   end
 

@@ -1,23 +1,33 @@
 describe InvitationsController, type: :controller do
   describe "#create" do
     let!(:applicant_id) { "24" }
-    let!(:department) { create(:department) }
-    let!(:agent) { create(:agent, departments: [department]) }
-    let!(:applicant) { create(:applicant, department: department, id: applicant_id) }
-    let!(:create_params) { { applicant_id: applicant_id, format: "sms" } }
+    let!(:organisation_id) { "22" }
+    let!(:organisation) { create(:organisation, id: organisation_id) }
+    let!(:agent) { create(:agent, organisations: [organisation]) }
+    let!(:applicant) { create(:applicant, organisations: [organisation], id: applicant_id) }
+    let!(:create_params) { { organisation_id: organisation.id, applicant_id: applicant_id, format: "sms" } }
 
     before do
       sign_in(agent)
       set_rdv_solidarites_session
       allow(Invitations::InviteApplicant).to receive(:call)
         .and_return(OpenStruct.new)
-      allow(Applicant).to receive(:includes).and_return(Applicant)
-      allow(Applicant).to receive(:find)
+      allow(Organisation).to receive(:find)
+        .with(organisation_id)
+        .and_return(organisation)
+      allow(organisation).to receive_message_chain(:applicants, :includes, :find)
+        .with(applicant_id)
         .and_return(applicant)
     end
 
+    it "retrieves the organisation" do
+      expect(Organisation).to receive(:find)
+        .with(organisation_id)
+      post :create, params: create_params
+    end
+
     it "retrieves the applicant" do
-      expect(Applicant).to receive(:find)
+      expect(organisation).to receive_message_chain(:applicants, :includes, :find)
         .with(applicant_id)
       post :create, params: create_params
     end
@@ -27,13 +37,14 @@ describe InvitationsController, type: :controller do
         .with(
           applicant: applicant,
           rdv_solidarites_session: request.session[:rdv_solidarites],
+          organisation: organisation,
           invitation_format: "sms"
         )
       post :create, params: create_params
     end
 
     context "when the service succeeds" do
-      let(:invitation) { create(:invitation, applicant: applicant) }
+      let(:invitation) { create(:invitation, applicant: applicant, organisation: organisation) }
 
       before do
         allow(Invitations::InviteApplicant).to receive(:call)
@@ -77,10 +88,10 @@ describe InvitationsController, type: :controller do
     subject { get :redirect, params: invite_params }
 
     let!(:applicant_id) { "24" }
-    let!(:department) { create(:department) }
-    let!(:applicant) { create(:applicant, department: department, id: applicant_id) }
-    let!(:invitation) { create(:invitation, applicant: applicant, format: "sms") }
-    let!(:invitation2) { create(:invitation, applicant: applicant, format: "email") }
+    let!(:organisation) { create(:organisation) }
+    let!(:applicant) { create(:applicant, organisations: [organisation], id: applicant_id) }
+    let!(:invitation) { create(:invitation, organisation: organisation, applicant: applicant, format: "sms") }
+    let!(:invitation2) { create(:invitation, organisation: organisation, applicant: applicant, format: "email") }
 
     context "when format is not specified" do
       let!(:invite_params) { { token: invitation.token } }
@@ -112,8 +123,8 @@ describe InvitationsController, type: :controller do
       end
     end
 
-    context "when no invitation is retrieved" do
-      let!(:invitation) { create(:invitation, applicant: applicant, format: "email") }
+    context "when no invitation matches the format" do
+      let!(:invitation) { create(:invitation, applicant: applicant, organisation: organisation, format: "email") }
       let!(:invite_params) { { token: invitation.token } }
 
       it "raises an error" do

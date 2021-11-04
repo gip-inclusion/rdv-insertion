@@ -21,7 +21,7 @@ module AuthenticatedControllerConcern
   end
 
   def current_agent
-    @current_agent ||= Agent.includes(:departments).find_by(id: session[:agent_id])
+    @current_agent ||= Agent.includes(:organisations).find_by(id: session[:agent_id])
   end
 
   def pundit_user

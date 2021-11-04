@@ -11,7 +11,7 @@ class Applicant < ApplicationRecord
   include HasStatusConcern
   include NotificableConcern
 
-  belongs_to :department
+  has_and_belongs_to_many :organisations
   has_many :invitations, dependent: :nullify
   has_and_belongs_to_many :rdvs
 
@@ -33,8 +33,6 @@ class Applicant < ApplicationRecord
   scope :invited_before_time_window, lambda {
     where.not(id: Invitation.sent_in_time_window.pluck(:applicant_id).uniq)
   }
-
-  delegate :rdv_solidarites_organisation_id, to: :department
 
   def last_sent_invitation
     invitations.select(&:sent_at).max_by(&:sent_at)
@@ -69,7 +67,7 @@ class Applicant < ApplicationRecord
   end
 
   def invited_before_time_window?
-    last_invitation_sent_at && last_invitation_sent_at < Department::TIME_TO_ACCEPT_INVITATION.ago
+    last_invitation_sent_at && last_invitation_sent_at < Organisation::TIME_TO_ACCEPT_INVITATION.ago
   end
 
   def full_name

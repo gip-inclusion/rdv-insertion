@@ -26,7 +26,7 @@ Pour créer et migrer la base de données, veuillez lancer la commande suivante:
 
 Pour la peupler, veuillez lancer la commande `rails db:seed`.
 Pour pouvoir utiliser l'application correctement, veuillez ajouter les ids des organisations correspondantes
-à chaque département dans RDV-Solidarites au sein de la colonne `rdv_solidarites_organisation_id` de la table `departments`.
+à chaque organisation dans RDV-Solidarites au sein de la colonne `rdv_solidarites_organisation_id` de la table `organisations`.
 
 ### Variables d'environnements
 

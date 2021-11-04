@@ -9,24 +9,30 @@ describe Invitations::SendSms, type: :service do
   let!(:applicant) do
     create(
       :applicant,
-      phone_number_formatted: phone_number_formatted, department: department,
+      phone_number_formatted: phone_number_formatted,
       first_name: "John", last_name: "Doe", title: "monsieur"
     )
   end
   let!(:department) do
     create(
       :department,
-      rdv_solidarites_organisation_id: 27,
       number: "26",
       name: "Drôme",
-      region: "Auvergne-Rhône-Alpes",
-      phone_number: "0147200001"
+      region: "Auvergne-Rhône-Alpes"
+    )
+  end
+  let!(:organisation) do
+    create(
+      :organisation,
+      rdv_solidarites_organisation_id: 27,
+      phone_number: "0147200001",
+      department: department
     )
   end
   let!(:invitation) do
     create(
       :invitation,
-      applicant: applicant, token: "123", link: "https://www.rdv-solidarites.fr/lieux?invitation_token=123",
+      applicant: applicant, organisation: organisation, token: "123", link: "https://www.rdv-solidarites.fr/lieux?invitation_token=123",
       format: "sms"
     )
   end

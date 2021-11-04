@@ -1,6 +1,6 @@
 class ApplicantPolicy < ApplicationPolicy
   def search?
-    pundit_user.department_ids.include?(record.department_id)
+    pundit_user.organisation_ids.include?(record.organisation_id)
   end
 
   def index?

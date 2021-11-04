@@ -35,11 +35,11 @@ module Invitations
         "cliquez sur le lien suivant dans les 3 jours: " \
         "#{redirect_invitations_url(params: { token: @invitation.token }, host: ENV['HOST'])}\n" \
         "Passé ce délai, vous recevrez une convocation. En cas de problème technique, contactez le "\
-        "#{department.phone_number}."
+        "#{organisation.phone_number}."
     end
 
-    def department
-      @invitation.department
+    def organisation
+      @invitation.organisation
     end
 
     def phone_number

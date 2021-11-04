@@ -30,20 +30,20 @@ describe ProcessRdvSolidaritesWebhookJob, type: :job do
 
   let!(:rdv_solidarites_rdv) { OpenStruct.new(id: rdv_solidarites_rdv_id, user_ids: user_ids) }
 
-  let!(:applicant) { create(:applicant, department: department, id: 3) }
-  let!(:applicant2) { create(:applicant, department: department, id: 4) }
+  let!(:applicant) { create(:applicant, organisations: [organisation], id: 3) }
+  let!(:applicant2) { create(:applicant, organisations: [organisation], id: 4) }
 
-  let!(:configuration) { create(:configuration, department: department, notify_applicant: true) }
-  let!(:department) { create(:department, rdv_solidarites_organisation_id: organisation_id) }
+  let!(:configuration) { create(:configuration, organisation: organisation, notify_applicant: true) }
+  let!(:organisation) { create(:organisation, rdv_solidarites_organisation_id: organisation_id) }
 
   describe "#perform" do
     before do
       allow(RdvSolidarites::Rdv).to receive(:new)
         .with(data)
         .and_return(rdv_solidarites_rdv)
-      allow(Department).to receive(:find_by)
+      allow(Organisation).to receive(:find_by)
         .with(rdv_solidarites_organisation_id: 52)
-        .and_return(department)
+        .and_return(organisation)
       allow(Applicant).to receive(:includes).and_return(Applicant)
       allow(Applicant).to receive(:where)
         .with(rdv_solidarites_user_id: user_ids)
@@ -54,17 +54,17 @@ describe ProcessRdvSolidaritesWebhookJob, type: :job do
       allow(MattermostClient).to receive(:send_to_notif_channel)
     end
 
-    context "when no department is found" do
-      let!(:department) { create(:department, id: 111) }
+    context "when no organisation is found" do
+      let!(:organisation) { create(:organisation, id: 111) }
 
       before do
-        allow(Department).to receive(:find_by)
+        allow(Organisation).to receive(:find_by)
           .with(rdv_solidarites_organisation_id: 52)
           .and_return(nil)
       end
 
       it "raises an error" do
-        expect { subject }.to raise_error(WebhookProcessingJobError, "Department not found for organisation id 52")
+        expect { subject }.to raise_error(WebhookProcessingJobError, "Organisation not found for organisation id 52")
       end
     end
 
@@ -88,14 +88,14 @@ describe ProcessRdvSolidaritesWebhookJob, type: :job do
       end
     end
 
-    context "when there is a mismatch between one applicant and the department" do
-      let!(:another_department) { create(:department) }
-      let!(:applicant) { create(:applicant, id: 242, department: another_department) }
+    context "when there is a mismatch between one applicant and the organisation" do
+      let!(:another_organisation) { create(:organisation) }
+      let!(:applicant) { create(:applicant, id: 242, organisations: [another_organisation]) }
 
       it "raises an error" do
         expect { subject }.to raise_error(
           WebhookProcessingJobError,
-          "Applicants / Department mismatch: applicant_ids: [242, 4] - department_id #{department.id} - "\
+          "Applicants / Organisation mismatch: applicant_ids: [242, 4] - organisation_id #{organisation.id} - "\
           "data: #{data} - meta: #{meta}"
         )
       end
@@ -104,7 +104,7 @@ describe ProcessRdvSolidaritesWebhookJob, type: :job do
     context "it udpates the rdv" do
       it "enqueues an upsert job" do
         expect(UpsertRdvJob).to receive(:perform_async)
-          .with(data, [applicant.id, applicant2.id], department.id)
+          .with(data, [applicant.id, applicant2.id], organisation.id)
         subject
       end
 
@@ -120,8 +120,8 @@ describe ProcessRdvSolidaritesWebhookJob, type: :job do
     end
 
     context "when applicants should not be notified" do
-      context "when the department does not notify applicants" do
-        let!(:configuration) { create(:configuration, department: department, notify_applicant: false) }
+      context "when the organisation does not notify applicants" do
+        let!(:configuration) { create(:configuration, organisation: organisation, notify_applicant: false) }
 
         it "does not call the notify applicant job" do
           expect(NotifyApplicantJob).not_to receive(:perform_async)
@@ -146,14 +146,14 @@ describe ProcessRdvSolidaritesWebhookJob, type: :job do
 
     context "when applicants should be notified" do
       before do
-        allow(Department).to receive(:find_by).and_return(department)
+        allow(Organisation).to receive(:find_by).and_return(organisation)
       end
 
       it "calls the notify applicant job" do
         expect(NotifyApplicantJob).to receive(:perform_async)
-          .with(applicant.id, data, "created")
+          .with(applicant.id, organisation.id, data, "created")
         expect(NotifyApplicantJob).to receive(:perform_async)
-          .with(applicant2.id, data, "created")
+          .with(applicant2.id, organisation.id, data, "created")
         subject
       end
     end

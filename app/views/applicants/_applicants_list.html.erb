@@ -9,12 +9,12 @@
           <th scope="col">Prénom</th>
           <th scope="col">Nom</th>
           <th scope="col">Email</th>
-          <% if show_invitation?(@department) %>
+          <% if show_invitation?(@organisation) %>
             <th scope="col">Dernière invitation SMS</th>
             <th scope="col">Dernière invitation email</th>
           <% end %>
-          <% if show_notification?(@department) %>
-             <th scope="col">Dernière Notification envoyée le</th>
+          <% if show_notification?(@organisation) %>
+            <th scope="col">Dernière Notification envoyée le</th>
           <% end %>
           <th scope="col">Statut</th>
         </thead>
@@ -25,12 +25,12 @@
               <td><%= display_attribute applicant.first_name %></td>
               <td><%= display_attribute applicant.last_name %></td>
               <td><%= display_attribute applicant.email %></td>
-              <% if show_invitation?(@department) %>
+              <% if show_invitation?(@organisation) %>
                 <td><%= display_attribute format_date(applicant.last_sms_invitation_sent_at) %></td>
                 <td><%= display_attribute format_date(applicant.last_email_invitation_sent_at) %></td>
               <% end %>
-              <% if show_notification?(@department) %>
-                 <td><%= display_attribute format_date(applicant.last_notification_sent_at) %></td>
+              <% if show_notification?(@organisation) %>
+                <td><%= display_attribute format_date(applicant.last_notification_sent_at) %></td>
               <% end %>
               <td class="<%= background_class_for_status(applicant) %>">
                 <%= I18n.t("activerecord.attributes.applicant.statuses.#{applicant.status}") %>

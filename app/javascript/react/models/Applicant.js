@@ -12,7 +12,7 @@ const TITLES = {
 };
 
 export default class Applicant {
-  constructor(attributes, departmentNumber, departmentConfiguration) {
+  constructor(attributes, departmentNumber, organisationConfiguration) {
     const formattedAttributes = {};
     Object.keys(attributes).forEach((key) => {
       formattedAttributes[key] = attributes[key]?.toString()?.trim();
@@ -37,7 +37,7 @@ export default class Applicant {
     this.role = ROLES[formattedRole] || formattedRole;
     this.shortRole = (this.role === "demandeur" ? "DEM" : "CJT");
     this.departmentNumber = departmentNumber;
-    this.departmentConfiguration = departmentConfiguration;
+    this.organisationConfiguration = organisationConfiguration;
   }
 
   get uid() {
@@ -112,17 +112,17 @@ export default class Applicant {
   }
 
   shouldDisplay(attribute) {
-    return this.departmentConfiguration.column_names[attribute];
+    return this.organisationConfiguration.column_names[attribute];
   }
 
   shouldBeInvitedBySms() {
-    return (this.departmentConfiguration.invitation_format === "sms" ||
-            this.departmentConfiguration.invitation_format === "sms_and_email");
+    return (this.organisationConfiguration.invitation_format === "sms" ||
+            this.organisationConfiguration.invitation_format === "sms_and_email");
   }
 
   shouldBeInvitedByEmail() {
-    return (this.departmentConfiguration.invitation_format === "email" ||
-            this.departmentConfiguration.invitation_format === "sms_and_email");
+    return (this.organisationConfiguration.invitation_format === "email" ||
+            this.organisationConfiguration.invitation_format === "sms_and_email");
   }
 
   hasMissingAttributes() {

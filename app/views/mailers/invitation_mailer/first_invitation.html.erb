@@ -4,5 +4,5 @@
 <p class="btn-wrapper">
   <a href="<%= redirect_invitations_url(params: { token: @invitation.token, format: "email" }, host: ENV['HOST']) %>" class="btn btn-primary">Je prends RDV</a>
 </p>
-<p>En cas de problème technique, contactez le <%= @applicant.department.phone_number.gsub(/\d{2}/, '\& ') %></p>
+<p>En cas de problème technique, contactez le <%= @invitation.organisation.phone_number.gsub(/\d{2}/, '\& ') %></p>
 
