@@ -1,93 +1,34 @@
 import React, { useState } from "react";
-import Swal from "sweetalert2";
-import confirmationModal from "../../lib/confirmationModal";
-import createApplicant from "../actions/createApplicant";
-import inviteApplicant from "../actions/inviteApplicant";
+
+import handleApplicantCreation from "../actions/handleApplicantCreation"
+import handleApplicantInvitation from "../actions/handleApplicantInvitation"
 
 export default function Applicant({ applicant, dispatchApplicants, department }) {
   const [isLoading, setIsLoading] = useState({
-    account_creation: false,
-    sms_invitation: false,
-    email_invitation: false,
+    accountCreation: false,
+    smsInvitation: false,
+    emailInvitation: false,
   });
-
-  const displayDuplicationWarning = async () => {
-    let warningMessage = "";
-
-    if (!applicant.affiliationNumber) {
-      warningMessage =
-        "Le numéro d'allocataire n'est pas spécifié (si c'est un NIR il a été filtré).";
-    } else if (!applicant.role) {
-      warningMessage = "Le rôle de l'allocataire n'est pas spécifié.";
-    }
-
-    const searchApplicantLink = new URL(
-      `${window.location.origin}/departments/${department.id}/applicants`
-    );
-    searchApplicantLink.searchParams.set("search_query", applicant.lastName);
-
-    return confirmationModal(
-      `${warningMessage}\nVérifiez <a class="light-blue" href="${searchApplicantLink.href}" target="_blank">ici</a>` +
-        " que l'allocataire n'a pas déjà été créé avant de continuer.",
-      {
-        confirmButtonText: "Créer",
-        cancelButtonText: "Annuler",
-      }
-    );
-  };
-
-  const handleApplicantCreation = async () => {
-    if (!applicant.affiliationNumber || !applicant.role) {
-      const confirmation = await displayDuplicationWarning();
-      if (!confirmation.isConfirmed) return;
-    }
-    const result = await createApplicant(applicant, department.id);
-    if (result.success) {
-      applicant.updateWith(result.applicant);
-
-      dispatchApplicants({
-        type: "update",
-        item: {
-          seed: applicant.uid,
-          applicant,
-        },
-      });
-    } else {
-      Swal.fire("Impossible de créer l'utilisateur", result.errors[0], "error");
-    }
-  };
-
-  const handleApplicantInvitation = async (invitationFormat) => {
-    const result = await inviteApplicant(applicant.id, invitationFormat);
-    if (result.success) {
-      const { invitation } = result;
-      if (invitationFormat === "sms") {
-        applicant.lastSmsInvitationSentAt = invitation.sent_at;
-      } else if (invitationFormat === "email") {
-        applicant.lastEmailInvitationSentAt = invitation.sent_at;
-      }
-
-      dispatchApplicants({
-        type: "update",
-        item: {
-          seed: applicant.uid,
-          applicant,
-        },
-      });
-    } else {
-      Swal.fire("Impossible d'inviter l'utilisateur", result.errors[0], "error");
-    }
-  };
 
   const handleClick = async (action) => {
     setIsLoading({ ...isLoading, [action]: true });
-    if (action === "account_creation") {
-      await handleApplicantCreation();
-    } else if (action === "sms_invitation") {
-      await handleApplicantInvitation("sms");
-    } else if (action === "email_invitation") {
-      await handleApplicantInvitation("email");
+    if (action === "accountCreation") {
+      await handleApplicantCreation(applicant, department);
+    } else if (action === "smsInvitation") {
+      const invitation = await handleApplicantInvitation(applicant, "sms");
+      applicant.lastSmsInvitationSentAt = invitation.sent_at;
+    } else if (action === "emailInvitation") {
+      const invitation = await handleApplicantInvitation(applicant, "email");
+      applicant.lastEmailInvitationSentAt = invitation.sent_at;
     }
+
+    dispatchApplicants({
+      type: "update",
+      item: {
+        seed: applicant.uid,
+        applicant,
+      },
+    });
     setIsLoading({ ...isLoading, [action]: false });
   };
 
@@ -108,11 +49,11 @@ export default function Applicant({ applicant, dispatchApplicants, department })
         ) : (
           <button
             type="submit"
-            disabled={isLoading.account_creation}
+            disabled={isLoading.accountCreation}
             className="btn btn-primary btn-blue"
-            onClick={() => handleClick("account_creation")}
+            onClick={() => handleClick("accountCreation")}
           >
-            {isLoading.account_creation ? "Création..." : "Créer compte"}
+            {isLoading.accountCreation ? "Création..." : "Créer compte"}
           </button>
         )}
       </td>
@@ -124,11 +65,11 @@ export default function Applicant({ applicant, dispatchApplicants, department })
             ) : (
               <button
                 type="submit"
-                disabled={isLoading.sms_invitation || !applicant.createdAt || !applicant.phoneNumber}
+                disabled={isLoading.smsInvitation || !applicant.createdAt || !applicant.phoneNumber}
                 className="btn btn-primary btn-blue"
-                onClick={() => handleClick("sms_invitation")}
+                onClick={() => handleClick("smsInvitation")}
               >
-                {isLoading.sms_invitation ? "Invitation..." : "Inviter par SMS"}
+                {isLoading.smsInvitation ? "Invitation..." : "Inviter par SMS"}
               </button>
             )}
           </td>
@@ -142,11 +83,11 @@ export default function Applicant({ applicant, dispatchApplicants, department })
             ) : (
               <button
                 type="submit"
-                disabled={isLoading.email_invitation || !applicant.createdAt || !applicant.email}
+                disabled={isLoading.emailInvitation || !applicant.createdAt || !applicant.email}
                 className="btn btn-primary btn-blue"
-                onClick={() => handleClick("email_invitation")}
+                onClick={() => handleClick("emailInvitation")}
               >
-                {isLoading.email_invitation ? "Invitation..." : "Inviter par mail"}
+                {isLoading.emailInvitation ? "Invitation..." : "Inviter par mail"}
               </button>
             )}
           </td>

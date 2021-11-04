@@ -121,7 +121,15 @@ export default function ApplicantsUpload({ department, configuration }) {
   return (
     <div className="container mt-5 mb-8">
       <div className="row mb-4 block-white justify-content-center">
-        <div className="col-4 text-center" />
+        <div className="col-4 text-center d-flex align-items-center justify-content-start">
+          <button
+            type="submit"
+            className="btn btn-secondary btn-blue-out"
+            onClick={() => redirectToApplicantList()}
+          >
+            Retour au suivi
+          </button>
+        </div>
         <div className="col-4 text-center d-flex flex-column align-items-center">
           <h3 className="new-applicants-title">Ajout allocataires</h3>
           <FileHandler
@@ -132,15 +140,7 @@ export default function ApplicantsUpload({ department, configuration }) {
             pendingMessage="Récupération des informations, merci de patienter"
           />
         </div>
-        <div className="col-4 text-center d-flex align-items-center justify-content-end">
-          <button
-            type="submit"
-            className="btn btn-secondary btn-blue-out"
-            onClick={() => redirectToApplicantList()}
-          >
-            Retour au suivi
-          </button>
-        </div>
+        <div className="col-4 text-center" />
       </div>
 
       {applicants.length > 0 && (

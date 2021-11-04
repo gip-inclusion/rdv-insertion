@@ -1,11 +1,17 @@
 <div class="container applicant-attribute mt-4">
   <div class="d-flex justify-content-between mb-4">
-    <%= link_to url_for(:back) do %>
+    <%= link_to department_applicants_path(@applicant.department) do %>
       <button class="btn btn-blue-out">Retour</button>
     <% end %>
-    <button class="btn btn-blue">Modifier</button>
+    <%= link_to rdv_solidarites_user_url(@applicant), target: "_blank" do %>
+      <button class="btn btn-blue">Voir sur RDV-Solidarités<i class="fas fa-external-link-alt icon-sm"></i></button>
+    <% end %>
+    <%#
+    <%= link_to edit_applicant_path(@applicant) %>
+    <%# <button class="btn btn-blue">Modifier</button>
+    <% end %>
   </div>
-  <div class="block-white mb-4">
+  <div class="mb-4">
     <div class="row d-flex justify-content-around flex-wrap">
       <div class="col-10 col-md-5">
         <h4 class="attribute-title">Nom</h4>
@@ -47,59 +53,15 @@
       </div>
     </div>
   </div>
-  <div class="d-flex justify-content-around text-center flex-wrap mb-4 pb-3">
-    <div class="tracking-block block-white">
-      <div class="row d-flex justify-content-around">
-        <h4 class="col-4">Création du compte</h4>
-        <h4 class="col-4">Invitation SMS</h4>
-        <h4 class="col-4">Invitation mail</h4>
-      </div>
-      <div class="row d-flex justify-content-around">
-        <p class="col-4 py-2 <%= bg_for_account_creation(@applicant) %>">
-          <%= account_creation_date(@applicant) %>
-        </p>
-        <p class="col-4 py-2 <%= bg_for_invitation_date(@applicant, "sms") %>">
-          <%= last_sms_invitation_date(@applicant) %>
-        </p>
-        <p class="col-4 py-2 <%= bg_for_invitation_date(@applicant, "email") %>">
-          <%= last_email_invitation_date(@applicant) %>
-        </p>
-      </div>
-      <div class="row d-flex justify-content-around">
-        <div class="col-4">
-          <button class="btn btn-blue <%= class_for_account_creation_button(@applicant) %>">Créer compte</button>
-        </div>
-        <div class="col-4">
-          <button class="btn btn-blue <%= class_for_invitation_button(@applicant) %>">
-            <%= text_for_invitation_button(@applicant,"sms") %>
-          </button>
-        </div>
-        <div class="col-4">
-          <button class="btn btn-blue <%= class_for_invitation_button(@applicant) %>">
-            <%= text_for_invitation_button(@applicant,"email") %>
-          </button>
-        </div>
-      </div>
-    </div>
-    <div class="tracking-block block-2 block-white d-flex justify-content-center flex-column">
-      <div class="row d-flex justify-content-around">
-        <h4 class="col-4">RDV pris le</h4>
-        <h4 class="col-4">Date du RDV</h4>
-        <h4 class="col-4">Statut</h4>
-      </div>
-      <div class="row d-flex justify-content-around flex-grow-1">
-        <div class="col-4 d-flex align-items-center justify-content-center">
-          <p><%= last_rdv_creation_date(@applicant) %></p>
-        </div>
-        <div class="col-4 d-flex align-items-center justify-content-center">
-          <p><%= last_rdv_date(@applicant) %></p>
-        </div>
-        <div class="col-4 d-flex align-items-center justify-content-center <%= background_class_for_status(@applicant) %>">
-          <p class="m-0"><%= I18n.t("activerecord.attributes.applicant.statuses.#{@applicant.status}") + display_notice(@applicant) %></p>
-        </div>
-      </div>
-    </div>
-  </div>
-
+  <%= react_component(
+    "components/ApplicantTracker", {
+      applicant: @applicant,
+      rdvs: @applicant.rdvs,
+      outOfTime: @applicant.invited_before_time_window?,
+      actionRequired: @applicant.action_required?,
+      status: @applicant.status,
+      textForStatus: I18n.t("activerecord.attributes.applicant.statuses.#{@applicant.status}")
+    }
+  ) %>
 </div>
 
