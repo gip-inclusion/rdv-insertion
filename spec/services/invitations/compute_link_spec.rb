@@ -43,6 +43,12 @@ describe Invitations::ComputeLink, type: :service do
         .and_return(rdv_solidarites_client)
       allow(rdv_solidarites_client).to receive(:get_motifs)
         .and_return(OpenStruct.new(success?: true, body: { "motifs" => motifs }.to_json))
+      allow(ENV).to receive(:[])
+        .with('RDV_SOLIDARITES_URL')
+        .and_return('https://www.rdv-solidarites.fr')
+      allow(ENV).to receive(:[])
+        .with('RDV_SOLIDARITES_RSA_SERVICE_ID')
+        .and_return(4)
     end
 
     it("is a success") { is_a_success }
@@ -54,7 +60,7 @@ describe Invitations::ComputeLink, type: :service do
     context "retrieves the motif" do
       it "tries to retrieve the motifs" do
         expect(rdv_solidarites_client).to receive(:get_motifs)
-          .with(27)
+          .with(27, 4)
         subject
       end
 
@@ -70,18 +76,26 @@ describe Invitations::ComputeLink, type: :service do
           expect(subject.errors).to eq(["erreur RDV-Solidarités: [\"something happened\"]"])
         end
       end
+
+      context "when no motifs is retrieved" do
+        before do
+          allow(rdv_solidarites_client).to receive(:get_motifs)
+            .and_return(OpenStruct.new(success?: true, body: { "motifs" => [] }.to_json))
+        end
+
+        it("is a failure") { is_a_failure }
+
+        it "returns the error" do
+          expect(subject.errors).to eq(
+            [
+              "Aucun motif ne correspond aux critères d'invitation. Vérifiez que vous appartenez au bon service."
+            ]
+          )
+        end
+      end
     end
 
     context "computes the link" do
-      before do
-        allow(ENV).to receive(:[])
-          .with('RDV_SOLIDARITES_URL')
-          .and_return('https://www.rdv-solidarites.fr')
-        allow(ENV).to receive(:[])
-          .with('RDV_SOLIDARITES_RSA_SERVICE_ID')
-          .and_return(4)
-      end
-
       context "when only one motif is found" do
         it "redirects to the lieux page with the motif params" do
           expect(subject.invitation_link).to eq(

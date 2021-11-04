@@ -14,13 +14,16 @@ module Invitations
     private
 
     def retrieve_organisation_motifs!
-      return if rdv_solidarites_response.success?
+      unless rdv_solidarites_response.success?
+        fail!("erreur RDV-Solidarités: #{rdv_solidarites_response_body['errors']}")
+      end
+      return unless motifs.empty?
 
-      fail!("erreur RDV-Solidarités: #{rdv_solidarites_response_body['errors']}")
+      fail!("Aucun motif ne correspond aux critères d'invitation. Vérifiez que vous appartenez au bon service.")
     end
 
     def redirect_link
-      if motifs.one?
+      if motifs.length == 1
         link_with_motif(motifs.first)
       else
         link_without_motif
@@ -32,7 +35,7 @@ module Invitations
         search: {
           departement: @organisation.department_number,
           where: @organisation.department_name_with_region,
-          motif_name_with_location_type: "#{motif['name']}-#{motif['location_type']}",
+          motif_name_with_location_type: motif.name_with_location_type,
           service: ENV['RDV_SOLIDARITES_RSA_SERVICE_ID']
         }
       }
@@ -46,7 +49,7 @@ module Invitations
     end
 
     def motifs
-      rdv_solidarites_response_body['motifs']
+      rdv_solidarites_response_body['motifs'].map { RdvSolidarites::Motif.new(_1) }
     end
 
     def rdv_solidarites_response_body
@@ -54,7 +57,9 @@ module Invitations
     end
 
     def rdv_solidarites_response
-      @rdv_solidarites_response ||= rdv_solidarites_client.get_motifs(@organisation.rdv_solidarites_organisation_id)
+      @rdv_solidarites_response ||= rdv_solidarites_client.get_motifs(
+        @organisation.rdv_solidarites_organisation_id, ENV['RDV_SOLIDARITES_RSA_SERVICE_ID']
+      )
     end
 
     def rdv_solidarites_client
