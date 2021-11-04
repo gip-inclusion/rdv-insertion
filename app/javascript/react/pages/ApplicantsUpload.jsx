@@ -55,7 +55,6 @@ export default function ApplicantsUpload({ organisation, configuration, departme
             department.number,
             configuration
           );
-          console.log(applicant)
           applicantsFromList.push(applicant);
         });
         resolve();
