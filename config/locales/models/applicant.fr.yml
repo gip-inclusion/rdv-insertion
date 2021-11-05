@@ -5,6 +5,7 @@ fr:
     attributes:
       applicant:
         statuses:
+          # Changes in statuses wording also need to be echoed in ApplicantTracker.jsx
           not_invited: Non invité
           invitation_pending: Invitation en attente de réponse
           rdv_creation_pending: En attente de prise de RDV
@@ -14,3 +15,4 @@ fr:
           rdv_revoked: RDV annulé à l'initative du Service
           rdv_excused: RDV annulé à l'initiative de l'allocataire
           rdv_seen: RDV honoré
+          resolved: Dossier clôturé

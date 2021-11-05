@@ -31,15 +31,15 @@ module ApplicantsHelper
 
   def background_class_for_status(applicant)
     if applicant.action_required?
-      applicant.attention_needed? ? "text-dark-blue bg-warning border-warning" : "bg-danger border-danger"
-    elsif applicant.rdv_seen?
-      "text-white bg-success border-success"
+      applicant.attention_needed? ? "bg-warning border-warning" : "bg-danger border-danger"
+    elsif applicant.rdv_seen? || applicant.resolved?
+      "bg-success border-success"
     else
       ""
     end
   end
 
-  def display_notice(applicant)
+  def display_time_notice(applicant)
     applicant.invited_before_time_window? ? " (Délai dépassé)" : ""
   end
 

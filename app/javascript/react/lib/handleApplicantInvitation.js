@@ -1,5 +1,5 @@
 import Swal from "sweetalert2";
-import inviteApplicant from "./inviteApplicant";
+import inviteApplicant from "../actions/inviteApplicant";
 
 const handleApplicantInvitation = async (organisationId, applicantId, invitationFormat) => {
   const result = await inviteApplicant(organisationId, applicantId, invitationFormat);

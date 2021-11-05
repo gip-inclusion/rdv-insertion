@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import retrieveLastInvitationDate from "../../lib/retrieveLastInvitationDate";
-import handleApplicantInvitation from "../actions/handleApplicantInvitation"
+import handleApplicantInvitation from "../lib/handleApplicantInvitation"
 import { getFrenchFormatDateString } from "../../lib/datesHelper"
 
 export default function ApplicantTracker({
@@ -9,8 +9,7 @@ export default function ApplicantTracker({
   organisation,
   rdvs,
   outOfTime,
-  actionRequired,
-  textForStatus
+  actionRequired
 }) {
   const [isLoading, setIsLoading] = useState({
     smsInvitation: false,
@@ -20,64 +19,85 @@ export default function ApplicantTracker({
   const [hasActionRequired, setHasActionRequired] = useState(actionRequired);
   const [lastSmsInvitationSentAt, setLastSmsInvitationSentAt] = useState(retrieveLastInvitationDate(applicant.invitations, "sms"));
   const [lastEmailInvitationSentAt, setLastEmailInvitationSentAt] = useState(retrieveLastInvitationDate(applicant.invitations, "email"));
-  const [statusDisplayed, setStatusDisplayed] = useState(textForStatus);
+  const [applicantStatus, setApplicantStatus] = useState(applicant.status);
 
-  const classForInvitationDate = (format) => {
-    let date = null;
+  const baseCssClass = "col-4 d-flex align-items-center justify-content-center"
+
+  const cssClassForInvitationDate = (format) => {
+    let lastInvitationDate = null;
     if (format === "sms") {
-      date = lastSmsInvitationSentAt;
+      lastInvitationDate = lastSmsInvitationSentAt;
     } else if (format === "email") {
-      date = lastEmailInvitationSentAt;
+      lastInvitationDate = lastEmailInvitationSentAt;
     }
 
-    if (date && isOutOfTime) {
-      return "col-4 py-2 bg-warning";
+    if (rdvs.length === 0 && applicantStatus !== "resolved") {
+      if (lastInvitationDate && isOutOfTime) {
+        return " bg-warning";
+      }
+      if (lastInvitationDate) {
+        return " bg-success";
+      }
+      if (!lastSmsInvitationSentAt && !lastEmailInvitationSentAt) {
+        return " bg-danger";
+      }
     }
-    if (date && rdvs.length === 0) {
-      return "col-4 py-2 bg-success";
-    }
-    if (!lastSmsInvitationSentAt && !lastEmailInvitationSentAt) {
-      return "col-4 py-2 bg-danger";
-    }
-    return "col-4 py-2";
+    return ""
   }
 
-  const classForApplicantStatus = () => {
-    const baseClass = "col-4 d-flex align-items-center justify-content-center"
-
+  const cssClassForApplicantStatus = () => {
     if (hasActionRequired &&
-      (applicant.status === "invitation_pending" || applicant.status === "rdv_creation_pending")) {
-      return `${baseClass} text-dark-blue bg-warning border-warning`
+      (applicantStatus === "invitation_pending" || applicantStatus === "rdv_creation_pending")) {
+      return " text-dark-blue bg-warning border-warning"
     }
     if (hasActionRequired) {
-      return `${baseClass} bg-danger border-danger`
+      return " bg-danger border-danger"
     }
-    if (applicant.status === "rdv_seen") {
-      return `${baseClass} text-white bg-success border-success`
+    if (applicantStatus === "rdv_seen" || applicantStatus === "resolved") {
+      return " bg-success border-success"
     }
-    return baseClass
+    return ""
   }
 
-  const classForApplicantRdv = () => {
-    const baseClass = "col-4 d-flex align-items-center justify-content-center"
+  const cssClassForApplicantRdv = () => {
+    if (applicantStatus === "rdv_pending") {
+      return " bg-success border-success"
+    }
+    return ""
+  }
 
-    if (applicant.status === "rdv_pending" || applicant.status === "rdv_seen") {
-      return `${baseClass} text-white bg-success border-success`
+  const textForStatus = () => {
+    // Changes in statuses wording also need to be echoed in applicant.fr.yml
+    switch(applicantStatus) {
+      case "not_invited":
+        return "Non invité";
+      case "invitation_pending":
+        return "Invitation en attente de réponse";
+      case "rdv_creation_pending":
+        return "En attente de prise de RDV";
+      case "rdv_pending":
+        return "RDV pris";
+      case "rdv_needs_status_update":
+        return "Statut du RDV à préciser";
+      case "rdv_noshow":
+        return "Absence non excusée au RDV";
+      case "rdv_revoked":
+        return "RDV annulé à l'initative du Service";
+      case "rdv_excused":
+        return "RDV annulé à l'initiative de l'allocataire";
+      case "rdv_seen":
+        return "RDV honoré";
+      case "resolved":
+        return "Dossier clôturé";
+      default:
+        return "";
     }
-    if (applicant.status === "rdv_revoked" || applicant.status === "rdv_excused") {
-      return `${baseClass} text-dark-blue bg-warning border-warning`
-    }
-    if (applicant.status === "rdv_noshow") {
-      return `${baseClass} bg-danger border-danger`
-    }
-    return baseClass
   }
 
   const handleClick = async (action) => {
     setIsLoading({ ...isLoading, [action]: true });
-    let format;
-    // eslint-disable-next-line no-unused-expressions
-    (action === "smsInvitation") ? format = "sms" : format = "email"
+
+    const format = (action === "smsInvitation") ? "sms" : "email";
     const invitation = await handleApplicantInvitation(organisation.id, applicant.id, format);
 
     if (invitation?.sent_at) {
@@ -86,8 +106,8 @@ export default function ApplicantTracker({
       } else {
       setLastEmailInvitationSentAt(invitation?.sent_at)
       }
-      if (statusDisplayed === "Non invité") {
-      setStatusDisplayed("Invitation en attente de réponse");
+      if (applicantStatus === "not_invited") {
+      setApplicantStatus("invitation_pending");
       }
       setHasActionRequired(false);
       setIsOutOfTime(false);
@@ -108,10 +128,10 @@ export default function ApplicantTracker({
           <p className="col-4 py-2">
             {getFrenchFormatDateString(applicant.created_at)}
           </p>
-          <p className={classForInvitationDate("sms")}>
+          <p className={`col-4 py-2${cssClassForInvitationDate("sms")}`}>
             {lastSmsInvitationSentAt ? getFrenchFormatDateString(lastSmsInvitationSentAt) : "-"}
           </p>
-          <p className={classForInvitationDate("email")}>
+          <p className={`col-4 py-2${cssClassForInvitationDate("email")}`}>
             {lastEmailInvitationSentAt ? getFrenchFormatDateString(lastEmailInvitationSentAt) : "-"}
           </p>
         </div>
@@ -120,7 +140,8 @@ export default function ApplicantTracker({
           <div className="col-4">
             <button
               type="button"
-              disabled={isLoading.smsInvitation || (rdvs.length > 0 && !hasActionRequired) || !applicant.phone_number_formatted}
+              disabled={isLoading.smsInvitation || (rdvs.length > 0 && !hasActionRequired) ||
+                !applicant.phone_number_formatted || applicantStatus === "resolved"}
               className="btn btn-blue"
               onClick={() => handleClick("smsInvitation")}
             >
@@ -132,7 +153,8 @@ export default function ApplicantTracker({
           <div className="col-4">
             <button
               type="button"
-              disabled={isLoading.emailInvitation || (rdvs.length > 0 && !hasActionRequired) || !applicant.email}
+              disabled={isLoading.emailInvitation || (rdvs.length > 0 && !hasActionRequired) ||
+                !applicant.email || applicantStatus === "resolved"}
               className="btn btn-blue"
               onClick={() => handleClick("emailInvitation")}
             >
@@ -150,14 +172,14 @@ export default function ApplicantTracker({
           <h4 className="col-4">Statut</h4>
         </div>
         <div className="row d-flex justify-content-around flex-grow-1">
-          <div className={classForApplicantRdv()}>
+          <div className={`${baseCssClass}${cssClassForApplicantRdv()}`}>
             <p>{rdvs.length > 0 ? getFrenchFormatDateString(rdvs.at(-1).created_at) : "-"}</p>
           </div>
-          <div className={classForApplicantRdv()}>
+          <div className={`${baseCssClass}${cssClassForApplicantRdv()}`}>
             <p>{rdvs.length > 0 ? getFrenchFormatDateString(rdvs.at(-1).starts_at) : "-"}</p>
           </div>
-          <div className={classForApplicantStatus()}>
-            <p className="m-0">{statusDisplayed}{isOutOfTime && " (Délai dépassé)"}</p>
+          <div className={`${baseCssClass}${cssClassForApplicantStatus()}`}>
+            <p className="m-0">{textForStatus()}{isOutOfTime && " (Délai dépassé)"}</p>
           </div>
         </div>
       </div>

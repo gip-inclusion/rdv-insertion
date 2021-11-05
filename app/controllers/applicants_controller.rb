@@ -3,11 +3,20 @@ class ApplicantsController < ApplicationController
     :uid, :role, :first_name, :last_name, :birth_date, :email, :phone_number,
     :birth_name, :address, :affiliation_number, :custom_id, :title
   ].freeze
-  before_action :set_organisation, only: [:index, :create, :show, :search]
+  before_action :set_organisation, only: [:index, :create, :show, :search, :resolve]
   before_action :retrieve_applicants, only: [:search]
-  before_action :set_applicant, only: [:show]
+  before_action :set_applicant, only: [:show, :resolve]
 
   include FilterableApplicantsConcern
+
+  def create
+    authorize @organisation, :create_applicant?
+    if create_applicant.success?
+      render json: { success: true, applicant: create_applicant.applicant }
+    else
+      render json: { success: false, errors: create_applicant.errors }
+    end
+  end
 
   def index
     authorize @organisation, :list_applicants?
@@ -34,13 +43,10 @@ class ApplicantsController < ApplicationController
     }
   end
 
-  def create
-    authorize @organisation, :create_applicant?
-    if create_applicant.success?
-      render json: { success: true, applicant: create_applicant.applicant }
-    else
-      render json: { success: false, errors: create_applicant.errors }
-    end
+  def resolve
+    authorize @applicant
+    @applicant.resolved!
+    redirect_to organisation_applicant_path(@organisation, @applicant)
   end
 
   private

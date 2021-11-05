@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
-import handleApplicantCreation from "../actions/handleApplicantCreation"
-import handleApplicantInvitation from "../actions/handleApplicantInvitation"
+import handleApplicantCreation from "../lib/handleApplicantCreation"
+import handleApplicantInvitation from "../lib/handleApplicantInvitation"
 
 export default function Applicant({ applicant, dispatchApplicants, organisation }) {
   const [isLoading, setIsLoading] = useState({

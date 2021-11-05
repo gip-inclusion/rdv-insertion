@@ -34,7 +34,7 @@
                 <td><%= display_attribute format_date(applicant.last_notification_sent_at) %></td>
               <% end %>
               <td class="<%= background_class_for_status(applicant) %>">
-                <%= I18n.t("activerecord.attributes.applicant.statuses.#{applicant.status}") + display_notice(applicant) %>
+                <%= I18n.t("activerecord.attributes.applicant.statuses.#{applicant.status}") + display_time_notice(applicant) %>
               </td>
               <td class="padding-left-15">
                 <%= link_to organisation_applicant_path(@organisation, applicant) do %>

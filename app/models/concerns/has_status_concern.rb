@@ -6,6 +6,8 @@ module HasStatusConcern
   end
 
   def set_status
+    return if status == "resolved"
+
     rdvs.reload
     invitations.reload
     self.status = compute_status

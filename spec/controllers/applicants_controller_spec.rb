@@ -165,6 +165,22 @@ describe ApplicantsController, type: :controller do
     end
   end
 
+  describe "#show" do
+    let!(:applicant) { create(:applicant, organisations: [organisation]) }
+    let!(:show_params) { { id: applicant.id, organisation_id: organisation.id } }
+
+    before do
+      sign_in(agent)
+      set_rdv_solidarites_session
+    end
+
+    it "renders the applicant page" do
+      get :show, params: show_params
+
+      expect(response).to be_successful
+    end
+  end
+
   describe "#index" do
     let!(:applicants) { organisation.applicants }
     let!(:applicant) { create(:applicant, organisations: [organisation]) }

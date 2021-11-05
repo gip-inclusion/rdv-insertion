@@ -12,6 +12,10 @@ class ApplicantPolicy < ApplicationPolicy
   end
 
   def show?
-    (pundit_user.organisation_ids & record.organisations.pluck(:rdv_solidarites_organisation_id)).empty?
+    (pundit_user.organisation_ids & record.organisations.pluck(:id)).any?
+  end
+
+  def resolve?
+    show?
   end
 end

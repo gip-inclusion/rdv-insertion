@@ -16,7 +16,7 @@ Rails.application.routes.draw do
     resources :applicants, only: [:index, :create, :show] do
       collection do
         resources :uploads, only: [:new]
-        post :search
+        post :search, :resolve
       end
       resources :invitations, only: [:create]
     end

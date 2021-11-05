@@ -1,11 +1,20 @@
 <div class="container applicant-attribute mt-4">
   <div class="d-flex justify-content-between mb-4">
-    <%= link_to organisation_applicants_path(@organisation) do %>
-      <button class="btn btn-blue-out">Retour</button>
-    <% end %>
-    <%= link_to rdv_solidarites_user_url(@organisation, @applicant), target: "_blank" do %>
-      <button class="btn btn-blue">Voir sur RDV-Solidarités<i class="fas fa-external-link-alt icon-sm"></i></button>
-    <% end %>
+    <div>
+      <%= link_to organisation_applicants_path(@organisation) do %>
+        <button class="btn btn-blue-out">Retour</button>
+      <% end %>
+      <%= link_to rdv_solidarites_user_url(@organisation, @applicant), target: "_blank" do %>
+        <button class="btn btn-blue">Voir sur RDV-Solidarités<i class="fas fa-external-link-alt icon-sm"></i></button>
+      <% end %>
+    </div>
+    <div>
+      <% unless @applicant.rdv_seen? || @applicant.resolved? %>
+        <%= link_to resolve_organisation_applicants_path(@organisation, id: @applicant), method: :post do %>
+          <button class="btn btn-primary">Clôturer le dossier</button>
+        <% end %>
+      <% end %>
+    </div>
     <%#
     <%= link_to edit_applicant_path(@applicant) %>
     <%# <button class="btn btn-blue">Modifier</button>
@@ -59,8 +68,7 @@
       organisation: @organisation,
       rdvs: @applicant.rdvs,
       outOfTime: @applicant.invited_before_time_window?,
-      actionRequired: @applicant.action_required?,
-      textForStatus: I18n.t("activerecord.attributes.applicant.statuses.#{@applicant.status}")
+      actionRequired: @applicant.action_required?
     }
   ) %>
 </div>

@@ -1,6 +1,6 @@
 import Swal from "sweetalert2";
 import confirmationModal from "../../lib/confirmationModal";
-import createApplicant from "./createApplicant";
+import createApplicant from "../actions/createApplicant";
 
 const displayDuplicationWarning = async (applicant, organisation) => {
   let warningMessage = "";
