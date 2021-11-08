@@ -8,18 +8,34 @@ module Invitations
 
     def call
       retrieve_organisation_motifs!
+      check_motifs_presence!
       result.invitation_link = redirect_link + "&invitation_token=#{@invitation_token}"
     end
 
     private
 
     def retrieve_organisation_motifs!
-      unless rdv_solidarites_response.success?
-        fail!("erreur RDV-Solidarités: #{rdv_solidarites_response_body['errors']}")
-      end
+      return if retrieve_organisation_motifs.success?
+
+      result.errors += retrieve_organisation_motifs.errors
+      fail!
+    end
+
+    def retrieve_organisation_motifs
+      @retrieve_organisation_motifs ||= RdvSolidaritesApi::RetrieveMotifs.call(
+        rdv_solidarites_session: @rdv_solidarites_session,
+        organisation: @organisation
+      )
+    end
+
+    def check_motifs_presence!
       return unless motifs.empty?
 
       fail!("Aucun motif ne correspond aux critères d'invitation. Vérifiez que vous appartenez au bon service.")
+    end
+
+    def motifs
+      retrieve_organisation_motifs.motifs
     end
 
     def redirect_link
@@ -36,7 +52,8 @@ module Invitations
           departement: @organisation.department_number,
           where: @organisation.department_name_with_region,
           motif_name_with_location_type: motif.name_with_location_type,
-          service: ENV['RDV_SOLIDARITES_RSA_SERVICE_ID']
+          # Agents and motifs can be on "Service Social" and not in "Service RSA"
+          service: @organisation.rsa_agents_service_id
         }
       }
       "#{ENV['RDV_SOLIDARITES_URL']}/lieux?#{params.to_query}"
@@ -45,25 +62,7 @@ module Invitations
     def link_without_motif
       params = { where: @organisation.department_name_with_region }
       "#{ENV['RDV_SOLIDARITES_URL']}/departement/#{@organisation.department_number}/" \
-        "#{ENV['RDV_SOLIDARITES_RSA_SERVICE_ID']}?#{params.to_query}"
-    end
-
-    def motifs
-      rdv_solidarites_response_body['motifs'].map { RdvSolidarites::Motif.new(_1) }
-    end
-
-    def rdv_solidarites_response_body
-      JSON.parse(rdv_solidarites_response.body)
-    end
-
-    def rdv_solidarites_response
-      @rdv_solidarites_response ||= rdv_solidarites_client.get_motifs(
-        @organisation.rdv_solidarites_organisation_id, ENV['RDV_SOLIDARITES_RSA_SERVICE_ID']
-      )
-    end
-
-    def rdv_solidarites_client
-      @rdv_solidarites_client ||= RdvSolidaritesClient.new(@rdv_solidarites_session)
+        "#{@organisation.rsa_agents_service_id}?#{params.to_query}"
     end
   end
 end
