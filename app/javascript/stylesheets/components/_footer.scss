@@ -27,6 +27,9 @@
 
 .nav-link {
   color: black !important;
+  &:hover {
+    color: black !important;
+  }
 }
 
 @media (max-width: 700px) {
