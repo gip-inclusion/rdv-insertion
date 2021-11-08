@@ -58,7 +58,8 @@ export default function ApplicantsUpload({ organisation, configuration, departme
       const reader = new FileReader();
       reader.onload = function (event) {
         const workbook = XLSX.read(event.target.result, { type: "binary" });
-        const sheet = workbook.Sheets[SHEET_NAME] || workbook.Sheets[0];
+        const sheet = workbook.Sheets[SHEET_NAME] || workbook.Sheets[workbook.SheetNames[0]];
+        console.log(sheet)
         let rows = XLSX.utils.sheet_to_row_object_array(sheet);
         rows = rows.map((row) => parameterizeObjectKeys(row));
         const missingColumnNames = checkColumnNames(Object.keys(rows[0]));
