@@ -98,7 +98,8 @@ export default class Applicant {
   }
 
   shouldDisplay(attribute) {
-    return this.organisationConfiguration.column_names[attribute];
+    return this.organisationConfiguration.column_names.required[attribute]
+      || this.organisationConfiguration.column_names.optionnal[attribute];
   }
 
   callToAction() {

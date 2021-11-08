@@ -59,7 +59,6 @@ export default function ApplicantsUpload({ organisation, configuration, departme
       reader.onload = function (event) {
         const workbook = XLSX.read(event.target.result, { type: "binary" });
         const sheet = workbook.Sheets[SHEET_NAME] || workbook.Sheets[workbook.SheetNames[0]];
-        console.log(sheet)
         let rows = XLSX.utils.sheet_to_row_object_array(sheet);
         rows = rows.map((row) => parameterizeObjectKeys(row));
         const missingColumnNames = checkColumnNames(Object.keys(rows[0]));
@@ -200,10 +199,10 @@ export default function ApplicantsUpload({ organisation, configuration, departme
                     <th scope="col">Prénom</th>
                     <th scope="col">Nom</th>
                     <th scope="col">Rôle</th>
-                    {columnNames.birth_date && <th scope="col">Date de naissance</th>}
-                    {columnNames.email && <th scope="col">Email</th>}
-                    {columnNames.phone_number && <th scope="col">Téléphone</th>}
-                    {columnNames.custom_id && <th scope="col">ID Editeur</th>}
+                    {parameterizedColumnNames.birth_date && <th scope="col">Date de naissance</th>}
+                    {parameterizedColumnNames.email && <th scope="col">Email</th>}
+                    {parameterizedColumnNames.phone_number && <th scope="col">Téléphone</th>}
+                    {parameterizedColumnNames.custom_id && <th scope="col">ID Editeur</th>}
                     <th scope="col" style={{ whiteSpace: "nowrap" }}>
                       Créé le
                     </th>
