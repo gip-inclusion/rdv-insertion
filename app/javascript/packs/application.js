@@ -7,6 +7,7 @@ import LoginForm from "components/login-form";
 import StatusSelector from "components/status-selector"
 import ActionRequiredCheckbox from "components/action-required-checkbox"
 import initTooltip from "components/tooltip"
+import resolveApplicantWarning from "components/resolve-applicant-warning"
 
 import "bootstrap";
 import "stylesheets/application";
@@ -44,9 +45,13 @@ const ReactRailsUJS = require("react_ujs");
 
 ReactRailsUJS.useContext(componentRequireContext);
 
+
 document.addEventListener("turbolinks:load", () => {
   new LoginForm();
   new StatusSelector();
   new ActionRequiredCheckbox();
   initTooltip();
+  if (document.getElementById("resolve-button")) {
+    resolveApplicantWarning();
+  }
 });

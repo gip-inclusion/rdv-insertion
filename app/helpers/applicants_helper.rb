@@ -40,7 +40,7 @@ module ApplicantsHelper
   end
 
   def display_time_notice(applicant)
-    applicant.invited_before_time_window? ? " (Délai dépassé)" : ""
+    applicant.invited_before_time_window? && applicant.invitation_pending? ? " (Délai dépassé)" : ""
   end
 
   def rdv_solidarites_user_url(organisation, applicant)

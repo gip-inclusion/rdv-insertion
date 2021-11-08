@@ -3,9 +3,9 @@ class ApplicantsController < ApplicationController
     :uid, :role, :first_name, :last_name, :birth_date, :email, :phone_number,
     :birth_name, :address, :affiliation_number, :custom_id, :title
   ].freeze
-  before_action :set_organisation, only: [:index, :create, :show, :search, :resolve]
+  before_action :set_organisation, only: [:index, :create, :show, :search, :update]
   before_action :retrieve_applicants, only: [:search]
-  before_action :set_applicant, only: [:show, :resolve]
+  before_action :set_applicant, only: [:show, :update]
 
   include FilterableApplicantsConcern
 
@@ -43,10 +43,14 @@ class ApplicantsController < ApplicationController
     }
   end
 
-  def resolve
+  def update
     authorize @applicant
-    @applicant.resolved!
-    redirect_to organisation_applicant_path(@organisation, @applicant)
+    @applicant.status = params[:status]
+    if @applicant.save
+      render json: { success: true }
+    else
+      render json: { success: false }
+    end
   end
 
   private

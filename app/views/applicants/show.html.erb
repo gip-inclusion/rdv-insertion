@@ -10,9 +10,7 @@
     </div>
     <div>
       <% unless @applicant.rdv_seen? || @applicant.resolved? %>
-        <%= link_to resolve_organisation_applicants_path(@organisation, id: @applicant), method: :post do %>
-          <button class="btn btn-primary">Clôturer le dossier</button>
-        <% end %>
+        <button class="btn btn-primary" id="resolve-button" data-applicant-id="<%= @applicant.id %>" data-organisation-id="<%= @organisation.id %>">Clôturer le dossier</button>
       <% end %>
     </div>
     <%#

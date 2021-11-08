@@ -15,7 +15,7 @@ class ApplicantPolicy < ApplicationPolicy
     (pundit_user.organisation_ids & record.organisations.pluck(:id)).any?
   end
 
-  def resolve?
+  def update?
     show?
   end
 end

@@ -179,7 +179,7 @@ export default function ApplicantTracker({
             <p>{rdvs.length > 0 ? getFrenchFormatDateString(rdvs.at(-1).starts_at) : "-"}</p>
           </div>
           <div className={`${baseCssClass}${cssClassForApplicantStatus()}`}>
-            <p className="m-0">{textForStatus()}{isOutOfTime && " (Délai dépassé)"}</p>
+            <p className="m-0">{textForStatus()}{isOutOfTime && applicantStatus === "invitation_pending" && " (Délai dépassé)"}</p>
           </div>
         </div>
       </div>
