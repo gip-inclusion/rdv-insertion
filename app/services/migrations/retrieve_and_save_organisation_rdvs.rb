@@ -42,7 +42,7 @@ module Migrations
     end
 
     def retrieve_rdv_solidarites_rdvs
-      @retrieve_rdv_solidarites_rdvs ||= RetrieveRdvSolidaritesResources.call(
+      @retrieve_rdv_solidarites_rdvs ||= RdvSolidaritesApi::RetrieveResources.call(
         rdv_solidarites_session: @rdv_solidarites_session,
         organisation_id: @organisation_id,
         resource_name: "rdvs"

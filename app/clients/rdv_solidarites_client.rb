@@ -36,10 +36,12 @@ class RdvSolidaritesClient
     )
   end
 
-  def get_motifs(organisation_id)
+  def get_motifs(organisation_id, service_id = nil)
     Faraday.get(
       "#{@url}/api/v1/organisations/#{organisation_id}/motifs",
-      { active: true, reservable_online: true },
+      {
+        active: true, reservable_online: true
+      }.merge(service_id.present? ? { service_id: service_id } : {}),
       request_headers
     )
   end
