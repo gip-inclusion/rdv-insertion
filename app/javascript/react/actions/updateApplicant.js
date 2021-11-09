@@ -9,10 +9,11 @@ const updateApplicant = async (organisationId, applicantId, attributes = {}) => 
         "Content-Type": "application/json",
         "X-CSRF-Token": document.querySelector("meta[name=csrf-token]").content,
       },
-      body: JSON.stringify(attributes),
+      body: JSON.stringify({
+        applicant: attributes,
+      }),
     }
   );
-
   return response.json();
 };
 

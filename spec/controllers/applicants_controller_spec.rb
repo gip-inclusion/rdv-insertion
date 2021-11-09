@@ -263,7 +263,7 @@ describe ApplicantsController, type: :controller do
 
   describe "#update" do
     let!(:applicant) { create(:applicant, organisations: [organisation], status: "invitation_pending") }
-    let!(:update_params) { { id: applicant.id, organisation_id: organisation.id, status: "resolved" } }
+    let!(:update_params) { { id: applicant.id, organisation_id: organisation.id, applicant: { status: "resolved" } } }
 
     before do
       sign_in(agent)
@@ -276,9 +276,19 @@ describe ApplicantsController, type: :controller do
       expect(applicant.status).to eq("resolved")
     end
 
-    # context "when it fails" do
-    #   it "stores the errors" do
-    #   end
-    # end
+    context "when it fails" do
+      before do
+        allow(applicant).to receive(:update)
+          .and_return(false)
+        allow(applicant).to receive(:errors)
+          .and_return('some error')
+      end
+
+      it "stores the errors" do
+        patch :update, params: update_params
+        applicant.reload
+        expect(applicant.errors).to eq("some error")
+      end
+    end
   end
 end

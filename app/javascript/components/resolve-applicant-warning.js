@@ -22,7 +22,7 @@ const displayResolveWarning = async (resolveButton) => {
     if (result.success) {
       window.location.replace(`/organisations/${organisationId}/applicants/${applicantId}`);
     } else {
-      Swal.fire("Impossible de clôturer le dossier", "", "error");
+      Swal.fire("Impossible de clôturer le dossier", result.errors[0], "error");
     };
   };
 };
