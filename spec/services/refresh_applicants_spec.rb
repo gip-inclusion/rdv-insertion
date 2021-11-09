@@ -28,7 +28,7 @@ describe RefreshApplicants, type: :service do
     end
 
     before do
-      allow(RetrieveRdvSolidaritesResources).to receive(:call)
+      allow(RdvSolidaritesApi::RetrieveResources).to receive(:call)
         .and_return(
           OpenStruct.new(
             success?: true, users: [rdv_solidarites_user]
@@ -46,14 +46,14 @@ describe RefreshApplicants, type: :service do
       end
 
       it "does not retrieve rdv solidarites users" do
-        expect(RetrieveRdvSolidaritesResources).not_to receive(:call)
+        expect(RdvSolidaritesApi::RetrieveResources).not_to receive(:call)
         subject
       end
     end
 
     context "when applicants are passed" do
       it "tries to retrieve the rdv solidarites users" do
-        expect(RetrieveRdvSolidaritesResources).to receive(:call)
+        expect(RdvSolidaritesApi::RetrieveResources).to receive(:call)
           .with(
             additional_args: [51], rdv_solidarites_session: rdv_solidarites_session,
             organisation_id: rdv_solidarites_organisation_id, resource_name: "users"
@@ -75,7 +75,7 @@ describe RefreshApplicants, type: :service do
 
       context "when it does not retrieve users" do
         before do
-          allow(RetrieveRdvSolidaritesResources).to receive(:call)
+          allow(RdvSolidaritesApi::RetrieveResources).to receive(:call)
             .and_return(OpenStruct.new(success?: false, errors: ['some error']))
         end
 

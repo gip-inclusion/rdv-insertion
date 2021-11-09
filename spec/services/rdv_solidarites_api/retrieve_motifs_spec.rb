@@ -1,46 +1,53 @@
-describe Invitations::RetrieveToken, type: :service do
+describe RdvSolidaritesApi::RetrieveMotifs, type: :service do
   subject do
     described_class.call(
       rdv_solidarites_session: rdv_solidarites_session,
-      rdv_solidarites_user_id: rdv_solidarites_user_id
+      organisation: organisation
     )
   end
 
-  let!(:rdv_solidarites_user_id) { 27 }
   let(:rdv_solidarites_session) do
     { client: "client", uid: "johndoe@example.com", access_token: "token" }
   end
+  let(:organisation) { create(:organisation, rdv_solidarites_organisation_id: 43, rsa_agents_service_id: "2") }
 
   describe "#call" do
     let!(:rdv_solidarites_client) { instance_double(RdvSolidaritesClient) }
-    let!(:invitation_token) { 'sometoken' }
+    let!(:motifs) do
+      [{
+        "id" => 16,
+        "location_type" => "public_office",
+        "name" => "RSA - Orientation : rdv sur site"
+      }]
+    end
 
     before do
       allow(RdvSolidaritesClient).to receive(:new)
         .and_return(rdv_solidarites_client)
-      allow(rdv_solidarites_client).to receive(:invite_user)
-        .and_return(OpenStruct.new(success?: true, body: { 'invitation_token' => invitation_token }.to_json))
+      allow(rdv_solidarites_client).to receive(:get_motifs)
+        .with(43, "2")
+        .and_return(OpenStruct.new(success?: true, body: { "motifs" => motifs }.to_json))
     end
 
     context "when it succeeds" do
       it("is a success") { is_a_success }
 
-      it "retrieves the invitation_token" do
+      it "retrieves the motifs" do
         expect(RdvSolidaritesClient).to receive(:new)
           .with(rdv_solidarites_session)
-        expect(rdv_solidarites_client).to receive(:invite_user)
-          .with(rdv_solidarites_user_id)
+        expect(rdv_solidarites_client).to receive(:get_motifs)
+          .with(43, "2")
         subject
       end
 
-      it "returns the token" do
-        expect(subject.invitation_token).to eq(invitation_token)
+      it "returns the motifs" do
+        expect(subject.motifs.map(&:id)).to contain_exactly(16)
       end
     end
 
     context "when it fails" do
       before do
-        allow(rdv_solidarites_client).to receive(:invite_user)
+        allow(rdv_solidarites_client).to receive(:get_motifs)
           .and_return(OpenStruct.new(success?: false, body: { 'errors' => ['some error'] }.to_json))
       end
 

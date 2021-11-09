@@ -43,7 +43,7 @@ class RefreshApplicants < BaseService
   end
 
   def retrieve_rdv_solidarites_users
-    @retrieve_rdv_solidarites_users ||= RetrieveRdvSolidaritesResources.call(
+    @retrieve_rdv_solidarites_users ||= RdvSolidaritesApi::RetrieveResources.call(
       rdv_solidarites_session: @rdv_solidarites_session,
       organisation_id: @rdv_solidarites_organisation_id,
       resource_name: "users",

@@ -59,7 +59,7 @@ class CreateApplicant < BaseService
   end
 
   def create_rdv_solidarites_user
-    @create_rdv_solidarites_user ||= CreateRdvSolidaritesUser.call(
+    @create_rdv_solidarites_user ||= RdvSolidaritesApi::CreateUser.call(
       user_attributes: rdv_solidarites_user_attributes,
       rdv_solidarites_session: @rdv_solidarites_session
     )

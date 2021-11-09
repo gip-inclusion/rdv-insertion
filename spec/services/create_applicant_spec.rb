@@ -31,7 +31,7 @@ describe CreateApplicant, type: :service do
         .and_return(applicant)
       allow(applicant).to receive(:save)
         .and_return(true)
-      allow(CreateRdvSolidaritesUser).to receive(:call)
+      allow(RdvSolidaritesApi::CreateUser).to receive(:call)
         .and_return(OpenStruct.new(success?: true, rdv_solidarites_user: rdv_solidarites_user))
       allow(rdv_solidarites_user).to receive(:id).and_return(142)
       allow(rdv_solidarites_user).to receive(:phone_number_formatted).and_return("+33782605941")
@@ -78,7 +78,7 @@ describe CreateApplicant, type: :service do
       end
 
       it "tries to create a rdv solidarites user" do
-        expect(CreateRdvSolidaritesUser).to receive(:call)
+        expect(RdvSolidaritesApi::CreateUser).to receive(:call)
           .with(
             user_attributes: rdv_solidarites_user_attributes,
             rdv_solidarites_session: rdv_solidarites_session
@@ -92,7 +92,7 @@ describe CreateApplicant, type: :service do
         end
 
         it "does not notify with rdv solidarites" do
-          expect(CreateRdvSolidaritesUser).to receive(:call)
+          expect(RdvSolidaritesApi::CreateUser).to receive(:call)
             .with(
               user_attributes: rdv_solidarites_user_attributes.merge(
                 notify_by_email: false, notify_by_sms: false
@@ -109,7 +109,7 @@ describe CreateApplicant, type: :service do
         end
 
         it "creates the user without the email" do
-          expect(CreateRdvSolidaritesUser).to receive(:call)
+          expect(RdvSolidaritesApi::CreateUser).to receive(:call)
             .with(
               user_attributes: rdv_solidarites_user_attributes.except(:email),
               rdv_solidarites_session: rdv_solidarites_session
@@ -120,7 +120,7 @@ describe CreateApplicant, type: :service do
 
       context "when the rdv solidarites user creation fails" do
         before do
-          allow(CreateRdvSolidaritesUser).to receive(:call)
+          allow(RdvSolidaritesApi::CreateUser).to receive(:call)
             .and_return(OpenStruct.new(errors: ['some error'], success?: false))
         end
 

@@ -25,7 +25,7 @@ describe Invitations::Create, type: :service do
     let!(:invitation_link) { "https://www.rdv_solidarites.com/some_params" }
 
     before do
-      allow(Invitations::RetrieveToken).to receive(:call)
+      allow(RdvSolidaritesApi::RetrieveInvitationToken).to receive(:call)
         .and_return(OpenStruct.new(success?: true, invitation_token: token))
       allow(Invitations::ComputeLink).to receive(:call)
         .and_return(OpenStruct.new(success?: true, invitation_link: invitation_link))
@@ -59,7 +59,7 @@ describe Invitations::Create, type: :service do
         end
 
         it "tries to retrieve an invitation token" do
-          expect(Invitations::RetrieveToken).to receive(:call)
+          expect(RdvSolidaritesApi::RetrieveInvitationToken).to receive(:call)
             .with(
               rdv_solidarites_session: rdv_solidarites_session,
               rdv_solidarites_user_id: rdv_solidarites_user_id
@@ -69,7 +69,7 @@ describe Invitations::Create, type: :service do
 
         context "when it fails" do
           before do
-            allow(Invitations::RetrieveToken).to receive(:call)
+            allow(RdvSolidaritesApi::RetrieveInvitationToken).to receive(:call)
               .and_return(OpenStruct.new(success?: false, errors: ["something happened"]))
           end
 
@@ -96,7 +96,7 @@ describe Invitations::Create, type: :service do
         end
 
         it "does not try to retrieve an invitation token" do
-          expect(Invitations::RetrieveToken).not_to receive(:call)
+          expect(RdvSolidaritesApi::RetrieveInvitationToken).not_to receive(:call)
           subject
         end
       end
@@ -191,7 +191,7 @@ describe Invitations::Create, type: :service do
         end
 
         it "does not try to retrieve an invitation token" do
-          expect(Invitations::RetrieveToken).not_to receive(:call)
+          expect(RdvSolidaritesApi::RetrieveInvitationToken).not_to receive(:call)
           subject
         end
       end
