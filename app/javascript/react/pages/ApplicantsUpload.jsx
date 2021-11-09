@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 import FileHandler from "../components/FileHandler";
 import ApplicantList from "../components/ApplicantList";
 
-import { parameterizeObjectKeys, parameterizeObjectValues } from "../../lib/parameterize";
+import { parameterizeObjectKeys, parameterizeObjectValues, parameterizeArray } from "../../lib/parameterize";
 import getKeyByValue from "../../lib/getKeyByValue";
 import searchApplicants from "../actions/searchApplicants";
 import { initReducer, reducerFactory } from "../../lib/reducers";
@@ -58,10 +58,15 @@ export default function ApplicantsUpload({ organisation, configuration, departme
       const reader = new FileReader();
       reader.onload = function (event) {
         const workbook = XLSX.read(event.target.result, { type: "binary" });
-        const sheet = workbook.Sheets[SHEET_NAME] || workbook.Sheets[0];
+        const sheet = workbook.Sheets[SHEET_NAME] || workbook.Sheets[workbook.SheetNames[0]];
+        const header = []
+        const columnCount = XLSX.utils.decode_range(sheet["!ref"]).e.c + 1
+        for (let i = 0; i < columnCount; i += 1) {
+          header[i] = sheet[`${XLSX.utils.encode_col(i)}1`].v
+        }
+        const missingColumnNames = checkColumnNames(parameterizeArray(header));
         let rows = XLSX.utils.sheet_to_row_object_array(sheet);
         rows = rows.map((row) => parameterizeObjectKeys(row));
-        const missingColumnNames = checkColumnNames(Object.keys(rows[0]));
         if (missingColumnNames.length === 0) {
           rows.forEach((row) => {
             const applicant = new Applicant(
@@ -199,10 +204,10 @@ export default function ApplicantsUpload({ organisation, configuration, departme
                     <th scope="col">Prénom</th>
                     <th scope="col">Nom</th>
                     <th scope="col">Rôle</th>
-                    {columnNames.birth_date && <th scope="col">Date de naissance</th>}
-                    {columnNames.email && <th scope="col">Email</th>}
-                    {columnNames.phone_number && <th scope="col">Téléphone</th>}
-                    {columnNames.custom_id && <th scope="col">ID Editeur</th>}
+                    {parameterizedColumnNames.birth_date && <th scope="col">Date de naissance</th>}
+                    {parameterizedColumnNames.email && <th scope="col">Email</th>}
+                    {parameterizedColumnNames.phone_number && <th scope="col">Téléphone</th>}
+                    {parameterizedColumnNames.custom_id && <th scope="col">ID Editeur</th>}
                     <th scope="col" style={{ whiteSpace: "nowrap" }}>
                       Créé le
                     </th>

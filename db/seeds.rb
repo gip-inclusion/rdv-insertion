@@ -36,7 +36,7 @@ Configuration.create!(
       "phone_number"=>"N° Téléphones",
       "title"=>"Civilité"
     },
-    optionnal: {
+    optional: {
       "custom_id"=>"Code individu IODAS"
     }
   }
