@@ -45,11 +45,10 @@ class ApplicantsController < ApplicationController
 
   def update
     authorize @applicant
-    @applicant.status = params[:status]
-    if @applicant.save
+    if @applicant.update(update_params)
       render json: { success: true }
     else
-      render json: { success: false }
+      render json: { success: false, errors: @applicant.errors.full_messages }
     end
   end
 
@@ -57,6 +56,10 @@ class ApplicantsController < ApplicationController
 
   def applicant_params
     params.require(:applicant).permit(*PERMITTED_PARAMS)
+  end
+
+  def update_params
+    params.permit(:status, :first_name)
   end
 
   def create_applicant

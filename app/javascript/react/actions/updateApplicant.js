@@ -1,4 +1,4 @@
-const updateApplicant = async (organisationId, applicantId, status) => {
+const updateApplicant = async (organisationId, applicantId, attributes = {}) => {
   const response = await fetch(
     `/organisations/${organisationId}/applicants/${applicantId}`,
     {
@@ -9,7 +9,7 @@ const updateApplicant = async (organisationId, applicantId, status) => {
         "Content-Type": "application/json",
         "X-CSRF-Token": document.querySelector("meta[name=csrf-token]").content,
       },
-      body: JSON.stringify({ status }),
+      body: JSON.stringify(attributes),
     }
   );
 

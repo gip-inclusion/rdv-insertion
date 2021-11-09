@@ -260,4 +260,25 @@ describe ApplicantsController, type: :controller do
       end
     end
   end
+
+  describe "#update" do
+    let!(:applicant) { create(:applicant, organisations: [organisation], status: "invitation_pending") }
+    let!(:update_params) { { id: applicant.id, organisation_id: organisation.id, status: "resolved" } }
+
+    before do
+      sign_in(agent)
+      set_rdv_solidarites_session
+    end
+
+    it "updates the applicant status" do
+      patch :update, params: update_params
+      applicant.reload
+      expect(applicant.status).to eq("resolved")
+    end
+
+    # context "when it fails" do
+    #   it "stores the errors" do
+    #   end
+    # end
+  end
 end

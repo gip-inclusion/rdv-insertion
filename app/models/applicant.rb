@@ -43,7 +43,7 @@ class Applicant < ApplicationRecord
   end
 
   def last_sent_sms_invitation
-    invitations.where(format: "sms").select(&:sent_at).max_by(&:sent_at)
+    invitations.select { |invitation| invitation.format == "sms" }.select(&:sent_at).max_by(&:sent_at)
   end
 
   def last_sms_invitation_sent_at
@@ -51,7 +51,7 @@ class Applicant < ApplicationRecord
   end
 
   def last_sent_email_invitation
-    invitations.where(format: "email").select(&:sent_at).max_by(&:sent_at)
+    invitations.select { |invitation| invitation.format == "email" }.select(&:sent_at).max_by(&:sent_at)
   end
 
   def last_email_invitation_sent_at

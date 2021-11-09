@@ -16,7 +16,8 @@ const displayResolveWarning = async (resolveButton) => {
   const confirmation = await resolveWarningModal();
 
   if (confirmation.isConfirmed) {
-    const result = await updateApplicant(organisationId, applicantId, "resolved");
+    const attributes = { status: "resolved" }
+    const result = await updateApplicant(organisationId, applicantId, attributes);
 
     if (result.success) {
       window.location.replace(`/organisations/${organisationId}/applicants/${applicantId}`);
@@ -27,8 +28,10 @@ const displayResolveWarning = async (resolveButton) => {
 };
 
 const resolveApplicantWarning = () => {
-  const resolveButton = document.getElementById("resolve-button");
-  resolveButton.addEventListener("click", () => { displayResolveWarning(resolveButton) });
+  if (document.getElementById("resolve-button")) {
+    const resolveButton = document.getElementById("resolve-button");
+    resolveButton.addEventListener("click", () => { displayResolveWarning(resolveButton) });
+  }
 };
 
 export default resolveApplicantWarning;

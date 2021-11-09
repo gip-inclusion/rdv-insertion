@@ -45,13 +45,10 @@ const ReactRailsUJS = require("react_ujs");
 
 ReactRailsUJS.useContext(componentRequireContext);
 
-
 document.addEventListener("turbolinks:load", () => {
   new LoginForm();
   new StatusSelector();
   new ActionRequiredCheckbox();
   initTooltip();
-  if (document.getElementById("resolve-button")) {
-    resolveApplicantWarning();
-  }
+  resolveApplicantWarning();
 });

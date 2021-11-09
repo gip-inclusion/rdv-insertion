@@ -39,7 +39,7 @@ module ApplicantsHelper
     end
   end
 
-  def display_time_notice(applicant)
+  def display_out_of_time_notice(applicant)
     applicant.invited_before_time_window? && applicant.invitation_pending? ? " (Délai dépassé)" : ""
   end
 
