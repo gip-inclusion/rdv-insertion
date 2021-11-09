@@ -34,4 +34,19 @@ const parameterizeObjectValues = (object) =>
     return res;
   }, {});
 
-export { parameterizeObjectKeys, parameterizeObjectValues };
+const parameterizeArray = (array) =>
+  array.map((element) =>
+    element
+      .replace(/[\n\r]+/g, " ")
+      .trim()
+      .replace(/ +(?= )/g, "")
+      .replace(/'/g, "-")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace("n°", "numero")
+      .split(" ")
+      .join("-")
+  );
+
+export { parameterizeObjectKeys, parameterizeObjectValues, parameterizeArray };

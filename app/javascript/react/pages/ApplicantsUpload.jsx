@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 import FileHandler from "../components/FileHandler";
 import ApplicantList from "../components/ApplicantList";
 
-import { parameterizeObjectKeys, parameterizeObjectValues } from "../../lib/parameterize";
+import { parameterizeObjectKeys, parameterizeObjectValues, parameterizeArray } from "../../lib/parameterize";
 import getKeyByValue from "../../lib/getKeyByValue";
 import searchApplicants from "../actions/searchApplicants";
 import { initReducer, reducerFactory } from "../../lib/reducers";
@@ -59,9 +59,14 @@ export default function ApplicantsUpload({ organisation, configuration, departme
       reader.onload = function (event) {
         const workbook = XLSX.read(event.target.result, { type: "binary" });
         const sheet = workbook.Sheets[SHEET_NAME] || workbook.Sheets[workbook.SheetNames[0]];
+        const header = []
+        const columnCount = XLSX.utils.decode_range(sheet["!ref"]).e.c + 1
+        for (let i = 0; i < columnCount; i += 1) {
+          header[i] = sheet[`${XLSX.utils.encode_col(i)}1`].v
+        }
+        const missingColumnNames = checkColumnNames(parameterizeArray(header));
         let rows = XLSX.utils.sheet_to_row_object_array(sheet);
         rows = rows.map((row) => parameterizeObjectKeys(row));
-        const missingColumnNames = checkColumnNames(Object.keys(rows[0]));
         if (missingColumnNames.length === 0) {
           rows.forEach((row) => {
             const applicant = new Applicant(
