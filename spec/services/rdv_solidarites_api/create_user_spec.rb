@@ -1,4 +1,4 @@
-describe CreateRdvSolidaritesUser, type: :service do
+describe RdvSolidaritesApi::CreateUser, type: :service do
   subject do
     described_class.call(user_attributes: user_attributes, rdv_solidarites_session: rdv_solidarites_session)
   end

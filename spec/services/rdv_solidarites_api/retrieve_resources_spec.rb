@@ -1,4 +1,4 @@
-describe RetrieveRdvSolidaritesResources, type: :service do
+describe RdvSolidaritesApi::RetrieveResources, type: :service do
   subject do
     described_class.call(
       rdv_solidarites_session: rdv_solidarites_session,

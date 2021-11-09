@@ -55,7 +55,7 @@ module Invitations
     end
 
     def retrieve_invitation_token
-      @retrieve_invitation_token ||= Invitations::RetrieveToken.call(
+      @retrieve_invitation_token ||= RdvSolidaritesApi::RetrieveInvitationToken.call(
         rdv_solidarites_session: @rdv_solidarites_session,
         rdv_solidarites_user_id: rdv_solidarites_user_id
       )
