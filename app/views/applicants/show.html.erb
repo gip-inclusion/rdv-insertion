@@ -64,6 +64,7 @@
     "components/ApplicantTracker", {
       applicant: @applicant,
       organisation: @organisation,
+      invitationFormat: @organisation.configuration.invitation_format,
       rdvs: @applicant.rdvs,
       outOfTime: @applicant.invited_before_time_window?,
       actionRequired: @applicant.action_required?,
