@@ -3,8 +3,12 @@ module ApplicantsHelper
     date&.strftime("%d/%m/%Y")
   end
 
-  def show_invitation?(organisation)
-    !organisation.no_invitation?
+  def show_sms_invitation?(organisation)
+    organisation.configuration.sms? || organisation.configuration.sms_and_email?
+  end
+
+  def show_email_invitation?(organisation)
+    organisation.configuration.email? || organisation.configuration.sms_and_email?
   end
 
   def show_notification?(organisation)

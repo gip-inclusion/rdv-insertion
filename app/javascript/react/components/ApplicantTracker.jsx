@@ -7,7 +7,8 @@ import { getFrenchFormatDateString } from "../../lib/datesHelper"
 export default function ApplicantTracker({
   applicant,
   organisation,
-  invitationFormat,
+  showSmsInvitation,
+  showEmailInvitation,
   rdvs,
   outOfTime,
   actionRequired,
@@ -23,9 +24,6 @@ export default function ApplicantTracker({
   const [lastEmailInvitationSentAt, setLastEmailInvitationSentAt] = useState(retrieveLastInvitationDate(applicant.invitations, "email"));
   const [applicantStatus, setApplicantStatus] = useState(applicant.status);
   const [textForStatus, setTextForStatus] = useState(humanStatus)
-
-  const shouldDisplaySmsInvitation = (invitationFormat === "sms" || invitationFormat === "sms_and_email")
-  const shouldDisplayEmailInvitation = (invitationFormat === "email" || invitationFormat === "sms_and_email")
 
   const bgColorClassForInvitationDate = (format) => {
     let lastInvitationDate = null;
@@ -114,10 +112,10 @@ export default function ApplicantTracker({
       <div className="tracking-block block-white">
         <div className="row d-flex justify-content-around">
           <h4 className="col-4">Création du compte</h4>
-          {shouldDisplaySmsInvitation && (
+          {showSmsInvitation && (
             <h4 className="col-4">Invitation SMS</h4>
           )}
-          {shouldDisplayEmailInvitation && (
+          {showEmailInvitation && (
             <h4 className="col-4">Invitation mail</h4>
           )}
         </div>
@@ -125,12 +123,12 @@ export default function ApplicantTracker({
           <p className="col-4 py-2">
             {getFrenchFormatDateString(applicant.created_at)}
           </p>
-          {shouldDisplaySmsInvitation && (
+          {showSmsInvitation && (
             <p className={cssClassForInvitationDate("sms")}>
               {lastSmsInvitationSentAt ? getFrenchFormatDateString(lastSmsInvitationSentAt) : "-"}
             </p>
           )}
-          {shouldDisplayEmailInvitation && (
+          {showEmailInvitation && (
           <p className={cssClassForInvitationDate("email")}>
             {lastEmailInvitationSentAt ? getFrenchFormatDateString(lastEmailInvitationSentAt) : "-"}
           </p>
@@ -138,7 +136,7 @@ export default function ApplicantTracker({
         </div>
         <div className="row d-flex justify-content-around align-items-center">
           <div className="col-4" />
-          {shouldDisplaySmsInvitation && (
+          {showSmsInvitation && (
             <div className="col-4">
               <button
                 type="button"
@@ -153,7 +151,7 @@ export default function ApplicantTracker({
               </button>
             </div>
           )}
-          {shouldDisplayEmailInvitation && (
+          {showEmailInvitation && (
             <div className="col-4">
               <button
                 type="button"
