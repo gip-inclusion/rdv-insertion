@@ -27,7 +27,7 @@ export default function ApplicantTracker({
   const shouldDisplaySmsInvitation = (invitationFormat === "sms" || invitationFormat === "sms_and_email")
   const shouldDisplayEmailInvitation = (invitationFormat === "email" || invitationFormat === "sms_and_email")
 
-  const cssBgClassForInvitationDate = (format) => {
+  const bgColorClassForInvitationDate = (format) => {
     let lastInvitationDate = null;
     if (format === "sms") {
       lastInvitationDate = lastSmsInvitationSentAt;
@@ -46,10 +46,18 @@ export default function ApplicantTracker({
         return "bg-danger";
       }
     }
-    return ""
-  }
+    return "";
+  };
 
-  const cssBgClassForApplicantStatus = () => {
+  const cssClassForInvitationDate = (format) => {
+    const bgColorClass = bgColorClassForInvitationDate(format);
+    if (bgColorClass.length === 0) {
+      return "col-4 py-2"
+    }
+    return `col-4 py-2 ${bgColorClass}`
+  };
+
+  const bgColorClassForApplicantStatus = () => {
     if (hasActionRequired &&
       (applicantStatus === "invitation_pending" || applicantStatus === "rdv_creation_pending")) {
       return "text-dark-blue bg-warning border-warning"
@@ -63,11 +71,19 @@ export default function ApplicantTracker({
     return ""
   }
 
-  const cssBgClassForApplicantRdv = () => {
-    if (applicantStatus === "rdv_pending") {
-      return "bg-success border-success"
+  const cssClassForApplicantStatus = () => {
+    const bgColorClass = bgColorClassForApplicantStatus();
+    if (bgColorClass.length === 0) {
+      return "col-4 d-flex align-items-center justify-content-center"
     }
-    return ""
+    return `col-4 d-flex align-items-center justify-content-center ${bgColorClass}`
+  };
+
+  const cssClassForApplicantRdv = () => {
+    if (applicantStatus === "rdv_pending") {
+      return "col-4 d-flex align-items-center justify-content-center bg-success border-success"
+    }
+    return "col-4 d-flex align-items-center justify-content-center"
   }
 
   const handleClick = async (action) => {
@@ -110,12 +126,12 @@ export default function ApplicantTracker({
             {getFrenchFormatDateString(applicant.created_at)}
           </p>
           {shouldDisplaySmsInvitation && (
-            <p className={`col-4 py-2 ${cssBgClassForInvitationDate("sms")}`}>
+            <p className={cssClassForInvitationDate("sms")}>
               {lastSmsInvitationSentAt ? getFrenchFormatDateString(lastSmsInvitationSentAt) : "-"}
             </p>
           )}
           {shouldDisplayEmailInvitation && (
-          <p className={`col-4 py-2 ${cssBgClassForInvitationDate("email")}`}>
+          <p className={cssClassForInvitationDate("email")}>
             {lastEmailInvitationSentAt ? getFrenchFormatDateString(lastEmailInvitationSentAt) : "-"}
           </p>
           )}
@@ -161,19 +177,13 @@ export default function ApplicantTracker({
           <h4 className="col-4">Statut</h4>
         </div>
         <div className="row d-flex justify-content-around flex-grow-1">
-          <div className={
-            `col-4 d-flex align-items-center justify-content-center ${cssBgClassForApplicantRdv()}`
-          }>
+          <div className={cssClassForApplicantRdv()}>
             <p>{rdvs.length > 0 ? getFrenchFormatDateString(rdvs.at(-1).created_at) : "-"}</p>
           </div>
-          <div className={
-            `col-4 d-flex align-items-center justify-content-center ${cssBgClassForApplicantRdv()}`
-          }>
+          <div className={cssClassForApplicantRdv()}>
             <p>{rdvs.length > 0 ? getFrenchFormatDateString(rdvs.at(-1).starts_at) : "-"}</p>
           </div>
-          <div className={
-            `col-4 d-flex align-items-center justify-content-center ${cssBgClassForApplicantStatus()}`
-          }>
+          <div className={cssClassForApplicantStatus()}>
             <p className="m-0">
               {textForStatus}
               {isOutOfTime && applicantStatus === "invitation_pending" && " (Délai dépassé)"}
