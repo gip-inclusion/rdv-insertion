@@ -1,11 +1,11 @@
 class ApplicantsController < ApplicationController
   PERMITTED_PARAMS = [
     :uid, :role, :first_name, :last_name, :birth_date, :email, :phone_number,
-    :birth_name, :address, :affiliation_number, :custom_id, :title
+    :birth_name, :address, :affiliation_number, :custom_id, :title, :status
   ].freeze
-  before_action :set_organisation, only: [:index, :create, :show, :search, :update]
+  before_action :set_organisation, only: [:index, :create, :show, :search, :update, :edit]
   before_action :retrieve_applicants, only: [:search]
-  before_action :set_applicant, only: [:show, :update]
+  before_action :set_applicant, only: [:show, :update, :edit]
 
   include FilterableApplicantsConcern
 
@@ -45,21 +45,25 @@ class ApplicantsController < ApplicationController
 
   def update
     authorize @applicant
-    if @applicant.update(update_params)
-      render json: { success: true }
-    else
-      render json: { success: false, errors: @applicant.errors.full_messages }
+    respond_to do |format|
+      if @applicant.update(applicant_params)
+        format.html { render :show }
+        format.json { render json: { success: true } }
+      else
+        format.html { render :edit }
+        format.json { render json: { success: false, errors: @applicant.errors.full_messages } }
+      end
     end
+  end
+
+  def edit
+    authorize @applicant
   end
 
   private
 
   def applicant_params
     params.require(:applicant).permit(*PERMITTED_PARAMS)
-  end
-
-  def update_params
-    params.require(:applicant).permit(:status)
   end
 
   def create_applicant

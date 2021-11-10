@@ -9,14 +9,17 @@
       <% end %>
     </div>
     <div>
-      <% unless @applicant.rdv_seen? || @applicant.resolved? %>
-        <button class="btn btn-primary" id="resolve-button" data-applicant-id="<%= @applicant.id %>" data-organisation-id="<%= @organisation.id %>">Clôturer le dossier</button>
+      <button class="btn btn-primary" id="update-status-button" data-applicant-id="<%= @applicant.id %>" data-organisation-id="<%= @organisation.id %>">
+        <% if @applicant.rdv_seen? || @applicant.resolved? %>
+          Rouvrir le dossier
+        <% else %>
+          Clôturer le dossier
+        <% end %>
+      </button>
+      <%= link_to edit_organisation_applicant_path(@organisation, @applicant) do %>
+        <button class="btn btn-blue">Modifier</button>
       <% end %>
     </div>
-    <%#
-    <%= link_to edit_applicant_path(@applicant) %>
-    <%# <button class="btn btn-blue">Modifier</button>
-    <% end %>
   </div>
   <div class="mb-4">
     <div class="row d-flex justify-content-around flex-wrap">

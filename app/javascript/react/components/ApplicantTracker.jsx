@@ -169,10 +169,14 @@ export default function ApplicantTracker({
         </div>
         <div className="row d-flex justify-content-around flex-grow-1">
           <div className="col-4 d-flex align-items-center justify-content-center">
-            <p>{rdvs.length > 0 ? getFrenchFormatDateString(rdvs.at(-1).created_at) : "-"}</p>
+            <p className="m-0">
+              {rdvs.length > 0 ? getFrenchFormatDateString(rdvs.at(-1).created_at) : "-"}
+            </p>
           </div>
           <div className="col-4 d-flex align-items-center justify-content-center">
-            <p>{rdvs.length > 0 ? getFrenchFormatDateString(rdvs.at(-1).starts_at) : "-"}</p>
+            <p className="m-0">
+              {rdvs.length > 0 ? getFrenchFormatDateString(rdvs.at(-1).starts_at) : "-"}
+            </p>
           </div>
           <div className={cssClassForApplicantStatus()}>
             <p className="m-0">

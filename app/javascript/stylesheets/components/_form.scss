@@ -23,4 +23,15 @@
   padding: 20px;
 }
 
+input, select {
+  background-color: $white;
+  color: $dark-blue;
+  border-radius: 3px;
+  border: 1px solid #083b66;
+  width: 100%;
+  padding: 1px 5px;
+  &.date-select {
+    width: inherit;
+  }
+}
 
