@@ -1,15 +1,44 @@
-.light-blue {
-  color: $light-blue;
-}
-
-.dark-blue {
-  color: $dark-blue;
-}
-
 .block-white {
   background-color: white;
-  border: 1px solid $light-grey;
+  border: 0.5px solid $light-grey;
   border-radius: 5px;
   padding: 20px;
-  box-shadow: 0 0 1px rgba(0,0,0,0.3);
+  box-shadow: 0 0 1px rgba(0,0,0,0.1);
+}
+
+.green-check {
+  color: $green;
+  font-size: 1.3rem;
+}
+
+.padding-left-15 {
+  padding-left: 15px !important;
+}
+
+.applicant-attribute {
+  color: $dark-blue;
+
+  h4 {
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+}
+
+.icon-sm {
+  font-size: 10px;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
+.tracking-block {
+  width: 40%;
+}
+
+@media (max-width: 991px) {
+  .tracking-block {
+    width: 80%;
+    &.block-2 {
+      margin-top: 30px;
+    }
+  }
 }

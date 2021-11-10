@@ -1,4 +1,5 @@
 import formatPhoneNumber from "../../lib/formatPhoneNumber";
+import retrieveLastInvitationDate from "../../lib/retrieveLastInvitationDate";
 
 const ROLES = {
   dem: "demandeur",
@@ -21,6 +22,7 @@ export default class Applicant {
     this.firstName = formattedAttributes.firstName;
     this.title =
       TITLES[formattedAttributes.title?.toLowerCase()] || formattedAttributes.title?.toLowerCase();
+    this.shortTitle = (this.title === "monsieur" ? "M" : "Mme");
     this.email = formattedAttributes.email;
     this.birthDate = formattedAttributes.birthDate;
     this.birthName = formattedAttributes.birthName;
@@ -33,6 +35,7 @@ export default class Applicant {
     // CONJOINT/CONCUBIN/PACSE => conjoint
     const formattedRole = formattedAttributes.role?.split("/")?.shift()?.toLowerCase();
     this.role = ROLES[formattedRole] || formattedRole;
+    this.shortRole = (this.role === "demandeur" ? "DEM" : "CJT");
     this.departmentNumber = departmentNumber;
     this.organisationConfiguration = organisationConfiguration;
   }
@@ -45,8 +48,12 @@ export default class Applicant {
     return this._createdAt;
   }
 
-  get invitationSentAt() {
-    return this._invitationSentAt;
+  get lastEmailInvitationSentAt() {
+    return this._lastEmailInvitationSentAt;
+  }
+
+  get lastSmsInvitationSentAt() {
+    return this._lastSmsInvitationSentAt;
   }
 
   get id() {
@@ -61,8 +68,12 @@ export default class Applicant {
     this._id = id;
   }
 
-  set invitationSentAt(invitationSentAt) {
-    this._invitationSentAt = invitationSentAt;
+  set lastEmailInvitationSentAt(lastEmailInvitationSentAt) {
+    this._lastEmailInvitationSentAt = lastEmailInvitationSentAt;
+  }
+
+  set lastSmsInvitationSentAt(lastSmsInvitationSentAt) {
+    this._lastSmsInvitationSentAt = lastSmsInvitationSentAt;
   }
 
   formatAffiliationNumber(affiliationNumber) {
@@ -86,7 +97,10 @@ export default class Applicant {
     this.createdAt = upToDateApplicant.created_at;
     this.invitedAt = upToDateApplicant.invited_at;
     this.id = upToDateApplicant.id;
-    this.invitationSentAt = upToDateApplicant.invitation_sent_at;
+    this.lastSmsInvitationSentAt =
+      retrieveLastInvitationDate(upToDateApplicant.invitations, "sms");
+    this.lastEmailInvitationSentAt =
+      retrieveLastInvitationDate(upToDateApplicant.invitations, "email");
   }
 
   formatAddress() {
@@ -103,34 +117,14 @@ export default class Applicant {
         && this.organisationConfiguration.column_names.optional[attribute])
   }
 
-  callToAction() {
-    if (!this.createdAt) {
-      return "CREER COMPTE";
-    }
-    if (!this.shouldBeInvited()) {
-      return null;
-    }
-    if (!this.invitationSentAt) {
-      return "INVITER";
-    }
-    return "REINVITER";
+  shouldBeInvitedBySms() {
+    return (this.organisationConfiguration.invitation_format === "sms" ||
+            this.organisationConfiguration.invitation_format === "sms_and_email");
   }
 
-  loadingAction() {
-    switch (this.callToAction()) {
-      case "INVITER":
-        return "INVITATION...";
-      case "REINVITER":
-        return "INVITATION...";
-      case "CREER COMPTE":
-        return "CREATION...";
-      default:
-        return "...";
-    }
-  }
-
-  shouldBeInvited() {
-    return this.organisationConfiguration.invitation_format !== "no_invitation";
+  shouldBeInvitedByEmail() {
+    return (this.organisationConfiguration.invitation_format === "email" ||
+            this.organisationConfiguration.invitation_format === "sms_and_email");
   }
 
   hasMissingAttributes() {

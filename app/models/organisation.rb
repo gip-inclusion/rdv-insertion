@@ -12,6 +12,5 @@ class Organisation < ApplicationRecord
   has_many :invitations, dependent: :nullify
 
   delegate :notify_applicant?, to: :configuration
-  delegate :no_invitation?, to: :configuration
   delegate :name, :name_with_region, :number, to: :department, prefix: true
 end

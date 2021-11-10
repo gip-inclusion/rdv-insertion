@@ -16,10 +16,6 @@ class Invitation < ApplicationRecord
     end
   end
 
-  def as_json(_opts = {})
-    super.merge(sent_at: sent_at&.to_date&.strftime("%d/%m/%Y"))
-  end
-
   private
 
   def set_applicant_status

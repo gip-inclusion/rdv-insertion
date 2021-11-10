@@ -1,37 +1,50 @@
 <div class="row block-white justify-content-center">
-  <div class="col-10 text-center">
+  <div class="col-12 text-center">
     <% if no_search_results?(@applicants) %>
       <h4>Aucun allocataire ne correspond à votre recherche</h4>
     <% else %>
       <table class="table table-hover table-responsive">
-        <thead class="light-blue">
-          <th scope="col">Numéro d'allocataire</th>
+        <thead class="text-dark-blue">
+          <th scope="col" class="d-none d-lg-table-cell">Numéro d'allocataire</th>
           <th scope="col">Prénom</th>
           <th scope="col">Nom</th>
-          <th scope="col">Email</th>
-          <% if show_invitation?(@organisation) %>
-            <th scope="col">Dernière Invitation</th>
+          <th scope="col" class="d-none d-lg-table-cell">Email</th>
+          <% if show_sms_invitation?(@organisation) %>
+            <th scope="col">Dernière invitation SMS</th>
+          <% end %>
+          <% if show_email_invitation?(@organisation) %>
+            <th scope="col">Dernière invitation email</th>
           <% end %>
           <% if show_notification?(@organisation) %>
-             <th scope="col">Dernière Notification envoyée le</th>
+            <th scope="col">Dernière Notification envoyée le</th>
           <% end %>
           <th scope="col">Statut</th>
+          <th scope="col"></th>
         </thead>
-        <tbody class="">
+        <tbody class="align-middle">
           <% @applicants.each do |applicant| %>
             <tr>
-              <td><%= display_attribute applicant.affiliation_number %></td>
+              <td class="d-none d-lg-table-cell"><%= display_attribute applicant.affiliation_number %></td>
               <td><%= display_attribute applicant.first_name %></td>
               <td><%= display_attribute applicant.last_name %></td>
-              <td><%= display_attribute applicant.email %></td>
-              <% if show_invitation?(@organisation) %>
-                <td><%= display_attribute format_date(applicant.last_invitation_sent_at) %></td>
+              <td class="d-none d-lg-table-cell"><%= display_attribute applicant.email %></td>
+              <% if show_sms_invitation?(@organisation) %>
+                <td><%= display_attribute format_date(applicant.last_sms_invitation_sent_at) %></td>
+              <% end %>
+              <% if show_email_invitation?(@organisation) %>
+                <td><%= display_attribute format_date(applicant.last_email_invitation_sent_at) %></td>
               <% end %>
               <% if show_notification?(@organisation) %>
-                 <td><%= display_attribute format_date(applicant.last_notification_sent_at) %></td>
+                <td><%= display_attribute format_date(applicant.last_notification_sent_at) %></td>
               <% end %>
               <td class="<%= background_class_for_status(applicant) %>">
                 <%= I18n.t("activerecord.attributes.applicant.statuses.#{applicant.status}") %>
+                <%= display_out_of_time_notice(applicant) %>
+              </td>
+              <td class="padding-left-15">
+                <%= link_to organisation_applicant_path(@organisation, applicant) do %>
+                  <button class="btn btn-blue">Gérer</button>
+                <% end %>
               </td>
             </tr>
           <% end %>

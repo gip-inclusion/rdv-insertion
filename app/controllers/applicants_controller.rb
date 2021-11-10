@@ -3,10 +3,20 @@ class ApplicantsController < ApplicationController
     :uid, :role, :first_name, :last_name, :birth_date, :email, :phone_number,
     :birth_name, :address, :affiliation_number, :custom_id, :title
   ].freeze
-  before_action :set_organisation, only: [:index, :create, :search]
+  before_action :set_organisation, only: [:index, :create, :show, :search, :update]
   before_action :retrieve_applicants, only: [:search]
+  before_action :set_applicant, only: [:show, :update]
 
   include FilterableApplicantsConcern
+
+  def create
+    authorize @organisation, :create_applicant?
+    if create_applicant.success?
+      render json: { success: true, applicant: create_applicant.applicant }
+    else
+      render json: { success: false, errors: create_applicant.errors }
+    end
+  end
 
   def index
     authorize @organisation, :list_applicants?
@@ -19,6 +29,10 @@ class ApplicantsController < ApplicationController
     refresh_applicants
   end
 
+  def show
+    authorize @applicant
+  end
+
   def search
     authorize @organisation, :list_applicants?
     # temporary solution to have up to date applicants with RDVS
@@ -29,12 +43,12 @@ class ApplicantsController < ApplicationController
     }
   end
 
-  def create
-    authorize @organisation, :create_applicant?
-    if create_applicant.success?
-      render json: { success: true, applicant: create_applicant.applicant }
+  def update
+    authorize @applicant
+    if @applicant.update(update_params)
+      render json: { success: true }
     else
-      render json: { success: false, errors: create_applicant.errors }
+      render json: { success: false, errors: @applicant.errors.full_messages }
     end
   end
 
@@ -42,6 +56,10 @@ class ApplicantsController < ApplicationController
 
   def applicant_params
     params.require(:applicant).permit(*PERMITTED_PARAMS)
+  end
+
+  def update_params
+    params.require(:applicant).permit(:status)
   end
 
   def create_applicant
@@ -68,5 +86,9 @@ class ApplicantsController < ApplicationController
 
   def set_organisation
     @organisation = Organisation.includes(:applicants, :configuration).find(params[:organisation_id])
+  end
+
+  def set_applicant
+    @applicant = Applicant.find(params[:id])
   end
 end

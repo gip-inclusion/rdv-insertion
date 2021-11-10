@@ -29,7 +29,8 @@ export const excelDateToJsDate = (serial) => {
   return new Date(utcValue * 1000);
 };
 
-export function getFrenchFormatDateString(date) {
+export const getFrenchFormatDateString = (dateStr) => {
+  const date = new Date(dateStr);
   const y = date.getFullYear();
   // JavaScript months are 0-based.
   const m = date.getMonth() + 1;

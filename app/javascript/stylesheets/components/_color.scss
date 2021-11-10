@@ -2,10 +2,10 @@
   background-color: $dark-blue;
 }
 
-.color-white {
-  color: white;
+.text-dark-blue, .bg-success, .bg-warning {
+  color: $dark-blue;
 }
 
-.color-dark-blue {
-  color: $dark-blue;
+.bg-danger {
+  color: white;
 }

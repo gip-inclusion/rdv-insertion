@@ -165,6 +165,22 @@ describe ApplicantsController, type: :controller do
     end
   end
 
+  describe "#show" do
+    let!(:applicant) { create(:applicant, organisations: [organisation]) }
+    let!(:show_params) { { id: applicant.id, organisation_id: organisation.id } }
+
+    before do
+      sign_in(agent)
+      set_rdv_solidarites_session
+    end
+
+    it "renders the applicant page" do
+      get :show, params: show_params
+
+      expect(response).to be_successful
+    end
+  end
+
   describe "#index" do
     let!(:applicants) { organisation.applicants }
     let!(:applicant) { create(:applicant, organisations: [organisation]) }
@@ -241,6 +257,37 @@ describe ApplicantsController, type: :controller do
         expect(Applicant).to receive(:action_required)
 
         get :index, params: index_params
+      end
+    end
+  end
+
+  describe "#update" do
+    let!(:applicant) { create(:applicant, organisations: [organisation], status: "invitation_pending") }
+    let!(:update_params) { { id: applicant.id, organisation_id: organisation.id, applicant: { status: "resolved" } } }
+
+    before do
+      sign_in(agent)
+      set_rdv_solidarites_session
+    end
+
+    it "updates the applicant status" do
+      patch :update, params: update_params
+      applicant.reload
+      expect(applicant.status).to eq("resolved")
+    end
+
+    context "when it fails" do
+      before do
+        allow(applicant).to receive(:update)
+          .and_return(false)
+        allow(applicant).to receive(:errors)
+          .and_return('some error')
+      end
+
+      it "stores the errors" do
+        patch :update, params: update_params
+        applicant.reload
+        expect(applicant.errors).to eq("some error")
       end
     end
   end

@@ -2,7 +2,7 @@ import React from "react";
 
 export default function PendingMessage({ message, fileSize }) {
   return (
-    <p>
+    <>
       {message}
       {fileSize > 100000000 && (
         <>
@@ -11,6 +11,6 @@ export default function PendingMessage({ message, fileSize }) {
           dépasser 1 minute.
         </>
       )}
-    </p>
+    </>
   );
 }

@@ -9,7 +9,7 @@
 }
 
 .btn-logout:hover {
-  background-color:  $light-grey;
+  background-color: $light-grey;
 }
 
 .btn-blue {
@@ -32,4 +32,8 @@
     background-color: $dark-blue;
     color: white;
   }
+}
+
+.file-input-div {
+  width: 87px;
 }

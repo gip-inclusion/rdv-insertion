@@ -164,42 +164,37 @@ export default function ApplicantsUpload({ organisation, configuration, departme
 
   return (
     <div className="container mt-5 mb-8">
-      <div className="row mt-5 mb-3 justify-content-center">
-        <div className="col-4 text-center">
-          <h1>Ajout allocataires</h1>
-        </div>
-      </div>
-      <div className="row mb-5 justify-content-center">
-        <div className="col-4 text-center">
+      <div className="row mb-4 block-white justify-content-center">
+        <div className="col-4 text-center d-flex align-items-center justify-content-start">
           <button
             type="submit"
-            className="btn btn-sm btn-secondary"
+            className="btn btn-secondary btn-blue-out"
             onClick={() => redirectToApplicantList()}
           >
             Retour au suivi
           </button>
         </div>
-      </div>
-      <div className="row justify-content-center">
-        <div className="col-4 text-center">
+        <div className="col-4 text-center d-flex flex-column align-items-center">
+          <h3 className="new-applicants-title">Ajout allocataires</h3>
           <FileHandler
             handleFile={handleFile}
             fileSize={fileSize}
             multiple={false}
-            uploadMessage="Glissez votre fichier de nouveaux demandeurs"
+            uploadMessage="Choisissez un fichier de nouveaux demandeurs"
             pendingMessage="Récupération des informations, merci de patienter"
           />
         </div>
+        <div className="col-4 text-center" />
       </div>
 
       {applicants.length > 0 && (
         <>
           <div className="row my-5 justify-content-center">
             <div className="text-center">
-              <table className="table table-hover  text-center align-middle table-striped table-bordered">
-                <thead className="align-middle">
+              <table className="table table-hover text-center align-middle table-striped table-bordered">
+                <thead className="align-middle dark-blue">
                   <tr>
-                    <th scope="col">Numéro d&apos;allocataire</th>
+                    <th scope="col">Numéro allocataire</th>
                     <th scope="col">Civilité</th>
                     <th scope="col">Prénom</th>
                     <th scope="col">Nom</th>
@@ -209,14 +204,24 @@ export default function ApplicantsUpload({ organisation, configuration, departme
                     {parameterizedColumnNames.phone_number && <th scope="col">Téléphone</th>}
                     {parameterizedColumnNames.custom_id && <th scope="col">ID Editeur</th>}
                     <th scope="col" style={{ whiteSpace: "nowrap" }}>
-                      Créé le
+                      Création compte
                     </th>
-                    {configuration.invitation_format !== "no_invitation" && (
-                      <th scope="col" style={{ whiteSpace: "nowrap" }}>
-                        Dernière invitation
-                      </th>
+                    {(configuration.invitation_format === "sms" ||
+                      configuration.invitation_format === "sms_and_email") && (
+                      <>
+                        <th scope="col-3">
+                          Invitation SMS
+                        </th>
+                      </>
                     )}
-                    <th scope="col">Action</th>
+                    {(configuration.invitation_format === "email" ||
+                      configuration.invitation_format === "sms_and_email") && (
+                      <>
+                        <th scope="col-3">
+                          Invitation mail
+                        </th>
+                      </>
+                    )}
                   </tr>
                 </thead>
                 <tbody>

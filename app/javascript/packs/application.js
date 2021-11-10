@@ -7,6 +7,7 @@ import LoginForm from "components/login-form";
 import StatusSelector from "components/status-selector"
 import ActionRequiredCheckbox from "components/action-required-checkbox"
 import initTooltip from "components/tooltip"
+import resolveApplicantWarning from "components/resolve-applicant-warning"
 
 import "bootstrap";
 import "stylesheets/application";
@@ -49,4 +50,5 @@ document.addEventListener("turbolinks:load", () => {
   new StatusSelector();
   new ActionRequiredCheckbox();
   initTooltip();
+  resolveApplicantWarning();
 });

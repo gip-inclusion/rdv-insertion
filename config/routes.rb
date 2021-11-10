@@ -13,7 +13,7 @@ end
 Rails.application.routes.draw do
   root "static_pages#welcome"
   resources :organisations, only: [:index] do
-    resources :applicants, only: [:index, :create] do
+    resources :applicants, only: [:index, :create, :show, :update] do
       collection do
         resources :uploads, only: [:new]
         post :search

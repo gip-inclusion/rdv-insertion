@@ -30,8 +30,13 @@ export default function FileHandler({
   return (
     <>
       {/* <p className={styles.description}> */}
-      <p className="text-center">{uploadMessage}</p>
-      <div style={{ paddingLeft: "33%" }}>
+      <p className="text-center">
+        {isPending && (
+          <PendingMessage message={pendingMessage} fileSize={fileSize} />
+        )}
+        {!isPending && uploadMessage}
+      </p>
+      <div className="file-input-div">
         <input
           type="file"
           className="text-white"
@@ -39,10 +44,6 @@ export default function FileHandler({
           multiple={multiple}
         />
       </div>
-
-      {isPending && (
-        <PendingMessage message={pendingMessage} fileSize={fileSize} />
-      )}
     </>
   );
 }

@@ -10,4 +10,12 @@ class ApplicantPolicy < ApplicationPolicy
   def invite?
     search?
   end
+
+  def show?
+    (pundit_user.organisation_ids & record.organisations.pluck(:id)).any?
+  end
+
+  def update?
+    show?
+  end
 end
