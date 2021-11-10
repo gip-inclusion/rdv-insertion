@@ -77,13 +77,6 @@ export default function ApplicantTracker({
     return `col-4 d-flex align-items-center justify-content-center ${bgColorClass}`
   };
 
-  const cssClassForApplicantRdv = () => {
-    if (applicantStatus === "rdv_pending") {
-      return "col-4 d-flex align-items-center justify-content-center bg-success border-success"
-    }
-    return "col-4 d-flex align-items-center justify-content-center"
-  }
-
   const handleClick = async (action) => {
     setIsLoading({ ...isLoading, [action]: true });
 
@@ -175,10 +168,10 @@ export default function ApplicantTracker({
           <h4 className="col-4">Statut</h4>
         </div>
         <div className="row d-flex justify-content-around flex-grow-1">
-          <div className={cssClassForApplicantRdv()}>
+          <div className="col-4 d-flex align-items-center justify-content-center">
             <p>{rdvs.length > 0 ? getFrenchFormatDateString(rdvs.at(-1).created_at) : "-"}</p>
           </div>
-          <div className={cssClassForApplicantRdv()}>
+          <div className="col-4 d-flex align-items-center justify-content-center">
             <p>{rdvs.length > 0 ? getFrenchFormatDateString(rdvs.at(-1).starts_at) : "-"}</p>
           </div>
           <div className={cssClassForApplicantStatus()}>
