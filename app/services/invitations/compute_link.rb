@@ -1,15 +1,17 @@
 module Invitations
   class ComputeLink < BaseService
-    def initialize(organisation:, rdv_solidarites_session:, invitation_token:)
+    def initialize(organisation:, rdv_solidarites_session:, invitation_token:, applicant:)
       @organisation = organisation
       @rdv_solidarites_session = rdv_solidarites_session
       @invitation_token = invitation_token
+      @applicant = applicant
     end
 
     def call
       retrieve_organisation_motifs!
       check_motifs_presence!
-      result.invitation_link = redirect_link + "&invitation_token=#{@invitation_token}"
+      retrieve_geolocalisation
+      result.invitation_link = redirect_link
     end
 
     private
@@ -26,6 +28,23 @@ module Invitations
         rdv_solidarites_session: @rdv_solidarites_session,
         organisation: @organisation
       )
+    end
+
+    def retrieve_geolocalisation
+      @retrieve_geolocalisation ||= RetrieveGeolocalisation.call(
+        address: @applicant.address, department: @organisation.department
+      )
+    end
+
+    def geo_attributes
+      return {} unless retrieve_geolocalisation.success?
+
+      {
+        longitude: retrieve_geolocalisation.longitude,
+        latitude: retrieve_geolocalisation.latitude,
+        city_code: retrieve_geolocalisation.city_code,
+        street_ban_id: retrieve_geolocalisation.street_ban_id
+      }
     end
 
     def check_motifs_presence!
@@ -46,23 +65,28 @@ module Invitations
       end
     end
 
+    def link_params
+      {
+        departement: @organisation.department_number,
+        where: where,
+        invitation_token: @invitation_token
+      }.merge(geo_attributes)
+    end
+
     def link_with_motif(motif)
-      params = {
-        search: {
-          departement: @organisation.department_number,
-          where: @organisation.department_name_with_region,
-          motif_name_with_location_type: motif.name_with_location_type,
-          # Agents and motifs can be on "Service Social" and not in "Service RSA"
-          service: @organisation.rsa_agents_service_id
-        }
-      }
-      "#{ENV['RDV_SOLIDARITES_URL']}/lieux?#{params.to_query}"
+      "#{ENV['RDV_SOLIDARITES_URL']}/external_invitations/organisations/" \
+        "#{@organisation.rdv_solidarites_organisation_id}/services/"\
+        "#{@organisation.rsa_agents_service_id}/motifs/#{motif.id}/lieux?#{link_params.to_query}"
+    end
+
+    def where
+      @applicant.address.presence || @organisation.department_name_with_region
     end
 
     def link_without_motif
-      params = { where: @organisation.department_name_with_region }
-      "#{ENV['RDV_SOLIDARITES_URL']}/departement/#{@organisation.department_number}/" \
-        "#{@organisation.rsa_agents_service_id}?#{params.to_query}"
+      "#{ENV['RDV_SOLIDARITES_URL']}/external_invitations/organisations/" \
+        "#{@organisation.rdv_solidarites_organisation_id}/services/" \
+        "#{@organisation.rsa_agents_service_id}/motifs?#{link_params.to_query}"
     end
   end
 end
