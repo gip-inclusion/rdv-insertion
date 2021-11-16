@@ -31,10 +31,16 @@ describe Notifications::NotifyApplicant, type: :service do
     context "when the phone number is missing" do
       let!(:applicant) { create(:applicant, organisations: [organisation], phone_number_formatted: "") }
 
-      it("is a failure") { is_a_failure }
+      it("is a success") { is_a_success }
 
-      it "stores the errors message" do
-        expect(subject.errors).to eq(["le téléphone n'est pas renseigné"])
+      it "does not create a notification" do
+        expect(Notification).not_to receive(:find_or_initialize_by)
+        subject
+      end
+
+      it "does not send a sms" do
+        expect(SendTransactionalSms).not_to receive(:call)
+        subject
       end
     end
 
