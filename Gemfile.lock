@@ -166,6 +166,7 @@ GEM
     pg_search (2.3.5)
       activerecord (>= 5.2)
       activesupport (>= 5.2)
+    phonelib (0.6.54)
     premailer (1.15.0)
       addressable
       css_parser (>= 1.6.0)
@@ -338,6 +339,7 @@ DEPENDENCIES
   listen (~> 3.2)
   pg (>= 0.18, < 2.0)
   pg_search
+  phonelib
   premailer-rails
   puma (~> 4.3)
   pundit

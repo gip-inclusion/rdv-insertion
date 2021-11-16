@@ -10,6 +10,7 @@ class Applicant < ApplicationRecord
   include SearchableConcern
   include HasStatusConcern
   include NotificableConcern
+  include HasPhoneNumberConcern
 
   has_and_belongs_to_many :organisations
   has_many :invitations, dependent: :nullify
@@ -18,6 +19,7 @@ class Applicant < ApplicationRecord
   validates :uid, uniqueness: true, allow_nil: true
   validates :rdv_solidarites_user_id, uniqueness: true, allow_nil: true
   validates :last_name, :first_name, :title, presence: true
+  validates :email, allow_blank: true, format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/ }
 
   enum role: { demandeur: 0, conjoint: 1 }
   enum title: { monsieur: 0, madame: 1 }

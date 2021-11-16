@@ -1,6 +1,6 @@
-<div class="container applicant-attribute mt-4">
-  <%= simple_form_for(@applicant, url: organisation_applicant_path(@organisation, @applicant), html: { method: :patch }) do |f| %>
-      <%= f.error_notification %>
+<%= simple_form_for(@applicant, url: organisation_applicant_path(@organisation, @applicant), html: { method: :patch }) do |f| %>
+<%= f.error_notification %>
+  <div class="container edit-applicant-form applicant-attribute mt-4">
     <div class="d-flex justify-content-between mb-4">
       <div>
         <%= link_to organisation_applicant_path(@organisation, @applicant) do %>
@@ -8,7 +8,7 @@
         <% end %>
       </div>
       <div>
-        <%= f.button :submit, "Enregistrer", class: "btn btn-blue" %>
+        <button type="submit" class="btn btn-blue">Enregistrer</button>
       </div>
     </div>
     <div class="mb-4">
@@ -29,7 +29,7 @@
         </div>
         <div class="col-10 col-md-5">
           <h4 class="attribute-title">Email</h4>
-          <p><%= f.input :email %></p>
+          <p><%= f.input :email, error: "Adresse mail non valide" %></p>
         </div>
       </div>
       <div class="row d-flex justify-content-around flex-wrap">
@@ -53,10 +53,12 @@
         </div>
         <div class="col-10 col-md-5">
           <h4 class="attribute-title">Téléphone</h4>
-          <p><%= f.input :phone_number_formatted %></p>
+          <p>
+            <%= f.input :phone_number_formatted, error: "Le numéro n'est pas valide" %>
+          </p>
         </div>
       </div>
     </div>
-  <% end %>
-</div>
+  </div>
+<% end %>
 

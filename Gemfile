@@ -56,6 +56,9 @@ gem "sentry-sidekiq"
 # Forms
 gem "simple_form"
 
+# Phone validator
+gem 'phonelib'
+
 # gem needed to be defined explicitely with ruby 3
 gem 'rexml'
 gem 'addressable'

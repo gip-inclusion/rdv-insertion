@@ -1,7 +1,7 @@
 class ApplicantsController < ApplicationController
   PERMITTED_PARAMS = [
     :uid, :role, :first_name, :last_name, :birth_date, :email, :phone_number,
-    :birth_name, :address, :affiliation_number, :custom_id, :title, :status
+    :birth_name, :address, :affiliation_number, :custom_id, :title, :status, :phone_number_formatted
   ].freeze
   before_action :set_organisation, only: [:index, :create, :show, :search, :update, :edit]
   before_action :retrieve_applicants, only: [:search]
@@ -44,15 +44,10 @@ class ApplicantsController < ApplicationController
   end
 
   def update
-    authorize @applicant
+    authorize @organisation, :update_applicant?
     respond_to do |format|
-      if @applicant.update(applicant_params)
-        format.html { render :show }
-        format.json { render json: { success: true } }
-      else
-        format.html { render :edit }
-        format.json { render json: { success: false, errors: @applicant.errors.full_messages } }
-      end
+      format.html { update_applicant! }
+      format.json { update_applicant_status }
     end
   end
 
@@ -66,11 +61,37 @@ class ApplicantsController < ApplicationController
     params.require(:applicant).permit(*PERMITTED_PARAMS)
   end
 
+  def update_applicant!
+    @applicant.assign_attributes(applicant_params)
+    if @applicant.valid? && update_applicant.success?
+      redirect_to organisation_applicant_path(@organisation, @applicant)
+    else
+      render :edit
+    end
+  end
+
+  def update_applicant_status
+    if @applicant.update(applicant_params)
+      render json: { success: true, applicant: @applicant }
+    else
+      render json: { success: false, errors: @applicant.errors.full_messages }
+    end
+  end
+
   def create_applicant
     @create_applicant ||= CreateApplicant.call(
       applicant_data: applicant_params.to_h.deep_symbolize_keys,
       rdv_solidarites_session: rdv_solidarites_session,
       organisation: @organisation
+    )
+  end
+
+  def update_applicant
+    @update_applicant ||= UpdateApplicant.call(
+      applicant_id: @applicant.id,
+      applicant_data: applicant_params.to_h.deep_symbolize_keys,
+      rdv_solidarites_session: rdv_solidarites_session,
+      rdv_solidarites_user_id: @applicant.rdv_solidarites_user_id
     )
   end
 
