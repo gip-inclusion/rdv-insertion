@@ -29,6 +29,7 @@ class UpdateApplicant < BaseService
     rdv_solidarites_user.attributes
                         .slice(*applicant.attribute_names.map(&:to_sym))
                         .except(:id, :created_at, :updated_at)
+                        .merge(role: @applicant_data[:role])
   end
 
   def rdv_solidarites_user
@@ -52,7 +53,7 @@ class UpdateApplicant < BaseService
 
   def rdv_solidarites_user_attributes
     @applicant_data
-      .except(:'birth_date(1i)', :'birth_date(2i)', :'birth_date(3i)', :phone_number_formatted)
+      .except(:'birth_date(1i)', :'birth_date(2i)', :'birth_date(3i)', :phone_number_formatted, :role)
       .merge(birth_date: "#{@applicant_data[:'birth_date(1i)']}/
       #{@applicant_data[:'birth_date(2i)']}/#{@applicant_data[:'birth_date(3i)']}")
       .merge(phone_number: @applicant_data[:phone_number_formatted])
