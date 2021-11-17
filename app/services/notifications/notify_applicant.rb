@@ -9,8 +9,9 @@ module Notifications
     end
 
     def call
+      return if phone_number.blank?
+
       check_applicant_organisation!
-      check_phone_number!
       notify_applicant!
       update_notification_sent_at!
     end
@@ -21,10 +22,6 @@ module Notifications
       return if @applicant.organisation_ids.include?(@organisation.id)
 
       fail!("l'allocataire ne peut être invité car il n'appartient pas à l'organisation.")
-    end
-
-    def check_phone_number!
-      fail!("le téléphone n'est pas renseigné") if phone_number.blank?
     end
 
     def notify_applicant!
