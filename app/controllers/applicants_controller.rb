@@ -1,20 +1,24 @@
 class ApplicantsController < ApplicationController
   PERMITTED_PARAMS = [
     :uid, :role, :first_name, :last_name, :birth_date, :email, :phone_number,
-    :birth_name, :address, :affiliation_number, :custom_id, :title
+    :birth_name, :address, :affiliation_number, :custom_id, :title, :status, :phone_number_formatted
   ].freeze
-  before_action :set_organisation, only: [:index, :create, :show, :search, :update]
+  before_action :set_organisation, only: [:index, :create, :show, :search, :update, :new]
   before_action :retrieve_applicants, only: [:search]
   before_action :set_applicant, only: [:show, :update]
 
   include FilterableApplicantsConcern
 
+  def new
+    authorize @organisation, :new_applicant?
+    @applicant = Applicant.new
+  end
+
   def create
     authorize @organisation, :create_applicant?
-    if create_applicant.success?
-      render json: { success: true, applicant: create_applicant.applicant }
-    else
-      render json: { success: false, errors: create_applicant.errors }
+    respond_to do |format|
+      format.html { create_applicant_and_redirect }
+      format.json { create_and_render_applicant }
     end
   end
 
@@ -60,6 +64,23 @@ class ApplicantsController < ApplicationController
 
   def update_params
     params.require(:applicant).permit(:status)
+  end
+
+  def create_applicant_and_redirect
+    @applicant = Applicant.new(applicant_params)
+    if @applicant.valid? && create_applicant.success?
+      redirect_to organisation_applicant_path(@organisation, create_applicant.applicant.id)
+    else
+      render :new
+    end
+  end
+
+  def create_and_render_applicant
+    if create_applicant.success?
+      render json: { success: true, applicant: create_applicant.applicant }
+    else
+      render json: { success: false, errors: create_applicant.errors }
+    end
   end
 
   def create_applicant

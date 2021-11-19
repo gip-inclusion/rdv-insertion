@@ -43,7 +43,7 @@ class CreateApplicant < BaseService
 
   def applicant_attributes
     { organisations: [@organisation] }.merge(
-      @applicant_data.slice(*Applicant.attribute_names.map(&:to_sym)).compact
+      clean_applicant_data.slice(*Applicant.attribute_names.map(&:to_sym)).compact
     )
   end
 
@@ -71,13 +71,22 @@ class CreateApplicant < BaseService
       # if we notify from rdv-insertion we don't from rdv-solidarites
       notify_by_sms: !@organisation.notify_applicant?,
       notify_by_email: !@organisation.notify_applicant?
-    }.merge(
-      @applicant_data.slice(*RdvSolidarites::User::RECORD_ATTRIBUTES).compact
-    ).deep_symbolize_keys
+    }.merge(clean_applicant_data.slice(*RdvSolidarites::User::RECORD_ATTRIBUTES).compact).deep_symbolize_keys
 
     return user_attributes unless applicant.conjoint?
 
     # we do not send the same email for the conjoint
     user_attributes.except(:email)
+  end
+
+  def clean_applicant_data
+    if @applicant_data[:'birth_date(1i)'].present?
+      @applicant_data.except(:'birth_date(1i)', :'birth_date(2i)', :'birth_date(3i)', :phone_number_formatted)
+                     .merge(birth_date: "#{@applicant_data[:'birth_date(1i)']}/
+        #{@applicant_data[:'birth_date(2i)']}/#{@applicant_data[:'birth_date(3i)']}")
+                     .merge(phone_number: @applicant_data[:phone_number_formatted])
+    else
+      @applicant_data
+    end
   end
 end

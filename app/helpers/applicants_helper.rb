@@ -16,7 +16,7 @@ module ApplicantsHelper
   end
 
   def display_attribute(attribute)
-    attribute || " - "
+    attribute.presence || " - "
   end
 
   def no_search_results?(applicants)

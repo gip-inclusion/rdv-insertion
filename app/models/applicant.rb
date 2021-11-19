@@ -10,6 +10,9 @@ class Applicant < ApplicationRecord
   include SearchableConcern
   include HasStatusConcern
   include NotificableConcern
+  include HasPhoneNumberConcern
+
+  before_save :generate_uid
 
   has_and_belongs_to_many :organisations
   has_many :invitations, dependent: :nullify
@@ -18,6 +21,8 @@ class Applicant < ApplicationRecord
   validates :uid, uniqueness: true, allow_nil: true
   validates :rdv_solidarites_user_id, uniqueness: true, allow_nil: true
   validates :last_name, :first_name, :title, presence: true
+  validates :affiliation_number, presence: true, allow_nil: true
+  validates :email, allow_blank: true, format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/ }
 
   enum role: { demandeur: 0, conjoint: 1 }
   enum title: { monsieur: 0, madame: 1 }
@@ -33,6 +38,13 @@ class Applicant < ApplicationRecord
   scope :invited_before_time_window, lambda {
     where.not(id: Invitation.sent_in_time_window.pluck(:applicant_id).uniq)
   }
+
+  def generate_uid
+    # Base64 encoded "departmentNumber - affiliationNumber - role"
+    return unless uid.blank? && organisations.present? && affiliation_number.present? && role.present?
+
+    self.uid = Base64.encode64("#{organisations.first.department.number} - #{affiliation_number} - #{role}")
+  end
 
   def last_sent_invitation
     invitations.select(&:sent_at).max_by(&:sent_at)
