@@ -15,7 +15,7 @@ module RdvSolidaritesApi
       if rdv_solidarites_response.success?
         result.invitation_token = rdv_solidarites_response_body['invitation_token']
       else
-        result.errors << "erreur RDV-Solidarités: #{rdv_solidarites_response_body['errors']}"
+        result.errors << "Erreur RDV-Solidarités: #{rdv_solidarites_response_body['error_messages']&.join(',')}"
       end
     end
 

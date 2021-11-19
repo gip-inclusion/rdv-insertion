@@ -61,13 +61,13 @@ describe RdvSolidaritesApi::RetrieveResources, type: :service do
     context "when response is unsuccessful" do
       before do
         allow(rdv_solidarites_client).to receive(:get_users)
-          .and_return(OpenStruct.new(success?: false, body: { errors: ["KO"] }.to_json))
+          .and_return(OpenStruct.new(success?: false, body: { error_messages: ['some error'] }.to_json))
       end
 
       it("is a failure") { is_a_failure }
 
       it "stores the error message" do
-        expect(subject.errors).to eq(["erreur RDV-Solidarités: [\"KO\"]"])
+        expect(subject.errors).to eq(["Erreur RDV-Solidarités: some error"])
       end
     end
   end
