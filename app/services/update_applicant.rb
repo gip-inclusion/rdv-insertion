@@ -7,8 +7,13 @@ class UpdateApplicant < BaseService
   end
 
   def call
-    update_rdv_solidarites_user!
-    update_applicant!
+    applicant.assign_attributes(@applicant_data)
+    if applicant.valid?
+      update_rdv_solidarites_user!
+      update_applicant!
+    else
+      result.errors << applicant.errors
+    end
     result.applicant = applicant
   end
 

@@ -46,8 +46,8 @@ class ApplicantsController < ApplicationController
   def update
     authorize @organisation, :update_applicant?
     respond_to do |format|
-      format.html { update_applicant! }
-      format.json { update_applicant_status }
+      format.html { update_applicant_and_redirect }
+      format.json { update_and_render_applicant }
     end
   end
 
@@ -61,16 +61,18 @@ class ApplicantsController < ApplicationController
     params.require(:applicant).permit(*PERMITTED_PARAMS)
   end
 
-  def update_applicant!
-    @applicant.assign_attributes(applicant_params)
-    if @applicant.valid? && update_applicant.success?
-      redirect_to organisation_applicant_path(@organisation, @applicant)
+  def update_applicant_and_redirect
+    return redirect_to organisation_applicant_path(@organisation, @applicant) if update_applicant.success?
+
+    if update_applicant.applicant.present?
+      @applicant = update_applicant.applicant
     else
-      render :edit
+      flash[:error] = update_applicant.errors&.join(',')
     end
+    render :edit
   end
 
-  def update_applicant_status
+  def update_and_render_applicant
     if @applicant.update(applicant_params)
       render json: { success: true, applicant: @applicant }
     else

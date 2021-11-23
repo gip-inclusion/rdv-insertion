@@ -2,8 +2,7 @@ import Swal from "sweetalert2";
 import updateApplicant from "../react/actions/updateApplicant";
 
 const updateApplicantStatus = async (updateButton) => {
-  const { organisationId } = updateButton.dataset;
-  const { applicantId } = updateButton.dataset;
+  const { organisationId, applicantId } = updateButton.dataset;
   const action = updateButton.innerText;
 
   const attributes = (action === "Rouvrir le dossier") ? { status: "invitation_pending" } : { status: "resolved" };

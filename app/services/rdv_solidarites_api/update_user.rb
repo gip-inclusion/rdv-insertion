@@ -16,7 +16,7 @@ module RdvSolidaritesApi
       if rdv_solidarites_response.success?
         result.rdv_solidarites_user = RdvSolidarites::User.new(rdv_solidarites_response_body["user"])
       else
-        result.errors << "erreur RDV-Solidarités: #{rdv_solidarites_response_body['errors']}"
+        result.errors << "Erreur RDV-Solidarités: #{rdv_solidarites_response_body['error_messages']&.join(',')}"
       end
     end
 

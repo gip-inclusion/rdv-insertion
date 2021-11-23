@@ -10,9 +10,9 @@
     </div>
     <div>
       <button class="btn btn-primary" id="update-status-button" data-applicant-id="<%= @applicant.id %>" data-organisation-id="<%= @organisation.id %>">
-        <% if @applicant.rdv_seen? || @applicant.resolved? %>
+        <% if @applicant.resolved? %>
           Rouvrir le dossier
-        <% else %>
+        <% elsif !@applicant.rdv_seen? %>
           Clôturer le dossier
         <% end %>
       </button>
