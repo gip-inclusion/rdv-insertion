@@ -1,40 +1,24 @@
 class UpdateApplicant < BaseService
-  def initialize(applicant_id:, applicant_data:, rdv_solidarites_session:, rdv_solidarites_user_id:)
-    @applicant_id = applicant_id
+  def initialize(applicant:, applicant_data:, rdv_solidarites_session:)
+    @applicant = applicant
     @applicant_data = applicant_data
     @rdv_solidarites_session = rdv_solidarites_session
-    @rdv_solidarites_user_id = rdv_solidarites_user_id
   end
 
   def call
-    applicant.assign_attributes(@applicant_data)
-    if applicant.valid?
-      update_rdv_solidarites_user!
+    Applicant.transaction do
       update_applicant!
-    else
-      result.errors << applicant.errors
+      update_rdv_solidarites_user!
     end
-    result.applicant = applicant
   end
 
   private
 
-  def applicant
-    @applicant ||= Applicant.find(@applicant_id)
-  end
-
   def update_applicant!
-    return if applicant.update(update_applicant_params)
+    return if @applicant.update(@applicant_data)
 
-    result.errors << applicant.errors.full_messages.to_sentence
+    result.errors << @applicant.errors.full_messages.to_sentence
     fail!
-  end
-
-  def update_applicant_params
-    rdv_solidarites_user.attributes
-                        .slice(*applicant.attribute_names.map(&:to_sym))
-                        .except(:id, :created_at, :updated_at)
-                        .merge(role: @applicant_data[:role])
   end
 
   def rdv_solidarites_user
@@ -52,7 +36,7 @@ class UpdateApplicant < BaseService
     @update_rdv_solidarites_user ||= RdvSolidaritesApi::UpdateUser.call(
       user_attributes: rdv_solidarites_user_attributes,
       rdv_solidarites_session: @rdv_solidarites_session,
-      rdv_solidarites_user_id: @rdv_solidarites_user_id
+      rdv_solidarites_user_id: @applicant.rdv_solidarites_user_id
     )
   end
 

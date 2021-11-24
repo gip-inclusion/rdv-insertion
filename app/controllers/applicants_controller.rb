@@ -62,14 +62,12 @@ class ApplicantsController < ApplicationController
   end
 
   def update_applicant_and_redirect
-    return redirect_to organisation_applicant_path(@organisation, @applicant) if update_applicant.success?
-
-    if update_applicant.applicant.present?
-      @applicant = update_applicant.applicant
+    if update_applicant.success?
+      redirect_to organisation_applicant_path(@organisation, @applicant)
     else
-      flash[:error] = update_applicant.errors&.join(',')
+      flash.now[:error] = update_applicant.errors&.join(',')
+      render :edit
     end
-    render :edit
   end
 
   def update_and_render_applicant
@@ -90,10 +88,9 @@ class ApplicantsController < ApplicationController
 
   def update_applicant
     @update_applicant ||= UpdateApplicant.call(
-      applicant_id: @applicant.id,
+      applicant: @applicant,
       applicant_data: applicant_params.to_h.deep_symbolize_keys,
-      rdv_solidarites_session: rdv_solidarites_session,
-      rdv_solidarites_user_id: @applicant.rdv_solidarites_user_id
+      rdv_solidarites_session: rdv_solidarites_session
     )
   end
 
