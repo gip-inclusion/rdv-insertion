@@ -44,7 +44,7 @@ class ApplicantsController < ApplicationController
   end
 
   def update
-    authorize @organisation, :update_applicant?
+    authorize @applicant
     respond_to do |format|
       format.html { update_applicant_and_redirect }
       format.json { update_and_render_applicant }

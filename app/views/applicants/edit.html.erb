@@ -28,17 +28,13 @@
         </div>
         <div class="col-10 col-md-5">
           <h4 class="attribute-title">Email</h4>
-          <p><%= f.input :email, error: "Adresse mail non valide" %></p>
+          <p><%= f.input :email %></p>
         </div>
       </div>
       <div class="row d-flex justify-content-around flex-wrap">
         <div class="col-10 col-md-5">
           <h4 class="attribute-title">Date de naissance</h4>
-          <p><%= f.input :birth_date,
-                          input_html: { class: "date-select" },
-                          as: :date, start_year: Date.today.year - 100,
-                          end_year: Date.today.year,
-                          order: [:day, :month, :year] %></p>
+          <p><%= date_input(f, :birth_date) %></p>
         </div>
         <div class="col-10 col-md-5">
           <h4 class="attribute-title">Rôle</h4>
@@ -53,7 +49,7 @@
         <div class="col-10 col-md-5">
           <h4 class="attribute-title">Téléphone</h4>
           <p>
-            <%= f.input :phone_number_formatted, error: "Le numéro n'est pas valide" %>
+            <%= f.input :phone_number_formatted %>
           </p>
         </div>
       </div>

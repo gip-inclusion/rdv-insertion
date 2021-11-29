@@ -281,7 +281,7 @@ describe Applicant do
         expect(applicant).not_to be_valid
         expect(applicant.errors.details).to eq({ phone_number_formatted: [{ error: :invalid }] })
         expect(applicant.errors.full_messages.to_sentence)
-          .to include("Phone number formatted n'est pas valide")
+          .to include("Téléphone n'est pas valide")
       end
     end
   end

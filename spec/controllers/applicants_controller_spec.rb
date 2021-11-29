@@ -309,16 +309,21 @@ describe ApplicantsController, type: :controller do
       it "calls the service" do
         expect(UpdateApplicant).to receive(:call)
           .with(
-            applicant_id: applicant.id,
+            applicant: applicant,
             applicant_data: update_params[:applicant],
-            rdv_solidarites_session: request.session[:rdv_solidarites],
-            rdv_solidarites_user_id: applicant.rdv_solidarites_user_id
+            rdv_solidarites_session: request.session[:rdv_solidarites]
           )
         patch :update, params: update_params
       end
 
       context "when not authorized" do
         let!(:another_organisation) { create(:organisation) }
+        let!(:another_agent) { create(:agent, organisations: [another_organisation]) }
+
+        before do
+          sign_in(another_agent)
+          set_rdv_solidarites_session
+        end
 
         it "does not call the service" do
           expect(UpdateApplicant).not_to receive(:call)

@@ -16,8 +16,4 @@ class OrganisationPolicy < ApplicationPolicy
   def create_applicant?
     list_applicants?
   end
-
-  def update_applicant?
-    list_applicants?
-  end
 end
