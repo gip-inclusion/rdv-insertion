@@ -1,6 +1,8 @@
 describe RdvSolidaritesWebhooksController, type: :controller do
   before do
-    allow(ProcessRdvSolidaritesWebhookJob).to receive(:perform_async)
+    allow(RdvSolidaritesWebhooks::ProcessRdvJob).to receive(:perform_async)
+    allow(RdvSolidaritesWebhooks::ProcessUserJob).to receive(:perform_async)
+    allow(RdvSolidaritesWebhooks::ProcessUserProfileJob).to receive(:perform_async)
     ENV['RDV_SOLIDARITES_SECRET'] = "i am secret"
   end
 
@@ -17,16 +19,44 @@ describe RdvSolidaritesWebhooksController, type: :controller do
     request.headers["X-Lapin-Signature"] = OpenSSL::HMAC.hexdigest(
       "SHA256", "i am secret", webhook_params.to_json
     )
-    expect(ProcessRdvSolidaritesWebhookJob).to receive(:perform_async)
+    expect(RdvSolidaritesWebhooks::ProcessRdvJob).to receive(:perform_async)
       .with(data, meta)
     post :create, params: webhook_params, as: :json
     expect(response).to be_successful
   end
 
+  context "for a user" do
+    let!(:meta) { { event: "created", model: "User" } }
+
+    it "enqueues the user job" do
+      request.headers["X-Lapin-Signature"] = OpenSSL::HMAC.hexdigest(
+        "SHA256", "i am secret", webhook_params.to_json
+      )
+      expect(RdvSolidaritesWebhooks::ProcessUserJob).to receive(:perform_async)
+        .with(data, meta)
+      post :create, params: webhook_params, as: :json
+      expect(response).to be_successful
+    end
+  end
+
+  context "for a user profile" do
+    let!(:meta) { { event: "created", model: "UserProfile" } }
+
+    it "enqueues the user profile job" do
+      request.headers["X-Lapin-Signature"] = OpenSSL::HMAC.hexdigest(
+        "SHA256", "i am secret", webhook_params.to_json
+      )
+      expect(RdvSolidaritesWebhooks::ProcessUserProfileJob).to receive(:perform_async)
+        .with(data, meta)
+      post :create, params: webhook_params, as: :json
+      expect(response).to be_successful
+    end
+  end
+
   context "when the webhook is not verified" do
     it "is a bad request" do
       request.headers["X-Lapin-Signature"] = "wrong signature"
-      expect(ProcessRdvSolidaritesWebhookJob).not_to receive(:perform_async)
+      expect(RdvSolidaritesWebhooks::ProcessRdvJob).not_to receive(:perform_async)
       post :create, params: webhook_params
       expect(response).to have_http_status(:bad_request)
       expect(response.body).to eq("webhook auth error")
@@ -40,7 +70,7 @@ describe RdvSolidaritesWebhooksController, type: :controller do
       request.headers["X-Lapin-Signature"] = OpenSSL::HMAC.hexdigest(
         "SHA256", "i am secret", webhook_params.to_json
       )
-      expect(ProcessRdvSolidaritesWebhookJob).not_to receive(:perform_async)
+      expect(RdvSolidaritesWebhooks::ProcessRdvJob).not_to receive(:perform_async)
         .with(meta, data)
       post :create, params: webhook_params, as: :json
       expect(response).to be_successful

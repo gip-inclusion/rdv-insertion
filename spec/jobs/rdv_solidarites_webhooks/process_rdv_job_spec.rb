@@ -1,4 +1,4 @@
-describe ProcessRdvSolidaritesWebhookJob, type: :job do
+describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
   subject do
     described_class.new.perform(data, meta)
   end
@@ -6,7 +6,7 @@ describe ProcessRdvSolidaritesWebhookJob, type: :job do
   let!(:user_id) { 42 }
   let!(:user_ids) { [user_id] }
   let!(:rdv_solidarites_rdv_id) { 22 }
-  let!(:organisation_id) { 52 }
+  let!(:rdv_solidarites_organisation_id) { 52 }
   let!(:lieu) { { name: "DINUM", lieu: "20 avenue de Ségur" } }
   let!(:motif) { { location: "public_office" } }
   let!(:starts_at) { "2021-09-08 12:00:00 UTC" }
@@ -17,7 +17,7 @@ describe ProcessRdvSolidaritesWebhookJob, type: :job do
       "lieu" => lieu,
       "motif" => motif,
       "users" => [{ id: user_id }],
-      "organisation" => { id: organisation_id }
+      "organisation" => { id: rdv_solidarites_organisation_id }
     }.deep_symbolize_keys
   end
 
@@ -34,7 +34,7 @@ describe ProcessRdvSolidaritesWebhookJob, type: :job do
   let!(:applicant2) { create(:applicant, organisations: [organisation], id: 4) }
 
   let!(:configuration) { create(:configuration, organisation: organisation, notify_applicant: true) }
-  let!(:organisation) { create(:organisation, rdv_solidarites_organisation_id: organisation_id) }
+  let!(:organisation) { create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id) }
 
   describe "#perform" do
     before do
@@ -48,7 +48,7 @@ describe ProcessRdvSolidaritesWebhookJob, type: :job do
       allow(Applicant).to receive(:where)
         .with(rdv_solidarites_user_id: user_ids)
         .and_return([applicant, applicant2])
-      allow(UpsertRdvJob).to receive(:perform_async)
+      allow(UpsertRecordJob).to receive(:perform_async)
       allow(DeleteRdvJob).to receive(:perform_async)
       allow(NotifyApplicantJob).to receive(:perform_async)
       allow(MattermostClient).to receive(:send_to_notif_channel)
@@ -76,7 +76,7 @@ describe ProcessRdvSolidaritesWebhookJob, type: :job do
       end
 
       it "does not call the other jobs" do
-        [UpsertRdvJob, DeleteRdvJob, NotifyApplicantJob].each do |klass|
+        [UpsertRecordJob, DeleteRdvJob, NotifyApplicantJob].each do |klass|
           expect(klass).not_to receive(:perform_async)
         end
         subject
@@ -103,8 +103,8 @@ describe ProcessRdvSolidaritesWebhookJob, type: :job do
 
     context "it udpates the rdv" do
       it "enqueues an upsert job" do
-        expect(UpsertRdvJob).to receive(:perform_async)
-          .with(data, [applicant.id, applicant2.id], organisation.id)
+        expect(UpsertRecordJob).to receive(:perform_async)
+          .with("Rdv", data, { applicant_ids: [applicant.id, applicant2.id], organisation_id: organisation.id })
         subject
       end
 
