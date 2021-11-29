@@ -23,7 +23,7 @@ module Migrations
     end
 
     def retrieve_applicants_ids(user_ids)
-      Applicant.where(rdv_solidarites_user_id: user_ids, organisation_id: organisation.id).pluck(:id)
+      Applicant.where(rdv_solidarites_user_id: user_ids).pluck(:id)
     end
 
     def retrieve_rdv_solidarites_rdvs!
