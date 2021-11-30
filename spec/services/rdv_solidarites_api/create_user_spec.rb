@@ -57,7 +57,7 @@ describe RdvSolidaritesApi::CreateUser, type: :service do
     end
 
     context "when the response is unsuccessful" do
-      let(:response_body) { { errors: ['some error'] }.to_json }
+      let(:response_body) { { error_messages: ['some error'] }.to_json }
 
       before do
         allow(rdv_solidarites_client).to receive(:create_user)
@@ -70,7 +70,7 @@ describe RdvSolidaritesApi::CreateUser, type: :service do
       end
 
       it "stores the error" do
-        expect(subject.errors).to eq(["erreur RDV-Solidarités: [\"some error\"]"])
+        expect(subject.errors).to eq(["Erreur RDV-Solidarités: some error"])
       end
     end
   end
