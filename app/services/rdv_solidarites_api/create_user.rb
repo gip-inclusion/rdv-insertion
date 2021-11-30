@@ -6,17 +6,15 @@ module RdvSolidaritesApi
     end
 
     def call
-      create_user_in_rdv_solidarites
+      create_user_in_rdv_solidarites!
     end
 
     private
 
-    def create_user_in_rdv_solidarites
-      if rdv_solidarites_response.success?
-        result.rdv_solidarites_user = RdvSolidarites::User.new(rdv_solidarites_response_body["user"])
-      else
-        result.errors << "Erreur RDV-Solidarités: #{rdv_solidarites_response_body['error_messages']&.join(',')}"
-      end
+    def create_user_in_rdv_solidarites!
+      fail_with_response_errors unless rdv_solidarites_response.success?
+
+      result.rdv_solidarites_user = RdvSolidarites::User.new(rdv_solidarites_response_body["user"])
     end
 
     def rdv_solidarites_response
