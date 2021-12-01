@@ -6,17 +6,15 @@ module RdvSolidaritesApi
     end
 
     def call
-      retrieve_invitation_token
+      retrieve_invitation_token!
     end
 
     private
 
-    def retrieve_invitation_token
-      if rdv_solidarites_response.success?
-        result.invitation_token = rdv_solidarites_response_body['invitation_token']
-      else
-        result.errors << "erreur RDV-Solidarités: #{rdv_solidarites_response_body['errors']}"
-      end
+    def retrieve_invitation_token!
+      fail_with_response_errors unless rdv_solidarites_response.success?
+
+      result.invitation_token = rdv_solidarites_response_body['invitation_token']
     end
 
     def rdv_solidarites_response

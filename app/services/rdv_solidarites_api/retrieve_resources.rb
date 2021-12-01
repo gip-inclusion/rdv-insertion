@@ -30,7 +30,7 @@ module RdvSolidaritesApi
       return if response.success?
 
       parsed_reponse_body = JSON.parse(response.body)
-      fail!("erreur RDV-Solidarités: #{parsed_reponse_body['errors']}")
+      fail!("Erreur RDV-Solidarités: #{parsed_reponse_body['error_messages']&.join(',')}")
     end
 
     def retrieve_resources(page)

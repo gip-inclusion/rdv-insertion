@@ -41,13 +41,13 @@ describe RdvSolidaritesApi::RetrieveInvitationToken, type: :service do
     context "when it fails" do
       before do
         allow(rdv_solidarites_client).to receive(:invite_user)
-          .and_return(OpenStruct.new(success?: false, body: { 'errors' => ['some error'] }.to_json))
+          .and_return(OpenStruct.new(success?: false, body: { error_messages: ['some error'] }.to_json))
       end
 
       it("is a failure") { is_a_failure }
 
       it "returns the error" do
-        expect(subject.errors).to eq(["erreur RDV-Solidarités: [\"some error\"]"])
+        expect(subject.errors).to eq(["Erreur RDV-Solidarités: some error"])
       end
     end
   end
