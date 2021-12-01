@@ -58,35 +58,23 @@ module Invitations
     end
 
     def redirect_link
-      if motifs.length == 1
-        link_with_motif(motifs.first)
-      else
-        link_without_motif
-      end
+      "#{ENV['RDV_SOLIDARITES_URL']}/prendre-rdv?#{link_params.to_query}"
     end
 
     def link_params
       {
         departement: @organisation.department_number,
-        where: where,
-        invitation_token: @invitation_token
-      }.merge(geo_attributes)
+        address: address,
+        invitation_token: @invitation_token,
+        organisation_id: @organisation.rdv_solidarites_organisation_id,
+        service_id: @organisation.rsa_agents_service_id
+      }
+        .merge(geo_attributes)
+        .merge(motifs.length == 1 ? { motif_id: motifs.first.id } : {})
     end
 
-    def link_with_motif(motif)
-      "#{ENV['RDV_SOLIDARITES_URL']}/external_invitations/organisations/" \
-        "#{@organisation.rdv_solidarites_organisation_id}/services/"\
-        "#{@organisation.rsa_agents_service_id}/motifs/#{motif.id}/lieux?#{link_params.to_query}"
-    end
-
-    def where
+    def address
       @applicant.address.presence || @organisation.department_name_with_region
-    end
-
-    def link_without_motif
-      "#{ENV['RDV_SOLIDARITES_URL']}/external_invitations/organisations/" \
-        "#{@organisation.rdv_solidarites_organisation_id}/services/" \
-        "#{@organisation.rsa_agents_service_id}/motifs?#{link_params.to_query}"
     end
   end
 end
