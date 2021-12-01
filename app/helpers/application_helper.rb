@@ -14,21 +14,6 @@ module ApplicationHelper
     end
   end
 
-  def date_input(form, field, label = nil, input_html: {}, **kwargs)
-    form.input(
-      field,
-      as: :string,
-      label: label,
-      input_html: {
-        value: form.object&.send(field)&.strftime("%d/%m/%Y"),
-        data: { behaviour: "datepicker" },
-        autocomplete: "off",
-        placeholder: "__/__/___"
-      }.deep_merge(input_html),
-      **kwargs
-    )
-  end
-
   def component_name_for_department(department_name)
     department_name.parameterize.capitalize
   end

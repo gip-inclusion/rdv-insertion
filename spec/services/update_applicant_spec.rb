@@ -22,7 +22,7 @@ describe UpdateApplicant, type: :service do
 
   describe "#call" do
     let!(:rdv_solidarites_user_attributes) do
-      applicant_data.merge(phone_number: applicant_data[:phone_number_formatted]).except(:role)
+      applicant_data.merge(phone_number: applicant_data[:phone_number_formatted]).except(:role, :phone_number_formatted)
     end
     let(:rdv_solidarites_client) { instance_double(RdvSolidaritesSession) }
     let!(:rdv_solidarites_user) { instance_double(RdvSolidarites::User, id: applicant.rdv_solidarites_user_id) }
@@ -45,6 +45,8 @@ describe UpdateApplicant, type: :service do
             affiliation_number: "0987", birth_date: "1981-07-11",
             phone_number_formatted: "+33123456789" }
         )
+      allow(rdv_solidarites_user).to receive(:phone_number_formatted)
+        .and_return("+33123456789")
       allow(applicant).to receive(:update).and_return(true)
     end
 

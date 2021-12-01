@@ -9,13 +9,11 @@
       <% end %>
     </div>
     <div>
-      <button class="btn btn-primary" id="update-status-button" data-applicant-id="<%= @applicant.id %>" data-organisation-id="<%= @organisation.id %>">
-        <% if @applicant.resolved? %>
-          Rouvrir le dossier
-        <% elsif !@applicant.rdv_seen? %>
-          Clôturer le dossier
-        <% end %>
-      </button>
+      <% unless @applicant.rdv_seen? %>
+        <button class="btn btn-primary" id="update-status-button" data-applicant-id="<%= @applicant.id %>" data-organisation-id="<%= @organisation.id %>">
+          <%= @applicant.resolved? ? "Rouvrir le dossier" : "Clôturer le dossier" %>
+        </button>
+      <% end %>
       <%= link_to edit_organisation_applicant_path(@organisation, @applicant) do %>
         <button class="btn btn-blue">Modifier</button>
       <% end %>
