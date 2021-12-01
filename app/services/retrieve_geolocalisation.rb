@@ -15,13 +15,13 @@ class RetrieveGeolocalisation < BaseService
   private
 
   def check_address_presence!
-    fail!("an address must be passed!") if @address.blank?
+    fail!("l'addresse doit être renseignée") if @address.blank?
   end
 
   def request_geo_api!
     return if geo_api_response.success?
 
-    fail!("something happened while requesting geo coordinates")
+    fail!("la requête pour récupérer les coordonnées a échoué")
   end
 
   def geo_api_response
@@ -33,7 +33,7 @@ class RetrieveGeolocalisation < BaseService
   end
 
   def retrieve_geolocalisation!
-    fail!("coordinates could not be found") if selected_feature.nil?
+    fail!("les coordonnées n'ont pas pu être retrouvées") if selected_feature.nil?
 
     result.longitude, result.latitude = coordinates
     result.city_code = city_code

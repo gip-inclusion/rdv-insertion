@@ -65,7 +65,7 @@ describe RetrieveGeolocalisation, type: :service do
       it("is a failure") { is_a_failure }
 
       it "returns the error message" do
-        expect(subject.errors).to eq(["an address must be passed!"])
+        expect(subject.errors).to eq(["l'addresse doit être renseignée"])
       end
     end
 
@@ -82,7 +82,7 @@ describe RetrieveGeolocalisation, type: :service do
       it("is a failure") { is_a_failure }
 
       it "returns the error message" do
-        expect(subject.errors).to eq(["something happened while requesting geo coordinates"])
+        expect(subject.errors).to eq(["la requête pour récupérer les coordonnées a échoué"])
       end
     end
 
@@ -121,7 +121,7 @@ describe RetrieveGeolocalisation, type: :service do
       it("is a failure") { is_a_failure }
 
       it "returns the error message" do
-        expect(subject.errors).to eq(["coordinates could not be found"])
+        expect(subject.errors).to eq(["les coordonnées n'ont pas pu être retrouvées"])
       end
     end
   end
