@@ -16,7 +16,8 @@ const displayResolveWarning = async (resolveButton) => {
   const confirmation = await resolveWarningModal();
 
   if (confirmation.isConfirmed) {
-    const attributes = { status: "resolved" }
+    const today = new Date();
+    const attributes = { status: "resolved", oriented_at: today }
     const result = await updateApplicant(organisationId, applicantId, attributes);
 
     if (result.success) {

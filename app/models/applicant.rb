@@ -33,6 +33,7 @@ class Applicant < ApplicationRecord
   scope :invited_before_time_window, lambda {
     where.not(id: Invitation.sent_in_time_window.pluck(:applicant_id).uniq)
   }
+  scope :oriented, -> { where(status: %w[resolved rdv_seen]) }
 
   def last_sent_invitation
     invitations.select(&:sent_at).max_by(&:sent_at)
@@ -68,6 +69,23 @@ class Applicant < ApplicationRecord
 
   def invited_before_time_window?
     last_invitation_sent_at && last_invitation_sent_at < Organisation::TIME_TO_ACCEPT_INVITATION.ago
+  end
+
+  def orientation_date
+    if rdv_seen?
+      rdvs.seen.first.starts_at
+    elsif resolved? && oriented_at
+      oriented_at
+    elsif resolved?
+      updated_at
+    else
+      DateTime.now
+    end
+  end
+
+  def orientation_delay_in_days
+    starting_date = created_at.change(day: "01")
+    orientation_date.to_datetime.mjd - starting_date.to_datetime.mjd
   end
 
   def full_name

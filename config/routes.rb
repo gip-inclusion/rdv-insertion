@@ -22,6 +22,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :stats, only: [:index]
+
   resources :invitations, only: [] do
     get :redirect, on: :collection
   end

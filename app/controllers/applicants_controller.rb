@@ -59,7 +59,7 @@ class ApplicantsController < ApplicationController
   end
 
   def update_params
-    params.require(:applicant).permit(:status)
+    params.require(:applicant).permit(:status, :oriented_at)
   end
 
   def create_applicant
