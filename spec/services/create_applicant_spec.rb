@@ -34,7 +34,6 @@ describe CreateApplicant, type: :service do
       allow(RdvSolidaritesApi::CreateUser).to receive(:call)
         .and_return(OpenStruct.new(success?: true, rdv_solidarites_user: rdv_solidarites_user))
       allow(rdv_solidarites_user).to receive(:id).and_return(142)
-      allow(rdv_solidarites_user).to receive(:phone_number_formatted).and_return("+33782605941")
     end
 
     it "tries to create the applicant in db" do
@@ -137,11 +136,6 @@ describe CreateApplicant, type: :service do
         it "assign the rdv solidarites user id" do
           subject
           expect(applicant.rdv_solidarites_user_id).to eq(142)
-        end
-
-        it "assign the phone number formatted" do
-          subject
-          expect(applicant.phone_number_formatted).to eq("+33782605941")
         end
 
         it "save the applicant" do

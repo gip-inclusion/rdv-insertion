@@ -56,7 +56,7 @@ describe Applicant do
         first_name: "jean",
         last_name: "dujardin",
         email: "jean@dujardin.fr",
-        phone_number_formatted: "+33110101010",
+        phone_number: "+33110101010",
         affiliation_number: "1111"
       )
     end
@@ -66,7 +66,7 @@ describe Applicant do
         first_name: "cecile",
         last_name: "defrance",
         email: "cecile@defrance.fr",
-        phone_number_formatted: nil,
+        phone_number: nil,
         affiliation_number: "1111"
       )
     end
@@ -76,7 +76,7 @@ describe Applicant do
         first_name: "romain",
         last_name: "duris",
         email: "romain@duris.fr",
-        phone_number_formatted: "+33782605941",
+        phone_number: "+33782605941",
         affiliation_number: "0000"
       )
     end
@@ -232,6 +232,56 @@ describe Applicant do
         it "does not retrieve the applicant" do
           expect(subject).to include(applicant)
         end
+      end
+    end
+  end
+
+  describe "email format validation" do
+    context "valid email format" do
+      let(:applicant) { build(:applicant, email: "abc@test.fr") }
+
+      it { expect(applicant).to be_valid }
+    end
+
+    context "nil email" do
+      let(:applicant) { build(:applicant, email: nil) }
+
+      it { expect(applicant).to be_valid }
+    end
+
+    context "wrong email format" do
+      let(:applicant) { build(:applicant, email: "abc") }
+
+      it "add errors" do
+        expect(applicant).not_to be_valid
+        expect(applicant.errors.details).to eq({ email: [{ error: :invalid, value: "abc" }] })
+        expect(applicant.errors.full_messages.to_sentence)
+          .to include("Email n'est pas valide")
+      end
+    end
+  end
+
+  describe "phone format validation" do
+    context "valid phone format" do
+      let(:applicant) { build(:applicant, phone_number: "0123456789") }
+
+      it { expect(applicant).to be_valid }
+    end
+
+    context "nil phone" do
+      let(:applicant) { build(:applicant, phone_number: nil) }
+
+      it { expect(applicant).to be_valid }
+    end
+
+    context "wrong phone format" do
+      let(:applicant) { build(:applicant, phone_number: "01234") }
+
+      it "add errors" do
+        expect(applicant).not_to be_valid
+        expect(applicant.errors.details).to eq({ phone_number: [{ error: :invalid }] })
+        expect(applicant.errors.full_messages.to_sentence)
+          .to include("Téléphone n'est pas valide")
       end
     end
   end

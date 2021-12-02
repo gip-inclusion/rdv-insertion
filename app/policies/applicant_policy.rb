@@ -18,4 +18,8 @@ class ApplicantPolicy < ApplicationPolicy
   def update?
     show?
   end
+
+  def edit?
+    show?
+  end
 end

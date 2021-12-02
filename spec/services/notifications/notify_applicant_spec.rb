@@ -17,7 +17,7 @@ describe Notifications::NotifyApplicant, type: :service do
   end
   let!(:organisation) { create(:organisation) }
   let!(:rdv_solidarites_rdv_id) { 23 }
-  let!(:applicant) { create(:applicant, phone_number_formatted: phone_number, organisations: [organisation]) }
+  let!(:applicant) { create(:applicant, phone_number: phone_number, organisations: [organisation]) }
   let!(:notification) { create(:notification, applicant: applicant) }
 
   describe "#call" do
@@ -29,7 +29,7 @@ describe Notifications::NotifyApplicant, type: :service do
     end
 
     context "when the phone number is missing" do
-      let!(:applicant) { create(:applicant, organisations: [organisation], phone_number_formatted: "") }
+      let!(:applicant) { create(:applicant, organisations: [organisation], phone_number: "") }
 
       it("is a success") { is_a_success }
 

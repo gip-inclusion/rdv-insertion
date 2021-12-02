@@ -10,7 +10,7 @@ describe Notifications::RdvCancelled, type: :service do
   let!(:applicant) do
     create(
       :applicant,
-      phone_number_formatted: phone_number,
+      phone_number: phone_number,
       first_name: "john",
       last_name: "doe",
       title: "monsieur",
