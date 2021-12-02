@@ -39,7 +39,7 @@ module Notifications
     end
 
     def phone_number
-      @applicant.phone_number_formatted
+      @applicant.phone_number
     end
 
     def send_sms!

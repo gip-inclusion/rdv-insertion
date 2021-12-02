@@ -22,7 +22,7 @@ export default class Applicant {
     this.firstName = formattedAttributes.firstName;
     this.title =
       TITLES[formattedAttributes.title?.toLowerCase()] || formattedAttributes.title?.toLowerCase();
-    this.shortTitle = (this.title === "monsieur" ? "M" : "Mme");
+    this.shortTitle = this.title === "monsieur" ? "M" : "Mme";
     this.email = formattedAttributes.email;
     this.birthDate = formattedAttributes.birthDate;
     this.birthName = formattedAttributes.birthName;
@@ -35,7 +35,7 @@ export default class Applicant {
     // CONJOINT/CONCUBIN/PACSE => conjoint
     const formattedRole = formattedAttributes.role?.split("/")?.shift()?.toLowerCase();
     this.role = ROLES[formattedRole] || formattedRole;
-    this.shortRole = (this.role === "demandeur" ? "DEM" : "CJT");
+    this.shortRole = this.role === "demandeur" ? "DEM" : "CJT";
     this.departmentNumber = departmentNumber;
     this.organisationConfiguration = organisationConfiguration;
   }
@@ -92,15 +92,16 @@ export default class Applicant {
     this.firstName = upToDateApplicant.first_name;
     this.lastName = upToDateApplicant.last_name;
     this.email = upToDateApplicant.email;
-    this.phoneNumber = formatPhoneNumber(upToDateApplicant.phone_number_formatted);
+    this.phoneNumber = formatPhoneNumber(upToDateApplicant.phone_number);
     this.fullAddress = upToDateApplicant.address;
     this.createdAt = upToDateApplicant.created_at;
     this.invitedAt = upToDateApplicant.invited_at;
     this.id = upToDateApplicant.id;
-    this.lastSmsInvitationSentAt =
-      retrieveLastInvitationDate(upToDateApplicant.invitations, "sms");
-    this.lastEmailInvitationSentAt =
-      retrieveLastInvitationDate(upToDateApplicant.invitations, "email");
+    this.lastSmsInvitationSentAt = retrieveLastInvitationDate(upToDateApplicant.invitations, "sms");
+    this.lastEmailInvitationSentAt = retrieveLastInvitationDate(
+      upToDateApplicant.invitations,
+      "email"
+    );
   }
 
   formatAddress() {
@@ -112,19 +113,25 @@ export default class Applicant {
   }
 
   shouldDisplay(attribute) {
-    return this.organisationConfiguration.column_names.required[attribute]
-      || (this.organisationConfiguration.column_names.optional
-        && this.organisationConfiguration.column_names.optional[attribute])
+    return (
+      this.organisationConfiguration.column_names.required[attribute] ||
+      (this.organisationConfiguration.column_names.optional &&
+        this.organisationConfiguration.column_names.optional[attribute])
+    );
   }
 
   shouldBeInvitedBySms() {
-    return (this.organisationConfiguration.invitation_format === "sms" ||
-            this.organisationConfiguration.invitation_format === "sms_and_email");
+    return (
+      this.organisationConfiguration.invitation_format === "sms" ||
+      this.organisationConfiguration.invitation_format === "sms_and_email"
+    );
   }
 
   shouldBeInvitedByEmail() {
-    return (this.organisationConfiguration.invitation_format === "email" ||
-            this.organisationConfiguration.invitation_format === "sms_and_email");
+    return (
+      this.organisationConfiguration.invitation_format === "email" ||
+      this.organisationConfiguration.invitation_format === "sms_and_email"
+    );
   }
 
   hasMissingAttributes() {

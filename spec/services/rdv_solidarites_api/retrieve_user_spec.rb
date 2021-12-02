@@ -14,7 +14,7 @@ describe RdvSolidaritesApi::RetrieveUser, type: :service do
   describe "#call" do
     let!(:rdv_solidarites_client) { instance_double(RdvSolidaritesClient) }
     let!(:user) do
-      { 'id' => 5, 'first_name' => 'Dimitri', 'last_name' => 'Payet', 'phone_number_formatted' => '+33782122222' }
+      { 'id' => 5, 'first_name' => 'Dimitri', 'last_name' => 'Payet', 'phone_number' => '+33782122222' }
     end
 
     before do
@@ -38,7 +38,7 @@ describe RdvSolidaritesApi::RetrieveUser, type: :service do
       it "returns the user" do
         expect(subject.user).to be_an_instance_of(RdvSolidarites::User)
         expect(subject.user.id).to eq(5)
-        expect(subject.user.phone_number_formatted).to eq('+33782122222')
+        expect(subject.user.phone_number).to eq('+33782122222')
       end
     end
 

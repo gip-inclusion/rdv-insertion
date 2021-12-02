@@ -38,6 +38,7 @@
                           input_html: { class: "date-select" },
                           as: :date, start_year: Date.today.year - 100,
                           end_year: Date.today.year,
+                          include_blank: true,
                           order: [:day, :month, :year] %></p>
         </div>
         <div class="col-10 col-md-5">
@@ -53,7 +54,7 @@
         <div class="col-10 col-md-5">
           <h4 class="attribute-title">Téléphone</h4>
           <p>
-            <%= f.input :phone_number_formatted %>
+            <%= f.input :phone_number %>
           </p>
         </div>
       </div>

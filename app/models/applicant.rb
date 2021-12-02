@@ -1,7 +1,8 @@
 class Applicant < ApplicationRecord
-  SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = (
-    RdvSolidarites::User::RECORD_ATTRIBUTES - [:id, :phone_number, :birth_name, :created_at, :invited_at]
-  )
+  SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [
+    :first_name, :last_name, :birth_date, :email, :phone_number, :address, :affiliation_number
+  ].freeze
+
   STATUSES_WITH_ACTION_REQUIRED = %w[
     not_invited rdv_needs_status_update rdv_noshow rdv_revoked rdv_excused
   ].freeze

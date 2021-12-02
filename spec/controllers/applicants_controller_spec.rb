@@ -296,7 +296,7 @@ describe ApplicantsController, type: :controller do
     context "when html request" do
       let!(:update_params) do
         { id: applicant.id, organisation_id: organisation.id,
-          applicant: { first_name: "Alain", last_name: "Deloin", phone_number_formatted: "0123456789" } }
+          applicant: { first_name: "Alain", last_name: "Deloin", phone_number: "0123456789" } }
       end
 
       before do
