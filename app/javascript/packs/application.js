@@ -8,7 +8,7 @@ import StatusSelector from "components/status-selector"
 import DepartmentSelector from "components/department-selector"
 import ActionRequiredCheckbox from "components/action-required-checkbox"
 import initTooltip from "components/tooltip"
-import resolveApplicantWarning from "components/resolve-applicant-warning"
+import updateApplicantButton from "components/update-applicant-button"
 
 import "bootstrap";
 import "stylesheets/application";
@@ -52,5 +52,5 @@ document.addEventListener("turbolinks:load", () => {
   new DepartmentSelector();
   new ActionRequiredCheckbox();
   initTooltip();
-  resolveApplicantWarning();
+  updateApplicantButton();
 });

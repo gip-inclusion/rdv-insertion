@@ -7,7 +7,7 @@ module SearchableConcern
     pg_search_scope(
       :search_by_text,
       using: { tsearch: { prefix: true } },
-      against: [:first_name, :last_name, :affiliation_number, :email, :phone_number_formatted]
+      against: [:first_name, :last_name, :affiliation_number, :email, :phone_number]
     )
   end
 end

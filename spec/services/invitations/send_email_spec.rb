@@ -5,8 +5,7 @@ describe Invitations::SendEmail, type: :service do
     )
   end
 
-  let!(:email) { "test@test.fr" }
-  let!(:applicant) { create(:applicant, email: email) }
+  let!(:applicant) { create(:applicant) }
   let!(:invitation) { create(:invitation, applicant: applicant, format: "email") }
 
   describe "#call" do
@@ -36,7 +35,7 @@ describe Invitations::SendEmail, type: :service do
     end
 
     context "when the mail is blank" do
-      let!(:email) { "" }
+      let!(:applicant) { create(:applicant, email: nil) }
 
       it("is a failure") { is_a_failure }
 
@@ -46,7 +45,7 @@ describe Invitations::SendEmail, type: :service do
     end
 
     context "when the mail is invalid" do
-      let!(:email) { "abcd" }
+      let!(:applicant) { create(:applicant, :skip_validate, email: "abcd") }
 
       it("is a failure") { is_a_failure }
 

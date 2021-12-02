@@ -23,4 +23,30 @@
   padding: 20px;
 }
 
+.edit-applicant-form {
+  input, select {
+    background-color: $white;
+    color: $dark-blue;
+    border-radius: 3px;
+    border: 1px solid #083b66;
+    width: 100%;
+    padding: 1px 5px;
+    &.date-select {
+      width: inherit;
+    }
+  }
+}
 
+.error_notification {
+  display: block;
+  text-align: center;
+  background-color: $warning;
+  padding: 15px;
+  color: $dark-blue;
+}
+
+.field_with_errors {
+  input {
+    border: 3px solid $orange;
+  }
+}

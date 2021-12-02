@@ -2,6 +2,7 @@ class Rdv < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = (
     RdvSolidarites::Rdv::RECORD_ATTRIBUTES - [:id]
   ).freeze
+
   PENDING_STATUSES = %w[unknown waiting].freeze
   CANCELLED_STATUSES = %w[excused revoked noshow].freeze
 
