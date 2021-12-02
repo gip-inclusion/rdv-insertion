@@ -1,7 +1,8 @@
 class Applicant < ApplicationRecord
-  SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = (
-    RdvSolidarites::User::RECORD_ATTRIBUTES - [:id, :phone_number, :birth_name, :created_at, :invited_at]
-  )
+  SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [
+    :first_name, :last_name, :birth_date, :email, :phone_number, :address, :affiliation_number
+  ].freeze
+
   STATUSES_WITH_ACTION_REQUIRED = %w[
     not_invited rdv_needs_status_update rdv_noshow rdv_revoked rdv_excused
   ].freeze
@@ -23,6 +24,7 @@ class Applicant < ApplicationRecord
   validates :last_name, :first_name, :title, presence: true
   validates :affiliation_number, presence: true, allow_nil: true
   validates :email, allow_blank: true, format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/ }
+  validate :birth_date_validity
 
   enum role: { demandeur: 0, conjoint: 1 }
   enum title: { monsieur: 0, madame: 1 }
@@ -44,6 +46,12 @@ class Applicant < ApplicationRecord
     return unless uid.blank? && organisations.present? && affiliation_number.present? && role.present?
 
     self.uid = Base64.encode64("#{organisations.first.department.number} - #{affiliation_number} - #{role}")
+  end
+
+  def birth_date_validity
+    return unless birth_date.present? && (birth_date > Time.zone.today || birth_date < 130.years.ago)
+
+    errors.add(:birth_date, "n'est pas valide")
   end
 
   def last_sent_invitation

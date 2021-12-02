@@ -1,11 +1,11 @@
 class ApplicantsController < ApplicationController
   PERMITTED_PARAMS = [
     :uid, :role, :first_name, :last_name, :birth_date, :email, :phone_number,
-    :birth_name, :address, :affiliation_number, :custom_id, :title, :status, :phone_number_formatted
+    :birth_name, :address, :affiliation_number, :custom_id, :title, :status
   ].freeze
-  before_action :set_organisation, only: [:index, :create, :show, :search, :update, :new]
+  before_action :set_organisation, only: [:index, :create, :show, :search, :update, :edit, :new]
   before_action :retrieve_applicants, only: [:search]
-  before_action :set_applicant, only: [:show, :update]
+  before_action :set_applicant, only: [:show, :update, :edit]
 
   include FilterableApplicantsConcern
 
@@ -49,11 +49,14 @@ class ApplicantsController < ApplicationController
 
   def update
     authorize @applicant
-    if @applicant.update(update_params)
-      render json: { success: true }
-    else
-      render json: { success: false, errors: @applicant.errors.full_messages }
+    respond_to do |format|
+      format.html { update_applicant_and_redirect }
+      format.json { update_and_render_applicant }
     end
+  end
+
+  def edit
+    authorize @applicant
   end
 
   private
@@ -62,8 +65,21 @@ class ApplicantsController < ApplicationController
     params.require(:applicant).permit(*PERMITTED_PARAMS)
   end
 
-  def update_params
-    params.require(:applicant).permit(:status)
+  def update_applicant_and_redirect
+    if update_applicant.success?
+      redirect_to organisation_applicant_path(@organisation, @applicant)
+    else
+      flash.now[:error] = update_applicant.errors&.join(',')
+      render :edit
+    end
+  end
+
+  def update_and_render_applicant
+    if @applicant.update(applicant_params)
+      render json: { success: true, applicant: @applicant }
+    else
+      render json: { success: false, errors: @applicant.errors.full_messages }
+    end
   end
 
   def create_applicant_and_redirect
@@ -88,6 +104,14 @@ class ApplicantsController < ApplicationController
       applicant_data: applicant_params.to_h.deep_symbolize_keys,
       rdv_solidarites_session: rdv_solidarites_session,
       organisation: @organisation
+    )
+  end
+
+  def update_applicant
+    @update_applicant ||= UpdateApplicant.call(
+      applicant: @applicant,
+      applicant_data: applicant_params.to_h.deep_symbolize_keys,
+      rdv_solidarites_session: rdv_solidarites_session
     )
   end
 

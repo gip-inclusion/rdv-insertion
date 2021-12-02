@@ -3,16 +3,21 @@ module HasPhoneNumberConcern
 
   included do
     validate :validate_phone_number
+    before_save :format_phone_number
   end
 
   def validate_phone_number
-    errors.add(:phone_number_formatted, :invalid) if phone_number_formatted.present? && !phone_number_is_valid?
+    errors.add(:phone_number, :invalid) if phone_number.present? && !phone_number_is_valid?
+  end
+
+  def format_phone_number
+    self.phone_number = phone_number_is_valid? ? Phonelib.parse(phone_number).e164 : nil
   end
 
   def phone_number_is_valid?
-    return false if phone_number_formatted.blank?
+    return false if phone_number.blank?
 
-    parsed_number = Phonelib.parse(phone_number_formatted)
+    parsed_number = Phonelib.parse(phone_number)
     country_codes = [:FR, :GP, :GF, :MQ, :RE, :YT]
     # See issue #1471 in RDV-Solidarités. This setup allows:
     # * international (e164) phone numbers

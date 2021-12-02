@@ -21,10 +21,7 @@ class CreateApplicant < BaseService
   end
 
   def update_applicant!
-    return if applicant.update(
-      rdv_solidarites_user_id: rdv_solidarites_user.id,
-      phone_number_formatted: rdv_solidarites_user.phone_number_formatted
-    )
+    return if applicant.update(rdv_solidarites_user_id: rdv_solidarites_user.id)
 
     result.errors << applicant.errors.full_messages.to_sentence
     fail!
