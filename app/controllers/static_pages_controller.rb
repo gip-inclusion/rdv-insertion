@@ -6,11 +6,7 @@ class StaticPagesController < ApplicationController
 
     @rdvs = Rdv.all
     @applicants = Applicant.all
-    @invitations = Invitation.all
-    @agents = Agent.all
-    @organisations = Organisation.all
 
-    @stats = Stat.new(applicants: @applicants, agents: @agents, invitations: @invitations,
-                      organisations: @organisations, rdvs: @rdvs)
+    @stats = Stat.new(applicants: @applicants, rdvs: @rdvs)
   end
 end
