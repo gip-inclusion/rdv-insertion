@@ -17,7 +17,7 @@ class Stat
   def applicants_orientable_in_time
     # Remove from calculation applicants that are not oriented yet and
     # were created less than 30 days ago
-    applicants - applicants.where("created_at > ?", 30.days.ago).where.not(status: %w[resolved rdv_seen])
+    applicants - applicants.where("applicants.created_at > ?", 30.days.ago).where.not(status: %w[resolved rdv_seen])
   end
 
   def average_orientation_delay_in_days

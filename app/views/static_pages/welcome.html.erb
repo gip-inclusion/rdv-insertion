@@ -45,42 +45,22 @@
   <div class="my-4">
     <div class="row d-flex justify-content-center">
       <div class="text-center col-10 col-md-5">
-        <p class="highlight-stat"><%= @stats.applicants.count %></p>
-        <p>bénéficiaires du RSA<br/>gérés dans RDV-Insertion</p>
-      </div>
-      <div class="text-center col-10 col-md-5">
-        <p class="highlight-stat"><%= @stats.invitations.uniq(&:applicant_id).count %></p>
-        <p>bénéficiaires invités par mail et SMS</p>
-      </div>
-    </div>
-    <div class="row d-flex justify-content-center">
-      <div class="text-center col-10 col-md-5">
         <p class="highlight-stat"><%= @stats.rdvs.count %></p>
         <p>rendez-vous pris</p>
       </div>
       <div class="text-center col-10 col-md-5">
-        <p class="highlight-stat"><%= @stats.percentage_of_no_show %> %</p>
-        <p>seulement de rendez-vous<br/>non honorés avec RDV-Insertion</p>
-      </div>
-    </div>
-    <div class="row d-flex justify-content-center">
-      <div class="text-center col-10 col-md-5">
-        <p class="highlight-stat"><%= @stats.percentage_of_applicants_oriented_in_time %> %</p>
-        <p>de bénéficiaires <strong>orientés en - de 30 jours</strong></p>
-      </div>
-      <div class="text-center col-10 col-md-5">
-        <p class="highlight-stat"><%= @stats.average_orientation_delay_in_days %> jours</p>
-        <p>délai d'orientation moyen<br/>d'un bénéficiaire avec RDV-Insertion</p>
-      </div>
-    </div>
-    <div class="row d-flex justify-content-center">
-      <div class="text-center col-10 col-md-5">
         <p class="highlight-stat"><%= @stats.average_rdv_delay_in_days %> jours</p>
         <p>délai moyen entre la prise<br/>d'un rendez-vous et sa tenue</p>
       </div>
+    </div>
+    <div class="row d-flex justify-content-center">
       <div class="text-center col-10 col-md-5">
-        <p class="highlight-stat"><%= @stats.agents.count %> agents</p>
-        <p>travaillant pour <strong><%= Department.count %> départements</strong><br/> utilisent RDV-Insertion</p>
+        <p class="highlight-stat"><%= @stats.percentage_of_no_show %> %</p>
+        <p>seulement de rendez-vous<br/>non honorés avec RDV-Insertion</p>
+      </div>
+      <div class="text-center col-10 col-md-5">
+        <p class="highlight-stat"><%= @stats.percentage_of_applicants_oriented_in_time %> %</p>
+        <p>de bénéficiaires du RSA <br/><strong>orientés en - de 30 jours</strong></p>
       </div>
     </div>
   </div>

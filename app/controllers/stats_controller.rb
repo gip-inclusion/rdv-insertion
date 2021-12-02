@@ -1,35 +1,36 @@
 class StatsController < ApplicationController
   skip_before_action :authenticate_agent!, only: [:index]
-  before_action :collect_datas
 
   def index
+    collect_datas
+    filter_stats_by_department
     @stats = Stat.new(applicants: @applicants, agents: @agents, invitations: @invitations,
                       organisations: @organisations, rdvs: @rdvs)
   end
 
+  private
+
   def collect_datas
-    @department_number = params[:department_number]
-    if @department_number.present?
-      scope_stats_to_department
-    else
-      @rdvs = Rdv.all
-      @applicants = Applicant.all
-      @invitations = Invitation.all
-      @agents = Agent.all
-      @organisations = Organisation.all
-    end
+    @rdvs = Rdv.all
+    @applicants = Applicant.all
+    @invitations = Invitation.all
+    @agents = Agent.all
+    @organisations = Organisation.all
   end
 
-  def scope_stats_to_department
-    @applicants = Applicant.joins(organisations: :department)
-                           .where(organisations: { departments: { number: @department_number } })
-    @agents = Agent.joins(organisations: :department)
-                   .where(organisations: { departments: { number: @department_number } })
-    @invitations = Invitation.joins(organisations: :department)
+  def filter_stats_by_department
+    @department_number = params[:department]
+    return if @department_number.blank?
+
+    @applicants = @applicants.joins(organisations: :department)
                              .where(organisations: { departments: { number: @department_number } })
-    @rdvs = Rdv.joins(organisation: :department)
-               .where(organisations: { departments: { number: @department_number } })
-    @organisations = Organisation.joins(:department)
-                                 .where(departments: { number: @department_number })
+    @agents = @agents.joins(organisations: :department)
+                     .where(organisations: { departments: { number: @department_number } })
+    @invitations = @invitations.joins(organisation: :department)
+                               .where(organisation: { departments: { number: @department_number } })
+    @rdvs = @rdvs.joins(organisation: :department)
+                 .where(organisations: { departments: { number: @department_number } })
+    @organisations = @organisations.joins(:department)
+                                   .where(departments: { number: @department_number })
   end
 end

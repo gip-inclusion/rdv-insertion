@@ -57,10 +57,6 @@ gem "sentry-sidekiq"
 gem 'rexml'
 gem 'addressable'
 
-# stats and charts
-gem "chartkick"
-gem "groupdate"
-
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
 
