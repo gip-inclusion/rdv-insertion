@@ -16,8 +16,9 @@ class ApplicantsController < ApplicationController
 
   def create
     authorize @organisation, :create_applicant?
+    @applicant = Applicant.new
     respond_to do |format|
-      format.html { create_applicant_and_redirect }
+      format.html { upsert_applicant_and_redirect(:new) }
       format.json { create_and_render_applicant }
     end
   end
@@ -50,7 +51,7 @@ class ApplicantsController < ApplicationController
   def update
     authorize @applicant
     respond_to do |format|
-      format.html { update_applicant_and_redirect }
+      format.html { upsert_applicant_and_redirect(:edit) }
       format.json { update_and_render_applicant }
     end
   end
@@ -65,12 +66,12 @@ class ApplicantsController < ApplicationController
     params.require(:applicant).permit(*PERMITTED_PARAMS)
   end
 
-  def update_applicant_and_redirect
-    if update_applicant.success?
+  def upsert_applicant_and_redirect(source)
+    if upsert_applicant.success?
       redirect_to organisation_applicant_path(@organisation, @applicant)
     else
-      flash.now[:error] = update_applicant.errors&.join(',')
-      render :edit
+      flash.now[:error] = upsert_applicant.errors&.join(',')
+      render source
     end
   end
 
@@ -82,34 +83,18 @@ class ApplicantsController < ApplicationController
     end
   end
 
-  def create_applicant_and_redirect
-    @applicant = Applicant.new(applicant_params)
-    if @applicant.valid? && create_applicant.success?
-      redirect_to organisation_applicant_path(@organisation, create_applicant.applicant.id)
-    else
-      render :new
-    end
-  end
-
   def create_and_render_applicant
-    if create_applicant.success?
-      render json: { success: true, applicant: create_applicant.applicant }
+    if upsert_applicant.success?
+      render json: { success: true, applicant: @applicant }
     else
-      render json: { success: false, errors: create_applicant.errors }
+      render json: { success: false, errors: upsert_applicant.errors }
     end
   end
 
-  def create_applicant
-    @create_applicant ||= CreateApplicant.call(
-      applicant_data: applicant_params.to_h.deep_symbolize_keys,
-      rdv_solidarites_session: rdv_solidarites_session,
-      organisation: @organisation
-    )
-  end
-
-  def update_applicant
-    @update_applicant ||= UpdateApplicant.call(
+  def upsert_applicant
+    @upsert_applicant ||= UpsertApplicant.call(
       applicant: @applicant,
+      organisation: @organisation,
       applicant_data: applicant_params.to_h.deep_symbolize_keys,
       rdv_solidarites_session: rdv_solidarites_session
     )

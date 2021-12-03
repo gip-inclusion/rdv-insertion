@@ -1,6 +1,10 @@
-describe RdvSolidaritesApi::CreateUser, type: :service do
+describe RdvSolidaritesApi::UpsertUser, type: :service do
   subject do
-    described_class.call(user_attributes: user_attributes, rdv_solidarites_session: rdv_solidarites_session)
+    described_class.call(
+      user_attributes: user_attributes,
+      rdv_solidarites_session: rdv_solidarites_session,
+      rdv_solidarites_user_id: rdv_solidarites_user_id
+    )
   end
 
   let(:user_attributes) do
@@ -11,6 +15,7 @@ describe RdvSolidaritesApi::CreateUser, type: :service do
     { client: "client", uid: "johndoe@example.com", access_token: "token" }
   end
 
+  let(:rdv_solidarites_user_id) { nil }
   let(:rdv_solidarites_client) { RdvSolidaritesClient.new(rdv_solidarites_session) }
 
   describe "#call" do
@@ -29,10 +34,34 @@ describe RdvSolidaritesApi::CreateUser, type: :service do
         .and_return(OpenStruct.new(body: response_body))
     end
 
-    it "tries to create a user in rdv solidarites" do
-      expect(rdv_solidarites_client).to receive(:create_user)
-        .with(user_attributes)
-      subject
+    context "create user" do
+      before do
+        allow(rdv_solidarites_client).to receive(:create_user)
+          .with(user_attributes)
+          .and_return(OpenStruct.new(body: response_body))
+      end
+
+      it "tries to create a user in rdv solidarites" do
+        expect(rdv_solidarites_client).to receive(:create_user)
+          .with(user_attributes)
+        subject
+      end
+    end
+
+    context "update user" do
+      let(:rdv_solidarites_user_id) { 17 }
+
+      before do
+        allow(rdv_solidarites_client).to receive(:update_user)
+          .with(rdv_solidarites_user_id, user_attributes)
+          .and_return(OpenStruct.new(body: response_body))
+      end
+
+      it "tries to update a user in rdv solidarites" do
+        expect(rdv_solidarites_client).to receive(:update_user)
+          .with(rdv_solidarites_user_id, user_attributes)
+        subject
+      end
     end
 
     context "when the response is successful" do
