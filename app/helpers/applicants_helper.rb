@@ -51,4 +51,16 @@ module ApplicantsHelper
     organisation_id = organisation.rdv_solidarites_organisation_id
     "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{organisation_id}/users/#{applicant.rdv_solidarites_user_id}"
   end
+
+  def applicant_form_cancel_button(organisation, applicant, page_name)
+    if page_name == "edit"
+      link_to organisation_applicant_path(organisation, applicant) do
+        content_tag(:button, "Annuler", class: ["btn btn-blue-out"], type: "button")
+      end
+    else
+      link_to organisation_applicants_path(organisation) do
+        content_tag(:button, "Annuler", class: ["btn btn-blue-out"], type: "button")
+      end
+    end
+  end
 end
