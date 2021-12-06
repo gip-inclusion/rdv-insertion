@@ -94,7 +94,7 @@ class Applicant < ApplicationRecord
   end
 
   def orientation_delay_in_days
-    starting_date = created_at.change(day: "01")
+    starting_date = created_at - 3.days
     orientation_date.to_datetime.mjd - starting_date.to_datetime.mjd
   end
 
