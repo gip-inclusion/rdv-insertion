@@ -1,4 +1,4 @@
-describe DeleteApplicantJob, type: :job do
+describe SoftDeleteApplicantJob, type: :job do
   subject do
     described_class.new.perform(rdv_solidarites_user_id)
   end
@@ -11,7 +11,6 @@ describe DeleteApplicantJob, type: :job do
       allow(Applicant).to receive(:find_by)
         .with(rdv_solidarites_user_id: rdv_solidarites_user_id)
         .and_return(applicant)
-      allow(applicant).to receive(:destroy!)
       allow(MattermostClient).to receive(:send_to_notif_channel)
     end
 
@@ -21,9 +20,11 @@ describe DeleteApplicantJob, type: :job do
       subject
     end
 
-    it "destroys the applicant" do
-      expect(applicant).to receive(:destroy!)
+    it "soft deletes the applicant" do
       subject
+      expect(applicant.status).to eq("deleted")
+      expect(applicant.uid).to eq(nil)
+      expect(applicant.custom_id).to eq(nil)
     end
   end
 end

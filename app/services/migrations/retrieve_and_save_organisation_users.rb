@@ -5,7 +5,7 @@ module Migrations
     def call
       super
       upsert_users
-      remove_deleted_users
+      soft_delete_users
     end
 
     private
@@ -20,22 +20,17 @@ module Migrations
       end
     end
 
-    # rubocop:disable Metrics/AbcSize, Rails/Output
-    def remove_deleted_users
+    def soft_delete_users
       organisation.applicants.find_each do |applicant|
         rdv_solidarites_user = rdv_solidarites_users.find { _1.id == applicant.rdv_solidarites_user_id }
         next if rdv_solidarites_user
 
-        puts "Applicant #{applicant.id} not found found in RDV Solidarites for "\
-             "organisation #{@organisation_id}. Deleting? (y/n)"
-        response = gets.chomp&.downcase
-
-        next unless response.in?(%w[y yes])
-
-        applicant.delete_organisation(organisation)
-        DeleteApplicantJob.perform_async(applicant.rdv_solidarites_user_id) if applicant.organisations.empty?
+        if applicant.organisations.length > 1
+          applicant.delete_organisation(organisation)
+        else
+          SoftDeleteApplicantJob.perform_async(rdv_solidarites_user_id)
+        end
       end
     end
-    # rubocop:enable Metrics/AbcSize, Rails/Output
   end
 end

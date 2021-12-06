@@ -5,7 +5,7 @@ module RdvSolidaritesWebhooks
       @meta = meta.deep_symbolize_keys
       return if applicant.blank? || organisation.blank?
 
-      remove_applicant_from_organisation if event == "destroyed"
+      mark_applicant_as_deleted if event == "destroyed"
     end
 
     private
@@ -30,11 +30,12 @@ module RdvSolidaritesWebhooks
       @organisation ||= Organisation.find_by(rdv_solidarites_organisation_id: rdv_solidarites_organisation_id)
     end
 
-    def remove_applicant_from_organisation
-      applicant.delete_organisation(organisation)
-      return unless applicant.organisations.empty?
-
-      DeleteApplicantJob.perform_async(rdv_solidarites_user_id)
+    def mark_applicant_as_deleted
+      if applicant.organisations.length > 1
+        applicant.delete_organisation(organisation)
+      else
+        SoftDeleteApplicantJob.perform_async(rdv_solidarites_user_id)
+      end
     end
   end
 end

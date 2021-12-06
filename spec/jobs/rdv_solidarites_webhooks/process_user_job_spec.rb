@@ -26,7 +26,7 @@ describe RdvSolidaritesWebhooks::ProcessUserJob, type: :job do
   describe "#call" do
     before do
       allow(UpsertRecordJob).to receive(:perform_async)
-      allow(DeleteApplicantJob).to receive(:perform_async)
+      allow(SoftDeleteApplicantJob).to receive(:perform_async)
     end
 
     it "enqueues upsert record job" do
@@ -53,7 +53,7 @@ describe RdvSolidaritesWebhooks::ProcessUserJob, type: :job do
       end
 
       it "enqueues a delete applicant job" do
-        expect(DeleteApplicantJob).to receive(:perform_async)
+        expect(SoftDeleteApplicantJob).to receive(:perform_async)
           .with(rdv_solidarites_user_id)
         subject
       end

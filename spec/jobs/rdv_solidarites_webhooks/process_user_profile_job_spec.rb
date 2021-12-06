@@ -28,16 +28,11 @@ describe RdvSolidaritesWebhooks::ProcessUserProfileJob, type: :job do
 
   describe "#call" do
     before do
-      allow(DeleteApplicantJob).to receive(:perform_async)
+      allow(SoftDeleteApplicantJob).to receive(:perform_async)
     end
 
-    it "removes the organisation from the applicant" do
-      subject
-      expect(applicant.reload.organisations).to eq([])
-    end
-
-    it "enqueues a delete applicant job" do
-      expect(DeleteApplicantJob).to receive(:perform_async)
+    it "enqueues a soft delete applicant job" do
+      expect(SoftDeleteApplicantJob).to receive(:perform_async)
         .with(rdv_solidarites_user_id)
       subject
     end
@@ -55,7 +50,7 @@ describe RdvSolidaritesWebhooks::ProcessUserProfileJob, type: :job do
       end
 
       it "does not enqueue a delete applicant job" do
-        expect(DeleteApplicantJob).not_to receive(:perform_async)
+        expect(SoftDeleteApplicantJob).not_to receive(:perform_async)
         subject
       end
     end
@@ -71,7 +66,7 @@ describe RdvSolidaritesWebhooks::ProcessUserProfileJob, type: :job do
       end
 
       it "does not enqueue a delete applicant job" do
-        expect(DeleteApplicantJob).not_to receive(:perform_async)
+        expect(SoftDeleteApplicantJob).not_to receive(:perform_async)
         subject
       end
     end
@@ -87,7 +82,7 @@ describe RdvSolidaritesWebhooks::ProcessUserProfileJob, type: :job do
       end
 
       it "does not enqueue a delete applicant job" do
-        expect(DeleteApplicantJob).not_to receive(:perform_async)
+        expect(SoftDeleteApplicantJob).not_to receive(:perform_async)
         subject
       end
     end
@@ -106,7 +101,7 @@ describe RdvSolidaritesWebhooks::ProcessUserProfileJob, type: :job do
       end
 
       it "does not enqueue a delete applicant job" do
-        expect(DeleteApplicantJob).not_to receive(:perform_async)
+        expect(SoftDeleteApplicantJob).not_to receive(:perform_async)
         subject
       end
     end

@@ -24,7 +24,7 @@ module RdvSolidaritesWebhooks
 
     def upsert_or_delete_applicant
       if event == "destroyed"
-        DeleteApplicantJob.perform_async(rdv_solidarites_user_id)
+        SoftDeleteApplicantJob.perform_async(rdv_solidarites_user_id)
       else
         UpsertRecordJob.perform_async("Applicant", @data)
       end

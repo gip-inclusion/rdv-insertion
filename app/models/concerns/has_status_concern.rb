@@ -6,7 +6,7 @@ module HasStatusConcern
   end
 
   def set_status
-    return if status == "resolved"
+    return if status.in?(%w[resolved deleted])
 
     rdvs.reload
     invitations.reload
