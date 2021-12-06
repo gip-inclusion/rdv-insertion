@@ -1,13 +1,23 @@
 <header>
   <nav class="navbar px-3 navbar-expand-lg">
-    <%= link_to root_path do  %>
-      <%= image_pack_tag "logos/rdv-insertion.png", class: "rdvi-logo", alt: "Logo rdv insertion" %>
-    <% end %>
+    <div class="d-flex justify-content-start">
+      <%= image_pack_tag "logos/republique-francaise-logo.svg", height: 50, alt: "République francaise", class: "d-none d-sm-inline navbar-france-logo" %>
+      <%= link_to root_path do %>
+        <%= image_pack_tag "logos/rdv-insertion.png", class: "rdvi-logo", alt: "Logo rdv insertion" %>
+      <% end %>
+    </div>
     <div class="nav justify-content-around">
       <% if logged_in? %>
+        <div class="text-center col">
+          <%= link_to "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/", target: :blank, class: "d-none d-sm-inline" do %>
+            <button class="btn btn-default btn-logout w-100 text-nowrap">
+              <span class="d-inline">Guide d'utilisation</span>
+            </button>
+          <% end %>
+        </div>
         <div class="text-center mx-3 col">
           <%= link_to sign_out_path, method: :delete do %>
-            <button class="btn btn-default btn-logout w-100 ">
+            <button class="btn btn-default btn-logout w-100">
               <span class="d-none d-sm-inline">Se déconnecter</span>
               <span class="d-inline d-sm-none"><i class="fas fa-sign-out-alt"></i></span>
             </button>
@@ -15,18 +25,28 @@
         </div>
       <% end %>
       <div class="ml-5 d-flex align-items-center">
-        <% unless logged_in? || controller.controller_name.include?("sessions") %>
+        <% unless logged_in? || controller_name.include?("sessions") %>
           <div class="text-center mx-3 col">
             <%= link_to sign_in_path do %>
-              <button class="btn btn-default btn-blue w-100 ">
+              <button class="btn btn-default btn-blue w-100">
                 <span class="d-none d-sm-inline">Connexion agent</span>
                 <span class="d-inline d-sm-none">Connexion</span>
               </button>
             <% end %>
           </div>
         <% end %>
-        <%= image_pack_tag "logos/republique-francaise-logo.svg", height: 50, alt: "République francaise", class: "d-none d-sm-inline navbar-france-logo" %>
       </div>
     </div>
   </nav>
+  <% unless logged_in? || controller.controller_name.include?("sessions") %>
+    <div class="sub-header d-none d-md-flex marianne">
+      <%= link_to "https://communaute.inclusion.beta.gouv.fr/", class: "nav-link optional-link ", target: :blank, rel: "noopener noreferrer" do %>
+        <p class="mb-0">Communauté de l'inclusion&nbsp;<i class="fas fa-external-link-alt"></i></p>
+      <% end %>
+      <%= link_to "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/", target: :blank, class: "nav-link optional-link" do %>
+        <p class="mb-0">Guide d'utilisation&nbsp;<i class="fas fa-external-link-alt"></i></p>
+      <% end %>
+      <%= link_to "Contacter l'équipe", "mailto:data.insertion@beta.gouv.fr", class: "nav-link optional-link" %>
+    </div>
+  <% end %>
 </header>
