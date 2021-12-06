@@ -1,8 +1,7 @@
 class UpsertApplicant < BaseService
-  def initialize(applicant:, organisation:, applicant_data:, rdv_solidarites_session:)
+  def initialize(applicant:, organisation:, rdv_solidarites_session:)
     @applicant = applicant
     @organisation = organisation
-    @applicant_data = applicant_data
     @rdv_solidarites_session = rdv_solidarites_session
   end
 
@@ -24,21 +23,10 @@ class UpsertApplicant < BaseService
   end
 
   def upsert_applicant_in_db!
-    if @applicant.id?
-      return if @applicant.update(@applicant_data)
-    else
-      @applicant.assign_attributes(applicant_attributes)
-      return if @applicant.save
-    end
+    return if @applicant.save
 
     result.errors << @applicant.errors.full_messages.to_sentence
     fail!
-  end
-
-  def applicant_attributes
-    { organisations: [@organisation] }.merge(
-      @applicant_data.slice(*Applicant.attribute_names.map(&:to_sym)).compact
-    )
   end
 
   def rdv_solidarites_user

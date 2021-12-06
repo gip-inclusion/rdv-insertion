@@ -23,9 +23,6 @@ Lint/MissingSuper:
   Exclude:
     - "app/services/**/*" # Inheriting BaseService without calling super is OK.
 
-Metrics/ClassLength:
-  Enabled: false
-
 Metrics/BlockLength:
   Exclude:
     - "Guardfile"

@@ -10,16 +10,16 @@ class ApplicantsController < ApplicationController
   include FilterableApplicantsConcern
 
   def new
-    authorize @organisation, :new_applicant?
-    @applicant = Applicant.new
+    @applicant = Applicant.new organisations: [@organisation]
+    authorize @applicant
   end
 
   def create
-    authorize @organisation, :create_applicant?
-    @applicant = Applicant.new
+    @applicant = Applicant.new(organisations: [@organisation], **applicant_params)
+    authorize @applicant
     respond_to do |format|
       format.html { upsert_applicant_and_redirect(:new) }
-      format.json { create_and_render_applicant }
+      format.json { upsert_applicant_and_render }
     end
   end
 
@@ -49,10 +49,14 @@ class ApplicantsController < ApplicationController
   end
 
   def update
+    @applicant.assign_attributes(
+      organisations: (@applicant.organisations.to_a + [@organisation]).uniq,
+      **applicant_params
+    )
     authorize @applicant
     respond_to do |format|
       format.html { upsert_applicant_and_redirect(:edit) }
-      format.json { update_and_render_applicant }
+      format.json { upsert_applicant_and_render }
     end
   end
 
@@ -66,24 +70,16 @@ class ApplicantsController < ApplicationController
     params.require(:applicant).permit(*PERMITTED_PARAMS)
   end
 
-  def upsert_applicant_and_redirect(source)
+  def upsert_applicant_and_redirect(page)
     if upsert_applicant.success?
       redirect_to organisation_applicant_path(@organisation, @applicant)
     else
       flash.now[:error] = upsert_applicant.errors&.join(',')
-      render source
+      render page
     end
   end
 
-  def update_and_render_applicant
-    if @applicant.update(applicant_params)
-      render json: { success: true, applicant: @applicant }
-    else
-      render json: { success: false, errors: @applicant.errors.full_messages }
-    end
-  end
-
-  def create_and_render_applicant
+  def upsert_applicant_and_render
     if upsert_applicant.success?
       render json: { success: true, applicant: @applicant }
     else
@@ -95,7 +91,6 @@ class ApplicantsController < ApplicationController
     @upsert_applicant ||= UpsertApplicant.call(
       applicant: @applicant,
       organisation: @organisation,
-      applicant_data: applicant_params.to_h.deep_symbolize_keys,
       rdv_solidarites_session: rdv_solidarites_session
     )
   end
