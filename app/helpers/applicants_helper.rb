@@ -55,11 +55,11 @@ module ApplicantsHelper
   def applicant_form_cancel_button(organisation, applicant, page_name)
     if page_name == "edit"
       link_to organisation_applicant_path(organisation, applicant) do
-        content_tag(:button, "Annuler", class: ["btn btn-blue-out"], type: "button")
+        tag.button("Annuler", class: ["btn btn-blue-out"], type: "button")
       end
     else
       link_to organisation_applicants_path(organisation) do
-        content_tag(:button, "Annuler", class: ["btn btn-blue-out"], type: "button")
+        tag.button("Annuler", class: ["btn btn-blue-out"], type: "button")
       end
     end
   end

@@ -25,18 +25,25 @@
       </h4>
       <% end %>
     </div>
-    <div class="col-4 d-flex flex-column justify-content-between align-items-end">
-      <div class="text-center">
-        <%= link_to new_organisation_applicant_path(@organisation), class: "btn btn-blue" do %>
-          Créer un allocataire
-        <% end %>
-      </div>
-      <div class="text-center">
-        <%= link_to new_organisation_upload_path(@organisation), class: "btn btn-blue" do %>
-          Charger fichier allocataires
-        <% end %>
-      </div>
+    <div class="col-4 d-flex flex-column justify-content-center align-items-end dropdown">
+      <a class="btn btn-blue dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+        Créer allocataire(s)
+      </a>
+
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
+        <li>
+          <%= link_to new_organisation_applicant_path(@organisation), class: "dropdown-item" do %>
+            Créer un allocataire
+          <% end %>
+        </li>
+        <li>
+          <%= link_to new_organisation_upload_path(@organisation), class: "dropdown-item" do %>
+            Charger fichier allocataires
+          <% end %>
+        </li>
+      </ul>
     </div>
   </div>
   <%= render "applicants_list" %>
 </div>
+

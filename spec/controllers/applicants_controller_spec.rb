@@ -319,7 +319,7 @@ describe ApplicantsController, type: :controller do
   end
 
   describe "#update" do
-    let!(:applicant) { create(:applicant, organisations: [organisation], status: "invitation_pending") }
+    let!(:applicant) { create(:applicant, organisations: [organisation]) }
     let!(:update_params) { { id: applicant.id, organisation_id: organisation.id, applicant: { status: "resolved" } } }
 
     before do
@@ -328,24 +328,71 @@ describe ApplicantsController, type: :controller do
     end
 
     context "when json request" do
-      it "updates the applicant status" do
-        patch :update, params: update_params, as: :json
-        applicant.reload
-        expect(applicant.status).to eq("resolved")
+      let(:update_params) do
+        {
+          applicant: {
+            status: "resolved"
+          },
+          id: applicant.id,
+          organisation_id: organisation.id,
+          format: "json"
+        }
       end
 
-      context "when it fails" do
+      before do
+        allow(UpsertApplicant).to receive(:call)
+          .and_return(OpenStruct.new)
+      end
+
+      it "calls the service" do
+        expect(UpsertApplicant).to receive(:call)
+        post :update, params: update_params
+      end
+
+      context "when not authorized" do
+        let!(:another_organisation) { create(:organisation) }
+        let!(:another_agent) { create(:agent, organisations: [another_organisation]) }
+
         before do
-          allow(applicant).to receive(:update)
-            .and_return(false)
-          allow(applicant).to receive(:errors)
-            .and_return('some error')
+          sign_in(another_agent)
+          set_rdv_solidarites_session
         end
 
-        it "stores the errors" do
-          patch :update, params: update_params
-          applicant.reload
-          expect(applicant.errors).to eq("some error")
+        it "does not call the service" do
+          post :update, params: update_params
+          expect(UpsertApplicant).not_to receive(:call)
+        end
+      end
+
+      context "when the update succeeds" do
+        before do
+          allow(UpsertApplicant).to receive(:call)
+            .and_return(OpenStruct.new(success?: true, applicant: applicant))
+        end
+
+        it "is a success" do
+          post :update, params: update_params
+          expect(response).to be_successful
+          expect(JSON.parse(response.body)["success"]).to eq(true)
+        end
+      end
+
+      context "when the creation fails" do
+        before do
+          allow(UpsertApplicant).to receive(:call)
+            .and_return(OpenStruct.new(success?: false, errors: ['some error']))
+        end
+
+        it "is not a success" do
+          post :update, params: update_params
+          expect(response).to be_successful
+          expect(JSON.parse(response.body)["success"]).to eq(false)
+        end
+
+        it "renders the errors" do
+          post :update, params: update_params
+          expect(response).to be_successful
+          expect(JSON.parse(response.body)["errors"]).to eq(['some error'])
         end
       end
     end
@@ -368,7 +415,6 @@ describe ApplicantsController, type: :controller do
           .with(
             applicant: applicant,
             organisation: organisation,
-            applicant_data: update_params[:applicant],
             rdv_solidarites_session: request.session[:rdv_solidarites]
           )
         patch :update, params: update_params
@@ -385,7 +431,7 @@ describe ApplicantsController, type: :controller do
 
         it "does not call the service" do
           expect(UpsertApplicant).not_to receive(:call)
-          patch :update, params: update_params.merge(organisation_id: another_organisation.id)
+          patch :update, params: update_params
         end
       end
 

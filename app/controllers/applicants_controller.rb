@@ -48,6 +48,10 @@ class ApplicantsController < ApplicationController
     }
   end
 
+  def edit
+    authorize @applicant
+  end
+
   def update
     @applicant.assign_attributes(
       organisations: (@applicant.organisations.to_a + [@organisation]).uniq,
@@ -58,10 +62,6 @@ class ApplicantsController < ApplicationController
       format.html { upsert_applicant_and_redirect(:edit) }
       format.json { upsert_applicant_and_render }
     end
-  end
-
-  def edit
-    authorize @applicant
   end
 
   private

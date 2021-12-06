@@ -15,13 +15,6 @@ class UpsertApplicant < BaseService
 
   private
 
-  def set_rdv_solidarites_id!
-    return if @applicant.update(rdv_solidarites_user_id: rdv_solidarites_user.id)
-
-    result.errors << @applicant.errors.full_messages.to_sentence
-    fail!
-  end
-
   def upsert_applicant_in_db!
     return if @applicant.save
 
@@ -29,19 +22,34 @@ class UpsertApplicant < BaseService
     fail!
   end
 
-  def rdv_solidarites_user
-    upsert_rdv_solidarites_user.rdv_solidarites_user
-  end
-
   def upsert_rdv_solidarites_user!
-    return if upsert_rdv_solidarites_user.success?
+    service = @applicant.rdv_solidarites_user_id? ? update_rdv_solidarites_user : create_rdv_solidarites_user
+    return if service.success?
 
-    result.errors += upsert_rdv_solidarites_user.errors
+    result.errors += service.errors
     fail!
   end
 
-  def upsert_rdv_solidarites_user
-    @upsert_rdv_solidarites_user ||= RdvSolidaritesApi::UpsertUser.call(
+  def set_rdv_solidarites_id!
+    return if @applicant.update(rdv_solidarites_user_id: rdv_solidarites_user_id)
+
+    result.errors << @applicant.errors.full_messages.to_sentence
+    fail!
+  end
+
+  def rdv_solidarites_user_id
+    @applicant.rdv_solidarites_user_id || create_rdv_solidarites_user.rdv_solidarites_user.id
+  end
+
+  def create_rdv_solidarites_user
+    @create_rdv_solidarites_user ||= RdvSolidaritesApi::CreateUser.call(
+      user_attributes: rdv_solidarites_user_attributes,
+      rdv_solidarites_session: @rdv_solidarites_session
+    )
+  end
+
+  def update_rdv_solidarites_user
+    @update_rdv_solidarites_user ||= RdvSolidaritesApi::UpdateUser.call(
       user_attributes: rdv_solidarites_user_attributes,
       rdv_solidarites_session: @rdv_solidarites_session,
       rdv_solidarites_user_id: @applicant.rdv_solidarites_user_id

@@ -1,7 +1,7 @@
 describe UpsertApplicant, type: :service do
   subject do
     described_class.call(
-      applicant_data: applicant_data, rdv_solidarites_session: rdv_solidarites_session,
+      rdv_solidarites_session: rdv_solidarites_session,
       organisation: organisation, applicant: applicant
     )
   end
@@ -30,14 +30,12 @@ describe UpsertApplicant, type: :service do
         .and_return(true)
       allow(applicant).to receive(:save)
         .and_return(true)
-      allow(RdvSolidaritesApi::UpsertUser).to receive(:call)
+      allow(RdvSolidaritesApi::CreateUser).to receive(:call)
         .and_return(OpenStruct.new(success?: true, rdv_solidarites_user: rdv_solidarites_user))
       allow(rdv_solidarites_user).to receive(:id).and_return(nil)
     end
 
     it "tries to create the applicant in db" do
-      expect(applicant).to receive(:assign_attributes)
-        .with(applicant_attributes)
       expect(applicant).to receive(:save)
       subject
     end
@@ -71,12 +69,16 @@ describe UpsertApplicant, type: :service do
         }
       end
 
+      before do
+        allow(applicant).to receive(:rdv_solidarites_user_id?)
+          .and_return(false)
+      end
+
       it "tries to create a rdv solidarites user" do
-        expect(RdvSolidaritesApi::UpsertUser).to receive(:call)
+        expect(RdvSolidaritesApi::CreateUser).to receive(:call)
           .with(
             user_attributes: rdv_solidarites_user_attributes,
-            rdv_solidarites_session: rdv_solidarites_session,
-            rdv_solidarites_user_id: applicant.rdv_solidarites_user_id
+            rdv_solidarites_session: rdv_solidarites_session
           )
         subject
       end
@@ -87,13 +89,12 @@ describe UpsertApplicant, type: :service do
         end
 
         it "does not notify with rdv solidarites" do
-          expect(RdvSolidaritesApi::UpsertUser).to receive(:call)
+          expect(RdvSolidaritesApi::CreateUser).to receive(:call)
             .with(
               user_attributes: rdv_solidarites_user_attributes.merge(
                 notify_by_email: false, notify_by_sms: false
               ),
-              rdv_solidarites_session: rdv_solidarites_session,
-              rdv_solidarites_user_id: applicant.rdv_solidarites_user_id
+              rdv_solidarites_session: rdv_solidarites_session
             )
           subject
         end
@@ -106,11 +107,10 @@ describe UpsertApplicant, type: :service do
         end
 
         it "creates the user without the email" do
-          expect(RdvSolidaritesApi::UpsertUser).to receive(:call)
+          expect(RdvSolidaritesApi::CreateUser).to receive(:call)
             .with(
               user_attributes: rdv_solidarites_user_attributes.except(:email),
-              rdv_solidarites_session: rdv_solidarites_session,
-              rdv_solidarites_user_id: applicant.rdv_solidarites_user_id
+              rdv_solidarites_session: rdv_solidarites_session
             )
           subject
         end
@@ -118,7 +118,7 @@ describe UpsertApplicant, type: :service do
 
       context "when the rdv solidarites user creation fails" do
         before do
-          allow(RdvSolidaritesApi::UpsertUser).to receive(:call)
+          allow(RdvSolidaritesApi::CreateUser).to receive(:call)
             .and_return(OpenStruct.new(errors: ['some error'], success?: false))
         end
 
@@ -158,31 +158,35 @@ describe UpsertApplicant, type: :service do
 
     let(:rdv_solidarites_user_attributes) do
       {
-        first_name: "john", last_name: "doe",
-        address: "16 rue de la tour", email: "johndoe@example.com", phone_number: "+33612459567",
-        affiliation_number: "aff123", birth_date: Date.parse("1989/03/17"),
-        notify_by_sms: true,
+        address: applicant.address,
+        affiliation_number: applicant.affiliation_number,
+        birth_date: applicant.birth_date,
+        email: applicant.email,
+        first_name: applicant.first_name,
+        last_name: applicant.last_name,
         notify_by_email: true,
+        notify_by_sms: true,
+        phone_number: applicant.phone_number,
         organisation_ids: [organisation.rdv_solidarites_organisation_id]
       }
     end
     let!(:rdv_solidarites_user) { instance_double(RdvSolidarites::User, id: applicant.rdv_solidarites_user_id) }
 
     before do
-      allow(RdvSolidaritesApi::UpsertUser).to receive(:call)
+      allow(RdvSolidaritesApi::UpdateUser).to receive(:call)
         .and_return(OpenStruct.new(success?: true, rdv_solidarites_user: rdv_solidarites_user))
       allow(applicant).to receive(:id?)
         .and_return(true)
     end
 
     it "tries to update the applicant" do
-      expect(applicant).to receive(:update).with(applicant_data)
+      expect(applicant).to receive(:save)
       subject
     end
 
     context "when the applicant cannot be updated" do
       before do
-        allow(applicant).to receive(:update)
+        allow(applicant).to receive(:save)
           .and_return(false)
         allow(applicant).to receive_message_chain(:errors, :full_messages, :to_sentence)
           .and_return('some error')
@@ -199,7 +203,7 @@ describe UpsertApplicant, type: :service do
 
     context "when the applicant can be updated" do
       it "tries to update a rdv solidarites user" do
-        expect(RdvSolidaritesApi::UpsertUser).to receive(:call)
+        expect(RdvSolidaritesApi::UpdateUser).to receive(:call)
           .with(
             user_attributes: rdv_solidarites_user_attributes,
             rdv_solidarites_session: rdv_solidarites_session,
@@ -210,7 +214,7 @@ describe UpsertApplicant, type: :service do
 
       context "when the rdv solidarites user update fails" do
         before do
-          allow(RdvSolidaritesApi::UpsertUser).to receive(:call)
+          allow(RdvSolidaritesApi::UpdateUser).to receive(:call)
             .and_return(OpenStruct.new(errors: ['some error'], success?: false))
         end
 
