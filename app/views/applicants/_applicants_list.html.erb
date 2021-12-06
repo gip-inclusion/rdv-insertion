@@ -42,8 +42,10 @@
                 <%= display_out_of_time_notice(applicant) %>
               </td>
               <td class="padding-left-15">
-                <%= link_to organisation_applicant_path(@organisation, applicant) do %>
-                  <button class="btn btn-blue">Gérer</button>
+                <% unless applicant.deleted? %>
+                  <%= link_to organisation_applicant_path(@organisation, applicant) do %>
+                    <button class="btn btn-blue">Gérer</button>
+                  <% end %>
                 <% end %>
               </td>
             </tr>

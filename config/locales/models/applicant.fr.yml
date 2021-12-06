@@ -15,6 +15,7 @@ fr:
           rdv_excused: RDV annulé à l'initiative de l'allocataire
           rdv_seen: RDV honoré
           resolved: Dossier clôturé
+          deleted: Supprimé
         phone_number: Téléphone
         first_name: Prénom
         last_name: Nom

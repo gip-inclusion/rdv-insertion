@@ -2,19 +2,19 @@ describe RdvSolidaritesApi::RetrieveResources, type: :service do
   subject do
     described_class.call(
       rdv_solidarites_session: rdv_solidarites_session,
-      organisation_id: organisation_id,
+      rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
       resource_name: resource_name,
       additional_args: additional_args
     )
   end
 
-  let!(:organisation_id) { 23 }
+  let!(:rdv_solidarites_organisation_id) { 23 }
   let!(:additional_args) { user_ids }
   let!(:user_ids) { [25] }
   let!(:rdv_solidarites_session) do
     { client: "client", uid: "johndoe@example.com", access_token: "token" }
   end
-  let!(:resource_name) { "users" }
+  let!(:resource_name) { "user" }
 
   describe "#call" do
     let!(:rdv_solidarites_client) { instance_double(RdvSolidaritesClient) }
@@ -38,7 +38,7 @@ describe RdvSolidaritesApi::RetrieveResources, type: :service do
 
     it "retrieves the resources" do
       expect(rdv_solidarites_client).to receive(:get_users)
-        .with(organisation_id, page, user_ids)
+        .with(rdv_solidarites_organisation_id, page, user_ids)
       subject
     end
 
@@ -53,7 +53,7 @@ describe RdvSolidaritesApi::RetrieveResources, type: :service do
 
       it "retrieves the resources without the additional argument" do
         expect(rdv_solidarites_client).to receive(:get_users)
-          .with(organisation_id, page)
+          .with(rdv_solidarites_organisation_id, page)
         subject
       end
     end

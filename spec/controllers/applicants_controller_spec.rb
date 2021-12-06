@@ -151,21 +151,9 @@ describe ApplicantsController, type: :controller do
     before do
       sign_in(agent)
       set_rdv_solidarites_session
-      allow(RefreshApplicants).to receive(:call)
-        .and_return(OpenStruct.new)
       allow(Applicant).to receive(:where)
         .with(uid: ['23'])
         .and_return([applicant])
-    end
-
-    it "calls the update service" do
-      expect(RefreshApplicants).to receive(:call)
-        .with(
-          applicants: [applicant],
-          rdv_solidarites_session: request.session[:rdv_solidarites],
-          rdv_solidarites_organisation_id: rdv_solidarites_organisation_id
-        )
-      post :search, params: search_params
     end
 
     context "when not authorized" do
@@ -176,49 +164,18 @@ describe ApplicantsController, type: :controller do
         post :search, params: search_params
         expect(response).to have_http_status(:forbidden)
       end
-
-      it "does not call the service" do
-        expect(RefreshApplicants).not_to receive(:call)
-        post :search, params: search_params
-      end
     end
 
-    context "when the service succeeds" do
-      before do
-        allow(RefreshApplicants).to receive(:call)
-          .and_return(OpenStruct.new(success?: true))
-      end
-
-      it "is a success" do
-        post :search, params: search_params
-        expect(response).to be_successful
-        expect(JSON.parse(response.body)["success"]).to eq(true)
-      end
-
-      it "renders the applicants updated" do
-        post :search, params: search_params
-        expect(response).to be_successful
-        expect(JSON.parse(response.body)["applicants"].pluck("id")).to contain_exactly(applicant.id)
-      end
+    it "is a success" do
+      post :search, params: search_params
+      expect(response).to be_successful
+      expect(JSON.parse(response.body)["success"]).to eq(true)
     end
 
-    context "when the service fails" do
-      before do
-        allow(RefreshApplicants).to receive(:call)
-          .and_return(OpenStruct.new(success?: false, errors: ['some error']))
-      end
-
-      it "is still a success" do
-        post :search, params: search_params
-        expect(response).to be_successful
-        expect(JSON.parse(response.body)["success"]).to eq(true)
-      end
-
-      it "still renders the applicants" do
-        post :search, params: search_params
-        expect(response).to be_successful
-        expect(JSON.parse(response.body)["applicants"].pluck("id")).to contain_exactly(applicant.id)
-      end
+    it "renders the applicants updated" do
+      post :search, params: search_params
+      expect(response).to be_successful
+      expect(JSON.parse(response.body)["applicants"].pluck("id")).to contain_exactly(applicant.id)
     end
   end
 
@@ -247,8 +204,6 @@ describe ApplicantsController, type: :controller do
     before do
       sign_in(agent)
       set_rdv_solidarites_session
-      allow(RefreshApplicants).to receive(:call)
-        .and_return(OpenStruct.new)
       allow(Applicant).to receive(:search_by_text)
         .and_return(applicants)
       allow(Applicant).to receive(:page)
@@ -267,12 +222,6 @@ describe ApplicantsController, type: :controller do
 
     it "does not search applicants" do
       expect(Applicant).not_to receive(:search_by_text)
-
-      get :index, params: index_params
-    end
-
-    it "calls the refresh service" do
-      expect(RefreshApplicants).to receive(:call)
 
       get :index, params: index_params
     end

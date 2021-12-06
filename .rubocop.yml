@@ -19,6 +19,9 @@ Style/Documentation:
 Style/StringLiterals:
   Enabled: false
 
+Style/AsciiComments:
+  Enabled: false
+
 Lint/MissingSuper:
   Exclude:
     - "app/services/**/*" # Inheriting BaseService without calling super is OK.

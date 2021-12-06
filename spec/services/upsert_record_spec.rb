@@ -1,7 +1,7 @@
 describe UpsertRecord, type: :service do
   subject do
     described_class.call(
-      klass: klass, rdv_solidarites_object: rdv_solidarites_object,
+      klass: klass, rdv_solidarites_attributes: rdv_solidarites_attributes,
       additional_attributes: additional_attributes
     )
   end
@@ -10,8 +10,7 @@ describe UpsertRecord, type: :service do
   let!(:additional_attributes) { { applicant_ids: applicant_ids } }
   let!(:applicant_ids) { [33] }
   let!(:rdv_solidarites_rdv_id) { 12 }
-  let!(:rdv_solidarites_object) { RdvSolidarites::Rdv.new(rdv_attributes) }
-  let!(:rdv_attributes) do
+  let!(:rdv_solidarites_attributes) do
     { id: 12, lieu: lieu, motif: motif, starts_at: starts_at, duration_in_min: duration_in_min,
       status: status }
   end
