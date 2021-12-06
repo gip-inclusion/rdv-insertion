@@ -7,14 +7,16 @@ class Applicant < ApplicationRecord
     not_invited rdv_needs_status_update rdv_noshow rdv_revoked rdv_excused
   ].freeze
   STATUSES_WITH_ATTENTION_NEEDED = %w[invitation_pending rdv_creation_pending].freeze
+  RDV_SOLIDARITES_CLASS_NAME = "User".freeze
 
   include SearchableConcern
   include HasStatusConcern
   include NotificableConcern
   include HasPhoneNumberConcern
+  include InvitableConcern
 
   has_and_belongs_to_many :organisations
-  has_many :invitations, dependent: :nullify
+  has_many :invitations, dependent: :destroy
   has_and_belongs_to_many :rdvs
 
   validates :uid, uniqueness: true, allow_nil: true
@@ -28,7 +30,7 @@ class Applicant < ApplicationRecord
   enum status: {
     not_invited: 0, invitation_pending: 1, rdv_creation_pending: 2, rdv_pending: 3,
     rdv_needs_status_update: 4, rdv_noshow: 5, rdv_revoked: 6, rdv_excused: 7,
-    rdv_seen: 8, resolved: 9
+    rdv_seen: 8, resolved: 9, deleted: 10
   }
 
   scope :status, ->(status) { where(status: status) }
@@ -43,30 +45,6 @@ class Applicant < ApplicationRecord
     return unless birth_date.present? && (birth_date > Time.zone.today || birth_date < 130.years.ago)
 
     errors.add(:birth_date, "n'est pas valide")
-  end
-
-  def last_sent_invitation
-    invitations.select(&:sent_at).max_by(&:sent_at)
-  end
-
-  def last_invitation_sent_at
-    last_sent_invitation&.sent_at
-  end
-
-  def last_sent_sms_invitation
-    invitations.select { |invitation| invitation.format == "sms" }.select(&:sent_at).max_by(&:sent_at)
-  end
-
-  def last_sms_invitation_sent_at
-    last_sent_sms_invitation&.sent_at
-  end
-
-  def last_sent_email_invitation
-    invitations.select { |invitation| invitation.format == "email" }.select(&:sent_at).max_by(&:sent_at)
-  end
-
-  def last_email_invitation_sent_at
-    last_sent_email_invitation&.sent_at
   end
 
   def action_required?
@@ -104,6 +82,11 @@ class Applicant < ApplicationRecord
 
   def short_title
     title == "monsieur" ? "M" : "Mme"
+  end
+
+  def delete_organisation(organisation)
+    organisations.delete(organisation)
+    save!
   end
 
   def as_json(_opts = {})

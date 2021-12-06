@@ -77,7 +77,7 @@ class ProcessRdvSolidaritesWebhookJob < ApplicationJob
     if event == "destroyed"
       DeleteRdvJob.perform_async(rdv_solidarites_rdv.id)
     else
-      UpsertRdvJob.perform_async(@data, applicant_ids, organisation.id)
+      UpsertRecordJob.perform_async(Rdv, @data, { applicant_ids: applicant_ids, organisation_id: organisation.id })
     end
   end
 
