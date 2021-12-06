@@ -5,11 +5,23 @@ class RdvSolidaritesWebhooksController < ApplicationController
   include FilterRdvSolidaritesWebhooksConcern
 
   def create
-    ProcessRdvSolidaritesWebhookJob.perform_async(data_params.to_h, meta_params.to_h)
+    webhook_jobs[model].perform_async(data_params.to_h, meta_params.to_h)
     head :ok
   end
 
   private
+
+  def webhook_jobs
+    {
+      "User" => RdvSolidaritesWebhooks::ProcessUserJob,
+      "Rdv" => RdvSolidaritesWebhooks::ProcessRdvJob,
+      "UserProfile" => RdvSolidaritesWebhooks::ProcessUserProfileJob
+    }
+  end
+
+  def model
+    params[:meta][:model]
+  end
 
   def data_params
     params.require(:data).permit!

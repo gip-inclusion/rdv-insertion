@@ -24,9 +24,6 @@ class ApplicantsController < ApplicationController
     @statuses_count = @applicants.group(:status).count
     filter_applicants
     @applicants = @applicants.order(created_at: :desc)
-
-    # temporary solution to have up to date applicants with RDVS
-    refresh_applicants
   end
 
   def show
@@ -35,8 +32,6 @@ class ApplicantsController < ApplicationController
 
   def search
     authorize @organisation, :list_applicants?
-    # temporary solution to have up to date applicants with RDVS
-    refresh_applicants
     render json: {
       success: true,
       applicants: @applicants
@@ -91,14 +86,6 @@ class ApplicantsController < ApplicationController
       applicant: @applicant,
       applicant_data: applicant_params.to_h.deep_symbolize_keys,
       rdv_solidarites_session: rdv_solidarites_session
-    )
-  end
-
-  def refresh_applicants
-    @refresh_applicants ||= RefreshApplicants.call(
-      applicants: @applicants.to_a,
-      rdv_solidarites_session: rdv_solidarites_session,
-      rdv_solidarites_organisation_id: @organisation.rdv_solidarites_organisation_id
     )
   end
 
