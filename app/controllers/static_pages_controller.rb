@@ -4,9 +4,13 @@ class StaticPagesController < ApplicationController
   def welcome
     redirect_to(organisations_path) if logged_in?
 
-    @rdvs = Rdv.all
     @applicants = Applicant.all
+    @agents = Agent.all
+    @invitations = Invitation.all
+    @rdvs = Rdv.all
+    @organisations = Organisation.all
 
-    @stats = Stat.new(applicants: @applicants, rdvs: @rdvs)
+    @stats = Stat.new(applicants: @applicants, agents: @agents, invitations: @invitations,
+                      rdvs: @rdvs, organisations: @organisations)
   end
 end

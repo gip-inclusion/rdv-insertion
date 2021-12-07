@@ -50,7 +50,11 @@
     </div>
     <div class="text-center col-10 col-md-5 mb-4">
       <p class="highlight-stat"><%= @stats.agents.count %> agents</p>
-      <p>travaillant pour <strong><%= Department.count %> départements</strong><br/> utilisent RDV-Insertion</p>
+      <% if @department_number %>
+        <p>utilisent RDV-Insertion</p>
+      <% else %>
+        <p>travaillant pour <strong><%= Department.count %> départements</strong><br/> utilisent RDV-Insertion</p>
+      <% end %>
     </div>
   </div>
 </div>
