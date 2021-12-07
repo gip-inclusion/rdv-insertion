@@ -44,7 +44,7 @@ class Applicant < ApplicationRecord
   }
 
   def generate_uid
-    # Base64 encoded "departmentNumber - affiliationNumber - role"
+    # Base64 encoded "department_number - affiliation_number - role"
     return unless uid.blank? && organisations.present? && affiliation_number.present? && role.present?
 
     self.uid = Base64.encode64("#{organisations.first.department.number} - #{affiliation_number} - #{role}")

@@ -4,6 +4,7 @@ describe ApplicantsController, type: :controller do
   let!(:rdv_solidarites_organisation_id) { 52 }
 
   describe "#new" do
+    render_views
     let!(:new_params) { { organisation_id: organisation.id } }
 
     before do
@@ -15,10 +16,12 @@ describe ApplicantsController, type: :controller do
       get :new, params: new_params
 
       expect(response).to be_successful
+      expect(response.body).to match(/Créer allocataire/)
     end
   end
 
   describe "#create" do
+    render_views
     before do
       sign_in(agent)
       set_rdv_solidarites_session
@@ -53,14 +56,18 @@ describe ApplicantsController, type: :controller do
       end
 
       context "when the creation succeeds" do
+        let(:applicant) { create(:applicant, organisations: [organisation]) }
+
         before do
           allow(UpsertApplicant).to receive(:call)
             .and_return(OpenStruct.new(success?: true))
+          allow(Applicant).to receive(:new)
+            .and_return(applicant)
         end
 
         it "is a success" do
-          # post :create, params: applicant_params
-          # expect(response).to redirect_to(organisation_applicant_path(organisation, applicant))
+          post :create, params: applicant_params
+          expect(response).to redirect_to(organisation_applicant_path(organisation, applicant))
         end
       end
 
@@ -73,6 +80,7 @@ describe ApplicantsController, type: :controller do
         it "renders the new page" do
           post :create, params: applicant_params
           expect(response).to be_successful
+          expect(response.body).to match(/Créer allocataire/)
         end
       end
     end
@@ -198,7 +206,7 @@ describe ApplicantsController, type: :controller do
   describe "#index" do
     let!(:applicants) { organisation.applicants }
     let!(:applicant) { create(:applicant, organisations: [organisation]) }
-    let!(:applicant2) { create(:applicant, organisations: [organisation], role: 0) }
+    let!(:applicant2) { create(:applicant, organisations: [organisation], role: "demandeur") }
     let!(:index_params) { { organisation_id: organisation.id } }
 
     before do

@@ -31,7 +31,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
   let!(:rdv_solidarites_rdv) { OpenStruct.new(id: rdv_solidarites_rdv_id, user_ids: user_ids) }
 
   let!(:applicant) { create(:applicant, organisations: [organisation], id: 3) }
-  let!(:applicant2) { create(:applicant, organisations: [organisation], id: 4, role: 0) }
+  let!(:applicant2) { create(:applicant, organisations: [organisation], id: 4) }
 
   let!(:configuration) { create(:configuration, organisation: organisation, notify_applicant: true) }
   let!(:organisation) { create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id) }
