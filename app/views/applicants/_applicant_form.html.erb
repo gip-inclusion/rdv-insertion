@@ -1,0 +1,68 @@
+<div class="container applicant-form applicant-attribute mt-4">
+  <div class="d-flex justify-content-between mb-4">
+    <div>
+      <%= applicant_form_cancel_button(@organisation, @applicant, page_name) %>
+    </div>
+    <h1 class="applicant-form-title d-none d-sm-inline"><%= title %> </h1>
+    <div>
+      <button type="submit" class="btn btn-blue">Enregistrer</button>
+    </div>
+  </div>
+  <div class="mb-4">
+    <div class="row d-flex justify-content-around flex-wrap">
+      <div class="col-10 col-md-5">
+        <h4 class="attribute-title">Civilité*</h4>
+        <p><%= f.input :title, as: :select, collection: ["monsieur", "madame"] %></p>
+      </div>
+      <div class="col-10 col-md-5">
+      </div>
+    </div>
+    <div class="row d-flex justify-content-around flex-wrap">
+      <div class="col-10 col-md-5">
+        <h4 class="attribute-title">Nom</h4>
+        <p><%= f.input :last_name %></p>
+      </div>
+      <div class="col-10 col-md-5">
+        <h4 class="attribute-title">Prénom</h4>
+        <p><%= f.input :first_name %></p>
+      </div>
+    </div>
+    <div class="row d-flex justify-content-around flex-wrap">
+      <div class="col-10 col-md-5">
+        <h4 class="attribute-title">Numéro allocataire</h4>
+        <p><%= f.input :affiliation_number %></p>
+      </div>
+      <div class="col-10 col-md-5">
+        <h4 class="attribute-title">Email</h4>
+        <p><%= f.input :email %></p>
+      </div>
+    </div>
+    <div class="row d-flex justify-content-around flex-wrap">
+      <div class="col-10 col-md-5">
+        <h4 class="attribute-title">Date de naissance</h4>
+        <p><%= f.input :birth_date,
+                        input_html: { class: "date-select" },
+                        as: :date, start_year: Date.today.year - 100,
+                        end_year: Date.today.year,
+                        include_blank: true,
+                        order: [:day, :month, :year] %></p>
+      </div>
+      <div class="col-10 col-md-5">
+        <h4 class="attribute-title">Rôle</h4>
+        <p><%= f.input :role, as: :select, collection: ["demandeur", "conjoint"], selected: @applicant.role %></p>
+      </div>
+    </div>
+    <div class="row d-flex justify-content-around flex-wrap">
+      <div class="col-10 col-md-5">
+        <h4 class="attribute-title">Adresse</h4>
+        <p><%= f.input :address %></p>
+      </div>
+      <div class="col-10 col-md-5">
+        <h4 class="attribute-title">Téléphone</h4>
+        <p>
+          <%= f.input :phone_number %>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

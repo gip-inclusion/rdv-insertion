@@ -11,6 +11,11 @@
         %>
       </div>
       <%= render 'search_form' %>
+      <div class=" text-left mt-2">
+        <%= check_box("applicants_list", "action_required", class: "js-action-required-checkbox") %> Intervention nécessaire
+        <small><i class="fas fa-question-circle" id="js-action-required-tooltip"></i></small>
+      </div>
+
     </div>
     <div class="col-4 d-flex flex-column justify-content-center align-items-center">
       <% if image_compiled?("maps/#{@organisation.department_name.parameterize}.svg") %>
@@ -20,17 +25,25 @@
       </h4>
       <% end %>
     </div>
-    <div class="col-4 d-flex flex-column justify-content-around align-items-end">
-      <div class="text-center">
-        <%= link_to new_organisation_upload_path(@organisation), class: "btn btn-blue" do %>
-          Ajouter allocataires
-        <% end %>
-      </div>
-      <div class=" text-center">
-        <%= check_box("applicants_list", "action_required", class: "js-action-required-checkbox") %> Intervention nécessaire
-        <small><i class="fas fa-question-circle" id="js-action-required-tooltip"></i></small>
-      </div>
+    <div class="col-4 d-flex flex-column justify-content-center align-items-end dropdown">
+      <a class="btn btn-blue dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+        Créer allocataire(s)
+      </a>
+
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
+        <li>
+          <%= link_to new_organisation_applicant_path(@organisation), class: "dropdown-item" do %>
+            Créer un allocataire
+          <% end %>
+        </li>
+        <li>
+          <%= link_to new_organisation_upload_path(@organisation), class: "dropdown-item" do %>
+            Charger fichier allocataires
+          <% end %>
+        </li>
+      </ul>
     </div>
   </div>
   <%= render "applicants_list" %>
 </div>
+

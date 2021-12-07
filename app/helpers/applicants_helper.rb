@@ -16,7 +16,7 @@ module ApplicantsHelper
   end
 
   def display_attribute(attribute)
-    attribute || " - "
+    attribute.presence || " - "
   end
 
   def no_search_results?(applicants)
@@ -50,5 +50,17 @@ module ApplicantsHelper
   def rdv_solidarites_user_url(organisation, applicant)
     organisation_id = organisation.rdv_solidarites_organisation_id
     "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{organisation_id}/users/#{applicant.rdv_solidarites_user_id}"
+  end
+
+  def applicant_form_cancel_button(organisation, applicant, page_name)
+    if page_name == "edit"
+      link_to organisation_applicant_path(organisation, applicant) do
+        tag.button("Annuler", class: ["btn btn-blue-out"], type: "button")
+      end
+    else
+      link_to organisation_applicants_path(organisation) do
+        tag.button("Annuler", class: ["btn btn-blue-out"], type: "button")
+      end
+    end
   end
 end
