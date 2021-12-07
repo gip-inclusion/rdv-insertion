@@ -15,6 +15,8 @@ class Applicant < ApplicationRecord
   include HasPhoneNumberConcern
   include InvitableConcern
 
+  before_save :generate_uid
+
   has_and_belongs_to_many :organisations
   has_many :invitations, dependent: :destroy
   has_and_belongs_to_many :rdvs
@@ -22,6 +24,7 @@ class Applicant < ApplicationRecord
   validates :uid, uniqueness: true, allow_nil: true
   validates :rdv_solidarites_user_id, uniqueness: true, allow_nil: true
   validates :last_name, :first_name, :title, presence: true
+  validates :affiliation_number, presence: true, allow_nil: true
   validates :email, allow_blank: true, format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/ }
   validate :birth_date_validity
 
@@ -40,6 +43,13 @@ class Applicant < ApplicationRecord
     where.not(id: Invitation.sent_in_time_window.pluck(:applicant_id).uniq)
   }
   scope :oriented, -> { where(status: %w[resolved rdv_seen]) }
+
+  def generate_uid
+    # Base64 encoded "department_number - affiliation_number - role"
+    return unless uid.blank? && organisations.present? && affiliation_number.present? && role.present?
+
+    self.uid = Base64.encode64("#{organisations.first.department.number} - #{affiliation_number} - #{role}")
+  end
 
   def birth_date_validity
     return unless birth_date.present? && (birth_date > Time.zone.today || birth_date < 130.years.ago)

@@ -28,7 +28,7 @@ module Migrations
         if applicant.organisations.length > 1
           applicant.delete_organisation(organisation)
         else
-          SoftDeleteApplicantJob.perform_async(rdv_solidarites_user_id)
+          SoftDeleteApplicantJob.perform_async(applicant.rdv_solidarites_user_id)
         end
       end
     end
