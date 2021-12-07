@@ -57,6 +57,10 @@ class Applicant < ApplicationRecord
     errors.add(:birth_date, "n'est pas valide")
   end
 
+  def oriented?
+    resolved? || rdv_seen?
+  end
+
   def action_required?
     status.in?(STATUSES_WITH_ACTION_REQUIRED) || (attention_needed? && invited_before_time_window?)
   end
@@ -72,10 +76,8 @@ class Applicant < ApplicationRecord
   def orientation_date
     if rdv_seen?
       rdvs.seen.first.starts_at
-    elsif resolved? && oriented_at
-      oriented_at
     elsif resolved?
-      updated_at
+      oriented_at || updated_at
     else
       DateTime.now
     end

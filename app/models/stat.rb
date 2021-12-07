@@ -4,13 +4,12 @@ class Stat
   attr_accessor :applicants, :invitations, :agents, :organisations, :rdvs
 
   def percentage_of_applicants_oriented_in_time
-    applicants_oriented_in_less_than_30_days.count * 100 / (applicants_orientable_in_time.count.nonzero? || 1)
+    (applicants_oriented_in_less_than_30_days.count / (applicants_orientable_in_time.count.nonzero? || 1).to_f) * 100
   end
 
   def applicants_oriented_in_less_than_30_days
     applicants.select do |applicant|
-      applicant.orientation_delay_in_days < 30 &&
-        (applicant.resolved? || applicant.rdv_seen?)
+      applicant.orientation_delay_in_days < 30 && applicant.oriented?
     end
   end
 
@@ -26,7 +25,7 @@ class Stat
       cumulated_orientation_delays += applicant.orientation_delay_in_days
     end
 
-    cumulated_orientation_delays / (applicants.oriented.count.nonzero? || 1)
+    cumulated_orientation_delays / (applicants.oriented.count.nonzero? || 1).to_f
   end
 
   def average_rdv_delay_in_days
@@ -35,10 +34,14 @@ class Stat
       cumulated_rdv_delays += rdv.delay_in_days
     end
 
-    cumulated_rdv_delays / (rdvs.seen.count.nonzero? || 1)
+    cumulated_rdv_delays / (rdvs.seen.count.nonzero? || 1).to_f
   end
 
   def percentage_of_no_show
-    rdvs.noshow.count / (rdvs.closed.count.nonzero? || 1)
+    (rdvs.noshow.count / (rdvs.closed.count.nonzero? || 1).to_f) * 100
+  end
+
+  def sent_invitations
+    invitations.where.not(sent_at: nil).uniq(&:applicant_id)
   end
 end

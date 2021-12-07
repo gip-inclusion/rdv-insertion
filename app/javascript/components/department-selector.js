@@ -9,7 +9,7 @@ class DepartmentSelector {
 
   setIntialValue() {
     const url = new URL(window.location.href);
-    const selectedDepartment = url.searchParams.get("department");
+    const selectedDepartment = url.searchParams.get("department_number");
     if (selectedDepartment) {
       this.selectElt.value = selectedDepartment;
     }
@@ -24,11 +24,11 @@ class DepartmentSelector {
   refreshQuery(selectedDepartment) {
     if (selectedDepartment && selectedDepartment !== "0") {
       const url = new URL(window.location.href);
-      url.searchParams.set("department", selectedDepartment);
+      url.searchParams.set("department_number", selectedDepartment);
       window.location.href = url;
     } else {
       const url = new URL(window.location.href);
-      url.searchParams.delete("department");
+      url.searchParams.delete("department_number");
       window.location.href = url;
     }
   }

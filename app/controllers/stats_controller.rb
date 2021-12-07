@@ -5,32 +5,27 @@ class StatsController < ApplicationController
     collect_datas
     filter_stats_by_department
     @stats = Stat.new(applicants: @applicants, agents: @agents, invitations: @invitations,
-                      organisations: @organisations, rdvs: @rdvs)
+                      rdvs: @rdvs, organisations: @organisations)
   end
 
   private
 
   def collect_datas
-    @rdvs = Rdv.all
     @applicants = Applicant.all
-    @invitations = Invitation.all
     @agents = Agent.all
+    @invitations = Invitation.all
+    @rdvs = Rdv.all
     @organisations = Organisation.all
   end
 
   def filter_stats_by_department
-    @department_number = params[:department]
+    @department_number = params[:department_number]
     return if @department_number.blank?
 
-    @applicants = @applicants.joins(organisations: :department)
-                             .where(organisations: { departments: { number: @department_number } })
-    @agents = @agents.joins(organisations: :department)
-                     .where(organisations: { departments: { number: @department_number } })
-    @invitations = @invitations.joins(organisation: :department)
-                               .where(organisation: { departments: { number: @department_number } })
-    @rdvs = @rdvs.joins(organisation: :department)
-                 .where(organisations: { departments: { number: @department_number } })
-    @organisations = @organisations.joins(:department)
-                                   .where(departments: { number: @department_number })
+    @applicants = Department.find_by(number: @department_number).applicants
+    @agents = Department.find_by(number: @department_number).agents
+    @invitations = Department.find_by(number: @department_number).invitations
+    @rdvs = Department.find_by(number: @department_number).rdvs
+    @organisations = Department.find_by(number: @department_number).organisations
   end
 end
