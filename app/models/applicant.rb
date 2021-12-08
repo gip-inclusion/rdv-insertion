@@ -15,7 +15,7 @@ class Applicant < ApplicationRecord
   include HasPhoneNumberConcern
   include InvitableConcern
 
-  before_save :generate_uid
+  before_create :generate_uid
 
   has_and_belongs_to_many :organisations
   has_many :invitations, dependent: :destroy
