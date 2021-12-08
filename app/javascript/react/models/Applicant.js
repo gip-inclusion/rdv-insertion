@@ -12,7 +12,7 @@ const TITLES = {
 };
 
 export default class Applicant {
-  constructor(attributes, departmentNumber, organisationConfiguration) {
+  constructor(attributes, departmentNumber, organisation, organisationConfiguration) {
     const formattedAttributes = {};
     Object.keys(attributes).forEach((key) => {
       formattedAttributes[key] = attributes[key]?.toString()?.trim();
@@ -37,6 +37,8 @@ export default class Applicant {
     this.role = ROLES[formattedRole] || formattedRole;
     this.shortRole = this.role === "demandeur" ? "DEM" : "CJT";
     this.departmentNumber = departmentNumber;
+    // when creating/inviting we always consider an applicant in the scope of only one organisation
+    this.organisation = organisation;
     this.organisationConfiguration = organisationConfiguration;
   }
 
@@ -88,15 +90,12 @@ export default class Applicant {
   }
 
   updateWith(upToDateApplicant) {
-    // we update the attributes if they are different in the app than in the file
-    this.firstName = upToDateApplicant.first_name;
-    this.lastName = upToDateApplicant.last_name;
-    this.email = upToDateApplicant.email;
-    this.phoneNumber = formatPhoneNumber(upToDateApplicant.phone_number);
-    this.fullAddress = upToDateApplicant.address;
     this.createdAt = upToDateApplicant.created_at;
     this.invitedAt = upToDateApplicant.invited_at;
     this.id = upToDateApplicant.id;
+    this.organisation ||= upToDateApplicant.organisations.find(
+      (o) => o.department_number === this.departmentNumber
+    );
     this.lastSmsInvitationSentAt = retrieveLastInvitationDate(upToDateApplicant.invitations, "sms");
     this.lastEmailInvitationSentAt = retrieveLastInvitationDate(
       upToDateApplicant.invitations,

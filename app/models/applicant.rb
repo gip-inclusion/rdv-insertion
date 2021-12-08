@@ -80,7 +80,8 @@ class Applicant < ApplicationRecord
   def as_json(_opts = {})
     super.merge(
       created_at: created_at,
-      invitations: invitations
+      invitations: invitations,
+      organisations: organisations
     )
   end
 end

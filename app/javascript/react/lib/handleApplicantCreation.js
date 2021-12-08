@@ -2,7 +2,7 @@ import Swal from "sweetalert2";
 import confirmationModal from "../../lib/confirmationModal";
 import createApplicant from "../actions/createApplicant";
 
-const displayDuplicationWarning = async (applicant, organisation) => {
+const displayDuplicationWarning = async (applicant, organisationId) => {
   let warningMessage = "";
 
   if (!applicant.affiliationNumber) {
@@ -13,7 +13,7 @@ const displayDuplicationWarning = async (applicant, organisation) => {
   }
 
   const searchApplicantLink = new URL(
-    `${window.location.origin}/organisations/${organisation.id}/applicants`
+    `${window.location.origin}/organisations/${organisationId}/applicants`
   );
   searchApplicantLink.searchParams.set("search_query", applicant.lastName);
 
@@ -27,12 +27,12 @@ const displayDuplicationWarning = async (applicant, organisation) => {
   );
 };
 
-const handleApplicantCreation = async (applicant, organisation) => {
+const handleApplicantCreation = async (applicant, organisationId) => {
   if (!applicant.affiliationNumber || !applicant.role) {
-    const confirmation = await displayDuplicationWarning(applicant, organisation);
+    const confirmation = await displayDuplicationWarning(applicant, organisationId);
     if (!confirmation.isConfirmed) return;
   }
-  const result = await createApplicant(applicant, organisation.id);
+  const result = await createApplicant(applicant, organisationId);
   if (result.success) {
     applicant.updateWith(result.applicant);
   } else {

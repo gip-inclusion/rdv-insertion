@@ -3,7 +3,7 @@ class ApplicantsController < ApplicationController
     :uid, :role, :first_name, :last_name, :birth_date, :email, :phone_number,
     :birth_name, :address, :affiliation_number, :custom_id, :title, :status
   ].freeze
-  before_action :set_organisation, only: [:index, :create, :show, :search, :update, :edit, :new]
+  before_action :set_organisation, only: [:index, :create, :show, :update, :edit, :new]
   before_action :retrieve_applicants, only: [:search]
   before_action :set_applicant, only: [:show, :update, :edit]
 
@@ -24,8 +24,8 @@ class ApplicantsController < ApplicationController
   end
 
   def index
-    authorize @organisation, :list_applicants?
-    @applicants = @organisation.applicants.includes(:invitations, :rdvs)
+    @applicants = policy_scope(Applicant).includes(:invitations, :rdvs)
+                                         .where(organisations: @organisation)
     @statuses_count = @applicants.group(:status).count
     filter_applicants
     @applicants = @applicants.order(created_at: :desc)
@@ -36,7 +36,6 @@ class ApplicantsController < ApplicationController
   end
 
   def search
-    authorize @organisation, :list_applicants?
     render json: {
       success: true,
       applicants: @applicants
@@ -91,9 +90,9 @@ class ApplicantsController < ApplicationController
   end
 
   def retrieve_applicants
-    @applicants = @organisation.applicants.includes(:invitations, :rdvs)
-                               .where(uid: params.require(:applicants).require(:uids))
-                               .to_a
+    @applicants = policy_scope(Applicant).includes(:organisations, :invitations, :rdvs)
+                                         .where(uid: params.require(:applicants).require(:uids))
+                                         .to_a
   end
 
   def set_organisation
@@ -101,6 +100,6 @@ class ApplicantsController < ApplicationController
   end
 
   def set_applicant
-    @applicant = Applicant.find(params[:id])
+    @applicant = Applicant.includes(:organisations).find(params[:id])
   end
 end

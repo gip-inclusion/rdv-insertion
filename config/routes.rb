@@ -13,6 +13,7 @@ end
 Rails.application.routes.draw do
   root "static_pages#welcome"
   resources :organisations, only: [:index] do
+    get :geolocated, on: :collection
     resources :applicants, only: [:index, :create, :show, :update, :edit, :new] do
       collection do
         resources :uploads, only: [:new]
@@ -24,6 +25,16 @@ Rails.application.routes.draw do
 
   resources :invitations, only: [] do
     get :redirect, on: :collection
+  end
+
+  resources :applicants, only: [] do
+    post :search, on: :collection
+  end
+
+  resources :departments, only: [] do
+    resources :applicants, only: [] do
+      collection { resources :uploads, only: [:new] }
+    end
   end
 
   resources :rdv_solidarites_webhooks, only: [:create]

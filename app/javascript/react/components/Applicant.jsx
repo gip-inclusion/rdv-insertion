@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 
-import handleApplicantCreation from "../lib/handleApplicantCreation"
-import handleApplicantInvitation from "../lib/handleApplicantInvitation"
+import handleApplicantCreation from "../lib/handleApplicantCreation";
+import handleApplicantInvitation from "../lib/handleApplicantInvitation";
+import assignOrganisation from "../lib/assignOrganisation";
 
-export default function Applicant({ applicant, dispatchApplicants, organisation }) {
+export default function Applicant({ applicant, dispatchApplicants }) {
   const [isLoading, setIsLoading] = useState({
     accountCreation: false,
     smsInvitation: false,
@@ -13,12 +14,23 @@ export default function Applicant({ applicant, dispatchApplicants, organisation 
   const handleClick = async (action) => {
     setIsLoading({ ...isLoading, [action]: true });
     if (action === "accountCreation") {
-      await handleApplicantCreation(applicant, organisation);
+      if (!applicant.organisation?.id) {
+        await assignOrganisation(applicant);
+      }
+      await handleApplicantCreation(applicant, applicant.organisation.id);
     } else if (action === "smsInvitation") {
-      const invitation = await handleApplicantInvitation(organisation.id, applicant.id, "sms");
+      const invitation = await handleApplicantInvitation(
+        applicant.organisation.id,
+        applicant.id,
+        "sms"
+      );
       applicant.lastSmsInvitationSentAt = invitation.sent_at;
     } else if (action === "emailInvitation") {
-      const invitation = await handleApplicantInvitation(organisation.id, applicant.id, "email");
+      const invitation = await handleApplicantInvitation(
+        applicant.organisation.id,
+        applicant.id,
+        "email"
+      );
       applicant.lastEmailInvitationSentAt = invitation.sent_at;
     }
 

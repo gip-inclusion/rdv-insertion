@@ -6,7 +6,11 @@ import Swal from "sweetalert2";
 import FileHandler from "../components/FileHandler";
 import ApplicantList from "../components/ApplicantList";
 
-import { parameterizeObjectKeys, parameterizeObjectValues, parameterizeArray } from "../../lib/parameterize";
+import {
+  parameterizeObjectKeys,
+  parameterizeObjectValues,
+  parameterizeArray,
+} from "../../lib/parameterize";
 import getKeyByValue from "../../lib/getKeyByValue";
 import searchApplicants from "../actions/searchApplicants";
 import { initReducer, reducerFactory } from "../../lib/reducers";
@@ -19,7 +23,10 @@ const reducer = reducerFactory("Expérimentation RSA");
 export default function ApplicantsUpload({ organisation, configuration, department }) {
   const SHEET_NAME = configuration.sheet_name;
   const columnNames = configuration.column_names;
-  const parameterizedColumnNames = parameterizeObjectValues({ ...columnNames.required, ...columnNames.optional });
+  const parameterizedColumnNames = parameterizeObjectValues({
+    ...columnNames.required,
+    ...columnNames.optional,
+  });
 
   const [fileSize, setFileSize] = useState(0);
   const [applicants, dispatchApplicants] = useReducer(reducer, [], initReducer);
@@ -29,8 +36,9 @@ export default function ApplicantsUpload({ organisation, configuration, departme
     const requiredColumns = parameterizeObjectValues(columnNames.required);
 
     const expectedColumnNames = Object.values(requiredColumns);
-    const parameterizedMissingColumns =
-      expectedColumnNames.filter(colName => !uploadedColumnNames.includes(colName));
+    const parameterizedMissingColumns = expectedColumnNames.filter(
+      (colName) => !uploadedColumnNames.includes(colName)
+    );
 
     if (parameterizedMissingColumns.length > 0) {
       // Récupère les noms "humains" des colonnes manquantes
@@ -45,11 +53,11 @@ export default function ApplicantsUpload({ organisation, configuration, departme
         html: `Veuillez vérifier que les colonnes suivantes sont présentes et correctement nommées&nbsp;:
         <br/>
         <strong>${missingColumnNames.join("<br />")}</strong>`,
-        icon: "error"
+        icon: "error",
       });
     }
     return missingColumnNames;
-  }
+  };
 
   const retrieveApplicantsFromList = async (file) => {
     const applicantsFromList = [];
@@ -59,10 +67,10 @@ export default function ApplicantsUpload({ organisation, configuration, departme
       reader.onload = function (event) {
         const workbook = XLSX.read(event.target.result, { type: "binary" });
         const sheet = workbook.Sheets[SHEET_NAME] || workbook.Sheets[workbook.SheetNames[0]];
-        const header = []
-        const columnCount = XLSX.utils.decode_range(sheet["!ref"]).e.c + 1
+        const header = [];
+        const columnCount = XLSX.utils.decode_range(sheet["!ref"]).e.c + 1;
         for (let i = 0; i < columnCount; i += 1) {
-          header[i] = sheet[`${XLSX.utils.encode_col(i)}1`].v
+          header[i] = sheet[`${XLSX.utils.encode_col(i)}1`].v;
         }
         const missingColumnNames = checkColumnNames(parameterizeArray(header));
         let rows = XLSX.utils.sheet_to_row_object_array(sheet);
@@ -77,29 +85,32 @@ export default function ApplicantsUpload({ organisation, configuration, departme
                 role: row[parameterizedColumnNames.role],
                 title: row[parameterizedColumnNames.title],
                 address: parameterizedColumnNames.address && row[parameterizedColumnNames.address],
-                fullAddress: parameterizedColumnNames.full_address
-                  && row[parameterizedColumnNames.full_address],
+                fullAddress:
+                  parameterizedColumnNames.full_address &&
+                  row[parameterizedColumnNames.full_address],
                 email: parameterizedColumnNames.email && row[parameterizedColumnNames.email],
                 birthDate:
                   parameterizedColumnNames.birth_date &&
                   row[parameterizedColumnNames.birth_date] &&
                   excelDateToString(row[parameterizedColumnNames.birth_date]),
                 city: parameterizedColumnNames.city && row[parameterizedColumnNames.city],
-                postalCode: parameterizedColumnNames.postal_code
-                  && row[parameterizedColumnNames.postal_code],
-                phoneNumber: parameterizedColumnNames.phone_number
-                  && row[parameterizedColumnNames.phone_number],
-                birthName: parameterizedColumnNames.birth_name
-                  && row[parameterizedColumnNames.birth_name],
-                customId: parameterizedColumnNames.custom_id
-                  && row[parameterizedColumnNames.custom_id],
+                postalCode:
+                  parameterizedColumnNames.postal_code && row[parameterizedColumnNames.postal_code],
+                phoneNumber:
+                  parameterizedColumnNames.phone_number &&
+                  row[parameterizedColumnNames.phone_number],
+                birthName:
+                  parameterizedColumnNames.birth_name && row[parameterizedColumnNames.birth_name],
+                customId:
+                  parameterizedColumnNames.custom_id && row[parameterizedColumnNames.custom_id],
               },
               department.number,
+              organisation,
               configuration
             );
             applicantsFromList.push(applicant);
           });
-        };
+        }
         resolve();
       };
       reader.readAsBinaryString(file);
@@ -109,7 +120,7 @@ export default function ApplicantsUpload({ organisation, configuration, departme
   };
 
   const retrieveApplicantsFromApp = async (uids) => {
-    const result = await searchApplicants(organisation.id, uids);
+    const result = await searchApplicants(uids);
     if (result.success) {
       return result.applicants;
     }
@@ -139,7 +150,11 @@ export default function ApplicantsUpload({ organisation, configuration, departme
   };
 
   const redirectToApplicantList = () => {
-    window.location.href = `/organisations/${organisation.id}/applicants`;
+    if (organisation) {
+      window.location.href = `/organisations/${organisation.id}/applicants`;
+    } else {
+      window.location.href = "/organisations/";
+    }
   };
 
   const handleFile = async (file) => {
@@ -209,27 +224,19 @@ export default function ApplicantsUpload({ organisation, configuration, departme
                     {(configuration.invitation_format === "sms" ||
                       configuration.invitation_format === "sms_and_email") && (
                       <>
-                        <th scope="col-3">
-                          Invitation SMS
-                        </th>
+                        <th scope="col-3">Invitation SMS</th>
                       </>
                     )}
                     {(configuration.invitation_format === "email" ||
                       configuration.invitation_format === "sms_and_email") && (
                       <>
-                        <th scope="col-3">
-                          Invitation mail
-                        </th>
+                        <th scope="col-3">Invitation mail</th>
                       </>
                     )}
                   </tr>
                 </thead>
                 <tbody>
-                  <ApplicantList
-                    applicants={applicants}
-                    dispatchApplicants={dispatchApplicants}
-                    organisation={organisation}
-                  />
+                  <ApplicantList applicants={applicants} dispatchApplicants={dispatchApplicants} />
                 </tbody>
               </table>
             </div>

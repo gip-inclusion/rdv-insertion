@@ -10,7 +10,9 @@ module RdvSolidaritesApi
       JSON.parse(rdv_solidarites_response.body)
     end
 
-    def fail_with_response_errors
+    def request!
+      return if rdv_solidarites_response.success?
+
       result.errors << "Erreur RDV-Solidarités: #{rdv_solidarites_response_body['error_messages']&.join(',')}"
       fail!
     end

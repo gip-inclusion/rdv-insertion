@@ -14,7 +14,7 @@ class ChangeDepartmentTable < ActiveRecord::Migration[6.1]
     drop_table :agents_departments
   end
 
-  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  # rubocop:disable Metrics/AbcSize
   def down
     create_join_table :departments, :agents do |t|
       t.index [:department_id, :agent_id], unique: true
@@ -40,5 +40,5 @@ class ChangeDepartmentTable < ActiveRecord::Migration[6.1]
 
     remove_reference :organisations, :department, null: false, foreign_key: true
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+  # rubocop:enable Metrics/AbcSize
 end
