@@ -145,7 +145,7 @@ describe OrganisationsController, type: :controller do
         expect(response).to be_successful
         result = JSON.parse(response.body)
         expect(result["success"]).to eq(false)
-        expect(result["errors"]).to eq(["Impossible de géolocaliser le bénéficiaire à partir de l'addresse donnée"])
+        expect(result["errors"]).to eq(["Impossible de géolocaliser le bénéficiaire à partir de l'adresse donnée"])
       end
 
       it "still returns the scoped organisations" do

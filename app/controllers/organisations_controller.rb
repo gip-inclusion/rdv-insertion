@@ -40,7 +40,7 @@ class OrganisationsController < ApplicationController
     render json: {
       success: false,
       organisations: @organisations,
-      errors: ["Impossible de géolocaliser le bénéficiaire à partir de l'addresse donnée"]
+      errors: ["Impossible de géolocaliser le bénéficiaire à partir de l'adresse donnée"]
     }
   end
 

@@ -16,6 +16,10 @@ export default function Applicant({ applicant, dispatchApplicants }) {
     if (action === "accountCreation") {
       if (!applicant.organisation?.id) {
         await assignOrganisation(applicant);
+        if (!applicant.organisation?.id) {
+          setIsLoading({ ...isLoading, [action]: false });
+          return;
+        }
       }
       await handleApplicantCreation(applicant, applicant.organisation.id);
     } else if (action === "smsInvitation") {
