@@ -22,7 +22,8 @@ const chooseOrganisationModal = async (organisations, address, errors = []) => {
     confirmButtonText: "Sélectionner",
     inputOptions: organisationsObject,
   });
-  if (!result.value) return;
+  if (!result.value) return null;
+
   return organisations.find((o) => o.id.toString() === result.value.toString());
 };
 
