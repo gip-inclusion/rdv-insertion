@@ -1,20 +1,13 @@
 <header>
   <nav class="navbar px-3 navbar-expand-lg">
     <div class="d-flex justify-content-start">
-      <%= image_pack_tag "logos/republique-francaise-logo.svg", height: 50, alt: "République francaise", class: "d-none d-sm-inline navbar-france-logo" %>
       <%= link_to root_path do %>
+        <%= image_pack_tag "logos/republique-francaise-logo.svg", height: 50, alt: "République francaise", class: "d-none d-sm-inline navbar-france-logo" %>
         <%= image_pack_tag "logos/rdv-insertion.png", class: "rdvi-logo", alt: "Logo rdv insertion" %>
       <% end %>
     </div>
     <div class="nav justify-content-around">
       <% if logged_in? %>
-        <div class="text-center col">
-          <%= link_to "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/", target: :blank, class: "d-none d-sm-inline" do %>
-            <button class="btn btn-default btn-logout w-100 text-nowrap">
-              <span class="d-inline">Guide d'utilisation</span>
-            </button>
-          <% end %>
-        </div>
         <div class="text-center mx-3 col">
           <%= link_to sign_out_path, method: :delete do %>
             <button class="btn btn-default btn-logout w-100">

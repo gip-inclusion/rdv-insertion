@@ -184,7 +184,9 @@ export default function ApplicantsUpload({ organisation, configuration, departme
             pendingMessage="Récupération des informations, merci de patienter"
           />
         </div>
-        <div className="col-4 text-center" />
+        <div className="col-4 d-flex align-items-center justify-content-end">
+          <a href="https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/" className="btn btn-blue-out" target="_blank" rel="noreferrer">Guide d&apos;utilisation</a>
+        </div>
       </div>
 
       {applicants.length > 0 && (

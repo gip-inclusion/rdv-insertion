@@ -26,7 +26,7 @@
       <% end %>
     </div>
     <div class="col-4 d-flex flex-column justify-content-center align-items-end dropdown">
-      <a class="btn btn-blue dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+      <a class="btn btn-blue dropdown-toggle mb-2" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
         Créer allocataire(s)
       </a>
 
@@ -42,6 +42,8 @@
           <% end %>
         </li>
       </ul>
+
+      <%= link_to "Guide d'utilisation", "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/", class: "btn btn-blue-out mt-2", target: :blank %>
     </div>
   </div>
   <%= render "applicants_list" %>
