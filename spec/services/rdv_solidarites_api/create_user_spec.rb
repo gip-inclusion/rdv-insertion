@@ -6,7 +6,6 @@ describe RdvSolidaritesApi::CreateUser, type: :service do
   let(:user_attributes) do
     { first_name: "john", last_name: "doe", address: "16 rue de la tour", email: "johndoe@example.com" }
   end
-
   let(:rdv_solidarites_session) do
     { client: "client", uid: "johndoe@example.com", access_token: "token" }
   end
@@ -17,7 +16,6 @@ describe RdvSolidaritesApi::CreateUser, type: :service do
     let(:response_body) do
       { user: user_attributes.merge(id: 1) }.to_json
     end
-
     let(:parsed_response) { JSON.parse(response_body) }
 
     before do

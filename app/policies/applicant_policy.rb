@@ -1,21 +1,29 @@
 class ApplicantPolicy < ApplicationPolicy
-  def search?
-    pundit_user.organisation_ids.include?(record.organisation_id)
+  def index?
+    show?
   end
 
-  def index?
-    search?
+  def new?
+    show?
   end
 
   def invite?
-    search?
+    show?
+  end
+
+  def create?
+    show?
   end
 
   def show?
-    (pundit_user.organisation_ids & record.organisations.pluck(:id)).any?
+    (pundit_user.organisation_ids & record.organisation_ids).any?
   end
 
   def update?
+    show?
+  end
+
+  def search?
     show?
   end
 

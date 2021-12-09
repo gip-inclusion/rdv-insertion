@@ -23,7 +23,7 @@
   padding: 20px;
 }
 
-.edit-applicant-form {
+.applicant-form {
   input, select {
     background-color: $white;
     color: $dark-blue;
@@ -46,7 +46,7 @@
 }
 
 .field_with_errors {
-  input {
+  input, select {
     border: 3px solid $orange;
   }
 }

@@ -78,7 +78,11 @@ module RdvSolidaritesWebhooks
       if event == "destroyed"
         DeleteRdvJob.perform_async(rdv_solidarites_rdv.id)
       else
-        UpsertRecordJob.perform_async("Rdv", @data, { applicant_ids: applicant_ids, organisation_id: organisation.id })
+        UpsertRecordJob.perform_async(
+          "Rdv",
+          rdv_solidarites_rdv.to_rdv_insertion_attributes,
+          { applicant_ids: applicant_ids, organisation_id: organisation.id }
+        )
       end
     end
 

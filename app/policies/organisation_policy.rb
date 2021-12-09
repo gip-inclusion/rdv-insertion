@@ -16,4 +16,8 @@ class OrganisationPolicy < ApplicationPolicy
   def create_applicant?
     list_applicants?
   end
+
+  def new_applicant?
+    list_applicants?
+  end
 end

@@ -3,18 +3,23 @@ class ApplicantsController < ApplicationController
     :uid, :role, :first_name, :last_name, :birth_date, :email, :phone_number,
     :birth_name, :address, :affiliation_number, :custom_id, :title, :status
   ].freeze
-  before_action :set_organisation, only: [:index, :create, :show, :search, :update, :edit]
+  before_action :set_organisation, only: [:index, :create, :show, :search, :update, :edit, :new]
   before_action :retrieve_applicants, only: [:search]
   before_action :set_applicant, only: [:show, :update, :edit]
 
   include FilterableApplicantsConcern
 
+  def new
+    @applicant = Applicant.new organisations: [@organisation]
+    authorize @applicant
+  end
+
   def create
-    authorize @organisation, :create_applicant?
-    if create_applicant.success?
-      render json: { success: true, applicant: create_applicant.applicant }
-    else
-      render json: { success: false, errors: create_applicant.errors }
+    @applicant = Applicant.new(organisations: [@organisation], **applicant_params)
+    authorize @applicant
+    respond_to do |format|
+      format.html { upsert_applicant_and_redirect(:new) }
+      format.json { upsert_applicant_and_render }
     end
   end
 
@@ -38,16 +43,20 @@ class ApplicantsController < ApplicationController
     }
   end
 
-  def update
-    authorize @applicant
-    respond_to do |format|
-      format.html { update_applicant_and_redirect }
-      format.json { update_and_render_applicant }
-    end
-  end
-
   def edit
     authorize @applicant
+  end
+
+  def update
+    @applicant.assign_attributes(
+      organisations: (@applicant.organisations.to_a + [@organisation]).uniq,
+      **applicant_params
+    )
+    authorize @applicant
+    respond_to do |format|
+      format.html { upsert_applicant_and_redirect(:edit) }
+      format.json { upsert_applicant_and_render }
+    end
   end
 
   private
@@ -56,35 +65,27 @@ class ApplicantsController < ApplicationController
     params.require(:applicant).permit(*PERMITTED_PARAMS)
   end
 
-  def update_applicant_and_redirect
-    if update_applicant.success?
+  def upsert_applicant_and_redirect(page)
+    if upsert_applicant.success?
       redirect_to organisation_applicant_path(@organisation, @applicant)
     else
-      flash.now[:error] = update_applicant.errors&.join(',')
-      render :edit
+      flash.now[:error] = upsert_applicant.errors&.join(',')
+      render page
     end
   end
 
-  def update_and_render_applicant
-    if @applicant.update(applicant_params)
+  def upsert_applicant_and_render
+    if upsert_applicant.success?
       render json: { success: true, applicant: @applicant }
     else
-      render json: { success: false, errors: @applicant.errors.full_messages }
+      render json: { success: false, errors: upsert_applicant.errors }
     end
   end
 
-  def create_applicant
-    @create_applicant ||= CreateApplicant.call(
-      applicant_data: applicant_params.to_h.deep_symbolize_keys,
-      rdv_solidarites_session: rdv_solidarites_session,
-      organisation: @organisation
-    )
-  end
-
-  def update_applicant
-    @update_applicant ||= UpdateApplicant.call(
+  def upsert_applicant
+    @upsert_applicant ||= UpsertApplicant.call(
       applicant: @applicant,
-      applicant_data: applicant_params.to_h.deep_symbolize_keys,
+      organisation: @organisation,
       rdv_solidarites_session: rdv_solidarites_session
     )
   end
