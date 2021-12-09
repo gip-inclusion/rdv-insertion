@@ -30,6 +30,8 @@ describe UpsertApplicant, type: :service do
         .and_return(true)
       allow(RdvSolidaritesApi::CreateUser).to receive(:call)
         .and_return(OpenStruct.new(success?: true, rdv_solidarites_user: rdv_solidarites_user))
+      allow(RdvSolidaritesApi::UpdateUser).to receive(:call)
+        .and_return(OpenStruct.new(success?: true, rdv_solidarites_user: rdv_solidarites_user))
       allow(rdv_solidarites_user).to receive(:id).and_return(nil)
     end
 

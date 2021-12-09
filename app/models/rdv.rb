@@ -1,7 +1,8 @@
 class Rdv < ApplicationRecord
-  SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = (
-    RdvSolidarites::Rdv::RECORD_ATTRIBUTES - [:id]
-  ).freeze
+  SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [
+    :address, :cancelled_at, :context, :created_by, :duration_in_min, :starts_at, :status,
+    :uuid, :rdv_solidarites_motif_id, :rdv_solidarites_lieu_id
+  ].freeze
 
   PENDING_STATUSES = %w[unknown waiting].freeze
   CANCELLED_STATUSES = %w[excused revoked noshow].freeze

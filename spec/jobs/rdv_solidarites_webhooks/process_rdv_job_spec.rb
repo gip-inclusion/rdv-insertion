@@ -7,13 +7,17 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
   let!(:user_ids) { [user_id] }
   let!(:rdv_solidarites_rdv_id) { 22 }
   let!(:rdv_solidarites_organisation_id) { 52 }
-  let!(:lieu) { { name: "DINUM", lieu: "20 avenue de Ségur" } }
-  let!(:motif) { { location: "public_office" } }
+  let!(:rdv_solidarites_lieu_id) { 43 }
+  let!(:rdv_solidarites_motif_id) { 53 }
+  let!(:lieu) { { id: 43, name: "DINUM", lieu: "20 avenue de Ségur" } }
+  let!(:motif) { { id: 53, location: "public_office" } }
   let!(:starts_at) { "2021-09-08 12:00:00 UTC" }
   let!(:data) do
     {
       "id" => rdv_solidarites_rdv_id,
       "starts_at" => starts_at,
+      "address" => "20 avenue de segur",
+      "context" => "all good",
       "lieu" => lieu,
       "motif" => motif,
       "users" => [{ id: user_id }],
@@ -28,8 +32,6 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
     }.deep_symbolize_keys
   end
 
-  let!(:rdv_solidarites_rdv) { OpenStruct.new(id: rdv_solidarites_rdv_id, user_ids: user_ids) }
-
   let!(:applicant) { create(:applicant, organisations: [organisation], id: 3) }
   let!(:applicant2) { create(:applicant, organisations: [organisation], id: 4) }
 
@@ -38,9 +40,6 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
 
   describe "#perform" do
     before do
-      allow(RdvSolidarites::Rdv).to receive(:new)
-        .with(data)
-        .and_return(rdv_solidarites_rdv)
       allow(Organisation).to receive(:find_by)
         .with(rdv_solidarites_organisation_id: 52)
         .and_return(organisation)
@@ -102,9 +101,17 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
     end
 
     context "it udpates the rdv" do
+      let!(:rdv_attributes) do
+        data.merge(
+          rdv_solidarites_motif_id: rdv_solidarites_motif_id,
+          rdv_solidarites_lieu_id: rdv_solidarites_lieu_id
+        )
+      end
+
       it "enqueues an upsert job" do
         expect(UpsertRecordJob).to receive(:perform_async)
-          .with("Rdv", data, { applicant_ids: [applicant.id, applicant2.id], organisation_id: organisation.id })
+          .with("Rdv", rdv_attributes, { applicant_ids: [applicant.id, applicant2.id],
+                                         organisation_id: organisation.id })
         subject
       end
 
