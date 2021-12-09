@@ -43,7 +43,9 @@
         </li>
       </ul>
 
-      <%= link_to "Guide d'utilisation", "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/", class: "btn btn-blue-out mt-2", target: :blank %>
+      <%= link_to "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/", target: :blank do %>
+        <button class="btn btn-blue-out mt-2">Guide d'utilisation<i class="fas fa-external-link-alt icon-sm"></i></button>
+      <% end %>
     </div>
   </div>
   <%= render "applicants_list" %>
