@@ -58,7 +58,7 @@ module Invitations
     end
 
     def redirect_link
-      "#{ENV['RDV_SOLIDARITES_URL']}/prendre-rdv?#{link_params.to_query}"
+      "#{ENV['RDV_SOLIDARITES_URL']}/prendre_rdv?#{link_params.to_query}"
     end
 
     def link_params

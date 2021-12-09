@@ -138,7 +138,7 @@ describe Invitations::ComputeLink, type: :service do
 
         it "does not add the attributes to the link" do
           expect(subject.invitation_link).to eq(
-            "https://www.rdv-solidarites.fr/prendre-rdv?address=20+avenue+de+s%C3%A9gur+75007+Paris&" \
+            "https://www.rdv-solidarites.fr/prendre_rdv?address=20+avenue+de+s%C3%A9gur+75007+Paris&" \
             "departement=75&invitation_token=sometoken&motif_id=16&organisation_id=27&service_id=12"
           )
         end
@@ -149,7 +149,7 @@ describe Invitations::ComputeLink, type: :service do
       context "when only one motif is found" do
         it "adds the motif id to the url" do
           expect(subject.invitation_link).to eq(
-            "https://www.rdv-solidarites.fr/prendre-rdv?address=20+avenue+de+s%C3%A9gur+75007+Paris&" \
+            "https://www.rdv-solidarites.fr/prendre_rdv?address=20+avenue+de+s%C3%A9gur+75007+Paris&" \
             "city_code=75107&departement=75&invitation_token=sometoken&latitude=48.850699&" \
             "longitude=2.308628&motif_id=16&organisation_id=27&service_id=12&street_ban_id=75107_8909"
           )
@@ -178,7 +178,7 @@ describe Invitations::ComputeLink, type: :service do
 
         it "does not add a motif id in the url" do
           expect(subject.invitation_link).to eq(
-            "https://www.rdv-solidarites.fr/prendre-rdv?address=20+avenue+de+s%C3%A9gur+75007+Paris&" \
+            "https://www.rdv-solidarites.fr/prendre_rdv?address=20+avenue+de+s%C3%A9gur+75007+Paris&" \
             "city_code=75107&departement=75&invitation_token=sometoken&latitude=48.850699&" \
             "longitude=2.308628&organisation_id=27&service_id=12&street_ban_id=75107_8909"
           )
