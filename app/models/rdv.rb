@@ -20,7 +20,7 @@ class Rdv < ApplicationRecord
   enum status: { unknown: 0, waiting: 1, seen: 2, excused: 3, revoked: 4, noshow: 5 }
 
   scope :status, ->(status) { where(status: status) }
-  scope :closed, -> { where(status: %w[seen excused revoked noshow]) }
+  scope :resolved, -> { where(status: %w[seen excused revoked noshow]) }
 
   def pending?
     in_the_future? && status.in?(PENDING_STATUSES)

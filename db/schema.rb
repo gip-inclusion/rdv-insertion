@@ -45,7 +45,6 @@ ActiveRecord::Schema.define(version: 2021_12_02_111858) do
     t.date "birth_date"
     t.date "invitation_accepted_at"
     t.integer "status", default: 0
-    t.datetime "oriented_at"
     t.index ["rdv_solidarites_user_id"], name: "index_applicants_on_rdv_solidarites_user_id", unique: true
     t.index ["status"], name: "index_applicants_on_status"
     t.index ["uid"], name: "index_applicants_on_uid", unique: true

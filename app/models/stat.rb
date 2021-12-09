@@ -4,7 +4,7 @@ class Stat
   attr_accessor :applicants, :invitations, :agents, :organisations, :rdvs
 
   def relevant_organisations
-    organisations.find(Configuration.where(notify_applicant: false).collect(&:organisation_id))
+    organisations.joins(:configuration).where(configuration: { notify_applicant: false })
   end
 
   def relevant_applicants
@@ -21,25 +21,26 @@ class Stat
 
   def applicants_oriented_in_less_than_30_days
     relevant_applicants.select do |applicant|
-      applicant.orientation_delay_in_days < 30 && applicant.oriented?
+      applicant.rdv_seen? && applicant.orientation_delay_in_days < 30
     end
   end
 
   def applicants_orientable_in_time
     # Remove from calculation applicants that are not oriented yet and
     # were created less than 30 days ago
-    relevant_applicants - relevant_applicants
-                          .where("applicants.created_at > ?", 30.days.ago)
-                          .where.not(status: %w[resolved rdv_seen])
+    non_pertinent_applicants =
+      relevant_applicants.resolved + relevant_applicants.where("applicants.created_at > ?", 30.days.ago)
+                                                        .where.not(status: %w[rdv_seen])
+    relevant_applicants - non_pertinent_applicants
   end
 
   def average_orientation_delay_in_days
     cumulated_orientation_delays = 0
-    relevant_applicants.oriented.each do |applicant|
+    relevant_applicants.rdv_seen.each do |applicant|
       cumulated_orientation_delays += applicant.orientation_delay_in_days
     end
 
-    cumulated_orientation_delays / (relevant_applicants.oriented.count.nonzero? || 1).to_f
+    cumulated_orientation_delays / (relevant_applicants.rdv_seen.count.nonzero? || 1).to_f
   end
 
   def average_rdv_delay_in_days
@@ -52,7 +53,7 @@ class Stat
   end
 
   def percentage_of_no_show
-    (relevant_rdvs.noshow.count / (relevant_rdvs.closed.count.nonzero? || 1).to_f) * 100
+    (relevant_rdvs.noshow.count / (relevant_rdvs.resolved.count.nonzero? || 1).to_f) * 100
   end
 
   def sent_invitations

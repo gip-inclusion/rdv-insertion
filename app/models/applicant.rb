@@ -42,7 +42,6 @@ class Applicant < ApplicationRecord
   scope :invited_before_time_window, lambda {
     where.not(id: Invitation.sent_in_time_window.pluck(:applicant_id).uniq)
   }
-  scope :oriented, -> { where(status: %w[resolved rdv_seen]) }
 
   def generate_uid
     # Base64 encoded "department_number - affiliation_number - role"
@@ -55,10 +54,6 @@ class Applicant < ApplicationRecord
     return unless birth_date.present? && (birth_date > Time.zone.today || birth_date < 130.years.ago)
 
     errors.add(:birth_date, "n'est pas valide")
-  end
-
-  def oriented?
-    resolved? || rdv_seen?
   end
 
   def action_required?
@@ -74,13 +69,7 @@ class Applicant < ApplicationRecord
   end
 
   def orientation_date
-    if rdv_seen?
-      rdvs.seen.first.starts_at
-    elsif resolved?
-      oriented_at || updated_at
-    else
-      DateTime.now
-    end
+    rdvs.seen.first.starts_at
   end
 
   def orientation_delay_in_days

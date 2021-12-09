@@ -29,23 +29,23 @@
       <p>rendez-vous pris</p>
     </div>
     <div class="text-center col-10 col-md-5">
-      <p class="highlight-stat"><%= @stats.percentage_of_no_show.to_i %> %</p>
+      <p class="highlight-stat"><%= @stats.percentage_of_no_show.round %> %</p>
       <p>seulement de rendez-vous<br/>non honorés avec RDV-Insertion</p>
     </div>
   </div>
   <div class="row d-flex justify-content-center">
     <div class="text-center col-10 col-md-5">
-      <p class="highlight-stat"><%= @stats.percentage_of_applicants_oriented_in_time.to_i %> %</p>
+      <p class="highlight-stat"><%= @stats.percentage_of_applicants_oriented_in_time.round %> %</p>
       <p>de bénéficiaires <strong>orientés en - de 30 jours</strong></p>
     </div>
     <div class="text-center col-10 col-md-5">
-      <p class="highlight-stat"><%= @stats.average_orientation_delay_in_days.to_i %> jours</p>
+      <p class="highlight-stat"><%= @stats.average_orientation_delay_in_days.round %> jours</p>
       <p>délai d'orientation moyen<br/>d'un bénéficiaire avec RDV-Insertion</p>
     </div>
   </div>
   <div class="row d-flex justify-content-center">
     <div class="text-center col-10 col-md-5">
-      <p class="highlight-stat"><%= @stats.average_rdv_delay_in_days.to_i %> jours</p>
+      <p class="highlight-stat"><%= @stats.average_rdv_delay_in_days.round %> jours</p>
       <p>délai moyen entre la prise<br/>d'un rendez-vous et sa tenue</p>
     </div>
     <div class="text-center col-10 col-md-5 mb-4">

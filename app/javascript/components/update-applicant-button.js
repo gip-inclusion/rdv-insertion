@@ -5,8 +5,7 @@ const updateApplicantStatus = async (updateButton) => {
   const { organisationId, applicantId } = updateButton.dataset;
   const action = updateButton.innerText;
 
-  const today = new Date();
-  const attributes = (action === "Rouvrir le dossier") ? { status: "invitation_pending", oriented_at: today } : { status: "resolved", oriented_at: today };
+  const attributes = (action === "Rouvrir le dossier") ? { status: "invitation_pending" } : { status: "resolved" };
   const result = await updateApplicant(organisationId, applicantId, attributes);
 
   if (result.success) {
