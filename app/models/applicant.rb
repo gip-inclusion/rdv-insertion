@@ -69,10 +69,16 @@ class Applicant < ApplicationRecord
   end
 
   def orientation_date
-    rdvs.seen.first.starts_at
+    rdvs.seen.first&.starts_at
+  end
+
+  def oriented?
+    orentation_date.present?
   end
 
   def orientation_delay_in_days
+    return unless oriented?
+
     starting_date = created_at - 3.days
     orientation_date.to_datetime.mjd - starting_date.to_datetime.mjd
   end
