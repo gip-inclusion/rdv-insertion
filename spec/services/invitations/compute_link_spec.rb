@@ -2,16 +2,16 @@ describe Invitations::ComputeLink, type: :service do
   subject do
     described_class.call(
       organisation: organisation, rdv_solidarites_session: rdv_solidarites_session,
-      invitation_token: invitation_token
+      invitation_token: invitation_token, applicant: applicant
     )
   end
 
   let!(:department) do
     create(
       :department,
-      number: "26",
-      name: "Drôme",
-      region: "Auvergne-Rhône-Alpes"
+      number: "75",
+      name: "Paris",
+      region: "Ile-de-France"
     )
   end
 
@@ -22,6 +22,12 @@ describe Invitations::ComputeLink, type: :service do
       department: department,
       rsa_agents_service_id: "12"
     )
+  end
+
+  let(:address) { "20 avenue de ségur 75007 Paris" }
+
+  let!(:applicant) do
+    create(:applicant, address: address)
   end
 
   let!(:invitation_token) { "sometoken" }
@@ -48,6 +54,14 @@ describe Invitations::ComputeLink, type: :service do
           organisation: organisation
         )
         .and_return(OpenStruct.new(success?: true, motifs: motifs))
+      allow(RetrieveGeolocalisation).to receive(:call)
+        .with(address: address, department: department)
+        .and_return(
+          OpenStruct.new(
+            success?: true, longitude: 2.308628, latitude: 48.850699, city_code: "75107",
+            street_ban_id: "75107_8909"
+          )
+        )
       allow(ENV).to receive(:[])
         .with('RDV_SOLIDARITES_URL')
         .and_return('https://www.rdv-solidarites.fr')
@@ -100,15 +114,44 @@ describe Invitations::ComputeLink, type: :service do
       end
     end
 
+    context "retrieves geolocalisation" do
+      it "tries to retrieve the geolocalisation" do
+        expect(RetrieveGeolocalisation).to receive(:call)
+          .with(
+            address: address,
+            department: department
+          )
+        subject
+      end
+
+      context "when it fails" do
+        before do
+          allow(RetrieveGeolocalisation).to receive(:call)
+            .with(
+              address: address,
+              department: department
+            )
+            .and_return(OpenStruct.new(success?: false))
+        end
+
+        it("still succeeds") { is_a_success }
+
+        it "does not add the attributes to the link" do
+          expect(subject.invitation_link).to eq(
+            "https://www.rdv-solidarites.fr/prendre_rdv?address=20+avenue+de+s%C3%A9gur+75007+Paris&" \
+            "departement=75&invitation_token=sometoken&motif_id=16&organisation_id=27&service_id=12"
+          )
+        end
+      end
+    end
+
     context "computes the link" do
       context "when only one motif is found" do
-        it "redirects to the lieux page with the motif params" do
+        it "adds the motif id to the url" do
           expect(subject.invitation_link).to eq(
-            "https://www.rdv-solidarites.fr/lieux?" \
-            "search%5Bdepartement%5D=26&" \
-            "search%5Bmotif_name_with_location_type%5D=RSA+-+Orientation+%3A+rdv+sur+site-public_office"\
-            "&search%5Bservice%5D=12&search%5Bwhere%5D=Dr%C3%B4me%2C+Auvergne-Rh%C3%B4ne-Alpes" \
-            "&invitation_token=sometoken"
+            "https://www.rdv-solidarites.fr/prendre_rdv?address=20+avenue+de+s%C3%A9gur+75007+Paris&" \
+            "city_code=75107&departement=75&invitation_token=sometoken&latitude=48.850699&" \
+            "longitude=2.308628&motif_id=16&organisation_id=27&service_id=12&street_ban_id=75107_8909"
           )
         end
       end
@@ -133,10 +176,11 @@ describe Invitations::ComputeLink, type: :service do
           ]
         end
 
-        it "redirects to the motifs selection page" do
+        it "does not add a motif id in the url" do
           expect(subject.invitation_link).to eq(
-            "https://www.rdv-solidarites.fr/departement/26/12?where=Dr%C3%B4me%2C+Auvergne-Rh%C3%B4ne-Alpes" \
-            "&invitation_token=sometoken"
+            "https://www.rdv-solidarites.fr/prendre_rdv?address=20+avenue+de+s%C3%A9gur+75007+Paris&" \
+            "city_code=75107&departement=75&invitation_token=sometoken&latitude=48.850699&" \
+            "longitude=2.308628&organisation_id=27&service_id=12&street_ban_id=75107_8909"
           )
         end
       end
