@@ -68,7 +68,7 @@
       showSmsInvitation: show_sms_invitation?(@organisation),
       showEmailInvitation: show_email_invitation?(@organisation),
       rdvs: @applicant.rdvs,
-      rdvsCancelled: @applicant.rdvs.cancelled_by_user,
+      numberOfCancelledRdvs: @applicant.rdvs.cancelled_by_user.count,
       statusNotice: display_status_notice(@applicant),
       outOfTime: @applicant.invited_before_time_window?,
       actionRequired: @applicant.action_required?,
