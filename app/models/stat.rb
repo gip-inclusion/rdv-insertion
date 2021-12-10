@@ -4,15 +4,18 @@ class Stat
   attr_accessor :applicants, :invitations, :agents, :organisations, :rdvs
 
   def relevant_organisations
-    organisations.joins(:configuration).where(configuration: { notify_applicant: false })
+    organisations.joins(:configuration)
+                 .where(configuration: { notify_applicant: false })
   end
 
   def relevant_applicants
-    applicants.joins(:organisations).where(organisations: relevant_organisations)
+    applicants.joins(:organisations)
+              .where(organisations: relevant_organisations)
+              .where.not(status: %w[resolved deleted])
   end
 
   def relevant_rdvs
-    rdvs.where(organisations: relevant_organisations)
+    rdvs.joins(:applicants).where(applicants: relevant_applicants)
   end
 
   def percentage_of_applicants_oriented_in_time
@@ -28,9 +31,8 @@ class Stat
   def applicants_orientable_in_time
     # Remove from calculation applicants that are not oriented yet and
     # were created less than 30 days ago
-    non_pertinent_applicants =
-      relevant_applicants.resolved + relevant_applicants.where("applicants.created_at > ?", 30.days.ago)
-                                                        .where.not(status: %w[rdv_seen])
+    non_pertinent_applicants = relevant_applicants.where("applicants.created_at > ?", 30.days.ago)
+                                                  .where.not(status: "rdv_seen")
     relevant_applicants - non_pertinent_applicants
   end
 

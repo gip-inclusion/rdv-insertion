@@ -73,7 +73,7 @@ class Applicant < ApplicationRecord
   end
 
   def oriented?
-    orentation_date.present?
+    orientation_date.present?
   end
 
   def orientation_delay_in_days
