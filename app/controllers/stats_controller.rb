@@ -19,13 +19,14 @@ class StatsController < ApplicationController
   end
 
   def filter_stats_by_department
-    @department_number = params[:department_number]
-    return if @department_number.blank?
+    return if params[:department_number].blank?
 
-    @applicants = Department.find_by(number: @department_number).applicants
-    @agents = Department.find_by(number: @department_number).agents
-    @invitations = Department.find_by(number: @department_number).invitations
-    @rdvs = Department.find_by(number: @department_number).rdvs
-    @organisations = Department.find_by(number: @department_number).organisations
+    @department = Department.find_by(number: params[:department_number])
+    @applicants = @department.applicants
+    @agents = @department.agents
+    @invitations = @department.invitations
+    @rdvs = @department.rdvs
+    @organisations = @department.organisations
+    @display_all_stats = !@organisations.all?(&:notify_applicant?)
   end
 end
