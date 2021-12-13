@@ -6,9 +6,14 @@
   height: 100px;
 }
 
-@media (max-width: 370px) {
+.rdvi-logo {
+  padding-left: 20px;
+}
+
+@media (max-width: 400px) {
   .rdvi-logo{
     width: 150px;
+    padding-left: 0px;
   }
 }
 

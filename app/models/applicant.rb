@@ -65,6 +65,25 @@ class Applicant < ApplicationRecord
     status.in?(STATUSES_WITH_ATTENTION_NEEDED)
   end
 
+  def invited_before_time_window?
+    last_invitation_sent_at && last_invitation_sent_at < Organisation::TIME_TO_ACCEPT_INVITATION.ago
+  end
+
+  def orientation_date
+    rdvs.find(&:seen?)&.starts_at
+  end
+
+  def oriented?
+    orientation_date.present?
+  end
+
+  def orientation_delay_in_days
+    return unless oriented?
+
+    starting_date = created_at - 3.days
+    orientation_date.to_datetime.mjd - starting_date.to_datetime.mjd
+  end
+
   def full_name
     "#{title.capitalize} #{first_name.capitalize} #{last_name.upcase}"
   end

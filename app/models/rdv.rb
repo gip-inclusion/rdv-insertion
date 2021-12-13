@@ -20,6 +20,8 @@ class Rdv < ApplicationRecord
   enum status: { unknown: 0, waiting: 1, seen: 2, excused: 3, revoked: 4, noshow: 5 }
 
   scope :cancelled_by_user, -> { where(status: CANCELLED_BY_USER_STATUSES) }
+  scope :status, ->(status) { where(status: status) }
+  scope :resolved, -> { where(status: %w[seen excused revoked noshow]) }
 
   def pending?
     in_the_future? && status.in?(PENDING_STATUSES)
@@ -31,6 +33,10 @@ class Rdv < ApplicationRecord
 
   def cancelled?
     status.in?(CANCELLED_STATUSES)
+  end
+
+  def delay_in_days
+    starts_at.to_datetime.mjd - created_at.to_datetime.mjd
   end
 
   private
