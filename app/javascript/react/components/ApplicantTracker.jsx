@@ -182,7 +182,9 @@ export default function ApplicantTracker({
           <h4 className={numbersOfColumnsForRdvBlock()}>RDV pris le</h4>
           <h4 className={numbersOfColumnsForRdvBlock()}>Date du RDV</h4>
           {numberOfCancelledRdvs > 0 &&
-            <h4 className="col-3">RDV annulé{numberOfCancelledRdvs > 1 && "s"}</h4>
+            <h4 className="col-3">RDV reportés <small>
+              <i className="fas fa-question-circle" id="js-rdv-cancelled-by-user-tooltip" />
+            </small></h4>
           }
           <h4 className={numbersOfColumnsForRdvBlock()}>Statut</h4>
         </div>

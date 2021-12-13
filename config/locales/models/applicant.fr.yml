@@ -16,7 +16,7 @@ fr:
           rdv_seen: RDV honoré
           resolved: Dossier clôturé
           deleted: Supprimé
-          multiple_rdvs_cancelled: Plusieurs annulations
+          multiple_rdvs_cancelled: Plusieurs RDV reportés par l'allocataire
         phone_number: Téléphone
         first_name: Prénom
         last_name: Nom
