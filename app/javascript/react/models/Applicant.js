@@ -96,6 +96,13 @@ export default class Applicant {
     this.organisation ||= upToDateApplicant.organisations.find(
       (o) => o.department_number === this.departmentNumber
     );
+    // we update the attributes if they are different in the app than in the file
+    this.firstName = upToDateApplicant.first_name;
+    this.lastName = upToDateApplicant.last_name;
+    this.email = upToDateApplicant.email;
+    this.phoneNumber = formatPhoneNumber(upToDateApplicant.phone_number);
+    this.fullAddress = upToDateApplicant.address;
+
     this.lastSmsInvitationSentAt = retrieveLastInvitationDate(upToDateApplicant.invitations, "sms");
     this.lastEmailInvitationSentAt = retrieveLastInvitationDate(
       upToDateApplicant.invitations,
