@@ -11,21 +11,24 @@ class StatsController < ApplicationController
   private
 
   def collect_datas
-    @applicants = Applicant.all
+    @organisations = Organisation.all
+    @applicants = Applicant.includes(:rdvs, :invitations).all
     @agents = Agent.all
     @invitations = Invitation.all
     @rdvs = Rdv.all
-    @organisations = Organisation.all
   end
 
   def filter_stats_by_department
-    @department_number = params[:department_number]
-    return if @department_number.blank?
+    return if params[:department_number].blank?
 
-    @applicants = Department.find_by(number: @department_number).applicants
-    @agents = Department.find_by(number: @department_number).agents
-    @invitations = Department.find_by(number: @department_number).invitations
-    @rdvs = Department.find_by(number: @department_number).rdvs
-    @organisations = Department.find_by(number: @department_number).organisations
+    @department = Department.includes(organisations: [:rdvs, :applicants, :invitations, :agents])
+                            .find_by!(number: params[:department_number])
+    @applicants = @department.applicants.includes(:rdvs, :invitations)
+    @agents = @department.agents
+    @invitations = @department.invitations
+    @rdvs = @department.rdvs
+    @organisations = @department.organisations
+    # We can
+    @display_all_stats = @organisations.none?(&:notify_applicant?)
   end
 end
