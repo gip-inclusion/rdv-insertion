@@ -72,7 +72,8 @@ module Invitations
       @compute_invitation_link ||= Invitations::ComputeLink.call(
         organisation: @organisation,
         rdv_solidarites_session: @rdv_solidarites_session,
-        invitation_token: retrieve_invitation_token.invitation_token
+        invitation_token: retrieve_invitation_token.invitation_token,
+        applicant: @applicant
       )
     end
 

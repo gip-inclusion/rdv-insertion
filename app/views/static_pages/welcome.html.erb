@@ -35,6 +35,29 @@
     <p class="col-10 text-left mt-4 mb-4">Proposé par data.insertion, une équipe de beta.gouv, ce service est porté par la Direction générale de la Cohésion sociale (DGCS), la Délégation interministérielle à la prévention et à la lutte contre la pauvreté (DILP) et la Délégation générale à l'Emploi et à la Formation professionnelle (DGEFP).</p>
   </div>
 
+  <div class="my-4">
+    <div class="row d-flex justify-content-center">
+      <div class="text-center col-10 col-md-5">
+        <p class="highlight-stat"><%= @stats.rdvs.count %></p>
+        <p>rendez-vous organisés<br/>via RDV-Insertion</p>
+      </div>
+      <div class="text-center col-10 col-md-5">
+        <p class="highlight-stat"><%= @stats.average_rdv_delay_in_days.round %> jours</p>
+        <p>délai moyen entre la prise<br/>d'un rendez-vous et sa tenue</p>
+      </div>
+    </div>
+    <div class="row d-flex justify-content-center">
+      <div class="text-center col-10 col-md-5">
+        <p class="highlight-stat"><%= @stats.percentage_of_no_show.round %> %</p>
+        <p>seulement de rendez-vous<br/>non honorés avec RDV-Insertion</p>
+      </div>
+      <div class="text-center col-10 col-md-5">
+        <p class="highlight-stat"><%= @stats.percentage_of_applicants_oriented_in_time.round %> %</p>
+        <p>de bénéficiaires du RSA <br/><strong>orientés en - de 30 jours</strong></p>
+      </div>
+    </div>
+  </div>
+
   <div class="row justify-content-center card-demo">
     <h2 class="col-10 text-center text-dark-blue bold mb-4">Ça vous intéresse&nbsp;?</h2>
     <p class="col-10 text-left">Vous souhaitez diminuer le délai d'orientation des bénéficiaires du RSA dans votre département et réduire le taux d'absentéisme du rendez-vous d'orientation ?</p>
