@@ -6,7 +6,8 @@ describe Notifications::RdvCancelled, type: :service do
     )
   end
 
-  let!(:phone_number) { "+33782605941" }
+  let!(:phone_number_formatted) { "+33782605941" }
+  let!(:phone_number) { "0782605941" }
   let!(:applicant) do
     create(
       :applicant,
@@ -50,7 +51,7 @@ describe Notifications::RdvCancelled, type: :service do
 
       it "sends the sms with the right content" do
         expect(SendTransactionalSms).to receive(:call)
-          .with(phone_number: phone_number, content: content)
+          .with(phone_number_formatted: phone_number_formatted, content: content)
         subject
       end
     end

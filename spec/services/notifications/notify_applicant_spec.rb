@@ -11,7 +11,8 @@ describe Notifications::NotifyApplicant, type: :service do
     )
   end
 
-  let!(:phone_number) { "+33782605941" }
+  let!(:phone_number) { "0782605941" }
+  let!(:phone_number_formatted) { "+33782605941" }
   let!(:rdv_solidarites_rdv) do
     OpenStruct.new(id: rdv_solidarites_rdv_id)
   end
@@ -53,7 +54,7 @@ describe Notifications::NotifyApplicant, type: :service do
 
     it "sends the sms" do
       expect(SendTransactionalSms).to receive(:call)
-        .with(phone_number: phone_number, content: "test")
+        .with(phone_number_formatted: phone_number_formatted, content: "test")
       subject
     end
 

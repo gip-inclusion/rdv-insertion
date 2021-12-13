@@ -5,7 +5,8 @@ describe Invitations::SendSms, type: :service do
     )
   end
 
-  let!(:phone_number) { "+33782605941" }
+  let!(:phone_number) { "0782605941" }
+  let!(:phone_number_formatted) { "+33782605941" }
   let!(:applicant) do
     create(
       :applicant,
@@ -55,7 +56,7 @@ describe Invitations::SendSms, type: :service do
 
     it "calls the send transactional service" do
       expect(SendTransactionalSms).to receive(:call)
-        .with(phone_number: phone_number, content: content)
+        .with(phone_number_formatted: phone_number_formatted, content: content)
       subject
     end
 
