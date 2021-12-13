@@ -5,7 +5,8 @@ RSpec.describe InvitationMailer, type: :mailer do
 
   describe "#first_invitation" do
     let!(:rdv_solidarites_user_id) { 14 }
-    let!(:organisation) { create(:organisation, phone_number: "0123456789") }
+    let!(:department) { create(:department, name: "Drôme") }
+    let!(:organisation) { create(:organisation, phone_number: "0123456789", department: department) }
     let!(:applicant) do
       create(:applicant, organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id)
     end

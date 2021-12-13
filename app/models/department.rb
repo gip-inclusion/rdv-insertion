@@ -10,4 +10,8 @@ class Department < ApplicationRecord
   def name_with_region
     "#{name}, #{region}"
   end
+
+  def name_with_pronoun
+    "#{pronoun} #{name}"
+  end
 end

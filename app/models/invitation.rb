@@ -1,6 +1,7 @@
 class Invitation < ApplicationRecord
   belongs_to :applicant
   belongs_to :organisation
+  delegate :department, to: :organisation
 
   enum format: { sms: 0, email: 1, link_only: 2 }, _prefix: :format
   after_commit :set_applicant_status
