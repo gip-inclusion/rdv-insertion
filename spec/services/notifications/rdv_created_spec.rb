@@ -62,7 +62,7 @@ describe Notifications::RdvCreated, type: :service do
 
       it "sends the sms with the right content" do
         expect(SendTransactionalSms).to receive(:call)
-          .with(phone_number: phone_number, content: content)
+          .with(phone_number: phone_number, sender_name: "Dept#{department.number}", content: content)
         subject
       end
     end
@@ -81,7 +81,7 @@ describe Notifications::RdvCreated, type: :service do
 
       it "sends the sms with the right content" do
         expect(SendTransactionalSms).to receive(:call)
-          .with(phone_number: phone_number, content: content)
+          .with(phone_number: phone_number, sender_name: "Dept#{department.number}", content: content)
         subject
       end
     end

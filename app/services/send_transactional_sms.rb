@@ -1,8 +1,9 @@
 class SendTransactionalSms < BaseService
   SENDER_NAME = "RdvRSA".freeze
 
-  def initialize(phone_number:, content:)
+  def initialize(phone_number:, sender_name:, content:)
     @phone_number = phone_number
+    @sender_name = sender_name
     @content = content
   end
 
@@ -29,7 +30,7 @@ class SendTransactionalSms < BaseService
 
   def transactional_sms
     SibApiV3Sdk::SendTransacSms.new(
-      sender: SENDER_NAME,
+      sender: @sender_name,
       recipient: @phone_number,
       content: formatted_content,
       type: "transactional"
