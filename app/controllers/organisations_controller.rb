@@ -5,20 +5,20 @@ class OrganisationsController < ApplicationController
   end
 
   def geolocated
-    @organisations = policy_scope(Organisation).where(department: department)
+    @department_organisations = policy_scope(Organisation).where(department: department)
     return render_impossible_to_geolocate if retrieve_geolocalisation.failure?
 
     if retrieve_organisations_attrituted_to_sector.success?
       render json: {
-        organisations: @organisations,
+        department_organisations: @department_organisations,
         success: true,
-        organisations_attributed_to_sector: organisations_attributed_to_sector
+        geolocated_organisations: organisations_attributed_to_sector
       }
     else
       render json: {
         errors: retrieve_organisations_attrituted_to_sector.errors,
         success: false,
-        organisations: @organisations
+        department_organisations: @department_organisations
       }
     end
   end
@@ -39,7 +39,7 @@ class OrganisationsController < ApplicationController
   def render_impossible_to_geolocate
     render json: {
       success: false,
-      organisations: @organisations,
+      department_organisations: @department_organisations,
       errors: ["Impossible de géolocaliser le bénéficiaire à partir de l'adresse donnée"]
     }
   end
@@ -61,7 +61,7 @@ class OrganisationsController < ApplicationController
   end
 
   def organisations_attributed_to_sector
-    @organisations.select do |org|
+    @department_organisations.select do |org|
       org.rdv_solidarites_organisation_id.in?(retrieved_rdv_solidarites_organisations.map(&:id))
     end
   end

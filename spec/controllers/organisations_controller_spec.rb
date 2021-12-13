@@ -81,10 +81,10 @@ describe OrganisationsController, type: :controller do
     it "returns the geolocated organisations along with all the organisations" do
       subject
       result = JSON.parse(response.body)
-      expect(result["organisations_attributed_to_sector"].count).to eq(1)
-      expect(result["organisations_attributed_to_sector"].pluck("id")).to contain_exactly(organisation2.id)
-      expect(result["organisations"].count).to eq(2)
-      expect(result["organisations"].pluck("id")).to contain_exactly(organisation.id, organisation2.id)
+      expect(result["geolocated_organisations"].count).to eq(1)
+      expect(result["geolocated_organisations"].pluck("id")).to contain_exactly(organisation2.id)
+      expect(result["department_organisations"].count).to eq(2)
+      expect(result["department_organisations"].pluck("id")).to contain_exactly(organisation.id, organisation2.id)
     end
 
     context "when attributed organisations are not in the agent scoped organisations" do
@@ -100,9 +100,9 @@ describe OrganisationsController, type: :controller do
       it "returns empty organisations attributed to sector" do
         subject
         result = JSON.parse(response.body)
-        expect(result["organisations_attributed_to_sector"].count).to eq(0)
-        expect(result["organisations"].count).to eq(1)
-        expect(result["organisations"].pluck("id")).to contain_exactly(organisation.id)
+        expect(result["geolocated_organisations"].count).to eq(0)
+        expect(result["department_organisations"].count).to eq(1)
+        expect(result["department_organisations"].pluck("id")).to contain_exactly(organisation.id)
       end
     end
 
@@ -123,14 +123,14 @@ describe OrganisationsController, type: :controller do
         expect(result["errors"]).to eq(["some error"])
       end
 
-      it "still returns the scoped organisations" do
+      it "still returns the department organisations" do
         subject
 
         expect(response).to be_successful
         result = JSON.parse(response.body)
         expect(result["success"]).to eq(false)
-        expect(result["organisations"].count).to eq(2)
-        expect(result["organisations"].pluck("id")).to contain_exactly(organisation.id, organisation2.id)
+        expect(result["department_organisations"].count).to eq(2)
+        expect(result["department_organisations"].pluck("id")).to contain_exactly(organisation.id, organisation2.id)
       end
     end
 
@@ -148,13 +148,13 @@ describe OrganisationsController, type: :controller do
         expect(result["errors"]).to eq(["Impossible de géolocaliser le bénéficiaire à partir de l'adresse donnée"])
       end
 
-      it "still returns the scoped organisations" do
+      it "still returns the department organisations" do
         subject
 
         expect(response).to be_successful
         result = JSON.parse(response.body)
-        expect(result["organisations"].count).to eq(2)
-        expect(result["organisations"].pluck("id")).to contain_exactly(organisation.id, organisation2.id)
+        expect(result["department_organisations"].count).to eq(2)
+        expect(result["department_organisations"].pluck("id")).to contain_exactly(organisation.id, organisation2.id)
       end
     end
   end

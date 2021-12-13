@@ -33,19 +33,19 @@ const assignOrganisation = async (applicant) => {
     applicant.fullAddress
   );
   if (result.success) {
-    if (result.organisations_attributed_to_sector.length === 1) {
-      [applicant.organisation] = result.organisations_attributed_to_sector;
+    if (result.geolocated_organisations.length === 1) {
+      [applicant.organisation] = result.geolocated_organisations;
     } else {
       applicant.organisation = await chooseOrganisationModal(
-        result.organisations_attributed_to_sector.length > 1
-          ? result.organisations_attributed_to_sector
-          : result.organisations,
+        result.geolocated_organisations.length > 1
+          ? result.geolocated_organisations
+          : result.department_organisations,
         applicant.fullAddress
       );
     }
   } else {
     applicant.organisation = await chooseOrganisationModal(
-      result.organisations,
+      result.department_organisations,
       applicant.fullAddress,
       result.errors
     );
