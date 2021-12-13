@@ -69,7 +69,7 @@ class Applicant < ApplicationRecord
   end
 
   def orientation_date
-    rdvs.seen.first&.starts_at
+    rdvs.find(&:seen?)&.starts_at
   end
 
   def oriented?
