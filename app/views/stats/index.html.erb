@@ -23,7 +23,7 @@
       <p>rendez-vous pris</p>
     </div>
   </div>
-  <% if @department && @display_all_stats %>
+  <% if @department.nil? || (@department && @display_all_stats) %>
     <div class="row d-flex justify-content-center">
       <div class="text-center col-10 col-md-5">
         <p class="highlight-stat"><%= @stats.sent_invitations.count %></p>
