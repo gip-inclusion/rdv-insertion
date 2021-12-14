@@ -27,6 +27,7 @@ export default function ApplicantsUpload({ organisation, configuration, departme
     ...columnNames.required,
     ...columnNames.optional,
   });
+  const isTerritoryLevel = !organisation;
 
   const [fileSize, setFileSize] = useState(0);
   const [applicants, dispatchApplicants] = useReducer(reducer, [], initReducer);
@@ -150,11 +151,9 @@ export default function ApplicantsUpload({ organisation, configuration, departme
   };
 
   const redirectToApplicantList = () => {
-    if (organisation) {
-      window.location.href = `/organisations/${organisation.id}/applicants`;
-    } else {
-      window.location.href = "/organisations/";
-    }
+    window.location.href = isTerritoryLevel
+      ? "/organisations/"
+      : `/organisations/${organisation.id}/applicants`;
   };
 
   const handleFile = async (file) => {
@@ -186,11 +185,13 @@ export default function ApplicantsUpload({ organisation, configuration, departme
             className="btn btn-secondary btn-blue-out"
             onClick={() => redirectToApplicantList()}
           >
-            Retour au suivi
+            {isTerritoryLevel ? "Retour aux organisations" : "Retour au suivi"}
           </button>
         </div>
         <div className="col-4 text-center d-flex flex-column align-items-center">
-          <h3 className="new-applicants-title">Ajout allocataires</h3>
+          <h3 className="new-applicants-title">
+            Ajout {isTerritoryLevel ? "au niveau du territoire" : "allocataires"}
+          </h3>
           <FileHandler
             handleFile={handleFile}
             fileSize={fileSize}
@@ -200,8 +201,14 @@ export default function ApplicantsUpload({ organisation, configuration, departme
           />
         </div>
         <div className="col-4 d-flex align-items-center justify-content-end">
-          <a target="blank" href="https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/">
-            <button type="button" className="btn btn-blue-out">Guide d&apos;utilisation<i className="fas fa-external-link-alt icon-sm" /></button>
+          <a
+            target="blank"
+            href="https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/"
+          >
+            <button type="button" className="btn btn-blue-out">
+              Guide d&apos;utilisation
+              <i className="fas fa-external-link-alt icon-sm" />
+            </button>
           </a>
         </div>
       </div>
