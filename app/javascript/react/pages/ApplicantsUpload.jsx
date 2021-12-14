@@ -93,6 +93,8 @@ export default function ApplicantsUpload({ organisation, configuration, departme
                   && row[parameterizedColumnNames.birth_name],
                 customId: parameterizedColumnNames.custom_id
                   && row[parameterizedColumnNames.custom_id],
+                allocationStartingDate: parameterizedColumnNames.allocation_starting_date
+                  && row[parameterizedColumnNames.allocation_starting_date],
               },
               department.number,
               configuration
@@ -207,6 +209,7 @@ export default function ApplicantsUpload({ organisation, configuration, departme
                     {parameterizedColumnNames.email && <th scope="col">Email</th>}
                     {parameterizedColumnNames.phone_number && <th scope="col">Téléphone</th>}
                     {parameterizedColumnNames.custom_id && <th scope="col">ID Editeur</th>}
+                    {parameterizedColumnNames.allocation_starting_date && <th scope="col">Date d&apos;entrée flux</th>}
                     <th scope="col" style={{ whiteSpace: "nowrap" }}>
                       Création compte
                     </th>

@@ -43,6 +43,7 @@ export default function Applicant({ applicant, dispatchApplicants, organisation 
       {applicant.shouldDisplay("email") && <td>{applicant.email ?? " - "}</td>}
       {applicant.shouldDisplay("phone_number") && <td>{applicant.phoneNumber ?? " - "}</td>}
       {applicant.shouldDisplay("custom_id") && <td>{applicant.customId ?? " - "}</td>}
+      {applicant.shouldDisplay("allocation_starting_date") && <td>{applicant.allocationStartingDate ?? " - "}</td>}
       <td>
         {applicant.createdAt ? (
           <i className="fas fa-check green-check" />
