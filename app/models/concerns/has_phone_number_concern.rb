@@ -3,15 +3,16 @@ module HasPhoneNumberConcern
 
   included do
     validate :validate_phone_number
-    before_save :format_phone_number
   end
+
+  def phone_number_formatted
+    Phonelib.parse(phone_number).e164
+  end
+
+  private
 
   def validate_phone_number
     errors.add(:phone_number, :invalid) if phone_number.present? && !phone_number_is_valid?
-  end
-
-  def format_phone_number
-    self.phone_number = phone_number_is_valid? ? Phonelib.parse(phone_number).e164 : nil
   end
 
   def phone_number_is_valid?

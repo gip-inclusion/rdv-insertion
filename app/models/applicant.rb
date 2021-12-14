@@ -4,7 +4,7 @@ class Applicant < ApplicationRecord
   ].freeze
 
   STATUSES_WITH_ACTION_REQUIRED = %w[
-    not_invited rdv_needs_status_update rdv_noshow rdv_revoked rdv_excused
+    not_invited rdv_needs_status_update rdv_noshow rdv_revoked rdv_excused multiple_rdvs_cancelled
   ].freeze
   STATUSES_WITH_ATTENTION_NEEDED = %w[invitation_pending rdv_creation_pending].freeze
   RDV_SOLIDARITES_CLASS_NAME = "User".freeze
@@ -33,7 +33,7 @@ class Applicant < ApplicationRecord
   enum status: {
     not_invited: 0, invitation_pending: 1, rdv_creation_pending: 2, rdv_pending: 3,
     rdv_needs_status_update: 4, rdv_noshow: 5, rdv_revoked: 6, rdv_excused: 7,
-    rdv_seen: 8, resolved: 9, deleted: 10
+    rdv_seen: 8, resolved: 9, deleted: 10, multiple_rdvs_cancelled: 11
   }
 
   scope :status, ->(status) { where(status: status) }
@@ -57,7 +57,8 @@ class Applicant < ApplicationRecord
   end
 
   def action_required?
-    status.in?(STATUSES_WITH_ACTION_REQUIRED) || (attention_needed? && invited_before_time_window?)
+    status.in?(STATUSES_WITH_ACTION_REQUIRED) ||
+      (attention_needed? && invited_before_time_window?)
   end
 
   def attention_needed?
@@ -69,7 +70,7 @@ class Applicant < ApplicationRecord
   end
 
   def orientation_date
-    rdvs.seen.first&.starts_at
+    rdvs.find(&:seen?)&.starts_at
   end
 
   def oriented?

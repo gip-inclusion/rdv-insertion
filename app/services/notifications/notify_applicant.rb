@@ -9,7 +9,7 @@ module Notifications
     end
 
     def call
-      return if phone_number.blank?
+      return if @applicant.phone_number.blank?
 
       check_applicant_organisation!
       notify_applicant!
@@ -38,8 +38,8 @@ module Notifications
       fail!
     end
 
-    def phone_number
-      @applicant.phone_number
+    def phone_number_formatted
+      @applicant.phone_number_formatted
     end
 
     def send_sms!
@@ -51,7 +51,8 @@ module Notifications
     end
 
     def send_sms
-      @send_sms ||= SendTransactionalSms.call(phone_number: phone_number, sender_name: sender_name, content: content)
+      @send_sms ||= SendTransactionalSms.call(phone_number_formatted: phone_number_formatted,
+                                              sender_name: sender_name, content: content)
     end
 
     def notification

@@ -34,6 +34,8 @@ module HasStatusConcern
   def status_with_rdv
     if seen_rdvs?
       :rdv_seen
+    elsif multiple_cancelled_rdvs?
+      :multiple_rdvs_cancelled
     elsif pending_rdvs?
       :rdv_pending
     elsif last_rdv_cancelled?
@@ -42,6 +44,10 @@ module HasStatusConcern
       # this means there is a past rdv that is still in "pending" or "unknown"
       :rdv_needs_status_update
     end
+  end
+
+  def multiple_cancelled_rdvs?
+    rdvs.cancelled_by_user.length > 1
   end
 
   def last_rdv_cancelled?

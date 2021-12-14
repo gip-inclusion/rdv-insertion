@@ -19,14 +19,15 @@ module Invitations
     end
 
     def check_phone_number!
-      fail!("le téléphone doit être renseigné") if phone_number.blank?
+      fail!("le téléphone doit être renseigné") if applicant.phone_number.blank?
     end
 
     def send_sms
       Rails.logger.info(content)
       return unless Rails.env.production?
 
-      SendTransactionalSms.call(phone_number: phone_number, sender_name: sender_name, content: content)
+      SendTransactionalSms.call(phone_number_formatted: phone_number_formatted,
+                                sender_name: sender_name, content: content)
     end
 
     def content
@@ -42,8 +43,8 @@ module Invitations
       @invitation.organisation
     end
 
-    def phone_number
-      applicant.phone_number
+    def phone_number_formatted
+      applicant.phone_number_formatted
     end
 
     def applicant
