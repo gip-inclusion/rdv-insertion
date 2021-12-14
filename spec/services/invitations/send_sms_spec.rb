@@ -40,10 +40,10 @@ describe Invitations::SendSms, type: :service do
 
   describe "#call" do
     let!(:content) do
-      "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous allez à ce titre bénéficier d'un "\
-        "accompagnement obligatoire. Pour pouvoir choisir la date et l'horaire de votre premier RDV, "\
-        "cliquez sur le lien suivant dans les 3 jours: http://www.rdv-insertion.fr/invitations/redirect?token=123\n"\
-        "Passé ce délai, vous recevrez une convocation. En cas de problème technique, contactez le 0147200001."
+      "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous "\
+        "d’accompagnement. Pour choisir la date et l'horaire de votre premier RDV, cliquez sur le lien suivant "\
+        "dans les 3 jours: http://www.rdv-insertion.fr/invitations/redirect?token=123\n"\
+        "Ce rendez-vous est obligatoire. En cas de problème technique, contactez le 0147200001."
     end
 
     before do
@@ -56,7 +56,9 @@ describe Invitations::SendSms, type: :service do
 
     it "calls the send transactional service" do
       expect(SendTransactionalSms).to receive(:call)
-        .with(phone_number_formatted: phone_number_formatted, content: content)
+        .with(phone_number_formatted: phone_number_formatted,
+              sender_name: "Dept#{department.number}",
+              content: content)
       subject
     end
 

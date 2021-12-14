@@ -51,7 +51,9 @@ describe Notifications::RdvCancelled, type: :service do
 
       it "sends the sms with the right content" do
         expect(SendTransactionalSms).to receive(:call)
-          .with(phone_number_formatted: phone_number_formatted, content: content)
+          .with(phone_number_formatted: phone_number_formatted,
+                sender_name: "Dept#{department.number}",
+                content: content)
         subject
       end
     end
