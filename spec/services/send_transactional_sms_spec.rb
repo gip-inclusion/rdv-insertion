@@ -3,7 +3,6 @@ describe SendTransactionalSms, type: :service do
     described_class.call(phone_number_formatted: phone_number_formatted, sender_name: sender_name, content: content)
   end
 
-  let(:phone_number) { "+33648498119" }
   let(:sender_name) { "Dept26" }
   let(:phone_number_formatted) { "+33648498119" }
   let(:content) { "Bienvenue sur RDV-Solidarités" }
