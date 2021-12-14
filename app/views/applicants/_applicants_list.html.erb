@@ -39,7 +39,7 @@
               <% end %>
               <td class="<%= background_class_for_status(applicant) %>">
                 <%= I18n.t("activerecord.attributes.applicant.statuses.#{applicant.status}") %>
-                <%= display_out_of_time_notice(applicant) %>
+                <%= display_status_notice(applicant) %>
               </td>
               <td class="padding-left-15">
                 <% unless applicant.deleted? %>

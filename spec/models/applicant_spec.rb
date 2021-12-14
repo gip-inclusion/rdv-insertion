@@ -185,6 +185,16 @@ describe Applicant do
         end
       end
 
+      context "with at least 2 rdvs cancelled" do
+        let!(:rdv) { create(:rdv, status: "noshow") }
+        let!(:rdv2) { create(:rdv, status: "excused") }
+        let!(:applicant) { create(:applicant, rdvs: [rdv, rdv2]) }
+
+        it "is mutliple rdvs cancelled" do
+          expect(subject).to eq(:multiple_rdvs_cancelled)
+        end
+      end
+
       context "with a past rdv with status not updated" do
         let!(:rdv) { create(:rdv, status: "unknown", starts_at: Time.zone.now - 2.days) }
         let!(:applicant) { create(:applicant, rdvs: [rdv]) }
