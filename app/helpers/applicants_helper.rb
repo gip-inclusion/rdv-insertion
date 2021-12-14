@@ -43,8 +43,16 @@ module ApplicantsHelper
     end
   end
 
-  def display_out_of_time_notice(applicant)
-    applicant.invited_before_time_window? && applicant.invitation_pending? ? " (Délai dépassé)" : ""
+  def display_status_notice(applicant)
+    if applicant.invited_before_time_window? && applicant.invitation_pending?
+      " (Délai dépassé)"
+    elsif applicant.multiple_rdvs_cancelled? && applicant.rdvs.last&.pending?
+      " (RDV en attente)"
+    elsif applicant.multiple_rdvs_cancelled?
+      " (Courrier à envoyer)"
+    else
+      ""
+    end
   end
 
   def rdv_solidarites_user_url(organisation, applicant)

@@ -10,6 +10,11 @@ const initToolTip = () => {
       "<li>L'issue du RDV n'a pas été renseignée sur RDV-Solidarités</li></ul>",
     allowHTML: true,
   });
+
+  tippy("#js-rdv-cancelled-by-user-tooltip", {
+    content:
+      "Nombre de rendez-vous manqués ou annulés par l'allocataire",
+  });
 };
 
 export default initToolTip;

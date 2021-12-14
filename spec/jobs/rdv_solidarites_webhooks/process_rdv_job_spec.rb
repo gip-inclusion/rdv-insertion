@@ -110,14 +110,8 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
 
       it "enqueues an upsert job" do
         expect(UpsertRecordJob).to receive(:perform_async)
-          .with(
-            "Rdv",
-            rdv_attributes,
-            {
-              applicant_ids: [applicant.id, applicant2.id], organisation_id: organisation.id
-            }
-          )
-        subject
+          .with("Rdv", rdv_attributes, { applicant_ids: [applicant.id, applicant2.id],
+                                         organisation_id: organisation.id })
       end
 
       context "when it is a destroy event" do

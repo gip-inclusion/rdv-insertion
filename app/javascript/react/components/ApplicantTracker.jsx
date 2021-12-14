@@ -10,6 +10,8 @@ export default function ApplicantTracker({
   showSmsInvitation,
   showEmailInvitation,
   rdvs,
+  numberOfCancelledRdvs,
+  statusNotice,
   outOfTime,
   actionRequired,
   humanStatus,
@@ -59,6 +61,8 @@ export default function ApplicantTracker({
     return `col-4 py-2 ${bgColorClass}`;
   };
 
+  const numbersOfColumnsForRdvBlock = () => numberOfCancelledRdvs > 0 ? "col-3" : "col-4";
+
   const bgColorClassForApplicantStatus = () => {
     if (
       hasActionRequired &&
@@ -75,12 +79,14 @@ export default function ApplicantTracker({
     return "";
   };
 
+  const cssClassForRdvsDates = () => `${numbersOfColumnsForRdvBlock()} d-flex align-items-center justify-content-center`;
+
   const cssClassForApplicantStatus = () => {
     const bgColorClass = bgColorClassForApplicantStatus();
     if (bgColorClass.length === 0) {
-      return "col-4 d-flex align-items-center justify-content-center";
+      return `${numbersOfColumnsForRdvBlock()} d-flex align-items-center justify-content-center`;
     }
-    return `col-4 d-flex align-items-center justify-content-center ${bgColorClass}`;
+    return `${numbersOfColumnsForRdvBlock()} d-flex align-items-center justify-content-center ${bgColorClass}`;
   };
 
   const handleClick = async (action) => {
@@ -173,25 +179,37 @@ export default function ApplicantTracker({
       </div>
       <div className="tracking-block block-2 block-white d-flex justify-content-center flex-column">
         <div className="row d-flex justify-content-around">
-          <h4 className="col-4">RDV pris le</h4>
-          <h4 className="col-4">Date du RDV</h4>
-          <h4 className="col-4">Statut</h4>
+          <h4 className={numbersOfColumnsForRdvBlock()}>RDV pris le</h4>
+          <h4 className={numbersOfColumnsForRdvBlock()}>Date du RDV</h4>
+          {numberOfCancelledRdvs > 0 &&
+            <h4 className="col-3">RDV reportés <small>
+              <i className="fas fa-question-circle" id="js-rdv-cancelled-by-user-tooltip" />
+            </small></h4>
+          }
+          <h4 className={numbersOfColumnsForRdvBlock()}>Statut</h4>
         </div>
         <div className="row d-flex justify-content-around flex-grow-1">
-          <div className="col-4 d-flex align-items-center justify-content-center">
+          <div className={cssClassForRdvsDates()}>
             <p className="m-0">
               {rdvs.length > 0 ? getFrenchFormatDateString(rdvs.at(-1).created_at) : "-"}
             </p>
           </div>
-          <div className="col-4 d-flex align-items-center justify-content-center">
+          <div className={cssClassForRdvsDates()}>
             <p className="m-0">
               {rdvs.length > 0 ? getFrenchFormatDateString(rdvs.at(-1).starts_at) : "-"}
             </p>
           </div>
+          {numberOfCancelledRdvs > 0 &&
+            <div className="col-3 d-flex align-items-center justify-content-center">
+              <p className="m-0">
+                {numberOfCancelledRdvs}
+              </p>
+            </div>
+          }
           <div className={cssClassForApplicantStatus()}>
             <p className="m-0">
               {textForStatus}
-              {isOutOfTime && applicantStatus === "invitation_pending" && " (Délai dépassé)"}
+              {statusNotice}
             </p>
           </div>
         </div>

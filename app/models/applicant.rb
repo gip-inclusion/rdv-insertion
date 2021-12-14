@@ -4,7 +4,7 @@ class Applicant < ApplicationRecord
   ].freeze
 
   STATUSES_WITH_ACTION_REQUIRED = %w[
-    not_invited rdv_needs_status_update rdv_noshow rdv_revoked rdv_excused
+    not_invited rdv_needs_status_update rdv_noshow rdv_revoked rdv_excused multiple_rdvs_cancelled
   ].freeze
   STATUSES_WITH_ATTENTION_NEEDED = %w[invitation_pending rdv_creation_pending].freeze
   RDV_SOLIDARITES_CLASS_NAME = "User".freeze
@@ -15,7 +15,7 @@ class Applicant < ApplicationRecord
   include HasPhoneNumberConcern
   include InvitableConcern
 
-  before_save :generate_uid
+  before_create :generate_uid
 
   has_and_belongs_to_many :organisations
   has_many :invitations, dependent: :destroy
@@ -33,7 +33,7 @@ class Applicant < ApplicationRecord
   enum status: {
     not_invited: 0, invitation_pending: 1, rdv_creation_pending: 2, rdv_pending: 3,
     rdv_needs_status_update: 4, rdv_noshow: 5, rdv_revoked: 6, rdv_excused: 7,
-    rdv_seen: 8, resolved: 9, deleted: 10
+    rdv_seen: 8, resolved: 9, deleted: 10, multiple_rdvs_cancelled: 11
   }
 
   scope :status, ->(status) { where(status: status) }
@@ -57,11 +57,31 @@ class Applicant < ApplicationRecord
   end
 
   def action_required?
-    status.in?(STATUSES_WITH_ACTION_REQUIRED) || (attention_needed? && invited_before_time_window?)
+    status.in?(STATUSES_WITH_ACTION_REQUIRED) ||
+      (attention_needed? && invited_before_time_window?)
   end
 
   def attention_needed?
     status.in?(STATUSES_WITH_ATTENTION_NEEDED)
+  end
+
+  def invited_before_time_window?
+    last_invitation_sent_at && last_invitation_sent_at < Organisation::TIME_TO_ACCEPT_INVITATION.ago
+  end
+
+  def orientation_date
+    rdvs.find(&:seen?)&.starts_at
+  end
+
+  def oriented?
+    orientation_date.present?
+  end
+
+  def orientation_delay_in_days
+    return unless oriented?
+
+    starting_date = created_at - 3.days
+    orientation_date.to_datetime.mjd - starting_date.to_datetime.mjd
   end
 
   def full_name
