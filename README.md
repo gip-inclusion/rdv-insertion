@@ -43,3 +43,9 @@ Lancez ces commandes pour lancer le projet en local:
 - `overmind start -f Procfile.dev`
 
 Le site devrait être accessible à l'adresse suivante: `http://localhost:8000`
+
+### Déploiement
+
+Une fois qu'une PR est mergé sur la branche `staging`, les changements sont automatiquements déployés sur [l'environnement de démo](https://www.rdv-insertion-demo.fr).
+
+Une fois les changements testés en demo, il faut lancer le script `./deploy.sh` qui se charge de pusher les changements sur la branche `main`, qui a pour effet de les déployer [en production](https://www.rdv-insertion.fr).
