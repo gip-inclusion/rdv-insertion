@@ -1,7 +1,7 @@
 # This migration creates the organisation table exactly like the department one
 # and fills it with the departments table values
 class CreateOrganisations < ActiveRecord::Migration[6.1]
-  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  # rubocop:disable Metrics/AbcSize
   def up
     create_table :organisations do |t|
       t.string :name
@@ -76,5 +76,5 @@ class CreateOrganisations < ActiveRecord::Migration[6.1]
     drop_table :agents_organisations
     drop_table :organisations
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+  # rubocop:enable Metrics/AbcSize
 end

@@ -36,6 +36,14 @@ class RdvSolidaritesClient
     )
   end
 
+  def get_organisations(geo_params = {})
+    Faraday.get(
+      "#{@url}/api/v1/organisations",
+      geo_params,
+      request_headers
+    )
+  end
+
   def invite_user(user_id, request_body = {})
     Faraday.post(
       "#{@url}/api/v1/users/#{user_id}/invite",

@@ -1,8 +1,9 @@
 describe SendTransactionalSms, type: :service do
   subject do
-    described_class.call(phone_number_formatted: phone_number_formatted, content: content)
+    described_class.call(phone_number_formatted: phone_number_formatted, sender_name: sender_name, content: content)
   end
 
+  let(:sender_name) { "Dept26" }
   let(:phone_number_formatted) { "+33648498119" }
   let(:content) { "Bienvenue sur RDV-Solidarités" }
   let(:sib_api_mock) { instance_double(SibApiV3Sdk::TransactionalSMSApi) }
@@ -13,7 +14,7 @@ describe SendTransactionalSms, type: :service do
       allow(SibApiV3Sdk::TransactionalSMSApi).to receive(:new).and_return(sib_api_mock)
       allow(SibApiV3Sdk::SendTransacSms).to receive(:new)
         .with(
-          sender: "RdvRSA",
+          sender: sender_name,
           recipient: phone_number_formatted,
           content: content,
           type: "transactional"

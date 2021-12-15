@@ -13,4 +13,8 @@ class Organisation < ApplicationRecord
 
   delegate :notify_applicant?, to: :configuration
   delegate :name, :name_with_region, :number, to: :department, prefix: true
+
+  def as_json(_opts = {})
+    super.merge(department_number: department_number)
+  end
 end

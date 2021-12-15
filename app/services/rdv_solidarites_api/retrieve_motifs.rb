@@ -6,16 +6,11 @@ module RdvSolidaritesApi
     end
 
     def call
-      retrieve_motifs!
+      request!
+      result.motifs = rdv_solidarites_response_body['motifs'].map { RdvSolidarites::Motif.new(_1) }
     end
 
     private
-
-    def retrieve_motifs!
-      fail_with_response_errors unless rdv_solidarites_response.success?
-
-      result.motifs = rdv_solidarites_response_body['motifs'].map { RdvSolidarites::Motif.new(_1) }
-    end
 
     def rdv_solidarites_response
       @rdv_solidarites_response ||= rdv_solidarites_client.get_motifs(

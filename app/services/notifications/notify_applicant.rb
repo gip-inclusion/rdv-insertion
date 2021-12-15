@@ -51,7 +51,8 @@ module Notifications
     end
 
     def send_sms
-      @send_sms ||= SendTransactionalSms.call(phone_number_formatted: phone_number_formatted, content: content)
+      @send_sms ||= SendTransactionalSms.call(phone_number_formatted: phone_number_formatted,
+                                              sender_name: sender_name, content: content)
     end
 
     def notification
@@ -67,6 +68,14 @@ module Notifications
 
       result.errors << notification.errors.full_messages.to_sentence
       fail!
+    end
+
+    def department
+      @organisation.department
+    end
+
+    def sender_name
+      "Dept#{department.number}"
     end
   end
 end

@@ -16,7 +16,8 @@ describe Notifications::NotifyApplicant, type: :service do
   let!(:rdv_solidarites_rdv) do
     OpenStruct.new(id: rdv_solidarites_rdv_id)
   end
-  let!(:organisation) { create(:organisation) }
+  let!(:department) { create(:department) }
+  let!(:organisation) { create(:organisation, department: department) }
   let!(:rdv_solidarites_rdv_id) { 23 }
   let!(:applicant) { create(:applicant, phone_number: phone_number, organisations: [organisation]) }
   let!(:notification) { create(:notification, applicant: applicant) }
@@ -54,7 +55,7 @@ describe Notifications::NotifyApplicant, type: :service do
 
     it "sends the sms" do
       expect(SendTransactionalSms).to receive(:call)
-        .with(phone_number_formatted: phone_number_formatted, content: "test")
+        .with(phone_number_formatted: phone_number_formatted, sender_name: "Dept#{department.number}", content: "test")
       subject
     end
 

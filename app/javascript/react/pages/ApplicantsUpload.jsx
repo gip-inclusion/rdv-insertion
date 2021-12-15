@@ -6,7 +6,11 @@ import Swal from "sweetalert2";
 import FileHandler from "../components/FileHandler";
 import ApplicantList from "../components/ApplicantList";
 
-import { parameterizeObjectKeys, parameterizeObjectValues, parameterizeArray } from "../../lib/parameterize";
+import {
+  parameterizeObjectKeys,
+  parameterizeObjectValues,
+  parameterizeArray,
+} from "../../lib/parameterize";
 import getKeyByValue from "../../lib/getKeyByValue";
 import searchApplicants from "../actions/searchApplicants";
 import { initReducer, reducerFactory } from "../../lib/reducers";
@@ -19,7 +23,11 @@ const reducer = reducerFactory("Expérimentation RSA");
 export default function ApplicantsUpload({ organisation, configuration, department }) {
   const SHEET_NAME = configuration.sheet_name;
   const columnNames = configuration.column_names;
-  const parameterizedColumnNames = parameterizeObjectValues({ ...columnNames.required, ...columnNames.optional });
+  const parameterizedColumnNames = parameterizeObjectValues({
+    ...columnNames.required,
+    ...columnNames.optional,
+  });
+  const isTerritoryLevel = !organisation;
 
   const [fileSize, setFileSize] = useState(0);
   const [applicants, dispatchApplicants] = useReducer(reducer, [], initReducer);
@@ -29,8 +37,9 @@ export default function ApplicantsUpload({ organisation, configuration, departme
     const requiredColumns = parameterizeObjectValues(columnNames.required);
 
     const expectedColumnNames = Object.values(requiredColumns);
-    const parameterizedMissingColumns =
-      expectedColumnNames.filter(colName => !uploadedColumnNames.includes(colName));
+    const parameterizedMissingColumns = expectedColumnNames.filter(
+      (colName) => !uploadedColumnNames.includes(colName)
+    );
 
     if (parameterizedMissingColumns.length > 0) {
       // Récupère les noms "humains" des colonnes manquantes
@@ -45,11 +54,11 @@ export default function ApplicantsUpload({ organisation, configuration, departme
         html: `Veuillez vérifier que les colonnes suivantes sont présentes et correctement nommées&nbsp;:
         <br/>
         <strong>${missingColumnNames.join("<br />")}</strong>`,
-        icon: "error"
+        icon: "error",
       });
     }
     return missingColumnNames;
-  }
+  };
 
   const retrieveApplicantsFromList = async (file) => {
     const applicantsFromList = [];
@@ -59,10 +68,10 @@ export default function ApplicantsUpload({ organisation, configuration, departme
       reader.onload = function (event) {
         const workbook = XLSX.read(event.target.result, { type: "binary" });
         const sheet = workbook.Sheets[SHEET_NAME] || workbook.Sheets[workbook.SheetNames[0]];
-        const header = []
-        const columnCount = XLSX.utils.decode_range(sheet["!ref"]).e.c + 1
+        const header = [];
+        const columnCount = XLSX.utils.decode_range(sheet["!ref"]).e.c + 1;
         for (let i = 0; i < columnCount; i += 1) {
-          header[i] = sheet[`${XLSX.utils.encode_col(i)}1`].v
+          header[i] = sheet[`${XLSX.utils.encode_col(i)}1`].v;
         }
         const missingColumnNames = checkColumnNames(parameterizeArray(header));
         let rows = XLSX.utils.sheet_to_row_object_array(sheet);
@@ -77,8 +86,9 @@ export default function ApplicantsUpload({ organisation, configuration, departme
                 role: row[parameterizedColumnNames.role],
                 title: row[parameterizedColumnNames.title],
                 address: parameterizedColumnNames.address && row[parameterizedColumnNames.address],
-                fullAddress: parameterizedColumnNames.full_address
-                  && row[parameterizedColumnNames.full_address],
+                fullAddress:
+                  parameterizedColumnNames.full_address &&
+                  row[parameterizedColumnNames.full_address],
                 email: parameterizedColumnNames.email && row[parameterizedColumnNames.email],
                 birthDate:
                   parameterizedColumnNames.birth_date &&
@@ -97,11 +107,12 @@ export default function ApplicantsUpload({ organisation, configuration, departme
                   && row[parameterizedColumnNames.allocation_starting_date],
               },
               department.number,
+              organisation,
               configuration
             );
             applicantsFromList.push(applicant);
           });
-        };
+        }
         resolve();
       };
       reader.readAsBinaryString(file);
@@ -111,7 +122,7 @@ export default function ApplicantsUpload({ organisation, configuration, departme
   };
 
   const retrieveApplicantsFromApp = async (uids) => {
-    const result = await searchApplicants(organisation.id, uids);
+    const result = await searchApplicants(uids);
     if (result.success) {
       return result.applicants;
     }
@@ -141,7 +152,9 @@ export default function ApplicantsUpload({ organisation, configuration, departme
   };
 
   const redirectToApplicantList = () => {
-    window.location.href = `/organisations/${organisation.id}/applicants`;
+    window.location.href = isTerritoryLevel
+      ? "/organisations/"
+      : `/organisations/${organisation.id}/applicants`;
   };
 
   const handleFile = async (file) => {
@@ -173,11 +186,13 @@ export default function ApplicantsUpload({ organisation, configuration, departme
             className="btn btn-secondary btn-blue-out"
             onClick={() => redirectToApplicantList()}
           >
-            Retour au suivi
+            {isTerritoryLevel ? "Retour aux organisations" : "Retour au suivi"}
           </button>
         </div>
         <div className="col-4 text-center d-flex flex-column align-items-center">
-          <h3 className="new-applicants-title">Ajout allocataires</h3>
+          <h3 className="new-applicants-title">
+            Ajout {isTerritoryLevel ? "au niveau du territoire" : "allocataires"}
+          </h3>
           <FileHandler
             handleFile={handleFile}
             fileSize={fileSize}
@@ -187,8 +202,14 @@ export default function ApplicantsUpload({ organisation, configuration, departme
           />
         </div>
         <div className="col-4 d-flex align-items-center justify-content-end">
-          <a target="blank" href="https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/">
-            <button type="button" className="btn btn-blue-out">Guide d&apos;utilisation<i className="fas fa-external-link-alt icon-sm" /></button>
+          <a
+            target="blank"
+            href="https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/"
+          >
+            <button type="button" className="btn btn-blue-out">
+              Guide d&apos;utilisation
+              <i className="fas fa-external-link-alt icon-sm" />
+            </button>
           </a>
         </div>
       </div>
@@ -216,27 +237,19 @@ export default function ApplicantsUpload({ organisation, configuration, departme
                     {(configuration.invitation_format === "sms" ||
                       configuration.invitation_format === "sms_and_email") && (
                       <>
-                        <th scope="col-3">
-                          Invitation SMS
-                        </th>
+                        <th scope="col-3">Invitation SMS</th>
                       </>
                     )}
                     {(configuration.invitation_format === "email" ||
                       configuration.invitation_format === "sms_and_email") && (
                       <>
-                        <th scope="col-3">
-                          Invitation mail
-                        </th>
+                        <th scope="col-3">Invitation mail</th>
                       </>
                     )}
                   </tr>
                 </thead>
                 <tbody>
-                  <ApplicantList
-                    applicants={applicants}
-                    dispatchApplicants={dispatchApplicants}
-                    organisation={organisation}
-                  />
+                  <ApplicantList applicants={applicants} dispatchApplicants={dispatchApplicants} />
                 </tbody>
               </table>
             </div>

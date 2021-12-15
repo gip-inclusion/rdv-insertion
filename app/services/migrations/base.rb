@@ -27,7 +27,7 @@ module Migrations
     end
 
     def retrieve_all_resources
-      @retrieve_all_resources ||= RdvSolidaritesApi::RetrieveResources.call(
+      @retrieve_all_resources ||= RdvSolidaritesApi::RetrieveOrganisationResources.call(
         rdv_solidarites_session: @rdv_solidarites_session,
         rdv_solidarites_organisation_id: organisation.rdv_solidarites_organisation_id,
         resource_name: resources_name.singularize
