@@ -26,9 +26,9 @@
       </div>
       <div class="col-10 col-md-5">
         <h4 class="attribute-title">Date d'entrée flux</h4>
-        <p><%= f.input :allocation_starting_date,
+        <p><%= f.input :rights_opening_date,
                         input_html: { class: "date-select" },
-                        as: :date, start_year: Date.today.year - 100,
+                        as: :date, start_year: Date.today.year - 10,
                         end_year: Date.today.year,
                         include_blank: true,
                         order: [:day, :month, :year] %></p>
