@@ -38,6 +38,10 @@ Metrics/BlockLength:
 Layout/LineLength:
   Max: 120
 
+Metrics/MethodLength:
+  CountAsOne: ["array", "hash", "heredoc"]
+  Max: 20
+
 Rails/HasAndBelongsToMany:
   Enabled: false
 

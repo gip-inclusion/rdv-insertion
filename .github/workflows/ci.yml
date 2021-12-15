@@ -1,0 +1,74 @@
+name: CI
+on: push
+jobs:
+  rubocop:
+    name: Ruby linter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.0.2
+          bundler-cache: true
+      - run: bundle exec rubocop
+  eslint:
+    name: JS linter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.0.2
+          bundler-cache: true
+      - name: Install JS dependencies
+        run: yarn install
+      - run: yarn lint
+  test_unit:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:13.2
+        env:
+          POSTGRES_USER: rdv_insertion_test
+          POSTGRES_PASSWORD: rdv_insertion_test
+          POSTGRES_DB: rdv_insertion_test
+        options: >-
+          --mount type=tmpfs,destination=/var/lib/postgresql/data
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+        options: --entrypoint redis-server
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.0.2
+          bundler-cache: true
+      - name: Install JS dependencies
+        run: yarn install
+      - name: Setup test database
+        env:
+          POSTGRES_USER: rdv_insertion_test
+          POSTGRES_PASSWORD: rdv_insertion_test
+          POSTGRES_DB: rdv_insertion_test
+        run: bundle exec rails db:create db:schema:load RAILS_ENV=test
+      - name: Run specs
+        env:
+          HOST: http://example.com
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+          POSTGRES_USER: rdv_insertion_test
+          POSTGRES_PASSWORD: rdv_insertion_test
+          POSTGRES_DB: rdv_insertion_test
+        run: RAILS_ENV=test bundle exec rspec

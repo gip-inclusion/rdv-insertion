@@ -41,6 +41,6 @@
   },
   "scripts": {
     "postinstall": "husky install",
-    "lint": "bundle exec rspec && eslint 'app/javascript/**' --quiet && rubocop"
+    "lint": "eslint 'app/javascript/**' --quiet"
   }
 }

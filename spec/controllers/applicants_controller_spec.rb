@@ -153,24 +153,24 @@ describe ApplicantsController, type: :controller do
   end
 
   describe "#search" do
-    let!(:search_params) { { applicants: { uids: [23] }, format: "json", organisation_id: organisation.id } }
-    let!(:applicant) { create(:applicant, organisations: [organisation], uid: 23, email: "borisjohnson@gov.uk") }
+    let!(:search_params) { { applicants: { uids: ["23"] }, format: "json" } }
+    let!(:applicant) { create(:applicant, organisations: [organisation], uid: "23", email: "borisjohnson@gov.uk") }
 
     before do
       sign_in(agent)
       set_rdv_solidarites_session
-      allow(Applicant).to receive(:where)
-        .with(uid: ['23'])
-        .and_return([applicant])
     end
 
-    context "when not authorized" do
+    context "policy scope" do
       let!(:another_organisation) { create(:organisation) }
       let!(:agent) { create(:agent, organisations: [another_organisation]) }
+      let!(:another_applicant) { create(:applicant, uid: "0332", organisations: [another_organisation]) }
+      let!(:search_params) { { applicants: { uids: %w[23 0332] }, format: "json" } }
 
-      it "renders forbidden in the response" do
+      it "returns the policy scoped applicants" do
         post :search, params: search_params
-        expect(response).to have_http_status(:forbidden)
+        expect(response).to be_successful
+        expect(JSON.parse(response.body)["applicants"].pluck("id")).to contain_exactly(another_applicant.id)
       end
     end
 
@@ -180,7 +180,7 @@ describe ApplicantsController, type: :controller do
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end
 
-    it "renders the applicants updated" do
+    it "renders the applicants" do
       post :search, params: search_params
       expect(response).to be_successful
       expect(JSON.parse(response.body)["applicants"].pluck("id")).to contain_exactly(applicant.id)
@@ -205,7 +205,7 @@ describe ApplicantsController, type: :controller do
 
   describe "#index" do
     let!(:applicants) { organisation.applicants }
-    let!(:applicant) { create(:applicant, organisations: [organisation]) }
+    let!(:applicant) { create(:applicant, organisations: [organisation], last_name: "Chabat") }
     let!(:applicant2) { create(:applicant, organisations: [organisation], role: "demandeur") }
     let!(:index_params) { { organisation_id: organisation.id } }
 

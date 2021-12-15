@@ -1,14 +1,25 @@
 class UploadsController < ApplicationController
-  before_action :set_organisation, only: [:new]
-
   def new
-    authorize @organisation, :list_applicants?
-    @configuration = @organisation.configuration
+    if params[:department_id].present?
+      set_department_upload
+    elsif params[:organisation_id].present?
+      set_organisation_upload
+    end
   end
 
   private
 
-  def set_organisation
+  def set_department_upload
+    @department = Department.find(params[:department_id])
+    authorize @department, :upload?
+    @organisation = nil
+    @configuration = @department.configuration
+  end
+
+  def set_organisation_upload
     @organisation = Organisation.find(params[:organisation_id])
+    authorize @organisation, :upload?
+    @configuration = @organisation.configuration
+    @department = @organisation.department
   end
 end
