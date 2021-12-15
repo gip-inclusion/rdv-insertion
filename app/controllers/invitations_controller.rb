@@ -6,7 +6,7 @@ class InvitationsController < ApplicationController
   respond_to :json
 
   def create
-    authorize @organisation, :invite_applicant?
+    authorize @applicant, :invite?
     if invite_applicant.success?
       render json: { success: true, invitation: invite_applicant.invitation }
     else

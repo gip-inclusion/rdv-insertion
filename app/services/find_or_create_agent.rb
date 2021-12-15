@@ -15,7 +15,7 @@ class FindOrCreateAgent < BaseService
   def update_agent_if_changed
     agent = result.agent
     agent.organisations = agent_organisations
-    agent.save if agent.changed?
+    agent.save! if agent.changed?
   end
 
   def belongs_to_one_organisation?

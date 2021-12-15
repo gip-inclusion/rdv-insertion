@@ -1,23 +1,11 @@
 class OrganisationPolicy < ApplicationPolicy
+  def upload?
+    pundit_user.organisations.include?(record)
+  end
+
   class Scope < Scope
     def resolve
       pundit_user.organisations
     end
-  end
-
-  def list_applicants?
-    pundit_user.organisations.include?(record)
-  end
-
-  def invite_applicant?
-    list_applicants?
-  end
-
-  def create_applicant?
-    list_applicants?
-  end
-
-  def new_applicant?
-    list_applicants?
   end
 end

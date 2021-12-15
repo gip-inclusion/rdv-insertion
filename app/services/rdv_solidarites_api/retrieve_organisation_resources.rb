@@ -1,5 +1,5 @@
 module RdvSolidaritesApi
-  class RetrieveResources < Base
+  class RetrieveOrganisationResources < Base
     def initialize(rdv_solidarites_session:, rdv_solidarites_organisation_id:, resource_name:, additional_args: nil)
       @rdv_solidarites_organisation_id = rdv_solidarites_organisation_id
       @rdv_solidarites_session = rdv_solidarites_session

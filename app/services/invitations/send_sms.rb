@@ -23,8 +23,7 @@ module Invitations
     end
 
     def send_sms
-      Rails.logger.info(content)
-      return unless Rails.env.production?
+      return Rails.logger.info(content) unless Rails.env.production?
 
       SendTransactionalSms.call(phone_number_formatted: phone_number_formatted,
                                 sender_name: sender_name, content: content)
