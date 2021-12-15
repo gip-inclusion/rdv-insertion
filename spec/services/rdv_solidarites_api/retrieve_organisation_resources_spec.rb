@@ -11,13 +11,11 @@ describe RdvSolidaritesApi::RetrieveOrganisationResources, type: :service do
   let!(:rdv_solidarites_organisation_id) { 23 }
   let!(:additional_args) { user_ids }
   let!(:user_ids) { [25] }
-  let!(:rdv_solidarites_session) do
-    { client: "client", uid: "johndoe@example.com", access_token: "token" }
-  end
+  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
+  let!(:rdv_solidarites_client) { instance_double(RdvSolidaritesClient) }
   let!(:resource_name) { "user" }
 
   describe "#call" do
-    let!(:rdv_solidarites_client) { instance_double(RdvSolidaritesClient) }
     let!(:response_body) do
       { users: [{ id: 25, first_name: "John", last_name: "Doe", email: "johndoe@example.com" }], meta: {} }.to_json
     end
@@ -26,8 +24,7 @@ describe RdvSolidaritesApi::RetrieveOrganisationResources, type: :service do
     let!(:page) { 1 }
 
     before do
-      allow(RdvSolidaritesClient).to receive(:new)
-        .with(rdv_solidarites_session)
+      allow(rdv_solidarites_session).to receive(:rdv_solidarites_client)
         .and_return(rdv_solidarites_client)
       allow(rdv_solidarites_client).to receive(:get_users)
       allow(rdv_solidarites_client).to receive(:get_users)

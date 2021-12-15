@@ -1,10 +1,10 @@
 module RdvSolidaritesApi
   class Base < BaseService
-    protected
+    attr_reader :rdv_solidarites_session
 
-    def rdv_solidarites_client
-      @rdv_solidarites_client ||= RdvSolidaritesClient.new(@rdv_solidarites_session)
-    end
+    delegate :rdv_solidarites_client, to: :rdv_solidarites_session
+
+    protected
 
     def rdv_solidarites_response_body
       JSON.parse(rdv_solidarites_response.body)

@@ -2,6 +2,7 @@ describe ApplicantsController, type: :controller do
   let!(:organisation) { create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id) }
   let!(:agent) { create(:agent, organisations: [organisation]) }
   let!(:rdv_solidarites_organisation_id) { 52 }
+  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
 
   describe "#new" do
     render_views
@@ -9,7 +10,7 @@ describe ApplicantsController, type: :controller do
 
     before do
       sign_in(agent)
-      set_rdv_solidarites_session
+      setup_rdv_solidarites_session(rdv_solidarites_session)
     end
 
     it "renders the new applicant page" do
@@ -24,7 +25,7 @@ describe ApplicantsController, type: :controller do
     render_views
     before do
       sign_in(agent)
-      set_rdv_solidarites_session
+      setup_rdv_solidarites_session(rdv_solidarites_session)
       allow(UpsertApplicant).to receive(:call)
         .and_return(OpenStruct.new)
     end
@@ -158,7 +159,7 @@ describe ApplicantsController, type: :controller do
 
     before do
       sign_in(agent)
-      set_rdv_solidarites_session
+      setup_rdv_solidarites_session(rdv_solidarites_session)
     end
 
     context "policy scope" do
@@ -193,7 +194,7 @@ describe ApplicantsController, type: :controller do
 
     before do
       sign_in(agent)
-      set_rdv_solidarites_session
+      setup_rdv_solidarites_session(rdv_solidarites_session)
     end
 
     it "renders the applicant page" do
@@ -211,7 +212,7 @@ describe ApplicantsController, type: :controller do
 
     before do
       sign_in(agent)
-      set_rdv_solidarites_session
+      setup_rdv_solidarites_session(rdv_solidarites_session)
       allow(Applicant).to receive(:search_by_text)
         .and_return(applicants)
       allow(Applicant).to receive(:page)
@@ -281,7 +282,7 @@ describe ApplicantsController, type: :controller do
 
     before do
       sign_in(agent)
-      set_rdv_solidarites_session
+      setup_rdv_solidarites_session(rdv_solidarites_session)
     end
 
     context "when json request" do
@@ -312,7 +313,7 @@ describe ApplicantsController, type: :controller do
 
         before do
           sign_in(another_agent)
-          set_rdv_solidarites_session
+          setup_rdv_solidarites_session(rdv_solidarites_session)
         end
 
         it "does not call the service" do
@@ -362,7 +363,7 @@ describe ApplicantsController, type: :controller do
 
       before do
         sign_in(agent)
-        set_rdv_solidarites_session
+        setup_rdv_solidarites_session(rdv_solidarites_session)
         allow(UpsertApplicant).to receive(:call)
           .and_return(OpenStruct.new)
       end
@@ -372,7 +373,7 @@ describe ApplicantsController, type: :controller do
           .with(
             applicant: applicant,
             organisation: organisation,
-            rdv_solidarites_session: request.session[:rdv_solidarites]
+            rdv_solidarites_session: rdv_solidarites_session
           )
         patch :update, params: update_params
       end
@@ -383,7 +384,7 @@ describe ApplicantsController, type: :controller do
 
         before do
           sign_in(another_agent)
-          set_rdv_solidarites_session
+          setup_rdv_solidarites_session(rdv_solidarites_session)
         end
 
         it "does not call the service" do

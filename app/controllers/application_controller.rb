@@ -19,7 +19,11 @@ class ApplicationController < ActionController::Base
   end
 
   def rdv_solidarites_session
-    session[:rdv_solidarites]
+    @rdv_solidarites_session ||= RdvSolidaritesSession.new(
+      uid: session["rdv_solidarites"]["uid"],
+      access_token: session["rdv_solidarites"]["access_token"],
+      client: session["rdv_solidarites"]["client"]
+    )
   end
 
   def json_request?

@@ -7,8 +7,10 @@ class SessionsController < ApplicationController
   def new; end
 
   def create
+    return render_invalid_session unless rdv_solidarites_session_valid?
+
     if find_or_create_agent.success?
-      set_session
+      set_session_credentials
       render json: { success: true, redirect_path: session.delete(:agent_return_to) || organisations_path }
     else
       render json: { success: false, errors: find_or_create_agent.errors }
@@ -33,13 +35,25 @@ class SessionsController < ApplicationController
     find_or_create_agent.agent
   end
 
-  def set_session
+  def set_session_credentials
     session[:agent_id] = created_agent.id
     session[:rdv_solidarites] = {
       client: session_params[:client],
       uid: session_params[:uid],
       access_token: session_params[:access_token]
     }
+  end
+
+  def rdv_solidarites_session_valid?
+    RdvSolidaritesSession.new(
+      uid: session_params[:uid],
+      client: session_params[:client],
+      access_token: session_params[:access_token]
+    ).valid?
+  end
+
+  def render_invalid_session
+    render json: { success: false, errors: ["La session RDV-Solidarités n'est pas valide"] }
   end
 
   def clear_session

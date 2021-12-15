@@ -17,8 +17,14 @@ describe SessionsController, type: :controller do
       let(:session_params) do
         { client: "some-client", uid: "some-uid", access_token: "some-token", organisation_ids: ["some-id"] }
       end
+      let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
 
       before do
+        allow(RdvSolidaritesSession).to receive(:new)
+          .with(session_params.except(:organisation_ids))
+          .and_return(rdv_solidarites_session)
+        allow(rdv_solidarites_session).to receive(:valid?)
+          .and_return(true)
         allow(FindOrCreateAgent).to receive(:call)
           .and_return(OpenStruct.new)
       end
@@ -28,6 +34,20 @@ describe SessionsController, type: :controller do
           .with(email: session_params[:uid], organisation_ids: session_params[:organisation_ids])
 
         post :create, params: session_params.merge(format: 'json')
+      end
+
+      context "when session is invalid" do
+        before do
+          allow(rdv_solidarites_session).to receive(:valid?)
+            .and_return(false)
+        end
+
+        it "is a failure" do
+          post :create, params: session_params.merge(format: 'json')
+          expect(response).to be_successful
+          expect(JSON.parse(response.body)["success"]).to eq(false)
+          expect(JSON.parse(response.body)["errors"]).to eq(["La session RDV-Solidarités n'est pas valide"])
+        end
       end
 
       context "when the agent is found or created" do
