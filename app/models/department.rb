@@ -10,9 +10,4 @@ class Department < ApplicationRecord
   def name_with_region
     "#{name}, #{region}"
   end
-
-  def name_with_pronoun
-    separator = pronoun == "de l'" ? "" : " "
-    "#{pronoun}#{separator}#{name}"
-  end
 end

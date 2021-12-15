@@ -6,7 +6,7 @@
 </p>
 <p>En cas de problème technique, contactez le <%= @invitation.organisation.phone_number.gsub(/\d{2}/, '\& ') %></p>
 <p>À bientôt,</p>
-<p>Le département <%= @invitation.department.name_with_pronoun %></p>
+<p>Le département <%= I18n.t("with_prefix.#{@invitation.department.pronoun}") %><%= @invitation.department.name %></p>
 <% if File.exist?("app/javascript/images/logos/#{@invitation.department.name.parameterize}.png") %>
   <%= image_pack_tag "logos/#{@invitation.department.name.parameterize}.png", alt: "Logo du département", class: "department-logo" %>
 <% elsif File.exist?("app/javascript/images/logos/#{@invitation.department.name.parameterize}.jpg") %>
