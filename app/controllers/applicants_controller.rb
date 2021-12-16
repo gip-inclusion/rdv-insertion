@@ -1,7 +1,7 @@
 class ApplicantsController < ApplicationController
   PERMITTED_PARAMS = [
     :uid, :role, :first_name, :last_name, :birth_date, :email, :phone_number,
-    :birth_name, :address, :affiliation_number, :custom_id, :title, :status
+    :birth_name, :address, :affiliation_number, :custom_id, :title, :status, :rights_opening_date
   ].freeze
   before_action :set_organisation, only: [:index, :create, :show, :update, :edit, :new]
   before_action :retrieve_applicants, only: [:search]

@@ -30,6 +30,7 @@ export default class Applicant {
     this.postalCode = formattedAttributes.postalCode;
     this.fullAddress = formattedAttributes.fullAddress || this.formatAddress();
     this.customId = formattedAttributes.customId;
+    this.rightsOpeningDate = formattedAttributes.rightsOpeningDate;
     this.affiliationNumber = this.formatAffiliationNumber(formattedAttributes.affiliationNumber);
     this.phoneNumber = formatPhoneNumber(formattedAttributes.phoneNumber);
     // CONJOINT/CONCUBIN/PACSE => conjoint
@@ -168,6 +169,7 @@ export default class Applicant {
       ...(this.birthDate && { birth_date: this.birthDate }),
       ...(this.birthName && { birth_name: this.birthName }),
       ...(this.customId && { custom_id: this.customId }),
+      ...(this.rightsOpeningDate && { rights_opening_date: this.rightsOpeningDate }),
     };
   }
 }
