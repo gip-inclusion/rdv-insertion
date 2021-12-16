@@ -12,6 +12,9 @@ end
 
 Rails.application.routes.draw do
   root "static_pages#welcome"
+  get "mentions-legales", to: "static_pages#legal_notice"
+  get "politique-de-confidentialite", to: "static_pages#privacy_policy"
+  get "accessibilite", to: "static_pages#accessibility"
   resources :organisations, only: [:index] do
     get :geolocated, on: :collection
     resources :applicants, only: [:index, :create, :show, :update, :edit, :new] do

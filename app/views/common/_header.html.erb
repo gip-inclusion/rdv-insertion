@@ -1,5 +1,5 @@
 <header>
-  <nav class="navbar px-3 navbar-expand-lg">
+  <nav class="container marianne navbar px-3 navbar-expand-lg">
     <div class="d-flex justify-content-start">
       <%= link_to root_path do %>
         <%= image_pack_tag "logos/republique-francaise-logo.svg", height: 50, alt: "République francaise", class: "d-none d-sm-inline navbar-france-logo" %>
@@ -33,13 +33,15 @@
   </nav>
   <% unless logged_in? || controller.controller_name.include?("sessions") %>
     <div class="sub-header d-none d-md-flex marianne">
-      <%= link_to "https://communaute.inclusion.beta.gouv.fr/", class: "nav-link optional-link ", target: :blank, rel: "noopener noreferrer" do %>
-        <p class="mb-0">Communauté de l'inclusion&nbsp;<i class="fas fa-external-link-alt"></i></p>
-      <% end %>
-      <%= link_to "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/", target: :blank, class: "nav-link optional-link" do %>
-        <p class="mb-0">Guide d'utilisation&nbsp;<i class="fas fa-external-link-alt"></i></p>
-      <% end %>
-      <%= link_to "Contacter l'équipe", "mailto:data.insertion@beta.gouv.fr", class: "nav-link optional-link" %>
+      <div class="container d-none d-md-flex ">
+        <%= link_to "https://communaute.inclusion.beta.gouv.fr/", class: "nav-link optional-link ", target: :blank, rel: "noopener noreferrer" do %>
+          <p class="mb-0">Communauté de l'inclusion&nbsp;<i class="fas fa-external-link-alt"></i></p>
+        <% end %>
+        <%= link_to "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/", target: :blank, class: "nav-link optional-link" do %>
+          <p class="mb-0">Guide d'utilisation&nbsp;<i class="fas fa-external-link-alt"></i></p>
+        <% end %>
+        <%= link_to "Contacter l'équipe", "mailto:data.insertion@beta.gouv.fr", class: "nav-link optional-link" %>
+      </div>
     </div>
   <% end %>
 </header>

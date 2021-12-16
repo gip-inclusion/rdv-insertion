@@ -1,11 +1,14 @@
+header {
+  background-color: white;
+  box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.07),0 1px 0 0 rgba(0, 0, 0,0.03);
+}
+
 .navbar {
   transition: all 0.3s ease;
   height: 70px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.07),0 1px 0 0 rgba(0, 0, 0,0.03);
-  background-color: white;
 }
 
 .navbar-france-logo {
@@ -17,12 +20,11 @@
   display: flex;
   align-items: center;
   justify-content: left;
-  background-color: white;
   border-top: 1px solid $dark-grey;
-  box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.07),0 1px 0 0 rgba(0, 0, 0,0.03);
   position: relative;
   z-index: 2;
   p, a {
     font-size: 12px;
+    color: black;
   }
 }

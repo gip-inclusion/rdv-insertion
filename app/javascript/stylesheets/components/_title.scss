@@ -28,6 +28,13 @@
   }
 }
 
+.legal-notice {
+  h1, h2 {
+    font-weight: 600;
+    margin-top: 25px;
+  }
+}
+
 @media (max-width: 500px) {
   .welcome-title {
     h1 {
