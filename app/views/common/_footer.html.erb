@@ -1,14 +1,58 @@
-<div class="footer navbar-static-bottom">
-  <div class="footer-links">
-    <%= link_to "https://beta.gouv.fr/", class: "mr-2", target: "_blank", rel: "noopener noreferrer" do %>
-      <%= image_pack_tag "logos/betagouv-disque.png", height: 50, alt: "Beta gouv" %>
-    <% end %>
+<footer class="marianne">
+  <div class="container">
+    <div class="footer-top row">
+      <div class="col-8 col-md-4">
+        <%= image_pack_tag "logos/republique-francaise-logo.svg", alt: "Logo République francaise", class: "footer-france-logo" %>
+      </div>
+      <div class="footer-top-links d-flex col-8 col-md-7 col-lg-5 col-xl-4 justify-content-between flex-wrap">
+        <div>
+          <h4>Ressources</h4>
+          <ul class="footer-top-list">
+            <li>
+              <%= link_to "Guide d'utilisation", "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/", target: :blank %>
+            </li>
+            <li>
+              <%= link_to "Statistiques", stats_path %>
+            </li>
+            <li>
+              <%= link_to "Lecteur flux CNAF", "https://betagouv.github.io/analyse-flux-insertion/", target: :blank %>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h4>Nos partenaires</h4>
+          <ul class="footer-top-list">
+            <li>
+              <%= link_to "RDV-Solidarités", "https://www.rdv-solidarites.fr/", target: :blank %>
+            </li>
+            <li>
+              <%= link_to "CNAF", "https://www.caf.fr/", target: :blank %>
+            </li>
+            <li>
+              <%= link_to "Pôle emploi", "https://www.pole-emploi.fr/accueil/", target: :blank %>
+            </li>
+            <li>
+              <%= link_to "MSA", "https://www.msa.fr/lfp", target: :blank %>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <ul class="footer-bottom-list">
+        <li class="footer-bottom-list-item">
+          <%= link_to 'Mentions légales', mentions_legales_path %>
+        </li>
+        <li class="footer-bottom-list-item">
+          <%= link_to 'Politique de confidentialité', politique_de_confidentialite_path %>
+        </li>
+        <li class="footer-bottom-list-item">
+          <%= link_to "Accessibilité: non conforme", accessibilite_path %>
+        </li>
+      </ul>
+      <div>
+        <p>Sauf mention contraire, tous les textes de ce site sont sous <a href="https://github.com/etalab/licence-ouverte/blob/master/LO.md" target="_blank">licence etalab-2.0</a></p>
+      </div>
+    </div>
   </div>
-  <div class="nav">
-    <%= link_to "Guide d'utilisation", "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/", class: "nav-link optional-link", target: "_blank", rel: "noopener noreferrer" %>
-    <%= link_to "Statistiques", stats_path, class: "nav-link optional-link" %>
-    <%= link_to "RDV-Solidarités", "https://www.rdv-solidarites.fr/", class: "nav-link optional-link", target: "_blank", rel: "noopener noreferrer" %>
-    <%= link_to "Lecteur Flux CNAF", "https://betagouv.github.io/analyse-flux-insertion/", class: "nav-link optional-link", target: "_blank", rel: "noopener noreferrer" %>
-    <%= link_to "Contacter data.insertion", "mailto:data.insertion@beta.gouv.fr", class: "nav-link" %>
-  </div>
-</div>
+</footer>

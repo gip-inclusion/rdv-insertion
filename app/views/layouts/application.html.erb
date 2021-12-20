@@ -15,7 +15,9 @@
   <body>
     <%= render 'common/header' %>
     <%= render 'common/flash' %>
-    <%= yield %>
+    <div class="wrapper">
+      <%= yield %>
+    </div>
     <%= render 'common/footer' %>
   </body>
 </html>

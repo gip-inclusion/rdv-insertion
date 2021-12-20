@@ -22,11 +22,6 @@ html {
   min-height: 100%;
 }
 
-.container,
-.container-fluid {
-  margin-bottom: 85px;
-}
-
 a {
   text-decoration: none;
   color: black;
@@ -37,4 +32,11 @@ a {
 
 body {
   background-color: $light;
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+}
+
+.wrapper {
+  flex:1
 }
