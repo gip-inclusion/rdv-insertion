@@ -80,7 +80,7 @@ class Applicant < ApplicationRecord
   def orientation_delay_in_days
     return unless oriented?
 
-    starting_date = created_at - 3.days
+    starting_date = rights_opening_date || (created_at - 3.days)
     orientation_date.to_datetime.mjd - starting_date.to_datetime.mjd
   end
 

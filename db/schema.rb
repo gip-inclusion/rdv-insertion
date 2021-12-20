@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_13_175536) do
+ActiveRecord::Schema.define(version: 2021_12_14_113405) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,6 +45,7 @@ ActiveRecord::Schema.define(version: 2021_12_13_175536) do
     t.date "birth_date"
     t.date "invitation_accepted_at"
     t.integer "status", default: 0
+    t.date "rights_opening_date"
     t.index ["rdv_solidarites_user_id"], name: "index_applicants_on_rdv_solidarites_user_id", unique: true
     t.index ["status"], name: "index_applicants_on_status"
     t.index ["uid"], name: "index_applicants_on_uid", unique: true
@@ -115,7 +116,7 @@ ActiveRecord::Schema.define(version: 2021_12_13_175536) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "department_id"
-    t.string "rsa_agents_service_id"
+    t.string "rsa_agents_service_id", default: "4"
     t.index ["department_id"], name: "index_organisations_on_department_id"
     t.index ["rdv_solidarites_organisation_id"], name: "index_organisations_on_rdv_solidarites_organisation_id", unique: true
   end

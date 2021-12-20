@@ -104,6 +104,10 @@ export default function ApplicantsUpload({ organisation, configuration, departme
                   parameterizedColumnNames.birth_name && row[parameterizedColumnNames.birth_name],
                 customId:
                   parameterizedColumnNames.custom_id && row[parameterizedColumnNames.custom_id],
+                rightsOpeningDate:
+                  parameterizedColumnNames.rights_opening_date &&
+                  row[parameterizedColumnNames.rights_opening_date] &&
+                  excelDateToString(row[parameterizedColumnNames.rights_opening_date]),
               },
               department.number,
               organisation,
@@ -229,6 +233,9 @@ export default function ApplicantsUpload({ organisation, configuration, departme
                     {parameterizedColumnNames.email && <th scope="col">Email</th>}
                     {parameterizedColumnNames.phone_number && <th scope="col">Téléphone</th>}
                     {parameterizedColumnNames.custom_id && <th scope="col">ID Editeur</th>}
+                    {parameterizedColumnNames.rights_opening_date && (
+                      <th scope="col">Date d&apos;entrée flux</th>
+                    )}
                     <th scope="col" style={{ whiteSpace: "nowrap" }}>
                       Création compte
                     </th>
