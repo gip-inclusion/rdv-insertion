@@ -238,8 +238,7 @@ fr:
   phone: "par téléphone"
   home: "à domicile"
   with_prefix:
-    le: "du "
-    la: "de la "
-    l': "de l'"
-    les: "des "
-
+    le: "du %{name}"
+    la: "de la %{name}"
+    l': "de l'%{name}"
+    les: "des %{name}"

@@ -1,5 +1,5 @@
 class Department < ApplicationRecord
-  validates :name, :capital, :number, presence: true
+  validates :name, :capital, :number, :pronoun, presence: true
 
   has_many :organisations, dependent: :nullify
   has_many :applicants, through: :organisations
