@@ -1,8 +1,14 @@
 <h1>Bonjour <%= "#{@applicant.first_name} #{@applicant.last_name.upcase}" %>,</h1>
-<p>Vous êtes bénéficiaire du RSA et vous allez à ce titre bénéficier d’un accompagnement obligatoire.</p>
-<p><span class="font-weight-bold">Pour pouvoir choisir la date et l'horaire de votre premier rendez-vous</span>, vous pouvez accéder au service RDV-Solidarités en cliquant sur le bouton suivant <span class="font-weight-bold">dans les 3 jours</span>. Passé ce délai vous recevrez une convocation.</p>
+<p>Vous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous d’accompagnement.</p>
+<p><span class="font-weight-bold">Pour pouvoir choisir la date et l'horaire de votre rendez-vous</span>, vous pouvez accéder au service RDV-Solidarités en cliquant sur le bouton suivant <span class="font-weight-bold">dans les 3 jours</span>. Ce rendez-vous est obligatoire.</p>
 <p class="btn-wrapper">
   <a href="<%= redirect_invitations_url(params: { token: @invitation.token, format: "email" }, host: ENV['HOST']) %>" class="btn btn-primary">Je prends RDV</a>
 </p>
 <p>En cas de problème technique, contactez le <%= @invitation.organisation.phone_number.gsub(/\d{2}/, '\& ') %></p>
-
+<p>À bientôt,</p>
+<p>Le département <%= I18n.t("with_prefix.#{@invitation.department.pronoun}", name: @invitation.department.name) %>.</p>
+<% if File.exist?("app/javascript/images/logos/#{@invitation.department.name.parameterize}.png") %>
+  <%= image_pack_tag "logos/#{@invitation.department.name.parameterize}.png", alt: "Logo du département", class: "department-logo" %>
+<% elsif File.exist?("app/javascript/images/logos/#{@invitation.department.name.parameterize}.jpg") %>
+  <%= image_pack_tag "logos/#{@invitation.department.name.parameterize}.jpg", alt: "Logo du département", class: "department-logo" %>
+<% end %>

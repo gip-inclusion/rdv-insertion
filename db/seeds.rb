@@ -3,7 +3,8 @@ puts "Creating organisations..."
 Department.create!(
   number: '08',
   name: 'Ardennes',
-  capital: 'Charlevilles-Mézières'
+  capital: 'Charlevilles-Mézières',
+  pronoun: "les"
 )
 
 Organisation.create!(

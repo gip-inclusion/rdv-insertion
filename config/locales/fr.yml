@@ -237,3 +237,8 @@ fr:
   public_office: "sur place"
   phone: "par téléphone"
   home: "à domicile"
+  with_prefix:
+    le: "du %{name}"
+    la: "de la %{name}"
+    l': "de l'%{name}"
+    les: "des %{name}"

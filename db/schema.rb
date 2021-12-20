@@ -81,6 +81,7 @@ ActiveRecord::Schema.define(version: 2021_12_14_113405) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "region"
+    t.string "pronoun"
   end
 
   create_table "invitations", force: :cascade do |t|
@@ -115,7 +116,7 @@ ActiveRecord::Schema.define(version: 2021_12_14_113405) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "department_id"
-    t.string "rsa_agents_service_id"
+    t.string "rsa_agents_service_id", default: "4"
     t.index ["department_id"], name: "index_organisations_on_department_id"
     t.index ["rdv_solidarites_organisation_id"], name: "index_organisations_on_rdv_solidarites_organisation_id", unique: true
   end

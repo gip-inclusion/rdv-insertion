@@ -5,7 +5,8 @@ RSpec.describe InvitationMailer, type: :mailer do
 
   describe "#first_invitation" do
     let!(:rdv_solidarites_user_id) { 14 }
-    let!(:organisation) { create(:organisation, phone_number: "0123456789") }
+    let!(:department) { create(:department, name: "Drôme", pronoun: "la") }
+    let!(:organisation) { create(:organisation, phone_number: "0123456789", department: department) }
     let!(:applicant) do
       create(:applicant, organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id)
     end
@@ -22,6 +23,7 @@ RSpec.describe InvitationMailer, type: :mailer do
 
     it "renders the body" do
       expect(subject.body.encoded).to match("Bonjour #{applicant.first_name} #{applicant.last_name.upcase},")
+      expect(subject.body.encoded).to match("Le département de la Drôme.")
     end
   end
 end
