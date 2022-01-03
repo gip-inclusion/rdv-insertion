@@ -10,7 +10,7 @@ describe UpsertApplicant, type: :service do
   let(:applicant_data) do
     {
       uid: "1234xyz", first_name: "john", last_name: "doe",
-      address: "16 rue de la tour", email: "johndoe@example.com",
+      address: "16 rue de la tour", email: "johndoe@example.com", birth_name: "",
       role: "demandeur", birth_date: "1989/03/17", affiliation_number: "aff123", phone_number: "+33612459567"
     }
   end
@@ -62,7 +62,7 @@ describe UpsertApplicant, type: :service do
         {
           first_name: "john", last_name: "doe",
           address: "16 rue de la tour", email: "johndoe@example.com", phone_number: "+33612459567",
-          affiliation_number: "aff123", birth_date: Date.parse("1989/03/17"),
+          affiliation_number: "aff123", birth_date: Date.parse("1989/03/17"), birth_name: "",
           notify_by_sms: true,
           notify_by_email: true,
           organisation_ids: [organisation.rdv_solidarites_organisation_id]

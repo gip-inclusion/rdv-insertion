@@ -1,6 +1,6 @@
 class Applicant < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [
-    :first_name, :last_name, :birth_date, :email, :phone_number, :address, :affiliation_number
+    :first_name, :last_name, :birth_date, :email, :phone_number, :address, :affiliation_number, :birth_name
   ].freeze
 
   STATUSES_WITH_ACTION_REQUIRED = %w[
