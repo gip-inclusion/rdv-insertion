@@ -53,6 +53,20 @@ describe RdvSolidaritesWebhooksController, type: :controller do
     end
   end
 
+  context "for an organisation" do
+    let!(:meta) { { event: "updated", model: "Organisation" } }
+
+    it "enqueues the organisation job" do
+      request.headers["X-Lapin-Signature"] = OpenSSL::HMAC.hexdigest(
+        "SHA256", "i am secret", webhook_params.to_json
+      )
+      expect(RdvSolidaritesWebhooks::ProcessOrganisationJob).to receive(:perform_async)
+        .with(data, meta)
+      post :create, params: webhook_params, as: :json
+      expect(response).to be_successful
+    end
+  end
+
   context "when the webhook is not verified" do
     it "is a bad request" do
       request.headers["X-Lapin-Signature"] = "wrong signature"
