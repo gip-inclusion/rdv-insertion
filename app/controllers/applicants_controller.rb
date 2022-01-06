@@ -18,8 +18,8 @@ class ApplicantsController < ApplicationController
     @applicant = Applicant.new(organisations: [@organisation], **applicant_params)
     authorize @applicant
     respond_to do |format|
-      format.html { upsert_applicant_and_redirect(:new) }
-      format.json { upsert_applicant_and_render }
+      format.html { save_applicant_and_redirect(:new) }
+      format.json { save_applicant_and_render }
     end
   end
 
@@ -53,8 +53,8 @@ class ApplicantsController < ApplicationController
     )
     authorize @applicant
     respond_to do |format|
-      format.html { upsert_applicant_and_redirect(:edit) }
-      format.json { upsert_applicant_and_render }
+      format.html { save_applicant_and_redirect(:edit) }
+      format.json { save_applicant_and_render }
     end
   end
 
@@ -64,25 +64,25 @@ class ApplicantsController < ApplicationController
     params.require(:applicant).permit(*PERMITTED_PARAMS)
   end
 
-  def upsert_applicant_and_redirect(page)
-    if upsert_applicant.success?
+  def save_applicant_and_redirect(page)
+    if save_applicant.success?
       redirect_to organisation_applicant_path(@organisation, @applicant)
     else
-      flash.now[:error] = upsert_applicant.errors&.join(',')
+      flash.now[:error] = save_applicant.errors&.join(',')
       render page
     end
   end
 
-  def upsert_applicant_and_render
-    if upsert_applicant.success?
+  def save_applicant_and_render
+    if save_applicant.success?
       render json: { success: true, applicant: @applicant }
     else
-      render json: { success: false, errors: upsert_applicant.errors }
+      render json: { success: false, errors: save_applicant.errors }
     end
   end
 
-  def upsert_applicant
-    @upsert_applicant ||= UpsertApplicant.call(
+  def save_applicant
+    @save_applicant ||= SaveApplicant.call(
       applicant: @applicant,
       organisation: @organisation,
       rdv_solidarites_session: rdv_solidarites_session

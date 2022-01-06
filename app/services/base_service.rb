@@ -10,12 +10,7 @@ class BaseService
       output = service.call
       format_result(output, service.result)
     rescue FailedServiceError => e
-      errors = service.result.errors
-      raise UnexpectedResultBehaviourError unless errors.is_a? Array
-
-      # we add the exception message only if it is a custom message
-      errors << e.message if e.message != e.class.to_s
-      OpenStruct.new(success?: false, failure?: true, errors: errors)
+      format_error(service.result, e)
     end
 
     private
@@ -33,6 +28,18 @@ class BaseService
 
       result[:success?] = result.errors.blank?
       result[:failure?] = result.errors.present?
+      result
+    end
+
+    def format_error(result, exception)
+      errors = result.errors
+      raise UnexpectedResultBehaviourError unless errors.is_a? Array
+
+      # we add the exception message only if it is a custom message
+      errors << exception.message if exception.message != exception.class.to_s
+      result.errors = errors
+      result[:success?] = false
+      result[:failure?] = true
       result
     end
   end

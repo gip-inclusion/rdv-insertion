@@ -13,7 +13,14 @@ module RdvSolidaritesApi
     def request!
       return if rdv_solidarites_response.success?
 
+      fail_with_errors
+    end
+
+    def fail_with_errors
+      fail!("record not found") if rdv_solidarites_response.status == 404
+
       result.errors << "Erreur RDV-Solidarités: #{rdv_solidarites_response_body['error_messages']&.join(',')}"
+      result.error_details = rdv_solidarites_response_body["errors"]
       fail!
     end
 

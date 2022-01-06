@@ -34,9 +34,9 @@ const assignOrganisation = async (applicant) => {
   );
   if (result.success) {
     if (result.geolocated_organisations.length === 1) {
-      [applicant.organisation] = result.geolocated_organisations;
+      [applicant.currentOrganisation] = result.geolocated_organisations;
     } else {
-      applicant.organisation = await chooseOrganisationModal(
+      applicant.currentOrganisation = await chooseOrganisationModal(
         result.geolocated_organisations.length > 1
           ? result.geolocated_organisations
           : result.department_organisations,
@@ -44,7 +44,7 @@ const assignOrganisation = async (applicant) => {
       );
     }
   } else {
-    applicant.organisation = await chooseOrganisationModal(
+    applicant.currentOrganisation = await chooseOrganisationModal(
       result.department_organisations,
       applicant.fullAddress,
       result.errors

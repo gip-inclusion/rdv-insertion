@@ -1,37 +1,52 @@
 import React, { useState } from "react";
+import Swal from "sweetalert2";
 
 import handleApplicantCreation from "../lib/handleApplicantCreation";
 import handleApplicantInvitation from "../lib/handleApplicantInvitation";
 import assignOrganisation from "../lib/assignOrganisation";
+import updateApplicant from "../actions/updateApplicant";
 
 export default function Applicant({ applicant, dispatchApplicants }) {
   const [isLoading, setIsLoading] = useState({
     accountCreation: false,
     smsInvitation: false,
     emailInvitation: false,
+    addToOrganisation: false,
   });
 
   const handleClick = async (action) => {
     setIsLoading({ ...isLoading, [action]: true });
     if (action === "accountCreation") {
-      if (!applicant.organisation?.id) {
+      if (!applicant.currentOrganisation) {
         await assignOrganisation(applicant);
-        if (!applicant.organisation?.id) {
+        // If there is still no organisation it means the assignation was cancelled by agent
+        if (!applicant.currentOrganisation) {
           setIsLoading({ ...isLoading, [action]: false });
           return;
         }
       }
-      await handleApplicantCreation(applicant, applicant.organisation.id);
+      await handleApplicantCreation(applicant, applicant.currentOrganisation.id);
+    } else if (action === "addToOrganisation") {
+      const result = await updateApplicant(
+        applicant.currentOrganisation.id,
+        applicant.id,
+        applicant.asJson()
+      );
+      if (result.success) {
+        applicant.updateWith(result.applicant);
+      } else {
+        Swal.fire("Impossible d'assigner à l'orrganisation", result.errors[0], "error");
+      }
     } else if (action === "smsInvitation") {
       const invitation = await handleApplicantInvitation(
-        applicant.organisation.id,
+        applicant.currentOrganisation.id,
         applicant.id,
         "sms"
       );
       applicant.lastSmsInvitationSentAt = invitation.sent_at;
     } else if (action === "emailInvitation") {
       const invitation = await handleApplicantInvitation(
-        applicant.organisation.id,
+        applicant.currentOrganisation.id,
         applicant.id,
         "email"
       );
@@ -59,10 +74,23 @@ export default function Applicant({ applicant, dispatchApplicants }) {
       {applicant.shouldDisplay("email") && <td>{applicant.email ?? " - "}</td>}
       {applicant.shouldDisplay("phone_number") && <td>{applicant.phoneNumber ?? " - "}</td>}
       {applicant.shouldDisplay("custom_id") && <td>{applicant.customId ?? " - "}</td>}
-      {applicant.shouldDisplay("rights_opening_date") && <td>{applicant.rightsOpeningDate ?? " - "}</td>}
+      {applicant.shouldDisplay("rights_opening_date") && (
+        <td>{applicant.rightsOpeningDate ?? " - "}</td>
+      )}
       <td>
         {applicant.createdAt ? (
-          <i className="fas fa-check green-check" />
+          applicant.canBeAddedToOrganisation() ? (
+            <button
+              type="submit"
+              disabled={isLoading.addToOrganisation}
+              className="btn btn-primary btn-blue"
+              onClick={() => handleClick("addToOrganisation")}
+            >
+              {isLoading.addToOrganisation ? "En cours..." : "Ajouter à cette organisation"}
+            </button>
+          ) : (
+            <i className="fas fa-check green-check" />
+          )
         ) : (
           <button
             type="submit"
