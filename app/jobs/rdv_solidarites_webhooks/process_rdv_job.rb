@@ -6,7 +6,7 @@ module RdvSolidaritesWebhooks
       @data = data.deep_symbolize_keys
       @meta = meta.deep_symbolize_keys
       check_organisation!
-      return send_no_applicants_to_mattermost if applicants.empty?
+      return if applicants.empty?
 
       check_applicants_organisation!
       upsert_or_delete_rdv
@@ -28,13 +28,6 @@ module RdvSolidaritesWebhooks
         WebhookProcessingJobError,
         "Applicants / Organisation mismatch: applicant_ids: #{applicant_ids} - organisation_id #{organisation.id} - " \
         "data: #{@data} - meta: #{@meta}"
-      )
-    end
-
-    def send_no_applicants_to_mattermost
-      MattermostClient.send_to_notif_channel(
-        "Webhook not linked to RDVI applicants.\n" \
-        "RDV Solidarites ids: #{rdv_solidarites_user_ids} - organisation id: #{organisation.id}\n"
       )
     end
 

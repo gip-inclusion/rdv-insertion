@@ -80,11 +80,6 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
         end
         subject
       end
-
-      it "sends a message to mattermost" do
-        expect(MattermostClient).to receive(:send_to_notif_channel)
-        subject
-      end
     end
 
     context "when there is a mismatch between one applicant and the organisation" do
