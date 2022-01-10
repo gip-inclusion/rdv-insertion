@@ -6,11 +6,8 @@ describe RdvSolidaritesApi::CreateUser, type: :service do
   let(:user_attributes) do
     { first_name: "john", last_name: "doe", address: "16 rue de la tour", email: "johndoe@example.com" }
   end
-  let(:rdv_solidarites_session) do
-    { client: "client", uid: "johndoe@example.com", access_token: "token" }
-  end
-
-  let(:rdv_solidarites_client) { RdvSolidaritesClient.new(rdv_solidarites_session) }
+  let(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
+  let(:rdv_solidarites_client) { instance_double(RdvSolidaritesClient) }
 
   describe "#call" do
     let(:response_body) do
@@ -19,8 +16,7 @@ describe RdvSolidaritesApi::CreateUser, type: :service do
     let(:parsed_response) { JSON.parse(response_body) }
 
     before do
-      allow(RdvSolidaritesClient).to receive(:new)
-        .with(rdv_solidarites_session)
+      allow(rdv_solidarites_session).to receive(:rdv_solidarites_client)
         .and_return(rdv_solidarites_client)
       allow(rdv_solidarites_client).to receive(:create_user)
         .with(user_attributes)

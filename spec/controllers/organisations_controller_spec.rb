@@ -42,7 +42,7 @@ describe OrganisationsController, type: :controller do
     subject { get :geolocated, params: { department_number: department_number, address: address } }
 
     let!(:agent) { create(:agent, organisations: [organisation, organisation2]) }
-
+    let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
     let!(:department) { create(:department, number: department_number) }
     let!(:organisation) { create(:organisation, department: department) }
     let!(:organisation2) do
@@ -60,13 +60,13 @@ describe OrganisationsController, type: :controller do
 
     before do
       sign_in(agent)
-      set_rdv_solidarites_session
+      setup_rdv_solidarites_session(rdv_solidarites_session)
       allow(RetrieveGeolocalisation).to receive(:call)
         .with(address: address, department: department)
         .and_return(OpenStruct.new(success?: true, city_code: city_code, street_ban_id: street_ban_id))
       allow(RdvSolidaritesApi::RetrieveOrganisations).to receive(:call)
         .with(
-          rdv_solidarites_session: request.session[:rdv_solidarites],
+          rdv_solidarites_session: rdv_solidarites_session,
           geo_attributes: geo_attributes
         ).and_return(OpenStruct.new(success?: true, organisations: [rdv_solidarites_organisation]))
     end
@@ -110,7 +110,7 @@ describe OrganisationsController, type: :controller do
       before do
         allow(RdvSolidaritesApi::RetrieveOrganisations).to receive(:call)
           .with(
-            rdv_solidarites_session: request.session[:rdv_solidarites],
+            rdv_solidarites_session: rdv_solidarites_session,
             geo_attributes: geo_attributes
           ).and_return(OpenStruct.new(success?: false, errors: ["some error"]))
       end

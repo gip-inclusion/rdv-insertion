@@ -1,5 +1,5 @@
 class RdvSolidaritesClient
-  def initialize(rdv_solidarites_session)
+  def initialize(rdv_solidarites_session:)
     @rdv_solidarites_session = rdv_solidarites_session
     @url = ENV['RDV_SOLIDARITES_URL']
   end
@@ -70,14 +70,22 @@ class RdvSolidaritesClient
     )
   end
 
+  def validate_token
+    Faraday.get(
+      "#{@url}/api/v1/auth/validate_token",
+      {},
+      request_headers
+    )
+  end
+
   private
 
   def request_headers
     {
       "Content-Type" => "application/json",
-      "uid" => @rdv_solidarites_session['uid'],
-      "access_token" => @rdv_solidarites_session['access_token'],
-      "client" => @rdv_solidarites_session['client']
+      "uid" => @rdv_solidarites_session.uid,
+      "access_token" => @rdv_solidarites_session.access_token,
+      "client" => @rdv_solidarites_session.client
     }
   end
 end

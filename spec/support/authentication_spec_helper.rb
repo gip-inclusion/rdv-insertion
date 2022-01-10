@@ -3,7 +3,12 @@ module AuthenticationSpecHelper
     request.session[:agent_id] = agent.id
   end
 
-  def set_rdv_solidarites_session
-    request.session[:rdv_solidarites] = { client: "client", uid: "johndoe@example.com", access_token: "token" }
+  def setup_rdv_solidarites_session(session_object)
+    request.session["rdv_solidarites"] = {
+      "client" => "client", "uid" => "johndoe@example.com", "access_token" => "token"
+    }
+    allow(RdvSolidaritesSession).to receive(:new)
+      .with(client: "client", uid: "johndoe@example.com", access_token: "token")
+      .and_return(session_object)
   end
 end

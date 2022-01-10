@@ -7,18 +7,16 @@ describe RdvSolidaritesApi::RetrieveUser, type: :service do
   end
 
   let!(:rdv_solidarites_user_id) { 27 }
-  let(:rdv_solidarites_session) do
-    { client: "client", uid: "johndoe@example.com", access_token: "token" }
-  end
+  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
+  let!(:rdv_solidarites_client) { instance_double(RdvSolidaritesClient) }
 
   describe "#call" do
-    let!(:rdv_solidarites_client) { instance_double(RdvSolidaritesClient) }
     let!(:user) do
       { 'id' => 5, 'first_name' => 'Dimitri', 'last_name' => 'Payet', 'phone_number' => '+33782122222' }
     end
 
     before do
-      allow(RdvSolidaritesClient).to receive(:new)
+      allow(rdv_solidarites_session).to receive(:rdv_solidarites_client)
         .and_return(rdv_solidarites_client)
       allow(rdv_solidarites_client).to receive(:get_user)
         .and_return(OpenStruct.new(success?: true, body: { 'user' => user }.to_json))
@@ -28,8 +26,6 @@ describe RdvSolidaritesApi::RetrieveUser, type: :service do
       it("is a success") { is_a_success }
 
       it "retrieves the user" do
-        expect(RdvSolidaritesClient).to receive(:new)
-          .with(rdv_solidarites_session)
         expect(rdv_solidarites_client).to receive(:get_user)
           .with(rdv_solidarites_user_id)
         subject

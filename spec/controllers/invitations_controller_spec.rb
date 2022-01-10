@@ -6,10 +6,11 @@ describe InvitationsController, type: :controller do
     let!(:agent) { create(:agent, organisations: [organisation]) }
     let!(:applicant) { create(:applicant, organisations: [organisation], id: applicant_id) }
     let!(:create_params) { { organisation_id: organisation.id, applicant_id: applicant_id, format: "sms" } }
+    let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
 
     before do
       sign_in(agent)
-      set_rdv_solidarites_session
+      setup_rdv_solidarites_session(rdv_solidarites_session)
       allow(Invitations::InviteApplicant).to receive(:call)
         .and_return(OpenStruct.new)
       allow(Organisation).to receive(:find)
@@ -36,7 +37,7 @@ describe InvitationsController, type: :controller do
       expect(Invitations::InviteApplicant).to receive(:call)
         .with(
           applicant: applicant,
-          rdv_solidarites_session: request.session[:rdv_solidarites],
+          rdv_solidarites_session: rdv_solidarites_session,
           organisation: organisation,
           invitation_format: "sms"
         )
