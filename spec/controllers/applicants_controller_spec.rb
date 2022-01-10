@@ -26,7 +26,7 @@ describe ApplicantsController, type: :controller do
     before do
       sign_in(agent)
       setup_rdv_solidarites_session(rdv_solidarites_session)
-      allow(UpsertApplicant).to receive(:call)
+      allow(SaveApplicant).to receive(:call)
         .and_return(OpenStruct.new)
     end
 
@@ -43,7 +43,7 @@ describe ApplicantsController, type: :controller do
       end
 
       it "calls the service" do
-        expect(UpsertApplicant).to receive(:call)
+        expect(SaveApplicant).to receive(:call)
         post :create, params: applicant_params
       end
 
@@ -51,7 +51,7 @@ describe ApplicantsController, type: :controller do
         let!(:another_organisation) { create(:organisation) }
 
         it "does not call the service" do
-          expect(UpsertApplicant).not_to receive(:call)
+          expect(SaveApplicant).not_to receive(:call)
           post :create, params: applicant_params.merge(organisation_id: another_organisation.id)
         end
       end
@@ -60,7 +60,7 @@ describe ApplicantsController, type: :controller do
         let(:applicant) { create(:applicant, organisations: [organisation]) }
 
         before do
-          allow(UpsertApplicant).to receive(:call)
+          allow(SaveApplicant).to receive(:call)
             .and_return(OpenStruct.new(success?: true))
           allow(Applicant).to receive(:new)
             .and_return(applicant)
@@ -74,7 +74,7 @@ describe ApplicantsController, type: :controller do
 
       context "when the creation fails" do
         before do
-          allow(UpsertApplicant).to receive(:call)
+          allow(SaveApplicant).to receive(:call)
             .and_return(OpenStruct.new(success?: false, errors: ['some error']))
         end
 
@@ -99,7 +99,7 @@ describe ApplicantsController, type: :controller do
       end
 
       it "calls the service" do
-        expect(UpsertApplicant).to receive(:call)
+        expect(SaveApplicant).to receive(:call)
         post :create, params: applicant_params
       end
 
@@ -112,7 +112,7 @@ describe ApplicantsController, type: :controller do
         end
 
         it "does not call the service" do
-          expect(UpsertApplicant).not_to receive(:call)
+          expect(SaveApplicant).not_to receive(:call)
           post :create, params: applicant_params.merge(organisation_id: another_organisation.id)
         end
       end
@@ -121,7 +121,7 @@ describe ApplicantsController, type: :controller do
         let!(:applicant) { create(:applicant) }
 
         before do
-          allow(UpsertApplicant).to receive(:call)
+          allow(SaveApplicant).to receive(:call)
             .and_return(OpenStruct.new(success?: true, applicant: applicant))
         end
 
@@ -134,7 +134,7 @@ describe ApplicantsController, type: :controller do
 
       context "when the creation fails" do
         before do
-          allow(UpsertApplicant).to receive(:call)
+          allow(SaveApplicant).to receive(:call)
             .and_return(OpenStruct.new(success?: false, errors: ['some error']))
         end
 
@@ -298,12 +298,12 @@ describe ApplicantsController, type: :controller do
       end
 
       before do
-        allow(UpsertApplicant).to receive(:call)
+        allow(SaveApplicant).to receive(:call)
           .and_return(OpenStruct.new)
       end
 
       it "calls the service" do
-        expect(UpsertApplicant).to receive(:call)
+        expect(SaveApplicant).to receive(:call)
         post :update, params: update_params
       end
 
@@ -318,13 +318,13 @@ describe ApplicantsController, type: :controller do
 
         it "does not call the service" do
           post :update, params: update_params
-          expect(UpsertApplicant).not_to receive(:call)
+          expect(SaveApplicant).not_to receive(:call)
         end
       end
 
       context "when the update succeeds" do
         before do
-          allow(UpsertApplicant).to receive(:call)
+          allow(SaveApplicant).to receive(:call)
             .and_return(OpenStruct.new(success?: true, applicant: applicant))
         end
 
@@ -337,7 +337,7 @@ describe ApplicantsController, type: :controller do
 
       context "when the creation fails" do
         before do
-          allow(UpsertApplicant).to receive(:call)
+          allow(SaveApplicant).to receive(:call)
             .and_return(OpenStruct.new(success?: false, errors: ['some error']))
         end
 
@@ -364,12 +364,12 @@ describe ApplicantsController, type: :controller do
       before do
         sign_in(agent)
         setup_rdv_solidarites_session(rdv_solidarites_session)
-        allow(UpsertApplicant).to receive(:call)
+        allow(SaveApplicant).to receive(:call)
           .and_return(OpenStruct.new)
       end
 
       it "calls the service" do
-        expect(UpsertApplicant).to receive(:call)
+        expect(SaveApplicant).to receive(:call)
           .with(
             applicant: applicant,
             organisation: organisation,
@@ -388,14 +388,14 @@ describe ApplicantsController, type: :controller do
         end
 
         it "does not call the service" do
-          expect(UpsertApplicant).not_to receive(:call)
+          expect(SaveApplicant).not_to receive(:call)
           patch :update, params: update_params
         end
       end
 
       context "when the update succeeds" do
         before do
-          allow(UpsertApplicant).to receive(:call)
+          allow(SaveApplicant).to receive(:call)
             .and_return(OpenStruct.new(success?: true, applicant: applicant))
         end
 
@@ -407,7 +407,7 @@ describe ApplicantsController, type: :controller do
 
       context "when the creation fails" do
         before do
-          allow(UpsertApplicant).to receive(:call)
+          allow(SaveApplicant).to receive(:call)
             .and_return(OpenStruct.new(success?: false, errors: ['some error']))
         end
 

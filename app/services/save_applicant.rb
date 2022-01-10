@@ -25,7 +25,7 @@ class SaveApplicant < BaseService
   def upsert_rdv_solidarites_user!
     return if upsert_rdv_solidarites_user.success?
 
-    result.errors << upsert_rdv_solidarites_user.errors
+    result.errors += upsert_rdv_solidarites_user.errors
     fail!
   end
 
@@ -33,7 +33,7 @@ class SaveApplicant < BaseService
     @upsert_rdv_solidarites_user ||= UpsertRdvSolidaritesUser.call(
       rdv_solidarites_session: @rdv_solidarites_session,
       rdv_solidarites_organisation_id: @organisation.rdv_solidarites_organisation_id,
-      user_attributes: rdv_solidarites_user_attributes,
+      rdv_solidarites_user_attributes: rdv_solidarites_user_attributes,
       rdv_solidarites_user_id: @applicant.rdv_solidarites_user_id
     )
   end

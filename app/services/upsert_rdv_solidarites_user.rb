@@ -1,7 +1,7 @@
 class UpsertRdvSolidaritesUser < BaseService
-  def initialize(rdv_solidarites_session:, user_attributes:, rdv_solidarites_organisation_id:, rdv_solidarites_user_id:)
+  def initialize(rdv_solidarites_session:, rdv_solidarites_user_attributes:, rdv_solidarites_organisation_id:, rdv_solidarites_user_id:)
     @rdv_solidarites_session = rdv_solidarites_session
-    @user_attributes = user_attributes
+    @rdv_solidarites_user_attributes = rdv_solidarites_user_attributes
     @rdv_solidarites_organisation_id = rdv_solidarites_organisation_id
     @rdv_solidarites_user_id = rdv_solidarites_user_id
   end
@@ -14,7 +14,7 @@ class UpsertRdvSolidaritesUser < BaseService
   private
 
   def rdv_solidarites_user_id
-    @rdv_solidarites_user_id || user_id_from_error_details || create_rdv_solidarites_user.user.id
+    @rdv_solidarites_user_id || user_id_from_email_taken_error || create_rdv_solidarites_user.user.id
   end
 
   def upsert_rdv_solidarites_user!
@@ -28,7 +28,7 @@ class UpsertRdvSolidaritesUser < BaseService
     # and we then update the user
     return assign_to_org_and_udpate! if email_taken_error?
 
-    result.errors << create_rdv_solidarites_user.errors
+    result.errors += create_rdv_solidarites_user.errors
     fail!
   end
 
@@ -37,7 +37,7 @@ class UpsertRdvSolidaritesUser < BaseService
     update_rdv_solidarites_user!
   end
 
-  def user_id_from_error_details
+  def user_id_from_email_taken_error
     create_rdv_solidarites_user.error_details&.dig("email")&.first&.dig("id")
   end
 
@@ -48,7 +48,7 @@ class UpsertRdvSolidaritesUser < BaseService
   def create_user_profile!
     return if create_user_profile.success?
 
-    result.errors << create_user_profile.errors
+    result.errors += create_user_profile.errors
     fail!
   end
 
@@ -74,7 +74,7 @@ class UpsertRdvSolidaritesUser < BaseService
 
   def create_rdv_solidarites_user
     @create_rdv_solidarites_user ||= RdvSolidaritesApi::CreateUser.call(
-      user_attributes: @user_attributes.merge(organisation_ids: [@rdv_solidarites_organisation_id]),
+      user_attributes: @rdv_solidarites_user_attributes.merge(organisation_ids: [@rdv_solidarites_organisation_id]),
       rdv_solidarites_session: @rdv_solidarites_session
     )
   end
@@ -82,13 +82,13 @@ class UpsertRdvSolidaritesUser < BaseService
   def update_rdv_solidarites_user!
     return if update_rdv_solidarites_user.success?
 
-    result.errors << update_rdv_solidarites_user.errors
+    result.errors += update_rdv_solidarites_user.errors
     fail!
   end
 
   def update_rdv_solidarites_user
     @update_rdv_solidarites_user ||= RdvSolidaritesApi::UpdateUser.call(
-      user_attributes: @user_attributes,
+      user_attributes: @rdv_solidarites_user_attributes,
       rdv_solidarites_session: @rdv_solidarites_session,
       rdv_solidarites_user_id: rdv_solidarites_user_id
     )
