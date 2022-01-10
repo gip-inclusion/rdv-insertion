@@ -15,7 +15,8 @@ class RdvSolidaritesWebhooksController < ApplicationController
     {
       "User" => RdvSolidaritesWebhooks::ProcessUserJob,
       "Rdv" => RdvSolidaritesWebhooks::ProcessRdvJob,
-      "UserProfile" => RdvSolidaritesWebhooks::ProcessUserProfileJob
+      "UserProfile" => RdvSolidaritesWebhooks::ProcessUserProfileJob,
+      "Organisation" => RdvSolidaritesWebhooks::ProcessOrganisationJob
     }
   end
 
