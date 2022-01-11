@@ -9,7 +9,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.0.2
+          ruby-version: 3.0.3
           bundler-cache: true
       - run: bundle exec rubocop
   eslint:
@@ -20,7 +20,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.0.2
+          ruby-version: 3.0.3
           bundler-cache: true
       - name: Install JS dependencies
         run: yarn install
@@ -53,7 +53,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.0.2
+          ruby-version: 3.0.3
           bundler-cache: true
       - name: Install JS dependencies
         run: yarn install
