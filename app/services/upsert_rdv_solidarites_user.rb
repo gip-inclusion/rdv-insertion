@@ -1,5 +1,10 @@
 class UpsertRdvSolidaritesUser < BaseService
-  def initialize(rdv_solidarites_session:, rdv_solidarites_user_attributes:, rdv_solidarites_organisation_id:, rdv_solidarites_user_id:)
+  def initialize(
+    rdv_solidarites_session:,
+    rdv_solidarites_user_attributes:,
+    rdv_solidarites_organisation_id:,
+    rdv_solidarites_user_id:
+  )
     @rdv_solidarites_session = rdv_solidarites_session
     @rdv_solidarites_user_attributes = rdv_solidarites_user_attributes
     @rdv_solidarites_organisation_id = rdv_solidarites_organisation_id
