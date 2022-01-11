@@ -107,13 +107,15 @@ export default class Applicant {
     this.currentOrganisation ||= upToDateApplicant.organisations.find(
       (o) => o.department_number === this.departmentNumber
     );
-    // we update the attributes if they are different in the app than in the file
-    this.firstName = upToDateApplicant.first_name;
-    this.lastName = upToDateApplicant.last_name;
-    this.email = upToDateApplicant.email;
-    this.phoneNumber = formatPhoneNumber(upToDateApplicant.phone_number);
-    this.fullAddress = upToDateApplicant.address;
-
+    // we update the attributes with the attributes in DB if the applicant is already created
+    // and cannot be updated from the page
+    if (this.belongsToCurrentOrg()) {
+      this.firstName = upToDateApplicant.first_name;
+      this.lastName = upToDateApplicant.last_name;
+      this.email = upToDateApplicant.email;
+      this.phoneNumber = formatPhoneNumber(upToDateApplicant.phone_number);
+      this.fullAddress = upToDateApplicant.address;
+    }
     this.lastSmsInvitationSentAt = retrieveLastInvitationDate(upToDateApplicant.invitations, "sms");
     this.lastEmailInvitationSentAt = retrieveLastInvitationDate(
       upToDateApplicant.invitations,
@@ -151,10 +153,10 @@ export default class Applicant {
     );
   }
 
-  canBeAddedToOrganisation() {
+  belongsToCurrentOrg() {
     return (
       this.currentOrganisation &&
-      !this.organisations.map((o) => o.id).includes(this.currentOrganisation.id)
+      this.organisations.map((o) => o.id).includes(this.currentOrganisation.id)
     );
   }
 

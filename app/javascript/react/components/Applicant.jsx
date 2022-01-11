@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Swal from "sweetalert2";
+import Tippy from "@tippyjs/react";
 
 import handleApplicantCreation from "../lib/handleApplicantCreation";
 import handleApplicantInvitation from "../lib/handleApplicantInvitation";
@@ -79,17 +80,29 @@ export default function Applicant({ applicant, dispatchApplicants }) {
       )}
       <td>
         {applicant.createdAt ? (
-          applicant.canBeAddedToOrganisation() ? (
-            <button
-              type="submit"
-              disabled={isLoading.addToOrganisation}
-              className="btn btn-primary btn-blue"
-              onClick={() => handleClick("addToOrganisation")}
-            >
-              {isLoading.addToOrganisation ? "En cours..." : "Ajouter à cette organisation"}
-            </button>
-          ) : (
+          applicant.belongsToCurrentOrg() ? (
             <i className="fas fa-check green-check" />
+          ) : (
+            <Tippy
+              content={
+                <span>
+                  Cet allocataire est déjà présent dans RDV-Insertion dans une autre organisation
+                  que l&apos;organisation actuelle.
+                  <br />
+                  Appuyez sur ce bouton pour ajouter l&apos;allocataire à cette organisation et
+                  mettre à jours ses informations.
+                </span>
+              }
+            >
+              <button
+                type="submit"
+                disabled={isLoading.addToOrganisation}
+                className="btn btn-primary btn-blue"
+                onClick={() => handleClick("addToOrganisation")}
+              >
+                {isLoading.addToOrganisation ? "En cours..." : "Ajouter à cette organisation"}
+              </button>
+            </Tippy>
           )
         ) : (
           <button
@@ -110,7 +123,12 @@ export default function Applicant({ applicant, dispatchApplicants }) {
             ) : (
               <button
                 type="submit"
-                disabled={isLoading.smsInvitation || !applicant.createdAt || !applicant.phoneNumber}
+                disabled={
+                  isLoading.smsInvitation ||
+                  !applicant.createdAt ||
+                  !applicant.phoneNumber ||
+                  !applicant.belongsToCurrentOrg()
+                }
                 className="btn btn-primary btn-blue"
                 onClick={() => handleClick("smsInvitation")}
               >
@@ -128,7 +146,12 @@ export default function Applicant({ applicant, dispatchApplicants }) {
             ) : (
               <button
                 type="submit"
-                disabled={isLoading.emailInvitation || !applicant.createdAt || !applicant.email}
+                disabled={
+                  isLoading.emailInvitation ||
+                  !applicant.createdAt ||
+                  !applicant.email ||
+                  !applicant.belongsToCurrentOrg()
+                }
                 className="btn btn-primary btn-blue"
                 onClick={() => handleClick("emailInvitation")}
               >
