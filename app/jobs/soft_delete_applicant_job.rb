@@ -6,7 +6,7 @@ class SoftDeleteApplicantJob < ApplicationJob
     applicant.update!(
       status: "deleted",
       uid: nil,
-      custom_id: nil
+      department_internal_id: nil
     )
     MattermostClient.send_to_notif_channel(
       "RDV Solidarites user #{rdv_solidarites_user_id} deleted"
