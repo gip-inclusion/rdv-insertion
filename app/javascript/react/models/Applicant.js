@@ -29,7 +29,7 @@ export default class Applicant {
     this.city = formattedAttributes.city;
     this.postalCode = formattedAttributes.postalCode;
     this.fullAddress = formattedAttributes.fullAddress || this.formatAddress();
-    this.customId = formattedAttributes.customId;
+    this.departmentInternalId = formattedAttributes.departmentInternalId;
     this.rightsOpeningDate = formattedAttributes.rightsOpeningDate;
     this.affiliationNumber = this.formatAffiliationNumber(formattedAttributes.affiliationNumber);
     this.phoneNumber = formatPhoneNumber(formattedAttributes.phoneNumber);
@@ -82,8 +82,8 @@ export default class Applicant {
   formatAffiliationNumber(affiliationNumber) {
     if (affiliationNumber && [13, 15].includes(affiliationNumber.length)) {
       // This means it is a NIR, we replace it by a custom ID if present
-      if (this.customId) {
-        return `CUS-${this.customId}`;
+      if (this.departmentInternalId) {
+        return `CUS-${this.departmentInternalId}`;
       }
       return null;
     }
@@ -168,7 +168,7 @@ export default class Applicant {
       ...(this.email && this.email.includes("@") && { email: this.email }),
       ...(this.birthDate && { birth_date: this.birthDate }),
       ...(this.birthName && { birth_name: this.birthName }),
-      ...(this.customId && { custom_id: this.customId }),
+      ...(this.departmentInternalId && { department_internal_id: this.departmentInternalId }),
       ...(this.rightsOpeningDate && { rights_opening_date: this.rightsOpeningDate }),
     };
   }
