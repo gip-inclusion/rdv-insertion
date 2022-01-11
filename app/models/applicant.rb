@@ -15,14 +15,16 @@ class Applicant < ApplicationRecord
   include HasPhoneNumberConcern
   include InvitableConcern
 
-  before_create :generate_uid
+  before_save :generate_uid
 
   has_and_belongs_to_many :organisations
   has_many :invitations, dependent: :destroy
   has_and_belongs_to_many :rdvs
+  belongs_to :department
 
   validates :uid, uniqueness: true, allow_nil: true
   validates :rdv_solidarites_user_id, uniqueness: true, allow_nil: true
+  validates :department_internal_id, uniqueness: { scope: :department_id }, allow_nil: true
   validates :last_name, :first_name, :title, presence: true
   validates :affiliation_number, presence: true, allow_nil: true
   validates :email, allow_blank: true, format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/ }
@@ -45,9 +47,10 @@ class Applicant < ApplicationRecord
 
   def generate_uid
     # Base64 encoded "department_number - affiliation_number - role"
-    return unless uid.blank? && organisations.present? && affiliation_number.present? && role.present?
+    return if deleted?
+    return if department_id.blank? || affiliation_number.blank? || role.blank?
 
-    self.uid = Base64.encode64("#{organisations.first.department.number} - #{affiliation_number} - #{role}")
+    self.uid = Base64.strict_encode64("#{department.number} - #{affiliation_number} - #{role}")
   end
 
   def birth_date_validity

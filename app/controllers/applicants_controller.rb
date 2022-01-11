@@ -1,7 +1,7 @@
 class ApplicantsController < ApplicationController
   PERMITTED_PARAMS = [
     :uid, :role, :first_name, :last_name, :birth_date, :email, :phone_number,
-    :birth_name, :address, :affiliation_number, :custom_id, :title, :status, :rights_opening_date
+    :birth_name, :address, :affiliation_number, :department_internal_id, :title, :status, :rights_opening_date
   ].freeze
   before_action :set_organisation, only: [:index, :create, :show, :update, :edit, :new]
   before_action :retrieve_applicants, only: [:search]
@@ -10,12 +10,16 @@ class ApplicantsController < ApplicationController
   include FilterableApplicantsConcern
 
   def new
-    @applicant = Applicant.new organisations: [@organisation]
+    @applicant = Applicant.new department: @organisation.department, organisations: [@organisation]
     authorize @applicant
   end
 
   def create
-    @applicant = Applicant.new(organisations: [@organisation], **applicant_params)
+    @applicant = Applicant.new(
+      department: @organisation.department,
+      organisations: [@organisation],
+      **applicant_params
+    )
     authorize @applicant
     respond_to do |format|
       format.html { upsert_applicant_and_redirect(:new) }
