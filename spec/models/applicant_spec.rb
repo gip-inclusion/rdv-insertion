@@ -52,6 +52,31 @@ describe Applicant do
     end
   end
 
+  describe "department internal id uniqueness" do
+    context "no collision" do
+      let(:applicant) { build(:applicant, department_internal_id: '123') }
+
+      it { expect(applicant).to be_valid }
+    end
+
+    context "colliding department internal id" do
+      let!(:department) { create(:department) }
+      let!(:applicant_existing) do
+        create(:applicant, department: department, department_internal_id: "921")
+      end
+      let!(:applicant) do
+        build(:applicant, department: department, department_internal_id: "921")
+      end
+
+      it "adds errors" do
+        expect(applicant).not_to be_valid
+        expect(applicant.errors.details).to eq({ department_internal_id: [{ error: :taken, value: '921' }] })
+        expect(applicant.errors.full_messages.to_sentence)
+          .to include("Department internal est déjà utilisé")
+      end
+    end
+  end
+
   describe "#search_by_text" do
     subject { described_class.search_by_text(query) }
 
