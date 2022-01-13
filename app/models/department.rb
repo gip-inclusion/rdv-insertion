@@ -2,7 +2,7 @@ class Department < ApplicationRecord
   validates :name, :capital, :number, :pronoun, presence: true
 
   has_many :organisations, dependent: :nullify
-  has_many :applicants, dependent: :nullify
+  has_many :applicants, through: :organisations
   has_many :agents, through: :organisations
   has_many :invitations, through: :organisations
   has_many :rdvs, through: :organisations

@@ -58,12 +58,8 @@ export default function Applicant({ applicant, dispatchApplicants }) {
       {applicant.shouldDisplay("birth_date") && <td>{applicant.birthDate ?? " - "}</td>}
       {applicant.shouldDisplay("email") && <td>{applicant.email ?? " - "}</td>}
       {applicant.shouldDisplay("phone_number") && <td>{applicant.phoneNumber ?? " - "}</td>}
-      {applicant.shouldDisplay("department_internal_id") && (
-        <td>{applicant.departmentInternalId ?? " - "}</td>
-      )}
-      {applicant.shouldDisplay("rights_opening_date") && (
-        <td>{applicant.rightsOpeningDate ?? " - "}</td>
-      )}
+      {applicant.shouldDisplay("custom_id") && <td>{applicant.customId ?? " - "}</td>}
+      {applicant.shouldDisplay("rights_opening_date") && <td>{applicant.rightsOpeningDate ?? " - "}</td>}
       <td>
         {applicant.createdAt ? (
           <i className="fas fa-check green-check" />
