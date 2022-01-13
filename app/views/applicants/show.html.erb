@@ -1,7 +1,7 @@
 <div class="container applicant-attribute mt-4">
   <div class="d-flex justify-content-between mb-4">
     <div>
-      <%= link_to(back_button_url_for_show(request&.fullpath, @department, @organisation)) do %>
+      <%= link_to(back_button_url_for_show(@department, @organisation)) do %>
         <button class="btn btn-blue-out">Retour</button>
       <% end %>
       <%= link_to rdv_solidarites_user_url(@organisation, @applicant), target: "_blank" do %>
@@ -17,7 +17,7 @@
       <% if request&.url&.match("organisation") %>
         <%= link_to edit_organisation_applicant_path(@organisation, @applicant) do %>
           <button class="btn btn-blue">Modifier</button>
-      <% end %>
+        <% end %>
       <% else %>
         <%= link_to edit_department_applicant_path(@department, @applicant) do %>
           <button class="btn btn-blue">Modifier</button>

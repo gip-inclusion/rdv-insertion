@@ -1,4 +1,4 @@
-<%= simple_form_for(@applicant, url: patch_applicant_url(request.url, @department, @organisation, @applicant), html: { method: :patch }) do |f| %>
+<%= simple_form_for(@applicant, url: patch_applicant_url(@department, @organisation, @applicant), html: { method: :patch }) do |f| %>
   <%= render 'applicant_form', f: f, page_name: "edit", title: "Modifier allocataire" %>
 <% end %>
 

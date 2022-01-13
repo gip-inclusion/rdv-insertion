@@ -62,25 +62,25 @@ module ApplicantsHelper
 
   def back_button_url_for_applicant_form(page_name, applicant, department, organisation)
     if page_name == "edit"
-      return organisation_applicant_path(organisation, applicant) if organisation.present?
+      return department_applicant_path(department, applicant) if params[:department_id].present?
 
-      department_applicant_path(department, applicant)
+      organisation_applicant_path(organisation, applicant)
     else
-      return organisation_applicants_path(organisation) if organisation.present?
+      return department_applicants_path(department) if params[:department_id].present?
 
-      department_applicants_path(department)
+      organisation_applicants_path(organisation)
     end
   end
 
-  def back_button_url_for_show(request_url, department, organisation)
-    return department_applicants_path(department) if request_url&.match("departments")
+  def back_button_url_for_show(department, organisation)
+    return department_applicants_path(department) if params[:department_id].present?
 
     organisation_applicants_path(organisation)
   end
 
-  def patch_applicant_url(request_url, department, organisation, applicant)
-    return organisation_applicant_path(organisation, applicant) if request_url.include?("organisation")
+  def patch_applicant_url(department, organisation, applicant)
+    return department_applicant_path(department, applicant) if params[:department_id].present?
 
-    department_applicant_path(department, applicant)
+    organisation_applicant_path(organisation, applicant)
   end
 end
