@@ -9,7 +9,7 @@ de s'interfacer facilement avec [RDV-Solidarites](https://github.com/betagouv/rd
 
 Veuillez installer les outils suivants pour pouvoir lancer le projet:
 
-- **Ruby 3.0.2**: Nous conseillons l'utilisation de [Rbenv](https://github.com/rbenv/rbenv-installer#rbenv-installer--doctor-scripts).
+- **Ruby 3.0.3**: Nous conseillons l'utilisation de [Rbenv](https://github.com/rbenv/rbenv-installer#rbenv-installer--doctor-scripts).
 
 - **bundler**: Vous pouvez l'installer avec la commande `gem install bundler`.
 - **Node 15+**: Nous conseillons l'utilisation de [`nvm`](https://github.com/nvm-sh/nvm).

@@ -24,7 +24,7 @@ class Stat
 
   def applicants_oriented_in_less_than_30_days
     relevant_applicants.select do |applicant|
-      applicant.rdv_seen? && applicant.orientation_delay_in_days < 30
+      applicant.rdv_seen? && applicant.orientation_delay_in_days && applicant.orientation_delay_in_days < 30
     end
   end
 
@@ -39,6 +39,8 @@ class Stat
   def average_orientation_delay_in_days
     cumulated_orientation_delays = 0
     relevant_applicants.rdv_seen.each do |applicant|
+      next unless applicant.orientation_delay_in_days
+
       cumulated_orientation_delays += applicant.orientation_delay_in_days
     end
 

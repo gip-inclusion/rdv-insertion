@@ -6,7 +6,6 @@ class Rdv < ApplicationRecord
   PENDING_STATUSES = %w[unknown waiting].freeze
   CANCELLED_STATUSES = %w[excused revoked noshow].freeze
   CANCELLED_BY_USER_STATUSES = %w[excused noshow].freeze
-  RDV_SOLIDARITES_CLASS_NAME = "Rdv".freeze
 
   after_commit :refresh_applicant_statuses, on: [:create, :update]
 

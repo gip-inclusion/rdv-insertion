@@ -4,8 +4,8 @@ import Tippy from "@tippyjs/react";
 
 import handleApplicantCreation from "../lib/handleApplicantCreation";
 import handleApplicantInvitation from "../lib/handleApplicantInvitation";
-import assignOrganisation from "../lib/assignOrganisation";
 import updateApplicant from "../actions/updateApplicant";
+import assignOrganisation from "../../lib/assignOrganisation";
 
 export default function Applicant({ applicant, dispatchApplicants }) {
   const [isLoading, setIsLoading] = useState({
@@ -74,7 +74,9 @@ export default function Applicant({ applicant, dispatchApplicants }) {
       {applicant.shouldDisplay("birth_date") && <td>{applicant.birthDate ?? " - "}</td>}
       {applicant.shouldDisplay("email") && <td>{applicant.email ?? " - "}</td>}
       {applicant.shouldDisplay("phone_number") && <td>{applicant.phoneNumber ?? " - "}</td>}
-      {applicant.shouldDisplay("custom_id") && <td>{applicant.customId ?? " - "}</td>}
+      {applicant.shouldDisplay("department_internal_id") && (
+        <td>{applicant.departmentInternalId ?? " - "}</td>
+      )}
       {applicant.shouldDisplay("rights_opening_date") && (
         <td>{applicant.rightsOpeningDate ?? " - "}</td>
       )}

@@ -25,6 +25,9 @@ Style/AsciiComments:
 Style/OpenStructUse:
   Enabled: false
 
+Rails/SkipsModelValidations:
+  Enabled: false
+
 Lint/MissingSuper:
   Exclude:
     - "app/services/**/*" # Inheriting BaseService without calling super is OK.
@@ -39,6 +42,9 @@ Metrics/BlockLength:
     - "config/routes.rb"
 
 Layout/LineLength:
+  Max: 120
+
+Metrics/ClassLength:
   Max: 120
 
 Metrics/MethodLength:

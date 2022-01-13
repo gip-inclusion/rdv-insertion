@@ -102,8 +102,9 @@ export default function ApplicantsUpload({ organisation, configuration, departme
                   row[parameterizedColumnNames.phone_number],
                 birthName:
                   parameterizedColumnNames.birth_name && row[parameterizedColumnNames.birth_name],
-                customId:
-                  parameterizedColumnNames.custom_id && row[parameterizedColumnNames.custom_id],
+                departmentInternalId:
+                  parameterizedColumnNames.department_internal_id &&
+                  row[parameterizedColumnNames.department_internal_id],
                 rightsOpeningDate:
                   parameterizedColumnNames.rights_opening_date &&
                   row[parameterizedColumnNames.rights_opening_date] &&
@@ -156,7 +157,7 @@ export default function ApplicantsUpload({ organisation, configuration, departme
 
   const redirectToApplicantList = () => {
     window.location.href = isTerritoryLevel
-      ? "/organisations/"
+      ? `/departments/${department.id}/applicants`
       : `/organisations/${organisation.id}/applicants`;
   };
 
@@ -189,7 +190,7 @@ export default function ApplicantsUpload({ organisation, configuration, departme
             className="btn btn-secondary btn-blue-out"
             onClick={() => redirectToApplicantList()}
           >
-            {isTerritoryLevel ? "Retour aux organisations" : "Retour au suivi"}
+            Retour au suivi
           </button>
         </div>
         <div className="col-4 text-center d-flex flex-column align-items-center">
@@ -232,7 +233,9 @@ export default function ApplicantsUpload({ organisation, configuration, departme
                     {parameterizedColumnNames.birth_date && <th scope="col">Date de naissance</th>}
                     {parameterizedColumnNames.email && <th scope="col">Email</th>}
                     {parameterizedColumnNames.phone_number && <th scope="col">Téléphone</th>}
-                    {parameterizedColumnNames.custom_id && <th scope="col">ID Editeur</th>}
+                    {parameterizedColumnNames.department_internal_id && (
+                      <th scope="col">ID Editeur</th>
+                    )}
                     {parameterizedColumnNames.rights_opening_date && (
                       <th scope="col">Date d&apos;entrée flux</th>
                     )}
