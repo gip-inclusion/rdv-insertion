@@ -3,16 +3,16 @@ module ApplicantsHelper
     date&.strftime("%d/%m/%Y")
   end
 
-  def show_sms_invitation?(organisation)
-    organisation.configuration.sms? || organisation.configuration.sms_and_email?
+  def show_sms_invitation?(configuration)
+    configuration.sms? || configuration.sms_and_email?
   end
 
-  def show_email_invitation?(organisation)
-    organisation.configuration.email? || organisation.configuration.sms_and_email?
+  def show_email_invitation?(configuration)
+    configuration.email? || configuration.sms_and_email?
   end
 
-  def show_notification?(organisation)
-    organisation.notify_applicant?
+  def show_notification?(configuration)
+    configuration.notify_applicant?
   end
 
   def display_attribute(attribute)
@@ -60,15 +60,23 @@ module ApplicantsHelper
     "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{organisation_id}/users/#{applicant.rdv_solidarites_user_id}"
   end
 
-  def applicant_form_cancel_button(organisation, applicant, page_name)
-    if page_name == "edit"
-      link_to organisation_applicant_path(organisation, applicant) do
-        tag.button("Annuler", class: ["btn btn-blue-out"], type: "button")
-      end
-    else
-      link_to organisation_applicants_path(organisation) do
-        tag.button("Annuler", class: ["btn btn-blue-out"], type: "button")
-      end
-    end
+  def department_level?
+    params[:department_id].present?
+  end
+
+  def compute_index_path(organisation, department)
+    department_level? ? department_applicants_path(department) : organisation_applicants_path(organisation)
+  end
+
+  def compute_edit_path(applicant, organisation, department)
+    return edit_department_applicant_path(department, applicant) if department_level?
+
+    edit_organisation_applicant_path(organisation, applicant)
+  end
+
+  def compute_applicant_path(applicant, organisation, department)
+    return department_applicant_path(department, applicant) if department_level?
+
+    organisation_applicant_path(organisation, applicant)
   end
 end

@@ -3,9 +3,9 @@ class ApplicantsController < ApplicationController
     :uid, :role, :first_name, :last_name, :birth_date, :email, :phone_number,
     :birth_name, :address, :affiliation_number, :department_internal_id, :title, :status, :rights_opening_date
   ].freeze
-  before_action :set_organisation, only: [:index, :create, :show, :update, :edit, :new]
-  before_action :retrieve_applicants, only: [:search]
   before_action :set_applicant, only: [:show, :update, :edit]
+  before_action :set_context_variables, only: [:index, :new, :create, :show, :update, :edit]
+  before_action :retrieve_applicants, only: [:search]
 
   include FilterableApplicantsConcern
 
@@ -29,7 +29,12 @@ class ApplicantsController < ApplicationController
 
   def index
     @applicants = policy_scope(Applicant).includes(:invitations, :rdvs)
-                                         .where(organisations: @organisation)
+    @applicants = \
+      if department_level?
+        @applicants.where(organisations: policy_scope(Organisation).where(department: @department))
+      else
+        @applicants.where(organisations: @organisation)
+      end
     @statuses_count = @applicants.group(:status).count
     filter_applicants
     @applicants = @applicants.order(created_at: :desc)
@@ -70,7 +75,7 @@ class ApplicantsController < ApplicationController
 
   def upsert_applicant_and_redirect(page)
     if upsert_applicant.success?
-      redirect_to organisation_applicant_path(@organisation, @applicant)
+      redirect_to(redirect_path)
     else
       flash.now[:error] = upsert_applicant.errors&.join(',')
       render page
@@ -93,17 +98,41 @@ class ApplicantsController < ApplicationController
     )
   end
 
+  def set_applicant
+    @applicant = Applicant.includes(:organisations).find(params[:id])
+  end
+
+  def redirect_path
+    if department_level?
+      department_applicant_path(@department, @applicant)
+    else
+      organisation_applicant_path(@organisation, @applicant)
+    end
+  end
+
+  def set_context_variables
+    department_level? ? set_department_variables : set_organisation_variables
+  end
+
+  def set_organisation_variables
+    @organisation = Organisation.includes(:applicants, :configuration).find(params[:organisation_id])
+    @department = @organisation.department
+    @configuration = @organisation.configuration
+  end
+
+  def set_department_variables
+    @department = Department.includes(:organisations, :applicants).find(params[:department_id])
+    @organisation = @applicant.organisations.where(department: @department).first if @applicant.present?
+    @configuration = @department.configuration
+  end
+
+  def department_level?
+    params[:department_id].present?
+  end
+
   def retrieve_applicants
     @applicants = policy_scope(Applicant).includes(:organisations, :invitations, :rdvs)
                                          .where(uid: params.require(:applicants).require(:uids))
                                          .to_a
-  end
-
-  def set_organisation
-    @organisation = Organisation.includes(:applicants, :configuration).find(params[:organisation_id])
-  end
-
-  def set_applicant
-    @applicant = Applicant.includes(:organisations).find(params[:id])
   end
 end
