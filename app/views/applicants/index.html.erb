@@ -21,12 +21,16 @@
       <% if image_compiled?("maps/#{@department.name.parameterize}.svg") %>
         <%= image_pack_tag("maps/#{@department.name.parameterize}.svg", alt: @department.name.parameterize, width: 50, height: 50) %>
       <h4 class="text-center department-map-title mb-0">
-        <%= @organisation ? @organisation.name : @department.name %>
+        <%= department_level? ? @department.name : @organisation.name %>
       </h4>
       <% end %>
     </div>
     <div class="col-4 d-flex flex-column justify-content-center align-items-end dropdown">
-      <% if @organisation.present? %>
+      <% if department_level? %>
+        <%= link_to(new_department_upload_path(@department), class: "btn btn-blue") do %>
+          Charger fichier allocataires
+        <% end %>
+      <% else %>
         <a class="btn btn-blue dropdown-toggle mb-2" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
           Créer allocataire(s)
         </a>
@@ -43,12 +47,7 @@
             <% end %>
           </li>
         </ul>
-      <% else %>
-        <%= link_to(new_department_upload_path(@department), class: "btn btn-blue") do %>
-          Charger fichier allocataires
-        <% end %>
       <% end %>
-
       <%= link_to "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/", target: :blank do %>
         <button class="btn btn-blue-out mt-2">Guide d'utilisation<i class="fas fa-external-link-alt icon-sm"></i></button>
       <% end %>

@@ -44,7 +44,7 @@
               <td class="padding-left-15">
                 <% unless applicant.deleted? %>
                   <%# We consider that an applicant is only in one organisation per department %>
-                  <%= link_to @organisation ? organisation_applicant_path(@organisation, applicant) : department_applicant_path(@department, applicant) do %>
+                  <%= link_to compute_applicant_path(applicant, @organisation, @department) do %>
                     <button class="btn btn-blue">Gérer</button>
                   <% end %>
                 <% end %>

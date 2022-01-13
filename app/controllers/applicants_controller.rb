@@ -4,7 +4,7 @@ class ApplicantsController < ApplicationController
     :birth_name, :address, :affiliation_number, :department_internal_id, :title, :status, :rights_opening_date
   ].freeze
   before_action :set_applicant, only: [:show, :update, :edit]
-  before_action :set_department_and_organisation, only: [:index, :create, :show, :update, :edit, :new]
+  before_action :set_context_variables, only: [:index, :new, :create, :show, :update, :edit]
   before_action :retrieve_applicants, only: [:search]
 
   include FilterableApplicantsConcern
@@ -29,13 +29,12 @@ class ApplicantsController < ApplicationController
 
   def index
     @applicants = policy_scope(Applicant).includes(:invitations, :rdvs)
-    @applicants = if @organisation
-                    @applicants.where(organisations: @organisation)
-                  else
-                    @applicants.where(organisations: policy_scope(Organisation).where(department: @department))
-                  end
-    @search_url = @organisation ? organisation_applicants_path(@organisation) : department_applicants_path(@department)
-    @configuration = @organisation ? @organisation.configuration : @department.configuration
+    @applicants = \
+      if department_level?
+        @applicants.where(organisations: policy_scope(Organisation).where(department: @department))
+      else
+        @applicants.where(organisations: @organisation)
+      end
     @statuses_count = @applicants.group(:status).count
     filter_applicants
     @applicants = @applicants.order(created_at: :desc)
@@ -76,11 +75,7 @@ class ApplicantsController < ApplicationController
 
   def upsert_applicant_and_redirect(page)
     if upsert_applicant.success?
-      redirect_to(if params[:department_id].present?
-                    department_applicant_path(@department, @applicant)
-                  else
-                    organisation_applicant_path(@organisation, @applicant)
-                  end)
+      redirect_to(redirect_path)
     else
       flash.now[:error] = upsert_applicant.errors&.join(',')
       render page
@@ -107,14 +102,32 @@ class ApplicantsController < ApplicationController
     @applicant = Applicant.includes(:organisations).find(params[:id])
   end
 
-  def set_department_and_organisation
-    if params[:organisation_id].present?
-      @organisation = Organisation.includes(:applicants, :configuration).find(params[:organisation_id])
-      @department = @organisation&.department
+  def redirect_path
+    if department_level?
+      department_applicant_path(@department, @applicant)
     else
-      @department = Department.includes(:organisations, :applicants).find(params[:department_id])
-      @organisation = @applicant.organisations.where(department: @department).first if @applicant.present?
+      organisation_applicant_path(@organisation, @applicant)
     end
+  end
+
+  def set_context_variables
+    department_level? ? set_department_variables : set_organisation_variables
+  end
+
+  def set_organisation_variables
+    @organisation = Organisation.includes(:applicants, :configuration).find(params[:organisation_id])
+    @department = @organisation.department
+    @configuration = @organisation.configuration
+  end
+
+  def set_department_variables
+    @department = Department.includes(:organisations, :applicants).find(params[:department_id])
+    @organisation = @applicant.organisations.where(department: @department).first if @applicant.present?
+    @configuration = @department.configuration
+  end
+
+  def department_level?
+    params[:department_id].present?
   end
 
   def retrieve_applicants

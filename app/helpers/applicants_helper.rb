@@ -60,26 +60,22 @@ module ApplicantsHelper
     "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{organisation_id}/users/#{applicant.rdv_solidarites_user_id}"
   end
 
-  def back_button_url_for_applicant_form(page_name, applicant, department, organisation)
-    if page_name == "edit"
-      return department_applicant_path(department, applicant) if params[:department_id].present?
-
-      organisation_applicant_path(organisation, applicant)
-    else
-      return department_applicants_path(department) if params[:department_id].present?
-
-      organisation_applicants_path(organisation)
-    end
+  def department_level?
+    params[:department_id].present?
   end
 
-  def back_button_url_for_show(department, organisation)
-    return department_applicants_path(department) if params[:department_id].present?
-
-    organisation_applicants_path(organisation)
+  def compute_index_path(organisation, department)
+    department_level? ? department_applicants_path(department) : organisation_applicants_path(organisation)
   end
 
-  def patch_applicant_url(department, organisation, applicant)
-    return department_applicant_path(department, applicant) if params[:department_id].present?
+  def compute_edit_path(applicant, organisation, department)
+    return edit_department_applicant_path(department, applicant) if department_level?
+
+    edit_organisation_applicant_path(organisation, applicant)
+  end
+
+  def compute_applicant_path(applicant, organisation, department)
+    return department_applicant_path(department, applicant) if department_level?
 
     organisation_applicant_path(organisation, applicant)
   end

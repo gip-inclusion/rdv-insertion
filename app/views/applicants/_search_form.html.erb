@@ -1,10 +1,10 @@
-<%= form_with method: :get, local: true, url: @search_url do |form| %>
+<%= form_with method: :get, local: true, url: compute_index_path(@organisation, @department) do |form| %>
   <%= form.text_field :search_query, placeholder: "Prénom, nom, email, numéro allocataire...", class: "form-control mb-1" %>
   <div class="d-flex justify-content-between">
     <%= form.submit "Rechercher", name: nil, class: "btn btn-blue-out" %>
     <% if display_back_to_list_button? %>
       <div class="d-flex justify-content-start">
-        <%= link_to @search_url, class: "btn btn-blue-out" do %>
+        <%= link_to compute_index_path(@organisation, @department), class: "btn btn-blue-out" do %>
           Retour à la liste
         <% end %>
       </div>
