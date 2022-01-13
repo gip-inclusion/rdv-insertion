@@ -35,8 +35,13 @@ describe Applicant do
     end
 
     context "colliding uid" do
-      let!(:applicant_existing) { create(:applicant, uid: '123') }
-      let(:applicant) { build(:applicant, uid: '123') }
+      let!(:applicant_existing) { create(:applicant) }
+      let!(:applicant) { build(:applicant, uid: '123') }
+
+      before do
+        # we skip the callbacks not to recompute uid
+        applicant_existing.update_columns(uid: '123')
+      end
 
       it "adds errors" do
         expect(applicant).not_to be_valid

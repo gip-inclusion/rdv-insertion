@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_03_132647) do
+ActiveRecord::Schema.define(version: 2022_01_11_152434) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -47,6 +47,8 @@ ActiveRecord::Schema.define(version: 2022_01_03_132647) do
     t.integer "status", default: 0
     t.date "rights_opening_date"
     t.string "birth_name"
+    t.bigint "department_id"
+    t.index ["department_id"], name: "index_applicants_on_department_id"
     t.index ["rdv_solidarites_user_id"], name: "index_applicants_on_rdv_solidarites_user_id", unique: true
     t.index ["status"], name: "index_applicants_on_status"
     t.index ["uid"], name: "index_applicants_on_uid", unique: true
@@ -143,6 +145,7 @@ ActiveRecord::Schema.define(version: 2022_01_03_132647) do
     t.index ["status"], name: "index_rdvs_on_status"
   end
 
+  add_foreign_key "applicants", "departments"
   add_foreign_key "configurations", "organisations"
   add_foreign_key "invitations", "applicants"
   add_foreign_key "invitations", "organisations"
