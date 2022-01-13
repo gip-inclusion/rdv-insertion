@@ -22,9 +22,6 @@ Style/StringLiterals:
 Style/AsciiComments:
   Enabled: false
 
-Rails/SkipsModelValidations:
-  Enabled: false
-
 Lint/MissingSuper:
   Exclude:
     - "app/services/**/*" # Inheriting BaseService without calling super is OK.

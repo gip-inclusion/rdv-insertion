@@ -38,7 +38,7 @@ Configuration.create!(
       "title"=>"Civilité"
     },
     optional: {
-      "department_internal_id"=>"Code individu IODAS"
+      "custom_id"=>"Code individu IODAS"
     }
   }
 )

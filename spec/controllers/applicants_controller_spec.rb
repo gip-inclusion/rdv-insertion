@@ -155,10 +155,9 @@ describe ApplicantsController, type: :controller do
 
   describe "#search" do
     let!(:search_params) { { applicants: { uids: ["23"] }, format: "json" } }
-    let!(:applicant) { create(:applicant, organisations: [organisation],  email: "borisjohnson@gov.uk") }
+    let!(:applicant) { create(:applicant, organisations: [organisation], uid: "23", email: "borisjohnson@gov.uk") }
 
     before do
-      applicant.update_columns(uid: "23") # used to skip callbacks and computation of uid
       sign_in(agent)
       setup_rdv_solidarites_session(rdv_solidarites_session)
     end
@@ -166,10 +165,8 @@ describe ApplicantsController, type: :controller do
     context "policy scope" do
       let!(:another_organisation) { create(:organisation) }
       let!(:agent) { create(:agent, organisations: [another_organisation]) }
-      let!(:another_applicant) { create(:applicant, organisations: [another_organisation]) }
+      let!(:another_applicant) { create(:applicant, uid: "0332", organisations: [another_organisation]) }
       let!(:search_params) { { applicants: { uids: %w[23 0332] }, format: "json" } }
-
-      before { another_applicant.update_columns(uid: "0332") }
 
       it "returns the policy scoped applicants" do
         post :search, params: search_params
