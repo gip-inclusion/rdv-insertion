@@ -233,7 +233,7 @@ export default function ApplicantsUpload({ organisation, configuration, departme
                     {parameterizedColumnNames.birth_date && <th scope="col">Date de naissance</th>}
                     {parameterizedColumnNames.email && <th scope="col">Email</th>}
                     {parameterizedColumnNames.phone_number && <th scope="col">Téléphone</th>}
-                    {parameterizedColumnNames.departmentInternalId && (
+                    {parameterizedColumnNames.department_internal_id && (
                       <th scope="col">ID Editeur</th>
                     )}
                     {parameterizedColumnNames.rights_opening_date && (
