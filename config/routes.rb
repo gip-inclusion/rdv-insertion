@@ -37,7 +37,7 @@ Rails.application.routes.draw do
   end
 
   resources :departments, only: [] do
-    resources :applicants, only: [] do
+    resources :applicants, only: [:index, :show, :edit, :update] do
       collection { resources :uploads, only: [:new] }
     end
   end

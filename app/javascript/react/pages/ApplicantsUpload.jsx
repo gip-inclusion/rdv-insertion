@@ -157,7 +157,7 @@ export default function ApplicantsUpload({ organisation, configuration, departme
 
   const redirectToApplicantList = () => {
     window.location.href = isTerritoryLevel
-      ? "/organisations/"
+      ? `/departments/${department.id}/applicants`
       : `/organisations/${organisation.id}/applicants`;
   };
 
@@ -190,7 +190,7 @@ export default function ApplicantsUpload({ organisation, configuration, departme
             className="btn btn-secondary btn-blue-out"
             onClick={() => redirectToApplicantList()}
           >
-            {isTerritoryLevel ? "Retour aux organisations" : "Retour au suivi"}
+            Retour au suivi
           </button>
         </div>
         <div className="col-4 text-center d-flex flex-column align-items-center">

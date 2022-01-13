@@ -1,7 +1,7 @@
 <div class="container applicant-attribute mt-4">
   <div class="d-flex justify-content-between mb-4">
     <div>
-      <%= link_to organisation_applicants_path(@organisation) do %>
+      <%= link_to(back_button_url_for_show(request&.fullpath, @department, @organisation)) do %>
         <button class="btn btn-blue-out">Retour</button>
       <% end %>
       <%= link_to rdv_solidarites_user_url(@organisation, @applicant), target: "_blank" do %>
@@ -14,8 +14,14 @@
           <%= @applicant.resolved? ? "Rouvrir le dossier" : "Clôturer le dossier" %>
         </button>
       <% end %>
-      <%= link_to edit_organisation_applicant_path(@organisation, @applicant) do %>
-        <button class="btn btn-blue">Modifier</button>
+      <% if request&.url&.match("organisation") %>
+        <%= link_to edit_organisation_applicant_path(@organisation, @applicant) do %>
+          <button class="btn btn-blue">Modifier</button>
+      <% end %>
+      <% else %>
+        <%= link_to edit_department_applicant_path(@department, @applicant) do %>
+          <button class="btn btn-blue">Modifier</button>
+        <% end %>
       <% end %>
     </div>
   </div>
@@ -75,8 +81,8 @@
     "components/ApplicantTracker", {
       applicant: @applicant,
       organisation: @organisation,
-      showSmsInvitation: show_sms_invitation?(@organisation),
-      showEmailInvitation: show_email_invitation?(@organisation),
+      showSmsInvitation: show_sms_invitation?(@organisation.configuration),
+      showEmailInvitation: show_email_invitation?(@organisation.configuration),
       rdvs: @applicant.rdvs,
       numberOfCancelledRdvs: @applicant.rdvs.cancelled_by_user.count,
       statusNotice: display_status_notice(@applicant),

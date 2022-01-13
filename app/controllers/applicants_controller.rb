@@ -4,6 +4,7 @@ class ApplicantsController < ApplicationController
     :birth_name, :address, :affiliation_number, :department_internal_id, :title, :status, :rights_opening_date
   ].freeze
   before_action :set_organisation, only: [:index, :create, :show, :update, :edit, :new]
+  before_action :set_department, only: [:index, :show, :edit, :update]
   before_action :retrieve_applicants, only: [:search]
   before_action :set_applicant, only: [:show, :update, :edit]
 
@@ -29,7 +30,13 @@ class ApplicantsController < ApplicationController
 
   def index
     @applicants = policy_scope(Applicant).includes(:invitations, :rdvs)
-                                         .where(organisations: @organisation)
+    @applicants = if @organisation
+                    @applicants.where(organisations: @organisation)
+                  else
+                    @applicants.where(organisations: policy_scope(Organisation).where(department: @department))
+                  end
+    @search_url = @organisation ? organisation_applicants_path(@organisation) : department_applicants_path(@department)
+    @configuration = @organisation ? @organisation.configuration : @department.configuration
     @statuses_count = @applicants.group(:status).count
     filter_applicants
     @applicants = @applicants.order(created_at: :desc)
@@ -37,6 +44,7 @@ class ApplicantsController < ApplicationController
 
   def show
     authorize @applicant
+    set_organisation_when_department_level if @organisation.nil?
   end
 
   def search
@@ -48,9 +56,11 @@ class ApplicantsController < ApplicationController
 
   def edit
     authorize @applicant
+    set_organisation_when_department_level if @organisation.nil?
   end
 
   def update
+    set_organisation_when_department_level if @organisation.nil?
     @applicant.assign_attributes(
       organisations: (@applicant.organisations.to_a + [@organisation]).uniq,
       **applicant_params
@@ -69,7 +79,9 @@ class ApplicantsController < ApplicationController
   end
 
   def upsert_applicant_and_redirect(page)
-    if upsert_applicant.success?
+    if @department_level && upsert_applicant.success?
+      redirect_to department_applicant_path(@department, @applicant)
+    elsif upsert_applicant.success?
       redirect_to organisation_applicant_path(@organisation, @applicant)
     else
       flash.now[:error] = upsert_applicant.errors&.join(',')
@@ -100,7 +112,20 @@ class ApplicantsController < ApplicationController
   end
 
   def set_organisation
+    return unless params[:organisation_id]
+
     @organisation = Organisation.includes(:applicants, :configuration).find(params[:organisation_id])
+  end
+
+  def set_department
+    @department = @organisation&.department || Department.includes(:organisations, :applicants)
+                                                         .find(params[:department_id])
+  end
+
+  def set_organisation_when_department_level
+    # We consider that an applicant is only in one organisation per department
+    @organisation = @applicant.organisations.where(department: @department).first
+    @department_level = true
   end
 
   def set_applicant

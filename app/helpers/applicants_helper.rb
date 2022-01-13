@@ -3,16 +3,16 @@ module ApplicantsHelper
     date&.strftime("%d/%m/%Y")
   end
 
-  def show_sms_invitation?(organisation)
-    organisation.configuration.sms? || organisation.configuration.sms_and_email?
+  def show_sms_invitation?(configuration)
+    configuration.sms? || configuration.sms_and_email?
   end
 
-  def show_email_invitation?(organisation)
-    organisation.configuration.email? || organisation.configuration.sms_and_email?
+  def show_email_invitation?(configuration)
+    configuration.email? || configuration.sms_and_email?
   end
 
-  def show_notification?(organisation)
-    organisation.notify_applicant?
+  def show_notification?(configuration)
+    configuration.notify_applicant?
   end
 
   def display_attribute(attribute)
@@ -60,15 +60,27 @@ module ApplicantsHelper
     "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{organisation_id}/users/#{applicant.rdv_solidarites_user_id}"
   end
 
-  def applicant_form_cancel_button(organisation, applicant, page_name)
+  def back_button_url_for_applicant_form(page_name, applicant, department, organisation)
     if page_name == "edit"
-      link_to organisation_applicant_path(organisation, applicant) do
-        tag.button("Annuler", class: ["btn btn-blue-out"], type: "button")
-      end
+      return organisation_applicant_path(organisation, applicant) if organisation.present?
+
+      department_applicant_path(department, applicant)
     else
-      link_to organisation_applicants_path(organisation) do
-        tag.button("Annuler", class: ["btn btn-blue-out"], type: "button")
-      end
+      return organisation_applicants_path(organisation) if organisation.present?
+
+      department_applicants_path(department)
     end
+  end
+
+  def back_button_url_for_show(request_url, department, organisation)
+    return department_applicants_path(department) if request_url&.match("departments")
+
+    organisation_applicants_path(organisation)
+  end
+
+  def patch_applicant_url(request_url, department, organisation, applicant)
+    return organisation_applicant_path(organisation, applicant) if request_url.include?("organisation")
+
+    department_applicant_path(department, applicant)
   end
 end

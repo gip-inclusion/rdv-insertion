@@ -18,30 +18,36 @@
 
     </div>
     <div class="col-4 d-flex flex-column justify-content-center align-items-center">
-      <% if image_compiled?("maps/#{@organisation.department_name.parameterize}.svg") %>
-        <%= image_pack_tag("maps/#{@organisation.department_name.parameterize}.svg", alt: @organisation.department_name.parameterize, width: 50, height: 50) %>
+      <% if image_compiled?("maps/#{@department.name.parameterize}.svg") %>
+        <%= image_pack_tag("maps/#{@department.name.parameterize}.svg", alt: @department.name.parameterize, width: 50, height: 50) %>
       <h4 class="text-center department-map-title mb-0">
-        <%= @organisation.name %>
+        <%= @organisation ? @organisation.name : @department.name %>
       </h4>
       <% end %>
     </div>
     <div class="col-4 d-flex flex-column justify-content-center align-items-end dropdown">
-      <a class="btn btn-blue dropdown-toggle mb-2" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-        Créer allocataire(s)
-      </a>
+      <% if @organisation.present? %>
+        <a class="btn btn-blue dropdown-toggle mb-2" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+          Créer allocataire(s)
+        </a>
 
-      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
-        <li>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
+          <li>
           <%= link_to new_organisation_applicant_path(@organisation), class: "dropdown-item" do %>
-            Créer un allocataire
-          <% end %>
-        </li>
-        <li>
+              Créer un allocataire
+            <% end %>
+          </li>
+          <li>
           <%= link_to new_organisation_upload_path(@organisation), class: "dropdown-item" do %>
-            Charger fichier allocataires
-          <% end %>
-        </li>
-      </ul>
+              Charger fichier allocataires
+            <% end %>
+          </li>
+        </ul>
+      <% else %>
+        <%= link_to(new_department_upload_path(@department), class: "btn btn-blue") do %>
+          Charger fichier allocataires
+        <% end %>
+      <% end %>
 
       <%= link_to "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/", target: :blank do %>
         <button class="btn btn-blue-out mt-2">Guide d'utilisation<i class="fas fa-external-link-alt icon-sm"></i></button>

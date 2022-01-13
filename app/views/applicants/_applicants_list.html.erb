@@ -9,13 +9,13 @@
           <th scope="col">Prénom</th>
           <th scope="col">Nom</th>
           <th scope="col" class="d-none d-lg-table-cell">Email</th>
-          <% if show_sms_invitation?(@organisation) %>
+          <% if show_sms_invitation?(@configuration) %>
             <th scope="col">Dernière invitation SMS</th>
           <% end %>
-          <% if show_email_invitation?(@organisation) %>
+          <% if show_email_invitation?(@configuration) %>
             <th scope="col">Dernière invitation email</th>
           <% end %>
-          <% if show_notification?(@organisation) %>
+          <% if show_notification?(@configuration) %>
             <th scope="col">Dernière Notification envoyée le</th>
           <% end %>
           <th scope="col">Statut</th>
@@ -28,13 +28,13 @@
               <td><%= display_attribute applicant.first_name %></td>
               <td><%= display_attribute applicant.last_name %></td>
               <td class="d-none d-lg-table-cell"><%= display_attribute applicant.email %></td>
-              <% if show_sms_invitation?(@organisation) %>
+              <% if show_sms_invitation?(@configuration) %>
                 <td><%= display_attribute format_date(applicant.last_sms_invitation_sent_at) %></td>
               <% end %>
-              <% if show_email_invitation?(@organisation) %>
+              <% if show_email_invitation?(@configuration) %>
                 <td><%= display_attribute format_date(applicant.last_email_invitation_sent_at) %></td>
               <% end %>
-              <% if show_notification?(@organisation) %>
+              <% if show_notification?(@configuration) %>
                 <td><%= display_attribute format_date(applicant.last_notification_sent_at) %></td>
               <% end %>
               <td class="<%= background_class_for_status(applicant) %>">
@@ -43,7 +43,8 @@
               </td>
               <td class="padding-left-15">
                 <% unless applicant.deleted? %>
-                  <%= link_to organisation_applicant_path(@organisation, applicant) do %>
+                  <%# We consider that an applicant is only in one organisation per department %>
+                  <%= link_to @organisation ? organisation_applicant_path(@organisation, applicant) : department_applicant_path(@department, applicant) do %>
                     <button class="btn btn-blue">Gérer</button>
                   <% end %>
                 <% end %>

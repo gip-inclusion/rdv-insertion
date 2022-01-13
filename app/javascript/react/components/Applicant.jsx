@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import handleApplicantCreation from "../lib/handleApplicantCreation";
 import handleApplicantInvitation from "../lib/handleApplicantInvitation";
-import assignOrganisation from "../lib/assignOrganisation";
+import assignOrganisation from "../../lib/assignOrganisation";
 
 export default function Applicant({ applicant, dispatchApplicants }) {
   const [isLoading, setIsLoading] = useState({
@@ -15,7 +15,7 @@ export default function Applicant({ applicant, dispatchApplicants }) {
     setIsLoading({ ...isLoading, [action]: true });
     if (action === "accountCreation") {
       if (!applicant.organisation?.id) {
-        await assignOrganisation(applicant);
+        applicant.organisation = await assignOrganisation(applicant.departmentNumber, applicant.fullAddress);
         if (!applicant.organisation?.id) {
           setIsLoading({ ...isLoading, [action]: false });
           return;
