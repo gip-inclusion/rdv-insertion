@@ -16,7 +16,7 @@
               </div>
               <div class="p-3">
                 <ul class="list-inline">
-                  <% if policy(department).index? && organisations.length > 1 %>
+                  <% if organisations.length > 1 %>
                     <%= link_to department_applicants_path(department) do %>
                       <li class="my-3"><div class="col-5 pb-2 border-bottom">Toutes les organisations</div></li>
                     <% end %>
