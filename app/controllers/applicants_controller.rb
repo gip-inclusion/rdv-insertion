@@ -103,11 +103,9 @@ class ApplicantsController < ApplicationController
   end
 
   def after_save_path
-    if department_level?
-      department_applicant_path(@department, @applicant)
-    else
-      organisation_applicant_path(@organisation, @applicant)
-    end
+    return department_applicant_path(@department, @applicant) if department_level?
+
+    organisation_applicant_path(@organisation, @applicant)
   end
 
   def set_context_variables
