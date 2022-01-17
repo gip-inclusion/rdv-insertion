@@ -122,7 +122,12 @@ class ApplicantsController < ApplicationController
 
   def set_department_variables
     @department = Department.includes(:organisations, :applicants).find(params[:department_id])
-    @organisation = @applicant.organisations.where(department: @department).first if @applicant.present?
+    @organisation =  \
+      if @applicant.blank?
+        nil
+      else
+        policy_scope(Organisation).where(id: @applicant.organisations.pluck(:id), department: @department).first
+      end
     @configuration = @department.configuration
   end
 

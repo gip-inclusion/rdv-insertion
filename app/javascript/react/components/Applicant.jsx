@@ -5,7 +5,7 @@ import Tippy from "@tippyjs/react";
 import handleApplicantCreation from "../lib/handleApplicantCreation";
 import handleApplicantInvitation from "../lib/handleApplicantInvitation";
 import updateApplicant from "../actions/updateApplicant";
-import assignOrganisation from "../../lib/assignOrganisation";
+import retrieveRelevantOrganisation from "../../lib/retrieveRelevantOrganisation";
 
 export default function Applicant({ applicant, dispatchApplicants }) {
   const [isLoading, setIsLoading] = useState({
@@ -19,7 +19,10 @@ export default function Applicant({ applicant, dispatchApplicants }) {
     setIsLoading({ ...isLoading, [action]: true });
     if (action === "accountCreation") {
       if (!applicant.currentOrganisation) {
-        await assignOrganisation(applicant);
+        applicant.currentOrganisation = await retrieveRelevantOrganisation(
+          applicant.departmentNumber,
+          applicant.fullAddress
+        );
         // If there is still no organisation it means the assignation was cancelled by agent
         if (!applicant.currentOrganisation) {
           setIsLoading({ ...isLoading, [action]: false });

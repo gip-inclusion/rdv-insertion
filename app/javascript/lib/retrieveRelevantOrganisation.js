@@ -1,11 +1,8 @@
 import chooseOrganisationModal from "../components/choose-organisation-modal";
 import retrieveGeolocatedOrganisations from "../react/actions/retrieveGeolocatedOrganisations";
 
-const assignOrganisation = async (departmentNumber, applicantFullAddress) => {
-  const result = await retrieveGeolocatedOrganisations(
-    departmentNumber,
-    applicantFullAddress
-  );
+const retrieveRelevantOrganisation = async (departmentNumber, applicantFullAddress) => {
+  const result = await retrieveGeolocatedOrganisations(departmentNumber, applicantFullAddress);
 
   if (result.success) {
     if (result.geolocated_organisations.length === 1) {
@@ -27,4 +24,4 @@ const assignOrganisation = async (departmentNumber, applicantFullAddress) => {
   );
 };
 
-export default assignOrganisation;
+export default retrieveRelevantOrganisation;
