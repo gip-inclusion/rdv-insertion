@@ -1,12 +1,17 @@
 describe ApplicantsController, type: :controller do
-  let!(:organisation) { create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id) }
+  let!(:department) { create(:department) }
+  let!(:organisation) do
+    create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
+                          department_id: department.id)
+  end
   let!(:agent) { create(:agent, organisations: [organisation]) }
   let!(:rdv_solidarites_organisation_id) { 52 }
   let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
 
   describe "#new" do
-    render_views
     let!(:new_params) { { organisation_id: organisation.id } }
+
+    render_views
 
     before do
       sign_in(agent)
@@ -193,17 +198,34 @@ describe ApplicantsController, type: :controller do
 
   describe "#show" do
     let!(:applicant) { create(:applicant, organisations: [organisation]) }
-    let!(:show_params) { { id: applicant.id, organisation_id: organisation.id } }
+
+    render_views
 
     before do
       sign_in(agent)
       setup_rdv_solidarites_session(rdv_solidarites_session)
     end
 
-    it "renders the applicant page" do
-      get :show, params: show_params
+    context "when organisation_level" do
+      let!(:show_params) { { id: applicant.id, organisation_id: organisation.id } }
 
-      expect(response).to be_successful
+      it "renders the applicant page" do
+        get :show, params: show_params
+
+        expect(response).to be_successful
+        expect(response.body).to match(/Voir sur RDV-Solidarités/)
+      end
+    end
+
+    context "when department_level" do
+      let!(:show_params) { { id: applicant.id, department_id: department.id } }
+
+      it "renders the applicant page" do
+        get :show, params: show_params
+
+        expect(response).to be_successful
+        expect(response.body).to match(/Voir sur RDV-Solidarités/)
+      end
     end
   end
 
@@ -275,6 +297,49 @@ describe ApplicantsController, type: :controller do
         expect(Applicant).to receive(:action_required)
 
         get :index, params: index_params
+      end
+    end
+
+    context "when department level" do
+      let!(:index_params) { { department_id: department.id } }
+
+      it "renders the index page" do
+        get :index, params: index_params
+
+        expect(response).to be_successful
+      end
+    end
+  end
+
+  describe "#edit" do
+    let!(:applicant) { create(:applicant, organisations: [organisation]) }
+
+    render_views
+
+    before do
+      sign_in(agent)
+      setup_rdv_solidarites_session(rdv_solidarites_session)
+    end
+
+    context "when organisation_level" do
+      let!(:edit_params) { { id: applicant.id, organisation_id: organisation.id } }
+
+      it "renders the edit applicant page" do
+        get :edit, params: edit_params
+
+        expect(response).to be_successful
+        expect(response.body).to match(/Modifier allocataire/)
+      end
+    end
+
+    context "when department_level" do
+      let!(:edit_params) { { id: applicant.id, department_id: department.id } }
+
+      it "renders the edit applicant page" do
+        get :edit, params: edit_params
+
+        expect(response).to be_successful
+        expect(response.body).to match(/Modifier allocataire/)
       end
     end
   end
@@ -402,9 +467,23 @@ describe ApplicantsController, type: :controller do
             .and_return(OpenStruct.new(success?: true, applicant: applicant))
         end
 
-        it "is redirects to the show page" do
-          patch :update, params: update_params
-          expect(response).to redirect_to(organisation_applicant_path(organisation, applicant))
+        context "when organisation level" do
+          it "redirects to the show page" do
+            patch :update, params: update_params
+            expect(response).to redirect_to(organisation_applicant_path(organisation, applicant))
+          end
+        end
+
+        context "when department level" do
+          let!(:update_params) do
+            { id: applicant.id, department_id: department.id,
+              applicant: { first_name: "Alain", last_name: "Deloin", phone_number: "0123456789" } }
+          end
+
+          it "redirects to the show page" do
+            patch :update, params: update_params
+            expect(response).to redirect_to(department_applicant_path(department, applicant))
+          end
         end
       end
 
@@ -414,7 +493,7 @@ describe ApplicantsController, type: :controller do
             .and_return(OpenStruct.new(success?: false, errors: ['some error']))
         end
 
-        it "is renders the edit page" do
+        it "renders the edit page" do
           patch :update, params: update_params
           expect(response).to be_successful
         end
