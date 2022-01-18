@@ -42,6 +42,11 @@ Rails.application.routes.draw do
     end
   end
 
+  # Error pages
+  %w[404 422 500].each do |code|
+    get code, to: "static_pages#error", code: code
+  end
+
   resources :rdv_solidarites_webhooks, only: [:create]
 
   resources :sessions, only: [:create]
