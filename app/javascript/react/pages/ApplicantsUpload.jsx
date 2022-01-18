@@ -12,6 +12,7 @@ import {
   parameterizeArray,
 } from "../../lib/parameterize";
 import getKeyByValue from "../../lib/getKeyByValue";
+import splitArray from "../../lib/splitArray";
 import searchApplicants from "../actions/searchApplicants";
 import { initReducer, reducerFactory } from "../../lib/reducers";
 import { excelDateToString } from "../../lib/datesHelper";
@@ -125,8 +126,8 @@ export default function ApplicantsUpload({ organisation, configuration, departme
     return applicantsFromList.reverse();
   };
 
-  const retrieveApplicantsFromApp = async (uids) => {
-    const result = await searchApplicants(uids);
+  const retrieveApplicantsFromApp = async (departmentInternalIds, uids) => {
+    const result = await searchApplicants(departmentInternalIds, uids);
     if (result.success) {
       return result.applicants;
     }
@@ -139,10 +140,13 @@ export default function ApplicantsUpload({ organisation, configuration, departme
   };
 
   const retrieveUpToDateApplicants = async (applicantsFromList) => {
-    const uids = applicantsFromList.map((applicant) => applicant.uid).filter((uid) => uid);
+    const [withId, withoutId] = splitArray(applicantsFromList, (applicant) => applicant.departmentInternalId !== undefined);
+    const departmentInternalIds = withId.map((applicant) => applicant.departmentInternalId);
+    const uids = withoutId.map((applicant) => applicant.uid).filter((uid) => uid);
+
     let upToDateApplicants = applicantsFromList;
 
-    const retrievedApplicants = await retrieveApplicantsFromApp(uids);
+    const retrievedApplicants = await retrieveApplicantsFromApp(departmentInternalIds, uids);
 
     upToDateApplicants = applicantsFromList.map((applicant) => {
       const upToDateApplicant = retrievedApplicants.find((a) => a.uid === applicant.uid);

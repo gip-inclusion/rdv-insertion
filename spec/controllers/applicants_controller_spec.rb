@@ -159,8 +159,8 @@ describe ApplicantsController, type: :controller do
   end
 
   describe "#search" do
-    let!(:search_params) { { applicants: { uids: ["23"] }, format: "json" } }
-    let!(:applicant) { create(:applicant, organisations: [organisation],  email: "borisjohnson@gov.uk") }
+    let!(:search_params) { { applicants: { department_internal_ids: %w[331 552], uids: ["23"] }, format: "json" } }
+    let!(:applicant) { create(:applicant, organisations: [organisation], email: "borisjohnson@gov.uk") }
 
     before do
       applicant.update_columns(uid: "23") # used to skip callbacks and computation of uid
@@ -172,7 +172,9 @@ describe ApplicantsController, type: :controller do
       let!(:another_organisation) { create(:organisation) }
       let!(:agent) { create(:agent, organisations: [another_organisation]) }
       let!(:another_applicant) { create(:applicant, organisations: [another_organisation]) }
-      let!(:search_params) { { applicants: { uids: %w[23 0332] }, format: "json" } }
+      let!(:search_params) do
+        { applicants: { department_internal_ids: %w[331 552], uids: %w[23 0332] }, format: "json" }
+      end
 
       before { another_applicant.update_columns(uid: "0332") }
 

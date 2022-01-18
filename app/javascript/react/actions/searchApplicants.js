@@ -1,5 +1,5 @@
 /* eslint no-await-in-loop: "off" */
-const searchApplicants = async (uids) => {
+const searchApplicants = async (departmentInternalIds, uids) => {
   const response = await fetch("/applicants/search", {
     method: "POST",
     credentials: "same-origin",
@@ -9,7 +9,7 @@ const searchApplicants = async (uids) => {
       "X-CSRF-Token": document.querySelector("meta[name=csrf-token]").content,
     },
     body: JSON.stringify({
-      applicants: { uids },
+      applicants: { department_internal_ids: departmentInternalIds, uids },
     }),
   });
 
