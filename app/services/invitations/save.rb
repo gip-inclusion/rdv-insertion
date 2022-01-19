@@ -51,8 +51,7 @@ module Invitations
     def compute_invitation_link!
       call_service!(
         Invitations::ComputeLink,
-        invitation: @invitation,
-        rdv_solidarites_session: @rdv_solidarites_session
+        invitation: @invitation
       )
     end
 

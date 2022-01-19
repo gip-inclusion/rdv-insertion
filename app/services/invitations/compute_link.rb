@@ -1,8 +1,7 @@
 module Invitations
   class ComputeLink < BaseService
-    def initialize(rdv_solidarites_session:, invitation:)
+    def initialize(invitation:)
       @invitation = invitation
-      @rdv_solidarites_session = rdv_solidarites_session
     end
 
     def call

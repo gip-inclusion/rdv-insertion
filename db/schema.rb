@@ -98,7 +98,7 @@ ActiveRecord::Schema.define(version: 2022_01_17_163650) do
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "clicked", default: false
     t.string "context"
-    t.string "rescue_phone_number"
+    t.string "help_phone_number"
     t.bigint "department_id"
     t.index ["applicant_id"], name: "index_invitations_on_applicant_id"
     t.index ["department_id"], name: "index_invitations_on_department_id"

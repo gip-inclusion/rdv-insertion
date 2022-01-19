@@ -3,7 +3,7 @@ class Invitation < ApplicationRecord
   belongs_to :department
   has_and_belongs_to_many :organisations
 
-  validates :rescue_phone_number, :context, :token, :organisations, :link, presence: true
+  validates :help_phone_number, :context, :token, :organisations, :link, presence: true
   validate :organisations_cannot_be_from_different_departments
 
   enum format: { sms: 0, email: 1, link_lonly: 2 }, _prefix: :format

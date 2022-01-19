@@ -12,7 +12,7 @@ class InvitationsController < ApplicationController
     )
     authorize @invitation
     if save_and_send_invitation.success?
-      render json: { success: true, invitation: save_and_send_invitation.invitation }
+      render json: { success: true, invitation: @invitation }
     else
       render json: { success: false, errors: save_and_send_invitation.errors }
     end
@@ -27,7 +27,7 @@ class InvitationsController < ApplicationController
   private
 
   def invitation_params
-    params.require(:invitation).permit(:format, :context, :rescue_phone_number)
+    params.require(:invitation).permit(:format, :context, :help_phone_number)
   end
 
   def set_applicant
@@ -37,6 +37,7 @@ class InvitationsController < ApplicationController
   def set_invitation
     # TODO: identify the invitation with a uuid
     @invitation = Invitation.where(format: invitation_format, token: params[:token]).last
+    raise ActiveRecord::RecordNotFound unless @invitation
   end
 
   def save_and_send_invitation

@@ -6,7 +6,7 @@ const inviteApplicant = async (
   organisationId,
   isDepartmentLevel,
   invitationFormat,
-  rescuePhoneNumber
+  helpPhoneNumber
 ) => {
   let url;
   if (isDepartmentLevel) {
@@ -16,7 +16,7 @@ const inviteApplicant = async (
   }
   return appFetch(url, "POST", {
     format: invitationFormat,
-    rescue_phone_number: rescuePhoneNumber,
+    help_phone_number: helpPhoneNumber,
     context: "RSA orientation",
   });
 };

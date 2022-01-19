@@ -1,7 +1,7 @@
 class CreateOrganisationsInvitationsJoinTable < ActiveRecord::Migration[6.1]
   def up
     add_column :invitations, :context, :string
-    add_column :invitations, :rescue_phone_number, :string
+    add_column :invitations, :help_phone_number, :string
 
     create_join_table :organisations, :invitations do |t|
       t.index(
@@ -16,7 +16,7 @@ class CreateOrganisationsInvitationsJoinTable < ActiveRecord::Migration[6.1]
     Invitation.all.find_each do |invitation|
       organisation = Organisation.find(invitation.organisation_id)
       invitation.update!(
-        rescue_phone_number: organisation&.phone_number,
+        help_phone_number: organisation&.phone_number,
         context: "RSA orientation",
         organisation_ids: [invitation.organisation_id],
         department_id: organisation.department_id
@@ -38,6 +38,6 @@ class CreateOrganisationsInvitationsJoinTable < ActiveRecord::Migration[6.1]
     drop_table :invitations_organisations
 
     remove_column :invitations, :context
-    remove_column :invitations, :rescue_phone_number
+    remove_column :invitations, :help_phone_number
   end
 end
