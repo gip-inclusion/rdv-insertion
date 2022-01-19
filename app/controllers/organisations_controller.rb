@@ -8,15 +8,15 @@ class OrganisationsController < ApplicationController
     @department_organisations = policy_scope(Organisation).where(department: department)
     return render_impossible_to_geolocate if retrieve_geolocalisation.failure?
 
-    if retrieve_organisations_attrituted_to_sector.success?
+    if retrieve_relevant_organisations.success?
       render json: {
         department_organisations: @department_organisations,
         success: true,
-        geolocated_organisations: organisations_attributed_to_sector
+        geolocated_organisations: organisations_relevant_to_sector
       }
     else
       render json: {
-        errors: retrieve_organisations_attrituted_to_sector.errors,
+        errors: retrieve_relevant_organisations.errors,
         success: false,
         department_organisations: @department_organisations
       }
@@ -32,7 +32,7 @@ class OrganisationsController < ApplicationController
   def retrieve_geolocalisation
     @retrieve_geolocalisation ||= RetrieveGeolocalisation.call(
       address: params[:address],
-      department: department
+      department_number: department.number
     )
   end
 
@@ -44,8 +44,8 @@ class OrganisationsController < ApplicationController
     }
   end
 
-  def retrieve_organisations_attrituted_to_sector
-    @retrieve_organisations_attrituted_to_sector ||= \
+  def retrieve_relevant_organisations
+    @retrieve_relevant_organisations ||= \
       RdvSolidaritesApi::RetrieveOrganisations.call(
         rdv_solidarites_session: rdv_solidarites_session,
         geo_attributes: {
@@ -57,10 +57,10 @@ class OrganisationsController < ApplicationController
   end
 
   def retrieved_rdv_solidarites_organisations
-    retrieve_organisations_attrituted_to_sector.organisations
+    retrieve_relevant_organisations.organisations
   end
 
-  def organisations_attributed_to_sector
+  def organisations_relevant_to_sector
     @department_organisations.select do |org|
       org.rdv_solidarites_organisation_id.in?(retrieved_rdv_solidarites_organisations.map(&:id))
     end

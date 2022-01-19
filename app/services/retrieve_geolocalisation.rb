@@ -1,9 +1,9 @@
 class RetrieveGeolocalisation < BaseService
   API_ADRESSE_URL = "https://api-adresse.data.gouv.fr/search/".freeze
 
-  def initialize(address:, department:)
+  def initialize(address:, department_number:)
     @address = address
-    @department = department
+    @department_number = department_number
   end
 
   def call
@@ -56,9 +56,7 @@ class RetrieveGeolocalisation < BaseService
   def selected_feature
     # we take the first result that checks that it is in the right department
     response_body["features"].find do |f|
-      context = f["properties"]["context"].downcase
-
-      context.include?(@department.name.downcase) || context.include?(@department.number)
+      f["properties"]["context"].downcase.include?(@department_number)
     end
   end
 end

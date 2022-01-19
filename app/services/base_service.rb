@@ -52,11 +52,26 @@ class BaseService
 
   private
 
-  def fail!(error_message = nil)
-    raise FailedServiceError, error_message
+  def call_service!(service, **kwargs)
+    service_call = service.call(**kwargs)
+
+    if service_call.success?
+      instance_variable_set(:"@#{service.name.demodulize.underscore}_service", service_call)
+      return
+    end
+
+    result.errors += service_call.errors
+    fail!
   end
 
-  def failed?
-    result.errors.present?
+  def save_record!(record)
+    return if record.save
+
+    result.errors << record.errors.full_messages.to_sentence
+    fail!
+  end
+
+  def fail!(error_message = nil)
+    raise FailedServiceError, error_message
   end
 end

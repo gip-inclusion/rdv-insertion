@@ -1,21 +1,24 @@
-const inviteApplicant = async (organisationId, applicantId, invitationFormat) => {
-  const response = await fetch(
-    `/organisations/${organisationId}/applicants/${applicantId}/invitations`,
-    {
-      method: "POST",
-      credentials: "same-origin",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        "X-CSRF-Token": document.querySelector("meta[name=csrf-token]").content,
-      },
-      body: JSON.stringify({
-        format: invitationFormat,
-      }),
-    }
-  );
+import appFetch from "../../lib/appFetch";
 
-  return response.json();
+const inviteApplicant = async (
+  applicantId,
+  departmentId,
+  organisationId,
+  isDepartmentLevel,
+  invitationFormat,
+  rescuePhoneNumber
+) => {
+  let url;
+  if (isDepartmentLevel) {
+    url = `/departments/${departmentId}/applicants/${applicantId}/invitations`;
+  } else {
+    url = `/organisations/${organisationId}/applicants/${applicantId}/invitations`;
+  }
+  return appFetch(url, "POST", {
+    format: invitationFormat,
+    rescue_phone_number: rescuePhoneNumber,
+    context: "RSA orientation",
+  });
 };
 
 export default inviteApplicant;

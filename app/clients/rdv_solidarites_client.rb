@@ -36,6 +36,14 @@ class RdvSolidaritesClient
     )
   end
 
+  def get_invitation(invitation_token)
+    Faraday.get(
+      "#{@url}/api/v1/invitations/#{invitation_token}",
+      {},
+      request_headers
+    )
+  end
+
   def create_user_profile(user_id, organisation_id)
     Faraday.post(
       "#{@url}/api/v1/user_profiles",

@@ -1,0 +1,10 @@
+fr:
+  activerecord:
+    models:
+      invitation: Invitation
+    attributes:
+      invitation:
+        rescue_phone_number: Téléphone de secours
+        link: Lien
+        token: Token
+        context: Contexte

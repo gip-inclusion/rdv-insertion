@@ -12,7 +12,7 @@ const TITLES = {
 };
 
 export default class Applicant {
-  constructor(attributes, departmentNumber, organisation, organisationConfiguration) {
+  constructor(attributes, department, organisation, organisationConfiguration) {
     const formattedAttributes = {};
     Object.keys(attributes).forEach((key) => {
       formattedAttributes[key] = attributes[key]?.toString()?.trim();
@@ -37,7 +37,8 @@ export default class Applicant {
     const formattedRole = formattedAttributes.role?.split("/")?.shift()?.toLowerCase();
     this.role = ROLES[formattedRole] || formattedRole;
     this.shortRole = this.role === "demandeur" ? "DEM" : "CJT";
-    this.departmentNumber = departmentNumber;
+    this.department = department;
+    this.departmentNumber = department.number;
     // when creating/inviting we always consider an applicant in the scope of only one organisation
     this.currentOrganisation = organisation;
     this.organisationConfiguration = organisationConfiguration;

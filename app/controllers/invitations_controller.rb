@@ -1,16 +1,20 @@
 class InvitationsController < ApplicationController
-  before_action :set_organisation, only: [:create]
+  before_action :set_organisations, only: [:create]
+  before_action :set_department, only: [:create]
   before_action :set_applicant, only: [:create]
   before_action :set_invitation, only: [:redirect]
   skip_before_action :authenticate_agent!, only: [:redirect]
   respond_to :json
 
   def create
-    authorize @applicant, :invite?
-    if invite_applicant.success?
-      render json: { success: true, invitation: invite_applicant.invitation }
+    @invitation = Invitation.new(
+      applicant: @applicant, department: @department, organisations: @organisations, **invitation_params
+    )
+    authorize @invitation
+    if save_and_send_invitation.success?
+      render json: { success: true, invitation: save_and_send_invitation.invitation }
     else
-      render json: { success: false, errors: invite_applicant.errors }
+      render json: { success: false, errors: save_and_send_invitation.errors }
     end
   end
 
@@ -22,25 +26,37 @@ class InvitationsController < ApplicationController
 
   private
 
+  def invitation_params
+    params.require(:invitation).permit(:format, :context, :rescue_phone_number)
+  end
+
   def set_applicant
-    @applicant = @organisation.applicants.includes(:invitations).find(params[:applicant_id])
+    @applicant = policy_scope(Applicant).includes(:invitations).find(params[:applicant_id])
   end
 
   def set_invitation
-    @invitation = Invitation.find_by!(format: invitation_format, token: params[:token])
+    # TODO: identify the invitation with a uuid
+    @invitation = Invitation.where(format: invitation_format, token: params[:token]).last
   end
 
-  def invite_applicant
-    @invite_applicant ||= Invitations::InviteApplicant.call(
-      applicant: @applicant,
-      organisation: @organisation,
-      rdv_solidarites_session: rdv_solidarites_session,
-      invitation_format: params[:format]
+  def save_and_send_invitation
+    @save_and_send_invitation ||= Invitations::SaveAndSend.call(
+      invitation: @invitation,
+      rdv_solidarites_session: rdv_solidarites_session
     )
   end
 
-  def set_organisation
-    @organisation = Organisation.find(params[:organisation_id])
+  def set_department
+    @department = @organisations.first.department
+  end
+
+  def set_organisations
+    @organisations = \
+      if department_level?
+        policy_scope(Organisation).where(department_id: params[:department_id])
+      else
+        policy_scope(Organisation).where(id: params[:organisation_id])
+      end
   end
 
   def invitation_format

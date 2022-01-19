@@ -4,7 +4,7 @@
 <p class="btn-wrapper">
   <a href="<%= redirect_invitations_url(params: { token: @invitation.token, format: "email" }, host: ENV['HOST']) %>" class="btn btn-primary">Je prends RDV</a>
 </p>
-<p>En cas de problème technique, contactez le <%= @invitation.organisation.phone_number.gsub(/\d{2}/, '\& ') %></p>
+<p>En cas de problème technique, contactez le <%= @invitation.rescue_phone_number.gsub(/\d{2}/, '\& ') %></p>
 <p>À bientôt,</p>
 <p>Le département <%= I18n.t("with_prefix.#{@invitation.department.pronoun}", name: @invitation.department.name) %>.</p>
 <% if File.exist?("app/javascript/images/logos/#{@invitation.department.name.parameterize}.png") %>

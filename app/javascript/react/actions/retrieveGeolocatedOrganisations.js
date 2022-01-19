@@ -1,20 +1,10 @@
-const retrieveGeolocatedOrganisations = async (departmentNumber, address) => {
-  const response = await fetch(
+import appFetch from "../../lib/appFetch";
+
+const retrieveGeolocatedOrganisations = async (departmentNumber, address) =>
+  appFetch(
     `/organisations/geolocated?department_number=${encodeURIComponent(
       departmentNumber
-    )}&address=${encodeURIComponent(address)}`,
-    {
-      method: "GET",
-      credentials: "same-origin",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        "X-CSRF-Token": document.querySelector("meta[name=csrf-token]").content,
-      },
-    }
+    )}&address=${encodeURIComponent(address)}`
   );
-
-  return response.json();
-};
 
 export default retrieveGeolocatedOrganisations;

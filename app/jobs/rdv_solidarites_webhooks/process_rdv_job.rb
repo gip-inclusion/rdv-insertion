@@ -8,7 +8,6 @@ module RdvSolidaritesWebhooks
       check_organisation!
       return if applicants.empty?
 
-      check_applicants_organisation!
       upsert_or_delete_rdv
       notify_applicants if should_notify_applicants?
     end
@@ -21,22 +20,8 @@ module RdvSolidaritesWebhooks
       raise WebhookProcessingJobError, "Organisation not found for organisation id #{rdv_solidarites_organisation_id}"
     end
 
-    def check_applicants_organisation!
-      return if all_applicants_belongs_to_organisation?
-
-      raise(
-        WebhookProcessingJobError,
-        "Applicants / Organisation mismatch: applicant_ids: #{applicant_ids} - organisation_id #{organisation.id} - " \
-        "data: #{@data} - meta: #{@meta}"
-      )
-    end
-
     def should_notify_applicants?
       organisation.notify_applicant? && event.in?(%w[created destroyed])
-    end
-
-    def all_applicants_belongs_to_organisation?
-      applicants.all? { |a| a.organisation_ids.include?(organisation.id) }
     end
 
     def event
