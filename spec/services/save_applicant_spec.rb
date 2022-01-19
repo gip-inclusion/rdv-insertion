@@ -20,7 +20,8 @@ describe SaveApplicant, type: :service do
     {
       first_name: "john", last_name: "doe", notify_by_sms: true, notify_by_email: true,
       address: "16 rue de la tour", email: "johndoe@example.com", birth_name: "",
-      birth_date: Date.new(1989, 3, 17), affiliation_number: "aff123", phone_number: "+33612459567"
+      birth_date: Date.new(1989, 3, 17), affiliation_number: "aff123", phone_number: "+33612459567",
+      invitation_accepted_at: nil
     }
   end
 
@@ -35,7 +36,6 @@ describe SaveApplicant, type: :service do
   describe "#call" do
     before do
       allow(applicant).to receive(:save).and_return(true)
-      allow(applicant).to receive(:update).and_return(true)
       allow(UpsertRdvSolidaritesUser).to receive(:call)
         .and_return(OpenStruct.new(success?: true, rdv_solidarites_user_id: rdv_solidarites_user_id))
     end
@@ -57,9 +57,8 @@ describe SaveApplicant, type: :service do
     end
 
     it "assign the rdv solidarites user id" do
-      expect(applicant).to receive(:update)
-        .with(rdv_solidarites_user_id: rdv_solidarites_user_id)
       subject
+      expect(applicant.rdv_solidarites_user_id).not_to be_nil
     end
 
     it "is a success" do
@@ -132,7 +131,7 @@ describe SaveApplicant, type: :service do
 
     context "when the applicant update fails" do
       before do
-        allow(applicant).to receive(:update).and_return(false)
+        allow(applicant).to receive(:save).and_return(false)
         allow(applicant).to receive_message_chain(:errors, :full_messages, :to_sentence)
           .and_return('update error')
       end
@@ -154,8 +153,8 @@ describe SaveApplicant, type: :service do
           ))
       end
 
-      it "does not assign the user id" do
-        expect(applicant).not_to receive(:update)
+      it "does not reassign the user id" do
+        expect(applicant).to receive(:save).at_most(1).time
         subject
       end
     end

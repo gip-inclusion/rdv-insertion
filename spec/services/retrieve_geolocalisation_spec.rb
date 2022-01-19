@@ -1,10 +1,10 @@
 describe RetrieveGeolocalisation, type: :service do
   subject do
-    described_class.call(address: address, department: department)
+    described_class.call(address: address, department_number: department_number)
   end
 
+  let!(:department_number) { "75" }
   let(:address) { "20 Avenue de Ségur, 75007 Paris" }
-  let(:department) { create(:department, name: "Paris", number: "75", region: "Île-de-France") }
   let(:response_body) do
     {
       "type" => "FeatureCollection",

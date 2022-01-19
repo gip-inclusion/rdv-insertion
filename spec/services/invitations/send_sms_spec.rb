@@ -5,6 +5,7 @@ describe Invitations::SendSms, type: :service do
     )
   end
 
+  let!(:help_phone_number) { "0147200001" }
   let!(:phone_number) { "0782605941" }
   let!(:phone_number_formatted) { "+33782605941" }
   let!(:applicant) do
@@ -22,19 +23,12 @@ describe Invitations::SendSms, type: :service do
       region: "Auvergne-Rhône-Alpes"
     )
   end
-  let!(:organisation) do
-    create(
-      :organisation,
-      rdv_solidarites_organisation_id: 27,
-      phone_number: "0147200001",
-      department: department
-    )
-  end
+
   let!(:invitation) do
     create(
       :invitation,
-      applicant: applicant, organisation: organisation, token: "123", link: "https://www.rdv-solidarites.fr/lieux?invitation_token=123",
-      format: "sms"
+      applicant: applicant, department: department, token: "123", help_phone_number: help_phone_number,
+      link: "https://www.rdv-solidarites.fr/lieux?invitation_token=123", format: "sms"
     )
   end
 

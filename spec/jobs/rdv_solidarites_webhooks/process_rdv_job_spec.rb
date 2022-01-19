@@ -82,19 +82,6 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
       end
     end
 
-    context "when there is a mismatch between one applicant and the organisation" do
-      let!(:another_organisation) { create(:organisation) }
-      let!(:applicant) { create(:applicant, id: 242, organisations: [another_organisation]) }
-
-      it "raises an error" do
-        expect { subject }.to raise_error(
-          WebhookProcessingJobError,
-          "Applicants / Organisation mismatch: applicant_ids: [242, 4] - organisation_id #{organisation.id} - "\
-          "data: #{data} - meta: #{meta}"
-        )
-      end
-    end
-
     context "it udpates the rdv" do
       let!(:rdv_attributes) do
         data.merge(

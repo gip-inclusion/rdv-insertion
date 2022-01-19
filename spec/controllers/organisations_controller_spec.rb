@@ -62,7 +62,7 @@ describe OrganisationsController, type: :controller do
       sign_in(agent)
       setup_rdv_solidarites_session(rdv_solidarites_session)
       allow(RetrieveGeolocalisation).to receive(:call)
-        .with(address: address, department: department)
+        .with(address: address, department_number: department.number)
         .and_return(OpenStruct.new(success?: true, city_code: city_code, street_ban_id: street_ban_id))
       allow(RdvSolidaritesApi::RetrieveOrganisations).to receive(:call)
         .with(

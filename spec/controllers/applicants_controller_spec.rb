@@ -92,14 +92,15 @@ describe ApplicantsController, type: :controller do
     end
 
     context "when json request" do
+      before { request.accept = "application/json" }
+
       let(:applicant_params) do
         {
           applicant: {
             uid: "123xz", first_name: "john", last_name: "doe", email: "johndoe@example.com",
             affiliation_number: "1234", role: "conjoint"
           },
-          organisation_id: organisation.id,
-          format: "json"
+          organisation_id: organisation.id
         }
       end
 
@@ -123,9 +124,10 @@ describe ApplicantsController, type: :controller do
       end
 
       context "when the creation succeeds" do
-        let!(:applicant) { create(:applicant) }
+        let!(:applicant) { create(:applicant, organisations: [organisation]) }
 
         before do
+          allow(Applicant).to receive(:new).and_return(applicant)
           allow(SaveApplicant).to receive(:call)
             .and_return(OpenStruct.new(success?: true, applicant: applicant))
         end
@@ -134,6 +136,12 @@ describe ApplicantsController, type: :controller do
           post :create, params: applicant_params
           expect(response).to be_successful
           expect(JSON.parse(response.body)["success"]).to eq(true)
+        end
+
+        it "renders the applicant" do
+          post :create, params: applicant_params
+          expect(response).to be_successful
+          expect(JSON.parse(response.body)["applicant"]["id"]).to eq(applicant.id)
         end
       end
 
