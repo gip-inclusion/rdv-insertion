@@ -71,7 +71,9 @@ export default function ApplicantsUpload({ organisation, configuration, departme
         const header = [];
         const columnCount = XLSX.utils.decode_range(sheet["!ref"]).e.c + 1;
         for (let i = 0; i < columnCount; i += 1) {
-          header[i] = sheet[`${XLSX.utils.encode_col(i)}1`].v;
+          if (sheet[`${XLSX.utils.encode_col(i)}1`] !== undefined) {
+            header[i] = sheet[`${XLSX.utils.encode_col(i)}1`].v;
+          }
         }
         const missingColumnNames = checkColumnNames(parameterizeArray(header));
         let rows = XLSX.utils.sheet_to_row_object_array(sheet);
