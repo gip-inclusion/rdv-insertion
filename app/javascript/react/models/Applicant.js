@@ -39,7 +39,7 @@ export default class Applicant {
     this.shortRole = this.role === "demandeur" ? "DEM" : "CJT";
     this.departmentNumber = departmentNumber;
     // when creating/inviting we always consider an applicant in the scope of only one organisation
-    this.organisation = organisation;
+    this.currentOrganisation = organisation;
     this.organisationConfiguration = organisationConfiguration;
   }
 
@@ -63,6 +63,10 @@ export default class Applicant {
     return this._id;
   }
 
+  get organisations() {
+    return this._organisations;
+  }
+
   set createdAt(createdAt) {
     this._createdAt = createdAt;
   }
@@ -77,6 +81,10 @@ export default class Applicant {
 
   set lastSmsInvitationSentAt(lastSmsInvitationSentAt) {
     this._lastSmsInvitationSentAt = lastSmsInvitationSentAt;
+  }
+
+  set organisations(organisations) {
+    this._organisations = organisations;
   }
 
   formatAffiliationNumber(affiliationNumber) {
@@ -94,16 +102,20 @@ export default class Applicant {
     this.createdAt = upToDateApplicant.created_at;
     this.invitedAt = upToDateApplicant.invited_at;
     this.id = upToDateApplicant.id;
-    this.organisation ||= upToDateApplicant.organisations.find(
+    this.organisations = upToDateApplicant.organisations;
+    // we assign a current organisation when we are in the context of a department
+    this.currentOrganisation ||= upToDateApplicant.organisations.find(
       (o) => o.department_number === this.departmentNumber
     );
-    // we update the attributes if they are different in the app than in the file
-    this.firstName = upToDateApplicant.first_name;
-    this.lastName = upToDateApplicant.last_name;
-    this.email = upToDateApplicant.email;
-    this.phoneNumber = formatPhoneNumber(upToDateApplicant.phone_number);
-    this.fullAddress = upToDateApplicant.address;
-
+    // we update the attributes with the attributes in DB if the applicant is already created
+    // and cannot be updated from the page
+    if (this.belongsToCurrentOrg()) {
+      this.firstName = upToDateApplicant.first_name;
+      this.lastName = upToDateApplicant.last_name;
+      this.email = upToDateApplicant.email;
+      this.phoneNumber = formatPhoneNumber(upToDateApplicant.phone_number);
+      this.fullAddress = upToDateApplicant.address;
+    }
     this.lastSmsInvitationSentAt = retrieveLastInvitationDate(upToDateApplicant.invitations, "sms");
     this.lastEmailInvitationSentAt = retrieveLastInvitationDate(
       upToDateApplicant.invitations,
@@ -138,6 +150,13 @@ export default class Applicant {
     return (
       this.organisationConfiguration.invitation_format === "email" ||
       this.organisationConfiguration.invitation_format === "sms_and_email"
+    );
+  }
+
+  belongsToCurrentOrg() {
+    return (
+      this.currentOrganisation &&
+      this.organisations.map((o) => o.id).includes(this.currentOrganisation.id)
     );
   }
 

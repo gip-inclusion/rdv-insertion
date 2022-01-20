@@ -1,4 +1,4 @@
-class UpsertApplicant < BaseService
+class SaveApplicant < BaseService
   def initialize(applicant:, organisation:, rdv_solidarites_session:)
     @applicant = applicant
     @organisation = organisation
@@ -7,15 +7,15 @@ class UpsertApplicant < BaseService
 
   def call
     Applicant.transaction do
-      upsert_applicant_in_db!
+      save_applicant!
       upsert_rdv_solidarites_user!
-      set_rdv_solidarites_id!
+      assign_rdv_solidarites_user_id! unless @applicant.rdv_solidarites_user_id?
     end
   end
 
   private
 
-  def upsert_applicant_in_db!
+  def save_applicant!
     return if @applicant.save
 
     result.errors << @applicant.errors.full_messages.to_sentence
@@ -23,42 +23,30 @@ class UpsertApplicant < BaseService
   end
 
   def upsert_rdv_solidarites_user!
-    service = @applicant.rdv_solidarites_user_id? ? update_rdv_solidarites_user : create_rdv_solidarites_user
-    return if service.success?
+    return if upsert_rdv_solidarites_user.success?
 
-    result.errors += service.errors
+    result.errors += upsert_rdv_solidarites_user.errors
     fail!
   end
 
-  def set_rdv_solidarites_id!
-    return if @applicant.update(rdv_solidarites_user_id: rdv_solidarites_user_id)
+  def upsert_rdv_solidarites_user
+    @upsert_rdv_solidarites_user ||= UpsertRdvSolidaritesUser.call(
+      rdv_solidarites_session: @rdv_solidarites_session,
+      rdv_solidarites_organisation_id: @organisation.rdv_solidarites_organisation_id,
+      rdv_solidarites_user_attributes: rdv_solidarites_user_attributes,
+      rdv_solidarites_user_id: @applicant.rdv_solidarites_user_id
+    )
+  end
+
+  def assign_rdv_solidarites_user_id!
+    return if @applicant.update(rdv_solidarites_user_id: upsert_rdv_solidarites_user.rdv_solidarites_user_id)
 
     result.errors << @applicant.errors.full_messages.to_sentence
     fail!
   end
 
-  def rdv_solidarites_user_id
-    @applicant.rdv_solidarites_user_id || create_rdv_solidarites_user.rdv_solidarites_user.id
-  end
-
-  def create_rdv_solidarites_user
-    @create_rdv_solidarites_user ||= RdvSolidaritesApi::CreateUser.call(
-      user_attributes: rdv_solidarites_user_attributes,
-      rdv_solidarites_session: @rdv_solidarites_session
-    )
-  end
-
-  def update_rdv_solidarites_user
-    @update_rdv_solidarites_user ||= RdvSolidaritesApi::UpdateUser.call(
-      user_attributes: rdv_solidarites_user_attributes,
-      rdv_solidarites_session: @rdv_solidarites_session,
-      rdv_solidarites_user_id: @applicant.rdv_solidarites_user_id
-    )
-  end
-
   def rdv_solidarites_user_attributes
     user_attributes = {
-      organisation_ids: [@organisation.rdv_solidarites_organisation_id],
       # if we notify from rdv-insertion we don't from rdv-solidarites
       notify_by_sms: !@organisation.notify_applicant?,
       notify_by_email: !@organisation.notify_applicant?

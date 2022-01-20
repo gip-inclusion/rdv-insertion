@@ -8,7 +8,7 @@ module RdvSolidaritesApi
 
     def call
       request!
-      result.rdv_solidarites_user = RdvSolidarites::User.new(rdv_solidarites_response_body["user"])
+      result.user = RdvSolidarites::User.new(rdv_solidarites_response_body["user"])
     end
 
     def rdv_solidarites_response

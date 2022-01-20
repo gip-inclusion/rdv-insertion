@@ -50,7 +50,7 @@ describe RdvSolidaritesApi::UpdateUser, type: :service do
       end
 
       it "stores the rdv solidarites user" do
-        expect(subject.rdv_solidarites_user).to eq(rdv_solidarites_user)
+        expect(subject.user).to eq(rdv_solidarites_user)
       end
     end
 

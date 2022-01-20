@@ -9,7 +9,7 @@ describe RdvSolidaritesApi::RetrieveOrganisationResources, type: :service do
   end
 
   let!(:rdv_solidarites_organisation_id) { 23 }
-  let!(:additional_args) { user_ids }
+  let!(:additional_args) { { user_ids: user_ids } }
   let!(:user_ids) { [25] }
   let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
   let!(:rdv_solidarites_client) { instance_double(RdvSolidaritesClient) }
@@ -26,16 +26,16 @@ describe RdvSolidaritesApi::RetrieveOrganisationResources, type: :service do
     before do
       allow(rdv_solidarites_session).to receive(:rdv_solidarites_client)
         .and_return(rdv_solidarites_client)
-      allow(rdv_solidarites_client).to receive(:get_users)
-      allow(rdv_solidarites_client).to receive(:get_users)
+      allow(rdv_solidarites_client).to receive(:get_organisation_users)
+      allow(rdv_solidarites_client).to receive(:get_organisation_users)
         .and_return(OpenStruct.new(success?: true, body: response_body))
       allow(RdvSolidarites::User).to receive(:new)
         .and_return(rdv_solidarites_user)
     end
 
     it "retrieves the resources" do
-      expect(rdv_solidarites_client).to receive(:get_users)
-        .with(rdv_solidarites_organisation_id, page, user_ids)
+      expect(rdv_solidarites_client).to receive(:get_organisation_users)
+        .with(rdv_solidarites_organisation_id, page, user_ids: user_ids)
       subject
     end
 
@@ -46,10 +46,10 @@ describe RdvSolidaritesApi::RetrieveOrganisationResources, type: :service do
     it("is a success") { is_a_success }
 
     context "without additional_args" do
-      let!(:additional_args) { nil }
+      let!(:additional_args) { {} }
 
       it "retrieves the resources without the additional argument" do
-        expect(rdv_solidarites_client).to receive(:get_users)
+        expect(rdv_solidarites_client).to receive(:get_organisation_users)
           .with(rdv_solidarites_organisation_id, page)
         subject
       end
@@ -57,7 +57,7 @@ describe RdvSolidaritesApi::RetrieveOrganisationResources, type: :service do
 
     context "when response is unsuccessful" do
       before do
-        allow(rdv_solidarites_client).to receive(:get_users)
+        allow(rdv_solidarites_client).to receive(:get_organisation_users)
           .and_return(OpenStruct.new(success?: false, body: { error_messages: ['some error'] }.to_json))
       end
 

@@ -17,6 +17,7 @@
     "react/prop-types": 0,
     "no-underscore-dangle": ["error", { "allowAfterThis": true }],
     "no-param-reassign": "off",
-    "class-methods-use-this": "off"
+    "class-methods-use-this": "off",
+    "no-nested-ternary": "off"
   }
 }
