@@ -8,7 +8,12 @@ describe SaveApplicant, type: :service do
 
   let!(:rdv_solidarites_organisation_id) { 1010 }
   let!(:rdv_solidarites_user_id) { 2020 }
-  let!(:organisation) { create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id) }
+  let!(:organisation) do
+    create(
+      :organisation,
+      configuration: configuration, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id
+    )
+  end
   let!(:applicant_attributes) do
     {
       uid: "1234xyz", first_name: "john", last_name: "doe",
@@ -25,7 +30,7 @@ describe SaveApplicant, type: :service do
     }
   end
 
-  let!(:configuration) { create(:configuration, organisation: organisation, notify_applicant: false) }
+  let!(:configuration) { create(:configuration, notify_applicant: false) }
 
   let!(:applicant) do
     create(:applicant, applicant_attributes.merge(organisations: [organisation], rdv_solidarites_user_id: nil))
@@ -83,7 +88,7 @@ describe SaveApplicant, type: :service do
     end
 
     context "when organisation notifies customer from rdv insertion" do
-      let!(:configuration) { create(:configuration, organisation: organisation, notify_applicant: true) }
+      let!(:configuration) { create(:configuration, notify_applicant: true) }
 
       it "does not notify with rdv solidarites user" do
         expect(UpsertRdvSolidaritesUser).to receive(:call)

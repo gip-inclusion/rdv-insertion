@@ -28,7 +28,7 @@ class ApplicantsController < ApplicationController
   end
 
   def index
-    @applicants = policy_scope(Applicant).includes(:invitations, :rdvs)
+    @applicants = policy_scope(Applicant).includes(:invitations, :rdvs).distinct
     @applicants = \
       if department_level?
         @applicants.where(organisations: policy_scope(Organisation).where(department: @department))

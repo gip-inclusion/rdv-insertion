@@ -9,7 +9,7 @@ class Organisation < ApplicationRecord
   has_and_belongs_to_many :agents, dependent: :nullify
   has_and_belongs_to_many :applicants, dependent: :nullify
   has_and_belongs_to_many :invitations, dependent: :nullify
-  has_one :configuration, dependent: :nullify
+  belongs_to :configuration
   has_many :rdvs, dependent: :nullify
 
   delegate :notify_applicant?, to: :configuration
