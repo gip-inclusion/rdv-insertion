@@ -43,9 +43,9 @@ Rails.application.routes.draw do
   end
 
   # Error pages
-  %w[404 422 500].each do |code|
-    get code, to: "static_pages#error", code: code
-  end
+  get "404", to: "errors#not_found"
+  get "422", to: "errors#unprocessable_entity"
+  get "500", to: "errors#internal_server_error"
 
   resources :rdv_solidarites_webhooks, only: [:create]
 

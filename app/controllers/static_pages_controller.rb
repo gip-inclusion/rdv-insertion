@@ -1,5 +1,5 @@
 class StaticPagesController < ApplicationController
-  skip_before_action :authenticate_agent!, only: [:welcome, :legal_notice, :privacy_policy, :accessibility, :error]
+  skip_before_action :authenticate_agent!, only: [:welcome, :legal_notice, :privacy_policy, :accessibility]
 
   def welcome
     redirect_to(organisations_path) if logged_in?
@@ -19,9 +19,4 @@ class StaticPagesController < ApplicationController
   def privacy_policy; end
 
   def accessibility; end
-
-  def error
-    status = params[:code].present? ? params[:code].to_s : "500"
-    render status
-  end
 end
