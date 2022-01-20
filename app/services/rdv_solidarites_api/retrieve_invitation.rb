@@ -1,5 +1,5 @@
 module RdvSolidaritesApi
-  class RetrieveInvitationUser < Base
+  class RetrieveInvitation < Base
     def initialize(rdv_solidarites_session:, token:)
       @rdv_solidarites_session = rdv_solidarites_session
       @token = token

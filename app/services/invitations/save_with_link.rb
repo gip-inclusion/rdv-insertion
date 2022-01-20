@@ -1,5 +1,5 @@
 module Invitations
-  class Save < BaseService
+  class SaveWithLink < BaseService
     def initialize(invitation:, rdv_solidarites_session:)
       @invitation = invitation
       @rdv_solidarites_session = rdv_solidarites_session
@@ -26,7 +26,7 @@ module Invitations
     end
 
     def invitation_user
-      @invitation_user ||= RdvSolidaritesApi::RetrieveInvitationUser.call(
+      @invitation_user ||= RdvSolidaritesApi::RetrieveInvitation.call(
         token: existing_token,
         rdv_solidarites_session: @rdv_solidarites_session
       ).user

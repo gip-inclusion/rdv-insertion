@@ -1,4 +1,4 @@
-describe Invitations::Save, type: :service do
+describe Invitations::SaveWithLink, type: :service do
   subject do
     described_class.call(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
   end
@@ -105,13 +105,13 @@ describe Invitations::Save, type: :service do
       let!(:rdv_solidarites_user) { instance_double(RdvSolidarites::User) }
 
       before do
-        allow(RdvSolidaritesApi::RetrieveInvitationUser).to receive(:call).with(
+        allow(RdvSolidaritesApi::RetrieveInvitation).to receive(:call).with(
           token: "existing-token", rdv_solidarites_session: rdv_solidarites_session
         ).and_return(OpenStruct.new(user: rdv_solidarites_user))
       end
 
       it "checks if the token is valid by retrieving the associated user" do
-        expect(RdvSolidaritesApi::RetrieveInvitationUser).to receive(:call).with(
+        expect(RdvSolidaritesApi::RetrieveInvitation).to receive(:call).with(
           token: "existing-token", rdv_solidarites_session: rdv_solidarites_session
         )
         subject
@@ -133,7 +133,7 @@ describe Invitations::Save, type: :service do
 
       context "when the token is not associated to the user" do
         before do
-          allow(RdvSolidaritesApi::RetrieveInvitationUser).to receive(:call)
+          allow(RdvSolidaritesApi::RetrieveInvitation).to receive(:call)
             .with(token: "existing-token", rdv_solidarites_session: rdv_solidarites_session)
             .and_return(OpenStruct.new)
         end

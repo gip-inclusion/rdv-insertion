@@ -6,7 +6,7 @@ module Invitations
     end
 
     def call
-      save_invitation!
+      save_invitation_with_link!
       send_invitation!
       update_invitation_sent_at!
       result.invitation = @invitation
@@ -30,9 +30,9 @@ module Invitations
       @send_invitation ||= @invitation.send_to_applicant
     end
 
-    def save_invitation!
+    def save_invitation_with_link!
       call_service!(
-        Invitations::Save,
+        Invitations::SaveWithLink,
         invitation: @invitation,
         rdv_solidarites_session: @rdv_solidarites_session
       )

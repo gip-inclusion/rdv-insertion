@@ -11,7 +11,7 @@ describe Invitations::SaveAndSend, type: :service do
 
   describe "#call" do
     before do
-      allow(Invitations::Save).to receive(:call)
+      allow(Invitations::SaveWithLink).to receive(:call)
         .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
         .and_return(OpenStruct.new(success?: true))
       allow(invitation).to receive(:send_to_applicant)
@@ -27,7 +27,7 @@ describe Invitations::SaveAndSend, type: :service do
     end
 
     it "saves an invitation" do
-      expect(Invitations::Save).to receive(:call)
+      expect(Invitations::SaveWithLink).to receive(:call)
         .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
       subject
     end
@@ -44,7 +44,7 @@ describe Invitations::SaveAndSend, type: :service do
 
     context "when it fails to save" do
       before do
-        allow(Invitations::Save).to receive(:call)
+        allow(Invitations::SaveWithLink).to receive(:call)
           .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
           .and_return(OpenStruct.new(success?: false, errors: ["cannot save invitation"]))
       end
