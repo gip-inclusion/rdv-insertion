@@ -18,7 +18,7 @@
                 <ul class="list-inline">
                   <% if organisations.length > 1 %>
                     <%= link_to department_applicants_path(department) do %>
-                      <li class="my-3"><div class="col-5 pb-2 border-bottom">Toutes les organisations</div></li>
+                      <li class="my-4"><div class="col-5 pb-2 border-bottom"><h5>Toutes les organisations</h5></div></li>
                     <% end %>
                   <% end %>
                   <% organisations.each do |organisation| %>
@@ -30,7 +30,7 @@
               </div>
             </div>
             <div class="d-flex align-items-center">
-              <div>
+              <div class="px-3">
                 <% if image_compiled?("maps/#{department.name.parameterize}.svg") %>
                   <%= image_pack_tag("maps/#{department.name.parameterize}.svg", alt: department.name.parameterize) %>
                 <% end %>
