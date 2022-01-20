@@ -4,7 +4,7 @@ fr:
       invitation: Invitation
     attributes:
       invitation:
-        help_phone_number: Téléphone de secours
+        help_phone_number: Téléphone de contact
         link: Lien
         token: Token
         context: Contexte
