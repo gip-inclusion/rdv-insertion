@@ -5,6 +5,7 @@ module RdvSolidaritesWebhooks
       @meta = meta.deep_symbolize_keys
       return if applicant.blank? || organisation.blank?
 
+      attach_applicant_to_org if event == "created"
       mark_applicant_as_deleted if event == "destroyed"
     end
 
@@ -28,6 +29,10 @@ module RdvSolidaritesWebhooks
 
     def organisation
       @organisation ||= Organisation.find_by(rdv_solidarites_organisation_id: rdv_solidarites_organisation_id)
+    end
+
+    def attach_applicant_to_org
+      applicant.organisations << organisation unless applicant.organisation_ids.include?(organisation.id)
     end
 
     def mark_applicant_as_deleted

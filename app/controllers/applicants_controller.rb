@@ -129,10 +129,6 @@ class ApplicantsController < ApplicationController
     @configuration = @department.configuration
   end
 
-  def department_level?
-    params[:department_id].present?
-  end
-
   def retrieve_applicants
     @applicants = policy_scope(Applicant).includes(:organisations, :invitations, :rdvs)
                                          .where(uid: params.require(:applicants).require(:uids))

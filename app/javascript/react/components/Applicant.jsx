@@ -7,7 +7,7 @@ import handleApplicantInvitation from "../lib/handleApplicantInvitation";
 import updateApplicant from "../actions/updateApplicant";
 import retrieveRelevantOrganisation from "../../lib/retrieveRelevantOrganisation";
 
-export default function Applicant({ applicant, dispatchApplicants }) {
+export default function Applicant({ applicant, dispatchApplicants, isDepartmentLevel }) {
   const [isLoading, setIsLoading] = useState({
     accountCreation: false,
     smsInvitation: false,
@@ -43,15 +43,19 @@ export default function Applicant({ applicant, dispatchApplicants }) {
       }
     } else if (action === "smsInvitation") {
       const invitation = await handleApplicantInvitation(
-        applicant.currentOrganisation.id,
         applicant.id,
+        applicant.department.id,
+        applicant.currentOrganisation,
+        isDepartmentLevel,
         "sms"
       );
       applicant.lastSmsInvitationSentAt = invitation.sent_at;
     } else if (action === "emailInvitation") {
       const invitation = await handleApplicantInvitation(
-        applicant.currentOrganisation.id,
         applicant.id,
+        applicant.department.id,
+        applicant.currentOrganisation,
+        isDepartmentLevel,
         "email"
       );
       applicant.lastEmailInvitationSentAt = invitation.sent_at;

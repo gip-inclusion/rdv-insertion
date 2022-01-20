@@ -7,7 +7,7 @@ class SaveApplicant < BaseService
 
   def call
     Applicant.transaction do
-      save_applicant!
+      save_record!(@applicant)
       upsert_rdv_solidarites_user!
       assign_rdv_solidarites_user_id! unless @applicant.rdv_solidarites_user_id?
     end
@@ -15,22 +15,9 @@ class SaveApplicant < BaseService
 
   private
 
-  def save_applicant!
-    return if @applicant.save
-
-    result.errors << @applicant.errors.full_messages.to_sentence
-    fail!
-  end
-
   def upsert_rdv_solidarites_user!
-    return if upsert_rdv_solidarites_user.success?
-
-    result.errors += upsert_rdv_solidarites_user.errors
-    fail!
-  end
-
-  def upsert_rdv_solidarites_user
-    @upsert_rdv_solidarites_user ||= UpsertRdvSolidaritesUser.call(
+    call_service!(
+      UpsertRdvSolidaritesUser,
       rdv_solidarites_session: @rdv_solidarites_session,
       rdv_solidarites_organisation_id: @organisation.rdv_solidarites_organisation_id,
       rdv_solidarites_user_attributes: rdv_solidarites_user_attributes,
@@ -39,10 +26,8 @@ class SaveApplicant < BaseService
   end
 
   def assign_rdv_solidarites_user_id!
-    return if @applicant.update(rdv_solidarites_user_id: upsert_rdv_solidarites_user.rdv_solidarites_user_id)
-
-    result.errors << @applicant.errors.full_messages.to_sentence
-    fail!
+    @applicant.rdv_solidarites_user_id = @upsert_rdv_solidarites_user_service.rdv_solidarites_user_id
+    save_record!(@applicant)
   end
 
   def rdv_solidarites_user_attributes

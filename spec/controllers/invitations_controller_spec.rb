@@ -2,56 +2,101 @@ describe InvitationsController, type: :controller do
   describe "#create" do
     let!(:applicant_id) { "24" }
     let!(:organisation_id) { "22" }
-    let!(:organisation) { create(:organisation, id: organisation_id) }
-    let!(:agent) { create(:agent, organisations: [organisation]) }
-    let!(:applicant) { create(:applicant, organisations: [organisation], id: applicant_id) }
-    let!(:create_params) { { organisation_id: organisation.id, applicant_id: applicant_id, format: "sms" } }
+    let!(:help_phone_number) { "0101010101" }
+    let!(:department) { create(:department) }
+    let!(:organisation) { create(:organisation, id: organisation_id, department: department) }
+    let!(:other_org) { create(:organisation, department: department) }
+
+    let!(:organisations) { Organisation.where(id: organisation.id) }
+    let!(:agent) { create(:agent, organisations: organisations) }
+    let!(:applicant) { create(:applicant, id: applicant_id, organisations: [organisation]) }
+    let!(:create_params) do
+      {
+        organisation_id: organisation.id,
+        applicant_id: applicant_id,
+        invitation: {
+          format: "sms",
+          help_phone_number: help_phone_number,
+          context: "RSA orientation"
+        }
+      }
+    end
     let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
+    let!(:invitation) do
+      create(
+        :invitation,
+        applicant: applicant, department: department, organisations: organisations,
+        help_phone_number: help_phone_number
+      )
+    end
 
     before do
       sign_in(agent)
       setup_rdv_solidarites_session(rdv_solidarites_session)
-      allow(Invitations::InviteApplicant).to receive(:call)
-        .and_return(OpenStruct.new)
-      allow(Organisation).to receive(:find)
-        .with(organisation_id)
-        .and_return(organisation)
-      allow(organisation).to receive_message_chain(:applicants, :includes, :find)
-        .with(applicant_id)
-        .and_return(applicant)
-    end
-
-    it "retrieves the organisation" do
-      expect(Organisation).to receive(:find)
-        .with(organisation_id)
-      post :create, params: create_params
-    end
-
-    it "retrieves the applicant" do
-      expect(organisation).to receive_message_chain(:applicants, :includes, :find)
-        .with(applicant_id)
-      post :create, params: create_params
-    end
-
-    it "calls the service" do
-      expect(Invitations::InviteApplicant).to receive(:call)
+      allow(Invitation).to receive(:new)
         .with(
-          applicant: applicant,
-          rdv_solidarites_session: rdv_solidarites_session,
-          organisation: organisation,
-          invitation_format: "sms"
-        )
-      post :create, params: create_params
+          department: department, applicant: applicant, organisations: organisations,
+          "format" => "sms", "help_phone_number" => help_phone_number, "context" => "RSA orientation"
+        ).and_return(invitation)
+      allow(Invitations::SaveAndSend).to receive(:call)
+        .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
+        .and_return(OpenStruct.new(success?: true))
+    end
+
+    context "organisation level" do
+      it "instantiate the invitation" do
+        expect(Invitation).to receive(:new)
+          .with(
+            department: department, applicant: applicant, organisations: organisations,
+            "format" => "sms", "help_phone_number" => help_phone_number, "context" => "RSA orientation"
+          )
+        post :create, params: create_params
+      end
+
+      it "calls the service" do
+        expect(Invitations::SaveAndSend).to receive(:call)
+          .with(
+            invitation: invitation,
+            rdv_solidarites_session: rdv_solidarites_session
+          )
+        post :create, params: create_params
+      end
+    end
+
+    context "department level" do
+      let!(:organisations) { Organisation.where(id: [organisation.id, other_org.id]) }
+      let!(:create_params) do
+        {
+          department_id: department.id,
+          applicant_id: applicant_id,
+          invitation: {
+            format: "sms",
+            help_phone_number: help_phone_number,
+            context: "RSA orientation"
+          }
+        }
+      end
+
+      it "instantiate the invitation" do
+        expect(Invitation).to receive(:new)
+          .with(
+            department: department, applicant: applicant, organisations: organisations,
+            "format" => "sms", "help_phone_number" => help_phone_number, "context" => "RSA orientation"
+          )
+        post :create, params: create_params
+      end
+
+      it "calls the service" do
+        expect(Invitations::SaveAndSend).to receive(:call)
+          .with(
+            invitation: invitation,
+            rdv_solidarites_session: rdv_solidarites_session
+          )
+        post :create, params: create_params
+      end
     end
 
     context "when the service succeeds" do
-      let(:invitation) { create(:invitation, applicant: applicant, organisation: organisation) }
-
-      before do
-        allow(Invitations::InviteApplicant).to receive(:call)
-          .and_return(OpenStruct.new(success?: true, invitation: invitation))
-      end
-
       it "is a success" do
         post :create, params: create_params
         expect(response).to be_successful
@@ -67,7 +112,7 @@ describe InvitationsController, type: :controller do
 
     context "when the service fails" do
       before do
-        allow(Invitations::InviteApplicant).to receive(:call)
+        allow(Invitations::SaveAndSend).to receive(:call)
           .and_return(OpenStruct.new(success?: false, errors: ['some error']))
       end
 
@@ -89,10 +134,8 @@ describe InvitationsController, type: :controller do
     subject { get :redirect, params: invite_params }
 
     let!(:applicant_id) { "24" }
-    let!(:organisation) { create(:organisation) }
-    let!(:applicant) { create(:applicant, organisations: [organisation], id: applicant_id) }
-    let!(:invitation) { create(:invitation, organisation: organisation, applicant: applicant, format: "sms") }
-    let!(:invitation2) { create(:invitation, organisation: organisation, applicant: applicant, format: "email") }
+    let!(:invitation) { create(:invitation, format: "sms") }
+    let!(:invitation2) { create(:invitation, format: "email") }
 
     context "when format is not specified" do
       let!(:invite_params) { { token: invitation.token } }
@@ -125,7 +168,7 @@ describe InvitationsController, type: :controller do
     end
 
     context "when no invitation matches the format" do
-      let!(:invitation) { create(:invitation, applicant: applicant, organisation: organisation, format: "email") }
+      let!(:invitation) { create(:invitation, format: "email") }
       let!(:invite_params) { { token: invitation.token } }
 
       it "raises an error" do

@@ -1,19 +1,10 @@
 /* eslint no-await-in-loop: "off" */
-const searchApplicants = async (uids) => {
-  const response = await fetch("/applicants/search", {
-    method: "POST",
-    credentials: "same-origin",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "X-CSRF-Token": document.querySelector("meta[name=csrf-token]").content,
-    },
-    body: JSON.stringify({
-      applicants: { uids },
-    }),
-  });
 
-  return response.json();
-};
+import appFetch from "../../lib/appFetch";
+
+const searchApplicants = async (uids) =>
+  appFetch("/applicants/search", "POST", {
+    applicants: { uids },
+  });
 
 export default searchApplicants;

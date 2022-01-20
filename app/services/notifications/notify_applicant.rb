@@ -26,16 +26,9 @@ module Notifications
 
     def notify_applicant!
       Notification.transaction do
-        save_notification!
+        save_record!(notification)
         send_sms!
       end
-    end
-
-    def save_notification!
-      return if notification.save
-
-      result.errors << notification.errors.full_messages.to_sentence
-      fail!
     end
 
     def phone_number_formatted
@@ -44,15 +37,11 @@ module Notifications
 
     def send_sms!
       return Rails.logger.info(content) if Rails.env.development?
-      return if send_sms.success?
 
-      result.errors += send_sms.errors
-      fail!
-    end
-
-    def send_sms
-      @send_sms ||= SendTransactionalSms.call(phone_number_formatted: phone_number_formatted,
-                                              sender_name: sender_name, content: content)
+      call_service!(
+        SendTransactionalSms,
+        phone_number_formatted: phone_number_formatted, sender_name: sender_name, content: content
+      )
     end
 
     def notification
@@ -64,10 +53,8 @@ module Notifications
     end
 
     def update_notification_sent_at!
-      return if notification.update(sent_at: Time.zone.now)
-
-      result.errors << notification.errors.full_messages.to_sentence
-      fail!
+      notification.sent_at = Time.zone.now
+      save_record!(notification)
     end
 
     def department

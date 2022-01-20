@@ -29,7 +29,7 @@ module AuthenticatedControllerConcern
   end
 
   def agent_not_authorized
-    json_request? ? render_not_authorized : redirect_not_authorized
+    should_return_json? ? render_not_authorized : redirect_not_authorized
   end
 
   def redirect_not_authorized

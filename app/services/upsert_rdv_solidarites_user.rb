@@ -51,10 +51,12 @@ class UpsertRdvSolidaritesUser < BaseService
   end
 
   def create_user_profile!
-    return if create_user_profile.success?
-
-    result.errors += create_user_profile.errors
-    fail!
+    call_service!(
+      RdvSolidaritesApi::CreateUserProfile,
+      user_id: rdv_solidarites_user_id,
+      organisation_id: @rdv_solidarites_organisation_id,
+      rdv_solidarites_session: @rdv_solidarites_session
+    )
   end
 
   def user_belongs_to_org?
@@ -69,14 +71,6 @@ class UpsertRdvSolidaritesUser < BaseService
     )
   end
 
-  def create_user_profile
-    @create_user_profile || RdvSolidaritesApi::CreateUserProfile.call(
-      user_id: rdv_solidarites_user_id,
-      organisation_id: @rdv_solidarites_organisation_id,
-      rdv_solidarites_session: @rdv_solidarites_session
-    )
-  end
-
   def create_rdv_solidarites_user
     @create_rdv_solidarites_user ||= RdvSolidaritesApi::CreateUser.call(
       user_attributes: @rdv_solidarites_user_attributes.merge(organisation_ids: [@rdv_solidarites_organisation_id]),
@@ -85,10 +79,12 @@ class UpsertRdvSolidaritesUser < BaseService
   end
 
   def update_rdv_solidarites_user!
-    return if update_rdv_solidarites_user.success?
-
-    result.errors += update_rdv_solidarites_user.errors
-    fail!
+    call_service!(
+      RdvSolidaritesApi::UpdateUser,
+      user_attributes: @rdv_solidarites_user_attributes,
+      rdv_solidarites_session: @rdv_solidarites_session,
+      rdv_solidarites_user_id: rdv_solidarites_user_id
+    )
   end
 
   def update_rdv_solidarites_user

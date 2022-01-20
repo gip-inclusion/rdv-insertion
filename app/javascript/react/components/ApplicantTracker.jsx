@@ -7,6 +7,8 @@ import { getFrenchFormatDateString } from "../../lib/datesHelper";
 export default function ApplicantTracker({
   applicant,
   organisation,
+  department,
+  isDepartmentLevel,
   showSmsInvitation,
   showEmailInvitation,
   rdvs,
@@ -61,7 +63,7 @@ export default function ApplicantTracker({
     return `col-4 py-2 ${bgColorClass}`;
   };
 
-  const numbersOfColumnsForRdvBlock = () => numberOfCancelledRdvs > 0 ? "col-3" : "col-4";
+  const numbersOfColumnsForRdvBlock = () => (numberOfCancelledRdvs > 0 ? "col-3" : "col-4");
 
   const bgColorClassForApplicantStatus = () => {
     if (
@@ -79,7 +81,8 @@ export default function ApplicantTracker({
     return "";
   };
 
-  const cssClassForRdvsDates = () => `${numbersOfColumnsForRdvBlock()} d-flex align-items-center justify-content-center`;
+  const cssClassForRdvsDates = () =>
+    `${numbersOfColumnsForRdvBlock()} d-flex align-items-center justify-content-center`;
 
   const cssClassForApplicantStatus = () => {
     const bgColorClass = bgColorClassForApplicantStatus();
@@ -93,7 +96,13 @@ export default function ApplicantTracker({
     setIsLoading({ ...isLoading, [action]: true });
 
     const format = action === "smsInvitation" ? "sms" : "email";
-    const invitation = await handleApplicantInvitation(organisation.id, applicant.id, format);
+    const invitation = await handleApplicantInvitation(
+      applicant.id,
+      department.id,
+      organisation,
+      isDepartmentLevel,
+      format
+    );
 
     if (invitation?.sent_at) {
       if (format === "sms") {
@@ -181,11 +190,14 @@ export default function ApplicantTracker({
         <div className="row d-flex justify-content-around">
           <h4 className={numbersOfColumnsForRdvBlock()}>RDV pris le</h4>
           <h4 className={numbersOfColumnsForRdvBlock()}>Date du RDV</h4>
-          {numberOfCancelledRdvs > 0 &&
-            <h4 className="col-3">RDV reportés <small>
-              <i className="fas fa-question-circle" id="js-rdv-cancelled-by-user-tooltip" />
-            </small></h4>
-          }
+          {numberOfCancelledRdvs > 0 && (
+            <h4 className="col-3">
+              RDV reportés{" "}
+              <small>
+                <i className="fas fa-question-circle" id="js-rdv-cancelled-by-user-tooltip" />
+              </small>
+            </h4>
+          )}
           <h4 className={numbersOfColumnsForRdvBlock()}>Statut</h4>
         </div>
         <div className="row d-flex justify-content-around flex-grow-1">
@@ -199,13 +211,11 @@ export default function ApplicantTracker({
               {rdvs.length > 0 ? getFrenchFormatDateString(rdvs.at(-1).starts_at) : "-"}
             </p>
           </div>
-          {numberOfCancelledRdvs > 0 &&
+          {numberOfCancelledRdvs > 0 && (
             <div className="col-3 d-flex align-items-center justify-content-center">
-              <p className="m-0">
-                {numberOfCancelledRdvs}
-              </p>
+              <p className="m-0">{numberOfCancelledRdvs}</p>
             </div>
-          }
+          )}
           <div className={cssClassForApplicantStatus()}>
             <p className="m-0">
               {textForStatus}

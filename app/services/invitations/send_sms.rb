@@ -35,11 +35,7 @@ module Invitations
         "cliquez sur le lien suivant dans les 3 jours: " \
         "#{redirect_invitations_url(params: { token: @invitation.token }, host: ENV['HOST'])}\n" \
         "Ce rendez-vous est obligatoire. En cas de problème technique, contactez le "\
-        "#{organisation.phone_number}."
-    end
-
-    def organisation
-      @invitation.organisation
+        "#{@invitation.help_phone_number}."
     end
 
     def phone_number_formatted
@@ -50,12 +46,8 @@ module Invitations
       @invitation.applicant
     end
 
-    def department
-      organisation.department
-    end
-
     def sender_name
-      "Dept#{department.number}"
+      "Dept#{@invitation.department.number}"
     end
   end
 end
