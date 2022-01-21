@@ -12,7 +12,6 @@ import {
   parameterizeArray,
 } from "../../lib/parameterize";
 import getKeyByValue from "../../lib/getKeyByValue";
-import splitArray from "../../lib/splitArray";
 import searchApplicants from "../actions/searchApplicants";
 import { initReducer, reducerFactory } from "../../lib/reducers";
 import { excelDateToString } from "../../lib/datesHelper";
@@ -140,16 +139,23 @@ export default function ApplicantsUpload({ organisation, configuration, departme
   };
 
   const retrieveUpToDateApplicants = async (applicantsFromList) => {
-    const [withId, withoutId] = splitArray(applicantsFromList, (applicant) => applicant.departmentInternalId !== undefined);
-    const departmentInternalIds = withId.map((applicant) => applicant.departmentInternalId);
-    const uids = withoutId.map((applicant) => applicant.uid).filter((uid) => uid);
-
-    let upToDateApplicants = applicantsFromList;
+    const departmentInternalIds = applicantsFromList
+      .map((applicant) => applicant.departmentInternalId)
+      .filter((departmentInternalId) => departmentInternalId);
+    const uids = applicantsFromList.map((applicant) => applicant.uid).filter((uid) => uid);
 
     const retrievedApplicants = await retrieveApplicantsFromApp(departmentInternalIds, uids);
 
-    upToDateApplicants = applicantsFromList.map((applicant) => {
-      const upToDateApplicant = retrievedApplicants.find((a) => a.uid === applicant.uid);
+    let upToDateApplicant;
+    const upToDateApplicants = applicantsFromList.map((applicant) => {
+      if (applicant.departmentInternalId) {
+        upToDateApplicant = retrievedApplicants.find((a) =>
+          a.department_internal_id === applicant.departmentInternalId
+        );
+      };
+      if (upToDateApplicant == null) {
+        upToDateApplicant = retrievedApplicants.find((a) => a.uid === applicant.uid);
+      };
       if (upToDateApplicant) {
         applicant.updateWith(upToDateApplicant);
       }

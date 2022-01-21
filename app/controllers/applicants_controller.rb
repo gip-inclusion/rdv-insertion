@@ -131,10 +131,10 @@ class ApplicantsController < ApplicationController
   end
 
   def retrieve_applicants
-    @applicants = policy_scope(Applicant).includes(:organisations, :invitations, :rdvs)
-    @applicants =
-      @applicants.where(department_internal_id: params.require(:applicants).require(:department_internal_ids))
-                 .or(@applicants.where(uid: params.require(:applicants).require(:uids)))
-                 .to_a
+    @applicants = policy_scope(Applicant).includes(:organisations, :invitations, :rdvs).distinct
+    @applicants = @applicants
+                  .where(department_internal_id: params.require(:applicants).require(:department_internal_ids))
+                  .or(@applicants.where(uid: params.require(:applicants).require(:uids)))
+                  .to_a
   end
 end
