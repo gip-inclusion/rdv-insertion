@@ -10,12 +10,7 @@ class BaseService
       output = service.call
       format_result(output, service.result)
     rescue FailedServiceError => e
-      errors = service.result.errors
-      raise UnexpectedResultBehaviourError unless errors.is_a? Array
-
-      # we add the exception message only if it is a custom message
-      errors << e.message if e.message != e.class.to_s
-      OpenStruct.new(success?: false, failure?: true, errors: errors)
+      format_error(service.result, e)
     end
 
     private
@@ -35,6 +30,18 @@ class BaseService
       result[:failure?] = result.errors.present?
       result
     end
+
+    def format_error(result, exception)
+      errors = result.errors
+      raise UnexpectedResultBehaviourError unless errors.is_a? Array
+
+      # we add the exception message only if it is a custom message
+      errors << exception.message if exception.message != exception.class.to_s
+      result.errors = errors
+      result[:success?] = false
+      result[:failure?] = true
+      result
+    end
   end
 
   attr_reader :result
@@ -45,11 +52,26 @@ class BaseService
 
   private
 
-  def fail!(error_message = nil)
-    raise FailedServiceError, error_message
+  def call_service!(service, **kwargs)
+    service_call = service.call(**kwargs)
+
+    if service_call.success?
+      instance_variable_set(:"@#{service.name.demodulize.underscore}_service", service_call)
+      return
+    end
+
+    result.errors += service_call.errors
+    fail!
   end
 
-  def failed?
-    result.errors.present?
+  def save_record!(record)
+    return if record.save
+
+    result.errors << record.errors.full_messages.to_sentence
+    fail!
+  end
+
+  def fail!(error_message = nil)
+    raise FailedServiceError, error_message
   end
 end

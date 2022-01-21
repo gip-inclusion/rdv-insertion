@@ -1,6 +1,4 @@
 class SendTransactionalSms < BaseService
-  SENDER_NAME = "RdvRSA".freeze
-
   def initialize(phone_number_formatted:, sender_name:, content:)
     @sender_name = sender_name
     @phone_number_formatted = phone_number_formatted

@@ -198,7 +198,7 @@ describe Applicant do
       end
 
       context "with a pending rdv" do
-        let!(:rdv) { create(:rdv, status: "unknown", starts_at: Time.zone.now + 3.days) }
+        let!(:rdv) { create(:rdv, status: "unknown", starts_at: 3.days.from_now) }
         let!(:applicant) { create(:applicant, rdvs: [rdv]) }
 
         it "is rdv pending" do
@@ -226,7 +226,7 @@ describe Applicant do
       end
 
       context "with a past rdv with status not updated" do
-        let!(:rdv) { create(:rdv, status: "unknown", starts_at: Time.zone.now - 2.days) }
+        let!(:rdv) { create(:rdv, status: "unknown", starts_at: 2.days.ago) }
         let!(:applicant) { create(:applicant, rdvs: [rdv]) }
 
         it "is rdv pending" do

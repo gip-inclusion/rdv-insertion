@@ -35,8 +35,13 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
   let!(:applicant) { create(:applicant, organisations: [organisation], id: 3) }
   let!(:applicant2) { create(:applicant, organisations: [organisation], id: 4) }
 
-  let!(:configuration) { create(:configuration, organisation: organisation, notify_applicant: true) }
-  let!(:organisation) { create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id) }
+  let!(:configuration) { create(:configuration, notify_applicant: true) }
+  let!(:organisation) do
+    create(
+      :organisation,
+      rdv_solidarites_organisation_id: rdv_solidarites_organisation_id, configuration: configuration
+    )
+  end
 
   describe "#perform" do
     before do
@@ -82,19 +87,6 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
       end
     end
 
-    context "when there is a mismatch between one applicant and the organisation" do
-      let!(:another_organisation) { create(:organisation) }
-      let!(:applicant) { create(:applicant, id: 242, organisations: [another_organisation]) }
-
-      it "raises an error" do
-        expect { subject }.to raise_error(
-          WebhookProcessingJobError,
-          "Applicants / Organisation mismatch: applicant_ids: [242, 4] - organisation_id #{organisation.id} - "\
-          "data: #{data} - meta: #{meta}"
-        )
-      end
-    end
-
     context "it udpates the rdv" do
       let!(:rdv_attributes) do
         data.merge(
@@ -123,7 +115,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
 
     context "when applicants should not be notified" do
       context "when the organisation does not notify applicants" do
-        let!(:configuration) { create(:configuration, organisation: organisation, notify_applicant: false) }
+        let!(:configuration) { create(:configuration, notify_applicant: false) }
 
         it "does not call the notify applicant job" do
           expect(NotifyApplicantJob).not_to receive(:perform_async)

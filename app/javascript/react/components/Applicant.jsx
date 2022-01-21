@@ -1,38 +1,61 @@
 import React, { useState } from "react";
+import Swal from "sweetalert2";
+import Tippy from "@tippyjs/react";
 
 import handleApplicantCreation from "../lib/handleApplicantCreation";
 import handleApplicantInvitation from "../lib/handleApplicantInvitation";
-import assignOrganisation from "../../lib/assignOrganisation";
+import updateApplicant from "../actions/updateApplicant";
+import retrieveRelevantOrganisation from "../../lib/retrieveRelevantOrganisation";
 
-export default function Applicant({ applicant, dispatchApplicants }) {
+export default function Applicant({ applicant, dispatchApplicants, isDepartmentLevel }) {
   const [isLoading, setIsLoading] = useState({
     accountCreation: false,
     smsInvitation: false,
     emailInvitation: false,
+    addToOrganisation: false,
   });
 
   const handleClick = async (action) => {
     setIsLoading({ ...isLoading, [action]: true });
     if (action === "accountCreation") {
-      if (!applicant.organisation?.id) {
-        applicant.organisation = await assignOrganisation(applicant.departmentNumber, applicant.fullAddress);
-        if (!applicant.organisation?.id) {
+      if (!applicant.currentOrganisation) {
+        applicant.currentOrganisation = await retrieveRelevantOrganisation(
+          applicant.departmentNumber,
+          applicant.fullAddress
+        );
+        // If there is still no organisation it means the assignation was cancelled by agent
+        if (!applicant.currentOrganisation) {
           setIsLoading({ ...isLoading, [action]: false });
           return;
         }
       }
-      await handleApplicantCreation(applicant, applicant.organisation.id);
+      await handleApplicantCreation(applicant, applicant.currentOrganisation.id);
+    } else if (action === "addToOrganisation") {
+      const result = await updateApplicant(
+        applicant.currentOrganisation.id,
+        applicant.id,
+        applicant.asJson()
+      );
+      if (result.success) {
+        applicant.updateWith(result.applicant);
+      } else {
+        Swal.fire("Impossible d'assigner à l'orrganisation", result.errors[0], "error");
+      }
     } else if (action === "smsInvitation") {
       const invitation = await handleApplicantInvitation(
-        applicant.organisation.id,
         applicant.id,
+        applicant.department.id,
+        applicant.currentOrganisation,
+        isDepartmentLevel,
         "sms"
       );
       applicant.lastSmsInvitationSentAt = invitation.sent_at;
     } else if (action === "emailInvitation") {
       const invitation = await handleApplicantInvitation(
-        applicant.organisation.id,
         applicant.id,
+        applicant.department.id,
+        applicant.currentOrganisation,
+        isDepartmentLevel,
         "email"
       );
       applicant.lastEmailInvitationSentAt = invitation.sent_at;
@@ -66,7 +89,30 @@ export default function Applicant({ applicant, dispatchApplicants }) {
       )}
       <td>
         {applicant.createdAt ? (
-          <i className="fas fa-check green-check" />
+          applicant.belongsToCurrentOrg() ? (
+            <i className="fas fa-check green-check" />
+          ) : (
+            <Tippy
+              content={
+                <span>
+                  Cet allocataire est déjà présent dans RDV-Insertion dans une autre organisation
+                  que l&apos;organisation actuelle.
+                  <br />
+                  Appuyez sur ce bouton pour ajouter l&apos;allocataire à cette organisation et
+                  mettre à jours ses informations.
+                </span>
+              }
+            >
+              <button
+                type="submit"
+                disabled={isLoading.addToOrganisation}
+                className="btn btn-primary btn-blue"
+                onClick={() => handleClick("addToOrganisation")}
+              >
+                {isLoading.addToOrganisation ? "En cours..." : "Ajouter à cette organisation"}
+              </button>
+            </Tippy>
+          )
         ) : (
           <button
             type="submit"
@@ -86,7 +132,12 @@ export default function Applicant({ applicant, dispatchApplicants }) {
             ) : (
               <button
                 type="submit"
-                disabled={isLoading.smsInvitation || !applicant.createdAt || !applicant.phoneNumber}
+                disabled={
+                  isLoading.smsInvitation ||
+                  !applicant.createdAt ||
+                  !applicant.phoneNumber ||
+                  !applicant.belongsToCurrentOrg()
+                }
                 className="btn btn-primary btn-blue"
                 onClick={() => handleClick("smsInvitation")}
               >
@@ -104,7 +155,12 @@ export default function Applicant({ applicant, dispatchApplicants }) {
             ) : (
               <button
                 type="submit"
-                disabled={isLoading.emailInvitation || !applicant.createdAt || !applicant.email}
+                disabled={
+                  isLoading.emailInvitation ||
+                  !applicant.createdAt ||
+                  !applicant.email ||
+                  !applicant.belongsToCurrentOrg()
+                }
                 className="btn btn-primary btn-blue"
                 onClick={() => handleClick("emailInvitation")}
               >

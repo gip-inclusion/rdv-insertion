@@ -20,14 +20,14 @@ describe Notifications::NotifyApplicant, type: :service do
   let!(:organisation) { create(:organisation, department: department) }
   let!(:rdv_solidarites_rdv_id) { 23 }
   let!(:applicant) { create(:applicant, phone_number: phone_number, organisations: [organisation]) }
-  let!(:notification) { create(:notification, applicant: applicant) }
+  let!(:notification) { create(:notification, applicant: applicant, sent_at: nil) }
 
   describe "#call" do
     before do
       allow(Notification).to receive(:find_or_initialize_by).and_return(notification)
       allow(notification).to receive(:save).and_return(true)
       allow(SendTransactionalSms).to receive(:call).and_return(OpenStruct.new(success?: true))
-      allow(notification).to receive(:update).and_return(true)
+      allow(notification).to receive(:save).and_return(true)
     end
 
     context "when the phone number is missing" do
@@ -60,8 +60,13 @@ describe Notifications::NotifyApplicant, type: :service do
     end
 
     it "updates the notification" do
-      expect(notification).to receive(:update)
+      expect(notification).to receive(:save)
       subject
+    end
+
+    it "marks the notif as sent" do
+      subject
+      expect(notification.sent_at).not_to be_nil
     end
 
     context "when the applicants does not belong to the organisation" do
@@ -105,15 +110,15 @@ describe Notifications::NotifyApplicant, type: :service do
         expect(subject.errors).to eq(["bad request"])
       end
 
-      it "does not update the notification" do
-        expect(notification).not_to receive(:update)
+      it "marks the notification as sent" do
         subject
+        expect(notification.sent_at).to be_nil
       end
     end
 
     context "when the notification cannot be updated" do
       before do
-        allow(notification).to receive(:update)
+        allow(notification).to receive(:save)
           .and_return(false)
         allow(notification).to receive_message_chain(:errors, :full_messages, :to_sentence)
           .and_return("some error")

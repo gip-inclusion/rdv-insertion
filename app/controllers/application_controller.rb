@@ -26,11 +26,15 @@ class ApplicationController < ActionController::Base
     )
   end
 
-  def json_request?
-    request.format == "application/json"
+  def should_return_json?
+    request.accept == "application/json"
   end
 
   def page
     params[:page] || 1
+  end
+
+  def department_level?
+    params[:department_id].present?
   end
 end

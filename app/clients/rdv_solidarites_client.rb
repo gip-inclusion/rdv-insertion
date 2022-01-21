@@ -28,10 +28,42 @@ class RdvSolidaritesClient
     )
   end
 
-  def get_users(organisation_id, page, ids = [])
+  def get_organisation_user(user_id, organisation_id)
+    Faraday.get(
+      "#{@url}/api/v1/organisations/#{organisation_id}/users/#{user_id}",
+      {},
+      request_headers
+    )
+  end
+
+  def get_invitation(invitation_token)
+    Faraday.get(
+      "#{@url}/api/v1/invitations/#{invitation_token}",
+      {},
+      request_headers
+    )
+  end
+
+  def create_user_profile(user_id, organisation_id)
+    Faraday.post(
+      "#{@url}/api/v1/user_profiles",
+      { user_id: user_id, organisation_id: organisation_id }.to_json,
+      request_headers
+    )
+  end
+
+  def get_organisation_users(organisation_id, page = 1, **kwargs)
     Faraday.get(
       "#{@url}/api/v1/organisations/#{organisation_id}/users",
-      { page: page }.merge(ids.present? ? { ids: ids } : {}),
+      { page: page }.merge(**kwargs),
+      request_headers
+    )
+  end
+
+  def get_users(user_params = {})
+    Faraday.get(
+      "#{@url}/api/v1/users",
+      user_params,
       request_headers
     )
   end
@@ -62,7 +94,7 @@ class RdvSolidaritesClient
     )
   end
 
-  def get_rdvs(organisation_id, page = 1)
+  def get_organisation_rdvs(organisation_id, page = 1)
     Faraday.get(
       "#{@url}/api/v1/organisations/#{organisation_id}/rdvs",
       { page: page },

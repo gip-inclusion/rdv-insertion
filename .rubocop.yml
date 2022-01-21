@@ -22,6 +22,9 @@ Style/StringLiterals:
 Style/AsciiComments:
   Enabled: false
 
+Style/OpenStructUse:
+  Enabled: false
+
 Rails/SkipsModelValidations:
   Enabled: false
 

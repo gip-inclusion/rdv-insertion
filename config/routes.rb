@@ -39,6 +39,7 @@ Rails.application.routes.draw do
   resources :departments, only: [] do
     resources :applicants, only: [:index, :show, :edit, :update] do
       collection { resources :uploads, only: [:new] }
+      resources :invitations, only: [:create]
     end
   end
 

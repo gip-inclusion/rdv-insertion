@@ -22,13 +22,13 @@ class ApplicantsController < ApplicationController
     )
     authorize @applicant
     respond_to do |format|
-      format.html { upsert_applicant_and_redirect(:new) }
-      format.json { upsert_applicant_and_render }
+      format.html { save_applicant_and_redirect(:new) }
+      format.json { save_applicant_and_render }
     end
   end
 
   def index
-    @applicants = policy_scope(Applicant).includes(:invitations, :rdvs)
+    @applicants = policy_scope(Applicant).includes(:invitations, :rdvs).distinct
     @applicants = \
       if department_level?
         @applicants.where(organisations: policy_scope(Organisation).where(department: @department))
@@ -62,8 +62,8 @@ class ApplicantsController < ApplicationController
     )
     authorize @applicant
     respond_to do |format|
-      format.html { upsert_applicant_and_redirect(:edit) }
-      format.json { upsert_applicant_and_render }
+      format.html { save_applicant_and_redirect(:edit) }
+      format.json { save_applicant_and_render }
     end
   end
 
@@ -73,25 +73,25 @@ class ApplicantsController < ApplicationController
     params.require(:applicant).permit(*PERMITTED_PARAMS)
   end
 
-  def upsert_applicant_and_redirect(page)
-    if upsert_applicant.success?
-      redirect_to(redirect_path)
+  def save_applicant_and_redirect(page)
+    if save_applicant.success?
+      redirect_to(after_save_path)
     else
-      flash.now[:error] = upsert_applicant.errors&.join(',')
+      flash.now[:error] = save_applicant.errors&.join(',')
       render page
     end
   end
 
-  def upsert_applicant_and_render
-    if upsert_applicant.success?
+  def save_applicant_and_render
+    if save_applicant.success?
       render json: { success: true, applicant: @applicant }
     else
-      render json: { success: false, errors: upsert_applicant.errors }
+      render json: { success: false, errors: save_applicant.errors }
     end
   end
 
-  def upsert_applicant
-    @upsert_applicant ||= UpsertApplicant.call(
+  def save_applicant
+    @save_applicant ||= SaveApplicant.call(
       applicant: @applicant,
       organisation: @organisation,
       rdv_solidarites_session: rdv_solidarites_session
@@ -102,12 +102,10 @@ class ApplicantsController < ApplicationController
     @applicant = Applicant.includes(:organisations).find(params[:id])
   end
 
-  def redirect_path
-    if department_level?
-      department_applicant_path(@department, @applicant)
-    else
-      organisation_applicant_path(@organisation, @applicant)
-    end
+  def after_save_path
+    return department_applicant_path(@department, @applicant) if department_level?
+
+    organisation_applicant_path(@organisation, @applicant)
   end
 
   def set_context_variables
@@ -122,12 +120,13 @@ class ApplicantsController < ApplicationController
 
   def set_department_variables
     @department = Department.includes(:organisations, :applicants).find(params[:department_id])
-    @organisation = @applicant.organisations.where(department: @department).first if @applicant.present?
+    @organisation =  \
+      if @applicant.blank?
+        nil
+      else
+        policy_scope(Organisation).where(id: @applicant.organisations.pluck(:id), department: @department).first
+      end
     @configuration = @department.configuration
-  end
-
-  def department_level?
-    params[:department_id].present?
   end
 
   def retrieve_applicants

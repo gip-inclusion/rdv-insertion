@@ -27,7 +27,7 @@ export default function ApplicantsUpload({ organisation, configuration, departme
     ...columnNames.required,
     ...columnNames.optional,
   });
-  const isTerritoryLevel = !organisation;
+  const isDepartmentLevel = !organisation;
 
   const [fileSize, setFileSize] = useState(0);
   const [applicants, dispatchApplicants] = useReducer(reducer, [], initReducer);
@@ -71,7 +71,9 @@ export default function ApplicantsUpload({ organisation, configuration, departme
         const header = [];
         const columnCount = XLSX.utils.decode_range(sheet["!ref"]).e.c + 1;
         for (let i = 0; i < columnCount; i += 1) {
-          header[i] = sheet[`${XLSX.utils.encode_col(i)}1`].v;
+          if (sheet[`${XLSX.utils.encode_col(i)}1`] !== undefined) {
+            header[i] = sheet[`${XLSX.utils.encode_col(i)}1`].v;
+          }
         }
         const missingColumnNames = checkColumnNames(parameterizeArray(header));
         let rows = XLSX.utils.sheet_to_row_object_array(sheet);
@@ -110,7 +112,7 @@ export default function ApplicantsUpload({ organisation, configuration, departme
                   row[parameterizedColumnNames.rights_opening_date] &&
                   excelDateToString(row[parameterizedColumnNames.rights_opening_date]),
               },
-              department.number,
+              department,
               organisation,
               configuration
             );
@@ -166,7 +168,7 @@ export default function ApplicantsUpload({ organisation, configuration, departme
   };
 
   const redirectToApplicantList = () => {
-    window.location.href = isTerritoryLevel
+    window.location.href = isDepartmentLevel
       ? `/departments/${department.id}/applicants`
       : `/organisations/${organisation.id}/applicants`;
   };
@@ -205,7 +207,7 @@ export default function ApplicantsUpload({ organisation, configuration, departme
         </div>
         <div className="col-4 text-center d-flex flex-column align-items-center">
           <h3 className="new-applicants-title">
-            Ajout {isTerritoryLevel ? "au niveau du territoire" : "allocataires"}
+            Ajout {isDepartmentLevel ? "au niveau du territoire" : "allocataires"}
           </h3>
           <FileHandler
             handleFile={handleFile}
@@ -267,7 +269,11 @@ export default function ApplicantsUpload({ organisation, configuration, departme
                   </tr>
                 </thead>
                 <tbody>
-                  <ApplicantList applicants={applicants} dispatchApplicants={dispatchApplicants} />
+                  <ApplicantList
+                    applicants={applicants}
+                    dispatchApplicants={dispatchApplicants}
+                    isDepartmentLevel={isDepartmentLevel}
+                  />
                 </tbody>
               </table>
             </div>

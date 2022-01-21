@@ -1,18 +1,8 @@
-const createApplicant = async (applicant, organisationId) => {
-  const response = await fetch(`/organisations/${organisationId}/applicants`, {
-    method: "POST",
-    credentials: "same-origin",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "X-CSRF-Token": document.querySelector("meta[name=csrf-token]").content,
-    },
-    body: JSON.stringify({
-      applicant: applicant.asJson(),
-    }),
-  });
+import appFetch from "../../lib/appFetch";
 
-  return response.json();
-};
+const createApplicant = async (applicant, organisationId) =>
+  appFetch(`/organisations/${organisationId}/applicants`, "POST", {
+    applicant: applicant.asJson(),
+  });
 
 export default createApplicant;

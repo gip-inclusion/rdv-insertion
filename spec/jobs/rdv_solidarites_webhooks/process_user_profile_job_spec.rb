@@ -87,7 +87,7 @@ describe RdvSolidaritesWebhooks::ProcessUserProfileJob, type: :job do
       end
     end
 
-    context "when the event is not destroyed" do
+    context "when the event is updated" do
       let!(:meta) do
         {
           "model" => "UserProfile",
@@ -103,6 +103,40 @@ describe RdvSolidaritesWebhooks::ProcessUserProfileJob, type: :job do
       it "does not enqueue a delete applicant job" do
         expect(SoftDeleteApplicantJob).not_to receive(:perform_async)
         subject
+      end
+    end
+
+    context "when the event is created" do
+      let!(:meta) do
+        {
+          "model" => "UserProfile",
+          "event" => "created"
+        }.deep_symbolize_keys
+      end
+
+      context "when the applicant does not belong to the org" do
+        let!(:other_org) { create(:organisation) }
+        let!(:applicant) do
+          create(:applicant, rdv_solidarites_user_id: rdv_solidarites_user_id, organisations: [other_org])
+        end
+
+        it "adds the applicant to the org" do
+          subject
+          expect(applicant.reload.organisations.ids).to eq([other_org.id, organisation.id])
+        end
+
+        it "does not enqueue a delete applicant job" do
+          expect(SoftDeleteApplicantJob).not_to receive(:perform_async)
+          subject
+        end
+      end
+
+      context "when the applicant already belongs to org" do
+        it "does not do anything" do
+          expect(SoftDeleteApplicantJob).not_to receive(:perform_async)
+          subject
+          expect(applicant.reload.organisations.ids).to eq([organisation.id])
+        end
       end
     end
   end

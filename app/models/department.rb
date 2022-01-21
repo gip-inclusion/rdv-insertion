@@ -3,8 +3,9 @@ class Department < ApplicationRecord
 
   has_many :organisations, dependent: :nullify
   has_many :applicants, dependent: :nullify
+  has_many :invitations, dependent: :nullify
+
   has_many :agents, through: :organisations
-  has_many :invitations, through: :organisations
   has_many :rdvs, through: :organisations
 
   def name_with_region
