@@ -20,14 +20,11 @@ module Invitations
     end
 
     def send_invitation!
-      return if send_invitation.success?
+      send_to_applicant = @invitation.send_to_applicant
+      return if send_to_applicant.success?
 
-      result.errors += send_invitation.errors
+      result.errors += send_to_applicant.errors
       fail!
-    end
-
-    def send_invitation
-      @send_invitation ||= @invitation.send_to_applicant
     end
 
     def save_invitation_with_link!
