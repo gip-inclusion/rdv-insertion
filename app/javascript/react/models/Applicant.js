@@ -2,6 +2,7 @@ import formatPhoneNumber from "../../lib/formatPhoneNumber";
 import retrieveLastInvitationDate from "../../lib/retrieveLastInvitationDate";
 
 const ROLES = {
+  allocataire: "demandeur",
   dem: "demandeur",
   cjt: "conjoint",
 };
@@ -22,7 +23,7 @@ export default class Applicant {
     this.firstName = formattedAttributes.firstName;
     this.title =
       TITLES[formattedAttributes.title?.toLowerCase()] || formattedAttributes.title?.toLowerCase();
-    this.shortTitle = this.title === "monsieur" ? "M" : "Mme";
+    this.shortTitle = this.title ? (this.title === "monsieur" ? "M" : "Mme") : "";
     this.email = formattedAttributes.email;
     this.birthDate = formattedAttributes.birthDate;
     this.birthName = formattedAttributes.birthName;
@@ -34,9 +35,15 @@ export default class Applicant {
     this.affiliationNumber = this.formatAffiliationNumber(formattedAttributes.affiliationNumber);
     this.phoneNumber = formatPhoneNumber(formattedAttributes.phoneNumber);
     // CONJOINT/CONCUBIN/PACSE => conjoint
-    const formattedRole = formattedAttributes.role?.split("/")?.shift()?.toLowerCase();
+    // CONJOINT(E) => conjoint
+    const formattedRole = formattedAttributes.role
+      ?.split("/")
+      ?.shift()
+      ?.split("(")
+      ?.shift()
+      ?.toLowerCase();
     this.role = ROLES[formattedRole] || formattedRole;
-    this.shortRole = this.role === "demandeur" ? "DEM" : "CJT";
+    this.shortRole = this.role ? (this.role === "demandeur" ? "DEM" : "CJT") : "";
     this.department = department;
     this.departmentNumber = department.number;
     // when creating/inviting we always consider an applicant in the scope of only one organisation
