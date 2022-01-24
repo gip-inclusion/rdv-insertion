@@ -238,9 +238,10 @@ describe ApplicantsController, type: :controller do
   end
 
   describe "#index" do
-    let!(:applicants) { Applicant.where(organisations: [organisation]) }
     let!(:applicant) { create(:applicant, organisations: [organisation], last_name: "Chabat", status: "rdv_seen") }
-    let!(:applicant2) { create(:applicant, organisations: [organisation], last_name: "Baer", status: "invitation_pending") }
+    let!(:applicant2) do
+      create(:applicant, organisations: [organisation], last_name: "Baer", status: "invitation_pending")
+    end
     let!(:index_params) { { organisation_id: organisation.id } }
 
     render_views
