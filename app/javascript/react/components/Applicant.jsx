@@ -1,19 +1,61 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import Tippy from "@tippyjs/react";
 
+import retrievePhoneNumber from "../../lib/retrievePhoneNumber";
 import handleApplicantCreation from "../lib/handleApplicantCreation";
 import handleApplicantInvitation from "../lib/handleApplicantInvitation";
 import updateApplicant from "../actions/updateApplicant";
 import retrieveRelevantOrganisation from "../../lib/retrieveRelevantOrganisation";
 
-export default function Applicant({ applicant, dispatchApplicants, isDepartmentLevel }) {
+export default function Applicant({ applicant, dispatchApplicants, contactsData, isDepartmentLevel }) {
   const [isLoading, setIsLoading] = useState({
+    updateContacts: false,
     accountCreation: false,
     smsInvitation: false,
     emailInvitation: false,
     addToOrganisation: false,
   });
+
+  const updateApplicantContacts = async (applicantContactsData) => {
+    setIsLoading({ ...isLoading, updateContacts: true });
+    // first, we update the contact infos of the js model if necessary
+    let phoneNumberUpdated = false;
+    let emailUpdated = false;
+
+    if (applicant.phoneNumber == null) {
+      applicant.updatePhoneNumber(retrievePhoneNumber(applicantContactsData));
+      phoneNumberUpdated = true;
+    }
+    if (applicant.email == null) {
+      applicant.updateEmail(applicantContactsData["ADRESSE ELECTRONIQUE DOSSIER"]);
+      emailUpdated = true;
+    }
+
+    // if the applicant exists in DB, we update the record to allow invitations on this page
+    if (applicant.createdAt) {
+      const result = await updateApplicant(
+        applicant.currentOrganisation.id,
+        applicant.id,
+        applicant.asJson()
+      );
+      // if the update fails, we don't notify the agent, but remove the unusable contacts infos
+      if (!result.success) {
+        if (phoneNumberUpdated && result.errors[0].includes("Téléphone")) applicant.updatePhoneNumber(undefined);
+        if (emailUpdated && result.errors[0].includes("Email")) applicant.updateEmail(undefined);
+      }
+    }
+    setIsLoading({ ...isLoading, updateContacts: false });
+  }
+
+  useEffect(() => {
+    if (contactsData.length > 0 && (applicant.phoneNumber == null || applicant.email == null)) {
+      const applicantContactsData = contactsData.find((a) =>
+        a.MATRICULE.toString() === applicant.affiliationNumber
+      );
+      if (applicantContactsData) updateApplicantContacts(applicantContactsData);
+    }
+  }, [contactsData]);
 
   const handleClick = async (action) => {
     setIsLoading({ ...isLoading, [action]: true });

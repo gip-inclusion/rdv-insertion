@@ -124,6 +124,14 @@ export default class Applicant {
     );
   }
 
+  updatePhoneNumber(phoneNumber) {
+    this.phoneNumber = formatPhoneNumber(phoneNumber);
+  }
+
+  updateEmail(email) {
+    this.email = email;
+  }
+
   formatAddress() {
     return (
       (this.address ?? "") +

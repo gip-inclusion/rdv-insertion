@@ -27,28 +27,51 @@ export default function ApplicantsUpload({ organisation, configuration, departme
     ...columnNames.required,
     ...columnNames.optional,
   });
+  const contactsColumnNames = ["MATRICULE", "ROLE PERSONNE", "TYPE PERSONNE", "NIR",
+    "NUMERO DEMANDE RSA", "DATE DEMANDE RSA", "DATE DEBUT DROITS - DEVOIRS",
+    "NOM RESPONSABLE DOSSIER", "PRENOM RESPONSABLE DOSSIER", "NUMERO TELEPHONE DOSSIER",
+    "NUMERO TELEPHONE 2 DOSSIER","ADRESSE ELECTRONIQUE DOSSIER"]
   const isDepartmentLevel = !organisation;
 
   const [fileSize, setFileSize] = useState(0);
+  const [contactsData, setContactsData] = useState([]);
   const [applicants, dispatchApplicants] = useReducer(reducer, [], initReducer);
 
-  const checkColumnNames = (uploadedColumnNames) => {
-    const missingColumnNames = [];
-    const requiredColumns = parameterizeObjectValues(columnNames.required);
+  const getHeaderNames = (sheet) => {
+    const header = [];
+    const columnCount = XLSX.utils.decode_range(sheet["!ref"]).e.c + 1;
+    for (let i = 0; i < columnCount; i += 1) {
+      if (sheet[`${XLSX.utils.encode_col(i)}1`] !== undefined) {
+        header[i] = sheet[`${XLSX.utils.encode_col(i)}1`].v;
+      }
+    }
+    return header;
+  }
 
+  const checkColumnNames = (uploadedColumnNames, fileType = "applicants") => {
+    let requiredColumns = null;
+    const missingColumnNames = [];
+    if (fileType === "applicants") {
+      requiredColumns = parameterizeObjectValues(columnNames.required);
+    } else {
+      requiredColumns = contactsColumnNames;
+    }
     const expectedColumnNames = Object.values(requiredColumns);
-    const parameterizedMissingColumns = expectedColumnNames.filter(
+    const missingColumns = expectedColumnNames.filter(
       (colName) => !uploadedColumnNames.includes(colName)
     );
-
-    if (parameterizedMissingColumns.length > 0) {
+    if (missingColumns.length > 0) {
       // Récupère les noms "humains" des colonnes manquantes
-      parameterizedMissingColumns.forEach((col) => {
+      missingColumns.forEach((col) => {
         const missingAttribute = getKeyByValue(requiredColumns, col);
-        const missingColumnName = configuration.column_names.required[missingAttribute];
+        let missingColumnName = null;
+        if (fileType === "applicants") {
+          missingColumnName = configuration.column_names.required[missingAttribute];
+        } else {
+          missingColumnName = contactsColumnNames[missingAttribute];
+        }
         missingColumnNames.push(missingColumnName);
       });
-
       Swal.fire({
         title: "Le fichier chargé ne correspond pas au format attendu",
         html: `Veuillez vérifier que les colonnes suivantes sont présentes et correctement nommées&nbsp;:
@@ -56,7 +79,7 @@ export default function ApplicantsUpload({ organisation, configuration, departme
         <strong>${missingColumnNames.join("<br />")}</strong>`,
         icon: "error",
       });
-    }
+      }
     return missingColumnNames;
   };
 
@@ -68,14 +91,8 @@ export default function ApplicantsUpload({ organisation, configuration, departme
       reader.onload = function (event) {
         const workbook = XLSX.read(event.target.result, { type: "binary" });
         const sheet = workbook.Sheets[SHEET_NAME] || workbook.Sheets[workbook.SheetNames[0]];
-        const header = [];
-        const columnCount = XLSX.utils.decode_range(sheet["!ref"]).e.c + 1;
-        for (let i = 0; i < columnCount; i += 1) {
-          if (sheet[`${XLSX.utils.encode_col(i)}1`] !== undefined) {
-            header[i] = sheet[`${XLSX.utils.encode_col(i)}1`].v;
-          }
-        }
-        const missingColumnNames = checkColumnNames(parameterizeArray(header));
+        const headerNames = getHeaderNames(sheet);
+        const missingColumnNames = checkColumnNames(parameterizeArray(headerNames));
         let rows = XLSX.utils.sheet_to_row_object_array(sheet);
         rows = rows.map((row) => parameterizeObjectKeys(row));
         if (missingColumnNames.length === 0) {
@@ -163,7 +180,7 @@ export default function ApplicantsUpload({ organisation, configuration, departme
       : `/organisations/${organisation.id}/applicants`;
   };
 
-  const handleFile = async (file) => {
+  const handleApplicantsFile = async (file) => {
     setFileSize(file.size);
 
     dispatchApplicants({ type: "reset" });
@@ -183,6 +200,34 @@ export default function ApplicantsUpload({ organisation, configuration, departme
     });
   };
 
+  const retrieveContactsData = async (file) => {
+    let contacts = [];
+
+    await new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        const sheet = XLSX.read(event.target.result, {type: "string"}).Sheets.Sheet1;
+        const headerNames = getHeaderNames(sheet);
+        const missingColumnNames = checkColumnNames(headerNames, "contacts");
+        if (missingColumnNames.length === 0) {
+          contacts = XLSX.utils.sheet_to_json(sheet, { raw: false });
+        }
+        resolve();
+      };
+      reader.readAsBinaryString(file);
+    });
+    return contacts;
+  };
+
+  const handleContactsFile = async (file) => {
+    setFileSize(file.size);
+
+    const result = await retrieveContactsData(file);
+    if (result.length === 0) return;
+
+    setContactsData(result);
+  };
+
   return (
     <div className="container mt-5 mb-8">
       <div className="row mb-4 block-white justify-content-center">
@@ -200,7 +245,7 @@ export default function ApplicantsUpload({ organisation, configuration, departme
             Ajout {isDepartmentLevel ? "au niveau du territoire" : "allocataires"}
           </h3>
           <FileHandler
-            handleFile={handleFile}
+            handleFile={handleApplicantsFile}
             fileSize={fileSize}
             multiple={false}
             uploadMessage="Choisissez un fichier de nouveaux demandeurs"
@@ -219,6 +264,27 @@ export default function ApplicantsUpload({ organisation, configuration, departme
           </a>
         </div>
       </div>
+      {applicants.length > 0 && (
+        <>
+          <div className="row mb-4 block-white justify-content-center">
+            <div className="col-4" />
+            <div className="col-4 text-center d-flex flex-column align-items-center">
+              <h3 className="new-applicants-title">
+                Enrichir données de contacts
+              </h3>
+              <FileHandler
+                handleFile={handleContactsFile}
+                fileSize={fileSize}
+                multiple={false}
+                uploadMessage="Choisissez un fichier de données de contact"
+                pendingMessage="Récupération des informations, merci de patienter"
+              />
+            </div>
+            <div className="col-4" />
+          </div>
+
+        </>
+      )}
 
       {applicants.length > 0 && (
         <>
@@ -262,6 +328,7 @@ export default function ApplicantsUpload({ organisation, configuration, departme
                   <ApplicantList
                     applicants={applicants}
                     dispatchApplicants={dispatchApplicants}
+                    contactsData={contactsData}
                     isDepartmentLevel={isDepartmentLevel}
                   />
                 </tbody>
