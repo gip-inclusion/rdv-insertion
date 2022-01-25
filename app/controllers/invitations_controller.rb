@@ -27,7 +27,7 @@ class InvitationsController < ApplicationController
   private
 
   def invitation_params
-    params.require(:invitation).permit(:format, :context, :help_phone_number)
+    params.require(:invitation).permit(:format, :context, :help_phone_number, :rdv_solidarites_lieu_id)
   end
 
   def set_applicant
