@@ -11,6 +11,7 @@ module RdvSolidaritesApi
     end
 
     def request!
+      result.status = rdv_solidarites_response.status
       return if rdv_solidarites_response.success?
 
       fail_with_errors
