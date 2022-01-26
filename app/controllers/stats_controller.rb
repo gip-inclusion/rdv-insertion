@@ -28,7 +28,7 @@ class StatsController < ApplicationController
     @invitations = @department.invitations
     @rdvs = @department.rdvs
     @organisations = @department.organisations
-    # We can
+    # We don't display all stats for Yonne
     @display_all_stats = @organisations.none?(&:notify_applicant?)
   end
 end

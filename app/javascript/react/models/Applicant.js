@@ -21,9 +21,8 @@ export default class Applicant {
     this.address = formattedAttributes.address;
     this.lastName = formattedAttributes.lastName;
     this.firstName = formattedAttributes.firstName;
-    this.title =
-      TITLES[formattedAttributes.title?.toLowerCase()] || formattedAttributes.title?.toLowerCase();
-    this.shortTitle = this.title ? (this.title === "monsieur" ? "M" : "Mme") : "";
+    this.title = this.formatTitle(formattedAttributes.title);
+    this.shortTitle = this.title ? (this.title === "monsieur" ? "M" : "Mme") : null;
     this.email = formattedAttributes.email;
     this.birthDate = formattedAttributes.birthDate;
     this.birthName = formattedAttributes.birthName;
@@ -34,16 +33,8 @@ export default class Applicant {
     this.rightsOpeningDate = formattedAttributes.rightsOpeningDate;
     this.affiliationNumber = this.formatAffiliationNumber(formattedAttributes.affiliationNumber);
     this.phoneNumber = formatPhoneNumber(formattedAttributes.phoneNumber);
-    // CONJOINT/CONCUBIN/PACSE => conjoint
-    // CONJOINT(E) => conjoint
-    const formattedRole = formattedAttributes.role
-      ?.split("/")
-      ?.shift()
-      ?.split("(")
-      ?.shift()
-      ?.toLowerCase();
-    this.role = ROLES[formattedRole] || formattedRole;
-    this.shortRole = this.role ? (this.role === "demandeur" ? "DEM" : "CJT") : "";
+    this.role = this.formatRole(formattedAttributes.role);
+    this.shortRole = this.role ? (this.role === "demandeur" ? "DEM" : "CJT") : null;
     this.department = department;
     this.departmentNumber = department.number;
     // when creating/inviting we always consider an applicant in the scope of only one organisation
@@ -104,6 +95,22 @@ export default class Applicant {
       return null;
     }
     return affiliationNumber;
+  }
+
+  formatTitle(title) {
+    title = title?.toLowerCase();
+    title = TITLES[title] || title;
+    if (!Object.values(TITLES).includes(title)) return null;
+    return title;
+  }
+
+  formatRole(role) {
+    // CONJOINT/CONCUBIN/PACSE => conjoint
+    // CONJOINT(E) => conjoint
+    role = role?.split("/")?.shift()?.split("(")?.shift()?.toLowerCase();
+    role = ROLES[role] || role;
+    if (!Object.values(ROLES).includes(role)) return null;
+    return role;
   }
 
   updateWith(upToDateApplicant) {

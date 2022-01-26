@@ -1,6 +1,6 @@
 class DepartmentPolicy < ApplicationPolicy
   def upload?
-    (record.organisation_ids - pundit_user.organisation_ids).empty?
+    (pundit_user.organisation_ids & record.organisation_ids).any?
   end
 
   def index?
