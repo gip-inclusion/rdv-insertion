@@ -5,7 +5,8 @@ module Invitations
     end
 
     def call
-      retrieve_geolocalisation
+      # we don't need or want to geolocalise when we invite for a precise place
+      retrieve_geolocalisation unless @invitation.rdv_solidarites_lieu_id?
       result.invitation_link = redirect_link
     end
 
@@ -44,7 +45,7 @@ module Invitations
         organisation_ids: @invitation.organisations.map(&:rdv_solidarites_organisation_id),
         motif_search_terms: @invitation.context
       }
-        .merge(geo_attributes)
+        .merge(@invitation.rdv_solidarites_lieu_id? ? { lieu_id: @invitation.rdv_solidarites_lieu_id } : geo_attributes)
     end
 
     def address
