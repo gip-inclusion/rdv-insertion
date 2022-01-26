@@ -15,6 +15,14 @@ class RdvSolidaritesSession
     @rdv_solidarites_client ||= RdvSolidaritesClient.new(rdv_solidarites_session: self)
   end
 
+  def to_h
+    {
+      uid: @uid,
+      client: @client,
+      access_token: @access_token
+    }
+  end
+
   private
 
   def all_attributes_present?
