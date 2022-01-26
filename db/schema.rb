@@ -127,7 +127,7 @@ ActiveRecord::Schema.define(version: 2022_01_25_154225) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "department_id"
-    t.string "rsa_agents_service_id", default: "4"
+    t.string "rsa_agents_service_id"
     t.bigint "configuration_id"
     t.index ["configuration_id"], name: "index_organisations_on_configuration_id"
     t.index ["department_id"], name: "index_organisations_on_department_id"
