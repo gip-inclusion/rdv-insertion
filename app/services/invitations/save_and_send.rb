@@ -6,20 +6,20 @@ module Invitations
     end
 
     def call
-      save_invitation_with_link!
-      send_invitation!
-      update_invitation_sent_at!
+      save_invitation_with_link
+      send_invitation
+      update_invitation_sent_at
       result.invitation = @invitation
     end
 
     private
 
-    def update_invitation_sent_at!
+    def update_invitation_sent_at
       @invitation.sent_at = Time.zone.now
       save_record!(@invitation)
     end
 
-    def send_invitation!
+    def send_invitation
       send_to_applicant = @invitation.send_to_applicant
       return if send_to_applicant.success?
 
@@ -27,7 +27,7 @@ module Invitations
       fail!
     end
 
-    def save_invitation_with_link!
+    def save_invitation_with_link
       call_service!(
         Invitations::SaveWithLink,
         invitation: @invitation,
