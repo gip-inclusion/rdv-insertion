@@ -25,6 +25,9 @@ Style/AsciiComments:
 Style/OpenStructUse:
   Enabled: false
 
+Style/ClassAndModuleChildren:
+  Enabled: false
+
 Rails/SkipsModelValidations:
   Enabled: false
 
