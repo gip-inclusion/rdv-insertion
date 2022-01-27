@@ -22,22 +22,23 @@
   <div class="mb-4">
     <div class="row d-flex justify-content-around flex-wrap">
       <div class="col-10 col-md-5">
-        <h4 class="attribute-title">Nom</h4>
-        <p><%= display_attribute @applicant.last_name %></p>
-      </div>
-      <div class="col-10 col-md-5">
         <h4 class="attribute-title">Prénom</h4>
         <p><%= display_attribute @applicant.first_name %></p>
       </div>
+      <div class="col-10 col-md-5">
+        <h4 class="attribute-title">Nom</h4>
+        <p><%= display_attribute @applicant.last_name %></p>
+      </div>
     </div>
+  <div class="mb-4">
     <div class="row d-flex justify-content-around flex-wrap">
       <div class="col-10 col-md-5">
         <h4 class="attribute-title">Civilité</h4>
         <p><%= display_attribute @applicant.title %></p>
       </div>
       <div class="col-10 col-md-5">
-        <h4 class="attribute-title">Date d'entrée flux</h4>
-        <p><%= display_attribute format_date(@applicant.rights_opening_date) %></p>
+        <h4 class="attribute-title">Nom de naissance</h4>
+        <p><%= display_attribute @applicant.birth_name %></p>
       </div>
     </div>
     <div class="row d-flex justify-content-around flex-wrap">
@@ -46,18 +47,18 @@
         <p><%= display_attribute @applicant.affiliation_number %></p>
       </div>
       <div class="col-10 col-md-5">
-        <h4 class="attribute-title">Email</h4>
-        <p><%= display_attribute @applicant.email %></p>
+        <h4 class="attribute-title">Rôle</h4>
+        <p><%= display_attribute @applicant.role %></p>
       </div>
     </div>
     <div class="row d-flex justify-content-around flex-wrap">
       <div class="col-10 col-md-5">
-        <h4 class="attribute-title">Date de naissance</h4>
-        <p><%= display_attribute format_date(@applicant.birth_date) %></p>
+        <h4 class="attribute-title">Email</h4>
+        <p><%= display_attribute @applicant.email %></p>
       </div>
       <div class="col-10 col-md-5">
-        <h4 class="attribute-title">Rôle</h4>
-        <p><%= display_attribute @applicant.role %></p>
+        <h4 class="attribute-title">Date de naissance</h4>
+        <p><%= display_attribute format_date(@applicant.birth_date) %></p>
       </div>
     </div>
     <div class="row d-flex justify-content-around flex-wrap">
@@ -68,6 +69,18 @@
       <div class="col-10 col-md-5">
         <h4 class="attribute-title">Téléphone</h4>
         <p><%= display_attribute @applicant.phone_number %></p>
+      </div>
+    </div>
+    <div class="row d-flex justify-content-around flex-wrap">
+      <div class="col-10 col-md-5">
+        <h4 class="attribute-title">Date d'entrée flux</h4>
+        <p><%= display_attribute format_date(@applicant.rights_opening_date) %></p>
+      </div>
+      <div class="col-10 col-md-5">
+        <% if department_level? %>
+          <h4 class="attribute-title">Organisation(s)</h4>
+          <p><%= @applicant.organisations.collect(&:name).join(", ") %></p>
+        <% end %>
       </div>
     </div>
   </div>
