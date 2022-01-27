@@ -12,8 +12,8 @@ module Notifications
       return if @applicant.phone_number.blank?
 
       check_applicant_organisation!
-      notify_applicant!
-      update_notification_sent_at!
+      notify_applicant
+      update_notification_sent_at
     end
 
     protected
@@ -24,10 +24,10 @@ module Notifications
       fail!("l'allocataire ne peut être invité car il n'appartient pas à l'organisation.")
     end
 
-    def notify_applicant!
+    def notify_applicant
       Notification.transaction do
         save_record!(notification)
-        send_sms!
+        send_sms
       end
     end
 
@@ -35,7 +35,7 @@ module Notifications
       @applicant.phone_number_formatted
     end
 
-    def send_sms!
+    def send_sms
       return Rails.logger.info(content) if Rails.env.development?
 
       call_service!(
@@ -52,7 +52,7 @@ module Notifications
       )
     end
 
-    def update_notification_sent_at!
+    def update_notification_sent_at
       notification.sent_at = Time.zone.now
       save_record!(notification)
     end

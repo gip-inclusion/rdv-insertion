@@ -125,43 +125,60 @@ describe UpsertRdvSolidaritesUser, type: :service do
         end
 
         context "when the error is email taken" do
+          let!(:existing_user_id) { 42 }
+
           before do
             allow(RdvSolidaritesApi::CreateUser).to receive(:call)
               .and_return(
                 OpenStruct.new(
-                  success?: false, error_details: { "email" => [{ "error" => "taken", "id" => 42 }] }
+                  success?: false,
+                  error_details: { "email" => [{ "error" => "taken", "id" => existing_user_id }] }
                 )
               )
             allow(RdvSolidaritesApi::RetrieveUser).to receive(:call)
               .and_return(OpenStruct.new(success?: false))
           end
 
-          it "assigns the user to the org by creating a user profile" do
-            expect(RdvSolidaritesApi::CreateUserProfile).to receive(:call)
-              .with(
-                user_id: 42,
-                organisation_id: rdv_solidarites_organisation_id,
-                rdv_solidarites_session: rdv_solidarites_session
-              )
-            subject
+          context "when there is an applicant linked to this user" do
+            let!(:applicant) { create(:applicant, id: 23, rdv_solidarites_user_id: existing_user_id) }
+
+            it "is a failure" do
+              is_a_failure
+            end
+
+            it "stores the error" do
+              expect(subject.errors).to eq(["l'allocataire existe déjà: id 23"])
+            end
           end
 
-          it "updates the user" do
-            expect(RdvSolidaritesApi::UpdateUser).to receive(:call)
-              .with(
-                user_attributes: rdv_solidarites_user_attributes,
-                rdv_solidarites_session: rdv_solidarites_session,
-                rdv_solidarites_user_id: 42
-              )
-            subject
-          end
+          context "when there is no applicant linked to this user" do
+            it "assigns the user to the org by creating a user profile" do
+              expect(RdvSolidaritesApi::CreateUserProfile).to receive(:call)
+                .with(
+                  user_id: 42,
+                  organisation_id: rdv_solidarites_organisation_id,
+                  rdv_solidarites_session: rdv_solidarites_session
+                )
+              subject
+            end
 
-          it "is a success" do
-            is_a_success
-          end
+            it "updates the user" do
+              expect(RdvSolidaritesApi::UpdateUser).to receive(:call)
+                .with(
+                  user_attributes: rdv_solidarites_user_attributes,
+                  rdv_solidarites_session: rdv_solidarites_session,
+                  rdv_solidarites_user_id: 42
+                )
+              subject
+            end
 
-          it "stores the rdv_solidarites_user_id" do
-            expect(subject.rdv_solidarites_user_id).to eq(42)
+            it "is a success" do
+              is_a_success
+            end
+
+            it "stores the rdv_solidarites_user_id" do
+              expect(subject.rdv_solidarites_user_id).to eq(42)
+            end
           end
         end
       end

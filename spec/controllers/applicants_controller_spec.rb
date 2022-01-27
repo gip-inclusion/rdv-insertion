@@ -240,28 +240,25 @@ describe ApplicantsController, type: :controller do
   end
 
   describe "#index" do
-    let!(:applicants) { organisation.applicants }
-    let!(:applicant) { create(:applicant, organisations: [organisation], last_name: "Chabat") }
-    let!(:applicant2) { create(:applicant, organisations: [organisation], role: "demandeur") }
+    let!(:applicant) { create(:applicant, organisations: [organisation], last_name: "Chabat", status: "rdv_seen") }
+    let!(:applicant2) do
+      create(:applicant, organisations: [organisation], last_name: "Baer", status: "invitation_pending")
+    end
     let!(:index_params) { { organisation_id: organisation.id } }
+
+    render_views
 
     before do
       sign_in(agent)
       setup_rdv_solidarites_session(rdv_solidarites_session)
-      allow(Applicant).to receive(:search_by_text)
-        .and_return(applicants)
-      allow(Applicant).to receive(:page)
-        .and_return(applicants)
-      allow(Applicant).to receive(:status)
-        .and_return(applicants)
-      allow(Applicant).to receive(:action_required)
-        .and_return(applicants)
     end
 
     it "returns a list of applicants" do
       get :index, params: index_params
 
       expect(response).to be_successful
+      expect(response.body).to match(/Chabat/)
+      expect(response.body).to match(/Baer/)
     end
 
     it "does not search applicants" do
@@ -270,43 +267,47 @@ describe ApplicantsController, type: :controller do
       get :index, params: index_params
     end
 
-    context "when a page is specified" do
-      let!(:index_params) { { organisation_id: organisation.id, page: 4 } }
-
-      it "retrieves the applicants from that page" do
-        expect(Applicant).to receive(:page).with("4")
-
-        get :index, params: index_params.merge(page: 4)
-      end
-    end
-
     context "when a search query is specified" do
-      let!(:index_params) { { organisation_id: organisation.id, search_query: "coco" } }
+      let!(:index_params) { { organisation_id: organisation.id, search_query: "chabat" } }
 
       it "searches the applicants" do
-        expect(Applicant).to receive(:search_by_text).with("coco")
-
         get :index, params: index_params
+        expect(response.body).to match(/Chabat/)
+        expect(response.body).not_to match(/Baer/)
       end
     end
 
     context "when a status is passed" do
-      let!(:index_params) { { organisation_id: organisation.id, status: "rdv_pending" } }
+      let!(:index_params) { { organisation_id: organisation.id, status: "invitation_pending" } }
 
       it "filters by status" do
-        expect(Applicant).to receive(:status).with("rdv_pending")
-
         get :index, params: index_params
+        expect(response.body).to match(/Baer/)
+        expect(response.body).not_to match(/Chabat/)
       end
     end
 
     context "when action_required is passed" do
       let!(:index_params) { { organisation_id: organisation.id, action_required: "true" } }
 
-      it "filters by action required" do
-        expect(Applicant).to receive(:action_required)
+      context "when the invitation has been sent more than 3 days ago" do
+        let!(:invitation) { create(:invitation, applicant: applicant2, sent_at: 5.days.ago) }
 
-        get :index, params: index_params
+        it "filters by action required" do
+          get :index, params: index_params
+          expect(response.body).to match(/Baer/)
+          expect(response.body).not_to match(/Chabat/)
+        end
+      end
+
+      context "when the invitation has not been sent more than 3 days ago" do
+        let!(:invitation) { create(:invitation, applicant: applicant2, sent_at: 1.day.ago) }
+
+        it "filters by action required" do
+          get :index, params: index_params
+          expect(response.body).not_to match(/Baer/)
+          expect(response.body).not_to match(/Chabat/)
+        end
       end
     end
 
@@ -316,7 +317,8 @@ describe ApplicantsController, type: :controller do
       it "renders the index page" do
         get :index, params: index_params
 
-        expect(response).to be_successful
+        expect(response.body).to match(/Chabat/)
+        expect(response.body).to match(/Baer/)
       end
     end
   end

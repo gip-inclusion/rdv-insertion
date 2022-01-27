@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_20_203747) do
+ActiveRecord::Schema.define(version: 2022_01_26_170508) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,7 +30,7 @@ ActiveRecord::Schema.define(version: 2022_01_20_203747) do
 
   create_table "applicants", force: :cascade do |t|
     t.string "uid"
-    t.integer "rdv_solidarites_user_id"
+    t.bigint "rdv_solidarites_user_id"
     t.string "affiliation_number"
     t.integer "role"
     t.datetime "created_at", precision: 6, null: false
@@ -84,6 +84,8 @@ ActiveRecord::Schema.define(version: 2022_01_20_203747) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "region"
     t.string "pronoun"
+    t.string "email"
+    t.string "phone_number"
   end
 
   create_table "invitations", force: :cascade do |t|
@@ -98,6 +100,7 @@ ActiveRecord::Schema.define(version: 2022_01_20_203747) do
     t.string "context"
     t.string "help_phone_number"
     t.bigint "department_id"
+    t.bigint "rdv_solidarites_lieu_id"
     t.index ["applicant_id"], name: "index_invitations_on_applicant_id"
     t.index ["department_id"], name: "index_invitations_on_department_id"
   end
@@ -122,7 +125,7 @@ ActiveRecord::Schema.define(version: 2022_01_20_203747) do
     t.string "name"
     t.string "phone_number"
     t.string "email"
-    t.integer "rdv_solidarites_organisation_id"
+    t.bigint "rdv_solidarites_organisation_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "department_id"

@@ -1,0 +1,14 @@
+<div class="container legal-notice mt-5 mb-5">
+  <div class="row d-flex flex-row justify-content-center align-items-center mt-2">
+    <div class="col-5 mr-5">
+      <%= image_pack_tag "illustrations/error.svg", class: "error-illustration mb-3", alt: "Image d'illustration calendrier" %>
+    </div>
+    <div class="col-5">
+      <h1 class="text-center">Oups !</h1>
+      <p class="text-center">Erreur 422 - Une erreur s'est produite, nous nous efforçons de résoudre le problème le plus vite possible.</p>
+      <%= link_to root_path do %>
+        <button class="btn btn-default btn-blue w-100 ">Retour à l'accueil</button>
+      <% end %>
+    </div>
+  </div>
+</div>

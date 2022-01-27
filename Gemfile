@@ -38,6 +38,8 @@ gem 'responders'
 gem 'kaminari'
 # PG search
 gem 'pg_search'
+# Adds advisory locking (mutexes)
+gem 'with_advisory_lock'
 
 # CSS styled emails with stylesheets
 gem 'premailer-rails'

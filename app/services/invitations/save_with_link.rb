@@ -6,13 +6,12 @@ module Invitations
     end
 
     def call
-      retrieve_invitation_token! unless existing_token_valid?
-      @invitation.token = invitation_token
-
-      compute_invitation_link!
-      @invitation.link = invitation_link
-
-      save_record!(@invitation)
+      # we prevent generating two tokens at the same time for one applicant
+      Invitation.with_advisory_lock "invite_applicant_#{applicant.id}" do
+        @invitation.token = invitation_token
+        @invitation.link = invitation_link
+        save_record!(@invitation)
+      end
     end
 
     private
@@ -36,8 +35,8 @@ module Invitations
       @invitation.applicant
     end
 
-    def retrieve_invitation_token!
-      call_service!(
+    def retrieve_invitation_token
+      @retrieve_invitation_token ||= call_service!(
         RdvSolidaritesApi::RetrieveInvitationToken,
         rdv_solidarites_user_id: applicant.rdv_solidarites_user_id,
         rdv_solidarites_session: @rdv_solidarites_session
@@ -45,18 +44,18 @@ module Invitations
     end
 
     def invitation_token
-      existing_token_valid? ? existing_token : @retrieve_invitation_token_service.invitation_token
+      existing_token_valid? ? existing_token : retrieve_invitation_token.invitation_token
     end
 
-    def compute_invitation_link!
-      call_service!(
+    def compute_invitation_link
+      @compute_invitation_link ||= call_service!(
         Invitations::ComputeLink,
         invitation: @invitation
       )
     end
 
     def invitation_link
-      @compute_link_service.invitation_link
+      compute_invitation_link.invitation_link
     end
   end
 end

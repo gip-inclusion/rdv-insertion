@@ -8,15 +8,15 @@ class SaveApplicant < BaseService
   def call
     Applicant.transaction do
       save_record!(@applicant)
-      upsert_rdv_solidarites_user!
-      assign_rdv_solidarites_user_id! unless @applicant.rdv_solidarites_user_id?
+      upsert_rdv_solidarites_user
+      assign_rdv_solidarites_user_id unless @applicant.rdv_solidarites_user_id?
     end
   end
 
   private
 
-  def upsert_rdv_solidarites_user!
-    call_service!(
+  def upsert_rdv_solidarites_user
+    @upsert_rdv_solidarites_user ||= call_service!(
       UpsertRdvSolidaritesUser,
       rdv_solidarites_session: @rdv_solidarites_session,
       rdv_solidarites_organisation_id: @organisation.rdv_solidarites_organisation_id,
@@ -25,8 +25,8 @@ class SaveApplicant < BaseService
     )
   end
 
-  def assign_rdv_solidarites_user_id!
-    @applicant.rdv_solidarites_user_id = @upsert_rdv_solidarites_user_service.rdv_solidarites_user_id
+  def assign_rdv_solidarites_user_id
+    @applicant.rdv_solidarites_user_id = upsert_rdv_solidarites_user.rdv_solidarites_user_id
     save_record!(@applicant)
   end
 
