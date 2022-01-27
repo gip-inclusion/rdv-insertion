@@ -1,8 +1,15 @@
 import appFetch from "../../lib/appFetch";
 
-const updateApplicant = async (organisationId, applicantId, attributes = {}) =>
-  appFetch(`/organisations/${organisationId}/applicants/${applicantId}`, "PATCH", {
-    applicant: attributes,
-  });
+const updateApplicant = async (organisationOrDepartmentId, applicantId, attributes = {}, level = "organisation") => {
+  if (level === "organisation") {
+    appFetch(`/organisations/${organisationOrDepartmentId}/applicants/${applicantId}`, "PATCH", {
+      applicant: attributes,
+    });
+  } else {
+    appFetch(`/departments/${organisationOrDepartmentId}/applicants/${applicantId}`, "PATCH", {
+      applicant: attributes,
+    });
+  }
+}
 
 export default updateApplicant;

@@ -122,6 +122,7 @@ export default class Applicant {
       upToDateApplicant.invitations,
       "email"
     );
+    this.departmentInternalId = upToDateApplicant.department_internal_id;
   }
 
   formatAddress() {

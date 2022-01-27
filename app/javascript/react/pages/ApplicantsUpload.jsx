@@ -11,6 +11,7 @@ import {
   parameterizeObjectValues,
   parameterizeArray,
 } from "../../lib/parameterize";
+import updateApplicant from "../actions/updateApplicant";
 import getKeyByValue from "../../lib/getKeyByValue";
 import searchApplicants from "../actions/searchApplicants";
 import { initReducer, reducerFactory } from "../../lib/reducers";
@@ -148,17 +149,18 @@ export default function ApplicantsUpload({ organisation, configuration, departme
 
     const retrievedApplicants = await retrieveApplicantsFromApp(departmentInternalIds, uids);
 
-    let upToDateApplicant;
     const upToDateApplicants = applicantsFromList.map((applicant) => {
-      if (applicant.departmentInternalId) {
-        upToDateApplicant = retrievedApplicants.find((a) =>
-          a.department_internal_id === applicant.departmentInternalId
-        );
-      };
-      if (upToDateApplicant == null) {
-        upToDateApplicant = retrievedApplicants.find((a) => a.uid === applicant.uid);
-      };
+      const upToDateApplicant = retrievedApplicants.find((a) =>(a.department_internal_id && a.department_internal_id === applicant.departmentInternalId) || (a.uid && a.uid === applicant.uid));
+
       if (upToDateApplicant) {
+        if (applicant.departmentInternalId && !upToDateApplicant.department_internal_id) {
+          upToDateApplicant.department_internal_id = applicant.departmentInternalId
+          updateApplicant(
+            upToDateApplicant.department_id,
+            upToDateApplicant.id,
+            upToDateApplicant
+          );
+        }
         applicant.updateWith(upToDateApplicant);
       }
       return applicant;
