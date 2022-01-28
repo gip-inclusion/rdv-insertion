@@ -6,12 +6,13 @@ describe DepartmentPolicy, type: :policy do
   let!(:department) { create(:department) }
 
   describe "#upload?" do
-    context "when the agent belongs to all the department the organisations" do
+    context "when the agent belongs to onee of the department organisations" do
       permissions(:upload?) { it { is_expected.to permit(agent, department) } }
     end
 
     context "when the agent does not belong to all the department organisations" do
-      let!(:other_organisation) { create(:organisation, department: department) }
+      let!(:other_department) { create(:department) }
+      let!(:organisation) { create(:organisation, department: other_department) }
 
       permissions(:upload?) { it { is_expected.not_to permit(agent, department) } }
     end

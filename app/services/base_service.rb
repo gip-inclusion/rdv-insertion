@@ -53,14 +53,10 @@ class BaseService
   private
 
   def call_service!(service, **kwargs)
-    service_call = service.call(**kwargs)
+    service_result = service.call(**kwargs)
+    return service_result if service_result.success?
 
-    if service_call.success?
-      instance_variable_set(:"@#{service.name.demodulize.underscore}_service", service_call)
-      return
-    end
-
-    result.errors += service_call.errors
+    result.errors += service_result.errors
     fail!
   end
 

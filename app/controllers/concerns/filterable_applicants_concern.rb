@@ -15,7 +15,10 @@ module FilterableApplicantsConcern
   end
 
   def filter_applicants_by_search_query
-    @applicants = @applicants.search_by_text(params[:search_query]) if params[:search_query].present?
+    return if params[:search_query].blank?
+
+    # with_pg_search_rank scope added to be compatible with distinct https://github.com/Casecommons/pg_search/issues/238
+    @applicants = @applicants.search_by_text(params[:search_query]).with_pg_search_rank
   end
 
   def filter_applicants_by_page

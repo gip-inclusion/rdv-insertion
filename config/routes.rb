@@ -43,6 +43,21 @@ Rails.application.routes.draw do
     end
   end
 
+  namespace :api do
+    namespace :v1 do
+      resources :organisations, only: [] do
+        resources :applicants, only: [] do
+          post :create_and_invite_many, on: :collection
+        end
+      end
+    end
+  end
+
+  # Error pages
+  get "404", to: "errors#not_found"
+  get "422", to: "errors#unprocessable_entity"
+  get "500", to: "errors#internal_server_error"
+
   resources :rdv_solidarites_webhooks, only: [:create]
 
   resources :sessions, only: [:create]

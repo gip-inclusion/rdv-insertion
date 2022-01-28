@@ -25,6 +25,9 @@ Style/AsciiComments:
 Style/OpenStructUse:
   Enabled: false
 
+Style/ClassAndModuleChildren:
+  Enabled: false
+
 Rails/SkipsModelValidations:
   Enabled: false
 
@@ -82,7 +85,7 @@ RSpec/NamedSubject:
   Enabled: false
 
 RSpec/NestedGroups:
-  Max: 5
+  Max: 7
 
 RSpec/MessageChain:
   Enabled: false

@@ -97,5 +97,32 @@ describe Invitations::ComputeLink, type: :service do
         end
       end
     end
+
+    context "when a lieu id is passed" do
+      let!(:invitation) do
+        create(
+          :invitation,
+          department: department,
+          organisations: [organisation1, organisation2],
+          applicant: applicant,
+          context: "RSA accompagnement",
+          token: invitation_token,
+          rdv_solidarites_lieu_id: 5
+        )
+      end
+
+      it "does not retrieve the geolocalisation" do
+        expect(RetrieveGeolocalisation).not_to receive(:call)
+        subject
+      end
+
+      it "adds the lieu id instead of the geo attributes in the url" do
+        expect(subject.invitation_link).to eq(
+          "https://www.rdv-solidarites.fr/prendre_rdv?address=20+avenue+de+s%C3%A9gur+75007+Paris&" \
+          "departement=75&invitation_token=sometoken&lieu_id=5&motif_search_terms=RSA+accompagnement&" \
+          "organisation_ids%5B%5D=333&organisation_ids%5B%5D=444"
+        )
+      end
+    end
   end
 end
