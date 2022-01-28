@@ -158,7 +158,8 @@ export default function ApplicantsUpload({ organisation, configuration, departme
           updateApplicant(
             upToDateApplicant.department_id,
             upToDateApplicant.id,
-            upToDateApplicant
+            upToDateApplicant,
+            true
           );
         }
         applicant.updateWith(upToDateApplicant);
