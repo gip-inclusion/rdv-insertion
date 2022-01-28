@@ -2,6 +2,7 @@ import React, { useState, useReducer } from "react";
 
 import * as XLSX from "xlsx";
 import Swal from "sweetalert2";
+import Tippy from "@tippyjs/react";
 
 import FileHandler from "../components/FileHandler";
 import ApplicantList from "../components/ApplicantList";
@@ -11,6 +12,7 @@ import {
   parameterizeObjectValues,
   parameterizeArray,
 } from "../../lib/parameterize";
+import retrievePhoneNumber from "../../lib/retrievePhoneNumber";
 import getKeyByValue from "../../lib/getKeyByValue";
 import searchApplicants from "../actions/searchApplicants";
 import { initReducer, reducerFactory } from "../../lib/reducers";
@@ -27,14 +29,12 @@ export default function ApplicantsUpload({ organisation, configuration, departme
     ...columnNames.required,
     ...columnNames.optional,
   });
-  const contactsColumnNames = ["MATRICULE", "ROLE PERSONNE", "TYPE PERSONNE", "NIR",
-    "NUMERO DEMANDE RSA", "DATE DEMANDE RSA", "DATE DEBUT DROITS - DEVOIRS",
-    "NOM RESPONSABLE DOSSIER", "PRENOM RESPONSABLE DOSSIER", "NUMERO TELEPHONE DOSSIER",
-    "NUMERO TELEPHONE 2 DOSSIER","ADRESSE ELECTRONIQUE DOSSIER"]
   const isDepartmentLevel = !organisation;
 
   const [fileSize, setFileSize] = useState(0);
-  const [contactsData, setContactsData] = useState([]);
+  /* eslint no-unused-vars: ["error", { "varsIgnorePattern": "contactsUpdated" }] */
+  // This state allows to re-renders applicants after contacts update
+  const [contactsUpdated, setContactsUpdated] = useState(false);
   const [applicants, dispatchApplicants] = useReducer(reducer, [], initReducer);
 
   const getHeaderNames = (sheet) => {
@@ -46,41 +46,36 @@ export default function ApplicantsUpload({ organisation, configuration, departme
       }
     }
     return header;
-  }
+  };
 
-  const checkColumnNames = (uploadedColumnNames, fileType = "applicants") => {
-    let requiredColumns = null;
+  const checkColumnNames = (uploadedColumnNamesParameterized) => {
     const missingColumnNames = [];
-    if (fileType === "applicants") {
-      requiredColumns = parameterizeObjectValues(columnNames.required);
-    } else {
-      requiredColumns = contactsColumnNames;
-    }
-    const expectedColumnNames = Object.values(requiredColumns);
-    const missingColumns = expectedColumnNames.filter(
-      (colName) => !uploadedColumnNames.includes(colName)
+    const requiredColumnsMapping = parameterizeObjectValues(columnNames.required);
+
+    const expectedColumnNamesParameterized = Object.values(requiredColumnsMapping);
+    const parameterizedMissingColumns = expectedColumnNamesParameterized.filter(
+      (colName) => !uploadedColumnNamesParameterized.includes(colName)
     );
-    if (missingColumns.length > 0) {
+
+    if (parameterizedMissingColumns.length > 0) {
       // Récupère les noms "humains" des colonnes manquantes
-      missingColumns.forEach((col) => {
-        const missingAttribute = getKeyByValue(requiredColumns, col);
-        let missingColumnName = null;
-        if (fileType === "applicants") {
-          missingColumnName = configuration.column_names.required[missingAttribute];
-        } else {
-          missingColumnName = contactsColumnNames[missingAttribute];
-        }
+      parameterizedMissingColumns.forEach((col) => {
+        const missingAttribute = getKeyByValue(requiredColumnsMapping, col);
+        const missingColumnName = configuration.column_names.required[missingAttribute];
         missingColumnNames.push(missingColumnName);
       });
-      Swal.fire({
-        title: "Le fichier chargé ne correspond pas au format attendu",
-        html: `Veuillez vérifier que les colonnes suivantes sont présentes et correctement nommées&nbsp;:
-        <br/>
-        <strong>${missingColumnNames.join("<br />")}</strong>`,
-        icon: "error",
-      });
-      }
+    }
     return missingColumnNames;
+  };
+
+  const displayMissingColumnsWarning = (missingColumnNames) => {
+    Swal.fire({
+      title: "Le fichier chargé ne correspond pas au format attendu",
+      html: `Veuillez vérifier que les colonnes suivantes sont présentes et correctement nommées&nbsp;:
+      <br/>
+      <strong>${missingColumnNames.join("<br />")}</strong>`,
+      icon: "error",
+    });
   };
 
   const retrieveApplicantsFromList = async (file) => {
@@ -93,9 +88,11 @@ export default function ApplicantsUpload({ organisation, configuration, departme
         const sheet = workbook.Sheets[SHEET_NAME] || workbook.Sheets[workbook.SheetNames[0]];
         const headerNames = getHeaderNames(sheet);
         const missingColumnNames = checkColumnNames(parameterizeArray(headerNames));
-        let rows = XLSX.utils.sheet_to_row_object_array(sheet);
-        rows = rows.map((row) => parameterizeObjectKeys(row));
-        if (missingColumnNames.length === 0) {
+        if (missingColumnNames.length > 0) {
+          displayMissingColumnsWarning(missingColumnNames);
+        } else {
+          let rows = XLSX.utils.sheet_to_row_object_array(sheet);
+          rows = rows.map((row) => parameterizeObjectKeys(row));
           rows.forEach((row) => {
             const applicant = new Applicant(
               {
@@ -200,16 +197,37 @@ export default function ApplicantsUpload({ organisation, configuration, departme
     });
   };
 
+  const updateApplicantContacts = (applicant, applicantContactsData) => {
+    if (applicant.phoneNumber == null) {
+      applicant.updatePhoneNumber(retrievePhoneNumber(applicantContactsData));
+    }
+    if (applicant.email == null) {
+      applicant.updateEmail(applicantContactsData["ADRESSE ELECTRONIQUE DOSSIER"]);
+    }
+    return applicant;
+  };
+
   const retrieveContactsData = async (file) => {
+    const expectedContactsColumnNames = [
+      "MATRICULE",
+      "NUMERO TELEPHONE DOSSIER",
+      "NUMERO TELEPHONE 2 DOSSIER",
+      "ADRESSE ELECTRONIQUE DOSSIER",
+    ];
     let contacts = [];
 
     await new Promise((resolve) => {
       const reader = new FileReader();
       reader.onload = function (event) {
-        const sheet = XLSX.read(event.target.result, {type: "string"}).Sheets.Sheet1;
+        const sheet = XLSX.read(event.target.result, { type: "string" }).Sheets.Sheet1;
         const headerNames = getHeaderNames(sheet);
-        const missingColumnNames = checkColumnNames(headerNames, "contacts");
-        if (missingColumnNames.length === 0) {
+        const missingColumnNames = [];
+        expectedContactsColumnNames.forEach((col) => {
+          if (!headerNames.includes(col)) missingColumnNames.push(col);
+        });
+        if (missingColumnNames.length > 0) {
+          displayMissingColumnsWarning(missingColumnNames);
+        } else {
           contacts = XLSX.utils.sheet_to_json(sheet, { raw: false });
         }
         resolve();
@@ -220,17 +238,29 @@ export default function ApplicantsUpload({ organisation, configuration, departme
   };
 
   const handleContactsFile = async (file) => {
+    setContactsUpdated(false);
     setFileSize(file.size);
+    const contactsData = await retrieveContactsData(file);
+    if (contactsData.length === 0) return;
 
-    const result = await retrieveContactsData(file);
-    if (result.length === 0) return;
-
-    setContactsData(result);
+    await Promise.all(
+      applicants.map(async (e) => {
+        let { applicant } = e;
+        const applicantContactsData = contactsData.find(
+          (a) => a.MATRICULE.toString() === applicant.affiliationNumber
+        );
+        // if the applicant exists in DB, we don't update the record
+        if (applicantContactsData && !applicant.createdAt) {
+          applicant = await updateApplicantContacts(applicant, applicantContactsData);
+        }
+      })
+    );
+    setContactsUpdated(true);
   };
 
   return (
     <div className="container mt-5 mb-8">
-      <div className="row mb-4 block-white justify-content-center">
+      <div className="row block-white justify-content-center">
         <div className="col-4 text-center d-flex align-items-center justify-content-start">
           <button
             type="submit"
@@ -266,23 +296,44 @@ export default function ApplicantsUpload({ organisation, configuration, departme
       </div>
       {applicants.length > 0 && (
         <>
-          <div className="row mb-4 block-white justify-content-center">
+          <div className="row mb-4 justify-content-center">
             <div className="col-4" />
-            <div className="col-4 text-center d-flex flex-column align-items-center">
-              <h3 className="new-applicants-title">
-                Enrichir données de contacts
-              </h3>
+            <div className="col-4 block-white text-center d-flex flex-column align-items-center">
+              <div className="d-flex align-items-center">
+                <h3 className="new-applicants-title">Enrichir données de contacts</h3>
+                <Tippy
+                  placement="right"
+                  content={
+                    <span>
+                      Les informations de contact ne sont pas ajoutées aux utilisateurs déjà créés.
+                    </span>
+                  }
+                >
+                  <small>
+                    <i className="fas fa-question-circle tooltip-margin" />
+                  </small>
+                </Tippy>
+              </div>
+
               <FileHandler
                 handleFile={handleContactsFile}
                 fileSize={fileSize}
                 multiple={false}
-                uploadMessage="Choisissez un fichier de données de contact"
+                uploadMessage="Choisissez un fichier de données de contact CNAF"
                 pendingMessage="Récupération des informations, merci de patienter"
               />
+              <p className="mt-3 mb-0">
+                <a
+                  href="https://forum.inclusion.beta.gouv.fr/t/communication-aux-departements-des-coordonnees-de-contact-des-beneficiaires-rsa-mise-a-disposition-hebdomadaire/7112"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Comment obtenir ce fichier ?
+                </a>
+              </p>
             </div>
             <div className="col-4" />
           </div>
-
         </>
       )}
 
@@ -328,7 +379,6 @@ export default function ApplicantsUpload({ organisation, configuration, departme
                   <ApplicantList
                     applicants={applicants}
                     dispatchApplicants={dispatchApplicants}
-                    contactsData={contactsData}
                     isDepartmentLevel={isDepartmentLevel}
                   />
                 </tbody>
