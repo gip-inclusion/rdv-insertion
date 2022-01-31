@@ -45,9 +45,11 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      resources :organisations, only: [] do
-        resources :applicants, only: [] do
-          post :create_and_invite_many, on: :collection
+      resources :organisations, param: "rdv_solidarites_organisation_id", only: [] do
+        member do
+          resources :applicants, only: [] do
+            post :create_and_invite_many, on: :collection
+          end
         end
       end
     end
