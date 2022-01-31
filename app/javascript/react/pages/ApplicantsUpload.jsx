@@ -2,10 +2,10 @@ import React, { useState, useReducer } from "react";
 
 import * as XLSX from "xlsx";
 import Swal from "sweetalert2";
-import Tippy from "@tippyjs/react";
 
 import FileHandler from "../components/FileHandler";
 import ApplicantList from "../components/ApplicantList";
+import EnrichWithContactFile from "../components/EnrichWithContactFile";
 
 import {
   parameterizeObjectKeys,
@@ -35,6 +35,7 @@ export default function ApplicantsUpload({ organisation, configuration, departme
   /* eslint no-unused-vars: ["error", { "varsIgnorePattern": "contactsUpdated" }] */
   // This state allows to re-renders applicants after contacts update
   const [contactsUpdated, setContactsUpdated] = useState(false);
+  const [showEnrichWithContactFile, setShowEnrichWithContactFile] = useState(false);
   const [applicants, dispatchApplicants] = useReducer(reducer, [], initReducer);
 
   const getHeaderNames = (sheet) => {
@@ -294,49 +295,20 @@ export default function ApplicantsUpload({ organisation, configuration, departme
           </a>
         </div>
       </div>
-      {applicants.length > 0 && (
-        <>
-          <div className="row mb-4 justify-content-center">
-            <div className="col-4" />
-            <div className="col-4 block-white text-center d-flex flex-column align-items-center">
-              <div className="d-flex align-items-center">
-                <h3 className="new-applicants-title">Enrichir données de contacts</h3>
-                <Tippy
-                  placement="right"
-                  content={
-                    <span>
-                      Les informations de contact ne sont pas ajoutées aux utilisateurs déjà créés.
-                    </span>
-                  }
-                >
-                  <small>
-                    <i className="fas fa-question-circle tooltip-margin" />
-                  </small>
-                </Tippy>
-              </div>
-
-              <FileHandler
-                handleFile={handleContactsFile}
-                fileSize={fileSize}
-                multiple={false}
-                uploadMessage="Choisissez un fichier de données de contact CNAF"
-                pendingMessage="Récupération des informations, merci de patienter"
-              />
-              <p className="mt-3 mb-0">
-                <a
-                  href="https://forum.inclusion.beta.gouv.fr/t/communication-aux-departements-des-coordonnees-de-contact-des-beneficiaires-rsa-mise-a-disposition-hebdomadaire/7112"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Comment obtenir ce fichier ?
-                </a>
-              </p>
-            </div>
-            <div className="col-4" />
-          </div>
-        </>
+      {!showEnrichWithContactFile && applicants.length > 0 && (
+        <div className="my-4 text-center">
+          <button
+            type="button"
+            className="btn btn-blue-out"
+            onClick={() => setShowEnrichWithContactFile(true)}
+          >
+            Enrichir avec données de contacts
+          </button>
+        </div>
       )}
-
+      {showEnrichWithContactFile && applicants.length > 0 && (
+        <EnrichWithContactFile handleContactsFile={handleContactsFile} fileSize={fileSize} />
+      )}
       {applicants.length > 0 && (
         <>
           <div className="row my-5 justify-content-center">
