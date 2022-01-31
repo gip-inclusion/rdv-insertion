@@ -13,7 +13,8 @@ describe InviteApplicantJob, type: :job do
   let!(:rdv_solidarites_session_credentials) { session_hash.symbolize_keys }
   let!(:invitation_format) { "sms" }
   let!(:invitation_attributes) do
-    { format: invitation_format, context: "RSA orientation", help_phone_number: "01010101", rdv_solidarites_lieu_id: 444 }
+    { format: invitation_format, context: "RSA orientation",
+      help_phone_number: "01010101", rdv_solidarites_lieu_id: 444 }
   end
   let!(:invitation) { create(:invitation) }
   let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
