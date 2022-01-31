@@ -39,10 +39,10 @@ class CreateAndInviteApplicantJob < ApplicationJob
 
   def enqueue_invite_job(invitation_format)
     InviteApplicantJob.perform_async(
-      applicant.id, @organisation.id, @rdv_solidarites_session_credentials,
+      applicant.id, @organisation.id,
       @invitation_attributes.merge(
         format: invitation_format, context: "RSA orientation", help_phone_number: @organisation.phone_number
-      )
+      ), @rdv_solidarites_session_credentials
     )
   end
 
@@ -61,7 +61,7 @@ class CreateAndInviteApplicantJob < ApplicationJob
 
   def capture_exception(errors)
     Sentry.capture_exception(
-      FailedServiceError.new("save applicant error"),
+      FailedServiceError.new("Error saving applicant in CreateAndInviteApplicantJob"),
       extra: {
         applicant: applicant,
         service_errors: errors,

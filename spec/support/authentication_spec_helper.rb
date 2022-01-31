@@ -14,7 +14,6 @@ module AuthenticationSpecHelper
 
   def validate_rdv_solidarites_session(session_object)
     allow(RdvSolidaritesSession).to receive(:new)
-      .with(client: "client", uid: "johndoe@example.com", access_token: "token")
       .and_return(session_object)
     allow(session_object).to receive(:valid?)
       .and_return(true)
@@ -22,9 +21,9 @@ module AuthenticationSpecHelper
       .and_return(session_hash)
   end
 
-  def api_auth_headers
+  def api_auth_headers_for_agent(agent)
     {
-      client: "client", uid: "johndoe@example.com", 'access-token': "token",
+      client: "client", uid: agent.email, 'access-token': "token",
       CONTENT_TYPE: "application/json", HTTP_ACCEPT: "application/json"
     }
   end

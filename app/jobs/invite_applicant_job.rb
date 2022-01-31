@@ -1,12 +1,12 @@
 class InviteApplicantJob < ApplicationJob
   sidekiq_options retry: 0
 
-  def perform(applicant_id, organisation_id, session_credentials, invitation_attributes)
+  def perform(applicant_id, organisation_id, invitation_attributes, rdv_solidarites_session_credentials)
     @applicant = Applicant.find(applicant_id)
     @organisation = Organisation.find(organisation_id)
     @department = @organisation.department
     @attributes = invitation_attributes.deep_symbolize_keys
-    @session_credentials = session_credentials.deep_symbolize_keys
+    @rdv_solidarites_session_credentials = rdv_solidarites_session_credentials.deep_symbolize_keys
 
     Invitation.with_advisory_lock "invite_job_for_applicant_#{@applicant.id}_with_#{invitation_format}" do
       invite_applicant
@@ -37,12 +37,12 @@ class InviteApplicantJob < ApplicationJob
 
   def capture_exception
     Sentry.capture_exception(
-      FailedServiceError.new("save and send invitation error"),
+      FailedServiceError.new("Save and send invitation error in InviteApplicantJob"),
       extra: {
         applicant: @applicant,
         service_errors: save_and_send_invitation.errors,
         organisation: @organisation,
-        invitation_attributes: @invitation_attributes
+        invitation_attributes: @attributes
       }
     )
   end
@@ -52,6 +52,6 @@ class InviteApplicantJob < ApplicationJob
   end
 
   def rdv_solidarites_session
-    @rdv_solidarites_session ||= RdvSolidaritesSession.new(**@session_credentials)
+    @rdv_solidarites_session ||= RdvSolidaritesSession.new(**@rdv_solidarites_session_credentials)
   end
 end

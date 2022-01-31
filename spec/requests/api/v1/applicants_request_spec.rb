@@ -1,5 +1,6 @@
 describe "api/v1/applicants/create_and_invite_many requests", type: :request do
-  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
+  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession, uid: agent.email) }
+  let!(:agent) { create(:agent, organisations: [organisation]) }
   let!(:rdv_solidarites_organisation_id) { 42 }
   let!(:organisation) { create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id) }
   let!(:applicants_params) { { applicants: [applicant1_params, applicant2_params] } }
@@ -45,7 +46,7 @@ describe "api/v1/applicants/create_and_invite_many requests", type: :request do
     subject do
       post(
         create_and_invite_many_api_v1_applicants_path(rdv_solidarites_organisation_id: rdv_solidarites_organisation_id),
-        params: applicants_params, headers: api_auth_headers, as: :json
+        params: applicants_params, headers: api_auth_headers_for_agent(agent), as: :json
       )
     end
 
@@ -113,6 +114,18 @@ describe "api/v1/applicants/create_and_invite_many requests", type: :request do
       it "does not enqueue jobs" do
         expect(CreateAndInviteApplicantJob).not_to receive(:perform_async)
         subject
+      end
+    end
+
+    context "when not authorized" do
+      let!(:other_org) { create(:organisation) }
+      let!(:agent) { create(:agent, organisations: [other_org]) }
+
+      it "returns 403" do
+        subject
+        expect(response.status).to eq(403)
+        result = JSON.parse(response.body)
+        expect(result["errors"]).to eq(["Vous n'êtes pas autorisé à effectuer cette action"])
       end
     end
   end
