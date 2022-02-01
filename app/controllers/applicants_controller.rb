@@ -45,10 +45,7 @@ class ApplicantsController < ApplicationController
   end
 
   def search
-    render json: {
-      success: true,
-      applicants: @applicants
-    }
+    render json: { success: true, applicants: @applicants }
   end
 
   def edit

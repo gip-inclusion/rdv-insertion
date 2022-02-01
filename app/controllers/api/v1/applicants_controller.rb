@@ -26,7 +26,8 @@ module Api
       end
 
       def set_organisation
-        @organisation = Organisation.find(params[:organisation_id])
+        @organisation = Organisation.find_by!(rdv_solidarites_organisation_id: params[:rdv_solidarites_organisation_id])
+        authorize @organisation, :create_and_invite_applicants?
       end
 
       def create_and_invite_params
