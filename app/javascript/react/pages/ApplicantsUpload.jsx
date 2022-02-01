@@ -209,12 +209,6 @@ export default function ApplicantsUpload({ organisation, configuration, departme
   };
 
   const retrieveContactsData = async (file) => {
-    if (file.type !== "text/csv") {
-      return Swal.fire({
-        title: "Le fichier chargé n'est pas au format .csv",
-        icon: "error",
-      });
-    }
     const expectedContactsColumnNames = [
       "MATRICULE",
       "NUMERO TELEPHONE DOSSIER",
@@ -284,8 +278,15 @@ export default function ApplicantsUpload({ organisation, configuration, departme
           <FileHandler
             handleFile={handleApplicantsFile}
             fileSize={fileSize}
+            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
             multiple={false}
-            uploadMessage="Choisissez un fichier de nouveaux demandeurs"
+            uploadMessage={
+              <span>
+                Choisissez un fichier de nouveaux demandeurs
+                <br />
+                (.xls, xlsx)
+              </span>
+            }
             pendingMessage="Récupération des informations, merci de patienter"
           />
         </div>
