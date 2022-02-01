@@ -13,27 +13,27 @@
   <div class="mb-4">
     <div class="row d-flex justify-content-around flex-wrap">
       <div class="col-10 col-md-5">
-        <h4 class="attribute-title"><%= Applicant.human_attribute_name(:first_name) %></h4>
+        <h4 class="attribute-title"><%= Applicant.human_attribute_name(:first_name) %>*</h4>
         <p><%= f.input :first_name %></p>
       </div>
       <div class="col-10 col-md-5">
-        <h4 class="attribute-title"><%= Applicant.human_attribute_name(:last_name) %></h4>
+        <h4 class="attribute-title"><%= Applicant.human_attribute_name(:last_name) %>*</h4>
         <p><%= f.input :last_name %></p>
       </div>
     </div>
     <div class="row d-flex justify-content-around flex-wrap">
       <div class="col-10 col-md-5">
-        <h4 class="attribute-title"><%= Applicant.human_attribute_name(:title) %></h4>
+        <h4 class="attribute-title"><%= Applicant.human_attribute_name(:title) %>*</h4>
         <p><%= f.input :title, as: :select, collection: ["monsieur", "madame"] %></p>
       </div>
       <div class="col-10 col-md-5">
-        <h4 class="attribute-title"><%= Applicant.human_attribute_name(:role) %></h4>
+        <h4 class="attribute-title"><%= Applicant.human_attribute_name(:role) %>*</h4>
         <p><%= f.input :role, as: :select, collection: ["demandeur", "conjoint"], selected: @applicant.role %></p>
       </div>
     </div>
     <div class="row d-flex justify-content-around flex-wrap">
       <div class="col-10 col-md-5">
-        <h4 class="attribute-title"><%= Applicant.human_attribute_name(:affiliation_number) %></h4>
+        <h4 class="attribute-title"><%= Applicant.human_attribute_name(:affiliation_number) %>*</h4>
         <p><%= f.input :affiliation_number %></p>
       </div>
       <div class="col-10 col-md-5">
