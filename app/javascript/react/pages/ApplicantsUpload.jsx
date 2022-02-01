@@ -209,6 +209,12 @@ export default function ApplicantsUpload({ organisation, configuration, departme
   };
 
   const retrieveContactsData = async (file) => {
+    if (file.type !== "text/csv") {
+      return Swal.fire({
+        title: "Le fichier chargé n'est pas au format .csv",
+        icon: "error",
+      });
+    }
     const expectedContactsColumnNames = [
       "MATRICULE",
       "NUMERO TELEPHONE DOSSIER",
