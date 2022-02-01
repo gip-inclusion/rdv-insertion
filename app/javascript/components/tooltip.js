@@ -12,8 +12,7 @@ const initToolTip = () => {
   });
 
   tippy("#js-rdv-cancelled-by-user-tooltip", {
-    content:
-      "Nombre de rendez-vous manqués ou annulés par l'allocataire",
+    content: "Nombre de rendez-vous manqués ou annulés par l'allocataire",
   });
 };
 

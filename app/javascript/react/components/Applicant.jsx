@@ -39,7 +39,7 @@ export default function Applicant({ applicant, dispatchApplicants, isDepartmentL
       if (result.success) {
         applicant.updateWith(result.applicant);
       } else {
-        Swal.fire("Impossible d'assigner à l'orrganisation", result.errors[0], "error");
+        Swal.fire("Impossible d'assigner à l'organisation", result.errors[0], "error");
       }
     } else if (action === "smsInvitation") {
       const invitation = await handleApplicantInvitation(
