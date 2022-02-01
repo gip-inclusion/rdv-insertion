@@ -12,7 +12,7 @@ Veuillez installer les outils suivants pour pouvoir lancer le projet:
 - **Ruby 3.0.3**: Nous conseillons l'utilisation de [Rbenv](https://github.com/rbenv/rbenv-installer#rbenv-installer--doctor-scripts).
 
 - **bundler**: Vous pouvez l'installer avec la commande `gem install bundler`.
-- **Node 15+**: Nous conseillons l'utilisation de [`nvm`](https://github.com/nvm-sh/nvm).
+- **Node 16+**: Nous conseillons l'utilisation de [`nvm`](https://github.com/nvm-sh/nvm).
 - **yarn**: Vous pouvez l'installer avec la commande `npm install yarn -g`.
 - [**Overmind**](https://github.com/DarthSim/overmind) ou [**Foreman**](https://github.com/ddollar/foreman) pour lancer le Procfile.
 - **POSTGRESQL >= 12**.
