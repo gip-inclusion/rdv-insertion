@@ -27,7 +27,7 @@ export default function EnrichWithContactFile({ handleContactsFile, fileSize }) 
             handleFile={handleContactsFile}
             fileSize={fileSize}
             multiple={false}
-            uploadMessage="Choisissez un fichier de données de contact CNAF"
+            uploadMessage="Choisissez un fichier de données de contact CNAF (.csv)"
             pendingMessage="Récupération des informations, merci de patienter"
           />
           <p className="mt-3 mb-0">
