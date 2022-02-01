@@ -26,3 +26,6 @@ fr:
         address: Adresse
         email: Email
         title: Civilité
+        department_internal_id: ID interne au département
+        rights_opening_date: Date d'entrée flux
+        organisations: Organisation(s)
