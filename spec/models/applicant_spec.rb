@@ -72,7 +72,7 @@ describe Applicant do
         expect(applicant).not_to be_valid
         expect(applicant.errors.details).to eq({ department_internal_id: [{ error: :taken, value: '921' }] })
         expect(applicant.errors.full_messages.to_sentence)
-          .to include("Department internal est déjà utilisé")
+          .to include("ID interne au département est déjà utilisé")
       end
     end
   end
