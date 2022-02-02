@@ -12,7 +12,7 @@ import {
   parameterizeObjectValues,
   parameterizeArray,
 } from "../../lib/parameterize";
-import retrievePhoneNumber from "../../lib/retrievePhoneNumber";
+import retrieveContactPhoneNumber from "../../lib/retrieveContactPhoneNumber";
 import getKeyByValue from "../../lib/getKeyByValue";
 import searchApplicants from "../actions/searchApplicants";
 import { initReducer, reducerFactory } from "../../lib/reducers";
@@ -200,7 +200,7 @@ export default function ApplicantsUpload({ organisation, configuration, departme
 
   const updateApplicantContacts = (applicant, applicantContactsData) => {
     if (applicant.phoneNumber == null) {
-      applicant.updatePhoneNumber(retrievePhoneNumber(applicantContactsData));
+      applicant.updatePhoneNumber(retrieveContactPhoneNumber(applicantContactsData));
     }
     if (applicant.email == null) {
       applicant.updateEmail(applicantContactsData["ADRESSE ELECTRONIQUE DOSSIER"]);
@@ -278,8 +278,15 @@ export default function ApplicantsUpload({ organisation, configuration, departme
           <FileHandler
             handleFile={handleApplicantsFile}
             fileSize={fileSize}
+            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
             multiple={false}
-            uploadMessage="Choisissez un fichier de nouveaux demandeurs"
+            uploadMessage={
+              <span>
+                Choisissez un fichier de nouveaux demandeurs
+                <br />
+                (.xls, xlsx)
+              </span>
+            }
             pendingMessage="Récupération des informations, merci de patienter"
           />
         </div>
