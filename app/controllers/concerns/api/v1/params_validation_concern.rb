@@ -17,7 +17,7 @@ module Api
           next if validator.valid?
 
           department_internal_id = applicant_attributes[:department_internal_id]
-          key = "Entrée #{idx + 1}" + (department_internal_id ? " - #{department_internal_id}" : "")
+          key = "Entrée #{idx + 1}" + (department_internal_id.present? ? " - #{department_internal_id}" : "")
 
           @params_validation_errors << { "#{key}": validator.errors }
         end

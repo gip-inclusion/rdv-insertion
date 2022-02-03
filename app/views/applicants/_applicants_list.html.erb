@@ -5,10 +5,10 @@
     <% else %>
       <table class="table table-hover table-responsive">
         <thead class="text-dark-blue">
-          <th scope="col" class="d-none d-lg-table-cell">Numéro d'allocataire</th>
-          <th scope="col">Prénom</th>
           <th scope="col">Nom</th>
+          <th scope="col">Prénom</th>
           <th scope="col" class="d-none d-lg-table-cell">Email</th>
+          <th scope="col" class="d-none d-lg-table-cell">Téléphone</th>
           <% if show_sms_invitation?(@configuration) %>
             <th scope="col">Dernière invitation SMS</th>
           <% end %>
@@ -24,10 +24,10 @@
         <tbody class="align-middle">
           <% @applicants.each do |applicant| %>
             <tr>
-              <td class="d-none d-lg-table-cell"><%= display_attribute applicant.affiliation_number %></td>
-              <td><%= display_attribute applicant.first_name %></td>
               <td><%= display_attribute applicant.last_name %></td>
+              <td><%= display_attribute applicant.first_name %></td>
               <td class="d-none d-lg-table-cell"><%= display_attribute applicant.email %></td>
+              <td class="d-none d-lg-table-cell"><%= display_attribute applicant.phone_number %></td>
               <% if show_sms_invitation?(@configuration) %>
                 <td><%= display_attribute format_date(applicant.last_sms_invitation_sent_at) %></td>
               <% end %>

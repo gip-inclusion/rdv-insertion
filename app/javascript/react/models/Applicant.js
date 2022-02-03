@@ -139,6 +139,14 @@ export default class Applicant {
     this.departmentInternalId = upToDateApplicant.department_internal_id;
   }
 
+  updatePhoneNumber(phoneNumber) {
+    this.phoneNumber = formatPhoneNumber(phoneNumber);
+  }
+
+  updateEmail(email) {
+    this.email = email;
+  }
+
   formatAddress() {
     return (
       (this.address ?? "") +

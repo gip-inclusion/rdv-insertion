@@ -18,7 +18,7 @@ class ApplicantsController < ApplicationController
     @applicant = Applicant.new(
       department: @organisation.department,
       organisations: [@organisation],
-      **applicant_params
+      **applicant_params.compact_blank
     )
     authorize @applicant
     respond_to do |format|
@@ -45,10 +45,7 @@ class ApplicantsController < ApplicationController
   end
 
   def search
-    render json: {
-      success: true,
-      applicants: @applicants
-    }
+    render json: { success: true, applicants: @applicants }
   end
 
   def edit
