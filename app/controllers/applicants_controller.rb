@@ -18,7 +18,7 @@ class ApplicantsController < ApplicationController
     @applicant = Applicant.new(
       department: @organisation.department,
       organisations: [@organisation],
-      **applicant_params
+      **applicant_params.compact_blank
     )
     authorize @applicant
     respond_to do |format|
