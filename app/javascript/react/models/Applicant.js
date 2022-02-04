@@ -163,17 +163,11 @@ export default class Applicant {
   }
 
   shouldBeInvitedBySms() {
-    return (
-      this.organisationConfiguration.invitation_format === "sms" ||
-      this.organisationConfiguration.invitation_format === "sms_and_email"
-    );
+    return this.organisationConfiguration.invitation_formats.includes("sms");
   }
 
   shouldBeInvitedByEmail() {
-    return (
-      this.organisationConfiguration.invitation_format === "email" ||
-      this.organisationConfiguration.invitation_format === "sms_and_email"
-    );
+    return this.organisationConfiguration.invitation_formats.includes("email");
   }
 
   belongsToCurrentOrg() {

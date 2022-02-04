@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_26_170508) do
+ActiveRecord::Schema.define(version: 2022_02_04_162710) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -69,11 +69,11 @@ ActiveRecord::Schema.define(version: 2022_01_26_170508) do
 
   create_table "configurations", force: :cascade do |t|
     t.string "sheet_name"
-    t.integer "invitation_format"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.json "column_names"
     t.boolean "notify_applicant", default: false
+    t.string "invitation_formats", default: ["sms", "email", "postal"], null: false, array: true
   end
 
   create_table "departments", force: :cascade do |t|

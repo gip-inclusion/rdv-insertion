@@ -4,11 +4,11 @@ module ApplicantsHelper
   end
 
   def show_sms_invitation?(configuration)
-    configuration.sms? || configuration.sms_and_email?
+    configuration.invitation_formats.include?("sms")
   end
 
   def show_email_invitation?(configuration)
-    configuration.email? || configuration.sms_and_email?
+    configuration.invitation_formats.include?("email")
   end
 
   def show_notification?(configuration)

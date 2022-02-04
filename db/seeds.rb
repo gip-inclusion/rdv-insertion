@@ -22,7 +22,7 @@ agent.save!
 puts "Creating configurations..."
 Configuration.create!(
   sheet_name: "ENTRETIENS PHYSIQUES",
-  invitation_format: "sms",
+  invitation_formats: %w[sms email],
   organisation_id: Organisation.last.id,
   column_names: {
     required: {

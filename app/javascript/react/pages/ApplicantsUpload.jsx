@@ -340,14 +340,12 @@ export default function ApplicantsUpload({ organisation, configuration, departme
                     <th scope="col" style={{ whiteSpace: "nowrap" }}>
                       Création compte
                     </th>
-                    {(configuration.invitation_format === "sms" ||
-                      configuration.invitation_format === "sms_and_email") && (
+                    {configuration.invitation_formats.includes("sms") && (
                       <>
                         <th scope="col-3">Invitation SMS</th>
                       </>
                     )}
-                    {(configuration.invitation_format === "email" ||
-                      configuration.invitation_format === "sms_and_email") && (
+                    {configuration.invitation_formats.includes("email") && (
                       <>
                         <th scope="col-3">Invitation mail</th>
                       </>
