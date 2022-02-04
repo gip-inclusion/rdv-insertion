@@ -3,7 +3,7 @@ class InvitationsController < ApplicationController
   before_action :set_department, only: [:create]
   before_action :set_applicant, only: [:create]
   before_action :set_invitation, only: [:redirect]
-  skip_before_action :authenticate_agent!, only: [:redirect]
+  skip_before_action :authenticate_agent!, only: [:index, :redirect]
   respond_to :json
 
   def create
@@ -17,6 +17,8 @@ class InvitationsController < ApplicationController
       render json: { success: false, errors: save_and_send_invitation.errors }
     end
   end
+
+  def index; end
 
   def redirect
     @invitation.clicked = true

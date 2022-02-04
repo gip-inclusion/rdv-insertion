@@ -1,4 +1,4 @@
-<div class="container applicant-attribute mt-4">
+<div class="container label-blue mt-4">
   <div class="d-flex justify-content-between mb-4">
     <div>
       <%= link_to(compute_index_path(@organisation, @department)) do %>
@@ -22,51 +22,51 @@
   <div class="mb-4">
     <div class="row d-flex justify-content-around flex-wrap">
       <div class="col-10 col-md-5">
-        <h4 class="attribute-title">Nom</h4>
+        <h4 class="label-blue">Nom</h4>
         <p><%= display_attribute @applicant.last_name %></p>
       </div>
       <div class="col-10 col-md-5">
-        <h4 class="attribute-title">Prénom</h4>
+        <h4 class="label-blue">Prénom</h4>
         <p><%= display_attribute @applicant.first_name %></p>
       </div>
     </div>
     <div class="row d-flex justify-content-around flex-wrap">
       <div class="col-10 col-md-5">
-        <h4 class="attribute-title">Civilité</h4>
+        <h4 class="label-blue">Civilité</h4>
         <p><%= display_attribute @applicant.title %></p>
       </div>
       <div class="col-10 col-md-5">
-        <h4 class="attribute-title">Date d'entrée flux</h4>
+        <h4 class="label-blue">Date d'entrée flux</h4>
         <p><%= display_attribute format_date(@applicant.rights_opening_date) %></p>
       </div>
     </div>
     <div class="row d-flex justify-content-around flex-wrap">
       <div class="col-10 col-md-5">
-        <h4 class="attribute-title">Numéro allocataire</h4>
+        <h4 class="label-blue">Numéro allocataire</h4>
         <p><%= display_attribute @applicant.affiliation_number %></p>
       </div>
       <div class="col-10 col-md-5">
-        <h4 class="attribute-title">Email</h4>
+        <h4 class="label-blue">Email</h4>
         <p><%= display_attribute @applicant.email %></p>
       </div>
     </div>
     <div class="row d-flex justify-content-around flex-wrap">
       <div class="col-10 col-md-5">
-        <h4 class="attribute-title">Date de naissance</h4>
+        <h4 class="label-blue">Date de naissance</h4>
         <p><%= display_attribute format_date(@applicant.birth_date) %></p>
       </div>
       <div class="col-10 col-md-5">
-        <h4 class="attribute-title">Rôle</h4>
+        <h4 class="label-blue">Rôle</h4>
         <p><%= display_attribute @applicant.role %></p>
       </div>
     </div>
     <div class="row d-flex justify-content-around flex-wrap">
       <div class="col-10 col-md-5">
-        <h4 class="attribute-title">Adresse</h4>
+        <h4 class="label-blue">Adresse</h4>
         <p><%= display_attribute @applicant.address %></p>
       </div>
       <div class="col-10 col-md-5">
-        <h4 class="attribute-title">Téléphone</h4>
+        <h4 class="label-blue">Téléphone</h4>
         <p><%= display_attribute @applicant.phone_number %></p>
       </div>
     </div>

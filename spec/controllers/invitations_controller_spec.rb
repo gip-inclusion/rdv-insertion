@@ -130,6 +130,13 @@ describe InvitationsController, type: :controller do
     end
   end
 
+  describe "GET #index" do
+    it "returns a success response" do
+      get :index
+      expect(response).to be_successful
+    end
+  end
+
   describe "#redirect" do
     subject { get :redirect, params: invite_params }
 
