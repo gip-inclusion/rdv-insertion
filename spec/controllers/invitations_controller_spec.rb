@@ -130,10 +130,13 @@ describe InvitationsController, type: :controller do
     end
   end
 
-  describe "GET #index" do
+  describe "GET #invitation_code" do
+    render_views
+
     it "returns a success response" do
-      get :index
+      get :invitation_code
       expect(response).to be_successful
+      expect(response.body).to match(/Je prends rendez-vous/)
     end
   end
 
