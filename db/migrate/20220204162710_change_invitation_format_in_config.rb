@@ -4,15 +4,15 @@ class ChangeInvitationFormatInConfig < ActiveRecord::Migration[6.1]
 
     Configuration.find_each do |config|
       case config.invitation_format
-      when "sms"
+      when 0
         config.invitation_formats = %w[sms]
-      when "email"
+      when 1
         config.invitation_formats = %w[email]
-      when "sms_and_email"
+      when 2
         config.invitation_formats = %w[sms email]
-      when "link_only"
+      when 3
         config.invitation_formats = %w[postal]
-      when "no_invitation"
+      when 4
         config.invitation_formats = []
       end
 
@@ -23,21 +23,21 @@ class ChangeInvitationFormatInConfig < ActiveRecord::Migration[6.1]
   end
 
   def down
-    add_column :configurations, :invitation_format
+    add_column :configurations, :invitation_format, :integer
 
     Configuration.find_each do |config|
       case config.invitation_formats
-      when ["sms"]
+      when 0
         config.invitation_format = "sms"
-      when ["email"]
+      when 1
         config.invitation_format = "email"
-      when %w[sms email]
+      when 2
         config.invitation_format = "sms_and_email"
-      when %w[sms email postal]
-        config.invitation_format = "all"
-      when %w[postal]
+      when 3
         config.invitation_format = "link_only"
-      when []
+      when 4
+        config.invitation_format = "all"
+      when 5
         config.invitation_format = "no_invitation"
       end
 
