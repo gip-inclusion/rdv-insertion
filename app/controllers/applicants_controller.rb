@@ -55,7 +55,7 @@ class ApplicantsController < ApplicationController
   def update
     @applicant.assign_attributes(
       organisations: (@applicant.organisations.to_a + [@organisation]).uniq,
-      **applicant_params.compact_blank
+      **applicant_params
     )
     authorize @applicant
     respond_to do |format|
