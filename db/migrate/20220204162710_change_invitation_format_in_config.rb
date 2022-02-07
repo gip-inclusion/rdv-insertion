@@ -31,14 +31,12 @@ class ChangeInvitationFormatInConfig < ActiveRecord::Migration[6.1]
         config.invitation_format = 0
       when ["email"]
         config.invitation_format = 1
-      when %w[sms email]
+      when %w[sms email] || %w[sms email postal]
         config.invitation_format = 2
       when %w[postal]
         config.invitation_format = 3
       when []
         config.invitation_format = 4
-      when %w[sms email postal]
-        config.invitation_format = 5
       end
 
       config.save!
