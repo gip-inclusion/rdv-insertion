@@ -25,7 +25,7 @@ class Applicant < ApplicationRecord
 
   validates :uid, uniqueness: true, allow_nil: true
   validates :rdv_solidarites_user_id, uniqueness: true, allow_nil: true
-  validates :department_internal_id, uniqueness: { scope: :department_id }, allow_blank: true
+  validates :department_internal_id, uniqueness: { scope: :department_id }, allow_nil: true
   validates :last_name, :first_name, :title, presence: true
   validates :affiliation_number, presence: true, allow_nil: true
   validates :email, allow_blank: true, format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/ }
