@@ -55,7 +55,7 @@ class ApplicantsController < ApplicationController
   def update
     @applicant.assign_attributes(
       organisations: (@applicant.organisations.to_a + [@organisation]).uniq,
-      **applicant_params.compact_blank
+      **formatted_params
     )
     authorize @applicant
     respond_to do |format|
@@ -67,7 +67,14 @@ class ApplicantsController < ApplicationController
   private
 
   def applicant_params
-    params.require(:applicant).permit(*PERMITTED_PARAMS)
+    params.require(:applicant).permit(*PERMITTED_PARAMS).to_h.deep_symbolize_keys
+  end
+
+  def formatted_params
+    # we nullify some blank params for unicity exceptions (ActiveRecord::RecordNotUnique) not to raise
+    applicant_params.to_h do |k, v|
+      [k, k.in?([:affiliation_number, :department_internal_id]) ? v.presence : v]
+    end
   end
 
   def save_applicant_and_redirect(page)
