@@ -26,8 +26,15 @@ export default function EnrichWithContactFile({ handleContactsFile, fileSize }) 
           <FileHandler
             handleFile={handleContactsFile}
             fileSize={fileSize}
+            accept=".csv, text/plain"
             multiple={false}
-            uploadMessage="Choisissez un fichier de données de contact CNAF"
+            uploadMessage={
+              <span>
+                Choisissez un fichier de données de contact CNAF
+                <br />
+                (.csv, .txt)
+              </span>
+            }
             pendingMessage="Récupération des informations, merci de patienter"
           />
           <p className="mt-3 mb-0">

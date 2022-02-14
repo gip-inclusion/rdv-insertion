@@ -12,7 +12,7 @@ import {
   parameterizeObjectValues,
   parameterizeArray,
 } from "../../lib/parameterize";
-import retrievePhoneNumber from "../../lib/retrievePhoneNumber";
+import retrieveContactPhoneNumber from "../../lib/retrieveContactPhoneNumber";
 import getKeyByValue from "../../lib/getKeyByValue";
 import searchApplicants from "../actions/searchApplicants";
 import { initReducer, reducerFactory } from "../../lib/reducers";
@@ -142,8 +142,8 @@ export default function ApplicantsUpload({ organisation, configuration, departme
     return applicantsFromList.reverse();
   };
 
-  const retrieveApplicantsFromApp = async (uids) => {
-    const result = await searchApplicants(uids);
+  const retrieveApplicantsFromApp = async (departmentInternalIds, uids) => {
+    const result = await searchApplicants(departmentInternalIds, uids);
     if (result.success) {
       return result.applicants;
     }
@@ -156,13 +156,21 @@ export default function ApplicantsUpload({ organisation, configuration, departme
   };
 
   const retrieveUpToDateApplicants = async (applicantsFromList) => {
+    const departmentInternalIds = applicantsFromList
+      .map((applicant) => applicant.departmentInternalId)
+      .filter((departmentInternalId) => departmentInternalId);
     const uids = applicantsFromList.map((applicant) => applicant.uid).filter((uid) => uid);
-    let upToDateApplicants = applicantsFromList;
 
-    const retrievedApplicants = await retrieveApplicantsFromApp(uids);
+    const retrievedApplicants = await retrieveApplicantsFromApp(departmentInternalIds, uids);
 
-    upToDateApplicants = applicantsFromList.map((applicant) => {
-      const upToDateApplicant = retrievedApplicants.find((a) => a.uid === applicant.uid);
+    const upToDateApplicants = applicantsFromList.map((applicant) => {
+      const upToDateApplicant = retrievedApplicants.find(
+        (a) =>
+          (a.department_internal_id &&
+            a.department_internal_id === applicant.departmentInternalId) ||
+          (a.uid && a.uid === applicant.uid)
+      );
+
       if (upToDateApplicant) {
         applicant.updateWith(upToDateApplicant);
       }
@@ -200,7 +208,7 @@ export default function ApplicantsUpload({ organisation, configuration, departme
 
   const updateApplicantContacts = (applicant, applicantContactsData) => {
     if (applicant.phoneNumber == null) {
-      applicant.updatePhoneNumber(retrievePhoneNumber(applicantContactsData));
+      applicant.updatePhoneNumber(retrieveContactPhoneNumber(applicantContactsData));
     }
     if (applicant.email == null) {
       applicant.updateEmail(applicantContactsData["ADRESSE ELECTRONIQUE DOSSIER"]);
@@ -278,8 +286,15 @@ export default function ApplicantsUpload({ organisation, configuration, departme
           <FileHandler
             handleFile={handleApplicantsFile}
             fileSize={fileSize}
+            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
             multiple={false}
-            uploadMessage="Choisissez un fichier de nouveaux demandeurs"
+            uploadMessage={
+              <span>
+                Choisissez un fichier de nouveaux demandeurs
+                <br />
+                (.xls, xlsx)
+              </span>
+            }
             pendingMessage="Récupération des informations, merci de patienter"
           />
         </div>
@@ -333,14 +348,12 @@ export default function ApplicantsUpload({ organisation, configuration, departme
                     <th scope="col" style={{ whiteSpace: "nowrap" }}>
                       Création compte
                     </th>
-                    {(configuration.invitation_format === "sms" ||
-                      configuration.invitation_format === "sms_and_email") && (
+                    {configuration.invitation_formats.includes("sms") && (
                       <>
                         <th scope="col-3">Invitation SMS</th>
                       </>
                     )}
-                    {(configuration.invitation_format === "email" ||
-                      configuration.invitation_format === "sms_and_email") && (
+                    {configuration.invitation_formats.includes("email") && (
                       <>
                         <th scope="col-3">Invitation mail</th>
                       </>

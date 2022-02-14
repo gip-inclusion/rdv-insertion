@@ -32,7 +32,9 @@ module Invitations
     end
 
     def applicant
-      @invitation.applicant
+      # we reload in case the applicant had a new invitation attached to it after
+      # the invitation has been instantiated
+      @invitation.applicant.reload
     end
 
     def retrieve_invitation_token
