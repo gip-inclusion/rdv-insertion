@@ -31,14 +31,6 @@
 }
 
 .tracking-block {
-  width: 40%;
-}
-
-@media (max-width: 991px) {
-  .tracking-block {
-    width: 80%;
-    &.block-2 {
-      margin-top: 30px;
-    }
-  }
+  width: 80%;
+  max-width: 750px;
 }

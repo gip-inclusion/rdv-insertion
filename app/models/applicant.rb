@@ -96,6 +96,14 @@ class Applicant < ApplicationRecord
     title == "monsieur" ? "M" : "Mme"
   end
 
+  def street_address
+    address&.match(/^(.+) (\d{5}.*)$/)[1]
+  end
+
+  def zipcode_and_city
+    address&.match(/^(.+) (\d{5}.*)$/)[2]
+  end
+
   def delete_organisation(organisation)
     organisations.delete(organisation)
     save!

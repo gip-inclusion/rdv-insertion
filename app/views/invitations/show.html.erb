@@ -1,0 +1,45 @@
+<div>
+  <div class="left-col">
+    <div class="logo">
+      <%= pdf_image_tag("logos/#{@department.name.parameterize}.png") %>
+    </div>
+    <%# Remplacer par une variable @department.direction_name ? %>
+    <p>DIRECTION GÉNÉRALE DES SERVICES DÉPARTEMENTAUX</p>
+    <p>DIRECTION DE L’INSERTION ET DU RETOUR À L’EMPLOI</p>
+    <%# Remplacer par une variable @department.service_name ? %>
+    <p>SERVICE ORIENTATION ET ACCOMPAGNEMENT VERS L’EMPLOI</p>
+  </div>
+  <div class="right-col">
+    <%# Remplacer par une variable @department.city ou @organisation.city ? %>
+    <p><%= @department.capital %>, le <%= Date.today.strftime('%d/%m/%Y') %></p>
+    <br/><br/><br/>
+    <p>À l'attention de</p>
+    <p><%= @applicant.title.upcase %> <%= @applicant.first_name.upcase %> <%= @applicant.last_name.upcase %></p>
+    <p><%= @applicant.street_address.upcase %></p>
+    <p><%= @applicant.zipcode_and_city.upcase %></p>
+  </div>
+</div>
+<div class="mail-object">
+    <%# Remplacer par une variable @motif ? %>
+  <p><strong>Objet : Rendez-vous d’orientation dans le cadre de votre RSA</strong></p>
+  <p>N° allocataire : <%= @applicant.affiliation_number %></p>
+</div>
+<div class="main-content">
+  <p><%= @applicant.title.capitalize %>,</p>
+  <p>Vous êtes allocataire du Revenu de Solidarité Active (RSA) et devez bénéficier d’un accompagnement obligatoire dans le cadre de vos démarches d’insertion.</p>
+  <p>La première étape est <strong>une rencontre avec un professionnel de l’insertion</strong> afin de définir, selon votre situation et vos besoins, quelle sera la structure la mieux adaptée pour vous accompagner.</p>
+  <p>Pour faciliter votre prise de rendez-vous, le Conseil départemental a mis en place <strong>une plateforme vous permettant de prendre rendez-vous vous-même.</strong></p>
+  <p>Pour choisir un créneau à votre convenance, <strong>rendez-vous sur <u>www.rdv-insertion.fr/invitation</u></strong>, saisissez le code d’invitation ci-dessous, puis suivez les instructions présentes à l'écran :</p>
+  <div class="invitation-token">Mon code d'invitation<br/><%= @invitation.token %></div>
+  <p>Vous disposez d’un délai de 15 jours maximum à réception de ce courrier pour prendre rendez-vous. Au-delà, vous risquez une suspension ou une réduction de votre allocation RSA.</p>
+  <p>Si vous rencontrez une difficulté pour accéder à internet, veuillez téléphoner dès réception de ce courrier au <%= @invitation.help_phone_number.scan(/../).join(" ") %></p>
+  <p>Veuillez agréer, <%= @applicant.title.capitalize %>, l’expression de mes salutations distinguées.</p>
+</div>
+<div>
+  <div class="left-col logo">
+    <%= pdf_image_tag("logos/#{@department.name.parameterize}.png") %>
+  </div>
+  <div class="right-col logo">
+    <%= pdf_image_tag('logos/rdv-insertion.png') %>
+  </div>
+</div>

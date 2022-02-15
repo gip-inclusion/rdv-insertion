@@ -6,7 +6,7 @@ class Invitation < ApplicationRecord
   validates :help_phone_number, :context, :token, :organisations, :link, presence: true
   validate :organisations_cannot_be_from_different_departments
 
-  enum format: { sms: 0, email: 1, link_lonly: 2 }, _prefix: :format
+  enum format: { sms: 0, email: 1, postal: 2 }, _prefix: :format
   after_commit :set_applicant_status
 
   scope :sent_in_time_window, -> { where("sent_at > ?", Organisation::TIME_TO_ACCEPT_INVITATION.ago) }

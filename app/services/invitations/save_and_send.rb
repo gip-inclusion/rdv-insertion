@@ -7,8 +7,10 @@ module Invitations
 
     def call
       save_invitation_with_link
-      send_invitation
-      update_invitation_sent_at
+      unless @invitation.format_postal?
+        send_invitation
+        update_invitation_sent_at
+      end
       result.invitation = @invitation
     end
 

@@ -15,9 +15,11 @@ const inviteApplicant = async (
     url = `/organisations/${organisationId}/applicants/${applicantId}/invitations`;
   }
   return appFetch(url, "POST", {
-    format: invitationFormat,
-    help_phone_number: helpPhoneNumber,
-    context: "RSA orientation",
+    invitation: {
+      format: invitationFormat,
+      help_phone_number: helpPhoneNumber,
+      context: "RSA orientation",
+    }
   });
 };
 
