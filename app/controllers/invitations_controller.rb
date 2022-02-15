@@ -4,7 +4,7 @@ class InvitationsController < ApplicationController
   before_action :set_applicant, only: [:create, :show]
   before_action :set_invitation, only: [:show, :redirect]
   before_action :set_context_variables, only: [:show]
-  skip_before_action :authenticate_agent!, only: [:redirect]
+  skip_before_action :authenticate_agent!, only: [:invitation_code, :redirect]
   respond_to :json, only: [:index, :redirect]
   respond_to :pdf, only: [:show]
 
@@ -31,6 +31,8 @@ class InvitationsController < ApplicationController
       render json: { success: false }
     end
   end
+
+  def invitation_code; end
 
   def redirect
     @invitation.clicked = true

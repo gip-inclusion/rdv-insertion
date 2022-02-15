@@ -1,4 +1,4 @@
-<div class="container applicant-form applicant-attribute mt-4">
+<div class="container applicant-form label-blue mt-4">
   <div class="d-flex justify-content-between mb-4">
     <div>
       <%= link_to(redirect_path) do %>
@@ -13,41 +13,41 @@
   <div class="mb-4">
     <div class="row d-flex justify-content-around flex-wrap">
       <div class="col-10 col-md-5">
-        <h4 class="attribute-title"><%= Applicant.human_attribute_name(:first_name) %>*</h4>
+        <h4 class="label-blue"><%= Applicant.human_attribute_name(:first_name) %>*</h4>
         <p><%= f.input :first_name %></p>
       </div>
       <div class="col-10 col-md-5">
-        <h4 class="attribute-title"><%= Applicant.human_attribute_name(:last_name) %>*</h4>
+        <h4 class="label-blue"><%= Applicant.human_attribute_name(:last_name) %>*</h4>
         <p><%= f.input :last_name %></p>
       </div>
     </div>
     <div class="row d-flex justify-content-around flex-wrap">
       <div class="col-10 col-md-5">
-        <h4 class="attribute-title"><%= Applicant.human_attribute_name(:title) %>*</h4>
+        <h4 class="label-blue"><%= Applicant.human_attribute_name(:title) %>*</h4>
         <p><%= f.input :title, as: :select, collection: ["monsieur", "madame"] %></p>
       </div>
       <div class="col-10 col-md-5">
-        <h4 class="attribute-title"><%= Applicant.human_attribute_name(:role) %>*</h4>
+        <h4 class="label-blue"><%= Applicant.human_attribute_name(:role) %>*</h4>
         <p><%= f.input :role, as: :select, collection: ["demandeur", "conjoint"], selected: @applicant.role %></p>
       </div>
     </div>
     <div class="row d-flex justify-content-around flex-wrap">
       <div class="col-10 col-md-5">
-        <h4 class="attribute-title"><%= Applicant.human_attribute_name(:affiliation_number) %>*</h4>
+        <h4 class="label-blue"><%= Applicant.human_attribute_name(:affiliation_number) %>*</h4>
         <p><%= f.input :affiliation_number %></p>
       </div>
       <div class="col-10 col-md-5">
-        <h4 class="attribute-title"><%= Applicant.human_attribute_name(:department_internal_id) %></h4>
+        <h4 class="label-blue"><%= Applicant.human_attribute_name(:department_internal_id) %></h4>
         <p><%= f.input :department_internal_id %></p>
       </div>
     </div>
     <div class="row d-flex justify-content-around flex-wrap">
       <div class="col-10 col-md-5">
-        <h4 class="attribute-title"><%= Applicant.human_attribute_name(:email) %></h4>
+        <h4 class="label-blue"><%= Applicant.human_attribute_name(:email) %></h4>
         <p><%= f.input :email %></p>
       </div>
       <div class="col-10 col-md-5">
-        <h4 class="attribute-title"><%= Applicant.human_attribute_name(:birth_date) %></h4>
+        <h4 class="label-blue"><%= Applicant.human_attribute_name(:birth_date) %></h4>
         <p><%= f.input :birth_date,
                         input_html: { class: "date-select" },
                         as: :date, start_year: Date.today.year - 100,
@@ -58,11 +58,11 @@
     </div>
     <div class="row d-flex justify-content-around flex-wrap">
       <div class="col-10 col-md-5">
-        <h4 class="attribute-title"><%= Applicant.human_attribute_name(:address) %></h4>
+        <h4 class="label-blue"><%= Applicant.human_attribute_name(:address) %></h4>
         <p><%= f.input :address %></p>
       </div>
       <div class="col-10 col-md-5">
-        <h4 class="attribute-title"><%= Applicant.human_attribute_name(:phone_number) %></h4>
+        <h4 class="label-blue"><%= Applicant.human_attribute_name(:phone_number) %></h4>
         <p>
           <%= f.input :phone_number %>
         </p>
@@ -70,7 +70,7 @@
     </div>
     <div class="row d-flex justify-content-around flex-wrap">
       <div class="col-10 col-md-5">
-        <h4 class="attribute-title"><%= Applicant.human_attribute_name(:rights_opening_date) %></h4>
+        <h4 class="label-blue"><%= Applicant.human_attribute_name(:rights_opening_date) %></h4>
         <p><%= f.input :rights_opening_date,
                         input_html: { class: "date-select" },
                         as: :date, start_year: Date.today.year - 10,

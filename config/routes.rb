@@ -28,6 +28,7 @@ Rails.application.routes.draw do
 
   resources :stats, only: [:index]
 
+  get "invitation", to: "invitations#invitation_code", as: :invitation_landing
   resources :invitations, only: [] do
     get :redirect, on: :collection
   end

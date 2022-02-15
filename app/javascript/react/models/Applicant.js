@@ -148,6 +148,7 @@ export default class Applicant {
       upToDateApplicant.invitations,
       "postal"
     );
+    this.departmentInternalId = upToDateApplicant.department_internal_id;
   }
 
   updatePhoneNumber(phoneNumber) {
