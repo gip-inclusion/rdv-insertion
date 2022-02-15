@@ -97,11 +97,13 @@ class Applicant < ApplicationRecord
   end
 
   def street_address
-    address&.match(/^(.+) (\d{5}.*)$/)[1]
+    split_address = address&.match(/^(.+) (\d{5}.*)$/)
+    split_address.present? ? split_address[1] : nil
   end
 
   def zipcode_and_city
-    address&.match(/^(.+) (\d{5}.*)$/)[2]
+    split_address = address&.match(/^(.+) (\d{5}.*)$/)
+    split_address.present? ? split_address[2] : nil
   end
 
   def delete_organisation(organisation)

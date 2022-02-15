@@ -2,8 +2,8 @@ class InvitationsController < ApplicationController
   before_action :set_organisations, only: [:create]
   before_action :set_department, only: [:create]
   before_action :set_applicant, only: [:create, :show]
+  before_action :set_invitation, only: [:show, :redirect]
   before_action :set_context_variables, only: [:show]
-  before_action :set_invitation, only: [:redirect]
   skip_before_action :authenticate_agent!, only: [:redirect]
   respond_to :json, only: [:index, :redirect]
   respond_to :pdf, only: [:show]
@@ -21,7 +21,6 @@ class InvitationsController < ApplicationController
   end
 
   def show
-    @invitation = Invitation.find(params[:id])
     authorize @invitation
     if generate_letter.success?
       render pdf: "#{@applicant&.affiliation_number}_#{@applicant&.last_name}_#{@applicant&.first_name}",
@@ -54,6 +53,8 @@ class InvitationsController < ApplicationController
   end
 
   def set_invitation
+    return @invitation = Invitation.find(params[:id]) if params[:token].blank?
+
     # TODO: identify the invitation with a uuid
     @invitation = Invitation.where(format: invitation_format, token: params[:token]).last
     raise ActiveRecord::RecordNotFound unless @invitation
@@ -94,6 +95,6 @@ class InvitationsController < ApplicationController
 
   def set_department_variables
     @department = Department.includes(:organisations).find(params[:department_id])
-    @organisation = policy_scope(Organisation).where(id: @applicant.organisations.pluck(:id), department: @department).first
+    @organisation = @invitation.organisations.first
   end
 end
