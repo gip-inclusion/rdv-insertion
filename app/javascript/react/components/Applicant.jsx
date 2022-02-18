@@ -7,6 +7,7 @@ import handleApplicantInvitation from "../lib/handleApplicantInvitation";
 import updateApplicant from "../actions/updateApplicant";
 import retrieveRelevantOrganisation from "../../lib/retrieveRelevantOrganisation";
 import getInvitationLetter from "../actions/getInvitationLetter";
+import { todaysDateString } from "../../lib/datesHelper";
 
 export default function Applicant({
   applicant,
@@ -63,10 +64,9 @@ export default function Applicant({
       applicant.lastEmailInvitationSentAt = invitation.sent_at;
     } else if (action === "postalInvitation") {
       setDownloadInProgress(true);
-      const invitation = await handleApplicantInvitation(...applicantParams, "postal");
-      const invitationLetter = await getInvitationLetter(...applicantParams, invitation.id);
-      if (invitationLetter.success) {
-        applicant.lastPostalInvitationCreatedAt = invitation.created_at;
+      const invitationLetter = await getInvitationLetter(...applicantParams, "postal");
+      if (invitationLetter?.success) {
+        applicant.lastPostalInvitationSentAt = todaysDateString();
       }
       setDownloadInProgress(false);
     }
@@ -183,7 +183,7 @@ export default function Applicant({
       {applicant.shouldBeInvitedByPostal() && (
         <>
           <td>
-            {applicant.lastPostalInvitationCreatedAt ? (
+            {applicant.lastPostalInvitationSentAt ? (
               <i className="fas fa-check green-check" />
             ) : (
               <button

@@ -1,31 +1,33 @@
+import Swal from "sweetalert2";
+import inviteApplicant from "./inviteApplicant";
+
 const getInvitationLetter = async (
   applicantId,
   departmentId,
   organisation,
   isDepartmentLevel,
-  invitationId
+  invitationFormat
 ) => {
-  let url;
-  if (isDepartmentLevel) {
-    url = `/departments/${departmentId}/applicants/${applicantId}/invitations/${invitationId}`;
-  } else {
-    url = `/organisations/${organisation.id}/applicants/${applicantId}/invitations/${invitationId}`;
+  const result = await inviteApplicant(
+    applicantId,
+    departmentId,
+    organisation.id,
+    isDepartmentLevel,
+    invitationFormat,
+    organisation.phone_number,
+    "application/json, application/pdf"
+  );
+  if (result.success === false) {
+    Swal.fire({
+      title: "Impossible d'inviter l'utilisateur",
+      html: result.errors[0],
+      icon: "error",
+    });
+    return result;
   }
-
-  const response = await fetch(url, {
-    method: "GET",
-    credentials: "same-origin",
-    headers: {
-      Accept: "application/pdf",
-      "Content-Type": "application/pdf",
-      "X-CSRF-Token": document.querySelector("meta[name=csrf-token]").content,
-    },
-  });
-
-  const blob = await response.blob();
-
+  const blob = await result.blob();
   if (blob) {
-    const headerParts = response.headers.get("Content-Disposition").split(";");
+    const headerParts = result?.headers.get("Content-Disposition").split(";");
     const filename = headerParts[1].split("=")[1];
     const filePath = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -34,6 +36,11 @@ const getInvitationLetter = async (
     a.click();
     return { success: true };
   }
+  Swal.fire(
+    "Une erreur a eu lieu pendant le téléchargement",
+    "Essayez de vous rendre sur la page du bénéficiaire et de recréer le document",
+    "error"
+  );
   return { success: false };
 };
 

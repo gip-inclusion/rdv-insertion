@@ -58,8 +58,8 @@ export default class Applicant {
     return this._lastSmsInvitationSentAt;
   }
 
-  get lastPostalInvitationCreatedAt() {
-    return this._lastPostalInvitationCreatedAt;
+  get lastPostalInvitationSentAt() {
+    return this._lastPostalInvitationSentAt;
   }
 
   get id() {
@@ -86,8 +86,8 @@ export default class Applicant {
     this._lastSmsInvitationSentAt = lastSmsInvitationSentAt;
   }
 
-  set lastPostalInvitationCreatedAt(lastPostalInvitationCreatedAt) {
-    this._lastPostalInvitationCreatedAt = lastPostalInvitationCreatedAt;
+  set lastPostalInvitationSentAt(lastPostalInvitationSentAt) {
+    this._lastPostalInvitationSentAt = lastPostalInvitationSentAt;
   }
 
   set organisations(organisations) {
@@ -144,7 +144,7 @@ export default class Applicant {
       upToDateApplicant.invitations,
       "email"
     );
-    this.lastPostalInvitationCreatedAt = retrieveLastInvitationDate(
+    this.lastPostalInvitationSentAt = retrieveLastInvitationDate(
       upToDateApplicant.invitations,
       "postal"
     );

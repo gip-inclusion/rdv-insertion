@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import retrieveLastInvitationDate from "../../lib/retrieveLastInvitationDate";
 import handleApplicantInvitation from "../lib/handleApplicantInvitation";
 import getInvitationLetter from "../actions/getInvitationLetter";
-import { getFrenchFormatDateString } from "../../lib/datesHelper";
+import { getFrenchFormatDateString, todaysDateString } from "../../lib/datesHelper";
 
 export default function ApplicantTracker({
   applicant,
@@ -33,12 +33,11 @@ export default function ApplicantTracker({
   const [lastEmailInvitationSentAt, setLastEmailInvitationSentAt] = useState(
     retrieveLastInvitationDate(applicant.invitations, "email")
   );
-  const [lastPostalInvitationCreatedAt, setLastPostalInvitationCreatedAt] = useState(
+  const [lastPostalInvitationSentAt, setLastPostalInvitationSentAt] = useState(
     retrieveLastInvitationDate(applicant.invitations, "postal")
   );
   const [applicantStatus, setApplicantStatus] = useState(applicant.status);
   const [textForStatus, setTextForStatus] = useState(humanStatus);
-
   const bgColorClassForInvitationDate = (format) => {
     let lastInvitationDate = null;
     if (format === "sms") {
@@ -46,11 +45,11 @@ export default function ApplicantTracker({
     } else if (format === "email") {
       lastInvitationDate = lastEmailInvitationSentAt;
     } else {
-      lastInvitationDate = lastPostalInvitationCreatedAt;
+      lastInvitationDate = lastPostalInvitationSentAt;
     }
 
     if (rdvs.length === 0 && applicantStatus !== "resolved") {
-      if (lastInvitationDate && format !== "postal" && isOutOfTime) {
+      if (lastInvitationDate && isOutOfTime) {
         return "bg-warning";
       }
       if (lastInvitationDate) {
@@ -110,18 +109,17 @@ export default function ApplicantTracker({
       const invitation = await handleApplicantInvitation(...applicantParams, "email");
       setLastEmailInvitationSentAt(invitation?.sent_at);
     } else {
-      const invitation = await handleApplicantInvitation(...applicantParams, "postal");
-      const invitationLetter = await getInvitationLetter(...applicantParams, invitation.id);
-      if (invitationLetter.success) {
-        setLastPostalInvitationCreatedAt(invitation?.created_at);
+      const invitationLetter = await getInvitationLetter(...applicantParams, "postal");
+      if (invitationLetter?.success) {
+        setLastPostalInvitationSentAt(todaysDateString());
       }
     }
     if (applicantStatus === "not_invited") {
       setApplicantStatus("invitation_pending");
       setTextForStatus("Invitation en attente de réponse");
     }
-    if (action !== "postalInvitation") setHasActionRequired(false);
-    if (action !== "postalInvitation") setIsOutOfTime(false);
+    setHasActionRequired(false);
+    setIsOutOfTime(false);
     setIsLoading({ ...isLoading, [action]: false });
   };
 
@@ -150,8 +148,8 @@ export default function ApplicantTracker({
           )}
           {showPostalInvitation && (
             <p className={cssClassForInvitationDate("postal")}>
-              {lastPostalInvitationCreatedAt
-                ? getFrenchFormatDateString(lastPostalInvitationCreatedAt)
+              {lastPostalInvitationSentAt
+                ? getFrenchFormatDateString(lastPostalInvitationSentAt)
                 : "-"}
             </p>
           )}
@@ -210,8 +208,8 @@ export default function ApplicantTracker({
                 onClick={() => handleClick("postalInvitation")}
               >
                 {isLoading.postalInvitation && "Invitation..."}
-                {!isLoading.postalInvitation && lastPostalInvitationCreatedAt && "Recréer"}
-                {!isLoading.postalInvitation && !lastPostalInvitationCreatedAt && "Inviter"}
+                {!isLoading.postalInvitation && lastPostalInvitationSentAt && "Recréer"}
+                {!isLoading.postalInvitation && !lastPostalInvitationSentAt && "Inviter"}
               </button>
             </div>
           )}

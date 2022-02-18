@@ -1,34 +1,22 @@
 class InvitationsController < ApplicationController
   before_action :set_organisations, only: [:create]
   before_action :set_department, only: [:create]
-  before_action :set_applicant, only: [:create, :show]
-  before_action :set_invitation, only: [:show, :redirect]
-  before_action :set_context_variables, only: [:show]
+  before_action :set_applicant, only: [:create]
+  before_action :set_invitation, only: [:redirect]
   skip_before_action :authenticate_agent!, only: [:invitation_code, :redirect]
-  respond_to :json, only: [:index, :redirect]
-  respond_to :pdf, only: [:show]
+  respond_to :json, only: [:redirect]
 
   def create
     @invitation = Invitation.new(
       applicant: @applicant, department: @department, organisations: @organisations, **invitation_params
     )
     authorize @invitation
-    if save_and_send_invitation.success?
+    if @invitation.format == "postal" && save_and_send_invitation.success?
+      send_data pdf, filename: pdf_filename
+    elsif save_and_send_invitation.success?
       render json: { success: true, invitation: @invitation }
     else
       render json: { success: false, errors: save_and_send_invitation.errors }
-    end
-  end
-
-  def show
-    authorize @invitation
-    if generate_letter.success?
-      render pdf: "#{@applicant&.affiliation_number}_#{@applicant&.last_name}_#{@applicant&.first_name}",
-             template: "invitations/show.html.erb",
-             disposition: "attachment",
-             encoding: "utf-8"
-    else
-      render json: { success: false }
     end
   end
 
@@ -46,24 +34,12 @@ class InvitationsController < ApplicationController
     params.require(:invitation).permit(:format, :context, :help_phone_number, :rdv_solidarites_lieu_id)
   end
 
-  def set_applicant
-    @applicant = policy_scope(Applicant).includes(:invitations).find(params[:applicant_id])
+  def pdf
+    WickedPdf.new.pdf_from_string(@invitation.pdf_string, encoding: "utf-8")
   end
 
-  def invitation_format
-    params[:format] || "sms" # sms by default to keep the sms link the shortest possible
-  end
-
-  def set_invitation
-    return @invitation = Invitation.find(params[:id]) if params[:token].blank?
-
-    # TODO: identify the invitation with a uuid
-    @invitation = Invitation.where(format: invitation_format, token: params[:token]).last
-    raise ActiveRecord::RecordNotFound unless @invitation
-  end
-
-  def generate_letter
-    @generate_letter ||= Invitations::GenerateLetter.call(invitation: @invitation)
+  def pdf_filename
+    "#{@applicant&.affiliation_number}_#{@applicant&.last_name}_#{@applicant&.first_name}.pdf"
   end
 
   def save_and_send_invitation
@@ -71,10 +47,6 @@ class InvitationsController < ApplicationController
       invitation: @invitation,
       rdv_solidarites_session: rdv_solidarites_session
     )
-  end
-
-  def set_department
-    @department = @organisations.first.department
   end
 
   def set_organisations
@@ -86,17 +58,21 @@ class InvitationsController < ApplicationController
       end
   end
 
-  def set_context_variables
-    department_level? ? set_department_variables : set_organisation_variables
+  def set_department
+    @department = @organisations.first.department
   end
 
-  def set_organisation_variables
-    @organisation = Organisation.find(params[:organisation_id])
-    @department = @organisation.department
+  def set_applicant
+    @applicant = policy_scope(Applicant).includes(:invitations).find(params[:applicant_id])
   end
 
-  def set_department_variables
-    @department = Department.includes(:organisations).find(params[:department_id])
-    @organisation = @invitation.organisations.first
+  def set_invitation
+    # TODO: identify the invitation with a uuid
+    @invitation = Invitation.where(format: invitation_format, token: params[:token]).last
+    raise ActiveRecord::RecordNotFound unless @invitation
+  end
+
+  def invitation_format
+    params[:format] || "sms" # sms by default to keep the sms link the shortest possible
   end
 end

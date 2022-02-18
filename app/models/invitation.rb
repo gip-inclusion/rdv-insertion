@@ -17,6 +17,8 @@ class Invitation < ApplicationRecord
       Invitations::SendSms.call(invitation: self)
     when "email"
       Invitations::SendEmail.call(invitation: self)
+    when "postal"
+      Invitations::GenerateLetter.call(invitation: self)
     end
   end
 
