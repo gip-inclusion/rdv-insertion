@@ -4,7 +4,7 @@ class InvitationsController < ApplicationController
   before_action :set_applicant, only: [:create]
   before_action :set_invitation, only: [:redirect]
   skip_before_action :authenticate_agent!, only: [:invitation_code, :redirect]
-  respond_to :json, only: [:redirect]
+  respond_to :json, only: [:create, :redirect]
 
   def create
     @invitation = Invitation.new(

@@ -26,11 +26,11 @@ module InvitableConcern
   end
 
   def last_postal_invitation
-    invitations.select { |invitation| invitation.format == "postal" }.select(&:created_at).max_by(&:created_at)
+    invitations.select { |invitation| invitation.format == "postal" }.select(&:sent_at).max_by(&:sent_at)
   end
 
-  def last_postal_invitation_created_at
-    last_postal_invitation&.created_at
+  def last_postal_invitation_sent_at
+    last_postal_invitation&.sent_at
   end
 
   def invited_before_time_window?

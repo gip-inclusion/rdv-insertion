@@ -38,7 +38,7 @@
                 <td><%= display_attribute format_date(applicant.last_email_invitation_sent_at) %></td>
               <% end %>
               <% if show_postal_invitation?(@configuration) %>
-                <td><%= display_attribute format_date(applicant.last_postal_invitation_created_at) %></td>
+                <td><%= display_attribute format_date(applicant.last_postal_invitation_sent_at) %></td>
               <% end %>
               <% if show_notification?(@configuration) %>
                 <td><%= display_attribute format_date(applicant.last_notification_sent_at) %></td>

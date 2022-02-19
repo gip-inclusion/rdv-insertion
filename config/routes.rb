@@ -22,7 +22,7 @@ Rails.application.routes.draw do
         resources :uploads, only: [:new]
         post :search
       end
-      resources :invitations, only: [:create, :show]
+      resources :invitations, only: [:create]
     end
   end
 
