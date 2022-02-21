@@ -9,6 +9,10 @@ module HasPhoneNumberConcern
     Phonelib.parse(phone_number).e164
   end
 
+  def mobile_phone_number?
+    phone_number && Phonelib.parse(phone_number).types.include?(:mobile)
+  end
+
   private
 
   def validate_phone_number
