@@ -21,10 +21,12 @@ describe Notifications::NotifyApplicant, type: :service do
   let!(:rdv_solidarites_rdv_id) { 23 }
   let!(:applicant) { create(:applicant, phone_number: phone_number, organisations: [organisation]) }
   let!(:notification) { create(:notification, applicant: applicant, sent_at: nil) }
+  let!(:event) { "rdv_created" }
 
   describe "#call" do
     before do
-      allow(Notification).to receive(:find_or_initialize_by).and_return(notification)
+      allow_any_instance_of(TestService).to receive(:event).and_return(event)
+      allow(Notification).to receive(:new).and_return(notification)
       allow(notification).to receive(:save).and_return(true)
       allow(SendTransactionalSms).to receive(:call).and_return(OpenStruct.new(success?: true))
       allow(notification).to receive(:save).and_return(true)
@@ -36,7 +38,7 @@ describe Notifications::NotifyApplicant, type: :service do
       it("is a success") { is_a_success }
 
       it "does not create a notification" do
-        expect(Notification).not_to receive(:find_or_initialize_by)
+        expect(Notification).not_to receive(:new)
         subject
       end
 
@@ -47,8 +49,8 @@ describe Notifications::NotifyApplicant, type: :service do
     end
 
     it "creates a notification" do
-      expect(Notification).to receive(:find_or_initialize_by)
-        .with(event: "test_service", applicant: applicant, rdv_solidarites_rdv_id: rdv_solidarites_rdv_id)
+      expect(Notification).to receive(:new)
+        .with(event: event, applicant: applicant, rdv_solidarites_rdv_id: rdv_solidarites_rdv_id)
       expect(notification).to receive(:save)
       subject
     end
