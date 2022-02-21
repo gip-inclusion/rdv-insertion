@@ -78,6 +78,9 @@ RSpec/MessageSpies:
 RSpec/MultipleExpectations:
   Enabled: false
 
+RSpec/AnyInstance:
+  Enabled: false
+
 RSpec/MultipleMemoizedHelpers:
   Enabled: false
 
