@@ -97,16 +97,64 @@ describe InvitationsController, type: :controller do
     end
 
     context "when the service succeeds" do
-      it "is a success" do
-        post :create, params: create_params
-        expect(response).to be_successful
-        expect(JSON.parse(response.body)["success"]).to eq(true)
+      context "when sms or email invitation" do
+        it "is a success" do
+          post :create, params: create_params
+          expect(response).to be_successful
+          expect(JSON.parse(response.body)["success"]).to eq(true)
+        end
+
+        it "renders the invitation" do
+          post :create, params: create_params
+          expect(response).to be_successful
+          expect(JSON.parse(response.body)["invitation"]["id"]).to eq(invitation.id)
+        end
       end
 
-      it "renders the invitation" do
-        post :create, params: create_params
-        expect(response).to be_successful
-        expect(JSON.parse(response.body)["invitation"]["id"]).to eq(invitation.id)
+      context "when postal invitation" do
+        let!(:invitation) do
+          create(
+            :invitation,
+            applicant: applicant, department: department, organisations: organisations,
+            help_phone_number: help_phone_number, format: "postal"
+          )
+        end
+        let!(:create_params) do
+          {
+            organisation_id: organisation.id,
+            applicant_id: applicant_id,
+            invitation: {
+              format: "postal",
+              help_phone_number: help_phone_number,
+              context: "RSA orientation"
+            }
+          }
+        end
+
+        before do
+          allow(Invitation).to receive(:new)
+            .with(
+              department: department, applicant: applicant, organisations: organisations,
+              "format" => "postal", "help_phone_number" => help_phone_number, "context" => "RSA orientation"
+            ).and_return(invitation)
+          allow(Invitations::SaveAndSend).to receive(:call)
+            .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
+            .and_return(OpenStruct.new(success?: true))
+        end
+
+        it "is a success" do
+          post :create, params: create_params
+          expect(response).to be_successful
+          expect(response.headers["Content-Type"]).to eq("application/pdf")
+        end
+
+        it "renders the invitation" do
+          filename = "#{applicant.affiliation_number}_#{applicant.last_name}_#{applicant.first_name}"
+          post :create, params: create_params
+          expect(response).to be_successful
+          expect(response.headers["Content-Disposition"]).to eq("attachment; filename=\"#{filename}.pdf\"; "\
+                                                                "filename*=UTF-8''#{filename}.pdf")
+        end
       end
     end
 
