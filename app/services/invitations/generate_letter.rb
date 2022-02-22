@@ -13,12 +13,11 @@ module Invitations
     private
 
     def generate_letter
-      @invitation.pdf_string = ApplicationController.render(
+      @invitation.content = ApplicationController.render(
         template: "invitations/invitation_letter",
         layout: "pdf.html.erb",
         locals: { invitation: @invitation, department: @invitation.department, applicant: applicant }
       )
-      save_record!(@invitation)
     end
 
     def check_invitation_format!

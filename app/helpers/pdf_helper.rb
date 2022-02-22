@@ -1,7 +1,7 @@
 module PdfHelper
   def pdf_stylesheet_pack_tag(source)
     if Rails.env.test?
-      true
+      nil
     elsif Rails.env.development?
       wicked_pdf_stylesheet_link_tag(source)
     else
@@ -11,7 +11,7 @@ module PdfHelper
 
   def pdf_image_tag(source)
     if Rails.env.test?
-      true
+      nil
     elsif Rails.env.development?
       image_pack_tag(source)
     else

@@ -27,7 +27,7 @@ const getInvitationLetter = async (
   }
   const blob = await result.blob();
   if (blob) {
-    const headerParts = result?.headers.get("Content-Disposition").split(";");
+    const headerParts = result.headers.get("Content-Disposition").split(";");
     const filename = headerParts[1].split("=")[1];
     const filePath = window.URL.createObjectURL(blob);
     const a = document.createElement("a");

@@ -3,6 +3,8 @@ class Invitation < ApplicationRecord
   belongs_to :department
   has_and_belongs_to_many :organisations
 
+  attr_accessor :content
+
   validates :help_phone_number, :context, :token, :organisations, :link, presence: true
   validate :organisations_cannot_be_from_different_departments
 

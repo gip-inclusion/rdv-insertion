@@ -4,17 +4,16 @@ class InvitationsController < ApplicationController
   before_action :set_applicant, only: [:create]
   before_action :set_invitation, only: [:redirect]
   skip_before_action :authenticate_agent!, only: [:invitation_code, :redirect]
-  respond_to :json, only: [:create, :redirect]
+  respond_to :json, only: [:create]
 
   def create
     @invitation = Invitation.new(
       applicant: @applicant, department: @department, organisations: @organisations, **invitation_params
     )
     authorize @invitation
-    if @invitation.format == "postal" && save_and_send_invitation.success?
-      send_data pdf, filename: pdf_filename
-    elsif save_and_send_invitation.success?
-      render json: { success: true, invitation: @invitation }
+    if save_and_send_invitation.success?
+      send_data pdf, filename: pdf_filename if @invitation.format == "postal"
+      render json: { success: true, invitation: @invitation } if @invitation.format != "postal"
     else
       render json: { success: false, errors: save_and_send_invitation.errors }
     end
@@ -35,11 +34,11 @@ class InvitationsController < ApplicationController
   end
 
   def pdf
-    WickedPdf.new.pdf_from_string(@invitation.pdf_string, encoding: "utf-8")
+    WickedPdf.new.pdf_from_string(@invitation.content, encoding: "utf-8")
   end
 
   def pdf_filename
-    "#{@applicant&.affiliation_number}_#{@applicant&.last_name}_#{@applicant&.first_name}.pdf"
+    "Invitation_#{Time.now.to_i}_#{@applicant.last_name}_#{@applicant.first_name}.pdf"
   end
 
   def save_and_send_invitation

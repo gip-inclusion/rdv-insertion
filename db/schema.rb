@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_18_154827) do
+ActiveRecord::Schema.define(version: 2022_02_04_162710) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -101,7 +101,6 @@ ActiveRecord::Schema.define(version: 2022_02_18_154827) do
     t.string "help_phone_number"
     t.bigint "department_id"
     t.bigint "rdv_solidarites_lieu_id"
-    t.string "pdf_string"
     t.index ["applicant_id"], name: "index_invitations_on_applicant_id"
     t.index ["department_id"], name: "index_invitations_on_department_id"
   end

@@ -6,15 +6,14 @@ describe Invitations::GenerateLetter, type: :service do
   end
 
   let!(:applicant) { create(:applicant) }
-  let!(:invitation) { create(:invitation, pdf_string: nil, applicant: applicant, format: "postal") }
+  let!(:invitation) { create(:invitation, content: nil, applicant: applicant, format: "postal") }
 
   describe "#call" do
     it("is a success") { is_a_success }
 
     it "generates the pdf string" do
-      expect(invitation).to receive(:save)
       subject
-      expect(invitation.pdf_string).not_to eq(nil)
+      expect(invitation.content).not_to eq(nil)
     end
 
     context "when the format is not postal" do
