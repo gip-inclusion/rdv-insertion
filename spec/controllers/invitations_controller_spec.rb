@@ -149,11 +149,12 @@ describe InvitationsController, type: :controller do
         end
 
         it "renders the invitation" do
-          filename = "#{applicant.affiliation_number}_#{applicant.last_name}_#{applicant.first_name}"
           post :create, params: create_params
           expect(response).to be_successful
-          expect(response.headers["Content-Disposition"]).to eq("attachment; filename=\"#{filename}.pdf\"; "\
-                                                                "filename*=UTF-8''#{filename}.pdf")
+          expect(response.headers["Content-Disposition"]).to start_with("attachment; filename=")
+          first_name = applicant.first_name
+          last_name = applicant.last_name
+          expect(response.headers["Content-Disposition"]).to end_with("_#{last_name}_#{first_name}.pdf")
         end
       end
     end
