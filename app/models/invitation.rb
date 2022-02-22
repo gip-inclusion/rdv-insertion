@@ -24,6 +24,10 @@ class Invitation < ApplicationRecord
     end
   end
 
+  def help_phone_number_formatted
+    help_phone_number.scan(/../).join(" ")
+  end
+
   private
 
   def organisations_cannot_be_from_different_departments

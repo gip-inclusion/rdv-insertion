@@ -14,6 +14,7 @@ describe Invitations::GenerateLetter, type: :service do
     it "generates the pdf string" do
       subject
       expect(invitation.content).not_to eq(nil)
+      expect(invitation.content).to match(/saisissez le code d’invitation ci-dessous, puis suivez les instructions/)
     end
 
     context "when the format is not postal" do
@@ -42,8 +43,7 @@ describe Invitations::GenerateLetter, type: :service do
       it("is a failure") { is_a_failure }
 
       it "returns the error" do
-        expect(subject.errors).to eq(["L'adresse n'est pas complète ou elle n'est pas enregistrée correctement." \
-                                      "<br/><br/>Format attendu&nbsp;:<br/>10 rue de l'envoi 12345 - La Ville"])
+        expect(subject.errors).to eq(["Le format de l'adresse est invalide"])
       end
     end
   end

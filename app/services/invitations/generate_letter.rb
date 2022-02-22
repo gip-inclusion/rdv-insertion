@@ -26,12 +26,7 @@ module Invitations
 
     def check_address!
       fail!("L'adresse doit être renseignée") if address.blank?
-      fail!(wrong_address_message) if street_address.blank? || zipcode_and_city.blank?
-    end
-
-    def wrong_address_message
-      "L'adresse n'est pas complète ou elle n'est pas enregistrée correctement.<br/><br/>" \
-        "Format attendu&nbsp;:<br/>10 rue de l'envoi 12345 - La Ville"
+      fail!("Le format de l'adresse est invalide") if street_address.blank? || zipcode_and_city.blank?
     end
 
     def address

@@ -4,9 +4,6 @@ class Organisation < ApplicationRecord
 
   validates :rdv_solidarites_organisation_id, uniqueness: true, allow_nil: true
   validates :name, presence: true
-  validates :phone_number, length: { is: 10 },
-                           format: { with: /\d+/, message: "Le numéro ne doit contenir que 10 chiffres" },
-                           allow_nil: true
 
   belongs_to :department
   has_and_belongs_to_many :agents, dependent: :nullify

@@ -10,7 +10,7 @@ const appFetch = async (url, method = "GET", body = null, accept = "application/
     ...(body && { body: JSON.stringify(body) }),
   });
 
-  if (response.headers.get("content-type") !== "application/json") return response;
+  if (!response.headers.get("content-type").includes("application/json")) return response;
   return response.json();
 };
 
