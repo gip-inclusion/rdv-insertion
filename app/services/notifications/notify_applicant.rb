@@ -45,7 +45,7 @@ module Notifications
     end
 
     def notification
-      @notification || Notification.find_or_initialize_by(
+      @notification ||= Notification.new(
         event: event,
         applicant: @applicant,
         rdv_solidarites_rdv_id: @rdv_solidarites_rdv.id
