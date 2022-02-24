@@ -25,7 +25,7 @@ class Invitation < ApplicationRecord
   end
 
   def help_phone_number_formatted
-    help_phone_number.scan(/../).join(" ")
+    Phonelib.parse(help_phone_number).national
   end
 
   private
