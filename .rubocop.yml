@@ -48,7 +48,7 @@ Layout/LineLength:
   Max: 120
 
 Metrics/ClassLength:
-  Max: 120
+  Enabled: false
 
 Metrics/MethodLength:
   CountAsOne: ["array", "hash", "heredoc"]
