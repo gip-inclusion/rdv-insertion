@@ -40,6 +40,7 @@ export default class Applicant {
     // when creating/inviting we always consider an applicant in the scope of only one organisation
     this.currentOrganisation = organisation;
     this.organisationConfiguration = organisationConfiguration;
+    this.isDuplicate = false;
   }
 
   get uid() {

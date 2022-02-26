@@ -71,8 +71,16 @@ export default function Applicant({ applicant, dispatchApplicants, isDepartmentL
     setIsLoading({ ...isLoading, [action]: false });
   };
 
+  const computeColSpanForDuplicateWarning = () => {
+    let colSpan = 0;
+    if (applicant.shouldBeInvitedBySms()) colSpan += 1;
+    if (applicant.shouldBeInvitedByEmail()) colSpan += 1;
+    // if (applicant.shouldBeInvitedByPostal()) colSpan += 1;
+    return colSpan;
+  };
+
   return (
-    <tr key={applicant.uid}>
+    <tr key={applicant.uid} className={applicant.isDuplicate ? "table-danger" : ""}>
       <td>{applicant.affiliationNumber}</td>
       <td>{applicant.shortTitle}</td>
       <td>{applicant.firstName}</td>
@@ -87,7 +95,7 @@ export default function Applicant({ applicant, dispatchApplicants, isDepartmentL
       {applicant.shouldDisplay("rights_opening_date") && (
         <td>{applicant.rightsOpeningDate ?? " - "}</td>
       )}
-      <td>
+      <td className={applicant.isDuplicate ? "text-dark-blue" : ""}>
         {applicant.createdAt ? (
           applicant.belongsToCurrentOrg() ? (
             <i className="fas fa-check green-check" />
@@ -113,6 +121,10 @@ export default function Applicant({ applicant, dispatchApplicants, isDepartmentL
               </button>
             </Tippy>
           )
+        ) : applicant.isDuplicate ? (
+          <button type="submit" disabled="true" className="btn btn-primary btn-blue">
+            Création impossible
+          </button>
         ) : (
           <button
             type="submit"
@@ -124,50 +136,79 @@ export default function Applicant({ applicant, dispatchApplicants, isDepartmentL
           </button>
         )}
       </td>
-      {applicant.shouldBeInvitedBySms() && (
-        <>
-          <td>
-            {applicant.lastSmsInvitationSentAt ? (
-              <i className="fas fa-check green-check" />
-            ) : (
-              <button
-                type="submit"
-                disabled={
-                  isLoading.smsInvitation ||
-                  !applicant.createdAt ||
-                  !applicant.phoneNumber ||
-                  !applicant.belongsToCurrentOrg()
-                }
-                className="btn btn-primary btn-blue"
-                onClick={() => handleClick("smsInvitation")}
-              >
-                {isLoading.smsInvitation ? "Invitation..." : "Inviter par SMS"}
-              </button>
-            )}
+      {applicant.isDuplicate ? (
+        <Tippy
+          content={
+            <span>
+              <strong>Cet allocataire est un doublon.</strong> Les doublons sont identifiés de 2
+              façons&nbsp;:
+              <br />
+              1) Son numéro d&apos;ID éditeur est identique à un autre allocataire présent dans ce
+              fichier.
+              <br />
+              2) Son numéro d&apos;allocataire <strong>et</strong> son rôle sont identiques à ceux
+              d&apos;un autre allocataire présent dans ce fichier.
+              <br />
+              <br />
+              Si cet allocataire a besoin d&apos;être créé, merci de modifier votre fichier et de le
+              charger à nouveau.
+            </span>
+          }
+        >
+          <td colSpan={computeColSpanForDuplicateWarning()}>
+            <small className="d-inline-block mx-2">
+              <i className="fas fa-exclamation-triangle" />
+            </small>
           </td>
-        </>
-      )}
-      {applicant.shouldBeInvitedByEmail() && (
+        </Tippy>
+      ) : (
         <>
-          <td>
-            {applicant.lastEmailInvitationSentAt ? (
-              <i className="fas fa-check green-check" />
-            ) : (
-              <button
-                type="submit"
-                disabled={
-                  isLoading.emailInvitation ||
-                  !applicant.createdAt ||
-                  !applicant.email ||
-                  !applicant.belongsToCurrentOrg()
-                }
-                className="btn btn-primary btn-blue"
-                onClick={() => handleClick("emailInvitation")}
-              >
-                {isLoading.emailInvitation ? "Invitation..." : "Inviter par mail"}
-              </button>
-            )}
-          </td>
+          {applicant.shouldBeInvitedBySms() && (
+            <>
+              <td>
+                {applicant.lastSmsInvitationSentAt ? (
+                  <i className="fas fa-check green-check" />
+                ) : (
+                  <button
+                    type="submit"
+                    disabled={
+                      isLoading.smsInvitation ||
+                      !applicant.createdAt ||
+                      !applicant.phoneNumber ||
+                      !applicant.belongsToCurrentOrg()
+                    }
+                    className="btn btn-primary btn-blue"
+                    onClick={() => handleClick("smsInvitation")}
+                  >
+                    {isLoading.smsInvitation ? "Invitation..." : "Inviter par SMS"}
+                  </button>
+                )}
+              </td>
+            </>
+          )}
+          {applicant.shouldBeInvitedByEmail() && (
+            <>
+              <td>
+                {applicant.lastEmailInvitationSentAt ? (
+                  <i className="fas fa-check green-check" />
+                ) : (
+                  <button
+                    type="submit"
+                    disabled={
+                      isLoading.emailInvitation ||
+                      !applicant.createdAt ||
+                      !applicant.email ||
+                      !applicant.belongsToCurrentOrg()
+                    }
+                    className="btn btn-primary btn-blue"
+                    onClick={() => handleClick("emailInvitation")}
+                  >
+                    {isLoading.emailInvitation ? "Invitation..." : "Inviter par mail"}
+                  </button>
+                )}
+              </td>
+            </>
+          )}
         </>
       )}
     </tr>

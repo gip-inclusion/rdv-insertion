@@ -14,6 +14,7 @@ import {
 } from "../../lib/parameterize";
 import retrieveContactPhoneNumber from "../../lib/retrieveContactPhoneNumber";
 import getKeyByValue from "../../lib/getKeyByValue";
+import findDuplicates from "../../lib/findDuplicates";
 import searchApplicants from "../actions/searchApplicants";
 import { initReducer, reducerFactory } from "../../lib/reducers";
 import { excelDateToString } from "../../lib/datesHelper";
@@ -155,11 +156,30 @@ export default function ApplicantsUpload({ organisation, configuration, departme
     return null;
   };
 
+  const processApplicantsDoubles = (applicantsFromList, applicant) => {
+    let mainApplicant;
+    const reversedApplicantsList = applicantsFromList.map((e, i, a) => a[a.length - 1 - i]);
+    if (applicant.departmentInternalId) {
+      mainApplicant = reversedApplicantsList.find(
+        (a) => a.departmentInternalId === applicant.departmentInternalId
+      );
+    } else {
+      mainApplicant = reversedApplicantsList.find((a) => a.uid === applicant.uid);
+    }
+
+    if (mainApplicant !== applicant) {
+      applicant.isDuplicate = true;
+    }
+  };
+
   const retrieveUpToDateApplicants = async (applicantsFromList) => {
     const departmentInternalIds = applicantsFromList
       .map((applicant) => applicant.departmentInternalId)
       .filter((departmentInternalId) => departmentInternalId);
     const uids = applicantsFromList.map((applicant) => applicant.uid).filter((uid) => uid);
+
+    const duplicatesDepartmentInternalIds = findDuplicates(departmentInternalIds);
+    const duplicatesUids = findDuplicates(uids);
 
     const retrievedApplicants = await retrieveApplicantsFromApp(departmentInternalIds, uids);
 
@@ -173,6 +193,12 @@ export default function ApplicantsUpload({ organisation, configuration, departme
 
       if (upToDateApplicant) {
         applicant.updateWith(upToDateApplicant);
+      } else if (
+        (applicant.departmentInternalId &&
+          duplicatesDepartmentInternalIds.includes(applicant.departmentInternalId)) ||
+        (applicant.uid && duplicatesUids.includes(applicant.uid))
+      ) {
+        processApplicantsDoubles(applicantsFromList, applicant);
       }
       return applicant;
     });
