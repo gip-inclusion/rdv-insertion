@@ -74,37 +74,17 @@ class ApplicantsController < ApplicationController
   end
 
   def find_or_instantiate_applicant
-    find_applicant.organisations.push(@organisation) if find_applicant.present?
-    @find_or_instantiate_applicant ||= \
-      find_applicant ||
-      Applicant.new(
-        department: @organisation.department,
-        organisations: [@organisation],
-        **applicant_params.compact_blank
-      )
+    return find_applicant.applicant if find_applicant.success?
+
+    Applicant.new(
+      department: @organisation.department,
+      organisations: [@organisation],
+      **applicant_params.compact_blank
+    )
   end
 
   def find_applicant
-    @find_applicant ||=
-      find_applicant_by_department_internal_id ||
-      find_applicant_by_role_and_affiliation_number
-  end
-
-  def find_applicant_by_department_internal_id
-    return unless applicant_params[:department_internal_id]
-
-    @find_applicant_by_department_internal_id ||= \
-      Applicant.find_by(department_internal_id: applicant_params[:department_internal_id])
-  end
-
-  def find_applicant_by_role_and_affiliation_number
-    return unless applicant_params[:role] && applicant_params[:affiliation_number]
-
-    @find_applicant_by_role_and_affiliation_number ||= \
-      Applicant.find_by(
-        affiliation_number: applicant_params[:affiliation_number],
-        role: applicant_params[:role]
-      )
+    @find_applicant ||= FindApplicant.call(applicant_params: applicant_params, organisation: @organisation)
   end
 
   def save_applicant_and_redirect(page)
