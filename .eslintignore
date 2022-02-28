@@ -3,3 +3,4 @@
 /app/javascript/fonts/*
 /app/javascript/packs/application.js
 /app/javascript/packs/mail.js
+/app/javascript/packs/pdf.js
