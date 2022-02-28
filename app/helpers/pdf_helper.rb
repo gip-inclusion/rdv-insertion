@@ -15,7 +15,7 @@ module PdfHelper
     if Rails.env.development?
       image_pack_tag(source)
     else
-      image_tag wicked_pdf_asset_pack_path(source)
+      image_tag wicked_pdf_asset_pack_path("media/images/#{source}")
     end
   end
 end
