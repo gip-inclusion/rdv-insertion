@@ -5,7 +5,7 @@ module PdfHelper
     if Rails.env.development?
       wicked_pdf_stylesheet_link_tag(source)
     else
-      wicked_pdf_stylesheet_pack_tag(source)
+      wicked_pdf_stylesheet_pack_tag("media/stylesheets/#{source}")
     end
   end
 
