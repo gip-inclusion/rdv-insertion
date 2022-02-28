@@ -1,7 +1,7 @@
 <div>
   <div class="left-col">
     <div class="logo">
-      <%= image_tag wicked_pdf_asset_pack_path("media/images/logos/#{department.name.parameterize}.png") %>
+      <%= pdf_image_tag("logos/#{department.name.parameterize}.png") %>
     </div>
     <%# Remplacer par une variable department.direction_name ? %>
     <p>DIRECTION GÉNÉRALE DES SERVICES DÉPARTEMENTAUX</p>
@@ -39,9 +39,9 @@
 </div>
 <div>
   <div class="left-col logo">
-    <%= image_tag wicked_pdf_asset_pack_path("media/images/logos/#{department.name.parameterize}.png") %>
+    <%= pdf_image_tag("logos/#{department.name.parameterize}.png") %>
   </div>
   <div class="right-col logo">
-    <%= image_tag wicked_pdf_asset_pack_path("media/images/logos/rdv-insertion.png") %>
+    <%= pdf_image_tag('logos/rdv-insertion.png') %>
   </div>
 </div>
