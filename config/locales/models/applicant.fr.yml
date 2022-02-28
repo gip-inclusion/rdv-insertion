@@ -29,3 +29,4 @@ fr:
         department_internal_id: ID interne au département
         rights_opening_date: Date d'entrée flux
         organisations: Organisation(s)
+        uid: Le couple numéro d'allocataire + rôle
