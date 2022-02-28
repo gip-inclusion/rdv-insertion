@@ -6,7 +6,7 @@
     Je prends RDV
   <% end %>
 </p>
-<p>En cas de problème technique, contactez le <%= @invitation.help_phone_number.gsub(/\d{2}/, '\& ') %></p>
+<p>En cas de problème technique, contactez le <%= @invitation.help_phone_number_formatted %></p>
 <p>À bientôt,</p>
 <p>Le département <%= I18n.t("with_prefix.#{@invitation.department.pronoun}", name: @invitation.department.name) %>.</p>
 <% if File.exist?("app/javascript/images/logos/#{@invitation.department.name.parameterize}.png") %>

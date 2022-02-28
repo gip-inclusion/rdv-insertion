@@ -35,6 +35,7 @@ export default function ApplicantsUpload({ organisation, configuration, departme
   /* eslint no-unused-vars: ["error", { "varsIgnorePattern": "contactsUpdated" }] */
   // This state allows to re-renders applicants after contacts update
   const [contactsUpdated, setContactsUpdated] = useState(false);
+  const [downloadInProgress, setDownloadInProgress] = useState(false);
   const [showEnrichWithContactFile, setShowEnrichWithContactFile] = useState(false);
   const [applicants, dispatchApplicants] = useReducer(reducer, [], initReducer);
 
@@ -327,48 +328,53 @@ export default function ApplicantsUpload({ organisation, configuration, departme
       {applicants.length > 0 && (
         <>
           <div className="row my-5 justify-content-center">
-            <div className="text-center">
-              <table className="table table-hover text-center align-middle table-striped table-bordered">
-                <thead className="align-middle dark-blue">
-                  <tr>
-                    <th scope="col">Numéro allocataire</th>
-                    <th scope="col">Civilité</th>
-                    <th scope="col">Prénom</th>
-                    <th scope="col">Nom</th>
-                    <th scope="col">Rôle</th>
-                    {parameterizedColumnNames.birth_date && <th scope="col">Date de naissance</th>}
-                    {parameterizedColumnNames.email && <th scope="col">Email</th>}
-                    {parameterizedColumnNames.phone_number && <th scope="col">Téléphone</th>}
-                    {parameterizedColumnNames.department_internal_id && (
-                      <th scope="col">ID Editeur</th>
-                    )}
-                    {parameterizedColumnNames.rights_opening_date && (
-                      <th scope="col">Date d&apos;entrée flux</th>
-                    )}
-                    <th scope="col" style={{ whiteSpace: "nowrap" }}>
-                      Création compte
-                    </th>
-                    {configuration.invitation_formats.includes("sms") && (
-                      <>
-                        <th scope="col-3">Invitation SMS</th>
-                      </>
-                    )}
-                    {configuration.invitation_formats.includes("email") && (
-                      <>
-                        <th scope="col-3">Invitation mail</th>
-                      </>
-                    )}
-                  </tr>
-                </thead>
-                <tbody>
-                  <ApplicantList
-                    applicants={applicants}
-                    dispatchApplicants={dispatchApplicants}
-                    isDepartmentLevel={isDepartmentLevel}
-                  />
-                </tbody>
-              </table>
-            </div>
+            <table className="table table-hover text-center align-middle table-striped table-bordered">
+              <thead className="align-middle dark-blue">
+                <tr>
+                  <th scope="col">Numéro allocataire</th>
+                  <th scope="col">Civilité</th>
+                  <th scope="col">Prénom</th>
+                  <th scope="col">Nom</th>
+                  <th scope="col">Rôle</th>
+                  {parameterizedColumnNames.birth_date && <th scope="col">Date de naissance</th>}
+                  {parameterizedColumnNames.email && <th scope="col">Email</th>}
+                  {parameterizedColumnNames.phone_number && <th scope="col">Téléphone</th>}
+                  {parameterizedColumnNames.department_internal_id && (
+                    <th scope="col">ID Editeur</th>
+                  )}
+                  {parameterizedColumnNames.rights_opening_date && (
+                    <th scope="col">Date d&apos;entrée flux</th>
+                  )}
+                  <th scope="col" style={{ whiteSpace: "nowrap" }}>
+                    Création compte
+                  </th>
+                  {configuration.invitation_formats.includes("sms") && (
+                    <>
+                      <th scope="col-3">Invitation SMS</th>
+                    </>
+                  )}
+                  {configuration.invitation_formats.includes("email") && (
+                    <>
+                      <th scope="col-3">Invitation mail</th>
+                    </>
+                  )}
+                  {configuration.invitation_formats.includes("postal") && (
+                    <>
+                      <th scope="col-3">Invitation courrier</th>
+                    </>
+                  )}
+                </tr>
+              </thead>
+              <tbody>
+                <ApplicantList
+                  applicants={applicants}
+                  dispatchApplicants={dispatchApplicants}
+                  isDepartmentLevel={isDepartmentLevel}
+                  downloadInProgress={downloadInProgress}
+                  setDownloadInProgress={setDownloadInProgress}
+                />
+              </tbody>
+            </table>
           </div>
         </>
       )}

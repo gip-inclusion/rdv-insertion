@@ -58,6 +58,10 @@ export default class Applicant {
     return this._lastSmsInvitationSentAt;
   }
 
+  get lastPostalInvitationSentAt() {
+    return this._lastPostalInvitationSentAt;
+  }
+
   get id() {
     return this._id;
   }
@@ -80,6 +84,10 @@ export default class Applicant {
 
   set lastSmsInvitationSentAt(lastSmsInvitationSentAt) {
     this._lastSmsInvitationSentAt = lastSmsInvitationSentAt;
+  }
+
+  set lastPostalInvitationSentAt(lastPostalInvitationSentAt) {
+    this._lastPostalInvitationSentAt = lastPostalInvitationSentAt;
   }
 
   set organisations(organisations) {
@@ -136,6 +144,10 @@ export default class Applicant {
       upToDateApplicant.invitations,
       "email"
     );
+    this.lastPostalInvitationSentAt = retrieveLastInvitationDate(
+      upToDateApplicant.invitations,
+      "postal"
+    );
     this.departmentInternalId = upToDateApplicant.department_internal_id;
   }
 
@@ -169,6 +181,10 @@ export default class Applicant {
 
   shouldBeInvitedByEmail() {
     return this.organisationConfiguration.invitation_formats.includes("email");
+  }
+
+  shouldBeInvitedByPostal() {
+    return this.organisationConfiguration.invitation_formats.includes("postal");
   }
 
   belongsToCurrentOrg() {

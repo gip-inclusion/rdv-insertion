@@ -36,10 +36,16 @@ export const getFrenchFormatDateString = (dateStr) => {
   const m = date.getMonth() + 1;
   const d = date.getDate();
   return `${d < 10 ? `0${d}` : d}/${m < 10 ? `0${m}` : m}/${y}`;
-}
+};
 
-export const excelDateToString = (serial) =>
-  getFrenchFormatDateString(excelDateToJsDate(serial));
+export const todaysDateString = () => {
+  let date = new Date();
+  const offset = date.getTimezoneOffset();
+  date = new Date(date.getTime() - offset * 60 * 1000);
+  return date.toISOString().split("T")[0];
+};
+
+export const excelDateToString = (serial) => getFrenchFormatDateString(excelDateToJsDate(serial));
 
 export function getDateTimeString(date = new Date()) {
   const y = date.getFullYear();
@@ -49,7 +55,7 @@ export function getDateTimeString(date = new Date()) {
   const h = date.getHours();
   const mi = date.getMinutes();
   const s = date.getSeconds();
-  return `${y}_${m < 10 ? `0${m}` : m}_${d < 10 ? `0${d}` : d}_${
-    h < 10 ? `0${h}` : h
-  }_${mi < 10 ? `0${mi}` : mi}_${s < 10 ? `0${s}` : s}`;
+  return `${y}_${m < 10 ? `0${m}` : m}_${d < 10 ? `0${d}` : d}_${h < 10 ? `0${h}` : h}_${
+    mi < 10 ? `0${mi}` : mi
+  }_${s < 10 ? `0${s}` : s}`;
 }

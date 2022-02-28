@@ -43,6 +43,8 @@ Rails.application.configure do
                                                utm_campaign: "default" }
   config.action_mailer.asset_host = "http://localhost:8000"
 
+  config.action_controller.asset_host = "http://localhost:8000"
+
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 

@@ -6,17 +6,32 @@ import handleApplicantCreation from "../lib/handleApplicantCreation";
 import handleApplicantInvitation from "../lib/handleApplicantInvitation";
 import updateApplicant from "../actions/updateApplicant";
 import retrieveRelevantOrganisation from "../../lib/retrieveRelevantOrganisation";
+import getInvitationLetter from "../actions/getInvitationLetter";
+import { todaysDateString } from "../../lib/datesHelper";
 
-export default function Applicant({ applicant, dispatchApplicants, isDepartmentLevel }) {
+export default function Applicant({
+  applicant,
+  dispatchApplicants,
+  isDepartmentLevel,
+  downloadInProgress,
+  setDownloadInProgress,
+}) {
   const [isLoading, setIsLoading] = useState({
     accountCreation: false,
     smsInvitation: false,
     emailInvitation: false,
+    postalInvitation: false,
     addToOrganisation: false,
   });
 
   const handleClick = async (action) => {
     setIsLoading({ ...isLoading, [action]: true });
+    const applicantParams = [
+      applicant.id,
+      applicant.department.id,
+      applicant.currentOrganisation,
+      isDepartmentLevel,
+    ];
     if (action === "accountCreation") {
       if (!applicant.currentOrganisation) {
         applicant.currentOrganisation = await retrieveRelevantOrganisation(
@@ -42,23 +57,18 @@ export default function Applicant({ applicant, dispatchApplicants, isDepartmentL
         Swal.fire("Impossible d'assigner à l'organisation", result.errors[0], "error");
       }
     } else if (action === "smsInvitation") {
-      const invitation = await handleApplicantInvitation(
-        applicant.id,
-        applicant.department.id,
-        applicant.currentOrganisation,
-        isDepartmentLevel,
-        "sms"
-      );
+      const invitation = await handleApplicantInvitation(...applicantParams, "sms");
       applicant.lastSmsInvitationSentAt = invitation.sent_at;
     } else if (action === "emailInvitation") {
-      const invitation = await handleApplicantInvitation(
-        applicant.id,
-        applicant.department.id,
-        applicant.currentOrganisation,
-        isDepartmentLevel,
-        "email"
-      );
+      const invitation = await handleApplicantInvitation(...applicantParams, "email");
       applicant.lastEmailInvitationSentAt = invitation.sent_at;
+    } else if (action === "postalInvitation") {
+      setDownloadInProgress(true);
+      const invitationLetter = await getInvitationLetter(...applicantParams, "postal");
+      if (invitationLetter?.success) {
+        applicant.lastPostalInvitationSentAt = todaysDateString();
+      }
+      setDownloadInProgress(false);
     }
 
     dispatchApplicants({
@@ -165,6 +175,30 @@ export default function Applicant({ applicant, dispatchApplicants, isDepartmentL
                 onClick={() => handleClick("emailInvitation")}
               >
                 {isLoading.emailInvitation ? "Invitation..." : "Inviter par mail"}
+              </button>
+            )}
+          </td>
+        </>
+      )}
+      {applicant.shouldBeInvitedByPostal() && (
+        <>
+          <td>
+            {applicant.lastPostalInvitationSentAt ? (
+              <i className="fas fa-check green-check" />
+            ) : (
+              <button
+                type="submit"
+                disabled={
+                  isLoading.postalInvitation ||
+                  downloadInProgress ||
+                  !applicant.createdAt ||
+                  !applicant.fullAddress ||
+                  !applicant.belongsToCurrentOrg()
+                }
+                className="btn btn-primary btn-blue"
+                onClick={() => handleClick("postalInvitation")}
+              >
+                {isLoading.postalInvitation ? "Création en cours..." : "Générer courrier"}
               </button>
             )}
           </td>

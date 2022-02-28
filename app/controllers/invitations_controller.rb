@@ -4,7 +4,7 @@ class InvitationsController < ApplicationController
   before_action :set_applicant, only: [:create]
   before_action :set_invitation, only: [:redirect]
   skip_before_action :authenticate_agent!, only: [:invitation_code, :redirect]
-  respond_to :json
+  respond_to :json, only: [:create]
 
   def create
     @invitation = Invitation.new(
@@ -12,6 +12,8 @@ class InvitationsController < ApplicationController
     )
     authorize @invitation
     if save_and_send_invitation.success?
+      return send_data pdf, filename: pdf_filename if @invitation.format == "postal"
+
       render json: { success: true, invitation: @invitation }
     else
       render json: { success: false, errors: save_and_send_invitation.errors }
@@ -32,14 +34,12 @@ class InvitationsController < ApplicationController
     params.require(:invitation).permit(:format, :context, :help_phone_number, :rdv_solidarites_lieu_id)
   end
 
-  def set_applicant
-    @applicant = policy_scope(Applicant).includes(:invitations).find(params[:applicant_id])
+  def pdf
+    WickedPdf.new.pdf_from_string(@invitation.content, encoding: "utf-8")
   end
 
-  def set_invitation
-    # TODO: identify the invitation with a uuid
-    @invitation = Invitation.where(format: invitation_format, token: params[:token]).last
-    raise ActiveRecord::RecordNotFound unless @invitation
+  def pdf_filename
+    "Invitation_#{Time.now.to_i}_#{@applicant.last_name}_#{@applicant.first_name}.pdf"
   end
 
   def save_and_send_invitation
@@ -49,10 +49,6 @@ class InvitationsController < ApplicationController
     )
   end
 
-  def set_department
-    @department = @organisations.first.department
-  end
-
   def set_organisations
     @organisations = \
       if department_level?
@@ -60,6 +56,20 @@ class InvitationsController < ApplicationController
       else
         policy_scope(Organisation).where(id: params[:organisation_id])
       end
+  end
+
+  def set_department
+    @department = @organisations.first.department
+  end
+
+  def set_applicant
+    @applicant = policy_scope(Applicant).includes(:invitations).find(params[:applicant_id])
+  end
+
+  def set_invitation
+    # TODO: identify the invitation with a uuid
+    @invitation = Invitation.where(format: invitation_format, token: params[:token]).last
+    raise ActiveRecord::RecordNotFound unless @invitation
   end
 
   def invitation_format

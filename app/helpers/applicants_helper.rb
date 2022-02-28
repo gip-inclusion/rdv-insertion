@@ -11,6 +11,10 @@ module ApplicantsHelper
     configuration.invitation_formats.include?("email")
   end
 
+  def show_postal_invitation?(configuration)
+    configuration.invitation_formats.include?("postal")
+  end
+
   def show_notification?(configuration)
     configuration.notify_applicant?
   end
