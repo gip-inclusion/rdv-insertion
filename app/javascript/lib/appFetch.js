@@ -1,15 +1,16 @@
-const appFetch = async (url, method = "GET", body = null) => {
+const appFetch = async (url, method = "GET", body = null, accept = "application/json") => {
   const response = await fetch(url, {
     method,
     credentials: "same-origin",
     headers: {
-      Accept: "application/json",
+      Accept: `${accept}`,
       "Content-Type": "application/json",
       "X-CSRF-Token": document.querySelector("meta[name=csrf-token]").content,
     },
     ...(body && { body: JSON.stringify(body) }),
   });
 
+  if (!response.headers.get("content-type").includes("application/json")) return response;
   return response.json();
 };
 

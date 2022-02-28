@@ -96,6 +96,16 @@ class Applicant < ApplicationRecord
     title == "monsieur" ? "M" : "Mme"
   end
 
+  def street_address
+    split_address = address&.match(/^(.+) (\d{5}.*)$/)
+    split_address.present? ? split_address[1].strip.gsub(/-$/, '') : nil
+  end
+
+  def zipcode_and_city
+    split_address = address&.match(/^(.+) (\d{5}.*)$/)
+    split_address.present? ? split_address[2].strip : nil
+  end
+
   def delete_organisation(organisation)
     organisations.delete(organisation)
     save!

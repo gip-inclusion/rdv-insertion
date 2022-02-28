@@ -25,6 +25,14 @@ module InvitableConcern
     last_sent_email_invitation&.sent_at
   end
 
+  def last_postal_invitation
+    invitations.select { |invitation| invitation.format == "postal" }.select(&:sent_at).max_by(&:sent_at)
+  end
+
+  def last_postal_invitation_sent_at
+    last_postal_invitation&.sent_at
+  end
+
   def invited_before_time_window?
     last_invitation_sent_at && last_invitation_sent_at < Organisation::TIME_TO_ACCEPT_INVITATION.ago
   end

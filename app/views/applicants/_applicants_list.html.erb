@@ -15,6 +15,9 @@
           <% if show_email_invitation?(@configuration) %>
             <th scope="col">Dernière invitation email</th>
           <% end %>
+          <% if show_postal_invitation?(@configuration) %>
+            <th scope="col">Dernière invitation courrier</th>
+          <% end %>
           <% if show_notification?(@configuration) %>
             <th scope="col">Dernière Notification envoyée le</th>
           <% end %>
@@ -33,6 +36,9 @@
               <% end %>
               <% if show_email_invitation?(@configuration) %>
                 <td><%= display_attribute format_date(applicant.last_email_invitation_sent_at) %></td>
+              <% end %>
+              <% if show_postal_invitation?(@configuration) %>
+                <td><%= display_attribute format_date(applicant.last_postal_invitation_sent_at) %></td>
               <% end %>
               <% if show_notification?(@configuration) %>
                 <td><%= display_attribute format_date(applicant.last_notification_sent_at) %></td>
