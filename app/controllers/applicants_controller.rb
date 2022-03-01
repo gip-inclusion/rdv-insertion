@@ -15,7 +15,12 @@ class ApplicantsController < ApplicationController
   end
 
   def create
-    @applicant = find_or_instantiate_applicant
+    @applicant = find_or_instantiate_applicant.applicant
+    @applicant.assign_attributes(
+      department: @organisation.department,
+      organisations: (@applicant.organisations.to_a + [@organisation]).uniq,
+      **@applicant_params.compact_blank!
+    )
     authorize @applicant
     respond_to do |format|
       format.html { save_applicant_and_redirect(:new) }
@@ -74,17 +79,10 @@ class ApplicantsController < ApplicationController
   end
 
   def find_or_instantiate_applicant
-    return find_applicant.applicant if find_applicant.success?
-
-    Applicant.new(
-      department: @organisation.department,
-      organisations: [@organisation],
-      **applicant_params.compact_blank
+    @find_or_instantiate_applicant ||= FindOrInstantiateApplicant.call(
+      applicant_params: applicant_params,
+      organisation: @organisation
     )
-  end
-
-  def find_applicant
-    @find_applicant ||= FindApplicant.call(applicant_params: applicant_params, organisation: @organisation)
   end
 
   def save_applicant_and_redirect(page)
