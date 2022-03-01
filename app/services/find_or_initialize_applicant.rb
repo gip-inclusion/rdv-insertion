@@ -1,18 +1,16 @@
-class FindOrInstantiateApplicant < BaseService
+class FindOrInitializeApplicant < BaseService
   def initialize(applicant_params:, organisation:)
     @applicant_params = applicant_params
     @organisation = organisation
   end
 
   def call
-    @applicant = find_or_instantiate_applicant
-    check_if_applicant_belongs_to_organisation
-    result.applicant = @applicant
+    result.applicant = find_or_initialize_applicant
   end
 
   private
 
-  def find_or_instantiate_applicant
+  def find_or_initialize_applicant
     find_applicant_by_department_internal_id ||
       find_applicant_by_role_and_affiliation_number ||
       Applicant.new
@@ -33,7 +31,4 @@ class FindOrInstantiateApplicant < BaseService
     )
   end
 
-  def check_if_applicant_belongs_to_organisation
-    @applicant = Applicant.new if @applicant.organisations.include?(@organisation)
-  end
 end

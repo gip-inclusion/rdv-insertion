@@ -1,4 +1,4 @@
-describe FindApplicant, type: :service do
+describe FindOrInitializeApplicant, type: :service do
   subject do
     described_class.call(
       applicant_params: applicant_params,
@@ -74,25 +74,11 @@ describe FindApplicant, type: :service do
       before do
         allow(Applicant).to receive(:find_by)
           .and_return(nil)
+        allow(Applicant).to receive(:new)
       end
 
-      it("is a failure") { is_a_failure }
-    end
-
-    context "when an applicant is found but belongs to the current organisation" do
-      let(:applicant) { create(:applicant, organisations: [organisation]) }
-
-      before do
-        allow(Applicant).to receive(:find_by)
-          .and_return(applicant)
-      end
-
-      it("is a failure") { is_a_failure }
-    end
-
-    context "when an applicant is found and does not belongs to the current organisation" do
-      it "assigns the params to the applicant" do
-        expect(applicant).to receive(:assign_attributes)
+      it "initializes an applicant" do
+        expect(Applicant).to receive(:new)
         subject
       end
     end
