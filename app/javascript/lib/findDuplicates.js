@@ -1,3 +1,5 @@
-const findDuplicates = (arr) => [...new Set(arr.filter((e, i, a) => a.indexOf(e) !== i))];
+const findDuplicates = (arr) => [
+  ...new Set(arr.filter((element, index, array) => array.indexOf(element) !== index)),
+];
 
 export default findDuplicates;

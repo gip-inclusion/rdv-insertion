@@ -1,3 +1,5 @@
+# rubocop:disable Metrics/ClassLength
+
 class ApplicantsController < ApplicationController
   PERMITTED_PARAMS = [
     :uid, :role, :first_name, :last_name, :birth_date, :email, :phone_number,
@@ -149,3 +151,5 @@ class ApplicantsController < ApplicationController
                   .to_a
   end
 end
+
+# rubocop: enable Metrics/ClassLength

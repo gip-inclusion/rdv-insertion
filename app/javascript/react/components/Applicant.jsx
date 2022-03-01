@@ -139,7 +139,7 @@ export default function Applicant({
             </Tippy>
           )
         ) : applicant.isDuplicate ? (
-          <button type="submit" disabled="true" className="btn btn-primary btn-blue">
+          <button type="submit" disabled className="btn btn-primary btn-blue">
             Création impossible
           </button>
         ) : (

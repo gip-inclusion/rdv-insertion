@@ -158,16 +158,15 @@ export default function ApplicantsUpload({ organisation, configuration, departme
   };
 
   const processApplicantsDoubles = (applicantsFromList, applicant) => {
-    let mainApplicant;
-    const reversedApplicantsList = applicantsFromList.map((e, i, a) => a[a.length - 1 - i]);
-    if (applicant.departmentInternalId) {
-      mainApplicant = reversedApplicantsList.find(
-        (a) => a.departmentInternalId === applicant.departmentInternalId
-      );
-    } else {
-      mainApplicant = reversedApplicantsList.find((a) => a.uid === applicant.uid);
-    }
-
+    const reversedApplicantsList = applicantsFromList.map(
+      (element, index, array) => array[array.length - 1 - index]
+    );
+    const mainApplicant = reversedApplicantsList.find(
+      (a) =>
+        (applicant.departmentInternalId &&
+          a.departmentInternalId === applicant.departmentInternalId) ||
+        (applicant.uid && a.uid === applicant.uid)
+    );
     if (mainApplicant !== applicant) {
       applicant.isDuplicate = true;
     }
