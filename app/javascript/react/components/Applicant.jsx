@@ -53,6 +53,13 @@ export default function Applicant({
       );
       if (result.success) {
         applicant.updateWith(result.applicant);
+        if (result.applicant.organisations.length > 1) {
+          Swal.fire(
+            "Allocataire ajouté",
+            "Cet allocataire existait déjà dans une autre organisation du département. Il a été mis à jour et ajouté à votre organisation",
+            "info"
+          );
+        }
       } else {
         Swal.fire("Impossible d'assigner à l'organisation", result.errors[0], "error");
       }
@@ -85,7 +92,7 @@ export default function Applicant({
     let colSpan = 0;
     if (applicant.shouldBeInvitedBySms()) colSpan += 1;
     if (applicant.shouldBeInvitedByEmail()) colSpan += 1;
-    // if (applicant.shouldBeInvitedByPostal()) colSpan += 1;
+    if (applicant.shouldBeInvitedByPostal()) colSpan += 1;
     return colSpan;
   };
 
@@ -219,30 +226,30 @@ export default function Applicant({
               </td>
             </>
           )}
-        </>
-      )}
-      {applicant.shouldBeInvitedByPostal() && (
-        <>
-          <td>
-            {applicant.lastPostalInvitationSentAt ? (
-              <i className="fas fa-check green-check" />
-            ) : (
-              <button
-                type="submit"
-                disabled={
-                  isLoading.postalInvitation ||
-                  downloadInProgress ||
-                  !applicant.createdAt ||
-                  !applicant.fullAddress ||
-                  !applicant.belongsToCurrentOrg()
-                }
-                className="btn btn-primary btn-blue"
-                onClick={() => handleClick("postalInvitation")}
-              >
-                {isLoading.postalInvitation ? "Création en cours..." : "Générer courrier"}
-              </button>
-            )}
-          </td>
+          {applicant.shouldBeInvitedByPostal() && (
+            <>
+              <td>
+                {applicant.lastPostalInvitationSentAt ? (
+                  <i className="fas fa-check green-check" />
+                ) : (
+                  <button
+                    type="submit"
+                    disabled={
+                      isLoading.postalInvitation ||
+                      downloadInProgress ||
+                      !applicant.createdAt ||
+                      !applicant.fullAddress ||
+                      !applicant.belongsToCurrentOrg()
+                    }
+                    className="btn btn-primary btn-blue"
+                    onClick={() => handleClick("postalInvitation")}
+                  >
+                    {isLoading.postalInvitation ? "Création en cours..." : "Générer courrier"}
+                  </button>
+                )}
+              </td>
+            </>
+          )}
         </>
       )}
     </tr>

@@ -7,6 +7,7 @@ describe ApplicantsController, type: :controller do
   let!(:agent) { create(:agent, organisations: [organisation]) }
   let!(:rdv_solidarites_organisation_id) { 52 }
   let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
+  let(:applicant) { create(:applicant, organisations: [organisation]) }
 
   describe "#new" do
     let!(:new_params) { { organisation_id: organisation.id } }
@@ -31,8 +32,56 @@ describe ApplicantsController, type: :controller do
     before do
       sign_in(agent)
       setup_rdv_solidarites_session(rdv_solidarites_session)
+      allow(FindApplicant).to receive(:call)
+        .and_return(OpenStruct.new)
+      allow(Applicant).to receive(:new)
+        .and_return(applicant)
       allow(SaveApplicant).to receive(:call)
         .and_return(OpenStruct.new)
+    end
+
+    let(:applicant_params) do
+      {
+        applicant: {
+          uid: "123xz", first_name: "john", last_name: "doe", email: "johndoe@example.com",
+          affiliation_number: "1234", role: "conjoint"
+        },
+        organisation_id: organisation.id
+      }
+    end
+
+    it "calls the FindApplicant service" do
+      expect(FindApplicant).to receive(:call)
+      post :create, params: applicant_params
+    end
+
+    context "when the applicant exists" do
+      before do
+        allow(FindApplicant).to receive(:call)
+          .and_return(OpenStruct.new(success?: true, applicant: applicant))
+      end
+
+      it "does not instantiate a new applicant" do
+        expect(Applicant).not_to receive(:new)
+        post :create, params: applicant_params
+      end
+    end
+
+    context "when the applicant do not exists" do
+      before do
+        allow(FindApplicant).to receive(:call)
+          .and_return(OpenStruct.new(success?: false))
+      end
+
+      it "instantiate a new applicant" do
+        expect(Applicant).to receive(:new)
+        post :create, params: applicant_params
+      end
+    end
+
+    it "calls the SaveApplicant service" do
+      expect(SaveApplicant).to receive(:call)
+      post :create, params: applicant_params
     end
 
     context "when html request" do
@@ -47,13 +96,9 @@ describe ApplicantsController, type: :controller do
         }
       end
 
-      it "calls the service" do
-        expect(SaveApplicant).to receive(:call)
-        post :create, params: applicant_params
-      end
-
       context "when not authorized" do
         let!(:another_organisation) { create(:organisation) }
+        let(:applicant) { create(:applicant, organisations: [another_organisation]) }
 
         it "does not call the service" do
           expect(SaveApplicant).not_to receive(:call)
@@ -62,13 +107,9 @@ describe ApplicantsController, type: :controller do
       end
 
       context "when the creation succeeds" do
-        let(:applicant) { create(:applicant, organisations: [organisation]) }
-
         before do
           allow(SaveApplicant).to receive(:call)
             .and_return(OpenStruct.new(success?: true))
-          allow(Applicant).to receive(:new)
-            .and_return(applicant)
         end
 
         it "is a success" do
@@ -104,13 +145,9 @@ describe ApplicantsController, type: :controller do
         }
       end
 
-      it "calls the service" do
-        expect(SaveApplicant).to receive(:call)
-        post :create, params: applicant_params
-      end
-
       context "when not authorized" do
         let!(:another_organisation) { create(:organisation) }
+        let(:applicant) { create(:applicant, organisations: [another_organisation]) }
 
         it "renders forbidden in the response" do
           post :create, params: applicant_params.merge(organisation_id: another_organisation.id)
@@ -127,7 +164,6 @@ describe ApplicantsController, type: :controller do
         let!(:applicant) { create(:applicant, organisations: [organisation]) }
 
         before do
-          allow(Applicant).to receive(:new).and_return(applicant)
           allow(SaveApplicant).to receive(:call)
             .and_return(OpenStruct.new(success?: true, applicant: applicant))
         end

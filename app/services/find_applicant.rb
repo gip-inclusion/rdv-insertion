@@ -13,17 +13,6 @@ class FindApplicant < BaseService
 
   private
 
-  def update_applicant_and_add_to_organisation
-    @applicant.assign_attributes(
-      organisations: (@applicant.organisations.to_a + [@organisation]).uniq,
-      **@applicant_params.compact_blank!
-    )
-  end
-
-  def check_if_applicant_exists_and_belongs_to_organisation
-    fail! if @applicant.nil? || @applicant.organisations.include?(@organisation)
-  end
-
   def find_applicant
     @find_applicant ||=
       find_applicant_by_department_internal_id ||
@@ -45,5 +34,16 @@ class FindApplicant < BaseService
         affiliation_number: @applicant_params[:affiliation_number],
         role: @applicant_params[:role]
       )
+  end
+
+  def check_if_applicant_exists_and_belongs_to_organisation
+    fail! if @applicant.nil? || @applicant.organisations.include?(@organisation)
+  end
+
+  def update_applicant_and_add_to_organisation
+    @applicant.assign_attributes(
+      organisations: (@applicant.organisations.to_a + [@organisation]).uniq,
+      **@applicant_params.compact_blank!
+    )
   end
 end
