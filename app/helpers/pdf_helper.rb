@@ -2,20 +2,12 @@ module PdfHelper
   def pdf_stylesheet_pack_tag(source)
     return if Rails.env.test?
 
-    if Rails.env.development?
-      wicked_pdf_stylesheet_link_tag(source)
-    else
-      wicked_pdf_stylesheet_pack_tag(source)
-    end
+    wicked_pdf_stylesheet_pack_tag(source)
   end
 
   def pdf_image_tag(source)
     return if Rails.env.test?
 
-    if Rails.env.development?
-      image_pack_tag(source)
-    else
-      image_tag wicked_pdf_asset_pack_path(source)
-    end
+    image_tag wicked_pdf_asset_pack_path("media/images/#{source}")
   end
 end

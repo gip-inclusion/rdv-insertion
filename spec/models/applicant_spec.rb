@@ -47,7 +47,7 @@ describe Applicant do
         expect(applicant).not_to be_valid
         expect(applicant.errors.details).to eq({ uid: [{ error: :taken, value: '123' }] })
         expect(applicant.errors.full_messages.to_sentence)
-          .to include("Uid est déjà utilisé")
+          .to include("Le couple numéro d'allocataire + rôle est déjà utilisé")
       end
     end
   end
@@ -62,10 +62,10 @@ describe Applicant do
     context "colliding department internal id" do
       let!(:department) { create(:department) }
       let!(:applicant_existing) do
-        create(:applicant, department: department, department_internal_id: "921")
+        create(:applicant, department: department, department_internal_id: "921", role: "demandeur")
       end
       let!(:applicant) do
-        build(:applicant, department: department, department_internal_id: "921")
+        build(:applicant, department: department, department_internal_id: "921", role: "conjoint")
       end
 
       it "adds errors" do

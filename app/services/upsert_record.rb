@@ -10,6 +10,7 @@ class UpsertRecord < BaseService
       @rdv_solidarites_attributes
         .slice(*@klass::SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES)
         .compact
+        .transform_values(&:presence)
         .merge(@additional_attributes)
     )
     record.save! if record.changed?
