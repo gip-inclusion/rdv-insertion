@@ -39,7 +39,7 @@ class InvitationsController < ApplicationController
   end
 
   def pdf_filename
-    "#{@applicant.last_name}_#{@applicant.first_name}_invitation_#{Time.now.to_i}.pdf"
+    "Invitation_#{Time.now.to_i}_#{@applicant.last_name}_#{@applicant.first_name}.pdf"
   end
 
   def save_and_send_invitation
