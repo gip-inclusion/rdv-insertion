@@ -32,10 +32,11 @@ describe ApplicantsController, type: :controller do
     before do
       sign_in(agent)
       setup_rdv_solidarites_session(rdv_solidarites_session)
-      allow(FindApplicant).to receive(:call)
-        .and_return(OpenStruct.new)
+      allow(FindOrInitializeApplicant).to receive(:call)
+        .and_return(OpenStruct.new(success?: true, applicant: applicant))
       allow(Applicant).to receive(:new)
         .and_return(applicant)
+      allow(applicant).to receive(:assign_attributes)
       allow(SaveApplicant).to receive(:call)
         .and_return(OpenStruct.new)
     end
@@ -50,33 +51,14 @@ describe ApplicantsController, type: :controller do
       }
     end
 
-    it "calls the FindApplicant service" do
-      expect(FindApplicant).to receive(:call)
+    it "calls the FindOrInitializeApplicant service" do
+      expect(FindOrInitializeApplicant).to receive(:call)
       post :create, params: applicant_params
     end
 
-    context "when the applicant exists" do
-      before do
-        allow(FindApplicant).to receive(:call)
-          .and_return(OpenStruct.new(success?: true, applicant: applicant))
-      end
-
-      it "does not instantiate a new applicant" do
-        expect(Applicant).not_to receive(:new)
-        post :create, params: applicant_params
-      end
-    end
-
-    context "when the applicant do not exists" do
-      before do
-        allow(FindApplicant).to receive(:call)
-          .and_return(OpenStruct.new(success?: false))
-      end
-
-      it "instantiate a new applicant" do
-        expect(Applicant).to receive(:new)
-        post :create, params: applicant_params
-      end
+    it "assigns the attributes" do
+      expect(applicant).to receive(:assign_attributes)
+      post :create, params: applicant_params
     end
 
     it "calls the SaveApplicant service" do
@@ -100,7 +82,7 @@ describe ApplicantsController, type: :controller do
         let!(:another_organisation) { create(:organisation) }
         let(:applicant) { create(:applicant, organisations: [another_organisation]) }
 
-        it "does not call the service" do
+        it "does not call the SaveApplicant service" do
           expect(SaveApplicant).not_to receive(:call)
           post :create, params: applicant_params.merge(organisation_id: another_organisation.id)
         end
@@ -154,7 +136,7 @@ describe ApplicantsController, type: :controller do
           expect(response).to have_http_status(:forbidden)
         end
 
-        it "does not call the service" do
+        it "does not call the SaveApplicant service" do
           expect(SaveApplicant).not_to receive(:call)
           post :create, params: applicant_params.merge(organisation_id: another_organisation.id)
         end

@@ -30,5 +30,4 @@ class FindOrInitializeApplicant < BaseService
       role: @applicant_params[:role]
     )
   end
-
 end

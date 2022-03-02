@@ -17,11 +17,12 @@ class ApplicantsController < ApplicationController
   end
 
   def create
-    @applicant = find_or_instantiate_applicant.applicant
+    @applicant = find_or_initialize_applicant.applicant
+    # To do : if an applicant exists, return it to the agent to let him decide what to do
     @applicant.assign_attributes(
       department: @organisation.department,
       organisations: (@applicant.organisations.to_a + [@organisation]).uniq,
-      **@applicant_params.compact_blank!
+      **applicant_params.compact_blank!
     )
     authorize @applicant
     respond_to do |format|
@@ -80,8 +81,8 @@ class ApplicantsController < ApplicationController
     end
   end
 
-  def find_or_instantiate_applicant
-    @find_or_instantiate_applicant ||= FindOrInstantiateApplicant.call(
+  def find_or_initialize_applicant
+    @find_or_initialize_applicant ||= FindOrInitializeApplicant.call(
       applicant_params: applicant_params,
       organisation: @organisation
     )
