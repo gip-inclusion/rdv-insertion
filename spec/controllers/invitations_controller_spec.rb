@@ -154,7 +154,7 @@ describe InvitationsController, type: :controller do
           expect(response.headers["Content-Disposition"]).to start_with("attachment; filename=")
           first_name = applicant.first_name
           last_name = applicant.last_name
-          expect(response.headers["Content-Disposition"]).to end_with("_#{last_name}_#{first_name}.pdf")
+          expect(response.headers["Content-Disposition"]).to include("#{last_name}_#{first_name}_invitation")
         end
       end
     end
