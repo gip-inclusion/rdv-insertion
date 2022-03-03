@@ -12,7 +12,7 @@ class InvitationsController < ApplicationController
     )
     authorize @invitation
     if save_and_send_invitation.success?
-      return send_data pdf, filename: pdf_filename if @invitation.format == "postal"
+      return send_data pdf, filename: pdf_filename if @invitation.format_postal?
 
       render json: { success: true, invitation: @invitation }
     else
