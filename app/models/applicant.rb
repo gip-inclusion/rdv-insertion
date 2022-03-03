@@ -64,7 +64,7 @@ class Applicant < ApplicationRecord
   def uid_or_department_internal_id_presence
     return if department_internal_id.present? || (affiliation_number.present? && role.present?)
 
-    errors.add(:base, "le couple role/numéro allocataire ou l'ID interne au département doivent être présents.")
+    errors.add(:base, "le couple numéro d'allocataire + rôle ou l'ID interne au département doivent être présents.")
   end
 
   def action_required?
