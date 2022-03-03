@@ -12,8 +12,11 @@ import {
   parameterizeObjectValues,
   parameterizeArray,
 } from "../../lib/parameterize";
-import retrieveContactPhoneNumber from "../../lib/retrieveContactPhoneNumber";
+import displayMissingColumnsWarning from "../lib/displayMissingColumnsWarning";
+import updateApplicantContacts from "../lib/updateApplicantContacts";
+import retrieveContactsData from "../lib/retrieveContactsData";
 import getKeyByValue from "../../lib/getKeyByValue";
+import getHeaderNames from "../lib/getHeaderNames";
 import searchApplicants from "../actions/searchApplicants";
 import { initReducer, reducerFactory } from "../../lib/reducers";
 import { excelDateToString } from "../../lib/datesHelper";
@@ -39,17 +42,6 @@ export default function ApplicantsUpload({ organisation, configuration, departme
   const [showEnrichWithContactFile, setShowEnrichWithContactFile] = useState(false);
   const [applicants, dispatchApplicants] = useReducer(reducer, [], initReducer);
 
-  const getHeaderNames = (sheet) => {
-    const header = [];
-    const columnCount = XLSX.utils.decode_range(sheet["!ref"]).e.c + 1;
-    for (let i = 0; i < columnCount; i += 1) {
-      if (sheet[`${XLSX.utils.encode_col(i)}1`] !== undefined) {
-        header[i] = sheet[`${XLSX.utils.encode_col(i)}1`].v;
-      }
-    }
-    return header;
-  };
-
   const checkColumnNames = (uploadedColumnNamesParameterized) => {
     const missingColumnNames = [];
     const requiredColumnsMapping = parameterizeObjectValues(columnNames.required);
@@ -68,16 +60,6 @@ export default function ApplicantsUpload({ organisation, configuration, departme
       });
     }
     return missingColumnNames;
-  };
-
-  const displayMissingColumnsWarning = (missingColumnNames) => {
-    Swal.fire({
-      title: "Le fichier chargé ne correspond pas au format attendu",
-      html: `Veuillez vérifier que les colonnes suivantes sont présentes et correctement nommées&nbsp;:
-      <br/>
-      <strong>${missingColumnNames.join("<br />")}</strong>`,
-      icon: "error",
-    });
   };
 
   const retrieveApplicantsFromList = async (file) => {
@@ -205,46 +187,6 @@ export default function ApplicantsUpload({ organisation, configuration, departme
         },
       });
     });
-  };
-
-  const updateApplicantContacts = (applicant, applicantContactsData) => {
-    if (applicant.phoneNumber == null) {
-      applicant.updatePhoneNumber(retrieveContactPhoneNumber(applicantContactsData));
-    }
-    if (applicant.email == null) {
-      applicant.updateEmail(applicantContactsData["ADRESSE ELECTRONIQUE DOSSIER"]);
-    }
-    return applicant;
-  };
-
-  const retrieveContactsData = async (file) => {
-    const expectedContactsColumnNames = [
-      "MATRICULE",
-      "NUMERO TELEPHONE DOSSIER",
-      "NUMERO TELEPHONE 2 DOSSIER",
-      "ADRESSE ELECTRONIQUE DOSSIER",
-    ];
-    let contacts = [];
-
-    await new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onload = function (event) {
-        const sheet = XLSX.read(event.target.result, { type: "string" }).Sheets.Sheet1;
-        const headerNames = getHeaderNames(sheet);
-        const missingColumnNames = [];
-        expectedContactsColumnNames.forEach((col) => {
-          if (!headerNames.includes(col)) missingColumnNames.push(col);
-        });
-        if (missingColumnNames.length > 0) {
-          displayMissingColumnsWarning(missingColumnNames);
-        } else {
-          contacts = XLSX.utils.sheet_to_json(sheet, { raw: false });
-        }
-        resolve();
-      };
-      reader.readAsBinaryString(file);
-    });
-    return contacts;
   };
 
   const handleContactsFile = async (file) => {
