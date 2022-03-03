@@ -120,7 +120,7 @@ class Applicant < ApplicationRecord
   def zipcode_and_city
     return if split_address.blank?
 
-    split_address.present? ? split_address[2].strip : nil
+    split_address[2].strip
   end
 
   def delete_organisation(organisation)
