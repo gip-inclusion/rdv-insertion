@@ -86,7 +86,6 @@ ActiveRecord::Schema.define(version: 2022_03_03_154747) do
     t.string "pronoun"
     t.string "email"
     t.string "phone_number"
-    t.string "responsible_name"
   end
 
   create_table "invitations", force: :cascade do |t|
