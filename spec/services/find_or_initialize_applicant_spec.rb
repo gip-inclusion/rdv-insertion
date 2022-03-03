@@ -1,8 +1,9 @@
 describe FindOrInitializeApplicant, type: :service do
   subject do
     described_class.call(
-      applicant_params: applicant_params,
-      organisation: organisation
+      department_internal_id: applicant_params[:department_internal_id],
+      role: applicant_params[:role],
+      affiliation_number: applicant_params[:affiliation_number]
     )
   end
 
@@ -14,20 +15,19 @@ describe FindOrInitializeApplicant, type: :service do
   end
   let!(:organisation) { create(:organisation) }
   let!(:another_organisation) { create(:organisation) }
-  # let!(:applicant) do
-  #   create(:applicant, applicant_params.merge(organisations: [another_organisation], rdv_solidarites_user_id: 1))
-  # end
-
   let(:applicant) { create(:applicant, organisations: [another_organisation]) }
 
   describe "#call" do
     before do
       allow(Applicant).to receive(:find_by)
         .and_return(applicant)
-      allow(applicant).to receive(:assign_attributes)
     end
 
     it("is a success") { is_a_success }
+
+    it "returns an applicant" do
+      expect(subject.applicant).to eq(applicant)
+    end
 
     context "when department internal id is present" do
       it "search for an applicant with department internal id" do
