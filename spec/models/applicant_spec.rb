@@ -325,4 +325,24 @@ describe Applicant do
       end
     end
   end
+
+  describe "uid or department_internal_id presence" do
+    context "when an affiliation_number and a role is present" do
+      let(:applicant) { build(:applicant, role: "demandeur", affiliation_number: "KOKO", department_internal_id: nil) }
+
+      it { expect(applicant).to be_valid }
+    end
+
+    context "when a department_internal_id is present" do
+      let(:applicant) { build(:applicant, role: nil, affiliation_number: nil, department_internal_id: "32424") }
+
+      it { expect(applicant).to be_valid }
+    end
+
+    context "when no affiliation_number and no department_internal_id is present" do
+      let(:applicant) { build(:applicant, role: nil, affiliation_number: nil, department_internal_id: nil) }
+
+      it { expect(applicant).not_to be_valid }
+    end
+  end
 end
