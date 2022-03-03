@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_03_144511) do
+ActiveRecord::Schema.define(version: 2022_03_03_154747) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -132,6 +132,7 @@ ActiveRecord::Schema.define(version: 2022_03_03_144511) do
     t.bigint "department_id"
     t.string "rsa_agents_service_id"
     t.bigint "configuration_id"
+    t.string "responsible_name"
     t.index ["configuration_id"], name: "index_organisations_on_configuration_id"
     t.index ["department_id"], name: "index_organisations_on_department_id"
     t.index ["rdv_solidarites_organisation_id"], name: "index_organisations_on_rdv_solidarites_organisation_id", unique: true
