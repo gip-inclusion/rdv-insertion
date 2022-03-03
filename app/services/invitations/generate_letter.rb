@@ -16,7 +16,12 @@ module Invitations
       @invitation.content = ApplicationController.render(
         template: "invitations/invitation_letter",
         layout: "pdf.html.erb",
-        locals: { invitation: @invitation, department: @invitation.department, applicant: applicant }
+        locals: {
+          invitation: @invitation,
+          department: @invitation.department,
+          applicant: applicant,
+          organisation: @invitation.organisations.last
+        }
       )
     end
 
