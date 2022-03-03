@@ -1,32 +1,19 @@
 import React, { useState, useReducer } from "react";
 
-import * as XLSX from "xlsx";
-import Swal from "sweetalert2";
-
 import FileHandler from "../components/FileHandler";
 import ApplicantList from "../components/ApplicantList";
 import EnrichWithContactFile from "../components/EnrichWithContactFile";
 
-import {
-  parameterizeObjectKeys,
-  parameterizeObjectValues,
-  parameterizeArray,
-} from "../../lib/parameterize";
-import displayMissingColumnsWarning from "../lib/displayMissingColumnsWarning";
+import { parameterizeObjectValues } from "../../lib/parameterize";
+import retrieveApplicantsFromList from "../lib/retrieveApplicantsFromList";
+import retrieveUpToDateApplicants from "../lib/retrieveUpToDateApplicants";
 import updateApplicantContacts from "../lib/updateApplicantContacts";
 import retrieveContactsData from "../lib/retrieveContactsData";
-import getKeyByValue from "../../lib/getKeyByValue";
-import getHeaderNames from "../lib/getHeaderNames";
-import searchApplicants from "../actions/searchApplicants";
 import { initReducer, reducerFactory } from "../../lib/reducers";
-import { excelDateToString } from "../../lib/datesHelper";
-
-import Applicant from "../models/Applicant";
 
 const reducer = reducerFactory("Expérimentation RSA");
 
 export default function ApplicantsUpload({ organisation, configuration, department }) {
-  const SHEET_NAME = configuration.sheet_name;
   const columnNames = configuration.column_names;
   const parameterizedColumnNames = parameterizeObjectValues({
     ...columnNames.required,
@@ -42,127 +29,6 @@ export default function ApplicantsUpload({ organisation, configuration, departme
   const [showEnrichWithContactFile, setShowEnrichWithContactFile] = useState(false);
   const [applicants, dispatchApplicants] = useReducer(reducer, [], initReducer);
 
-  const checkColumnNames = (uploadedColumnNamesParameterized) => {
-    const missingColumnNames = [];
-    const requiredColumnsMapping = parameterizeObjectValues(columnNames.required);
-
-    const expectedColumnNamesParameterized = Object.values(requiredColumnsMapping);
-    const parameterizedMissingColumns = expectedColumnNamesParameterized.filter(
-      (colName) => !uploadedColumnNamesParameterized.includes(colName)
-    );
-
-    if (parameterizedMissingColumns.length > 0) {
-      // Récupère les noms "humains" des colonnes manquantes
-      parameterizedMissingColumns.forEach((col) => {
-        const missingAttribute = getKeyByValue(requiredColumnsMapping, col);
-        const missingColumnName = configuration.column_names.required[missingAttribute];
-        missingColumnNames.push(missingColumnName);
-      });
-    }
-    return missingColumnNames;
-  };
-
-  const retrieveApplicantsFromList = async (file) => {
-    const applicantsFromList = [];
-
-    await new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onload = function (event) {
-        const workbook = XLSX.read(event.target.result, { type: "binary" });
-        const sheet = workbook.Sheets[SHEET_NAME] || workbook.Sheets[workbook.SheetNames[0]];
-        const headerNames = getHeaderNames(sheet);
-        const missingColumnNames = checkColumnNames(parameterizeArray(headerNames));
-        if (missingColumnNames.length > 0) {
-          displayMissingColumnsWarning(missingColumnNames);
-        } else {
-          let rows = XLSX.utils.sheet_to_row_object_array(sheet);
-          rows = rows.map((row) => parameterizeObjectKeys(row));
-          rows.forEach((row) => {
-            const applicant = new Applicant(
-              {
-                lastName: row[parameterizedColumnNames.last_name],
-                firstName: row[parameterizedColumnNames.first_name],
-                affiliationNumber: row[parameterizedColumnNames.affiliation_number],
-                role: row[parameterizedColumnNames.role],
-                title: row[parameterizedColumnNames.title],
-                address: parameterizedColumnNames.address && row[parameterizedColumnNames.address],
-                fullAddress:
-                  parameterizedColumnNames.full_address &&
-                  row[parameterizedColumnNames.full_address],
-                email: parameterizedColumnNames.email && row[parameterizedColumnNames.email],
-                birthDate:
-                  parameterizedColumnNames.birth_date &&
-                  row[parameterizedColumnNames.birth_date] &&
-                  excelDateToString(row[parameterizedColumnNames.birth_date]),
-                city: parameterizedColumnNames.city && row[parameterizedColumnNames.city],
-                postalCode:
-                  parameterizedColumnNames.postal_code && row[parameterizedColumnNames.postal_code],
-                phoneNumber:
-                  parameterizedColumnNames.phone_number &&
-                  row[parameterizedColumnNames.phone_number],
-                birthName:
-                  parameterizedColumnNames.birth_name && row[parameterizedColumnNames.birth_name],
-                departmentInternalId:
-                  parameterizedColumnNames.department_internal_id &&
-                  row[parameterizedColumnNames.department_internal_id],
-                rightsOpeningDate:
-                  parameterizedColumnNames.rights_opening_date &&
-                  row[parameterizedColumnNames.rights_opening_date] &&
-                  excelDateToString(row[parameterizedColumnNames.rights_opening_date]),
-              },
-              department,
-              organisation,
-              configuration
-            );
-            applicantsFromList.push(applicant);
-          });
-        }
-        resolve();
-      };
-      reader.readAsBinaryString(file);
-    });
-
-    return applicantsFromList.reverse();
-  };
-
-  const retrieveApplicantsFromApp = async (departmentInternalIds, uids) => {
-    const result = await searchApplicants(departmentInternalIds, uids);
-    if (result.success) {
-      return result.applicants;
-    }
-    Swal.fire(
-      "Une erreur s'est produite en récupérant les infos utilisateurs sur le serveur",
-      result.errors && result.errors.join(" - "),
-      "warning"
-    );
-    return null;
-  };
-
-  const retrieveUpToDateApplicants = async (applicantsFromList) => {
-    const departmentInternalIds = applicantsFromList
-      .map((applicant) => applicant.departmentInternalId)
-      .filter((departmentInternalId) => departmentInternalId);
-    const uids = applicantsFromList.map((applicant) => applicant.uid).filter((uid) => uid);
-
-    const retrievedApplicants = await retrieveApplicantsFromApp(departmentInternalIds, uids);
-
-    const upToDateApplicants = applicantsFromList.map((applicant) => {
-      const upToDateApplicant = retrievedApplicants.find(
-        (a) =>
-          (a.department_internal_id &&
-            a.department_internal_id === applicant.departmentInternalId) ||
-          (a.uid && a.uid === applicant.uid)
-      );
-
-      if (upToDateApplicant) {
-        applicant.updateWith(upToDateApplicant);
-      }
-      return applicant;
-    });
-
-    return upToDateApplicants;
-  };
-
   const redirectToApplicantList = () => {
     window.location.href = isDepartmentLevel
       ? `/departments/${department.id}/applicants`
@@ -173,7 +39,14 @@ export default function ApplicantsUpload({ organisation, configuration, departme
     setFileSize(file.size);
 
     dispatchApplicants({ type: "reset" });
-    const applicantsFromList = await retrieveApplicantsFromList(file);
+    const applicantsFromList = await retrieveApplicantsFromList(
+      file,
+      organisation,
+      department,
+      configuration,
+      columnNames,
+      parameterizedColumnNames
+    );
     if (applicantsFromList.length === 0) return;
 
     const upToDateApplicants = await retrieveUpToDateApplicants(applicantsFromList);
