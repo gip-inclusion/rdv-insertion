@@ -12,11 +12,15 @@
   <div class="right-col">
     <%# Remplacer par une variable department.city ou @organisation.city ? %>
     <p><%= department.capital %>, le <%= Date.today.strftime('%d/%m/%Y') %></p>
-    <br/><br/><br/>
+    <br/>
     <p>À l'attention de</p>
-    <p><%= applicant.title.upcase %> <%= applicant.first_name.upcase %> <%= applicant.last_name.upcase %></p>
-    <p><%= applicant.street_address.upcase %></p>
-    <p><%= applicant.zipcode_and_city.upcase %></p>
+    <br/><br/>
+    <p><%= applicant.title.upcase %> <%= applicant.first_name.upcase %> <%= applicant.last_name.upcase %><br/>
+    <%= applicant.street_address.upcase %><br/>
+    <% if applicant.street_address2 %>
+      <%= applicant.street_address2.upcase %><br/>
+    <% end %>
+    <%= applicant.zipcode_and_city.upcase %></p>
   </div>
 </div>
 <div class="mail-object">
@@ -36,6 +40,10 @@
   <p>Vous disposez d’un délai de 15 jours maximum à réception de ce courrier pour prendre rendez-vous. Au-delà, vous risquez une suspension ou une réduction de votre allocation RSA.</p>
   <p>Si vous rencontrez une difficulté pour accéder à internet, veuillez téléphoner dès réception de ce courrier au <%= invitation.help_phone_number_formatted %></p>
   <p>Veuillez agréer, <%= applicant.title.capitalize %>, l’expression de mes salutations distinguées.</p>
+  <div class="signature">
+    <p>Pour le Président du Conseil départemental et par délégation,<br/>
+    <%= department.responsible_name %></p>
+  </div>
 </div>
 <div>
   <div class="left-col logo">

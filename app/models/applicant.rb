@@ -96,13 +96,30 @@ class Applicant < ApplicationRecord
     title == "monsieur" ? "M" : "Mme"
   end
 
+  def split_address
+    address&.match(/^(.+) (\d{5}.*)$/m)
+  end
+
   def street_address
-    split_address = address&.match(/^(.+) (\d{5}.*)$/)
-    split_address.present? ? split_address[1].strip.gsub(/-$/, '').gsub(/,$/, '').gsub(/.$/, '') : nil
+    return if split_address.blank?
+
+    raw_street_address = split_address[1]
+    if raw_street_address.include?("\n")
+      raw_street_address.strip.split("\n")[0].gsub(/"\r"/, "")
+    else
+      raw_street_address.strip.gsub(/-$/, '').gsub(/,$/, '').gsub(/.$/, '')
+    end
+  end
+
+  def street_address2
+    return unless split_address.present? && split_address[1].include?("\n")
+
+    split_address[1].strip.split("\n")[1].gsub(/"\r"/, "").gsub(/-$/, '').gsub(/,$/, '').gsub(/.$/, '')
   end
 
   def zipcode_and_city
-    split_address = address&.match(/^(.+) (\d{5}.*)$/)
+    return if split_address.blank?
+
     split_address.present? ? split_address[2].strip : nil
   end
 

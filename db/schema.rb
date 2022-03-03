@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_04_162710) do
+ActiveRecord::Schema.define(version: 2022_03_03_144511) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -86,6 +86,7 @@ ActiveRecord::Schema.define(version: 2022_02_04_162710) do
     t.string "pronoun"
     t.string "email"
     t.string "phone_number"
+    t.string "responsible_name"
   end
 
   create_table "invitations", force: :cascade do |t|
