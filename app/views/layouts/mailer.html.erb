@@ -4,38 +4,33 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <%= stylesheet_pack_tag 'mail' %>
   </head>
-
   <body>
     <table class="body-wrap">
-      <tr align="center" class="d-block">
+      <tr align="center" class="d-block py-2">
         <td class="logo d-block">
           <%= image_pack_tag "logos/rdv-insertion.png", alt: "Logo rdv insertion" %>
         </td>
         <td class="container">
-          <div class="content">
-            <table class="main" width="100%">
-              <tr>
-                <td class="content-wrap">
-                  <table width="100%">
-                    <tbody>
-                      <%= yield %>
-                    </tbody>
-                  </table>
-                </td>
-              </tr>
-            </table>
-            <div class="footer">
-              <table width="100%">
-                <tr>
-                  <td align="center" class="content-block">
-                    <%= link_to "https://doc.rdv-solidarites.fr/informations-generales/informations-generales-et-legales-1" do %>
-                      <span>Informations légales</span>
-                    <% end %>
-                  </td>
-                </tr>
-              </table>
-            </div>
-          </div>
+          <table class="main content" width="100%">
+            <tr>
+              <td class="content-wrap">
+                <table width="100%">
+                  <tbody>
+                    <%= yield %>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </table>
+          <table width="100%" class="footer">
+            <tr>
+              <td align="center" class="content-block">
+                <%= link_to mentions_legales_url do %>
+                  <span>Informations légales</span>
+                <% end %>
+              </td>
+            </tr>
+          </table>
         </td>
       </tr>
     </table>

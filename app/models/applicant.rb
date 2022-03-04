@@ -30,6 +30,7 @@ class Applicant < ApplicationRecord
   validates :affiliation_number, presence: true, allow_nil: true
   validates :email, allow_blank: true, format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/ }
   validate :birth_date_validity
+  validate :uid_or_department_internal_id_presence
 
   enum role: { demandeur: 0, conjoint: 1 }
   enum title: { monsieur: 0, madame: 1 }
@@ -58,6 +59,12 @@ class Applicant < ApplicationRecord
     return unless birth_date.present? && (birth_date > Time.zone.today || birth_date < 130.years.ago)
 
     errors.add(:birth_date, "n'est pas valide")
+  end
+
+  def uid_or_department_internal_id_presence
+    return if department_internal_id.present? || (affiliation_number.present? && role.present?)
+
+    errors.add(:base, "le couple numéro d'allocataire + rôle ou l'ID interne au département doivent être présents.")
   end
 
   def action_required?
@@ -98,7 +105,7 @@ class Applicant < ApplicationRecord
 
   def street_address
     split_address = address&.match(/^(.+) (\d{5}.*)$/)
-    split_address.present? ? split_address[1].strip.gsub(/-$/, '') : nil
+    split_address.present? ? split_address[1].strip.gsub(/-$/, '').gsub(/,$/, '').gsub(/.$/, '') : nil
   end
 
   def zipcode_and_city
