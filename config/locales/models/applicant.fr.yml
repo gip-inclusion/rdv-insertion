@@ -30,3 +30,4 @@ fr:
         rights_opening_date: Date d'entrée flux
         organisations: Organisation(s)
         uid: Le couple numéro d'allocataire + rôle
+        creation_date: Date de création

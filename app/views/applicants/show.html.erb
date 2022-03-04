@@ -77,11 +77,18 @@
         <p><%= display_attribute format_date(@applicant.rights_opening_date) %></p>
       </div>
       <div class="col-10 col-md-5">
+        <h4 class="label-blue"><%= Applicant.human_attribute_name(:creation_date) %></h4>
+        <p><%= display_attribute format_date(@applicant.created_at) %></p>
+      </div>
+    </div>
+    <div class="row d-flex justify-content-around flex-wrap">
+      <div class="col-10 col-md-5">
         <% if department_level? %>
           <h4 class="label-blue"><%= Applicant.human_attribute_name(:organisations) %></h4>
           <p><%= @applicant.organisations.collect(&:name).join(", ") %></p>
         <% end %>
       </div>
+      <div class="col-10 col-md-5"></div>
     </div>
   </div>
   <%= react_component(

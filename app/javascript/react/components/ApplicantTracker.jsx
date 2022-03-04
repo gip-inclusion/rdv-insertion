@@ -62,15 +62,23 @@ export default function ApplicantTracker({
     return "";
   };
 
+  const computeColSpanForInvitationBlock = () => {
+    let colSpan = 0;
+    if (showSmsInvitation) colSpan += 1;
+    if (showEmailInvitation) colSpan += 1;
+    if (showPostalInvitation) colSpan += 1;
+    return `col-${12 / colSpan}`;
+  };
+
   const cssClassForInvitationDate = (format) => {
     const bgColorClass = bgColorClassForInvitationDate(format);
     if (bgColorClass.length === 0) {
-      return "col-3 py-2";
+      return `${computeColSpanForInvitationBlock()} py-2`;
     }
-    return `col-3 py-2 ${bgColorClass}`;
+    return `${computeColSpanForInvitationBlock()} py-2 ${bgColorClass}`;
   };
 
-  const numbersOfColumnsForRdvBlock = () => (numberOfCancelledRdvs > 0 ? "col-3" : "col-4");
+  const computeColSpanForRdvBlock = () => (numberOfCancelledRdvs > 0 ? "col-3" : "col-4");
 
   const bgColorClassForApplicantStatus = () => {
     if (
@@ -89,14 +97,14 @@ export default function ApplicantTracker({
   };
 
   const cssClassForRdvsDates = () =>
-    `${numbersOfColumnsForRdvBlock()} d-flex align-items-center justify-content-center`;
+    `${computeColSpanForRdvBlock()} d-flex align-items-center justify-content-center`;
 
   const cssClassForApplicantStatus = () => {
     const bgColorClass = bgColorClassForApplicantStatus();
     if (bgColorClass.length === 0) {
-      return `${numbersOfColumnsForRdvBlock()} d-flex align-items-center justify-content-center p-3`;
+      return `${computeColSpanForRdvBlock()} d-flex align-items-center justify-content-center p-3`;
     }
-    return `${numbersOfColumnsForRdvBlock()} d-flex align-items-center justify-content-center p-3 ${bgColorClass}`;
+    return `${computeColSpanForRdvBlock()} d-flex align-items-center justify-content-center p-3 ${bgColorClass}`;
   };
 
   const handleClick = async (action) => {
@@ -124,16 +132,20 @@ export default function ApplicantTracker({
   };
 
   return (
-    <div className="d-flex flex-column align-items-center text-center pb-4">
-      <div className="tracking-block block-white mb-4">
+    <div className="d-flex justify-content-around text-center flex-wrap mb-4 pb-3 tracking-blocks-wrapper">
+      <div className="tracking-block block-white">
         <div className="row d-flex justify-content-around">
-          <h4 className="col-3">Création du compte</h4>
-          {showSmsInvitation && <h4 className="col-3">Invitation SMS</h4>}
-          {showEmailInvitation && <h4 className="col-3">Invitation mail</h4>}
-          {showPostalInvitation && <h4 className="col-3">Invitation courrier</h4>}
+          {showSmsInvitation && (
+            <h4 className={computeColSpanForInvitationBlock()}>Invitation SMS</h4>
+          )}
+          {showEmailInvitation && (
+            <h4 className={computeColSpanForInvitationBlock()}>Invitation mail</h4>
+          )}
+          {showPostalInvitation && (
+            <h4 className={computeColSpanForInvitationBlock()}>Invitation courrier</h4>
+          )}
         </div>
         <div className="row d-flex justify-content-around flex-nowrap">
-          <p className="col-3 py-2">{getFrenchFormatDateString(applicant.created_at)}</p>
           {showSmsInvitation && (
             <p className={cssClassForInvitationDate("sms")}>
               {lastSmsInvitationSentAt ? getFrenchFormatDateString(lastSmsInvitationSentAt) : "-"}
@@ -155,9 +167,8 @@ export default function ApplicantTracker({
           )}
         </div>
         <div className="row d-flex justify-content-around align-items-center">
-          <div className="col-3" />
           {showSmsInvitation && (
-            <div className="col-3">
+            <div className={computeColSpanForInvitationBlock()}>
               <button
                 type="button"
                 disabled={
@@ -176,7 +187,7 @@ export default function ApplicantTracker({
             </div>
           )}
           {showEmailInvitation && (
-            <div className="col-3">
+            <div className={computeColSpanForInvitationBlock()}>
               <button
                 type="button"
                 disabled={
@@ -195,7 +206,7 @@ export default function ApplicantTracker({
             </div>
           )}
           {showPostalInvitation && (
-            <div className="col-3">
+            <div className={computeColSpanForInvitationBlock()}>
               <button
                 type="button"
                 disabled={
@@ -217,8 +228,8 @@ export default function ApplicantTracker({
       </div>
       <div className="tracking-block block-2 block-white d-flex justify-content-center flex-column">
         <div className="row d-flex justify-content-around">
-          <h4 className={numbersOfColumnsForRdvBlock()}>RDV pris le</h4>
-          <h4 className={numbersOfColumnsForRdvBlock()}>Date du RDV</h4>
+          <h4 className={computeColSpanForRdvBlock()}>RDV pris le</h4>
+          <h4 className={computeColSpanForRdvBlock()}>Date du RDV</h4>
           {numberOfCancelledRdvs > 0 && (
             <h4 className="col-3">
               RDV reportés{" "}
@@ -227,7 +238,7 @@ export default function ApplicantTracker({
               </small>
             </h4>
           )}
-          <h4 className={numbersOfColumnsForRdvBlock()}>Statut</h4>
+          <h4 className={computeColSpanForRdvBlock()}>Statut</h4>
         </div>
         <div className="row d-flex justify-content-around flex-grow-1">
           <div className={cssClassForRdvsDates()}>
