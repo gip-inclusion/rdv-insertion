@@ -44,6 +44,11 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :parcours_insertion, param: "department_number",
+                                 path: '/parcours-insertion',
+                                 to: "static_pages#teleprocedure",
+                                 as: :teleprocedure
+
   namespace :api do
     namespace :v1 do
       resources :organisations, param: "rdv_solidarites_organisation_id", only: [] do
