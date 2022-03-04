@@ -15,6 +15,11 @@ Rails.application.routes.draw do
   get "mentions-legales", to: "static_pages#legal_notice"
   get "politique-de-confidentialite", to: "static_pages#privacy_policy"
   get "accessibilite", to: "static_pages#accessibility"
+  resources :teleprocedure, param: "department_number",
+                            path: '/parcours-insertion',
+                            to: "static_pages#teleprocedure",
+                            as: :teleprocedure, only: [:show]
+
   resources :organisations, only: [:index] do
     get :geolocated, on: :collection
     resources :applicants, only: [:index, :create, :show, :update, :edit, :new] do
@@ -43,11 +48,6 @@ Rails.application.routes.draw do
       resources :invitations, only: [:create]
     end
   end
-
-  resources :parcours_insertion, param: "department_number",
-                                 path: '/parcours-insertion',
-                                 to: "static_pages#teleprocedure",
-                                 as: :teleprocedure
 
   namespace :api do
     namespace :v1 do
