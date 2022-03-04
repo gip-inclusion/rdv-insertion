@@ -108,26 +108,11 @@ class Applicant < ApplicationRecord
   end
 
   def street_address
-    return if split_address.blank?
-
-    raw_street_address = split_address[1]
-    if raw_street_address.include?("\n")
-      raw_street_address.strip.split("\n")[0].gsub(/"\r"/, "")
-    else
-      raw_street_address.strip.gsub(/-$/, '').gsub(/,$/, '').gsub(/.$/, '')
-    end
-  end
-
-  def street_address2
-    return unless split_address.present? && split_address[1].include?("\n")
-
-    split_address[1].strip.split("\n")[1].gsub(/"\r"/, "").gsub(/-$/, '').gsub(/,$/, '').gsub(/.$/, '')
+    split_address.present? ? split_address[1].strip.gsub(/-$/, '').gsub(/,$/, '').gsub(/\.$/, '') : nil
   end
 
   def zipcode_and_city
-    return if split_address.blank?
-
-    split_address[2].strip
+    split_address.present? ? split_address[2].strip : nil
   end
 
   def delete_organisation(organisation)

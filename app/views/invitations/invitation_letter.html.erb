@@ -16,10 +16,7 @@
     <p>À l'attention de</p>
     <br/><br/>
     <p><%= applicant.title.upcase %> <%= applicant.first_name.upcase %> <%= applicant.last_name.upcase %><br/>
-    <%= applicant.street_address.upcase %><br/>
-    <% if applicant.street_address2 %>
-      <%= applicant.street_address2.upcase %><br/>
-    <% end %>
+    <%= simple_format(applicant.street_address.upcase, {}, wrapper_tag: "span") %><br/>
     <%= applicant.zipcode_and_city.upcase %></p>
   </div>
 </div>
