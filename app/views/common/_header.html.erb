@@ -18,7 +18,7 @@
         </div>
       <% end %>
       <div class="ml-5 d-flex align-items-center">
-        <% unless logged_in? || controller_name.include?("sessions") || controller.action_name.include?("teleprocedure") %>
+        <% if show_login_button? %>
           <div class="text-center mx-3 col">
             <%= link_to sign_in_path do %>
               <button class="btn btn-default btn-blue w-100">
@@ -31,7 +31,7 @@
       </div>
     </div>
   </nav>
-  <% unless logged_in? || controller.controller_name.include?("sessions") || controller.action_name.include?("teleprocedure") %>
+  <% if show_guide_banner? %>
     <div class="sub-header d-none d-md-flex marianne">
       <div class="container d-none d-md-flex ">
         <%= link_to "https://communaute.inclusion.beta.gouv.fr/", class: "nav-link optional-link ", target: :blank, rel: "noopener noreferrer" do %>
