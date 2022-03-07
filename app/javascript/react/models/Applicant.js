@@ -1,6 +1,5 @@
 import formatPhoneNumber from "../../lib/formatPhoneNumber";
 import retrieveLastInvitationDate from "../../lib/retrieveLastInvitationDate";
-import { stringToDate } from "../../lib/datesHelper";
 
 const ROLES = {
   allocataire: "demandeur",
@@ -154,14 +153,6 @@ export default class Applicant {
 
   updatePhoneNumber(phoneNumber) {
     this.phoneNumber = formatPhoneNumber(phoneNumber);
-  }
-
-  updateEmail(email) {
-    this.email = email;
-  }
-
-  updateRightsOpeningDate(date) {
-    this.rightsOpeningDate = stringToDate(date);
   }
 
   formatAddress() {
