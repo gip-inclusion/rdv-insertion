@@ -1,8 +1,9 @@
 class FindOrInitializeApplicant < BaseService
-  def initialize(department_internal_id:, role:, affiliation_number:)
+  def initialize(department_internal_id:, role:, affiliation_number:, department_id:)
     @department_internal_id = department_internal_id
     @role = role
     @affiliation_number = affiliation_number
+    @department_id = department_id
   end
 
   def call
@@ -20,7 +21,7 @@ class FindOrInitializeApplicant < BaseService
   def find_applicant_by_department_internal_id
     return if @department_internal_id.blank?
 
-    Applicant.find_by(department_internal_id: @department_internal_id)
+    Applicant.find_by(department_internal_id: @department_internal_id, department_id: @department_id)
   end
 
   def find_applicant_by_role_and_affiliation_number
@@ -28,7 +29,8 @@ class FindOrInitializeApplicant < BaseService
 
     Applicant.find_by(
       affiliation_number: @affiliation_number,
-      role: @role
+      role: @role,
+      department_id: @department_id
     )
   end
 end

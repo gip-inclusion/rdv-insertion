@@ -85,7 +85,8 @@ class ApplicantsController < ApplicationController
     @find_or_initialize_applicant ||= FindOrInitializeApplicant.call(
       department_internal_id: applicant_params[:department_internal_id],
       role: applicant_params[:role],
-      affiliation_number: applicant_params[:affiliation_number]
+      affiliation_number: applicant_params[:affiliation_number],
+      department_id: @department.id
     )
   end
 
