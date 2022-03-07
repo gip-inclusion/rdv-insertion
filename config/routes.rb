@@ -15,6 +15,11 @@ Rails.application.routes.draw do
   get "mentions-legales", to: "static_pages#legal_notice"
   get "politique-de-confidentialite", to: "static_pages#privacy_policy"
   get "accessibilite", to: "static_pages#accessibility"
+
+  resources :teleprocedure_landings, param: "department_number",
+                                     path: '/parcours-insertion',
+                                     only: [:show]
+
   resources :organisations, only: [:index] do
     get :geolocated, on: :collection
     resources :applicants, only: [:index, :create, :show, :update, :edit, :new] do

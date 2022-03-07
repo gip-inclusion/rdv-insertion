@@ -1,5 +1,5 @@
 class StaticPagesController < ApplicationController
-  skip_before_action :authenticate_agent!, only: [:welcome, :legal_notice, :privacy_policy, :accessibility]
+  skip_before_action :authenticate_agent!
 
   def welcome
     redirect_to(organisations_path) if logged_in?
