@@ -1,3 +1,5 @@
+# rubocop:disable Metrics/ClassLength
+
 class ApplicantsController < ApplicationController
   PERMITTED_PARAMS = [
     :uid, :role, :first_name, :last_name, :birth_date, :email, :phone_number,
@@ -15,9 +17,11 @@ class ApplicantsController < ApplicationController
   end
 
   def create
-    @applicant = Applicant.new(
+    @applicant = find_or_initialize_applicant.applicant
+    # TODO: if an applicant exists, return it to the agent to let him decide what to do
+    @applicant.assign_attributes(
       department: @organisation.department,
-      organisations: [@organisation],
+      organisations: (@applicant.organisations.to_a + [@organisation]).uniq,
       **applicant_params.compact_blank
     )
     authorize @applicant
@@ -77,6 +81,14 @@ class ApplicantsController < ApplicationController
     end
   end
 
+  def find_or_initialize_applicant
+    @find_or_initialize_applicant ||= FindOrInitializeApplicant.call(
+      department_internal_id: applicant_params[:department_internal_id],
+      role: applicant_params[:role],
+      affiliation_number: applicant_params[:affiliation_number]
+    )
+  end
+
   def save_applicant_and_redirect(page)
     if save_applicant.success?
       redirect_to(after_save_path)
@@ -124,7 +136,7 @@ class ApplicantsController < ApplicationController
 
   def set_department_variables
     @department = Department.includes(:organisations, :applicants).find(params[:department_id])
-    @organisation =  \
+    @organisation = \
       if @applicant.blank?
         nil
       else
@@ -141,3 +153,5 @@ class ApplicantsController < ApplicationController
                   .to_a
   end
 end
+
+# rubocop: enable Metrics/ClassLength
