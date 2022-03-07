@@ -27,7 +27,9 @@ describe FindOrInitializeApplicant, type: :service do
       end
 
       context "for another department" do
-        let!(:applicant) { create(:applicant, department: another_department, department_internal_id: department_internal_id) }
+        let!(:applicant) do
+          create(:applicant, department: another_department, department_internal_id: department_internal_id)
+        end
 
         it "does not return the existing applicant" do
           expect(subject).not_to eq(applicant)
