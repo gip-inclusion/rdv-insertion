@@ -4,6 +4,6 @@
     <%= image_pack_tag "logos/#{@department.name.parameterize}.svg", alt: "Logo Département", class: "teleprocedure-department-logo" %>
   </div>
   <div class="text-center pb-3">
-    <%= render partial: "static_pages/teleprocedure_message/#{@department.number}" %>
+    <%= render @department.number %>
   </div>
 </div>
