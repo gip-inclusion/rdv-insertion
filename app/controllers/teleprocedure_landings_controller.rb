@@ -1,3 +1,5 @@
+# Where the bRSA lands after his teleprocedure online
+
 class TeleprocedureLandingsController < ApplicationController
   skip_before_action :authenticate_agent!
 
