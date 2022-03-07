@@ -47,26 +47,6 @@ class Applicant < ApplicationRecord
     where.not(id: Invitation.sent_in_time_window.pluck(:applicant_id).uniq)
   }
 
-  def generate_uid
-    # Base64 encoded "department_number - affiliation_number - role"
-    return if deleted?
-    return if department_id.blank? || affiliation_number.blank? || role.blank?
-
-    self.uid = Base64.strict_encode64("#{department.number} - #{affiliation_number} - #{role}")
-  end
-
-  def birth_date_validity
-    return unless birth_date.present? && (birth_date > Time.zone.today || birth_date < 130.years.ago)
-
-    errors.add(:birth_date, "n'est pas valide")
-  end
-
-  def uid_or_department_internal_id_presence
-    return if department_internal_id.present? || (affiliation_number.present? && role.present?)
-
-    errors.add(:base, "le couple numéro d'allocataire + rôle ou l'ID interne au département doivent être présents.")
-  end
-
   def action_required?
     status.in?(STATUSES_WITH_ACTION_REQUIRED) ||
       (attention_needed? && invited_before_time_window?)
@@ -103,10 +83,6 @@ class Applicant < ApplicationRecord
     title == "monsieur" ? "M" : "Mme"
   end
 
-  def split_address
-    address&.match(/^(.+) (\d{5}.*)$/m)
-  end
-
   def street_address
     split_address.present? ? split_address[1].strip.gsub(/-$/, '').gsub(/,$/, '').gsub(/\.$/, '') : nil
   end
@@ -126,5 +102,31 @@ class Applicant < ApplicationRecord
       invitations: invitations,
       organisations: organisations
     )
+  end
+
+  private
+
+  def generate_uid
+    # Base64 encoded "department_number - affiliation_number - role"
+    return if deleted?
+    return if department_id.blank? || affiliation_number.blank? || role.blank?
+
+    self.uid = Base64.strict_encode64("#{department.number} - #{affiliation_number} - #{role}")
+  end
+
+  def birth_date_validity
+    return unless birth_date.present? && (birth_date > Time.zone.today || birth_date < 130.years.ago)
+
+    errors.add(:birth_date, "n'est pas valide")
+  end
+
+  def uid_or_department_internal_id_presence
+    return if department_internal_id.present? || (affiliation_number.present? && role.present?)
+
+    errors.add(:base, "le couple numéro d'allocataire + rôle ou l'ID interne au département doivent être présents.")
+  end
+
+  def split_address
+    address&.match(/^(.+) (\d{5}.*)$/m)
   end
 end
