@@ -8,7 +8,10 @@ describe Invitations::GenerateLetter, type: :service do
   let!(:applicant) { create(:applicant) }
   let!(:department) { create(:department) }
   let!(:invitation) do
-    create(:invitation, content: nil, applicant: applicant, organisations: [organisation], department: department, format: "postal")
+    create(
+      :invitation, content: nil, applicant: applicant, organisations: [organisation],
+                   department: department, format: "postal"
+    )
   end
   let!(:organisation) { create(:organisation, responsible: responsible, department: department) }
   let!(:responsible) { create(:responsible, first_name: "Gael", last_name: "Monfils") }
