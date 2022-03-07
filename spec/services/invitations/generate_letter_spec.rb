@@ -6,7 +6,12 @@ describe Invitations::GenerateLetter, type: :service do
   end
 
   let!(:applicant) { create(:applicant) }
-  let!(:invitation) { create(:invitation, content: nil, applicant: applicant, format: "postal") }
+  let!(:department) { create(:department) }
+  let!(:invitation) do
+    create(:invitation, content: nil, applicant: applicant, organisations: [organisation], department: department, format: "postal")
+  end
+  let!(:organisation) { create(:organisation, responsible: responsible, department: department) }
+  let!(:responsible) { create(:responsible, first_name: "Gael", last_name: "Monfils") }
 
   describe "#call" do
     it("is a success") { is_a_success }
@@ -15,6 +20,7 @@ describe Invitations::GenerateLetter, type: :service do
       subject
       expect(invitation.content).not_to eq(nil)
       expect(invitation.content).to match(/saisissez le code d’invitation ci-dessous, puis suivez les instructions/)
+      expect(invitation.content).to match(/Gael Monfils/)
     end
 
     context "when the format is not postal" do
