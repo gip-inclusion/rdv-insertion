@@ -156,10 +156,6 @@ export default class Applicant {
     this.phoneNumber = formatPhoneNumber(phoneNumber);
   }
 
-  updateEmail(email) {
-    this.email = email;
-  }
-
   formatAddress() {
     return (
       (this.address ?? "") +

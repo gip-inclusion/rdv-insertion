@@ -9,7 +9,7 @@ import getHeaderNames from "../lib/getHeaderNames";
 import checkColumnNames from "../lib/checkColumnNames";
 import displayMissingColumnsWarning from "../lib/displayMissingColumnsWarning";
 import retrieveUpToDateApplicants from "../lib/retrieveUpToDateApplicants";
-import updateApplicantContacts from "../lib/updateApplicantContacts";
+import updateApplicantContactsData from "../lib/updateApplicantContactsData";
 import retrieveContactsData from "../lib/retrieveContactsData";
 import { initReducer, reducerFactory } from "../../lib/reducers";
 import { excelDateToString } from "../../lib/datesHelper";
@@ -143,11 +143,13 @@ export default function ApplicantsUpload({ organisation, configuration, departme
       applicants.map(async (e) => {
         let { applicant } = e;
         const applicantContactsData = contactsData.find(
-          (a) => a.MATRICULE.toString() === applicant.affiliationNumber
+          (a) =>
+            a.MATRICULE.toString()?.padStart(7, "0") ===
+            applicant.affiliationNumber?.padStart(7, "0")
         );
         // if the applicant exists in DB, we don't update the record
         if (applicantContactsData && !applicant.createdAt) {
-          applicant = await updateApplicantContacts(applicant, applicantContactsData);
+          applicant = await updateApplicantContactsData(applicant, applicantContactsData);
         }
       })
     );
