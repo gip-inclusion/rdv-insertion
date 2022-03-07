@@ -17,16 +17,18 @@
 }
 
 .mail-object {
-  margin: 40px 0 80px;
+  margin: 40px 0 40px;
 }
 
 .main-content {
   width: 95%;
   margin-left: 40px;
-  margin-bottom: 50px;
+  margin-bottom: 80px;
   font-size: 18px;
   p {
     padding-bottom: 10px;
+    text-align:justify;
+    text-justify: inter-word;
   }
 }
 
@@ -46,4 +48,10 @@
 .bold-blue {
   font-weight: bold;
   color: #083b66;
+}
+
+.letter-signature {
+  p {
+    text-align: right;
+  }
 }
