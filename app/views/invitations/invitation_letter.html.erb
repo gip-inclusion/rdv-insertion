@@ -37,10 +37,14 @@
   <p>Vous disposez d’un délai de 15 jours maximum à réception de ce courrier pour prendre rendez-vous. Au-delà, vous risquez une suspension ou une réduction de votre allocation RSA.</p>
   <p>Si vous rencontrez une difficulté pour accéder à internet, veuillez téléphoner dès réception de ce courrier au <%= invitation.help_phone_number_formatted %></p>
   <p>Veuillez agréer, <%= applicant.title.capitalize %>, l’expression de mes salutations distinguées.</p>
-  <div class="letter-signature">
-    <p>Pour le Président du Conseil départemental et par délégation,<br/>
-    <%= organisation.responsible.full_name %></p>
-  </div>
+  <% if organisation.responsible.present? %>
+    <div class="letter-signature">
+      <p>Pour le Président du Conseil départemental et par délégation,<br/>
+      <%= organisation.responsible.full_name %></p>
+    </div>
+  <% else %>
+    <br/><br/>
+  <% end %>
 </div>
 <div>
   <div class="left-col logo">
