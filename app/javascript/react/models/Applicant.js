@@ -18,7 +18,6 @@ export default class Applicant {
     Object.keys(attributes).forEach((key) => {
       formattedAttributes[key] = attributes[key]?.toString()?.trim();
     });
-    this.address = formattedAttributes.address;
     this.lastName = formattedAttributes.lastName;
     this.firstName = formattedAttributes.firstName;
     this.title = this.formatTitle(formattedAttributes.title);
@@ -26,9 +25,13 @@ export default class Applicant {
     this.email = formattedAttributes.email;
     this.birthDate = formattedAttributes.birthDate;
     this.birthName = formattedAttributes.birthName;
+    // address is street name and street number
+    this.address = formattedAttributes.address;
+    // sometimes street number is separated from address
+    this.streetNumber = formattedAttributes.streetNumber;
     this.city = formattedAttributes.city;
     this.postalCode = formattedAttributes.postalCode;
-    this.fullAddress = formattedAttributes.fullAddress || this.formatAddress();
+    this.fullAddress = formattedAttributes.fullAddress || this.formatFullAddress();
     this.departmentInternalId = formattedAttributes.departmentInternalId;
     this.rightsOpeningDate = formattedAttributes.rightsOpeningDate;
     this.affiliationNumber = this.formatAffiliationNumber(formattedAttributes.affiliationNumber);
@@ -156,8 +159,9 @@ export default class Applicant {
     this.phoneNumber = formatPhoneNumber(phoneNumber);
   }
 
-  formatAddress() {
+  formatFullAddress() {
     return (
+      (this.streetNumber ? `${this.streetNumber} ` : "") +
       (this.address ?? "") +
       (this.postalCode ? ` ${this.postalCode}` : "") +
       (this.city ? ` ${this.city}` : "")
@@ -191,10 +195,6 @@ export default class Applicant {
     );
   }
 
-  hasMissingAttributes() {
-    return [this.firstName, this.lastName, this.title].some((attribute) => !attribute);
-  }
-
   generateUid() {
     // Base64 encoded "departmentNumber - affiliationNumber - role"
 
@@ -207,7 +207,6 @@ export default class Applicant {
 
   asJson() {
     return {
-      uid: this.generateUid(),
       address: this.fullAddress,
       title: this.title,
       last_name: this.lastName,

@@ -81,7 +81,7 @@ export default function Applicant({
     dispatchApplicants({
       type: "update",
       item: {
-        seed: applicant.uid,
+        seed: applicant.uid || applicant.departmentInternalId,
         applicant,
       },
     });
