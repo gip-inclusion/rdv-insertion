@@ -150,7 +150,7 @@ class ApplicantsController < ApplicationController
     @applicants = policy_scope(Applicant).includes(:organisations, :invitations, :rdvs).distinct
     @applicants = @applicants
                   .where(department_internal_id: params.require(:applicants)[:department_internal_ids])
-                  .or(@applicants.where(uid: params[:applicants].require(:uids)))
+                  .or(@applicants.where(uid: params.require(:applicants)[:uids]))
                   .to_a
   end
 end
