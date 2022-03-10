@@ -40,7 +40,7 @@
   <% if organisation.responsible.present? %>
     <div class="letter-signature">
       <p>Pour le Président du Conseil départemental et par délégation,<br/>
-      <%= organisation.responsible.full_name %></p>
+      <%= organisation.responsible.full_name %>, <%= organisation.responsible.role %></p>
     </div>
   <% else %>
     <br/><br/>
