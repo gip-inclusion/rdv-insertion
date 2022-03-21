@@ -1,3 +1,17 @@
+@font-face {
+  font-family: 'Marianne';
+  src: url('../fonts/Marianne/Marianne-Regular.woff');
+}
+
+body {
+  font-family: "Marianne", sans-serif;
+}
+
+// to keep the link to rdv-insertion on one line
+u {
+  white-space: nowrap;
+}
+
 .left-col {
   display: inline-block;
   width: 40%;
@@ -27,11 +41,8 @@
   margin-bottom: 80px;
   font-size: 18px;
   p {
-    padding-bottom: 10px;
     text-align:justify;
     text-justify: inter-word;
-    font-size: 100%;
-    font-family: Arial, Helvetica, sans-serif;
   }
 }
 
