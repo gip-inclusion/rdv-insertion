@@ -22,7 +22,7 @@ describe Invitations::GenerateLetter, type: :service do
     it "generates the pdf string" do
       subject
       expect(invitation.content).not_to eq(nil)
-      expect(invitation.content).to match(/Pour choisir un créneau à votre convenance, saisissez le code d’invitation ci-dessous/)
+      expect(invitation.content).to match(/Pour choisir un créneau à votre convenance, saisissez le code d’invitation/)
       expect(invitation.content).to match(/Gael Monfils/)
     end
 
