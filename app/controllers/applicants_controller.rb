@@ -137,15 +137,19 @@ class ApplicantsController < ApplicationController
 
   def set_department_variables
     @department = Department.includes(:organisations, :applicants).find(params[:department_id])
+    @configuration = @department.configuration
+    set_organisation_for_department_level
+  end
+
+  def set_organisation_for_department_level
     @organisation = \
       if @applicant.blank?
         nil
       elsif @applicant.rdvs.present?
-        @applicant.rdvs.last.organisation
+        @applicant.rdvs.where(organisation_id: policy_scope(Organisation).pluck(:id)).last.organisation
       else
         policy_scope(Organisation).where(id: @applicant.organisations.pluck(:id), department: @department).first
       end
-    @configuration = @department.configuration
   end
 
   def retrieve_applicants
