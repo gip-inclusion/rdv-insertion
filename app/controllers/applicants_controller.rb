@@ -140,6 +140,8 @@ class ApplicantsController < ApplicationController
     @organisation = \
       if @applicant.blank?
         nil
+      elsif @applicant.rdvs.present?
+        @applicant.rdvs.last.organisation
       else
         policy_scope(Organisation).where(id: @applicant.organisations.pluck(:id), department: @department).first
       end
