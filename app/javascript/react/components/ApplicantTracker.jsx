@@ -13,6 +13,7 @@ export default function ApplicantTracker({
   showSmsInvitation,
   showEmailInvitation,
   showPostalInvitation,
+  showNotification,
   rdvs,
   numberOfCancelledRdvs,
   statusNotice,
@@ -67,6 +68,7 @@ export default function ApplicantTracker({
     if (showSmsInvitation) colSpan += 1;
     if (showEmailInvitation) colSpan += 1;
     if (showPostalInvitation) colSpan += 1;
+    if (colSpan === 0) return "";
     return `col-${12 / colSpan}`;
   };
 
@@ -133,99 +135,101 @@ export default function ApplicantTracker({
 
   return (
     <div className="d-flex justify-content-around text-center flex-wrap mb-4 pb-3 tracking-blocks-wrapper">
-      <div className="tracking-block block-white">
-        <div className="row d-flex justify-content-around">
-          {showSmsInvitation && (
-            <h4 className={computeColSpanForInvitationBlock()}>Invitation SMS</h4>
-          )}
-          {showEmailInvitation && (
-            <h4 className={computeColSpanForInvitationBlock()}>Invitation mail</h4>
-          )}
-          {showPostalInvitation && (
-            <h4 className={computeColSpanForInvitationBlock()}>Invitation courrier</h4>
-          )}
+      {!showNotification && (
+        <div className="tracking-block block-white">
+          <div className="row d-flex justify-content-around">
+            {showSmsInvitation && (
+              <h4 className={computeColSpanForInvitationBlock()}>Invitation SMS</h4>
+            )}
+            {showEmailInvitation && (
+              <h4 className={computeColSpanForInvitationBlock()}>Invitation mail</h4>
+            )}
+            {showPostalInvitation && (
+              <h4 className={computeColSpanForInvitationBlock()}>Invitation courrier</h4>
+            )}
+          </div>
+          <div className="row d-flex justify-content-around flex-nowrap">
+            {showSmsInvitation && (
+              <p className={cssClassForInvitationDate("sms")}>
+                {lastSmsInvitationSentAt ? getFrenchFormatDateString(lastSmsInvitationSentAt) : "-"}
+              </p>
+            )}
+            {showEmailInvitation && (
+              <p className={cssClassForInvitationDate("email")}>
+                {lastEmailInvitationSentAt
+                  ? getFrenchFormatDateString(lastEmailInvitationSentAt)
+                  : "-"}
+              </p>
+            )}
+            {showPostalInvitation && (
+              <p className={cssClassForInvitationDate("postal")}>
+                {lastPostalInvitationSentAt
+                  ? getFrenchFormatDateString(lastPostalInvitationSentAt)
+                  : "-"}
+              </p>
+            )}
+          </div>
+          <div className="row d-flex justify-content-around align-items-center">
+            {showSmsInvitation && (
+              <div className={computeColSpanForInvitationBlock()}>
+                <button
+                  type="button"
+                  disabled={
+                    isLoading.smsInvitation ||
+                    rdvs.length > 0 ||
+                    !applicant.phone_number ||
+                    applicantStatus === "resolved"
+                  }
+                  className="btn btn-blue"
+                  onClick={() => handleClick("smsInvitation")}
+                >
+                  {isLoading.smsInvitation && "Invitation..."}
+                  {!isLoading.smsInvitation && lastSmsInvitationSentAt && "Relancer"}
+                  {!isLoading.smsInvitation && !lastSmsInvitationSentAt && "Inviter"}
+                </button>
+              </div>
+            )}
+            {showEmailInvitation && (
+              <div className={computeColSpanForInvitationBlock()}>
+                <button
+                  type="button"
+                  disabled={
+                    isLoading.emailInvitation ||
+                    rdvs.length > 0 ||
+                    !applicant.email ||
+                    applicantStatus === "resolved"
+                  }
+                  className="btn btn-blue"
+                  onClick={() => handleClick("emailInvitation")}
+                >
+                  {isLoading.emailInvitation && "Invitation..."}
+                  {!isLoading.emailInvitation && lastEmailInvitationSentAt && "Relancer"}
+                  {!isLoading.emailInvitation && !lastEmailInvitationSentAt && "Inviter"}
+                </button>
+              </div>
+            )}
+            {showPostalInvitation && (
+              <div className={computeColSpanForInvitationBlock()}>
+                <button
+                  type="button"
+                  disabled={
+                    isLoading.postalInvitation ||
+                    rdvs.length > 0 ||
+                    !applicant.address ||
+                    applicantStatus === "resolved"
+                  }
+                  className="btn btn-blue"
+                  onClick={() => handleClick("postalInvitation")}
+                >
+                  {isLoading.postalInvitation && "Invitation..."}
+                  {!isLoading.postalInvitation && lastPostalInvitationSentAt && "Recréer"}
+                  {!isLoading.postalInvitation && !lastPostalInvitationSentAt && "Inviter"}
+                </button>
+              </div>
+            )}
+          </div>
         </div>
-        <div className="row d-flex justify-content-around flex-nowrap">
-          {showSmsInvitation && (
-            <p className={cssClassForInvitationDate("sms")}>
-              {lastSmsInvitationSentAt ? getFrenchFormatDateString(lastSmsInvitationSentAt) : "-"}
-            </p>
-          )}
-          {showEmailInvitation && (
-            <p className={cssClassForInvitationDate("email")}>
-              {lastEmailInvitationSentAt
-                ? getFrenchFormatDateString(lastEmailInvitationSentAt)
-                : "-"}
-            </p>
-          )}
-          {showPostalInvitation && (
-            <p className={cssClassForInvitationDate("postal")}>
-              {lastPostalInvitationSentAt
-                ? getFrenchFormatDateString(lastPostalInvitationSentAt)
-                : "-"}
-            </p>
-          )}
-        </div>
-        <div className="row d-flex justify-content-around align-items-center">
-          {showSmsInvitation && (
-            <div className={computeColSpanForInvitationBlock()}>
-              <button
-                type="button"
-                disabled={
-                  isLoading.smsInvitation ||
-                  rdvs.length > 0 ||
-                  !applicant.phone_number ||
-                  applicantStatus === "resolved"
-                }
-                className="btn btn-blue"
-                onClick={() => handleClick("smsInvitation")}
-              >
-                {isLoading.smsInvitation && "Invitation..."}
-                {!isLoading.smsInvitation && lastSmsInvitationSentAt && "Relancer"}
-                {!isLoading.smsInvitation && !lastSmsInvitationSentAt && "Inviter"}
-              </button>
-            </div>
-          )}
-          {showEmailInvitation && (
-            <div className={computeColSpanForInvitationBlock()}>
-              <button
-                type="button"
-                disabled={
-                  isLoading.emailInvitation ||
-                  rdvs.length > 0 ||
-                  !applicant.email ||
-                  applicantStatus === "resolved"
-                }
-                className="btn btn-blue"
-                onClick={() => handleClick("emailInvitation")}
-              >
-                {isLoading.emailInvitation && "Invitation..."}
-                {!isLoading.emailInvitation && lastEmailInvitationSentAt && "Relancer"}
-                {!isLoading.emailInvitation && !lastEmailInvitationSentAt && "Inviter"}
-              </button>
-            </div>
-          )}
-          {showPostalInvitation && (
-            <div className={computeColSpanForInvitationBlock()}>
-              <button
-                type="button"
-                disabled={
-                  isLoading.postalInvitation ||
-                  rdvs.length > 0 ||
-                  !applicant.address ||
-                  applicantStatus === "resolved"
-                }
-                className="btn btn-blue"
-                onClick={() => handleClick("postalInvitation")}
-              >
-                {isLoading.postalInvitation && "Invitation..."}
-                {!isLoading.postalInvitation && lastPostalInvitationSentAt && "Recréer"}
-                {!isLoading.postalInvitation && !lastPostalInvitationSentAt && "Inviter"}
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
+      )}
       <div className="tracking-block block-2 block-white d-flex justify-content-center flex-column">
         <div className="row d-flex justify-content-around">
           <h4 className={computeColSpanForRdvBlock()}>RDV pris le</h4>
