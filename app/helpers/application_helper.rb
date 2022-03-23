@@ -25,4 +25,12 @@ module ApplicationHelper
   def image_compiled?(image_path)
     asset_compiled?("media/images/#{image_path}")
   end
+
+  def show_login_button?
+    !logged_in? && controller_name.include?("static_pages")
+  end
+
+  def show_guide_banner?
+    show_login_button?
+  end
 end

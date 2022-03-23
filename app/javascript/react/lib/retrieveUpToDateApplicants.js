@@ -1,5 +1,7 @@
 import Swal from "sweetalert2";
 import searchApplicants from "../actions/searchApplicants";
+import findDuplicates from "../../lib/findDuplicates";
+import processApplicantsDuplicates from "./processApplicantsDuplicates";
 
 const retrieveApplicantsFromApp = async (departmentInternalIds, uids) => {
   const result = await searchApplicants(departmentInternalIds, uids);
@@ -20,6 +22,9 @@ const retrieveUpToDateApplicants = async (applicantsFromList) => {
     .filter((departmentInternalId) => departmentInternalId);
   const uids = applicantsFromList.map((applicant) => applicant.uid).filter((uid) => uid);
 
+  const duplicatesDepartmentInternalIds = findDuplicates(departmentInternalIds);
+  const duplicatesUids = findDuplicates(uids);
+
   const retrievedApplicants = await retrieveApplicantsFromApp(departmentInternalIds, uids);
 
   const upToDateApplicants = applicantsFromList.map((applicant) => {
@@ -31,6 +36,12 @@ const retrieveUpToDateApplicants = async (applicantsFromList) => {
 
     if (upToDateApplicant) {
       applicant.updateWith(upToDateApplicant);
+    } else if (
+      (applicant.departmentInternalId &&
+        duplicatesDepartmentInternalIds.includes(applicant.departmentInternalId)) ||
+      (applicant.uid && duplicatesUids.includes(applicant.uid))
+    ) {
+      processApplicantsDuplicates(applicantsFromList, applicant);
     }
     return applicant;
   });

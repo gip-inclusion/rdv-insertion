@@ -9,7 +9,7 @@ import getHeaderNames from "../lib/getHeaderNames";
 import checkColumnNames from "../lib/checkColumnNames";
 import displayMissingColumnsWarning from "../lib/displayMissingColumnsWarning";
 import retrieveUpToDateApplicants from "../lib/retrieveUpToDateApplicants";
-import updateApplicantContacts from "../lib/updateApplicantContacts";
+import updateApplicantContactsData from "../lib/updateApplicantContactsData";
 import retrieveContactsData from "../lib/retrieveContactsData";
 import { initReducer, reducerFactory } from "../../lib/reducers";
 import { excelDateToString } from "../../lib/datesHelper";
@@ -73,7 +73,13 @@ export default function ApplicantsUpload({ organisation, configuration, departme
                 affiliationNumber: row[parameterizedColumnNames.affiliation_number],
                 role: row[parameterizedColumnNames.role],
                 title: row[parameterizedColumnNames.title],
+                // address is street name and street number
                 address: parameterizedColumnNames.address && row[parameterizedColumnNames.address],
+                // sometimes street number is separated from address
+                streetNumber:
+                  parameterizedColumnNames.street_number &&
+                  row[parameterizedColumnNames.street_number],
+                // fullAddress is address with postal code and city
                 fullAddress:
                   parameterizedColumnNames.full_address &&
                   row[parameterizedColumnNames.full_address],
@@ -122,15 +128,15 @@ export default function ApplicantsUpload({ organisation, configuration, departme
 
     const upToDateApplicants = await retrieveUpToDateApplicants(applicantsFromList);
 
-    upToDateApplicants.forEach((applicant) => {
+    upToDateApplicants.forEach((applicant) =>
       dispatchApplicants({
         type: "append",
         item: {
           applicant,
-          seed: applicant.uid,
+          seed: applicant.uid || applicant.departmentInternalId,
         },
-      });
-    });
+      })
+    );
   };
 
   const handleContactsFile = async (file) => {
@@ -140,14 +146,17 @@ export default function ApplicantsUpload({ organisation, configuration, departme
     if (contactsData.length === 0) return;
 
     await Promise.all(
-      applicants.map(async (e) => {
-        let { applicant } = e;
+      applicants.map(async (item) => {
+        let { applicant } = item;
         const applicantContactsData = contactsData.find(
-          (a) => a.MATRICULE.toString() === applicant.affiliationNumber
+          (a) =>
+            // padStart is used because sometimes affiliation numbers are fetched with less than 7 letters
+            a.MATRICULE.toString()?.padStart(7, "0") ===
+            applicant.affiliationNumber?.padStart(7, "0")
         );
         // if the applicant exists in DB, we don't update the record
         if (applicantContactsData && !applicant.createdAt) {
-          applicant = await updateApplicantContacts(applicant, applicantContactsData);
+          applicant = await updateApplicantContactsData(applicant, applicantContactsData);
         }
       })
     );

@@ -1,6 +1,9 @@
 export const stringToDate = (dateStr) => {
   const [day, month, year] = dateStr.split("/");
-  return new Date(year, month - 1, day);
+  let date = new Date(year, month - 1, day);
+  const offset = date.getTimezoneOffset();
+  date = new Date(date.getTime() - offset * 60 * 1000);
+  return date;
 };
 
 export const applicationStringToDate = (dateStr) => {

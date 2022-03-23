@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_04_162710) do
+ActiveRecord::Schema.define(version: 2022_03_10_085941) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -131,9 +131,11 @@ ActiveRecord::Schema.define(version: 2022_02_04_162710) do
     t.bigint "department_id"
     t.string "rsa_agents_service_id"
     t.bigint "configuration_id"
+    t.bigint "responsible_id"
     t.index ["configuration_id"], name: "index_organisations_on_configuration_id"
     t.index ["department_id"], name: "index_organisations_on_department_id"
     t.index ["rdv_solidarites_organisation_id"], name: "index_organisations_on_rdv_solidarites_organisation_id", unique: true
+    t.index ["responsible_id"], name: "index_organisations_on_responsible_id"
   end
 
   create_table "rdvs", force: :cascade do |t|
@@ -157,11 +159,20 @@ ActiveRecord::Schema.define(version: 2022_02_04_162710) do
     t.index ["status"], name: "index_rdvs_on_status"
   end
 
+  create_table "responsibles", force: :cascade do |t|
+    t.string "first_name"
+    t.string "last_name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "role"
+  end
+
   add_foreign_key "applicants", "departments"
   add_foreign_key "invitations", "applicants"
   add_foreign_key "invitations", "departments"
   add_foreign_key "notifications", "applicants"
   add_foreign_key "organisations", "configurations"
   add_foreign_key "organisations", "departments"
+  add_foreign_key "organisations", "responsibles"
   add_foreign_key "rdvs", "organisations"
 end

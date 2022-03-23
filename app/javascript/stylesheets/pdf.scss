@@ -1,6 +1,21 @@
+@font-face {
+  font-family: 'Marianne';
+  src: url('../fonts/Marianne/Marianne-Regular.woff');
+}
+
+body {
+  font-family: "Marianne", sans-serif;
+}
+
+// to keep the link to rdv-insertion on one line
+u {
+  white-space: nowrap;
+}
+
 .left-col {
   display: inline-block;
   width: 40%;
+  margin-top: 10px;
   margin-right: 140px;
 }
 
@@ -10,23 +25,24 @@
 }
 
 .logo img {
-  height: 100px;
+  height: 80px;
   border: none;
   display: block;
   margin: 0 auto;
 }
 
 .mail-object {
-  margin: 40px 0 80px;
+  margin: 40px 0 40px;
 }
 
 .main-content {
   width: 95%;
   margin-left: 40px;
-  margin-bottom: 50px;
+  margin-bottom: 80px;
   font-size: 18px;
   p {
-    padding-bottom: 10px;
+    text-align:justify;
+    text-justify: inter-word;
   }
 }
 
@@ -46,4 +62,10 @@
 .bold-blue {
   font-weight: bold;
   color: #083b66;
+}
+
+.letter-signature {
+  p {
+    text-align: right;
+  }
 }
