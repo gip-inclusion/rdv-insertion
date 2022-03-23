@@ -7,6 +7,7 @@ module HasPhoneNumberConcern
     validate :validate_phone_number
   end
 
+  COUNTRY_CODES = [:FR, :GP, :GF, :MQ, :RE, :YT].freeze
   # See issue #1471 in RDV-Solidarités. This setup allows:
   # * international (e164) phone numbers
   # * “french format” (ten digits with a leading 0)
@@ -19,11 +20,17 @@ module HasPhoneNumberConcern
   # Mayotte    | YT | +262 | 0692XXXXXX, 0693XXXXXX
   # Cf: Plan national de numérotation téléphonique,
   # https://www.arcep.fr/uploads/tx_gsavis/05-1085.pdf  “Numéros mobiles à 10 chiffres”, page 6
-  COUNTRY_CODES = [:FR, :GP, :GF, :MQ, :RE, :YT].freeze
 
   def phone_number_formatted
     parsed_number(phone_number)&.e164
   end
+
+  def phone_number_is_mobile?
+    types = parsed_number(phone_number)&.types
+    types&.include?(:mobile)
+  end
+
+  private
 
   def validate_phone_number
     return if phone_number.blank?
@@ -33,11 +40,6 @@ module HasPhoneNumberConcern
 
   def phone_number_is_valid?
     parsed_number(phone_number).present?
-  end
-
-  def phone_number_is_mobile?
-    types = parsed_number(phone_number)&.types
-    types&.include?(:mobile)
   end
 
   def parsed_number(phone_number)
