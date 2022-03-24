@@ -40,7 +40,7 @@ module ApplicantsHelper
   def background_class_for_status(applicant)
     if applicant.action_required?
       applicant.attention_needed? ? "bg-warning border-warning" : "bg-danger border-danger"
-    elsif applicant.rdv_seen? || applicant.resolved?
+    elsif applicant.rdv_seen? || applicant.archived?
       "bg-success border-success"
     else
       ""

@@ -15,7 +15,7 @@ class Stat
                              .includes(:rdvs)
                              .joins(:organisations)
                              .where(organisations: relevant_organisations)
-                             .where.not(status: %w[resolved deleted])
+                             .where.not(status: %w[archived deleted])
   end
 
   def relevant_rdvs

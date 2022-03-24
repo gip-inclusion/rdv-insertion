@@ -1,43 +1,62 @@
 import Swal from "sweetalert2";
 import updateApplicant from "../react/actions/updateApplicant";
 
-const updateApplicantStatus = async (updateButton) => {
+const updateApplicantStatus = async (updateButton, archivingReason = null) => {
   const { organisationId, applicantId } = updateButton.dataset;
   const action = updateButton.innerText;
 
-  const attributes = (action === "Rouvrir le dossier") ? { status: "invitation_pending" } : { status: "resolved" };
+  const status = action === "Rouvrir le dossier" ? "invitation_pending" : "archived";
+  const attributes = { status, archiving_reason: archivingReason };
   const result = await updateApplicant(organisationId, applicantId, attributes);
 
   if (result.success) {
     window.location.replace(`/organisations/${organisationId}/applicants/${applicantId}`);
   } else {
-    Swal.fire("Impossible de clôturer le dossier", result.errors[0], "error");
-  };
-}
+    Swal.fire("Impossible d'archiver le dossier", result.errors[0], "error");
+  }
+};
 
-const resolveWarningModal = () => Swal.fire({
-  title: "Le dossier sera définitivement clôturé",
-  text: "Vous ne pourrez plus inviter ou relancer l'allocataire. Êtes-vous sûr(e) ?",
-  icon: "warning",
-  showCancelButton: true,
-  confirmButtonText: "Oui",
-  cancelButtonText: "Annuler",
-  confirmButtonColor: "#EC4C4C",
-  cancelButtonColor: "#083b66"
-});
+const displayUpdateStatusModal = async (updateButton) => {
+  if (updateButton.innerText === "Archiver le dossier") {
+    const { value: archivingReason, isConfirmed } = await Swal.fire({
+      icon: "warning",
+      title: "Le dossier sera archivé",
+      input: "text",
+      inputLabel: "Motif d'archivage",
+      showCancelButton: true,
+      confirmButtonText: "Oui",
+      cancelButtonText: "Annuler",
+      confirmButtonColor: "#EC4C4C",
+      cancelButtonColor: "#083b66",
+    });
 
-const displayResolveWarning = async (updateButton) => {
-  const confirmation = await resolveWarningModal();
+    if (isConfirmed) {
+      updateApplicantStatus(updateButton, archivingReason);
+    }
+  } else {
+    const { isConfirmed } = await Swal.fire({
+      title: "Le dossier sera rouvert",
+      text: "Le dossier retrouvera le statut précédant l'archivage",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Oui",
+      cancelButtonText: "Annuler",
+      confirmButtonColor: "#EC4C4C",
+      cancelButtonColor: "#083b66",
+    });
 
-  if (confirmation.isConfirmed) {
-    updateApplicantStatus(updateButton);
-  };
+    if (isConfirmed) {
+      updateApplicantStatus(updateButton);
+    }
+  }
 };
 
 const updateApplicantButton = () => {
   if (document.getElementById("update-status-button")) {
     const updateButton = document.getElementById("update-status-button");
-    updateButton.addEventListener("click", () => { displayResolveWarning(updateButton) });
+    updateButton.addEventListener("click", () => {
+      displayUpdateStatusModal(updateButton);
+    });
   }
 };
 

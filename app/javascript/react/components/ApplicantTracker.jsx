@@ -48,7 +48,7 @@ export default function ApplicantTracker({
       lastInvitationDate = lastPostalInvitationSentAt;
     }
 
-    if (rdvs.length === 0 && applicantStatus !== "resolved") {
+    if (rdvs.length === 0 && applicantStatus !== "archived") {
       if (lastInvitationDate && isOutOfTime) {
         return "bg-warning";
       }
@@ -82,7 +82,7 @@ export default function ApplicantTracker({
     if (hasActionRequired) {
       return "bg-danger border-danger";
     }
-    if (applicantStatus === "rdv_seen" || applicantStatus === "resolved") {
+    if (applicantStatus === "rdv_seen" || applicantStatus === "archived") {
       return "bg-success border-success";
     }
     return "";
@@ -164,7 +164,7 @@ export default function ApplicantTracker({
                   isLoading.smsInvitation ||
                   rdvs.length > 0 ||
                   !applicant.phone_number ||
-                  applicantStatus === "resolved"
+                  applicantStatus === "archived"
                 }
                 className="btn btn-blue"
                 onClick={() => handleClick("smsInvitation")}
@@ -183,7 +183,7 @@ export default function ApplicantTracker({
                   isLoading.emailInvitation ||
                   rdvs.length > 0 ||
                   !applicant.email ||
-                  applicantStatus === "resolved"
+                  applicantStatus === "archived"
                 }
                 className="btn btn-blue"
                 onClick={() => handleClick("emailInvitation")}
@@ -202,7 +202,7 @@ export default function ApplicantTracker({
                   isLoading.postalInvitation ||
                   rdvs.length > 0 ||
                   !applicant.address ||
-                  applicantStatus === "resolved"
+                  applicantStatus === "archived"
                 }
                 className="btn btn-blue"
                 onClick={() => handleClick("postalInvitation")}
