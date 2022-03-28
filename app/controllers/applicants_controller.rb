@@ -140,8 +140,12 @@ class ApplicantsController < ApplicationController
     @configuration = @department.configuration
     return if @applicant.blank?
 
+    # If an applicant has rdvs, we want the "redirect to RDV-Solidarités" button to redirect
+    # to the organization to which the last appointment belongs
+    authorized_organisations_with_rdvs = \
+      @applicant.organisations_with_rdvs & policy_scope(Organisation).where(department: @department)
     @organisation = \
-      @applicant.organisations_with_rdvs.intersection(policy_scope(Organisation)).last ||
+      authorized_organisations_with_rdvs.last ||
       policy_scope(Organisation).where(id: @applicant.organisations.pluck(:id), department: @department).first
   end
 
