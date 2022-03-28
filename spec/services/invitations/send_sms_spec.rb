@@ -76,6 +76,12 @@ describe Invitations::SendSms, type: :service do
       end
     end
 
+    context "when the phone number is not a metropolitan mobile" do
+      let!(:phone_number) { '0692926878' }
+
+      it("is a success") { is_a_success }
+    end
+
     context "when the invitation format is not sms" do
       let!(:invitation) do
         create(:invitation, applicant: applicant, format: "email")

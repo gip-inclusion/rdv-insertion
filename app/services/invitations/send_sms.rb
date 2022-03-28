@@ -20,7 +20,7 @@ module Invitations
 
     def check_phone_number!
       fail!("Le téléphone doit être renseigné") if applicant.phone_number.blank?
-      fail!("Le numéro de téléphone doit être un mobile") unless applicant.mobile_phone_number?
+      fail!("Le numéro de téléphone doit être un mobile") unless applicant.phone_number_is_mobile?
     end
 
     def send_sms
