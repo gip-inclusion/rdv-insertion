@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_21_113650) do
+ActiveRecord::Schema.define(version: 2022_03_28_173945) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,6 +48,7 @@ ActiveRecord::Schema.define(version: 2022_03_21_113650) do
     t.date "rights_opening_date"
     t.string "birth_name"
     t.bigint "department_id"
+    t.string "archiving_reason"
     t.index ["department_id"], name: "index_applicants_on_department_id"
     t.index ["department_internal_id", "department_id"], name: "index_applicants_on_department_internal_id_and_department_id", unique: true
     t.index ["rdv_solidarites_user_id"], name: "index_applicants_on_rdv_solidarites_user_id", unique: true
@@ -86,6 +87,7 @@ ActiveRecord::Schema.define(version: 2022_03_21_113650) do
     t.string "pronoun"
     t.string "email"
     t.string "phone_number"
+    t.string "direction_names", array: true
   end
 
   create_table "invitations", force: :cascade do |t|

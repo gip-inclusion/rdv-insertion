@@ -3,14 +3,12 @@
     <div class="logo">
       <%= pdf_image_tag("logos/#{department.name.parameterize}.svg") %>
     </div>
-    <%# Remplacer par une variable department.direction_name ? %>
-    <p>DIRECTION GÉNÉRALE DES SERVICES DÉPARTEMENTAUX</p>
-    <p>DIRECTION DE L’INSERTION ET DU RETOUR À L’EMPLOI</p>
-    <%# Remplacer par une variable department.service_name ? %>
-    <p>SERVICE ORIENTATION ET ACCOMPAGNEMENT VERS L’EMPLOI</p>
+    <% department.direction_names&.each do |sender_name| %>
+      <p><%= sender_name.upcase %></p>
+    <% end %>
   </div>
   <div class="right-col">
-    <%# Remplacer par une variable department.city ou @organisation.city ? %>
+    <%# Remplacer par une varialbe organisation.city ? %>
     <p><%= department.capital %>, le <%= Date.today.strftime('%d/%m/%Y') %></p>
     <br/>
     <p>À l'attention de</p>
