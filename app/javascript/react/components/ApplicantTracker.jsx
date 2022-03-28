@@ -13,8 +13,9 @@ export default function ApplicantTracker({
   showSmsInvitation,
   showEmailInvitation,
   showPostalInvitation,
-  rdvs,
+  numberOfRdvs,
   numberOfCancelledRdvs,
+  rdvToDisplay,
   statusNotice,
   outOfTime,
   actionRequired,
@@ -48,7 +49,7 @@ export default function ApplicantTracker({
       lastInvitationDate = lastPostalInvitationSentAt;
     }
 
-    if (rdvs.length === 0 && applicantStatus !== "resolved") {
+    if (numberOfRdvs === 0 && applicantStatus !== "resolved") {
       if (lastInvitationDate && isOutOfTime) {
         return "bg-warning";
       }
@@ -162,7 +163,7 @@ export default function ApplicantTracker({
                 type="button"
                 disabled={
                   isLoading.smsInvitation ||
-                  rdvs.length > 0 ||
+                  numberOfRdvs > 0 ||
                   !applicant.phone_number ||
                   applicantStatus === "resolved"
                 }
@@ -181,7 +182,7 @@ export default function ApplicantTracker({
                 type="button"
                 disabled={
                   isLoading.emailInvitation ||
-                  rdvs.length > 0 ||
+                  numberOfRdvs > 0 ||
                   !applicant.email ||
                   applicantStatus === "resolved"
                 }
@@ -200,7 +201,7 @@ export default function ApplicantTracker({
                 type="button"
                 disabled={
                   isLoading.postalInvitation ||
-                  rdvs.length > 0 ||
+                  numberOfRdvs > 0 ||
                   !applicant.address ||
                   applicantStatus === "resolved"
                 }
@@ -232,12 +233,12 @@ export default function ApplicantTracker({
         <div className="row d-flex justify-content-around flex-grow-1">
           <div className={cssClassForRdvsDates()}>
             <p className="m-0">
-              {rdvs.length > 0 ? getFrenchFormatDateString(rdvs.at(-1).created_at) : "-"}
+              {numberOfRdvs > 0 ? getFrenchFormatDateString(rdvToDisplay.created_at) : "-"}
             </p>
           </div>
           <div className={cssClassForRdvsDates()}>
             <p className="m-0">
-              {rdvs.length > 0 ? getFrenchFormatDateString(rdvs.at(-1).starts_at) : "-"}
+              {numberOfRdvs > 0 ? getFrenchFormatDateString(rdvToDisplay.starts_at) : "-"}
             </p>
           </div>
           {numberOfCancelledRdvs > 0 && (
