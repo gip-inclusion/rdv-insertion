@@ -13,7 +13,6 @@ export default function ApplicantTracker({
   showSmsInvitation,
   showEmailInvitation,
   showPostalInvitation,
-  showNotification,
   rdvs,
   numberOfCancelledRdvs,
   statusNotice,
@@ -28,6 +27,7 @@ export default function ApplicantTracker({
   });
   const [isOutOfTime, setIsOutOfTime] = useState(outOfTime);
   const [hasActionRequired, setHasActionRequired] = useState(actionRequired);
+  const showInvitations = showSmsInvitation || showEmailInvitation || showPostalInvitation;
   const [lastSmsInvitationSentAt, setLastSmsInvitationSentAt] = useState(
     retrieveLastInvitationDate(applicant.invitations, "sms")
   );
@@ -39,6 +39,7 @@ export default function ApplicantTracker({
   );
   const [applicantStatus, setApplicantStatus] = useState(applicant.status);
   const [textForStatus, setTextForStatus] = useState(humanStatus);
+
   const bgColorClassForInvitationDate = (format) => {
     let lastInvitationDate = null;
     if (format === "sms") {
@@ -135,7 +136,7 @@ export default function ApplicantTracker({
 
   return (
     <div className="d-flex justify-content-around text-center flex-wrap mb-4 pb-3 tracking-blocks-wrapper">
-      {!showNotification && (
+      {showInvitations && (
         <div className="tracking-block block-white">
           <div className="row d-flex justify-content-around">
             {showSmsInvitation && (

@@ -99,7 +99,6 @@
       showSmsInvitation: show_sms_invitation?(@configuration),
       showEmailInvitation: show_email_invitation?(@configuration),
       showPostalInvitation: show_postal_invitation?(@configuration),
-      showNotification: show_notification?(@configuration),
       rdvs: @applicant.rdvs,
       numberOfCancelledRdvs: @applicant.rdvs.cancelled_by_user.count,
       statusNotice: display_status_notice(@applicant),
