@@ -17,7 +17,7 @@ Rails.application.routes.draw do
   get "accessibilite", to: "static_pages#accessibility"
 
   resources :teleprocedure_landings, param: "department_number",
-                                     path: '/parcours-insertion',
+                                     path: '/parcours_insertion',
                                      only: [:show]
 
   resources :organisations, only: [:index] do
