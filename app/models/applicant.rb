@@ -91,6 +91,10 @@ class Applicant < ApplicationRecord
     split_address.present? ? split_address[2].strip : nil
   end
 
+  def organisations_with_rdvs
+    organisations.where(id: rdvs.pluck(:organisation_id))
+  end
+
   def delete_organisation(organisation)
     organisations.delete(organisation)
     save!
