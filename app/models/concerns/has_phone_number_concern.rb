@@ -1,3 +1,5 @@
+# Concern to include in application models
+# Models need to have a :phone_number and a :phone_number_formatted attributes
 module HasPhoneNumberConcern
   extend ActiveSupport::Concern
 
@@ -5,37 +7,49 @@ module HasPhoneNumberConcern
     validate :validate_phone_number
   end
 
+  COUNTRY_CODES = [:FR, :GP, :GF, :MQ, :RE, :YT].freeze
+  # See issue #1471 in RDV-Solidarités. This setup allows:
+  # * international (e164) phone numbers
+  # * “french format” (ten digits with a leading 0)
+  # However, we need to special-case some ten-digit numbers,
+  # because the ARCEP assigns some blocks of "O6 XX XX XX XX" numbers to DROM operators.
+  # Guadeloupe | GP | +590 | 0690XXXXXX, 0691XXXXXX
+  # Guyane     | GF | +594 | 0694XXXXXX
+  # Martinique | MQ | +596 | 0696XXXXXX, 0697XXXXXX
+  # Réunion    | RE | +262 | 0692XXXXXX, 0693XXXXXX
+  # Mayotte    | YT | +262 | 0692XXXXXX, 0693XXXXXX
+  # Cf: Plan national de numérotation téléphonique,
+  # https://www.arcep.fr/uploads/tx_gsavis/05-1085.pdf  “Numéros mobiles à 10 chiffres”, page 6
+
   def phone_number_formatted
-    Phonelib.parse(phone_number).e164
+    parsed_number(phone_number)&.e164
   end
 
-  def mobile_phone_number?
-    phone_number && Phonelib.parse(phone_number).types.include?(:mobile)
+  def phone_number_is_mobile?
+    types = parsed_number(phone_number)&.types
+    types&.include?(:mobile)
   end
 
   private
 
   def validate_phone_number
-    errors.add(:phone_number, :invalid) if phone_number.present? && !phone_number_is_valid?
+    return if phone_number.blank?
+
+    errors.add(:phone_number, :invalid) unless phone_number_is_valid?
   end
 
   def phone_number_is_valid?
-    return false if phone_number.blank?
+    parsed_number(phone_number).present?
+  end
 
-    parsed_number = Phonelib.parse(phone_number)
-    country_codes = [:FR, :GP, :GF, :MQ, :RE, :YT]
-    # See issue #1471 in RDV-Solidarités. This setup allows:
-    # * international (e164) phone numbers
-    # * “french format” (ten digits with a leading 0)
-    # However, we need to special-case some ten-digit numbers,
-    # because the ARCEP assigns some blocks of "O6 XX XX XX XX" numbers to DROM operators.
-    # Guadeloupe | GP | +590 | 0690XXXXXX, 0691XXXXXX
-    # Guyane     | GF | +594 | 0694XXXXXX
-    # Martinique | MQ | +596 | 0696XXXXXX, 0697XXXXXX
-    # Réunion    | RE | +262 | 0692XXXXXX, 0693XXXXXX
-    # Mayotte    | YT | +262 | 0692XXXXXX, 0693XXXXXX
-    # Cf: Plan national de numérotation téléphonique,
-    # https://www.arcep.fr/uploads/tx_gsavis/05-1085.pdf  “Numéros mobiles à 10 chiffres”, page 6
-    parsed_number.valid? || country_codes.any?{ parsed_number.valid_for_country? _1 }
+  def parsed_number(phone_number)
+    return if phone_number.blank?
+
+    COUNTRY_CODES.each do |country_code|
+      parsed_attempt = Phonelib.parse(phone_number, country_code)
+      return parsed_attempt if parsed_attempt.valid?
+    end
+
+    nil
   end
 end

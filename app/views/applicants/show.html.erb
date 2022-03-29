@@ -65,6 +65,10 @@
         <h4 class="label-blue"><%= Applicant.human_attribute_name(:rights_opening_date) %></h4>
         <p><%= display_attribute format_date(@applicant.rights_opening_date) %></p>
       </div>
+      <div class="col-12 col-md-6 px-5">
+        <h4 class="label-blue"><%= Applicant.human_attribute_name(:creation_date) %></h4>
+        <p><%= display_attribute format_date(@applicant.created_at) %></p>
+      </div>
       <% if department_level? %>
         <div class="col-12 col-md-6 px-5">
             <h4 class="label-blue"><%= Applicant.human_attribute_name(:organisations) %></h4>
@@ -88,8 +92,9 @@
       showSmsInvitation: show_sms_invitation?(@configuration),
       showEmailInvitation: show_email_invitation?(@configuration),
       showPostalInvitation: show_postal_invitation?(@configuration),
-      rdvs: @applicant.rdvs,
+      numberOfRdvs: @applicant.rdvs.length,
       numberOfCancelledRdvs: @applicant.rdvs.cancelled_by_user.count,
+      rdvToDisplay: @applicant.rdvs.seen.first || @applicant.rdvs.last,
       statusNotice: display_status_notice(@applicant),
       outOfTime: @applicant.invited_before_time_window?,
       actionRequired: @applicant.action_required?,

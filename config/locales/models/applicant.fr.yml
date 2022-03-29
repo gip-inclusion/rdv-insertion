@@ -31,3 +31,4 @@ fr:
         organisations: Organisation(s)
         archiving_reason: Motif d'archivage
         uid: Le couple numéro d'allocataire + rôle
+        creation_date: Date de création
