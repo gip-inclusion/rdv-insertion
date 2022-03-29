@@ -1,9 +1,9 @@
 import Swal from "sweetalert2";
 import updateApplicant from "../react/actions/updateApplicant";
 
-const updateApplicantStatus = async (updateButton, archivingReason = null) => {
-  const { organisationId, applicantId } = updateButton.dataset;
-  const action = updateButton.innerText;
+const archiveApplicant = async (archiveButton, archivingReason = null) => {
+  const { organisationId, applicantId } = archiveButton.dataset;
+  const action = archiveButton.innerText;
 
   const status = action === "Rouvrir le dossier" ? "invitation_pending" : "archived";
   const attributes = { status, archiving_reason: archivingReason };
@@ -16,8 +16,8 @@ const updateApplicantStatus = async (updateButton, archivingReason = null) => {
   }
 };
 
-const displayUpdateStatusModal = async (updateButton) => {
-  if (updateButton.innerText === "Archiver le dossier") {
+const displayArchiveModal = async (archiveButton) => {
+  if (archiveButton.innerText === "Archiver le dossier") {
     const { value: archivingReason, isConfirmed } = await Swal.fire({
       icon: "warning",
       title: "Le dossier sera archivé",
@@ -31,7 +31,7 @@ const displayUpdateStatusModal = async (updateButton) => {
     });
 
     if (isConfirmed) {
-      updateApplicantStatus(updateButton, archivingReason);
+      archiveApplicant(archiveButton, archivingReason);
     }
   } else {
     const { isConfirmed } = await Swal.fire({
@@ -46,18 +46,18 @@ const displayUpdateStatusModal = async (updateButton) => {
     });
 
     if (isConfirmed) {
-      updateApplicantStatus(updateButton);
+      archiveApplicant(archiveButton);
     }
   }
 };
 
-const updateApplicantButton = () => {
-  if (document.getElementById("update-status-button")) {
-    const updateButton = document.getElementById("update-status-button");
-    updateButton.addEventListener("click", () => {
-      displayUpdateStatusModal(updateButton);
+const archiveApplicantButton = () => {
+  if (document.getElementById("archive-button")) {
+    const archiveButton = document.getElementById("archive-button");
+    archiveButton.addEventListener("click", () => {
+      displayArchiveModal(archiveButton);
     });
   }
 };
 
-export default updateApplicantButton;
+export default archiveApplicantButton;
