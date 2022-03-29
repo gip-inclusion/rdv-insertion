@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_21_113650) do
+ActiveRecord::Schema.define(version: 2022_03_29_141306) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,6 +48,7 @@ ActiveRecord::Schema.define(version: 2022_03_21_113650) do
     t.date "rights_opening_date"
     t.string "birth_name"
     t.bigint "department_id"
+    t.string "archiving_reason"
     t.index ["department_id"], name: "index_applicants_on_department_id"
     t.index ["department_internal_id", "department_id"], name: "index_applicants_on_department_internal_id_and_department_id", unique: true
     t.index ["rdv_solidarites_user_id"], name: "index_applicants_on_rdv_solidarites_user_id", unique: true
@@ -72,8 +73,14 @@ ActiveRecord::Schema.define(version: 2022_03_21_113650) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.json "column_names"
-    t.boolean "notify_applicant", default: false
     t.string "invitation_formats", default: ["sms", "email", "postal"], null: false, array: true
+    t.integer "context", default: 0
+  end
+
+  create_table "configurations_organisations", id: false, force: :cascade do |t|
+    t.bigint "organisation_id", null: false
+    t.bigint "configuration_id", null: false
+    t.index ["organisation_id", "configuration_id"], name: "index_config_orgas_on_organisation_id_and_configuration_id", unique: true
   end
 
   create_table "departments", force: :cascade do |t|
@@ -129,9 +136,8 @@ ActiveRecord::Schema.define(version: 2022_03_21_113650) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "department_id"
-    t.bigint "configuration_id"
     t.bigint "responsible_id"
-    t.index ["configuration_id"], name: "index_organisations_on_configuration_id"
+    t.boolean "notify_applicant", default: false
     t.index ["department_id"], name: "index_organisations_on_department_id"
     t.index ["rdv_solidarites_organisation_id"], name: "index_organisations_on_rdv_solidarites_organisation_id", unique: true
     t.index ["responsible_id"], name: "index_organisations_on_responsible_id"
@@ -170,7 +176,6 @@ ActiveRecord::Schema.define(version: 2022_03_21_113650) do
   add_foreign_key "invitations", "applicants"
   add_foreign_key "invitations", "departments"
   add_foreign_key "notifications", "applicants"
-  add_foreign_key "organisations", "configurations"
   add_foreign_key "organisations", "departments"
   add_foreign_key "organisations", "responsibles"
   add_foreign_key "rdvs", "organisations"

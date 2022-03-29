@@ -13,13 +13,13 @@ class UploadsController < ApplicationController
     @department = Department.find(params[:department_id])
     authorize @department, :upload?
     @organisation = nil
-    @configuration = @department.configuration
+    @configurations = @department.configurations
   end
 
   def set_organisation_upload
     @organisation = Organisation.find(params[:organisation_id])
     authorize @organisation, :upload?
-    @configuration = @organisation.configuration
+    @configurations = @organisation.configurations
     @department = @organisation.department
   end
 end

@@ -12,9 +12,7 @@ class Department < ApplicationRecord
     "#{name}, #{region}"
   end
 
-  # For now we consider that if there is a config at the department level
-  # then it is the same as the ones at orga level
-  def configuration
-    organisations.includes(:configuration).map(&:configuration).find(&:present?)
+  def configurations
+    organisations.includes(:configurations).flat_map(&:configurations).uniq(&:context)
   end
 end
