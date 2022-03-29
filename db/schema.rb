@@ -86,7 +86,6 @@ ActiveRecord::Schema.define(version: 2022_03_28_173945) do
     t.string "pronoun"
     t.string "email"
     t.string "phone_number"
-    t.string "direction_names", array: true
   end
 
   create_table "invitations", force: :cascade do |t|
@@ -112,6 +111,14 @@ ActiveRecord::Schema.define(version: 2022_03_28_173945) do
     t.index ["organisation_id", "invitation_id"], name: "index_invitations_orgas_on_orga_id_and_invitation_id", unique: true
   end
 
+  create_table "letter_configurations", force: :cascade do |t|
+    t.string "direction_names", array: true
+    t.string "sender_city"
+    t.string "motif", default: "Rendez-vous d’orientation dans le cadre de votre RSA"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "notifications", force: :cascade do |t|
     t.bigint "applicant_id", null: false
     t.integer "event"
@@ -132,8 +139,10 @@ ActiveRecord::Schema.define(version: 2022_03_28_173945) do
     t.bigint "department_id"
     t.bigint "configuration_id"
     t.bigint "responsible_id"
+    t.bigint "letter_configuration_id"
     t.index ["configuration_id"], name: "index_organisations_on_configuration_id"
     t.index ["department_id"], name: "index_organisations_on_department_id"
+    t.index ["letter_configuration_id"], name: "index_organisations_on_letter_configuration_id"
     t.index ["rdv_solidarites_organisation_id"], name: "index_organisations_on_rdv_solidarites_organisation_id", unique: true
     t.index ["responsible_id"], name: "index_organisations_on_responsible_id"
   end
@@ -173,6 +182,7 @@ ActiveRecord::Schema.define(version: 2022_03_28_173945) do
   add_foreign_key "notifications", "applicants"
   add_foreign_key "organisations", "configurations"
   add_foreign_key "organisations", "departments"
+  add_foreign_key "organisations", "letter_configurations"
   add_foreign_key "organisations", "responsibles"
   add_foreign_key "rdvs", "organisations"
 end
