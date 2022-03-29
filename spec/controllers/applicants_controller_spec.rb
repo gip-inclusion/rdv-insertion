@@ -376,7 +376,7 @@ describe ApplicantsController, type: :controller do
 
   describe "#update" do
     let!(:applicant) { create(:applicant, organisations: [organisation]) }
-    let!(:update_params) { { id: applicant.id, organisation_id: organisation.id, applicant: { status: "archived" } } }
+    let!(:update_params) { { id: applicant.id, organisation_id: organisation.id, applicant: { is_archived: true } } }
 
     before do
       sign_in(agent)
@@ -387,7 +387,7 @@ describe ApplicantsController, type: :controller do
       let(:update_params) do
         {
           applicant: {
-            status: "archived"
+            is_archived: true
           },
           id: applicant.id,
           organisation_id: organisation.id,

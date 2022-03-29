@@ -4,7 +4,7 @@ class ApplicantsController < ApplicationController
   PERMITTED_PARAMS = [
     :uid, :role, :first_name, :last_name, :birth_date, :email, :phone_number,
     :birth_name, :address, :affiliation_number, :department_internal_id, :title,
-    :status, :rights_opening_date, :archiving_reason
+    :status, :rights_opening_date, :archiving_reason, :is_archived
   ].freeze
   before_action :set_applicant, only: [:show, :update, :edit]
   before_action :set_context_variables, only: [:index, :new, :create, :show, :update, :edit]

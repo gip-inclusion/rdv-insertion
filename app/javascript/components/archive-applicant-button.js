@@ -3,10 +3,14 @@ import updateApplicant from "../react/actions/updateApplicant";
 
 const archiveApplicant = async (archiveButton, archivingReason = null) => {
   const { applicantId, organisationId, departmentId, departmentLevel } = archiveButton.dataset;
+  let attributes;
   const action = archiveButton.innerText;
-
-  const status = action === "Rouvrir le dossier" ? "invitation_pending" : "archived";
-  const attributes = { status, archiving_reason: archivingReason };
+  if (action === "Rouvrir le dossier") {
+    attributes = { is_archived: "false" };
+  } else {
+    attributes = { is_archived: "true", archiving_reason: archivingReason };
+  }
+  console.log(attributes);
   const result = await updateApplicant(organisationId, applicantId, attributes);
 
   if (result.success) {

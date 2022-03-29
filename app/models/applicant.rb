@@ -37,7 +37,7 @@ class Applicant < ApplicationRecord
   enum status: {
     not_invited: 0, invitation_pending: 1, rdv_creation_pending: 2, rdv_pending: 3,
     rdv_needs_status_update: 4, rdv_noshow: 5, rdv_revoked: 6, rdv_excused: 7,
-    rdv_seen: 8, archived: 9, deleted: 10, multiple_rdvs_cancelled: 11
+    rdv_seen: 8, deleted: 10, multiple_rdvs_cancelled: 11
   }
 
   scope :status, ->(status) { where(status: status) }

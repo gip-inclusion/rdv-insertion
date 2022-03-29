@@ -6,7 +6,7 @@ module HasStatusConcern
   end
 
   def set_status
-    return if status.in?(%w[archived deleted])
+    return if status.in?(%w[deleted])
 
     rdvs.reload
     invitations.reload

@@ -51,7 +51,7 @@ export default function ApplicantTracker({
       lastInvitationDate = lastPostalInvitationSentAt;
     }
 
-    if (numberOfRdvs === 0 && applicantStatus !== "archived") {
+    if (numberOfRdvs === 0 && applicant.is_archived === false) {
       if (lastInvitationDate && isOutOfTime) {
         return "bg-warning";
       }
@@ -85,6 +85,9 @@ export default function ApplicantTracker({
   const computeColSpanForRdvBlock = () => (numberOfCancelledRdvs > 0 ? "col-3" : "col-4");
 
   const bgColorClassForApplicantStatus = () => {
+    if (applicant.is_archived === true) {
+      return "";
+    }
     if (
       hasActionRequired &&
       (applicantStatus === "invitation_pending" || applicantStatus === "rdv_creation_pending")
@@ -94,7 +97,7 @@ export default function ApplicantTracker({
     if (hasActionRequired) {
       return "bg-danger border-danger";
     }
-    if (applicantStatus === "rdv_seen" || applicantStatus === "archived") {
+    if (applicantStatus === "rdv_seen") {
       return "bg-success border-success";
     }
     return "";
@@ -180,7 +183,7 @@ export default function ApplicantTracker({
                     isLoading.smsInvitation ||
                     numberOfRdvs > 0 ||
                     !applicant.phone_number ||
-                    applicantStatus === "archived"
+                    applicant.is_archived === true
                   }
                   className="btn btn-blue"
                   onClick={() => handleClick("smsInvitation")}
@@ -199,7 +202,7 @@ export default function ApplicantTracker({
                     isLoading.emailInvitation ||
                     numberOfRdvs > 0 ||
                     !applicant.email ||
-                    applicantStatus === "archived"
+                    applicant.is_archived === true
                   }
                   className="btn btn-blue"
                   onClick={() => handleClick("emailInvitation")}
@@ -218,7 +221,7 @@ export default function ApplicantTracker({
                     isLoading.postalInvitation ||
                     numberOfRdvs > 0 ||
                     !applicant.address ||
-                    applicantStatus === "archived"
+                    applicant.is_archived === true
                   }
                   className="btn btn-blue"
                   onClick={() => handleClick("postalInvitation")}
