@@ -10,7 +10,7 @@
     </div>
     <div>
       <% unless @applicant.rdv_seen? %>
-        <button class="btn btn-primary" id="archive-button" data-applicant-id="<%= @applicant.id %>" data-organisation-id="<%= @organisation.id %>">
+        <button class="btn btn-primary" id="archive-button" data-applicant-id="<%= @applicant.id %>" data-organisation-id="<%= @organisation.id %>" data-department-id="<%= @department.id %>" data-department-level="<%= department_level? %>">
           <%= @applicant.archived? ? "Rouvrir le dossier" : "Archiver le dossier" %>
         </button>
       <% end %>

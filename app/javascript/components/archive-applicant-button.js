@@ -2,7 +2,7 @@ import Swal from "sweetalert2";
 import updateApplicant from "../react/actions/updateApplicant";
 
 const archiveApplicant = async (archiveButton, archivingReason = null) => {
-  const { organisationId, applicantId } = archiveButton.dataset;
+  const { applicantId, organisationId, departmentId, departmentLevel } = archiveButton.dataset;
   const action = archiveButton.innerText;
 
   const status = action === "Rouvrir le dossier" ? "invitation_pending" : "archived";
@@ -10,7 +10,11 @@ const archiveApplicant = async (archiveButton, archivingReason = null) => {
   const result = await updateApplicant(organisationId, applicantId, attributes);
 
   if (result.success) {
-    window.location.replace(`/organisations/${organisationId}/applicants/${applicantId}`);
+    if (departmentLevel === true) {
+      window.location.replace(`/departments/${departmentId}/applicants/${applicantId}`);
+    } else {
+      window.location.replace(`/organisations/${organisationId}/applicants/${applicantId}`);
+    }
   } else {
     Swal.fire("Impossible d'archiver le dossier", result.errors[0], "error");
   }
