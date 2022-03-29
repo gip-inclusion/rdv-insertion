@@ -3,12 +3,12 @@
     <div class="logo">
       <%= pdf_image_tag("logos/#{department.name.parameterize}.svg") %>
     </div>
-    <% department.direction_names&.each do |sender_name| %>
-      <p><%= sender_name.upcase %></p>
+    <% department.direction_names&.each do |direction_name| %>
+      <p><%= direction_name.upcase %></p>
     <% end %>
   </div>
   <div class="right-col">
-    <%# Remplacer par une varialbe organisation.city ? %>
+    <%# Remplacer par une variable organisation.city ? %>
     <p><%= department.capital %>, le <%= Date.today.strftime('%d/%m/%Y') %></p>
     <br/>
     <p>À l'attention de</p>
