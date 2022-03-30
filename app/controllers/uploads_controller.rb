@@ -14,6 +14,7 @@ class UploadsController < ApplicationController
     authorize @department, :upload?
     @organisation = nil
     @configurations = @department.configurations
+    set_configuration
   end
 
   def set_organisation_upload
@@ -21,5 +22,15 @@ class UploadsController < ApplicationController
     authorize @organisation, :upload?
     @configurations = @organisation.configurations
     @department = @organisation.department
+    set_configuration
+  end
+
+  def set_configuration
+    @configuration = \
+      if params[:configuration_id].present?
+        @configurations.find(params[:configuration_id])
+      elsif @configurations.length == 1
+        @configurations.first
+      end
   end
 end

@@ -6,7 +6,7 @@ class ApplicantsController < ApplicationController
     :birth_name, :address, :affiliation_number, :department_internal_id, :title, :status, :rights_opening_date
   ].freeze
   before_action :set_applicant, only: [:show, :update, :edit]
-  before_action :set_context_variables, only: [:index, :new, :create, :show, :update, :edit]
+  before_action :set_variables, only: [:index, :new, :create, :show, :update, :edit]
   before_action :retrieve_applicants, only: [:search]
 
   include FilterableApplicantsConcern
@@ -125,23 +125,25 @@ class ApplicantsController < ApplicationController
     organisation_applicant_path(@organisation, @applicant)
   end
 
-  def set_context_variables
+  def set_variables
     department_level? ? set_department_variables : set_organisation_variables
   end
 
   def set_organisation_variables
-    @organisation = Organisation.includes(:applicants, :configuration).find(params[:organisation_id])
+    @organisation = Organisation.includes(:applicants, :configurations).find(params[:organisation_id])
     @department = @organisation.department
-    @configuration = @organisation.configuration
+    @configuration = @organisation.configurations.first
   end
 
   def set_department_variables
     @department = Department.includes(:organisations, :applicants).find(params[:department_id])
-    @configuration = @department.configuration
-    return if @applicant.blank?
+    @configuration = @department.configurations.first
+    set_organisation_at_department_level if @applicant.present?
+  end
 
-    # If an applicant has rdvs, we want the "redirect to RDV-Solidarités" button to redirect
-    # to the organization to which the last appointment belongs
+  def set_organisation_at_department_level
+    # If an applicant has rdvs, we want the "Voir sur RDV-Solidarités" button to redirect
+    # to the organisation to which the last appointment belongs
     authorized_organisations_with_rdvs = \
       @applicant.organisations_with_rdvs & policy_scope(Organisation).where(department: @department)
     @organisation = \

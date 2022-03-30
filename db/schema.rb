@@ -74,6 +74,7 @@ ActiveRecord::Schema.define(version: 2022_03_29_141306) do
     t.datetime "updated_at", precision: 6, null: false
     t.json "column_names"
     t.string "invitation_formats", default: ["sms", "email", "postal"], null: false, array: true
+    t.boolean "notify_applicant", default: false
     t.integer "context", default: 0
   end
 
@@ -137,7 +138,6 @@ ActiveRecord::Schema.define(version: 2022_03_29_141306) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "department_id"
     t.bigint "responsible_id"
-    t.boolean "notify_applicant", default: false
     t.index ["department_id"], name: "index_organisations_on_department_id"
     t.index ["rdv_solidarites_organisation_id"], name: "index_organisations_on_rdv_solidarites_organisation_id", unique: true
     t.index ["responsible_id"], name: "index_organisations_on_responsible_id"

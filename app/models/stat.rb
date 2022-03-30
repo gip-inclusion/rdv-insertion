@@ -6,8 +6,8 @@ class Stat
   def relevant_organisations
     @relevant_organisations ||= organisations
                                 .includes(:applicants, :rdvs)
-                                .joins(:configuration)
-                                .where(configuration: { notify_applicant: false })
+                                .joins(:configurations)
+                                .where(configurations: { notify_applicant: false })
   end
 
   def relevant_applicants

@@ -1,5 +1,9 @@
-<%= react_component(
-  "pages/ApplicantsUpload", {
-    organisation: @organisation, configuration: @configuration, department: @department
-  }
-) %>
+<% if @configuration.present? %>
+  <%= react_component(
+    "pages/ApplicantsUpload", {
+      organisation: @organisation, configuration: @configuration, department: @department
+    }
+  ) %>
+<% else %>
+  <%= render "context_selection" %>
+<% end %>
