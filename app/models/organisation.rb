@@ -11,6 +11,7 @@ class Organisation < ApplicationRecord
   has_and_belongs_to_many :invitations, dependent: :nullify
   belongs_to :configuration
   belongs_to :responsible, optional: true
+  belongs_to :letter_configuration, optional: true
   has_many :rdvs, dependent: :nullify
 
   delegate :notify_applicant?, to: :configuration

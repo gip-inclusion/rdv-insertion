@@ -13,8 +13,11 @@ describe Invitations::GenerateLetter, type: :service do
                    department: department, format: "postal"
     )
   end
-  let!(:organisation) { create(:organisation, responsible: responsible, department: department) }
+  let!(:letter_configuration) { create(:letter_configuration) }
   let!(:responsible) { create(:responsible, first_name: "Gael", last_name: "Monfils") }
+  let!(:organisation) do
+    create(:organisation, responsible: responsible, letter_configuration: letter_configuration, department: department)
+  end
 
   describe "#call" do
     it("is a success") { is_a_success }
