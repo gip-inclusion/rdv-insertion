@@ -3,15 +3,12 @@
     <div class="logo">
       <%= pdf_image_tag("logos/#{department.name.parameterize}.svg") %>
     </div>
-    <%# Remplacer par une variable department.direction_name ? %>
-    <p>DIRECTION GÉNÉRALE DES SERVICES DÉPARTEMENTAUX</p>
-    <p>DIRECTION DE L’INSERTION ET DU RETOUR À L’EMPLOI</p>
-    <%# Remplacer par une variable department.service_name ? %>
-    <p>SERVICE ORIENTATION ET ACCOMPAGNEMENT VERS L’EMPLOI</p>
+    <% letter_configuration.direction_names.each do |direction_name| %>
+      <p><%= direction_name.upcase %></p>
+    <% end %>
   </div>
   <div class="right-col">
-    <%# Remplacer par une variable department.city ou @organisation.city ? %>
-    <p><%= department.capital %>, le <%= Date.today.strftime('%d/%m/%Y') %></p>
+    <p><%= letter_configuration.sender_city || department.capital %>, le <%= Date.today.strftime('%d/%m/%Y') %></p>
     <br/>
     <p>À l'attention de</p>
     <br/><br/>
@@ -22,7 +19,7 @@
 </div>
 <div class="mail-object">
     <%# Remplacer par une variable @motif ? %>
-  <p class="bold-blue"><span class="bold-blue">Objet : Rendez-vous d’orientation dans le cadre de votre RSA</span></p>
+  <p class="bold-blue"><span class="bold-blue">Objet : <%= letter_configuration.motif %></span></p>
   <% if applicant.affiliation_number %>
     <p>N° allocataire : <%= applicant.affiliation_number %></p>
   <% end %>
@@ -37,14 +34,14 @@
   <p>Dans le cadre du versement de votre allocation RSA, vous devez obligatoirement prendre ce rendez-vous dans un délai de 15 jours à réception de ce courrier.</p>
   <p>Si vous rencontrez une difficulté pour accéder à internet, veuillez téléphoner dès réception de ce courrier au <%= invitation.help_phone_number_formatted %>.</p>
   <p>Veuillez agréer, <%= applicant.title.capitalize %>, l’expression de mes salutations distinguées.</p>
-  <% if organisation.responsible.present? %>
-    <div class="letter-signature">
+  <div class="letter-signature">
+    <% if organisation.responsible.present? %>
       <p>Pour le Président du Conseil départemental et par délégation,<br/>
       <%= organisation.responsible.full_name %>, <%= organisation.responsible.role %></p>
-    </div>
-  <% else %>
-    <br/><br/>
-  <% end %>
+    <% else %>
+      <p>Le département <%= I18n.t("with_prefix.#{department.pronoun}", name: invitation.department.name) %><br/></p>
+    <% end %>
+  </div>
 </div>
 <div>
   <div class="left-col logo">
