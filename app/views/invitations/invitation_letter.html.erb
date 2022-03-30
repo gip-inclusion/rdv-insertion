@@ -3,7 +3,7 @@
     <div class="logo">
       <%= pdf_image_tag("logos/#{department.name.parameterize}.svg") %>
     </div>
-    <% letter_configuration.direction_names&.each do |direction_name| %>
+    <% letter_configuration.direction_names.each do |direction_name| %>
       <p><%= direction_name.upcase %></p>
     <% end %>
   </div>
