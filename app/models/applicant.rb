@@ -37,12 +37,15 @@ class Applicant < ApplicationRecord
   enum status: {
     not_invited: 0, invitation_pending: 1, rdv_creation_pending: 2, rdv_pending: 3,
     rdv_needs_status_update: 4, rdv_noshow: 5, rdv_revoked: 6, rdv_excused: 7,
-    rdv_seen: 8, deleted: 10, multiple_rdvs_cancelled: 11
+    rdv_seen: 8, resolved: 9, deleted: 10, multiple_rdvs_cancelled: 11
   }
 
   scope :status, ->(status) { where(status: status) }
-  scope :action_required, -> { status(STATUSES_WITH_ACTION_REQUIRED).or(attention_needed.invited_before_time_window) }
-  scope :attention_needed, -> { status(STATUSES_WITH_ATTENTION_NEEDED) }
+  scope :active, -> { where(is_archived: false) }
+  scope :action_required, lambda {
+    active.and(status(STATUSES_WITH_ACTION_REQUIRED).or(attention_needed.invited_before_time_window))
+  }
+  scope :attention_needed, -> { active.and(status(STATUSES_WITH_ATTENTION_NEEDED)) }
   scope :invited_before_time_window, lambda {
     where.not(id: Invitation.sent_in_time_window.pluck(:applicant_id).uniq)
   }

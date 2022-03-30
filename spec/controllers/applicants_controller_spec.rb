@@ -255,6 +255,18 @@ describe ApplicantsController, type: :controller do
         expect(response.body).to match(/Voir sur RDV-Solidarités/)
       end
     end
+
+    context "when applicant is archived" do
+      let!(:applicant) { create(:applicant, is_archived: true, organisations: [organisation]) }
+      let!(:show_params) { { id: applicant.id, organisation_id: organisation.id } }
+
+      it "the applicant is displayed as archived" do
+        get :show, params: show_params
+
+        expect(response).to be_successful
+        expect(response.body).to match(/Dossier archivé/)
+      end
+    end
   end
 
   describe "#index" do

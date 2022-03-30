@@ -3,7 +3,9 @@ class AddIsArchivedToApplicants < ActiveRecord::Migration[6.1]
     add_column :applicants, :is_archived, :boolean, default: false
 
     Applicant.find_each do |applicant|
-      applicant.is_archived = true if Applicant.statuses[applicant.status] == 9
+      next unless Applicant.statuses[applicant.status] == 9
+
+      applicant.is_archived = true
       applicant.status = 0 # right status will be automatically computed
       applicant.save!
     end
@@ -11,7 +13,9 @@ class AddIsArchivedToApplicants < ActiveRecord::Migration[6.1]
 
   def down
     Applicant.find_each do |applicant|
-      applicant.status = 9 if applicant.is_archived == true
+      next unless applicant.is_archived?
+
+      applicant.status = 9
       applicant.save!
     end
 

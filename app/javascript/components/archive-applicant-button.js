@@ -3,18 +3,13 @@ import updateApplicant from "../react/actions/updateApplicant";
 
 const archiveApplicant = async (archiveButton, archivingReason = null) => {
   const { applicantId, organisationId, departmentId, departmentLevel } = archiveButton.dataset;
-  let attributes;
   const action = archiveButton.innerText;
-  if (action === "Rouvrir le dossier") {
-    attributes = { is_archived: "false" };
-  } else {
-    attributes = { is_archived: "true", archiving_reason: archivingReason };
-  }
-  console.log(attributes);
+  const isArchived = action === "Rouvrir le dossier" ? "false" : "true";
+  const attributes = { is_archived: isArchived, archiving_reason: archivingReason };
   const result = await updateApplicant(organisationId, applicantId, attributes);
 
   if (result.success) {
-    if (departmentLevel === true) {
+    if (departmentLevel === "true") {
       window.location.replace(`/departments/${departmentId}/applicants/${applicantId}`);
     } else {
       window.location.replace(`/organisations/${organisationId}/applicants/${applicantId}`);
