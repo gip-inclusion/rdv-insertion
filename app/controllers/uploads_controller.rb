@@ -13,7 +13,7 @@ class UploadsController < ApplicationController
     @department = Department.find(params[:department_id])
     authorize @department, :upload?
     @organisation = nil
-    @configurations = @department.configurations
+    @configurations = policy_scope(::Configuration) & @department.configurations
     set_configuration
   end
 
@@ -32,5 +32,6 @@ class UploadsController < ApplicationController
       elsif @configurations.length == 1
         @configurations.first
       end
+    @context_name = @configuration&.context_name
   end
 end

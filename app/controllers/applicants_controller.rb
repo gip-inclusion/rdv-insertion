@@ -130,14 +130,14 @@ class ApplicantsController < ApplicationController
   end
 
   def set_organisation_variables
-    @organisation = Organisation.includes(:applicants, :configurations).find(params[:organisation_id])
+    @organisation = policy_scope(Organisation).includes(:applicants, :configurations).find(params[:organisation_id])
     @department = @organisation.department
     @configuration = @organisation.configurations.first
   end
 
   def set_department_variables
     @department = Department.includes(:organisations, :applicants).find(params[:department_id])
-    @configuration = @department.configurations.first
+    @configuration = (policy_scope(::Configuration) & @department.configurations).first
     set_organisation_at_department_level if @applicant.present?
   end
 

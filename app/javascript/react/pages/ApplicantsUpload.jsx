@@ -23,7 +23,7 @@ import Applicant from "../models/Applicant";
 
 const reducer = reducerFactory("Expérimentation RSA");
 
-export default function ApplicantsUpload({ organisation, configuration, department }) {
+export default function ApplicantsUpload({ organisation, configuration, department, contextName }) {
   const columnNames = configuration.column_names;
   const parameterizedColumnNames = parameterizeObjectValues({
     ...columnNames.required,
@@ -179,6 +179,7 @@ export default function ApplicantsUpload({ organisation, configuration, departme
           <h3 className="new-applicants-title">
             Ajout {isDepartmentLevel ? "au niveau du territoire" : "allocataires"}
           </h3>
+          <h6>({contextName})</h6>
           <FileHandler
             handleFile={handleApplicantsFile}
             fileSize={fileSize}
