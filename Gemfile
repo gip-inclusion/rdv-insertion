@@ -69,6 +69,9 @@ gem 'addressable'
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
 
+# CORS support
+gem 'rack-cors'
+
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
 
