@@ -40,7 +40,6 @@
       <%= organisation.responsible.full_name %>, <%= organisation.responsible.role %></p>
     <% else %>
       <p>Le département <%= I18n.t("with_prefix.#{department.pronoun}", name: invitation.department.name) %><br/></p>
-
     <% end %>
   </div>
 </div>
