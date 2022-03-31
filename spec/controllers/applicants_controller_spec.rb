@@ -265,6 +265,7 @@ describe ApplicantsController, type: :controller do
 
         expect(response).to be_successful
         expect(response.body).to match(/Dossier archivé/)
+        expect(response.body).to match(/Motif d'archivage/)
       end
     end
   end

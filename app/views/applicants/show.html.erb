@@ -1,11 +1,5 @@
 
-<% if @applicant.is_archived? %>
-  <div class="marianne archive-banner">
-    <p class="text-center">
-        Dossier archivé
-    </p>
-  </div>
-<% end %>
+<%= render 'archive_banner' if @applicant.is_archived? %>
 <div class="container label-blue mt-4">
   <div class="d-flex justify-content-between mb-4">
     <div>
