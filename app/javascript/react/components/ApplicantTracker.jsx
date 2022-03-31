@@ -113,7 +113,7 @@ export default function ApplicantTracker({
 
   const handleClick = async (action) => {
     setIsLoading({ ...isLoading, [action]: true });
-    const applicantParams = [applicant.id, department.id, organisation, isDepartmentLevel];
+    const applicantParams = [applicant, department.id, organisation, isDepartmentLevel];
     if (action === "smsInvitation") {
       const invitation = await handleApplicantInvitation(...applicantParams, "sms");
       setLastSmsInvitationSentAt(invitation?.sent_at);

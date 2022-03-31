@@ -27,7 +27,7 @@ export default function Applicant({
   const handleClick = async (action) => {
     setIsLoading({ ...isLoading, [action]: true });
     const applicantParams = [
-      applicant.id,
+      applicant,
       applicant.department.id,
       applicant.currentOrganisation,
       isDepartmentLevel,

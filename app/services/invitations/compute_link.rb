@@ -43,7 +43,7 @@ module Invitations
         address: address,
         invitation_token: @invitation.token,
         organisation_ids: @invitation.organisations.map(&:rdv_solidarites_organisation_id),
-        motif_search_terms: @invitation.context
+        motif_search_terms: @invitation.context_name
       }
         .merge(@invitation.rdv_solidarites_lieu_id? ? { lieu_id: @invitation.rdv_solidarites_lieu_id } : geo_attributes)
     end

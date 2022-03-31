@@ -21,7 +21,12 @@ module RdvSolidaritesWebhooks
     end
 
     def should_notify_applicants?
-      organisation.notify_applicant? && event.in?(%w[created destroyed])
+      organisation_configuration.notify_applicant? && event.in?(%w[created destroyed])
+    end
+
+    def organisation_configuration
+      # TODO: replace "rsa_orientation" with the motif category coming from the webhook
+      organisation.configurations.find_by(context: "rsa_orientation") || organisation.configurations.first
     end
 
     def event
@@ -59,8 +64,15 @@ module RdvSolidaritesWebhooks
         UpsertRecordJob.perform_async(
           "Rdv",
           rdv_solidarites_rdv.to_rdv_insertion_attributes,
-          { applicant_ids: applicant_ids, organisation_id: organisation.id }
+          { applicant_ids: applicant_ids, organisation_id: organisation.id, rdv_context_ids: rdv_contexts.map(&:id) }
         )
+      end
+    end
+
+    def rdv_contexts
+      applicants.map do |applicant|
+        # TODO: replace "rsa_orientation" with the motif category coming from the webhook
+        RdvContext.find_or_create_by(applicant: applicant, context: "rsa_orientation")
       end
     end
 

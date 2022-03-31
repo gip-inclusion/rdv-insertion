@@ -1,6 +1,7 @@
 class Invitation < ApplicationRecord
   belongs_to :applicant
   belongs_to :department
+  belongs_to :rdv_context
   has_and_belongs_to_many :organisations
 
   attr_accessor :content
@@ -8,8 +9,10 @@ class Invitation < ApplicationRecord
   validates :help_phone_number, :context, :token, :organisations, :link, presence: true
   validate :organisations_cannot_be_from_different_departments
 
+  delegate :context, :context_name, to: :rdv_context
+
   enum format: { sms: 0, email: 1, postal: 2 }, _prefix: :format
-  after_commit :set_applicant_status
+  after_commit :set_applicant_status, :set_rdv_context_status
 
   scope :sent_in_time_window, -> { where("sent_at > ?", Organisation::TIME_TO_ACCEPT_INVITATION.ago) }
 
@@ -38,5 +41,9 @@ class Invitation < ApplicationRecord
 
   def set_applicant_status
     RefreshApplicantStatusesJob.perform_async(applicant.id)
+  end
+
+  def set_rdv_context_status
+    RefreshRdvContextStatusesJob.perform_async(rdv_context_id)
   end
 end

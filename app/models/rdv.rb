@@ -7,13 +7,16 @@ class Rdv < ApplicationRecord
   CANCELLED_STATUSES = %w[excused revoked noshow].freeze
   CANCELLED_BY_USER_STATUSES = %w[excused noshow].freeze
 
-  after_commit :refresh_applicant_statuses, on: [:create, :update]
+  after_commit :refresh_applicant_statuses, :refresh_context_status, on: [:create, :update]
 
   belongs_to :organisation
+  has_and_belongs_to_many :rdv_contexts
   has_and_belongs_to_many :applicants
 
   validates :applicants, :rdv_solidarites_motif_id, :starts_at, :duration_in_min, presence: true
   validates :rdv_solidarites_rdv_id, uniqueness: true, presence: true
+
+  validate :context_subject_is_uniq
 
   enum created_by: { agent: 0, user: 1, file_attente: 2 }, _prefix: :created_by
   enum status: { unknown: 0, waiting: 1, seen: 2, excused: 3, revoked: 4, noshow: 5 }
@@ -42,5 +45,15 @@ class Rdv < ApplicationRecord
 
   def refresh_applicant_statuses
     RefreshApplicantStatusesJob.perform_async(applicant_ids)
+  end
+
+  def refresh_context_status
+    RefreshRdvContextStatusesJob.perform_async(rdv_context_ids)
+  end
+
+  def context_subject_is_uniq
+    return if rdv_contexts.pluck(:context).uniq.length < 2
+
+    errors.add(:base, "Un RDV ne peut pas être lié à deux sujets différents")
   end
 end
