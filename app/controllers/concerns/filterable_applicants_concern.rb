@@ -7,7 +7,7 @@ module FilterableApplicantsConcern
   end
 
   def filter_applicants_by_status
-    @applicants = @applicants.status(params[:status]) if params[:status].present?
+    @applicants = @applicants.active.status(params[:status]) if params[:status].present?
   end
 
   def filter_applicants_by_action_required

@@ -42,8 +42,11 @@ class Applicant < ApplicationRecord
   }
 
   scope :status, ->(status) { where(status: status) }
-  scope :action_required, -> { status(STATUSES_WITH_ACTION_REQUIRED).or(attention_needed.invited_before_time_window) }
-  scope :attention_needed, -> { status(STATUSES_WITH_ATTENTION_NEEDED) }
+  scope :active, -> { where(is_archived: false) }
+  scope :action_required, lambda {
+    active.and(status(STATUSES_WITH_ACTION_REQUIRED).or(attention_needed.invited_before_time_window))
+  }
+  scope :attention_needed, -> { active.and(status(STATUSES_WITH_ATTENTION_NEEDED)) }
   scope :invited_before_time_window, lambda {
     where.not(id: Invitation.sent_in_time_window.pluck(:applicant_id).uniq)
   }

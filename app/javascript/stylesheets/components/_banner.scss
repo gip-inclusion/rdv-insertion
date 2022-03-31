@@ -1,13 +1,25 @@
 .invitation-banner {
   background-color: $green;
   color: $dark-blue;
-  padding: 13px 0;
-  font-size: 1.1rem;
+  padding: 26px 0;
   p {
+    font-size: 1.1rem;
     margin: 0;
   }
   i {
     display: inline;
     color: white;
+  }
+}
+
+.archive-banner {
+  background-color: $orange-light;
+  color: $dark-blue;
+  padding: 13px 0;
+  position: sticky;
+  top: 0;
+  p {
+    font-size: 1.1rem;
+    margin: 0;
   }
 }

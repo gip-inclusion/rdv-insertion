@@ -14,7 +14,6 @@ fr:
           rdv_revoked: RDV annulé à l'initative du Service
           rdv_excused: RDV annulé à l'initiative de l'allocataire
           rdv_seen: RDV honoré
-          resolved: Dossier clôturé
           deleted: Supprimé
           multiple_rdvs_cancelled: Plusieurs RDV reportés par l'allocataire
         phone_number: Téléphone
@@ -29,5 +28,6 @@ fr:
         department_internal_id: ID interne au département
         rights_opening_date: Date d'entrée flux
         organisations: Organisation(s)
+        archiving_reason: Motif d'archivage
         uid: Le couple numéro d'allocataire + rôle
         creation_date: Date de création

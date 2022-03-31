@@ -88,7 +88,7 @@ export default function Applicant({
     setIsLoading({ ...isLoading, [action]: false });
   };
 
-  const computeColSpanForDuplicateWarning = () => {
+  const computeColSpanForDisabledInvitations = () => {
     let colSpan = 0;
     if (applicant.shouldBeInvitedBySms()) colSpan += 1;
     if (applicant.shouldBeInvitedByEmail()) colSpan += 1;
@@ -97,7 +97,10 @@ export default function Applicant({
   };
 
   return (
-    <tr key={applicant.uid} className={applicant.isDuplicate ? "table-danger" : ""}>
+    <tr
+      key={applicant.uid}
+      className={applicant.isDuplicate || applicant.isArchived ? "table-danger" : ""}
+    >
       <td>{applicant.affiliationNumber}</td>
       <td>{applicant.shortTitle}</td>
       <td>{applicant.firstName}</td>
@@ -112,8 +115,12 @@ export default function Applicant({
       {applicant.shouldDisplay("rights_opening_date") && (
         <td>{applicant.rightsOpeningDate ?? " - "}</td>
       )}
-      <td className={applicant.isDuplicate ? "text-dark-blue" : ""}>
-        {applicant.createdAt ? (
+      <td>
+        {applicant.isArchived ? (
+          <button type="submit" disabled className="btn btn-primary btn-blue">
+            Dossier archivé
+          </button>
+        ) : applicant.createdAt ? (
           applicant.belongsToCurrentOrg() ? (
             <i className="fas fa-check green-check" />
           ) : (
@@ -153,7 +160,9 @@ export default function Applicant({
           </button>
         )}
       </td>
-      {applicant.isDuplicate ? (
+      {applicant.isArchived ? (
+        <td colSpan={computeColSpanForDisabledInvitations()} />
+      ) : applicant.isDuplicate ? (
         <Tippy
           content={
             <span>
@@ -172,7 +181,7 @@ export default function Applicant({
             </span>
           }
         >
-          <td colSpan={computeColSpanForDuplicateWarning()}>
+          <td colSpan={computeColSpanForDisabledInvitations()}>
             <small className="d-inline-block mx-2">
               <i className="fas fa-exclamation-triangle" />
             </small>

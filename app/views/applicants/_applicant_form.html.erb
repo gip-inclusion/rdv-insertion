@@ -11,42 +11,36 @@
     </div>
   </div>
   <div class="mb-4">
-    <div class="row d-flex justify-content-around flex-wrap">
-      <div class="col-10 col-md-5">
+    <div class="row d-flex justify-content-start flex-wrap">
+      <div class="col-12 col-md-6 px-5">
         <h4 class="label-blue"><%= Applicant.human_attribute_name(:first_name) %>*</h4>
         <p><%= f.input :first_name %></p>
       </div>
-      <div class="col-10 col-md-5">
+      <div class="col-12 col-md-6 px-5">
         <h4 class="label-blue"><%= Applicant.human_attribute_name(:last_name) %>*</h4>
         <p><%= f.input :last_name %></p>
       </div>
-    </div>
-    <div class="row d-flex justify-content-around flex-wrap">
-      <div class="col-10 col-md-5">
+      <div class="col-12 col-md-6 px-5">
         <h4 class="label-blue"><%= Applicant.human_attribute_name(:title) %>*</h4>
         <p><%= f.input :title, as: :select, collection: ["monsieur", "madame"] %></p>
       </div>
-      <div class="col-10 col-md-5">
+      <div class="col-12 col-md-6 px-5">
         <h4 class="label-blue"><%= Applicant.human_attribute_name(:role) %>*</h4>
         <p><%= f.input :role, as: :select, collection: ["demandeur", "conjoint"], selected: @applicant.role %></p>
       </div>
-    </div>
-    <div class="row d-flex justify-content-around flex-wrap">
-      <div class="col-10 col-md-5">
+      <div class="col-12 col-md-6 px-5">
         <h4 class="label-blue"><%= Applicant.human_attribute_name(:affiliation_number) %>*</h4>
         <p><%= f.input :affiliation_number %></p>
       </div>
-      <div class="col-10 col-md-5">
+      <div class="col-12 col-md-6 px-5">
         <h4 class="label-blue"><%= Applicant.human_attribute_name(:department_internal_id) %></h4>
         <p><%= f.input :department_internal_id %></p>
       </div>
-    </div>
-    <div class="row d-flex justify-content-around flex-wrap">
-      <div class="col-10 col-md-5">
+      <div class="col-12 col-md-6 px-5">
         <h4 class="label-blue"><%= Applicant.human_attribute_name(:email) %></h4>
         <p><%= f.input :email %></p>
       </div>
-      <div class="col-10 col-md-5">
+      <div class="col-12 col-md-6 px-5">
         <h4 class="label-blue"><%= Applicant.human_attribute_name(:birth_date) %></h4>
         <p><%= f.input :birth_date,
                         input_html: { class: "date-select" },
@@ -55,21 +49,17 @@
                         include_blank: true,
                         order: [:day, :month, :year] %></p>
       </div>
-    </div>
-    <div class="row d-flex justify-content-around flex-wrap">
-      <div class="col-10 col-md-5">
+      <div class="col-12 col-md-6 px-5">
         <h4 class="label-blue"><%= Applicant.human_attribute_name(:address) %></h4>
         <p><%= f.input :address %></p>
       </div>
-      <div class="col-10 col-md-5">
+      <div class="col-12 col-md-6 px-5">
         <h4 class="label-blue"><%= Applicant.human_attribute_name(:phone_number) %></h4>
         <p>
           <%= f.input :phone_number %>
         </p>
       </div>
-    </div>
-    <div class="row d-flex justify-content-around flex-wrap">
-      <div class="col-10 col-md-5">
+      <div class="col-12 col-md-6 px-5">
         <h4 class="label-blue"><%= Applicant.human_attribute_name(:rights_opening_date) %></h4>
         <p><%= f.input :rights_opening_date,
                         input_html: { class: "date-select" },
@@ -78,7 +68,15 @@
                         include_blank: true,
                         order: [:day, :month, :year] %></p>
       </div>
-      <div class="col-10 col-md-5"></div>
+      <div class="col-12 col-md-6 px-5"></div>
+      <% if @applicant.is_archived? %>
+        <div class="col-12 col-md-6 px-5">
+          <h4 class="label-blue"><%= Applicant.human_attribute_name(:archiving_reason) %></h4>
+          <p>
+            <%= f.input :archiving_reason %>
+          </p>
+        </div>
+      <% end %>
     </div>
   </div>
 </div>
