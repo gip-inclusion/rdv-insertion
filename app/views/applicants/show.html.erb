@@ -1,3 +1,11 @@
+
+<% if @applicant.is_archived? %>
+  <div class="marianne archive-banner">
+    <p class="text-center">
+        Dossier archivé
+    </p>
+  </div>
+<% end %>
 <div class="container label-blue mt-4">
   <div class="d-flex justify-content-between mb-4">
     <div>
@@ -10,8 +18,8 @@
     </div>
     <div>
       <% unless @applicant.rdv_seen? %>
-        <button class="btn btn-primary" id="update-status-button" data-applicant-id="<%= @applicant.id %>" data-organisation-id="<%= @organisation.id %>">
-          <%= @applicant.resolved? ? "Rouvrir le dossier" : "Clôturer le dossier" %>
+        <button class="btn btn-primary" id="archive-button" data-applicant-id="<%= @applicant.id %>" data-organisation-id="<%= @organisation.id %>" data-department-id="<%= @department.id %>" data-department-level="<%= department_level? %>">
+          <%= @applicant.is_archived? ? "Rouvrir le dossier" : "Archiver le dossier" %>
         </button>
       <% end %>
       <%= link_to compute_edit_path(@applicant, @organisation, @department) do %>
@@ -20,74 +28,67 @@
     </div>
   </div>
   <div class="mb-4">
-    <div class="row d-flex justify-content-around flex-wrap">
-      <div class="col-10 col-md-5">
+    <div class="row d-flex justify-content-start flex-wrap">
+      <div class="col-12 col-md-6 px-5">
         <h4 class="label-blue"><%= Applicant.human_attribute_name(:first_name) %></h4>
         <p><%= display_attribute @applicant.first_name %></p>
       </div>
-      <div class="col-10 col-md-5">
+      <div class="col-12 col-md-6 px-5">
         <h4 class="label-blue"><%= Applicant.human_attribute_name(:last_name) %></h4>
         <p><%= display_attribute @applicant.last_name %></p>
       </div>
-    </div>
-    <div class="row d-flex justify-content-around flex-wrap">
-      <div class="col-10 col-md-5">
+      <div class="col-12 col-md-6 px-5">
         <h4 class="label-blue"><%= Applicant.human_attribute_name(:title) %></h4>
         <p><%= display_attribute @applicant.title %></p>
       </div>
-      <div class="col-10 col-md-5">
+      <div class="col-12 col-md-6 px-5">
         <h4 class="label-blue"><%= Applicant.human_attribute_name(:role) %></h4>
         <p><%= display_attribute @applicant.role %></p>
       </div>
-    </div>
-    <div class="row d-flex justify-content-around flex-wrap">
-      <div class="col-10 col-md-5">
+      <div class="col-12 col-md-6 px-5">
         <h4 class="label-blue"><%= Applicant.human_attribute_name(:affiliation_number) %></h4>
         <p><%= display_attribute @applicant.affiliation_number %></p>
       </div>
-      <div class="col-10 col-md-5">
+      <div class="col-12 col-md-6 px-5">
         <h4 class="label-blue"><%= Applicant.human_attribute_name(:department_internal_id) %></h4>
         <p><%= display_attribute @applicant.department_internal_id %></p>
       </div>
-    </div>
-    <div class="row d-flex justify-content-around flex-wrap">
-      <div class="col-10 col-md-5">
+      <div class="col-12 col-md-6 px-5">
         <h4 class="label-blue"><%= Applicant.human_attribute_name(:email) %></h4>
         <p><%= display_attribute @applicant.email %></p>
       </div>
-      <div class="col-10 col-md-5">
+      <div class="col-12 col-md-6 px-5">
         <h4 class="label-blue"><%= Applicant.human_attribute_name(:birth_date) %></h4>
         <p><%= display_attribute format_date(@applicant.birth_date) %></p>
       </div>
-    </div>
-    <div class="row d-flex justify-content-around flex-wrap">
-      <div class="col-10 col-md-5">
+      <div class="col-12 col-md-6 px-5">
         <h4 class="label-blue"><%= Applicant.human_attribute_name(:address) %></h4>
         <p><%= display_attribute @applicant.address %></p>
       </div>
-      <div class="col-10 col-md-5">
+      <div class="col-12 col-md-6 px-5">
         <h4 class="label-blue"><%= Applicant.human_attribute_name(:phone_number) %></h4>
         <p><%= display_attribute @applicant.phone_number %></p>
       </div>
-    </div>
-    <div class="row d-flex justify-content-around flex-wrap">
-      <div class="col-10 col-md-5">
+      <div class="col-12 col-md-6 px-5">
         <h4 class="label-blue"><%= Applicant.human_attribute_name(:rights_opening_date) %></h4>
         <p><%= display_attribute format_date(@applicant.rights_opening_date) %></p>
       </div>
-      <div class="col-10 col-md-5">
+      <div class="col-12 col-md-6 px-5">
         <h4 class="label-blue"><%= Applicant.human_attribute_name(:creation_date) %></h4>
         <p><%= display_attribute format_date(@applicant.created_at) %></p>
       </div>
-    </div>
-    <div class="row d-flex justify-content-around flex-wrap">
-      <div class="col-10 col-md-5">
-        <% if department_level? %>
-          <h4 class="label-blue"><%= Applicant.human_attribute_name(:organisations) %></h4>
-          <p><%= @applicant.organisations.collect(&:name).join(", ") %></p>
-        <% end %>
-      </div>
-      <div class="col-10 col-md-5"></div>
+      <% if department_level? %>
+        <div class="col-12 col-md-6 px-5">
+            <h4 class="label-blue"><%= Applicant.human_attribute_name(:organisations) %></h4>
+            <p><%= @applicant.organisations.collect(&:name).join(", ") %></p>
+        </div>
+      <% end %>
+      <% if @applicant.is_archived? %>
+        <div class="col-12 col-md-6 px-5">
+          <h4 class="label-blue"><%= Applicant.human_attribute_name(:archiving_reason) %></h4>
+          <p><%= display_attribute @applicant.archiving_reason %></p>
+        </div>
+      <% end %>
     </div>
   </div>
   <%= react_component(

@@ -26,7 +26,7 @@
         </thead>
         <tbody class="align-middle">
           <% @applicants.each do |applicant| %>
-            <tr>
+            <tr class="<%= "table-danger" if applicant.is_archived? %>">
               <td><%= display_attribute applicant.last_name %></td>
               <td><%= display_attribute applicant.first_name %></td>
               <td class="d-none d-lg-table-cell"><%= display_attribute applicant.email %></td>
@@ -43,10 +43,14 @@
               <% if show_notification?(@configuration) %>
                 <td><%= display_attribute format_date(applicant.last_notification_sent_at) %></td>
               <% end %>
-              <td class="<%= background_class_for_status(applicant) %>">
-                <%= I18n.t("activerecord.attributes.applicant.statuses.#{applicant.status}") %>
-                <%= display_status_notice(applicant) %>
-              </td>
+              <% if applicant.is_archived? %>
+                <td>Dossier archivé</td>
+              <% else %>
+                <td class="<%= background_class_for_status(applicant) %>">
+                  <%= I18n.t("activerecord.attributes.applicant.statuses.#{applicant.status}") %>
+                  <%= display_status_notice(applicant) %>
+                </td>
+              <% end %>
               <td class="padding-left-15">
                 <% unless applicant.deleted? %>
                   <%# We consider that an applicant is only in one organisation per department %>
