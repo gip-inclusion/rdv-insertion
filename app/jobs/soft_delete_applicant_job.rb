@@ -3,7 +3,7 @@ class SoftDeleteApplicantJob < ApplicationJob
     applicant = Applicant.find_by(rdv_solidarites_user_id: rdv_solidarites_user_id)
     return if applicant.blank?
 
-    applicant.update!(
+    applicant.update_columns(
       status: "deleted",
       uid: nil,
       department_internal_id: nil
