@@ -32,7 +32,7 @@ module Invitations
 
     def content
       "#{applicant.full_name},\nVous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous " \
-        "d’accompagnement. Pour choisir la date et l'horaire de votre premier RDV, " \
+        "d'orientation. Pour choisir la date et l'horaire de votre premier RDV, " \
         "cliquez sur le lien suivant dans les 3 jours: " \
         "#{redirect_invitations_url(params: { token: @invitation.token }, host: ENV['HOST'])}\n" \
         "Ce rendez-vous est obligatoire. En cas de problème technique, contactez le "\
