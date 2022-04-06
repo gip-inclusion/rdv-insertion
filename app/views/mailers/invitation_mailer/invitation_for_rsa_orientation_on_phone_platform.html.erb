@@ -1,6 +1,6 @@
 <h1>Bonjour <%= "#{@applicant.first_name} #{@applicant.last_name.upcase}" %>,</h1>
 <p>En tant que bénéficiaire du RSA vous devez contacter la plateforme départementale afin de démarrer votre parcours d’accompagnement.</p>
-<p><span class="font-weight-bold">Pour cela, merci d’appeler le <%= @invitation.help_phone_number %> dans un délai de 3 jours.</span> Cet appel est nécessaire pour le traitement de votre dossier.</p>
+<p><span class="font-weight-bold">Pour cela, merci d’appeler le <%= @invitation.help_phone_number_formatted %> dans un délai de 3 jours.</span> Cet appel est nécessaire pour le traitement de votre dossier.</p>
 
 <p>À bientôt,</p>
 <p>Le département <%= I18n.t("with_prefix.#{@invitation.department.pronoun}", name: @invitation.department.name) %>.</p>

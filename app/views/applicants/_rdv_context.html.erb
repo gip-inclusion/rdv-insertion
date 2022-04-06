@@ -1,4 +1,4 @@
-<h5 class="text-center py-4"><%= configuration.context_name %> (<span><%= display_context_status(rdv_context, with_notice: false) %>)</span></h5>
+<h5 class="text-center py-4"><%= configuration.context_name %> (<%= display_context_status(rdv_context, with_notice: false) %>)</h5>
 <div class="d-flex justify-content-around">
    <%= react_component(
     "components/InvitationBlock", {

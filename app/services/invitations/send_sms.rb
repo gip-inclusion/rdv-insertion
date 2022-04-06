@@ -52,7 +52,7 @@ module Invitations
         "#{@invitation.help_phone_number}."
     end
 
-    def content_for_rsa_orientation_phone_platform
+    def content_for_rsa_orientation_on_phone_platform
       "#{applicant.full_name},\nVous êtes bénéficiaire du RSA et vous devez contacter la plateforme départementale " \
         "afin de démarrer votre parcours d’accompagnement. Pour cela, merci d’appeler le " \
         "#{@invitation.help_phone_number} dans un délai de 3 jours. "\

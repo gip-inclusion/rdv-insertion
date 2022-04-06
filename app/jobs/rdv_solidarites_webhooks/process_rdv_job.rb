@@ -73,7 +73,7 @@ module RdvSolidaritesWebhooks
     def rdv_contexts
       applicants.map do |applicant|
         # TODO: remove organisation_configuration.context when caegory available
-        RdvContext.find_or_create_by(
+        RdvContext.find_or_create_by!(
           applicant: applicant, context: rdv_solidarites_rdv.context || organisation_configuration.context
         )
       end
