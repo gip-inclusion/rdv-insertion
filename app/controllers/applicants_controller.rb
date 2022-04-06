@@ -32,16 +32,25 @@ class ApplicantsController < ApplicationController
     end
   end
 
-  def index
-    @applicants = policy_scope(Applicant).includes(:invitations, :rdvs).distinct
+  def index # rubocop:disable Metrics/AbcSize
+    @not_invited_list = params[:not_invited] == "true"
+    @applicants = policy_scope(Applicant).includes(:invitations, :rdvs, :rdv_contexts).active.distinct
     @applicants = \
       if department_level?
         @applicants.where(organisations: policy_scope(Organisation).where(department: @department))
       else
         @applicants.where(organisations: @organisation)
       end
-    @statuses_count = @applicants.group(:status).count
-    filter_applicants
+    if @not_invited_list
+      @applicants = @applicants.where.missing(:rdv_contexts)
+      filter_applicants_by_search_query
+      filter_applicants_by_page
+    else
+      @applicants = @applicants.joins(:rdv_contexts).where(rdv_contexts: { context: @current_context })
+      @rdv_contexts = RdvContext.where(applicant_id: @applicants.archived(false).ids, context: @current_context)
+      @statuses_count = @rdv_contexts.group(:status).count
+      filter_applicants
+    end
     @applicants = @applicants.order(created_at: :desc)
   end
 
@@ -117,7 +126,7 @@ class ApplicantsController < ApplicationController
   end
 
   def set_applicant
-    @applicant = Applicant.includes(:organisations).find(params[:id])
+    @applicant = Applicant.includes(:organisations, rdv_contexts: [{ rdvs: [:organisation] }, :invitations]).find(params[:id])
   end
 
   def after_save_path
@@ -127,19 +136,26 @@ class ApplicantsController < ApplicationController
   end
 
   def set_variables
-    department_level? ? set_department_variables : set_organisation_variables
+    department_level? ? set_variables_at_department_level : set_variables_at_organisation_level
   end
 
-  def set_organisation_variables
+  def set_variables_at_organisation_level
     @organisation = policy_scope(Organisation).includes(:applicants, :configurations).find(params[:organisation_id])
     @department = @organisation.department
-    @configuration = @organisation.configurations.first
+    @all_configurations = @organisation.configurations
+    set_current_configuration_and_context
   end
 
-  def set_department_variables
-    @department = Department.includes(:organisations, :applicants).find(params[:department_id])
-    @configuration = (policy_scope(::Configuration) & @department.configurations).first
+  def set_variables_at_department_level
+    @department = policy_scope(Department).includes(:organisations, :applicants).find(params[:department_id])
+    @all_configurations = policy_scope(::Configuration) & @department.configurations
+    set_current_configuration_and_context
     set_organisation_at_department_level if @applicant.present?
+  end
+
+  def set_current_configuration_and_context
+    @current_configuration = @all_configurations.find { |c| c.context == params[:context] } || @all_configurations.first
+    @current_context = @current_configuration.context
   end
 
   def set_organisation_at_department_level
@@ -153,7 +169,7 @@ class ApplicantsController < ApplicationController
   end
 
   def retrieve_applicants
-    @applicants = policy_scope(Applicant).includes(:organisations, :invitations, :rdvs).distinct
+    @applicants = policy_scope(Applicant).includes(:organisations, :rdvs, invitations: [:rdv_context]).distinct
     @applicants = @applicants
                   .where(department_internal_id: params.require(:applicants)[:department_internal_ids])
                   .or(@applicants.where(uid: params.require(:applicants)[:uids]))

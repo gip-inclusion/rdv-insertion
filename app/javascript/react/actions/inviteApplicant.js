@@ -7,6 +7,7 @@ const inviteApplicant = async (
   isDepartmentLevel,
   invitationFormat,
   helpPhoneNumber,
+  context,
   types = "application/json"
 ) => {
   let url;
@@ -22,7 +23,7 @@ const inviteApplicant = async (
       format: invitationFormat,
       help_phone_number: helpPhoneNumber,
       rdv_context: {
-        context: applicant.currentConfiguration.context,
+        context,
       },
     },
     types

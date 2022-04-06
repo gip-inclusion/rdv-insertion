@@ -31,6 +31,12 @@ class Invitation < ApplicationRecord
     Phonelib.parse(help_phone_number).national
   end
 
+  def as_json(_opts = {})
+    super.merge(
+      context: context
+    )
+  end
+
   private
 
   def organisations_cannot_be_from_different_departments

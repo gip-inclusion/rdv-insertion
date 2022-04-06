@@ -1,4 +1,3 @@
-
 <%= render 'archive_banner' if @applicant.is_archived? %>
 <div class="container label-blue mt-4">
   <div class="d-flex justify-content-between mb-4">
@@ -11,11 +10,9 @@
       <% end %>
     </div>
     <div>
-      <% unless @applicant.rdv_seen? %>
-        <button class="btn btn-primary" id="archive-button" data-applicant-id="<%= @applicant.id %>" data-organisation-id="<%= @organisation.id %>" data-department-id="<%= @department.id %>" data-department-level="<%= department_level? %>">
-          <%= @applicant.is_archived? ? "Rouvrir le dossier" : "Archiver le dossier" %>
-        </button>
-      <% end %>
+      <button class="btn btn-blue" id="archive-button" data-applicant-id="<%= @applicant.id %>" data-organisation-id="<%= @organisation.id %>" data-department-id="<%= @department.id %>" data-department-level="<%= department_level? %>">
+        <%= @applicant.is_archived? ? "Rouvrir le dossier" : "Archiver le dossier" %>
+      </button>
       <%= link_to compute_edit_path(@applicant, @organisation, @department) do %>
         <button class="btn btn-blue">Modifier</button>
       <% end %>
@@ -85,23 +82,53 @@
       <% end %>
     </div>
   </div>
-  <%= react_component(
-    "components/ApplicantTracker", {
-      applicant: @applicant,
-      organisation: @organisation,
-      department: @department,
-      isDepartmentLevel: department_level?,
-      showSmsInvitation: show_sms_invitation?(@configuration),
-      showEmailInvitation: show_email_invitation?(@configuration),
-      showPostalInvitation: show_postal_invitation?(@configuration),
-      numberOfRdvs: @applicant.rdvs.length,
-      numberOfCancelledRdvs: @applicant.rdvs.cancelled_by_user.count,
-      rdvToDisplay: @applicant.rdvs.seen.first || @applicant.rdvs.last,
-      statusNotice: display_status_notice(@applicant),
-      outOfTime: @applicant.invited_before_time_window?,
-      actionRequired: @applicant.action_required?,
-      humanStatus: I18n.t("activerecord.attributes.applicant.statuses.#{@applicant.status}")
-    }
-  ) %>
+  <% @all_configurations.each do |configuration| %>
+    <% rdv_context = @applicant.rdv_contexts.find { |rc| rc.context == configuration.context } %>
+    <h5 class="text-center py-4"><%= configuration.context_name %> (<span><%= display_context_status(rdv_context, with_notice: false) %>)</span></h5>
+    <div class="d-flex justify-content-around">
+       <%= react_component(
+        "components/InvitationBlock", {
+          applicant: @applicant,
+          organisation: @organisation,
+          department: @department,
+          invitations: rdv_context.nil? ? [] : rdv_context.invitations,
+          isDepartmentLevel: department_level?,
+          invitationFormats: configuration.invitation_formats,
+          context: configuration.context,
+          backgroundClassForStatus: rdv_context.nil? ? "" : background_class_for_context_status(rdv_context),
+          status: rdv_context&.status,
+          statusText: display_context_status(rdv_context)
+        }
+      ) %>
+      <% if rdv_context&.rdvs.present? %>
+          <table class="tracking-block block-white text-center align-middle mb-4">
+            <thead>
+              <tr>
+                <th class="px-4 py-2"><h4>RDV pris le</h4></th>
+                <th class="px-4 py-2"><h4>Date du RDV</h4></th>
+                <th class="px-4 py-2"><h4>Statut RDV</h4></th>
+                <th class="px-4 py-2"><h4>Lien</h4></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% rdv_context.rdvs.each do |rdv| %>
+                <tr>
+                  <td class="px-4 py-3"><%= format_date(rdv.created_at) %></td>
+                  <td class="px-4 py-3"><%= format_date(rdv.starts_at) %></td>
+                  <td class="px-4 py-3 <%= background_class_for_rdv_status(rdv) %>"><%= rdv.displayed_status %></td>
+                  <td class="px-4 py-2">
+                    <%= link_to rdv.rdv_solidarites_url, target: "_blank" do %>
+                      <button class="btn btn-blue">
+                        Voir sur RDV-S<i class="fas fa-external-link-alt icon-sm"></i>
+                      </button>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+      <% end %>
+    </div>
+  <% end %>
 </div>
 

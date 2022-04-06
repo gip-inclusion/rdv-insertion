@@ -36,7 +36,15 @@ module HasContextStatusConcern
     return false unless invitation_sent?
     return true if rdvs.empty?
 
-    last_sent_invitation.sent_at > last_rdv.starts_at
+    # If there is a pending or a seen rdv we compare to the date of the rdv, otherwise to the date of
+    # the rdv creation
+    rdv_date_to_compare = \
+      if last_rdv.pending? || last_rdv.seen?
+        last_rdv.starts_at
+      else
+        last_rdv.created_at
+      end
+    last_sent_invitation.sent_at > rdv_date_to_compare
   end
 
   def invitation_sent?

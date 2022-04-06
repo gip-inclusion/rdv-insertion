@@ -1,7 +1,7 @@
-<% if @configuration.present? %>
+<% if @current_configuration.present? %>
   <%= react_component(
     "pages/ApplicantsUpload", {
-      organisation: @organisation, configuration: @configuration, department: @department, contextName: @context_name
+      organisation: @organisation, configuration: @current_configuration, department: @department, contextName: @context_name
     }
   ) %>
 <% else %>

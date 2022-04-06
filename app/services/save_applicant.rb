@@ -31,14 +31,7 @@ class SaveApplicant < BaseService
   end
 
   def rdv_solidarites_user_attributes
-    user_attributes = {
-      # if we notify from rdv-insertion we don't from rdv-solidarites
-      notify_by_sms: !@organisation.notify_applicant?,
-      notify_by_email: !@organisation.notify_applicant?
-    }.merge(
-      @applicant.attributes.symbolize_keys.slice(*Applicant::SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES)
-    )
-
+    user_attributes = @applicant.attributes.symbolize_keys.slice(*Applicant::SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES)
     return user_attributes if @applicant.demandeur? || @applicant.rdv_solidarites_user_id?
 
     # we do not send the same email for the conjoint on creation

@@ -26,11 +26,12 @@ export default function Applicant({
 
   const handleClick = async (action) => {
     setIsLoading({ ...isLoading, [action]: true });
-    const applicantParams = [
+    const invitationParams = [
       applicant,
       applicant.department.id,
       applicant.currentOrganisation,
       isDepartmentLevel,
+      applicant.currentConfiguration.context,
     ];
     if (action === "accountCreation") {
       if (!applicant.currentOrganisation) {
@@ -64,14 +65,14 @@ export default function Applicant({
         Swal.fire("Impossible d'assigner à l'organisation", result.errors[0], "error");
       }
     } else if (action === "smsInvitation") {
-      const invitation = await handleApplicantInvitation(...applicantParams, "sms");
+      const invitation = await handleApplicantInvitation(...invitationParams, "sms");
       applicant.lastSmsInvitationSentAt = invitation.sent_at;
     } else if (action === "emailInvitation") {
-      const invitation = await handleApplicantInvitation(...applicantParams, "email");
+      const invitation = await handleApplicantInvitation(...invitationParams, "email");
       applicant.lastEmailInvitationSentAt = invitation.sent_at;
     } else if (action === "postalInvitation") {
       setDownloadInProgress(true);
-      const invitationLetter = await getInvitationLetter(...applicantParams, "postal");
+      const invitationLetter = await getInvitationLetter(...invitationParams, "postal");
       if (invitationLetter?.success) {
         applicant.lastPostalInvitationSentAt = todaysDateString();
       }

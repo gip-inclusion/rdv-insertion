@@ -41,6 +41,10 @@ module RdvSolidarites
       )
     end
 
+    def context
+      motif.category
+    end
+
     def agents
       @attributes[:agents].map { RdvSolidarites::Agent.new(_1) }
     end

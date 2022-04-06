@@ -3,11 +3,6 @@ class Applicant < ApplicationRecord
     :first_name, :last_name, :birth_date, :email, :phone_number, :address, :affiliation_number, :birth_name,
     :invitation_accepted_at
   ].freeze
-
-  STATUSES_WITH_ACTION_REQUIRED = %w[
-    not_invited rdv_needs_status_update rdv_noshow rdv_revoked rdv_excused multiple_rdvs_cancelled
-  ].freeze
-  STATUSES_WITH_ATTENTION_NEEDED = %w[invitation_pending rdv_creation_pending].freeze
   RDV_SOLIDARITES_CLASS_NAME = "User".freeze
 
   include SearchableConcern
@@ -41,28 +36,8 @@ class Applicant < ApplicationRecord
     rdv_seen: 8, resolved: 9, deleted: 10, multiple_rdvs_cancelled: 11
   }
 
-  scope :status, ->(status) { where(status: status) }
-  scope :active, -> { where(is_archived: false) }
-  scope :action_required, lambda {
-    active.and(status(STATUSES_WITH_ACTION_REQUIRED).or(attention_needed.invited_before_time_window))
-  }
-  scope :attention_needed, -> { active.and(status(STATUSES_WITH_ATTENTION_NEEDED)) }
-  scope :invited_before_time_window, lambda {
-    where.not(id: Invitation.sent_in_time_window.pluck(:applicant_id).uniq)
-  }
-
-  def action_required?
-    status.in?(STATUSES_WITH_ACTION_REQUIRED) ||
-      (attention_needed? && invited_before_time_window?)
-  end
-
-  def attention_needed?
-    status.in?(STATUSES_WITH_ATTENTION_NEEDED)
-  end
-
-  def invited_before_time_window?
-    last_invitation_sent_at && last_invitation_sent_at < Organisation::TIME_TO_ACCEPT_INVITATION.ago
-  end
+  scope :active, -> { where.not(status: "deleted") }
+  scope :archived, ->(archived = true) { where(is_archived: archived) }
 
   def orientation_date
     rdvs.find(&:seen?)&.starts_at

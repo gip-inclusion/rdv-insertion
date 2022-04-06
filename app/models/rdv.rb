@@ -37,8 +37,21 @@ class Rdv < ApplicationRecord
     status.in?(CANCELLED_STATUSES)
   end
 
+  def needs_status_update?
+    !in_the_future? && status.in?(PENDING_STATUSES)
+  end
+
   def delay_in_days
     starts_at.to_datetime.mjd - created_at.to_datetime.mjd
+  end
+
+  def rdv_solidarites_url
+    "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/" \
+      "#{organisation.rdv_solidarites_organisation_id}/rdvs/#{rdv_solidarites_rdv_id}"
+  end
+
+  def displayed_status
+    pending? ? "À venir" : I18n.t("activerecord.attributes.rdv.statuses.#{status}")
   end
 
   private

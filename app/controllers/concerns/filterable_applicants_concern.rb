@@ -7,11 +7,15 @@ module FilterableApplicantsConcern
   end
 
   def filter_applicants_by_status
-    @applicants = @applicants.active.status(params[:status]) if params[:status].present?
+    return if params[:status].blank?
+
+    @applicants = @applicants.joins(:rdv_contexts).where(rdv_contexts: @rdv_contexts.status(params[:status]))
   end
 
   def filter_applicants_by_action_required
-    @applicants = @applicants.action_required if params[:action_required] == "true"
+    return unless params[:action_required] == "true"
+
+    @applicants = @applicants.joins(:rdv_contexts).where(rdv_contexts: @rdv_contexts.action_required)
   end
 
   def filter_applicants_by_search_query

@@ -25,8 +25,9 @@ module RdvSolidaritesWebhooks
     end
 
     def organisation_configuration
-      # TODO: replace "rsa_orientation" with the motif category coming from the webhook
-      organisation.configurations.find_by(context: "rsa_orientation") || organisation.configurations.first
+      # TODO: remove organisation_configuration.configurations.first when category available
+      organisation.configurations.find_by(context: rdv_solidarites_rdv.context) ||
+        organisation.configurations.first
     end
 
     def event
@@ -71,8 +72,10 @@ module RdvSolidaritesWebhooks
 
     def rdv_contexts
       applicants.map do |applicant|
-        # TODO: replace "rsa_orientation" with the motif category coming from the webhook
-        RdvContext.find_or_create_by(applicant: applicant, context: "rsa_orientation")
+        # TODO: remove organisation_configuration.context when caegory available
+        RdvContext.find_or_create_by(
+          applicant: applicant, context: rdv_solidarites_rdv.context || organisation_configuration.context
+        )
       end
     end
 

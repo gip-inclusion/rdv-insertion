@@ -13,25 +13,25 @@ class UploadsController < ApplicationController
     @department = Department.find(params[:department_id])
     authorize @department, :upload?
     @organisation = nil
-    @configurations = policy_scope(::Configuration) & @department.configurations
-    set_configuration
+    @all_configurations = policy_scope(::Configuration) & @department.configurations
+    set_current_configuration
   end
 
   def set_organisation_upload
     @organisation = Organisation.find(params[:organisation_id])
     authorize @organisation, :upload?
-    @configurations = @organisation.configurations
+    @all_configurations = @organisation.configurations
     @department = @organisation.department
-    set_configuration
+    set_current_configuration
   end
 
-  def set_configuration
-    @configuration = \
+  def set_current_configuration
+    @current_configuration = \
       if params[:configuration_id].present?
-        @configurations.find(params[:configuration_id])
-      elsif @configurations.length == 1
-        @configurations.first
+        @all_configurations.find(params[:configuration_id])
+      elsif @all_configurations.length == 1
+        @all_configurations.first
       end
-    @context_name = @configuration&.context_name
+    @context_name = @current_configuration&.context_name
   end
 end

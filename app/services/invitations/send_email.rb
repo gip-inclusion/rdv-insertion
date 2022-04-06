@@ -30,7 +30,7 @@ module Invitations
     end
 
     def send_email
-      InvitationMailer.first_invitation(@invitation, applicant).deliver_now
+      InvitationMailer.send(:"invitation_for_#{@invitation.context}", @invitation, applicant).deliver_now
     end
   end
 end

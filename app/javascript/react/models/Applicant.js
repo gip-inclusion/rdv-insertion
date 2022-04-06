@@ -144,14 +144,20 @@ export default class Applicant {
       this.phoneNumber = formatPhoneNumber(upToDateApplicant.phone_number);
       this.fullAddress = upToDateApplicant.address;
     }
-    this.lastSmsInvitationSentAt = retrieveLastInvitationDate(upToDateApplicant.invitations, "sms");
+    this.lastSmsInvitationSentAt = retrieveLastInvitationDate(
+      upToDateApplicant.invitations,
+      "sms",
+      this.currentConfiguration.context
+    );
     this.lastEmailInvitationSentAt = retrieveLastInvitationDate(
       upToDateApplicant.invitations,
-      "email"
+      "email",
+      this.currentConfiguration.context
     );
     this.lastPostalInvitationSentAt = retrieveLastInvitationDate(
       upToDateApplicant.invitations,
-      "postal"
+      "postal",
+      this.currentConfiguration.context
     );
     this.departmentInternalId = upToDateApplicant.department_internal_id;
   }

@@ -6,6 +6,7 @@ const handleApplicantInvitation = async (
   departmentId,
   organisation,
   isDepartmentLevel,
+  context,
   invitationFormat
 ) => {
   const result = await inviteApplicant(
@@ -14,7 +15,8 @@ const handleApplicantInvitation = async (
     organisation.id,
     isDepartmentLevel,
     invitationFormat,
-    organisation.phone_number
+    organisation.phone_number,
+    context
   );
   if (result.success) {
     const { invitation } = result;

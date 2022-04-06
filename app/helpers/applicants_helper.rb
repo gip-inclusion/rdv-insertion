@@ -37,22 +37,41 @@ module ApplicantsHelper
     end
   end
 
-  def background_class_for_status(applicant)
-    if applicant.action_required?
-      applicant.attention_needed? ? "bg-warning border-warning" : "bg-danger border-danger"
-    elsif applicant.rdv_seen? || applicant.is_archived?
+  def background_class_for_context_status(context)
+    if context.action_required?
+      context.attention_needed? ? "bg-warning border-warning" : "bg-danger border-danger"
+    elsif context.rdv_seen?
       "bg-success border-success"
     else
       ""
     end
   end
 
-  def display_status_notice(applicant)
-    if applicant.invited_before_time_window? && applicant.invitation_pending?
+  def background_class_for_rdv_status(rdv)
+    if rdv.seen?
+      "bg-success border-success"
+    elsif rdv.cancelled?
+      "bg-danger border-danger"
+    elsif rdv.needs_status_update?
+      "bg-warning border-warning"
+    else
+      ""
+    end
+  end
+
+  def display_context_status(context, with_notice: true)
+    return "Non invité" if context.nil?
+
+    I18n.t("activerecord.attributes.rdv_context.statuses.#{context.status}") + \
+      (with_notice ? display_context_status_notice(context) : "")
+  end
+
+  def display_context_status_notice(context)
+    if context.invited_before_time_window? && context.invitation_pending?
       " (Délai dépassé)"
-    elsif applicant.multiple_rdvs_cancelled? && applicant.rdvs.last&.pending?
+    elsif context.multiple_rdvs_cancelled? && context.rdvs.last&.pending?
       " (RDV en attente)"
-    elsif applicant.multiple_rdvs_cancelled?
+    elsif context.multiple_rdvs_cancelled?
       " (Courrier à envoyer)"
     else
       ""
@@ -68,8 +87,12 @@ module ApplicantsHelper
     params[:department_id].present?
   end
 
-  def compute_index_path(organisation, department)
-    department_level? ? department_applicants_path(department) : organisation_applicants_path(organisation)
+  def compute_index_path(organisation, department, **params)
+    if department_level?
+      department_applicants_path(department, **params)
+    else
+      organisation_applicants_path(organisation, **params)
+    end
   end
 
   def compute_edit_path(applicant, organisation, department)
