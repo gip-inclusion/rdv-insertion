@@ -1,4 +1,5 @@
 import React, { useState, useReducer } from "react";
+import Swal from "sweetalert2";
 
 import * as XLSX from "xlsx";
 import FileHandler from "../components/FileHandler";
@@ -140,6 +141,14 @@ export default function ApplicantsUpload({ organisation, configuration, departme
   };
 
   const handleContactsFile = async (file) => {
+    if (!(file.name.endsWith(".csv") || file.name.endsWith(".txt"))) {
+      Swal.fire({
+        title: "Le fichier doit être au format .txt ou .csv",
+        icon: "error",
+      });
+      return;
+    }
+
     setContactsUpdated(false);
     setFileSize(file.size);
     const contactsData = await retrieveContactsData(file);
