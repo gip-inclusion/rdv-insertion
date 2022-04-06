@@ -9,6 +9,9 @@ fr:
             dépendant(e) existe
           has_many: Vous ne pouvez pas supprimer l'enregistrement parce que les %{record}
             dépendants existent
+  boolean:
+    true: "oui"
+    false: "non"
   date:
     helpers:
       tomorrow: demain

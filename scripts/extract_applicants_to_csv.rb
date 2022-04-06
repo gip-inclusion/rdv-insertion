@@ -2,11 +2,12 @@ require 'csv'
 
 # rails runner scripts/extract_applicants_to_csv.rb email organisation_id department_id
 # email must be written as a string, ids as integers
+# if csv wanted in console, precise nil for mail
 # if extraction on department level wished, precise nil for organisation_id arg
 
-EMAIL = ARGV[0]
-ORGANISATION_ID = ARGV[1]
-DEPARTMENT_ID = ARGV[2]
+EMAIL = ARGV[0] == "nil" ? nil : ARGV[0]
+ORGANISATION_ID = ARGV[1] == "nil" ? nil : ARGV[1]
+DEPARTMENT_ID = ARGV[2] == "nil" ? nil : ARGV[2]
 
 applicants = if DEPARTMENT_ID.present?
                Applicant.where(department_id: DEPARTMENT_ID)
@@ -47,19 +48,23 @@ csv = CSV.generate(write_headers: true, col_sep: ";", headers: headers, encoding
             applicant.email,
             applicant.address,
             applicant.phone_number,
-            applicant.birth_date,
-            applicant.rights_opening_date,
+            applicant.birth_date&.strftime("%d/%m/%Y"),
+            applicant.rights_opening_date&.strftime("%d/%m/%Y"),
             applicant.role,
-            applicant.invitation_accepted_at,
+            applicant.invitation_accepted_at&.strftime("%d/%m/%Y"),
             applicant.status,
-            applicant.is_archived,
+            I18n.t("boolean.#{applicant.is_archived?}"),
             applicant.archiving_reason,
             Department.find(applicant.department_id).number,
-            applicant.last_invitation_sent_at,
-            applicant.oriented?,
-            applicant.orientation_date,
-            applicant.rdvs.last&.starts_at]
+            applicant.last_invitation_sent_at&.strftime("%d/%m/%Y"),
+            I18n.t("boolean.#{applicant.oriented?}"),
+            applicant.orientation_date&.strftime("%d/%m/%Y"),
+            applicant.rdvs.last&.starts_at&.strftime("%d/%m/%Y")]
   end
 end
 
-ExtractionMailer.extract_applicants_with_script(EMAIL, csv).deliver_now
+if EMAIL.present?
+  CsvExportMailer.applicants_csv_export(EMAIL, csv).deliver_now
+else
+  puts csv
+end
