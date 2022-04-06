@@ -126,7 +126,10 @@ class ApplicantsController < ApplicationController
   end
 
   def set_applicant
-    @applicant = Applicant.includes(:organisations, rdv_contexts: [{ rdvs: [:organisation] }, :invitations]).find(params[:id])
+    @applicant = \
+      Applicant
+      .includes(:organisations, rdv_contexts: [{ rdvs: [:organisation] }, :invitations], invitations: [:rdv_context])
+      .find(params[:id])
   end
 
   def after_save_path

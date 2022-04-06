@@ -79,6 +79,10 @@ class Applicant < ApplicationRecord
     save!
   end
 
+  def rdv_context_for(context)
+    rdv_contexts.find { |rc| rc.context == context }
+  end
+
   def as_json(_opts = {})
     super.merge(
       created_at: created_at,
