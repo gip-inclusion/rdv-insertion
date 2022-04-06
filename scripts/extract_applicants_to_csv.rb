@@ -62,7 +62,6 @@ csv = CSV.generate(write_headers: true, col_sep: ";", headers: headers, encoding
             applicant.department.name,
             applicant.organisations.count,
             applicant.organisations.collect(&:name).join(", "),
-            Organisation.find(applicant.department_id).number,
             applicant.last_invitation_sent_at&.strftime("%d/%m/%Y"),
             I18n.t("boolean.#{applicant.oriented?}"),
             applicant.orientation_date&.strftime("%d/%m/%Y"),
