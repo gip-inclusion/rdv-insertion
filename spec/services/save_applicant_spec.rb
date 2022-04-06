@@ -11,7 +11,7 @@ describe SaveApplicant, type: :service do
   let!(:organisation) do
     create(
       :organisation,
-      configuration: configuration, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id
+      configurations: [configuration], rdv_solidarites_organisation_id: rdv_solidarites_organisation_id
     )
   end
   let!(:applicant_attributes) do
@@ -23,14 +23,14 @@ describe SaveApplicant, type: :service do
   end
   let!(:rdv_solidarites_user_attributes) do
     {
-      first_name: "john", last_name: "doe", notify_by_sms: true, notify_by_email: true,
+      first_name: "john", last_name: "doe",
       address: "16 rue de la tour", email: "johndoe@example.com", birth_name: "",
       birth_date: Date.new(1989, 3, 17), affiliation_number: "aff123", phone_number: "+33612459567",
       invitation_accepted_at: nil
     }
   end
 
-  let!(:configuration) { create(:configuration, notify_applicant: false) }
+  let!(:configuration) { create(:configuration) }
 
   let!(:applicant) do
     create(:applicant, applicant_attributes.merge(organisations: [organisation], rdv_solidarites_user_id: nil))
@@ -84,23 +84,6 @@ describe SaveApplicant, type: :service do
 
       it "stores the error" do
         expect(subject.errors).to eq(['some error'])
-      end
-    end
-
-    context "when organisation notifies customer from rdv insertion" do
-      let!(:configuration) { create(:configuration, notify_applicant: true) }
-
-      it "does not notify with rdv solidarites user" do
-        expect(UpsertRdvSolidaritesUser).to receive(:call)
-          .with(
-            rdv_solidarites_user_attributes: rdv_solidarites_user_attributes.merge(
-              notify_by_email: false, notify_by_sms: false
-            ),
-            rdv_solidarites_session: rdv_solidarites_session,
-            rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
-            rdv_solidarites_user_id: nil
-          )
-        subject
       end
     end
 

@@ -35,12 +35,19 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
   let!(:applicant) { create(:applicant, organisations: [organisation], id: 3) }
   let!(:applicant2) { create(:applicant, organisations: [organisation], id: 4) }
 
-  let!(:configuration) { create(:configuration, notify_applicant: true) }
+  let!(:configuration) { create(:configuration, notify_applicant: true, context: "rsa_orientation") }
   let!(:organisation) do
     create(
       :organisation,
-      rdv_solidarites_organisation_id: rdv_solidarites_organisation_id, configuration: configuration
+      rdv_solidarites_organisation_id: rdv_solidarites_organisation_id, configurations: [configuration]
     )
+  end
+  let!(:rdv_context) do
+    build(:rdv_context, context: "rsa_orientation", applicant: applicant, id: 28)
+  end
+
+  let!(:rdv_context2) do
+    build(:rdv_context, context: "rsa_orientation", applicant: applicant2, id: 99)
   end
 
   describe "#perform" do
@@ -52,6 +59,12 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
       allow(Applicant).to receive(:where)
         .with(rdv_solidarites_user_id: user_ids)
         .and_return([applicant, applicant2])
+      allow(RdvContext).to receive(:find_or_create_by!)
+        .with(applicant: applicant, context: "rsa_orientation")
+        .and_return(rdv_context)
+      allow(RdvContext).to receive(:find_or_create_by!)
+        .with(applicant: applicant2, context: "rsa_orientation")
+        .and_return(rdv_context2)
       allow(UpsertRecordJob).to receive(:perform_async)
       allow(DeleteRdvJob).to receive(:perform_async)
       allow(NotifyApplicantJob).to receive(:perform_async)
@@ -97,8 +110,15 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
 
       it "enqueues an upsert job" do
         expect(UpsertRecordJob).to receive(:perform_async)
-          .with("Rdv", rdv_attributes, { applicant_ids: [applicant.id, applicant2.id],
-                                         organisation_id: organisation.id })
+          .with(
+            "Rdv",
+            rdv_attributes,
+            {
+              applicant_ids: [applicant.id, applicant2.id],
+              organisation_id: organisation.id,
+              rdv_context_ids: [rdv_context.id, rdv_context2.id]
+            }
+          )
         subject
       end
 

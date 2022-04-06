@@ -20,14 +20,14 @@ describe Invitations::ComputeLink, type: :service do
   let!(:applicant) do
     create(:applicant, address: address, department: department)
   end
-
+  let!(:rdv_context) { build(:rdv_context, context: "rsa_accompagnement") }
   let!(:invitation) do
     create(
       :invitation,
       department: department,
       organisations: [organisation1, organisation2],
       applicant: applicant,
-      context: "RSA accompagnement",
+      rdv_context: rdv_context,
       token: invitation_token
     )
   end
@@ -105,7 +105,7 @@ describe Invitations::ComputeLink, type: :service do
           department: department,
           organisations: [organisation1, organisation2],
           applicant: applicant,
-          context: "RSA accompagnement",
+          rdv_context: rdv_context,
           token: invitation_token,
           rdv_solidarites_lieu_id: 5
         )

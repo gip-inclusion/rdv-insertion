@@ -28,9 +28,11 @@ describe Invitations::SendSms, type: :service do
     create(
       :invitation,
       applicant: applicant, department: department, token: "123", help_phone_number: help_phone_number,
-      link: "https://www.rdv-solidarites.fr/lieux?invitation_token=123", format: "sms"
+      link: "https://www.rdv-solidarites.fr/lieux?invitation_token=123", format: "sms", rdv_context: rdv_context
     )
   end
+
+  let!(:rdv_context) { build(:rdv_context, context: "rsa_orientation") }
 
   describe "#call" do
     let!(:content) do
@@ -91,6 +93,46 @@ describe Invitations::SendSms, type: :service do
 
       it "returns the error" do
         expect(subject.errors).to eq(["Envoi de SMS alors que le format est email"])
+      end
+    end
+
+    context "for rsa accompagnement" do
+      let!(:rdv_context) { build(:rdv_context, context: "rsa_accompagnement") }
+      let!(:content) do
+        "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous "\
+          "d'accompagnement. Pour choisir la date et l'horaire de votre premier RDV, cliquez sur le lien suivant "\
+          "dans les 3 jours: http://www.rdv-insertion.fr/invitations/redirect?token=123\n"\
+          "Ce rendez-vous est obligatoire. En cas de problème technique, contactez le 0147200001."
+      end
+
+      it("is a success") { is_a_success }
+
+      it "calls the send transactional service with the right content" do
+        expect(SendTransactionalSms).to receive(:call)
+          .with(phone_number_formatted: phone_number_formatted,
+                sender_name: "Dept#{department.number}",
+                content: content)
+        subject
+      end
+    end
+
+    context "for rsa orientation on phone platform" do
+      let!(:rdv_context) { build(:rdv_context, context: "rsa_orientation_on_phone_platform") }
+      let!(:content) do
+        "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez contacter la plateforme départementale " \
+          "afin de démarrer votre parcours d’accompagnement. Pour cela, merci d’appeler le " \
+          "0147200001 dans un délai de 3 jours. "\
+          "Cet appel est nécessaire pour le traitement de votre dossier."
+      end
+
+      it("is a success") { is_a_success }
+
+      it "calls the send transactional service with the right content" do
+        expect(SendTransactionalSms).to receive(:call)
+          .with(phone_number_formatted: phone_number_formatted,
+                sender_name: "Dept#{department.number}",
+                content: content)
+        subject
       end
     end
   end
