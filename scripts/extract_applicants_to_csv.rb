@@ -9,13 +9,13 @@ EMAIL = ARGV[0] == "nil" ? nil : ARGV[0]
 ORGANISATION_ID = ARGV[1] == "nil" ? nil : ARGV[1]
 DEPARTMENT_ID = ARGV[2] == "nil" ? nil : ARGV[2]
 
-applicants = if DEPARTMENT_ID.present?
-               Applicant.where(department_id: DEPARTMENT_ID)
-             elsif ORGANISATION_ID.present?
-               Applicant.where(organisation_id: ORGANISATION_ID)
-             else
-               Applicant.order(:department_id)
-             end
+structure = if DEPARTMENT_ID.present?
+              Department.find(DEPARTMENT_ID)
+            elsif ORGANISATION_ID.present?
+              Organisation.find(ORGANISATION_ID)
+            end
+
+applicants = structure&.applicants || Applicant.order(:department_id)
 
 headers = [Applicant.human_attribute_name(:title),
            Applicant.human_attribute_name(:last_name),
@@ -33,6 +33,9 @@ headers = [Applicant.human_attribute_name(:title),
            "Archivé ?",
            Applicant.human_attribute_name(:archiving_reason),
            "Numéro du département",
+           "Nom du département",
+           "Nombre d'organisations",
+           "Nom des organisations",
            "Dernière invitation envoyée le",
            "Orienté ?",
            "Date d'orientation",
@@ -55,7 +58,11 @@ csv = CSV.generate(write_headers: true, col_sep: ";", headers: headers, encoding
             applicant.status,
             I18n.t("boolean.#{applicant.is_archived?}"),
             applicant.archiving_reason,
-            Department.find(applicant.department_id).number,
+            applicant.department.number,
+            applicant.department.name,
+            applicant.organisations.count,
+            applicant.organisations.collect(&:name).join(", "),
+            Organisation.find(applicant.department_id).number,
             applicant.last_invitation_sent_at&.strftime("%d/%m/%Y"),
             I18n.t("boolean.#{applicant.oriented?}"),
             applicant.orientation_date&.strftime("%d/%m/%Y"),
@@ -64,7 +71,7 @@ csv = CSV.generate(write_headers: true, col_sep: ";", headers: headers, encoding
 end
 
 if EMAIL.present?
-  CsvExportMailer.applicants_csv_export(EMAIL, csv).deliver_now
+  CsvExportMailer.applicants_csv_export(EMAIL, csv, structure).deliver_now
 else
   puts csv
 end
