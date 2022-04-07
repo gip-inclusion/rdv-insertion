@@ -1,0 +1,13 @@
+fr:
+  activerecord:
+    models:
+      rdv: Rendez-vous
+    attributes:
+      rdv:
+        statuses:
+          unknown: Non déterminé
+          waiting: En salle d’attente
+          seen: Rendez-vous honoré
+          excused: Annulé (excusé)
+          revoked: Annulé (par le service)
+          noshow: Absence non excusée

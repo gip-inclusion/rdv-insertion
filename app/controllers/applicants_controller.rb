@@ -7,7 +7,7 @@ class ApplicantsController < ApplicationController
     :status, :rights_opening_date, :archiving_reason, :is_archived
   ].freeze
   before_action :set_applicant, only: [:show, :update, :edit]
-  before_action :set_context_variables, only: [:index, :new, :create, :show, :update, :edit]
+  before_action :set_variables, only: [:index, :new, :create, :show, :update, :edit]
   before_action :retrieve_applicants, only: [:search]
 
   include FilterableApplicantsConcern
@@ -32,16 +32,26 @@ class ApplicantsController < ApplicationController
     end
   end
 
-  def index
-    @applicants = policy_scope(Applicant).includes(:invitations, :rdvs).distinct
+  def index # rubocop:disable Metrics/AbcSize
+    @applicants = policy_scope(Applicant).includes(rdv_contexts: [:invitations]).active.distinct
     @applicants = \
       if department_level?
         @applicants.where(organisations: policy_scope(Organisation).where(department: @department))
       else
         @applicants.where(organisations: @organisation)
       end
-    @statuses_count = @applicants.group(:status).count
-    filter_applicants
+
+    @not_invited_list = params[:not_invited] == "true"
+    if @not_invited_list
+      @applicants = @applicants.where.missing(:rdv_contexts)
+      filter_applicants_by_search_query
+      filter_applicants_by_page
+    else
+      @applicants = @applicants.joins(:rdv_contexts).where(rdv_contexts: { context: @current_context })
+      @rdv_contexts = RdvContext.where(applicant_id: @applicants.archived(false).ids, context: @current_context)
+      @statuses_count = @rdv_contexts.group(:status).count
+      filter_applicants
+    end
     @applicants = @applicants.order(created_at: :desc)
   end
 
@@ -117,7 +127,10 @@ class ApplicantsController < ApplicationController
   end
 
   def set_applicant
-    @applicant = Applicant.includes(:organisations).find(params[:id])
+    @applicant = \
+      Applicant
+      .includes(:organisations, rdv_contexts: [{ rdvs: [:organisation] }, :invitations], invitations: [:rdv_context])
+      .find(params[:id])
   end
 
   def after_save_path
@@ -126,23 +139,32 @@ class ApplicantsController < ApplicationController
     organisation_applicant_path(@organisation, @applicant)
   end
 
-  def set_context_variables
-    department_level? ? set_department_variables : set_organisation_variables
+  def set_variables
+    department_level? ? set_variables_at_department_level : set_variables_at_organisation_level
   end
 
-  def set_organisation_variables
-    @organisation = Organisation.includes(:applicants, :configuration).find(params[:organisation_id])
+  def set_variables_at_organisation_level
+    @organisation = policy_scope(Organisation).includes(:applicants, :configurations).find(params[:organisation_id])
     @department = @organisation.department
-    @configuration = @organisation.configuration
+    @all_configurations = @organisation.configurations
+    set_current_configuration_and_context
   end
 
-  def set_department_variables
-    @department = Department.includes(:organisations, :applicants).find(params[:department_id])
-    @configuration = @department.configuration
-    return if @applicant.blank?
+  def set_variables_at_department_level
+    @department = policy_scope(Department).includes(:organisations, :applicants).find(params[:department_id])
+    @all_configurations = (policy_scope(::Configuration) & @department.configurations).uniq(&:context)
+    set_current_configuration_and_context
+    set_organisation_at_department_level if @applicant.present?
+  end
 
-    # If an applicant has rdvs, we want the "redirect to RDV-Solidarités" button to redirect
-    # to the organization to which the last appointment belongs
+  def set_current_configuration_and_context
+    @current_configuration = @all_configurations.find { |c| c.context == params[:context] } || @all_configurations.first
+    @current_context = @current_configuration.context
+  end
+
+  def set_organisation_at_department_level
+    # If an applicant has rdvs, we want the "Voir sur RDV-Solidarités" button to redirect
+    # to the organisation to which the last appointment belongs
     authorized_organisations_with_rdvs = \
       @applicant.organisations_with_rdvs & policy_scope(Organisation).where(department: @department)
     @organisation = \
@@ -151,7 +173,7 @@ class ApplicantsController < ApplicationController
   end
 
   def retrieve_applicants
-    @applicants = policy_scope(Applicant).includes(:organisations, :invitations, :rdvs).distinct
+    @applicants = policy_scope(Applicant).includes(:organisations, :rdvs, invitations: [:rdv_context]).distinct
     @applicants = @applicants
                   .where(department_internal_id: params.require(:applicants)[:department_internal_ids])
                   .or(@applicants.where(uid: params.require(:applicants)[:uids]))

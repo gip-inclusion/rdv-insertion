@@ -6,10 +6,7 @@ FactoryBot.define do
     department { create(:department) }
     association :applicant
     help_phone_number { "0139393939" }
-    # rubocop:disable RSpec/EmptyExampleGroup, RSpec/MissingExampleGroupArgument
-    context { "RSA orientation" }
-    # rubocop:enable RSpec/EmptyExampleGroup, RSpec/MissingExampleGroupArgument
-
+    rdv_context { build(:rdv_context) }
     after(:build) do |invitation|
       next if invitation.organisations.present?
 

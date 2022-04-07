@@ -1,4 +1,3 @@
-
 <%= render 'archive_banner' if @applicant.is_archived? %>
 <div class="container label-blue mt-4">
   <div class="d-flex justify-content-between mb-4">
@@ -11,11 +10,9 @@
       <% end %>
     </div>
     <div>
-      <% unless @applicant.rdv_seen? %>
-        <button class="btn btn-primary" id="archive-button" data-applicant-id="<%= @applicant.id %>" data-organisation-id="<%= @organisation.id %>" data-department-id="<%= @department.id %>" data-department-level="<%= department_level? %>">
-          <%= @applicant.is_archived? ? "Rouvrir le dossier" : "Archiver le dossier" %>
-        </button>
-      <% end %>
+      <button class="btn btn-blue" id="archive-button" data-applicant-id="<%= @applicant.id %>" data-organisation-id="<%= @organisation.id %>" data-department-id="<%= @department.id %>" data-department-level="<%= department_level? %>">
+        <%= @applicant.is_archived? ? "Rouvrir le dossier" : "Archiver le dossier" %>
+      </button>
       <%= link_to compute_edit_path(@applicant, @organisation, @department) do %>
         <button class="btn btn-blue">Modifier</button>
       <% end %>
@@ -85,23 +82,8 @@
       <% end %>
     </div>
   </div>
-  <%= react_component(
-    "components/ApplicantTracker", {
-      applicant: @applicant,
-      organisation: @organisation,
-      department: @department,
-      isDepartmentLevel: department_level?,
-      showSmsInvitation: show_sms_invitation?(@configuration),
-      showEmailInvitation: show_email_invitation?(@configuration),
-      showPostalInvitation: show_postal_invitation?(@configuration),
-      numberOfRdvs: @applicant.rdvs.length,
-      numberOfCancelledRdvs: @applicant.rdvs.cancelled_by_user.count,
-      rdvToDisplay: @applicant.rdvs.seen.first || @applicant.rdvs.last,
-      statusNotice: display_status_notice(@applicant),
-      outOfTime: @applicant.invited_before_time_window?,
-      actionRequired: @applicant.action_required?,
-      humanStatus: I18n.t("activerecord.attributes.applicant.statuses.#{@applicant.status}")
-    }
-  ) %>
+  <% @all_configurations.each do |configuration| %>
+    <%= render "rdv_context", rdv_context: @applicant.rdv_context_for(configuration.context), configuration: configuration, applicant: @applicant, department: @department  %>
+  <% end %>
 </div>
 

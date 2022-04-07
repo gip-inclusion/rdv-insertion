@@ -1,19 +1,20 @@
 import appFetch from "../../lib/appFetch";
 
 const inviteApplicant = async (
-  applicantId,
+  applicant,
   departmentId,
   organisationId,
   isDepartmentLevel,
   invitationFormat,
   helpPhoneNumber,
+  context,
   types = "application/json"
 ) => {
   let url;
   if (isDepartmentLevel) {
-    url = `/departments/${departmentId}/applicants/${applicantId}/invitations`;
+    url = `/departments/${departmentId}/applicants/${applicant.id}/invitations`;
   } else {
-    url = `/organisations/${organisationId}/applicants/${applicantId}/invitations`;
+    url = `/organisations/${organisationId}/applicants/${applicant.id}/invitations`;
   }
   return appFetch(
     url,
@@ -21,7 +22,9 @@ const inviteApplicant = async (
     {
       format: invitationFormat,
       help_phone_number: helpPhoneNumber,
-      context: "RSA orientation",
+      rdv_context: {
+        context,
+      },
     },
     types
   );

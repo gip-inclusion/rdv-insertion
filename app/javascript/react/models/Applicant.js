@@ -13,7 +13,7 @@ const TITLES = {
 };
 
 export default class Applicant {
-  constructor(attributes, department, organisation, organisationConfiguration) {
+  constructor(attributes, department, organisation, currentConfiguration) {
     const formattedAttributes = {};
     Object.keys(attributes).forEach((key) => {
       formattedAttributes[key] = attributes[key]?.toString()?.trim();
@@ -42,7 +42,7 @@ export default class Applicant {
     this.departmentNumber = department.number;
     // when creating/inviting we always consider an applicant in the scope of only one organisation
     this.currentOrganisation = organisation;
-    this.organisationConfiguration = organisationConfiguration;
+    this.currentConfiguration = currentConfiguration;
     this.isDuplicate = false;
   }
 
@@ -144,14 +144,20 @@ export default class Applicant {
       this.phoneNumber = formatPhoneNumber(upToDateApplicant.phone_number);
       this.fullAddress = upToDateApplicant.address;
     }
-    this.lastSmsInvitationSentAt = retrieveLastInvitationDate(upToDateApplicant.invitations, "sms");
+    this.lastSmsInvitationSentAt = retrieveLastInvitationDate(
+      upToDateApplicant.invitations,
+      "sms",
+      this.currentConfiguration.context
+    );
     this.lastEmailInvitationSentAt = retrieveLastInvitationDate(
       upToDateApplicant.invitations,
-      "email"
+      "email",
+      this.currentConfiguration.context
     );
     this.lastPostalInvitationSentAt = retrieveLastInvitationDate(
       upToDateApplicant.invitations,
-      "postal"
+      "postal",
+      this.currentConfiguration.context
     );
     this.departmentInternalId = upToDateApplicant.department_internal_id;
   }
@@ -171,22 +177,22 @@ export default class Applicant {
 
   shouldDisplay(attribute) {
     return (
-      this.organisationConfiguration.column_names.required[attribute] ||
-      (this.organisationConfiguration.column_names.optional &&
-        this.organisationConfiguration.column_names.optional[attribute])
+      this.currentConfiguration.column_names.required[attribute] ||
+      (this.currentConfiguration.column_names.optional &&
+        this.currentConfiguration.column_names.optional[attribute])
     );
   }
 
   shouldBeInvitedBySms() {
-    return this.organisationConfiguration.invitation_formats.includes("sms");
+    return this.currentConfiguration.invitation_formats.includes("sms");
   }
 
   shouldBeInvitedByEmail() {
-    return this.organisationConfiguration.invitation_formats.includes("email");
+    return this.currentConfiguration.invitation_formats.includes("email");
   }
 
   shouldBeInvitedByPostal() {
-    return this.organisationConfiguration.invitation_formats.includes("postal");
+    return this.currentConfiguration.invitation_formats.includes("postal");
   }
 
   belongsToCurrentOrg() {

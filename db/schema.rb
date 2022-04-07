@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_29_112332) do
+ActiveRecord::Schema.define(version: 2022_03_31_104257) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -74,8 +74,15 @@ ActiveRecord::Schema.define(version: 2022_03_29_112332) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.json "column_names"
-    t.boolean "notify_applicant", default: false
     t.string "invitation_formats", default: ["sms", "email", "postal"], null: false, array: true
+    t.boolean "notify_applicant", default: false
+    t.integer "context", default: 0
+  end
+
+  create_table "configurations_organisations", id: false, force: :cascade do |t|
+    t.bigint "organisation_id", null: false
+    t.bigint "configuration_id", null: false
+    t.index ["organisation_id", "configuration_id"], name: "index_config_orgas_on_organisation_id_and_configuration_id", unique: true
   end
 
   create_table "departments", force: :cascade do |t|
@@ -99,12 +106,13 @@ ActiveRecord::Schema.define(version: 2022_03_29_112332) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "clicked", default: false
-    t.string "context"
     t.string "help_phone_number"
     t.bigint "department_id"
     t.bigint "rdv_solidarites_lieu_id"
+    t.bigint "rdv_context_id"
     t.index ["applicant_id"], name: "index_invitations_on_applicant_id"
     t.index ["department_id"], name: "index_invitations_on_department_id"
+    t.index ["rdv_context_id"], name: "index_invitations_on_rdv_context_id"
   end
 
   create_table "invitations_organisations", id: false, force: :cascade do |t|
@@ -139,14 +147,29 @@ ActiveRecord::Schema.define(version: 2022_03_29_112332) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "department_id"
-    t.bigint "configuration_id"
     t.bigint "responsible_id"
     t.bigint "letter_configuration_id"
-    t.index ["configuration_id"], name: "index_organisations_on_configuration_id"
     t.index ["department_id"], name: "index_organisations_on_department_id"
     t.index ["letter_configuration_id"], name: "index_organisations_on_letter_configuration_id"
     t.index ["rdv_solidarites_organisation_id"], name: "index_organisations_on_rdv_solidarites_organisation_id", unique: true
     t.index ["responsible_id"], name: "index_organisations_on_responsible_id"
+  end
+
+  create_table "rdv_contexts", force: :cascade do |t|
+    t.integer "context"
+    t.integer "status"
+    t.bigint "applicant_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["applicant_id"], name: "index_rdv_contexts_on_applicant_id"
+    t.index ["context"], name: "index_rdv_contexts_on_context"
+    t.index ["status"], name: "index_rdv_contexts_on_status"
+  end
+
+  create_table "rdv_contexts_rdvs", id: false, force: :cascade do |t|
+    t.bigint "rdv_id", null: false
+    t.bigint "rdv_context_id", null: false
+    t.index ["rdv_id", "rdv_context_id"], name: "index_rdv_contexts_rdvs_on_rdv_id_and_rdv_context_id", unique: true
   end
 
   create_table "rdvs", force: :cascade do |t|
@@ -181,10 +204,11 @@ ActiveRecord::Schema.define(version: 2022_03_29_112332) do
   add_foreign_key "applicants", "departments"
   add_foreign_key "invitations", "applicants"
   add_foreign_key "invitations", "departments"
+  add_foreign_key "invitations", "rdv_contexts"
   add_foreign_key "notifications", "applicants"
-  add_foreign_key "organisations", "configurations"
   add_foreign_key "organisations", "departments"
   add_foreign_key "organisations", "letter_configurations"
   add_foreign_key "organisations", "responsibles"
+  add_foreign_key "rdv_contexts", "applicants"
   add_foreign_key "rdvs", "organisations"
 end

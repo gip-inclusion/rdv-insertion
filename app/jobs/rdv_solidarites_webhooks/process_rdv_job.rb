@@ -21,7 +21,13 @@ module RdvSolidaritesWebhooks
     end
 
     def should_notify_applicants?
-      organisation.notify_applicant? && event.in?(%w[created destroyed])
+      organisation_configuration.notify_applicant? && event.in?(%w[created destroyed])
+    end
+
+    def organisation_configuration
+      # TODO: remove organisation_configuration.configurations.first when category available
+      organisation.configurations.find_by(context: rdv_solidarites_rdv.context) ||
+        organisation.configurations.first
     end
 
     def event
@@ -59,7 +65,16 @@ module RdvSolidaritesWebhooks
         UpsertRecordJob.perform_async(
           "Rdv",
           rdv_solidarites_rdv.to_rdv_insertion_attributes,
-          { applicant_ids: applicant_ids, organisation_id: organisation.id }
+          { applicant_ids: applicant_ids, organisation_id: organisation.id, rdv_context_ids: rdv_contexts.map(&:id) }
+        )
+      end
+    end
+
+    def rdv_contexts
+      applicants.map do |applicant|
+        # TODO: remove organisation_configuration.context when caegory available
+        RdvContext.find_or_create_by!(
+          applicant: applicant, context: rdv_solidarites_rdv.context || organisation_configuration.context
         )
       end
     end

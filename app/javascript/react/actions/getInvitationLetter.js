@@ -2,19 +2,21 @@ import Swal from "sweetalert2";
 import inviteApplicant from "./inviteApplicant";
 
 const getInvitationLetter = async (
-  applicantId,
+  applicant,
   departmentId,
   organisation,
   isDepartmentLevel,
+  context,
   invitationFormat
 ) => {
   const result = await inviteApplicant(
-    applicantId,
+    applicant,
     departmentId,
     organisation.id,
     isDepartmentLevel,
     invitationFormat,
     organisation.phone_number,
+    context,
     "application/json, application/pdf"
   );
   if (result.success === false) {

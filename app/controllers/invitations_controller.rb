@@ -2,13 +2,18 @@ class InvitationsController < ApplicationController
   before_action :set_organisations, only: [:create]
   before_action :set_department, only: [:create]
   before_action :set_applicant, only: [:create]
+  before_action :set_rdv_context, only: [:create]
   before_action :set_invitation, only: [:redirect]
   skip_before_action :authenticate_agent!, only: [:invitation_code, :redirect]
   respond_to :json, only: [:create]
 
   def create
     @invitation = Invitation.new(
-      applicant: @applicant, department: @department, organisations: @organisations, **invitation_params
+      applicant: @applicant,
+      department: @department,
+      organisations: @organisations,
+      rdv_context: @rdv_context,
+      **invitation_params
     )
     authorize @invitation
     if save_and_send_invitation.success?
@@ -31,7 +36,7 @@ class InvitationsController < ApplicationController
   private
 
   def invitation_params
-    params.require(:invitation).permit(:format, :context, :help_phone_number, :rdv_solidarites_lieu_id)
+    params.require(:invitation).permit(:format, :help_phone_number, :rdv_solidarites_lieu_id)
   end
 
   def pdf
@@ -56,6 +61,12 @@ class InvitationsController < ApplicationController
       else
         policy_scope(Organisation).where(id: params[:organisation_id])
       end
+  end
+
+  def set_rdv_context
+    @rdv_context = RdvContext.find_or_create_by!(
+      context: params[:rdv_context][:context], applicant: @applicant
+    )
   end
 
   def set_department

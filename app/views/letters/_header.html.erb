@@ -1,0 +1,19 @@
+<div>
+  <div class="left-col">
+    <div class="logo">
+      <%= pdf_image_tag("logos/#{department.name.parameterize}.svg") %>
+    </div>
+    <% letter_configuration.direction_names.each do |direction_name| %>
+      <p><%= direction_name.upcase %></p>
+    <% end %>
+  </div>
+  <div class="right-col">
+    <p><%= letter_configuration.sender_city || department.capital %>, le <%= Date.today.strftime('%d/%m/%Y') %></p>
+    <br/>
+    <p>À l'attention de</p>
+    <br/><br/>
+    <p><%= applicant.title.upcase %> <%= applicant.first_name.upcase %> <%= applicant.last_name.upcase %><br/>
+    <%= simple_format(applicant.street_address.upcase, {}, wrapper_tag: "span") %><br/>
+    <%= applicant.zipcode_and_city.upcase %></p>
+  </div>
+</div>

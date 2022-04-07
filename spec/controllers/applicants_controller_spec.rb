@@ -1,8 +1,9 @@
 describe ApplicantsController, type: :controller do
   let!(:department) { create(:department) }
+  let!(:configuration) { create(:configuration, context: "rsa_orientation") }
   let!(:organisation) do
     create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
-                          department_id: department.id)
+                          department_id: department.id, configurations: [configuration])
   end
   let!(:agent) { create(:agent, organisations: [organisation]) }
   let!(:rdv_solidarites_organisation_id) { 52 }
@@ -80,11 +81,11 @@ describe ApplicantsController, type: :controller do
 
       context "when not authorized" do
         let!(:another_organisation) { create(:organisation) }
-        let(:applicant) { create(:applicant, organisations: [another_organisation]) }
 
-        it "does not call the SaveApplicant service" do
-          expect(SaveApplicant).not_to receive(:call)
-          post :create, params: applicant_params.merge(organisation_id: another_organisation.id)
+        it "raises an error" do
+          expect do
+            post :create, params: applicant_params.merge(organisation_id: another_organisation.id)
+          end.to raise_error(ActiveRecord::RecordNotFound)
         end
       end
 
@@ -129,16 +130,11 @@ describe ApplicantsController, type: :controller do
 
       context "when not authorized" do
         let!(:another_organisation) { create(:organisation) }
-        let(:applicant) { create(:applicant, organisations: [another_organisation]) }
 
-        it "renders forbidden in the response" do
-          post :create, params: applicant_params.merge(organisation_id: another_organisation.id)
-          expect(response).to have_http_status(:forbidden)
-        end
-
-        it "does not call the SaveApplicant service" do
-          expect(SaveApplicant).not_to receive(:call)
-          post :create, params: applicant_params.merge(organisation_id: another_organisation.id)
+        it "raises an error" do
+          expect do
+            post :create, params: applicant_params.merge(organisation_id: another_organisation.id)
+          end.to raise_error(ActiveRecord::RecordNotFound)
         end
       end
 
@@ -225,7 +221,9 @@ describe ApplicantsController, type: :controller do
   end
 
   describe "#show" do
-    let!(:applicant) { create(:applicant, organisations: [organisation]) }
+    let!(:applicant) do
+      create(:applicant, first_name: "Andreas", last_name: "Kopke", organisations: [organisation])
+    end
 
     render_views
 
@@ -242,6 +240,8 @@ describe ApplicantsController, type: :controller do
 
         expect(response).to be_successful
         expect(response.body).to match(/Voir sur RDV-Solidarités/)
+        expect(response.body).to match(/Andreas/)
+        expect(response.body).to match(/Kopke/)
       end
     end
 
@@ -253,6 +253,8 @@ describe ApplicantsController, type: :controller do
 
         expect(response).to be_successful
         expect(response.body).to match(/Voir sur RDV-Solidarités/)
+        expect(response.body).to match(/Andreas/)
+        expect(response.body).to match(/Kopke/)
       end
     end
 
@@ -268,13 +270,82 @@ describe ApplicantsController, type: :controller do
         expect(response.body).to match(/Motif d&#39;archivage/)
       end
     end
+
+    context "it shows the different contexts" do
+      let!(:configuration) { create(:configuration, context: "rsa_orientation", invitation_formats: %w[sms email]) }
+      let!(:configuration2) do
+        create(:configuration, context: "rsa_accompagnement", invitation_formats: %w[sms email postal])
+      end
+
+      let!(:show_params) { { id: applicant.id, organisation_id: organisation.id } }
+      let!(:organisation) do
+        create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
+                              department_id: department.id, configurations: [configuration, configuration2])
+      end
+
+      let!(:rdv_context) do
+        create(:rdv_context, status: "rdv_seen", applicant: applicant, context: "rsa_orientation")
+      end
+      let!(:invitation_orientation) do
+        create(:invitation, sent_at: "2021-10-20", format: "sms", rdv_context: rdv_context)
+      end
+
+      let!(:rdv_orientation1) do
+        create(
+          :rdv,
+          status: "noshow", created_at: "2021-10-21", starts_at: "2021-10-22",
+          applicants: [applicant], rdv_contexts: [rdv_context], organisation: organisation
+        )
+      end
+
+      let!(:rdv_orientation2) do
+        create(
+          :rdv,
+          status: "seen", created_at: "2021-10-23", starts_at: "2021-10-24",
+          applicants: [applicant], rdv_contexts: [rdv_context], organisation: organisation
+        )
+      end
+
+      let!(:rdv_context2) do
+        create(:rdv_context, status: "invitation_pending", applicant: applicant, context: "rsa_accompagnement")
+      end
+
+      let!(:invitation_accompagnement) do
+        create(:invitation, sent_at: "2021-11-20", format: "sms", rdv_context: rdv_context2)
+      end
+
+      it "shows all the contexts" do
+        get :show, params: show_params
+
+        expect(response).to be_successful
+        expect(response.body).to match(/RSA orientation \(RDV honoré\)/)
+        expect(response.body).to match(/RDV pris le/)
+        expect(response.body).to match(/Date du RDV/)
+        expect(response.body).to match(/Statut RDV/)
+        expect(response.body).to include("21/10/2021")
+        expect(response.body).to include("22/10/2021")
+        expect(response.body).to include("23/10/2021")
+        expect(response.body).to include("24/10/2021")
+        expect(response.body).to match(/Absence non excusée/)
+        expect(response.body).to match(/Rendez-vous honoré/)
+        expect(response.body).to match(/Statut RDV/)
+        expect(response.body).to match(/Statut RDV/)
+        expect(response.body).to match(/RSA accompagnement \(Invitation en attente de réponse\)/)
+      end
+    end
   end
 
   describe "#index" do
-    let!(:applicant) { create(:applicant, organisations: [organisation], last_name: "Chabat", status: "rdv_seen") }
-    let!(:applicant2) do
-      create(:applicant, organisations: [organisation], last_name: "Baer", status: "invitation_pending")
+    let!(:applicant) do
+      create(:applicant, organisations: [organisation], last_name: "Chabat", rdv_contexts: [rdv_context1])
     end
+    let!(:rdv_context1) { build(:rdv_context, context: "rsa_orientation", status: "rdv_seen") }
+
+    let!(:applicant2) do
+      create(:applicant, organisations: [organisation], last_name: "Baer", rdv_contexts: [rdv_context2])
+    end
+
+    let!(:rdv_context2) { build(:rdv_context, context: "rsa_orientation", status: "invitation_pending") }
     let!(:index_params) { { organisation_id: organisation.id } }
 
     render_views
@@ -292,10 +363,17 @@ describe ApplicantsController, type: :controller do
       expect(response.body).to match(/Baer/)
     end
 
-    it "does not search applicants" do
-      expect(Applicant).not_to receive(:search_by_text)
+    context "when a context is specified" do
+      let!(:rdv_context2) { build(:rdv_context, context: "rsa_accompagnement", status: "invitation_pending") }
+      let!(:configuration) { create(:configuration, context: "rsa_accompagnement") }
 
-      get :index, params: index_params
+      it "returns the list of applicants in the current context" do
+        get :index, params: index_params.merge(context: "rsa_accompagnement")
+
+        expect(response).to be_successful
+        expect(response.body).not_to match(/Chabat/)
+        expect(response.body).to match(/Baer/)
+      end
     end
 
     context "when a search query is specified" do
@@ -322,7 +400,7 @@ describe ApplicantsController, type: :controller do
       let!(:index_params) { { organisation_id: organisation.id, action_required: "true" } }
 
       context "when the invitation has been sent more than 3 days ago" do
-        let!(:invitation) { create(:invitation, applicant: applicant2, sent_at: 5.days.ago) }
+        let!(:invitation) { create(:invitation, applicant: applicant2, rdv_context: rdv_context2, sent_at: 5.days.ago) }
 
         it "filters by action required" do
           get :index, params: index_params
@@ -332,7 +410,7 @@ describe ApplicantsController, type: :controller do
       end
 
       context "when the invitation has not been sent more than 3 days ago" do
-        let!(:invitation) { create(:invitation, applicant: applicant2, sent_at: 1.day.ago) }
+        let!(:invitation) { create(:invitation, applicant: applicant2, rdv_context: rdv_context2, sent_at: 1.day.ago) }
 
         it "filters by action required" do
           get :index, params: index_params
@@ -350,6 +428,19 @@ describe ApplicantsController, type: :controller do
 
         expect(response.body).to match(/Chabat/)
         expect(response.body).to match(/Baer/)
+      end
+    end
+
+    context "when not invited list" do
+      let!(:applicant) do
+        create(:applicant, organisations: [organisation], last_name: "Chabat", rdv_contexts: [])
+      end
+
+      it "lists the applicants with no rdv contexts" do
+        get :index, params: index_params.merge(not_invited: true)
+
+        expect(response.body).to match(/Chabat/)
+        expect(response.body).not_to match(/Baer/)
       end
     end
   end
@@ -428,8 +519,9 @@ describe ApplicantsController, type: :controller do
         end
 
         it "does not call the service" do
-          post :update, params: update_params
-          expect(SaveApplicant).not_to receive(:call)
+          expect do
+            post :update, params: update_params
+          end.to raise_error(ActiveRecord::RecordNotFound)
         end
       end
 
@@ -499,8 +591,9 @@ describe ApplicantsController, type: :controller do
         end
 
         it "does not call the service" do
-          expect(SaveApplicant).not_to receive(:call)
-          patch :update, params: update_params
+          expect do
+            patch :update, params: update_params
+          end.to raise_error(ActiveRecord::RecordNotFound)
         end
       end
 

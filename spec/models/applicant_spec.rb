@@ -236,46 +236,6 @@ describe Applicant do
     end
   end
 
-  describe "#action_required" do
-    subject { described_class.action_required }
-
-    context "when status requires action" do
-      let!(:applicant) { create(:applicant, status: "not_invited") }
-
-      it "retrieves the applicant" do
-        expect(subject).to include(applicant)
-      end
-    end
-
-    context "when status does not require action nor attention" do
-      let!(:applicant) { create(:applicant, last_name: "renard", status: "rdv_seen") }
-
-      it "does not retrieve the applicant" do
-        expect(subject).not_to include(applicant)
-      end
-    end
-
-    context "when status needs attention" do
-      let!(:applicant) { create(:applicant, last_name: "renard", status: "invitation_pending") }
-
-      context "when the applicant has been last invited less than 3 days ago" do
-        let!(:invitation) { create(:invitation, applicant: applicant, sent_at: 2.hours.ago) }
-
-        it "does not retrieve the applicant" do
-          expect(subject).not_to include(applicant)
-        end
-      end
-
-      context "when the applicant has been invited more than 3 days ago" do
-        let!(:invitation) { create(:invitation, applicant: applicant, sent_at: 5.days.ago) }
-
-        it "does not retrieve the applicant" do
-          expect(subject).to include(applicant)
-        end
-      end
-    end
-  end
-
   describe "email format validation" do
     context "valid email format" do
       let(:applicant) { build(:applicant, email: "abc@test.fr") }

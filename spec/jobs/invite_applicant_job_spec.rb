@@ -5,7 +5,7 @@ describe InviteApplicantJob, type: :job do
     )
   end
 
-  let!(:applicant_id) { 99 }
+  let!(:applicant_id) { 9999 }
   let!(:organisation_id) { 999 }
   let!(:department) { create(:department) }
   let!(:applicant) { create(:applicant, id: applicant_id) }

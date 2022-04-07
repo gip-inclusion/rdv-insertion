@@ -1,0 +1,45 @@
+<h5 class="text-center py-4"><%= configuration.context_name %> (<%= display_context_status(rdv_context, with_notice: false) %>)</h5>
+<div class="d-flex justify-content-around">
+   <%= react_component(
+    "components/InvitationBlock", {
+      applicant: @applicant,
+      organisation: @organisation,
+      department: @department,
+      invitations: rdv_context.nil? ? [] : rdv_context.invitations,
+      isDepartmentLevel: department_level?,
+      invitationFormats: configuration.invitation_formats,
+      context: configuration.context,
+      backgroundClassForStatus: rdv_context.nil? ? "" : background_class_for_context_status(rdv_context),
+      status: rdv_context&.status,
+      statusText: display_context_status(rdv_context)
+    }
+  ) %>
+  <% if rdv_context&.rdvs.present? %>
+      <table class="tracking-block block-white text-center align-middle mb-4">
+        <thead>
+          <tr>
+            <th class="px-4 py-2"><h4>RDV pris le</h4></th>
+            <th class="px-4 py-2"><h4>Date du RDV</h4></th>
+            <th class="px-4 py-2"><h4>Statut RDV</h4></th>
+            <th class="px-4 py-2"><h4>Lien</h4></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% rdv_context.rdvs.each do |rdv| %>
+            <tr>
+              <td class="px-4 py-3"><%= format_date(rdv.created_at) %></td>
+              <td class="px-4 py-3"><%= format_date(rdv.starts_at) %></td>
+              <td class="px-4 py-3 <%= background_class_for_rdv_status(rdv) %>"><%= display_rdv_status(rdv) %></td>
+              <td class="px-4 py-2">
+                <%= link_to rdv.rdv_solidarites_url, target: "_blank" do %>
+                  <button class="btn btn-blue">
+                    Voir sur RDV-S<i class="fas fa-external-link-alt icon-sm"></i>
+                  </button>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+  <% end %>
+</div>

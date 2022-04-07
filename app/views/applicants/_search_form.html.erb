@@ -1,5 +1,9 @@
 <%= form_with method: :get, local: true, url: compute_index_path(@organisation, @department) do |form| %>
   <%= form.text_field :search_query, placeholder: "Prénom, nom, email, numéro allocataire...", class: "form-control mb-1" %>
+  <% if @not_invited_list %>
+    <%= form.hidden_field :not_invited, value: @not_invited_list %>
+  <% end %>
+  <%= form.hidden_field :context, value: @current_context %>
   <div class="d-flex justify-content-between">
     <%= form.submit "Rechercher", name: nil, class: "btn btn-blue-out" %>
     <% if display_back_to_list_button? %>

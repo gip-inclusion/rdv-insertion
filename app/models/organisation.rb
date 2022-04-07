@@ -9,12 +9,11 @@ class Organisation < ApplicationRecord
   has_and_belongs_to_many :agents, dependent: :nullify
   has_and_belongs_to_many :applicants, dependent: :nullify
   has_and_belongs_to_many :invitations, dependent: :nullify
-  belongs_to :configuration
+  has_and_belongs_to_many :configurations
   belongs_to :responsible, optional: true
   belongs_to :letter_configuration, optional: true
   has_many :rdvs, dependent: :nullify
 
-  delegate :notify_applicant?, to: :configuration
   delegate :name, :name_with_region, :number, to: :department, prefix: true
 
   def as_json(_opts = {})

@@ -10,14 +10,18 @@ describe InvitationsController, type: :controller do
     let!(:organisations) { Organisation.where(id: organisation.id) }
     let!(:agent) { create(:agent, organisations: organisations) }
     let!(:applicant) { create(:applicant, id: applicant_id, organisations: [organisation]) }
+    let!(:context) { "rsa_orientation" }
+
     let!(:create_params) do
       {
         organisation_id: organisation.id,
         applicant_id: applicant_id,
         invitation: {
           format: "sms",
-          help_phone_number: help_phone_number,
-          context: "RSA orientation"
+          help_phone_number: help_phone_number
+        },
+        rdv_context: {
+          context: context
         }
       }
     end
@@ -26,17 +30,22 @@ describe InvitationsController, type: :controller do
       create(
         :invitation,
         applicant: applicant, department: department, organisations: organisations,
-        help_phone_number: help_phone_number
+        help_phone_number: help_phone_number, rdv_context: rdv_context
       )
     end
+
+    let!(:rdv_context) { build(:rdv_context, applicant: applicant, context: context) }
 
     before do
       sign_in(agent)
       setup_rdv_solidarites_session(rdv_solidarites_session)
+      allow(RdvContext).to receive(:find_or_create_by!)
+        .with(context: context, applicant: applicant)
+        .and_return(rdv_context)
       allow(Invitation).to receive(:new)
         .with(
-          department: department, applicant: applicant, organisations: organisations,
-          "format" => "sms", "help_phone_number" => help_phone_number, "context" => "RSA orientation"
+          department: department, applicant: applicant, organisations: organisations, rdv_context: rdv_context,
+          "format" => "sms", "help_phone_number" => help_phone_number
         ).and_return(invitation)
       allow(Invitations::SaveAndSend).to receive(:call)
         .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
@@ -44,11 +53,17 @@ describe InvitationsController, type: :controller do
     end
 
     context "organisation level" do
+      it "finds or create a context" do
+        expect(RdvContext).to receive(:find_or_create_by!)
+          .with(context: context, applicant: applicant)
+        post :create, params: create_params
+      end
+
       it "instantiate the invitation" do
         expect(Invitation).to receive(:new)
           .with(
-            department: department, applicant: applicant, organisations: organisations,
-            "format" => "sms", "help_phone_number" => help_phone_number, "context" => "RSA orientation"
+            department: department, applicant: applicant, organisations: organisations, rdv_context: rdv_context,
+            "format" => "sms", "help_phone_number" => help_phone_number
           )
         post :create, params: create_params
       end
@@ -71,17 +86,25 @@ describe InvitationsController, type: :controller do
           applicant_id: applicant_id,
           invitation: {
             format: "sms",
-            help_phone_number: help_phone_number,
-            context: "RSA orientation"
+            help_phone_number: help_phone_number
+          },
+          rdv_context: {
+            context: context
           }
         }
+      end
+
+      it "finds or create a context" do
+        expect(RdvContext).to receive(:find_or_create_by!)
+          .with(context: context, applicant: applicant)
+        post :create, params: create_params
       end
 
       it "instantiate the invitation" do
         expect(Invitation).to receive(:new)
           .with(
-            department: department, applicant: applicant, organisations: organisations,
-            "format" => "sms", "help_phone_number" => help_phone_number, "context" => "RSA orientation"
+            department: department, applicant: applicant, organisations: organisations, rdv_context: rdv_context,
+            "format" => "sms", "help_phone_number" => help_phone_number
           )
         post :create, params: create_params
       end
@@ -125,17 +148,17 @@ describe InvitationsController, type: :controller do
             applicant_id: applicant_id,
             invitation: {
               format: "postal",
-              help_phone_number: help_phone_number,
-              context: "RSA orientation"
-            }
+              help_phone_number: help_phone_number
+            },
+            rdv_context: { context: context }
           }
         end
 
         before do
           allow(Invitation).to receive(:new)
             .with(
-              department: department, applicant: applicant, organisations: organisations,
-              "format" => "postal", "help_phone_number" => help_phone_number, "context" => "RSA orientation"
+              department: department, applicant: applicant, organisations: organisations, rdv_context: rdv_context,
+              "format" => "postal", "help_phone_number" => help_phone_number
             ).and_return(invitation)
           allow(Invitations::SaveAndSend).to receive(:call)
             .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
