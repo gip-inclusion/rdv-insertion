@@ -41,7 +41,7 @@ headers = [Applicant.human_attribute_name(:title),
            "Date d'orientation",
            "Date du rendez-vous le plus récent"]
 
-csv = CSV.generate(write_headers: true, col_sep: ";", headers: headers, encoding: 'utf-8') do |row|
+csv = CSV.generate(write_headers: true, col_sep: ";", headers: headers, encoding: 'iso8859-1') do |row|
   applicants.each do |applicant|
     row << [applicant.title,
             applicant.last_name,
