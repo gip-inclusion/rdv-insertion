@@ -13,6 +13,6 @@ class Department < ApplicationRecord
   end
 
   def configurations
-    organisations.includes(:configurations).flat_map(&:configurations).uniq(&:context)
+    organisations.includes(:configurations).flat_map(&:configurations)
   end
 end

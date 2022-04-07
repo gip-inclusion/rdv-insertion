@@ -33,7 +33,7 @@ class ApplicantsController < ApplicationController
   end
 
   def index # rubocop:disable Metrics/AbcSize
-    @applicants = policy_scope(Applicant).includes(:invitations, :rdvs, :rdv_contexts).active.distinct
+    @applicants = policy_scope(Applicant).includes(rdv_contexts: [:invitations]).active.distinct
     @applicants = \
       if department_level?
         @applicants.where(organisations: policy_scope(Organisation).where(department: @department))
@@ -152,7 +152,7 @@ class ApplicantsController < ApplicationController
 
   def set_variables_at_department_level
     @department = policy_scope(Department).includes(:organisations, :applicants).find(params[:department_id])
-    @all_configurations = policy_scope(::Configuration) & @department.configurations
+    @all_configurations = (policy_scope(::Configuration) & @department.configurations).uniq(&:context)
     set_current_configuration_and_context
     set_organisation_at_department_level if @applicant.present?
   end

@@ -38,7 +38,7 @@
         </thead>
         <tbody class="align-middle">
           <% @applicants.each do |applicant| %>
-            <% rdv_context = applicant.rdv_contexts.find { |rc| rc.context == @current_context } %>
+            <% rdv_context = applicant.rdv_context_for(@current_context) %>
             <tr class="<%= "table-danger" if applicant.is_archived? %>">
               <td><%= display_attribute applicant.last_name %></td>
               <td><%= display_attribute applicant.first_name %></td>

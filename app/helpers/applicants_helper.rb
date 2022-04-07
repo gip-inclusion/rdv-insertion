@@ -66,13 +66,13 @@ module ApplicantsHelper
       (with_notice ? display_context_status_notice(context) : "")
   end
 
+  def display_rdv_status(rdv)
+    rdv.pending? ? "À venir" : I18n.t("activerecord.attributes.rdv.statuses.#{rdv.status}")
+  end
+
   def display_context_status_notice(context)
     if context.invited_before_time_window? && context.invitation_pending?
       " (Délai dépassé)"
-    elsif context.multiple_rdvs_cancelled? && context.rdvs.last&.pending?
-      " (RDV en attente)"
-    elsif context.multiple_rdvs_cancelled?
-      " (Courrier à envoyer)"
     else
       ""
     end

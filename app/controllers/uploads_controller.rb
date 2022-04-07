@@ -13,7 +13,7 @@ class UploadsController < ApplicationController
     @department = Department.find(params[:department_id])
     authorize @department, :upload?
     @organisation = nil
-    @all_configurations = policy_scope(::Configuration) & @department.configurations
+    @all_configurations = (policy_scope(::Configuration) & @department.configurations).uniq(&:context)
     set_current_configuration
   end
 

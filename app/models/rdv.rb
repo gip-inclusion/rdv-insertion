@@ -50,10 +50,6 @@ class Rdv < ApplicationRecord
       "#{organisation.rdv_solidarites_organisation_id}/rdvs/#{rdv_solidarites_rdv_id}"
   end
 
-  def displayed_status
-    pending? ? "À venir" : I18n.t("activerecord.attributes.rdv.statuses.#{status}")
-  end
-
   private
 
   def refresh_applicant_statuses
