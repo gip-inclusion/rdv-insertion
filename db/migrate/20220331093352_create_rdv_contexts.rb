@@ -19,7 +19,7 @@ class CreateRdvContexts < ActiveRecord::Migration[6.1]
 
     up_only do
       Applicant.find_each do |applicant|
-        next if applicant.deleted? || applicant.not_invited?
+        next if applicant.not_invited?
 
         rdv_context = RdvContext.new(applicant: applicant, context: "rsa_orientation")
         rdv_context.save!

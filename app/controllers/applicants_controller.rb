@@ -33,7 +33,6 @@ class ApplicantsController < ApplicationController
   end
 
   def index # rubocop:disable Metrics/AbcSize
-    @not_invited_list = params[:not_invited] == "true"
     @applicants = policy_scope(Applicant).includes(:invitations, :rdvs, :rdv_contexts).active.distinct
     @applicants = \
       if department_level?
@@ -41,6 +40,8 @@ class ApplicantsController < ApplicationController
       else
         @applicants.where(organisations: @organisation)
       end
+
+    @not_invited_list = params[:not_invited] == "true"
     if @not_invited_list
       @applicants = @applicants.where.missing(:rdv_contexts)
       filter_applicants_by_search_query
