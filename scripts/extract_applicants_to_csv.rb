@@ -70,7 +70,7 @@ csv = CSV.generate(write_headers: true, col_sep: ";", headers: headers, encoding
 end
 
 if EMAIL.present?
-  CsvExportMailer.applicants_csv_export(EMAIL, csv, structure).deliver_now
+  CsvExportMailer.applicants_csv_export(csv, EMAIL, structure).deliver_now
 else
   puts csv
 end
