@@ -3,7 +3,7 @@ class CsvExportMailer < ApplicationMailer
     csv_name = if structure.nil?
                  "applicants_extraction.csv"
                else
-                 "#{structure.class.name}_#{structure.name.parameterize(separator: "_")}_applicants_extraction.csv"
+                 "#{structure.class.name}_#{structure.name.parameterize(separator: '_')}_applicants_extraction.csv"
                end
     attachments[csv_name] = { mime_type: 'text/csv', content: csv }
     mail(
