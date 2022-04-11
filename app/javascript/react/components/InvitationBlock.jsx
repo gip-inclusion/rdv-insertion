@@ -37,7 +37,7 @@ export default function InvitationBlock({
     if (titleStatusElt) {
       titleStatusElt.textContent = "Invitation en attente de réponse";
     }
-    const statusBlock = document.getElementById(`js-${context}-status-block`);
+    const statusBlock = document.getElementById(`js-block-status-${context}`);
     if (statusBlock) {
       statusBlock.textContent = "Invitation en attente de réponse";
       statusBlock.className = "p-4";
