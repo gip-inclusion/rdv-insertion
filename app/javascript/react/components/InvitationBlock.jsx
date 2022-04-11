@@ -13,9 +13,7 @@ export default function InvitationBlock({
   context,
   isDepartmentLevel,
   invitationFormats,
-  backgroundClassForStatus,
   status,
-  statusText,
 }) {
   const [isLoading, setIsLoading] = useState({
     smsInvitation: false,
@@ -31,11 +29,20 @@ export default function InvitationBlock({
   const [lastPostalInvitationSentAt, setLastPostalInvitationSentAt] = useState(
     retrieveLastInvitationDate(invitations, "postal")
   );
-  const [currentStatusText, setCurrentStatusText] = useState(statusText);
-  const [currentBackgroundClassForStatus, setCurrentBackgroundClassForStatus] =
-    useState(backgroundClassForStatus);
 
   const showInvitation = (format) => invitationFormats.includes(format);
+
+  const updateStatusTitleAndBlock = () => {
+    const titleStatusElt = document.getElementById(`js-title-status-${context}`);
+    if (titleStatusElt) {
+      titleStatusElt.textContent = "Invitation en attente de réponse";
+    }
+    const statusBlock = document.getElementById(`js-${context}-status-block`);
+    if (statusBlock) {
+      statusBlock.textContent = "Invitation en attente de réponse";
+      statusBlock.className = "p-4";
+    }
+  };
 
   const handleClick = async (action) => {
     setIsLoading({ ...isLoading, [action]: true });
@@ -52,19 +59,16 @@ export default function InvitationBlock({
         setLastPostalInvitationSentAt(todaysDateString());
       }
     }
-    setCurrentStatusText("Invitation en attente de réponse");
-    setCurrentBackgroundClassForStatus("");
+    updateStatusTitleAndBlock();
     setIsLoading({ ...isLoading, [action]: false });
   };
 
   return (
     <div className="d-flex justify-content-center">
-      <table className="tracking-block block-white text-center align-middle mb-4">
+      <table className="tracking-block block-white text-center align-middle mb-4 mx-4">
+        <caption className="text-center">Invitations</caption>
         <thead>
           <tr>
-            <th className="px-4 py-3">
-              <h4>Statut global</h4>
-            </th>
             {showInvitation("sms") && (
               <th className="px-4 py-3">
                 <h4>Invitation SMS</h4>
@@ -84,9 +88,6 @@ export default function InvitationBlock({
         </thead>
         <tbody>
           <tr>
-            <td className={`p-4 ${currentBackgroundClassForStatus}`} rowSpan="2">
-              {currentStatusText}
-            </td>
             {showInvitation("sms") && (
               <td className="px-4 py-3">
                 {lastSmsInvitationSentAt ? getFrenchFormatDateString(lastSmsInvitationSentAt) : "-"}
