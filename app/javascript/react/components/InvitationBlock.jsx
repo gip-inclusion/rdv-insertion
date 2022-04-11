@@ -32,11 +32,7 @@ export default function InvitationBlock({
 
   const showInvitation = (format) => invitationFormats.includes(format);
 
-  const updateStatusTitleAndBlock = () => {
-    const titleStatusElt = document.getElementById(`js-title-status-${context}`);
-    if (titleStatusElt) {
-      titleStatusElt.textContent = "Invitation en attente de réponse";
-    }
+  const updateStatusBlock = () => {
     const statusBlock = document.getElementById(`js-block-status-${context}`);
     if (statusBlock) {
       statusBlock.textContent = "Invitation en attente de réponse";
@@ -59,14 +55,14 @@ export default function InvitationBlock({
         setLastPostalInvitationSentAt(todaysDateString());
       }
     }
-    updateStatusTitleAndBlock();
+    updateStatusBlock();
     setIsLoading({ ...isLoading, [action]: false });
   };
 
   return (
     <div className="d-flex justify-content-center">
       <table className="tracking-block block-white text-center align-middle mb-4 mx-4">
-        <caption className="text-center">Invitations</caption>
+        <caption className="text-center">Dernières Invitations</caption>
         <thead>
           <tr>
             {showInvitation("sms") && (
