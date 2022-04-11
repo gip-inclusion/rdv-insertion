@@ -7,6 +7,7 @@ module RdvSolidaritesWebhooks
       @meta = meta.deep_symbolize_keys
       check_organisation!
       return if applicants.empty?
+      return notify_unhandled_category_to_mattermost if unhandled_category?
 
       upsert_or_delete_rdv
       notify_applicants if should_notify_applicants?
@@ -21,13 +22,22 @@ module RdvSolidaritesWebhooks
     end
 
     def should_notify_applicants?
-      organisation_configuration.notify_applicant? && event.in?(%w[created destroyed])
+      matching_configuration.notify_applicant? && event.in?(%w[created destroyed])
     end
 
-    def organisation_configuration
-      # TODO: remove organisation_configuration.configurations.first when category available
-      organisation.configurations.find_by(context: rdv_solidarites_rdv.context) ||
-        organisation.configurations.first
+    def matching_configuration
+      organisation.configurations.find_by(context: rdv_solidarites_rdv.category)
+    end
+
+    def unhandled_category?
+      Configuration.contexts.keys.exclude?(rdv_solidarites_rdv.category) || matching_configuration.nil?
+    end
+
+    def notify_unhandled_category_to_mattermost
+      MattermostClient.send_to_notif_channel(
+        "Catégorie #{rdv_solidarites_rdv.category} non gérée dans l'organisation #{organisation.id}.\n" \
+        "RDV #{rdv_solidarites_rdv.id} non traité pour Applicants #{applicant_ids} "
+      )
     end
 
     def event
@@ -74,7 +84,7 @@ module RdvSolidaritesWebhooks
       applicants.map do |applicant|
         # TODO: remove organisation_configuration.context when caegory available
         RdvContext.find_or_create_by!(
-          applicant: applicant, context: rdv_solidarites_rdv.context || organisation_configuration.context
+          applicant: applicant, context: matching_configuration.context
         )
       end
     end
