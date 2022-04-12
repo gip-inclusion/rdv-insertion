@@ -6,7 +6,7 @@ module RdvSolidarites
     ].freeze
     attr_reader(*RECORD_ATTRIBUTES)
 
-    delegate :presential?, to: :motif
+    delegate :presential?, :category, to: :motif
 
     def initialize(attributes = {})
       super(attributes)
@@ -39,10 +39,6 @@ module RdvSolidarites
         rdv_solidarites_motif_id: motif_id,
         rdv_solidarites_lieu_id: lieu_id
       )
-    end
-
-    def context
-      motif.category
     end
 
     def agents
