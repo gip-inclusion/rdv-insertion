@@ -9,6 +9,7 @@ class ApplicantsController < ApplicationController
   before_action :set_applicant, only: [:show, :update, :edit]
   before_action :set_variables, only: [:index, :new, :create, :show, :update, :edit]
   before_action :retrieve_applicants, only: [:search]
+  before_action :set_applicants, only: [:index]
 
   include FilterableApplicantsConcern
 
@@ -32,27 +33,11 @@ class ApplicantsController < ApplicationController
     end
   end
 
-  def index # rubocop:disable Metrics/AbcSize
-    @applicants = policy_scope(Applicant).includes(rdv_contexts: [:invitations]).active.distinct
-    @applicants = \
-      if department_level?
-        @applicants.where(organisations: policy_scope(Organisation).where(department: @department))
-      else
-        @applicants.where(organisations: @organisation)
-      end
-
-    @not_invited_list = params[:not_invited] == "true"
-    if @not_invited_list
-      @applicants = @applicants.where.missing(:rdv_contexts)
-      filter_applicants_by_search_query
-      filter_applicants_by_page
-    else
-      @applicants = @applicants.joins(:rdv_contexts).where(rdv_contexts: { context: @current_context })
-      @rdv_contexts = RdvContext.where(applicant_id: @applicants.archived(false).ids, context: @current_context)
-      @statuses_count = @rdv_contexts.group(:status).count
-      filter_applicants
+  def index
+    respond_to do |format|
+      format.html
+      format.csv { export_applicants_to_csv }
     end
-    @applicants = @applicants.order(created_at: :desc)
   end
 
   def show
@@ -101,6 +86,17 @@ class ApplicantsController < ApplicationController
     )
   end
 
+  def export_applicants_to_csv
+    csv = create_applicants_csv_export.csv
+    filename = create_applicants_csv_export.filename
+    send_data csv, filename: filename
+  end
+
+  def create_applicants_csv_export
+    @structure = department_level? ? @department : @organisation
+    CreateApplicantsCsvExport.call(applicants: @applicants, structure: @structure, context: @current_context)
+  end
+
   def save_applicant_and_redirect(page)
     if save_applicant.success?
       redirect_to(after_save_path)
@@ -131,6 +127,29 @@ class ApplicantsController < ApplicationController
       Applicant
       .includes(:organisations, rdv_contexts: [{ rdvs: [:organisation] }, :invitations], invitations: [:rdv_context])
       .find(params[:id])
+  end
+
+  def set_applicants # rubocop:disable Metrics/AbcSize
+    @applicants = policy_scope(Applicant).includes(rdv_contexts: [:invitations]).active.distinct
+    @applicants = \
+      if department_level?
+        @applicants.where(organisations: policy_scope(Organisation).where(department: @department))
+      else
+        @applicants.where(organisations: @organisation)
+      end
+
+    @not_invited_list = params[:not_invited] == "true"
+    if @not_invited_list
+      @applicants = @applicants.where.missing(:rdv_contexts)
+      filter_applicants_by_search_query
+      filter_applicants_by_page
+    else
+      @applicants = @applicants.joins(:rdv_contexts).where(rdv_contexts: { context: @current_context })
+      @rdv_contexts = RdvContext.where(applicant_id: @applicants.archived(false).ids, context: @current_context)
+      @statuses_count = @rdv_contexts.group(:status).count
+      filter_applicants
+    end
+    @applicants = @applicants.order(created_at: :desc)
   end
 
   def after_save_path

@@ -11,6 +11,12 @@ const initToolTip = () => {
     allowHTML: true,
   });
 
+  tippy("#js-csv-export-tooltip", {
+    content:
+      "Les bénéficiaires seront exportés en fonction du contexte et des éventuels filtres sélectionnés",
+    placement: "bottom",
+  });
+
   tippy("#js-rdv-cancelled-by-user-tooltip", {
     content: "Nombre de rendez-vous manqués ou annulés par l'allocataire",
   });
