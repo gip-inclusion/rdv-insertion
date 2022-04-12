@@ -65,7 +65,7 @@ module ApplicantsHelper
     return "Non invité" if context.nil?
 
     I18n.t("activerecord.attributes.rdv_context.statuses.#{context.status}") +
-     display_context_status_notice(context, number_of_days_to_accept_invitation)
+      display_context_status_notice(context, number_of_days_to_accept_invitation)
   end
 
   def display_rdv_status(rdv)
