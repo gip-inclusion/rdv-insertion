@@ -318,7 +318,8 @@ describe ApplicantsController, type: :controller do
         get :show, params: show_params
 
         expect(response).to be_successful
-        expect(response.body).to match(/RSA orientation \(RDV honoré\)/)
+        expect(response.body).to match(/RSA orientation/)
+        expect(response.body).to match(/RDV honoré/)
         expect(response.body).to match(/RDV pris le/)
         expect(response.body).to match(/Date du RDV/)
         expect(response.body).to match(/Statut RDV/)
@@ -330,7 +331,8 @@ describe ApplicantsController, type: :controller do
         expect(response.body).to match(/Rendez-vous honoré/)
         expect(response.body).to match(/Statut RDV/)
         expect(response.body).to match(/Statut RDV/)
-        expect(response.body).to match(/RSA accompagnement \(Invitation en attente de réponse\)/)
+        expect(response.body).to match(/RSA accompagnement/)
+        expect(response.body).to match(/Invitation en attente de réponse/)
       end
     end
   end

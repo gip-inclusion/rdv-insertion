@@ -1,21 +1,22 @@
-<h5 class="text-center py-4"><%= configuration.context_name %> (<%= display_context_status(rdv_context, with_notice: false) %>)</h5>
+<h5 class="text-center py-4"><%= configuration.context_name %></h5>
 <div class="d-flex justify-content-around">
-   <%= react_component(
-    "components/InvitationBlock", {
-      applicant: @applicant,
-      organisation: @organisation,
-      department: @department,
-      invitations: rdv_context.nil? ? [] : rdv_context.invitations,
-      isDepartmentLevel: department_level?,
-      invitationFormats: configuration.invitation_formats,
-      context: configuration.context,
-      backgroundClassForStatus: rdv_context.nil? ? "" : background_class_for_context_status(rdv_context),
-      status: rdv_context&.status,
-      statusText: display_context_status(rdv_context)
-    }
-  ) %>
+  <% if configuration.invitation_formats.any? %>
+     <%= react_component(
+      "components/InvitationBlock", {
+        applicant: @applicant,
+        organisation: @organisation,
+        department: @department,
+        invitations: rdv_context.nil? ? [] : rdv_context.invitations,
+        isDepartmentLevel: department_level?,
+        invitationFormats: configuration.invitation_formats,
+        context: configuration.context,
+        status: rdv_context&.status
+      }
+    ) %>
+  <% end %>
   <% if rdv_context&.rdvs.present? %>
-      <table class="tracking-block block-white text-center align-middle mb-4">
+      <table class="tracking-block block-white text-center align-middle mb-4 mx-4">
+        <caption class="text-center">RDVs</caption>
         <thead>
           <tr>
             <th class="px-4 py-2"><h4>RDV pris le</h4></th>
@@ -42,4 +43,19 @@
         </tbody>
       </table>
   <% end %>
+  <div className="d-flex justify-content-center">
+    <table class="tracking-block block-white text-center align-middle m-4">
+      <caption></caption>
+      <thead>
+        <tr>
+          <th class="px-4 py-2"><h4>Statut global</h4></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="p-4 <%= background_class_for_context_status(rdv_context) %>" id="js-block-status-<%= configuration.context %>"><%= display_context_status(rdv_context) %></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

@@ -10,7 +10,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
   let!(:rdv_solidarites_lieu_id) { 43 }
   let!(:rdv_solidarites_motif_id) { 53 }
   let!(:lieu) { { id: 43, name: "DINUM", lieu: "20 avenue de Ségur" } }
-  let!(:motif) { { id: 53, location: "public_office" } }
+  let!(:motif) { { id: 53, location: "public_office", category: "rsa_orientation" } }
   let!(:starts_at) { "2021-09-08 12:00:00 UTC" }
   let!(:data) do
     {
@@ -168,6 +168,38 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
           .with(applicant.id, organisation.id, data, "created")
         expect(NotifyApplicantJob).to receive(:perform_async)
           .with(applicant2.id, organisation.id, data, "created")
+        subject
+      end
+    end
+
+    context "with an invalid category" do
+      let!(:motif) { { id: 53, location: "public_office", category: nil } }
+
+      it "does not call any job" do
+        [UpsertRecordJob, DeleteRdvJob, NotifyApplicantJob].each do |klass|
+          expect(klass).not_to receive(:perform_async)
+        end
+        subject
+      end
+
+      it "sends a notif to mattermost" do
+        expect(MattermostClient).to receive(:send_to_notif_channel)
+        subject
+      end
+    end
+
+    context "with no matching configuration" do
+      let!(:motif) { { id: 53, location: "public_office", category: "rsa_accompagnement" } }
+
+      it "does not call any job" do
+        [UpsertRecordJob, DeleteRdvJob, NotifyApplicantJob].each do |klass|
+          expect(klass).not_to receive(:perform_async)
+        end
+        subject
+      end
+
+      it "sends a notif to mattermost" do
+        expect(MattermostClient).to receive(:send_to_notif_channel)
         subject
       end
     end

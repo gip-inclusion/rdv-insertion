@@ -38,6 +38,8 @@ module ApplicantsHelper
   end
 
   def background_class_for_context_status(context)
+    return "" if context.nil?
+
     if context.action_required?
       context.attention_needed? ? "bg-warning border-warning" : "bg-danger border-danger"
     elsif context.rdv_seen?
