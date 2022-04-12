@@ -37,10 +37,10 @@ module ApplicantsHelper
     end
   end
 
-  def background_class_for_context_status(context)
+  def background_class_for_context_status(context, number_of_days_to_accept_invitation)
     return "" if context.nil?
 
-    if context.action_required?
+    if context.action_required?(number_of_days_to_accept_invitation)
       context.attention_needed? ? "bg-warning border-warning" : "bg-danger border-danger"
     elsif context.rdv_seen?
       "bg-success border-success"
@@ -61,19 +61,19 @@ module ApplicantsHelper
     end
   end
 
-  def display_context_status(context, with_notice: true)
+  def display_context_status(context, number_of_days_to_accept_invitation)
     return "Non invité" if context.nil?
 
-    I18n.t("activerecord.attributes.rdv_context.statuses.#{context.status}") + \
-      (with_notice ? display_context_status_notice(context) : "")
+    I18n.t("activerecord.attributes.rdv_context.statuses.#{context.status}") +
+     display_context_status_notice(context, number_of_days_to_accept_invitation)
   end
 
   def display_rdv_status(rdv)
     rdv.pending? ? "À venir" : I18n.t("activerecord.attributes.rdv.statuses.#{rdv.status}")
   end
 
-  def display_context_status_notice(context)
-    if context.invited_before_time_window? && context.invitation_pending?
+  def display_context_status_notice(context, number_of_days_to_accept_invitation)
+    if context.invited_before_time_window?(number_of_days_to_accept_invitation) && context.invitation_pending?
       " (Délai dépassé)"
     else
       ""

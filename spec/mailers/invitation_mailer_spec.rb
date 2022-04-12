@@ -8,7 +8,8 @@ RSpec.describe InvitationMailer, type: :mailer do
   let!(:invitation) do
     create(
       :invitation,
-      applicant: applicant, token: token, department: department, format: "email", help_phone_number: help_phone_number
+      applicant: applicant, token: token, department: department, format: "email", help_phone_number: help_phone_number,
+      number_of_days_to_accept_invitation: 5
     )
   end
   let!(:token) { "some_token" }
@@ -35,6 +36,7 @@ RSpec.describe InvitationMailer, type: :mailer do
       )
       expect(subject.body.encoded).to match("/invitations/redirect")
       expect(subject.body.encoded).to match("token=some_token")
+      expect(subject.body.encoded).to match("dans les 5 jours")
     end
   end
 
@@ -60,6 +62,7 @@ RSpec.describe InvitationMailer, type: :mailer do
       )
       expect(subject.body.encoded).to match("/invitations/redirect")
       expect(subject.body.encoded).to match("token=some_token")
+      expect(subject.body.encoded).to match("dans les 5 jours")
     end
   end
 
@@ -85,6 +88,7 @@ RSpec.describe InvitationMailer, type: :mailer do
         " afin de démarrer votre parcours d’accompagnement"
       )
       expect(subject.body.encoded).not_to match("/invitations/redirect")
+      expect(subject.body.encoded).to match("dans un délai de 5 jours")
     end
   end
 end

@@ -10,7 +10,8 @@
         isDepartmentLevel: department_level?,
         invitationFormats: configuration.invitation_formats,
         context: configuration.context,
-        status: rdv_context&.status
+        numberOfDaysToAcceptInvitation: configuration.number_of_days_to_accept_invitation,
+        status: rdv_context&.status,
       }
     ) %>
   <% end %>
@@ -53,7 +54,7 @@
       </thead>
       <tbody>
         <tr>
-          <td class="p-4 <%= background_class_for_context_status(rdv_context) %>" id="js-block-status-<%= configuration.context %>"><%= display_context_status(rdv_context) %></td>
+          <td class="p-4 <%= background_class_for_context_status(rdv_context, configuration.number_of_days_to_accept_invitation) %>" id="js-block-status-<%= configuration.context %>"><%= display_context_status(rdv_context, configuration.number_of_days_to_accept_invitation) %></td>
         </tr>
       </tbody>
     </table>

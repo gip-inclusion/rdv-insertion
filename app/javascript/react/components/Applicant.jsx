@@ -32,6 +32,7 @@ export default function Applicant({
       applicant.currentOrganisation,
       isDepartmentLevel,
       applicant.currentConfiguration.context,
+      applicant.currentConfiguration.number_of_days_to_accept_invitation,
     ];
     if (action === "accountCreation") {
       if (!applicant.currentOrganisation) {

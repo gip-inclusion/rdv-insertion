@@ -12,7 +12,7 @@
   <p>Pour faciliter votre prise de rendez-vous, le Conseil départemental a mis en place <span class="bold-blue">une plateforme vous permettant de prendre rendez-vous vous-même.</span></p>
   <p>Pour choisir un créneau à votre convenance, saisissez le code d’invitation ci-dessous <span class="bold-blue">sur <u><%= ENV['HOST'] %>/invitation</u></span>, puis suivez les instructions présentes à l'écran :</p>
   <div class="invitation-token">Mon code d'invitation<br/><%= invitation.token %></div>
-  <p>Dans le cadre du versement de votre allocation RSA, vous devez obligatoirement prendre ce rendez-vous dans un délai de 15 jours à réception de ce courrier.</p>
+  <p>Dans le cadre du versement de votre allocation RSA, vous devez obligatoirement prendre ce rendez-vous dans un délai de <%= invitation.number_of_days_to_accept_invitation %> jours à réception de ce courrier.</p>
   <p>Si vous rencontrez une difficulté pour accéder à internet, veuillez téléphoner dès réception de ce courrier au <%= invitation.help_phone_number_formatted %>.</p>
   <p>Veuillez agréer, <%= applicant.title.capitalize %>, l’expression de mes salutations distinguées.</p>
   <div class="letter-signature">

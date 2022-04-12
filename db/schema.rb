@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_31_104257) do
+ActiveRecord::Schema.define(version: 2022_04_12_151557) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -77,6 +77,7 @@ ActiveRecord::Schema.define(version: 2022_03_31_104257) do
     t.string "invitation_formats", default: ["sms", "email", "postal"], null: false, array: true
     t.boolean "notify_applicant", default: false
     t.integer "context", default: 0
+    t.integer "number_of_days_to_accept_invitation", default: 3
   end
 
   create_table "configurations_organisations", id: false, force: :cascade do |t|
@@ -110,6 +111,7 @@ ActiveRecord::Schema.define(version: 2022_03_31_104257) do
     t.bigint "department_id"
     t.bigint "rdv_solidarites_lieu_id"
     t.bigint "rdv_context_id"
+    t.integer "number_of_days_to_accept_invitation"
     t.index ["applicant_id"], name: "index_invitations_on_applicant_id"
     t.index ["department_id"], name: "index_invitations_on_department_id"
     t.index ["rdv_context_id"], name: "index_invitations_on_rdv_context_id"
@@ -124,7 +126,6 @@ ActiveRecord::Schema.define(version: 2022_03_31_104257) do
   create_table "letter_configurations", force: :cascade do |t|
     t.string "direction_names", array: true
     t.string "sender_city"
-    t.string "motif", default: "Rendez-vous d’orientation dans le cadre de votre RSA"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
