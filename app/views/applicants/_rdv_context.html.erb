@@ -54,7 +54,7 @@
       </thead>
       <tbody>
         <tr>
-          <td class="p-4 <%= background_class_for_context_status(rdv_context, configuration.number_of_days_to_accept_invitation) %>" id="js-block-status-<%= configuration.context %>"><%= display_context_status(rdv_context, configuration.number_of_days_to_accept_invitation) %></td>
+          <td class="p-4 <%= background_class_for_context_status(rdv_context, configuration.number_of_days_before_action_required) %>" id="js-block-status-<%= configuration.context %>"><%= display_context_status(rdv_context, configuration.number_of_days_before_action_required) %></td>
         </tr>
       </tbody>
     </table>

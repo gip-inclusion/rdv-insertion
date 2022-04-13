@@ -16,7 +16,7 @@ module FilterableApplicantsConcern
     return unless params[:action_required] == "true"
 
     @applicants = @applicants.joins(:rdv_contexts).where(
-      rdv_contexts: @rdv_contexts.action_required(@current_configuration.number_of_days_to_accept_invitation)
+      rdv_contexts: @rdv_contexts.action_required(@current_configuration.number_of_days_before_action_required)
     )
   end
 

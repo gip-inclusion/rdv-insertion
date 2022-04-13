@@ -33,7 +33,7 @@ module InvitableConcern
     last_postal_invitation&.sent_at
   end
 
-  def invited_before_time_window?(number_of_days_to_accept_invitation)
-    last_invitation_sent_at && last_invitation_sent_at < number_of_days_to_accept_invitation.days.ago
+  def invited_before_time_window?(number_of_days_before_action_required)
+    last_invitation_sent_at && last_invitation_sent_at < number_of_days_before_action_required.days.ago
   end
 end

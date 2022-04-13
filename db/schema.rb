@@ -78,6 +78,7 @@ ActiveRecord::Schema.define(version: 2022_04_12_151557) do
     t.boolean "notify_applicant", default: false
     t.integer "context", default: 0
     t.integer "number_of_days_to_accept_invitation", default: 3
+    t.integer "number_of_days_before_action_required", default: 3
   end
 
   create_table "configurations_organisations", id: false, force: :cascade do |t|
