@@ -7,7 +7,6 @@ describe CreateApplicantsCsvExport, type: :service do
   let(:applicant1) { create(:applicant, last_name: "Dhobb", organisations: [organisation]) }
   let(:applicant2) { create(:applicant, last_name: "Casubolo", organisations: [organisation]) }
   let(:applicant3) { create(:applicant, last_name: "Blanc", organisations: [organisation]) }
-  let(:applicant4) { create(:applicant, last_name: "Prébot", organisations: [organisation]) }
   let!(:applicants) { [applicant1, applicant2, applicant3] }
 
   describe "#call" do
@@ -45,7 +44,6 @@ describe CreateApplicantsCsvExport, type: :service do
         expect(subject.csv).to include("Dhobb")
         expect(subject.csv).to include("Casubolo")
         expect(subject.csv).to include("Blanc")
-        expect(subject.csv).not_to include("Prébot")
       end
     end
   end

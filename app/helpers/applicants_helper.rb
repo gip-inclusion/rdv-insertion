@@ -85,14 +85,6 @@ module ApplicantsHelper
     "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{organisation_id}/users/#{applicant.rdv_solidarites_user_id}"
   end
 
-  def applicants_export_url
-    if request.url.include?("?")
-      "#{request.url}&format=csv"
-    else
-      "#{request.url}?format=csv"
-    end
-  end
-
   def department_level?
     params[:department_id].present?
   end

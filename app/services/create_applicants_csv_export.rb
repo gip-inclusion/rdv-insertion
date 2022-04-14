@@ -17,7 +17,7 @@ class CreateApplicantsCsvExport < BaseService
   def generate_csv
     CSV.generate(write_headers: true, col_sep: ";", headers: headers, encoding: 'utf-8') do |row|
       @applicants.each do |applicant|
-        row << applicant_csv(applicant)
+        row << applicant_csv_row(applicant)
       end
     end
   end
@@ -34,21 +34,21 @@ class CreateApplicantsCsvExport < BaseService
      Applicant.human_attribute_name(:birth_date),
      Applicant.human_attribute_name(:rights_opening_date),
      Applicant.human_attribute_name(:role),
+     "Dernière invitation envoyée le",
      "Invitation acceptée le",
+     "Date du dernier RDV",
      Applicant.human_attribute_name(:status),
+     "Orienté ?",
+     "Date d'orientation",
      "Archivé ?",
      Applicant.human_attribute_name(:archiving_reason),
      "Numéro du département",
      "Nom du département",
      "Nombre d'organisations",
-     "Nom des organisations",
-     "Dernière invitation envoyée le",
-     "Orienté ?",
-     "Date d'orientation",
-     "Date du rendez-vous le plus récent"]
+     "Nom des organisations"]
   end
 
-  def applicant_csv(applicant) # rubocop:disable Metrics/AbcSize
+  def applicant_csv_row(applicant) # rubocop:disable Metrics/AbcSize
     [applicant.title,
      applicant.last_name,
      applicant.first_name,
@@ -60,18 +60,18 @@ class CreateApplicantsCsvExport < BaseService
      format_date(applicant.birth_date),
      format_date(applicant.rights_opening_date),
      applicant.role,
+     format_date(applicant.last_invitation_sent_at),
      format_date(applicant.invitation_accepted_at),
-     rdv_context_status(applicant),
+     last_rdv_date(applicant),
+     human_rdv_context_status(applicant),
+     I18n.t("boolean.#{applicant.oriented?}"),
+     format_date(applicant.orientation_date),
      I18n.t("boolean.#{applicant.is_archived?}"),
      applicant.archiving_reason,
      applicant.department.number,
      applicant.department.name,
      applicant.organisations.count,
-     applicant.organisations.collect(&:name).join(", "),
-     format_date(applicant.last_invitation_sent_at),
-     I18n.t("boolean.#{applicant.oriented?}"),
-     format_date(applicant.orientation_date),
-     rdv_context_date(applicant)]
+     applicant.organisations.collect(&:name).join(", ")]
   end
 
   def filename
@@ -82,16 +82,26 @@ class CreateApplicantsCsvExport < BaseService
     end
   end
 
-  def rdv_context_status(applicant)
-    rdv_context(applicant)&.status || "Non invité"
+  def human_rdv_context_status(applicant)
+    return "Non invité" if rdv_context(applicant)&.status.nil?
+
+    I18n.t("activerecord.attributes.rdv_context.statuses.#{rdv_context(applicant).status}")
   end
 
-  def rdv_context_date(applicant)
-    rdv_context(applicant) ? format_date(rdv_context(applicant).rdvs.last&.starts_at) : ""
+  def last_invitation_date(applicant)
+    return "" if rdv_context(applicant)&.invitations.blank?
+
+    format_date(rdv_context(applicant).invitations.last.select(&:sent_at).max_by(&:sent_at).sent_at)
+  end
+
+  def last_rdv_date(applicant)
+    return "" unless rdv_context(applicant)
+
+    format_date(rdv_context(applicant).rdvs.last&.starts_at)
   end
 
   def rdv_context(applicant)
-    applicant.rdv_contexts.find_by(context: @context)
+    applicant.rdv_context_for(@context)
   end
 
   def format_date(date)

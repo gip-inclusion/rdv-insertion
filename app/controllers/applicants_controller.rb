@@ -9,7 +9,7 @@ class ApplicantsController < ApplicationController
   before_action :set_applicant, only: [:show, :update, :edit]
   before_action :set_variables, only: [:index, :new, :create, :show, :update, :edit]
   before_action :retrieve_applicants, only: [:search]
-  before_action :set_applicants, only: [:index]
+  before_action :set_applicants_and_related_variables, only: [:index]
 
   include FilterableApplicantsConcern
 
@@ -94,7 +94,14 @@ class ApplicantsController < ApplicationController
 
   def create_applicants_csv_export
     @structure = department_level? ? @department : @organisation
-    CreateApplicantsCsvExport.call(applicants: @applicants, structure: @structure, context: @current_context)
+    CreateApplicantsCsvExport.call(
+      applicants: @applicants
+                  .includes(:organisations,
+                            rdv_contexts: [{ rdvs: [:organisation] }, :invitations],
+                            invitations: [:rdv_context]),
+      structure: @structure,
+      context: @current_context
+    )
   end
 
   def save_applicant_and_redirect(page)
@@ -129,7 +136,7 @@ class ApplicantsController < ApplicationController
       .find(params[:id])
   end
 
-  def set_applicants # rubocop:disable Metrics/AbcSize
+  def set_applicants_and_related_variables # rubocop:disable Metrics/AbcSize
     @applicants = policy_scope(Applicant).includes(rdv_contexts: [:invitations]).active.distinct
     @applicants = \
       if department_level?

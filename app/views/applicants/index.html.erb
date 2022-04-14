@@ -51,14 +51,7 @@
           </li>
         </ul>
       <% end %>
-      <% if department_level? %>
-        <%= link_to "Export csv bénéficiaires", applicants_export_url, class: "btn btn-blue-out mt-2", id: "js-csv-export-tooltip", target: "_blank" %>
-      <% else %>
-        <%= link_to "Export csv bénéficiaires", applicants_export_url, class: "btn btn-blue-out mt-2", id: "js-csv-export-tooltip", target: "_blank" %>
-      <% end %>
-      <%= link_to "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/", target: :blank do %>
-        <button class="btn btn-blue-out mt-2">Guide d'utilisation<i class="fas fa-external-link-alt icon-sm"></i></button>
-      <% end %>
+      <%= link_to "Export csv bénéficiaires", compute_index_path(@organisation, @department, **params.to_unsafe_h.merge(format: "csv")), class: "btn btn-blue-out mt-2", id: "js-csv-export-tooltip", target: "_blank" %>
     </div>
   </div>
   <%= render "applicants_list" %>
