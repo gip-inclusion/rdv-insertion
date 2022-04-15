@@ -28,7 +28,7 @@ class UploadsController < ApplicationController
   def set_current_configuration
     @current_configuration = \
       if params[:configuration_id].present?
-        @all_configurations.find(params[:configuration_id])
+        @all_configurations.find { |config| config.id == params[:configuration_id].to_i }
       elsif @all_configurations.length == 1
         @all_configurations.first
       end
