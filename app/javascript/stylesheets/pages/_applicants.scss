@@ -38,6 +38,19 @@
   vertical-align: middle;
 }
 
+.context-header {
+  width: 100%;
+  span {
+    display: block;
+    background-color: $dark-blue;
+    height: 4px;
+      width: 50px;
+    &:nth-child(3) {
+      flex-grow: 1;
+    }
+  }
+}
+
 @media (max-width: 1200px) {
   .context-block {
     flex-wrap: wrap;

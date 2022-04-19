@@ -1,4 +1,16 @@
-<h5 class="text-center py-4"><%= configuration.context_name %></h5>
+<div class="d-flex align-items-center context-header">
+  <span></span>
+  <h5 class="text-center px-2 py-4"><strong><%= configuration.context_name %></strong></h5>
+  <span></span>
+      <table class="mx-2">
+        <tbody>
+          <tr>
+            <td class="px-2 py-1 context-status <%= background_class_for_context_status(rdv_context) %>" id="js-block-status-<%= configuration.context %>"><em><%= display_context_status(rdv_context) %></em></td>
+          </tr>
+        </tbody>
+      </table>
+  <span></span>
+</div>
 <div class="context-block d-flex justify-content-center">
   <% if configuration.invitation_formats.any? %>
     <%= react_component(
@@ -50,21 +62,6 @@
               <td class="px-4 py-3"></td>
             </tr>
           <% end %>
-        </tbody>
-      </table>
-    </div>
-    <div>
-      <table class="block-white text-center align-middle m-4">
-        <caption></caption>
-        <thead>
-          <tr>
-            <th class="px-4 py-2"><h4>Statut global</h4></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="px-2 py-4 context-status <%= background_class_for_context_status(rdv_context) %>" id="js-block-status-<%= configuration.context %>"><%= display_context_status(rdv_context) %></td>
-          </tr>
         </tbody>
       </table>
     </div>
