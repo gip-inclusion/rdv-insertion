@@ -95,10 +95,7 @@ class ApplicantsController < ApplicationController
   def create_applicants_csv_export
     @structure = department_level? ? @department : @organisation
     CreateApplicantsCsvExport.call(
-      applicants: @applicants
-                  .includes(:organisations,
-                            rdv_contexts: [{ rdvs: [:organisation] }, :invitations],
-                            invitations: [:rdv_context]),
+      applicants: @applicants.includes(:department, :organisations, rdv_contexts: [:rdvs, :invitations])
       structure: @structure,
       context: @current_context
     )

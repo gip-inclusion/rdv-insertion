@@ -60,7 +60,7 @@ class CreateApplicantsCsvExport < BaseService
      format_date(applicant.birth_date),
      format_date(applicant.rights_opening_date),
      applicant.role,
-     format_date(applicant.last_invitation_sent_at),
+     last_invitation_date(applicant),
      format_date(applicant.invitation_accepted_at),
      last_rdv_date(applicant),
      human_rdv_context_status(applicant),
@@ -70,15 +70,15 @@ class CreateApplicantsCsvExport < BaseService
      applicant.archiving_reason,
      applicant.department.number,
      applicant.department.name,
-     applicant.organisations.count,
+     applicant.organisations.to_a.count,
      applicant.organisations.collect(&:name).join(", ")]
   end
 
   def filename
     if @structure.nil?
-      "applicants_extraction.csv"
+      "extraction_beneficiaires.csv"
     else
-      "#{@structure.class.name}_#{@structure.name.parameterize(separator: '_')}_applicants_extraction.csv"
+      "extraction_beneficiaires_#{@structure.class.name}_#{@structure.name.parameterize(separator: '_')}.csv"
     end
   end
 
@@ -91,7 +91,7 @@ class CreateApplicantsCsvExport < BaseService
   def last_invitation_date(applicant)
     return "" if rdv_context(applicant)&.invitations.blank?
 
-    format_date(rdv_context(applicant).invitations.last.select(&:sent_at).max_by(&:sent_at).sent_at)
+    format_date(rdv_context(applicant).last_invitations_sent_at)
   end
 
   def last_rdv_date(applicant)
