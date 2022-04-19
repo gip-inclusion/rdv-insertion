@@ -1,5 +1,13 @@
+.context-block {
+  th, td {
+    min-width: 140px;
+    max-width: 140px;
+  }
+}
+
 .block-white {
   background-color: white;
+  caption-side: top;
   border: 0.5px solid $light-grey;
   border-radius: 5px;
   padding: 20px;
@@ -30,16 +38,24 @@
   vertical-align: middle;
 }
 
-.tracking-block {
-  width: 40%;
-  caption-side: top;
+.context-header {
+  width: 100%;
+  span {
+    display: block;
+    background-color: $dark-blue;
+    height: 4px;
+    width: 50px;
+    &:nth-child(3) {
+      flex-grow: 1;
+    }
+  }
 }
 
-@media (max-width: 991px) {
-  .tracking-block {
+@media (max-width: 1200px) {
+  .context-block {
+    flex-wrap: wrap;
+  }
+  .rdv-status-block {
     width: 80%;
-    &.block-2 {
-      margin-top: 30px;
-    }
   }
 }
