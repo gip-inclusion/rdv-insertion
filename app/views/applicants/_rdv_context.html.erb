@@ -5,7 +5,7 @@
       <table class="mx-2">
         <tbody>
           <tr>
-            <td class="px-2 py-1 context-status <%= background_class_for_context_status(rdv_context) %>" id="js-block-status-<%= configuration.context %>"><em><%= display_context_status(rdv_context) %></em></td>
+            <td class="px-2 py-1 context-status <%= background_class_for_context_status(rdv_context, configuration.number_of_days_before_action_required) %>" id="js-block-status-<%= configuration.context %>"><em><%= display_context_status(rdv_context, configuration.number_of_days_before_action_required) %></em></td>
           </tr>
         </tbody>
       </table>

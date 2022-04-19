@@ -5,6 +5,7 @@ fr:
     attributes:
       rdv_context:
         statuses:
+          not_invited: Non invité
           invitation_pending: Invitation en attente de réponse
           rdv_pending: RDV pris
           rdv_needs_status_update: Statut du RDV à préciser
