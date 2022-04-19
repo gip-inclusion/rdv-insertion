@@ -18,8 +18,8 @@ describe CreateApplicantsCsvExport, type: :service do
       context "it generates a filename" do
         context "structure is present" do
           it "generates a filename with structure" do
-            expect(subject.filename).to eq("#{structure.class.name}_#{structure.name \
-              .parameterize(separator: '_')}_applicants_extraction.csv")
+            expect(subject.filename).to eq("extraction_beneficiaires_#{structure.class.name}_#{structure.name \
+              .parameterize(separator: '_')}.csv")
           end
         end
 
@@ -27,7 +27,7 @@ describe CreateApplicantsCsvExport, type: :service do
           let!(:structure) { nil }
 
           it "generates a generic filename" do
-            expect(subject.filename).to eq("applicants_extraction.csv")
+            expect(subject.filename).to eq("extraction_beneficiaires.csv")
           end
         end
       end
