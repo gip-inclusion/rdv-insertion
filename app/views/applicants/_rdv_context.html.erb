@@ -2,13 +2,13 @@
   <span></span>
   <h5 class="text-center px-2 py-4"><strong><%= configuration.context_name %></strong></h5>
   <span></span>
-      <table class="mx-2">
-        <tbody>
-          <tr>
-            <td class="px-2 py-1 context-status <%= background_class_for_context_status(rdv_context, configuration.number_of_days_before_action_required) %>" id="js-block-status-<%= configuration.context %>"><em><%= display_context_status(rdv_context, configuration.number_of_days_before_action_required) %></em></td>
-          </tr>
-        </tbody>
-      </table>
+  <table class="mx-2">
+    <tbody>
+      <tr>
+        <td class="px-2 py-1 context-status <%= background_class_for_context_status(rdv_context, configuration.number_of_days_before_action_required) %>" id="js-block-status-<%= configuration.context %>"><em><%= display_context_status(rdv_context, configuration.number_of_days_before_action_required) %></em></td>
+      </tr>
+    </tbody>
+  </table>
   <span></span>
 </div>
 <div class="context-block d-flex justify-content-center">
