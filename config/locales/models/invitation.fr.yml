@@ -7,4 +7,4 @@ fr:
         help_phone_number: Téléphone de contact
         link: Lien
         token: Token
-        context: Contexte
+        number_of_days_to_accept_invitation: Nombre de jours pour accepter l'invitation

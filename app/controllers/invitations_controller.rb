@@ -36,7 +36,9 @@ class InvitationsController < ApplicationController
   private
 
   def invitation_params
-    params.require(:invitation).permit(:format, :help_phone_number, :rdv_solidarites_lieu_id)
+    params.require(:invitation).permit(
+      :format, :help_phone_number, :rdv_solidarites_lieu_id, :number_of_days_to_accept_invitation
+    )
   end
 
   def pdf

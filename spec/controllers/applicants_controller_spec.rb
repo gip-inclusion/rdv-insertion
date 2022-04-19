@@ -1,6 +1,13 @@
 describe ApplicantsController, type: :controller do
   let!(:department) { create(:department) }
-  let!(:configuration) { create(:configuration, context: "rsa_orientation") }
+  let!(:configuration) do
+    create(
+      :configuration,
+      context: "rsa_orientation",
+      number_of_days_before_action_required: number_of_days_before_action_required
+    )
+  end
+  let!(:number_of_days_before_action_required) { 3 }
   let!(:organisation) do
     create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
                           department_id: department.id, configurations: [configuration])
@@ -400,8 +407,9 @@ describe ApplicantsController, type: :controller do
 
     context "when action_required is passed" do
       let!(:index_params) { { organisation_id: organisation.id, action_required: "true" } }
+      let!(:number_of_days_before_action_required) { 4 }
 
-      context "when the invitation has been sent more than 3 days ago" do
+      context "when the invitation has been sent before the number of days defined in the configuration ago" do
         let!(:invitation) { create(:invitation, applicant: applicant2, rdv_context: rdv_context2, sent_at: 5.days.ago) }
 
         it "filters by action required" do
@@ -411,8 +419,8 @@ describe ApplicantsController, type: :controller do
         end
       end
 
-      context "when the invitation has not been sent more than 3 days ago" do
-        let!(:invitation) { create(:invitation, applicant: applicant2, rdv_context: rdv_context2, sent_at: 1.day.ago) }
+      context "when the invitation has been sent after the number of days defined in the configuration 3 days ago" do
+        let!(:invitation) { create(:invitation, applicant: applicant2, rdv_context: rdv_context2, sent_at: 3.days.ago) }
 
         it "filters by action required" do
           get :index, params: index_params

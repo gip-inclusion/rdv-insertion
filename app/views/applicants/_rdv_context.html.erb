@@ -22,7 +22,8 @@
         isDepartmentLevel: department_level?,
         invitationFormats: configuration.invitation_formats,
         context: configuration.context,
-        status: rdv_context&.status
+        numberOfDaysToAcceptInvitation: configuration.number_of_days_to_accept_invitation,
+        status: rdv_context&.status,
       }
     ) %>
   <% end %>
