@@ -8,6 +8,7 @@ const inviteApplicant = async (
   invitationFormat,
   helpPhoneNumber,
   context,
+  numberOfDaysToAcceptInvitation,
   types = "application/json"
 ) => {
   let url;
@@ -22,6 +23,7 @@ const inviteApplicant = async (
     {
       format: invitationFormat,
       help_phone_number: helpPhoneNumber,
+      number_of_days_to_accept_invitation: numberOfDaysToAcceptInvitation,
       rdv_context: {
         context,
       },
