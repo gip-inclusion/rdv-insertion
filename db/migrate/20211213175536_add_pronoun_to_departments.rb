@@ -5,22 +5,22 @@ class AddPronounToDepartments < ActiveRecord::Migration[6.1]
     all_departments = Department.all
 
     ardennes = all_departments.find { |d| d.name == "Ardennes" }
-    ardennes.update!(pronoun: "les")
+    ardennes.update!(pronoun: "les") if ardennes.present?
 
     drome = all_departments.find { |d| d.name == "Drôme" }
-    drome.update!(pronoun: "la")
+    drome.update!(pronoun: "la") if drome.present?
 
     yonne = all_departments.find { |d| d.name == "Yonne" }
-    yonne.update!(pronoun: "l'")
+    yonne.update!(pronoun: "l'") if yonne.present?
 
     aveyron = all_departments.find { |d| d.name == "Aveyron" }
-    aveyron&.update!(pronoun: "l'")
+    aveyron&.update!(pronoun: "l'") if aveyron.present?
 
     bdr = all_departments.find { |d| d.name == "Bouches-du-Rhône" }
-    bdr&.update!(pronoun: "les")
+    bdr&.update!(pronoun: "les") if bdr.present?
 
     finistere = all_departments.find { |d| d.name == "Finistère" }
-    finistere&.update!(pronoun: "le")
+    finistere&.update!(pronoun: "le") if finistere.present?
   end
   # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 end

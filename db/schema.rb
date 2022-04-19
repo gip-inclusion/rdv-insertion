@@ -74,8 +74,8 @@ ActiveRecord::Schema.define(version: 2022_03_31_104257) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.json "column_names"
-    t.string "invitation_formats", default: ["sms", "email", "postal"], null: false, array: true
     t.boolean "notify_applicant", default: false
+    t.string "invitation_formats", default: ["sms", "email", "postal"], null: false, array: true
     t.integer "context", default: 0
   end
 
