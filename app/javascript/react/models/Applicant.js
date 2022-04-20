@@ -29,6 +29,7 @@ export default class Applicant {
     this.address = formattedAttributes.address;
     // sometimes street number is separated from address
     this.streetNumber = formattedAttributes.streetNumber;
+    this.streetType = formattedAttributes.streetType;
     this.city = formattedAttributes.city;
     this.postalCode = formattedAttributes.postalCode;
     this.fullAddress = formattedAttributes.fullAddress || this.formatFullAddress();
@@ -169,6 +170,7 @@ export default class Applicant {
   formatFullAddress() {
     return (
       (this.streetNumber ? `${this.streetNumber} ` : "") +
+      (this.streetType ? `${this.streetType} ` : "") +
       (this.address ?? "") +
       (this.postalCode ? ` ${this.postalCode}` : "") +
       (this.city ? ` ${this.city}` : "")
