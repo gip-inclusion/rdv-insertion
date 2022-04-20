@@ -13,6 +13,7 @@ export default function InvitationBlock({
   context,
   isDepartmentLevel,
   invitationFormats,
+  numberOfDaysToAcceptInvitation,
   status,
 }) {
   const [isLoading, setIsLoading] = useState({
@@ -42,7 +43,14 @@ export default function InvitationBlock({
 
   const handleClick = async (action) => {
     setIsLoading({ ...isLoading, [action]: true });
-    const applicantParams = [applicant, department.id, organisation, isDepartmentLevel, context];
+    const applicantParams = [
+      applicant,
+      department.id,
+      organisation,
+      isDepartmentLevel,
+      context,
+      numberOfDaysToAcceptInvitation,
+    ];
     if (action === "smsInvitation") {
       const invitation = await handleApplicantInvitation(...applicantParams, "sms");
       setLastSmsInvitationSentAt(invitation?.sent_at);
@@ -61,7 +69,7 @@ export default function InvitationBlock({
 
   return (
     <div className="d-flex justify-content-center">
-      <table className="tracking-block block-white text-center align-middle mb-4 mx-4">
+      <table className="block-white text-center align-middle mb-4 mx-4">
         <caption className="text-center">Dernières Invitations</caption>
         <thead>
           <tr>

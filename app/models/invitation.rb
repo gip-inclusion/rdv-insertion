@@ -6,7 +6,8 @@ class Invitation < ApplicationRecord
 
   attr_accessor :content
 
-  validates :help_phone_number, :context, :token, :organisations, :link, presence: true
+  validates :help_phone_number, :context, :token, :organisations, :link, :number_of_days_to_accept_invitation,
+            presence: true
   validate :organisations_cannot_be_from_different_departments
 
   delegate :context, :context_name, to: :rdv_context
@@ -14,7 +15,9 @@ class Invitation < ApplicationRecord
   enum format: { sms: 0, email: 1, postal: 2 }, _prefix: :format
   after_commit :set_applicant_status, :set_rdv_context_status
 
-  scope :sent_in_time_window, -> { where("sent_at > ?", Organisation::TIME_TO_ACCEPT_INVITATION.ago) }
+  scope :sent_in_time_window, lambda { |number_of_days_before_action_required|
+    where("sent_at > ?", number_of_days_before_action_required.days.ago)
+  }
 
   def send_to_applicant
     case self.format

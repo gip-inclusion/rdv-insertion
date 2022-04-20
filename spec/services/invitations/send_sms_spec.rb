@@ -28,6 +28,7 @@ describe Invitations::SendSms, type: :service do
     create(
       :invitation,
       applicant: applicant, department: department, token: "123", help_phone_number: help_phone_number,
+      number_of_days_to_accept_invitation: 9,
       link: "https://www.rdv-solidarites.fr/lieux?invitation_token=123", format: "sms", rdv_context: rdv_context
     )
   end
@@ -38,7 +39,7 @@ describe Invitations::SendSms, type: :service do
     let!(:content) do
       "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous "\
         "d'orientation. Pour choisir la date et l'horaire de votre premier RDV, cliquez sur le lien suivant "\
-        "dans les 3 jours: http://www.rdv-insertion.fr/invitations/redirect?token=123\n"\
+        "dans les 9 jours: http://www.rdv-insertion.fr/invitations/redirect?token=123\n"\
         "Ce rendez-vous est obligatoire. En cas de problème technique, contactez le 0147200001."
     end
 
@@ -101,7 +102,7 @@ describe Invitations::SendSms, type: :service do
       let!(:content) do
         "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous "\
           "d'accompagnement. Pour choisir la date et l'horaire de votre premier RDV, cliquez sur le lien suivant "\
-          "dans les 3 jours: http://www.rdv-insertion.fr/invitations/redirect?token=123\n"\
+          "dans les 9 jours: http://www.rdv-insertion.fr/invitations/redirect?token=123\n"\
           "Ce rendez-vous est obligatoire. En cas de problème technique, contactez le 0147200001."
       end
 
@@ -121,7 +122,7 @@ describe Invitations::SendSms, type: :service do
       let!(:content) do
         "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez contacter la plateforme départementale " \
           "afin de démarrer votre parcours d’accompagnement. Pour cela, merci d’appeler le " \
-          "0147200001 dans un délai de 3 jours. "\
+          "0147200001 dans un délai de 9 jours. "\
           "Cet appel est nécessaire pour le traitement de votre dossier."
       end
 

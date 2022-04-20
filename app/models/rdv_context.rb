@@ -15,17 +15,18 @@ class RdvContext < ApplicationRecord
   STATUSES_WITH_ATTENTION_NEEDED = %w[invitation_pending].freeze
 
   scope :status, ->(status) { where(status: status) }
-  scope :action_required, lambda {
-    status(STATUSES_WITH_ACTION_REQUIRED).or(attention_needed.invited_before_time_window)
+  scope :action_required, lambda { |number_of_days_before_action_required|
+    status(STATUSES_WITH_ACTION_REQUIRED)
+      .or(attention_needed.invited_before_time_window(number_of_days_before_action_required))
   }
   scope :attention_needed, -> { status(STATUSES_WITH_ATTENTION_NEEDED) }
-  scope :invited_before_time_window, lambda {
-    where.not(id: Invitation.sent_in_time_window.pluck(:rdv_context_id).uniq)
+  scope :invited_before_time_window, lambda { |number_of_days_before_action_required|
+    where.not(id: Invitation.sent_in_time_window(number_of_days_before_action_required).pluck(:rdv_context_id).uniq)
   }
 
-  def action_required?
+  def action_required?(number_of_days_before_action_required)
     status.in?(STATUSES_WITH_ACTION_REQUIRED) ||
-      (attention_needed? && invited_before_time_window?)
+      (attention_needed? && invited_before_time_window?(number_of_days_before_action_required))
   end
 
   def attention_needed?

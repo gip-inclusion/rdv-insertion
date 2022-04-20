@@ -60,8 +60,8 @@
                 <% if applicant.is_archived? %>
                   <td>Dossier archivé</td>
                 <% else %>
-                  <td class="<%= background_class_for_context_status(rdv_context) %>">
-                    <%= display_context_status(rdv_context) %>
+                  <td class="<%= background_class_for_context_status(rdv_context, @current_configuration.number_of_days_before_action_required) %>">
+                    <%= display_context_status(rdv_context, @current_configuration.number_of_days_before_action_required) %>
                   </td>
                 <% end %>
               <% end %>
