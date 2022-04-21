@@ -91,7 +91,7 @@ class CreateApplicantsCsvExport < BaseService
   def last_invitation_date(applicant)
     return "" if rdv_context(applicant)&.invitations.blank?
 
-    format_date(rdv_context(applicant).last_invitations_sent_at)
+    format_date(rdv_context(applicant).last_invitation_sent_at)
   end
 
   def last_rdv_date(applicant)

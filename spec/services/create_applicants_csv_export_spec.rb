@@ -7,6 +7,12 @@ describe CreateApplicantsCsvExport, type: :service do
   let(:applicant1) { create(:applicant, last_name: "Dhobb", organisations: [organisation]) }
   let(:applicant2) { create(:applicant, last_name: "Casubolo", organisations: [organisation]) }
   let(:applicant3) { create(:applicant, last_name: "Blanc", organisations: [organisation]) }
+
+  let!(:rdv) { create(:rdv, status: "unknown", starts_at: 2.days.ago) }
+  let!(:invitation) { create(:invitation, applicant: applicant1, format: "email", sent_at: 3.days.ago) }
+  let!(:rdv_context) { create(:rdv_context, rdvs: [rdv], invitations: [invitation], applicant: applicant1) }
+
+
   let!(:applicants) { [applicant1, applicant2, applicant3] }
 
   describe "#call" do
@@ -44,6 +50,14 @@ describe CreateApplicantsCsvExport, type: :service do
         expect(subject.csv).to include("Dhobb")
         expect(subject.csv).to include("Casubolo")
         expect(subject.csv).to include("Blanc")
+      end
+
+      it "display the invitations dates" do
+        expect(subject.csv).to include(invitation.sent_at&.strftime("%d/%m/%Y"))
+      end
+
+      it "display the rdvs dates" do
+        expect(subject.csv).to include(rdv.starts_at&.strftime("%d/%m/%Y"))
       end
     end
   end
