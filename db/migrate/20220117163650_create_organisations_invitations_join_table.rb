@@ -5,9 +5,9 @@ class CreateOrganisationsInvitationsJoinTable < ActiveRecord::Migration[6.1]
 
     create_join_table :organisations, :invitations do |t|
       t.index(
-        [:organisation_id, :configuration_id],
+        [:organisation_id, :invitation_id],
         unique: true,
-        name: "index_config_orga_on_organisation_id_and_configuration_id"
+        name: "index_invitations_orgas_on_orga_id_and_invitation_id"
       )
     end
 
