@@ -69,7 +69,7 @@ export default function InvitationBlock({
 
   return (
     <div className="d-flex justify-content-center">
-      <table className="tracking-block block-white text-center align-middle mb-4 mx-4">
+      <table className="block-white text-center align-middle mb-4 mx-4">
         <caption className="text-center">Dernières Invitations</caption>
         <thead>
           <tr>
