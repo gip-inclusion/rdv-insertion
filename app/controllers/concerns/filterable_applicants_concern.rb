@@ -28,6 +28,8 @@ module FilterableApplicantsConcern
   end
 
   def filter_applicants_by_page
+    return if request.format == "csv"
+
     @applicants = @applicants.page(page)
   end
 end

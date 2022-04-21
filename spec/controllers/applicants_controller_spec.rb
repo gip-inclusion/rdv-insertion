@@ -453,6 +453,46 @@ describe ApplicantsController, type: :controller do
         expect(response.body).not_to match(/Baer/)
       end
     end
+
+    context "when csv request" do
+      before do
+        allow(CreateApplicantsCsvExport).to receive(:call)
+          .and_return(OpenStruct.new)
+      end
+
+      it "calls the service" do
+        expect(CreateApplicantsCsvExport).to receive(:call)
+        get :index, params: index_params.merge(format: :csv)
+      end
+
+      context "when not authorized" do
+        let!(:another_organisation) { create(:organisation) }
+        let!(:another_agent) { create(:agent, organisations: [another_organisation]) }
+
+        before do
+          sign_in(another_agent)
+          setup_rdv_solidarites_session(rdv_solidarites_session)
+        end
+
+        it "does not call the service" do
+          expect do
+            get :index, params: index_params.merge(format: :csv)
+          end.to raise_error(ActiveRecord::RecordNotFound)
+        end
+      end
+
+      context "when the csv creation succeeds" do
+        before do
+          allow(CreateApplicantsCsvExport).to receive(:call)
+            .and_return(OpenStruct.new(success?: true))
+        end
+
+        it "is a success" do
+          get :index, params: index_params.merge(format: :csv)
+          expect(response).to be_successful
+        end
+      end
+    end
   end
 
   describe "#edit" do
