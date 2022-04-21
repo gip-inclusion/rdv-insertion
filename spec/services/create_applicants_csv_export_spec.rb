@@ -12,7 +12,6 @@ describe CreateApplicantsCsvExport, type: :service do
   let!(:invitation) { create(:invitation, applicant: applicant1, format: "email", sent_at: 3.days.ago) }
   let!(:rdv_context) { create(:rdv_context, rdvs: [rdv], invitations: [invitation], applicant: applicant1) }
 
-
   let!(:applicants) { [applicant1, applicant2, applicant3] }
 
   describe "#call" do
