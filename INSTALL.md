@@ -11,6 +11,12 @@
   - [Scalingo CLI](https://doc.scalingo.com/cli) (OPTIONAL)
   - [Make](https://fr.wikipedia.org/wiki/Make) (OPTIONAL)
 
+## Important
+
+Cette application est conçue pour fonctionner en complément de rdv-solidarités
+rdv-solidarités doit donc être installé et tourner en local pour obtenir un environnement de dev fonctionnel
+Le code de rdv-solidarités peut être trouvé ici : https://github.com/betagouv/rdv-solidarites.fr/
+
 ## Setup
 
 Voir les variables d'environnement pour configurer l'accès à PostgreSQL
@@ -26,6 +32,10 @@ Il ne reste (si tout s’est bien passé) qu’à lancer un serveur le serveur.
 ```bash
 make run      ## appelle foreman s -f Procfile.dev
 ```
+
+Il n'y a pas d'agent créé dans les seeds : les agents utilisateurs de rdv-insertion sont récupérés de rdv-solidarités
+Les informations à ce sujet peuvent être trouvées dans [le fichier de seeds](db/seeds.rb)
+
 
 ## Commandes
 
