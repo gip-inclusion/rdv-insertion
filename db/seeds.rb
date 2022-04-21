@@ -101,14 +101,14 @@ yonne_orientation_config = Configuration.create!(
   number_of_days_before_action_required: 3
 )
 
-letter_configuration = LetterConfiguration.new(
+letter_configuration = LetterConfiguration.create!(
   direction_names:
     ["DIRECTION GÉNÉRALE DES SERVICES DÉPARTEMENTAUX",
     "DIRECTION DE L’INSERTION ET DU RETOUR À L’EMPLOI",
     "SERVICE ORIENTATION ET ACCOMPAGNEMENT VERS L’EMPLOI"]
 )
 
-responsible_drome = Responsible.new(
+responsible_drome = Responsible.create!(
   first_name: "Fabienne",
   last_name: "Bouchet",
   role: "Responsable Plate-forme mutualisée d'orientation"

@@ -3,7 +3,7 @@
 ## Prérequis
 
 - Déploiement:
-  - Ruby 3.0 (nous conseillons l’utilisation de [rbenv](https://github.com/rbenv/rbenv-installer#rbenv-installer--doctor-scripts))
+  - Ruby 3.0.3 (nous conseillons l’utilisation de [rbenv](https://github.com/rbenv/rbenv-installer#rbenv-installer--doctor-scripts))
   - PostgreSQL >= 12, l’utilisateur doit avoir les droits `superuser`. C'est nécessaire pour pouvoir activer les extensions utilisés.
 - Développement
   - [Yarn](https://yarnpkg.com/en/docs/install)
@@ -21,10 +21,6 @@ make install  ## appelle bin/setup
 ```
 
 Assurez-vous d'avoir une instance de redis en cours d'éxecution
-```bash
-redis-server  ## lancer un serveur redis
-```
-
 
 Il ne reste (si tout s’est bien passé) qu’à lancer un serveur le serveur.
 ```bash
