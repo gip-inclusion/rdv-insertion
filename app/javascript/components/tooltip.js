@@ -3,9 +3,7 @@ import tippy from "tippy.js";
 const initToolTip = () => {
   tippy("#js-action-required-tooltip", {
     content(reference) {
-      const numberOfDaysBeforeActionRequired = reference.getAttribute(
-        "data-number-of-days-before-action-required"
-      );
+      const { numberOfDaysBeforeActionRequired } = reference.dataset;
       return (
         "Une intervention est nécessaire quand: " +
         `<ul><li>L'invitation a été envoyée depuis + de ${numberOfDaysBeforeActionRequired} jours sans réponse</li>` +
