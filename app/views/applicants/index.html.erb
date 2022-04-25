@@ -15,8 +15,11 @@
       <%= render 'search_form' %>
       <% unless @not_invited_list %>
         <div class=" text-left mt-2">
-          <%= check_box("applicants_list", "action_required", class: "js-action-required-checkbox") %> Intervention nécessaire
-          <small><i class="fas fa-question-circle" id="js-action-required-tooltip"></i></small>
+          <%= check_box("applicants_list", "action_required", class: "js-action-required-checkbox") %>Intervention nécessaire
+          <small>
+            <i class="fas fa-question-circle" id="js-action-required-tooltip" data-number-of-days-before-action-required="<%= @current_configuration.number_of_days_before_action_required %>">
+            </i>
+          </small>
         </div>
       <% end %>
     </div>
