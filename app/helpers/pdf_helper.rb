@@ -8,6 +8,12 @@ module PdfHelper
   def pdf_image_tag(source)
     return if Rails.env.test?
 
-    image_tag wicked_pdf_asset_pack_path("media/images/#{source}")
+    if Webpacker.manifest.lookup("media/images/logos/#{source}.svg")
+      image_tag wicked_pdf_asset_pack_path("media/images/logos/#{source}.svg")
+    elsif Webpacker.manifest.lookup("media/images/logos/#{source}.png")
+      image_tag wicked_pdf_asset_pack_path("media/images/logos/#{source}.png")
+    elsif Webpacker.manifest.lookup("media/images/logos/#{source}.jpg")
+      image_tag wicked_pdf_asset_pack_path("media/images/logos/#{source}.jpg")
+    end
   end
 end

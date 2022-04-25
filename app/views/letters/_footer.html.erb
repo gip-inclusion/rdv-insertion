@@ -1,8 +1,8 @@
 <div>
   <div class="left-col department-logo">
-    <%= pdf_image_tag("logos/#{department.name.parameterize}.svg") %>
+    <%= pdf_image_tag(department.name.parameterize) %>
   </div>
   <div class="right-col rdvi-logo">
-    <%= pdf_image_tag('logos/rdv-insertion.svg') %>
+    <%= pdf_image_tag("rdv-insertion") %>
   </div>
 </div>
