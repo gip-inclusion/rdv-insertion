@@ -17,7 +17,7 @@ module Migrations
 
         UpsertRecordJob.perform_async(
           Rdv,
-          rdv.to_rdv_insertion_attributes,
+          rdv.payload,
           { applicant_ids: applicant_ids, organisation_id: @organisation_id }
         )
       end

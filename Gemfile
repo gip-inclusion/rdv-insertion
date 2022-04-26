@@ -55,6 +55,9 @@ gem "sentry-ruby"
 gem "sentry-rails"
 gem "sentry-sidekiq"
 
+# JSON web token
+gem "jwt"
+
 # Forms
 gem "simple_form"
 
