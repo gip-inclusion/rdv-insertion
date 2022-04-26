@@ -2,7 +2,15 @@ describe "api/v1/applicants/create_and_invite_many requests", type: :request do
   let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession, uid: agent.email) }
   let!(:agent) { create(:agent, organisations: [organisation]) }
   let!(:rdv_solidarites_organisation_id) { 42 }
-  let!(:organisation) { create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id) }
+  let!(:organisation) do
+    create(
+      :organisation,
+      configurations: [configuration], rdv_solidarites_organisation_id: rdv_solidarites_organisation_id
+    )
+  end
+  let!(:configuration) do
+    create(:configuration, context: "rsa_orientation")
+  end
   let!(:applicants_params) { { applicants: [applicant1_params, applicant2_params] } }
 
   let!(:applicant1_params) do
@@ -98,22 +106,60 @@ describe "api/v1/applicants/create_and_invite_many requests", type: :request do
     end
 
     context "when params are invalid" do
-      before do
-        applicant1_params[:last_name] = ""
-        applicant2_params[:department_internal_id] = ""
+      context "with invalid applicants attributes" do
+        before do
+          applicant1_params[:last_name] = ""
+          applicant2_params[:department_internal_id] = ""
+        end
+
+        it "returns 422" do
+          subject
+          expect(response.status).to eq(422)
+          result = JSON.parse(response.body)
+          expect(result["errors"]).to include({ "Entrée 1 - 11111444" => { "last_name" => ["doit être rempli(e)"] } })
+          expect(result["errors"]).to include({ "Entrée 2" => { "department_internal_id" => ["doit être rempli(e)"] } })
+        end
+
+        it "does not enqueue jobs" do
+          expect(CreateAndInviteApplicantJob).not_to receive(:perform_async)
+          subject
+        end
       end
 
-      it "returns 422" do
-        subject
-        expect(response.status).to eq(422)
-        result = JSON.parse(response.body)
-        expect(result["errors"]).to include({ "Entrée 1 - 11111444" => { "last_name" => ["doit être rempli(e)"] } })
-        expect(result["errors"]).to include({ "Entrée 2" => { "department_internal_id" => ["doit être rempli(e)"] } })
+      context "with too many applicants" do
+        let!(:applicants_params) do
+          { applicants: 30.times.map { applicant1_params } }
+        end
+
+        it "returns 422" do
+          subject
+          expect(response.status).to eq(422)
+          result = JSON.parse(response.body)
+          expect(result["errors"]).to include("Les allocataires doivent être envoyés par lots de 25 maximum")
+        end
+
+        it "does not enqueue jobs" do
+          expect(CreateAndInviteApplicantJob).not_to receive(:perform_async)
+          subject
+        end
       end
 
-      it "does not enqueue jobs" do
-        expect(CreateAndInviteApplicantJob).not_to receive(:perform_async)
-        subject
+      context "with invalid invitation context for organisation" do
+        before do
+          applicant1_params[:invitation][:context] = "rsa_accompagnement"
+        end
+
+        it "returns 422" do
+          subject
+          expect(response.status).to eq(422)
+          result = JSON.parse(response.body)
+          expect(result["errors"]).to include({ "Entrée 1" => "Invitation context rsa_accompagnement est invalide" })
+        end
+
+        it "does not enqueue jobs" do
+          expect(CreateAndInviteApplicantJob).not_to receive(:perform_async)
+          subject
+        end
       end
     end
 
