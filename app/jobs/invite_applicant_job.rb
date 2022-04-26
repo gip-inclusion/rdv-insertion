@@ -1,14 +1,15 @@
 class InviteApplicantJob < ApplicationJob
   sidekiq_options retry: 0
 
-  def perform(applicant_id, organisation_id, invitation_attributes, rdv_solidarites_session_credentials)
+  def perform(applicant_id, organisation_id, invitation_attributes, context, rdv_solidarites_session_credentials)
     @applicant = Applicant.find(applicant_id)
     @organisation = Organisation.find(organisation_id)
     @department = @organisation.department
-    @attributes = invitation_attributes.deep_symbolize_keys
+    @invitation_attributes = invitation_attributes.deep_symbolize_keys
+    @context = context
     @rdv_solidarites_session_credentials = rdv_solidarites_session_credentials.deep_symbolize_keys
 
-    Invitation.with_advisory_lock "invite_job_for_applicant_#{@applicant.id}_with_#{invitation_format}" do
+    Invitation.with_advisory_lock "invite_applicant_#{@applicant.id}" do
       invite_applicant
     end
   end
@@ -19,9 +20,28 @@ class InviteApplicantJob < ApplicationJob
     return if invitation_already_sent_today?
 
     @invitation = Invitation.new(
-      applicant: @applicant, department: @department, organisations: [@organisation], **@attributes
+      applicant: @applicant,
+      department: @department,
+      organisations: [@organisation],
+      number_of_days_to_accept_invitation: matching_configuration.number_of_days_to_accept_invitation,
+      rdv_context: rdv_context,
+      **@invitation_attributes
     )
     capture_exception if save_and_send_invitation.failure?
+  end
+
+  def invitation_format
+    @invitation_attributes[:format]
+  end
+
+  def rdv_context
+    RdvContext.with_advisory_lock "setting_rdv_context_for_applicant_#{@applicant.id}" do
+      RdvContext.find_or_create_by!(context: @context, applicant: @applicant)
+    end
+  end
+
+  def matching_configuration
+    @matching_configuration ||= @organisation.configurations.find_by!(context: @context)
   end
 
   def save_and_send_invitation
@@ -31,10 +51,6 @@ class InviteApplicantJob < ApplicationJob
     )
   end
 
-  def invitation_format
-    @attributes[:format]
-  end
-
   def capture_exception
     Sentry.capture_exception(
       FailedServiceError.new("Save and send invitation error in InviteApplicantJob"),
@@ -42,7 +58,7 @@ class InviteApplicantJob < ApplicationJob
         applicant: @applicant,
         service_errors: save_and_send_invitation.errors,
         organisation: @organisation,
-        invitation_attributes: @attributes
+        invitation_attributes: @invitation_attributes
       }
     )
   end

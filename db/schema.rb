@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_12_151557) do
+ActiveRecord::Schema.define(version: 2022_04_25_164025) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -157,6 +157,12 @@ ActiveRecord::Schema.define(version: 2022_04_12_151557) do
     t.index ["responsible_id"], name: "index_organisations_on_responsible_id"
   end
 
+  create_table "organisations_webhook_endpoints", id: false, force: :cascade do |t|
+    t.bigint "organisation_id", null: false
+    t.bigint "webhook_endpoint_id", null: false
+    t.index ["organisation_id", "webhook_endpoint_id"], name: "index_webhook_orgas_on_orga_id_and_webhook_id", unique: true
+  end
+
   create_table "rdv_contexts", force: :cascade do |t|
     t.integer "context"
     t.integer "status"
@@ -201,6 +207,13 @@ ActiveRecord::Schema.define(version: 2022_04_12_151557) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "role"
+  end
+
+  create_table "webhook_endpoints", force: :cascade do |t|
+    t.string "url"
+    t.string "secret"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   add_foreign_key "applicants", "departments"

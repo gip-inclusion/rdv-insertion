@@ -9,6 +9,8 @@ class Organisation < ApplicationRecord
   has_and_belongs_to_many :applicants, dependent: :nullify
   has_and_belongs_to_many :invitations, dependent: :nullify
   has_and_belongs_to_many :configurations
+  has_and_belongs_to_many :webhook_endpoints
+
   belongs_to :responsible, optional: true
   belongs_to :letter_configuration, optional: true
   has_many :rdvs, dependent: :nullify

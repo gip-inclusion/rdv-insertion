@@ -35,9 +35,7 @@ class Invitation < ApplicationRecord
   end
 
   def as_json(_opts = {})
-    super.merge(
-      context: context
-    )
+    super.merge(context: context)
   end
 
   private

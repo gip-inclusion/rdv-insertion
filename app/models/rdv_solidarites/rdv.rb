@@ -34,7 +34,7 @@ module RdvSolidarites
       RdvSolidarites::Motif.new(@attributes[:motif])
     end
 
-    def to_rdv_insertion_attributes
+    def payload
       attributes.merge(
         rdv_solidarites_motif_id: motif_id,
         rdv_solidarites_lieu_id: lieu_id

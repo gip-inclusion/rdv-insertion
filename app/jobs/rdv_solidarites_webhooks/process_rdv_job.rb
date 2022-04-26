@@ -11,6 +11,7 @@ module RdvSolidaritesWebhooks
 
       upsert_or_delete_rdv
       notify_applicants if should_notify_applicants?
+      send_webhooks
     end
 
     private
@@ -74,7 +75,7 @@ module RdvSolidaritesWebhooks
       else
         UpsertRecordJob.perform_async(
           "Rdv",
-          rdv_solidarites_rdv.to_rdv_insertion_attributes,
+          rdv_solidarites_rdv.payload,
           { applicant_ids: applicant_ids, organisation_id: organisation.id, rdv_context_ids: rdv_contexts.map(&:id) }
         )
       end
@@ -82,10 +83,9 @@ module RdvSolidaritesWebhooks
 
     def rdv_contexts
       applicants.map do |applicant|
-        # TODO: remove organisation_configuration.context when caegory available
-        RdvContext.find_or_create_by!(
-          applicant: applicant, context: matching_configuration.context
-        )
+        RdvContext.with_advisory_lock "setting_rdv_context_for_applicant_#{applicant.id}" do
+          RdvContext.find_or_create_by!(applicant: applicant, context: matching_configuration.context)
+        end
       end
     end
 
@@ -96,6 +96,14 @@ module RdvSolidaritesWebhooks
           organisation.id,
           @data,
           event
+        )
+      end
+    end
+
+    def send_webhooks
+      organisation.webhook_endpoints.each do |webhook_endpoint|
+        SendRdvWebhookJob.perform_async(
+          webhook_endpoint.id, rdv_solidarites_rdv.payload, applicant_ids, @meta
         )
       end
     end
