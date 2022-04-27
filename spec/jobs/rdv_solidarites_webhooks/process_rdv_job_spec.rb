@@ -75,7 +75,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
       allow(UpsertRecordJob).to receive(:perform_async)
       allow(DeleteRdvJob).to receive(:perform_async)
       allow(NotifyApplicantJob).to receive(:perform_async)
-      allow(SendRdvWebhookJob).to receive(:perform_async)
+      allow(SendRdvSolidaritesWebhookJob).to receive(:perform_async)
       allow(MattermostClient).to receive(:send_to_notif_channel)
     end
 
@@ -209,10 +209,34 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
       let!(:webhook_endpoint) do
         create(:webhook_endpoint, organisations: [organisation])
       end
+      let!(:department_internal_id) { "some-dept-id" }
+      let!(:applicant) do
+        create(
+          :applicant,
+          organisations: [organisation],
+          id: 3,
+          title: "monsieur",
+          rdv_solidarites_user_id: user_id,
+          department_internal_id: department_internal_id
+        )
+      end
 
-      it "enqueues a webhook job" do
-        expect(SendRdvWebhookJob).to receive(:perform_async)
-          .with(webhook_endpoint.id, rdv_payload, [3, 4], meta)
+      let!(:webhook_payload) do
+        {
+          data: data.merge(
+            users: [{ id: user_id, department_internal_id: department_internal_id, title: "monsieur" }]
+          ),
+          meta: meta
+        }
+      end
+
+      before do
+        allow(Applicant).to receive(:find_by).with(rdv_solidarites_user_id: user_id).and_return(applicant)
+      end
+
+      it "enqueues a webhook job with an augmented payload" do
+        expect(SendRdvSolidaritesWebhookJob).to receive(:perform_async)
+          .with(webhook_endpoint.id, webhook_payload)
         subject
       end
     end

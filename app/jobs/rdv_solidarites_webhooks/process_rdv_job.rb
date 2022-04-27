@@ -75,7 +75,7 @@ module RdvSolidaritesWebhooks
       else
         UpsertRecordJob.perform_async(
           "Rdv",
-          rdv_solidarites_rdv.payload,
+          rdv_solidarites_rdv.to_rdv_insertion_attributes,
           { applicant_ids: applicant_ids, organisation_id: organisation.id, rdv_context_ids: rdv_contexts.map(&:id) }
         )
       end
@@ -102,10 +102,15 @@ module RdvSolidaritesWebhooks
 
     def send_webhooks
       organisation.webhook_endpoints.each do |webhook_endpoint|
-        SendRdvWebhookJob.perform_async(
-          webhook_endpoint.id, rdv_solidarites_rdv.payload, applicant_ids, @meta
-        )
+        SendRdvSolidaritesWebhookJob.perform_async(webhook_endpoint.id, webhook_payload)
       end
+    end
+
+    def webhook_payload
+      {
+        data: @data.merge(users: rdv_solidarites_rdv.users.map(&:augmented_attributes)),
+        meta: @meta
+      }
     end
   end
 end
