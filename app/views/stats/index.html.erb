@@ -27,7 +27,7 @@
     <div class="row d-flex justify-content-center">
       <div class="text-center col-10 col-md-5">
         <p class="highlight-stat"><%= @stats.sent_invitations.count %></p>
-        <p>bénéficiaires invités par mail et SMS</p>
+        <p>bénéficiaires invités par mail, SMS, et courrier</p>
       </div>
       <div class="text-center col-10 col-md-5">
         <p class="highlight-stat"><%= @stats.percentage_of_no_show.round %> %</p>
@@ -36,18 +36,18 @@
     </div>
     <div class="row d-flex justify-content-center">
       <div class="text-center col-10 col-md-5">
-        <p class="highlight-stat"><%= @stats.percentage_of_applicants_oriented_in_time.round %> %</p>
-        <p>de bénéficiaires <strong>orientés en - de 30 jours</strong></p>
+        <p class="highlight-stat"><%= @stats.average_invitation_delay_in_days.round %> jours</p>
+        <p>délai moyen entre l'invitation<br/>et la prise de rendez-vous</p>
       </div>
       <div class="text-center col-10 col-md-5">
-        <p class="highlight-stat"><%= @stats.average_orientation_delay_in_days.round %> jours</p>
-        <p>délai d'orientation moyen<br/>d'un bénéficiaire avec RDV-Insertion</p>
+        <p class="highlight-stat"><%= @stats.average_rdv_delay_in_days.round %> jours</p>
+        <p>délai moyen entre la prise<br/>d'un rendez-vous et sa tenue</p>
       </div>
     </div>
     <div class="row d-flex justify-content-center">
       <div class="text-center col-10 col-md-5">
-        <p class="highlight-stat"><%= @stats.average_rdv_delay_in_days.round %> jours</p>
-        <p>délai moyen entre la prise<br/>d'un rendez-vous et sa tenue</p>
+        <p class="highlight-stat"><%= @stats.percentage_of_applicants_oriented_in_time.round %> %</p>
+        <p>de bénéficiaires <strong>orientés en - de 30 jours</strong></p>
       </div>
       <div class="text-center col-10 col-md-5 mb-4">
         <p class="highlight-stat"><%= @stats.agents.count %> agents</p>
@@ -58,5 +58,11 @@
         <% end %>
       </div>
     </div>
+  <% end %>
+  <% if @department.nil? %>
+    <%# Mettre la carte Flourish %>
+  <% end %>
+  <% if @department.present? %>
+    <%# Mettre les graphiques %>
   <% end %>
 </div>

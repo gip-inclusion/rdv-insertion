@@ -4,14 +4,15 @@ class StaticPagesController < ApplicationController
   def welcome
     redirect_to(organisations_path) if logged_in?
 
-    @applicants = Applicant.all
+    @applicants = Applicant.includes(:rdvs, :rdv_contexts, :invitations).all
     @agents = Agent.all
     @invitations = Invitation.all
     @rdvs = Rdv.all
+    @rdv_contexts = RdvContext.all
     @organisations = Organisation.all
 
     @stats = Stat.new(applicants: @applicants, agents: @agents, invitations: @invitations,
-                      rdvs: @rdvs, organisations: @organisations)
+                      rdvs: @rdvs, rdv_contexts: @rdv_contexts, organisations: @organisations)
   end
 
   def legal_notice; end

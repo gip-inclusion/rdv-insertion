@@ -39,8 +39,16 @@ class Applicant < ApplicationRecord
   scope :active, -> { where.not(status: "deleted") }
   scope :archived, ->(archived = true) { where(is_archived: archived) }
 
+  def orientation_path_starting_date
+    rights_opening_date || (created_at - 3.days)
+  end
+
+  def orientations_rdvs
+    rdvs.includes(:rdv_contexts).where(rdv_contexts: { context: %w[rsa_orientation rsa_orientation_on_phone_platform] })
+  end
+
   def orientation_date
-    rdvs.find(&:seen?)&.starts_at
+    orientations_rdvs.find(&:seen?)&.starts_at
   end
 
   def oriented?
@@ -50,8 +58,7 @@ class Applicant < ApplicationRecord
   def orientation_delay_in_days
     return unless oriented?
 
-    starting_date = rights_opening_date || (created_at - 3.days)
-    orientation_date.to_datetime.mjd - starting_date.to_datetime.mjd
+    orientation_date.to_datetime.mjd - orientation_path_starting_date.to_datetime.mjd
   end
 
   def full_name

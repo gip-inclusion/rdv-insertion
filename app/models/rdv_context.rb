@@ -32,4 +32,9 @@ class RdvContext < ApplicationRecord
   def attention_needed?
     status.in?(STATUSES_WITH_ATTENTION_NEEDED)
   end
+
+  def invitation_delay_in_days
+    first_rdv_creation_date = rdvs.select(&:created_at).min_by(&:created_at).created_at
+    first_rdv_creation_date.to_datetime.mjd - first_invitation_sent_at.to_datetime.mjd
+  end
 end
