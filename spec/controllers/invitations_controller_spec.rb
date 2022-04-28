@@ -163,6 +163,7 @@ describe InvitationsController, type: :controller do
           allow(Invitations::SaveAndSend).to receive(:call)
             .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
             .and_return(OpenStruct.new(success?: true))
+          allow(invitation).to receive(:content).and_return("some content")
         end
 
         it "is a success" do
