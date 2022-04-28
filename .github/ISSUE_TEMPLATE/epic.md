@@ -10,5 +10,8 @@ assignees: ''
 **Objectif de l'EPIC**
 
 
-**Tasks**
+**Tâches prioritaires**
+- [ ] #numéro de l'issue
+
+**Tâches pour la solution cible**
 - [ ] #numéro de l'issue
