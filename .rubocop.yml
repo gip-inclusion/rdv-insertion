@@ -105,6 +105,9 @@ RSpec/MessageChain:
 RSpec/BeEq:
   Enabled: false
 
+RSpec/VerifiedDoubleReference:
+  Enabled: false
+
 RSpec/DescribeClass:
   Exclude:
     - "spec/features/**/*"

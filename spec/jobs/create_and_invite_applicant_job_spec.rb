@@ -98,7 +98,7 @@ describe CreateAndInviteApplicantJob, type: :job do
   end
 
   context "when the save fails" do
-    let!(:department_mail) { instance_double(mail) }
+    let!(:department_mail) { instance_double("mail") }
 
     before do
       allow(SaveApplicant).to receive(:call)

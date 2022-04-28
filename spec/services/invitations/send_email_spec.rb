@@ -18,7 +18,7 @@ describe Invitations::SendEmail, type: :service do
       end
 
       before do
-        mail_mock = instance_double(deliver_now: true)
+        mail_mock = instance_double("deliver_now: true")
         allow(InvitationMailer).to receive(:invitation_for_rsa_orientation)
           .and_return(mail_mock)
         allow(mail_mock).to receive(:deliver_now)
@@ -74,7 +74,7 @@ describe Invitations::SendEmail, type: :service do
     end
 
     before do
-      mail_mock = instance_double(deliver_now: true)
+      mail_mock = instance_double("deliver_now: true")
       allow(InvitationMailer).to receive(:invitation_for_rsa_accompagnement)
         .and_return(mail_mock)
       allow(mail_mock).to receive(:deliver_now)
@@ -99,7 +99,7 @@ describe Invitations::SendEmail, type: :service do
     end
 
     before do
-      mail_mock = instance_double(deliver_now: true)
+      mail_mock = instance_double("deliver_now: true")
       allow(InvitationMailer).to receive(:invitation_for_rsa_orientation_on_phone_platform)
         .and_return(mail_mock)
       allow(mail_mock).to receive(:deliver_now)
