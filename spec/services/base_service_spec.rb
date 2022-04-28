@@ -1,7 +1,7 @@
 describe BaseService, type: :service do
   subject { described_class.call }
 
-  let(:service) { instance_double("service") }
+  let(:service) { instance_double(service) }
 
   describe "#self.call" do
     before do
