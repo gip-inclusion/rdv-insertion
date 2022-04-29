@@ -1,0 +1,63 @@
+# rails runner scripts/create_applicants_and_rdvs.rb
+# Ce script est hors seeds car les records créés ainsi ne sont pas liés à rdv-solidarités
+# Il crée 350 bénéficiaires sur un an, un par jour
+# Pour chacun, un rdv_context d'orientation, une invitation et un rdv est créé
+# 90% des rdvs sont marqués comme honorés, 10% comme noshow ; les délais de rdv sont aléatoires
+# Peut être utile pour tester des fonctionnalités, par exemple les statistiques
+
+date = Time.zone.now - 1.year
+350.times do |i|
+  applicant = Applicant.create!(
+    created_at: date,
+    updated_at: date,
+    first_name: "first_name_#{i}",
+    last_name: "last_name_#{i}",
+    email: "email_#{i}@test.com",
+    phone_number: (format "+336%08d", i),
+    affiliation_number: "123#{i}",
+    role: "demandeur",
+    address: "8 rue du test 75001 Paris",
+    rights_opening_date: date,
+    title: "monsieur",
+    department_id: 1
+  )
+  applicant.organisation_ids = [1]
+  applicant.save!
+  rc = RdvContext.create!(
+    context: "rsa_orientation",
+    created_at: date,
+    updated_at: date,
+    applicant_id: applicant.id
+  )
+  invitation = Invitation.new(
+    format: "sms",
+    sent_at: date,
+    applicant_id: applicant.id,
+    created_at: date,
+    updated_at: date,
+    help_phone_number: "0102030405",
+    token: "sometoken#{i}",
+    link: "http://www.test.com/test&id=#{i}",
+    number_of_days_to_accept_invitation: 7,
+    department_id: 1,
+    rdv_context_id: rc.id
+  )
+  invitation.organisation_ids = [1]
+  invitation.save!
+  rdv = Rdv.new(
+    starts_at: date + Random.new.rand(7).days,
+    duration_in_min: 30,
+    created_at: date,
+    updated_at: date,
+    rdv_solidarites_motif_id: 18,
+    rdv_solidarites_lieu_id: 6,
+    created_by: "user",
+    organisation_id: 1,
+    rdv_solidarites_rdv_id: "1500#{i}".to_i
+  )
+  rdv.status = i.to_s.ends_with?("1") ? "noshow" : "seen"
+  rdv.applicant_ids = [applicant.id]
+  rdv.rdv_context_ids = [rc.id]
+  rdv.save!
+  date += 1.day
+end
