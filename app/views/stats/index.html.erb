@@ -2,21 +2,32 @@
   <div class="text-center mt-4">
     <h1>Statistiques</h1>
   </div>
-
   <% if @department.nil? %>
-
-
-  <div class="d-flex justify-content-center mt-4">
-    <ul class="nav nav-tabs">
-      <li class="nav-item">
-        <%= link_to "Utilisation", stats_path, class: "nav-link #{!@deployment_map ? 'active' : ''}" %>
-      </li>
-      <li class="nav-item">
-        <%= link_to "Déploiement", stats_path(deployment_map: "true"), class: "nav-link #{@deployment_map ? 'active' : ''}" %>
-      </li>
-    </ul>
-  </div>
+    <div class="d-flex justify-content-center mt-4">
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <%= link_to "Utilisation", stats_path, class: "nav-link #{!@deployment_map ? 'active' : ''}" %>
+        </li>
+        <li class="nav-item">
+          <%= link_to "Déploiement", stats_path(deployment_map: "true"), class: "nav-link #{@deployment_map ? 'active' : ''}" %>
+        </li>
+      </ul>
+    </div>
   <% end %>
-  <%= render 'usage_stats' if !@deployment_map %>
+  <% unless @deployment_map %>
+    <div class="d-flex justify-content-center mt-5">
+    <div>
+      <%=
+        select(
+          "department", "number", options_for_department_select,
+          { },
+          class: "text-center form-select js-department-selector"
+        )
+      %>
+    </div>
+  <% end %>
+</div>
+  <%= render 'global_stats' if !@deployment_map && @department.nil? %>
+  <%= render 'detailed_stats' if !@deployment_map && @department.present? %>
   <%= render 'deployment_map' if @deployment_map %>
 </div>

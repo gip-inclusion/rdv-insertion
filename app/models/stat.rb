@@ -32,8 +32,8 @@ class Stat
 
   # --------------- Calcul du taux de bénéficiaires orientés en - de 30 jours ---------------
   def percentage_of_applicants_oriented_in_time
-    (applicants_oriented_in_less_than_30_days.length / (
-      applicants_for_30_days_orientation_scope.length.nonzero? || 1
+    (applicants_oriented_in_less_than_30_days.count / (
+      applicants_for_30_days_orientation_scope.count.nonzero? || 1
     ).to_f) * 100
   end
 
@@ -74,7 +74,7 @@ class Stat
       cumulated_invitation_delays += rdv_context.invitation_delay_in_days
     end
 
-    cumulated_invitation_delays / (rdv_contexts_with_rdvs.length.nonzero? || 1).to_f
+    cumulated_invitation_delays / (rdv_contexts_with_rdvs.count.nonzero? || 1).to_f
   end
 
   def average_rdv_delay_in_days
@@ -84,11 +84,29 @@ class Stat
       cumulated_rdv_delays += rdv.delay_in_days
     end
 
-    cumulated_rdv_delays / (orientation_rdvs.length.nonzero? || 1).to_f
+    cumulated_rdv_delays / (orientation_rdvs.count.nonzero? || 1).to_f
   end
 
   def percentage_of_no_show
-    (orientation_rdvs.noshow.length / (orientation_rdvs.resolved.length.nonzero? || 1).to_f) * 100
+    (orientation_rdvs.noshow.count / (orientation_rdvs.resolved.count.nonzero? || 1).to_f) * 100
+  end
+
+  def percentage_of_no_show_by_month
+    rdv_month = orientation_rdvs.select(&:created_at).min_by(&:created_at).created_at.beginning_of_month
+    percentage_of_no_show_by_month = {}
+
+    while rdv_month < Time.zone.today
+      orientation_rdvs_of_month = orientation_rdvs.where("rdvs.created_at >= ?", rdv_month)
+                                                  .where("rdvs.created_at < ?", rdv_month + 1.month)
+      number_of_orientation_rdvs_of_month_no_show = orientation_rdvs_of_month.noshow.count
+      number_of_orientation_rdvs_of_month_resoved = orientation_rdvs_of_month.resolved.count
+      percentage_of_no_show_of_month = (number_of_orientation_rdvs_of_month_no_show / (
+        number_of_orientation_rdvs_of_month_resoved.nonzero? || 1
+      ).to_f) * 100
+      percentage_of_no_show_by_month[rdv_month.strftime("%m/%Y")] = percentage_of_no_show_of_month.round
+      rdv_month += 1.month
+    end
+    percentage_of_no_show_by_month
   end
 
   def sent_invitations

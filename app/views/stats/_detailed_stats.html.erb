@@ -1,0 +1,28 @@
+<div class="mt-4 px-4 pb-4">
+  <div class="m-2">
+    <p class="highlight-stat big margin-left"><%= @stats.applicants.count %></p>
+    <p class="highlight-stat margin-left">bénéficiaires du RSA<br/>gérés dans ce département</p>
+  </div>
+  <%= line_chart @stats.applicants.group_by_month(:created_at, format: "%m/%Y").count, title: "Nouveaux bénéficiaires par mois", colors: ["#083b66"] %>
+</div>
+<div class="px-4 pb-4 background-blue-light">
+  <div class="m-2">
+    <p class="highlight-stat big margin-left"><%= @stats.rdvs.count %></p>
+    <p class="highlight-stat margin-left">rendez-vous pris<br/>dans ce département</p>
+  </div>
+  <%= line_chart @stats.rdvs.group_by_month(:created_at, format: "%m/%Y").count, title: "Nouveaux rdvs par mois", colors: ["#083b66"] %>
+</div>
+<div class="px-4 pb-4">
+  <div class="m-2">
+    <p class="highlight-stat big margin-left"><%= @stats.sent_invitations.count %></p>
+    <p class="highlight-stat margin-left">invitations envoyées<br/>par mail, SMS, et courrier</p>
+  </div>
+  <%= line_chart @stats.sent_invitations.group_by_month(:created_at, format: "%m/%Y").count, title: "Invitations envoyées par mois", colors: ["#083b66"] %>
+</div>
+<div class="px-4 pb-4 background-blue-light">
+  <div class="m-2">
+    <p class="highlight-stat big margin-left"><%= @stats.percentage_of_no_show.round %> %</p>
+    <p class="highlight-stat margin-left">seulement de rendez-vous<br/>non honorés avec RDV-Insertion</p>
+  </div>
+  <%= line_chart @stats.percentage_of_no_show_by_month, suffix: "%", title: "Taux de rdvs non honorés par mois", colors: ["#083b66"] %>
+</div>
