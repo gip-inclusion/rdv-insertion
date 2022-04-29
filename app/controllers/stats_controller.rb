@@ -2,6 +2,7 @@ class StatsController < ApplicationController
   skip_before_action :authenticate_agent!, only: [:index]
 
   def index
+    @deployment_map = params[:deployment_map] == "true"
     if params[:department_number].blank?
       collect_datas
     else
@@ -23,7 +24,7 @@ class StatsController < ApplicationController
   end
 
   def filter_stats_by_department
-    @department = Department.includes(organisations: [:rdvs, :rdv_contexts, :applicants, :invitations, :agents])
+    @department = Department.includes(organisations: [:rdvs, :applicants, :invitations, :agents])
                             .find_by!(number: params[:department_number])
     @applicants = @department.applicants.includes(:rdvs, :rdv_contexts, :invitations)
     @agents = @department.agents
