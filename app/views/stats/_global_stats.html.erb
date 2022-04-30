@@ -33,7 +33,7 @@
     <p>de bénéficiaires <strong>orientés en - de 30 jours</strong></p>
   </div>
   <div class="text-center col-10 col-md-5 mb-4">
-    <p class="highlight-stat big"><%= @stats.agents.count %> agents</p>
+    <p class="highlight-stat big"><%= @stats.relevant_agents.count %> agents</p>
     <% if @department %>
       <p>utilisent RDV-Insertion</p>
     <% else %>
