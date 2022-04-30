@@ -36,9 +36,7 @@ class Stat
   # correctement renseignés par les départements/ ou sont pris dans le passé (ce qui fausse les délais)
   def orientation_rdvs
     @orientation_rdvs ||= relevant_rdvs.includes(:rdv_contexts)
-                                       .where(rdv_contexts: {
-                                                context: %w[rsa_orientation]
-                                              })
+                                       .where(rdv_contexts: { context: %w[rsa_orientation] })
   end
 
   def orientation_rdvs_by_month
