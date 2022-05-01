@@ -12,6 +12,7 @@ class Applicant < ApplicationRecord
   include InvitableConcern
 
   before_validation :generate_uid
+  before_save :update_orientation_date
 
   has_and_belongs_to_many :organisations
   has_many :invitations, dependent: :destroy
@@ -43,16 +44,17 @@ class Applicant < ApplicationRecord
     rights_opening_date || (created_at - 3.days)
   end
 
+  def update_orientation_date
+    orientation_rdv = orientations_rdvs.seen.min_by(&:starts_at)
+    self.orientation_date = orientation_rdv.starts_at if orientation_rdv.present?
+  end
+
   def orientations_rdvs
     rdvs.includes(:rdv_contexts).where(rdv_contexts: { context: %w[rsa_orientation rsa_orientation_on_phone_platform] })
   end
 
-  def orientation_date
-    orientations_rdvs.seen.min_by(&:starts_at)&.starts_at
-  end
-
   def oriented?
-    orientation_date.present?
+    orientation_date != nil
   end
 
   def orientation_delay_in_days
