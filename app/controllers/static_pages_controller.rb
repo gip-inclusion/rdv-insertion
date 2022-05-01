@@ -1,18 +1,13 @@
 class StaticPagesController < ApplicationController
   skip_before_action :authenticate_agent!
 
+  include StatsConcern
+
   def welcome
     redirect_to(organisations_path) if logged_in?
 
-    @applicants = Applicant.includes(:rdvs, :rdv_contexts, :invitations).all
-    @agents = Agent.all
-    @invitations = Invitation.all
-    @rdvs = Rdv.all
-    @rdv_contexts = RdvContext.all
-    @organisations = Organisation.all
-
-    @stats = Stat.new(applicants: @applicants, agents: @agents, invitations: @invitations,
-                      rdvs: @rdvs, rdv_contexts: @rdv_contexts, organisations: @organisations)
+    collect_datas_for_stats
+    set_stats_data
   end
 
   def legal_notice; end
