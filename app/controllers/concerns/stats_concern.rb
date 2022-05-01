@@ -1,5 +1,5 @@
 module StatsConcern
-  def set_stats_data
+  def set_stats_datas
     @stats = Stat.new(applicants: @applicants, agents: @agents, invitations: @invitations,
                       rdvs: @rdvs, rdv_contexts: @rdv_contexts, organisations: @organisations)
   end
