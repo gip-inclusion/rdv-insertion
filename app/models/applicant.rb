@@ -92,6 +92,14 @@ class Applicant < ApplicationRecord
     rdv_contexts.find { |rc| rc.context == context }
   end
 
+  def payload
+    payload_attributes_keys = [
+      :id, :affiliation_number, :role, :department_internal_id, :first_name,
+      :last_name, :address, :phone_number, :email, :title, :birth_date, :rights_opening_date
+    ]
+    attributes.deep_symbolize_keys.slice(*payload_attributes_keys)
+  end
+
   def as_json(_opts = {})
     super.merge(
       created_at: created_at,

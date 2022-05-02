@@ -1,21 +1,33 @@
 describe InviteApplicantJob, type: :job do
   subject do
     described_class.new.perform(
-      applicant_id, organisation_id, invitation_attributes, rdv_solidarites_session_credentials
+      applicant_id, organisation_id, invitation_attributes, context, rdv_solidarites_session_credentials
     )
   end
 
   let!(:applicant_id) { 9999 }
   let!(:organisation_id) { 999 }
+  let!(:context) { "rsa_orientation" }
   let!(:department) { create(:department) }
   let!(:applicant) { create(:applicant, id: applicant_id) }
-  let!(:organisation) { create(:organisation, id: organisation_id, department: department) }
+  let!(:organisation) do
+    create(:organisation, id: organisation_id, department: department, configurations: [configuration])
+  end
+  let!(:number_of_days_to_accept_invitation) { 11 }
+  let!(:configuration) do
+    create(:configuration, context: context, number_of_days_to_accept_invitation: number_of_days_to_accept_invitation)
+  end
   let!(:rdv_solidarites_session_credentials) { session_hash.symbolize_keys }
   let!(:invitation_format) { "sms" }
   let!(:invitation_attributes) do
-    { format: invitation_format, context: "RSA orientation",
-      help_phone_number: "01010101", rdv_solidarites_lieu_id: 444 }
+    {
+      format: invitation_format,
+      help_phone_number: "01010101",
+      rdv_solidarites_lieu_id: 444,
+      number_of_days_to_accept_invitation: number_of_days_to_accept_invitation
+    }
   end
+  let!(:rdv_context) { create(:rdv_context, context: context, applicant: applicant) }
   let!(:invitation) { create(:invitation) }
   let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
 
@@ -24,7 +36,7 @@ describe InviteApplicantJob, type: :job do
       before do
         allow(Invitation).to receive(:new).with(
           invitation_attributes.merge(
-            applicant: applicant, department: department, organisations: [organisation]
+            applicant: applicant, department: department, rdv_context: rdv_context, organisations: [organisation]
           )
         ).and_return(invitation)
         allow(RdvSolidaritesSession).to receive(:new)
@@ -38,7 +50,7 @@ describe InviteApplicantJob, type: :job do
       it "instantiates an invitation" do
         expect(Invitation).to receive(:new).with(
           invitation_attributes.merge(
-            applicant: applicant, department: department, organisations: [organisation]
+            applicant: applicant, department: department, rdv_context: rdv_context, organisations: [organisation]
           )
         )
         subject
@@ -83,6 +95,22 @@ describe InviteApplicantJob, type: :job do
       it "does not invite the applicant" do
         expect(Invitations::SaveAndSend).not_to receive(:call)
         subject
+      end
+    end
+
+    context "when no matching configuration for context" do
+      let!(:other_context) { "rsa_accompagnement" }
+      let!(:configuration) do
+        create(
+          :configuration,
+          context: other_context,
+          number_of_days_to_accept_invitation: number_of_days_to_accept_invitation
+        )
+      end
+
+      it "raises an error" do
+        expect(Invitations::SaveAndSend).not_to receive(:call)
+        expect { subject }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
   end

@@ -346,12 +346,18 @@ describe ApplicantsController, type: :controller do
 
   describe "#index" do
     let!(:applicant) do
-      create(:applicant, organisations: [organisation], last_name: "Chabat", rdv_contexts: [rdv_context1])
+      create(
+        :applicant,
+        organisations: [organisation], department: department, last_name: "Chabat", rdv_contexts: [rdv_context1]
+      )
     end
     let!(:rdv_context1) { build(:rdv_context, context: "rsa_orientation", status: "rdv_seen") }
 
     let!(:applicant2) do
-      create(:applicant, organisations: [organisation], last_name: "Baer", rdv_contexts: [rdv_context2])
+      create(
+        :applicant,
+        organisations: [organisation], department: department, last_name: "Baer", rdv_contexts: [rdv_context2]
+      )
     end
 
     let!(:rdv_context2) { build(:rdv_context, context: "rsa_orientation", status: "invitation_pending") }

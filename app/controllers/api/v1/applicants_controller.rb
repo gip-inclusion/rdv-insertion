@@ -25,6 +25,10 @@ module Api
         create_and_invite_params.to_h.deep_symbolize_keys[:applicants]
       end
 
+      def invitations_params
+        applicants_attributes.pluck(:invitation)
+      end
+
       def set_organisation
         @organisation = Organisation.find_by!(rdv_solidarites_organisation_id: params[:rdv_solidarites_organisation_id])
         authorize @organisation, :create_and_invite_applicants?

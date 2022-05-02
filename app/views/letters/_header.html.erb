@@ -1,7 +1,7 @@
 <div>
   <div class="left-col">
     <div class="department-logo">
-      <%= pdf_image_tag("logos/#{department.name.parameterize}.svg") %>
+      <%= pdf_image_tag(department.name.parameterize) %>
     </div>
     <% letter_configuration.direction_names.each do |direction_name| %>
       <p><%= direction_name.upcase %></p>

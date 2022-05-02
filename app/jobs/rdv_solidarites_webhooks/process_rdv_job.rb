@@ -11,6 +11,7 @@ module RdvSolidaritesWebhooks
 
       upsert_or_delete_rdv
       notify_applicants if should_notify_applicants?
+      send_webhooks
     end
 
     private
@@ -35,8 +36,9 @@ module RdvSolidaritesWebhooks
 
     def notify_unhandled_category_to_mattermost
       MattermostClient.send_to_notif_channel(
-        "Catégorie #{rdv_solidarites_rdv.category} non gérée dans l'organisation #{organisation.id}.\n" \
-        "RDV #{rdv_solidarites_rdv.id} non traité pour Applicants #{applicant_ids} "
+        "Catégorie #{rdv_solidarites_rdv.category} non gérée dans l'organisation #{organisation.name}" \
+        " (#{organisation.department.name}).\n" \
+        "RDV #{rdv_solidarites_rdv.id} non traité."
       )
     end
 
@@ -82,10 +84,9 @@ module RdvSolidaritesWebhooks
 
     def rdv_contexts
       applicants.map do |applicant|
-        # TODO: remove organisation_configuration.context when caegory available
-        RdvContext.find_or_create_by!(
-          applicant: applicant, context: matching_configuration.context
-        )
+        RdvContext.with_advisory_lock "setting_rdv_context_for_applicant_#{applicant.id}" do
+          RdvContext.find_or_create_by!(applicant: applicant, context: matching_configuration.context)
+        end
       end
     end
 
@@ -98,6 +99,19 @@ module RdvSolidaritesWebhooks
           event
         )
       end
+    end
+
+    def send_webhooks
+      organisation.webhook_endpoints.each do |webhook_endpoint|
+        SendRdvSolidaritesWebhookJob.perform_async(webhook_endpoint.id, webhook_payload)
+      end
+    end
+
+    def webhook_payload
+      {
+        data: @data.merge(users: rdv_solidarites_rdv.users.map(&:augmented_attributes)),
+        meta: @meta
+      }
     end
   end
 end
