@@ -1,5 +1,5 @@
 class CreateRdvContexts < ActiveRecord::Migration[6.1]
-  def change # rubocop:disable Metrics/AbcSize
+  def change # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     create_table :rdv_contexts do |t|
       t.integer :context
       t.integer :status

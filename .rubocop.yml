@@ -25,6 +25,9 @@ Style/AsciiComments:
 Style/OpenStructUse:
   Enabled: false
 
+Style/FetchEnvVar:
+  Enabled: false
+
 Style/ClassAndModuleChildren:
   Enabled: false
 
@@ -63,6 +66,9 @@ Rails/HasAndBelongsToMany:
 Rails/BulkChangeTable:
   Enabled: false
 
+Rails/I18nLocaleTexts:
+  Enabled: false
+
 RSpec/ContextWording:
   Enabled: False
 
@@ -94,6 +100,12 @@ RSpec/NestedGroups:
   Max: 7
 
 RSpec/MessageChain:
+  Enabled: false
+
+RSpec/BeEq:
+  Enabled: false
+
+RSpec/VerifiedDoubleReference:
   Enabled: false
 
 RSpec/DescribeClass:

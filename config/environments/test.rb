@@ -44,7 +44,7 @@ Rails.application.configure do
   config.action_mailer.default_url_options = { host: "localhost:8000" }
 
   # Print deprecation notices to the stderr.
-  config.active_support.deprecation = :stderr
+  config.active_support.report_deprecations = false
 
   # Raises error for missing translations.
   # config.action_view.raise_on_missing_translations = true
