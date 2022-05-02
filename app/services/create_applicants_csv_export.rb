@@ -20,7 +20,7 @@ class CreateApplicantsCsvExport < BaseService
         row << applicant_csv_row(applicant)
       end
     end
-    # Ajout d'un BOM au début du fichier pour un affichage correct sur Excel
+    # We add a BOM at the beginning of the file to enable a correct parsing of accented characters in Excel
     "\uFEFF#{csv}"
   end
 
