@@ -1,4 +1,4 @@
-class FindOrCreateAgent < BaseService
+class SetAgent < BaseService
   def initialize(email:, organisation_ids:)
     @email = email
     @organisation_ids = organisation_ids
