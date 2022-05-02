@@ -38,7 +38,7 @@ describe CreateApplicantsCsvExport, type: :service do
       end
 
       it "generates headers" do
-        expect(subject.csv).to start_with("\uFEFFCivilité;Nom;Prénom;Numéro d'allocataire;ID interne au département;Email;")
+        expect(subject.csv).to start_with("\uFEFFCivilité;Nom;Prénom;Numéro d'allocataire;ID interne au département;Em")
       end
 
       it "generates one line for each applicant required" do
