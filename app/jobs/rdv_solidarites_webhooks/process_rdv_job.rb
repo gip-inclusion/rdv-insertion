@@ -36,8 +36,9 @@ module RdvSolidaritesWebhooks
 
     def notify_unhandled_category_to_mattermost
       MattermostClient.send_to_notif_channel(
-        "Catégorie #{rdv_solidarites_rdv.category} non gérée dans l'organisation #{organisation.id}.\n" \
-        "RDV #{rdv_solidarites_rdv.id} non traité pour Applicants #{applicant_ids} "
+        "Catégorie #{rdv_solidarites_rdv.category} non gérée dans l'organisation #{organisation.name}" \
+        " (#{organisation.department.name}).\n" \
+        "RDV #{rdv_solidarites_rdv.id} non traité."
       )
     end
 

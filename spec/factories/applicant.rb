@@ -3,7 +3,7 @@ FactoryBot.define do
     association :department
     sequence(:uid) { |n| "uid#{n}" }
     sequence(:rdv_solidarites_user_id)
-    affiliation_number { "1234" }
+    sequence(:affiliation_number) { |n| "numero_#{n}" }
     role { 1 }
     title { "monsieur" }
     sequence(:first_name) { |n| "john#{n}" }

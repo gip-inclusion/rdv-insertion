@@ -9,7 +9,7 @@ class ApplicantsController < ApplicationController
   before_action :set_applicant, only: [:show, :update, :edit]
   before_action :set_variables, only: [:index, :new, :create, :show, :update, :edit]
   before_action :retrieve_applicants, only: [:search]
-  before_action :set_applicants_and_related_variables, only: [:index]
+  before_action :set_not_invited_list, :set_applicants_and_rdv_contexts, only: [:index]
 
   include FilterableApplicantsConcern
 
@@ -133,26 +133,27 @@ class ApplicantsController < ApplicationController
       .find(params[:id])
   end
 
-  def set_applicants_and_related_variables # rubocop:disable Metrics/AbcSize
+  def set_not_invited_list
+    @not_invited_list = params[:not_invited] == "true"
+  end
+
+  def set_applicants_and_rdv_contexts # rubocop:disable Metrics/AbcSize
     @applicants = policy_scope(Applicant).includes(rdv_contexts: [:invitations]).active.distinct
     @applicants = \
       if department_level?
-        @applicants.where(organisations: policy_scope(Organisation).where(department: @department))
+        @applicants.where(department: @department)
       else
         @applicants.where(organisations: @organisation)
       end
 
-    @not_invited_list = params[:not_invited] == "true"
     if @not_invited_list
       @applicants = @applicants.where.missing(:rdv_contexts)
-      filter_applicants_by_search_query
-      filter_applicants_by_page
     else
       @applicants = @applicants.joins(:rdv_contexts).where(rdv_contexts: { context: @current_context })
       @rdv_contexts = RdvContext.where(applicant_id: @applicants.archived(false).ids, context: @current_context)
       @statuses_count = @rdv_contexts.group(:status).count
-      filter_applicants
     end
+    filter_applicants
     @applicants = @applicants.order(created_at: :desc)
   end
 
