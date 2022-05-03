@@ -15,11 +15,13 @@ class CreateApplicantsCsvExport < BaseService
   private
 
   def generate_csv
-    CSV.generate(write_headers: true, col_sep: ";", headers: headers, encoding: 'utf-8') do |row|
+    csv = CSV.generate(write_headers: true, col_sep: ";", headers: headers, encoding: 'utf-8') do |row|
       @applicants.each do |applicant|
         row << applicant_csv_row(applicant)
       end
     end
+    # We add a BOM at the beginning of the file to enable a correct parsing of accented characters in Excel
+    "\uFEFF#{csv}"
   end
 
   def headers
