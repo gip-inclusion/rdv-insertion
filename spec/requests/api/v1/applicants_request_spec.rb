@@ -60,6 +60,7 @@ describe "api/v1/applicants/create_and_invite_many requests", type: :request do
 
     before do
       validate_rdv_solidarites_session(rdv_solidarites_session)
+      mock_agent_update
       allow(CreateAndInviteApplicantJob).to receive(:perform_async)
     end
 
@@ -93,6 +94,36 @@ describe "api/v1/applicants/create_and_invite_many requests", type: :request do
       it "does not enqueue jobs" do
         expect(CreateAndInviteApplicantJob).not_to receive(:perform_async)
         subject
+      end
+    end
+
+    context "when it fails retrieving the agent orgs" do
+      before do
+        allow(RdvSolidaritesApi::RetrieveOrganisations).to receive(:call)
+          .and_return(OpenStruct.new(success?: false, errors: ["failure retrieving orgs"]))
+      end
+
+      it "returns 422" do
+        subject
+        expect(response).not_to be_successful
+        expect(response.status).to eq(422)
+        expect(JSON.parse(response.body)["success"]).to eq(false)
+        expect(JSON.parse(response.body)["errors"]).to eq(["failure retrieving orgs"])
+      end
+    end
+
+    context "when it fails upserting the agent" do
+      before do
+        allow(UpsertAgent).to receive(:call)
+          .and_return(OpenStruct.new(success?: false, errors: ["failure upserting agent"]))
+      end
+
+      it "returns 422" do
+        subject
+        expect(response).not_to be_successful
+        expect(response.status).to eq(422)
+        expect(JSON.parse(response.body)["success"]).to eq(false)
+        expect(JSON.parse(response.body)["errors"]).to eq(["failure upserting agent"])
       end
     end
 
