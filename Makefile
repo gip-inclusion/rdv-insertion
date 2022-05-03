@@ -15,7 +15,8 @@ lint_eslint: ## JavaScript Linter
 autocorrect: ## Fix autocorrectable lint issues
 	bundle exec rubocop --auto-correct-all
 
-test: bundle exec rspec ## Run all tests
+test: ## Run all tests
+	bundle exec rspec
 
 clean: ## Clean temporary files (including weppacks) and logs
 	bundle exec rails log:clear tmp:clear

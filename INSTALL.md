@@ -39,7 +39,7 @@ Les informations à ce sujet peuvent être trouvées dans [le fichier de seeds](
 
 ## Commandes
 
-Un [Makefile](https://github.com/betagouv/rdv-solidarites.fr/blob/production/Makefile) est disponible, qui sert de point d’entrée aux différents outils :
+Un [Makefile](https://github.com/betagouv/rdv-insertion/blob/staging/Makefile) est disponible, qui sert de point d’entrée aux différents outils :
 
 ```bash
 > make help
