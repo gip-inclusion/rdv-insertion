@@ -1,6 +1,6 @@
 class OrganisationsController < ApplicationController
   def index
-    @organisations = policy_scope(Organisation)
+    @organisations = policy_scope(Organisation).includes(:department)
     redirect_to organisation_applicants_path(@organisations.first) if @organisations.size == 1
   end
 
