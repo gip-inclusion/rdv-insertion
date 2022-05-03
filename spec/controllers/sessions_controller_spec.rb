@@ -110,7 +110,9 @@ describe SessionsController, type: :controller do
           post :create
           expect(response).not_to be_successful
           expect(response.status).to eq(401)
-          expect(JSON.parse(response.body)["errors"]).to eq(["Les identifiants de session RDV-Solidarités sont invalides"])
+          expect(JSON.parse(response.body)["errors"]).to eq(
+            ["Les identifiants de session RDV-Solidarités sont invalides"]
+          )
         end
       end
 
