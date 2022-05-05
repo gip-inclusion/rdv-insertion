@@ -24,16 +24,10 @@ class LoginForm {
     this.formAuthenticityToken = this.loginForm.querySelector(
       "input[name=authenticity_token]"
     ).value;
-    this.headerAuthenticityToken = document.querySelector(
-      "meta[name=csrf-token]"
-    ).content;
+    this.headerAuthenticityToken = document.querySelector("meta[name=csrf-token]").content;
 
     if (this.email === "" || this.password === "") {
-      Swal.fire(
-        "L'email et le mot de passe doivent être renseignés",
-        "",
-        "warning"
-      );
+      Swal.fire("L'email et le mot de passe doivent être renseignés", "", "warning");
       this.resetButton();
       return;
     }
@@ -41,11 +35,7 @@ class LoginForm {
     const loginRdvResult = await this.loginToRdv();
 
     if (loginRdvResult.body.success === false) {
-      Swal.fire(
-        "Impossible de s'authentifier",
-        `${loginRdvResult.body.errors[0]}`,
-        "warning"
-      );
+      Swal.fire("Impossible de s'authentifier", `${loginRdvResult.body.errors[0]}`, "warning");
       this.resetButton();
       return;
     }
@@ -56,11 +46,7 @@ class LoginForm {
       client: loginRdvResult.headers.get("client"),
     };
 
-    const organisationsResult = await this.retrieveOrganisations();
-
-    const organisationIds = organisationsResult.organisations.map((o) => o.id);
-
-    const signInResult = await this.createSession(organisationIds);
+    const signInResult = await this.createSession();
 
     if (signInResult.success === true) {
       window.location.href = signInResult.redirect_path;
@@ -74,19 +60,18 @@ class LoginForm {
     }
   }
 
-  async createSession(organisationIds) {
+  async createSession() {
     const response = await fetch("/sessions", {
       method: "POST",
       credentials: "same-origin",
       headers: {
         "Content-Type": "application/json",
         "X-CSRF-Token": this.headerAuthenticityToken,
+        uid: this.rdvSolidaritesSession.uid,
+        access_token: this.rdvSolidaritesSession.accessToken,
+        client: this.rdvSolidaritesSession.client,
       },
       body: JSON.stringify({
-        access_token: this.rdvSolidaritesSession.accessToken,
-        uid: this.rdvSolidaritesSession.uid,
-        client: this.rdvSolidaritesSession.client,
-        organisation_ids: organisationIds,
         authenticity_token: this.formAuthenticityToken,
       }),
     });
@@ -101,37 +86,17 @@ class LoginForm {
     this.buttonForm.value = "Se connecter";
   }
 
-  async retrieveOrganisations() {
-    const response = await fetch(
-      `${process.env.RDV_SOLIDARITES_URL}/api/v1/organisations`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "access-token": this.rdvSolidaritesSession.accessToken,
-          uid: this.rdvSolidaritesSession.uid,
-          client: this.rdvSolidaritesSession.client,
-        },
-      }
-    );
-
-    return response.json();
-  }
-
   async loginToRdv() {
-    const response = await fetch(
-      `${process.env.RDV_SOLIDARITES_URL}/api/v1/auth/sign_in`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: this.email,
-          password: this.password,
-        }),
-      }
-    );
+    const response = await fetch(`${process.env.RDV_SOLIDARITES_URL}/api/v1/auth/sign_in`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: this.email,
+        password: this.password,
+      }),
+    });
 
     return {
       body: await response.json(),

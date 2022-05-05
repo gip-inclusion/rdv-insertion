@@ -21,6 +21,13 @@ module AuthenticationSpecHelper
       .and_return(session_hash)
   end
 
+  def mock_agent_update
+    allow(RdvSolidaritesApi::RetrieveOrganisations).to receive(:call)
+      .and_return(OpenStruct.new(success?: true, organisations: [OpenStruct.new(id: 42)]))
+    allow(UpsertAgent).to receive(:call)
+      .and_return(OpenStruct.new(success?: true))
+  end
+
   def api_auth_headers_for_agent(agent)
     {
       client: "client", uid: agent.email, 'access-token': "token",
