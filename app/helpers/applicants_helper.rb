@@ -24,7 +24,7 @@ module ApplicantsHelper
   end
 
   def no_search_results?(applicants)
-    applicants.empty? && params[:search_query].present?
+    applicants.to_a.empty? && params[:search_query].present?
   end
 
   def display_back_to_list_button?

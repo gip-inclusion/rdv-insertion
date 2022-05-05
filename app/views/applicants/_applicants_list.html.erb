@@ -2,11 +2,11 @@
   <ul class="nav nav-tabs">
     <% @all_configurations.each do |configuration| %>
       <li class="nav-item">
-        <%= link_to configuration.context_name, compute_index_path(@organisation, @department, context: configuration.context), class:  "nav-link #{!@not_invited_list && configuration.id == @current_configuration.id ? 'active' : ''}"%>
+        <%= link_to configuration.context_name, compute_index_path(@organisation, @department, context: configuration.context), class:  "nav-link #{!@without_context_list && configuration.id == @current_configuration.id ? 'active' : ''}"%>
       </li>
     <% end %>
     <li class="nav-item">
-      <%= link_to "Non invités", compute_index_path(@organisation, @department, not_invited: true), class: "nav-link #{@not_invited_list ? 'active' : ''}" %>
+      <%= link_to "Autres", compute_index_path(@organisation, @department, without_context: true), class: "nav-link #{@without_context_list ? 'active' : ''}" %>
     </li>
   </ul>
   <div class="col-12 text-center">
@@ -19,7 +19,7 @@
           <th scope="col">Prénom</th>
           <th scope="col" class="d-none d-lg-table-cell">Email</th>
           <th scope="col" class="d-none d-lg-table-cell">Téléphone</th>
-          <% unless @not_invited_list %>
+          <% unless @without_context_list %>
             <% if show_sms_invitation?(@current_configuration) %>
               <th scope="col">Dernière invitation SMS</th>
             <% end %>
@@ -44,7 +44,7 @@
               <td><%= display_attribute applicant.first_name %></td>
               <td class="d-none d-lg-table-cell"><%= display_attribute applicant.email %></td>
               <td class="d-none d-lg-table-cell"><%= display_attribute applicant.phone_number %></td>
-              <% unless @not_invited_list %>
+              <% unless @without_context_list %>
                 <% if show_sms_invitation?(@current_configuration) %>
                   <td><%= display_attribute format_date(rdv_context.last_sms_invitation_sent_at) %></td>
                 <% end %>

@@ -9,7 +9,7 @@ class ApplicantsController < ApplicationController
   before_action :set_applicant, only: [:show, :update, :edit]
   before_action :set_variables, only: [:index, :new, :create, :show, :update, :edit]
   before_action :retrieve_applicants, only: [:search]
-  before_action :set_not_invited_list, :set_applicants_and_rdv_contexts, only: [:index]
+  before_action :set_without_context_list, :set_applicants_and_rdv_contexts, only: [:index]
 
   include FilterableApplicantsConcern
 
@@ -133,8 +133,8 @@ class ApplicantsController < ApplicationController
       .find(params[:id])
   end
 
-  def set_not_invited_list
-    @not_invited_list = params[:not_invited] == "true"
+  def set_without_context_list
+    @without_context_list = params[:without_context] == "true"
   end
 
   def set_applicants_and_rdv_contexts # rubocop:disable Metrics/AbcSize
@@ -146,8 +146,8 @@ class ApplicantsController < ApplicationController
         @applicants.where(organisations: @organisation)
       end
 
-    if @not_invited_list
-      @applicants = @applicants.where.missing(:rdv_contexts)
+    if @without_context_list
+      @applicants = @applicants.without_rdv_contexts(@all_configurations.map(&:context))
     else
       @applicants = @applicants.joins(:rdv_contexts).where(rdv_contexts: { context: @current_context })
       @rdv_contexts = RdvContext.where(applicant_id: @applicants.archived(false).ids, context: @current_context)

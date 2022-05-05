@@ -38,6 +38,9 @@ class Applicant < ApplicationRecord
 
   scope :active, -> { where.not(status: "deleted") }
   scope :archived, ->(archived = true) { where(is_archived: archived) }
+  scope :without_rdv_contexts, lambda { |contexts|
+    where.not(id: joins(:rdv_contexts).where(rdv_contexts: { context: contexts }).ids)
+  }
 
   def orientation_date
     rdvs.find(&:seen?)&.starts_at
