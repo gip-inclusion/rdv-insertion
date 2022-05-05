@@ -44,11 +44,11 @@ class Applicant < ApplicationRecord
   end
 
   def orientations_rdvs
-      rdv_contexts.select(&:context_orientation?).flat_map(&:rdvs)
-    end
+    rdv_contexts.select(&:context_orientation?).flat_map(&:rdvs)
+  end
 
   def orientation_date
-      @orientation_date ||= orientations_rdvs.to_a.select(&:seen?).min_by(&:starts_at)&.starts_at
+    @orientation_date ||= orientations_rdvs.to_a.select(&:seen?).min_by(&:starts_at)&.starts_at
   end
 
   def oriented?

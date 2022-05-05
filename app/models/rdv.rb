@@ -41,7 +41,6 @@ class Rdv < ApplicationRecord
     status.in?(%w[seen excused revoked noshow])
   end
 
-
   def needs_status_update?
     !in_the_future? && status.in?(PENDING_STATUSES)
   end
