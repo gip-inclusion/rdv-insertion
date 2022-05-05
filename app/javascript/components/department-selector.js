@@ -3,16 +3,7 @@ class DepartmentSelector {
     this.selectElt = document.querySelector(".js-department-selector");
     if (this.selectElt === null) return;
 
-    this.setIntialValue();
     this.attachListener();
-  }
-
-  setIntialValue() {
-    const url = new URL(window.location.href);
-    const selectedDepartment = url.searchParams.get("department_number");
-    if (selectedDepartment) {
-      this.selectElt.value = selectedDepartment;
-    }
   }
 
   attachListener() {
@@ -23,12 +14,10 @@ class DepartmentSelector {
 
   refreshQuery(selectedDepartment) {
     if (selectedDepartment && selectedDepartment !== "0") {
-      const url = new URL(window.location.href);
-      url.searchParams.set("department_number", selectedDepartment);
+      const url = new URL(`${window.location.origin}/stats/${selectedDepartment}`);
       window.location.href = url;
     } else {
-      const url = new URL(window.location.href);
-      url.searchParams.delete("department_number");
+      const url = new URL(`${window.location.origin}/stats`);
       window.location.href = url;
     }
   }
