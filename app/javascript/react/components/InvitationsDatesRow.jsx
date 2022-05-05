@@ -6,37 +6,17 @@ export default function InvitationsDatesRow({
   invitationFormats,
   index,
 }) {
-  const showInvitation = (format) => invitationFormats.includes(format);
-
   return (
     <tr>
-      {showInvitation("sms") && (
-        <td className="px-4 py-3">
-          {invitationsDatesByFormat.sms[index]
-            ? getFrenchFormatDateString(invitationsDatesByFormat.sms[index])
+      {invitationFormats.map((format) => (
+        <td className="px-4 py-3" key={format + index}>
+          {invitationsDatesByFormat[format][index]
+            ? getFrenchFormatDateString(invitationsDatesByFormat[format][index])
             : index === 0
             ? "-"
             : ""}
         </td>
-      )}
-      {showInvitation("email") && (
-        <td className="px-4 py-3">
-          {invitationsDatesByFormat.email[index]
-            ? getFrenchFormatDateString(invitationsDatesByFormat.email[index])
-            : index === 0
-            ? "-"
-            : ""}
-        </td>
-      )}
-      {showInvitation("postal") && (
-        <td className="px-4 py-3">
-          {invitationsDatesByFormat.postal[index]
-            ? getFrenchFormatDateString(invitationsDatesByFormat.postal[index])
-            : index === 0
-            ? "-"
-            : ""}
-        </td>
-      )}
+      ))}
     </tr>
   );
 }

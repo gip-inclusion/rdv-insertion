@@ -21,7 +21,7 @@
           <th scope="col" class="d-none d-lg-table-cell">Téléphone</th>
           <th scope="col" class="d-none d-lg-table-cell">Adresse</th>
           <% unless @not_invited_list %>
-            <% unless show_notification?(@current_configuration) %>
+            <% if show_invitations?(@current_configuration) %>
               <th scope="col">Première invitation</th>
               <th scope="col">Dernière invitation</th>
             <% end %>
@@ -40,27 +40,27 @@
               <td><%= display_attribute applicant.first_name %></td>
               <td class="d-none d-lg-table-cell">
                 <% if applicant.email.present? %>
-                  <i class="fas fa-check green-check" />
+                  <i class="fas fa-check icon-blue" />
                 <% else %>
-                  <i class="fas fa-times-circle red-check" />
+                  <i class="fas fa-times icon-blue" />
                 <% end %>
               </td>
               <td class="d-none d-lg-table-cell">
                 <% if applicant.phone_number.present? %>
-                  <i class="fas fa-check green-check" />
+                  <i class="fas fa-check icon-blue" />
                 <% else %>
-                  <i class="fas fa-times-circle red-check" />
+                  <i class="fas fa-times icon-blue" />
                 <% end %>
               </td>
               <td class="d-none d-lg-table-cell">
                 <% if applicant.address.present? %>
-                  <i class="fas fa-check green-check" />
+                  <i class="fas fa-check icon-blue" />
                 <% else %>
-                  <i class="fas fa-times-circle red-check" />
+                  <i class="fas fa-times icon-blue" />
                 <% end %>
               </td>
               <% unless @not_invited_list %>
-                <% unless show_notification?(@current_configuration) %>
+                <% if show_invitations?(@current_configuration) %>
                   <td><%= display_attribute format_date(rdv_context.first_invitation_sent_at) %></td>
                   <td><%= rdv_context.invitations.length > 1 ? display_attribute(format_date(rdv_context.last_invitation_sent_at)) : "-" %></td>
                 <% end %>

@@ -22,8 +22,6 @@ export default function InvitationBlock({
     email: false,
     postal: false,
   });
-  /* eslint no-unused-vars: ["error", { "varsIgnorePattern": "setInvitationsDatesByFormat" }] */
-  // This state is updated by .unshift in handleInvitationClick method
   const [invitationsDatesByFormat, setInvitationsDatesByFormat] = useState(
     sortInvitationsByFormatsAndDates(invitations)
   );
@@ -31,19 +29,28 @@ export default function InvitationBlock({
 
   // We don't display "Show history" button if there is no history to display
   const showInvitationsHistoryButton = Object.values(invitationsDatesByFormat).some(
-    (array) => array.length > 1
+    (invitationDates) => invitationDates.length > 1
   );
 
   const computeInvitationsDatesRows = () => {
-    const numberOfInvitationsDatesRowsNeeded = Object.values(invitationsDatesByFormat).reduce(
-      (r, s) => (r > s.length ? r : s.length),
-      0
+    const invitationsDatesByFormatLengths = invitationFormats.map(
+      (format) => invitationsDatesByFormat[format].length
     );
-    const invitationsDatesRowsArray = [];
+    const numberOfInvitationsDatesRowsNeeded = showInvitationsHistory
+      ? Math.max(...invitationsDatesByFormatLengths)
+      : 1;
+    const invitationsDatesRows = [];
     for (let i = 0; i < numberOfInvitationsDatesRowsNeeded; i += 1) {
-      invitationsDatesRowsArray.push(i);
+      invitationsDatesRows.push(
+        <InvitationsDatesRow
+          invitationsDatesByFormat={invitationsDatesByFormat}
+          invitationFormats={invitationFormats}
+          index={i}
+          key={`${context}${i}`}
+        />
+      );
     }
-    return invitationsDatesRowsArray;
+    return invitationsDatesRows;
   };
 
   const updateStatusBlock = () => {
@@ -77,7 +84,10 @@ export default function InvitationBlock({
       const invitation = await handleApplicantInvitation(...applicantParams, format);
       newInvitationDate = invitation?.sent_at;
     }
-    invitationsDatesByFormat[format].unshift(newInvitationDate);
+    setInvitationsDatesByFormat((prevState) => ({
+      ...prevState,
+      [format]: [newInvitationDate, ...prevState[format]],
+    }));
     updateStatusBlock();
     setIsLoading({ ...isLoading, [format]: false });
   };
@@ -105,30 +115,14 @@ export default function InvitationBlock({
           </tr>
         </thead>
         <tbody>
-          {!showInvitationsHistory && (
-            <InvitationsDatesRow
-              invitationsDatesByFormat={invitationsDatesByFormat}
-              invitationFormats={invitationFormats}
-              index={0}
-              key={`${context}${0}`}
-            />
-          )}
-          {showInvitationsHistory &&
-            computeInvitationsDatesRows().map((index) => (
-              <InvitationsDatesRow
-                invitationsDatesByFormat={invitationsDatesByFormat}
-                invitationFormats={invitationFormats}
-                index={index}
-                key={`${context}${index}`}
-              />
-            ))}
+          {computeInvitationsDatesRows().map((invitationDateRow) => invitationDateRow)}
           <tr>
             {showInvitation("sms") && (
               <td className="px-4 py-3">
                 <button
                   type="button"
                   disabled={
-                    isLoading.smsInvitation ||
+                    isLoading.sms ||
                     !applicant.phone_number ||
                     applicant.is_archived === true ||
                     status === "rdv_pending"
@@ -136,9 +130,9 @@ export default function InvitationBlock({
                   className="btn btn-blue"
                   onClick={() => handleInvitationClick("sms")}
                 >
-                  {isLoading.smsInvitation && "Invitation..."}
-                  {!isLoading.smsInvitation && invitationsDatesByFormat.sms[0] && "Relancer"}
-                  {!isLoading.smsInvitation && !invitationsDatesByFormat.sms[0] && "Inviter"}
+                  {isLoading.sms && "Invitation..."}
+                  {!isLoading.sms && invitationsDatesByFormat.sms[0] && "Relancer"}
+                  {!isLoading.sms && !invitationsDatesByFormat.sms[0] && "Inviter"}
                 </button>
               </td>
             )}
@@ -147,7 +141,7 @@ export default function InvitationBlock({
                 <button
                   type="button"
                   disabled={
-                    isLoading.emailInvitation ||
+                    isLoading.email ||
                     !applicant.email ||
                     applicant.is_archived === true ||
                     status === "rdv_pending"
@@ -155,9 +149,9 @@ export default function InvitationBlock({
                   className="btn btn-blue"
                   onClick={() => handleInvitationClick("email")}
                 >
-                  {isLoading.emailInvitation && "Invitation..."}
-                  {!isLoading.emailInvitation && invitationsDatesByFormat.email[0] && "Relancer"}
-                  {!isLoading.emailInvitation && !invitationsDatesByFormat.email[0] && "Inviter"}
+                  {isLoading.email && "Invitation..."}
+                  {!isLoading.email && invitationsDatesByFormat.email[0] && "Relancer"}
+                  {!isLoading.email && !invitationsDatesByFormat.email[0] && "Inviter"}
                 </button>
               </td>
             )}
@@ -166,7 +160,7 @@ export default function InvitationBlock({
                 <button
                   type="button"
                   disabled={
-                    isLoading.postalInvitation ||
+                    isLoading.postal ||
                     !applicant.address ||
                     applicant.is_archived === true ||
                     status === "rdv_pending"
@@ -174,9 +168,9 @@ export default function InvitationBlock({
                   className="btn btn-blue"
                   onClick={() => handleInvitationClick("postal")}
                 >
-                  {isLoading.postalInvitation && "Invitation..."}
-                  {!isLoading.postalInvitation && invitationsDatesByFormat.postal[0] && "Recréer"}
-                  {!isLoading.postalInvitation && !invitationsDatesByFormat.postal[0] && "Inviter"}
+                  {isLoading.postal && "Invitation..."}
+                  {!isLoading.postal && invitationsDatesByFormat.postal[0] && "Recréer"}
+                  {!isLoading.postal && !invitationsDatesByFormat.postal[0] && "Inviter"}
                 </button>
               </td>
             )}
