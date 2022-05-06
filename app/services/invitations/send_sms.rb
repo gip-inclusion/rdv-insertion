@@ -67,12 +67,21 @@ module Invitations
       @invitation.number_of_days_to_accept_invitation
     end
 
+    def sender_name
+      configuration.sms_sender_name || "Dept#{@invitation.department.number}"
+    end
+
     def applicant
       @invitation.applicant
     end
 
-    def sender_name
-      "Dept#{@invitation.department.number}"
+    def configuration
+      organisation.configurations.find_by(context: @invitation.context)
+    end
+
+    def organisation
+      # an invitation normally belongs to only one organisation
+      @invitation.organisations.first
     end
   end
 end
