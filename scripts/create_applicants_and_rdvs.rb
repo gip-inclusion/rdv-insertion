@@ -5,7 +5,7 @@
 # 90% des rdvs sont marqués comme honorés, 10% comme noshow ; les délais de rdv sont aléatoires
 # Peut être utile pour tester des fonctionnalités, par exemple les statistiques
 
-date = Time.zone.now - 1.year
+date = 1.year.ago
 350.times do |i|
   applicant = Applicant.create!(
     created_at: date,
