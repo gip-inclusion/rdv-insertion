@@ -23,12 +23,20 @@ u {
   width: 40%;
 }
 
-.department-logo img {
-  height: 80px;
-  border: none;
-  display: block;
-  margin: 0 auto;
+.department-logo {
+  &.header-logo {
+    position: absolute;
+    top: 0;
+    width: 40%;
+  }
+  img {
+    height: 80px;
+    border: none;
+    display: block;
+    margin: 0 auto;
+  }
 }
+
 
 .rdvi-logo {
   height: 80px;
@@ -71,4 +79,10 @@ u {
   p {
     text-align: right;
   }
+}
+
+.letter-footer {
+  position: absolute;
+  top: 1230px;
+  width: 100%;
 }
