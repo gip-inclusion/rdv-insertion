@@ -129,13 +129,13 @@ export default function ApplicantsUpload({ organisation, configuration, departme
         title: `Le fichier doit être au format ${acceptedFormats.map((format) => ` ${format}`)}`,
         icon: "error",
       });
-      return false;
+      return { valid: false };
     }
-    return true;
+    return { valid: true };
   };
 
   const handleApplicantsFile = async (file) => {
-    if (checkFileFormat(file, [".csv", ".xls", ".xlsx", ".ods"]) === false) {
+    if (!checkFileFormat(file, [".csv", ".xls", ".xlsx", ".ods"]).valid) {
       return;
     }
 
@@ -158,7 +158,7 @@ export default function ApplicantsUpload({ organisation, configuration, departme
   };
 
   const handleContactsFile = async (file) => {
-    if (checkFileFormat(file, [".csv", ".txt"]) === false) {
+    if (!checkFileFormat(file, [".csv", ".txt"]).valid) {
       return;
     }
 
