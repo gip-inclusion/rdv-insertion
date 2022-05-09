@@ -80,7 +80,6 @@ module Invitations
     end
 
     def organisation
-      # an invitation normally belongs to only one organisation
       @invitation.organisations.first
     end
   end
