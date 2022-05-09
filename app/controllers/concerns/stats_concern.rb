@@ -6,10 +6,10 @@ module StatsConcern
 
   def collect_datas_for_stats
     @organisations = Organisation.all
-    @applicants = Applicant.includes(:invitations, :rdvs, rdv_contexts: [:rdvs]).all
+    @applicants = Applicant.all.includes(:rdvs, :invitations).preload(rdv_contexts: [:rdvs])
     @agents = Agent.all
     @invitations = Invitation.all
     @rdvs = Rdv.all
-    @rdv_contexts = RdvContext.includes(:rdvs, :invitations).all
+    @rdv_contexts = RdvContext.all.includes(:invitations).preload(:rdvs)
   end
 end

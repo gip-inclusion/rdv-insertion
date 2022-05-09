@@ -14,7 +14,6 @@ class Stat
   # We filter the applicants by organisations and retrieve deleted or archived applicants
   def relevant_applicants
     @relevant_applicants ||= applicants
-                             .includes(:rdv_contexts)
                              .joins(:organisations)
                              .where(organisations: relevant_organisations)
                              .where.not(status: %w[deleted])

@@ -11,11 +11,11 @@ class StatsController < ApplicationController
   end
 
   def show
-    @applicants = @department.applicants.includes(:rdvs, :invitations, rdv_contexts: [:rdvs])
+    @applicants = @department.applicants.includes(:rdvs, :invitations).preload(rdv_contexts: [:rdvs])
     @agents = @department.agents
     @invitations = @department.invitations
     @rdvs = @department.rdvs
-    @rdv_contexts = @department.rdv_contexts.includes(:rdvs, :invitations)
+    @rdv_contexts = @department.rdv_contexts.includes(:invitations).preload(:rdvs)
 
     @organisations = @department.organisations
     # We don't display all stats for Yonne
