@@ -123,19 +123,24 @@ export default function ApplicantsUpload({ organisation, configuration, departme
     return applicantsFromList.reverse();
   };
 
-  const checkFileFormat = (file, acceptedFormats) => {
-    if (!acceptedFormats.some((format) => file.name.endsWith(format))) {
-      Swal.fire({
-        title: `Le fichier doit être au format ${acceptedFormats.map((format) => ` ${format}`)}`,
-        icon: "error",
-      });
-      return { valid: false };
+  const isFormatValid = (file, acceptedFormats) => {
+    if (acceptedFormats.some((format) => file.name.endsWith(format))) {
+      return { valid: true };
     }
-    return { valid: true };
+    return { valid: false };
+  };
+
+  const displayFormatErrorMessage = (acceptedFormats) => {
+    Swal.fire({
+      title: `Le fichier doit être au format ${acceptedFormats.map((format) => ` ${format}`)}`,
+      icon: "error",
+    });
   };
 
   const handleApplicantsFile = async (file) => {
-    if (!checkFileFormat(file, [".csv", ".xls", ".xlsx", ".ods"]).valid) {
+    const acceptedFormats = [".csv", ".xls", ".xlsx", ".ods"];
+    if (!isFormatValid(file, acceptedFormats).valid) {
+      displayFormatErrorMessage(acceptedFormats);
       return;
     }
 
@@ -158,7 +163,9 @@ export default function ApplicantsUpload({ organisation, configuration, departme
   };
 
   const handleContactsFile = async (file) => {
-    if (!checkFileFormat(file, [".csv", ".txt"]).valid) {
+    const acceptedFormats = [".csv", ".txt"];
+    if (!isFormatValid(file, acceptedFormats).valid) {
+      displayFormatErrorMessage(acceptedFormats);
       return;
     }
 
