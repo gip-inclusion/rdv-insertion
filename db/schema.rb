@@ -129,7 +129,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_06_130132) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "sender_name"
-    t.string "sender_address", array: true
+    t.string "sender_address_lines", array: true
   end
 
   create_table "notifications", force: :cascade do |t|

@@ -9,7 +9,6 @@
 <div class="main-content">
   <p><%= applicant.title.capitalize %>,</p>
   <p>Vous êtes allocataire du Revenu de Solidarité Active (RSA) et devez bénéficier d’un accompagnement obligatoire dans le cadre de vos démarches d’insertion.</p>
-  <p>En fonction de votre situation et de vos besoins, vous avez été orienté(e) vers la structure la mieux adaptée pour vous accompagner: le XX. Vous devez prendre rendez-vous avec cette structure pour définir ensemble votre Contrat d’Engagement Réciproque (CER).</p>
   <p>Pour faciliter votre prise de rendez-vous, <%= sender_name %> a mis en place <span class="bold-blue">une plateforme vous permettant de prendre rendez-vous vous-même.</span></p>
   <p>Pour choisir un créneau à votre convenance, saisissez le code d’invitation ci-dessous <span class="bold-blue">sur <u><%= ENV['HOST'] %>/invitation</u></span>, puis suivez les instructions présentes à l'écran :</p>
   <div class="invitation-token">Mon code d'invitation<br/><%= invitation.token %></div>
