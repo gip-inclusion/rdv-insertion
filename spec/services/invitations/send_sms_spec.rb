@@ -101,16 +101,6 @@ describe Invitations::SendSms, type: :service do
     context "for rsa accompagnement" do
       let!(:rdv_context) { build(:rdv_context, context: "rsa_accompagnement") }
       let!(:configuration) { create(:configuration, context: "rsa_accompagnement") }
-      let!(:organisation) { create(:organisation, configurations: [configuration], department: department) }
-
-      let!(:invitation) do
-        create(
-          :invitation,
-          applicant: applicant, department: department, token: "123", help_phone_number: help_phone_number,
-          number_of_days_to_accept_invitation: 9, organisations: [organisation],
-          link: "https://www.rdv-solidarites.fr/lieux?invitation_token=123", format: "sms", rdv_context: rdv_context
-        )
-      end
       let!(:content) do
         "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous "\
           "d'accompagnement. Pour choisir la date et l'horaire de votre premier RDV, cliquez sur le lien suivant "\
@@ -132,16 +122,6 @@ describe Invitations::SendSms, type: :service do
     context "for rsa orientation on phone platform" do
       let!(:rdv_context) { build(:rdv_context, context: "rsa_orientation_on_phone_platform") }
       let!(:configuration) { create(:configuration, context: "rsa_orientation_on_phone_platform") }
-      let!(:organisation) { create(:organisation, configurations: [configuration], department: department) }
-
-      let!(:invitation) do
-        create(
-          :invitation,
-          applicant: applicant, department: department, token: "123", help_phone_number: help_phone_number,
-          number_of_days_to_accept_invitation: 9, organisations: [organisation],
-          link: "https://www.rdv-solidarites.fr/lieux?invitation_token=123", format: "sms", rdv_context: rdv_context
-        )
-      end
       let!(:content) do
         "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez contacter la plateforme départementale " \
           "afin de démarrer votre parcours d’accompagnement. Pour cela, merci d’appeler le " \
