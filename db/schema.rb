@@ -10,15 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_25_164025) do
-
+ActiveRecord::Schema[7.0].define(version: 2022_05_06_130132) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "agents", force: :cascade do |t|
     t.string "email"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["email"], name: "index_agents_on_email", unique: true
   end
 
@@ -33,8 +32,8 @@ ActiveRecord::Schema.define(version: 2022_04_25_164025) do
     t.bigint "rdv_solidarites_user_id"
     t.string "affiliation_number"
     t.integer "role"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "department_internal_id"
     t.string "first_name"
     t.string "last_name"
@@ -71,8 +70,8 @@ ActiveRecord::Schema.define(version: 2022_04_25_164025) do
 
   create_table "configurations", force: :cascade do |t|
     t.string "sheet_name"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.json "column_names"
     t.string "invitation_formats", default: ["sms", "email", "postal"], null: false, array: true
     t.boolean "notify_applicant", default: false
@@ -91,8 +90,8 @@ ActiveRecord::Schema.define(version: 2022_04_25_164025) do
     t.string "name"
     t.string "number"
     t.string "capital"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "region"
     t.string "pronoun"
     t.string "email"
@@ -103,10 +102,10 @@ ActiveRecord::Schema.define(version: 2022_04_25_164025) do
     t.integer "format"
     t.string "link"
     t.string "token"
-    t.datetime "sent_at"
+    t.datetime "sent_at", precision: nil
     t.bigint "applicant_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.boolean "clicked", default: false
     t.string "help_phone_number"
     t.bigint "department_id"
@@ -127,16 +126,18 @@ ActiveRecord::Schema.define(version: 2022_04_25_164025) do
   create_table "letter_configurations", force: :cascade do |t|
     t.string "direction_names", array: true
     t.string "sender_city"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "sender_name"
+    t.string "sender_address_lines", array: true
   end
 
   create_table "notifications", force: :cascade do |t|
     t.bigint "applicant_id", null: false
     t.integer "event"
-    t.datetime "sent_at"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "sent_at", precision: nil
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.bigint "rdv_solidarites_rdv_id"
     t.index ["applicant_id"], name: "index_notifications_on_applicant_id"
   end
@@ -146,8 +147,8 @@ ActiveRecord::Schema.define(version: 2022_04_25_164025) do
     t.string "phone_number"
     t.string "email"
     t.bigint "rdv_solidarites_organisation_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.bigint "department_id"
     t.bigint "responsible_id"
     t.bigint "letter_configuration_id"
@@ -167,8 +168,8 @@ ActiveRecord::Schema.define(version: 2022_04_25_164025) do
     t.integer "context"
     t.integer "status"
     t.bigint "applicant_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["applicant_id"], name: "index_rdv_contexts_on_applicant_id"
     t.index ["context"], name: "index_rdv_contexts_on_context"
     t.index ["status"], name: "index_rdv_contexts_on_status"
@@ -182,9 +183,9 @@ ActiveRecord::Schema.define(version: 2022_04_25_164025) do
 
   create_table "rdvs", force: :cascade do |t|
     t.bigint "rdv_solidarites_rdv_id"
-    t.datetime "starts_at"
+    t.datetime "starts_at", precision: nil
     t.integer "duration_in_min"
-    t.datetime "cancelled_at"
+    t.datetime "cancelled_at", precision: nil
     t.bigint "rdv_solidarites_motif_id"
     t.bigint "rdv_solidarites_lieu_id"
     t.string "uuid"
@@ -192,8 +193,8 @@ ActiveRecord::Schema.define(version: 2022_04_25_164025) do
     t.integer "created_by"
     t.integer "status"
     t.text "context"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.bigint "organisation_id"
     t.index ["created_by"], name: "index_rdvs_on_created_by"
     t.index ["organisation_id"], name: "index_rdvs_on_organisation_id"
@@ -204,16 +205,16 @@ ActiveRecord::Schema.define(version: 2022_04_25_164025) do
   create_table "responsibles", force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "role"
   end
 
   create_table "webhook_endpoints", force: :cascade do |t|
     t.string "url"
     t.string "secret"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   add_foreign_key "applicants", "departments"
