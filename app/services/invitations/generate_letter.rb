@@ -22,6 +22,7 @@ module Invitations
           department: @invitation.department,
           applicant: applicant,
           organisation: @invitation.organisations.last,
+          sender_name: sender_name,
           letter_configuration: letter_configuration
         }
       )
@@ -58,6 +59,10 @@ module Invitations
 
     def applicant
       @invitation.applicant
+    end
+
+    def sender_name
+      letter_configuration.sender_name || "le Conseil départemental"
     end
   end
 end
