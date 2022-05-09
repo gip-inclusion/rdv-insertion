@@ -2,15 +2,15 @@
   <ul class="nav nav-tabs">
     <% @all_configurations.each do |configuration| %>
       <li class="nav-item">
-        <%= link_to configuration.context_name, compute_index_path(@organisation, @department, context: configuration.context), class:  "nav-link #{!@not_invited_list && configuration.id == @current_configuration.id ? 'active' : ''}"%>
+        <%= link_to configuration.context_name, compute_index_path(@organisation, @department, context: configuration.context), class:  "nav-link #{!@without_context_list && configuration.id == @current_configuration.id ? 'active' : ''}"%>
       </li>
     <% end %>
     <li class="nav-item">
-      <%= link_to "Non invités", compute_index_path(@organisation, @department, not_invited: true), class: "nav-link #{@not_invited_list ? 'active' : ''}" %>
+      <%= link_to "Autres", compute_index_path(@organisation, @department, without_context: true), class: "nav-link #{@without_context_list ? 'active' : ''}" %>
     </li>
   </ul>
   <div class="col-12 text-center">
-    <% if no_search_results?(@applicants) %>
+    <% if no_search_results?(@applicants.to_a) %>
       <h4 class="py-4">Aucun allocataire ne correspond à votre recherche</h4>
     <% else %>
       <table class="table table-hover table-responsive">
@@ -19,17 +19,13 @@
           <th scope="col">Prénom</th>
           <th scope="col" class="d-none d-lg-table-cell">Email</th>
           <th scope="col" class="d-none d-lg-table-cell">Téléphone</th>
-          <% unless @not_invited_list %>
-            <% if show_sms_invitation?(@current_configuration) %>
-              <th scope="col">Dernière invitation SMS</th>
+          <th scope="col" class="d-none d-lg-table-cell">Adresse</th>
+          <% unless @without_context_list %>
+            <% if show_invitations?(@current_configuration) %>
+              <th scope="col">Première invitation</th>
+              <th scope="col">Dernière invitation</th>
             <% end %>
-            <% if show_email_invitation?(@current_configuration) %>
-              <th scope="col">Dernière invitation email</th>
-            <% end %>
-            <% if show_postal_invitation?(@current_configuration) %>
-              <th scope="col">Dernière invitation courrier</th>
-            <% end %>
-            <% if show_notification?(@current_configuration)%>
+            <% if show_notification?(@current_configuration) %>
               <th scope="col">Dernière Notification envoyée le</th>
             <% end %>
             <th scope="col">Statut</th>
@@ -42,17 +38,31 @@
             <tr class="<%= "table-danger" if applicant.is_archived? %>">
               <td><%= display_attribute applicant.last_name %></td>
               <td><%= display_attribute applicant.first_name %></td>
-              <td class="d-none d-lg-table-cell"><%= display_attribute applicant.email %></td>
-              <td class="d-none d-lg-table-cell"><%= display_attribute applicant.phone_number %></td>
-              <% unless @not_invited_list %>
-                <% if show_sms_invitation?(@current_configuration) %>
-                  <td><%= display_attribute format_date(rdv_context.last_sms_invitation_sent_at) %></td>
+              <td class="d-none d-lg-table-cell">
+                <% if applicant.email.present? %>
+                  <i class="fas fa-check icon-blue" />
+                <% else %>
+                  <i class="fas fa-times icon-blue" />
                 <% end %>
-                <% if show_email_invitation?(@current_configuration) %>
-                  <td><%= display_attribute format_date(rdv_context.last_email_invitation_sent_at) %></td>
+              </td>
+              <td class="d-none d-lg-table-cell">
+                <% if applicant.phone_number.present? %>
+                  <i class="fas fa-check icon-blue" />
+                <% else %>
+                  <i class="fas fa-times icon-blue" />
                 <% end %>
-                <% if show_postal_invitation?(@current_configuration) %>
-                  <td><%= display_attribute format_date(rdv_context.last_postal_invitation_sent_at) %></td>
+              </td>
+              <td class="d-none d-lg-table-cell">
+                <% if applicant.address.present? %>
+                  <i class="fas fa-check icon-blue" />
+                <% else %>
+                  <i class="fas fa-times icon-blue" />
+                <% end %>
+              </td>
+              <% unless @without_context_list %>
+                <% if show_invitations?(@current_configuration) %>
+                  <td><%= display_attribute format_date(rdv_context.first_invitation_sent_at) %></td>
+                  <td><%= rdv_context.invitations.length > 1 ? display_attribute(format_date(rdv_context.last_invitation_sent_at)) : "-" %></td>
                 <% end %>
                 <% if show_notification?(@current_configuration) %>
                   <td><%= display_attribute format_date(applicant.last_notification_sent_at) %></td>
