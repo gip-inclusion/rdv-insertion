@@ -78,6 +78,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_06_130132) do
     t.integer "context", default: 0
     t.integer "number_of_days_to_accept_invitation", default: 3
     t.integer "number_of_days_before_action_required", default: 3
+    t.string "sms_sender_name", limit: 11
   end
 
   create_table "configurations_organisations", id: false, force: :cascade do |t|
