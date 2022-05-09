@@ -19,12 +19,16 @@ module ApplicantsHelper
     configuration.notify_applicant?
   end
 
+  def show_invitations?(configuration)
+    configuration.invitation_formats.present?
+  end
+
   def display_attribute(attribute)
     attribute.presence || " - "
   end
 
   def no_search_results?(applicants)
-    applicants.to_a.empty? && params[:search_query].present?
+    applicants.empty? && params[:search_query].present?
   end
 
   def display_back_to_list_button?
