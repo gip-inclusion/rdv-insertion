@@ -82,8 +82,7 @@ export default function ApplicantsUpload({ organisation, configuration, departme
                   row[parameterizedColumnNames.street_number],
                 // sometimes street type is separated from address
                 streetType:
-                  parameterizedColumnNames.street_type &&
-                  row[parameterizedColumnNames.street_type],
+                  parameterizedColumnNames.street_type && row[parameterizedColumnNames.street_type],
                 // fullAddress is address with postal code and city
                 fullAddress:
                   parameterizedColumnNames.full_address &&
@@ -124,9 +123,23 @@ export default function ApplicantsUpload({ organisation, configuration, departme
     return applicantsFromList.reverse();
   };
 
-  const handleApplicantsFile = async (file) => {
-    setFileSize(file.size);
+  const checkFileFormat = (file, acceptedFormats) => {
+    if (!acceptedFormats.some((format) => file.name.endsWith(format))) {
+      Swal.fire({
+        title: `Le fichier doit être au format ${acceptedFormats.map((format) => ` ${format}`)}`,
+        icon: "error",
+      });
+      return false;
+    }
+    return true;
+  };
 
+  const handleApplicantsFile = async (file) => {
+    if (checkFileFormat(file, [".csv", ".xls", ".xlsx", ".ods"]) === false) {
+      return;
+    }
+
+    setFileSize(file.size);
     dispatchApplicants({ type: "reset" });
     const applicantsFromList = await retrieveApplicantsFromList(file);
     if (applicantsFromList.length === 0) return;
@@ -145,11 +158,7 @@ export default function ApplicantsUpload({ organisation, configuration, departme
   };
 
   const handleContactsFile = async (file) => {
-    if (!(file.name.endsWith(".csv") || file.name.endsWith(".txt"))) {
-      Swal.fire({
-        title: "Le fichier doit être au format .txt ou .csv",
-        icon: "error",
-      });
+    if (checkFileFormat(file, [".csv", ".txt"]) === false) {
       return;
     }
 
@@ -196,15 +205,9 @@ export default function ApplicantsUpload({ organisation, configuration, departme
           <FileHandler
             handleFile={handleApplicantsFile}
             fileSize={fileSize}
-            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+            accept="text/plain, .csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, application/vnd.oasis.opendocument.spreadsheet"
             multiple={false}
-            uploadMessage={
-              <span>
-                Choisissez un fichier de nouveaux demandeurs
-                <br />
-                (.xls, xlsx)
-              </span>
-            }
+            uploadMessage={<span>Choisissez un fichier de nouveaux demandeurs</span>}
             pendingMessage="Récupération des informations, merci de patienter"
           />
         </div>
