@@ -125,9 +125,9 @@ export default function ApplicantsUpload({ organisation, configuration, departme
 
   const isFormatValid = (file, acceptedFormats) => {
     if (acceptedFormats.some((format) => file.name.endsWith(format))) {
-      return { valid: true };
+      return true;
     }
-    return { valid: false };
+    return false;
   };
 
   const displayFormatErrorMessage = (acceptedFormats) => {
@@ -139,7 +139,7 @@ export default function ApplicantsUpload({ organisation, configuration, departme
 
   const handleApplicantsFile = async (file) => {
     const acceptedFormats = [".csv", ".xls", ".xlsx", ".ods"];
-    if (!isFormatValid(file, acceptedFormats).valid) {
+    if (!isFormatValid(file, acceptedFormats)) {
       displayFormatErrorMessage(acceptedFormats);
       return;
     }
@@ -164,7 +164,7 @@ export default function ApplicantsUpload({ organisation, configuration, departme
 
   const handleContactsFile = async (file) => {
     const acceptedFormats = [".csv", ".txt"];
-    if (!isFormatValid(file, acceptedFormats).valid) {
+    if (!isFormatValid(file, acceptedFormats)) {
       displayFormatErrorMessage(acceptedFormats);
       return;
     }
