@@ -32,7 +32,7 @@ class Stat
   end
 
   # For the % of no show, the average rdv delay and the rate of applicants oriented in less than 30 days
-  # we only consider the rdvs in the "rs_orientation" contexts, because the other rdvs are note always
+  # we only consider the rdvs in the "rsa_orientation" contexts, because the other rdvs are not always
   # correctly informed by the organisations/ or are taken in the past (which mess up with the delays)
   def orientation_rdvs
     @orientation_rdvs ||= relevant_rdvs.joins(:rdv_contexts)
