@@ -31,8 +31,9 @@ Rails.application.routes.draw do
     end
   end
 
-  get "stats/deployment_map", to: "stats#deployment_map", as: :deployment_map
-  resources :stats, only: [:index, :show]
+  resources :stats, only: [:index, :show] do
+    get :deployment_map, on: :collection
+  end
 
   get "invitation", to: "invitations#invitation_code", as: :invitation_landing
   resources :invitations, only: [] do
