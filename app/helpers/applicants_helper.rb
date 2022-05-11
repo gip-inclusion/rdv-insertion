@@ -19,6 +19,10 @@ module ApplicantsHelper
     configuration.notify_applicant?
   end
 
+  def show_invitations?(configuration)
+    configuration.invitation_formats.present?
+  end
+
   def display_attribute(attribute)
     attribute.presence || " - "
   end
