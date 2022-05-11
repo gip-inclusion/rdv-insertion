@@ -46,6 +46,7 @@ class Stat
   def relevant_rdv_contexts
     @relevant_rdv_contexts ||= rdv_contexts.where(applicant_id: relevant_applicants.pluck(:id))
                                            .joins(:rdvs).where.not(rdvs: { id: nil })
+                                           .distinct
   end
 
   def sent_invitations
