@@ -1,6 +1,6 @@
 class ApplicantPolicy < ApplicationPolicy
   def new?
-    (pundit_user.organisation_ids & record.organisation_ids).any?
+    pundit_user.department_ids.include?(record.department_id)
   end
 
   def create?
@@ -8,7 +8,7 @@ class ApplicantPolicy < ApplicationPolicy
   end
 
   def show?
-    new? && !record.deleted?
+    (pundit_user.organisation_ids & record.organisation_ids).any? && !record.deleted?
   end
 
   def search?

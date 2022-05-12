@@ -10,7 +10,7 @@ class RdvContext < ApplicationRecord
   validates :context, uniqueness: { scope: :applicant_id }
 
   STATUSES_WITH_ACTION_REQUIRED = %w[
-    rdv_needs_status_update rdv_noshow rdv_revoked rdv_excused multiple_rdvs_cancelled
+    not_invited rdv_needs_status_update rdv_noshow rdv_revoked rdv_excused multiple_rdvs_cancelled
   ].freeze
   STATUSES_WITH_ATTENTION_NEEDED = %w[invitation_pending].freeze
 

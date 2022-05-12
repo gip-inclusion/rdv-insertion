@@ -82,8 +82,7 @@ export default function ApplicantsUpload({ organisation, configuration, departme
                   row[parameterizedColumnNames.street_number],
                 // sometimes street type is separated from address
                 streetType:
-                  parameterizedColumnNames.street_type &&
-                  row[parameterizedColumnNames.street_type],
+                  parameterizedColumnNames.street_type && row[parameterizedColumnNames.street_type],
                 // fullAddress is address with postal code and city
                 fullAddress:
                   parameterizedColumnNames.full_address &&

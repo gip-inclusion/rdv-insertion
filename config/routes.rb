@@ -39,13 +39,15 @@ Rails.application.routes.draw do
   end
 
   resources :applicants, only: [] do
+    resources :rdv_contexts, only: [:new, :create]
     post :search, on: :collection
   end
 
   resources :departments, only: [] do
-    resources :applicants, only: [:index, :show, :edit, :update] do
+    resources :applicants, only: [:index, :new, :create, :show, :edit, :update] do
       collection { resources :uploads, only: [:new] }
       resources :invitations, only: [:create]
+      resources :applicants_organisations, only: [:new, :create]
     end
   end
 
