@@ -17,7 +17,6 @@ describe Stat do
     create(:rdv_context, context: "rsa_orientation_on_phone_platform", created_at: DateTime.new(2022, 5, 7, 10, 0))
   end
   let!(:rdv_context_accompagnement) { create(:rdv_context, context: "rsa_accompagnement") }
-  let!(:empty_rdv_context) { create(:rdv_context, context: "rsa_accompagnement") }
 
   let!(:invitation) do
     create(:invitation, sent_at: DateTime.new(2022, 4, 4, 10, 0), rdv_context: rdv_context_orientation)
@@ -59,7 +58,7 @@ describe Stat do
   let!(:relevant_orientation_platform_applicant) do
     create(:applicant, organisations: [relevant_organisation, irrelevant_organisation],
                        rdvs: [orientation_rdv2],
-                       rdv_contexts: [rdv_context_orientation_platform, empty_rdv_context],
+                       rdv_contexts: [rdv_context_orientation_platform],
                        rights_opening_date: 35.days.ago)
   end
   let!(:irrelevant_applicant) do
@@ -158,7 +157,24 @@ describe Stat do
     end
   end
 
-  describe "#relevent_rdv_contexts" do
+  describe "#relevant_rdv_contexts" do
+    let!(:rdv_context_with_no_rdv) { create(:rdv_context, context: "rsa_accompagnement") }
+    let!(:invitation3) do
+      create(:invitation, sent_at: DateTime.new(2022, 5, 7, 10, 0), rdv_context: rdv_context_with_no_rdv)
+    end
+    let!(:relevant_applicant2) do
+      create(:applicant, organisations: [relevant_organisation],
+                         invitations: [invitation3],
+                         rdv_contexts: [rdv_context_with_no_rdv])
+    end
+    let!(:rdv_context_with_no_invitation) { create(:rdv_context, context: "rsa_accompagnement") }
+    let!(:accompagnement_rdv) { create(:rdv, rdv_contexts: [rdv_context_with_no_invitation]) }
+    let!(:relevant_applicant3) do
+      create(:applicant, organisations: [relevant_organisation],
+                         rdvs: [accompagnement_rdv],
+                         rdv_contexts: [rdv_context_with_no_invitation])
+    end
+
     context "when a rdv_context belongs to a relevant applicant and has at least one rdv" do
       it "is not filtered" do
         expect(subject.relevant_rdv_contexts).to include(rdv_context_orientation)
@@ -172,10 +188,15 @@ describe Stat do
       end
     end
 
-    context "when a rdv_context has no rdv" do
+    context "when a rdv_context has an invitation but no rdv" do
       it "is filtered" do
-        expect(subject.relevant_rdv_contexts).not_to include(rdv_context_accompagnement)
-        expect(subject.relevant_rdv_contexts).not_to include(empty_rdv_context)
+        expect(subject.relevant_rdv_contexts).not_to include(rdv_context_with_no_rdv)
+      end
+    end
+
+    context "when a rdv_context has a rdv but no invitation" do
+      it "is filtered" do
+        expect(subject.relevant_rdv_contexts).not_to include(rdv_context_with_no_invitation)
       end
     end
   end
