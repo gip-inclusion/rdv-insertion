@@ -1,0 +1,17 @@
+<%= render "common/remote_modal", title: "Sélectionnez un contexte d'invitation" do %>
+  <%= simple_form_for(@rdv_context, url: applicant_rdv_contexts_path(@applicant), html: { method: :post }) do |f| %>
+      <div class="form-group">
+        <%= f.input :context,
+                    as: :select,
+                    collection: @contexts.map { |c| [Configuration::CONTEXT_NAMES_MAPPING[c], c] },
+                    include_blank: false,
+                    input_html: { class: "form-control" }
+        %>
+      </div>
+      <div class="form-group text-center">
+        <%= f.button :submit, "OK", class: "btn btn-blue" %>
+      </div>
+    </div>
+  <% end %>
+<% end %>
+

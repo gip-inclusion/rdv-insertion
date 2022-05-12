@@ -26,8 +26,6 @@ const componentRequireContext = require.context("react", true);
 const ReactRailsUJS = require("react_ujs");
 ReactRailsUJS.useContext(componentRequireContext);
 
-import "@hotwired/turbo-rails";
-
 window.Stimulus = Application.start()
 const context = require.context("../controllers", true, /\.js$/)
 Stimulus.load(definitionsFromContext(context))

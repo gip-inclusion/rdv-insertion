@@ -107,16 +107,14 @@ export default function InvitationBlock({
           </tr>
         </thead>
         <tbody>
-          {[...Array(numberOfInvitationsDatesRowsNeeded).keys()].map((idx) => {
-            return (
-              <InvitationsDatesRow
-                invitationsDatesByFormat={invitationsDatesByFormat}
-                invitationFormats={invitationFormats}
-                index={idx}
-                key={`${context}${idx}`}
-              />
-            );
-          })}
+          {[...Array(numberOfInvitationsDatesRowsNeeded).keys()].map((idx) => (
+            <InvitationsDatesRow
+              invitationsDatesByFormat={invitationsDatesByFormat}
+              invitationFormats={invitationFormats}
+              index={idx}
+              key={`${context}${idx}`}
+            />
+          ))}
           <tr>
             {showInvitation("sms") && (
               <td className="px-4 py-3">
