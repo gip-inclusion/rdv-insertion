@@ -3,7 +3,6 @@ import Applicant from "./Applicant";
 
 export default function ApplicantList({
   applicants,
-  dispatchApplicants,
   isDepartmentLevel,
   downloadInProgress,
   setDownloadInProgress,
@@ -11,7 +10,6 @@ export default function ApplicantList({
   return applicants.map(({ applicant }, i) => (
     <Applicant
       applicant={applicant}
-      dispatchApplicants={dispatchApplicants}
       isDepartmentLevel={isDepartmentLevel}
       downloadInProgress={downloadInProgress}
       setDownloadInProgress={setDownloadInProgress}

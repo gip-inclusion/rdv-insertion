@@ -1,5 +1,6 @@
 import formatPhoneNumber from "../../lib/formatPhoneNumber";
 import retrieveLastInvitationDate from "../../lib/retrieveLastInvitationDate";
+import { getFrenchFormatDateString } from "../../lib/datesHelper";
 
 const ROLES = {
   allocataire: "demandeur",
@@ -144,6 +145,9 @@ export default class Applicant {
       this.email = upToDateApplicant.email;
       this.phoneNumber = formatPhoneNumber(upToDateApplicant.phone_number);
       this.fullAddress = upToDateApplicant.address;
+      if (upToDateApplicant.rights_opening_date) {
+        this.rightsOpeningDate = getFrenchFormatDateString(upToDateApplicant.rights_opening_date);
+      }
     }
     this.lastSmsInvitationSentAt = retrieveLastInvitationDate(
       upToDateApplicant.invitations,

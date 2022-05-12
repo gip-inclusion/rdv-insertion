@@ -73,7 +73,7 @@ class ApplicantsController < ApplicationController
   def formatted_params
     # we nullify some blank params for unicity exceptions (ActiveRecord::RecordNotUnique) not to raise
     applicant_params.to_h do |k, v|
-      [k, k.in?([:affiliation_number, :department_internal_id]) ? v.presence : v]
+      [k, k.in?([:affiliation_number, :department_internal_id, :email]) ? v.presence : v]
     end
   end
 
