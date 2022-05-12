@@ -1,0 +1,26 @@
+<div class="text-center mt-4">
+  <h1>Statistiques</h1>
+</div>
+<div class="d-flex justify-content-center mt-4">
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <%= link_to "Utilisation", stats_path, class: "nav-link #{!@deployment_map ? 'active' : ''}" %>
+    </li>
+    <li class="nav-item">
+      <%= link_to "Déploiement", deployment_map_stats_path, class: "nav-link #{@deployment_map ? 'active' : ''}" %>
+    </li>
+  </ul>
+</div>
+<% unless @deployment_map %>
+  <div class="d-flex justify-content-center mt-5">
+    <div>
+      <%=
+        select(
+          "department", "id", options_for_department_select,
+          { },
+          class: "text-center form-select js-department-selector"
+        )
+      %>
+    </div>
+  </div>
+<% end %>

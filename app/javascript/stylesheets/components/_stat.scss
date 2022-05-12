@@ -1,3 +1,9 @@
 .highlight-stat {
-  font-size: 3rem;
+  &.big {
+    font-size: 3rem;
+    margin-bottom: 0rem;
+  }
+  &.margin-left {
+    margin-left: 20px;
+  }
 }
