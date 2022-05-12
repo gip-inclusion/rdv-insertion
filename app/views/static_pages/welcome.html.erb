@@ -47,29 +47,22 @@
   <div class="my-4">
     <div class="row d-flex justify-content-center">
       <div class="text-center col-10 col-md-5">
-        <p class="highlight-stat big"><%= @stats.rdvs.to_a.count %></p>
-        <p class="highlight-stat">rendez-vous organisés<br/>via RDV-Insertion</p>
+        <p class="highlight-stat"><%= @stats.rdvs.count %></p>
+        <p>rendez-vous organisés<br/>via RDV-Insertion</p>
       </div>
       <div class="text-center col-10 col-md-5">
-        <p class="highlight-stat big"><%= @stats.average_time_between_invitation_and_rdv_in_days.round %> jours</p>
-        <p class="highlight-stat">délai moyen entre l'invitation<br/>et la prise de rendez-vous</p>
+        <p class="highlight-stat"><%= @stats.average_rdv_delay_in_days.round %> jours</p>
+        <p>délai moyen entre la prise<br/>d'un rendez-vous et sa tenue</p>
       </div>
     </div>
     <div class="row d-flex justify-content-center">
       <div class="text-center col-10 col-md-5">
-        <p class="highlight-stat big"><%= @stats.percentage_of_no_show.round %> %</p>
-        <p class="highlight-stat">seulement de rendez-vous<br/>non honorés avec RDV-Insertion</p>
+        <p class="highlight-stat"><%= @stats.percentage_of_no_show.round %> %</p>
+        <p>seulement de rendez-vous<br/>non honorés avec RDV-Insertion</p>
       </div>
       <div class="text-center col-10 col-md-5">
-        <p class="highlight-stat big"><%= @stats.percentage_of_applicants_oriented_in_less_than_30_days.round %> %</p>
-        <p class="highlight-stat">de bénéficiaires du RSA <br/><strong>orientés en - de 30 jours</strong></p>
-      </div>
-    </div>
-    <div class="row d-flex justify-content-center">
-      <div class="col-8 col-md-4 col-lg-3 text-center mt-4">
-        <%= link_to stats_path do %>
-          <button class="btn btn-default btn-blue w-100 ">Voir plus de statistiques</button>
-        <% end %>
+        <p class="highlight-stat"><%= @stats.percentage_of_applicants_oriented_in_time.round %> %</p>
+        <p>de bénéficiaires du RSA <br/><strong>orientés en - de 30 jours</strong></p>
       </div>
     </div>
   </div>
@@ -80,7 +73,7 @@
     <p class="col-10 text-left">Nous sommes à votre écoute pour adapter notre service à vos besoins et vous aider à le déployer pour votre territoire.</p>
     <div class="col-8 col-md-4 col-lg-3 text-center mt-4">
       <%= link_to "https://calendly.com/claire-casubolo/reunion-avec-cd", target: "_blank" do %>
-        <button class="btn btn-default btn-blue-out w-100 ">Demander une démo</button>
+        <button class="btn btn-default btn-blue w-100 ">Demander une démo</button>
       <% end %>
     </div>
   </div>

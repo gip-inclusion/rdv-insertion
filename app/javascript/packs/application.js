@@ -14,7 +14,6 @@ import "bootstrap";
 import "stylesheets/application";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
-import "chartkick/chart.js"
 
 require("@rails/ujs").start();
 require("turbolinks").start();

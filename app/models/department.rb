@@ -7,7 +7,6 @@ class Department < ApplicationRecord
 
   has_many :agents, through: :organisations
   has_many :rdvs, through: :organisations
-  has_many :rdv_contexts, through: :applicants
 
   def name_with_region
     "#{name}, #{region}"
