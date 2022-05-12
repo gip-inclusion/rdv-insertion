@@ -42,16 +42,8 @@ class Applicant < ApplicationRecord
     where.not(id: joins(:rdv_contexts).where(rdv_contexts: { context: contexts }).ids)
   }
 
-  def orientation_path_starting_date
-    rights_opening_date || (created_at - 3.days)
-  end
-
-  def orientations_rdvs
-    rdv_contexts.select(&:context_orientation?).flat_map(&:rdvs)
-  end
-
   def orientation_date
-    @orientation_date ||= orientations_rdvs.to_a.select(&:seen?).min_by(&:starts_at)&.starts_at
+    rdvs.find(&:seen?)&.starts_at
   end
 
   def oriented?
@@ -61,7 +53,8 @@ class Applicant < ApplicationRecord
   def orientation_delay_in_days
     return unless oriented?
 
-    orientation_date.to_datetime.mjd - orientation_path_starting_date.to_datetime.mjd
+    starting_date = rights_opening_date || (created_at - 3.days)
+    orientation_date.to_datetime.mjd - starting_date.to_datetime.mjd
   end
 
   def full_name
