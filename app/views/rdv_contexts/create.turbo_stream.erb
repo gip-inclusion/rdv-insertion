@@ -1,0 +1,3 @@
+<%= turbo_stream.prepend "flash_message" do %>
+  <%= render partial: "common/flash", locals: { flash: { success: "L'allocataire a bien été ajouté au nouveau contexte" }  } %>
+<% end %>

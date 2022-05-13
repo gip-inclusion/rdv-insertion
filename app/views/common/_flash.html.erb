@@ -1,4 +1,4 @@
-<%  [:success, :notice, :error, :alert].each do |type| %>
+<% [:success, :notice, :error, :alert].each do |type| %>
   <% if flash[type] %>
     <div class="row text-center">
       <div class="alert <%= alert_class_for(type) %> alert-dismissible fade show" role="alert">
@@ -8,3 +8,4 @@
     </div>
   <% end %>
 <% end %>
+

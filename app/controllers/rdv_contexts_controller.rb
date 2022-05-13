@@ -1,6 +1,7 @@
 class RdvContextsController < ApplicationController
   before_action :set_contexts, only: [:new]
   before_action :set_applicant, only: [:new, :create]
+  before_action :set_rdv_context, only: [:create]
 
   def new
     @rdv_context = RdvContext.new(applicant: @applicant)
@@ -8,13 +9,11 @@ class RdvContextsController < ApplicationController
   end
 
   def create
-    @rdv_context = RdvContext.find_or_initialize_by(
-      applicant: @applicant,
-      context: rdv_context_params[:context]
-    )
     if @rdv_context.save
-      flash[:success] = "L'allocataire a bien été ajouté au nouveau contexte"
-      redirect_to department_applicant_path(@applicant.department, @applicant)
+      respond_to do |format|
+        format.turbo_stream
+        format.html { redirect_to department_applicant_path(@applicant.department, @applicant) }
+      end
     else
       flash.now[:error] = @rdv_context.errors.full_message.to_sentence
       render :new, status: :unprocessable_entity
@@ -25,6 +24,13 @@ class RdvContextsController < ApplicationController
 
   def rdv_context_params
     params.require(:rdv_context).permit(:context)
+  end
+
+  def set_rdv_context
+    @rdv_context = RdvContext.find_or_initialize_by(
+      applicant: @applicant,
+      context: rdv_context_params[:context]
+    )
   end
 
   def set_contexts

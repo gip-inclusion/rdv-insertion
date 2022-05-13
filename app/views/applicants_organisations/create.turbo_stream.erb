@@ -1,0 +1,14 @@
+<%= turbo_stream.replace "organisations_list" do %>
+  <%= render partial: "applicants/organisations_list", locals: { organisations: @applicant.organisations } %>
+<% end %>
+<%= turbo_stream.replace "add_to_org_button" do %>
+  <%= render partial: "applicants/add_to_org_button", locals: { applicant: @applicant, department: @department, can_be_added_to_other_org: (@department.organisations - @applicant.organisations).any? } %>
+<% end %>
+<%= turbo_stream.prepend "flash_message" do %>
+  <%= render partial: "common/flash", locals: { flash: { success: "L'allocataire a bien été ajouté à l'organisation" }  } %>
+<% end %>
+<% if @assign_rdv_context %>
+  <%= turbo_stream.replace "remote_modal" do %>
+    <%= render partial: "rdv_contexts/form", locals: { applicant: @applicant, contexts: @organisation.configurations.map(&:context), rdv_context: RdvContext.new } %>
+  <% end %>
+<% end %>

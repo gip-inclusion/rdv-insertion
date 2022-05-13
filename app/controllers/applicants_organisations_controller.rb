@@ -8,7 +8,10 @@ class ApplicantsOrganisationsController < ApplicationController
     @applicant.assign_attributes(organisations: applicants_organisations)
 
     if save_applicant.success?
-      after_succes_redirect
+      respond_to do |format|
+        format.turbo_stream
+        format.html { redirect_to department_applicant_path(@department, @applicant) }
+      end
     else
       flash.now[:error] = save_applicant.errors&.join(',')
       render :new, status: :unprocessable_entity
