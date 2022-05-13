@@ -232,7 +232,9 @@ describe ApplicantsController, type: :controller do
 
   describe "#show" do
     let!(:applicant) do
-      create(:applicant, first_name: "Andreas", last_name: "Kopke", organisations: [organisation], department: department)
+      create(
+        :applicant, first_name: "Andreas", last_name: "Kopke", organisations: [organisation], department: department
+      )
     end
     let!(:show_params) { { id: applicant.id, organisation_id: organisation.id } }
 
