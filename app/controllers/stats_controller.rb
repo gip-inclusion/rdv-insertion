@@ -15,8 +15,7 @@ class StatsController < ApplicationController
     @agents = @department.agents
     @invitations = @department.invitations
     @rdvs = @department.rdvs
-    @rdv_contexts = @department.rdv_contexts.includes(:invitations).preload(:rdvs)
-
+    @rdv_contexts = @department.rdv_contexts.preload(:rdvs, :invitations)
     @organisations = @department.organisations
     # We don't display all stats for Yonne
     @display_all_stats = @department.configurations.none?(&:notify_applicant?)
