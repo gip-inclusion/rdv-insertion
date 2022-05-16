@@ -123,9 +123,28 @@ export default function ApplicantsUpload({ organisation, configuration, departme
     return applicantsFromList.reverse();
   };
 
-  const handleApplicantsFile = async (file) => {
-    setFileSize(file.size);
+  const isFormatValid = (file, acceptedFormats) => {
+    if (acceptedFormats.some((format) => file.name.endsWith(format))) {
+      return true;
+    }
+    return false;
+  };
 
+  const displayFormatErrorMessage = (acceptedFormats) => {
+    Swal.fire({
+      title: `Le fichier doit être au format ${acceptedFormats.map((format) => ` ${format}`)}`,
+      icon: "error",
+    });
+  };
+
+  const handleApplicantsFile = async (file) => {
+    const acceptedFormats = [".csv", ".xls", ".xlsx", ".ods"];
+    if (!isFormatValid(file, acceptedFormats)) {
+      displayFormatErrorMessage(acceptedFormats);
+      return;
+    }
+
+    setFileSize(file.size);
     dispatchApplicants({ type: "reset" });
     const applicantsFromList = await retrieveApplicantsFromList(file);
     if (applicantsFromList.length === 0) return;
@@ -144,11 +163,9 @@ export default function ApplicantsUpload({ organisation, configuration, departme
   };
 
   const handleContactsFile = async (file) => {
-    if (!(file.name.endsWith(".csv") || file.name.endsWith(".txt"))) {
-      Swal.fire({
-        title: "Le fichier doit être au format .txt ou .csv",
-        icon: "error",
-      });
+    const acceptedFormats = [".csv", ".txt"];
+    if (!isFormatValid(file, acceptedFormats)) {
+      displayFormatErrorMessage(acceptedFormats);
       return;
     }
 
@@ -195,15 +212,9 @@ export default function ApplicantsUpload({ organisation, configuration, departme
           <FileHandler
             handleFile={handleApplicantsFile}
             fileSize={fileSize}
-            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+            accept="text/plain, .csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, application/vnd.oasis.opendocument.spreadsheet"
             multiple={false}
-            uploadMessage={
-              <span>
-                Choisissez un fichier de nouveaux demandeurs
-                <br />
-                (.xls, xlsx)
-              </span>
-            }
+            uploadMessage={<span>Choisissez un fichier de nouveaux demandeurs</span>}
             pendingMessage="Récupération des informations, merci de patienter"
           />
         </div>

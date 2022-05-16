@@ -26,8 +26,9 @@ describe SendRdvSolidaritesWebhookJob, type: :job do
     let!(:now) { Date.new(2022, 7, 22) }
     let!(:exp) { (now + 10.minutes).to_i }
     let!(:jwt_payload) do
-      { id: 12, address: "20 avenue de Ségur 75015 Paris", starts_at: "20-12-2022", exp: exp }
+      { id: 12, address: "20 avenue de Ségur 75015 Paris", starts_at: "20-12-2022" }
     end
+    let!(:jwt_headers) { { typ: "JWT", exp: exp } }
     let!(:jwt_token) { "stubbed-token" }
     let!(:request_headers) do
       {
@@ -41,7 +42,7 @@ describe SendRdvSolidaritesWebhookJob, type: :job do
       travel_to(now)
 
       allow(JWT).to receive(:encode)
-        .with(jwt_payload, webhook_secret, "HS256")
+        .with(jwt_payload, webhook_secret, "HS256", jwt_headers)
         .and_return(jwt_token)
       allow(Faraday).to receive(:post)
         .with(webhook_url, webhook_payload.to_json, request_headers)

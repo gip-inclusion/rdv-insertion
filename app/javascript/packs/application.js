@@ -18,6 +18,7 @@ import { Integrations } from "@sentry/tracing";
 import { cable } from "@hotwired/turbo-rails"
 import { Application } from "@hotwired/stimulus"
 import { definitionsFromContext } from "@hotwired/stimulus-webpack-helpers"
+import "chartkick/chart.js"
 
 require("@rails/ujs").start();
 require("@rails/activestorage").start();

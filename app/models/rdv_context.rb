@@ -32,4 +32,16 @@ class RdvContext < ApplicationRecord
   def attention_needed?
     status.in?(STATUSES_WITH_ATTENTION_NEEDED)
   end
+
+  def context_orientation?
+    context.in?(%w[rsa_orientation rsa_orientation_on_phone_platform])
+  end
+
+  def first_rdv_creation_date
+    rdvs.select(&:created_at).min_by(&:created_at).created_at
+  end
+
+  def time_between_invitation_and_rdv_in_days
+    first_rdv_creation_date.to_datetime.mjd - first_invitation_sent_at.to_datetime.mjd
+  end
 end
