@@ -1,3 +1,5 @@
+# rubocop:disable Metrics/ClassLength
+
 class Stat
   include ActiveModel::Model
 
