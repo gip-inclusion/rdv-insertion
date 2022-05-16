@@ -51,7 +51,7 @@ gem 'sib-api-v3-sdk'
 gem 'sidekiq'
 
 # Hotwire
-gem "hotwire-rails"
+gem "turbo-rails"
 
 # Monitor errors
 gem "sentry-ruby"
