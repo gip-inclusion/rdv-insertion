@@ -5,16 +5,13 @@ class ApplicantsOrganisationsController < ApplicationController
   def new; end
 
   def create
-    @applicant.assign_attributes(organisations: applicants_organisations)
-
     if save_applicant.success?
       respond_to do |format|
         format.turbo_stream
-        format.html { redirect_to department_applicant_path(@department, @applicant) }
       end
     else
-      flash.now[:error] = save_applicant.errors&.join(',')
-      render :new, status: :unprocessable_entity
+      flash[:error] = save_applicant.errors&.join(", ")
+      redirect_to department_applicant_path(@department, @applicant)
     end
   end
 
@@ -30,6 +27,7 @@ class ApplicantsOrganisationsController < ApplicationController
 
   def set_applicant
     @applicant = policy_scope(Applicant).find(params[:applicant_id])
+    authorize @applicant
   end
 
   def set_department
@@ -54,15 +52,5 @@ class ApplicantsOrganisationsController < ApplicationController
 
   def set_assign_rdv_context
     @assign_rdv_context = params[:assign_rdv_context]
-  end
-
-  def after_succes_redirect
-    if @assign_rdv_context
-      redirect_to(
-        new_applicant_rdv_context_path(@applicant, organisation_id: @organisation.id)
-      )
-    else
-      redirect_to department_applicant_path(@applicant.department, @applicant)
-    end
   end
 end

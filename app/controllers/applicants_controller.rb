@@ -9,7 +9,7 @@ class ApplicantsController < ApplicationController
   before_action :set_applicant, only: [:show, :update, :edit]
   before_action :set_organisation, :set_department, :set_all_configurations, :set_current_configuration,
                 :set_current_context, only: [:index, :new, :create, :show, :update, :edit]
-  before_action :set_organisations, only: [:new]
+  before_action :set_organisations, only: [:new, :create]
   before_action :set_can_be_added_to_other_org, only: [:show]
   before_action :retrieve_applicants, only: [:search]
   before_action :set_without_context_list, :set_applicants_and_rdv_contexts, only: [:index]
@@ -26,7 +26,6 @@ class ApplicantsController < ApplicationController
     # TODO: if an applicant exists, return it to the agent to let him decide what to do
     @applicant.assign_attributes(
       department: @department,
-      organisations: (@applicant.organisations.to_a + [@organisation]).uniq,
       **applicant_params.compact_blank
     )
     authorize @applicant
@@ -56,10 +55,7 @@ class ApplicantsController < ApplicationController
   end
 
   def update
-    @applicant.assign_attributes(
-      organisations: (@applicant.organisations.to_a + [@organisation]).uniq,
-      **formatted_params
-    )
+    @applicant.assign_attributes(**formatted_params)
     authorize @applicant
     respond_to do |format|
       format.html { save_applicant_and_redirect(:edit) }

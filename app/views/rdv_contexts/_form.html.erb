@@ -1,5 +1,5 @@
 <%= render "common/remote_modal", title: "Sélectionnez un contexte d'invitation" do %>
-  <%= simple_form_for(rdv_context, url: applicant_rdv_contexts_path(applicant), html: { method: :post }) do |f| %>
+  <%= simple_form_for(rdv_context, url: applicant_rdv_contexts_path(applicant), html: { method: :post }, data: { "turbo-frame" => "_top" }) do |f| %>
       <div class="form-group">
         <%= f.input :context,
                     as: :select,

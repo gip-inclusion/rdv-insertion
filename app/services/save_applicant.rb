@@ -7,6 +7,7 @@ class SaveApplicant < BaseService
 
   def call
     Applicant.transaction do
+      assign_organisation
       save_record!(@applicant)
       upsert_rdv_solidarites_user
       assign_rdv_solidarites_user_id unless @applicant.rdv_solidarites_user_id?
@@ -14,6 +15,10 @@ class SaveApplicant < BaseService
   end
 
   private
+
+  def assign_organisation
+    @applicant.organisations = (@applicant.organisations.to_a + [@organisation]).uniq
+  end
 
   def upsert_rdv_solidarites_user
     @upsert_rdv_solidarites_user ||= call_service!(

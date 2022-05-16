@@ -7,7 +7,7 @@ class RdvContext < ApplicationRecord
   has_and_belongs_to_many :rdvs
   belongs_to :applicant
 
-  validates :context, uniqueness: { scope: :applicant_id }
+  validates :context, presence: true, uniqueness: { scope: :applicant_id }
 
   STATUSES_WITH_ACTION_REQUIRED = %w[
     not_invited rdv_needs_status_update rdv_noshow rdv_revoked rdv_excused multiple_rdvs_cancelled

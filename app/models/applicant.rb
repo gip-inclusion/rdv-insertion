@@ -25,8 +25,7 @@ class Applicant < ApplicationRecord
   validates :last_name, :first_name, :title, presence: true
   validates :affiliation_number, presence: true, allow_nil: true
   validates :email, allow_blank: true, format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/ }
-  validate :birth_date_validity
-  validate :uid_or_department_internal_id_presence
+  validate :birth_date_validity, :uid_or_department_internal_id_presence
 
   enum role: { demandeur: 0, conjoint: 1 }
   enum title: { monsieur: 0, madame: 1 }

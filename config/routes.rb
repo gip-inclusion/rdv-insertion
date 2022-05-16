@@ -39,7 +39,7 @@ Rails.application.routes.draw do
   end
 
   resources :applicants, only: [] do
-    resources :rdv_contexts, only: [:new, :create]
+    resources :rdv_contexts, only: [:create]
     post :search, on: :collection
   end
 
