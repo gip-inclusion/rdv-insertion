@@ -64,6 +64,10 @@ gem "simple_form"
 # Phone validator
 gem 'phonelib'
 
+# Stats graphs
+gem "groupdate"
+gem "chartkick"
+
 # gem needed to be defined explicitely with ruby 3
 gem 'rexml'
 gem 'addressable'
