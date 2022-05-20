@@ -48,7 +48,7 @@ class Stat
   def relevant_rdv_contexts
     @relevant_rdv_contexts ||= rdv_contexts.where(applicant_id: relevant_applicants.pluck(:id))
                                            .where.associated(:rdvs)
-                                           .where.associated(:invitations)
+                                           .with_sent_invitations
                                            .distinct
   end
 
@@ -73,13 +73,8 @@ class Stat
 
   def compute_average_time_between_invitation_and_rdv_in_days(selected_rdv_contexts)
     cumulated_invitation_delays = 0
-    selected_rdv_contexts = selected_rdv_contexts.to_a
-    selected_rdv_contexts.each do |rdv_context|
-      if rdv_context.first_invitation_sent_at.present?
-        cumulated_invitation_delays += rdv_context.time_between_invitation_and_rdv_in_days
-      else
-        selected_rdv_contexts.delete(rdv_context)
-      end
+    selected_rdv_contexts.to_a.each do |rdv_context|
+      cumulated_invitation_delays += rdv_context.time_between_invitation_and_rdv_in_days
     end
     cumulated_invitation_delays / (selected_rdv_contexts.count.nonzero? || 1).to_f
   end

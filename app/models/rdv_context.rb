@@ -23,6 +23,7 @@ class RdvContext < ApplicationRecord
   scope :invited_before_time_window, lambda { |number_of_days_before_action_required|
     where.not(id: Invitation.sent_in_time_window(number_of_days_before_action_required).pluck(:rdv_context_id).uniq)
   }
+  scope :with_sent_invitations, -> { where.associated(:invitations).where.not(invitations: { sent_at: nil }) }
 
   def action_required?(number_of_days_before_action_required)
     status.in?(STATUSES_WITH_ACTION_REQUIRED) ||
