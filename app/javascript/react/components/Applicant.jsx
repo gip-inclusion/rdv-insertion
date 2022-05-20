@@ -8,6 +8,7 @@ import handleApplicantUpdate from "../lib/handleApplicantUpdate";
 import retrieveRelevantOrganisation from "../../lib/retrieveRelevantOrganisation";
 import getInvitationLetter from "../actions/getInvitationLetter";
 import { todaysDateString } from "../../lib/datesHelper";
+import camelToSnakeCase from "../../lib/stringHelper";
 
 export default function Applicant({
   applicant,
@@ -27,39 +28,27 @@ export default function Applicant({
     allAttributesUpdate: false,
   });
 
-  const handleUpdateClick = async (attribute = null) => {
+  const handleUpdateWithContactsDataFileClick = async (attribute = null) => {
     setIsLoading({ ...isLoading, [`${attribute}Update`]: true });
+
     const attributes = {};
-    if (attribute === "email" || attribute === "allAttributes") {
-      attributes.email = applicant.newEmail;
-    }
-    if (attribute === "phoneNumber" || attribute === "allAttributes") {
-      attributes.phone_number = applicant.newPhoneNumber;
-    }
-    if (attribute === "rightsOpeningDate" || attribute === "allAttributes") {
-      attributes.rights_opening_date = applicant.newRightsOpeningDate;
+    if (attribute === "allAttributes") {
+      attributes.email = applicant.emailNew;
+      attributes.phone_number = applicant.phoneNumberNew;
+      attributes.rights_opening_date = applicant.rightsOpeningDateNew;
+    } else {
+      attributes[`${camelToSnakeCase(attribute)}`] = applicant[`${attribute}New`];
     }
 
     const result = await handleApplicantUpdate(applicant, attributes);
 
     if (result.success) {
-      if (attribute === "email" || (attribute === "allAttributes" && applicant.newEmail)) {
-        applicant.newEmail = null;
-        applicant.updatedEmail = true;
-      }
-      if (
-        attribute === "phoneNumber" ||
-        (attribute === "allAttributes" && applicant.newPhoneNumber)
-      ) {
-        applicant.newPhoneNumber = null;
-        applicant.updatedPhoneNumber = true;
-      }
-      if (
-        attribute === "rightsOpeningDate" ||
-        (attribute === "allAttributes" && applicant.newRightsOpeningDate)
-      ) {
-        applicant.newRightsOpeningDate = null;
-        applicant.updatedRightsOpeningDate = true;
+      if (attribute === "allAttributes") {
+        applicant.markAttributeAsUpdated("email");
+        applicant.markAttributeAsUpdated("phoneNumber");
+        applicant.markAttributeAsUpdated("rightsOpeningDate");
+      } else {
+        applicant.markAttributeAsUpdated(`${attribute}`);
       }
     }
 
@@ -127,12 +116,8 @@ export default function Applicant({
     setIsLoading({ ...isLoading, accountCreation: false });
   };
 
-  const computeColSpanForContactsUpdate = () => {
-    let colSpan = 5;
-    if (applicant.shouldDisplay("department_internal_id")) colSpan += 1;
-    if (applicant.shouldDisplay("birth_date")) colSpan += 1;
-    return colSpan;
-  };
+  const computeColSpanForContactsUpdate = () =>
+    applicant.displayedAttributes().length - applicant.attributesFromContactsDataFile().length;
 
   const computeColSpanForDisabledInvitations = () => {
     let colSpan = 0;
@@ -155,17 +140,17 @@ export default function Applicant({
         )}
         {applicant.shouldDisplay("birth_date") && <td>{applicant.birthDate ?? " - "}</td>}
         {applicant.shouldDisplay("email") && (
-          <td className={applicant.updatedEmail ? "table-success" : ""}>
+          <td className={applicant.emailUpdated ? "table-success" : ""}>
             {applicant.email ?? " - "}
           </td>
         )}
         {applicant.shouldDisplay("phone_number") && (
-          <td className={applicant.updatedPhoneNumber ? "table-success" : ""}>
+          <td className={applicant.phoneNumberUpdated ? "table-success" : ""}>
             {applicant.phoneNumber ?? " - "}
           </td>
         )}
         {applicant.shouldDisplay("rights_opening_date") && (
-          <td className={applicant.updatedRightsOpeningDate ? "table-success" : ""}>
+          <td className={applicant.rightsOpeningDateUpdated ? "table-success" : ""}>
             {applicant.rightsOpeningDate ?? " - "}
           </td>
         )}
@@ -316,77 +301,45 @@ export default function Applicant({
           </>
         )}
       </tr>
-      {(applicant.newPhoneNumber || applicant.newEmail || applicant.newRightsOpeningDate) && (
+      {(applicant.phoneNumberNew || applicant.emailNew || applicant.rightsOpeningDateNew) && (
         <tr className="table-success">
           <td colSpan={computeColSpanForContactsUpdate()} className="text-align-right">
             <i className="fas fa-level-up-alt" />
             Nouvelles données trouvées pour {applicant.firstName} {applicant.lastName}
           </td>
-          {applicant.shouldDisplay("email") && (
-            <td className="update-box">
-              {applicant.newEmail && (
-                <>
-                  {applicant.newEmail}
-                  <br />
-                  <button
-                    type="submit"
-                    className="btn btn-primary btn-blue btn-sm mt-2"
-                    onClick={() => handleUpdateClick("email")}
-                  >
-                    {isLoading.emailUpdate || isLoading.allAttributesUpdate
-                      ? "En cours..."
-                      : "Mettre à jour"}
-                  </button>
-                </>
-              )}
-            </td>
-          )}
-          {applicant.shouldDisplay("phone_number") && (
-            <td className="update-box">
-              {applicant.newPhoneNumber && (
-                <>
-                  {applicant.newPhoneNumber}
-                  <br />
-                  <button
-                    type="submit"
-                    className="btn btn-primary btn-blue btn-sm mt-2"
-                    onClick={() => handleUpdateClick("phoneNumber")}
-                  >
-                    {isLoading.phoneNumberUpdate || isLoading.allAttributesUpdate
-                      ? "En cours..."
-                      : "Mettre à jour"}
-                  </button>
-                </>
-              )}
-            </td>
-          )}
-          {applicant.shouldDisplay("rights_opening_date") && (
-            <td className="update-box">
-              {applicant.newRightsOpeningDate && (
-                <>
-                  {applicant.newRightsOpeningDate}
-                  <br />
-                  <button
-                    type="submit"
-                    className="btn btn-primary btn-blue btn-sm mt-2"
-                    onClick={() => handleUpdateClick("rightsOpeningDate")}
-                  >
-                    {isLoading.rightsOpeningDateUpdate || isLoading.allAttributesUpdate
-                      ? "En cours..."
-                      : "Mettre à jour"}
-                  </button>
-                </>
-              )}
-            </td>
+          {["email", "phoneNumber", "rightsOpeningDate"].map(
+            (attributeName) =>
+              applicant.shouldDisplay(camelToSnakeCase(attributeName)) && (
+                <td
+                  className="update-box"
+                  key={`${attributeName}${new Date().toISOString().slice(0, 19)}`}
+                >
+                  {applicant[`${attributeName}New`] && (
+                    <>
+                      {applicant[`${attributeName}New`]}
+                      <br />
+                      <button
+                        type="submit"
+                        className="btn btn-primary btn-blue btn-sm mt-2"
+                        onClick={() => handleUpdateWithContactsDataFileClick(attributeName)}
+                      >
+                        {isLoading[`${attributeName}Update`] || isLoading.allAttributesUpdate
+                          ? "En cours..."
+                          : "Mettre à jour"}
+                      </button>
+                    </>
+                  )}
+                </td>
+              )
           )}
           <td>
-            {[applicant.newEmail, applicant.newPhoneNumber, applicant.newRightsOpeningDate].filter(
+            {[applicant.emailNew, applicant.phoneNumberNew, applicant.rightsOpeningDateNew].filter(
               (e) => e != null
             ).length > 1 && (
               <button
                 type="submit"
                 className="btn btn-primary btn-blue"
-                onClick={() => handleUpdateClick("allAttributes")}
+                onClick={() => handleUpdateWithContactsDataFileClick("allAttributes")}
               >
                 {isLoading.emailUpdate ||
                 isLoading.phoneNumberUpdate ||

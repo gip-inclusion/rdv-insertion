@@ -171,6 +171,11 @@ export default class Applicant {
     this.phoneNumber = formatPhoneNumber(phoneNumber);
   }
 
+  markAttributeAsUpdated(attribute) {
+    this[`${attribute}New`] = null;
+    this[`${attribute}Updated`] = true;
+  }
+
   formatFullAddress() {
     return (
       (this.streetNumber ? `${this.streetNumber} ` : "") +
@@ -179,6 +184,30 @@ export default class Applicant {
       (this.postalCode ? ` ${this.postalCode}` : "") +
       (this.city ? ` ${this.city}` : "")
     );
+  }
+
+  displayedAttributes() {
+    const attributes = [
+      this.affiliationNumber,
+      this.shortTitle,
+      this.firstName,
+      this.lastName,
+      this.shortRole,
+    ];
+    if (this.shouldDisplay("department_internal_id")) attributes.push(this.departmentInternalId);
+    if (this.shouldDisplay("birth_date")) attributes.push(this.birthDate);
+    if (this.shouldDisplay("email")) attributes.push(this.email);
+    if (this.shouldDisplay("phone_number")) attributes.push(this.phoneNumber);
+    if (this.shouldDisplay("rights_opening_date")) attributes.push(this.rightsOpeningDate);
+    return attributes;
+  }
+
+  attributesFromContactsDataFile() {
+    const attributes = [];
+    if (this.shouldDisplay("email")) attributes.push(this.email);
+    if (this.shouldDisplay("phone_number")) attributes.push(this.phoneNumber);
+    if (this.shouldDisplay("rights_opening_date")) attributes.push(this.rightsOpeningDate);
+    return attributes;
   }
 
   shouldDisplay(attribute) {

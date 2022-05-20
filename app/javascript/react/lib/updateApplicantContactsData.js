@@ -1,18 +1,10 @@
-const updateExistingApplicantContactsData = async (
-  applicant,
-  phoneNumber,
-  email,
-  rightsOpeningDate
-) => {
-  if (applicant.phoneNumber !== phoneNumber) {
-    applicant.newPhoneNumber = phoneNumber;
-  }
-  if (applicant.email !== email) {
-    applicant.newEmail = email;
-  }
-  if (applicant.rightsOpeningDate !== rightsOpeningDate) {
-    applicant.newRightsOpeningDate = rightsOpeningDate;
-  }
+const updateExistingApplicantContactsData = async (applicant, parsedApplicantContactsData) => {
+  ["email", "phoneNumber", "rightsOpeningDate"].forEach((attributeName) => {
+    const attribute = parsedApplicantContactsData[attributeName];
+    if (attribute && applicant[attributeName] !== attribute) {
+      applicant[`${attributeName}New`] = attribute;
+    }
+  });
   return applicant;
 };
 
@@ -37,7 +29,7 @@ const updateApplicantContactsData = (applicant, parsedApplicantContactsData) => 
   const { email } = parsedApplicantContactsData;
   const { rightsOpeningDate } = parsedApplicantContactsData;
   if (applicant.createdAt) {
-    return updateExistingApplicantContactsData(applicant, phoneNumber, email, rightsOpeningDate);
+    return updateExistingApplicantContactsData(applicant, parsedApplicantContactsData);
   }
   return updateNewApplicantContactsData(applicant, phoneNumber, email, rightsOpeningDate);
 };
