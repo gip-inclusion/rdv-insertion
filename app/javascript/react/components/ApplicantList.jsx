@@ -13,7 +13,6 @@ export default function ApplicantList({
       isDepartmentLevel={isDepartmentLevel}
       downloadInProgress={downloadInProgress}
       setDownloadInProgress={setDownloadInProgress}
-      keyValue={`${applicant.uid}${i}`}
       key={`${applicant.uid}${i}`} // eslint-disable-line react/no-array-index-key
     />
   ));
