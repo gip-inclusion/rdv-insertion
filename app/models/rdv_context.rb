@@ -1,6 +1,6 @@
 class RdvContext < ApplicationRecord
   include HasContextConcern
-  include HasContextStatusConcern
+  include HasStatusConcern
   include InvitableConcern
 
   has_many :invitations, dependent: :destroy

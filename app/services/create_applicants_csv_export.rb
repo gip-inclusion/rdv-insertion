@@ -37,7 +37,6 @@ class CreateApplicantsCsvExport < BaseService
      Applicant.human_attribute_name(:rights_opening_date),
      Applicant.human_attribute_name(:role),
      "Dernière invitation envoyée le",
-     "Invitation acceptée le",
      "Date du dernier RDV",
      Applicant.human_attribute_name(:status),
      "Orienté ?",
@@ -63,7 +62,6 @@ class CreateApplicantsCsvExport < BaseService
      format_date(applicant.rights_opening_date),
      applicant.role,
      last_invitation_date(applicant),
-     format_date(applicant.invitation_accepted_at),
      last_rdv_date(applicant),
      human_rdv_context_status(applicant),
      I18n.t("boolean.#{applicant.oriented?}"),
@@ -78,9 +76,10 @@ class CreateApplicantsCsvExport < BaseService
 
   def filename
     if @structure.nil?
-      "extraction_beneficiaires.csv"
+      "Liste_beneficiaires_#{@context}.csv"
     else
-      "extraction_beneficiaires_#{@structure.class.name}_#{@structure.name.parameterize(separator: '_')}.csv"
+      "Liste_beneficiaires_#{@context}_#{@structure.model_name.human.downcase}_" \
+        "#{@structure.name.parameterize(separator: '_')}.csv"
     end
   end
 
