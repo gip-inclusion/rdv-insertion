@@ -137,8 +137,8 @@ class Stat
   end
 
   def compute_percentage_of_applicants_oriented_in_less_than_30_days(selected_applicants)
-    (applicants_oriented_in_less_than_30_days(selected_applicants).count / (
-      selected_applicants.count.nonzero? || 1
+    (applicants_oriented_in_less_than_30_days(selected_applicants).to_a.length / (
+      selected_applicants.to_a.length.nonzero? || 1
     ).to_f) * 100
   end
 
