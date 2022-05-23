@@ -26,32 +26,12 @@ export default function InvitationBlock({
     sortInvitationsByFormatsAndDates(invitations)
   );
   const [showInvitationsHistory, setShowInvitationsHistory] = useState(false);
+  const [numberOfInvitationsDatesRowsNeeded, setNumberOfInvitationsDatesRowsNeeded] = useState(1);
 
   // We don't display "Show history" button if there is no history to display
   const showInvitationsHistoryButton = Object.values(invitationsDatesByFormat).some(
     (invitationDates) => invitationDates.length > 1
   );
-
-  const computeInvitationsDatesRows = () => {
-    const invitationsDatesByFormatLengths = invitationFormats.map(
-      (format) => invitationsDatesByFormat[format].length
-    );
-    const numberOfInvitationsDatesRowsNeeded = showInvitationsHistory
-      ? Math.max(...invitationsDatesByFormatLengths)
-      : 1;
-    const invitationsDatesRows = [];
-    for (let i = 0; i < numberOfInvitationsDatesRowsNeeded; i += 1) {
-      invitationsDatesRows.push(
-        <InvitationsDatesRow
-          invitationsDatesByFormat={invitationsDatesByFormat}
-          invitationFormats={invitationFormats}
-          index={i}
-          key={`${context}${i}`}
-        />
-      );
-    }
-    return invitationsDatesRows;
-  };
 
   const updateStatusBlock = () => {
     const statusBlock = document.getElementById(`js-block-status-${context}`);
@@ -62,6 +42,18 @@ export default function InvitationBlock({
   };
 
   const showInvitation = (format) => invitationFormats.includes(format);
+
+  const handleShowInvitationsHistory = () => {
+    setShowInvitationsHistory(true);
+    setNumberOfInvitationsDatesRowsNeeded(
+      Math.max(...invitationFormats.map((format) => invitationsDatesByFormat[format].length))
+    );
+  };
+
+  const handleHideInvitationsHistory = () => {
+    setShowInvitationsHistory(false);
+    setNumberOfInvitationsDatesRowsNeeded(1);
+  };
 
   const handleInvitationClick = async (format) => {
     setIsLoading({ ...isLoading, [format]: true });
@@ -115,7 +107,14 @@ export default function InvitationBlock({
           </tr>
         </thead>
         <tbody>
-          {computeInvitationsDatesRows().map((invitationDateRow) => invitationDateRow)}
+          {[...Array(numberOfInvitationsDatesRowsNeeded).keys()].map((idx) => (
+            <InvitationsDatesRow
+              invitationsDatesByFormat={invitationsDatesByFormat}
+              invitationFormats={invitationFormats}
+              index={idx}
+              key={`${context}${idx}`}
+            />
+          ))}
           <tr>
             {showInvitation("sms") && (
               <td className="px-4 py-3">
@@ -179,13 +178,13 @@ export default function InvitationBlock({
             <tr>
               <td className="px-4 py-2" colSpan={3} style={{ cursor: "pointer" }}>
                 {!showInvitationsHistory && (
-                  <button onClick={() => setShowInvitationsHistory(true)} type="button">
+                  <button onClick={handleShowInvitationsHistory} type="button">
                     <i className="fas fa-angle-down" /> Voir l&apos;historique{" "}
                     <i className="fas fa-angle-down" />
                   </button>
                 )}
                 {showInvitationsHistory && (
-                  <button onClick={() => setShowInvitationsHistory(false)} type="button">
+                  <button onClick={handleHideInvitationsHistory} type="button">
                     <i className="fas fa-angle-up" /> Voir moins <i className="fas fa-angle-up" />
                   </button>
                 )}

@@ -15,7 +15,7 @@ describe ApplicantsController, type: :controller do
   let!(:agent) { create(:agent, organisations: [organisation]) }
   let!(:rdv_solidarites_organisation_id) { 52 }
   let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
-  let(:applicant) { create(:applicant, organisations: [organisation]) }
+  let(:applicant) { create(:applicant, organisations: [organisation], department: department) }
 
   describe "#new" do
     let!(:new_params) { { organisation_id: organisation.id } }
@@ -116,7 +116,8 @@ describe ApplicantsController, type: :controller do
 
         it "renders the new page" do
           post :create, params: applicant_params
-          expect(response).to be_successful
+          expect(response).not_to be_successful
+          expect(response.status).to eq(422)
           expect(response.body).to match(/Créer allocataire/)
         end
       end
@@ -146,7 +147,7 @@ describe ApplicantsController, type: :controller do
       end
 
       context "when the creation succeeds" do
-        let!(:applicant) { create(:applicant, organisations: [organisation]) }
+        let!(:applicant) { create(:applicant, organisations: [organisation], department: department) }
 
         before do
           allow(SaveApplicant).to receive(:call)
@@ -174,13 +175,15 @@ describe ApplicantsController, type: :controller do
 
         it "is not a success" do
           post :create, params: applicant_params
-          expect(response).to be_successful
+          expect(response).not_to be_successful
+          expect(response.status).to eq(422)
           expect(JSON.parse(response.body)["success"]).to eq(false)
         end
 
         it "renders the errors" do
           post :create, params: applicant_params
-          expect(response).to be_successful
+          expect(response).not_to be_successful
+          expect(response.status).to eq(422)
           expect(JSON.parse(response.body)["errors"]).to eq(['some error'])
         end
       end
@@ -229,8 +232,11 @@ describe ApplicantsController, type: :controller do
 
   describe "#show" do
     let!(:applicant) do
-      create(:applicant, first_name: "Andreas", last_name: "Kopke", organisations: [organisation])
+      create(
+        :applicant, first_name: "Andreas", last_name: "Kopke", organisations: [organisation], department: department
+      )
     end
+    let!(:show_params) { { id: applicant.id, organisation_id: organisation.id } }
 
     render_views
 
@@ -240,8 +246,6 @@ describe ApplicantsController, type: :controller do
     end
 
     context "when organisation_level" do
-      let!(:show_params) { { id: applicant.id, organisation_id: organisation.id } }
-
       it "renders the applicant page" do
         get :show, params: show_params
 
@@ -278,13 +282,32 @@ describe ApplicantsController, type: :controller do
       end
     end
 
+    context "when it belongs to all department organisations" do
+      it "does not show the add to organisation button" do
+        get :show, params: show_params
+
+        expect(response).to be_successful
+        expect(response.body).not_to match(/Ajouter à une organisation/)
+      end
+    end
+
+    context "when it does not belong to all department organisations" do
+      let!(:other_org) { create(:organisation, department: department) }
+
+      it "shows the add to organisation button" do
+        get :show, params: show_params
+
+        expect(response).to be_successful
+        expect(response.body).to match(/Ajouter à une organisation/)
+      end
+    end
+
     context "it shows the different contexts" do
       let!(:configuration) { create(:configuration, context: "rsa_orientation", invitation_formats: %w[sms email]) }
       let!(:configuration2) do
         create(:configuration, context: "rsa_accompagnement", invitation_formats: %w[sms email postal])
       end
 
-      let!(:show_params) { { id: applicant.id, organisation_id: organisation.id } }
       let!(:organisation) do
         create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
                               department_id: department.id, configurations: [configuration, configuration2])
@@ -604,13 +627,15 @@ describe ApplicantsController, type: :controller do
 
         it "is not a success" do
           post :update, params: update_params
-          expect(response).to be_successful
+          expect(response).not_to be_successful
+          expect(response.status).to eq(422)
           expect(JSON.parse(response.body)["success"]).to eq(false)
         end
 
         it "renders the errors" do
           post :update, params: update_params
-          expect(response).to be_successful
+          expect(response).not_to be_successful
+          expect(response.status).to eq(422)
           expect(JSON.parse(response.body)["errors"]).to eq(['some error'])
         end
       end
@@ -689,7 +714,8 @@ describe ApplicantsController, type: :controller do
 
         it "renders the edit page" do
           patch :update, params: update_params
-          expect(response).to be_successful
+          expect(response).not_to be_successful
+          expect(response.status).to eq(422)
         end
       end
     end

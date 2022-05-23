@@ -12,13 +12,28 @@ import archiveApplicantButton from "components/archive-applicant-button"
 
 import "bootstrap";
 import "stylesheets/application";
+import "@hotwired/turbo-rails"
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
+import { cable } from "@hotwired/turbo-rails"
+import { Application } from "@hotwired/stimulus"
+import { definitionsFromContext } from "@hotwired/stimulus-webpack-helpers"
 import "chartkick/chart.js"
 
 require("@rails/ujs").start();
-require("turbolinks").start();
 require("@rails/activestorage").start();
+
+const componentRequireContext = require.context("react", true);
+const ReactRailsUJS = require("react_ujs");
+ReactRailsUJS.useContext(componentRequireContext);
+
+window.Stimulus = Application.start()
+const context = require.context("../controllers", true, /\.js$/)
+Stimulus.load(definitionsFromContext(context))
+
+// https://github.com/reactjs/react-rails/issues/1103
+ReactRailsUJS.handleEvent('turbo:load', ReactRailsUJS.handleMount);
+ReactRailsUJS.handleEvent('turbo:before-render', ReactRailsUJS.handleUnmount);
 
 // this is necessary so images are compiled by webpack
 require.context("../images", true);
@@ -35,19 +50,7 @@ if (process.env.NODE_ENV === 'production') {
   });
 };
 
-// Uncomment to copy all static images under ../images to the output folder and reference
-// them with the image_pack_tag helper in views (e.g <%= image_pack_tag 'rails.png' %>)
-// or the `imagePath` JavaScript helper below.
-//
-// const images = require.context('../images', true)
-// const imagePath = (name) => images(name, true)
-// Support component names relative to this directory:
-const componentRequireContext = require.context("react", true);
-const ReactRailsUJS = require("react_ujs");
-
-ReactRailsUJS.useContext(componentRequireContext);
-
-document.addEventListener("turbolinks:load", () => {
+document.addEventListener("turbo:load", () => {
   new LoginForm();
   new StatusSelector();
   new DepartmentSelector();

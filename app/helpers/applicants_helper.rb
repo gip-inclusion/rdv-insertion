@@ -66,7 +66,7 @@ module ApplicantsHelper
   end
 
   def display_context_status(context, number_of_days_before_action_required)
-    return "Non invité" if context.nil?
+    return "Non rattaché" if context.nil?
 
     I18n.t("activerecord.attributes.rdv_context.statuses.#{context.status}") +
       display_context_status_notice(context, number_of_days_before_action_required)

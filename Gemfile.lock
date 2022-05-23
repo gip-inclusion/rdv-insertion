@@ -332,6 +332,9 @@ GEM
     thor (1.2.1)
     tilt (2.0.10)
     timeout (0.2.0)
+    turbo-rails (1.0.1)
+      actionpack (>= 6.0.0)
+      railties (>= 6.0.0)
     turbolinks (5.2.1)
       turbolinks-source (~> 5.2)
     turbolinks-source (5.2.0)
@@ -393,6 +396,7 @@ DEPENDENCIES
   rack-cors
   rails (>= 6.0.4.1)
   react-rails
+  redis (~> 4.0)
   responders
   rexml
   rspec-rails (~> 5.0.0)
@@ -408,6 +412,7 @@ DEPENDENCIES
   sidekiq
   simple_form
   spring (~> 3.0.0)
+  turbo-rails
   turbolinks (~> 5)
   tzinfo-data
   web-console (>= 3.3.0)
