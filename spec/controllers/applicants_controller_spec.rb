@@ -384,7 +384,7 @@ describe ApplicantsController, type: :controller do
     end
 
     let!(:rdv_context2) { build(:rdv_context, context: "rsa_orientation", status: "invitation_pending") }
-    let!(:index_params) { { organisation_id: organisation.id } }
+    let!(:index_params) { { organisation_id: organisation.id, context: "rsa_orientation" } }
 
     render_views
 
@@ -415,7 +415,7 @@ describe ApplicantsController, type: :controller do
     end
 
     context "when a search query is specified" do
-      let!(:index_params) { { organisation_id: organisation.id, search_query: "chabat" } }
+      let!(:index_params) { { organisation_id: organisation.id, search_query: "chabat", context: "rsa_orientation"  } }
 
       it "searches the applicants" do
         get :index, params: index_params
@@ -425,7 +425,7 @@ describe ApplicantsController, type: :controller do
     end
 
     context "when a status is passed" do
-      let!(:index_params) { { organisation_id: organisation.id, status: "invitation_pending" } }
+      let!(:index_params) { { organisation_id: organisation.id, status: "invitation_pending", context: "rsa_orientation"  } }
 
       it "filters by status" do
         get :index, params: index_params
@@ -435,7 +435,7 @@ describe ApplicantsController, type: :controller do
     end
 
     context "when action_required is passed" do
-      let!(:index_params) { { organisation_id: organisation.id, action_required: "true" } }
+      let!(:index_params) { { organisation_id: organisation.id, action_required: "true", context: "rsa_orientation" } }
       let!(:number_of_days_before_action_required) { 4 }
 
       context "when the invitation has been sent before the number of days defined in the configuration ago" do
@@ -460,7 +460,7 @@ describe ApplicantsController, type: :controller do
     end
 
     context "when department level" do
-      let!(:index_params) { { department_id: department.id } }
+      let!(:index_params) { { department_id: department.id, context: "rsa_orientation"  } }
 
       it "renders the index page" do
         get :index, params: index_params
@@ -470,7 +470,7 @@ describe ApplicantsController, type: :controller do
       end
     end
 
-    context "when without context list" do
+    context "when no context is specified" do
       let!(:applicant) do
         create(:applicant, organisations: [organisation], last_name: "Chabat", rdv_contexts: [])
       end
@@ -478,7 +478,7 @@ describe ApplicantsController, type: :controller do
       let!(:rdv_context2) { build(:rdv_context, context: "rsa_accompagnement", status: "invitation_pending") }
 
       it "lists the applicants with no rdv contexts in the contexts of the org configs" do
-        get :index, params: index_params.merge(without_context: true)
+        get :index, params: index_params.merge(context: nil)
 
         expect(response.body).to match(/Chabat/)
         expect(response.body).to match(/Baer/)

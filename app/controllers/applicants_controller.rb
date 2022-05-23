@@ -12,7 +12,7 @@ class ApplicantsController < ApplicationController
   before_action :set_organisations, only: [:new, :create]
   before_action :set_can_be_added_to_other_org, only: [:show]
   before_action :retrieve_applicants, only: [:search]
-  before_action :set_without_context_list, :set_applicants_and_rdv_contexts, only: [:index]
+  before_action :set_applicants_and_rdv_contexts, only: [:index]
 
   include FilterableApplicantsConcern
 
@@ -181,15 +181,11 @@ class ApplicantsController < ApplicationController
   end
 
   def set_current_configuration
-    @current_configuration = @all_configurations.find { |c| c.context == params[:context] } || @all_configurations.first
+    @current_configuration = @all_configurations.find { |c| c.context == params[:context] }
   end
 
   def set_current_context
-    @current_context = @current_configuration.context
-  end
-
-  def set_without_context_list
-    @without_context_list = params[:without_context] == "true"
+    @current_context = @current_configuration&.context
   end
 
   def set_can_be_added_to_other_org
@@ -205,7 +201,7 @@ class ApplicantsController < ApplicationController
         @applicants.where(organisations: @organisation)
       end
 
-    if @without_context_list
+    if @current_context.nil?
       @applicants = @applicants.without_rdv_contexts(@all_configurations.map(&:context))
     else
       @applicants = @applicants.joins(:rdv_contexts).where(rdv_contexts: { context: @current_context })
