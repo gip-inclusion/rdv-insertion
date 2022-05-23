@@ -46,7 +46,7 @@ class Stat
   def relevant_rdv_contexts
     @relevant_rdv_contexts ||= rdv_contexts.where(applicant_id: relevant_applicants.pluck(:id))
                                            .where.associated(:rdvs)
-                                           .where.associated(:invitations)
+                                           .with_sent_invitations
                                            .distinct
   end
 
