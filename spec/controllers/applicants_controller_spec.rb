@@ -415,7 +415,7 @@ describe ApplicantsController, type: :controller do
     end
 
     context "when a search query is specified" do
-      let!(:index_params) { { organisation_id: organisation.id, search_query: "chabat", context: "rsa_orientation"  } }
+      let!(:index_params) { { organisation_id: organisation.id, search_query: "chabat", context: "rsa_orientation" } }
 
       it "searches the applicants" do
         get :index, params: index_params
@@ -425,7 +425,9 @@ describe ApplicantsController, type: :controller do
     end
 
     context "when a status is passed" do
-      let!(:index_params) { { organisation_id: organisation.id, status: "invitation_pending", context: "rsa_orientation"  } }
+      let!(:index_params) do
+        { organisation_id: organisation.id, status: "invitation_pending", context: "rsa_orientation" }
+      end
 
       it "filters by status" do
         get :index, params: index_params
@@ -460,7 +462,7 @@ describe ApplicantsController, type: :controller do
     end
 
     context "when department level" do
-      let!(:index_params) { { department_id: department.id, context: "rsa_orientation"  } }
+      let!(:index_params) { { department_id: department.id, context: "rsa_orientation" } }
 
       it "renders the index page" do
         get :index, params: index_params
