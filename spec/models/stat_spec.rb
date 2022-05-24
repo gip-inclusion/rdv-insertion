@@ -67,7 +67,7 @@ describe Stat do
                        rdv_contexts: [rdv_context_accompagnement])
   end
   let!(:irrelevant_applicant2) do
-    create(:applicant, organisations: [relevant_organisation], status: "deleted", rdvs: [irrelevant_rdv2])
+    create(:applicant, organisations: [relevant_organisation], deleted_at: 2.days.ago, rdvs: [irrelevant_rdv2])
   end
   let!(:irrelevant_applicant3) do
     create(:applicant, organisations: [relevant_organisation], is_archived: true, rdvs: [irrelevant_rdv3])

@@ -1,7 +1,7 @@
 <div class="container mt-5 mb-5">
   <div class="row mb-4 block-white justify-content-center">
     <div class="col-4 justify-content-center">
-      <% unless @without_context_list %>
+      <% if @current_context.present? %>
         <div class="mb-1">
           <%=
             select(
@@ -13,7 +13,7 @@
         </div>
       <% end %>
       <%= render 'search_form' %>
-      <% unless @without_context_list %>
+      <% if @current_context.present? %>
         <div class=" text-left mt-2">
           <%= check_box("applicants_list", "action_required", class: "js-action-required-checkbox") %>Intervention nécessaire
           <small>

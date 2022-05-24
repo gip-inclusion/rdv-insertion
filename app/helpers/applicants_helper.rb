@@ -37,7 +37,7 @@ module ApplicantsHelper
 
   def options_for_select_status(statuses_count)
     statuses_count.map do |status, count|
-      ["#{I18n.t("activerecord.attributes.applicant.statuses.#{status}")} (#{count})", status]
+      ["#{I18n.t("activerecord.attributes.rdv_context.statuses.#{status}")} (#{count})", status]
     end
   end
 

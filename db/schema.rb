@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_05_06_130132) do
+ActiveRecord::Schema[7.0].define(version: 2022_05_23_193814) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -42,17 +42,15 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_06_130132) do
     t.string "email"
     t.integer "title"
     t.date "birth_date"
-    t.date "invitation_accepted_at"
-    t.integer "status", default: 0
     t.date "rights_opening_date"
     t.string "birth_name"
     t.bigint "department_id"
     t.string "archiving_reason"
     t.boolean "is_archived", default: false
+    t.datetime "deleted_at"
     t.index ["department_id"], name: "index_applicants_on_department_id"
     t.index ["department_internal_id", "department_id"], name: "index_applicants_on_department_internal_id_and_department_id", unique: true
     t.index ["rdv_solidarites_user_id"], name: "index_applicants_on_rdv_solidarites_user_id", unique: true
-    t.index ["status"], name: "index_applicants_on_status"
     t.index ["uid"], name: "index_applicants_on_uid", unique: true
   end
 

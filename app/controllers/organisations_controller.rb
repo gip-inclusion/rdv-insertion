@@ -1,7 +1,7 @@
 class OrganisationsController < ApplicationController
   def index
-    @organisations = policy_scope(Organisation).includes(:department)
-    redirect_to organisation_applicants_path(@organisations.first) if @organisations.size == 1
+    @organisations = policy_scope(Organisation).includes(:configurations, department: [:configurations])
+    redirect_to organisation_applicants_path(@organisations.first) if @organisations.to_a.length == 1
   end
 
   def geolocated

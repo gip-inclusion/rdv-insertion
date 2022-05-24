@@ -16,7 +16,7 @@ class Stat
     @relevant_applicants ||= applicants
                              .joins(:organisations)
                              .where(organisations: relevant_organisations)
-                             .where.not(status: %w[deleted])
+                             .active
                              .archived(false)
                              .distinct
   end

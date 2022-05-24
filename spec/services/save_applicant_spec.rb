@@ -25,8 +25,7 @@ describe SaveApplicant, type: :service do
     {
       first_name: "john", last_name: "doe",
       address: "16 rue de la tour", email: "johndoe@example.com", birth_name: "",
-      birth_date: Date.new(1989, 3, 17), affiliation_number: "aff123", phone_number: "+33612459567",
-      invitation_accepted_at: nil
+      birth_date: Date.new(1989, 3, 17), affiliation_number: "aff123", phone_number: "+33612459567"
     }
   end
 

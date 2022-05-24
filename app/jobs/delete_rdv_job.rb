@@ -3,8 +3,8 @@ class DeleteRdvJob < ApplicationJob
     rdv = Rdv.find_by(rdv_solidarites_rdv_id: rdv_solidarites_rdv_id)
     return unless rdv
 
-    applicant_ids = rdv.applicant_ids
+    rdv_context_ids = rdv.rdv_context_ids
     rdv.destroy!
-    RefreshApplicantStatusesJob.perform_async(applicant_ids)
+    RefreshRdvContextStatusesJob.perform_async(rdv_context_ids)
   end
 end
