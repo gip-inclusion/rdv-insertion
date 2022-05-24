@@ -89,6 +89,10 @@ class Applicant < ApplicationRecord
     deleted_at.present?
   end
 
+  def contexts
+    rdv_contexts.map(&:context)
+  end
+
   def as_json(_opts = {})
     super.merge(
       created_at: created_at,
