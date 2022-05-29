@@ -1,4 +1,4 @@
-<%= render 'letters/header', letter_configuration: letter_configuration, department: department, applicant: applicant %>
+<%= render 'letters/header', letter_configuration: letter_configuration, department: department, organisation: organisation, applicant: applicant %>
 <div class="mail-object">
     <%# Remplacer par une variable @motif ? %>
   <p class="bold-blue"><span class="bold-blue">Objet : Rendez-vous d’orientation dans le cadre de votre RSA</span></p>
@@ -22,4 +22,4 @@
     <% end %>
   </div>
 </div>
-<%= render 'letters/footer', department: department %>
+<%= render 'letters/footer', department: department, organisation: organisation %>
