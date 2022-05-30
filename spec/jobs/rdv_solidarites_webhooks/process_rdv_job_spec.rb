@@ -25,10 +25,12 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
     }.deep_symbolize_keys
   end
 
+  let!(:timestamp) { "2021-05-30 14:44:22 +0200" }
   let!(:meta) do
     {
       "model" => "Rdv",
-      "event" => "created"
+      "event" => "created",
+      "timestamp" => timestamp
     }.deep_symbolize_keys
   end
 
@@ -117,7 +119,8 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
             {
               applicant_ids: [applicant.id, applicant2.id],
               organisation_id: organisation.id,
-              rdv_context_ids: [rdv_context.id, rdv_context2.id]
+              rdv_context_ids: [rdv_context.id, rdv_context2.id],
+              last_webhook_update_received_at: timestamp
             }
           )
         subject
@@ -182,11 +185,6 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
         end
         subject
       end
-
-      it "sends a notif to mattermost" do
-        expect(MattermostClient).to receive(:send_to_notif_channel)
-        subject
-      end
     end
 
     context "with no matching configuration" do
@@ -196,11 +194,6 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
         [UpsertRecordJob, DeleteRdvJob, NotifyApplicantJob].each do |klass|
           expect(klass).not_to receive(:perform_async)
         end
-        subject
-      end
-
-      it "sends a notif to mattermost" do
-        expect(MattermostClient).to receive(:send_to_notif_channel)
         subject
       end
     end

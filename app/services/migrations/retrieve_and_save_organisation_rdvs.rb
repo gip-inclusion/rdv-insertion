@@ -18,7 +18,11 @@ module Migrations
         UpsertRecordJob.perform_async(
           Rdv,
           rdv.to_rdv_insertion_attributes,
-          { applicant_ids: applicant_ids, organisation_id: @organisation_id }
+          {
+            applicant_ids: applicant_ids,
+            organisation_id: @organisation_id,
+            last_webhook_update_received_at: @meta[:timestamp]
+          }
         )
       end
     end

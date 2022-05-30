@@ -25,11 +25,11 @@ module HasStatusConcern
   end
 
   def last_rdv
-    rdvs.last
+    rdvs.max_by(&:created_at)
   end
 
   def last_sent_invitation
-    invitations.select(&:sent_at).last
+    invitations.max_by(&:sent_at)
   end
 
   def invited_after_last_rdv?

@@ -7,7 +7,7 @@ module RdvSolidaritesWebhooks
       @meta = meta.deep_symbolize_keys
       check_organisation!
       return if applicants.empty?
-      return notify_unhandled_category_to_mattermost if unhandled_category?
+      return if unhandled_category?
 
       upsert_or_delete_rdv
       notify_applicants if should_notify_applicants?
@@ -32,14 +32,6 @@ module RdvSolidaritesWebhooks
 
     def unhandled_category?
       Configuration.contexts.keys.exclude?(rdv_solidarites_rdv.category) || matching_configuration.nil?
-    end
-
-    def notify_unhandled_category_to_mattermost
-      MattermostClient.send_to_notif_channel(
-        "Catégorie #{rdv_solidarites_rdv.category} non gérée dans l'organisation #{organisation.name}" \
-        " (#{organisation.department.name}).\n" \
-        "RDV #{rdv_solidarites_rdv.id} non traité."
-      )
     end
 
     def event
@@ -77,7 +69,12 @@ module RdvSolidaritesWebhooks
         UpsertRecordJob.perform_async(
           "Rdv",
           rdv_solidarites_rdv.to_rdv_insertion_attributes,
-          { applicant_ids: applicant_ids, organisation_id: organisation.id, rdv_context_ids: rdv_contexts.map(&:id) }
+          {
+            applicant_ids: applicant_ids,
+            organisation_id: organisation.id,
+            rdv_context_ids: rdv_contexts.map(&:id),
+            last_webhook_update_received_at: @meta[:timestamp]
+          }
         )
       end
     end
