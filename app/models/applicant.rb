@@ -1,5 +1,3 @@
-# rubocop:disable Metrics/ClassLength
-
 class Applicant < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [
     :first_name, :last_name, :birth_date, :email, :phone_number, :address, :affiliation_number, :birth_name
@@ -129,5 +127,3 @@ class Applicant < ApplicationRecord
     address&.match(/^(.+) (\d{5}.*)$/m)
   end
 end
-
-# rubocop: enable Metrics/ClassLength
