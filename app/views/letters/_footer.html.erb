@@ -1,6 +1,6 @@
 <div class="letter-footer">
   <div class="left-col department-logo">
-    <%= pdf_image_tag(department.name.parameterize) %>
+    <%= organisation_or_department_logo(department.name.parameterize, organisation.name.parameterize) %>
   </div>
   <div class="right-col rdvi-logo">
     <%= pdf_image_tag("rdv-insertion") %>
