@@ -11,37 +11,37 @@ describe Stat do
   let!(:irrelevant_organisation) { create(:organisation, configurations: [configuration_notify]) }
 
   let!(:rdv_context_orientation) do
-    create(:rdv_context, context: "rsa_orientation", created_at: DateTime.new(2022, 4, 4, 10, 0))
+    create(:rdv_context, context: "rsa_orientation", created_at: DateTime.new(2022, 3, 4, 10, 0))
   end
   let!(:rdv_context_orientation_platform) do
-    create(:rdv_context, context: "rsa_orientation_on_phone_platform", created_at: DateTime.new(2022, 5, 7, 10, 0))
+    create(:rdv_context, context: "rsa_orientation_on_phone_platform", created_at: DateTime.new(2022, 4, 7, 10, 0))
   end
   let!(:rdv_context_accompagnement) { create(:rdv_context, context: "rsa_accompagnement") }
 
   let!(:invitation) do
-    create(:invitation, sent_at: DateTime.new(2022, 4, 4, 10, 0), rdv_context: rdv_context_orientation)
+    create(:invitation, sent_at: DateTime.new(2022, 3, 4, 10, 0), rdv_context: rdv_context_orientation)
   end
   let!(:invitation2) do
-    create(:invitation, sent_at: DateTime.new(2022, 5, 7, 10, 0), rdv_context: rdv_context_orientation_platform)
+    create(:invitation, sent_at: DateTime.new(2022, 4, 7, 10, 0), rdv_context: rdv_context_orientation_platform)
   end
   let!(:invitation_not_sended) { create(:invitation, sent_at: nil) }
 
   let!(:orientation_rdv) do
     create(:rdv, rdv_contexts: [rdv_context_orientation],
-                 created_at: DateTime.new(2022, 4, 7, 10, 0),
-                 starts_at: DateTime.new(2022, 4, 8, 10, 0),
+                 created_at: DateTime.new(2022, 3, 7, 10, 0),
+                 starts_at: DateTime.new(2022, 3, 8, 10, 0),
                  status: "seen")
   end
   let!(:orientation_rdv2) do
     create(:rdv, rdv_contexts: [rdv_context_orientation],
-                 created_at: DateTime.new(2022, 5, 2, 10, 0),
-                 starts_at: DateTime.new(2022, 5, 7, 10, 0),
+                 created_at: DateTime.new(2022, 4, 2, 10, 0),
+                 starts_at: DateTime.new(2022, 4, 7, 10, 0),
                  status: "noshow")
   end
   let!(:orientation_platform_rdv) do
     create(:rdv, rdv_contexts: [rdv_context_orientation_platform],
-                 created_at: DateTime.new(2022, 5, 8, 10, 0),
-                 starts_at: DateTime.new(2022, 5, 11, 10, 0))
+                 created_at: DateTime.new(2022, 4, 8, 10, 0),
+                 starts_at: DateTime.new(2022, 4, 11, 10, 0))
   end
   let!(:accompagnement_rdv) { create(:rdv, rdv_contexts: [rdv_context_accompagnement]) }
   let!(:irrelevant_rdv) { create(:rdv) }
@@ -52,8 +52,8 @@ describe Stat do
     create(:applicant, organisations: [relevant_organisation],
                        rdvs: [orientation_rdv, orientation_platform_rdv, accompagnement_rdv],
                        rdv_contexts: [rdv_context_orientation],
-                       rights_opening_date: DateTime.new(2022, 4, 2, 10, 0),
-                       created_at: DateTime.new(2022, 4, 1, 10, 0))
+                       rights_opening_date: DateTime.new(2022, 3, 2, 10, 0),
+                       created_at: DateTime.new(2022, 3, 1, 10, 0))
   end
   let!(:relevant_orientation_platform_applicant) do
     create(:applicant, organisations: [relevant_organisation, irrelevant_organisation],
@@ -160,7 +160,7 @@ describe Stat do
   describe "#relevant_rdv_contexts" do
     let!(:rdv_context_with_no_rdv) { create(:rdv_context, context: "rsa_accompagnement") }
     let!(:invitation3) do
-      create(:invitation, sent_at: DateTime.new(2022, 5, 7, 10, 0), rdv_context: rdv_context_with_no_rdv)
+      create(:invitation, sent_at: DateTime.new(2022, 4, 7, 10, 0), rdv_context: rdv_context_with_no_rdv)
     end
     let!(:relevant_applicant2) do
       create(:applicant, organisations: [relevant_organisation],
@@ -225,7 +225,7 @@ describe Stat do
 
   describe "#average_time_between_invitation_and_rdv_in_days_by_month" do
     it "computes the average time by month between first invitation and first rdv in days" do
-      expect(subject.average_time_between_invitation_and_rdv_in_days_by_month).to eq({ "04/2022" => 3, "05/2022" => 1 })
+      expect(subject.average_time_between_invitation_and_rdv_in_days_by_month).to eq({ "03/2022" => 3, "04/2022" => 1 })
     end
   end
 
@@ -238,7 +238,7 @@ describe Stat do
   describe "#average_time_between_rdv_creation_and_start_in_days_by_month" do
     it "computes the average time by month between the creation of the rdvs and the rdvs date in days" do
       expect(subject.average_time_between_rdv_creation_and_start_in_days_by_month).to eq(
-        { "04/2022" => 1, "05/2022" => 5 }
+        { "03/2022" => 1, "04/2022" => 5 }
       )
     end
   end
@@ -251,7 +251,7 @@ describe Stat do
 
   describe "#percentage_of_no_show_by_month" do
     it "computes the percentage of no show by month" do
-      expect(subject.percentage_of_no_show_by_month).to eq({ "04/2022" => 0, "05/2022" => 100 })
+      expect(subject.percentage_of_no_show_by_month).to eq({ "03/2022" => 0, "04/2022" => 100 })
     end
   end
 
@@ -313,8 +313,8 @@ describe Stat do
     let!(:rdv_context_orientation2) { create(:rdv_context, context: "rsa_orientation") }
     let!(:orientation_rdv2) do
       create(:rdv, rdv_contexts: [rdv_context_orientation2],
-                   created_at: DateTime.new(2022, 4, 16, 10, 0),
-                   starts_at: DateTime.new(2022, 4, 17, 10, 0),
+                   created_at: DateTime.new(2022, 3, 16, 10, 0),
+                   starts_at: DateTime.new(2022, 3, 17, 10, 0),
                    status: "seen")
     end
     let!(:relevant_applicant2) do
@@ -322,7 +322,7 @@ describe Stat do
                          rdvs: [orientation_rdv2],
                          rdv_contexts: [rdv_context_orientation2],
                          rights_opening_date: nil,
-                         created_at: DateTime.new(2022, 3, 5, 10, 0))
+                         created_at: DateTime.new(2022, 2, 5, 10, 0))
     end
 
     describe "#percentage_of_applicants_oriented_in_less_than_30_days" do
@@ -334,8 +334,8 @@ describe Stat do
     describe "#percentage_of_applicants_oriented_in_less_than_30_days_by_month" do
       it "computes the percentage by month of applicants oriented in less than 30 days" do
         expect(subject.percentage_of_applicants_oriented_in_less_than_30_days_by_month).to eq(
-          { "03/2022" => 0,
-            "04/2022" => 100 }
+          { "02/2022" => 0,
+            "03/2022" => 100 }
         )
       end
     end

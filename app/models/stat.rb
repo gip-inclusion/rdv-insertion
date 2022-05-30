@@ -40,7 +40,8 @@ class Stat
   end
 
   def orientation_rdvs_by_month
-    @orientation_rdvs_by_month ||= orientation_rdvs.group_by { |m| m.created_at.beginning_of_month }
+    @orientation_rdvs_by_month ||= orientation_rdvs.order(created_at: :asc)
+                                                   .group_by { |m| m.created_at.beginning_of_month }
   end
 
   def relevant_rdv_contexts
@@ -63,6 +64,8 @@ class Stat
     cumulated_invitation_delays_by_month = {}
     rdv_contexts_by_month = relevant_rdv_contexts.group_by { |m| m.created_at.beginning_of_month }
     rdv_contexts_by_month.each do |date, rdv_contexts|
+      next if date.strftime("%m/%Y") == Time.zone.today.strftime("%m/%Y")
+
       result = compute_average_time_between_invitation_and_rdv_in_days(rdv_contexts)
       cumulated_invitation_delays_by_month[date.strftime("%m/%Y")] = result.round
     end
@@ -86,6 +89,8 @@ class Stat
   def average_time_between_rdv_creation_and_start_in_days_by_month
     cumulated_time_between_rdv_creation_and_starts_by_month = {}
     orientation_rdvs_by_month.each do |date, rdvs|
+      next if date.strftime("%m/%Y") == Time.zone.today.strftime("%m/%Y")
+
       result = compute_average_time_between_rdv_creation_and_start_in_days(rdvs)
       cumulated_time_between_rdv_creation_and_starts_by_month[date.strftime("%m/%Y")] = result.round
     end
@@ -109,6 +114,8 @@ class Stat
   def percentage_of_no_show_by_month
     percentage_of_no_show_by_month = {}
     orientation_rdvs_by_month.each do |date, rdvs|
+      next if date.strftime("%m/%Y") == Time.zone.today.strftime("%m/%Y")
+
       result = compute_percentage_of_no_show(rdvs)
       percentage_of_no_show_by_month[date.strftime("%m/%Y")] = result.round
     end
@@ -127,9 +134,12 @@ class Stat
 
   def percentage_of_applicants_oriented_in_less_than_30_days_by_month
     percentage_of_applicants_oriented_in_less_than_30_days_by_month = {}
-    applicants_by_month = applicants_for_30_days_orientation_scope.group_by { |m| m.created_at.beginning_of_month }
+    applicants_by_month = applicants_for_30_days_orientation_scope.order(created_at: :asc)
+                                                                  .group_by { |m| m.created_at.beginning_of_month }
 
     applicants_by_month.each do |date, applicants|
+      next if date.strftime("%m/%Y") == Time.zone.today.strftime("%m/%Y")
+
       result = compute_percentage_of_applicants_oriented_in_less_than_30_days(applicants)
       percentage_of_applicants_oriented_in_less_than_30_days_by_month[date.strftime("%m/%Y")] = result.round
     end
