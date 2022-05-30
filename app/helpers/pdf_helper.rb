@@ -12,9 +12,7 @@ module PdfHelper
   end
 
   def organisation_or_department_logo(department_name, organisation_name = nil)
-    return if Rails.env.test?
-
-    logo_name = if organisation_name && organisation_logo_is_present(organisation_name)
+    logo_name = if organisation_name && logo_is_present(organisation_name)
                   organisation_name
                 else
                   department_name
@@ -23,15 +21,15 @@ module PdfHelper
     pdf_image_tag(logo_name)
   end
 
-  def organisation_logo_is_present(organisation_name)
-    Webpacker.manifest.lookup("media/images/logos/#{organisation_name}.svg") ||
-      Webpacker.manifest.lookup("media/images/logos/#{organisation_name}.png") ||
-      Webpacker.manifest.lookup("media/images/logos/#{organisation_name}.jpg")
+  def logo_is_present(logo_name)
+    Webpacker.manifest.lookup("media/images/logos/#{logo_name}.svg") ||
+      Webpacker.manifest.lookup("media/images/logos/#{logo_name}.png") ||
+      Webpacker.manifest.lookup("media/images/logos/#{logo_name}.jpg")
   end
 
   def logo_format(logo_name)
     return "svg" if Webpacker.manifest.lookup("media/images/logos/#{logo_name}.svg")
-    return "png" if Webpacker.manifest.lookup("media/images/logos/#{logo_name}.pgn")
+    return "png" if Webpacker.manifest.lookup("media/images/logos/#{logo_name}.png")
     return "jpg" if Webpacker.manifest.lookup("media/images/logos/#{logo_name}.jpg")
   end
 end
