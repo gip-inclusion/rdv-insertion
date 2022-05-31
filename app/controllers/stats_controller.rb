@@ -22,9 +22,7 @@ class StatsController < ApplicationController
     set_stats_datas
   end
 
-  def deployment_map
-    @deployment_map = true
-  end
+  def deployment_map; end
 
   private
 

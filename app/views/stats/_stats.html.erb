@@ -12,7 +12,7 @@
       <%= line_chart @stats.rdvs.group_by_month(:created_at, format: "%m/%Y", current: false).count, title: "Nouveaux rdvs par mois", colors: ["#083b66"] %>
     </div>
   </div>
-  <% if !@department || @display_all_stats %>
+  <% if current_page?(action: 'index') || @display_all_stats %>
     <div class="row d-flex justify-content-center flex-wrap-reverse">
       <div class="col-12 col-md-6 px-5 pb-5 background-blue-light">
         <p class="highlight-stat big margin-left"><%= @stats.sent_invitations.to_a.count %></p>
@@ -45,7 +45,7 @@
       </div>
       <div class="col-12 col-md-6 px-5 pb-5 d-flex flex-column justify-content-center align-items-center">
         <p class="highlight-stat big margin-left"><%= @stats.relevant_agents.to_a.count %> agents</p>
-        <% if @department_count %>
+        <% if current_page?(action: 'index') %>
           <p class="highlight-stat margin-left">travaillant pour <strong><%= @department_count %> départements</strong><br/> utilisent RDV-Insertion</p>
         <% else %>
           <p class="highlight-stat margin-left">utilisent RDV-Insertion</p>
