@@ -22,7 +22,7 @@ class RdvContext < ApplicationRecord
   scope :attention_needed, -> { status(STATUSES_WITH_ATTENTION_NEEDED) }
   scope :invited_before_time_window, lambda { |number_of_days_before_action_required|
     where(id: RdvContext.includes(:invitations).select(&:first_sent_invitation).map(&:id))
-    .where.not(id: Invitation.sent_in_time_window(number_of_days_before_action_required).pluck(:rdv_context_id).uniq)
+      .where.not(id: Invitation.sent_in_time_window(number_of_days_before_action_required).pluck(:rdv_context_id).uniq)
   }
   scope :with_sent_invitations, -> { where(id: joins(:invitations).where.not(invitations: { sent_at: nil })) }
 
