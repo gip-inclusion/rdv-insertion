@@ -7,8 +7,10 @@ class NotifyApplicantJob < ApplicationJob
     @rdv_solidarites_rdv = RdvSolidarites::Rdv.new(rdv_attributes)
     @event = event
 
-    return send_already_notified_to_mattermost if already_notified?
-    raise NotificationsJobError, notify_applicant.errors.join(" - ") unless notify_applicant.success?
+    Rdv.with_advisory_lock "notifying_for_rdv_#{@rdv_solidarites_rdv.id}" do
+      return send_already_notified_to_mattermost if already_notified?
+      raise NotificationsJobError, notify_applicant.errors.join(" - ") unless notify_applicant.success?
+    end
   end
 
   private

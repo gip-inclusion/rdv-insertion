@@ -17,7 +17,8 @@ describe RdvSolidaritesWebhooks::ProcessOrganisationJob, type: :job do
   let!(:meta) do
     {
       "model" => "Organisation",
-      "event" => "updated"
+      "event" => "updated",
+      "timestamp" => "2022-05-30 14:44:22 +0200"
     }.deep_symbolize_keys
   end
 
@@ -30,7 +31,7 @@ describe RdvSolidaritesWebhooks::ProcessOrganisationJob, type: :job do
 
     it "enqueues upsert record job" do
       expect(UpsertRecordJob).to receive(:perform_async)
-        .with("Organisation", data)
+        .with("Organisation", data, { last_webhook_update_received_at: "2022-05-30 14:44:22 +0200" })
       subject
     end
 
