@@ -24,7 +24,7 @@ describe SendRdvSolidaritesWebhookJob, type: :job do
   end
 
   describe "#perform" do
-    let!(:now) { Date.new(2022, 7, 22) }
+    let!(:now) { Time.zone.parse("2020-05-02 15:05") }
     let!(:exp) { (now + 10.minutes).to_i }
     let!(:jwt_payload) do
       { id: rdv_solidarites_rdv_id, address: "20 avenue de Ségur 75015 Paris", starts_at: "20-12-2022" }
@@ -63,7 +63,7 @@ describe SendRdvSolidaritesWebhookJob, type: :job do
 
     it "adds timestamp to the receipt" do
       expect(webhook_receipt).to receive(:update!)
-        .with(rdvs_timestamp: "2020-05-02 15:02".to_datetime, sent_at: now.to_time)
+        .with(rdvs_timestamp: "2020-05-02 15:02".to_datetime, sent_at: now)
       subject
     end
 
