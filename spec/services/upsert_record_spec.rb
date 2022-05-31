@@ -28,7 +28,7 @@ describe UpsertRecord, type: :service do
         .with(rdv_solidarites_rdv_id: rdv_solidarites_rdv_id)
         .and_return(rdv)
       allow(rdv).to receive(:save!)
-      allow(rdv).to receive(:changed?)
+      allow(rdv).to receive(:changed?).and_return(true)
     end
 
     it "retrieves the rdv if present" do
@@ -44,6 +44,25 @@ describe UpsertRecord, type: :service do
       expect(rdv.status).to eq(status)
       expect(rdv.applicant_ids).to eq(applicant_ids)
       expect(rdv.id).not_to eq(rdv_solidarites_rdv_id)
+    end
+
+    it "saves the record" do
+      expect(rdv).to receive(:assign_attributes)
+      expect(rdv).to receive(:save!)
+      subject
+    end
+
+    context "when it is an old update" do
+      let!(:additional_attributes) { { last_webhook_update_received_at: "2021-09-08 11:05:00 UTC" } }
+      let!(:rdv) do
+        create(:rdv, last_webhook_update_received_at: "2021-09-08 11:06:00 UTC")
+      end
+
+      it "does not update the rdv" do
+        expect(rdv).not_to receive(:assign_attributes)
+        expect(rdv).not_to receive(:save!)
+        subject
+      end
     end
   end
 end

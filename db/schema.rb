@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_05_23_193814) do
+ActiveRecord::Schema[7.0].define(version: 2022_05_30_135315) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -48,6 +48,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_23_193814) do
     t.string "archiving_reason"
     t.boolean "is_archived", default: false
     t.datetime "deleted_at"
+    t.datetime "last_webhook_update_received_at"
     t.index ["department_id"], name: "index_applicants_on_department_id"
     t.index ["department_internal_id", "department_id"], name: "index_applicants_on_department_internal_id_and_department_id", unique: true
     t.index ["rdv_solidarites_user_id"], name: "index_applicants_on_rdv_solidarites_user_id", unique: true
@@ -151,6 +152,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_23_193814) do
     t.bigint "department_id"
     t.bigint "responsible_id"
     t.bigint "letter_configuration_id"
+    t.datetime "last_webhook_update_received_at"
     t.index ["department_id"], name: "index_organisations_on_department_id"
     t.index ["letter_configuration_id"], name: "index_organisations_on_letter_configuration_id"
     t.index ["rdv_solidarites_organisation_id"], name: "index_organisations_on_rdv_solidarites_organisation_id", unique: true
@@ -195,6 +197,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_23_193814) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "organisation_id"
+    t.datetime "last_webhook_update_received_at"
     t.index ["created_by"], name: "index_rdvs_on_created_by"
     t.index ["organisation_id"], name: "index_rdvs_on_organisation_id"
     t.index ["rdv_solidarites_rdv_id"], name: "index_rdvs_on_rdv_solidarites_rdv_id", unique: true
