@@ -42,6 +42,6 @@ module InvitableConcern
   end
 
   def invited_before_time_window?(number_of_days_before_action_required)
-    last_invitation_sent_at && last_invitation_sent_at < number_of_days_before_action_required.days.ago
+    first_invitation_sent_at && first_invitation_sent_at < number_of_days_before_action_required.days.ago
   end
 end
