@@ -8,7 +8,6 @@ class Stat
   # We don't include in the scope the organisations who don't invite the applicants
   def relevant_organisations
     @relevant_organisations ||= organisations
-                                .includes(:applicants, :rdvs)
                                 .joins(:configurations)
                                 .where(configurations: { notify_applicant: false })
   end
@@ -43,7 +42,7 @@ class Stat
 
   def orientation_rdvs_by_month
     @orientation_rdvs_by_month ||= orientation_rdvs.order(created_at: :asc)
-                                                   .group_by { |m| m.created_at.beginning_of_month.strftime("%m/%Y") }
+                                                   .group_by { |rdv| rdv.created_at.beginning_of_month.strftime("%m/%Y") }
                                                    .except(Time.zone.today.strftime("%m/%Y"))
   end
 
@@ -55,9 +54,10 @@ class Stat
   end
 
   def relevant_rdv_contexts_by_month
-    relevant_rdv_contexts.order(created_at: :asc)
-                         .group_by { |m| m.created_at.beginning_of_month.strftime("%m/%Y") }
-                         .except(Time.zone.today.strftime("%m/%Y"))
+    @relevant_rdv_contexts_by_month ||= \
+      relevant_rdv_contexts.order(created_at: :asc)
+                           .group_by { |rdv_context| rdv_context.created_at.beginning_of_month.strftime("%m/%Y") }
+                           .except(Time.zone.today.strftime("%m/%Y"))
   end
 
   def sent_invitations
@@ -156,21 +156,24 @@ class Stat
   end
 
   def applicants_for_30_days_orientation_scope_by_month
-    applicants_for_30_days_orientation_scope.order(created_at: :asc)
-                                            .group_by { |m| m.created_at.beginning_of_month.strftime("%m/%Y") }
-                                            .except(Time.zone.today.strftime("%m/%Y"))
+    @applicants_for_30_days_orientation_scope_by_month ||= \
+      applicants_for_30_days_orientation_scope
+      .order(created_at: :asc)
+      .group_by { |m| m.created_at.beginning_of_month.strftime("%m/%Y") }
+      .except(Time.zone.today.strftime("%m/%Y"))
   end
 
   def applicants_for_30_days_orientation_scope
     # Bénéficiaires avec dont le droit est ouvert depuis 30 jours au moins
     # et qui ont été invités dans un contexte d'orientation
-    relevant_applicants.where("rights_opening_date < ?", 30.days.ago)
-                       .or(relevant_applicants.where(rights_opening_date: nil)
-                                     .where("applicants.created_at < ?", 27.days.ago))
-                       .joins(:rdv_contexts)
-                       .where(rdv_contexts: {
-                                context: %w[rsa_orientation]
-                              })
+    @applicants_for_30_days_orientation_scope ||= \
+      relevant_applicants.where("rights_opening_date < ?", 30.days.ago)
+                         .or(relevant_applicants.where(rights_opening_date: nil)
+                                       .where("applicants.created_at < ?", 27.days.ago))
+                         .joins(:rdv_contexts)
+                         .where(rdv_contexts: {
+                                  context: %w[rsa_orientation]
+                                })
   end
   # -----------------------------------------------------------------------------------------
 end

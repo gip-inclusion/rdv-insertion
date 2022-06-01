@@ -2,8 +2,6 @@ class StatsController < ApplicationController
   skip_before_action :authenticate_agent!, only: [:index, :show, :deployment_map]
   before_action :set_department, only: [:show]
 
-  include StatsConcern
-
   def index
     @department_count = Department.count
     collect_datas_for_stats
@@ -11,7 +9,7 @@ class StatsController < ApplicationController
   end
 
   def show
-    @applicants = @department.applicants.includes(:rdvs, :invitations).preload(rdv_contexts: [:rdvs])
+    @applicants = @department.applicants.preload(rdv_contexts: [:rdvs])
     @agents = @department.agents
     @invitations = @department.invitations
     @rdvs = @department.rdvs
@@ -29,5 +27,19 @@ class StatsController < ApplicationController
   def set_department
     @department = Department.includes(organisations: [:rdvs, :applicants, :invitations, :agents])
                             .find(params[:id])
+  end
+
+  def set_stats_datas
+    @stats = Stat.new(applicants: @applicants, agents: @agents, invitations: @invitations,
+                      rdvs: @rdvs, rdv_contexts: @rdv_contexts, organisations: @organisations)
+  end
+
+  def collect_datas_for_stats
+    @organisations = Organisation.all
+    @applicants = Applicant.all.preload(rdv_contexts: :rdvs)
+    @agents = Agent.all
+    @invitations = Invitation.all
+    @rdvs = Rdv.all
+    @rdv_contexts = RdvContext.all.preload(:rdvs, :invitations)
   end
 end
