@@ -41,9 +41,10 @@ class Stat
   end
 
   def orientation_rdvs_by_month
-    @orientation_rdvs_by_month ||= orientation_rdvs.order(created_at: :asc)
-                                                   .group_by { |rdv| rdv.created_at.beginning_of_month.strftime("%m/%Y") }
-                                                   .except(Time.zone.today.strftime("%m/%Y"))
+    @orientation_rdvs_by_month ||= \
+      orientation_rdvs.order(created_at: :asc)
+                      .group_by { |rdv| rdv.created_at.beginning_of_month.strftime("%m/%Y") }
+                      .except(Time.zone.today.strftime("%m/%Y"))
   end
 
   def relevant_rdv_contexts
