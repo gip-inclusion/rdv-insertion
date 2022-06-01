@@ -4,7 +4,7 @@ class InvitationMailer < ApplicationMailer
     @applicant = applicant
     mail(
       to: @applicant.email,
-      subject: "Prenez RDV pour votre RSA"
+      subject: "RDV d'orientation dans le cadre de votre RSA"
     )
   end
 
@@ -13,7 +13,7 @@ class InvitationMailer < ApplicationMailer
     @applicant = applicant
     mail(
       to: @applicant.email,
-      subject: "Prenez RDV pour votre RSA"
+      subject: "RDV d'accompagnement dans le cadre de votre RSA"
     )
   end
 
@@ -22,7 +22,7 @@ class InvitationMailer < ApplicationMailer
     @applicant = applicant
     mail(
       to: @applicant.email,
-      subject: "Prenez un RDV téléphonique pour votre RSA"
+      subject: "RDV d'orientation téléphonique dans le cadre de votre RSA"
     )
   end
 end
