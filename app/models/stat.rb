@@ -1,3 +1,5 @@
+# rubocop:disable Metrics/ClassLength
+
 class Stat
   include ActiveModel::Model
 
@@ -6,7 +8,6 @@ class Stat
   # We don't include in the scope the organisations who don't invite the applicants
   def relevant_organisations
     @relevant_organisations ||= organisations
-                                .includes(:applicants, :rdvs)
                                 .joins(:configurations)
                                 .where(configurations: { notify_applicant: false })
   end
@@ -40,7 +41,10 @@ class Stat
   end
 
   def orientation_rdvs_by_month
-    @orientation_rdvs_by_month ||= orientation_rdvs.group_by { |m| m.created_at.beginning_of_month }
+    @orientation_rdvs_by_month ||= \
+      orientation_rdvs.order(created_at: :asc)
+                      .group_by { |rdv| rdv.created_at.beginning_of_month.strftime("%m/%Y") }
+                      .except(Time.zone.today.strftime("%m/%Y"))
   end
 
   def relevant_rdv_contexts
@@ -48,6 +52,13 @@ class Stat
                                            .where.associated(:rdvs)
                                            .with_sent_invitations
                                            .distinct
+  end
+
+  def relevant_rdv_contexts_by_month
+    @relevant_rdv_contexts_by_month ||= \
+      relevant_rdv_contexts.order(created_at: :asc)
+                           .group_by { |rdv_context| rdv_context.created_at.beginning_of_month.strftime("%m/%Y") }
+                           .except(Time.zone.today.strftime("%m/%Y"))
   end
 
   def sent_invitations
@@ -61,10 +72,9 @@ class Stat
 
   def average_time_between_invitation_and_rdv_in_days_by_month
     cumulated_invitation_delays_by_month = {}
-    rdv_contexts_by_month = relevant_rdv_contexts.group_by { |m| m.created_at.beginning_of_month }
-    rdv_contexts_by_month.each do |date, rdv_contexts|
+    relevant_rdv_contexts_by_month.each do |date, rdv_contexts|
       result = compute_average_time_between_invitation_and_rdv_in_days(rdv_contexts)
-      cumulated_invitation_delays_by_month[date.strftime("%m/%Y")] = result.round
+      cumulated_invitation_delays_by_month[date] = result.round
     end
     cumulated_invitation_delays_by_month
   end
@@ -87,7 +97,7 @@ class Stat
     cumulated_time_between_rdv_creation_and_starts_by_month = {}
     orientation_rdvs_by_month.each do |date, rdvs|
       result = compute_average_time_between_rdv_creation_and_start_in_days(rdvs)
-      cumulated_time_between_rdv_creation_and_starts_by_month[date.strftime("%m/%Y")] = result.round
+      cumulated_time_between_rdv_creation_and_starts_by_month[date] = result.round
     end
     cumulated_time_between_rdv_creation_and_starts_by_month
   end
@@ -110,7 +120,7 @@ class Stat
     percentage_of_no_show_by_month = {}
     orientation_rdvs_by_month.each do |date, rdvs|
       result = compute_percentage_of_no_show(rdvs)
-      percentage_of_no_show_by_month[date.strftime("%m/%Y")] = result.round
+      percentage_of_no_show_by_month[date] = result.round
     end
     percentage_of_no_show_by_month
   end
@@ -127,11 +137,9 @@ class Stat
 
   def percentage_of_applicants_oriented_in_less_than_30_days_by_month
     percentage_of_applicants_oriented_in_less_than_30_days_by_month = {}
-    applicants_by_month = applicants_for_30_days_orientation_scope.group_by { |m| m.created_at.beginning_of_month }
-
-    applicants_by_month.each do |date, applicants|
+    applicants_for_30_days_orientation_scope_by_month.each do |date, applicants|
       result = compute_percentage_of_applicants_oriented_in_less_than_30_days(applicants)
-      percentage_of_applicants_oriented_in_less_than_30_days_by_month[date.strftime("%m/%Y")] = result.round
+      percentage_of_applicants_oriented_in_less_than_30_days_by_month[date] = result.round
     end
     percentage_of_applicants_oriented_in_less_than_30_days_by_month
   end
@@ -148,16 +156,27 @@ class Stat
     end
   end
 
+  def applicants_for_30_days_orientation_scope_by_month
+    @applicants_for_30_days_orientation_scope_by_month ||= \
+      applicants_for_30_days_orientation_scope
+      .order(created_at: :asc)
+      .group_by { |m| m.created_at.beginning_of_month.strftime("%m/%Y") }
+      .except(Time.zone.today.strftime("%m/%Y"))
+  end
+
   def applicants_for_30_days_orientation_scope
     # Bénéficiaires avec dont le droit est ouvert depuis 30 jours au moins
     # et qui ont été invités dans un contexte d'orientation
-    relevant_applicants.where("rights_opening_date < ?", 30.days.ago)
-                       .or(relevant_applicants.where(rights_opening_date: nil)
-                                     .where("applicants.created_at < ?", 27.days.ago))
-                       .joins(:rdv_contexts)
-                       .where(rdv_contexts: {
-                                context: %w[rsa_orientation]
-                              })
+    @applicants_for_30_days_orientation_scope ||= \
+      relevant_applicants.where("rights_opening_date < ?", 30.days.ago)
+                         .or(relevant_applicants.where(rights_opening_date: nil)
+                                       .where("applicants.created_at < ?", 27.days.ago))
+                         .joins(:rdv_contexts)
+                         .where(rdv_contexts: {
+                                  context: %w[rsa_orientation]
+                                })
   end
   # -----------------------------------------------------------------------------------------
 end
+
+# rubocop: enable Metrics/ClassLength

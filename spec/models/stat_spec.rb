@@ -4,6 +4,8 @@ describe Stat do
                         rdvs: Rdv.all, rdv_contexts: RdvContext.all, organisations: Organisation.all)
   end
 
+  before { travel_to("2022-06-10".to_time) }
+
   let!(:configuration) { create(:configuration, notify_applicant: false) }
   let!(:configuration_notify) { create(:configuration, notify_applicant: true) }
 
@@ -157,6 +159,21 @@ describe Stat do
     end
   end
 
+  describe "#orientation_rdvs_by_month" do
+    let!(:current_month_orientation_rdv) do
+      create(:rdv, rdv_contexts: [rdv_context_orientation],
+                   created_at: DateTime.new(2022, 6, 7, 10, 0),
+                   starts_at: DateTime.new(2022, 6, 8, 10, 0),
+                   status: "seen")
+    end
+
+    context "when a rdv belongs to current month" do
+      it "is filtered" do
+        expect(subject.orientation_rdvs_by_month).not_to include(current_month_orientation_rdv)
+      end
+    end
+  end
+
   describe "#relevant_rdv_contexts" do
     let!(:rdv_context_with_no_rdv) { create(:rdv_context, context: "rsa_accompagnement") }
     let!(:invitation3) do
@@ -197,6 +214,16 @@ describe Stat do
     context "when a rdv_context has a rdv but no invitation" do
       it "is filtered" do
         expect(subject.relevant_rdv_contexts).not_to include(rdv_context_with_no_invitation)
+      end
+    end
+  end
+
+  describe "#relevant_rdv_contexts_by_month" do
+    context "when a rdv_context belongs to current month" do
+      it "is filtered" do
+        rdv_context_orientation.created_at = DateTime.new(2022, 6, 4, 10, 0)
+        rdv_context_orientation.save
+        expect(subject.orientation_rdvs_by_month).not_to include(rdv_context_orientation)
       end
     end
   end
@@ -305,6 +332,16 @@ describe Stat do
     context "when an applicant is in time scope and has no rsa_orientation rdv_context" do
       it "is filtered" do
         expect(subject.applicants_for_30_days_orientation_scope).not_to include(relevant_orientation_platform_applicant)
+      end
+    end
+  end
+
+  describe "#applicants_for_30_days_orientation_scope_by_month" do
+    context "when an applicant was created in current month" do
+      it "is filtered" do
+        relevant_applicant.created_at = DateTime.new(2022, 6, 4, 10, 0)
+        relevant_applicant.save
+        expect(subject.applicants_for_30_days_orientation_scope_by_month).not_to include(relevant_applicant)
       end
     end
   end

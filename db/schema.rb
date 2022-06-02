@@ -220,6 +220,17 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_01_160812) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "webhook_receipts", force: :cascade do |t|
+    t.bigint "rdv_solidarites_rdv_id"
+    t.datetime "rdvs_webhook_timestamp"
+    t.datetime "sent_at"
+    t.bigint "webhook_endpoint_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["rdv_solidarites_rdv_id"], name: "index_webhook_receipts_on_rdv_solidarites_rdv_id", unique: true
+    t.index ["webhook_endpoint_id"], name: "index_webhook_receipts_on_webhook_endpoint_id"
+  end
+
   add_foreign_key "applicants", "departments"
   add_foreign_key "invitations", "applicants"
   add_foreign_key "invitations", "departments"
@@ -230,4 +241,5 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_01_160812) do
   add_foreign_key "organisations", "responsibles"
   add_foreign_key "rdv_contexts", "applicants"
   add_foreign_key "rdvs", "organisations"
+  add_foreign_key "webhook_receipts", "webhook_endpoints"
 end
