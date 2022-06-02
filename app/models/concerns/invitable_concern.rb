@@ -1,8 +1,20 @@
 module InvitableConcern
   extend ActiveSupport::Concern
 
+  def last_seen_rdv
+    rdvs.seen.max_by(&:starts_at)
+  end
+
+  def last_seen_rdv_starts_at
+    last_seen_rdv&.starts_at
+  end
+
   def first_sent_invitation
-    invitations.select(&:sent_at).min_by(&:sent_at)
+    if rdvs.seen.present? && status != "rdv_seen"
+      invitations.where("sent_at > ?", last_seen_rdv_starts_at).select(&:sent_at).min_by(&:sent_at)
+    else
+      invitations.select(&:sent_at).min_by(&:sent_at)
+    end
   end
 
   def first_invitation_sent_at

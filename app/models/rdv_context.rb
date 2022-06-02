@@ -21,8 +21,7 @@ class RdvContext < ApplicationRecord
   }
   scope :attention_needed, -> { status(STATUSES_WITH_ATTENTION_NEEDED) }
   scope :invited_before_time_window, lambda { |number_of_days_before_action_required|
-    where(id: RdvContext.includes(:invitations).select(&:first_sent_invitation).map(&:id))
-      .where.not(id: Invitation.sent_in_time_window(number_of_days_before_action_required).pluck(:rdv_context_id).uniq)
+    where(id: joins(:invitations).where("invitations.sent_at < ?", number_of_days_before_action_required.days.ago))
   }
   scope :with_sent_invitations, -> { where(id: joins(:invitations).where.not(invitations: { sent_at: nil })) }
 
@@ -44,6 +43,7 @@ class RdvContext < ApplicationRecord
   end
 
   def time_between_invitation_and_rdv_in_days
+    first_invitation_sent_at = invitations.select(&:sent_at).min_by(&:sent_at).sent_at
     first_rdv_creation_date.to_datetime.mjd - first_invitation_sent_at.to_datetime.mjd
   end
 end
