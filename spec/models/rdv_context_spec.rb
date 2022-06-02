@@ -35,7 +35,7 @@ describe RdvContext do
         let!(:invitation) { create(:invitation, rdv_context: rdv_context, sent_at: 5.days.ago) }
         let!(:invitation2) { create(:invitation, rdv_context: rdv_context, sent_at: 2.hours.ago) }
 
-        it "does not retrieve the rdv_context" do
+        it "retrieve the rdv_context" do
           expect(subject).to include(rdv_context)
         end
       end
@@ -138,12 +138,6 @@ describe RdvContext do
         let!(:invitation2) { create(:invitation, sent_at: 1.day.ago) }
         let!(:rdv_context) { create(:rdv_context, invitations: [invitation, invitation2]) }
 
-        context "first_sent_invitation" do
-          it "is selecting the right invitation" do
-            expect(rdv_context.first_sent_invitation).to eq(invitation)
-          end
-        end
-
         context "when invited in time window" do
           it "is false" do
             expect(rdv_context.invited_before_time_window?(number_of_days_before_action_required)).to eq(false)
@@ -169,9 +163,9 @@ describe RdvContext do
                                rdvs: [rdv], invitations: [invitation, invitation2, invitation3])
         end
 
-        context "first_sent_invitation" do
+        context "first_current_invitation_sent_at" do
           it "is selecting the right invitation" do
-            expect(rdv_context.first_sent_invitation).to eq(invitation2)
+            expect(rdv_context.first_current_invitation_sent_at).to eq(invitation2.sent_at)
           end
         end
 

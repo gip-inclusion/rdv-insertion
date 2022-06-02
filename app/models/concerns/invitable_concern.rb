@@ -1,24 +1,16 @@
 module InvitableConcern
   extend ActiveSupport::Concern
 
-  def last_seen_rdv
-    rdvs.seen.max_by(&:starts_at)
-  end
-
-  def last_seen_rdv_starts_at
-    last_seen_rdv&.starts_at
-  end
-
   def first_sent_invitation
-    if rdvs.seen.present? && status != "rdv_seen"
-      invitations.where("sent_at > ?", last_seen_rdv_starts_at).select(&:sent_at).min_by(&:sent_at)
-    else
-      invitations.select(&:sent_at).min_by(&:sent_at)
-    end
+    invitations.select(&:sent_at).min_by(&:sent_at)
   end
 
   def first_invitation_sent_at
     first_sent_invitation&.sent_at
+  end
+
+  def first_current_invitation_sent_at
+    invitations.select { |invitation| invitation.sent_at > last_seen_rdv.starts_at }.map(&:sent_at).compact.min
   end
 
   def last_sent_invitation
@@ -54,6 +46,12 @@ module InvitableConcern
   end
 
   def invited_before_time_window?(number_of_days_before_action_required)
-    first_invitation_sent_at && first_invitation_sent_at < number_of_days_before_action_required.days.ago
+    invitation_date_to_compare = \
+      if last_seen_rdv.present? && status != "rdv_seen"
+        first_current_invitation_sent_at
+      else
+        first_invitation_sent_at
+      end
+    invitation_date_to_compare && invitation_date_to_compare < number_of_days_before_action_required.days.ago
   end
 end
