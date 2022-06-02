@@ -27,7 +27,7 @@ class SendRdvSolidaritesWebhookJob < ApplicationJob
   end
 
   def old_update?
-    webhook_receipt.persisted? && webhook_timestamp < webhook_receipt.rdvs_timestamp
+    webhook_receipt.persisted? && webhook_timestamp < webhook_receipt.rdvs_webhook_timestamp
   end
 
   def webhook_receipt
@@ -38,7 +38,7 @@ class SendRdvSolidaritesWebhookJob < ApplicationJob
   end
 
   def add_timestamps_to_receipt
-    webhook_receipt.update!(rdvs_timestamp: webhook_timestamp, sent_at: Time.zone.now)
+    webhook_receipt.update!(rdvs_webhook_timestamp: webhook_timestamp, sent_at: Time.zone.now)
   end
 
   def error_message_for(response)

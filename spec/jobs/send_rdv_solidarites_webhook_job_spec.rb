@@ -63,7 +63,7 @@ describe SendRdvSolidaritesWebhookJob, type: :job do
 
     it "adds timestamp to the receipt" do
       expect(webhook_receipt).to receive(:update!)
-        .with(rdvs_timestamp: "2020-05-02 15:02".to_datetime, sent_at: now)
+        .with(rdvs_webhook_timestamp: "2020-05-02 15:02".to_datetime, sent_at: now)
       subject
     end
 
@@ -89,7 +89,7 @@ describe SendRdvSolidaritesWebhookJob, type: :job do
     context "when it is an old webhook" do
       let!(:webhook_receipt) do
         create(:webhook_receipt,
-               webhook_endpoint: webhook_endpoint, rdvs_timestamp: "2020-05-02 15:03".to_datetime,
+               webhook_endpoint: webhook_endpoint, rdvs_webhook_timestamp: "2020-05-02 15:03".to_datetime,
                rdv_solidarites_rdv_id: rdv_solidarites_rdv_id, sent_at: now)
       end
 

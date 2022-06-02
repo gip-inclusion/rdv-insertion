@@ -221,7 +221,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_31_121857) do
 
   create_table "webhook_receipts", force: :cascade do |t|
     t.bigint "rdv_solidarites_rdv_id"
-    t.datetime "rdvs_timestamp"
+    t.datetime "rdvs_webhook_timestamp"
     t.datetime "sent_at"
     t.bigint "webhook_endpoint_id", null: false
     t.datetime "created_at", null: false
