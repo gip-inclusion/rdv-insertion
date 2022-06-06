@@ -28,7 +28,7 @@ export default function Applicant({
     allAttributesUpdate: false,
   });
 
-  const handleUpdateWithContactsDataFileClick = async (attribute = null) => {
+  const handleUpdateContactsDataClick = async (attribute = null) => {
     setIsLoading({ ...isLoading, [`${attribute}Update`]: true });
 
     const attributes = {};
@@ -321,7 +321,7 @@ export default function Applicant({
                       <button
                         type="submit"
                         className="btn btn-primary btn-blue btn-sm mt-2"
-                        onClick={() => handleUpdateWithContactsDataFileClick(attributeName)}
+                        onClick={() => handleUpdateContactsDataClick(attributeName)}
                       >
                         {isLoading[`${attributeName}Update`] || isLoading.allAttributesUpdate
                           ? "En cours..."
@@ -339,7 +339,7 @@ export default function Applicant({
               <button
                 type="submit"
                 className="btn btn-primary btn-blue"
-                onClick={() => handleUpdateWithContactsDataFileClick("allAttributes")}
+                onClick={() => handleUpdateContactsDataClick("allAttributes")}
               >
                 {isLoading.emailUpdate ||
                 isLoading.phoneNumberUpdate ||

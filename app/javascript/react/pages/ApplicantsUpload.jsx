@@ -10,7 +10,7 @@ import getHeaderNames from "../lib/getHeaderNames";
 import checkColumnNames from "../lib/checkColumnNames";
 import displayMissingColumnsWarning from "../lib/displayMissingColumnsWarning";
 import retrieveUpToDateApplicants from "../lib/retrieveUpToDateApplicants";
-import retrieveApplicantContactsData from "../lib/retrieveApplicantContactsData";
+import parseContactsData from "../lib/parseContactsData";
 import updateApplicantContactsData from "../lib/updateApplicantContactsData";
 import retrieveContactsData from "../lib/retrieveContactsData";
 import { initReducer, reducerFactory } from "../../lib/reducers";
@@ -185,9 +185,7 @@ export default function ApplicantsUpload({ organisation, configuration, departme
             applicant.affiliationNumber?.padStart(7, "0")
         );
         if (applicantContactsData) {
-          const parsedApplicantContactsData = await retrieveApplicantContactsData(
-            applicantContactsData
-          );
+          const parsedApplicantContactsData = await parseContactsData(applicantContactsData);
           applicant = await updateApplicantContactsData(applicant, parsedApplicantContactsData);
         }
       })

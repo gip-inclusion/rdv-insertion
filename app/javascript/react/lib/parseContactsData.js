@@ -1,6 +1,6 @@
 import retrieveContactPhoneNumber from "../../lib/retrieveContactPhoneNumber";
 
-const retrieveApplicantContactsData = async (applicantContactsData) => {
+const parseContactsData = async (applicantContactsData) => {
   const phoneNumber = retrieveContactPhoneNumber(applicantContactsData);
   const email = applicantContactsData["ADRESSE ELECTRONIQUE DOSSIER"];
   const rightsOpeningDate = applicantContactsData["DATE DEBUT DROITS - DEVOIRS"];
@@ -8,4 +8,4 @@ const retrieveApplicantContactsData = async (applicantContactsData) => {
   return { phoneNumber, email, rightsOpeningDate };
 };
 
-export default retrieveApplicantContactsData;
+export default parseContactsData;
