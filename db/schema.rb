@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_01_160812) do
+ActiveRecord::Schema[7.0].define(version: 2022_06_06_163726) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -79,6 +79,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_01_160812) do
     t.integer "number_of_days_before_action_required", default: 3
     t.string "sms_sender_name", limit: 11
     t.string "signature_lines", array: true
+    t.string "help_address"
   end
 
   create_table "configurations_organisations", id: false, force: :cascade do |t|
@@ -130,7 +131,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_01_160812) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "sender_name"
-    t.string "sender_address_lines", array: true
   end
 
   create_table "notifications", force: :cascade do |t|

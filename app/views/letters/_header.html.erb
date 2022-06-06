@@ -8,16 +8,6 @@
     <% letter_configuration.direction_names.each do |direction_name| %>
       <p><%= direction_name.upcase %></p>
     <% end %>
-
-    <% if letter_configuration.sender_address_lines.present? %>
-      <p>
-        <% letter_configuration.sender_address_lines.each_with_index do |address_line, i| %>
-          <%= address_line.upcase %>
-          <%= tag(:br) unless letter_configuration.sender_address_lines.length == i + 1 %>
-        <% end %>
-      </p>
-    <% end %>
-
   </div>
   <div class="right-col">
     <p><%= letter_configuration.sender_city || department.capital %>, le <%= Date.today.strftime('%d/%m/%Y') %></p>

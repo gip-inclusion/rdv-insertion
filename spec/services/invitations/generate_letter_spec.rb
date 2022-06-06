@@ -7,10 +7,11 @@ describe Invitations::GenerateLetter, type: :service do
 
   let!(:applicant) { create(:applicant) }
   let!(:department) { create(:department) }
+  let!(:rdv_context) { create(:rdv_context) }
   let!(:invitation) do
     create(
       :invitation, content: nil, applicant: applicant, organisations: [organisation],
-                   department: department, format: "postal"
+                   department: department, format: "postal", rdv_context: rdv_context
     )
   end
   let!(:letter_configuration) { create(:letter_configuration) }
@@ -38,6 +39,36 @@ describe Invitations::GenerateLetter, type: :service do
       it "generates the pdf string with the right signature" do
         subject
         expect(invitation.content).to match(/Fabienne Bouchet/)
+      end
+    end
+
+    context "when the context is orientation" do
+      context "when the help address is configured" do
+        let!(:rdv_context) { create(:rdv_context, context: "rsa_orientation") }
+        let!(:configuration) do
+          create(:configuration, help_address: "10, rue du Conseil départemental 75001 Paris",
+                                 context: "rsa_orientation")
+        end
+
+        it "renders the mail with the help address" do
+          subject
+          expect(invitation.content).to match("10, rue du Conseil départemental 75001 Paris")
+        end
+      end
+    end
+
+    context "when the context is accompagnement" do
+      context "when the help address is configured" do
+        let!(:rdv_context) { create(:rdv_context, context: "rsa_accompagnement") }
+        let!(:configuration) do
+          create(:configuration, help_address: "10, rue du Conseil départemental 75001 Paris",
+                                 context: "rsa_accompagnement")
+        end
+
+        it "renders the mail with the help address" do
+          subject
+          expect(invitation.content).to match("10, rue du Conseil départemental 75001 Paris")
+        end
       end
     end
 

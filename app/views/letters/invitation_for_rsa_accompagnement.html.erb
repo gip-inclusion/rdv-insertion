@@ -13,7 +13,7 @@
   <p>Pour choisir un créneau à votre convenance, saisissez le code d’invitation ci-dessous <span class="bold-blue">sur <u><%= ENV['HOST'] %>/invitation</u></span>, puis suivez les instructions présentes à l'écran :</p>
   <div class="invitation-token">Mon code d'invitation<br/><%= invitation.token %></div>
   <p>Vous devez obligatoirement prendre ce rendez-vous <span class="bold-blue">dans un délai de <%= invitation.number_of_days_to_accept_invitation %> jours</span> à réception de ce courrier. <span class="bold-blue">En l'absence d'action de votre part, vous risquez une suspension du versement de votre RSA.</span></p>
-  <p>Si vous rencontrez une difficulté pour accéder à internet, veuillez téléphoner dès réception de ce courrier au <%= invitation.help_phone_number_formatted %>.</p>
+  <%= render 'common/invitations_help_message', configuration: configuration, invitation: invitation %>
   <p>Veuillez agréer, <%= applicant.title.capitalize %>, l’expression de mes salutations distinguées.</p>
   <div class="letter-signature">
     <%= render 'common/invitations_signature', configuration: configuration, department: department %>

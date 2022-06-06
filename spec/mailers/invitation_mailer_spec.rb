@@ -44,7 +44,15 @@ RSpec.describe InvitationMailer, type: :mailer do
       let!(:configuration) { create(:configuration, signature_lines: ["Fabienne Bouchet"]) }
 
       it "renders the mail with the right signature" do
-        expect(subject.body.encoded).to match(/Fabienne Bouchet/)
+        expect(subject.body.encoded).to match("Fabienne Bouchet")
+      end
+    end
+
+    context "when the help address is configured" do
+      let!(:configuration) { create(:configuration, help_address: "10, rue du Conseil départemental 75001 Paris") }
+
+      it "renders the mail with the right signature" do
+        expect(subject.body.encoded).to match("10, rue du Conseil départemental 75001 Paris")
       end
     end
   end
@@ -79,6 +87,14 @@ RSpec.describe InvitationMailer, type: :mailer do
 
       it "renders the mail with the right signature" do
         expect(subject.body.encoded).to match(/Fabienne Bouchet/)
+      end
+    end
+
+    context "when the help address is configured" do
+      let!(:configuration) { create(:configuration, help_address: "10, rue du Conseil départemental 75001 Paris") }
+
+      it "renders the mail with the right signature" do
+        expect(subject.body.encoded).to match("10, rue du Conseil départemental 75001 Paris")
       end
     end
   end

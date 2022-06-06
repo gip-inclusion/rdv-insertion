@@ -6,6 +6,6 @@
     Choisir un créneau
   <% end %>
 </p>
-<p>En cas de problème technique, contactez le <%= @invitation.help_phone_number_formatted %></p>
+<%= render 'common/invitations_help_message', configuration: @configuration, invitation: @invitation %>
 <p>À bientôt,</p>
-<%= render 'common/invitations_signature', configuration: @invitation.organisations.last.configurations.find_by(context: @invitation.context), department: @invitation.department %>
+<%= render 'common/invitations_signature', configuration: @configuration, department: @invitation.department %>
