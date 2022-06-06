@@ -8,4 +8,4 @@
 </p>
 <p>En cas de problème technique, contactez le <%= @invitation.help_phone_number_formatted %></p>
 <p>À bientôt,</p>
-<p>Le département <%= I18n.t("with_prefix.#{@invitation.department.pronoun}", name: @invitation.department.name) %>.</p>
+<%= render 'common/invitations_signature', configuration: @invitation.organisations.last.configurations.find_by(context: @invitation.context), department: @invitation.department %>

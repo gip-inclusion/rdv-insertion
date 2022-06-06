@@ -3,4 +3,4 @@
 <p><span class="font-weight-bold">Pour cela, merci d’appeler le <%= @invitation.help_phone_number_formatted %> dans un délai de <%= @invitation.number_of_days_to_accept_invitation %> jours.</span> Cet appel est nécessaire pour le traitement de votre dossier.</p>
 
 <p>À bientôt,</p>
-<p>Le département <%= I18n.t("with_prefix.#{@invitation.department.pronoun}", name: @invitation.department.name) %>.</p>
+<%= render 'common/invitations_signature', configuration: @invitation.organisations.last.configurations.find_by(context: @invitation.context), department: @invitation.department %>

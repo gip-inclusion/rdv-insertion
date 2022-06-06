@@ -1,7 +1,8 @@
 RSpec.describe InvitationMailer, type: :mailer do
   let!(:department) { create(:department, name: "Drôme", pronoun: "la") }
   let!(:help_phone_number) { "0139393939" }
-  let!(:organisation) { create(:organisation, department: department) }
+  let!(:configuration) { create(:configuration) }
+  let!(:organisation) { create(:organisation, department: department, configurations: [configuration]) }
   let!(:applicant) do
     create(:applicant, first_name: "Jean", last_name: "Valjean")
   end
@@ -9,7 +10,7 @@ RSpec.describe InvitationMailer, type: :mailer do
     create(
       :invitation,
       applicant: applicant, token: token, department: department, format: "email", help_phone_number: help_phone_number,
-      number_of_days_to_accept_invitation: 5
+      number_of_days_to_accept_invitation: 5, organisations: [organisation]
     )
   end
   let!(:token) { "some_token" }
@@ -38,6 +39,14 @@ RSpec.describe InvitationMailer, type: :mailer do
       expect(subject.body.encoded).to match("token=some_token")
       expect(subject.body.encoded).to match("dans les 5 jours")
     end
+
+    context "when the signature is configured" do
+      let!(:configuration) { create(:configuration, signature_lines: ["Fabienne Bouchet"]) }
+
+      it "renders the mail with the right signature" do
+        expect(subject.body.encoded).to match(/Fabienne Bouchet/)
+      end
+    end
   end
 
   describe "#invitation_for_rsa_accompagnement" do
@@ -64,6 +73,14 @@ RSpec.describe InvitationMailer, type: :mailer do
       expect(subject.body.encoded).to match("token=some_token")
       expect(subject.body.encoded).to match("dans les 5 jours")
     end
+
+    context "when the signature is configured" do
+      let!(:configuration) { create(:configuration, signature_lines: ["Fabienne Bouchet"]) }
+
+      it "renders the mail with the right signature" do
+        expect(subject.body.encoded).to match(/Fabienne Bouchet/)
+      end
+    end
   end
 
   describe "#invitation_for_rsa_orientation_on_phone_platform" do
@@ -89,6 +106,14 @@ RSpec.describe InvitationMailer, type: :mailer do
       )
       expect(subject.body.encoded).not_to match("/invitations/redirect")
       expect(subject.body.encoded).to match("dans un délai de 5 jours")
+    end
+
+    context "when the signature is configured" do
+      let!(:configuration) { create(:configuration, signature_lines: ["Fabienne Bouchet"]) }
+
+      it "renders the mail with the right signature" do
+        expect(subject.body.encoded).to match(/Fabienne Bouchet/)
+      end
     end
   end
 end

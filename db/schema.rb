@@ -78,6 +78,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_01_160812) do
     t.integer "number_of_days_to_accept_invitation", default: 3
     t.integer "number_of_days_before_action_required", default: 3
     t.string "sms_sender_name", limit: 11
+    t.string "signature_lines", array: true
   end
 
   create_table "configurations_organisations", id: false, force: :cascade do |t|
@@ -130,7 +131,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_01_160812) do
     t.datetime "updated_at", null: false
     t.string "sender_name"
     t.string "sender_address_lines", array: true
-    t.string "signature_lines", array: true
   end
 
   create_table "notifications", force: :cascade do |t|

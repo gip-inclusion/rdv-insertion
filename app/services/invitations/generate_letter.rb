@@ -21,9 +21,10 @@ module Invitations
           invitation: @invitation,
           department: @invitation.department,
           applicant: applicant,
-          organisation: @invitation.organisations.last,
+          organisation: organisation,
           sender_name: sender_name,
-          letter_configuration: letter_configuration
+          letter_configuration: letter_configuration,
+          configuration: configuration
         }
       )
     end
@@ -53,8 +54,16 @@ module Invitations
       applicant.zipcode_and_city
     end
 
+    def organisation
+      @invitation.organisations.last
+    end
+
     def letter_configuration
-      @invitation.organisations.last&.letter_configuration
+      organisation&.letter_configuration
+    end
+
+    def configuration
+      organisation.configurations.find_by(context: @invitation.context)
     end
 
     def applicant
