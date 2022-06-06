@@ -17,6 +17,10 @@ class Organisation < ApplicationRecord
 
   delegate :name, :name_with_region, :number, to: :department, prefix: true
 
+  def contexts
+    configurations.map(&:context)
+  end
+
   def as_json(_opts = {})
     super.merge(department_number: department_number)
   end

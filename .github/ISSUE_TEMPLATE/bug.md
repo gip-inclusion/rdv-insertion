@@ -2,7 +2,7 @@
 name: Bug
 about: Description du bug
 title: "[Bug] "
-labels: bug
+labels: bug, EPIC
 assignees: ''
 
 ---

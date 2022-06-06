@@ -24,7 +24,7 @@ module RdvSolidaritesWebhooks
     end
 
     def update_organisation
-      UpsertRecordJob.perform_async("Organisation", @data)
+      UpsertRecordJob.perform_async("Organisation", @data, { last_webhook_update_received_at: @meta[:timestamp] })
     end
   end
 end

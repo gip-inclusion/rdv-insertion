@@ -2,7 +2,7 @@
 <div class="container label-blue mt-4">
   <div class="d-flex justify-content-between mb-4">
     <div>
-      <%= link_to(compute_index_path(@organisation, @department)) do %>
+      <%= link_to(compute_index_path(@organisation, @department, context: @applicant.contexts.first)) do %>
         <button class="btn btn-blue-out">Retour</button>
       <% end %>
       <%= link_to rdv_solidarites_user_url(@organisation, @applicant), target: "_blank" do %>
@@ -69,10 +69,7 @@
         <p><%= display_attribute format_date(@applicant.created_at) %></p>
       </div>
       <% if department_level? %>
-        <div class="col-12 col-md-6 px-5">
-            <h4 class="label-blue"><%= Applicant.human_attribute_name(:organisations) %></h4>
-            <p><%= @applicant.organisations.collect(&:name).join(", ") %></p>
-        </div>
+        <%= render "organisations_list", organisations: @applicant.organisations %>
       <% end %>
       <% if @applicant.is_archived? %>
         <div class="col-12 col-md-6 px-5">
@@ -81,6 +78,7 @@
         </div>
       <% end %>
     </div>
+    <%= render "add_to_org_button", can_be_added_to_other_org: @can_be_added_to_other_org, department: @department, applicant: @applicant %>
   </div>
   <% @all_configurations.each do |configuration| %>
     <%= render "rdv_context", rdv_context: @applicant.rdv_context_for(configuration.context), configuration: configuration, applicant: @applicant, department: @department  %>

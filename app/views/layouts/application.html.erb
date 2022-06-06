@@ -8,14 +8,17 @@
     <%= csp_meta_tag %>
     <%= favicon_pack_tag 'logos/rdvi-favicon.png' %>
 
-    <%= stylesheet_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_pack_tag 'application', media: 'all', 'data-turbo-track': 'reload' %>
+    <%= javascript_pack_tag 'application', 'data-turbo-track': 'reload' %>
   </head>
 
   <body>
     <%= render 'common/header' %>
-    <%= render 'common/flash' %>
+    <div id="flashes">
+      <%= render 'common/flash' %>
+    </div>
     <div class="wrapper">
+      <%= turbo_frame_tag "remote_modal", target: "_top" %>
       <%= yield %>
     </div>
     <%= render 'common/footer' %>

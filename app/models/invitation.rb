@@ -13,7 +13,7 @@ class Invitation < ApplicationRecord
   delegate :context, :context_name, to: :rdv_context
 
   enum format: { sms: 0, email: 1, postal: 2 }, _prefix: :format
-  after_commit :set_applicant_status, :set_rdv_context_status
+  after_commit :set_rdv_context_status
 
   scope :sent_in_time_window, lambda { |number_of_days_before_action_required|
     where("sent_at > ?", number_of_days_before_action_required.days.ago)
@@ -44,10 +44,6 @@ class Invitation < ApplicationRecord
     return if organisations.map(&:department_id).uniq == [department_id]
 
     errors.add(:organisations, :invalid)
-  end
-
-  def set_applicant_status
-    RefreshApplicantStatusesJob.perform_async(applicant.id)
   end
 
   def set_rdv_context_status

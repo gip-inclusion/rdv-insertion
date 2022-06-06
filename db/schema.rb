@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_05_06_130132) do
+ActiveRecord::Schema[7.0].define(version: 2022_05_31_121857) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -42,17 +42,16 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_06_130132) do
     t.string "email"
     t.integer "title"
     t.date "birth_date"
-    t.date "invitation_accepted_at"
-    t.integer "status", default: 0
     t.date "rights_opening_date"
     t.string "birth_name"
     t.bigint "department_id"
     t.string "archiving_reason"
     t.boolean "is_archived", default: false
+    t.datetime "deleted_at"
+    t.datetime "last_webhook_update_received_at"
     t.index ["department_id"], name: "index_applicants_on_department_id"
     t.index ["department_internal_id", "department_id"], name: "index_applicants_on_department_internal_id_and_department_id", unique: true
     t.index ["rdv_solidarites_user_id"], name: "index_applicants_on_rdv_solidarites_user_id", unique: true
-    t.index ["status"], name: "index_applicants_on_status"
     t.index ["uid"], name: "index_applicants_on_uid", unique: true
   end
 
@@ -153,6 +152,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_06_130132) do
     t.bigint "department_id"
     t.bigint "responsible_id"
     t.bigint "letter_configuration_id"
+    t.datetime "last_webhook_update_received_at"
     t.index ["department_id"], name: "index_organisations_on_department_id"
     t.index ["letter_configuration_id"], name: "index_organisations_on_letter_configuration_id"
     t.index ["rdv_solidarites_organisation_id"], name: "index_organisations_on_rdv_solidarites_organisation_id", unique: true
@@ -197,6 +197,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_06_130132) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "organisation_id"
+    t.datetime "last_webhook_update_received_at"
     t.index ["created_by"], name: "index_rdvs_on_created_by"
     t.index ["organisation_id"], name: "index_rdvs_on_organisation_id"
     t.index ["rdv_solidarites_rdv_id"], name: "index_rdvs_on_rdv_solidarites_rdv_id", unique: true
@@ -218,6 +219,17 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_06_130132) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "webhook_receipts", force: :cascade do |t|
+    t.bigint "rdv_solidarites_rdv_id"
+    t.datetime "rdvs_webhook_timestamp"
+    t.datetime "sent_at"
+    t.bigint "webhook_endpoint_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["rdv_solidarites_rdv_id"], name: "index_webhook_receipts_on_rdv_solidarites_rdv_id", unique: true
+    t.index ["webhook_endpoint_id"], name: "index_webhook_receipts_on_webhook_endpoint_id"
+  end
+
   add_foreign_key "applicants", "departments"
   add_foreign_key "invitations", "applicants"
   add_foreign_key "invitations", "departments"
@@ -228,4 +240,5 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_06_130132) do
   add_foreign_key "organisations", "responsibles"
   add_foreign_key "rdv_contexts", "applicants"
   add_foreign_key "rdvs", "organisations"
+  add_foreign_key "webhook_receipts", "webhook_endpoints"
 end

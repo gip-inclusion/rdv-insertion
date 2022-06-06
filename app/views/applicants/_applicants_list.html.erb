@@ -2,11 +2,11 @@
   <ul class="nav nav-tabs">
     <% @all_configurations.each do |configuration| %>
       <li class="nav-item">
-        <%= link_to configuration.context_name, compute_index_path(@organisation, @department, context: configuration.context), class:  "nav-link #{!@without_context_list && configuration.id == @current_configuration.id ? 'active' : ''}"%>
+        <%= link_to configuration.context_name, compute_index_path(@organisation, @department, context: configuration.context), class:  "nav-link #{configuration.id == @current_configuration&.id ? 'active' : ''}"%>
       </li>
     <% end %>
     <li class="nav-item">
-      <%= link_to "Autres", compute_index_path(@organisation, @department, without_context: true), class: "nav-link #{@without_context_list ? 'active' : ''}" %>
+      <%= link_to "Autres", compute_index_path(@organisation, @department, context: "none"), class: "nav-link #{@current_context.nil? ? 'active' : ''}" %>
     </li>
   </ul>
   <div class="col-12 text-center">
@@ -20,7 +20,7 @@
           <th scope="col" class="d-none d-lg-table-cell">Email</th>
           <th scope="col" class="d-none d-lg-table-cell">Téléphone</th>
           <th scope="col" class="d-none d-lg-table-cell">Adresse</th>
-          <% unless @without_context_list %>
+          <% if @current_context.present? %>
             <% if show_invitations?(@current_configuration) %>
               <th scope="col">Première invitation</th>
               <th scope="col">Dernière invitation</th>
@@ -59,7 +59,7 @@
                   <i class="fas fa-times icon-blue" />
                 <% end %>
               </td>
-              <% unless @without_context_list %>
+              <% if @current_context.present? %>
                 <% if show_invitations?(@current_configuration) %>
                   <td><%= display_attribute format_date(rdv_context.first_invitation_sent_at) %></td>
                   <td><%= rdv_context.invitations.length > 1 ? display_attribute(format_date(rdv_context.last_invitation_sent_at)) : "-" %></td>

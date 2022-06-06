@@ -37,7 +37,7 @@ module ApplicantsHelper
 
   def options_for_select_status(statuses_count)
     statuses_count.map do |status, count|
-      ["#{I18n.t("activerecord.attributes.applicant.statuses.#{status}")} (#{count})", status]
+      ["#{I18n.t("activerecord.attributes.rdv_context.statuses.#{status}")} (#{count})", status]
     end
   end
 
@@ -66,7 +66,7 @@ module ApplicantsHelper
   end
 
   def display_context_status(context, number_of_days_before_action_required)
-    return "Non invité" if context.nil?
+    return "Non rattaché" if context.nil?
 
     I18n.t("activerecord.attributes.rdv_context.statuses.#{context.status}") +
       display_context_status_notice(context, number_of_days_before_action_required)

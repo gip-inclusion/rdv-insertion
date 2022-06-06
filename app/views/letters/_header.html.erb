@@ -2,7 +2,7 @@
   <div class="left-col">
     <div>
     <div class="department-logo header-logo">
-      <%= pdf_image_tag(department.name.parameterize) %>
+      <%= organisation_or_department_logo(department.name.parameterize, organisation.name.parameterize) %>
     </div>
     </div>
     <% letter_configuration.direction_names.each do |direction_name| %>

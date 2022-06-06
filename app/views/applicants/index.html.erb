@@ -1,7 +1,7 @@
 <div class="container mt-5 mb-5">
   <div class="row mb-4 block-white justify-content-center">
     <div class="col-4 justify-content-center">
-      <% unless @without_context_list %>
+      <% if @current_context.present? %>
         <div class="mb-1">
           <%=
             select(
@@ -13,7 +13,7 @@
         </div>
       <% end %>
       <%= render 'search_form' %>
-      <% unless @without_context_list %>
+      <% if @current_context.present? %>
         <div class=" text-left mt-2">
           <%= check_box("applicants_list", "action_required", class: "js-action-required-checkbox") %>Intervention nécessaire
           <small>
@@ -32,28 +32,22 @@
       <% end %>
     </div>
     <div class="col-4 d-flex flex-column justify-content-center align-items-end dropdown">
-      <% if department_level? %>
-        <%= link_to(new_department_upload_path(@department), class: "btn btn-blue") do %>
-          Charger fichier allocataires
-        <% end %>
-      <% else %>
-        <a class="btn btn-blue dropdown-toggle mb-2" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-          Créer allocataire(s)
-        </a>
+      <a class="btn btn-blue dropdown-toggle mb-2" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+        Créer allocataire(s)
+      </a>
 
-        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
-          <li>
-            <%= link_to new_organisation_applicant_path(@organisation), class: "dropdown-item" do %>
-              Créer un allocataire
-            <% end %>
-          </li>
-          <li>
-            <%= link_to new_organisation_upload_path(@organisation), class: "dropdown-item" do %>
-              Charger fichier allocataires
-            <% end %>
-          </li>
-        </ul>
-      <% end %>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
+        <li>
+          <%= link_to(department_level? ? new_department_applicant_path(@department) : new_organisation_applicant_path(@organisation), class: "dropdown-item") do %>
+            Créer un allocataire
+          <% end %>
+        </li>
+        <li>
+          <%= link_to(department_level? ? new_department_upload_path(@department) : new_organisation_upload_path(@organisation), class: "dropdown-item") do %>
+            Charger fichier allocataires
+          <% end %>
+        </li>
+      </ul>
       <%= link_to "Export csv bénéficiaires", compute_index_path(@organisation, @department, **params.to_unsafe_h.merge(format: "csv")), class: "btn btn-blue-out mt-2", id: "js-csv-export-tooltip", target: "_blank" %>
     </div>
   </div>

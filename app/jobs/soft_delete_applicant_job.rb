@@ -4,7 +4,7 @@ class SoftDeleteApplicantJob < ApplicationJob
     return if applicant.blank?
 
     applicant.update_columns(
-      status: "deleted",
+      deleted_at: Time.zone.now,
       uid: nil,
       department_internal_id: nil
     )

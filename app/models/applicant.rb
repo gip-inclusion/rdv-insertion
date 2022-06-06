@@ -1,12 +1,10 @@
 class Applicant < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [
-    :first_name, :last_name, :birth_date, :email, :phone_number, :address, :affiliation_number, :birth_name,
-    :invitation_accepted_at
+    :first_name, :last_name, :birth_date, :email, :phone_number, :address, :affiliation_number, :birth_name
   ].freeze
   RDV_SOLIDARITES_CLASS_NAME = "User".freeze
 
   include SearchableConcern
-  include HasStatusConcern
   include NotificableConcern
   include HasPhoneNumberConcern
   include InvitableConcern
@@ -25,25 +23,27 @@ class Applicant < ApplicationRecord
   validates :last_name, :first_name, :title, presence: true
   validates :affiliation_number, presence: true, allow_nil: true
   validates :email, allow_blank: true, format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/ }
-  validate :birth_date_validity
-  validate :uid_or_department_internal_id_presence
+  validate :birth_date_validity, :uid_or_department_internal_id_presence
 
   enum role: { demandeur: 0, conjoint: 1 }
   enum title: { monsieur: 0, madame: 1 }
-  enum status: {
-    not_invited: 0, invitation_pending: 1, rdv_creation_pending: 2, rdv_pending: 3,
-    rdv_needs_status_update: 4, rdv_noshow: 5, rdv_revoked: 6, rdv_excused: 7,
-    rdv_seen: 8, resolved: 9, deleted: 10, multiple_rdvs_cancelled: 11
-  }
 
-  scope :active, -> { where.not(status: "deleted") }
+  scope :active, -> { where(deleted_at: nil) }
   scope :archived, ->(archived = true) { where(is_archived: archived) }
   scope :without_rdv_contexts, lambda { |contexts|
     where.not(id: joins(:rdv_contexts).where(rdv_contexts: { context: contexts }).ids)
   }
 
+  def orientation_path_starting_date
+    rights_opening_date || (created_at - 3.days)
+  end
+
+  def orientations_rdvs
+    rdv_contexts.select(&:context_orientation?).flat_map(&:rdvs)
+  end
+
   def orientation_date
-    rdvs.find(&:seen?)&.starts_at
+    @orientation_date ||= orientations_rdvs.to_a.select(&:seen?).min_by(&:starts_at)&.starts_at
   end
 
   def oriented?
@@ -53,8 +53,7 @@ class Applicant < ApplicationRecord
   def orientation_delay_in_days
     return unless oriented?
 
-    starting_date = rights_opening_date || (created_at - 3.days)
-    orientation_date.to_datetime.mjd - starting_date.to_datetime.mjd
+    orientation_date.to_datetime.mjd - orientation_path_starting_date.to_datetime.mjd
   end
 
   def full_name
@@ -86,12 +85,12 @@ class Applicant < ApplicationRecord
     rdv_contexts.find { |rc| rc.context == context }
   end
 
-  def payload
-    payload_attributes_keys = [
-      :id, :affiliation_number, :role, :department_internal_id, :first_name,
-      :last_name, :address, :phone_number, :email, :title, :birth_date, :rights_opening_date
-    ]
-    attributes.deep_symbolize_keys.slice(*payload_attributes_keys)
+  def deleted?
+    deleted_at.present?
+  end
+
+  def contexts
+    rdv_contexts.map(&:context)
   end
 
   def as_json(_opts = {})

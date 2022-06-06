@@ -22,7 +22,7 @@ describe SoftDeleteApplicantJob, type: :job do
 
     it "soft deletes the applicant" do
       subject
-      expect(applicant.status).to eq("deleted")
+      expect(applicant.deleted_at).not_to be_nil
       expect(applicant.uid).to eq(nil)
       expect(applicant.department_internal_id).to eq(nil)
     end

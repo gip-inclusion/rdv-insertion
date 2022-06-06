@@ -7,14 +7,17 @@ class ApplicantsController < ApplicationController
     :status, :rights_opening_date, :archiving_reason, :is_archived
   ].freeze
   before_action :set_applicant, only: [:show, :update, :edit]
-  before_action :set_variables, only: [:index, :new, :create, :show, :update, :edit]
+  before_action :set_organisation, :set_department, :set_all_configurations, :set_current_configuration,
+                :set_current_context, only: [:index, :new, :create, :show, :update, :edit]
+  before_action :set_organisations, only: [:new, :create]
+  before_action :set_can_be_added_to_other_org, only: [:show]
   before_action :retrieve_applicants, only: [:search]
-  before_action :set_without_context_list, :set_applicants_and_rdv_contexts, only: [:index]
+  before_action :set_applicants_and_rdv_contexts, only: [:index]
 
   include FilterableApplicantsConcern
 
   def new
-    @applicant = Applicant.new department: @organisation.department, organisations: [@organisation]
+    @applicant = Applicant.new(department: @department)
     authorize @applicant
   end
 
@@ -22,8 +25,7 @@ class ApplicantsController < ApplicationController
     @applicant = find_or_initialize_applicant.applicant
     # TODO: if an applicant exists, return it to the agent to let him decide what to do
     @applicant.assign_attributes(
-      department: @organisation.department,
-      organisations: (@applicant.organisations.to_a + [@organisation]).uniq,
+      department: @department,
       **applicant_params.compact_blank
     )
     authorize @applicant
@@ -53,10 +55,7 @@ class ApplicantsController < ApplicationController
   end
 
   def update
-    @applicant.assign_attributes(
-      organisations: (@applicant.organisations.to_a + [@organisation]).uniq,
-      **formatted_params
-    )
+    @applicant.assign_attributes(**formatted_params)
     authorize @applicant
     respond_to do |format|
       format.html { save_applicant_and_redirect(:edit) }
@@ -106,7 +105,7 @@ class ApplicantsController < ApplicationController
       redirect_to(after_save_path)
     else
       flash.now[:error] = save_applicant.errors&.join(',')
-      render page
+      render page, status: :unprocessable_entity
     end
   end
 
@@ -114,7 +113,7 @@ class ApplicantsController < ApplicationController
     if save_applicant.success?
       render json: { success: true, applicant: @applicant }
     else
-      render json: { success: false, errors: save_applicant.errors }
+      render json: { success: false, errors: save_applicant.errors }, status: :unprocessable_entity
     end
   end
 
@@ -133,8 +132,64 @@ class ApplicantsController < ApplicationController
       .find(params[:id])
   end
 
-  def set_without_context_list
-    @without_context_list = params[:without_context] == "true"
+  def set_organisation
+    @organisation = \
+      if department_level?
+        set_organisation_at_department_level
+      else
+        policy_scope(Organisation).includes(:applicants, :configurations).find(params[:organisation_id])
+      end
+  end
+
+  def set_organisation_at_department_level
+    return set_organisation_through_form if params[:action] == "create"
+    return if @applicant.nil?
+
+    @organisation = policy_scope(Organisation)
+                    .find_by(id: @applicant.organisation_ids, department_id: params[:department_id])
+  end
+
+  def set_organisation_through_form
+    # for now we allow only one organisation through creation
+    @organisation = Organisation.find_by(
+      id: params[:applicant][:organisation_ids], department_id: params[:department_id]
+    )
+  end
+
+  def set_organisations
+    return unless department_level?
+
+    @organisations = policy_scope(Organisation).where(department: @department)
+  end
+
+  def set_department
+    @department = \
+      if department_level?
+        policy_scope(Department).includes(:organisations, :applicants).find(params[:department_id])
+      else
+        @organisation.department
+      end
+  end
+
+  def set_all_configurations
+    @all_configurations = \
+      if department_level?
+        (policy_scope(::Configuration) & @department.configurations).uniq(&:context)
+      else
+        @organisation.configurations
+      end
+  end
+
+  def set_current_configuration
+    @current_configuration = @all_configurations.find { |c| c.context == params[:context] }
+  end
+
+  def set_current_context
+    @current_context = @current_configuration&.context
+  end
+
+  def set_can_be_added_to_other_org
+    @can_be_added_to_other_org = (@department.organisation_ids - @applicant.organisation_ids).any?
   end
 
   def set_applicants_and_rdv_contexts # rubocop:disable Metrics/AbcSize
@@ -146,7 +201,7 @@ class ApplicantsController < ApplicationController
         @applicants.where(organisations: @organisation)
       end
 
-    if @without_context_list
+    if @current_context.nil?
       @applicants = @applicants.without_rdv_contexts(@all_configurations.map(&:context))
     else
       @applicants = @applicants.joins(:rdv_contexts).where(rdv_contexts: { context: @current_context })
@@ -161,39 +216,6 @@ class ApplicantsController < ApplicationController
     return department_applicant_path(@department, @applicant) if department_level?
 
     organisation_applicant_path(@organisation, @applicant)
-  end
-
-  def set_variables
-    department_level? ? set_variables_at_department_level : set_variables_at_organisation_level
-  end
-
-  def set_variables_at_organisation_level
-    @organisation = policy_scope(Organisation).includes(:applicants, :configurations).find(params[:organisation_id])
-    @department = @organisation.department
-    @all_configurations = @organisation.configurations
-    set_current_configuration_and_context
-  end
-
-  def set_variables_at_department_level
-    @department = policy_scope(Department).includes(:organisations, :applicants).find(params[:department_id])
-    @all_configurations = (policy_scope(::Configuration) & @department.configurations).uniq(&:context)
-    set_current_configuration_and_context
-    set_organisation_at_department_level if @applicant.present?
-  end
-
-  def set_current_configuration_and_context
-    @current_configuration = @all_configurations.find { |c| c.context == params[:context] } || @all_configurations.first
-    @current_context = @current_configuration.context
-  end
-
-  def set_organisation_at_department_level
-    # If an applicant has rdvs, we want the "Voir sur RDV-Solidarités" button to redirect
-    # to the organisation to which the last appointment belongs
-    authorized_organisations_with_rdvs = \
-      @applicant.organisations_with_rdvs & policy_scope(Organisation).where(department: @department)
-    @organisation = \
-      authorized_organisations_with_rdvs.last ||
-      policy_scope(Organisation).where(id: @applicant.organisations.pluck(:id), department: @department).first
   end
 
   def retrieve_applicants

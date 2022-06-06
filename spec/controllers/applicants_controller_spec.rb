@@ -15,7 +15,7 @@ describe ApplicantsController, type: :controller do
   let!(:agent) { create(:agent, organisations: [organisation]) }
   let!(:rdv_solidarites_organisation_id) { 52 }
   let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
-  let(:applicant) { create(:applicant, organisations: [organisation]) }
+  let(:applicant) { create(:applicant, organisations: [organisation], department: department) }
 
   describe "#new" do
     let!(:new_params) { { organisation_id: organisation.id } }
@@ -116,7 +116,8 @@ describe ApplicantsController, type: :controller do
 
         it "renders the new page" do
           post :create, params: applicant_params
-          expect(response).to be_successful
+          expect(response).not_to be_successful
+          expect(response.status).to eq(422)
           expect(response.body).to match(/Créer allocataire/)
         end
       end
@@ -146,7 +147,7 @@ describe ApplicantsController, type: :controller do
       end
 
       context "when the creation succeeds" do
-        let!(:applicant) { create(:applicant, organisations: [organisation]) }
+        let!(:applicant) { create(:applicant, organisations: [organisation], department: department) }
 
         before do
           allow(SaveApplicant).to receive(:call)
@@ -174,13 +175,15 @@ describe ApplicantsController, type: :controller do
 
         it "is not a success" do
           post :create, params: applicant_params
-          expect(response).to be_successful
+          expect(response).not_to be_successful
+          expect(response.status).to eq(422)
           expect(JSON.parse(response.body)["success"]).to eq(false)
         end
 
         it "renders the errors" do
           post :create, params: applicant_params
-          expect(response).to be_successful
+          expect(response).not_to be_successful
+          expect(response.status).to eq(422)
           expect(JSON.parse(response.body)["errors"]).to eq(['some error'])
         end
       end
@@ -229,8 +232,11 @@ describe ApplicantsController, type: :controller do
 
   describe "#show" do
     let!(:applicant) do
-      create(:applicant, first_name: "Andreas", last_name: "Kopke", organisations: [organisation])
+      create(
+        :applicant, first_name: "Andreas", last_name: "Kopke", organisations: [organisation], department: department
+      )
     end
+    let!(:show_params) { { id: applicant.id, organisation_id: organisation.id } }
 
     render_views
 
@@ -240,8 +246,6 @@ describe ApplicantsController, type: :controller do
     end
 
     context "when organisation_level" do
-      let!(:show_params) { { id: applicant.id, organisation_id: organisation.id } }
-
       it "renders the applicant page" do
         get :show, params: show_params
 
@@ -278,13 +282,32 @@ describe ApplicantsController, type: :controller do
       end
     end
 
+    context "when it belongs to all department organisations" do
+      it "does not show the add to organisation button" do
+        get :show, params: show_params
+
+        expect(response).to be_successful
+        expect(response.body).not_to match(/Ajouter à une organisation/)
+      end
+    end
+
+    context "when it does not belong to all department organisations" do
+      let!(:other_org) { create(:organisation, department: department) }
+
+      it "shows the add to organisation button" do
+        get :show, params: show_params
+
+        expect(response).to be_successful
+        expect(response.body).to match(/Ajouter à une organisation/)
+      end
+    end
+
     context "it shows the different contexts" do
       let!(:configuration) { create(:configuration, context: "rsa_orientation", invitation_formats: %w[sms email]) }
       let!(:configuration2) do
         create(:configuration, context: "rsa_accompagnement", invitation_formats: %w[sms email postal])
       end
 
-      let!(:show_params) { { id: applicant.id, organisation_id: organisation.id } }
       let!(:organisation) do
         create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
                               department_id: department.id, configurations: [configuration, configuration2])
@@ -361,7 +384,7 @@ describe ApplicantsController, type: :controller do
     end
 
     let!(:rdv_context2) { build(:rdv_context, context: "rsa_orientation", status: "invitation_pending") }
-    let!(:index_params) { { organisation_id: organisation.id } }
+    let!(:index_params) { { organisation_id: organisation.id, context: "rsa_orientation" } }
 
     render_views
 
@@ -392,7 +415,7 @@ describe ApplicantsController, type: :controller do
     end
 
     context "when a search query is specified" do
-      let!(:index_params) { { organisation_id: organisation.id, search_query: "chabat" } }
+      let!(:index_params) { { organisation_id: organisation.id, search_query: "chabat", context: "rsa_orientation" } }
 
       it "searches the applicants" do
         get :index, params: index_params
@@ -402,7 +425,9 @@ describe ApplicantsController, type: :controller do
     end
 
     context "when a status is passed" do
-      let!(:index_params) { { organisation_id: organisation.id, status: "invitation_pending" } }
+      let!(:index_params) do
+        { organisation_id: organisation.id, status: "invitation_pending", context: "rsa_orientation" }
+      end
 
       it "filters by status" do
         get :index, params: index_params
@@ -412,7 +437,7 @@ describe ApplicantsController, type: :controller do
     end
 
     context "when action_required is passed" do
-      let!(:index_params) { { organisation_id: organisation.id, action_required: "true" } }
+      let!(:index_params) { { organisation_id: organisation.id, action_required: "true", context: "rsa_orientation" } }
       let!(:number_of_days_before_action_required) { 4 }
 
       context "when the invitation has been sent before the number of days defined in the configuration ago" do
@@ -437,7 +462,7 @@ describe ApplicantsController, type: :controller do
     end
 
     context "when department level" do
-      let!(:index_params) { { department_id: department.id } }
+      let!(:index_params) { { department_id: department.id, context: "rsa_orientation" } }
 
       it "renders the index page" do
         get :index, params: index_params
@@ -447,7 +472,7 @@ describe ApplicantsController, type: :controller do
       end
     end
 
-    context "when without context list" do
+    context "when no context is specified" do
       let!(:applicant) do
         create(:applicant, organisations: [organisation], last_name: "Chabat", rdv_contexts: [])
       end
@@ -455,7 +480,7 @@ describe ApplicantsController, type: :controller do
       let!(:rdv_context2) { build(:rdv_context, context: "rsa_accompagnement", status: "invitation_pending") }
 
       it "lists the applicants with no rdv contexts in the contexts of the org configs" do
-        get :index, params: index_params.merge(without_context: true)
+        get :index, params: index_params.merge(context: nil)
 
         expect(response.body).to match(/Chabat/)
         expect(response.body).to match(/Baer/)
@@ -604,13 +629,15 @@ describe ApplicantsController, type: :controller do
 
         it "is not a success" do
           post :update, params: update_params
-          expect(response).to be_successful
+          expect(response).not_to be_successful
+          expect(response.status).to eq(422)
           expect(JSON.parse(response.body)["success"]).to eq(false)
         end
 
         it "renders the errors" do
           post :update, params: update_params
-          expect(response).to be_successful
+          expect(response).not_to be_successful
+          expect(response.status).to eq(422)
           expect(JSON.parse(response.body)["errors"]).to eq(['some error'])
         end
       end
@@ -689,7 +716,8 @@ describe ApplicantsController, type: :controller do
 
         it "renders the edit page" do
           patch :update, params: update_params
-          expect(response).to be_successful
+          expect(response).not_to be_successful
+          expect(response.status).to eq(422)
         end
       end
     end

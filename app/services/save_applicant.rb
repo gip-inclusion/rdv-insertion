@@ -7,6 +7,7 @@ class SaveApplicant < BaseService
 
   def call
     Applicant.transaction do
+      assign_organisation
       save_record!(@applicant)
       upsert_rdv_solidarites_user
       assign_rdv_solidarites_user_id unless @applicant.rdv_solidarites_user_id?
@@ -14,6 +15,10 @@ class SaveApplicant < BaseService
   end
 
   private
+
+  def assign_organisation
+    @applicant.organisations = (@applicant.organisations.to_a + [@organisation]).uniq
+  end
 
   def upsert_rdv_solidarites_user
     @upsert_rdv_solidarites_user ||= call_service!(
@@ -32,9 +37,9 @@ class SaveApplicant < BaseService
 
   def rdv_solidarites_user_attributes
     user_attributes = @applicant.attributes.symbolize_keys.slice(*Applicant::SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES)
-    return user_attributes if @applicant.demandeur? || @applicant.rdv_solidarites_user_id?
+    return user_attributes if @applicant.demandeur?
 
-    # we do not send the same email for the conjoint on creation
+    # we do not send the email to rdv-s for the conjoint
     user_attributes.except(:email)
   end
 end

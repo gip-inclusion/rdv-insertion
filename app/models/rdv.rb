@@ -7,7 +7,7 @@ class Rdv < ApplicationRecord
   CANCELLED_STATUSES = %w[excused revoked noshow].freeze
   CANCELLED_BY_USER_STATUSES = %w[excused noshow].freeze
 
-  after_commit :refresh_applicant_statuses, :refresh_context_status, on: [:create, :update]
+  after_commit :refresh_context_status, on: [:create, :update]
 
   belongs_to :organisation
   has_and_belongs_to_many :rdv_contexts
@@ -37,6 +37,10 @@ class Rdv < ApplicationRecord
     status.in?(CANCELLED_STATUSES)
   end
 
+  def resolved?
+    status.in?(%w[seen excused revoked noshow])
+  end
+
   def needs_status_update?
     !in_the_future? && status.in?(PENDING_STATUSES)
   end
@@ -51,10 +55,6 @@ class Rdv < ApplicationRecord
   end
 
   private
-
-  def refresh_applicant_statuses
-    RefreshApplicantStatusesJob.perform_async(applicant_ids)
-  end
 
   def refresh_context_status
     RefreshRdvContextStatusesJob.perform_async(rdv_context_ids)

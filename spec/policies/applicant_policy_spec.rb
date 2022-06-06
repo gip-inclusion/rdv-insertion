@@ -19,7 +19,7 @@ describe ApplicantPolicy, type: :policy do
     end
 
     context "when the applicant is deleted" do
-      let!(:applicant) { create(:applicant, organisations: [organisation], status: "deleted") }
+      let!(:applicant) { create(:applicant, organisations: [organisation], deleted_at: 2.days.ago) }
 
       permissions(:show?) { it { is_expected.not_to permit(agent, applicant) } }
     end

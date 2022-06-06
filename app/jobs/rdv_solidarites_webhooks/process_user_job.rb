@@ -26,7 +26,7 @@ module RdvSolidaritesWebhooks
       if event == "destroyed"
         SoftDeleteApplicantJob.perform_async(rdv_solidarites_user_id)
       else
-        UpsertRecordJob.perform_async("Applicant", @data)
+        UpsertRecordJob.perform_async("Applicant", @data, { last_webhook_update_received_at: @meta[:timestamp] })
       end
     end
   end
