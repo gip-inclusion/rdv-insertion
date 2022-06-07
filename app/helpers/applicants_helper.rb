@@ -31,10 +31,10 @@ module ApplicantsHelper
   end
 
   def compute_first_invitation_sent_at(rdv_context)
-    if rdv_context.last_seen_rdv.present? && rdv_context.status != "rdv_seen"
-      display_attribute(format_date(rdv_context.first_sent_invitation_after_last_seen_rdv_sent_at))
+    if rdv_context.last_seen_rdv.present? && rdv_context.rdv_seen?
+      format_date(rdv_context.first_sent_invitation_after_last_seen_rdv_sent_at)
     else
-      display_attribute(format_date(rdv_context.first_invitation_sent_at))
+      format_date(rdv_context.first_invitation_sent_at)
     end
   end
 
