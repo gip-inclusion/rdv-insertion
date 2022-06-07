@@ -5,6 +5,8 @@ class SoftDeleteApplicantJob < ApplicationJob
 
     applicant.update_columns(
       deleted_at: Time.zone.now,
+      affiliation_number: nil,
+      role: nil,
       uid: nil,
       department_internal_id: nil
     )

@@ -25,6 +25,8 @@ describe SoftDeleteApplicantJob, type: :job do
       expect(applicant.deleted_at).not_to be_nil
       expect(applicant.uid).to eq(nil)
       expect(applicant.department_internal_id).to eq(nil)
+      expect(applicant.affiliation_number).to eq(nil)
+      expect(applicant.role).to eq(nil)
     end
   end
 end

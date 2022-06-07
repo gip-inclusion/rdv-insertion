@@ -21,7 +21,6 @@ class Applicant < ApplicationRecord
   validates :rdv_solidarites_user_id, uniqueness: true, allow_nil: true
   validates :department_internal_id, uniqueness: { scope: :department_id }, allow_nil: true
   validates :last_name, :first_name, :title, presence: true
-  validates :affiliation_number, presence: true, allow_nil: true
   validates :email, allow_blank: true, format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/ }
   validate :birth_date_validity, :uid_or_department_internal_id_presence
 
@@ -118,6 +117,7 @@ class Applicant < ApplicationRecord
   end
 
   def uid_or_department_internal_id_presence
+    return if deleted?
     return if department_internal_id.present? || (affiliation_number.present? && role.present?)
 
     errors.add(:base, "le couple numéro d'allocataire + rôle ou l'ID interne au département doivent être présents.")

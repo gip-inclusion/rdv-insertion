@@ -42,8 +42,8 @@ export default function ApplicantsUpload({ organisation, configuration, departme
 
   const redirectToApplicantList = () => {
     window.location.href = isDepartmentLevel
-      ? `/departments/${department.id}/applicants`
-      : `/organisations/${organisation.id}/applicants`;
+      ? `/departments/${department.id}/applicants?context=${configuration.context}`
+      : `/organisations/${organisation.id}/applicants?context=${configuration.context}`;
   };
 
   const retrieveApplicantsFromList = async (file) => {
