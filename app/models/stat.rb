@@ -168,9 +168,7 @@ class Stat
     # Bénéficiaires avec dont le droit est ouvert depuis 30 jours au moins
     # et qui ont été invités dans un contexte d'orientation
     @applicants_for_30_days_orientation_scope ||= \
-      relevant_applicants.where("rights_opening_date < ?", 30.days.ago)
-                         .or(relevant_applicants.where(rights_opening_date: nil)
-                                       .where("applicants.created_at < ?", 27.days.ago))
+      relevant_applicants.where("applicants.created_at < ?", 30.days.ago)
                          .joins(:rdv_contexts)
                          .where(rdv_contexts: {
                                   context: %w[rsa_orientation]
