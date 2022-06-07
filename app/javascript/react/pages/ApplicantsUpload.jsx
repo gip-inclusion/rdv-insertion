@@ -10,6 +10,7 @@ import getHeaderNames from "../lib/getHeaderNames";
 import checkColumnNames from "../lib/checkColumnNames";
 import displayMissingColumnsWarning from "../lib/displayMissingColumnsWarning";
 import retrieveUpToDateApplicants from "../lib/retrieveUpToDateApplicants";
+import parseContactsData from "../lib/parseContactsData";
 import updateApplicantContactsData from "../lib/updateApplicantContactsData";
 import retrieveContactsData from "../lib/retrieveContactsData";
 import { initReducer, reducerFactory } from "../../lib/reducers";
@@ -156,7 +157,7 @@ export default function ApplicantsUpload({ organisation, configuration, departme
         type: "append",
         item: {
           applicant,
-          seed: applicant.uid || applicant.departmentInternalId,
+          seed: applicant.departmentInternalId || applicant.uid,
         },
       })
     );
@@ -183,9 +184,9 @@ export default function ApplicantsUpload({ organisation, configuration, departme
             a.MATRICULE.toString()?.padStart(7, "0") ===
             applicant.affiliationNumber?.padStart(7, "0")
         );
-        // if the applicant exists in DB, we don't update the record
-        if (applicantContactsData && !applicant.createdAt) {
-          applicant = await updateApplicantContactsData(applicant, applicantContactsData);
+        if (applicantContactsData) {
+          const parsedApplicantContactsData = await parseContactsData(applicantContactsData);
+          applicant = await updateApplicantContactsData(applicant, parsedApplicantContactsData);
         }
       })
     );
@@ -255,12 +256,12 @@ export default function ApplicantsUpload({ organisation, configuration, departme
                   <th scope="col">Prénom</th>
                   <th scope="col">Nom</th>
                   <th scope="col">Rôle</th>
-                  {parameterizedColumnNames.birth_date && <th scope="col">Date de naissance</th>}
-                  {parameterizedColumnNames.email && <th scope="col">Email</th>}
-                  {parameterizedColumnNames.phone_number && <th scope="col">Téléphone</th>}
                   {parameterizedColumnNames.department_internal_id && (
                     <th scope="col">ID Editeur</th>
                   )}
+                  {parameterizedColumnNames.birth_date && <th scope="col">Date de naissance</th>}
+                  {parameterizedColumnNames.email && <th scope="col">Email</th>}
+                  {parameterizedColumnNames.phone_number && <th scope="col">Téléphone</th>}
                   {parameterizedColumnNames.rights_opening_date && (
                     <th scope="col">Date d&apos;entrée flux</th>
                   )}
@@ -287,7 +288,6 @@ export default function ApplicantsUpload({ organisation, configuration, departme
               <tbody>
                 <ApplicantList
                   applicants={applicants}
-                  dispatchApplicants={dispatchApplicants}
                   isDepartmentLevel={isDepartmentLevel}
                   downloadInProgress={downloadInProgress}
                   setDownloadInProgress={setDownloadInProgress}

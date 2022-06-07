@@ -45,6 +45,11 @@ button, input[type="button"] {
   }
 }
 
+.btn-sm {
+  min-width: 105px !important;
+  padding: 0.25rem;
+}
+
 .file-input-div {
   width: 87px;
 }
