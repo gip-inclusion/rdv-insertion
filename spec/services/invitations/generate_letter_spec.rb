@@ -13,10 +13,10 @@ describe Invitations::GenerateLetter, type: :service do
                    department: department, format: "postal"
     )
   end
-  let!(:letter_configuration) { create(:letter_configuration) }
-  let!(:responsible) { create(:responsible, first_name: "Gael", last_name: "Monfils") }
+  let!(:invitation_parameters) { create(:invitation_parameters) }
   let!(:organisation) do
-    create(:organisation, responsible: responsible, letter_configuration: letter_configuration, department: department)
+    create(:organisation, invitation_parameters: invitation_parameters,
+                          department: department)
   end
 
   describe "#call" do
@@ -26,7 +26,16 @@ describe Invitations::GenerateLetter, type: :service do
       subject
       expect(invitation.content).not_to eq(nil)
       expect(invitation.content).to match(/Pour choisir un créneau à votre convenance, saisissez le code d’invitation/)
-      expect(invitation.content).to match(/Gael Monfils/)
+      expect(invitation.content).to match(/#{department.name}/)
+    end
+
+    context "when the signature is configured" do
+      let!(:invitation_parameters) { create(:invitation_parameters, signature_lines: ["Fabienne Bouchet"]) }
+
+      it "generates the pdf string with the right signature" do
+        subject
+        expect(invitation.content).to match(/Fabienne Bouchet/)
+      end
     end
 
     context "when the format is not postal" do
