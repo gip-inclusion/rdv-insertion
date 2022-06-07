@@ -43,7 +43,7 @@ class RdvContext < ApplicationRecord
   end
 
   def last_seen_rdv
-    rdvs.seen.max_by(&:starts_at)
+    rdvs.select(&:seen?).max_by(&:starts_at)
   end
 
   def last_seen_rdv_starts_at

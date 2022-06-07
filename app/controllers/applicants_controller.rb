@@ -193,7 +193,7 @@ class ApplicantsController < ApplicationController
   end
 
   def set_applicants_and_rdv_contexts # rubocop:disable Metrics/AbcSize
-    @applicants = policy_scope(Applicant).includes(rdv_contexts: [:invitations]).active.distinct
+    @applicants = policy_scope(Applicant).includes(rdv_contexts: [:invitations, :rdvs]).active.distinct
     @applicants = \
       if department_level?
         @applicants.where(department: @department)

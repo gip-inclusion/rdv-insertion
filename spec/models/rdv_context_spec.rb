@@ -23,7 +23,7 @@ describe RdvContext do
     context "when status needs attention" do
       let!(:rdv_context) { create(:rdv_context, status: "invitation_pending") }
 
-      context "when the rdv_context has been invited less than 3 days ago" do
+      context "when the applicant has been invited less than 3 days ago in this context" do
         let!(:invitation) { create(:invitation, rdv_context: rdv_context, sent_at: 2.hours.ago) }
 
         it "does not retrieve the rdv_context" do
@@ -31,7 +31,7 @@ describe RdvContext do
         end
       end
 
-      context "when the rdv_context has been first invited more than 3 days ago" do
+      context "when the applicant has been first invited more than 3 days ago in this context" do
         let!(:invitation) { create(:invitation, rdv_context: rdv_context, sent_at: 5.days.ago) }
         let!(:invitation2) { create(:invitation, rdv_context: rdv_context, sent_at: 2.hours.ago) }
 
@@ -40,7 +40,7 @@ describe RdvContext do
         end
       end
 
-      context "when the rdv_context has been invited more than 3 days ago" do
+      context "when the applicant has been invited more than 3 days ago in this context" do
         let!(:invitation) { create(:invitation, rdv_context: rdv_context, sent_at: 5.days.ago) }
 
         it "retrieves the rdv_context" do
@@ -163,9 +163,9 @@ describe RdvContext do
                                rdvs: [rdv], invitations: [invitation, invitation2, invitation3])
         end
 
-        context "first_current_invitation_sent_at" do
+        context "first_sent_invitation_after_last_seen_rdv_sent_at" do
           it "is selecting the right invitation" do
-            expect(rdv_context.first_current_invitation_sent_at).to eq(invitation2.sent_at)
+            expect(rdv_context.first_sent_invitation_after_last_seen_rdv_sent_at).to eq(invitation2.sent_at)
           end
         end
 
