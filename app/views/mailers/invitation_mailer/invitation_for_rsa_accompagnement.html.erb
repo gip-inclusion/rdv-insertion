@@ -6,5 +6,5 @@
     Choisir un créneau
   <% end %>
 </p>
-<p>En cas de problème technique, contactez le <%= @invitation.help_phone_number_formatted %></p>
+<%= render 'common/invitations_help_message', invitation: @invitation, invitation_parameters: @invitation_parameters %>
 <%= render 'common/invitations_signature', invitation_parameters: @invitation_parameters, department: @department %>
