@@ -1,4 +1,4 @@
-<%= render 'letters/header', letter_configuration: letter_configuration, department: department, organisation: organisation, applicant: applicant %>
+<%= render 'letters/header', invitation_parameters: invitation_parameters, department: department, organisation: organisation, applicant: applicant %>
 <div class="mail-object">
     <%# Remplacer par une variable @motif ? %>
   <p class="bold-blue"><span class="bold-blue">Objet : Rendez-vous d’orientation dans le cadre de votre RSA</span></p>
@@ -14,7 +14,7 @@
   <p>Cet appel est obligatoire dans le cadre du versement de votre allocation RSA.</p>
   <p>Veuillez agréer, <%= applicant.title.capitalize %>, l’expression de mes salutations distinguées.</p>
   <div class="letter-signature">
-    <%= render 'common/invitations_signature', configuration: configuration, department: department %>
+    <%= render 'common/invitations_signature', invitation_parameters: invitation_parameters, department: department %>
   </div>
 </div>
 <%= render 'letters/footer', department: department, organisation: organisation %>

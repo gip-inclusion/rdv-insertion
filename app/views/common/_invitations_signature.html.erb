@@ -1,8 +1,8 @@
-<% if configuration.signature_lines.present? %>
+<% if invitation_parameters.signature_lines.present? %>
   <p>
-    <% configuration.signature_lines.each_with_index do |signature_line, i| %>
+    <% invitation_parameters.signature_lines.each_with_index do |signature_line, i| %>
         <%= signature_line %>
-        <%= tag(:br) unless configuration.signature_lines.length == i + 1 %>
+        <%= tag(:br) unless invitation_parameters.signature_lines.length == i + 1 %>
     <% end %>
   </p>
 <% else %>

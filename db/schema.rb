@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_01_160812) do
+ActiveRecord::Schema[7.0].define(version: 2022_06_07_105632) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -77,7 +77,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_01_160812) do
     t.integer "context", default: 0
     t.integer "number_of_days_to_accept_invitation", default: 3
     t.integer "number_of_days_before_action_required", default: 3
-    t.string "sms_sender_name", limit: 11
     t.string "signature_lines", array: true
   end
 
@@ -97,6 +96,17 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_01_160812) do
     t.string "pronoun"
     t.string "email"
     t.string "phone_number"
+  end
+
+  create_table "invitation_parameters", force: :cascade do |t|
+    t.string "direction_names", array: true
+    t.string "sender_city"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "letter_sender_name"
+    t.string "sender_address_lines"
+    t.string "sms_sender_name"
+    t.string "signature_lines", array: true
   end
 
   create_table "invitations", force: :cascade do |t|
@@ -124,15 +134,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_01_160812) do
     t.index ["organisation_id", "invitation_id"], name: "index_invitations_orgas_on_orga_id_and_invitation_id", unique: true
   end
 
-  create_table "letter_configurations", force: :cascade do |t|
-    t.string "direction_names", array: true
-    t.string "sender_city"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "sender_name"
-    t.string "sender_address_lines", array: true
-  end
-
   create_table "notifications", force: :cascade do |t|
     t.bigint "applicant_id", null: false
     t.integer "event"
@@ -152,10 +153,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_01_160812) do
     t.datetime "updated_at", null: false
     t.bigint "department_id"
     t.bigint "responsible_id"
-    t.bigint "letter_configuration_id"
+    t.bigint "invitation_parameters_id"
     t.datetime "last_webhook_update_received_at"
     t.index ["department_id"], name: "index_organisations_on_department_id"
-    t.index ["letter_configuration_id"], name: "index_organisations_on_letter_configuration_id"
+    t.index ["invitation_parameters_id"], name: "index_organisations_on_invitation_parameters_id"
     t.index ["rdv_solidarites_organisation_id"], name: "index_organisations_on_rdv_solidarites_organisation_id", unique: true
     t.index ["responsible_id"], name: "index_organisations_on_responsible_id"
   end
@@ -237,7 +238,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_01_160812) do
   add_foreign_key "invitations", "rdv_contexts"
   add_foreign_key "notifications", "applicants"
   add_foreign_key "organisations", "departments"
-  add_foreign_key "organisations", "letter_configurations"
+  add_foreign_key "organisations", "invitation_parameters", column: "invitation_parameters_id"
   add_foreign_key "organisations", "responsibles"
   add_foreign_key "rdv_contexts", "applicants"
   add_foreign_key "rdvs", "organisations"

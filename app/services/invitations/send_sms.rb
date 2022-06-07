@@ -69,7 +69,7 @@ module Invitations
     end
 
     def sender_name
-      configuration.sms_sender_name || "Dept#{@invitation.department.number}"
+      @invitation.invitation_parameters&.sms_sender_name || "Dept#{@invitation.department.number}"
     end
 
     def applicant

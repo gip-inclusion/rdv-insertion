@@ -13,12 +13,10 @@ describe Invitations::GenerateLetter, type: :service do
                    department: department, format: "postal"
     )
   end
-  let!(:letter_configuration) { create(:letter_configuration) }
-  let!(:configuration) { create(:configuration) }
+  let!(:invitation_parameters) { create(:invitation_parameters) }
   let!(:organisation) do
-    create(:organisation, letter_configuration: letter_configuration,
-                          department: department,
-                          configurations: [configuration])
+    create(:organisation, invitation_parameters: invitation_parameters,
+                          department: department)
   end
 
   describe "#call" do
@@ -32,8 +30,7 @@ describe Invitations::GenerateLetter, type: :service do
     end
 
     context "when the signature is configured" do
-      let!(:letter_configuration) { create(:letter_configuration) }
-      let!(:configuration) { create(:configuration, signature_lines: ["Fabienne Bouchet"]) }
+      let!(:invitation_parameters) { create(:invitation_parameters, signature_lines: ["Fabienne Bouchet"]) }
 
       it "generates the pdf string with the right signature" do
         subject

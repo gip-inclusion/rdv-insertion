@@ -7,7 +7,7 @@ module Invitations
     def call
       check_invitation_format!
       check_address!
-      check_letter_configuration!
+      check_invitation_parameters!
       generate_letter
     end
 
@@ -23,8 +23,7 @@ module Invitations
           applicant: applicant,
           organisation: organisation,
           sender_name: sender_name,
-          letter_configuration: letter_configuration,
-          configuration: configuration
+          invitation_parameters: invitation_parameters
         }
       )
     end
@@ -38,8 +37,8 @@ module Invitations
       fail!("Le format de l'adresse est invalide") if street_address.blank? || zipcode_and_city.blank?
     end
 
-    def check_letter_configuration!
-      fail!("La configuration des courriers pour votre organisation est incomplète") if letter_configuration.blank?
+    def check_invitation_parameters!
+      fail!("La configuration des courriers pour votre organisation est incomplète") if invitation_parameters.blank?
     end
 
     def address
@@ -58,12 +57,8 @@ module Invitations
       @invitation.organisations.last
     end
 
-    def letter_configuration
-      organisation&.letter_configuration
-    end
-
-    def configuration
-      organisation.configurations.find_by(context: @invitation.context)
+    def invitation_parameters
+      @invitation.invitation_parameters
     end
 
     def applicant
@@ -71,7 +66,7 @@ module Invitations
     end
 
     def sender_name
-      letter_configuration.sender_name || "le Conseil départemental"
+      invitation_parameters.letter_sender_name || "le Conseil départemental"
     end
   end
 end

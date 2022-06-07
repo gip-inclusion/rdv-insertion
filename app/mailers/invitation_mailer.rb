@@ -1,6 +1,8 @@
 class InvitationMailer < ApplicationMailer
   def invitation_for_rsa_orientation(invitation, applicant)
     @invitation = invitation
+    @department = @invitation.department
+    @invitation_parameters = @invitation.invitation_parameters
     @applicant = applicant
     mail(
       to: @applicant.email,
@@ -10,6 +12,8 @@ class InvitationMailer < ApplicationMailer
 
   def invitation_for_rsa_accompagnement(invitation, applicant)
     @invitation = invitation
+    @department = @invitation.department
+    @invitation_parameters = @invitation.invitation_parameters
     @applicant = applicant
     mail(
       to: @applicant.email,
@@ -19,6 +23,8 @@ class InvitationMailer < ApplicationMailer
 
   def invitation_for_rsa_orientation_on_phone_platform(invitation, applicant)
     @invitation = invitation
+    @department = @invitation.department
+    @invitation_parameters = @invitation.invitation_parameters
     @applicant = applicant
     mail(
       to: @applicant.email,

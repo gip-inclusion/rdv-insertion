@@ -2,6 +2,3 @@ fr:
   activerecord:
     models:
       configuration: Configuration
-    attributes:
-      configuration:
-        sms_sender_name: Nom de l'expéditeur
