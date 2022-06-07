@@ -9,6 +9,10 @@ module InvitableConcern
     first_sent_invitation&.sent_at
   end
 
+  def first_sent_invitation_after_last_seen_rdv_sent_at
+    invitations.select { |invitation| invitation.sent_at > last_seen_rdv.starts_at }.map(&:sent_at).compact.min
+  end
+
   def last_sent_invitation
     invitations.select(&:sent_at).max_by(&:sent_at)
   end
@@ -42,6 +46,12 @@ module InvitableConcern
   end
 
   def invited_before_time_window?(number_of_days_before_action_required)
-    last_invitation_sent_at && last_invitation_sent_at < number_of_days_before_action_required.days.ago
+    invitation_date_to_compare = \
+      if last_seen_rdv.present? && status != "rdv_seen"
+        first_sent_invitation_after_last_seen_rdv_sent_at
+      else
+        first_invitation_sent_at
+      end
+    invitation_date_to_compare && invitation_date_to_compare < number_of_days_before_action_required.days.ago
   end
 end

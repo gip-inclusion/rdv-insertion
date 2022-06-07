@@ -23,7 +23,7 @@ describe RdvContext do
     context "when status needs attention" do
       let!(:rdv_context) { create(:rdv_context, status: "invitation_pending") }
 
-      context "when the rdv_context has been last invited less than 3 days ago" do
+      context "when the applicant has been invited less than 3 days ago in this context" do
         let!(:invitation) { create(:invitation, rdv_context: rdv_context, sent_at: 2.hours.ago) }
 
         it "does not retrieve the rdv_context" do
@@ -31,10 +31,19 @@ describe RdvContext do
         end
       end
 
-      context "when the rdv_context has been invited more than 3 days ago" do
+      context "when the applicant has been first invited more than 3 days ago in this context" do
+        let!(:invitation) { create(:invitation, rdv_context: rdv_context, sent_at: 5.days.ago) }
+        let!(:invitation2) { create(:invitation, rdv_context: rdv_context, sent_at: 2.hours.ago) }
+
+        it "retrieve the rdv_context" do
+          expect(subject).to include(rdv_context)
+        end
+      end
+
+      context "when the applicant has been invited more than 3 days ago in this context" do
         let!(:invitation) { create(:invitation, rdv_context: rdv_context, sent_at: 5.days.ago) }
 
-        it "does not retrieve the rdv_context" do
+        it "retrieves the rdv_context" do
           expect(subject).to include(rdv_context)
         end
       end
@@ -117,6 +126,61 @@ describe RdvContext do
 
         it "is rdv pending" do
           expect(subject).to eq(:rdv_needs_status_update)
+        end
+      end
+    end
+
+    describe "#invited_before_time_window?" do
+      let!(:number_of_days_before_action_required) { 3 }
+
+      context "when no rdv seen or status is rdv_seen" do
+        let!(:invitation) { create(:invitation, sent_at: 2.days.ago) }
+        let!(:invitation2) { create(:invitation, sent_at: 1.day.ago) }
+        let!(:rdv_context) { create(:rdv_context, invitations: [invitation, invitation2]) }
+
+        context "when invited in time window" do
+          it "is false" do
+            expect(rdv_context.invited_before_time_window?(number_of_days_before_action_required)).to eq(false)
+          end
+        end
+
+        context "when not invited in time window" do
+          let!(:invitation) { create(:invitation, sent_at: 6.days.ago) }
+
+          it "is true" do
+            expect(rdv_context.invited_before_time_window?(number_of_days_before_action_required)).to eq(true)
+          end
+        end
+      end
+
+      context "when there is a rdv_seen but status is not rdv_seen" do
+        let!(:rdv) { create(:rdv, status: "seen", starts_at: 4.days.ago) }
+        let!(:invitation) { create(:invitation, sent_at: 6.days.ago) }
+        let!(:invitation2) { create(:invitation, sent_at: 2.days.ago) }
+        let!(:invitation3) { create(:invitation, sent_at: 1.day.ago) }
+        let!(:rdv_context) do
+          create(:rdv_context, status: "invitation_pending",
+                               rdvs: [rdv], invitations: [invitation, invitation2, invitation3])
+        end
+
+        context "first_sent_invitation_after_last_seen_rdv_sent_at" do
+          it "is selecting the right invitation" do
+            expect(rdv_context.first_sent_invitation_after_last_seen_rdv_sent_at).to eq(invitation2.sent_at)
+          end
+        end
+
+        context "when invited in time window" do
+          it "is false" do
+            expect(rdv_context.invited_before_time_window?(number_of_days_before_action_required)).to eq(false)
+          end
+        end
+
+        context "when not invited in time window" do
+          let!(:invitation2) { create(:invitation, sent_at: 4.days.ago) }
+
+          it "is true" do
+            expect(rdv_context.invited_before_time_window?(number_of_days_before_action_required)).to eq(true)
+          end
         end
       end
     end
