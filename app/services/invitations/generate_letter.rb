@@ -38,7 +38,9 @@ module Invitations
     end
 
     def check_invitation_parameters!
-      fail!("La configuration des courriers pour votre organisation est incomplète") if invitation_parameters.blank?
+      return if invitation_parameters.present? && invitation_parameters.direction_names.present?
+
+      fail!("La configuration des courriers pour votre organisation est incomplète")
     end
 
     def address
@@ -58,7 +60,7 @@ module Invitations
     end
 
     def invitation_parameters
-      @invitation.invitation_parameters
+      @invitation_parameters ||= @invitation.invitation_parameters
     end
 
     def applicant

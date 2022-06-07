@@ -1,4 +1,4 @@
-<% if invitation_parameters.signature_lines.present? %>
+<% if invitation_parameters.present? && invitation_parameters.signature_lines.present? %>
   <p>
     <% invitation_parameters.signature_lines.each_with_index do |signature_line, i| %>
         <%= signature_line %>
