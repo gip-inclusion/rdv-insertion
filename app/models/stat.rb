@@ -171,7 +171,7 @@ class Stat
       relevant_applicants.where("applicants.created_at < ?", 30.days.ago)
                          .joins(:rdv_contexts)
                          .where(rdv_contexts: {
-                                  context: %w[rsa_orientation]
+                                  context: %w[rsa_orientation rsa_accompagnement]
                                 })
   end
   # -----------------------------------------------------------------------------------------

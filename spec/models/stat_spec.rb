@@ -294,38 +294,20 @@ describe Stat do
     end
     let!(:irrelevant_applicant) do
       create(:applicant, organisations: [relevant_organisation],
-                         rdv_contexts: [rdv_context_orientation3],
-                         rights_opening_date: 10.days.ago)
-    end
-    let!(:irrelevant_applicant2) do
-      create(:applicant, organisations: [relevant_organisation],
                          rdv_contexts: [rdv_context_orientation4],
-                         rights_opening_date: nil,
                          created_at: 10.days.ago)
     end
 
-    context "when an applicant rights opening date is more than 30 days and has a rsa_orientation rdv_context" do
+    context "when an applicant creation date is more than 30 days ago and has a rsa_orientation rdv_context" do
       it "is not filtered" do
         expect(subject.applicants_for_30_days_orientation_scope).to include(relevant_applicant)
-      end
-    end
-
-    context "when an applicant rights opening date is nil, creation date is more than 27 days" \
-            "and has a rsa_orientation rdv_context" do
-      it "is not filtered" do
         expect(subject.applicants_for_30_days_orientation_scope).to include(relevant_applicant2)
       end
     end
 
-    context "when an applicant rights opening date is less than 30 days" do
-      it "is is filtered" do
-        expect(subject.applicants_for_30_days_orientation_scope).not_to include(irrelevant_applicant)
-      end
-    end
-
-    context "when an applicant rights opening date is nil and creation date is less than 27 days" do
+    context "when an applicant creation date is less than 30 days ago" do
       it "is filtered" do
-        expect(subject.applicants_for_30_days_orientation_scope).not_to include(irrelevant_applicant2)
+        expect(subject.applicants_for_30_days_orientation_scope).not_to include(irrelevant_applicant)
       end
     end
 
@@ -358,7 +340,6 @@ describe Stat do
       create(:applicant, organisations: [relevant_organisation],
                          rdvs: [orientation_rdv2],
                          rdv_contexts: [rdv_context_orientation2],
-                         rights_opening_date: nil,
                          created_at: DateTime.new(2022, 3, 5, 10, 0))
     end
 
