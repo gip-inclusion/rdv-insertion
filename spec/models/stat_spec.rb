@@ -16,7 +16,9 @@ describe Stat do
     create(:rdv_context, motif_category: "rsa_orientation", created_at: DateTime.new(2022, 4, 4, 10, 0))
   end
   let!(:rdv_context_orientation_platform) do
-    create(:rdv_context, motif_category: "rsa_orientation_on_phone_platform", created_at: DateTime.new(2022, 5, 7, 10, 0))
+    create(
+      :rdv_context, motif_category: "rsa_orientation_on_phone_platform", created_at: DateTime.new(2022, 5, 7, 10, 0)
+    )
   end
   let!(:rdv_context_accompagnement) { create(:rdv_context, motif_category: "rsa_accompagnement") }
 

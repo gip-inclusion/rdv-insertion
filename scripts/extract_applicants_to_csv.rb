@@ -23,7 +23,9 @@ context_applicants = if CONTEXT.present?
                        applicants.where.missing(:rdv_contexts)
                      end
 
-result = CreateApplicantsCsvExport.call(applicants: context_applicants, structure: structure, motif_category: MOTIF_CATEGORY)
+result = CreateApplicantsCsvExport.call(
+  applicants: context_applicants, structure: structure, motif_category: MOTIF_CATEGORY
+)
 
 if EMAIL.present?
   CsvExportMailer.applicants_csv_export(EMAIL, result.csv, result.filename).deliver_now

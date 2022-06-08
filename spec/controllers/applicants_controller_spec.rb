@@ -303,7 +303,9 @@ describe ApplicantsController, type: :controller do
     end
 
     context "it shows the different contexts" do
-      let!(:configuration) { create(:configuration, motif_category: "rsa_orientation", invitation_formats: %w[sms email]) }
+      let!(:configuration) do
+        create(:configuration, motif_category: "rsa_orientation", invitation_formats: %w[sms email])
+      end
       let!(:configuration2) do
         create(:configuration, motif_category: "rsa_accompagnement", invitation_formats: %w[sms email postal])
       end

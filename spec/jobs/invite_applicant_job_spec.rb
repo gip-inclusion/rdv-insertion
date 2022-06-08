@@ -15,7 +15,10 @@ describe InviteApplicantJob, type: :job do
   end
   let!(:number_of_days_to_accept_invitation) { 11 }
   let!(:configuration) do
-    create(:configuration, motif_category: motif_category, number_of_days_to_accept_invitation: number_of_days_to_accept_invitation)
+    create(
+      :configuration,
+      motif_category: motif_category, number_of_days_to_accept_invitation: number_of_days_to_accept_invitation
+    )
   end
   let!(:rdv_solidarites_session_credentials) { session_hash.symbolize_keys }
   let!(:invitation_format) { "sms" }
