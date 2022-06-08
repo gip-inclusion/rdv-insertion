@@ -1,4 +1,4 @@
-<%= render 'letters/header', letter_configuration: letter_configuration, department: department, organisation: organisation, applicant: applicant %>
+<%= render 'letters/header', invitation_parameters: invitation_parameters, department: department, organisation: organisation, applicant: applicant %>
 <div class="mail-object">
     <%# Remplacer par une variable @motif ? %>
   <p class="bold-blue"><span class="bold-blue">Objet : Rendez-vous d'accompagnement dans le cadre de votre RSA</span></p>
@@ -16,12 +16,7 @@
   <p>Si vous rencontrez une difficulté pour accéder à internet, veuillez téléphoner dès réception de ce courrier au <%= invitation.help_phone_number_formatted %>.</p>
   <p>Veuillez agréer, <%= applicant.title.capitalize %>, l’expression de mes salutations distinguées.</p>
   <div class="letter-signature">
-    <% if organisation.responsible.present? %>
-      <p>Pour le Président du Conseil départemental et par délégation,<br/>
-      <%= organisation.responsible.full_name %>, <%= organisation.responsible.role %></p>
-    <% else %>
-      <p>Le département <%= I18n.t("with_prefix.#{department.pronoun}", name: invitation.department.name) %><br/></p>
-    <% end %>
+    <%= render 'common/invitations_signature', invitation_parameters: invitation_parameters, department: department %>
   </div>
 </div>
 <%= render 'letters/footer', department: department, organisation: organisation %>

@@ -72,7 +72,7 @@ class ApplicantsController < ApplicationController
   def formatted_params
     # we nullify some blank params for unicity exceptions (ActiveRecord::RecordNotUnique) not to raise
     applicant_params.to_h do |k, v|
-      [k, k.in?([:affiliation_number, :department_internal_id]) ? v.presence : v]
+      [k, k.in?([:affiliation_number, :department_internal_id, :email]) ? v.presence : v]
     end
   end
 
@@ -193,7 +193,7 @@ class ApplicantsController < ApplicationController
   end
 
   def set_applicants_and_rdv_contexts # rubocop:disable Metrics/AbcSize
-    @applicants = policy_scope(Applicant).includes(rdv_contexts: [:invitations]).active.distinct
+    @applicants = policy_scope(Applicant).includes(rdv_contexts: [:invitations, :rdvs]).active.distinct
     @applicants = \
       if department_level?
         @applicants.where(department: @department)

@@ -80,7 +80,9 @@ export default function InvitationBlock({
       ...prevState,
       [format]: [newInvitationDate, ...prevState[format]],
     }));
-    updateStatusBlock();
+    if (status !== "invitation_pending") {
+      updateStatusBlock();
+    }
     setIsLoading({ ...isLoading, [format]: false });
   };
 

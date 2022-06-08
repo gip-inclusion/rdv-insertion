@@ -12,7 +12,7 @@ class Organisation < ApplicationRecord
   has_and_belongs_to_many :webhook_endpoints
 
   belongs_to :responsible, optional: true
-  belongs_to :letter_configuration, optional: true
+  belongs_to :invitation_parameters, optional: true
   has_many :rdvs, dependent: :nullify
 
   delegate :name, :name_with_region, :number, to: :department, prefix: true

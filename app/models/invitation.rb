@@ -38,6 +38,10 @@ class Invitation < ApplicationRecord
     super.merge(context: context)
   end
 
+  def invitation_parameters
+    organisations.map(&:invitation_parameters).compact.first
+  end
+
   private
 
   def organisations_cannot_be_from_different_departments
