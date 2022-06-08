@@ -61,8 +61,8 @@
               </td>
               <% if @current_context.present? %>
                 <% if show_invitations?(@current_configuration) %>
-                  <td><%= display_attribute format_date(rdv_context.first_invitation_sent_at) %></td>
-                  <td><%= rdv_context.invitations.length > 1 ? display_attribute(format_date(rdv_context.last_invitation_sent_at)) : "-" %></td>
+                  <td><%= display_attribute(compute_first_invitation_sent_at(rdv_context)) %> </td>
+                  <td><%= show_last_invitation_date?(rdv_context) ? display_attribute(format_date(rdv_context.last_invitation_sent_at)) : "-" %></td>
                 <% end %>
                 <% if show_notification?(@current_configuration) %>
                   <td><%= display_attribute format_date(applicant.last_notification_sent_at) %></td>

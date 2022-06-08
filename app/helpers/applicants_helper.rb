@@ -1,3 +1,5 @@
+# rubocop:disable Metrics/ModuleLength
+
 module ApplicantsHelper
   def format_date(date)
     date&.strftime("%d/%m/%Y")
@@ -21,6 +23,19 @@ module ApplicantsHelper
 
   def show_invitations?(configuration)
     configuration.invitation_formats.present?
+  end
+
+  def show_last_invitation_date?(rdv_context)
+    rdv_context.invitations.length > 1 &&
+      format_date(rdv_context.last_invitation_sent_at) != format_date(rdv_context.first_invitation_sent_at)
+  end
+
+  def compute_first_invitation_sent_at(rdv_context)
+    if rdv_context.last_seen_rdv.present? && rdv_context.rdv_seen?
+      format_date(rdv_context.first_sent_invitation_after_last_seen_rdv_sent_at)
+    else
+      format_date(rdv_context.first_invitation_sent_at)
+    end
   end
 
   def display_attribute(attribute)
@@ -113,3 +128,5 @@ module ApplicantsHelper
     organisation_applicant_path(organisation, applicant)
   end
 end
+
+# rubocop:enable Metrics/ModuleLength
