@@ -8,16 +8,6 @@
     <% invitation_parameters.direction_names.each do |direction_name| %>
       <p><%= direction_name.upcase %></p>
     <% end %>
-
-    <% if invitation_parameters.sender_address_lines.present? %>
-      <p>
-        <% invitation_parameters.sender_address_lines.each_with_index do |address_line, i| %>
-          <%= address_line.upcase %>
-          <%= tag(:br) unless invitation_parameters.sender_address_lines.length == i + 1 %>
-        <% end %>
-      </p>
-    <% end %>
-
   </div>
   <div class="right-col">
     <p><%= invitation_parameters.sender_city || department.capital %>, le <%= Date.today.strftime('%d/%m/%Y') %></p>
