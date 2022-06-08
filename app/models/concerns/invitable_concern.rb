@@ -10,7 +10,8 @@ module InvitableConcern
   end
 
   def first_sent_invitation_after_last_seen_rdv_sent_at
-    invitations.select { |invitation| invitation.sent_at > last_seen_rdv.starts_at }.map(&:sent_at).compact.min
+    invitations.select { |invitation| invitation.sent_at && invitation.sent_at > last_seen_rdv.starts_at }
+               .map(&:sent_at).min
   end
 
   def last_sent_invitation
