@@ -39,7 +39,7 @@ class Invitation < ApplicationRecord
   end
 
   def invitation_parameters
-    organisations.flat_map(&:invitation_parameters).first
+    organisations.map(&:invitation_parameters).compact.first
   end
 
   private
