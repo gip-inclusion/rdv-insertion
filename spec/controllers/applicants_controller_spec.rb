@@ -3,7 +3,7 @@ describe ApplicantsController, type: :controller do
   let!(:configuration) do
     create(
       :configuration,
-      context: "rsa_orientation",
+      motif_category: "rsa_orientation",
       number_of_days_before_action_required: number_of_days_before_action_required
     )
   end
@@ -303,9 +303,9 @@ describe ApplicantsController, type: :controller do
     end
 
     context "it shows the different contexts" do
-      let!(:configuration) { create(:configuration, context: "rsa_orientation", invitation_formats: %w[sms email]) }
+      let!(:configuration) { create(:configuration, motif_category: "rsa_orientation", invitation_formats: %w[sms email]) }
       let!(:configuration2) do
-        create(:configuration, context: "rsa_accompagnement", invitation_formats: %w[sms email postal])
+        create(:configuration, motif_category: "rsa_accompagnement", invitation_formats: %w[sms email postal])
       end
 
       let!(:organisation) do
@@ -314,7 +314,7 @@ describe ApplicantsController, type: :controller do
       end
 
       let!(:rdv_context) do
-        create(:rdv_context, status: "rdv_seen", applicant: applicant, context: "rsa_orientation")
+        create(:rdv_context, status: "rdv_seen", applicant: applicant, motif_category: "rsa_orientation")
       end
       let!(:invitation_orientation) do
         create(:invitation, sent_at: "2021-10-20", format: "sms", rdv_context: rdv_context)
@@ -337,7 +337,7 @@ describe ApplicantsController, type: :controller do
       end
 
       let!(:rdv_context2) do
-        create(:rdv_context, status: "invitation_pending", applicant: applicant, context: "rsa_accompagnement")
+        create(:rdv_context, status: "invitation_pending", applicant: applicant, motif_category: "rsa_accompagnement")
       end
 
       let!(:invitation_accompagnement) do
@@ -374,7 +374,7 @@ describe ApplicantsController, type: :controller do
         organisations: [organisation], department: department, last_name: "Chabat", rdv_contexts: [rdv_context1]
       )
     end
-    let!(:rdv_context1) { build(:rdv_context, context: "rsa_orientation", status: "rdv_seen") }
+    let!(:rdv_context1) { build(:rdv_context, motif_category: "rsa_orientation", status: "rdv_seen") }
 
     let!(:applicant2) do
       create(
@@ -383,8 +383,8 @@ describe ApplicantsController, type: :controller do
       )
     end
 
-    let!(:rdv_context2) { build(:rdv_context, context: "rsa_orientation", status: "invitation_pending") }
-    let!(:index_params) { { organisation_id: organisation.id, context: "rsa_orientation" } }
+    let!(:rdv_context2) { build(:rdv_context, motif_category: "rsa_orientation", status: "invitation_pending") }
+    let!(:index_params) { { organisation_id: organisation.id, motif_category: "rsa_orientation" } }
 
     render_views
 
@@ -402,11 +402,11 @@ describe ApplicantsController, type: :controller do
     end
 
     context "when a context is specified" do
-      let!(:rdv_context2) { build(:rdv_context, context: "rsa_accompagnement", status: "invitation_pending") }
-      let!(:configuration) { create(:configuration, context: "rsa_accompagnement") }
+      let!(:rdv_context2) { build(:rdv_context, motif_category: "rsa_accompagnement", status: "invitation_pending") }
+      let!(:configuration) { create(:configuration, motif_category: "rsa_accompagnement") }
 
       it "returns the list of applicants in the current context" do
-        get :index, params: index_params.merge(context: "rsa_accompagnement")
+        get :index, params: index_params.merge(motif_category: "rsa_accompagnement")
 
         expect(response).to be_successful
         expect(response.body).not_to match(/Chabat/)
@@ -415,7 +415,9 @@ describe ApplicantsController, type: :controller do
     end
 
     context "when a search query is specified" do
-      let!(:index_params) { { organisation_id: organisation.id, search_query: "chabat", context: "rsa_orientation" } }
+      let!(:index_params) do
+        { organisation_id: organisation.id, search_query: "chabat", motif_category: "rsa_orientation" }
+      end
 
       it "searches the applicants" do
         get :index, params: index_params
@@ -426,7 +428,7 @@ describe ApplicantsController, type: :controller do
 
     context "when a status is passed" do
       let!(:index_params) do
-        { organisation_id: organisation.id, status: "invitation_pending", context: "rsa_orientation" }
+        { organisation_id: organisation.id, status: "invitation_pending", motif_category: "rsa_orientation" }
       end
 
       it "filters by status" do
@@ -437,7 +439,9 @@ describe ApplicantsController, type: :controller do
     end
 
     context "when action_required is passed" do
-      let!(:index_params) { { organisation_id: organisation.id, action_required: "true", context: "rsa_orientation" } }
+      let!(:index_params) do
+        { organisation_id: organisation.id, action_required: "true", motif_category: "rsa_orientation" }
+      end
       let!(:number_of_days_before_action_required) { 4 }
 
       context "when the invitation has been sent before the number of days defined in the configuration ago" do
@@ -462,7 +466,7 @@ describe ApplicantsController, type: :controller do
     end
 
     context "when department level" do
-      let!(:index_params) { { department_id: department.id, context: "rsa_orientation" } }
+      let!(:index_params) { { department_id: department.id, motif_category: "rsa_orientation" } }
 
       it "renders the index page" do
         get :index, params: index_params
@@ -477,10 +481,10 @@ describe ApplicantsController, type: :controller do
         create(:applicant, organisations: [organisation], last_name: "Chabat", rdv_contexts: [])
       end
 
-      let!(:rdv_context2) { build(:rdv_context, context: "rsa_accompagnement", status: "invitation_pending") }
+      let!(:rdv_context2) { build(:rdv_context, motif_category: "rsa_accompagnement", status: "invitation_pending") }
 
       it "lists the applicants with no rdv contexts in the contexts of the org configs" do
-        get :index, params: index_params.merge(context: nil)
+        get :index, params: index_params.merge(motif_category: nil)
 
         expect(response.body).to match(/Chabat/)
         expect(response.body).to match(/Baer/)

@@ -9,7 +9,7 @@ describe "api/v1/applicants/create_and_invite_many requests", type: :request do
     )
   end
   let!(:configuration) do
-    create(:configuration, context: "rsa_orientation")
+    create(:configuration, motif_category: "rsa_orientation")
   end
   let!(:applicants_params) { { applicants: [applicant1_params, applicant2_params] } }
 
@@ -177,14 +177,14 @@ describe "api/v1/applicants/create_and_invite_many requests", type: :request do
 
       context "with invalid invitation context for organisation" do
         before do
-          applicant1_params[:invitation][:context] = "rsa_accompagnement"
+          applicant1_params[:invitation][:motif_category] = "rsa_accompagnement"
         end
 
         it "returns 422" do
           subject
           expect(response.status).to eq(422)
           result = JSON.parse(response.body)
-          expect(result["errors"]).to include({ "Entrée 1" => "Invitation context rsa_accompagnement est invalide" })
+          expect(result["errors"]).to include({ "Entrée 1" => "Catégorie de motifs rsa_accompagnement invalide" })
         end
 
         it "does not enqueue jobs" do

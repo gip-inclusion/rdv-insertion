@@ -37,7 +37,7 @@ class Stat
   # correctly informed by the organisations/ or are taken in the past (which mess up with the delays)
   def orientation_rdvs
     @orientation_rdvs ||= relevant_rdvs.joins(:rdv_contexts)
-                                       .where(rdv_contexts: { context: %w[rsa_orientation] })
+                                       .where(rdv_contexts: { motif_category: %w[rsa_orientation] })
   end
 
   def orientation_rdvs_by_month
@@ -173,7 +173,7 @@ class Stat
                                        .where("applicants.created_at < ?", 27.days.ago))
                          .joins(:rdv_contexts)
                          .where(rdv_contexts: {
-                                  context: %w[rsa_orientation]
+                                  motif_category: %w[rsa_orientation]
                                 })
   end
   # -----------------------------------------------------------------------------------------

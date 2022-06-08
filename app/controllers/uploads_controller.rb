@@ -13,7 +13,7 @@ class UploadsController < ApplicationController
     @department = Department.find(params[:department_id])
     authorize @department, :upload?
     @organisation = nil
-    @all_configurations = (policy_scope(::Configuration) & @department.configurations).uniq(&:context)
+    @all_configurations = (policy_scope(::Configuration) & @department.configurations).uniq(&:motif_category)
     set_current_configuration
   end
 
@@ -32,6 +32,6 @@ class UploadsController < ApplicationController
       elsif @all_configurations.length == 1
         @all_configurations.first
       end
-    @context_name = @current_configuration&.context_name
+    @motif_category_human = @current_configuration&.motif_category_human
   end
 end

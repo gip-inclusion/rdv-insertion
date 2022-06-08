@@ -152,17 +152,17 @@ export default class Applicant {
     this.lastSmsInvitationSentAt = retrieveLastInvitationDate(
       upToDateApplicant.invitations,
       "sms",
-      this.currentConfiguration.context
+      this.currentConfiguration.motif_category
     );
     this.lastEmailInvitationSentAt = retrieveLastInvitationDate(
       upToDateApplicant.invitations,
       "email",
-      this.currentConfiguration.context
+      this.currentConfiguration.motif_category
     );
     this.lastPostalInvitationSentAt = retrieveLastInvitationDate(
       upToDateApplicant.invitations,
       "postal",
-      this.currentConfiguration.context
+      this.currentConfiguration.motif_category
     );
     this.departmentInternalId = upToDateApplicant.department_internal_id;
   }

@@ -6,11 +6,11 @@ class Invitation < ApplicationRecord
 
   attr_accessor :content
 
-  validates :help_phone_number, :context, :token, :organisations, :link, :number_of_days_to_accept_invitation,
+  validates :help_phone_number, :token, :organisations, :link, :number_of_days_to_accept_invitation,
             presence: true
   validate :organisations_cannot_be_from_different_departments
 
-  delegate :context, :context_name, to: :rdv_context
+  delegate :motif_category, :motif_category_human, to: :rdv_context
 
   enum format: { sms: 0, email: 1, postal: 2 }, _prefix: :format
   after_commit :set_rdv_context_status
@@ -35,7 +35,7 @@ class Invitation < ApplicationRecord
   end
 
   def as_json(_opts = {})
-    super.merge(context: context)
+    super.merge(motif_category: motif_category)
   end
 
   def invitation_parameters

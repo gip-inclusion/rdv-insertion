@@ -1,5 +1,5 @@
 class RdvContext < ApplicationRecord
-  include HasContextConcern
+  include HasMotifCategoryConcern
   include HasStatusConcern
   include InvitableConcern
 
@@ -7,7 +7,7 @@ class RdvContext < ApplicationRecord
   has_and_belongs_to_many :rdvs
   belongs_to :applicant
 
-  validates :context, presence: true, uniqueness: { scope: :applicant_id }
+  validates :motif_category, presence: true, uniqueness: { scope: :applicant_id }
 
   STATUSES_WITH_ACTION_REQUIRED = %w[
     not_invited rdv_needs_status_update rdv_noshow rdv_revoked rdv_excused multiple_rdvs_cancelled
@@ -34,8 +34,8 @@ class RdvContext < ApplicationRecord
     status.in?(STATUSES_WITH_ATTENTION_NEEDED)
   end
 
-  def context_orientation?
-    context.in?(%w[rsa_orientation rsa_orientation_on_phone_platform])
+  def motif_orientation?
+    motif_category.in?(%w[rsa_orientation rsa_orientation_on_phone_platform])
   end
 
   def first_rdv_creation_date

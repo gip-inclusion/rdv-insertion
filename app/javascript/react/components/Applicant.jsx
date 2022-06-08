@@ -77,7 +77,7 @@ export default function Applicant({
       applicant.department.id,
       applicant.currentOrganisation,
       isDepartmentLevel,
-      applicant.currentConfiguration.context,
+      applicant.currentConfiguration.motif_category,
       applicant.currentConfiguration.number_of_days_to_accept_invitation,
     ];
     if (format === "sms") {

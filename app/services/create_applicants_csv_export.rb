@@ -1,10 +1,10 @@
 require "csv"
 
 class CreateApplicantsCsvExport < BaseService
-  def initialize(applicants:, structure:, context:)
+  def initialize(applicants:, structure:, motif_category:)
     @applicants = applicants
     @structure = structure
-    @context = context
+    @motif_category = motif_category
   end
 
   def call
@@ -78,13 +78,13 @@ class CreateApplicantsCsvExport < BaseService
     if @structure.nil?
       "Liste_beneficiaires.csv"
     else
-      "Liste_beneficiaires_#{context_title}_#{@structure.class.model_name.human.downcase}_" \
+      "Liste_beneficiaires_#{motif_category_title}_#{@structure.class.model_name.human.downcase}_" \
         "#{@structure.name.parameterize(separator: '_')}.csv"
     end
   end
 
-  def context_title
-    @context.presence || "autres"
+  def motif_category_title
+    @motif_category.presence || "autres"
   end
 
   def human_rdv_context_status(applicant)
@@ -106,7 +106,7 @@ class CreateApplicantsCsvExport < BaseService
   end
 
   def rdv_context(applicant)
-    applicant.rdv_context_for(@context)
+    applicant.rdv_context_for(@motif_category)
   end
 
   def format_date(date)

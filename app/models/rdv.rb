@@ -16,7 +16,7 @@ class Rdv < ApplicationRecord
   validates :applicants, :rdv_solidarites_motif_id, :starts_at, :duration_in_min, presence: true
   validates :rdv_solidarites_rdv_id, uniqueness: true, presence: true
 
-  validate :context_subject_is_uniq
+  validate :motif_category_is_uniq
 
   enum created_by: { agent: 0, user: 1, file_attente: 2 }, _prefix: :created_by
   enum status: { unknown: 0, waiting: 1, seen: 2, excused: 3, revoked: 4, noshow: 5 }
@@ -60,9 +60,9 @@ class Rdv < ApplicationRecord
     RefreshRdvContextStatusesJob.perform_async(rdv_context_ids)
   end
 
-  def context_subject_is_uniq
-    return if rdv_contexts.pluck(:context).uniq.length < 2
+  def motif_category_is_uniq
+    return if rdv_contexts.pluck(:motif_category).uniq.length < 2
 
-    errors.add(:base, "Un RDV ne peut pas être lié à deux sujets différents")
+    errors.add(:base, "Un RDV ne peut pas être lié à deux catégories de motifs différents")
   end
 end

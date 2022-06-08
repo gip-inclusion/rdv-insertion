@@ -11,7 +11,7 @@ export default function InvitationBlock({
   invitations,
   organisation,
   department,
-  context,
+  motifCategory,
   isDepartmentLevel,
   invitationFormats,
   numberOfDaysToAcceptInvitation,
@@ -34,7 +34,7 @@ export default function InvitationBlock({
   );
 
   const updateStatusBlock = () => {
-    const statusBlock = document.getElementById(`js-block-status-${context}`);
+    const statusBlock = document.getElementById(`js-block-status-${motifCategory}`);
     if (statusBlock) {
       statusBlock.textContent = "Invitation en attente de réponse";
       statusBlock.className = "p-4";
@@ -62,7 +62,7 @@ export default function InvitationBlock({
       department.id,
       organisation,
       isDepartmentLevel,
-      context,
+      motifCategory,
       numberOfDaysToAcceptInvitation,
     ];
     let newInvitationDate;
@@ -114,7 +114,7 @@ export default function InvitationBlock({
               invitationsDatesByFormat={invitationsDatesByFormat}
               invitationFormats={invitationFormats}
               index={idx}
-              key={`${context}${idx}`}
+              key={`${motifCategory}${idx}`}
             />
           ))}
           <tr>

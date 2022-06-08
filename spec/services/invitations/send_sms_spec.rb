@@ -23,7 +23,7 @@ describe Invitations::SendSms, type: :service do
       region: "Auvergne-Rhône-Alpes"
     )
   end
-  let!(:configuration) { create(:configuration, context: "rsa_orientation") }
+  let!(:configuration) { create(:configuration, motif_category: "rsa_orientation") }
   let!(:organisation) { create(:organisation, configurations: [configuration], department: department) }
 
   let!(:invitation) do
@@ -35,7 +35,7 @@ describe Invitations::SendSms, type: :service do
     )
   end
 
-  let!(:rdv_context) { build(:rdv_context, context: "rsa_orientation") }
+  let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_orientation") }
   let!(:content) do
     "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous "\
       "d'orientation. Pour choisir la date et l'horaire de votre premier RDV, cliquez sur le lien suivant "\
@@ -99,8 +99,8 @@ describe Invitations::SendSms, type: :service do
     end
 
     context "for rsa accompagnement" do
-      let!(:rdv_context) { build(:rdv_context, context: "rsa_accompagnement") }
-      let!(:configuration) { create(:configuration, context: "rsa_accompagnement") }
+      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_accompagnement") }
+      let!(:configuration) { create(:configuration, motif_category: "rsa_accompagnement") }
       let!(:content) do
         "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous "\
           "d'accompagnement. Pour choisir la date et l'horaire de votre premier RDV, cliquez sur le lien suivant "\
@@ -121,8 +121,8 @@ describe Invitations::SendSms, type: :service do
     end
 
     context "for rsa orientation on phone platform" do
-      let!(:rdv_context) { build(:rdv_context, context: "rsa_orientation_on_phone_platform") }
-      let!(:configuration) { create(:configuration, context: "rsa_orientation_on_phone_platform") }
+      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_orientation_on_phone_platform") }
+      let!(:configuration) { create(:configuration, motif_category: "rsa_orientation_on_phone_platform") }
       let!(:content) do
         "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez contacter la plateforme départementale " \
           "afin de démarrer votre parcours d’accompagnement. Pour cela, merci d’appeler le " \
@@ -142,7 +142,7 @@ describe Invitations::SendSms, type: :service do
     end
 
     context "when the sms sender name is defined in organisation configuration" do
-      let!(:configuration) { create(:configuration, context: "rsa_orientation") }
+      let!(:configuration) { create(:configuration, motif_category: "rsa_orientation") }
       let!(:invitation_parameters) { create(:invitation_parameters, sms_sender_name: "PoleRSA") }
       let!(:organisation) do
         create(:organisation, configurations: [configuration],
