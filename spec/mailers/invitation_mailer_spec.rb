@@ -47,16 +47,6 @@ RSpec.describe InvitationMailer, type: :mailer do
         expect(subject.body.encoded).to match(/Fabienne Bouchet/)
       end
     end
-
-    context "when the help address is configured" do
-      let!(:invitation_parameters) do
-        create(:invitation_parameters, help_address: "10, rue du Conseil départemental 75001 Paris")
-      end
-
-      it "renders the mail with the right signature" do
-        expect(subject.body.encoded).to match("10, rue du Conseil départemental 75001 Paris")
-      end
-    end
   end
 
   describe "#invitation_for_rsa_accompagnement" do
@@ -89,16 +79,6 @@ RSpec.describe InvitationMailer, type: :mailer do
 
       it "renders the mail with the right signature" do
         expect(subject.body.encoded).to match(/Fabienne Bouchet/)
-      end
-    end
-
-    context "when the help address is configured" do
-      let!(:invitation_parameters) do
-        create(:invitation_parameters, help_address: "10, rue du Conseil départemental 75001 Paris")
-      end
-
-      it "renders the mail with the right signature" do
-        expect(subject.body.encoded).to match("10, rue du Conseil départemental 75001 Paris")
       end
     end
   end
