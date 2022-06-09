@@ -17,8 +17,8 @@ class Organisation < ApplicationRecord
 
   delegate :name, :name_with_region, :number, to: :department, prefix: true
 
-  def contexts
-    configurations.map(&:context)
+  def motif_categories
+    configurations.map(&:motif_category)
   end
 
   def as_json(_opts = {})

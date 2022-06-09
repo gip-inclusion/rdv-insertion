@@ -1,5 +1,5 @@
 class Configuration < ApplicationRecord
-  include HasContextConcern
+  include HasMotifCategoryConcern
 
   has_and_belongs_to_many :organisations
 end

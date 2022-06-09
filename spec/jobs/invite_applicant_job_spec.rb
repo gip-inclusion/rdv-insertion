@@ -1,13 +1,13 @@
 describe InviteApplicantJob, type: :job do
   subject do
     described_class.new.perform(
-      applicant_id, organisation_id, invitation_attributes, context, rdv_solidarites_session_credentials
+      applicant_id, organisation_id, invitation_attributes, motif_category, rdv_solidarites_session_credentials
     )
   end
 
   let!(:applicant_id) { 9999 }
   let!(:organisation_id) { 999 }
-  let!(:context) { "rsa_orientation" }
+  let!(:motif_category) { "rsa_orientation" }
   let!(:department) { create(:department) }
   let!(:applicant) { create(:applicant, id: applicant_id) }
   let!(:organisation) do
@@ -15,7 +15,10 @@ describe InviteApplicantJob, type: :job do
   end
   let!(:number_of_days_to_accept_invitation) { 11 }
   let!(:configuration) do
-    create(:configuration, context: context, number_of_days_to_accept_invitation: number_of_days_to_accept_invitation)
+    create(
+      :configuration,
+      motif_category: motif_category, number_of_days_to_accept_invitation: number_of_days_to_accept_invitation
+    )
   end
   let!(:rdv_solidarites_session_credentials) { session_hash.symbolize_keys }
   let!(:invitation_format) { "sms" }
@@ -27,7 +30,7 @@ describe InviteApplicantJob, type: :job do
       number_of_days_to_accept_invitation: number_of_days_to_accept_invitation
     }
   end
-  let!(:rdv_context) { create(:rdv_context, context: context, applicant: applicant) }
+  let!(:rdv_context) { create(:rdv_context, motif_category: motif_category, applicant: applicant) }
   let!(:invitation) { create(:invitation) }
   let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
 
@@ -98,12 +101,12 @@ describe InviteApplicantJob, type: :job do
       end
     end
 
-    context "when no matching configuration for context" do
-      let!(:other_context) { "rsa_accompagnement" }
+    context "when no matching configuration for motif category" do
+      let!(:other_motif_category) { "rsa_accompagnement" }
       let!(:configuration) do
         create(
           :configuration,
-          context: other_context,
+          motif_category: other_motif_category,
           number_of_days_to_accept_invitation: number_of_days_to_accept_invitation
         )
       end

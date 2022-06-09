@@ -29,8 +29,8 @@ class Applicant < ApplicationRecord
 
   scope :active, -> { where(deleted_at: nil) }
   scope :archived, ->(archived = true) { where(is_archived: archived) }
-  scope :without_rdv_contexts, lambda { |contexts|
-    where.not(id: joins(:rdv_contexts).where(rdv_contexts: { context: contexts }).ids)
+  scope :without_rdv_contexts, lambda { |motif_categories|
+    where.not(id: joins(:rdv_contexts).where(rdv_contexts: { motif_category: motif_categories }).ids)
   }
 
   def orientation_path_starting_date
@@ -38,7 +38,7 @@ class Applicant < ApplicationRecord
   end
 
   def orientations_rdvs
-    rdv_contexts.select(&:context_orientation?).flat_map(&:rdvs)
+    rdv_contexts.select(&:motif_orientation?).flat_map(&:rdvs)
   end
 
   def orientation_date
@@ -80,16 +80,16 @@ class Applicant < ApplicationRecord
     save!
   end
 
-  def rdv_context_for(context)
-    rdv_contexts.find { |rc| rc.context == context }
+  def rdv_context_for(motif_category)
+    rdv_contexts.find { |rc| rc.motif_category == motif_category }
   end
 
   def deleted?
     deleted_at.present?
   end
 
-  def contexts
-    rdv_contexts.map(&:context)
+  def motif_categories
+    rdv_contexts.map(&:motif_category)
   end
 
   def as_json(_opts = {})

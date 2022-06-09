@@ -27,11 +27,11 @@ module RdvSolidaritesWebhooks
     end
 
     def matching_configuration
-      organisation.configurations.find_by(context: rdv_solidarites_rdv.category)
+      organisation.configurations.find_by(motif_category: rdv_solidarites_rdv.category)
     end
 
     def unhandled_category?
-      Configuration.contexts.keys.exclude?(rdv_solidarites_rdv.category) || matching_configuration.nil?
+      Configuration.motif_categories.keys.exclude?(rdv_solidarites_rdv.category) || matching_configuration.nil?
     end
 
     def event
@@ -82,7 +82,7 @@ module RdvSolidaritesWebhooks
     def rdv_contexts
       applicants.map do |applicant|
         RdvContext.with_advisory_lock "setting_rdv_context_for_applicant_#{applicant.id}" do
-          RdvContext.find_or_create_by!(applicant: applicant, context: matching_configuration.context)
+          RdvContext.find_or_create_by!(applicant: applicant, motif_category: matching_configuration.motif_category)
         end
       end
     end

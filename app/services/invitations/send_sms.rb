@@ -31,7 +31,7 @@ module Invitations
     end
 
     def content
-      send(:"content_for_#{@invitation.context}")
+      send(:"content_for_#{@invitation.motif_category}")
     end
 
     def content_for_rsa_orientation
@@ -74,10 +74,6 @@ module Invitations
 
     def applicant
       @invitation.applicant
-    end
-
-    def configuration
-      organisation.configurations.find_by(context: @invitation.context)
     end
 
     def organisation

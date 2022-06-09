@@ -14,7 +14,7 @@ class Department < ApplicationRecord
     "#{name}, #{region}"
   end
 
-  def contexts
-    configurations.map(&:context)
+  def motif_categories
+    configurations.map(&:motif_category)
   end
 end

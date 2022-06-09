@@ -15,13 +15,13 @@ class RdvContextsController < ApplicationController
   private
 
   def rdv_context_params
-    params.require(:rdv_context).permit(:context)
+    params.require(:rdv_context).permit(:motif_category)
   end
 
   def set_rdv_context
     @rdv_context = RdvContext.find_or_initialize_by(
       applicant: @applicant,
-      context: rdv_context_params[:context]
+      motif_category: rdv_context_params[:motif_category]
     )
     authorize @rdv_context
   end

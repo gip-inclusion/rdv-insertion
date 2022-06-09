@@ -36,14 +36,15 @@ module Api
       end
 
       def validate_invitations_params
-        possible_contexts = @organisation.configurations.map(&:context)
+        possible_motif_categories = @organisation.configurations.map(&:motif_category)
 
         invitations_params.each_with_index do |invitation_params, idx|
-          context = invitation_params[:context]
+          motif_category = invitation_params[:motif_category]
           # we don't have to precise the context if there is only one context possible
-          next if (context.blank? && possible_contexts.length == 1) || context.in?(possible_contexts)
+          next if (motif_category.blank? && possible_motif_categories.length == 1) ||
+                  motif_category.in?(possible_motif_categories)
 
-          @params_validation_errors << { "Entrée #{idx + 1}": "Invitation context #{context} est invalide" }
+          @params_validation_errors << { "Entrée #{idx + 1}": "Catégorie de motifs #{motif_category} invalide" }
         end
       end
 

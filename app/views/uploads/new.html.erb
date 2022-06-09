@@ -1,9 +1,9 @@
 <% if @current_configuration.present? %>
   <%= react_component(
     "pages/ApplicantsUpload", {
-      organisation: @organisation, configuration: @current_configuration, department: @department, contextName: @context_name
+      organisation: @organisation, configuration: @current_configuration, department: @department, motifCategoryHuman: @motif_category_human
     }
   ) %>
 <% else %>
-  <%= render "context_selection" %>
+  <%= render "category_selection" %>
 <% end %>
