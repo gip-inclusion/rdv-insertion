@@ -64,7 +64,7 @@ class CreateApplicantsCsvExport < BaseService
      last_invitation_date(applicant),
      last_rdv_date(applicant),
      human_rdv_context_status(applicant),
-     I18n.t("boolean.#{applicant.oriented?}"),
+     I18n.t("boolean.#{applicant.rdv_seen_in_30_days?}"),
      format_date(applicant.orientation_date),
      I18n.t("boolean.#{applicant.is_archived?}"),
      applicant.archiving_reason,
