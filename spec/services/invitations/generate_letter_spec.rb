@@ -41,7 +41,7 @@ describe Invitations::GenerateLetter, type: :service do
 
     context "when the context is orientation" do
       context "when the help address is configured" do
-        let!(:rdv_context) { create(:rdv_context, context: "rsa_orientation") }
+        let!(:rdv_context) { create(:rdv_context, motif_category: "rsa_orientation") }
         let!(:invitation_parameters) do
           create(:invitation_parameters, help_address: "10, rue du Conseil départemental 75001 Paris")
         end
@@ -55,7 +55,7 @@ describe Invitations::GenerateLetter, type: :service do
 
     context "when the context is accompagnement" do
       context "when the help address is configured" do
-        let!(:rdv_context) { create(:rdv_context, context: "rsa_accompagnement") }
+        let!(:rdv_context) { create(:rdv_context, motif_category: "rsa_accompagnement") }
         let!(:invitation_parameters) do
           create(:invitation_parameters, help_address: "10, rue du Conseil départemental 75001 Paris")
         end
