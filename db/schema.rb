@@ -104,9 +104,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_08_090654) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "letter_sender_name"
-    t.string "sender_address_lines", array: true
     t.string "sms_sender_name"
     t.string "signature_lines", array: true
+    t.string "help_address"
   end
 
   create_table "invitations", force: :cascade do |t|
