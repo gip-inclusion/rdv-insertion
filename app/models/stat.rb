@@ -167,6 +167,12 @@ class Stat
   def applicants_for_30_days_rdvs_seen_scope
     @applicants_for_30_days_rdvs_seen_scope ||= \
       relevant_applicants.where("applicants.created_at < ?", 30.days.ago)
+                         .joins(:rdv_contexts)
+                         .where(rdv_contexts: {
+                                  motif_category: %w[
+                                    rsa_orientation rsa_orientation_on_phone_platform rsa_accompagnement
+                                  ]
+                                })
   end
   # -----------------------------------------------------------------------------------------
 end
