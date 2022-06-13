@@ -38,7 +38,7 @@ class Applicant < ApplicationRecord
   end
 
   def rdv_seen_delay_in_days
-    return unless seen_date.present?
+    return if seen_date.blank?
 
     seen_date.to_datetime.mjd - created_at.to_datetime.mjd
   end
