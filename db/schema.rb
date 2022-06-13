@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_07_105632) do
+ActiveRecord::Schema[7.0].define(version: 2022_06_08_123659) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -104,9 +104,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_07_105632) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "letter_sender_name"
-    t.string "sender_address_lines"
     t.string "sms_sender_name"
     t.string "signature_lines", array: true
+    t.string "help_address"
   end
 
   create_table "invitations", force: :cascade do |t|
