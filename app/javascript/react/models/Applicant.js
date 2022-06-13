@@ -36,7 +36,7 @@ export default class Applicant {
     this.fullAddress = formattedAttributes.fullAddress || this.formatFullAddress();
     this.departmentInternalId = formattedAttributes.departmentInternalId;
     this.rightsOpeningDate = formattedAttributes.rightsOpeningDate;
-    this.affiliationNumber = this.formatAffiliationNumber(formattedAttributes.affiliationNumber);
+    this.affiliationNumber = formattedAttributes.affiliationNumber;
     this.phoneNumber = formatPhoneNumber(formattedAttributes.phoneNumber);
     this.role = this.formatRole(formattedAttributes.role);
     this.shortRole = this.role ? (this.role === "demandeur" ? "DEM" : "CJT") : null;
@@ -98,17 +98,6 @@ export default class Applicant {
 
   set organisations(organisations) {
     this._organisations = organisations;
-  }
-
-  formatAffiliationNumber(affiliationNumber) {
-    if (affiliationNumber && affiliationNumber.length === 15) {
-      // This means it is a NIR, we replace it by a custom ID if present
-      if (this.departmentInternalId) {
-        return `CUS-${this.departmentInternalId}`;
-      }
-      return null;
-    }
-    return affiliationNumber;
   }
 
   formatTitle(title) {
