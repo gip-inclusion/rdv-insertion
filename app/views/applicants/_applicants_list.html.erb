@@ -2,11 +2,11 @@
   <ul class="nav nav-tabs">
     <% @all_configurations.each do |configuration| %>
       <li class="nav-item">
-        <%= link_to configuration.context_name, compute_index_path(@organisation, @department, context: configuration.context), class:  "nav-link #{configuration.id == @current_configuration&.id ? 'active' : ''}"%>
+        <%= link_to configuration.motif_category_human, compute_index_path(@organisation, @department, motif_category: configuration.motif_category), class:  "nav-link #{configuration.id == @current_configuration&.id ? 'active' : ''}"%>
       </li>
     <% end %>
     <li class="nav-item">
-      <%= link_to "Autres", compute_index_path(@organisation, @department, context: "none"), class: "nav-link #{@current_context.nil? ? 'active' : ''}" %>
+      <%= link_to "Autres", compute_index_path(@organisation, @department, motif_category: "none"), class: "nav-link #{@current_motif_category.nil? ? 'active' : ''}" %>
     </li>
   </ul>
   <div class="col-12 text-center">
@@ -20,7 +20,7 @@
           <th scope="col" class="d-none d-lg-table-cell">Email</th>
           <th scope="col" class="d-none d-lg-table-cell">Téléphone</th>
           <th scope="col" class="d-none d-lg-table-cell">Adresse</th>
-          <% if @current_context.present? %>
+          <% if @current_motif_category.present? %>
             <% if show_invitations?(@current_configuration) %>
               <th scope="col">Première invitation</th>
               <th scope="col">Dernière invitation</th>
@@ -34,7 +34,7 @@
         </thead>
         <tbody class="align-middle">
           <% @applicants.each do |applicant| %>
-            <% rdv_context = applicant.rdv_context_for(@current_context) %>
+            <% rdv_context = applicant.rdv_context_for(@current_motif_category) %>
             <tr class="<%= "table-danger" if applicant.is_archived? %>">
               <td><%= display_attribute applicant.last_name %></td>
               <td><%= display_attribute applicant.first_name %></td>
@@ -59,7 +59,7 @@
                   <i class="fas fa-times icon-blue" />
                 <% end %>
               </td>
-              <% if @current_context.present? %>
+              <% if @current_motif_category.present? %>
                 <% if show_invitations?(@current_configuration) %>
                   <td><%= display_attribute(compute_first_invitation_sent_at(rdv_context)) %> </td>
                   <td><%= show_last_invitation_date?(rdv_context) ? display_attribute(format_date(rdv_context.last_invitation_sent_at)) : "-" %></td>

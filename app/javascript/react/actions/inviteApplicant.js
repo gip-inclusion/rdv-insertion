@@ -7,7 +7,7 @@ const inviteApplicant = async (
   isDepartmentLevel,
   invitationFormat,
   helpPhoneNumber,
-  context,
+  motifCategory,
   numberOfDaysToAcceptInvitation,
   types = "application/json"
 ) => {
@@ -25,7 +25,7 @@ const inviteApplicant = async (
       help_phone_number: helpPhoneNumber,
       number_of_days_to_accept_invitation: numberOfDaysToAcceptInvitation,
       rdv_context: {
-        context,
+        motif_category: motifCategory,
       },
     },
     types

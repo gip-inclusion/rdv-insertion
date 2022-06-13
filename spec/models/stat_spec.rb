@@ -13,12 +13,14 @@ describe Stat do
   let!(:irrelevant_organisation) { create(:organisation, configurations: [configuration_notify]) }
 
   let!(:rdv_context_orientation) do
-    create(:rdv_context, context: "rsa_orientation", created_at: DateTime.new(2022, 4, 4, 10, 0))
+    create(:rdv_context, motif_category: "rsa_orientation", created_at: DateTime.new(2022, 4, 4, 10, 0))
   end
   let!(:rdv_context_orientation_platform) do
-    create(:rdv_context, context: "rsa_orientation_on_phone_platform", created_at: DateTime.new(2022, 5, 7, 10, 0))
+    create(
+      :rdv_context, motif_category: "rsa_orientation_on_phone_platform", created_at: DateTime.new(2022, 5, 7, 10, 0)
+    )
   end
-  let!(:rdv_context_accompagnement) { create(:rdv_context, context: "rsa_accompagnement") }
+  let!(:rdv_context_accompagnement) { create(:rdv_context, motif_category: "rsa_accompagnement") }
 
   let!(:invitation) do
     create(:invitation, sent_at: DateTime.new(2022, 4, 4, 10, 0), rdv_context: rdv_context_orientation)
@@ -175,7 +177,7 @@ describe Stat do
   end
 
   describe "#relevant_rdv_contexts" do
-    let!(:rdv_context_with_no_rdv) { create(:rdv_context, context: "rsa_accompagnement") }
+    let!(:rdv_context_with_no_rdv) { create(:rdv_context, motif_category: "rsa_accompagnement") }
     let!(:invitation3) do
       create(:invitation, sent_at: DateTime.new(2022, 5, 7, 10, 0), rdv_context: rdv_context_with_no_rdv)
     end
@@ -184,7 +186,7 @@ describe Stat do
                          invitations: [invitation3],
                          rdv_contexts: [rdv_context_with_no_rdv])
     end
-    let!(:rdv_context_with_no_invitation) { create(:rdv_context, context: "rsa_accompagnement") }
+    let!(:rdv_context_with_no_invitation) { create(:rdv_context, motif_category: "rsa_accompagnement") }
     let!(:accompagnement_rdv) { create(:rdv, rdv_contexts: [rdv_context_with_no_invitation]) }
     let!(:relevant_applicant3) do
       create(:applicant, organisations: [relevant_organisation],
@@ -283,9 +285,9 @@ describe Stat do
   end
 
   describe "#applicants_for_30_days_rdvs_seen_scope" do
-    let!(:rdv_context_orientation2) { create(:rdv_context, context: "rsa_orientation") }
-    let!(:rdv_context_orientation3) { create(:rdv_context, context: "rsa_orientation") }
-    let!(:rdv_context_orientation4) { create(:rdv_context, context: "rsa_orientation") }
+    let!(:rdv_context_orientation2) { create(:rdv_context, motif_category: "rsa_orientation") }
+    let!(:rdv_context_orientation3) { create(:rdv_context, motif_category: "rsa_orientation") }
+    let!(:rdv_context_orientation4) { create(:rdv_context, motif_category: "rsa_orientation") }
     let!(:relevant_applicant2) do
       create(:applicant, organisations: [relevant_organisation],
                          rdv_contexts: [rdv_context_orientation2],
@@ -329,7 +331,7 @@ describe Stat do
   end
 
   describe "applicants with rdv seen in time limit" do
-    let!(:rdv_context_orientation2) { create(:rdv_context, context: "rsa_orientation") }
+    let!(:rdv_context_orientation2) { create(:rdv_context, motif_category: "rsa_orientation") }
     let!(:orientation_rdv2) do
       create(:rdv, rdv_contexts: [rdv_context_orientation2],
                    created_at: DateTime.new(2022, 4, 16, 10, 0),

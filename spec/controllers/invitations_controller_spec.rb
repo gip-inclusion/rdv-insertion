@@ -10,7 +10,7 @@ describe InvitationsController, type: :controller do
     let!(:organisations) { Organisation.where(id: organisation.id) }
     let!(:agent) { create(:agent, organisations: organisations) }
     let!(:applicant) { create(:applicant, id: applicant_id, organisations: [organisation]) }
-    let!(:context) { "rsa_orientation" }
+    let!(:motif_category) { "rsa_orientation" }
 
     let!(:create_params) do
       {
@@ -21,7 +21,7 @@ describe InvitationsController, type: :controller do
           help_phone_number: help_phone_number
         },
         rdv_context: {
-          context: context
+          motif_category: motif_category
         }
       }
     end
@@ -34,13 +34,13 @@ describe InvitationsController, type: :controller do
       )
     end
 
-    let!(:rdv_context) { build(:rdv_context, applicant: applicant, context: context) }
+    let!(:rdv_context) { build(:rdv_context, applicant: applicant, motif_category: motif_category) }
 
     before do
       sign_in(agent)
       setup_rdv_solidarites_session(rdv_solidarites_session)
       allow(RdvContext).to receive(:find_or_create_by!)
-        .with(context: context, applicant: applicant)
+        .with(motif_category: motif_category, applicant: applicant)
         .and_return(rdv_context)
       allow(Invitation).to receive(:new)
         .with(
@@ -55,7 +55,7 @@ describe InvitationsController, type: :controller do
     context "organisation level" do
       it "finds or create a context" do
         expect(RdvContext).to receive(:find_or_create_by!)
-          .with(context: context, applicant: applicant)
+          .with(motif_category: motif_category, applicant: applicant)
         post :create, params: create_params
       end
 
@@ -89,14 +89,14 @@ describe InvitationsController, type: :controller do
             help_phone_number: help_phone_number
           },
           rdv_context: {
-            context: context
+            motif_category: motif_category
           }
         }
       end
 
       it "finds or create a context" do
         expect(RdvContext).to receive(:find_or_create_by!)
-          .with(context: context, applicant: applicant)
+          .with(motif_category: motif_category, applicant: applicant)
         post :create, params: create_params
       end
 
@@ -150,7 +150,7 @@ describe InvitationsController, type: :controller do
               format: "postal",
               help_phone_number: help_phone_number
             },
-            rdv_context: { context: context }
+            rdv_context: { motif_category: motif_category }
           }
         end
 

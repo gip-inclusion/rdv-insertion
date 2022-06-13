@@ -1,7 +1,7 @@
 describe CreateApplicantsCsvExport, type: :service do
-  subject { described_class.call(applicants: applicants, structure: structure, context: context) }
+  subject { described_class.call(applicants: applicants, structure: structure, motif_category: motif_category) }
 
-  let!(:context) { "rsa_orientation" }
+  let!(:motif_category) { "rsa_orientation" }
   let!(:organisation) { create(:organisation, name: "Drome RSA") }
   let!(:structure) { organisation }
   let(:applicant1) { create(:applicant, last_name: "Dhobb", organisations: [organisation]) }

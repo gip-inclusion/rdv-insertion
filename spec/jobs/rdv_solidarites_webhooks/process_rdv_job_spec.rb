@@ -44,7 +44,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
   let!(:applicant) { create(:applicant, organisations: [organisation], id: 3) }
   let!(:applicant2) { create(:applicant, organisations: [organisation], id: 4) }
 
-  let!(:configuration) { create(:configuration, notify_applicant: true, context: "rsa_orientation") }
+  let!(:configuration) { create(:configuration, notify_applicant: true, motif_category: "rsa_orientation") }
   let!(:organisation) do
     create(
       :organisation,
@@ -52,11 +52,11 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
     )
   end
   let!(:rdv_context) do
-    build(:rdv_context, context: "rsa_orientation", applicant: applicant, id: 28)
+    build(:rdv_context, motif_category: "rsa_orientation", applicant: applicant, id: 28)
   end
 
   let!(:rdv_context2) do
-    build(:rdv_context, context: "rsa_orientation", applicant: applicant2, id: 99)
+    build(:rdv_context, motif_category: "rsa_orientation", applicant: applicant2, id: 99)
   end
 
   describe "#perform" do
@@ -69,10 +69,10 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
         .with(rdv_solidarites_user_id: user_ids)
         .and_return([applicant, applicant2])
       allow(RdvContext).to receive(:find_or_create_by!)
-        .with(applicant: applicant, context: "rsa_orientation")
+        .with(applicant: applicant, motif_category: "rsa_orientation")
         .and_return(rdv_context)
       allow(RdvContext).to receive(:find_or_create_by!)
-        .with(applicant: applicant2, context: "rsa_orientation")
+        .with(applicant: applicant2, motif_category: "rsa_orientation")
         .and_return(rdv_context2)
       allow(UpsertRecordJob).to receive(:perform_async)
       allow(DeleteRdvJob).to receive(:perform_async)

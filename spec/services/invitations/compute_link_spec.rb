@@ -20,7 +20,7 @@ describe Invitations::ComputeLink, type: :service do
   let!(:applicant) do
     create(:applicant, address: address, department: department)
   end
-  let!(:rdv_context) { build(:rdv_context, context: "rsa_accompagnement") }
+  let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_accompagnement") }
   let!(:invitation) do
     create(
       :invitation,

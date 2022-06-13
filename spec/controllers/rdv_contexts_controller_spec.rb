@@ -4,7 +4,7 @@ describe RdvContextsController, type: :controller do
   let!(:applicant) { create(:applicant, department: department, id: applicant_id) }
   let!(:agent) { create(:agent, organisations: [organisation]) }
   let!(:organisation) { create(:organisation, department: department) }
-  let!(:rdv_context) { create(:rdv_context, applicant: applicant, context: "rsa_accompagnement") }
+  let!(:rdv_context) { create(:rdv_context, applicant: applicant, motif_category: "rsa_accompagnement") }
   let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
 
   render_views
@@ -18,14 +18,14 @@ describe RdvContextsController, type: :controller do
     subject do
       post :create, params: {
         applicant_id: applicant_id, rdv_context: {
-          context: "rsa_accompagnement"
+          motif_category: "rsa_accompagnement"
         }, format: "turbo_stream"
       }
     end
 
     before do
       allow(RdvContext).to receive(:find_or_initialize_by)
-        .with(context: "rsa_accompagnement", applicant: applicant)
+        .with(motif_category: "rsa_accompagnement", applicant: applicant)
         .and_return(rdv_context)
       allow(rdv_context).to receive(:save)
         .and_return(true)

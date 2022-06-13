@@ -68,7 +68,7 @@ class InvitationsController < ApplicationController
   def set_rdv_context
     RdvContext.with_advisory_lock "setting_rdv_context_for_applicant_#{@applicant.id}" do
       @rdv_context = RdvContext.find_or_create_by!(
-        context: params[:rdv_context][:context], applicant: @applicant
+        motif_category: params[:rdv_context][:motif_category], applicant: @applicant
       )
     end
   end

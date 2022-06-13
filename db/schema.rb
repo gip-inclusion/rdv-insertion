@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_07_160302) do
+ActiveRecord::Schema[7.0].define(version: 2022_06_08_090654) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -74,7 +74,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_07_160302) do
     t.json "column_names"
     t.string "invitation_formats", default: ["sms", "email", "postal"], null: false, array: true
     t.boolean "notify_applicant", default: false
-    t.integer "context", default: 0
+    t.integer "motif_category", default: 0
     t.integer "number_of_days_to_accept_invitation", default: 3
     t.integer "number_of_days_before_action_required", default: 3
     t.string "signature_lines", array: true
@@ -168,13 +168,13 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_07_160302) do
   end
 
   create_table "rdv_contexts", force: :cascade do |t|
-    t.integer "context"
+    t.integer "motif_category"
     t.integer "status"
     t.bigint "applicant_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["applicant_id"], name: "index_rdv_contexts_on_applicant_id"
-    t.index ["context"], name: "index_rdv_contexts_on_context"
+    t.index ["motif_category"], name: "index_rdv_contexts_on_motif_category"
     t.index ["status"], name: "index_rdv_contexts_on_status"
   end
 
@@ -195,10 +195,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_07_160302) do
     t.string "address"
     t.integer "created_by"
     t.integer "status"
-    t.text "context"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "organisation_id"
+    t.text "context"
     t.datetime "last_webhook_update_received_at"
     t.index ["created_by"], name: "index_rdvs_on_created_by"
     t.index ["organisation_id"], name: "index_rdvs_on_organisation_id"

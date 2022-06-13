@@ -9,6 +9,6 @@
 <% end %>
 <% if @assign_rdv_context %>
   <%= turbo_stream.replace "remote_modal" do %>
-    <%= render partial: "rdv_contexts/form", locals: { applicant: @applicant, contexts: @organisation.configurations.map(&:context), rdv_context: RdvContext.new } %>
+    <%= render partial: "rdv_contexts/form", locals: { applicant: @applicant, motif_categories: @organisation.motif_categories, rdv_context: RdvContext.new } %>
   <% end %>
 <% end %>

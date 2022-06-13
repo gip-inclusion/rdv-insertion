@@ -13,7 +13,7 @@ describe Invitations::SendEmail, type: :service do
         create(
           :invitation,
           applicant: applicant, format: "email",
-          rdv_context: build(:rdv_context, context: "rsa_orientation")
+          rdv_context: build(:rdv_context, motif_category: "rsa_orientation")
         )
       end
 
@@ -69,7 +69,7 @@ describe Invitations::SendEmail, type: :service do
       create(
         :invitation,
         applicant: applicant, format: "email",
-        rdv_context: build(:rdv_context, context: "rsa_accompagnement")
+        rdv_context: build(:rdv_context, motif_category: "rsa_accompagnement")
       )
     end
 
@@ -94,7 +94,7 @@ describe Invitations::SendEmail, type: :service do
       create(
         :invitation,
         applicant: applicant, format: "email",
-        rdv_context: build(:rdv_context, context: "rsa_orientation_on_phone_platform")
+        rdv_context: build(:rdv_context, motif_category: "rsa_orientation_on_phone_platform")
       )
     end
 
