@@ -33,26 +33,14 @@ class Applicant < ApplicationRecord
     where.not(id: joins(:rdv_contexts).where(rdv_contexts: { motif_category: motif_categories }).ids)
   }
 
-  def orientation_path_starting_date
-    rights_opening_date || (created_at - 3.days)
+  def seen_date
+    @seen_date ||= rdvs.to_a.select(&:seen?).min_by(&:starts_at)&.starts_at
   end
 
-  def orientations_rdvs
-    rdv_contexts.select(&:motif_orientation?).flat_map(&:rdvs)
-  end
+  def rdv_seen_delay_in_days
+    return if seen_date.blank?
 
-  def orientation_date
-    @orientation_date ||= orientations_rdvs.to_a.select(&:seen?).min_by(&:starts_at)&.starts_at
-  end
-
-  def oriented?
-    orientation_date.present?
-  end
-
-  def orientation_delay_in_days
-    return unless oriented?
-
-    orientation_date.to_datetime.mjd - orientation_path_starting_date.to_datetime.mjd
+    seen_date.to_datetime.mjd - created_at.to_datetime.mjd
   end
 
   def full_name

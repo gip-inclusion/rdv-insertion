@@ -32,7 +32,7 @@ class Stat
     @relevant_rdvs ||= rdvs.joins(:applicants).where(applicants: relevant_applicants).distinct
   end
 
-  # For the % of no show, the average rdv delay and the rate of applicants oriented in less than 30 days
+  # For the % of no show, the average rdv delay and the rate of applicants with rdv seen in less than 30 days
   # we only consider the rdvs in the "rsa_orientation" contexts, because the other rdvs are not always
   # correctly informed by the organisations/ or are taken in the past (which mess up with the delays)
   def orientation_rdvs
@@ -130,50 +130,48 @@ class Stat
   end
   # -----------------------------------------------------------------------------------------
 
-  # -------------------- Rate of applicants oriented in less than 30 days -------------------
-  def percentage_of_applicants_oriented_in_less_than_30_days
-    compute_percentage_of_applicants_oriented_in_less_than_30_days(applicants_for_30_days_orientation_scope)
+  # -------------------- Rate of applicants with rdv seen in less than 30 days -------------------
+  def percentage_of_applicants_with_rdv_seen_in_less_than_30_days
+    compute_percentage_of_applicants_with_rdv_seen_in_less_than_30_days(applicants_for_30_days_rdvs_seen_scope)
   end
 
-  def percentage_of_applicants_oriented_in_less_than_30_days_by_month
-    percentage_of_applicants_oriented_in_less_than_30_days_by_month = {}
-    applicants_for_30_days_orientation_scope_by_month.each do |date, applicants|
-      result = compute_percentage_of_applicants_oriented_in_less_than_30_days(applicants)
-      percentage_of_applicants_oriented_in_less_than_30_days_by_month[date] = result.round
+  def percentage_of_applicants_with_rdv_seen_in_less_than_30_days_by_month
+    percentage_of_applicants_with_rdv_seen_in_less_than_30_days_by_month = {}
+    applicants_for_30_days_rdvs_seen_scope_by_month.each do |date, applicants|
+      result = compute_percentage_of_applicants_with_rdv_seen_in_less_than_30_days(applicants)
+      percentage_of_applicants_with_rdv_seen_in_less_than_30_days_by_month[date] = result.round
     end
-    percentage_of_applicants_oriented_in_less_than_30_days_by_month
+    percentage_of_applicants_with_rdv_seen_in_less_than_30_days_by_month
   end
 
-  def compute_percentage_of_applicants_oriented_in_less_than_30_days(selected_applicants)
-    (applicants_oriented_in_less_than_30_days(selected_applicants).to_a.length / (
+  def compute_percentage_of_applicants_with_rdv_seen_in_less_than_30_days(selected_applicants)
+    (applicants_with_rdv_seen_in_less_than_30_days(selected_applicants).to_a.length / (
       selected_applicants.to_a.length.nonzero? || 1
     ).to_f) * 100
   end
 
-  def applicants_oriented_in_less_than_30_days(selected_applicants)
+  def applicants_with_rdv_seen_in_less_than_30_days(selected_applicants)
     selected_applicants.to_a.select do |applicant|
-      applicant.oriented? && applicant.orientation_delay_in_days < 30
+      applicant.seen_date.present? && applicant.rdv_seen_delay_in_days < 30
     end
   end
 
-  def applicants_for_30_days_orientation_scope_by_month
-    @applicants_for_30_days_orientation_scope_by_month ||= \
-      applicants_for_30_days_orientation_scope
+  def applicants_for_30_days_rdvs_seen_scope_by_month
+    @applicants_for_30_days_rdvs_seen_scope_by_month ||= \
+      applicants_for_30_days_rdvs_seen_scope
       .order(created_at: :asc)
       .group_by { |m| m.created_at.beginning_of_month.strftime("%m/%Y") }
       .except(Time.zone.today.strftime("%m/%Y"))
   end
 
-  def applicants_for_30_days_orientation_scope
-    # Bénéficiaires avec dont le droit est ouvert depuis 30 jours au moins
-    # et qui ont été invités dans un contexte d'orientation
-    @applicants_for_30_days_orientation_scope ||= \
-      relevant_applicants.where("rights_opening_date < ?", 30.days.ago)
-                         .or(relevant_applicants.where(rights_opening_date: nil)
-                                       .where("applicants.created_at < ?", 27.days.ago))
+  def applicants_for_30_days_rdvs_seen_scope
+    @applicants_for_30_days_rdvs_seen_scope ||= \
+      relevant_applicants.where("applicants.created_at < ?", 30.days.ago)
                          .joins(:rdv_contexts)
                          .where(rdv_contexts: {
-                                  motif_category: %w[rsa_orientation]
+                                  motif_category: %w[
+                                    rsa_orientation rsa_orientation_on_phone_platform rsa_accompagnement
+                                  ]
                                 })
   end
   # -----------------------------------------------------------------------------------------

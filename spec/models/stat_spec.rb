@@ -63,7 +63,7 @@ describe Stat do
     create(:applicant, organisations: [relevant_organisation, irrelevant_organisation],
                        rdvs: [orientation_rdv2],
                        rdv_contexts: [rdv_context_orientation_platform],
-                       rights_opening_date: 35.days.ago)
+                       created_at: DateTime.new(2022, 6, 1, 10, 0))
   end
   let!(:irrelevant_applicant) do
     create(:applicant, organisations: [irrelevant_organisation],
@@ -284,7 +284,7 @@ describe Stat do
     end
   end
 
-  describe "#applicants_for_30_days_orientation_scope" do
+  describe "#applicants_for_30_days_rdvs_seen_scope" do
     let!(:rdv_context_orientation2) { create(:rdv_context, motif_category: "rsa_orientation") }
     let!(:rdv_context_orientation3) { create(:rdv_context, motif_category: "rsa_orientation") }
     let!(:rdv_context_orientation4) { create(:rdv_context, motif_category: "rsa_orientation") }
@@ -296,59 +296,35 @@ describe Stat do
     end
     let!(:irrelevant_applicant) do
       create(:applicant, organisations: [relevant_organisation],
-                         rdv_contexts: [rdv_context_orientation3],
-                         rights_opening_date: 10.days.ago)
-    end
-    let!(:irrelevant_applicant2) do
-      create(:applicant, organisations: [relevant_organisation],
                          rdv_contexts: [rdv_context_orientation4],
-                         rights_opening_date: nil,
                          created_at: 10.days.ago)
     end
 
-    context "when an applicant rights opening date is more than 30 days and has a rsa_orientation rdv_context" do
+    context "when an applicant creation date is more than 30 days ago and has a rsa_orientation rdv_context" do
       it "is not filtered" do
-        expect(subject.applicants_for_30_days_orientation_scope).to include(relevant_applicant)
+        expect(subject.applicants_for_30_days_rdvs_seen_scope).to include(relevant_applicant)
+        expect(subject.applicants_for_30_days_rdvs_seen_scope).to include(relevant_applicant2)
       end
     end
 
-    context "when an applicant rights opening date is nil, creation date is more than 27 days" \
-            "and has a rsa_orientation rdv_context" do
-      it "is not filtered" do
-        expect(subject.applicants_for_30_days_orientation_scope).to include(relevant_applicant2)
-      end
-    end
-
-    context "when an applicant rights opening date is less than 30 days" do
-      it "is is filtered" do
-        expect(subject.applicants_for_30_days_orientation_scope).not_to include(irrelevant_applicant)
-      end
-    end
-
-    context "when an applicant rights opening date is nil and creation date is less than 27 days" do
+    context "when an applicant creation date is less than 30 days ago" do
       it "is filtered" do
-        expect(subject.applicants_for_30_days_orientation_scope).not_to include(irrelevant_applicant2)
-      end
-    end
-
-    context "when an applicant is in time scope and has no rsa_orientation rdv_context" do
-      it "is filtered" do
-        expect(subject.applicants_for_30_days_orientation_scope).not_to include(relevant_orientation_platform_applicant)
+        expect(subject.applicants_for_30_days_rdvs_seen_scope).not_to include(irrelevant_applicant)
       end
     end
   end
 
-  describe "#applicants_for_30_days_orientation_scope_by_month" do
+  describe "#applicants_for_30_days_rdvs_seen_scope_by_month" do
     context "when an applicant was created in current month" do
       it "is filtered" do
         relevant_applicant.created_at = DateTime.new(2022, 6, 4, 10, 0)
         relevant_applicant.save
-        expect(subject.applicants_for_30_days_orientation_scope_by_month).not_to include(relevant_applicant)
+        expect(subject.applicants_for_30_days_rdvs_seen_scope_by_month).not_to include(relevant_applicant)
       end
     end
   end
 
-  describe "applicants oriented in time limit" do
+  describe "applicants with rdv seen in time limit" do
     let!(:rdv_context_orientation2) { create(:rdv_context, motif_category: "rsa_orientation") }
     let!(:orientation_rdv2) do
       create(:rdv, rdv_contexts: [rdv_context_orientation2],
@@ -360,19 +336,18 @@ describe Stat do
       create(:applicant, organisations: [relevant_organisation],
                          rdvs: [orientation_rdv2],
                          rdv_contexts: [rdv_context_orientation2],
-                         rights_opening_date: nil,
                          created_at: DateTime.new(2022, 3, 5, 10, 0))
     end
 
-    describe "#percentage_of_applicants_oriented_in_less_than_30_days" do
-      it "computes the percentage of applicants oriented in less than 30 days" do
-        expect(subject.percentage_of_applicants_oriented_in_less_than_30_days.round).to eq(50)
+    describe "#percentage_of_applicants_with_rdv_seen_in_less_than_30_days" do
+      it "computes the percentage of applicants with rdv seen in less than 30 days" do
+        expect(subject.percentage_of_applicants_with_rdv_seen_in_less_than_30_days.round).to eq(50)
       end
     end
 
-    describe "#percentage_of_applicants_oriented_in_less_than_30_days_by_month" do
-      it "computes the percentage by month of applicants oriented in less than 30 days" do
-        expect(subject.percentage_of_applicants_oriented_in_less_than_30_days_by_month).to eq(
+    describe "#percentage_of_applicants_with_rdv_seen_in_less_than_30_days_by_month" do
+      it "computes the percentage by month of applicants with rdv seen in less than 30 days" do
+        expect(subject.percentage_of_applicants_with_rdv_seen_in_less_than_30_days_by_month).to eq(
           { "03/2022" => 0,
             "04/2022" => 100 }
         )
