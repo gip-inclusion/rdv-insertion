@@ -33,22 +33,14 @@ class Applicant < ApplicationRecord
     where.not(id: joins(:rdv_contexts).where(rdv_contexts: { motif_category: motif_categories }).ids)
   }
 
-  def rdvs_no_phone_platform
-    rdv_contexts.reject(&:rsa_orientation_on_phone_platform?).flat_map(&:rdvs)
+  def seen_date
+    @seen_date ||= rdvs.to_a.select(&:seen?).min_by(&:starts_at)&.starts_at
   end
 
-  def seen_date_no_phone_platform
-    @seen_date_no_phone_platform ||= rdvs_no_phone_platform.to_a.select(&:seen?).min_by(&:starts_at)&.starts_at
-  end
+  def rdv_seen_delay_in_days
+    return unless seen_date.present?
 
-  def rdv_seen_in_30_days?
-    seen_date_no_phone_platform.present?
-  end
-
-  def rdv_seen_no_phone_platform_delay_in_days
-    return unless rdv_seen_in_30_days?
-
-    seen_date_no_phone_platform.to_datetime.mjd - created_at.to_datetime.mjd
+    seen_date.to_datetime.mjd - created_at.to_datetime.mjd
   end
 
   def full_name

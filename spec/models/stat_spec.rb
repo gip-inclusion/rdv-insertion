@@ -63,7 +63,7 @@ describe Stat do
     create(:applicant, organisations: [relevant_organisation, irrelevant_organisation],
                        rdvs: [orientation_rdv2],
                        rdv_contexts: [rdv_context_orientation_platform],
-                       rights_opening_date: 35.days.ago)
+                       created_at: DateTime.new(2022, 6, 1, 10, 0))
   end
   let!(:irrelevant_applicant) do
     create(:applicant, organisations: [irrelevant_organisation],
@@ -310,12 +310,6 @@ describe Stat do
     context "when an applicant creation date is less than 30 days ago" do
       it "is filtered" do
         expect(subject.applicants_for_30_days_rdvs_seen_scope).not_to include(irrelevant_applicant)
-      end
-    end
-
-    context "when an applicant is in time scope and has no rsa_orientation rdv_context" do
-      it "is filtered" do
-        expect(subject.applicants_for_30_days_rdvs_seen_scope).not_to include(relevant_orientation_platform_applicant)
       end
     end
   end

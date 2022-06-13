@@ -152,7 +152,7 @@ class Stat
 
   def applicants_with_rdv_seen_in_less_than_30_days(selected_applicants)
     selected_applicants.to_a.select do |applicant|
-      applicant.rdv_seen_in_30_days? && applicant.rdv_seen_no_phone_platform_delay_in_days < 30
+      applicant.seen_date.present? && applicant.rdv_seen_delay_in_days < 30
     end
   end
 
@@ -165,8 +165,6 @@ class Stat
   end
 
   def applicants_for_30_days_rdvs_seen_scope
-    # Bénéficiaires avec dont le droit est ouvert depuis 30 jours au moins
-    # et qui ont été invités dans un contexte d'orientation ou d'accompagnement
     @applicants_for_30_days_rdvs_seen_scope ||= \
       relevant_applicants.where("applicants.created_at < ?", 30.days.ago)
   end
