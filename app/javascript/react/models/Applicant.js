@@ -101,7 +101,7 @@ export default class Applicant {
   }
 
   formatAffiliationNumber(affiliationNumber) {
-    if (affiliationNumber && [13, 15].includes(affiliationNumber.length)) {
+    if (affiliationNumber && affiliationNumber.length === 15) {
       // This means it is a NIR, we replace it by a custom ID if present
       if (this.departmentInternalId) {
         return `CUS-${this.departmentInternalId}`;
