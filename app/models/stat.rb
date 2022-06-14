@@ -24,7 +24,7 @@ class Stat
 
   # We don't include in the stats the agents working for rdv-insertion
   def relevant_agents
-    agents.where.not("agents.email LIKE ?", "%beta.gouv.fr").uniq
+    @relevant_agents ||= agents.where.not("agents.email LIKE ?", "%beta.gouv.fr").uniq
   end
 
   # We filter the rdvs to keep the rdvs of the applicants in the scope
@@ -62,7 +62,7 @@ class Stat
   end
 
   def sent_invitations
-    invitations.where.not(sent_at: nil)
+    @sent_invitations ||= invitations.where.not(sent_at: nil)
   end
 
   # ----------------- Delays between the first invitation and the first rdv -----------------

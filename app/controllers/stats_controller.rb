@@ -36,7 +36,7 @@ class StatsController < ApplicationController
 
   def collect_datas_for_stats
     @organisations = Organisation.all
-    @applicants = Applicant.all.preload(rdv_contexts: :rdvs)
+    @applicants = Applicant.includes(:rdvs).all.preload(rdv_contexts: :rdvs)
     @agents = Agent.all
     @invitations = Invitation.all
     @rdvs = Rdv.all
