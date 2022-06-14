@@ -1,4 +1,4 @@
-describe Stat do
+describe Stats do
   subject do
     described_class.new(department_ids: Department.pluck(:id))
   end

@@ -6,14 +6,14 @@ class StatsController < ApplicationController
     @applicants = Applicant.all
     @rdvs = Rdv.all
     @department_count = Department.count
-    @stats = Stat.new(department_ids: Department.pluck(:id))
+    @stats = Stats.new(department_ids: Department.pluck(:id))
   end
 
   def show
     @applicants = @department.applicants
     @rdvs = @department.rdvs
     @display_all_stats = @department.configurations.none?(&:notify_applicant?)
-    @stats = Stat.new(department_ids: [@department.id])
+    @stats = Stats.new(department_ids: [@department.id])
   end
 
   def deployment_map; end

@@ -1,8 +1,6 @@
 # rubocop:disable Metrics/ClassLength
 
-class Stat
-  include ActiveModel::Model
-
+class Stats
   def initialize(department_ids:)
     @department_ids = department_ids
   end
