@@ -17,7 +17,7 @@ describe Invitations::SaveWithLink, type: :service do
     let!(:invitation_link) { "https://www.rdv_solidarites.com/some_params" }
 
     before do
-      allow(RdvSolidaritesApi::RetrieveInvitationToken).to receive(:call)
+      allow(RdvSolidaritesApi::InviteUser).to receive(:call)
         .with(rdv_solidarites_user_id: rdv_solidarites_user_id, rdv_solidarites_session: rdv_solidarites_session)
         .and_return(OpenStruct.new(success?: true, invitation_token: token))
       allow(Invitations::ComputeLink).to receive(:call)
@@ -30,7 +30,7 @@ describe Invitations::SaveWithLink, type: :service do
     end
 
     it "retrieves an invitation token" do
-      expect(RdvSolidaritesApi::RetrieveInvitationToken).to receive(:call)
+      expect(RdvSolidaritesApi::InviteUser).to receive(:call)
         .with(rdv_solidarites_user_id: rdv_solidarites_user_id, rdv_solidarites_session: rdv_solidarites_session)
       subject
     end
@@ -49,7 +49,7 @@ describe Invitations::SaveWithLink, type: :service do
 
     context "when it fails to retrieve a token" do
       before do
-        allow(RdvSolidaritesApi::RetrieveInvitationToken).to receive(:call)
+        allow(RdvSolidaritesApi::InviteUser).to receive(:call)
           .and_return(OpenStruct.new(success?: false, errors: ["something happened with token"]))
       end
 
@@ -122,7 +122,7 @@ describe Invitations::SaveWithLink, type: :service do
       end
 
       it "does not retrieve a new token" do
-        expect(RdvSolidaritesApi::RetrieveInvitationToken).not_to receive(:call)
+        expect(RdvSolidaritesApi::InviteUser).not_to receive(:call)
         subject
       end
 
@@ -139,7 +139,7 @@ describe Invitations::SaveWithLink, type: :service do
         end
 
         it "retrieves a new token" do
-          expect(RdvSolidaritesApi::RetrieveInvitationToken).to receive(:call)
+          expect(RdvSolidaritesApi::InviteUser).to receive(:call)
           subject
         end
 

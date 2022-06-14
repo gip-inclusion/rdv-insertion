@@ -4,7 +4,7 @@ class Invitation < ApplicationRecord
   belongs_to :rdv_context
   has_and_belongs_to_many :organisations
 
-  attr_accessor :content
+  attr_accessor :content, :validity_duration
 
   validates :help_phone_number, :token, :organisations, :link, :number_of_days_to_accept_invitation,
             presence: true
@@ -40,6 +40,10 @@ class Invitation < ApplicationRecord
 
   def invitation_parameters
     organisations.map(&:invitation_parameters).compact.first
+  end
+
+  def set_valid_until
+    self.valid_until = validity_duration.present? ? validity_duration.from_now : nil
   end
 
   private

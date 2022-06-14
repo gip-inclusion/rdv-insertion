@@ -8,6 +8,7 @@ module Invitations
     def call
       # we prevent generating two tokens at the same time for one applicant
       Invitation.with_advisory_lock "invite_applicant_#{applicant.id}" do
+        @invitation.valid_until = valid_until
         @invitation.token = invitation_token
         @invitation.link = invitation_link
         save_record!(@invitation)
@@ -16,17 +17,26 @@ module Invitations
 
     private
 
-    def existing_token
-      @existing_token ||= applicant.invitations.last&.token
+    def last_sent_invitation
+      @last_sent_invitation ||= applicant.last_sent_invitation
     end
 
-    def existing_token_valid?
-      existing_token.present? && invitation_user.present?
+    def last_sent_token
+      @last_sent_token ||= last_sent_invitation&.token
+    end
+
+    def last_sent_token_valid?
+      @last_sent_token_valid ||= \
+        last_sent_token.present? && invitation_user.present?
+    end
+
+    def valid_until
+      last_sent_token_valid? ? last_sent_invitation.valid_until : @invitation.set_valid_until
     end
 
     def invitation_user
       @invitation_user ||= RdvSolidaritesApi::RetrieveInvitation.call(
-        token: existing_token,
+        token: last_sent_token,
         rdv_solidarites_session: @rdv_solidarites_session
       ).user
     end
@@ -39,14 +49,15 @@ module Invitations
 
     def retrieve_invitation_token
       @retrieve_invitation_token ||= call_service!(
-        RdvSolidaritesApi::RetrieveInvitationToken,
+        RdvSolidaritesApi::InviteUser,
         rdv_solidarites_user_id: applicant.rdv_solidarites_user_id,
-        rdv_solidarites_session: @rdv_solidarites_session
+        rdv_solidarites_session: @rdv_solidarites_session,
+        invite_for: @invitation.validity_duration
       )
     end
 
     def invitation_token
-      existing_token_valid? ? existing_token : retrieve_invitation_token.invitation_token
+      last_sent_token_valid? ? last_sent_token : retrieve_invitation_token.invitation_token
     end
 
     def compute_invitation_link
