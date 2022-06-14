@@ -1,11 +1,11 @@
 <div class="d-flex align-items-center context-header">
   <span></span>
-  <h5 class="text-center px-2 py-4"><strong><%= configuration.context_name %></strong></h5>
+  <h5 class="text-center px-2 py-4"><strong><%= configuration.motif_category_human %></strong></h5>
   <span></span>
   <table class="mx-2">
     <tbody>
       <tr>
-        <td class="px-2 py-1 context-status <%= background_class_for_context_status(rdv_context, configuration.number_of_days_before_action_required) %>" id="js-block-status-<%= configuration.context %>"><em><%= display_context_status(rdv_context, configuration.number_of_days_before_action_required) %></em></td>
+        <td class="px-2 py-1 context-status <%= background_class_for_context_status(rdv_context, configuration.number_of_days_before_action_required) %>" id="js-block-status-<%= configuration.motif_category %>"><em><%= display_context_status(rdv_context, configuration.number_of_days_before_action_required) %></em></td>
       </tr>
     </tbody>
   </table>
@@ -21,7 +21,7 @@
         invitations: rdv_context.nil? ? [] : rdv_context.invitations,
         isDepartmentLevel: department_level?,
         invitationFormats: configuration.invitation_formats,
-        context: configuration.context,
+        motifCategory: configuration.motif_category,
         numberOfDaysToAcceptInvitation: configuration.number_of_days_to_accept_invitation,
         status: rdv_context&.status,
       }

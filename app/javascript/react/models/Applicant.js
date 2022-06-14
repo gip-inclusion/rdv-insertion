@@ -36,7 +36,7 @@ export default class Applicant {
     this.fullAddress = formattedAttributes.fullAddress || this.formatFullAddress();
     this.departmentInternalId = formattedAttributes.departmentInternalId;
     this.rightsOpeningDate = formattedAttributes.rightsOpeningDate;
-    this.affiliationNumber = this.formatAffiliationNumber(formattedAttributes.affiliationNumber);
+    this.affiliationNumber = formattedAttributes.affiliationNumber;
     this.phoneNumber = formatPhoneNumber(formattedAttributes.phoneNumber);
     this.role = this.formatRole(formattedAttributes.role);
     this.shortRole = this.role ? (this.role === "demandeur" ? "DEM" : "CJT") : null;
@@ -100,17 +100,6 @@ export default class Applicant {
     this._organisations = organisations;
   }
 
-  formatAffiliationNumber(affiliationNumber) {
-    if (affiliationNumber && [13, 15].includes(affiliationNumber.length)) {
-      // This means it is a NIR, we replace it by a custom ID if present
-      if (this.departmentInternalId) {
-        return `CUS-${this.departmentInternalId}`;
-      }
-      return null;
-    }
-    return affiliationNumber;
-  }
-
   formatTitle(title) {
     title = title?.toLowerCase();
     title = TITLES[title] || title;
@@ -152,17 +141,17 @@ export default class Applicant {
     this.lastSmsInvitationSentAt = retrieveLastInvitationDate(
       upToDateApplicant.invitations,
       "sms",
-      this.currentConfiguration.context
+      this.currentConfiguration.motif_category
     );
     this.lastEmailInvitationSentAt = retrieveLastInvitationDate(
       upToDateApplicant.invitations,
       "email",
-      this.currentConfiguration.context
+      this.currentConfiguration.motif_category
     );
     this.lastPostalInvitationSentAt = retrieveLastInvitationDate(
       upToDateApplicant.invitations,
       "postal",
-      this.currentConfiguration.context
+      this.currentConfiguration.motif_category
     );
     this.departmentInternalId = upToDateApplicant.department_internal_id;
   }

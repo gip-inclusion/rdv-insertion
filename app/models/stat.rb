@@ -7,7 +7,7 @@ class Stat
             :average_time_between_invitation_and_rdv_in_days_grouped_by_month,
             :average_time_between_rdv_creation_and_start_in_days,
             :average_time_between_rdv_creation_and_start_in_days_grouped_by_month,
-            :percentage_of_applicants_oriented_in_less_than_30_days,
-            :percentage_of_applicants_oriented_in_less_than_30_days_grouped_by_month,
+            :percentage_of_applicants_with_rdv_seen_in_less_than_30_days,
+            :percentage_of_applicants_with_rdv_seen_in_less_than_30_days_grouped_by_month,
             :agents_count, presence: true
 end

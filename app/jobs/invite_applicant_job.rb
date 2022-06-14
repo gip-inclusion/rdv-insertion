@@ -1,12 +1,12 @@
 class InviteApplicantJob < ApplicationJob
   sidekiq_options retry: 0
 
-  def perform(applicant_id, organisation_id, invitation_attributes, context, rdv_solidarites_session_credentials)
+  def perform(applicant_id, organisation_id, invitation_attributes, motif_category, rdv_solidarites_session_credentials)
     @applicant = Applicant.find(applicant_id)
     @organisation = Organisation.find(organisation_id)
     @department = @organisation.department
     @invitation_attributes = invitation_attributes.deep_symbolize_keys
-    @context = context
+    @motif_category = motif_category
     @rdv_solidarites_session_credentials = rdv_solidarites_session_credentials.deep_symbolize_keys
 
     Invitation.with_advisory_lock "invite_applicant_#{@applicant.id}" do
@@ -36,12 +36,12 @@ class InviteApplicantJob < ApplicationJob
 
   def rdv_context
     RdvContext.with_advisory_lock "setting_rdv_context_for_applicant_#{@applicant.id}" do
-      RdvContext.find_or_create_by!(context: @context, applicant: @applicant)
+      RdvContext.find_or_create_by!(motif_category: @motif_category, applicant: @applicant)
     end
   end
 
   def matching_configuration
-    @matching_configuration ||= @organisation.configurations.find_by!(context: @context)
+    @matching_configuration ||= @organisation.configurations.find_by!(motif_category: @motif_category)
   end
 
   def save_and_send_invitation

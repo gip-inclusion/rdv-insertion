@@ -6,7 +6,7 @@ const getInvitationLetter = async (
   departmentId,
   organisation,
   isDepartmentLevel,
-  context,
+  motifCategory,
   numberOfDaysToAcceptInvitation,
   invitationFormat
 ) => {
@@ -17,7 +17,7 @@ const getInvitationLetter = async (
     isDepartmentLevel,
     invitationFormat,
     organisation.phone_number,
-    context,
+    motifCategory,
     numberOfDaysToAcceptInvitation,
     "application/json, application/pdf"
   );

@@ -8,7 +8,7 @@ class ApplicantsController < ApplicationController
   ].freeze
   before_action :set_applicant, only: [:show, :update, :edit]
   before_action :set_organisation, :set_department, :set_all_configurations, :set_current_configuration,
-                :set_current_context, only: [:index, :new, :create, :show, :update, :edit]
+                :set_current_motif_category, only: [:index, :new, :create, :show, :update, :edit]
   before_action :set_organisations, only: [:new, :create]
   before_action :set_can_be_added_to_other_org, only: [:show]
   before_action :retrieve_applicants, only: [:search]
@@ -96,7 +96,7 @@ class ApplicantsController < ApplicationController
     CreateApplicantsCsvExport.call(
       applicants: @applicants.includes(:department, :organisations, rdv_contexts: [:rdvs, :invitations]),
       structure: @structure,
-      context: @current_context
+      motif_category: @current_motif_category
     )
   end
 
@@ -174,18 +174,18 @@ class ApplicantsController < ApplicationController
   def set_all_configurations
     @all_configurations = \
       if department_level?
-        (policy_scope(::Configuration) & @department.configurations).uniq(&:context)
+        (policy_scope(::Configuration) & @department.configurations).uniq(&:motif_category)
       else
         @organisation.configurations
       end
   end
 
   def set_current_configuration
-    @current_configuration = @all_configurations.find { |c| c.context == params[:context] }
+    @current_configuration = @all_configurations.find { |c| c.motif_category == params[:motif_category] }
   end
 
-  def set_current_context
-    @current_context = @current_configuration&.context
+  def set_current_motif_category
+    @current_motif_category = @current_configuration&.motif_category
   end
 
   def set_can_be_added_to_other_org
@@ -201,11 +201,13 @@ class ApplicantsController < ApplicationController
         @applicants.where(organisations: @organisation)
       end
 
-    if @current_context.nil?
-      @applicants = @applicants.without_rdv_contexts(@all_configurations.map(&:context))
+    if @current_motif_category.nil?
+      @applicants = @applicants.without_rdv_contexts(@all_configurations.map(&:motif_category))
     else
-      @applicants = @applicants.joins(:rdv_contexts).where(rdv_contexts: { context: @current_context })
-      @rdv_contexts = RdvContext.where(applicant_id: @applicants.archived(false).ids, context: @current_context)
+      @applicants = @applicants.joins(:rdv_contexts).where(rdv_contexts: { motif_category: @current_motif_category })
+      @rdv_contexts = RdvContext.where(
+        applicant_id: @applicants.archived(false).ids, motif_category: @current_motif_category
+      )
       @statuses_count = @rdv_contexts.group(:status).count
     end
     filter_applicants

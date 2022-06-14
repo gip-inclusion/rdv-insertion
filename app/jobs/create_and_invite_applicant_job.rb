@@ -43,18 +43,18 @@ class CreateAndInviteApplicantJob < ApplicationJob
     InviteApplicantJob.perform_async(
       applicant.id,
       @organisation.id,
-      @invitation_params.except(:context).merge(
+      @invitation_params.except(:motif_category).merge(
         format: invitation_format,
         help_phone_number: @organisation.phone_number
       ),
-      invitation_context,
+      invitation_motif_category,
       @rdv_solidarites_session_credentials
     )
   end
 
-  def invitation_context
-    # If not specified we invite on the first context found for the org
-    @invitation_params[:context] || @organisation.configurations.first.context
+  def invitation_motif_category
+    # If not specified we invite on the first motif category found for the org
+    @invitation_params[:motif_category] || @organisation.configurations.first.motif_category
   end
 
   def save_applicant

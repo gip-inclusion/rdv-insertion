@@ -25,7 +25,7 @@ import Applicant from "../models/Applicant";
 
 const reducer = reducerFactory("Expérimentation RSA");
 
-export default function ApplicantsUpload({ organisation, configuration, department, contextName }) {
+export default function ApplicantsUpload({ organisation, configuration, department, motifCategoryHuman }) {
   const columnNames = configuration.column_names;
   const parameterizedColumnNames = parameterizeObjectValues({
     ...columnNames.required,
@@ -43,8 +43,8 @@ export default function ApplicantsUpload({ organisation, configuration, departme
 
   const redirectToApplicantList = () => {
     window.location.href = isDepartmentLevel
-      ? `/departments/${department.id}/applicants?context=${configuration.context}`
-      : `/organisations/${organisation.id}/applicants?context=${configuration.context}`;
+      ? `/departments/${department.id}/applicants?motif_category=${configuration.motif_category}`
+      : `/organisations/${organisation.id}/applicants?motif_category=${configuration.motif_category}`;
   };
 
   const retrieveApplicantsFromList = async (file) => {
@@ -209,7 +209,7 @@ export default function ApplicantsUpload({ organisation, configuration, departme
           <h3 className="new-applicants-title">
             Ajout {isDepartmentLevel ? "au niveau du territoire" : "allocataires"}
           </h3>
-          <h6>({contextName})</h6>
+          <h6>({motifCategoryHuman})</h6>
           <FileHandler
             handleFile={handleApplicantsFile}
             fileSize={fileSize}

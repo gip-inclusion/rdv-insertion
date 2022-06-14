@@ -54,7 +54,7 @@ drome_orientation_config = Configuration.create!(
     "optional"=>{"department_internal_id"=>"ID Iodas"}},
   notify_applicant: false,
   invitation_formats: ["sms", "email", "postal"],
-  context: "rsa_orientation",
+  motif_category: "rsa_orientation",
   number_of_days_to_accept_invitation: 3,
   number_of_days_before_action_required: 3
 )
@@ -76,7 +76,7 @@ drome_accompagnement_config = Configuration.create!(
     "optional"=>{"department_internal_id"=>"ID Iodas"}},
   notify_applicant: false,
   invitation_formats: ["sms", "email", "postal"],
-  context: "rsa_accompagnement",
+  motif_category: "rsa_accompagnement",
   number_of_days_to_accept_invitation: 3,
   number_of_days_before_action_required: 3
 )
@@ -96,7 +96,7 @@ yonne_orientation_config = Configuration.create!(
     "optional"=>{"birth_name"=>"Nom JF", "department_internal_id"=>"Code individu Iodas"}},
   notify_applicant: true,
   invitation_formats: [],
-  context: "rsa_orientation",
+  motif_category: "rsa_orientation",
   number_of_days_to_accept_invitation: 3,
   number_of_days_before_action_required: 3
 )
