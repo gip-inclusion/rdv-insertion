@@ -15,6 +15,7 @@ class Invitation < ApplicationRecord
   enum format: { sms: 0, email: 1, postal: 2 }, _prefix: :format
   after_commit :set_rdv_context_status
 
+  scope :sent, -> { where.not(sent_at: nil) }
   scope :sent_in_time_window, lambda { |number_of_days_before_action_required|
     where("sent_at > ?", number_of_days_before_action_required.days.ago)
   }

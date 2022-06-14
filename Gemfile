@@ -50,6 +50,9 @@ gem 'sib-api-v3-sdk'
 # Queuing system
 gem 'sidekiq'
 
+# Job scheduling
+gem "sidekiq-cron"
+
 # Hotwire
 gem "turbo-rails"
 

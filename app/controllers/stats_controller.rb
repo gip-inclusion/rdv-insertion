@@ -3,7 +3,7 @@ class StatsController < ApplicationController
 
   def index
     @department_count = Department.count
-    @stat = Stat.where(department_number: nil).last
+    @stat = Stat.where(department_id: nil).last
   end
 
   def show

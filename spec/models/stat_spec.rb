@@ -339,15 +339,15 @@ describe Stat do
                          created_at: DateTime.new(2022, 3, 5, 10, 0))
     end
 
-    describe "#percentage_of_applicants_with_rdv_seen_in_less_than_30_days" do
+    describe "#rate_of_applicants_with_rdv_seen_in_less_than_30_days" do
       it "computes the percentage of applicants with rdv seen in less than 30 days" do
-        expect(subject.percentage_of_applicants_with_rdv_seen_in_less_than_30_days.round).to eq(50)
+        expect(subject.rate_of_applicants_with_rdv_seen_in_less_than_30_days.round).to eq(50)
       end
     end
 
-    describe "#percentage_of_applicants_with_rdv_seen_in_less_than_30_days_by_month" do
+    describe "#rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month" do
       it "computes the percentage by month of applicants with rdv seen in less than 30 days" do
-        expect(subject.percentage_of_applicants_with_rdv_seen_in_less_than_30_days_by_month).to eq(
+        expect(subject.rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month).to eq(
           { "03/2022" => 0,
             "04/2022" => 100 }
         )

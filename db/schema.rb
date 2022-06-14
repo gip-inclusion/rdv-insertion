@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_08_090654) do
+ActiveRecord::Schema[7.0].define(version: 2022_06_14_084655) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -195,10 +195,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_08_090654) do
     t.string "address"
     t.integer "created_by"
     t.integer "status"
+    t.text "context"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "organisation_id"
-    t.text "context"
     t.datetime "last_webhook_update_received_at"
     t.index ["created_by"], name: "index_rdvs_on_created_by"
     t.index ["organisation_id"], name: "index_rdvs_on_organisation_id"
@@ -212,6 +212,27 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_08_090654) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "role"
+  end
+
+  create_table "stats", force: :cascade do |t|
+    t.integer "applicants_count"
+    t.json "applicants_count_grouped_by_month"
+    t.integer "rdvs_count"
+    t.json "rdvs_count_grouped_by_month"
+    t.integer "sent_invitations_count"
+    t.json "sent_invitations_count_grouped_by_month"
+    t.float "percentage_of_no_show"
+    t.json "percentage_of_no_show_grouped_by_month"
+    t.float "average_time_between_invitation_and_rdv_in_days"
+    t.json "average_time_between_invitation_and_rdv_in_days_by_month"
+    t.float "average_time_between_rdv_creation_and_start_in_days"
+    t.json "average_time_between_rdv_creation_and_start_in_days_by_month"
+    t.float "rate_of_applicants_with_rdv_seen_in_less_than_30_days"
+    t.json "rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month"
+    t.integer "agents_count"
+    t.integer "department_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "webhook_endpoints", force: :cascade do |t|
