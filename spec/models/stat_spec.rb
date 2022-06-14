@@ -1,7 +1,6 @@
 describe Stat do
   subject do
-    described_class.new(applicants: Applicant.all, agents: Agent.all, invitations: Invitation.all,
-                        rdvs: Rdv.all, rdv_contexts: RdvContext.all, organisations: Organisation.all)
+    described_class.new(department_ids: Department.pluck(:id))
   end
 
   before { travel_to("2022-06-10".to_time) }
@@ -115,8 +114,10 @@ describe Stat do
 
   describe "#relevant_agents" do
     context "when an agent belongs to rdv-insertion" do
-      let!(:relevant_agent) { create(:agent) }
-      let!(:irrelevant_agent) { create(:agent, email: "quentin.blanc@beta.gouv.fr") }
+      let!(:relevant_agent) { create(:agent, organisations: [relevant_organisation], email: "gibert@jospeh.fr") }
+      let!(:irrelevant_agent) do
+        create(:agent, organisations: [relevant_organisation], email: "quentin.blanc@beta.gouv.fr")
+      end
 
       it "is filtered" do
         expect(subject.relevant_agents).to include(relevant_agent)

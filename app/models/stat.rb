@@ -3,7 +3,22 @@
 class Stat
   include ActiveModel::Model
 
-  attr_accessor :applicants, :invitations, :agents, :organisations, :rdvs, :rdv_contexts
+  def initialize(department_ids:)
+    @department_ids = department_ids
+  end
+
+  def organisations
+    @organisations ||= Organisation.where(department_id: @department_ids)
+  end
+
+  # We don't include in the stats the agents working for rdv-insertion
+  def relevant_agents
+    @relevant_agents ||= Agent
+                         .joins(:organisations)
+                         .where(organisations: organisations)
+                         .where.not("agents.email LIKE ?", "%beta.gouv.fr")
+                         .distinct
+  end
 
   # We don't include in the scope the organisations who don't invite the applicants
   def relevant_organisations
@@ -14,7 +29,9 @@ class Stat
 
   # We filter the applicants by organisations and retrieve deleted or archived applicants
   def relevant_applicants
-    @relevant_applicants ||= applicants
+    @relevant_applicants ||= Applicant
+                             .includes(:rdvs)
+                             .preload(rdv_contexts: :rdvs)
                              .joins(:organisations)
                              .where(organisations: relevant_organisations)
                              .active
@@ -22,14 +39,9 @@ class Stat
                              .distinct
   end
 
-  # We don't include in the stats the agents working for rdv-insertion
-  def relevant_agents
-    @relevant_agents ||= agents.where.not("agents.email LIKE ?", "%beta.gouv.fr").uniq
-  end
-
   # We filter the rdvs to keep the rdvs of the applicants in the scope
   def relevant_rdvs
-    @relevant_rdvs ||= rdvs.joins(:applicants).where(applicants: relevant_applicants).distinct
+    @relevant_rdvs ||= Rdv.joins(:applicants).where(applicants: relevant_applicants).distinct
   end
 
   # For the % of no show, the average rdv delay and the rate of applicants with rdv seen in less than 30 days
@@ -48,10 +60,11 @@ class Stat
   end
 
   def relevant_rdv_contexts
-    @relevant_rdv_contexts ||= rdv_contexts.where(applicant_id: relevant_applicants.pluck(:id))
-                                           .where.associated(:rdvs)
-                                           .with_sent_invitations
-                                           .distinct
+    @relevant_rdv_contexts ||= RdvContext.preload(:rdvs, :invitations)
+                                         .where(applicant_id: relevant_applicants.pluck(:id))
+                                         .where.associated(:rdvs)
+                                         .with_sent_invitations
+                                         .distinct
   end
 
   def relevant_rdv_contexts_by_month
@@ -62,7 +75,7 @@ class Stat
   end
 
   def sent_invitations
-    @sent_invitations ||= invitations.where.not(sent_at: nil)
+    @sent_invitations ||= Invitation.sent.where(department_id: @department_ids)
   end
 
   # ----------------- Delays between the first invitation and the first rdv -----------------
