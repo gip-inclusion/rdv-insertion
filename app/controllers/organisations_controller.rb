@@ -1,6 +1,7 @@
 class OrganisationsController < ApplicationController
   def index
     @organisations = policy_scope(Organisation).includes(:configurations, department: [:configurations])
+    @organisations_by_department = @organisations.sort_by(&:department_number).group_by(&:department)
     redirect_to organisation_applicants_path(@organisations.first) if @organisations.to_a.length == 1
   end
 
