@@ -8,8 +8,8 @@ describe InvitationsController, type: :controller do
     let!(:configuration) do
       create(
         :configuration,
-        organisations: [organisation], number_of_days_before_action_required: 10, number_of_days_to_accept_invitation: 3,
-        motif_category: motif_category
+        organisations: [organisation], number_of_days_before_action_required: 10,
+        number_of_days_to_accept_invitation: 3, motif_category: motif_category
       )
     end
     let!(:other_org) { create(:organisation, department: department) }
