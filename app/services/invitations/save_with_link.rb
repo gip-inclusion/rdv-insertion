@@ -25,13 +25,18 @@ module Invitations
       @last_sent_token ||= last_sent_invitation&.token
     end
 
+    # A token is no longer considered as valid if the invitation attached does not expire
     def last_sent_token_valid?
       @last_sent_token_valid ||= \
-        last_sent_token.present? && invitation_user.present?
+        last_sent_token.present? && last_sent_invitation.valid_until.present? && invitation_user.present?
     end
 
     def valid_until
-      last_sent_token_valid? ? last_sent_invitation.valid_until : @invitation.set_valid_until
+      if last_sent_token_valid?
+        last_sent_invitation.valid_until
+      else
+        @invitation.set_valid_until
+      end
     end
 
     def invitation_user
@@ -52,7 +57,7 @@ module Invitations
         RdvSolidaritesApi::InviteUser,
         rdv_solidarites_user_id: applicant.rdv_solidarites_user_id,
         rdv_solidarites_session: @rdv_solidarites_session,
-        invite_for: @invitation.validity_duration
+        invite_for: @invitation.validity_duration.to_i
       )
     end
 

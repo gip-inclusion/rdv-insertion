@@ -9,16 +9,24 @@ describe Invitations::SaveWithLink, type: :service do
     create(:applicant, invitations: [], rdv_solidarites_user_id: rdv_solidarites_user_id)
   end
 
+  let!(:validity_duration) { 10.days }
+
   let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
-  let!(:invitation) { build(:invitation, applicant: applicant, token: nil, link: nil) }
+  let!(:invitation) do
+    build(:invitation, validity_duration: validity_duration, applicant: applicant, token: nil, link: nil)
+  end
   let!(:token) { "some-token" }
 
   describe "#call" do
     let!(:invitation_link) { "https://www.rdv_solidarites.com/some_params" }
 
     before do
+      travel_to(Time.zone.parse("2022-04-05 13:45"))
       allow(RdvSolidaritesApi::InviteUser).to receive(:call)
-        .with(rdv_solidarites_user_id: rdv_solidarites_user_id, rdv_solidarites_session: rdv_solidarites_session)
+        .with(
+          rdv_solidarites_user_id: rdv_solidarites_user_id, rdv_solidarites_session: rdv_solidarites_session,
+          invite_for: validity_duration.to_i
+        )
         .and_return(OpenStruct.new(success?: true, invitation_token: token))
       allow(Invitations::ComputeLink).to receive(:call)
         .with(invitation: invitation)
@@ -31,13 +39,21 @@ describe Invitations::SaveWithLink, type: :service do
 
     it "retrieves an invitation token" do
       expect(RdvSolidaritesApi::InviteUser).to receive(:call)
-        .with(rdv_solidarites_user_id: rdv_solidarites_user_id, rdv_solidarites_session: rdv_solidarites_session)
+        .with(
+          rdv_solidarites_user_id: rdv_solidarites_user_id, rdv_solidarites_session: rdv_solidarites_session,
+          invite_for: validity_duration.to_i
+        )
       subject
     end
 
     it "computes a link" do
       expect(Invitations::ComputeLink).to receive(:call).with(invitation: invitation)
       subject
+    end
+
+    it "sets the validity limit from the validity_duration" do
+      subject
+      expect(invitation.valid_until).to eq(Time.zone.parse("2022-04-15 13:45"))
     end
 
     it "saves the invitationn with token and the link" do
@@ -98,7 +114,13 @@ describe Invitations::SaveWithLink, type: :service do
     end
 
     context "when the applicant has already been invited" do
-      let!(:other_invitation) { create(:invitation, token: "existing-token") }
+      let!(:other_invitation) do
+        create(
+          :invitation,
+          sent_at: Time.zone.parse("2022-04-02 13:45"), token: "existing-token",
+          valid_until: Time.zone.parse("2022-04-12 15:00")
+        )
+      end
       let!(:applicant) do
         create(:applicant, invitations: [other_invitation], rdv_solidarites_user_id: rdv_solidarites_user_id)
       end
@@ -126,6 +148,11 @@ describe Invitations::SaveWithLink, type: :service do
         subject
       end
 
+      it "sets the validity limit from the previous invitation" do
+        subject
+        expect(invitation.reload.valid_until).to eq(Time.zone.parse("2022-04-12 15:00"))
+      end
+
       it "assign the existing token to the invitation" do
         subject
         expect(invitation.reload.token).to eq("existing-token")
@@ -146,6 +173,35 @@ describe Invitations::SaveWithLink, type: :service do
         it "assign the new token to the invitation" do
           subject
           expect(invitation.reload.token).to eq(token)
+        end
+
+        it "sets the validity limit from the validity_duration" do
+          subject
+          expect(invitation.reload.valid_until).to eq(Time.zone.parse("2022-04-15 13:45"))
+        end
+      end
+
+      context "when the previous invitation does not have a validity limit" do
+        let!(:other_invitation) do
+          create(
+            :invitation,
+            sent_at: Time.zone.parse("2022-04-02 13:45"), token: "existing-token"
+          )
+        end
+
+        it "retrieves a new token" do
+          expect(RdvSolidaritesApi::InviteUser).to receive(:call)
+          subject
+        end
+
+        it "assign the new token to the invitation" do
+          subject
+          expect(invitation.reload.token).to eq(token)
+        end
+
+        it "sets the validity limit from the validity_duration" do
+          subject
+          expect(invitation.reload.valid_until).to eq(Time.zone.parse("2022-04-15 13:45"))
         end
       end
     end
