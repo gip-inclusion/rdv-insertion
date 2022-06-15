@@ -140,14 +140,17 @@ describe UpsertRdvSolidaritesUser, type: :service do
           end
 
           context "when there is an applicant linked to this user" do
-            let!(:applicant) { create(:applicant, id: 23, rdv_solidarites_user_id: existing_user_id) }
+            let!(:department) { create(:department, number: "95") }
+            let!(:applicant) do
+              create(:applicant, id: 23, rdv_solidarites_user_id: existing_user_id, department: department)
+            end
 
             it "is a failure" do
               is_a_failure
             end
 
             it "stores the error" do
-              expect(subject.errors).to eq(["l'allocataire existe déjà: id 23"])
+              expect(subject.errors).to eq(["l'allocataire existe déjà sur RDVI: id 23, départment 95"])
             end
           end
 

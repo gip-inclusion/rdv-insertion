@@ -54,7 +54,7 @@ describe SaveApplicant, type: :service do
         .with(
           rdv_solidarites_session: rdv_solidarites_session,
           rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
-          rdv_solidarites_user_attributes: rdv_solidarites_user_attributes,
+          rdv_solidarites_user_attributes: rdv_solidarites_user_attributes.except(:birth_name),
           rdv_solidarites_user_id: nil
         )
       subject
@@ -92,7 +92,7 @@ describe SaveApplicant, type: :service do
       it "creates the user without the email" do
         expect(UpsertRdvSolidaritesUser).to receive(:call)
           .with(
-            rdv_solidarites_user_attributes: rdv_solidarites_user_attributes.except(:email),
+            rdv_solidarites_user_attributes: rdv_solidarites_user_attributes.except(:email, :birth_name),
             rdv_solidarites_session: rdv_solidarites_session,
             rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
             rdv_solidarites_user_id: nil
