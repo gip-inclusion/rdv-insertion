@@ -1,94 +1,126 @@
 describe Stats::ComputeStats, type: :service do
   subject { described_class.call(department_id: department.id) }
 
+  before { travel_to("2022-06-10".to_time) }
+
+  let!(:configuration) { create(:configuration, notify_applicant: false) }
+  let!(:configuration_notify) { create(:configuration, notify_applicant: true) }
+  let!(:department) { create(:department) }
+  let!(:relevant_organisation) { create(:organisation, configurations: [configuration], department: department) }
+  let!(:irrelevant_organisation) do
+    create(:organisation, configurations: [configuration_notify], department: department)
+  end
+
+  let!(:rdv_context_orientation) do
+    create(:rdv_context, motif_category: "rsa_orientation", created_at: DateTime.new(2022, 4, 4, 10, 0))
+  end
+  let!(:rdv_context_accompagnement) { create(:rdv_context, motif_category: "rsa_accompagnement") }
+  let!(:rdv_context_accompagnement2) do
+    create(
+      :rdv_context, motif_category: "rsa_accompagnement", created_at: DateTime.new(2022, 5, 7, 10, 0)
+    )
+  end
+
+  let!(:relevant_agent) { create(:agent, organisations: [relevant_organisation]) }
+  let!(:irrelevant_agent) { create(:agent) }
+
+  let!(:invitation) do
+    create(:invitation, sent_at: DateTime.new(2022, 4, 4, 10, 0), rdv_context: rdv_context_orientation,
+                        department: department)
+  end
+  let!(:invitation2) do
+    create(:invitation, sent_at: DateTime.new(2022, 5, 7, 10, 0), rdv_context: rdv_context_accompagnement2,
+                        department: department)
+  end
+  let!(:invitation_not_sended) { create(:invitation, sent_at: nil, department: department) }
+
+  let!(:orientation_rdv) do
+    create(:rdv, rdv_contexts: [rdv_context_orientation], organisation: relevant_organisation,
+                 created_at: DateTime.new(2022, 4, 7, 10, 0),
+                 starts_at: DateTime.new(2022, 4, 8, 10, 0),
+                 status: "seen")
+  end
+  let!(:orientation_rdv2) do
+    create(:rdv, rdv_contexts: [rdv_context_orientation], organisation: relevant_organisation,
+                 created_at: DateTime.new(2022, 5, 2, 10, 0),
+                 starts_at: DateTime.new(2022, 5, 7, 10, 0),
+                 status: "noshow")
+  end
+  let!(:accompagnement_rdv) do
+    create(:rdv, rdv_contexts: [rdv_context_accompagnement], organisation: relevant_organisation)
+  end
+  let!(:accompagnement_rdv2) do
+    create(:rdv, rdv_contexts: [rdv_context_accompagnement2], organisation: relevant_organisation,
+                 created_at: DateTime.new(2022, 5, 8, 10, 0),
+                 starts_at: DateTime.new(2022, 5, 11, 10, 0))
+  end
+  let!(:irrelevant_rdv) { create(:rdv, organisation: relevant_organisation) }
+  let!(:irrelevant_rdv2) { create(:rdv, organisation: relevant_organisation) }
+  let!(:irrelevant_rdv3) { create(:rdv, organisation: relevant_organisation) }
+
+  let!(:relevant_applicant) do
+    create(:applicant, organisations: [relevant_organisation],
+                       department: department,
+                       rdvs: [orientation_rdv, accompagnement_rdv],
+                       rdv_contexts: [rdv_context_orientation],
+                       created_at: DateTime.new(2022, 4, 1, 10, 0))
+  end
+  let!(:relevant_orientation_platform_applicant) do
+    create(:applicant, organisations: [relevant_organisation, irrelevant_organisation],
+                       department: department,
+                       rdvs: [orientation_rdv2, accompagnement_rdv2],
+                       rdv_contexts: [rdv_context_accompagnement2],
+                       created_at: DateTime.new(2022, 3, 1, 10, 0))
+  end
+  let!(:irrelevant_applicant) do
+    create(:applicant, organisations: [irrelevant_organisation],
+                       department: department,
+                       rdvs: [irrelevant_rdv],
+                       rdv_contexts: [rdv_context_accompagnement],
+                       created_at: DateTime.new(2022, 4, 1, 10, 0))
+  end
+  let!(:irrelevant_applicant2) do
+    create(:applicant, organisations: [relevant_organisation], department: department,
+                       deleted_at: 2.days.ago, rdvs: [irrelevant_rdv2],
+                       created_at: DateTime.new(2022, 5, 1, 10, 0))
+  end
+  let!(:irrelevant_applicant3) do
+    create(:applicant, organisations: [relevant_organisation], department: department, is_archived: true,
+                       rdvs: [irrelevant_rdv3], created_at: DateTime.new(2022, 5, 1, 10, 0))
+  end
+
   describe "#call" do
-    before { travel_to("2022-06-10".to_time) }
-
-    let!(:configuration) { create(:configuration, notify_applicant: false) }
-    let!(:configuration_notify) { create(:configuration, notify_applicant: true) }
-    let!(:department) { create(:department) }
-    let!(:relevant_organisation) { create(:organisation, configurations: [configuration], department: department) }
-    let!(:irrelevant_organisation) do
-      create(:organisation, configurations: [configuration_notify], department: department)
-    end
-
-    let!(:rdv_context_orientation) do
-      create(:rdv_context, motif_category: "rsa_orientation", created_at: DateTime.new(2022, 4, 4, 10, 0))
-    end
-    let!(:rdv_context_accompagnement) { create(:rdv_context, motif_category: "rsa_accompagnement") }
-    let!(:rdv_context_accompagnement2) do
-      create(
-        :rdv_context, motif_category: "rsa_accompagnement", created_at: DateTime.new(2022, 5, 7, 10, 0)
-      )
-    end
-
-    let!(:invitation) do
-      create(:invitation, sent_at: DateTime.new(2022, 4, 4, 10, 0), rdv_context: rdv_context_orientation,
-                          department: department)
-    end
-    let!(:invitation2) do
-      create(:invitation, sent_at: DateTime.new(2022, 5, 7, 10, 0), rdv_context: rdv_context_accompagnement2,
-                          department: department)
-    end
-    let!(:invitation_not_sended) { create(:invitation, sent_at: nil, department: department) }
-
-    let!(:orientation_rdv) do
-      create(:rdv, rdv_contexts: [rdv_context_orientation], organisation: relevant_organisation,
-                   created_at: DateTime.new(2022, 4, 7, 10, 0),
-                   starts_at: DateTime.new(2022, 4, 8, 10, 0),
-                   status: "seen")
-    end
-    let!(:orientation_rdv2) do
-      create(:rdv, rdv_contexts: [rdv_context_orientation], organisation: relevant_organisation,
-                   created_at: DateTime.new(2022, 5, 2, 10, 0),
-                   starts_at: DateTime.new(2022, 5, 7, 10, 0),
-                   status: "noshow")
-    end
-    let!(:accompagnement_rdv) do
-      create(:rdv, rdv_contexts: [rdv_context_accompagnement], organisation: relevant_organisation)
-    end
-    let!(:accompagnement_rdv2) do
-      create(:rdv, rdv_contexts: [rdv_context_accompagnement2], organisation: relevant_organisation,
-                   created_at: DateTime.new(2022, 5, 8, 10, 0),
-                   starts_at: DateTime.new(2022, 5, 11, 10, 0))
-    end
-    let!(:irrelevant_rdv) { create(:rdv, organisation: relevant_organisation) }
-    let!(:irrelevant_rdv2) { create(:rdv, organisation: relevant_organisation) }
-    let!(:irrelevant_rdv3) { create(:rdv, organisation: relevant_organisation) }
-
-    let!(:relevant_applicant) do
-      create(:applicant, organisations: [relevant_organisation],
-                         department: department,
-                         rdvs: [orientation_rdv, accompagnement_rdv],
-                         rdv_contexts: [rdv_context_orientation],
-                         created_at: DateTime.new(2022, 4, 1, 10, 0))
-    end
-    let!(:relevant_orientation_platform_applicant) do
-      create(:applicant, organisations: [relevant_organisation, irrelevant_organisation],
-                         department: department,
-                         rdvs: [orientation_rdv2, accompagnement_rdv2],
-                         rdv_contexts: [rdv_context_accompagnement2],
-                         created_at: DateTime.new(2022, 3, 1, 10, 0))
-    end
-    let!(:irrelevant_applicant) do
-      create(:applicant, organisations: [irrelevant_organisation],
-                         department: department,
-                         rdvs: [irrelevant_rdv],
-                         rdv_contexts: [rdv_context_accompagnement],
-                         created_at: DateTime.new(2022, 4, 1, 10, 0))
-    end
-    let!(:irrelevant_applicant2) do
-      create(:applicant, organisations: [relevant_organisation], department: department,
-                         deleted_at: 2.days.ago, rdvs: [irrelevant_rdv2],
-                         created_at: DateTime.new(2022, 5, 1, 10, 0))
-    end
-    let!(:irrelevant_applicant3) do
-      create(:applicant, organisations: [relevant_organisation], department: department, is_archived: true,
-                         rdvs: [irrelevant_rdv3], created_at: DateTime.new(2022, 5, 1, 10, 0))
-    end
-
     it "is a success" do
       expect(subject.success?).to eq(true)
+    end
+
+    it "renders a hash of stats" do
+      expect(subject.data).to be_a(Hash)
+    end
+
+    it "renders all the stats" do
+      expect(subject.data).to include(:department_id)
+      expect(subject.data).to include(:applicants_count)
+      expect(subject.data).to include(:applicants_count_grouped_by_month)
+      expect(subject.data).to include(:rdvs_count)
+      expect(subject.data).to include(:rdvs_count_grouped_by_month)
+      expect(subject.data).to include(:sent_invitations_count)
+      expect(subject.data).to include(:sent_invitations_count_grouped_by_month)
+      expect(subject.data).to include(:percentage_of_no_show)
+      expect(subject.data).to include(:percentage_of_no_show_grouped_by_month)
+      expect(subject.data).to include(:average_time_between_invitation_and_rdv_in_days)
+      expect(subject.data).to include(:average_time_between_invitation_and_rdv_in_days_by_month)
+      expect(subject.data).to include(:average_time_between_rdv_creation_and_start_in_days)
+      expect(subject.data).to include(:average_time_between_rdv_creation_and_start_in_days_by_month)
+      expect(subject.data).to include(:rate_of_applicants_with_rdv_seen_in_less_than_30_days)
+      expect(subject.data).to include(:rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month)
+      expect(subject.data).to include(:agents_count)
+    end
+
+    describe "#agents_count" do
+      it "counts the agents" do
+        expect(subject.data[:agents_count]).to eq(1)
+      end
     end
 
     describe "#applicants_count" do
