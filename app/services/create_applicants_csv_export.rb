@@ -16,7 +16,9 @@ class CreateApplicantsCsvExport < BaseService
 
   def generate_csv
     csv = CSV.generate(write_headers: true, col_sep: ";", headers: headers, encoding: 'utf-8') do |row|
-      @applicants.each do |applicant|
+      @applicants
+        .includes(:department).preload(:organisations, :rdvs, rdv_contexts: [:invitations])
+        .each do |applicant|
         row << applicant_csv_row(applicant)
       end
     end
@@ -97,7 +99,9 @@ class CreateApplicantsCsvExport < BaseService
   end
 
   def number_of_days_before_action_required
-    @structure.configurations.find { |c| c.motif_category == @motif_category }.number_of_days_before_action_required
+    @number_of_days_before_action_required ||= @structure.configurations.find do |c|
+      c.motif_category == @motif_category
+    end.number_of_days_before_action_required
   end
 
   def display_context_status_notice(rdv_context, number_of_days_before_action_required)
