@@ -32,7 +32,8 @@ class UpsertRdvSolidaritesUser < BaseService
     # If the user already exists in RDV-S, we check if he is in RDVI. If not we assign the user to the org
     # by creating the user profile and we then update the user.
     if email_taken_error?
-      fail!("l'allocataire existe déjà: id #{applicant.id}") if applicant.present?
+      fail!("l'allocataire existe déjà sur RDVI: id #{applicant.id}, départment #{applicant.department_number}") \
+        if applicant.present?
       return assign_to_org_and_udpate
     end
 

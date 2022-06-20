@@ -10,7 +10,7 @@
     </div>
     <div class="row justify-content-center">
       <div class="col-8">
-        <% @organisations.group_by(&:department).each do |department, organisations| %>
+        <% @organisations_by_department.each do |department, organisations| %>
           <div class="card-container">
             <div class="card d-flex flex-row justify-content-center card-organisation mb-3">
               <div class="card-body card-organisation-body">
@@ -24,7 +24,7 @@
                         <li class="my-4"><div class="col-5 pb-2 border-bottom">⭐ Toutes les organisations ⭐</div></li>
                       <% end %>
                     <% end %>
-                    <% organisations.each do |organisation| %>
+                    <% organisations.sort_by(&:name).each do |organisation| %>
                       <%= link_to organisation_applicants_path(organisation, motif_category: organisation.motif_categories.first) do %>
                         <li class="my-3"><div class="col-5 pb-2 border-bottom"><%= organisation.name %></div></li>
                       <% end %>
