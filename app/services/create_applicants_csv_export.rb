@@ -16,7 +16,9 @@ class CreateApplicantsCsvExport < BaseService
 
   def generate_csv
     csv = CSV.generate(write_headers: true, col_sep: ";", headers: headers, encoding: 'utf-8') do |row|
-      @applicants.each do |applicant|
+      @applicants
+        .includes(:department).preload(:organisations, :rdvs, rdv_contexts: [:invitations])
+        .each do |applicant|
         row << applicant_csv_row(applicant)
       end
     end
@@ -36,6 +38,7 @@ class CreateApplicantsCsvExport < BaseService
      Applicant.human_attribute_name(:birth_date),
      Applicant.human_attribute_name(:rights_opening_date),
      Applicant.human_attribute_name(:role),
+     "Première invitation envoyée le",
      "Dernière invitation envoyée le",
      "Date du dernier RDV",
      Applicant.human_attribute_name(:status),
@@ -61,7 +64,8 @@ class CreateApplicantsCsvExport < BaseService
      format_date(applicant.birth_date),
      format_date(applicant.rights_opening_date),
      applicant.role,
-     last_invitation_date(applicant),
+     display_invitation_date(applicant, first_invitation_date(applicant)),
+     display_invitation_date(applicant, last_invitation_date(applicant)),
      last_rdv_date(applicant),
      human_rdv_context_status(applicant),
      I18n.t("boolean.#{applicant.seen_date.present?}"),
@@ -90,13 +94,36 @@ class CreateApplicantsCsvExport < BaseService
   def human_rdv_context_status(applicant)
     return "Non invité" if rdv_context(applicant)&.status.nil?
 
-    I18n.t("activerecord.attributes.rdv_context.statuses.#{rdv_context(applicant).status}")
+    I18n.t("activerecord.attributes.rdv_context.statuses.#{rdv_context(applicant).status}") +
+      display_context_status_notice(rdv_context(applicant), number_of_days_before_action_required)
+  end
+
+  def number_of_days_before_action_required
+    @number_of_days_before_action_required ||= @structure.configurations.find do |c|
+      c.motif_category == @motif_category
+    end.number_of_days_before_action_required
+  end
+
+  def display_context_status_notice(rdv_context, number_of_days_before_action_required)
+    if rdv_context.invited_before_time_window?(number_of_days_before_action_required) && rdv_context.invitation_pending?
+      " (Délai dépassé)"
+    else
+      ""
+    end
+  end
+
+  def display_invitation_date(applicant, invitation_date)
+    return "" if rdv_context(applicant)&.invitations.blank?
+
+    format_date(invitation_date)
+  end
+
+  def first_invitation_date(applicant)
+    rdv_context(applicant)&.first_invitation_sent_at
   end
 
   def last_invitation_date(applicant)
-    return "" if rdv_context(applicant)&.invitations.blank?
-
-    format_date(rdv_context(applicant).last_invitation_sent_at)
+    rdv_context(applicant)&.last_invitation_sent_at
   end
 
   def last_rdv_date(applicant)
