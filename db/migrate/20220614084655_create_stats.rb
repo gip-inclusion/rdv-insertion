@@ -1,7 +1,7 @@
 # rubocop:disable Metrics/AbcSize
 
 class CreateStats < ActiveRecord::Migration[7.0]
-  def change
+  def change # rubocop:disable Metrics/MethodLength
     create_table :stats do |t|
       t.integer :applicants_count
       t.json :applicants_count_grouped_by_month
@@ -18,9 +18,14 @@ class CreateStats < ActiveRecord::Migration[7.0]
       t.float :rate_of_applicants_with_rdv_seen_in_less_than_30_days
       t.json :rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month
       t.integer :agents_count
-      t.integer :department_id
+      t.string :department_number
 
       t.timestamps
+    end
+
+    add_index "stats", ["department_number"], unique: true
+    up_only do
+      CreateStatsJob.perform_async
     end
   end
 end

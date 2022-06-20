@@ -15,6 +15,6 @@ FactoryBot.define do
     rate_of_applicants_with_rdv_seen_in_less_than_30_days { 0.0 }
     rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month { {} }
     agents_count { 1 }
-    sequence(:department_id)
+    sequence(:department_number)
   end
 end

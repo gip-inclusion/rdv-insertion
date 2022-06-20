@@ -230,9 +230,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_14_084655) do
     t.float "rate_of_applicants_with_rdv_seen_in_less_than_30_days"
     t.json "rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month"
     t.integer "agents_count"
-    t.integer "department_id"
+    t.string "department_number"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["department_number"], name: "index_stats_on_department_number", unique: true
   end
 
   create_table "webhook_endpoints", force: :cascade do |t|

@@ -2,19 +2,19 @@
 
 module Stats
   class ComputeStats < BaseService
-    def initialize(department_id:)
-      @department_id = department_id
+    def initialize(department_number:)
+      @department_number = department_number
     end
 
     def call
-      result.data = stats_data
+      result.data = stat_attributes
     end
 
     private
 
-    def stats_data
-      @stats_data ||= {
-        department_id: @department_id,
+    def stat_attributes
+      @stat_attributes ||= {
+        department_number: @department_number,
         applicants_count: applicants_count,
         applicants_count_grouped_by_month: applicants_count_grouped_by_month,
         rdvs_count: rdvs_count,
@@ -38,19 +38,17 @@ module Stats
     end
 
     def department
-      @department ||= Department.find(@department_id) if @department_id.present?
+      @department ||= Department.find_by(number: @department_number) if @department_number != "all"
     end
 
     def organisations
-      return @organisations ||= Organisation.all if department.nil?
-
-      @organisations ||= department.organisations
+      @organisations ||= \
+        department.nil? ? Organisation.all : department.organisations
     end
 
     def all_applicants
-      return @all_applicants ||= Applicant.all if department.nil?
-
-      @all_applicants ||= department.applicants
+      @all_applicants ||= \
+        department.nil? ? Applicant.all : department.applicants
     end
 
     def applicants_count
@@ -62,9 +60,8 @@ module Stats
     end
 
     def all_rdvs
-      return @all_rdvs ||= Rdv.all if department.nil?
-
-      @all_rdvs ||= department.rdvs
+      @all_rdvs ||= \
+        department.nil? ? Rdv.all : department.rdvs
     end
 
     def rdvs_count
@@ -151,7 +148,8 @@ module Stats
     end
 
     def sent_invitations
-      Invitation.sent.where(department_id: @department_id)
+      @sent_invitations ||= \
+        department.nil? ? Invitation.sent : Invitation.sent.where(department_id: department.id)
     end
 
     # ----------------- Delays between the first invitation and the first rdv -----------------

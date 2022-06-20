@@ -1,8 +1,8 @@
 describe Stats::CreateStat, type: :service do
-  subject { described_class.call(department_id: department.id) }
+  subject { described_class.call(department_number: department.number) }
 
   let!(:department) { create(:department) }
-  let!(:stats_data) do
+  let!(:stats_attributes) do
     {
       applicants_count: 0,
       applicants_count_grouped_by_month: {},
@@ -19,18 +19,18 @@ describe Stats::CreateStat, type: :service do
       rate_of_applicants_with_rdv_seen_in_less_than_30_days: 0.0,
       rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month: {},
       agents_count: 1,
-      department_id: department.id
+      department_number: department.number
     }
   end
-  let!(:stat) { create(:stat, department_id: department.id) }
+  let!(:stat) { create(:stat, department_number: department.number) }
 
   describe "#call" do
     before do
       allow(Stats::ComputeStats).to receive(:call)
-        .with(department_id: department.id)
-        .and_return(OpenStruct.new(success?: true, data: stats_data))
-      allow(Stat).to receive(:new)
-        .with(stats_data)
+        .with(department_number: department.number)
+        .and_return(OpenStruct.new(success?: true, data: stats_attributes))
+      allow(Stat).to receive(:find_or_initialize_by)
+        .with(department_number: department.number)
         .and_return(stat)
       allow(stat).to receive(:save)
         .and_return(true)
@@ -40,8 +40,8 @@ describe Stats::CreateStat, type: :service do
       expect(subject.success?).to eq(true)
     end
 
-    it "initializes a new stat record" do
-      expect(Stat).to receive(:new)
+    it "finds or initializes stat record" do
+      expect(Stat).to receive(:find_or_initialize_by)
       subject
     end
 

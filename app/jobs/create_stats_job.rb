@@ -1,8 +1,12 @@
+class StatsJobError < StandardError; end
+
 class CreateStatsJob < ApplicationJob
   def perform
-    department_ids = Department.pluck(:id).push(nil)
-    department_ids.each do |department_id|
-      Stats::CreateStat.call(department_id: department_id)
+    department_numbers = Department.pluck(:number).push("all")
+    department_numbers.each do |department_number|
+      upsert_stat_record = Stats::CreateStat.call(department_number: department_number)
+
+      raise StatsJobError, upsert_stat_record.errors.join(" - ") unless upsert_stat_record.success?
     end
   end
 end

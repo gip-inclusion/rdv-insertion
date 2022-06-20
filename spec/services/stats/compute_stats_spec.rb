@@ -1,5 +1,5 @@
 describe Stats::ComputeStats, type: :service do
-  subject { described_class.call(department_id: department.id) }
+  subject { described_class.call(department_number: department.number) }
 
   before { travel_to("2022-06-10".to_time) }
 
@@ -99,7 +99,7 @@ describe Stats::ComputeStats, type: :service do
     end
 
     it "renders all the stats" do
-      expect(subject.data).to include(:department_id)
+      expect(subject.data).to include(:department_number)
       expect(subject.data).to include(:applicants_count)
       expect(subject.data).to include(:applicants_count_grouped_by_month)
       expect(subject.data).to include(:rdvs_count)
