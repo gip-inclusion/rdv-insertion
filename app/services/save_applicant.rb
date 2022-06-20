@@ -36,7 +36,11 @@ class SaveApplicant < BaseService
   end
 
   def rdv_solidarites_user_attributes
-    user_attributes = @applicant.attributes.symbolize_keys.slice(*Applicant::SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES)
+    user_attributes = @applicant.attributes
+                                .symbolize_keys
+                                .slice(*Applicant::SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES)
+                                .transform_values(&:presence)
+                                .compact
     return user_attributes if @applicant.demandeur?
 
     # we do not send the email to rdv-s for the conjoint
