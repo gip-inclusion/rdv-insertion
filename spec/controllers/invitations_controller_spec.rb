@@ -5,6 +5,13 @@ describe InvitationsController, type: :controller do
     let!(:help_phone_number) { "0101010101" }
     let!(:department) { create(:department) }
     let!(:organisation) { create(:organisation, id: organisation_id, department: department) }
+    let!(:configuration) do
+      create(
+        :configuration,
+        organisations: [organisation], number_of_days_before_action_required: 10,
+        number_of_days_to_accept_invitation: 3, motif_category: motif_category
+      )
+    end
     let!(:other_org) { create(:organisation, department: department) }
 
     let!(:organisations) { Organisation.where(id: organisation.id) }
@@ -45,6 +52,7 @@ describe InvitationsController, type: :controller do
       allow(Invitation).to receive(:new)
         .with(
           department: department, applicant: applicant, organisations: organisations, rdv_context: rdv_context,
+          number_of_days_to_accept_invitation: 3,
           "format" => "sms", "help_phone_number" => help_phone_number
         ).and_return(invitation)
       allow(Invitations::SaveAndSend).to receive(:call)
@@ -63,9 +71,15 @@ describe InvitationsController, type: :controller do
         expect(Invitation).to receive(:new)
           .with(
             department: department, applicant: applicant, organisations: organisations, rdv_context: rdv_context,
+            number_of_days_to_accept_invitation: 3,
             "format" => "sms", "help_phone_number" => help_phone_number
           )
         post :create, params: create_params
+      end
+
+      it "sets a validity_duration on the invitation" do
+        post :create, params: create_params
+        expect(invitation.validity_duration).to eq(10.days)
       end
 
       it "calls the service" do
@@ -104,9 +118,15 @@ describe InvitationsController, type: :controller do
         expect(Invitation).to receive(:new)
           .with(
             department: department, applicant: applicant, organisations: organisations, rdv_context: rdv_context,
+            number_of_days_to_accept_invitation: 3,
             "format" => "sms", "help_phone_number" => help_phone_number
           )
         post :create, params: create_params
+      end
+
+      it "sets a validity_duration on the invitation" do
+        post :create, params: create_params
+        expect(invitation.validity_duration).to eq(10.days)
       end
 
       it "calls the service" do
@@ -158,6 +178,7 @@ describe InvitationsController, type: :controller do
           allow(Invitation).to receive(:new)
             .with(
               department: department, applicant: applicant, organisations: organisations, rdv_context: rdv_context,
+              number_of_days_to_accept_invitation: 3,
               "format" => "postal", "help_phone_number" => help_phone_number
             ).and_return(invitation)
           allow(Invitations::SaveAndSend).to receive(:call)
