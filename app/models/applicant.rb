@@ -8,6 +8,7 @@ class Applicant < ApplicationRecord
   include NotificableConcern
   include HasPhoneNumberConcern
   include InvitableConcern
+  include HasRdvsConcern
 
   before_validation :generate_uid
 
@@ -35,14 +36,10 @@ class Applicant < ApplicationRecord
     where.not(id: joins(:rdv_contexts).where(rdv_contexts: { motif_category: motif_categories }).ids)
   }
 
-  def seen_date
-    @seen_date ||= rdvs.to_a.select(&:seen?).min_by(&:starts_at)&.starts_at
-  end
-
   def rdv_seen_delay_in_days
-    return if seen_date.blank?
+    return if first_seen_rdv_starts_at.blank?
 
-    seen_date.to_datetime.mjd - created_at.to_datetime.mjd
+    first_seen_rdv_starts_at.to_datetime.mjd - created_at.to_datetime.mjd
   end
 
   def full_name

@@ -2,6 +2,7 @@ class RdvContext < ApplicationRecord
   include HasMotifCategoryConcern
   include HasStatusConcern
   include InvitableConcern
+  include HasRdvsConcern
 
   has_many :invitations, dependent: :destroy
   has_and_belongs_to_many :rdvs
@@ -36,18 +37,6 @@ class RdvContext < ApplicationRecord
 
   def motif_orientation?
     motif_category.in?(%w[rsa_orientation rsa_orientation_on_phone_platform])
-  end
-
-  def first_rdv_creation_date
-    rdvs.select(&:created_at).min_by(&:created_at).created_at
-  end
-
-  def last_seen_rdv
-    rdvs.select(&:seen?).max_by(&:starts_at)
-  end
-
-  def last_seen_rdv_starts_at
-    last_seen_rdv&.starts_at
   end
 
   def time_between_invitation_and_rdv_in_days

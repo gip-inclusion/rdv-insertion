@@ -163,7 +163,7 @@ class Stats
 
   def applicants_with_rdv_seen_in_less_than_30_days(selected_applicants)
     selected_applicants.to_a.select do |applicant|
-      applicant.seen_date.present? && applicant.rdv_seen_delay_in_days < 30
+      applicant.first_seen_rdv_starts_at.present? && applicant.rdv_seen_delay_in_days < 30
     end
   end
 

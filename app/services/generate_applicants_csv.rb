@@ -1,6 +1,6 @@
 require "csv"
 
-class CreateApplicantsCsvExport < BaseService
+class GenerateApplicantsCsv < BaseService
   def initialize(applicants:, structure:, motif_category:)
     @applicants = applicants
     @structure = structure
@@ -68,8 +68,8 @@ class CreateApplicantsCsvExport < BaseService
      display_invitation_date(applicant, last_invitation_date(applicant)),
      last_rdv_date(applicant),
      human_rdv_context_status(applicant),
-     I18n.t("boolean.#{applicant.seen_date.present?}"),
-     format_date(applicant.seen_date),
+     I18n.t("boolean.#{applicant.first_seen_rdv_starts_at.present?}"),
+     format_date(applicant.first_seen_rdv_starts_at),
      I18n.t("boolean.#{applicant.is_archived?}"),
      applicant.archiving_reason,
      applicant.department.number,
