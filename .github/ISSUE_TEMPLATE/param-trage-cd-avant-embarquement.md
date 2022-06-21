@@ -1,7 +1,7 @@
 ---
 name: Paramétrage CD avant embarquement
 about: description des paramétrages à faire pour embarquer le CD (hors dev éventuel
-  supplémentaire
+  supplémentaire)
 title: "[Paramétrage CD XX]"
 labels: ''
 assignees: ''
