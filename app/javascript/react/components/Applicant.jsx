@@ -77,8 +77,7 @@ export default function Applicant({
       applicant.department.id,
       applicant.currentOrganisation,
       isDepartmentLevel,
-      applicant.currentConfiguration.motif_category,
-      applicant.currentConfiguration.number_of_days_to_accept_invitation,
+      applicant.currentConfiguration.motif_category
     ];
     if (format === "sms") {
       const invitation = await handleApplicantInvitation(...invitationParams, "sms");
@@ -88,7 +87,7 @@ export default function Applicant({
       applicant.lastEmailInvitationSentAt = invitation.sent_at;
     } else if (format === "postal") {
       setDownloadInProgress(true);
-      const invitationLetter = await getInvitationLetter(...invitationParams, "postal");
+      const invitationLetter = await getInvitationLetter(...invitationParams);
       if (invitationLetter?.success) {
         applicant.lastPostalInvitationSentAt = todaysDateString();
       }

@@ -14,7 +14,6 @@ export default function InvitationBlock({
   motifCategory,
   isDepartmentLevel,
   invitationFormats,
-  numberOfDaysToAcceptInvitation,
   status,
 }) {
   const [isLoading, setIsLoading] = useState({
@@ -63,12 +62,11 @@ export default function InvitationBlock({
       organisation,
       isDepartmentLevel,
       motifCategory,
-      numberOfDaysToAcceptInvitation,
     ];
     let newInvitationDate;
 
     if (format === "postal") {
-      const invitationLetter = await getInvitationLetter(...applicantParams, format);
+      const invitationLetter = await getInvitationLetter(...applicantParams);
       if (invitationLetter?.success) {
         newInvitationDate = todaysDateString();
       }

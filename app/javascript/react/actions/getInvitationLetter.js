@@ -7,18 +7,15 @@ const getInvitationLetter = async (
   organisation,
   isDepartmentLevel,
   motifCategory,
-  numberOfDaysToAcceptInvitation,
-  invitationFormat
 ) => {
   const result = await inviteApplicant(
     applicant,
     departmentId,
     organisation.id,
     isDepartmentLevel,
-    invitationFormat,
+    "postal",
     organisation.phone_number,
     motifCategory,
-    numberOfDaysToAcceptInvitation,
     "application/json, application/pdf"
   );
   if (result.success === false) {

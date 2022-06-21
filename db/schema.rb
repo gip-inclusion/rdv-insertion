@@ -76,7 +76,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_14_084655) do
     t.boolean "notify_applicant", default: false
     t.integer "motif_category", default: 0
     t.integer "number_of_days_to_accept_invitation", default: 3
-    t.integer "number_of_days_before_action_required", default: 3
+    t.integer "number_of_days_before_action_required", default: 10
     t.string "signature_lines", array: true
   end
 
@@ -123,6 +123,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_14_084655) do
     t.bigint "rdv_solidarites_lieu_id"
     t.bigint "rdv_context_id"
     t.integer "number_of_days_to_accept_invitation"
+    t.datetime "valid_until"
     t.index ["applicant_id"], name: "index_invitations_on_applicant_id"
     t.index ["department_id"], name: "index_invitations_on_department_id"
     t.index ["rdv_context_id"], name: "index_invitations_on_rdv_context_id"

@@ -25,6 +25,7 @@ class InviteApplicantJob < ApplicationJob
       organisations: [@organisation],
       number_of_days_to_accept_invitation: matching_configuration.number_of_days_to_accept_invitation,
       rdv_context: rdv_context,
+      validity_duration: validity_duration,
       **@invitation_attributes
     )
     capture_exception if save_and_send_invitation.failure?
@@ -42,6 +43,10 @@ class InviteApplicantJob < ApplicationJob
 
   def matching_configuration
     @matching_configuration ||= @organisation.configurations.find_by!(motif_category: @motif_category)
+  end
+
+  def validity_duration
+    matching_configuration.number_of_days_before_action_required.days
   end
 
   def save_and_send_invitation

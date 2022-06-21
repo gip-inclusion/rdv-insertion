@@ -1,8 +1,6 @@
 class InvitationsController < ApplicationController
-  before_action :set_organisations, only: [:create]
-  before_action :set_department, only: [:create]
-  before_action :set_applicant, only: [:create]
-  before_action :set_rdv_context, only: [:create]
+  before_action :set_organisations, :set_department, :set_applicant, :set_rdv_context,
+                :set_current_configuration, only: [:create]
   before_action :set_invitation, only: [:redirect]
   skip_before_action :authenticate_agent!, only: [:invitation_code, :redirect]
   respond_to :json, only: [:create]
@@ -13,8 +11,10 @@ class InvitationsController < ApplicationController
       department: @department,
       organisations: @organisations,
       rdv_context: @rdv_context,
+      number_of_days_to_accept_invitation: @current_configuration.number_of_days_to_accept_invitation,
       **invitation_params
     )
+    set_invitation_validity_duration
     authorize @invitation
     if save_and_send_invitation.success?
       return send_data pdf, filename: pdf_filename if @invitation.format_postal?
@@ -37,7 +37,7 @@ class InvitationsController < ApplicationController
 
   def invitation_params
     params.require(:invitation).permit(
-      :format, :help_phone_number, :rdv_solidarites_lieu_id, :number_of_days_to_accept_invitation
+      :format, :help_phone_number, :rdv_solidarites_lieu_id
     )
   end
 
@@ -68,9 +68,23 @@ class InvitationsController < ApplicationController
   def set_rdv_context
     RdvContext.with_advisory_lock "setting_rdv_context_for_applicant_#{@applicant.id}" do
       @rdv_context = RdvContext.find_or_create_by!(
-        motif_category: params[:rdv_context][:motif_category], applicant: @applicant
+        motif_category: motif_category, applicant: @applicant
       )
     end
+  end
+
+  def set_current_configuration
+    @current_configuration = @organisations.flat_map(&:configurations).find { |c| c.motif_category == motif_category }
+  end
+
+  def motif_category
+    params[:rdv_context][:motif_category]
+  end
+
+  # the validity of an invitation is equal to the number of days before an action is required, unless it's postal
+  def set_invitation_validity_duration
+    @invitation.validity_duration = \
+      @invitation.format_postal? ? nil : @current_configuration.number_of_days_before_action_required.days
   end
 
   def set_department
