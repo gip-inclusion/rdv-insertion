@@ -18,6 +18,7 @@ class SendInvitationReminderJob < ApplicationJob
 
   def invitation # rubocop:disable Metrics/AbcSize
     @invitation ||= Invitation.new(
+      reminder: true,
       applicant: @applicant,
       department: first_invitation.department,
       organisations: first_invitation.organisations,

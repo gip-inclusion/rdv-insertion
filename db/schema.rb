@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_13_120827) do
+ActiveRecord::Schema[7.0].define(version: 2022_06_21_131006) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -124,6 +124,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_13_120827) do
     t.bigint "rdv_context_id"
     t.integer "number_of_days_to_accept_invitation"
     t.datetime "valid_until"
+    t.boolean "reminder", default: false
     t.index ["applicant_id"], name: "index_invitations_on_applicant_id"
     t.index ["department_id"], name: "index_invitations_on_department_id"
     t.index ["rdv_context_id"], name: "index_invitations_on_rdv_context_id"
