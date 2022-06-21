@@ -1,4 +1,4 @@
-describe Stats::CreateStat, type: :service do
+describe Stats::UpsertStat, type: :service do
   subject { described_class.call(department_number: department.number) }
 
   let!(:department) { create(:department) }
@@ -53,10 +53,6 @@ describe Stats::CreateStat, type: :service do
     it "saves a stat record" do
       expect(stat).to receive(:save)
       subject
-    end
-
-    it "returns a stat record" do
-      expect(subject.stat).to eq(stat)
     end
   end
 end
