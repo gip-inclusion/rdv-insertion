@@ -3,17 +3,13 @@ class StatsController < ApplicationController
   before_action :set_department, only: [:show]
 
   def index
-    @applicants = Applicant.all
-    @rdvs = Rdv.all
     @department_count = Department.count
-    @stats = Stats.new(department_ids: Department.pluck(:id))
+    @stat = Stat.find_by(department_number: "all")
   end
 
   def show
-    @applicants = @department.applicants
-    @rdvs = @department.rdvs
+    @stat = Stat.find_by(department_number: @department.number)
     @display_all_stats = @department.configurations.none?(&:notify_applicant?)
-    @stats = Stats.new(department_ids: [@department.id])
   end
 
   def deployment_map; end

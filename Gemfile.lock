@@ -101,6 +101,8 @@ GEM
       dotenv (= 2.7.6)
       railties (>= 3.2)
     erubi (1.10.0)
+    et-orbi (1.2.6)
+      tzinfo
     ethon (0.15.0)
       ffi (>= 1.15.0)
     execjs (2.8.1)
@@ -114,6 +116,9 @@ GEM
       ruby2_keywords (>= 0.0.4)
     faraday-net_http (2.0.2)
     ffi (1.15.5)
+    fugit (1.5.2)
+      et-orbi (~> 1.1, >= 1.1.8)
+      raabro (~> 1.4)
     globalid (1.0.0)
       activesupport (>= 5.0)
     groupdate (4.3.0)
@@ -195,6 +200,7 @@ GEM
       nio4r (~> 2.0)
     pundit (2.2.0)
       activesupport (>= 3.0.0)
+    raabro (1.4.0)
     racc (1.6.0)
     rack (2.2.3.1)
     rack-cors (1.1.1)
@@ -317,6 +323,9 @@ GEM
       connection_pool (>= 2.2.2)
       rack (~> 2.0)
       redis (>= 4.2.0)
+    sidekiq-cron (1.5.1)
+      fugit (~> 1)
+      sidekiq (>= 4.2.1)
     simple_form (5.1.0)
       actionpack (>= 5.2)
       activemodel (>= 5.2)
@@ -410,6 +419,7 @@ DEPENDENCIES
   sentry-sidekiq
   sib-api-v3-sdk
   sidekiq
+  sidekiq-cron
   simple_form
   spring (~> 3.0.0)
   turbo-rails
