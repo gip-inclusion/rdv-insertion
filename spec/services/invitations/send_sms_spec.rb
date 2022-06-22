@@ -98,6 +98,28 @@ describe Invitations::SendSms, type: :service do
       end
     end
 
+    context "when it is a reminder" do
+      let!(:content) do
+        "Monsieur John DOE,\nBénéficiaire du RSA, vous avez reçu un premier message il y a 3 jours vous invitant" \
+          " à prendre RDV au créneau de votre choix afin de démarrer un parcours d’accompagnement. " \
+          "Le lien de prise de RDV suivant expire dans 5 jours: " \
+          "http://www.rdv-insertion.fr/invitations/redirect?token=123\n" \
+          "Ce rendez-vous est obligatoire. En cas de problème technique, contactez le 0147200001."
+      end
+
+      before do
+        invitation.update!(reminder: true, valid_until: 5.days.from_now)
+      end
+
+      it "calls the send transactional service with the right content" do
+        expect(SendTransactionalSms).to receive(:call)
+          .with(phone_number_formatted: phone_number_formatted,
+                sender_name: "Dept#{department.number}",
+                content: content)
+        subject
+      end
+    end
+
     context "for rsa accompagnement" do
       let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_accompagnement") }
       let!(:configuration) { create(:configuration, motif_category: "rsa_accompagnement") }
@@ -117,6 +139,30 @@ describe Invitations::SendSms, type: :service do
                 sender_name: "Dept#{department.number}",
                 content: content)
         subject
+      end
+
+      context "when it is a reminder" do
+        let!(:content) do
+          "Monsieur John DOE,\nBénéficiaire du RSA, vous avez reçu un premier message il y a 3 jours vous invitant" \
+            " à prendre RDV au créneau de votre choix afin de démarrer un parcours d’accompagnement. " \
+            "Le lien de prise de RDV suivant expire dans 5 jours: " \
+            "http://www.rdv-insertion.fr/invitations/redirect?token=123\n" \
+            "Ce rendez-vous est obligatoire. En l’absence d'action de votre part, " \
+            "le versement de votre RSA pourra être suspendu. En cas de problème technique, contactez le "\
+            "0147200001."
+        end
+
+        before do
+          invitation.update!(reminder: true, valid_until: 5.days.from_now)
+        end
+
+        it "calls the send transactional service with the right content" do
+          expect(SendTransactionalSms).to receive(:call)
+            .with(phone_number_formatted: phone_number_formatted,
+                  sender_name: "Dept#{department.number}",
+                  content: content)
+          subject
+        end
       end
     end
 
@@ -138,6 +184,27 @@ describe Invitations::SendSms, type: :service do
                 sender_name: "Dept#{department.number}",
                 content: content)
         subject
+      end
+
+      context "when it is a reminder" do
+        let!(:content) do
+          "Monsieur John DOE,\nBénéficiaire du RSA, vous avez reçu un premier message il y a 3 jours vous invitant" \
+            " à contacter la plateforme départementale afin de démarrer un parcours d’accompagnement. " \
+            "Vous n'avez plus que 5 jours pour appeler le " \
+            "0147200001. Cet appel est obligatoire pour le traitement de votre dossier."
+        end
+
+        before do
+          invitation.update!(reminder: true, valid_until: 5.days.from_now)
+        end
+
+        it "calls the send transactional service with the right content" do
+          expect(SendTransactionalSms).to receive(:call)
+            .with(phone_number_formatted: phone_number_formatted,
+                  sender_name: "Dept#{department.number}",
+                  content: content)
+          subject
+        end
       end
     end
 

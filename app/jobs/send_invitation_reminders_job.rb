@@ -18,7 +18,9 @@ class SendInvitationRemindersJob < ApplicationJob
 
   def applicants_to_send_reminders_to
     @applicants_to_send_reminders_to ||= \
-      Applicant.where(id: valid_invitations_sent_3_days_ago.pluck(:applicant_id))
+      Applicant.active
+               .archived(false)
+               .where(id: valid_invitations_sent_3_days_ago.pluck(:applicant_id))
                .distinct
   end
 
@@ -33,8 +35,8 @@ class SendInvitationRemindersJob < ApplicationJob
 
   def notify_on_mattermost
     MattermostClient.send_to_notif_channel(
-      "📬 #{@sent_reminders_applicant_ids .length} relances en cours!\n" \
-      "Les allocataires sont: #{@sent_reminders_applicant_ids }"
+      "📬 #{@sent_reminders_applicant_ids.length} relances en cours!\n" \
+      "Les allocataires sont: #{@sent_reminders_applicant_ids}"
     )
   end
 end

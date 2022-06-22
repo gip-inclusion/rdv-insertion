@@ -30,7 +30,15 @@ module Invitations
     end
 
     def send_email
-      InvitationMailer.send(:"invitation_for_#{@invitation.motif_category}", @invitation, applicant).deliver_now
+      if @invitation.reminder?
+        InvitationMailer.send(
+          :"invitation_for_#{@invitation.motif_category}_reminder", @invitation, applicant
+        ).deliver_now
+      else
+        InvitationMailer.send(
+          :"invitation_for_#{@invitation.motif_category}", @invitation, applicant
+        ).deliver_now
+      end
     end
   end
 end

@@ -7,7 +7,7 @@ class SendInvitationReminderJob < ApplicationJob
 
     return if invitation_already_sent_today?
 
-    return notify_non_eligible_applicant unless eligible_applicant?
+    return notify_non_eligible_for_reminder unless eligible_for_reminder?
 
     return if save_and_send_invitation.success?
 
@@ -41,15 +41,16 @@ class SendInvitationReminderJob < ApplicationJob
     @applicant.invitations.where(format: @invitation_format).where("sent_at > ?", 24.hours.ago).present?
   end
 
-  def notify_non_eligible_applicant
+  def notify_non_eligible_for_reminder
     MattermostClient.send_to_notif_channel(
       "🚫 L'allocataire #{@applicant.id} n'est pas éligible à la relance."
     )
   end
 
-  def eligible_applicant?
+  def eligible_for_reminder?
     first_invitation.sent_at.to_date == 3.days.ago.to_date &&
-      first_invitation.valid_until >= 2.days.from_now
+      first_invitation.valid_until >= 2.days.from_now &&
+      first_invitation.rdv_context.status == "invitation_pending"
   end
 
   def first_invitation

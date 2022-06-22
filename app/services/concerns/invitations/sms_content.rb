@@ -33,7 +33,7 @@ module Invitations
     def content_for_rsa_orientation_reminder
       "#{applicant.full_name},\nBénéficiaire du RSA, vous avez reçu un premier message il y a 3 jours vous invitant" \
         " à prendre RDV au créneau de votre choix afin de démarrer un parcours d’accompagnement." \
-        "Le lien de prise de RDV suivant expire dans #{@invitation.number_of_days_before_expiration} "\
+        " Le lien de prise de RDV suivant expire dans #{@invitation.number_of_days_before_expiration} "\
         "jours: " \
         "#{redirect_invitations_url(params: { token: @invitation.token }, host: ENV['HOST'])}\n" \
         "Ce rendez-vous est obligatoire. En cas de problème technique, contactez le "\
@@ -43,7 +43,7 @@ module Invitations
     def content_for_rsa_accompagnement_reminder
       "#{applicant.full_name},\nBénéficiaire du RSA, vous avez reçu un premier message il y a 3 jours vous invitant" \
         " à prendre RDV au créneau de votre choix afin de démarrer un parcours d’accompagnement." \
-        "Le lien de prise de RDV suivant n'est encore valable que #{@invitation.number_of_days_before_expiration} " \
+        " Le lien de prise de RDV suivant expire dans #{@invitation.number_of_days_before_expiration} " \
         "jours: " \
         "#{redirect_invitations_url(params: { token: @invitation.token }, host: ENV['HOST'])}\n" \
         "Ce rendez-vous est obligatoire. En l’absence d'action de votre part, " \
