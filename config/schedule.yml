@@ -1,0 +1,3 @@
+upsert_stats_job:
+  cron: "0 22 * * *" # we compute stats once a day, at 22:00
+  class: "UpsertStatsJob"
