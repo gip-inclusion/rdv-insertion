@@ -17,7 +17,7 @@ RSpec.describe InvitationMailer, type: :mailer do
 
   describe "#invitation_for_rsa_orientation" do
     subject do
-      described_class.invitation_for_rsa_orientation(invitation, applicant)
+      described_class.with(invitation: invitation, applicant: applicant).invitation_for_rsa_orientation
     end
 
     it "renders the headers" do
@@ -51,7 +51,8 @@ RSpec.describe InvitationMailer, type: :mailer do
 
   describe "#invitation_for_rsa_accompagnement" do
     subject do
-      described_class.invitation_for_rsa_accompagnement(invitation, applicant)
+      described_class.with(invitation: invitation, applicant: applicant)
+                     .invitation_for_rsa_accompagnement
     end
 
     it "renders the headers" do
@@ -85,7 +86,9 @@ RSpec.describe InvitationMailer, type: :mailer do
 
   describe "#invitation_for_rsa_orientation_on_phone_platform" do
     subject do
-      described_class.invitation_for_rsa_orientation_on_phone_platform(invitation, applicant)
+      described_class
+        .with(invitation: invitation, applicant: applicant)
+        .invitation_for_rsa_orientation_on_phone_platform
     end
 
     it "renders the headers" do

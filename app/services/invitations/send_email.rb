@@ -31,12 +31,12 @@ module Invitations
 
     def send_email
       if @invitation.reminder?
-        InvitationMailer.send(
-          :"invitation_for_#{@invitation.motif_category}_reminder", @invitation, applicant
+        InvitationMailer.with(invitation: @invitation, applicant: applicant).send(
+          :"invitation_for_#{@invitation.motif_category}_reminder"
         ).deliver_now
       else
-        InvitationMailer.send(
-          :"invitation_for_#{@invitation.motif_category}", @invitation, applicant
+        InvitationMailer.with(invitation: @invitation, applicant: applicant).send(
+          :"invitation_for_#{@invitation.motif_category}"
         ).deliver_now
       end
     end
