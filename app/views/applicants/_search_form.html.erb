@@ -1,4 +1,12 @@
-<%= form_with method: :get, local: true, url: compute_index_path(@organisation, @department) do |form| %>
+<%= form_with method: :get, local: true, url: compute_index_path(@organisation, @department), class: "search-form" do |form| %>
+  <div class="input date form-element">
+    <%= form.date_select :first_invitation_date_before,{
+                start_year: 2021,
+                end_year: Date.today.year,
+                include_blank: true,
+                order: [:day, :month, :year]},
+                class: "date-select" %>
+  </div>
   <%= form.text_field :search_query, placeholder: "Prénom, nom, email, numéro allocataire...", class: "form-control mb-1" %>
   <%= form.hidden_field :motif_category, value: @current_motif_category %>
   <div class="d-flex justify-content-between">

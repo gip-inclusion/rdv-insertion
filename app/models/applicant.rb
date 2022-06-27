@@ -8,6 +8,7 @@ class Applicant < ApplicationRecord
   include NotificableConcern
   include HasPhoneNumberConcern
   include InvitableConcern
+  include HasRdvsConcern
 
   before_validation :generate_uid
 
