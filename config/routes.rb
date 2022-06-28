@@ -1,4 +1,5 @@
 require 'sidekiq/web'
+require 'sidekiq/cron/web'
 
 def check_auth(username, password, service)
   ActiveSupport::SecurityUtils.secure_compare(
