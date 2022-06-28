@@ -40,21 +40,33 @@
               <td><%= display_attribute applicant.first_name %></td>
               <td class="d-none d-lg-table-cell">
                 <% if applicant.phone_number.present? %>
-                  <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: "sms", invited: applicant.last_sent_sms_invitation.present? %>
+                  <% if @current_motif_category %>
+                    <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: "sms", invited: applicant.last_sent_sms_invitation.present? %>
+                  <% else %>
+                    <%= applicant.phone_number_formatted %>
+                  <% end %>
                 <% else %>
                   -
                 <% end %>
               </td>
               <td class="d-none d-lg-table-cell">
                 <% if applicant.email.present? %>
-                  <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: "email", invited: applicant.last_sent_email_invitation.present? %>
+                  <% if @current_motif_category %>
+                    <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: "email", invited: applicant.last_sent_email_invitation.present? %>
+                  <% else %>
+                    <%= applicant.email %>
+                  <% end %>
                 <% else %>
                   -
                 <% end %>
               </td>
               <td class="d-none d-lg-table-cell">
                 <% if applicant.address.present? %>
-                  <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: "postal", invited: applicant.last_sent_postal_invitation.present? %>
+                  <% if @current_motif_category %>
+                    <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: "postal", invited: applicant.last_sent_postal_invitation.present? %>
+                  <% else %>
+                    <%= applicant.address %>
+                  <% end %>
                 <% else %>
                   -
                 <% end %>
