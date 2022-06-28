@@ -1,7 +1,7 @@
 import appFetch from "../../lib/appFetch";
 
 const inviteApplicant = async (
-  applicant,
+  applicantId,
   departmentId,
   organisationId,
   isDepartmentLevel,
@@ -10,11 +10,12 @@ const inviteApplicant = async (
   motifCategory,
   types = "application/json"
 ) => {
+  console.log("departmentIddd", departmentId)
   let url;
   if (isDepartmentLevel) {
-    url = `/departments/${departmentId}/applicants/${applicant.id}/invitations`;
+    url = `/departments/${departmentId}/applicants/${applicantId}/invitations`;
   } else {
-    url = `/organisations/${organisationId}/applicants/${applicant.id}/invitations`;
+    url = `/organisations/${organisationId}/applicants/${applicantId}/invitations`;
   }
   return appFetch(
     url,

@@ -4,24 +4,26 @@ class InvitationsController < ApplicationController
                 :set_invitation_validity_duration, only: [:create]
   before_action :set_invitation, only: [:redirect]
   skip_before_action :authenticate_agent!, only: [:invitation_code, :redirect]
-  respond_to :json, only: [:create]
 
-  def create
+  def create # rubocop:disable Metrics/AbcSize
     if save_and_send_invitation.success?
-
       respond_to do |format|
         format.json do
-          return send_data pdf, filename: pdf_filename, type: 'application/pdf' if @invitation.format_postal?
-
-          render json: { success: true, invitation: @invitation }
+          if @invitation.format_postal?
+            send_data pdf, filename: pdf_filename, layout: "application/pdf"
+          else
+            render json: { success: true, invitation: @invitation }
+          end
         end
         format.turbo_stream
       end
     else
-      flash[:error] = save_and_send_invitation.errors.join(", ")
       respond_to do |format|
-        format.turbo_stream { redirect_to request.referer }
         format.json { render json: { success: false, errors: save_and_send_invitation.errors } }
+        format.turbo_stream do
+          flash[:error] = save_and_send_invitation.errors.join(", ")
+          redirect_to request.referer
+        end
       end
     end
   end
@@ -37,8 +39,8 @@ class InvitationsController < ApplicationController
   private
 
   def invitation_params
-    params.require(:invitation).permit(
-      :format, :help_phone_number, :rdv_solidarites_lieu_id
+    params.permit(
+      :invitation_format, :help_phone_number, :rdv_solidarites_lieu_id, :motif_category
     )
   end
 
@@ -50,13 +52,14 @@ class InvitationsController < ApplicationController
       rdv_context: @rdv_context,
       format: @invitation_format,
       number_of_days_to_accept_invitation: @current_configuration.number_of_days_to_accept_invitation,
-      **invitation_params
+      help_phone_number: invitation_params[:help_phone_number],
+      rdv_solidarites_lieu_id: invitation_params[:rdv_solidarites_lieu_id]
     )
     authorize @invitation
   end
 
   def set_invitation_format
-    @invitation_format = params[:invitation_format] || invitation_params[:format]
+    @invitation_format = invitation_params[:invitation_format]
   end
 
   def pdf
@@ -102,7 +105,7 @@ class InvitationsController < ApplicationController
   end
 
   def motif_category
-    params[:motif_category] || params[:invitation][:motif_category]
+    invitation_params[:motif_category]
   end
 
   # the validity of an invitation is equal to the number of days before an action is required, unless it's postal

@@ -37,7 +37,7 @@ Rails.application.routes.draw do
   end
 
   get "invitation", to: "invitations#invitation_code", as: :invitation_landing
-  resources :invitations, only: [] do
+  resources :invitations, only: [:show] do
     get :redirect, on: :collection
   end
 

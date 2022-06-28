@@ -23,13 +23,10 @@ describe InvitationsController, type: :controller do
       {
         organisation_id: organisation.id,
         applicant_id: applicant_id,
-        invitation: {
-          format: "sms",
-          help_phone_number: help_phone_number
-        },
-        rdv_context: {
-          motif_category: motif_category
-        }
+        invitation_format: "sms",
+        help_phone_number: help_phone_number,
+        motif_category: motif_category,
+        format: "json"
       }
     end
     let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
@@ -52,8 +49,8 @@ describe InvitationsController, type: :controller do
       allow(Invitation).to receive(:new)
         .with(
           department: department, applicant: applicant, organisations: organisations, rdv_context: rdv_context,
-          number_of_days_to_accept_invitation: 3,
-          "format" => "sms", "help_phone_number" => help_phone_number
+          help_phone_number: help_phone_number,
+          number_of_days_to_accept_invitation: 3, format: "sms", rdv_solidarites_lieu_id: nil
         ).and_return(invitation)
       allow(Invitations::SaveAndSend).to receive(:call)
         .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
@@ -71,8 +68,8 @@ describe InvitationsController, type: :controller do
         expect(Invitation).to receive(:new)
           .with(
             department: department, applicant: applicant, organisations: organisations, rdv_context: rdv_context,
-            number_of_days_to_accept_invitation: 3,
-            "format" => "sms", "help_phone_number" => help_phone_number
+            help_phone_number: help_phone_number,
+            number_of_days_to_accept_invitation: 3, format: "sms", rdv_solidarites_lieu_id: nil
           )
         post :create, params: create_params
       end
@@ -98,14 +95,21 @@ describe InvitationsController, type: :controller do
         {
           department_id: department.id,
           applicant_id: applicant_id,
-          invitation: {
-            format: "sms",
-            help_phone_number: help_phone_number
-          },
-          rdv_context: {
-            motif_category: motif_category
-          }
+          invitation_format: "email",
+          help_phone_number: help_phone_number,
+          motif_category: motif_category,
+          rdv_solidarites_lieu_id: "3929",
+          format: "json"
         }
+      end
+
+      before do
+        allow(Invitation).to receive(:new)
+          .with(
+            department: department, applicant: applicant, organisations: organisations, rdv_context: rdv_context,
+            help_phone_number: help_phone_number,
+            number_of_days_to_accept_invitation: 3, format: "email", rdv_solidarites_lieu_id: "3929"
+          ).and_return(invitation)
       end
 
       it "finds or create a context" do
@@ -118,8 +122,8 @@ describe InvitationsController, type: :controller do
         expect(Invitation).to receive(:new)
           .with(
             department: department, applicant: applicant, organisations: organisations, rdv_context: rdv_context,
-            number_of_days_to_accept_invitation: 3,
-            "format" => "sms", "help_phone_number" => help_phone_number
+            number_of_days_to_accept_invitation: 3, format: "email", help_phone_number: help_phone_number,
+            rdv_solidarites_lieu_id: "3929"
           )
         post :create, params: create_params
       end
@@ -166,11 +170,10 @@ describe InvitationsController, type: :controller do
           {
             organisation_id: organisation.id,
             applicant_id: applicant_id,
-            invitation: {
-              format: "postal",
-              help_phone_number: help_phone_number
-            },
-            rdv_context: { motif_category: motif_category }
+            invitation_format: "postal",
+            help_phone_number: help_phone_number,
+            motif_category: motif_category,
+            format: "json"
           }
         end
 
@@ -178,8 +181,8 @@ describe InvitationsController, type: :controller do
           allow(Invitation).to receive(:new)
             .with(
               department: department, applicant: applicant, organisations: organisations, rdv_context: rdv_context,
-              number_of_days_to_accept_invitation: 3,
-              "format" => "postal", "help_phone_number" => help_phone_number
+              number_of_days_to_accept_invitation: 3, format: "postal", help_phone_number: help_phone_number,
+              rdv_solidarites_lieu_id: nil
             ).and_return(invitation)
           allow(Invitations::SaveAndSend).to receive(:call)
             .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)

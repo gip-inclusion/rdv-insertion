@@ -1,5 +1,5 @@
 <%= turbo_stream.prepend "flashes" do %>
-  <%= render partial: "common/flash", locals: { flash: { success: "L'allocataire #{@applicant.full_name} a bien été invité par #{I18n.t("activerecord.attributes.invitation.formats.#{@invitation_format}")}" } } %>
+  <%= render partial: "common/flash", locals: { flash: { success: "#{@applicant.full_name} a bien été invité par #{I18n.t("activerecord.attributes.invitation.formats.#{@invitation_format}")}" } } %>
 <% end %>
 <%= turbo_stream.replace "applicant-#{@applicant.id}-#{@invitation_format}-invitation" do %>
   <%= render partial: "invitations/checkbox_form", locals: { applicant: @applicant, invitation_format: @invitation_format, invited: true } %>

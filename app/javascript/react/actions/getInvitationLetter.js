@@ -2,19 +2,21 @@ import Swal from "sweetalert2";
 import inviteApplicant from "./inviteApplicant";
 
 const getInvitationLetter = async (
-  applicant,
+  applicantId,
   departmentId,
-  organisation,
+  organisationId,
   isDepartmentLevel,
   motifCategory,
+  helpPhoneNumber
 ) => {
+  console.log("departmentIdd", departmentId)
   const result = await inviteApplicant(
-    applicant,
+    applicantId,
     departmentId,
-    organisation.id,
+    organisationId,
     isDepartmentLevel,
     "postal",
-    organisation.phone_number,
+    helpPhoneNumber,
     motifCategory,
     "application/json, application/pdf"
   );
