@@ -38,7 +38,7 @@ module FilterableApplicantsConcern
                                               .collect(&:relevant_first_invitation)
                                               .compact
     relevant_first_invitations = applicants_first_invitations.to_a.select do |invitation|
-      invitation.sent_at < params[:first_invitation_date_before]
+      invitation.sent_at > params[:first_invitation_date_before]
     end
     @applicants = @applicants.where(id: relevant_first_invitations.pluck(:applicant_id))
   end
@@ -50,7 +50,7 @@ module FilterableApplicantsConcern
                                               .collect(&:relevant_first_invitation)
                                               .compact
     relevant_first_invitations = applicants_first_invitations.to_a.select do |invitation|
-      invitation.sent_at > params[:first_invitation_date_after]
+      invitation.sent_at < params[:first_invitation_date_after]
     end
     @applicants = @applicants.where(id: relevant_first_invitations.pluck(:applicant_id))
   end
@@ -62,7 +62,7 @@ module FilterableApplicantsConcern
                                              .collect(&:last_sent_invitation)
                                              .compact
     relevant_last_invitations = applicants_last_invitations.to_a.select do |invitation|
-      invitation.sent_at < params[:last_invitation_date_before]
+      invitation.sent_at > params[:last_invitation_date_before]
     end
     @applicants = @applicants.where(id: relevant_last_invitations.pluck(:applicant_id))
   end
@@ -74,7 +74,7 @@ module FilterableApplicantsConcern
                                              .collect(&:last_sent_invitation)
                                              .compact
     relevant_last_invitations = applicants_last_invitations.to_a.select do |invitation|
-      invitation.sent_at > params[:last_invitation_date_after]
+      invitation.sent_at < params[:last_invitation_date_after]
     end
     @applicants = @applicants.where(id: relevant_last_invitations.pluck(:applicant_id))
   end

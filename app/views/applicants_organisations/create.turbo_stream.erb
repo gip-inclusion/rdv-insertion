@@ -5,7 +5,7 @@
   <%= render partial: "applicants/add_to_org_button", locals: { applicant: @applicant, department: @department, can_be_added_to_other_org: (@department.organisations - @applicant.organisations).any? } %>
 <% end %>
 <%= turbo_stream.prepend "flashes" do %>
-  <%= render partial: "common/flash", locals: { flash: { success: "L'allocataire a bien été ajouté à l'organisation" }  } %>
+  <%= render partial: "common/flash", locals: { flash: { success: "L'allocataire a bien été ajouté à l'organisation" } } %>
 <% end %>
 <% if @assign_rdv_context %>
   <%= turbo_stream.replace "remote_modal" do %>

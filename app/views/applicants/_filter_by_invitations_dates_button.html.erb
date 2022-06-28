@@ -1,0 +1,7 @@
+<div id="filter_by_invitations_dates_button" class="mb-1">
+  <div class="w-100">
+    <%= link_to(new_filter_applicant_path(**params.to_unsafe_h), data: { turbo_frame: 'remote_modal' }) do %>
+      <button class="btn btn-grey w-100">Filtrer par date d'invitation</button>
+    <% end %>
+  </div>
+</div>

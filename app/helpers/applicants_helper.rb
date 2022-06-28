@@ -110,9 +110,9 @@ module ApplicantsHelper
 
   def compute_index_path(organisation, department, **params)
     if department_level?
-      department_applicants_path(department, **params)
+      department_applicants_path(department, **params.compact_blank)
     else
-      organisation_applicants_path(organisation, **params)
+      organisation_applicants_path(organisation, **params.compact_blank)
     end
   end
 
