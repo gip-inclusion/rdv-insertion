@@ -1,27 +1,28 @@
 class InvitationsController < ApplicationController
-  before_action :set_organisations, :set_department, :set_applicant, :set_rdv_context,
-                :set_current_configuration, only: [:create]
+  before_action :set_organisations, :set_organisation, :set_department, :set_applicant, :set_rdv_context,
+                :set_current_configuration, :set_invitation_format, :set_new_invitation,
+                :set_invitation_validity_duration, only: [:create]
   before_action :set_invitation, only: [:redirect]
   skip_before_action :authenticate_agent!, only: [:invitation_code, :redirect]
   respond_to :json, only: [:create]
 
   def create
-    @invitation = Invitation.new(
-      applicant: @applicant,
-      department: @department,
-      organisations: @organisations,
-      rdv_context: @rdv_context,
-      number_of_days_to_accept_invitation: @current_configuration.number_of_days_to_accept_invitation,
-      **invitation_params
-    )
-    set_invitation_validity_duration
-    authorize @invitation
     if save_and_send_invitation.success?
-      return send_data pdf, filename: pdf_filename if @invitation.format_postal?
 
-      render json: { success: true, invitation: @invitation }
+      respond_to do |format|
+        format.json do
+          return send_data pdf, filename: pdf_filename, type: 'application/pdf' if @invitation.format_postal?
+
+          render json: { success: true, invitation: @invitation }
+        end
+        format.turbo_stream
+      end
     else
-      render json: { success: false, errors: save_and_send_invitation.errors }
+      flash[:error] = save_and_send_invitation.errors.join(", ")
+      respond_to do |format|
+        format.turbo_stream { redirect_to request.referer }
+        format.json { render json: { success: false, errors: save_and_send_invitation.errors } }
+      end
     end
   end
 
@@ -39,6 +40,23 @@ class InvitationsController < ApplicationController
     params.require(:invitation).permit(
       :format, :help_phone_number, :rdv_solidarites_lieu_id
     )
+  end
+
+  def set_new_invitation
+    @invitation = Invitation.new(
+      applicant: @applicant,
+      department: @department,
+      organisations: @organisations,
+      rdv_context: @rdv_context,
+      format: @invitation_format,
+      number_of_days_to_accept_invitation: @current_configuration.number_of_days_to_accept_invitation,
+      **invitation_params
+    )
+    authorize @invitation
+  end
+
+  def set_invitation_format
+    @invitation_format = params[:invitation_format] || invitation_params[:format]
   end
 
   def pdf
@@ -65,6 +83,12 @@ class InvitationsController < ApplicationController
       end
   end
 
+  def set_organisation
+    return if department_level?
+
+    @organisation = @organisations.first
+  end
+
   def set_rdv_context
     RdvContext.with_advisory_lock "setting_rdv_context_for_applicant_#{@applicant.id}" do
       @rdv_context = RdvContext.find_or_create_by!(
@@ -78,7 +102,7 @@ class InvitationsController < ApplicationController
   end
 
   def motif_category
-    params[:rdv_context][:motif_category]
+    params[:motif_category] || params[:invitation][:motif_category]
   end
 
   # the validity of an invitation is equal to the number of days before an action is required, unless it's postal

@@ -78,6 +78,10 @@ class Applicant < ApplicationRecord
     deleted_at.present?
   end
 
+  def inactive?
+    is_archived? || deleted?
+  end
+
   def motif_categories
     rdv_contexts.map(&:motif_category)
   end

@@ -20,11 +20,9 @@ const inviteApplicant = async (
     url,
     "POST",
     {
-      format: invitationFormat,
+      invitation_format: invitationFormat,
       help_phone_number: helpPhoneNumber,
-      rdv_context: {
-        motif_category: motifCategory,
-      },
+      motif_category: motifCategory,
     },
     types
   );

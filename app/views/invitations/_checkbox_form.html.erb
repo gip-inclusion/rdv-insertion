@@ -1,0 +1,10 @@
+<div id="applicant-<%= applicant.id %>-<%= invitation_format %>-invitation">
+  <%= simple_form_for(:invitation, url: department_level? ? department_applicant_invitations_path(@department, applicant) : organisation_applicant_invitations_path(@organisation, applicant), remote: false, local: true, html: { method: :post }, data: { controller: "checkbox-form", action: "turbo:submit-end->checkbox-form#submitEnd" }) do |f| %>
+    <div class="form-group">
+      <%= f.hidden_field :motif_category, value: @current_motif_category %>
+      <%= f.hidden_field :help_phone_number, value: department_level? ? applicant.organisations.first.phone_number : @organisation.phone_number %>
+      <%= f.hidden_field :format, value: invitation_format %>
+      <%= f.input :invite, as: :boolean, input_html: { checked: invited, disabled: invited || applicant.inactive?, data: { controller: "checkbox-form", action: "change->checkbox-form#submit" } } %>
+    </div>
+  <% end %>
+</div>
