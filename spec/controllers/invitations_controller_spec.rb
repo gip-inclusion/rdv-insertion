@@ -202,7 +202,7 @@ describe InvitationsController, type: :controller do
             invitation_format: "postal",
             help_phone_number: help_phone_number,
             motif_category: motif_category,
-            format: "json"
+            format: "pdf"
           }
         end
 

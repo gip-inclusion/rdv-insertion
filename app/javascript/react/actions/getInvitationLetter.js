@@ -17,7 +17,7 @@ const getInvitationLetter = async (
     "postal",
     helpPhoneNumber,
     motifCategory,
-    "application/json, application/pdf"
+    "application/pdf"
   );
   if (result.success === false) {
     if (result.errors[0] === "Le format de l'adresse est invalide") {

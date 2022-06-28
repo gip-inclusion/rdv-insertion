@@ -8,13 +8,8 @@ class InvitationsController < ApplicationController
   def create # rubocop:disable Metrics/AbcSize
     if save_and_send_invitation.success?
       respond_to do |format|
-        format.json do
-          if @invitation.format_postal?
-            send_data pdf, filename: pdf_filename, layout: "application/pdf"
-          else
-            render json: { success: true, invitation: @invitation }
-          end
-        end
+        format.json { render json: { success: true, invitation: @invitation } }
+        format.pdf { send_data pdf, filename: pdf_filename, layout: "application/pdf" }
         format.turbo_stream
       end
     else
