@@ -9,7 +9,6 @@ const getInvitationLetter = async (
   motifCategory,
   helpPhoneNumber
 ) => {
-  console.log("departmentIdd", departmentId)
   const result = await inviteApplicant(
     applicantId,
     departmentId,

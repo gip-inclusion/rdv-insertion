@@ -78,7 +78,7 @@ export default function Applicant({
       applicant.currentOrganisation.id,
       isDepartmentLevel,
       applicant.currentConfiguration.motif_category,
-      applicant.currentOrganisation.phone_number
+      applicant.currentOrganisation.phone_number,
     ];
     if (format === "sms") {
       const invitation = await handleApplicantInvitation(...invitationParams, "sms");

@@ -10,7 +10,6 @@ const inviteApplicant = async (
   motifCategory,
   types = "application/json"
 ) => {
-  console.log("departmentIddd", departmentId)
   let url;
   if (isDepartmentLevel) {
     url = `/departments/${departmentId}/applicants/${applicantId}/invitations`;
