@@ -16,7 +16,13 @@ describe InvitationsController, type: :controller do
 
     let!(:organisations) { Organisation.where(id: organisation.id) }
     let!(:agent) { create(:agent, organisations: organisations) }
-    let!(:applicant) { create(:applicant, id: applicant_id, organisations: [organisation]) }
+    let!(:applicant) do
+      create(
+        :applicant,
+        first_name: "JANE", last_name: "DOE", title: "madame",
+        id: applicant_id, organisations: [organisation]
+      )
+    end
     let!(:motif_category) { "rsa_orientation" }
 
     let!(:create_params) do
@@ -140,6 +146,29 @@ describe InvitationsController, type: :controller do
             rdv_solidarites_session: rdv_solidarites_session
           )
         post :create, params: create_params
+      end
+
+      context "when the request is in a turbo stream format" do
+        render_views
+
+        before { create_params[:format] = "turbo_stream" }
+
+        it "calls the service" do
+          expect(Invitations::SaveAndSend).to receive(:call)
+            .with(
+              invitation: invitation,
+              rdv_solidarites_session: rdv_solidarites_session
+            )
+          post :create, params: create_params
+        end
+
+        it "renders the success message" do
+          post :create, params: create_params
+
+          expect(response).to be_successful
+          expect(response.body).to match(/flashes/)
+          expect(response.body).to match(/ Madame Jane DOE a bien été invité.e par email/)
+        end
       end
     end
 
