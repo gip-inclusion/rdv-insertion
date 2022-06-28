@@ -165,7 +165,7 @@ describe RdvContext do
 
         context "first_sent_invitation_after_last_seen_rdv" do
           it "is selecting the right invitation" do
-            expect(rdv_context.first_sent_invitation_after_last_seen_rdv).to eq(invitation2.sent_at)
+            expect(rdv_context.first_sent_invitation_after_last_seen_rdv_sent_at).to eq(invitation2.sent_at)
           end
         end
 
