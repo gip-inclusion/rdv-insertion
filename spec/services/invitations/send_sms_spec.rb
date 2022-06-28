@@ -100,8 +100,8 @@ describe Invitations::SendSms, type: :service do
 
     context "when it is a reminder" do
       let!(:content) do
-        "Monsieur John DOE,\nBénéficiaire du RSA, vous avez reçu un premier message il y a 3 jours vous invitant" \
-          " à prendre RDV au créneau de votre choix afin de démarrer un parcours d’accompagnement. " \
+        "Monsieur John DOE,\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours vous " \
+          "invitant à prendre RDV au créneau de votre choix afin de démarrer un parcours d’accompagnement. " \
           "Le lien de prise de RDV suivant expire dans 5 jours: " \
           "http://www.rdv-insertion.fr/invitations/redirect?token=123\n" \
           "Ce rendez-vous est obligatoire. En cas de problème technique, contactez le 0147200001."
@@ -143,8 +143,8 @@ describe Invitations::SendSms, type: :service do
 
       context "when it is a reminder" do
         let!(:content) do
-          "Monsieur John DOE,\nBénéficiaire du RSA, vous avez reçu un premier message il y a 3 jours vous invitant" \
-            " à prendre RDV au créneau de votre choix afin de démarrer un parcours d’accompagnement. " \
+          "Monsieur John DOE,\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours vous " \
+            "invitant à prendre RDV au créneau de votre choix afin de démarrer un parcours d’accompagnement. " \
             "Le lien de prise de RDV suivant expire dans 5 jours: " \
             "http://www.rdv-insertion.fr/invitations/redirect?token=123\n" \
             "Ce rendez-vous est obligatoire. En l’absence d'action de votre part, " \
@@ -188,8 +188,8 @@ describe Invitations::SendSms, type: :service do
 
       context "when it is a reminder" do
         let!(:content) do
-          "Monsieur John DOE,\nBénéficiaire du RSA, vous avez reçu un premier message il y a 3 jours vous invitant" \
-            " à contacter la plateforme départementale afin de démarrer un parcours d’accompagnement. " \
+          "Monsieur John DOE,\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours vous " \
+            "invitant à contacter la plateforme départementale afin de démarrer un parcours d’accompagnement. " \
             "Vous n'avez plus que 5 jours pour appeler le " \
             "0147200001. Cet appel est obligatoire pour le traitement de votre dossier."
         end

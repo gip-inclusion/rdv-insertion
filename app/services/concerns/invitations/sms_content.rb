@@ -31,8 +31,8 @@ module Invitations
     ### Reminders
 
     def content_for_rsa_orientation_reminder
-      "#{applicant.full_name},\nBénéficiaire du RSA, vous avez reçu un premier message il y a 3 jours vous invitant" \
-        " à prendre RDV au créneau de votre choix afin de démarrer un parcours d’accompagnement." \
+      "#{applicant.full_name},\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours " \
+        "vous invitant à prendre RDV au créneau de votre choix afin de démarrer un parcours d’accompagnement." \
         " Le lien de prise de RDV suivant expire dans #{@invitation.number_of_days_before_expiration} "\
         "jours: " \
         "#{redirect_invitations_url(params: { token: @invitation.token }, host: ENV['HOST'])}\n" \
@@ -41,8 +41,8 @@ module Invitations
     end
 
     def content_for_rsa_accompagnement_reminder
-      "#{applicant.full_name},\nBénéficiaire du RSA, vous avez reçu un premier message il y a 3 jours vous invitant" \
-        " à prendre RDV au créneau de votre choix afin de démarrer un parcours d’accompagnement." \
+      "#{applicant.full_name},\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours " \
+        "vous invitant à prendre RDV au créneau de votre choix afin de démarrer un parcours d’accompagnement." \
         " Le lien de prise de RDV suivant expire dans #{@invitation.number_of_days_before_expiration} " \
         "jours: " \
         "#{redirect_invitations_url(params: { token: @invitation.token }, host: ENV['HOST'])}\n" \
@@ -52,8 +52,8 @@ module Invitations
     end
 
     def content_for_rsa_orientation_on_phone_platform_reminder
-      "#{applicant.full_name},\nBénéficiaire du RSA, vous avez reçu un premier message il y a 3 jours vous invitant" \
-        " à contacter la plateforme départementale afin de démarrer un parcours d’accompagnement. " \
+      "#{applicant.full_name},\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours vous " \
+        "invitant à contacter la plateforme départementale afin de démarrer un parcours d’accompagnement. " \
         "Vous n'avez plus que #{@invitation.number_of_days_before_expiration} jours pour appeler le " \
         "#{@invitation.help_phone_number}. Cet appel est obligatoire pour le traitement de votre dossier."
     end
