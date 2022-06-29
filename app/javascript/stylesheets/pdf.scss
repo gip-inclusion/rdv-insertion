@@ -23,6 +23,32 @@ u {
   width: 40%;
 }
 
+.col-1 {
+  display: inline-block;
+  width: 15%;
+  margin-right: 0px;
+  padding-right: 0px;
+}
+
+.col-2 {
+  display: inline-block;
+  width: 15%;
+  margin-left: 0px;
+  padding-left: 0px;
+  margin-right: 80px;
+}
+
+.col-3 {
+  display: inline-block;
+  width: 20%;
+  margin-right: 80px;
+}
+
+.col-4 {
+  display: inline-block;
+  width: 30%;
+}
+
 .department-logo {
   &.header-logo {
     position: absolute;

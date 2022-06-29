@@ -1,8 +1,23 @@
 <div class="letter-footer">
-  <div class="left-col department-logo">
-    <%= organisation_or_department_logo(department.name.parameterize, organisation.name.parameterize) %>
-  </div>
-  <div class="right-col rdvi-logo">
-    <%= pdf_image_tag("rdv-insertion") %>
-  </div>
+  <% if invitation_parameters.display_europe_logos? %>
+    <div class="col-1 department-logo">
+      <%= pdf_image_tag("europe-s-engage") %>
+    </div>
+    <div class="col-2 department-logo">
+      <%= pdf_image_tag("drapeau-europe") %>
+    </div>
+    <div class="col-3 department-logo">
+      <%= organisation_or_department_logo(department.name.parameterize, organisation.name.parameterize) %>
+    </div>
+    <div class="col-4 rdvi-logo">
+      <%= pdf_image_tag("rdv-insertion") %>
+    </div>
+  <% else %>
+    <div class="left-col department-logo">
+      <%= organisation_or_department_logo(department.name.parameterize, organisation.name.parameterize) %>
+    </div>
+    <div class="right-col rdvi-logo">
+      <%= pdf_image_tag("rdv-insertion") %>
+    </div>
+  <% end %>
 </div>

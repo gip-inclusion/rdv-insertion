@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_21_131006) do
+ActiveRecord::Schema[7.0].define(version: 2022_06_29_121431) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -107,6 +107,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_21_131006) do
     t.string "sms_sender_name"
     t.string "signature_lines", array: true
     t.string "help_address"
+    t.boolean "display_europe_logos", default: false
   end
 
   create_table "invitations", force: :cascade do |t|
