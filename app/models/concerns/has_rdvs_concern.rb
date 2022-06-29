@@ -10,11 +10,11 @@ module HasRdvsConcern
   end
 
   def first_rdv_creation_date
-    rdvs.to_a.min_by(&:created_at).created_at
+    rdvs.min_by(&:created_at).created_at
   end
 
   def last_seen_rdv
-    rdvs.select(&:seen?).max_by(&:starts_at)
+    rdvs.to_a.select(&:seen?).max_by(&:starts_at)
   end
 
   def last_seen_rdv_starts_at

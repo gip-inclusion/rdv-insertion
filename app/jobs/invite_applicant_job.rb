@@ -9,7 +9,7 @@ class InviteApplicantJob < ApplicationJob
     @motif_category = motif_category
     @rdv_solidarites_session_credentials = rdv_solidarites_session_credentials.deep_symbolize_keys
 
-    Invitation.with_advisory_lock "invite_applicant_#{@applicant.id}" do
+    Invitation.with_advisory_lock "invite_applicant_job_#{@applicant.id}" do
       invite_applicant
     end
   end

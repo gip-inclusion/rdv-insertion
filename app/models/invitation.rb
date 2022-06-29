@@ -47,6 +47,18 @@ class Invitation < ApplicationRecord
     self.valid_until = validity_duration.present? ? validity_duration.from_now : nil
   end
 
+  def number_of_days_before_expiration
+    if valid_until.blank? || expired?
+      0
+    else
+      (valid_until.to_date - Time.zone.now.to_date).to_i
+    end
+  end
+
+  def expired?
+    valid_until.present? && valid_until < Time.zone.now
+  end
+
   private
 
   def organisations_cannot_be_from_different_departments
