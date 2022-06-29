@@ -1,5 +1,3 @@
-# rubocop:disable Metrics/ModuleLength
-
 module ApplicantsHelper
   def format_date(date)
     date&.strftime("%d/%m/%Y")
@@ -123,5 +121,3 @@ module ApplicantsHelper
     organisation_applicant_path(organisation, applicant)
   end
 end
-
-# rubocop:enable Metrics/ModuleLength
