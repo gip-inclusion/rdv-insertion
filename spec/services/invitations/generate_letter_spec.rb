@@ -23,11 +23,12 @@ describe Invitations::GenerateLetter, type: :service do
   describe "#call" do
     it("is a success") { is_a_success }
 
-    it "generates the pdf string" do
+    it "generates the pdf string with default configuration" do
       subject
       expect(invitation.content).not_to eq(nil)
       expect(invitation.content).to match(/Pour choisir un créneau à votre convenance, saisissez le code d’invitation/)
       expect(invitation.content).to match(/#{department.name}/)
+      expect(invitation.content).not_to match(/col-1/)
     end
 
     context "when the signature is configured" do
@@ -36,6 +37,15 @@ describe Invitations::GenerateLetter, type: :service do
       it "generates the pdf string with the right signature" do
         subject
         expect(invitation.content).to match(/Fabienne Bouchet/)
+      end
+    end
+
+    context "when the europe logos are configured to be displayed" do
+      let!(:invitation_parameters) { create(:invitation_parameters, display_europe_logos: true) }
+
+      it "generates the pdf string with the europe logos" do
+        subject
+        expect(invitation.content).to match(/col-1/)
       end
     end
 
