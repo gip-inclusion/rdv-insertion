@@ -40,6 +40,8 @@ export default class Applicant {
     this.phoneNumber = formatPhoneNumber(formattedAttributes.phoneNumber);
     this.role = this.formatRole(formattedAttributes.role);
     this.shortRole = this.role ? (this.role === "demandeur" ? "DEM" : "CJT") : null;
+    this.linkedOrganisationSearchTerms = formattedAttributes.linkedOrganisationSearchTerms;
+
     this.department = department;
     this.departmentNumber = department.number;
     // when creating/inviting we always consider an applicant in the scope of only one organisation
