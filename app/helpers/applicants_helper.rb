@@ -30,14 +30,6 @@ module ApplicantsHelper
       format_date(rdv_context.last_invitation_sent_at) != format_date(rdv_context.first_invitation_sent_at)
   end
 
-  def compute_first_invitation_sent_at(rdv_context)
-    if rdv_context.last_seen_rdv.present? && rdv_context.rdv_seen?
-      format_date(rdv_context.first_sent_invitation_after_last_seen_rdv)
-    else
-      format_date(rdv_context.first_invitation_sent_at)
-    end
-  end
-
   def display_attribute(attribute)
     attribute.presence || " - "
   end
@@ -47,7 +39,10 @@ module ApplicantsHelper
   end
 
   def display_back_to_list_button?
-    [params[:search_query], params[:status], params[:action_required]].any?(&:present?)
+    [
+      params[:search_query], params[:status], params[:action_required], params[:first_invitation_date_before],
+      params[:last_invitation_date_before], params[:first_invitation_date_after], params[:last_invitation_date_after]
+    ].any?(&:present?)
   end
 
   def options_for_select_status(statuses_count)

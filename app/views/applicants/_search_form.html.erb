@@ -1,5 +1,5 @@
 <%= form_with method: :get, local: true, url: compute_index_path(@organisation, @department), class: "search-form" do |form| %>
-  <%= render 'common/search_and_filter_applicants_hidden_fields', form: form %>
+  <%= render 'common/search_and_filter_applicants_hidden_fields', form: form, form_name: "search_form" %>
   <div class="d-flex">
   <%= form.text_field :search_query, placeholder: "Prénom, nom, email, n° allocataire...", class: "form-control mb-0" %>
   <%= form.submit "Rechercher", name: nil, class: "btn btn-blue-out" %>

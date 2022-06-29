@@ -1,7 +1,7 @@
 <%= form.hidden_field :motif_category, value: params[:motif_category] if params[:motif_category].present? %>
 <%= form.hidden_field :status, value: params[:status] if params[:status].present? %>
-<%= form.hidden_field :search_query, value: params[:search_query] if params[:search_query].present? %>
-<%= form.hidden_field :first_invitation_date_before, value: params[:first_invitation_date_before] if params[:first_invitation_date_before].present? %>
-<%= form.hidden_field :first_invitation_date_after, value: params[:first_invitation_date_after] if params[:first_invitation_date_after].present? %>
-<%= form.hidden_field :last_invitation_date_before, value: params[:last_invitation_date_before] if params[:last_invitation_date_before].present? %>
-<%= form.hidden_field :last_invitation_date_after, value: params[:last_invitation_date_after] if params[:last_invitation_date_after].present? %>
+<%= form.hidden_field :search_query, value: params[:search_query] if params[:search_query].present? && form_name != "search_form" %>
+<%= form.hidden_field :first_invitation_date_before, value: params[:first_invitation_date_before] if params[:first_invitation_date_before].present? && form_name != "invitation_dates_filter" %>
+<%= form.hidden_field :first_invitation_date_after, value: params[:first_invitation_date_after] if params[:first_invitation_date_after].present? && form_name != "invitation_dates_filter" %>
+<%= form.hidden_field :last_invitation_date_before, value: params[:last_invitation_date_before] if params[:last_invitation_date_before].present? && form_name != "invitation_dates_filter" %>
+<%= form.hidden_field :last_invitation_date_after, value: params[:last_invitation_date_after] if params[:last_invitation_date_after].present? && form_name != "invitation_dates_filter" %>

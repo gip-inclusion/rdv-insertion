@@ -1,6 +1,6 @@
 <%= render "common/remote_modal", title: "Filtrer par date d'invitation" do %>
   <%= form_with method: :get, local: true, url: compute_index_path(@organisation, @department, **params.to_unsafe_h), class: "search-form", data: { "turbo-frame" => "_top" } do |form| %>
-    <%= render 'common/search_and_filter_applicants_hidden_fields', form: form %>
+    <%= render 'common/search_and_filter_applicants_hidden_fields', form: form, form_name: "invitation_dates_filter" %>
     <p class="mb-2">Première invitation</p>
     <div class="d-flex mb-3">
       <%= form.text_field :first_invitation_date_before,

@@ -3,10 +3,7 @@ module FilterableApplicantsConcern
     filter_applicants_by_search_query
     filter_applicants_by_action_required
     filter_applicants_by_status
-    filter_applicants_by_first_invitation_before
-    filter_applicants_by_first_invitation_after
-    filter_applicants_by_last_invitation_before
-    filter_applicants_by_last_invitation_after
+    filter_applicant_by_invitations_dates
     filter_applicants_by_page
   end
 
@@ -31,52 +28,44 @@ module FilterableApplicantsConcern
     @applicants = @applicants.search_by_text(params[:search_query]).with_pg_search_rank
   end
 
-  def filter_applicants_by_first_invitation_before
-    return if params[:first_invitation_date_before].blank?
+  def filter_applicant_by_invitations_dates
+    invitations_dates_params_names = %w[
+      first_invitation_date_before last_invitation_date_before first_invitation_date_after last_invitation_date_after
+    ]
 
-    applicants_first_invitations = @applicants.includes(:invitations, :rdvs)
-                                              .collect(&:relevant_first_invitation)
-                                              .compact
-    relevant_first_invitations = applicants_first_invitations.to_a.select do |invitation|
-      invitation.sent_at > params[:first_invitation_date_before]
+    invitations_dates_params_names.each do |param_name|
+      next if params[param_name].blank?
+
+      invitation_type = param_name.split("_").first
+      comparison_type = param_name.split("_").last
+      filter_applicants_by_invitation_date(invitation_type, comparison_type, params[param_name])
     end
-    @applicants = @applicants.where(id: relevant_first_invitations.pluck(:applicant_id))
   end
 
-  def filter_applicants_by_first_invitation_after
-    return if params[:first_invitation_date_after].blank?
+  def filter_applicants_by_invitation_date(invitation_type, comparison_type, param)
+    concerned_invitations = invitation_type == "first" ? :relevant_first_invitation : :last_sent_invitation
 
-    applicants_first_invitations = @applicants.includes(:invitations, :rdvs)
-                                              .collect(&:relevant_first_invitation)
-                                              .compact
-    relevant_first_invitations = applicants_first_invitations.to_a.select do |invitation|
-      invitation.sent_at < params[:first_invitation_date_after]
-    end
-    @applicants = @applicants.where(id: relevant_first_invitations.pluck(:applicant_id))
+    applicants_concerned_invitations = @applicants.includes(:invitations, :rdvs)
+                                                  .map(&concerned_invitations)
+                                                  .compact
+    relevant_invitations = if comparison_type == "before"
+                             compare_invitations_dates_before(applicants_concerned_invitations, param)
+                           else
+                             compare_invitations_dates_after(applicants_concerned_invitations, param)
+                           end
+    @applicants = @applicants.where(id: relevant_invitations.pluck(:applicant_id))
   end
 
-  def filter_applicants_by_last_invitation_before
-    return if params[:last_invitation_date_before].blank?
-
-    applicants_last_invitations = @applicants.includes(:invitations, :rdvs)
-                                             .collect(&:last_sent_invitation)
-                                             .compact
-    relevant_last_invitations = applicants_last_invitations.to_a.select do |invitation|
-      invitation.sent_at > params[:last_invitation_date_before]
+  def compare_invitations_dates_before(invitations, param_date)
+    invitations.select do |invitation|
+      invitation.sent_at > param_date && invitation.rdv_context_id.in?(@rdv_contexts.map(&:id))
     end
-    @applicants = @applicants.where(id: relevant_last_invitations.pluck(:applicant_id))
   end
 
-  def filter_applicants_by_last_invitation_after
-    return if params[:last_invitation_date_after].blank?
-
-    applicants_last_invitations = @applicants.includes(:invitations, :rdvs)
-                                             .collect(&:last_sent_invitation)
-                                             .compact
-    relevant_last_invitations = applicants_last_invitations.to_a.select do |invitation|
-      invitation.sent_at < params[:last_invitation_date_after]
+  def compare_invitations_dates_after(invitations, param_date)
+    invitations.select do |invitation|
+      invitation.sent_at < param_date && invitation.rdv_context_id.in?(@rdv_contexts.map(&:id))
     end
-    @applicants = @applicants.where(id: relevant_last_invitations.pluck(:applicant_id))
   end
 
   def filter_applicants_by_page
