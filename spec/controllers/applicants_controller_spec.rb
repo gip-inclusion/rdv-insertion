@@ -495,12 +495,12 @@ describe ApplicantsController, type: :controller do
 
     context "when csv request" do
       before do
-        allow(CreateApplicantsCsvExport).to receive(:call)
+        allow(GenerateApplicantsCsv).to receive(:call)
           .and_return(OpenStruct.new)
       end
 
       it "calls the service" do
-        expect(CreateApplicantsCsvExport).to receive(:call)
+        expect(GenerateApplicantsCsv).to receive(:call)
         get :index, params: index_params.merge(format: :csv)
       end
 
@@ -522,7 +522,7 @@ describe ApplicantsController, type: :controller do
 
       context "when the csv creation succeeds" do
         before do
-          allow(CreateApplicantsCsvExport).to receive(:call)
+          allow(GenerateApplicantsCsv).to receive(:call)
             .and_return(OpenStruct.new(success?: true))
         end
 

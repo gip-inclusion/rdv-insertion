@@ -1,4 +1,4 @@
-describe Invitations::SaveWithLink, type: :service do
+describe Invitations::AssignLinkAndToken, type: :service do
   subject do
     described_class.call(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
   end
@@ -56,9 +56,8 @@ describe Invitations::SaveWithLink, type: :service do
       expect(invitation.valid_until).to eq(Time.zone.parse("2022-04-15 13:45"))
     end
 
-    it "saves the invitationn with token and the link" do
+    it "assigns the invitationn with token and the link" do
       subject
-      expect(invitation.id).not_to be_nil
       expect(invitation.link).to eq(invitation_link)
       expect(invitation.token).to eq(token)
     end
@@ -150,12 +149,12 @@ describe Invitations::SaveWithLink, type: :service do
 
       it "sets the validity limit from the previous invitation" do
         subject
-        expect(invitation.reload.valid_until).to eq(Time.zone.parse("2022-04-12 15:00"))
+        expect(invitation.valid_until).to eq(Time.zone.parse("2022-04-12 15:00"))
       end
 
       it "assign the existing token to the invitation" do
         subject
-        expect(invitation.reload.token).to eq("existing-token")
+        expect(invitation.token).to eq("existing-token")
       end
 
       context "when the token is not associated to the user" do
@@ -172,12 +171,12 @@ describe Invitations::SaveWithLink, type: :service do
 
         it "assign the new token to the invitation" do
           subject
-          expect(invitation.reload.token).to eq(token)
+          expect(invitation.token).to eq(token)
         end
 
         it "sets the validity limit from the validity_duration" do
           subject
-          expect(invitation.reload.valid_until).to eq(Time.zone.parse("2022-04-15 13:45"))
+          expect(invitation.valid_until).to eq(Time.zone.parse("2022-04-15 13:45"))
         end
       end
 
@@ -196,12 +195,12 @@ describe Invitations::SaveWithLink, type: :service do
 
         it "assign the new token to the invitation" do
           subject
-          expect(invitation.reload.token).to eq(token)
+          expect(invitation.token).to eq(token)
         end
 
         it "sets the validity limit from the validity_duration" do
           subject
-          expect(invitation.reload.valid_until).to eq(Time.zone.parse("2022-04-15 13:45"))
+          expect(invitation.valid_until).to eq(Time.zone.parse("2022-04-15 13:45"))
         end
       end
     end
