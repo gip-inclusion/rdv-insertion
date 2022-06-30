@@ -1,18 +1,14 @@
 module Invitations
-  class SaveWithLink < BaseService
+  class AssignLinkAndToken < BaseService
     def initialize(invitation:, rdv_solidarites_session:)
       @invitation = invitation
       @rdv_solidarites_session = rdv_solidarites_session
     end
 
     def call
-      # we prevent generating two tokens at the same time for one applicant
-      Invitation.with_advisory_lock "invite_applicant_#{applicant.id}" do
-        @invitation.valid_until = valid_until
-        @invitation.token = invitation_token
-        @invitation.link = invitation_link
-        save_record!(@invitation)
-      end
+      @invitation.valid_until = valid_until
+      @invitation.token = invitation_token
+      @invitation.link = invitation_link
     end
 
     private

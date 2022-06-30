@@ -1,14 +1,17 @@
 module Invitations
   class SaveAndSend < BaseService
-    def initialize(invitation:, rdv_solidarites_session:)
+    def initialize(invitation:, rdv_solidarites_session: nil)
       @invitation = invitation
       @rdv_solidarites_session = rdv_solidarites_session
     end
 
     def call
-      save_invitation_with_link
-      send_invitation
-      update_invitation_sent_at
+      Invitation.with_advisory_lock "invite_applicant_#{applicant.id}" do
+        assign_link_and_token
+        save_record!(@invitation)
+        send_invitation
+        update_invitation_sent_at
+      end
       result.invitation = @invitation
     end
 
@@ -27,12 +30,18 @@ module Invitations
       fail!
     end
 
-    def save_invitation_with_link
+    def assign_link_and_token
+      return if @invitation.link? && @invitation.token?
+
       call_service!(
-        Invitations::SaveWithLink,
+        Invitations::AssignLinkAndToken,
         invitation: @invitation,
         rdv_solidarites_session: @rdv_solidarites_session
       )
+    end
+
+    def applicant
+      @invitation.applicant
     end
   end
 end

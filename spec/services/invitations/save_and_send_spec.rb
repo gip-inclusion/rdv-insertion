@@ -11,11 +11,13 @@ describe Invitations::SaveAndSend, type: :service do
 
   describe "#call" do
     before do
-      allow(Invitations::SaveWithLink).to receive(:call)
+      allow(Invitations::AssignLinkAndToken).to receive(:call)
         .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
         .and_return(OpenStruct.new(success?: true))
       allow(invitation).to receive(:send_to_applicant)
         .and_return(OpenStruct.new(success?: true))
+      allow(invitation).to receive(:token?).and_return(false)
+      allow(invitation).to receive(:link?).and_return(false)
     end
 
     it "is a success" do
@@ -27,7 +29,7 @@ describe Invitations::SaveAndSend, type: :service do
     end
 
     it "saves an invitation" do
-      expect(Invitations::SaveWithLink).to receive(:call)
+      expect(Invitations::AssignLinkAndToken).to receive(:call)
         .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
       subject
     end
@@ -44,9 +46,9 @@ describe Invitations::SaveAndSend, type: :service do
 
     context "when it fails to save" do
       before do
-        allow(Invitations::SaveWithLink).to receive(:call)
+        allow(Invitations::AssignLinkAndToken).to receive(:call)
           .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
-          .and_return(OpenStruct.new(success?: false, errors: ["cannot save invitation"]))
+          .and_return(OpenStruct.new(success?: false, errors: ["cannot assign token"]))
       end
 
       it "is a failure" do
@@ -54,7 +56,7 @@ describe Invitations::SaveAndSend, type: :service do
       end
 
       it "stores the error" do
-        expect(subject.errors).to eq(["cannot save invitation"])
+        expect(subject.errors).to eq(["cannot assign token"])
       end
     end
 
@@ -75,6 +77,20 @@ describe Invitations::SaveAndSend, type: :service do
       it "does not mark the invitation as sent" do
         subject
         expect(invitation.sent_at).to be_nil
+      end
+    end
+
+    context "when there is a token and a link assigned already" do
+      before do
+        allow(invitation).to receive(:token?).and_return(true)
+        allow(invitation).to receive(:link?).and_return(true)
+      end
+
+      it("is a success") { is_a_success }
+
+      it "does not call the assign link and token service" do
+        expect(Invitations::AssignLinkAndToken).not_to receive(:call)
+        subject
       end
     end
 

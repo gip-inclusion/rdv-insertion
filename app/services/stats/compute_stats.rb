@@ -239,7 +239,7 @@ module Stats
 
     def applicants_oriented_in_less_than_30_days(selected_applicants)
       selected_applicants.to_a.select do |applicant|
-        applicant.seen_date.present? && applicant.rdv_seen_delay_in_days < 30
+        applicant.rdv_seen_delay_in_days.present? && applicant.rdv_seen_delay_in_days < 30
       end
     end
 

@@ -19,7 +19,11 @@ describe Invitations::SendEmail, type: :service do
 
       before do
         mail_mock = instance_double("deliver_now: true")
+        allow(InvitationMailer).to receive(:with)
+          .and_return(InvitationMailer)
         allow(InvitationMailer).to receive(:invitation_for_rsa_orientation)
+          .and_return(mail_mock)
+        allow(InvitationMailer).to receive(:invitation_for_rsa_orientation_reminder)
           .and_return(mail_mock)
         allow(mail_mock).to receive(:deliver_now)
       end
@@ -27,8 +31,8 @@ describe Invitations::SendEmail, type: :service do
       it("is a success") { is_a_success }
 
       it "calls the invitation mail" do
+        expect(InvitationMailer).to receive(:with).with(applicant: applicant, invitation: invitation)
         expect(InvitationMailer).to receive(:invitation_for_rsa_orientation)
-          .with(invitation, applicant)
         subject
       end
 
@@ -61,6 +65,16 @@ describe Invitations::SendEmail, type: :service do
           expect(subject.errors).to eq(["L'email renseigné ne semble pas être une adresse valable"])
         end
       end
+
+      context "when it is a reminder" do
+        before { invitation.update!(reminder: true) }
+
+        it "calls the reminder mail" do
+          expect(InvitationMailer).to receive(:with).with(applicant: applicant, invitation: invitation)
+          expect(InvitationMailer).to receive(:invitation_for_rsa_orientation_reminder)
+          subject
+        end
+      end
     end
   end
 
@@ -75,7 +89,11 @@ describe Invitations::SendEmail, type: :service do
 
     before do
       mail_mock = instance_double("deliver_now: true")
+      allow(InvitationMailer).to receive(:with)
+        .and_return(InvitationMailer)
       allow(InvitationMailer).to receive(:invitation_for_rsa_accompagnement)
+        .and_return(mail_mock)
+      allow(InvitationMailer).to receive(:invitation_for_rsa_accompagnement_reminder)
         .and_return(mail_mock)
       allow(mail_mock).to receive(:deliver_now)
     end
@@ -83,9 +101,19 @@ describe Invitations::SendEmail, type: :service do
     it("is a success") { is_a_success }
 
     it "calls the invitation mail" do
+      expect(InvitationMailer).to receive(:with).with(applicant: applicant, invitation: invitation)
       expect(InvitationMailer).to receive(:invitation_for_rsa_accompagnement)
-        .with(invitation, applicant)
       subject
+    end
+
+    context "when it is a reminder" do
+      before { invitation.update!(reminder: true) }
+
+      it "calls the reminder mail" do
+        expect(InvitationMailer).to receive(:with).with(applicant: applicant, invitation: invitation)
+        expect(InvitationMailer).to receive(:invitation_for_rsa_accompagnement_reminder)
+        subject
+      end
     end
   end
 
@@ -100,7 +128,11 @@ describe Invitations::SendEmail, type: :service do
 
     before do
       mail_mock = instance_double("deliver_now: true")
+      allow(InvitationMailer).to receive(:with)
+        .and_return(InvitationMailer)
       allow(InvitationMailer).to receive(:invitation_for_rsa_orientation_on_phone_platform)
+        .and_return(mail_mock)
+      allow(InvitationMailer).to receive(:invitation_for_rsa_orientation_on_phone_platform_reminder)
         .and_return(mail_mock)
       allow(mail_mock).to receive(:deliver_now)
     end
@@ -108,9 +140,19 @@ describe Invitations::SendEmail, type: :service do
     it("is a success") { is_a_success }
 
     it "calls the invitation mail" do
+      expect(InvitationMailer).to receive(:with).with(applicant: applicant, invitation: invitation)
       expect(InvitationMailer).to receive(:invitation_for_rsa_orientation_on_phone_platform)
-        .with(invitation, applicant)
       subject
+    end
+
+    context "when it is a reminder" do
+      before { invitation.update!(reminder: true) }
+
+      it "calls the reminder mail" do
+        expect(InvitationMailer).to receive(:with).with(applicant: applicant, invitation: invitation)
+        expect(InvitationMailer).to receive(:invitation_for_rsa_orientation_on_phone_platform_reminder)
+        subject
+      end
     end
   end
 end

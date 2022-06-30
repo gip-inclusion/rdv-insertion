@@ -103,8 +103,10 @@ export default function Applicant({
     if (!applicant.currentOrganisation) {
       applicant.currentOrganisation = await retrieveRelevantOrganisation(
         applicant.departmentNumber,
+        applicant.linkedOrganisationSearchTerms,
         applicant.fullAddress
       );
+
       // If there is still no organisation it means the assignation was cancelled by agent
       if (!applicant.currentOrganisation) {
         setIsLoading({ ...isLoading, accountCreation: false });

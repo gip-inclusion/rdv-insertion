@@ -108,12 +108,6 @@ invitation_parameters = InvitationParameters.create!(
     "SERVICE ORIENTATION ET ACCOMPAGNEMENT VERS L’EMPLOI"]
 )
 
-responsible_drome = Responsible.create!(
-  first_name: "Fabienne",
-  last_name: "Bouchet",
-  role: "Responsable Plate-forme mutualisée d'orientation"
-)
-
 # --------------------------------------------------------------------------------------------------------------------
 puts "Creating organisations..."
 drome1_organisation = Organisation.create!(
@@ -123,8 +117,7 @@ drome1_organisation = Organisation.create!(
   # rdv_solidarites_organisation_id: vérifier l'id de l'organisation correspondante sur RDV-Solidarites
   department_id: drome.id,
   configuration_ids: [drome_orientation_config.id, drome_accompagnement_config.id],
-  invitation_parameters_id: invitation_parameters.id,
-  responsible_id: responsible_drome.id
+  invitation_parameters_id: invitation_parameters.id
 )
 
 drome2_organisation = Organisation.create!(
@@ -134,8 +127,7 @@ drome2_organisation = Organisation.create!(
   # rdv_solidarites_organisation_id: vérifier l'id de l'organisation correspondante sur RDV-Solidarites
   department_id: drome.id,
   configuration_ids: [drome_orientation_config.id, drome_accompagnement_config.id],
-  invitation_parameters_id: invitation_parameters.id,
-  responsible_id: responsible_drome.id
+  invitation_parameters_id: invitation_parameters.id
 )
 
 yonne_organisation = Organisation.create!(
@@ -145,8 +137,7 @@ yonne_organisation = Organisation.create!(
   # rdv_solidarites_organisation_id: vérifier l'id de l'organisation correspondante sur RDV-Solidarites
   department_id: yonne.id,
   configuration_ids: [yonne_orientation_config.id],
-  invitation_parameters_id: invitation_parameters.id,
-  responsible_id: responsible_drome.id
+  invitation_parameters_id: invitation_parameters.id
 )
 
 puts "Done!"
