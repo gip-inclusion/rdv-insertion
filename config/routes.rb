@@ -23,6 +23,7 @@ Rails.application.routes.draw do
 
   resources :organisations, only: [:index] do
     get :geolocated, on: :collection
+    get :search, on: :collection
     resources :applicants, only: [:index, :create, :show, :update, :edit, :new] do
       collection do
         resources :uploads, only: [:new]

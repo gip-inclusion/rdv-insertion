@@ -23,7 +23,33 @@ u {
   width: 40%;
 }
 
-.department-logo {
+.letter-first-col {
+  display: inline-block;
+  width: 15%;
+  margin-right: 0px;
+  padding-right: 0px;
+}
+
+.letter-second-col {
+  display: inline-block;
+  width: 15%;
+  margin-left: 0px;
+  padding-left: 0px;
+  margin-right: 80px;
+}
+
+.letter-third-col {
+  display: inline-block;
+  width: 20%;
+  margin-right: 80px;
+}
+
+.letter-fourth-col {
+  display: inline-block;
+  width: 30%;
+}
+
+.letter-logo {
   &.header-logo {
     position: absolute;
     top: 0;
