@@ -28,7 +28,7 @@ describe Invitations::GenerateLetter, type: :service do
       expect(invitation.content).not_to eq(nil)
       expect(invitation.content).to match(/Pour choisir un créneau à votre convenance, saisissez le code d’invitation/)
       expect(invitation.content).to match(/#{department.name}/)
-      expect(invitation.content).not_to match(/col-1/)
+      expect(invitation.content).not_to match(/letter-first-col/)
     end
 
     context "when the signature is configured" do
@@ -45,7 +45,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf string with the europe logos" do
         subject
-        expect(invitation.content).to match(/col-1/)
+        expect(invitation.content).to match(/letter-first-col/)
       end
     end
 
