@@ -162,12 +162,35 @@ describe InvitationsController, type: :controller do
           post :create, params: create_params
         end
 
-        it "renders the success message" do
+        it "renders a disabled and checked input checkbox" do
           post :create, params: create_params
 
           expect(response).to be_successful
-          expect(response.body).to match(/flashes/)
-          expect(response.body).to match(/ Madame Jane DOE a bien été invité.e par email/)
+          expect(response.body).to match(/disabled="disabled"/)
+          expect(response.body).to match(/checked="checked"/)
+        end
+
+        context "when the service fails" do
+          before do
+            allow(Invitations::SaveAndSend).to receive(:call)
+              .and_return(OpenStruct.new(success?: false, errors: ["Cannot invite"]))
+          end
+
+          it "does not render a disabled and checked input checkbox" do
+            post :create, params: create_params
+
+            expect(response).to be_successful
+            expect(response.body).not_to match(/disabled="false"/)
+            expect(response.body).not_to match(/checked="false"/)
+          end
+
+          it "renders an error modal" do
+            post :create, params: create_params
+
+            expect(response).to be_successful
+            expect(response.body).to match(/❌ L&#39;invitation par email n&#39;a pas pu aboutir/)
+            expect(response.body).to match(/Cannot invite/)
+          end
         end
       end
     end
@@ -244,13 +267,13 @@ describe InvitationsController, type: :controller do
 
       it "is not a success" do
         post :create, params: create_params
-        expect(response).to be_successful
+        expect(response).not_to be_successful
         expect(JSON.parse(response.body)["success"]).to eq(false)
       end
 
       it "renders the errors" do
         post :create, params: create_params
-        expect(response).to be_successful
+        expect(response).not_to be_successful
         expect(JSON.parse(response.body)["errors"]).to eq(['some error'])
       end
     end
