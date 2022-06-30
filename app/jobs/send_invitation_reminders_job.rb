@@ -1,5 +1,7 @@
 class SendInvitationRemindersJob < ApplicationJob
-  def perform
+  def perform # rubocop:disable Metrics/AbcSize
+    return if staging_env?
+
     @sent_reminders_applicant_ids = []
 
     applicants_to_send_reminders_to.find_each do |applicant|
@@ -22,6 +24,10 @@ class SendInvitationRemindersJob < ApplicationJob
                .archived(false)
                .where(id: valid_invitations_sent_3_days_ago.pluck(:applicant_id))
                .distinct
+  end
+
+  def staging_env?
+    ENV["SENTRY_ENVIRONMENT"] == "staging"
   end
 
   def valid_invitations_sent_3_days_ago

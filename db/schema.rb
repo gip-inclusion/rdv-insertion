@@ -155,13 +155,12 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_29_121431) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "department_id"
-    t.bigint "responsible_id"
     t.bigint "invitation_parameters_id"
     t.datetime "last_webhook_update_received_at"
+    t.string "slug"
     t.index ["department_id"], name: "index_organisations_on_department_id"
     t.index ["invitation_parameters_id"], name: "index_organisations_on_invitation_parameters_id"
     t.index ["rdv_solidarites_organisation_id"], name: "index_organisations_on_rdv_solidarites_organisation_id", unique: true
-    t.index ["responsible_id"], name: "index_organisations_on_responsible_id"
   end
 
   create_table "organisations_webhook_endpoints", id: false, force: :cascade do |t|
@@ -207,14 +206,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_29_121431) do
     t.index ["organisation_id"], name: "index_rdvs_on_organisation_id"
     t.index ["rdv_solidarites_rdv_id"], name: "index_rdvs_on_rdv_solidarites_rdv_id", unique: true
     t.index ["status"], name: "index_rdvs_on_status"
-  end
-
-  create_table "responsibles", force: :cascade do |t|
-    t.string "first_name"
-    t.string "last_name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "role"
   end
 
   create_table "stats", force: :cascade do |t|
@@ -264,7 +255,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_29_121431) do
   add_foreign_key "notifications", "applicants"
   add_foreign_key "organisations", "departments"
   add_foreign_key "organisations", "invitation_parameters", column: "invitation_parameters_id"
-  add_foreign_key "organisations", "responsibles"
   add_foreign_key "rdv_contexts", "applicants"
   add_foreign_key "rdvs", "organisations"
   add_foreign_key "webhook_receipts", "webhook_endpoints"
