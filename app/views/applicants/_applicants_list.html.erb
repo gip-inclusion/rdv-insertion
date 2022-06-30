@@ -41,7 +41,7 @@
               <td class="d-none d-lg-table-cell">
                 <% if applicant.phone_number.present? %>
                   <% if @current_motif_category %>
-                    <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: "sms", invited: applicant.last_sent_sms_invitation.present? %>
+                    <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: "sms", invited: applicant.last_sent_sms_invitation.present?, motif_category: @current_motif_category %>
                   <% else %>
                     <%= applicant.phone_number_formatted %>
                   <% end %>
@@ -52,7 +52,7 @@
               <td class="d-none d-lg-table-cell">
                 <% if applicant.email.present? %>
                   <% if @current_motif_category %>
-                    <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: "email", invited: applicant.last_sent_email_invitation.present? %>
+                    <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: "email", invited: applicant.last_sent_email_invitation.present?, motif_category: @current_motif_category %>
                   <% else %>
                     <%= applicant.email %>
                   <% end %>
@@ -63,7 +63,7 @@
               <td class="d-none d-lg-table-cell">
                 <% if applicant.address.present? %>
                   <% if @current_motif_category %>
-                    <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: "postal", invited: applicant.last_sent_postal_invitation.present? %>
+                    <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: "postal", invited: applicant.last_sent_postal_invitation.present?, motif_category: @current_motif_category %>
                   <% else %>
                     <%= applicant.address %>
                   <% end %>

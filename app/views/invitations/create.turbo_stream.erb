@@ -1,5 +1,5 @@
 <%= turbo_stream.replace "applicant-#{@applicant.id}-#{@invitation_format}-invitation" do %>
-  <%= render partial: "invitations/checkbox_form", locals: { applicant: @applicant, invitation_format: @invitation_format, invited: @success } %>
+  <%= render partial: "invitations/checkbox_form", locals: { applicant: @applicant, invitation_format: @invitation_format,  motif_category: @motif_category, invited: @success } %>
 <% end %>
 <% unless @success %>
   <%= turbo_stream.replace "remote_modal" do %>

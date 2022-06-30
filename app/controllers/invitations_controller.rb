@@ -1,6 +1,7 @@
 class InvitationsController < ApplicationController
-  before_action :set_organisations, :set_organisation, :set_department, :set_applicant, :set_rdv_context,
-                :set_current_configuration, :set_invitation_format, :set_new_invitation,
+  before_action :set_organisations, :set_organisation, :set_department, :set_applicant,
+                :set_motif_category, :set_rdv_context, :set_current_configuration,
+                :set_invitation_format, :set_new_invitation,
                 :set_invitation_validity_duration, :set_save_and_send_invitation_results,
                 only: [:create]
   before_action :set_invitation, only: [:redirect]
@@ -97,17 +98,17 @@ class InvitationsController < ApplicationController
   def set_rdv_context
     RdvContext.with_advisory_lock "setting_rdv_context_for_applicant_#{@applicant.id}" do
       @rdv_context = RdvContext.find_or_create_by!(
-        motif_category: motif_category, applicant: @applicant
+        motif_category: @motif_category, applicant: @applicant
       )
     end
   end
 
   def set_current_configuration
-    @current_configuration = @organisations.flat_map(&:configurations).find { |c| c.motif_category == motif_category }
+    @current_configuration = @organisations.flat_map(&:configurations).find { |c| c.motif_category == @motif_category }
   end
 
-  def motif_category
-    invitation_params[:motif_category]
+  def set_motif_category
+    @motif_category = invitation_params[:motif_category]
   end
 
   # the validity of an invitation is equal to the number of days before an action is required, unless it's postal
