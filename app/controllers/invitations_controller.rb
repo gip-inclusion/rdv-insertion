@@ -1,12 +1,13 @@
 class InvitationsController < ApplicationController
   before_action :set_organisations, :set_organisation, :set_department, :set_applicant, :set_rdv_context,
                 :set_current_configuration, :set_invitation_format, :set_new_invitation,
-                :set_invitation_validity_duration, only: [:create]
+                :set_invitation_validity_duration, :set_save_and_send_invitation_results,
+                only: [:create]
   before_action :set_invitation, only: [:redirect]
   skip_before_action :authenticate_agent!, only: [:invitation_code, :redirect]
 
-  def create # rubocop:disable Metrics/AbcSize
-    if save_and_send_invitation.success?
+  def create
+    if @success
       respond_to do |format|
         format.json { render json: { success: true, invitation: @invitation } }
         format.pdf { send_data pdf, filename: pdf_filename, layout: "application/pdf" }
@@ -14,11 +15,13 @@ class InvitationsController < ApplicationController
       end
     else
       respond_to do |format|
-        format.json { render json: { success: false, errors: save_and_send_invitation.errors } }
-        format.turbo_stream do
-          flash[:error] = save_and_send_invitation.errors.join(", ")
-          redirect_to request.referer
+        format.json do
+          render json: { success: false, errors: @errors }, status: :unprocessable_entity
         end
+        format.pdf do
+          render json: { success: false, errors: @errors }, status: :unprocessable_entity
+        end
+        format.turbo_stream
       end
     end
   end
@@ -70,6 +73,10 @@ class InvitationsController < ApplicationController
       invitation: @invitation,
       rdv_solidarites_session: rdv_solidarites_session
     )
+  end
+
+  def set_save_and_send_invitation_results
+    @success, @errors = [save_and_send_invitation.success?, save_and_send_invitation.errors]
   end
 
   def set_organisations

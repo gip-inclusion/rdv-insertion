@@ -4,6 +4,8 @@ import getInvitationLetter from "../react/actions/getInvitationLetter";
 
 export default class extends Controller {
   submit() {
+    this.element.hidden = true;
+    this.element.parentElement.classList.add("spinner-border");
     navigator.submitForm(this.element.closest("form"));
   }
 
@@ -27,6 +29,9 @@ export default class extends Controller {
       );
 
       const checkbox = this.element.querySelector("input[type=checkbox]");
+
+      checkbox.hidden = false;
+      checkbox.parentElement.classList.remove("spinner-border");
       if (result.success) {
         checkbox.disabled = true;
       } else {
