@@ -31,7 +31,7 @@ Style/FetchEnvVar:
 Style/ClassAndModuleChildren:
   Enabled: false
 
-Style/ParallelAssignement:
+Style/ParallelAssignment:
   Enabled: false
 
 Rails/SkipsModelValidations:
