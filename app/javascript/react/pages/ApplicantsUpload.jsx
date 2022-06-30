@@ -25,7 +25,12 @@ import Applicant from "../models/Applicant";
 
 const reducer = reducerFactory("Expérimentation RSA");
 
-export default function ApplicantsUpload({ organisation, configuration, department, motifCategoryHuman }) {
+export default function ApplicantsUpload({
+  organisation,
+  configuration,
+  department,
+  motifCategoryHuman,
+}) {
   const columnNames = configuration.column_names;
   const parameterizedColumnNames = parameterizeObjectValues({
     ...columnNames.required,
@@ -108,6 +113,9 @@ export default function ApplicantsUpload({ organisation, configuration, departme
                   parameterizedColumnNames.rights_opening_date &&
                   row[parameterizedColumnNames.rights_opening_date] &&
                   excelDateToString(row[parameterizedColumnNames.rights_opening_date]),
+                linkedOrganisationSearchTerms:
+                  parameterizedColumnNames.organisation_search_terms &&
+                  row[parameterizedColumnNames.organisation_search_terms],
               },
               department,
               organisation,
