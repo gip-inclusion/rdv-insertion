@@ -38,6 +38,7 @@ describe Stats::ComputeStats, type: :service do
     create(:rdv, rdv_contexts: [rdv_context_orientation], organisation: relevant_organisation,
                  created_at: DateTime.new(2022, 4, 7, 10, 0),
                  starts_at: DateTime.new(2022, 4, 8, 10, 0),
+                 created_by: "user",
                  status: "seen")
   end
   let!(:orientation_rdv2) do
@@ -114,6 +115,8 @@ describe Stats::ComputeStats, type: :service do
       expect(subject.data).to include(:average_time_between_rdv_creation_and_start_in_days_by_month)
       expect(subject.data).to include(:rate_of_applicants_with_rdv_seen_in_less_than_30_days)
       expect(subject.data).to include(:rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month)
+      expect(subject.data).to include(:rate_of_rdvs_taken_in_autonomy_by_user)
+      expect(subject.data).to include(:rate_of_rdvs_taken_in_autonomy_by_user_grouped_by_month)
       expect(subject.data).to include(:agents_count)
     end
 
@@ -209,6 +212,20 @@ describe Stats::ComputeStats, type: :service do
       it "computes the percentage by month of applicants with rdv seen in less than 30 days" do
         expect(subject.data[:rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month]).to eq(
           { "03/2022" => 0, "04/2022" => 100 }
+        )
+      end
+    end
+
+    describe "#rate_of_rdvs_taken_in_autonomy_by_user" do
+      it "computes the percentage of rdvs taken in automony by users" do
+        expect(subject.data[:rate_of_rdvs_taken_in_autonomy_by_user]).to eq(25)
+      end
+    end
+
+    describe "#rate_of_rdvs_taken_in_autonomy_by_user_grouped_by_month" do
+      it "computes the percentage by month of rdvs taken in automony by users" do
+        expect(subject.data[:rate_of_rdvs_taken_in_autonomy_by_user_grouped_by_month]).to eq(
+          { "04/2022" => 100, "05/2022" => 0 }
         )
       end
     end
