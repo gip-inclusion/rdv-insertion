@@ -20,4 +20,12 @@ module HasRdvsConcern
   def last_seen_rdv_starts_at
     last_seen_rdv&.starts_at
   end
+
+  def last_rdv
+    rdvs.to_a.max_by(&:starts_at)
+  end
+
+  def last_rdv_starts_at
+    last_rdv&.starts_at
+  end
 end
