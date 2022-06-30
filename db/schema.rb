@@ -107,6 +107,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_29_134039) do
     t.string "sms_sender_name"
     t.string "signature_lines", array: true
     t.string "help_address"
+    t.boolean "display_europe_logos", default: false
   end
 
   create_table "invitations", force: :cascade do |t|
