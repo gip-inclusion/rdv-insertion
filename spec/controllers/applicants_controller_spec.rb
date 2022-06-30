@@ -384,8 +384,16 @@ describe ApplicantsController, type: :controller do
         organisations: [organisation], department: department, last_name: "Baer", rdv_contexts: [rdv_context2]
       )
     end
-
     let!(:rdv_context2) { build(:rdv_context, motif_category: "rsa_orientation", status: "invitation_pending") }
+
+    let!(:applicant3) do
+      create(
+        :applicant,
+        organisations: [organisation], department: department, last_name: "Darmon", rdv_contexts: [rdv_context3]
+      )
+    end
+    let!(:rdv_context3) { build(:rdv_context, motif_category: "rsa_orientation", status: "invitation_pending") }
+
     let!(:index_params) { { organisation_id: organisation.id, motif_category: "rsa_orientation" } }
 
     render_views
@@ -437,6 +445,59 @@ describe ApplicantsController, type: :controller do
         get :index, params: index_params
         expect(response.body).to match(/Baer/)
         expect(response.body).not_to match(/Chabat/)
+      end
+    end
+
+    context "when dates are passed" do
+      let!(:invitation1) do
+        create(:invitation, sent_at: DateTime.new(2022, 6, 1, 10, 0), rdv_context: rdv_context1, applicant: applicant)
+      end
+      let!(:invitation2) do
+        create(:invitation, sent_at: DateTime.new(2022, 6, 8, 10, 0), rdv_context: rdv_context2, applicant: applicant2)
+      end
+      let!(:invitation3) do
+        create(:invitation, sent_at: DateTime.new(2022, 6, 15, 10, 0), rdv_context: rdv_context3, applicant: applicant3)
+      end
+
+      context "for first invitations" do
+        let!(:index_params) do
+          { organisation_id: organisation.id, motif_category: "rsa_orientation",
+            first_invitation_date_after: "05-06-2022", first_invitation_date_before: "10-06-2022" }
+        end
+
+        it "filters by first invitations dates" do
+          get :index, params: index_params
+          expect(response.body).to match(/Baer/)
+          expect(response.body).not_to match(/Chabat/)
+          expect(response.body).not_to match(/Darmon/)
+        end
+      end
+
+      context "for last invitations" do
+        let!(:invitation4) do
+          create(:invitation, sent_at: DateTime.new(2022, 6, 16, 10, 0),
+                              rdv_context: rdv_context1, applicant: applicant)
+        end
+        let!(:invitation5) do
+          create(:invitation, sent_at: DateTime.new(2022, 6, 19, 10, 0),
+                              rdv_context: rdv_context2, applicant: applicant2)
+        end
+        let!(:invitation6) do
+          create(:invitation, sent_at: DateTime.new(2022, 6, 17, 10, 0),
+                              rdv_context: rdv_context3, applicant: applicant3)
+        end
+
+        let!(:index_params) do
+          { organisation_id: organisation.id, motif_category: "rsa_orientation",
+            last_invitation_date_after: "17-06-2022", last_invitation_date_before: "18-06-2022" }
+        end
+
+        it "filters by last invitations dates" do
+          get :index, params: index_params
+          expect(response.body).not_to match(/Baer/)
+          expect(response.body).not_to match(/Chabat/)
+          expect(response.body).to match(/Darmon/)
+        end
       end
     end
 
