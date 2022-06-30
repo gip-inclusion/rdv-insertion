@@ -79,7 +79,7 @@ class GenerateApplicantsCsv < BaseService
      applicant.department.number,
      applicant.department.name,
      applicant.organisations.to_a.count,
-     applicant.organisations.collect(&:name).join(", ")]
+     applicant.organisations.map(&:name).join(", ")]
   end
 
   def filename

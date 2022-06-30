@@ -54,6 +54,7 @@ Rails.application.routes.draw do
       resources :applicants_organisations, only: [:new, :create]
     end
   end
+  resources :filter_applicants, only: [:new]
 
   namespace :api do
     namespace :v1 do
