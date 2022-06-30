@@ -28,6 +28,7 @@ describe Invitations::GenerateLetter, type: :service do
       expect(invitation.content).not_to eq(nil)
       expect(invitation.content).to match(/Pour choisir un créneau à votre convenance, saisissez le code d’invitation/)
       expect(invitation.content).to match(/#{department.name}/)
+      # letter-first-col is only used when display_europe_logos is true (false by default)
       expect(invitation.content).not_to match(/letter-first-col/)
     end
 
@@ -45,6 +46,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf string with the europe logos" do
         subject
+        # letter-first-col is only used when display_europe_logos is true
         expect(invitation.content).to match(/letter-first-col/)
       end
     end
