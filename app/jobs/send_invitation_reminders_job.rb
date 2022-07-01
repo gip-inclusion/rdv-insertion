@@ -1,5 +1,5 @@
 class SendInvitationRemindersJob < ApplicationJob
-  def perform # rubocop:disable Metrics/AbcSize
+  def perform
     return if staging_env?
 
     @sent_reminders_applicant_ids = []

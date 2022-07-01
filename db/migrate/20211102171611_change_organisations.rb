@@ -10,7 +10,6 @@ class ChangeOrganisations < ActiveRecord::Migration[6.1]
     remove_column :organisations, :region
   end
 
-  # rubocop:disable Metrics/AbcSize
   def down
     add_column :organisations, :number, :string
     add_column :organisations, :capital, :string
@@ -24,5 +23,4 @@ class ChangeOrganisations < ActiveRecord::Migration[6.1]
       organisation.save!
     end
   end
-  # rubocop:enable Metrics/AbcSize
 end

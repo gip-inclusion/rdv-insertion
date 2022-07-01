@@ -63,6 +63,9 @@ Metrics/MethodLength:
   CountAsOne: ["array", "hash", "heredoc"]
   Max: 20
 
+Metrics/AbcSize:
+  Max: 20
+
 Rails/HasAndBelongsToMany:
   Enabled: false
 

@@ -12,7 +12,7 @@ module Stats
 
     private
 
-    def stat_attributes # rubocop:disable Metrics/AbcSize
+    def stat_attributes
       @stat_attributes ||= {
         department_number: @department_number,
         applicants_count: applicants_count,
