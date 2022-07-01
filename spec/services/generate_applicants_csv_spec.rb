@@ -50,11 +50,11 @@ describe GenerateApplicantsCsv, type: :service do
         expect(subject.csv).to include("Blanc")
       end
 
-      it "display the invitations dates" do
+      it "displays the invitations dates" do
         expect(subject.csv).to include(invitation.sent_at&.strftime("%d/%m/%Y"))
       end
 
-      it "display the rdvs dates" do
+      it "displays the rdvs dates" do
         expect(subject.csv).to include(rdv.starts_at&.strftime("%d/%m/%Y"))
       end
     end

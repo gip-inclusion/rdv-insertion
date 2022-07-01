@@ -1,5 +1,7 @@
 require "csv"
 
+# rubocop:disable Metrics/ClassLength
+
 class GenerateApplicantsCsv < BaseService
   def initialize(applicants:, structure:, motif_category:)
     @applicants = applicants
@@ -41,6 +43,7 @@ class GenerateApplicantsCsv < BaseService
      "Première invitation envoyée le",
      "Dernière invitation envoyée le",
      "Date du dernier RDV",
+     "Dernier RDV pris en autonomie ?",
      Applicant.human_attribute_name(:status),
      "RDV honoré en - de 30 jours ?",
      "Date d'orientation",
@@ -61,15 +64,16 @@ class GenerateApplicantsCsv < BaseService
      applicant.email,
      applicant.address,
      applicant.phone_number,
-     format_date(applicant.birth_date),
-     format_date(applicant.rights_opening_date),
+     display_date(applicant.birth_date),
+     display_date(applicant.rights_opening_date),
      applicant.role,
-     display_invitation_date(applicant, first_invitation_date(applicant)),
-     display_invitation_date(applicant, last_invitation_date(applicant)),
-     last_rdv_date(applicant),
+     display_date(first_invitation_date(applicant)),
+     display_date(last_invitation_date(applicant)),
+     display_date(last_rdv_date(applicant)),
+     rdv_taken_in_autonomy?(applicant),
      human_rdv_context_status(applicant),
      I18n.t("boolean.#{applicant.first_seen_rdv_starts_at.present?}"),
-     format_date(applicant.first_seen_rdv_starts_at),
+     display_date(applicant.first_seen_rdv_starts_at),
      I18n.t("boolean.#{applicant.is_archived?}"),
      applicant.archiving_reason,
      applicant.department.number,
@@ -112,10 +116,10 @@ class GenerateApplicantsCsv < BaseService
     end
   end
 
-  def display_invitation_date(applicant, invitation_date)
-    return "" if rdv_context(applicant)&.invitations.blank?
+  def display_date(date)
+    return "" if date.blank?
 
-    format_date(invitation_date)
+    format_date(date)
   end
 
   def first_invitation_date(applicant)
@@ -127,9 +131,17 @@ class GenerateApplicantsCsv < BaseService
   end
 
   def last_rdv_date(applicant)
-    return "" unless rdv_context(applicant)
+    rdv_context(applicant)&.last_rdv_starts_at
+  end
 
-    format_date(rdv_context(applicant).rdvs.last&.starts_at)
+  def last_rdv(applicant)
+    rdv_context(applicant)&.last_rdv
+  end
+
+  def rdv_taken_in_autonomy?(applicant)
+    return "" unless rdv_context(applicant) && last_rdv(applicant).present?
+
+    I18n.t("boolean.#{last_rdv(applicant).created_by_user?}")
   end
 
   def rdv_context(applicant)
@@ -140,3 +152,5 @@ class GenerateApplicantsCsv < BaseService
     date&.strftime("%d/%m/%Y")
   end
 end
+
+# rubocop: enable Metrics/ClassLength

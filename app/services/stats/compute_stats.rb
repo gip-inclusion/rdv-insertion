@@ -12,7 +12,7 @@ module Stats
 
     private
 
-    def stat_attributes
+    def stat_attributes # rubocop:disable Metrics/AbcSize
       @stat_attributes ||= {
         department_number: @department_number,
         applicants_count: applicants_count,
@@ -33,6 +33,9 @@ module Stats
           rate_of_applicants_with_rdv_seen_in_less_than_30_days,
         rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month:
           rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month,
+        rate_of_rdvs_created_by_user: rate_of_rdvs_created_by_user,
+        rate_of_rdvs_created_by_user_grouped_by_month:
+          rate_of_rdvs_created_by_user_grouped_by_month,
         agents_count: agents_count
       }
     end
@@ -145,6 +148,13 @@ module Stats
         relevant_rdv_contexts.order(created_at: :asc)
                              .group_by { |rdv_context| rdv_context.created_at.beginning_of_month.strftime("%m/%Y") }
                              .except(Time.zone.today.strftime("%m/%Y"))
+    end
+
+    def relevant_rdvs_by_month
+      @relevant_rdvs_by_month ||= \
+        relevant_rdvs.order(created_at: :asc)
+                     .group_by { |rdv| rdv.created_at.beginning_of_month.strftime("%m/%Y") }
+                     .except(Time.zone.today.strftime("%m/%Y"))
     end
 
     def sent_invitations
@@ -262,6 +272,25 @@ module Stats
                                       rsa_orientation rsa_orientation_on_phone_platform rsa_accompagnement
                                     ]
                                   })
+    end
+    # -----------------------------------------------------------------------------------------
+    # ----------------------------- Rate of rdvs taken in autonomy ----------------------------
+
+    def rate_of_rdvs_created_by_user
+      compute_rate_of_rdvs_taken_in_autonomy(relevant_rdvs)
+    end
+
+    def rate_of_rdvs_created_by_user_grouped_by_month
+      rate_of_rdvs_created_by_user_by_month = {}
+      relevant_rdvs_by_month.each do |date, rdvs|
+        result = compute_rate_of_rdvs_taken_in_autonomy(rdvs)
+        rate_of_rdvs_created_by_user_by_month[date] = result.round
+      end
+      rate_of_rdvs_created_by_user_by_month
+    end
+
+    def compute_rate_of_rdvs_taken_in_autonomy(selected_rdvs)
+      (selected_rdvs.count(&:created_by_user?) / (selected_rdvs.count.nonzero? || 1).to_f) * 100
     end
     # -----------------------------------------------------------------------------------------
   end

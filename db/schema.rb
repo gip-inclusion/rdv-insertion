@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_29_134039) do
+ActiveRecord::Schema[7.0].define(version: 2022_06_30_110610) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -227,6 +227,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_29_134039) do
     t.string "department_number"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.float "rate_of_rdvs_created_by_user"
+    t.json "rate_of_rdvs_created_by_user_grouped_by_month"
     t.index ["department_number"], name: "index_stats_on_department_number", unique: true
   end
 
