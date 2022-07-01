@@ -57,11 +57,12 @@ export default function InvitationBlock({
   const handleInvitationClick = async (format) => {
     setIsLoading({ ...isLoading, [format]: true });
     const applicantParams = [
-      applicant,
+      applicant.id,
       department.id,
-      organisation,
+      organisation.id,
       isDepartmentLevel,
       motifCategory,
+      organisation.phone_number
     ];
     let newInvitationDate;
 

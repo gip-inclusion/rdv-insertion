@@ -2,23 +2,27 @@ import Swal from "sweetalert2";
 import inviteApplicant from "./inviteApplicant";
 
 const getInvitationLetter = async (
-  applicant,
+  applicantId,
   departmentId,
-  organisation,
+  organisationId,
   isDepartmentLevel,
   motifCategory,
+  helpPhoneNumber
 ) => {
-  const result = await inviteApplicant(
-    applicant,
+  const response = await inviteApplicant(
+    applicantId,
     departmentId,
-    organisation.id,
+    organisationId,
     isDepartmentLevel,
     "postal",
-    organisation.phone_number,
+    helpPhoneNumber,
     motifCategory,
-    "application/json, application/pdf"
+    "application/pdf"
   );
-  if (result.success === false) {
+
+  if (!response.ok) {
+    // we respond with json when request is unsuccessfull
+    const result = await response.json();
     if (result.errors[0] === "Le format de l'adresse est invalide") {
       Swal.fire({
         title: "Impossible d'inviter l'utilisateur",
@@ -32,9 +36,9 @@ const getInvitationLetter = async (
     }
     return result;
   }
-  const blob = await result.blob();
+  const blob = await response.blob();
   if (blob) {
-    const headerParts = result.headers.get("Content-Disposition").split(";");
+    const headerParts = response.headers.get("Content-Disposition").split(";");
     const filename = headerParts[1].split("=")[1].replace(/^"|"$/g, "");
     const filePath = window.URL.createObjectURL(blob);
     const a = document.createElement("a");

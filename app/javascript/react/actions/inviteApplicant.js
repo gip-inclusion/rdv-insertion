@@ -1,7 +1,7 @@
 import appFetch from "../../lib/appFetch";
 
 const inviteApplicant = async (
-  applicant,
+  applicantId,
   departmentId,
   organisationId,
   isDepartmentLevel,
@@ -12,19 +12,17 @@ const inviteApplicant = async (
 ) => {
   let url;
   if (isDepartmentLevel) {
-    url = `/departments/${departmentId}/applicants/${applicant.id}/invitations`;
+    url = `/departments/${departmentId}/applicants/${applicantId}/invitations`;
   } else {
-    url = `/organisations/${organisationId}/applicants/${applicant.id}/invitations`;
+    url = `/organisations/${organisationId}/applicants/${applicantId}/invitations`;
   }
   return appFetch(
     url,
     "POST",
     {
-      format: invitationFormat,
+      invitation_format: invitationFormat,
       help_phone_number: helpPhoneNumber,
-      rdv_context: {
-        motif_category: motifCategory,
-      },
+      motif_category: motifCategory,
     },
     types
   );

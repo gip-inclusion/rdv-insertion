@@ -42,12 +42,12 @@ module InvitableConcern
     last_sent_email_invitation&.sent_at
   end
 
-  def last_postal_invitation
+  def last_sent_postal_invitation
     invitations.select { |invitation| invitation.format == "postal" }.select(&:sent_at).max_by(&:sent_at)
   end
 
-  def last_postal_invitation_sent_at
-    last_postal_invitation&.sent_at
+  def last_sent_postal_invitation_sent_at
+    last_sent_postal_invitation&.sent_at
   end
 
   def relevant_first_invitation

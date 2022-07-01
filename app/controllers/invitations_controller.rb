@@ -1,27 +1,29 @@
 class InvitationsController < ApplicationController
-  before_action :set_organisations, :set_department, :set_applicant, :set_rdv_context,
-                :set_current_configuration, only: [:create]
+  before_action :set_organisations, :set_organisation, :set_department, :set_applicant,
+                :set_motif_category, :set_rdv_context, :set_current_configuration,
+                :set_invitation_format, :set_new_invitation,
+                :set_invitation_validity_duration, :set_save_and_send_invitation_results,
+                only: [:create]
   before_action :set_invitation, only: [:redirect]
   skip_before_action :authenticate_agent!, only: [:invitation_code, :redirect]
-  respond_to :json, only: [:create]
 
   def create
-    @invitation = Invitation.new(
-      applicant: @applicant,
-      department: @department,
-      organisations: @organisations,
-      rdv_context: @rdv_context,
-      number_of_days_to_accept_invitation: @current_configuration.number_of_days_to_accept_invitation,
-      **invitation_params
-    )
-    set_invitation_validity_duration
-    authorize @invitation
-    if save_and_send_invitation.success?
-      return send_data pdf, filename: pdf_filename if @invitation.format_postal?
-
-      render json: { success: true, invitation: @invitation }
+    if @success
+      respond_to do |format|
+        format.json { render json: { success: true, invitation: @invitation } }
+        format.pdf { send_data pdf, filename: pdf_filename, layout: "application/pdf" }
+        format.turbo_stream
+      end
     else
-      render json: { success: false, errors: save_and_send_invitation.errors }
+      respond_to do |format|
+        format.json do
+          render json: { success: false, errors: @errors }, status: :unprocessable_entity
+        end
+        format.pdf do
+          render json: { success: false, errors: @errors }, status: :unprocessable_entity
+        end
+        format.turbo_stream
+      end
     end
   end
 
@@ -36,9 +38,27 @@ class InvitationsController < ApplicationController
   private
 
   def invitation_params
-    params.require(:invitation).permit(
-      :format, :help_phone_number, :rdv_solidarites_lieu_id
+    params.permit(
+      :invitation_format, :help_phone_number, :rdv_solidarites_lieu_id, :motif_category
     )
+  end
+
+  def set_new_invitation
+    @invitation = Invitation.new(
+      applicant: @applicant,
+      department: @department,
+      organisations: @organisations,
+      rdv_context: @rdv_context,
+      format: @invitation_format,
+      number_of_days_to_accept_invitation: @current_configuration.number_of_days_to_accept_invitation,
+      help_phone_number: invitation_params[:help_phone_number],
+      rdv_solidarites_lieu_id: invitation_params[:rdv_solidarites_lieu_id]
+    )
+    authorize @invitation
+  end
+
+  def set_invitation_format
+    @invitation_format = invitation_params[:invitation_format]
   end
 
   def pdf
@@ -56,6 +76,10 @@ class InvitationsController < ApplicationController
     )
   end
 
+  def set_save_and_send_invitation_results
+    @success, @errors = [save_and_send_invitation.success?, save_and_send_invitation.errors]
+  end
+
   def set_organisations
     @organisations = \
       if department_level?
@@ -65,20 +89,26 @@ class InvitationsController < ApplicationController
       end
   end
 
+  def set_organisation
+    return if department_level?
+
+    @organisation = @organisations.first
+  end
+
   def set_rdv_context
     RdvContext.with_advisory_lock "setting_rdv_context_for_applicant_#{@applicant.id}" do
       @rdv_context = RdvContext.find_or_create_by!(
-        motif_category: motif_category, applicant: @applicant
+        motif_category: @motif_category, applicant: @applicant
       )
     end
   end
 
   def set_current_configuration
-    @current_configuration = @organisations.flat_map(&:configurations).find { |c| c.motif_category == motif_category }
+    @current_configuration = @organisations.flat_map(&:configurations).find { |c| c.motif_category == @motif_category }
   end
 
-  def motif_category
-    params[:rdv_context][:motif_category]
+  def set_motif_category
+    @motif_category = invitation_params[:motif_category]
   end
 
   # the validity of an invitation is equal to the number of days before an action is required, unless it's postal

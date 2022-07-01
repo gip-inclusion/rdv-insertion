@@ -16,20 +16,23 @@ describe InvitationsController, type: :controller do
 
     let!(:organisations) { Organisation.where(id: organisation.id) }
     let!(:agent) { create(:agent, organisations: organisations) }
-    let!(:applicant) { create(:applicant, id: applicant_id, organisations: [organisation]) }
+    let!(:applicant) do
+      create(
+        :applicant,
+        first_name: "JANE", last_name: "DOE", title: "madame",
+        id: applicant_id, organisations: [organisation]
+      )
+    end
     let!(:motif_category) { "rsa_orientation" }
 
     let!(:create_params) do
       {
         organisation_id: organisation.id,
         applicant_id: applicant_id,
-        invitation: {
-          format: "sms",
-          help_phone_number: help_phone_number
-        },
-        rdv_context: {
-          motif_category: motif_category
-        }
+        invitation_format: "sms",
+        help_phone_number: help_phone_number,
+        motif_category: motif_category,
+        format: "json"
       }
     end
     let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
@@ -52,8 +55,8 @@ describe InvitationsController, type: :controller do
       allow(Invitation).to receive(:new)
         .with(
           department: department, applicant: applicant, organisations: organisations, rdv_context: rdv_context,
-          number_of_days_to_accept_invitation: 3,
-          "format" => "sms", "help_phone_number" => help_phone_number
+          help_phone_number: help_phone_number,
+          number_of_days_to_accept_invitation: 3, format: "sms", rdv_solidarites_lieu_id: nil
         ).and_return(invitation)
       allow(Invitations::SaveAndSend).to receive(:call)
         .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
@@ -71,8 +74,8 @@ describe InvitationsController, type: :controller do
         expect(Invitation).to receive(:new)
           .with(
             department: department, applicant: applicant, organisations: organisations, rdv_context: rdv_context,
-            number_of_days_to_accept_invitation: 3,
-            "format" => "sms", "help_phone_number" => help_phone_number
+            help_phone_number: help_phone_number,
+            number_of_days_to_accept_invitation: 3, format: "sms", rdv_solidarites_lieu_id: nil
           )
         post :create, params: create_params
       end
@@ -98,14 +101,21 @@ describe InvitationsController, type: :controller do
         {
           department_id: department.id,
           applicant_id: applicant_id,
-          invitation: {
-            format: "sms",
-            help_phone_number: help_phone_number
-          },
-          rdv_context: {
-            motif_category: motif_category
-          }
+          invitation_format: "email",
+          help_phone_number: help_phone_number,
+          motif_category: motif_category,
+          rdv_solidarites_lieu_id: "3929",
+          format: "json"
         }
+      end
+
+      before do
+        allow(Invitation).to receive(:new)
+          .with(
+            department: department, applicant: applicant, organisations: organisations, rdv_context: rdv_context,
+            help_phone_number: help_phone_number,
+            number_of_days_to_accept_invitation: 3, format: "email", rdv_solidarites_lieu_id: "3929"
+          ).and_return(invitation)
       end
 
       it "finds or create a context" do
@@ -118,8 +128,8 @@ describe InvitationsController, type: :controller do
         expect(Invitation).to receive(:new)
           .with(
             department: department, applicant: applicant, organisations: organisations, rdv_context: rdv_context,
-            number_of_days_to_accept_invitation: 3,
-            "format" => "sms", "help_phone_number" => help_phone_number
+            number_of_days_to_accept_invitation: 3, format: "email", help_phone_number: help_phone_number,
+            rdv_solidarites_lieu_id: "3929"
           )
         post :create, params: create_params
       end
@@ -136,6 +146,52 @@ describe InvitationsController, type: :controller do
             rdv_solidarites_session: rdv_solidarites_session
           )
         post :create, params: create_params
+      end
+
+      context "when the request is in a turbo stream format" do
+        render_views
+
+        before { create_params[:format] = "turbo_stream" }
+
+        it "calls the service" do
+          expect(Invitations::SaveAndSend).to receive(:call)
+            .with(
+              invitation: invitation,
+              rdv_solidarites_session: rdv_solidarites_session
+            )
+          post :create, params: create_params
+        end
+
+        it "renders a disabled and checked input checkbox" do
+          post :create, params: create_params
+
+          expect(response).to be_successful
+          expect(response.body).to match(/disabled="disabled"/)
+          expect(response.body).to match(/checked="checked"/)
+        end
+
+        context "when the service fails" do
+          before do
+            allow(Invitations::SaveAndSend).to receive(:call)
+              .and_return(OpenStruct.new(success?: false, errors: ["Cannot invite"]))
+          end
+
+          it "does not render a disabled and checked input checkbox" do
+            post :create, params: create_params
+
+            expect(response).to be_successful
+            expect(response.body).not_to match(/disabled="false"/)
+            expect(response.body).not_to match(/checked="false"/)
+          end
+
+          it "renders an error modal" do
+            post :create, params: create_params
+
+            expect(response).to be_successful
+            expect(response.body).to match(/❌ L&#39;invitation de Madame Jane DOE par email n&#39;a pas pu aboutir/)
+            expect(response.body).to match(/Cannot invite/)
+          end
+        end
       end
     end
 
@@ -166,11 +222,10 @@ describe InvitationsController, type: :controller do
           {
             organisation_id: organisation.id,
             applicant_id: applicant_id,
-            invitation: {
-              format: "postal",
-              help_phone_number: help_phone_number
-            },
-            rdv_context: { motif_category: motif_category }
+            invitation_format: "postal",
+            help_phone_number: help_phone_number,
+            motif_category: motif_category,
+            format: "pdf"
           }
         end
 
@@ -178,8 +233,8 @@ describe InvitationsController, type: :controller do
           allow(Invitation).to receive(:new)
             .with(
               department: department, applicant: applicant, organisations: organisations, rdv_context: rdv_context,
-              number_of_days_to_accept_invitation: 3,
-              "format" => "postal", "help_phone_number" => help_phone_number
+              number_of_days_to_accept_invitation: 3, format: "postal", help_phone_number: help_phone_number,
+              rdv_solidarites_lieu_id: nil
             ).and_return(invitation)
           allow(Invitations::SaveAndSend).to receive(:call)
             .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
@@ -212,13 +267,13 @@ describe InvitationsController, type: :controller do
 
       it "is not a success" do
         post :create, params: create_params
-        expect(response).to be_successful
+        expect(response).not_to be_successful
         expect(JSON.parse(response.body)["success"]).to eq(false)
       end
 
       it "renders the errors" do
         post :create, params: create_params
-        expect(response).to be_successful
+        expect(response).not_to be_successful
         expect(JSON.parse(response.body)["errors"]).to eq(['some error'])
       end
     end

@@ -8,3 +8,7 @@ fr:
         link: Lien
         token: Token
         number_of_days_to_accept_invitation: Nombre de jours pour accepter l'invitation
+        formats:
+          postal: courrier
+          email: email
+          sms: SMS

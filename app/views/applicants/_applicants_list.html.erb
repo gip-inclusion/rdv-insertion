@@ -17,9 +17,9 @@
         <thead class="text-dark-blue">
           <th scope="col">Nom</th>
           <th scope="col">Prénom</th>
-          <th scope="col" class="d-none d-lg-table-cell">Email</th>
-          <th scope="col" class="d-none d-lg-table-cell">Téléphone</th>
-          <th scope="col" class="d-none d-lg-table-cell">Adresse</th>
+          <th scope="col" class="d-none d-lg-table-cell">📱 SMS</th>
+          <th scope="col" class="d-none d-lg-table-cell">📧 Email</th>
+          <th scope="col" class="d-none d-lg-table-cell">📮 Courrier</th>
           <% if @current_motif_category.present? %>
             <% if show_invitations?(@current_configuration) %>
               <th scope="col">Première invitation</th>
@@ -39,27 +39,39 @@
               <td><%= display_attribute applicant.last_name %></td>
               <td><%= display_attribute applicant.first_name %></td>
               <td class="d-none d-lg-table-cell">
-                <% if applicant.email.present? %>
-                  <i class="fas fa-check icon-blue" />
+                <% if applicant.phone_number.present? %>
+                  <% if @current_motif_category %>
+                    <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: "sms", invited: applicant.last_sent_sms_invitation.present?, motif_category: @current_motif_category %>
+                  <% else %>
+                    <%= applicant.phone_number_formatted %>
+                  <% end %>
                 <% else %>
-                  <i class="fas fa-times icon-blue" />
+                  -
                 <% end %>
               </td>
               <td class="d-none d-lg-table-cell">
-                <% if applicant.phone_number.present? %>
-                  <i class="fas fa-check icon-blue" />
+                <% if applicant.email.present? %>
+                  <% if @current_motif_category %>
+                    <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: "email", invited: applicant.last_sent_email_invitation.present?, motif_category: @current_motif_category %>
+                  <% else %>
+                    <%= applicant.email %>
+                  <% end %>
                 <% else %>
-                  <i class="fas fa-times icon-blue" />
+                  -
                 <% end %>
               </td>
               <td class="d-none d-lg-table-cell">
                 <% if applicant.address.present? %>
-                  <i class="fas fa-check icon-blue" />
+                  <% if @current_motif_category %>
+                    <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: "postal", invited: applicant.last_sent_postal_invitation.present?, motif_category: @current_motif_category %>
+                  <% else %>
+                    <%= applicant.address %>
+                  <% end %>
                 <% else %>
-                  <i class="fas fa-times icon-blue" />
+                  -
                 <% end %>
               </td>
-              <% if @current_motif_category.present? %>
+              <% if @current_configuration.present? %>
                 <% if show_invitations?(@current_configuration) %>
                   <td><%= display_attribute format_date(rdv_context.relevant_first_invitation_sent_at) %> </td>
                   <td><%= show_last_invitation_date?(rdv_context) ? display_attribute(format_date(rdv_context.last_invitation_sent_at)) : "-" %></td>

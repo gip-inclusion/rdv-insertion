@@ -73,11 +73,12 @@ export default function Applicant({
   const handleInvitationClick = async (format) => {
     setIsLoading({ ...isLoading, [`${format}Invitation`]: true });
     const invitationParams = [
-      applicant,
+      applicant.id,
       applicant.department.id,
-      applicant.currentOrganisation,
+      applicant.currentOrganisation.id,
       isDepartmentLevel,
       applicant.currentConfiguration.motif_category,
+      applicant.currentOrganisation.phone_number,
     ];
     if (format === "sms") {
       const invitation = await handleApplicantInvitation(...invitationParams, "sms");
