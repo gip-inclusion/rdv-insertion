@@ -33,9 +33,9 @@ module Stats
           rate_of_applicants_with_rdv_seen_in_less_than_30_days,
         rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month:
           rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month,
-        rate_of_rdvs_taken_in_autonomy_by_user: rate_of_rdvs_taken_in_autonomy_by_user,
-        rate_of_rdvs_taken_in_autonomy_by_user_grouped_by_month:
-          rate_of_rdvs_taken_in_autonomy_by_user_grouped_by_month,
+        rate_of_rdvs_created_by_user: rate_of_rdvs_created_by_user,
+        rate_of_rdvs_created_by_user_grouped_by_month:
+          rate_of_rdvs_created_by_user_grouped_by_month,
         agents_count: agents_count
       }
     end
@@ -276,17 +276,17 @@ module Stats
     # -----------------------------------------------------------------------------------------
     # ----------------------------- Rate of rdvs taken in autonomy ----------------------------
 
-    def rate_of_rdvs_taken_in_autonomy_by_user
+    def rate_of_rdvs_created_by_user
       compute_rate_of_rdvs_taken_in_autonomy(relevant_rdvs)
     end
 
-    def rate_of_rdvs_taken_in_autonomy_by_user_grouped_by_month
-      rate_of_rdvs_taken_in_autonomy_by_user_by_month = {}
+    def rate_of_rdvs_created_by_user_grouped_by_month
+      rate_of_rdvs_created_by_user_by_month = {}
       relevant_rdvs_by_month.each do |date, rdvs|
         result = compute_rate_of_rdvs_taken_in_autonomy(rdvs)
-        rate_of_rdvs_taken_in_autonomy_by_user_by_month[date] = result.round
+        rate_of_rdvs_created_by_user_by_month[date] = result.round
       end
-      rate_of_rdvs_taken_in_autonomy_by_user_by_month
+      rate_of_rdvs_created_by_user_by_month
     end
 
     def compute_rate_of_rdvs_taken_in_autonomy(selected_rdvs)
