@@ -3,6 +3,6 @@
 <% end %>
 <% unless @success %>
   <%= turbo_stream.replace "remote_modal" do %>
-    <%= render partial: "common/error_modal", locals: { title: "❌ L'invitation par #{@invitation_format} n'a pas pu aboutir", errors: @errors } %>
+    <%= render partial: "common/error_modal", locals: { title: "❌ L'invitation de #{@applicant.full_name} par #{@invitation_format} n'a pas pu aboutir", errors: @errors } %>
   <% end %>
 <% end %>

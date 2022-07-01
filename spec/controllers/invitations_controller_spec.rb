@@ -188,7 +188,7 @@ describe InvitationsController, type: :controller do
             post :create, params: create_params
 
             expect(response).to be_successful
-            expect(response.body).to match(/❌ L&#39;invitation par email n&#39;a pas pu aboutir/)
+            expect(response.body).to match(/❌ L&#39;invitation de Madame Jane DOE par email n&#39;a pas pu aboutir/)
             expect(response.body).to match(/Cannot invite/)
           end
         end
