@@ -28,4 +28,8 @@ module HasRdvsConcern
   def last_rdv_starts_at
     last_rdv&.starts_at
   end
+
+  def rdvs?
+    !rdvs.empty?
+  end
 end

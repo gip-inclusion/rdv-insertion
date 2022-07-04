@@ -1,8 +1,25 @@
 import { Controller } from "@hotwired/stimulus";
 import { navigator } from "@hotwired/turbo";
+import tippy from "tippy.js";
 import getInvitationLetter from "../react/actions/getInvitationLetter";
 
 export default class extends Controller {
+  connect() {
+    const checkbox = this.element.querySelector("input[type=checkbox]");
+    const { invitationFormat } = this.element.dataset;
+    if (!checkbox) return null;
+
+    if (invitationFormat === "postal") {
+      return tippy(checkbox, {
+        content: "Générer courrier d'invitation",
+      });
+    }
+
+    return tippy(checkbox, {
+      content: `Envoyer ${invitationFormat} d'invitation`,
+    });
+  }
+
   submit() {
     this.element.hidden = true;
     this.element.parentElement.classList.add("spinner-border", "spinner-border-sm");
