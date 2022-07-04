@@ -38,7 +38,7 @@ module FilterableApplicantsConcern
                                               .map(&:relevant_first_invitation)
                                               .compact
     relevant_first_invitations = applicants_first_invitations.select do |invitation|
-      invitation.sent_at < params[:first_invitation_date_before] &&
+      invitation.sent_at.to_date <= params[:first_invitation_date_before].to_date &&
         invitation.rdv_context_id.in?(@rdv_contexts.map(&:id))
     end
     @applicants = @applicants.where(id: relevant_first_invitations.pluck(:applicant_id))
@@ -51,7 +51,7 @@ module FilterableApplicantsConcern
                                               .map(&:relevant_first_invitation)
                                               .compact
     relevant_first_invitations = applicants_first_invitations.select do |invitation|
-      invitation.sent_at > params[:first_invitation_date_after] &&
+      invitation.sent_at.to_date >= params[:first_invitation_date_after].to_date &&
         invitation.rdv_context_id.in?(@rdv_contexts.map(&:id))
     end
     @applicants = @applicants.where(id: relevant_first_invitations.pluck(:applicant_id))
@@ -64,7 +64,7 @@ module FilterableApplicantsConcern
                                              .map(&:last_sent_invitation)
                                              .compact
     relevant_last_invitations = applicants_last_invitations.select do |invitation|
-      invitation.sent_at < params[:last_invitation_date_before] &&
+      invitation.sent_at.to_date <= params[:last_invitation_date_before].to_date &&
         invitation.rdv_context_id.in?(@rdv_contexts.map(&:id))
     end
     @applicants = @applicants.where(id: relevant_last_invitations.pluck(:applicant_id))
@@ -77,7 +77,7 @@ module FilterableApplicantsConcern
                                              .map(&:last_sent_invitation)
                                              .compact
     relevant_last_invitations = applicants_last_invitations.select do |invitation|
-      invitation.sent_at > params[:last_invitation_date_after] &&
+      invitation.sent_at.to_date >= params[:last_invitation_date_after].to_date &&
         invitation.rdv_context_id.in?(@rdv_contexts.map(&:id))
     end
     @applicants = @applicants.where(id: relevant_last_invitations.pluck(:applicant_id))

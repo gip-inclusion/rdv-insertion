@@ -489,7 +489,7 @@ describe ApplicantsController, type: :controller do
 
         let!(:index_params) do
           { organisation_id: organisation.id, motif_category: "rsa_orientation",
-            last_invitation_date_after: "17-06-2022", last_invitation_date_before: "18-06-2022" }
+            last_invitation_date_after: "17-06-2022", last_invitation_date_before: "17-06-2022" }
         end
 
         it "filters by last invitations dates" do
