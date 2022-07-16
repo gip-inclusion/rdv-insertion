@@ -12,6 +12,8 @@ assignees: ''
 **Description du problème**
 __ajouter des retours utilisateurs__
 
+**Description de la solution**
+
 **Impact attendu**
 
 **Tâches prioritaires**
