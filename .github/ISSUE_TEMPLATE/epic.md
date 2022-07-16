@@ -9,6 +9,10 @@ assignees: ''
 
 **Objectif de l'EPIC**
 
+**Description du problème**
+__ajouter des retours utilisateurs__
+
+**Impact attendu**
 
 **Tâches prioritaires**
 - [ ] #numéro de l'issue
