@@ -1,7 +1,7 @@
 ---
 name: Task
 about: Description d'une tâche
-title: " "
+title: "[EPIC] "
 labels: ''
 assignees: ''
 
