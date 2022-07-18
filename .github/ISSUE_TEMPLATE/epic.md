@@ -15,6 +15,9 @@ __ajouter des retours utilisateurs__
 **Description de la solution**
 
 **Impact attendu**
+| Mesure d'impact avant | Mesure d'impact après |
+| -------- | -------- |
+| --     | --     |
 
 **Tâches prioritaires**
 - [ ] #numéro de l'issue
