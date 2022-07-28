@@ -24,7 +24,7 @@ module ApplicantsHelper
   end
 
   def show_last_invitation_date?(rdv_context)
-    rdv_context.invitations.length > 1 &&
+    rdv_context.present? && rdv_context.invitations.length > 1 &&
       format_date(rdv_context.last_invitation_sent_at) != format_date(rdv_context.first_invitation_sent_at)
   end
 
@@ -85,6 +85,8 @@ module ApplicantsHelper
   end
 
   def display_context_status_notice(context, number_of_days_before_action_required)
+    return if context.nil?
+
     if context.invited_before_time_window?(number_of_days_before_action_required) && context.invitation_pending?
       " (Délai dépassé)"
     else

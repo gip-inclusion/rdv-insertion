@@ -204,15 +204,11 @@ class ApplicantsController < ApplicationController
         @applicants.where(organisations: @organisation)
       end
 
-    if @current_motif_category.nil?
-      @applicants = @applicants.without_rdv_contexts(@all_configurations.map(&:motif_category))
-    else
-      @applicants = @applicants.joins(:rdv_contexts).where(rdv_contexts: { motif_category: @current_motif_category })
-      @rdv_contexts = RdvContext.where(
-        applicant_id: @applicants.archived(false).ids, motif_category: @current_motif_category
-      )
-      @statuses_count = @rdv_contexts.group(:status).count
-    end
+    @applicants = @applicants.joins(:rdv_contexts).where(rdv_contexts: { motif_category: @current_motif_category })
+    @rdv_contexts = RdvContext.where(
+      applicant_id: @applicants.archived(false).ids, motif_category: @current_motif_category
+    )
+    @statuses_count = @rdv_contexts.group(:status).count
     filter_applicants
     @applicants = @applicants.order(created_at: :desc)
   end

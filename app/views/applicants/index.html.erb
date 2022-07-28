@@ -1,38 +1,33 @@
 <div class="container mt-5 mb-5">
   <div class="row mb-4 block-white justify-content-center">
     <div class="col-4 justify-content-center">
-      <% if @current_motif_category.present? %>
-        <div class="mb-1">
-          <%=
-            select(
-              "applicant", "status", options_for_select_status(@statuses_count),
-              { prompt: "Filtrer par statut" },
-              class: "text-center form-select js-status-selector"
-            )
-          %>
-        </div>
-        <%= render "filter_by_invitations_dates_button" %>
-      <% end %>
+      <div class="mb-1">
+        <%=
+          select(
+            "applicant", "status", options_for_select_status(@statuses_count),
+            { prompt: "Filtrer par statut" },
+            class: "text-center form-select js-status-selector"
+          )
+        %>
+      </div>
+      <%= render "filter_by_invitations_dates_button" %>
       <%= render 'search_form' %>
-      <% if @current_motif_category.present? %>
-        <div class="d-flex justify-content-between mt-1">
-          <div class=" text-left mt-2">
-            <%= check_box("applicants_list", "action_required", class: "js-action-required-checkbox") %>Intervention nécessaire
-            <small>
-              <i class="fas fa-question-circle" id="js-action-required-tooltip" data-number-of-days-before-action-required="<%= @current_configuration.number_of_days_before_action_required %>">
-              </i>
-            </small>
-          </div>
-          <% if display_back_to_list_button? %>
-            <div class="">
-              <%= link_to compute_index_path(@organisation, @department, motif_category: @current_motif_category), class: "btn btn-blue-out" do %>
-                Retour à la liste
-              <% end %>
-            </div>
-          <% end %>
+      <div class="d-flex justify-content-between mt-1">
+        <div class=" text-left mt-2">
+          <%= check_box("applicants_list", "action_required", class: "js-action-required-checkbox") %>Intervention nécessaire
+          <small>
+            <i class="fas fa-question-circle" id="js-action-required-tooltip" data-number-of-days-before-action-required="<%= @current_configuration.number_of_days_before_action_required %>">
+            </i>
+          </small>
         </div>
-
-      <% end %>
+        <% if display_back_to_list_button? %>
+          <div class="">
+            <%= link_to compute_index_path(@organisation, @department, motif_category: @current_motif_category), class: "btn btn-blue-out" do %>
+              Retour à la liste
+            <% end %>
+          </div>
+        <% end %>
+      </div>
     </div>
     <div class="col-4 d-flex flex-column justify-content-center align-items-center">
       <% if image_compiled?("maps/#{@department.name.parameterize}.svg") %>

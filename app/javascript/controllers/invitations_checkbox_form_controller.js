@@ -1,7 +1,8 @@
 import { Controller } from "@hotwired/stimulus";
 import { navigator } from "@hotwired/turbo";
 import tippy from "tippy.js";
-import getInvitationLetter from "../react/actions/getInvitationLetter";
+import handleApplicantInvitation from "../react/lib/handleApplicantInvitation";
+import { getFrenchFormatDateString, todaysDateString } from "../lib/datesHelper";
 
 export default class extends Controller {
   connect() {
@@ -27,33 +28,60 @@ export default class extends Controller {
   }
 
   async submitStart(event) {
-    // For postal invitations, we have to use JSON instead of Turbostream as I found no
-    // way to send_data as a turbo stream
+    // We have to use JSON instead of Turbostream because postal invitation return raw data as pdfs
     const body = Object.fromEntries(event.detail.formSubmission.fetchRequest.entries);
-    if (body.invitation_format === "postal") {
-      event.detail.formSubmission.stop();
-      const { applicantId, departmentId, organisationId } = this.element.dataset;
+    event.detail.formSubmission.stop();
+    const { applicantId, departmentId, organisationId } = this.element.dataset;
+    const rdvContext = JSON.parse(this.element.dataset.rdvContext);
 
-      const isDepartmentLevel = !organisationId;
+    const isDepartmentLevel = !organisationId;
 
-      const result = await getInvitationLetter(
-        applicantId,
-        departmentId,
-        organisationId,
-        isDepartmentLevel,
-        body.motif_category,
-        body.help_phone_number
-      );
+    const result = await handleApplicantInvitation(
+      applicantId,
+      departmentId,
+      organisationId,
+      isDepartmentLevel,
+      body.motif_category,
+      body.help_phone_number,
+      body.invitation_format
+    );
 
-      const checkbox = this.element.querySelector("input[type=checkbox]");
+    const checkbox = this.element.querySelector("input[type=checkbox]");
 
-      checkbox.hidden = false;
-      checkbox.parentElement.classList.remove("spinner-border", "spinner-border-sm");
-      if (result.success) {
-        checkbox.disabled = true;
-      } else {
-        checkbox.checked = false;
+    checkbox.hidden = false;
+    checkbox.parentElement.classList.remove("spinner-border", "spinner-border-sm");
+    if (result.success) {
+      checkbox.disabled = true;
+      this.updateFirstInvitationDate(rdvContext);
+      this.updateLastInvitationDate(rdvContext);
+      this.updateStatus(rdvContext);
+    } else {
+      checkbox.checked = false;
+    }
+  }
+
+  updateFirstInvitationDate(rdvContext) {
+    const firstInvitationDate = document.getElementById(`first-invitation-date-${rdvContext.id}`);
+    if (firstInvitationDate.innerHTML === " - ") {
+      firstInvitationDate.innerHTML = getFrenchFormatDateString(todaysDateString());
+    }
+  }
+
+  updateLastInvitationDate(rdvContext) {
+    const lastInvitationDate = document.getElementById(`last-invitation-date-${rdvContext.id}`);
+    if (lastInvitationDate.innerHTML === " - ") {
+      const firstInvitationDate = document.getElementById(`first-invitation-date-${rdvContext.id}`);
+      if (!(firstInvitationDate.innerHTML === getFrenchFormatDateString(todaysDateString()))) {
+        lastInvitationDate.innerHTML = getFrenchFormatDateString(todaysDateString());
       }
+    }
+  }
+
+  updateStatus(rdvContext) {
+    if (!(rdvContext.status === "invitation_pending")) {
+      const status = document.getElementById(`rdv-context-status-${rdvContext.id}`);
+      status.classList = [];
+      status.innerHTML = "Invitation en attente de réponse";
     }
   }
 }

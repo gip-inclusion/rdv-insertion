@@ -539,21 +539,6 @@ describe ApplicantsController, type: :controller do
       end
     end
 
-    context "when no context is specified" do
-      let!(:applicant) do
-        create(:applicant, organisations: [organisation], last_name: "Chabat", rdv_contexts: [])
-      end
-
-      let!(:rdv_context2) { build(:rdv_context, motif_category: "rsa_accompagnement", status: "invitation_pending") }
-
-      it "lists the applicants with no rdv contexts in the contexts of the org configs" do
-        get :index, params: index_params.merge(motif_category: nil)
-
-        expect(response.body).to match(/Chabat/)
-        expect(response.body).to match(/Baer/)
-      end
-    end
-
     context "when csv request" do
       before do
         allow(GenerateApplicantsCsv).to receive(:call)
