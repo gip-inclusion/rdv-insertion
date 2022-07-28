@@ -9,8 +9,8 @@ class ConfigurationsOrganisation < ApplicationRecord
   private
 
   def organisation_not_already_attached_to_motif_category
-    motif_categories = organisation.configurations.reject { |c| c.id == configuration.id }.map(&:motif_category)
-    return unless motif_categories.include?(configuration.motif_category)
+    existing_categories = organisation.configurations.reject { |c| c.id == configuration.id }.map(&:motif_category)
+    return unless existing_categories.include?(configuration.motif_category)
 
     errors.add(:base, "l'organisation est déjà rattachée à cette catégorie de motif")
   end

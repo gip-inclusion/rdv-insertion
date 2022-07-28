@@ -35,21 +35,21 @@
               <td><%= display_attribute applicant.first_name %></td>
               <td class="d-none d-lg-table-cell">
                 <% if applicant.phone_number.present? %>
-                  <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: "sms", motif_category: @current_motif_category, rdv_context: rdv_context, already_invited: rdv_context.invited_by?("sms") %>
+                  <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: "sms", motif_category: @current_motif_category, rdv_context: rdv_context, already_invited: rdv_context.invited_through?("sms") %>
                 <% else %>
                   -
                 <% end %>
               </td>
               <td class="d-none d-lg-table-cell">
                 <% if applicant.email.present? %>
-                  <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: "email", motif_category: @current_motif_category, rdv_context: rdv_context, already_invited: rdv_context.invited_by?("email")  %>
+                  <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: "email", motif_category: @current_motif_category, rdv_context: rdv_context, already_invited: rdv_context.invited_through?("email")  %>
                 <% else %>
                   -
                 <% end %>
               </td>
               <td class="d-none d-lg-table-cell">
                 <% if applicant.address.present? %>
-                  <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: "postal", motif_category: @current_motif_category, rdv_context: rdv_context, already_invited: rdv_context.invited_by?("email")  %>
+                  <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: "postal", motif_category: @current_motif_category, rdv_context: rdv_context, already_invited: rdv_context.invited_through?("email")  %>
                 <% else %>
                   -
                 <% end %>

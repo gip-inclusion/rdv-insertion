@@ -29,7 +29,7 @@ describe SaveApplicant, type: :service do
     }
   end
 
-  let!(:configuration) { create(:configuration) }
+  let!(:configuration) { create(:configuration, motif_category: "rsa_orientation") }
 
   let!(:applicant) do
     create(:applicant, applicant_attributes.merge(organisations: [organisation], rdv_solidarites_user_id: nil))
@@ -46,6 +46,12 @@ describe SaveApplicant, type: :service do
 
     it "tries to save the applicant in db" do
       expect(applicant).to receive(:save)
+      subject
+    end
+
+    it "finds or create a rdv context" do
+      expect(RdvContext).to receive(:find_or_create_by!)
+        .with(applicant: applicant, motif_category: "rsa_orientation")
       subject
     end
 

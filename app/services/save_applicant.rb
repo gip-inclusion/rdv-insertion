@@ -25,8 +25,7 @@ class SaveApplicant < BaseService
   def create_rdv_contexts
     RdvContext.with_advisory_lock "setting_rdv_context_for_applicant_#{@applicant.id}" do
       @organisation.motif_categories.each do |motif_category|
-        rdv_context = RdvContext.find_or_initialize_by(motif_category: motif_category, applicant: @applicant)
-        save_record!(rdv_context)
+        RdvContext.find_or_create_by!(motif_category: motif_category, applicant: @applicant)
       end
     end
   end

@@ -192,7 +192,7 @@ class ApplicantsController < ApplicationController
     @can_be_added_to_other_org = (@department.organisation_ids - @applicant.organisation_ids).any?
   end
 
-  def set_applicants_and_rdv_contexts # rubocop:disable Metrics/AbcSize
+  def set_applicants_and_rdv_contexts
     @applicants = policy_scope(Applicant)
                   .includes(:invitations)
                   .preload(:organisations, rdv_contexts: [:invitations, :rdvs])

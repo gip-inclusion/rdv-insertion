@@ -50,7 +50,7 @@ module InvitableConcern
     last_sent_postal_invitation&.sent_at
   end
 
-  def invited_by?(format)
+  def invited_through?(format)
     invitations.any? { |invitation| invitation.format == format }
   end
 
