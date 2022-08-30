@@ -1,45 +1,67 @@
 # Installation
 
-## Prérequis
+## Outils à installer
 
-- Déploiement:
-  - Ruby 3.0.3 (nous conseillons l’utilisation de [rbenv](https://github.com/rbenv/rbenv-installer#rbenv-installer--doctor-scripts))
-  - PostgreSQL >= 12, l’utilisateur doit avoir les droits `superuser`. C'est nécessaire pour pouvoir activer les extensions utilisés.
-- Développement
-  - [Yarn](https://yarnpkg.com/en/docs/install)
-  - [Foreman](https://github.com/ddollar/foreman), (ou équivalent, comme [Overmind](https://github.com/DarthSim/overmind))
-  - [Scalingo CLI](https://doc.scalingo.com/cli) (OPTIONAL)
-  - [Make](https://fr.wikipedia.org/wiki/Make) (OPTIONAL)
+- Ruby 3.0.3 (nous conseillons l’utilisation de [rbenv](https://github.com/rbenv/rbenv-installer#rbenv-installer--doctor-scripts))
+- PostgreSQL >= 12, l’utilisateur doit avoir les droits `superuser`. C'est nécessaire pour pouvoir activer les extensions utilisés.
+- [Yarn](https://yarnpkg.com/en/docs/install)
+- [Foreman](https://github.com/ddollar/foreman), (ou équivalent, comme [Overmind](https://github.com/DarthSim/overmind))
+- [Scalingo CLI](https://doc.scalingo.com/cli) (OPTIONAL)
+- [Make](https://fr.wikipedia.org/wiki/Make) (OPTIONAL)
 
-## Important
+## Avant de commencer
 
-Cette application est conçue pour fonctionner en complément de rdv-solidarités
-rdv-solidarités doit donc être installé et tourner en local pour obtenir un environnement de dev fonctionnel
-Le code de rdv-solidarités peut être trouvé ici : https://github.com/betagouv/rdv-solidarites.fr/
+### Installer RDV-Solidarités
+
+Cette application est conçue pour fonctionner en complément de RDV-Solidarités.
+RDV-Solidarités doit donc être installé et tourner en local pour obtenir un environnement de dev fonctionnel.
+Le code source de rdv-solidarités peut être trouvé [ici](https://github.com/betagouv/rdv-solidarites.fr/).
+Les instructions d'installation sont [ici](https://github.com/betagouv/rdv-solidarites.fr/blob/production/docs/1-installation.md).
+
+### Créer un territoire, une organisation et les webhook endpoints
+
+Pour utiliser RDV-Insertion proprement en local, il est nécessaire de créer sur RDV-S :
+
+- Les territories et organisations correspondant aux départments et organisations que l'on va utiliser sur RDV-Insertion (voir [Setup](#Setup))
+
+- Rattacher l'agent aux organisations via un `AgentRole` (de préférence avec le level `admin`)
+
+- Configurer les webhooks de chaque organisation pour les envoyer vers l'appli RDV-Insertion en local (`POST http://localhost:8000/rdv_solidarites_webhooks`)
+
+**Les [seeds](https://github.com/betagouv/rdv-solidarites.fr/blob/production/db/seeds.rb) de rdv-solidarités permettent de créer ces différents éléments pour vous**:
+
+- Le territoire de la Drôme avec 2 organisations ("Plateforme mutualisée d'orientation" et "Plie Valence") et le territoire de l'Yonne avec une organisation ("UT Avallon")
+- Un agent [`Alain Sertion`](https://github.com/betagouv/rdv-solidarites.fr/blob/feffeda72d4b07e7866b6f2b063fb448cd2be178/db/seeds.rb#L658) admin sur ces organisations avec des plages d'ouvertures préconfigurées
+
+- Les webhooks qui pointent vers RDV-I pour ces orgas
 
 ## Setup
 
-Voir les variables d'environnement pour configurer l'accès à PostgreSQL
+### Seeds
 
-Le script se charge d’installer les gems et packages et de créer la base de données.
+Avant de le lancer les commandes suivantes, veuillez mettre à jour [le fichier de seeds](db/seeds.rb) pour que les organisations que l'on crée pointent vers les organisations créés précédemment sur RDV-Solidarités (en changeant le `rdv_solidarites_organisation_id` au niveau des organisations).
+
+Il n'y a pas d'agent créé dans les seeds : Se connecter sur RDV-Insertion avec ses identifiants RDV-Solidarités crée automatiquement l'agent en question sur RDV-Insertion.
+
+### Lancer l'appli
+
+Le script suivant se charge d’installer les gems et packages et de créer la base de données.
+
 ```bash
 make install  ## appelle bin/setup
 ```
 
-Assurez-vous d'avoir une instance de redis en cours d'éxecution
+Assurez-vous d'avoir une instance de redis en cours d'éxecution.
 
 Il ne reste (si tout s’est bien passé) qu’à lancer un serveur le serveur.
+
 ```bash
 make run      ## appelle foreman s -f Procfile.dev
 ```
 
-Il n'y a pas d'agent créé dans les seeds : les agents utilisateurs de rdv-insertion sont récupérés de rdv-solidarités
-Les informations à ce sujet peuvent être trouvées dans [le fichier de seeds](db/seeds.rb)
-
-
 ## Commandes
 
-Un [Makefile](https://github.com/betagouv/rdv-insertion/blob/staging/Makefile) est disponible, qui sert de point d’entrée aux différents outils :
+Un [Makefile](https://github.com/betagouv/rdv-insertion/blob/staging/Makefile) est disponible, qui sert de point d’entrée aux différents outils :
 
 ```bash
 > make help
