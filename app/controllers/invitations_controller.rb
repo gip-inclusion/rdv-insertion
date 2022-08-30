@@ -12,18 +12,9 @@ class InvitationsController < ApplicationController
       respond_to do |format|
         format.json { render json: { success: true, invitation: @invitation } }
         format.pdf { send_data pdf, filename: pdf_filename, layout: "application/pdf" }
-        format.turbo_stream
       end
     else
-      respond_to do |format|
-        format.json do
-          render json: { success: false, errors: @errors }, status: :unprocessable_entity
-        end
-        format.pdf do
-          render json: { success: false, errors: @errors }, status: :unprocessable_entity
-        end
-        format.turbo_stream
-      end
+      render json: { success: false, errors: @errors }, status: :unprocessable_entity
     end
   end
 

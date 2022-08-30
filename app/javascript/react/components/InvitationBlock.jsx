@@ -3,7 +3,6 @@ import InvitationsDatesRow from "./InvitationsDatesRow";
 
 import sortInvitationsByFormatsAndDates from "../../lib/sortInvitationsByFormatsAndDates";
 import handleApplicantInvitation from "../lib/handleApplicantInvitation";
-import getInvitationLetter from "../actions/getInvitationLetter";
 import { todaysDateString } from "../../lib/datesHelper";
 
 export default function InvitationBlock({
@@ -62,18 +61,15 @@ export default function InvitationBlock({
       organisation.id,
       isDepartmentLevel,
       motifCategory,
-      organisation.phone_number
+      organisation.phone_number,
     ];
     let newInvitationDate;
 
-    if (format === "postal") {
-      const invitationLetter = await getInvitationLetter(...applicantParams);
-      if (invitationLetter?.success) {
-        newInvitationDate = todaysDateString();
-      }
+    const result = await handleApplicantInvitation(...applicantParams, format);
+    if (format === "postal" && result.success) {
+      newInvitationDate = todaysDateString();
     } else {
-      const invitation = await handleApplicantInvitation(...applicantParams, format);
-      newInvitationDate = invitation?.sent_at;
+      newInvitationDate = result.invitation?.sent_at;
     }
     setInvitationsDatesByFormat((prevState) => ({
       ...prevState,

@@ -147,52 +147,6 @@ describe InvitationsController, type: :controller do
           )
         post :create, params: create_params
       end
-
-      context "when the request is in a turbo stream format" do
-        render_views
-
-        before { create_params[:format] = "turbo_stream" }
-
-        it "calls the service" do
-          expect(Invitations::SaveAndSend).to receive(:call)
-            .with(
-              invitation: invitation,
-              rdv_solidarites_session: rdv_solidarites_session
-            )
-          post :create, params: create_params
-        end
-
-        it "renders a disabled and checked input checkbox" do
-          post :create, params: create_params
-
-          expect(response).to be_successful
-          expect(response.body).to match(/disabled="disabled"/)
-          expect(response.body).to match(/checked="checked"/)
-        end
-
-        context "when the service fails" do
-          before do
-            allow(Invitations::SaveAndSend).to receive(:call)
-              .and_return(OpenStruct.new(success?: false, errors: ["Cannot invite"]))
-          end
-
-          it "does not render a disabled and checked input checkbox" do
-            post :create, params: create_params
-
-            expect(response).to be_successful
-            expect(response.body).not_to match(/disabled="false"/)
-            expect(response.body).not_to match(/checked="false"/)
-          end
-
-          it "renders an error modal" do
-            post :create, params: create_params
-
-            expect(response).to be_successful
-            expect(response.body).to match(/❌ L&#39;invitation de Madame Jane DOE par email n&#39;a pas pu aboutir/)
-            expect(response.body).to match(/Cannot invite/)
-          end
-        end
-      end
     end
 
     context "when the service succeeds" do

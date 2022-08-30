@@ -15,6 +15,6 @@ class Department < ApplicationRecord
   end
 
   def motif_categories
-    configurations.map(&:motif_category)
+    configurations.map(&:motif_category).uniq
   end
 end
