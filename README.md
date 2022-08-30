@@ -4,19 +4,30 @@ L'objectif de ce service numérique public est de faciliter la prise de 1er RDV 
 de s'interfacer facilement avec [RDV-Solidarites](https://github.com/betagouv/rdv-solidarites.fr).
 
 Le site est disponible
+
 - En production sur [rdv-insertion.fr/](https://rdv-insertion.fr/).
 - En démo sur [rdv-insertion-demo.fr/](https://rdv-insertion-demo.fr/).
-
-## Statistiques
-
-- [Statistiques de rdv-insertion](https://rdv-insertion.fr/stats)
 
 ## Installation
 
 La procédure d'installation [est disponible ici](https://github.com/betagouv/rdv-insertion/blob/staging/INSTALL.md)
 
+## Contribuer
+
+Pour contribuer les instructions sont disponibles [ici](https://github.com/betagouv/rdv-insertion/blob/staging/CONTRIBUTE.md)
+
+## Guide d'utilisation
+
+La guide d'utilisation de l'application se trouve [ici](https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/)
+
+## Statistiques
+
+Les statistiques d'utilisation de l'application sont consultables [ici](https://rdv-insertion.fr/stats)
+
 ## Déploiement
 
-Une fois qu'une PR est mergé sur la branche `staging`, les changements sont automatiquements déployés sur [l'environnement de démo](https://www.rdv-insertion-demo.fr).
+RDV-Insertion utilise [Scalingo](https://scalingo.com/) pour héberger les applis de staging et de production. Le déploiement se fait automatiquement avec Github:
 
-Une fois les changements testés en demo, il faut lancer le script `./deploy.sh` qui se charge de pusher les changements sur la branche `main`, qui a pour effet de les déployer [en production](https://www.rdv-insertion.fr).
+- Une fois qu'une PR est mergé sur la branche `staging`, les changements sont automatiquements déployés sur [l'environnement de démo](https://www.rdv-insertion-demo.fr).
+
+- Une fois les changements testés en demo, il faut lancer le script `./deploy.sh` qui se charge de pusher les changements sur la branche `main`, qui a pour effet de les déployer [en production](https://www.rdv-insertion.fr).
