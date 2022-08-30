@@ -15,12 +15,16 @@
 
 Cette application est conçue pour fonctionner en complément de RDV-Solidarités.
 RDV-Solidarités doit donc être installé et tourner en local pour obtenir un environnement de dev fonctionnel.
-Le code source de rdv-solidarités peut être trouvé [ici](https://github.com/betagouv/rdv-solidarites.fr/).
+
+Le code source de RDV-Solidarités peut être trouvé [ici](https://github.com/betagouv/rdv-solidarites.fr/).
+
 Les instructions d'installation sont [ici](https://github.com/betagouv/rdv-solidarites.fr/blob/production/docs/1-installation.md).
 
 ### Créer un territoire, une organisation et les webhook endpoints
 
-Pour utiliser RDV-Insertion proprement en local, il est nécessaire de créer sur RDV-S :
+**Les [seeds](https://github.com/betagouv/rdv-solidarites.fr/blob/production/db/seeds.rb) de RDV-Solidarités permettent de créer les différents éléments dont vous aurez besoin pour utiliser l'application en local.**
+
+En effet pour utiliser RDV-Insertion proprement en local, il est nécessaire de créer sur RDV-Solidarités :
 
 - Les territories et organisations correspondant aux départments et organisations que l'on va utiliser sur RDV-Insertion (voir [Setup](#Setup))
 
@@ -28,14 +32,14 @@ Pour utiliser RDV-Insertion proprement en local, il est nécessaire de créer su
 
 - Configurer les webhooks de chaque organisation pour les envoyer vers l'appli RDV-Insertion en local (`POST http://localhost:8000/rdv_solidarites_webhooks`)
 
-**Les [seeds](https://github.com/betagouv/rdv-solidarites.fr/blob/production/db/seeds.rb) de rdv-solidarités permettent de créer ces différents éléments pour vous**:
+Ainsi le fichier [seeds](https://github.com/betagouv/rdv-solidarites.fr/blob/production/db/seeds.rb) permet de créer:
 
 - Le territoire de la Drôme avec 2 organisations ("Plateforme mutualisée d'orientation" et "Plie Valence") et le territoire de l'Yonne avec une organisation ("UT Avallon")
 - Un agent [`Alain Sertion`](https://github.com/betagouv/rdv-solidarites.fr/blob/feffeda72d4b07e7866b6f2b063fb448cd2be178/db/seeds.rb#L658) admin sur ces organisations avec des plages d'ouvertures préconfigurées
 
-- Les webhooks qui pointent vers RDV-I pour ces orgas
+- Les webhooks qui pointent vers RDV-Insertion pour ces orgas
 
-## Setup
+## Installer RDV-Insertion
 
 ### Seeds
 
