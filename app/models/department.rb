@@ -17,4 +17,10 @@ class Department < ApplicationRecord
   def motif_categories
     configurations.map(&:motif_category).uniq
   end
+
+  def logo_format
+    %w[svg png jpg].find do |format|
+      Webpacker.manifest.lookup("media/images/logos/#{name.parameterize}.#{format}")
+    end
+  end
 end
