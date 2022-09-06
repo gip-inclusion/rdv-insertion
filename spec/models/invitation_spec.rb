@@ -44,5 +44,15 @@ describe Invitation do
 
       it { expect(invitation).not_to be_valid }
     end
+
+    context "when it is a postal invitation that expires in less than 5 days" do
+      before do
+        travel_to(Time.zone.parse("2022-05-04"))
+        invitation.format = "postal"
+        invitation.valid_until = Time.zone.parse("2022-05-08")
+      end
+
+      it { expect(invitation).not_to be_valid }
+    end
   end
 end

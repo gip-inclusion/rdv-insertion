@@ -9,6 +9,7 @@ class Invitation < ApplicationRecord
   validates :help_phone_number, :token, :organisations, :link, :number_of_days_to_accept_invitation,
             presence: true
   validate :organisations_cannot_be_from_different_departments
+  validate :postal_invitation_cannot_expire_in_less_than_5_days
 
   delegate :motif_category, :motif_category_human, to: :rdv_context
 
@@ -65,6 +66,12 @@ class Invitation < ApplicationRecord
     return if organisations.map(&:department_id).uniq == [department_id]
 
     errors.add(:organisations, :invalid)
+  end
+
+  def postal_invitation_cannot_expire_in_less_than_5_days
+    return if !format_postal? || valid_until.blank? || valid_until > 5.days.from_now
+
+    errors.add(:base, "La durée de validité de l'invitation pour un courrier doit être supérieure à 5 jours")
   end
 
   def set_rdv_context_status
