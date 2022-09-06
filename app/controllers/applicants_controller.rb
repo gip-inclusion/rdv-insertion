@@ -181,7 +181,9 @@ class ApplicantsController < ApplicationController
   end
 
   def set_current_configuration
-    @current_configuration = @all_configurations.find { |c| c.motif_category == params[:motif_category] }
+    @current_configuration = \
+      @all_configurations.find { |c| c.motif_category == params[:motif_category] } ||
+      @all_configurations.first
   end
 
   def set_current_motif_category
