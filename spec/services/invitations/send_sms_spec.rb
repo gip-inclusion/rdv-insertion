@@ -128,7 +128,8 @@ describe Invitations::SendSms, type: :service do
           "d'accompagnement. Pour choisir la date et l'horaire de votre premier RDV, cliquez sur le lien suivant "\
           "dans les 9 jours: http://www.rdv-insertion.fr/invitations/redirect?token=123\n"\
           "Ce rendez-vous est obligatoire. En l’absence d'action de votre part, " \
-          "le versement de votre RSA pourra être suspendu ou réduit. En cas de problème technique, contactez le 0147200001."
+          "le versement de votre RSA pourra être suspendu ou réduit. " \
+          "En cas de problème technique, contactez le 0147200001."
       end
 
       it("is a success") { is_a_success }
