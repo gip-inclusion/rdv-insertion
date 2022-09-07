@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_30_110610) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_07_135612) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -126,9 +126,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_30_110610) do
     t.integer "number_of_days_to_accept_invitation"
     t.datetime "valid_until"
     t.boolean "reminder", default: false
+    t.string "uuid"
     t.index ["applicant_id"], name: "index_invitations_on_applicant_id"
     t.index ["department_id"], name: "index_invitations_on_department_id"
     t.index ["rdv_context_id"], name: "index_invitations_on_rdv_context_id"
+    t.index ["uuid"], name: "index_invitations_on_uuid", unique: true
   end
 
   create_table "invitations_organisations", id: false, force: :cascade do |t|
@@ -197,10 +199,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_30_110610) do
     t.string "address"
     t.integer "created_by"
     t.integer "status"
-    t.text "context"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "organisation_id"
+    t.text "context"
     t.datetime "last_webhook_update_received_at"
     t.index ["created_by"], name: "index_rdvs_on_created_by"
     t.index ["organisation_id"], name: "index_rdvs_on_organisation_id"

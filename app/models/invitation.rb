@@ -4,10 +4,11 @@ class Invitation < ApplicationRecord
   belongs_to :rdv_context
   has_and_belongs_to_many :organisations
 
-  attr_accessor :content, :validity_duration
+  attr_accessor :content
 
   validates :help_phone_number, :token, :organisations, :link, :number_of_days_to_accept_invitation,
             presence: true
+  validates :uuid, uniqueness: true, allow_nil: true
   validate :organisations_cannot_be_from_different_departments
 
   delegate :motif_category, :motif_category_human, to: :rdv_context
@@ -15,12 +16,14 @@ class Invitation < ApplicationRecord
   enum format: { sms: 0, email: 1, postal: 2 }, _prefix: :format
 
   before_validation :verify_it_expires_in_more_than_5_days_if_postal, on: :create
+  before_create :assign_uuid
   after_commit :set_rdv_context_status
 
   scope :sent, -> { where.not(sent_at: nil) }
   scope :sent_in_time_window, lambda { |number_of_days_before_action_required|
     where("sent_at > ?", number_of_days_before_action_required.days.ago)
   }
+  scope :reminder, ->(reminder = true) { where(reminder: reminder) }
 
   def send_to_applicant
     case self.format
@@ -62,6 +65,17 @@ class Invitation < ApplicationRecord
   end
 
   private
+
+  def assign_uuid
+    self.uuid = generate_uuid
+  end
+
+  def generate_uuid
+    loop do
+      uuid = SecureRandom.send(:choose, [*"A".."Z", *"0".."9"], 8)
+      break uuid unless self.class.find_by(uuid: uuid)
+    end
+  end
 
   def organisations_cannot_be_from_different_departments
     return if organisations.map(&:department_id).uniq == [department_id]
