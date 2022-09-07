@@ -13,6 +13,8 @@ class Invitation < ApplicationRecord
   delegate :motif_category, :motif_category_human, to: :rdv_context
 
   enum format: { sms: 0, email: 1, postal: 2 }, _prefix: :format
+
+  before_validation :verify_it_expires_in_more_than_5_days_if_postal, on: :create
   after_commit :set_rdv_context_status
 
   scope :sent, -> { where.not(sent_at: nil) }
@@ -65,6 +67,12 @@ class Invitation < ApplicationRecord
     return if organisations.map(&:department_id).uniq == [department_id]
 
     errors.add(:organisations, :invalid)
+  end
+
+  def verify_it_expires_in_more_than_5_days_if_postal
+    return if !format_postal? || valid_until.blank? || valid_until > 5.days.from_now
+
+    errors.add(:base, "La durée de validité de l'invitation pour un courrier doit être supérieure à 5 jours")
   end
 
   def set_rdv_context_status

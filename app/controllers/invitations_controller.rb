@@ -102,10 +102,10 @@ class InvitationsController < ApplicationController
     @motif_category = invitation_params[:motif_category]
   end
 
-  # the validity of an invitation is equal to the number of days before an action is required, unless it's postal
+  # the validity of an invitation is equal to the number of days before an action is required, then the organisation
+  # usually convene the applicant
   def set_invitation_validity_duration
-    @invitation.validity_duration = \
-      @invitation.format_postal? ? nil : @current_configuration.number_of_days_before_action_required.days
+    @invitation.validity_duration = @current_configuration.number_of_days_before_action_required.days
   end
 
   def set_department
