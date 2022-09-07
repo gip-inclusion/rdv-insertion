@@ -49,7 +49,7 @@
               </td>
               <td class="d-none d-lg-table-cell">
                 <% if applicant.address.present? %>
-                  <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: "postal", motif_category: @current_motif_category, rdv_context: rdv_context, already_invited: rdv_context.invited_through?("email")  %>
+                  <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: "postal", motif_category: @current_motif_category, rdv_context: rdv_context, already_invited: rdv_context.invited_through?("postal")  %>
                 <% else %>
                   -
                 <% end %>
