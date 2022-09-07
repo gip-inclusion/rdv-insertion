@@ -44,6 +44,14 @@ class RdvSolidaritesClient
     )
   end
 
+  def invalidate_invitation_token(invitation_token)
+    Faraday.put(
+      "#{@url}/api/v1/invitations/#{invitation_token}",
+      { invalidate_token: true },
+      request_headers
+    )
+  end
+
   def create_user_profile(user_id, organisation_id)
     Faraday.post(
       "#{@url}/api/v1/user_profiles",

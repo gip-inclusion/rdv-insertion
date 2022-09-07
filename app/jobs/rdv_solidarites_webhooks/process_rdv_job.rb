@@ -54,6 +54,10 @@ module RdvSolidaritesWebhooks
       applicants.pluck(:id)
     end
 
+    def invitations
+      @invitations ||= Invitation.where(rdv_context_id: rdv_context_ids)
+    end
+
     def organisation
       @organisation ||= Organisation.find_by(rdv_solidarites_organisation_id: rdv_solidarites_organisation_id)
     end
@@ -72,10 +76,16 @@ module RdvSolidaritesWebhooks
           {
             applicant_ids: applicant_ids,
             organisation_id: organisation.id,
-            rdv_context_ids: rdv_contexts.map(&:id),
+            rdv_context_ids: rdv_context_ids,
             last_webhook_update_received_at: @meta[:timestamp]
           }
         )
+        # We invalidate the invitations linked to the new or updated rdvs to avoid double appointments
+        invitations.each do |invitation|
+          InvalidateInvitationTokenJob.perform_async(
+            invitation_id: invitation.id
+          )
+        end
       end
     end
 
@@ -85,6 +95,10 @@ module RdvSolidaritesWebhooks
           RdvContext.find_or_create_by!(applicant: applicant, motif_category: matching_configuration.motif_category)
         end
       end
+    end
+
+    def rdv_context_ids
+      @rdv_context_ids ||= rdv_contexts.map(&:id)
     end
 
     def notify_applicants
