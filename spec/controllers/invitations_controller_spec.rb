@@ -45,9 +45,11 @@ describe InvitationsController, type: :controller do
     end
 
     let!(:rdv_context) { build(:rdv_context, applicant: applicant, motif_category: motif_category) }
+    let!(:valid_until) { Time.zone.parse("2022-05-14 12:30") }
 
     before do
       sign_in(agent)
+      travel_to(Time.zone.parse("2022-05-04 12:30"))
       setup_rdv_solidarites_session(rdv_solidarites_session)
       allow(RdvContext).to receive(:find_or_create_by!)
         .with(motif_category: motif_category, applicant: applicant)
@@ -56,7 +58,7 @@ describe InvitationsController, type: :controller do
         .with(
           department: department, applicant: applicant, organisations: organisations, rdv_context: rdv_context,
           help_phone_number: help_phone_number,
-          number_of_days_to_accept_invitation: 3, format: "sms", rdv_solidarites_lieu_id: nil
+          number_of_days_to_accept_invitation: 3, format: "sms", rdv_solidarites_lieu_id: nil, valid_until: valid_until
         ).and_return(invitation)
       allow(Invitations::SaveAndSend).to receive(:call)
         .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
@@ -75,14 +77,10 @@ describe InvitationsController, type: :controller do
           .with(
             department: department, applicant: applicant, organisations: organisations, rdv_context: rdv_context,
             help_phone_number: help_phone_number,
-            number_of_days_to_accept_invitation: 3, format: "sms", rdv_solidarites_lieu_id: nil
+            number_of_days_to_accept_invitation: 3, format: "sms", rdv_solidarites_lieu_id: nil,
+            valid_until: valid_until
           )
         post :create, params: create_params
-      end
-
-      it "sets a validity_duration on the invitation" do
-        post :create, params: create_params
-        expect(invitation.validity_duration).to eq(10.days)
       end
 
       it "calls the service" do
@@ -114,7 +112,7 @@ describe InvitationsController, type: :controller do
           .with(
             department: department, applicant: applicant, organisations: organisations, rdv_context: rdv_context,
             help_phone_number: help_phone_number,
-            number_of_days_to_accept_invitation: 3, format: "email", rdv_solidarites_lieu_id: "3929"
+            number_of_days_to_accept_invitation: 3, format: "email", rdv_solidarites_lieu_id: "3929", valid_until: valid_until
           ).and_return(invitation)
       end
 
@@ -129,14 +127,9 @@ describe InvitationsController, type: :controller do
           .with(
             department: department, applicant: applicant, organisations: organisations, rdv_context: rdv_context,
             number_of_days_to_accept_invitation: 3, format: "email", help_phone_number: help_phone_number,
-            rdv_solidarites_lieu_id: "3929"
+            rdv_solidarites_lieu_id: "3929", valid_until: valid_until
           )
         post :create, params: create_params
-      end
-
-      it "sets a validity_duration on the invitation" do
-        post :create, params: create_params
-        expect(invitation.validity_duration).to eq(10.days)
       end
 
       it "calls the service" do
@@ -188,7 +181,7 @@ describe InvitationsController, type: :controller do
             .with(
               department: department, applicant: applicant, organisations: organisations, rdv_context: rdv_context,
               number_of_days_to_accept_invitation: 3, format: "postal", help_phone_number: help_phone_number,
-              rdv_solidarites_lieu_id: nil
+              rdv_solidarites_lieu_id: nil, valid_until: valid_until
             ).and_return(invitation)
           allow(Invitations::SaveAndSend).to receive(:call)
             .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
@@ -250,42 +243,72 @@ describe InvitationsController, type: :controller do
     let!(:invitation) { create(:invitation, format: "sms") }
     let!(:invitation2) { create(:invitation, format: "email") }
 
-    context "when format is not specified" do
-      let!(:invite_params) { { token: invitation.token } }
+    context "when a token is passed" do
+      context "when format is not specified" do
+        let!(:invite_params) { { token: invitation.token } }
 
-      it "marks the sms invitation as clicked" do
-        subject
-        expect(invitation.reload.clicked).to eq(true)
-        expect(invitation2.reload.clicked).to eq(false)
+        it "marks the sms invitation as clicked" do
+          subject
+          expect(invitation.reload.clicked).to eq(true)
+          expect(invitation2.reload.clicked).to eq(false)
+        end
+
+        it "redirects to the invitation link" do
+          subject
+          expect(response).to redirect_to invitation.link
+        end
       end
 
-      it "redirects to the invitation link" do
-        subject
-        expect(response).to redirect_to invitation.link
+      context "when format is specified" do
+        let!(:invite_params) { { token: invitation.token, format: "email" } }
+
+        it "marks the matching format invitation as clicked" do
+          subject
+          expect(invitation2.reload.clicked).to eq(true)
+          expect(invitation.reload.clicked).to eq(false)
+        end
+
+        it "redirects to the invitation link" do
+          subject
+          expect(response).to redirect_to invitation2.link
+        end
+      end
+
+      context "when no invitation matches the format" do
+        let!(:invitation) { create(:invitation, format: "email") }
+        let!(:invite_params) { { token: invitation.token } }
+
+        it "raises an error" do
+          expect { subject }.to raise_error(ActiveRecord::RecordNotFound)
+        end
       end
     end
 
-    context "when format is specified" do
-      let!(:invite_params) { { token: invitation.token, format: "email" } }
-
-      it "marks the matching format invitation as clicked" do
-        subject
-        expect(invitation2.reload.clicked).to eq(true)
-        expect(invitation.reload.clicked).to eq(false)
-      end
+    context "when uuid is passed" do
+      let!(:invite_params) { { uuid: invitation2.uuid } }
 
       it "redirects to the invitation link" do
         subject
         expect(response).to redirect_to invitation2.link
       end
-    end
 
-    context "when no invitation matches the format" do
-      let!(:invitation) { create(:invitation, format: "email") }
-      let!(:invite_params) { { token: invitation.token } }
+      context "when the invitation is no longer valid" do
+        render_views
+        before { invitation2.update!(valid_until: 2.days.ago) }
 
-      it "raises an error" do
-        expect { subject }.to raise_error(ActiveRecord::RecordNotFound)
+        it "says the invitation is invalid" do
+          subject
+          expect(response.body.encode).to include("Désolé, votre invitation n'est plus valide!")
+          expect(response.body.encode).to include(invitation.help_phone_number)
+        end
+      end
+
+      context "when the uuid cannot be found" do
+        let!(:invite_params) { { uuid: "some_wrong_uuid" } }
+
+        it "raises an error" do
+          expect { subject }.to raise_error(ActiveRecord::RecordNotFound)
+        end
       end
     end
   end
