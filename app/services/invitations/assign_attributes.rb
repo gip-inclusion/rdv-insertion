@@ -1,5 +1,5 @@
 module Invitations
-  class AssignLinkAndToken < BaseService
+  class AssignAttributes < BaseService
     def initialize(invitation:, rdv_solidarites_session:)
       @invitation = invitation
       @rdv_solidarites_session = rdv_solidarites_session
