@@ -36,13 +36,13 @@ describe Invitations::AssignAttributes, type: :service do
 
     it "retrieves an invitation token" do
       expect(RdvSolidaritesApi::InviteUser).to receive(:call)
-        .with(
-          rdv_solidarites_user_id: rdv_solidarites_user_id, rdv_solidarites_session: rdv_solidarites_session        )
+        .with(rdv_solidarites_user_id: rdv_solidarites_user_id, rdv_solidarites_session: rdv_solidarites_session)
       subject
     end
 
     it "computes a link" do
-      expect(Invitations::ComputeLink).to receive(:call).with(invitation: invitation)
+      expect(Invitations::ComputeLink).to receive(:call)
+        .with(invitation: invitation)
       subject
     end
 

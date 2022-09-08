@@ -112,7 +112,8 @@ describe InvitationsController, type: :controller do
           .with(
             department: department, applicant: applicant, organisations: organisations, rdv_context: rdv_context,
             help_phone_number: help_phone_number,
-            number_of_days_to_accept_invitation: 3, format: "email", rdv_solidarites_lieu_id: "3929", valid_until: valid_until
+            number_of_days_to_accept_invitation: 3, format: "email", rdv_solidarites_lieu_id: "3929",
+            valid_until: valid_until
           ).and_return(invitation)
       end
 
