@@ -34,7 +34,7 @@ class SendInvitationRemindersJob < ApplicationJob
     @valid_invitations_sent_3_days_ago ||= \
       # we want the token to be valid for at least two days to be sure the invitation will be valid
       Invitation.where("valid_until > ?", 2.days.from_now)
-                .where(format: %w[email sms], sent_at: 3.days.ago.all_day)
+                .where(format: %w[email sms], sent_at: 3.days.ago.all_day, reminder: false)
                 .joins(:rdv_context)
                 .where(rdv_contexts: { status: "invitation_pending" })
   end
