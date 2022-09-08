@@ -56,7 +56,7 @@ module Invitations
     end
 
     def organisation
-      @invitation.organisations.last
+      (applicant.organisations & @invitation.organisations).last
     end
 
     def invitation_parameters
