@@ -199,10 +199,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_07_135612) do
     t.string "address"
     t.integer "created_by"
     t.integer "status"
+    t.text "context"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "organisation_id"
-    t.text "context"
     t.datetime "last_webhook_update_received_at"
     t.index ["created_by"], name: "index_rdvs_on_created_by"
     t.index ["organisation_id"], name: "index_rdvs_on_organisation_id"
