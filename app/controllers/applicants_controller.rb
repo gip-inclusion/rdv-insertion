@@ -12,7 +12,7 @@ class ApplicantsController < ApplicationController
   before_action :set_organisations, only: [:new, :create]
   before_action :set_can_be_added_to_other_org, only: [:show]
   before_action :retrieve_applicants, only: [:search]
-  before_action :set_applicants_and_rdv_contexts, only: [:index]
+  before_action :set_applicants, :set_rdv_contexts, only: [:index]
 
   include FilterableApplicantsConcern
 
@@ -36,6 +36,8 @@ class ApplicantsController < ApplicationController
   end
 
   def index
+    filter_applicants
+    @applicants = @applicants.order(created_at: :desc)
     respond_to do |format|
       format.html
       format.csv { export_applicants_to_csv }
@@ -182,19 +184,22 @@ class ApplicantsController < ApplicationController
 
   def set_current_configuration
     @current_configuration = \
-      @all_configurations.find { |c| c.motif_category == params[:motif_category] } ||
-      @all_configurations.first
+      if params[:motif_category].nil?
+        nil
+      else
+        @all_configurations.find { |c| c.motif_category == params[:motif_category] } || @all_configurations.first
+      end
   end
 
   def set_current_motif_category
-    @current_motif_category = @current_configuration&.motif_category
+    @current_motif_category = params[:motif_category].nil? ? nil : @current_configuration&.motif_category
   end
 
   def set_can_be_added_to_other_org
     @can_be_added_to_other_org = (@department.organisation_ids - @applicant.organisation_ids).any?
   end
 
-  def set_applicants_and_rdv_contexts
+  def set_applicants
     @applicants = policy_scope(Applicant)
                   .includes(:invitations)
                   .preload(:organisations, rdv_contexts: [:invitations, :rdvs])
@@ -206,13 +211,24 @@ class ApplicantsController < ApplicationController
         @applicants.where(organisations: @organisation)
       end
 
-    @applicants = @applicants.joins(:rdv_contexts).where(rdv_contexts: { motif_category: @current_motif_category })
-    @rdv_contexts = RdvContext.where(
-      applicant_id: @applicants.archived(false).ids, motif_category: @current_motif_category
-    )
+    @applicants = \
+      if @current_motif_category.present?
+        @applicants.archived(false)
+                   .joins(:rdv_contexts)
+                   .where(rdv_contexts: { motif_category: @current_motif_category })
+      else
+        @applicants.archived(true)
+      end
+  end
+
+  def set_rdv_contexts
+    @rdv_contexts = \
+      if @current_motif_category.present?
+        RdvContext.where(applicant_id: @applicants.ids, motif_category: @current_motif_category)
+      else
+        RdvContext.where(applicant_id: @applicants.ids)
+      end
     @statuses_count = @rdv_contexts.group(:status).count
-    filter_applicants
-    @applicants = @applicants.order(created_at: :desc)
   end
 
   def after_save_path

@@ -16,11 +16,11 @@ module ApplicantsHelper
   end
 
   def show_notification?(configuration)
-    configuration.notify_applicant?
+    configuration.blank? ? false : configuration.notify_applicant?
   end
 
   def show_invitations?(configuration)
-    configuration.invitation_formats.present?
+    configuration.blank? ? false : configuration.invitation_formats.present?
   end
 
   def show_last_invitation_date?(rdv_context)
