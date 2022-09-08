@@ -299,7 +299,7 @@ describe InvitationsController, type: :controller do
 
         it "says the invitation is invalid" do
           subject
-          expect(response.body.encode).to include("Désolé, votre invitation n'est plus valide!")
+          expect(response.body.encode).to include("Désolé, votre invitation n'est plus valide !")
           expect(response.body.encode).to include(invitation.help_phone_number)
         end
       end
