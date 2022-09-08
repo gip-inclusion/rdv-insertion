@@ -39,7 +39,7 @@ describe Invitations::SendSms, type: :service do
   let!(:content) do
     "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous "\
       "d'orientation. Pour choisir la date et l'horaire de votre premier RDV, cliquez sur le lien suivant "\
-      "dans les 9 jours: http://www.rdv-insertion.fr/invitations/redirect?token=123\n"\
+      "dans les 9 jours: http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n"\
       "Ce rendez-vous est obligatoire. En cas de problème technique, contactez le 0147200001."
   end
 
@@ -103,7 +103,7 @@ describe Invitations::SendSms, type: :service do
         "Monsieur John DOE,\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours vous " \
           "invitant à prendre RDV au créneau de votre choix afin de démarrer un parcours d’accompagnement. " \
           "Le lien de prise de RDV suivant expire dans 5 jours: " \
-          "http://www.rdv-insertion.fr/invitations/redirect?token=123\n" \
+          "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
           "Ce rendez-vous est obligatoire. En cas de problème technique, contactez le 0147200001."
       end
 
@@ -126,7 +126,7 @@ describe Invitations::SendSms, type: :service do
       let!(:content) do
         "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous "\
           "d'accompagnement. Pour choisir la date et l'horaire de votre premier RDV, cliquez sur le lien suivant "\
-          "dans les 9 jours: http://www.rdv-insertion.fr/invitations/redirect?token=123\n"\
+          "dans les 9 jours: http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n"\
           "Ce rendez-vous est obligatoire. En l’absence d'action de votre part, " \
           "le versement de votre RSA pourra être suspendu ou réduit. " \
           "En cas de problème technique, contactez le 0147200001."
@@ -147,7 +147,7 @@ describe Invitations::SendSms, type: :service do
           "Monsieur John DOE,\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours vous " \
             "invitant à prendre RDV au créneau de votre choix afin de démarrer un parcours d’accompagnement. " \
             "Le lien de prise de RDV suivant expire dans 5 jours: " \
-            "http://www.rdv-insertion.fr/invitations/redirect?token=123\n" \
+            "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
             "Ce rendez-vous est obligatoire. En l’absence d'action de votre part, " \
             "le versement de votre RSA pourra être suspendu ou réduit. En cas de problème technique, contactez le "\
             "0147200001."

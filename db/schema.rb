@@ -127,9 +127,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_07_144848) do
     t.integer "number_of_days_to_accept_invitation"
     t.datetime "valid_until"
     t.boolean "reminder", default: false
+    t.string "uuid"
     t.index ["applicant_id"], name: "index_invitations_on_applicant_id"
     t.index ["department_id"], name: "index_invitations_on_department_id"
     t.index ["rdv_context_id"], name: "index_invitations_on_rdv_context_id"
+    t.index ["uuid"], name: "index_invitations_on_uuid", unique: true
   end
 
   create_table "invitations_organisations", id: false, force: :cascade do |t|
