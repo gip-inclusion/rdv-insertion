@@ -22,7 +22,7 @@ La guide d'utilisation de l'application se trouve [ici](https://rdv-insertion.gi
 
 ## Architecture
 
-Ci-dessous le schéma de l'architecture de l'application ![schema rdv-insertion](https://github.com/rdv-insertion/blob/staging/docs/architecture_rdv-insertion.png)
+Ci-dessous le schéma de l'architecture de l'application ![schema rdv-insertion](https://github.com/betagouv/rdv-insertion/blob/staging/docs/architecture_rdv-insertion.png)
 
 ## Statistiques
 
