@@ -5,7 +5,7 @@ describe Invitations::GenerateLetter, type: :service do
     )
   end
 
-  let!(:applicant) { create(:applicant) }
+  let!(:applicant) { create(:applicant, organisations: [organisation]) }
   let!(:department) { create(:department) }
   let!(:rdv_context) { create(:rdv_context) }
   let!(:invitation) do

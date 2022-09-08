@@ -3,7 +3,7 @@ class StatsController < ApplicationController
   before_action :set_department, only: [:show]
 
   def index
-    @department_count = Department.count
+    @department_count = Department.displayed_in_stats.count
     @stat = Stat.find_by(department_number: "all")
   end
 

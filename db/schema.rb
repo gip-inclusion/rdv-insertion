@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_07_135612) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_07_144848) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -96,6 +96,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_07_135612) do
     t.string "pronoun"
     t.string "email"
     t.string "phone_number"
+    t.boolean "display_in_stats", default: true
   end
 
   create_table "invitation_parameters", force: :cascade do |t|
