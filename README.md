@@ -10,15 +10,19 @@ Le site est disponible
 
 ## Installation
 
-La procédure d'installation [est disponible ici](https://github.com/betagouv/rdv-insertion/blob/staging/INSTALL.md)
+La procédure d'installation est disponible [ici](https://github.com/betagouv/rdv-insertion/blob/staging/docs/INSTALL.md)
 
 ## Contribuer
 
-Pour contribuer les instructions sont disponibles [ici](https://github.com/betagouv/rdv-insertion/blob/staging/CONTRIBUTE.md)
+Pour contribuer les instructions sont disponibles [ici](https://github.com/betagouv/rdv-insertion/blob/staging/docs/CONTRIBUTE.md)
 
 ## Guide d'utilisation
 
 La guide d'utilisation de l'application se trouve [ici](https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/)
+
+## Architecture
+
+Ci-dessous le schéma de l'architecture de l'application ![schema rdv-insertion](https://github.com/rdv-insertion/blob/staging/docs/architecture_rdv-insertion.png)
 
 ## Statistiques
 
