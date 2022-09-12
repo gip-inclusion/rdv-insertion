@@ -1,10 +1,9 @@
 class InvitationsController < ApplicationController
   before_action :set_organisations, :set_organisation, :set_department, :set_applicant,
                 :set_motif_category, :set_rdv_context, :set_current_configuration,
-                :set_invitation_format, :set_new_invitation,
-                :set_invitation_validity_duration, :set_save_and_send_invitation_results,
+                :set_invitation_format, :set_new_invitation, :set_save_and_send_invitation_results,
                 only: [:create]
-  before_action :set_invitation, only: [:redirect]
+  before_action :set_invitation, :verify_invitation_validity, only: [:redirect]
   skip_before_action :authenticate_agent!, only: [:invitation_code, :redirect]
 
   def create
@@ -43,7 +42,10 @@ class InvitationsController < ApplicationController
       format: @invitation_format,
       number_of_days_to_accept_invitation: @current_configuration.number_of_days_to_accept_invitation,
       help_phone_number: invitation_params[:help_phone_number],
-      rdv_solidarites_lieu_id: invitation_params[:rdv_solidarites_lieu_id]
+      rdv_solidarites_lieu_id: invitation_params[:rdv_solidarites_lieu_id],
+      # the validity of an invitation is equal to the number of days before an action is required, then the organisation
+      # usually convene the applicant
+      valid_until: @current_configuration.number_of_days_before_action_required.days.from_now
     )
     authorize @invitation
   end
@@ -102,12 +104,6 @@ class InvitationsController < ApplicationController
     @motif_category = invitation_params[:motif_category]
   end
 
-  # the validity of an invitation is equal to the number of days before an action is required, unless it's postal
-  def set_invitation_validity_duration
-    @invitation.validity_duration = \
-      @invitation.format_postal? ? nil : @current_configuration.number_of_days_before_action_required.days
-  end
-
   def set_department
     @department = @organisations.first.department
   end
@@ -117,9 +113,20 @@ class InvitationsController < ApplicationController
   end
 
   def set_invitation
-    # TODO: identify the invitation with a uuid
-    @invitation = Invitation.where(format: invitation_format, token: params[:token]).last
+    @invitation = \
+      if params[:uuid].present?
+        # the token passed as a uuid will happen only during the transition for the postal invitation form
+        Invitation.find_by(uuid: params[:uuid]) || Invitation.find_by(token: params[:uuid], format: invitation_format)
+      else
+        Invitation.find_by(format: invitation_format, token: params[:token])
+      end
     raise ActiveRecord::RecordNotFound unless @invitation
+  end
+
+  def verify_invitation_validity
+    return unless @invitation.expired?
+
+    render :invalid
   end
 
   def invitation_format

@@ -14,9 +14,9 @@
         <thead class="text-dark-blue">
           <th scope="col">Nom</th>
           <th scope="col">Prénom</th>
-          <th scope="col" class="d-none d-lg-table-cell">📱 SMS</th>
-          <th scope="col" class="d-none d-lg-table-cell">📧 Email</th>
-          <th scope="col" class="d-none d-lg-table-cell">📮 Courrier</th>
+          <%  @current_configuration.invitation_formats.each do |invitation_format| %>
+            <th scope="col" class="d-none d-lg-table-cell"><%= t(".#{invitation_format}_column_title") %></th>
+          <% end  %>
           <% if show_invitations?(@current_configuration) %>
             <th scope="col">Première invitation</th>
             <th scope="col">Dernière invitation</th>
@@ -33,26 +33,15 @@
             <tr class="<%= "table-danger" if applicant.is_archived? %>">
               <td><%= display_attribute applicant.last_name %></td>
               <td><%= display_attribute applicant.first_name %></td>
-              <td class="d-none d-lg-table-cell">
-                <% if applicant.phone_number.present? %>
-                  <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: "sms", motif_category: @current_motif_category, rdv_context: rdv_context, already_invited: rdv_context.invited_through?("sms") %>
-                <% else %>
-                  -
-                <% end %>
-              </td>
-              <td class="d-none d-lg-table-cell">
-                <% if applicant.email.present? %>
-                  <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: "email", motif_category: @current_motif_category, rdv_context: rdv_context, already_invited: rdv_context.invited_through?("email")  %>
-                <% else %>
-                  -
-                <% end %>
-              </td>
-              <td class="d-none d-lg-table-cell">
-                <% if applicant.address.present? %>
-                  <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: "postal", motif_category: @current_motif_category, rdv_context: rdv_context, already_invited: rdv_context.invited_through?("email")  %>
-                <% else %>
-                  -
-                <% end %>
+              <% @current_configuration.invitation_formats.each do |invitation_format| %>
+                <td class="d-none d-lg-table-cell">
+                  <% if applicant.can_be_invited_through?(invitation_format) %>
+                    <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: invitation_format, motif_category: @current_motif_category, rdv_context: rdv_context, already_invited: rdv_context.invited_through?(invitation_format) %>
+                  <% else %>
+                    -
+                  <% end %>
+                </td>
+              <% end %>
               </td>
               <% if show_invitations?(@current_configuration) %>
                 <td id="first-invitation-date-<%= rdv_context.id %>"><%= display_attribute format_date(rdv_context.relevant_first_invitation_sent_at) %></td>

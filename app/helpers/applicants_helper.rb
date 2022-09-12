@@ -3,18 +3,6 @@ module ApplicantsHelper
     date&.strftime("%d/%m/%Y")
   end
 
-  def show_sms_invitation?(configuration)
-    configuration.invitation_formats.include?("sms")
-  end
-
-  def show_email_invitation?(configuration)
-    configuration.invitation_formats.include?("email")
-  end
-
-  def show_postal_invitation?(configuration)
-    configuration.invitation_formats.include?("postal")
-  end
-
   def show_notification?(configuration)
     configuration.notify_applicant?
   end

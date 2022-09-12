@@ -12,7 +12,7 @@
   <p>La première étape est <span class="bold-blue">une rencontre avec un professionnel de l’insertion</span> afin de définir, selon votre situation et vos besoins, quelle sera la structure la mieux adaptée pour vous accompagner.</p>
   <p>Pour faciliter votre prise de rendez-vous, <%= sender_name %> a mis en place <span class="bold-blue">une plateforme vous permettant de prendre rendez-vous vous-même.</span></p>
   <p>Pour choisir un créneau à votre convenance, saisissez le code d’invitation ci-dessous <span class="bold-blue">sur <u><%= ENV['HOST'] %>/invitation</u></span>, puis suivez les instructions présentes à l'écran :</p>
-  <div class="invitation-token">Mon code d'invitation<br/><%= invitation.token %></div>
+  <div class="invitation-token">Mon code d'invitation<br/><%= invitation.uuid %></div>
   <p>Dans le cadre du versement de votre allocation RSA, vous devez obligatoirement prendre ce rendez-vous dans un délai de <%= invitation.number_of_days_to_accept_invitation %> jours à réception de ce courrier.</p>
   <%= render 'letters/help_message', invitation: invitation, invitation_parameters: invitation_parameters %>
   <p>Veuillez agréer, <%= applicant.title.capitalize %>, l’expression de mes salutations distinguées.</p>

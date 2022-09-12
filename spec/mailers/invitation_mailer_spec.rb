@@ -9,11 +9,10 @@ RSpec.describe InvitationMailer, type: :mailer do
   let!(:invitation) do
     create(
       :invitation,
-      applicant: applicant, token: token, department: department, format: "email", help_phone_number: help_phone_number,
+      applicant: applicant, department: department, format: "email", help_phone_number: help_phone_number,
       number_of_days_to_accept_invitation: 5, organisations: [organisation]
     )
   end
-  let!(:token) { "some_token" }
 
   describe "#invitation_for_rsa_orientation" do
     subject do
@@ -36,7 +35,7 @@ RSpec.describe InvitationMailer, type: :mailer do
         "Vous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous d'orientation"
       )
       expect(subject.body.encoded).to match("/invitations/redirect")
-      expect(subject.body.encoded).to match("token=some_token")
+      expect(subject.body.encoded).to match("uuid=#{invitation.uuid}")
       expect(subject.body.encoded).to match("dans les 5 jours")
     end
 
@@ -71,7 +70,7 @@ RSpec.describe InvitationMailer, type: :mailer do
         "Vous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous d'accompagnement."
       )
       expect(subject.body.encoded).to match("/invitations/redirect")
-      expect(subject.body.encoded).to match("token=some_token")
+      expect(subject.body.encoded).to match("uuid=#{invitation.uuid}")
       expect(subject.body.encoded).to match("dans les 5 jours")
     end
 

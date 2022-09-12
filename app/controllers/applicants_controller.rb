@@ -7,10 +7,11 @@ class ApplicantsController < ApplicationController
     :status, :rights_opening_date, :archiving_reason, :is_archived
   ].freeze
   before_action :set_applicant, only: [:show, :update, :edit]
-  before_action :set_organisation, :set_department, :set_all_configurations, :set_current_configuration,
-                :set_current_motif_category, only: [:index, :new, :create, :show, :update, :edit]
+  before_action :set_organisation, :set_department, only: [:index, :new, :create, :show, :update, :edit]
+  before_action :set_all_configurations, :set_current_configuration, :set_current_motif_category,
+                only: [:index]
   before_action :set_organisations, only: [:new, :create]
-  before_action :set_can_be_added_to_other_org, only: [:show]
+  before_action :set_applicant_rdv_contexts, :set_can_be_added_to_other_org, only: [:show]
   before_action :retrieve_applicants, only: [:search]
   before_action :set_applicants_and_rdv_contexts, only: [:index]
 
@@ -143,7 +144,7 @@ class ApplicantsController < ApplicationController
 
   def set_organisation_at_department_level
     return set_organisation_through_form if params[:action] == "create"
-    return if @applicant.nil?
+    return if @applicant.nil? # no need to set an organisation if we are not in an applicant-level page
 
     @organisation = policy_scope(Organisation)
                     .find_by(id: @applicant.organisation_ids, department_id: params[:department_id])
@@ -188,6 +189,10 @@ class ApplicantsController < ApplicationController
 
   def set_current_motif_category
     @current_motif_category = @current_configuration&.motif_category
+  end
+
+  def set_applicant_rdv_contexts
+    @rdv_contexts = @applicant.rdv_contexts
   end
 
   def set_can_be_added_to_other_org
