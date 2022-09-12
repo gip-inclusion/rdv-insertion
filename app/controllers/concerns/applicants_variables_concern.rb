@@ -40,6 +40,4 @@ module ApplicantsVariablesConcern
         @organisation.configurations
       end
   end
-
-
 end

@@ -187,4 +187,3 @@ describe ArchivedApplicantsController, type: :controller do
     end
   end
 end
-
