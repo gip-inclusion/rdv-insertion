@@ -31,6 +31,7 @@ Rails.application.routes.draw do
       end
       resources :invitations, only: [:create]
     end
+    resources :archived_applicants, only: [:index]
   end
 
   resources :stats, only: [:index, :show] do
@@ -52,6 +53,7 @@ Rails.application.routes.draw do
       resources :invitations, only: [:create]
       resources :applicants_organisations, only: [:new, :create]
     end
+    resources :archived_applicants, only: [:index]
   end
   resources :filter_applicants, only: [:new]
 

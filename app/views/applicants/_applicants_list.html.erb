@@ -6,7 +6,7 @@
       </li>
     <% end %>
     <li class="nav-item">
-      <%= link_to "Archivés", compute_index_path(@organisation, @department, motif_category: nil), class: "nav-link #{@all_configurations.map(&:id).include?(@current_configuration&.id) ? '' : 'active'}" %>
+      <%= link_to "Archivés", compute_archived_index_path(@organisation, @department), class: "nav-link #{@all_configurations.map(&:id).include?(@current_configuration&.id) ? '' : 'active'}" %>
     </li>
   </ul>
   <div class="col-12 text-center">

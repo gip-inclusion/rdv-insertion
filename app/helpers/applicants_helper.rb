@@ -111,6 +111,14 @@ module ApplicantsHelper
     end
   end
 
+  def compute_archived_index_path(organisation, department)
+    if department_level?
+      department_archived_applicants_path(department)
+    else
+      organisation_archived_applicants_path(organisation)
+    end
+  end
+
   def compute_edit_path(applicant, organisation, department)
     return edit_department_applicant_path(department, applicant) if department_level?
 

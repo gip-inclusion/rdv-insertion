@@ -10,8 +10,8 @@
           )
         %>
       </div>
-      <%= render "filter_by_invitations_dates_button" %>
-      <%= render 'search_form' %>
+      <%= render "applicants/filter_by_invitations_dates_button" %>
+      <%= render "applicants/search_form" %>
       <div class="d-flex justify-content-between mt-1">
         <% if @current_configuration.present? %>
           <div class=" text-left mt-2">
@@ -59,6 +59,6 @@
       <%= link_to "Export csv bénéficiaires", compute_index_path(@organisation, @department, **params.to_unsafe_h.merge(format: "csv")), class: "btn btn-blue-out mt-2", id: "js-csv-export-tooltip", target: "_blank" %>
     </div>
   </div>
-  <%= render "applicants_list" %>
+  <%= render "applicants/applicants_list" %>
 </div>
 

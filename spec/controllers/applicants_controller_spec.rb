@@ -435,20 +435,6 @@ describe ApplicantsController, type: :controller do
       end
     end
 
-    context "when no context is specified" do
-      let!(:index_params) { { organisation_id: organisation.id } }
-
-      it "returns the list of the archived applicants" do
-        get :index, params: index_params
-
-        expect(response).to be_successful
-        expect(response.body).not_to match(/Darmon/)
-        expect(response.body).not_to match(/Chabat/)
-        expect(response.body).not_to match(/Baer/)
-        expect(response.body).to match(/Carette/)
-      end
-    end
-
     context "when a search query is specified" do
       let!(:index_params) do
         { organisation_id: organisation.id, search_query: "chabat", motif_category: "rsa_orientation" }
@@ -458,6 +444,7 @@ describe ApplicantsController, type: :controller do
         get :index, params: index_params
         expect(response.body).to match(/Chabat/)
         expect(response.body).not_to match(/Baer/)
+        expect(response.body).not_to match(/Carette/)
       end
     end
 
@@ -470,6 +457,7 @@ describe ApplicantsController, type: :controller do
         get :index, params: index_params
         expect(response.body).to match(/Baer/)
         expect(response.body).not_to match(/Chabat/)
+        expect(response.body).not_to match(/Carette/)
       end
     end
 
@@ -495,6 +483,7 @@ describe ApplicantsController, type: :controller do
           expect(response.body).to match(/Baer/)
           expect(response.body).not_to match(/Chabat/)
           expect(response.body).not_to match(/Darmon/)
+          expect(response.body).not_to match(/Carette/)
         end
       end
 
@@ -522,6 +511,7 @@ describe ApplicantsController, type: :controller do
           expect(response.body).not_to match(/Baer/)
           expect(response.body).not_to match(/Chabat/)
           expect(response.body).to match(/Darmon/)
+          expect(response.body).not_to match(/Carette/)
         end
       end
     end
@@ -539,6 +529,7 @@ describe ApplicantsController, type: :controller do
           get :index, params: index_params
           expect(response.body).to match(/Baer/)
           expect(response.body).not_to match(/Chabat/)
+          expect(response.body).not_to match(/Carette/)
         end
       end
 
@@ -549,6 +540,7 @@ describe ApplicantsController, type: :controller do
           get :index, params: index_params
           expect(response.body).not_to match(/Baer/)
           expect(response.body).not_to match(/Chabat/)
+          expect(response.body).not_to match(/Carette/)
         end
       end
     end
@@ -561,6 +553,7 @@ describe ApplicantsController, type: :controller do
 
         expect(response.body).to match(/Chabat/)
         expect(response.body).to match(/Baer/)
+        expect(response.body).not_to match(/Carette/)
       end
     end
 

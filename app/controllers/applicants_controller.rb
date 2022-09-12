@@ -15,6 +15,8 @@ class ApplicantsController < ApplicationController
   before_action :set_applicants, :set_rdv_contexts, only: [:index]
 
   include FilterableApplicantsConcern
+  include ApplicantsVariablesConcern
+  include ExportApplicantsToCsvConcern
 
   def new
     @applicant = Applicant.new(department: @department)
@@ -87,21 +89,6 @@ class ApplicantsController < ApplicationController
     )
   end
 
-  def export_applicants_to_csv
-    csv = create_applicants_csv_export.csv
-    filename = create_applicants_csv_export.filename
-    send_data csv, filename: filename
-  end
-
-  def create_applicants_csv_export
-    @structure = department_level? ? @department : @organisation
-    GenerateApplicantsCsv.call(
-      applicants: @applicants,
-      structure: @structure,
-      motif_category: @current_motif_category
-    )
-  end
-
   def save_applicant_and_redirect(page)
     if save_applicant.success?
       redirect_to(after_save_path)
@@ -134,65 +121,19 @@ class ApplicantsController < ApplicationController
       .find(params[:id])
   end
 
-  def set_organisation
-    @organisation = \
-      if department_level?
-        set_organisation_at_department_level
-      else
-        policy_scope(Organisation).includes(:applicants, :configurations).find(params[:organisation_id])
-      end
-  end
-
-  def set_organisation_at_department_level
-    return set_organisation_through_form if params[:action] == "create"
-    return if @applicant.nil?
-
-    @organisation = policy_scope(Organisation)
-                    .find_by(id: @applicant.organisation_ids, department_id: params[:department_id])
-  end
-
-  def set_organisation_through_form
-    # for now we allow only one organisation through creation
-    @organisation = Organisation.find_by(
-      id: params[:applicant][:organisation_ids], department_id: params[:department_id]
-    )
-  end
-
   def set_organisations
     return unless department_level?
 
     @organisations = policy_scope(Organisation).where(department: @department)
   end
 
-  def set_department
-    @department = \
-      if department_level?
-        policy_scope(Department).includes(:organisations, :applicants).find(params[:department_id])
-      else
-        @organisation.department
-      end
-  end
-
-  def set_all_configurations
-    @all_configurations = \
-      if department_level?
-        (policy_scope(::Configuration) & @department.configurations).uniq(&:motif_category)
-      else
-        @organisation.configurations
-      end
-  end
-
   def set_current_configuration
     @current_configuration = \
-      if params[:motif_category].nil?
-        nil
-      else
-        @all_configurations.find { |c| c.motif_category == params[:motif_category] } || @all_configurations.first
-      end
+      @all_configurations.find { |c| c.motif_category == params[:motif_category] } || @all_configurations.first
   end
 
   def set_current_motif_category
-    @current_motif_category = params[:motif_category].nil? ? nil : @current_configuration&.motif_category
+    @current_motif_category = @current_configuration&.motif_category
   end
 
   def set_can_be_added_to_other_org
@@ -203,6 +144,9 @@ class ApplicantsController < ApplicationController
     @applicants = policy_scope(Applicant)
                   .includes(:invitations)
                   .preload(:organisations, rdv_contexts: [:invitations, :rdvs])
+                  .archived(false)
+                  .joins(:rdv_contexts)
+                  .where(rdv_contexts: { motif_category: @current_motif_category })
                   .active.distinct
     @applicants = \
       if department_level?
@@ -210,24 +154,10 @@ class ApplicantsController < ApplicationController
       else
         @applicants.where(organisations: @organisation)
       end
-
-    @applicants = \
-      if @current_motif_category.present?
-        @applicants.archived(false)
-                   .joins(:rdv_contexts)
-                   .where(rdv_contexts: { motif_category: @current_motif_category })
-      else
-        @applicants.archived(true)
-      end
   end
 
   def set_rdv_contexts
-    @rdv_contexts = \
-      if @current_motif_category.present?
-        RdvContext.where(applicant_id: @applicants.ids, motif_category: @current_motif_category)
-      else
-        RdvContext.where(applicant_id: @applicants.ids)
-      end
+    @rdv_contexts = RdvContext.where(applicant_id: @applicants.ids, motif_category: @current_motif_category)
     @statuses_count = @rdv_contexts.group(:status).count
   end
 
