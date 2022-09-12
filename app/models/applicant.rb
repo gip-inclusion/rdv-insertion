@@ -3,6 +3,11 @@ class Applicant < ApplicationRecord
     :first_name, :last_name, :birth_date, :email, :phone_number, :address, :affiliation_number, :birth_name
   ].freeze
   RDV_SOLIDARITES_CLASS_NAME = "User".freeze
+  REQUIRED_ATTRIBUTES_FOR_INVITATION_FORMATS = {
+    "sms" => :phone_number,
+    "email" => :email,
+    "postal" => :address
+  }.freeze
 
   include SearchableConcern
   include NotificableConcern
@@ -15,6 +20,7 @@ class Applicant < ApplicationRecord
   has_and_belongs_to_many :organisations
   has_many :invitations, dependent: :destroy
   has_many :rdv_contexts, dependent: :destroy
+  has_many :configurations, through: :organisations
   has_and_belongs_to_many :rdvs
   belongs_to :department
 
@@ -81,6 +87,10 @@ class Applicant < ApplicationRecord
 
   def motif_categories
     rdv_contexts.map(&:motif_category)
+  end
+
+  def can_be_invited_through?(invitation_format)
+    send(REQUIRED_ATTRIBUTES_FOR_INVITATION_FORMATS[invitation_format]).present?
   end
 
   def as_json(_opts = {})
