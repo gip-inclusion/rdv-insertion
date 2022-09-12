@@ -15,7 +15,7 @@
           <th scope="col">Nom</th>
           <th scope="col">Prénom</th>
           <%  @current_configuration.invitation_formats.each do |invitation_format| %>
-            <th scope="col" class="d-none d-lg-table-cell"><%= translate(".#{invitation_format}_column_title") %></th>
+            <th scope="col" class="d-none d-lg-table-cell"><%= t(".#{invitation_format}_column_title") %></th>
           <% end  %>
           <% if show_invitations?(@current_configuration) %>
             <th scope="col">Première invitation</th>
