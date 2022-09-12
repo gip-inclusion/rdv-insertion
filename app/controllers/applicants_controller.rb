@@ -11,7 +11,7 @@ class ApplicantsController < ApplicationController
   before_action :set_all_configurations, :set_current_configuration, :set_current_motif_category,
                 only: [:index]
   before_action :set_organisations, only: [:new, :create]
-  before_action :set_rdv_contexts, :set_can_be_added_to_other_org, only: [:show]
+  before_action :set_applicant_rdv_contexts, :set_can_be_added_to_other_org, only: [:show]
   before_action :retrieve_applicants, only: [:search]
   before_action :set_applicants_and_rdv_contexts, only: [:index]
 
@@ -191,7 +191,7 @@ class ApplicantsController < ApplicationController
     @current_motif_category = @current_configuration&.motif_category
   end
 
-  def set_rdv_contexts
+  def set_applicant_rdv_contexts
     @rdv_contexts = @applicant.rdv_contexts
   end
 
