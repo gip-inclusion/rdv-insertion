@@ -55,7 +55,7 @@ module RdvSolidaritesWebhooks
     end
 
     def invitations
-      @invitations ||= Invitation.where(rdv_context_id: rdv_context_ids)
+      Invitation.where(rdv_context_id: rdv_context_ids)
     end
 
     def organisation
@@ -82,9 +82,7 @@ module RdvSolidaritesWebhooks
         )
         # We invalidate the invitations linked to the new or updated rdvs to avoid double appointments
         invitations.each do |invitation|
-          InvalidateInvitationTokenJob.perform_async(
-            invitation_id: invitation.id
-          )
+          InvalidateInvitationTokenJob.perform_async(invitation.id)
         end
       end
     end

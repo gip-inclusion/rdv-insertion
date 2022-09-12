@@ -5,7 +5,7 @@ class InvalidateInvitationTokenJob < ApplicationJob
     invitation = Invitation.find(invitation_id)
     return if invitation.expired?
 
-    invalidate_token = Invitations::InvalidateToken.call(invitation_id: invitation_id)
+    invalidate_token = Invitations::InvalidateToken.call(invitation: invitation)
 
     raise InvalidateInvitationTokenJobError, invalidate_token.errors.join(" - ") unless invalidate_token.success?
   end
