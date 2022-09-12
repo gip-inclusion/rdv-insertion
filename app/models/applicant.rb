@@ -3,7 +3,7 @@ class Applicant < ApplicationRecord
     :first_name, :last_name, :birth_date, :email, :phone_number, :address, :affiliation_number, :birth_name
   ].freeze
   RDV_SOLIDARITES_CLASS_NAME = "User".freeze
-  ATTRIBUTES_FOR_INVITATION_FORMATS = {
+  REQUIRED_ATTRIBUTES_FOR_INVITATION_FORMATS = {
     "sms" => :phone_number,
     "email" => :email,
     "postal" => :address
@@ -89,8 +89,8 @@ class Applicant < ApplicationRecord
     rdv_contexts.map(&:motif_category)
   end
 
-  def attribute_for_invitation_format(invitation_format)
-    send(ATTRIBUTES_FOR_INVITATION_FORMATS[invitation_format])
+  def can_be_invited_through?(invitation_format)
+    send(REQUIRED_ATTRIBUTES_FOR_INVITATION_FORMATS[invitation_format]).present?
   end
 
   def as_json(_opts = {})

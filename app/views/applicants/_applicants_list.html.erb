@@ -35,7 +35,7 @@
               <td><%= display_attribute applicant.first_name %></td>
               <% @current_configuration.invitation_formats.each do |invitation_format| %>
                 <td class="d-none d-lg-table-cell">
-                  <% if applicant.attribute_for_invitation_format(invitation_format).present? %>
+                  <% if applicant.can_be_invited_through?(invitation_format) %>
                     <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: invitation_format, motif_category: @current_motif_category, rdv_context: rdv_context, already_invited: rdv_context.invited_through?(invitation_format) %>
                   <% else %>
                     -
