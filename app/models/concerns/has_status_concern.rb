@@ -21,10 +21,10 @@ module HasStatusConcern
   def compute_status
     return :not_invited if !invitation_sent? && rdvs.empty?
 
-    invited_after_last_rdv? ? :invitation_pending : rdv_status
+    invited_after_last_created_rdv? ? :invitation_pending : rdv_status
   end
 
-  def last_rdv
+  def last_created_rdv
     rdvs.max_by(&:created_at)
   end
 
@@ -32,17 +32,17 @@ module HasStatusConcern
     invitations.max_by(&:sent_at)
   end
 
-  def invited_after_last_rdv?
+  def invited_after_last_created_rdv?
     return false unless invitation_sent?
     return true if rdvs.empty?
 
     # If there is a pending or a seen rdv we compare to the date of the rdv, otherwise to the date of
     # the rdv creation
     rdv_date_to_compare = \
-      if last_rdv.pending? || last_rdv.seen?
-        last_rdv.starts_at
+      if last_created_rdv.pending? || last_created_rdv.seen?
+        last_created_rdv.starts_at
       else
-        last_rdv.created_at
+        last_created_rdv.created_at
       end
     last_sent_invitation.sent_at > rdv_date_to_compare
   end
@@ -52,14 +52,14 @@ module HasStatusConcern
   end
 
   def rdv_status
-    if last_rdv.pending?
+    if last_created_rdv.pending?
       :rdv_pending
-    elsif last_rdv.seen?
+    elsif last_created_rdv.seen?
       :rdv_seen
     elsif multiple_cancelled_rdvs?
       :multiple_rdvs_cancelled
-    elsif last_rdv.cancelled?
-      :"rdv_#{last_rdv.status}"
+    elsif last_created_rdv.cancelled?
+      :"rdv_#{last_created_rdv.status}"
     else
       :rdv_needs_status_update
     end

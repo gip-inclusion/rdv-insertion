@@ -7,10 +7,11 @@ class ApplicantsController < ApplicationController
     :status, :rights_opening_date, :archiving_reason, :is_archived
   ].freeze
   before_action :set_applicant, only: [:show, :update, :edit]
-  before_action :set_organisation, :set_department, :set_all_configurations, :set_current_configuration,
-                :set_current_motif_category, only: [:index, :new, :create, :show, :update, :edit]
+  before_action :set_organisation, :set_department, only: [:index, :new, :create, :show, :update, :edit]
+  before_action :set_all_configurations, :set_current_configuration, :set_current_motif_category,
+                only: [:index]
   before_action :set_organisations, only: [:new, :create]
-  before_action :set_can_be_added_to_other_org, only: [:show]
+  before_action :set_applicant_rdv_contexts, :set_can_be_added_to_other_org, only: [:show]
   before_action :retrieve_applicants, only: [:search]
   before_action :set_applicants_and_rdv_contexts, only: [:index]
 
@@ -143,7 +144,7 @@ class ApplicantsController < ApplicationController
 
   def set_organisation_at_department_level
     return set_organisation_through_form if params[:action] == "create"
-    return if @applicant.nil?
+    return if @applicant.nil? # no need to set an organisation if we are not in an applicant-level page
 
     @organisation = policy_scope(Organisation)
                     .find_by(id: @applicant.organisation_ids, department_id: params[:department_id])
@@ -181,18 +182,24 @@ class ApplicantsController < ApplicationController
   end
 
   def set_current_configuration
-    @current_configuration = @all_configurations.find { |c| c.motif_category == params[:motif_category] }
+    @current_configuration = \
+      @all_configurations.find { |c| c.motif_category == params[:motif_category] } ||
+      @all_configurations.first
   end
 
   def set_current_motif_category
     @current_motif_category = @current_configuration&.motif_category
   end
 
+  def set_applicant_rdv_contexts
+    @rdv_contexts = @applicant.rdv_contexts
+  end
+
   def set_can_be_added_to_other_org
     @can_be_added_to_other_org = (@department.organisation_ids - @applicant.organisation_ids).any?
   end
 
-  def set_applicants_and_rdv_contexts # rubocop:disable Metrics/AbcSize
+  def set_applicants_and_rdv_contexts
     @applicants = policy_scope(Applicant)
                   .includes(:invitations)
                   .preload(:organisations, rdv_contexts: [:invitations, :rdvs])
@@ -204,15 +211,11 @@ class ApplicantsController < ApplicationController
         @applicants.where(organisations: @organisation)
       end
 
-    if @current_motif_category.nil?
-      @applicants = @applicants.without_rdv_contexts(@all_configurations.map(&:motif_category))
-    else
-      @applicants = @applicants.joins(:rdv_contexts).where(rdv_contexts: { motif_category: @current_motif_category })
-      @rdv_contexts = RdvContext.where(
-        applicant_id: @applicants.archived(false).ids, motif_category: @current_motif_category
-      )
-      @statuses_count = @rdv_contexts.group(:status).count
-    end
+    @applicants = @applicants.joins(:rdv_contexts).where(rdv_contexts: { motif_category: @current_motif_category })
+    @rdv_contexts = RdvContext.where(
+      applicant_id: @applicants.archived(false).ids, motif_category: @current_motif_category
+    )
+    @statuses_count = @rdv_contexts.group(:status).count
     filter_applicants
     @applicants = @applicants.order(created_at: :desc)
   end

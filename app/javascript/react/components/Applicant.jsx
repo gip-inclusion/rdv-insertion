@@ -6,7 +6,6 @@ import handleApplicantCreation from "../lib/handleApplicantCreation";
 import handleApplicantInvitation from "../lib/handleApplicantInvitation";
 import handleApplicantUpdate from "../lib/handleApplicantUpdate";
 import retrieveRelevantOrganisation from "../../lib/retrieveRelevantOrganisation";
-import getInvitationLetter from "../actions/getInvitationLetter";
 import { todaysDateString } from "../../lib/datesHelper";
 import camelToSnakeCase from "../../lib/stringHelper";
 
@@ -81,15 +80,15 @@ export default function Applicant({
       applicant.currentOrganisation.phone_number,
     ];
     if (format === "sms") {
-      const invitation = await handleApplicantInvitation(...invitationParams, "sms");
-      applicant.lastSmsInvitationSentAt = invitation.sent_at;
+      const result = await handleApplicantInvitation(...invitationParams, "sms");
+      applicant.lastSmsInvitationSentAt = result.invitation?.sent_at;
     } else if (format === "email") {
-      const invitation = await handleApplicantInvitation(...invitationParams, "email");
-      applicant.lastEmailInvitationSentAt = invitation.sent_at;
+      const result = await handleApplicantInvitation(...invitationParams, "email");
+      applicant.lastEmailInvitationSentAt = result.invitation?.sent_at;
     } else if (format === "postal") {
       setDownloadInProgress(true);
-      const invitationLetter = await getInvitationLetter(...invitationParams);
-      if (invitationLetter?.success) {
+      const createLetter = await handleApplicantInvitation(...invitationParams, "postal");
+      if (createLetter?.success) {
         applicant.lastPostalInvitationSentAt = todaysDateString();
       }
       setDownloadInProgress(false);

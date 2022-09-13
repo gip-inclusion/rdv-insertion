@@ -10,11 +10,13 @@ class Department < ApplicationRecord
   has_many :rdvs, through: :organisations
   has_many :rdv_contexts, through: :applicants
 
+  scope :displayed_in_stats, -> { where(display_in_stats: true) }
+
   def name_with_region
     "#{name}, #{region}"
   end
 
   def motif_categories
-    configurations.map(&:motif_category)
+    configurations.map(&:motif_category).uniq
   end
 end

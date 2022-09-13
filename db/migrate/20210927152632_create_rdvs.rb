@@ -1,5 +1,4 @@
 class CreateRdvs < ActiveRecord::Migration[6.1]
-  # rubocop:disable Metrics/AbcSize
   def change
     create_table :rdvs do |t|
       t.bigint :rdv_solidarites_rdv_id
@@ -22,5 +21,4 @@ class CreateRdvs < ActiveRecord::Migration[6.1]
     add_index "rdvs", ["status"]
     add_index "rdvs", ["rdv_solidarites_rdv_id"], unique: true
   end
-  # rubocop:enable Metrics/AbcSize
 end

@@ -489,7 +489,7 @@ describe ApplicantsController, type: :controller do
 
         let!(:index_params) do
           { organisation_id: organisation.id, motif_category: "rsa_orientation",
-            last_invitation_date_after: "17-06-2022", last_invitation_date_before: "18-06-2022" }
+            last_invitation_date_after: "17-06-2022", last_invitation_date_before: "17-06-2022" }
         end
 
         it "filters by last invitations dates" do
@@ -533,21 +533,6 @@ describe ApplicantsController, type: :controller do
 
       it "renders the index page" do
         get :index, params: index_params
-
-        expect(response.body).to match(/Chabat/)
-        expect(response.body).to match(/Baer/)
-      end
-    end
-
-    context "when no context is specified" do
-      let!(:applicant) do
-        create(:applicant, organisations: [organisation], last_name: "Chabat", rdv_contexts: [])
-      end
-
-      let!(:rdv_context2) { build(:rdv_context, motif_category: "rsa_accompagnement", status: "invitation_pending") }
-
-      it "lists the applicants with no rdv contexts in the contexts of the org configs" do
-        get :index, params: index_params.merge(motif_category: nil)
 
         expect(response.body).to match(/Chabat/)
         expect(response.body).to match(/Baer/)

@@ -1,7 +1,7 @@
 import Swal from "sweetalert2";
-import inviteApplicant from "./inviteApplicant";
+import inviteApplicant from "../actions/inviteApplicant";
 
-const getInvitationLetter = async (
+const createInvitationLetter = async (
   applicantId,
   departmentId,
   organisationId,
@@ -55,4 +55,4 @@ const getInvitationLetter = async (
   return { success: false };
 };
 
-export default getInvitationLetter;
+export default createInvitationLetter;

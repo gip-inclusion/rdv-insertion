@@ -9,10 +9,11 @@ class Organisation < ApplicationRecord
   belongs_to :department
   belongs_to :invitation_parameters, optional: true
   has_many :rdvs, dependent: :nullify
+  has_many :configurations_organisations, dependent: :destroy
+  has_many :configurations, through: :configurations_organisations
   has_and_belongs_to_many :agents, dependent: :nullify
   has_and_belongs_to_many :applicants, dependent: :nullify
   has_and_belongs_to_many :invitations, dependent: :nullify
-  has_and_belongs_to_many :configurations
   has_and_belongs_to_many :webhook_endpoints
 
   delegate :name, :name_with_region, :number, to: :department, prefix: true

@@ -1,11 +1,11 @@
 <div id="applicant-<%= applicant.id %>-<%= invitation_format %>-invitation">
-  <%= form_with(url: department_level? ? department_applicant_invitations_path(@department, applicant) : organisation_applicant_invitations_path(@organisation, applicant), html: { method: :post }, data: { controller: "invitations-checkbox-form", action: "turbo:submit-start->invitations-checkbox-form#submitStart", applicant_id: applicant.id, department_id: @department.id, organisation_id: @organisation&.id }) do |f| %>
+  <%= form_with(url: department_level? ? department_applicant_invitations_path(@department, applicant) : organisation_applicant_invitations_path(@organisation, applicant), html: { method: :post }, data: { controller: "invitations-checkbox-form", action: "turbo:submit-start->invitations-checkbox-form#submitStart", applicant_id: applicant.id, department_id: @department.id, organisation_id: @organisation&.id, invitation_format: invitation_format, rdv_context: rdv_context }) do |f| %>
     <div class="form-group">
       <%= f.hidden_field :motif_category, value: motif_category %>
       <%= f.hidden_field :help_phone_number, value: department_level? ? applicant.organisations.first.phone_number : @organisation.phone_number %>
       <%= f.hidden_field :invitation_format, value: invitation_format %>
       <div>
-        <%= f.check_box :invite, { checked: invited, disabled: invited || applicant.inactive?, data: { controller: "invitations-checkbox-form", action: "change->invitations-checkbox-form#submit" } }, invited %>
+        <%= f.check_box :invite, { checked: already_invited, disabled: (already_invited || applicant.inactive? || rdv_context.rdvs?), data: { controller: "invitations-checkbox-form", action: "change->invitations-checkbox-form#submit" } }, already_invited %>
       </div>
     </div>
   <% end %>

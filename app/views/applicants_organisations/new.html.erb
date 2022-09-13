@@ -1,5 +1,5 @@
 <%= render "common/remote_modal", title: "Choisissez une organisation" do %>
-    <%= simple_form_for(:applicants_organisation, url: department_applicant_applicants_organisations_path(@department, @applicant, assign_rdv_context: @assign_rdv_context), html: { method: :post }) do |f| %>
+    <%= simple_form_for(:applicants_organisation, url: department_applicant_applicants_organisations_path(@department, @applicant), html: { method: :post }) do |f| %>
       <div class="form-group">
         <%= f.input :organisation_id,
                     as: :select,

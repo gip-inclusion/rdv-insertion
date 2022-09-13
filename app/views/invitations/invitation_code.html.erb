@@ -9,7 +9,7 @@
     <div class="d-flex flex-column block-white col-8 align-items-center mt-3 applicant-form label-blue">
       <%= form_with url: :redirect_invitations, method: :get, local: :true do |f| %>
         <h4 class="label-blue">Code d'invitation</h4>
-        <p><%= f.text_field :token, placeholder: "DKC92JX7" %></p>
+        <p><%= f.text_field :uuid, placeholder: "DKC92JX7" %></p>
         <%= f.hidden_field :format, value: "postal" %>
         <div class="d-flex justify-content-center">
           <button type="submit" class="btn btn-blue">Valider</button>

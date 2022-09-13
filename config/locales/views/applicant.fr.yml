@@ -1,0 +1,6 @@
+fr:
+  applicants:
+    applicants_list:
+      sms_column_title: 📱 SMS
+      email_column_title: 📧 Email
+      postal_column_title: 📮 Courrier

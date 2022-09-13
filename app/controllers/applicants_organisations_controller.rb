@@ -1,5 +1,5 @@
 class ApplicantsOrganisationsController < ApplicationController
-  before_action :set_applicant, :set_department, :set_organisations, :set_assign_rdv_context, only: [:new, :create]
+  before_action :set_applicant, :set_department, :set_organisations, only: [:new, :create]
   before_action :set_organisation, only: [:create]
 
   def new; end
@@ -48,9 +48,5 @@ class ApplicantsOrganisationsController < ApplicationController
       organisation: @organisation,
       rdv_solidarites_session: rdv_solidarites_session
     )
-  end
-
-  def set_assign_rdv_context
-    @assign_rdv_context = params[:assign_rdv_context]
   end
 end

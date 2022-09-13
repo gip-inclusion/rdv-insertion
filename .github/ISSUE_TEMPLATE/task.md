@@ -1,7 +1,7 @@
 ---
 name: Task
 about: Description d'une tâche
-title: " "
+title: "[EPIC] "
 labels: ''
 assignees: ''
 
@@ -10,5 +10,6 @@ assignees: ''
 **User story**
 En tant que ..., je veux ... afin que ...
 
-
 **Description technique**
+
+**Test d'acceptance**

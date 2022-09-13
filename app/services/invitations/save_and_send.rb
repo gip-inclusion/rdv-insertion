@@ -34,7 +34,7 @@ module Invitations
       return if @invitation.link? && @invitation.token?
 
       call_service!(
-        Invitations::AssignLinkAndToken,
+        Invitations::AssignAttributes,
         invitation: @invitation,
         rdv_solidarites_session: @rdv_solidarites_session
       )
