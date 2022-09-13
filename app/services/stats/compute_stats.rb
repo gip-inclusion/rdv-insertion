@@ -283,12 +283,10 @@ module Stats
     end
 
     def compute_rate_of_applicants_autonomy(selected_applicants)
-      relevant_rdvs_created_by_user_applicants_ids = relevant_rdvs.select(&:created_by_user?).flat_map(&:applicant_ids)
-      applicants_with_rdv_created_by_user = selected_applicants.select do |applicant|
-        relevant_rdvs_created_by_user_applicants_ids.include?(applicant.id)
-      end
-
-      (applicants_with_rdv_created_by_user.count / (
+      relevant_rdvs_created_by_user = relevant_rdvs.select(&:created_by_user?)
+      ids_of_relevant_applicants_with_rdv_created_by_user =
+        selected_applicants.map(&:id) & relevant_rdvs_created_by_user.flat_map(&:applicant_ids)
+      (relevant_invited_applicants.where(id: ids_of_relevant_applicants_with_rdv_created_by_user).count / (
         selected_applicants.count.nonzero? || 1
       ).to_f) * 100
     end

@@ -62,6 +62,7 @@ describe Stats::ComputeStats, type: :service do
   let!(:relevant_applicant) do
     create(:applicant, organisations: [relevant_organisation],
                        department: department,
+                       invitations: [invitation],
                        rdvs: [orientation_rdv, accompagnement_rdv],
                        rdv_contexts: [rdv_context_orientation],
                        created_at: DateTime.new(2022, 4, 1, 10, 0))
@@ -69,6 +70,7 @@ describe Stats::ComputeStats, type: :service do
   let!(:relevant_orientation_platform_applicant) do
     create(:applicant, organisations: [relevant_organisation, irrelevant_organisation],
                        department: department,
+                       invitations: [invitation2],
                        rdvs: [orientation_rdv2, accompagnement_rdv2],
                        rdv_contexts: [rdv_context_accompagnement2],
                        created_at: DateTime.new(2022, 3, 1, 10, 0))
@@ -218,14 +220,14 @@ describe Stats::ComputeStats, type: :service do
 
     describe "#rate_of_applicants_autonomy" do
       it "computes the percentage of invited applicants with at least on rdv taken in autonomy" do
-        expect(subject.data[:rate_of_applicants_autonomy]).to eq(25)
+        expect(subject.data[:rate_of_applicants_autonomy]).to eq(50)
       end
     end
 
     describe "#rate_of_applicants_autonomy_grouped_by_month" do
       it "computes the percentage by month of invited applicants with at least on rdv taken in autonomy" do
         expect(subject.data[:rate_of_applicants_autonomy_grouped_by_month]).to eq(
-          { "04/2022" => 100, "05/2022" => 0 }
+          { "03/2022" => 0, "04/2022" => 100 }
         )
       end
     end
