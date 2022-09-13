@@ -13,7 +13,7 @@ describe InviteApplicantJob, type: :job do
   let!(:organisation) do
     create(:organisation, id: organisation_id, department: department, configurations: [configuration])
   end
-  let!(:number_of_days_to_accept_invitation) { 11 }
+  let!(:number_of_days_to_accept_invitation) { 3 }
   let!(:configuration) do
     create(
       :configuration,
@@ -37,11 +37,14 @@ describe InviteApplicantJob, type: :job do
 
   describe "#perform" do
     context "when the applicant has not been invited yet" do
+      let!(:valid_until) { Time.zone.parse("2022-04-15") }
+
       before do
+        travel_to(Time.zone.parse("2022-04-05"))
         allow(Invitation).to receive(:new).with(
           invitation_attributes.merge(
             applicant: applicant, department: department, rdv_context: rdv_context, organisations: [organisation],
-            validity_duration: 10.days
+            valid_until: valid_until
           )
         ).and_return(invitation)
         allow(RdvSolidaritesSession).to receive(:new)
@@ -56,7 +59,7 @@ describe InviteApplicantJob, type: :job do
         expect(Invitation).to receive(:new).with(
           invitation_attributes.merge(
             applicant: applicant, department: department, rdv_context: rdv_context, organisations: [organisation],
-            validity_duration: 10.days
+            valid_until: valid_until
           )
         )
         subject
