@@ -5,7 +5,7 @@ module Invitations
     end
 
     def call
-      @invitation.valid_until = DateTime.now
+      @invitation.valid_until = Time.zone.now
       save_record!(@invitation)
       result.invitation = @invitation
     end
