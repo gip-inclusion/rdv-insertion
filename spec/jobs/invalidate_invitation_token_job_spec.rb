@@ -20,10 +20,10 @@ describe InvalidateInvitationTokenJob, type: :job do
       subject
     end
 
-    it "checks if the invitation is expired" do
-      expect(invitation).to receive(:expired?)
-      subject
-    end
+    # it "checks if the invitation is expired" do
+    #   expect(invitation).to receive(:expired?)
+    #   subject
+    # end
 
     it "calls a InvalidateToken service" do
       expect(Invitations::InvalidateToken).to receive(:call)
