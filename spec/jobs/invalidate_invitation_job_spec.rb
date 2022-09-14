@@ -20,11 +20,6 @@ describe InvalidateInvitationJob, type: :job do
       subject
     end
 
-    # it "checks if the invitation is expired" do
-    #   expect(invitation).to receive(:expired?)
-    #   subject
-    # end
-
     it "calls a InvalidateLink service" do
       expect(Invitations::InvalidateLink).to receive(:call)
         .with(invitation: invitation)
