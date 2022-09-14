@@ -473,13 +473,20 @@ describe ApplicantsController, type: :controller do
 
     context "when dates are passed" do
       let!(:invitation1) do
-        create(:invitation, sent_at: DateTime.new(2022, 6, 1, 10, 0), rdv_context: rdv_context1, applicant: applicant)
+        create(
+          :invitation, sent_at: Time.zone.parse("2022-06-01 12:00"), rdv_context: rdv_context1,
+                       applicant: applicant
+        )
       end
       let!(:invitation2) do
-        create(:invitation, sent_at: DateTime.new(2022, 6, 8, 10, 0), rdv_context: rdv_context2, applicant: applicant2)
+        create(
+          :invitation, sent_at: Time.zone.parse("2022-06-08 12:00"), rdv_context: rdv_context2, applicant: applicant2
+        )
       end
       let!(:invitation3) do
-        create(:invitation, sent_at: DateTime.new(2022, 6, 15, 10, 0), rdv_context: rdv_context3, applicant: applicant3)
+        create(
+          :invitation, sent_at: Time.zone.parse("2022-06-15 12:00"), rdv_context: rdv_context3, applicant: applicant3
+        )
       end
 
       context "for first invitations" do
@@ -498,15 +505,15 @@ describe ApplicantsController, type: :controller do
 
       context "for last invitations" do
         let!(:invitation4) do
-          create(:invitation, sent_at: DateTime.new(2022, 6, 16, 10, 0),
+          create(:invitation, sent_at: Time.zone.parse("2022-06-19 12:00"),
                               rdv_context: rdv_context1, applicant: applicant)
         end
         let!(:invitation5) do
-          create(:invitation, sent_at: DateTime.new(2022, 6, 19, 10, 0),
+          create(:invitation, sent_at: Time.zone.parse("2022-06-16 12:00"),
                               rdv_context: rdv_context2, applicant: applicant2)
         end
         let!(:invitation6) do
-          create(:invitation, sent_at: DateTime.new(2022, 6, 17, 10, 0),
+          create(:invitation, sent_at: Time.zone.parse("2022-06-17 12:00"),
                               rdv_context: rdv_context3, applicant: applicant3)
         end
 

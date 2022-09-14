@@ -64,6 +64,14 @@ class Invitation < ApplicationRecord
     valid_until.present? && valid_until < Time.zone.now
   end
 
+  def sent_before?(date)
+    sent_at.present? && sent_at <= date
+  end
+
+  def sent_after?(date)
+    sent_at.present? && sent_at >= date
+  end
+
   private
 
   def assign_uuid
