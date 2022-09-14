@@ -1,62 +1,8 @@
 <div class="container mt-5 mb-5">
-  <div class="row mb-4 block-white justify-content-center">
-    <div class="col-4 justify-content-center">
-      <div class="mb-1">
-        <%=
-          select(
-            "applicant", "status", options_for_select_status(@statuses_count),
-            { prompt: "Filtrer par statut" },
-            class: "text-center form-select js-status-selector"
-          )
-        %>
-      </div>
-      <%= render "filter_by_invitations_dates_button" %>
-      <%= render 'search_form' %>
-      <div class="d-flex justify-content-between mt-1">
-        <div class=" text-left mt-2">
-          <%= check_box("applicants_list", "action_required", class: "js-action-required-checkbox") %>Intervention nécessaire
-          <small>
-            <i class="fas fa-question-circle" id="js-action-required-tooltip" data-number-of-days-before-action-required="<%= @current_configuration.number_of_days_before_action_required %>">
-            </i>
-          </small>
-        </div>
-        <% if display_back_to_list_button? %>
-          <div class="">
-            <%= link_to compute_index_path(@organisation, @department, motif_category: @current_motif_category), class: "btn btn-blue-out" do %>
-              Retour à la liste
-            <% end %>
-          </div>
-        <% end %>
-      </div>
-    </div>
-    <div class="col-4 d-flex flex-column justify-content-center align-items-center">
-      <% if image_compiled?("maps/#{@department.name.parameterize}.svg") %>
-        <%= image_pack_tag("maps/#{@department.name.parameterize}.svg", alt: @department.name.parameterize, width: 50, height: 50) %>
-      <h4 class="text-center department-map-title mb-0">
-        <%= department_level? ? @department.name : @organisation.name %>
-      </h4>
-      <% end %>
-    </div>
-    <div class="col-4 d-flex flex-column justify-content-center align-items-end dropdown">
-      <a class="btn btn-blue dropdown-toggle mb-2" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-        Créer allocataire(s)
-      </a>
-
-      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
-        <li>
-          <%= link_to(department_level? ? new_department_applicant_path(@department) : new_organisation_applicant_path(@organisation), class: "dropdown-item") do %>
-            Créer un allocataire
-          <% end %>
-        </li>
-        <li>
-          <%= link_to(department_level? ? new_department_upload_path(@department) : new_organisation_upload_path(@organisation), class: "dropdown-item") do %>
-            Charger fichier allocataires
-          <% end %>
-        </li>
-      </ul>
-      <%= link_to "Export csv bénéficiaires", compute_index_path(@organisation, @department, **params.to_unsafe_h.merge(format: "csv")), class: "btn btn-blue-out mt-2", id: "js-csv-export-tooltip", target: "_blank" %>
-    </div>
+  <%= render "applicants_list_header", archived_applicants_only: @archived_applicants_only
+ %>
+  <div class="row block-white justify-content-center">
+    <%= render "applicants_list_tabs" %>
+    <%= render "applicants_list_table", archived_applicants_only: @archived_applicants_only %>
   </div>
-  <%= render "applicants_list" %>
 </div>
-

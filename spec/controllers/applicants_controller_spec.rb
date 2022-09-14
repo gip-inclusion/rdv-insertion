@@ -394,6 +394,15 @@ describe ApplicantsController, type: :controller do
     end
     let!(:rdv_context3) { build(:rdv_context, motif_category: "rsa_orientation", status: "invitation_pending") }
 
+    let!(:archived_applicant) do
+      create(
+        :applicant,
+        organisations: [organisation], department: department, last_name: "Barthelemy", rdv_contexts: [rdv_context4],
+        is_archived: true
+      )
+    end
+    let!(:rdv_context4) { build(:rdv_context, motif_category: "rsa_orientation", status: "invitation_pending") }
+
     let!(:index_params) { { organisation_id: organisation.id, motif_category: "rsa_orientation" } }
 
     render_views
@@ -409,6 +418,7 @@ describe ApplicantsController, type: :controller do
       expect(response).to be_successful
       expect(response.body).to match(/Chabat/)
       expect(response.body).to match(/Baer/)
+      expect(response.body).not_to match(/Barthelemy/)
     end
 
     context "when a context is specified" do
@@ -421,6 +431,19 @@ describe ApplicantsController, type: :controller do
         expect(response).to be_successful
         expect(response.body).not_to match(/Chabat/)
         expect(response.body).to match(/Baer/)
+      end
+    end
+
+    context "when archived applicants only" do
+      let!(:index_params) { { organisation_id: organisation.id, archived_applicants_only: true } }
+
+      it "returns the list of archived applicants" do
+        get :index, params: index_params
+
+        expect(response).to be_successful
+        expect(response.body).not_to match(/Chabat/)
+        expect(response.body).not_to match(/Baer/)
+        expect(response.body).to match(/Barthelemy/)
       end
     end
 
