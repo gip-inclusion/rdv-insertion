@@ -117,8 +117,8 @@ describe Stats::ComputeStats, type: :service do
       expect(subject.data).to include(:average_time_between_rdv_creation_and_start_in_days_by_month)
       expect(subject.data).to include(:rate_of_applicants_with_rdv_seen_in_less_than_30_days)
       expect(subject.data).to include(:rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month)
-      expect(subject.data).to include(:rate_of_applicants_autonomy)
-      expect(subject.data).to include(:rate_of_applicants_autonomy_grouped_by_month)
+      expect(subject.data).to include(:rate_of_autonomous_applicants)
+      expect(subject.data).to include(:rate_of_autonomous_applicants_grouped_by_month)
       expect(subject.data).to include(:agents_count)
     end
 
@@ -218,15 +218,15 @@ describe Stats::ComputeStats, type: :service do
       end
     end
 
-    describe "#rate_of_applicants_autonomy" do
+    describe "#rate_of_autonomous_applicants" do
       it "computes the percentage of invited applicants with at least on rdv taken in autonomy" do
-        expect(subject.data[:rate_of_applicants_autonomy]).to eq(50)
+        expect(subject.data[:rate_of_autonomous_applicants]).to eq(50)
       end
     end
 
-    describe "#rate_of_applicants_autonomy_grouped_by_month" do
+    describe "#rate_of_autonomous_applicants_grouped_by_month" do
       it "computes the percentage by month of invited applicants with at least on rdv taken in autonomy" do
-        expect(subject.data[:rate_of_applicants_autonomy_grouped_by_month]).to eq(
+        expect(subject.data[:rate_of_autonomous_applicants_grouped_by_month]).to eq(
           { "03/2022" => 0, "04/2022" => 100 }
         )
       end

@@ -33,9 +33,9 @@ module Stats
           rate_of_applicants_with_rdv_seen_in_less_than_30_days,
         rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month:
           rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month,
-        rate_of_applicants_autonomy: rate_of_applicants_autonomy,
-        rate_of_applicants_autonomy_grouped_by_month:
-          rate_of_applicants_autonomy_grouped_by_month,
+        rate_of_autonomous_applicants: rate_of_autonomous_applicants,
+        rate_of_autonomous_applicants_grouped_by_month:
+          rate_of_autonomous_applicants_grouped_by_month,
         agents_count: agents_count
       }
     end
@@ -269,24 +269,27 @@ module Stats
     # -----------------------------------------------------------------------------------------
     # ----------------------------- Rate of rdvs taken in autonomy ----------------------------
 
-    def rate_of_applicants_autonomy
-      compute_rate_of_applicants_autonomy(relevant_invited_applicants)
+    def rate_of_autonomous_applicants
+      compute_rate_of_autonomous_applicants(relevant_invited_applicants)
     end
 
-    def rate_of_applicants_autonomy_grouped_by_month
-      rate_of_applicants_autonomy_by_month = {}
+    def rate_of_autonomous_applicants_grouped_by_month
+      rate_of_autonomous_applicants_by_month = {}
       relevant_invited_applicants_by_month.each do |date, applicants|
-        result = compute_rate_of_applicants_autonomy(applicants)
-        rate_of_applicants_autonomy_by_month[date] = result.round
+        result = compute_rate_of_autonomous_applicants(applicants)
+        rate_of_autonomous_applicants_by_month[date] = result.round
       end
-      rate_of_applicants_autonomy_by_month
+      rate_of_autonomous_applicants_by_month
     end
 
-    def compute_rate_of_applicants_autonomy(selected_applicants)
+    def compute_rate_of_autonomous_applicants(selected_applicants)
       relevant_rdvs_created_by_user = relevant_rdvs.select(&:created_by_user?)
-      ids_of_relevant_applicants_with_rdv_created_by_user =
-        selected_applicants.map(&:id) & relevant_rdvs_created_by_user.flat_map(&:applicant_ids)
-      (relevant_invited_applicants.where(id: ids_of_relevant_applicants_with_rdv_created_by_user).count / (
+      autonomous_applicants = selected_applicants.select do |applicant|
+        applicant.id.in?(relevant_invited_applicants.ids) && applicant.id.in?(
+          relevant_rdvs_created_by_user.flat_map(&:applicant_ids)
+        )
+      end
+      (autonomous_applicants.count / (
         selected_applicants.count.nonzero? || 1
       ).to_f) * 100
     end
