@@ -10,7 +10,7 @@ module RdvSolidaritesWebhooks
       return if unhandled_category?
 
       upsert_or_delete_rdv
-      invalidate_invitation_token if event == "created"
+      invalidate_invitations if event == "created"
       notify_applicants if should_notify_applicants?
       send_webhooks
     end
@@ -84,10 +84,10 @@ module RdvSolidaritesWebhooks
       end
     end
 
-    def invalidate_invitation_token
+    def invalidate_invitations
       # We invalidate the invitations linked to the new or updated rdvs to avoid double appointments
       related_invitations.each do |invitation|
-        InvalidateInvitationTokenJob.perform_async(invitation.id)
+        InvalidateInvitationJob.perform_async(invitation.id)
       end
     end
 

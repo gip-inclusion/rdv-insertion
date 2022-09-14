@@ -1,4 +1,4 @@
-describe Invitations::InvalidateToken, type: :service do
+describe Invitations::InvalidateLink, type: :service do
   subject do
     described_class.call(invitation: invitation)
   end

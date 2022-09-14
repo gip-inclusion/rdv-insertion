@@ -80,7 +80,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
         .with(applicant: applicant2, motif_category: "rsa_orientation")
         .and_return(rdv_context2)
       allow(UpsertRecordJob).to receive(:perform_async)
-      allow(InvalidateInvitationTokenJob).to receive(:perform_async)
+      allow(InvalidateInvitationJob).to receive(:perform_async)
       allow(DeleteRdvJob).to receive(:perform_async)
       allow(NotifyApplicantJob).to receive(:perform_async)
       allow(SendRdvSolidaritesWebhookJob).to receive(:perform_async)
@@ -109,7 +109,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
       end
 
       it "does not call the other jobs" do
-        [UpsertRecordJob, DeleteRdvJob, NotifyApplicantJob, InvalidateInvitationTokenJob].each do |klass|
+        [UpsertRecordJob, DeleteRdvJob, NotifyApplicantJob, InvalidateInvitationJob].each do |klass|
           expect(klass).not_to receive(:perform_async)
         end
         subject
@@ -129,9 +129,9 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
               last_webhook_update_received_at: timestamp
             }
           )
-        expect(InvalidateInvitationTokenJob).to receive(:perform_async).exactly(1).time.with(invitation.id)
-        expect(InvalidateInvitationTokenJob).to receive(:perform_async).exactly(1).time.with(invitation2.id)
-        expect(InvalidateInvitationTokenJob).to receive(:perform_async).exactly(1).time.with(invitation3.id)
+        expect(InvalidateInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation.id)
+        expect(InvalidateInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation2.id)
+        expect(InvalidateInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation3.id)
         subject
       end
 

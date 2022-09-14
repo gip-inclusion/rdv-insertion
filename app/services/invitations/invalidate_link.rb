@@ -1,5 +1,5 @@
 module Invitations
-  class InvalidateToken < BaseService
+  class InvalidateLink < BaseService
     def initialize(invitation:)
       @invitation = invitation
     end

@@ -1,4 +1,4 @@
-describe InvalidateInvitationTokenJob, type: :job do
+describe InvalidateInvitationJob, type: :job do
   subject do
     described_class.new.perform(invitation_id)
   end
@@ -10,7 +10,7 @@ describe InvalidateInvitationTokenJob, type: :job do
     before do
       allow(Invitation).to receive(:find)
         .and_return(invitation)
-      allow(Invitations::InvalidateToken).to receive(:call)
+      allow(Invitations::InvalidateLink).to receive(:call)
         .with(invitation: invitation)
         .and_return(OpenStruct.new(success?: true))
     end
@@ -25,8 +25,8 @@ describe InvalidateInvitationTokenJob, type: :job do
     #   subject
     # end
 
-    it "calls a InvalidateToken service" do
-      expect(Invitations::InvalidateToken).to receive(:call)
+    it "calls a InvalidateLink service" do
+      expect(Invitations::InvalidateLink).to receive(:call)
         .with(invitation: invitation)
       subject
     end
@@ -34,8 +34,8 @@ describe InvalidateInvitationTokenJob, type: :job do
     context "when the invitation is expired" do
       let!(:invitation) { create(:invitation, id: invitation_id, valid_until: 1.day.ago) }
 
-      it "does not call a InvalidateToken service" do
-        expect(Invitations::InvalidateToken).not_to receive(:call)
+      it "does not call a InvalidateLink service" do
+        expect(Invitations::InvalidateLink).not_to receive(:call)
         subject
       end
     end
