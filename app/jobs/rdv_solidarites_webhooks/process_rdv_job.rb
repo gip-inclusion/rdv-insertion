@@ -10,6 +10,7 @@ module RdvSolidaritesWebhooks
       return if unhandled_category?
 
       upsert_or_delete_rdv
+      invalidate_invitations if event == "created"
       notify_applicants if should_notify_applicants?
       send_webhooks
     end
@@ -54,6 +55,10 @@ module RdvSolidaritesWebhooks
       applicants.pluck(:id)
     end
 
+    def related_invitations
+      @related_invitations ||= Invitation.where(rdv_context_id: rdv_context_ids)
+    end
+
     def organisation
       @organisation ||= Organisation.find_by(rdv_solidarites_organisation_id: rdv_solidarites_organisation_id)
     end
@@ -72,19 +77,31 @@ module RdvSolidaritesWebhooks
           {
             applicant_ids: applicant_ids,
             organisation_id: organisation.id,
-            rdv_context_ids: rdv_contexts.map(&:id),
+            rdv_context_ids: rdv_context_ids,
             last_webhook_update_received_at: @meta[:timestamp]
           }
         )
       end
     end
 
-    def rdv_contexts
-      applicants.map do |applicant|
-        RdvContext.with_advisory_lock "setting_rdv_context_for_applicant_#{applicant.id}" do
-          RdvContext.find_or_create_by!(applicant: applicant, motif_category: matching_configuration.motif_category)
-        end
+    def invalidate_invitations
+      # We invalidate the invitations linked to the new or updated rdvs to avoid double appointments
+      related_invitations.each do |invitation|
+        InvalidateInvitationJob.perform_async(invitation.id)
       end
+    end
+
+    def rdv_contexts
+      @rdv_contexts ||= \
+        applicants.map do |applicant|
+          RdvContext.with_advisory_lock "setting_rdv_context_for_applicant_#{applicant.id}" do
+            RdvContext.find_or_create_by!(applicant: applicant, motif_category: matching_configuration.motif_category)
+          end
+        end
+    end
+
+    def rdv_context_ids
+      rdv_contexts.map(&:id)
     end
 
     def notify_applicants
