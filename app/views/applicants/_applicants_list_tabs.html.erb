@@ -5,6 +5,6 @@
     </li>
   <% end %>
   <li class="nav-item">
-    <%= link_to "Archivés", compute_index_path(@organisation, @department, archived_applicants_only: true), class: "nav-link #{@archived_applicants_only ? 'active' : ''}" %>
+    <%= link_to "Archivés", compute_index_path(@organisation, @department, applicants_scope: "archived"), class: "nav-link #{archived_scope?(@applicants_scope) ? 'active' : ''}" %>
   </li>
 </ul>

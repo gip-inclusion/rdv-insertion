@@ -1,7 +1,7 @@
 <div class="row mb-4 block-white justify-content-center">
   <div class="col-4 justify-content-center">
     <div class="mb-1">
-      <% unless @archived_applicants_only %>
+      <% unless archived_scope?(@applicants_scope) %>
         <%=
           select(
             "applicant", "status", options_for_select_status(@statuses_count),
@@ -14,7 +14,7 @@
     <%= render "filter_by_invitations_dates_button" %>
     <%= render 'search_form', url: compute_index_path(@organisation, @department) %>
     <div class="d-flex justify-content-between mt-1">
-      <% unless @archived_applicants_only %>
+      <% unless archived_scope?(@applicants_scope) %>
         <div class=" text-left mt-2">
           <%= check_box("applicants_list", "action_required", class: "js-action-required-checkbox") %>Intervention nécessaire
           <small>
@@ -25,7 +25,7 @@
       <% end %>
       <% if display_back_to_list_button? %>
         <div class="">
-          <%= link_to compute_index_path(@organisation, @department, motif_category: @current_motif_category, archived_applicants_only: @archived_applicants_only), class: "btn btn-blue-out" do %>
+          <%= link_to compute_index_path(@organisation, @department, motif_category: @current_motif_category, applicants_scope: @applicants_scope), class: "btn btn-blue-out" do %>
             Retour à la liste
           <% end %>
         </div>

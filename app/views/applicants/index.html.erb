@@ -1,8 +1,7 @@
 <div class="container mt-5 mb-5">
-  <%= render "applicants_list_header", archived_applicants_only: @archived_applicants_only
- %>
+  <%= render "applicants_list_header" %>
   <div class="row block-white justify-content-center">
     <%= render "applicants_list_tabs" %>
-    <%= render "applicants_list_table", archived_applicants_only: @archived_applicants_only %>
+    <%= render "applicants_list_table" %>
   </div>
 </div>

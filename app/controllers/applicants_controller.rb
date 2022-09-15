@@ -11,7 +11,7 @@ class ApplicantsController < ApplicationController
 
   before_action :set_applicant, only: [:show, :update, :edit]
   before_action :set_organisation, :set_department, only: [:index, :new, :create, :show, :update, :edit]
-  before_action :set_archived_applicants_only, :set_all_configurations, :set_current_configuration,
+  before_action :set_applicants_scope, :set_all_configurations, :set_current_configuration,
                 :set_current_motif_category, :set_applicants, :set_rdv_contexts,
                 :filter_applicants, :order_applicants, only: [:index]
   before_action :set_organisations, only: [:new, :create]
@@ -183,7 +183,7 @@ class ApplicantsController < ApplicationController
   end
 
   def set_current_configuration
-    return if @archived_applicants_only
+    return if archived_scope?
 
     @current_configuration = \
       @all_configurations.find { |c| c.motif_category == params[:motif_category] } ||
@@ -203,7 +203,7 @@ class ApplicantsController < ApplicationController
   end
 
   def set_applicants
-    @archived_applicants_only ? set_archived_applicants : set_applicants_for_motif_category
+    archived_scope? ? set_archived_applicants : set_applicants_for_motif_category
   end
 
   def set_applicants_for_motif_category
@@ -223,7 +223,7 @@ class ApplicantsController < ApplicationController
   end
 
   def set_rdv_contexts
-    return if @archived_applicants_only
+    return if archived_scope?
 
     @rdv_contexts = RdvContext.where(
       applicant_id: @applicants.ids, motif_category: @current_motif_category
@@ -231,8 +231,12 @@ class ApplicantsController < ApplicationController
     @statuses_count = @rdv_contexts.group(:status).count
   end
 
-  def set_archived_applicants_only
-    @archived_applicants_only = params[:archived_applicants_only] == "true"
+  def set_applicants_scope
+    @applicants_scope = params[:applicants_scope]
+  end
+
+  def archived_scope?
+    @applicants_scope == "archived"
   end
 
   def order_applicants

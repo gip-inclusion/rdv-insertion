@@ -435,7 +435,7 @@ describe ApplicantsController, type: :controller do
     end
 
     context "when archived applicants only" do
-      let!(:index_params) { { organisation_id: organisation.id, archived_applicants_only: true } }
+      let!(:index_params) { { organisation_id: organisation.id, applicants_scope: "archived" } }
 
       it "returns the list of archived applicants" do
         get :index, params: index_params
