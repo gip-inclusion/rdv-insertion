@@ -3,7 +3,9 @@ describe GenerateApplicantsCsv, type: :service do
 
   let!(:motif_category) { "rsa_orientation" }
   let!(:department) { create(:department, name: "Drôme", number: "26") }
-  let!(:organisation) { create(:organisation, configurations: [configuration], name: "Drome RSA", department: department) }
+  let!(:organisation) do
+    create(:organisation, configurations: [configuration], name: "Drome RSA", department: department)
+  end
   let!(:configuration) { create(:configuration, motif_category: motif_category) }
   let!(:structure) { organisation }
   let!(:applicant1) do
@@ -34,7 +36,9 @@ describe GenerateApplicantsCsv, type: :service do
     create(:invitation, applicant: applicant1, format: "email", sent_at: Time.zone.parse("2022-05-21"))
   end
   let!(:rdv_context) do
-    create(:rdv_context, rdvs: [rdv], invitations: [invitation], applicant: applicant1, status: "rdv_needs_status_update")
+    create(
+      :rdv_context, rdvs: [rdv], invitations: [invitation], applicant: applicant1, status: "rdv_needs_status_update"
+    )
   end
 
   let!(:applicants) { Applicant.where(id: [applicant1, applicant2, applicant3]) }
