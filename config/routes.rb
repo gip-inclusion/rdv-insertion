@@ -45,6 +45,10 @@ Rails.application.routes.draw do
     post :search, on: :collection
   end
 
+  resources :applicants, module: :applicants, only: [] do
+    resource :archivings, only: [:create, :destroy]
+  end
+
   resources :departments, only: [] do
     resources :applicants, only: [:index, :new, :create, :show, :edit, :update] do
       collection { resources :uploads, only: [:new] }

@@ -270,7 +270,7 @@ describe ApplicantsController, type: :controller do
     end
 
     context "when applicant is archived" do
-      let!(:applicant) { create(:applicant, is_archived: true, organisations: [organisation]) }
+      let!(:applicant) { create(:applicant, archived_at: 2.days.ago, organisations: [organisation]) }
       let!(:show_params) { { id: applicant.id, organisation_id: organisation.id } }
 
       it "the applicant is displayed as archived" do
@@ -398,7 +398,7 @@ describe ApplicantsController, type: :controller do
       create(
         :applicant,
         organisations: [organisation], department: department, last_name: "Barthelemy", rdv_contexts: [rdv_context4],
-        is_archived: true
+        archived_at: 2.days.ago
       )
     end
     let!(:rdv_context4) { build(:rdv_context, motif_category: "rsa_orientation", status: "invitation_pending") }
@@ -645,7 +645,9 @@ describe ApplicantsController, type: :controller do
 
   describe "#update" do
     let!(:applicant) { create(:applicant, organisations: [organisation]) }
-    let!(:update_params) { { id: applicant.id, organisation_id: organisation.id, applicant: { is_archived: true } } }
+    let!(:update_params) do
+      { id: applicant.id, organisation_id: organisation.id, applicant: { birth_date: "20/12/1988" } }
+    end
 
     before do
       sign_in(agent)
@@ -656,7 +658,7 @@ describe ApplicantsController, type: :controller do
       let(:update_params) do
         {
           applicant: {
-            is_archived: true
+            birth_date: "20/12/1988"
           },
           id: applicant.id,
           organisation_id: organisation.id,

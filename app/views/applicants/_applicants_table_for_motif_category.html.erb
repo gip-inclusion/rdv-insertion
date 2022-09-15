@@ -18,7 +18,7 @@
   <tbody class="align-middle">
     <% @applicants.each do |applicant| %>
       <% rdv_context = applicant.rdv_context_for(@current_motif_category) %>
-      <tr class="<%= "table-danger" if applicant.is_archived? %>">
+      <tr>
         <td><%= display_attribute applicant.last_name %></td>
         <td><%= display_attribute applicant.first_name %></td>
         <% @current_configuration.invitation_formats.each do |invitation_format| %>
@@ -38,7 +38,7 @@
         <% if show_notification?(@current_configuration) %>
           <td><%= display_attribute format_date(applicant.last_notification_sent_at) %></td>
         <% end %>
-        <% if applicant.is_archived? %>
+        <% if applicant.archived? %>
           <td>Dossier archivé</td>
         <% else %>
           <td id="rdv-context-status-<%= rdv_context.id %>" class="<%= background_class_for_context_status(rdv_context, @current_configuration.number_of_days_before_action_required) %>">

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_07_144848) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_14_162719) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -46,9 +46,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_07_144848) do
     t.string "birth_name"
     t.bigint "department_id"
     t.string "archiving_reason"
-    t.boolean "is_archived", default: false
     t.datetime "deleted_at"
     t.datetime "last_webhook_update_received_at"
+    t.datetime "archived_at"
     t.index ["department_id"], name: "index_applicants_on_department_id"
     t.index ["department_internal_id", "department_id"], name: "index_applicants_on_department_internal_id_and_department_id", unique: true
     t.index ["rdv_solidarites_user_id"], name: "index_applicants_on_rdv_solidarites_user_id", unique: true

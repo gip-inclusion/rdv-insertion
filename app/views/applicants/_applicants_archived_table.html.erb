@@ -4,6 +4,7 @@
     <th scope="col">Prénom</th>
     <th scope="col">Première invitation</th>
     <th scope="col">Dernière invitation</th>
+    <th scope="col">Archivé le</th>
     <th scope="col">Statut</th>
     <th scope="col"></th>
   </thead>
@@ -12,9 +13,10 @@
       <tr class="table-danger">
         <td><%= display_attribute applicant.last_name %></td>
         <td><%= display_attribute applicant.first_name %></td>
-        <td id="first-invitation-date-<%= applicant.id %>"><%= display_attribute format_date(applicant.relevant_first_invitation_sent_at) %></td>
-        <td id="last-invitation-date-<%= applicant.id %>"><%= display_attribute(format_date(applicant
+        <td><%= display_attribute format_date(applicant.relevant_first_invitation_sent_at) %></td>
+        <td><%= display_attribute(format_date(applicant
         .last_invitation_sent_at)) %></td>
+        <td><%= display_attribute format_date(applicant.archived_at) %></td>
         <td>Dossier archivé</td>
         <td class="padding-left-15">
           <%= link_to compute_applicant_path(applicant, @organisation, @department) do %>

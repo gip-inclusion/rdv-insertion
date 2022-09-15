@@ -37,7 +37,7 @@ class Applicant < ApplicationRecord
   enum title: { monsieur: 0, madame: 1 }
 
   scope :active, -> { where(deleted_at: nil) }
-  scope :archived, ->(archived = true) { where(is_archived: archived) }
+  scope :archived, ->(archived = true) { archived ? where.not(archived_at: nil) : where(archived_at: nil) }
   scope :without_rdv_contexts, lambda { |motif_categories|
     where.not(id: joins(:rdv_contexts).where(rdv_contexts: { motif_category: motif_categories }).ids)
   }
@@ -82,7 +82,7 @@ class Applicant < ApplicationRecord
   end
 
   def inactive?
-    is_archived? || deleted?
+    archived? || deleted?
   end
 
   def motif_categories
@@ -91,6 +91,10 @@ class Applicant < ApplicationRecord
 
   def can_be_invited_through?(invitation_format)
     send(REQUIRED_ATTRIBUTES_FOR_INVITATION_FORMATS[invitation_format]).present?
+  end
+
+  def archived?
+    archived_at.present?
   end
 
   def as_json(_opts = {})

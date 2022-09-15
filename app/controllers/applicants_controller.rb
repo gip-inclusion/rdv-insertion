@@ -4,7 +4,7 @@ class ApplicantsController < ApplicationController
   PERMITTED_PARAMS = [
     :uid, :role, :first_name, :last_name, :birth_date, :email, :phone_number,
     :birth_name, :address, :affiliation_number, :department_internal_id, :title,
-    :status, :rights_opening_date, :archiving_reason, :is_archived
+    :status, :rights_opening_date
   ].freeze
 
   include FilterableApplicantsConcern
