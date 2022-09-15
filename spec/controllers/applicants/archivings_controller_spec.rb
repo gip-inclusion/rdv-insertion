@@ -12,7 +12,7 @@ describe Applicants::ArchivingsController, type: :controller do
   end
 
   describe "#create" do
-    it "is a success" do
+    it "archives the applicant" do
       post :create, params: { archiving_reason: "something", applicant_id: applicant_id }
       expect(response).to be_successful
       expect(JSON.parse(response.body)["success"]).to eq(true)
@@ -28,7 +28,7 @@ describe Applicants::ArchivingsController, type: :controller do
       )
     end
 
-    it "is a success" do
+    it "unarchives the applicant" do
       delete :destroy, params: { applicant_id: applicant_id }
       expect(response).to be_successful
       expect(JSON.parse(response.body)["success"]).to eq(true)
