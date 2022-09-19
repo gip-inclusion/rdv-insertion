@@ -8,7 +8,7 @@ import StatusSelector from "components/status-selector"
 import DepartmentSelector from "components/department-selector"
 import ActionRequiredCheckbox from "components/action-required-checkbox"
 import initTooltip from "components/tooltip"
-import archiveApplicantButton from "components/archive-applicant-button"
+import toggleApplicantArchivingButton from "components/toggle-applicant-archiving-button"
 
 import "bootstrap";
 import "stylesheets/application";
@@ -56,5 +56,5 @@ document.addEventListener("turbo:load", () => {
   new DepartmentSelector();
   new ActionRequiredCheckbox();
   initTooltip();
-  archiveApplicantButton();
+  toggleApplicantArchivingButton();
 });

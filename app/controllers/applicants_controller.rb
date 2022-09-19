@@ -4,18 +4,19 @@ class ApplicantsController < ApplicationController
   PERMITTED_PARAMS = [
     :uid, :role, :first_name, :last_name, :birth_date, :email, :phone_number,
     :birth_name, :address, :affiliation_number, :department_internal_id, :title,
-    :status, :rights_opening_date, :archiving_reason, :is_archived
+    :status, :rights_opening_date
   ].freeze
+
+  include FilterableApplicantsConcern
+
   before_action :set_applicant, only: [:show, :update, :edit]
   before_action :set_organisation, :set_department, only: [:index, :new, :create, :show, :update, :edit]
-  before_action :set_all_configurations, :set_current_configuration, :set_current_motif_category,
-                only: [:index]
+  before_action :set_applicants_scope, :set_all_configurations, :set_current_configuration,
+                :set_current_motif_category, :set_applicants, :set_rdv_contexts,
+                :filter_applicants, :order_applicants, only: [:index]
   before_action :set_organisations, only: [:new, :create]
   before_action :set_applicant_rdv_contexts, :set_can_be_added_to_other_org, only: [:show]
   before_action :retrieve_applicants, only: [:search]
-  before_action :set_applicants_and_rdv_contexts, only: [:index]
-
-  include FilterableApplicantsConcern
 
   def new
     @applicant = Applicant.new(department: @department)
@@ -182,6 +183,8 @@ class ApplicantsController < ApplicationController
   end
 
   def set_current_configuration
+    return if archived_scope?
+
     @current_configuration = \
       @all_configurations.find { |c| c.motif_category == params[:motif_category] } ||
       @all_configurations.first
@@ -199,24 +202,44 @@ class ApplicantsController < ApplicationController
     @can_be_added_to_other_org = (@department.organisation_ids - @applicant.organisation_ids).any?
   end
 
-  def set_applicants_and_rdv_contexts
+  def set_applicants
+    archived_scope? ? set_archived_applicants : set_applicants_for_motif_category
+  end
+
+  def set_applicants_for_motif_category
     @applicants = policy_scope(Applicant)
                   .includes(:invitations)
                   .preload(:organisations, rdv_contexts: [:invitations, :rdvs])
-                  .active.distinct
-    @applicants = \
-      if department_level?
-        @applicants.where(department: @department)
-      else
-        @applicants.where(organisations: @organisation)
-      end
+                  .active.distinct.archived(false)
+                  .where(department_level? ? { department: @department } : { organisations: @organisation })
+                  .joins(:rdv_contexts)
+                  .where(rdv_contexts: { motif_category: @current_motif_category })
+  end
 
-    @applicants = @applicants.joins(:rdv_contexts).where(rdv_contexts: { motif_category: @current_motif_category })
+  def set_archived_applicants
+    @applicants = policy_scope(Applicant)
+                  .active.distinct.archived
+                  .where(department_level? ? { department: @department } : { organisations: @organisation })
+  end
+
+  def set_rdv_contexts
+    return if archived_scope?
+
     @rdv_contexts = RdvContext.where(
-      applicant_id: @applicants.archived(false).ids, motif_category: @current_motif_category
+      applicant_id: @applicants.ids, motif_category: @current_motif_category
     )
     @statuses_count = @rdv_contexts.group(:status).count
-    filter_applicants
+  end
+
+  def set_applicants_scope
+    @applicants_scope = params[:applicants_scope]
+  end
+
+  def archived_scope?
+    @applicants_scope == "archived"
+  end
+
+  def order_applicants
     @applicants = @applicants.order(created_at: :desc)
   end
 

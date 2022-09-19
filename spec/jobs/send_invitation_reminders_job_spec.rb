@@ -8,7 +8,9 @@ describe SendInvitationRemindersJob, type: :job do
     let!(:applicant2) { create(:applicant, email: "camille2@gouv.fr", phone_number: "0649031932") }
     let!(:applicant3) { create(:applicant, email: "camille3@gouv.fr", phone_number: "0649031933") }
     let!(:applicant4) { create(:applicant, email: "camille4@gouv.fr", phone_number: "0649031934") }
-    let!(:applicant5) { create(:applicant, email: "camille5@gouv.fr", phone_number: "0649031935", is_archived: true) }
+    let!(:applicant5) do
+      create(:applicant, email: "camille5@gouv.fr", phone_number: "0649031935", archived_at: 2.days.ago)
+    end
 
     let!(:rdv_context1) { create(:rdv_context, status: "invitation_pending") }
     let!(:rdv_context2) { create(:rdv_context, status: "invitation_pending") }

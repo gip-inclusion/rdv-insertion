@@ -120,7 +120,7 @@ export default function InvitationBlock({
                   disabled={
                     isLoading.sms ||
                     !applicant.phone_number ||
-                    applicant.is_archived === true ||
+                    applicant.archived_at != null ||
                     status === "rdv_pending"
                   }
                   className="btn btn-blue"
@@ -139,7 +139,7 @@ export default function InvitationBlock({
                   disabled={
                     isLoading.email ||
                     !applicant.email ||
-                    applicant.is_archived === true ||
+                    applicant.archived_at != null ||
                     status === "rdv_pending"
                   }
                   className="btn btn-blue"
@@ -158,7 +158,7 @@ export default function InvitationBlock({
                   disabled={
                     isLoading.postal ||
                     !applicant.address ||
-                    applicant.is_archived === true ||
+                    applicant.archived_at != null ||
                     status === "rdv_pending"
                   }
                   className="btn btn-blue"

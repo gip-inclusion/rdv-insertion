@@ -1,4 +1,4 @@
-<%= render 'archive_banner' if @applicant.is_archived? %>
+<%= render 'archive_banner' if @applicant.archived? %>
 <div class="container label-blue mt-4">
   <div class="d-flex justify-content-between mb-4">
     <div>
@@ -11,7 +11,7 @@
     </div>
     <div>
       <button class="btn btn-blue" id="archive-button" data-applicant-id="<%= @applicant.id %>" data-organisation-id="<%= @organisation.id %>" data-department-id="<%= @department.id %>" data-department-level="<%= department_level? %>">
-        <%= @applicant.is_archived? ? "Rouvrir le dossier" : "Archiver le dossier" %>
+        <%= @applicant.archived? ? "Rouvrir le dossier" : "Archiver le dossier" %>
       </button>
       <%= link_to compute_edit_path(@applicant, @organisation, @department) do %>
         <button class="btn btn-blue">Modifier</button>
@@ -71,7 +71,7 @@
       <% if department_level? %>
         <%= render "organisations_list", organisations: @applicant.organisations %>
       <% end %>
-      <% if @applicant.is_archived? %>
+      <% if @applicant.archived? %>
         <div class="col-12 col-md-6 px-5">
           <h4 class="label-blue"><%= Applicant.human_attribute_name(:archiving_reason) %></h4>
           <p><%= display_attribute @applicant.archiving_reason %></p>

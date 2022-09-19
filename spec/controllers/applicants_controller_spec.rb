@@ -270,7 +270,7 @@ describe ApplicantsController, type: :controller do
     end
 
     context "when applicant is archived" do
-      let!(:applicant) { create(:applicant, is_archived: true, organisations: [organisation]) }
+      let!(:applicant) { create(:applicant, archived_at: 2.days.ago, organisations: [organisation]) }
       let!(:show_params) { { id: applicant.id, organisation_id: organisation.id } }
 
       it "the applicant is displayed as archived" do
@@ -394,6 +394,15 @@ describe ApplicantsController, type: :controller do
     end
     let!(:rdv_context3) { build(:rdv_context, motif_category: "rsa_orientation", status: "invitation_pending") }
 
+    let!(:archived_applicant) do
+      create(
+        :applicant,
+        organisations: [organisation], department: department, last_name: "Barthelemy", rdv_contexts: [rdv_context4],
+        archived_at: 2.days.ago
+      )
+    end
+    let!(:rdv_context4) { build(:rdv_context, motif_category: "rsa_orientation", status: "invitation_pending") }
+
     let!(:index_params) { { organisation_id: organisation.id, motif_category: "rsa_orientation" } }
 
     render_views
@@ -409,6 +418,7 @@ describe ApplicantsController, type: :controller do
       expect(response).to be_successful
       expect(response.body).to match(/Chabat/)
       expect(response.body).to match(/Baer/)
+      expect(response.body).not_to match(/Barthelemy/)
     end
 
     context "when a context is specified" do
@@ -421,6 +431,19 @@ describe ApplicantsController, type: :controller do
         expect(response).to be_successful
         expect(response.body).not_to match(/Chabat/)
         expect(response.body).to match(/Baer/)
+      end
+    end
+
+    context "when archived applicants only" do
+      let!(:index_params) { { organisation_id: organisation.id, applicants_scope: "archived" } }
+
+      it "returns the list of archived applicants" do
+        get :index, params: index_params
+
+        expect(response).to be_successful
+        expect(response.body).not_to match(/Chabat/)
+        expect(response.body).not_to match(/Baer/)
+        expect(response.body).to match(/Barthelemy/)
       end
     end
 
@@ -450,13 +473,20 @@ describe ApplicantsController, type: :controller do
 
     context "when dates are passed" do
       let!(:invitation1) do
-        create(:invitation, sent_at: DateTime.new(2022, 6, 1, 10, 0), rdv_context: rdv_context1, applicant: applicant)
+        create(
+          :invitation, sent_at: Time.zone.parse("2022-06-01 12:00"), rdv_context: rdv_context1,
+                       applicant: applicant
+        )
       end
       let!(:invitation2) do
-        create(:invitation, sent_at: DateTime.new(2022, 6, 8, 10, 0), rdv_context: rdv_context2, applicant: applicant2)
+        create(
+          :invitation, sent_at: Time.zone.parse("2022-06-08 12:00"), rdv_context: rdv_context2, applicant: applicant2
+        )
       end
       let!(:invitation3) do
-        create(:invitation, sent_at: DateTime.new(2022, 6, 15, 10, 0), rdv_context: rdv_context3, applicant: applicant3)
+        create(
+          :invitation, sent_at: Time.zone.parse("2022-06-15 12:00"), rdv_context: rdv_context3, applicant: applicant3
+        )
       end
 
       context "for first invitations" do
@@ -475,15 +505,15 @@ describe ApplicantsController, type: :controller do
 
       context "for last invitations" do
         let!(:invitation4) do
-          create(:invitation, sent_at: DateTime.new(2022, 6, 16, 10, 0),
+          create(:invitation, sent_at: Time.zone.parse("2022-06-19 12:00"),
                               rdv_context: rdv_context1, applicant: applicant)
         end
         let!(:invitation5) do
-          create(:invitation, sent_at: DateTime.new(2022, 6, 19, 10, 0),
+          create(:invitation, sent_at: Time.zone.parse("2022-06-16 12:00"),
                               rdv_context: rdv_context2, applicant: applicant2)
         end
         let!(:invitation6) do
-          create(:invitation, sent_at: DateTime.new(2022, 6, 17, 10, 0),
+          create(:invitation, sent_at: Time.zone.parse("2022-06-17 12:00"),
                               rdv_context: rdv_context3, applicant: applicant3)
         end
 
@@ -615,7 +645,9 @@ describe ApplicantsController, type: :controller do
 
   describe "#update" do
     let!(:applicant) { create(:applicant, organisations: [organisation]) }
-    let!(:update_params) { { id: applicant.id, organisation_id: organisation.id, applicant: { is_archived: true } } }
+    let!(:update_params) do
+      { id: applicant.id, organisation_id: organisation.id, applicant: { birth_date: "20/12/1988" } }
+    end
 
     before do
       sign_in(agent)
@@ -626,7 +658,7 @@ describe ApplicantsController, type: :controller do
       let(:update_params) do
         {
           applicant: {
-            is_archived: true
+            birth_date: "20/12/1988"
           },
           id: applicant.id,
           organisation_id: organisation.id,

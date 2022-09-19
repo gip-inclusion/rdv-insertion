@@ -86,7 +86,7 @@ describe Stats::ComputeStats, type: :service do
                        created_at: DateTime.new(2022, 5, 1, 10, 0))
   end
   let!(:irrelevant_applicant3) do
-    create(:applicant, organisations: [relevant_organisation], department: department, is_archived: true,
+    create(:applicant, organisations: [relevant_organisation], department: department, archived_at: 2.days.ago,
                        rdvs: [irrelevant_rdv3], created_at: DateTime.new(2022, 5, 1, 10, 0))
   end
 

@@ -87,6 +87,10 @@ module ApplicantsHelper
     "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{organisation_id}/users/#{applicant.rdv_solidarites_user_id}"
   end
 
+  def archived_scope?(scope)
+    scope == "archived"
+  end
+
   def department_level?
     params[:department_id].present?
   end
