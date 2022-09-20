@@ -1,12 +1,17 @@
 import Swal from "sweetalert2";
-import updateApplicant from "../react/actions/updateApplicant";
+import archiveApplicant from "../react/actions/archiveApplicant";
+import unarchiveApplicant from "../react/actions/unarchiveApplicant";
 
-const archiveApplicant = async (archiveButton, archivingReason = null) => {
-  const { applicantId, organisationId, departmentId, departmentLevel } = archiveButton.dataset;
-  const action = archiveButton.innerText;
-  const isArchived = action === "Rouvrir le dossier" ? "false" : "true";
-  const attributes = { is_archived: isArchived, archiving_reason: archivingReason };
-  const result = await updateApplicant(organisationId, applicantId, attributes);
+const toggleApplicantArchiving = async (toggleArchivingButton, archivingReason = null) => {
+  const { applicantId, organisationId, departmentId, departmentLevel } =
+    toggleArchivingButton.dataset;
+  const action = toggleArchivingButton.innerText;
+  const isArchiving = action.toLowerCase().includes("archiver");
+  const attributes = { archiving_reason: archivingReason };
+
+  const result = isArchiving
+    ? await archiveApplicant(applicantId, attributes)
+    : await unarchiveApplicant(applicantId);
 
   if (result.success) {
     if (departmentLevel === "true") {
@@ -19,7 +24,7 @@ const archiveApplicant = async (archiveButton, archivingReason = null) => {
   }
 };
 
-const displayArchiveModal = async (archiveButton) => {
+const displayToggleArchivingModal = async (archiveButton) => {
   if (archiveButton.innerText === "Archiver le dossier") {
     const { value: archivingReason, isConfirmed } = await Swal.fire({
       icon: "warning",
@@ -35,7 +40,7 @@ const displayArchiveModal = async (archiveButton) => {
     });
 
     if (isConfirmed) {
-      archiveApplicant(archiveButton, archivingReason);
+      toggleApplicantArchiving(archiveButton, archivingReason);
     }
   } else {
     const { isConfirmed } = await Swal.fire({
@@ -50,18 +55,18 @@ const displayArchiveModal = async (archiveButton) => {
     });
 
     if (isConfirmed) {
-      archiveApplicant(archiveButton);
+      toggleApplicantArchiving(archiveButton);
     }
   }
 };
 
-const archiveApplicantButton = () => {
+const toggleApplicantArchivingButton = () => {
   if (document.getElementById("archive-button")) {
     const archiveButton = document.getElementById("archive-button");
     archiveButton.addEventListener("click", () => {
-      displayArchiveModal(archiveButton);
+      displayToggleArchivingModal(archiveButton);
     });
   }
 };
 
-export default archiveApplicantButton;
+export default toggleApplicantArchivingButton;

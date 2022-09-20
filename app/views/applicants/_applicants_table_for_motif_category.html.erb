@@ -1,0 +1,56 @@
+<table class="table table-hover table-responsive">
+  <thead class="text-dark-blue">
+    <th scope="col">Nom</th>
+    <th scope="col">Prénom</th>
+    <% @current_configuration.invitation_formats.each do |invitation_format| %>
+      <th scope="col" class="d-none d-lg-table-cell"><%= t(".#{invitation_format}_column_title") %></th>
+    <% end  %>
+    <% if show_invitations?(@current_configuration) %>
+      <th scope="col">Première invitation</th>
+      <th scope="col">Dernière invitation</th>
+    <% end %>
+    <% if show_notification?(@current_configuration) %>
+      <th scope="col">Dernière Notification envoyée le</th>
+    <% end %>
+    <th scope="col">Statut</th>
+    <th scope="col"></th>
+  </thead>
+  <tbody class="align-middle">
+    <% @applicants.each do |applicant| %>
+      <% rdv_context = applicant.rdv_context_for(@current_motif_category) %>
+      <tr>
+        <td><%= display_attribute applicant.last_name %></td>
+        <td><%= display_attribute applicant.first_name %></td>
+        <% @current_configuration.invitation_formats.each do |invitation_format| %>
+          <td class="d-none d-lg-table-cell">
+            <% if applicant.can_be_invited_through?(invitation_format) %>
+              <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: invitation_format, motif_category: @current_motif_category, rdv_context: rdv_context, already_invited: rdv_context.invited_through?(invitation_format) %>
+            <% else %>
+              -
+            <% end %>
+          </td>
+        <% end %>
+        </td>
+        <% if show_invitations?(@current_configuration) %>
+          <td id="first-invitation-date-<%= rdv_context.id %>"><%= display_attribute format_date(rdv_context.relevant_first_invitation_sent_at) %></td>
+          <td id="last-invitation-date-<%= rdv_context.id %>"><%= show_last_invitation_date?(rdv_context) ? display_attribute(format_date(rdv_context.last_invitation_sent_at)) : " - " %></td>
+        <% end %>
+        <% if show_notification?(@current_configuration) %>
+          <td><%= display_attribute format_date(applicant.last_notification_sent_at) %></td>
+        <% end %>
+        <% if applicant.archived? %>
+          <td>Dossier archivé</td>
+        <% else %>
+          <td id="rdv-context-status-<%= rdv_context.id %>" class="<%= background_class_for_context_status(rdv_context, @current_configuration.number_of_days_before_action_required) %>">
+            <%= display_context_status(rdv_context, @current_configuration.number_of_days_before_action_required) %>
+          </td>
+        <% end %>
+        <td class="padding-left-15">
+          <%= link_to compute_applicant_path(applicant, @organisation, @department) do %>
+            <button class="btn btn-blue">Gérer</button>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

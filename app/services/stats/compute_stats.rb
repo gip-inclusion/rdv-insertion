@@ -33,9 +33,9 @@ module Stats
           rate_of_applicants_with_rdv_seen_in_less_than_30_days,
         rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month:
           rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month,
-        rate_of_rdvs_created_by_user: rate_of_rdvs_created_by_user,
-        rate_of_rdvs_created_by_user_grouped_by_month:
-          rate_of_rdvs_created_by_user_grouped_by_month,
+        rate_of_autonomous_applicants: rate_of_autonomous_applicants,
+        rate_of_autonomous_applicants_grouped_by_month:
+          rate_of_autonomous_applicants_grouped_by_month,
         agents_count: agents_count
       }
     end
@@ -148,13 +148,6 @@ module Stats
         relevant_rdv_contexts.order(created_at: :asc)
                              .group_by { |rdv_context| rdv_context.created_at.beginning_of_month.strftime("%m/%Y") }
                              .except(Time.zone.today.strftime("%m/%Y"))
-    end
-
-    def relevant_rdvs_by_month
-      @relevant_rdvs_by_month ||= \
-        relevant_rdvs.order(created_at: :asc)
-                     .group_by { |rdv| rdv.created_at.beginning_of_month.strftime("%m/%Y") }
-                     .except(Time.zone.today.strftime("%m/%Y"))
     end
 
     def sent_invitations
@@ -276,21 +269,39 @@ module Stats
     # -----------------------------------------------------------------------------------------
     # ----------------------------- Rate of rdvs taken in autonomy ----------------------------
 
-    def rate_of_rdvs_created_by_user
-      compute_rate_of_rdvs_taken_in_autonomy(relevant_rdvs)
+    def rate_of_autonomous_applicants
+      compute_rate_of_autonomous_applicants(relevant_invited_applicants)
     end
 
-    def rate_of_rdvs_created_by_user_grouped_by_month
-      rate_of_rdvs_created_by_user_by_month = {}
-      relevant_rdvs_by_month.each do |date, rdvs|
-        result = compute_rate_of_rdvs_taken_in_autonomy(rdvs)
-        rate_of_rdvs_created_by_user_by_month[date] = result.round
+    def rate_of_autonomous_applicants_grouped_by_month
+      rate_of_autonomous_applicants_by_month = {}
+      relevant_invited_applicants_by_month.each do |date, applicants|
+        result = compute_rate_of_autonomous_applicants(applicants)
+        rate_of_autonomous_applicants_by_month[date] = result.round
       end
-      rate_of_rdvs_created_by_user_by_month
+      rate_of_autonomous_applicants_by_month
     end
 
-    def compute_rate_of_rdvs_taken_in_autonomy(selected_rdvs)
-      (selected_rdvs.count(&:created_by_user?) / (selected_rdvs.count.nonzero? || 1).to_f) * 100
+    def compute_rate_of_autonomous_applicants(selected_applicants)
+      relevant_rdvs_created_by_user = relevant_rdvs.select(&:created_by_user?)
+      autonomous_applicants = selected_applicants.select do |applicant|
+        applicant.id.in?(relevant_rdvs_created_by_user.flat_map(&:applicant_ids))
+      end
+      (autonomous_applicants.count / (
+        selected_applicants.count.nonzero? || 1
+      ).to_f) * 100
+    end
+
+    def relevant_invited_applicants
+      @relevant_invited_applicants ||= \
+        relevant_applicants.where(id: sent_invitations.map(&:applicant_id).uniq)
+    end
+
+    def relevant_invited_applicants_by_month
+      @relevant_invited_applicants_by_month ||= \
+        relevant_invited_applicants.order(created_at: :asc)
+                                   .group_by { |applicant| applicant.created_at.beginning_of_month.strftime("%m/%Y") }
+                                   .except(Time.zone.today.strftime("%m/%Y"))
     end
     # -----------------------------------------------------------------------------------------
   end

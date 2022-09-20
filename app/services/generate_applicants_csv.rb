@@ -47,7 +47,7 @@ class GenerateApplicantsCsv < BaseService
      Applicant.human_attribute_name(:status),
      "RDV honoré en - de 30 jours ?",
      "Date d'orientation",
-     "Archivé ?",
+     Applicant.human_attribute_name(:archived_at),
      Applicant.human_attribute_name(:archiving_reason),
      "Numéro du département",
      "Nom du département",
@@ -74,7 +74,7 @@ class GenerateApplicantsCsv < BaseService
      human_rdv_context_status(applicant),
      I18n.t("boolean.#{applicant.first_seen_rdv_starts_at.present?}"),
      display_date(applicant.first_seen_rdv_starts_at),
-     I18n.t("boolean.#{applicant.is_archived?}"),
+     display_date(applicant.archived_at),
      applicant.archiving_reason,
      applicant.department.number,
      applicant.department.name,
@@ -83,12 +83,8 @@ class GenerateApplicantsCsv < BaseService
   end
 
   def filename
-    if @structure.nil?
-      "Liste_beneficiaires.csv"
-    else
-      "Liste_beneficiaires_#{motif_category_title}_#{@structure.class.model_name.human.downcase}_" \
-        "#{@structure.name.parameterize(separator: '_')}.csv"
-    end
+    "Liste_beneficiaires_#{motif_category_title}_#{@structure.class.model_name.human.downcase}_" \
+      "#{@structure.name.parameterize(separator: '_')}.csv"
   end
 
   def motif_category_title
@@ -96,7 +92,7 @@ class GenerateApplicantsCsv < BaseService
   end
 
   def human_rdv_context_status(applicant)
-    return "Non invité" if rdv_context(applicant)&.status.nil?
+    return "" if rdv_context(applicant).nil?
 
     I18n.t("activerecord.attributes.rdv_context.statuses.#{rdv_context(applicant).status}") +
       display_context_status_notice(rdv_context(applicant), number_of_days_before_action_required)

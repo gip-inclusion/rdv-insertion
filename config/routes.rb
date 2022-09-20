@@ -27,7 +27,6 @@ Rails.application.routes.draw do
     resources :applicants, only: [:index, :create, :show, :update, :edit, :new] do
       collection do
         resources :uploads, only: [:new]
-        post :search
       end
       resources :invitations, only: [:create]
     end
@@ -44,6 +43,10 @@ Rails.application.routes.draw do
 
   resources :applicants, only: [] do
     post :search, on: :collection
+  end
+
+  resources :applicants, module: :applicants, only: [] do
+    resource :archivings, only: [:create, :destroy]
   end
 
   resources :departments, only: [] do

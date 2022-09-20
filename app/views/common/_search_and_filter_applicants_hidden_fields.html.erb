@@ -2,6 +2,8 @@
 <%= form.hidden_field :status, value: params[:status] if params[:status].present? %>
 <%= form.hidden_field :action_required, value: params[:action_required] if params[:action_required].present? %>
 <%= form.hidden_field :search_query, value: params[:search_query] if params[:search_query].present? && form_name != "search_form" %>
+<%= form.hidden_field :applicants_scope, value: params[:applicants_scope] if params[:applicants_scope].present? %>
+
 <%= form.hidden_field :first_invitation_date_before, value: params[:first_invitation_date_before] if params[:first_invitation_date_before].present? && form_name != "filter_form" %>
 <%= form.hidden_field :first_invitation_date_after, value: params[:first_invitation_date_after] if params[:first_invitation_date_after].present? && form_name != "filter_form" %>
 <%= form.hidden_field :last_invitation_date_before, value: params[:last_invitation_date_before] if params[:last_invitation_date_before].present? && form_name != "filter_form" %>
