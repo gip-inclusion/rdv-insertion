@@ -12,12 +12,41 @@ describe Applicants::ArchivingsController, type: :controller do
   end
 
   describe "#create" do
+    let(:create_params) do
+      { archiving_reason: "something", applicant_id: applicant_id }
+    end
+
     it "archives the applicant" do
-      post :create, params: { archiving_reason: "something", applicant_id: applicant_id }
+      post :create, params: create_params
       expect(response).to be_successful
       expect(JSON.parse(response.body)["success"]).to eq(true)
       expect(applicant.reload.archived_at).to eq(now)
       expect(applicant.reload.archiving_reason).to eq("something")
+    end
+
+    context "when the applicant is archived" do
+      let!(:rdv_context) do
+        create(:rdv_context, applicant: applicant, motif_category: "rsa_orientation")
+      end
+      let!(:invitation1) do
+        create(:invitation, valid_until: 3.days.from_now, rdv_context: rdv_context, applicant: applicant)
+      end
+      let!(:rdv_context2) do
+        create(:rdv_context, applicant: applicant, motif_category: "rsa_accompagnement")
+      end
+      let!(:invitation2) do
+        create(:invitation, valid_until: 3.days.from_now, rdv_context: rdv_context2, applicant: applicant)
+      end
+
+      before do
+        allow(InvalidateInvitationJob).to receive(:perform_async)
+      end
+
+      it "calls the InvalidateInvitationJob for the applicants invitations" do
+        expect(InvalidateInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation1.id)
+        expect(InvalidateInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation2.id)
+        post :create, params: create_params
+      end
     end
   end
 

@@ -5,6 +5,7 @@ module Applicants
 
     def create
       if @applicant.update(archiving_reason: archiving_params[:archiving_reason], archived_at: Time.zone.now)
+        invalidate_invitations
         render json: { success: true }
       else
         render json: { success: false, errors: @applicant.errors.full_messages }
@@ -28,6 +29,12 @@ module Applicants
 
     def archiving_params
       params.permit(:archiving_reason)
+    end
+
+    def invalidate_invitations
+      @applicant.invitations.each do |invitation|
+        InvalidateInvitationJob.perform_async(invitation.id)
+      end
     end
   end
 end

@@ -703,31 +703,6 @@ describe ApplicantsController, type: :controller do
           expect(response).to be_successful
           expect(JSON.parse(response.body)["success"]).to eq(true)
         end
-
-        context "when the applicant is archived" do
-          let!(:rdv_context) do
-            create(:rdv_context, applicant: applicant, motif_category: "rsa_orientation")
-          end
-          let!(:invitation1) do
-            create(:invitation, valid_until: 3.days.from_now, rdv_context: rdv_context, applicant: applicant)
-          end
-          let!(:rdv_context2) do
-            create(:rdv_context, applicant: applicant, motif_category: "rsa_accompagnement")
-          end
-          let!(:invitation2) do
-            create(:invitation, valid_until: 3.days.from_now, rdv_context: rdv_context2, applicant: applicant)
-          end
-
-          before do
-            allow(InvalidateInvitationJob).to receive(:perform_async)
-          end
-
-          it "calls the InvalidateInvitationJob for the applicants invitations" do
-            expect(InvalidateInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation1.id)
-            expect(InvalidateInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation2.id)
-            post :update, params: update_params
-          end
-        end
       end
 
       context "when the creation fails" do

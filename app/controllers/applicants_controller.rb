@@ -113,7 +113,6 @@ class ApplicantsController < ApplicationController
 
   def save_applicant_and_render
     if save_applicant.success?
-      invalidate_invitations if formatted_params[:is_archived].present?
       render json: { success: true, applicant: @applicant }
     else
       render json: { success: false, errors: save_applicant.errors }, status: :unprocessable_entity
@@ -248,12 +247,6 @@ class ApplicantsController < ApplicationController
     return department_applicant_path(@department, @applicant) if department_level?
 
     organisation_applicant_path(@organisation, @applicant)
-  end
-
-  def invalidate_invitations
-    @applicant.invitations.each do |invitation|
-      InvalidateInvitationJob.perform_async(invitation.id)
-    end
   end
 
   def retrieve_applicants
