@@ -4,21 +4,28 @@ class InvitationMailer < ApplicationMailer
   def invitation_for_rsa_orientation
     mail(
       to: @applicant.email,
-      subject: "RDV d'orientation dans le cadre de votre RSA"
+      subject: "Votre RDV d'orientation dans le cadre de votre RSA"
     )
   end
 
   def invitation_for_rsa_accompagnement
     mail(
       to: @applicant.email,
-      subject: "RDV d'accompagnement dans le cadre de votre RSA"
+      subject: "Votre RDV d'accompagnement dans le cadre de votre RSA"
     )
   end
 
   def invitation_for_rsa_orientation_on_phone_platform
     mail(
       to: @applicant.email,
-      subject: "RDV d'orientation téléphonique dans le cadre de votre RSA"
+      subject: "Votre RDV d'orientation téléphonique dans le cadre de votre RSA"
+    )
+  end
+
+  def invitation_for_rsa_cer_signature
+    mail(
+      to: @applicant.email,
+      subject: "Votre RDV de signature de Contrat d'Engagement Réciproque dans le cadre de votre RSA"
     )
   end
 
@@ -42,6 +49,13 @@ class InvitationMailer < ApplicationMailer
     mail(
       to: @applicant.email,
       subject: "[Rappel]: RDV d'orientation téléphonique dans le cadre de votre RSA"
+    )
+  end
+
+  def invitation_for_rsa_cer_signature_reminder
+    mail(
+      to: @applicant.email,
+      subject: "[Rappel]: Votre RDV de signature de Contrat d'Engagement Réciproque dans le cadre de votre RSA"
     )
   end
 

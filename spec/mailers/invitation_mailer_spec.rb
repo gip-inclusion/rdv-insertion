@@ -24,7 +24,7 @@ RSpec.describe InvitationMailer, type: :mailer do
     end
 
     it "renders the subject" do
-      expect(subject.subject).to eq("RDV d'orientation dans le cadre de votre RSA")
+      expect(subject.subject).to eq("Votre RDV d'orientation dans le cadre de votre RSA")
     end
 
     it "renders the body" do
@@ -59,7 +59,7 @@ RSpec.describe InvitationMailer, type: :mailer do
     end
 
     it "renders the subject" do
-      expect(subject.subject).to eq("RDV d'accompagnement dans le cadre de votre RSA")
+      expect(subject.subject).to eq("Votre RDV d'accompagnement dans le cadre de votre RSA")
     end
 
     it "renders the body" do
@@ -95,7 +95,7 @@ RSpec.describe InvitationMailer, type: :mailer do
     end
 
     it "renders the subject" do
-      expect(subject.subject).to eq("RDV d'orientation téléphonique dans le cadre de votre RSA")
+      expect(subject.subject).to eq("Votre RDV d'orientation téléphonique dans le cadre de votre RSA")
     end
 
     it "renders the body" do
