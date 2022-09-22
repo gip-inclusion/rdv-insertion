@@ -235,8 +235,8 @@ describe Invitations::SendSms, type: :service do
       context "when it is a reminder" do
         let!(:content) do
           "Monsieur John DOE,\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours " \
-            "vous invitant à prendre RDV au créneau de votre choix afin de signer votre Contrat d'Engagement Réciproque." \
-            " Le lien de prise de RDV suivant expire dans 5 jours: " \
+            "vous invitant à prendre RDV au créneau de votre choix afin de signer votre Contrat d'Engagement " \
+            "Réciproque. Le lien de prise de RDV suivant expire dans 5 jours: " \
             "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
             "Ce rendez-vous est obligatoire. En cas de problème technique, contactez le "\
             "0147200001."
