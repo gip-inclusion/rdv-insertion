@@ -81,51 +81,107 @@ describe RdvContext do
           end
         end
 
-        context "when the invitation has been sent after last rdv" do
-          let!(:rdv) { create(:rdv, status: "seen", starts_at: 3.days.ago, rdv_contexts: [rdv_context]) }
+        context "with a seen rdv" do
+          context "when the invitation has been sent after last rdv" do
+            let!(:rdv) { create(:rdv, status: "seen", starts_at: 3.days.ago, rdv_contexts: [rdv_context]) }
 
-          it "is in invitation pending" do
-            expect(subject).to eq(:invitation_pending)
+            it "is in invitation pending" do
+              expect(subject).to eq(:invitation_pending)
+            end
+          end
+
+          context "when the rdv has starts after the invitation" do
+            let!(:rdv) { create(:rdv, status: "seen", starts_at: 1.day.ago, rdv_contexts: [rdv_context]) }
+
+            it "is the status of the rdv" do
+              expect(subject).to eq(:rdv_seen)
+            end
           end
         end
 
-        context "when the rdv has starts after the invitation" do
-          let!(:rdv) { create(:rdv, status: "seen", starts_at: 1.day.ago, rdv_contexts: [rdv_context]) }
+        context "when a rdv is pending" do
+          let!(:rdv) do
+            create(
+              :rdv, status: "unknown", starts_at: 1.day.from_now, created_at: 4.days.ago, rdv_contexts: [rdv_context]
+            )
+          end
 
           it "is the status of the rdv" do
-            expect(subject).to eq(:rdv_seen)
+            expect(subject).to eq(:rdv_pending)
           end
         end
-      end
-    end
 
-    context "with rdvs" do
-      context "with a seen rdv" do
-        let!(:rdv) { create(:rdv, status: "seen", starts_at: 4.days.ago) }
-        let!(:rdv2) { create(:rdv, status: "noshow", starts_at: 2.days.ago) }
-        let!(:rdv_context) { create(:rdv_context, rdvs: [rdv, rdv2]) }
+        context "with a cancelled rdv" do
+          context "when the invitation has been sent after the rdv creation" do
+            let!(:rdv) do
+              create(
+                :rdv,
+                status: "noshow", starts_at: 4.days.from_now, created_at: 4.days.ago, rdv_contexts: [rdv_context]
+              )
+            end
 
-        it "is the last rdv" do
-          expect(subject).to eq(:rdv_noshow)
+            it "is in invitation pending" do
+              expect(subject).to eq(:invitation_pending)
+            end
+          end
+
+          context "when the invitation has been sent before the rdv creation" do
+            let!(:rdv) do
+              create(
+                :rdv,
+                status: "noshow", starts_at: 4.days.from_now, created_at: 1.day.ago, rdv_contexts: [rdv_context]
+              )
+            end
+
+            it "is the status of the rdv" do
+              expect(subject).to eq(:rdv_noshow)
+            end
+          end
         end
-      end
 
-      context "with at least 2 rdvs cancelled" do
-        let!(:rdv) { create(:rdv, status: "noshow") }
-        let!(:rdv2) { create(:rdv, status: "excused") }
-        let!(:rdv_context) { create(:rdv_context, rdvs: [rdv, rdv2]) }
+        context "with mutliple rdvs after invitation" do
+          let!(:invitation) { create(:invitation, sent_at: 10.days.ago) }
+          let!(:rdv) do
+            create(:rdv, status: "seen", created_at: 4.days.ago, starts_at: 4.days.ago, rdv_contexts: [rdv_context])
+          end
+          let!(:rdv2) do
+            create(:rdv, status: "noshow", created_at: 5.days.ago, starts_at: 2.days.ago, rdv_contexts: [rdv_context])
+          end
 
-        it "is mutliple rdvs cancelled" do
-          expect(subject).to eq(:multiple_rdvs_cancelled)
-        end
-      end
+          it "is the status of the last created rdv" do
+            expect(subject).to eq(:rdv_seen)
+          end
 
-      context "with a past rdv with status not updated" do
-        let!(:rdv) { create(:rdv, status: "unknown", starts_at: 2.days.ago) }
-        let!(:rdv_context) { create(:rdv_context, rdvs: [rdv]) }
+          context "when a rdv is pending" do
+            let!(:rdv3) do
+              create(
+                :rdv,
+                status: "unknown", created_at: 8.days.ago, starts_at: 2.days.from_now, rdv_contexts: [rdv_context]
+              )
+            end
 
-        it "is rdv pending" do
-          expect(subject).to eq(:rdv_needs_status_update)
+            it "is rdv_pending" do
+              expect(subject).to eq(:rdv_pending)
+            end
+          end
+
+          context "when the last rdv is cancelled and one other has been cancelled" do
+            let!(:rdv3) { create(:rdv, status: "excused", created_at: 1.day.ago, rdv_contexts: [rdv_context]) }
+
+            it "is mutliple rdvs cancelled" do
+              expect(subject).to eq(:multiple_rdvs_cancelled)
+            end
+          end
+
+          context "when the last rdv already took place but the status is not updated" do
+            let!(:rdv3) do
+              create(:rdv, status: "unknown", created_at: 1.day.ago, starts_at: 2.days.ago, rdv_contexts: [rdv_context])
+            end
+
+            it "is needs status update" do
+              expect(subject).to eq(:rdv_needs_status_update)
+            end
+          end
         end
       end
     end

@@ -52,7 +52,7 @@ module HasStatusConcern
   end
 
   def rdv_status
-    if last_created_rdv.pending?
+    if rdvs.any?(&:pending?)
       :rdv_pending
     elsif last_created_rdv.seen?
       :rdv_seen
