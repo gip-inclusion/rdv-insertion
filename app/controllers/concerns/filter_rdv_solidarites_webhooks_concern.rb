@@ -1,7 +1,7 @@
 module FilterRdvSolidaritesWebhooksConcern
   extend ActiveSupport::Concern
 
-  SUPPORTED_MODELS_TYPES = %w[Rdv User UserProfile Organisation].freeze
+  SUPPORTED_MODELS_TYPES = %w[Rdv User UserProfile Organisation Motif].freeze
 
   included do
     before_action :check_webhook_auth!
