@@ -31,8 +31,8 @@ describe CreateAndInviteApplicantJob, type: :job do
   let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
 
   before do
-    allow(FindOrInitializeApplicant).to receive(:call).and_return(OpenStruct.new(applicant: applicant))
-    allow(SaveApplicant).to receive(:call).and_return(OpenStruct.new(success?: true, failure?: false))
+    allow(Applicants::FindOrInitializeApplicant).to receive(:call).and_return(OpenStruct.new(applicant: applicant))
+    allow(Applicants::SaveApplicant).to receive(:call).and_return(OpenStruct.new(success?: true, failure?: false))
     allow(RdvSolidaritesSession).to receive(:new)
       .with(rdv_solidarites_session_credentials)
       .and_return(rdv_solidarites_session)
@@ -46,7 +46,7 @@ describe CreateAndInviteApplicantJob, type: :job do
   end
 
   it "saves the applicant" do
-    expect(SaveApplicant).to receive(:call)
+    expect(Applicants::SaveApplicant).to receive(:call)
       .with(applicant: applicant, organisation: organisation, rdv_solidarites_session: rdv_solidarites_session)
     subject
   end
@@ -110,7 +110,7 @@ describe CreateAndInviteApplicantJob, type: :job do
     let!(:department_mail) { instance_double("mail") }
 
     before do
-      allow(SaveApplicant).to receive(:call)
+      allow(Applicants::SaveApplicant).to receive(:call)
         .and_return(OpenStruct.new(failure?: true, errors: ["could not save applicant"]))
       allow(Sentry).to receive(:capture_exception)
       allow(DepartmentMailer).to receive(:create_applicant_error).and_return(department_mail)

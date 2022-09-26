@@ -1,4 +1,4 @@
-describe FindOrInitializeApplicant, type: :service do
+describe Applicants::FindOrInitializeApplicant, type: :service do
   subject do
     described_class.call(
       department_internal_id: department_internal_id,

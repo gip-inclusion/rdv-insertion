@@ -1,4 +1,4 @@
-describe GenerateApplicantsCsv, type: :service do
+describe Applicants::GenerateApplicantsCsv, type: :service do
   subject { described_class.call(applicants: applicants, structure: structure, motif_category: motif_category) }
 
   let!(:motif_category) { "rsa_orientation" }
