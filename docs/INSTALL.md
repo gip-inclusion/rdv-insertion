@@ -63,6 +63,10 @@ Il ne reste (si tout s’est bien passé) qu’à lancer un serveur le serveur.
 make run      ## appelle foreman s -f Procfile.dev
 ```
 
+### Dans l'appli
+
+Vous trouverez dans le dossier [Resources](https://github.com/betagouv/rdv-insertion/tree/staging/docs/resources) 2 fichiers de test pour l'import des allocataires via l'upload dans l'application : Un fichier xlsx contenant des allocataires et un fichier csv de contacts.
+
 ## Commandes
 
 Un [Makefile](https://github.com/betagouv/rdv-insertion/blob/staging/Makefile) est disponible, qui sert de point d’entrée aux différents outils :

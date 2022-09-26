@@ -283,7 +283,7 @@ module Stats
     end
 
     def compute_rate_of_autonomous_applicants(selected_applicants)
-      relevant_rdvs_created_by_user = relevant_rdvs.select(&:created_by_user?)
+      relevant_rdvs_created_by_user = relevant_rdvs.preload(:applicants).select(&:created_by_user?)
       autonomous_applicants = selected_applicants.select do |applicant|
         applicant.id.in?(relevant_rdvs_created_by_user.flat_map(&:applicant_ids))
       end
