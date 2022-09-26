@@ -5,22 +5,29 @@ module RdvSolidaritesWebhooks
     def perform(data, meta)
       @data = data.deep_symbolize_keys
       @meta = meta.deep_symbolize_keys
-      check_organisation!
+      verify_organisation!
+      verify_motif!
       return if applicants.empty?
       return if unhandled_category?
 
       upsert_or_delete_rdv
-      invalidate_invitations if event == "created"
+      invalidate_related_invitations if event == "created"
       notify_applicants if should_notify_applicants?
-      send_webhooks
+      send_outgoing_webhooks
     end
 
     private
 
-    def check_organisation!
+    def verify_organisation!
       return if organisation
 
-      raise WebhookProcessingJobError, "Organisation not found for organisation id #{rdv_solidarites_organisation_id}"
+      raise WebhookProcessingJobError, "Organisation not found with id #{rdv_solidarites_organisation_id}"
+    end
+
+    def verify_motif!
+      return if motif
+
+      raise WebhookProcessingJobError, "Motif not found with id #{rdv_solidarites_motif_id}"
     end
 
     def should_notify_applicants?
@@ -31,8 +38,10 @@ module RdvSolidaritesWebhooks
       organisation.configurations.find_by(motif_category: rdv_solidarites_rdv.category)
     end
 
+    # Category is checked through the webhook directly and not through the motif we have in DB since it's always
+    # more reliable than our cache
     def unhandled_category?
-      Configuration.motif_categories.keys.exclude?(rdv_solidarites_rdv.category) || matching_configuration.nil?
+      Motif.categories.keys.exclude?(rdv_solidarites_rdv.category) || matching_configuration.nil?
     end
 
     def event
@@ -63,6 +72,14 @@ module RdvSolidaritesWebhooks
       @organisation ||= Organisation.find_by(rdv_solidarites_organisation_id: rdv_solidarites_organisation_id)
     end
 
+    def motif
+      @motif ||= Motif.find_by(rdv_solidarites_motif_id: rdv_solidarites_motif_id)
+    end
+
+    def rdv_solidarites_motif_id
+      rdv_solidarites_rdv.motif_id
+    end
+
     def rdv_solidarites_organisation_id
       @data[:organisation][:id]
     end
@@ -77,6 +94,7 @@ module RdvSolidaritesWebhooks
           {
             applicant_ids: applicant_ids,
             organisation_id: organisation.id,
+            motif_id: motif.id,
             rdv_context_ids: rdv_context_ids,
             last_webhook_update_received_at: @meta[:timestamp]
           }
@@ -84,7 +102,7 @@ module RdvSolidaritesWebhooks
       end
     end
 
-    def invalidate_invitations
+    def invalidate_related_invitations
       # We invalidate the invitations linked to the new or updated rdvs to avoid double appointments
       related_invitations.each do |invitation|
         InvalidateInvitationJob.perform_async(invitation.id)
@@ -115,13 +133,13 @@ module RdvSolidaritesWebhooks
       end
     end
 
-    def send_webhooks
+    def send_outgoing_webhooks
       organisation.webhook_endpoints.each do |webhook_endpoint|
-        SendRdvSolidaritesWebhookJob.perform_async(webhook_endpoint.id, webhook_payload)
+        SendRdvSolidaritesWebhookJob.perform_async(webhook_endpoint.id, outgoing_webhook_payload)
       end
     end
 
-    def webhook_payload
+    def outgoing_webhook_payload
       {
         data: @data.merge(users: rdv_solidarites_rdv.users.map(&:augmented_attributes)),
         meta: @meta
