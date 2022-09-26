@@ -25,7 +25,7 @@ describe Applicants::Archive, type: :service do
 
     it "change the archived_at value" do
       subject
-      expect(applicant.reload.archived_at).to eq(archived_at)
+      expect(applicant.reload.archived_at.to_date).to eq(archived_at.to_date)
     end
 
     it "saves the archiving_reason" do
