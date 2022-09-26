@@ -23,5 +23,5 @@ class Motif < ApplicationRecord
   belongs_to :organisation
 
   validates :rdv_solidarites_motif_id, uniqueness: true, presence: true
-  validates :name, :category, :location_type, presence: true
+  validates :name, :location_type, presence: true
 end

@@ -50,14 +50,5 @@ describe RdvSolidaritesWebhooks::ProcessMotifJob, type: :job do
         subject
       end
     end
-
-    context "when it is an unhandled category" do
-      before { data[:category] = nil }
-
-      it "does not enqueue a job" do
-        expect(UpsertRecordJob).not_to receive(:perform_async)
-        subject
-      end
-    end
   end
 end
