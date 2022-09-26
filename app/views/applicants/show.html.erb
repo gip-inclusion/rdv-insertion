@@ -68,14 +68,18 @@
         <h4 class="label-blue"><%= Applicant.human_attribute_name(:creation_date) %></h4>
         <p><%= display_attribute format_date(@applicant.created_at) %></p>
       </div>
-      <% if department_level? %>
-        <%= render "organisations_list", organisations: @applicant.organisations %>
-      <% end %>
       <% if @applicant.archived? %>
         <div class="col-12 col-md-6 px-5">
           <h4 class="label-blue"><%= Applicant.human_attribute_name(:archiving_reason) %></h4>
           <p><%= display_attribute @applicant.archiving_reason %></p>
         </div>
+        <div class="col-12 col-md-6 px-5">
+          <h4 class="label-blue"><%= Applicant.human_attribute_name(:archived_at) %></h4>
+          <p><%= display_attribute format_date(@applicant.archived_at) %></p>
+        </div>
+      <% end %>
+      <% if department_level? %>
+        <%= render "organisations_list", organisations: @applicant.organisations %>
       <% end %>
     </div>
     <%= render "add_to_org_button", can_be_added_to_other_org: @can_be_added_to_other_org, department: @department, applicant: @applicant %>
