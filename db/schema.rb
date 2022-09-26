@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_14_162719) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_22_135546) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -140,6 +140,23 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_14_162719) do
     t.index ["organisation_id", "invitation_id"], name: "index_invitations_orgas_on_orga_id_and_invitation_id", unique: true
   end
 
+  create_table "motifs", force: :cascade do |t|
+    t.bigint "rdv_solidarites_motif_id"
+    t.string "name"
+    t.boolean "reservable_online"
+    t.datetime "deleted_at"
+    t.bigint "rdv_solidarites_service_id"
+    t.boolean "collectif"
+    t.integer "location_type"
+    t.integer "category"
+    t.datetime "last_webhook_update_received_at"
+    t.bigint "organisation_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organisation_id"], name: "index_motifs_on_organisation_id"
+    t.index ["rdv_solidarites_motif_id"], name: "index_motifs_on_rdv_solidarites_motif_id", unique: true
+  end
+
   create_table "notifications", force: :cascade do |t|
     t.bigint "applicant_id", null: false
     t.integer "event"
@@ -257,6 +274,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_14_162719) do
   add_foreign_key "invitations", "applicants"
   add_foreign_key "invitations", "departments"
   add_foreign_key "invitations", "rdv_contexts"
+  add_foreign_key "motifs", "organisations"
   add_foreign_key "notifications", "applicants"
   add_foreign_key "organisations", "departments"
   add_foreign_key "organisations", "invitation_parameters", column: "invitation_parameters_id"
