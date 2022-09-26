@@ -10,7 +10,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
   let!(:rdv_solidarites_lieu_id) { 43 }
   let!(:rdv_solidarites_motif_id) { 53 }
   let!(:lieu) { { id: 43, name: "DINUM", lieu: "20 avenue de Ségur" } }
-  let!(:motif) { { id: 53, location: "public_office", category: "rsa_orientation" } }
+  let!(:motif_attributes) { { id: 53, location: "public_office", category: "rsa_orientation" } }
   let!(:starts_at) { "2021-09-08 12:00:00 UTC" }
   let!(:data) do
     {
@@ -19,7 +19,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
       "address" => "20 avenue de segur",
       "context" => "all good",
       "lieu" => lieu,
-      "motif" => motif,
+      "motif" => motif_attributes,
       "users" => [{ id: user_id }],
       "organisation" => { id: rdv_solidarites_organisation_id }
     }.deep_symbolize_keys
@@ -35,10 +35,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
   end
 
   let!(:rdv_payload) do
-    data.merge(
-      rdv_solidarites_motif_id: rdv_solidarites_motif_id,
-      rdv_solidarites_lieu_id: rdv_solidarites_lieu_id
-    )
+    data.merge(rdv_solidarites_lieu_id: rdv_solidarites_lieu_id)
   end
 
   let!(:applicant) { create(:applicant, organisations: [organisation], id: 3) }
@@ -51,6 +48,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
       rdv_solidarites_organisation_id: rdv_solidarites_organisation_id, configurations: [configuration]
     )
   end
+  let!(:motif) { create(:motif, rdv_solidarites_motif_id: rdv_solidarites_motif_id) }
 
   let!(:invitation) { create(:invitation, rdv_context: rdv_context) }
   let!(:invitation2) { create(:invitation, rdv_context: rdv_context2) }
@@ -66,9 +64,6 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
 
   describe "#perform" do
     before do
-      allow(Organisation).to receive(:find_by)
-        .with(rdv_solidarites_organisation_id: 52)
-        .and_return(organisation)
       allow(Applicant).to receive(:includes).and_return(Applicant)
       allow(Applicant).to receive(:where)
         .with(rdv_solidarites_user_id: user_ids)
@@ -88,16 +83,18 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
     end
 
     context "when no organisation is found" do
-      let!(:organisation) { create(:organisation, id: 111) }
-
-      before do
-        allow(Organisation).to receive(:find_by)
-          .with(rdv_solidarites_organisation_id: 52)
-          .and_return(nil)
-      end
+      let!(:organisation) { create(:organisation, rdv_solidarites_organisation_id: "random-orga-id") }
 
       it "raises an error" do
-        expect { subject }.to raise_error(WebhookProcessingJobError, "Organisation not found for organisation id 52")
+        expect { subject }.to raise_error(WebhookProcessingJobError, "Organisation not found with id 52")
+      end
+    end
+
+    context "when no motif is found" do
+      let!(:motif) { create(:motif, rdv_solidarites_motif_id: "random-motif-id") }
+
+      it "raises an error" do
+        expect { subject }.to raise_error(WebhookProcessingJobError, "Motif not found with id 53")
       end
     end
 
@@ -126,6 +123,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
               applicant_ids: [applicant.id, applicant2.id],
               organisation_id: organisation.id,
               rdv_context_ids: [rdv_context.id, rdv_context2.id],
+              motif_id: motif.id,
               last_webhook_update_received_at: timestamp
             }
           )
@@ -143,6 +141,16 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
             .with(rdv_solidarites_rdv_id)
           subject
         end
+      end
+    end
+
+    context "when applicants should be notified" do
+      it "calls the notify applicant job" do
+        expect(NotifyApplicantJob).to receive(:perform_async)
+          .with(applicant.id, organisation.id, data, "created")
+        expect(NotifyApplicantJob).to receive(:perform_async)
+          .with(applicant2.id, organisation.id, data, "created")
+        subject
       end
     end
 
@@ -171,22 +179,8 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
       end
     end
 
-    context "when applicants should be notified" do
-      before do
-        allow(Organisation).to receive(:find_by).and_return(organisation)
-      end
-
-      it "calls the notify applicant job" do
-        expect(NotifyApplicantJob).to receive(:perform_async)
-          .with(applicant.id, organisation.id, data, "created")
-        expect(NotifyApplicantJob).to receive(:perform_async)
-          .with(applicant2.id, organisation.id, data, "created")
-        subject
-      end
-    end
-
     context "with an invalid category" do
-      let!(:motif) { { id: 53, location: "public_office", category: nil } }
+      let!(:motif_attributes) { { id: 53, location: "public_office", category: nil } }
 
       it "does not call any job" do
         [UpsertRecordJob, DeleteRdvJob, NotifyApplicantJob].each do |klass|
@@ -197,7 +191,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
     end
 
     context "with no matching configuration" do
-      let!(:motif) { { id: 53, location: "public_office", category: "rsa_accompagnement" } }
+      let!(:motif_attributes) { { id: 53, location: "public_office", category: "rsa_accompagnement" } }
 
       it "does not call any job" do
         [UpsertRecordJob, DeleteRdvJob, NotifyApplicantJob].each do |klass|
