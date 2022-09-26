@@ -4,7 +4,6 @@ module RdvSolidaritesWebhooks
       @data = data.deep_symbolize_keys
       @meta = meta.deep_symbolize_keys
       return if organisation.blank?
-      return if unhandled_category?
 
       upsert_motif
     end
@@ -17,14 +16,6 @@ module RdvSolidaritesWebhooks
 
     def rdv_solidarites_motif
       RdvSolidarites::Motif.new(@data)
-    end
-
-    def motif_category
-      @data[:category]
-    end
-
-    def unhandled_category?
-      motif_category.nil? || Motif.categories.keys.exclude?(motif_category)
     end
 
     def organisation
