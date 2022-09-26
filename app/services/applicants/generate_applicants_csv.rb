@@ -106,7 +106,8 @@ module Applicants
     end
 
     def display_context_status_notice(rdv_context, number_of_days_before_action_required)
-      if rdv_context.invited_before_time_window?(number_of_days_before_action_required) && rdv_context.invitation_pending?
+      if rdv_context.invited_before_time_window?(number_of_days_before_action_required) &&
+         rdv_context.invitation_pending?
         " (Délai dépassé)"
       else
         ""
