@@ -11,6 +11,8 @@ describe Applicants::ToggleArchiveApplicant, type: :service do
   let(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
   let!(:archiving_reason) { "some reason" }
   let!(:archived_at) { Time.zone.now }
+  let!(:invitation1) { create(:invitation, applicant: applicant) }
+  let!(:invitation2) { create(:invitation, applicant: applicant) }
 
   describe "#call" do
     before do
@@ -42,6 +44,12 @@ describe Applicants::ToggleArchiveApplicant, type: :service do
     #   expect(applicant.reload.archiving_reason).to eq(archiving_reason)
     # end
 
+    it "calls the InvalidateInvitationJob for the applicants invitations" do
+      expect(InvalidateInvitationJob).to receive(:perform_async).exactly(1).time
+      expect(InvalidateInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation2.id)
+      subject
+    end
+
     context "when the applicant cannot be updated" do
       before do
         allow(applicant).to receive(:save)
@@ -56,6 +64,11 @@ describe Applicants::ToggleArchiveApplicant, type: :service do
 
       it "stores the error" do
         expect(subject.errors).to eq(['some error'])
+      end
+
+      it "does not call the InvalidateInvitationJob" do
+        expect(InvalidateInvitationJob).not_to receive(:perform_async)
+        subject
       end
     end
 
@@ -83,6 +96,11 @@ describe Applicants::ToggleArchiveApplicant, type: :service do
       #   subject
       #   expect(applicant.reload.archiving_reason).to eq(archiving_reason)
       # end
+
+      it "does not call the InvalidateInvitationJob" do
+        expect(InvalidateInvitationJob).not_to receive(:perform_async)
+        subject
+      end
     end
   end
 end

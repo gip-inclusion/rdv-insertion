@@ -13,7 +13,7 @@ class ApplicantsController < ApplicationController
   before_action :set_organisation, :set_department, only: [:index, :new, :create, :show, :update, :edit]
   before_action :set_applicants_scope, :set_all_configurations, :set_current_configuration,
                 :set_current_motif_category, :set_applicants, :set_rdv_contexts,
-                :filter_applicants, only: [:index]
+                :filter_applicants, :order_applicants, only: [:index]
   before_action :set_organisations, only: [:new, :create]
   before_action :set_applicant_rdv_contexts, :set_can_be_added_to_other_org, only: [:show]
   before_action :retrieve_applicants, only: [:search]
@@ -214,14 +214,12 @@ class ApplicantsController < ApplicationController
                   .where(department_level? ? { department: @department } : { organisations: @organisation })
                   .joins(:rdv_contexts)
                   .where(rdv_contexts: { motif_category: @current_motif_category })
-                  .order(created_at: :desc)
   end
 
   def set_archived_applicants
     @applicants = policy_scope(Applicant)
                   .active.distinct.archived
                   .where(department_level? ? { department: @department } : { organisations: @organisation })
-                  .order(archived_at: :desc)
   end
 
   def set_rdv_contexts
@@ -239,6 +237,14 @@ class ApplicantsController < ApplicationController
 
   def archived_scope?
     @applicants_scope == "archived"
+  end
+
+  def order_applicants
+    @applicants = if archived_scope?
+                    @applicants.order(archived_at: :desc)
+                  else
+                    @applicants.order(created_at: :desc)
+                  end
   end
 
   def after_save_path

@@ -9,7 +9,7 @@ module Applicants
 
     def call
       update_applicant
-      invalidate_invitations if @archived_at.nil?
+      invalidate_invitations if @archived_at.present?
     end
 
     private
