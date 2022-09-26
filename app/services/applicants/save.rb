@@ -1,5 +1,5 @@
 module Applicants
-  class SaveApplicant < BaseService
+  class Save < BaseService
     def initialize(applicant:, organisation:, rdv_solidarites_session:)
       @applicant = applicant
       @organisation = organisation

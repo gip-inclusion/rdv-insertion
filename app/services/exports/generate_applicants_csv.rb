@@ -2,7 +2,7 @@ require "csv"
 
 # rubocop:disable Metrics/ClassLength
 
-module Applicants
+module Exports
   class GenerateApplicantsCsv < BaseService
     def initialize(applicants:, structure:, motif_category:)
       @applicants = applicants

@@ -40,12 +40,12 @@ describe ApplicantsController, type: :controller do
     before do
       sign_in(agent)
       setup_rdv_solidarites_session(rdv_solidarites_session)
-      allow(Applicants::FindOrInitializeApplicant).to receive(:call)
+      allow(Applicants::FindOrInitialize).to receive(:call)
         .and_return(OpenStruct.new(success?: true, applicant: applicant))
       allow(Applicant).to receive(:new)
         .and_return(applicant)
       allow(applicant).to receive(:assign_attributes)
-      allow(Applicants::SaveApplicant).to receive(:call)
+      allow(Applicants::Save).to receive(:call)
         .and_return(OpenStruct.new)
     end
 
@@ -59,8 +59,8 @@ describe ApplicantsController, type: :controller do
       }
     end
 
-    it "calls the Applicants::FindOrInitializeApplicant service" do
-      expect(Applicants::FindOrInitializeApplicant).to receive(:call)
+    it "calls the Applicants::FindOrInitialize service" do
+      expect(Applicants::FindOrInitialize).to receive(:call)
       post :create, params: applicant_params
     end
 
@@ -69,8 +69,8 @@ describe ApplicantsController, type: :controller do
       post :create, params: applicant_params
     end
 
-    it "calls the Applicants::SaveApplicant service" do
-      expect(Applicants::SaveApplicant).to receive(:call)
+    it "calls the Applicants::Save service" do
+      expect(Applicants::Save).to receive(:call)
       post :create, params: applicant_params
     end
 
@@ -98,7 +98,7 @@ describe ApplicantsController, type: :controller do
 
       context "when the creation succeeds" do
         before do
-          allow(Applicants::SaveApplicant).to receive(:call)
+          allow(Applicants::Save).to receive(:call)
             .and_return(OpenStruct.new(success?: true))
         end
 
@@ -110,7 +110,7 @@ describe ApplicantsController, type: :controller do
 
       context "when the creation fails" do
         before do
-          allow(Applicants::SaveApplicant).to receive(:call)
+          allow(Applicants::Save).to receive(:call)
             .and_return(OpenStruct.new(success?: false, errors: ['some error']))
         end
 
@@ -150,7 +150,7 @@ describe ApplicantsController, type: :controller do
         let!(:applicant) { create(:applicant, organisations: [organisation], department: department) }
 
         before do
-          allow(Applicants::SaveApplicant).to receive(:call)
+          allow(Applicants::Save).to receive(:call)
             .and_return(OpenStruct.new(success?: true, applicant: applicant))
         end
 
@@ -169,7 +169,7 @@ describe ApplicantsController, type: :controller do
 
       context "when the creation fails" do
         before do
-          allow(Applicants::SaveApplicant).to receive(:call)
+          allow(Applicants::Save).to receive(:call)
             .and_return(OpenStruct.new(success?: false, errors: ['some error']))
         end
 
@@ -571,12 +571,12 @@ describe ApplicantsController, type: :controller do
 
     context "when csv request" do
       before do
-        allow(Applicants::GenerateApplicantsCsv).to receive(:call)
+        allow(Exports::GenerateApplicantsCsv).to receive(:call)
           .and_return(OpenStruct.new)
       end
 
       it "calls the service" do
-        expect(Applicants::GenerateApplicantsCsv).to receive(:call)
+        expect(Exports::GenerateApplicantsCsv).to receive(:call)
         get :index, params: index_params.merge(format: :csv)
       end
 
@@ -598,7 +598,7 @@ describe ApplicantsController, type: :controller do
 
       context "when the csv creation succeeds" do
         before do
-          allow(Applicants::GenerateApplicantsCsv).to receive(:call)
+          allow(Exports::GenerateApplicantsCsv).to receive(:call)
             .and_return(OpenStruct.new(success?: true))
         end
 
@@ -667,12 +667,12 @@ describe ApplicantsController, type: :controller do
       end
 
       before do
-        allow(Applicants::SaveApplicant).to receive(:call)
+        allow(Applicants::Save).to receive(:call)
           .and_return(OpenStruct.new)
       end
 
       it "calls the service" do
-        expect(Applicants::SaveApplicant).to receive(:call)
+        expect(Applicants::Save).to receive(:call)
         post :update, params: update_params
       end
 
@@ -694,7 +694,7 @@ describe ApplicantsController, type: :controller do
 
       context "when the update succeeds" do
         before do
-          allow(Applicants::SaveApplicant).to receive(:call)
+          allow(Applicants::Save).to receive(:call)
             .and_return(OpenStruct.new(success?: true, applicant: applicant))
         end
 
@@ -707,7 +707,7 @@ describe ApplicantsController, type: :controller do
 
       context "when the creation fails" do
         before do
-          allow(Applicants::SaveApplicant).to receive(:call)
+          allow(Applicants::Save).to receive(:call)
             .and_return(OpenStruct.new(success?: false, errors: ['some error']))
         end
 
@@ -736,12 +736,12 @@ describe ApplicantsController, type: :controller do
       before do
         sign_in(agent)
         setup_rdv_solidarites_session(rdv_solidarites_session)
-        allow(Applicants::SaveApplicant).to receive(:call)
+        allow(Applicants::Save).to receive(:call)
           .and_return(OpenStruct.new)
       end
 
       it "calls the service" do
-        expect(Applicants::SaveApplicant).to receive(:call)
+        expect(Applicants::Save).to receive(:call)
           .with(
             applicant: applicant,
             organisation: organisation,
@@ -768,7 +768,7 @@ describe ApplicantsController, type: :controller do
 
       context "when the update succeeds" do
         before do
-          allow(Applicants::SaveApplicant).to receive(:call)
+          allow(Applicants::Save).to receive(:call)
             .and_return(OpenStruct.new(success?: true, applicant: applicant))
         end
 
@@ -794,7 +794,7 @@ describe ApplicantsController, type: :controller do
 
       context "when the creation fails" do
         before do
-          allow(Applicants::SaveApplicant).to receive(:call)
+          allow(Applicants::Save).to receive(:call)
             .and_return(OpenStruct.new(success?: false, errors: ['some error']))
         end
 

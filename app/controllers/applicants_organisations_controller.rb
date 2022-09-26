@@ -43,7 +43,7 @@ class ApplicantsOrganisationsController < ApplicationController
   end
 
   def save_applicant
-    @save_applicant ||= Applicants::SaveApplicant.call(
+    @save_applicant ||= Applicants::Save.call(
       applicant: @applicant,
       organisation: @organisation,
       rdv_solidarites_session: rdv_solidarites_session

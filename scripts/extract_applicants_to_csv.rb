@@ -23,7 +23,7 @@ context_applicants = if CONTEXT.present?
                        applicants.where.missing(:rdv_contexts)
                      end
 
-result = Applicants::GenerateApplicantsCsv.call(
+result = Exports::GenerateApplicantsCsv.call(
   applicants: context_applicants, structure: structure, motif_category: MOTIF_CATEGORY
 )
 

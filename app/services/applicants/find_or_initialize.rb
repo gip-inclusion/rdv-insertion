@@ -1,5 +1,5 @@
 module Applicants
-  class FindOrInitializeApplicant < BaseService
+  class FindOrInitialize < BaseService
     def initialize(department_internal_id:, role:, affiliation_number:, department_id:)
       @department_internal_id = department_internal_id
       @role = role

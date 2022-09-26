@@ -34,7 +34,7 @@ describe ApplicantsOrganisationsController, type: :controller do
     end
 
     before do
-      allow(Applicants::SaveApplicant).to receive(:call)
+      allow(Applicants::Save).to receive(:call)
         .with(applicant: applicant, organisation: organisation2, rdv_solidarites_session: rdv_solidarites_session)
         .and_return(OpenStruct.new(success?: true))
     end
@@ -48,14 +48,14 @@ describe ApplicantsOrganisationsController, type: :controller do
     end
 
     it "saves the applicant with the organisation" do
-      expect(Applicants::SaveApplicant).to receive(:call)
+      expect(Applicants::Save).to receive(:call)
         .with(applicant: applicant, organisation: organisation2, rdv_solidarites_session: rdv_solidarites_session)
       subject
     end
 
     context "when the save fails" do
       before do
-        allow(Applicants::SaveApplicant).to receive(:call)
+        allow(Applicants::Save).to receive(:call)
           .with(applicant: applicant, organisation: organisation2, rdv_solidarites_session: rdv_solidarites_session)
           .and_return(OpenStruct.new(success?: false, errors: ["something failed"]))
       end
