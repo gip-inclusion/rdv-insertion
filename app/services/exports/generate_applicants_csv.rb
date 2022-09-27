@@ -4,7 +4,7 @@ require "csv"
 
 module Exports
   class GenerateApplicantsCsv < BaseService
-    def initialize(applicants:, structure:, motif_category:)
+    def initialize(applicants:, structure: nil, motif_category: nil)
       @applicants = applicants
       @structure = structure
       @motif_category = motif_category
@@ -46,7 +46,7 @@ module Exports
        "Date du dernier RDV",
        "Dernier RDV pris en autonomie ?",
        Applicant.human_attribute_name(:status),
-       "RDV honoré en - de 30 jours ?",
+       "1er RDV honoré en - de 30 jours ?",
        "Date d'orientation",
        Applicant.human_attribute_name(:archived_at),
        Applicant.human_attribute_name(:archiving_reason),
@@ -73,7 +73,7 @@ module Exports
        display_date(last_rdv_date(applicant)),
        rdv_taken_in_autonomy?(applicant),
        human_rdv_context_status(applicant),
-       I18n.t("boolean.#{applicant.first_seen_rdv_starts_at.present?}"),
+       rdv_seen_in_less_than_30_days?(applicant),
        display_date(applicant.first_seen_rdv_starts_at),
        display_date(applicant.archived_at),
        applicant.archiving_reason,
@@ -84,8 +84,12 @@ module Exports
     end
 
     def filename
-      "Liste_beneficiaires_#{motif_category_title}_#{@structure.class.model_name.human.downcase}_" \
-        "#{@structure.name.parameterize(separator: '_')}.csv"
+      if @structure.present?
+        "Export_beneficiaires_#{motif_category_title}_#{@structure.class.model_name.human.downcase}_" \
+          "#{@structure.name.parameterize(separator: '_')}.csv"
+      else
+        "Export_beneficiaires_#{Time.zone.now.to_i}.csv"
+      end
     end
 
     def motif_category_title
@@ -93,7 +97,9 @@ module Exports
     end
 
     def human_rdv_context_status(applicant)
-      return "" if rdv_context(applicant).nil?
+      return "Archivé" if applicant.archived_at.present?
+
+      return "" if rdv_context(applicant).nil? || @structure.nil?
 
       I18n.t("activerecord.attributes.rdv_context.statuses.#{rdv_context(applicant).status}") +
         display_context_status_notice(rdv_context(applicant), number_of_days_before_action_required)
@@ -121,25 +127,29 @@ module Exports
     end
 
     def first_invitation_date(applicant)
-      rdv_context(applicant)&.first_invitation_sent_at
+      rdv_context(applicant)&.first_invitation_sent_at || applicant&.first_invitation_sent_at
     end
 
     def last_invitation_date(applicant)
-      rdv_context(applicant)&.last_invitation_sent_at
+      rdv_context(applicant)&.last_invitation_sent_at || applicant&.last_invitation_sent_at
     end
 
     def last_rdv_date(applicant)
-      rdv_context(applicant)&.last_rdv_starts_at
+      rdv_context(applicant)&.last_rdv_starts_at || applicant&.last_rdv_starts_at
     end
 
     def last_rdv(applicant)
-      rdv_context(applicant)&.last_rdv
+      rdv_context(applicant)&.last_rdv || applicant&.last_rdv
     end
 
     def rdv_taken_in_autonomy?(applicant)
-      return "" unless rdv_context(applicant) && last_rdv(applicant).present?
+      return "" if last_rdv(applicant).blank?
 
       I18n.t("boolean.#{last_rdv(applicant).created_by_user?}")
+    end
+
+    def rdv_seen_in_less_than_30_days?(applicant)
+      I18n.t("boolean.#{applicant.rdv_seen_delay_in_days.present? && applicant.rdv_seen_delay_in_days < 30}")
     end
 
     def rdv_context(applicant)

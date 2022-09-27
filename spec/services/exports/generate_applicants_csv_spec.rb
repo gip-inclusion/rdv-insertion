@@ -1,6 +1,7 @@
 describe Exports::GenerateApplicantsCsv, type: :service do
   subject { described_class.call(applicants: applicants, structure: structure, motif_category: motif_category) }
 
+  let!(:timestamp) { Time.zone.now.to_i }
   let!(:motif_category) { "rsa_orientation" }
   let!(:department) { create(:department, name: "Drôme", number: "26") }
   let!(:organisation) do
@@ -21,17 +22,26 @@ describe Exports::GenerateApplicantsCsv, type: :service do
       phone_number: "01 01 01 01 01",
       birth_date: "20/12/1977",
       rights_opening_date: "20/05/2022",
+      created_at: "21/05/2022",
       role: "demandeur",
-      archived_at: "20/06/2022",
-      archiving_reason: "traité",
+      archived_at: nil,
+      archiving_reason: nil,
       organisations: [organisation],
-      department: department
+      department: department,
+      rdvs: [rdv]
     )
   end
   let(:applicant2) { create(:applicant, last_name: "Casubolo", organisations: [organisation]) }
-  let(:applicant3) { create(:applicant, last_name: "Blanc", organisations: [organisation]) }
+  let(:applicant3) do
+    create(:applicant, last_name: "Blanc", organisations: [organisation],
+                       archived_at: "20/06/2022", archiving_reason: "traité")
+  end
 
-  let!(:rdv) { create(:rdv, status: "unknown", starts_at: Time.zone.parse("2022-05-25"), created_by: "user") }
+  let!(:rdv) do
+    create(:rdv, status: "seen",
+                 starts_at: Time.zone.parse("2022-05-25"),
+                 created_by: "user")
+  end
   let!(:invitation) do
     create(:invitation, applicant: applicant1, format: "email", sent_at: Time.zone.parse("2022-05-21"))
   end
@@ -50,7 +60,7 @@ describe Exports::GenerateApplicantsCsv, type: :service do
       end
 
       it "generates a filename" do
-        expect(subject.filename).to eq("Liste_beneficiaires_rsa_orientation_organisation_drome_rsa.csv")
+        expect(subject.filename).to eq("Export_beneficiaires_rsa_orientation_organisation_drome_rsa.csv")
       end
 
       it "generates headers" do
@@ -92,7 +102,7 @@ describe Exports::GenerateApplicantsCsv, type: :service do
         expect(csv).to include("Blanc")
       end
 
-      it "display the applicants attributes" do
+      it "displays the applicants attributes" do
         csv = subject.csv
         expect(csv).to include("madame")
         expect(csv).to include("Doe")
@@ -107,6 +117,8 @@ describe Exports::GenerateApplicantsCsv, type: :service do
 
         # rdv_context
         expect(csv).to include("Statut du RDV à préciser")
+        # rdv delay
+        expect(csv).to include("Statut du RDV à préciser;oui")
 
         # archiving
         expect(csv).to include("traité")
@@ -123,6 +135,47 @@ describe Exports::GenerateApplicantsCsv, type: :service do
 
         expect(csv).to include("1")
         expect(csv).to include("Drome RSA")
+      end
+
+      context "when no structure is passed" do
+        let!(:structure) { nil }
+
+        it "is a success" do
+          expect(subject.success?).to eq(true)
+        end
+
+        it "generates a filename" do
+          expect(subject.filename).to eq("Export_beneficiaires_#{timestamp}.csv")
+        end
+
+        it "does not display the statuses" do
+          expect(subject.csv).not_to include("Statut du RDV à préciser")
+        end
+      end
+
+      context "when no motif category is passed" do
+        let!(:motif_category) { nil }
+
+        it "is a success" do
+          expect(subject.success?).to eq(true)
+        end
+
+        it "generates the right filename" do
+          expect(subject.filename).to eq("Export_beneficiaires_autres_organisation_drome_rsa.csv")
+        end
+
+        it "does not display the statuses" do
+          expect(subject.csv).not_to include("Statut du RDV à préciser")
+        end
+
+        it "displays rdvs and invitations dates" do
+          # invitation
+          expect(subject.csv).to include("21/05/2022")
+          # rdv
+          expect(subject.csv).to include("25/05/2022")
+          expect(subject.csv).to include("oui")
+          expect(subject.csv).to include("non")
+        end
       end
     end
   end
