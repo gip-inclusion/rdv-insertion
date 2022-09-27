@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :notification do
+  factory :convocation do
     event { "rdv_created" }
     applicant { create(:applicant) }
   end

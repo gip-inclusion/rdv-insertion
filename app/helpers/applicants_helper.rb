@@ -3,8 +3,8 @@ module ApplicantsHelper
     date&.strftime("%d/%m/%Y")
   end
 
-  def show_notification?(configuration)
-    configuration.notify_applicant?
+  def show_convocation?(configuration)
+    configuration.convene_applicant?
   end
 
   def show_invitations?(configuration)

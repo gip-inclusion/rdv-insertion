@@ -7,6 +7,8 @@ class Rdv < ApplicationRecord
   CANCELLED_STATUSES = %w[excused revoked noshow].freeze
   CANCELLED_BY_USER_STATUSES = %w[excused noshow].freeze
 
+  include ConvocableConcern
+
   after_commit :refresh_context_status, on: [:create, :update]
 
   belongs_to :organisation
