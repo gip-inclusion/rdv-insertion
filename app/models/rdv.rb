@@ -21,8 +21,8 @@ class Rdv < ApplicationRecord
   enum created_by: { agent: 0, user: 1, file_attente: 2 }, _prefix: :created_by
   enum status: { unknown: 0, waiting: 1, seen: 2, excused: 3, revoked: 4, noshow: 5 }
 
-
   default_scope { where(deleted_at: nil) }
+
   scope :cancelled_by_user, -> { where(status: CANCELLED_BY_USER_STATUSES) }
   scope :status, ->(status) { where(status: status) }
   scope :resolved, -> { where(status: %w[seen excused revoked noshow]) }
