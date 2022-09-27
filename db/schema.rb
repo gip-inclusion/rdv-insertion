@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_22_135546) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_27_155923) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -222,6 +222,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_22_135546) do
     t.datetime "updated_at", null: false
     t.bigint "organisation_id"
     t.datetime "last_webhook_update_received_at"
+    t.datetime "deleted_at"
     t.index ["created_by"], name: "index_rdvs_on_created_by"
     t.index ["organisation_id"], name: "index_rdvs_on_organisation_id"
     t.index ["rdv_solidarites_rdv_id"], name: "index_rdvs_on_rdv_solidarites_rdv_id", unique: true

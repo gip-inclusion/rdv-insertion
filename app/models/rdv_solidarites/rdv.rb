@@ -2,7 +2,7 @@ module RdvSolidarites
   class Rdv < Base
     RECORD_ATTRIBUTES = [
       :id, :address, :cancelled_at, :context, :created_by, :duration_in_min, :starts_at, :status,
-      :uuid
+      :uuid, :deleted_at
     ].freeze
     attr_reader(*RECORD_ATTRIBUTES)
 

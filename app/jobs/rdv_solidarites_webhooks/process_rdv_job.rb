@@ -9,7 +9,7 @@ module RdvSolidaritesWebhooks
       return if applicants.empty?
       return if unhandled_category?
 
-      upsert_or_delete_rdv
+      upsert_rdv
       invalidate_invitations if event == "created"
       notify_applicants if should_notify_applicants?
       send_webhooks
@@ -67,21 +67,17 @@ module RdvSolidaritesWebhooks
       @data[:organisation][:id]
     end
 
-    def upsert_or_delete_rdv
-      if event == "destroyed"
-        DeleteRdvJob.perform_async(rdv_solidarites_rdv.id)
-      else
-        UpsertRecordJob.perform_async(
-          "Rdv",
-          rdv_solidarites_rdv.to_rdv_insertion_attributes,
-          {
-            applicant_ids: applicant_ids,
-            organisation_id: organisation.id,
-            rdv_context_ids: rdv_context_ids,
-            last_webhook_update_received_at: @meta[:timestamp]
-          }
-        )
-      end
+    def upsert_rdv
+      UpsertRecordJob.perform_async(
+        "Rdv",
+        rdv_solidarites_rdv.to_rdv_insertion_attributes,
+        {
+          applicant_ids: applicant_ids,
+          organisation_id: organisation.id,
+          rdv_context_ids: rdv_context_ids,
+          last_webhook_update_received_at: @meta[:timestamp]
+        }
+      )
     end
 
     def invalidate_invitations

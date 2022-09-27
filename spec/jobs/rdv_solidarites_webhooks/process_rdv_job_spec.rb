@@ -21,6 +21,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
       "lieu" => lieu,
       "motif" => motif,
       "users" => [{ id: user_id }],
+      "deleted_at" => nil,
       "organisation" => { id: rdv_solidarites_organisation_id }
     }.deep_symbolize_keys
   end
@@ -81,7 +82,6 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
         .and_return(rdv_context2)
       allow(UpsertRecordJob).to receive(:perform_async)
       allow(InvalidateInvitationJob).to receive(:perform_async)
-      allow(DeleteRdvJob).to receive(:perform_async)
       allow(NotifyApplicantJob).to receive(:perform_async)
       allow(SendRdvSolidaritesWebhookJob).to receive(:perform_async)
       allow(MattermostClient).to receive(:send_to_notif_channel)
@@ -109,7 +109,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
       end
 
       it "does not call the other jobs" do
-        [UpsertRecordJob, DeleteRdvJob, NotifyApplicantJob, InvalidateInvitationJob].each do |klass|
+        [UpsertRecordJob, NotifyApplicantJob, InvalidateInvitationJob].each do |klass|
           expect(klass).not_to receive(:perform_async)
         end
         subject
@@ -133,16 +133,6 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
         expect(InvalidateInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation2.id)
         expect(InvalidateInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation3.id)
         subject
-      end
-
-      context "when it is a destroy event" do
-        let!(:meta) { { "model" => "Rdv", "event" => "destroyed" }.deep_symbolize_keys }
-
-        it "enqueues a delete job" do
-          expect(DeleteRdvJob).to receive(:perform_async)
-            .with(rdv_solidarites_rdv_id)
-          subject
-        end
       end
     end
 
@@ -189,7 +179,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
       let!(:motif) { { id: 53, location: "public_office", category: nil } }
 
       it "does not call any job" do
-        [UpsertRecordJob, DeleteRdvJob, NotifyApplicantJob].each do |klass|
+        [UpsertRecordJob, NotifyApplicantJob].each do |klass|
           expect(klass).not_to receive(:perform_async)
         end
         subject
@@ -200,7 +190,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
       let!(:motif) { { id: 53, location: "public_office", category: "rsa_accompagnement" } }
 
       it "does not call any job" do
-        [UpsertRecordJob, DeleteRdvJob, NotifyApplicantJob].each do |klass|
+        [UpsertRecordJob, NotifyApplicantJob].each do |klass|
           expect(klass).not_to receive(:perform_async)
         end
         subject
@@ -218,7 +208,6 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
           organisations: [organisation],
           id: 3,
           title: "monsieur",
-          rdv_solidarites_user_id: user_id,
           department_internal_id: department_internal_id
         )
       end
