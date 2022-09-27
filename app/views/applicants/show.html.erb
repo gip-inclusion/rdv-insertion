@@ -78,9 +78,7 @@
           <p><%= display_attribute format_date(@applicant.archived_at) %></p>
         </div>
       <% end %>
-      <% if department_level? %>
-        <%= render "organisations_list", organisations: @applicant.organisations %>
-      <% end %>
+      <%= render "organisations_list", organisations: @applicant.organisations %>
     </div>
     <%= render "add_to_org_button", can_be_added_to_other_org: @can_be_added_to_other_org, department: @department, applicant: @applicant %>
   </div>
