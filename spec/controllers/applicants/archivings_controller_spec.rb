@@ -17,7 +17,7 @@ describe Applicants::ArchivingsController, type: :controller do
     before do
       allow(Applicants::Archive).to receive(:call)
         .with(applicant: applicant, rdv_solidarites_session: rdv_solidarites_session,
-              archived_at: Time.zone.now, archiving_reason: "something")
+              archiving_reason: "something")
         .and_return(OpenStruct.new(success?: true))
     end
 
@@ -28,7 +28,7 @@ describe Applicants::ArchivingsController, type: :controller do
     it "calls the archive applicants service" do
       expect(Applicants::Archive).to receive(:call)
         .with(applicant: applicant, rdv_solidarites_session: rdv_solidarites_session,
-              archived_at: Time.zone.now, archiving_reason: "something")
+              archiving_reason: "something")
       post :create, params: create_params
     end
 

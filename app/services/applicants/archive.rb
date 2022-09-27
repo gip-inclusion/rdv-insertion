@@ -1,21 +1,22 @@
 module Applicants
   class Archive < BaseService
-    def initialize(applicant:, rdv_solidarites_session:, archiving_reason:, archived_at:)
+    def initialize(applicant:, rdv_solidarites_session:, archiving_reason:)
       @applicant = applicant
       @rdv_solidarites_session = rdv_solidarites_session
       @archiving_reason = archiving_reason
-      @archived_at = archived_at
     end
 
     def call
-      archive_applicant
-      invalidate_invitations
+      Applicant.transaction do
+        archive_applicant
+        invalidate_invitations
+      end
     end
 
     private
 
     def archive_applicant
-      @applicant.assign_attributes(archiving_reason: @archiving_reason, archived_at: @archived_at)
+      @applicant.assign_attributes(archiving_reason: @archiving_reason, archived_at: Time.zone.now)
       save_record!(@applicant)
     end
 

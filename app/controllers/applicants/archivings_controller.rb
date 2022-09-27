@@ -25,8 +25,7 @@ module Applicants
       @archive_applicant ||= Applicants::Archive.call(
         applicant: @applicant,
         rdv_solidarites_session: rdv_solidarites_session,
-        archiving_reason: archiving_params[:archiving_reason],
-        archived_at: Time.zone.now
+        archiving_reason: archiving_params[:archiving_reason]
       )
     end
 

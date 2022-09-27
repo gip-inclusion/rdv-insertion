@@ -2,8 +2,7 @@ describe Applicants::Archive, type: :service do
   subject do
     described_class.call(
       rdv_solidarites_session: rdv_solidarites_session,
-      applicant: applicant, archiving_reason: archiving_reason,
-      archived_at: archived_at
+      applicant: applicant, archiving_reason: archiving_reason
     )
   end
 
@@ -34,7 +33,7 @@ describe Applicants::Archive, type: :service do
     end
 
     it "calls the InvalidateInvitationJob for the applicants invitations" do
-      expect(InvalidateInvitationJob).to receive(:perform_async).exactly(1).time
+      expect(InvalidateInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation1.id)
       expect(InvalidateInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation2.id)
       subject
     end
