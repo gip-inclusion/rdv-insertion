@@ -29,6 +29,7 @@ const displayToggleArchivingModal = async (archiveButton) => {
     const { value: archivingReason, isConfirmed } = await Swal.fire({
       icon: "warning",
       title: "Le dossier sera archivé",
+      text: "Si des invitations envoyées au bénéificiaire sont toujours valides, il ne pourra plus les utiliser pour prendre rendez-vous",
       input: "text",
       inputLabel: "Motif d'archivage",
       showCancelButton: true,

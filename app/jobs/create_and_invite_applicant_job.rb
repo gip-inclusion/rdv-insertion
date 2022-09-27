@@ -26,7 +26,7 @@ class CreateAndInviteApplicantJob < ApplicationJob
 
   def applicant
     @applicant ||= \
-      FindOrInitializeApplicant.call(
+      Applicants::FindOrInitialize.call(
         affiliation_number: @applicant_attributes[:affiliation_number],
         role: @applicant_attributes[:role],
         department_internal_id: @applicant_attributes[:department_internal_id],
@@ -58,7 +58,7 @@ class CreateAndInviteApplicantJob < ApplicationJob
   end
 
   def save_applicant
-    @save_applicant ||= SaveApplicant.call(
+    @save_applicant ||= Applicants::Save.call(
       applicant: applicant,
       organisation: @organisation,
       rdv_solidarites_session: rdv_solidarites_session

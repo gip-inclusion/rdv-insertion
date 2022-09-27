@@ -79,7 +79,7 @@ class ApplicantsController < ApplicationController
   end
 
   def find_or_initialize_applicant
-    @find_or_initialize_applicant ||= FindOrInitializeApplicant.call(
+    @find_or_initialize_applicant ||= Applicants::FindOrInitialize.call(
       department_internal_id: applicant_params[:department_internal_id],
       role: applicant_params[:role],
       affiliation_number: applicant_params[:affiliation_number],
@@ -95,7 +95,7 @@ class ApplicantsController < ApplicationController
 
   def create_applicants_csv_export
     @structure = department_level? ? @department : @organisation
-    GenerateApplicantsCsv.call(
+    Exports::GenerateApplicantsCsv.call(
       applicants: @applicants,
       structure: @structure,
       motif_category: @current_motif_category
@@ -120,7 +120,7 @@ class ApplicantsController < ApplicationController
   end
 
   def save_applicant
-    @save_applicant ||= SaveApplicant.call(
+    @save_applicant ||= Applicants::Save.call(
       applicant: @applicant,
       organisation: @organisation,
       rdv_solidarites_session: rdv_solidarites_session
@@ -240,7 +240,11 @@ class ApplicantsController < ApplicationController
   end
 
   def order_applicants
-    @applicants = @applicants.order(created_at: :desc)
+    @applicants = if archived_scope?
+                    @applicants.order(archived_at: :desc)
+                  else
+                    @applicants.order(created_at: :desc)
+                  end
   end
 
   def after_save_path

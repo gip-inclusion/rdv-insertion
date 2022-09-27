@@ -5,19 +5,54 @@ describe Applicants::ArchivingsController, type: :controller do
   let!(:agent) { create(:agent, organisations: [organisation]) }
   let!(:archiving_params) { { archiving_reason: "something" } }
   let!(:now) { Time.zone.parse("2022-05-22") }
+  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
 
   before do
     travel_to(now)
     sign_in(agent)
+    setup_rdv_solidarites_session(rdv_solidarites_session)
   end
 
   describe "#create" do
-    it "archives the applicant" do
-      post :create, params: { archiving_reason: "something", applicant_id: applicant_id }
-      expect(response).to be_successful
-      expect(JSON.parse(response.body)["success"]).to eq(true)
-      expect(applicant.reload.archived_at).to eq(now)
-      expect(applicant.reload.archiving_reason).to eq("something")
+    before do
+      allow(Applicants::Archive).to receive(:call)
+        .with(applicant: applicant, rdv_solidarites_session: rdv_solidarites_session,
+              archiving_reason: "something")
+        .and_return(OpenStruct.new(success?: true))
+    end
+
+    let(:create_params) do
+      { archiving_reason: "something", applicant_id: applicant_id }
+    end
+
+    it "calls the archive applicants service" do
+      expect(Applicants::Archive).to receive(:call)
+        .with(applicant: applicant, rdv_solidarites_session: rdv_solidarites_session,
+              archiving_reason: "something")
+      post :create, params: create_params
+    end
+
+    context "when the archiving is successfull" do
+      it "renders a successfull response" do
+        post :create, params: create_params
+        expect(response).to be_successful
+        expect(JSON.parse(response.body)["success"]).to eq(true)
+      end
+    end
+
+    context "when the archiving is unsucessfull" do
+      before do
+        allow(Applicants::Archive).to receive(:call)
+          .and_return(OpenStruct.new(success?: false, errors: ["something failed"]))
+      end
+
+      it "renders the errors" do
+        post :create, params: create_params
+
+        expect(response).not_to be_successful
+        expect(JSON.parse(response.body)["success"]).to eq(false)
+        expect(JSON.parse(response.body)["errors"]).to eq(["something failed"])
+      end
     end
   end
 
