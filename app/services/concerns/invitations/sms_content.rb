@@ -97,7 +97,7 @@ module Invitations
     def content_for_rsa_insertion_offer_reminder
       "#{applicant.full_name},\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours "\
         "vous invitant à vous inscrire directement à des ateliers adaptés à votre parcours d'accompagnement." \
-        "Utilisez le lien suivant pour effectuer votre prise de RDV : " \
+        "Utilisez le lien suivant pour effectuer votre prise de RDV: " \
         "#{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
         "En cas de problème technique, contactez le #{@invitation.help_phone_number}."
     end

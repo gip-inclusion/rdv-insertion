@@ -263,7 +263,7 @@ describe Invitations::SendSms, type: :service do
         "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement en parcours "\
           "professionnel ou socio-professionel. Pour profiter au mieux de cet accompagnement, nous vous invitons "\
           "à vous inscrire directement et librement aux ateliers et formations de votre choix en cliquant sur le " \
-          "lien suivant dans un délai de 9 jours: " \
+          "lien suivant: " \
           "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n"\
           "En cas de problème technique, contactez le 0147200001."
       end
@@ -282,7 +282,7 @@ describe Invitations::SendSms, type: :service do
         let!(:content) do
           "Monsieur John DOE,\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours " \
             "vous invitant à vous inscrire directement à des ateliers adaptés à votre parcours d'accompagnement." \
-            "Le lien de prise de RDV suivant expire dans 5 jours: " \
+            "Utilisez le lien suivant pour effectuer votre prise de RDV: " \
             "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
             "En cas de problème technique, contactez le "\
             "0147200001."
