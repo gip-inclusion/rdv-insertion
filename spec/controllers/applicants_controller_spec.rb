@@ -322,10 +322,12 @@ describe ApplicantsController, type: :controller do
         create(:invitation, sent_at: "2021-10-20", format: "sms", rdv_context: rdv_context)
       end
 
+      let!(:motif) { create(:motif, name: "RSA Orientation sur site") }
+
       let!(:rdv_orientation1) do
         create(
           :rdv,
-          status: "noshow", created_at: "2021-10-21", starts_at: "2021-10-22",
+          status: "noshow", created_at: "2021-10-21", starts_at: "2021-10-22", motif: motif,
           applicants: [applicant], rdv_contexts: [rdv_context], organisation: organisation
         )
       end
@@ -333,7 +335,7 @@ describe ApplicantsController, type: :controller do
       let!(:rdv_orientation2) do
         create(
           :rdv,
-          status: "seen", created_at: "2021-10-23", starts_at: "2021-10-24",
+          status: "seen", created_at: "2021-10-23", starts_at: "2021-10-24", motif: motif,
           applicants: [applicant], rdv_contexts: [rdv_context], organisation: organisation
         )
       end
@@ -365,6 +367,7 @@ describe ApplicantsController, type: :controller do
         expect(response.body).to match(/Statut RDV/)
         expect(response.body).to match(/RSA accompagnement/)
         expect(response.body).to match(/Invitation en attente de réponse/)
+        expect(response.body).to match(/RSA Orientation sur site/)
       end
     end
   end

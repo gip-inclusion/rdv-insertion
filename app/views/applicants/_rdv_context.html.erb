@@ -33,6 +33,7 @@
           <tr>
             <th class="px-4 py-2"><h4>RDV pris le</h4></th>
             <th class="px-4 py-2"><h4>Date du RDV</h4></th>
+            <th class="px-4 py-2"><h4>Motif</h4></th>
             <th class="px-4 py-2"><h4>Statut RDV</h4></th>
             <th class="px-4 py-2"><h4>Lien</h4></th>
           </tr>
@@ -43,6 +44,7 @@
               <tr>
                 <td class="px-4 py-3"><%= format_date(rdv.created_at) %></td>
                 <td class="px-4 py-3"><%= format_date(rdv.starts_at) %></td>
+                <td class="px-4 py-3"><%= rdv.motif.name %></td>
                 <td class="px-4 py-3 <%= background_class_for_rdv_status(rdv) %>"><%= display_rdv_status(rdv) %></td>
                 <td class="px-4 py-3">
                   <%= link_to rdv.rdv_solidarites_url, target: "_blank" do %>
