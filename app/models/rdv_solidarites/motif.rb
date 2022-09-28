@@ -9,6 +9,10 @@ module RdvSolidarites
       location_type == "public_office"
     end
 
+    def convocation?
+      name.downcase.include?("convocation")
+    end
+
     def name_with_location_type
       "#{name}-#{location_type}"
     end

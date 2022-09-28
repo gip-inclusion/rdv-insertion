@@ -10,6 +10,7 @@ class Rdv < ApplicationRecord
   include ConvocableConcern
 
   after_commit :refresh_context_status, on: [:create, :update]
+  after_commit :convene_applicants, if: :convocable?, on: [:create, :update]
 
   belongs_to :organisation
   belongs_to :motif
@@ -62,6 +63,10 @@ class Rdv < ApplicationRecord
 
   def refresh_context_status
     RefreshRdvContextStatusesJob.perform_async(rdv_context_ids)
+  end
+
+  def convene_applicants
+    ConveneRdvApplicantsJob.perform_async(id)
   end
 
   def motif_category_is_uniq
