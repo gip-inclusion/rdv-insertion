@@ -21,6 +21,7 @@ class Motif < ApplicationRecord
   enum category: CATEGORIES_ENUM
 
   belongs_to :organisation
+  has_many :rdvs, dependent: :nullify
 
   validates :rdv_solidarites_motif_id, uniqueness: true, presence: true
   validates :name, :location_type, presence: true

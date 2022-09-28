@@ -10,10 +10,11 @@ class Rdv < ApplicationRecord
   after_commit :refresh_context_status, on: [:create, :update]
 
   belongs_to :organisation
+  belongs_to :motif
   has_and_belongs_to_many :rdv_contexts
   has_and_belongs_to_many :applicants
 
-  validates :applicants, :rdv_solidarites_motif_id, :starts_at, :duration_in_min, presence: true
+  validates :applicants, :starts_at, :duration_in_min, presence: true
   validates :rdv_solidarites_rdv_id, uniqueness: true, presence: true
 
   validate :motif_category_is_uniq
