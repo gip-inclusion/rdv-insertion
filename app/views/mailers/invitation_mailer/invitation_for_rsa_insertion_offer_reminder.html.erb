@@ -1,6 +1,6 @@
 <h1>Bonjour <%= "#{@applicant.first_name} #{@applicant.last_name.upcase}" %>,</h1>
 <p>En tant que bénéficiaire du RSA, vous avez reçu un premier mail il y a 3 jours vous invitant à vous inscrire directement et librement aux ateliers et formations de votre choix.</p>
-<p>Il ne vous reste plus que <span class="font-weight-bold"><%= @invitation.number_of_days_before_expiration %> jours</span> pour prendre rendez-vous à la date et l'horaire de votre choix en cliquant sur le bouton suivant.</p>
+<p><span class="font-weight-bold">Pour pouvoir choisir la date et l'horaire de votre rendez-vous</span>, vous pouvez accéder au service RDV-Solidarités en cliquant sur le bouton suivant.</p>
 <p class="btn-wrapper">
   <%= link_to redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST']), class: "btn btn-primary" do %>
     Choisir un créneau

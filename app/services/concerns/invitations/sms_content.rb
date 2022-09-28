@@ -42,8 +42,7 @@ module Invitations
       "#{applicant.full_name},\nVous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement en parcours "\
         "professionnel ou socio-professionel. Pour profiter au mieux de cet accompagnement, nous vous invitons "\
         "à vous inscrire directement et librement aux ateliers et formations de votre choix en cliquant sur le lien " \
-        "suivant dans un délai de #{number_of_days_to_accept_invitation} jours: " \
-        "#{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
+        "suivant: #{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
         "En cas de problème technique, contactez le #{@invitation.help_phone_number}."
     end
 
@@ -98,7 +97,7 @@ module Invitations
     def content_for_rsa_insertion_offer_reminder
       "#{applicant.full_name},\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours "\
         "vous invitant à vous inscrire directement à des ateliers adaptés à votre parcours d'accompagnement." \
-        "Le lien de prise de RDV suivant expire dans #{@invitation.number_of_days_before_expiration} jours: " \
+        "Utilisez le lien suivant pour effectuer votre prise de RDV : " \
         "#{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
         "En cas de problème technique, contactez le #{@invitation.help_phone_number}."
     end
