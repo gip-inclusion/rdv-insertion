@@ -24,30 +24,29 @@ describe Exports::GenerateApplicantsCsv, type: :service do
       rights_opening_date: "20/05/2022",
       created_at: "21/05/2022",
       role: "demandeur",
-      archived_at: nil,
-      archiving_reason: nil,
       organisations: [organisation],
       department: department,
       rdvs: [rdv]
     )
   end
   let(:applicant2) { create(:applicant, last_name: "Casubolo", organisations: [organisation]) }
-  let(:applicant3) do
-    create(:applicant, last_name: "Blanc", organisations: [organisation],
-                       archived_at: "20/06/2022", archiving_reason: "traité")
-  end
+  let(:applicant3) { create(:applicant, last_name: "Blanc", organisations: [organisation]) }
 
   let!(:rdv) do
     create(:rdv, status: "seen",
                  starts_at: Time.zone.parse("2022-05-25"),
                  created_by: "user")
   end
-  let!(:invitation) do
+  let!(:first_invitation) do
     create(:invitation, applicant: applicant1, format: "email", sent_at: Time.zone.parse("2022-05-21"))
+  end
+  let!(:last_invitation) do
+    create(:invitation, applicant: applicant1, format: "email", sent_at: Time.zone.parse("2022-05-22"))
   end
   let!(:rdv_context) do
     create(
-      :rdv_context, rdvs: [rdv], invitations: [invitation], applicant: applicant1, status: "rdv_needs_status_update"
+      :rdv_context, rdvs: [rdv], invitations: [first_invitation, last_invitation],
+                    applicant: applicant1, status: "rdv_needs_status_update"
     )
   end
 
@@ -55,6 +54,8 @@ describe Exports::GenerateApplicantsCsv, type: :service do
 
   describe "#call" do
     context "it exports applicants to csv" do
+      let!(:csv) { subject.csv }
+
       it "is a success" do
         expect(subject.success?).to eq(true)
       end
@@ -64,7 +65,6 @@ describe Exports::GenerateApplicantsCsv, type: :service do
       end
 
       it "generates headers" do
-        csv = subject.csv
         expect(csv).to start_with("\uFEFF")
         expect(csv).to include("Civilité")
         expect(csv).to include("Nom")
@@ -76,8 +76,8 @@ describe Exports::GenerateApplicantsCsv, type: :service do
         expect(csv).to include("Date de naissance")
         expect(csv).to include("Date d'entrée flux")
         expect(csv).to include("Rôle")
-        expect(csv).to include("Motif d'archivage")
         expect(csv).to include("Archivé le")
+        expect(csv).to include("Motif d'archivage")
         expect(csv).to include("Statut")
         expect(csv).to include("Première invitation envoyée le")
         expect(csv).to include("Dernière invitation envoyée le")
@@ -91,54 +91,110 @@ describe Exports::GenerateApplicantsCsv, type: :service do
         expect(csv).to include("Nom des organisations")
       end
 
-      it "generates one line for each applicant required" do
-        expect(subject.csv.scan(/(?=\n)/).count).to eq(applicants.count + 1)
+      context "it exports all the concerned applicants" do
+        it "generates one line for each applicant required" do
+          expect(csv.scan(/(?=\n)/).count).to eq(4) # one line per applicants + 1 line of headers
+        end
+
+        it "displays all the applicants" do
+          expect(csv).to include("Doe")
+          expect(csv).to include("Casubolo")
+          expect(csv).to include("Blanc")
+        end
       end
 
-      it "displays all the applicants" do
-        csv = subject.csv
-        expect(csv).to include("Doe")
-        expect(csv).to include("Casubolo")
-        expect(csv).to include("Blanc")
-      end
+      context "it displays the right attributes" do
+        let!(:applicants) { Applicant.where(id: [applicant1]) }
 
-      it "displays the applicants attributes" do
-        csv = subject.csv
-        expect(csv).to include("madame")
-        expect(csv).to include("Doe")
-        expect(csv).to include("Jane")
-        expect(csv).to include("12345")
-        expect(csv).to include("33333")
-        expect(csv).to include("jane@doe.com")
-        expect(csv).to include("01 01 01 01 01")
-        expect(csv).to include("20/12/1977")
-        expect(csv).to include("20/05/2022")
-        expect(csv).to include("demandeur")
+        it "displays the applicants attributes" do
+          expect(csv.scan(/(?=\n)/).count).to eq(2) # we check there is only one applicant for this test
+          expect(csv).to include("madame")
+          expect(csv).to include("Doe")
+          expect(csv).to include("Jane")
+          expect(csv).to include("12345") # affiliation_number
+          expect(csv).to include("33333") # department_internal_id
+          expect(csv).to include("20 avenue de Ségur 75OO7 Paris")
+          expect(csv).to include("jane@doe.com")
+          expect(csv).to include("01 01 01 01 01")
+          expect(csv).to include("20/12/1977") # birth_date
+          expect(csv).to include("20/05/2022") # rights_opening_date
+          expect(csv).to include("demandeur") # role
+        end
 
-        # rdv_context
-        expect(csv).to include("Statut du RDV à préciser")
-        # rdv delay
-        expect(csv).to include("Statut du RDV à préciser;oui")
+        it "displays the invitations infos" do
+          expect(csv).to include("21/05/2022") # first invitation date
+          expect(csv).to include("22/05/2022") # last invitation date
+        end
 
-        # archiving
-        expect(csv).to include("traité")
-        expect(csv).to include("20/06/2022")
-        # invitation
-        expect(csv).to include("21/05/2022")
-        # rdv
-        expect(csv).to include("25/05/2022")
-        expect(csv).to include("oui")
-        expect(csv).to include("non")
+        it "displays the rdvs infos" do
+          expect(csv).to include("25/05/2022") # last rdv date
+          expect(csv).to include("25/05/2022;oui") # last rdv taken in autonomy ?
+          expect(csv).to include("Statut du RDV à préciser") # rdv_context status
+          expect(csv).to include("Statut du RDV à préciser;oui") # first rdv in less than 30 days ?
+          expect(csv).to include("25/05/2022;oui;Statut du RDV à préciser;oui;25/05/2022") # orientation date
+        end
 
-        expect(csv).to include("26")
-        expect(csv).to include("Drôme")
+        context "when the invitation deadline has passed" do
+          let!(:rdv_context) do
+            create(
+              :rdv_context, rdvs: [], invitations: [first_invitation, last_invitation],
+                            applicant: applicant1, status: "invitation_pending"
+            )
+          end
 
-        expect(csv).to include("1")
-        expect(csv).to include("Drome RSA")
+          it "displays 'délai dépassé'" do
+            expect(subject.csv).to include("Invitation en attente de réponse (Délai dépassé)") # rdv_context status
+          end
+        end
+
+        it "displays the archiving infos" do
+          expect(csv).to include("25/05/2022;\"\"") # archiving status
+          expect(csv).to include("25/05/2022;\"\";;") # archiving reason
+        end
+
+        it "displays the department infos" do
+          expect(csv).to include("26")
+          expect(csv).to include("Drôme")
+        end
+
+        it "displays the organisation infos" do
+          expect(csv).to include("1")
+          expect(csv).to include("Drome RSA")
+        end
+
+        context "when the applicant is archived" do
+          let!(:applicant1) do
+            create(
+              :applicant,
+              archived_at: "20/06/2022",
+              archiving_reason: "test",
+              organisations: [organisation],
+              department: department,
+              rdvs: [rdv]
+            )
+          end
+          let!(:csv) { subject.csv }
+
+          it "displays the archiving infos" do
+            expect(csv).to include("20/06/2022") # archiving status
+            expect(csv).to include("20/06/2022;test") # archiving reason
+          end
+
+          it "does displays the archived status rather than the rdv_context status" do
+            expect(csv).not_to include("Statut du RDV à préciser")
+            expect(csv).to include("Archivé")
+          end
+        end
       end
 
       context "when no structure is passed" do
         let!(:structure) { nil }
+        let!(:rdv_context) do
+          create(
+            :rdv_context, rdvs: [], invitations: [first_invitation, last_invitation],
+                          applicant: applicant1, status: "invitation_pending"
+          )
+        end
 
         it "is a success" do
           expect(subject.success?).to eq(true)
@@ -148,8 +204,9 @@ describe Exports::GenerateApplicantsCsv, type: :service do
           expect(subject.filename).to eq("Export_beneficiaires_#{timestamp}.csv")
         end
 
-        it "does not display the statuses" do
-          expect(subject.csv).not_to include("Statut du RDV à préciser")
+        it "does not displays 'délai dépassé' warnings" do
+          expect(subject.csv).to include("Invitation en attente de réponse") # rdv_context status
+          expect(subject.csv).not_to include("Invitation en attente de réponse (Délai dépassé)")
         end
       end
 
@@ -161,20 +218,11 @@ describe Exports::GenerateApplicantsCsv, type: :service do
         end
 
         it "generates the right filename" do
-          expect(subject.filename).to eq("Export_beneficiaires_autres_organisation_drome_rsa.csv")
+          expect(subject.filename).to eq("Export_beneficiaires__organisation_drome_rsa.csv")
         end
 
         it "does not display the statuses" do
           expect(subject.csv).not_to include("Statut du RDV à préciser")
-        end
-
-        it "displays rdvs and invitations dates" do
-          # invitation
-          expect(subject.csv).to include("21/05/2022")
-          # rdv
-          expect(subject.csv).to include("25/05/2022")
-          expect(subject.csv).to include("oui")
-          expect(subject.csv).to include("non")
         end
       end
     end

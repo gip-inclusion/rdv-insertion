@@ -93,31 +93,31 @@ module Exports
     end
 
     def motif_category_title
-      @motif_category.presence || "autres"
+      @motif_category.presence
     end
 
     def human_rdv_context_status(applicant)
       return "Archivé" if applicant.archived_at.present?
 
-      return "" if rdv_context(applicant).nil? || @structure.nil?
+      return "" if @motif_category.nil? || rdv_context(applicant).nil?
 
       I18n.t("activerecord.attributes.rdv_context.statuses.#{rdv_context(applicant).status}") +
-        display_context_status_notice(rdv_context(applicant), number_of_days_before_action_required)
+        display_context_status_notice(rdv_context(applicant))
+    end
+
+    def display_context_status_notice(rdv_context)
+      if @structure.present? && rdv_context.invited_before_time_window?(number_of_days_before_action_required) &&
+         rdv_context.invitation_pending?
+        " (Délai dépassé)"
+      else
+        ""
+      end
     end
 
     def number_of_days_before_action_required
       @number_of_days_before_action_required ||= @structure.configurations.find do |c|
         c.motif_category == @motif_category
       end.number_of_days_before_action_required
-    end
-
-    def display_context_status_notice(rdv_context, number_of_days_before_action_required)
-      if rdv_context.invited_before_time_window?(number_of_days_before_action_required) &&
-         rdv_context.invitation_pending?
-        " (Délai dépassé)"
-      else
-        ""
-      end
     end
 
     def display_date(date)
@@ -127,19 +127,19 @@ module Exports
     end
 
     def first_invitation_date(applicant)
-      rdv_context(applicant)&.first_invitation_sent_at || applicant&.first_invitation_sent_at
+      @motif_category.present? ? rdv_context(applicant)&.first_invitation_sent_at : applicant.first_invitation_sent_at
     end
 
     def last_invitation_date(applicant)
-      rdv_context(applicant)&.last_invitation_sent_at || applicant&.last_invitation_sent_at
+      @motif_category.present? ? rdv_context(applicant)&.last_invitation_sent_at : applicant.last_invitation_sent_at
     end
 
     def last_rdv_date(applicant)
-      rdv_context(applicant)&.last_rdv_starts_at || applicant&.last_rdv_starts_at
+      @motif_category.present? ? rdv_context(applicant)&.last_rdv_starts_at : applicant.last_rdv_starts_at
     end
 
     def last_rdv(applicant)
-      rdv_context(applicant)&.last_rdv || applicant&.last_rdv
+      @motif_category.present? ? rdv_context(applicant)&.last_rdv : applicant.last_rdv
     end
 
     def rdv_taken_in_autonomy?(applicant)
