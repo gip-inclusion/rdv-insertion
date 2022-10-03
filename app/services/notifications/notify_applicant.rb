@@ -12,12 +12,12 @@ module Notifications
     def call
       Notification.transaction do
         save_record!(notification)
-        send_notification!
+        send_notification
       end
       update_notification_sent_at
     end
 
-    protected
+    private
 
     def notification
       @notification ||= Notification.new(
@@ -28,13 +28,12 @@ module Notifications
       )
     end
 
-    def send_notification!
+    def send_notification
       send_to_applicant = @notification.send_to_applicant
       return if send_to_applicant.success?
 
       result.errors += send_to_applicant.errors
       fail!
-    end
     end
 
     def update_notification_sent_at

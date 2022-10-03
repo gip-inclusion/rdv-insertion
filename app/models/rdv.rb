@@ -27,6 +27,8 @@ class Rdv < ApplicationRecord
   enum created_by: { agent: 0, user: 1, file_attente: 2 }, _prefix: :created_by
   enum status: { unknown: 0, waiting: 1, seen: 2, excused: 3, revoked: 4, noshow: 5 }
 
+  delegate :presential?, :by_phone?, to: :motif
+
   scope :cancelled_by_user, -> { where(status: CANCELLED_BY_USER_STATUSES) }
   scope :status, ->(status) { where(status: status) }
   scope :resolved, -> { where(status: %w[seen excused revoked noshow]) }
@@ -68,6 +70,20 @@ class Rdv < ApplicationRecord
     # we rely on the rdv contexts instead of the motif itself since the category on the motif
     # can be updated but not on the context
     rdv_contexts.first.motif_category
+  end
+
+  def formatted_start_date
+    starts_at.to_datetime.strftime("%d/%m/%Y")
+  end
+
+  def formatted_start_time
+    starts_at.to_datetime.strftime('%H:%M')
+  end
+
+  def phone_number
+    return lieu.phone_number if lieu&.phone_number.present?
+
+    organisation.phone_number
   end
 
   private

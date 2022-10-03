@@ -8,4 +8,9 @@ class Lieu < ApplicationRecord
 
   belongs_to :organisation
   has_many :rdvs, dependent: :restrict_with_error
+
+
+  def full_name
+    "#{name} - #{address}"
+  end
 end

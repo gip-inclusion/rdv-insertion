@@ -5,19 +5,19 @@ module Messengers
       @content = content
     end
 
-     def call
-      check_invitation_format!
-      check_phone_number!
+    def call
+      verify_invitation_format!
+      verify_phone_number!
       send_sms
     end
 
     private
 
-    def check_invitation_format!
+    def verify_invitation_format!
       fail!("Envoi de SMS alors que le format est #{@sendable.format}") unless @sendable.format == "sms"
     end
 
-    def check_phone_number!
+    def verify_phone_number!
       fail!("Le téléphone doit être renseigné") if @sendable.phone_number.blank?
       fail!("Le numéro de téléphone doit être un mobile") unless @sendable.phone_number_is_mobile?
     end

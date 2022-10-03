@@ -92,7 +92,7 @@ class ApplicantsController < ApplicationController
   end
 
   def generate_applicants_csv
-    @generate_applicants_csv ||= Exports::GenerateApplicantsCsv.call(
+    @generate_applicants_csv ||= Exporters::GenerateApplicantsCsv.call(
       applicants: @applicants,
       structure: department_level? ? @department : @organisation,
       motif_category: @current_motif_category

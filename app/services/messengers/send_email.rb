@@ -8,20 +8,22 @@ module Messengers
     end
 
     def call
-      check_invitation_format!
-      check_email!
+      verify_invitation_format!
+      verify_email!
       send_email
     end
 
     private
 
-    def check_invitation_format!
+    def verify_invitation_format!
       fail!("Envoi d'un email alors que le format est #{@sendable.format}") unless @sendable.format == "email"
     end
 
-    def check_email!
+    def verify_email!
       fail!("L'email doit être renseigné") if @sendable.email.blank?
-      fail!("L'email renseigné ne semble pas être une adresse valable") if (@sendable.email =~ URI::MailTo::EMAIL_REGEXP).nil?
+      return unless (@sendable.email =~ URI::MailTo::EMAIL_REGEXP).nil?
+
+      fail!("L'email renseigné ne semble pas être une adresse valable")
     end
 
     def send_email
