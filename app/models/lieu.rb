@@ -6,4 +6,5 @@ class Lieu < ApplicationRecord
   validates :name, :address, presence: true
 
   belongs_to :organisation
+  has_many :lieux, dependent: :restrict_with_error
 end
