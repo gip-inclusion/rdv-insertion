@@ -211,17 +211,17 @@ class ApplicantsController < ApplicationController
     @motif_categories_from_motifs ||= @motifs.map(&:category).uniq.compact
   end
 
-  def motif_categories_from_org
-    @motif_categories_from_org ||= if department_level?
-                                     @organisations.flat_map(&:motif_categories).uniq
-                                   else
-                                     @organisation.motif_categories.uniq
-                                   end
+  def motif_categories_from_configurations
+    @motif_categories_from_configurations ||= if department_level?
+                                                @organisations.flat_map(&:motif_categories).uniq
+                                              else
+                                                @organisation.motif_categories.uniq
+                                              end
   end
 
   def set_applicant_rdv_contexts
     @rdv_contexts = @applicant.rdv_contexts.select do |rdv_context|
-      (motif_categories_from_org & motif_categories_from_motifs).include?(rdv_context.motif_category)
+      (motif_categories_from_configurations & motif_categories_from_motifs).include?(rdv_context.motif_category)
     end
   end
 
