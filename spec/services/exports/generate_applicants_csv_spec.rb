@@ -124,6 +124,7 @@ describe Exports::GenerateApplicantsCsv, type: :service do
         it "displays the invitations infos" do
           expect(csv).to include("21/05/2022") # first invitation date
           expect(csv).to include("22/05/2022") # last invitation date
+          expect(csv).not_to include("(Délai dépassé)") # invitation delay
         end
 
         it "displays the rdvs infos" do
@@ -205,8 +206,9 @@ describe Exports::GenerateApplicantsCsv, type: :service do
         end
 
         it "does not displays 'délai dépassé' warnings" do
-          expect(subject.csv).to include("Invitation en attente de réponse") # rdv_context status
-          expect(subject.csv).not_to include("Invitation en attente de réponse (Délai dépassé)")
+          csv = subject.csv
+          expect(csv).to include("Invitation en attente de réponse") # rdv_context status
+          expect(csv).not_to include("(Délai dépassé)")
         end
       end
 
