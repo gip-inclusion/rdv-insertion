@@ -11,10 +11,11 @@ class ApplicantsController < ApplicationController
 
   before_action :set_applicant, only: [:show, :update, :edit]
   before_action :set_organisation, :set_department, only: [:index, :new, :create, :show, :update, :edit]
+  before_action :set_organisations, only: [:new, :index, :show, :create]
+  before_action :set_motifs, only: [:index, :show]
   before_action :set_applicants_scope, :set_all_configurations, :set_current_configuration,
                 :set_current_motif_category, :set_applicants, :set_rdv_contexts,
                 :filter_applicants, :order_applicants, only: [:index]
-  before_action :set_organisations, only: [:new, :create]
   before_action :set_applicant_rdv_contexts, :set_can_be_added_to_other_org, only: [:show]
   before_action :retrieve_applicants, only: [:search]
 
@@ -176,9 +177,13 @@ class ApplicantsController < ApplicationController
   def set_all_configurations
     @all_configurations = \
       if department_level?
-        (policy_scope(::Configuration) & @department.configurations).uniq(&:motif_category)
+        (policy_scope(::Configuration) & @department.configurations).uniq(&:motif_category).select do |config|
+          motif_categories_from_motifs.include?(config.motif_category)
+        end
       else
-        @organisation.configurations
+        @organisation.configurations.select do |config|
+          motif_categories_from_motifs.include?(config.motif_category)
+        end
       end
   end
 
@@ -194,8 +199,30 @@ class ApplicantsController < ApplicationController
     @current_motif_category = @current_configuration&.motif_category
   end
 
+  def set_motifs
+    @motifs = if department_level?
+                Motif.where(organisation_id: @organisations.ids)
+              else
+                Motif.where(organisation_id: @organisation.id)
+              end
+  end
+
+  def motif_categories_from_motifs
+    @motif_categories_from_motifs ||= @motifs.map(&:category).uniq.compact
+  end
+
+  def motif_categories_from_org
+    @motif_categories_from_org ||= if department_level?
+                                     @organisations.flat_map(&:motif_categories).uniq
+                                   else
+                                     @organisation.motif_categories.uniq
+                                   end
+  end
+
   def set_applicant_rdv_contexts
-    @rdv_contexts = @applicant.rdv_contexts
+    @rdv_contexts = @applicant.rdv_contexts.select do |rdv_context|
+      (motif_categories_from_org & motif_categories_from_motifs).include?(rdv_context.motif_category)
+    end
   end
 
   def set_can_be_added_to_other_org
