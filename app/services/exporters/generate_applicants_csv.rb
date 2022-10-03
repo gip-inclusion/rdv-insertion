@@ -1,8 +1,5 @@
-require "csv"
-
 # rubocop:disable Metrics/ClassLength
-
-module Exports
+module Exporters
   class GenerateApplicantsCsv < BaseService
     def initialize(applicants:, structure:, motif_category:)
       @applicants = applicants
@@ -150,6 +147,5 @@ module Exports
       date&.strftime("%d/%m/%Y")
     end
   end
-
-  # rubocop: enable Metrics/ClassLength
 end
+# rubocop: enable Metrics/ClassLength

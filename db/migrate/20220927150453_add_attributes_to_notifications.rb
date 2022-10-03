@@ -1,7 +1,6 @@
 class AddAttributesToNotifications < ActiveRecord::Migration[7.0]
   def change
     add_column :notifications, :format, :integer
-    add_column :notifications, :convocation, :boolean, default: false
     add_reference :notifications, :rdv, foreign_key: true
     up_only do
       # linking to rdvs
@@ -11,8 +10,7 @@ class AddAttributesToNotifications < ActiveRecord::Migration[7.0]
           notification.destroy!
         else
           notification.update!(
-            rdv_id: notification.applicant.rdvs.first.id,
-            convocation: notification.event == "rdv_created"
+            rdv_id: notification.applicant.rdvs.first.id
           )
         end
       end

@@ -2,6 +2,18 @@ module Invitations
   module SmsContent
     extend ActiveSupport::Concern
 
+    include Rails.application.routes.url_helpers
+
+    private
+
+    def number_of_days_to_accept_invitation
+      @invitation.number_of_days_to_accept_invitation
+    end
+
+    def applicant
+      @invitation.applicant
+    end
+
     def content_for_rsa_orientation
       "#{applicant.full_name},\nVous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous " \
         "d'orientation. Pour choisir la date et l'horaire de votre premier RDV, " \

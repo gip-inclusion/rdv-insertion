@@ -13,7 +13,7 @@ module RdvSolidaritesWebhooks
 
       verify_lieu!
       upsert_or_delete_rdv
-      invalidate_related_invitations if event == "created"
+      invalidate_related_invitations if just_created?
       send_outgoing_webhooks
     end
 
@@ -58,6 +58,10 @@ module RdvSolidaritesWebhooks
 
     def rdv_solidarites_lieu
       RdvSolidarites::Lieu.new(@data[:lieu])
+    end
+
+    def just_created?
+      event == "created"
     end
 
     def rdv_solidarites_rdv
@@ -116,7 +120,7 @@ module RdvSolidaritesWebhooks
             last_webhook_update_received_at: @meta[:timestamp]
           }
           .merge(lieu.present? ? { lieu_id: lieu.id } : {})
-          .merge(rdv_convocable? ? { convocable: true } : {})
+          .merge(just_created? && rdv_convocable? ? { convocable: true } : {})
         )
       end
     end

@@ -9,9 +9,9 @@ class Rdv < ApplicationRecord
 
   include NotificableConcern
 
-  after_save :set_event_to_notify, if: :convocable?
+  after_save :set_event_to_notify, if: :notify_applicants?
+  after_commit :notify_applicants, if: :notify_applicants?, on: [:create, :update]
   after_commit :refresh_context_status, on: [:create, :update]
-  after_commit :notify_applicants, if: :convocable?, on: [:create, :update]
 
   belongs_to :organisation
   belongs_to :motif
@@ -22,7 +22,7 @@ class Rdv < ApplicationRecord
   validates :applicants, :starts_at, :duration_in_min, presence: true
   validates :rdv_solidarites_rdv_id, uniqueness: true, presence: true
 
-  validate :motif_category_is_uniq
+  validate :rdv_contexts_motif_categories_are_uniq
 
   enum created_by: { agent: 0, user: 1, file_attente: 2 }, _prefix: :created_by
   enum status: { unknown: 0, waiting: 1, seen: 2, excused: 3, revoked: 4, noshow: 5 }
@@ -60,6 +60,16 @@ class Rdv < ApplicationRecord
       "#{organisation.rdv_solidarites_organisation_id}/rdvs/#{rdv_solidarites_rdv_id}"
   end
 
+  def notify_applicants?
+    convocable?
+  end
+
+  def motif_category
+    # we rely on the rdv contexts instead of the motif itself since the category on the motif
+    # can be updated but not on the context
+    rdv_contexts.first.motif_category
+  end
+
   private
 
   def refresh_context_status
@@ -78,12 +88,12 @@ class Rdv < ApplicationRecord
         :created
       elsif cancelled_at.present? && cancelled_at_changed?
         :cancelled
-      elsif address.changed? || starts_at.changed?
+      elsif address_changed? || starts_at_changed?
         :updated
       end
   end
 
-  def motif_category_is_uniq
+  def rdv_contexts_motif_categories_are_uniq
     return if rdv_contexts.pluck(:motif_category).uniq.length < 2
 
     errors.add(:base, "Un RDV ne peut pas être lié à deux catégories de motifs différents")

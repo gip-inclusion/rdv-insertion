@@ -8,6 +8,7 @@ class Organisation < ApplicationRecord
 
   belongs_to :department
   belongs_to :invitation_parameters, optional: true
+  belongs_to :sms_configuration, optional: true
   has_many :rdvs, dependent: :nullify
   has_many :lieux, dependent: :nullify
   has_many :motifs, dependent: :nullify

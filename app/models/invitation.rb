@@ -48,6 +48,10 @@ class Invitation < ApplicationRecord
     organisations.map(&:invitation_parameters).compact.first
   end
 
+  def sms_configuration
+    organisations.map(&:sms_configuration).compact.first
+  end
+
   def set_valid_until
     self.valid_until = validity_duration.present? ? validity_duration.from_now : nil
   end

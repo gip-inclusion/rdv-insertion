@@ -105,7 +105,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_03_200541) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "letter_sender_name"
-    t.string "sms_sender_name"
     t.string "signature_lines", array: true
     t.string "help_address"
     t.boolean "display_europe_logos", default: false
@@ -177,7 +176,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_03_200541) do
     t.datetime "updated_at", null: false
     t.bigint "rdv_solidarites_rdv_id"
     t.integer "format"
-    t.boolean "convocation", default: false
     t.bigint "rdv_id"
     t.index ["applicant_id"], name: "index_notifications_on_applicant_id"
     t.index ["rdv_id"], name: "index_notifications_on_rdv_id"
@@ -194,9 +192,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_03_200541) do
     t.bigint "invitation_parameters_id"
     t.datetime "last_webhook_update_received_at"
     t.string "slug"
+    t.bigint "sms_configuration_id"
     t.index ["department_id"], name: "index_organisations_on_department_id"
     t.index ["invitation_parameters_id"], name: "index_organisations_on_invitation_parameters_id"
     t.index ["rdv_solidarites_organisation_id"], name: "index_organisations_on_rdv_solidarites_organisation_id", unique: true
+    t.index ["sms_configuration_id"], name: "index_organisations_on_sms_configuration_id"
   end
 
   create_table "organisations_webhook_endpoints", id: false, force: :cascade do |t|
@@ -244,6 +244,12 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_03_200541) do
     t.index ["organisation_id"], name: "index_rdvs_on_organisation_id"
     t.index ["rdv_solidarites_rdv_id"], name: "index_rdvs_on_rdv_solidarites_rdv_id", unique: true
     t.index ["status"], name: "index_rdvs_on_status"
+  end
+
+  create_table "sms_configurations", force: :cascade do |t|
+    t.string "sender_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "stats", force: :cascade do |t|
@@ -298,6 +304,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_03_200541) do
   add_foreign_key "notifications", "rdvs"
   add_foreign_key "organisations", "departments"
   add_foreign_key "organisations", "invitation_parameters", column: "invitation_parameters_id"
+  add_foreign_key "organisations", "sms_configurations"
   add_foreign_key "rdv_contexts", "applicants"
   add_foreign_key "rdvs", "lieux"
   add_foreign_key "rdvs", "motifs"

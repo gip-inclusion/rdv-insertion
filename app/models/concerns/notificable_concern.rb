@@ -22,7 +22,8 @@ module NotificableConcern
   end
 
   def convocations
-    notifications.select(&:convocation?)
+    # we assume a convocation is a notification of a created rdv
+    notifications.select(&:rdv_created?)
   end
 
   def last_sent_convocation
