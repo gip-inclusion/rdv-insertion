@@ -24,6 +24,18 @@ class InvitationPreview < ActionMailer::Preview
                     .invitation_for_rsa_cer_signature
   end
 
+  def invitation_for_rsa_insertion_offer
+    invitation = Invitation.where(format: "email").last
+    InvitationMailer.with(invitation: invitation, applicant: invitation.applicant)
+                    .invitation_for_rsa_insertion_offer
+  end
+
+  def invitation_for_rsa_follow_up
+    invitation = Invitation.where(format: "email").last
+    InvitationMailer.with(invitation: invitation, applicant: invitation.applicant)
+                    .invitation_for_rsa_follow_up
+  end
+
   ### Reminders
 
   def invitation_for_rsa_orientation_reminder
@@ -48,5 +60,17 @@ class InvitationPreview < ActionMailer::Preview
     invitation = Invitation.where(format: "email").last
     InvitationMailer.with(invitation: invitation, applicant: invitation.applicant)
                     .invitation_for_rsa_cer_signature_reminder
+  end
+
+  def invitation_for_rsa_insertion_offer_reminder
+    invitation = Invitation.where(format: "email").last
+    InvitationMailer.with(invitation: invitation, applicant: invitation.applicant)
+                    .invitation_for_rsa_insertion_offer_reminder
+  end
+
+  def invitation_for_rsa_follow_up_reminder
+    invitation = Invitation.where(format: "email").last
+    InvitationMailer.with(invitation: invitation, applicant: invitation.applicant)
+                    .invitation_for_rsa_follow_up_reminder
   end
 end

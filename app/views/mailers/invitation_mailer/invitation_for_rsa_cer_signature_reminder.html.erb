@@ -1,8 +1,6 @@
 <h1>Bonjour <%= "#{@applicant.first_name} #{@applicant.last_name.upcase}" %>,</h1>
-<p>En tant que bénéficiaire du RSA, vous avez reçu un premier mail il y a 3 jours vous invitant
- à prendre RDV afin de construire et signer votre Contrat d'Engagement Réciproque.</p>
-<p>Il ne vous reste plus que  <span class="font-weight-bold"><%= @invitation.number_of_days_before_expiration %> jours</span> pour prendre rendez-vous à la date et l'horaire de votre choix en cliquant sur le bouton suivant.
-<span class="font-weight-bold">Ce rendez-vous est obligatoire.</span></p>
+<p>En tant que bénéficiaire du RSA, vous avez reçu un premier mail il y a 3 jours vous invitant à prendre rendez-vous afin de construire et signer votre Contrat d'Engagement Réciproque.</p>
+<p>Il ne vous reste plus que <span class="font-weight-bold"><%= @invitation.number_of_days_before_expiration %> jours</span> pour prendre rendez-vous à la date et l'horaire de votre choix en cliquant sur le bouton suivant. <span class="font-weight-bold">Ce rendez-vous est obligatoire.</span></p>
 <p>En l’absence d'action de votre part, le versement de votre RSA pourra être suspendu ou son montant réduit.</p>
 <p class="btn-wrapper">
   <%= link_to redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST']), class: "btn btn-primary" do %>
