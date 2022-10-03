@@ -7,10 +7,11 @@ class Rdv < ApplicationRecord
   CANCELLED_STATUSES = %w[excused revoked noshow].freeze
   CANCELLED_BY_USER_STATUSES = %w[excused noshow].freeze
 
-  include ConvocableConcern
+  include NotificableConcern
 
+  after_save :set_event_to_notify, if: :convocable?
   after_commit :refresh_context_status, on: [:create, :update]
-  after_commit :convene_applicants, if: :convocable?, on: [:create, :update]
+  after_commit :notify_applicants, if: :convocable?, on: [:create, :update]
 
   belongs_to :organisation
   belongs_to :motif
@@ -65,8 +66,21 @@ class Rdv < ApplicationRecord
     RefreshRdvContextStatusesJob.perform_async(rdv_context_ids)
   end
 
-  def convene_applicants
-    ConveneRdvApplicantsJob.perform_async(id)
+  def notify_applicants
+    return unless @event_to_notify
+
+    NotifyRdvToApplicants.perform_async(id, @event_to_notify)
+  end
+
+  def set_event_to_notify
+    @event_to_notify = \
+      if new_record?
+        :created
+      elsif cancelled_at.present? && cancelled_at_changed?
+        :cancelled
+      elsif address.changed? || starts_at.changed?
+        :updated
+      end
   end
 
   def motif_category_is_uniq

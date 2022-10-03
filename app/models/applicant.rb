@@ -10,7 +10,7 @@ class Applicant < ApplicationRecord
   }.freeze
 
   include SearchableConcern
-  include ConvocableConcern
+  include NotificableConcern
   include HasPhoneNumberConcern
   include InvitableConcern
   include HasRdvsConcern

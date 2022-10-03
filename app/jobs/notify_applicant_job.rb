@@ -1,10 +1,10 @@
 class NotificationsJobError < StandardError; end
 
 class NotifyApplicantJob < ApplicationJob
-  def perform(applicant_id, organisation_id, rdv_attributes, event)
-    @applicant_id = applicant_id
-    @organisation_id = organisation_id
-    @rdv_solidarites_rdv = RdvSolidarites::Rdv.new(rdv_attributes)
+  def perform(rdv_id, applicant_id, format, event)
+    @rdv = Rdv.find(rdv_id)
+    @applicant = Applicant.find(applicant_id)
+    @format = format
     @event = event
 
     Rdv.with_advisory_lock "notifying_for_rdv_#{@rdv_solidarites_rdv.id}" do
@@ -15,22 +15,20 @@ class NotifyApplicantJob < ApplicationJob
 
   private
 
-  def applicant
-    @applicant ||= Applicant.find(@applicant_id)
-  end
-
-  def organisation
-    @organisation ||= Organisation.find(@organisation_id)
-  end
-
   def already_notified?
-    Notification.find_by(rdv_solidarites_rdv_id: @rdv_solidarites_rdv.id, event: "rdv_#{@event}")&.sent_at.present?
+    if @event == "rdv_updated"
+      # we assume here there should not be more than 2 lieu/time updates in one hour. The mattermost notification
+      # would let us double check anyway.
+      @rdv.sent_notifications.where(event: "rdv_updated").where("sent_at > ?", 1.hour.ago).count > 1
+    else
+      @rdv.sent_notifications.find_by(event: @event).present?
+    end
   end
 
   def send_already_notified_to_mattermost
     MattermostClient.send_to_notif_channel(
       "Rdv already notified to applicant. Skipping notification sending.\n" \
-      "rdv_solidarites_rdv_id: #{@rdv_solidarites_rdv.id} - event: rdv_#{@event} - " \
+      "rdv id: #{@rdv.id} " \
       "applicant_id: #{@applicant_id}"
     )
   end

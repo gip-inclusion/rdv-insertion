@@ -86,19 +86,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_03_200541) do
     t.index ["organisation_id", "configuration_id"], name: "index_config_orgas_on_organisation_id_and_configuration_id", unique: true
   end
 
-  create_table "convocations", force: :cascade do |t|
-    t.bigint "applicant_id", null: false
-    t.integer "event"
-    t.datetime "sent_at", precision: nil
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "rdv_solidarites_rdv_id"
-    t.integer "format"
-    t.bigint "rdv_id"
-    t.index ["applicant_id"], name: "index_convocations_on_applicant_id"
-    t.index ["rdv_id"], name: "index_convocations_on_rdv_id"
-  end
-
   create_table "departments", force: :cascade do |t|
     t.string "name"
     t.string "number"
@@ -180,6 +167,20 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_03_200541) do
     t.datetime "updated_at", null: false
     t.index ["organisation_id"], name: "index_motifs_on_organisation_id"
     t.index ["rdv_solidarites_motif_id"], name: "index_motifs_on_rdv_solidarites_motif_id", unique: true
+  end
+
+  create_table "notifications", force: :cascade do |t|
+    t.bigint "applicant_id", null: false
+    t.integer "event"
+    t.datetime "sent_at", precision: nil
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "rdv_solidarites_rdv_id"
+    t.integer "format"
+    t.boolean "convocation", default: false
+    t.bigint "rdv_id"
+    t.index ["applicant_id"], name: "index_notifications_on_applicant_id"
+    t.index ["rdv_id"], name: "index_notifications_on_rdv_id"
   end
 
   create_table "organisations", force: :cascade do |t|
@@ -288,13 +289,13 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_03_200541) do
   end
 
   add_foreign_key "applicants", "departments"
-  add_foreign_key "convocations", "applicants"
-  add_foreign_key "convocations", "rdvs"
   add_foreign_key "invitations", "applicants"
   add_foreign_key "invitations", "departments"
   add_foreign_key "invitations", "rdv_contexts"
   add_foreign_key "lieux", "organisations"
   add_foreign_key "motifs", "organisations"
+  add_foreign_key "notifications", "applicants"
+  add_foreign_key "notifications", "rdvs"
   add_foreign_key "organisations", "departments"
   add_foreign_key "organisations", "invitation_parameters", column: "invitation_parameters_id"
   add_foreign_key "rdv_contexts", "applicants"

@@ -14,7 +14,6 @@ module RdvSolidaritesWebhooks
       verify_lieu!
       upsert_or_delete_rdv
       invalidate_related_invitations if event == "created"
-      notify_applicants if should_notify_applicants?
       send_outgoing_webhooks
     end
 
@@ -144,17 +143,6 @@ module RdvSolidaritesWebhooks
 
     def rdv_context_ids
       rdv_contexts.map(&:id)
-    end
-
-    def notify_applicants
-      applicants.each do |applicant|
-        NotifyApplicantJob.perform_async(
-          applicant.id,
-          organisation.id,
-          @data,
-          event
-        )
-      end
     end
 
     def send_outgoing_webhooks
