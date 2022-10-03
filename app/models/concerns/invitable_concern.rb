@@ -2,7 +2,7 @@ module InvitableConcern
   extend ActiveSupport::Concern
 
   def sent_invitations
-    invitations.sent
+    invitations.to_a.select(&:sent_at?)
   end
 
   def first_sent_invitation
