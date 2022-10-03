@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_26_133354) do
+ActiveRecord::Schema[7.0].define(version: 2022_10_03_170642) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -138,6 +138,18 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_26_133354) do
     t.bigint "organisation_id", null: false
     t.bigint "invitation_id", null: false
     t.index ["organisation_id", "invitation_id"], name: "index_invitations_orgas_on_orga_id_and_invitation_id", unique: true
+  end
+
+  create_table "lieux", force: :cascade do |t|
+    t.bigint "rdv_solidarites_lieu_id"
+    t.string "name"
+    t.string "address"
+    t.string "phone_number"
+    t.datetime "last_webhook_update_received_at"
+    t.bigint "organisation_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organisation_id"], name: "index_lieux_on_organisation_id"
   end
 
   create_table "motifs", force: :cascade do |t|
@@ -275,6 +287,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_26_133354) do
   add_foreign_key "invitations", "applicants"
   add_foreign_key "invitations", "departments"
   add_foreign_key "invitations", "rdv_contexts"
+  add_foreign_key "lieux", "organisations"
   add_foreign_key "motifs", "organisations"
   add_foreign_key "notifications", "applicants"
   add_foreign_key "organisations", "departments"
