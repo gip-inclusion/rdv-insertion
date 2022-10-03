@@ -410,7 +410,7 @@ describe ApplicantsController, type: :controller do
         end
       end
 
-      context "when there is a rdv_context but no matching motif" do
+      context "when there is no matching motif for a rdv_context" do
         let!(:configuration) do
           create(:configuration, motif_category: "rsa_orientation", invitation_formats: %w[sms email])
         end
@@ -426,7 +426,7 @@ describe ApplicantsController, type: :controller do
 
         let!(:motif) { create(:motif, category: "rsa_accompagnement") }
 
-        it "does not displays the context" do
+        it "does not display the context" do
           get :show, params: show_params
 
           expect(response).to be_successful
@@ -435,7 +435,7 @@ describe ApplicantsController, type: :controller do
         end
       end
 
-      context "when there is a rdv_context but no matching configuration" do
+      context "when there is no matching configuration for a rdv_context" do
         let!(:configuration) do
           create(:configuration, motif_category: "rsa_accompagnement", invitation_formats: %w[sms email])
         end
@@ -452,7 +452,7 @@ describe ApplicantsController, type: :controller do
         let!(:motif) { create(:motif, category: "rsa_orientation") }
         let!(:motif2) { create(:motif, category: "rsa_insertion_offer") }
 
-        it "does not displays the context" do
+        it "does not display the context" do
           get :show, params: show_params
 
           expect(response).to be_successful
@@ -529,6 +529,21 @@ describe ApplicantsController, type: :controller do
         RdvContext.statuses.each_key do |status|
           expect(response.body).to match(/"#{status}"/)
         end
+      end
+    end
+
+    context "when a there is no matching motif for a context" do
+      let!(:configuration2) { create(:configuration, motif_category: "rsa_insertion_offer") }
+      let!(:organisation) do
+        create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
+                              department_id: department.id, configurations: [configuration, configuration2])
+      end
+
+      it "does not display the context" do
+        get :index, params: index_params
+
+        expect(response).to be_successful
+        expect(response.body).not_to match(/RSA offre insertion pro/)
       end
     end
 
