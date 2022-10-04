@@ -85,7 +85,7 @@ module Exports
 
     def filename
       if @structure.present?
-        "Export_beneficiaires_#{motif_category_title}_#{@structure.class.model_name.human.downcase}_" \
+        "Export_beneficiaires_#{motif_category_title}#{@structure.class.model_name.human.downcase}_" \
           "#{@structure.name.parameterize(separator: '_')}.csv"
       else
         "Export_beneficiaires_#{Time.zone.now.to_i}.csv"
@@ -93,7 +93,7 @@ module Exports
     end
 
     def motif_category_title
-      @motif_category.presence
+      @motif_category.present? ? "#{@motif_category}_" : ""
     end
 
     def human_rdv_context_status(applicant)

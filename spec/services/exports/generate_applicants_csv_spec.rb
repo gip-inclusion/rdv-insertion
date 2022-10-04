@@ -135,19 +135,6 @@ describe Exports::GenerateApplicantsCsv, type: :service do
           expect(csv).to include("25/05/2022;oui;Statut du RDV à préciser;oui;25/05/2022") # orientation date
         end
 
-        context "when the invitation deadline has passed" do
-          let!(:rdv_context) do
-            create(
-              :rdv_context, rdvs: [], invitations: [first_invitation, last_invitation],
-                            applicant: applicant1, status: "invitation_pending"
-            )
-          end
-
-          it "displays 'délai dépassé'" do
-            expect(subject.csv).to include("Invitation en attente de réponse (Délai dépassé)") # rdv_context status
-          end
-        end
-
         it "displays the archiving infos" do
           expect(csv).to include("25/05/2022;\"\"") # archiving status
           expect(csv).to include("25/05/2022;\"\";;") # archiving reason
@@ -161,6 +148,19 @@ describe Exports::GenerateApplicantsCsv, type: :service do
         it "displays the organisation infos" do
           expect(csv).to include("1")
           expect(csv).to include("Drome RSA")
+        end
+
+        context "when the invitation deadline has passed" do
+          let!(:rdv_context) do
+            create(
+              :rdv_context, rdvs: [], invitations: [first_invitation, last_invitation],
+                            applicant: applicant1, status: "invitation_pending"
+            )
+          end
+
+          it "displays 'délai dépassé'" do
+            expect(subject.csv).to include("Invitation en attente de réponse (Délai dépassé)") # rdv_context status
+          end
         end
 
         context "when the applicant is archived" do
@@ -220,7 +220,7 @@ describe Exports::GenerateApplicantsCsv, type: :service do
         end
 
         it "generates the right filename" do
-          expect(subject.filename).to eq("Export_beneficiaires__organisation_drome_rsa.csv")
+          expect(subject.filename).to eq("Export_beneficiaires_organisation_drome_rsa.csv")
         end
 
         it "does not display the statuses" do
