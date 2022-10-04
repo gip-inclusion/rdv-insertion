@@ -1,6 +1,7 @@
 class WebhookProcessingJobError < StandardError; end
 
 module RdvSolidaritesWebhooks
+  # rubocop:disable Metrics/ClassLength
   class ProcessRdvJob < ApplicationJob
     def perform(data, meta)
       @data = data.deep_symbolize_keys
@@ -10,6 +11,7 @@ module RdvSolidaritesWebhooks
       return if applicants.empty?
       return if unhandled_category?
 
+      verify_lieu!
       upsert_or_delete_rdv
       invalidate_related_invitations if event == "created"
       notify_applicants if should_notify_applicants?
@@ -30,6 +32,13 @@ module RdvSolidaritesWebhooks
       raise WebhookProcessingJobError, "Motif not found with id #{rdv_solidarites_motif_id}"
     end
 
+    def verify_lieu!
+      return if @data[:lieu].blank?
+      return if rdv_solidarites_lieu == lieu
+
+      raise WebhookProcessingJobError, "Lieu in webhook is not the same as the one in db: #{@data[:lieu]}"
+    end
+
     def should_notify_applicants?
       matching_configuration.notify_applicant? && event.in?(%w[created destroyed])
     end
@@ -46,6 +55,10 @@ module RdvSolidaritesWebhooks
 
     def event
       @meta[:event]
+    end
+
+    def rdv_solidarites_lieu
+      RdvSolidarites::Lieu.new(@data[:lieu])
     end
 
     def rdv_solidarites_rdv
@@ -76,6 +89,11 @@ module RdvSolidaritesWebhooks
       @motif ||= Motif.find_by(rdv_solidarites_motif_id: rdv_solidarites_motif_id)
     end
 
+    def lieu
+      @lieu ||= \
+        @data[:lieu].present? ? Lieu.find_by(rdv_solidarites_lieu_id: @data[:lieu][:id]) : nil
+    end
+
     def rdv_solidarites_motif_id
       rdv_solidarites_rdv.motif_id
     end
@@ -90,7 +108,7 @@ module RdvSolidaritesWebhooks
       else
         UpsertRecordJob.perform_async(
           "Rdv",
-          rdv_solidarites_rdv.to_rdv_insertion_attributes,
+          @data,
           {
             applicant_ids: applicant_ids,
             organisation_id: organisation.id,
@@ -98,6 +116,7 @@ module RdvSolidaritesWebhooks
             rdv_context_ids: rdv_context_ids,
             last_webhook_update_received_at: @meta[:timestamp]
           }
+          .merge(lieu.present? ? { lieu_id: lieu.id } : {})
         )
       end
     end
@@ -146,4 +165,5 @@ module RdvSolidaritesWebhooks
       }
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end

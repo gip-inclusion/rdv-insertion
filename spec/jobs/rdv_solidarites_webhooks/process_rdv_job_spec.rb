@@ -9,7 +9,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
   let!(:rdv_solidarites_organisation_id) { 52 }
   let!(:rdv_solidarites_lieu_id) { 43 }
   let!(:rdv_solidarites_motif_id) { 53 }
-  let!(:lieu) { { id: 43, name: "DINUM", lieu: "20 avenue de Ségur" } }
+  let!(:lieu_attributes) { { id: rdv_solidarites_lieu_id, name: "DINUM", address: "20 avenue de Ségur" } }
   let!(:motif_attributes) { { id: 53, location: "public_office", category: "rsa_orientation" } }
   let!(:starts_at) { "2021-09-08 12:00:00 UTC" }
   let!(:data) do
@@ -18,7 +18,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
       "starts_at" => starts_at,
       "address" => "20 avenue de segur",
       "context" => "all good",
-      "lieu" => lieu,
+      "lieu" => lieu_attributes,
       "motif" => motif_attributes,
       "users" => [{ id: user_id }],
       "organisation" => { id: rdv_solidarites_organisation_id }
@@ -34,10 +34,6 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
     }.deep_symbolize_keys
   end
 
-  let!(:rdv_payload) do
-    data.merge(rdv_solidarites_lieu_id: rdv_solidarites_lieu_id)
-  end
-
   let!(:applicant) { create(:applicant, organisations: [organisation], id: 3) }
   let!(:applicant2) { create(:applicant, organisations: [organisation], id: 4) }
 
@@ -49,6 +45,12 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
     )
   end
   let!(:motif) { create(:motif, rdv_solidarites_motif_id: rdv_solidarites_motif_id) }
+  let!(:lieu) do
+    create(
+      :lieu, rdv_solidarites_lieu_id: rdv_solidarites_lieu_id, name: "DINUM", address: "20 avenue de Ségur",
+             organisation: organisation
+    )
+  end
 
   let!(:invitation) { create(:invitation, rdv_context: rdv_context) }
   let!(:invitation2) { create(:invitation, rdv_context: rdv_context2) }
@@ -118,12 +120,13 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
         expect(UpsertRecordJob).to receive(:perform_async)
           .with(
             "Rdv",
-            rdv_payload,
+            data,
             {
               applicant_ids: [applicant.id, applicant2.id],
               organisation_id: organisation.id,
               rdv_context_ids: [rdv_context.id, rdv_context2.id],
               motif_id: motif.id,
+              lieu_id: lieu.id,
               last_webhook_update_received_at: timestamp
             }
           )
@@ -198,6 +201,21 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
           expect(klass).not_to receive(:perform_async)
         end
         subject
+      end
+    end
+
+    context "when the lieu in db does not match the lieu in webhook" do
+      let!(:lieu) do
+        create(
+          :lieu, rdv_solidarites_lieu_id: rdv_solidarites_lieu_id, name: "DINUM", address: "15 avenue de Ségur",
+                 organisation: organisation
+        )
+      end
+
+      it "raises an error" do
+        expect { subject }.to raise_error(
+          WebhookProcessingJobError, "Lieu in webhook is not the same as the one in db: #{lieu_attributes}"
+        )
       end
     end
 
