@@ -15,7 +15,7 @@ describe Stats::ComputeStats, type: :service do
   let!(:relevant_agent) { create(:agent, organisations: [relevant_organisation]) }
 
   # --------------------------------------- relevant applicants for stats --------------------------------------
-  let!(:applicant_orientation_from_relevant_organisation) do
+  let!(:applicant1) do
     create(:applicant, organisations: [relevant_organisation],
                        department: department,
                        invitations: [invitation],
@@ -23,7 +23,7 @@ describe Stats::ComputeStats, type: :service do
                        rdv_contexts: [rdv_context_orientation],
                        created_at: "2022-04-01 10:00:00 UTC")
   end
-  let!(:applicant_orientation_platform_from_relevant_organisation) do
+  let!(:applicant2) do
     create(:applicant, organisations: [relevant_organisation, irrelevant_organisation],
                        department: department,
                        invitations: [invitation2],
