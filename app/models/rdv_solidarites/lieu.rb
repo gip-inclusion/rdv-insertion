@@ -5,7 +5,7 @@ module RdvSolidarites
 
     def ==(other)
       return true if id.nil? && other.nil?
-      return false if id.present? && other.nil?
+      return false if other.nil?
 
       id == other.rdv_solidarites_lieu_id && address == other.address &&
         name == other.name

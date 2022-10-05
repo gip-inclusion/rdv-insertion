@@ -1,4 +1,6 @@
 class Notification < ApplicationRecord
+  include Sendable
+
   belongs_to :applicant
   belongs_to :rdv
 
@@ -6,8 +8,18 @@ class Notification < ApplicationRecord
   enum format: { sms: 0, email: 1 }
 
   delegate :organisation, :motif_category, to: :rdv
-  delegate :sms_configuration, to: :organisation
+  delegate :messages_configuration, to: :organisation
 
   # we assume a convocation is a notification of a created rdv
   scope :convocations, -> { where(event: "rdv_created") }
+  scope :sent, -> { where.not(sent_at: nil) }
+
+  def send_to_applicant
+    case format
+    when "sms"
+      Notifications::SendSms.call(notification: self)
+    when "email"
+      Notifications::SendEmail.call(notification: self)
+    end
+  end
 end

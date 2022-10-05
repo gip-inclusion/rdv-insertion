@@ -1,10 +1,10 @@
 module Messengers
   class SendEmail < BaseService
-    def initialize(sendable:, mailer_class:, mailer_method:, **email_args)
+    def initialize(sendable:, mailer_class:, mailer_method:, **email_kwargs)
       @sendable = sendable
       @mailer_class = mailer_class
       @mailer_method = mailer_method
-      @email_args = email_args
+      @email_kwargs = email_kwargs
     end
 
     def call
@@ -27,7 +27,7 @@ module Messengers
     end
 
     def send_email
-      @mailer_class.with(@email_args).send(@mailer_method).deliver_now
+      @mailer_class.with(@email_kwargs).send(@mailer_method).deliver_now
     end
   end
 end

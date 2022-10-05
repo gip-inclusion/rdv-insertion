@@ -9,11 +9,11 @@ class Applicant < ApplicationRecord
     "postal" => :address
   }.freeze
 
-  include SearchableConcern
-  include NotificableConcern
-  include HasPhoneNumberConcern
-  include InvitableConcern
-  include HasRdvsConcern
+  include Searchable
+  include Notificable
+  include Phonable
+  include Invitable
+  include Meetable
 
   before_validation :generate_uid
 
@@ -21,7 +21,6 @@ class Applicant < ApplicationRecord
   has_many :invitations, dependent: :destroy
   has_many :rdv_contexts, dependent: :destroy
   has_many :configurations, through: :organisations
-  has_and_belongs_to_many :rdvs
   belongs_to :department
 
   validates :uid, uniqueness: true, allow_nil: true

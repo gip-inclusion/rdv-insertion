@@ -7,7 +7,7 @@ module Invitations
     def call
       call_service!(
         Messengers::SendEmail,
-        sendable: Sendable.new(@invitation),
+        sendable: @invitation,
         mailer_class: InvitationMailer,
         mailer_method: mailer_method,
         invitation: @invitation,

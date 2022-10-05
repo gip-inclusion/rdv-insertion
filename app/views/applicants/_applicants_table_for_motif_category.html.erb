@@ -36,7 +36,7 @@
           <td id="last-invitation-date-<%= rdv_context.id %>"><%= show_last_invitation_date?(rdv_context) ? display_attribute(format_date(rdv_context.last_invitation_sent_at)) : " - " %></td>
         <% end %>
         <% if show_convocation?(@current_configuration) %>
-          <td><%= display_attribute format_date(applicant.last_convocation_sent_at) %></td>
+          <td><%= display_attribute format_date(applicant.last_convocation_for_category_sent_at(@current_motif_category)) %></td>
         <% end %>
         <% if applicant.archived? %>
           <td>Dossier archivé</td>

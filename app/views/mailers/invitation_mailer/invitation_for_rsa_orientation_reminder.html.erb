@@ -7,4 +7,4 @@
   <% end %>
 </p>
 <p>En cas de problème technique, contactez le <%= @invitation.help_phone_number_formatted %></p>
-<%= render 'common/invitations_signature', invitation_parameters: @invitation_parameters, department: @department %>
+<%= render 'common/organisation_signature', signature_lines: @messages_configuration.signature_lines, department: @department %>

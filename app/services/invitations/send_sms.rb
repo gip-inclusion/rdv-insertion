@@ -9,7 +9,7 @@ module Invitations
     def call
       call_service!(
         Messengers::SendSms,
-        sendable: Sendable.new(@invitation),
+        sendable: @invitation,
         content: content
       )
     end

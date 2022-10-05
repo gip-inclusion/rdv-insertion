@@ -11,7 +11,7 @@ module Notifications
     def call
       call_service!(
         Messengers::SendSms,
-        sendable: Sendable.new(@notification),
+        sendable: @notification,
         content: content
       )
     end
@@ -27,12 +27,12 @@ module Notifications
     end
 
     def content_method_name
-      if notification.event == "rdv_cancelled"
-        :"content_for_#{@notification.motif_category}_rdv_cancelled"
+      if @notification.event == "rdv_cancelled"
+        :content_for_rdv_cancelled
       elsif rdv.presential?
-        :"presential_content_for_#{@notification.motif_category}_#{@notification.event}"
+        :"presential_content_for_#{@notification.event}"
       elsif rdv.by_phone?
-        :"by_phone_content_for_#{@notification.motif_category}_#{@notification.event}"
+        :"by_phone_content_for_#{@notification.event}"
       else
         raise SmsNotificationError, "Message de convocation non géré pour notification #{@notification.id}"
       end

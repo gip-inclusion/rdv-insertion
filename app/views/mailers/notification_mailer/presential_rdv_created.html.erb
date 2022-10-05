@@ -1,0 +1,14 @@
+<h1>Bonjour <%= "#{@applicant.first_name} #{@applicant.last_name.upcase}" %>,</h1>
+<p>Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) à un <%= @rdv_title %>.</p>
+<p>Vous êtes attendu(e) <span class="font-weight-bold">le <%= @rdv.formatted_start_date %> à <%= @rdv.formatted_start_time %></span> ici: </p>
+<p><h4><%= @rdv.lieu.name %></h4></p>
+<p><h4><%= @rdv.lieu.address %></h4></p>
+<br/>
+<% if @display_mandatory_warning %>
+  <p><span class="font-weight-bold">Ce rendez-vous est obligatoire</span>.</p>
+<% end %>
+<% if @display_punishable_warning %>
+  <p>En cas d'absence, le versement de votre RSA pourra être suspendu ou réduit.</p>
+<% end %>
+<p>En cas d'empêchement, merci d'appeler rapidement le <%= @rdv.phone_number %>.</p>
+<%= render 'common/organisation_signature', signature_lines: @signature_lines, department: @department %>

@@ -1,4 +1,4 @@
-module SearchableConcern
+module Searchable
   extend ActiveSupport::Concern
 
   include PgSearch::Model

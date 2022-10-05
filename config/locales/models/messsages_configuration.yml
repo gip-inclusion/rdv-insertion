@@ -1,7 +1,7 @@
 fr:
   activerecord:
     models:
-      invitation_parameters: Paramètres d'invitation
+      messages_configuration: Paramètres d'invitation
     attributes:
-      configuration:
+      messages_configuration:
         sms_sender_name: Nom de l'expéditeur

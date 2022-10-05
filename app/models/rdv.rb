@@ -7,9 +7,8 @@ class Rdv < ApplicationRecord
   CANCELLED_STATUSES = %w[excused revoked noshow].freeze
   CANCELLED_BY_USER_STATUSES = %w[excused noshow].freeze
 
-  include NotificableConcern
+  include Notificable
 
-  after_save :set_event_to_notify, if: :notify_applicants?
   after_commit :notify_applicants, if: :notify_applicants?, on: [:create, :update]
   after_commit :refresh_context_status, on: [:create, :update]
 
@@ -32,6 +31,7 @@ class Rdv < ApplicationRecord
   scope :cancelled_by_user, -> { where(status: CANCELLED_BY_USER_STATUSES) }
   scope :status, ->(status) { where(status: status) }
   scope :resolved, -> { where(status: %w[seen excused revoked noshow]) }
+  scope :with_lieu, -> { where.not(lieu_id: nil) }
 
   def pending?
     in_the_future? && status.in?(PENDING_STATUSES)
@@ -93,20 +93,20 @@ class Rdv < ApplicationRecord
   end
 
   def notify_applicants
-    return unless @event_to_notify
+    return unless event_to_notify
 
-    NotifyRdvToApplicants.perform_async(id, @event_to_notify)
+    NotifyRdvToApplicantsJob.perform_async(id, event_to_notify)
   end
 
-  def set_event_to_notify
-    @event_to_notify = \
-      if new_record?
-        :created
-      elsif cancelled_at.present? && cancelled_at_changed?
-        :cancelled
-      elsif address_changed? || starts_at_changed?
-        :updated
-      end
+  # event to notify in an after_commit context
+  def event_to_notify
+    if id_previously_changed?
+      :created
+    elsif cancelled_at.present? && cancelled_at_previously_changed?
+      :cancelled
+    elsif address_previously_changed? || starts_at_previously_changed?
+      :updated
+    end
   end
 
   def rdv_contexts_motif_categories_are_uniq

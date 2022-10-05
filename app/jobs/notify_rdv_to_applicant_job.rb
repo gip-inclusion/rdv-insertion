@@ -1,6 +1,6 @@
 class NotificationsJobError < StandardError; end
 
-class NotifyApplicantJob < ApplicationJob
+class NotifyRdvToApplicantJob < ApplicationJob
   def perform(rdv_id, applicant_id, format, event)
     @rdv = Rdv.find(rdv_id)
     @applicant = Applicant.find(applicant_id)

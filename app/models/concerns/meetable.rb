@@ -1,8 +1,16 @@
-module HasRdvsConcern
+module Meetable
   extend ActiveSupport::Concern
 
+  included do
+    has_and_belongs_to_many :rdvs
+  end
+
+  def seen_rdvs
+    rdvs.to_a.select(&:seen?)
+  end
+
   def first_seen_rdv
-    rdvs.to_a.select(&:seen?).min_by(&:starts_at)
+    seen_rdvs.min_by(&:starts_at)
   end
 
   def first_seen_rdv_starts_at
@@ -14,7 +22,7 @@ module HasRdvsConcern
   end
 
   def last_seen_rdv
-    rdvs.to_a.select(&:seen?).max_by(&:starts_at)
+    seen_rdvs.max_by(&:starts_at)
   end
 
   def last_seen_rdv_starts_at

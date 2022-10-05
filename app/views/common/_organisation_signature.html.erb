@@ -1,0 +1,10 @@
+<% if signature_lines.present? %>
+  <p>
+    <% signature_lines.each_with_index do |signature_line, i| %>
+        <%= signature_line %>
+        <%= tag(:br) unless signature_lines.length == i + 1 %>
+    <% end %>
+  </p>
+<% else %>
+  <p>Le département <%= I18n.t("with_prefix.#{department.pronoun}", name: department.name) %><br/></p>
+<% end %>

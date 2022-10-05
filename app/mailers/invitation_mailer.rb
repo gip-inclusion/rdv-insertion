@@ -1,5 +1,5 @@
 class InvitationMailer < ApplicationMailer
-  before_action :set_invitation, :set_applicant, :set_department, :set_invitation_parameters
+  before_action :set_invitation, :set_applicant, :set_department, :set_messages_configuration
 
   def invitation_for_rsa_orientation
     mail(
@@ -73,7 +73,7 @@ class InvitationMailer < ApplicationMailer
     @department = @invitation.department
   end
 
-  def set_invitation_parameters
-    @invitation_parameters = @invitation.invitation_parameters
+  def set_messages_configuration
+    @messages_configuration = @invitation.messages_configuration
   end
 end

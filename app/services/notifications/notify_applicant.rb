@@ -1,10 +1,8 @@
 module Notifications
   class NotifyApplicant < BaseService
-    include Notifications::RdvConcern
-
     def initialize(rdv:, applicant:, event:, format:)
+      @rdv = rdv
       @applicant = applicant
-      @organisation = organisation
       @event = event
       @format = format
     end

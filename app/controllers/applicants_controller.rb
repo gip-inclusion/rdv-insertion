@@ -205,7 +205,7 @@ class ApplicantsController < ApplicationController
 
   def set_applicants_for_motif_category
     @applicants = policy_scope(Applicant)
-                  .includes(:invitations, :notifications)
+                  .includes(:invitations, notifications: :rdv)
                   .preload(:organisations, rdv_contexts: [:invitations, :rdvs])
                   .active.distinct.archived(false)
                   .where(department_level? ? { department: @department } : { organisations: @organisation })

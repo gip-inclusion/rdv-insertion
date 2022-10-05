@@ -350,11 +350,11 @@ describe Invitations::SendSms, type: :service do
 
     context "when the sms sender name is defined in organisation configuration" do
       let!(:configuration) { create(:configuration, motif_category: "rsa_orientation") }
-      let!(:invitation_parameters) { create(:invitation_parameters, sms_sender_name: "PoleRSA") }
+      let!(:messages_configuration) { create(:messages_configuration, sms_sender_name: "PoleRSA") }
       let!(:organisation) do
         create(:organisation, configurations: [configuration],
                               department: department,
-                              invitation_parameters: invitation_parameters)
+                              messages_configuration: messages_configuration)
       end
 
       let!(:invitation) do

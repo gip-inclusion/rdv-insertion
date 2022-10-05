@@ -1,6 +1,6 @@
 # Concern to include in application models
 # Models need to have a :phone_number and a :phone_number_formatted attributes
-module HasPhoneNumberConcern
+module Phonable
   extend ActiveSupport::Concern
 
   included do

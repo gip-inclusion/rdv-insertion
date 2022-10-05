@@ -1,4 +1,4 @@
-module InvitableConcern
+module Invitable
   extend ActiveSupport::Concern
 
   def first_sent_invitation

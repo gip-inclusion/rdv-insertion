@@ -1,7 +1,6 @@
 class WebhookProcessingJobError < StandardError; end
 
 module RdvSolidaritesWebhooks
-  # rubocop:disable Metrics/ClassLength
   class ProcessRdvJob < ApplicationJob
     def perform(data, meta)
       @data = data.deep_symbolize_keys
@@ -11,9 +10,10 @@ module RdvSolidaritesWebhooks
       return if applicants.empty?
       return if unhandled_category?
 
-      verify_lieu!
+      # for a convocation, we have to verify the lieu is up to date in db
+      verify_lieu_sync! if rdv_convocable?
       upsert_or_delete_rdv
-      invalidate_related_invitations if just_created?
+      invalidate_related_invitations if created_event?
       send_outgoing_webhooks
     end
 
@@ -31,11 +31,11 @@ module RdvSolidaritesWebhooks
       raise WebhookProcessingJobError, "Motif not found with id #{rdv_solidarites_motif_id}"
     end
 
-    def verify_lieu!
-      return if @data[:lieu].blank?
-      return if rdv_solidarites_lieu == lieu
+    def verify_lieu_sync!
+      return unless rdv_solidarites_rdv.presential?
+      return if @data[:lieu].present? && rdv_solidarites_lieu == lieu
 
-      raise WebhookProcessingJobError, "Lieu in webhook is not the same as the one in db: #{@data[:lieu]}"
+      raise WebhookProcessingJobError, "Lieu in webhook is not coherent: #{@data[:lieu]}"
     end
 
     def should_notify_applicants?
@@ -60,7 +60,7 @@ module RdvSolidaritesWebhooks
       RdvSolidarites::Lieu.new(@data[:lieu])
     end
 
-    def just_created?
+    def created_event?
       event == "created"
     end
 
@@ -106,27 +106,23 @@ module RdvSolidaritesWebhooks
     end
 
     def upsert_or_delete_rdv
-      if event == "destroyed"
-        DeleteRdvJob.perform_async(rdv_solidarites_rdv.id)
-      else
-        UpsertRecordJob.perform_async(
-          "Rdv",
-          @data,
-          {
-            applicant_ids: applicant_ids,
-            organisation_id: organisation.id,
-            motif_id: motif.id,
-            rdv_context_ids: rdv_context_ids,
-            last_webhook_update_received_at: @meta[:timestamp]
-          }
-          .merge(lieu.present? ? { lieu_id: lieu.id } : {})
-          .merge(just_created? && rdv_convocable? ? { convocable: true } : {})
-        )
-      end
+      UpsertRecordJob.perform_async(
+        "Rdv",
+        @data,
+        {
+          applicant_ids: applicant_ids,
+          organisation_id: organisation.id,
+          motif_id: motif.id,
+          rdv_context_ids: rdv_context_ids,
+          last_webhook_update_received_at: @meta[:timestamp]
+        }
+        .merge(lieu.present? ? { lieu_id: lieu.id } : {})
+        .merge(rdv_convocable? ? { convocable: true } : {})
+      )
     end
 
     def rdv_convocable?
-      matching_configuration.convene_applicant? && rdv_solidarites_rdv.convocable?
+      created_event? && matching_configuration.convene_applicant? && rdv_solidarites_rdv.convocable?
     end
 
     def invalidate_related_invitations
@@ -162,5 +158,4 @@ module RdvSolidaritesWebhooks
       }
     end
   end
-  # rubocop:enable Metrics/ClassLength
 end

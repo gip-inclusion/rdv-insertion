@@ -7,7 +7,7 @@ class Organisation < ApplicationRecord
   validates :name, presence: true
 
   belongs_to :department
-  belongs_to :invitation_parameters, optional: true
+  belongs_to :messages_configuration, optional: true
   belongs_to :sms_configuration, optional: true
   has_many :rdvs, dependent: :nullify
   has_many :lieux, dependent: :nullify

@@ -1,4 +1,4 @@
-module HasStatusConcern
+module Statuable
   extend ActiveSupport::Concern
 
   included do

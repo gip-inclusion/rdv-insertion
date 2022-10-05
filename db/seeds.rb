@@ -101,7 +101,7 @@ yonne_orientation_config = Configuration.create!(
   number_of_days_before_action_required: 3
 )
 
-invitation_parameters = InvitationParameters.create!(
+messages_configuration = MessagesConfiguration.create!(
   direction_names:
     ["DIRECTION GÉNÉRALE DES SERVICES DÉPARTEMENTAUX",
     "DIRECTION DE L’INSERTION ET DU RETOUR À L’EMPLOI",
@@ -117,7 +117,7 @@ drome1_organisation = Organisation.create!(
   # rdv_solidarites_organisation_id: vérifier l'id de l'organisation correspondante sur RDV-Solidarites
   department_id: drome.id,
   configuration_ids: [drome_orientation_config.id, drome_accompagnement_config.id],
-  invitation_parameters_id: invitation_parameters.id
+  messages_configuration_id: messages_configuration.id
 )
 
 drome2_organisation = Organisation.create!(
@@ -127,7 +127,7 @@ drome2_organisation = Organisation.create!(
   # rdv_solidarites_organisation_id: vérifier l'id de l'organisation correspondante sur RDV-Solidarites
   department_id: drome.id,
   configuration_ids: [drome_orientation_config.id, drome_accompagnement_config.id],
-  invitation_parameters_id: invitation_parameters.id
+  messages_configuration_id: messages_configuration.id
 )
 
 yonne_organisation = Organisation.create!(
@@ -137,7 +137,7 @@ yonne_organisation = Organisation.create!(
   # rdv_solidarites_organisation_id: vérifier l'id de l'organisation correspondante sur RDV-Solidarites
   department_id: yonne.id,
   configuration_ids: [yonne_orientation_config.id],
-  invitation_parameters_id: invitation_parameters.id
+  messages_configuration_id: messages_configuration.id
 )
 
 puts "Done!"
