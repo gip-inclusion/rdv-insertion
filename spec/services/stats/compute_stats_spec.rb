@@ -23,7 +23,7 @@ describe Stats::ComputeStats, type: :service do
                        rdv_contexts: [rdv_context_orientation],
                        created_at: "2022-04-01 10:00:00 UTC")
   end
-  let!(:applicant_relevant_orientation_platform_from_relevant_organisation) do
+  let!(:applicant_orientation_platform_from_relevant_organisation) do
     create(:applicant, organisations: [relevant_organisation, irrelevant_organisation],
                        department: department,
                        invitations: [invitation2],
