@@ -1,0 +1,52 @@
+describe RdvSolidaritesWebhooks::ProcessLieuJob, type: :job do
+  subject do
+    described_class.new.perform(data, meta)
+  end
+
+  let!(:data) do
+    {
+      "id" => rdv_solidarites_organisation_id,
+      "name" => "Mairie de Valence",
+      "address" => "20 avenue de la République 26000 Valence",
+      "phone_number" => "01 01 01 01 01",
+      "organisation_id" => rdv_solidarites_organisation_id
+    }.deep_symbolize_keys
+  end
+
+  let!(:rdv_solidarites_organisation_id) { 222 }
+  let!(:rdv_solidarites_motif_id) { 455 }
+
+  let!(:meta) do
+    {
+      "model" => "Lieu",
+      "event" => "updated",
+      "timestamp" => "2022-05-30 14:44:22 +0200"
+    }.deep_symbolize_keys
+  end
+
+  let!(:organisation) { create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id) }
+
+  describe "#call" do
+    before do
+      allow(UpsertRecordJob).to receive(:perform_async)
+    end
+
+    it "enqueues upsert record job" do
+      expect(UpsertRecordJob).to receive(:perform_async)
+        .with(
+          "Lieu", data,
+          { organisation_id: organisation.id, last_webhook_update_received_at: "2022-05-30 14:44:22 +0200" }
+        )
+      subject
+    end
+
+    context "when the organisation is not found" do
+      let!(:organisation) { create(:organisation, rdv_solidarites_organisation_id: "some-id") }
+
+      it "does not enqueue a job" do
+        expect(UpsertRecordJob).not_to receive(:perform_async)
+        subject
+      end
+    end
+  end
+end

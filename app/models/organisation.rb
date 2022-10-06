@@ -9,6 +9,8 @@ class Organisation < ApplicationRecord
   belongs_to :department
   belongs_to :invitation_parameters, optional: true
   has_many :rdvs, dependent: :nullify
+  has_many :lieux, dependent: :nullify
+  has_many :motifs, dependent: :nullify
   has_many :configurations_organisations, dependent: :destroy
   has_many :configurations, through: :configurations_organisations
   has_and_belongs_to_many :agents, dependent: :nullify
