@@ -8,7 +8,6 @@ const initToolTip = () => {
         "Une intervention est nécessaire quand: " +
         `<ul><li>L'invitation a été envoyée depuis + de ${numberOfDaysBeforeActionRequired} jours sans réponse</li>` +
         "<li>Le RDV a été annulé par l'un des partis ou l'allocataire ne s'est pas présenté au RDV</li>" +
-        "<li>L'allocataire n'a pas été invité</li>" +
         "<li>L'issue du RDV n'a pas été renseignée sur RDV-Solidarités</li></ul>"
       );
     },
