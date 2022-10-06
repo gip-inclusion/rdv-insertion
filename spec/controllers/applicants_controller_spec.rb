@@ -12,7 +12,6 @@ describe ApplicantsController, type: :controller do
     create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
                           department_id: department.id, configurations: [configuration])
   end
-  let!(:motif) { create(:motif, organisation: organisation) }
   let!(:agent) { create(:agent, organisations: [organisation]) }
   let!(:rdv_solidarites_organisation_id) { 52 }
   let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
@@ -323,9 +322,7 @@ describe ApplicantsController, type: :controller do
         create(:invitation, sent_at: "2021-10-20", format: "sms", rdv_context: rdv_context)
       end
 
-      let!(:motif) do
-        create(:motif, category: "rsa_orientation", name: "RSA Orientation sur site", organisation: organisation)
-      end
+      let!(:motif) { create(:motif, name: "RSA Orientation sur site") }
 
       let!(:rdv_orientation1) do
         create(
@@ -349,10 +346,6 @@ describe ApplicantsController, type: :controller do
 
       let!(:invitation_accompagnement) do
         create(:invitation, sent_at: "2021-11-20", format: "sms", rdv_context: rdv_context2)
-      end
-
-      let!(:motif2) do
-        create(:motif, category: "rsa_accompagnement", name: "RSA Accompagnement", organisation: organisation)
       end
 
       it "shows all the contexts" do
@@ -410,31 +403,6 @@ describe ApplicantsController, type: :controller do
         end
       end
 
-      context "when there is no matching motif for a rdv_context" do
-        let!(:configuration) do
-          create(:configuration, motif_category: "rsa_orientation", invitation_formats: %w[sms email])
-        end
-
-        let!(:organisation) do
-          create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
-                                department_id: department.id, configurations: [configuration])
-        end
-
-        let!(:rdv_context) do
-          create(:rdv_context, status: "rdv_seen", applicant: applicant, motif_category: "rsa_orientation")
-        end
-
-        let!(:motif) { create(:motif, category: "rsa_accompagnement") }
-
-        it "does not display the context" do
-          get :show, params: show_params
-
-          expect(response).to be_successful
-          expect(response.body).not_to match(/RSA orientation/)
-          expect(response.body).not_to match(/InvitationBlock/)
-        end
-      end
-
       context "when there is no matching configuration for a rdv_context" do
         let!(:configuration) do
           create(:configuration, motif_category: "rsa_accompagnement", invitation_formats: %w[sms email])
@@ -449,15 +417,12 @@ describe ApplicantsController, type: :controller do
           create(:rdv_context, status: "rdv_seen", applicant: applicant, motif_category: "rsa_orientation")
         end
 
-        let!(:motif) { create(:motif, category: "rsa_orientation") }
-        let!(:motif2) { create(:motif, category: "rsa_insertion_offer") }
-
         it "does not display the context" do
           get :show, params: show_params
 
           expect(response).to be_successful
+          expect(response.body).to match(/InvitationBlock/)
           expect(response.body).not_to match(/RSA orientation/)
-          expect(response.body).not_to match(/InvitationBlock/)
         end
       end
     end
@@ -550,7 +515,6 @@ describe ApplicantsController, type: :controller do
     context "when a context is specified" do
       let!(:rdv_context2) { build(:rdv_context, motif_category: "rsa_accompagnement", status: "invitation_pending") }
       let!(:configuration) { create(:configuration, motif_category: "rsa_accompagnement") }
-      let!(:motif2) { create(:motif, category: "rsa_accompagnement", organisation: organisation) }
 
       it "returns the list of applicants in the current context" do
         get :index, params: index_params.merge(motif_category: "rsa_accompagnement")
