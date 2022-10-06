@@ -1,3 +1,5 @@
+# rubocop:disable Metrics/ModuleLength
+
 module ApplicantsHelper
   def format_date(date)
     date&.strftime("%d/%m/%Y")
@@ -32,9 +34,25 @@ module ApplicantsHelper
   end
 
   def options_for_select_status(statuses_count)
-    statuses_count.map do |status, count|
+    ordered_statuses_count(statuses_count).map do |status, count|
+      next if count.nil?
+
       ["#{I18n.t("activerecord.attributes.rdv_context.statuses.#{status}")} (#{count})", status]
-    end
+    end.compact
+  end
+
+  def ordered_statuses_count(statuses_count)
+    [
+      ["not_invited", statuses_count["not_invited"]],
+      ["invitation_pending", statuses_count["invitation_pending"]],
+      ["rdv_pending", statuses_count["rdv_pending"]],
+      ["rdv_needs_status_update", statuses_count["rdv_needs_status_update"]],
+      ["rdv_excused", statuses_count["rdv_excused"]],
+      ["rdv_revoked", statuses_count["rdv_revoked"]],
+      ["multiple_rdvs_cancelled", statuses_count["multiple_rdvs_cancelled"]],
+      ["rdv_noshow", statuses_count["rdv_noshow"]],
+      ["rdv_seen", statuses_count["rdv_seen"]]
+    ].compact
   end
 
   def background_class_for_context_status(context, number_of_days_before_action_required)
@@ -115,3 +133,5 @@ module ApplicantsHelper
     organisation_applicant_path(organisation, applicant)
   end
 end
+
+# rubocop:enable Metrics/ModuleLength
