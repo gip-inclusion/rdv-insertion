@@ -1,8 +1,12 @@
 module InvitableConcern
   extend ActiveSupport::Concern
 
+  def sent_invitations
+    invitations.to_a.select(&:sent_at?)
+  end
+
   def first_sent_invitation
-    invitations.select(&:sent_at).min_by(&:sent_at)
+    sent_invitations.min_by(&:sent_at)
   end
 
   def first_invitation_sent_at
@@ -10,8 +14,8 @@ module InvitableConcern
   end
 
   def first_sent_invitation_after_last_seen_rdv
-    invitations.select { |invitation| invitation.sent_at && invitation.sent_at > last_seen_rdv.starts_at }
-               .min_by(&:sent_at)
+    sent_invitations.select { |invitation| invitation.sent_at > last_seen_rdv.starts_at }
+                    .min_by(&:sent_at)
   end
 
   def first_sent_invitation_after_last_seen_rdv_sent_at
@@ -19,7 +23,7 @@ module InvitableConcern
   end
 
   def last_sent_invitation
-    invitations.select(&:sent_at).max_by(&:sent_at)
+    sent_invitations.max_by(&:sent_at)
   end
 
   def last_invitation_sent_at
@@ -27,7 +31,7 @@ module InvitableConcern
   end
 
   def last_sent_sms_invitation
-    invitations.select { |invitation| invitation.format == "sms" }.select(&:sent_at).max_by(&:sent_at)
+    sent_invitations.select { |invitation| invitation.format == "sms" }.max_by(&:sent_at)
   end
 
   def last_sms_invitation_sent_at
@@ -35,7 +39,7 @@ module InvitableConcern
   end
 
   def last_sent_email_invitation
-    invitations.select { |invitation| invitation.format == "email" }.select(&:sent_at).max_by(&:sent_at)
+    sent_invitations.select { |invitation| invitation.format == "email" }.max_by(&:sent_at)
   end
 
   def last_email_invitation_sent_at
@@ -43,7 +47,7 @@ module InvitableConcern
   end
 
   def last_sent_postal_invitation
-    invitations.select { |invitation| invitation.format == "postal" }.select(&:sent_at).max_by(&:sent_at)
+    sent_invitations.select { |invitation| invitation.format == "postal" }.max_by(&:sent_at)
   end
 
   def last_sent_postal_invitation_sent_at
@@ -51,7 +55,7 @@ module InvitableConcern
   end
 
   def invited_through?(format)
-    invitations.any? { |invitation| invitation.format == format }
+    sent_invitations.any? { |invitation| invitation.format == format }
   end
 
   def relevant_first_invitation
