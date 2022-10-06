@@ -5,7 +5,7 @@ describe RdvSolidaritesWebhooks::ProcessLieuJob, type: :job do
 
   let!(:data) do
     {
-      "id" => rdv_solidarites_organisation_id,
+      "id" => rdv_solidarites_lieu_id,
       "name" => "Mairie de Valence",
       "address" => "20 avenue de la République 26000 Valence",
       "phone_number" => "01 01 01 01 01",
@@ -14,7 +14,7 @@ describe RdvSolidaritesWebhooks::ProcessLieuJob, type: :job do
   end
 
   let!(:rdv_solidarites_organisation_id) { 222 }
-  let!(:rdv_solidarites_motif_id) { 455 }
+  let!(:rdv_solidarites_lieu_id) { 455 }
 
   let!(:meta) do
     {
@@ -46,6 +46,23 @@ describe RdvSolidaritesWebhooks::ProcessLieuJob, type: :job do
       it "does not enqueue a job" do
         expect(UpsertRecordJob).not_to receive(:perform_async)
         subject
+      end
+    end
+
+    context "when it is the destroy event" do
+      let!(:lieu) { create(:lieu, rdv_solidarites_lieu_id: rdv_solidarites_lieu_id) }
+
+      let!(:meta) do
+        {
+          "model" => "Lieu",
+          "event" => "destroyed",
+          "timestamp" => "2022-05-30 14:44:22 +0200"
+        }.deep_symbolize_keys
+      end
+
+      it "deletes the lieu" do
+        expect(UpsertRecordJob).not_to receive(:perform_async)
+        expect { subject }.to change(Lieu, :count).by(-1)
       end
     end
   end
