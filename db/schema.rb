@@ -236,7 +236,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_04_194204) do
     t.text "context"
     t.datetime "last_webhook_update_received_at"
     t.bigint "motif_id"
+<<<<<<< HEAD
     t.boolean "convocable", default: false
+=======
+>>>>>>> staging
     t.bigint "lieu_id"
     t.index ["created_by"], name: "index_rdvs_on_created_by"
     t.index ["lieu_id"], name: "index_rdvs_on_lieu_id"

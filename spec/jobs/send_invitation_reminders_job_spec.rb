@@ -96,12 +96,15 @@ describe SendInvitationRemindersJob, type: :job do
       subject
     end
 
-    context "when the eligible applicants do not have email or phone number" do
+    context "when the eligible applicants do not have email or mobile phone number" do
       let!(:applicant1) { create(:applicant, phone_number: nil, email: "") }
+      let!(:applicant2) { create(:applicant, phone_number: "0123456789", email: "") }
 
       it "does not enqueue reminder jobs" do
         expect(SendInvitationReminderJob).not_to receive(:perform_async)
           .with(applicant1.id, "sms")
+        expect(SendInvitationReminderJob).not_to receive(:perform_async)
+          .with(applicant2.id, "sms")
         expect(SendInvitationReminderJob).not_to receive(:perform_async)
           .with(applicant1.id, "email")
         subject

@@ -1,7 +1,7 @@
 # rubocop:disable Metrics/ClassLength
 module Exporters
   class GenerateApplicantsCsv < BaseService
-    def initialize(applicants:, structure:, motif_category:)
+    def initialize(applicants:, structure: nil, motif_category: nil)
       @applicants = applicants
       @structure = structure
       @motif_category = motif_category
@@ -43,7 +43,7 @@ module Exporters
        "Date du dernier RDV",
        "Dernier RDV pris en autonomie ?",
        Applicant.human_attribute_name(:status),
-       "RDV honoré en - de 30 jours ?",
+       "1er RDV honoré en - de 30 jours ?",
        "Date d'orientation",
        Applicant.human_attribute_name(:archived_at),
        Applicant.human_attribute_name(:archiving_reason),
@@ -70,7 +70,7 @@ module Exporters
        display_date(last_rdv_date(applicant)),
        rdv_taken_in_autonomy?(applicant),
        human_rdv_context_status(applicant),
-       I18n.t("boolean.#{applicant.first_seen_rdv_starts_at.present?}"),
+       rdv_seen_in_less_than_30_days?(applicant),
        display_date(applicant.first_seen_rdv_starts_at),
        display_date(applicant.archived_at),
        applicant.archiving_reason,
@@ -81,34 +81,40 @@ module Exporters
     end
 
     def filename
-      "Liste_beneficiaires_#{motif_category_title}_#{@structure.class.model_name.human.downcase}_" \
-        "#{@structure.name.parameterize(separator: '_')}.csv"
+      if @structure.present?
+        "Export_beneficiaires_#{motif_category_title}#{@structure.class.model_name.human.downcase}_" \
+          "#{@structure.name.parameterize(separator: '_')}.csv"
+      else
+        "Export_beneficiaires_#{Time.zone.now.to_i}.csv"
+      end
     end
 
     def motif_category_title
-      @motif_category.presence || "autres"
+      @motif_category.present? ? "#{@motif_category}_" : ""
     end
 
     def human_rdv_context_status(applicant)
-      return "" if rdv_context(applicant).nil?
+      return "Archivé" if applicant.archived_at.present?
+
+      return "" if @motif_category.nil? || rdv_context(applicant).nil?
 
       I18n.t("activerecord.attributes.rdv_context.statuses.#{rdv_context(applicant).status}") +
-        display_context_status_notice(rdv_context(applicant), number_of_days_before_action_required)
+        display_context_status_notice(rdv_context(applicant))
+    end
+
+    def display_context_status_notice(rdv_context)
+      if @structure.present? && rdv_context.invited_before_time_window?(number_of_days_before_action_required) &&
+         rdv_context.invitation_pending?
+        " (Délai dépassé)"
+      else
+        ""
+      end
     end
 
     def number_of_days_before_action_required
       @number_of_days_before_action_required ||= @structure.configurations.find do |c|
         c.motif_category == @motif_category
       end.number_of_days_before_action_required
-    end
-
-    def display_context_status_notice(rdv_context, number_of_days_before_action_required)
-      if rdv_context.invited_before_time_window?(number_of_days_before_action_required) &&
-         rdv_context.invitation_pending?
-        " (Délai dépassé)"
-      else
-        ""
-      end
     end
 
     def display_date(date)
@@ -118,25 +124,29 @@ module Exporters
     end
 
     def first_invitation_date(applicant)
-      rdv_context(applicant)&.first_invitation_sent_at
+      @motif_category.present? ? rdv_context(applicant)&.first_invitation_sent_at : applicant.first_invitation_sent_at
     end
 
     def last_invitation_date(applicant)
-      rdv_context(applicant)&.last_invitation_sent_at
+      @motif_category.present? ? rdv_context(applicant)&.last_invitation_sent_at : applicant.last_invitation_sent_at
     end
 
     def last_rdv_date(applicant)
-      rdv_context(applicant)&.last_rdv_starts_at
+      @motif_category.present? ? rdv_context(applicant)&.last_rdv_starts_at : applicant.last_rdv_starts_at
     end
 
     def last_rdv(applicant)
-      rdv_context(applicant)&.last_rdv
+      @motif_category.present? ? rdv_context(applicant)&.last_rdv : applicant.last_rdv
     end
 
     def rdv_taken_in_autonomy?(applicant)
-      return "" unless rdv_context(applicant) && last_rdv(applicant).present?
+      return "" if last_rdv(applicant).blank?
 
       I18n.t("boolean.#{last_rdv(applicant).created_by_user?}")
+    end
+
+    def rdv_seen_in_less_than_30_days?(applicant)
+      I18n.t("boolean.#{applicant.rdv_seen_delay_in_days.present? && applicant.rdv_seen_delay_in_days < 30}")
     end
 
     def rdv_context(applicant)

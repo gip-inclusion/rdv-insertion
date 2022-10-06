@@ -9,7 +9,9 @@ class SendInvitationRemindersJob < ApplicationJob
       next if applicant.relevant_first_invitation_sent_at.to_date != 3.days.ago.to_date
 
       SendInvitationReminderJob.perform_async(applicant.id, "email") if applicant.email?
-      SendInvitationReminderJob.perform_async(applicant.id, "sms") if applicant.phone_number?
+      if applicant.phone_number? && applicant.phone_number_is_mobile?
+        SendInvitationReminderJob.perform_async(applicant.id, "sms")
+      end
       @sent_reminders_applicant_ids << applicant.id
     end
 

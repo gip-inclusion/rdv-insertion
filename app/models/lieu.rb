@@ -9,7 +9,7 @@ class Lieu < ApplicationRecord
   validates :rdv_solidarites_lieu_id, presence: true, uniqueness: true
 
   belongs_to :organisation
-  has_many :rdvs, dependent: :restrict_with_error
+  has_many :rdvs, dependent: :nullify
 
   def full_name
     "#{name} - #{address}"

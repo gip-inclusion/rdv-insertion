@@ -1,6 +1,7 @@
 class WebhookProcessingJobError < StandardError; end
 
 module RdvSolidaritesWebhooks
+  # rubocop:disable Metrics/ClassLength
   class ProcessRdvJob < ApplicationJob
     def perform(data, meta)
       @data = data.deep_symbolize_keys
@@ -106,19 +107,23 @@ module RdvSolidaritesWebhooks
     end
 
     def upsert_or_delete_rdv
-      UpsertRecordJob.perform_async(
-        "Rdv",
-        @data,
-        {
-          applicant_ids: applicant_ids,
-          organisation_id: organisation.id,
-          motif_id: motif.id,
-          rdv_context_ids: rdv_context_ids,
-          last_webhook_update_received_at: @meta[:timestamp]
-        }
-        .merge(lieu.present? ? { lieu_id: lieu.id } : {})
-        .merge(rdv_convocable? ? { convocable: true } : {})
-      )
+      if event == "destroyed"
+        DeleteRdvJob.perform_async(rdv_solidarites_rdv.id)
+      else
+        UpsertRecordJob.perform_async(
+          "Rdv",
+          @data,
+          {
+            applicant_ids: applicant_ids,
+            organisation_id: organisation.id,
+            motif_id: motif.id,
+            rdv_context_ids: rdv_context_ids,
+            last_webhook_update_received_at: @meta[:timestamp]
+          }
+          .merge(lieu.present? ? { lieu_id: lieu.id } : {})
+          .merge(rdv_convocable? ? { convocable: true } : {})
+        )
+      end
     end
 
     def rdv_convocable?
@@ -158,4 +163,5 @@ module RdvSolidaritesWebhooks
       }
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end

@@ -5,7 +5,7 @@ module RdvSolidaritesWebhooks
       @meta = meta.deep_symbolize_keys
       return if organisation.blank?
 
-      upsert_lieu
+      upsert_or_delete_lieu
     end
 
     private
@@ -14,16 +14,31 @@ module RdvSolidaritesWebhooks
       @data[:organisation_id]
     end
 
+    def event
+      @meta[:event]
+    end
+
+    def rdv_solidarites_lieu_id
+      @data[:id]
+    end
+
     def organisation
       @organisation ||= Organisation.find_by(rdv_solidarites_organisation_id: rdv_solidarites_organisation_id)
     end
 
-    def upsert_lieu
+    def upsert_or_delete_lieu
+      return delete_lieu if event == "destroyed"
+
       UpsertRecordJob.perform_async(
         "Lieu",
         @data,
         { organisation_id: organisation.id, last_webhook_update_received_at: @meta[:timestamp] }
       )
+    end
+
+    def delete_lieu
+      lieu = Lieu.find_by(rdv_solidarites_lieu_id: rdv_solidarites_lieu_id)
+      lieu.destroy!
     end
   end
 end
