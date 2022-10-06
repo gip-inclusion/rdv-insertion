@@ -11,6 +11,7 @@ class Rdv < ApplicationRecord
 
   belongs_to :organisation
   belongs_to :motif
+  belongs_to :lieu, optional: true
   has_and_belongs_to_many :rdv_contexts
   has_and_belongs_to_many :applicants
 

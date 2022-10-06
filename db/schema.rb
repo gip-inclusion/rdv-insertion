@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_10_03_170642) do
+ActiveRecord::Schema[7.0].define(version: 2022_10_03_200541) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -223,7 +223,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_03_170642) do
     t.datetime "starts_at", precision: nil
     t.integer "duration_in_min"
     t.datetime "cancelled_at", precision: nil
-    t.bigint "rdv_solidarites_lieu_id"
     t.string "uuid"
     t.string "address"
     t.integer "created_by"
@@ -234,7 +233,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_03_170642) do
     t.text "context"
     t.datetime "last_webhook_update_received_at"
     t.bigint "motif_id"
+    t.bigint "lieu_id"
     t.index ["created_by"], name: "index_rdvs_on_created_by"
+    t.index ["lieu_id"], name: "index_rdvs_on_lieu_id"
     t.index ["motif_id"], name: "index_rdvs_on_motif_id"
     t.index ["organisation_id"], name: "index_rdvs_on_organisation_id"
     t.index ["rdv_solidarites_rdv_id"], name: "index_rdvs_on_rdv_solidarites_rdv_id", unique: true
@@ -293,6 +294,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_03_170642) do
   add_foreign_key "organisations", "departments"
   add_foreign_key "organisations", "invitation_parameters", column: "invitation_parameters_id"
   add_foreign_key "rdv_contexts", "applicants"
+  add_foreign_key "rdvs", "lieux"
   add_foreign_key "rdvs", "motifs"
   add_foreign_key "rdvs", "organisations"
   add_foreign_key "webhook_receipts", "webhook_endpoints"

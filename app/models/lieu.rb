@@ -4,6 +4,8 @@ class Lieu < ApplicationRecord
   ].freeze
 
   validates :name, :address, presence: true
+  validates :rdv_solidarites_lieu_id, presence: true, uniqueness: true
 
   belongs_to :organisation
+  has_many :rdvs, dependent: :nullify
 end

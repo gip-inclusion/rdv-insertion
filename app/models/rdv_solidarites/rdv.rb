@@ -34,10 +34,6 @@ module RdvSolidarites
       RdvSolidarites::Motif.new(@attributes[:motif])
     end
 
-    def to_rdv_insertion_attributes
-      attributes.merge(rdv_solidarites_lieu_id: lieu_id)
-    end
-
     def agents
       @attributes[:agents].map { RdvSolidarites::Agent.new(_1) }
     end
