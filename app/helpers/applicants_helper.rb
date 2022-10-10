@@ -103,15 +103,15 @@ module ApplicantsHelper
     end
   end
 
-  def compute_edit_path(applicant, organisation, department)
-    return edit_department_applicant_path(department, applicant) if department_level?
+  def compute_edit_path(applicant, organisation, department, **params)
+    return edit_department_applicant_path(department, applicant, **params.compact_blank) if department_level?
 
-    edit_organisation_applicant_path(organisation, applicant)
+    edit_organisation_applicant_path(organisation, applicant, **params.compact_blank)
   end
 
-  def compute_applicant_path(applicant, organisation, department)
-    return department_applicant_path(department, applicant) if department_level?
+  def compute_applicant_path(applicant, organisation, department, **params)
+    return department_applicant_path(department, applicant, **params.compact_blank) if department_level?
 
-    organisation_applicant_path(organisation, applicant)
+    organisation_applicant_path(organisation, applicant, **params.compact_blank)
   end
 end

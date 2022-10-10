@@ -4,7 +4,7 @@ class ApplicantsController < ApplicationController
   PERMITTED_PARAMS = [
     :uid, :role, :first_name, :last_name, :birth_date, :email, :phone_number,
     :birth_name, :address, :affiliation_number, :department_internal_id, :title,
-    :status, :rights_opening_date
+    :status, :rights_opening_date, :archiving_reason
   ].freeze
 
   include FilterableApplicantsConcern
@@ -104,10 +104,20 @@ class ApplicantsController < ApplicationController
 
   def save_applicant_and_redirect(page)
     if save_applicant.success?
-      redirect_to(after_save_path)
+      redirect_to(after_save_redirect_url)
     else
       flash.now[:error] = save_applicant.errors&.join(',')
       render page, status: :unprocessable_entity
+    end
+  end
+
+  def after_save_redirect_url
+    if params[:applicants_scope].present?
+      "#{after_save_path}?applicants_scope=#{params[:applicants_scope]}"
+    elsif params[:motif_category].present?
+      "#{after_save_path}?motif_category=#{params[:motif_category]}"
+    else
+      after_save_path
     end
   end
 
