@@ -196,7 +196,7 @@ class ApplicantsController < ApplicationController
   end
 
   def set_applicant_rdv_contexts
-    @rdv_contexts = @applicant.rdv_contexts.select do |rdv_context|
+    @rdv_contexts = policy_scope(RdvContext).where(applicant: @applicant).select do |rdv_context|
       @all_configurations.map(&:motif_category).uniq.include?(rdv_context.motif_category)
     end
   end
