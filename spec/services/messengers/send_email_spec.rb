@@ -60,8 +60,8 @@ describe Messengers::SendEmail, type: :service do
       end
     end
 
-    context "when the phone number is not a mobile" do
-      before { applicant.email = 'someone@beta' }
+    context "when the email format is not valid" do
+      before { applicant.email = 'someinvalidmail' }
 
       it("is a failure") { is_a_failure }
 

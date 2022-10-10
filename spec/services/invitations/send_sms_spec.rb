@@ -57,44 +57,6 @@ describe Invitations::SendSms, type: :service do
       subject
     end
 
-    # context "when the phone number is blank" do
-    #   let!(:phone_number) { '' }
-
-    #   it("is a failure") { is_a_failure }
-
-    #   it "returns the error" do
-    #     expect(subject.errors).to eq(["Le téléphone doit être renseigné"])
-    #   end
-    # end
-
-    # context "when the phone number is not a mobile" do
-    #   let!(:phone_number) { '0123456789' }
-
-    #   it("is a failure") { is_a_failure }
-
-    #   it "returns the error" do
-    #     expect(subject.errors).to eq(["Le numéro de téléphone doit être un mobile"])
-    #   end
-    # end
-
-    # context "when the phone number is not a metropolitan mobile" do
-    #   let!(:phone_number) { '0692926878' }
-
-    #   it("is a success") { is_a_success }
-    # end
-
-    context "when the invitation format is not sms" do
-      let!(:invitation) do
-        create(:invitation, applicant: applicant, format: "email")
-      end
-
-      it("is a failure") { is_a_failure }
-
-      it "returns the error" do
-        expect(subject.errors).to eq(["Envoi de SMS alors que le format est email"])
-      end
-    end
-
     context "when it is a reminder" do
       let!(:content) do
         "Monsieur John DOE,\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours vous " \
@@ -322,34 +284,5 @@ describe Invitations::SendSms, type: :service do
         end
       end
     end
-
-    # context "when the sms sender name is defined in organisation configuration" do
-    #   let!(:configuration) { create(:configuration, motif_category: "rsa_orientation") }
-    #   let!(:messages_configuration) { create(:messages_configuration, sms_sender_name: "PoleRSA") }
-    #   let!(:organisation) do
-    #     create(:organisation, configurations: [configuration],
-    #                           department: department,
-    #                           messages_configuration: messages_configuration)
-    #   end
-
-    #   let!(:invitation) do
-    #     create(
-    #       :invitation,
-    #       applicant: applicant, department: department, token: "123", help_phone_number: help_phone_number,
-    #       number_of_days_to_accept_invitation: 9, organisations: [organisation],
-    #       link: "https://www.rdv-solidarites.fr/lieux?invitation_token=123", format: "sms", rdv_context: rdv_context
-    #     )
-    #   end
-
-    #   it("is a success") { is_a_success }
-
-    #   it "sends the SMS with the right sender name" do
-    #     expect(SendTransactionalSms).to receive(:call)
-    #       .with(phone_number_formatted: phone_number_formatted,
-    #             sender_name: "PoleRSA",
-    #             content: content)
-    #     subject
-    #   end
-    # end
   end
 end

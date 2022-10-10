@@ -18,7 +18,7 @@ module Notifications
         " à partir de #{formatted_start_time} sur ce numéro. " \
         "#{mandatory_warning}"\
         "#{punishable_warning}" \
-        "En cas d’empêchement, merci d’appeler rapidement le #{phone_number}."
+        "En cas d’empêchement, appelez rapidement le #{phone_number}."
     end
 
     ### rdv_updated
@@ -28,7 +28,7 @@ module Notifications
         " ici: #{lieu.full_name}. " \
         "#{mandatory_warning}"\
         "#{punishable_warning}" \
-        "En cas d’empêchement, merci d’appeler rapidement le #{phone_number}."
+        "En cas d’empêchement, appelez rapidement le #{phone_number}."
     end
 
     def by_phone_content_for_rdv_updated
@@ -37,7 +37,7 @@ module Notifications
         " à partir de #{formatted_start_time} sur ce numéro. " \
         "#{mandatory_warning}"\
         "#{punishable_warning}" \
-        "En cas d’empêchement, merci d’appeler rapidement le #{phone_number}."
+        "En cas d’empêchement, appelez rapidement le #{phone_number}."
     end
 
     ### rdv_cancelled

@@ -368,6 +368,40 @@ describe ApplicantsController, type: :controller do
         expect(response.body).to match(/RSA accompagnement/)
         expect(response.body).to match(/Invitation en attente de réponse/)
         expect(response.body).to match(/RSA Orientation sur site/)
+        expect(response.body).not_to match(/Convoqué par/)
+      end
+
+      context "when one rdv is a convocation" do
+        before { rdv_orientation1.update!(convocable: true) }
+
+        let!(:notification) do
+          create(
+            :notification,
+            applicant: applicant, rdv: rdv_orientation1, event: "rdv_created", format: "sms",
+            sent_at: 2.days.ago
+          )
+        end
+
+        it "shows the convocation formats" do
+          get :show, params: show_params
+
+          expect(response.body).to match(/Convoqué par/)
+          expect(response.body).to include("SMS 📱")
+          expect(response.body).not_to include("Email 📧")
+        end
+
+        context "when no notification is sent" do
+          before { notification.update!(sent_at: nil) }
+
+          it "warns that convocations have not been sent" do
+            get :show, params: show_params
+
+            expect(response.body).to match(/Convoqué par/)
+            expect(response.body).to include("SMS et Email non envoyés")
+            expect(response.body).not_to include("SMS 📱")
+            expect(response.body).not_to include("Email 📧")
+          end
+        end
       end
     end
   end
@@ -558,6 +592,43 @@ describe ApplicantsController, type: :controller do
           expect(response.body).not_to match(/Baer/)
           expect(response.body).not_to match(/Chabat/)
         end
+      end
+    end
+
+    context "when the organisation convene applicants" do
+      before do
+        configuration.update!(convene_applicant: true)
+        rdv_context2.update!(motif_category: "rsa_accompagnement")
+      end
+
+      let!(:rdv) { create(:rdv, rdv_contexts: [rdv_context1]) }
+      let!(:rdv2) { create(:rdv, rdv_contexts: [rdv_context2]) }
+      let!(:notification) do
+        create(
+          :notification,
+          rdv: rdv, applicant: applicant, event: "rdv_created", sent_at: Time.zone.parse("20/12/2021 12:00")
+        )
+      end
+      let!(:notification2) do
+        create(
+          :notification,
+          rdv: rdv, applicant: applicant, event: "rdv_updated", sent_at: Time.zone.parse("21/12/2021 12:00")
+        )
+      end
+      let!(:notification3) do
+        create(
+          :notification,
+          rdv: rdv2, applicant: applicant, event: "rdv_created", sent_at: Time.zone.parse("25/12/2021 12:00")
+        )
+      end
+
+      it "shows the last sent convocation on the current motif category" do
+        get :index, params: index_params
+
+        expect(response.body).to include("Dernière convocation envoyée le")
+        expect(response.body).to include("20/12/2021")
+        expect(response.body).not_to include("21/12/2021")
+        expect(response.body).not_to include("25/12/2021")
       end
     end
 

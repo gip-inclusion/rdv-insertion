@@ -117,13 +117,18 @@ module RdvSolidaritesWebhooks
             last_webhook_update_received_at: @meta[:timestamp]
           }
           .merge(lieu.present? ? { lieu_id: lieu.id } : {})
-          .merge(rdv_convocable? ? { convocable: true } : {})
+          .merge(set_convocable_attribute? ? { convocable: true } : {})
         )
       end
     end
 
+    def set_convocable_attribute?
+      # we only set the convocation during rdv creation
+      created_event? && rdv_convocable?
+    end
+
     def rdv_convocable?
-      created_event? && matching_configuration.convene_applicant? && rdv_solidarites_rdv.convocable?
+      matching_configuration.convene_applicant? && rdv_solidarites_rdv.convocable?
     end
 
     def invalidate_related_invitations

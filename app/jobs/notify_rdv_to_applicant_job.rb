@@ -20,17 +20,21 @@ class NotifyRdvToApplicantJob < ApplicationJob
     if @event == "rdv_updated"
       # we assume here there should not be more than 2 lieu/time updates in one hour. The mattermost notification
       # would let us double check anyway.
-      @rdv.notifications.sent.where(event: "rdv_updated", format: @format).where("sent_at > ?", 1.hour.ago).count > 1
+      @rdv.notifications.sent
+          .where(event: "rdv_updated", format: @format, applicant: @applicant)
+          .where("sent_at > ?", 1.hour.ago).count > 1
     else
-      @rdv.notifications.sent.find_by(event: @event, format: @format).present?
+      @rdv.notifications.sent.find_by(event: @event, format: @format, applicant: @applicant).present?
     end
   end
 
   def send_already_notified_to_mattermost
     MattermostClient.send_to_notif_channel(
       "Rdv already notified to applicant. Skipping notification sending.\n" \
-      "rdv id: #{@rdv.id} " \
-      "applicant_id: #{@applicant.id}"
+      "rdv id: #{@rdv.id}\n" \
+      "applicant_id: #{@applicant.id}\n" \
+      "format: #{@format}\n" \
+      "event: #{@event}"
     )
   end
 

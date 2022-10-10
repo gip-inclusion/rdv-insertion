@@ -2,7 +2,7 @@ module Notificable
   extend ActiveSupport::Concern
 
   included do
-    has_many :notifications, dependent: :destroy
+    has_many :notifications, dependent: :nullify
   end
 
   def notified?

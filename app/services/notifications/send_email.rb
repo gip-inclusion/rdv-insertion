@@ -29,7 +29,7 @@ module Notifications
       elsif rdv.by_phone?
         :"by_phone_#{@notification.event}"
       else
-        raise EmailNotificationError, "Message de convocation non géré pour notification #{@notification.id}"
+        raise EmailNotificationError, "Message de convocation non géré pour le rdv #{rdv.id}"
       end
     end
 
