@@ -9,3 +9,4 @@
 </p>
 <p>En cas de problème technique, contactez le <%= @invitation.help_phone_number_formatted %></p>
 <%= render 'common/invitations_signature', invitation_parameters: @invitation_parameters, department: @department %>
+<%= render 'common/mailer_footer_logo', logo_name: @logo_name, logo_format: @logo_format %>

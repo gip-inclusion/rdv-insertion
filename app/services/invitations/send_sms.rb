@@ -54,9 +54,5 @@ module Invitations
     def applicant
       @invitation.applicant
     end
-
-    def organisation
-      @invitation.organisations.first
-    end
   end
 end

@@ -1,5 +1,5 @@
 class InvitationMailer < ApplicationMailer
-  before_action :set_invitation, :set_applicant, :set_department, :set_invitation_parameters
+  before_action :set_invitation, :set_applicant, :set_department, :set_logo_name, :set_logo_format, :set_invitation_parameters
 
   def invitation_for_rsa_orientation
     mail(
@@ -75,5 +75,33 @@ class InvitationMailer < ApplicationMailer
 
   def set_invitation_parameters
     @invitation_parameters = @invitation.invitation_parameters
+  end
+
+  def set_logo_name
+    @logo_name = if !department_level? && logo_is_present(organisation_name)
+                   organisation_name
+                 else
+                   @department.name.parameterize
+                 end
+  end
+
+  def set_logo_format
+    @logo_format = %w[svg png jpg].find do |format|
+      Webpacker.manifest.lookup("media/images/logos/#{@logo_name}.#{format}")
+    end
+  end
+
+  def department_level?
+    @invitation.organisations.size > 1
+  end
+
+  def logo_is_present(organisation_name)
+    Webpacker.manifest.lookup("media/images/logos/#{organisation_name}.svg") ||
+      Webpacker.manifest.lookup("media/images/logos/#{organisation_name}.png") ||
+      Webpacker.manifest.lookup("media/images/logos/#{organisation_name}.jpg")
+  end
+
+  def organisation_name
+    @organisation_name ||= @invitation.organisations.first.name.parameterize
   end
 end

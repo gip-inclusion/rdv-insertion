@@ -3,3 +3,4 @@
 <p>Il ne vous reste plus que <span class="font-weight-bold"><%= @invitation.number_of_days_before_expiration %> jours</span> pour appeler le <span class="font-weight-bold"><%= @invitation.help_phone_number %></span>.</p>
 <p> Cet appel est nécessaire pour le traitement de votre dossier.</p>
 <%= render 'common/invitations_signature', invitation_parameters: @invitation_parameters, department: @department %>
+<%= render 'common/mailer_footer_logo', logo_name: @logo_name, logo_format: @logo_format %>
