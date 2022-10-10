@@ -52,7 +52,7 @@ module ApplicantsHelper
       ["multiple_rdvs_cancelled", statuses_count["multiple_rdvs_cancelled"]],
       ["rdv_noshow", statuses_count["rdv_noshow"]],
       ["rdv_seen", statuses_count["rdv_seen"]]
-    ].compact
+    ]
   end
 
   def background_class_for_context_status(context, number_of_days_before_action_required)
