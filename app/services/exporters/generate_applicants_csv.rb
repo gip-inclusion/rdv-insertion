@@ -1,3 +1,5 @@
+require "csv"
+
 # rubocop:disable Metrics/ClassLength
 module Exporters
   class GenerateApplicantsCsv < BaseService

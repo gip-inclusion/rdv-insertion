@@ -3,8 +3,8 @@ describe Stats::ComputeStats, type: :service do
 
   before { travel_to("2022-06-10".to_time) }
 
-  let!(:configuration) { create(:configuration, notify_applicant: false) }
-  let!(:configuration_notify) { create(:configuration, notify_applicant: true) }
+  let!(:configuration) { create(:configuration, convene_applicant: false) }
+  let!(:configuration_notify) { create(:configuration, convene_applicant: true) }
   let!(:department) { create(:department) }
   let!(:relevant_organisation) { create(:organisation, configurations: [configuration], department: department) }
   let!(:irrelevant_organisation) do # this organisation is irrelevant because she's notifying the applicants

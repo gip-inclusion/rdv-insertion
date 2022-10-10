@@ -26,7 +26,7 @@ drome = Department.create!(
   pronoun: "la",
 )
 
-# Dans l'Yonne, pas de système d'invitation : les bénéficiaires sont directement convoqués (notify_applicant: true)
+# Dans l'Yonne, pas de système d'invitation : les bénéficiaires sont directement convoqués (convene_applicant: true)
 yonne = Department.create!(
   name: "Yonne",
   number: "89",
@@ -52,7 +52,7 @@ drome_orientation_config = Configuration.create!(
       "phone_number"=>"N° Téléphones",
       "title"=>"Civilité"},
     "optional"=>{"department_internal_id"=>"ID Iodas"}},
-  notify_applicant: false,
+  convene_applicant: false,
   invitation_formats: ["sms", "email", "postal"],
   motif_category: "rsa_orientation",
   number_of_days_to_accept_invitation: 3,
@@ -74,7 +74,7 @@ drome_accompagnement_config = Configuration.create!(
       "phone_number"=>"N° Téléphones",
       "title"=>"Civilité"},
     "optional"=>{"department_internal_id"=>"ID Iodas"}},
-  notify_applicant: false,
+  convene_applicant: false,
   invitation_formats: ["sms", "email", "postal"],
   motif_category: "rsa_accompagnement",
   number_of_days_to_accept_invitation: 3,
@@ -94,7 +94,7 @@ yonne_orientation_config = Configuration.create!(
       "role"=>"Rôle",
       "title"=>"Civilité"},
     "optional"=>{"birth_name"=>"Nom JF", "department_internal_id"=>"Code individu Iodas"}},
-  notify_applicant: true,
+  convene_applicant: true,
   invitation_formats: [],
   motif_category: "rsa_orientation",
   number_of_days_to_accept_invitation: 3,

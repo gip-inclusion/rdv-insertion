@@ -1,4 +1,4 @@
-module MotifCategorizable
+module HasMotifCategory
   extend ActiveSupport::Concern
 
   included do

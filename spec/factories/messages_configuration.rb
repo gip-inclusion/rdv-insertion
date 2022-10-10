@@ -5,5 +5,6 @@ FactoryBot.define do
        "DIRECTION DE L’INSERTION ET DU RETOUR À L’EMPLOI",
        "SERVICE ORIENTATION ET ACCOMPAGNEMENT VERS L’EMPLOI"]
     end
+    sms_sender_name { "Rdvi" }
   end
 end

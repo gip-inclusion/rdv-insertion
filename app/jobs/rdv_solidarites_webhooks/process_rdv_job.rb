@@ -36,11 +36,7 @@ module RdvSolidaritesWebhooks
       return unless rdv_solidarites_rdv.presential?
       return if @data[:lieu].present? && rdv_solidarites_lieu == lieu
 
-      raise WebhookProcessingJobError, "Lieu in webhook is not coherent: #{@data[:lieu]}"
-    end
-
-    def should_notify_applicants?
-      matching_configuration.notify_applicant? && event.in?(%w[created destroyed])
+      raise WebhookProcessingJobError, "Lieu in webhook is not coherent. #{@data[:lieu]}"
     end
 
     def matching_configuration
