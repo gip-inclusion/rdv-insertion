@@ -1,4 +1,5 @@
 # Preview all emails at http://localhost:8000/rails/mailers/notifications
+# rubocop:disable Metrics/ClassLength
 class NotificationPreview < ActionMailer::Preview
   ###### rsa_orientation ######
   ### rdv_created ###
@@ -162,3 +163,4 @@ class NotificationPreview < ActionMailer::Preview
     Applicant.where.not(phone_number: nil).last
   end
 end
+# rubocop:enable Metrics/ClassLength

@@ -279,8 +279,8 @@ RSpec.describe NotificationMailer, type: :mailer do
 
       it "renders the body" do
         expect(mail.body.encoded).to include(
-          "Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) à un rendez-vous d&#39;accompagnement" \
-          " téléphonique"
+          "Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) " \
+          "à un rendez-vous d&#39;accompagnement téléphonique"
         )
         expect(mail.body.encoded).to include("Un travailleur social vous appellera")
         expect(mail.body.encoded).to include("le 20/12/2021 à 12:00")

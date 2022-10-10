@@ -127,8 +127,11 @@ class ApplicantsController < ApplicationController
   def set_applicant
     @applicant = \
       Applicant
-      .includes(:organisations, rdv_contexts: [{ rdvs: [:organisation, :motif] }, :invitations], invitations: [:rdv_context])
-      .find(params[:id])
+      .includes(
+        :organisations,
+        rdv_contexts: [{ rdvs: [:organisation, :motif] }, :invitations],
+        invitations: [:rdv_context]
+      ).find(params[:id])
   end
 
   def set_organisation
