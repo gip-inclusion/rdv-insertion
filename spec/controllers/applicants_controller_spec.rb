@@ -424,6 +424,23 @@ describe ApplicantsController, type: :controller do
       expect(response.body).not_to match(/Barthelemy/)
     end
 
+    context "when there is all types of rdv_contexts statuses" do
+      before do
+        RdvContext.statuses.each_key do |status|
+          create(:rdv_context, motif_category: "rsa_orientation",
+                               status: status,
+                               applicant: create(:applicant, organisations: [organisation], department: department))
+        end
+      end
+
+      it "displays all statuses in the filter list" do
+        get :index, params: index_params.merge(motif_category: "rsa_orientation")
+        RdvContext.statuses.each_key do |status|
+          expect(response.body).to match(/"#{status}"/)
+        end
+      end
+    end
+
     context "when a context is specified" do
       let!(:rdv_context2) { build(:rdv_context, motif_category: "rsa_accompagnement", status: "invitation_pending") }
       let!(:configuration) { create(:configuration, motif_category: "rsa_accompagnement") }
