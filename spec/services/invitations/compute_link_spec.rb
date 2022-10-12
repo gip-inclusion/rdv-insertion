@@ -59,10 +59,10 @@ describe Invitations::ComputeLink, type: :service do
 
     it "computes the link" do
       expect(subject.invitation_link).to eq(
-        "https://www.rdv-solidarites.fr/prendre_rdv?address=20+avenue+de+s%C3%A9gur+75007+Paris&" \
-        "city_code=75107&departement=75&invitation_token=sometoken&latitude=48.850699&longitude=2.308628&" \
-        "motif_category=rsa_accompagnement&organisation_ids%5B%5D=333&"\
-        "organisation_ids%5B%5D=444&street_ban_id=75107_8909"
+        "https://www.rdv-solidarites.fr/prendre_rdv?address=20+avenue+de+s%C3%A9gur+75007+Paris" \
+        "&city_code=75107&departement=75&invitation_token=sometoken&latitude=48.850699&longitude=2.308628" \
+        "&motif_category=rsa_accompagnement&organisation_ids%5B%5D=333&organisation_ids%5B%5D=444" \
+        "&show_available_lieux_only=true&street_ban_id=75107_8909"
       )
     end
 
@@ -92,7 +92,7 @@ describe Invitations::ComputeLink, type: :service do
           expect(subject.invitation_link).to eq(
             "https://www.rdv-solidarites.fr/prendre_rdv?address=20+avenue+de+s%C3%A9gur+75007+Paris&" \
             "departement=75&invitation_token=sometoken&motif_category=rsa_accompagnement&" \
-            "organisation_ids%5B%5D=333&organisation_ids%5B%5D=444"
+            "organisation_ids%5B%5D=333&organisation_ids%5B%5D=444&show_available_lieux_only=true"
           )
         end
       end
@@ -120,7 +120,7 @@ describe Invitations::ComputeLink, type: :service do
         expect(subject.invitation_link).to eq(
           "https://www.rdv-solidarites.fr/prendre_rdv?address=20+avenue+de+s%C3%A9gur+75007+Paris&" \
           "departement=75&invitation_token=sometoken&lieu_id=5&motif_category=rsa_accompagnement&" \
-          "organisation_ids%5B%5D=333&organisation_ids%5B%5D=444"
+          "organisation_ids%5B%5D=333&organisation_ids%5B%5D=444&show_available_lieux_only=true"
         )
       end
     end
