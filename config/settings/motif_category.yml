@@ -14,7 +14,7 @@ rsa_follow_up:
   display_mandatory_warning: false
   display_punishable_warning: false
 rsa_cer_signature:
-  rdv_title: rendez-vous afin de construire et signer votre Contrat d'Engagement Réciproque
-  rdv_title_by_phone: rendez-vous téléphonique afin de construire et signer votre Contrat d'Engagement Réciproque
+  rdv_title: rendez-vous pour construire et signer votre Contrat d'Engagement Réciproque
+  rdv_title_by_phone: rendez-vous téléphonique pour construire et signer votre Contrat d'Engagement Réciproque
   display_mandatory_warning: true
   display_punishable_warning: false

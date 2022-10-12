@@ -24,7 +24,7 @@ RSpec.describe NotificationMailer, type: :mailer do
     context "for rsa orientation" do
       it "renders the subject" do
         expect(mail.subject).to eq(
-          "[Important] Vous êtes convoqué(e) à un rendez-vous d'orientation dans le cadre de votre RSA"
+          "[Important - RSA] Vous êtes convoqué(e) à un rendez-vous d'orientation"
         )
       end
 
@@ -47,7 +47,7 @@ RSpec.describe NotificationMailer, type: :mailer do
 
       it "renders the subject" do
         expect(mail.subject).to eq(
-          "[Important] Vous êtes convoqué(e) à un rendez-vous d'accompagnement dans le cadre de votre RSA"
+          "[Important - RSA] Vous êtes convoqué(e) à un rendez-vous d'accompagnement"
         )
       end
 
@@ -70,14 +70,14 @@ RSpec.describe NotificationMailer, type: :mailer do
 
       it "renders the subject" do
         expect(mail.subject).to eq(
-          "[Important] Vous êtes convoqué(e) à un rendez-vous afin de construire" \
-          " et signer votre Contrat d'Engagement Réciproque dans le cadre de votre RSA"
+          "[Important - RSA] Vous êtes convoqué(e) à un rendez-vous pour construire" \
+          " et signer votre Contrat d'Engagement Réciproque"
         )
       end
 
       it "renders the body" do
         expect(mail.body.encoded).to include(
-          "Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) à un rendez-vous afin de construire" \
+          "Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) à un rendez-vous pour construire" \
           " et signer votre Contrat d&#39;Engagement Réciproque"
         )
         expect(mail.body.encoded).to include("le 20/12/2021 à 12:00")
@@ -95,8 +95,8 @@ RSpec.describe NotificationMailer, type: :mailer do
 
       it "renders the subject" do
         expect(mail.subject).to eq(
-          "[Important] Vous êtes convoqué(e) à un rendez-vous de suivi avec votre référent de parcours" \
-          " dans le cadre de votre RSA"
+          "[Important - RSA] Vous êtes convoqué(e) à un rendez-vous de suivi avec votre référent de parcours" \
+          ""
         )
       end
 
@@ -135,7 +135,7 @@ RSpec.describe NotificationMailer, type: :mailer do
     context "for rsa orientation" do
       it "renders the subject" do
         expect(mail.subject).to eq(
-          "[Important] Votre rendez-vous d'orientation dans le cadre de votre RSA a été modifié."
+          "[Important - RSA] Votre rendez-vous d'orientation a été modifié."
         )
       end
 
@@ -158,7 +158,7 @@ RSpec.describe NotificationMailer, type: :mailer do
 
       it "renders the subject" do
         expect(mail.subject).to eq(
-          "[Important] Votre rendez-vous d'accompagnement dans le cadre de votre RSA a été modifié."
+          "[Important - RSA] Votre rendez-vous d'accompagnement a été modifié."
         )
       end
 
@@ -181,15 +181,15 @@ RSpec.describe NotificationMailer, type: :mailer do
 
       it "renders the subject" do
         expect(mail.subject).to eq(
-          "[Important] Votre rendez-vous afin de construire" \
-          " et signer votre Contrat d'Engagement Réciproque dans le cadre de votre RSA" \
-          " a été modifié."
+          "[Important - RSA] Votre rendez-vous pour construire" \
+          " et signer votre Contrat d'Engagement Réciproque " \
+          "a été modifié."
         )
       end
 
       it "renders the body" do
         expect(mail.body.encoded).to include(
-          "Votre rendez-vous afin de construire et signer votre Contrat d&#39;Engagement"\
+          "Votre rendez-vous pour construire et signer votre Contrat d&#39;Engagement"\
           " Réciproque dans le cadre de votre RSA a été modifié."
         )
         expect(mail.body.encoded).to include("le 20/12/2021 à 12:00")
@@ -207,8 +207,8 @@ RSpec.describe NotificationMailer, type: :mailer do
 
       it "renders the subject" do
         expect(mail.subject).to eq(
-          "[Important] Votre rendez-vous de suivi avec votre référent de parcours" \
-          " dans le cadre de votre RSA a été modifié."
+          "[Important - RSA] Votre rendez-vous de suivi avec votre référent de parcours" \
+          " a été modifié."
         )
       end
 
@@ -247,7 +247,7 @@ RSpec.describe NotificationMailer, type: :mailer do
     context "for rsa orientation" do
       it "renders the subject" do
         expect(mail.subject).to eq(
-          "[Important] Vous êtes convoqué(e) à un rendez-vous d'orientation téléphonique dans le cadre de votre RSA"
+          "[Important - RSA] Vous êtes convoqué(e) à un rendez-vous d'orientation téléphonique"
         )
       end
 
@@ -273,7 +273,7 @@ RSpec.describe NotificationMailer, type: :mailer do
 
       it "renders the subject" do
         expect(mail.subject).to eq(
-          "[Important] Vous êtes convoqué(e) à un rendez-vous d'accompagnement téléphonique dans le cadre de votre RSA"
+          "[Important - RSA] Vous êtes convoqué(e) à un rendez-vous d'accompagnement téléphonique"
         )
       end
 
@@ -299,15 +299,15 @@ RSpec.describe NotificationMailer, type: :mailer do
 
       it "renders the subject" do
         expect(mail.subject).to eq(
-          "[Important] Vous êtes convoqué(e) à un rendez-vous téléphonique afin de construire" \
-          " et signer votre Contrat d'Engagement Réciproque dans le cadre de votre RSA"
+          "[Important - RSA] Vous êtes convoqué(e) à un rendez-vous téléphonique pour construire" \
+          " et signer votre Contrat d'Engagement Réciproque"
         )
       end
 
       it "renders the body" do
         expect(mail.body.encoded).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) à un rendez-vous téléphonique"\
-          " afin de construire et signer votre Contrat d&#39;Engagement Réciproque"
+          " pour construire et signer votre Contrat d&#39;Engagement Réciproque"
         )
         expect(mail.body.encoded).to include("Un travailleur social vous appellera")
         expect(mail.body.encoded).to include("le 20/12/2021 à 12:00")
@@ -326,8 +326,8 @@ RSpec.describe NotificationMailer, type: :mailer do
 
       it "renders the subject" do
         expect(mail.subject).to eq(
-          "[Important] Vous êtes convoqué(e) à un rendez-vous de suivi téléphonique avec "\
-          "votre référent de parcours dans le cadre de votre RSA"
+          "[Important - RSA] Vous êtes convoqué(e) à un rendez-vous de suivi téléphonique avec "\
+          "votre référent de parcours"
         )
       end
 
@@ -379,7 +379,7 @@ RSpec.describe NotificationMailer, type: :mailer do
     context "for rsa orientation" do
       it "renders the subject" do
         expect(mail.subject).to eq(
-          "[Important] Votre rendez-vous d'orientation téléphonique dans le cadre de votre RSA a été modifié."
+          "[Important - RSA] Votre rendez-vous d'orientation téléphonique a été modifié."
         )
       end
 
@@ -404,7 +404,7 @@ RSpec.describe NotificationMailer, type: :mailer do
 
       it "renders the subject" do
         expect(mail.subject).to eq(
-          "[Important] Votre rendez-vous d'accompagnement téléphonique dans le cadre de votre RSA a été modifié."
+          "[Important - RSA] Votre rendez-vous d'accompagnement téléphonique a été modifié."
         )
       end
 
@@ -429,14 +429,14 @@ RSpec.describe NotificationMailer, type: :mailer do
 
       it "renders the subject" do
         expect(mail.subject).to eq(
-          "[Important] Votre rendez-vous téléphonique afin de construire" \
-          " et signer votre Contrat d'Engagement Réciproque dans le cadre de votre RSA a été modifié."
+          "[Important - RSA] Votre rendez-vous téléphonique pour construire" \
+          " et signer votre Contrat d'Engagement Réciproque a été modifié."
         )
       end
 
       it "renders the body" do
         expect(mail.body.encoded).to include(
-          "Votre rendez-vous téléphonique afin de construire et signer votre Contrat d&#39;Engagement Réciproque" \
+          "Votre rendez-vous téléphonique pour construire et signer votre Contrat d&#39;Engagement Réciproque" \
           " dans le cadre de votre RSA a été modifié"
         )
         expect(mail.body.encoded).to include("Un travailleur social vous appellera")
@@ -456,8 +456,8 @@ RSpec.describe NotificationMailer, type: :mailer do
 
       it "renders the subject" do
         expect(mail.subject).to eq(
-          "[Important] Votre rendez-vous de suivi téléphonique avec "\
-          "votre référent de parcours dans le cadre de votre RSA a été modifié."
+          "[Important - RSA] Votre rendez-vous de suivi téléphonique avec "\
+          "votre référent de parcours a été modifié."
         )
       end
 
@@ -509,7 +509,7 @@ RSpec.describe NotificationMailer, type: :mailer do
     context "for rsa orientation" do
       it "renders the subject" do
         expect(mail.subject).to eq(
-          "[Important] Votre rendez-vous d'orientation dans le cadre de votre RSA a été annulé."
+          "[Important - RSA] Votre rendez-vous d'orientation a été annulé."
         )
       end
 
@@ -526,7 +526,7 @@ RSpec.describe NotificationMailer, type: :mailer do
 
       it "renders the subject" do
         expect(mail.subject).to eq(
-          "[Important] Votre rendez-vous d'accompagnement dans le cadre de votre RSA a été annulé."
+          "[Important - RSA] Votre rendez-vous d'accompagnement a été annulé."
         )
       end
 
@@ -543,14 +543,14 @@ RSpec.describe NotificationMailer, type: :mailer do
 
       it "renders the subject" do
         expect(mail.subject).to eq(
-          "[Important] Votre rendez-vous afin de construire" \
-          " et signer votre Contrat d'Engagement Réciproque dans le cadre de votre RSA a été annulé."
+          "[Important - RSA] Votre rendez-vous pour construire" \
+          " et signer votre Contrat d'Engagement Réciproque a été annulé."
         )
       end
 
       it "renders the body" do
         expect(mail.body.encoded).to include(
-          "Votre rendez-vous afin de construire et signer votre Contrat d&#39;Engagement Réciproque" \
+          "Votre rendez-vous pour construire et signer votre Contrat d&#39;Engagement Réciproque" \
           " dans le cadre de votre RSA a été annulé"
         )
         expect(mail.body.encoded).to include("our plus d'informations, veuillez appeler le 0101010101")
@@ -562,8 +562,8 @@ RSpec.describe NotificationMailer, type: :mailer do
 
       it "renders the subject" do
         expect(mail.subject).to eq(
-          "[Important] Votre rendez-vous de suivi avec "\
-          "votre référent de parcours dans le cadre de votre RSA a été annulé."
+          "[Important - RSA] Votre rendez-vous de suivi avec "\
+          "votre référent de parcours a été annulé."
         )
       end
 

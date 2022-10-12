@@ -13,12 +13,15 @@ class Applicant < ApplicationRecord
   include Notificable
   include Phonable
   include Invitable
-  include Meetable
+  include HasRdvs
 
   before_validation :generate_uid
 
   has_and_belongs_to_many :organisations
+  has_and_belongs_to_many :rdvs
   has_many :rdv_contexts, dependent: :destroy
+  has_many :invitations, dependent: :destroy
+  has_many :notifications, dependent: :destroy
   has_many :configurations, through: :organisations
   belongs_to :department
 

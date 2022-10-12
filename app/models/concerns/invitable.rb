@@ -1,10 +1,6 @@
 module Invitable
   extend ActiveSupport::Concern
 
-  included do
-    has_many :invitations, dependent: :destroy
-  end
-
   def sent_invitations
     invitations.to_a.select(&:sent_at?)
   end

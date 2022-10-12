@@ -249,7 +249,7 @@ describe Notifications::SendSms, type: :service do
 
       let!(:content) do
         "Monsieur John DOE,\nVous êtes allocataire du RSA et à ce titre vous avez été convoqué(e) à un " \
-          "rendez-vous afin de construire et signer votre Contrat d'Engagement Réciproque. " \
+          "rendez-vous pour construire et signer votre Contrat d'Engagement Réciproque. " \
           "Vous êtes attendu(e) le 20/12/2021 à " \
           "10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
           "Ce RDV est obligatoire. "\
@@ -268,7 +268,7 @@ describe Notifications::SendSms, type: :service do
         end
 
         let!(:content) do
-          "Monsieur John DOE,\nVotre rendez-vous afin de construire et signer votre Contrat d'Engagement Réciproque" \
+          "Monsieur John DOE,\nVotre rendez-vous pour construire et signer votre Contrat d'Engagement Réciproque" \
             " dans le cadre de votre RSA a été modifié. " \
             "Vous êtes attendu(e) le 20/12/2021 à " \
             "10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
@@ -289,7 +289,7 @@ describe Notifications::SendSms, type: :service do
         end
 
         let!(:content) do
-          "Monsieur John DOE,\nVotre rendez-vous afin de construire et signer votre Contrat d'Engagement Réciproque" \
+          "Monsieur John DOE,\nVotre rendez-vous pour construire et signer votre Contrat d'Engagement Réciproque" \
             " dans le cadre de votre RSA a été annulé. " \
             "Pour plus d'informations, contactez le 0101010101."
         end
@@ -306,7 +306,7 @@ describe Notifications::SendSms, type: :service do
 
         let!(:content) do
           "Monsieur John DOE,\nVous êtes allocataire du RSA et à ce titre vous avez été convoqué(e) à un " \
-            "rendez-vous afin de construire et signer votre Contrat d'Engagement Réciproque. "\
+            "rendez-vous pour construire et signer votre Contrat d'Engagement Réciproque. "\
             "Un travailleur social vous appellera le 20/12/2021 à " \
             "partir de 10:00 sur ce numéro. " \
             "Ce RDV est obligatoire. "\
@@ -325,7 +325,7 @@ describe Notifications::SendSms, type: :service do
           end
 
           let!(:content) do
-            "Monsieur John DOE,\nVotre rendez-vous afin de construire et signer votre Contrat d'Engagement Réciproque" \
+            "Monsieur John DOE,\nVotre rendez-vous pour construire et signer votre Contrat d'Engagement Réciproque" \
               " dans le cadre de votre RSA a été modifié. " \
               "Un travailleur social vous appellera le 20/12/2021 à " \
               "partir de 10:00 sur ce numéro. " \

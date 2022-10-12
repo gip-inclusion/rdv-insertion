@@ -81,7 +81,6 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
       allow(UpsertRecordJob).to receive(:perform_async)
       allow(InvalidateInvitationJob).to receive(:perform_async)
       allow(DeleteRdvJob).to receive(:perform_async)
-      allow(NotifyApplicantJob).to receive(:perform_async)
       allow(SendRdvSolidaritesWebhookJob).to receive(:perform_async)
       allow(MattermostClient).to receive(:send_to_notif_channel)
     end
@@ -110,7 +109,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
       end
 
       it "does not call the other jobs" do
-        [UpsertRecordJob, DeleteRdvJob, NotifyApplicantJob, InvalidateInvitationJob].each do |klass|
+        [UpsertRecordJob, DeleteRdvJob, InvalidateInvitationJob].each do |klass|
           expect(klass).not_to receive(:perform_async)
         end
         subject
@@ -203,7 +202,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
       let!(:motif_attributes) { { id: 53, location_type: "public_office", category: nil } }
 
       it "does not call any job" do
-        [UpsertRecordJob, DeleteRdvJob, NotifyApplicantJob].each do |klass|
+        [UpsertRecordJob, DeleteRdvJob].each do |klass|
           expect(klass).not_to receive(:perform_async)
         end
         subject
@@ -214,7 +213,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
       let!(:motif_attributes) { { id: 53, location_type: "public_office", category: "rsa_accompagnement" } }
 
       it "does not call any job" do
-        [UpsertRecordJob, DeleteRdvJob, NotifyApplicantJob].each do |klass|
+        [UpsertRecordJob, DeleteRdvJob].each do |klass|
           expect(klass).not_to receive(:perform_async)
         end
         subject

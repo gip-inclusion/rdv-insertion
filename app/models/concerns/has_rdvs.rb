@@ -1,9 +1,5 @@
-module Meetable
+module HasRdvs
   extend ActiveSupport::Concern
-
-  included do
-    has_and_belongs_to_many :rdvs
-  end
 
   def seen_rdvs
     rdvs.to_a.select(&:seen?)

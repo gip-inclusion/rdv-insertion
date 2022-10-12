@@ -10,14 +10,14 @@ class NotificationMailer < ApplicationMailer
   def presential_rdv_created
     mail(
       to: @applicant.email,
-      subject: "[Important] Vous êtes convoqué(e) à un #{@rdv_title} dans le cadre de votre RSA"
+      subject: "[Important - RSA] Vous êtes convoqué(e) à un #{@rdv_title}"
     )
   end
 
   def by_phone_rdv_created
     mail(
       to: @applicant.email,
-      subject: "[Important] Vous êtes convoqué(e) à un #{@rdv_title} dans le cadre de votre RSA"
+      subject: "[Important - RSA] Vous êtes convoqué(e) à un #{@rdv_title}"
     )
   end
 
@@ -25,14 +25,14 @@ class NotificationMailer < ApplicationMailer
   def presential_rdv_updated
     mail(
       to: @applicant.email,
-      subject: "[Important] Votre #{@rdv_title} dans le cadre de votre RSA a été modifié."
+      subject: "[Important - RSA] Votre #{@rdv_title} a été modifié."
     )
   end
 
   def by_phone_rdv_updated
     mail(
       to: @applicant.email,
-      subject: "[Important] Votre #{@rdv_title} dans le cadre de votre RSA a été modifié."
+      subject: "[Important - RSA] Votre #{@rdv_title} a été modifié."
     )
   end
 
@@ -40,7 +40,7 @@ class NotificationMailer < ApplicationMailer
   def rdv_cancelled
     mail(
       to: @applicant.email,
-      subject: "[Important] Votre #{@rdv_title} dans le cadre de votre RSA a été annulé."
+      subject: "[Important - RSA] Votre #{@rdv_title} a été annulé."
     )
   end
 
@@ -96,7 +96,7 @@ class NotificationMailer < ApplicationMailer
   def verify_phone_number_presence
     # if we send a notif for a phone rdv we want to be sure the applicant has a phone
     return unless rdv_by_phone?
-    return if @applicant.phone_number_is_mobile?
+    return if @applicant.phone_number.present?
 
     raise(
       NotificationMailerError,
