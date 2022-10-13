@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_10_03_200541) do
+ActiveRecord::Schema[7.0].define(version: 2022_10_04_194204) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -73,7 +73,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_03_200541) do
     t.datetime "updated_at", null: false
     t.json "column_names"
     t.string "invitation_formats", default: ["sms", "email", "postal"], null: false, array: true
-    t.boolean "notify_applicant", default: false
+    t.boolean "convene_applicant", default: false
     t.integer "motif_category", default: 0
     t.integer "number_of_days_to_accept_invitation", default: 3
     t.integer "number_of_days_before_action_required", default: 10
@@ -97,18 +97,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_03_200541) do
     t.string "email"
     t.string "phone_number"
     t.boolean "display_in_stats", default: true
-  end
-
-  create_table "invitation_parameters", force: :cascade do |t|
-    t.string "direction_names", array: true
-    t.string "sender_city"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "letter_sender_name"
-    t.string "sms_sender_name"
-    t.string "signature_lines", array: true
-    t.string "help_address"
-    t.boolean "display_europe_logos", default: false
   end
 
   create_table "invitations", force: :cascade do |t|
@@ -152,6 +140,18 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_03_200541) do
     t.index ["organisation_id"], name: "index_lieux_on_organisation_id"
   end
 
+  create_table "messages_configurations", force: :cascade do |t|
+    t.string "direction_names", array: true
+    t.string "sender_city"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "letter_sender_name"
+    t.string "signature_lines", array: true
+    t.string "help_address"
+    t.boolean "display_europe_logos", default: false
+    t.string "sms_sender_name"
+  end
+
   create_table "motifs", force: :cascade do |t|
     t.bigint "rdv_solidarites_motif_id"
     t.string "name"
@@ -176,7 +176,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_03_200541) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "rdv_solidarites_rdv_id"
+    t.integer "format"
+    t.bigint "rdv_id"
     t.index ["applicant_id"], name: "index_notifications_on_applicant_id"
+    t.index ["rdv_id"], name: "index_notifications_on_rdv_id"
   end
 
   create_table "organisations", force: :cascade do |t|
@@ -187,11 +190,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_03_200541) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "department_id"
-    t.bigint "invitation_parameters_id"
+    t.bigint "messages_configuration_id"
     t.datetime "last_webhook_update_received_at"
     t.string "slug"
     t.index ["department_id"], name: "index_organisations_on_department_id"
-    t.index ["invitation_parameters_id"], name: "index_organisations_on_invitation_parameters_id"
+    t.index ["messages_configuration_id"], name: "index_organisations_on_messages_configuration_id"
     t.index ["rdv_solidarites_organisation_id"], name: "index_organisations_on_rdv_solidarites_organisation_id", unique: true
   end
 
@@ -233,6 +236,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_03_200541) do
     t.text "context"
     t.datetime "last_webhook_update_received_at"
     t.bigint "motif_id"
+    t.boolean "convocable", default: false
     t.bigint "lieu_id"
     t.index ["created_by"], name: "index_rdvs_on_created_by"
     t.index ["lieu_id"], name: "index_rdvs_on_lieu_id"
@@ -291,8 +295,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_03_200541) do
   add_foreign_key "lieux", "organisations"
   add_foreign_key "motifs", "organisations"
   add_foreign_key "notifications", "applicants"
+  add_foreign_key "notifications", "rdvs"
   add_foreign_key "organisations", "departments"
-  add_foreign_key "organisations", "invitation_parameters", column: "invitation_parameters_id"
+  add_foreign_key "organisations", "messages_configurations"
   add_foreign_key "rdv_contexts", "applicants"
   add_foreign_key "rdvs", "lieux"
   add_foreign_key "rdvs", "motifs"

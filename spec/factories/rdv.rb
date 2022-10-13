@@ -8,6 +8,8 @@ FactoryBot.define do
     motif { create(:motif) }
 
     after(:build) do |rdv|
+      next if rdv.applicants.present?
+
       rdv.applicants = [create(:applicant)]
     end
   end

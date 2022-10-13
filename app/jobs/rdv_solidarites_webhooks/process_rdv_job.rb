@@ -11,10 +11,10 @@ module RdvSolidaritesWebhooks
       return if applicants.empty?
       return if unhandled_category?
 
-      verify_lieu!
+      # for a convocation, we have to verify the lieu is up to date in db
+      verify_lieu_sync! if rdv_convocable?
       upsert_or_delete_rdv
-      invalidate_related_invitations if event == "created"
-      notify_applicants if should_notify_applicants?
+      invalidate_related_invitations if created_event?
       send_outgoing_webhooks
     end
 
@@ -32,15 +32,11 @@ module RdvSolidaritesWebhooks
       raise WebhookProcessingJobError, "Motif not found with id #{rdv_solidarites_motif_id}"
     end
 
-    def verify_lieu!
-      return if @data[:lieu].blank?
-      return if rdv_solidarites_lieu == lieu
+    def verify_lieu_sync!
+      return unless rdv_solidarites_rdv.presential?
+      return if @data[:lieu].present? && rdv_solidarites_lieu == lieu
 
-      raise WebhookProcessingJobError, "Lieu in webhook is not the same as the one in db: #{@data[:lieu]}"
-    end
-
-    def should_notify_applicants?
-      matching_configuration.notify_applicant? && event.in?(%w[created destroyed])
+      raise WebhookProcessingJobError, "Lieu in webhook is not coherent. #{@data[:lieu]}"
     end
 
     def matching_configuration
@@ -59,6 +55,10 @@ module RdvSolidaritesWebhooks
 
     def rdv_solidarites_lieu
       RdvSolidarites::Lieu.new(@data[:lieu])
+    end
+
+    def created_event?
+      event == "created"
     end
 
     def rdv_solidarites_rdv
@@ -117,8 +117,18 @@ module RdvSolidaritesWebhooks
             last_webhook_update_received_at: @meta[:timestamp]
           }
           .merge(lieu.present? ? { lieu_id: lieu.id } : {})
+          .merge(set_convocable_attribute? ? { convocable: true } : {})
         )
       end
+    end
+
+    def set_convocable_attribute?
+      # we only set the convocation during rdv creation
+      created_event? && rdv_convocable?
+    end
+
+    def rdv_convocable?
+      matching_configuration.convene_applicant? && rdv_solidarites_rdv.convocable?
     end
 
     def invalidate_related_invitations
@@ -139,17 +149,6 @@ module RdvSolidaritesWebhooks
 
     def rdv_context_ids
       rdv_contexts.map(&:id)
-    end
-
-    def notify_applicants
-      applicants.each do |applicant|
-        NotifyApplicantJob.perform_async(
-          applicant.id,
-          organisation.id,
-          @data,
-          event
-        )
-      end
     end
 
     def send_outgoing_webhooks
