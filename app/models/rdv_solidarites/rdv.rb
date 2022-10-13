@@ -34,6 +34,10 @@ module RdvSolidarites
       RdvSolidarites::Motif.new(@attributes[:motif])
     end
 
+    def convocable?
+      motif.convocation?
+    end
+
     def agents
       @attributes[:agents].map { RdvSolidarites::Agent.new(_1) }
     end

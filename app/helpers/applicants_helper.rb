@@ -5,8 +5,8 @@ module ApplicantsHelper
     date&.strftime("%d/%m/%Y")
   end
 
-  def show_notification?(configuration)
-    configuration.notify_applicant?
+  def show_convocation?(configuration)
+    configuration.convene_applicant?
   end
 
   def show_invitations?(configuration)
@@ -103,6 +103,14 @@ module ApplicantsHelper
   def rdv_solidarites_user_url(organisation, applicant)
     organisation_id = organisation.rdv_solidarites_organisation_id
     "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{organisation_id}/users/#{applicant.rdv_solidarites_user_id}"
+  end
+
+  def display_convocation_formats(convocation_formats)
+    if convocation_formats.empty?
+      "❌#{content_tag(:br)}SMS et Email non envoyés#{content_tag(:br)}❌"
+    else
+      convocation_formats.map { |format| format == "sms" ? "SMS 📱" : "Email 📧" }.join("\n")
+    end
   end
 
   def archived_scope?(scope)

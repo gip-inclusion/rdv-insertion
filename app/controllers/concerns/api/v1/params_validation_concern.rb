@@ -50,7 +50,7 @@ module Api
 
       class ApplicantParamsValidator
         include ActiveModel::Model
-        include HasPhoneNumberConcern
+        include Phonable
 
         attr_accessor(*Applicant.attribute_names)
 

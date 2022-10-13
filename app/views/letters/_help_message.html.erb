@@ -1,6 +1,6 @@
 <p>
   Si vous rencontrez une difficulté pour accéder à internet, veuillez téléphoner dès réception de ce courrier au <%= invitation.help_phone_number_formatted %>
-  <% if invitation_parameters.present? && invitation_parameters.help_address.present? %>
-    ou vous rendre <%= invitation_parameters.help_address %>.
+  <% if help_address.present? %>
+    ou vous rendre <%= help_address %>.
   <% end %>
 </p>
