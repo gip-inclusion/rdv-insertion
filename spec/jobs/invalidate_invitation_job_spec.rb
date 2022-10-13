@@ -3,21 +3,14 @@ describe InvalidateInvitationJob, type: :job do
     described_class.new.perform(invitation_id)
   end
 
-  let!(:invitation_id) { { id: 1 } }
+  let!(:invitation_id) { 444 }
   let!(:invitation) { create(:invitation, id: invitation_id) }
 
   describe "#perform" do
     before do
-      allow(Invitation).to receive(:find)
-        .and_return(invitation)
       allow(Invitations::InvalidateLink).to receive(:call)
         .with(invitation: invitation)
         .and_return(OpenStruct.new(success?: true))
-    end
-
-    it "finds the matching invitation" do
-      expect(Invitation).to receive(:find)
-      subject
     end
 
     it "calls a InvalidateLink service" do

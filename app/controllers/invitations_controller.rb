@@ -113,13 +113,7 @@ class InvitationsController < ApplicationController
   end
 
   def set_invitation
-    @invitation = \
-      if params[:uuid].present?
-        # the token passed as a uuid will happen only during the transition for the postal invitation form
-        Invitation.find_by(uuid: params[:uuid]) || Invitation.find_by(token: params[:uuid], format: invitation_format)
-      else
-        Invitation.find_by(format: invitation_format, token: params[:token])
-      end
+    @invitation = Invitation.find_by(uuid: params[:uuid])
     raise ActiveRecord::RecordNotFound unless @invitation
   end
 

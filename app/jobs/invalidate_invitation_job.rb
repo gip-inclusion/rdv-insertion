@@ -3,7 +3,7 @@ class InvalidateInvitationJobError < StandardError; end
 class InvalidateInvitationJob < ApplicationJob
   def perform(invitation_id)
     invitation = Invitation.find(invitation_id)
-    return if invitation.valid_until.present? && invitation.valid_until < Time.zone.now
+    return if invitation.expired?
 
     invalidate_invitation = Invitations::InvalidateLink.call(invitation: invitation)
 

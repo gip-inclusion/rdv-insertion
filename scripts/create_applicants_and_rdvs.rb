@@ -36,7 +36,7 @@ date = 1.year.ago
     created_at: date,
     updated_at: date,
     help_phone_number: "0102030405",
-    token: "sometoken#{i}",
+    rdv_solidarites_token: "sometoken#{i}",
     link: "http://www.test.com/test&id=#{i}",
     number_of_days_to_accept_invitation: 7,
     department_id: 1,

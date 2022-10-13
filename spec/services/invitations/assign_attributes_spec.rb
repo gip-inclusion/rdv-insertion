@@ -11,9 +11,9 @@ describe Invitations::AssignAttributes, type: :service do
 
   let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
   let!(:invitation) do
-    build(:invitation, applicant: applicant, token: nil, link: nil)
+    build(:invitation, applicant: applicant, rdv_solidarites_token: nil, link: nil)
   end
-  let!(:token) { "some-token" }
+  let!(:rdv_solidarites_token) { "some-token" }
 
   describe "#call" do
     let!(:invitation_link) { "https://www.rdv_solidarites.com/some_params" }
@@ -24,7 +24,7 @@ describe Invitations::AssignAttributes, type: :service do
         .with(
           rdv_solidarites_user_id: rdv_solidarites_user_id, rdv_solidarites_session: rdv_solidarites_session
         )
-        .and_return(OpenStruct.new(success?: true, invitation_token: token))
+        .and_return(OpenStruct.new(success?: true, invitation_token: rdv_solidarites_token))
       allow(Invitations::ComputeLink).to receive(:call)
         .with(invitation: invitation)
         .and_return(OpenStruct.new(success?: true, invitation_link: invitation_link))
@@ -49,7 +49,7 @@ describe Invitations::AssignAttributes, type: :service do
     it "assigns the invitationn with token and the link" do
       subject
       expect(invitation.link).to eq(invitation_link)
-      expect(invitation.token).to eq(token)
+      expect(invitation.rdv_solidarites_token).to eq(rdv_solidarites_token)
     end
 
     context "when it fails to retrieve a token" do
@@ -66,9 +66,9 @@ describe Invitations::AssignAttributes, type: :service do
         expect(subject.errors).to eq(["something happened with token"])
       end
 
-      it "does not attach the token" do
+      it "does not attach the rdv_solidarites_token" do
         subject
-        expect(invitation.token).to be_nil
+        expect(invitation.rdv_solidarites_token).to be_nil
       end
 
       it "does not save the invitation" do
@@ -106,7 +106,7 @@ describe Invitations::AssignAttributes, type: :service do
       let!(:other_invitation) do
         create(
           :invitation,
-          sent_at: Time.zone.parse("2022-04-02 13:45"), token: "existing-token",
+          sent_at: Time.zone.parse("2022-04-02 13:45"), rdv_solidarites_token: "existing-token",
           valid_until: Time.zone.parse("2022-04-12 15:00")
         )
       end
@@ -117,13 +117,13 @@ describe Invitations::AssignAttributes, type: :service do
 
       before do
         allow(RdvSolidaritesApi::RetrieveInvitation).to receive(:call).with(
-          token: "existing-token", rdv_solidarites_session: rdv_solidarites_session
+          rdv_solidarites_token: "existing-token", rdv_solidarites_session: rdv_solidarites_session
         ).and_return(OpenStruct.new(user: rdv_solidarites_user))
       end
 
       it "checks if the token is valid by retrieving the associated user" do
         expect(RdvSolidaritesApi::RetrieveInvitation).to receive(:call).with(
-          token: "existing-token", rdv_solidarites_session: rdv_solidarites_session
+          rdv_solidarites_token: "existing-token", rdv_solidarites_session: rdv_solidarites_session
         )
         subject
       end
@@ -139,13 +139,13 @@ describe Invitations::AssignAttributes, type: :service do
 
       it "assign the existing token to the invitation" do
         subject
-        expect(invitation.token).to eq("existing-token")
+        expect(invitation.rdv_solidarites_token).to eq("existing-token")
       end
 
       context "when the token is not associated to the user" do
         before do
           allow(RdvSolidaritesApi::RetrieveInvitation).to receive(:call)
-            .with(token: "existing-token", rdv_solidarites_session: rdv_solidarites_session)
+            .with(rdv_solidarites_token: "existing-token", rdv_solidarites_session: rdv_solidarites_session)
             .and_return(OpenStruct.new)
         end
 
@@ -156,7 +156,7 @@ describe Invitations::AssignAttributes, type: :service do
 
         it "assign the new token to the invitation" do
           subject
-          expect(invitation.token).to eq(token)
+          expect(invitation.rdv_solidarites_token).to eq(rdv_solidarites_token)
         end
       end
     end

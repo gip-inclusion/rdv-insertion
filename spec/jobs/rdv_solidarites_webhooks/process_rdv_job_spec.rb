@@ -54,16 +54,24 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
     )
   end
 
-  let!(:invitation) { create(:invitation, rdv_context: rdv_context) }
-  let!(:invitation2) { create(:invitation, rdv_context: rdv_context2) }
-  let!(:invitation3) { create(:invitation, rdv_context: rdv_context2) }
+  let!(:invitation) do
+    create(:invitation, rdv_context: rdv_context, sent_at: 2.days.ago, valid_until: 3.days.from_now)
+  end
+
+  let!(:invitation2) do
+    create(:invitation, rdv_context: rdv_context2, sent_at: 2.days.ago, valid_until: 3.days.from_now)
+  end
+
+  let!(:invitation3) do
+    create(:invitation, rdv_context: rdv_context, sent_at: 4.days.ago, valid_until: 3.days.ago)
+  end
 
   let!(:rdv_context) do
-    build(:rdv_context, motif_category: "rsa_orientation", applicant: applicant, id: 28)
+    build(:rdv_context, motif_category: "rsa_orientation", applicant: applicant)
   end
 
   let!(:rdv_context2) do
-    build(:rdv_context, motif_category: "rsa_orientation", applicant: applicant2, id: 99)
+    build(:rdv_context, motif_category: "rsa_orientation", applicant: applicant2)
   end
 
   describe "#perform" do
@@ -135,10 +143,10 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
         subject
       end
 
-      it "enqueues jobs to invalidate the related invitations" do
+      it "enqueues jobs to invalidate the related sent valid invitations" do
         expect(InvalidateInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation.id)
         expect(InvalidateInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation2.id)
-        expect(InvalidateInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation3.id)
+        expect(InvalidateInvitationJob).not_to receive(:perform_async).with(invitation3.id)
         subject
       end
     end

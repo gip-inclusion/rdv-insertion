@@ -14,8 +14,8 @@ describe SendInvitationReminderJob, type: :job do
     create(
       :invitation,
       valid_until: Time.zone.parse("2022-05-15 15:05"), sent_at: Time.zone.parse("2022-05-01 14:01"),
-      applicant: applicant, organisations: [organisation], rdv_context: rdv_context, token: "123",
-      link: "www.rdv-insertion.fr/invitations/redirect?token=123",
+      applicant: applicant, organisations: [organisation], rdv_context: rdv_context, rdv_solidarites_token: "123",
+      link: "www.rdv-solidarités.fr/prendre_rdv",
       number_of_days_to_accept_invitation: 3, help_phone_number: "0101010101",
       rdv_solidarites_lieu_id: nil, department: department
     )
@@ -44,8 +44,8 @@ describe SendInvitationReminderJob, type: :job do
         number_of_days_to_accept_invitation: 3,
         help_phone_number: "0101010101",
         rdv_solidarites_lieu_id: nil,
-        link: "www.rdv-insertion.fr/invitations/redirect?token=123",
-        token: "123",
+        link: "www.rdv-solidarités.fr/prendre_rdv",
+        rdv_solidarites_token: "123",
         valid_until: Time.zone.parse("2022-05-15 15:05")
       )
     subject

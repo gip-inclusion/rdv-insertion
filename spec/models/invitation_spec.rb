@@ -8,14 +8,15 @@ describe Invitation do
       build(
         :invitation,
         organisations: [organisation], department: department, rdv_context: rdv_context,
-        help_phone_number: "0101010101", applicant: applicant, token: "token", link: "https://www.rdv-solidarites.fr"
+        help_phone_number: "0101010101", applicant: applicant, rdv_solidarites_token: "rdv_solidarites_token",
+        link: "https://www.rdv-solidarites.fr"
       )
     end
 
     it { expect(invitation).to be_valid }
 
-    context "when no token" do
-      before { invitation.token = nil }
+    context "when no rdv_solidarites_token" do
+      before { invitation.rdv_solidarites_token = nil }
 
       it { expect(invitation).not_to be_valid }
     end

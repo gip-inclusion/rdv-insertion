@@ -16,7 +16,7 @@ describe Invitations::SaveAndSend, type: :service do
         .and_return(OpenStruct.new(success?: true))
       allow(invitation).to receive(:send_to_applicant)
         .and_return(OpenStruct.new(success?: true))
-      allow(invitation).to receive(:token?).and_return(false)
+      allow(invitation).to receive(:rdv_solidarites_token?).and_return(false)
       allow(invitation).to receive(:link?).and_return(false)
     end
 
@@ -82,7 +82,7 @@ describe Invitations::SaveAndSend, type: :service do
 
     context "when there is a token and a link assigned already" do
       before do
-        allow(invitation).to receive(:token?).and_return(true)
+        allow(invitation).to receive(:rdv_solidarites_token?).and_return(true)
         allow(invitation).to receive(:link?).and_return(true)
       end
 

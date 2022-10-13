@@ -28,7 +28,7 @@ class SendInvitationReminderJob < ApplicationJob
       help_phone_number: first_invitation.help_phone_number,
       rdv_solidarites_lieu_id: first_invitation.rdv_solidarites_lieu_id,
       link: first_invitation.link,
-      token: first_invitation.token,
+      rdv_solidarites_token: first_invitation.rdv_solidarites_token,
       valid_until: first_invitation.valid_until
     )
   end
