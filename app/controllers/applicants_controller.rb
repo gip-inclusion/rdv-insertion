@@ -17,7 +17,7 @@ class ApplicantsController < ApplicationController
   before_action :set_organisations, only: [:new, :create]
   before_action :set_applicant_rdv_contexts, :set_can_be_added_to_other_org, :set_back_to_list_url, only: [:show]
   before_action :retrieve_applicants, only: [:search]
-  after_action :store_user_index_origin, only: [:index]
+  after_action :store_back_to_list_url, only: [:index]
 
   def new
     @applicant = Applicant.new(department: @department)
@@ -240,7 +240,7 @@ class ApplicantsController < ApplicationController
     @applicants_scope == "archived"
   end
 
-  def store_user_index_origin
+  def store_back_to_list_url
     session[:back_to_list_url] = request.fullpath
   end
 
