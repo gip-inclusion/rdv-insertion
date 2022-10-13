@@ -91,7 +91,7 @@ module Stats
     def relevant_organisations
       @relevant_organisations ||= organisations
                                   .joins(:configurations)
-                                  .where(configurations: { notify_applicant: false })
+                                  .where(configurations: { convene_applicant: false })
     end
 
     # We filter the applicants by organisations and retrieve deleted or archived applicants

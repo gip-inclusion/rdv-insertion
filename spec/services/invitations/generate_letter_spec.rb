@@ -14,9 +14,9 @@ describe Invitations::GenerateLetter, type: :service do
                    department: department, format: "postal", rdv_context: rdv_context
     )
   end
-  let!(:invitation_parameters) { create(:invitation_parameters) }
+  let!(:messages_configuration) { create(:messages_configuration) }
   let!(:organisation) do
-    create(:organisation, invitation_parameters: invitation_parameters,
+    create(:organisation, messages_configuration: messages_configuration,
                           department: department)
   end
 
@@ -33,7 +33,7 @@ describe Invitations::GenerateLetter, type: :service do
     end
 
     context "when the signature is configured" do
-      let!(:invitation_parameters) { create(:invitation_parameters, signature_lines: ["Fabienne Bouchet"]) }
+      let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
 
       it "generates the pdf string with the right signature" do
         subject
@@ -42,7 +42,7 @@ describe Invitations::GenerateLetter, type: :service do
     end
 
     context "when the europe logos are configured to be displayed" do
-      let!(:invitation_parameters) { create(:invitation_parameters, display_europe_logos: true) }
+      let!(:messages_configuration) { create(:messages_configuration, display_europe_logos: true) }
 
       it "generates the pdf string with the europe logos" do
         subject
@@ -54,8 +54,8 @@ describe Invitations::GenerateLetter, type: :service do
     context "when the context is orientation" do
       context "when the help address is configured" do
         let!(:rdv_context) { create(:rdv_context, motif_category: "rsa_orientation") }
-        let!(:invitation_parameters) do
-          create(:invitation_parameters, help_address: "10, rue du Conseil départemental 75001 Paris")
+        let!(:messages_configuration) do
+          create(:messages_configuration, help_address: "10, rue du Conseil départemental 75001 Paris")
         end
 
         it "renders the mail with the help address" do
@@ -68,8 +68,8 @@ describe Invitations::GenerateLetter, type: :service do
     context "when the context is accompagnement" do
       context "when the help address is configured" do
         let!(:rdv_context) { create(:rdv_context, motif_category: "rsa_accompagnement") }
-        let!(:invitation_parameters) do
-          create(:invitation_parameters, help_address: "10, rue du Conseil départemental 75001 Paris")
+        let!(:messages_configuration) do
+          create(:messages_configuration, help_address: "10, rue du Conseil départemental 75001 Paris")
         end
 
         it "renders the mail with the help address" do

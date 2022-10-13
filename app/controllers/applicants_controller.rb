@@ -40,7 +40,7 @@ class ApplicantsController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.csv { export_applicants_to_csv }
+      format.csv { send_applicants_csv }
     end
   end
 
@@ -87,17 +87,14 @@ class ApplicantsController < ApplicationController
     )
   end
 
-  def export_applicants_to_csv
-    csv = create_applicants_csv_export.csv
-    filename = create_applicants_csv_export.filename
-    send_data csv, filename: filename
+  def send_applicants_csv
+    send_data generate_applicants_csv.csv, filename: generate_applicants_csv.filename
   end
 
-  def create_applicants_csv_export
-    @structure = department_level? ? @department : @organisation
-    Exports::GenerateApplicantsCsv.call(
+  def generate_applicants_csv
+    @generate_applicants_csv ||= Exporters::GenerateApplicantsCsv.call(
       applicants: @applicants,
-      structure: @structure,
+      structure: department_level? ? @department : @organisation,
       motif_category: @current_motif_category
     )
   end
@@ -130,8 +127,11 @@ class ApplicantsController < ApplicationController
   def set_applicant
     @applicant = \
       Applicant
-      .includes(:organisations, rdv_contexts: [{ rdvs: [:organisation] }, :invitations], invitations: [:rdv_context])
-      .find(params[:id])
+      .includes(
+        :organisations,
+        rdv_contexts: [{ rdvs: [:organisation, :motif] }, :invitations],
+        invitations: [:rdv_context]
+      ).find(params[:id])
   end
 
   def set_organisation
@@ -208,7 +208,7 @@ class ApplicantsController < ApplicationController
 
   def set_applicants_for_motif_category
     @applicants = policy_scope(Applicant)
-                  .includes(:invitations)
+                  .includes(:invitations, notifications: :rdv)
                   .preload(:organisations, rdv_contexts: [:invitations, :rdvs])
                   .active.distinct.archived(false)
                   .where(department_level? ? { department: @department } : { organisations: @organisation })

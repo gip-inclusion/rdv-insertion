@@ -9,7 +9,7 @@ class StatsController < ApplicationController
 
   def show
     @stat = Stat.find_by(department_number: @department.number)
-    @display_all_stats = @department.configurations.none?(&:notify_applicant?)
+    @display_all_stats = @department.configurations.none?(&:convene_applicant?)
   end
 
   def deployment_map; end

@@ -1,4 +1,6 @@
 class Invitation < ApplicationRecord
+  include Sendable
+
   belongs_to :applicant
   belongs_to :department
   belongs_to :rdv_context
@@ -44,8 +46,8 @@ class Invitation < ApplicationRecord
     super.merge(motif_category: motif_category)
   end
 
-  def invitation_parameters
-    organisations.map(&:invitation_parameters).compact.first
+  def messages_configuration
+    organisations.map(&:messages_configuration).compact.first
   end
 
   def set_valid_until

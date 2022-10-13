@@ -1,10 +1,12 @@
+# rubocop:disable Metrics/ModuleLength
+
 module ApplicantsHelper
   def format_date(date)
     date&.strftime("%d/%m/%Y")
   end
 
-  def show_notification?(configuration)
-    configuration.notify_applicant?
+  def show_convocation?(configuration)
+    configuration.convene_applicant?
   end
 
   def show_invitations?(configuration)
@@ -32,9 +34,25 @@ module ApplicantsHelper
   end
 
   def options_for_select_status(statuses_count)
-    statuses_count.map do |status, count|
+    ordered_statuses_count(statuses_count).map do |status, count|
+      next if count.nil?
+
       ["#{I18n.t("activerecord.attributes.rdv_context.statuses.#{status}")} (#{count})", status]
-    end
+    end.compact
+  end
+
+  def ordered_statuses_count(statuses_count)
+    [
+      ["not_invited", statuses_count["not_invited"]],
+      ["invitation_pending", statuses_count["invitation_pending"]],
+      ["rdv_pending", statuses_count["rdv_pending"]],
+      ["rdv_needs_status_update", statuses_count["rdv_needs_status_update"]],
+      ["rdv_excused", statuses_count["rdv_excused"]],
+      ["rdv_revoked", statuses_count["rdv_revoked"]],
+      ["multiple_rdvs_cancelled", statuses_count["multiple_rdvs_cancelled"]],
+      ["rdv_noshow", statuses_count["rdv_noshow"]],
+      ["rdv_seen", statuses_count["rdv_seen"]]
+    ]
   end
 
   def background_class_for_context_status(context, number_of_days_before_action_required)
@@ -87,6 +105,14 @@ module ApplicantsHelper
     "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{organisation_id}/users/#{applicant.rdv_solidarites_user_id}"
   end
 
+  def display_convocation_formats(convocation_formats)
+    if convocation_formats.empty?
+      "❌#{content_tag(:br)}SMS et Email non envoyés#{content_tag(:br)}❌"
+    else
+      convocation_formats.map { |format| format == "sms" ? "SMS 📱" : "Email 📧" }.join("\n")
+    end
+  end
+
   def archived_scope?(scope)
     scope == "archived"
   end
@@ -115,3 +141,5 @@ module ApplicantsHelper
     organisation_applicant_path(organisation, applicant)
   end
 end
+
+# rubocop:enable Metrics/ModuleLength

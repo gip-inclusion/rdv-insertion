@@ -1,4 +1,4 @@
-<%= render 'letters/header', invitation_parameters: invitation_parameters, department: department, organisation: organisation, applicant: applicant %>
+<%= render 'letters/header', direction_names: messages_configuration.direction_names, sender_city: messages_configuration.sender_city, department: department, organisation: organisation, applicant: applicant %>
 <div class="mail-object">
     <%# Remplacer par une variable @motif ? %>
   <p class="bold-blue"><span class="bold-blue">Objet : Rendez-vous de suivi dans le cadre de votre RSA</span></p>
@@ -13,10 +13,11 @@
   <p>Pour choisir un créneau à votre convenance, saisissez le code d’invitation ci-dessous <span class="bold-blue">sur <u><%= ENV['HOST'] %>/invitation</u></span>, puis suivez les instructions présentes à l'écran :</p>
   <div class="invitation-token">Mon code d'invitation<br/><%= invitation.uuid %></div>
   <p>Vous disposez <span class="bold-blue">d'un délai de <%= invitation.number_of_days_to_accept_invitation %> jours</span> pour prendre rendez-vous à réception de ce courrier.</p>
-  <%= render 'letters/help_message', invitation: invitation, invitation_parameters: invitation_parameters %>
+  <%= render 'letters/help_message', invitation: invitation, help_address: messages_configuration.help_address %>
   <p>Veuillez agréer, <%= applicant.title.capitalize %>, l’expression de mes salutations distinguées.</p>
   <div class="letter-signature">
-    <%= render 'common/invitations_signature', invitation_parameters: invitation_parameters, department: department %>
+    <%= render 'common/organisation_signature', signature_lines: messages_configuration.signature_lines, department: department %>
   </div>
 </div>
-<%= render 'letters/footer', department: department, organisation: organisation, display_europe_logos: invitation_parameters.display_europe_logos %>
+<%= render 'letters/footer', department: department, organisation: organisation, display_europe_logos: messages_configuration.display_europe_logos %>
+

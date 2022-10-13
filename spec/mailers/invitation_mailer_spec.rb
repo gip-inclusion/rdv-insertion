@@ -1,8 +1,8 @@
 RSpec.describe InvitationMailer, type: :mailer do
   let!(:department) { create(:department, name: "Drôme", pronoun: "la") }
   let!(:help_phone_number) { "0139393939" }
-  let!(:invitation_parameters) { create(:invitation_parameters) }
-  let!(:organisation) { create(:organisation, department: department, invitation_parameters: invitation_parameters) }
+  let!(:messages_configuration) { create(:messages_configuration) }
+  let!(:organisation) { create(:organisation, department: department, messages_configuration: messages_configuration) }
   let!(:applicant) do
     create(:applicant, first_name: "Jean", last_name: "Valjean")
   end
@@ -40,7 +40,7 @@ RSpec.describe InvitationMailer, type: :mailer do
     end
 
     context "when the signature is configured" do
-      let!(:invitation_parameters) { create(:invitation_parameters, signature_lines: ["Fabienne Bouchet"]) }
+      let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
 
       it "renders the mail with the right signature" do
         expect(subject.body.encoded).to match(/Fabienne Bouchet/)
@@ -75,7 +75,7 @@ RSpec.describe InvitationMailer, type: :mailer do
     end
 
     context "when the signature is configured" do
-      let!(:invitation_parameters) { create(:invitation_parameters, signature_lines: ["Fabienne Bouchet"]) }
+      let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
 
       it "renders the mail with the right signature" do
         expect(subject.body.encoded).to match(/Fabienne Bouchet/)
@@ -111,7 +111,7 @@ RSpec.describe InvitationMailer, type: :mailer do
     end
 
     context "when the signature is configured" do
-      let!(:invitation_parameters) { create(:invitation_parameters, signature_lines: ["Fabienne Bouchet"]) }
+      let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
 
       it "renders the mail with the right signature" do
         expect(subject.body.encoded).to match(/Fabienne Bouchet/)

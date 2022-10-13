@@ -1,6 +1,6 @@
 class InvitationMailer < ApplicationMailer
   before_action :set_invitation, :set_applicant, :set_department, :set_department_or_organisation_logo_name,
-                :set_logo_format, :set_invitation_parameters
+                :set_logo_format, :set_messages_configuration
 
   def invitation_for_rsa_orientation
     mail(
@@ -74,8 +74,8 @@ class InvitationMailer < ApplicationMailer
     @department = @invitation.department
   end
 
-  def set_invitation_parameters
-    @invitation_parameters = @invitation.invitation_parameters
+  def set_messages_configuration
+    @messages_configuration = @invitation.messages_configuration
   end
 
   def set_department_or_organisation_logo_name
