@@ -19,7 +19,7 @@
         <td><%= display_attribute format_date(applicant.archived_at) %></td>
         <td>Dossier archivé</td>
         <td class="padding-left-15">
-          <%= link_to compute_applicant_path(applicant, @organisation, @department, applicants_scope: @applicants_scope) do %>
+          <%= link_to compute_applicant_path(applicant, @organisation, @department) do %>
             <button class="btn btn-blue">Gérer</button>
           <% end %>
         </td>

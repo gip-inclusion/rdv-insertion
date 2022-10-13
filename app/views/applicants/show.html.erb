@@ -2,7 +2,7 @@
 <div class="container label-blue mt-4">
   <div class="d-flex justify-content-between mb-4">
     <div>
-      <%= link_to(compute_index_path(@organisation, @department, motif_category: params[:motif_category], applicants_scope: params[:applicants_scope])) do %>
+      <%= link_to(@back_to_list_url) do %>
         <button class="btn btn-blue-out">Retour</button>
       <% end %>
       <%= link_to rdv_solidarites_user_url(@organisation, @applicant), target: "_blank" do %>
@@ -13,7 +13,7 @@
       <button class="btn btn-blue" id="archive-button" data-applicant-id="<%= @applicant.id %>" data-organisation-id="<%= @organisation.id %>" data-department-id="<%= @department.id %>" data-department-level="<%= department_level? %>">
         <%= @applicant.archived? ? "Rouvrir le dossier" : "Archiver le dossier" %>
       </button>
-      <%= link_to compute_edit_path(@applicant, @organisation, @department, motif_category: params[:motif_category], applicants_scope: params[:applicants_scope]) do %>
+      <%= link_to compute_edit_path(@applicant, @organisation, @department) do %>
         <button class="btn btn-blue">Modifier</button>
       <% end %>
     </div>

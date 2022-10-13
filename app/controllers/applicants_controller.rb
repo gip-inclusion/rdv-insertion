@@ -15,8 +15,9 @@ class ApplicantsController < ApplicationController
                 :set_current_motif_category, :set_applicants, :set_rdv_contexts,
                 :filter_applicants, :order_applicants, only: [:index]
   before_action :set_organisations, only: [:new, :create]
-  before_action :set_applicant_rdv_contexts, :set_can_be_added_to_other_org, only: [:show]
+  before_action :set_applicant_rdv_contexts, :set_can_be_added_to_other_org, :set_back_to_list_url, only: [:show]
   before_action :retrieve_applicants, only: [:search]
+  after_action :store_user_index_origin, only: [:index]
 
   def new
     @applicant = Applicant.new(department: @department)
@@ -104,20 +105,10 @@ class ApplicantsController < ApplicationController
 
   def save_applicant_and_redirect(page)
     if save_applicant.success?
-      redirect_to(after_save_redirect_url)
+      redirect_to(after_save_path)
     else
       flash.now[:error] = save_applicant.errors&.join(',')
       render page, status: :unprocessable_entity
-    end
-  end
-
-  def after_save_redirect_url
-    if params[:applicants_scope].present?
-      "#{after_save_path}?applicants_scope=#{params[:applicants_scope]}"
-    elsif params[:motif_category].present?
-      "#{after_save_path}?motif_category=#{params[:motif_category]}"
-    else
-      after_save_path
     end
   end
 
@@ -247,6 +238,14 @@ class ApplicantsController < ApplicationController
 
   def archived_scope?
     @applicants_scope == "archived"
+  end
+
+  def store_user_index_origin
+    session[:back_to_list_url] = request.fullpath
+  end
+
+  def set_back_to_list_url
+    @back_to_list_url = session[:back_to_list_url]
   end
 
   def order_applicants
