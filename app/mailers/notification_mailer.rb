@@ -90,7 +90,7 @@ class NotificationMailer < ApplicationMailer
   end
 
   def set_logo_path
-    @logo_path = @rdv.organisation.logo_path || @department.logo_path
+    @logo_path = @rdv.organisation.logo_path(%w[png jpg]) || @department.logo_path(%w[png jpg])
   end
 
   def rdv_by_phone?
