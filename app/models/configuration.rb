@@ -3,5 +3,4 @@ class Configuration < ApplicationRecord
 
   has_many :configurations_organisations, dependent: :destroy
   has_many :organisations, through: :configurations_organisations
-  has_many :agents, through: :organisations
 end

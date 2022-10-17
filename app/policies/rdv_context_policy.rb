@@ -5,7 +5,7 @@ class RdvContextPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      RdvContext.where(applicant_id: pundit_user.applicants.map(&:id))
+      RdvContext.where(applicant_id: Applicant.joins(:organisations).where(organisations: pundit_user.organisations))
                 .where(motif_category: pundit_user.configurations.map(&:motif_category).uniq)
     end
   end

@@ -497,21 +497,6 @@ describe ApplicantsController, type: :controller do
       end
     end
 
-    context "when a there is no matching motif for a context" do
-      let!(:configuration2) { create(:configuration, motif_category: "rsa_insertion_offer") }
-      let!(:organisation) do
-        create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
-                              department_id: department.id, configurations: [configuration, configuration2])
-      end
-
-      it "does not display the context" do
-        get :index, params: index_params
-
-        expect(response).to be_successful
-        expect(response.body).not_to match(/RSA offre insertion pro/)
-      end
-    end
-
     context "when a context is specified" do
       let!(:rdv_context2) { build(:rdv_context, motif_category: "rsa_accompagnement", status: "invitation_pending") }
       let!(:configuration) { create(:configuration, motif_category: "rsa_accompagnement") }

@@ -196,9 +196,7 @@ class ApplicantsController < ApplicationController
   end
 
   def set_applicant_rdv_contexts
-    @rdv_contexts = policy_scope(RdvContext).where(applicant: @applicant).select do |rdv_context|
-      @all_configurations.map(&:motif_category).uniq.include?(rdv_context.motif_category)
-    end
+    @rdv_contexts = RdvContext.where(applicant: @applicant, motif_category: @all_configurations.map(&:motif_category))
   end
 
   def set_can_be_added_to_other_org
@@ -243,11 +241,7 @@ class ApplicantsController < ApplicationController
   end
 
   def order_applicants
-    @applicants = if archived_scope?
-                    @applicants.order(archived_at: :desc)
-                  else
-                    @applicants.order(created_at: :desc)
-                  end
+    @applicants = archived_scope? ? @applicants.order(archived_at: :desc) : @applicants.order(created_at: :desc)
   end
 
   def after_save_path
