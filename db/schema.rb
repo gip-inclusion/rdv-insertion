@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_10_04_194204) do
+ActiveRecord::Schema[7.0].define(version: 2022_10_17_152036) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -77,7 +77,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_04_194204) do
     t.integer "motif_category", default: 0
     t.integer "number_of_days_to_accept_invitation", default: 3
     t.integer "number_of_days_before_action_required", default: 10
-    t.string "signature_lines", array: true
+    t.boolean "invitation_fallbacks_set_to_applicants_organisations", default: false
   end
 
   create_table "configurations_organisations", id: false, force: :cascade do |t|

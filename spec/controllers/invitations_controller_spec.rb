@@ -141,6 +141,29 @@ describe InvitationsController, type: :controller do
           )
         post :create, params: create_params
       end
+
+      context "when the invitation fallbacks is set to applicants organisations" do
+        before do
+          configuration.update!(invitation_fallbacks_set_to_applicants_organisations: true)
+          allow(Invitation).to receive(:new)
+            .with(
+              department: department, applicant: applicant, organisations: [organisation], rdv_context: rdv_context,
+              help_phone_number: help_phone_number,
+              number_of_days_to_accept_invitation: 3, format: "email", rdv_solidarites_lieu_id: "3929",
+              valid_until: valid_until
+            ).and_return(invitation)
+        end
+
+        it "instantiates the invitation with the applicant org only" do
+          expect(Invitation).to receive(:new)
+            .with(
+              department: department, applicant: applicant, organisations: [organisation], rdv_context: rdv_context,
+              number_of_days_to_accept_invitation: 3, format: "email", help_phone_number: help_phone_number,
+              rdv_solidarites_lieu_id: "3929", valid_until: valid_until
+            )
+          post :create, params: create_params
+        end
+      end
     end
 
     context "when the service succeeds" do
