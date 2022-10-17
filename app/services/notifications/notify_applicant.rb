@@ -22,7 +22,9 @@ module Notifications
         rdv: @rdv,
         applicant: @applicant,
         event: @event,
-        format: @format
+        format: @format,
+        # needed in case the rdv gets deleted
+        rdv_solidarites_rdv_id: @rdv.rdv_solidarites_rdv_id
       )
     end
 

@@ -7,6 +7,8 @@ class Notification < ApplicationRecord
   enum event: { rdv_created: 0, rdv_updated: 1, rdv_cancelled: 2 }
   enum format: { sms: 0, email: 1 }
 
+  validates :format, :event, presence: true
+
   delegate :organisation, :motif_category, to: :rdv, allow_nil: true
   delegate :messages_configuration, to: :organisation
 
