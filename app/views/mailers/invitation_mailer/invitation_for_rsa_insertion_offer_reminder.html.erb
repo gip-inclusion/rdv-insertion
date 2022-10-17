@@ -7,4 +7,7 @@
   <% end %>
 </p>
 <p>En cas de problème technique, contactez le <%= @invitation.help_phone_number_formatted %></p>
-<%= render 'common/organisation_signature', signature_lines: @messages_configuration.signature_lines, department: @department %>
+<%= render 'common/organisation_signature', signature_lines: @signature_lines, department: @department %>
+<% if @logo_path %>
+  <%= image_pack_tag @logo_path, alt: "Logo département ou organisation", class: "department-logo" %>
+<% end %>

@@ -1,4 +1,6 @@
 class Department < ApplicationRecord
+  include HasLogo
+
   validates :name, :capital, :number, :pronoun, presence: true
 
   has_many :organisations, dependent: :nullify

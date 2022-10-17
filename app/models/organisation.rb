@@ -1,5 +1,6 @@
 class Organisation < ApplicationRecord
   include PgSearch::Model
+  include HasLogo
 
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [:name, :phone_number, :email].freeze
 

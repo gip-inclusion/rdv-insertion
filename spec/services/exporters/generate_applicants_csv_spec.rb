@@ -1,7 +1,8 @@
 describe Exporters::GenerateApplicantsCsv, type: :service do
   subject { described_class.call(applicants: applicants, structure: structure, motif_category: motif_category) }
 
-  let!(:timestamp) { Time.zone.now.to_i }
+  let!(:now) { Time.zone.parse("22/06/2022") }
+  let!(:timestamp) { now.to_i }
   let!(:motif_category) { "rsa_orientation" }
   let!(:department) { create(:department, name: "Drôme", number: "26") }
   let!(:organisation) do
@@ -53,6 +54,8 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
   let!(:applicants) { Applicant.where(id: [applicant1, applicant2, applicant3]) }
 
   describe "#call" do
+    before { travel_to(now) }
+
     context "it exports applicants to csv" do
       let!(:csv) { subject.csv }
 

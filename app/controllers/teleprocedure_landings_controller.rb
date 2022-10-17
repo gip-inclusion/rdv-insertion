@@ -5,8 +5,6 @@ class TeleprocedureLandingsController < ApplicationController
 
   def show
     @department = Department.find_by!(number: params[:department_number])
-    @department_logo_format = %w[svg png jpg].find do |format|
-      Webpacker.manifest.lookup("media/images/logos/#{@department.name.parameterize}.#{format}")
-    end
+    @department_logo_path = @department.logo_path
   end
 end
