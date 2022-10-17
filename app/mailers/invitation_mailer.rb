@@ -1,6 +1,6 @@
 class InvitationMailer < ApplicationMailer
-  before_action :set_invitation, :set_applicant, :set_department, :set_department_or_organisation_logo_name,
-                :set_logo_format, :set_messages_configuration
+  before_action :set_invitation, :set_applicant, :set_department,
+                :set_logo_path, :set_signature_lines
 
   def invitation_for_rsa_orientation
     mail(
@@ -74,26 +74,20 @@ class InvitationMailer < ApplicationMailer
     @department = @invitation.department
   end
 
-  def set_messages_configuration
-    @messages_configuration = @invitation.messages_configuration
+  def set_signature_lines
+    @signature_lines = @invitation.messages_configuration&.signature_lines
   end
 
-  def set_department_or_organisation_logo_name
-    @logo_name = ComputeOrganisationOrDepartmentLogoName.call(
-      department_name: @department.name.parameterize,
-      organisation_name: organisation_name
-    ).logo_name
+  def set_logo_path
+    @logo_path = \
+      if @invitation.organisations.length == 1 && first_organisation.logo_path.present?
+        first_organisation.logo_path
+      else
+        @department.logo_path
+      end
   end
 
-  def set_logo_format
-    @logo_format = ComputeLogoFormat.call(logo_name: @logo_name).format
-  end
-
-  def organisation
-    @organisation ||= @invitation.organisations.size > 1 ? nil : @invitation.organisations.first
-  end
-
-  def organisation_name
-    @organisation_name ||= organisation.present? ? organisation.name.parameterize : nil
+  def first_organisation
+    @invitation.organisations.first
   end
 end

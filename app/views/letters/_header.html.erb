@@ -1,9 +1,9 @@
 <div>
   <div class="left-col">
     <div>
-    <div class="letter-logo header-logo">
-      <%= organisation_or_department_logo(department.name.parameterize, organisation.name.parameterize) %>
-    </div>
+      <div class="letter-logo header-logo">
+        <%= pdf_image_tag(organisation.logo_path || department.logo_path) %>
+      </div>
     </div>
     <% direction_names.each do |direction_name| %>
       <p><%= direction_name.upcase %></p>

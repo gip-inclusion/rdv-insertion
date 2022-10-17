@@ -12,3 +12,6 @@
 <% end %>
 <p>En cas d'empêchement, merci d'appeler rapidement le <%= @rdv.phone_number %>.</p>
 <%= render 'common/organisation_signature', signature_lines: @signature_lines, department: @department %>
+<% if @logo_path %>
+  <%= image_pack_tag @logo_path, alt: "Logo département ou organisation", class: "department-logo" %>
+<% end %>

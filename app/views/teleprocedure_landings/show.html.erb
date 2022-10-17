@@ -3,7 +3,7 @@
   <% if lookup_context.exists?(@department.number, ["teleprocedure_landings"], true) %>
     <div class="welcome-title justify-content-around mt-5 flex-wrap text-center">
       <h1 class="pb-3">INFORMATION - RSA</h1>
-      <%= image_pack_tag "logos/#{@department.name.parameterize}.#{@department_logo_format}", alt: "Logo Département", class: "teleprocedure-department-logo" %>
+      <%= image_pack_tag @department_logo_path, alt: "Logo Département", class: "teleprocedure-department-logo" %>
     </div>
     <div class="text-center pb-3">
       <%= render @department.number %>

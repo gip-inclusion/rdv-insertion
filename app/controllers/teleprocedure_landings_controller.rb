@@ -5,6 +5,6 @@ class TeleprocedureLandingsController < ApplicationController
 
   def show
     @department = Department.find_by!(number: params[:department_number])
-    @department_logo_format = ComputeLogoFormat.call(logo_name: @department.name.parameterize).format
+    @department_logo_path = @department.logo_path
   end
 end
