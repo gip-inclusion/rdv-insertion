@@ -1,19 +1,19 @@
 class InvitationsController < ApplicationController
-  before_action :set_organisations, :set_organisation, :set_department, :set_applicant,
+  before_action :set_organisations, :set_department, :set_applicant,
                 :set_motif_category, :set_rdv_context, :set_current_configuration,
-                :set_invitation_format, :set_new_invitation, :set_save_and_send_invitation_results,
+                :set_invitation_format, :set_fallback_organisations, :set_new_invitation, :save_and_send_invitation,
                 only: [:create]
   before_action :set_invitation, :verify_invitation_validity, only: [:redirect]
   skip_before_action :authenticate_agent!, only: [:invitation_code, :redirect]
 
   def create
-    if @success
+    if save_and_send_invitation.success?
       respond_to do |format|
         format.json { render json: { success: true, invitation: @invitation } }
         format.pdf { send_data pdf, filename: pdf_filename, layout: "application/pdf" }
       end
     else
-      render json: { success: false, errors: @errors }, status: :unprocessable_entity
+      render json: { success: false, errors: save_and_send_invitation.errors }, status: :unprocessable_entity
     end
   end
 
@@ -37,7 +37,7 @@ class InvitationsController < ApplicationController
     @invitation = Invitation.new(
       applicant: @applicant,
       department: @department,
-      organisations: @organisations,
+      organisations: @fallback_organisations,
       rdv_context: @rdv_context,
       format: @invitation_format,
       number_of_days_to_accept_invitation: @current_configuration.number_of_days_to_accept_invitation,
@@ -69,10 +69,6 @@ class InvitationsController < ApplicationController
     )
   end
 
-  def set_save_and_send_invitation_results
-    @success, @errors = [save_and_send_invitation.success?, save_and_send_invitation.errors]
-  end
-
   def set_organisations
     @organisations = \
       if department_level?
@@ -82,18 +78,21 @@ class InvitationsController < ApplicationController
       end
   end
 
-  def set_organisation
-    return if department_level?
-
-    @organisation = @organisations.first
-  end
-
   def set_rdv_context
     RdvContext.with_advisory_lock "setting_rdv_context_for_applicant_#{@applicant.id}" do
       @rdv_context = RdvContext.find_or_create_by!(
         motif_category: @motif_category, applicant: @applicant
       )
     end
+  end
+
+  def set_fallback_organisations
+    @fallback_organisations = \
+      if @current_configuration.invitation_fallbacks_set_to_applicants_organisations?
+        @organisations & @applicant.organisations
+      else
+        @organisations
+      end
   end
 
   def set_current_configuration
