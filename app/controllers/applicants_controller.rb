@@ -11,7 +11,8 @@ class ApplicantsController < ApplicationController
 
   before_action :set_applicant, only: [:show, :update, :edit]
   before_action :set_organisation, :set_department, only: [:index, :new, :create, :show, :update, :edit]
-  before_action :set_applicants_scope, :set_all_configurations, :set_current_configuration,
+  before_action :set_all_configurations, only: [:index, :show]
+  before_action :set_applicants_scope, :set_current_configuration,
                 :set_current_motif_category, :set_applicants, :set_rdv_contexts,
                 :filter_applicants, :order_applicants, only: [:index]
   before_action :set_organisations, only: [:new, :create]
@@ -196,7 +197,7 @@ class ApplicantsController < ApplicationController
   end
 
   def set_applicant_rdv_contexts
-    @rdv_contexts = @applicant.rdv_contexts
+    @rdv_contexts = RdvContext.where(applicant: @applicant, motif_category: @all_configurations.map(&:motif_category))
   end
 
   def set_can_be_added_to_other_org
@@ -249,11 +250,7 @@ class ApplicantsController < ApplicationController
   end
 
   def order_applicants
-    @applicants = if archived_scope?
-                    @applicants.order(archived_at: :desc)
-                  else
-                    @applicants.order(created_at: :desc)
-                  end
+    @applicants = archived_scope? ? @applicants.order(archived_at: :desc) : @applicants.order(created_at: :desc)
   end
 
   def after_save_path

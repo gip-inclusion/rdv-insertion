@@ -353,6 +353,7 @@ describe ApplicantsController, type: :controller do
 
         expect(response).to be_successful
         expect(response.body).to match(/RSA orientation/)
+        expect(response.body).to match(/RSA accompagnement/)
         expect(response.body).to match(/RDV honoré/)
         expect(response.body).to match(/RDV pris le/)
         expect(response.body).to match(/Date du RDV/)
@@ -364,8 +365,6 @@ describe ApplicantsController, type: :controller do
         expect(response.body).to match(/Absence non excusée/)
         expect(response.body).to match(/Rendez-vous honoré/)
         expect(response.body).to match(/Statut RDV/)
-        expect(response.body).to match(/Statut RDV/)
-        expect(response.body).to match(/RSA accompagnement/)
         expect(response.body).to match(/Invitation en attente de réponse/)
         expect(response.body).to match(/RSA Orientation sur site/)
         expect(response.body).not_to match(/Convoqué par/)
@@ -401,6 +400,29 @@ describe ApplicantsController, type: :controller do
             expect(response.body).not_to include("SMS 📱")
             expect(response.body).not_to include("Email 📧")
           end
+        end
+      end
+
+      context "when there is no matching configuration for a rdv_context" do
+        let!(:configuration) do
+          create(:configuration, motif_category: "rsa_accompagnement", invitation_formats: %w[sms email])
+        end
+
+        let!(:organisation) do
+          create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
+                                department_id: department.id, configurations: [configuration])
+        end
+
+        let!(:rdv_context) do
+          create(:rdv_context, status: "rdv_seen", applicant: applicant, motif_category: "rsa_orientation")
+        end
+
+        it "does not display the context" do
+          get :show, params: show_params
+
+          expect(response).to be_successful
+          expect(response.body).to match(/InvitationBlock/)
+          expect(response.body).not_to match(/RSA orientation/)
         end
       end
     end
