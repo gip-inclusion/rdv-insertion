@@ -4,7 +4,7 @@ class ApplicantsController < ApplicationController
   PERMITTED_PARAMS = [
     :uid, :role, :first_name, :last_name, :birth_date, :email, :phone_number,
     :birth_name, :address, :affiliation_number, :department_internal_id, :title,
-    :status, :rights_opening_date
+    :status, :rights_opening_date, :archiving_reason
   ].freeze
 
   include FilterableApplicantsConcern
@@ -15,8 +15,9 @@ class ApplicantsController < ApplicationController
                 :set_current_motif_category, :set_applicants, :set_rdv_contexts,
                 :filter_applicants, :order_applicants, only: [:index]
   before_action :set_organisations, only: [:new, :create]
-  before_action :set_applicant_rdv_contexts, :set_can_be_added_to_other_org, only: [:show]
+  before_action :set_applicant_rdv_contexts, :set_can_be_added_to_other_org, :set_back_to_list_url, only: [:show]
   before_action :retrieve_applicants, only: [:search]
+  after_action :store_back_to_list_url, only: [:index]
 
   def new
     @applicant = Applicant.new(department: @department)
@@ -237,6 +238,14 @@ class ApplicantsController < ApplicationController
 
   def archived_scope?
     @applicants_scope == "archived"
+  end
+
+  def store_back_to_list_url
+    session[:back_to_list_url] = request.fullpath
+  end
+
+  def set_back_to_list_url
+    @back_to_list_url = session[:back_to_list_url]
   end
 
   def order_applicants
