@@ -6,7 +6,7 @@ fr:
       invitation:
         help_phone_number: Téléphone de contact
         link: Lien
-        token: Token
+        rdv_solidarites_token: Token RDV-Solidarités
         number_of_days_to_accept_invitation: Nombre de jours pour accepter l'invitation
         formats:
           postal: courrier

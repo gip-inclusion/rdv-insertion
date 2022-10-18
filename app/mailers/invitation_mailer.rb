@@ -30,6 +30,13 @@ class InvitationMailer < ApplicationMailer
     )
   end
 
+  def invitation_for_rsa_follow_up
+    mail(
+      to: @applicant.email,
+      subject: "Votre RDV de suivi avec votre référent de parcours"
+    )
+  end
+
   ### Reminders
 
   def invitation_for_rsa_orientation_reminder
@@ -57,6 +64,13 @@ class InvitationMailer < ApplicationMailer
     mail(
       to: @applicant.email,
       subject: "[Rappel]: Votre RDV de signature de Contrat d'Engagement Réciproque dans le cadre de votre RSA"
+    )
+  end
+
+  def invitation_for_rsa_follow_up_reminder
+    mail(
+      to: @applicant.email,
+      subject: "[Rappel]: Votre RDV de suivi avec votre référent de parcours"
     )
   end
 

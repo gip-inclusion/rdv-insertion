@@ -33,6 +33,7 @@ describe Notifications::NotifyApplicant, type: :service do
       expect(notification.applicant_id).to eq(applicant.id)
       expect(notification.format).to eq(format)
       expect(notification.event).to eq(event)
+      expect(notification.rdv_solidarites_rdv_id).to eq(rdv.rdv_solidarites_rdv_id)
       expect(notification.sent_at).not_to be_nil
     end
 

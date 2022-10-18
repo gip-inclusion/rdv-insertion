@@ -8,30 +8,23 @@ const updateExistingApplicantContactsData = async (applicant, parsedApplicantCon
   return applicant;
 };
 
-const updateNewApplicantContactsData = (applicant, phoneNumber, email, rightsOpeningDate) => {
-  if (applicant.phoneNumber == null && phoneNumber) {
-    applicant.updatePhoneNumber(phoneNumber);
-  }
+const updateNewApplicantContactsData = (applicant, parsedApplicantContactsData) => {
+  const { phoneNumber } = parsedApplicantContactsData;
+  const { email } = parsedApplicantContactsData;
+  const { rightsOpeningDate } = parsedApplicantContactsData;
 
-  if (applicant.email == null && email) {
-    applicant.email = email;
-  }
-
-  if (applicant.rightsOpeningDate == null && rightsOpeningDate) {
-    applicant.rightsOpeningDate = rightsOpeningDate;
-  }
+  if (phoneNumber) applicant.updatePhoneNumber(phoneNumber);
+  if (email) applicant.email = email;
+  if (rightsOpeningDate) applicant.rightsOpeningDate = rightsOpeningDate;
 
   return applicant;
 };
 
 const updateApplicantContactsData = (applicant, parsedApplicantContactsData) => {
-  const { phoneNumber } = parsedApplicantContactsData;
-  const { email } = parsedApplicantContactsData;
-  const { rightsOpeningDate } = parsedApplicantContactsData;
   if (applicant.createdAt) {
     return updateExistingApplicantContactsData(applicant, parsedApplicantContactsData);
   }
-  return updateNewApplicantContactsData(applicant, phoneNumber, email, rightsOpeningDate);
+  return updateNewApplicantContactsData(applicant, parsedApplicantContactsData);
 };
 
 export default updateApplicantContactsData;

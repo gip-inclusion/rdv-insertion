@@ -102,7 +102,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_17_152036) do
   create_table "invitations", force: :cascade do |t|
     t.integer "format"
     t.string "link"
-    t.string "token"
+    t.string "rdv_solidarites_token"
     t.datetime "sent_at", precision: nil
     t.bigint "applicant_id", null: false
     t.datetime "created_at", null: false

@@ -29,7 +29,7 @@ describe Invitations::SendSms, type: :service do
   let!(:invitation) do
     create(
       :invitation,
-      applicant: applicant, department: department, token: "123", help_phone_number: help_phone_number,
+      applicant: applicant, department: department, rdv_solidarites_token: "123", help_phone_number: help_phone_number,
       number_of_days_to_accept_invitation: 9, organisations: [organisation],
       link: "https://www.rdv-solidarites.fr/lieux?invitation_token=123", format: "sms", rdv_context: rdv_context
     )

@@ -17,7 +17,7 @@ describe CreateAndInviteApplicantJob, type: :job do
   let!(:configuration) { create(:configuration, motif_category: motif_category) }
   let!(:applicant) { create(:applicant) }
   let!(:applicant_attributes) do
-    { department_internal_id: "1919", affiliation_number: "00001", role: "conjoint", phone_number: "07070707",
+    { department_internal_id: "1919", affiliation_number: "00001", role: "conjoint", phone_number: "0607070707",
       email: "john.doe@apijob.com" }
   end
   let!(:invitation_params) { { rdv_solidarites_lieu_id: 888 } }
@@ -65,6 +65,18 @@ describe CreateAndInviteApplicantJob, type: :job do
 
   context "when there is no phone" do
     before { applicant_attributes[:phone_number] = nil }
+
+    it "does not enqueue an invite sms job" do
+      expect(InviteApplicantJob).not_to receive(:perform_async)
+        .with(
+          applicant.id, organisation.id, sms_invitation_attributes, motif_category, rdv_solidarites_session_credentials
+        )
+      subject
+    end
+  end
+
+  context "when the phone is not a mobile" do
+    before { applicant_attributes[:phone_number] = "0101010101" }
 
     it "does not enqueue an invite sms job" do
       expect(InviteApplicantJob).not_to receive(:perform_async)

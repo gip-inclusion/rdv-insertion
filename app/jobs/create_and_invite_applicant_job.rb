@@ -35,8 +35,8 @@ class CreateAndInviteApplicantJob < ApplicationJob
   end
 
   def invite_applicant
-    enqueue_invite_job("sms") if @applicant_attributes[:phone_number].present?
-    enqueue_invite_job("email") if @applicant_attributes[:email].present?
+    enqueue_invite_job("sms") if applicant.phone_number_is_mobile?
+    enqueue_invite_job("email") if @applicant.email.present?
   end
 
   def enqueue_invite_job(invitation_format)

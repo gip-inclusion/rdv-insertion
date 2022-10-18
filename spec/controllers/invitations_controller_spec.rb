@@ -267,47 +267,6 @@ describe InvitationsController, type: :controller do
     let!(:invitation) { create(:invitation, format: "sms") }
     let!(:invitation2) { create(:invitation, format: "email") }
 
-    context "when a token is passed" do
-      context "when format is not specified" do
-        let!(:invite_params) { { token: invitation.token } }
-
-        it "marks the sms invitation as clicked" do
-          subject
-          expect(invitation.reload.clicked).to eq(true)
-          expect(invitation2.reload.clicked).to eq(false)
-        end
-
-        it "redirects to the invitation link" do
-          subject
-          expect(response).to redirect_to invitation.link
-        end
-      end
-
-      context "when format is specified" do
-        let!(:invite_params) { { token: invitation.token, format: "email" } }
-
-        it "marks the matching format invitation as clicked" do
-          subject
-          expect(invitation2.reload.clicked).to eq(true)
-          expect(invitation.reload.clicked).to eq(false)
-        end
-
-        it "redirects to the invitation link" do
-          subject
-          expect(response).to redirect_to invitation2.link
-        end
-      end
-
-      context "when no invitation matches the format" do
-        let!(:invitation) { create(:invitation, format: "email") }
-        let!(:invite_params) { { token: invitation.token } }
-
-        it "raises an error" do
-          expect { subject }.to raise_error(ActiveRecord::RecordNotFound)
-        end
-      end
-    end
-
     context "when uuid is passed" do
       let!(:invite_params) { { uuid: invitation2.uuid } }
 
