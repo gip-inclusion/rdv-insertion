@@ -31,7 +31,11 @@ const handleApplicantInvitation = async (
     motifCategory
   );
   if (!result.success) {
-    Swal.fire("Impossible d'inviter l'utilisateur", result.errors && result.errors[0], "error");
+    Swal.fire(
+      "Impossible d'inviter l'utilisateur",
+      result.errors && result.errors.join("<br/><br/>"),
+      "error"
+    );
   }
   return result;
 };

@@ -75,7 +75,7 @@ class Applicant < ApplicationRecord
   end
 
   def rdv_context_for(motif_category)
-    rdv_contexts.find { |rc| rc.motif_category == motif_category }
+    rdv_contexts.to_a.find { |rc| rc.motif_category == motif_category }
   end
 
   def deleted?
@@ -86,8 +86,12 @@ class Applicant < ApplicationRecord
     archived? || deleted?
   end
 
-  def motif_categories
-    rdv_contexts.map(&:motif_category)
+  def rdv_contexts_motif_categories
+    rdv_contexts.map(&:motif_category).uniq
+  end
+
+  def configurations_motif_categories
+    configurations.flat_map(&:motif_category).uniq
   end
 
   def can_be_invited_through?(invitation_format)

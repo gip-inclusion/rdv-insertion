@@ -14,6 +14,9 @@ describe Invitations::SaveAndSend, type: :service do
       allow(Invitations::AssignAttributes).to receive(:call)
         .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
         .and_return(OpenStruct.new(success?: true))
+      allow(Invitations::Validate).to receive(:call)
+        .with(invitation: invitation)
+        .and_return(OpenStruct.new(success?: true))
       allow(invitation).to receive(:send_to_applicant)
         .and_return(OpenStruct.new(success?: true))
       allow(invitation).to receive(:rdv_solidarites_token?).and_return(false)
@@ -44,7 +47,7 @@ describe Invitations::SaveAndSend, type: :service do
       expect(invitation.reload.sent_at).not_to be_nil
     end
 
-    context "when it fails to save" do
+    context "when it fails to assign attributes" do
       before do
         allow(Invitations::AssignAttributes).to receive(:call)
           .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
@@ -57,6 +60,22 @@ describe Invitations::SaveAndSend, type: :service do
 
       it "stores the error" do
         expect(subject.errors).to eq(["cannot assign token"])
+      end
+    end
+
+    context "when the validation fails" do
+      before do
+        allow(Invitations::Validate).to receive(:call)
+          .with(invitation: invitation)
+          .and_return(OpenStruct.new(success?: false, errors: ["validation failed"]))
+      end
+
+      it "is a failure" do
+        is_a_failure
+      end
+
+      it "stores the error" do
+        expect(subject.errors).to eq(["validation failed"])
       end
     end
 

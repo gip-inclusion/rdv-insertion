@@ -27,7 +27,7 @@ class Organisation < ApplicationRecord
     against: [:name, :slug]
   )
 
-  def motif_categories
+  def configurations_motif_categories
     configurations.map(&:motif_category)
   end
 

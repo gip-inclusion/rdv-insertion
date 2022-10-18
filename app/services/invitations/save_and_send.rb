@@ -8,6 +8,7 @@ module Invitations
     def call
       Invitation.with_advisory_lock "invite_applicant_#{applicant.id}" do
         assign_link_and_token
+        validate_invitation
         save_record!(@invitation)
         send_invitation
         update_invitation_sent_at
@@ -20,6 +21,13 @@ module Invitations
     def update_invitation_sent_at
       @invitation.sent_at = Time.zone.now
       save_record!(@invitation)
+    end
+
+    def validate_invitation
+      call_service!(
+        Invitations::Validate,
+        invitation: @invitation
+      )
     end
 
     def send_invitation
