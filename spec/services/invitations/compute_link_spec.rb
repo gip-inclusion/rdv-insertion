@@ -28,14 +28,14 @@ describe Invitations::ComputeLink, type: :service do
       organisations: [organisation1, organisation2],
       applicant: applicant,
       rdv_context: rdv_context,
-      token: invitation_token
+      rdv_solidarites_token: rdv_solidarites_token
     )
   end
 
   let!(:organisation1) { create(:organisation, department: department, rdv_solidarites_organisation_id: 333) }
   let!(:organisation2) { create(:organisation, department: department, rdv_solidarites_organisation_id: 444) }
 
-  let!(:invitation_token) { "sometoken" }
+  let!(:rdv_solidarites_token) { "sometoken" }
 
   describe "#call" do
     before do
@@ -54,7 +54,7 @@ describe Invitations::ComputeLink, type: :service do
     it("is a success") { is_a_success }
 
     it "returns the link" do
-      expect(subject.invitation_link).to include(invitation_token)
+      expect(subject.invitation_link).to include(rdv_solidarites_token)
     end
 
     it "computes the link" do
@@ -106,7 +106,7 @@ describe Invitations::ComputeLink, type: :service do
           organisations: [organisation1, organisation2],
           applicant: applicant,
           rdv_context: rdv_context,
-          token: invitation_token,
+          rdv_solidarites_token: rdv_solidarites_token,
           rdv_solidarites_lieu_id: 5
         )
       end

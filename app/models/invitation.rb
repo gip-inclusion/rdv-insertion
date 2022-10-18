@@ -8,7 +8,8 @@ class Invitation < ApplicationRecord
 
   attr_accessor :content
 
-  validates :help_phone_number, :token, :organisations, :link, :number_of_days_to_accept_invitation,
+  validates :help_phone_number, :rdv_solidarites_token, :organisations, :link, :number_of_days_to_accept_invitation,
+            :valid_until,
             presence: true
   validates :uuid, uniqueness: true, allow_nil: true
   validate :organisations_cannot_be_from_different_departments
@@ -26,6 +27,7 @@ class Invitation < ApplicationRecord
     where("sent_at > ?", number_of_days_before_action_required.days.ago)
   }
   scope :reminder, ->(reminder = true) { where(reminder: reminder) }
+  scope :valid, -> { where("valid_until > ?", Time.zone.now) }
 
   def send_to_applicant
     case self.format
@@ -50,12 +52,8 @@ class Invitation < ApplicationRecord
     organisations.map(&:messages_configuration).compact.first
   end
 
-  def set_valid_until
-    self.valid_until = validity_duration.present? ? validity_duration.from_now : nil
-  end
-
   def number_of_days_before_expiration
-    if valid_until.blank? || expired?
+    if expired?
       0
     else
       (valid_until.to_date - Time.zone.now.to_date).to_i
@@ -63,7 +61,7 @@ class Invitation < ApplicationRecord
   end
 
   def expired?
-    valid_until.present? && valid_until < Time.zone.now
+    valid_until < Time.zone.now
   end
 
   def sent_before?(date)

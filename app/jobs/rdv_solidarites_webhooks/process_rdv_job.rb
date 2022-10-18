@@ -78,7 +78,7 @@ module RdvSolidaritesWebhooks
     end
 
     def related_invitations
-      @related_invitations ||= Invitation.where(rdv_context_id: rdv_context_ids)
+      @related_invitations ||= Invitation.sent.valid.where(rdv_context_id: rdv_context_ids)
     end
 
     def organisation

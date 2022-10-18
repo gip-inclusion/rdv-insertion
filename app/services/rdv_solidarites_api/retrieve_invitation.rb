@@ -1,8 +1,8 @@
 module RdvSolidaritesApi
   class RetrieveInvitation < Base
-    def initialize(rdv_solidarites_session:, token:)
+    def initialize(rdv_solidarites_session:, rdv_solidarites_token:)
       @rdv_solidarites_session = rdv_solidarites_session
-      @token = token
+      @rdv_solidarites_token = rdv_solidarites_token
     end
 
     def call
@@ -13,7 +13,7 @@ module RdvSolidaritesApi
     private
 
     def rdv_solidarites_response
-      @rdv_solidarites_response ||= rdv_solidarites_client.get_invitation(@token)
+      @rdv_solidarites_response ||= rdv_solidarites_client.get_invitation(@rdv_solidarites_token)
     end
   end
 end

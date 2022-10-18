@@ -41,7 +41,7 @@ module Invitations
       {
         departement: @invitation.department.number,
         address: address,
-        invitation_token: @invitation.token,
+        invitation_token: @invitation.rdv_solidarites_token,
         organisation_ids: @invitation.organisations.map(&:rdv_solidarites_organisation_id),
         motif_category: @invitation.motif_category
       }

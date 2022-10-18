@@ -31,7 +31,7 @@ module Invitations
     end
 
     def assign_link_and_token
-      return if @invitation.link? && @invitation.token?
+      return if @invitation.link? && @invitation.rdv_solidarites_token?
 
       call_service!(
         Invitations::AssignAttributes,
