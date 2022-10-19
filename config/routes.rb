@@ -70,6 +70,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :email_sendings, only: [:new, :create]
+
   # Error pages
   get "404", to: "errors#not_found"
   get "422", to: "errors#unprocessable_entity"

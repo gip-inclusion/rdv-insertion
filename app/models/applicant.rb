@@ -53,6 +53,10 @@ class Applicant < ApplicationRecord
     "#{title.capitalize} #{first_name.capitalize} #{last_name.upcase}"
   end
 
+  def to_s
+    "#{first_name.capitalize} #{last_name.capitalize}"
+  end
+
   def short_title
     title == "monsieur" ? "M" : "Mme"
   end

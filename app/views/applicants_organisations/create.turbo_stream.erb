@@ -7,3 +7,8 @@
 <%= turbo_stream.prepend "flashes" do %>
   <%= render partial: "common/flash", locals: { flash: { success: "L'allocataire a bien été ajouté à l'organisation" } } %>
 <% end %>
+<% if @organisation.email? %>
+  <%= turbo_stream.replace "remote_modal" do %>
+    <%= render partial: "email_sendings/form", locals: { emails: [@organisation.email], applicant: @applicant, organisation: @organisation } %>
+  <% end %>
+<% end %>

@@ -1,0 +1,49 @@
+<%= render "common/remote_modal", title: "Envoyez un email à l'organisation si vous le souhaitez" do %>
+  <%= simple_form_for(:email, url: email_sendings_path, html: { method: :post }, data: { "turbo-frame" => "_top" }) do |f| %>
+      <div class="form-group">
+        <div class="mb-3">
+          <h5 class="label-blue">Destinataire</h5>
+            <%= f.input :to,
+                        as: :select,
+                        collection: emails,
+                        include_blank: false,
+                        input_html: { class: "form-control" }
+            %>
+        </div>
+        <div class="mb-3">
+          <h5 class="label-blue">Objet</h5>
+            <%= f.input :subject,
+                        input_html: {
+                          class: "form-control",
+                          value: "[RDV-Insertion] Un allocataire a été ajouté à votre organisation"
+                        }
+            %>
+        </div>
+        <div class="mb-3">
+          <h5 class="label-blue">Message</h5>
+            <%= f.input :content,
+                    as: :text,
+                    input_html: {
+                      class: "form-control",
+                      cols: 15,
+                      rows: 15,
+                      value: "Le bénéficiaire a #{applicant} été ajouté à votre organisation #{organisation.name}. Vous pouvez consulter son profil à l'adresse suivant : #{organisation_applicant_url(id: applicant.id, organisation_id: organisation.id, host: ENV['HOST'])}"
+                    }
+
+            %>
+        </div>
+        <div class="mb-3">
+          <h5 class="label-blue">Pièces jointes</h5>
+            <%= f.input :attachments,
+                        as: :file,
+                        input_html: { class: "form-control", multiple: true }
+            %>
+        </div>
+
+      </div>
+      <div class="form-group text-center">
+        <%= f.button :submit, "Envoyer", class: "btn btn-blue" %>
+      </div>
+    </div>
+  <% end %>
+<% end %>
