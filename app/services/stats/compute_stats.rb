@@ -263,6 +263,7 @@ module Stats
                            .where(rdv_contexts: {
                                     motif_category: %w[
                                       rsa_orientation rsa_orientation_on_phone_platform rsa_accompagnement
+                                      rsa_accompagnement_social rsa_accompagnement_sociopro
                                     ]
                                   })
     end

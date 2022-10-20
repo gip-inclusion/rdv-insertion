@@ -65,6 +65,52 @@ RSpec.describe NotificationMailer, type: :mailer do
       end
     end
 
+    context "for rsa accompagnement social" do
+      let!(:motif_category) { "rsa_accompagnement_social" }
+
+      it "renders the subject" do
+        expect(mail.subject).to eq(
+          "[Important - RSA] Vous êtes convoqué(e) à un rendez-vous d'accompagnement"
+        )
+      end
+
+      it "renders the body" do
+        expect(mail.body.encoded).to include(
+          "Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) à un rendez-vous d&#39;accompagnement"
+        )
+        expect(mail.body.encoded).to include("le 20/12/2021 à 12:00")
+        expect(mail.body.encoded).to include("DINUM")
+        expect(mail.body.encoded).to include("20 avenue de ségur 75007 Paris")
+        expect(mail.body.encoded).to include("Ce rendez-vous est obligatoire")
+        expect(mail.body.encoded).to include(
+          "En cas d'absence, le versement de votre RSA pourra être suspendu ou réduit."
+        )
+      end
+    end
+
+    context "for rsa accompagnement sociopro" do
+      let!(:motif_category) { "rsa_accompagnement_sociopro" }
+
+      it "renders the subject" do
+        expect(mail.subject).to eq(
+          "[Important - RSA] Vous êtes convoqué(e) à un rendez-vous d'accompagnement"
+        )
+      end
+
+      it "renders the body" do
+        expect(mail.body.encoded).to include(
+          "Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) à un rendez-vous d&#39;accompagnement"
+        )
+        expect(mail.body.encoded).to include("le 20/12/2021 à 12:00")
+        expect(mail.body.encoded).to include("DINUM")
+        expect(mail.body.encoded).to include("20 avenue de ségur 75007 Paris")
+        expect(mail.body.encoded).to include("Ce rendez-vous est obligatoire")
+        expect(mail.body.encoded).to include(
+          "En cas d'absence, le versement de votre RSA pourra être suspendu ou réduit."
+        )
+      end
+    end
+
     context "for rsa cer signature" do
       let!(:motif_category) { "rsa_cer_signature" }
 
@@ -155,6 +201,52 @@ RSpec.describe NotificationMailer, type: :mailer do
 
     context "for rsa accompagnement" do
       let!(:motif_category) { "rsa_accompagnement" }
+
+      it "renders the subject" do
+        expect(mail.subject).to eq(
+          "[Important - RSA] Votre rendez-vous d'accompagnement a été modifié."
+        )
+      end
+
+      it "renders the body" do
+        expect(mail.body.encoded).to include(
+          "Votre rendez-vous d&#39;accompagnement dans le cadre de votre RSA a été modifié"
+        )
+        expect(mail.body.encoded).to include("le 20/12/2021 à 12:00")
+        expect(mail.body.encoded).to include("DINUM")
+        expect(mail.body.encoded).to include("20 avenue de ségur 75007 Paris")
+        expect(mail.body.encoded).to include("Ce rendez-vous est obligatoire")
+        expect(mail.body.encoded).to include(
+          "En cas d'absence, le versement de votre RSA pourra être suspendu ou réduit."
+        )
+      end
+    end
+
+    context "for rsa accompagnemen social" do
+      let!(:motif_category) { "rsa_accompagnement_social" }
+
+      it "renders the subject" do
+        expect(mail.subject).to eq(
+          "[Important - RSA] Votre rendez-vous d'accompagnement a été modifié."
+        )
+      end
+
+      it "renders the body" do
+        expect(mail.body.encoded).to include(
+          "Votre rendez-vous d&#39;accompagnement dans le cadre de votre RSA a été modifié"
+        )
+        expect(mail.body.encoded).to include("le 20/12/2021 à 12:00")
+        expect(mail.body.encoded).to include("DINUM")
+        expect(mail.body.encoded).to include("20 avenue de ségur 75007 Paris")
+        expect(mail.body.encoded).to include("Ce rendez-vous est obligatoire")
+        expect(mail.body.encoded).to include(
+          "En cas d'absence, le versement de votre RSA pourra être suspendu ou réduit."
+        )
+      end
+    end
+
+    context "for rsa accompagnement sociopro" do
+      let!(:motif_category) { "rsa_accompagnement_sociopro" }
 
       it "renders the subject" do
         expect(mail.subject).to eq(
@@ -270,6 +362,58 @@ RSpec.describe NotificationMailer, type: :mailer do
 
     context "for rsa accompagnement" do
       let!(:motif_category) { "rsa_accompagnement" }
+
+      it "renders the subject" do
+        expect(mail.subject).to eq(
+          "[Important - RSA] Vous êtes convoqué(e) à un rendez-vous d'accompagnement téléphonique"
+        )
+      end
+
+      it "renders the body" do
+        expect(mail.body.encoded).to include(
+          "Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) " \
+          "à un rendez-vous d&#39;accompagnement téléphonique"
+        )
+        expect(mail.body.encoded).to include("Un travailleur social vous appellera")
+        expect(mail.body.encoded).to include("le 20/12/2021 à 12:00")
+        expect(mail.body.encoded).to include("sur votre numéro de téléphone:")
+        expect(mail.body.encoded).to include("+33607070707")
+        expect(mail.body.encoded).not_to include("20 avenue de ségur 75007 Paris")
+        expect(mail.body.encoded).to include("Ce rendez-vous est obligatoire")
+        expect(mail.body.encoded).to include(
+          "En cas d'absence, le versement de votre RSA pourra être suspendu ou réduit."
+        )
+      end
+    end
+
+    context "for rsa accompagnement social" do
+      let!(:motif_category) { "rsa_accompagnement_social" }
+
+      it "renders the subject" do
+        expect(mail.subject).to eq(
+          "[Important - RSA] Vous êtes convoqué(e) à un rendez-vous d'accompagnement téléphonique"
+        )
+      end
+
+      it "renders the body" do
+        expect(mail.body.encoded).to include(
+          "Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) " \
+          "à un rendez-vous d&#39;accompagnement téléphonique"
+        )
+        expect(mail.body.encoded).to include("Un travailleur social vous appellera")
+        expect(mail.body.encoded).to include("le 20/12/2021 à 12:00")
+        expect(mail.body.encoded).to include("sur votre numéro de téléphone:")
+        expect(mail.body.encoded).to include("+33607070707")
+        expect(mail.body.encoded).not_to include("20 avenue de ségur 75007 Paris")
+        expect(mail.body.encoded).to include("Ce rendez-vous est obligatoire")
+        expect(mail.body.encoded).to include(
+          "En cas d'absence, le versement de votre RSA pourra être suspendu ou réduit."
+        )
+      end
+    end
+
+    context "for rsa accompagnement sociopro" do
+      let!(:motif_category) { "rsa_accompagnement_sociopro" }
 
       it "renders the subject" do
         expect(mail.subject).to eq(
@@ -424,6 +568,56 @@ RSpec.describe NotificationMailer, type: :mailer do
       end
     end
 
+    context "for rsa accompagnement social" do
+      let!(:motif_category) { "rsa_accompagnement_social" }
+
+      it "renders the subject" do
+        expect(mail.subject).to eq(
+          "[Important - RSA] Votre rendez-vous d'accompagnement téléphonique a été modifié."
+        )
+      end
+
+      it "renders the body" do
+        expect(mail.body.encoded).to include(
+          "Votre rendez-vous d&#39;accompagnement téléphonique dans le cadre de votre RSA a été modifié."
+        )
+        expect(mail.body.encoded).to include("Un travailleur social vous appellera")
+        expect(mail.body.encoded).to include("le 20/12/2021 à 12:00")
+        expect(mail.body.encoded).to include("sur votre numéro de téléphone:")
+        expect(mail.body.encoded).to include("+33607070707")
+        expect(mail.body.encoded).not_to include("20 avenue de ségur 75007 Paris")
+        expect(mail.body.encoded).to include("Ce rendez-vous est obligatoire")
+        expect(mail.body.encoded).to include(
+          "En cas d'absence, le versement de votre RSA pourra être suspendu ou réduit."
+        )
+      end
+    end
+
+    context "for rsa accompagnement sociopro" do
+      let!(:motif_category) { "rsa_accompagnement_sociopro" }
+
+      it "renders the subject" do
+        expect(mail.subject).to eq(
+          "[Important - RSA] Votre rendez-vous d'accompagnement téléphonique a été modifié."
+        )
+      end
+
+      it "renders the body" do
+        expect(mail.body.encoded).to include(
+          "Votre rendez-vous d&#39;accompagnement téléphonique dans le cadre de votre RSA a été modifié."
+        )
+        expect(mail.body.encoded).to include("Un travailleur social vous appellera")
+        expect(mail.body.encoded).to include("le 20/12/2021 à 12:00")
+        expect(mail.body.encoded).to include("sur votre numéro de téléphone:")
+        expect(mail.body.encoded).to include("+33607070707")
+        expect(mail.body.encoded).not_to include("20 avenue de ségur 75007 Paris")
+        expect(mail.body.encoded).to include("Ce rendez-vous est obligatoire")
+        expect(mail.body.encoded).to include(
+          "En cas d'absence, le versement de votre RSA pourra être suspendu ou réduit."
+        )
+      end
+    end
+
     context "for rsa cer signature" do
       let!(:motif_category) { "rsa_cer_signature" }
 
@@ -523,6 +717,40 @@ RSpec.describe NotificationMailer, type: :mailer do
 
     context "for rsa accompagnement" do
       let!(:motif_category) { "rsa_accompagnement" }
+
+      it "renders the subject" do
+        expect(mail.subject).to eq(
+          "[Important - RSA] Votre rendez-vous d'accompagnement a été annulé."
+        )
+      end
+
+      it "renders the body" do
+        expect(mail.body.encoded).to include(
+          "Votre rendez-vous d&#39;accompagnement dans le cadre de votre RSA a été annulé."
+        )
+        expect(mail.body.encoded).to include("our plus d'informations, veuillez appeler le 0101010101")
+      end
+    end
+
+    context "for rsa accompagnement social" do
+      let!(:motif_category) { "rsa_accompagnement_social" }
+
+      it "renders the subject" do
+        expect(mail.subject).to eq(
+          "[Important - RSA] Votre rendez-vous d'accompagnement a été annulé."
+        )
+      end
+
+      it "renders the body" do
+        expect(mail.body.encoded).to include(
+          "Votre rendez-vous d&#39;accompagnement dans le cadre de votre RSA a été annulé."
+        )
+        expect(mail.body.encoded).to include("our plus d'informations, veuillez appeler le 0101010101")
+      end
+    end
+
+    context "for rsa accompagnement sociopro" do
+      let!(:motif_category) { "rsa_accompagnement_sociopro" }
 
       it "renders the subject" do
         expect(mail.subject).to eq(

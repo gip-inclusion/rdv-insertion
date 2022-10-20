@@ -244,6 +244,200 @@ describe Notifications::SendSms, type: :service do
       end
     end
 
+    describe "RSA accompagnement social" do
+      let!(:rdv_context) { create(:rdv_context, motif_category: "rsa_accompagnement_social") }
+
+      let!(:content) do
+        "Monsieur John DOE,\nVous êtes allocataire du RSA et à ce titre vous avez été convoqué(e) à un " \
+          "rendez-vous d'accompagnement. Vous êtes attendu(e) le 20/12/2021 à " \
+          "10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
+          "Ce RDV est obligatoire. "\
+          "En cas d'absence, le versement de votre RSA pourra être suspendu ou réduit. " \
+          "En cas d’empêchement, appelez rapidement le 0101010101."
+      end
+
+      it "calls the messenger service with the right content" do
+        expect(Messengers::SendSms).to receive(:call)
+          .with(sendable: notification, content: content)
+        subject
+      end
+
+      context "when is an update notification" do
+        let!(:notification) do
+          create(:notification, applicant: applicant, rdv: rdv, format: "sms", event: "rdv_updated")
+        end
+
+        let!(:content) do
+          "Monsieur John DOE,\nVotre rendez-vous d'accompagnement dans le cadre de votre RSA a été modifié. " \
+            "Vous êtes attendu(e) le 20/12/2021 à " \
+            "10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
+            "Ce RDV est obligatoire. "\
+            "En cas d'absence, le versement de votre RSA pourra être suspendu ou réduit. " \
+            "En cas d’empêchement, appelez rapidement le 0101010101."
+        end
+
+        it "calls the messenger service with the right content" do
+          expect(Messengers::SendSms).to receive(:call)
+            .with(sendable: notification, content: content)
+          subject
+        end
+      end
+
+      context "when it is a cancelled notification" do
+        let!(:notification) do
+          create(:notification, applicant: applicant, rdv: rdv, format: "sms", event: "rdv_cancelled")
+        end
+
+        let!(:content) do
+          "Monsieur John DOE,\nVotre rendez-vous d'accompagnement dans le cadre de votre RSA a été annulé. " \
+            "Pour plus d'informations, contactez le 0101010101."
+        end
+
+        it "calls the messenger service with the right content" do
+          expect(Messengers::SendSms).to receive(:call)
+            .with(sendable: notification, content: content)
+          subject
+        end
+      end
+
+      context "when it is a phone rdv" do
+        let!(:motif) { create(:motif, location_type: "phone") }
+
+        let!(:content) do
+          "Monsieur John DOE,\nVous êtes allocataire du RSA et à ce titre vous avez été convoqué(e) à un " \
+            "rendez-vous d'accompagnement. Un travailleur social vous appellera le 20/12/2021 à " \
+            "partir de 10:00 sur ce numéro. " \
+            "Ce RDV est obligatoire. "\
+            "En cas d'absence, le versement de votre RSA pourra être suspendu ou réduit. " \
+            "En cas d’empêchement, appelez rapidement le 0101010101."
+        end
+
+        it "calls the send transactional service with the right content" do
+          expect(Messengers::SendSms).to receive(:call)
+            .with(sendable: notification, content: content)
+          subject
+        end
+
+        context "when it is an update notification" do
+          let!(:notification) do
+            create(:notification, applicant: applicant, rdv: rdv, format: "sms", event: "rdv_updated")
+          end
+
+          let!(:content) do
+            "Monsieur John DOE,\nVotre rendez-vous d'accompagnement dans le cadre de votre RSA a été modifié. " \
+              "Un travailleur social vous appellera le 20/12/2021 à " \
+              "partir de 10:00 sur ce numéro. " \
+              "Ce RDV est obligatoire. "\
+              "En cas d'absence, le versement de votre RSA pourra être suspendu ou réduit. " \
+              "En cas d’empêchement, appelez rapidement le 0101010101."
+          end
+
+          it "calls the send transactional service with the right content" do
+            expect(Messengers::SendSms).to receive(:call)
+              .with(sendable: notification, content: content)
+            subject
+          end
+        end
+      end
+    end
+
+    describe "RSA accompagnement sociopro" do
+      let!(:rdv_context) { create(:rdv_context, motif_category: "rsa_accompagnement_sociopro") }
+
+      let!(:content) do
+        "Monsieur John DOE,\nVous êtes allocataire du RSA et à ce titre vous avez été convoqué(e) à un " \
+          "rendez-vous d'accompagnement. Vous êtes attendu(e) le 20/12/2021 à " \
+          "10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
+          "Ce RDV est obligatoire. "\
+          "En cas d'absence, le versement de votre RSA pourra être suspendu ou réduit. " \
+          "En cas d’empêchement, appelez rapidement le 0101010101."
+      end
+
+      it "calls the messenger service with the right content" do
+        expect(Messengers::SendSms).to receive(:call)
+          .with(sendable: notification, content: content)
+        subject
+      end
+
+      context "when is an update notification" do
+        let!(:notification) do
+          create(:notification, applicant: applicant, rdv: rdv, format: "sms", event: "rdv_updated")
+        end
+
+        let!(:content) do
+          "Monsieur John DOE,\nVotre rendez-vous d'accompagnement dans le cadre de votre RSA a été modifié. " \
+            "Vous êtes attendu(e) le 20/12/2021 à " \
+            "10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
+            "Ce RDV est obligatoire. "\
+            "En cas d'absence, le versement de votre RSA pourra être suspendu ou réduit. " \
+            "En cas d’empêchement, appelez rapidement le 0101010101."
+        end
+
+        it "calls the messenger service with the right content" do
+          expect(Messengers::SendSms).to receive(:call)
+            .with(sendable: notification, content: content)
+          subject
+        end
+      end
+
+      context "when it is a cancelled notification" do
+        let!(:notification) do
+          create(:notification, applicant: applicant, rdv: rdv, format: "sms", event: "rdv_cancelled")
+        end
+
+        let!(:content) do
+          "Monsieur John DOE,\nVotre rendez-vous d'accompagnement dans le cadre de votre RSA a été annulé. " \
+            "Pour plus d'informations, contactez le 0101010101."
+        end
+
+        it "calls the messenger service with the right content" do
+          expect(Messengers::SendSms).to receive(:call)
+            .with(sendable: notification, content: content)
+          subject
+        end
+      end
+
+      context "when it is a phone rdv" do
+        let!(:motif) { create(:motif, location_type: "phone") }
+
+        let!(:content) do
+          "Monsieur John DOE,\nVous êtes allocataire du RSA et à ce titre vous avez été convoqué(e) à un " \
+            "rendez-vous d'accompagnement. Un travailleur social vous appellera le 20/12/2021 à " \
+            "partir de 10:00 sur ce numéro. " \
+            "Ce RDV est obligatoire. "\
+            "En cas d'absence, le versement de votre RSA pourra être suspendu ou réduit. " \
+            "En cas d’empêchement, appelez rapidement le 0101010101."
+        end
+
+        it "calls the send transactional service with the right content" do
+          expect(Messengers::SendSms).to receive(:call)
+            .with(sendable: notification, content: content)
+          subject
+        end
+
+        context "when it is an update notification" do
+          let!(:notification) do
+            create(:notification, applicant: applicant, rdv: rdv, format: "sms", event: "rdv_updated")
+          end
+
+          let!(:content) do
+            "Monsieur John DOE,\nVotre rendez-vous d'accompagnement dans le cadre de votre RSA a été modifié. " \
+              "Un travailleur social vous appellera le 20/12/2021 à " \
+              "partir de 10:00 sur ce numéro. " \
+              "Ce RDV est obligatoire. "\
+              "En cas d'absence, le versement de votre RSA pourra être suspendu ou réduit. " \
+              "En cas d’empêchement, appelez rapidement le 0101010101."
+          end
+
+          it "calls the send transactional service with the right content" do
+            expect(Messengers::SendSms).to receive(:call)
+              .with(sendable: notification, content: content)
+            subject
+          end
+        end
+      end
+    end
+
     describe "RSA CER Signature" do
       let!(:rdv_context) { create(:rdv_context, motif_category: "rsa_cer_signature") }
 
