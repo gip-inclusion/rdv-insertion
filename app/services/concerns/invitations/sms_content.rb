@@ -41,6 +41,8 @@ module Invitations
         "le versement de votre RSA pourra être suspendu ou réduit. En cas de problème technique, contactez le "\
         "#{help_phone_number}."
     end
+    alias content_for_rsa_accompagnement_social content_for_rsa_accompagnement
+    alias content_for_rsa_accompagnement_sociopro content_for_rsa_accompagnement
 
     def content_for_rsa_orientation_on_phone_platform
       "#{applicant.full_name},\nVous êtes bénéficiaire du RSA et vous devez contacter la plateforme départementale " \
@@ -98,6 +100,8 @@ module Invitations
         "le versement de votre RSA pourra être suspendu ou réduit. En cas de problème technique, contactez le "\
         "#{help_phone_number}."
     end
+    alias content_for_rsa_accompagnement_social_reminder content_for_rsa_accompagnement_reminder
+    alias content_for_rsa_accompagnement_sociopro_reminder content_for_rsa_accompagnement_reminder
 
     def content_for_rsa_orientation_on_phone_platform_reminder
       "#{applicant.full_name},\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours vous " \

@@ -73,6 +73,86 @@ class NotificationPreview < ActionMailer::Preview
       .rdv_cancelled
   end
 
+  ###### rsa_accompagnement_social ######
+  ### rdv_created ###
+  def rsa_accompagnement_social_presential_rdv_created
+    NotificationMailer
+      .with(rdv: rdv, applicant: applicant, signature_lines: signature_lines,
+            motif_category: "rsa_accompagnement_social")
+      .presential_rdv_created
+  end
+
+  def rsa_accompagnement_social_by_phone_rdv_created
+    NotificationMailer
+      .with(
+        rdv: rdv, applicant: applicant, signature_lines: signature_lines, motif_category: "rsa_accompagnement_social"
+      )
+      .by_phone_rdv_created
+  end
+
+  ### rdv_updated ###
+  def rsa_accompagnement_social_presential_rdv_updated
+    NotificationMailer
+      .with(rdv: rdv, applicant: applicant, signature_lines: signature_lines,
+            motif_category: "rsa_accompagnement_social")
+      .presential_rdv_updated
+  end
+
+  def rsa_accompagnement_social_by_phone_rdv_updated
+    NotificationMailer
+      .with(rdv: rdv, applicant: applicant, signature_lines: signature_lines,
+            motif_category: "rsa_accompagnement_social")
+      .by_phone_rdv_updated
+  end
+
+  ### rdv_cancelled ###
+  def rsa_accompagnement_social_rdv_cancelled
+    NotificationMailer
+      .with(rdv: rdv, applicant: applicant, signature_lines: signature_lines,
+            motif_category: "rsa_accompagnement_social")
+      .rdv_cancelled
+  end
+
+  ###### rsa_accompagnement_sociopro ######
+  ### rdv_created ###
+  def rsa_accompagnement_sociopro_presential_rdv_created
+    NotificationMailer
+      .with(rdv: rdv, applicant: applicant, signature_lines: signature_lines,
+            motif_category: "rsa_accompagnement_sociopro")
+      .presential_rdv_created
+  end
+
+  def rsa_accompagnement_sociopro_by_phone_rdv_created
+    NotificationMailer
+      .with(
+        rdv: rdv, applicant: applicant, signature_lines: signature_lines, motif_category: "rsa_accompagnement_sociopro"
+      )
+      .by_phone_rdv_created
+  end
+
+  ### rdv_updated ###
+  def rsa_accompagnement_sociopro_presential_rdv_updated
+    NotificationMailer
+      .with(rdv: rdv, applicant: applicant, signature_lines: signature_lines,
+            motif_category: "rsa_accompagnement_sociopro")
+      .presential_rdv_updated
+  end
+
+  def rsa_accompagnement_sociopro_by_phone_rdv_updated
+    NotificationMailer
+      .with(rdv: rdv, applicant: applicant, signature_lines: signature_lines,
+            motif_category: "rsa_accompagnement_sociopro")
+      .by_phone_rdv_updated
+  end
+
+  ### rdv_cancelled ###
+  def rsa_accompagnement_sociopro_rdv_cancelled
+    NotificationMailer
+      .with(rdv: rdv, applicant: applicant, signature_lines: signature_lines,
+            motif_category: "rsa_accompagnement_sociopro")
+      .rdv_cancelled
+  end
+
   ###### rsa_cer_signature ######
   ### rdv_created ###
   def rsa_cer_signature_presential_rdv_created

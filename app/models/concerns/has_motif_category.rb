@@ -6,6 +6,6 @@ module HasMotifCategory
   end
 
   def motif_category_human
-    Motif::CATEGORIES_NAMES_MAPPING[motif_category]
+    I18n.t("activerecord.attributes.motif.categories.#{motif_category}")
   end
 end
