@@ -9,7 +9,8 @@ class StatsController < ApplicationController
 
   def show
     @stat = Stat.find_by(department_number: @department.number)
-    @display_all_stats = @department.configurations.none?(&:convene_applicant?)
+    # we don't display all stats for departments who don't invite applicants
+    @display_all_stats = @department.configurations.none? { |configuration| configuration.invitation_formats.blank? }
   end
 
   def deployment_map; end
