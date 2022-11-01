@@ -38,6 +38,11 @@ describe Applicants::ArchivingsController, type: :controller do
         expect(response).to be_successful
         expect(JSON.parse(response.body)["success"]).to eq(true)
       end
+
+      it "returns the applicant" do
+        post :create, params: create_params
+        expect(JSON.parse(response.body)["applicant"]).to be_present
+      end
     end
 
     context "when the archiving is unsucessfull" do
@@ -69,6 +74,11 @@ describe Applicants::ArchivingsController, type: :controller do
       expect(JSON.parse(response.body)["success"]).to eq(true)
       expect(applicant.reload.archived_at).to eq(nil)
       expect(applicant.reload.archiving_reason).to eq(nil)
+    end
+
+    it "returns the applicant" do
+      post :destroy, params: { applicant_id: applicant_id }
+      expect(JSON.parse(response.body)["applicant"]).to be_present
     end
   end
 end

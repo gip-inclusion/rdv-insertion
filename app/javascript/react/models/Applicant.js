@@ -100,6 +100,7 @@ export default class Applicant {
     this.invitedAt = upToDateApplicant.invited_at;
     this.id = upToDateApplicant.id;
     this.isArchived = upToDateApplicant.archived_at != null;
+    this.archiving_reason = upToDateApplicant.archiving_reason;
     this.organisations = upToDateApplicant.organisations;
     // we assign a current organisation when we are in the context of a department
     this.currentOrganisation ||= upToDateApplicant.organisations.find(

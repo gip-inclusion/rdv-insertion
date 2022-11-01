@@ -5,6 +5,7 @@ import Tippy from "@tippyjs/react";
 import handleApplicantCreation from "../lib/handleApplicantCreation";
 import handleApplicantInvitation from "../lib/handleApplicantInvitation";
 import handleApplicantUpdate from "../lib/handleApplicantUpdate";
+import handleApplicantUnarchive from "../lib/handleApplicantUnarchive";
 import retrieveRelevantOrganisation from "../../lib/retrieveRelevantOrganisation";
 import { getFrenchFormatDateString } from "../../lib/datesHelper";
 import camelToSnakeCase from "../../lib/stringHelper";
@@ -25,6 +26,7 @@ export default function Applicant({
     phoneNumberUpdate: false,
     rightsOpeningDateUpdate: false,
     allAttributesUpdate: false,
+    applicantUnarchive: false,
   });
   const handleUpdateContactsDataClick = async (attribute = null) => {
     setIsLoading({ ...isLoading, [`${attribute}Update`]: true });
@@ -64,6 +66,17 @@ export default function Applicant({
         "Cet allocataire existait déjà dans une autre organisation du département. Il a été mis à jour et ajouté à votre organisation",
         "info"
       );
+    }
+    setIsLoading({ ...isLoading, organisationUpdate: false });
+  };
+
+  const handleUnarchiveApplicantClick = async () => {
+    setIsLoading({ ...isLoading, applicantUnarchive: true });
+
+    const result = await handleApplicantUnarchive(applicant);
+
+    if (result.success) {
+      Swal.fire("Dossier de l'allocataire rouvert avec succès", "", "info");
     }
     setIsLoading({ ...isLoading, organisationUpdate: false });
   };
@@ -159,8 +172,13 @@ export default function Applicant({
 
         {applicant.isArchived ? (
           <td>
-            <button type="submit" disabled className="btn btn-primary btn-blue">
-              Dossier archivé
+            <button
+              type="submit"
+              disabled={isLoading.applicantUnarchive}
+              className="btn btn-primary btn-blue"
+              onClick={() => handleUnarchiveApplicantClick()}
+            >
+              Rouvrir le dossier
             </button>
           </td>
         ) : applicant.createdAt ? (
@@ -251,7 +269,10 @@ export default function Applicant({
         {/* ----------------------------- Disabled invitations cases -------------------------- */}
 
         {applicant.isArchived ? (
-          <td colSpan={computeColSpanForDisabledInvitations()} />
+          <td colSpan={computeColSpanForDisabledInvitations()}>
+            Dossier archivé
+            {applicant.archiving_reason && <>&nbsp;: {applicant.archiving_reason}</>}
+          </td>
         ) : applicant.isDuplicate ? (
           <Tippy
             content={
