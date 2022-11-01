@@ -37,7 +37,6 @@ export default function ApplicantsUpload({
     ...columnNames.optional,
   });
   const isDepartmentLevel = !organisation;
-
   const [fileSize, setFileSize] = useState(0);
   /* eslint no-unused-vars: ["error", { "varsIgnorePattern": "contactsUpdated" }] */
   // This state allows to re-renders applicants after contacts update

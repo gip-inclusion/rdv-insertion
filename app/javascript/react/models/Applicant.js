@@ -1,5 +1,6 @@
 import formatPhoneNumber from "../../lib/formatPhoneNumber";
 import retrieveLastInvitationDate from "../../lib/retrieveLastInvitationDate";
+import retrieveLastRdvDate from "../../lib/retrieveLastRdvDate";
 import { getFrenchFormatDateString } from "../../lib/datesHelper";
 
 const ROLES = {
@@ -58,18 +59,6 @@ export default class Applicant {
     return this._createdAt;
   }
 
-  get lastEmailInvitationSentAt() {
-    return this._lastEmailInvitationSentAt;
-  }
-
-  get lastSmsInvitationSentAt() {
-    return this._lastSmsInvitationSentAt;
-  }
-
-  get lastPostalInvitationSentAt() {
-    return this._lastPostalInvitationSentAt;
-  }
-
   get id() {
     return this._id;
   }
@@ -84,18 +73,6 @@ export default class Applicant {
 
   set id(id) {
     this._id = id;
-  }
-
-  set lastEmailInvitationSentAt(lastEmailInvitationSentAt) {
-    this._lastEmailInvitationSentAt = lastEmailInvitationSentAt;
-  }
-
-  set lastSmsInvitationSentAt(lastSmsInvitationSentAt) {
-    this._lastSmsInvitationSentAt = lastSmsInvitationSentAt;
-  }
-
-  set lastPostalInvitationSentAt(lastPostalInvitationSentAt) {
-    this._lastPostalInvitationSentAt = lastPostalInvitationSentAt;
   }
 
   set organisations(organisations) {
@@ -140,21 +117,17 @@ export default class Applicant {
         this.rightsOpeningDate = getFrenchFormatDateString(upToDateApplicant.rights_opening_date);
       }
     }
-    this.lastSmsInvitationSentAt = retrieveLastInvitationDate(
+    this.currentRdvContext = upToDateApplicant.rdv_contexts.find(
+      (rc) => rc.motif_category === this.currentConfiguration.motif_category
+    );
+    this.currentContextStatus = this.currentRdvContext?.status;
+    this.lastInvitationSentAt = retrieveLastInvitationDate(
       upToDateApplicant.invitations,
-      "sms",
+      null,
       this.currentConfiguration.motif_category
     );
-    this.lastEmailInvitationSentAt = retrieveLastInvitationDate(
-      upToDateApplicant.invitations,
-      "email",
-      this.currentConfiguration.motif_category
-    );
-    this.lastPostalInvitationSentAt = retrieveLastInvitationDate(
-      upToDateApplicant.invitations,
-      "postal",
-      this.currentConfiguration.motif_category
-    );
+    this.lastNonWaitingRdvDate = retrieveLastRdvDate(this.currentRdvContext.rdvs);
+    this.lastWaitingRdvDate = retrieveLastRdvDate(this.currentRdvContext.rdvs, true);
     this.departmentInternalId = upToDateApplicant.department_internal_id;
   }
 
@@ -226,6 +199,10 @@ export default class Applicant {
       this.currentOrganisation &&
       this.organisations.map((o) => o.id).includes(this.currentOrganisation.id)
     );
+  }
+
+  pendingContextStatus() {
+    return ["invitation_pending", "rdv_pending"].includes(this.currentContextStatus);
   }
 
   generateUid() {

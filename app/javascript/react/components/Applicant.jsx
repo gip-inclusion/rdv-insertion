@@ -6,7 +6,7 @@ import handleApplicantCreation from "../lib/handleApplicantCreation";
 import handleApplicantInvitation from "../lib/handleApplicantInvitation";
 import handleApplicantUpdate from "../lib/handleApplicantUpdate";
 import retrieveRelevantOrganisation from "../../lib/retrieveRelevantOrganisation";
-import { todaysDateString } from "../../lib/datesHelper";
+import { getFrenchFormatDateString } from "../../lib/datesHelper";
 import camelToSnakeCase from "../../lib/stringHelper";
 
 export default function Applicant({
@@ -26,7 +26,6 @@ export default function Applicant({
     rightsOpeningDateUpdate: false,
     allAttributesUpdate: false,
   });
-
   const handleUpdateContactsDataClick = async (attribute = null) => {
     setIsLoading({ ...isLoading, [`${attribute}Update`]: true });
 
@@ -80,16 +79,16 @@ export default function Applicant({
       applicant.currentOrganisation.phone_number,
     ];
     if (format === "sms") {
-      const result = await handleApplicantInvitation(...invitationParams, "sms");
-      applicant.lastSmsInvitationSentAt = result.invitation?.sent_at;
+      await handleApplicantInvitation(...invitationParams, "sms");
+      applicant.SmsInvitationSuccessfullySent = true;
     } else if (format === "email") {
-      const result = await handleApplicantInvitation(...invitationParams, "email");
-      applicant.lastEmailInvitationSentAt = result.invitation?.sent_at;
+      await handleApplicantInvitation(...invitationParams, "email");
+      applicant.emailInvitationSuccessfullySent = true;
     } else if (format === "postal") {
       setDownloadInProgress(true);
       const createLetter = await handleApplicantInvitation(...invitationParams, "postal");
       if (createLetter?.success) {
-        applicant.lastPostalInvitationSentAt = todaysDateString();
+        applicant.postalInvitationSuccessfullySent = true;
       }
       setDownloadInProgress(false);
     }
@@ -155,26 +154,29 @@ export default function Applicant({
             {applicant.rightsOpeningDate ?? " - "}
           </td>
         )}
-        <td>
-          {applicant.isArchived ? (
+
+        {/* ------------------------------- Account creation cell ----------------------------- */}
+
+        {applicant.isArchived ? (
+          <td>
             <button type="submit" disabled className="btn btn-primary btn-blue">
               Dossier archivé
             </button>
-          ) : applicant.createdAt ? (
-            applicant.belongsToCurrentOrg() ? (
-              <i className="fas fa-check" />
-            ) : (
-              <Tippy
-                content={
-                  <span>
-                    Cet allocataire est déjà présent dans RDV-Insertion dans une autre organisation
-                    que l&apos;organisation actuelle.
-                    <br />
-                    Appuyez sur ce bouton pour ajouter l&apos;allocataire à cette organisation et
-                    mettre à jours ses informations.
-                  </span>
-                }
-              >
+          </td>
+        ) : applicant.createdAt ? (
+          !applicant.belongsToCurrentOrg() ? (
+            <Tippy
+              content={
+                <span>
+                  Cet allocataire est déjà présent dans RDV-Insertion dans une autre organisation
+                  que l&apos;organisation actuelle.
+                  <br />
+                  Appuyez sur ce bouton pour ajouter l&apos;allocataire à cette organisation et
+                  mettre à jours ses informations.
+                </span>
+              }
+            >
+              <td>
                 <button
                   type="submit"
                   disabled={isLoading.organisationUpdate}
@@ -183,13 +185,56 @@ export default function Applicant({
                 >
                   {isLoading.organisationUpdate ? "En cours..." : "Ajouter à cette organisation"}
                 </button>
-              </Tippy>
-            )
-          ) : applicant.isDuplicate ? (
+              </td>
+            </Tippy>
+          ) : applicant.currentContextStatus === "not_invited" ? (
+            <td>Compte existant mais jamais invité dans ce contexte</td>
+          ) : (
+            // if applicant belongs to current rdv_context, we give extra infos to the agent
+            <Tippy
+              content={
+                <span>
+                  Compte créé le&nbsp;
+                  {getFrenchFormatDateString(applicant.createdAt)}
+                  {/* In case of pending context, invitations are disabled */}
+                  {/* and the following infos are displayed in the invitations cells */}
+                  {!applicant.pendingContextStatus() && (
+                    <>
+                      {applicant.lastInvitationSentAt && (
+                        <>
+                          <br />
+                          Dernière invitation envoyée le&nbsp;
+                          {getFrenchFormatDateString(applicant.lastInvitationSentAt)}
+                        </>
+                      )}
+                      {applicant.lastNonWaitingRdvDate && (
+                        <>
+                          <br />
+                          Date du dernier RDV&nbsp;: le&nbsp;
+                          {getFrenchFormatDateString(applicant.lastNonWaitingRdvDate)}
+                        </>
+                      )}
+                      <br />
+                      <strong>{applicant.currentRdvContext.human_status}</strong>
+                    </>
+                  )}
+                </span>
+              }
+            >
+              <td>
+                Existe déjà dans ce contexte&nbsp;
+                <i className="fas fa-question-circle" />
+              </td>
+            </Tippy>
+          )
+        ) : applicant.isDuplicate ? (
+          <td>
             <button type="submit" disabled className="btn btn-primary btn-blue">
               Création impossible
             </button>
-          ) : (
+          </td>
+        ) : (
+          <td>
             <button
               type="submit"
               disabled={isLoading.accountCreation}
@@ -198,8 +243,13 @@ export default function Applicant({
             >
               {isLoading.accountCreation ? "Création..." : "Créer compte"}
             </button>
-          )}
-        </td>
+          </td>
+        )}
+
+        {/* --------------------------------- Invitations cells ------------------------------- */}
+
+        {/* ----------------------------- Disabled invitations cases -------------------------- */}
+
         {applicant.isArchived ? (
           <td colSpan={computeColSpanForDisabledInvitations()} />
         ) : applicant.isDuplicate ? (
@@ -227,12 +277,41 @@ export default function Applicant({
               </small>
             </td>
           </Tippy>
-        ) : (
+        ) : applicant.pendingContextStatus() ? (
           <>
+            <Tippy
+              content={
+                <span>
+                  {applicant.currentContextStatus === "invitation_pending" ? (
+                    <>
+                      Dernière invitation envoyée le&nbsp;
+                      {getFrenchFormatDateString(applicant.lastInvitationSentAt)}
+                    </>
+                  ) : (
+                    <>
+                      Date du RDV&nbsp;: le&nbsp;
+                      {getFrenchFormatDateString(applicant.lastWaitingRdvDate)}
+                    </>
+                  )}
+                </span>
+              }
+            >
+              <td colSpan={computeColSpanForDisabledInvitations()}>
+                {applicant.currentRdvContext.human_status}&nbsp;
+                <i className="fas fa-question-circle" />
+              </td>
+            </Tippy>
+          </>
+        ) : (
+          /* ----------------------------- Enabled invitations cases --------------------------- */
+
+          <>
+            {/* --------------------------------- SMS Invitations ------------------------------- */}
+
             {applicant.shouldBeInvitedBySms() && (
               <>
                 <td>
-                  {applicant.lastSmsInvitationSentAt ? (
+                  {applicant.SmsInvitationSuccessfullySent ? (
                     <i className="fas fa-check" />
                   ) : (
                     <button
@@ -252,10 +331,13 @@ export default function Applicant({
                 </td>
               </>
             )}
+
+            {/* ------------------------------- Email Invitations ----------------------------- */}
+
             {applicant.shouldBeInvitedByEmail() && (
               <>
                 <td>
-                  {applicant.lastEmailInvitationSentAt ? (
+                  {applicant.emailInvitationSuccessfullySent ? (
                     <i className="fas fa-check" />
                   ) : (
                     <button
@@ -275,10 +357,13 @@ export default function Applicant({
                 </td>
               </>
             )}
+
+            {/* ------------------------------ Postal Invitations ----------------------------- */}
+
             {applicant.shouldBeInvitedByPostal() && (
               <>
                 <td>
-                  {applicant.lastPostalInvitationSentAt ? (
+                  {applicant.postalInvitationSuccessfullySent ? (
                     <i className="fas fa-check" />
                   ) : (
                     <button
@@ -302,6 +387,9 @@ export default function Applicant({
           </>
         )}
       </tr>
+
+      {/* ------------------------------ Contact infos extra line ----------------------------- */}
+
       {(applicant.phoneNumberNew || applicant.emailNew || applicant.rightsOpeningDateNew) && (
         <tr className="table-success">
           <td colSpan={computeColSpanForContactsUpdate()} className="text-align-right">
