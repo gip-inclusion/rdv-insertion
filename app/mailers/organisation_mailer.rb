@@ -1,13 +1,13 @@
 class OrganisationMailer < ApplicationMailer
-  def applicant_added(to:, subject:, content:, forwarded_attachments:)
+  def applicant_added(to:, subject:, content:, applicant_attachements:, reply_to:)
     @content = content
-    forwarded_attachments.each do |attachment|
-      filename = attachment.original_filename
-      attachments[filename] = File.read(filename)
+    applicant_attachements.each do |attachment|
+      attachments[attachment.original_filename] = attachment.read
     end
     mail(
       to: to,
-      subject: subject
+      subject: subject,
+      reply_to: reply_to
     )
   end
 end

@@ -1,5 +1,5 @@
 <%= render "common/remote_modal", title: "Envoyez un email à l'organisation si vous le souhaitez" do %>
-  <%= simple_form_for(:email, url: email_sendings_path, html: { method: :post }, data: { "turbo-frame" => "_top" }) do |f| %>
+  <%= simple_form_for(:email, url: organisations_applicant_added_notifications_path, html: { method: :post }) do |f| %>
       <div class="form-group">
         <div class="mb-3">
           <h5 class="label-blue">Destinataire</h5>
@@ -27,7 +27,7 @@
                       class: "form-control",
                       cols: 15,
                       rows: 15,
-                      value: "Le bénéficiaire a #{applicant} été ajouté à votre organisation #{organisation.name}. Vous pouvez consulter son profil à l'adresse suivant : #{organisation_applicant_url(id: applicant.id, organisation_id: organisation.id, host: ENV['HOST'])}"
+                      value: "Le bénéficiaire a #{applicant} été ajouté à votre organisation #{organisation.name}.\nVous pouvez consulter son profil à l'adresse suivante :\n #{organisation_applicant_url(id: applicant.id, organisation_id: organisation.id, host: ENV['HOST'])}"
                     }
 
             %>

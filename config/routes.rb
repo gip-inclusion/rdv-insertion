@@ -49,6 +49,10 @@ Rails.application.routes.draw do
     resource :archivings, only: [:create, :destroy]
   end
 
+  namespace :organisations do
+    resources :applicant_added_notifications, only: [:create]
+  end
+
   resources :departments, only: [] do
     resources :applicants, only: [:index, :new, :create, :show, :edit, :update] do
       collection { resources :uploads, only: [:new] }
@@ -70,7 +74,6 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :email_sendings, only: [:new, :create]
 
   # Error pages
   get "404", to: "errors#not_found"

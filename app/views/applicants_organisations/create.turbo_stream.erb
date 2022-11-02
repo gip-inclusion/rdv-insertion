@@ -9,6 +9,6 @@
 <% end %>
 <% if @organisation.email? %>
   <%= turbo_stream.replace "remote_modal" do %>
-    <%= render partial: "email_sendings/form", locals: { emails: [@organisation.email], applicant: @applicant, organisation: @organisation } %>
+    <%= render partial: "organisations/applicant_added_notifications/form", locals: { emails: [@organisation.email], applicant: @applicant, organisation: @organisation } %>
   <% end %>
 <% end %>
