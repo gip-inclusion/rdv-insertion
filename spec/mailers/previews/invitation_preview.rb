@@ -12,6 +12,18 @@ class InvitationPreview < ActionMailer::Preview
                     .invitation_for_rsa_accompagnement
   end
 
+  def invitation_for_rsa_accompagnement_social
+    invitation = Invitation.where(format: "email").last
+    InvitationMailer.with(invitation: invitation, applicant: invitation.applicant)
+                    .invitation_for_rsa_accompagnement_social
+  end
+
+  def invitation_for_rsa_accompagnement_sociopro
+    invitation = Invitation.where(format: "email").last
+    InvitationMailer.with(invitation: invitation, applicant: invitation.applicant)
+                    .invitation_for_rsa_accompagnement_sociopro
+  end
+
   def invitation_for_rsa_orientation_on_phone_platform
     invitation = Invitation.where(format: "email").last
     InvitationMailer.with(invitation: invitation, applicant: invitation.applicant)
@@ -48,6 +60,18 @@ class InvitationPreview < ActionMailer::Preview
     invitation = Invitation.where(format: "email").last
     InvitationMailer.with(invitation: invitation, applicant: invitation.applicant)
                     .invitation_for_rsa_accompagnement_reminder
+  end
+
+  def invitation_for_rsa_accompagnement_social_reminder
+    invitation = Invitation.where(format: "email").last
+    InvitationMailer.with(invitation: invitation, applicant: invitation.applicant)
+                    .invitation_for_rsa_accompagnement_social_reminder
+  end
+
+  def invitation_for_rsa_accompagnement_sociopro_reminder
+    invitation = Invitation.where(format: "email").last
+    InvitationMailer.with(invitation: invitation, applicant: invitation.applicant)
+                    .invitation_for_rsa_accompagnement_sociopro_reminder
   end
 
   def invitation_for_rsa_orientation_on_phone_platform_reminder

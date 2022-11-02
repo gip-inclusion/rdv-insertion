@@ -22,8 +22,8 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
       address: "20 avenue de Ségur 75OO7 Paris",
       phone_number: "01 01 01 01 01",
       birth_date: "20/12/1977",
-      rights_opening_date: "20/05/2022",
-      created_at: "21/05/2022",
+      rights_opening_date: "18/05/2022",
+      created_at: "20/05/2022",
       role: "demandeur",
       organisations: [organisation],
       department: department,
@@ -77,6 +77,7 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
         expect(csv).to include("Email")
         expect(csv).to include("Téléphone")
         expect(csv).to include("Date de naissance")
+        expect(csv).to include("Date de création")
         expect(csv).to include("Date d'entrée flux")
         expect(csv).to include("Rôle")
         expect(csv).to include("Archivé le")
@@ -120,7 +121,8 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
           expect(csv).to include("jane@doe.com")
           expect(csv).to include("01 01 01 01 01")
           expect(csv).to include("20/12/1977") # birth_date
-          expect(csv).to include("20/05/2022") # rights_opening_date
+          expect(csv).to include("20/05/2022") # created_at
+          expect(csv).to include("18/05/2022") # rights_opening_date
           expect(csv).to include("demandeur") # role
         end
 
