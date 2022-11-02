@@ -9,11 +9,6 @@ FactoryBot.define do
     help_phone_number { "0139393939" }
     valid_until { 1.week.from_now }
     rdv_context { build(:rdv_context) }
-    after(:build) do |invitation|
-      next if invitation.organisations.present?
-
-      invitation.department_id = invitation.department.id
-      invitation.organisations << create(:organisation, department: invitation.department)
-    end
+    organisations { [create(:organisation)] }
   end
 end

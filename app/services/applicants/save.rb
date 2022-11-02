@@ -25,7 +25,7 @@ module Applicants
     # we link the applicant to all the motif categories the organisation can invite to
     def create_rdv_contexts
       RdvContext.with_advisory_lock "setting_rdv_context_for_applicant_#{@applicant.id}" do
-        @organisation.motif_categories.each do |motif_category|
+        @organisation.configurations_motif_categories.each do |motif_category|
           RdvContext.find_or_create_by!(motif_category: motif_category, applicant: @applicant)
         end
       end
