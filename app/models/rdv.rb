@@ -16,7 +16,8 @@ class Rdv < ApplicationRecord
   belongs_to :lieu, optional: true
   has_many :notifications, dependent: :nullify
   has_and_belongs_to_many :rdv_contexts
-  has_and_belongs_to_many :applicants
+  has_many :participations, dependent: :destroy
+  has_and_belongs_to_many :applicants, through: :participations
 
   validates :applicants, :starts_at, :duration_in_min, presence: true
   validates :rdv_solidarites_rdv_id, uniqueness: true, presence: true
