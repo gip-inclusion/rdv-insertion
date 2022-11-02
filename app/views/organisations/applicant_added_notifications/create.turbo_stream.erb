@@ -1,0 +1,3 @@
+<%= turbo_stream.prepend "flashes" do %>
+  <%= render partial: "common/flash", locals: { flash: { success: "L'email a bien été envoyé à l'organisation" }  } %>
+<% end %>
