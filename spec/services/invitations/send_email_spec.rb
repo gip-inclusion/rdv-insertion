@@ -5,6 +5,8 @@ describe Invitations::SendEmail, type: :service do
     )
   end
 
+  let!(:applicant) { create(:applicant) }
+
   describe "#call" do
     before do
       allow(Messengers::SendEmail).to receive(:call)
@@ -12,7 +14,6 @@ describe Invitations::SendEmail, type: :service do
     end
 
     context "for rsa orientation" do
-      let!(:applicant) { create(:applicant) }
       let!(:invitation) do
         create(
           :invitation,
@@ -28,7 +29,7 @@ describe Invitations::SendEmail, type: :service do
           .with(
             sendable: invitation,
             mailer_class: InvitationMailer,
-            mailer_method: :invitation_for_rsa_orientation,
+            mailer_method: :regular_invitation,
             invitation: invitation,
             applicant: applicant
           )
@@ -52,12 +53,85 @@ describe Invitations::SendEmail, type: :service do
             .with(
               sendable: invitation,
               mailer_class: InvitationMailer,
-              mailer_method: :invitation_for_rsa_orientation_reminder,
+              mailer_method: :regular_invitation_reminder,
               invitation: invitation,
               applicant: applicant
             )
           subject
         end
+      end
+    end
+
+    context "for rsa_orientation_on_phone_platform" do
+      let!(:invitation) do
+        create(
+          :invitation,
+          applicant: applicant,
+          rdv_context: build(:rdv_context, motif_category: "rsa_orientation_on_phone_platform")
+        )
+      end
+
+      it("is a success") { is_a_success }
+
+      it "calls the emailer service" do
+        expect(Messengers::SendEmail).to receive(:call)
+          .with(
+            sendable: invitation,
+            mailer_class: InvitationMailer,
+            mailer_method: :invitation_for_rsa_orientation_on_phone_platform,
+            invitation: invitation,
+            applicant: applicant
+          )
+        subject
+      end
+
+      context "when the invitation is a reminder" do
+        let!(:invitation) do
+          create(
+            :invitation,
+            applicant: applicant,
+            rdv_context: build(:rdv_context, motif_category: "rsa_orientation_on_phone_platform"),
+            reminder: true
+          )
+        end
+
+        it("is a success") { is_a_success }
+
+        it "calls the emailer service with the reminder mailer method" do
+          expect(Messengers::SendEmail).to receive(:call)
+            .with(
+              sendable: invitation,
+              mailer_class: InvitationMailer,
+              mailer_method: :invitation_for_rsa_orientation_on_phone_platform_reminder,
+              invitation: invitation,
+              applicant: applicant
+            )
+          subject
+        end
+      end
+    end
+
+    context "for rsa_insertion_offer" do
+      let!(:invitation) do
+        create(
+          :invitation,
+          applicant: applicant,
+          rdv_context: build(:rdv_context, motif_category: "rsa_insertion_offer")
+        )
+      end
+
+      it("is a success") { is_a_success }
+
+      it "calls the emailer service" do
+        expect(Messengers::SendEmail).to receive(:call)
+          .with(
+            sendable: invitation,
+            mailer_class: InvitationMailer,
+            mailer_method: :invitation_for_rsa_insertion_offer,
+            invitation: invitation,
+            applicant: applicant
+          )
+        subject
       end
     end
   end

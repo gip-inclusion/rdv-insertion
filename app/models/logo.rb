@@ -5,16 +5,16 @@ class Logo
     @name = name
   end
 
-  def path(selected_formats = [])
-    return if formats.empty?
+  def path(preferred_formats = [])
+    return if available_formats.empty?
 
-    format = selected_formats.any? ? selected_formats.find { |f| f.in?(formats) } : formats.first
+    format = preferred_formats.any? ? preferred_formats.find { |f| f.in?(available_formats) } : available_formats.first
     return if format.nil?
 
     "#{BASE_PATH}#{@name}.#{format}"
   end
 
-  def formats
+  def available_formats
     %w[svg png jpg].select do |format|
       Webpacker.manifest.lookup("#{BASE_PATH}#{@name}.#{format}")
     end

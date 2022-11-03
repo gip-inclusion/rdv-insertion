@@ -58,10 +58,6 @@ module Notifications
       end
     end
 
-    def applicant
-      @notification.applicant
-    end
-
     def formatted_start_date
       rdv.formatted_start_date
     end
@@ -88,38 +84,6 @@ module Notifications
 
     def motif_category
       rdv.motif_category
-    end
-
-    def category_settings
-      @category_settings ||= Settings::MotifCategory.send(:"#{motif_category}")
-    end
-
-    def rdv_title
-      @rdv_title ||= begin
-        rdv_title = category_settings.rdv_title
-        raise_for_missing_attribute("rdv_title") if rdv_title.nil?
-        rdv_title
-      end
-    end
-
-    def display_mandatory_warning
-      @display_mandatory_warning ||= begin
-        display_mandatory_warning = category_settings.display_mandatory_warning
-        raise_for_missing_attribute("display_mandatory_warning") if display_mandatory_warning.nil?
-        display_mandatory_warning
-      end
-    end
-
-    def display_punishable_warning
-      @display_punishable_warning ||= begin
-        display_punishable_warning = category_settings.display_punishable_warning
-        raise_for_missing_attribute("display_punishable_warning") if display_punishable_warning.nil?
-        display_punishable_warning
-      end
-    end
-
-    def raise_for_missing_attributes(attribute)
-      raise SmsNotificationError, "#{attribute} not found for category #{motif_category}"
     end
   end
 end

@@ -1,5 +1,6 @@
 class Notification < ApplicationRecord
   include Sendable
+  include Templatable
 
   belongs_to :applicant
   belongs_to :rdv, optional: true
