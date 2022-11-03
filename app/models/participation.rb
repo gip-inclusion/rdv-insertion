@@ -1,8 +1,6 @@
 class Participation < ApplicationRecord
   self.table_name = "applicants_rdvs"
-  SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [
-    :status
-  ].freeze
+
   PENDING_STATUSES = %w[unknown waiting].freeze
   CANCELLED_STATUSES = %w[excused revoked noshow].freeze
   CANCELLED_BY_USER_STATUSES = %w[excused noshow].freeze

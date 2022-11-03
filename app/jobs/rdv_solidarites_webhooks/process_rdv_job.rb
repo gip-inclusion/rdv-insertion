@@ -65,6 +65,10 @@ module RdvSolidaritesWebhooks
       RdvSolidarites::Rdv.new(@data)
     end
 
+    def rdv
+      Rdv.find_by(rdv_solidarites_rdv_id: rdv_solidarites_rdv.id)
+    end
+
     def rdv_solidarites_user_ids
       rdv_solidarites_rdv.user_ids
     end
@@ -73,8 +77,21 @@ module RdvSolidaritesWebhooks
       @applicants ||= Applicant.where(rdv_solidarites_user_id: rdv_solidarites_user_ids)
     end
 
-    def applicant_ids
-      applicants.pluck(:id)
+    def participations
+      # TODO : Comment gérer le destroy d'une participation ?
+      # coté rdv-s cette action (d'admin) n'envoi pas de notifications aux usagers
+      @participations ||= \
+        rdv_solidarites_rdv.participations.map do |participation|
+          applicant = Applicant.find_by(rdv_solidarites_user_id: participation.user[:id])
+          next if applicant.nil?
+
+          {
+            id: Participation.find_by(applicant: applicant, rdv: rdv)&.id,
+            status: participation.status,
+            applicant_id: applicant.id,
+            rdv_solidarites_participation_id: participation.id
+          }
+        end
     end
 
     def related_invitations
@@ -110,7 +127,7 @@ module RdvSolidaritesWebhooks
           "Rdv",
           @data,
           {
-            applicant_ids: applicant_ids,
+            participations_attributes: participations,
             organisation_id: organisation.id,
             motif_id: motif.id,
             rdv_context_ids: rdv_context_ids,

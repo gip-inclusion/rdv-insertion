@@ -16,6 +16,10 @@ module RdvSolidarites
       @attributes[:users].map { RdvSolidarites::User.new(_1) }
     end
 
+    def participations
+      @attributes[:rdvs_users].map { RdvSolidarites::Participation.new(_1) }
+    end
+
     # rubocop:disable Rails/Delegate
     def motif_id
       motif.id
