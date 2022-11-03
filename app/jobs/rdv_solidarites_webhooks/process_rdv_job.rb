@@ -91,7 +91,7 @@ module RdvSolidaritesWebhooks
             applicant_id: applicant.id,
             rdv_solidarites_participation_id: participation.id
           }
-        end
+        end.compact
     end
 
     def related_invitations

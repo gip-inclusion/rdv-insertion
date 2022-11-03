@@ -28,6 +28,10 @@ module Statuable
     rdvs.max_by(&:created_at)
   end
 
+  def last_created_participation
+    last_created_rdv.participations.find_by(applicant: applicant)
+  end
+
   def last_sent_invitation
     invitations.max_by(&:sent_at)
   end
@@ -39,7 +43,8 @@ module Statuable
     # If there is a pending or a seen rdv we compare to the date of the rdv, otherwise to the date of
     # the rdv creation
     rdv_date_to_compare = \
-      if last_created_rdv.pending? || last_created_rdv.seen?
+      if last_created_participation.pending? \
+        || last_created_participation.seen?
         last_created_rdv.starts_at
       else
         last_created_rdv.created_at
@@ -52,20 +57,20 @@ module Statuable
   end
 
   def rdv_status
-    if rdvs.any?(&:pending?)
+    if participations.any?(&:pending?)
       :rdv_pending
-    elsif last_created_rdv.seen?
+    elsif last_created_participation.seen?
       :rdv_seen
-    elsif multiple_cancelled_rdvs?
+    elsif multiple_cancelled_participations?
       :multiple_rdvs_cancelled
-    elsif last_created_rdv.cancelled?
-      :"rdv_#{last_created_rdv.status}"
+    elsif last_created_participation.cancelled?
+      :"rdv_#{last_created_participation.status}"
     else
       :rdv_needs_status_update
     end
   end
 
-  def multiple_cancelled_rdvs?
-    rdvs.cancelled_by_user.length > 1
+  def multiple_cancelled_participations?
+    participations.cancelled_by_user.length > 1
   end
 end
