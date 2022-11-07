@@ -1,6 +1,5 @@
 class Invitation < ApplicationRecord
   include Sendable
-  include Templatable
 
   belongs_to :applicant
   belongs_to :department

@@ -6,7 +6,6 @@ module Invitations
 
     delegate :motif_category, :applicant, :help_phone_number, :number_of_days_to_accept_invitation,
              :number_of_days_before_expiration,
-             :rdv_title, :invitation_purpose, :display_mandatory_warning, :display_punishable_warning,
              to: :invitation
 
     def initialize(invitation:)

@@ -3,6 +3,7 @@ module Invitations
     extend ActiveSupport::Concern
 
     include Rails.application.routes.url_helpers
+    include Templatable
 
     private
 

@@ -1,6 +1,6 @@
-class InvitationMailerError < StandardError; end
-
 class InvitationMailer < ApplicationMailer
+  include Templatable
+
   before_action :set_invitation, :set_applicant, :set_department,
                 :set_logo_path, :set_signature_lines
 
@@ -77,20 +77,24 @@ class InvitationMailer < ApplicationMailer
     @motif_category = @invitation.motif_category
   end
 
+  def motif_category
+    @invitation.motif_category
+  end
+
   def set_rdv_title
-    @rdv_title = @invitation.rdv_title
+    @rdv_title = rdv_title
   end
 
   def set_display_mandatory_warning
-    @display_mandatory_warning = @invitation.display_mandatory_warning
+    @display_mandatory_warning = display_mandatory_warning
   end
 
   def set_display_punishable_warning
-    @display_punishable_warning = @invitation.display_punishable_warning
+    @display_punishable_warning = display_punishable_warning
   end
 
   def set_invitation_purpose
-    @invitation_purpose = @invitation.invitation_purpose
+    @invitation_purpose = invitation_purpose
   end
 
   def first_organisation

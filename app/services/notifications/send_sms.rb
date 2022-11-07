@@ -6,8 +6,7 @@ module Notifications
 
     attr_reader :notification
 
-    delegate :rdv, :applicant, :rdv_title, :rdv_title_by_phone, :display_punishable_warning,
-             :display_mandatory_warning, to: :notification
+    delegate :rdv, :applicant, :motif_category, to: :notification
 
     def initialize(notification:)
       @notification = notification

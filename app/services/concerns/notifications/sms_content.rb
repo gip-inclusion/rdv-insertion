@@ -1,5 +1,7 @@
 module Notifications
   module SmsContent
+    include Templatable
+
     private
 
     ### rdv_created
