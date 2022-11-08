@@ -17,11 +17,27 @@ module Invitations
 
     private
 
+    def motif_category
+      @invitation.motif_category
+    end
+
     def mailer_method
-      if @invitation.reminder?
-        :"invitation_for_#{@invitation.motif_category}_reminder"
+      @invitation.reminder? ? mailer_method_for_invitation_reminder : mailer_method_for_first_invitation
+    end
+
+    def mailer_method_for_first_invitation
+      if InvitationMailer.respond_to?(:"invitation_for_#{motif_category}")
+        :"invitation_for_#{motif_category}"
       else
-        :"invitation_for_#{@invitation.motif_category}"
+        :regular_invitation
+      end
+    end
+
+    def mailer_method_for_invitation_reminder
+      if InvitationMailer.respond_to?(:"invitation_for_#{motif_category}_reminder")
+        :"invitation_for_#{motif_category}_reminder"
+      else
+        :regular_invitation_reminder
       end
     end
   end
