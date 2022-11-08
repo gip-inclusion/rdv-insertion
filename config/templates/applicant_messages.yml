@@ -25,3 +25,9 @@ categories:
     invitation_purpose: signer votre Contrat d'Engagement Réciproque
     display_mandatory_warning: true
     display_punishable_warning: false
+  entretien_main_tendue:
+    rdv_title: entretien de main tendue afin de faire le point sur votre situation
+    rdv_title_by_phone: entretien téléphonique de main tendue afin de faire le point sur votre situation
+    invitation_purpose: faire le point sur votre situation
+    display_mandatory_warning: true
+    display_punishable_warning: false
