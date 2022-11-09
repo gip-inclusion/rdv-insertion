@@ -79,10 +79,8 @@ module RdvSolidaritesWebhooks
 
     def participations_attributes
       @participations_attributes ||= \
-        rdv_solidarites_rdv.participations.map do |participation|
-          applicant = Applicant.find_by(rdv_solidarites_user_id: participation.user.id)
-          next if applicant.nil?
-
+        @applicants.map do |applicant|
+          participation = rdv_solidarites_rdv.participations.find { _1.user.id == applicant.rdv_solidarites_user_id }
           {
             id: (rdv.nil? ? nil : Participation.find_by(applicant: applicant, rdv: rdv).id),
             status: participation.status,

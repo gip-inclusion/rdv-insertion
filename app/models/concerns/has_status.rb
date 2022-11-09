@@ -1,14 +1,14 @@
 module HasStatus
   extend ActiveSupport::Concern
 
-  included do
+  included do |base|
     enum status: { unknown: 0, waiting: 1, seen: 2, excused: 3, revoked: 4, noshow: 5 }
 
     const_set(:PENDING_STATUSES, %w[unknown waiting].freeze)
     const_set(:CANCELLED_STATUSES, %w[excused revoked noshow].freeze)
     const_set(:CANCELLED_BY_USER_STATUSES, %w[excused noshow].freeze)
 
-    scope :cancelled_by_user, -> { where(status: self.class::CANCELLED_BY_USER_STATUSES) }
+    scope :cancelled_by_user, -> { where(status: base::CANCELLED_BY_USER_STATUSES) }
     scope :status, ->(status) { where(status: status) }
     scope :resolved, -> { where(status: %w[seen excused revoked noshow]) }
   end
