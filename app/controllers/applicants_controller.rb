@@ -133,7 +133,9 @@ class ApplicantsController < ApplicationController
         :organisations,
         rdv_contexts: [{ rdvs: [:organisation, :motif] }, :invitations],
         invitations: [:rdv_context]
-      ).find(params[:id])
+      )
+      .preload(:participations)
+      .find(params[:id])
   end
 
   def set_organisation

@@ -67,8 +67,7 @@ module ApplicantsHelper
     end
   end
 
-  def background_class_for_participation_status(rdv, applicant)
-    participation = Participation.find_by(rdv: rdv, applicant: applicant)
+  def background_class_for_participation_status(participation)
     if participation.seen?
       "bg-success border-success"
     elsif participation.cancelled?
@@ -87,12 +86,7 @@ module ApplicantsHelper
       display_context_status_notice(context, number_of_days_before_action_required)
   end
 
-  # def display_rdv_status(rdv)
-  #   rdv.pending? ? "À venir" : I18n.t("activerecord.attributes.rdv.statuses.#{rdv.status}")
-  # end
-
-  def display_participation_status(rdv, applicant)
-    participation = Participation.find_by(rdv: rdv, applicant: applicant)
+  def display_participation_status(participation)
     participation.pending? ? "À venir" : I18n.t("activerecord.attributes.rdv.statuses.#{participation.status}")
   end
 

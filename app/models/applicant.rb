@@ -50,6 +50,10 @@ class Applicant < ApplicationRecord
     first_seen_rdv_starts_at.to_datetime.mjd - created_at.to_datetime.mjd
   end
 
+  def participation_for(rdv)
+    participations.to_a.find { |participation| participation.rdv_id == rdv.id }
+  end
+
   def full_name
     "#{title.capitalize} #{first_name.capitalize} #{last_name.upcase}"
   end

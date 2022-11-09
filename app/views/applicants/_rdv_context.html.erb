@@ -51,7 +51,9 @@
               <% if convocable_rdvs.present?  %>
                 <td class="px-4 py-2"><%= rdv.convocable? ? sanitize(display_convocation_formats(rdv.convocation_formats)) : " - " %></td>
               <% end %>
-              <td class="px-4 py-3 <%= background_class_for_participation_status(rdv, @applicant) %>"><%= display_participation_status(rdv, @applicant) %></td>
+              <td class="px-4 py-3 <%= background_class_for_participation_status(@applicant.participation_for(rdv)) %>">
+                <%= display_participation_status(@applicant.participation_for(rdv)) %>
+              </td>
               <td class="px-4 py-3">
                 <%= link_to rdv.rdv_solidarites_url, target: "_blank" do %>
                   <button class="btn btn-blue">
