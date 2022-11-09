@@ -8,8 +8,8 @@ module Invitations
     private
 
     def regular_invitation_content
-      "#{applicant.full_name},\nVous êtes bénéficiaire du RSA et vous devez vous présenter à un #{rdv_title} " \
-        "afin de #{rdv_purpose}. Pour choisir la date et l'horaire du RDV, " \
+      "#{applicant.full_name},\nVous êtes bénéficiaire du RSA et vous devez vous présenter à un #{rdv_title}." \
+        " Pour choisir la date et l'horaire du RDV, " \
         "cliquez sur le lien suivant dans les #{number_of_days_to_accept_invitation} jours: " \
         "#{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
         "#{mandatory_warning}"\
