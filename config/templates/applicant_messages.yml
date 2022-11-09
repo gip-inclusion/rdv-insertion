@@ -1,33 +1,40 @@
 categories:
+  ### Il faut avoir en tête la phrase suivante: "Vous êtes invité/convoqué à un rdv_title afin de rdv_purpose"
   rsa_orientation:
     rdv_title: rendez-vous d'orientation
     rdv_title_by_phone: rendez-vous d'orientation téléphonique
-    invitation_purpose: démarrer un parcours d'accompagnement
+    rdv_purpose: démarrer un parcours d'accompagnement
     display_mandatory_warning: true
     display_punishable_warning: false
   rsa_accompagnement: &rsa_accompagnement_values
     rdv_title: rendez-vous d'accompagnement
     rdv_title_by_phone: rendez-vous d'accompagnement téléphonique
-    invitation_purpose: démarrer un parcours d'accompagnement
+    rdv_purpose: démarrer un parcours d'accompagnement
     display_mandatory_warning: true
     display_punishable_warning: true
   rsa_accompagnement_social: *rsa_accompagnement_values # we reuse the rsa_accompagnement_values
   rsa_accompagnement_sociopro: *rsa_accompagnement_values # we reuse the rsa_accompagnement_values
   rsa_follow_up:
-    rdv_title: rendez-vous de suivi avec votre référent de parcours
-    rdv_title_by_phone: rendez-vous de suivi téléphonique avec votre référent de parcours
-    invitation_purpose: faire un point avec votre référent de parcours
+    rdv_title: rendez-vous de suivi
+    rdv_title_by_phone: rendez-vous de suivi téléphonique
+    rdv_purpose: faire un point avec votre référent de parcours
     display_mandatory_warning: false
     display_punishable_warning: false
   rsa_cer_signature:
-    rdv_title: rendez-vous pour construire et signer votre Contrat d'Engagement Réciproque
-    rdv_title_by_phone: rendez-vous téléphonique pour construire et signer votre Contrat d'Engagement Réciproque
-    invitation_purpose: signer votre Contrat d'Engagement Réciproque
+    rdv_title: rendez-vous de signature de CER
+    rdv_title_by_phone: rendez-vous téléphonique de signature de CER
+    rdv_purpose: construire et signer votre Contrat d'Engagement Réciproque
     display_mandatory_warning: true
     display_punishable_warning: false
-  entretien_main_tendue:
-    rdv_title: entretien de main tendue afin de faire le point sur votre situation
-    rdv_title_by_phone: entretien téléphonique de main tendue afin de faire le point sur votre situation
-    invitation_purpose: faire le point sur votre situation
+  rsa_main_tendue:
+    rdv_title: entretien de main tendue
+    rdv_title_by_phone: entretien téléphonique de main tendue
+    rdv_purpose: faire le point sur votre situation
+    display_mandatory_warning: true
+    display_punishable_warning: false
+  rsa_atelier_collectif_mandatory:
+    rdv_title: atelier collectif
+    rdv_title_by_phone: atelier collectif
+    rdv_purpose: vous aider dans votre parcours d'insertion
     display_mandatory_warning: true
     display_punishable_warning: false

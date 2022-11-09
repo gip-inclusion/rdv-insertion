@@ -101,11 +101,10 @@ describe Invitations::GenerateLetter, type: :service do
         subject
         content = CGI.unescapeHTML(invitation.content)
         expect(content).to include(
-          "Objet : Rendez-vous pour construire et signer votre Contrat d'Engagement " \
-          "Réciproque dans le cadre de votre RSA"
+          "Objet : Rendez-vous de signature de CER dans le cadre de votre RSA"
         )
         expect(content).to include(
-          "vous devez prendre un rendez-vous afin de signer votre Contrat d'Engagement Réciproque"
+          "vous devez prendre un rendez-vous afin de construire et signer votre Contrat d'Engagement Réciproque"
         )
         expect(content).to include("Vous devez obligatoirement prendre ce rendez-vous")
         expect(content).not_to include(
@@ -121,7 +120,7 @@ describe Invitations::GenerateLetter, type: :service do
         subject
         content = CGI.unescapeHTML(invitation.content)
         expect(content).to include(
-          "Objet : Rendez-vous de suivi avec votre référent de parcours dans le cadre de votre RSA"
+          "Objet : Rendez-vous de suivi dans le cadre de votre RSA"
         )
         expect(content).to include(
           "vous devez prendre un rendez-vous afin de faire un point avec votre référent de parcours"

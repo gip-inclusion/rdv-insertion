@@ -67,7 +67,7 @@ module Invitations
         rdv_title: rdv_title,
         display_mandatory_warning: display_mandatory_warning,
         display_punishable_warning: display_punishable_warning,
-        invitation_purpose: invitation_purpose
+        rdv_purpose: rdv_purpose
       )
     end
 

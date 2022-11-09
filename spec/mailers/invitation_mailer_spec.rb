@@ -39,7 +39,8 @@ RSpec.describe InvitationMailer, type: :mailer do
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")
         expect(body_string).to match(
-          "Vous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous d'orientation"
+          "Vous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous d'orientation" \
+          " afin de démarrer un parcours d'accompagnement"
         )
         expect(body_string).to match("Ce rendez-vous est obligatoire.")
         expect(body_string).not_to match(
@@ -81,7 +82,8 @@ RSpec.describe InvitationMailer, type: :mailer do
           expect(body_string).to match("Le département de la Drôme.")
           expect(body_string).to match("01 39 39 39 39")
           expect(body_string).to match(
-            "Vous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous d'accompagnement"
+            "Vous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous d'accompagnement" \
+            " afin de démarrer un parcours d'accompagnement"
           )
           expect(body_string).to match("Ce rendez-vous est obligatoire.")
           expect(body_string).to match(
@@ -104,7 +106,7 @@ RSpec.describe InvitationMailer, type: :mailer do
       it "renders the subject" do
         email_subject = CGI.unescapeHTML(subject.subject)
         expect(email_subject).to eq(
-          "[RSA]: Votre rendez-vous pour construire et signer votre Contrat d'Engagement Réciproque" \
+          "[RSA]: Votre rendez-vous de signature de CER" \
           " dans le cadre de votre RSA"
         )
       end
@@ -115,8 +117,8 @@ RSpec.describe InvitationMailer, type: :mailer do
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")
         expect(body_string).to match(
-          "Vous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous pour "\
-          "construire et signer votre Contrat d'Engagement Réciproque"
+          "Vous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous de signature de CER "\
+          "afin de construire et signer votre Contrat d'Engagement Réciproque"
         )
         expect(body_string).to match("Ce rendez-vous est obligatoire.")
         expect(body_string).not_to match(
@@ -138,7 +140,7 @@ RSpec.describe InvitationMailer, type: :mailer do
       it "renders the subject" do
         email_subject = CGI.unescapeHTML(subject.subject)
         expect(email_subject).to eq(
-          "[RSA]: Votre rendez-vous de suivi avec votre référent de parcours" \
+          "[RSA]: Votre rendez-vous de suivi" \
           " dans le cadre de votre RSA"
         )
       end
@@ -150,9 +152,77 @@ RSpec.describe InvitationMailer, type: :mailer do
         expect(body_string).to match("01 39 39 39 39")
         expect(body_string).to match(
           "Vous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous "\
-          "de suivi avec votre référent de parcours"
+          "de suivi afin de faire un point avec votre référent de parcours"
         )
         expect(body_string).not_to match("Ce rendez-vous est obligatoire.")
+        expect(body_string).not_to match(
+          "le versement de votre RSA pourra être suspendu ou son montant réduit."
+        )
+        expect(body_string).to match("/invitations/redirect")
+        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("dans les 5 jours")
+      end
+    end
+
+    context "for rsa_main_tendue" do
+      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_main_tendue") }
+
+      it "renders the headers" do
+        expect(subject.to).to eq([applicant.email])
+      end
+
+      it "renders the subject" do
+        email_subject = CGI.unescapeHTML(subject.subject)
+        expect(email_subject).to eq(
+          "[RSA]: Votre entretien de main tendue" \
+          " dans le cadre de votre RSA"
+        )
+      end
+
+      it "renders the body" do
+        body_string = CGI.unescapeHTML(subject.body.encoded)
+        expect(body_string).to match("Bonjour Jean VALJEAN")
+        expect(body_string).to match("Le département de la Drôme.")
+        expect(body_string).to match("01 39 39 39 39")
+        expect(body_string).to match(
+          "Vous êtes bénéficiaire du RSA et vous devez vous présenter à un entretien de main tendue " \
+          "afin de faire le point sur votre situation"
+        )
+        expect(body_string).to match("Ce rendez-vous est obligatoire.")
+        expect(body_string).not_to match(
+          "le versement de votre RSA pourra être suspendu ou son montant réduit."
+        )
+        expect(body_string).to match("/invitations/redirect")
+        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("dans les 5 jours")
+      end
+    end
+
+    context "for rsa_atelier_collectif_mandatory" do
+      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_atelier_collectif_mandatory") }
+
+      it "renders the headers" do
+        expect(subject.to).to eq([applicant.email])
+      end
+
+      it "renders the subject" do
+        email_subject = CGI.unescapeHTML(subject.subject)
+        expect(email_subject).to eq(
+          "[RSA]: Votre atelier collectif" \
+          " dans le cadre de votre RSA"
+        )
+      end
+
+      it "renders the body" do
+        body_string = CGI.unescapeHTML(subject.body.encoded)
+        expect(body_string).to match("Bonjour Jean VALJEAN")
+        expect(body_string).to match("Le département de la Drôme.")
+        expect(body_string).to match("01 39 39 39 39")
+        expect(body_string).to match(
+          "Vous êtes bénéficiaire du RSA et vous devez vous présenter à un atelier collectif " \
+          "afin de vous aider dans votre parcours d'insertion"
+        )
+        expect(body_string).to match("Ce rendez-vous est obligatoire.")
         expect(body_string).not_to match(
           "le versement de votre RSA pourra être suspendu ou son montant réduit."
         )
@@ -336,8 +406,8 @@ RSpec.describe InvitationMailer, type: :mailer do
       it "renders the subject" do
         email_subject = CGI.unescapeHTML(subject.subject)
         expect(email_subject).to eq(
-          "[Rappel]: Votre rendez-vous pour construire et signer votre "\
-          "Contrat d'Engagement Réciproque dans le cadre de votre RSA"
+          "[Rappel]: Votre rendez-vous de signature de CER "\
+          "dans le cadre de votre RSA"
         )
       end
 
@@ -348,7 +418,7 @@ RSpec.describe InvitationMailer, type: :mailer do
         expect(body_string).to match("01 39 39 39 39")
         expect(body_string).to match(
           "En tant que bénéficiaire du RSA, vous avez reçu un premier mail il y a 3 jours "\
-          "vous invitant à prendre rendez-vous afin de signer votre Contrat d'Engagement Réciproque."
+          "vous invitant à prendre rendez-vous afin de construire et signer votre Contrat d'Engagement Réciproque."
         )
         expect(body_string).to match("Ce rendez-vous est obligatoire.")
         expect(body_string).not_to match(
@@ -373,7 +443,7 @@ RSpec.describe InvitationMailer, type: :mailer do
       it "renders the subject" do
         email_subject = CGI.unescapeHTML(subject.subject)
         expect(email_subject).to eq(
-          "[Rappel]: Votre rendez-vous de suivi avec votre référent de parcours "\
+          "[Rappel]: Votre rendez-vous de suivi "\
           "dans le cadre de votre RSA"
         )
       end

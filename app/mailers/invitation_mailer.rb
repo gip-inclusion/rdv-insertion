@@ -6,7 +6,7 @@ class InvitationMailer < ApplicationMailer
 
   before_action :set_motif_category, :set_rdv_title,
                 :set_display_mandatory_warning, :set_display_punishable_warning,
-                :set_invitation_purpose,
+                :set_rdv_purpose,
                 only: [:regular_invitation, :regular_invitation_reminder]
 
   def regular_invitation
@@ -93,8 +93,8 @@ class InvitationMailer < ApplicationMailer
     @display_punishable_warning = display_punishable_warning
   end
 
-  def set_invitation_purpose
-    @invitation_purpose = invitation_purpose
+  def set_rdv_purpose
+    @rdv_purpose = rdv_purpose
   end
 
   def first_organisation
