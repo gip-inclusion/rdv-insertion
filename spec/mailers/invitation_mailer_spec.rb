@@ -39,7 +39,7 @@ RSpec.describe InvitationMailer, type: :mailer do
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")
         expect(body_string).to match(
-          "Vous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous d'orientation" \
+          "Vous êtes bénéficiaire du RSA et à ce titre vous devez vous présenter à un rendez-vous d'orientation" \
           " afin de démarrer un parcours d'accompagnement"
         )
         expect(body_string).to match("Ce rendez-vous est obligatoire.")
@@ -82,7 +82,7 @@ RSpec.describe InvitationMailer, type: :mailer do
           expect(body_string).to match("Le département de la Drôme.")
           expect(body_string).to match("01 39 39 39 39")
           expect(body_string).to match(
-            "Vous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous d'accompagnement" \
+            "Vous êtes bénéficiaire du RSA et à ce titre vous devez vous présenter à un rendez-vous d'accompagnement" \
             " afin de démarrer un parcours d'accompagnement"
           )
           expect(body_string).to match("Ce rendez-vous est obligatoire.")
@@ -117,7 +117,7 @@ RSpec.describe InvitationMailer, type: :mailer do
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")
         expect(body_string).to match(
-          "Vous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous de signature de CER "\
+          "Vous êtes bénéficiaire du RSA et à ce titre vous devez vous présenter à un rendez-vous de signature de CER "\
           "afin de construire et signer votre Contrat d'Engagement Réciproque"
         )
         expect(body_string).to match("Ce rendez-vous est obligatoire.")
@@ -151,7 +151,7 @@ RSpec.describe InvitationMailer, type: :mailer do
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")
         expect(body_string).to match(
-          "Vous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous "\
+          "Vous êtes bénéficiaire du RSA et à ce titre vous devez vous présenter à un rendez-vous "\
           "de suivi afin de faire un point avec votre référent de parcours"
         )
         expect(body_string).not_to match("Ce rendez-vous est obligatoire.")
@@ -185,7 +185,7 @@ RSpec.describe InvitationMailer, type: :mailer do
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")
         expect(body_string).to match(
-          "Vous êtes bénéficiaire du RSA et vous devez vous présenter à un entretien de main tendue " \
+          "Vous êtes bénéficiaire du RSA et à ce titre vous devez vous présenter à un entretien de main tendue " \
           "afin de faire le point sur votre situation"
         )
         expect(body_string).to match("Ce rendez-vous est obligatoire.")
@@ -219,7 +219,7 @@ RSpec.describe InvitationMailer, type: :mailer do
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")
         expect(body_string).to match(
-          "Vous êtes bénéficiaire du RSA et vous devez vous présenter à un atelier collectif " \
+          "Vous êtes bénéficiaire du RSA et à ce titre vous devez vous présenter à un atelier collectif " \
           "afin de vous aider dans votre parcours d'insertion"
         )
         expect(body_string).to match("Ce rendez-vous est obligatoire.")

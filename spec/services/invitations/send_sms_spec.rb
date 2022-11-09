@@ -38,7 +38,7 @@ describe Invitations::SendSms, type: :service do
   let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_orientation") }
   let!(:content) do
     "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous "\
-      "d'orientation afin de démarrer un parcours d'accompagnement. "\
+      "d'orientation. "\
       "Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant "\
       "dans les 9 jours: http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n"\
       "Ce rendez-vous est obligatoire. En cas de problème technique, contactez le 0147200001."
@@ -83,7 +83,7 @@ describe Invitations::SendSms, type: :service do
       let!(:configuration) { create(:configuration) }
       let!(:content) do
         "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous "\
-          "d'accompagnement afin de démarrer un parcours d'accompagnement." \
+          "d'accompagnement." \
           " Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant "\
           "dans les 9 jours: http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n"\
           "Ce rendez-vous est obligatoire. En l'absence d'action de votre part, " \
@@ -172,7 +172,7 @@ describe Invitations::SendSms, type: :service do
       let!(:configuration) { create(:configuration, motif_category: "rsa_cer_signature") }
       let!(:content) do
         "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez vous présenter à " \
-          "un rendez-vous de signature de CER afin de construire et signer votre Contrat d'Engagement Réciproque." \
+          "un rendez-vous de signature de CER." \
           " Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant dans les " \
           "9 jours: " \
           "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n"\
@@ -216,7 +216,7 @@ describe Invitations::SendSms, type: :service do
       let!(:configuration) { create(:configuration, motif_category: "rsa_main_tendue") }
       let!(:content) do
         "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez vous présenter à " \
-          "un entretien de main tendue afin de faire le point sur votre situation." \
+          "un entretien de main tendue." \
           " Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant dans les " \
           "9 jours: " \
           "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n"\
@@ -258,8 +258,7 @@ describe Invitations::SendSms, type: :service do
       let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_atelier_collectif_mandatory") }
       let!(:configuration) { create(:configuration, motif_category: "rsa_atelier_collectif_mandatory") }
       let!(:content) do
-        "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez vous présenter à " \
-          "un atelier collectif afin de vous aider dans votre parcours d'insertion." \
+        "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez vous présenter à un atelier collectif." \
           " Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant dans les " \
           "9 jours: " \
           "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n"\
@@ -323,7 +322,7 @@ describe Invitations::SendSms, type: :service do
       let!(:configuration) { create(:configuration, motif_category: "rsa_follow_up") }
       let!(:content) do
         "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez vous présenter à " \
-          "un rendez-vous de suivi afin de faire un point avec votre référent de parcours. " \
+          "un rendez-vous de suivi. " \
           "Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant dans les " \
           "9 jours: " \
           "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n"\
