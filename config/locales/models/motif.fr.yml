@@ -13,3 +13,5 @@ fr:
           rsa_cer_signature: RSA signature CER
           rsa_insertion_offer: RSA offre insertion pro
           rsa_follow_up: RSA suivi
+          rsa_main_tendue: RSA Main Tendue
+          rsa_atelier_collectif_mandatory: RSA Atelier collectif

@@ -1,5 +1,5 @@
 <h1>Bonjour <%= "#{@applicant.first_name} #{@applicant.last_name.upcase}" %>,</h1>
-<p>Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) à un <%= @rdv_title %>.</p>
+<p>Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) à un <%= @rdv_title %> afin de <%= @rdv_purpose %>.</p>
 <p>Vous êtes attendu(e) <span class="font-weight-bold">le <%= @rdv.formatted_start_date %> à <%= @rdv.formatted_start_time %></span> à l'adresse suivante: </p>
 <p><h4><%= @rdv.lieu.name %></h4></p>
 <p><h4><%= @rdv.lieu.address %></h4></p>

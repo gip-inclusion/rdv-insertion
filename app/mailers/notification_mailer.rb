@@ -6,7 +6,7 @@ class NotificationMailer < ApplicationMailer
   before_action :set_applicant, :set_rdv, :set_department, :set_motif_category,
                 :set_signature_lines, :set_rdv_title,
                 :set_display_mandatory_warning, :set_display_punishable_warning,
-                :set_logo_path, :verify_phone_number_presence
+                :set_rdv_purpose, :set_logo_path, :verify_phone_number_presence
 
   ### rdv_created ###
   def presential_rdv_created
@@ -82,6 +82,10 @@ class NotificationMailer < ApplicationMailer
 
   def set_display_punishable_warning
     @display_punishable_warning = display_punishable_warning
+  end
+
+  def set_rdv_purpose
+    @rdv_purpose = rdv_purpose
   end
 
   def set_logo_path

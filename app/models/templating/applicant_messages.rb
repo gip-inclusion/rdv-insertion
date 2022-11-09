@@ -30,38 +30,9 @@ class Templating::ApplicantMessages
     def initialize(motif_category, attributes)
       @motif_category = motif_category
       @attributes = attributes
-    end
-
-    def invitation_purpose
-      fetch("invitation_purpose")
-    end
-
-    def rdv_title
-      fetch("rdv_title")
-    end
-
-    def rdv_title_by_phone
-      fetch("rdv_title_by_phone")
-    end
-
-    def display_mandatory_warning
-      fetch("display_mandatory_warning")
-    end
-
-    def display_punishable_warning
-      fetch("display_punishable_warning")
-    end
-
-    private
-
-    def fetch(attribute_name)
-      attribute = @attributes[attribute_name]
-      raise_for_missing_attribute(attribute_name) if attribute.nil?
-      attribute
-    end
-
-    def raise_for_missing_attribute(attribute)
-      raise TemplatingError, "#{attribute} not found for category #{@motif_category}"
+      @attributes.each_key do |attribute|
+        define_singleton_method(attribute) { @attributes[attribute] }
+      end
     end
   end
 end

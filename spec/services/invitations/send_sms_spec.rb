@@ -38,7 +38,8 @@ describe Invitations::SendSms, type: :service do
   let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_orientation") }
   let!(:content) do
     "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous "\
-      "d'orientation. Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant "\
+      "d'orientation afin de démarrer un parcours d'accompagnement. "\
+      "Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant "\
       "dans les 9 jours: http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n"\
       "Ce rendez-vous est obligatoire. En cas de problème technique, contactez le 0147200001."
   end
@@ -78,130 +79,52 @@ describe Invitations::SendSms, type: :service do
     end
 
     context "for rsa accompagnement" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_accompagnement") }
-      let!(:configuration) { create(:configuration, motif_category: "rsa_accompagnement") }
+      let!(:rdv_context) { build(:rdv_context) }
+      let!(:configuration) { create(:configuration) }
       let!(:content) do
         "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous "\
-          "d'accompagnement. Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant "\
+          "d'accompagnement afin de démarrer un parcours d'accompagnement." \
+          " Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant "\
           "dans les 9 jours: http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n"\
           "Ce rendez-vous est obligatoire. En l'absence d'action de votre part, " \
           "le versement de votre RSA pourra être suspendu ou réduit. " \
           "En cas de problème technique, contactez le 0147200001."
       end
 
-      it("is a success") { is_a_success }
-
-      it "calls the send transactional service with the right content" do
-        expect(Messengers::SendSms).to receive(:call)
-          .with(sendable: invitation, content: content)
-        subject
-      end
-
-      context "when it is a reminder" do
-        let!(:content) do
-          "Monsieur John DOE,\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours vous " \
-            "invitant à prendre RDV au créneau de votre choix afin de démarrer un parcours d'accompagnement. " \
-            "Le lien de prise de RDV suivant expire dans 5 jours: " \
-            "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
-            "Ce rendez-vous est obligatoire. En l'absence d'action de votre part, " \
-            "le versement de votre RSA pourra être suspendu ou réduit. En cas de problème technique, contactez le "\
-            "0147200001."
-        end
-
+      %w[rsa_accompagnement rsa_accompagnement_social rsa_accompagnement_sociopro].each do |motif_category|
         before do
-          invitation.update!(reminder: true, valid_until: 5.days.from_now)
+          rdv_context.motif_category = motif_category
+          configuration.motif_category = motif_category
         end
+
+        it("is a success") { is_a_success }
 
         it "calls the send transactional service with the right content" do
           expect(Messengers::SendSms).to receive(:call)
             .with(sendable: invitation, content: content)
           subject
         end
-      end
-    end
 
-    context "for rsa accompagnement social" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_accompagnement_social") }
-      let!(:configuration) { create(:configuration, motif_category: "rsa_accompagnement_social") }
-      let!(:content) do
-        "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous "\
-          "d'accompagnement. Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant "\
-          "dans les 9 jours: http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n"\
-          "Ce rendez-vous est obligatoire. En l'absence d'action de votre part, " \
-          "le versement de votre RSA pourra être suspendu ou réduit. " \
-          "En cas de problème technique, contactez le 0147200001."
-      end
+        context "when it is a reminder" do
+          let!(:content) do
+            "Monsieur John DOE,\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours vous " \
+              "invitant à prendre RDV au créneau de votre choix afin de démarrer un parcours d'accompagnement. " \
+              "Le lien de prise de RDV suivant expire dans 5 jours: " \
+              "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
+              "Ce rendez-vous est obligatoire. En l'absence d'action de votre part, " \
+              "le versement de votre RSA pourra être suspendu ou réduit. En cas de problème technique, contactez le "\
+              "0147200001."
+          end
 
-      it("is a success") { is_a_success }
+          before do
+            invitation.update!(reminder: true, valid_until: 5.days.from_now)
+          end
 
-      it "calls the send transactional service with the right content" do
-        expect(Messengers::SendSms).to receive(:call)
-          .with(sendable: invitation, content: content)
-        subject
-      end
-
-      context "when it is a reminder" do
-        let!(:content) do
-          "Monsieur John DOE,\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours vous " \
-            "invitant à prendre RDV au créneau de votre choix afin de démarrer un parcours d'accompagnement. " \
-            "Le lien de prise de RDV suivant expire dans 5 jours: " \
-            "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
-            "Ce rendez-vous est obligatoire. En l'absence d'action de votre part, " \
-            "le versement de votre RSA pourra être suspendu ou réduit. En cas de problème technique, contactez le "\
-            "0147200001."
-        end
-
-        before do
-          invitation.update!(reminder: true, valid_until: 5.days.from_now)
-        end
-
-        it "calls the send transactional service with the right content" do
-          expect(Messengers::SendSms).to receive(:call)
-            .with(sendable: invitation, content: content)
-          subject
-        end
-      end
-    end
-
-    context "for rsa accompagnement sociopro" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_accompagnement_sociopro") }
-      let!(:configuration) { create(:configuration, motif_category: "rsa_accompagnement_sociopro") }
-      let!(:content) do
-        "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous "\
-          "d'accompagnement. Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant "\
-          "dans les 9 jours: http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n"\
-          "Ce rendez-vous est obligatoire. En l'absence d'action de votre part, " \
-          "le versement de votre RSA pourra être suspendu ou réduit. " \
-          "En cas de problème technique, contactez le 0147200001."
-      end
-
-      it("is a success") { is_a_success }
-
-      it "calls the send transactional service with the right content" do
-        expect(Messengers::SendSms).to receive(:call)
-          .with(sendable: invitation, content: content)
-        subject
-      end
-
-      context "when it is a reminder" do
-        let!(:content) do
-          "Monsieur John DOE,\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours vous " \
-            "invitant à prendre RDV au créneau de votre choix afin de démarrer un parcours d'accompagnement. " \
-            "Le lien de prise de RDV suivant expire dans 5 jours: " \
-            "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
-            "Ce rendez-vous est obligatoire. En l'absence d'action de votre part, " \
-            "le versement de votre RSA pourra être suspendu ou réduit. En cas de problème technique, contactez le "\
-            "0147200001."
-        end
-
-        before do
-          invitation.update!(reminder: true, valid_until: 5.days.from_now)
-        end
-
-        it "calls the send transactional service with the right content" do
-          expect(Messengers::SendSms).to receive(:call)
-            .with(sendable: invitation, content: content)
-          subject
+          it "calls the send transactional service with the right content" do
+            expect(Messengers::SendSms).to receive(:call)
+              .with(sendable: invitation, content: content)
+            subject
+          end
         end
       end
     end
@@ -249,7 +172,7 @@ describe Invitations::SendSms, type: :service do
       let!(:configuration) { create(:configuration, motif_category: "rsa_cer_signature") }
       let!(:content) do
         "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez vous présenter à " \
-          "un rendez-vous pour construire et signer votre Contrat d'Engagement Réciproque." \
+          "un rendez-vous de signature de CER afin de construire et signer votre Contrat d'Engagement Réciproque." \
           " Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant dans les " \
           "9 jours: " \
           "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n"\
@@ -268,8 +191,95 @@ describe Invitations::SendSms, type: :service do
       context "when it is a reminder" do
         let!(:content) do
           "Monsieur John DOE,\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours " \
-            "vous invitant à prendre RDV au créneau de votre choix afin de signer votre Contrat d'Engagement " \
-            "Réciproque. Le lien de prise de RDV suivant expire dans 5 jours: " \
+            "vous invitant à prendre RDV au créneau de votre choix afin de construire et signer " \
+            "votre Contrat d'Engagement Réciproque. " \
+            "Le lien de prise de RDV suivant expire dans 5 jours: " \
+            "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
+            "Ce rendez-vous est obligatoire. En cas de problème technique, contactez le "\
+            "0147200001."
+        end
+
+        before do
+          invitation.update!(reminder: true, valid_until: 5.days.from_now)
+        end
+
+        it "calls the send transactional service with the right content" do
+          expect(Messengers::SendSms).to receive(:call)
+            .with(sendable: invitation, content: content)
+          subject
+        end
+      end
+    end
+
+    context "for rsa_main_tendue" do
+      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_main_tendue") }
+      let!(:configuration) { create(:configuration, motif_category: "rsa_main_tendue") }
+      let!(:content) do
+        "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez vous présenter à " \
+          "un entretien de main tendue afin de faire le point sur votre situation." \
+          " Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant dans les " \
+          "9 jours: " \
+          "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n"\
+          "Ce rendez-vous est obligatoire. "\
+          "En cas de problème technique, contactez le 0147200001."
+      end
+
+      it("is a success") { is_a_success }
+
+      it "calls the send transactional service with the right content" do
+        expect(Messengers::SendSms).to receive(:call)
+          .with(sendable: invitation, content: content)
+        subject
+      end
+
+      context "when it is a reminder" do
+        let!(:content) do
+          "Monsieur John DOE,\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours " \
+            "vous invitant à prendre RDV au créneau de votre choix afin de faire le point sur votre situation." \
+            " Le lien de prise de RDV suivant expire dans 5 jours: " \
+            "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
+            "Ce rendez-vous est obligatoire. En cas de problème technique, contactez le "\
+            "0147200001."
+        end
+
+        before do
+          invitation.update!(reminder: true, valid_until: 5.days.from_now)
+        end
+
+        it "calls the send transactional service with the right content" do
+          expect(Messengers::SendSms).to receive(:call)
+            .with(sendable: invitation, content: content)
+          subject
+        end
+      end
+    end
+
+    context "for rsa_atelier_collectif_mandatory" do
+      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_atelier_collectif_mandatory") }
+      let!(:configuration) { create(:configuration, motif_category: "rsa_atelier_collectif_mandatory") }
+      let!(:content) do
+        "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez vous présenter à " \
+          "un atelier collectif afin de vous aider dans votre parcours d'insertion." \
+          " Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant dans les " \
+          "9 jours: " \
+          "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n"\
+          "Ce rendez-vous est obligatoire. "\
+          "En cas de problème technique, contactez le 0147200001."
+      end
+
+      it("is a success") { is_a_success }
+
+      it "calls the send transactional service with the right content" do
+        expect(Messengers::SendSms).to receive(:call)
+          .with(sendable: invitation, content: content)
+        subject
+      end
+
+      context "when it is a reminder" do
+        let!(:content) do
+          "Monsieur John DOE,\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours " \
+            "vous invitant à prendre RDV au créneau de votre choix afin de vous aider dans votre parcours d'insertion" \
+            ". Le lien de prise de RDV suivant expire dans 5 jours: " \
             "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
             "Ce rendez-vous est obligatoire. En cas de problème technique, contactez le "\
             "0147200001."
@@ -313,7 +323,7 @@ describe Invitations::SendSms, type: :service do
       let!(:configuration) { create(:configuration, motif_category: "rsa_follow_up") }
       let!(:content) do
         "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez vous présenter à " \
-          "un rendez-vous de suivi avec votre référent de parcours. " \
+          "un rendez-vous de suivi afin de faire un point avec votre référent de parcours. " \
           "Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant dans les " \
           "9 jours: " \
           "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n"\
