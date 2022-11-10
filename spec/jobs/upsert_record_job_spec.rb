@@ -5,8 +5,21 @@ describe UpsertRecordJob, type: :job do
 
   let(:class_name) { "Rdv" }
   let(:rdv_solidarites_attributes) { { id: 1 } }
-  let(:additional_attributes) { { organisation_id: organisation_id, applicant_ids: applicant_ids } }
-  let(:applicant_ids) { [23] }
+  let!(:additional_attributes) do
+    {
+      participations_attributes: [
+        {
+          id: nil,
+          status: 'unknown',
+          applicant_id: applicant_id,
+          rdv_solidarites_participation_id: 998
+        }
+      ],
+      organisation_id: organisation_id
+    }
+  end
+  let(:applicant_id) { 23 }
+  let(:applicant_ids) { [applicant_id] }
 
   let(:organisation_id) { 3 }
 
@@ -18,7 +31,7 @@ describe UpsertRecordJob, type: :job do
     it "calls the upsert service" do
       expect(UpsertRecord).to receive(:call)
         .with(klass: Rdv, rdv_solidarites_attributes: rdv_solidarites_attributes,
-              additional_attributes: { applicant_ids: applicant_ids, organisation_id: organisation_id })
+              additional_attributes: additional_attributes)
       subject
     end
   end
