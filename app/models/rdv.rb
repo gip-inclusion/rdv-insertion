@@ -18,7 +18,7 @@ class Rdv < ApplicationRecord
   # Needed to build participations in process_rdv_job
   accepts_nested_attributes_for :participations
 
-  has_and_belongs_to_many :applicants, through: :participations
+  has_many :applicants, through: :participations
 
   validates :applicants, :starts_at, :duration_in_min, presence: true
   validates :rdv_solidarites_rdv_id, uniqueness: true, presence: true
