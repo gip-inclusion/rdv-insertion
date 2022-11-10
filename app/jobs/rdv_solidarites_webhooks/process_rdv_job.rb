@@ -14,6 +14,8 @@ module RdvSolidaritesWebhooks
       # for a convocation, we have to verify the lieu is up to date in db
       verify_lieu_sync! if rdv_convocable?
       upsert_or_delete_rdv
+      # Refresh rdv contexts because participations could be removed in rdv-s for existin rdv
+      RefreshRdvContextStatusesJob.perform_async(rdv.rdv_context_ids) if rdv.present?
       invalidate_related_invitations if created_event?
       send_outgoing_webhooks
     end
