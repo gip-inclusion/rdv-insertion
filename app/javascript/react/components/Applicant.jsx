@@ -1,12 +1,8 @@
 import React, { useState } from "react";
-import Swal from "sweetalert2";
-import Tippy from "@tippyjs/react";
 
 import CreationCell from "./applicant/CreationCell";
 import InvitationCells from "./applicant/InvitationCells";
 import ContactInfosExtraLine from "./applicant/ContactInfosExtraLine";
-
-import { getFrenchFormatDateString } from "../../lib/datesHelper";
 
 export default function Applicant({ applicant, isDepartmentLevel }) {
   const [isTriggered, setIsTriggered] = useState({
@@ -23,9 +19,9 @@ export default function Applicant({ applicant, isDepartmentLevel }) {
 
   const computeInvitationsColspan = () => {
     let colSpan = 0;
-    if (applicant.shouldBeInvitedBySms()) colSpan += 1;
-    if (applicant.shouldBeInvitedByEmail()) colSpan += 1;
-    if (applicant.shouldBeInvitedByPostal()) colSpan += 1;
+    if (applicant.canBeInvitedBySms()) colSpan += 1;
+    if (applicant.canBeInvitedByEmail()) colSpan += 1;
+    if (applicant.canBeInvitedByPostal()) colSpan += 1;
     return colSpan;
   };
 

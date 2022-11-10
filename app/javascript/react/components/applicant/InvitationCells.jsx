@@ -1,8 +1,5 @@
-import React, { useState } from "react";
-import Swal from "sweetalert2";
+import React from "react";
 import Tippy from "@tippyjs/react";
-
-import { getFrenchFormatDateString } from "../../../lib/datesHelper";
 
 import SmsInvitationCell from "./SmsInvitationCell";
 import EmailInvitationCell from "./EmailInvitationCell";
@@ -47,7 +44,7 @@ export default function InvitationCells({
           </small>
         </td>
       </Tippy>
-    ) : applicant.createdAt && !applicant.currentRdvContext && isDepartmentLevel ? (
+    ) : applicant.createdAt && isDepartmentLevel && !applicant.linkedToCurrentCategory() ? (
       <td colSpan={invitationsColspan}>
         L'allocataire n'appartient pas à une organisation qui gère ce type de rdv{" "}
         <Tippy
@@ -63,18 +60,7 @@ export default function InvitationCells({
       </td>
     ) : applicant.currentContextStatus === "rdv_pending" ? (
       <>
-        <Tippy
-          content={
-            <span>
-              <>Un rdv est en attente pour ce bénéficiaire</>
-            </span>
-          }
-        >
-          <td colSpan={invitationsColspan}>
-            {applicant.currentRdvContext.human_status}&nbsp;
-            <i className="fas fa-question-circle" />
-          </td>
-        </Tippy>
+        <td colSpan={invitationsColspan}>{applicant.currentRdvContext.human_status}</td>
       </>
     ) : (
       /* ----------------------------- Enabled invitations cases --------------------------- */

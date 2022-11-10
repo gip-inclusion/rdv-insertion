@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import Swal from "sweetalert2";
+import React from "react";
 import Tippy from "@tippyjs/react";
 
 import handleApplicantInvitation from "../../lib/handleApplicantInvitation";
@@ -28,10 +27,10 @@ export default function SmsInvitationCell({
   };
 
   return (
-    applicant.shouldBeInvitedBySms() && (
+    applicant.canBeInvitedBySms() && (
       <>
         <td>
-          {applicant.lastSmsInvitationSentAt ? (
+          {applicant.markAsAlreadyInvitedBy("sms") ? (
             <Tippy
               content={
                 <span>

@@ -1,6 +1,4 @@
-import React, { useState } from "react";
-import Swal from "sweetalert2";
-import Tippy from "@tippyjs/react";
+import React from "react";
 
 import handleApplicantUpdate from "../../lib/handleApplicantUpdate";
 import camelToSnakeCase from "../../../lib/stringHelper";

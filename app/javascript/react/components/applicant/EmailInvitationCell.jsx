@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import Swal from "sweetalert2";
+import React from "react";
 import Tippy from "@tippyjs/react";
 
 import handleApplicantInvitation from "../../lib/handleApplicantInvitation";
@@ -11,8 +10,6 @@ export default function EmailInvitationCell({
   setIsTriggered,
   isDepartmentLevel,
 }) {
-  const [isLoading, setIsLoading] = useState(false);
-
   const handleEmailInvitationClick = async () => {
     setIsTriggered({ ...isTriggered, emailInvitation: true });
     const invitationParams = [
@@ -30,10 +27,10 @@ export default function EmailInvitationCell({
   };
 
   return (
-    applicant.shouldBeInvitedByEmail() && (
+    applicant.canBeInvitedByEmail() && (
       <>
         <td>
-          {applicant.lastEmailInvitationSentAt ? (
+          {applicant.markAsAlreadyInvitedBy("email") ? (
             <Tippy
               content={
                 <span>
@@ -55,7 +52,11 @@ export default function EmailInvitationCell({
               className="btn btn-primary btn-blue"
               onClick={() => handleEmailInvitationClick()}
             >
-              {isTriggered.emailInvitation ? "Invitation..." : "Inviter par Email"}
+              {isTriggered.emailInvitation
+                ? "Invitation..."
+                : applicant.hasRdvs()
+                ? "Réinviter par Email"
+                : "Inviter par Email"}
             </button>
           )}
         </td>

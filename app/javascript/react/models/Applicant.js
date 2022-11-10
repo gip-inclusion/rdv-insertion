@@ -1,6 +1,5 @@
 import formatPhoneNumber from "../../lib/formatPhoneNumber";
 import retrieveLastInvitationDate from "../../lib/retrieveLastInvitationDate";
-import retrieveLastRdvDate from "../../lib/retrieveLastRdvDate";
 import { getFrenchFormatDateString } from "../../lib/datesHelper";
 
 const ROLES = {
@@ -48,6 +47,7 @@ export default class Applicant {
     // when creating/inviting we always consider an applicant in the scope of only one organisation
     this.currentOrganisation = organisation;
     this.currentConfiguration = currentConfiguration;
+    this.currentMotifCategory = currentConfiguration.motif_category;
     this.isDuplicate = false;
   }
 
@@ -106,7 +106,7 @@ export default class Applicant {
     this.currentOrganisation ||= upToDateApplicant.organisations.find(
       (o) =>
         o.department_number === this.departmentNumber &&
-        o.motif_categories.includes(this.currentConfiguration.motif_category)
+        o.motif_categories.includes(this.currentMotifCategory)
     );
     // we update the attributes with the attributes in DB if the applicant is already created
     // and cannot be updated from the page
@@ -121,26 +121,24 @@ export default class Applicant {
       }
     }
     this.currentRdvContext = upToDateApplicant.rdv_contexts.find(
-      (rc) => rc.motif_category === this.currentConfiguration.motif_category
+      (rc) => rc.motif_category === this.currentMotifCategory
     );
     this.currentContextStatus = this.currentRdvContext && this.currentRdvContext.status;
     this.rdvs = this.currentRdvContext?.rdvs || [];
-    console.log(this.sortedRdvs(), "this.sortedRdvs()");
-    console.log(this.lastRdvDate(), "this.lastRdvDate()");
     this.lastSmsInvitationSentAt = retrieveLastInvitationDate(
       upToDateApplicant.invitations,
       "sms",
-      this.currentConfiguration.motif_category
+      this.currentMotifCategory
     );
     this.lastEmailInvitationSentAt = retrieveLastInvitationDate(
       upToDateApplicant.invitations,
       "email",
-      this.currentConfiguration.motif_category
+      this.currentMotifCategory
     );
     this.lastPostalInvitationSentAt = retrieveLastInvitationDate(
       upToDateApplicant.invitations,
       "postal",
-      this.currentConfiguration.motif_category
+      this.currentMotifCategory
     );
     this.departmentInternalId = upToDateApplicant.department_internal_id;
   }
@@ -196,15 +194,15 @@ export default class Applicant {
     );
   }
 
-  shouldBeInvitedBySms() {
+  canBeInvitedBySms() {
     return this.currentConfiguration.invitation_formats.includes("sms");
   }
 
-  shouldBeInvitedByEmail() {
+  canBeInvitedByEmail() {
     return this.currentConfiguration.invitation_formats.includes("email");
   }
 
-  shouldBeInvitedByPostal() {
+  canBeInvitedByPostal() {
     return this.currentConfiguration.invitation_formats.includes("postal");
   }
 
@@ -215,16 +213,47 @@ export default class Applicant {
     );
   }
 
+  linkedToCurrentCategory() {
+    return this.organisations.some((organisation) =>
+      organisation.motif_categories.includes(this.currentMotifCategory)
+    );
+  }
+
   hasRdvs() {
-    this.rdvs && this.rdvs.length > 0;
+    return this.rdvs && this.rdvs.length > 0;
   }
 
-  sortedRdvs() {
-    this.rdvs && this.rdvs.sort((a, b) => new Date(a.starts_at) - new Date(b.starts_at));
+  sortedRdvsByCreationDate() {
+    return this.rdvs.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
   }
 
-  lastRdvDate() {
-    this.sortedRdvs() && this.sortedRdvs()[-1];
+  lastRdvCreatedAt() {
+    return this.hasRdvs()
+      ? this.sortedRdvsByCreationDate()[this.sortedRdvsByCreationDate().length - 1].created_at
+      : null;
+  }
+
+  lastInvitationDate(format) {
+    switch (format) {
+      case "sms":
+        return this.lastSmsInvitationSentAt;
+      case "email":
+        return this.lastEmailInvitationSentAt;
+      case "postal":
+        return this.lastPostalInvitationSentAt;
+      default:
+        return null;
+    }
+  }
+
+  markAsAlreadyInvitedBy(format) {
+    // We cannot re-invite if the applicant is invited in this format and if the applicant has no rdvs yet,
+    // or if he has been reinvted after the last rdv
+    const lastInvitationDate = this.lastInvitationDate(format);
+    return (
+      lastInvitationDate &&
+      (!this.hasRdvs() || new Date(lastInvitationDate) > new Date(this.lastRdvCreatedAt()))
+    );
   }
 
   generateUid() {

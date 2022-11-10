@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Swal from "sweetalert2";
 import Tippy from "@tippyjs/react";
 
@@ -49,7 +49,7 @@ export default function CreationCell({
   const handleAddToOrganisationClick = async () => {
     setIsTriggered({ ...isTriggered, creation: true });
 
-    const result = await handleApplicantCreation(applicant, applicant.currentOrganisation.id);
+    await handleApplicantCreation(applicant, applicant.currentOrganisation.id);
 
     setIsTriggered({ ...isTriggered, creation: false });
   };
@@ -110,7 +110,7 @@ export default function CreationCell({
               </span>
             }
           >
-            <i className="fas fa-check" />
+            <i className="fas fa-link" />
           </Tippy>
         </a>
       </td>

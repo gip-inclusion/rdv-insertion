@@ -1,10 +1,8 @@
-import React, { useState } from "react";
-import Swal from "sweetalert2";
+import React from "react";
 import Tippy from "@tippyjs/react";
 
 import handleApplicantInvitation from "../../lib/handleApplicantInvitation";
-import { todaysDateString } from "../../../lib/datesHelper";
-import { getFrenchFormatDateString } from "../../../lib/datesHelper";
+import { todaysDateString, getFrenchFormatDateString } from "../../../lib/datesHelper";
 
 export default function PostalInvitationCell({
   applicant,
@@ -31,10 +29,10 @@ export default function PostalInvitationCell({
   };
 
   return (
-    applicant.shouldBeInvitedByPostal() && (
+    applicant.canBeInvitedByPostal() && (
       <>
         <td>
-          {applicant.lastPostalInvitationSentAt ? (
+          {applicant.markAsAlreadyInvitedBy("postal") ? (
             <Tippy
               content={
                 <span>
@@ -56,7 +54,11 @@ export default function PostalInvitationCell({
               className="btn btn-primary btn-blue"
               onClick={() => handlePostalInvitationClick()}
             >
-              {isTriggered.postalInvitation ? "Création en cours..." : "Générer courrier"}
+              {isTriggered.postalInvitation
+                ? "Invitation..."
+                : applicant.hasRdvs()
+                ? "Regénérer courrier"
+                : "Générer courrier"}
             </button>
           )}
         </td>

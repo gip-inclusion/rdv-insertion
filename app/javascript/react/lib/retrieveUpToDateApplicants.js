@@ -35,7 +35,6 @@ const retrieveUpToDateApplicants = async (applicantsFromList) => {
     );
 
     if (upToDateApplicant) {
-      console.log(upToDateApplicant);
       applicant.updateWith(upToDateApplicant);
     } else if (
       (applicant.departmentInternalId &&
