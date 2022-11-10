@@ -9,146 +9,226 @@ RSpec.describe InvitationMailer, type: :mailer do
   let!(:invitation) do
     create(
       :invitation,
-      applicant: applicant, department: department, format: "email", help_phone_number: help_phone_number,
+      rdv_context: rdv_context, applicant: applicant, department: department,
+      format: "email", help_phone_number: help_phone_number,
       number_of_days_to_accept_invitation: 5, organisations: [organisation]
     )
   end
+  let!(:rdv_context) { build(:rdv_context) }
 
-  describe "#invitation_for_rsa_orientation" do
+  describe "#regular_invitation" do
     subject do
-      described_class.with(invitation: invitation, applicant: applicant).invitation_for_rsa_orientation
+      described_class.with(invitation: invitation, applicant: applicant).regular_invitation
     end
 
-    it "renders the headers" do
-      expect(subject.to).to eq([applicant.email])
-    end
+    context "for rsa_orientation" do
+      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_orientation") }
 
-    it "renders the subject" do
-      expect(subject.subject).to eq("Votre RDV d'orientation dans le cadre de votre RSA")
-    end
+      it "renders the headers" do
+        expect(subject.to).to eq([applicant.email])
+      end
 
-    it "renders the body" do
-      expect(subject.body.encoded).to match("Bonjour Jean VALJEAN")
-      expect(subject.body.encoded).to match("Le département de la Drôme.")
-      expect(subject.body.encoded).to match("01 39 39 39 39")
-      expect(subject.body.encoded).to match(
-        "Vous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous d'orientation"
-      )
-      expect(subject.body.encoded).to match("/invitations/redirect")
-      expect(subject.body.encoded).to match("uuid=#{invitation.uuid}")
-      expect(subject.body.encoded).to match("dans les 5 jours")
-    end
+      it "renders the subject" do
+        email_subject = CGI.unescapeHTML(subject.subject)
+        expect(email_subject).to eq("[RSA]: Votre rendez-vous d'orientation dans le cadre de votre RSA")
+      end
 
-    context "when the signature is configured" do
-      let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
+      it "renders the body" do
+        body_string = CGI.unescapeHTML(subject.body.encoded)
+        expect(body_string).to match("Bonjour Jean VALJEAN")
+        expect(body_string).to match("Le département de la Drôme.")
+        expect(body_string).to match("01 39 39 39 39")
+        expect(body_string).to match(
+          "Vous êtes bénéficiaire du RSA et à ce titre vous devez vous présenter à un rendez-vous d'orientation" \
+          " afin de démarrer un parcours d'accompagnement"
+        )
+        expect(body_string).to match("Ce rendez-vous est obligatoire.")
+        expect(body_string).not_to match(
+          "le versement de votre RSA pourra être suspendu ou son montant réduit."
+        )
+        expect(body_string).to match("/invitations/redirect")
+        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("dans les 5 jours")
+      end
 
-      it "renders the mail with the right signature" do
-        expect(subject.body.encoded).to match(/Fabienne Bouchet/)
+      context "when the signature is configured" do
+        let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
+
+        it "renders the mail with the right signature" do
+          expect(subject.body.encoded).to match(/Fabienne Bouchet/)
+        end
       end
     end
-  end
 
-  describe "#invitation_for_rsa_accompagnement" do
-    subject do
-      described_class.with(invitation: invitation, applicant: applicant)
-                     .invitation_for_rsa_accompagnement
-    end
+    context "for rsa_accompagnement" do
+      let!(:rdv_context) { build(:rdv_context) }
 
-    it "renders the headers" do
-      expect(subject.to).to eq([applicant.email])
-    end
+      %w[rsa_accompagnement rsa_accompagnement_social rsa_accompagnement_sociopro]
+        .each do |motif_category|
+        before { rdv_context.motif_category = motif_category }
 
-    it "renders the subject" do
-      expect(subject.subject).to eq("Votre RDV d'accompagnement dans le cadre de votre RSA")
-    end
+        it "renders the headers" do
+          expect(subject.to).to eq([applicant.email])
+        end
 
-    it "renders the body" do
-      expect(subject.body.encoded).to match("Bonjour Jean VALJEAN")
-      expect(subject.body.encoded).to match("Le département de la Drôme.")
-      expect(subject.body.encoded).to match("01 39 39 39 39")
-      expect(subject.body.encoded).to match(
-        "Vous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous d'accompagnement."
-      )
-      expect(subject.body.encoded).to match("/invitations/redirect")
-      expect(subject.body.encoded).to match("uuid=#{invitation.uuid}")
-      expect(subject.body.encoded).to match("dans les 5 jours")
-    end
+        it "renders the subject" do
+          email_subject = CGI.unescapeHTML(subject.subject)
+          expect(email_subject).to eq("[RSA]: Votre rendez-vous d'accompagnement dans le cadre de votre RSA")
+        end
 
-    context "when the signature is configured" do
-      let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
-
-      it "renders the mail with the right signature" do
-        expect(subject.body.encoded).to match(/Fabienne Bouchet/)
+        it "renders the body" do
+          body_string = CGI.unescapeHTML(subject.body.encoded)
+          expect(body_string).to match("Bonjour Jean VALJEAN")
+          expect(body_string).to match("Le département de la Drôme.")
+          expect(body_string).to match("01 39 39 39 39")
+          expect(body_string).to match(
+            "Vous êtes bénéficiaire du RSA et à ce titre vous devez vous présenter à un rendez-vous d'accompagnement" \
+            " afin de démarrer un parcours d'accompagnement"
+          )
+          expect(body_string).to match("Ce rendez-vous est obligatoire.")
+          expect(body_string).to match(
+            "le versement de votre RSA pourra être suspendu ou son montant réduit."
+          )
+          expect(body_string).to match("/invitations/redirect")
+          expect(body_string).to match("uuid=#{invitation.uuid}")
+          expect(body_string).to match("dans les 5 jours")
+        end
       end
     end
-  end
 
-  describe "#invitation_for_rsa_accompagnement_social" do
-    subject do
-      described_class.with(invitation: invitation, applicant: applicant)
-                     .invitation_for_rsa_accompagnement_social
-    end
+    context "for rsa_cer_signature" do
+      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_cer_signature") }
 
-    it "renders the headers" do
-      expect(subject.to).to eq([applicant.email])
-    end
+      it "renders the headers" do
+        expect(subject.to).to eq([applicant.email])
+      end
 
-    it "renders the subject" do
-      expect(subject.subject).to eq("Votre RDV d'accompagnement dans le cadre de votre RSA")
-    end
+      it "renders the subject" do
+        email_subject = CGI.unescapeHTML(subject.subject)
+        expect(email_subject).to eq(
+          "[RSA]: Votre rendez-vous de signature de CER" \
+          " dans le cadre de votre RSA"
+        )
+      end
 
-    it "renders the body" do
-      expect(subject.body.encoded).to match("Bonjour Jean VALJEAN")
-      expect(subject.body.encoded).to match("Le département de la Drôme.")
-      expect(subject.body.encoded).to match("01 39 39 39 39")
-      expect(subject.body.encoded).to match(
-        "Vous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous d'accompagnement."
-      )
-      expect(subject.body.encoded).to match("/invitations/redirect")
-      expect(subject.body.encoded).to match("uuid=#{invitation.uuid}")
-      expect(subject.body.encoded).to match("dans les 5 jours")
-    end
-
-    context "when the signature is configured" do
-      let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
-
-      it "renders the mail with the right signature" do
-        expect(subject.body.encoded).to match(/Fabienne Bouchet/)
+      it "renders the body" do
+        body_string = CGI.unescapeHTML(subject.body.encoded)
+        expect(body_string).to match("Bonjour Jean VALJEAN")
+        expect(body_string).to match("Le département de la Drôme.")
+        expect(body_string).to match("01 39 39 39 39")
+        expect(body_string).to match(
+          "Vous êtes bénéficiaire du RSA et à ce titre vous devez vous présenter à un rendez-vous de signature de CER "\
+          "afin de construire et signer votre Contrat d'Engagement Réciproque"
+        )
+        expect(body_string).to match("Ce rendez-vous est obligatoire.")
+        expect(body_string).not_to match(
+          "le versement de votre RSA pourra être suspendu ou son montant réduit."
+        )
+        expect(body_string).to match("/invitations/redirect")
+        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("dans les 5 jours")
       end
     end
-  end
 
-  describe "#invitation_for_rsa_accompagnement_sociopro" do
-    subject do
-      described_class.with(invitation: invitation, applicant: applicant)
-                     .invitation_for_rsa_accompagnement_sociopro
+    context "for rsa_follow_up" do
+      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_follow_up") }
+
+      it "renders the headers" do
+        expect(subject.to).to eq([applicant.email])
+      end
+
+      it "renders the subject" do
+        email_subject = CGI.unescapeHTML(subject.subject)
+        expect(email_subject).to eq(
+          "[RSA]: Votre rendez-vous de suivi" \
+          " dans le cadre de votre RSA"
+        )
+      end
+
+      it "renders the body" do
+        body_string = CGI.unescapeHTML(subject.body.encoded)
+        expect(body_string).to match("Bonjour Jean VALJEAN")
+        expect(body_string).to match("Le département de la Drôme.")
+        expect(body_string).to match("01 39 39 39 39")
+        expect(body_string).to match(
+          "Vous êtes bénéficiaire du RSA et à ce titre vous devez vous présenter à un rendez-vous "\
+          "de suivi afin de faire un point avec votre référent de parcours"
+        )
+        expect(body_string).not_to match("Ce rendez-vous est obligatoire.")
+        expect(body_string).not_to match(
+          "le versement de votre RSA pourra être suspendu ou son montant réduit."
+        )
+        expect(body_string).to match("/invitations/redirect")
+        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("dans les 5 jours")
+      end
     end
 
-    it "renders the headers" do
-      expect(subject.to).to eq([applicant.email])
+    context "for rsa_main_tendue" do
+      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_main_tendue") }
+
+      it "renders the headers" do
+        expect(subject.to).to eq([applicant.email])
+      end
+
+      it "renders the subject" do
+        email_subject = CGI.unescapeHTML(subject.subject)
+        expect(email_subject).to eq(
+          "[RSA]: Votre entretien de main tendue" \
+          " dans le cadre de votre RSA"
+        )
+      end
+
+      it "renders the body" do
+        body_string = CGI.unescapeHTML(subject.body.encoded)
+        expect(body_string).to match("Bonjour Jean VALJEAN")
+        expect(body_string).to match("Le département de la Drôme.")
+        expect(body_string).to match("01 39 39 39 39")
+        expect(body_string).to match(
+          "Vous êtes bénéficiaire du RSA et à ce titre vous devez vous présenter à un entretien de main tendue " \
+          "afin de faire le point sur votre situation"
+        )
+        expect(body_string).to match("Ce rendez-vous est obligatoire.")
+        expect(body_string).not_to match(
+          "le versement de votre RSA pourra être suspendu ou son montant réduit."
+        )
+        expect(body_string).to match("/invitations/redirect")
+        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("dans les 5 jours")
+      end
     end
 
-    it "renders the subject" do
-      expect(subject.subject).to eq("Votre RDV d'accompagnement dans le cadre de votre RSA")
-    end
+    context "for rsa_atelier_collectif_mandatory" do
+      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_atelier_collectif_mandatory") }
 
-    it "renders the body" do
-      expect(subject.body.encoded).to match("Bonjour Jean VALJEAN")
-      expect(subject.body.encoded).to match("Le département de la Drôme.")
-      expect(subject.body.encoded).to match("01 39 39 39 39")
-      expect(subject.body.encoded).to match(
-        "Vous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous d'accompagnement."
-      )
-      expect(subject.body.encoded).to match("/invitations/redirect")
-      expect(subject.body.encoded).to match("uuid=#{invitation.uuid}")
-      expect(subject.body.encoded).to match("dans les 5 jours")
-    end
+      it "renders the headers" do
+        expect(subject.to).to eq([applicant.email])
+      end
 
-    context "when the signature is configured" do
-      let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
+      it "renders the subject" do
+        email_subject = CGI.unescapeHTML(subject.subject)
+        expect(email_subject).to eq(
+          "[RSA]: Votre atelier collectif" \
+          " dans le cadre de votre RSA"
+        )
+      end
 
-      it "renders the mail with the right signature" do
-        expect(subject.body.encoded).to match(/Fabienne Bouchet/)
+      it "renders the body" do
+        body_string = CGI.unescapeHTML(subject.body.encoded)
+        expect(body_string).to match("Bonjour Jean VALJEAN")
+        expect(body_string).to match("Le département de la Drôme.")
+        expect(body_string).to match("01 39 39 39 39")
+        expect(body_string).to match(
+          "Vous êtes bénéficiaire du RSA et à ce titre vous devez vous présenter à un atelier collectif " \
+          "afin de vous aider dans votre parcours d'insertion"
+        )
+        expect(body_string).to match("Ce rendez-vous est obligatoire.")
+        expect(body_string).not_to match(
+          "le versement de votre RSA pourra être suspendu ou son montant réduit."
+        )
+        expect(body_string).to match("/invitations/redirect")
+        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("dans les 5 jours")
       end
     end
   end
@@ -165,7 +245,7 @@ RSpec.describe InvitationMailer, type: :mailer do
     end
 
     it "renders the subject" do
-      expect(subject.subject).to eq("Votre RDV d'orientation téléphonique dans le cadre de votre RSA")
+      expect(subject.subject).to eq("[RSA]: Votre RDV d'orientation téléphonique dans le cadre de votre RSA")
     end
 
     it "renders the body" do
@@ -189,11 +269,11 @@ RSpec.describe InvitationMailer, type: :mailer do
     end
   end
 
-  describe "#invitation_for_rsa_cer_signature" do
+  describe "#invitation_for_rsa_insertion_offer" do
     subject do
       described_class
         .with(invitation: invitation, applicant: applicant)
-        .invitation_for_rsa_cer_signature
+        .invitation_for_rsa_insertion_offer
     end
 
     it "renders the headers" do
@@ -201,21 +281,25 @@ RSpec.describe InvitationMailer, type: :mailer do
     end
 
     it "renders the subject" do
-      expect(subject.subject).to eq("Votre RDV de signature de Contrat d'Engagement Réciproque" \
-                                    " dans le cadre de votre RSA")
+      email_subject = CGI.unescapeHTML(subject.subject)
+      expect(email_subject).to eq(
+        "[RSA]: Offre de formations et ateliers dans le cadre de votre parcours socio-professionel"
+      )
     end
 
     it "renders the body" do
-      expect(subject.body.encoded).to match("Bonjour Jean VALJEAN")
-      expect(subject.body.encoded).to match("Le département de la Drôme.")
-      expect(subject.body.encoded).to match("01 39 39 39 39")
-      expect(subject.body.encoded).to match(
-        "Vous êtes bénéficiaire du RSA et à ce titre vous allez construire et signer" \
-        " votre Contrat d'Engagement Réciproque."
+      body_string = CGI.unescapeHTML(subject.body.encoded)
+      expect(body_string).to match("Bonjour Jean VALJEAN")
+      expect(body_string).to match("Le département de la Drôme.")
+      expect(body_string).to match("01 39 39 39 39")
+      expect(body_string).to match(
+        "Vous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement "\
+        "en parcours professionnel ou socio-professionel. Pour profiter au mieux de cet accompagnement," \
+        " nous vous invitons à vous inscrire directement et librement aux ateliers et formations de votre choix."
       )
-      expect(subject.body.encoded).to match("/invitations/redirect")
-      expect(subject.body.encoded).to match("uuid=#{invitation.uuid}")
-      expect(subject.body.encoded).to match("dans les 5 jours")
+      expect(body_string).to match("/invitations/redirect")
+      expect(body_string).to match("uuid=#{invitation.uuid}")
+      expect(body_string).not_to match("dans un délai de 5 jours")
     end
 
     context "when the signature is configured" do
@@ -227,32 +311,43 @@ RSpec.describe InvitationMailer, type: :mailer do
     end
   end
 
-  describe "#invitation_for_rsa_follow_up" do
+  describe "#regular_invitation_reminder" do
     subject do
-      described_class
-        .with(invitation: invitation, applicant: applicant)
-        .invitation_for_rsa_follow_up
+      described_class.with(invitation: invitation, applicant: applicant).regular_invitation_reminder
     end
 
-    it "renders the headers" do
-      expect(subject.to).to eq([applicant.email])
-    end
+    context "for rsa_orientation" do
+      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_orientation") }
 
-    it "renders the subject" do
-      expect(subject.subject).to eq("Votre RDV de suivi avec votre référent de parcours")
-    end
+      it "renders the headers" do
+        expect(subject.to).to eq([applicant.email])
+      end
 
-    it "renders the body" do
-      expect(subject.body.encoded).to match("Bonjour Jean VALJEAN")
-      expect(subject.body.encoded).to match("Le département de la Drôme.")
-      expect(subject.body.encoded).to match("01 39 39 39 39")
-      expect(subject.body.encoded).to match(
-        "Vous êtes bénéficiaire du RSA et à ce titre vous êtes invité par votre référent de parcours" \
-        " à un rendez-vous de suivi."
-      )
-      expect(subject.body.encoded).to match("/invitations/redirect")
-      expect(subject.body.encoded).to match("uuid=#{invitation.uuid}")
-      expect(subject.body.encoded).to match("dans les 5 jours")
+      it "renders the subject" do
+        email_subject = CGI.unescapeHTML(subject.subject)
+        expect(email_subject).to eq("[Rappel]: Votre rendez-vous d'orientation dans le cadre de votre RSA")
+      end
+
+      it "renders the body" do
+        body_string = CGI.unescapeHTML(subject.body.encoded)
+        expect(body_string).to match("Bonjour Jean VALJEAN")
+        expect(body_string).to match("Le département de la Drôme.")
+        expect(body_string).to match("01 39 39 39 39")
+        expect(body_string).to match(
+          "En tant que bénéficiaire du RSA, vous avez reçu un premier mail il y a 3 jours "\
+          "vous invitant à prendre rendez-vous afin de démarrer un parcours d'accompagnement."
+        )
+        expect(body_string).to match("Ce rendez-vous est obligatoire.")
+        expect(body_string).not_to match(
+          "le versement de votre RSA pourra être suspendu ou son montant réduit."
+        )
+        expect(body_string).to match("/invitations/redirect")
+        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match(
+          "Il ne vous reste plus que <span class=\"font-weight-bold\">#{invitation.number_of_days_before_expiration}" \
+          " jours</span> pour prendre rendez-vous"
+        )
+      end
     end
 
     context "when the signature is configured" do
@@ -262,143 +357,116 @@ RSpec.describe InvitationMailer, type: :mailer do
         expect(subject.body.encoded).to match(/Fabienne Bouchet/)
       end
     end
-  end
 
-  describe "#invitation_for_rsa_orientation_reminder" do
-    subject do
-      described_class.with(invitation: invitation, applicant: applicant).invitation_for_rsa_orientation_reminder
-    end
+    context "for rsa_accompagnement" do
+      %w[rsa_accompagnement rsa_accompagnement_social rsa_accompagnement_sociopro]
+        .each do |motif_category|
+        before { rdv_context.motif_category = motif_category }
 
-    it "renders the headers" do
-      expect(subject.to).to eq([applicant.email])
-    end
+        it "renders the headers" do
+          expect(subject.to).to eq([applicant.email])
+        end
 
-    it "renders the subject" do
-      expect(subject.subject).to eq("[Rappel]: RDV d'orientation dans le cadre de votre RSA")
-    end
+        it "renders the subject" do
+          email_subject = CGI.unescapeHTML(subject.subject)
+          expect(email_subject).to eq("[Rappel]: Votre rendez-vous d'accompagnement dans le cadre de votre RSA")
+        end
 
-    it "renders the body" do
-      expect(subject.body.encoded).to match("Bonjour Jean VALJEAN")
-      expect(subject.body.encoded).to match("Le département de la Drôme.")
-      expect(subject.body.encoded).to match("01 39 39 39 39")
-      expect(subject.body.encoded).to match(
-        "En tant que bénéficiaire du RSA, vous avez reçu un premier mail il y a 3 jours vous invitant à prendre" \
-        " rendez-vous afin de démarrer un parcours d’accompagnement."
-      )
-      expect(subject.body.encoded).to match("/invitations/redirect")
-      expect(subject.body.encoded).to match("uuid=#{invitation.uuid}")
-      expect(subject.body.encoded).to match(
-        "Il ne vous reste plus que <span class=\"font-weight-bold\">#{invitation.number_of_days_before_expiration}" \
-        " jours</span> pour prendre rendez-vous"
-      )
-    end
-
-    context "when the signature is configured" do
-      let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
-
-      it "renders the mail with the right signature" do
-        expect(subject.body.encoded).to match(/Fabienne Bouchet/)
+        it "renders the body" do
+          body_string = CGI.unescapeHTML(subject.body.encoded)
+          expect(body_string).to match("Bonjour Jean VALJEAN")
+          expect(body_string).to match("Le département de la Drôme.")
+          expect(body_string).to match("01 39 39 39 39")
+          expect(body_string).to match(
+            "En tant que bénéficiaire du RSA, vous avez reçu un premier mail il y a 3 jours "\
+            "vous invitant à prendre rendez-vous afin de démarrer un parcours d'accompagnement."
+          )
+          expect(body_string).to match("Ce rendez-vous est obligatoire.")
+          expect(body_string).to match(
+            "le versement de votre RSA pourra être suspendu ou son montant réduit."
+          )
+          expect(body_string).to match("/invitations/redirect")
+          expect(body_string).to match("uuid=#{invitation.uuid}")
+          expect(body_string).to match(
+            "Il ne vous reste plus que <span class=\"font-weight-bold\">" \
+            "#{invitation.number_of_days_before_expiration}" \
+            " jours</span> pour prendre rendez-vous"
+          )
+        end
       end
     end
-  end
 
-  describe "#invitation_for_rsa_accompagnement_reminder" do
-    subject do
-      described_class.with(invitation: invitation, applicant: applicant)
-                     .invitation_for_rsa_accompagnement_reminder
+    context "for rsa_cer_signature" do
+      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_cer_signature") }
+
+      it "renders the headers" do
+        expect(subject.to).to eq([applicant.email])
+      end
+
+      it "renders the subject" do
+        email_subject = CGI.unescapeHTML(subject.subject)
+        expect(email_subject).to eq(
+          "[Rappel]: Votre rendez-vous de signature de CER "\
+          "dans le cadre de votre RSA"
+        )
+      end
+
+      it "renders the body" do
+        body_string = CGI.unescapeHTML(subject.body.encoded)
+        expect(body_string).to match("Bonjour Jean VALJEAN")
+        expect(body_string).to match("Le département de la Drôme.")
+        expect(body_string).to match("01 39 39 39 39")
+        expect(body_string).to match(
+          "En tant que bénéficiaire du RSA, vous avez reçu un premier mail il y a 3 jours "\
+          "vous invitant à prendre rendez-vous afin de construire et signer votre Contrat d'Engagement Réciproque."
+        )
+        expect(body_string).to match("Ce rendez-vous est obligatoire.")
+        expect(body_string).not_to match(
+          "le versement de votre RSA pourra être suspendu ou son montant réduit."
+        )
+        expect(body_string).to match("/invitations/redirect")
+        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match(
+          "Il ne vous reste plus que <span class=\"font-weight-bold\">#{invitation.number_of_days_before_expiration}" \
+          " jours</span> pour prendre rendez-vous"
+        )
+      end
     end
 
-    it "renders the headers" do
-      expect(subject.to).to eq([applicant.email])
-    end
+    context "for rsa_follow_up" do
+      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_follow_up") }
 
-    it "renders the subject" do
-      expect(subject.subject).to eq("[Rappel]: RDV d'accompagnement dans le cadre de votre RSA")
-    end
+      it "renders the headers" do
+        expect(subject.to).to eq([applicant.email])
+      end
 
-    it "renders the body" do
-      expect(subject.body.encoded).to match("Bonjour Jean VALJEAN")
-      expect(subject.body.encoded).to match("Le département de la Drôme.")
-      expect(subject.body.encoded).to match("01 39 39 39 39")
-      expect(subject.body.encoded).to match(
-        "En tant que bénéficiaire du RSA, vous avez reçu un premier mail il y a 3 jours vous invitant à prendre" \
-        " rendez-vous afin de démarrer un parcours d’accompagnement."
-      )
-      expect(subject.body.encoded).to match("/invitations/redirect")
-      expect(subject.body.encoded).to match("uuid=#{invitation.uuid}")
-      expect(subject.body.encoded).to match(
-        "Il ne vous reste plus que <span class=\"font-weight-bold\">#{invitation.number_of_days_before_expiration}" \
-        " jours</span> pour prendre rendez-vous"
-      )
-    end
-  end
+      it "renders the subject" do
+        email_subject = CGI.unescapeHTML(subject.subject)
+        expect(email_subject).to eq(
+          "[Rappel]: Votre rendez-vous de suivi "\
+          "dans le cadre de votre RSA"
+        )
+      end
 
-  describe "#invitation_for_rsa_accompagnement_social_reminder" do
-    subject do
-      described_class.with(invitation: invitation, applicant: applicant)
-                     .invitation_for_rsa_accompagnement_social_reminder
-    end
-
-    it "renders the headers" do
-      expect(subject.to).to eq([applicant.email])
-    end
-
-    it "renders the subject" do
-      expect(subject.subject).to eq("[Rappel]: RDV d'accompagnement dans le cadre de votre RSA")
-    end
-
-    it "renders the body" do
-      expect(subject.body.encoded).to match("Bonjour Jean VALJEAN")
-      expect(subject.body.encoded).to match("Le département de la Drôme.")
-      expect(subject.body.encoded).to match("01 39 39 39 39")
-      expect(subject.body.encoded).to match(
-        "En tant que bénéficiaire du RSA, vous avez reçu un premier mail il y a 3 jours vous invitant à prendre" \
-        " rendez-vous afin de démarrer un parcours d’accompagnement."
-      )
-      expect(subject.body.encoded).to match("/invitations/redirect")
-      expect(subject.body.encoded).to match("uuid=#{invitation.uuid}")
-      expect(subject.body.encoded).to match(
-        "Il ne vous reste plus que <span class=\"font-weight-bold\">#{invitation.number_of_days_before_expiration}" \
-        " jours</span> pour prendre rendez-vous"
-      )
-    end
-  end
-
-  describe "#invitation_for_rsa_accompagnement_sociopro_reminder" do
-    subject do
-      described_class.with(invitation: invitation, applicant: applicant)
-                     .invitation_for_rsa_accompagnement_sociopro_reminder
-    end
-
-    it "renders the headers" do
-      expect(subject.to).to eq([applicant.email])
-    end
-
-    it "renders the subject" do
-      expect(subject.subject).to eq("[Rappel]: RDV d'accompagnement dans le cadre de votre RSA")
-    end
-
-    it "renders the body" do
-      expect(subject.body.encoded).to match("Bonjour Jean VALJEAN")
-      expect(subject.body.encoded).to match("Le département de la Drôme.")
-      expect(subject.body.encoded).to match("01 39 39 39 39")
-      expect(subject.body.encoded).to match(
-        "En tant que bénéficiaire du RSA, vous avez reçu un premier mail il y a 3 jours vous invitant à prendre" \
-        " rendez-vous afin de démarrer un parcours d’accompagnement."
-      )
-      expect(subject.body.encoded).to match("/invitations/redirect")
-      expect(subject.body.encoded).to match("uuid=#{invitation.uuid}")
-      expect(subject.body.encoded).to match(
-        "Il ne vous reste plus que <span class=\"font-weight-bold\">#{invitation.number_of_days_before_expiration}" \
-        " jours</span> pour prendre rendez-vous"
-      )
-    end
-
-    context "when the signature is configured" do
-      let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
-
-      it "renders the mail with the right signature" do
-        expect(subject.body.encoded).to match(/Fabienne Bouchet/)
+      it "renders the body" do
+        body_string = CGI.unescapeHTML(subject.body.encoded)
+        expect(body_string).to match("Bonjour Jean VALJEAN")
+        expect(body_string).to match("Le département de la Drôme.")
+        expect(body_string).to match("01 39 39 39 39")
+        expect(body_string).to match(
+          "En tant que bénéficiaire du RSA, vous avez reçu un premier mail il y a 3 jours "\
+          "vous invitant à prendre rendez-vous afin de faire un point avec votre référent de parcours."
+        )
+        expect(body_string).not_to match("Ce rendez-vous est obligatoire.")
+        expect(body_string).not_to match(
+          "le versement de votre RSA pourra être suspendu ou son montant réduit."
+        )
+        expect(body_string).to match("/invitations/redirect")
+        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match(
+          "Il ne vous reste plus que <span class=\"font-weight-bold\">#{invitation.number_of_days_before_expiration}" \
+          " jours</span> pour prendre rendez-vous"
+        )
       end
     end
   end
@@ -430,87 +498,6 @@ RSpec.describe InvitationMailer, type: :mailer do
       expect(subject.body.encoded).to match(
         "Il ne vous reste plus que <span class=\"font-weight-bold\">#{invitation.number_of_days_before_expiration}" \
         " jours</span> pour appeler le <span class=\"font-weight-bold\">01 39 39 39 39</span>."
-      )
-    end
-
-    context "when the signature is configured" do
-      let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
-
-      it "renders the mail with the right signature" do
-        expect(subject.body.encoded).to match(/Fabienne Bouchet/)
-      end
-    end
-  end
-
-  describe "#invitation_for_rsa_cer_signature_reminder" do
-    subject do
-      described_class
-        .with(invitation: invitation, applicant: applicant)
-        .invitation_for_rsa_cer_signature_reminder
-    end
-
-    it "renders the headers" do
-      expect(subject.to).to eq([applicant.email])
-    end
-
-    it "renders the subject" do
-      expect(subject.subject).to eq("[Rappel]: Votre RDV de signature de Contrat d'Engagement Réciproque" \
-                                    " dans le cadre de votre RSA")
-    end
-
-    it "renders the body" do
-      expect(subject.body.encoded).to match("Bonjour Jean VALJEAN")
-      expect(subject.body.encoded).to match("Le département de la Drôme.")
-      expect(subject.body.encoded).to match("01 39 39 39 39")
-      expect(subject.body.encoded).to match(
-        "En tant que bénéficiaire du RSA, vous avez reçu un premier mail il y a 3 jours vous invitant à prendre" \
-        " rendez-vous afin de construire et signer votre Contrat d'Engagement Réciproque."
-      )
-      expect(subject.body.encoded).to match("/invitations/redirect")
-      expect(subject.body.encoded).to match("uuid=#{invitation.uuid}")
-      expect(subject.body.encoded).to match(
-        "Il ne vous reste plus que <span class=\"font-weight-bold\">#{invitation.number_of_days_before_expiration}" \
-        " jours</span> pour prendre rendez-vous"
-      )
-    end
-
-    context "when the signature is configured" do
-      let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
-
-      it "renders the mail with the right signature" do
-        expect(subject.body.encoded).to match(/Fabienne Bouchet/)
-      end
-    end
-  end
-
-  describe "#invitation_for_rsa_follow_up_reminder" do
-    subject do
-      described_class
-        .with(invitation: invitation, applicant: applicant)
-        .invitation_for_rsa_follow_up_reminder
-    end
-
-    it "renders the headers" do
-      expect(subject.to).to eq([applicant.email])
-    end
-
-    it "renders the subject" do
-      expect(subject.subject).to eq("[Rappel]: Votre RDV de suivi avec votre référent de parcours")
-    end
-
-    it "renders the body" do
-      expect(subject.body.encoded).to match("Bonjour Jean VALJEAN")
-      expect(subject.body.encoded).to match("Le département de la Drôme.")
-      expect(subject.body.encoded).to match("01 39 39 39 39")
-      expect(subject.body.encoded).to match(
-        "En tant que bénéficiaire du RSA, vous avez reçu un premier mail il y a 3 jours vous invitant à" \
-        " un rendez-vous de suivi."
-      )
-      expect(subject.body.encoded).to match("/invitations/redirect")
-      expect(subject.body.encoded).to match("uuid=#{invitation.uuid}")
-      expect(subject.body.encoded).to match(
-        "Il ne vous reste plus que <span class=\"font-weight-bold\">#{invitation.number_of_days_before_expiration}" \
-        " jours</span> pour prendre rendez-vous"
       )
     end
 

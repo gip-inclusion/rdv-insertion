@@ -1,9 +1,10 @@
 # Preview all emails at http://localhost:8000/rails/mailers/invitation
 class InvitationPreview < ActionMailer::Preview
   def invitation_for_rsa_orientation
-    invitation = Invitation.where(format: "email").last # create a local mail invitation if there are none
+    rdv_context = RdvContext.where.associated(:invitations).where(motif_category: "rsa_orientation").last
+    invitation = rdv_context.invitations.last
     InvitationMailer.with(invitation: invitation, applicant: invitation.applicant)
-                    .invitation_for_rsa_orientation
+                    .regular_invitation
   end
 
   def invitation_for_rsa_accompagnement

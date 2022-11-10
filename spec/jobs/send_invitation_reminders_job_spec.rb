@@ -11,12 +11,16 @@ describe SendInvitationRemindersJob, type: :job do
     let!(:applicant5) do
       create(:applicant, email: "camille5@gouv.fr", phone_number: "0649031935", archived_at: 2.days.ago)
     end
+    let!(:applicant6) { create(:applicant, email: "camille6@gouv.fr", phone_number: "0649031935") }
 
     let!(:rdv_context1) { create(:rdv_context, status: "invitation_pending") }
     let!(:rdv_context2) { create(:rdv_context, status: "invitation_pending") }
     let!(:rdv_context3) { create(:rdv_context, status: "invitation_pending") }
     let!(:rdv_context4) { create(:rdv_context, status: "rdv_pending") }
     let!(:rdv_context5) { create(:rdv_context, status: "invitation_pending") }
+    let!(:rdv_context6) do
+      create(:rdv_context, status: "invitation_pending", motif_category: "rsa_insertion_offer")
+    end
 
     let!(:invitation1) do
       create(
@@ -58,6 +62,14 @@ describe SendInvitationRemindersJob, type: :job do
       )
     end
 
+    let!(:invitation6) do
+      create(
+        :invitation,
+        applicant: applicant6, rdv_context: rdv_context6,
+        sent_at: 3.days.ago, valid_until: 4.days.from_now
+      )
+    end
+
     before do
       allow(SendInvitationReminderJob).to receive(:perform_async)
       allow(MattermostClient).to receive(:send_to_notif_channel)
@@ -84,6 +96,10 @@ describe SendInvitationRemindersJob, type: :job do
         .with(applicant5.id, "sms")
       expect(SendInvitationReminderJob).not_to receive(:perform_async)
         .with(applicant5.id, "email")
+      expect(SendInvitationReminderJob).not_to receive(:perform_async)
+        .with(applicant6.id, "sms")
+      expect(SendInvitationReminderJob).not_to receive(:perform_async)
+        .with(applicant6.id, "email")
       subject
     end
 

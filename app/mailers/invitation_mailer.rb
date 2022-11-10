@@ -1,82 +1,48 @@
 class InvitationMailer < ApplicationMailer
+  include Templatable
+
   before_action :set_invitation, :set_applicant, :set_department,
                 :set_logo_path, :set_signature_lines
 
-  def invitation_for_rsa_orientation
-    mail(
-      to: @applicant.email,
-      subject: "Votre RDV d'orientation dans le cadre de votre RSA"
-    )
-  end
+  before_action :set_motif_category, :set_rdv_title,
+                :set_display_mandatory_warning, :set_display_punishable_warning,
+                :set_rdv_purpose,
+                only: [:regular_invitation, :regular_invitation_reminder]
 
-  def invitation_for_rsa_accompagnement
+  def regular_invitation
     mail(
       to: @applicant.email,
-      subject: "Votre RDV d'accompagnement dans le cadre de votre RSA",
-      template_name: "invitation_for_rsa_accompagnement"
+      subject: "[RSA]: Votre #{@rdv_title} dans le cadre de votre RSA"
     )
   end
-  alias invitation_for_rsa_accompagnement_social invitation_for_rsa_accompagnement
-  alias invitation_for_rsa_accompagnement_sociopro invitation_for_rsa_accompagnement
 
   def invitation_for_rsa_orientation_on_phone_platform
     mail(
       to: @applicant.email,
-      subject: "Votre RDV d'orientation téléphonique dans le cadre de votre RSA"
+      subject: "[RSA]: Votre RDV d'orientation téléphonique dans le cadre de votre RSA"
     )
   end
 
-  def invitation_for_rsa_cer_signature
+  def invitation_for_rsa_insertion_offer
     mail(
       to: @applicant.email,
-      subject: "Votre RDV de signature de Contrat d'Engagement Réciproque dans le cadre de votre RSA"
-    )
-  end
-
-  def invitation_for_rsa_follow_up
-    mail(
-      to: @applicant.email,
-      subject: "Votre RDV de suivi avec votre référent de parcours"
+      subject: "[RSA]: Offre de formations et ateliers dans le cadre de votre parcours socio-professionel"
     )
   end
 
   ### Reminders
 
-  def invitation_for_rsa_orientation_reminder
+  def regular_invitation_reminder
     mail(
       to: @applicant.email,
-      subject: "[Rappel]: RDV d'orientation dans le cadre de votre RSA"
+      subject: "[Rappel]: Votre #{@rdv_title} dans le cadre de votre RSA"
     )
   end
-
-  def invitation_for_rsa_accompagnement_reminder
-    mail(
-      to: @applicant.email,
-      subject: "[Rappel]: RDV d'accompagnement dans le cadre de votre RSA",
-      template_name: "invitation_for_rsa_accompagnement_reminder"
-    )
-  end
-  alias invitation_for_rsa_accompagnement_social_reminder invitation_for_rsa_accompagnement_reminder
-  alias invitation_for_rsa_accompagnement_sociopro_reminder invitation_for_rsa_accompagnement_reminder
 
   def invitation_for_rsa_orientation_on_phone_platform_reminder
     mail(
       to: @applicant.email,
       subject: "[Rappel]: RDV d'orientation téléphonique dans le cadre de votre RSA"
-    )
-  end
-
-  def invitation_for_rsa_cer_signature_reminder
-    mail(
-      to: @applicant.email,
-      subject: "[Rappel]: Votre RDV de signature de Contrat d'Engagement Réciproque dans le cadre de votre RSA"
-    )
-  end
-
-  def invitation_for_rsa_follow_up_reminder
-    mail(
-      to: @applicant.email,
-      subject: "[Rappel]: Votre RDV de suivi avec votre référent de parcours"
     )
   end
 
@@ -105,6 +71,30 @@ class InvitationMailer < ApplicationMailer
       else
         @department.logo_path(%w[png jpg])
       end
+  end
+
+  def set_motif_category
+    @motif_category = @invitation.motif_category
+  end
+
+  def motif_category
+    @invitation.motif_category
+  end
+
+  def set_rdv_title
+    @rdv_title = rdv_title
+  end
+
+  def set_display_mandatory_warning
+    @display_mandatory_warning = display_mandatory_warning
+  end
+
+  def set_display_punishable_warning
+    @display_punishable_warning = display_punishable_warning
+  end
+
+  def set_rdv_purpose
+    @rdv_purpose = rdv_purpose
   end
 
   def first_organisation

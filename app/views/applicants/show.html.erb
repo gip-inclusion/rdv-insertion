@@ -2,7 +2,7 @@
 <div class="container label-blue mt-4">
   <div class="d-flex justify-content-between mb-4">
     <div>
-      <%= link_to(@back_to_list_url || compute_index_path(@organisation, @department, motif_category: @applicant.motif_categories.first)) do %>
+      <%= link_to(@back_to_list_url || compute_index_path(@organisation, @department)) do %>
         <button class="btn btn-blue-out">Retour</button>
       <% end %>
       <%= link_to rdv_solidarites_user_url(@organisation, @applicant), target: "_blank" do %>

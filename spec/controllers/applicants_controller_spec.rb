@@ -724,7 +724,7 @@ describe ApplicantsController, type: :controller do
   end
 
   describe "#edit" do
-    let!(:applicant) { create(:applicant, organisations: [organisation]) }
+    let!(:applicant) { create(:applicant, organisations: [organisation], department: department) }
 
     render_views
 
@@ -757,7 +757,7 @@ describe ApplicantsController, type: :controller do
   end
 
   describe "#update" do
-    let!(:applicant) { create(:applicant, organisations: [organisation]) }
+    let!(:applicant) { create(:applicant, organisations: [organisation], department: department) }
     let!(:update_params) do
       { id: applicant.id, organisation_id: organisation.id, applicant: { birth_date: "20/12/1988" } }
     end

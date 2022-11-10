@@ -46,9 +46,7 @@ class ApplicantsController < ApplicationController
     end
   end
 
-  def show
-    authorize @applicant
-  end
+  def show; end
 
   def search
     render json: { success: true, applicants: @applicants }
@@ -128,13 +126,14 @@ class ApplicantsController < ApplicationController
 
   def set_applicant
     @applicant = \
-      Applicant
+      policy_scope(Applicant)
+      .preload(:organisations)
       .includes(
-        :organisations,
         rdv_contexts: [{ rdvs: [:organisation, :motif] }, :invitations],
         invitations: [:rdv_context]
       )
       .preload(:participations)
+      .where(department_level? ? { department: params[:department_id] } : { organisations: params[:organisation_id] })
       .find(params[:id])
   end
 
@@ -212,8 +211,8 @@ class ApplicantsController < ApplicationController
 
   def set_applicants_for_motif_category
     @applicants = policy_scope(Applicant)
-                  .includes(:invitations, notifications: :rdv)
-                  .preload(:organisations, rdv_contexts: [:invitations, :rdvs])
+                  .includes(:invitations)
+                  .preload(:organisations, rdv_contexts: [:invitations, :rdvs], notifications: [rdv: :rdv_contexts])
                   .active.distinct.archived(false)
                   .where(department_level? ? { department: @department } : { organisations: @organisation })
                   .joins(:rdv_contexts)

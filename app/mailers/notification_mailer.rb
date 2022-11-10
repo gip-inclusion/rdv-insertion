@@ -1,10 +1,12 @@
 class NotificationMailerError < StandardError; end
 
 class NotificationMailer < ApplicationMailer
+  include Templatable
+
   before_action :set_applicant, :set_rdv, :set_department, :set_motif_category,
-                :set_signature_lines, :set_category_settings, :set_rdv_title,
+                :set_signature_lines, :set_rdv_title,
                 :set_display_mandatory_warning, :set_display_punishable_warning,
-                :set_logo_path, :verify_phone_number_presence
+                :set_rdv_purpose, :set_logo_path, :verify_phone_number_presence
 
   ### rdv_created ###
   def presential_rdv_created
@@ -46,10 +48,6 @@ class NotificationMailer < ApplicationMailer
 
   private
 
-  def set_notification
-    @notification = params[:notification]
-  end
-
   def set_applicant
     @applicant = params[:applicant]
   end
@@ -63,11 +61,11 @@ class NotificationMailer < ApplicationMailer
   end
 
   def set_motif_category
-    @motif_category = params[:motif_category]
+    @motif_category = motif_category
   end
 
-  def set_category_settings
-    @category_settings = Settings::MotifCategory.send(:"#{@motif_category}")
+  def motif_category
+    params[:motif_category]
   end
 
   def set_signature_lines
@@ -75,18 +73,19 @@ class NotificationMailer < ApplicationMailer
   end
 
   def set_rdv_title
-    @rdv_title = rdv_by_phone? ? @category_settings.rdv_title_by_phone : @category_settings.rdv_title
-    raise_missing_attribute("rdv_title#{rdv_by_phone? ? '_by_phone' : ''}") if @rdv_title.nil?
+    @rdv_title = rdv_by_phone? ? rdv_title_by_phone : rdv_title
   end
 
   def set_display_mandatory_warning
-    @display_mandatory_warning = @category_settings.display_mandatory_warning
-    raise_missing_attribute("display_mandatory_warning") if @display_mandatory_warning.nil?
+    @display_mandatory_warning = display_mandatory_warning
   end
 
   def set_display_punishable_warning
-    @display_punishable_warning = @category_settings.display_punishable_warning
-    raise_missing_attribute("display_punishable_warning") if @display_punishable_warning.nil?
+    @display_punishable_warning = display_punishable_warning
+  end
+
+  def set_rdv_purpose
+    @rdv_purpose = rdv_purpose
   end
 
   def set_logo_path
@@ -106,9 +105,5 @@ class NotificationMailer < ApplicationMailer
       NotificationMailerError,
       "No valid phone found for applicant #{@applicant.id}, cannot notify him by phone"
     )
-  end
-
-  def raise_for_missing_attribute(attribute)
-    raise NotificationMailerError, "#{attribute} not found for #{@motif_category}"
   end
 end

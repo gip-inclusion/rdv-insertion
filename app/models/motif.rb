@@ -10,7 +10,9 @@ class Motif < ApplicationRecord
     rsa_insertion_offer: 4,
     rsa_follow_up: 5,
     rsa_accompagnement_social: 6,
-    rsa_accompagnement_sociopro: 7
+    rsa_accompagnement_sociopro: 7,
+    rsa_main_tendue: 8,
+    rsa_atelier_collectif_mandatory: 9
   }.freeze
 
   enum location_type: { public_office: 0, phone: 1, home: 2 }

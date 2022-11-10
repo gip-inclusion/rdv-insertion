@@ -4,6 +4,10 @@ module Notifications
   class SendSms < BaseService
     include Notifications::SmsContent
 
+    attr_reader :notification
+
+    delegate :rdv, :applicant, :motif_category, to: :notification
+
     def initialize(notification:)
       @notification = notification
     end
@@ -17,10 +21,6 @@ module Notifications
     end
 
     private
-
-    def rdv
-      @notification.rdv
-    end
 
     def content
       send(content_method_name)
