@@ -41,7 +41,6 @@ export default function ApplicantsUpload({
   /* eslint no-unused-vars: ["error", { "varsIgnorePattern": "contactsUpdated" }] */
   // This state allows to re-renders applicants after contacts update
   const [contactsUpdated, setContactsUpdated] = useState(false);
-  const [downloadInProgress, setDownloadInProgress] = useState(false);
   const [showEnrichWithContactFile, setShowEnrichWithContactFile] = useState(false);
   const [applicants, dispatchApplicants] = useReducer(reducer, [], initReducer);
 
@@ -293,12 +292,7 @@ export default function ApplicantsUpload({
                 </tr>
               </thead>
               <tbody>
-                <ApplicantList
-                  applicants={applicants}
-                  isDepartmentLevel={isDepartmentLevel}
-                  downloadInProgress={downloadInProgress}
-                  setDownloadInProgress={setDownloadInProgress}
-                />
+                <ApplicantList applicants={applicants} isDepartmentLevel={isDepartmentLevel} />
               </tbody>
             </table>
           </div>

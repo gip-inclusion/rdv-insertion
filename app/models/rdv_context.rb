@@ -45,8 +45,7 @@ class RdvContext < ApplicationRecord
 
   def as_json(_opts = {})
     super.merge(
-      created_at: created_at,
-      human_status: I18n.t("activerecord.attributes.rdv_context.statuses.#{status}").to_s,
+      human_status: I18n.t("activerecord.attributes.rdv_context.statuses.#{status}"),
       rdvs: rdvs
     )
   end

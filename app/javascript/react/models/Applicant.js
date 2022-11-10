@@ -104,7 +104,9 @@ export default class Applicant {
     this.organisations = upToDateApplicant.organisations;
     // we assign a current organisation when we are in the context of a department
     this.currentOrganisation ||= upToDateApplicant.organisations.find(
-      (o) => o.department_number === this.departmentNumber
+      (o) =>
+        o.department_number === this.departmentNumber &&
+        o.motif_categories.includes(this.currentConfiguration.motif_category)
     );
     // we update the attributes with the attributes in DB if the applicant is already created
     // and cannot be updated from the page
@@ -121,14 +123,25 @@ export default class Applicant {
     this.currentRdvContext = upToDateApplicant.rdv_contexts.find(
       (rc) => rc.motif_category === this.currentConfiguration.motif_category
     );
-    this.currentContextStatus = this.currentRdvContext?.status;
-    this.lastInvitationSentAt = retrieveLastInvitationDate(
+    this.currentContextStatus = this.currentRdvContext && this.currentRdvContext.status;
+    this.rdvs = this.currentRdvContext?.rdvs || [];
+    console.log(this.sortedRdvs(), "this.sortedRdvs()");
+    console.log(this.lastRdvDate(), "this.lastRdvDate()");
+    this.lastSmsInvitationSentAt = retrieveLastInvitationDate(
       upToDateApplicant.invitations,
-      null,
+      "sms",
       this.currentConfiguration.motif_category
     );
-    this.lastNonWaitingRdvDate = retrieveLastRdvDate(this.currentRdvContext.rdvs);
-    this.lastWaitingRdvDate = retrieveLastRdvDate(this.currentRdvContext.rdvs, true);
+    this.lastEmailInvitationSentAt = retrieveLastInvitationDate(
+      upToDateApplicant.invitations,
+      "email",
+      this.currentConfiguration.motif_category
+    );
+    this.lastPostalInvitationSentAt = retrieveLastInvitationDate(
+      upToDateApplicant.invitations,
+      "postal",
+      this.currentConfiguration.motif_category
+    );
     this.departmentInternalId = upToDateApplicant.department_internal_id;
   }
 
@@ -202,8 +215,16 @@ export default class Applicant {
     );
   }
 
-  pendingContextStatus() {
-    return ["invitation_pending", "rdv_pending"].includes(this.currentContextStatus);
+  hasRdvs() {
+    this.rdvs && this.rdvs.length > 0;
+  }
+
+  sortedRdvs() {
+    this.rdvs && this.rdvs.sort((a, b) => new Date(a.starts_at) - new Date(b.starts_at));
+  }
+
+  lastRdvDate() {
+    this.sortedRdvs() && this.sortedRdvs()[-1];
   }
 
   generateUid() {
