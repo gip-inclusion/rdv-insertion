@@ -110,7 +110,8 @@ class Applicant < ApplicationRecord
     super.merge(
       created_at: created_at,
       invitations: invitations,
-      organisations: organisations
+      organisations: organisations,
+      rdv_contexts: rdv_contexts
     )
   end
 

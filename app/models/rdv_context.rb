@@ -42,4 +42,11 @@ class RdvContext < ApplicationRecord
   def time_between_invitation_and_rdv_in_days
     first_rdv_creation_date.to_datetime.mjd - first_invitation_sent_at.to_datetime.mjd
   end
+
+  def as_json(_opts = {})
+    super.merge(
+      human_status: I18n.t("activerecord.attributes.rdv_context.statuses.#{status}"),
+      rdvs: rdvs
+    )
+  end
 end
