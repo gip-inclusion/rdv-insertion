@@ -2,7 +2,7 @@ module HasRdvs
   extend ActiveSupport::Concern
 
   def seen_rdvs
-    rdvs.to_a.select(&:seen?)
+    rdvs.joins(:participations).distinct.to_a.select { |participation| participation.status == "seen" }
   end
 
   def first_seen_rdv

@@ -1,4 +1,4 @@
-module Statuable
+module RdvContextStatus
   extend ActiveSupport::Concern
 
   included do
