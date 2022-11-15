@@ -61,15 +61,34 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
   end
 
   let!(:invitation) do
-    create(:invitation, rdv_context: rdv_context, sent_at: 2.days.ago, valid_until: 3.days.from_now)
+    create(
+      :invitation,
+      organisations: [organisation],
+      rdv_context: rdv_context,
+      sent_at: 2.days.ago,
+      valid_until: 3.days.from_now
+    )
   end
 
   let!(:invitation2) do
-    create(:invitation, rdv_context: rdv_context2, sent_at: 2.days.ago, valid_until: 3.days.from_now)
+    create(
+      :invitation,
+      organisations:
+      [organisation],
+      rdv_context: rdv_context2,
+      sent_at: 2.days.ago,
+      valid_until: 3.days.from_now
+    )
   end
 
   let!(:invitation3) do
-    create(:invitation, rdv_context: rdv_context, sent_at: 4.days.ago, valid_until: 3.days.ago)
+    create(
+      :invitation,
+      organisations: [organisation],
+      rdv_context: rdv_context,
+      sent_at: 4.days.ago,
+      valid_until: 3.days.ago
+    )
   end
 
   let!(:rdv_context) do
@@ -126,43 +145,115 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
       end
     end
 
-    context "it upserts the rdv" do
-      it "enqueues a job to upsert the rdv" do
-        expect(UpsertRecordJob).to receive(:perform_async)
-          .with(
-            "Rdv",
-            data,
-            {
-              participations_attributes: [
-                {
-                  id: nil,
-                  status: 'unknown',
-                  applicant_id: 3,
-                  rdv_solidarites_participation_id: 998
-                },
-                {
-                  id: nil,
-                  status: 'unknown',
-                  applicant_id: 4,
-                  rdv_solidarites_participation_id: 999
-                }
-              ],
-              organisation_id: organisation.id,
-              rdv_context_ids: [rdv_context.id, rdv_context2.id],
-              motif_id: motif.id,
-              lieu_id: lieu.id,
-              last_webhook_update_received_at: timestamp
-            }
-          )
+    describe "upserting the rdv" do
+      context "it upserts the rdv (for a create)" do
+        it "enqueues a job to upsert the rdv" do
+          expect(UpsertRecordJob).to receive(:perform_async)
+            .with(
+              "Rdv",
+              data,
+              {
+                participations_attributes: [
+                  {
+                    id: nil,
+                    status: 'unknown',
+                    applicant_id: 3,
+                    rdv_solidarites_participation_id: 998
+                  },
+                  {
+                    id: nil,
+                    status: 'unknown',
+                    applicant_id: 4,
+                    rdv_solidarites_participation_id: 999
+                  }
+                ],
+                organisation_id: organisation.id,
+                rdv_context_ids: [rdv_context.id, rdv_context2.id],
+                motif_id: motif.id,
+                lieu_id: lieu.id,
+                last_webhook_update_received_at: timestamp
+              }
+            )
 
-        subject
+          subject
+        end
+
+        it "enqueues jobs to invalidate the related sent valid invitations" do
+          expect(InvalidateInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation.id)
+          expect(InvalidateInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation2.id)
+          expect(InvalidateInvitationJob).not_to receive(:perform_async).with(invitation3.id)
+          subject
+        end
       end
 
-      it "enqueues jobs to invalidate the related sent valid invitations" do
-        expect(InvalidateInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation.id)
-        expect(InvalidateInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation2.id)
-        expect(InvalidateInvitationJob).not_to receive(:perform_async).with(invitation3.id)
-        subject
+      context "it upserts the rdv (for a participation update and destroy)" do
+        let!(:participations_attributes) do
+          [{ id: 998, status: "unknown", user: { id: user_id1 } }, { id: 999, status: "seen", user: { id: user_id2 } }]
+        end
+
+        # Rdv create factory create a new applicant (and participation) by default
+        let!(:rdv) { create(:rdv, rdv_solidarites_rdv_id: rdv_solidarites_rdv_id, organisation: organisation) }
+        let!(:default_applicant) { rdv.applicants.first }
+        let!(:default_participation) { rdv.participations.first }
+        let!(:participation) do
+          create(
+            :participation,
+            applicant: applicant,
+            rdv: rdv,
+            status: 'unknown',
+            id: 1,
+            rdv_solidarites_participation_id: 998
+          )
+        end
+        let!(:participation2) do
+          create(
+            :participation,
+            applicant: applicant2,
+            rdv: rdv,
+            status: 'unknown',
+            id: 2,
+            rdv_solidarites_participation_id: 999
+          )
+        end
+        let!(:participations_attributes_expected) do
+          [
+            {
+              id: 1,
+              status: 'unknown',
+              applicant_id: 3,
+              rdv_solidarites_participation_id: 998
+            },
+            {
+              id: 2,
+              status: 'seen',
+              applicant_id: 4,
+              rdv_solidarites_participation_id: 999
+            },
+            {
+              _destroy: true,
+              applicant_id: default_applicant.id,
+              id: default_participation.id
+            }
+          ]
+        end
+
+        it "enqueues a job to upsert the rdv with updated status and destroyed participation" do
+          expect(UpsertRecordJob).to receive(:perform_async)
+            .with(
+              "Rdv",
+              data,
+              {
+                participations_attributes: participations_attributes_expected,
+                organisation_id: organisation.id,
+                rdv_context_ids: [rdv_context.id, rdv_context2.id],
+                motif_id: motif.id,
+                lieu_id: lieu.id,
+                last_webhook_update_received_at: timestamp
+              }
+            )
+
+          subject
+        end
       end
     end
 
@@ -182,7 +273,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
       end
       let!(:configuration) { create(:configuration, convene_applicant: true, motif_category: "rsa_orientation") }
 
-      it "sets the convocable attrribute when upserting the rdv" do
+      it "sets the convocable attribute when upserting the rdv" do
         expect(UpsertRecordJob).to receive(:perform_async)
           .with(
             "Rdv",
