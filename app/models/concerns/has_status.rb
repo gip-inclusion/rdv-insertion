@@ -1,12 +1,12 @@
 module HasStatus
   extend ActiveSupport::Concern
 
+  const_set(:PENDING_STATUSES, %w[unknown waiting].freeze)
+  const_set(:CANCELLED_STATUSES, %w[excused revoked noshow].freeze)
+  const_set(:CANCELLED_BY_USER_STATUSES, %w[excused noshow].freeze)
+
   included do |base|
     enum status: { unknown: 0, waiting: 1, seen: 2, excused: 3, revoked: 4, noshow: 5 }
-
-    const_set(:PENDING_STATUSES, %w[unknown waiting].freeze)
-    const_set(:CANCELLED_STATUSES, %w[excused revoked noshow].freeze)
-    const_set(:CANCELLED_BY_USER_STATUSES, %w[excused noshow].freeze)
 
     scope :cancelled_by_user, -> { where(status: base::CANCELLED_BY_USER_STATUSES) }
     scope :status, ->(status) { where(status: status) }
@@ -18,11 +18,7 @@ module HasStatus
   end
 
   def in_the_future?
-    if instance_of?(Participation)
-      rdv.starts_at > Time.zone.now
-    else
-      starts_at > Time.zone.now
-    end
+    starts_at > Time.zone.now
   end
 
   def cancelled?

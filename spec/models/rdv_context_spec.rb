@@ -89,10 +89,10 @@ describe RdvContext do
                 :rdv,
                 status: "seen",
                 starts_at: 3.days.ago,
-                applicants: [applicant],
                 rdv_contexts: [rdv_context]
               )
             end
+            let!(:participation) { create(:participation, rdv: rdv, applicant: applicant, status: 'seen') }
 
             it "is in invitation pending" do
               expect(subject).to eq(:invitation_pending)
@@ -105,10 +105,10 @@ describe RdvContext do
                 :rdv,
                 status: "seen",
                 starts_at: 1.day.ago,
-                applicants: [applicant],
                 rdv_contexts: [rdv_context]
               )
             end
+            let!(:participation) { create(:participation, rdv: rdv, applicant: applicant, status: 'seen') }
 
             it "is the status of the rdv" do
               expect(subject).to eq(:rdv_seen)
@@ -141,10 +141,10 @@ describe RdvContext do
                 status: "noshow",
                 starts_at: 4.days.from_now,
                 created_at: 4.days.ago,
-                applicants: [applicant],
                 rdv_contexts: [rdv_context]
               )
             end
+            let!(:participation) { create(:participation, rdv: rdv, applicant: applicant, status: 'noshow') }
 
             it "is in invitation pending" do
               expect(subject).to eq(:invitation_pending)
@@ -158,10 +158,10 @@ describe RdvContext do
                 status: "noshow",
                 starts_at: 4.days.from_now,
                 created_at: 1.day.ago,
-                applicants: [applicant],
                 rdv_contexts: [rdv_context]
               )
             end
+            let!(:participation) { create(:participation, rdv: rdv, applicant: applicant, status: 'noshow') }
 
             it "is the status of the rdv" do
               expect(subject).to eq(:rdv_noshow)
@@ -177,20 +177,21 @@ describe RdvContext do
               status: "seen",
               created_at: 4.days.ago,
               starts_at: 4.days.ago,
-              applicants: [applicant],
               rdv_contexts: [rdv_context]
             )
           end
+          let!(:participation) { create(:participation, rdv: rdv, applicant: applicant, status: 'seen') }
+
           let!(:rdv2) do
             create(
               :rdv,
               status: "noshow",
               created_at: 5.days.ago,
               starts_at: 2.days.ago,
-              applicants: [applicant],
               rdv_contexts: [rdv_context]
             )
           end
+          let!(:participation2) { create(:participation, rdv: rdv2, applicant: applicant, status: 'noshow') }
 
           it "is the status of the last created rdv" do
             expect(subject).to eq(:rdv_seen)
@@ -219,10 +220,10 @@ describe RdvContext do
                 :rdv,
                 status: "excused",
                 created_at: 1.day.ago,
-                applicants: [applicant],
                 rdv_contexts: [rdv_context]
               )
             end
+            let!(:participation) { create(:participation, rdv: rdv3, applicant: applicant, status: 'excused') }
 
             it "is mutliple rdvs cancelled" do
               expect(subject).to eq(:multiple_rdvs_cancelled)

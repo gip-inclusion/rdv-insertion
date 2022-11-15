@@ -328,17 +328,20 @@ describe ApplicantsController, type: :controller do
         create(
           :rdv,
           status: "noshow", created_at: "2021-10-21", starts_at: "2021-10-22", motif: motif,
-          applicants: [applicant], rdv_contexts: [rdv_context], organisation: organisation
+          rdv_contexts: [rdv_context], organisation: organisation
         )
       end
+      let!(:participation) { create(:participation, rdv: rdv_orientation1, applicant: applicant, status: 'noshow') }
+
 
       let!(:rdv_orientation2) do
         create(
           :rdv,
           status: "seen", created_at: "2021-10-23", starts_at: "2021-10-24", motif: motif,
-          applicants: [applicant], rdv_contexts: [rdv_context], organisation: organisation
+          rdv_contexts: [rdv_context], organisation: organisation
         )
       end
+      let!(:participation2) { create(:participation, rdv: rdv_orientation2, applicant: applicant, status: 'seen') }
 
       let!(:rdv_context2) do
         create(:rdv_context, status: "invitation_pending", applicant: applicant, motif_category: "rsa_accompagnement")
