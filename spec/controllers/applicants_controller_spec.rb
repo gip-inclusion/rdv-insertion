@@ -333,7 +333,6 @@ describe ApplicantsController, type: :controller do
       end
       let!(:participation) { create(:participation, rdv: rdv_orientation1, applicant: applicant, status: 'noshow') }
 
-
       let!(:rdv_orientation2) do
         create(
           :rdv,
