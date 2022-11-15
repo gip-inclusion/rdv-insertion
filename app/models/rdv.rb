@@ -17,7 +17,7 @@ class Rdv < ApplicationRecord
   has_many :participations, dependent: :destroy
   has_many :applicants, through: :participations
   # Needed to build participations in process_rdv_job
-  accepts_nested_attributes_for :participations
+  accepts_nested_attributes_for :participations, allow_destroy: true
 
   validates :participations, :starts_at, :duration_in_min, presence: true
   validates :rdv_solidarites_rdv_id, uniqueness: true, presence: true

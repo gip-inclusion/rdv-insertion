@@ -11,4 +11,11 @@ class Participation < ApplicationRecord
 
   belongs_to :rdv
   belongs_to :applicant
+  after_commit :refresh_applicant_context_statuses, on: [:destroy]
+
+  private
+
+  def refresh_applicant_context_statuses
+    RefreshRdvContextStatusesJob.perform_async(applicant.rdv_context_ids)
+  end
 end
