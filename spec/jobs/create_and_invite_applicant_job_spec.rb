@@ -27,7 +27,9 @@ describe CreateAndInviteApplicantJob, type: :job do
   let!(:email_invitation_attributes) do
     { help_phone_number: "0146292929", format: "email", rdv_solidarites_lieu_id: 888 }
   end
-  let!(:rdv_solidarites_session_credentials) { session_hash.symbolize_keys }
+  let!(:rdv_solidarites_session_credentials) do
+    { "client" => "someclient", "uid" => "janedoe@gouv.fr", "access_token" => "sometoken" }.symbolize_keys
+  end
   let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
 
   before do
