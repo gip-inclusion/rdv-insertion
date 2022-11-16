@@ -5,7 +5,7 @@ module RdvSolidaritesWebhooks
       @meta = meta.deep_symbolize_keys
 
       # temporary step to assign rdv_solidarites_id to existing agents
-      assign_rdv_solidarites_agent_id_if_exists
+      assign_rdv_solidarites_agent_id if agent
       upsert_or_delete_agent
     end
 
@@ -15,9 +15,7 @@ module RdvSolidaritesWebhooks
       @meta[:event]
     end
 
-    def assign_rdv_solidarites_agent_id_if_exists
-      return unless agent
-
+    def assign_rdv_solidarites_agent_id
       agent.update!(rdv_solidarites_agent_id: @data[:id])
     end
 
