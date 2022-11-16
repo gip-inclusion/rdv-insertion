@@ -694,7 +694,6 @@ describe ApplicantsController, type: :controller do
 
         before do
           sign_in(another_agent)
-
         end
 
         it "does not call the service" do
@@ -788,7 +787,6 @@ describe ApplicantsController, type: :controller do
 
         before do
           sign_in(another_agent)
-
         end
 
         it "does not call the service" do
