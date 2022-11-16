@@ -42,7 +42,6 @@ describe OrganisationsController, type: :controller do
     subject { get :geolocated, params: { department_number: department_number, address: address } }
 
     let!(:agent) { create(:agent, organisations: [organisation, organisation2]) }
-    let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
     let!(:department) { create(:department, number: department_number) }
     let!(:organisation) { create(:organisation, department: department) }
     let!(:organisation2) do
@@ -60,7 +59,6 @@ describe OrganisationsController, type: :controller do
 
     before do
       sign_in(agent)
-      setup_rdv_solidarites_session(rdv_solidarites_session)
       allow(RetrieveGeolocalisation).to receive(:call)
         .with(address: address, department_number: department.number)
         .and_return(OpenStruct.new(success?: true, city_code: city_code, street_ban_id: street_ban_id))
@@ -163,7 +161,6 @@ describe OrganisationsController, type: :controller do
     subject { get :search, params: { department_number: "93", search_terms: search_terms } }
 
     let!(:agent) { create(:agent, organisations: [organisation, organisation2]) }
-    let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
     let!(:department) { create(:department, number: "93") }
     let!(:organisation) { create(:organisation, name: "Mission locale", department: department) }
     let!(:organisation2) { create(:organisation, name: "PIE", department: department) }
@@ -171,7 +168,6 @@ describe OrganisationsController, type: :controller do
 
     before do
       sign_in(agent)
-      setup_rdv_solidarites_session(rdv_solidarites_session)
     end
 
     it "is a success" do

@@ -3,32 +3,14 @@ module Api
     class ApplicationController < ActionController::Base
       skip_before_action :verify_authenticity_token
       respond_to :json
-      include Pundit
+      include AuthorizationConcern
       include RdvSolidaritesSessionConcern
       include RdvSolidaritesAgentConcern
-      before_action :validate_session!, :retrieve_agent_organisations!, :upsert_agent!
+      before_action :validate_session!, :retrieve_agent!, :mark_as_logged_in!
 
       private
 
-      def pundit_user
-        current_agent
-      end
-
-      def current_agent
-        @current_agent ||= Agent.find_by!(email: rdv_solidarites_session.uid)
-      end
-
       rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
-      rescue_from Pundit::NotAuthorizedError, with: :forbidden
-
-      def forbidden(_)
-        render(
-          status: :forbidden,
-          json: {
-            errors: ["Vous n'êtes pas autorisé à effectuer cette action"]
-          }
-        )
-      end
 
       def record_not_found(_)
         head :not_found

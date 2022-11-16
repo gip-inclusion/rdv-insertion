@@ -60,7 +60,6 @@ describe "api/v1/applicants/create_and_invite_many requests", type: :request do
 
     before do
       validate_rdv_solidarites_session(rdv_solidarites_session)
-      mock_agent_update
       allow(CreateAndInviteApplicantJob).to receive(:perform_async)
     end
 
@@ -97,33 +96,17 @@ describe "api/v1/applicants/create_and_invite_many requests", type: :request do
       end
     end
 
-    context "when it fails retrieving the agent orgs" do
-      before do
-        allow(RdvSolidaritesApi::RetrieveOrganisations).to receive(:call)
-          .and_return(OpenStruct.new(success?: false, errors: ["failure retrieving orgs"]))
-      end
+    context "when it fails to retrieve the agent" do
+      let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession, uid: "nonexistingagent@departement.fr") }
 
-      it "returns 422" do
+      it "returns 403" do
         subject
         expect(response).not_to be_successful
-        expect(response.status).to eq(422)
+        expect(response.status).to eq(403)
         expect(JSON.parse(response.body)["success"]).to eq(false)
-        expect(JSON.parse(response.body)["errors"]).to eq(["failure retrieving orgs"])
-      end
-    end
-
-    context "when it fails upserting the agent" do
-      before do
-        allow(UpsertAgent).to receive(:call)
-          .and_return(OpenStruct.new(success?: false, errors: ["failure upserting agent"]))
-      end
-
-      it "returns 422" do
-        subject
-        expect(response).not_to be_successful
-        expect(response.status).to eq(422)
-        expect(JSON.parse(response.body)["success"]).to eq(false)
-        expect(JSON.parse(response.body)["errors"]).to eq(["failure upserting agent"])
+        expect(JSON.parse(response.body)["errors"]).to eq(
+          ["L'agent ne fait pas partie d'une organisation sur RDV-Insertion"]
+        )
       end
     end
 
@@ -202,7 +185,7 @@ describe "api/v1/applicants/create_and_invite_many requests", type: :request do
         subject
         expect(response.status).to eq(403)
         result = JSON.parse(response.body)
-        expect(result["errors"]).to eq(["Vous n'êtes pas autorisé à effectuer cette action"])
+        expect(result["errors"]).to eq(["Votre compte ne vous permet pas d'effectuer cette action"])
       end
     end
   end
