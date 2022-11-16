@@ -64,7 +64,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_25_080503) do
   create_table "applicants_rdvs", force: :cascade do |t|
     t.bigint "applicant_id", null: false
     t.bigint "rdv_id", null: false
-    t.integer "status"
+    t.integer "status", default: 0
     t.bigint "rdv_solidarites_participation_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

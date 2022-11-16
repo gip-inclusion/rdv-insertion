@@ -1,20 +1,20 @@
 module HasStatus
   extend ActiveSupport::Concern
 
-  const_set(:PENDING_STATUSES, %w[unknown waiting].freeze)
-  const_set(:CANCELLED_STATUSES, %w[excused revoked noshow].freeze)
-  const_set(:CANCELLED_BY_USER_STATUSES, %w[excused noshow].freeze)
+  PENDING_STATUSES = %w[unknown waiting].freeze
+  CANCELLED_STATUSES = %w[excused revoked noshow].freeze
+  CANCELLED_BY_USER_STATUSES = %w[excused noshow].freeze
 
-  included do |base|
+  included do
     enum status: { unknown: 0, waiting: 1, seen: 2, excused: 3, revoked: 4, noshow: 5 }
 
-    scope :cancelled_by_user, -> { where(status: base::CANCELLED_BY_USER_STATUSES) }
+    scope :cancelled_by_user, -> { where(status: CANCELLED_BY_USER_STATUSES) }
     scope :status, ->(status) { where(status: status) }
     scope :resolved, -> { where(status: %w[seen excused revoked noshow]) }
   end
 
   def pending?
-    in_the_future? && status.in?(self.class::PENDING_STATUSES)
+    in_the_future? && status.in?(PENDING_STATUSES)
   end
 
   def in_the_future?
@@ -22,7 +22,7 @@ module HasStatus
   end
 
   def cancelled?
-    status.in?(self.class::CANCELLED_STATUSES)
+    status.in?(CANCELLED_STATUSES)
   end
 
   def resolved?
@@ -30,6 +30,6 @@ module HasStatus
   end
 
   def needs_status_update?
-    !in_the_future? && status.in?(self.class::PENDING_STATUSES)
+    !in_the_future? && status.in?(PENDING_STATUSES)
   end
 end

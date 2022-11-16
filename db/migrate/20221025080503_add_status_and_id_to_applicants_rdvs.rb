@@ -1,6 +1,6 @@
 class AddStatusAndIdToApplicantsRdvs < ActiveRecord::Migration[7.0]
   def change
-    add_column :applicants_rdvs, :status, :integer
+    add_column :applicants_rdvs, :status, :integer, default: 0
     add_column :applicants_rdvs, :rdv_solidarites_participation_id, :bigint
     add_column :applicants_rdvs, :id, :primary_key
     add_index :applicants_rdvs, :status
