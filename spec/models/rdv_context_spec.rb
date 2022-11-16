@@ -275,11 +275,12 @@ describe RdvContext do
 
       context "when there is a rdv_seen but status is not rdv_seen" do
         let!(:rdv) { create(:rdv, status: "seen", starts_at: 4.days.ago) }
+        let!(:defaut_applicant) { rdv.applicants.first }
         let!(:invitation) { create(:invitation, sent_at: 6.days.ago) }
         let!(:invitation2) { create(:invitation, sent_at: 2.days.ago) }
         let!(:invitation3) { create(:invitation, sent_at: 1.day.ago) }
         let!(:rdv_context) do
-          create(:rdv_context, status: "invitation_pending",
+          create(:rdv_context, status: "invitation_pending", applicant: defaut_applicant,
                                rdvs: [rdv], invitations: [invitation, invitation2, invitation3])
         end
 

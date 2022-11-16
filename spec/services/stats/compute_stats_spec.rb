@@ -19,7 +19,6 @@ describe Stats::ComputeStats, type: :service do
     create(:applicant, organisations: [relevant_organisation],
                        department: department,
                        invitations: [invitation],
-                       rdvs: [orientation_rdv, accompagnement_rdv],
                        rdv_contexts: [rdv_context_orientation],
                        created_at: "2022-04-01 10:00:00 UTC")
   end
@@ -27,7 +26,6 @@ describe Stats::ComputeStats, type: :service do
     create(:applicant, organisations: [relevant_organisation, irrelevant_organisation],
                        department: department,
                        invitations: [invitation2],
-                       rdvs: [orientation_rdv2, accompagnement_rdv2],
                        rdv_contexts: [rdv_context_accompagnement2],
                        created_at: "2022-03-01 10:00:00 UTC")
   end
@@ -61,20 +59,27 @@ describe Stats::ComputeStats, type: :service do
                  created_by: "user",
                  status: "seen")
   end
+  let!(:part_orient_rdv) { create(:participation, rdv: orientation_rdv, applicant: applicant1, status: 'seen') }
+
   let!(:orientation_rdv2) do
     create(:rdv, rdv_contexts: [rdv_context_orientation], organisation: relevant_organisation,
                  created_at: "2022-05-02 10:00:00 UTC",
                  starts_at: "2022-05-07 10:00:00 UTC",
                  status: "noshow")
   end
+  let!(:part_orient_rdv2) { create(:participation, rdv: orientation_rdv2, applicant: applicant2, status: 'noshow') }
+
   let!(:accompagnement_rdv) do
     create(:rdv, rdv_contexts: [rdv_context_accompagnement], organisation: relevant_organisation)
   end
+  let!(:part_accomp_rdv) { create(:participation, rdv: accompagnement_rdv, applicant: applicant1) }
+
   let!(:accompagnement_rdv2) do
     create(:rdv, rdv_contexts: [rdv_context_accompagnement2], organisation: relevant_organisation,
                  created_at: "2022-05-08 10:00:00 UTC",
                  starts_at: "2022-05-11 10:00:00 UTC")
   end
+  let!(:part_accomp_rdv2) { create(:participation, rdv: accompagnement_rdv2, applicant: applicant2) }
 
   # We are creating irrelevant applicants and their related records : they should appear in some general counts, but
   # be filtered when computing precise stats

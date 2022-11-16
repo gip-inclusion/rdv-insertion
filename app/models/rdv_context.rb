@@ -7,8 +7,6 @@ class RdvContext < ApplicationRecord
   belongs_to :applicant
   has_many :invitations, dependent: :nullify
   has_and_belongs_to_many :rdvs
-  has_many :participations, through: :rdvs
-  # scope :participations, -> { joins({ rdvs: :participations }).where(participation: { applicant: applicant }) }
 
   validates :motif_category, presence: true, uniqueness: { scope: :applicant_id }
 
