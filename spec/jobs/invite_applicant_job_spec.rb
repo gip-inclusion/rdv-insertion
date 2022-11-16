@@ -21,7 +21,9 @@ describe InviteApplicantJob, type: :job do
       number_of_days_before_action_required: 10
     )
   end
-  let!(:rdv_solidarites_session_credentials) { session_hash.symbolize_keys }
+  let!(:rdv_solidarites_session_credentials) do
+    { "client" => "someclient", "uid" => "janedoe@gouv.fr", "access_token" => "sometoken" }.symbolize_keys
+  end
   let!(:invitation_format) { "sms" }
   let!(:invitation_attributes) do
     {

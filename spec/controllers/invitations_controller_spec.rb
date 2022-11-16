@@ -35,7 +35,6 @@ describe InvitationsController, type: :controller do
         format: "json"
       }
     end
-    let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
     let!(:invitation) do
       create(
         :invitation,
@@ -50,7 +49,6 @@ describe InvitationsController, type: :controller do
     before do
       sign_in(agent)
       travel_to(Time.zone.parse("2022-05-04 12:30"))
-      setup_rdv_solidarites_session(rdv_solidarites_session)
       allow(RdvContext).to receive(:find_or_create_by!)
         .with(motif_category: motif_category, applicant: applicant)
         .and_return(rdv_context)

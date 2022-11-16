@@ -112,6 +112,7 @@ module Stats
                            .joins(:organisations)
                            .where(organisations: organisations)
                            .where.not("agents.email LIKE ?", "%beta.gouv.fr")
+                           .where(has_logged_in: true)
                            .distinct
     end
 

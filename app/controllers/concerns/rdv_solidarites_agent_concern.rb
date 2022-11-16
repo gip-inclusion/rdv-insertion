@@ -1,27 +1,20 @@
 module RdvSolidaritesAgentConcern
-  extend ActiveSupport::Concern
+  private
 
-  def upsert_agent!
-    return if upsert_agent.success?
+  def retrieve_agent!
+    return if current_agent
 
-    render json: { success: false, errors: upsert_agent.errors }, status: :unprocessable_entity
+    render json: { success: false, errors: ["L'agent ne fait pas partie d'une organisation sur RDV-Insertion"] },
+           status: :unprocessable_entity
   end
 
-  def upsert_agent
-    @upsert_agent ||= UpsertAgent.call(
-      email: request.headers["uid"], organisation_ids: retrieve_agent_organisations.organisations.map(&:id)
-    )
+  def mark_as_logged_in!
+    return if current_agent.has_logged_in? || current_agent.update(has_logged_in: true)
+
+    render json: { success: false, errors: current_agent.errors.full_messages }, status: :unprocessable_entity
   end
 
-  def retrieve_agent_organisations!
-    return if retrieve_agent_organisations.success?
-
-    render json: { success: false, errors: retrieve_agent_organisations.errors }, status: :unprocessable_entity
-  end
-
-  def retrieve_agent_organisations
-    @retrieve_agent_organisations ||= RdvSolidaritesApi::RetrieveOrganisations.call(
-      rdv_solidarites_session: rdv_solidarites_session
-    )
+  def current_agent
+    @current_agent ||= Agent.find_by(email: rdv_solidarites_session.uid)
   end
 end

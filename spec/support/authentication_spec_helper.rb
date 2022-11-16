@@ -1,31 +1,32 @@
 module AuthenticationSpecHelper
-  def sign_in(agent)
-    request.session[:agent_id] = agent.id
+  def sign_in(agent, for_api: false)
+    setup_agent_session(agent) unless for_api
+    mock_rdv_solidarites_session(agent.email)
   end
 
-  def session_hash
-    { "client" => "client", "uid" => "johndoe@example.com", "access_token" => "token" }
+  def session_hash(agent_email)
+    { "client" => "someclient", "uid" => agent_email, "access_token" => "sometoken" }
   end
 
-  def setup_rdv_solidarites_session(session_object)
-    request.session["rdv_solidarites"] = session_hash
-    validate_rdv_solidarites_session(session_object)
+  def setup_agent_session(agent)
+    request.session["agent_id"] = agent.id
+    request.session["rdv_solidarites"] = session_hash(agent.email)
   end
 
-  def validate_rdv_solidarites_session(session_object)
+  # rubocop:disable Metrics/AbcSize
+  def mock_rdv_solidarites_session(agent_email)
     allow(RdvSolidaritesSession).to receive(:new)
-      .and_return(session_object)
-    allow(session_object).to receive(:valid?)
+      .and_return(rdv_solidarites_session)
+    allow(rdv_solidarites_session).to receive(:valid?)
       .and_return(true)
-    allow(session_object).to receive(:to_h)
-      .and_return(session_hash)
+    allow(rdv_solidarites_session).to receive(:uid).and_return(agent_email)
+    allow(rdv_solidarites_session).to receive(:to_h)
+      .and_return(session_hash(agent_email))
   end
+  # rubocop:enable Metrics/AbcSize
 
-  def mock_agent_update
-    allow(RdvSolidaritesApi::RetrieveOrganisations).to receive(:call)
-      .and_return(OpenStruct.new(success?: true, organisations: [OpenStruct.new(id: 42)]))
-    allow(UpsertAgent).to receive(:call)
-      .and_return(OpenStruct.new(success?: true))
+  def rdv_solidarites_session
+    @rdv_solidarites_session ||= instance_double(RdvSolidaritesSession)
   end
 
   def api_auth_headers_for_agent(agent)

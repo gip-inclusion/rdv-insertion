@@ -5,12 +5,10 @@ describe Applicants::ArchivingsController, type: :controller do
   let!(:agent) { create(:agent, organisations: [organisation]) }
   let!(:archiving_params) { { archiving_reason: "something" } }
   let!(:now) { Time.zone.parse("2022-05-22") }
-  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
 
   before do
     travel_to(now)
     sign_in(agent)
-    setup_rdv_solidarites_session(rdv_solidarites_session)
   end
 
   describe "#create" do

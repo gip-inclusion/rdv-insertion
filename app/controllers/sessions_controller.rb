@@ -1,11 +1,11 @@
 class SessionsController < ApplicationController
-  skip_before_action :authenticate_agent!, only: [:new, :create]
+  skip_before_action :authenticate_agent!
   wrap_parameters false
   respond_to :json, only: :create
 
   include RdvSolidaritesSessionConcern
   include RdvSolidaritesAgentConcern
-  before_action :validate_session!, :retrieve_agent_organisations!, :upsert_agent!, only: [:create]
+  before_action :validate_session!, :retrieve_agent!, :mark_as_logged_in!, only: [:create]
 
   def new; end
 
@@ -23,7 +23,7 @@ class SessionsController < ApplicationController
   private
 
   def set_session_credentials
-    session[:agent_id] = upsert_agent.agent.id
+    session[:agent_id] = current_agent.id
     session[:rdv_solidarites] = {
       client: request.headers["client"],
       uid: request.headers["uid"],
@@ -33,6 +33,7 @@ class SessionsController < ApplicationController
 
   def clear_session
     session.delete(:agent_id)
+    session.delete(:rdv_solidarites)
     @current_agent = nil
   end
 end

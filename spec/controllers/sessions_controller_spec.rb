@@ -3,7 +3,7 @@ describe SessionsController, type: :controller do
 
   let!(:organisation) { create(:organisation) }
   let!(:agent_email) {  "agent@beta.gouv.fr" }
-  let!(:agent) { create(:agent, email: agent_email, organisations: [organisation]) }
+  let!(:agent) { create(:agent, email: agent_email, organisations: [organisation], has_logged_in: false) }
 
   describe "GET /sign_in" do
     it "renders the login form" do
@@ -24,7 +24,6 @@ describe SessionsController, type: :controller do
           "Accept" => "application/json"
         }
       end
-      let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
 
       before do
         request.headers.merge(session_headers)
@@ -35,31 +34,19 @@ describe SessionsController, type: :controller do
           ).and_return(rdv_solidarites_session)
         allow(rdv_solidarites_session).to receive(:valid?)
           .and_return(true)
-        allow(RdvSolidaritesApi::RetrieveOrganisations).to receive(:call)
-          .with(rdv_solidarites_session: rdv_solidarites_session)
-          .and_return(OpenStruct.new(success?: true, organisations: [organisation]))
-        allow(UpsertAgent).to receive(:call)
-          .with(email: agent_email, organisation_ids: [organisation.id])
-          .and_return(OpenStruct.new(success?: true, agent: agent))
-      end
-
-      it "retrieves the agent organisations" do
-        expect(RdvSolidaritesApi::RetrieveOrganisations).to receive(:call)
-          .with(rdv_solidarites_session: rdv_solidarites_session)
-        post :create
-      end
-
-      it "upserts the agent" do
-        expect(UpsertAgent).to receive(:call)
-          .with(email: session_headers["uid"], organisation_ids: [organisation.id])
-
-        post :create
+        allow(rdv_solidarites_session).to receive(:uid)
+          .and_return(agent_email)
       end
 
       it "is a success" do
         post :create
         expect(response).to be_successful
         expect(JSON.parse(response.body)["success"]).to eq(true)
+      end
+
+      it "marks the agent as logged in" do
+        post :create
+        expect(agent.reload.has_logged_in).to eq(true)
       end
 
       it "sets a session" do
@@ -116,27 +103,26 @@ describe SessionsController, type: :controller do
         end
       end
 
-      context "when it fails to retrieve the organisations" do
-        before do
-          allow(RdvSolidaritesApi::RetrieveOrganisations).to receive(:call)
-            .with(rdv_solidarites_session: rdv_solidarites_session)
-            .and_return(OpenStruct.new(success?: false, errors: ["failure retrieving orgs"]))
-        end
+      context "when it fails to retrieve the agent" do
+        let!(:agent) { create(:agent, email: "someotheremail@beta.gouv.fr", organisations: [organisation]) }
 
         it "is a failure" do
           post :create
           expect(response).not_to be_successful
           expect(response.status).to eq(422)
           expect(JSON.parse(response.body)["success"]).to eq(false)
-          expect(JSON.parse(response.body)["errors"]).to eq(["failure retrieving orgs"])
+          expect(JSON.parse(response.body)["errors"]).to eq(
+            ["L'agent ne fait pas partie d'une organisation sur RDV-Insertion"]
+          )
         end
       end
 
-      context "when it fails to upsert the agent" do
+      context "when it fails to mark the agent as logged in" do
         before do
-          allow(UpsertAgent).to receive(:call)
-            .with(email: session_headers["uid"], organisation_ids: [organisation.id])
-            .and_return(OpenStruct.new(success?: false, errors: ["failure upserting agent"]))
+          allow(Agent).to receive(:find_by).and_return(agent)
+          allow(agent).to receive(:update).and_return(false)
+          allow(agent).to receive_message_chain(:errors, :full_messages)
+            .and_return(["Update impossible"])
         end
 
         it "is a failure" do
@@ -144,7 +130,7 @@ describe SessionsController, type: :controller do
           expect(response).not_to be_successful
           expect(response.status).to eq(422)
           expect(JSON.parse(response.body)["success"]).to eq(false)
-          expect(JSON.parse(response.body)["errors"]).to eq(["failure upserting agent"])
+          expect(JSON.parse(response.body)["errors"]).to eq(["Update impossible"])
         end
       end
     end

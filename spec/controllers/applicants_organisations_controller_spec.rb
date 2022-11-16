@@ -4,14 +4,12 @@ describe ApplicantsOrganisationsController, type: :controller do
   let!(:organisation1) { create(:organisation, name: "CD de DIE") }
   let(:organisation2) { create(:organisation, name: "CD de Valence") }
   let!(:department) { create(:department, organisations: [organisation1, organisation2]) }
-  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
   let!(:agent) { create(:agent, organisations: [organisation1]) }
 
   render_views
 
   before do
     sign_in(agent)
-    setup_rdv_solidarites_session(rdv_solidarites_session)
   end
 
   describe "#new" do
