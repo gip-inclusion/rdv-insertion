@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_10_25_080503) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_14_174617) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -18,7 +18,13 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_25_080503) do
     t.string "email"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "rdv_solidarites_agent_id"
+    t.string "first_name"
+    t.string "last_name"
+    t.boolean "has_logged_in", default: false
+    t.datetime "last_webhook_update_received_at"
     t.index ["email"], name: "index_agents_on_email", unique: true
+    t.index ["rdv_solidarites_agent_id"], name: "index_agents_on_rdv_solidarites_agent_id", unique: true
   end
 
   create_table "agents_organisations", id: false, force: :cascade do |t|

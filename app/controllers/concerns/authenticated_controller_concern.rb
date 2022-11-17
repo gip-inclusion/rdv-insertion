@@ -3,7 +3,6 @@ module AuthenticatedControllerConcern
 
   included do
     before_action :authenticate_agent!
-    rescue_from Pundit::NotAuthorizedError, with: :agent_not_authorized
     helper_method :logged_in?
   end
 
@@ -17,32 +16,18 @@ module AuthenticatedControllerConcern
   end
 
   def logged_in?
-    !current_agent.nil?
+    !current_agent.nil? && rdv_solidarites_session.valid?
   end
 
   def current_agent
     @current_agent ||= Agent.includes(:organisations).find_by(id: session[:agent_id])
   end
 
-  def pundit_user
-    current_agent
-  end
-
-  def agent_not_authorized
-    should_return_json? ? render_not_authorized : redirect_not_authorized
-  end
-
-  def redirect_not_authorized
-    flash[:alert] = "Votre compte ne vous permet pas d'effectuer cette action"
-    redirect_to root_url, status: :see_other
-  end
-
-  def render_not_authorized
-    render(
-      status: :forbidden,
-      json: {
-        errors: ["Votre compte ne vous permet pas d'effectuer cette action"]
-      }
+  def rdv_solidarites_session
+    @rdv_solidarites_session ||= RdvSolidaritesSession.new(
+      uid: session["rdv_solidarites"]["uid"],
+      access_token: session["rdv_solidarites"]["access_token"],
+      client: session["rdv_solidarites"]["client"]
     )
   end
 end

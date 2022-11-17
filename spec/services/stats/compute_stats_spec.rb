@@ -12,7 +12,8 @@ describe Stats::ComputeStats, type: :service do
   end
 
   # ----------------------------------------- relevant agent for stats -----------------------------------------
-  let!(:relevant_agent) { create(:agent, organisations: [relevant_organisation]) }
+  let!(:relevant_agent) { create(:agent, organisations: [relevant_organisation], has_logged_in: true) }
+  let!(:non_logged_agent) { create(:agent, organisations: [relevant_organisation], has_logged_in: false) }
 
   # --------------------------------------- relevant applicants for stats --------------------------------------
   let!(:applicant1) do

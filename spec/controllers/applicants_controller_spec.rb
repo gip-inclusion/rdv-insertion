@@ -24,7 +24,6 @@ describe ApplicantsController, type: :controller do
 
     before do
       sign_in(agent)
-      setup_rdv_solidarites_session(rdv_solidarites_session)
     end
 
     it "renders the new applicant page" do
@@ -39,7 +38,6 @@ describe ApplicantsController, type: :controller do
     render_views
     before do
       sign_in(agent)
-      setup_rdv_solidarites_session(rdv_solidarites_session)
       allow(Applicants::FindOrInitialize).to receive(:call)
         .and_return(OpenStruct.new(success?: true, applicant: applicant))
       allow(Applicant).to receive(:new)
@@ -197,7 +195,6 @@ describe ApplicantsController, type: :controller do
     before do
       applicant.update_columns(uid: "23") # used to skip callbacks and computation of uid
       sign_in(agent)
-      setup_rdv_solidarites_session(rdv_solidarites_session)
     end
 
     context "policy scope" do
@@ -242,7 +239,6 @@ describe ApplicantsController, type: :controller do
 
     before do
       sign_in(agent)
-      setup_rdv_solidarites_session(rdv_solidarites_session)
     end
 
     context "when organisation_level" do
@@ -470,7 +466,6 @@ describe ApplicantsController, type: :controller do
 
     before do
       sign_in(agent)
-      setup_rdv_solidarites_session(rdv_solidarites_session)
     end
 
     it "returns a list of applicants" do
@@ -701,7 +696,6 @@ describe ApplicantsController, type: :controller do
 
         before do
           sign_in(another_agent)
-          setup_rdv_solidarites_session(rdv_solidarites_session)
         end
 
         it "does not call the service" do
@@ -732,7 +726,6 @@ describe ApplicantsController, type: :controller do
 
     before do
       sign_in(agent)
-      setup_rdv_solidarites_session(rdv_solidarites_session)
     end
 
     context "when organisation_level" do
@@ -766,7 +759,6 @@ describe ApplicantsController, type: :controller do
 
     before do
       sign_in(agent)
-      setup_rdv_solidarites_session(rdv_solidarites_session)
     end
 
     context "when json request" do
@@ -797,7 +789,6 @@ describe ApplicantsController, type: :controller do
 
         before do
           sign_in(another_agent)
-          setup_rdv_solidarites_session(rdv_solidarites_session)
         end
 
         it "does not call the service" do
@@ -850,7 +841,7 @@ describe ApplicantsController, type: :controller do
 
       before do
         sign_in(agent)
-        setup_rdv_solidarites_session(rdv_solidarites_session)
+
         allow(Applicants::Save).to receive(:call)
           .and_return(OpenStruct.new)
       end
@@ -871,7 +862,6 @@ describe ApplicantsController, type: :controller do
 
         before do
           sign_in(another_agent)
-          setup_rdv_solidarites_session(rdv_solidarites_session)
         end
 
         it "does not call the service" do

@@ -13,7 +13,7 @@ module Applicants
 
     def destroy
       if @applicant.update(archiving_reason: nil, archived_at: nil)
-        render json: { success: true }
+        render json: { success: true, applicant: @applicant }
       else
         render json: { success: false, errors: @applicant.errors.full_messages }
       end

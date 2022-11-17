@@ -32,6 +32,6 @@ class Organisation < ApplicationRecord
   end
 
   def as_json(_opts = {})
-    super.merge(department_number: department_number)
+    super.merge(department_number: department_number, motif_categories: configurations_motif_categories)
   end
 end

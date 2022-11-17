@@ -46,4 +46,11 @@ class RdvContext < ApplicationRecord
   def participations
     applicant.participations.to_a.select { |participation| participation.rdv_id.in?(rdvs.ids) }
   end
+
+  def as_json(_opts = {})
+    super.merge(
+      human_status: I18n.t("activerecord.attributes.rdv_context.statuses.#{status}"),
+      rdvs: rdvs
+    )
+  end
 end

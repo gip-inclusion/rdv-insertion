@@ -1,5 +1,4 @@
 describe "api/v1/applicants/create_and_invite_many requests", type: :request do
-  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession, uid: agent.email) }
   let!(:agent) { create(:agent, organisations: [organisation]) }
   let!(:rdv_solidarites_organisation_id) { 42 }
   let!(:organisation) do
@@ -59,16 +58,25 @@ describe "api/v1/applicants/create_and_invite_many requests", type: :request do
     end
 
     before do
-      validate_rdv_solidarites_session(rdv_solidarites_session)
-      mock_agent_update
+      sign_in(agent, for_api: true)
       allow(CreateAndInviteApplicantJob).to receive(:perform_async)
     end
 
     it "enqueues create and invite jobs" do
       expect(CreateAndInviteApplicantJob).to receive(:perform_async)
-        .with(organisation.id, applicant1_params.except(:invitation), applicant1_params[:invitation], session_hash)
+        .with(
+          organisation.id,
+          applicant1_params.except(:invitation),
+          applicant1_params[:invitation],
+          session_hash(agent.email)
+        )
       expect(CreateAndInviteApplicantJob).to receive(:perform_async)
-        .with(organisation.id, applicant2_params.except(:invitation), applicant2_params[:invitation], session_hash)
+        .with(
+          organisation.id,
+          applicant2_params.except(:invitation),
+          applicant2_params[:invitation],
+          session_hash(agent.email)
+        )
       subject
     end
 
@@ -97,10 +105,9 @@ describe "api/v1/applicants/create_and_invite_many requests", type: :request do
       end
     end
 
-    context "when it fails retrieving the agent orgs" do
+    context "when it fails to retrieve the agent" do
       before do
-        allow(RdvSolidaritesApi::RetrieveOrganisations).to receive(:call)
-          .and_return(OpenStruct.new(success?: false, errors: ["failure retrieving orgs"]))
+        allow(rdv_solidarites_session).to receive(:uid).and_return("nonexistingagent@beta.gouv.fr")
       end
 
       it "returns 422" do
@@ -108,22 +115,9 @@ describe "api/v1/applicants/create_and_invite_many requests", type: :request do
         expect(response).not_to be_successful
         expect(response.status).to eq(422)
         expect(JSON.parse(response.body)["success"]).to eq(false)
-        expect(JSON.parse(response.body)["errors"]).to eq(["failure retrieving orgs"])
-      end
-    end
-
-    context "when it fails upserting the agent" do
-      before do
-        allow(UpsertAgent).to receive(:call)
-          .and_return(OpenStruct.new(success?: false, errors: ["failure upserting agent"]))
-      end
-
-      it "returns 422" do
-        subject
-        expect(response).not_to be_successful
-        expect(response.status).to eq(422)
-        expect(JSON.parse(response.body)["success"]).to eq(false)
-        expect(JSON.parse(response.body)["errors"]).to eq(["failure upserting agent"])
+        expect(JSON.parse(response.body)["errors"]).to eq(
+          ["L'agent ne fait pas partie d'une organisation sur RDV-Insertion"]
+        )
       end
     end
 
@@ -202,7 +196,7 @@ describe "api/v1/applicants/create_and_invite_many requests", type: :request do
         subject
         expect(response.status).to eq(403)
         result = JSON.parse(response.body)
-        expect(result["errors"]).to eq(["Vous n'êtes pas autorisé à effectuer cette action"])
+        expect(result["errors"]).to eq(["Votre compte ne vous permet pas d'effectuer cette action"])
       end
     end
   end
