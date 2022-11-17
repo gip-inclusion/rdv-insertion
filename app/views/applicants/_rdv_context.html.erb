@@ -18,7 +18,7 @@
         applicant: @applicant,
         organisation: @organisation,
         department: @department,
-        invitations: rdv_context.nil? ? [] : rdv_context.invitations,
+        invitations: invitations,
         isDepartmentLevel: department_level?,
         invitationFormats: configuration.invitation_formats,
         motifCategory: configuration.motif_category,

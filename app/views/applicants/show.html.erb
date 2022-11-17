@@ -83,7 +83,7 @@
     <%= render "add_to_org_button", can_be_added_to_other_org: @can_be_added_to_other_org, department: @department, applicant: @applicant %>
   </div>
   <% @rdv_contexts.each do |rdv_context| %>
-    <%= render "rdv_context", rdv_context: rdv_context, rdvs: rdv_context.rdvs, convocable_rdvs: rdv_context.rdvs.select(&:convocable?), configuration: @all_configurations.find { |c| c.motif_category == rdv_context.motif_category }, applicant: @applicant, department: @department  %>
+    <%= render "rdv_context", rdv_context: rdv_context, rdvs: rdv_context.rdvs, convocable_rdvs: rdv_context.rdvs.select(&:convocable?), configuration: @all_configurations.find { |c| c.motif_category == rdv_context.motif_category }, applicant: @applicant, department: @department, invitations: rdv_context.invitations  %>
   <% end %>
 </div>
 

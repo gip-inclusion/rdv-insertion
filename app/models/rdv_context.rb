@@ -44,6 +44,6 @@ class RdvContext < ApplicationRecord
   end
 
   def participations
-    Participation.where(applicant: applicant, rdv: [rdvs])
+    applicant.participations.to_a.select { |participation| participation.rdv_id.in?(rdvs.ids) }
   end
 end
