@@ -127,10 +127,10 @@ class ApplicantsController < ApplicationController
   def set_applicant
     @applicant = \
       policy_scope(Applicant)
-      .preload(:organisations)
-      .includes(
-        rdv_contexts: [{ rdvs: [:organisation, :motif] }, :invitations],
-        invitations: [:rdv_context]
+      .preload(
+        organisations: :department,
+        participations: :rdv,
+        invitations: :rdv_context
       )
       .where(department_level? ? { department: params[:department_id] } : { organisations: params[:organisation_id] })
       .find(params[:id])
@@ -197,7 +197,12 @@ class ApplicantsController < ApplicationController
   end
 
   def set_applicant_rdv_contexts
-    @rdv_contexts = RdvContext.where(applicant: @applicant, motif_category: @all_configurations.map(&:motif_category))
+    @rdv_contexts = \
+      RdvContext.preload(
+        rdvs: [:motif, :organisation, :notifications],
+        applicant: :participations,
+        invitations: :rdv_context
+      ).where(applicant: @applicant, motif_category: @all_configurations.map(&:motif_category))
   end
 
   def set_can_be_added_to_other_org
@@ -211,7 +216,11 @@ class ApplicantsController < ApplicationController
   def set_applicants_for_motif_category
     @applicants = policy_scope(Applicant)
                   .includes(:invitations)
-                  .preload(:organisations, rdv_contexts: [:invitations, :rdvs], notifications: [rdv: :rdv_contexts])
+                  .preload(
+                    :organisations,
+                    rdv_contexts: [{ applicant: :participations }, :invitations, :rdvs],
+                    notifications: [rdv: :rdv_contexts]
+                  )
                   .active.distinct.archived(false)
                   .where(department_level? ? { department: @department } : { organisations: @organisation })
                   .joins(:rdv_contexts)

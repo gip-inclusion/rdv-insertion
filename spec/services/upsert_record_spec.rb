@@ -7,8 +7,20 @@ describe UpsertRecord, type: :service do
   end
 
   let!(:klass) { Rdv }
-  let!(:additional_attributes) { { applicant_ids: applicant_ids } }
-  let!(:applicant_ids) { [33] }
+  let!(:additional_attributes) do
+    {
+      participations_attributes: [
+        {
+          id: nil,
+          status: 'unknown',
+          applicant_id: applicant_id,
+          rdv_solidarites_participation_id: 998
+        }
+      ]
+    }
+  end
+  let!(:applicant_id) { 33 }
+  let!(:applicant_ids) { [applicant_id] }
   let!(:rdv_solidarites_rdv_id) { 12 }
   let!(:rdv_solidarites_attributes) do
     { id: 12, lieu: lieu, motif: motif, starts_at: starts_at, duration_in_min: duration_in_min,
@@ -20,7 +32,7 @@ describe UpsertRecord, type: :service do
   let!(:starts_at) { "2021-09-08 12:00:00 UTC" }
   let!(:duration_in_min) { 45 }
   let!(:status) { "unknown" }
-  let!(:rdv) { create(:rdv, id: 55) }
+  let!(:rdv) { create(:rdv, applicants: [applicant], id: 55) }
 
   describe "#call" do
     before do

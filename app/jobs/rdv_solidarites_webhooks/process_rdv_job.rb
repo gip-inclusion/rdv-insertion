@@ -8,7 +8,7 @@ module RdvSolidaritesWebhooks
       @meta = meta.deep_symbolize_keys
       verify_organisation!
       verify_motif!
-      return if applicants.empty?
+      return if empty_applicants_on_new_rdv?
       return if unhandled_category?
 
       # for a convocation, we have to verify the lieu is up to date in db
@@ -39,6 +39,10 @@ module RdvSolidaritesWebhooks
       raise WebhookProcessingJobError, "Lieu in webhook is not coherent. #{@data[:lieu]}"
     end
 
+    def empty_applicants_on_new_rdv?
+      applicants.empty? && rdv.nil?
+    end
+
     def matching_configuration
       organisation.configurations.find_by(motif_category: rdv_solidarites_rdv.category)
     end
@@ -65,6 +69,10 @@ module RdvSolidaritesWebhooks
       RdvSolidarites::Rdv.new(@data)
     end
 
+    def rdv
+      @rdv ||= Rdv.find_by(rdv_solidarites_rdv_id: rdv_solidarites_rdv.id)
+    end
+
     def rdv_solidarites_user_ids
       rdv_solidarites_rdv.user_ids
     end
@@ -73,8 +81,33 @@ module RdvSolidaritesWebhooks
       @applicants ||= Applicant.where(rdv_solidarites_user_id: rdv_solidarites_user_ids)
     end
 
-    def applicant_ids
-      applicants.pluck(:id)
+    def participations_attributes_destroyed
+      return [] if rdv.nil?
+
+      removed_applicants = rdv.applicants - applicants
+      @participations_attributes_destroyed ||= \
+        removed_applicants.map do |applicant|
+          existing_participation = Participation.find_by(applicant: applicant, rdv: rdv)
+          {
+            id: existing_participation&.id,
+            applicant_id: applicant.id,
+            _destroy: true
+          }
+        end.compact
+    end
+
+    def participations_attributes
+      @participations_attributes ||= \
+        @applicants.map do |applicant|
+          participation = rdv_solidarites_rdv.participations.find { _1.user.id == applicant.rdv_solidarites_user_id }
+          existing_participation = rdv.nil? ? nil : Participation.find_by(applicant: applicant, rdv: rdv)
+          {
+            id: existing_participation&.id,
+            status: participation.status,
+            applicant_id: applicant.id,
+            rdv_solidarites_participation_id: participation.id
+          }
+        end.compact + participations_attributes_destroyed
     end
 
     def related_invitations
@@ -102,15 +135,20 @@ module RdvSolidaritesWebhooks
       @data[:organisation][:id]
     end
 
+    def delete_rdv?
+      # Destroy event or Emptied rdv
+      event == "destroyed" || (applicants.empty? && rdv.present?)
+    end
+
     def upsert_or_delete_rdv
-      if event == "destroyed"
+      if delete_rdv?
         DeleteRdvJob.perform_async(rdv_solidarites_rdv.id)
       else
         UpsertRecordJob.perform_async(
           "Rdv",
           @data,
           {
-            applicant_ids: applicant_ids,
+            participations_attributes: participations_attributes,
             organisation_id: organisation.id,
             motif_id: motif.id,
             rdv_context_ids: rdv_context_ids,

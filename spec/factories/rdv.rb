@@ -6,11 +6,13 @@ FactoryBot.define do
     duration_in_min { 30 }
     organisation { create(:organisation) }
     motif { create(:motif) }
+    status { 'unknown' }
 
     after(:build) do |rdv|
       next if rdv.applicants.present?
 
       rdv.applicants = [create(:applicant)]
+      rdv.participations.first.status = rdv.status
     end
   end
 end

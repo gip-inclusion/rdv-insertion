@@ -3,12 +3,16 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
     described_class.new.perform(data, meta)
   end
 
-  let!(:user_id) { 42 }
-  let!(:user_ids) { [user_id] }
+  let!(:user_id1) { 442 }
+  let!(:user_id2) { 443 }
+  let!(:user_ids) { [user_id1, user_id2] }
   let!(:rdv_solidarites_rdv_id) { 22 }
   let!(:rdv_solidarites_organisation_id) { 52 }
   let!(:rdv_solidarites_lieu_id) { 43 }
   let!(:rdv_solidarites_motif_id) { 53 }
+  let!(:participations_attributes) do
+    [{ id: 998, status: "unknown", user: { id: user_id1 } }, { id: 999, status: "unknown", user: { id: user_id2 } }]
+  end
   let!(:lieu_attributes) { { id: rdv_solidarites_lieu_id, name: "DINUM", address: "20 avenue de Ségur" } }
   let!(:motif_attributes) do
     { id: 53, location_type: "public_office", category: "rsa_orientation", name: "RSA orientation" }
@@ -22,7 +26,8 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
       "context" => "all good",
       "lieu" => lieu_attributes,
       "motif" => motif_attributes,
-      "users" => [{ id: user_id }],
+      "users" => [{ id: user_id1 }, { id: user_id2 }],
+      "rdvs_users" => participations_attributes,
       "organisation" => { id: rdv_solidarites_organisation_id }
     }.deep_symbolize_keys
   end
@@ -36,8 +41,9 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
     }.deep_symbolize_keys
   end
 
-  let!(:applicant) { create(:applicant, organisations: [organisation], id: 3) }
-  let!(:applicant2) { create(:applicant, organisations: [organisation], id: 4) }
+  let!(:applicant) { create(:applicant, organisations: [organisation], id: 3, rdv_solidarites_user_id: 442) }
+  let!(:applicant2) { create(:applicant, organisations: [organisation], id: 4, rdv_solidarites_user_id: 443) }
+  let!(:applicants) { Applicant.where(id: [applicant.id, applicant2.id]) }
 
   let!(:configuration) { create(:configuration, convene_applicant: false, motif_category: "rsa_orientation") }
   let!(:organisation) do
@@ -55,15 +61,34 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
   end
 
   let!(:invitation) do
-    create(:invitation, rdv_context: rdv_context, sent_at: 2.days.ago, valid_until: 3.days.from_now)
+    create(
+      :invitation,
+      organisations: [organisation],
+      rdv_context: rdv_context,
+      sent_at: 2.days.ago,
+      valid_until: 3.days.from_now
+    )
   end
 
   let!(:invitation2) do
-    create(:invitation, rdv_context: rdv_context2, sent_at: 2.days.ago, valid_until: 3.days.from_now)
+    create(
+      :invitation,
+      organisations:
+      [organisation],
+      rdv_context: rdv_context2,
+      sent_at: 2.days.ago,
+      valid_until: 3.days.from_now
+    )
   end
 
   let!(:invitation3) do
-    create(:invitation, rdv_context: rdv_context, sent_at: 4.days.ago, valid_until: 3.days.ago)
+    create(
+      :invitation,
+      organisations: [organisation],
+      rdv_context: rdv_context,
+      sent_at: 4.days.ago,
+      valid_until: 3.days.ago
+    )
   end
 
   let!(:rdv_context) do
@@ -76,10 +101,6 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
 
   describe "#perform" do
     before do
-      allow(Applicant).to receive(:includes).and_return(Applicant)
-      allow(Applicant).to receive(:where)
-        .with(rdv_solidarites_user_id: user_ids)
-        .and_return([applicant, applicant2])
       allow(RdvContext).to receive(:find_or_create_by!)
         .with(applicant: applicant, motif_category: "rsa_orientation")
         .and_return(rdv_context)
@@ -124,30 +145,115 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
       end
     end
 
-    context "it upserts the rdv" do
-      it "enqueues a job to upsert the rdv" do
-        expect(UpsertRecordJob).to receive(:perform_async)
-          .with(
-            "Rdv",
-            data,
-            {
-              applicant_ids: [applicant.id, applicant2.id],
-              organisation_id: organisation.id,
-              rdv_context_ids: [rdv_context.id, rdv_context2.id],
-              motif_id: motif.id,
-              lieu_id: lieu.id,
-              last_webhook_update_received_at: timestamp
-            }
-          )
+    describe "upserting the rdv" do
+      context "it upserts the rdv (for a create)" do
+        it "enqueues a job to upsert the rdv" do
+          expect(UpsertRecordJob).to receive(:perform_async)
+            .with(
+              "Rdv",
+              data,
+              {
+                participations_attributes: [
+                  {
+                    id: nil,
+                    status: 'unknown',
+                    applicant_id: 3,
+                    rdv_solidarites_participation_id: 998
+                  },
+                  {
+                    id: nil,
+                    status: 'unknown',
+                    applicant_id: 4,
+                    rdv_solidarites_participation_id: 999
+                  }
+                ],
+                organisation_id: organisation.id,
+                rdv_context_ids: [rdv_context.id, rdv_context2.id],
+                motif_id: motif.id,
+                lieu_id: lieu.id,
+                last_webhook_update_received_at: timestamp
+              }
+            )
 
-        subject
+          subject
+        end
+
+        it "enqueues jobs to invalidate the related sent valid invitations" do
+          expect(InvalidateInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation.id)
+          expect(InvalidateInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation2.id)
+          expect(InvalidateInvitationJob).not_to receive(:perform_async).with(invitation3.id)
+          subject
+        end
       end
 
-      it "enqueues jobs to invalidate the related sent valid invitations" do
-        expect(InvalidateInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation.id)
-        expect(InvalidateInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation2.id)
-        expect(InvalidateInvitationJob).not_to receive(:perform_async).with(invitation3.id)
-        subject
+      context "it upserts the rdv (for a participation update and destroy)" do
+        let!(:participations_attributes) do
+          [{ id: 998, status: "unknown", user: { id: user_id1 } }, { id: 999, status: "seen", user: { id: user_id2 } }]
+        end
+
+        # Rdv create factory create a new applicant (and participation) by default
+        let!(:rdv) { create(:rdv, rdv_solidarites_rdv_id: rdv_solidarites_rdv_id, organisation: organisation) }
+        let!(:default_applicant) { rdv.applicants.first }
+        let!(:default_participation) { rdv.participations.first }
+        let!(:participation) do
+          create(
+            :participation,
+            applicant: applicant,
+            rdv: rdv,
+            status: 'unknown',
+            id: 1,
+            rdv_solidarites_participation_id: 998
+          )
+        end
+        let!(:participation2) do
+          create(
+            :participation,
+            applicant: applicant2,
+            rdv: rdv,
+            status: 'unknown',
+            id: 2,
+            rdv_solidarites_participation_id: 999
+          )
+        end
+        let!(:participations_attributes_expected) do
+          [
+            {
+              id: 1,
+              status: 'unknown',
+              applicant_id: 3,
+              rdv_solidarites_participation_id: 998
+            },
+            {
+              id: 2,
+              status: 'seen',
+              applicant_id: 4,
+              rdv_solidarites_participation_id: 999
+            },
+            {
+              _destroy: true,
+              applicant_id: default_applicant.id,
+              id: default_participation.id
+            }
+          ]
+        end
+
+        it "enqueues a job to upsert the rdv with updated status and destroyed participation" do
+          expect(UpsertRecordJob).to receive(:perform_async)
+            .with(
+              "Rdv",
+              data,
+              {
+                participations_attributes: participations_attributes_expected,
+                organisation_id: organisation.id,
+                rdv_context_ids: [rdv_context.id, rdv_context2.id],
+                motif_id: motif.id,
+                lieu_id: lieu.id,
+                last_webhook_update_received_at: timestamp
+              }
+            )
+
+          subject
+        end
       end
     end
 
@@ -167,13 +273,26 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
       end
       let!(:configuration) { create(:configuration, convene_applicant: true, motif_category: "rsa_orientation") }
 
-      it "sets the convocable attrribute when upserting the rdv" do
+      it "sets the convocable attribute when upserting the rdv" do
         expect(UpsertRecordJob).to receive(:perform_async)
           .with(
             "Rdv",
             data,
             {
-              applicant_ids: [applicant.id, applicant2.id],
+              participations_attributes: [
+                {
+                  id: nil,
+                  status: 'unknown',
+                  applicant_id: 3,
+                  rdv_solidarites_participation_id: 998
+                },
+                {
+                  id: nil,
+                  status: 'unknown',
+                  applicant_id: 4,
+                  rdv_solidarites_participation_id: 999
+                }
+              ],
               organisation_id: organisation.id,
               rdv_context_ids: [rdv_context.id, rdv_context2.id],
               motif_id: motif.id,
@@ -237,9 +356,8 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
         create(
           :applicant,
           organisations: [organisation],
-          id: 3,
           title: "monsieur",
-          rdv_solidarites_user_id: user_id,
+          rdv_solidarites_user_id: user_id1,
           department_internal_id: department_internal_id
         )
       end
@@ -247,14 +365,13 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
       let!(:webhook_payload) do
         {
           data: data.merge(
-            users: [{ id: user_id, department_internal_id: department_internal_id, title: "monsieur" }]
+            users: [
+              { id: user_id1, department_internal_id: department_internal_id, title: "monsieur" },
+              { id: user_id2, department_internal_id: nil, title: "monsieur" }
+            ]
           ),
           meta: meta
         }
-      end
-
-      before do
-        allow(Applicant).to receive(:find_by).with(rdv_solidarites_user_id: user_id).and_return(applicant)
       end
 
       it "enqueues a webhook job with an augmented payload" do

@@ -26,8 +26,7 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
       created_at: "20/05/2022",
       role: "demandeur",
       organisations: [organisation],
-      department: department,
-      rdvs: [rdv]
+      department: department
     )
   end
   let(:applicant2) { create(:applicant, last_name: "Casubolo", organisations: [organisation]) }
@@ -38,6 +37,8 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
                  starts_at: Time.zone.parse("2022-05-25"),
                  created_by: "user")
   end
+  let!(:part_rdv) { create(:participation, rdv: rdv, applicant: applicant1, status: 'seen') }
+
   let!(:first_invitation) do
     create(:invitation, applicant: applicant1, format: "email", sent_at: Time.zone.parse("2022-05-21"))
   end
@@ -175,8 +176,7 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
               archived_at: "20/06/2022",
               archiving_reason: "test",
               organisations: [organisation],
-              department: department,
-              rdvs: [rdv]
+              department: department
             )
           end
           let!(:csv) { subject.csv }
