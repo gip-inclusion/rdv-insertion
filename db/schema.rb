@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_14_174617) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_16_163348) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -25,6 +25,12 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_14_174617) do
     t.datetime "last_webhook_update_received_at"
     t.index ["email"], name: "index_agents_on_email", unique: true
     t.index ["rdv_solidarites_agent_id"], name: "index_agents_on_rdv_solidarites_agent_id", unique: true
+  end
+
+  create_table "agents_applicants", id: false, force: :cascade do |t|
+    t.bigint "applicant_id", null: false
+    t.bigint "agent_id", null: false
+    t.index ["applicant_id", "agent_id"], name: "index_agents_applicants_on_applicant_id_and_agent_id", unique: true
   end
 
   create_table "agents_organisations", id: false, force: :cascade do |t|
@@ -186,9 +192,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_14_174617) do
     t.datetime "sent_at", precision: nil
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "rdv_solidarites_rdv_id"
     t.integer "format"
     t.bigint "rdv_id"
+    t.bigint "rdv_solidarites_rdv_id"
     t.index ["applicant_id"], name: "index_notifications_on_applicant_id"
     t.index ["rdv_id"], name: "index_notifications_on_rdv_id"
   end
