@@ -25,6 +25,10 @@ module HasStatus
     status.in?(CANCELLED_STATUSES)
   end
 
+  def cancelled_by_user?
+    status.in?(CANCELLED_BY_USER_STATUSES)
+  end
+
   def resolved?
     status.in?(%w[seen excused revoked noshow])
   end

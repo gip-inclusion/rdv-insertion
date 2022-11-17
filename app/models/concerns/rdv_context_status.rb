@@ -71,6 +71,6 @@ module RdvContextStatus
   end
 
   def multiple_cancelled_participations?
-    participations.cancelled_by_user.length > 1
+    participations.select(&:cancelled_by_user?).length > 1
   end
 end
