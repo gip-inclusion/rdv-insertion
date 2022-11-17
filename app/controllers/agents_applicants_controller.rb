@@ -6,13 +6,10 @@ class AgentsApplicantsController < ApplicationController
 
   def create
     assign_agent_to_applicant
-    respond_to do |format|
-      format.turbo_stream
-    end
+    @success = true
   rescue ActiveRecord::ActiveRecordError => e
+    @success = false
     Sentry.capture_exception(e)
-    flash[:error] = "Une erreur s'est produite lors de l'assignation du référent, veuillez nous en excuser."
-    redirect_to department_applicant_path(@department, @applicant)
   end
 
   private

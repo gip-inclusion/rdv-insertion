@@ -2,5 +2,5 @@
   <%= render partial: "applicants/agents_list", locals: { agents: @applicant.agents } %>
 <% end %>
 <%= turbo_stream.prepend "flashes" do %>
-  <%= render partial: "common/flash", locals: { flash: { success: "Le référent a bien été assigné" } } %>
+  <%= render partial: "common/flash", locals: { flash: @success ? { success: "Le référent a bien été assigné" } : { error: "Une erreur s'est produite lors de l'assignation du référent, veuillez nous en excuser." } } %>
 <% end %>
