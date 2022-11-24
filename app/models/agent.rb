@@ -5,11 +5,16 @@ class Agent < ApplicationRecord
   validates :rdv_solidarites_agent_id, uniqueness: true, allow_nil: true
 
   has_and_belongs_to_many :organisations
+  has_and_belongs_to_many :applicants
   has_many :departments, through: :organisations
   has_many :configurations, through: :organisations
 
   def delete_organisation(organisation)
     organisations.delete(organisation)
     save!
+  end
+
+  def to_s
+    "#{first_name} #{last_name}"
   end
 end

@@ -58,6 +58,7 @@ Rails.application.routes.draw do
       collection { resources :uploads, only: [:new] }
       resources :invitations, only: [:create]
       resources :applicants_organisations, only: [:new, :create]
+      resources :agents_applicants, only: [:new, :create]
     end
   end
   resources :filter_applicants, only: [:new]

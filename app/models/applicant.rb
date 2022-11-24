@@ -20,6 +20,7 @@ class Applicant < ApplicationRecord
   has_and_belongs_to_many :organisations
   has_many :participations, dependent: :destroy
   has_many :rdvs, through: :participations
+  has_and_belongs_to_many :agents
   has_many :rdv_contexts, dependent: :destroy
   has_many :invitations, dependent: :destroy
   has_many :notifications, dependent: :destroy
