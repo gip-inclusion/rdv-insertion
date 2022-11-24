@@ -46,7 +46,7 @@ export default function EmailInvitationCell({
               disabled={
                 isTriggered.emailInvitation ||
                 !applicant.createdAt ||
-                !applicant.phoneNumber ||
+                !applicant.email ||
                 !applicant.belongsToCurrentOrg()
               }
               className="btn btn-primary btn-blue"
