@@ -14,6 +14,7 @@ module Invitations
       validate_it_expires_in_more_than_5_days if @invitation.format_postal?
       validate_applicant_belongs_to_an_org_linked_to_motif_category
       validate_motif_of_this_category_is_defined_in_organisations
+      validate_referents_are_assigned_for_rdv_with_referents
     end
 
     private
@@ -40,6 +41,13 @@ module Invitations
       return if organisations.flat_map(&:motifs).map(&:category).include?(motif_category)
 
       result.errors << "Aucun motif de la catégorie #{motif_category_human} n'est défini sur RDV-Solidarités"
+    end
+
+    def validate_referents_are_assigned_for_rdv_with_referents
+      return unless @invitation.rdv_with_referents?
+      return if applicant.agent_ids.any?
+
+      result.errors << "Un référent doit être assigné au bénéficiaire pour les rdvs avec référents"
     end
   end
 end

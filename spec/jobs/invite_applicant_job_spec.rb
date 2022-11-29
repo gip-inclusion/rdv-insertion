@@ -18,7 +18,7 @@ describe InviteApplicantJob, type: :job do
     create(
       :configuration,
       motif_category: motif_category, number_of_days_to_accept_invitation: number_of_days_to_accept_invitation,
-      number_of_days_before_action_required: 10
+      number_of_days_before_action_required: 10, rdv_with_referents: false
     )
   end
   let!(:rdv_solidarites_session_credentials) do
@@ -46,7 +46,7 @@ describe InviteApplicantJob, type: :job do
         allow(Invitation).to receive(:new).with(
           invitation_attributes.merge(
             applicant: applicant, department: department, rdv_context: rdv_context, organisations: [organisation],
-            valid_until: valid_until
+            valid_until: valid_until, rdv_with_referents: false
           )
         ).and_return(invitation)
         allow(RdvSolidaritesSession).to receive(:new)
@@ -61,7 +61,7 @@ describe InviteApplicantJob, type: :job do
         expect(Invitation).to receive(:new).with(
           invitation_attributes.merge(
             applicant: applicant, department: department, rdv_context: rdv_context, organisations: [organisation],
-            valid_until: valid_until
+            valid_until: valid_until, rdv_with_referents: false
           )
         )
         subject

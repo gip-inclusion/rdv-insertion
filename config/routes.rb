@@ -58,7 +58,9 @@ Rails.application.routes.draw do
       collection { resources :uploads, only: [:new] }
       resources :invitations, only: [:create]
       resources :applicants_organisations, only: [:new, :create]
-      resources :agents_applicants, only: [:new, :create]
+      resources :referent_assignations, only: [:index, :create]
+      # not so correct semantically speaking but it generates the DELETE route without /:id we need
+      resource :referent_assignations, only: [:destroy]
     end
   end
   resources :filter_applicants, only: [:new]

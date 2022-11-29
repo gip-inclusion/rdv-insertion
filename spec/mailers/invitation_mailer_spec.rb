@@ -29,12 +29,12 @@ RSpec.describe InvitationMailer, type: :mailer do
       end
 
       it "renders the subject" do
-        email_subject = CGI.unescapeHTML(subject.subject)
+        email_subject = unescape_html(subject.subject)
         expect(email_subject).to eq("[RSA]: Votre rendez-vous d'orientation dans le cadre de votre RSA")
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(subject.body.encoded)
+        body_string = unescape_html(subject.body.encoded)
         expect(body_string).to match("Bonjour Jean VALJEAN")
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")
@@ -72,12 +72,12 @@ RSpec.describe InvitationMailer, type: :mailer do
         end
 
         it "renders the subject" do
-          email_subject = CGI.unescapeHTML(subject.subject)
+          email_subject = unescape_html(subject.subject)
           expect(email_subject).to eq("[RSA]: Votre rendez-vous d'accompagnement dans le cadre de votre RSA")
         end
 
         it "renders the body" do
-          body_string = CGI.unescapeHTML(subject.body.encoded)
+          body_string = unescape_html(subject.body.encoded)
           expect(body_string).to match("Bonjour Jean VALJEAN")
           expect(body_string).to match("Le département de la Drôme.")
           expect(body_string).to match("01 39 39 39 39")
@@ -104,7 +104,7 @@ RSpec.describe InvitationMailer, type: :mailer do
       end
 
       it "renders the subject" do
-        email_subject = CGI.unescapeHTML(subject.subject)
+        email_subject = unescape_html(subject.subject)
         expect(email_subject).to eq(
           "[RSA]: Votre rendez-vous de signature de CER" \
           " dans le cadre de votre RSA"
@@ -112,7 +112,7 @@ RSpec.describe InvitationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(subject.body.encoded)
+        body_string = unescape_html(subject.body.encoded)
         expect(body_string).to match("Bonjour Jean VALJEAN")
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")
@@ -138,7 +138,7 @@ RSpec.describe InvitationMailer, type: :mailer do
       end
 
       it "renders the subject" do
-        email_subject = CGI.unescapeHTML(subject.subject)
+        email_subject = unescape_html(subject.subject)
         expect(email_subject).to eq(
           "[RSA]: Votre rendez-vous de suivi" \
           " dans le cadre de votre RSA"
@@ -146,7 +146,7 @@ RSpec.describe InvitationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(subject.body.encoded)
+        body_string = unescape_html(subject.body.encoded)
         expect(body_string).to match("Bonjour Jean VALJEAN")
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")
@@ -172,7 +172,7 @@ RSpec.describe InvitationMailer, type: :mailer do
       end
 
       it "renders the subject" do
-        email_subject = CGI.unescapeHTML(subject.subject)
+        email_subject = unescape_html(subject.subject)
         expect(email_subject).to eq(
           "[RSA]: Votre entretien de main tendue" \
           " dans le cadre de votre RSA"
@@ -180,7 +180,7 @@ RSpec.describe InvitationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(subject.body.encoded)
+        body_string = unescape_html(subject.body.encoded)
         expect(body_string).to match("Bonjour Jean VALJEAN")
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")
@@ -206,7 +206,7 @@ RSpec.describe InvitationMailer, type: :mailer do
       end
 
       it "renders the subject" do
-        email_subject = CGI.unescapeHTML(subject.subject)
+        email_subject = unescape_html(subject.subject)
         expect(email_subject).to eq(
           "[RSA]: Votre atelier collectif" \
           " dans le cadre de votre RSA"
@@ -214,7 +214,7 @@ RSpec.describe InvitationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(subject.body.encoded)
+        body_string = unescape_html(subject.body.encoded)
         expect(body_string).to match("Bonjour Jean VALJEAN")
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")
@@ -281,14 +281,14 @@ RSpec.describe InvitationMailer, type: :mailer do
     end
 
     it "renders the subject" do
-      email_subject = CGI.unescapeHTML(subject.subject)
+      email_subject = unescape_html(subject.subject)
       expect(email_subject).to eq(
         "[RSA]: Offre de formations et ateliers dans le cadre de votre parcours socio-professionel"
       )
     end
 
     it "renders the body" do
-      body_string = CGI.unescapeHTML(subject.body.encoded)
+      body_string = unescape_html(subject.body.encoded)
       expect(body_string).to match("Bonjour Jean VALJEAN")
       expect(body_string).to match("Le département de la Drôme.")
       expect(body_string).to match("01 39 39 39 39")
@@ -324,12 +324,12 @@ RSpec.describe InvitationMailer, type: :mailer do
       end
 
       it "renders the subject" do
-        email_subject = CGI.unescapeHTML(subject.subject)
+        email_subject = unescape_html(subject.subject)
         expect(email_subject).to eq("[Rappel]: Votre rendez-vous d'orientation dans le cadre de votre RSA")
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(subject.body.encoded)
+        body_string = unescape_html(subject.body.encoded)
         expect(body_string).to match("Bonjour Jean VALJEAN")
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")
@@ -368,12 +368,12 @@ RSpec.describe InvitationMailer, type: :mailer do
         end
 
         it "renders the subject" do
-          email_subject = CGI.unescapeHTML(subject.subject)
+          email_subject = unescape_html(subject.subject)
           expect(email_subject).to eq("[Rappel]: Votre rendez-vous d'accompagnement dans le cadre de votre RSA")
         end
 
         it "renders the body" do
-          body_string = CGI.unescapeHTML(subject.body.encoded)
+          body_string = unescape_html(subject.body.encoded)
           expect(body_string).to match("Bonjour Jean VALJEAN")
           expect(body_string).to match("Le département de la Drôme.")
           expect(body_string).to match("01 39 39 39 39")
@@ -404,7 +404,7 @@ RSpec.describe InvitationMailer, type: :mailer do
       end
 
       it "renders the subject" do
-        email_subject = CGI.unescapeHTML(subject.subject)
+        email_subject = unescape_html(subject.subject)
         expect(email_subject).to eq(
           "[Rappel]: Votre rendez-vous de signature de CER "\
           "dans le cadre de votre RSA"
@@ -412,7 +412,7 @@ RSpec.describe InvitationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(subject.body.encoded)
+        body_string = unescape_html(subject.body.encoded)
         expect(body_string).to match("Bonjour Jean VALJEAN")
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")
@@ -441,7 +441,7 @@ RSpec.describe InvitationMailer, type: :mailer do
       end
 
       it "renders the subject" do
-        email_subject = CGI.unescapeHTML(subject.subject)
+        email_subject = unescape_html(subject.subject)
         expect(email_subject).to eq(
           "[Rappel]: Votre rendez-vous de suivi "\
           "dans le cadre de votre RSA"
@@ -449,7 +449,7 @@ RSpec.describe InvitationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(subject.body.encoded)
+        body_string = unescape_html(subject.body.encoded)
         expect(body_string).to match("Bonjour Jean VALJEAN")
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")

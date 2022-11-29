@@ -20,7 +20,8 @@ class RdvSolidaritesWebhooksController < ApplicationController
       "Motif" => RdvSolidaritesWebhooks::ProcessMotifJob,
       "Lieu" => RdvSolidaritesWebhooks::ProcessLieuJob,
       "Agent" => RdvSolidaritesWebhooks::ProcessAgentJob,
-      "AgentRole" => RdvSolidaritesWebhooks::ProcessAgentRoleJob
+      "AgentRole" => RdvSolidaritesWebhooks::ProcessAgentRoleJob,
+      "ReferentAssignation" => RdvSolidaritesWebhooks::ProcessReferentAssignationJob
     }
   end
 

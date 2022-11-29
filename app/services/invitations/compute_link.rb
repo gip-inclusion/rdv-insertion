@@ -46,6 +46,7 @@ module Invitations
         motif_category: @invitation.motif_category
       }
         .merge(@invitation.rdv_solidarites_lieu_id? ? { lieu_id: @invitation.rdv_solidarites_lieu_id } : geo_attributes)
+        .merge(@invitation.rdv_with_referents? ? { referent_ids: applicant.agents.map(&:rdv_solidarites_agent_id) } : {})
     end
 
     def address

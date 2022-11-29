@@ -45,7 +45,8 @@ class InvitationsController < ApplicationController
       rdv_solidarites_lieu_id: invitation_params[:rdv_solidarites_lieu_id],
       # the validity of an invitation is equal to the number of days before an action is required, then the organisation
       # usually convene the applicant
-      valid_until: @current_configuration.number_of_days_before_action_required.days.from_now
+      valid_until: @current_configuration.number_of_days_before_action_required.days.from_now,
+      rdv_with_referents: @current_configuration.rdv_with_referents
     )
     authorize @invitation
   end

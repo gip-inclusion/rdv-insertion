@@ -9,6 +9,8 @@ class Agent < ApplicationRecord
   has_many :departments, through: :organisations
   has_many :configurations, through: :organisations
 
+  scope :not_betagouv, -> { where.not("agents.email LIKE ?", "%beta.gouv.fr") }
+
   def delete_organisation(organisation)
     organisations.delete(organisation)
     save!

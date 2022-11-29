@@ -109,9 +109,9 @@ module Stats
     # We don't include in the stats the agents working for rdv-insertion
     def relevant_agents
       @relevant_agents ||= Agent
+                           .not_betagouv
                            .joins(:organisations)
                            .where(organisations: organisations)
-                           .where.not("agents.email LIKE ?", "%beta.gouv.fr")
                            .where(has_logged_in: true)
                            .distinct
     end

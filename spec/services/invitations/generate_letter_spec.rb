@@ -25,7 +25,7 @@ describe Invitations::GenerateLetter, type: :service do
 
     it "generates the pdf string with the invitation code" do
       subject
-      content = CGI.unescapeHTML(invitation.content)
+      content = unescape_html(invitation.content)
       expect(content).to include("Pour choisir un créneau à votre convenance, saisissez le code d’invitation")
       expect(content).to include(invitation.uuid)
       expect(content).to include(department.name)
@@ -69,7 +69,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf with the right content" do
         subject
-        content = CGI.unescapeHTML(invitation.content)
+        content = unescape_html(invitation.content)
         expect(content).to include("Objet : Rendez-vous d'orientation dans le cadre de votre RSA")
         expect(content).to include("vous devez prendre un rendez-vous afin de démarrer un parcours d'accompagnement")
         expect(content).to include("Vous devez obligatoirement prendre ce rendez-vous")
@@ -84,7 +84,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf with the right content" do
         subject
-        content = CGI.unescapeHTML(invitation.content)
+        content = unescape_html(invitation.content)
         expect(content).to include("Objet : Rendez-vous d'accompagnement dans le cadre de votre RSA")
         expect(content).to include("vous devez prendre un rendez-vous afin de démarrer un parcours d'accompagnement")
         expect(content).to include("Vous devez obligatoirement prendre ce rendez-vous")
@@ -99,7 +99,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf with the right content" do
         subject
-        content = CGI.unescapeHTML(invitation.content)
+        content = unescape_html(invitation.content)
         expect(content).to include(
           "Objet : Rendez-vous de signature de CER dans le cadre de votre RSA"
         )
@@ -118,7 +118,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf with the right content" do
         subject
-        content = CGI.unescapeHTML(invitation.content)
+        content = unescape_html(invitation.content)
         expect(content).to include(
           "Objet : Rendez-vous de suivi dans le cadre de votre RSA"
         )
@@ -137,7 +137,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf with the right content" do
         subject
-        content = CGI.unescapeHTML(invitation.content)
+        content = unescape_html(invitation.content)
         expect(content).to include(
           "Objet : Offre d'insertion dans le cadre de votre RSA"
         )
@@ -157,7 +157,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf with the right content" do
         subject
-        content = CGI.unescapeHTML(invitation.content)
+        content = unescape_html(invitation.content)
         expect(content).to include(
           "Objet : Rendez-vous d’orientation dans le cadre de votre RSA"
         )

@@ -29,7 +29,7 @@ RSpec.describe NotificationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(mail.body.encoded)
+        body_string = unescape_html(mail.body.encoded)
         expect(body_string).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) à un rendez-vous d'orientation"
         )
@@ -53,7 +53,7 @@ RSpec.describe NotificationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(mail.body.encoded)
+        body_string = unescape_html(mail.body.encoded)
         expect(body_string).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) à un rendez-vous d'accompagnement"
         )
@@ -77,7 +77,7 @@ RSpec.describe NotificationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(mail.body.encoded)
+        body_string = unescape_html(mail.body.encoded)
         expect(body_string).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) à un rendez-vous d'accompagnement"
         )
@@ -101,7 +101,7 @@ RSpec.describe NotificationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(mail.body.encoded)
+        body_string = unescape_html(mail.body.encoded)
         expect(body_string).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) à un rendez-vous d'accompagnement"
         )
@@ -125,7 +125,7 @@ RSpec.describe NotificationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(mail.body.encoded)
+        body_string = unescape_html(mail.body.encoded)
         expect(body_string).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) à un rendez-vous de signature de CER" \
           " afin de construire et signer votre Contrat d'Engagement Réciproque"
@@ -150,7 +150,7 @@ RSpec.describe NotificationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(mail.body.encoded)
+        body_string = unescape_html(mail.body.encoded)
         expect(body_string).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) à un rendez-vous de suivi" \
           " afin de faire un point avec votre référent de parcours"
@@ -190,7 +190,7 @@ RSpec.describe NotificationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(mail.body.encoded)
+        body_string = unescape_html(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous d'orientation dans le cadre de votre RSA a été modifié"
         )
@@ -214,7 +214,7 @@ RSpec.describe NotificationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(mail.body.encoded)
+        body_string = unescape_html(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous d'accompagnement dans le cadre de votre RSA a été modifié"
         )
@@ -238,7 +238,7 @@ RSpec.describe NotificationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(mail.body.encoded)
+        body_string = unescape_html(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous d'accompagnement dans le cadre de votre RSA a été modifié"
         )
@@ -262,7 +262,7 @@ RSpec.describe NotificationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(mail.body.encoded)
+        body_string = unescape_html(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous d'accompagnement dans le cadre de votre RSA a été modifié"
         )
@@ -286,7 +286,7 @@ RSpec.describe NotificationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(mail.body.encoded)
+        body_string = unescape_html(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous de signature de CER" \
           " dans le cadre de votre RSA a été modifié."
@@ -311,7 +311,7 @@ RSpec.describe NotificationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(mail.body.encoded)
+        body_string = unescape_html(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous de suivi dans le cadre de votre RSA a été modifié"
         )
@@ -350,7 +350,7 @@ RSpec.describe NotificationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(mail.body.encoded)
+        body_string = unescape_html(mail.body.encoded)
         expect(body_string).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) à un rendez-vous d'orientation" \
           " téléphonique afin de démarrer un parcours d'accompagnement"
@@ -377,7 +377,7 @@ RSpec.describe NotificationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(mail.body.encoded)
+        body_string = unescape_html(mail.body.encoded)
         expect(body_string).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) " \
           "à un rendez-vous d'accompagnement téléphonique afin de démarrer un parcours d'accompagnement"
@@ -404,7 +404,7 @@ RSpec.describe NotificationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(mail.body.encoded)
+        body_string = unescape_html(mail.body.encoded)
         expect(body_string).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) " \
           "à un rendez-vous d'accompagnement téléphonique afin de démarrer un parcours d'accompagnement"
@@ -431,7 +431,7 @@ RSpec.describe NotificationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(mail.body.encoded)
+        body_string = unescape_html(mail.body.encoded)
         expect(body_string).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) " \
           "à un rendez-vous d'accompagnement téléphonique afin de démarrer un parcours d'accompagnement"
@@ -458,7 +458,7 @@ RSpec.describe NotificationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(mail.body.encoded)
+        body_string = unescape_html(mail.body.encoded)
         expect(body_string).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) à un rendez-vous téléphonique"\
           " de signature de CER afin de construire et signer votre Contrat d'Engagement Réciproque"
@@ -485,7 +485,7 @@ RSpec.describe NotificationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(mail.body.encoded)
+        body_string = unescape_html(mail.body.encoded)
         expect(body_string).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) à un rendez-vous de suivi " \
           "téléphonique afin de faire un point avec votre référent de parcours"\
@@ -538,7 +538,7 @@ RSpec.describe NotificationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(mail.body.encoded)
+        body_string = unescape_html(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous d'orientation téléphonique dans le cadre de votre RSA a été modifié."
         )
@@ -564,7 +564,7 @@ RSpec.describe NotificationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(mail.body.encoded)
+        body_string = unescape_html(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous d'accompagnement téléphonique dans le cadre de votre RSA a été modifié."
         )
@@ -590,7 +590,7 @@ RSpec.describe NotificationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(mail.body.encoded)
+        body_string = unescape_html(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous d'accompagnement téléphonique dans le cadre de votre RSA a été modifié."
         )
@@ -616,7 +616,7 @@ RSpec.describe NotificationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(mail.body.encoded)
+        body_string = unescape_html(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous d'accompagnement téléphonique dans le cadre de votre RSA a été modifié."
         )
@@ -642,7 +642,7 @@ RSpec.describe NotificationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(mail.body.encoded)
+        body_string = unescape_html(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous téléphonique de signature de CER" \
           " dans le cadre de votre RSA a été modifié"
@@ -669,7 +669,7 @@ RSpec.describe NotificationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(mail.body.encoded)
+        body_string = unescape_html(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous de suivi " \
           "téléphonique dans le cadre de votre RSA a été modifié"\
@@ -722,7 +722,7 @@ RSpec.describe NotificationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(mail.body.encoded)
+        body_string = unescape_html(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous d'orientation dans le cadre de votre RSA a été annulé."
         )
@@ -740,7 +740,7 @@ RSpec.describe NotificationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(mail.body.encoded)
+        body_string = unescape_html(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous d'accompagnement dans le cadre de votre RSA a été annulé."
         )
@@ -758,7 +758,7 @@ RSpec.describe NotificationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(mail.body.encoded)
+        body_string = unescape_html(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous d'accompagnement dans le cadre de votre RSA a été annulé."
         )
@@ -776,7 +776,7 @@ RSpec.describe NotificationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(mail.body.encoded)
+        body_string = unescape_html(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous d'accompagnement dans le cadre de votre RSA a été annulé."
         )
@@ -794,7 +794,7 @@ RSpec.describe NotificationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(mail.body.encoded)
+        body_string = unescape_html(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous de signature de CER" \
           " dans le cadre de votre RSA a été annulé"
@@ -813,7 +813,7 @@ RSpec.describe NotificationMailer, type: :mailer do
       end
 
       it "renders the body" do
-        body_string = CGI.unescapeHTML(mail.body.encoded)
+        body_string = unescape_html(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous de suivi dans le cadre de votre RSA a été annulé"\
         )
