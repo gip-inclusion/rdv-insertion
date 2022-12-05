@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_16_163348) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_01_093927) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -95,6 +95,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_16_163348) do
     t.integer "number_of_days_to_accept_invitation", default: 3
     t.integer "number_of_days_before_action_required", default: 10
     t.boolean "invitation_fallbacks_set_to_applicants_organisations", default: false
+    t.boolean "rdv_with_referents", default: false
   end
 
   create_table "configurations_organisations", id: false, force: :cascade do |t|
@@ -133,6 +134,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_16_163348) do
     t.datetime "valid_until"
     t.boolean "reminder", default: false
     t.string "uuid"
+    t.boolean "rdv_with_referents", default: false
     t.index ["applicant_id"], name: "index_invitations_on_applicant_id"
     t.index ["department_id"], name: "index_invitations_on_department_id"
     t.index ["rdv_context_id"], name: "index_invitations_on_rdv_context_id"

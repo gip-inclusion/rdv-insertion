@@ -26,6 +26,7 @@ class InviteApplicantJob < ApplicationJob
       number_of_days_to_accept_invitation: matching_configuration.number_of_days_to_accept_invitation,
       rdv_context: rdv_context,
       valid_until: matching_configuration.number_of_days_before_action_required.days.from_now,
+      rdv_with_referents: matching_configuration.rdv_with_referents,
       **@invitation_attributes
     )
     capture_exception if save_and_send_invitation.failure?

@@ -124,5 +124,20 @@ describe Invitations::ComputeLink, type: :service do
         )
       end
     end
+
+    context "when the rdv is with a referent" do
+      let!(:agent) { create(:agent, applicants: [applicant], rdv_solidarites_agent_id: 2442) }
+
+      before { invitation.rdv_with_referents = true }
+
+      it "adds the referent ids to the link" do
+        expect(subject.invitation_link).to eq(
+          "https://www.rdv-solidarites.fr/prendre_rdv?address=20+avenue+de+s%C3%A9gur+75007+Paris&" \
+          "city_code=75107&departement=75&invitation_token=sometoken&latitude=48.850699&longitude=2.308628&" \
+          "motif_category=rsa_accompagnement&organisation_ids%5B%5D=333&organisation_ids%5B%5D=444&" \
+          "referent_ids%5B%5D=2442&street_ban_id=75107_8909"
+        )
+      end
+    end
   end
 end

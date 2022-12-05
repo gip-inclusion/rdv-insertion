@@ -110,6 +110,22 @@ class RdvSolidaritesClient
     )
   end
 
+  def create_referent_assignation(user_id, agent_id)
+    Faraday.post(
+      "#{@url}/api/v1/referent_assignations",
+      { user_id: user_id, agent_id: agent_id }.to_json,
+      request_headers
+    )
+  end
+
+  def delete_referent_assignation(user_id, agent_id)
+    Faraday.delete(
+      "#{@url}/api/v1/referent_assignations",
+      { user_id: user_id, agent_id: agent_id },
+      request_headers
+    )
+  end
+
   private
 
   def request_headers

@@ -88,5 +88,17 @@ describe Invitations::Validate, type: :service do
         )
       end
     end
+
+    context "when it is a rdv with referents and no referents is assigned" do
+      before { invitation.rdv_with_referents = true }
+
+      it("is a failure") { is_a_failure }
+
+      it "stores an error message" do
+        expect(subject.errors).to include(
+          "Un référent doit être assigné au bénéficiaire pour les rdvs avec référents"
+        )
+      end
+    end
   end
 end
