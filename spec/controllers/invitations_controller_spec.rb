@@ -207,6 +207,7 @@ describe InvitationsController, type: :controller do
               number_of_days_to_accept_invitation: 3, format: "postal", help_phone_number: help_phone_number,
               rdv_solidarites_lieu_id: nil, valid_until: valid_until, rdv_with_referents: false
             ).and_return(invitation)
+          allow(WickedPdf).to receive_message_chain(:new, :pdf_from_string)
           allow(Invitations::SaveAndSend).to receive(:call)
             .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
             .and_return(OpenStruct.new(success?: true))
