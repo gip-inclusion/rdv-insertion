@@ -46,7 +46,7 @@ class ReferentAssignationsController < ApplicationController
   end
 
   def remove_referent
-    @assign_referent ||= Applicants::RemoveReferent.call(
+    @remove_referent ||= Applicants::RemoveReferent.call(
       applicant: @applicant, agent: @agent, rdv_solidarites_session: rdv_solidarites_session
     )
   end
