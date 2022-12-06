@@ -78,7 +78,7 @@ describe Invitations::Validate, type: :service do
     end
 
     context "when there is no motif for that category on the organisations" do
-      before { motif.category = "rsa_accompagnement" }
+      before { motif.update!(category: "rsa_accompagnement") }
 
       it("is a failure") { is_a_failure }
 
@@ -89,15 +89,40 @@ describe Invitations::Validate, type: :service do
       end
     end
 
-    context "when it is a rdv with referents and no referents is assigned" do
-      before { invitation.rdv_with_referents = true }
+    context "with referents" do
+      before do
+        invitation.rdv_with_referents = true
+      end
 
-      it("is a failure") { is_a_failure }
+      let!(:motif) { create(:motif, category: "rsa_orientation", follow_up: true) }
+      let!(:agent) { create(:agent, applicants: [applicant]) }
 
-      it "stores an error message" do
-        expect(subject.errors).to include(
-          "Un référent doit être assigné au bénéficiaire pour les rdvs avec référents"
-        )
+      it "is_a_success" do
+        is_a_success
+      end
+
+      context "when no referents is assigned" do
+        let!(:agent) { create(:agent, applicants: []) }
+
+        it("is a failure") { is_a_failure }
+
+        it "stores an error message" do
+          expect(subject.errors).to include(
+            "Un référent doit être assigné au bénéficiaire pour les rdvs avec référents"
+          )
+        end
+      end
+
+      context "when no follow up motifs are defined for the category" do
+        let!(:motif) { create(:motif, category: "rsa_orientation", follow_up: false) }
+
+        it("is a failure") { is_a_failure }
+
+        it "stores an error message" do
+          expect(subject.errors).to include(
+            "Aucun motif de suivi n'a été défini pour la catégorie RSA orientation"
+          )
+        end
       end
     end
   end

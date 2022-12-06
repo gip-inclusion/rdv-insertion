@@ -14,7 +14,8 @@ module Invitations
       validate_it_expires_in_more_than_5_days if @invitation.format_postal?
       validate_applicant_belongs_to_an_org_linked_to_motif_category
       validate_motif_of_this_category_is_defined_in_organisations
-      validate_referents_are_assigned_for_rdv_with_referents
+      validate_referents_are_assigned if @invitation.rdv_with_referents?
+      validate_follow_up_motifs_are_defined if @invitation.rdv_with_referents?
     end
 
     private
@@ -38,16 +39,27 @@ module Invitations
     end
 
     def validate_motif_of_this_category_is_defined_in_organisations
-      return if organisations.flat_map(&:motifs).map(&:category).include?(motif_category)
+      return if organisations_motifs.map(&:category).include?(motif_category)
 
       result.errors << "Aucun motif de la catégorie #{motif_category_human} n'est défini sur RDV-Solidarités"
     end
 
-    def validate_referents_are_assigned_for_rdv_with_referents
-      return unless @invitation.rdv_with_referents?
+    def validate_referents_are_assigned
       return if applicant.agent_ids.any?
 
       result.errors << "Un référent doit être assigné au bénéficiaire pour les rdvs avec référents"
+    end
+
+    def validate_follow_up_motifs_are_defined
+      return if organisations_motifs.any? do |motif|
+        motif.follow_up? && motif.category == motif_category
+      end
+
+      result.errors << "Aucun motif de suivi n'a été défini pour la catégorie #{motif_category_human}"
+    end
+
+    def organisations_motifs
+      @organisations_motifs ||= Motif.where(organisation_id: organisations.map(&:id))
     end
   end
 end
