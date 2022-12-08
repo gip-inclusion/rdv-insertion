@@ -7,6 +7,12 @@ class ReferentAssignationsController < ApplicationController
   def create
     @success = assign_referent.success?
     @errors = assign_referent.errors
+    respond_to do |format|
+      format.turbo_stream
+      format.json do
+        render json: { success: @success, errors: @errors }, status: @success ? :ok : :unprocessable_entity
+      end
+    end
   end
 
   def destroy
@@ -16,20 +22,28 @@ class ReferentAssignationsController < ApplicationController
 
   private
 
-  def agents_applicants_params
-    params.require(:referent_assignation).permit(:agent_id)
+  def referent_assignation_params
+    params.require(:referent_assignation).permit(:agent_id, :applicant_id, :agent_email)
+  end
+
+  def applicant_id
+    params[:applicant_id] || referent_assignation_params[:applicant_id]
+  end
+
+  def agent_id
+    referent_assignation_params[:agent_id]
+  end
+
+  def agent_email
+    referent_assignation_params[:agent_email]
   end
 
   def set_applicant
-    @applicant = policy_scope(Applicant).includes(:agents).find(params[:applicant_id])
+    @applicant = policy_scope(Applicant).includes(:agents).find(applicant_id)
   end
 
   def set_department
     @department = policy_scope(Department).find(params[:department_id])
-  end
-
-  def set_agent
-    @agent = @agents.find(agents_applicants_params[:agent_id])
   end
 
   def set_agents
@@ -49,5 +63,16 @@ class ReferentAssignationsController < ApplicationController
     @remove_referent ||= Applicants::RemoveReferent.call(
       applicant: @applicant, agent: @agent, rdv_solidarites_session: rdv_solidarites_session
     )
+  end
+
+  def set_agent
+    @agent = \
+      if agent_id.present?
+        @agents.find(agent_id)
+      elsif agent_email.present?
+        @agents.find_by!(email: agent_email)
+      else
+        raise ActiveRecord::RecordNotFound
+      end
   end
 end

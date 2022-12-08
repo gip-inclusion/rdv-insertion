@@ -1,9 +1,9 @@
-<% if @current_configuration.present? %>
+<% if @current_configuration.nil? %>
+  <%= render "category_selection" %>
+<% else %>
   <%= react_component(
     "pages/ApplicantsUpload", {
       organisation: @organisation, configuration: @current_configuration, department: @department, motifCategoryHuman: @motif_category_human
-    }
+    }.merge(@current_configuration.rdv_with_referents? ? { currentAgent: current_agent } : {})
   ) %>
-<% else %>
-  <%= render "category_selection" %>
 <% end %>

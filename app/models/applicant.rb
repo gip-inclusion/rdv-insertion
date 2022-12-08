@@ -117,7 +117,8 @@ class Applicant < ApplicationRecord
       created_at: created_at,
       invitations: invitations,
       organisations: organisations,
-      rdv_contexts: rdv_contexts
+      rdv_contexts: rdv_contexts,
+      agents: agents
     )
   end
 

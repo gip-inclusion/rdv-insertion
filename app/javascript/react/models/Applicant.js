@@ -14,7 +14,7 @@ const TITLES = {
 };
 
 export default class Applicant {
-  constructor(attributes, department, organisation, currentConfiguration) {
+  constructor(attributes, department, organisation, currentConfiguration, currentAgent) {
     const formattedAttributes = {};
     Object.keys(attributes).forEach((key) => {
       formattedAttributes[key] = attributes[key]?.toString()?.trim();
@@ -41,6 +41,7 @@ export default class Applicant {
     this.role = this.formatRole(formattedAttributes.role);
     this.shortRole = this.role ? (this.role === "demandeur" ? "DEM" : "CJT") : null;
     this.linkedOrganisationSearchTerms = formattedAttributes.linkedOrganisationSearchTerms;
+    this.referentEmail = formattedAttributes.referentEmail || currentAgent?.email;
 
     this.department = department;
     this.departmentNumber = department.number;
@@ -141,6 +142,7 @@ export default class Applicant {
       this.currentMotifCategory
     );
     this.departmentInternalId = upToDateApplicant.department_internal_id;
+    this.agents = upToDateApplicant.agents;
   }
 
   updatePhoneNumber(phoneNumber) {
@@ -253,6 +255,14 @@ export default class Applicant {
     return (
       lastInvitationDate &&
       (!this.hasRdvs() || new Date(lastInvitationDate) > new Date(this.lastRdvCreatedAt()))
+    );
+  }
+
+  referentAlreadyAssigned() {
+    return (
+      this.referentEmail &&
+      this.agents &&
+      this.agents.some((agent) => agent.email === this.referentEmail)
     );
   }
 
