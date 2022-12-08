@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import CreationCell from "./applicant/CreationCell";
 import InvitationCells from "./applicant/InvitationCells";
 import ContactInfosExtraLine from "./applicant/ContactInfosExtraLine";
+import ReferentAssignationCell from "./applicant/ReferentAssignationCell";
 
 export default function Applicant({ applicant, isDepartmentLevel }) {
   const [isTriggered, setIsTriggered] = useState({
@@ -11,6 +12,7 @@ export default function Applicant({ applicant, isDepartmentLevel }) {
     smsInvitation: false,
     emailInvitation: false,
     postalInvitation: false,
+    referentAssignation: false,
     emailUpdate: false,
     phoneNumberUpdate: false,
     rightsOpeningDateUpdate: false,
@@ -61,6 +63,18 @@ export default function Applicant({ applicant, isDepartmentLevel }) {
           isTriggered={isTriggered}
           setIsTriggered={setIsTriggered}
         />
+
+        {/* ------------------------------- Referent cell ----------------------------- */}
+
+        {applicant.currentConfiguration.rdv_with_referents && (
+          <ReferentAssignationCell
+            applicant={applicant}
+            isDepartmentLevel={isDepartmentLevel}
+            isTriggered={isTriggered}
+            setIsTriggered={setIsTriggered}
+          />
+        )}
+
         {/* --------------------------------- Invitations cells ------------------------------- */}
 
         <InvitationCells

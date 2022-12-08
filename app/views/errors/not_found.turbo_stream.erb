@@ -1,0 +1,3 @@
+<%= turbo_stream.replace "remote_modal" do %>
+  <%= render partial: "common/error_modal", locals: { title: "Oups! Une erreur est survenue 👷‍♂", errors: [@not_found_error_message] } %>
+<% end %>

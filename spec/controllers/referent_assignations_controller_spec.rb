@@ -52,10 +52,13 @@ describe ReferentAssignationsController, type: :controller do
 
   describe "#create" do
     subject do
-      post :create, params: {
-        applicant_id: applicant_id, department_id: department.id, referent_assignation: {
-          agent_id: agent2.id
-        }, format: "turbo_stream"
+      post :create, params: create_params
+    end
+
+    let!(:create_params) do
+      {
+        department_id: department.id, referent_assignation: { applicant_id: applicant.id, agent_id: agent2.id },
+        format: "turbo_stream"
       }
     end
 
@@ -87,6 +90,31 @@ describe ReferentAssignationsController, type: :controller do
         expect(unescaped_response_body).to match(/flashes/)
         expect(unescaped_response_body).to match(/Something wrong happened/)
         expect(unescaped_response_body).to match(/Une erreur s'est produite lors de l'assignation du référent/)
+      end
+    end
+
+    context "when the agent email is passed and the request is JSON" do
+      let!(:create_params) do
+        {
+          department_id: department.id, referent_assignation: { applicant_id: applicant.id, agent_email: agent2.email },
+          format: "json"
+        }
+      end
+
+      before do
+        allow(Applicants::AssignReferent).to receive(:call)
+          .with(applicant: applicant, agent: agent2, rdv_solidarites_session: rdv_solidarites_session)
+          .and_return(OpenStruct.new(success?: true))
+      end
+
+      it "assigns the agent with a success message" do
+        expect(Applicants::AssignReferent).to receive(:call)
+          .with(applicant: applicant, agent: agent2, rdv_solidarites_session: rdv_solidarites_session)
+
+        subject
+
+        expect(response).to be_successful
+        expect(parsed_response_body["success"]).to eq(true)
       end
     end
   end

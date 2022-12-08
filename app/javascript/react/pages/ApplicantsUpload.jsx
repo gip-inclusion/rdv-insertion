@@ -30,6 +30,7 @@ export default function ApplicantsUpload({
   configuration,
   department,
   motifCategoryHuman,
+  currentAgent,
 }) {
   const columnNames = configuration.column_names;
   const parameterizedColumnNames = parameterizeObjectValues({
@@ -114,10 +115,14 @@ export default function ApplicantsUpload({
                 linkedOrganisationSearchTerms:
                   parameterizedColumnNames.organisation_search_terms &&
                   row[parameterizedColumnNames.organisation_search_terms],
+                referentEmail:
+                  parameterizedColumnNames.referent_email &&
+                  row[parameterizedColumnNames.referent_email],
               },
               department,
               organisation,
-              configuration
+              configuration,
+              currentAgent
             );
             applicantsFromList.push(applicant);
           });
@@ -215,7 +220,11 @@ export default function ApplicantsUpload({
           <h3 className="new-applicants-title">
             Ajout {isDepartmentLevel ? "au niveau du territoire" : "allocataires"}
           </h3>
-          <h6>({motifCategoryHuman})</h6>
+          <h6>
+            ({motifCategoryHuman}
+            {configuration.rdv_with_referents && " avec réferents"})
+          </h6>
+
           <FileHandler
             handleFile={handleApplicantsFile}
             fileSize={fileSize}
@@ -274,6 +283,11 @@ export default function ApplicantsUpload({
                   <th scope="col" style={{ whiteSpace: "nowrap" }}>
                     Création compte
                   </th>
+                  {configuration.rdv_with_referents && (
+                    <>
+                      <th scope="col-3">Réferent</th>
+                    </>
+                  )}
                   {configuration.invitation_formats.includes("sms") && (
                     <>
                       <th scope="col-3">Invitation SMS</th>
