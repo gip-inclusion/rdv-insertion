@@ -220,7 +220,11 @@ export default function ApplicantsUpload({
           <h3 className="new-applicants-title">
             Ajout {isDepartmentLevel ? "au niveau du territoire" : "allocataires"}
           </h3>
-          <h6>({motifCategoryHuman})</h6>
+          <h6>
+            ({motifCategoryHuman}
+            {configuration.rdv_with_referents && " avec réferents"})
+          </h6>
+
           <FileHandler
             handleFile={handleApplicantsFile}
             fileSize={fileSize}
