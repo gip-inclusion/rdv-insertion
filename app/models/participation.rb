@@ -1,6 +1,4 @@
 class Participation < ApplicationRecord
-  self.table_name = "applicants_rdvs"
-
   include HasStatus
 
   delegate :starts_at, to: :rdv
