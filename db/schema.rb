@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_05_153103) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_09_103823) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -71,17 +71,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_05_153103) do
     t.bigint "organisation_id", null: false
     t.bigint "applicant_id", null: false
     t.index ["organisation_id", "applicant_id"], name: "index_applicants_orgas_on_orga_id_and_applicant_id", unique: true
-  end
-
-  create_table "applicants_rdvs", force: :cascade do |t|
-    t.bigint "applicant_id", null: false
-    t.bigint "rdv_id", null: false
-    t.integer "status", default: 0
-    t.bigint "rdv_solidarites_participation_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["applicant_id", "rdv_id"], name: "index_applicants_rdvs_on_applicant_id_and_rdv_id", unique: true
-    t.index ["status"], name: "index_applicants_rdvs_on_status"
   end
 
   create_table "configurations", force: :cascade do |t|
@@ -195,9 +184,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_05_153103) do
     t.datetime "sent_at", precision: nil
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "rdv_solidarites_rdv_id"
     t.integer "format"
     t.bigint "rdv_id"
-    t.bigint "rdv_solidarites_rdv_id"
     t.index ["applicant_id"], name: "index_notifications_on_applicant_id"
     t.index ["rdv_id"], name: "index_notifications_on_rdv_id"
   end
@@ -222,6 +211,17 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_05_153103) do
     t.bigint "organisation_id", null: false
     t.bigint "webhook_endpoint_id", null: false
     t.index ["organisation_id", "webhook_endpoint_id"], name: "index_webhook_orgas_on_orga_id_and_webhook_id", unique: true
+  end
+
+  create_table "participations", force: :cascade do |t|
+    t.bigint "applicant_id", null: false
+    t.bigint "rdv_id", null: false
+    t.integer "status", default: 0
+    t.bigint "rdv_solidarites_participation_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["applicant_id", "rdv_id"], name: "index_participations_on_applicant_id_and_rdv_id", unique: true
+    t.index ["status"], name: "index_participations_on_status"
   end
 
   create_table "rdv_contexts", force: :cascade do |t|
