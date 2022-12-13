@@ -113,7 +113,7 @@ puts "Creating organisations..."
 drome1_organisation = Organisation.create!(
   name: "Plateforme mutualisée d'orientation",
   phone_number: "0475796991",
-  rdv_solidarites_organisation_id: 3,
+  rdv_solidarites_organisation_id: 27,
   # rdv_solidarites_organisation_id: vérifier l'id de l'organisation correspondante sur RDV-Solidarites
   department_id: drome.id,
   configuration_ids: [drome_orientation_config.id, drome_accompagnement_config.id],
@@ -123,7 +123,7 @@ drome1_organisation = Organisation.create!(
 drome2_organisation = Organisation.create!(
   name: "PLIE Valence",
   phone_number: "0101010102",
-  rdv_solidarites_organisation_id: 4,
+  rdv_solidarites_organisation_id: 28,
   # rdv_solidarites_organisation_id: vérifier l'id de l'organisation correspondante sur RDV-Solidarites
   department_id: drome.id,
   configuration_ids: [drome_orientation_config.id, drome_accompagnement_config.id],
@@ -133,11 +133,96 @@ drome2_organisation = Organisation.create!(
 yonne_organisation = Organisation.create!(
   name: "UT Avallon",
   phone_number: "0303030303",
-  rdv_solidarites_organisation_id: 5,
+  rdv_solidarites_organisation_id: 29,
   # rdv_solidarites_organisation_id: vérifier l'id de l'organisation correspondante sur RDV-Solidarites
   department_id: yonne.id,
   configuration_ids: [yonne_orientation_config.id],
   messages_configuration_id: messages_configuration.id
+)
+
+# Faking Webhooks entries (for avoiding resending them from rdv solidarites manually), update this if rdv solidarite seed is changing
+
+agent = Agent.create!(
+  email: "alain.sertion@rdv-insertion-demo.fr",
+  rdv_solidarites_agent_id: 1007,
+  first_name: "Alain",
+  last_name: "Sertion",
+  has_logged_in: true,
+  last_webhook_update_received_at: Time.zone.now
+)
+
+agent.organisations << drome1_organisation
+agent.organisations << drome2_organisation
+agent.organisations << yonne_organisation
+agent.save!
+
+Motif.create!(
+  rdv_solidarites_motif_id: 1018,
+  name: "RSA - Orientation : rdv sur site",
+  reservable_online: true,
+  rdv_solidarites_service_id: 5,
+  collectif: false,
+  location_type: "public_office",
+  category: "rsa_orientation",
+  last_webhook_update_received_at: Time.zone.now,
+  organisation_id: 2,
+  follow_up: false,
+)
+
+Motif.create!(
+  rdv_solidarites_motif_id: 1016,
+  name: "RSA - Orientation : rdv sur site",
+  reservable_online: true,
+  deleted_at: nil,
+  rdv_solidarites_service_id: 5,
+  collectif: false,
+  location_type: "public_office",
+  category: "rsa_orientation",
+  last_webhook_update_received_at: Time.zone.now,
+  organisation_id: 1,
+  follow_up: false,
+)
+
+Motif.create!(
+  rdv_solidarites_motif_id: 1017,
+  name: "RSA accompagnement",
+  reservable_online: true,
+  deleted_at: nil,
+  rdv_solidarites_service_id: 5,
+  collectif: false,
+  location_type: "public_office",
+  category: "rsa_accompagnement",
+  last_webhook_update_received_at: Time.zone.now,
+  organisation_id: 1,
+  follow_up: false,
+)
+
+Motif.create!(
+  rdv_solidarites_motif_id: 1019,
+  name: "RSA - Codiagnostic d'orientation",
+  reservable_online: false,
+  deleted_at: nil,
+  rdv_solidarites_service_id: 5,
+  collectif: false,
+  location_type: "public_office",
+  category: "rsa_orientation",
+  last_webhook_update_received_at: Time.zone.now,
+  organisation_id: 3,
+  follow_up: false,
+)
+
+Motif.create!(
+  rdv_solidarites_motif_id: 1020,
+  name: "RSA - Orientation : rdv téléphonique",
+  reservable_online: false,
+  deleted_at: nil,
+  rdv_solidarites_service_id: 5,
+  collectif: false,
+  location_type: "phone",
+  category: "rsa_orientation",
+  last_webhook_update_received_at: Time.zone.now,
+  organisation_id: 3,
+  follow_up: false,
 )
 
 puts "Done!"
