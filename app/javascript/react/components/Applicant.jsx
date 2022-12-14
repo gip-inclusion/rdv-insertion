@@ -5,7 +5,7 @@ import InvitationCells from "./applicant/InvitationCells";
 import ContactInfosExtraLine from "./applicant/ContactInfosExtraLine";
 import ReferentAssignationCell from "./applicant/ReferentAssignationCell";
 
-export default function Applicant({ applicant, isDepartmentLevel }) {
+export default function Applicant({ applicant, isDepartmentLevel, showReferentColumn }) {
   const [isTriggered, setIsTriggered] = useState({
     creation: false,
     unarchiving: false,
@@ -21,9 +21,9 @@ export default function Applicant({ applicant, isDepartmentLevel }) {
 
   const computeInvitationsColspan = () => {
     let colSpan = 0;
-    if (applicant.canBeInvitedBySms()) colSpan += 1;
-    if (applicant.canBeInvitedByEmail()) colSpan += 1;
-    if (applicant.canBeInvitedByPostal()) colSpan += 1;
+    if (applicant.canBeInvitedBy("sms")) colSpan += 1;
+    if (applicant.canBeInvitedBy("email")) colSpan += 1;
+    if (applicant.canBeInvitedBy("postal")) colSpan += 1;
     return colSpan;
   };
 
@@ -38,7 +38,6 @@ export default function Applicant({ applicant, isDepartmentLevel }) {
         {applicant.shouldDisplay("department_internal_id") && (
           <td>{applicant.departmentInternalId ?? " - "}</td>
         )}
-        {applicant.shouldDisplay("birth_date") && <td>{applicant.birthDate ?? " - "}</td>}
         {applicant.shouldDisplay("email") && (
           <td className={applicant.emailUpdated ? "table-success" : ""}>
             {applicant.email ?? " - "}
@@ -66,7 +65,7 @@ export default function Applicant({ applicant, isDepartmentLevel }) {
 
         {/* ------------------------------- Referent cell ----------------------------- */}
 
-        {applicant.currentConfiguration.rdv_with_referents && (
+        {showReferentColumn && (
           <ReferentAssignationCell
             applicant={applicant}
             isDepartmentLevel={isDepartmentLevel}

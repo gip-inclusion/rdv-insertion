@@ -196,16 +196,8 @@ export default class Applicant {
     );
   }
 
-  canBeInvitedBySms() {
-    return this.currentConfiguration.invitation_formats.includes("sms");
-  }
-
-  canBeInvitedByEmail() {
-    return this.currentConfiguration.invitation_formats.includes("email");
-  }
-
-  canBeInvitedByPostal() {
-    return this.currentConfiguration.invitation_formats.includes("postal");
+  canBeInvitedBy(format) {
+    return this.currentConfiguration.invitation_formats.includes(format);
   }
 
   belongsToCurrentOrg() {
@@ -235,6 +227,19 @@ export default class Applicant {
       : null;
   }
 
+  requiredAttributeToInviteBy(format) {
+    switch (format) {
+      case "sms":
+        return this.phoneNumber;
+      case "email":
+        return this.email;
+      case "postal":
+        return this.fullAddress;
+      default:
+        return null;
+    }
+  }
+
   lastInvitationDate(format) {
     switch (format) {
       case "sms":
@@ -243,6 +248,22 @@ export default class Applicant {
         return this.lastEmailInvitationSentAt;
       case "postal":
         return this.lastPostalInvitationSentAt;
+      default:
+        return null;
+    }
+  }
+
+  updateLastInvitationDate(format, date) {
+    switch (format) {
+      case "sms":
+        this.lastSmsInvitationSentAt = date;
+        return null;
+      case "email":
+        this.lastEmailInvitationSentAt = date;
+        return null;
+      case "postal":
+        this.lastPostalInvitationSentAt = date;
+        return null;
       default:
         return null;
     }
