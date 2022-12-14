@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_09_103823) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_14_091609) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -222,6 +222,12 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_09_103823) do
     t.datetime "updated_at", null: false
     t.index ["applicant_id", "rdv_id"], name: "index_participations_on_applicant_id_and_rdv_id", unique: true
     t.index ["status"], name: "index_participations_on_status"
+  end
+
+  create_table "participations_rdv_contexts", id: false, force: :cascade do |t|
+    t.bigint "participation_id", null: false
+    t.bigint "rdv_context_id", null: false
+    t.index ["participation_id", "rdv_context_id"], name: "index_particips_rdv_contexts_on_rdv_context_id_and_particip_id", unique: true
   end
 
   create_table "rdv_contexts", force: :cascade do |t|
