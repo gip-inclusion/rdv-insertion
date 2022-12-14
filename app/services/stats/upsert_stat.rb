@@ -16,7 +16,7 @@ module Stats
     end
 
     def assign_attributes_to_stat_record
-      stat.assign_attributes(compute_stats.data)
+      ActiveRecord::Base.uncached { stat.assign_attributes(compute_stats.data) }
     end
 
     def compute_stats
