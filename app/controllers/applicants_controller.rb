@@ -182,6 +182,7 @@ class ApplicantsController < ApplicationController
       else
         @organisation.configurations
       end
+    @all_configurations = @all_configurations.in_order_of(:motif_category, Motif::CHRONOLOGICALLY_SORTED_CATEGORIES)
   end
 
   def set_current_configuration
@@ -202,7 +203,9 @@ class ApplicantsController < ApplicationController
         rdvs: [:motif, :organisation, :notifications],
         applicant: :participations,
         invitations: :rdv_context
-      ).where(applicant: @applicant, motif_category: @all_configurations.map(&:motif_category))
+      ).where(
+        applicant: @applicant, motif_category: @all_configurations.map(&:motif_category)
+      ).in_order_of(:motif_category, Motif::CHRONOLOGICALLY_SORTED_CATEGORIES)
   end
 
   def set_can_be_added_to_other_org
