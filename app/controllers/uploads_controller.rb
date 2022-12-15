@@ -13,14 +13,18 @@ class UploadsController < ApplicationController
     @department = Department.find(params[:department_id])
     authorize @department, :upload?
     @organisation = nil
-    @all_configurations = (policy_scope(::Configuration) & @department.configurations).uniq(&:motif_category)
+    @all_configurations = (policy_scope(::Configuration) & @department.configurations)
+                          .uniq(&:motif_category)
+                          .in_order_of(:motif_category, Motif::CHRONOLOGICALLY_SORTED_CATEGORIES)
     set_current_configuration
   end
 
   def set_organisation_upload
     @organisation = Organisation.find(params[:organisation_id])
     authorize @organisation, :upload?
-    @all_configurations = @organisation.configurations
+    @all_configurations = @organisation.configurations.in_order_of(
+      :motif_category, Motif::CHRONOLOGICALLY_SORTED_CATEGORIES
+    )
     @department = @organisation.department
     set_current_configuration
   end
