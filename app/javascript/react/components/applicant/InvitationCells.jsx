@@ -1,9 +1,7 @@
 import React from "react";
 import Tippy from "@tippyjs/react";
 
-import SmsInvitationCell from "./SmsInvitationCell";
-import EmailInvitationCell from "./EmailInvitationCell";
-import PostalInvitationCell from "./PostalInvitationCell";
+import InvitationCell from "./InvitationCell";
 
 export default function InvitationCells({
   applicant,
@@ -67,23 +65,26 @@ export default function InvitationCells({
 
       <>
         {/* --------------------------------- Invitations ------------------------------- */}
-        <SmsInvitationCell
+        <InvitationCell
           applicant={applicant}
           isTriggered={isTriggered}
           setIsTriggered={setIsTriggered}
           isDepartmentLevel={isDepartmentLevel}
+          format="sms"
         />
-        <EmailInvitationCell
+        <InvitationCell
           applicant={applicant}
           isTriggered={isTriggered}
           setIsTriggered={setIsTriggered}
           isDepartmentLevel={isDepartmentLevel}
+          format="email"
         />
-        <PostalInvitationCell
+        <InvitationCell
           applicant={applicant}
           isTriggered={isTriggered}
           setIsTriggered={setIsTriggered}
           isDepartmentLevel={isDepartmentLevel}
+          format="postal"
         />
       </>
     )
