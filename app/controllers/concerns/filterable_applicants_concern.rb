@@ -4,6 +4,7 @@ module FilterableApplicantsConcern
   def filter_applicants
     filter_applicants_by_search_query
     filter_applicants_by_action_required
+    filter_applicants_by_current_agent
     filter_applicants_by_status
     filter_applicants_by_first_invitations
     filter_applicants_by_last_invitations
@@ -22,6 +23,12 @@ module FilterableApplicantsConcern
     @applicants = @applicants.joins(:rdv_contexts).where(
       rdv_contexts: @rdv_contexts.action_required(@current_configuration.number_of_days_before_action_required)
     )
+  end
+
+  def filter_applicants_by_current_agent
+    return unless params[:filter_by_current_agent] == "true"
+
+    @applicants = @applicants.joins(:agents).where(agents: current_agent)
   end
 
   def filter_applicants_by_search_query

@@ -1,4 +1,4 @@
-class FilterApplicantsController < ApplicationController
+class InvitationDatesFilteringsController < ApplicationController
   before_action :set_organisation, :set_department, only: [:new]
 
   def new; end
