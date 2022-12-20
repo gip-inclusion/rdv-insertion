@@ -14,10 +14,6 @@ const initToolTip = () => {
     allowHTML: true,
   });
 
-  tippy("#js-filter-by-current-agent-tooltip", {
-    content: "Filtre sur les bénéficiaires dont je suis assigné comme référent",
-  });
-
   tippy("#js-csv-export-tooltip", {
     content:
       "Les bénéficiaires seront exportés en fonction du contexte et des éventuels filtres sélectionnés",
