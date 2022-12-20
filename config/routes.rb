@@ -62,7 +62,7 @@ Rails.application.routes.draw do
     end
     resource :referent_assignations, only: [:create, :destroy]
   end
-  resources :filter_applicants, only: [:new]
+  resources :invitation_dates_filterings, only: [:new]
 
   namespace :api do
     namespace :v1 do
