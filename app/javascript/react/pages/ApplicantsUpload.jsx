@@ -1,4 +1,4 @@
-import React, { useState, useReducer } from "react";
+import React, { useState } from "react";
 import Swal from "sweetalert2";
 import Tippy from "@tippyjs/react";
 
@@ -14,7 +14,6 @@ import retrieveUpToDateApplicants from "../lib/retrieveUpToDateApplicants";
 import parseContactsData from "../lib/parseContactsData";
 import updateApplicantContactsData from "../lib/updateApplicantContactsData";
 import retrieveContactsData from "../lib/retrieveContactsData";
-import { initReducer, reducerFactory } from "../../lib/reducers";
 import { excelDateToString } from "../../lib/datesHelper";
 import {
   parameterizeObjectKeys,
@@ -23,8 +22,6 @@ import {
 } from "../../lib/parameterize";
 
 import Applicant from "../models/Applicant";
-
-const reducer = reducerFactory("Expérimentation RSA");
 
 export default function ApplicantsUpload({
   organisation,
@@ -39,12 +36,12 @@ export default function ApplicantsUpload({
     ...columnNames.optional,
   });
   const isDepartmentLevel = !organisation;
+  const [applicants, setApplicants] = useState([]);
   const [fileSize, setFileSize] = useState(0);
   /* eslint no-unused-vars: ["error", { "varsIgnorePattern": "contactsUpdated" }] */
   // This state allows to re-renders applicants after contacts update
   const [contactsUpdated, setContactsUpdated] = useState(false);
   const [showEnrichWithContactFile, setShowEnrichWithContactFile] = useState(false);
-  const [applicants, dispatchApplicants] = useReducer(reducer, [], initReducer);
   const [showReferentColumn, setShowReferentColumn] = useState(configuration.rdv_with_referents);
 
   const redirectToApplicantList = () => {
@@ -134,7 +131,7 @@ export default function ApplicantsUpload({
       reader.readAsBinaryString(file);
     });
 
-    return applicantsFromList.reverse();
+    return applicantsFromList;
   };
 
   const isFormatValid = (file, acceptedFormats) => {
@@ -159,21 +156,12 @@ export default function ApplicantsUpload({
     }
 
     setFileSize(file.size);
-    dispatchApplicants({ type: "reset" });
     const applicantsFromList = await retrieveApplicantsFromList(file);
     if (applicantsFromList.length === 0) return;
 
     const upToDateApplicants = await retrieveUpToDateApplicants(applicantsFromList);
 
-    upToDateApplicants.forEach((applicant) =>
-      dispatchApplicants({
-        type: "append",
-        item: {
-          applicant,
-          seed: applicant.departmentInternalId || applicant.uid,
-        },
-      })
-    );
+    setApplicants(upToDateApplicants);
   };
 
   const handleContactsFile = async (file) => {
