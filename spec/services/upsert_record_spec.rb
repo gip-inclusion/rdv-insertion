@@ -32,7 +32,8 @@ describe UpsertRecord, type: :service do
   let!(:starts_at) { "2021-09-08 12:00:00 UTC" }
   let!(:duration_in_min) { 45 }
   let!(:status) { "unknown" }
-  let!(:rdv) { create(:rdv, applicants: [applicant], id: 55) }
+  let!(:rdv) { create(:rdv, participations: [participation], id: 55) }
+  let!(:participation) { create(:participation, applicant: applicant) }
 
   describe "#call" do
     before do
@@ -50,6 +51,7 @@ describe UpsertRecord, type: :service do
     end
 
     it "updates the attributes" do
+      rdv.reload
       subject
       expect(rdv.starts_at).to eq(starts_at)
       expect(rdv.duration_in_min).to eq(duration_in_min)

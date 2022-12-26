@@ -324,19 +324,33 @@ describe ApplicantsController, type: :controller do
         create(
           :rdv,
           status: "noshow", created_at: "2021-10-21", starts_at: "2021-10-22", motif: motif,
-          rdv_contexts: [rdv_context], organisation: organisation
+          participations: [participation], organisation: organisation
         )
       end
-      let!(:participation) { create(:participation, rdv: rdv_orientation1, applicant: applicant, status: 'noshow') }
+      let!(:participation) do
+        create(
+          :participation,
+          applicant: applicant,
+          status: 'noshow',
+          rdv_context: rdv_context
+        )
+      end
 
       let!(:rdv_orientation2) do
         create(
           :rdv,
           status: "seen", created_at: "2021-10-23", starts_at: "2021-10-24", motif: motif,
-          rdv_contexts: [rdv_context], organisation: organisation
+          participations: [participation2], organisation: organisation
         )
       end
-      let!(:participation2) { create(:participation, rdv: rdv_orientation2, applicant: applicant, status: 'seen') }
+      let!(:participation2) do
+        create(
+          :participation,
+          applicant: applicant,
+          status: 'seen',
+          rdv_context: rdv_context
+        )
+      end
 
       let!(:rdv_context2) do
         create(:rdv_context, status: "invitation_pending", applicant: applicant, motif_category: "rsa_accompagnement")
@@ -637,8 +651,24 @@ describe ApplicantsController, type: :controller do
         rdv_context2.update!(motif_category: "rsa_accompagnement")
       end
 
-      let!(:rdv) { create(:rdv, rdv_contexts: [rdv_context1]) }
-      let!(:rdv2) { create(:rdv, rdv_contexts: [rdv_context2]) }
+      let!(:rdv) { create(:rdv, participations: [participation]) }
+      let!(:participation) do
+        create(
+          :participation,
+          applicant: applicant,
+          status: 'unknown',
+          rdv_context: rdv_context1
+        )
+      end
+      let!(:rdv2) { create(:rdv, participations: [participation2]) }
+      let!(:participation2) do
+        create(
+          :participation,
+          applicant: applicant,
+          status: 'unknown',
+          rdv_context: rdv_context2
+        )
+      end
       let!(:notification) do
         create(
           :notification,
@@ -691,7 +721,7 @@ describe ApplicantsController, type: :controller do
       end
 
       context "when not authorized" do
-        let!(:another_organisation) { create(:organisation) }
+        let!(:another_organisation) { create(:organisation, rdv_solidarites_organisation_id: 999) }
         let!(:another_agent) { create(:agent, organisations: [another_organisation]) }
 
         before do
@@ -784,7 +814,7 @@ describe ApplicantsController, type: :controller do
       end
 
       context "when not authorized" do
-        let!(:another_organisation) { create(:organisation) }
+        let!(:another_organisation) { create(:organisation, rdv_solidarites_organisation_id: 1001) }
         let!(:another_agent) { create(:agent, organisations: [another_organisation]) }
 
         before do
@@ -857,7 +887,7 @@ describe ApplicantsController, type: :controller do
       end
 
       context "when not authorized" do
-        let!(:another_organisation) { create(:organisation) }
+        let!(:another_organisation) { create(:organisation, rdv_solidarites_organisation_id: 1002) }
         let!(:another_agent) { create(:agent, organisations: [another_organisation]) }
 
         before do

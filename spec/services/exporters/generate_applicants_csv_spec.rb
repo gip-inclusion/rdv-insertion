@@ -1,5 +1,9 @@
 describe Exporters::GenerateApplicantsCsv, type: :service do
-  subject { described_class.call(applicants: applicants, structure: structure, motif_category: motif_category) }
+  subject { generate_csv }
+
+  def generate_csv
+    described_class.call(applicants: applicants, structure: structure, motif_category: motif_category)
+  end
 
   let!(:now) { Time.zone.parse("22/06/2022") }
   let!(:timestamp) { now.to_i }
@@ -35,9 +39,10 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
   let!(:rdv) do
     create(:rdv, status: "seen",
                  starts_at: Time.zone.parse("2022-05-25"),
-                 created_by: "user")
+                 created_by: "user",
+                 participations: [part_rdv])
   end
-  let!(:part_rdv) { create(:participation, rdv: rdv, applicant: applicant1, status: 'seen') }
+  let!(:part_rdv) { create(:participation, applicant: applicant1, status: 'seen', rdv_context: rdv_context) }
 
   let!(:first_invitation) do
     create(:invitation, applicant: applicant1, format: "email", sent_at: Time.zone.parse("2022-05-21"))
@@ -47,7 +52,7 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
   end
   let!(:rdv_context) do
     create(
-      :rdv_context, rdvs: [rdv], invitations: [first_invitation, last_invitation],
+      :rdv_context, invitations: [first_invitation, last_invitation],
                     applicant: applicant1, status: "rdv_needs_status_update"
     )
   end
@@ -159,13 +164,15 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
         context "when the invitation deadline has passed" do
           let!(:rdv_context) do
             create(
-              :rdv_context, rdvs: [], invitations: [first_invitation, last_invitation],
+              :rdv_context, invitations: [first_invitation, last_invitation],
                             applicant: applicant1, status: "invitation_pending"
             )
           end
 
           it "displays 'délai dépassé'" do
-            expect(subject.csv).to include("Invitation en attente de réponse (Délai dépassé)") # rdv_context status
+            part_rdv.destroy
+            generate_csv
+            expect(generate_csv.csv).to include("Invitation en attente de réponse (Délai dépassé)") # rdv_context status
           end
         end
 
