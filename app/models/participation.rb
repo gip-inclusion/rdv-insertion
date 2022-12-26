@@ -14,6 +14,6 @@ class Participation < ApplicationRecord
   private
 
   def refresh_applicant_context_statuses
-    RefreshRdvContextStatusesJob.perform_async(applicant.rdv_context_ids)
+    RefreshRdvContextStatusesJob.perform_async(rdv_context_id)
   end
 end

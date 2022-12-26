@@ -39,7 +39,7 @@ describe Participation do
     it 'schedules a refresh_applicant_context_statuses job' do
       expect { subject }.to change { RefreshRdvContextStatusesJob.jobs.size }.by(1)
       last_job = RefreshRdvContextStatusesJob.jobs.last
-      expect(last_job['args']).to eq([applicant1.rdv_contexts.map(&:id)])
+      expect(last_job['args']).to eq([rdv_context1.id])
     end
   end
 end
