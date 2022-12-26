@@ -13,7 +13,7 @@ describe ApplicantsController, type: :controller do
                           department_id: department.id, configurations: [configuration])
   end
   let!(:agent) { create(:agent, organisations: [organisation]) }
-  let!(:rdv_solidarites_organisation_id) { 52 }
+  let!(:rdv_solidarites_organisation_id) { 888 }
   let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
   let(:applicant) { create(:applicant, organisations: [organisation], department: department) }
 
@@ -721,7 +721,7 @@ describe ApplicantsController, type: :controller do
       end
 
       context "when not authorized" do
-        let!(:another_organisation) { create(:organisation, rdv_solidarites_organisation_id: 999) }
+        let!(:another_organisation) { create(:organisation) }
         let!(:another_agent) { create(:agent, organisations: [another_organisation]) }
 
         before do
@@ -814,7 +814,7 @@ describe ApplicantsController, type: :controller do
       end
 
       context "when not authorized" do
-        let!(:another_organisation) { create(:organisation, rdv_solidarites_organisation_id: 1001) }
+        let!(:another_organisation) { create(:organisation) }
         let!(:another_agent) { create(:agent, organisations: [another_organisation]) }
 
         before do
@@ -887,7 +887,7 @@ describe ApplicantsController, type: :controller do
       end
 
       context "when not authorized" do
-        let!(:another_organisation) { create(:organisation, rdv_solidarites_organisation_id: 1002) }
+        let!(:another_organisation) { create(:organisation) }
         let!(:another_agent) { create(:agent, organisations: [another_organisation]) }
 
         before do
