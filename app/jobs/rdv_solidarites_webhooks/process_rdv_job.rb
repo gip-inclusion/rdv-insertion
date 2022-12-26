@@ -100,14 +100,22 @@ module RdvSolidaritesWebhooks
       @participations_attributes ||= \
         @applicants.map do |applicant|
           participation = rdv_solidarites_rdv.participations.find { _1.user.id == applicant.rdv_solidarites_user_id }
-          existing_participation = rdv.nil? ? nil : Participation.find_by(applicant: applicant, rdv: rdv)
           {
-            id: existing_participation&.id,
+            id: existing_participation_for(applicant)&.id,
             status: participation.status,
             applicant_id: applicant.id,
-            rdv_solidarites_participation_id: participation.id
+            rdv_solidarites_participation_id: participation.id,
+            rdv_context_id: rdv_context_for(applicant).id
           }
         end.compact + participations_attributes_destroyed
+    end
+
+    def existing_participation_for(applicant)
+      rdv.nil? ? nil : Participation.find_by(applicant: applicant, rdv: rdv)
+    end
+
+    def rdv_context_for(applicant)
+      rdv_contexts.find { _1.applicant_id == applicant.id}
     end
 
     def related_invitations
@@ -151,7 +159,6 @@ module RdvSolidaritesWebhooks
             participations_attributes: participations_attributes,
             organisation_id: organisation.id,
             motif_id: motif.id,
-            rdv_context_ids: rdv_context_ids,
             last_webhook_update_received_at: @meta[:timestamp]
           }
           .merge(lieu.present? ? { lieu_id: lieu.id } : {})
