@@ -33,4 +33,8 @@ module ApplicationHelper
   def show_guide_banner?
     show_login_button?
   end
+
+  def url_params
+    Rack::Utils.parse_nested_query(request.query_string).deep_symbolize_keys
+  end
 end

@@ -6,14 +6,16 @@ export default function ApplicantList({
   isDepartmentLevel,
   downloadInProgress,
   setDownloadInProgress,
+  showReferentColumn,
 }) {
-  return applicants.map(({ applicant }, i) => (
+  return applicants.map((applicant) => (
     <Applicant
       applicant={applicant}
       isDepartmentLevel={isDepartmentLevel}
       downloadInProgress={downloadInProgress}
       setDownloadInProgress={setDownloadInProgress}
-      key={`${applicant.uid}${i}`} // eslint-disable-line react/no-array-index-key
+      key={applicant.departmentInternalId || applicant.uid}
+      showReferentColumn={showReferentColumn}
     />
   ));
 }

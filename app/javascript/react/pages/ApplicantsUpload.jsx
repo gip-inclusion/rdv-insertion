@@ -1,5 +1,6 @@
-import React, { useState, useReducer } from "react";
+import React, { useState } from "react";
 import Swal from "sweetalert2";
+import Tippy from "@tippyjs/react";
 
 import * as XLSX from "xlsx";
 import FileHandler from "../components/FileHandler";
@@ -13,7 +14,6 @@ import retrieveUpToDateApplicants from "../lib/retrieveUpToDateApplicants";
 import parseContactsData from "../lib/parseContactsData";
 import updateApplicantContactsData from "../lib/updateApplicantContactsData";
 import retrieveContactsData from "../lib/retrieveContactsData";
-import { initReducer, reducerFactory } from "../../lib/reducers";
 import { excelDateToString } from "../../lib/datesHelper";
 import {
   parameterizeObjectKeys,
@@ -22,8 +22,6 @@ import {
 } from "../../lib/parameterize";
 
 import Applicant from "../models/Applicant";
-
-const reducer = reducerFactory("Expérimentation RSA");
 
 export default function ApplicantsUpload({
   organisation,
@@ -38,12 +36,13 @@ export default function ApplicantsUpload({
     ...columnNames.optional,
   });
   const isDepartmentLevel = !organisation;
+  const [applicants, setApplicants] = useState([]);
   const [fileSize, setFileSize] = useState(0);
   /* eslint no-unused-vars: ["error", { "varsIgnorePattern": "contactsUpdated" }] */
   // This state allows to re-renders applicants after contacts update
   const [contactsUpdated, setContactsUpdated] = useState(false);
   const [showEnrichWithContactFile, setShowEnrichWithContactFile] = useState(false);
-  const [applicants, dispatchApplicants] = useReducer(reducer, [], initReducer);
+  const [showReferentColumn, setShowReferentColumn] = useState(configuration.rdv_with_referents);
 
   const redirectToApplicantList = () => {
     window.location.href = isDepartmentLevel
@@ -132,7 +131,7 @@ export default function ApplicantsUpload({
       reader.readAsBinaryString(file);
     });
 
-    return applicantsFromList.reverse();
+    return applicantsFromList;
   };
 
   const isFormatValid = (file, acceptedFormats) => {
@@ -157,21 +156,12 @@ export default function ApplicantsUpload({
     }
 
     setFileSize(file.size);
-    dispatchApplicants({ type: "reset" });
     const applicantsFromList = await retrieveApplicantsFromList(file);
     if (applicantsFromList.length === 0) return;
 
     const upToDateApplicants = await retrieveUpToDateApplicants(applicantsFromList);
 
-    upToDateApplicants.forEach((applicant) =>
-      dispatchApplicants({
-        type: "append",
-        item: {
-          applicant,
-          seed: applicant.departmentInternalId || applicant.uid,
-        },
-      })
-    );
+    setApplicants(upToDateApplicants);
   };
 
   const handleContactsFile = async (file) => {
@@ -262,6 +252,28 @@ export default function ApplicantsUpload({
       )}
       {applicants.length > 0 && (
         <>
+          <div className="row my-1">
+            <div className="d-flex justify-content-end align-items-center">
+              <i className="fas fa-user" />
+              {showReferentColumn ? (
+                <Tippy content="Cacher colonne référent">
+                  <button type="button" onClick={() => setShowReferentColumn(false)}>
+                    <i className="fas fa-minus" />
+                  </button>
+                </Tippy>
+              ) : (
+                <Tippy content="Montrer colonne référent">
+                  <button type="button" onClick={() => setShowReferentColumn(true)}>
+                    <i className="fas fa-plus" />
+                  </button>
+                </Tippy>
+              )}
+            </div>
+          </div>
+        </>
+      )}
+      {applicants.length > 0 && (
+        <>
           <div className="row my-5 justify-content-center">
             <table className="table table-hover text-center align-middle table-striped table-bordered">
               <thead className="align-middle dark-blue">
@@ -274,7 +286,6 @@ export default function ApplicantsUpload({
                   {parameterizedColumnNames.department_internal_id && (
                     <th scope="col">ID Editeur</th>
                   )}
-                  {parameterizedColumnNames.birth_date && <th scope="col">Date de naissance</th>}
                   {parameterizedColumnNames.email && <th scope="col">Email</th>}
                   {parameterizedColumnNames.phone_number && <th scope="col">Téléphone</th>}
                   {parameterizedColumnNames.rights_opening_date && (
@@ -283,7 +294,7 @@ export default function ApplicantsUpload({
                   <th scope="col" style={{ whiteSpace: "nowrap" }}>
                     Création compte
                   </th>
-                  {configuration.rdv_with_referents && (
+                  {showReferentColumn && (
                     <>
                       <th scope="col-3">Réferent</th>
                     </>
@@ -306,7 +317,11 @@ export default function ApplicantsUpload({
                 </tr>
               </thead>
               <tbody>
-                <ApplicantList applicants={applicants} isDepartmentLevel={isDepartmentLevel} />
+                <ApplicantList
+                  showReferentColumn={showReferentColumn}
+                  applicants={applicants}
+                  isDepartmentLevel={isDepartmentLevel}
+                />
               </tbody>
             </table>
           </div>

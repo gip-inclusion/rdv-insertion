@@ -29,7 +29,8 @@ module ApplicantsHelper
   def display_back_to_list_button?
     [
       params[:search_query], params[:status], params[:action_required], params[:first_invitation_date_before],
-      params[:last_invitation_date_before], params[:first_invitation_date_after], params[:last_invitation_date_after]
+      params[:last_invitation_date_before], params[:first_invitation_date_after], params[:last_invitation_date_after],
+      params[:filter_by_current_agent]
     ].any?(&:present?)
   end
 

@@ -488,6 +488,7 @@ describe ApplicantsController, type: :controller do
       expect(response).to be_successful
       expect(response.body).to match(/Chabat/)
       expect(response.body).to match(/Baer/)
+      expect(response.body).to match(/Darmon/)
       expect(response.body).not_to match(/Barthelemy/)
     end
 
@@ -642,6 +643,21 @@ describe ApplicantsController, type: :controller do
           expect(response.body).not_to match(/Baer/)
           expect(response.body).not_to match(/Chabat/)
         end
+      end
+    end
+
+    context "when filter_by_current_agent is passed" do
+      let!(:index_params) do
+        { organisation_id: organisation.id, filter_by_current_agent: "true", motif_category: "rsa_orientation" }
+      end
+
+      before { applicant.agents = [agent] }
+
+      it "filters on the applicants assigned to the agent" do
+        get :index, params: index_params
+        expect(response.body).to match(/Chabat/)
+        expect(response.body).not_to match(/Baer/)
+        expect(response.body).not_to match(/Darmon/)
       end
     end
 

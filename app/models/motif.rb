@@ -15,6 +15,18 @@ class Motif < ApplicationRecord
     rsa_main_tendue: 8,
     rsa_atelier_collectif_mandatory: 9
   }.freeze
+  CHRONOLOGICALLY_SORTED_CATEGORIES = %w[
+    rsa_orientation
+    rsa_orientation_on_phone_platform
+    rsa_accompagnement
+    rsa_accompagnement_social
+    rsa_accompagnement_sociopro
+    rsa_follow_up
+    rsa_cer_signature
+    rsa_insertion_offer
+    rsa_atelier_collectif_mandatory
+    rsa_main_tendue
+  ].freeze
 
   enum location_type: { public_office: 0, phone: 1, home: 2 }
   enum category: CATEGORIES_ENUM
