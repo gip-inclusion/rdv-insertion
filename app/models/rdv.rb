@@ -77,13 +77,7 @@ class Rdv < ApplicationRecord
 
   # event to notify in an after_commit context
   def event_to_notify
-    if id_previously_changed?
-      :created
-    elsif cancelled_at.present? && cancelled_at_previously_changed?
-      :cancelled
-    elsif address_previously_changed? || starts_at_previously_changed?
-      :updated
-    end
+    return :updated if address_previously_changed? || starts_at_previously_changed?
   end
 
   def rdv_contexts_motif_categories_are_uniq
