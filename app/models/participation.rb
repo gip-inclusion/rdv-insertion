@@ -1,4 +1,5 @@
 class Participation < ApplicationRecord
+  include Notificable
   include HasStatus
 
   delegate :starts_at, :notify_applicants?, to: :rdv
@@ -37,5 +38,9 @@ class Participation < ApplicationRecord
     elsif cancelled_at.present? && cancelled_at_previously_changed?
       :cancelled
     end
+  end
+
+  def notifications
+    applicant.notifications.where(rdv: rdv)
   end
 end
