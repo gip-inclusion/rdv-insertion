@@ -27,6 +27,65 @@ describe Participation do
     end
   end
 
+  describe "#notify_applicants" do
+    subject { participation.save }
+
+    let!(:rdv_id) { 333 }
+    let!(:rdv) { create(:rdv, id: rdv_id, convocable: true) }
+    let!(:applicant) { create(:applicant) }
+    let!(:participation) { build(:participation, rdv_id: rdv_id, applicant_id: applicant.id, status: "unknown") }
+
+    context "after record creation" do
+      it "enqueues a job to notify rdv applicants" do
+        expect(NotifyRdvToApplicantJob).to receive(:perform_async)
+          .with(rdv_id, applicant.id, "sms", 'rdv_created')
+        expect(NotifyRdvToApplicantJob).to receive(:perform_async)
+          .with(rdv_id, applicant.id, "email", 'rdv_created')
+        subject
+      end
+
+      context "when the rdv is not convocable" do
+        let!(:rdv) { create(:rdv, id: rdv_id, convocable: false) }
+
+        it "does not enqueue a notify applicants job" do
+          expect(NotifyRdvToApplicantJob).not_to receive(:perform_async)
+          subject
+        end
+      end
+    end
+
+    context "after cancellation" do
+      let!(:participation) do
+        create(
+          :participation,
+          rdv_id: rdv_id,
+          applicant_id: applicant.id,
+          status: "unknown"
+        )
+      end
+
+      it "enqueues a job to notify rdv applicants" do
+        participation.status = "excused"
+        participation.cancelled_at = Time.zone.now
+        expect(NotifyRdvToApplicantJob).to receive(:perform_async)
+          .with(rdv_id, applicant.id, "sms", 'rdv_cancelled')
+        expect(NotifyRdvToApplicantJob).to receive(:perform_async)
+          .with(rdv_id, applicant.id, "email", 'rdv_cancelled')
+        subject
+      end
+
+      context "when the rdv is not convocable" do
+        let!(:rdv) { create(:rdv, id: rdv_id, convocable: false) }
+
+        it "does not enqueue a notify applicants job" do
+          rdv.cancelled_at = Time.zone.now
+          expect(NotifyRdvToApplicantsJob).not_to receive(:perform_async)
+          subject
+        end
+      end
+    end
+  end
+
   describe '#destroy' do
     subject { participation1.destroy }
 

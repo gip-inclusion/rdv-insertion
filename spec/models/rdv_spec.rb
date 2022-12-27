@@ -35,46 +35,6 @@ describe Rdv do
 
     let!(:rdv_id) { 333 }
 
-    context "after record creation" do
-      let!(:rdv) { build(:rdv, id: rdv_id, convocable: true) }
-
-      it "enqueues a job to notify rdv applicants" do
-        expect(NotifyRdvToApplicantsJob).to receive(:perform_async)
-          .with(rdv_id, :created)
-        subject
-      end
-
-      context "when the rdv is not convocable" do
-        let!(:rdv) { build(:rdv, id: rdv_id, convocable: false) }
-
-        it "does not enqueue a notify applicants job" do
-          expect(NotifyRdvToApplicantsJob).not_to receive(:perform_async)
-          subject
-        end
-      end
-    end
-
-    context "after cancellation" do
-      let!(:rdv) { create(:rdv, id: rdv_id, convocable: true, cancelled_at: nil) }
-
-      it "enqueues a job to notify rdv applicants" do
-        rdv.cancelled_at = Time.zone.now
-        expect(NotifyRdvToApplicantsJob).to receive(:perform_async)
-          .with(rdv_id, :cancelled)
-        subject
-      end
-
-      context "when the rdv is not convocable" do
-        let!(:rdv) { build(:rdv, id: rdv_id, convocable: false) }
-
-        it "does not enqueue a notify applicants job" do
-          rdv.cancelled_at = Time.zone.now
-          expect(NotifyRdvToApplicantsJob).not_to receive(:perform_async)
-          subject
-        end
-      end
-    end
-
     context "when the lieu is updated" do
       let!(:rdv) { create(:rdv, id: rdv_id, convocable: true, address: "some place") }
 

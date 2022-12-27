@@ -100,15 +100,18 @@ module RdvSolidaritesWebhooks
       @participations_attributes ||= \
         @applicants.map do |applicant|
           participation = rdv_solidarites_rdv.participations.find { _1.user.id == applicant.rdv_solidarites_user_id }
-          existing_participation = rdv.nil? ? nil : Participation.find_by(applicant: applicant, rdv: rdv)
           {
-            id: existing_participation&.id,
+            id: existing_participation_for(applicant)&.id,
             status: participation.status,
             applicant_id: applicant.id,
             cancelled_at: participation.cancelled_at,
             rdv_solidarites_participation_id: participation.id
           }
         end.compact + participations_attributes_destroyed
+    end
+
+    def existing_participation_for(applicant)
+      rdv.nil? ? nil : Participation.find_by(applicant: applicant, rdv: rdv)
     end
 
     def related_invitations

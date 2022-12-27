@@ -11,7 +11,10 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
   let!(:rdv_solidarites_lieu_id) { 43 }
   let!(:rdv_solidarites_motif_id) { 53 }
   let!(:participations_attributes) do
-    [{ id: 998, status: "unknown", user: { id: user_id1 } }, { id: 999, status: "unknown", user: { id: user_id2 } }]
+    [
+      { id: 998, status: "unknown", user: { id: user_id1 }, cancelled_at: Time.zone.today },
+      { id: 999, status: "unknown", user: { id: user_id2 } }
+    ]
   end
   let!(:lieu_attributes) { { id: rdv_solidarites_lieu_id, name: "DINUM", address: "20 avenue de Ségur" } }
   let!(:motif_attributes) do
@@ -158,13 +161,15 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
                     id: nil,
                     status: 'unknown',
                     applicant_id: 3,
-                    rdv_solidarites_participation_id: 998
+                    rdv_solidarites_participation_id: 998,
+                    cancelled_at: Time.zone.today
                   },
                   {
                     id: nil,
                     status: 'unknown',
                     applicant_id: 4,
-                    rdv_solidarites_participation_id: 999
+                    rdv_solidarites_participation_id: 999,
+                    cancelled_at: nil
                   }
                 ],
                 organisation_id: organisation.id,
@@ -221,13 +226,15 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
               id: 1,
               status: 'unknown',
               applicant_id: 3,
-              rdv_solidarites_participation_id: 998
+              rdv_solidarites_participation_id: 998,
+              cancelled_at: nil
             },
             {
               id: 2,
               status: 'seen',
               applicant_id: 4,
-              rdv_solidarites_participation_id: 999
+              rdv_solidarites_participation_id: 999,
+              cancelled_at: nil
             },
             {
               _destroy: true,
@@ -284,13 +291,15 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
                   id: nil,
                   status: 'unknown',
                   applicant_id: 3,
-                  rdv_solidarites_participation_id: 998
+                  rdv_solidarites_participation_id: 998,
+                  cancelled_at: Time.zone.today
                 },
                 {
                   id: nil,
                   status: 'unknown',
                   applicant_id: 4,
-                  rdv_solidarites_participation_id: 999
+                  rdv_solidarites_participation_id: 999,
+                  cancelled_at: nil
                 }
               ],
               organisation_id: organisation.id,
