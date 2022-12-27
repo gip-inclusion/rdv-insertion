@@ -220,10 +220,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_27_085400) do
     t.bigint "rdv_solidarites_participation_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "rdv_context_id"
     t.datetime "cancelled_at"
     t.index ["applicant_id", "rdv_id"], name: "index_participations_on_applicant_id_and_rdv_id", unique: true
-    t.index ["rdv_context_id"], name: "index_participations_on_rdv_context_id"
     t.index ["status"], name: "index_participations_on_status"
   end
 
@@ -321,7 +319,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_27_085400) do
   add_foreign_key "notifications", "rdvs"
   add_foreign_key "organisations", "departments"
   add_foreign_key "organisations", "messages_configurations"
-  add_foreign_key "participations", "rdv_contexts"
   add_foreign_key "rdv_contexts", "applicants"
   add_foreign_key "rdvs", "lieux"
   add_foreign_key "rdvs", "motifs"
