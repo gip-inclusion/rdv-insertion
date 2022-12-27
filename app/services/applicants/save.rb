@@ -52,10 +52,10 @@ module Applicants
                                   .slice(*Applicant::SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES)
                                   .transform_values(&:presence)
                                   .compact
-      return user_attributes if @applicant.demandeur?
+      return user_attributes if @applicant.demandeur? || @applicant.role.nil?
 
       # we do not send the email to rdv-s for the conjoint
-      user_attributes.except(:email)
+      user_attributes.except(:email) if @applicant.conjoint?
     end
   end
 end
