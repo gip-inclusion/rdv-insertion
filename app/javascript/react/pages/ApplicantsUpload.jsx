@@ -243,7 +243,7 @@ export default function ApplicantsUpload({
             className="btn btn-blue-out"
             onClick={() => setShowEnrichWithContactFile(true)}
           >
-            Enrichir avec données de contacts
+            Enrichir avec des données de contacts CNAF
           </button>
         </div>
       )}
