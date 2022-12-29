@@ -178,7 +178,7 @@ export default function ApplicantsUpload({
 
     await Promise.all(
       applicants.map(async (item) => {
-        let { applicant } = item;
+        let applicant = item;
         const applicantContactsData = contactsData.find(
           (a) =>
             // padStart is used because sometimes affiliation numbers are fetched with less than 7 letters
