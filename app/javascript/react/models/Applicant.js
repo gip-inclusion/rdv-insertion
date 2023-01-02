@@ -173,7 +173,6 @@ export default class Applicant {
       this.shortRole,
     ];
     if (this.shouldDisplay("department_internal_id")) attributes.push(this.departmentInternalId);
-    if (this.shouldDisplay("birth_date")) attributes.push(this.birthDate);
     if (this.shouldDisplay("email")) attributes.push(this.email);
     if (this.shouldDisplay("phone_number")) attributes.push(this.phoneNumber);
     if (this.shouldDisplay("rights_opening_date")) attributes.push(this.rightsOpeningDate);
