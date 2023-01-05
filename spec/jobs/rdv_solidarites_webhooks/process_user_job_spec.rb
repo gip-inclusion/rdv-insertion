@@ -9,7 +9,8 @@ describe RdvSolidaritesWebhooks::ProcessUserJob, type: :job do
       "first_name" => "John",
       "last_name" => "Doe",
       "phone_number_formatted" => "+33624242424",
-      "affiliation_number" => "CAUCSCUAHSC"
+      "affiliation_number" => "CAUCSCUAHSC",
+      "email" => "user@something.com"
     }.deep_symbolize_keys
   end
 
@@ -42,9 +43,20 @@ describe RdvSolidaritesWebhooks::ProcessUserJob, type: :job do
       before { data.merge!(affiliation_number: nil) }
 
       it "enqueues an upsert record job without affiliation_number" do
-        formatted_data = data.except(:affiliation_number)
+        filtered_data = data.except(:affiliation_number)
         expect(UpsertRecordJob).to receive(:perform_async)
-          .with("Applicant", formatted_data, { last_webhook_update_received_at: timestamp })
+          .with("Applicant", filtered_data, { last_webhook_update_received_at: timestamp })
+        subject
+      end
+    end
+
+    context "when the email received is nil" do
+      before { data.merge!(email: nil) }
+
+      it "enqueues an upsert record job without the email" do
+        filtered_data = data.except(:email)
+        expect(UpsertRecordJob).to receive(:perform_async)
+          .with("Applicant", filtered_data, { last_webhook_update_received_at: timestamp })
         subject
       end
     end
