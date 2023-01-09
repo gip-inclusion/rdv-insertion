@@ -1,4 +1,4 @@
-describe ApplicantsOrganisationsController, type: :controller do
+describe ApplicantsOrganisationsController do
   let!(:applicant_id) { 2222 }
   let!(:applicant) { create(:applicant, id: applicant_id, organisations: [organisation1], department: department) }
   let!(:organisation1) { create(:organisation, name: "CD de DIE") }

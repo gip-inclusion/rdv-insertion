@@ -1,4 +1,4 @@
-describe UpsertRecordJob, type: :job do
+describe UpsertRecordJob do
   subject do
     described_class.new.perform(class_name, rdv_solidarites_attributes, additional_attributes)
   end

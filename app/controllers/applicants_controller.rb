@@ -20,8 +20,21 @@ class ApplicantsController < ApplicationController
   before_action :retrieve_applicants, only: [:search]
   after_action :store_back_to_list_url, only: [:index]
 
+  def index
+    respond_to do |format|
+      format.html
+      format.csv { send_applicants_csv }
+    end
+  end
+
+  def show; end
+
   def new
     @applicant = Applicant.new(department: @department)
+    authorize @applicant
+  end
+
+  def edit
     authorize @applicant
   end
 
@@ -39,21 +52,8 @@ class ApplicantsController < ApplicationController
     end
   end
 
-  def index
-    respond_to do |format|
-      format.html
-      format.csv { send_applicants_csv }
-    end
-  end
-
-  def show; end
-
   def search
     render json: { success: true, applicants: @applicants }
-  end
-
-  def edit
-    authorize @applicant
   end
 
   def update

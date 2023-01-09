@@ -1,4 +1,4 @@
-describe RdvSolidaritesWebhooksController, type: :controller do
+describe RdvSolidaritesWebhooksController do
   before do
     allow(RdvSolidaritesWebhooks::ProcessRdvJob).to receive(:perform_async)
     allow(RdvSolidaritesWebhooks::ProcessUserJob).to receive(:perform_async)

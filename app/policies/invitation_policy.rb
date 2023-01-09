@@ -1,5 +1,5 @@
 class InvitationPolicy < ApplicationPolicy
   def create?
-    (pundit_user.organisation_ids & record.applicant.organisation_ids).any?
+    pundit_user.organisation_ids.intersect?(record.applicant.organisation_ids)
   end
 end

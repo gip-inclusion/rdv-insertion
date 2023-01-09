@@ -163,7 +163,7 @@ describe Invitations::GenerateLetter, type: :service do
         )
         expect(content).to include(
           "La première étape est <span class=\"bold-blue\">un appel téléphonique avec un professionnel de l’insertion" \
-          "<\/span> afin de définir, selon votre situation et vos besoins, quelle sera la structure la "\
+          "</span> afin de définir, selon votre situation et vos besoins, quelle sera la structure la " \
           "mieux adaptée pour vous accompagner."
         )
         expect(content).to include("Cet appel est obligatoire dans le cadre du versement de votre allocation RSA")

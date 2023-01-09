@@ -1,4 +1,4 @@
-describe NotifyRdvToApplicantsJob, type: :job do
+describe NotifyRdvToApplicantsJob do
   subject do
     described_class.new.perform(rdv_id, event_to_notify)
   end

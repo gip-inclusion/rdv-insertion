@@ -1,4 +1,4 @@
-describe InviteApplicantJob, type: :job do
+describe InviteApplicantJob do
   subject do
     described_class.new.perform(
       applicant_id, organisation_id, invitation_attributes, motif_category, rdv_solidarites_session_credentials

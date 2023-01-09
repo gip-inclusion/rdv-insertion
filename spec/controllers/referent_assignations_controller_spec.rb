@@ -1,4 +1,4 @@
-describe ReferentAssignationsController, type: :controller do
+describe ReferentAssignationsController do
   let!(:applicant_id) { 2222 }
   let!(:applicant) do
     create(:applicant, id: applicant_id, organisations: [organisation1, organisation2], department: department)

@@ -1,4 +1,4 @@
-describe OrganisationsController, type: :controller do
+describe OrganisationsController do
   describe "GET #index" do
     render_views
     let!(:agent) { create(:agent, organisations: [organisation]) }

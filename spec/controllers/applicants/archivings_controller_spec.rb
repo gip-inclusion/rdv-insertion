@@ -1,4 +1,4 @@
-describe Applicants::ArchivingsController, type: :controller do
+describe Applicants::ArchivingsController do
   let!(:organisation) { create(:organisation) }
   let!(:applicant) { create(:applicant, id: applicant_id, organisations: [organisation]) }
   let!(:applicant_id) { 33 }

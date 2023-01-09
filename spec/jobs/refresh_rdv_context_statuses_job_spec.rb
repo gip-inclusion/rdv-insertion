@@ -1,4 +1,4 @@
-describe RefreshRdvContextStatusesJob, type: :job do
+describe RefreshRdvContextStatusesJob do
   subject do
     described_class.new.perform(rdv_context_ids)
   end
