@@ -11,6 +11,7 @@ jobs:
         with:
           ruby-version: 3.2.0
           bundler-cache: true
+          rubygems: latest
       - run: bundle exec rubocop
   eslint:
     name: JS linter
@@ -22,6 +23,7 @@ jobs:
         with:
           ruby-version: 3.2.0
           bundler-cache: true
+          rubygems: latest
       - name: Install JS dependencies
         run: yarn install
       - run: yarn lint
@@ -55,6 +57,7 @@ jobs:
         with:
           ruby-version: 3.2.0
           bundler-cache: true
+          rubygems: latest
       - name: Install JS dependencies
         run: yarn install
       - name: Setup test database
