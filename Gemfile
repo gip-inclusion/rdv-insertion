@@ -107,8 +107,8 @@ group :development do
   gem 'listen', '~> 3.2'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring', '~> 3.0.0'
-
   gem "letter_opener_web" # Saves sent emails and serves them on /letter_opener
+  gem 'rails-erd'
 end
 
 group :test do
