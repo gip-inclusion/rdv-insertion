@@ -66,7 +66,6 @@ describe Participation do
 
       it "enqueues a job to notify rdv applicants" do
         participation.status = "excused"
-        participation.cancelled_at = Time.zone.now
         expect(NotifyRdvToApplicantJob).to receive(:perform_async)
           .with(rdv_id, applicant.id, "sms", 'rdv_cancelled')
         expect(NotifyRdvToApplicantJob).to receive(:perform_async)
@@ -78,8 +77,25 @@ describe Participation do
         let!(:rdv) { create(:rdv, id: rdv_id, convocable: false) }
 
         it "does not enqueue a notify applicants job" do
-          rdv.cancelled_at = Time.zone.now
-          expect(NotifyRdvToApplicantsJob).not_to receive(:perform_async)
+          participation.status = "excused"
+          expect(NotifyRdvToApplicantJob).not_to receive(:perform_async)
+          subject
+        end
+      end
+
+      context "when the participation is already cancelled" do
+        let!(:participation) do
+          create(
+            :participation,
+            rdv_id: rdv_id,
+            applicant_id: applicant.id,
+            status: "excused"
+          )
+        end
+
+        it "does not enqueue a notify applicants job" do
+          participation.status = "excused"
+          expect(NotifyRdvToApplicantJob).not_to receive(:perform_async)
           subject
         end
       end

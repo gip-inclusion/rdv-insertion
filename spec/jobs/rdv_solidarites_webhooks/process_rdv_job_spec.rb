@@ -12,7 +12,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
   let!(:rdv_solidarites_motif_id) { 53 }
   let!(:participations_attributes) do
     [
-      { id: 998, status: "unknown", user: { id: user_id1 }, cancelled_at: Time.zone.today },
+      { id: 998, status: "unknown", user: { id: user_id1 } },
       { id: 999, status: "unknown", user: { id: user_id2 } }
     ]
   end
@@ -161,15 +161,13 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
                     id: nil,
                     status: 'unknown',
                     applicant_id: 3,
-                    rdv_solidarites_participation_id: 998,
-                    cancelled_at: Time.zone.today
+                    rdv_solidarites_participation_id: 998
                   },
                   {
                     id: nil,
                     status: 'unknown',
                     applicant_id: 4,
-                    rdv_solidarites_participation_id: 999,
-                    cancelled_at: nil
+                    rdv_solidarites_participation_id: 999
                   }
                 ],
                 organisation_id: organisation.id,
@@ -226,15 +224,13 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
               id: 1,
               status: 'unknown',
               applicant_id: 3,
-              rdv_solidarites_participation_id: 998,
-              cancelled_at: nil
+              rdv_solidarites_participation_id: 998
             },
             {
               id: 2,
               status: 'seen',
               applicant_id: 4,
-              rdv_solidarites_participation_id: 999,
-              cancelled_at: nil
+              rdv_solidarites_participation_id: 999
             },
             {
               _destroy: true,
@@ -291,15 +287,13 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
                   id: nil,
                   status: 'unknown',
                   applicant_id: 3,
-                  rdv_solidarites_participation_id: 998,
-                  cancelled_at: Time.zone.today
+                  rdv_solidarites_participation_id: 998
                 },
                 {
                   id: nil,
                   status: 'unknown',
                   applicant_id: 4,
-                  rdv_solidarites_participation_id: 999,
-                  cancelled_at: nil
+                  rdv_solidarites_participation_id: 999
                 }
               ],
               organisation_id: organisation.id,

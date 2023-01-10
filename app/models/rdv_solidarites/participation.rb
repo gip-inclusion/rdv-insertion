@@ -1,7 +1,7 @@
 module RdvSolidarites
   class Participation < Base
     RECORD_ATTRIBUTES = [
-      :id, :cancelled_at, :status
+      :id, :status
     ].freeze
     attr_reader(*RECORD_ATTRIBUTES)
 

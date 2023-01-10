@@ -3,6 +3,7 @@ class Participation < ApplicationRecord
   include HasStatus
 
   delegate :starts_at, :notify_applicants?, to: :rdv
+  delegate :notify_applicants?, to: :rdv, prefix: true
 
   validates :status, presence: true
   validates :rdv_solidarites_participation_id, uniqueness: true, allow_nil: true
@@ -10,7 +11,7 @@ class Participation < ApplicationRecord
   belongs_to :rdv
   belongs_to :applicant
   after_commit :refresh_applicant_context_statuses, on: [:destroy]
-  after_commit :notify_applicant, if: :notify_applicants?, on: [:create, :update]
+  after_commit :notify_applicant, if: :rdv_notify_applicants?, on: [:create, :update]
 
   private
 
@@ -20,6 +21,11 @@ class Participation < ApplicationRecord
 
   def status_reloaded_from_cancelled?
     status_previously_was.in?(CANCELLED_STATUSES) && status == "unknown"
+  end
+
+  def participation_cancelled?
+    # Do not notify applicants for a cancelled event statuses for previously cancelled participation
+    (status.in? CANCELLED_STATUSES) && !status_previously_was.in?(CANCELLED_STATUSES)
   end
 
   def notify_applicant
@@ -35,7 +41,7 @@ class Participation < ApplicationRecord
   def event_to_notify
     if id_previously_changed? || status_reloaded_from_cancelled?
       :created
-    elsif cancelled_at.present? && cancelled_at_previously_changed?
+    elsif participation_cancelled?
       :cancelled
     end
   end

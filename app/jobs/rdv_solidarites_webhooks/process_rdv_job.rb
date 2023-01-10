@@ -104,7 +104,6 @@ module RdvSolidaritesWebhooks
             id: existing_participation_for(applicant)&.id,
             status: participation.status,
             applicant_id: applicant.id,
-            cancelled_at: participation.cancelled_at,
             rdv_solidarites_participation_id: participation.id
           }
         end.compact + participations_attributes_destroyed
