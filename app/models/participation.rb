@@ -24,7 +24,7 @@ class Participation < ApplicationRecord
   end
 
   def participation_cancelled?
-    # Do not notify applicants for a cancelled event statuses for previously cancelled participation
+    # Do not notify applicants for a cancelled event for a previously cancelled participation
     (status.in? CANCELLED_STATUSES) && !status_previously_was.in?(CANCELLED_STATUSES)
   end
 

@@ -77,7 +77,6 @@ describe Participation do
         let!(:rdv) { create(:rdv, id: rdv_id, convocable: false) }
 
         it "does not enqueue a notify applicants job" do
-          participation.status = "excused"
           expect(NotifyRdvToApplicantJob).not_to receive(:perform_async)
           subject
         end
