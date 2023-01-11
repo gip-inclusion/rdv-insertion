@@ -109,6 +109,7 @@ group :development do
   gem 'spring', '~> 3.0.0'
 
   gem 'letter_opener' # Preview email in the default browser instead of sending it.
+  gem 'rails-erd'
 end
 
 group :test do

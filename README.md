@@ -24,6 +24,10 @@ La guide d'utilisation de l'application se trouve [ici](https://rdv-insertion.gi
 
 Ci-dessous le schéma de l'architecture de l'application ![schema rdv-insertion](https://github.com/betagouv/rdv-insertion/blob/staging/docs/architecture_rdv-insertion.png)
 
+Ci-dessous le schéma de la base de donnée.
+Pour le regénérer manuellement il faut lancer la commande `rake erd`.
+![schema DB rdv-insertion](https://github.com/betagouv/rdv-insertion/blob/staging/docs/domain_model.png)
+
 ## Statistiques
 
 Les statistiques d'utilisation de l'application sont consultables [ici](https://rdv-insertion.fr/stats)
