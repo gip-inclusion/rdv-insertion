@@ -56,6 +56,9 @@ Metrics/BlockLength:
 Layout/LineLength:
   Max: 120
 
+Layout/LineContinuationLeadingSpace:
+  Enabled: false
+
 Metrics/ClassLength:
   Max: 120
 
@@ -65,6 +68,9 @@ Metrics/MethodLength:
 
 Metrics/AbcSize:
   Max: 20
+
+Style/HashSyntax:
+  Enabled: false
 
 Rails/HasAndBelongsToMany:
   Enabled: false
@@ -114,6 +120,9 @@ RSpec/BeEq:
 RSpec/VerifiedDoubleReference:
   Enabled: false
 
+RSpec/NoExpectationExample:
+  Enabled: false
+
 RSpec/DescribeClass:
   Exclude:
-    - "spec/features/**/*"
+    - "spec/requests/**/*"

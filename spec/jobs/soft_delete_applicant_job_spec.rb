@@ -1,4 +1,4 @@
-describe SoftDeleteApplicantJob, type: :job do
+describe SoftDeleteApplicantJob do
   subject do
     described_class.new.perform(rdv_solidarites_user_id)
   end

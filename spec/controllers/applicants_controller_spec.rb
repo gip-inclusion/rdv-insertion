@@ -1,4 +1,4 @@
-describe ApplicantsController, type: :controller do
+describe ApplicantsController do
   let!(:department) { create(:department) }
   let!(:configuration) do
     create(
@@ -115,7 +115,7 @@ describe ApplicantsController, type: :controller do
         it "renders the new page" do
           post :create, params: applicant_params
           expect(response).not_to be_successful
-          expect(response.status).to eq(422)
+          expect(response).to have_http_status(:unprocessable_entity)
           expect(response.body).to match(/Créer allocataire/)
         end
       end
@@ -174,14 +174,14 @@ describe ApplicantsController, type: :controller do
         it "is not a success" do
           post :create, params: applicant_params
           expect(response).not_to be_successful
-          expect(response.status).to eq(422)
+          expect(response).to have_http_status(:unprocessable_entity)
           expect(JSON.parse(response.body)["success"]).to eq(false)
         end
 
         it "renders the errors" do
           post :create, params: applicant_params
           expect(response).not_to be_successful
-          expect(response.status).to eq(422)
+          expect(response).to have_http_status(:unprocessable_entity)
           expect(JSON.parse(response.body)["errors"]).to eq(['some error'])
         end
       end
@@ -836,14 +836,14 @@ describe ApplicantsController, type: :controller do
         it "is not a success" do
           post :update, params: update_params
           expect(response).not_to be_successful
-          expect(response.status).to eq(422)
+          expect(response).to have_http_status(:unprocessable_entity)
           expect(JSON.parse(response.body)["success"]).to eq(false)
         end
 
         it "renders the errors" do
           post :update, params: update_params
           expect(response).not_to be_successful
-          expect(response.status).to eq(422)
+          expect(response).to have_http_status(:unprocessable_entity)
           expect(JSON.parse(response.body)["errors"]).to eq(['some error'])
         end
       end
@@ -922,7 +922,7 @@ describe ApplicantsController, type: :controller do
         it "renders the edit page" do
           patch :update, params: update_params
           expect(response).not_to be_successful
-          expect(response.status).to eq(422)
+          expect(response).to have_http_status(:unprocessable_entity)
         end
       end
     end

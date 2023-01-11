@@ -1,4 +1,4 @@
-describe UpsertStatJob, type: :job do
+describe UpsertStatJob do
   subject do
     described_class.new.perform(department.number)
   end

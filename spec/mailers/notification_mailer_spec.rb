@@ -1,4 +1,4 @@
-RSpec.describe NotificationMailer, type: :mailer do
+RSpec.describe NotificationMailer do
   let!(:applicant) { create(:applicant, email: "someone@gmail.com", phone_number: "0607070707") }
   let!(:rdv) { create(:rdv, lieu: lieu, starts_at: Time.zone.parse("20/12/2021 12:00")) }
   let!(:lieu) { create(:lieu, name: "DINUM", address: "20 avenue de ségur 75007 Paris", phone_number: "0101010101") }
@@ -460,7 +460,7 @@ RSpec.describe NotificationMailer, type: :mailer do
       it "renders the body" do
         body_string = unescape_html(mail.body.encoded)
         expect(body_string).to include(
-          "Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) à un rendez-vous téléphonique"\
+          "Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) à un rendez-vous téléphonique" \
           " de signature de CER afin de construire et signer votre Contrat d'Engagement Réciproque"
         )
         expect(body_string).to include("Un travailleur social vous appellera")
@@ -488,7 +488,7 @@ RSpec.describe NotificationMailer, type: :mailer do
         body_string = unescape_html(mail.body.encoded)
         expect(body_string).to include(
           "Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) à un rendez-vous de suivi " \
-          "téléphonique afin de faire un point avec votre référent de parcours"\
+          "téléphonique afin de faire un point avec votre référent de parcours" \
         )
         expect(body_string).to include("Un travailleur social vous appellera")
         expect(body_string).to include("le 20/12/2021 à 12:00")
@@ -672,7 +672,7 @@ RSpec.describe NotificationMailer, type: :mailer do
         body_string = unescape_html(mail.body.encoded)
         expect(body_string).to include(
           "Votre rendez-vous de suivi " \
-          "téléphonique dans le cadre de votre RSA a été modifié"\
+          "téléphonique dans le cadre de votre RSA a été modifié" \
         )
         expect(body_string).to include("Un travailleur social vous appellera")
         expect(body_string).to include("le 20/12/2021 à 12:00")
@@ -815,7 +815,7 @@ RSpec.describe NotificationMailer, type: :mailer do
       it "renders the body" do
         body_string = unescape_html(mail.body.encoded)
         expect(body_string).to include(
-          "Votre rendez-vous de suivi dans le cadre de votre RSA a été annulé"\
+          "Votre rendez-vous de suivi dans le cadre de votre RSA a été annulé" \
         )
         expect(body_string).to include("Pour plus d'informations, veuillez appeler le 0101010101")
       end

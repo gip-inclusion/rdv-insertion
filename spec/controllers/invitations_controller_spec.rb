@@ -1,4 +1,4 @@
-describe InvitationsController, type: :controller do
+describe InvitationsController do
   describe "#create" do
     let!(:applicant_id) { "24" }
     let!(:organisation_id) { "22" }
