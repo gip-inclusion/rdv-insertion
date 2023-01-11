@@ -55,38 +55,42 @@ describe Stats::ComputeStats, type: :service do
   # -------------------------------------- rdvs for relevant applicants ----------------------------------------
   let!(:orientation_rdv) do
     create(:rdv, organisation: relevant_organisation,
-                 participations: [part_orient_rdv],
+                 participations: [participation_orientation_rdv],
                  created_at: "2022-04-07 10:00:00 UTC",
                  starts_at: "2022-04-08 10:00:00 UTC",
                  created_by: "user",
                  status: "seen")
   end
-  let!(:part_orient_rdv) do
+  let!(:participation_orientation_rdv) do
     create(:participation, rdv_context: rdv_context_orientation, applicant: applicant1, status: "seen")
   end
 
   let!(:orientation_rdv2) do
     create(:rdv, organisation: relevant_organisation,
-                 participations: [part_orient_rdv2],
+                 participations: [participation_orientation_rdv2],
                  created_at: "2022-05-02 10:00:00 UTC",
                  starts_at: "2022-05-07 10:00:00 UTC",
                  status: "noshow")
   end
-  let!(:part_orient_rdv2) do
+  let!(:participation_orientation_rdv2) do
     create(:participation, rdv_context: rdv_context_orientation, applicant: applicant2, status: "noshow")
   end
 
   let!(:accompagnement_rdv) do
-    create(:rdv, participations: [part_accomp_rdv], organisation: relevant_organisation)
+    create(:rdv, participations: [participation_accompagnement_rdv], organisation: relevant_organisation)
   end
-  let!(:part_accomp_rdv) { create(:participation, rdv_context: rdv_context_accompagnement, applicant: applicant1) }
+  let!(:participation_accompagnement_rdv) do
+    create(:participation, rdv_context: rdv_context_accompagnement, applicant: applicant1)
+  end
 
   let!(:accompagnement_rdv2) do
-    create(:rdv, participations: [part_accomp_rdv2], organisation: relevant_organisation,
+    create(:rdv, participations: [participation_accompagnement_rdv2], organisation: relevant_organisation,
                  created_at: "2022-05-08 10:00:00 UTC",
                  starts_at: "2022-05-11 10:00:00 UTC")
   end
-  let!(:part_accomp_rdv2) { create(:participation, rdv_context: rdv_context_accompagnement2, applicant: applicant2) }
+  let!(:participation_accompagnement_rdv2) do
+    create(:participation, rdv_context: rdv_context_accompagnement2, applicant: applicant2)
+  end
 
   # We are creating irrelevant applicants and their related records : they should appear in some general counts, but
   # be filtered when computing precise stats

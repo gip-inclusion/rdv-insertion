@@ -95,7 +95,6 @@ describe RdvContext do
             let!(:rdv) do
               create(
                 :rdv,
-                status: "seen",
                 starts_at: 3.days.ago,
                 participations: [participation]
               )
@@ -118,7 +117,6 @@ describe RdvContext do
             let!(:rdv) do
               create(
                 :rdv,
-                status: "seen",
                 starts_at: 1.day.ago,
                 participations: [participation]
               )
@@ -142,7 +140,6 @@ describe RdvContext do
           let!(:rdv) do
             create(
               :rdv,
-              status: "unknown",
               starts_at: 1.day.from_now,
               created_at: 4.days.ago,
               participations: [participation]
@@ -167,7 +164,6 @@ describe RdvContext do
             let!(:rdv) do
               create(
                 :rdv,
-                status: "noshow",
                 starts_at: 4.days.from_now,
                 created_at: 4.days.ago,
                 participations: [participation]
@@ -191,7 +187,6 @@ describe RdvContext do
             let!(:rdv) do
               create(
                 :rdv,
-                status: "noshow",
                 starts_at: 4.days.from_now,
                 created_at: 1.day.ago,
                 participations: [participation]
@@ -217,7 +212,6 @@ describe RdvContext do
           let!(:rdv) do
             create(
               :rdv,
-              status: "seen",
               created_at: 4.days.ago,
               starts_at: 4.days.ago,
               participations: [participation]
@@ -235,7 +229,6 @@ describe RdvContext do
           let!(:rdv2) do
             create(
               :rdv,
-              status: "noshow",
               created_at: 5.days.ago,
               starts_at: 2.days.ago,
               participations: [participation2]
@@ -258,7 +251,6 @@ describe RdvContext do
             let!(:rdv3) do
               create(
                 :rdv,
-                status: "unknown",
                 created_at: 8.days.ago,
                 starts_at: 2.days.from_now,
                 participations: [participation]
@@ -282,7 +274,6 @@ describe RdvContext do
             let!(:rdv3) do
               create(
                 :rdv,
-                status: "excused",
                 created_at: 1.day.ago,
                 participations: [participation]
               )
@@ -305,7 +296,6 @@ describe RdvContext do
             let!(:rdv3) do
               create(
                 :rdv,
-                status: "unknown",
                 created_at: 1.day.ago,
                 starts_at: 2.days.ago,
                 participations: [participation]
@@ -344,7 +334,7 @@ describe RdvContext do
       end
 
       context "when there is a rdv_seen but status is not rdv_seen" do
-        let!(:rdv) { create(:rdv, status: "seen", starts_at: 4.days.ago, participations: [participation]) }
+        let!(:rdv) { create(:rdv, starts_at: 4.days.ago, participations: [participation]) }
         let!(:applicant) { create(:applicant) }
         let!(:participation) do
           create(

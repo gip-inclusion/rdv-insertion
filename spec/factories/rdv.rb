@@ -11,7 +11,6 @@ FactoryBot.define do
     after(:build) do |rdv|
       if rdv.applicants.blank? && rdv.participations.blank?
         rdv.applicants = [create(:applicant)]
-        rdv.participations.first.status = rdv.status
         rdv.participations.first.rdv_context = create(:rdv_context)
       end
     end

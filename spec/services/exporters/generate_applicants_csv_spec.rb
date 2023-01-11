@@ -1,5 +1,5 @@
 describe Exporters::GenerateApplicantsCsv, type: :service do
-  subject { generate_csv }
+  subject { described_class.call(applicants: applicants, structure: structure, motif_category: motif_category) }
 
   def generate_csv
     described_class.call(applicants: applicants, structure: structure, motif_category: motif_category)
@@ -37,12 +37,11 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
   let(:applicant3) { create(:applicant, last_name: "Blanc", organisations: [organisation]) }
 
   let!(:rdv) do
-    create(:rdv, status: "seen",
-                 starts_at: Time.zone.parse("2022-05-25"),
+    create(:rdv, starts_at: Time.zone.parse("2022-05-25"),
                  created_by: "user",
-                 participations: [part_rdv])
+                 participations: [participation_rdv])
   end
-  let!(:part_rdv) { create(:participation, applicant: applicant1, status: "seen", rdv_context: rdv_context) }
+  let!(:participation_rdv) { create(:participation, applicant: applicant1, status: "seen", rdv_context: rdv_context) }
 
   let!(:first_invitation) do
     create(:invitation, applicant: applicant1, format: "email", sent_at: Time.zone.parse("2022-05-21"))
@@ -61,6 +60,20 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
 
   describe "#call" do
     before { travel_to(now) }
+
+    context "when the invitation deadline has passed" do
+      let!(:rdv_context) do
+        create(
+          :rdv_context, invitations: [first_invitation, last_invitation],
+                        applicant: applicant1, status: "invitation_pending"
+        )
+      end
+
+      it "displays 'délai dépassé'" do
+        participation_rdv.destroy
+        expect(subject.csv).to include("Invitation en attente de réponse (Délai dépassé)") # rdv_context status
+      end
+    end
 
     context "it exports applicants to csv" do
       let!(:csv) { subject.csv }
@@ -159,21 +172,6 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
         it "displays the organisation infos" do
           expect(csv).to include("1")
           expect(csv).to include("Drome RSA")
-        end
-
-        context "when the invitation deadline has passed" do
-          let!(:rdv_context) do
-            create(
-              :rdv_context, invitations: [first_invitation, last_invitation],
-                            applicant: applicant1, status: "invitation_pending"
-            )
-          end
-
-          it "displays 'délai dépassé'" do
-            part_rdv.destroy
-            generate_csv
-            expect(generate_csv.csv).to include("Invitation en attente de réponse (Délai dépassé)") # rdv_context status
-          end
         end
 
         context "when the applicant is archived" do
