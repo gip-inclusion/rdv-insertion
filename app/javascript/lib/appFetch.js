@@ -5,7 +5,7 @@ const appFetch = async (url, method = "GET", body = null, accept = "application/
     headers: {
       Accept: `${accept}`,
       "Content-Type": "application/json",
-      "X-CSRF-Token": document.querySelector("meta[name=csrf-token]").content,
+      "X-CSRF-Token": document.querySelector("meta[name=csrf-token]")?.content,
     },
     ...(body && { body: JSON.stringify(body) }),
   });

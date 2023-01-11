@@ -1,5 +1,5 @@
 class Participation < ApplicationRecord
-  include HasStatus
+  include RdvParticipationStatus
 
   delegate :starts_at, to: :rdv
 

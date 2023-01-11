@@ -29,6 +29,10 @@ module HasRdvs
     rdvs.to_a.max_by(&:starts_at)
   end
 
+  def last_created_rdv
+    rdvs.to_a.max_by(&:created_at)
+  end
+
   def last_rdv_starts_at
     last_rdv&.starts_at
   end

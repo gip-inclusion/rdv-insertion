@@ -19,44 +19,28 @@ module RdvContextStatus
   private
 
   def compute_status
-    return :not_invited if !invitation_sent? && rdvs.empty?
+    return :not_invited if sent_invitations.empty? && rdvs.empty?
 
-    invited_after_last_created_rdv? ? :invitation_pending : rdv_status
+    invitation_sent_after_last_created_participation? ? :invitation_pending : status_from_participations
   end
 
-  def last_created_rdv
-    rdvs.max_by(&:created_at)
-  end
+  def invitation_sent_after_last_created_participation?
+    return false if sent_invitations.empty?
+    return true if participations.empty?
 
-  def last_created_participation
-    last_created_rdv.participations.find_by(applicant: applicant)
-  end
-
-  def last_sent_invitation
-    invitations.max_by(&:sent_at)
-  end
-
-  def invited_after_last_created_rdv?
-    return false unless invitation_sent?
-    return true if rdvs.empty?
-
-    # If there is a pending or a seen rdv we compare to the date of the rdv, otherwise to the date of
-    # the rdv creation
-    rdv_date_to_compare = \
-      if last_created_participation.pending? \
-        || last_created_participation.seen?
-        last_created_rdv.starts_at
+    # If there is a pending rdv we compare to the date of the rdv, otherwise to the date of
+    # the participation creation
+    participation_date_to_compare = \
+      if last_created_participation.pending?
+        last_created_participation.starts_at
       else
-        last_created_rdv.created_at
+        last_created_participation.created_at
       end
-    last_sent_invitation.sent_at > rdv_date_to_compare
+
+    last_sent_invitation.sent_at > participation_date_to_compare
   end
 
-  def invitation_sent?
-    invitations.any?(&:sent_at)
-  end
-
-  def rdv_status
+  def status_from_participations
     if participations.any?(&:pending?)
       :rdv_pending
     elsif last_created_participation.seen?
@@ -68,9 +52,5 @@ module RdvContextStatus
     else
       :rdv_needs_status_update
     end
-  end
-
-  def multiple_cancelled_participations?
-    participations.select(&:cancelled_by_user?).length > 1
   end
 end
