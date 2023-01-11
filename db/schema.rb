@@ -237,12 +237,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_14_091609) do
     t.index ["status"], name: "index_rdv_contexts_on_status"
   end
 
-  create_table "rdv_contexts_rdvs", id: false, force: :cascade do |t|
-    t.bigint "rdv_id", null: false
-    t.bigint "rdv_context_id", null: false
-    t.index ["rdv_id", "rdv_context_id"], name: "index_rdv_contexts_rdvs_on_rdv_id_and_rdv_context_id", unique: true
-  end
-
   create_table "rdvs", force: :cascade do |t|
     t.bigint "rdv_solidarites_rdv_id"
     t.datetime "starts_at", precision: nil
