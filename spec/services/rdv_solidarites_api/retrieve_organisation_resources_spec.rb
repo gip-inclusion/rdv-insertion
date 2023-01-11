@@ -35,7 +35,7 @@ describe RdvSolidaritesApi::RetrieveOrganisationResources, type: :service do
 
     it "retrieves the resources" do
       expect(rdv_solidarites_client).to receive(:get_organisation_users)
-        .with(rdv_solidarites_organisation_id, page, user_ids: user_ids)
+        .with(rdv_solidarites_organisation_id, page, { user_ids: user_ids })
       subject
     end
 

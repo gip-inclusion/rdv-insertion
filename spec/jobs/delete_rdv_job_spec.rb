@@ -1,4 +1,4 @@
-describe DeleteRdvJob, type: :job do
+describe DeleteRdvJob do
   subject do
     described_class.new.perform(rdv_solidarites_rdv_id)
   end

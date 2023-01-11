@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "3.0.3"
+ruby "3.2.0"
 
 # Environment variables management
 gem "dotenv-rails"
@@ -107,8 +107,8 @@ group :development do
   gem "listen", "~> 3.2"
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem "spring", "~> 3.0.0"
-
   gem "letter_opener" # Preview email in the default browser instead of sending it.
+  gem "rails-erd"
 end
 
 group :test do

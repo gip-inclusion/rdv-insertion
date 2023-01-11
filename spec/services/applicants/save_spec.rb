@@ -92,6 +92,21 @@ describe Applicants::Save, type: :service do
       end
     end
 
+    context "when the applicant has a department_internal_id but no role" do
+      before { applicant.update!(role: nil, department_internal_id: 666) }
+
+      it "creates the user normally, with the email" do
+        expect(UpsertRdvSolidaritesUser).to receive(:call)
+          .with(
+            rdv_solidarites_user_attributes: rdv_solidarites_user_attributes.except(:birth_name),
+            rdv_solidarites_session: rdv_solidarites_session,
+            rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
+            rdv_solidarites_user_id: nil
+          )
+        subject
+      end
+    end
+
     context "when the applicant is a conjoint" do
       before { applicant.update!(role: "conjoint") }
 

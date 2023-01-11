@@ -6,16 +6,19 @@ module RdvSolidaritesWebhooks
     def perform(data, meta)
       @data = data.deep_symbolize_keys
       @meta = meta.deep_symbolize_keys
-      verify_organisation!
-      verify_motif!
-      return if empty_applicants_on_new_rdv?
-      return if unhandled_category?
 
-      # for a convocation, we have to verify the lieu is up to date in db
-      verify_lieu_sync! if rdv_convocable?
-      upsert_or_delete_rdv
-      invalidate_related_invitations if created_event?
-      send_outgoing_webhooks
+      Rdv.with_advisory_lock("processing_rdv_#{rdv_solidarites_rdv.id}") do
+        verify_organisation!
+        verify_motif!
+        return if empty_applicants_on_new_rdv?
+        return if unhandled_category?
+
+        # for a convocation, we have to verify the lieu is up to date in db
+        verify_lieu_sync! if rdv_convocable?
+        upsert_or_delete_rdv
+        invalidate_related_invitations if created_event?
+        send_outgoing_webhooks
+      end
     end
 
     private

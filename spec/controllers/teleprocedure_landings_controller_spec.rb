@@ -1,4 +1,4 @@
-describe TeleprocedureLandingsController, type: :controller do
+describe TeleprocedureLandingsController do
   render_views
 
   let!(:department) { create(:department, number: "13", name: "Bouches-du-Rhône") }

@@ -8,7 +8,7 @@ class ApplicantPolicy < ApplicationPolicy
   end
 
   def show?
-    (pundit_user.organisation_ids & record.organisation_ids).any? && !record.deleted?
+    pundit_user.organisation_ids.intersect?(record.organisation_ids) && !record.deleted?
   end
 
   def search?

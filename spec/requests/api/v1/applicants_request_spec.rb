@@ -1,4 +1,4 @@
-describe "api/v1/applicants/create_and_invite_many requests", type: :request do
+describe "Applicants API" do
   let!(:agent) { create(:agent, organisations: [organisation]) }
   let!(:rdv_solidarites_organisation_id) { 42 }
   let!(:organisation) do
@@ -82,7 +82,7 @@ describe "api/v1/applicants/create_and_invite_many requests", type: :request do
 
     it "is a success" do
       subject
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       result = JSON.parse(response.body)
       expect(result["success"]).to eq(true)
     end
@@ -94,7 +94,7 @@ describe "api/v1/applicants/create_and_invite_many requests", type: :request do
 
       it "returns unauthorized" do
         subject
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(:unauthorized)
         result = JSON.parse(response.body)
         expect(result["errors"]).to eq(["Les identifiants de session RDV-Solidarités sont invalides"])
       end
@@ -113,7 +113,7 @@ describe "api/v1/applicants/create_and_invite_many requests", type: :request do
       it "returns 422" do
         subject
         expect(response).not_to be_successful
-        expect(response.status).to eq(422)
+        expect(response).to have_http_status(:unprocessable_entity)
         expect(JSON.parse(response.body)["success"]).to eq(false)
         expect(JSON.parse(response.body)["errors"]).to eq(
           ["L'agent ne fait pas partie d'une organisation sur RDV-Insertion"]
@@ -126,7 +126,7 @@ describe "api/v1/applicants/create_and_invite_many requests", type: :request do
 
       it "returns 404" do
         subject
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(:not_found)
       end
     end
 
@@ -139,7 +139,7 @@ describe "api/v1/applicants/create_and_invite_many requests", type: :request do
 
         it "returns 422" do
           subject
-          expect(response.status).to eq(422)
+          expect(response).to have_http_status(:unprocessable_entity)
           result = JSON.parse(response.body)
           expect(result["errors"]).to include({ "Entrée 1 - 11111444" => { "last_name" => ["doit être rempli(e)"] } })
           expect(result["errors"]).to include({ "Entrée 2" => { "department_internal_id" => ["doit être rempli(e)"] } })
@@ -158,7 +158,7 @@ describe "api/v1/applicants/create_and_invite_many requests", type: :request do
 
         it "returns 422" do
           subject
-          expect(response.status).to eq(422)
+          expect(response).to have_http_status(:unprocessable_entity)
           result = JSON.parse(response.body)
           expect(result["errors"]).to include("Les allocataires doivent être envoyés par lots de 25 maximum")
         end
@@ -176,7 +176,7 @@ describe "api/v1/applicants/create_and_invite_many requests", type: :request do
 
         it "returns 422" do
           subject
-          expect(response.status).to eq(422)
+          expect(response).to have_http_status(:unprocessable_entity)
           result = JSON.parse(response.body)
           expect(result["errors"]).to include({ "Entrée 1" => "Catégorie de motifs rsa_accompagnement invalide" })
         end
@@ -194,7 +194,7 @@ describe "api/v1/applicants/create_and_invite_many requests", type: :request do
 
       it "returns 403" do
         subject
-        expect(response.status).to eq(403)
+        expect(response).to have_http_status(:forbidden)
         result = JSON.parse(response.body)
         expect(result["errors"]).to eq(["Votre compte ne vous permet pas d'effectuer cette action"])
       end

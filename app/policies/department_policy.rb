@@ -1,6 +1,6 @@
 class DepartmentPolicy < ApplicationPolicy
   def upload?
-    (pundit_user.organisation_ids & record.organisation_ids).any?
+    pundit_user.organisation_ids.intersect?(record.organisation_ids)
   end
 
   def index?

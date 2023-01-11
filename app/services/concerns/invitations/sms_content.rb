@@ -12,7 +12,7 @@ module Invitations
         " Pour choisir la date et l'horaire du RDV, " \
         "cliquez sur le lien suivant dans les #{number_of_days_to_accept_invitation} jours: " \
         "#{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
-        "#{mandatory_warning}"\
+        "#{mandatory_warning}" \
         "#{punishable_warning}" \
         "En cas de problème technique, contactez le #{help_phone_number}."
     end
@@ -20,13 +20,13 @@ module Invitations
     def content_for_rsa_orientation_on_phone_platform
       "#{applicant.full_name},\nVous êtes bénéficiaire du RSA et vous devez contacter la plateforme départementale " \
         "afin de démarrer votre parcours d'accompagnement. Pour cela, merci d'appeler le " \
-        "#{help_phone_number} dans un délai de #{number_of_days_to_accept_invitation} jours. "\
+        "#{help_phone_number} dans un délai de #{number_of_days_to_accept_invitation} jours. " \
         "Cet appel est nécessaire pour le traitement de votre dossier."
     end
 
     def content_for_rsa_insertion_offer
-      "#{applicant.full_name},\nVous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement en parcours "\
-        "professionnel ou socio-professionel. Pour profiter au mieux de cet accompagnement, nous vous invitons "\
+      "#{applicant.full_name},\nVous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement en parcours " \
+        "professionnel ou socio-professionel. Pour profiter au mieux de cet accompagnement, nous vous invitons " \
         "à vous inscrire directement et librement aux ateliers et formations de votre choix en cliquant sur le lien " \
         "suivant: #{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
         "En cas de problème technique, contactez le #{help_phone_number}."
@@ -40,8 +40,8 @@ module Invitations
         " Le lien de prise de RDV suivant expire dans #{number_of_days_before_expiration} " \
         "jours: " \
         "#{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
-        "#{mandatory_warning}"\
-        "#{punishable_warning}"\
+        "#{mandatory_warning}" \
+        "#{punishable_warning}" \
         "En cas de problème technique, contactez le #{help_phone_number}."
     end
 
