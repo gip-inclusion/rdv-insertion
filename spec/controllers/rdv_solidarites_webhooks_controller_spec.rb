@@ -3,7 +3,7 @@ describe RdvSolidaritesWebhooksController, type: :controller do
     allow(RdvSolidaritesWebhooks::ProcessRdvJob).to receive(:perform_async)
     allow(RdvSolidaritesWebhooks::ProcessUserJob).to receive(:perform_async)
     allow(RdvSolidaritesWebhooks::ProcessUserProfileJob).to receive(:perform_async)
-    ENV['RDV_SOLIDARITES_SECRET'] = "i am secret"
+    ENV["RDV_SOLIDARITES_SECRET"] = "i am secret"
   end
 
   let!(:meta) { { event: "created", model: "Rdv" } }

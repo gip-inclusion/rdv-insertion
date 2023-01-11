@@ -62,7 +62,7 @@ describe Stats::ComputeStats, type: :service do
                  status: "seen")
   end
   let!(:part_orient_rdv) do
-    create(:participation, rdv_context: rdv_context_orientation, applicant: applicant1, status: 'seen')
+    create(:participation, rdv_context: rdv_context_orientation, applicant: applicant1, status: "seen")
   end
 
   let!(:orientation_rdv2) do
@@ -73,7 +73,7 @@ describe Stats::ComputeStats, type: :service do
                  status: "noshow")
   end
   let!(:part_orient_rdv2) do
-    create(:participation, rdv_context: rdv_context_orientation, applicant: applicant2, status: 'noshow')
+    create(:participation, rdv_context: rdv_context_orientation, applicant: applicant2, status: "noshow")
   end
 
   let!(:accompagnement_rdv) do

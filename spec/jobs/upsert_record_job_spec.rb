@@ -10,7 +10,7 @@ describe UpsertRecordJob, type: :job do
       participations_attributes: [
         {
           id: nil,
-          status: 'unknown',
+          status: "unknown",
           applicant_id: applicant_id,
           rdv_solidarites_participation_id: 998
         }

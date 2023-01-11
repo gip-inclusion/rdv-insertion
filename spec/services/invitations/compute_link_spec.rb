@@ -48,7 +48,7 @@ describe Invitations::ComputeLink, type: :service do
           )
         )
 
-      ENV['RDV_SOLIDARITES_URL'] = 'https://www.rdv-solidarites.fr'
+      ENV["RDV_SOLIDARITES_URL"] = "https://www.rdv-solidarites.fr"
     end
 
     it("is a success") { is_a_success }

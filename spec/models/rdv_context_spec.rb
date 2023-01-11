@@ -88,7 +88,7 @@ describe RdvContext do
               create(
                 :participation,
                 applicant: applicant,
-                status: 'seen',
+                status: "seen",
                 rdv_context: rdv_context
               )
             end
@@ -111,7 +111,7 @@ describe RdvContext do
               create(
                 :participation,
                 applicant: applicant,
-                status: 'seen',
+                status: "seen",
                 rdv_context: rdv_context
               )
             end
@@ -135,7 +135,7 @@ describe RdvContext do
             create(
               :participation,
               applicant: applicant,
-              status: 'unknown',
+              status: "unknown",
               rdv_context: rdv_context
             )
           end
@@ -160,7 +160,7 @@ describe RdvContext do
               create(
                 :participation,
                 applicant: applicant,
-                status: 'noshow',
+                status: "noshow",
                 rdv_context: rdv_context
               )
             end
@@ -184,7 +184,7 @@ describe RdvContext do
               create(
                 :participation,
                 applicant: applicant,
-                status: 'noshow',
+                status: "noshow",
                 rdv_context: rdv_context
               )
             end
@@ -210,7 +210,7 @@ describe RdvContext do
             create(
               :participation,
               applicant: applicant,
-              status: 'seen',
+              status: "seen",
               rdv_context: rdv_context
             )
           end
@@ -228,7 +228,7 @@ describe RdvContext do
             create(
               :participation,
               applicant: applicant,
-              status: 'noshow',
+              status: "noshow",
               rdv_context: rdv_context
             )
           end
@@ -251,7 +251,7 @@ describe RdvContext do
               create(
                 :participation,
                 applicant: applicant,
-                status: 'unknown',
+                status: "unknown",
                 rdv_context: rdv_context
               )
             end
@@ -275,7 +275,7 @@ describe RdvContext do
               create(
                 :participation,
                 applicant: applicant,
-                status: 'excused',
+                status: "excused",
                 rdv_context: rdv_context
               )
             end
@@ -298,7 +298,7 @@ describe RdvContext do
               create(
                 :participation,
                 applicant: applicant,
-                status: 'unknown',
+                status: "unknown",
                 rdv_context: rdv_context
               )
             end
@@ -350,7 +350,7 @@ describe RdvContext do
           create(
             :participation,
             applicant: applicant,
-            status: 'seen',
+            status: "seen",
             rdv_context: rdv_context
           )
         end

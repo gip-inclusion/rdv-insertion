@@ -27,7 +27,7 @@ describe Participation do
     end
   end
 
-  describe '#destroy' do
+  describe "#destroy" do
     subject { participation1.destroy }
 
     let!(:rdv) { create(:rdv, participations: [participation1]) }
@@ -36,10 +36,10 @@ describe Participation do
     let!(:rdv_context1) { create(:rdv_context, motif_category: "rsa_orientation", status: "rdv_seen") }
     let!(:rdv_context2) { create(:rdv_context, motif_category: "rsa_accompagnement", status: "rdv_seen") }
 
-    it 'schedules a refresh_applicant_context_statuses job' do
+    it "schedules a refresh_applicant_context_statuses job" do
       expect { subject }.to change { RefreshRdvContextStatusesJob.jobs.size }.by(1)
       last_job = RefreshRdvContextStatusesJob.jobs.last
-      expect(last_job['args']).to eq([rdv_context1.id])
+      expect(last_job["args"]).to eq([rdv_context1.id])
     end
   end
 end

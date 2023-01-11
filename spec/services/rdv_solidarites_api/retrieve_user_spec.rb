@@ -12,14 +12,14 @@ describe RdvSolidaritesApi::RetrieveUser, type: :service do
 
   describe "#call" do
     let!(:user) do
-      { 'id' => 5, 'first_name' => 'Dimitri', 'last_name' => 'Payet', 'phone_number' => '+33782122222' }
+      { "id" => 5, "first_name" => "Dimitri", "last_name" => "Payet", "phone_number" => "+33782122222" }
     end
 
     before do
       allow(rdv_solidarites_session).to receive(:rdv_solidarites_client)
         .and_return(rdv_solidarites_client)
       allow(rdv_solidarites_client).to receive(:get_user)
-        .and_return(OpenStruct.new(success?: true, body: { 'user' => user }.to_json))
+        .and_return(OpenStruct.new(success?: true, body: { "user" => user }.to_json))
     end
 
     context "when it succeeds" do
@@ -34,14 +34,14 @@ describe RdvSolidaritesApi::RetrieveUser, type: :service do
       it "returns the user" do
         expect(subject.user).to be_an_instance_of(RdvSolidarites::User)
         expect(subject.user.id).to eq(5)
-        expect(subject.user.phone_number).to eq('+33782122222')
+        expect(subject.user.phone_number).to eq("+33782122222")
       end
     end
 
     context "when it fails" do
       before do
         allow(rdv_solidarites_client).to receive(:get_user)
-          .and_return(OpenStruct.new(success?: false, body: { error_messages: ['some error'] }.to_json))
+          .and_return(OpenStruct.new(success?: false, body: { error_messages: ["some error"] }.to_json))
       end
 
       it("is a failure") { is_a_failure }

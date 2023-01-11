@@ -156,14 +156,14 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
                 participations_attributes: [
                   {
                     id: nil,
-                    status: 'unknown',
+                    status: "unknown",
                     applicant_id: 3,
                     rdv_solidarites_participation_id: 998,
                     rdv_context_id: rdv_context.id
                   },
                   {
                     id: nil,
-                    status: 'unknown',
+                    status: "unknown",
                     applicant_id: 4,
                     rdv_solidarites_participation_id: 999,
                     rdv_context_id: rdv_context2.id
@@ -201,7 +201,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
             :participation,
             applicant: applicant,
             rdv: rdv,
-            status: 'unknown',
+            status: "unknown",
             id: 1,
             rdv_solidarites_participation_id: 998
           )
@@ -211,7 +211,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
             :participation,
             applicant: applicant2,
             rdv: rdv,
-            status: 'unknown',
+            status: "unknown",
             id: 2,
             rdv_solidarites_participation_id: 999
           )
@@ -220,14 +220,14 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
           [
             {
               id: 1,
-              status: 'unknown',
+              status: "unknown",
               applicant_id: 3,
               rdv_solidarites_participation_id: 998,
               rdv_context_id: rdv_context.id
             },
             {
               id: 2,
-              status: 'seen',
+              status: "seen",
               applicant_id: 4,
               rdv_solidarites_participation_id: 999,
               rdv_context_id: rdv_context2.id
@@ -284,14 +284,14 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
               participations_attributes: [
                 {
                   id: nil,
-                  status: 'unknown',
+                  status: "unknown",
                   applicant_id: 3,
                   rdv_solidarites_participation_id: 998,
                   rdv_context_id: rdv_context.id
                 },
                 {
                   id: nil,
-                  status: 'unknown',
+                  status: "unknown",
                   applicant_id: 4,
                   rdv_solidarites_participation_id: 999,
                   rdv_context_id: rdv_context2.id

@@ -80,7 +80,7 @@ describe Applicants::Save, type: :service do
         allow(applicant).to receive(:save)
           .and_return(false)
         allow(applicant).to receive_message_chain(:errors, :full_messages, :to_sentence)
-          .and_return('some error')
+          .and_return("some error")
       end
 
       it "is a failure" do
@@ -88,7 +88,7 @@ describe Applicants::Save, type: :service do
       end
 
       it "stores the error" do
-        expect(subject.errors).to eq(['some error'])
+        expect(subject.errors).to eq(["some error"])
       end
     end
 
@@ -110,7 +110,7 @@ describe Applicants::Save, type: :service do
     context "when the rdv solidarites user upsert fails" do
       before do
         allow(UpsertRdvSolidaritesUser).to receive(:call)
-          .and_return(OpenStruct.new(errors: ['some error'], success?: false))
+          .and_return(OpenStruct.new(errors: ["some error"], success?: false))
       end
 
       it "is a failure" do
@@ -118,7 +118,7 @@ describe Applicants::Save, type: :service do
       end
 
       it "stores the error" do
-        expect(subject.errors).to eq(['some error'])
+        expect(subject.errors).to eq(["some error"])
       end
     end
 
@@ -126,7 +126,7 @@ describe Applicants::Save, type: :service do
       before do
         allow(applicant).to receive(:save).and_return(false)
         allow(applicant).to receive_message_chain(:errors, :full_messages, :to_sentence)
-          .and_return('update error')
+          .and_return("update error")
       end
 
       it "is a failure" do
@@ -134,7 +134,7 @@ describe Applicants::Save, type: :service do
       end
 
       it "stores the error" do
-        expect(subject.errors).to eq(['update error'])
+        expect(subject.errors).to eq(["update error"])
       end
     end
 

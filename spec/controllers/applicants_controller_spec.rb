@@ -109,7 +109,7 @@ describe ApplicantsController, type: :controller do
       context "when the creation fails" do
         before do
           allow(Applicants::Save).to receive(:call)
-            .and_return(OpenStruct.new(success?: false, errors: ['some error']))
+            .and_return(OpenStruct.new(success?: false, errors: ["some error"]))
         end
 
         it "renders the new page" do
@@ -168,7 +168,7 @@ describe ApplicantsController, type: :controller do
       context "when the creation fails" do
         before do
           allow(Applicants::Save).to receive(:call)
-            .and_return(OpenStruct.new(success?: false, errors: ['some error']))
+            .and_return(OpenStruct.new(success?: false, errors: ["some error"]))
         end
 
         it "is not a success" do
@@ -182,7 +182,7 @@ describe ApplicantsController, type: :controller do
           post :create, params: applicant_params
           expect(response).not_to be_successful
           expect(response.status).to eq(422)
-          expect(JSON.parse(response.body)["errors"]).to eq(['some error'])
+          expect(JSON.parse(response.body)["errors"]).to eq(["some error"])
         end
       end
     end
@@ -331,7 +331,7 @@ describe ApplicantsController, type: :controller do
         create(
           :participation,
           applicant: applicant,
-          status: 'noshow',
+          status: "noshow",
           rdv_context: rdv_context
         )
       end
@@ -347,7 +347,7 @@ describe ApplicantsController, type: :controller do
         create(
           :participation,
           applicant: applicant,
-          status: 'seen',
+          status: "seen",
           rdv_context: rdv_context
         )
       end
@@ -672,7 +672,7 @@ describe ApplicantsController, type: :controller do
         create(
           :participation,
           applicant: applicant,
-          status: 'unknown',
+          status: "unknown",
           rdv_context: rdv_context1
         )
       end
@@ -681,7 +681,7 @@ describe ApplicantsController, type: :controller do
         create(
           :participation,
           applicant: applicant,
-          status: 'unknown',
+          status: "unknown",
           rdv_context: rdv_context2
         )
       end
@@ -860,7 +860,7 @@ describe ApplicantsController, type: :controller do
       context "when the creation fails" do
         before do
           allow(Applicants::Save).to receive(:call)
-            .and_return(OpenStruct.new(success?: false, errors: ['some error']))
+            .and_return(OpenStruct.new(success?: false, errors: ["some error"]))
         end
 
         it "is not a success" do
@@ -874,7 +874,7 @@ describe ApplicantsController, type: :controller do
           post :update, params: update_params
           expect(response).not_to be_successful
           expect(response.status).to eq(422)
-          expect(JSON.parse(response.body)["errors"]).to eq(['some error'])
+          expect(JSON.parse(response.body)["errors"]).to eq(["some error"])
         end
       end
     end
@@ -946,7 +946,7 @@ describe ApplicantsController, type: :controller do
       context "when the creation fails" do
         before do
           allow(Applicants::Save).to receive(:call)
-            .and_return(OpenStruct.new(success?: false, errors: ['some error']))
+            .and_return(OpenStruct.new(success?: false, errors: ["some error"]))
         end
 
         it "renders the edit page" do

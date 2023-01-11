@@ -6,7 +6,7 @@ FactoryBot.define do
     duration_in_min { 30 }
     organisation { create(:organisation) }
     motif { create(:motif) }
-    status { 'unknown' }
+    status { "unknown" }
 
     after(:build) do |rdv|
       if rdv.applicants.blank? && rdv.participations.blank?

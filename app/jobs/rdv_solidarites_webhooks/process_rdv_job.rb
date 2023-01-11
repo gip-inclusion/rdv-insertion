@@ -115,7 +115,7 @@ module RdvSolidaritesWebhooks
     end
 
     def rdv_context_for(applicant)
-      rdv_contexts.find { _1.applicant_id == applicant.id}
+      rdv_contexts.find { _1.applicant_id == applicant.id }
     end
 
     def related_invitations

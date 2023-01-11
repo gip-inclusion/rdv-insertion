@@ -61,7 +61,7 @@ describe Messengers::SendEmail, type: :service do
     end
 
     context "when the email format is not valid" do
-      before { applicant.email = 'someinvalidmail' }
+      before { applicant.email = "someinvalidmail" }
 
       it("is a failure") { is_a_failure }
 

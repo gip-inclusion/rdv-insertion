@@ -4,7 +4,7 @@ class MattermostClient
       return unless Rails.env.production?
 
       Faraday.post(
-        ENV['MATTERMOST_WEBHOOKS_URL'],
+        ENV["MATTERMOST_WEBHOOKS_URL"],
         { text: text }.to_json,
         { "Content-Type" => "application/json" }
       )

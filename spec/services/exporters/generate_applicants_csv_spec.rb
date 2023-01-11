@@ -42,7 +42,7 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
                  created_by: "user",
                  participations: [part_rdv])
   end
-  let!(:part_rdv) { create(:participation, applicant: applicant1, status: 'seen', rdv_context: rdv_context) }
+  let!(:part_rdv) { create(:participation, applicant: applicant1, status: "seen", rdv_context: rdv_context) }
 
   let!(:first_invitation) do
     create(:invitation, applicant: applicant1, format: "email", sent_at: Time.zone.parse("2022-05-21"))
