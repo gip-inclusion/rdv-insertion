@@ -8,6 +8,7 @@ describe "Agents can invite from index page", js: true do
     )
   end
   let!(:motif_category) { "rsa_follow_up" }
+  let!(:rdv_solidarites_token) { "123456" }
   let!(:rdv_context) { create(:rdv_context, applicant: applicant, motif_category: motif_category) }
   let!(:configuration) do
     create(
@@ -19,7 +20,7 @@ describe "Agents can invite from index page", js: true do
 
   before do
     setup_capybara_session(agent)
-    stub_rdv_solidarites_invitation
+    stub_rdv_solidarites_invitation_requests
     stub_geo_api_request
   end
 
@@ -43,7 +44,11 @@ describe "Agents can invite from index page", js: true do
 
   context "when an invitation has been sent" do
     let!(:sms_invitation) do
-      create(:invitation, format: "sms", applicant: applicant, rdv_context: rdv_context, sent_at: 2.days.ago)
+      create(
+        :invitation,
+        format: "sms", applicant: applicant, rdv_context: rdv_context, sent_at: 2.days.ago,
+        rdv_solidarites_token: rdv_solidarites_token
+      )
     end
 
     it "can invite in the format where invitation has not been sent" do
@@ -71,7 +76,11 @@ describe "Agents can invite from index page", js: true do
 
     context "when the applicant has been invited prior to the rdv" do
       let!(:sms_invitation) do
-        create(:invitation, format: "sms", applicant: applicant, rdv_context: rdv_context, sent_at: 6.days.ago)
+        create(
+          :invitation,
+          format: "sms", applicant: applicant, rdv_context: rdv_context, sent_at: 6.days.ago,
+          rdv_solidarites_token: rdv_solidarites_token
+        )
       end
 
       it "can invite the applicant in all format" do
@@ -93,7 +102,11 @@ describe "Agents can invite from index page", js: true do
 
     context "when the invitation has been sent after the rdv" do
       let!(:sms_invitation) do
-        create(:invitation, format: "sms", applicant: applicant, rdv_context: rdv_context, sent_at: 2.days.ago)
+        create(
+          :invitation,
+          format: "sms", applicant: applicant, rdv_context: rdv_context, sent_at: 2.days.ago,
+          rdv_solidarites_token: rdv_solidarites_token
+        )
       end
 
       it "can invite in the format where invitation has not been sent" do
@@ -120,7 +133,11 @@ describe "Agents can invite from index page", js: true do
       end
 
       let!(:sms_invitation) do
-        create(:invitation, format: "sms", applicant: applicant, rdv_context: rdv_context, sent_at: 2.days.ago)
+        create(
+          :invitation,
+          format: "sms", applicant: applicant, rdv_context: rdv_context, sent_at: 2.days.ago,
+          rdv_solidarites_token: rdv_solidarites_token
+        )
       end
 
       it "cannot invite in any format" do
@@ -135,10 +152,14 @@ describe "Agents can invite from index page", js: true do
     end
   end
 
-  def stub_rdv_solidarites_invitation
+  def stub_rdv_solidarites_invitation_requests
     stub_request(:post, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/users/#{applicant.rdv_solidarites_user_id}/invite")
       .with(headers: { "Content-Type" => "application/json" }.merge(session_hash(agent.email)))
       .to_return(body: { "invitation_token" => "123456" }.to_json)
+
+    stub_request(:get, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/invitations/#{rdv_solidarites_token}")
+      .with(headers: { "Content-Type" => "application/json" }.merge(session_hash(agent.email)))
+      .to_return(status: 404)
   end
 
   def stub_geo_api_request
