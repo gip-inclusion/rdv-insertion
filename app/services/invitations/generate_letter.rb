@@ -65,6 +65,7 @@ module Invitations
 
       locals.merge(
         rdv_title: rdv_title,
+        applicant_title: applicant_title,
         display_mandatory_warning: display_mandatory_warning,
         display_punishable_warning: display_punishable_warning,
         rdv_purpose: rdv_purpose

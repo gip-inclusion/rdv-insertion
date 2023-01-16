@@ -1,5 +1,5 @@
 module Templatable
-  delegate :rdv_purpose, :rdv_title_by_phone, :rdv_title, :display_mandatory_warning,
+  delegate :rdv_purpose, :rdv_title_by_phone, :rdv_title, :applicant_title, :display_mandatory_warning,
            :display_punishable_warning,
            to: :message_template
 

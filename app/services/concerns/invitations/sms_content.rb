@@ -8,7 +8,7 @@ module Invitations
     private
 
     def regular_invitation_content
-      "#{applicant.full_name},\nVous êtes bénéficiaire du RSA et vous devez vous présenter à un #{rdv_title}." \
+      "#{applicant.full_name},\nVous êtes #{applicant_title} et vous devez vous présenter à un #{rdv_title}." \
         " Pour choisir la date et l'horaire du RDV, " \
         "cliquez sur le lien suivant dans les #{number_of_days_to_accept_invitation} jours: " \
         "#{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
@@ -35,7 +35,7 @@ module Invitations
     ### Reminders
 
     def regular_invitation_reminder_content
-      "#{applicant.full_name},\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours " \
+      "#{applicant.full_name},\nEn tant que #{applicant_title}, vous avez reçu un message il y a 3 jours " \
         "vous invitant à prendre RDV au créneau de votre choix afin de #{rdv_purpose}." \
         " Le lien de prise de RDV suivant expire dans #{number_of_days_before_expiration} " \
         "jours: " \
