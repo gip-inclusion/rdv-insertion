@@ -9,7 +9,7 @@ FactoryBot.define do
     status { "unknown" }
 
     after(:build) do |rdv|
-      if rdv.applicants.blank? && rdv.participations.blank?
+      if rdv.participations.blank?
         rdv.applicants = [create(:applicant)]
         rdv.participations.first.rdv_context = create(:rdv_context)
       end

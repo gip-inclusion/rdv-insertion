@@ -1,8 +1,8 @@
 FactoryBot.define do
   factory :participation do
-    applicant { create(:applicant) }
-    rdv { create(:rdv) }
-    rdv_context { create(:rdv_context) }
+    association :applicant
+    association :rdv
+    association :rdv_context
     sequence(:rdv_solidarites_participation_id)
 
     after(:build) do |participation|
