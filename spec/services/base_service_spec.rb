@@ -43,7 +43,7 @@ describe BaseService, type: :service do
     context "when the result has errors" do
       before do
         allow(service).to receive(:result)
-          .and_return(OpenStruct.new(errors: ['some error occured']))
+          .and_return(OpenStruct.new(errors: ["some error occured"]))
       end
 
       it "is a failure" do

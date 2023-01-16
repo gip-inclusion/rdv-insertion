@@ -41,7 +41,7 @@ describe RdvSolidaritesApi::UpdateUser, type: :service do
           .with(rdv_solidarites_user_id, user_attributes)
           .and_return(OpenStruct.new(body: response_body, success?: true))
         allow(RdvSolidarites::User).to receive(:new)
-          .with(parsed_response['user'])
+          .with(parsed_response["user"])
           .and_return(rdv_solidarites_user)
       end
 
@@ -55,7 +55,7 @@ describe RdvSolidaritesApi::UpdateUser, type: :service do
     end
 
     context "when the response is unsuccessful" do
-      let(:response_body) { { error_messages: ['some error'] }.to_json }
+      let(:response_body) { { error_messages: ["some error"] }.to_json }
 
       before do
         allow(rdv_solidarites_client).to receive(:update_user)

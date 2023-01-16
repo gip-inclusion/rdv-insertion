@@ -40,7 +40,7 @@ describe RdvSolidaritesApi::RetrieveOrganisations, type: :service do
     context "when it fails" do
       before do
         allow(rdv_solidarites_client).to receive(:get_organisations)
-          .and_return(OpenStruct.new(success?: false, body: { error_messages: ['some error'] }.to_json))
+          .and_return(OpenStruct.new(success?: false, body: { error_messages: ["some error"] }.to_json))
       end
 
       it("is a failure") { is_a_failure }

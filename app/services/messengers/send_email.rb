@@ -27,7 +27,7 @@ module Messengers
     end
 
     def send_email
-      @mailer_class.with(@email_kwargs).send(@mailer_method).deliver_now
+      @mailer_class.with(**@email_kwargs).send(@mailer_method).deliver_now
     end
   end
 end

@@ -1,10 +1,11 @@
-describe DeleteRdvJob, type: :job do
+describe DeleteRdvJob do
   subject do
     described_class.new.perform(rdv_solidarites_rdv_id)
   end
 
   let!(:rdv_solidarites_rdv_id) { { id: 1 } }
-  let!(:rdv) { create(:rdv, rdv_contexts: [rdv_context]) }
+  let!(:rdv) { create(:rdv, participations: [participation]) }
+  let!(:participation) { create(:participation, rdv_context: rdv_context) }
   let!(:rdv_context) { create(:rdv_context) }
 
   describe "#perform" do

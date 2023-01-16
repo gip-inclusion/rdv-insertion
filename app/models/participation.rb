@@ -9,6 +9,7 @@ class Participation < ApplicationRecord
   validates :rdv_solidarites_participation_id, uniqueness: true, allow_nil: true
 
   belongs_to :rdv
+  belongs_to :rdv_context
   belongs_to :applicant
   after_commit :refresh_applicant_context_statuses, on: [:destroy]
   after_commit :notify_applicant, if: :rdv_notify_applicants?, on: [:create, :update]
@@ -16,7 +17,7 @@ class Participation < ApplicationRecord
   private
 
   def refresh_applicant_context_statuses
-    RefreshRdvContextStatusesJob.perform_async(applicant.rdv_context_ids)
+    RefreshRdvContextStatusesJob.perform_async(rdv_context_id)
   end
 
   def status_reloaded_from_cancelled?

@@ -60,7 +60,7 @@ describe Messengers::SendSms, type: :service do
     end
 
     context "when the phone number is blank" do
-      let!(:phone_number) { '' }
+      let!(:phone_number) { "" }
 
       it("is a failure") { is_a_failure }
 
@@ -70,7 +70,7 @@ describe Messengers::SendSms, type: :service do
     end
 
     context "when the phone number is not a mobile" do
-      let!(:phone_number) { '0123456789' }
+      let!(:phone_number) { "0123456789" }
 
       it("is a failure") { is_a_failure }
 
@@ -80,7 +80,7 @@ describe Messengers::SendSms, type: :service do
     end
 
     context "when the phone number is not a metropolitan mobile" do
-      let!(:phone_number) { '0692926878' }
+      let!(:phone_number) { "0692926878" }
 
       it("is a success") { is_a_success }
     end

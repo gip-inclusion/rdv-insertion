@@ -1,4 +1,4 @@
-describe SendInvitationRemindersJob, type: :job do
+describe SendInvitationRemindersJob do
   subject do
     described_class.new.perform
   end

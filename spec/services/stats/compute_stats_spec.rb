@@ -54,52 +54,61 @@ describe Stats::ComputeStats, type: :service do
 
   # -------------------------------------- rdvs for relevant applicants ----------------------------------------
   let!(:orientation_rdv) do
-    create(:rdv, rdv_contexts: [rdv_context_orientation], organisation: relevant_organisation,
+    create(:rdv, organisation: relevant_organisation,
+                 participations: [participation_orientation_rdv],
                  created_at: "2022-04-07 10:00:00 UTC",
                  starts_at: "2022-04-08 10:00:00 UTC",
                  created_by: "user",
                  status: "seen")
   end
-  let!(:part_orient_rdv) { create(:participation, rdv: orientation_rdv, applicant: applicant1, status: 'seen') }
+  let!(:participation_orientation_rdv) do
+    create(:participation, rdv_context: rdv_context_orientation, applicant: applicant1, status: "seen")
+  end
 
   let!(:orientation_rdv2) do
-    create(:rdv, rdv_contexts: [rdv_context_orientation], organisation: relevant_organisation,
+    create(:rdv, organisation: relevant_organisation,
+                 participations: [participation_orientation_rdv2],
                  created_at: "2022-05-02 10:00:00 UTC",
                  starts_at: "2022-05-07 10:00:00 UTC",
                  status: "noshow")
   end
-  let!(:part_orient_rdv2) { create(:participation, rdv: orientation_rdv2, applicant: applicant2, status: 'noshow') }
+  let!(:participation_orientation_rdv2) do
+    create(:participation, rdv_context: rdv_context_orientation, applicant: applicant2, status: "noshow")
+  end
 
   let!(:accompagnement_rdv) do
-    create(:rdv, rdv_contexts: [rdv_context_accompagnement], organisation: relevant_organisation)
+    create(:rdv, participations: [participation_accompagnement_rdv], organisation: relevant_organisation)
   end
-  let!(:part_accomp_rdv) { create(:participation, rdv: accompagnement_rdv, applicant: applicant1) }
+  let!(:participation_accompagnement_rdv) do
+    create(:participation, rdv_context: rdv_context_accompagnement, applicant: applicant1)
+  end
 
   let!(:accompagnement_rdv2) do
-    create(:rdv, rdv_contexts: [rdv_context_accompagnement2], organisation: relevant_organisation,
+    create(:rdv, participations: [participation_accompagnement_rdv2], organisation: relevant_organisation,
                  created_at: "2022-05-08 10:00:00 UTC",
                  starts_at: "2022-05-11 10:00:00 UTC")
   end
-  let!(:part_accomp_rdv2) { create(:participation, rdv: accompagnement_rdv2, applicant: applicant2) }
+  let!(:participation_accompagnement_rdv2) do
+    create(:participation, rdv_context: rdv_context_accompagnement2, applicant: applicant2)
+  end
 
   # We are creating irrelevant applicants and their related records : they should appear in some general counts, but
   # be filtered when computing precise stats
   # --------------------------- irrelevant applicants (apart for general applicants count) ---------------------
-  let!(:applicant_from_irrelevant_organisation) do
+  let!(:irrelevant_appl) do
     create(:applicant, organisations: [irrelevant_organisation],
                        department: department,
-                       rdvs: [irrelevant_rdv],
                        rdv_contexts: [rdv_context_accompagnement],
                        created_at: "2022-04-01 10:00:00 UTC")
   end
-  let!(:applicant_deleted) do
+  let!(:deleted_appl) do
     create(:applicant, organisations: [relevant_organisation], department: department,
-                       deleted_at: 2.days.ago, rdvs: [irrelevant_rdv2],
+                       deleted_at: 2.days.ago,
                        created_at: "2022-05-01 10:00:00 UTC")
   end
-  let!(:applicant_archived) do
+  let!(:archived_appl) do
     create(:applicant, organisations: [relevant_organisation], department: department, archived_at: 2.days.ago,
-                       rdvs: [irrelevant_rdv3], created_at: "2022-05-01 10:00:00 UTC")
+                       created_at: "2022-05-01 10:00:00 UTC")
   end
 
   # -------------------------------------------- irrelevant invitation -----------------------------------------
@@ -107,9 +116,13 @@ describe Stats::ComputeStats, type: :service do
 
   # ----------------------------- irrelevant rdvs (apart for general rdvs count) -------------------------------
   # They belong to a relevant organisation but to irrelevant applicants (see above)
-  let!(:irrelevant_rdv) { create(:rdv, organisation: relevant_organisation) }
-  let!(:irrelevant_rdv2) { create(:rdv, organisation: relevant_organisation) }
-  let!(:irrelevant_rdv3) { create(:rdv, organisation: relevant_organisation) }
+  let!(:irrelevant_rdv) { create(:rdv, organisation: relevant_organisation, participations: [irrelevant_part]) }
+  let!(:irrelevant_rdv2) { create(:rdv, organisation: relevant_organisation, participations: [irrelevant_part2]) }
+  let!(:irrelevant_rdv3) { create(:rdv, organisation: relevant_organisation, participations: [irrelevant_part3]) }
+  # ----------------------------- irrelevant participations -------------------------------
+  let!(:irrelevant_part) { create(:participation, rdv_context: rdv_context_accompagnement, applicant: irrelevant_appl) }
+  let!(:irrelevant_part2) { create(:participation, rdv_context: rdv_context_accompagnement, applicant: deleted_appl) }
+  let!(:irrelevant_part3) { create(:participation, rdv_context: rdv_context_accompagnement, applicant: archived_appl) }
 
   # ---------------------------------------------- irrelevant agent --------------------------------------------
   let!(:irrelevant_agent) { create(:agent) } # he does not belong to the department

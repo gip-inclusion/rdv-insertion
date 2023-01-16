@@ -22,7 +22,7 @@ class Templating::ApplicantMessages
     end
 
     def file_path
-      Rails.root.join('config/templates/applicant_messages.yml').to_s
+      Rails.root.join("config/templates/applicant_messages.yml").to_s
     end
   end
 

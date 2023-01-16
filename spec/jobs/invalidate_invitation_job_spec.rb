@@ -1,4 +1,4 @@
-describe InvalidateInvitationJob, type: :job do
+describe InvalidateInvitationJob do
   subject do
     described_class.new.perform(invitation_id)
   end

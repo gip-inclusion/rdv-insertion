@@ -20,8 +20,21 @@ class ApplicantsController < ApplicationController
   before_action :retrieve_applicants, only: [:search]
   after_action :store_back_to_list_url, only: [:index]
 
+  def index
+    respond_to do |format|
+      format.html
+      format.csv { send_applicants_csv }
+    end
+  end
+
+  def show; end
+
   def new
     @applicant = Applicant.new(department: @department)
+    authorize @applicant
+  end
+
+  def edit
     authorize @applicant
   end
 
@@ -39,21 +52,8 @@ class ApplicantsController < ApplicationController
     end
   end
 
-  def index
-    respond_to do |format|
-      format.html
-      format.csv { send_applicants_csv }
-    end
-  end
-
-  def show; end
-
   def search
     render json: { success: true, applicants: @applicants }
-  end
-
-  def edit
-    authorize @applicant
   end
 
   def update
@@ -103,7 +103,7 @@ class ApplicantsController < ApplicationController
     if save_applicant.success?
       redirect_to(after_save_path)
     else
-      flash.now[:error] = save_applicant.errors&.join(',')
+      flash.now[:error] = save_applicant.errors&.join(",")
       render page, status: :unprocessable_entity
     end
   end
@@ -272,7 +272,12 @@ class ApplicantsController < ApplicationController
   end
 
   def retrieve_applicants
-    @applicants = policy_scope(Applicant).preload(:organisations, :rdvs, :agents, invitations: [:rdv_context]).distinct
+    @applicants = policy_scope(Applicant).preload(
+      :rdvs, :agents,
+      rdv_contexts: [:participations],
+      invitations: :rdv_context,
+      organisations: [:department, :configurations]
+    ).distinct
     @applicants = @applicants
                   .where(department_internal_id: params.require(:applicants)[:department_internal_ids])
                   .or(@applicants.where(uid: params.require(:applicants)[:uids]))

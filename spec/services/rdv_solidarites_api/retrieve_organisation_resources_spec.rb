@@ -35,7 +35,7 @@ describe RdvSolidaritesApi::RetrieveOrganisationResources, type: :service do
 
     it "retrieves the resources" do
       expect(rdv_solidarites_client).to receive(:get_organisation_users)
-        .with(rdv_solidarites_organisation_id, page, user_ids: user_ids)
+        .with(rdv_solidarites_organisation_id, page, { user_ids: user_ids })
       subject
     end
 
@@ -58,7 +58,7 @@ describe RdvSolidaritesApi::RetrieveOrganisationResources, type: :service do
     context "when response is unsuccessful" do
       before do
         allow(rdv_solidarites_client).to receive(:get_organisation_users)
-          .and_return(OpenStruct.new(success?: false, body: { error_messages: ['some error'] }.to_json))
+          .and_return(OpenStruct.new(success?: false, body: { error_messages: ["some error"] }.to_json))
       end
 
       it("is a failure") { is_a_failure }

@@ -3,11 +3,11 @@ require 'sidekiq/cron/web'
 
 def check_auth(username, password, service)
   ActiveSupport::SecurityUtils.secure_compare(
-    ::Digest::SHA256.hexdigest(username),
-    ::Digest::SHA256.hexdigest(ENV["#{service}_USERNAME"])
+    Digest::SHA256.hexdigest(username),
+    Digest::SHA256.hexdigest(ENV["#{service}_USERNAME"])
   ) & ActiveSupport::SecurityUtils.secure_compare(
-    ::Digest::SHA256.hexdigest(password),
-    ::Digest::SHA256.hexdigest(ENV["#{service}_PASSWORD"])
+    Digest::SHA256.hexdigest(password),
+    Digest::SHA256.hexdigest(ENV["#{service}_PASSWORD"])
   )
 end
 

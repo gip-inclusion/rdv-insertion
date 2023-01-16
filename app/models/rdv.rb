@@ -13,8 +13,8 @@ class Rdv < ApplicationRecord
   belongs_to :motif
   belongs_to :lieu, optional: true
   has_many :notifications, dependent: :nullify
-  has_and_belongs_to_many :rdv_contexts
   has_many :participations, dependent: :destroy
+  has_many :rdv_contexts, through: :participations
   has_many :applicants, through: :participations
   # Needed to build participations in process_rdv_job
   accepts_nested_attributes_for :participations, allow_destroy: true
@@ -54,7 +54,7 @@ class Rdv < ApplicationRecord
   end
 
   def formatted_start_time
-    starts_at.to_datetime.strftime('%H:%M')
+    starts_at.to_datetime.strftime("%H:%M")
   end
 
   def phone_number

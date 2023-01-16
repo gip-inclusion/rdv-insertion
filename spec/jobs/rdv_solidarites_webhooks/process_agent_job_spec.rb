@@ -1,4 +1,4 @@
-describe RdvSolidaritesWebhooks::ProcessAgentJob, type: :job do
+describe RdvSolidaritesWebhooks::ProcessAgentJob do
   subject do
     described_class.new.perform(data, meta)
   end

@@ -125,7 +125,7 @@ export default class Applicant {
       (rc) => rc.motif_category === this.currentMotifCategory
     );
     this.currentContextStatus = this.currentRdvContext && this.currentRdvContext.status;
-    this.rdvs = this.currentRdvContext?.rdvs || [];
+    this.participations = this.currentRdvContext?.participations || [];
     this.lastSmsInvitationSentAt = retrieveLastInvitationDate(
       upToDateApplicant.invitations,
       "sms",
@@ -212,17 +212,19 @@ export default class Applicant {
     );
   }
 
-  hasRdvs() {
-    return this.rdvs && this.rdvs.length > 0;
+  hasParticipations() {
+    return this.participations && this.participations.length > 0;
   }
 
-  sortedRdvsByCreationDate() {
-    return this.rdvs.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+  sortedParticipationsByCreationDate() {
+    return this.participations.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
   }
 
-  lastRdvCreatedAt() {
-    return this.hasRdvs()
-      ? this.sortedRdvsByCreationDate()[this.sortedRdvsByCreationDate().length - 1].created_at
+  lastParticipationCreatedAt() {
+    return this.hasParticipations()
+      ? this.sortedParticipationsByCreationDate()[
+          this.sortedParticipationsByCreationDate().length - 1
+        ].created_at
       : null;
   }
 
@@ -274,7 +276,8 @@ export default class Applicant {
     const lastInvitationDate = this.lastInvitationDate(format);
     return (
       lastInvitationDate &&
-      (!this.hasRdvs() || new Date(lastInvitationDate) > new Date(this.lastRdvCreatedAt()))
+      (!this.hasParticipations() ||
+        new Date(lastInvitationDate) > new Date(this.lastParticipationCreatedAt()))
     );
   }
 

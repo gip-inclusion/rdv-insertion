@@ -1,4 +1,4 @@
-describe ApplicantsController, type: :controller do
+describe ApplicantsController do
   let!(:department) { create(:department) }
   let!(:configuration) do
     create(
@@ -13,7 +13,7 @@ describe ApplicantsController, type: :controller do
                           department_id: department.id, configurations: [configuration])
   end
   let!(:agent) { create(:agent, organisations: [organisation]) }
-  let!(:rdv_solidarites_organisation_id) { 52 }
+  let!(:rdv_solidarites_organisation_id) { 888 }
   let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
   let(:applicant) { create(:applicant, organisations: [organisation], department: department) }
 
@@ -109,13 +109,13 @@ describe ApplicantsController, type: :controller do
       context "when the creation fails" do
         before do
           allow(Applicants::Save).to receive(:call)
-            .and_return(OpenStruct.new(success?: false, errors: ['some error']))
+            .and_return(OpenStruct.new(success?: false, errors: ["some error"]))
         end
 
         it "renders the new page" do
           post :create, params: applicant_params
           expect(response).not_to be_successful
-          expect(response.status).to eq(422)
+          expect(response).to have_http_status(:unprocessable_entity)
           expect(response.body).to match(/Créer allocataire/)
         end
       end
@@ -168,21 +168,21 @@ describe ApplicantsController, type: :controller do
       context "when the creation fails" do
         before do
           allow(Applicants::Save).to receive(:call)
-            .and_return(OpenStruct.new(success?: false, errors: ['some error']))
+            .and_return(OpenStruct.new(success?: false, errors: ["some error"]))
         end
 
         it "is not a success" do
           post :create, params: applicant_params
           expect(response).not_to be_successful
-          expect(response.status).to eq(422)
+          expect(response).to have_http_status(:unprocessable_entity)
           expect(JSON.parse(response.body)["success"]).to eq(false)
         end
 
         it "renders the errors" do
           post :create, params: applicant_params
           expect(response).not_to be_successful
-          expect(response.status).to eq(422)
-          expect(JSON.parse(response.body)["errors"]).to eq(['some error'])
+          expect(response).to have_http_status(:unprocessable_entity)
+          expect(JSON.parse(response.body)["errors"]).to eq(["some error"])
         end
       end
     end
@@ -323,23 +323,29 @@ describe ApplicantsController, type: :controller do
       let!(:rdv_orientation1) do
         create(
           :rdv,
-          status: "noshow", starts_at: "2021-10-22", motif: motif,
-          rdv_contexts: [rdv_context], organisation: organisation
+          starts_at: "2021-10-22", motif: motif,
+          organisation: organisation
         )
       end
       let!(:participation) do
-        create(:participation, rdv: rdv_orientation1, applicant: applicant, status: 'noshow', created_at: "2021-10-21")
+        create(
+          :participation,
+          rdv: rdv_orientation1, rdv_context: rdv_context, applicant: applicant, status: "noshow",
+          created_at: "2021-10-21"
+        )
       end
 
       let!(:rdv_orientation2) do
         create(
           :rdv,
-          status: "seen", starts_at: "2021-10-24", motif: motif,
-          rdv_contexts: [rdv_context], organisation: organisation
+          starts_at: "2021-10-24", motif: motif, organisation: organisation
         )
       end
       let!(:participation2) do
-        create(:participation, rdv: rdv_orientation2, applicant: applicant, status: 'seen', created_at: "2021-10-23")
+        create(
+          :participation,
+          rdv_context: rdv_context, rdv: rdv_orientation2, applicant: applicant, status: "seen", created_at: "2021-10-23"
+        )
       end
 
       let!(:rdv_context2) do
@@ -657,8 +663,24 @@ describe ApplicantsController, type: :controller do
         rdv_context2.update!(motif_category: "rsa_accompagnement")
       end
 
-      let!(:rdv) { create(:rdv, rdv_contexts: [rdv_context1]) }
-      let!(:rdv2) { create(:rdv, rdv_contexts: [rdv_context2]) }
+      let!(:rdv) { create(:rdv, participations: [participation]) }
+      let!(:participation) do
+        create(
+          :participation,
+          applicant: applicant,
+          status: "unknown",
+          rdv_context: rdv_context1
+        )
+      end
+      let!(:rdv2) { create(:rdv, participations: [participation2]) }
+      let!(:participation2) do
+        create(
+          :participation,
+          applicant: applicant,
+          status: "unknown",
+          rdv_context: rdv_context2
+        )
+      end
       let!(:notification) do
         create(
           :notification,
@@ -834,21 +856,21 @@ describe ApplicantsController, type: :controller do
       context "when the creation fails" do
         before do
           allow(Applicants::Save).to receive(:call)
-            .and_return(OpenStruct.new(success?: false, errors: ['some error']))
+            .and_return(OpenStruct.new(success?: false, errors: ["some error"]))
         end
 
         it "is not a success" do
           post :update, params: update_params
           expect(response).not_to be_successful
-          expect(response.status).to eq(422)
+          expect(response).to have_http_status(:unprocessable_entity)
           expect(JSON.parse(response.body)["success"]).to eq(false)
         end
 
         it "renders the errors" do
           post :update, params: update_params
           expect(response).not_to be_successful
-          expect(response.status).to eq(422)
-          expect(JSON.parse(response.body)["errors"]).to eq(['some error'])
+          expect(response).to have_http_status(:unprocessable_entity)
+          expect(JSON.parse(response.body)["errors"]).to eq(["some error"])
         end
       end
     end
@@ -920,13 +942,13 @@ describe ApplicantsController, type: :controller do
       context "when the creation fails" do
         before do
           allow(Applicants::Save).to receive(:call)
-            .and_return(OpenStruct.new(success?: false, errors: ['some error']))
+            .and_return(OpenStruct.new(success?: false, errors: ["some error"]))
         end
 
         it "renders the edit page" do
           patch :update, params: update_params
           expect(response).not_to be_successful
-          expect(response.status).to eq(422)
+          expect(response).to have_http_status(:unprocessable_entity)
         end
       end
     end

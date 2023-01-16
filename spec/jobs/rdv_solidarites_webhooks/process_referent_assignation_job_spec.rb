@@ -1,4 +1,4 @@
-describe RdvSolidaritesWebhooks::ProcessReferentAssignationJob, type: :job do
+describe RdvSolidaritesWebhooks::ProcessReferentAssignationJob do
   subject do
     described_class.new.perform(data, meta)
   end

@@ -1,13 +1,12 @@
 FactoryBot.define do
   factory :participation do
-    applicant { create(:applicant) }
-    rdv { create(:rdv) }
+    association :applicant
+    association :rdv
+    association :rdv_context
     sequence(:rdv_solidarites_participation_id)
 
     after(:build) do |participation|
-      next if participation.status.present?
-
-      participation.status = participation.rdv.status
+      participation.status = participation.rdv.status if participation.status.blank?
     end
   end
 end

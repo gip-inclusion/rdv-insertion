@@ -118,7 +118,7 @@ describe Invitations::SaveAndSend, type: :service do
         allow(invitation).to receive(:save)
           .and_return(false)
         allow(invitation).to receive_message_chain(:errors, :full_messages, :to_sentence)
-          .and_return('some error')
+          .and_return("some error")
       end
 
       it "is a failure" do
@@ -126,7 +126,7 @@ describe Invitations::SaveAndSend, type: :service do
       end
 
       it "stores the error" do
-        expect(subject.errors).to eq(['some error'])
+        expect(subject.errors).to eq(["some error"])
       end
     end
   end

@@ -1,4 +1,4 @@
-describe SessionsController, type: :controller do
+describe SessionsController do
   render_views
 
   let!(:organisation) { create(:organisation) }
@@ -96,7 +96,7 @@ describe SessionsController, type: :controller do
         it "is a failure" do
           post :create
           expect(response).not_to be_successful
-          expect(response.status).to eq(401)
+          expect(response).to have_http_status(:unauthorized)
           expect(JSON.parse(response.body)["errors"]).to eq(
             ["Les identifiants de session RDV-Solidarités sont invalides"]
           )
@@ -109,7 +109,7 @@ describe SessionsController, type: :controller do
         it "is a failure" do
           post :create
           expect(response).not_to be_successful
-          expect(response.status).to eq(422)
+          expect(response).to have_http_status(:unprocessable_entity)
           expect(JSON.parse(response.body)["success"]).to eq(false)
           expect(JSON.parse(response.body)["errors"]).to eq(
             ["L'agent ne fait pas partie d'une organisation sur RDV-Insertion"]
@@ -128,7 +128,7 @@ describe SessionsController, type: :controller do
         it "is a failure" do
           post :create
           expect(response).not_to be_successful
-          expect(response.status).to eq(422)
+          expect(response).to have_http_status(:unprocessable_entity)
           expect(JSON.parse(response.body)["success"]).to eq(false)
           expect(JSON.parse(response.body)["errors"]).to eq(["Update impossible"])
         end

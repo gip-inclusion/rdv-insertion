@@ -7,7 +7,7 @@ module RdvSolidaritesApi
 
     def call
       request!
-      result.user = RdvSolidarites::User.new(rdv_solidarites_response_body['user'].deep_symbolize_keys)
+      result.user = RdvSolidarites::User.new(rdv_solidarites_response_body["user"].deep_symbolize_keys)
     end
 
     private
