@@ -49,14 +49,14 @@ module Notifications
     end
 
     def mandatory_warning
-      display_mandatory_warning ? 'Ce RDV est obligatoire. ' : ''
+      display_mandatory_warning ? "Ce RDV est obligatoire. " : ""
     end
 
     def punishable_warning
       if display_punishable_warning
         "En cas d'absence, le versement de votre RSA pourra être suspendu ou réduit. "
       else
-        ''
+        ""
       end
     end
 

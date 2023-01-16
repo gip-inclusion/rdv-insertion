@@ -1,7 +1,7 @@
 class RdvSolidaritesClient
   def initialize(rdv_solidarites_session:)
     @rdv_solidarites_session = rdv_solidarites_session
-    @url = ENV['RDV_SOLIDARITES_URL']
+    @url = ENV["RDV_SOLIDARITES_URL"]
   end
 
   def create_user(request_body)

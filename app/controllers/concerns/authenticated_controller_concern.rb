@@ -11,7 +11,7 @@ module AuthenticatedControllerConcern
   def authenticate_agent!
     return if logged_in?
 
-    session[:agent_return_to] = request.env['PATH_INFO']
+    session[:agent_return_to] = request.env["PATH_INFO"]
     redirect_to sign_in_path
   end
 

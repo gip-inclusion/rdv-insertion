@@ -1,4 +1,4 @@
-require 'csv'
+require "csv"
 
 # rails runner scripts/extract_applicants_to_csv.rb email organisation_id department_id
 # email must be written as a string, ids as integers

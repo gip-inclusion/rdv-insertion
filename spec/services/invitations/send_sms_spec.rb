@@ -47,7 +47,7 @@ describe Invitations::SendSms, type: :service do
   describe "#call" do
     before do
       allow(Messengers::SendSms).to receive(:call).and_return(OpenStruct.new(success?: true))
-      ENV['HOST'] = "www.rdv-insertion.fr"
+      ENV["HOST"] = "www.rdv-insertion.fr"
     end
 
     it("is a success") { is_a_success }

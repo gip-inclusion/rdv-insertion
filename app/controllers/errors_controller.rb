@@ -36,8 +36,8 @@ class ErrorsController < ApplicationController
   private
 
   def set_not_found_error_message
-    model_name = request.env['action_dispatch.exception'].model \
-      if request.env['action_dispatch.exception'].respond_to?(:model)
+    model_name = request.env["action_dispatch.exception"].model \
+      if request.env["action_dispatch.exception"].respond_to?(:model)
 
     @not_found_error_message = "🔎 Erreur 404 - #{model_name.presence || 'La ressource'} est introuvable"
   end

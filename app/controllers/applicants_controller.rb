@@ -103,7 +103,7 @@ class ApplicantsController < ApplicationController
     if save_applicant.success?
       redirect_to(after_save_path)
     else
-      flash.now[:error] = save_applicant.errors&.join(',')
+      flash.now[:error] = save_applicant.errors&.join(",")
       render page, status: :unprocessable_entity
     end
   end

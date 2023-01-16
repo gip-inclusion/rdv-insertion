@@ -8,7 +8,7 @@ module RdvSolidaritesApi
 
     def call
       request!
-      result.invitation_token = rdv_solidarites_response_body['invitation_token']
+      result.invitation_token = rdv_solidarites_response_body["invitation_token"]
     end
 
     private

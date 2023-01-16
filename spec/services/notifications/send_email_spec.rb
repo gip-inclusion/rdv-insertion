@@ -22,11 +22,17 @@ describe Notifications::SendEmail, type: :service do
       create(
         :rdv,
         organisation: organisation,
-        rdv_contexts: [build(:rdv_context, motif_category: "rsa_orientation")],
-        motif: motif
+        motif: motif,
+        participations: [participation]
       )
     end
-
+    let!(:participation) do
+      create(
+        :participation,
+        applicant: applicant,
+        rdv_context: build(:rdv_context, motif_category: "rsa_orientation")
+      )
+    end
     let!(:notification) do
       create(:notification, applicant: applicant, rdv: rdv, event: "rdv_created")
     end

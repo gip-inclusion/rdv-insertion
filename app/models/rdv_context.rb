@@ -6,7 +6,8 @@ class RdvContext < ApplicationRecord
 
   belongs_to :applicant
   has_many :invitations, dependent: :nullify
-  has_and_belongs_to_many :rdvs
+  has_many :participations, dependent: :nullify
+  has_many :rdvs, through: :participations
 
   validates :motif_category, presence: true, uniqueness: { scope: :applicant_id }
 
@@ -41,10 +42,6 @@ class RdvContext < ApplicationRecord
 
   def time_between_invitation_and_rdv_in_days
     first_rdv_creation_date.to_datetime.mjd - first_invitation_sent_at.to_datetime.mjd
-  end
-
-  def participations
-    applicant.participations.to_a.select { |participation| participation.rdv_id.in?(rdvs.ids) }
   end
 
   def as_json(_opts = {})

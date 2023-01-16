@@ -5,7 +5,9 @@ describe NotifyRdvToApplicantsJob do
 
   let!(:rdv_id) { 2213 }
   let!(:event_to_notify) { "created" }
-  let!(:rdv) { create(:rdv, id: rdv_id, applicants: [applicant1, applicant2]) }
+  let!(:rdv) { create(:rdv, id: rdv_id, participations: [participation1, participation2]) }
+  let!(:participation1) { create(:participation, applicant: applicant1) }
+  let!(:participation2) { create(:participation, applicant: applicant2) }
   let!(:applicant1) { create(:applicant, email: "someone@gmail.com", phone_number: "0607070707") }
   let!(:applicant2) { create(:applicant, email: "anotherone@gmail.com", phone_number: "0606070707") }
 

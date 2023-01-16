@@ -55,14 +55,14 @@ module Invitations
     ###
 
     def mandatory_warning
-      display_mandatory_warning ? 'Ce rendez-vous est obligatoire. ' : ''
+      display_mandatory_warning ? "Ce rendez-vous est obligatoire. " : ""
     end
 
     def punishable_warning
       if display_punishable_warning
         "En l'absence d'action de votre part, le versement de votre RSA pourra être suspendu ou réduit. "
       else
-        ''
+        ""
       end
     end
   end

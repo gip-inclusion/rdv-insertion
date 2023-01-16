@@ -30,11 +30,13 @@ describe Notifications::SendSms, type: :service do
   let!(:rdv) do
     create(
       :rdv,
-      applicants: [applicant], rdv_contexts: [rdv_context], motif: motif, lieu: lieu,
+      participations: [participation], motif: motif, lieu: lieu,
       starts_at: Time.zone.parse("20/12/2021 10:00")
     )
   end
-
+  let!(:participation) do
+    create(:participation, applicant: applicant, rdv_context: rdv_context)
+  end
   let!(:notification) do
     create(:notification, applicant: applicant, rdv: rdv, format: "sms", event: "rdv_created")
   end
@@ -149,10 +151,8 @@ describe Notifications::SendSms, type: :service do
     end
 
     describe "RSA accompagnement" do
-      let!(:rdv_context) { create(:rdv_context) }
-
       %w[rsa_accompagnement rsa_accompagnement_social rsa_accompagnement_sociopro].each do |motif_category|
-        before { rdv_context.motif_category = motif_category }
+        let!(:rdv_context) { create(:rdv_context, motif_category: motif_category) }
 
         let!(:content) do
           "Monsieur John DOE,\nVous êtes allocataire du RSA et à ce titre vous avez été convoqué(e) à un " \
