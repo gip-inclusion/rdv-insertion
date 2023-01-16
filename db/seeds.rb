@@ -113,7 +113,7 @@ puts "Creating organisations..."
 drome1_organisation = Organisation.create!(
   name: "Plateforme mutualisée d'orientation",
   phone_number: "0475796991",
-  rdv_solidarites_organisation_id: 1,
+  rdv_solidarites_organisation_id: 3,
   # rdv_solidarites_organisation_id: vérifier l'id de l'organisation correspondante sur RDV-Solidarites
   department_id: drome.id,
   configuration_ids: [drome_orientation_config.id, drome_accompagnement_config.id],
@@ -123,7 +123,7 @@ drome1_organisation = Organisation.create!(
 drome2_organisation = Organisation.create!(
   name: "PLIE Valence",
   phone_number: "0101010102",
-  rdv_solidarites_organisation_id: 2,
+  rdv_solidarites_organisation_id: 4,
   # rdv_solidarites_organisation_id: vérifier l'id de l'organisation correspondante sur RDV-Solidarites
   department_id: drome.id,
   configuration_ids: [drome_orientation_config.id, drome_accompagnement_config.id],
@@ -133,7 +133,7 @@ drome2_organisation = Organisation.create!(
 yonne_organisation = Organisation.create!(
   name: "UT Avallon",
   phone_number: "0303030303",
-  rdv_solidarites_organisation_id: 3,
+  rdv_solidarites_organisation_id: 5,
   # rdv_solidarites_organisation_id: vérifier l'id de l'organisation correspondante sur RDV-Solidarites
   department_id: yonne.id,
   configuration_ids: [yonne_orientation_config.id],
@@ -144,7 +144,7 @@ yonne_organisation = Organisation.create!(
 
 agent = Agent.create!(
   email: "alain.sertion@rdv-insertion-demo.fr",
-  rdv_solidarites_agent_id: 1,
+  rdv_solidarites_agent_id: 8,
   # rdv_solidarites_agent_id: vérifier l'id de l'agent correspondant sur RDV-Solidarites
   first_name: "Alain",
   last_name: "Sertion",
@@ -158,12 +158,12 @@ agent.organisations << yonne_organisation
 agent.save!
 
 Motif.create!(
-  rdv_solidarites_motif_id: 1,
-  # rdv_solidarites_agent_id: vérifier l'id du motif correspondant sur RDV-Solidarites
+  rdv_solidarites_motif_id: 18,
+  # rdv_solidarites_motif_id: vérifier l'id du motif correspondant sur RDV-Solidarites
   name: "RSA - Orientation : rdv sur site",
   reservable_online: true,
-  rdv_solidarites_service_id: 1,
-  # rdv_solidarites_agent_id: vérifier l'id du service correspondant sur RDV-Solidarites
+  rdv_solidarites_service_id: 2,
+  # rdv_solidarites_service_id: vérifier l'id du service correspondant sur RDV-Solidarites
   collectif: false,
   location_type: "public_office",
   category: "rsa_orientation",
@@ -173,29 +173,13 @@ Motif.create!(
 )
 
 Motif.create!(
-  rdv_solidarites_motif_id: 3,
-  # rdv_solidarites_agent_id: vérifier l'id du motif correspondant sur RDV-Solidarites
-  name: "RSA - Orientation : rdv sur site",
-  reservable_online: true,
-  deleted_at: nil,
-  rdv_solidarites_service_id: 1,
-  # rdv_solidarites_agent_id: vérifier l'id du service correspondant sur RDV-Solidarites
-  collectif: false,
-  location_type: "public_office",
-  category: "rsa_orientation",
-  last_webhook_update_received_at: Time.zone.now,
-  organisation_id: drome2_organisation.id,
-  follow_up: false
-)
-
-Motif.create!(
-  rdv_solidarites_motif_id: 2,
-  # rdv_solidarites_agent_id: vérifier l'id du motif correspondant sur RDV-Solidarites
+  rdv_solidarites_motif_id: 19,
+  # rdv_solidarites_motif_id: vérifier l'id du motif correspondant sur RDV-Solidarites
   name: "RSA accompagnement",
   reservable_online: true,
   deleted_at: nil,
-  rdv_solidarites_service_id: 1,
-  # rdv_solidarites_agent_id: vérifier l'id du service correspondant sur RDV-Solidarites
+  rdv_solidarites_service_id: 2,
+  # rdv_solidarites_service_id: vérifier l'id du service correspondant sur RDV-Solidarites
   collectif: false,
   location_type: "public_office",
   category: "rsa_accompagnement",
@@ -205,13 +189,29 @@ Motif.create!(
 )
 
 Motif.create!(
-  rdv_solidarites_motif_id: 4,
-  # rdv_solidarites_agent_id: vérifier l'id du motif correspondant sur RDV-Solidarites
+  rdv_solidarites_motif_id: 20,
+  # rdv_solidarites_motif_id: vérifier l'id du motif correspondant sur RDV-Solidarites
+  name: "RSA - Orientation : rdv sur site",
+  reservable_online: true,
+  deleted_at: nil,
+  rdv_solidarites_service_id: 2,
+  # rdv_solidarites_service_id: vérifier l'id du service correspondant sur RDV-Solidarites
+  collectif: false,
+  location_type: "public_office",
+  category: "rsa_orientation",
+  last_webhook_update_received_at: Time.zone.now,
+  organisation_id: drome2_organisation.id,
+  follow_up: false
+)
+
+Motif.create!(
+  rdv_solidarites_motif_id: 21,
+  # rdv_solidarites_motif_id: vérifier l'id du motif correspondant sur RDV-Solidarites
   name: "RSA - Codiagnostic d'orientation",
   reservable_online: false,
   deleted_at: nil,
-  rdv_solidarites_service_id: 1,
-  # rdv_solidarites_agent_id: vérifier l'id du service correspondant sur RDV-Solidarites
+  rdv_solidarites_service_id: 2,
+  # rdv_solidarites_service_id: vérifier l'id du service correspondant sur RDV-Solidarites
   collectif: false,
   location_type: "public_office",
   category: "rsa_orientation",
@@ -221,13 +221,13 @@ Motif.create!(
 )
 
 Motif.create!(
-  rdv_solidarites_motif_id: 5,
-  # rdv_solidarites_agent_id: vérifier l'id du motif correspondant sur RDV-Solidarites
+  rdv_solidarites_motif_id: 22,
+  # rdv_solidarites_motif_id: vérifier l'id du motif correspondant sur RDV-Solidarites
   name: "RSA - Orientation : rdv téléphonique",
   reservable_online: false,
   deleted_at: nil,
-  rdv_solidarites_service_id: 1,
-  # rdv_solidarites_agent_id: vérifier l'id du service correspondant sur RDV-Solidarites
+  rdv_solidarites_service_id: 2,
+  # rdv_solidarites_service_id: vérifier l'id du service correspondant sur RDV-Solidarites
   collectif: false,
   location_type: "phone",
   category: "rsa_orientation",
