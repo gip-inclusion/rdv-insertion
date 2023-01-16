@@ -272,7 +272,12 @@ class ApplicantsController < ApplicationController
   end
 
   def retrieve_applicants
-    @applicants = policy_scope(Applicant).preload(:organisations, :rdvs, :agents, invitations: [:rdv_context]).distinct
+    @applicants = policy_scope(Applicant).preload(
+      :rdvs, :agents,
+      rdv_contexts: [:participations],
+      invitations: :rdv_context,
+      organisations: [:department, :configurations]
+    ).distinct
     @applicants = @applicants
                   .where(department_internal_id: params.require(:applicants)[:department_internal_ids])
                   .or(@applicants.where(uid: params.require(:applicants)[:uids]))

@@ -69,7 +69,7 @@ export default function InvitationCell({
             >
               {isTriggered[`${format}Invitation`]
                 ? "Invitation..."
-                : applicant.hasRdvs()
+                : applicant.hasParticipations()
                 ? CTA_BY_FORMAT[format].secondTime
                 : CTA_BY_FORMAT[format].firstTime}
             </button>
