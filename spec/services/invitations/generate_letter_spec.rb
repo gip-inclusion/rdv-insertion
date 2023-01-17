@@ -29,7 +29,7 @@ describe Invitations::GenerateLetter, type: :service do
       expect(content).to include("Pour choisir un créneau à votre convenance, saisissez le code d’invitation")
       expect(content).to include(invitation.uuid)
       expect(content).to include(department.name)
-      expect(content).to include("Vous êtes allocataire du Revenu de Solidarité Active (RSA)")
+      expect(content).to include("Vous êtes bénéficiaire du RSA")
       # letter-first-col is only used when display_europe_logos is true (false by default)
       expect(content).not_to include("letter-first-col")
     end
