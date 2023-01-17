@@ -30,8 +30,8 @@ describe Invitations::GenerateLetter, type: :service do
       expect(content).to include(invitation.uuid)
       expect(content).to include(department.name)
       expect(content).to include("Vous êtes allocataire du Revenu de Solidarité Active (RSA)")
-      # letter-first-col is only used when display_europe_logos is true (false by default)
-      expect(content).not_to include("letter-first-col")
+      # europe-logos is only used when display_europe_logos is true (false by default)
+      expect(content).not_to include("europe-logos")
     end
 
     context "when the signature is configured" do
@@ -48,8 +48,8 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf string with the europe logos" do
         subject
-        # letter-first-col is only used when display_europe_logos is true
-        expect(invitation.content).to include("letter-first-col")
+        # europe-logos is only used when display_europe_logos is true
+        expect(invitation.content).to include("europe-logos")
       end
     end
 
