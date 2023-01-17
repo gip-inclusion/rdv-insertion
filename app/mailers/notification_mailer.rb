@@ -4,7 +4,7 @@ class NotificationMailer < ApplicationMailer
   include Templatable
 
   before_action :set_applicant, :set_rdv, :set_department, :set_motif_category,
-                :set_signature_lines, :set_rdv_title, :set_applicant_title,
+                :set_signature_lines, :set_rdv_title, :set_applicant_designation,
                 :set_display_mandatory_warning, :set_display_punishable_warning,
                 :set_rdv_purpose, :set_logo_path, :verify_phone_number_presence
 
@@ -76,8 +76,8 @@ class NotificationMailer < ApplicationMailer
     @rdv_title = rdv_by_phone? ? rdv_title_by_phone : rdv_title
   end
 
-  def set_applicant_title
-    @applicant_title = applicant_title
+  def set_applicant_designation
+    @applicant_designation = applicant_designation
   end
 
   def set_display_mandatory_warning
