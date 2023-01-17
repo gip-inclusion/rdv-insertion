@@ -4,7 +4,7 @@ class InvitationMailer < ApplicationMailer
   before_action :set_invitation, :set_applicant, :set_department,
                 :set_logo_path, :set_signature_lines
 
-  before_action :set_motif_category, :set_rdv_title,
+  before_action :set_motif_category, :set_rdv_title, :set_applicant_designation,
                 :set_display_mandatory_warning, :set_display_punishable_warning,
                 :set_rdv_purpose,
                 only: [:regular_invitation, :regular_invitation_reminder]
@@ -83,6 +83,10 @@ class InvitationMailer < ApplicationMailer
 
   def set_rdv_title
     @rdv_title = rdv_title
+  end
+
+  def set_applicant_designation
+    @applicant_designation = applicant_designation
   end
 
   def set_display_mandatory_warning
