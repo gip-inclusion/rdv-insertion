@@ -2,12 +2,14 @@ class RdvContext < ApplicationRecord
   include HasMotifCategory
   include RdvContextStatus
   include Invitable
+  include Notificable
   include HasRdvs
 
   belongs_to :applicant
   has_many :invitations, dependent: :nullify
   has_many :participations, dependent: :nullify
   has_many :rdvs, through: :participations
+  has_many :notifications, through: :participations
 
   validates :motif_category, presence: true, uniqueness: { scope: :applicant_id }
 

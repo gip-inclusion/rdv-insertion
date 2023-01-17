@@ -18,8 +18,8 @@ module Notificable
   end
 
   def convocations
-    # we assume a convocation is a notification of a created rdv
-    notifications.select(&:rdv_created?)
+    # we assume a convocation is a notification of a created participation
+    notifications.select(&:participation_created?)
   end
 
   def sent_convocations
@@ -30,15 +30,11 @@ module Notificable
     sent_convocations.map(&:format)
   end
 
-  def sent_convocations_for_category(motif_category)
-    sent_convocations.select { |notification| notification.motif_category == motif_category }
+  def last_sent_convocation
+    sent_convocations.max_by(&:sent_at)
   end
 
-  def last_sent_convocation_for_category(motif_category)
-    sent_convocations_for_category(motif_category).max_by(&:sent_at)
-  end
-
-  def last_convocation_for_category_sent_at(motif_category)
-    last_sent_convocation_for_category(motif_category)&.sent_at
+  def last_sent_convocation_sent_at
+    last_sent_convocation&.sent_at
   end
 end

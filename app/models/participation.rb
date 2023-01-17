@@ -2,17 +2,21 @@ class Participation < ApplicationRecord
   include Notificable
   include HasStatus
 
-  delegate :starts_at, :notify_applicants?, to: :rdv
-  delegate :notify_applicants?, to: :rdv, prefix: true
+  belongs_to :rdv
+  belongs_to :rdv_context
+  belongs_to :applicant
+  has_many :notifications, dependent: :nullify
 
   validates :status, presence: true
   validates :rdv_solidarites_participation_id, uniqueness: true, allow_nil: true
 
-  belongs_to :rdv
-  belongs_to :rdv_context
-  belongs_to :applicant
   after_commit :refresh_applicant_context_statuses, on: [:destroy]
   after_commit :notify_applicant, if: :rdv_notify_applicants?, on: [:create, :update]
+
+  delegate :starts_at, :convocable?, :motif_name, :rdv_solidarites_url, :rdv_solidarites_rdv_id, to: :rdv
+  delegate :phone_number_is_mobile?, :email?, to: :applicant
+  delegate :motif_category, to: :rdv_context
+  delegate :notify_applicants?, to: :rdv, prefix: true
 
   private
 
@@ -32,11 +36,8 @@ class Participation < ApplicationRecord
   def notify_applicant
     return unless event_to_notify
 
-    notification_event = "rdv_#{event_to_notify}"
-    if applicant.phone_number_is_mobile?
-      NotifyRdvToApplicantJob.perform_async(rdv_id, applicant_id, "sms", notification_event)
-    end
-    NotifyRdvToApplicantJob.perform_async(rdv_id, applicant_id, "email", notification_event) if applicant.email?
+    NotifyParticipationJob.perform_async(id, "sms", "participation_#{event_to_notify}") if phone_number_is_mobile?
+    NotifyParticipationJob.perform_async(id, "email", "participation_#{event_to_notify}") if email?
   end
 
   def event_to_notify
@@ -45,9 +46,5 @@ class Participation < ApplicationRecord
     elsif participation_cancelled?
       :cancelled
     end
-  end
-
-  def notifications
-    applicant.notifications.where(rdv: rdv)
   end
 end

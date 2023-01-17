@@ -30,25 +30,51 @@ describe Participation do
   describe "#notify_applicants" do
     subject { participation.save }
 
-    let!(:rdv_id) { 333 }
-    let!(:rdv) { create(:rdv, id: rdv_id, convocable: true) }
+    let!(:participation_id) { 333 }
+    let!(:rdv) { create(:rdv, convocable: true) }
     let!(:applicant) { create(:applicant) }
-    let!(:participation) { build(:participation, rdv_id: rdv_id, applicant_id: applicant.id, status: "unknown") }
+    let!(:participation) do
+      build(:participation, id: participation_id, rdv: rdv, applicant: applicant, status: "unknown")
+    end
 
     context "after record creation" do
-      it "enqueues a job to notify rdv applicants" do
-        expect(NotifyRdvToApplicantJob).to receive(:perform_async)
-          .with(rdv_id, applicant.id, "sms", 'rdv_created')
-        expect(NotifyRdvToApplicantJob).to receive(:perform_async)
-          .with(rdv_id, applicant.id, "email", 'rdv_created')
+      it "enqueues a job to notify the applicant" do
+        expect(NotifyParticipationJob).to receive(:perform_async)
+          .with(participation.id, "sms", "participation_created")
+        expect(NotifyParticipationJob).to receive(:perform_async)
+          .with(participation.id, "email", "participation_created")
         subject
       end
 
       context "when the rdv is not convocable" do
-        let!(:rdv) { create(:rdv, id: rdv_id, convocable: false) }
+        let!(:rdv) { create(:rdv, convocable: false) }
 
         it "does not enqueue a notify applicants job" do
-          expect(NotifyRdvToApplicantJob).not_to receive(:perform_async)
+          expect(NotifyParticipationJob).not_to receive(:perform_async)
+          subject
+        end
+      end
+
+      context "when the applicant has no email" do
+        let!(:applicant) { create(:applicant, email: nil) }
+
+        it "enqueues a job to notify by sms only" do
+          expect(NotifyParticipationJob).to receive(:perform_async)
+            .with(participation_id, "sms", "participation_created")
+          expect(NotifyParticipationJob).not_to receive(:perform_async)
+            .with(participation_id, "email", "participation_created")
+          subject
+        end
+      end
+
+      context "when the applicant has no phone" do
+        let!(:applicant) { create(:applicant, phone_number: nil) }
+
+        it "enqueues a job to notify by sms only" do
+          expect(NotifyParticipationJob).not_to receive(:perform_async)
+            .with(participation_id, "sms", "participation_created")
+          expect(NotifyParticipationJob).to receive(:perform_async)
+            .with(participation_id, "email", "participation_created")
           subject
         end
       end
@@ -58,26 +84,26 @@ describe Participation do
       let!(:participation) do
         create(
           :participation,
-          rdv_id: rdv_id,
-          applicant_id: applicant.id,
+          rdv: rdv,
+          applicant: applicant,
           status: "unknown"
         )
       end
 
       it "enqueues a job to notify rdv applicants" do
         participation.status = "excused"
-        expect(NotifyRdvToApplicantJob).to receive(:perform_async)
-          .with(rdv_id, applicant.id, "sms", 'rdv_cancelled')
-        expect(NotifyRdvToApplicantJob).to receive(:perform_async)
-          .with(rdv_id, applicant.id, "email", 'rdv_cancelled')
+        expect(NotifyParticipationJob).to receive(:perform_async)
+          .with(participation.id, "sms", "participation_cancelled")
+        expect(NotifyParticipationJob).to receive(:perform_async)
+          .with(participation.id, "email", "participation_cancelled")
         subject
       end
 
       context "when the rdv is not convocable" do
-        let!(:rdv) { create(:rdv, id: rdv_id, convocable: false) }
+        let!(:rdv) { create(:rdv, convocable: false) }
 
         it "does not enqueue a notify applicants job" do
-          expect(NotifyRdvToApplicantJob).not_to receive(:perform_async)
+          expect(NotifyParticipationJob).not_to receive(:perform_async)
           subject
         end
       end
@@ -86,15 +112,15 @@ describe Participation do
         let!(:participation) do
           create(
             :participation,
-            rdv_id: rdv_id,
-            applicant_id: applicant.id,
+            rdv: rdv,
+            applicant: applicant,
             status: "excused"
           )
         end
 
         it "does not enqueue a notify applicants job" do
           participation.status = "excused"
-          expect(NotifyRdvToApplicantJob).not_to receive(:perform_async)
+          expect(NotifyParticipationJob).not_to receive(:perform_async)
           subject
         end
       end

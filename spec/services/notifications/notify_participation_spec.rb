@@ -1,13 +1,14 @@
-describe Notifications::NotifyApplicant, type: :service do
+describe Notifications::NotifyParticipation, type: :service do
   subject do
     described_class.call(
-      applicant: applicant, rdv: rdv, event: event, format: format
+      participation: participation, event: event, format: format
     )
   end
 
-  let!(:applicant) { create(:applicant) }
-  let!(:event) { "rdv_created" }
-  let!(:rdv) { create(:rdv) }
+  let!(:participation) { create(:participation, rdv: rdv) }
+  let!(:rdv_solidarites_rdv_id) { 444 }
+  let!(:rdv) { create(:rdv, rdv_solidarites_rdv_id: rdv_solidarites_rdv_id) }
+  let!(:event) { "participation_created" }
   let!(:format) { "sms" }
 
   describe "#call" do
@@ -29,11 +30,10 @@ describe Notifications::NotifyApplicant, type: :service do
     it "assigns the attributes to the notification and mark it as sent" do
       subject
       notification = Notification.last
-      expect(notification.rdv_id).to eq(rdv.id)
-      expect(notification.applicant_id).to eq(applicant.id)
+      expect(notification.participation_id).to eq(participation.id)
       expect(notification.format).to eq(format)
       expect(notification.event).to eq(event)
-      expect(notification.rdv_solidarites_rdv_id).to eq(rdv.rdv_solidarites_rdv_id)
+      expect(notification.rdv_solidarites_rdv_id).to eq(rdv_solidarites_rdv_id)
       expect(notification.sent_at).not_to be_nil
     end
 
