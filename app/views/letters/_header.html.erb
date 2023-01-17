@@ -1,7 +1,7 @@
 <div>
-  <div class="left-col">
+  <div class="header-left-col">
     <div>
-      <div class="letter-logo header-logo">
+      <div class="header-logo">
         <%= pdf_image_tag(organisation.logo_path || department.logo_path) %>
       </div>
     </div>
@@ -9,7 +9,7 @@
       <p><%= direction_name.upcase %></p>
     <% end %>
   </div>
-  <div class="right-col">
+  <div class="header-right-col">Ò
     <p><%= sender_city || department.capital %>, le <%= Date.today.strftime('%d/%m/%Y') %></p>
     <br/>
     <p>À l'attention de</p>
