@@ -54,6 +54,7 @@ module Invitations
         department: department,
         applicant: applicant,
         organisation: organisation,
+        organisation_independent_from_cd: organisation_independent_from_cd,
         sender_name: letter_sender_name,
         direction_names: direction_names,
         signature_lines: signature_lines,
@@ -84,6 +85,10 @@ module Invitations
 
     def organisation
       (applicant.organisations & @invitation.organisations).last
+    end
+
+    def organisation_independent_from_cd
+      @invitation.organisations.any?(&:independent_from_cd)
     end
   end
 end
