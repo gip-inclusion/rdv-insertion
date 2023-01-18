@@ -40,6 +40,10 @@ module RdvContextStatus
     last_sent_invitation.sent_at > participation_date_to_compare
   end
 
+  def multiple_cancelled_participations?
+    participations.select(&:cancelled_by_user?).length > 1
+  end
+
   def status_from_participations
     if participations.any?(&:pending?)
       :rdv_pending

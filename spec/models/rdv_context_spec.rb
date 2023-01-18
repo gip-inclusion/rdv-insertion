@@ -265,8 +265,8 @@ describe RdvContext do
                                rdvs: [rdv], invitations: [invitation, invitation2, invitation3])
         end
 
-        context "first_sent_invitation_after_last_seen_rdv" do
-          it "is selecting the right invitation" do
+        context "when there is a participation" do
+          it "is selecting the invitation after the participation" do
             expect(rdv_context.first_invitation_relative_to_last_participation_sent_at).to eq(invitation2.sent_at)
           end
         end

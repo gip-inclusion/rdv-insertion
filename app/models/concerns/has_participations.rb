@@ -3,7 +3,7 @@ module HasParticipations
     participations.max_by(&:created_at)
   end
 
-  def multiple_cancelled_participations?
-    participations.select(&:cancelled_by_user?).length > 1
+  def seen_participations
+    participations.to_a.select(&:seen?)
   end
 end

@@ -2,7 +2,7 @@ module HasRdvs
   extend ActiveSupport::Concern
 
   def seen_rdvs
-    participations.select { |participation| participation.status == "seen" }.map(&:rdv).uniq
+    seen_participations.map(&:rdv).uniq
   end
 
   def first_seen_rdv
@@ -17,20 +17,8 @@ module HasRdvs
     rdvs.min_by(&:created_at).created_at
   end
 
-  def last_seen_rdv
-    seen_rdvs.max_by(&:starts_at)
-  end
-
-  def last_seen_rdv_starts_at
-    last_seen_rdv&.starts_at
-  end
-
   def last_rdv
     rdvs.to_a.max_by(&:starts_at)
-  end
-
-  def last_created_rdv
-    rdvs.to_a.max_by(&:created_at)
   end
 
   def last_rdv_starts_at
