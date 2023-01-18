@@ -7,7 +7,7 @@ module RdvSolidaritesApi
 
     def call
       request!
-      result.organisations = rdv_solidarites_response_body['organisations'].map do |organisation_attributes|
+      result.organisations = rdv_solidarites_response_body["organisations"].map do |organisation_attributes|
         RdvSolidarites::Organisation.new(organisation_attributes)
       end
     end

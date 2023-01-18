@@ -23,7 +23,7 @@ module RdvSolidaritesApi
         result[:"#{pluralized_resource_name}"] += parsed_reponse_body[pluralized_resource_name].map do |attributes|
           resource_class.new(attributes)
         end
-        next_page = parsed_reponse_body.dig('meta', 'next_page')
+        next_page = parsed_reponse_body.dig("meta", "next_page")
         break unless next_page
       end
     end

@@ -69,7 +69,7 @@ class Applicant < ApplicationRecord
   end
 
   def street_address
-    split_address.present? ? split_address[1].strip.gsub(/-$/, '').gsub(/,$/, '').gsub(/\.$/, '') : nil
+    split_address.present? ? split_address[1].strip.gsub(/-$/, "").gsub(/,$/, "").gsub(/\.$/, "") : nil
   end
 
   def zipcode_and_city

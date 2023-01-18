@@ -69,9 +69,12 @@ describe "Agents can invite from index page", js: true do
   end
 
   context "when there are rdvs" do
-    let!(:rdv) { create(:rdv, rdv_contexts: [rdv_context]) }
+    let!(:rdv) { create(:rdv) }
     let!(:participation) do
-      create(:participation, rdv: rdv, applicant: applicant, status: "seen", created_at: 4.days.ago)
+      create(
+        :participation,
+        rdv: rdv, applicant: applicant, rdv_context: rdv_context, status: "seen", created_at: 4.days.ago
+      )
     end
 
     context "when the applicant has been invited prior to the rdv" do
@@ -127,9 +130,12 @@ describe "Agents can invite from index page", js: true do
     end
 
     context "when the rdv is pending" do
-      let!(:rdv) { create(:rdv, rdv_contexts: [rdv_context], starts_at: 2.days.from_now) }
+      let!(:rdv) { create(:rdv, starts_at: 2.days.from_now) }
       let!(:participation) do
-        create(:participation, rdv: rdv, applicant: applicant, status: "unknown", created_at: 4.days.ago)
+        create(
+          :participation,
+          rdv: rdv, applicant: applicant, rdv_context: rdv_context, status: "unknown", created_at: 4.days.ago
+        )
       end
 
       let!(:sms_invitation) do

@@ -1,4 +1,4 @@
-describe InvitationsController, type: :controller do
+describe InvitationsController do
   describe "#create" do
     let!(:applicant_id) { "24" }
     let!(:organisation_id) { "22" }
@@ -234,7 +234,7 @@ describe InvitationsController, type: :controller do
     context "when the service fails" do
       before do
         allow(Invitations::SaveAndSend).to receive(:call)
-          .and_return(OpenStruct.new(success?: false, errors: ['some error']))
+          .and_return(OpenStruct.new(success?: false, errors: ["some error"]))
       end
 
       it "is not a success" do
@@ -246,7 +246,7 @@ describe InvitationsController, type: :controller do
       it "renders the errors" do
         post :create, params: create_params
         expect(response).not_to be_successful
-        expect(JSON.parse(response.body)["errors"]).to eq(['some error'])
+        expect(JSON.parse(response.body)["errors"]).to eq(["some error"])
       end
     end
   end

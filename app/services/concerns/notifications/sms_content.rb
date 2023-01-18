@@ -9,7 +9,7 @@ module Notifications
       "#{applicant.full_name},\nVous êtes allocataire du RSA et à ce titre vous avez été convoqué(e) à un " \
         "#{rdv_title}. Vous êtes attendu(e) le #{formatted_start_date} à " \
         "#{formatted_start_time} ici: #{lieu.full_name}. " \
-        "#{mandatory_warning}"\
+        "#{mandatory_warning}" \
         "#{punishable_warning}" \
         "En cas d’empêchement, appelez rapidement le #{phone_number}."
     end
@@ -18,7 +18,7 @@ module Notifications
       "#{applicant.full_name},\nVous êtes allocataire du RSA et à ce titre vous avez été convoqué(e) à un " \
         "#{rdv_title}. Un travailleur social vous appellera le #{formatted_start_date}" \
         " à partir de #{formatted_start_time} sur ce numéro. " \
-        "#{mandatory_warning}"\
+        "#{mandatory_warning}" \
         "#{punishable_warning}" \
         "En cas d’empêchement, appelez rapidement le #{phone_number}."
     end
@@ -28,7 +28,7 @@ module Notifications
       "#{applicant.full_name},\nVotre #{rdv_title} dans le cadre de votre RSA a été modifié. " \
         "Vous êtes attendu(e) le #{formatted_start_date} à #{formatted_start_time}" \
         " ici: #{lieu.full_name}. " \
-        "#{mandatory_warning}"\
+        "#{mandatory_warning}" \
         "#{punishable_warning}" \
         "En cas d’empêchement, appelez rapidement le #{phone_number}."
     end
@@ -37,7 +37,7 @@ module Notifications
       "#{applicant.full_name},\nVotre #{rdv_title} dans le cadre de votre RSA a été modifié. " \
         "Un travailleur social vous appellera le #{formatted_start_date}" \
         " à partir de #{formatted_start_time} sur ce numéro. " \
-        "#{mandatory_warning}"\
+        "#{mandatory_warning}" \
         "#{punishable_warning}" \
         "En cas d’empêchement, appelez rapidement le #{phone_number}."
     end
@@ -49,14 +49,14 @@ module Notifications
     end
 
     def mandatory_warning
-      display_mandatory_warning ? 'Ce RDV est obligatoire. ' : ''
+      display_mandatory_warning ? "Ce RDV est obligatoire. " : ""
     end
 
     def punishable_warning
       if display_punishable_warning
         "En cas d'absence, le versement de votre RSA pourra être suspendu ou réduit. "
       else
-        ''
+        ""
       end
     end
 

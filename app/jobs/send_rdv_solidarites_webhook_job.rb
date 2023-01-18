@@ -69,7 +69,7 @@ class SendRdvSolidaritesWebhookJob < ApplicationJob
   end
 
   def generated_jwt
-    JWT.encode(jwt_payload, webhook_endpoint.secret, 'HS256', { typ: "JWT", exp: 10.minutes.from_now.to_i })
+    JWT.encode(jwt_payload, webhook_endpoint.secret, "HS256", { typ: "JWT", exp: 10.minutes.from_now.to_i })
   end
 
   def jwt_payload

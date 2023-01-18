@@ -33,7 +33,7 @@ describe Messengers::SendEmail, type: :service do
     it "calls the right method on the right mailer with the right arguments" do
       expect(mailer_class).to receive(:with)
         .with(
-          some_attribute: some_attribute, another_attribute: another_attribute
+          { some_attribute: some_attribute, another_attribute: another_attribute }
         )
       expect(mailer_with).to receive(mailer_method)
       expect(mailer_with_method).to receive(:deliver_now)
@@ -61,7 +61,7 @@ describe Messengers::SendEmail, type: :service do
     end
 
     context "when the email format is not valid" do
-      before { applicant.email = 'someinvalidmail' }
+      before { applicant.email = "someinvalidmail" }
 
       it("is a failure") { is_a_failure }
 

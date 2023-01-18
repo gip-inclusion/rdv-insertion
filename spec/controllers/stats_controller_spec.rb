@@ -1,4 +1,4 @@
-describe StatsController, type: :controller do
+describe StatsController do
   describe "#index" do
     it "returns a success response" do
       get :index

@@ -29,23 +29,23 @@ describe Applicant do
 
   describe "uid uniqueness" do
     context "no collision" do
-      let(:applicant) { build(:applicant, uid: '123') }
+      let(:applicant) { build(:applicant, uid: "123") }
 
       it { expect(applicant).to be_valid }
     end
 
     context "colliding uid" do
       let!(:applicant_existing) { create(:applicant) }
-      let!(:applicant) { build(:applicant, uid: '123') }
+      let!(:applicant) { build(:applicant, uid: "123") }
 
       before do
         # we skip the callbacks not to recompute uid
-        applicant_existing.update_columns(uid: '123')
+        applicant_existing.update_columns(uid: "123")
       end
 
       it "adds errors" do
         expect(applicant).not_to be_valid
-        expect(applicant.errors.details).to eq({ uid: [{ error: :taken, value: '123' }] })
+        expect(applicant.errors.details).to eq({ uid: [{ error: :taken, value: "123" }] })
         expect(applicant.errors.full_messages.to_sentence)
           .to include("Le couple numéro d'allocataire + rôle est déjà utilisé")
       end
@@ -54,7 +54,7 @@ describe Applicant do
 
   describe "department internal id uniqueness" do
     context "no collision" do
-      let(:applicant) { build(:applicant, department_internal_id: '123') }
+      let(:applicant) { build(:applicant, department_internal_id: "123") }
 
       it { expect(applicant).to be_valid }
     end
@@ -70,7 +70,7 @@ describe Applicant do
 
       it "adds errors" do
         expect(applicant).not_to be_valid
-        expect(applicant.errors.details).to eq({ department_internal_id: [{ error: :taken, value: '921' }] })
+        expect(applicant.errors.details).to eq({ department_internal_id: [{ error: :taken, value: "921" }] })
         expect(applicant.errors.full_messages.to_sentence)
           .to include("ID interne au département est déjà utilisé")
       end

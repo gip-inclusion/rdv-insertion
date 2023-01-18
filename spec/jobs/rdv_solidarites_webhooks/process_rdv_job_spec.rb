@@ -1,4 +1,4 @@
-describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
+describe RdvSolidaritesWebhooks::ProcessRdvJob do
   subject do
     described_class.new.perform(data, meta)
   end
@@ -156,19 +156,20 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
                 participations_attributes: [
                   {
                     id: nil,
-                    status: 'unknown',
+                    status: "unknown",
                     applicant_id: 3,
-                    rdv_solidarites_participation_id: 998
+                    rdv_solidarites_participation_id: 998,
+                    rdv_context_id: rdv_context.id
                   },
                   {
                     id: nil,
-                    status: 'unknown',
+                    status: "unknown",
                     applicant_id: 4,
-                    rdv_solidarites_participation_id: 999
+                    rdv_solidarites_participation_id: 999,
+                    rdv_context_id: rdv_context2.id
                   }
                 ],
                 organisation_id: organisation.id,
-                rdv_context_ids: [rdv_context.id, rdv_context2.id],
                 motif_id: motif.id,
                 lieu_id: lieu.id,
                 last_webhook_update_received_at: timestamp
@@ -200,7 +201,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
             :participation,
             applicant: applicant,
             rdv: rdv,
-            status: 'unknown',
+            status: "unknown",
             id: 1,
             rdv_solidarites_participation_id: 998
           )
@@ -210,7 +211,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
             :participation,
             applicant: applicant2,
             rdv: rdv,
-            status: 'unknown',
+            status: "unknown",
             id: 2,
             rdv_solidarites_participation_id: 999
           )
@@ -219,15 +220,17 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
           [
             {
               id: 1,
-              status: 'unknown',
+              status: "unknown",
               applicant_id: 3,
-              rdv_solidarites_participation_id: 998
+              rdv_solidarites_participation_id: 998,
+              rdv_context_id: rdv_context.id
             },
             {
               id: 2,
-              status: 'seen',
+              status: "seen",
               applicant_id: 4,
-              rdv_solidarites_participation_id: 999
+              rdv_solidarites_participation_id: 999,
+              rdv_context_id: rdv_context2.id
             },
             {
               _destroy: true,
@@ -245,7 +248,6 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
               {
                 participations_attributes: participations_attributes_expected,
                 organisation_id: organisation.id,
-                rdv_context_ids: [rdv_context.id, rdv_context2.id],
                 motif_id: motif.id,
                 lieu_id: lieu.id,
                 last_webhook_update_received_at: timestamp
@@ -282,19 +284,20 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob, type: :job do
               participations_attributes: [
                 {
                   id: nil,
-                  status: 'unknown',
+                  status: "unknown",
                   applicant_id: 3,
-                  rdv_solidarites_participation_id: 998
+                  rdv_solidarites_participation_id: 998,
+                  rdv_context_id: rdv_context.id
                 },
                 {
                   id: nil,
-                  status: 'unknown',
+                  status: "unknown",
                   applicant_id: 4,
-                  rdv_solidarites_participation_id: 999
+                  rdv_solidarites_participation_id: 999,
+                  rdv_context_id: rdv_context2.id
                 }
               ],
               organisation_id: organisation.id,
-              rdv_context_ids: [rdv_context.id, rdv_context2.id],
               motif_id: motif.id,
               lieu_id: lieu.id,
               convocable: true,

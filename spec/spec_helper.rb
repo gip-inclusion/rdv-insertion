@@ -15,7 +15,7 @@
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 require "pundit/rspec"
 require "capybara/rspec"
-require 'webmock/rspec'
+require "webmock/rspec"
 require "rack_session_access/capybara"
 require "selenium-webdriver"
 

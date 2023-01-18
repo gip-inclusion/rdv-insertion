@@ -13,7 +13,8 @@ class Motif < ApplicationRecord
     rsa_accompagnement_social: 6,
     rsa_accompagnement_sociopro: 7,
     rsa_main_tendue: 8,
-    rsa_atelier_collectif_mandatory: 9
+    rsa_atelier_collectif_mandatory: 9,
+    rsa_spie: 10
   }.freeze
   CHRONOLOGICALLY_SORTED_CATEGORIES = %w[
     rsa_orientation
@@ -26,6 +27,7 @@ class Motif < ApplicationRecord
     rsa_insertion_offer
     rsa_atelier_collectif_mandatory
     rsa_main_tendue
+    rsa_spie
   ].freeze
 
   enum location_type: { public_office: 0, phone: 1, home: 2 }

@@ -31,7 +31,7 @@ describe RdvSolidaritesApi::DeleteReferentAssignation, type: :service do
     end
 
     context "when the response is unsuccessful" do
-      let(:response_body) { { error_messages: ['some error'] }.to_json }
+      let(:response_body) { { error_messages: ["some error"] }.to_json }
 
       before do
         allow(rdv_solidarites_client).to receive(:delete_referent_assignation)

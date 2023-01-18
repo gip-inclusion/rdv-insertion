@@ -4,18 +4,18 @@ class RenameCustomIdToDepartmentInternalId < ActiveRecord::Migration[6.1]
     add_index "applicants", %w[department_internal_id department_id], unique: true
 
     Configuration.find_each do |config|
-      next if config.column_names.dig('optional', 'custom_id').blank?
+      next if config.column_names.dig("optional", "custom_id").blank?
 
-      config.column_names['optional']['department_internal_id'] = config.column_names['optional'].delete('custom_id')
+      config.column_names["optional"]["department_internal_id"] = config.column_names["optional"].delete("custom_id")
       config.save!
     end
   end
 
   def down
     Configuration.find_each do |config|
-      next if config.column_names.dig('optional', 'department_internal_id').blank?
+      next if config.column_names.dig("optional", "department_internal_id").blank?
 
-      config.column_names['optional']['custom_id'] = config.column_names['optional'].delete('department_internal_id')
+      config.column_names["optional"]["custom_id"] = config.column_names["optional"].delete("department_internal_id")
       config.save!
     end
 

@@ -55,7 +55,7 @@ module RdvSolidarites
     end
 
     def formatted_start_time
-      starts_at.to_datetime.strftime('%H:%M')
+      starts_at.to_datetime.strftime("%H:%M")
     end
   end
 end
