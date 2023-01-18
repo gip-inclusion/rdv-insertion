@@ -36,7 +36,7 @@ module Invitations
 
     def regular_invitation_reminder_content
       "#{applicant.full_name},\nEn tant que #{applicant_designation}, vous avez reçu un message il y a 3 jours " \
-        "vous invitant à prendre RDV au créneau de votre choix afin de #{rdv_purpose}." \
+        "vous invitant à prendre RDV au créneau de votre choix afin #{rdv_purpose}." \
         " Le lien de prise de RDV suivant expire dans #{number_of_days_before_expiration} " \
         "jours: " \
         "#{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \

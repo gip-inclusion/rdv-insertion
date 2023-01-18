@@ -262,6 +262,37 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("dans les 5 jours")
       end
     end
+
+    context "for rsa integration information" do
+      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_integration_information") }
+
+      it "renders the headers" do
+        expect(subject.to).to eq([applicant.email])
+      end
+
+      it "renders the subject" do
+        email_subject = unescape_html(subject.subject)
+        expect(email_subject).to eq("[RSA]: Votre rendez-vous d'intégration dans le cadre de votre RSA")
+      end
+
+      it "renders the body" do
+        body_string = unescape_html(subject.body.encoded)
+        expect(body_string).to match("Bonjour Jean VALJEAN")
+        expect(body_string).to match("Le département de la Drôme.")
+        expect(body_string).to match("01 39 39 39 39")
+        expect(body_string).to match(
+          "Vous êtes bénéficiaire du RSA et à ce titre vous devez vous présenter à un rendez-vous d'intégration" \
+          " afin d'être informé de vos droits et de vos devoirs"
+        )
+        expect(body_string).to match("Ce rendez-vous est obligatoire.")
+        expect(body_string).not_to match(
+          "le versement de votre RSA pourra être suspendu ou son montant réduit."
+        )
+        expect(body_string).to match("/invitations/redirect")
+        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("dans les 5 jours")
+      end
+    end
   end
 
   describe "#invitation_for_rsa_orientation_on_phone_platform" do
