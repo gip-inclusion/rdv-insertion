@@ -282,7 +282,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("01 39 39 39 39")
         expect(body_string).to match(
           "Vous êtes bénéficiaire du RSA et à ce titre vous devez vous présenter à un rendez-vous d'intégration" \
-          " afin d'être informé de vos droits et de vos devoirs"
+          " afin de vous informer sur vos droits et vos devoirs"
         )
         expect(body_string).to match("Ce rendez-vous est obligatoire.")
         expect(body_string).not_to match(

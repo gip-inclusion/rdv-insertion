@@ -1,5 +1,5 @@
 <h1>Bonjour <%= "#{@applicant.first_name} #{@applicant.last_name.upcase}" %>,</h1>
-<p>En tant que <%= @applicant_designation %>, vous avez reçu un premier mail il y a 3 jours vous invitant à prendre rendez-vous afin <%= @rdv_purpose %>.</p>
+<p>En tant que <%= @applicant_designation %>, vous avez reçu un premier mail il y a 3 jours vous invitant à prendre rendez-vous afin de <%= @rdv_purpose %>.</p>
 <p>Il ne vous reste plus que <span class="font-weight-bold"><%= @invitation.number_of_days_before_expiration %> jours</span> pour prendre rendez-vous à la date et l'horaire de votre choix en cliquant sur le bouton suivant.</p>
 <% if @display_mandatory_warning %>
   <p><span class="font-weight-bold">Ce rendez-vous est obligatoire.</span></p>
