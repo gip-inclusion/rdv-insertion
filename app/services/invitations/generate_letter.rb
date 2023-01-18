@@ -88,7 +88,7 @@ module Invitations
     end
 
     def organisation_independent_from_cd
-      @invitation.organisations.any?(&:independent_from_cd)
+      @invitation.organisations.all?(&:independent_from_cd)
     end
   end
 end
