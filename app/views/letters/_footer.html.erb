@@ -1,5 +1,5 @@
 <div class="letter-footer">
-  <% if display_europe_logos == true %>
+  <% if display_europe_logos %>
     <div class="europe-logos">
       <%= pdf_image_tag(logo_path("europe-s-engage")) %>
     </div>
@@ -7,7 +7,7 @@
       <%= pdf_image_tag(logo_path("drapeau-europe")) %>
     </div>
   <% end %>
-  <% if display_department_logo == true || organisation.logo_path.nil? %>
+  <% if display_department_logo || organisation.logo_path.nil? %>
     <div>
       <%= pdf_image_tag(department.logo_path) %>
     </div>
