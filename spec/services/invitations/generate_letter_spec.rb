@@ -139,7 +139,47 @@ describe Invitations::GenerateLetter, type: :service do
         subject
         content = unescape_html(invitation.content)
         expect(content).to include(
-          "Objet : Offre d'insertion dans le cadre de votre RSA"
+          "Objet : Participation à un atelier dans le cadre de votre RSA"
+        )
+        expect(content).to include(
+          "Pour profiter au mieux de cet accompagnement, nous vous invitons à vous inscrire directement" \
+          " et librement aux ateliers et formations de votre choix"
+        )
+        expect(content).not_to include("Vous devez obligatoirement prendre ce rendez-vous")
+        expect(content).not_to include(
+          "En l'absence d'action de votre part, vous risquez une suspension ou réduction du versement de votre RSA."
+        )
+      end
+    end
+
+    context "when the context is rsa_atelier_competences" do
+      let!(:rdv_context) { create(:rdv_context, motif_category: "rsa_atelier_competences") }
+
+      it "generates the pdf with the right content" do
+        subject
+        content = unescape_html(invitation.content)
+        expect(content).to include(
+          "Objet : Participation à un atelier dans le cadre de votre RSA"
+        )
+        expect(content).to include(
+          "Pour profiter au mieux de cet accompagnement, nous vous invitons à vous inscrire directement" \
+          " et librement aux ateliers et formations de votre choix"
+        )
+        expect(content).not_to include("Vous devez obligatoirement prendre ce rendez-vous")
+        expect(content).not_to include(
+          "En l'absence d'action de votre part, vous risquez une suspension ou réduction du versement de votre RSA."
+        )
+      end
+    end
+
+    context "when the context is rsa_atelier_rencontres_pro" do
+      let!(:rdv_context) { create(:rdv_context, motif_category: "rsa_atelier_rencontres_pro") }
+
+      it "generates the pdf with the right content" do
+        subject
+        content = unescape_html(invitation.content)
+        expect(content).to include(
+          "Objet : Participation à un atelier dans le cadre de votre RSA"
         )
         expect(content).to include(
           "Pour profiter au mieux de cet accompagnement, nous vous invitons à vous inscrire directement" \

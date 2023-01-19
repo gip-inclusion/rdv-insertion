@@ -127,7 +127,55 @@ describe Invitations::SendEmail, type: :service do
           .with(
             sendable: invitation,
             mailer_class: InvitationMailer,
-            mailer_method: :invitation_for_rsa_insertion_offer,
+            mailer_method: :invitation_for_atelier,
+            invitation: invitation,
+            applicant: applicant
+          )
+        subject
+      end
+    end
+
+    context "for rsa_atelier_competences" do
+      let!(:invitation) do
+        create(
+          :invitation,
+          applicant: applicant,
+          rdv_context: build(:rdv_context, motif_category: "rsa_atelier_competences")
+        )
+      end
+
+      it("is a success") { is_a_success }
+
+      it "calls the emailer service" do
+        expect(Messengers::SendEmail).to receive(:call)
+          .with(
+            sendable: invitation,
+            mailer_class: InvitationMailer,
+            mailer_method: :invitation_for_atelier,
+            invitation: invitation,
+            applicant: applicant
+          )
+        subject
+      end
+    end
+
+    context "for rsa_atelier_rencontres_pro" do
+      let!(:invitation) do
+        create(
+          :invitation,
+          applicant: applicant,
+          rdv_context: build(:rdv_context, motif_category: "rsa_atelier_rencontres_pro")
+        )
+      end
+
+      it("is a success") { is_a_success }
+
+      it "calls the emailer service" do
+        expect(Messengers::SendEmail).to receive(:call)
+          .with(
+            sendable: invitation,
+            mailer_class: InvitationMailer,
+            mailer_method: :invitation_for_atelier,
             invitation: invitation,
             applicant: applicant
           )

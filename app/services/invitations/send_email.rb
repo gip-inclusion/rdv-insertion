@@ -28,6 +28,8 @@ module Invitations
     def mailer_method_for_first_invitation
       if InvitationMailer.respond_to?(:"invitation_for_#{motif_category}")
         :"invitation_for_#{motif_category}"
+      elsif @invitation.for_atelier?
+        :invitation_for_atelier
       else
         :regular_invitation
       end

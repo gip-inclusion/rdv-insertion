@@ -331,11 +331,11 @@ RSpec.describe InvitationMailer do
     end
   end
 
-  describe "#invitation_for_rsa_insertion_offer" do
+  describe "#invitation_for_atelier" do
     subject do
       described_class
         .with(invitation: invitation, applicant: applicant)
-        .invitation_for_rsa_insertion_offer
+        .invitation_for_atelier
     end
 
     it "renders the headers" do
@@ -345,7 +345,7 @@ RSpec.describe InvitationMailer do
     it "renders the subject" do
       email_subject = unescape_html(subject.subject)
       expect(email_subject).to eq(
-        "[RSA]: Offre de formations et ateliers dans le cadre de votre parcours socio-professionel"
+        "[RSA]: Participer à un atelier dans le cadre de votre parcours socio-professionnel"
       )
     end
 

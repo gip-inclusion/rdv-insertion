@@ -5,7 +5,7 @@ module Invitations
     attr_reader :invitation
 
     delegate :motif_category, :applicant, :help_phone_number, :number_of_days_to_accept_invitation,
-             :number_of_days_before_expiration,
+             :number_of_days_before_expiration, :for_atelier?,
              to: :invitation
 
     def initialize(invitation:)
@@ -28,16 +28,22 @@ module Invitations
 
     def compute_invitation_reminder_content
       # unless the message is specific for the category we send the regular reminder content
-      return regular_invitation_reminder_content unless respond_to?(:"content_for_#{motif_category}_reminder", true)
-
-      send(:"content_for_#{motif_category}_reminder")
+      if respond_to?(:"content_for_#{motif_category}_reminder", true)
+        send(:"content_for_#{motif_category}_reminder")
+      else
+        regular_invitation_reminder_content
+      end
     end
 
     def compute_invitation_content
-      # unless the messsage is specific for the category we send the regular reminder content
-      return regular_invitation_content unless respond_to?(:"content_for_#{motif_category}", true)
-
-      send(:"content_for_#{motif_category}")
+      # unless the messsage is specific for the category we send the regular content
+      if respond_to?(:"content_for_#{motif_category}", true)
+        send(:"content_for_#{motif_category}")
+      elsif for_atelier?
+        content_for_atelier
+      else
+        regular_invitation_content
+      end
     end
   end
 end

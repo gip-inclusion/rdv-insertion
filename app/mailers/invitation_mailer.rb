@@ -23,10 +23,10 @@ class InvitationMailer < ApplicationMailer
     )
   end
 
-  def invitation_for_rsa_insertion_offer
+  def invitation_for_atelier
     mail(
       to: @applicant.email,
-      subject: "[RSA]: Offre de formations et ateliers dans le cadre de votre parcours socio-professionel"
+      subject: "[RSA]: Participer à un atelier dans le cadre de votre parcours socio-professionnel"
     )
   end
 

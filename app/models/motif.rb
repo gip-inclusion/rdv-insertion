@@ -15,7 +15,9 @@ class Motif < ApplicationRecord
     rsa_main_tendue: 8,
     rsa_atelier_collectif_mandatory: 9,
     rsa_spie: 10,
-    rsa_integration_information: 11
+    rsa_integration_information: 11,
+    rsa_atelier_competences: 12,
+    rsa_atelier_rencontres_pro: 13
   }.freeze
   CHRONOLOGICALLY_SORTED_CATEGORIES = %w[
     rsa_integration_information
@@ -27,6 +29,8 @@ class Motif < ApplicationRecord
     rsa_follow_up
     rsa_cer_signature
     rsa_insertion_offer
+    rsa_atelier_competences
+    rsa_atelier_rencontres_pro
     rsa_atelier_collectif_mandatory
     rsa_main_tendue
     rsa_spie

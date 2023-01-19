@@ -7,7 +7,7 @@ module Invitations
     delegate :applicant, :department, :motif_category, :messages_configuration,
              :letter_sender_name, :address, :street_address, :zipcode_and_city,
              :signature_lines, :display_europe_logos, :direction_names, :help_address,
-             :sender_city, :display_department_logo,
+             :sender_city, :display_department_logo, :for_atelier?,
              to: :invitation
 
     def initialize(invitation:)
@@ -41,11 +41,14 @@ module Invitations
     end
 
     def template
-      if template_exists_for_motif_category?
-        "invitation_for_#{@invitation.motif_category}"
-      else
-        "regular_invitation"
-      end
+      @template ||= \
+        if template_exists_for_motif_category?
+          "invitation_for_#{@invitation.motif_category}"
+        elsif for_atelier?
+          "invitation_for_atelier"
+        else
+          "regular_invitation"
+        end
     end
 
     def locals
@@ -62,7 +65,7 @@ module Invitations
         display_department_logo: display_department_logo,
         sender_city: sender_city
       }
-      return locals if template_exists_for_motif_category?
+      return locals unless template == "regular_invitation"
 
       locals.merge(
         rdv_title: rdv_title,

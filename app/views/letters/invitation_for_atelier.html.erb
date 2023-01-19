@@ -1,6 +1,6 @@
 <%= render 'letters/header', direction_names: direction_names, sender_city: sender_city, department: department, organisation: organisation, applicant: applicant %>
 <div class="mail-object">
-  <p class="bold-blue"><span class="bold-blue">Objet : Offre d'insertion dans le cadre de votre RSA</span></p>
+  <p class="bold-blue"><span class="bold-blue">Objet : Participation à un atelier dans le cadre de votre RSA</span></p>
   <% if applicant.affiliation_number %>
     <p>N° allocataire : <%= applicant.affiliation_number %></p>
   <% end %>
