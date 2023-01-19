@@ -1,3 +1,5 @@
+// note: flexbox is not working with wkhtmltopdf/wicked-pdf ; hence, the dirty css to keep everything centered/aligned
+
 @font-face {
   font-family: 'Marianne';
   src: url('../fonts/Marianne/Marianne-Regular.woff');
@@ -12,60 +14,27 @@ u {
   white-space: nowrap;
 }
 
-.left-col {
+.header-left-col {
   display: inline-block;
   width: 40%;
   margin-right: 140px;
 }
 
-.right-col {
+.header-right-col {
   display: inline-block;
   width: 40%;
 }
 
-.letter-first-col {
-  display: inline-block;
-  width: 15%;
-  margin-right: 0px;
-  padding-right: 0px;
-}
-
-.letter-second-col {
-  display: inline-block;
-  width: 15%;
-  margin-left: 0px;
-  padding-left: 0px;
-  margin-right: 80px;
-}
-
-.letter-third-col {
-  display: inline-block;
-  width: 20%;
-  margin-right: 80px;
-}
-
-.letter-fourth-col {
-  display: inline-block;
-  width: 30%;
-}
-
-.letter-logo {
-  &.header-logo {
-    position: absolute;
-    top: 0;
-    width: 40%;
-  }
+.header-logo {
+  position: absolute;
+  top: 0;
+  width: 40%;
   img {
     height: 80px;
     border: none;
     display: block;
     margin: 0 auto;
   }
-}
-
-
-.rdvi-logo {
-  height: 80px;
 }
 
 .mail-object {
@@ -111,4 +80,50 @@ u {
   position: absolute;
   top: 1230px;
   width: 100%;
+
+  // the "first-child:nth-last-child" tricks are used to have logos grossly centered
+  div {
+    display: inline-block;
+    // no europe logos & no organisation logo
+    &:first-child:nth-last-child(2),
+    &:first-child:nth-last-child(2) ~ div {
+      margin: 0 110px;
+    }
+    // no europe logos ; organisation & department logos displayed
+    &:first-child:nth-last-child(3),
+    &:first-child:nth-last-child(3) ~ div {
+      margin: 0 40px;
+    }
+    // europe logos displayed ; no organisation logo
+    &:first-child:nth-last-child(4) ~ div {
+      margin-right: 120px;
+    // europe, organisation & department logos displayed
+    }
+    &:first-child:nth-last-child(5) ~ div {
+      margin-right: 20px;
+      img {
+        height: 60px;
+      }
+    }
+
+    // keep both europe logos glued together
+    &.europe-logos:first-child {
+      margin-right: 0px;
+      padding-right: 0px;
+    }
+    &.europe-logos:last-child {
+      margin-left: 0px;
+      padding-left: 0px;
+    }
+
+    &:last-child {
+      height: 65px;
+      width: 25%;
+      margin-right: 0px !important;
+    }
+  }
+
+  img {
+    height: 65px;
+  }
 }

@@ -7,7 +7,7 @@ module Invitations
     delegate :applicant, :department, :motif_category, :messages_configuration,
              :letter_sender_name, :address, :street_address, :zipcode_and_city,
              :signature_lines, :display_europe_logos, :direction_names, :help_address,
-             :sender_city,
+             :sender_city, :display_department_logo,
              to: :invitation
 
     def initialize(invitation:)
@@ -59,6 +59,7 @@ module Invitations
         signature_lines: signature_lines,
         help_address: help_address,
         display_europe_logos: display_europe_logos,
+        display_department_logo: display_department_logo,
         sender_city: sender_city
       }
       return locals if template_exists_for_motif_category?
@@ -73,7 +74,7 @@ module Invitations
     end
 
     def template_exists_for_motif_category?
-      ApplicationController.new.template_exists?("invitation_for_#{@invitation.motif_category}", ["letters"], false)
+      ApplicationController.new.template_exists?("invitation_for_#{@invitation.motif_category}", ["letters"])
     end
 
     def check_messages_configuration!
