@@ -25,7 +25,7 @@ module Notifications
 
     ### rdv_updated
     def presential_content_for_rdv_updated
-      "#{applicant.full_name},\nVotre #{rdv_title} dans le cadre de votre RSA a été modifié. " \
+      "#{applicant.full_name},\nVotre #{rdv_title} dans le cadre de votre #{rdv_subject} a été modifié. " \
         "Vous êtes attendu(e) le #{formatted_start_date} à #{formatted_start_time}" \
         " ici: #{lieu.full_name}. " \
         "#{mandatory_warning}" \
@@ -34,7 +34,7 @@ module Notifications
     end
 
     def by_phone_content_for_rdv_updated
-      "#{applicant.full_name},\nVotre #{rdv_title} dans le cadre de votre RSA a été modifié. " \
+      "#{applicant.full_name},\nVotre #{rdv_title} dans le cadre de votre #{rdv_subject} a été modifié. " \
         "Un travailleur social vous appellera le #{formatted_start_date}" \
         " à partir de #{formatted_start_time} sur ce numéro. " \
         "#{mandatory_warning}" \
@@ -44,7 +44,7 @@ module Notifications
 
     ### rdv_cancelled
     def content_for_rdv_cancelled
-      "#{applicant.full_name},\nVotre #{rdv_title} dans le cadre de votre RSA a été annulé. " \
+      "#{applicant.full_name},\nVotre #{rdv_title} dans le cadre de votre #{rdv_subject} a été annulé. " \
         "Pour plus d'informations, contactez le #{phone_number}."
     end
 

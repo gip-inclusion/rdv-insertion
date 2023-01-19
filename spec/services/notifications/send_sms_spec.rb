@@ -464,7 +464,8 @@ describe Notifications::SendSms, type: :service do
         end
 
         let!(:content) do
-          "Monsieur John DOE,\nVotre rendez-vous d'accompagnement dans le cadre de votre RSA a été modifié. " \
+          "Monsieur John DOE,\nVotre rendez-vous d'accompagnement dans le cadre de votre " \
+            "demande d'emploi a été modifié. " \
             "Vous êtes attendu(e) le 20/12/2021 à " \
             "10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
             "Ce RDV est obligatoire. " \
@@ -485,7 +486,8 @@ describe Notifications::SendSms, type: :service do
         end
 
         let!(:content) do
-          "Monsieur John DOE,\nVotre rendez-vous d'accompagnement dans le cadre de votre RSA a été annulé. " \
+          "Monsieur John DOE,\nVotre rendez-vous d'accompagnement dans le cadre de votre " \
+            "demande d'emploi a été annulé. " \
             "Pour plus d'informations, contactez le 0101010101."
         end
 
@@ -520,7 +522,8 @@ describe Notifications::SendSms, type: :service do
           end
 
           let!(:content) do
-            "Monsieur John DOE,\nVotre rendez-vous d'accompagnement dans le cadre de votre RSA a été modifié. " \
+            "Monsieur John DOE,\nVotre rendez-vous d'accompagnement dans le cadre de votre " \
+              "demande d'emploi a été modifié. " \
               "Un travailleur social vous appellera le 20/12/2021 à " \
               "partir de 10:00 sur ce numéro. " \
               "Ce RDV est obligatoire. " \

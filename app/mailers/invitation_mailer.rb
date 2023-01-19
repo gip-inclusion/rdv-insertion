@@ -4,7 +4,7 @@ class InvitationMailer < ApplicationMailer
   before_action :set_invitation, :set_applicant, :set_department,
                 :set_logo_path, :set_signature_lines
 
-  before_action :set_motif_category, :set_rdv_title, :set_applicant_designation,
+  before_action :set_motif_category, :set_rdv_title, :set_rdv_subject, :set_applicant_designation,
                 :set_display_mandatory_warning, :set_display_punishable_warning,
                 :set_rdv_purpose,
                 only: [:regular_invitation, :regular_invitation_reminder]
@@ -12,7 +12,7 @@ class InvitationMailer < ApplicationMailer
   def regular_invitation
     mail(
       to: @applicant.email,
-      subject: "[RSA]: Votre #{@rdv_title} dans le cadre de votre RSA"
+      subject: "[RSA]: Votre #{@rdv_title} dans le cadre de votre #{@rdv_subject}"
     )
   end
 
@@ -35,7 +35,7 @@ class InvitationMailer < ApplicationMailer
   def regular_invitation_reminder
     mail(
       to: @applicant.email,
-      subject: "[Rappel]: Votre #{@rdv_title} dans le cadre de votre RSA"
+      subject: "[Rappel]: Votre #{@rdv_title} dans le cadre de votre #{@rdv_subject}"
     )
   end
 
@@ -83,6 +83,10 @@ class InvitationMailer < ApplicationMailer
 
   def set_rdv_title
     @rdv_title = rdv_title
+  end
+
+  def set_rdv_subject
+    @rdv_subject = rdv_subject
   end
 
   def set_applicant_designation

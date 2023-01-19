@@ -5,6 +5,7 @@ categories:
     rdv_title_by_phone: rendez-vous d'orientation téléphonique
     rdv_purpose: démarrer un parcours d'accompagnement
     applicant_designation: bénéficiaire du RSA
+    rdv_subject: RSA
     display_mandatory_warning: true
     display_punishable_warning: false
   rsa_accompagnement: &rsa_accompagnement_values
@@ -12,6 +13,7 @@ categories:
     rdv_title_by_phone: rendez-vous d'accompagnement téléphonique
     rdv_purpose: démarrer un parcours d'accompagnement
     applicant_designation: bénéficiaire du RSA
+    rdv_subject: RSA
     display_mandatory_warning: true
     display_punishable_warning: true
   rsa_accompagnement_social: *rsa_accompagnement_values # we reuse the rsa_accompagnement_values
@@ -21,6 +23,7 @@ categories:
     rdv_title_by_phone: rendez-vous de suivi téléphonique
     rdv_purpose: faire un point avec votre référent de parcours
     applicant_designation: bénéficiaire du RSA
+    rdv_subject: RSA
     display_mandatory_warning: false
     display_punishable_warning: false
   rsa_cer_signature:
@@ -28,6 +31,7 @@ categories:
     rdv_title_by_phone: rendez-vous téléphonique de signature de CER
     rdv_purpose: construire et signer votre Contrat d'Engagement Réciproque
     applicant_designation: bénéficiaire du RSA
+    rdv_subject: RSA
     display_mandatory_warning: true
     display_punishable_warning: false
   rsa_main_tendue:
@@ -35,6 +39,7 @@ categories:
     rdv_title_by_phone: entretien téléphonique de main tendue
     rdv_purpose: faire le point sur votre situation
     applicant_designation: bénéficiaire du RSA
+    rdv_subject: RSA
     display_mandatory_warning: true
     display_punishable_warning: false
   rsa_atelier_collectif_mandatory:
@@ -42,6 +47,7 @@ categories:
     rdv_title_by_phone: atelier collectif
     rdv_purpose: vous aider dans votre parcours d'insertion
     applicant_designation: bénéficiaire du RSA
+    rdv_subject: RSA
     display_mandatory_warning: true
     display_punishable_warning: false
   rsa_spie:
@@ -49,5 +55,6 @@ categories:
     rdv_title_by_phone: rendez-vous d'accompagnement téléphonique
     rdv_purpose: démarrer un parcours d'accompagnement
     applicant_designation: demandeur d'emploi
+    rdv_subject: demande d'emploi
     display_mandatory_warning: true
     display_punishable_warning: true

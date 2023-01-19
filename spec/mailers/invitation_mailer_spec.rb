@@ -241,7 +241,7 @@ RSpec.describe InvitationMailer do
 
       it "renders the subject" do
         email_subject = unescape_html(subject.subject)
-        expect(email_subject).to eq("[RSA]: Votre rendez-vous d'accompagnement dans le cadre de votre RSA")
+        expect(email_subject).to eq("[RSA]: Votre rendez-vous d'accompagnement dans le cadre de votre demande d'emploi")
       end
 
       it "renders the body" do
