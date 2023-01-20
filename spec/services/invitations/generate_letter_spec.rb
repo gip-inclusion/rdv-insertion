@@ -64,6 +64,18 @@ describe Invitations::GenerateLetter, type: :service do
       end
     end
 
+    context "when the applicant has a referent" do
+      let!(:agent) do
+        create(:agent, organisations: [organisation], applicants: [applicant],
+                       first_name: "Kylian", last_name: "Mbappé")
+      end
+
+      it "displays the name of the referent" do
+        subject
+        expect(invitation.content).to include("Référent de parcours : Kylian Mbappé")
+      end
+    end
+
     context "when the context is orientation" do
       let!(:rdv_context) { create(:rdv_context, motif_category: "rsa_orientation") }
 
