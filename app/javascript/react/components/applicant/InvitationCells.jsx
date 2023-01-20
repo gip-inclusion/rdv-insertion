@@ -49,7 +49,7 @@ export default function InvitationCells({
           content={
             <>
               Ajoutez l'allocataire à une organisation qui gère ces rdvs en appuyant sur le boutton
-              "Ajouter à une organisation" sur sa fiche, puis rechargez le fichier
+              "Ajouter à des organisations" sur sa fiche, puis rechargez le fichier
             </>
           }
         >
