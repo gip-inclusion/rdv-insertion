@@ -16,7 +16,7 @@
       Nous vous remercions de prendre ce rendez-vous dans un délai de <%= invitation.number_of_days_to_accept_invitation %> jours à réception de ce courrier.
     <% end %>
     <% if display_punishable_warning %>
-      <%= render 'letters/punishable_warning', department: department, organisation_independent_from_cd: organisation_independent_from_cd %>
+      <%= render 'letters/punishable_warning', department: department, independent_from_cd_message: independent_from_cd_message %>
     <% end %>
   </p>
   <%= render 'letters/help_message', invitation: invitation, help_address: help_address %>
