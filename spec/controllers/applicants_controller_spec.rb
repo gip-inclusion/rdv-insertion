@@ -283,7 +283,7 @@ describe ApplicantsController do
         get :show, params: show_params
 
         expect(response).to be_successful
-        expect(response.body).not_to match(/Ajouter à des organisations/)
+        expect(response.body).not_to match(/Ajouter à une organisation/)
       end
     end
 
@@ -294,7 +294,7 @@ describe ApplicantsController do
         get :show, params: show_params
 
         expect(response).to be_successful
-        expect(response.body).to match(/Ajouter à des organisations/)
+        expect(response.body).to match(/Ajouter à une organisation/)
       end
     end
 
