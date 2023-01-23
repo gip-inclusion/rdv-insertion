@@ -625,7 +625,7 @@ describe ApplicantsController do
       end
       let!(:number_of_days_before_action_required) { 4 }
 
-      context "when the invitation has been sent before the number of days defined in the configuration ago" do
+      context "when the invitation has been sent before the number of days before action required" do
         let!(:invitation) { create(:invitation, applicant: applicant2, rdv_context: rdv_context2, sent_at: 5.days.ago) }
 
         it "filters by action required" do
