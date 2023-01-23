@@ -52,7 +52,7 @@ module Invitations
     end
 
     def locals
-      locals = {
+      {
         invitation: @invitation,
         department: department,
         applicant: applicant,
@@ -63,17 +63,14 @@ module Invitations
         help_address: help_address,
         display_europe_logos: display_europe_logos,
         display_department_logo: display_department_logo,
-        sender_city: sender_city
-      }
-      return locals unless template == "regular_invitation"
-
-      locals.merge(
+        sender_city: sender_city,
         rdv_title: rdv_title,
         applicant_designation: applicant_designation,
         display_mandatory_warning: display_mandatory_warning,
         display_punishable_warning: display_punishable_warning,
-        rdv_purpose: rdv_purpose
-      )
+        rdv_purpose: rdv_purpose,
+        rdv_subject: rdv_subject
+      }
     end
 
     def template_exists_for_motif_category?

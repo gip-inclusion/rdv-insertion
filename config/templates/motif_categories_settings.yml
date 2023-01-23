@@ -7,6 +7,9 @@ categories:
     applicant_designation: bénéficiaire du RSA
     display_mandatory_warning: true
     display_punishable_warning: false
+  rsa_orientation_on_phone_platform:
+    rdv_subject: RSA
+    applicant_designation: bénéficiaire du RSA
   rsa_accompagnement: &rsa_accompagnement_values
     rdv_title: rendez-vous d'accompagnement
     rdv_title_by_phone: rendez-vous d'accompagnement téléphonique
@@ -58,3 +61,8 @@ categories:
     rdv_purpose: vous informer sur vos droits et vos devoirs
     display_mandatory_warning: true
     display_punishable_warning: false
+  rsa_insertion_offer: &rsa_atelier
+    rdv_subject: RSA
+    applicant_designation: bénéficiaire du RSA
+  rsa_atelier_competences: *rsa_atelier
+  rsa_atelier_rencontres_pro: *rsa_atelier

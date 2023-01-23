@@ -1,9 +1,9 @@
 module Templatable
   delegate :rdv_purpose, :rdv_title_by_phone, :rdv_title, :applicant_designation, :display_mandatory_warning,
-           :display_punishable_warning,
-           to: :message_template
+           :display_punishable_warning, :rdv_subject,
+           to: :motif_category_settings
 
-  def message_template
-    @message_template ||= Templating::ApplicantMessages.send(:"#{motif_category}")
+  def motif_category_settings
+    @motif_category_settings ||= Templating::MotifCategoriesSettings.send(:"#{motif_category}")
   end
 end
