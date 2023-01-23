@@ -60,7 +60,8 @@ module Invitations
         help_address: help_address,
         display_europe_logos: display_europe_logos,
         display_department_logo: display_department_logo,
-        sender_city: sender_city
+        sender_city: sender_city,
+        invitation_in_referent_context: invitation_in_referent_context
       }
       return locals if template_exists_for_motif_category?
 
@@ -83,8 +84,16 @@ module Invitations
       fail!("La configuration des courriers pour votre organisation est incomplète")
     end
 
+    def organisations
+      (applicant.organisations & @invitation.organisations)
+    end
+
     def organisation
-      (applicant.organisations & @invitation.organisations).last
+      organisations.last
+    end
+
+    def invitation_in_referent_context
+      organisations.flat_map(&:configurations).any? { |c| c.rdv_with_referents == true }
     end
   end
 end

@@ -15,9 +15,10 @@ describe Invitations::GenerateLetter, type: :service do
     )
   end
   let!(:messages_configuration) { create(:messages_configuration) }
+  let!(:configuration) { create(:configuration) }
   let!(:organisation) do
     create(:organisation, messages_configuration: messages_configuration,
-                          department: department)
+                          department: department, configurations: [configuration])
   end
 
   describe "#call" do
@@ -64,7 +65,32 @@ describe Invitations::GenerateLetter, type: :service do
       end
     end
 
-    context "when the applicant has a referent" do
+    context "when the invitation is not in a referent context" do
+      it "generates the pdf with no reference to a referent" do
+        subject
+        expect(invitation.content).not_to include("Référent de parcours")
+      end
+    end
+
+    context "when the invitation is in a referent context and the applicant has no referent" do
+      let!(:configuration) { create(:configuration, rdv_with_referents: true) }
+      let!(:organisation) do
+        create(:organisation, messages_configuration: messages_configuration,
+                              department: department, configurations: [configuration])
+      end
+
+      it "displays that the referent is yet to be determined" do
+        subject
+        expect(invitation.content).to include("Référent de parcours : à définir")
+      end
+    end
+
+    context "when the invitation is in a referent context and the applicant has a referent" do
+      let!(:configuration) { create(:configuration, rdv_with_referents: true) }
+      let!(:organisation) do
+        create(:organisation, messages_configuration: messages_configuration,
+                              department: department, configurations: [configuration])
+      end
       let!(:agent) do
         create(:agent, organisations: [organisation], applicants: [applicant],
                        first_name: "Kylian", last_name: "Mbappé")
