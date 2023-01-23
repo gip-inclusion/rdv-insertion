@@ -1,8 +1,8 @@
 FactoryBot.define do
   factory :notification do
-    event { "rdv_created" }
+    association :participation
+    event { "participation_created" }
     format { "sms" }
-    rdv { create(:rdv) }
-    applicant { create(:applicant) }
+    sequence(:rdv_solidarites_rdv_id)
   end
 end

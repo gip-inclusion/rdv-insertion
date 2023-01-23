@@ -31,7 +31,7 @@ describe Invitations::GenerateLetter, type: :service do
       expect(content).to include(department.name)
       expect(content).to include("Vous êtes bénéficiaire du RSA")
       # letter-first-col is only used when display_europe_logos is true (false by default)
-      expect(content).not_to include("letter-first-col")
+      expect(content).not_to include("europe-logos")
     end
 
     context "when the signature is configured" do
@@ -48,8 +48,8 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf string with the europe logos" do
         subject
-        # letter-first-col is only used when display_europe_logos is true
-        expect(invitation.content).to include("letter-first-col")
+        # europe-logos is only used when display_europe_logos is true
+        expect(invitation.content).to include("europe-logos")
       end
     end
 
@@ -72,9 +72,9 @@ describe Invitations::GenerateLetter, type: :service do
         content = unescape_html(invitation.content)
         expect(content).to include("Objet : Rendez-vous d'orientation dans le cadre de votre RSA")
         expect(content).to include("vous devez prendre un rendez-vous afin de démarrer un parcours d'accompagnement")
-        expect(content).to include("Vous devez obligatoirement prendre ce rendez-vous")
+        expect(content).to include("Nous vous remercions de prendre ce rendez-vous")
         expect(content).not_to include(
-          "En l'absence d'action de votre part, vous risquez une suspension ou réduction du versement de votre RSA."
+          "la sanction peut aller jusqu’à une suspension ou une réduction du versement de votre RSA."
         )
       end
     end
@@ -87,10 +87,23 @@ describe Invitations::GenerateLetter, type: :service do
         content = unescape_html(invitation.content)
         expect(content).to include("Objet : Rendez-vous d'accompagnement dans le cadre de votre RSA")
         expect(content).to include("vous devez prendre un rendez-vous afin de démarrer un parcours d'accompagnement")
-        expect(content).to include("Vous devez obligatoirement prendre ce rendez-vous")
+        expect(content).to include("Nous vous remercions de prendre ce rendez-vous")
         expect(content).to include(
-          "En l'absence d'action de votre part, vous risquez une suspension ou réduction du versement de votre RSA."
+          "la sanction peut aller jusqu’à une suspension ou une réduction du versement de votre RSA."
         )
+      end
+
+      context "when the organisation is independent from the cd" do
+        let!(:organisation) do
+          create(:organisation, messages_configuration: messages_configuration,
+                                department: department, independent_from_cd: true)
+        end
+
+        it "generates the pdf with the right content" do
+          subject
+          content = unescape_html(invitation.content)
+          expect(content).to include("nous serons dans l’obligation d’en informer le Conseil Départemental")
+        end
       end
     end
 
@@ -106,9 +119,9 @@ describe Invitations::GenerateLetter, type: :service do
         expect(content).to include(
           "vous devez prendre un rendez-vous afin de construire et signer votre Contrat d'Engagement Réciproque"
         )
-        expect(content).to include("Vous devez obligatoirement prendre ce rendez-vous")
+        expect(content).to include("Nous vous remercions de prendre ce rendez-vous")
         expect(content).not_to include(
-          "En l'absence d'action de votre part, vous risquez une suspension ou réduction du versement de votre RSA."
+          "la sanction peut aller jusqu’à une suspension ou une réduction du versement de votre RSA."
         )
       end
     end
@@ -125,9 +138,9 @@ describe Invitations::GenerateLetter, type: :service do
         expect(content).to include(
           "vous devez prendre un rendez-vous afin de faire un point avec votre référent de parcours"
         )
-        expect(content).not_to include("Vous devez obligatoirement prendre ce rendez-vous")
+        expect(content).not_to include("Nous vous remercions de prendre ce rendez-vous")
         expect(content).not_to include(
-          "En l'absence d'action de votre part, vous risquez une suspension ou réduction du versement de votre RSA."
+          "la sanction peut aller jusqu’à une suspension ou une réduction du versement de votre RSA."
         )
       end
     end
@@ -145,9 +158,9 @@ describe Invitations::GenerateLetter, type: :service do
           "Pour profiter au mieux de cet accompagnement, nous vous invitons à vous inscrire directement" \
           " et librement aux ateliers et formations de votre choix"
         )
-        expect(content).not_to include("Vous devez obligatoirement prendre ce rendez-vous")
+        expect(content).not_to include("Nous vous remercions de prendre ce rendez-vous")
         expect(content).not_to include(
-          "En l'absence d'action de votre part, vous risquez une suspension ou réduction du versement de votre RSA."
+          "la sanction peut aller jusqu’à une suspension ou une réduction du versement de votre RSA."
         )
       end
     end

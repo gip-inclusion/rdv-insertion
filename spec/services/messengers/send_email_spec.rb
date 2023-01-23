@@ -10,7 +10,8 @@ describe Messengers::SendEmail, type: :service do
   end
 
   describe "#call" do
-    let!(:notification) { create(:notification, format: "email", applicant: applicant) }
+    let!(:notification) { create(:notification, format: "email", participation: participation) }
+    let!(:participation) { create(:participation, applicant: applicant) }
     let!(:applicant) { create(:applicant, email: email) }
     let!(:email) { "someone@beta.gouv.fr" }
 

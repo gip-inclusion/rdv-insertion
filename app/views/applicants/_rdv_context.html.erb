@@ -39,7 +39,7 @@
             <th class="px-4 py-2"><h4>RDV pris le</h4></th>
             <th class="px-4 py-2"><h4>Date du RDV</h4></th>
             <th class="px-5 py-2"><h4>Motif</h4></th>
-            <% if convocable_rdvs.present? %>
+            <% if convocable_participations.present? %>
               <th class="px-4 py-2"><h4>Convoqué par</h4></th>
             <% end %>
             <th class="px-4 py-2"><h4>Statut RDV</h4></th>
@@ -47,20 +47,20 @@
           </tr>
         </thead>
         <tbody>
-        <% if rdvs.present? %>
-          <% rdvs.each do |rdv| %>
+        <% if participations.present? %>
+          <% participations.sort_by(&:created_at).each do |participation| %>
             <tr>
-              <td class="px-4 py-3"><%= format_date(rdv.created_at) %></td>
-              <td class="px-4 py-3"><%= format_date(rdv.starts_at) %></td>
-              <td class="px-2 py-3"><%= rdv.motif.name %></td>
-              <% if convocable_rdvs.present?  %>
-                <td class="px-4 py-2"><%= rdv.convocable? ? sanitize(display_convocation_formats(rdv.convocation_formats)) : " - " %></td>
+              <td class="px-4 py-3"><%= format_date(participation.created_at) %></td>
+              <td class="px-4 py-3"><%= format_date(participation.starts_at) %></td>
+              <td class="px-2 py-3"><%= participation.motif_name %></td>
+              <% if convocable_participations.present?  %>
+                <td class="px-4 py-2"><%= participation.convocable? ? sanitize(display_convocation_formats(participation.convocation_formats)) : " - " %></td>
               <% end %>
-              <td class="px-4 py-3 <%= background_class_for_participation_status(@applicant.participation_for(rdv)) %>">
-                <%= display_participation_status(@applicant.participation_for(rdv)) %>
+              <td class="px-4 py-3 <%= background_class_for_participation_status(participation) %>">
+                <%= display_participation_status(participation) %>
               </td>
               <td class="px-4 py-3">
-                <%= link_to rdv.rdv_solidarites_url, target: "_blank" do %>
+                <%= link_to participation.rdv_solidarites_url, target: "_blank" do %>
                   <button class="btn btn-blue">
                     Voir sur RDV-S<i class="fas fa-external-link-alt icon-sm"></i>
                   </button>

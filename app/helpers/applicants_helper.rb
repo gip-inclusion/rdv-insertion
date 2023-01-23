@@ -13,11 +13,6 @@ module ApplicantsHelper
     configuration.invitation_formats.present?
   end
 
-  def show_last_invitation_date?(rdv_context)
-    rdv_context.present? && rdv_context.invitations.length > 1 &&
-      format_date(rdv_context.last_invitation_sent_at) != format_date(rdv_context.first_invitation_sent_at)
-  end
-
   def display_attribute(attribute)
     attribute.presence || " - "
   end

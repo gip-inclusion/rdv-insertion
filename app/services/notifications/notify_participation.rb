@@ -1,8 +1,7 @@
 module Notifications
-  class NotifyApplicant < BaseService
-    def initialize(rdv:, applicant:, event:, format:)
-      @rdv = rdv
-      @applicant = applicant
+  class NotifyParticipation < BaseService
+    def initialize(participation:, event:, format:)
+      @participation = participation
       @event = event
       @format = format
     end
@@ -19,12 +18,11 @@ module Notifications
 
     def notification
       @notification ||= Notification.new(
-        rdv: @rdv,
-        applicant: @applicant,
+        participation: @participation,
         event: @event,
         format: @format,
         # needed in case the rdv gets deleted
-        rdv_solidarites_rdv_id: @rdv.rdv_solidarites_rdv_id
+        rdv_solidarites_rdv_id: @participation.rdv_solidarites_rdv_id
       )
     end
 

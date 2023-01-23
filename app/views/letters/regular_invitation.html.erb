@@ -13,10 +13,10 @@
   <div class="invitation-token">Mon code d'invitation<br/><%= invitation.uuid %></div>
   <p>
     <% if display_mandatory_warning %>
-      Vous devez obligatoirement prendre ce rendez-vous <span class="bold-blue">dans un délai de <%= invitation.number_of_days_to_accept_invitation %> jours</span> à réception de ce courrier.
+      Nous vous remercions de prendre ce rendez-vous dans un délai de <%= invitation.number_of_days_to_accept_invitation %> jours à réception de ce courrier.
     <% end %>
     <% if display_punishable_warning %>
-      <span class="bold-blue">En l'absence d'action de votre part, vous risquez une suspension ou réduction du versement de votre RSA.</span>
+      <%= render 'letters/punishable_warning', department: department, display_independent_from_cd_message: display_independent_from_cd_message %>
     <% end %>
   </p>
   <%= render 'letters/help_message', invitation: invitation, help_address: help_address %>
@@ -25,4 +25,4 @@
     <%= render 'common/organisation_signature', signature_lines: signature_lines, department: department %>
   </div>
 </div>
-<%= render 'letters/footer', department: department, organisation: organisation, display_europe_logos: display_europe_logos %>
+<%= render 'letters/footer', department: department, organisation: organisation, display_europe_logos: display_europe_logos, display_department_logo: display_department_logo %>
