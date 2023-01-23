@@ -54,12 +54,12 @@ module Invitations
         department: department,
         applicant: applicant,
         organisation: organisation,
-        independent_from_cd_message: independent_from_cd_message,
         sender_name: letter_sender_name,
         direction_names: direction_names,
         signature_lines: signature_lines,
         help_address: help_address,
         display_europe_logos: display_europe_logos,
+        display_independent_from_cd_message: display_independent_from_cd_message,
         sender_city: sender_city
       }
       return locals if template_exists_for_motif_category?
@@ -87,7 +87,7 @@ module Invitations
       (applicant.organisations & @invitation.organisations).last
     end
 
-    def independent_from_cd_message
+    def display_independent_from_cd_message
       @invitation.organisations.all?(&:independent_from_cd)
     end
   end
