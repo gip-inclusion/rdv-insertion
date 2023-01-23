@@ -132,8 +132,8 @@ module Stats
     def orientation_rdvs_by_month
       @orientation_rdvs_by_month ||= \
         orientation_rdvs.order(created_at: :asc)
+                        .where.not(created_at: Time.zone.today.all_month)
                         .group_by { |rdv| rdv.created_at.beginning_of_month.strftime("%m/%Y") }
-                        .except(Time.zone.today.strftime("%m/%Y"))
     end
 
     def relevant_rdv_contexts
@@ -147,8 +147,8 @@ module Stats
     def relevant_rdv_contexts_by_month
       @relevant_rdv_contexts_by_month ||= \
         relevant_rdv_contexts.order(created_at: :asc)
+                             .where.not(created_at: Time.zone.today.all_month)
                              .group_by { |rdv_context| rdv_context.created_at.beginning_of_month.strftime("%m/%Y") }
-                             .except(Time.zone.today.strftime("%m/%Y"))
     end
 
     def sent_invitations
@@ -251,8 +251,8 @@ module Stats
       @applicants_for_30_days_rdvs_seen_scope_by_month ||= \
         applicants_for_30_days_rdvs_seen_scope
         .order(created_at: :asc)
+        .where.not(created_at: Time.zone.today.all_month)
         .group_by { |m| m.created_at.beginning_of_month.strftime("%m/%Y") }
-        .except(Time.zone.today.strftime("%m/%Y"))
     end
 
     def applicants_for_30_days_rdvs_seen_scope
@@ -302,8 +302,8 @@ module Stats
     def relevant_invited_applicants_by_month
       @relevant_invited_applicants_by_month ||= \
         relevant_invited_applicants.order(created_at: :asc)
+                                   .where.not(created_at: Time.zone.today.all_month)
                                    .group_by { |applicant| applicant.created_at.beginning_of_month.strftime("%m/%Y") }
-                                   .except(Time.zone.today.strftime("%m/%Y"))
     end
     # -----------------------------------------------------------------------------------------
   end

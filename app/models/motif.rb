@@ -14,9 +14,11 @@ class Motif < ApplicationRecord
     rsa_accompagnement_sociopro: 7,
     rsa_main_tendue: 8,
     rsa_atelier_collectif_mandatory: 9,
-    rsa_spie: 10
+    rsa_spie: 10,
+    rsa_integration_information: 11
   }.freeze
   CHRONOLOGICALLY_SORTED_CATEGORIES = %w[
+    rsa_integration_information
     rsa_orientation
     rsa_orientation_on_phone_platform
     rsa_accompagnement

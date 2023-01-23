@@ -54,6 +54,6 @@ class SendInvitationReminderJob < ApplicationJob
   end
 
   def first_invitation
-    @first_invitation ||= @applicant.relevant_first_invitation
+    @first_invitation ||= @applicant.first_invitation_relative_to_last_participation
   end
 end
