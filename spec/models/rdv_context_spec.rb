@@ -92,7 +92,10 @@ describe RdvContext do
 
           context "when the participation is created after the invitation" do
             let!(:participation) do
-              create(:participation, created_at: 1.day.ago, applicant: applicant, rdv_context: rdv_context, status: "seen")
+              create(
+                :participation,
+                created_at: 1.day.ago, applicant: applicant, rdv_context: rdv_context, status: "seen"
+              )
             end
 
             it "is the status of the participation" do
