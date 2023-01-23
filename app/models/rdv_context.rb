@@ -4,6 +4,7 @@ class RdvContext < ApplicationRecord
   include Invitable
   include Notificable
   include HasRdvs
+  include HasParticipations
 
   belongs_to :applicant
   has_many :invitations, dependent: :nullify

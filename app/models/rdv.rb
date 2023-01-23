@@ -4,7 +4,7 @@ class Rdv < ApplicationRecord
   ].freeze
 
   include Notificable
-  include HasStatus
+  include RdvParticipationStatus
 
   after_commit :notify_applicants, if: :notify_applicants?, on: [:create, :update]
   after_commit :refresh_context_status, on: [:create, :update]

@@ -1,6 +1,6 @@
 class Participation < ApplicationRecord
   include Notificable
-  include HasStatus
+  include RdvParticipationStatus
 
   belongs_to :rdv
   belongs_to :rdv_context

@@ -14,6 +14,7 @@ class Applicant < ApplicationRecord
   include Phonable
   include Invitable
   include HasRdvs
+  include HasParticipations
 
   before_validation :generate_uid
 
