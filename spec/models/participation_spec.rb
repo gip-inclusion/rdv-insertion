@@ -27,6 +27,106 @@ describe Participation do
     end
   end
 
+  describe "#notify_applicants" do
+    subject { participation.save }
+
+    let!(:participation_id) { 333 }
+    let!(:rdv) { create(:rdv, convocable: true) }
+    let!(:applicant) { create(:applicant) }
+    let!(:participation) do
+      build(:participation, id: participation_id, rdv: rdv, applicant: applicant, status: "unknown")
+    end
+
+    context "after record creation" do
+      it "enqueues a job to notify the applicant" do
+        expect(NotifyParticipationJob).to receive(:perform_async)
+          .with(participation.id, "sms", "participation_created")
+        expect(NotifyParticipationJob).to receive(:perform_async)
+          .with(participation.id, "email", "participation_created")
+        subject
+      end
+
+      context "when the rdv is not convocable" do
+        let!(:rdv) { create(:rdv, convocable: false) }
+
+        it "does not enqueue a notify applicants job" do
+          expect(NotifyParticipationJob).not_to receive(:perform_async)
+          subject
+        end
+      end
+
+      context "when the applicant has no email" do
+        let!(:applicant) { create(:applicant, email: nil) }
+
+        it "enqueues a job to notify by sms only" do
+          expect(NotifyParticipationJob).to receive(:perform_async)
+            .with(participation_id, "sms", "participation_created")
+          expect(NotifyParticipationJob).not_to receive(:perform_async)
+            .with(participation_id, "email", "participation_created")
+          subject
+        end
+      end
+
+      context "when the applicant has no phone" do
+        let!(:applicant) { create(:applicant, phone_number: nil) }
+
+        it "enqueues a job to notify by sms only" do
+          expect(NotifyParticipationJob).not_to receive(:perform_async)
+            .with(participation_id, "sms", "participation_created")
+          expect(NotifyParticipationJob).to receive(:perform_async)
+            .with(participation_id, "email", "participation_created")
+          subject
+        end
+      end
+    end
+
+    context "after cancellation" do
+      let!(:participation) do
+        create(
+          :participation,
+          rdv: rdv,
+          applicant: applicant,
+          status: "unknown"
+        )
+      end
+
+      it "enqueues a job to notify rdv applicants" do
+        participation.status = "excused"
+        expect(NotifyParticipationJob).to receive(:perform_async)
+          .with(participation.id, "sms", "participation_cancelled")
+        expect(NotifyParticipationJob).to receive(:perform_async)
+          .with(participation.id, "email", "participation_cancelled")
+        subject
+      end
+
+      context "when the rdv is not convocable" do
+        let!(:rdv) { create(:rdv, convocable: false) }
+
+        it "does not enqueue a notify applicants job" do
+          expect(NotifyParticipationJob).not_to receive(:perform_async)
+          subject
+        end
+      end
+
+      context "when the participation is already cancelled" do
+        let!(:participation) do
+          create(
+            :participation,
+            rdv: rdv,
+            applicant: applicant,
+            status: "excused"
+          )
+        end
+
+        it "does not enqueue a notify applicants job" do
+          participation.status = "excused"
+          expect(NotifyParticipationJob).not_to receive(:perform_async)
+          subject
+        end
+      end
+    end
+  end
+
   describe "#destroy" do
     subject { participation1.destroy }
 

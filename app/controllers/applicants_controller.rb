@@ -127,11 +127,7 @@ class ApplicantsController < ApplicationController
   def set_applicant
     @applicant = \
       policy_scope(Applicant)
-      .preload(
-        organisations: :department,
-        participations: :rdv,
-        invitations: :rdv_context
-      )
+      .preload(:invitations, organisations: [:department, :configurations])
       .where(department_level? ? { department: params[:department_id] } : { organisations: params[:organisation_id] })
       .find(params[:id])
   end
@@ -141,7 +137,7 @@ class ApplicantsController < ApplicationController
       if department_level?
         set_organisation_at_department_level
       else
-        policy_scope(Organisation).includes(:applicants, :configurations).find(params[:organisation_id])
+        policy_scope(Organisation).find(params[:organisation_id])
       end
   end
 
@@ -169,7 +165,7 @@ class ApplicantsController < ApplicationController
   def set_department
     @department = \
       if department_level?
-        policy_scope(Department).includes(:organisations, :applicants).find(params[:department_id])
+        policy_scope(Department).find(params[:department_id])
       else
         @organisation.department
       end
@@ -200,9 +196,8 @@ class ApplicantsController < ApplicationController
   def set_applicant_rdv_contexts
     @rdv_contexts = \
       RdvContext.preload(
-        rdvs: [:motif, :organisation, :notifications],
-        applicant: :participations,
-        invitations: :rdv_context
+        :invitations,
+        participations: [:notifications, { rdv: [:motif, :organisation] }]
       ).where(
         applicant: @applicant, motif_category: @all_configurations.map(&:motif_category)
       ).in_order_of(:motif_category, Motif::CHRONOLOGICALLY_SORTED_CATEGORIES)
@@ -218,11 +213,9 @@ class ApplicantsController < ApplicationController
 
   def set_applicants_for_motif_category
     @applicants = policy_scope(Applicant)
-                  .includes(:invitations)
                   .preload(
                     :organisations,
-                    rdv_contexts: [{ applicant: :participations }, :invitations, :rdvs],
-                    notifications: [rdv: :rdv_contexts]
+                    rdv_contexts: [:notifications, :invitations, :rdvs]
                   )
                   .active.distinct.archived(false)
                   .where(department_level? ? { department: @department } : { organisations: @organisation })
@@ -275,7 +268,6 @@ class ApplicantsController < ApplicationController
     @applicants = policy_scope(Applicant).preload(
       :rdvs, :agents,
       rdv_contexts: [:participations],
-      invitations: :rdv_context,
       organisations: [:department, :configurations]
     ).distinct
     @applicants = @applicants
