@@ -272,7 +272,7 @@ RSpec.describe InvitationMailer do
 
       it "renders the subject" do
         email_subject = unescape_html(subject.subject)
-        expect(email_subject).to eq("[RSA]: Votre rendez-vous d'intégration dans le cadre de votre RSA")
+        expect(email_subject).to eq("[RSA]: Votre rendez-vous d'information dans le cadre de votre RSA")
       end
 
       it "renders the body" do
@@ -281,8 +281,8 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")
         expect(body_string).to match(
-          "Vous êtes bénéficiaire du RSA et à ce titre vous devez vous présenter à un rendez-vous d'intégration" \
-          " afin de vous informer sur vos droits et vos devoirs"
+          "Vous êtes bénéficiaire du RSA et à ce titre vous devez vous présenter à un rendez-vous d'information" \
+          " afin de vous renseigner sur vos droits et vos devoirs"
         )
         expect(body_string).to match("Ce rendez-vous est obligatoire.")
         expect(body_string).not_to match(
