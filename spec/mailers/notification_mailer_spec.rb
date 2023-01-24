@@ -5,11 +5,11 @@ RSpec.describe NotificationMailer do
   let!(:signature_lines) { ["Signé par la DINUM"] }
   let!(:motif_category) { "rsa_orientation" }
 
-  describe "#presential_rdv_created" do
+  describe "#presential_participation_created" do
     let!(:mail) do
       described_class.with(
         applicant: applicant, rdv: rdv, signature_lines: signature_lines, motif_category: motif_category
-      ).presential_rdv_created
+      ).presential_participation_created
     end
 
     it "renders the headers" do
@@ -166,11 +166,11 @@ RSpec.describe NotificationMailer do
     end
   end
 
-  describe "#presential_rdv_updated" do
+  describe "#presential_participation_updated" do
     let!(:mail) do
       described_class.with(
         applicant: applicant, rdv: rdv, signature_lines: signature_lines, motif_category: motif_category
-      ).presential_rdv_updated
+      ).presential_participation_updated
     end
 
     it "renders the headers" do
@@ -326,11 +326,11 @@ RSpec.describe NotificationMailer do
     end
   end
 
-  describe "#by_phone_rdv_created" do
+  describe "#by_phone_participation_created" do
     let!(:mail) do
       described_class.with(
         applicant: applicant, rdv: rdv, signature_lines: signature_lines, motif_category: motif_category
-      ).by_phone_rdv_created
+      ).by_phone_participation_created
     end
 
     it "renders the headers" do
@@ -514,11 +514,11 @@ RSpec.describe NotificationMailer do
     end
   end
 
-  describe "#by_phone_rdv_updated" do
+  describe "#by_phone_participation_updated" do
     let!(:mail) do
       described_class.with(
         applicant: applicant, rdv: rdv, signature_lines: signature_lines, motif_category: motif_category
-      ).by_phone_rdv_updated
+      ).by_phone_participation_updated
     end
 
     it "renders the headers" do
@@ -698,11 +698,11 @@ RSpec.describe NotificationMailer do
     end
   end
 
-  describe "#rdv_cancelled" do
+  describe "#participation_cancelled" do
     let!(:mail) do
       described_class.with(
         applicant: applicant, rdv: rdv, signature_lines: signature_lines, motif_category: motif_category
-      ).rdv_cancelled
+      ).participation_cancelled
     end
 
     it "renders the headers" do

@@ -11,7 +11,10 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
   let!(:rdv_solidarites_lieu_id) { 43 }
   let!(:rdv_solidarites_motif_id) { 53 }
   let!(:participations_attributes) do
-    [{ id: 998, status: "unknown", user: { id: user_id1 } }, { id: 999, status: "unknown", user: { id: user_id2 } }]
+    [
+      { id: 998, status: "unknown", user: { id: user_id1 } },
+      { id: 999, status: "unknown", user: { id: user_id2 } }
+    ]
   end
   let!(:lieu_attributes) { { id: rdv_solidarites_lieu_id, name: "DINUM", address: "20 avenue de Ségur" } }
   let!(:motif_attributes) do

@@ -99,6 +99,7 @@ group :development, :test do
   gem "rubocop"
   gem "rubocop-rails"
   gem "rubocop-rspec"
+  gem "bullet"
 end
 
 group :development do
@@ -107,7 +108,7 @@ group :development do
   gem "listen", "~> 3.2"
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem "spring", "~> 3.0.0"
-  gem "letter_opener" # Preview email in the default browser instead of sending it.
+  gem "letter_opener_web" # Preview email in the default browser instead of sending it.
   gem "rails-erd"
 end
 
@@ -115,8 +116,10 @@ group :test do
   # Adds support for Capybara system testing and selenium driver
   gem "capybara", ">= 2.15"
   gem "selenium-webdriver"
+  gem "rack_session_access"
   # Easy installation and use of web drivers to run system tests with browsers
   gem "webdrivers"
+  gem "webmock"
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

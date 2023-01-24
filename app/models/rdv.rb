@@ -4,7 +4,7 @@ class Rdv < ApplicationRecord
   ].freeze
 
   include Notificable
-  include HasStatus
+  include RdvParticipationStatus
 
   after_commit :notify_applicants, if: :notify_applicants?, on: [:create, :update]
   after_commit :refresh_context_status, on: [:create, :update]
@@ -12,10 +12,11 @@ class Rdv < ApplicationRecord
   belongs_to :organisation
   belongs_to :motif
   belongs_to :lieu, optional: true
-  has_many :notifications, dependent: :nullify
   has_many :participations, dependent: :destroy
+  has_many :notifications, through: :participations
   has_many :rdv_contexts, through: :participations
   has_many :applicants, through: :participations
+
   # Needed to build participations in process_rdv_job
   accepts_nested_attributes_for :participations, allow_destroy: true
 
@@ -27,6 +28,7 @@ class Rdv < ApplicationRecord
   enum created_by: { agent: 0, user: 1, file_attente: 2 }, _prefix: :created_by
 
   delegate :presential?, :by_phone?, to: :motif
+  delegate :name, to: :motif, prefix: true
 
   scope :with_lieu, -> { where.not(lieu_id: nil) }
 
@@ -41,12 +43,6 @@ class Rdv < ApplicationRecord
 
   def notify_applicants?
     convocable?
-  end
-
-  def motif_category
-    # we rely on the rdv contexts instead of the motif itself since the category on the motif
-    # can be updated but not on the context
-    rdv_contexts.first.motif_category
   end
 
   def formatted_start_date
@@ -72,18 +68,15 @@ class Rdv < ApplicationRecord
   def notify_applicants
     return unless event_to_notify
 
-    NotifyRdvToApplicantsJob.perform_async(id, event_to_notify)
+    NotifyParticipationsJob.perform_async(participation_ids, event_to_notify)
   end
 
   # event to notify in an after_commit context
   def event_to_notify
-    if id_previously_changed?
-      :created
-    elsif cancelled_at.present? && cancelled_at_previously_changed?
-      :cancelled
-    elsif address_previously_changed? || starts_at_previously_changed?
-      :updated
-    end
+    # the :created notifications are handled by participations
+    return if id_previously_changed?
+
+    return :updated if address_previously_changed? || starts_at_previously_changed?
   end
 
   def rdv_contexts_motif_categories_are_uniq

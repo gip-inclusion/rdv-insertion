@@ -7,6 +7,8 @@ module Notifications
     attr_reader :notification
 
     delegate :rdv, :applicant, :motif_category, to: :notification
+    delegate :formatted_start_date, :formatted_start_time, :lieu, :phone_number, to: :rdv
+    delegate :department_number, :department_name, to: :applicant
 
     def initialize(notification:)
       @notification = notification
@@ -27,8 +29,8 @@ module Notifications
     end
 
     def content_method_name
-      if @notification.event == "rdv_cancelled"
-        :content_for_rdv_cancelled
+      if @notification.event == "participation_cancelled"
+        :content_for_participation_cancelled
       elsif rdv.presential?
         :"presential_content_for_#{@notification.event}"
       elsif rdv.by_phone?

@@ -88,7 +88,7 @@ module FilterableApplicantsConcern
 
   def applicants_first_invitations
     @applicants_first_invitations ||= @applicants.includes(:invitations, :rdvs)
-                                                 .map(&:relevant_first_invitation)
+                                                 .map(&:first_invitation_relative_to_last_participation)
                                                  .compact
   end
 
