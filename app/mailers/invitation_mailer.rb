@@ -4,7 +4,7 @@ class InvitationMailer < ApplicationMailer
   before_action :set_invitation, :set_applicant, :set_department,
                 :set_logo_path, :set_signature_lines
 
-  before_action :set_motif_category, :set_rdv_title, :set_rdv_subject, :set_applicant_designation,
+  before_action :set_motif_category, :set_rdv_title, :set_applicant_designation,
                 :set_display_mandatory_warning, :set_display_punishable_warning,
                 :set_rdv_purpose, :set_rdv_subject
 
