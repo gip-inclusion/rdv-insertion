@@ -78,7 +78,7 @@ describe Invitations::SendEmail, type: :service do
           .with(
             sendable: invitation,
             mailer_class: InvitationMailer,
-            mailer_method: :invitation_for_rsa_orientation_on_phone_platform,
+            mailer_method: :invitation_for_phone_platform,
             invitation: invitation,
             applicant: applicant
           )
@@ -102,7 +102,7 @@ describe Invitations::SendEmail, type: :service do
             .with(
               sendable: invitation,
               mailer_class: InvitationMailer,
-              mailer_method: :invitation_for_rsa_orientation_on_phone_platform_reminder,
+              mailer_method: :invitation_for_phone_platform_reminder,
               invitation: invitation,
               applicant: applicant
             )

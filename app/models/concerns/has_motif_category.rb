@@ -12,7 +12,11 @@ module HasMotifCategory
     I18n.t("activerecord.attributes.motif.categories.#{motif_category}")
   end
 
-  def for_atelier?
+  def atelier?
     motif_category.in?(ATELIERS)
+  end
+
+  def phone_platform?
+    motif_category == "rsa_orientation_on_phone_platform"
   end
 end

@@ -8,8 +8,10 @@ categories:
     display_mandatory_warning: true
     display_punishable_warning: false
   rsa_orientation_on_phone_platform:
+    rdv_title: rendez-vous d'orientation téléphonique
     rdv_subject: RSA
     applicant_designation: bénéficiaire du RSA
+    rdv_purpose: démarrer un parcours d'accompagnement
   rsa_accompagnement: &rsa_accompagnement_values
     rdv_title: rendez-vous d'accompagnement
     rdv_title_by_phone: rendez-vous d'accompagnement téléphonique

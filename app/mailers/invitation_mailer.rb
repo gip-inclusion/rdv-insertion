@@ -15,10 +15,10 @@ class InvitationMailer < ApplicationMailer
     )
   end
 
-  def invitation_for_rsa_orientation_on_phone_platform
+  def invitation_for_phone_platform
     mail(
       to: @applicant.email,
-      subject: "[#{@rdv_subject.upcase}]: Votre RDV d'orientation téléphonique dans le cadre " \
+      subject: "[#{@rdv_subject.upcase}]: Votre #{@rdv_title} dans le cadre " \
                "de votre #{@rdv_subject}"
     )
   end
@@ -40,10 +40,10 @@ class InvitationMailer < ApplicationMailer
     )
   end
 
-  def invitation_for_rsa_orientation_on_phone_platform_reminder
+  def invitation_for_phone_platform_reminder
     mail(
       to: @applicant.email,
-      subject: "[Rappel]: RDV d'orientation téléphonique dans le cadre de votre RSA"
+      subject: "[Rappel]: Votre #{@rdv_title} dans le cadre de votre #{@rdv_subject}"
     )
   end
 

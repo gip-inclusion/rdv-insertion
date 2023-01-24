@@ -26,18 +26,18 @@ module Invitations
     end
 
     def mailer_method_for_first_invitation
-      if InvitationMailer.respond_to?(:"invitation_for_#{motif_category}")
-        :"invitation_for_#{motif_category}"
-      elsif @invitation.for_atelier?
+      if @invitation.atelier?
         :invitation_for_atelier
+      elsif @invitation.phone_platform?
+        :invitation_for_phone_platform
       else
         :regular_invitation
       end
     end
 
     def mailer_method_for_invitation_reminder
-      if InvitationMailer.respond_to?(:"invitation_for_#{motif_category}_reminder")
-        :"invitation_for_#{motif_category}_reminder"
+      if @invitation.phone_platform?
+        :invitation_for_phone_platform_reminder
       else
         :regular_invitation_reminder
       end

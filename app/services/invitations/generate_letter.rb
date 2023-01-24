@@ -7,7 +7,7 @@ module Invitations
     delegate :applicant, :department, :motif_category, :messages_configuration,
              :letter_sender_name, :address, :street_address, :zipcode_and_city,
              :signature_lines, :display_europe_logos, :direction_names, :help_address,
-             :sender_city, :display_department_logo, :for_atelier?,
+             :sender_city, :display_department_logo, :atelier?, :phone_platform?,
              to: :invitation
 
     def initialize(invitation:)
@@ -42,10 +42,10 @@ module Invitations
 
     def template
       @template ||= \
-        if template_exists_for_motif_category?
-          "invitation_for_#{@invitation.motif_category}"
-        elsif for_atelier?
+        if atelier?
           "invitation_for_atelier"
+        elsif phone_platform?
+          "invitation_for_phone_platform"
         else
           "regular_invitation"
         end
@@ -71,10 +71,6 @@ module Invitations
         rdv_purpose: rdv_purpose,
         rdv_subject: rdv_subject
       }
-    end
-
-    def template_exists_for_motif_category?
-      ApplicationController.new.template_exists?("invitation_for_#{@invitation.motif_category}", ["letters"])
     end
 
     def check_messages_configuration!

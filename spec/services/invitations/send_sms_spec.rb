@@ -134,7 +134,7 @@ describe Invitations::SendSms, type: :service do
       let!(:configuration) { create(:configuration, motif_category: "rsa_orientation_on_phone_platform") }
       let!(:content) do
         "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez contacter la plateforme départementale " \
-          "afin de démarrer votre parcours d'accompagnement. Pour cela, merci d'appeler le " \
+          "afin de démarrer un parcours d'accompagnement. Pour cela, merci d'appeler le " \
           "0147200001 dans un délai de 9 jours. " \
           "Cet appel est nécessaire pour le traitement de votre dossier."
       end

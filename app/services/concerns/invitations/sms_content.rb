@@ -17,9 +17,9 @@ module Invitations
         "En cas de problème technique, contactez le #{help_phone_number}."
     end
 
-    def content_for_rsa_orientation_on_phone_platform
+    def content_for_phone_platform
       "#{applicant.full_name},\nVous êtes #{applicant_designation} et vous devez contacter la plateforme " \
-        "départementale afin de démarrer votre parcours d'accompagnement. Pour cela, merci d'appeler le " \
+        "départementale afin de #{rdv_purpose}. Pour cela, merci d'appeler le " \
         "#{help_phone_number} dans un délai de #{number_of_days_to_accept_invitation} jours. " \
         "Cet appel est nécessaire pour le traitement de votre dossier."
     end
@@ -45,9 +45,9 @@ module Invitations
         "En cas de problème technique, contactez le #{help_phone_number}."
     end
 
-    def content_for_rsa_orientation_on_phone_platform_reminder
+    def content_for_phone_platform_reminder
       "#{applicant.full_name},\nEn tant que #{applicant_designation}, vous avez reçu un message il y a 3 jours vous " \
-        "invitant à contacter la plateforme départementale afin de démarrer un parcours d'accompagnement. " \
+        "invitant à contacter la plateforme départementale afin de #{rdv_purpose}. " \
         "Vous n'avez plus que #{number_of_days_before_expiration} jours pour appeler le " \
         "#{help_phone_number}. Cet appel est obligatoire pour le traitement de votre dossier."
     end
