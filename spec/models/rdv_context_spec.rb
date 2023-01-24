@@ -103,6 +103,23 @@ describe RdvContext do
             end
           end
 
+          context "when the last created participation is seen" do
+            let!(:rdv) { create(:rdv, starts_at: 4.days.ago) }
+            let!(:participation) do
+              create(
+                :participation,
+                created_at: 1.day.ago, rdv: rdv, applicant: applicant, rdv_context: rdv_context, status: "seen"
+              )
+            end
+            let!(:other_participation) do
+              create(:participation, created_at: 2.days.ago, rdv_context: rdv_context, status: "revoked")
+            end
+
+            it "is the status of the participation" do
+              expect(subject).to eq(:rdv_seen)
+            end
+          end
+
           context "cancelled participation created after the seen participation but before the start of the seen rdv" do
             let!(:rdv) { create(:rdv, starts_at: 1.day.ago) }
             let!(:participation) do
