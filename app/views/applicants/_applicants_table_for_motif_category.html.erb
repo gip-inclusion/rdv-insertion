@@ -32,8 +32,8 @@
         <% end %>
         </td>
         <% if show_invitations?(@current_configuration) %>
-          <td id="first-invitation-date-<%= rdv_context.id %>"><%= display_attribute format_date(rdv_context.first_invitation_relative_to_last_participation_sent_at) %></td>
-          <td id="last-invitation-date-<%= rdv_context.id %>"><%= show_last_invitation_date?(rdv_context) ? display_attribute(format_date(rdv_context.last_invitation_sent_at)) : " - " %></td>
+          <td id="first-invitation-date-<%= rdv_context.id %>"><%= display_attribute format_date(rdv_context.first_invitation_sent_at) %></td>
+          <td id="last-invitation-date-<%= rdv_context.id %>"><%= display_attribute(format_date(rdv_context.last_invitation_sent_at)) %></td>
         <% end %>
         <% if show_convocation?(@current_configuration) %>
           <td><%= display_attribute format_date(rdv_context.last_sent_convocation_sent_at) %></td>

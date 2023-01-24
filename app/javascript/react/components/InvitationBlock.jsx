@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Tippy from "@tippyjs/react";
 import InvitationsDatesRow from "./InvitationsDatesRow";
 
 import sortInvitationsByFormatsAndDates from "../../lib/sortInvitationsByFormatsAndDates";
@@ -75,9 +76,7 @@ export default function InvitationBlock({
       ...prevState,
       [format]: [newInvitationDate, ...prevState[format]],
     }));
-    if (status !== "invitation_pending") {
-      updateStatusBlock();
-    }
+    updateStatusBlock();
     setIsLoading({ ...isLoading, [format]: false });
   };
 
@@ -127,7 +126,14 @@ export default function InvitationBlock({
                   onClick={() => handleInvitationClick("sms")}
                 >
                   {isLoading.sms && "Invitation..."}
-                  {!isLoading.sms && invitationsDatesByFormat.sms[0] && "Relancer"}
+                  {!isLoading.sms && invitationsDatesByFormat.sms[0] && (
+                    <Tippy
+                      content="Réinviter remettra les compteurs à 0 vis à vis des délais"
+                      placement="bottom"
+                    >
+                      <span>Réinviter</span>
+                    </Tippy>
+                  )}
                   {!isLoading.sms && !invitationsDatesByFormat.sms[0] && "Inviter"}
                 </button>
               </td>
@@ -146,7 +152,14 @@ export default function InvitationBlock({
                   onClick={() => handleInvitationClick("email")}
                 >
                   {isLoading.email && "Invitation..."}
-                  {!isLoading.email && invitationsDatesByFormat.email[0] && "Relancer"}
+                  {!isLoading.email && invitationsDatesByFormat.email[0] && (
+                    <Tippy
+                      content="Réinviter remettra les compteurs à 0 vis à vis des délais"
+                      placement="bottom"
+                    >
+                      <span>Réinviter</span>
+                    </Tippy>
+                  )}
                   {!isLoading.email && !invitationsDatesByFormat.email[0] && "Inviter"}
                 </button>
               </td>
@@ -165,7 +178,14 @@ export default function InvitationBlock({
                   onClick={() => handleInvitationClick("postal")}
                 >
                   {isLoading.postal && "Invitation..."}
-                  {!isLoading.postal && invitationsDatesByFormat.postal[0] && "Recréer"}
+                  {!isLoading.postal && invitationsDatesByFormat.postal[0] && (
+                    <Tippy
+                      content="Réinviter remettra les compteurs à 0 vis à vis des délais"
+                      placement="bottom"
+                    >
+                      <span>Réinviter</span>
+                    </Tippy>
+                  )}
                   {!isLoading.postal && !invitationsDatesByFormat.postal[0] && "Inviter"}
                 </button>
               </td>

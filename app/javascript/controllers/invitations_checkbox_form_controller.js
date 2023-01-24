@@ -69,19 +69,12 @@ export default class extends Controller {
 
   updateLastInvitationDate(rdvContext) {
     const lastInvitationDate = document.getElementById(`last-invitation-date-${rdvContext.id}`);
-    if (lastInvitationDate.innerHTML === " - ") {
-      const firstInvitationDate = document.getElementById(`first-invitation-date-${rdvContext.id}`);
-      if (!(firstInvitationDate.innerHTML === getFrenchFormatDateString(todaysDateString()))) {
-        lastInvitationDate.innerHTML = getFrenchFormatDateString(todaysDateString());
-      }
-    }
+    lastInvitationDate.innerHTML = getFrenchFormatDateString(todaysDateString());
   }
 
   updateStatus(rdvContext) {
-    if (!(rdvContext.status === "invitation_pending")) {
-      const status = document.getElementById(`rdv-context-status-${rdvContext.id}`);
-      status.classList = [];
-      status.innerHTML = "Invitation en attente de réponse";
-    }
+    const status = document.getElementById(`rdv-context-status-${rdvContext.id}`);
+    status.classList = [];
+    status.innerHTML = "Invitation en attente de réponse";
   }
 }

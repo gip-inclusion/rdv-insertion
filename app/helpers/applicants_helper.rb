@@ -13,11 +13,6 @@ module ApplicantsHelper
     configuration.invitation_formats.present?
   end
 
-  def show_last_invitation_date?(rdv_context)
-    rdv_context.present? && rdv_context.invitations.length > 1 &&
-      format_date(rdv_context.last_invitation_sent_at) != format_date(rdv_context.first_invitation_sent_at)
-  end
-
   def display_attribute(attribute)
     attribute.presence || " - "
   end
@@ -59,8 +54,10 @@ module ApplicantsHelper
   def background_class_for_context_status(context, number_of_days_before_action_required)
     return "" if context.nil?
 
-    if context.action_required?(number_of_days_before_action_required)
-      context.attention_needed? ? "bg-warning border-warning" : "bg-danger border-danger"
+    if context.action_required_status?
+      "bg-danger border-danger"
+    elsif context.time_to_accept_invitation_exceeded?(number_of_days_before_action_required)
+      "bg-warning border-warning"
     elsif context.rdv_seen?
       "bg-success border-success"
     else
@@ -94,7 +91,7 @@ module ApplicantsHelper
   def display_context_status_notice(context, number_of_days_before_action_required)
     return if context.nil?
 
-    if context.invited_before_time_window?(number_of_days_before_action_required) && context.invitation_pending?
+    if context.time_to_accept_invitation_exceeded?(number_of_days_before_action_required)
       " (Délai dépassé)"
     else
       ""

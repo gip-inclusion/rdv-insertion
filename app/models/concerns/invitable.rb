@@ -32,20 +32,8 @@ module Invitable
     last_sent_invitation&.sent_at
   end
 
-  def last_sent_invitation_by(format)
-    sent_invitations.select { |invitation| invitation.format == format }.max_by(&:sent_at)
-  end
-
-  def last_invitation_sent_at_by(format)
-    last_sent_invitation_by(format)&.sent_at
-  end
-
   def first_sent_invitation_by(format)
     sent_invitations.select { |invitation| invitation.format == format }.min_by(&:sent_at)
-  end
-
-  def first_invitation_sent_at_by(format)
-    first_invitation_sent_at_by(format)&.sent_at
   end
 
   def invited_through?(format)
@@ -68,8 +56,12 @@ module Invitable
     first_invitation_relative_to_last_participation_by(format)&.sent_at
   end
 
+  def last_invitation_sent_manually
+    sent_invitations.reject(&:reminder?).max_by(&:sent_at)
+  end
+
   def invited_before_time_window?(number_of_days_before_action_required)
-    first_invitation_relative_to_last_participation_sent_at.present? &&
-      first_invitation_relative_to_last_participation_sent_at < number_of_days_before_action_required.days.ago
+    last_invitation_sent_manually.present? &&
+      last_invitation_sent_manually.sent_at < number_of_days_before_action_required.days.ago
   end
 end

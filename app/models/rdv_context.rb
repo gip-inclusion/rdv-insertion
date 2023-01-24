@@ -17,26 +17,27 @@ class RdvContext < ApplicationRecord
   STATUSES_WITH_ACTION_REQUIRED = %w[
     rdv_needs_status_update rdv_noshow rdv_revoked rdv_excused multiple_rdvs_cancelled
   ].freeze
-  STATUSES_WITH_ATTENTION_NEEDED = %w[invitation_pending].freeze
 
   scope :status, ->(status) { where(status: status) }
   scope :action_required, lambda { |number_of_days_before_action_required|
     status(STATUSES_WITH_ACTION_REQUIRED)
-      .or(attention_needed.invited_before_time_window(number_of_days_before_action_required))
+      .or(invitation_pending.invited_before_time_window(number_of_days_before_action_required))
   }
-  scope :attention_needed, -> { status(STATUSES_WITH_ATTENTION_NEEDED) }
   scope :invited_before_time_window, lambda { |number_of_days_before_action_required|
-    where(id: joins(:invitations).where("invitations.sent_at < ?", number_of_days_before_action_required.days.ago))
+    where.not(
+      id: joins(:invitations).where("invitations.sent_at > ?", number_of_days_before_action_required.days.ago)
+                             .where(invitations: { reminder: false })
+                             .pluck(:rdv_context_id)
+    )
   }
   scope :with_sent_invitations, -> { joins(:invitations).where.not(invitations: { sent_at: nil }) }
 
-  def action_required?(number_of_days_before_action_required)
-    status.in?(STATUSES_WITH_ACTION_REQUIRED) ||
-      (attention_needed? && invited_before_time_window?(number_of_days_before_action_required))
+  def action_required_status?
+    status.in?(STATUSES_WITH_ACTION_REQUIRED)
   end
 
-  def attention_needed?
-    status.in?(STATUSES_WITH_ATTENTION_NEEDED)
+  def time_to_accept_invitation_exceeded?(number_of_days_before_action_required)
+    invitation_pending? && invited_before_time_window?(number_of_days_before_action_required)
   end
 
   def motif_orientation?

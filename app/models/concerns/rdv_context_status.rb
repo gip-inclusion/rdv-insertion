@@ -44,10 +44,15 @@ module RdvContextStatus
     participations.select(&:cancelled_by_user?).length > 1
   end
 
+  def seen_rdv_after_last_created_participation?
+    seen_participations.present? &&
+      seen_participations.max_by(&:starts_at).starts_at > last_created_participation.created_at
+  end
+
   def status_from_participations
     if participations.any?(&:pending?)
       :rdv_pending
-    elsif last_created_participation.seen?
+    elsif seen_rdv_after_last_created_participation?
       :rdv_seen
     elsif multiple_cancelled_participations?
       :multiple_rdvs_cancelled
