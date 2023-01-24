@@ -4,10 +4,8 @@
   <% if applicant.affiliation_number %>
     <p>N° allocataire : <%= applicant.affiliation_number %></p>
   <% end %>
-  <% if invitation_in_referent_context && applicant.agents.present? %>
+  <% if rdv_with_referents %>
     <p><%= "Référent".pluralize(applicant.agents.count) %> de parcours : <%= applicant.agents.order(:last_name).map(&:to_s).join(", ") %></p>
-  <% elsif invitation_in_referent_context %>
-    <p>Référent de parcours : à définir</p>
   <% end %>
 </div>
 <div class="main-content">
