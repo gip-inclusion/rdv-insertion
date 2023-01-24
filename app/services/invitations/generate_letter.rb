@@ -7,7 +7,7 @@ module Invitations
     delegate :applicant, :department, :motif_category, :messages_configuration,
              :letter_sender_name, :address, :street_address, :zipcode_and_city,
              :signature_lines, :display_europe_logos, :direction_names, :help_address,
-             :sender_city, :display_department_logo,
+             :sender_city, :display_department_logo, :atelier?, :phone_platform?,
              to: :invitation
 
     def initialize(invitation:)
@@ -41,15 +41,18 @@ module Invitations
     end
 
     def template
-      if template_exists_for_motif_category?
-        "invitation_for_#{@invitation.motif_category}"
-      else
-        "regular_invitation"
-      end
+      @template ||= \
+        if atelier?
+          "invitation_for_atelier"
+        elsif phone_platform?
+          "invitation_for_phone_platform"
+        else
+          "regular_invitation"
+        end
     end
 
     def locals
-      locals = {
+      {
         invitation: @invitation,
         department: department,
         applicant: applicant,
@@ -61,21 +64,14 @@ module Invitations
         display_europe_logos: display_europe_logos,
         display_independent_from_cd_message: display_independent_from_cd_message,
         display_department_logo: display_department_logo,
-        sender_city: sender_city
-      }
-      return locals if template_exists_for_motif_category?
-
-      locals.merge(
+        sender_city: sender_city,
         rdv_title: rdv_title,
         applicant_designation: applicant_designation,
         display_mandatory_warning: display_mandatory_warning,
         display_punishable_warning: display_punishable_warning,
-        rdv_purpose: rdv_purpose
-      )
-    end
-
-    def template_exists_for_motif_category?
-      ApplicationController.new.template_exists?("invitation_for_#{@invitation.motif_category}", ["letters"])
+        rdv_purpose: rdv_purpose,
+        rdv_subject: rdv_subject
+      }
     end
 
     def check_messages_configuration!

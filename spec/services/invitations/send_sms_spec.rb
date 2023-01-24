@@ -134,7 +134,7 @@ describe Invitations::SendSms, type: :service do
       let!(:configuration) { create(:configuration, motif_category: "rsa_orientation_on_phone_platform") }
       let!(:content) do
         "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez contacter la plateforme départementale " \
-          "afin de démarrer votre parcours d'accompagnement. Pour cela, merci d'appeler le " \
+          "afin de démarrer un parcours d'accompagnement. Pour cela, merci d'appeler le " \
           "0147200001 dans un délai de 9 jours. " \
           "Cet appel est nécessaire pour le traitement de votre dossier."
       end
@@ -386,6 +386,48 @@ describe Invitations::SendSms, type: :service do
     context "for rsa insertion offer" do
       let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_insertion_offer") }
       let!(:configuration) { create(:configuration, motif_category: "rsa_insertion_offer") }
+      let!(:content) do
+        "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement en parcours " \
+          "professionnel ou socio-professionel. Pour profiter au mieux de cet accompagnement, nous vous invitons " \
+          "à vous inscrire directement et librement aux ateliers et formations de votre choix en cliquant sur le " \
+          "lien suivant: " \
+          "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
+          "En cas de problème technique, contactez le 0147200001."
+      end
+
+      it("is a success") { is_a_success }
+
+      it "calls the send transactional service with the right content" do
+        expect(Messengers::SendSms).to receive(:call)
+          .with(sendable: invitation, content: content)
+        subject
+      end
+    end
+
+    context "for rsa_atelier_competences" do
+      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_atelier_competences") }
+      let!(:configuration) { create(:configuration, motif_category: "rsa_atelier_competences") }
+      let!(:content) do
+        "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement en parcours " \
+          "professionnel ou socio-professionel. Pour profiter au mieux de cet accompagnement, nous vous invitons " \
+          "à vous inscrire directement et librement aux ateliers et formations de votre choix en cliquant sur le " \
+          "lien suivant: " \
+          "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
+          "En cas de problème technique, contactez le 0147200001."
+      end
+
+      it("is a success") { is_a_success }
+
+      it "calls the send transactional service with the right content" do
+        expect(Messengers::SendSms).to receive(:call)
+          .with(sendable: invitation, content: content)
+        subject
+      end
+    end
+
+    context "for rsa_atelier_rencontres_pro" do
+      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_atelier_rencontres_pro") }
+      let!(:configuration) { create(:configuration, motif_category: "rsa_atelier_rencontres_pro") }
       let!(:content) do
         "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement en parcours " \
           "professionnel ou socio-professionel. Pour profiter au mieux de cet accompagnement, nous vous invitons " \

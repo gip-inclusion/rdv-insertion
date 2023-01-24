@@ -1,6 +1,4 @@
 class SendInvitationRemindersJob < ApplicationJob
-  EXEMPTED_MOTIF_CATEGORIES_FOR_REMINDERS = %w[rsa_insertion_offer].freeze
-
   def perform
     return if staging_env?
 
@@ -40,8 +38,7 @@ class SendInvitationRemindersJob < ApplicationJob
       Invitation.where("valid_until > ?", 2.days.from_now)
                 .where(format: %w[email sms], sent_at: 3.days.ago.all_day, reminder: false)
                 .joins(:rdv_context)
-                .where(rdv_contexts: { status: "invitation_pending" })
-                .where.not(rdv_contexts: { motif_category: EXEMPTED_MOTIF_CATEGORIES_FOR_REMINDERS })
+                .where(rdv_contexts: RdvContext.invitation_pending.not_atelier)
   end
 
   def notify_on_mattermost

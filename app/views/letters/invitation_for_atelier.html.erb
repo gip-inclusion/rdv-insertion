@@ -1,6 +1,6 @@
 <%= render 'letters/header', direction_names: direction_names, sender_city: sender_city, department: department, organisation: organisation, applicant: applicant %>
 <div class="mail-object">
-  <p class="bold-blue"><span class="bold-blue">Objet : Offre d'insertion dans le cadre de votre RSA</span></p>
+  <p class="bold-blue"><span class="bold-blue">Objet : Participation à un atelier dans le cadre de votre <%= rdv_subject %></span></p>
   <% if applicant.affiliation_number %>
     <p>N° allocataire : <%= applicant.affiliation_number %></p>
   <% end %>
@@ -10,7 +10,7 @@
 </div>
 <div class="main-content">
   <p><%= applicant.title.capitalize %>,</p>
-  <p>Vous êtes allocataire du Revenu de Solidarité Active (RSA) et bénéficiez d'un accompagnement en parcours professionnel ou socio-professionel. Pour profiter au mieux de cet accompagnement, nous vous invitons à vous inscrire directement et librement aux ateliers et formations de votre choix.</p>
+  <p>Vous êtes <%= applicant_designation %> et bénéficiez d'un accompagnement en parcours professionnel ou socio-professionel. Pour profiter au mieux de cet accompagnement, nous vous invitons à vous inscrire directement et librement aux ateliers et formations de votre choix.</p>
   <p>Pour faciliter votre prise de rendez-vous, <%= sender_name %> a mis en place <span class="bold-blue">une plateforme vous permettant de prendre rendez-vous vous-même.</span></p>
   <p>Pour choisir un créneau à votre convenance, saisissez le code d’invitation ci-dessous <span class="bold-blue">sur <u><%= ENV['HOST'] %>/invitation</u></span>, puis suivez les instructions présentes à l'écran :</p>
   <div class="invitation-token">Mon code d'invitation<br/><%= invitation.uuid %></div>
