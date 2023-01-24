@@ -460,7 +460,7 @@ describe Notifications::SendSms, type: :service do
 
       context "when is an update notification" do
         let!(:notification) do
-          create(:notification, applicant: applicant, rdv: rdv, format: "sms", event: "rdv_updated")
+          create(:notification, participation: participation, format: "sms", event: "participation_updated")
         end
 
         let!(:content) do
@@ -482,7 +482,7 @@ describe Notifications::SendSms, type: :service do
 
       context "when it is a cancelled notification" do
         let!(:notification) do
-          create(:notification, applicant: applicant, rdv: rdv, format: "sms", event: "rdv_cancelled")
+          create(:notification, participation: participation, format: "sms", event: "participation_cancelled")
         end
 
         let!(:content) do
@@ -518,7 +518,7 @@ describe Notifications::SendSms, type: :service do
 
         context "when it is an update notification" do
           let!(:notification) do
-            create(:notification, applicant: applicant, rdv: rdv, format: "sms", event: "rdv_updated")
+            create(:notification, participation: participation, format: "sms", event: "participation_updated")
           end
 
           let!(:content) do

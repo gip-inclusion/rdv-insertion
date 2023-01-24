@@ -20,6 +20,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
   let!(:motif_attributes) do
     { id: 53, location_type: "public_office", category: "rsa_orientation", name: "RSA orientation" }
   end
+  let!(:users) { [{ id: user_id1 }, { id: user_id2 }] }
   let!(:starts_at) { "2021-09-08 12:00:00 UTC" }
   let!(:data) do
     {
@@ -29,7 +30,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
       "context" => "all good",
       "lieu" => lieu_attributes,
       "motif" => motif_attributes,
-      "users" => [{ id: user_id1 }, { id: user_id2 }],
+      "users" => users,
       "rdvs_users" => participations_attributes,
       "organisation" => { id: rdv_solidarites_organisation_id }
     }.deep_symbolize_keys
@@ -192,23 +193,14 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
 
       context "it upserts the rdv (for a participation update and destroy)" do
         let!(:participations_attributes) do
-          [{ id: 998, status: "unknown", user: { id: user_id1 } }, { id: 999, status: "seen", user: { id: user_id2 } }]
+          [{ id: 999, status: "seen", user: { id: user_id2 } }]
         end
+        let!(:users) { [{ id: user_id2 }] }
 
         # Rdv create factory create a new applicant (and participation) by default
         let!(:rdv) { create(:rdv, rdv_solidarites_rdv_id: rdv_solidarites_rdv_id, organisation: organisation) }
         let!(:default_applicant) { rdv.applicants.first }
         let!(:default_participation) { rdv.participations.first }
-        let!(:participation) do
-          create(
-            :participation,
-            applicant: applicant,
-            rdv: rdv,
-            status: "unknown",
-            id: 1,
-            rdv_solidarites_participation_id: 998
-          )
-        end
         let!(:participation2) do
           create(
             :participation,
@@ -221,13 +213,6 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
         end
         let!(:participations_attributes_expected) do
           [
-            {
-              id: 1,
-              status: "unknown",
-              applicant_id: 3,
-              rdv_solidarites_participation_id: 998,
-              rdv_context_id: rdv_context.id
-            },
             {
               id: 2,
               status: "seen",
