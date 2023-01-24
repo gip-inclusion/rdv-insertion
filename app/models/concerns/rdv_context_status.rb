@@ -52,7 +52,7 @@ module RdvContextStatus
   def status_from_participations
     if participations.any?(&:pending?)
       :rdv_pending
-    elsif seen_rdv_after_last_created_participation?
+    elsif last_created_participation.seen? || seen_rdv_after_last_created_participation?
       :rdv_seen
     elsif multiple_cancelled_participations?
       :multiple_rdvs_cancelled
