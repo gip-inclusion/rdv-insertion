@@ -6,8 +6,7 @@ class InvitationMailer < ApplicationMailer
 
   before_action :set_motif_category, :set_rdv_title, :set_rdv_subject, :set_applicant_designation,
                 :set_display_mandatory_warning, :set_display_punishable_warning,
-                :set_rdv_purpose,
-                only: [:regular_invitation, :regular_invitation_reminder]
+                :set_rdv_purpose, :set_rdv_subject
 
   def regular_invitation
     mail(
@@ -16,17 +15,19 @@ class InvitationMailer < ApplicationMailer
     )
   end
 
-  def invitation_for_rsa_orientation_on_phone_platform
+  def invitation_for_phone_platform
     mail(
       to: @applicant.email,
-      subject: "[RSA]: Votre RDV d'orientation téléphonique dans le cadre de votre RSA"
+      subject: "[#{@rdv_subject.upcase}]: Votre #{@rdv_title} dans le cadre " \
+               "de votre #{@rdv_subject}"
     )
   end
 
-  def invitation_for_rsa_insertion_offer
+  def invitation_for_atelier
     mail(
       to: @applicant.email,
-      subject: "[RSA]: Offre de formations et ateliers dans le cadre de votre parcours socio-professionel"
+      subject: "[#{@rdv_subject.upcase}]: Participer à un atelier dans le cadre de votre " \
+               "parcours socio-professionnel"
     )
   end
 
@@ -39,10 +40,10 @@ class InvitationMailer < ApplicationMailer
     )
   end
 
-  def invitation_for_rsa_orientation_on_phone_platform_reminder
+  def invitation_for_phone_platform_reminder
     mail(
       to: @applicant.email,
-      subject: "[Rappel]: RDV d'orientation téléphonique dans le cadre de votre RSA"
+      subject: "[Rappel]: Votre #{@rdv_title} dans le cadre de votre #{@rdv_subject}"
     )
   end
 
