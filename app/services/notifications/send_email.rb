@@ -13,28 +13,24 @@ module Notifications
         mailer_class: NotificationMailer,
         mailer_method: mailer_method,
         applicant: @notification.applicant,
-        rdv: rdv,
+        rdv: @notification.rdv,
         signature_lines: @notification.signature_lines,
-        motif_category: rdv.motif_category
+        motif_category: @notification.motif_category
       )
     end
 
     private
 
     def mailer_method
-      if @notification.event == "rdv_cancelled"
-        :rdv_cancelled
-      elsif rdv.presential?
+      if @notification.event == "participation_cancelled"
+        :participation_cancelled
+      elsif @notification.rdv.presential?
         :"presential_#{@notification.event}"
-      elsif rdv.by_phone?
+      elsif @notification.rdv.by_phone?
         :"by_phone_#{@notification.event}"
       else
-        raise EmailNotificationError, "Message de convocation non géré pour le rdv #{rdv.id}"
+        raise EmailNotificationError, "Message de convocation non géré pour le rdv #{@notification.rdv.id}"
       end
-    end
-
-    def rdv
-      @notification.rdv
     end
   end
 end

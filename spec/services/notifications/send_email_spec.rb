@@ -22,19 +22,18 @@ describe Notifications::SendEmail, type: :service do
       create(
         :rdv,
         organisation: organisation,
-        motif: motif,
-        participations: [participation]
+        motif: motif
       )
     end
     let!(:participation) do
       create(
         :participation,
-        applicant: applicant,
+        applicant: applicant, rdv: rdv,
         rdv_context: build(:rdv_context, motif_category: "rsa_orientation")
       )
     end
     let!(:notification) do
-      create(:notification, applicant: applicant, rdv: rdv, event: "rdv_created")
+      create(:notification, participation: participation, event: "participation_created")
     end
 
     context "for a public_office rdv" do
@@ -47,7 +46,7 @@ describe Notifications::SendEmail, type: :service do
           .with(
             sendable: notification,
             mailer_class: NotificationMailer,
-            mailer_method: :presential_rdv_created,
+            mailer_method: :presential_participation_created,
             applicant: applicant,
             rdv: rdv,
             signature_lines: ["Signé par la DINUM"],
@@ -58,7 +57,7 @@ describe Notifications::SendEmail, type: :service do
 
       context "for a rdv updated event" do
         let!(:notification) do
-          create(:notification, applicant: applicant, rdv: rdv, event: "rdv_updated")
+          create(:notification, participation: participation, event: "participation_updated")
         end
 
         it "calls the emailer service with the right mailer method" do
@@ -66,7 +65,7 @@ describe Notifications::SendEmail, type: :service do
             .with(
               sendable: notification,
               mailer_class: NotificationMailer,
-              mailer_method: :presential_rdv_updated,
+              mailer_method: :presential_participation_updated,
               applicant: applicant,
               rdv: rdv,
               signature_lines: ["Signé par la DINUM"],
@@ -78,7 +77,7 @@ describe Notifications::SendEmail, type: :service do
 
       context "for a rdv cancelled event" do
         let!(:notification) do
-          create(:notification, applicant: applicant, rdv: rdv, event: "rdv_cancelled")
+          create(:notification, participation: participation, event: "participation_cancelled")
         end
 
         it "calls the emailer service with the right mailer method" do
@@ -86,7 +85,7 @@ describe Notifications::SendEmail, type: :service do
             .with(
               sendable: notification,
               mailer_class: NotificationMailer,
-              mailer_method: :rdv_cancelled,
+              mailer_method: :participation_cancelled,
               applicant: applicant,
               rdv: rdv,
               signature_lines: ["Signé par la DINUM"],
@@ -102,7 +101,7 @@ describe Notifications::SendEmail, type: :service do
 
       context "for a rdv created event" do
         let!(:notification) do
-          create(:notification, applicant: applicant, rdv: rdv, event: "rdv_created")
+          create(:notification, participation: participation, event: "participation_created")
         end
 
         it "calls the emailer service with the right mailer method" do
@@ -110,7 +109,7 @@ describe Notifications::SendEmail, type: :service do
             .with(
               sendable: notification,
               mailer_class: NotificationMailer,
-              mailer_method: :by_phone_rdv_created,
+              mailer_method: :by_phone_participation_created,
               applicant: applicant,
               rdv: rdv,
               signature_lines: ["Signé par la DINUM"],
@@ -122,7 +121,7 @@ describe Notifications::SendEmail, type: :service do
 
       context "for a rdv updated event" do
         let!(:notification) do
-          create(:notification, applicant: applicant, rdv: rdv, event: "rdv_updated")
+          create(:notification, participation: participation, event: "participation_updated")
         end
 
         it "calls the emailer service with the right mailer method" do
@@ -130,7 +129,7 @@ describe Notifications::SendEmail, type: :service do
             .with(
               sendable: notification,
               mailer_class: NotificationMailer,
-              mailer_method: :by_phone_rdv_updated,
+              mailer_method: :by_phone_participation_updated,
               applicant: applicant,
               rdv: rdv,
               signature_lines: ["Signé par la DINUM"],

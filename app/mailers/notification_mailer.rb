@@ -8,38 +8,38 @@ class NotificationMailer < ApplicationMailer
                 :set_display_mandatory_warning, :set_display_punishable_warning,
                 :set_rdv_purpose, :set_logo_path, :verify_phone_number_presence
 
-  ### rdv_created ###
-  def presential_rdv_created
+  ### participation_created ###
+  def presential_participation_created
     mail(
       to: @applicant.email,
       subject: "[Important - RSA] Vous êtes convoqué(e) à un #{@rdv_title}"
     )
   end
 
-  def by_phone_rdv_created
+  def by_phone_participation_created
     mail(
       to: @applicant.email,
       subject: "[Important - RSA] Vous êtes convoqué(e) à un #{@rdv_title}"
     )
   end
 
-  ### rdv_updated ###
-  def presential_rdv_updated
+  ### participation_updated ###
+  def presential_participation_updated
     mail(
       to: @applicant.email,
       subject: "[Important - RSA] Votre #{@rdv_title} a été modifié."
     )
   end
 
-  def by_phone_rdv_updated
+  def by_phone_participation_updated
     mail(
       to: @applicant.email,
       subject: "[Important - RSA] Votre #{@rdv_title} a été modifié."
     )
   end
 
-  ### rdv_cancelled ###
-  def rdv_cancelled
+  ### participation_cancelled ###
+  def participation_cancelled
     mail(
       to: @applicant.email,
       subject: "[Important - RSA] Votre #{@rdv_title} a été annulé."

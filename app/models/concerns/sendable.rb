@@ -4,7 +4,8 @@ module Sendable
   delegate :email, :phone_number, :phone_number_formatted, :phone_number_is_mobile?,
            :address, :street_address, :zipcode_and_city,
            to: :applicant
-  delegate :signature_lines, :sender_city, :help_address, :display_europe_logos, :direction_names,
+  delegate :signature_lines, :sender_city, :help_address, :display_europe_logos, :display_department_logo,
+           :direction_names,
            to: :messages_configuration, allow_nil: true
 
   def sms_sender_name

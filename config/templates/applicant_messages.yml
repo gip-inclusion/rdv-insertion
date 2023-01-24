@@ -58,3 +58,10 @@ categories:
     rdv_subject: demande d'emploi
     display_mandatory_warning: true
     display_punishable_warning: true
+  rsa_integration_information:
+    rdv_title: rendez-vous d'information
+    rdv_title_by_phone: rendez-vous d'information téléphonique
+    applicant_designation: bénéficiaire du RSA
+    rdv_purpose: vous renseigner sur vos droits et vos devoirs
+    display_mandatory_warning: true
+    display_punishable_warning: false

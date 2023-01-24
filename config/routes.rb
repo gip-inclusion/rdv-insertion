@@ -93,4 +93,9 @@ Rails.application.routes.draw do
     end
   end
   mount Sidekiq::Web, at: "/sidekiq"
+
+  if Rails.env.development?
+    # LetterOpener
+    mount LetterOpenerWeb::Engine, at: "/letter_opener"
+  end
 end

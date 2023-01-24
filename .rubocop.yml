@@ -126,3 +126,4 @@ RSpec/NoExpectationExample:
 RSpec/DescribeClass:
   Exclude:
     - "spec/requests/**/*"
+    - "spec/features/**"

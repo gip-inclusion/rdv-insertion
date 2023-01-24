@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_14_091609) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_17_114011) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -158,6 +158,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_14_091609) do
     t.string "help_address"
     t.boolean "display_europe_logos", default: false
     t.string "sms_sender_name"
+    t.boolean "display_department_logo", default: true
   end
 
   create_table "motifs", force: :cascade do |t|
@@ -179,16 +180,14 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_14_091609) do
   end
 
   create_table "notifications", force: :cascade do |t|
-    t.bigint "applicant_id", null: false
     t.integer "event"
     t.datetime "sent_at", precision: nil
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "rdv_solidarites_rdv_id"
     t.integer "format"
-    t.bigint "rdv_id"
-    t.index ["applicant_id"], name: "index_notifications_on_applicant_id"
-    t.index ["rdv_id"], name: "index_notifications_on_rdv_id"
+    t.bigint "rdv_solidarites_rdv_id"
+    t.bigint "participation_id"
+    t.index ["participation_id"], name: "index_notifications_on_participation_id"
   end
 
   create_table "organisations", force: :cascade do |t|
@@ -202,6 +201,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_14_091609) do
     t.bigint "messages_configuration_id"
     t.datetime "last_webhook_update_received_at"
     t.string "slug"
+    t.boolean "independent_from_cd", default: false
     t.index ["department_id"], name: "index_organisations_on_department_id"
     t.index ["messages_configuration_id"], name: "index_organisations_on_messages_configuration_id"
     t.index ["rdv_solidarites_organisation_id"], name: "index_organisations_on_rdv_solidarites_organisation_id", unique: true
@@ -310,8 +310,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_14_091609) do
   add_foreign_key "invitations", "rdv_contexts"
   add_foreign_key "lieux", "organisations"
   add_foreign_key "motifs", "organisations"
-  add_foreign_key "notifications", "applicants"
-  add_foreign_key "notifications", "rdvs"
+  add_foreign_key "notifications", "participations"
   add_foreign_key "organisations", "departments"
   add_foreign_key "organisations", "messages_configurations"
   add_foreign_key "participations", "rdv_contexts"

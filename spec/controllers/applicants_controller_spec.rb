@@ -323,32 +323,29 @@ describe ApplicantsController do
       let!(:rdv_orientation1) do
         create(
           :rdv,
-          created_at: "2021-10-21", starts_at: "2021-10-22", motif: motif,
-          participations: [participation], organisation: organisation
+          starts_at: "2021-10-22", motif: motif,
+          organisation: organisation
         )
       end
       let!(:participation) do
         create(
           :participation,
-          applicant: applicant,
-          status: "noshow",
-          rdv_context: rdv_context
+          rdv: rdv_orientation1, rdv_context: rdv_context, applicant: applicant, status: "noshow",
+          created_at: "2021-10-21"
         )
       end
 
       let!(:rdv_orientation2) do
         create(
           :rdv,
-          created_at: "2021-10-23", starts_at: "2021-10-24", motif: motif,
-          participations: [participation2], organisation: organisation
+          starts_at: "2021-10-24", motif: motif, organisation: organisation
         )
       end
       let!(:participation2) do
         create(
           :participation,
-          applicant: applicant,
-          status: "seen",
-          rdv_context: rdv_context
+          rdv_context: rdv_context, rdv: rdv_orientation2, applicant: applicant, status: "seen",
+          created_at: "2021-10-23"
         )
       end
 
@@ -388,7 +385,7 @@ describe ApplicantsController do
         let!(:notification) do
           create(
             :notification,
-            applicant: applicant, rdv: rdv_orientation1, event: "rdv_created", format: "sms",
+            participation: participation, event: "participation_created", format: "sms",
             sent_at: 2.days.ago
           )
         end
@@ -667,19 +664,21 @@ describe ApplicantsController do
         rdv_context2.update!(motif_category: "rsa_accompagnement")
       end
 
-      let!(:rdv) { create(:rdv, participations: [participation]) }
+      let!(:rdv) { create(:rdv) }
       let!(:participation) do
         create(
           :participation,
+          rdv: rdv,
           applicant: applicant,
           status: "unknown",
           rdv_context: rdv_context1
         )
       end
-      let!(:rdv2) { create(:rdv, participations: [participation2]) }
+      let!(:rdv2) { create(:rdv) }
       let!(:participation2) do
         create(
           :participation,
+          rdv: rdv2,
           applicant: applicant,
           status: "unknown",
           rdv_context: rdv_context2
@@ -688,19 +687,19 @@ describe ApplicantsController do
       let!(:notification) do
         create(
           :notification,
-          rdv: rdv, applicant: applicant, event: "rdv_created", sent_at: Time.zone.parse("20/12/2021 12:00")
+          participation: participation, event: "participation_created", sent_at: Time.zone.parse("20/12/2021 12:00")
         )
       end
       let!(:notification2) do
         create(
           :notification,
-          rdv: rdv, applicant: applicant, event: "rdv_updated", sent_at: Time.zone.parse("21/12/2021 12:00")
+          participation: participation, event: "participation_updated", sent_at: Time.zone.parse("21/12/2021 12:00")
         )
       end
       let!(:notification3) do
         create(
           :notification,
-          rdv: rdv2, applicant: applicant, event: "rdv_created", sent_at: Time.zone.parse("25/12/2021 12:00")
+          participation: participation2, event: "participation_created", sent_at: Time.zone.parse("25/12/2021 12:00")
         )
       end
 
