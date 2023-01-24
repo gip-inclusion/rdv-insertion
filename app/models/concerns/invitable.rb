@@ -56,9 +56,12 @@ module Invitable
     first_invitation_relative_to_last_participation_by(format)&.sent_at
   end
 
+  def last_invitation_sent_manually
+    sent_invitations.reject(&:reminder?).max_by(&:sent_at)
+  end
+
   def invited_before_time_window?(number_of_days_before_action_required)
-    last_manual_invitation_sent_at = sent_invitations.reject(&:reminder?).max_by(&:sent_at)&.sent_at
-    last_manual_invitation_sent_at.present? &&
-      last_manual_invitation_sent_at < number_of_days_before_action_required.days.ago
+    last_invitation_sent_manually.present? &&
+      last_invitation_sent_manually.sent_at < number_of_days_before_action_required.days.ago
   end
 end
