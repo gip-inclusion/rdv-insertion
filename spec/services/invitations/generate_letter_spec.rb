@@ -15,9 +15,10 @@ describe Invitations::GenerateLetter, type: :service do
     )
   end
   let!(:messages_configuration) { create(:messages_configuration) }
+  let!(:configuration) { create(:configuration) }
   let!(:organisation) do
     create(:organisation, messages_configuration: messages_configuration,
-                          department: department)
+                          department: department, configurations: [configuration])
   end
 
   describe "#call" do
@@ -61,6 +62,31 @@ describe Invitations::GenerateLetter, type: :service do
       it "renders the mail with the help address" do
         subject
         expect(invitation.content).to include("10, rue du Conseil départemental 75001 Paris")
+      end
+    end
+
+    context "when the invitation is not in a referent context" do
+      it "generates the pdf with no reference to a referent" do
+        subject
+        expect(invitation.content).not_to include("Référent de parcours")
+      end
+    end
+
+    context "when the invitation is in a referent context and the applicant has a referent" do
+      let!(:invitation) do
+        create(
+          :invitation, content: nil, applicant: applicant, organisations: [organisation],
+                       department: department, format: "postal", rdv_context: rdv_context, rdv_with_referents: true
+        )
+      end
+      let!(:agent) do
+        create(:agent, organisations: [organisation], applicants: [applicant],
+                       first_name: "Kylian", last_name: "Mbappé")
+      end
+
+      it "displays the name of the referent" do
+        subject
+        expect(invitation.content).to include("Référent de parcours : Kylian Mbappé")
       end
     end
 
