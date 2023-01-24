@@ -62,6 +62,7 @@ module Invitations
         signature_lines: signature_lines,
         help_address: help_address,
         display_europe_logos: display_europe_logos,
+        display_independent_from_cd_message: display_independent_from_cd_message,
         display_department_logo: display_department_logo,
         sender_city: sender_city,
         rdv_title: rdv_title,
@@ -81,6 +82,10 @@ module Invitations
 
     def organisation
       (applicant.organisations & @invitation.organisations).last
+    end
+
+    def display_independent_from_cd_message
+      @invitation.organisations.all?(&:independent_from_cd)
     end
   end
 end

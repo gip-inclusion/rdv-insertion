@@ -33,96 +33,56 @@ describe Rdv do
   describe "#notify_applicants" do
     subject { rdv.save }
 
-    let!(:rdv_id) { 333 }
-
-    context "after record creation" do
-      let!(:rdv) { build(:rdv, id: rdv_id, convocable: true) }
-
-      it "enqueues a job to notify rdv applicants" do
-        expect(NotifyRdvToApplicantsJob).to receive(:perform_async)
-          .with(rdv_id, :created)
-        subject
-      end
-
-      context "when the rdv is not convocable" do
-        let!(:rdv) { build(:rdv, id: rdv_id, convocable: false) }
-
-        it "does not enqueue a notify applicants job" do
-          expect(NotifyRdvToApplicantsJob).not_to receive(:perform_async)
-          subject
-        end
-      end
-    end
-
-    context "after cancellation" do
-      let!(:rdv) { create(:rdv, id: rdv_id, convocable: true, cancelled_at: nil) }
-
-      it "enqueues a job to notify rdv applicants" do
-        rdv.cancelled_at = Time.zone.now
-        expect(NotifyRdvToApplicantsJob).to receive(:perform_async)
-          .with(rdv_id, :cancelled)
-        subject
-      end
-
-      context "when the rdv is not convocable" do
-        let!(:rdv) { build(:rdv, id: rdv_id, convocable: false) }
-
-        it "does not enqueue a notify applicants job" do
-          rdv.cancelled_at = Time.zone.now
-          expect(NotifyRdvToApplicantsJob).not_to receive(:perform_async)
-          subject
-        end
-      end
-    end
+    let!(:participation) { create(:participation) }
 
     context "when the lieu is updated" do
-      let!(:rdv) { create(:rdv, id: rdv_id, convocable: true, address: "some place") }
+      let!(:rdv) { create(:rdv, participations: [participation], convocable: true, address: "some place") }
 
       it "enqueues a job to notify rdv applicants" do
         rdv.address = "some other place"
-        expect(NotifyRdvToApplicantsJob).to receive(:perform_async)
-          .with(rdv_id, :updated)
+        expect(NotifyParticipationsJob).to receive(:perform_async)
+          .with([participation.id], :updated)
         subject
       end
 
       context "when the rdv is not convocable" do
-        let!(:rdv) { create(:rdv, id: rdv_id, convocable: false) }
+        let!(:rdv) { create(:rdv, participations: [participation], convocable: false) }
 
         it "does not enqueue a notify applicants job" do
           rdv.address = "some other place"
-          expect(NotifyRdvToApplicantsJob).not_to receive(:perform_async)
+          expect(NotifyParticipationsJob).not_to receive(:perform_async)
           subject
         end
       end
     end
 
     context "when the start time is updated" do
-      let!(:rdv) { create(:rdv, id: rdv_id, convocable: true, starts_at: 2.days.from_now) }
+      let!(:rdv) { create(:rdv, participations: [participation], convocable: true, starts_at: 2.days.from_now) }
 
       it "enqueues a job to notify rdv applicants" do
         rdv.starts_at = 3.days.from_now
-        expect(NotifyRdvToApplicantsJob).to receive(:perform_async)
-          .with(rdv_id, :updated)
+        expect(NotifyParticipationsJob).to receive(:perform_async)
+          .with([participation.id], :updated)
         subject
       end
 
       context "when the rdv is not convocable" do
-        let!(:rdv) { build(:rdv, id: rdv_id, convocable: false) }
+        let!(:rdv) { build(:rdv, participations: [participation], convocable: false) }
 
         it "does not enqueue a notify applicants job" do
           rdv.starts_at = 3.days.from_now
-          expect(NotifyRdvToApplicantsJob).not_to receive(:perform_async)
+          expect(NotifyParticipationsJob).not_to receive(:perform_async)
           subject
         end
       end
     end
 
     context "when the another attribute is updated" do
-      let!(:rdv) { create(:rdv, id: rdv_id, convocable: true, duration_in_min: 30) }
+      let!(:rdv) { create(:rdv, participations: [participation], convocable: true, duration_in_min: 30) }
 
       it "does not enqueue a notify applicants job" do
         rdv.duration_in_min = 45
-        expect(NotifyRdvToApplicantsJob).not_to receive(:perform_async)
+        expect(NotifyParticipationJob).not_to receive(:perform_async)
         subject
       end
     end

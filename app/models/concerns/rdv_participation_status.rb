@@ -1,4 +1,4 @@
-module HasStatus
+module RdvParticipationStatus
   extend ActiveSupport::Concern
 
   PENDING_STATUSES = %w[unknown waiting].freeze

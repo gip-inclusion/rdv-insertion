@@ -3,6 +3,8 @@ module Templatable
            :display_punishable_warning, :rdv_subject,
            to: :motif_category_wordings
 
+  private
+
   def motif_category_wordings
     @motif_category_wordings ||= Templating::MotifCategoriesWordings.send(:"#{motif_category}")
   end

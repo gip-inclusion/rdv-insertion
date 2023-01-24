@@ -6,7 +6,7 @@ class SendInvitationRemindersJob < ApplicationJob
 
     applicants_to_send_reminders_to.find_each do |applicant|
       # we check here that it is the **first** invitation that has been sent 3 days ago
-      next if applicant.relevant_first_invitation_sent_at.to_date != 3.days.ago.to_date
+      next if applicant.first_invitation_relative_to_last_participation_sent_at.to_date != 3.days.ago.to_date
 
       SendInvitationReminderJob.perform_async(applicant.id, "email") if applicant.email?
       if applicant.phone_number? && applicant.phone_number_is_mobile?

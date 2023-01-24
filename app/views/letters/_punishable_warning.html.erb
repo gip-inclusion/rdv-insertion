@@ -1,0 +1,9 @@
+<span class="bold-blue">
+  En l’absence d’action de votre part,
+  <% if display_independent_from_cd_message %>
+      nous serons dans l’obligation d’en informer le Conseil Départemental <%= t("with_prefix.#{department.pronoun}", name: department.name) %> qui
+  <% else %>
+      le département
+  <% end %>
+  jugera des suites à réserver à votre dossier ; la sanction peut aller jusqu’à une suspension ou une réduction du versement de votre RSA.
+</span>

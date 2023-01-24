@@ -345,7 +345,7 @@ describe Invitations::SendSms, type: :service do
       let!(:configuration) { create(:configuration, motif_category: "rsa_integration_information") }
       let!(:content) do
         "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous " \
-          "d'intégration." \
+          "d'information." \
           " Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant " \
           "dans les 9 jours: http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
           "Ce rendez-vous est obligatoire. " \
@@ -363,7 +363,7 @@ describe Invitations::SendSms, type: :service do
       context "when it is a reminder" do
         let!(:content) do
           "Monsieur John DOE,\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours vous " \
-            "invitant à prendre RDV au créneau de votre choix afin de vous informer sur vos droits et vos devoirs. " \
+            "invitant à prendre RDV au créneau de votre choix afin de vous renseigner sur vos droits et vos devoirs. " \
             "Le lien de prise de RDV suivant expire dans 5 jours: " \
             "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
             "Ce rendez-vous est obligatoire. En cas de problème technique, contactez le " \

@@ -24,7 +24,7 @@
         <% @current_configuration.invitation_formats.each do |invitation_format| %>
           <td class="d-none d-lg-table-cell">
             <% if applicant.can_be_invited_through?(invitation_format) %>
-              <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: invitation_format, motif_category: @current_motif_category, rdv_context: rdv_context, already_invited: rdv_context.invited_through?(invitation_format) %>
+              <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: invitation_format, motif_category: @current_motif_category, rdv_context: rdv_context, checked: checked = rdv_context.first_invitation_relative_to_last_participation_by(invitation_format).present?, disabled: checked || applicant.inactive? || rdv_context.status == "rdv_pending" %>
             <% else %>
               -
             <% end %>
@@ -32,11 +32,11 @@
         <% end %>
         </td>
         <% if show_invitations?(@current_configuration) %>
-          <td id="first-invitation-date-<%= rdv_context.id %>"><%= display_attribute format_date(rdv_context.relevant_first_invitation_sent_at) %></td>
+          <td id="first-invitation-date-<%= rdv_context.id %>"><%= display_attribute format_date(rdv_context.first_invitation_relative_to_last_participation_sent_at) %></td>
           <td id="last-invitation-date-<%= rdv_context.id %>"><%= show_last_invitation_date?(rdv_context) ? display_attribute(format_date(rdv_context.last_invitation_sent_at)) : " - " %></td>
         <% end %>
         <% if show_convocation?(@current_configuration) %>
-          <td><%= display_attribute format_date(applicant.last_convocation_for_category_sent_at(@current_motif_category)) %></td>
+          <td><%= display_attribute format_date(rdv_context.last_sent_convocation_sent_at) %></td>
         <% end %>
         <% if applicant.archived? %>
           <td>Dossier archivé</td>
