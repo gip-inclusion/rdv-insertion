@@ -4,7 +4,7 @@
   <% if applicant.affiliation_number %>
     <p>N° allocataire : <%= applicant.affiliation_number %></p>
   <% end %>
-  <% if rdv_with_referents %>
+  <% if invitation.rdv_with_referents? %>
     <p><%= "Référent".pluralize(applicant.agents.count) %> de parcours : <%= applicant.agents.order(:last_name).map(&:to_s).join(", ") %></p>
   <% end %>
 </div>

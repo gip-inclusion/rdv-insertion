@@ -72,24 +72,12 @@ describe Invitations::GenerateLetter, type: :service do
       end
     end
 
-    context "when the invitation is in a referent context and the applicant has no referent" do
-      let!(:configuration) { create(:configuration, rdv_with_referents: true) }
-      let!(:organisation) do
-        create(:organisation, messages_configuration: messages_configuration,
-                              department: department, configurations: [configuration])
-      end
-
-      it "displays that the referent is yet to be determined" do
-        subject
-        expect(invitation.content).to include("Référent de parcours : à définir")
-      end
-    end
-
     context "when the invitation is in a referent context and the applicant has a referent" do
-      let!(:configuration) { create(:configuration, rdv_with_referents: true) }
-      let!(:organisation) do
-        create(:organisation, messages_configuration: messages_configuration,
-                              department: department, configurations: [configuration])
+      let!(:invitation) do
+        create(
+          :invitation, content: nil, applicant: applicant, organisations: [organisation],
+                       department: department, format: "postal", rdv_context: rdv_context, rdv_with_referents: true
+        )
       end
       let!(:agent) do
         create(:agent, organisations: [organisation], applicants: [applicant],

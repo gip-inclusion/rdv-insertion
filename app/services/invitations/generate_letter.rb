@@ -61,8 +61,7 @@ module Invitations
         display_europe_logos: display_europe_logos,
         display_independent_from_cd_message: display_independent_from_cd_message,
         display_department_logo: display_department_logo,
-        sender_city: sender_city,
-        rdv_with_referents: rdv_with_referents
+        sender_city: sender_city
       }
       return locals if template_exists_for_motif_category?
 
