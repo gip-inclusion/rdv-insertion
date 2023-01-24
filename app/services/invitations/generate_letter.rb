@@ -66,7 +66,6 @@ module Invitations
         display_department_logo: display_department_logo,
         sender_city: sender_city,
         rdv_title: rdv_title,
-        rdv_subject: rdv_subject,
         applicant_designation: applicant_designation,
         display_mandatory_warning: display_mandatory_warning,
         display_punishable_warning: display_punishable_warning,

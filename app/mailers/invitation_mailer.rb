@@ -11,7 +11,7 @@ class InvitationMailer < ApplicationMailer
   def regular_invitation
     mail(
       to: @applicant.email,
-      subject: "[RSA]: Votre #{@rdv_title} dans le cadre de votre #{@rdv_subject}"
+      subject: "[#{@rdv_subject.upcase}]: Votre #{@rdv_title} dans le cadre de votre #{@rdv_subject}"
     )
   end
 
