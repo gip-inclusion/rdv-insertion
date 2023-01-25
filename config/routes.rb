@@ -57,9 +57,10 @@ Rails.application.routes.draw do
     resources :applicants, only: [:index, :new, :create, :show, :edit, :update] do
       collection { resources :uploads, only: [:new] }
       resources :invitations, only: [:create]
-      resources :applicants_organisations, only: [:new, :create]
+      resources :applicants_organisations, only: [:index]
       resources :referent_assignations, only: [:index]
     end
+    resource :applicants_organisations, only: [:create, :destroy]
     resource :referent_assignations, only: [:create, :destroy]
   end
   resources :invitation_dates_filterings, only: [:new]

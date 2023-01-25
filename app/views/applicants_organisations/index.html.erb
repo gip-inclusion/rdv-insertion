@@ -1,0 +1,6 @@
+<%= render "common/remote_modal", title: "Choisissez l'organisation à ajouter" do %>
+  <% @organisations.each do |organisation| %>
+    <%= render "applicants_organisation", department: @department, organisation: organisation, applicant: @applicant, belongs_to_org: @applicant.organisation_ids.include?(organisation.id), removable: current_agent.organisation_ids.include?(organisation.id), organisations_count: @applicant.organisation_ids.length %>
+  <% end %>
+<% end %>
+

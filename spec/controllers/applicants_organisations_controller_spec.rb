@@ -12,21 +12,11 @@ describe ApplicantsOrganisationsController do
     sign_in(agent)
   end
 
-  describe "#new" do
-    it "shows the organisations selection" do
-      get :new, params: { applicant_id: applicant_id, department_id: department.id }
-
-      expect(response).to be_successful
-      expect(response.body).to match(/CD de Valence/)
-      expect(response.body).not_to match(/CD de DIE/)
-    end
-  end
-
   describe "#create" do
     subject do
       post :create, params: {
-        applicant_id: applicant_id, department_id: department.id, applicants_organisation: {
-          organisation_id: organisation2.id
+        department_id: department.id, applicants_organisation: {
+          organisation_id: organisation2.id, applicant_id: applicant_id
         }, format: "turbo_stream"
       }
     end
@@ -42,7 +32,7 @@ describe ApplicantsOrganisationsController do
 
       expect(response).to be_successful
       expect(response.body).to match(/flashes/)
-      expect(response.body).to match(/L&#39;allocataire a bien été ajouté à l&#39;organisation/)
+      expect(unescaped_response_body).to match(/L'organisation a bien été ajoutée/)
     end
 
     it "saves the applicant with the organisation" do
@@ -61,8 +51,53 @@ describe ApplicantsOrganisationsController do
       it "redirects with an error message" do
         subject
 
-        expect(response).to redirect_to(department_applicant_path(department, applicant))
-        expect(flash[:error]).to include("something failed")
+        expect(response.body).to match(/flashes/)
+        expect(unescaped_response_body).to match(/something failed/)
+      end
+    end
+  end
+
+  describe "#destroy" do
+    subject do
+      delete :destroy, params: {
+        department_id: department.id, applicants_organisation: {
+          organisation_id: organisation1.id, applicant_id: applicant_id
+        }, format: "turbo_stream"
+      }
+    end
+
+    before do
+      allow(Applicants::RemoveFromOrganisation).to receive(:call)
+        .with(applicant: applicant, organisation: organisation1, rdv_solidarites_session: rdv_solidarites_session)
+        .and_return(OpenStruct.new(success?: true))
+    end
+
+    it "shows with a success message" do
+      subject
+
+      expect(response).to be_successful
+      expect(response.body).to match(/flashes/)
+      expect(unescaped_response_body).to match(/L'organisation a bien été retirée/)
+    end
+
+    it "saves the applicant with the organisation" do
+      expect(Applicants::RemoveFromOrganisation).to receive(:call)
+        .with(applicant: applicant, organisation: organisation1, rdv_solidarites_session: rdv_solidarites_session)
+      subject
+    end
+
+    context "when the save fails" do
+      before do
+        allow(Applicants::RemoveFromOrganisation).to receive(:call)
+          .with(applicant: applicant, organisation: organisation1, rdv_solidarites_session: rdv_solidarites_session)
+          .and_return(OpenStruct.new(success?: false, errors: ["something failed"]))
+      end
+
+      it "shows with an error message" do
+        subject
+
+        expect(response.body).to match(/flashes/)
+        expect(unescaped_response_body).to match(/something failed/)
       end
     end
   end
