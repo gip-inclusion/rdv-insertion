@@ -1,6 +1,6 @@
 <%= render 'letters/header', direction_names: direction_names, sender_city: sender_city, department: department, organisation: organisation, applicant: applicant %>
 <div class="mail-object">
-  <p class="bold-blue"><span class="bold-blue">Objet : <%= rdv_title.slice(0,1).capitalize + rdv_title.slice(1..-1) %> dans le cadre de votre RSA</span></p>
+  <p class="bold-blue"><span class="bold-blue">Objet : <%= rdv_title.slice(0,1).capitalize + rdv_title.slice(1..-1) %> dans le cadre de votre <%= rdv_subject %></span></p>
   <% if applicant.affiliation_number %>
     <p>N° allocataire : <%= applicant.affiliation_number %></p>
   <% end %>
