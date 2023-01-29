@@ -1,5 +1,5 @@
 describe Stats::ComputeStats, type: :service do
-  subject { described_class.call(department_number: department.number) }
+  subject { described_class.call(department_number: department.number, current_stat: stat) }
 
   before { travel_to("2022-06-10".to_time) }
 
@@ -9,6 +9,18 @@ describe Stats::ComputeStats, type: :service do
   let!(:relevant_organisation) { create(:organisation, configurations: [configuration], department: department) }
   let!(:irrelevant_organisation) do # this organisation is irrelevant because she's notifying the applicants
     create(:organisation, configurations: [configuration_notify], department: department)
+  end
+  # we simulate an existing stat hash with values matching the simulated datas in this file
+  let!(:stat) do
+    create(:stat, department_number: department.number,
+                  applicants_count_grouped_by_month: { "03/2022" => 1, "04/2022" => 2 },
+                  rdvs_count_grouped_by_month: { "04/2022" => 1 },
+                  sent_invitations_count_grouped_by_month: { "04/2022" => 1 },
+                  average_time_between_invitation_and_rdv_in_days_by_month: { "04/2022" => 3 },
+                  average_time_between_rdv_creation_and_start_in_days_by_month: { "04/2022" => 1 },
+                  rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month: { "04/2022" => 100 },
+                  rate_of_autonomous_applicants_grouped_by_month: { "04/2022" => 100 },
+                  percentage_of_no_show_grouped_by_month: { "04/2022" => 0 })
   end
 
   # ----------------------------------------- relevant agent for stats -----------------------------------------
@@ -203,7 +215,7 @@ describe Stats::ComputeStats, type: :service do
 
     describe "#sent_invitations_count_grouped_by_month" do
       it "counts the sent invitations month by month" do
-        expect(data[:sent_invitations_count_grouped_by_month]).to eq({ "06/2022" => 2 })
+        expect(data[:sent_invitations_count_grouped_by_month]).to eq({ "04/2022" => 1, "05/2022" => 1 })
       end
     end
 
@@ -255,7 +267,7 @@ describe Stats::ComputeStats, type: :service do
     describe "#rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month" do
       it "computes the percentage by month of applicants with rdv seen in less than 30 days" do
         expect(data[:rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month]).to eq(
-          { "03/2022" => 0, "04/2022" => 100 }
+          { "04/2022" => 100, "05/2022" => 0 }
         )
       end
     end
@@ -269,7 +281,7 @@ describe Stats::ComputeStats, type: :service do
     describe "#rate_of_autonomous_applicants_grouped_by_month" do
       it "computes the percentage by month of invited applicants with at least on rdv taken in autonomy" do
         expect(data[:rate_of_autonomous_applicants_grouped_by_month]).to eq(
-          { "03/2022" => 0, "04/2022" => 100 }
+          { "04/2022" => 100, "05/2022" => 0 }
         )
       end
     end

@@ -2,8 +2,9 @@
 
 module Stats
   class ComputeStats < BaseService
-    def initialize(department_number:)
+    def initialize(department_number:, current_stat:)
       @department_number = department_number
+      @current_stat = current_stat
     end
 
     def call
@@ -40,6 +41,10 @@ module Stats
       }
     end
 
+    def created_last_month(data)
+      data.where(created_at: 1.month.ago.all_month)
+    end
+
     def department
       @department ||= Department.find_by(number: @department_number) if @department_number != "all"
     end
@@ -59,7 +64,10 @@ module Stats
     end
 
     def applicants_count_grouped_by_month
-      all_applicants.group_by_month(:created_at, format: "%m/%Y", current: false).count
+      @current_stat.applicants_count_grouped_by_month.merge(
+        { 1.month.ago.strftime("%m/%Y") =>
+          created_last_month(all_applicants).count }
+      )
     end
 
     def all_rdvs
@@ -72,7 +80,10 @@ module Stats
     end
 
     def rdvs_count_grouped_by_month
-      all_rdvs.group_by_month(:created_at, format: "%m/%Y", current: false).count
+      @current_stat.rdvs_count_grouped_by_month.merge(
+        { 1.month.ago.strftime("%m/%Y") =>
+          created_last_month(all_rdvs).count }
+      )
     end
 
     def sent_invitations_count
@@ -80,7 +91,10 @@ module Stats
     end
 
     def sent_invitations_count_grouped_by_month
-      sent_invitations.group_by_month(:created_at, format: "%m/%Y", current: false).count
+      @current_stat.sent_invitations_count_grouped_by_month.merge(
+        { 1.month.ago.strftime("%m/%Y") =>
+          sent_invitations.where(sent_at: 1.month.ago.all_month).count }
+      )
     end
 
     def agents_count
@@ -129,11 +143,9 @@ module Stats
                                          .where(rdv_contexts: { motif_category: %w[rsa_orientation] })
     end
 
-    def orientation_rdvs_by_month
-      @orientation_rdvs_by_month ||= \
-        orientation_rdvs.order(created_at: :asc)
-                        .where.not(created_at: Time.zone.today.all_month)
-                        .group_by { |rdv| rdv.created_at.beginning_of_month.strftime("%m/%Y") }
+    def orientation_rdvs_created_last_month
+      @orientation_rdvs_created_last_month ||= \
+        created_last_month(orientation_rdvs)
     end
 
     def relevant_rdv_contexts
@@ -144,11 +156,9 @@ module Stats
                                            .distinct
     end
 
-    def relevant_rdv_contexts_by_month
-      @relevant_rdv_contexts_by_month ||= \
-        relevant_rdv_contexts.order(created_at: :asc)
-                             .where.not(created_at: Time.zone.today.all_month)
-                             .group_by { |rdv_context| rdv_context.created_at.beginning_of_month.strftime("%m/%Y") }
+    def relevant_rdv_contexts_created_last_month
+      @relevant_rdv_contexts_created_last_month ||= \
+        created_last_month(relevant_rdv_contexts)
     end
 
     def sent_invitations
@@ -162,12 +172,10 @@ module Stats
     end
 
     def average_time_between_invitation_and_rdv_in_days_by_month
-      cumulated_invitation_delays_by_month = {}
-      relevant_rdv_contexts_by_month.each do |date, rdv_contexts|
-        result = compute_average_time_between_invitation_and_rdv_in_days(rdv_contexts)
-        cumulated_invitation_delays_by_month[date] = result.round
-      end
-      cumulated_invitation_delays_by_month
+      @current_stat.average_time_between_invitation_and_rdv_in_days_by_month.merge(
+        { 1.month.ago.strftime("%m/%Y") =>
+          compute_average_time_between_invitation_and_rdv_in_days(relevant_rdv_contexts_created_last_month).round }
+      )
     end
 
     def compute_average_time_between_invitation_and_rdv_in_days(selected_rdv_contexts)
@@ -185,12 +193,10 @@ module Stats
     end
 
     def average_time_between_rdv_creation_and_start_in_days_by_month
-      cumulated_time_between_rdv_creation_and_starts_by_month = {}
-      orientation_rdvs_by_month.each do |date, rdvs|
-        result = compute_average_time_between_rdv_creation_and_start_in_days(rdvs)
-        cumulated_time_between_rdv_creation_and_starts_by_month[date] = result.round
-      end
-      cumulated_time_between_rdv_creation_and_starts_by_month
+      @current_stat.average_time_between_rdv_creation_and_start_in_days_by_month.merge(
+        { 1.month.ago.strftime("%m/%Y") =>
+          compute_average_time_between_rdv_creation_and_start_in_days(orientation_rdvs_created_last_month).round }
+      )
     end
 
     def compute_average_time_between_rdv_creation_and_start_in_days(selected_rdvs)
@@ -208,12 +214,10 @@ module Stats
     end
 
     def percentage_of_no_show_grouped_by_month
-      percentage_of_no_show_by_month = {}
-      orientation_rdvs_by_month.each do |date, rdvs|
-        result = compute_percentage_of_no_show(rdvs)
-        percentage_of_no_show_by_month[date] = result.round
-      end
-      percentage_of_no_show_by_month
+      @current_stat.percentage_of_no_show_grouped_by_month.merge(
+        { 1.month.ago.strftime("%m/%Y") =>
+          compute_percentage_of_no_show(orientation_rdvs_created_last_month).round }
+      )
     end
 
     def compute_percentage_of_no_show(selected_rdvs)
@@ -227,12 +231,12 @@ module Stats
     end
 
     def rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month
-      rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month = {}
-      applicants_for_30_days_rdvs_seen_scope_by_month.each do |date, applicants|
-        result = compute_rate_of_applicants_with_rdv_seen_in_less_than_30_days(applicants)
-        rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month[date] = result.round
-      end
-      rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month
+      @current_stat.rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month.merge(
+        { 1.month.ago.strftime("%m/%Y") =>
+          compute_rate_of_applicants_with_rdv_seen_in_less_than_30_days(
+            applicants_for_30_days_rdvs_seen_scope_created_last_month
+          ).round }
+      )
     end
 
     def compute_rate_of_applicants_with_rdv_seen_in_less_than_30_days(selected_applicants)
@@ -247,12 +251,9 @@ module Stats
       end
     end
 
-    def applicants_for_30_days_rdvs_seen_scope_by_month
-      @applicants_for_30_days_rdvs_seen_scope_by_month ||= \
-        applicants_for_30_days_rdvs_seen_scope
-        .order(created_at: :asc)
-        .where.not(created_at: Time.zone.today.all_month)
-        .group_by { |m| m.created_at.beginning_of_month.strftime("%m/%Y") }
+    def applicants_for_30_days_rdvs_seen_scope_created_last_month
+      @applicants_for_30_days_rdvs_seen_scope_created_last_month ||= \
+        created_last_month(applicants_for_30_days_rdvs_seen_scope)
     end
 
     def applicants_for_30_days_rdvs_seen_scope
@@ -276,12 +277,10 @@ module Stats
     end
 
     def rate_of_autonomous_applicants_grouped_by_month
-      rate_of_autonomous_applicants_by_month = {}
-      relevant_invited_applicants_by_month.each do |date, applicants|
-        result = compute_rate_of_autonomous_applicants(applicants)
-        rate_of_autonomous_applicants_by_month[date] = result.round
-      end
-      rate_of_autonomous_applicants_by_month
+      @current_stat.rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month.merge(
+        { 1.month.ago.strftime("%m/%Y") =>
+          compute_rate_of_autonomous_applicants(relevant_invited_applicants_created_last_month).round }
+      )
     end
 
     def compute_rate_of_autonomous_applicants(selected_applicants)
@@ -299,11 +298,9 @@ module Stats
         relevant_applicants.where(id: sent_invitations.map(&:applicant_id).uniq)
     end
 
-    def relevant_invited_applicants_by_month
-      @relevant_invited_applicants_by_month ||= \
-        relevant_invited_applicants.order(created_at: :asc)
-                                   .where.not(created_at: Time.zone.today.all_month)
-                                   .group_by { |applicant| applicant.created_at.beginning_of_month.strftime("%m/%Y") }
+    def relevant_invited_applicants_created_last_month
+      @relevant_invited_applicants_created_last_month ||= \
+        created_last_month(relevant_invited_applicants)
     end
     # -----------------------------------------------------------------------------------------
   end

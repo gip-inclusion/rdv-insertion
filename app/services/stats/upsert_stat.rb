@@ -20,7 +20,7 @@ module Stats
     end
 
     def compute_stats
-      @compute_stats ||= Stats::ComputeStats.call(department_number: @department_number)
+      @compute_stats ||= Stats::ComputeStats.call(department_number: @department_number, current_stat: stat)
     end
   end
 end
