@@ -29,7 +29,7 @@ describe Stats::UpsertStat, type: :service do
   describe "#call" do
     before do
       allow(Stats::ComputeStats).to receive(:call)
-        .with(department_number: department.number)
+        .with(department_number: department.number, current_stat: stat)
         .and_return(OpenStruct.new(success?: true, data: stats_attributes))
       allow(Stat).to receive(:find_or_initialize_by)
         .with(department_number: department.number)
