@@ -11,7 +11,7 @@ module PdfHelper
     image_tag wicked_pdf_asset_pack_path(path)
   end
 
-  def logo_path(name)
-    Logo.new(name).path
+  def logo_path(name, formats = [])
+    Logo.new(name).path(formats)
   end
 end
