@@ -1,4 +1,6 @@
 RSpec.describe InvitationMailer do
+  include_context "with all existing categories"
+
   let!(:department) { create(:department, name: "Drôme", pronoun: "la") }
   let!(:help_phone_number) { "0139393939" }
   let!(:messages_configuration) { create(:messages_configuration) }
@@ -22,7 +24,7 @@ RSpec.describe InvitationMailer do
     end
 
     context "for rsa_orientation" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_orientation") }
+      let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_orientation) }
 
       it "renders the headers" do
         expect(subject.to).to eq([applicant.email])
@@ -63,9 +65,9 @@ RSpec.describe InvitationMailer do
     context "for rsa_accompagnement" do
       let!(:rdv_context) { build(:rdv_context) }
 
-      %w[rsa_accompagnement rsa_accompagnement_social rsa_accompagnement_sociopro]
+      %w[category_rsa_accompagnement category_rsa_accompagnement_social category_rsa_accompagnement_sociopro]
         .each do |motif_category|
-        before { rdv_context.motif_category = motif_category }
+        before { rdv_context.motif_category = send(motif_category) }
 
         it "renders the headers" do
           expect(subject.to).to eq([applicant.email])
@@ -97,7 +99,9 @@ RSpec.describe InvitationMailer do
     end
 
     context "for rsa_cer_signature" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_cer_signature") }
+      let!(:rdv_context) do
+        build(:rdv_context, motif_category: category_rsa_cer_signature)
+      end
 
       it "renders the headers" do
         expect(subject.to).to eq([applicant.email])
@@ -131,7 +135,7 @@ RSpec.describe InvitationMailer do
     end
 
     context "for rsa_follow_up" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_follow_up") }
+      let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_follow_up) }
 
       it "renders the headers" do
         expect(subject.to).to eq([applicant.email])
@@ -165,7 +169,7 @@ RSpec.describe InvitationMailer do
     end
 
     context "for rsa_main_tendue" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_main_tendue") }
+      let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_main_tendue) }
 
       it "renders the headers" do
         expect(subject.to).to eq([applicant.email])
@@ -199,7 +203,9 @@ RSpec.describe InvitationMailer do
     end
 
     context "for rsa_atelier_collectif_mandatory" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_atelier_collectif_mandatory") }
+      let!(:rdv_context) do
+        build(:rdv_context, motif_category: category_rsa_atelier_collectif_mandatory)
+      end
 
       it "renders the headers" do
         expect(subject.to).to eq([applicant.email])
@@ -233,7 +239,9 @@ RSpec.describe InvitationMailer do
     end
 
     context "for rsa_spie" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_spie") }
+      let!(:rdv_context) do
+        build(:rdv_context, motif_category: category_rsa_spie)
+      end
 
       it "renders the headers" do
         expect(subject.to).to eq([applicant.email])
@@ -266,7 +274,9 @@ RSpec.describe InvitationMailer do
     end
 
     context "for rsa integration information" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_integration_information") }
+      let!(:rdv_context) do
+        build(:rdv_context, motif_category: category_rsa_integration_information)
+      end
 
       it "renders the headers" do
         expect(subject.to).to eq([applicant.email])
@@ -304,7 +314,9 @@ RSpec.describe InvitationMailer do
         .invitation_for_phone_platform
     end
 
-    let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_orientation_on_phone_platform") }
+    let!(:rdv_context) do
+      build(:rdv_context, motif_category: category_rsa_orientation_on_phone_platform)
+    end
 
     it "renders the headers" do
       expect(subject.to).to eq([applicant.email])
@@ -343,7 +355,9 @@ RSpec.describe InvitationMailer do
         .invitation_for_atelier
     end
 
-    let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_atelier_rencontres_pro") }
+    let!(:rdv_context) do
+      build(:rdv_context, motif_category: category_rsa_atelier_rencontres_pro)
+    end
 
     it "renders the headers" do
       expect(subject.to).to eq([applicant.email])
@@ -386,7 +400,7 @@ RSpec.describe InvitationMailer do
     end
 
     context "for rsa_orientation" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_orientation") }
+      let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_orientation) }
 
       it "renders the headers" do
         expect(subject.to).to eq([applicant.email])
@@ -420,6 +434,7 @@ RSpec.describe InvitationMailer do
     end
 
     context "when the signature is configured" do
+      let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_orientation) }
       let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
 
       it "renders the mail with the right signature" do
@@ -428,9 +443,9 @@ RSpec.describe InvitationMailer do
     end
 
     context "for rsa_accompagnement" do
-      %w[rsa_accompagnement rsa_accompagnement_social rsa_accompagnement_sociopro]
+      %w[category_rsa_accompagnement category_rsa_accompagnement_social category_rsa_accompagnement_sociopro]
         .each do |motif_category|
-        before { rdv_context.motif_category = motif_category }
+        before { rdv_context.motif_category = send(motif_category) }
 
         it "renders the headers" do
           expect(subject.to).to eq([applicant.email])
@@ -466,7 +481,9 @@ RSpec.describe InvitationMailer do
     end
 
     context "for rsa_cer_signature" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_cer_signature") }
+      let!(:rdv_context) do
+        build(:rdv_context, motif_category: category_rsa_cer_signature)
+      end
 
       it "renders the headers" do
         expect(subject.to).to eq([applicant.email])
@@ -503,7 +520,7 @@ RSpec.describe InvitationMailer do
     end
 
     context "for rsa_follow_up" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_follow_up") }
+      let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_follow_up) }
 
       it "renders the headers" do
         expect(subject.to).to eq([applicant.email])
@@ -547,7 +564,9 @@ RSpec.describe InvitationMailer do
         .invitation_for_phone_platform_reminder
     end
 
-    let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_orientation_on_phone_platform") }
+    let!(:rdv_context) do
+      build(:rdv_context, motif_category: category_rsa_orientation_on_phone_platform)
+    end
 
     it "renders the headers" do
       expect(subject.to).to eq([applicant.email])

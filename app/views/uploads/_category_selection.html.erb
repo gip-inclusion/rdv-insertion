@@ -10,7 +10,7 @@
       <% @all_configurations.each do |configuration| %>
         <div>
           <%= link_to(department_level? ? new_department_upload_path(@department, configuration_id: configuration.id) : new_organisation_upload_path(@organisation, configuration_id: configuration.id), class: "btn btn-blue-out") do %>
-            <%= configuration.motif_category_human %>
+            <%= configuration.motif_category_name %>
           <% end %>
         </div>
       <% end %>

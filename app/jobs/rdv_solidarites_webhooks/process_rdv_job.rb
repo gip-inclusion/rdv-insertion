@@ -47,13 +47,18 @@ module RdvSolidaritesWebhooks
     end
 
     def matching_configuration
-      organisation.configurations.find_by(motif_category: rdv_solidarites_rdv.category)
+      organisation.configurations.find_by(motif_category: motif_category)
+    end
+
+    def motif_category
+      @motif_category ||= MotifCategory.find_by(short_name: rdv_solidarites_motif_category&.short_name)
     end
 
     # Category is checked through the webhook directly and not through the motif we have in DB since it's always
     # more reliable than our cache
     def unhandled_category?
-      Motif.categories.keys.exclude?(rdv_solidarites_rdv.category) || matching_configuration.nil?
+      MotifCategory.pluck(:short_name).exclude?(rdv_solidarites_motif_category&.short_name) ||
+        motif_category.nil?
     end
 
     def event
@@ -62,6 +67,10 @@ module RdvSolidaritesWebhooks
 
     def rdv_solidarites_lieu
       RdvSolidarites::Lieu.new(@data[:lieu])
+    end
+
+    def rdv_solidarites_motif_category
+      rdv_solidarites_rdv.motif_category
     end
 
     def created_event?
@@ -190,7 +199,7 @@ module RdvSolidaritesWebhooks
       @rdv_contexts ||= \
         applicants.map do |applicant|
           RdvContext.with_advisory_lock "setting_rdv_context_for_applicant_#{applicant.id}" do
-            RdvContext.find_or_create_by!(applicant: applicant, motif_category: matching_configuration.motif_category)
+            RdvContext.find_or_create_by!(applicant: applicant, motif_category: motif_category)
           end
         end
     end

@@ -7,7 +7,7 @@ describe "Agents can invite from index page", js: true do
       organisations: [organisation], email: "someemail@somecompany.com", phone_number: "0607070707"
     )
   end
-  let!(:motif_category) { "rsa_follow_up" }
+  let!(:motif_category) { create(:motif_category, short_name: "rsa_follow_up") }
   let!(:rdv_solidarites_token) { "123456" }
   let!(:rdv_context) { create(:rdv_context, applicant: applicant, motif_category: motif_category) }
   let!(:configuration) do
@@ -16,7 +16,7 @@ describe "Agents can invite from index page", js: true do
       motif_category: motif_category, organisations: [organisation], invitation_formats: %w[sms email]
     )
   end
-  let!(:motif) { create(:motif, category: motif_category, organisation: organisation) }
+  let!(:motif) { create(:motif, motif_category: motif_category, organisation: organisation) }
 
   before do
     setup_capybara_session(agent)
@@ -29,7 +29,7 @@ describe "Agents can invite from index page", js: true do
       rdv_context.set_status
       rdv_context.save!
 
-      visit organisation_applicants_path(organisation, motif_category: motif_category)
+      visit organisation_applicants_path(organisation, motif_category_id: motif_category.id)
       expect(page).to have_field("sms_invite", checked: false, disabled: false)
       expect(page).to have_field("email_invite", checked: false, disabled: false)
       expect(page).to have_content("Non invité")
@@ -55,7 +55,7 @@ describe "Agents can invite from index page", js: true do
       rdv_context.set_status
       rdv_context.save!
 
-      visit organisation_applicants_path(organisation, motif_category: motif_category)
+      visit organisation_applicants_path(organisation, motif_category_id: motif_category.id)
       expect(page).to have_field("sms_invite", checked: true, disabled: true)
       expect(page).to have_field("email_invite", checked: false, disabled: false)
       expect(page).to have_content("Invitation en attente de réponse")
@@ -90,7 +90,7 @@ describe "Agents can invite from index page", js: true do
         rdv_context.set_status
         rdv_context.save!
 
-        visit organisation_applicants_path(organisation, motif_category: motif_category)
+        visit organisation_applicants_path(organisation, motif_category_id: motif_category.id)
         expect(page).to have_field("sms_invite", checked: false, disabled: false)
         expect(page).to have_field("email_invite", checked: false, disabled: false)
         expect(page).to have_content("RDV honoré")
@@ -116,7 +116,7 @@ describe "Agents can invite from index page", js: true do
         rdv_context.set_status
         rdv_context.save!
 
-        visit organisation_applicants_path(organisation, motif_category: motif_category)
+        visit organisation_applicants_path(organisation, motif_category_id: motif_category.id)
         expect(page).to have_field("sms_invite", checked: true, disabled: true)
         expect(page).to have_field("email_invite", checked: false, disabled: false)
         expect(page).to have_content("Invitation en attente de réponse")
@@ -150,7 +150,7 @@ describe "Agents can invite from index page", js: true do
         rdv_context.set_status
         rdv_context.save!
 
-        visit organisation_applicants_path(organisation, motif_category: motif_category)
+        visit organisation_applicants_path(organisation, motif_category_id: motif_category.id)
         expect(page).to have_field("sms_invite", checked: true, disabled: true)
         expect(page).to have_field("email_invite", checked: false, disabled: true)
         expect(page).to have_content("RDV pris")

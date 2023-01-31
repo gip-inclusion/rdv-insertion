@@ -4,12 +4,12 @@ describe DeleteRdvJob do
   end
 
   let!(:rdv_solidarites_rdv_id) { { id: 1 } }
-  let!(:rdv) { create(:rdv, participations: [participation]) }
-  let!(:participation) { create(:participation, rdv_context: rdv_context) }
+  let!(:rdv) { create(:rdv, participations: [create(:participation, rdv_context: rdv_context)]) }
   let!(:rdv_context) { create(:rdv_context) }
 
   describe "#perform" do
     before do
+      rdv.reload
       allow(Rdv).to receive(:find_by)
         .with(rdv_solidarites_rdv_id: rdv_solidarites_rdv_id)
         .and_return(rdv)

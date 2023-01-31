@@ -32,7 +32,7 @@
       </div>
       <% if display_back_to_list_button? %>
         <div>
-          <%= link_to compute_index_path(@organisation, @department, motif_category: @current_motif_category, applicants_scope: @applicants_scope), class: "btn btn-blue-out" do %>
+          <%= link_to compute_index_path(@organisation, @department, motif_category_id: @current_motif_category.id, applicants_scope: @applicants_scope), class: "btn btn-blue-out" do %>
             Retour à la liste
           <% end %>
         </div>

@@ -1,9 +1,11 @@
-const retrieveLastInvitationDate = (invitations, format = null, motifCategory = null) => {
+const retrieveLastInvitationDate = (invitations, format = null, motifCategoryId = null) => {
   if (format !== null) {
     invitations = invitations.filter((invitation) => invitation.format === format);
   }
-  if (motifCategory !== null) {
-    invitations = invitations.filter((invitation) => invitation.motif_category === motifCategory);
+  if (motifCategoryId !== null) {
+    invitations = invitations.filter(
+      (invitation) => invitation.motif_category.id === motifCategoryId
+    );
   }
   const sentInvitations = invitations.filter((invitation) => !!invitation.sent_at);
   // Trier de la plus récente à la plus ancienne

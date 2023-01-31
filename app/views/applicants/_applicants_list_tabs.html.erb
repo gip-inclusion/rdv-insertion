@@ -1,7 +1,7 @@
 <ul class="nav nav-tabs">
   <% @all_configurations.each do |configuration| %>
     <li class="nav-item">
-      <%= link_to configuration.motif_category_human, compute_index_path(@organisation, @department, motif_category: configuration.motif_category), class: "nav-link #{configuration.id == @current_configuration&.id ? 'active' : ''}"%>
+      <%= link_to configuration.motif_category_name, compute_index_path(@organisation, @department, motif_category_id: configuration.motif_category_id), class: "nav-link #{configuration.id == @current_configuration&.id ? 'active' : ''}"%>
     </li>
   <% end %>
   <li class="nav-item">

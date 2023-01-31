@@ -1,9 +1,12 @@
 RSpec.describe NotificationMailer do
+  include_context "with all existing categories"
+
   let!(:applicant) { create(:applicant, email: "someone@gmail.com", phone_number: "0607070707") }
   let!(:rdv) { create(:rdv, lieu: lieu, starts_at: Time.zone.parse("20/12/2021 12:00")) }
   let!(:lieu) { create(:lieu, name: "DINUM", address: "20 avenue de ségur 75007 Paris", phone_number: "0101010101") }
   let!(:signature_lines) { ["Signé par la DINUM"] }
-  let!(:motif_category) { "rsa_orientation" }
+
+  let!(:motif_category) { category_rsa_orientation }
 
   describe "#presential_participation_created" do
     let!(:mail) do
@@ -44,7 +47,7 @@ RSpec.describe NotificationMailer do
     end
 
     context "for rsa accompagnement" do
-      let!(:motif_category) { "rsa_accompagnement" }
+      let!(:motif_category) { category_rsa_accompagnement }
 
       it "renders the subject" do
         expect(mail.subject).to eq(
@@ -68,7 +71,7 @@ RSpec.describe NotificationMailer do
     end
 
     context "for rsa accompagnement social" do
-      let!(:motif_category) { "rsa_accompagnement_social" }
+      let!(:motif_category) { category_rsa_accompagnement_social }
 
       it "renders the subject" do
         expect(mail.subject).to eq(
@@ -92,7 +95,7 @@ RSpec.describe NotificationMailer do
     end
 
     context "for rsa accompagnement sociopro" do
-      let!(:motif_category) { "rsa_accompagnement_sociopro" }
+      let!(:motif_category) { category_rsa_accompagnement_sociopro }
 
       it "renders the subject" do
         expect(mail.subject).to eq(
@@ -116,7 +119,7 @@ RSpec.describe NotificationMailer do
     end
 
     context "for rsa cer signature" do
-      let!(:motif_category) { "rsa_cer_signature" }
+      let!(:motif_category) { category_rsa_cer_signature }
 
       it "renders the subject" do
         expect(mail.subject).to eq(
@@ -141,7 +144,7 @@ RSpec.describe NotificationMailer do
     end
 
     context "for rsa follow up" do
-      let!(:motif_category) { "rsa_follow_up" }
+      let!(:motif_category) { category_rsa_follow_up }
 
       it "renders the subject" do
         expect(mail.subject).to eq(
@@ -205,7 +208,7 @@ RSpec.describe NotificationMailer do
     end
 
     context "for rsa accompagnement" do
-      let!(:motif_category) { "rsa_accompagnement" }
+      let!(:motif_category) { category_rsa_accompagnement }
 
       it "renders the subject" do
         expect(mail.subject).to eq(
@@ -229,7 +232,7 @@ RSpec.describe NotificationMailer do
     end
 
     context "for rsa accompagnemen social" do
-      let!(:motif_category) { "rsa_accompagnement_social" }
+      let!(:motif_category) { category_rsa_accompagnement_social }
 
       it "renders the subject" do
         expect(mail.subject).to eq(
@@ -253,7 +256,7 @@ RSpec.describe NotificationMailer do
     end
 
     context "for rsa accompagnement sociopro" do
-      let!(:motif_category) { "rsa_accompagnement_sociopro" }
+      let!(:motif_category) { category_rsa_accompagnement_sociopro }
 
       it "renders the subject" do
         expect(mail.subject).to eq(
@@ -277,7 +280,7 @@ RSpec.describe NotificationMailer do
     end
 
     context "for rsa cer signature" do
-      let!(:motif_category) { "rsa_cer_signature" }
+      let!(:motif_category) { category_rsa_cer_signature }
 
       it "renders the subject" do
         expect(mail.subject).to eq(
@@ -302,7 +305,7 @@ RSpec.describe NotificationMailer do
     end
 
     context "for rsa follow up" do
-      let!(:motif_category) { "rsa_follow_up" }
+      let!(:motif_category) { category_rsa_follow_up }
 
       it "renders the subject" do
         expect(mail.subject).to eq(
@@ -368,7 +371,7 @@ RSpec.describe NotificationMailer do
     end
 
     context "for rsa accompagnement" do
-      let!(:motif_category) { "rsa_accompagnement" }
+      let!(:motif_category) { category_rsa_accompagnement }
 
       it "renders the subject" do
         expect(mail.subject).to eq(
@@ -395,7 +398,7 @@ RSpec.describe NotificationMailer do
     end
 
     context "for rsa accompagnement social" do
-      let!(:motif_category) { "rsa_accompagnement_social" }
+      let!(:motif_category) { category_rsa_accompagnement_social }
 
       it "renders the subject" do
         expect(mail.subject).to eq(
@@ -422,7 +425,7 @@ RSpec.describe NotificationMailer do
     end
 
     context "for rsa accompagnement sociopro" do
-      let!(:motif_category) { "rsa_accompagnement_sociopro" }
+      let!(:motif_category) { category_rsa_accompagnement_sociopro }
 
       it "renders the subject" do
         expect(mail.subject).to eq(
@@ -449,7 +452,7 @@ RSpec.describe NotificationMailer do
     end
 
     context "for rsa cer signature" do
-      let!(:motif_category) { "rsa_cer_signature" }
+      let!(:motif_category) { category_rsa_cer_signature }
 
       it "renders the subject" do
         expect(mail.subject).to eq(
@@ -476,7 +479,7 @@ RSpec.describe NotificationMailer do
     end
 
     context "for rsa follow up" do
-      let!(:motif_category) { "rsa_follow_up" }
+      let!(:motif_category) { category_rsa_follow_up }
 
       it "renders the subject" do
         expect(mail.subject).to eq(
@@ -555,7 +558,7 @@ RSpec.describe NotificationMailer do
     end
 
     context "for rsa accompagnement" do
-      let!(:motif_category) { "rsa_accompagnement" }
+      let!(:motif_category) { category_rsa_accompagnement }
 
       it "renders the subject" do
         expect(mail.subject).to eq(
@@ -581,7 +584,7 @@ RSpec.describe NotificationMailer do
     end
 
     context "for rsa accompagnement social" do
-      let!(:motif_category) { "rsa_accompagnement_social" }
+      let!(:motif_category) { category_rsa_accompagnement_social }
 
       it "renders the subject" do
         expect(mail.subject).to eq(
@@ -607,7 +610,7 @@ RSpec.describe NotificationMailer do
     end
 
     context "for rsa accompagnement sociopro" do
-      let!(:motif_category) { "rsa_accompagnement_sociopro" }
+      let!(:motif_category) { category_rsa_accompagnement_sociopro }
 
       it "renders the subject" do
         expect(mail.subject).to eq(
@@ -633,7 +636,7 @@ RSpec.describe NotificationMailer do
     end
 
     context "for rsa cer signature" do
-      let!(:motif_category) { "rsa_cer_signature" }
+      let!(:motif_category) { category_rsa_cer_signature }
 
       it "renders the subject" do
         expect(mail.subject).to eq(
@@ -660,7 +663,7 @@ RSpec.describe NotificationMailer do
     end
 
     context "for rsa follow up" do
-      let!(:motif_category) { "rsa_follow_up" }
+      let!(:motif_category) { category_rsa_follow_up }
 
       it "renders the subject" do
         expect(mail.subject).to eq(
@@ -731,7 +734,7 @@ RSpec.describe NotificationMailer do
     end
 
     context "for rsa accompagnement" do
-      let!(:motif_category) { "rsa_accompagnement" }
+      let!(:motif_category) { category_rsa_accompagnement }
 
       it "renders the subject" do
         expect(mail.subject).to eq(
@@ -749,7 +752,7 @@ RSpec.describe NotificationMailer do
     end
 
     context "for rsa accompagnement social" do
-      let!(:motif_category) { "rsa_accompagnement_social" }
+      let!(:motif_category) { category_rsa_accompagnement_social }
 
       it "renders the subject" do
         expect(mail.subject).to eq(
@@ -767,7 +770,7 @@ RSpec.describe NotificationMailer do
     end
 
     context "for rsa accompagnement sociopro" do
-      let!(:motif_category) { "rsa_accompagnement_sociopro" }
+      let!(:motif_category) { category_rsa_accompagnement_sociopro }
 
       it "renders the subject" do
         expect(mail.subject).to eq(
@@ -785,7 +788,7 @@ RSpec.describe NotificationMailer do
     end
 
     context "for rsa cer signature" do
-      let!(:motif_category) { "rsa_cer_signature" }
+      let!(:motif_category) { category_rsa_cer_signature }
 
       it "renders the subject" do
         expect(mail.subject).to eq(
@@ -804,7 +807,7 @@ RSpec.describe NotificationMailer do
     end
 
     context "for rsa follow up" do
-      let!(:motif_category) { "rsa_follow_up" }
+      let!(:motif_category) { category_rsa_follow_up }
 
       it "renders the subject" do
         expect(mail.subject).to eq(

@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :rdv_context do
     association :applicant
-    motif_category { "rsa_orientation" }
+    association :motif_category
 
     after(:build) do |a|
       # https://github.com/thoughtbot/factory_bot/issues/931#issuecomment-307542965

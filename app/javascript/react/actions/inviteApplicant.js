@@ -7,7 +7,7 @@ const inviteApplicant = async (
   isDepartmentLevel,
   invitationFormat,
   helpPhoneNumber,
-  motifCategory,
+  motifCategoryId,
   types = "application/json"
 ) => {
   let url;
@@ -22,7 +22,7 @@ const inviteApplicant = async (
     {
       invitation_format: invitationFormat,
       help_phone_number: helpPhoneNumber,
-      motif_category: motifCategory,
+      motif_category_id: motifCategoryId,
     },
     types
   );

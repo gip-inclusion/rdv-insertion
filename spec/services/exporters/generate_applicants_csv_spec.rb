@@ -1,13 +1,9 @@
 describe Exporters::GenerateApplicantsCsv, type: :service do
   subject { described_class.call(applicants: applicants, structure: structure, motif_category: motif_category) }
 
-  def generate_csv
-    described_class.call(applicants: applicants, structure: structure, motif_category: motif_category)
-  end
-
   let!(:now) { Time.zone.parse("22/06/2022") }
   let!(:timestamp) { now.to_i }
-  let!(:motif_category) { "rsa_orientation" }
+  let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation") }
   let!(:department) { create(:department, name: "Drôme", number: "26") }
   let!(:organisation) do
     create(:organisation, configurations: [configuration], name: "Drome RSA", department: department)
@@ -41,7 +37,7 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
                  created_by: "user",
                  participations: [participation_rdv])
   end
-  let!(:participation_rdv) { create(:participation, applicant: applicant1, status: "seen", rdv_context: rdv_context) }
+  let!(:participation_rdv) { create(:participation, applicant: applicant1, status: "seen") }
 
   let!(:first_invitation) do
     create(:invitation, applicant: applicant1, format: "email", sent_at: Time.zone.parse("2022-05-21"))
@@ -52,6 +48,7 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
   let!(:rdv_context) do
     create(
       :rdv_context, invitations: [first_invitation, last_invitation],
+                    motif_category: motif_category, participations: [participation_rdv],
                     applicant: applicant1, status: "rdv_needs_status_update"
     )
   end
@@ -65,12 +62,12 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
       let!(:rdv_context) do
         create(
           :rdv_context, invitations: [first_invitation, last_invitation],
+                        participations: [], motif_category: motif_category,
                         applicant: applicant1, status: "invitation_pending"
         )
       end
 
       it "displays 'délai dépassé'" do
-        participation_rdv.destroy
         expect(subject.csv).to include("Invitation en attente de réponse (Délai dépassé)") # rdv_context status
       end
     end
@@ -202,7 +199,8 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
         let!(:structure) { nil }
         let!(:rdv_context) do
           create(
-            :rdv_context, rdvs: [], invitations: [first_invitation, last_invitation],
+            :rdv_context, participations: [], invitations: [first_invitation, last_invitation],
+                          motif_category: motif_category,
                           applicant: applicant1, status: "invitation_pending"
           )
         end
@@ -223,7 +221,7 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
       end
 
       context "when no motif category is passed" do
-        let!(:motif_category) { nil }
+        subject { described_class.call(applicants: applicants, structure: structure, motif_category: nil) }
 
         it "is a success" do
           expect(subject.success?).to eq(true)

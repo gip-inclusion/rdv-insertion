@@ -1,9 +1,15 @@
 describe ApplicantsController do
   let!(:department) { create(:department) }
+  let!(:category_orientation) do
+    create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation")
+  end
+  let!(:category_accompagnement) do
+    create(:motif_category, short_name: "rsa_accompagnement", name: "RSA accompagnement")
+  end
   let!(:configuration) do
     create(
       :configuration,
-      motif_category: "rsa_orientation",
+      motif_category: category_orientation,
       number_of_days_before_action_required: number_of_days_before_action_required
     )
   end
@@ -300,10 +306,10 @@ describe ApplicantsController do
 
     context "it shows the different contexts" do
       let!(:configuration) do
-        create(:configuration, motif_category: "rsa_orientation", invitation_formats: %w[sms email])
+        create(:configuration, motif_category: category_orientation, invitation_formats: %w[sms email])
       end
       let!(:configuration2) do
-        create(:configuration, motif_category: "rsa_accompagnement", invitation_formats: %w[sms email postal])
+        create(:configuration, motif_category: category_accompagnement, invitation_formats: %w[sms email postal])
       end
 
       let!(:organisation) do
@@ -312,7 +318,7 @@ describe ApplicantsController do
       end
 
       let!(:rdv_context) do
-        create(:rdv_context, status: "rdv_seen", applicant: applicant, motif_category: "rsa_orientation")
+        create(:rdv_context, status: "rdv_seen", applicant: applicant, motif_category: category_orientation)
       end
       let!(:invitation_orientation) do
         create(:invitation, sent_at: "2021-10-20", format: "sms", rdv_context: rdv_context)
@@ -350,7 +356,9 @@ describe ApplicantsController do
       end
 
       let!(:rdv_context2) do
-        create(:rdv_context, status: "invitation_pending", applicant: applicant, motif_category: "rsa_accompagnement")
+        create(
+          :rdv_context, status: "invitation_pending", applicant: applicant, motif_category: category_accompagnement
+        )
       end
 
       let!(:invitation_accompagnement) do
@@ -414,7 +422,7 @@ describe ApplicantsController do
 
       context "when there is no matching configuration for a rdv_context" do
         let!(:configuration) do
-          create(:configuration, motif_category: "rsa_accompagnement", invitation_formats: %w[sms email])
+          create(:configuration, motif_category: category_accompagnement, invitation_formats: %w[sms email])
         end
 
         let!(:organisation) do
@@ -423,7 +431,7 @@ describe ApplicantsController do
         end
 
         let!(:rdv_context) do
-          create(:rdv_context, status: "rdv_seen", applicant: applicant, motif_category: "rsa_orientation")
+          create(:rdv_context, status: "rdv_seen", applicant: applicant, motif_category: category_orientation)
         end
 
         it "does not display the context" do
@@ -444,7 +452,7 @@ describe ApplicantsController do
         organisations: [organisation], department: department, last_name: "Chabat", rdv_contexts: [rdv_context1]
       )
     end
-    let!(:rdv_context1) { build(:rdv_context, motif_category: "rsa_orientation", status: "rdv_seen") }
+    let!(:rdv_context1) { build(:rdv_context, motif_category: category_orientation, status: "rdv_seen") }
 
     let!(:applicant2) do
       create(
@@ -452,7 +460,7 @@ describe ApplicantsController do
         organisations: [organisation], department: department, last_name: "Baer", rdv_contexts: [rdv_context2]
       )
     end
-    let!(:rdv_context2) { build(:rdv_context, motif_category: "rsa_orientation", status: "invitation_pending") }
+    let!(:rdv_context2) { build(:rdv_context, motif_category: category_orientation, status: "invitation_pending") }
 
     let!(:applicant3) do
       create(
@@ -460,7 +468,7 @@ describe ApplicantsController do
         organisations: [organisation], department: department, last_name: "Darmon", rdv_contexts: [rdv_context3]
       )
     end
-    let!(:rdv_context3) { build(:rdv_context, motif_category: "rsa_orientation", status: "invitation_pending") }
+    let!(:rdv_context3) { build(:rdv_context, motif_category: category_orientation, status: "invitation_pending") }
 
     let!(:archived_applicant) do
       create(
@@ -469,9 +477,9 @@ describe ApplicantsController do
         archived_at: 2.days.ago
       )
     end
-    let!(:rdv_context4) { build(:rdv_context, motif_category: "rsa_orientation", status: "invitation_pending") }
+    let!(:rdv_context4) { build(:rdv_context, motif_category: category_orientation, status: "invitation_pending") }
 
-    let!(:index_params) { { organisation_id: organisation.id, motif_category: "rsa_orientation" } }
+    let!(:index_params) { { organisation_id: organisation.id, motif_category: category_orientation } }
 
     render_views
 
@@ -492,14 +500,14 @@ describe ApplicantsController do
     context "when there is all types of rdv_contexts statuses" do
       before do
         RdvContext.statuses.each_key do |status|
-          create(:rdv_context, motif_category: "rsa_orientation",
+          create(:rdv_context, motif_category: category_orientation,
                                status: status,
                                applicant: create(:applicant, organisations: [organisation], department: department))
         end
       end
 
       it "displays all statuses in the filter list" do
-        get :index, params: index_params.merge(motif_category: "rsa_orientation")
+        get :index, params: index_params.merge(motif_category_id: category_orientation.id)
         RdvContext.statuses.each_key do |status|
           expect(response.body).to match(/"#{status}"/)
         end
@@ -507,11 +515,11 @@ describe ApplicantsController do
     end
 
     context "when a context is specified" do
-      let!(:rdv_context2) { build(:rdv_context, motif_category: "rsa_accompagnement", status: "invitation_pending") }
-      let!(:configuration) { create(:configuration, motif_category: "rsa_accompagnement") }
+      let!(:rdv_context2) { build(:rdv_context, motif_category: category_accompagnement, status: "invitation_pending") }
+      let!(:configuration) { create(:configuration, motif_category: category_accompagnement) }
 
       it "returns the list of applicants in the current context" do
-        get :index, params: index_params.merge(motif_category: "rsa_accompagnement")
+        get :index, params: index_params.merge(motif_category_id: category_accompagnement.id)
 
         expect(response).to be_successful
         expect(response.body).not_to match(/Chabat/)
@@ -534,7 +542,7 @@ describe ApplicantsController do
 
     context "when a search query is specified" do
       let!(:index_params) do
-        { organisation_id: organisation.id, search_query: "chabat", motif_category: "rsa_orientation" }
+        { organisation_id: organisation.id, search_query: "chabat", motif_category_id: category_orientation.id }
       end
 
       it "searches the applicants" do
@@ -546,7 +554,7 @@ describe ApplicantsController do
 
     context "when a status is passed" do
       let!(:index_params) do
-        { organisation_id: organisation.id, status: "invitation_pending", motif_category: "rsa_orientation" }
+        { organisation_id: organisation.id, status: "invitation_pending", motif_category_id: category_orientation.id }
       end
 
       it "filters by status" do
@@ -576,7 +584,7 @@ describe ApplicantsController do
 
       context "for first invitations" do
         let!(:index_params) do
-          { organisation_id: organisation.id, motif_category: "rsa_orientation",
+          { organisation_id: organisation.id, motif_category_id: category_orientation.id,
             first_invitation_date_after: "05-06-2022", first_invitation_date_before: "10-06-2022" }
         end
 
@@ -603,7 +611,7 @@ describe ApplicantsController do
         end
 
         let!(:index_params) do
-          { organisation_id: organisation.id, motif_category: "rsa_orientation",
+          { organisation_id: organisation.id, motif_category: category_orientation,
             last_invitation_date_after: "17-06-2022", last_invitation_date_before: "17-06-2022" }
         end
 
@@ -618,7 +626,7 @@ describe ApplicantsController do
 
     context "when action_required is passed" do
       let!(:index_params) do
-        { organisation_id: organisation.id, action_required: "true", motif_category: "rsa_orientation" }
+        { organisation_id: organisation.id, action_required: "true", motif_category_id: category_orientation.id }
       end
       let!(:number_of_days_before_action_required) { 4 }
 
@@ -645,7 +653,11 @@ describe ApplicantsController do
 
     context "when filter_by_current_agent is passed" do
       let!(:index_params) do
-        { organisation_id: organisation.id, filter_by_current_agent: "true", motif_category: "rsa_orientation" }
+        {
+          organisation_id: organisation.id,
+          filter_by_current_agent: "true",
+          motif_category_id: category_orientation.id
+        }
       end
 
       before { applicant.agents = [agent] }
@@ -661,7 +673,7 @@ describe ApplicantsController do
     context "when the organisation convene applicants" do
       before do
         configuration.update!(convene_applicant: true)
-        rdv_context2.update!(motif_category: "rsa_accompagnement")
+        rdv_context2.update!(motif_category: category_accompagnement)
       end
 
       let!(:rdv) { create(:rdv) }
@@ -714,7 +726,7 @@ describe ApplicantsController do
     end
 
     context "when department level" do
-      let!(:index_params) { { department_id: department.id, motif_category: "rsa_orientation" } }
+      let!(:index_params) { { department_id: department.id, motif_category_id: category_orientation.id } }
 
       it "renders the index page" do
         get :index, params: index_params

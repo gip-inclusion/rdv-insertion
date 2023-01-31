@@ -12,8 +12,9 @@ class Organisation < ApplicationRecord
   has_many :rdvs, dependent: :nullify
   has_many :lieux, dependent: :nullify
   has_many :motifs, dependent: :nullify
-  has_many :configurations_organisations, dependent: :destroy
+  has_many :configurations_organisations, dependent: :delete_all
   has_many :configurations, through: :configurations_organisations
+  has_many :motif_categories, through: :configurations
   has_and_belongs_to_many :agents, dependent: :nullify
   has_and_belongs_to_many :applicants, dependent: :nullify
   has_and_belongs_to_many :invitations, dependent: :nullify
@@ -27,11 +28,7 @@ class Organisation < ApplicationRecord
     against: [:name, :slug]
   )
 
-  def configurations_motif_categories
-    configurations.map(&:motif_category)
-  end
-
   def as_json(_opts = {})
-    super.merge(department_number: department_number, motif_categories: configurations_motif_categories)
+    super.merge(department_number: department_number, motif_categories: motif_categories)
   end
 end

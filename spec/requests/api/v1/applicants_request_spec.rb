@@ -8,7 +8,7 @@ describe "Applicants API" do
     )
   end
   let!(:configuration) do
-    create(:configuration, motif_category: "rsa_orientation")
+    create(:configuration, motif_category: create(:motif_category, name: "RSA orientation"))
   end
   let!(:applicants_params) { { applicants: [applicant1_params, applicant2_params] } }
 
@@ -44,12 +44,13 @@ describe "Applicants API" do
       address: "5 Avenue du Moulin des Baux, 13260 Cassis",
       department_internal_id: "22221111",
       invitation: {
-        rdv_solidarites_lieu_id: 363
+        rdv_solidarites_lieu_id: 363,
+        motif_category_name: "RSA orientation"
       }
     }
   end
 
-  describe "GET api/v1/organisations/:rdv_solidarites_organisation_id/applicants/create_and_invite_many" do
+  describe "POST api/v1/organisations/:rdv_solidarites_organisation_id/applicants/create_and_invite_many" do
     subject do
       post(
         create_and_invite_many_api_v1_applicants_path(rdv_solidarites_organisation_id: rdv_solidarites_organisation_id),
@@ -171,14 +172,14 @@ describe "Applicants API" do
 
       context "with invalid invitation context for organisation" do
         before do
-          applicant1_params[:invitation][:motif_category] = "rsa_accompagnement"
+          applicant1_params[:invitation][:motif_category_name] = "RSA accompagnement"
         end
 
         it "returns 422" do
           subject
           expect(response).to have_http_status(:unprocessable_entity)
           result = JSON.parse(response.body)
-          expect(result["errors"]).to include({ "Entrée 1" => "Catégorie de motifs rsa_accompagnement invalide" })
+          expect(result["errors"]).to include({ "Entrée 1" => "Catégorie de motifs RSA accompagnement invalide" })
         end
 
         it "does not enqueue jobs" do

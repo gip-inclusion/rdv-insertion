@@ -18,6 +18,10 @@ module RdvSolidaritesWebhooks
       RdvSolidarites::Motif.new(@data)
     end
 
+    def motif_category
+      @motif_category ||= MotifCategory.find_by(short_name: rdv_solidarites_motif.motif_category&.short_name)
+    end
+
     def organisation
       @organisation ||= Organisation.find_by(rdv_solidarites_organisation_id: rdv_solidarites_organisation_id)
     end
@@ -26,7 +30,11 @@ module RdvSolidaritesWebhooks
       UpsertRecordJob.perform_async(
         "Motif",
         rdv_solidarites_motif.to_rdv_insertion_attributes,
-        { organisation_id: organisation.id, last_webhook_update_received_at: @meta[:timestamp] }
+        {
+          organisation_id: organisation.id,
+          last_webhook_update_received_at: @meta[:timestamp]
+        }
+          .merge(motif_category ? { motif_category_id: motif_category.id } : {})
       )
     end
   end

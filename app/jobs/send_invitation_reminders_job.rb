@@ -38,7 +38,12 @@ class SendInvitationRemindersJob < ApplicationJob
       Invitation.where("valid_until > ?", 2.days.from_now)
                 .where(format: %w[email sms], sent_at: 3.days.ago.all_day, reminder: false)
                 .joins(:rdv_context)
-                .where(rdv_contexts: RdvContext.invitation_pending.not_atelier)
+                .where(
+                  rdv_contexts: RdvContext.invitation_pending.joins(:motif_category).where(
+                    # ateliers are open invitations so we don't send reminders
+                    motif_category: MotifCategory.not_atelier
+                  )
+                )
   end
 
   def notify_on_mattermost

@@ -1,6 +1,7 @@
 class Configuration < ApplicationRecord
-  include HasMotifCategory
-
-  has_many :configurations_organisations, dependent: :destroy
+  belongs_to :motif_category
+  has_many :configurations_organisations, dependent: :delete_all
   has_many :organisations, through: :configurations_organisations
+
+  delegate :position, :name, to: :motif_category, prefix: true
 end

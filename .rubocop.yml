@@ -11,6 +11,7 @@ AllCops:
     - "node_modules/**/*"
     - "db/schema.rb"
     - "db/seeds.rb"
+    - "db/migrate/*.rb"
   NewCops: enable
 
 Style/Documentation:

@@ -38,6 +38,7 @@ RSpec.configure do |config|
   config.include ServiceSpecHelper
   config.include UnescapeHtmlSpecHelper
   config.include JsonRequestHelper
+  config.include MotifCategoriesHelper
   config.include ActiveSupport::Testing::TimeHelpers
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your

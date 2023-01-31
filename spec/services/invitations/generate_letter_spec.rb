@@ -5,9 +5,11 @@ describe Invitations::GenerateLetter, type: :service do
     )
   end
 
+  include_context "with all existing categories"
+
   let!(:applicant) { create(:applicant, organisations: [organisation]) }
   let!(:department) { create(:department) }
-  let!(:rdv_context) { create(:rdv_context) }
+  let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_orientation) }
   let!(:invitation) do
     create(
       :invitation, content: nil, applicant: applicant, organisations: [organisation],
@@ -15,7 +17,7 @@ describe Invitations::GenerateLetter, type: :service do
     )
   end
   let!(:messages_configuration) { create(:messages_configuration) }
-  let!(:configuration) { create(:configuration) }
+  let!(:configuration) { create(:configuration, motif_category: category_rsa_orientation) }
   let!(:organisation) do
     create(:organisation, messages_configuration: messages_configuration,
                           department: department, configurations: [configuration])
@@ -91,7 +93,7 @@ describe Invitations::GenerateLetter, type: :service do
     end
 
     context "when the context is orientation" do
-      let!(:rdv_context) { create(:rdv_context, motif_category: "rsa_orientation") }
+      let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_orientation) }
 
       it "generates the pdf with the right content" do
         subject
@@ -106,7 +108,7 @@ describe Invitations::GenerateLetter, type: :service do
     end
 
     context "when the context is accompagnement" do
-      let!(:rdv_context) { create(:rdv_context, motif_category: "rsa_accompagnement") }
+      let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_accompagnement) }
 
       it "generates the pdf with the right content" do
         subject
@@ -134,7 +136,7 @@ describe Invitations::GenerateLetter, type: :service do
     end
 
     context "when the context is rsa_cer_signature" do
-      let!(:rdv_context) { create(:rdv_context, motif_category: "rsa_cer_signature") }
+      let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_cer_signature) }
 
       it "generates the pdf with the right content" do
         subject
@@ -153,7 +155,7 @@ describe Invitations::GenerateLetter, type: :service do
     end
 
     context "when the context is rsa_follow_up" do
-      let!(:rdv_context) { create(:rdv_context, motif_category: "rsa_follow_up") }
+      let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_follow_up) }
 
       it "generates the pdf with the right content" do
         subject
@@ -172,7 +174,7 @@ describe Invitations::GenerateLetter, type: :service do
     end
 
     context "when the context is rsa_insertion_offer" do
-      let!(:rdv_context) { create(:rdv_context, motif_category: "rsa_insertion_offer") }
+      let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_insertion_offer) }
 
       it "generates the pdf with the right content" do
         subject
@@ -192,7 +194,7 @@ describe Invitations::GenerateLetter, type: :service do
     end
 
     context "when the context is rsa_atelier_competences" do
-      let!(:rdv_context) { create(:rdv_context, motif_category: "rsa_atelier_competences") }
+      let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_atelier_competences) }
 
       it "generates the pdf with the right content" do
         subject
@@ -212,7 +214,7 @@ describe Invitations::GenerateLetter, type: :service do
     end
 
     context "when the context is rsa_atelier_rencontres_pro" do
-      let!(:rdv_context) { create(:rdv_context, motif_category: "rsa_atelier_rencontres_pro") }
+      let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_atelier_rencontres_pro) }
 
       it "generates the pdf with the right content" do
         subject
@@ -232,7 +234,7 @@ describe Invitations::GenerateLetter, type: :service do
     end
 
     context "when the context is rsa_orientation_on_phone_platform" do
-      let!(:rdv_context) { create(:rdv_context, motif_category: "rsa_orientation_on_phone_platform") }
+      let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_orientation_on_phone_platform) }
 
       it "generates the pdf with the right content" do
         subject

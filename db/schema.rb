@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_17_114011) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_30_124527) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -80,11 +80,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_17_114011) do
     t.json "column_names"
     t.string "invitation_formats", default: ["sms", "email", "postal"], null: false, array: true
     t.boolean "convene_applicant", default: false
-    t.integer "motif_category", default: 0
     t.integer "number_of_days_to_accept_invitation", default: 3
     t.integer "number_of_days_before_action_required", default: 10
     t.boolean "invitation_fallbacks_set_to_applicants_organisations", default: false
     t.boolean "rdv_with_referents", default: false
+    t.bigint "motif_category_id"
+    t.index ["motif_category_id"], name: "index_configurations_on_motif_category_id"
   end
 
   create_table "configurations_organisations", id: false, force: :cascade do |t|
@@ -161,6 +162,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_17_114011) do
     t.boolean "display_department_logo", default: true
   end
 
+  create_table "motif_categories", force: :cascade do |t|
+    t.string "short_name"
+    t.string "name"
+    t.bigint "rdv_solidarites_motif_category_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["rdv_solidarites_motif_category_id"], name: "index_motif_categories_on_rdv_solidarites_motif_category_id", unique: true
+    t.index ["short_name"], name: "index_motif_categories_on_short_name", unique: true
+  end
+
   create_table "motifs", force: :cascade do |t|
     t.bigint "rdv_solidarites_motif_id"
     t.string "name"
@@ -169,12 +180,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_17_114011) do
     t.bigint "rdv_solidarites_service_id"
     t.boolean "collectif"
     t.integer "location_type"
-    t.integer "category"
     t.datetime "last_webhook_update_received_at"
     t.bigint "organisation_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "follow_up", default: false
+    t.bigint "motif_category_id"
+    t.index ["motif_category_id"], name: "index_motifs_on_motif_category_id"
     t.index ["organisation_id"], name: "index_motifs_on_organisation_id"
     t.index ["rdv_solidarites_motif_id"], name: "index_motifs_on_rdv_solidarites_motif_id", unique: true
   end
@@ -227,13 +239,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_17_114011) do
   end
 
   create_table "rdv_contexts", force: :cascade do |t|
-    t.integer "motif_category"
     t.integer "status"
     t.bigint "applicant_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "motif_category_id"
     t.index ["applicant_id"], name: "index_rdv_contexts_on_applicant_id"
-    t.index ["motif_category"], name: "index_rdv_contexts_on_motif_category"
+    t.index ["motif_category_id"], name: "index_rdv_contexts_on_motif_category_id"
     t.index ["status"], name: "index_rdv_contexts_on_status"
   end
 
@@ -305,16 +317,19 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_17_114011) do
   end
 
   add_foreign_key "applicants", "departments"
+  add_foreign_key "configurations", "motif_categories"
   add_foreign_key "invitations", "applicants"
   add_foreign_key "invitations", "departments"
   add_foreign_key "invitations", "rdv_contexts"
   add_foreign_key "lieux", "organisations"
+  add_foreign_key "motifs", "motif_categories"
   add_foreign_key "motifs", "organisations"
   add_foreign_key "notifications", "participations"
   add_foreign_key "organisations", "departments"
   add_foreign_key "organisations", "messages_configurations"
   add_foreign_key "participations", "rdv_contexts"
   add_foreign_key "rdv_contexts", "applicants"
+  add_foreign_key "rdv_contexts", "motif_categories"
   add_foreign_key "rdvs", "lieux"
   add_foreign_key "rdvs", "motifs"
   add_foreign_key "rdvs", "organisations"
