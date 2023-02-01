@@ -30,9 +30,8 @@ describe ApplicantsOrganisationsController do
     it "redirects with a success message" do
       subject
 
-      expect(response).to be_successful
-      expect(response.body).to match(/flashes/)
-      expect(unescaped_response_body).to match(/L'organisation a bien été ajoutée/)
+      expect(response).to redirect_to(department_applicant_path(department, applicant))
+      expect(flash[:success]).to include("L'organisation a bien été ajoutée")
     end
 
     it "saves the applicant with the organisation" do

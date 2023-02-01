@@ -1,5 +1,5 @@
 <div id="<%= dom_id(organisation, :applicants_organisation) %>" class="d-flex justify-content-between my-4">
-  <div><p><%= organisation.name %> <%= organisations_count %></p></div>
+  <div><p><%= organisation.name %></p></div>
   <div>
     <%= simple_form_for(:applicants_organisation, url: department_applicants_organisations_path(department, current_organisation_id: @current_organisation&.id), html: { method: belongs_to_org ? :delete : :post }) do |f| %>
       <%= f.input :applicant_id,

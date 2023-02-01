@@ -9,6 +9,9 @@ class ApplicantsOrganisationsController < ApplicationController
   def create
     @success = save_applicant.success?
     @errors = save_applicant.errors
+
+    # in this case we need to refresh the page in case there are new rdv contexts
+    redirect_to_department_applicant_path if @success && !@current_organisation
   end
 
   def destroy
@@ -60,6 +63,13 @@ class ApplicantsOrganisationsController < ApplicationController
 
   def redirect_to_applicants_list
     redirect_to session[:back_to_list_url] || department_applicants_path(@department)
+  end
+
+  def redirect_to_department_applicant_path
+    redirect_to(
+      department_applicant_path(@department, @applicant),
+      flash: { success: "L'organisation a bien été ajoutée" }
+    )
   end
 
   def applicant_deleted_or_removed_from_current_org?

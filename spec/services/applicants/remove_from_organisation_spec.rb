@@ -25,7 +25,7 @@ describe Applicants::RemoveFromOrganisation, type: :service do
       is_a_success
     end
 
-    it "removes the organisation from the applicant" do
+    it "removes the applicant from the organisation" do
       subject
       expect(applicant.reload.organisations).not_to include(organisation)
     end
@@ -45,7 +45,7 @@ describe Applicants::RemoveFromOrganisation, type: :service do
       end
     end
 
-    context "when it fails to remove the org from the API through API" do
+    context "when it fails to remove the org through API" do
       before do
         allow(RdvSolidaritesApi::DeleteUserProfile).to receive(:call)
           .with(
@@ -59,7 +59,7 @@ describe Applicants::RemoveFromOrganisation, type: :service do
         is_a_failure
       end
 
-      it "does not remove the organisation from the applicant" do
+      it "does not remove the applicant from the organisation" do
         subject
         expect(applicant.reload.organisations).to include(organisation)
       end
