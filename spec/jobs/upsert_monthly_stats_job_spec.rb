@@ -1,4 +1,4 @@
-describe UpsertStatsJob do
+describe UpsertMonthlyStatsJob do
   subject do
     described_class.new.perform
   end
@@ -9,12 +9,12 @@ describe UpsertStatsJob do
 
   describe "#perform" do
     before do
-      allow(UpsertStatJob).to receive(:perform_async)
+      allow(MonthlyStats::UpsertStatJob).to receive(:perform_async)
         .and_return(OpenStruct.new(success?: true))
     end
 
     it "calls the appropriate service the right number of times" do
-      expect(UpsertStatJob).to receive(:perform_async).exactly(4).times
+      expect(MonthlyStats::UpsertStatJob).to receive(:perform_async).exactly(4).times
       subject
     end
   end
