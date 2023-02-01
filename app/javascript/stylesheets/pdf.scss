@@ -81,49 +81,32 @@ u {
   top: 1230px;
   width: 100%;
 
-  // the "first-child:nth-last-child" tricks are used to have logos grossly centered
   div {
     display: inline-block;
-    // no europe logos & no organisation logo
+    &:last-child {
+      margin-right: 0px !important;
+    }
+  // the "first-child:nth-last-child" tricks are used to have logos grossly centered
     &:first-child:nth-last-child(2),
     &:first-child:nth-last-child(2) ~ div {
-      margin: 0 110px;
-    }
-    // no europe logos ; organisation & department logos displayed
-    &:first-child:nth-last-child(3),
-    &:first-child:nth-last-child(3) ~ div {
-      margin: 0 40px;
-    }
-    // europe logos displayed ; no organisation logo
-    &:first-child:nth-last-child(4) ~ div {
-      margin-right: 120px;
-    // europe, organisation & department logos displayed
-    }
-    &:first-child:nth-last-child(5) ~ div {
-      margin-right: 20px;
+      margin: 0 100px;
       img {
         height: 60px;
       }
     }
-
-    // keep both europe logos glued together
-    &.europe-logos:first-child {
-      margin-right: 0px;
-      padding-right: 0px;
+    &:first-child:nth-last-child(3),
+    &:first-child:nth-last-child(3) ~ div {
+      margin: 0 30px;
+      img {
+        height: 55px;
+      }
     }
-    &.europe-logos:last-child {
-      margin-left: 0px;
-      padding-left: 0px;
+    &:first-child:nth-last-child(4),
+    &:first-child:nth-last-child(4) ~ div {
+      margin-right: 20px;
+      img {
+        height: 50px;
+      }
     }
-
-    &:last-child {
-      height: 65px;
-      width: 25%;
-      margin-right: 0px !important;
-    }
-  }
-
-  img {
-    height: 65px;
   }
 }
