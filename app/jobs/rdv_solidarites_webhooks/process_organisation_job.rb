@@ -4,7 +4,7 @@ module RdvSolidaritesWebhooks
       @data = data.deep_symbolize_keys
       @meta = meta.deep_symbolize_keys
       return if organisation.blank?
-      return unless event == "updated"
+      return if event == "destroyed"
 
       update_organisation
     end
