@@ -4,19 +4,14 @@ describe Stats::ComputeAverageTimeBetweenInvitationAndRdvInDays, type: :service 
       rdv_contexts: RdvContext.preload(:rdvs, :invitations)
                                            .where.associated(:rdvs)
                                            .with_sent_invitations
-                                           .distinct,
-      for_focused_month: for_focused_month,
-      date: date
+                                           .distinct
     )
   end
-
-  let!(:for_focused_month) { false }
-  let!(:date) { nil }
 
   let!(:first_day_of_last_month) { 1.month.ago.beginning_of_month }
   let!(:first_day_of_other_month) { 2.months.ago.beginning_of_month }
 
-  # First rdv_context : created 1 month ago, 2 days delay between invitation and rdv
+  # First rdv_context : 2 days delay between invitation and rdv
   let!(:rdv_context1) { create(:rdv_context, created_at: first_day_of_last_month) }
   let!(:invitation1) do
     create(:invitation, created_at: first_day_of_last_month, sent_at: first_day_of_last_month,
@@ -27,7 +22,7 @@ describe Stats::ComputeAverageTimeBetweenInvitationAndRdvInDays, type: :service 
   end
   let!(:rdv1) { create(:rdv, created_at: (first_day_of_last_month + 2.days), participations: [participation1]) }
 
-  # Second rdv_context : created 1 month ago, 4 days delay between invitation and rdv
+  # Second rdv_context : 4 days delay between invitation and rdv
   let!(:rdv_context2) { create(:rdv_context, created_at: first_day_of_last_month) }
   let!(:invitation2) do
     create(:invitation, created_at: first_day_of_last_month, sent_at: first_day_of_last_month,
@@ -57,31 +52,11 @@ describe Stats::ComputeAverageTimeBetweenInvitationAndRdvInDays, type: :service 
     end
 
     it "renders a float" do
-      expect(result.data).to be_a(Float)
+      expect(result.value).to be_a(Float)
     end
 
     it "computes the average time between first invitation and first rdv in days" do
-      expect(result.data).to eq(4)
-    end
-
-    context "when for a focused month" do
-      let!(:for_focused_month) { true }
-      let!(:date) { first_day_of_last_month }
-      let!(:result) { subject }
-
-      it "is a success" do
-        expect(result.success?).to eq(true)
-      end
-
-      it "renders a float" do
-        expect(result.data).to be_a(Float)
-      end
-
-      # this result should not take the third rdv_context into account
-      it "computes the average time between first invitation and first rdv in days only for " \
-         "the rdv_contexts created during the focused month" do
-        expect(result.data).to eq(3)
-      end
+      expect(result.value).to eq(4)
     end
   end
 end

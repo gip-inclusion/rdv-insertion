@@ -1,13 +1,13 @@
 module Stats
   module MonthlyStats
     class ComputeForFocusedMonth < BaseService
-      def initialize(department_number:, date:)
-        @department_number = department_number
+      def initialize(stat:, date:)
+        @stat = stat
         @date = date
       end
 
       def call
-        result.data = stats_attributes_for_focused_month
+        result.values = stats_attributes_for_focused_month
       end
 
       private
@@ -30,69 +30,46 @@ module Stats
       end
 
       def applicants_count_for_focused_month
-        { @date.strftime("%m/%Y") =>
-          created_during_focused_month(records_for_stats[:all_applicants]).count }
+        created_during_focused_month(@stat.all_applicants).count
       end
 
       def rdvs_count_for_focused_month
-        { @date.strftime("%m/%Y") =>
-          created_during_focused_month(records_for_stats[:all_rdvs]).count }
+        created_during_focused_month(@stat.all_rdvs).count
       end
 
       def sent_invitations_count_for_focused_month
-        { @date.strftime("%m/%Y") =>
-          records_for_stats[:sent_invitations].where(sent_at: @date.all_month).count }
+        @stat.sent_invitations.where(sent_at: @date.all_month).count
       end
 
       def percentage_of_no_show_for_focused_month
-        { @date.strftime("%m/%Y") =>
-          ComputePercentageOfNoShow.call(
-            rdvs: records_for_stats[:relevant_rdvs],
-            for_focused_month: true,
-            date: @date
-          ).data.round }
+        ComputePercentageOfNoShow.call(
+          rdvs: created_during_focused_month(@stat.rdvs_sample)
+        ).value.round
       end
 
       def average_time_between_invitation_and_rdv_in_days_for_focused_month
-        { @date.strftime("%m/%Y") =>
-          ComputeAverageTimeBetweenInvitationAndRdvInDays.call(
-            rdv_contexts: records_for_stats[:relevant_rdv_contexts],
-            for_focused_month: true,
-            date: @date
-          ).data.round }
+        ComputeAverageTimeBetweenInvitationAndRdvInDays.call(
+          rdv_contexts: created_during_focused_month(@stat.rdv_contexts_sample)
+        ).value.round
       end
 
       def average_time_between_rdv_creation_and_start_in_days_for_focused_month
-        { @date.strftime("%m/%Y") =>
-          ComputeAverageTimeBetweenRdvCreationAndStartInDays.call(
-            rdvs: records_for_stats[:relevant_rdvs],
-            for_focused_month: true,
-            date: @date
-          ).data.round }
+        ComputeAverageTimeBetweenRdvCreationAndStartInDays.call(
+          rdvs: created_during_focused_month(@stat.rdvs_sample)
+        ).value.round
       end
 
       def rate_of_applicants_with_rdv_seen_in_less_than_30_days_for_focused_month
-        { @date.strftime("%m/%Y") =>
-          ComputeRateOfApplicantsWithRdvSeenInLessThanThirtyDays.call(
-            applicants: records_for_stats[:relevant_applicants],
-            for_focused_month: true,
-            date: @date
-          ).data.round }
+        ComputeRateOfApplicantsWithRdvSeenInLessThanThirtyDays.call(
+          applicants: created_during_focused_month(@stat.applicants_for_30_days_rdvs_seen_sample)
+        ).value.round
       end
 
       def rate_of_autonomous_applicants_for_focused_month
-        { @date.strftime("%m/%Y") =>
-          ComputeRateOfAutonomousApplicants.call(
-            applicants: records_for_stats[:relevant_applicants],
-            rdvs: records_for_stats[:relevant_rdvs],
-            sent_invitations: records_for_stats[:sent_invitations],
-            for_focused_month: true,
-            date: @date
-          ).data.round }
-      end
-
-      def records_for_stats
-        @records_for_stats = RetrieveRecordsForStatsComputing.call(department_number: @department_number).data
+        ComputeRateOfAutonomousApplicants.call(
+          applicants: created_during_focused_month(@stat.invited_applicants),
+          rdvs: @stat.rdvs_created_by_user
+        ).value.round
       end
 
       def created_during_focused_month(data)

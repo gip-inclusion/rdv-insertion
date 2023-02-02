@@ -1,18 +1,13 @@
 describe Stats::ComputeRateOfAutonomousApplicants, type: :service do
   subject do
     described_class.call(
-      applicants: Applicant.includes(:rdvs)
+      applicants: Applicant.where(id: Invitation.sent.map(&:applicant_id).uniq)
+                           .includes(:rdvs)
                            .preload(rdv_contexts: :rdvs)
                            .distinct,
-      rdvs: Rdv.all.distinct,
-      sent_invitations: Invitation.sent,
-      for_focused_month: for_focused_month,
-      date: date
+      rdvs: Rdv.all.distinct.select(&:created_by_user?)
     )
   end
-
-  let!(:for_focused_month) { false }
-  let!(:date) { nil }
 
   let!(:first_day_of_last_month) { 1.month.ago.beginning_of_month }
   let!(:first_day_of_other_month) { 2.months.ago.beginning_of_month }
@@ -83,32 +78,12 @@ describe Stats::ComputeRateOfAutonomousApplicants, type: :service do
     end
 
     it "renders a float" do
-      expect(result.data).to be_a(Float)
+      expect(result.value).to be_a(Float)
     end
 
     # Applicant 1 and 3 are ok ; 2 and 5 are not ok ; 4 is not considered
     it "computes the percentage of invited applicants with at least on rdv taken in autonomy" do
-      expect(result.data).to eq(50)
-    end
-
-    context "when for a focused month" do
-      let!(:for_focused_month) { true }
-      let!(:date) { first_day_of_last_month }
-      let!(:result) { subject }
-
-      it "is a success" do
-        expect(result.success?).to eq(true)
-      end
-
-      it "renders a float" do
-        expect(result.data).to be_a(Float)
-      end
-
-      # Applicant 1 is ok ; 2 and 5 are not ok ; 3 and 4 are not considered
-      it "computes the percentage of invited applicants created during the focused month" \
-         " with at least on rdv taken in autonomy" do
-        expect(result.data).to eq(33.33333333333333)
-      end
+      expect(result.value).to eq(50)
     end
   end
 end

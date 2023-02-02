@@ -110,32 +110,32 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
 
     it "computes the percentage of no show" do
       expect(Stats::ComputePercentageOfNoShow).to receive(:call)
-        .with(rdvs: department.rdvs, for_focused_month: true, date: date)
+        .with(rdvs: department.rdvs, date: date)
       subject
     end
 
     it "computes the average time between first invitation and first rdv in days" do
       expect(Stats::ComputeAverageTimeBetweenInvitationAndRdvInDays).to receive(:call)
-        .with(rdv_contexts: department.rdv_contexts, for_focused_month: true, date: date)
+        .with(rdv_contexts: department.rdv_contexts, date: date)
       subject
     end
 
     it "computes the average time between the creation of the rdvs and the rdvs date in days" do
       expect(Stats::ComputeAverageTimeBetweenRdvCreationAndStartInDays).to receive(:call)
-        .with(rdvs: department.rdvs, for_focused_month: true, date: date)
+        .with(rdvs: department.rdvs, date: date)
       subject
     end
 
     it "computes the percentage of applicants with rdv seen in less than 30 days" do
       expect(Stats::ComputeRateOfApplicantsWithRdvSeenInLessThanThirtyDays).to receive(:call)
-        .with(applicants: department.applicants, for_focused_month: true, date: date)
+        .with(applicants: department.applicants, date: date)
       subject
     end
 
     it "computes the percentage of invited applicants with at least on rdv taken in autonomy" do
       expect(Stats::ComputeRateOfAutonomousApplicants).to receive(:call)
         .with(applicants: department.applicants, rdvs: department.rdvs,
-              sent_invitations: department.invitations, for_focused_month: true, date: date)
+              sent_invitations: department.invitations, date: date)
       subject
     end
   end

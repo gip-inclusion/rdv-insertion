@@ -17,11 +17,11 @@ module Stats
       end
 
       def assign_global_stats_attributes_to_stat_record
-        ActiveRecord::Base.uncached { stat.assign_attributes(compute_global_stats.data) }
+        ActiveRecord::Base.uncached { stat.assign_attributes(compute_global_stats.stat_attributes) }
       end
 
       def compute_global_stats
-        @compute_global_stats ||= Stats::GlobalStats::Compute.call(department_number: @department_number)
+        @compute_global_stats ||= Stats::GlobalStats::Compute.call(stat: stat)
       end
     end
   end

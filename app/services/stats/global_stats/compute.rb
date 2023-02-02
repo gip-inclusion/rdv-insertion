@@ -1,18 +1,18 @@
 module Stats
   module GlobalStats
     class Compute < BaseService
-      def initialize(department_number:)
-        @department_number = department_number
+      def initialize(stat:)
+        @stat = stat
       end
 
       def call
-        result.data = global_stats_attributes
+        result.stat_attributes = global_stats
       end
 
       private
 
-      def global_stats_attributes
-        @global_stats_attributes ||= {
+      def global_stats
+        @global_stats ||= {
           applicants_count: applicants_count,
           rdvs_count: rdvs_count,
           sent_invitations_count: sent_invitations_count,
@@ -27,51 +27,46 @@ module Stats
       end
 
       def applicants_count
-        records_for_stats[:all_applicants].to_a.length
+        @stat.all_applicants.to_a.length
       end
 
       def rdvs_count
-        records_for_stats[:all_rdvs].to_a.length
+        @stat.all_rdvs.to_a.length
       end
 
       def sent_invitations_count
-        records_for_stats[:sent_invitations].to_a.length
+        @stat.sent_invitations.to_a.length
       end
 
       def percentage_of_no_show
-        ComputePercentageOfNoShow.call(rdvs: records_for_stats[:relevant_rdvs]).data
+        ComputePercentageOfNoShow.call(rdvs: @stat.rdvs_sample).value
       end
 
       def average_time_between_invitation_and_rdv_in_days
         ComputeAverageTimeBetweenInvitationAndRdvInDays.call(
-          rdv_contexts: records_for_stats[:relevant_rdv_contexts]
-        ).data
+          rdv_contexts: @stat.rdv_contexts_sample
+        ).value
       end
 
       def average_time_between_rdv_creation_and_start_in_days
-        ComputeAverageTimeBetweenRdvCreationAndStartInDays.call(rdvs: records_for_stats[:relevant_rdvs]).data
+        ComputeAverageTimeBetweenRdvCreationAndStartInDays.call(rdvs: @stat.rdvs_sample).value
       end
 
       def rate_of_applicants_with_rdv_seen_in_less_than_30_days
         ComputeRateOfApplicantsWithRdvSeenInLessThanThirtyDays.call(
-          applicants: records_for_stats[:relevant_applicants]
-        ).data
+          applicants: @stat.applicants_for_30_days_rdvs_seen_sample
+        ).value
       end
 
       def rate_of_autonomous_applicants
         ComputeRateOfAutonomousApplicants.call(
-          applicants: records_for_stats[:relevant_applicants],
-          rdvs: records_for_stats[:relevant_rdvs],
-          sent_invitations: records_for_stats[:sent_invitations]
-        ).data
+          applicants: @stat.invited_applicants,
+          rdvs: @stat.rdvs_created_by_user
+        ).value
       end
 
       def agents_count
-        records_for_stats[:relevant_agents].to_a.length
-      end
-
-      def records_for_stats
-        @records_for_stats = RetrieveRecordsForStatsComputing.call(department_number: @department_number).data
+        @stat.agents_sample.to_a.length
       end
     end
   end

@@ -1,9 +1,9 @@
 upsert_global_stats_job:
   cron: "0 22 * * *" # we compute global stats once a day, at 22:00
-  class: "UpsertGlobalStatsJob"
+  class: "Stats::GlobalStats::UpsertStatsJob"
 upsert_monthly_stats_job:
-  cron: "0 23 * * *" # we compute monthly stats once a day, at 23:00
-  class: "UpsertMonthlyStatsJob"
+  cron: "0 23 last * *" # we compute monthly stats the last day of the month, at 23:00
+  class: "Stats::MonthlyStats::UpsertStatsJob"
 send_invitation_reminders_job:
   cron: "0 11 * * *" # we send reminders once a day, at 11:00
   class: "SendInvitationRemindersJob"

@@ -18,18 +18,20 @@ module Stats
       end
 
       def merge_monthly_stats_attributes_for_focused_month_to_stat_record
-        compute_monthly_stats_for_focused_month.data.each do |stat_for_focused_month|
-          stat_name = stat_for_focused_month[0]
-          stat_value = stat_for_focused_month[1]
-          stat[stat_name] = stat[stat_name].merge(stat_value)
+        compute_monthly_stats_for_focused_month.values.each do |stat_name, stat_value|
+          stat[stat_name] = stat[stat_name].merge({ date.strftime("%m/%Y") => stat_value })
         end
       end
 
       def compute_monthly_stats_for_focused_month
         @compute_monthly_stats_for_focused_month ||= Stats::MonthlyStats::ComputeForFocusedMonth.call(
-          department_number: @department_number,
-          date: @date_string.to_date
+          stat: stat,
+          date: date
         )
+      end
+
+      def date
+        @date ||= @date_string.to_date
       end
     end
   end
