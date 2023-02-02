@@ -40,7 +40,7 @@ module RdvSolidaritesWebhooks
     end
 
     def remove_from_org
-      agent.delete_organisation(organisation)
+      agent.delete_organisation(organisation) if agent.organisation_ids.include?(organisation.id)
     end
   end
 end

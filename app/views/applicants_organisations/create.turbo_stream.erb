@@ -1,14 +1,11 @@
 <%= turbo_stream.replace "organisations_list" do %>
-  <%= render partial: "applicants/organisations_list", locals: { organisations: @applicant.organisations } %>
-<% end %>
-<%= turbo_stream.replace "add_to_org_button" do %>
-  <%= render partial: "applicants/add_to_org_button", locals: { applicant: @applicant, department: @department, can_be_added_to_other_org: (@department.organisations - @applicant.organisations).any? } %>
+  <%= render partial: "applicants/organisations_list", locals: { organisations: @applicant.reload.organisations } %>
 <% end %>
 <%= turbo_stream.prepend "flashes" do %>
-  <%= render partial: "common/flash", locals: { flash: { success: "L'allocataire a bien été ajouté à l'organisation" } } %>
+  <%= render partial: "common/flash", locals: { flash: @success ? { success: "L'organisation a bien été ajoutée" } : { error: "Une erreur s'est produite lors de l'ajout de l'organisation: #{@errors}" } } %>
 <% end %>
-<% if @organisation.email? %>
+<% if @organisation_to_add.email? %>
   <%= turbo_stream.replace "remote_modal" do %>
-    <%= render partial: "organisations/applicant_added_notifications/form", locals: { emails: [@organisation.email], applicant: @applicant, organisation: @organisation } %>
+    <%= render partial: "organisations/applicant_added_notifications/form", locals: { emails: [@organisation_to_add.email], applicant: @applicant, organisation: @organisation_to_add } %>
   <% end %>
 <% end %>

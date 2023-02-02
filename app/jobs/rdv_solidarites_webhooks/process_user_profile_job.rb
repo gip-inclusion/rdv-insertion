@@ -6,7 +6,7 @@ module RdvSolidaritesWebhooks
       return if applicant.blank? || organisation.blank?
 
       attach_applicant_to_org if event == "created"
-      mark_applicant_as_deleted if event == "destroyed"
+      remove_applicant_from_organisation if event == "destroyed"
     end
 
     private
@@ -35,12 +35,9 @@ module RdvSolidaritesWebhooks
       applicant.organisations << organisation unless applicant.organisation_ids.include?(organisation.id)
     end
 
-    def mark_applicant_as_deleted
-      if applicant.organisations.length > 1
-        applicant.delete_organisation(organisation)
-      else
-        SoftDeleteApplicantJob.perform_async(rdv_solidarites_user_id)
-      end
+    def remove_applicant_from_organisation
+      applicant.delete_organisation(organisation) if applicant.organisation_ids.include?(organisation.id)
+      SoftDeleteApplicantJob.perform_async(rdv_solidarites_user_id) if applicant.organisations.empty?
     end
   end
 end

@@ -1,6 +1,6 @@
 module AuthenticationSpecHelper
   def sign_in(agent, for_api: false)
-    setup_agent_session(agent) unless for_api
+    setup_request_session(agent) unless for_api
     mock_rdv_solidarites_session(agent.email)
   end
 
@@ -8,12 +8,12 @@ module AuthenticationSpecHelper
     { "client" => "someclient", "uid" => agent_email, "access_token" => "sometoken" }
   end
 
-  def setup_agent_session(agent)
+  def setup_request_session(agent)
     request.session["agent_id"] = agent.id
     request.session["rdv_solidarites"] = session_hash(agent.email)
   end
 
-  def setup_capybara_session(agent)
+  def setup_agent_session(agent)
     page.set_rack_session(agent_id: agent.id, rdv_solidarites: session_hash(agent.email))
 
     ENV["RDV_SOLIDARITES_URL"] = "http://www.rdv-solidarites-test.localhost"

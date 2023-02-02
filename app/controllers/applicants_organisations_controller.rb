@@ -1,51 +1,93 @@
 class ApplicantsOrganisationsController < ApplicationController
-  before_action :set_applicant, :set_department, :set_organisations, only: [:new, :create]
-  before_action :set_organisation, only: [:create]
+  before_action :set_applicant, :set_department, :set_organisations, :set_current_organisation,
+                only: [:index, :create, :destroy]
+  before_action :set_organisation_to_add, only: [:create]
+  before_action :set_organisation_to_remove, only: [:destroy]
 
-  def new; end
+  def index; end
 
   def create
-    if save_applicant.success?
-      respond_to do |format|
-        format.turbo_stream
-      end
-    else
-      flash[:error] = save_applicant.errors&.join(", ")
-      redirect_to department_applicant_path(@department, @applicant)
-    end
+    @success = save_applicant.success?
+    @errors = save_applicant.errors
+
+    # in this case we need to refresh the page in case there are new rdv contexts
+    redirect_to_department_applicant_path if @success && !@current_organisation
+  end
+
+  def destroy
+    @success = remove_applicant_from_org.success?
+    @errors = remove_applicant_from_org.errors
+    redirect_to_applicants_list if applicant_deleted_or_removed_from_current_org?
   end
 
   private
 
-  def applicants_organisations
-    (@applicant.organisations.to_a + [@organisation]).uniq
+  def applicants_organisation_params
+    params.require(:applicants_organisation).permit(:organisation_id, :applicant_id)
   end
 
-  def applicants_organisation_params
-    params.require(:applicants_organisation).permit(:organisation_id)
+  def applicant_id
+    params[:applicant_id] || applicants_organisation_params[:applicant_id]
   end
 
   def set_applicant
-    @applicant = policy_scope(Applicant).find(params[:applicant_id])
-    authorize @applicant
+    @applicant = policy_scope(Applicant).find(applicant_id)
   end
 
   def set_department
     @department = policy_scope(Department).find(params[:department_id])
   end
 
-  def set_organisation
-    @organisation = Organisation.find(applicants_organisation_params[:organisation_id])
+  def set_organisation_to_add
+    @organisation_to_add = @department.organisations.find(applicants_organisation_params[:organisation_id])
+  end
+
+  def set_organisation_to_remove
+    @organisation_to_remove = @department.organisations.find(applicants_organisation_params[:organisation_id])
+  end
+
+  # this lets us know from which organisation we are seeing the applicant if we are at the org level
+  def set_current_organisation
+    return unless params[:current_organisation_id]
+
+    @current_organisation = policy_scope(Organisation).find(params[:current_organisation_id])
   end
 
   def set_organisations
-    @organisations = @department.organisations - @applicant.organisations
+    @organisations = @department.organisations
+  end
+
+  def set_applicant_organisations
+    @applicant_organisations = @applicant.reload.organisations
+  end
+
+  def redirect_to_applicants_list
+    redirect_to session[:back_to_list_url] || department_applicants_path(@department)
+  end
+
+  def redirect_to_department_applicant_path
+    redirect_to(
+      department_applicant_path(@department, @applicant),
+      flash: { success: "L'organisation a bien été ajoutée" }
+    )
+  end
+
+  def applicant_deleted_or_removed_from_current_org?
+    @applicant.deleted? || @organisation_to_remove == @current_organisation
   end
 
   def save_applicant
     @save_applicant ||= Applicants::Save.call(
       applicant: @applicant,
-      organisation: @organisation,
+      organisation: @organisation_to_add,
+      rdv_solidarites_session: rdv_solidarites_session
+    )
+  end
+
+  def remove_applicant_from_org
+    @remove_applicant_from_org ||= Applicants::RemoveFromOrganisation.call(
+      applicant: @applicant,
+      organisation: @organisation_to_remove,
       rdv_solidarites_session: rdv_solidarites_session
     )
   end

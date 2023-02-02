@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 class RdvSolidaritesClient
   def initialize(rdv_solidarites_session:)
     @rdv_solidarites_session = rdv_solidarites_session
@@ -48,6 +49,14 @@ class RdvSolidaritesClient
     Faraday.post(
       "#{@url}/api/v1/user_profiles",
       { user_id: user_id, organisation_id: organisation_id }.to_json,
+      request_headers
+    )
+  end
+
+  def delete_user_profile(user_id, organisation_id)
+    Faraday.delete(
+      "#{@url}/api/v1/user_profiles",
+      { user_id: user_id, organisation_id: organisation_id },
       request_headers
     )
   end
@@ -137,3 +146,4 @@ class RdvSolidaritesClient
     }
   end
 end
+# rubocop:enable Metrics/ClassLength
