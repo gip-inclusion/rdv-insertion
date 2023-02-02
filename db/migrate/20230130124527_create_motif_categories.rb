@@ -32,6 +32,7 @@ class CreateMotifCategories < ActiveRecord::Migration[7.0]
     rsa_atelier_rencontres_pro: "RSA Atelier rencontres professionnelles"
   }.freeze
 
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def up
     create_table :motif_categories do |t|
       t.string :short_name
@@ -99,4 +100,5 @@ class CreateMotifCategories < ActiveRecord::Migration[7.0]
 
     drop_table :motif_categories
   end
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 end

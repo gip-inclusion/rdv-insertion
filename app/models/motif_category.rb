@@ -1,13 +1,15 @@
 class MotifCategory < ApplicationRecord
+  has_many :configurations, dependent: :restrict_with_exception
+  has_many :rdv_contexts, dependent: :restrict_with_exception
+  has_many :motifs, dependent: :restrict_with_exception
+  belongs_to :template
+
   validates :short_name, presence: true, uniqueness: true
   validates :name, presence: true
   validates :rdv_solidarites_motif_category_id, uniqueness: true, allow_nil: true
 
-  has_many :configurations, dependent: :restrict_with_exception
-  has_many :rdv_contexts, dependent: :restrict_with_exception
-  has_many :motifs, dependent: :restrict_with_exception
-
-  ATELIERS_SHORT_NAMES = %w[rsa_insertion_offer rsa_atelier_competences rsa_atelier_rencontres_pro].freeze
+  delegate :model, to: :template, prefix: true
+  delegate :atelier?, to: :template
 
   CHRONOLOGICALLY_SORTED_CATEGORIES = %w[
     rsa_integration_information
@@ -26,14 +28,10 @@ class MotifCategory < ApplicationRecord
     rsa_spie
   ].freeze
 
-  scope :not_atelier, -> { where.not(short_name: ATELIERS_SHORT_NAMES) }
+  scope :rdvs_mandatory, -> { where.not(template: Template.atelier) }
 
-  def atelier?
-    short_name.in?(ATELIERS_SHORT_NAMES)
-  end
-
-  def phone_platform?
-    short_name == "rsa_orientation_on_phone_platform"
+  def rdvs_mandatory?
+    !atelier?
   end
 
   def position

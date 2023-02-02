@@ -18,9 +18,9 @@ RSpec.describe InvitationMailer do
   end
   let!(:rdv_context) { build(:rdv_context) }
 
-  describe "#regular_invitation" do
+  describe "#standard_invitation" do
     subject do
-      described_class.with(invitation: invitation, applicant: applicant).regular_invitation
+      described_class.with(invitation: invitation, applicant: applicant).standard_invitation
     end
 
     context "for rsa_orientation" do
@@ -311,7 +311,7 @@ RSpec.describe InvitationMailer do
     subject do
       described_class
         .with(invitation: invitation, applicant: applicant)
-        .invitation_for_phone_platform
+        .phone_platform_invitation
     end
 
     let!(:rdv_context) do
@@ -348,11 +348,11 @@ RSpec.describe InvitationMailer do
     end
   end
 
-  describe "#invitation_for_atelier" do
+  describe "#atelier_invitation" do
     subject do
       described_class
         .with(invitation: invitation, applicant: applicant)
-        .invitation_for_atelier
+        .atelier_invitation
     end
 
     let!(:rdv_context) do
@@ -394,9 +394,9 @@ RSpec.describe InvitationMailer do
     end
   end
 
-  describe "#regular_invitation_reminder" do
+  describe "#standard_invitation_reminder" do
     subject do
-      described_class.with(invitation: invitation, applicant: applicant).regular_invitation_reminder
+      described_class.with(invitation: invitation, applicant: applicant).standard_invitation_reminder
     end
 
     context "for rsa_orientation" do
@@ -557,11 +557,11 @@ RSpec.describe InvitationMailer do
     end
   end
 
-  describe "#invitation_for_rsa_orientation_on_phone_platform_reminder" do
+  describe "#phone_platform_reminder" do
     subject do
       described_class
         .with(invitation: invitation, applicant: applicant)
-        .invitation_for_phone_platform_reminder
+        .phone_platform_invitation_reminder
     end
 
     let!(:rdv_context) do

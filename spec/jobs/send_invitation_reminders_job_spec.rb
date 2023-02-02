@@ -21,7 +21,12 @@ describe SendInvitationRemindersJob do
     let!(:rdv_context6) do
       create(
         :rdv_context,
-        status: "invitation_pending", motif_category: create(:motif_category, short_name: "rsa_insertion_offer"),
+        status: "invitation_pending",
+        motif_category: create(
+          :motif_category,
+          short_name: "rsa_insertion_offer",
+          template: create(:template, model: "atelier")
+        ),
         applicant: applicant6
       )
     end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_30_124527) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_01_161121) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -168,8 +168,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_30_124527) do
     t.bigint "rdv_solidarites_motif_category_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "template_id"
     t.index ["rdv_solidarites_motif_category_id"], name: "index_motif_categories_on_rdv_solidarites_motif_category_id", unique: true
     t.index ["short_name"], name: "index_motif_categories_on_short_name", unique: true
+    t.index ["template_id"], name: "index_motif_categories_on_template_id"
   end
 
   create_table "motifs", force: :cascade do |t|
@@ -298,6 +300,19 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_30_124527) do
     t.index ["department_number"], name: "index_stats_on_department_number", unique: true
   end
 
+  create_table "templates", force: :cascade do |t|
+    t.integer "model"
+    t.string "rdv_title"
+    t.string "rdv_title_by_phone"
+    t.string "rdv_purpose"
+    t.string "applicant_designation"
+    t.string "rdv_subject"
+    t.boolean "display_mandatory_warning"
+    t.boolean "display_punishable_warning"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "webhook_endpoints", force: :cascade do |t|
     t.string "url"
     t.string "secret"
@@ -322,6 +337,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_30_124527) do
   add_foreign_key "invitations", "departments"
   add_foreign_key "invitations", "rdv_contexts"
   add_foreign_key "lieux", "organisations"
+  add_foreign_key "motif_categories", "templates"
   add_foreign_key "motifs", "motif_categories"
   add_foreign_key "motifs", "organisations"
   add_foreign_key "notifications", "participations"

@@ -25,7 +25,7 @@ class SendInvitationRemindersJob < ApplicationJob
     @rdv_contexts_with_reminder_needed ||= \
       RdvContext.invitation_pending
                 .joins(:motif_category)
-                .where(motif_category: MotifCategory.not_atelier)
+                .where(motif_category: MotifCategory.rdvs_mandatory)
                 .where(id: valid_invitations_sent_3_days_ago.pluck(:rdv_context_id))
                 .where(applicant_id: Applicant.active.archived(false).ids)
                 .distinct
