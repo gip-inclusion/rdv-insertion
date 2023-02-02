@@ -63,12 +63,20 @@ describe RdvSolidaritesWebhooks::ProcessAgentRoleJob do
       let!(:meta) do
         {
           "model" => "AgentRole",
-          "event" => "created"
+          "event" => "created",
+          "timestamp" => "2022-05-30 14:44:22 +0200"
         }.deep_symbolize_keys
       end
 
       it "raises an error" do
-        expect { subject }.to raise_error(StandardError, "Could not find agent: #{data[:agent]}")
+        expect(UpsertRecordJob).to receive(:perform_async)
+          .with(
+            "Agent", data[:agent], { last_webhook_update_received_at: "2022-05-30 14:44:22 +0200" }
+          )
+        expect { subject }.to raise_error(
+          StandardError,
+          "Could not find agent 455. Launched upsert agent job and will retry"
+        )
       end
     end
   end

@@ -5,12 +5,12 @@ module RdvSolidaritesWebhooks
       @meta = meta.deep_symbolize_keys
       return if organisation.blank?
 
-      # let's make sure the agent is created before we continue
-      sleep 2
-      raise "Could not find agent: #{@data[:agent]}" unless agent
+      if event == "created"
+        upsert_agent_and_raise if agent.nil?
+        attach_agent_to_org
+      end
 
-      attach_agent_to_org if event == "created"
-      remove_from_org if event == "destroyed"
+      remove_from_org if agent && event == "destroyed"
     end
 
     private
@@ -25,6 +25,20 @@ module RdvSolidaritesWebhooks
 
     def rdv_solidarites_organisation_id
       @data[:organisation][:id]
+    end
+
+    def upsert_agent_and_raise
+      UpsertRecordJob.perform_async(
+        "Agent",
+        @data[:agent],
+        { last_webhook_update_received_at: @meta[:timestamp] }
+      )
+      sleep 2
+
+      raise(
+        "Could not find agent #{rdv_solidarites_agent_id}. " \
+        "Launched upsert agent job and will retry"
+      )
     end
 
     def organisation
