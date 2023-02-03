@@ -15,8 +15,8 @@ class Stat < ApplicationRecord
       department.nil? ? Rdv.all : department.rdvs
   end
 
-  def sent_invitations
-    @sent_invitations ||= \
+  def invitations_sample
+    @invitations_sample ||= \
       department.nil? ? Invitation.sent : Invitation.sent.where(department_id: department.id)
   end
 
@@ -29,7 +29,7 @@ class Stat < ApplicationRecord
     @rdv_contexts_sample ||= RdvContext.preload(:rdvs, :invitations)
                                        .where(applicant_id: applicants_sample.pluck(:id))
                                        .where.associated(:rdvs)
-                                       .with_
+                                       .with_sent_invitations
                                        .distinct
   end
 
@@ -48,20 +48,20 @@ class Stat < ApplicationRecord
   def agents_sample
     @agents_sample ||= Agent.not_betagouv
                             .joins(:organisations)
-                            .where(organisations: organisations)
+                            .where(organisations: all_organisations)
                             .where(has_logged_in: true)
                             .distinct
   end
 
-  def organisations
-    @organisations ||= \
+  def all_organisations
+    @all_organisations ||= \
       department.nil? ? Organisation.all : department.organisations
   end
 
   # We don't include in the scope the organisations who don't invite the applicants
   def organisations_sample
-    @organisations_sample ||= organisations.joins(:configurations)
-                                           .where.not(configurations: { invitation_formats: [] })
+    @organisations_sample ||= all_organisations.joins(:configurations)
+                                               .where.not(configurations: { invitation_formats: [] })
   end
 
   # For the rate of applicants with rdv seen in less than 30 days
@@ -80,12 +80,12 @@ class Stat < ApplicationRecord
                               })
   end
 
-  def invited_applicants
-    @invited_applicants ||= \
-      applicants_sample.where(id: sent_invitations.map(&:applicant_id).uniq)
+  def invited_applicants_sample
+    @invited_applicants_sample ||= \
+      applicants_sample.where(id: invitations_sample.map(&:applicant_id).uniq)
   end
 
-  def rdvs_created_by_user
-    @rdvs_created_by_user ||= rdvs_sample.preload(:applicants).select(&:created_by_user?)
+  def rdvs_created_by_user_sample
+    @rdvs_created_by_user_sample ||= rdvs_sample.preload(:applicants).select(&:created_by_user?)
   end
 end

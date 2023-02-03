@@ -7,13 +7,13 @@ module Stats
       end
 
       def call
-        result.values = stats_attributes_for_focused_month
+        result.stats_values = stats_for_focused_month
       end
 
       private
 
-      def stats_attributes_for_focused_month
-        @stats_attributes_for_focused_month ||= {
+      def stats_for_focused_month
+        @stats_for_focused_month ||= {
           applicants_count_grouped_by_month: applicants_count_for_focused_month,
           rdvs_count_grouped_by_month: rdvs_count_for_focused_month,
           sent_invitations_count_grouped_by_month: sent_invitations_count_for_focused_month,
@@ -38,7 +38,7 @@ module Stats
       end
 
       def sent_invitations_count_for_focused_month
-        @stat.sent_invitations.where(sent_at: @date.all_month).count
+        @stat.invitations_sample.where(sent_at: @date.all_month).count
       end
 
       def percentage_of_no_show_for_focused_month
@@ -67,8 +67,8 @@ module Stats
 
       def rate_of_autonomous_applicants_for_focused_month
         ComputeRateOfAutonomousApplicants.call(
-          applicants: created_during_focused_month(@stat.invited_applicants),
-          rdvs: @stat.rdvs_created_by_user
+          applicants: created_during_focused_month(@stat.invited_applicants_sample),
+          rdvs: @stat.rdvs_created_by_user_sample
         ).value.round
       end
 

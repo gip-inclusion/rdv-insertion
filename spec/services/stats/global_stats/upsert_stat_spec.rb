@@ -2,7 +2,7 @@ describe Stats::GlobalStats::UpsertStat, type: :service do
   subject { described_class.call(department_number: department.number) }
 
   let!(:department) { create(:department) }
-  let!(:stats_attributes) do
+  let!(:stat_attributes) do
     {
       applicants_count: 0,
       rdvs_count: 0,
@@ -20,9 +20,11 @@ describe Stats::GlobalStats::UpsertStat, type: :service do
   describe "#call" do
     before do
       allow(Stats::GlobalStats::Compute).to receive(:call)
-        .and_return(OpenStruct.new(success?: true, data: stats_attributes))
+        .and_return(OpenStruct.new(success?: true, stat_attributes: stat_attributes))
       allow(Stat).to receive(:find_or_initialize_by)
         .and_return(stat)
+      allow(stat).to receive(:assign_attributes)
+        .and_return(true)
       allow(stat).to receive(:save)
         .and_return(true)
     end
@@ -39,7 +41,13 @@ describe Stats::GlobalStats::UpsertStat, type: :service do
 
     it "calls the compute stats service" do
       expect(Stats::GlobalStats::Compute).to receive(:call)
-        .with(department_number: department.number)
+        .with(stat: stat)
+      subject
+    end
+
+    it "assigns the stat_attributes to a stat record" do
+      expect(stat).to receive(:assign_attributes)
+        .with(stat_attributes)
       subject
     end
 

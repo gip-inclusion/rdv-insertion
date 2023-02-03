@@ -35,7 +35,7 @@ module Stats
       end
 
       def sent_invitations_count
-        @stat.sent_invitations.to_a.length
+        @stat.invitations_sample.to_a.length
       end
 
       def percentage_of_no_show
@@ -60,8 +60,8 @@ module Stats
 
       def rate_of_autonomous_applicants
         ComputeRateOfAutonomousApplicants.call(
-          applicants: @stat.invited_applicants,
-          rdvs: @stat.rdvs_created_by_user
+          applicants: @stat.invited_applicants_sample,
+          rdvs: @stat.rdvs_created_by_user_sample
         ).value
       end
 
