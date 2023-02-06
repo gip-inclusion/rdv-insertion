@@ -57,7 +57,7 @@ class CreateAndInviteApplicantJob < ApplicationJob
     if @invitation_params[:motif_category_name].present?
       @organisation.motif_categories.find { |mc| mc.name == @invitation_params[:motif_category_name] }
     else
-      @organisation.configurations.first.motif_category
+      @organisation.motif_categories.min_by(&:position)
     end
   end
 
