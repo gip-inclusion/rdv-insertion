@@ -1,16 +1,10 @@
 describe Stats::ComputeRateOfAutonomousApplicants, type: :service do
-  subject do
-    described_class.call(
-      applicants: Applicant.where(id: Invitation.sent.map(&:applicant_id).uniq)
-                           .includes(:rdvs)
-                           .preload(rdv_contexts: :rdvs)
-                           .distinct,
-      rdvs: Rdv.all.distinct.select(&:created_by_user?)
-    )
-  end
+  subject { described_class.call(applicants: applicants, rdvs: rdvs) }
 
   let!(:first_day_of_last_month) { 1.month.ago.beginning_of_month }
-  let!(:first_day_of_other_month) { 2.months.ago.beginning_of_month }
+
+  let!(:applicants) { Applicant.where(id: [applicant1, applicant2, applicant3, applicant4, applicant5]) }
+  let!(:rdvs) { Rdv.where(id: [rdv1, rdv2, rdv3]) }
 
   # First applicant : created 1 month ago, has a rdv taken in autonomy
   let!(:applicant1) { create(:applicant, created_at: first_day_of_last_month) }
@@ -42,19 +36,19 @@ describe Stats::ComputeRateOfAutonomousApplicants, type: :service do
                            rdv: rdv2, created_at: first_day_of_last_month)
   end
 
-  # Third applicant : created 2 months ago, has a rdv taken in autonomy
-  let!(:applicant3) { create(:applicant, created_at: first_day_of_other_month) }
+  # Third applicant : created 1 month ago, has a rdv taken in autonomy
+  let!(:applicant3) { create(:applicant, created_at: first_day_of_last_month) }
   let!(:invitation3) do
-    create(:invitation, created_at: first_day_of_other_month, sent_at: first_day_of_other_month,
+    create(:invitation, created_at: first_day_of_last_month, sent_at: first_day_of_last_month,
                         rdv_context: rdv_context3, applicant: applicant3)
   end
-  let!(:rdv_context3) { create(:rdv_context, created_at: first_day_of_other_month, applicant: applicant3) }
+  let!(:rdv_context3) { create(:rdv_context, created_at: first_day_of_last_month, applicant: applicant3) }
   let!(:rdv3) do
-    create(:rdv, created_at: first_day_of_other_month, created_by: "user")
+    create(:rdv, created_at: first_day_of_last_month, created_by: "user")
   end
   let!(:participation3) do
     create(:participation, rdv_context: rdv_context3, applicant: applicant3,
-                           rdv: rdv3, created_at: first_day_of_other_month)
+                           rdv: rdv3, created_at: first_day_of_last_month)
   end
 
   # Fourth applicant : created 1 month ago, has not been invited

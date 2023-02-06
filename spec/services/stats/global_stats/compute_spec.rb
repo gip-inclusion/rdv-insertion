@@ -4,46 +4,37 @@ describe Stats::GlobalStats::Compute, type: :service do
   let!(:stat) { create(:stat, department_number: department.number) }
 
   let!(:first_day_of_last_month) { 1.month.ago.beginning_of_month }
-  let!(:first_day_of_other_month) { 2.months.ago.beginning_of_month }
 
   let!(:department) { create(:department) }
   let!(:organisation) { create(:organisation, department: department) }
-  let!(:applicant1) { create(:applicant, department: department, created_at: first_day_of_last_month) }
-  let!(:applicant2) { create(:applicant, department: department, created_at: first_day_of_other_month) }
-  let!(:rdv1) { create(:rdv, created_at: first_day_of_last_month, organisation: organisation) }
-  let!(:rdv2) { create(:rdv, created_at: first_day_of_other_month, organisation: organisation) }
-  let!(:rdv_context1) { create(:rdv_context, created_at: first_day_of_last_month, applicant: applicant1) }
-  let!(:rdv_context2) { create(:rdv_context, created_at: first_day_of_other_month, applicant: applicant2) }
-  let!(:invitation1) do
-    create(:invitation, created_at: first_day_of_last_month, sent_at: first_day_of_last_month, department: department)
-  end
-  let!(:invitation2) do
-    create(:invitation, created_at: first_day_of_other_month, sent_at: first_day_of_other_month, department: department)
-  end
+  let!(:applicant1) { create(:applicant, department: department) }
+  let!(:applicant2) { create(:applicant, department: department) }
+  let!(:rdv1) { create(:rdv, organisation: organisation) }
+  let!(:rdv2) { create(:rdv, organisation: organisation) }
+  let!(:rdv_context1) { create(:rdv_context, applicant: applicant1) }
+  let!(:rdv_context2) { create(:rdv_context, applicant: applicant2) }
+  let!(:invitation1) { create(:invitation, department: department) }
+  let!(:invitation2) { create(:invitation, department: department) }
   let!(:agent) { create(:agent, organisations: [organisation]) }
 
   describe "#call" do
     before do
       allow(stat).to receive(:all_applicants)
-        .and_return(department.applicants)
+        .and_return(Applicant.where(id: [applicant1, applicant2]))
       allow(stat).to receive(:all_rdvs)
-        .and_return(department.rdvs)
+        .and_return(Rdv.where(id: [rdv1, rdv2]))
       allow(stat).to receive(:invitations_sample)
-        .and_return(department.invitations.sent)
+        .and_return(Invitation.where(id: [invitation1, invitation2]))
       allow(stat).to receive(:rdvs_sample)
-        .and_return(department.rdvs)
+        .and_return(Rdv.where(id: [rdv1, rdv2]))
       allow(stat).to receive(:rdv_contexts_sample)
-        .and_return(department.rdv_contexts)
+        .and_return(RdvContext.where(id: [rdv_context1, rdv_context2]))
       allow(stat).to receive(:applicants_sample)
-        .and_return(department.applicants)
+        .and_return(Applicant.where(id: [applicant1, applicant2]))
       allow(stat).to receive(:agents_sample)
-        .and_return(department.agents)
+        .and_return(Agent.where(id: [agent]))
       allow(stat).to receive(:applicants_for_30_days_rdvs_seen_sample)
-        .and_return(department.applicants)
-      allow(stat).to receive(:invited_applicants_sample)
-        .and_return(department.applicants)
-      allow(stat).to receive(:rdvs_created_by_user_sample)
-        .and_return(department.rdvs)
+        .and_return(Applicant.where(id: [applicant1, applicant2]))
       allow(Stats::ComputePercentageOfNoShow).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 50.0))
       allow(Stats::ComputeAverageTimeBetweenInvitationAndRdvInDays).to receive(:call)
@@ -106,36 +97,36 @@ describe Stats::GlobalStats::Compute, type: :service do
     it "computes the percentage of no show" do
       expect(stat).to receive(:rdvs_sample)
       expect(Stats::ComputePercentageOfNoShow).to receive(:call)
-        .with(rdvs: department.rdvs)
+        .with(rdvs: [rdv1, rdv2])
       subject
     end
 
     it "computes the average time between first invitation and first rdv in days" do
       expect(stat).to receive(:rdv_contexts_sample)
       expect(Stats::ComputeAverageTimeBetweenInvitationAndRdvInDays).to receive(:call)
-        .with(rdv_contexts: department.rdv_contexts)
+        .with(rdv_contexts: [rdv_context1, rdv_context2])
       subject
     end
 
     it "computes the average time between the creation of the rdvs and the rdvs date in days" do
       expect(stat).to receive(:rdvs_sample)
       expect(Stats::ComputeAverageTimeBetweenRdvCreationAndStartInDays).to receive(:call)
-        .with(rdvs: department.rdvs)
+        .with(rdvs: [rdv1, rdv2])
       subject
     end
 
     it "computes the percentage of applicants with rdv seen in less than 30 days" do
       expect(stat).to receive(:applicants_for_30_days_rdvs_seen_sample)
       expect(Stats::ComputeRateOfApplicantsWithRdvSeenInLessThanThirtyDays).to receive(:call)
-        .with(applicants: department.applicants)
+        .with(applicants: [applicant1, applicant2])
       subject
     end
 
     it "computes the percentage of invited applicants with at least on rdv taken in autonomy" do
-      expect(stat).to receive(:invited_applicants_sample)
-      expect(stat).to receive(:rdvs_created_by_user_sample)
+      expect(stat).to receive(:applicants_sample)
+      expect(stat).to receive(:rdvs_sample)
       expect(Stats::ComputeRateOfAutonomousApplicants).to receive(:call)
-        .with(applicants: department.applicants, rdvs: department.rdvs)
+        .with(applicants: [applicant1, applicant2], rdvs: [rdv1, rdv2])
       subject
     end
 

@@ -46,6 +46,7 @@ class Applicant < ApplicationRecord
   scope :without_rdv_contexts, lambda { |motif_categories|
     where.not(id: joins(:rdv_contexts).where(rdv_contexts: { motif_category: motif_categories }).ids)
   }
+  scope :with_sent_invitations, -> { joins(:invitations).where.not(invitations: { sent_at: nil }) }
 
   def rdv_seen_delay_in_days
     return if first_seen_rdv_starts_at.blank?

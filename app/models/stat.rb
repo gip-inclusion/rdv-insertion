@@ -70,22 +70,12 @@ class Stat < ApplicationRecord
     # Applicants with a right open since at least 30 days
     # & invited in an orientation or accompagnement context
     @applicants_for_30_days_rdvs_seen_sample ||= \
-      applicants_sample.where("applicants.created_at < ?", 30.days.ago)
-                       .joins(:rdv_contexts)
+      applicants_sample.joins(:rdv_contexts)
                        .where(rdv_contexts: {
                                 motif_category: %w[
                                   rsa_orientation rsa_orientation_on_phone_platform rsa_accompagnement
                                   rsa_accompagnement_social rsa_accompagnement_sociopro
                                 ]
                               })
-  end
-
-  def invited_applicants_sample
-    @invited_applicants_sample ||= \
-      applicants_sample.where(id: invitations_sample.map(&:applicant_id).uniq)
-  end
-
-  def rdvs_created_by_user_sample
-    @rdvs_created_by_user_sample ||= rdvs_sample.preload(:applicants).select(&:created_by_user?)
   end
 end

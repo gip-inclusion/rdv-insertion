@@ -1,15 +1,9 @@
 describe Stats::ComputeAverageTimeBetweenInvitationAndRdvInDays, type: :service do
-  subject do
-    described_class.call(
-      rdv_contexts: RdvContext.preload(:rdvs, :invitations)
-                                           .where.associated(:rdvs)
-                                           .with_sent_invitations
-                                           .distinct
-    )
-  end
+  subject { described_class.call(rdv_contexts: rdv_contexts) }
 
   let!(:first_day_of_last_month) { 1.month.ago.beginning_of_month }
-  let!(:first_day_of_other_month) { 2.months.ago.beginning_of_month }
+
+  let!(:rdv_contexts) { RdvContext.where(id: [rdv_context1, rdv_context2]) }
 
   # First rdv_context : 2 days delay between invitation and rdv
   let!(:rdv_context1) { create(:rdv_context, created_at: first_day_of_last_month) }
@@ -33,17 +27,6 @@ describe Stats::ComputeAverageTimeBetweenInvitationAndRdvInDays, type: :service 
   end
   let!(:rdv2) { create(:rdv, created_at: (first_day_of_last_month + 4.days), participations: [participation2]) }
 
-  # Third rdv_context : created 2 months ago, 6 days delay between invitation and rdv
-  let!(:rdv_context3) { create(:rdv_context, created_at: first_day_of_other_month) }
-  let!(:invitation3) do
-    create(:invitation, created_at: first_day_of_other_month, sent_at: first_day_of_other_month,
-                        rdv_context: rdv_context3)
-  end
-  let!(:participation3) do
-    create(:participation, rdv_context: rdv_context3, created_at: first_day_of_other_month, status: "seen")
-  end
-  let!(:rdv3) { create(:rdv, created_at: (first_day_of_other_month + 6.days), participations: [participation3]) }
-
   describe "#call" do
     let!(:result) { subject }
 
@@ -56,7 +39,7 @@ describe Stats::ComputeAverageTimeBetweenInvitationAndRdvInDays, type: :service 
     end
 
     it "computes the average time between first invitation and first rdv in days" do
-      expect(result.value).to eq(4)
+      expect(result.value).to eq(3)
     end
   end
 end

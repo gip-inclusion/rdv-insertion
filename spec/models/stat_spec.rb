@@ -1,5 +1,5 @@
 describe Stat do
-  describe "deoartment_number validation" do
+  describe "department_number validation" do
     context "when the department_number is present" do
       let!(:stat) { build(:stat, department_number: "1") }
 
@@ -221,17 +221,11 @@ describe Stat do
 
       describe "#applicants_for_30_days_rdvs_seen_sample" do
         let!(:applicant3) do
-          create(:applicant, department: department, organisations: [organisation], created_at: Time.zone.today)
-        end
-        let!(:rdv_context3) do
-          create(:rdv_context, applicant: applicant3)
-        end
-        let!(:applicant4) do
           create(:applicant, department: department, organisations: [organisation],
                              created_at: 1.month.ago.beginning_of_month)
         end
-        let!(:rdv_context4) do
-          create(:rdv_context, applicant: applicant4, motif_category: "rsa_cer_signature")
+        let!(:rdv_context3) do
+          create(:rdv_context, applicant: applicant3, motif_category: "rsa_cer_signature")
         end
 
         it "scopes the collection to the department" do
@@ -239,53 +233,8 @@ describe Stat do
           expect(stat.applicants_for_30_days_rdvs_seen_sample).not_to include(applicant2)
         end
 
-        it "does not include the applicants created less than 30 days ago" do
-          expect(stat.applicants_for_30_days_rdvs_seen_sample).not_to include(applicant3)
-        end
-
         it "does not include the applicants with no motif category for a first rdv RSA" do
-          expect(stat.applicants_for_30_days_rdvs_seen_sample).not_to include(applicant4)
-        end
-      end
-
-      describe "#invited_applicants_sample" do
-        let!(:applicant3) { create(:applicant, department: department, organisations: [organisation]) }
-        let!(:applicant4) { create(:applicant, department: department, organisations: [organisation]) }
-        let!(:invitation3) { create(:invitation, applicant: applicant3, department: department, sent_at: nil) }
-        let!(:rdv_context3) do
-          create(:rdv_context, applicant: applicant3, invitations: [invitation3])
-        end
-        let!(:rdv_context4) do
-          create(:rdv_context, applicant: applicant4, invitations: [])
-        end
-
-        it "scopes the collection to the department" do
-          expect(stat.invited_applicants_sample).to include(applicant1)
-          expect(stat.invited_applicants_sample).not_to include(applicant2)
-        end
-
-        it "does not include the applicants who don't have a sent invitation" do
-          expect(stat.invited_applicants_sample).not_to include(applicant3)
-          expect(stat.invited_applicants_sample).not_to include(applicant4)
-        end
-      end
-
-      describe "#rdvs_created_by_user_sample" do
-        let!(:applicant3) { create(:applicant, department: department, organisations: [organisation]) }
-        let!(:rdv3) { create(:rdv, organisation: organisation, created_by: "agent") }
-        let!(:participation3) { create(:participation, rdv: rdv3, applicant: applicant3) }
-        let!(:applicant4) { create(:applicant, department: department, organisations: [organisation]) }
-        let!(:rdv4) { create(:rdv, organisation: organisation, created_by: "file_attente") }
-        let!(:participation4) { create(:participation, rdv: rdv4, applicant: applicant4) }
-
-        it "scopes the collection to the department" do
-          expect(stat.rdvs_created_by_user_sample).to include(rdv1)
-          expect(stat.rdvs_created_by_user_sample).not_to include(rdv2)
-        end
-
-        it "does not include the rdvs not created by user" do
-          expect(stat.rdvs_created_by_user_sample).not_to include(rdv3)
-          expect(stat.rdvs_created_by_user_sample).not_to include(rdv4)
+          expect(stat.applicants_for_30_days_rdvs_seen_sample).not_to include(applicant3)
         end
       end
     end
@@ -352,18 +301,6 @@ describe Stat do
       describe "#applicants_for_30_days_rdvs_seen_sample" do
         it "does not scope the collection to the department" do
           expect(stat.applicants_for_30_days_rdvs_seen_sample).to include(applicant2)
-        end
-      end
-
-      describe "#invited_applicants_sample" do
-        it "does not scope the collection to the department" do
-          expect(stat.invited_applicants_sample).to include(applicant2)
-        end
-      end
-
-      describe "#rdvs_created_by_user_sample" do
-        it "does not scope the collection to the department" do
-          expect(stat.rdvs_created_by_user_sample).to include(rdv2)
         end
       end
     end

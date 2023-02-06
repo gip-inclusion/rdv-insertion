@@ -67,8 +67,8 @@ module Stats
 
       def rate_of_autonomous_applicants_for_focused_month
         ComputeRateOfAutonomousApplicants.call(
-          applicants: created_during_focused_month(@stat.invited_applicants_sample),
-          rdvs: @stat.rdvs_created_by_user_sample
+          applicants: created_during_focused_month(@stat.applicants_sample),
+          rdvs: created_during_focused_month(@stat.rdvs_sample)
         ).value.round
       end
 

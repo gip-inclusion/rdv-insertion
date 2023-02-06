@@ -17,7 +17,7 @@ module Stats
       end
 
       def assign_global_stats_attributes_to_stat_record
-        ActiveRecord::Base.uncached { stat.assign_attributes(compute_global_stats.stat_attributes) }
+        stat.assign_attributes(compute_global_stats.stat_attributes)
       end
 
       def compute_global_stats

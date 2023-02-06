@@ -60,8 +60,8 @@ module Stats
 
       def rate_of_autonomous_applicants
         ComputeRateOfAutonomousApplicants.call(
-          applicants: @stat.invited_applicants_sample,
-          rdvs: @stat.rdvs_created_by_user_sample
+          applicants: @stat.applicants_sample,
+          rdvs: @stat.rdvs_sample
         ).value
       end
 
