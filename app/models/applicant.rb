@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 class Applicant < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [
     :first_name, :last_name, :birth_date, :email, :phone_number, :address, :affiliation_number, :birth_name
@@ -113,6 +114,16 @@ class Applicant < ApplicationRecord
     archived_at.present?
   end
 
+  def soft_delete
+    update_columns(
+      deleted_at: Time.zone.now,
+      affiliation_number: nil,
+      role: nil,
+      uid: nil,
+      department_internal_id: nil
+    )
+  end
+
   def as_json(_opts = {})
     super.merge(
       created_at: created_at,
@@ -150,3 +161,4 @@ class Applicant < ApplicationRecord
     address&.match(/^(.+) (\d{5}.*)$/m)
   end
 end
+# rubocop:enable Metrics/ClassLength

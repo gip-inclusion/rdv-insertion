@@ -16,7 +16,7 @@ class ApplicantsController < ApplicationController
                 :set_current_motif_category, :set_applicants, :set_rdv_contexts,
                 :filter_applicants, :order_applicants, only: [:index]
   before_action :set_organisations, only: [:new, :create]
-  before_action :set_applicant_rdv_contexts, :set_can_be_added_to_other_org, :set_back_to_list_url, only: [:show]
+  before_action :set_applicant_rdv_contexts, :set_back_to_list_url, only: [:show]
   before_action :retrieve_applicants, only: [:search]
   after_action :store_back_to_list_url, only: [:index]
 
@@ -201,10 +201,6 @@ class ApplicantsController < ApplicationController
       ).where(
         applicant: @applicant, motif_category: @all_configurations.map(&:motif_category)
       ).in_order_of(:motif_category, Motif::CHRONOLOGICALLY_SORTED_CATEGORIES)
-  end
-
-  def set_can_be_added_to_other_org
-    @can_be_added_to_other_org = (@department.organisation_ids - @applicant.organisation_ids).any?
   end
 
   def set_applicants

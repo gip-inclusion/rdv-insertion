@@ -19,7 +19,7 @@ describe "Agents can invite from index page", js: true do
   let!(:motif) { create(:motif, category: motif_category, organisation: organisation) }
 
   before do
-    setup_capybara_session(agent)
+    setup_agent_session(agent)
     stub_rdv_solidarites_invitation_requests
     stub_geo_api_request
   end

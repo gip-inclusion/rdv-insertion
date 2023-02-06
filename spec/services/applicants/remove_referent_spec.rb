@@ -25,12 +25,12 @@ describe Applicants::RemoveReferent, type: :service do
       is_a_success
     end
 
-    it "assigns the agent to the applicant" do
+    it "removes the agent from the applicant" do
       subject
       expect(applicant.reload.agents).not_to include(agent)
     end
 
-    context "when it fails to assign referent through API" do
+    context "when it fails to remove referent through API" do
       before do
         allow(RdvSolidaritesApi::DeleteReferentAssignation).to receive(:call)
           .with(
@@ -44,7 +44,7 @@ describe Applicants::RemoveReferent, type: :service do
         is_a_failure
       end
 
-      it "does not assign the agent to the applicant" do
+      it "does not remove the agent to the applicant" do
         subject
         expect(applicant.reload.agents).to include(agent)
       end

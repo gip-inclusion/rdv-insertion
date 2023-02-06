@@ -278,26 +278,6 @@ describe ApplicantsController do
       end
     end
 
-    context "when it belongs to all department organisations" do
-      it "does not show the add to organisation button" do
-        get :show, params: show_params
-
-        expect(response).to be_successful
-        expect(response.body).not_to match(/Ajouter à une organisation/)
-      end
-    end
-
-    context "when it does not belong to all department organisations" do
-      let!(:other_org) { create(:organisation, department: department) }
-
-      it "shows the add to organisation button" do
-        get :show, params: show_params
-
-        expect(response).to be_successful
-        expect(response.body).to match(/Ajouter à une organisation/)
-      end
-    end
-
     context "it shows the different contexts" do
       let!(:configuration) do
         create(:configuration, motif_category: "rsa_orientation", invitation_formats: %w[sms email])
