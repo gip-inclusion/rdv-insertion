@@ -19,7 +19,10 @@ describe SendInvitationRemindersJob do
     let!(:rdv_context4) { create(:rdv_context, status: "rdv_pending") }
     let!(:rdv_context5) { create(:rdv_context, status: "invitation_pending") }
     let!(:rdv_context6) do
-      create(:rdv_context, status: "invitation_pending", motif_category: "rsa_insertion_offer")
+      create(
+        :rdv_context,
+        status: "invitation_pending", motif_category: create(:motif_category, short_name: "rsa_insertion_offer")
+      )
     end
 
     let!(:invitation1) do

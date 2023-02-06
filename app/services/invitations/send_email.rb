@@ -22,10 +22,10 @@ module Invitations
     end
 
     def mailer_method
-      @invitation.reminder? ? mailer_method_for_invitation_reminder : mailer_method_for_first_invitation
+      @invitation.reminder? ? mailer_method_for_invitation_reminder : mailer_method_for_manual_invitation
     end
 
-    def mailer_method_for_first_invitation
+    def mailer_method_for_manual_invitation
       if @invitation.atelier?
         :invitation_for_atelier
       elsif @invitation.phone_platform?

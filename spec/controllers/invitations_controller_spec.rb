@@ -24,7 +24,7 @@ describe InvitationsController do
         id: applicant_id, organisations: [organisation]
       )
     end
-    let!(:motif_category) { "rsa_orientation" }
+    let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation") }
 
     let!(:create_params) do
       {
@@ -32,7 +32,7 @@ describe InvitationsController do
         applicant_id: applicant_id,
         invitation_format: "sms",
         help_phone_number: help_phone_number,
-        motif_category: motif_category,
+        motif_category_id: motif_category.id,
         format: "json"
       }
     end
@@ -101,7 +101,7 @@ describe InvitationsController do
           applicant_id: applicant_id,
           invitation_format: "email",
           help_phone_number: help_phone_number,
-          motif_category: motif_category,
+          motif_category_id: motif_category.id,
           rdv_solidarites_lieu_id: "3929",
           format: "json"
         }
@@ -195,7 +195,7 @@ describe InvitationsController do
             applicant_id: applicant_id,
             invitation_format: "postal",
             help_phone_number: help_phone_number,
-            motif_category: motif_category,
+            motif_category_id: motif_category.id,
             format: "pdf"
           }
         end

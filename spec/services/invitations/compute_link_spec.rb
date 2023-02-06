@@ -20,7 +20,8 @@ describe Invitations::ComputeLink, type: :service do
   let!(:applicant) do
     create(:applicant, address: address, department: department)
   end
-  let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_accompagnement") }
+  let!(:motif_category) { create(:motif_category, short_name: "rsa_accompagnement") }
+  let!(:rdv_context) { build(:rdv_context, motif_category: motif_category) }
   let!(:invitation) do
     create(
       :invitation,
@@ -61,7 +62,7 @@ describe Invitations::ComputeLink, type: :service do
       expect(subject.invitation_link).to eq(
         "https://www.rdv-solidarites.fr/prendre_rdv?address=20+avenue+de+s%C3%A9gur+75007+Paris&" \
         "city_code=75107&departement=75&invitation_token=sometoken&latitude=48.850699&longitude=2.308628&" \
-        "motif_category=rsa_accompagnement&organisation_ids%5B%5D=333&" \
+        "motif_category_short_name=rsa_accompagnement&organisation_ids%5B%5D=333&" \
         "organisation_ids%5B%5D=444&street_ban_id=75107_8909"
       )
     end
@@ -91,7 +92,7 @@ describe Invitations::ComputeLink, type: :service do
         it "does not add the attributes to the link" do
           expect(subject.invitation_link).to eq(
             "https://www.rdv-solidarites.fr/prendre_rdv?address=20+avenue+de+s%C3%A9gur+75007+Paris&" \
-            "departement=75&invitation_token=sometoken&motif_category=rsa_accompagnement&" \
+            "departement=75&invitation_token=sometoken&motif_category_short_name=rsa_accompagnement&" \
             "organisation_ids%5B%5D=333&organisation_ids%5B%5D=444"
           )
         end
@@ -119,7 +120,7 @@ describe Invitations::ComputeLink, type: :service do
       it "adds the lieu id instead of the geo attributes in the url" do
         expect(subject.invitation_link).to eq(
           "https://www.rdv-solidarites.fr/prendre_rdv?address=20+avenue+de+s%C3%A9gur+75007+Paris&" \
-          "departement=75&invitation_token=sometoken&lieu_id=5&motif_category=rsa_accompagnement&" \
+          "departement=75&invitation_token=sometoken&lieu_id=5&motif_category_short_name=rsa_accompagnement&" \
           "organisation_ids%5B%5D=333&organisation_ids%5B%5D=444"
         )
       end
@@ -134,7 +135,7 @@ describe Invitations::ComputeLink, type: :service do
         expect(subject.invitation_link).to eq(
           "https://www.rdv-solidarites.fr/prendre_rdv?address=20+avenue+de+s%C3%A9gur+75007+Paris&" \
           "city_code=75107&departement=75&invitation_token=sometoken&latitude=48.850699&longitude=2.308628&" \
-          "motif_category=rsa_accompagnement&organisation_ids%5B%5D=333&organisation_ids%5B%5D=444&" \
+          "motif_category_short_name=rsa_accompagnement&organisation_ids%5B%5D=333&organisation_ids%5B%5D=444&" \
           "referent_ids%5B%5D=2442&street_ban_id=75107_8909"
         )
       end

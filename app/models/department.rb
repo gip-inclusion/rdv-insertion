@@ -7,6 +7,7 @@ class Department < ApplicationRecord
   has_many :applicants, dependent: :nullify
   has_many :invitations, dependent: :nullify
   has_many :configurations, through: :organisations
+  has_many :motif_categories, through: :configurations
 
   has_many :agents, through: :organisations
   has_many :rdvs, through: :organisations
@@ -16,9 +17,5 @@ class Department < ApplicationRecord
 
   def name_with_region
     "#{name}, #{region}"
-  end
-
-  def configurations_motif_categories
-    configurations.map(&:motif_category).uniq
   end
 end

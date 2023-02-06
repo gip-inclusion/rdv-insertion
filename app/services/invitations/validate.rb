@@ -2,7 +2,7 @@ module Invitations
   class Validate < BaseService
     attr_reader :invitation
 
-    delegate :applicant, :organisations, :motif_category, :valid_until, :motif_category_human, :department_id,
+    delegate :applicant, :organisations, :motif_category, :valid_until, :motif_category_name, :department_id,
              to: :invitation
 
     def initialize(invitation:)
@@ -33,15 +33,15 @@ module Invitations
     end
 
     def validate_applicant_belongs_to_an_org_linked_to_motif_category
-      return if applicant.configurations_motif_categories.include?(motif_category)
+      return if applicant.organisations.flat_map(&:motif_categories).include?(motif_category)
 
-      result.errors << "L'allocataire n'appartient pas à une organisation qui gère la catégorie #{motif_category_human}"
+      result.errors << "L'allocataire n'appartient pas à une organisation qui gère la catégorie #{motif_category_name}"
     end
 
     def validate_motif_of_this_category_is_defined_in_organisations
-      return if organisations_motifs.map(&:category).include?(motif_category)
+      return if organisations_motifs.map(&:motif_category).include?(motif_category)
 
-      result.errors << "Aucun motif de la catégorie #{motif_category_human} n'est défini sur RDV-Solidarités"
+      result.errors << "Aucun motif de la catégorie #{motif_category_name} n'est défini sur RDV-Solidarités"
     end
 
     def validate_referents_are_assigned
@@ -52,14 +52,14 @@ module Invitations
 
     def validate_follow_up_motifs_are_defined
       return if organisations_motifs.any? do |motif|
-        motif.follow_up? && motif.category == motif_category
+        motif.follow_up? && motif.motif_category == motif_category
       end
 
-      result.errors << "Aucun motif de suivi n'a été défini pour la catégorie #{motif_category_human}"
+      result.errors << "Aucun motif de suivi n'a été défini pour la catégorie #{motif_category_name}"
     end
 
     def organisations_motifs
-      @organisations_motifs ||= Motif.where(organisation_id: organisations.map(&:id))
+      @organisations_motifs ||= Motif.includes(:motif_category).where(organisation_id: organisations.map(&:id))
     end
   end
 end

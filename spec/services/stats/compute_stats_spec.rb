@@ -5,6 +5,10 @@ describe Stats::ComputeStats, type: :service do
 
   let!(:configuration) { create(:configuration) }
   let!(:configuration_notify) { create(:configuration, convene_applicant: true, invitation_formats: []) }
+
+  let!(:category_rsa_orientation) { create(:motif_category, short_name: "rsa_orientation") }
+  let!(:category_rsa_accompagnement) { create(:motif_category, short_name: "rsa_accompagnement") }
+
   let!(:department) { create(:department) }
   let!(:relevant_organisation) { create(:organisation, configurations: [configuration], department: department) }
   let!(:irrelevant_organisation) do # this organisation is irrelevant because she's notifying the applicants
@@ -33,12 +37,12 @@ describe Stats::ComputeStats, type: :service do
 
   # ---------------------------------- rdv_contexts for relevant applicants ------------------------------------
   let!(:rdv_context_orientation) do
-    create(:rdv_context, motif_category: "rsa_orientation", created_at: "2022-04-04 10:00:00 UTC")
+    create(:rdv_context, motif_category: category_rsa_orientation, created_at: "2022-04-04 10:00:00 UTC")
   end
-  let!(:rdv_context_accompagnement) { create(:rdv_context, motif_category: "rsa_accompagnement") }
+  let!(:rdv_context_accompagnement) { create(:rdv_context, motif_category: category_rsa_accompagnement) }
   let!(:rdv_context_accompagnement2) do
     create(
-      :rdv_context, motif_category: "rsa_accompagnement", created_at: "2022-05-07 10:00:00 UTC"
+      :rdv_context, motif_category: category_rsa_accompagnement, created_at: "2022-05-07 10:00:00 UTC"
     )
   end
 

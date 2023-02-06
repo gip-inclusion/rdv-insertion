@@ -6,7 +6,7 @@ const createInvitationLetter = async (
   departmentId,
   organisationId,
   isDepartmentLevel,
-  motifCategory,
+  motifCategoryId,
   helpPhoneNumber
 ) => {
   const response = await inviteApplicant(
@@ -16,7 +16,7 @@ const createInvitationLetter = async (
     isDepartmentLevel,
     "postal",
     helpPhoneNumber,
-    motifCategory,
+    motifCategoryId,
     "application/pdf"
   );
 

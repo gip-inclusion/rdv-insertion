@@ -13,7 +13,7 @@ describe CreateAndInviteApplicantJob do
       department: department, configurations: [configuration], id: organisation_id, phone_number: "0146292929"
     )
   end
-  let!(:motif_category) { "rsa_orientation" }
+  let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation") }
   let!(:configuration) { create(:configuration, motif_category: motif_category) }
   let!(:applicant) { create(:applicant) }
   let!(:applicant_attributes) do
@@ -56,11 +56,13 @@ describe CreateAndInviteApplicantJob do
   it "enqueues invite applicant jobs" do
     expect(InviteApplicantJob).to receive(:perform_async)
       .with(
-        applicant.id, organisation.id, sms_invitation_attributes, motif_category, rdv_solidarites_session_credentials
+        applicant.id, organisation.id, sms_invitation_attributes, motif_category.id,
+        rdv_solidarites_session_credentials
       )
     expect(InviteApplicantJob).to receive(:perform_async)
       .with(
-        applicant.id, organisation.id, email_invitation_attributes, motif_category, rdv_solidarites_session_credentials
+        applicant.id, organisation.id, email_invitation_attributes, motif_category.id,
+        rdv_solidarites_session_credentials
       )
     subject
   end
@@ -71,7 +73,8 @@ describe CreateAndInviteApplicantJob do
     it "does not enqueue an invite sms job" do
       expect(InviteApplicantJob).not_to receive(:perform_async)
         .with(
-          applicant.id, organisation.id, sms_invitation_attributes, motif_category, rdv_solidarites_session_credentials
+          applicant.id, organisation.id, sms_invitation_attributes, motif_category.id,
+          rdv_solidarites_session_credentials
         )
       subject
     end
@@ -96,25 +99,29 @@ describe CreateAndInviteApplicantJob do
       expect(InviteApplicantJob).not_to receive(:perform_async)
         .with(
           applicant.id, organisation.id,
-          email_invitation_attributes, motif_category, rdv_solidarites_session_credentials
+          email_invitation_attributes, motif_category.id, rdv_solidarites_session_credentials
         )
       subject
     end
   end
 
   context "when a motif category is specified" do
-    let!(:invitation_params) { { rdv_solidarites_lieu_id: 888, motif_category: "rsa_accompagnement" } }
+    let!(:category_accompagnement) { create(:motif_category, name: "RSA accompagnement") }
+    let!(:new_configuration) do
+      create(:configuration, organisations: [organisation], motif_category: category_accompagnement)
+    end
+    let!(:invitation_params) { { rdv_solidarites_lieu_id: 888, motif_category_name: "RSA accompagnement" } }
 
     it "enqueues invite applicant jobs with the specified context" do
       expect(InviteApplicantJob).to receive(:perform_async)
         .with(
           applicant.id,
-          organisation.id, sms_invitation_attributes, "rsa_accompagnement", rdv_solidarites_session_credentials
+          organisation.id, sms_invitation_attributes, category_accompagnement.id, rdv_solidarites_session_credentials
         )
       expect(InviteApplicantJob).to receive(:perform_async)
         .with(
           applicant.id,
-          organisation.id, email_invitation_attributes, "rsa_accompagnement", rdv_solidarites_session_credentials
+          organisation.id, email_invitation_attributes, category_accompagnement.id, rdv_solidarites_session_credentials
         )
       subject
     end

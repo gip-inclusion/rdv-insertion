@@ -5,11 +5,18 @@ describe Invitations::Validate, type: :service do
     )
   end
 
+  let!(:category_orientation) do
+    create(:motif_category, name: "RSA orientation", short_name: "rsa_orientation")
+  end
+  let!(:category_accompagnement) do
+    create(:motif_category, name: "RSA accompagnement", short_name: "rsa_accompagnement")
+  end
+
   let!(:invitation) do
     create(
       :invitation,
       applicant: applicant,
-      rdv_context: build(:rdv_context, motif_category: "rsa_orientation"),
+      rdv_context: build(:rdv_context, motif_category: category_orientation),
       organisations: [organisation]
     )
   end
@@ -23,11 +30,11 @@ describe Invitations::Validate, type: :service do
   end
 
   let!(:configuration) do
-    create(:configuration, motif_category: "rsa_orientation")
+    create(:configuration, motif_category: category_orientation)
   end
 
   let!(:motif) do
-    create(:motif, category: "rsa_orientation")
+    create(:motif, motif_category: category_orientation)
   end
 
   let!(:department) do
@@ -65,7 +72,7 @@ describe Invitations::Validate, type: :service do
 
     context "when the applicant does not belong to an org for that category" do
       let!(:configuration) do
-        create(:configuration, motif_category: "rsa_accompagnement")
+        create(:configuration, motif_category: category_accompagnement)
       end
 
       it("is a failure") { is_a_failure }
@@ -78,7 +85,7 @@ describe Invitations::Validate, type: :service do
     end
 
     context "when there is no motif for that category on the organisations" do
-      before { motif.update!(category: "rsa_accompagnement") }
+      before { motif.update!(motif_category: category_accompagnement) }
 
       it("is a failure") { is_a_failure }
 
@@ -94,7 +101,7 @@ describe Invitations::Validate, type: :service do
         invitation.rdv_with_referents = true
       end
 
-      let!(:motif) { create(:motif, category: "rsa_orientation", follow_up: true) }
+      let!(:motif) { create(:motif, motif_category: category_orientation, follow_up: true) }
       let!(:agent) { create(:agent, applicants: [applicant]) }
 
       it "is_a_success" do
@@ -114,7 +121,7 @@ describe Invitations::Validate, type: :service do
       end
 
       context "when no follow up motifs are defined for the category" do
-        let!(:motif) { create(:motif, category: "rsa_orientation", follow_up: false) }
+        let!(:motif) { create(:motif, motif_category: category_orientation, follow_up: false) }
 
         it("is a failure") { is_a_failure }
 

@@ -86,15 +86,12 @@ module Exporters
 
     def filename
       if @structure.present?
-        "Export_beneficiaires_#{motif_category_title}#{@structure.class.model_name.human.downcase}_" \
+        "Export_beneficiaires_#{@motif_category.present? ? "#{@motif_category.short_name}_" : ''}" \
+          "#{@structure.class.model_name.human.downcase}_" \
           "#{@structure.name.parameterize(separator: '_')}.csv"
       else
         "Export_beneficiaires_#{Time.zone.now.to_i}.csv"
       end
-    end
-
-    def motif_category_title
-      @motif_category.present? ? "#{@motif_category}_" : ""
     end
 
     def human_rdv_context_status(applicant)

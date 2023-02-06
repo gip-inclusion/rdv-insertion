@@ -7,7 +7,7 @@ const handleApplicantInvitation = async (
   departmentId,
   organisationId,
   isDepartmentLevel,
-  motifCategory,
+  motifCategoryId,
   helpPhoneNumber,
   invitationFormat
 ) => {
@@ -17,7 +17,7 @@ const handleApplicantInvitation = async (
       departmentId,
       organisationId,
       isDepartmentLevel,
-      motifCategory,
+      motifCategoryId,
       helpPhoneNumber
     );
   }
@@ -28,7 +28,7 @@ const handleApplicantInvitation = async (
     isDepartmentLevel,
     invitationFormat,
     helpPhoneNumber,
-    motifCategory
+    motifCategoryId
   );
   if (!result.success) {
     Swal.fire(

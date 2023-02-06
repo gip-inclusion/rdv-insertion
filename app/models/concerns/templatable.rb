@@ -6,6 +6,6 @@ module Templatable
   private
 
   def motif_category_wordings
-    @motif_category_wordings ||= Templating::MotifCategoriesWordings.send(:"#{motif_category}")
+    @motif_category_wordings ||= Templating::MotifCategoriesWordings.send(:"#{motif_category.short_name}")
   end
 end

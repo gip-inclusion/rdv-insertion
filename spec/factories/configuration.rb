@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :configuration do
+    association :motif_category
     sheet_name { "LISTE DEMANDEURS" }
     invitation_formats { %w[sms] }
-    motif_category { "rsa_orientation" }
   end
 end

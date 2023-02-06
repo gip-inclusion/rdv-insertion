@@ -125,8 +125,14 @@ module Stats
     # we only consider the rdvs in the "rsa_orientation" contexts, because the other rdvs are not always
     # correctly informed by the organisations/ or are taken in the past (which mess up with the delays)
     def orientation_rdvs
-      @orientation_rdvs ||= relevant_rdvs.joins(:rdv_contexts)
-                                         .where(rdv_contexts: { motif_category: %w[rsa_orientation] })
+      @orientation_rdvs ||= \
+        relevant_rdvs
+        .joins(:rdv_contexts)
+        .where(
+          rdv_contexts: RdvContext.joins(:motif_category).where(
+            motif_category: { short_name: %w[rsa_orientation] }
+          )
+        )
     end
 
     def orientation_rdvs_by_month
@@ -259,14 +265,19 @@ module Stats
       # Bénéficiaires avec dont le droit est ouvert depuis 30 jours au moins
       # et qui ont été invités dans un contexte d'orientation
       @applicants_for_30_days_rdvs_seen_scope ||= \
-        relevant_applicants.where("applicants.created_at < ?", 30.days.ago)
-                           .joins(:rdv_contexts)
-                           .where(rdv_contexts: {
-                                    motif_category: %w[
-                                      rsa_orientation rsa_orientation_on_phone_platform rsa_accompagnement
-                                      rsa_accompagnement_social rsa_accompagnement_sociopro
-                                    ]
-                                  })
+        relevant_applicants
+        .where("applicants.created_at < ?", 30.days.ago)
+        .joins(:rdv_contexts)
+        .where(
+          rdv_contexts: RdvContext.joins(:motif_category).where(
+            motif_category: {
+              short_name: %w[
+                rsa_orientation rsa_orientation_on_phone_platform rsa_accompagnement
+                rsa_accompagnement_social rsa_accompagnement_sociopro
+              ]
+            }
+          )
+        )
     end
     # -----------------------------------------------------------------------------------------
     # ----------------------------- Rate of rdvs taken in autonomy ----------------------------

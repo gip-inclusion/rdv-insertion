@@ -1,5 +1,4 @@
 class RdvContext < ApplicationRecord
-  include HasMotifCategory
   include RdvContextStatus
   include Invitable
   include Notificable
@@ -7,12 +6,14 @@ class RdvContext < ApplicationRecord
   include HasParticipations
 
   belongs_to :applicant
+  belongs_to :motif_category
   has_many :invitations, dependent: :nullify
   has_many :participations, dependent: :nullify
   has_many :rdvs, through: :participations
   has_many :notifications, through: :participations
 
-  validates :motif_category, presence: true, uniqueness: { scope: :applicant_id }
+  delegate :position, :name, to: :motif_category, prefix: true
+  delegate :atelier?, :phone_platform?, to: :motif_category
 
   STATUSES_WITH_ACTION_REQUIRED = %w[
     rdv_needs_status_update rdv_noshow rdv_revoked rdv_excused multiple_rdvs_cancelled
@@ -38,10 +39,6 @@ class RdvContext < ApplicationRecord
 
   def time_to_accept_invitation_exceeded?(number_of_days_before_action_required)
     invitation_pending? && invited_before_time_window?(number_of_days_before_action_required)
-  end
-
-  def motif_orientation?
-    motif_category.in?(%w[rsa_orientation rsa_orientation_on_phone_platform])
   end
 
   def time_between_invitation_and_rdv_in_days
