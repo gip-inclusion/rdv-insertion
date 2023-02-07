@@ -28,6 +28,10 @@ class Organisation < ApplicationRecord
     against: [:name, :slug]
   )
 
+  def rdv_solidarites_url
+    "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{rdv_solidarites_organisation_id}"
+  end
+
   def as_json(_opts = {})
     super.merge(department_number: department_number, motif_categories: motif_categories)
   end
