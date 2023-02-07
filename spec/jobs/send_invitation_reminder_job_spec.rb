@@ -1,12 +1,21 @@
 describe SendInvitationReminderJob do
   subject do
-    described_class.new.perform(applicant_id, invitation_format)
+    described_class.new.perform(rdv_context_id, invitation_format)
   end
 
-  let!(:applicant_id) { 3333 }
+  let!(:rdv_context_id) { 3333 }
   let!(:invitation_format) { "sms" }
+  let!(:rdv_context) do
+    create(
+      :rdv_context,
+      id: rdv_context_id,
+      applicant: applicant,
+      status: "invitation_pending",
+      motif_category: create(:motif_category, name: "RSA accompagnement")
+    )
+  end
   let!(:applicant) do
-    create(:applicant, id: applicant_id, department: department)
+    create(:applicant, id: 444, department: department)
   end
   let!(:department) { create(:department) }
   let!(:organisation) { create(:organisation, department: department) }
@@ -17,10 +26,9 @@ describe SendInvitationReminderJob do
       applicant: applicant, organisations: [organisation], rdv_context: rdv_context, rdv_solidarites_token: "123",
       link: "www.rdv-solidarités.fr/prendre_rdv",
       number_of_days_to_accept_invitation: 3, help_phone_number: "0101010101",
-      rdv_solidarites_lieu_id: nil, department: department
+      rdv_solidarites_lieu_id: nil, department: department, rdv_with_referents: false
     )
   end
-  let!(:rdv_context) { create(:rdv_context, applicant: applicant, status: "invitation_pending") }
   let!(:invitation) { build(:invitation) }
 
   before do
@@ -46,7 +54,8 @@ describe SendInvitationReminderJob do
         rdv_solidarites_lieu_id: nil,
         link: "www.rdv-solidarités.fr/prendre_rdv",
         rdv_solidarites_token: "123",
-        valid_until: Time.zone.parse("2022-05-15 15:05")
+        valid_until: Time.zone.parse("2022-05-15 15:05"),
+        rdv_with_referents: false
       )
     subject
   end
@@ -71,7 +80,7 @@ describe SendInvitationReminderJob do
 
     it "sends a notification to mattermost" do
       expect(MattermostClient).to receive(:send_to_notif_channel)
-        .with("🚫 L'allocataire 3333 n'est pas éligible à la relance.")
+        .with("🚫 L'allocataire 444 n'est pas éligible à la relance pour RSA accompagnement.")
       subject
     end
   end
@@ -91,13 +100,13 @@ describe SendInvitationReminderJob do
 
     it "sends a notification to mattermost" do
       expect(MattermostClient).to receive(:send_to_notif_channel)
-        .with("🚫 L'allocataire 3333 n'est pas éligible à la relance.")
+        .with("🚫 L'allocataire 444 n'est pas éligible à la relance pour RSA accompagnement.")
       subject
     end
   end
 
   context "when the rdv context status is not invitation_pending" do
-    let!(:rdv_context) { create(:rdv_context, applicant: applicant, status: "rdv_pending") }
+    before { rdv_context.update! status: "rdv_pending" }
 
     it "does not instanciate an invitation" do
       expect(Invitation).not_to receive(:new)
@@ -111,13 +120,13 @@ describe SendInvitationReminderJob do
 
     it "sends a notification to mattermost" do
       expect(MattermostClient).to receive(:send_to_notif_channel)
-        .with("🚫 L'allocataire 3333 n'est pas éligible à la relance.")
+        .with("🚫 L'allocataire 444 n'est pas éligible à la relance pour RSA accompagnement.")
       subject
     end
   end
 
   context "when an invitation has already been sent in the last 24hrs in the same format" do
-    let!(:invitation) { create(:invitation, sent_at: Time.zone.parse("2022-05-04 08:00"), applicant: applicant) }
+    let!(:invitation) { create(:invitation, sent_at: Time.zone.parse("2022-05-04 08:00"), rdv_context: rdv_context) }
 
     it "does not instanciate an invitation" do
       expect(Invitation).not_to receive(:new)
