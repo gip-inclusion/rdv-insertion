@@ -1,16 +1,15 @@
 describe Stats::ComputePercentageOfNoShow, type: :service do
-  subject { described_class.call(rdvs: rdvs) }
+  subject { described_class.call(participations: participations) }
 
   let!(:first_day_of_last_month) { 1.month.ago.beginning_of_month }
 
-  let!(:rdvs) { Rdv.where(id: [rdv1, rdv2]) }
+  let!(:participations) { Participation.where(id: [participation1, participation2]) }
 
   # First rdv : created 1 month ago, seen status
-  let!(:rdv1) { create(:rdv, created_at: first_day_of_last_month, status: "seen") }
+  let!(:participation1) { create(:participation, created_at: first_day_of_last_month, status: "seen") }
 
   # Second rdv : created 1 month ago, noshow status
-
-  let!(:rdv2) { create(:rdv, created_at: first_day_of_last_month, status: "noshow") }
+  let!(:participation2) { create(:participation, created_at: first_day_of_last_month, status: "noshow") }
 
   describe "#call" do
     let!(:result) { subject }

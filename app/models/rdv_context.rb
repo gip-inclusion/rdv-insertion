@@ -2,13 +2,13 @@ class RdvContext < ApplicationRecord
   include RdvContextStatus
   include Invitable
   include Notificable
-  include HasRdvs
-  include HasParticipations
+  include HasRdvsAndParticipations
 
   belongs_to :applicant
   belongs_to :motif_category
   has_many :invitations, dependent: :nullify
   has_many :participations, dependent: :nullify
+
   has_many :rdvs, through: :participations
   has_many :notifications, through: :participations
 
@@ -42,7 +42,7 @@ class RdvContext < ApplicationRecord
   end
 
   def time_between_invitation_and_rdv_in_days
-    first_rdv_creation_date.to_datetime.mjd - first_invitation_sent_at.to_datetime.mjd
+    first_participation_creation_date.to_datetime.mjd - first_invitation_sent_at.to_datetime.mjd
   end
 
   def as_json(_opts = {})

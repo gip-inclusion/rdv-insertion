@@ -1,5 +1,13 @@
-module HasRdvs
+module HasRdvsAndParticipations
   extend ActiveSupport::Concern
+
+  def last_created_participation
+    participations.max_by(&:created_at)
+  end
+
+  def seen_participations
+    participations.to_a.select(&:seen?)
+  end
 
   def seen_rdvs
     seen_participations.map(&:rdv).uniq
@@ -15,6 +23,10 @@ module HasRdvs
 
   def first_rdv_creation_date
     rdvs.min_by(&:created_at).created_at
+  end
+
+  def first_participation_creation_date
+    participations.min_by(&:created_at).created_at
   end
 
   def last_rdv

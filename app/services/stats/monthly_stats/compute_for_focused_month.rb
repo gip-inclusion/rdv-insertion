@@ -34,7 +34,7 @@ module Stats
       end
 
       def rdvs_count_for_focused_month
-        created_during_focused_month(@stat.all_rdvs).count
+        created_during_focused_month(@stat.all_participations).count
       end
 
       def sent_invitations_count_for_focused_month
@@ -43,7 +43,7 @@ module Stats
 
       def percentage_of_no_show_for_focused_month
         ComputePercentageOfNoShow.call(
-          rdvs: created_during_focused_month(@stat.rdvs_sample)
+          participations: created_during_focused_month(@stat.participations_sample)
         ).value.round
       end
 
@@ -54,8 +54,8 @@ module Stats
       end
 
       def average_time_between_rdv_creation_and_start_in_days_for_focused_month
-        ComputeAverageTimeBetweenRdvCreationAndStartInDays.call(
-          rdvs: created_during_focused_month(@stat.rdvs_sample)
+        ComputeAverageTimeBetweenParticipationCreationAndRdvStartInDays.call(
+          participations: created_during_focused_month(@stat.participations_sample)
         ).value.round
       end
 
@@ -65,10 +65,12 @@ module Stats
         ).value.round
       end
 
+      # as long as the "created_by" is not informed on the participation, we exclude from this calculation
+      # the rdvs that belong to a collectif motif and the applicants that do not have at least one non collectif rdv
       def rate_of_autonomous_applicants_for_focused_month
         ComputeRateOfAutonomousApplicants.call(
-          applicants: created_during_focused_month(@stat.applicants_sample),
-          rdvs: created_during_focused_month(@stat.rdvs_sample)
+          applicants: created_during_focused_month(@stat.applicants_with_rdvs_non_collectifs_sample),
+          rdvs: created_during_focused_month(@stat.rdvs_non_collectifs_sample)
         ).value.round
       end
 

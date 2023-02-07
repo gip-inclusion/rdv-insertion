@@ -13,6 +13,8 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
   let!(:applicant2) { create(:applicant, department: department, created_at: first_day_of_other_month) }
   let!(:rdv1) { create(:rdv, created_at: first_day_of_last_month, organisation: organisation) }
   let!(:rdv2) { create(:rdv, created_at: first_day_of_other_month, organisation: organisation) }
+  let!(:participation1) { create(:participation, created_at: first_day_of_last_month, rdv: rdv1) }
+  let!(:participation2) { create(:participation, created_at: first_day_of_other_month, rdv: rdv2) }
   let!(:rdv_context1) { create(:rdv_context, created_at: first_day_of_last_month, applicant: applicant1) }
   let!(:rdv_context2) { create(:rdv_context, created_at: first_day_of_other_month, applicant: applicant2) }
   let!(:invitation1) do
@@ -26,10 +28,12 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
     before do
       allow(stat).to receive(:all_applicants)
         .and_return(Applicant.where(id: [applicant1, applicant2]))
-      allow(stat).to receive(:all_rdvs)
-        .and_return(Rdv.where(id: [rdv1, rdv2]))
+      allow(stat).to receive(:all_participations)
+        .and_return(Participation.where(id: [participation1, participation2]))
       allow(stat).to receive(:invitations_sample)
         .and_return(Invitation.where(id: [invitation1, invitation2]))
+      allow(stat).to receive(:participations_sample)
+        .and_return(Participation.where(id: [participation1, participation2]))
       allow(stat).to receive(:rdvs_sample)
         .and_return(Rdv.where(id: [rdv1, rdv2]))
       allow(stat).to receive(:rdv_contexts_sample)
@@ -38,11 +42,15 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
         .and_return(Applicant.where(id: [applicant1, applicant2]))
       allow(stat).to receive(:applicants_for_30_days_rdvs_seen_sample)
         .and_return(Applicant.where(id: [applicant1, applicant2]))
+      allow(stat).to receive(:applicants_with_rdvs_non_collectifs_sample)
+        .and_return(Applicant.where(id: [applicant1, applicant2]))
+      allow(stat).to receive(:rdvs_non_collectifs_sample)
+        .and_return(Rdv.where(id: [rdv1, rdv2]))
       allow(Stats::ComputePercentageOfNoShow).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 50.0))
       allow(Stats::ComputeAverageTimeBetweenInvitationAndRdvInDays).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 4.0))
-      allow(Stats::ComputeAverageTimeBetweenRdvCreationAndStartInDays).to receive(:call)
+      allow(Stats::ComputeAverageTimeBetweenParticipationCreationAndRdvStartInDays).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 4.0))
       allow(Stats::ComputeRateOfApplicantsWithRdvSeenInLessThanThirtyDays).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 50.0))
@@ -87,7 +95,7 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
     end
 
     it "counts the rdvs for the focused month" do
-      expect(stat).to receive(:all_rdvs)
+      expect(stat).to receive(:all_participations)
       # rdv1 is ok, rdv2 is not created in the focused month
       expect(subject.stats_values[:rdvs_count_grouped_by_month]).to eq(1)
     end
@@ -99,9 +107,9 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
     end
 
     it "computes the percentage of no show" do
-      expect(stat).to receive(:rdvs_sample)
+      expect(stat).to receive(:participations_sample)
       expect(Stats::ComputePercentageOfNoShow).to receive(:call)
-        .with(rdvs: [rdv1])
+        .with(participations: [participation1])
       subject
     end
 
@@ -113,9 +121,9 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
     end
 
     it "computes the average time between the creation of the rdvs and the rdvs date in days" do
-      expect(stat).to receive(:rdvs_sample)
-      expect(Stats::ComputeAverageTimeBetweenRdvCreationAndStartInDays).to receive(:call)
-        .with(rdvs: [rdv1])
+      expect(stat).to receive(:participations_sample)
+      expect(Stats::ComputeAverageTimeBetweenParticipationCreationAndRdvStartInDays).to receive(:call)
+        .with(participations: [participation1])
       subject
     end
 
@@ -127,8 +135,8 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
     end
 
     it "computes the percentage of invited applicants with at least on rdv taken in autonomy" do
-      expect(stat).to receive(:applicants_sample)
-      expect(stat).to receive(:rdvs_sample)
+      expect(stat).to receive(:applicants_with_rdvs_non_collectifs_sample)
+      expect(stat).to receive(:rdvs_non_collectifs_sample)
       expect(Stats::ComputeRateOfAutonomousApplicants).to receive(:call)
         .with(applicants: [applicant1],
               rdvs: [rdv1])

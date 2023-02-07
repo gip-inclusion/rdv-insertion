@@ -11,6 +11,8 @@ describe Stats::GlobalStats::Compute, type: :service do
   let!(:applicant2) { create(:applicant, department: department) }
   let!(:rdv1) { create(:rdv, organisation: organisation) }
   let!(:rdv2) { create(:rdv, organisation: organisation) }
+  let!(:participation1) { create(:participation, rdv: rdv1) }
+  let!(:participation2) { create(:participation, rdv: rdv2) }
   let!(:rdv_context1) { create(:rdv_context, applicant: applicant1) }
   let!(:rdv_context2) { create(:rdv_context, applicant: applicant2) }
   let!(:invitation1) { create(:invitation, department: department) }
@@ -21,25 +23,31 @@ describe Stats::GlobalStats::Compute, type: :service do
     before do
       allow(stat).to receive(:all_applicants)
         .and_return(Applicant.where(id: [applicant1, applicant2]))
-      allow(stat).to receive(:all_rdvs)
-        .and_return(Rdv.where(id: [rdv1, rdv2]))
+      allow(stat).to receive(:all_participations)
+        .and_return(Participation.where(id: [participation1, participation2]))
       allow(stat).to receive(:invitations_sample)
         .and_return(Invitation.where(id: [invitation1, invitation2]))
+      allow(stat).to receive(:participations_sample)
+        .and_return(Participation.where(id: [participation1, participation2]))
       allow(stat).to receive(:rdvs_sample)
         .and_return(Rdv.where(id: [rdv1, rdv2]))
       allow(stat).to receive(:rdv_contexts_sample)
         .and_return(RdvContext.where(id: [rdv_context1, rdv_context2]))
       allow(stat).to receive(:applicants_sample)
         .and_return(Applicant.where(id: [applicant1, applicant2]))
-      allow(stat).to receive(:agents_sample)
-        .and_return(Agent.where(id: [agent]))
       allow(stat).to receive(:applicants_for_30_days_rdvs_seen_sample)
         .and_return(Applicant.where(id: [applicant1, applicant2]))
+      allow(stat).to receive(:applicants_with_rdvs_non_collectifs_sample)
+        .and_return(Applicant.where(id: [applicant1, applicant2]))
+      allow(stat).to receive(:rdvs_non_collectifs_sample)
+        .and_return(Rdv.where(id: [rdv1, rdv2]))
+      allow(stat).to receive(:agents_sample)
+        .and_return(Agent.where(id: [agent]))
       allow(Stats::ComputePercentageOfNoShow).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 50.0))
       allow(Stats::ComputeAverageTimeBetweenInvitationAndRdvInDays).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 4.0))
-      allow(Stats::ComputeAverageTimeBetweenRdvCreationAndStartInDays).to receive(:call)
+      allow(Stats::ComputeAverageTimeBetweenParticipationCreationAndRdvStartInDays).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 4.0))
       allow(Stats::ComputeRateOfApplicantsWithRdvSeenInLessThanThirtyDays).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 50.0))
@@ -85,7 +93,7 @@ describe Stats::GlobalStats::Compute, type: :service do
     end
 
     it "counts the rdvs" do
-      expect(stat).to receive(:all_rdvs)
+      expect(stat).to receive(:all_participations)
       expect(subject.stat_attributes[:rdvs_count]).to eq(2)
     end
 
@@ -95,9 +103,9 @@ describe Stats::GlobalStats::Compute, type: :service do
     end
 
     it "computes the percentage of no show" do
-      expect(stat).to receive(:rdvs_sample)
+      expect(stat).to receive(:participations_sample)
       expect(Stats::ComputePercentageOfNoShow).to receive(:call)
-        .with(rdvs: [rdv1, rdv2])
+        .with(participations: [participation1, participation2])
       subject
     end
 
@@ -109,9 +117,9 @@ describe Stats::GlobalStats::Compute, type: :service do
     end
 
     it "computes the average time between the creation of the rdvs and the rdvs date in days" do
-      expect(stat).to receive(:rdvs_sample)
-      expect(Stats::ComputeAverageTimeBetweenRdvCreationAndStartInDays).to receive(:call)
-        .with(rdvs: [rdv1, rdv2])
+      expect(stat).to receive(:participations_sample)
+      expect(Stats::ComputeAverageTimeBetweenParticipationCreationAndRdvStartInDays).to receive(:call)
+        .with(participations: [participation1, participation2])
       subject
     end
 
@@ -123,8 +131,8 @@ describe Stats::GlobalStats::Compute, type: :service do
     end
 
     it "computes the percentage of invited applicants with at least on rdv taken in autonomy" do
-      expect(stat).to receive(:applicants_sample)
-      expect(stat).to receive(:rdvs_sample)
+      expect(stat).to receive(:applicants_with_rdvs_non_collectifs_sample)
+      expect(stat).to receive(:rdvs_non_collectifs_sample)
       expect(Stats::ComputeRateOfAutonomousApplicants).to receive(:call)
         .with(applicants: [applicant1, applicant2], rdvs: [rdv1, rdv2])
       subject

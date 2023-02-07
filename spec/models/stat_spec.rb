@@ -75,10 +75,10 @@ describe Stat do
         end
       end
 
-      describe "#all_rdvs" do
+      describe "#all_participations" do
         it "scopes the collection to the department" do
-          expect(stat.all_rdvs).to include(rdv1)
-          expect(stat.all_rdvs).not_to include(rdv2)
+          expect(stat.all_participations).to include(participation1)
+          expect(stat.all_participations).not_to include(participation2)
         end
       end
 
@@ -259,9 +259,9 @@ describe Stat do
         end
       end
 
-      describe "#all_rdvs" do
+      describe "#all_participations" do
         it "does not scope the collection to the department" do
-          expect(stat.all_rdvs).to include(rdv2)
+          expect(stat.all_participations).to include(participation2)
         end
       end
 

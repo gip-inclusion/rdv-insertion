@@ -1,5 +1,3 @@
-# rubocop:disable Metrics/ClassLength
-
 class Applicant < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [
     :first_name, :last_name, :birth_date, :email, :phone_number, :address, :affiliation_number, :birth_name
@@ -15,8 +13,7 @@ class Applicant < ApplicationRecord
   include Notificable
   include Phonable
   include Invitable
-  include HasRdvs
-  include HasParticipations
+  include HasRdvsAndParticipations
 
   before_validation :generate_uid
 
@@ -51,7 +48,7 @@ class Applicant < ApplicationRecord
   scope :without_rdv_contexts, lambda { |motif_categories|
     where.not(id: joins(:rdv_contexts).where(rdv_contexts: { motif_category: motif_categories }).ids)
   }
-  scope :with_sent_invitations, -> { joins(:invitations).where.not(invitations: { sent_at: nil }) }
+  scope :with_sent_invitations, -> { joins(:invitations).where.not(invitations: { sent_at: nil }).distinct }
 
   def rdv_seen_delay_in_days
     return if first_seen_rdv_starts_at.blank?
@@ -159,5 +156,3 @@ class Applicant < ApplicationRecord
     address&.match(/^(.+) (\d{5}.*)$/m)
   end
 end
-
-# rubocop:enable Metrics/ClassLength
