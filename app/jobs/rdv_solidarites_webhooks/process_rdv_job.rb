@@ -54,11 +54,8 @@ module RdvSolidaritesWebhooks
       @motif_category ||= MotifCategory.find_by(short_name: rdv_solidarites_motif_category&.short_name)
     end
 
-    # Category is checked through the webhook directly and not through the motif we have in DB since it's always
-    # more reliable than our cache
     def unhandled_category?
-      MotifCategory.pluck(:short_name).exclude?(rdv_solidarites_motif_category&.short_name) ||
-        motif_category.nil?
+      rdv_solidarites_motif_category.nil? || motif_category.nil? || matching_configuration.nil?
     end
 
     def event
