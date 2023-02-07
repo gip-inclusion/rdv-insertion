@@ -13,9 +13,12 @@ class UploadsController < ApplicationController
     @department = Department.find(params[:department_id])
     authorize @department, :upload?
     @organisation = nil
-    @all_configurations = (policy_scope(::Configuration).includes(:motif_category) & @department.configurations)
-                          .uniq(&:motif_category_id)
-                          .sort_by(&:motif_category_position)
+
+    @all_configurations = (
+      policy_scope(::Configuration).includes(:motif_category, :file_configuration) &
+      @department.configurations
+    ).uniq(&:motif_category_id).sort_by(&:motif_category_position)
+
     set_current_configuration
   end
 

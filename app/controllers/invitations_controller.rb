@@ -72,11 +72,9 @@ class InvitationsController < ApplicationController
 
   def set_organisations
     @organisations = \
-      if department_level?
-        policy_scope(Organisation).where(department_id: params[:department_id])
-      else
-        policy_scope(Organisation).where(id: params[:organisation_id])
-      end
+      policy_scope(Organisation)
+      .includes(:motif_categories, :department, :messages_configuration)
+      .where(department_level? ? { department_id: params[:department_id] } : { id: params[:organisation_id] })
   end
 
   def set_rdv_context
