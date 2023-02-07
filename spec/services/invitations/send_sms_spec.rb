@@ -5,6 +5,8 @@ describe Invitations::SendSms, type: :service do
     )
   end
 
+  include_context "with all existing categories"
+
   let!(:help_phone_number) { "0147200001" }
   let!(:phone_number) { "0782605941" }
   let!(:phone_number_formatted) { "+33782605941" }
@@ -23,7 +25,7 @@ describe Invitations::SendSms, type: :service do
       region: "Auvergne-Rhône-Alpes"
     )
   end
-  let!(:configuration) { create(:configuration, motif_category: "rsa_orientation") }
+  let!(:configuration) { create(:configuration, motif_category: category_rsa_orientation) }
   let!(:organisation) { create(:organisation, configurations: [configuration], department: department) }
 
   let!(:invitation) do
@@ -35,7 +37,7 @@ describe Invitations::SendSms, type: :service do
     )
   end
 
-  let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_orientation") }
+  let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_orientation) }
   let!(:content) do
     "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous " \
       "d'orientation. " \
@@ -91,10 +93,11 @@ describe Invitations::SendSms, type: :service do
           "En cas de problème technique, contactez le 0147200001."
       end
 
-      %w[rsa_accompagnement rsa_accompagnement_social rsa_accompagnement_sociopro].each do |motif_category|
+      %w[category_rsa_accompagnement category_rsa_accompagnement_social category_rsa_accompagnement_sociopro]
+        .each do |motif_category|
         before do
-          rdv_context.motif_category = motif_category
-          configuration.motif_category = motif_category
+          rdv_context.motif_category = send(motif_category)
+          configuration.motif_category = send(motif_category)
         end
 
         it("is a success") { is_a_success }
@@ -130,8 +133,8 @@ describe Invitations::SendSms, type: :service do
     end
 
     context "for rsa orientation on phone platform" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_orientation_on_phone_platform") }
-      let!(:configuration) { create(:configuration, motif_category: "rsa_orientation_on_phone_platform") }
+      let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_orientation_on_phone_platform) }
+      let!(:configuration) { create(:configuration, motif_category: category_rsa_orientation_on_phone_platform) }
       let!(:content) do
         "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez contacter la plateforme départementale " \
           "afin de démarrer un parcours d'accompagnement. Pour cela, merci d'appeler le " \
@@ -168,8 +171,8 @@ describe Invitations::SendSms, type: :service do
     end
 
     context "for rsa cer signature" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_cer_signature") }
-      let!(:configuration) { create(:configuration, motif_category: "rsa_cer_signature") }
+      let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_cer_signature) }
+      let!(:configuration) { create(:configuration, motif_category: category_rsa_cer_signature) }
       let!(:content) do
         "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez vous présenter à " \
           "un rendez-vous de signature de CER." \
@@ -212,8 +215,8 @@ describe Invitations::SendSms, type: :service do
     end
 
     context "for rsa_main_tendue" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_main_tendue") }
-      let!(:configuration) { create(:configuration, motif_category: "rsa_main_tendue") }
+      let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_main_tendue) }
+      let!(:configuration) { create(:configuration, motif_category: category_rsa_main_tendue) }
       let!(:content) do
         "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez vous présenter à " \
           "un entretien de main tendue." \
@@ -255,8 +258,8 @@ describe Invitations::SendSms, type: :service do
     end
 
     context "for rsa_atelier_collectif_mandatory" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_atelier_collectif_mandatory") }
-      let!(:configuration) { create(:configuration, motif_category: "rsa_atelier_collectif_mandatory") }
+      let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_atelier_collectif_mandatory) }
+      let!(:configuration) { create(:configuration, motif_category: category_rsa_atelier_collectif_mandatory) }
       let!(:content) do
         "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez vous présenter à un atelier collectif." \
           " Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant dans les " \
@@ -297,8 +300,8 @@ describe Invitations::SendSms, type: :service do
     end
 
     context "for rsa_spie" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_spie") }
-      let!(:configuration) { create(:configuration, motif_category: "rsa_spie") }
+      let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_spie) }
+      let!(:configuration) { create(:configuration, motif_category: category_rsa_spie) }
       let!(:content) do
         "Monsieur John DOE,\nVous êtes demandeur d'emploi et vous devez vous présenter à un rendez-vous " \
           "d'accompagnement." \
@@ -341,8 +344,8 @@ describe Invitations::SendSms, type: :service do
     end
 
     context "for rsa_integration_information" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_integration_information") }
-      let!(:configuration) { create(:configuration, motif_category: "rsa_integration_information") }
+      let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_integration_information) }
+      let!(:configuration) { create(:configuration, motif_category: category_rsa_integration_information) }
       let!(:content) do
         "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez vous présenter à un rendez-vous " \
           "d'information." \
@@ -384,8 +387,8 @@ describe Invitations::SendSms, type: :service do
     # ici
 
     context "for rsa insertion offer" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_insertion_offer") }
-      let!(:configuration) { create(:configuration, motif_category: "rsa_insertion_offer") }
+      let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_insertion_offer) }
+      let!(:configuration) { create(:configuration, motif_category: category_rsa_insertion_offer) }
       let!(:content) do
         "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement en parcours " \
           "professionnel ou socio-professionel. Pour profiter au mieux de cet accompagnement, nous vous invitons " \
@@ -405,8 +408,8 @@ describe Invitations::SendSms, type: :service do
     end
 
     context "for rsa_atelier_competences" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_atelier_competences") }
-      let!(:configuration) { create(:configuration, motif_category: "rsa_atelier_competences") }
+      let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_atelier_competences) }
+      let!(:configuration) { create(:configuration, motif_category: category_rsa_atelier_competences) }
       let!(:content) do
         "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement en parcours " \
           "professionnel ou socio-professionel. Pour profiter au mieux de cet accompagnement, nous vous invitons " \
@@ -426,8 +429,8 @@ describe Invitations::SendSms, type: :service do
     end
 
     context "for rsa_atelier_rencontres_pro" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_atelier_rencontres_pro") }
-      let!(:configuration) { create(:configuration, motif_category: "rsa_atelier_rencontres_pro") }
+      let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_atelier_rencontres_pro) }
+      let!(:configuration) { create(:configuration, motif_category: category_rsa_atelier_rencontres_pro) }
       let!(:content) do
         "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement en parcours " \
           "professionnel ou socio-professionel. Pour profiter au mieux de cet accompagnement, nous vous invitons " \
@@ -447,8 +450,8 @@ describe Invitations::SendSms, type: :service do
     end
 
     context "for rsa follow up" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_follow_up") }
-      let!(:configuration) { create(:configuration, motif_category: "rsa_follow_up") }
+      let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_follow_up) }
+      let!(:configuration) { create(:configuration, motif_category: category_rsa_follow_up) }
       let!(:content) do
         "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez vous présenter à " \
           "un rendez-vous de suivi. " \

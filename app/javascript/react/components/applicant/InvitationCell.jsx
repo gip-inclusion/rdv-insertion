@@ -30,7 +30,7 @@ export default function InvitationCell({
       applicant.department.id,
       applicant.currentOrganisation.id,
       isDepartmentLevel,
-      applicant.currentConfiguration.motif_category,
+      applicant.currentConfiguration.motif_category_id,
       applicant.currentOrganisation.phone_number,
     ];
     const result = await handleApplicantInvitation(...invitationParams, format);

@@ -12,7 +12,7 @@ class ConfigurationsOrganisation < ApplicationRecord
     existing_categories = organisation.configurations.reject { |c| c.id == configuration.id }.map(&:motif_category)
     return unless existing_categories.include?(configuration.motif_category)
 
-    errors.add(:base, "l'organisation est déjà rattachée à cette catégorie de motif")
+    errors.add(:base, "l'organisation a déjà une configuration pour cette catégorie de motif")
   end
 
   # When we add motif category in an organisation, we want all the applicants to be linked

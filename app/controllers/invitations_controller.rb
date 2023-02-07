@@ -29,7 +29,7 @@ class InvitationsController < ApplicationController
 
   def invitation_params
     params.permit(
-      :invitation_format, :help_phone_number, :rdv_solidarites_lieu_id, :motif_category
+      :invitation_format, :help_phone_number, :rdv_solidarites_lieu_id, :motif_category_id
     )
   end
 
@@ -97,11 +97,12 @@ class InvitationsController < ApplicationController
   end
 
   def set_current_configuration
-    @current_configuration = @organisations.flat_map(&:configurations).find { |c| c.motif_category == @motif_category }
+    @current_configuration = @organisations.preload(:configurations)
+                                           .flat_map(&:configurations).find { |c| c.motif_category == @motif_category }
   end
 
   def set_motif_category
-    @motif_category = invitation_params[:motif_category]
+    @motif_category = MotifCategory.find(invitation_params[:motif_category_id])
   end
 
   def set_department

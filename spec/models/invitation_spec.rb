@@ -3,7 +3,7 @@ describe Invitation do
     let!(:department) { create(:department) }
     let!(:organisation) { create(:organisation, department: department) }
     let!(:applicant) { create(:applicant) }
-    let!(:rdv_context) { build(:rdv_context, motif_category: "rsa_orientation") }
+    let!(:rdv_context) { build(:rdv_context) }
     let!(:invitation) do
       build(
         :invitation,

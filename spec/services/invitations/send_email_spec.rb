@@ -5,6 +5,8 @@ describe Invitations::SendEmail, type: :service do
     )
   end
 
+  include_context "with all existing categories"
+
   let!(:applicant) { create(:applicant) }
 
   describe "#call" do
@@ -18,7 +20,7 @@ describe Invitations::SendEmail, type: :service do
         create(
           :invitation,
           applicant: applicant,
-          rdv_context: build(:rdv_context, motif_category: "rsa_orientation")
+          rdv_context: build(:rdv_context, motif_category: category_rsa_orientation)
         )
       end
 
@@ -41,7 +43,7 @@ describe Invitations::SendEmail, type: :service do
           create(
             :invitation,
             applicant: applicant,
-            rdv_context: build(:rdv_context, motif_category: "rsa_orientation"),
+            rdv_context: build(:rdv_context, motif_category: category_rsa_orientation),
             reminder: true
           )
         end
@@ -67,7 +69,7 @@ describe Invitations::SendEmail, type: :service do
         create(
           :invitation,
           applicant: applicant,
-          rdv_context: build(:rdv_context, motif_category: "rsa_orientation_on_phone_platform")
+          rdv_context: build(:rdv_context, motif_category: category_rsa_orientation_on_phone_platform)
         )
       end
 
@@ -90,7 +92,7 @@ describe Invitations::SendEmail, type: :service do
           create(
             :invitation,
             applicant: applicant,
-            rdv_context: build(:rdv_context, motif_category: "rsa_orientation_on_phone_platform"),
+            rdv_context: build(:rdv_context, motif_category: category_rsa_orientation_on_phone_platform),
             reminder: true
           )
         end
@@ -116,7 +118,7 @@ describe Invitations::SendEmail, type: :service do
         create(
           :invitation,
           applicant: applicant,
-          rdv_context: build(:rdv_context, motif_category: "rsa_insertion_offer")
+          rdv_context: build(:rdv_context, motif_category: category_rsa_insertion_offer)
         )
       end
 
@@ -140,7 +142,7 @@ describe Invitations::SendEmail, type: :service do
         create(
           :invitation,
           applicant: applicant,
-          rdv_context: build(:rdv_context, motif_category: "rsa_atelier_competences")
+          rdv_context: build(:rdv_context, motif_category: category_rsa_atelier_competences)
         )
       end
 
@@ -164,7 +166,7 @@ describe Invitations::SendEmail, type: :service do
         create(
           :invitation,
           applicant: applicant,
-          rdv_context: build(:rdv_context, motif_category: "rsa_atelier_rencontres_pro")
+          rdv_context: build(:rdv_context, motif_category: category_rsa_atelier_rencontres_pro)
         )
       end
 

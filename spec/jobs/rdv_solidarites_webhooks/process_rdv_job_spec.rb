@@ -18,7 +18,12 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
   end
   let!(:lieu_attributes) { { id: rdv_solidarites_lieu_id, name: "DINUM", address: "20 avenue de Ségur" } }
   let!(:motif_attributes) do
-    { id: 53, location_type: "public_office", category: "rsa_orientation", name: "RSA orientation" }
+    {
+      id: 53,
+      location_type: "public_office",
+      motif_category: { short_name: "rsa_orientation" },
+      name: "RSA orientation"
+    }
   end
   let!(:users) { [{ id: user_id1 }, { id: user_id2 }] }
   let!(:starts_at) { "2021-09-08 12:00:00 UTC" }
@@ -49,7 +54,8 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
   let!(:applicant2) { create(:applicant, organisations: [organisation], id: 4, rdv_solidarites_user_id: 443) }
   let!(:applicants) { Applicant.where(id: [applicant.id, applicant2.id]) }
 
-  let!(:configuration) { create(:configuration, convene_applicant: false, motif_category: "rsa_orientation") }
+  let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation") }
+  let!(:configuration) { create(:configuration, convene_applicant: false, motif_category: motif_category) }
   let!(:organisation) do
     create(
       :organisation,
@@ -96,20 +102,20 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
   end
 
   let!(:rdv_context) do
-    build(:rdv_context, motif_category: "rsa_orientation", applicant: applicant)
+    build(:rdv_context, motif_category: motif_category, applicant: applicant)
   end
 
   let!(:rdv_context2) do
-    build(:rdv_context, motif_category: "rsa_orientation", applicant: applicant2)
+    build(:rdv_context, motif_category: motif_category, applicant: applicant2)
   end
 
   describe "#perform" do
     before do
       allow(RdvContext).to receive(:find_or_create_by!)
-        .with(applicant: applicant, motif_category: "rsa_orientation")
+        .with(applicant: applicant, motif_category: motif_category)
         .and_return(rdv_context)
       allow(RdvContext).to receive(:find_or_create_by!)
-        .with(applicant: applicant2, motif_category: "rsa_orientation")
+        .with(applicant: applicant2, motif_category: motif_category)
         .and_return(rdv_context2)
       allow(UpsertRecordJob).to receive(:perform_async)
       allow(InvalidateInvitationJob).to receive(:perform_async)
@@ -259,9 +265,14 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
 
     context "for a convocation" do
       let!(:motif_attributes) do
-        { id: 53, location_type: "public_office", category: "rsa_orientation", name: "RSA orientation: Convocation" }
+        {
+          id: 53,
+          location_type: "public_office",
+          motif_category: { short_name: "rsa_orientation" },
+          name: "RSA orientation: Convocation"
+        }
       end
-      let!(:configuration) { create(:configuration, convene_applicant: true, motif_category: "rsa_orientation") }
+      let!(:configuration) { create(:configuration, convene_applicant: true, motif_category: motif_category) }
 
       it "sets the convocable attribute when upserting the rdv" do
         expect(UpsertRecordJob).to receive(:perform_async)

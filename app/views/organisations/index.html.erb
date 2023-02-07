@@ -20,12 +20,12 @@
                 <div class="p-3">
                   <ul class="list-inline">
                     <% if organisations.length > 1 %>
-                      <%= link_to department_applicants_path(department, motif_category: organisations.first.configurations_motif_categories.first) do %>
+                      <%= link_to department_applicants_path(department, motif_category_id: organisations.first.motif_categories.first&.id) do %>
                         <li class="my-4"><div class="col-5 pb-2 border-bottom">⭐ Toutes les organisations ⭐</div></li>
                       <% end %>
                     <% end %>
                     <% organisations.sort_by(&:name).each do |organisation| %>
-                      <%= link_to organisation_applicants_path(organisation, motif_category: organisation.configurations_motif_categories.first) do %>
+                      <%= link_to organisation_applicants_path(organisation, motif_category_id: organisation.motif_categories.first&.id) do %>
                         <li class="my-3"><div class="col-5 pb-2 border-bottom"><%= organisation.name %></div></li>
                       <% end %>
                     <% end %>

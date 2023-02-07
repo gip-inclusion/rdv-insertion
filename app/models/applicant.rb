@@ -1,4 +1,5 @@
 # rubocop:disable Metrics/ClassLength
+
 class Applicant < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [
     :first_name, :last_name, :birth_date, :email, :phone_number, :address, :affiliation_number, :birth_name
@@ -19,15 +20,19 @@ class Applicant < ApplicationRecord
 
   before_validation :generate_uid
 
+  belongs_to :department
+
   has_and_belongs_to_many :organisations
-  has_many :participations, dependent: :destroy
-  has_many :rdvs, through: :participations
-  has_many :notifications, through: :participations
   has_and_belongs_to_many :agents
+
   has_many :rdv_contexts, dependent: :destroy
   has_many :invitations, dependent: :destroy
+  has_many :participations, dependent: :destroy
+
+  has_many :rdvs, through: :participations
+  has_many :notifications, through: :participations
   has_many :configurations, through: :organisations
-  belongs_to :department
+  has_many :motif_categories, through: :rdv_contexts
 
   validates :uid, uniqueness: true, allow_nil: true
   validates :rdv_solidarites_user_id, uniqueness: true, allow_nil: true
@@ -88,7 +93,7 @@ class Applicant < ApplicationRecord
   end
 
   def rdv_context_for(motif_category)
-    rdv_contexts.to_a.find { |rc| rc.motif_category == motif_category }
+    rdv_contexts.to_a.find { |rc| rc.motif_category_id == motif_category.id }
   end
 
   def deleted?
@@ -97,14 +102,6 @@ class Applicant < ApplicationRecord
 
   def inactive?
     archived? || deleted?
-  end
-
-  def rdv_contexts_motif_categories
-    rdv_contexts.map(&:motif_category).uniq
-  end
-
-  def configurations_motif_categories
-    configurations.flat_map(&:motif_category).uniq
   end
 
   def can_be_invited_through?(invitation_format)
@@ -162,4 +159,5 @@ class Applicant < ApplicationRecord
     address&.match(/^(.+) (\d{5}.*)$/m)
   end
 end
+
 # rubocop:enable Metrics/ClassLength

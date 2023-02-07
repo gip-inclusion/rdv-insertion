@@ -13,7 +13,7 @@ class Invitation < ApplicationRecord
             presence: true
   validates :uuid, uniqueness: true, allow_nil: true
 
-  delegate :motif_category, :motif_category_human, :atelier?, :phone_platform?, to: :rdv_context
+  delegate :motif_category, :motif_category_name, :atelier?, :phone_platform?, to: :rdv_context
 
   enum format: { sms: 0, email: 1, postal: 2 }, _prefix: :format
 

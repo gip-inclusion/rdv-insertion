@@ -43,18 +43,22 @@ class CreateAndInviteApplicantJob < ApplicationJob
     InviteApplicantJob.perform_async(
       applicant.id,
       @organisation.id,
-      @invitation_params.except(:motif_category).merge(
+      @invitation_params.except(:motif_category_name).merge(
         format: invitation_format,
         help_phone_number: @organisation.phone_number
       ),
-      invitation_motif_category,
+      invitation_motif_category.id,
       @rdv_solidarites_session_credentials
     )
   end
 
   def invitation_motif_category
     # If not specified we invite on the first motif category found for the org
-    @invitation_params[:motif_category] || @organisation.configurations.first.motif_category
+    if @invitation_params[:motif_category_name].present?
+      @organisation.motif_categories.find { |mc| mc.name == @invitation_params[:motif_category_name] }
+    else
+      @organisation.motif_categories.min_by(&:position)
+    end
   end
 
   def save_applicant

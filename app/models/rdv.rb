@@ -80,7 +80,7 @@ class Rdv < ApplicationRecord
   end
 
   def rdv_contexts_motif_categories_are_uniq
-    return if rdv_contexts.pluck(:motif_category).uniq.length < 2
+    return if rdv_contexts.map(&:motif_category).uniq.length < 2
 
     errors.add(:base, "Un RDV ne peut pas être lié à deux catégories de motifs différents")
   end

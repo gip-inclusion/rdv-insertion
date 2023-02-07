@@ -35,6 +35,10 @@ yonne = Department.create!(
   pronoun: "l'",
 )
 
+puts "Creating motif categories..."
+orientation_category = MotifCategory.create!(short_name: "rsa_orientation", name: "RSA orientation")
+accompagnement_category = MotifCategory.create!(short_name: "rsa_accompagnement", name: "RSA accompagnement")
+
 # --------------------------------------------------------------------------------------------------------------------
 puts "Creating configurations and responsible..."
 drome_orientation_config = Configuration.create!(
@@ -54,7 +58,7 @@ drome_orientation_config = Configuration.create!(
     "optional"=>{"department_internal_id"=>"ID Iodas"}},
   convene_applicant: false,
   invitation_formats: ["sms", "email", "postal"],
-  motif_category: "rsa_orientation",
+  motif_category: orientation_category,
   number_of_days_to_accept_invitation: 3,
   number_of_days_before_action_required: 10
 )
@@ -76,7 +80,7 @@ drome_accompagnement_config = Configuration.create!(
     "optional"=>{"department_internal_id"=>"ID Iodas"}},
   convene_applicant: false,
   invitation_formats: ["sms", "email", "postal"],
-  motif_category: "rsa_accompagnement",
+  motif_category: accompagnement_category,
   number_of_days_to_accept_invitation: 3,
   number_of_days_before_action_required: 10
 )
@@ -96,7 +100,7 @@ yonne_orientation_config = Configuration.create!(
     "optional"=>{"birth_name"=>"Nom JF", "department_internal_id"=>"Code individu Iodas"}},
   convene_applicant: true,
   invitation_formats: [],
-  motif_category: "rsa_orientation",
+  motif_category: orientation_category,
   number_of_days_to_accept_invitation: 3,
   number_of_days_before_action_required: 10
 )
@@ -166,7 +170,7 @@ Motif.create!(
   # rdv_solidarites_service_id: vérifier l'id du service correspondant sur RDV-Solidarites
   collectif: false,
   location_type: "public_office",
-  category: "rsa_orientation",
+  motif_category: orientation_category,
   last_webhook_update_received_at: Time.zone.now,
   organisation_id: drome1_organisation.id,
   follow_up: false
@@ -182,7 +186,7 @@ Motif.create!(
   # rdv_solidarites_service_id: vérifier l'id du service correspondant sur RDV-Solidarites
   collectif: false,
   location_type: "public_office",
-  category: "rsa_accompagnement",
+  motif_category: accompagnement_category,
   last_webhook_update_received_at: Time.zone.now,
   organisation_id: drome1_organisation.id,
   follow_up: false
@@ -198,7 +202,7 @@ Motif.create!(
   # rdv_solidarites_service_id: vérifier l'id du service correspondant sur RDV-Solidarites
   collectif: false,
   location_type: "public_office",
-  category: "rsa_orientation",
+  motif_category: orientation_category,
   last_webhook_update_received_at: Time.zone.now,
   organisation_id: drome2_organisation.id,
   follow_up: false
@@ -214,7 +218,7 @@ Motif.create!(
   # rdv_solidarites_service_id: vérifier l'id du service correspondant sur RDV-Solidarites
   collectif: false,
   location_type: "public_office",
-  category: "rsa_orientation",
+  motif_category: orientation_category,
   last_webhook_update_received_at: Time.zone.now,
   organisation_id: yonne_organisation.id,
   follow_up: false
@@ -230,7 +234,7 @@ Motif.create!(
   # rdv_solidarites_service_id: vérifier l'id du service correspondant sur RDV-Solidarites
   collectif: false,
   location_type: "phone",
-  category: "rsa_orientation",
+  motif_category: orientation_category,
   last_webhook_update_received_at: Time.zone.now,
   organisation_id: yonne_organisation.id,
   follow_up: false

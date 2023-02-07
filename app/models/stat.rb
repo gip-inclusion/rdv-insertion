@@ -71,11 +71,12 @@ class Stat < ApplicationRecord
     # & invited in an orientation or accompagnement context
     @applicants_for_30_days_rdvs_seen_sample ||= \
       applicants_sample.joins(:rdv_contexts)
-                       .where(rdv_contexts: {
-                                motif_category: %w[
-                                  rsa_orientation rsa_orientation_on_phone_platform rsa_accompagnement
-                                  rsa_accompagnement_social rsa_accompagnement_sociopro
-                                ]
-                              })
+                       .where(rdv_contexts:
+                                RdvContext.joins(:motif_category).where(
+                                  motif_category: { short_name: %w[
+                                    rsa_orientation rsa_orientation_on_phone_platform rsa_accompagnement
+                                    rsa_accompagnement_social rsa_accompagnement_sociopro
+                                  ] }
+                                ))
   end
 end

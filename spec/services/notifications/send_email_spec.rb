@@ -25,11 +25,12 @@ describe Notifications::SendEmail, type: :service do
         motif: motif
       )
     end
+    let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation") }
     let!(:participation) do
       create(
         :participation,
         applicant: applicant, rdv: rdv,
-        rdv_context: build(:rdv_context, motif_category: "rsa_orientation")
+        rdv_context: build(:rdv_context, motif_category: motif_category)
       )
     end
     let!(:notification) do
@@ -50,7 +51,7 @@ describe Notifications::SendEmail, type: :service do
             applicant: applicant,
             rdv: rdv,
             signature_lines: ["Signé par la DINUM"],
-            motif_category: "rsa_orientation"
+            motif_category: motif_category
           )
         subject
       end
@@ -69,7 +70,7 @@ describe Notifications::SendEmail, type: :service do
               applicant: applicant,
               rdv: rdv,
               signature_lines: ["Signé par la DINUM"],
-              motif_category: "rsa_orientation"
+              motif_category: motif_category
             )
           subject
         end
@@ -89,7 +90,7 @@ describe Notifications::SendEmail, type: :service do
               applicant: applicant,
               rdv: rdv,
               signature_lines: ["Signé par la DINUM"],
-              motif_category: "rsa_orientation"
+              motif_category: motif_category
             )
           subject
         end
@@ -113,7 +114,7 @@ describe Notifications::SendEmail, type: :service do
               applicant: applicant,
               rdv: rdv,
               signature_lines: ["Signé par la DINUM"],
-              motif_category: "rsa_orientation"
+              motif_category: motif_category
             )
           subject
         end
@@ -133,7 +134,7 @@ describe Notifications::SendEmail, type: :service do
               applicant: applicant,
               rdv: rdv,
               signature_lines: ["Signé par la DINUM"],
-              motif_category: "rsa_orientation"
+              motif_category: motif_category
             )
           subject
         end

@@ -6,7 +6,7 @@ module RdvSolidarites
     ].freeze
     attr_reader(*RECORD_ATTRIBUTES)
 
-    delegate :presential?, :category, to: :motif
+    delegate :presential?, :motif_category, to: :motif
 
     def initialize(attributes = {})
       super(attributes)

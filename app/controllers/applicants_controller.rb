@@ -174,19 +174,22 @@ class ApplicantsController < ApplicationController
   def set_all_configurations
     @all_configurations = \
       if department_level?
-        (policy_scope(::Configuration) & @department.configurations).uniq(&:motif_category)
+        (policy_scope(::Configuration).includes(:motif_category) & @department.configurations).uniq(&:motif_category_id)
       else
-        @organisation.configurations
+        @organisation.configurations.includes(:motif_category)
       end
-    @all_configurations = @all_configurations.in_order_of(:motif_category, Motif::CHRONOLOGICALLY_SORTED_CATEGORIES)
+    @all_configurations = @all_configurations.sort_by(&:motif_category_position)
   end
 
   def set_current_configuration
     return if archived_scope?
 
     @current_configuration = \
-      @all_configurations.find { |c| c.motif_category == params[:motif_category] } ||
-      @all_configurations.first
+      if params[:motif_category_id].present?
+        @all_configurations.find { |c| c.motif_category_id == params[:motif_category_id].to_i }
+      else
+        @all_configurations.first
+      end
   end
 
   def set_current_motif_category
@@ -196,11 +199,11 @@ class ApplicantsController < ApplicationController
   def set_applicant_rdv_contexts
     @rdv_contexts = \
       RdvContext.preload(
-        :invitations,
+        :invitations, :motif_category,
         participations: [:notifications, { rdv: [:motif, :organisation] }]
       ).where(
         applicant: @applicant, motif_category: @all_configurations.map(&:motif_category)
-      ).in_order_of(:motif_category, Motif::CHRONOLOGICALLY_SORTED_CATEGORIES)
+      ).sort_by(&:motif_category_position)
   end
 
   def set_applicants
@@ -263,6 +266,7 @@ class ApplicantsController < ApplicationController
   def retrieve_applicants
     @applicants = policy_scope(Applicant).preload(
       :rdvs, :agents,
+      invitations: :rdv_context,
       rdv_contexts: [:participations],
       organisations: [:department, :configurations]
     ).distinct

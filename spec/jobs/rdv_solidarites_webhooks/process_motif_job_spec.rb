@@ -42,6 +42,33 @@ describe RdvSolidaritesWebhooks::ProcessMotifJob do
       subject
     end
 
+    context "when there is a motif category attached" do
+      let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation") }
+      let!(:data) do
+        {
+          "id" => rdv_solidarites_organisation_id,
+          "name" => "RDV d'orientation sur site",
+          "category" => "rsa_orientation",
+          "service_id" => 444,
+          "organisation_id" => rdv_solidarites_organisation_id,
+          "motif_category" => { "short_name" => "rsa_orientation" }
+        }.deep_symbolize_keys
+      end
+
+      it "enqueues upsert record job with the motif category" do
+        expect(UpsertRecordJob).to receive(:perform_async)
+          .with(
+            "Motif", motif_attributes,
+            {
+              organisation_id: organisation.id,
+              last_webhook_update_received_at: "2022-05-30 14:44:22 +0200",
+              motif_category_id: motif_category.id
+            }
+          )
+        subject
+      end
+    end
+
     context "when the organisation is not found" do
       let!(:organisation) { create(:organisation, rdv_solidarites_organisation_id: "some-id") }
 

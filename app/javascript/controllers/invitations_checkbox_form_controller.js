@@ -41,7 +41,7 @@ export default class extends Controller {
       departmentId,
       organisationId,
       isDepartmentLevel,
-      body.motif_category,
+      body.motif_category_id,
       body.help_phone_number,
       body.invitation_format
     );

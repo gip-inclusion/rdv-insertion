@@ -27,7 +27,7 @@ export default function ApplicantsUpload({
   organisation,
   configuration,
   department,
-  motifCategoryHuman,
+  motifCategoryName,
   currentAgent,
 }) {
   const columnNames = configuration.column_names;
@@ -46,8 +46,8 @@ export default function ApplicantsUpload({
 
   const redirectToApplicantList = () => {
     window.location.href = isDepartmentLevel
-      ? `/departments/${department.id}/applicants?motif_category=${configuration.motif_category}`
-      : `/organisations/${organisation.id}/applicants?motif_category=${configuration.motif_category}`;
+      ? `/departments/${department.id}/applicants?motif_category_id=${configuration.motif_category_id}`
+      : `/organisations/${organisation.id}/applicants?motif_category_id=${configuration.motif_category_id}`;
   };
 
   const retrieveApplicantsFromList = async (file) => {
@@ -210,7 +210,7 @@ export default function ApplicantsUpload({
             Ajout {isDepartmentLevel ? "au niveau du territoire" : "allocataires"}
           </h3>
           <h6>
-            ({motifCategoryHuman}
+            ({motifCategoryName}
             {configuration.rdv_with_referents && " avec réferents"})
           </h6>
 

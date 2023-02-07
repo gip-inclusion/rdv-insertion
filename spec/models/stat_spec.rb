@@ -50,11 +50,15 @@ describe Stat do
     let!(:participation1) { create(:participation, rdv: rdv1, applicant: applicant1) }
     let!(:participation2) { create(:participation, rdv: rdv2, applicant: applicant2) }
     let!(:rdv_context1) do
-      create(:rdv_context, applicant: applicant1, invitations: [invitation1], participations: [participation1])
+      create(:rdv_context, applicant: applicant1, invitations: [invitation1],
+                           participations: [participation1], motif_category: category_rsa_orientation)
     end
     let!(:rdv_context2) do
-      create(:rdv_context, applicant: applicant2, invitations: [invitation2], participations: [participation2])
+      create(:rdv_context, applicant: applicant2, invitations: [invitation2],
+                           participations: [participation2], motif_category: category_rsa_orientation)
     end
+    let!(:category_rsa_orientation) { create(:motif_category, short_name: "rsa_orientation") }
+    let!(:category_rsa_cer_signature) { create(:motif_category, short_name: "rsa_cer_signature") }
 
     context "when department_number is not 'all'" do
       describe "#all_applicants" do
@@ -225,7 +229,7 @@ describe Stat do
                              created_at: 1.month.ago.beginning_of_month)
         end
         let!(:rdv_context3) do
-          create(:rdv_context, applicant: applicant3, motif_category: "rsa_cer_signature")
+          create(:rdv_context, applicant: applicant3, motif_category: category_rsa_cer_signature)
         end
 
         it "scopes the collection to the department" do

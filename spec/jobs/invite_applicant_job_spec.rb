@@ -1,13 +1,13 @@
 describe InviteApplicantJob do
   subject do
     described_class.new.perform(
-      applicant_id, organisation_id, invitation_attributes, motif_category, rdv_solidarites_session_credentials
+      applicant_id, organisation_id, invitation_attributes, motif_category.id, rdv_solidarites_session_credentials
     )
   end
 
   let!(:applicant_id) { 9999 }
   let!(:organisation_id) { 999 }
-  let!(:motif_category) { "rsa_orientation" }
+  let!(:motif_category) { create(:motif_category) }
   let!(:department) { create(:department) }
   let!(:applicant) { create(:applicant, id: applicant_id) }
   let!(:organisation) do
@@ -29,6 +29,7 @@ describe InviteApplicantJob do
     {
       format: invitation_format,
       help_phone_number: "01010101",
+      motif_category_id: motif_category.id,
       rdv_solidarites_lieu_id: 444,
       number_of_days_to_accept_invitation: number_of_days_to_accept_invitation
     }
@@ -110,7 +111,7 @@ describe InviteApplicantJob do
     end
 
     context "when no matching configuration for motif category" do
-      let!(:other_motif_category) { "rsa_accompagnement" }
+      let!(:other_motif_category) { create(:motif_category) }
       let!(:configuration) do
         create(
           :configuration,

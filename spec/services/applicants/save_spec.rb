@@ -29,7 +29,8 @@ describe Applicants::Save, type: :service do
     }
   end
 
-  let!(:configuration) { create(:configuration, motif_category: "rsa_orientation") }
+  let!(:motif_category) { create(:motif_category) }
+  let!(:configuration) { create(:configuration, motif_category: motif_category) }
 
   let!(:applicant) do
     create(:applicant, applicant_attributes.merge(organisations: [organisation], rdv_solidarites_user_id: nil))
@@ -51,7 +52,7 @@ describe Applicants::Save, type: :service do
 
     it "finds or create a rdv context" do
       expect(RdvContext).to receive(:find_or_create_by!)
-        .with(applicant: applicant, motif_category: "rsa_orientation")
+        .with(applicant: applicant, motif_category: motif_category)
       subject
     end
 
