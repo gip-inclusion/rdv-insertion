@@ -29,7 +29,7 @@ class Stat < ApplicationRecord
 
   # We exclude the rdvs collectifs motifs to correctly compute the rate of autonomous applicants
   def rdvs_non_collectifs_sample
-    @rdvs_non_collectifs_sample ||= rdvs_sample.where(motif: Motif.not_collectif).distinct
+    @rdvs_non_collectifs_sample ||= rdvs_sample.where(motif: Motif.collectif(false)).distinct
   end
 
   def applicants_with_rdvs_non_collectifs_sample
@@ -80,8 +80,7 @@ class Stat < ApplicationRecord
   # For the rate of applicants with rdv seen in less than 30 days
   # we only consider specific contexts to focus on the first RSA rdv
   def applicants_for_30_days_rdvs_seen_sample
-    # Applicants with a right open since at least 30 days
-    # & invited in an orientation or accompagnement context
+    # Applicants invited in an orientation or accompagnement context
     @applicants_for_30_days_rdvs_seen_sample ||= \
       applicants_sample.joins(:rdv_contexts)
                        .where(rdv_contexts:

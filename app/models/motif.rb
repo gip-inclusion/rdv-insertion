@@ -13,7 +13,7 @@ class Motif < ApplicationRecord
   validates :rdv_solidarites_motif_id, uniqueness: true, presence: true
   validates :name, :location_type, presence: true
 
-  scope :not_collectif, -> { where(collectif: false) }
+  scope :collectif, ->(collectif = true) { collectif ? where(collectif: true) : where(collectif: false) }
 
   def presential?
     location_type == "public_office"
