@@ -44,16 +44,16 @@
   <div class="col-4 d-flex flex-column justify-content-center align-items-center">
     <% if image_compiled?("maps/#{@department.name.parameterize}.svg") %>
       <%= image_pack_tag("maps/#{@department.name.parameterize}.svg", alt: @department.name.parameterize, width: 50, height: 50) %>
-      <% if @department.organisations.length > 1%>
+      <% if @organisations.length > 1 %>
         <div class="dropdown">
           <a class="dropdown-toggle text-center department-map-title mb-0" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
             <%= department_level? ? @department.name : @organisation.name %>
           </a>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
             <%= link_to department_applicants_path(@department) do %>
-              <li><div class="dropdown-item"><%= @department.name %></div></li>
+              <li><div class="dropdown-item">⭐ Toutes les organisations ⭐</div></li>
             <% end %>
-            <% @department.organisations.sort_by(&:name).each do |organisation| %>
+            <% @organisations.sort_by(&:name).each do |organisation| %>
               <%= link_to organisation_applicants_path(organisation) do %>
                 <li><div class="dropdown-item"><%= organisation.name %></div></li>
               <% end %>
