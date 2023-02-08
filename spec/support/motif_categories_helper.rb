@@ -113,6 +113,7 @@ module MotifCategoriesHelper
         :motif_category,
         name: "RSA offre insertion pro",
         short_name: "rsa_insertion_offer",
+        participation_optional: true,
         template: create(
           :template,
           model: "atelier",
@@ -159,6 +160,7 @@ module MotifCategoriesHelper
         :motif_category,
         name: "RSA Atelier rencontres professionnelles",
         short_name: "rsa_atelier_rencontres_pro",
+        participation_optional: true,
         template: create(
           :template,
           model: "atelier",
@@ -172,6 +174,7 @@ module MotifCategoriesHelper
         :motif_category,
         name: "RSA Atelier compétences",
         short_name: "rsa_atelier_competences",
+        participation_optional: true,
         template: create(
           :template,
           model: "atelier",

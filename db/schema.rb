@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_01_161121) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_08_134639) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -169,6 +169,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_01_161121) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "template_id"
+    t.boolean "participation_optional", default: false
     t.index ["rdv_solidarites_motif_category_id"], name: "index_motif_categories_on_rdv_solidarites_motif_category_id", unique: true
     t.index ["short_name"], name: "index_motif_categories_on_short_name", unique: true
     t.index ["template_id"], name: "index_motif_categories_on_template_id"

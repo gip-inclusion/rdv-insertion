@@ -22,10 +22,7 @@ describe SendInvitationRemindersJob do
       create(
         :rdv_context,
         status: "invitation_pending",
-        motif_category: create(
-          :motif_category,
-          short_name: "rsa_insertion_offer"
-        ),
+        motif_category: create(:motif_category, participation_optional: true),
         applicant: applicant6
       )
     end

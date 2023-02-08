@@ -11,7 +11,7 @@ class InvitationPreview < ActionMailer::Preview
                       .send("#{motif_category.template_model}_invitation")
     end
 
-    next unless motif_category.rdvs_mandatory?
+    next if motif_category.participation_optional?
 
     define_method "#{motif_category.short_name}_rappel" do
       InvitationMailer.with(invitation: invitation, applicant: invitation.applicant)

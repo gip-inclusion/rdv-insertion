@@ -13,13 +13,7 @@ class MotifCategory < ApplicationRecord
   delegate :model, to: :template, prefix: true
   delegate :atelier?, to: :template
 
-  CATEGORIES_NOT_MANDATORY_SHORT_NAMES = %w[
-    rsa_insertion_offer rsa_atelier_competences rsa_atelier_rencontres_pro
-  ].freeze
-
-  scope :rdvs_mandatory, -> { where.not(short_name: CATEGORIES_NOT_MANDATORY_SHORT_NAMES) }
-
-  def rdvs_mandatory?
-    !short_name.in?(CATEGORIES_NOT_MANDATORY_SHORT_NAMES)
-  end
+  scope :participation_optional, lambda { |participation_optional = true|
+    where(participation_optional: participation_optional)
+  }
 end
