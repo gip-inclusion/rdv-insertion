@@ -1,4 +1,6 @@
 class MotifCategory < ApplicationRecord
+  include MotifCategory::Sortable
+
   has_many :configurations, dependent: :restrict_with_exception
   has_many :rdv_contexts, dependent: :restrict_with_exception
   has_many :motifs, dependent: :restrict_with_exception
@@ -11,30 +13,13 @@ class MotifCategory < ApplicationRecord
   delegate :model, to: :template, prefix: true
   delegate :atelier?, to: :template
 
-  CHRONOLOGICALLY_SORTED_CATEGORIES = %w[
-    rsa_integration_information
-    rsa_orientation
-    rsa_orientation_on_phone_platform
-    rsa_accompagnement
-    rsa_accompagnement_social
-    rsa_accompagnement_sociopro
-    rsa_follow_up
-    rsa_cer_signature
-    rsa_insertion_offer
-    rsa_atelier_competences
-    rsa_atelier_rencontres_pro
-    rsa_atelier_collectif_mandatory
-    rsa_main_tendue
-    rsa_spie
+  CATEGORIES_NOT_MANDATORY_SHORT_NAMES = %w[
+    rsa_insertion_offer rsa_atelier_competences rsa_atelier_rencontres_pro
   ].freeze
 
-  scope :rdvs_mandatory, -> { where.not(template: Template.atelier) }
+  scope :rdvs_mandatory, -> { where.not(short_name: CATEGORIES_NOT_MANDATORY_SHORT_NAMES) }
 
   def rdvs_mandatory?
-    !atelier?
-  end
-
-  def position
-    CHRONOLOGICALLY_SORTED_CATEGORIES.index(short_name) || (CHRONOLOGICALLY_SORTED_CATEGORIES.length + 1)
+    !short_name.in?(CATEGORIES_NOT_MANDATORY_SHORT_NAMES)
   end
 end

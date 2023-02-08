@@ -1,4 +1,4 @@
-# Preview all emails at http://localhost:8000/rails/mailers/notifications
+# Preview all emails at http://localhost:8000/rails/mailers/notification
 class NotificationPreview < ActionMailer::Preview
   MotifCategory.rdvs_mandatory.find_each do |motif_category|
     notification = \

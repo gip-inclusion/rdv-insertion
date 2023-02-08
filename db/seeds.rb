@@ -36,8 +36,184 @@ yonne = Department.create!(
 )
 
 puts "Creating motif categories..."
-orientation_category = MotifCategory.create!(short_name: "rsa_orientation", name: "RSA orientation")
-accompagnement_category = MotifCategory.create!(short_name: "rsa_accompagnement", name: "RSA accompagnement")
+orientation_category = MotifCategory.create!(
+  short_name: "rsa_orientation", name: "RSA orientation",
+  template: Template.find_or_create_by!(
+    model: "standard",
+    rdv_title: "rendez-vous d'orientation",
+    rdv_title_by_phone: "rendez-vous d'orientation téléphonique",
+    rdv_purpose: "démarrer un parcours d'accompagnement",
+    applicant_designation: "bénéficiaire du RSA",
+    rdv_subject: "RSA",
+    display_mandatory_warning: true,
+    display_punishable_warning: false
+  )
+)
+accompagnement_category = MotifCategory.create!(
+  short_name: "rsa_accompagnement", name: "RSA accompagnement",
+  template: Template.find_or_create_by!(
+    model: "standard",
+    rdv_title: "rendez-vous d'accompagnement",
+    rdv_title_by_phone: "rendez-vous d'accompagnement téléphonique",
+    rdv_purpose: "démarrer un parcours d'accompagnement",
+    applicant_designation: "bénéficiaire du RSA",
+    rdv_subject: "RSA",
+    display_mandatory_warning: true,
+    display_punishable_warning: true
+  )
+)
+MotifCategory.create!(
+  name: "RSA accompagnement socio-pro",
+  short_name: "rsa_accompagnement_sociopro",
+  template: Template.find_or_create_by!(
+    :template,
+    model: "standard",
+    rdv_title: "rendez-vous d'accompagnement",
+    rdv_title_by_phone: "rendez-vous d'accompagnement téléphonique",
+    rdv_purpose: "démarrer un parcours d'accompagnement",
+    applicant_designation: "bénéficiaire du RSA",
+    rdv_subject: "RSA",
+    display_mandatory_warning: true,
+    display_punishable_warning: true
+  )
+)
+MotifCategory.create!(
+  name: "RSA accompagnement social",
+  short_name: "rsa_accompagnement_social",
+  template: Template.find_or_create_by!(
+    model: "standard",
+    rdv_title: "rendez-vous d'accompagnement",
+    rdv_title_by_phone: "rendez-vous d'accompagnement téléphonique",
+    rdv_purpose: "démarrer un parcours d'accompagnement",
+    applicant_designation: "bénéficiaire du RSA",
+    rdv_subject: "RSA",
+    display_mandatory_warning: true,
+    display_punishable_warning: true
+  )
+)
+MotifCategory.create!(
+  name: "RSA signature CER",
+  short_name: "rsa_cer_signature",
+  template: Template.find_or_create_by!(
+    model: "standard",
+    rdv_title: "rendez-vous de signature de CER",
+    rdv_title_by_phone: "rendez-vous téléphonique de signature de CER",
+    rdv_purpose: "construire et signer votre Contrat d'Engagement Réciproque",
+    applicant_designation: "bénéficiaire du RSA",
+    rdv_subject: "RSA",
+    display_mandatory_warning: true,
+    display_punishable_warning: false
+  )
+)
+MotifCategory.create!(
+  name: "RSA suivi",
+  short_name: "rsa_follow_up",
+  template: Template.find_or_create_by!(
+    model: "standard",
+    rdv_title: "rendez-vous de suivi",
+    rdv_title_by_phone: "rendez-vous de suivi téléphonique",
+    rdv_purpose: "faire un point avec votre référent de parcours",
+    applicant_designation: "bénéficiaire du RSA",
+    rdv_subject: "RSA",
+    display_mandatory_warning: false,
+    display_punishable_warning: false
+  )
+)
+MotifCategory.create!(
+  name: "RSA offre insertion pro",
+  short_name: "rsa_insertion_offer",
+  template: Template.find_or_create_by!(
+    model: "atelier",
+    rdv_subject: "RSA",
+    applicant_designation: "bénéficiaire du RSA"
+  )
+)
+
+MotifCategory.create!(
+  name: "RSA orientation sur plateforme téléphonique",
+  short_name: "rsa_orientation_on_phone_platform",
+  template: Template.find_or_create_by!(
+    model: "phone_platform",
+    rdv_title: "rendez-vous d'orientation téléphonique",
+    rdv_subject: "RSA",
+    applicant_designation: "bénéficiaire du RSA",
+    rdv_purpose: "démarrer un parcours d'accompagnement"
+  )
+)
+MotifCategory.create!(
+  name: "RSA Atelier collectif obligatoire",
+  short_name: "rsa_atelier_collectif_mandatory",
+  template: Template.find_or_create_by!(
+    model: "standard",
+    rdv_title: "atelier collectif",
+    rdv_title_by_phone: "atelier collectif",
+    rdv_purpose: "vous aider dans votre parcours d'insertion",
+    applicant_designation: "bénéficiaire du RSA",
+    rdv_subject: "RSA",
+    display_mandatory_warning: true,
+    display_punishable_warning: false
+  )
+)
+MotifCategory.create!(
+  name: "RSA Atelier rencontres professionnelles",
+  short_name: "rsa_atelier_rencontres_pro",
+  template: Template.find_or_create_by!(
+    model: "atelier",
+    rdv_subject: "RSA",
+    applicant_designation: "bénéficiaire du RSA"
+  )
+)
+MotifCategory.create!(
+  name: "RSA Atelier compétences",
+  short_name: "rsa_atelier_competences",
+  template: Template.find_or_create_by!(
+    model: "atelier",
+    rdv_subject: "RSA",
+    applicant_designation: "bénéficiaire du RSA"
+  )
+)
+MotifCategory.create!(
+  name: "RSA Main Tendue",
+  short_name: "rsa_main_tendue",
+  template: Template.find_or_create_by!(
+    model: "standard",
+    rdv_title: "entretien de main tendue",
+    rdv_title_by_phone: "entretien téléphonique de main tendue",
+    rdv_purpose: "faire le point sur votre situation",
+    applicant_designation: "bénéficiaire du RSA",
+    rdv_subject: "RSA",
+    display_mandatory_warning: true,
+    display_punishable_warning: false
+  )
+)
+MotifCategory.create!(
+  name: "RSA SPIE",
+  short_name: "rsa_spie",
+  template: Template.find_or_create_by!(
+    model: "standard",
+    rdv_title: "rendez-vous d'accompagnement",
+    rdv_title_by_phone: "rendez-vous d'accompagnement téléphonique",
+    rdv_purpose: "démarrer un parcours d'accompagnement",
+    applicant_designation: "demandeur d'emploi",
+    rdv_subject: "demande d'emploi",
+    display_mandatory_warning: true,
+    display_punishable_warning: true
+  )
+)
+MotifCategory.create!(
+  name: "RSA Information d'intégration",
+  short_name: "rsa_integration_information",
+  template: Template.find_or_create_by!(
+    model: "standard",
+    rdv_title: "rendez-vous d'information",
+    rdv_title_by_phone: "rendez-vous d'information téléphonique",
+    applicant_designation: "bénéficiaire du RSA",
+    rdv_subject: "RSA",
+    rdv_purpose: "vous renseigner sur vos droits et vos devoirs",
+    display_mandatory_warning: true,
+    display_punishable_warning: false
+  )
+)
 
 # --------------------------------------------------------------------------------------------------------------------
 puts "Creating configurations and responsible..."
