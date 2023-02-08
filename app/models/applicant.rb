@@ -13,7 +13,7 @@ class Applicant < ApplicationRecord
   include Notificable
   include Phonable
   include Invitable
-  include HasRdvsAndParticipations
+  include HasParticipationsToRdvs
 
   before_validation :generate_uid
 

@@ -1,4 +1,4 @@
-module HasRdvsAndParticipations
+module HasParticipationsToRdvs
   extend ActiveSupport::Concern
 
   def last_created_participation

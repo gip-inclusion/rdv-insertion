@@ -2,7 +2,7 @@ class RdvContext < ApplicationRecord
   include RdvContextStatus
   include Invitable
   include Notificable
-  include HasRdvsAndParticipations
+  include HasParticipationsToRdvs
 
   belongs_to :applicant
   belongs_to :motif_category
