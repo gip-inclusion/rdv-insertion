@@ -12,10 +12,7 @@ module Notifications
         sendable: @notification,
         mailer_class: NotificationMailer,
         mailer_method: mailer_method,
-        applicant: @notification.applicant,
-        rdv: @notification.rdv,
-        signature_lines: @notification.signature_lines,
-        motif_category: @notification.motif_category
+        notification: @notification
       )
     end
 

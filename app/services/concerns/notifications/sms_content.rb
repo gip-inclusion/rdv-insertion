@@ -1,6 +1,9 @@
 module Notifications
   module SmsContent
-    include Templatable
+    delegate :rdv, :applicant, :rdv_title, :applicant_designation, :display_mandatory_warning,
+             :display_punishable_warning, :rdv_subject,
+             to: :notification
+    delegate :formatted_start_date, :formatted_start_time, :lieu, :phone_number, to: :rdv
 
     private
 

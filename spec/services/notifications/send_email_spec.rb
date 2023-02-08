@@ -12,25 +12,16 @@ describe Notifications::SendEmail, type: :service do
     end
 
     let!(:applicant) { create(:applicant) }
-    let!(:organisation) do
-      create(
-        :organisation,
-        messages_configuration: build(:messages_configuration, signature_lines: ["Signé par la DINUM"])
-      )
-    end
     let!(:rdv) do
       create(
         :rdv,
-        organisation: organisation,
         motif: motif
       )
     end
-    let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation") }
     let!(:participation) do
       create(
         :participation,
-        applicant: applicant, rdv: rdv,
-        rdv_context: build(:rdv_context, motif_category: motif_category)
+        applicant: applicant, rdv: rdv
       )
     end
     let!(:notification) do
@@ -48,10 +39,7 @@ describe Notifications::SendEmail, type: :service do
             sendable: notification,
             mailer_class: NotificationMailer,
             mailer_method: :presential_participation_created,
-            applicant: applicant,
-            rdv: rdv,
-            signature_lines: ["Signé par la DINUM"],
-            motif_category: motif_category
+            notification: notification
           )
         subject
       end
@@ -67,10 +55,7 @@ describe Notifications::SendEmail, type: :service do
               sendable: notification,
               mailer_class: NotificationMailer,
               mailer_method: :presential_participation_updated,
-              applicant: applicant,
-              rdv: rdv,
-              signature_lines: ["Signé par la DINUM"],
-              motif_category: motif_category
+              notification: notification
             )
           subject
         end
@@ -87,10 +72,7 @@ describe Notifications::SendEmail, type: :service do
               sendable: notification,
               mailer_class: NotificationMailer,
               mailer_method: :participation_cancelled,
-              applicant: applicant,
-              rdv: rdv,
-              signature_lines: ["Signé par la DINUM"],
-              motif_category: motif_category
+              notification: notification
             )
           subject
         end
@@ -111,10 +93,7 @@ describe Notifications::SendEmail, type: :service do
               sendable: notification,
               mailer_class: NotificationMailer,
               mailer_method: :by_phone_participation_created,
-              applicant: applicant,
-              rdv: rdv,
-              signature_lines: ["Signé par la DINUM"],
-              motif_category: motif_category
+              notification: notification
             )
           subject
         end
@@ -131,10 +110,7 @@ describe Notifications::SendEmail, type: :service do
               sendable: notification,
               mailer_class: NotificationMailer,
               mailer_method: :by_phone_participation_updated,
-              applicant: applicant,
-              rdv: rdv,
-              signature_lines: ["Signé par la DINUM"],
-              motif_category: motif_category
+              notification: notification
             )
           subject
         end

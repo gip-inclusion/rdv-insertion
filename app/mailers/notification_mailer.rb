@@ -1,9 +1,7 @@
 class NotificationMailerError < StandardError; end
 
 class NotificationMailer < ApplicationMailer
-  include Templatable
-
-  before_action :set_applicant, :set_rdv, :set_department, :set_motif_category, :set_rdv_subject,
+  before_action :set_notification, :set_applicant, :set_rdv, :set_department, :set_rdv_subject,
                 :set_signature_lines, :set_rdv_title, :set_applicant_designation,
                 :set_display_mandatory_warning, :set_display_punishable_warning,
                 :set_rdv_purpose, :set_logo_path, :verify_phone_number_presence
@@ -48,52 +46,48 @@ class NotificationMailer < ApplicationMailer
 
   private
 
+  def set_notification
+    @notification = params[:notification]
+  end
+
   def set_applicant
-    @applicant = params[:applicant]
+    @applicant = @notification.applicant
   end
 
   def set_rdv
-    @rdv = params[:rdv]
+    @rdv = @notification.rdv
   end
 
   def set_department
     @department = @applicant.department
   end
 
-  def set_motif_category
-    @motif_category = motif_category
-  end
-
-  def motif_category
-    params[:motif_category]
-  end
-
   def set_signature_lines
-    @signature_lines = params[:signature_lines]
+    @signature_lines = @notification.signature_lines
   end
 
   def set_rdv_title
-    @rdv_title = rdv_by_phone? ? rdv_title_by_phone : rdv_title
+    @rdv_title = rdv_by_phone? ? @notification.rdv_title_by_phone : @notification.rdv_title
   end
 
   def set_rdv_subject
-    @rdv_subject = rdv_subject
+    @rdv_subject = @notification.rdv_subject
   end
 
   def set_applicant_designation
-    @applicant_designation = applicant_designation
+    @applicant_designation = @notification.applicant_designation
   end
 
   def set_display_mandatory_warning
-    @display_mandatory_warning = display_mandatory_warning
+    @display_mandatory_warning = @notification.display_mandatory_warning
   end
 
   def set_display_punishable_warning
-    @display_punishable_warning = display_punishable_warning
+    @display_punishable_warning = @notification.display_punishable_warning
   end
 
   def set_rdv_purpose
-    @rdv_purpose = rdv_purpose
+    @rdv_purpose = @notification.rdv_purpose
   end
 
   def set_logo_path

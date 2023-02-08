@@ -31,7 +31,7 @@ describe Invitations::SendEmail, type: :service do
           .with(
             sendable: invitation,
             mailer_class: InvitationMailer,
-            mailer_method: :regular_invitation,
+            mailer_method: :standard_invitation,
             invitation: invitation,
             applicant: applicant
           )
@@ -55,7 +55,7 @@ describe Invitations::SendEmail, type: :service do
             .with(
               sendable: invitation,
               mailer_class: InvitationMailer,
-              mailer_method: :regular_invitation_reminder,
+              mailer_method: :standard_invitation_reminder,
               invitation: invitation,
               applicant: applicant
             )
@@ -80,7 +80,7 @@ describe Invitations::SendEmail, type: :service do
           .with(
             sendable: invitation,
             mailer_class: InvitationMailer,
-            mailer_method: :invitation_for_phone_platform,
+            mailer_method: :phone_platform_invitation,
             invitation: invitation,
             applicant: applicant
           )
@@ -104,7 +104,7 @@ describe Invitations::SendEmail, type: :service do
             .with(
               sendable: invitation,
               mailer_class: InvitationMailer,
-              mailer_method: :invitation_for_phone_platform_reminder,
+              mailer_method: :phone_platform_invitation_reminder,
               invitation: invitation,
               applicant: applicant
             )
@@ -129,7 +129,7 @@ describe Invitations::SendEmail, type: :service do
           .with(
             sendable: invitation,
             mailer_class: InvitationMailer,
-            mailer_method: :invitation_for_atelier,
+            mailer_method: :atelier_invitation,
             invitation: invitation,
             applicant: applicant
           )
@@ -153,7 +153,7 @@ describe Invitations::SendEmail, type: :service do
           .with(
             sendable: invitation,
             mailer_class: InvitationMailer,
-            mailer_method: :invitation_for_atelier,
+            mailer_method: :atelier_invitation,
             invitation: invitation,
             applicant: applicant
           )
@@ -177,7 +177,7 @@ describe Invitations::SendEmail, type: :service do
           .with(
             sendable: invitation,
             mailer_class: InvitationMailer,
-            mailer_method: :invitation_for_atelier,
+            mailer_method: :atelier_invitation,
             invitation: invitation,
             applicant: applicant
           )

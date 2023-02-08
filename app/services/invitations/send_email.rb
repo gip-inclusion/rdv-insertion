@@ -17,29 +17,11 @@ module Invitations
 
     private
 
-    def motif_category
-      @invitation.motif_category
-    end
-
     def mailer_method
-      @invitation.reminder? ? mailer_method_for_invitation_reminder : mailer_method_for_manual_invitation
-    end
-
-    def mailer_method_for_manual_invitation
-      if @invitation.atelier?
-        :invitation_for_atelier
-      elsif @invitation.phone_platform?
-        :invitation_for_phone_platform
+      if @invitation.reminder?
+        :"#{@invitation.template_model}_invitation_reminder"
       else
-        :regular_invitation
-      end
-    end
-
-    def mailer_method_for_invitation_reminder
-      if @invitation.phone_platform?
-        :invitation_for_phone_platform_reminder
-      else
-        :regular_invitation_reminder
+        :"#{@invitation.template_model}_invitation"
       end
     end
   end
