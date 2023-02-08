@@ -1,8 +1,9 @@
 class SendInvitationReminderJobError < StandardError; end
 
 class SendInvitationReminderJob < ApplicationJob
-  def perform(applicant_id, invitation_format)
-    @applicant = Applicant.find(applicant_id)
+  def perform(rdv_context_id, invitation_format)
+    @rdv_context = RdvContext.find(rdv_context_id)
+    @applicant = @rdv_context.applicant
     @invitation_format = invitation_format
 
     return if invitation_already_sent_today?
@@ -16,6 +17,7 @@ class SendInvitationReminderJob < ApplicationJob
 
   private
 
+  # rubocop:disable Metrics/AbcSize
   def invitation
     @invitation ||= Invitation.new(
       reminder: true,
@@ -29,31 +31,33 @@ class SendInvitationReminderJob < ApplicationJob
       rdv_solidarites_lieu_id: first_invitation.rdv_solidarites_lieu_id,
       link: first_invitation.link,
       rdv_solidarites_token: first_invitation.rdv_solidarites_token,
-      valid_until: first_invitation.valid_until
+      valid_until: first_invitation.valid_until,
+      rdv_with_referents: first_invitation.rdv_with_referents
     )
   end
+  # rubocop:enable Metrics/AbcSize
 
   def save_and_send_invitation
     @save_and_send_invitation ||= Invitations::SaveAndSend.call(invitation: invitation)
   end
 
   def invitation_already_sent_today?
-    @applicant.invitations.where(format: @invitation_format).where("sent_at > ?", 24.hours.ago).present?
+    @rdv_context.invitations.where(format: @invitation_format).where("sent_at > ?", 24.hours.ago).present?
   end
 
   def notify_non_eligible_for_reminder
     MattermostClient.send_to_notif_channel(
-      "🚫 L'allocataire #{@applicant.id} n'est pas éligible à la relance."
+      "🚫 L'allocataire #{@applicant.id} n'est pas éligible à la relance pour #{@rdv_context.motif_category_name}."
     )
   end
 
   def eligible_for_reminder?
-    first_invitation.sent_at.to_date == 3.days.ago.to_date &&
-      first_invitation.valid_until >= 2.days.from_now &&
-      first_invitation.rdv_context.status == "invitation_pending"
+    @rdv_context.status == "invitation_pending" &&
+      first_invitation.sent_at.to_date == 3.days.ago.to_date &&
+      first_invitation.valid_until >= 2.days.from_now
   end
 
   def first_invitation
-    @first_invitation ||= @applicant.first_invitation_relative_to_last_participation
+    @first_invitation ||= @rdv_context.first_invitation_relative_to_last_participation
   end
 end
