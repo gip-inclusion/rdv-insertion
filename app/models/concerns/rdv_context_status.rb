@@ -11,7 +11,7 @@ module RdvContextStatus
   end
 
   def set_status
-    rdvs.reload
+    participations.reload
     invitations.reload
     self.status = compute_status
   end
