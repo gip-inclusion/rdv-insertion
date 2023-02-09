@@ -13,12 +13,14 @@ class Organisation < ApplicationRecord
   has_many :lieux, dependent: :nullify
   has_many :motifs, dependent: :nullify
   has_many :configurations_organisations, dependent: :delete_all
-  has_many :configurations, through: :configurations_organisations
-  has_many :motif_categories, through: :configurations
-  has_and_belongs_to_many :agents, dependent: :nullify
+  has_many :agent_roles, dependent: :destroy
   has_and_belongs_to_many :applicants, dependent: :nullify
   has_and_belongs_to_many :invitations, dependent: :nullify
   has_and_belongs_to_many :webhook_endpoints
+
+  has_many :agents, through: :agent_roles
+  has_many :configurations, through: :configurations_organisations
+  has_many :motif_categories, through: :configurations
 
   delegate :name, :name_with_region, :number, to: :department, prefix: true
 

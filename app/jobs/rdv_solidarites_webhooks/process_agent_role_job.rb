@@ -5,26 +5,22 @@ module RdvSolidaritesWebhooks
       @meta = meta.deep_symbolize_keys
       return if organisation.blank?
 
-      if event == "created"
-        upsert_agent_and_raise if agent.nil?
-        attach_agent_to_org
-      end
-
-      remove_from_org if agent && event == "destroyed"
+      # temporary step to assign rdv_solidarites_id to existing agent_roles
+      assign_rdv_solidarites_agent_role_id if agent_role
+      upsert_or_delete_agent_role
     end
 
     private
 
-    def event
-      @meta[:event]
+    def upsert_or_delete_agent_role
+      return remove_agent_from_org if event == "destroyed"
+
+      upsert_agent_and_raise if agent.nil?
+      upsert_agent_role
     end
 
-    def rdv_solidarites_agent_id
-      @data[:agent][:id]
-    end
-
-    def rdv_solidarites_organisation_id
-      @data[:organisation][:id]
+    def remove_agent_from_org
+      agent_role&.destroy
     end
 
     def upsert_agent_and_raise
@@ -41,6 +37,34 @@ module RdvSolidaritesWebhooks
       )
     end
 
+    def upsert_agent_role
+      UpsertRecordJob.perform_async(
+        "AgentRole",
+        @data,
+        { organisation_id: organisation.id, agent_id: agent.id, last_webhook_update_received_at: @meta[:timestamp] }
+      )
+    end
+
+    def assign_rdv_solidarites_agent_role_id
+      agent_role.update!(rdv_solidarites_agent_role_id: @data[:id])
+    end
+
+    def event
+      @meta[:event]
+    end
+
+    def rdv_solidarites_agent_role_id
+      @data[:id]
+    end
+
+    def rdv_solidarites_agent_id
+      @data[:agent][:id]
+    end
+
+    def rdv_solidarites_organisation_id
+      @data[:organisation][:id]
+    end
+
     def organisation
       @organisation ||= Organisation.find_by(rdv_solidarites_organisation_id: rdv_solidarites_organisation_id)
     end
@@ -49,12 +73,8 @@ module RdvSolidaritesWebhooks
       @agent ||= Agent.find_by(rdv_solidarites_agent_id: rdv_solidarites_agent_id)
     end
 
-    def attach_agent_to_org
-      agent.organisations << organisation unless agent.organisation_ids.include?(organisation.id)
-    end
-
-    def remove_from_org
-      agent.delete_organisation(organisation) if agent.organisation_ids.include?(organisation.id)
+    def agent_role
+      @agent_role ||= AgentRole.find_by(organisation_id: organisation.id, agent_id: agent&.id)
     end
   end
 end

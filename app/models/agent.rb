@@ -4,8 +4,10 @@ class Agent < ApplicationRecord
   validates :email, presence: true, uniqueness: true
   validates :rdv_solidarites_agent_id, uniqueness: true, allow_nil: true
 
-  has_and_belongs_to_many :organisations
+  has_many :agent_roles, dependent: :destroy
   has_and_belongs_to_many :applicants
+
+  has_many :organisations, through: :agent_roles
   has_many :departments, through: :organisations
   has_many :configurations, through: :organisations
 

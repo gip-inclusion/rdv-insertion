@@ -1,5 +1,5 @@
 describe "Agents can add or remove applicant from organisations", js: true do
-  let!(:agent) { create(:agent, organisations: [organisation]) }
+  let!(:agent) { create(:agent) }
   let!(:department) { create(:department) }
   let!(:organisation) do
     create(
@@ -9,6 +9,7 @@ describe "Agents can add or remove applicant from organisations", js: true do
       configurations: [create(:configuration)]
     )
   end
+  let!(:agent_role) { create(:agent_role, agent: agent, organisation: organisation) }
   let!(:rdv_solidarites_user_id) { 243 }
   let!(:applicant) do
     create(
