@@ -11,9 +11,11 @@ class CreateAgentRolesTable < ActiveRecord::Migration[7.0]
 
     add_index "agent_roles", ["level"]
     add_index "agent_roles", ["rdv_solidarites_agent_role_id"], unique: true
-    add_index "agent_roles", ["agent_id", "organisation_id"], unique: true
+    add_index "agent_roles", %w[agent_id organisation_id], unique: true
 
-    execute "insert into agent_roles(agent_id, organisation_id, created_at, updated_at) select agent_id,organisation_id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP from agents_organisations"
+    execute "insert into agent_roles(agent_id, organisation_id, created_at, updated_at)
+      select agent_id,organisation_id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+      from agents_organisations"
 
     drop_table :agents_organisations
   end
@@ -23,7 +25,8 @@ class CreateAgentRolesTable < ActiveRecord::Migration[7.0]
       t.index [:agent_id, :organisation_id], unique: true
     end
 
-    execute "insert into agents_organisations(agent_id,organisation_id) select agent_id,organisation_id from agent_roles"
+    execute "insert into agents_organisations(agent_id,organisation_id) select agent_id,organisation_id
+      from agent_roles"
 
     drop_table :agent_roles
   end
