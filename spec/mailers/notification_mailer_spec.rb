@@ -1,18 +1,25 @@
 RSpec.describe NotificationMailer do
   include_context "with all existing categories"
 
+  let!(:notification) { create(:notification, participation: participation) }
+  let!(:participation) { create(:participation, applicant: applicant, rdv: rdv, rdv_context: rdv_context) }
   let!(:applicant) { create(:applicant, email: "someone@gmail.com", phone_number: "0607070707") }
-  let!(:rdv) { create(:rdv, lieu: lieu, starts_at: Time.zone.parse("20/12/2021 12:00")) }
+  let!(:rdv) do
+    create(
+      :rdv,
+      lieu: lieu, starts_at: Time.zone.parse("20/12/2021 12:00"), organisation: organisation
+    )
+  end
+  let!(:organisation) { create(:organisation, messages_configuration: messages_configuration) }
+  let!(:messages_configuration) { create(:messages_configuration, signature_lines: signature_lines) }
   let!(:lieu) { create(:lieu, name: "DINUM", address: "20 avenue de ségur 75007 Paris", phone_number: "0101010101") }
   let!(:signature_lines) { ["Signé par la DINUM"] }
-
+  let!(:rdv_context) { create(:rdv_context, motif_category: motif_category) }
   let!(:motif_category) { category_rsa_orientation }
 
   describe "#presential_participation_created" do
     let!(:mail) do
-      described_class.with(
-        applicant: applicant, rdv: rdv, signature_lines: signature_lines, motif_category: motif_category
-      ).presential_participation_created
+      described_class.with(notification: notification).presential_participation_created
     end
 
     it "renders the headers" do
@@ -171,9 +178,7 @@ RSpec.describe NotificationMailer do
 
   describe "#presential_participation_updated" do
     let!(:mail) do
-      described_class.with(
-        applicant: applicant, rdv: rdv, signature_lines: signature_lines, motif_category: motif_category
-      ).presential_participation_updated
+      described_class.with(notification: notification).presential_participation_updated
     end
 
     it "renders the headers" do
@@ -331,9 +336,7 @@ RSpec.describe NotificationMailer do
 
   describe "#by_phone_participation_created" do
     let!(:mail) do
-      described_class.with(
-        applicant: applicant, rdv: rdv, signature_lines: signature_lines, motif_category: motif_category
-      ).by_phone_participation_created
+      described_class.with(notification: notification).by_phone_participation_created
     end
 
     it "renders the headers" do
@@ -519,9 +522,7 @@ RSpec.describe NotificationMailer do
 
   describe "#by_phone_participation_updated" do
     let!(:mail) do
-      described_class.with(
-        applicant: applicant, rdv: rdv, signature_lines: signature_lines, motif_category: motif_category
-      ).by_phone_participation_updated
+      described_class.with(notification: notification).by_phone_participation_updated
     end
 
     it "renders the headers" do
@@ -703,9 +704,7 @@ RSpec.describe NotificationMailer do
 
   describe "#participation_cancelled" do
     let!(:mail) do
-      described_class.with(
-        applicant: applicant, rdv: rdv, signature_lines: signature_lines, motif_category: motif_category
-      ).participation_cancelled
+      described_class.with(notification: notification).participation_cancelled
     end
 
     it "renders the headers" do

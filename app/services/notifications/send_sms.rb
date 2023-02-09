@@ -6,9 +6,7 @@ module Notifications
 
     attr_reader :notification
 
-    delegate :rdv, :applicant, :motif_category, to: :notification
-    delegate :formatted_start_date, :formatted_start_time, :lieu, :phone_number, to: :rdv
-    delegate :department_number, :department_name, to: :applicant
+    delegate :rdv, to: :notification
 
     def initialize(notification:)
       @notification = notification

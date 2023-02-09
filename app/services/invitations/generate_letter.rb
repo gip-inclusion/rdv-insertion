@@ -1,15 +1,5 @@
 module Invitations
   class GenerateLetter < BaseService
-    include Templatable
-
-    attr_reader :invitation
-
-    delegate :applicant, :department, :motif_category, :messages_configuration,
-             :letter_sender_name, :address, :street_address, :zipcode_and_city,
-             :signature_lines, :display_europe_logos, :direction_names, :help_address,
-             :sender_city, :display_department_logo, :atelier?, :phone_platform?,
-             to: :invitation
-
     def initialize(invitation:)
       @invitation = invitation
     end
@@ -25,7 +15,7 @@ module Invitations
 
     def generate_letter
       @invitation.content = ApplicationController.render(
-        template: "letters/#{template}",
+        template: "letters/#{@invitation.template_model}_invitation",
         layout: "pdf",
         locals: locals
       )
@@ -36,52 +26,42 @@ module Invitations
     end
 
     def check_address!
-      fail!("L'adresse doit être renseignée") if address.blank?
-      fail!("Le format de l'adresse est invalide") if street_address.blank? || zipcode_and_city.blank?
-    end
-
-    def template
-      @template ||= \
-        if atelier?
-          "invitation_for_atelier"
-        elsif phone_platform?
-          "invitation_for_phone_platform"
-        else
-          "regular_invitation"
-        end
+      fail!("L'adresse doit être renseignée") if @invitation.address.blank?
+      fail!("Le format de l'adresse est invalide") \
+        if @invitation.street_address.blank? || @invitation.zipcode_and_city.blank?
     end
 
     def locals
       {
         invitation: @invitation,
-        department: department,
-        applicant: applicant,
+        department: @invitation.department,
+        applicant: @invitation.applicant,
         organisation: organisation,
-        sender_name: letter_sender_name,
-        direction_names: direction_names,
-        signature_lines: signature_lines,
-        help_address: help_address,
-        display_europe_logos: display_europe_logos,
+        sender_name: @invitation.letter_sender_name,
+        direction_names: @invitation.direction_names,
+        signature_lines: @invitation.signature_lines,
+        help_address: @invitation.help_address,
+        display_europe_logos: @invitation.display_europe_logos,
         display_independent_from_cd_message: display_independent_from_cd_message,
-        display_department_logo: display_department_logo,
-        sender_city: sender_city,
-        rdv_title: rdv_title,
-        applicant_designation: applicant_designation,
-        display_mandatory_warning: display_mandatory_warning,
-        display_punishable_warning: display_punishable_warning,
-        rdv_purpose: rdv_purpose,
-        rdv_subject: rdv_subject
+        display_department_logo: @invitation.display_department_logo,
+        sender_city: @invitation.sender_city,
+        rdv_title: @invitation.rdv_title,
+        applicant_designation: @invitation.applicant_designation,
+        display_mandatory_warning: @invitation.display_mandatory_warning,
+        display_punishable_warning: @invitation.display_punishable_warning,
+        rdv_purpose: @invitation.rdv_purpose,
+        rdv_subject: @invitation.rdv_subject
       }
     end
 
     def check_messages_configuration!
-      return if messages_configuration.present? && messages_configuration.direction_names.present?
+      return if @invitation.direction_names.present?
 
       fail!("La configuration des courriers pour votre organisation est incomplète")
     end
 
     def organisation
-      (applicant.organisations & @invitation.organisations).last
+      (@invitation.applicant.organisations & @invitation.organisations).last
     end
 
     def display_independent_from_cd_message

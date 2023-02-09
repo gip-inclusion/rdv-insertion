@@ -13,7 +13,6 @@ class RdvContext < ApplicationRecord
   has_many :notifications, through: :participations
 
   delegate :position, :name, to: :motif_category, prefix: true
-  delegate :atelier?, :phone_platform?, to: :motif_category
 
   STATUSES_WITH_ACTION_REQUIRED = %w[
     rdv_needs_status_update rdv_noshow rdv_revoked rdv_excused multiple_rdvs_cancelled

@@ -53,6 +53,11 @@ Rails.application.configure do
   # Prepend all log lines with the following tags.
   config.log_tags = [ :request_id ]
 
+  if ENV['ENABLE_MAILER_PREVIEWS'].present?
+    config.action_mailer.show_previews = true
+    config.action_mailer.preview_path = Rails.root.join("spec/mailers/previews")
+  end
+
   # Use a different cache store in production.
   # config.cache_store = :mem_cache_store
 

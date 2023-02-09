@@ -35,7 +35,6 @@ export default class extends Controller {
     const rdvContext = JSON.parse(this.element.dataset.rdvContext);
 
     const isDepartmentLevel = !organisationId;
-
     const result = await handleApplicantInvitation(
       applicantId,
       departmentId,

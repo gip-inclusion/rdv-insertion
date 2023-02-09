@@ -82,10 +82,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_08_154729) do
   end
 
   create_table "configurations", force: :cascade do |t|
-    t.string "sheet_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.json "column_names"
     t.string "invitation_formats", default: ["sms", "email", "postal"], null: false, array: true
     t.boolean "convene_applicant", default: false
     t.integer "number_of_days_to_accept_invitation", default: 3
@@ -93,6 +91,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_08_154729) do
     t.boolean "invitation_fallbacks_set_to_applicants_organisations", default: false
     t.boolean "rdv_with_referents", default: false
     t.bigint "motif_category_id"
+    t.bigint "file_configuration_id"
+    t.index ["file_configuration_id"], name: "index_configurations_on_file_configuration_id"
     t.index ["motif_category_id"], name: "index_configurations_on_motif_category_id"
   end
 
@@ -113,6 +113,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_08_154729) do
     t.string "email"
     t.string "phone_number"
     t.boolean "display_in_stats", default: true
+  end
+
+  create_table "file_configurations", force: :cascade do |t|
+    t.string "sheet_name"
+    t.jsonb "column_names"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "invitations", force: :cascade do |t|
@@ -176,8 +183,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_08_154729) do
     t.bigint "rdv_solidarites_motif_category_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "template_id"
+    t.boolean "participation_optional", default: false
     t.index ["rdv_solidarites_motif_category_id"], name: "index_motif_categories_on_rdv_solidarites_motif_category_id", unique: true
     t.index ["short_name"], name: "index_motif_categories_on_short_name", unique: true
+    t.index ["template_id"], name: "index_motif_categories_on_template_id"
   end
 
   create_table "motifs", force: :cascade do |t|
@@ -306,6 +316,19 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_08_154729) do
     t.index ["department_number"], name: "index_stats_on_department_number", unique: true
   end
 
+  create_table "templates", force: :cascade do |t|
+    t.integer "model"
+    t.string "rdv_title"
+    t.string "rdv_title_by_phone"
+    t.string "rdv_purpose"
+    t.string "applicant_designation"
+    t.string "rdv_subject"
+    t.boolean "display_mandatory_warning"
+    t.boolean "display_punishable_warning"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "webhook_endpoints", force: :cascade do |t|
     t.string "url"
     t.string "secret"
@@ -327,11 +350,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_08_154729) do
   add_foreign_key "agent_roles", "agents"
   add_foreign_key "agent_roles", "organisations"
   add_foreign_key "applicants", "departments"
+  add_foreign_key "configurations", "file_configurations"
   add_foreign_key "configurations", "motif_categories"
   add_foreign_key "invitations", "applicants"
   add_foreign_key "invitations", "departments"
   add_foreign_key "invitations", "rdv_contexts"
   add_foreign_key "lieux", "organisations"
+  add_foreign_key "motif_categories", "templates"
   add_foreign_key "motifs", "motif_categories"
   add_foreign_key "motifs", "organisations"
   add_foreign_key "notifications", "participations"
