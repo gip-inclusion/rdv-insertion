@@ -10,7 +10,7 @@ class Participation < ApplicationRecord
   validates :status, presence: true
   validates :rdv_solidarites_participation_id, uniqueness: true, allow_nil: true
 
-  after_commit :refresh_applicant_context_statuses, on: [:destroy]
+  after_commit :refresh_applicant_context_statuses
   after_commit :notify_applicant, if: :rdv_notify_applicants?, on: [:create, :update]
 
   delegate :starts_at, :convocable?, :motif_name, :rdv_solidarites_url, :rdv_solidarites_rdv_id, to: :rdv
