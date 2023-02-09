@@ -74,10 +74,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_08_134639) do
   end
 
   create_table "configurations", force: :cascade do |t|
-    t.string "sheet_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.json "column_names"
     t.string "invitation_formats", default: ["sms", "email", "postal"], null: false, array: true
     t.boolean "convene_applicant", default: false
     t.integer "number_of_days_to_accept_invitation", default: 3
@@ -85,6 +83,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_08_134639) do
     t.boolean "invitation_fallbacks_set_to_applicants_organisations", default: false
     t.boolean "rdv_with_referents", default: false
     t.bigint "motif_category_id"
+    t.bigint "file_configuration_id"
+    t.index ["file_configuration_id"], name: "index_configurations_on_file_configuration_id"
     t.index ["motif_category_id"], name: "index_configurations_on_motif_category_id"
   end
 
@@ -105,6 +105,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_08_134639) do
     t.string "email"
     t.string "phone_number"
     t.boolean "display_in_stats", default: true
+  end
+
+  create_table "file_configurations", force: :cascade do |t|
+    t.string "sheet_name"
+    t.jsonb "column_names"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "invitations", force: :cascade do |t|
@@ -333,6 +340,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_08_134639) do
   end
 
   add_foreign_key "applicants", "departments"
+  add_foreign_key "configurations", "file_configurations"
   add_foreign_key "configurations", "motif_categories"
   add_foreign_key "invitations", "applicants"
   add_foreign_key "invitations", "departments"

@@ -267,8 +267,8 @@ class ApplicantsController < ApplicationController
     @applicants = policy_scope(Applicant).preload(
       :rdvs, :agents,
       invitations: :rdv_context,
-      rdv_contexts: [:participations],
-      organisations: [:department, :configurations]
+      rdv_contexts: [:participations, :motif_category],
+      organisations: [:motif_categories, :department, :configurations]
     ).distinct
     @applicants = @applicants
                   .where(department_internal_id: params.require(:applicants)[:department_internal_ids])
