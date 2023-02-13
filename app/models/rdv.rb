@@ -32,10 +32,6 @@ class Rdv < ApplicationRecord
 
   scope :with_lieu, -> { where.not(lieu_id: nil) }
 
-  def delay_in_days
-    starts_at.to_datetime.mjd - created_at.to_datetime.mjd
-  end
-
   def rdv_solidarites_url
     "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/" \
       "#{organisation.rdv_solidarites_organisation_id}/rdvs/#{rdv_solidarites_rdv_id}"

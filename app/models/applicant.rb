@@ -13,8 +13,7 @@ class Applicant < ApplicationRecord
   include Notificable
   include Phonable
   include Invitable
-  include HasRdvs
-  include HasParticipations
+  include HasParticipationsToRdvs
 
   before_validation :generate_uid
 
@@ -46,6 +45,10 @@ class Applicant < ApplicationRecord
 
   scope :active, -> { where(deleted_at: nil) }
   scope :archived, ->(archived = true) { archived ? where.not(archived_at: nil) : where(archived_at: nil) }
+  scope :without_rdv_contexts, lambda { |motif_categories|
+    where.not(id: joins(:rdv_contexts).where(rdv_contexts: { motif_category: motif_categories }).ids)
+  }
+  scope :with_sent_invitations, -> { joins(:invitations).where.not(invitations: { sent_at: nil }).distinct }
 
   def rdv_seen_delay_in_days
     return if first_seen_rdv_starts_at.blank?

@@ -1,4 +1,4 @@
-describe UpsertStatJob do
+describe Stats::GlobalStats::UpsertStatJob do
   subject do
     described_class.new.perform(department.number)
   end
@@ -7,19 +7,19 @@ describe UpsertStatJob do
 
   describe "#perform" do
     before do
-      allow(Stats::UpsertStat).to receive(:call)
+      allow(Stats::GlobalStats::UpsertStat).to receive(:call)
         .and_return(OpenStruct.new(success?: true))
     end
 
     it "calls the appropriate service" do
-      expect(Stats::UpsertStat).to receive(:call)
+      expect(Stats::GlobalStats::UpsertStat).to receive(:call)
         .with(department_number: department.number)
       subject
     end
 
     context "when the service fails" do
       before do
-        allow(Stats::UpsertStat).to receive(:call)
+        allow(Stats::GlobalStats::UpsertStat).to receive(:call)
           .and_return(OpenStruct.new(success?: false, errors: ["something happened"]))
       end
 
