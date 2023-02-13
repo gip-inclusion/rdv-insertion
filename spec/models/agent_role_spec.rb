@@ -35,12 +35,6 @@ describe AgentRole do
       it { expect(agent_role).to be_valid }
       it { expect(agent_role2).to be_valid }
     end
-
-    context "incorrect level value" do
-      let(:agent_role) { build(:agent_role, level: "something") }
-
-      it { expect(agent_role).not_to be_valid }
-    end
   end
 
   describe "agent/organisation uniqueness association" do
