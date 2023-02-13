@@ -15,7 +15,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_08_154729) do
   enable_extension "plpgsql"
 
   create_table "agent_roles", force: :cascade do |t|
-    t.string "level", default: "basic", null: false
+    t.integer "level", default: 0, null: false
     t.bigint "agent_id", null: false
     t.bigint "organisation_id", null: false
     t.bigint "rdv_solidarites_agent_role_id"

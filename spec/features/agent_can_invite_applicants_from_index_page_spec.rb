@@ -1,13 +1,12 @@
 describe "Agents can invite from index page", js: true do
   let!(:agent) { create(:agent) }
-  let!(:organisation) { create(:organisation) }
+  let!(:organisation) { create(:organisation, agents: [agent]) }
   let!(:applicant) do
     create(
       :applicant,
       organisations: [organisation], email: "someemail@somecompany.com", phone_number: "0607070707"
     )
   end
-  let!(:agent_role) { create(:agent_role, agent: agent, organisation: organisation) }
   let!(:motif_category) { create(:motif_category, short_name: "rsa_follow_up") }
   let!(:rdv_solidarites_token) { "123456" }
   let!(:rdv_context) { create(:rdv_context, applicant: applicant, motif_category: motif_category) }

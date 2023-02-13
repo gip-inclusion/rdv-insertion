@@ -1,7 +1,7 @@
 class CreateAgentRolesTable < ActiveRecord::Migration[7.0]
   def up
     create_table :agent_roles do |t|
-      t.string :level, default: "basic", null: false
+      t.integer :level, default: 0, null: false
       t.references :agent, null: false, foreign_key: true
       t.references :organisation, null: false, foreign_key: true
       t.bigint :rdv_solidarites_agent_role_id

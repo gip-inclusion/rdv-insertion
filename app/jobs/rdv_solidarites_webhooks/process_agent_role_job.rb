@@ -15,7 +15,8 @@ module RdvSolidaritesWebhooks
     def upsert_or_delete_agent_role
       return remove_agent_from_org if event == "destroyed"
 
-      upsert_agent_and_raise if agent.nil?
+      return upsert_agent_and_raise if agent.nil?
+
       upsert_agent_role
     end
 
