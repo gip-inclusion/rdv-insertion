@@ -10,9 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_08_134639) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_08_154729) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "agent_roles", force: :cascade do |t|
+    t.integer "level", default: 0, null: false
+    t.bigint "agent_id", null: false
+    t.bigint "organisation_id", null: false
+    t.bigint "rdv_solidarites_agent_role_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agent_id", "organisation_id"], name: "index_agent_roles_on_agent_id_and_organisation_id", unique: true
+    t.index ["agent_id"], name: "index_agent_roles_on_agent_id"
+    t.index ["level"], name: "index_agent_roles_on_level"
+    t.index ["organisation_id"], name: "index_agent_roles_on_organisation_id"
+    t.index ["rdv_solidarites_agent_role_id"], name: "index_agent_roles_on_rdv_solidarites_agent_role_id", unique: true
+  end
 
   create_table "agents", force: :cascade do |t|
     t.string "email"
@@ -31,12 +45,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_08_134639) do
     t.bigint "applicant_id", null: false
     t.bigint "agent_id", null: false
     t.index ["applicant_id", "agent_id"], name: "index_agents_applicants_on_applicant_id_and_agent_id", unique: true
-  end
-
-  create_table "agents_organisations", id: false, force: :cascade do |t|
-    t.bigint "organisation_id", null: false
-    t.bigint "agent_id", null: false
-    t.index ["organisation_id", "agent_id"], name: "index_agents_organisations_on_organisation_id_and_agent_id", unique: true
   end
 
   create_table "applicants", force: :cascade do |t|
@@ -339,6 +347,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_08_134639) do
     t.index ["webhook_endpoint_id"], name: "index_webhook_receipts_on_webhook_endpoint_id"
   end
 
+  add_foreign_key "agent_roles", "agents"
+  add_foreign_key "agent_roles", "organisations"
   add_foreign_key "applicants", "departments"
   add_foreign_key "configurations", "file_configurations"
   add_foreign_key "configurations", "motif_categories"
