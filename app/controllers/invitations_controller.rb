@@ -1,7 +1,7 @@
 class InvitationsController < ApplicationController
   before_action :set_organisations, :set_department, :set_applicant,
                 :set_motif_category, :set_rdv_context, :set_current_configuration,
-                :set_invitation_format, :set_fallback_organisations, :set_new_invitation, :save_and_send_invitation,
+                :set_invitation_format, :set_preselected_organisations, :set_new_invitation, :save_and_send_invitation,
                 only: [:create]
   before_action :set_invitation, :verify_invitation_validity, only: [:redirect]
   skip_before_action :authenticate_agent!, only: [:invitation_code, :redirect]
@@ -37,7 +37,7 @@ class InvitationsController < ApplicationController
     @invitation = Invitation.new(
       applicant: @applicant,
       department: @department,
-      organisations: @fallback_organisations,
+      organisations: @preselected_organisations,
       rdv_context: @rdv_context,
       format: @invitation_format,
       number_of_days_to_accept_invitation: @current_configuration.number_of_days_to_accept_invitation,
@@ -85,9 +85,9 @@ class InvitationsController < ApplicationController
     end
   end
 
-  def set_fallback_organisations
-    @fallback_organisations = \
-      if @current_configuration.invitation_fallbacks_set_to_applicants_organisations?
+  def set_preselected_organisations
+    @preselected_organisations = \
+      if @current_configuration.invite_to_applicant_organisations_only?
         @organisations & @applicant.organisations
       else
         @organisations
