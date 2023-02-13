@@ -7,34 +7,32 @@ describe Invitations::SendEmail, type: :service do
 
   include_context "with all existing categories"
 
-  let!(:applicant) { create(:applicant) }
+  let!(:applicant) { create(:applicant, email: "someemail@someservice.com") }
+  let!(:mailer) { instance_double("mailer") }
 
   describe "#call" do
     before do
-      allow(Messengers::SendEmail).to receive(:call)
-        .and_return(OpenStruct.new(success?: true))
+      allow(InvitationMailer).to receive(:with)
+        .with(invitation: invitation, applicant: applicant)
+        .and_return(mailer)
     end
 
     context "for rsa orientation" do
       let!(:invitation) do
         create(
           :invitation,
+          format: "email",
           applicant: applicant,
           rdv_context: build(:rdv_context, motif_category: category_rsa_orientation)
         )
       end
 
+      before { allow(mailer).to receive_message_chain(:standard_invitation, :deliver_now) }
+
       it("is a success") { is_a_success }
 
-      it "calls the emailer service" do
-        expect(Messengers::SendEmail).to receive(:call)
-          .with(
-            sendable: invitation,
-            mailer_class: InvitationMailer,
-            mailer_method: :standard_invitation,
-            invitation: invitation,
-            applicant: applicant
-          )
+      it "sends the email" do
+        expect(mailer).to receive_message_chain(:standard_invitation, :deliver_now)
         subject
       end
 
@@ -42,24 +40,50 @@ describe Invitations::SendEmail, type: :service do
         let!(:invitation) do
           create(
             :invitation,
+            format: "email",
             applicant: applicant,
             rdv_context: build(:rdv_context, motif_category: category_rsa_orientation),
             reminder: true
           )
         end
 
+        before { allow(mailer).to receive_message_chain(:standard_invitation_reminder, :deliver_now) }
+
         it("is a success") { is_a_success }
 
-        it "calls the emailer service with the reminder mailer method" do
-          expect(Messengers::SendEmail).to receive(:call)
-            .with(
-              sendable: invitation,
-              mailer_class: InvitationMailer,
-              mailer_method: :standard_invitation_reminder,
-              invitation: invitation,
-              applicant: applicant
-            )
+        it "sends the email" do
+          expect(mailer).to receive_message_chain(:standard_invitation_reminder, :deliver_now)
           subject
+        end
+      end
+
+      context "when the invitation format is not email" do
+        before { invitation.format = "sms" }
+
+        it("is a failure") { is_a_failure }
+
+        it "returns an error" do
+          expect(subject.errors).to eq(["Envoi d'un email alors que le format est sms"])
+        end
+      end
+
+      context "when the email is blank" do
+        before { applicant.email = nil }
+
+        it("is a failure") { is_a_failure }
+
+        it "returns the error" do
+          expect(subject.errors).to eq(["L'email doit être renseigné"])
+        end
+      end
+
+      context "when the email format is not valid" do
+        before { applicant.email = "someinvalidmail" }
+
+        it("is a failure") { is_a_failure }
+
+        it "returns the error" do
+          expect(subject.errors).to eq(["L'email renseigné ne semble pas être une adresse valable"])
         end
       end
     end
@@ -68,22 +92,17 @@ describe Invitations::SendEmail, type: :service do
       let!(:invitation) do
         create(
           :invitation,
-          applicant: applicant,
+          applicant: applicant, format: "email",
           rdv_context: build(:rdv_context, motif_category: category_rsa_orientation_on_phone_platform)
         )
       end
 
+      before { allow(mailer).to receive_message_chain(:phone_platform_invitation, :deliver_now) }
+
       it("is a success") { is_a_success }
 
-      it "calls the emailer service" do
-        expect(Messengers::SendEmail).to receive(:call)
-          .with(
-            sendable: invitation,
-            mailer_class: InvitationMailer,
-            mailer_method: :phone_platform_invitation,
-            invitation: invitation,
-            applicant: applicant
-          )
+      it "sends the email" do
+        expect(mailer).to receive_message_chain(:phone_platform_invitation, :deliver_now)
         subject
       end
 
@@ -91,23 +110,18 @@ describe Invitations::SendEmail, type: :service do
         let!(:invitation) do
           create(
             :invitation,
-            applicant: applicant,
+            applicant: applicant, format: "email",
             rdv_context: build(:rdv_context, motif_category: category_rsa_orientation_on_phone_platform),
             reminder: true
           )
         end
 
+        before { allow(mailer).to receive_message_chain(:phone_platform_invitation_reminder, :deliver_now) }
+
         it("is a success") { is_a_success }
 
-        it "calls the emailer service with the reminder mailer method" do
-          expect(Messengers::SendEmail).to receive(:call)
-            .with(
-              sendable: invitation,
-              mailer_class: InvitationMailer,
-              mailer_method: :phone_platform_invitation_reminder,
-              invitation: invitation,
-              applicant: applicant
-            )
+        it "sends the email" do
+          expect(mailer).to receive_message_chain(:phone_platform_invitation_reminder, :deliver_now)
           subject
         end
       end
@@ -117,22 +131,18 @@ describe Invitations::SendEmail, type: :service do
       let!(:invitation) do
         create(
           :invitation,
+          format: "email",
           applicant: applicant,
           rdv_context: build(:rdv_context, motif_category: category_rsa_insertion_offer)
         )
       end
 
+      before { allow(mailer).to receive_message_chain(:atelier_invitation, :deliver_now) }
+
       it("is a success") { is_a_success }
 
-      it "calls the emailer service" do
-        expect(Messengers::SendEmail).to receive(:call)
-          .with(
-            sendable: invitation,
-            mailer_class: InvitationMailer,
-            mailer_method: :atelier_invitation,
-            invitation: invitation,
-            applicant: applicant
-          )
+      it "sends the email" do
+        expect(mailer).to receive_message_chain(:atelier_invitation, :deliver_now)
         subject
       end
     end
@@ -141,22 +151,17 @@ describe Invitations::SendEmail, type: :service do
       let!(:invitation) do
         create(
           :invitation,
-          applicant: applicant,
+          applicant: applicant, format: "email",
           rdv_context: build(:rdv_context, motif_category: category_rsa_atelier_competences)
         )
       end
 
+      before { allow(mailer).to receive_message_chain(:atelier_invitation, :deliver_now) }
+
       it("is a success") { is_a_success }
 
-      it "calls the emailer service" do
-        expect(Messengers::SendEmail).to receive(:call)
-          .with(
-            sendable: invitation,
-            mailer_class: InvitationMailer,
-            mailer_method: :atelier_invitation,
-            invitation: invitation,
-            applicant: applicant
-          )
+      it "sends the email" do
+        expect(mailer).to receive_message_chain(:atelier_invitation, :deliver_now)
         subject
       end
     end
@@ -165,22 +170,17 @@ describe Invitations::SendEmail, type: :service do
       let!(:invitation) do
         create(
           :invitation,
-          applicant: applicant,
+          applicant: applicant, format: "email",
           rdv_context: build(:rdv_context, motif_category: category_rsa_atelier_rencontres_pro)
         )
       end
 
+      before { allow(mailer).to receive_message_chain(:atelier_invitation, :deliver_now) }
+
       it("is a success") { is_a_success }
 
-      it "calls the emailer service" do
-        expect(Messengers::SendEmail).to receive(:call)
-          .with(
-            sendable: invitation,
-            mailer_class: InvitationMailer,
-            mailer_method: :atelier_invitation,
-            invitation: invitation,
-            applicant: applicant
-          )
+      it "sends the email" do
+        expect(mailer).to receive_message_chain(:atelier_invitation, :deliver_now)
         subject
       end
     end

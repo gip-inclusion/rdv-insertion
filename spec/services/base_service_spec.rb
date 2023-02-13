@@ -7,6 +7,7 @@ describe BaseService, type: :service do
     before do
       allow(described_class).to receive(:new)
         .and_return(service)
+      allow(service).to receive(:call_before_calls)
       allow(service).to receive(:call)
       allow(service).to receive(:result)
         .and_return(OpenStruct.new)
@@ -14,6 +15,11 @@ describe BaseService, type: :service do
 
     it "calls the #call instance method" do
       expect(service).to receive(:call)
+      subject
+    end
+
+    it "callss the before calls" do
+      expect(service).to receive(:call_before_calls)
       subject
     end
 

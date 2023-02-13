@@ -5,10 +5,18 @@ describe Notifications::SendEmail, type: :service do
     )
   end
 
+  let!(:mailer) { instance_double("mailer") }
+
   describe "#call" do
     before do
-      allow(Messengers::SendEmail).to receive(:call)
-        .and_return(OpenStruct.new(success?: true))
+      allow(NotificationMailer).to receive(:with)
+        .with(notification: notification)
+        .and_return(mailer)
+      allow(mailer).to receive_message_chain(:presential_participation_created, :deliver_now)
+      allow(mailer).to receive_message_chain(:presential_participation_updated, :deliver_now)
+      allow(mailer).to receive_message_chain(:by_phone_participation_created, :deliver_now)
+      allow(mailer).to receive_message_chain(:by_phone_participation_updated, :deliver_now)
+      allow(mailer).to receive_message_chain(:participation_cancelled, :deliver_now)
     end
 
     let!(:applicant) { create(:applicant) }
@@ -18,6 +26,7 @@ describe Notifications::SendEmail, type: :service do
         motif: motif
       )
     end
+    let!(:motif) { create(:motif, location_type: "public_office") }
     let!(:participation) do
       create(
         :participation,
@@ -25,55 +34,39 @@ describe Notifications::SendEmail, type: :service do
       )
     end
     let!(:notification) do
-      create(:notification, participation: participation, event: "participation_created")
+      create(:notification, participation: participation, event: "participation_created", format: "email")
     end
 
     context "for a public_office rdv" do
+      before { allow(mailer).to receive_message_chain(:presential_participation_created, :deliver_now) }
+
       let!(:motif) { create(:motif, location_type: "public_office") }
 
       it("is a success") { is_a_success }
 
       it "calls the emailer service" do
-        expect(Messengers::SendEmail).to receive(:call)
-          .with(
-            sendable: notification,
-            mailer_class: NotificationMailer,
-            mailer_method: :presential_participation_created,
-            notification: notification
-          )
+        expect(mailer).to receive_message_chain(:presential_participation_created, :deliver_now)
         subject
       end
 
       context "for a rdv updated event" do
         let!(:notification) do
-          create(:notification, participation: participation, event: "participation_updated")
+          create(:notification, participation: participation, event: "participation_updated", format: "email")
         end
 
         it "calls the emailer service with the right mailer method" do
-          expect(Messengers::SendEmail).to receive(:call)
-            .with(
-              sendable: notification,
-              mailer_class: NotificationMailer,
-              mailer_method: :presential_participation_updated,
-              notification: notification
-            )
+          expect(mailer).to receive_message_chain(:presential_participation_updated, :deliver_now)
           subject
         end
       end
 
       context "for a rdv cancelled event" do
         let!(:notification) do
-          create(:notification, participation: participation, event: "participation_cancelled")
+          create(:notification, participation: participation, event: "participation_cancelled", format: "email")
         end
 
         it "calls the emailer service with the right mailer method" do
-          expect(Messengers::SendEmail).to receive(:call)
-            .with(
-              sendable: notification,
-              mailer_class: NotificationMailer,
-              mailer_method: :participation_cancelled,
-              notification: notification
-            )
+          expect(mailer).to receive_message_chain(:participation_cancelled, :deliver_now)
           subject
         end
       end
@@ -84,34 +77,22 @@ describe Notifications::SendEmail, type: :service do
 
       context "for a rdv created event" do
         let!(:notification) do
-          create(:notification, participation: participation, event: "participation_created")
+          create(:notification, participation: participation, event: "participation_created", format: "email")
         end
 
         it "calls the emailer service with the right mailer method" do
-          expect(Messengers::SendEmail).to receive(:call)
-            .with(
-              sendable: notification,
-              mailer_class: NotificationMailer,
-              mailer_method: :by_phone_participation_created,
-              notification: notification
-            )
+          expect(mailer).to receive_message_chain(:by_phone_participation_created, :deliver_now)
           subject
         end
       end
 
       context "for a rdv updated event" do
         let!(:notification) do
-          create(:notification, participation: participation, event: "participation_updated")
+          create(:notification, participation: participation, event: "participation_updated", format: "email")
         end
 
         it "calls the emailer service with the right mailer method" do
-          expect(Messengers::SendEmail).to receive(:call)
-            .with(
-              sendable: notification,
-              mailer_class: NotificationMailer,
-              mailer_method: :by_phone_participation_updated,
-              notification: notification
-            )
+          allow(mailer).to receive_message_chain(:by_phone_participation_updated, :deliver_now)
           subject
         end
       end
@@ -124,6 +105,36 @@ describe Notifications::SendEmail, type: :service do
         expect { subject }.to raise_error(
           EmailNotificationError, "Message de convocation non géré pour le rdv #{rdv.id}"
         )
+      end
+    end
+
+    context "when the notification format is not email" do
+      before { notification.format = "sms" }
+
+      it("is a failure") { is_a_failure }
+
+      it "returns an error" do
+        expect(subject.errors).to eq(["Envoi d'un email alors que le format est sms"])
+      end
+    end
+
+    context "when the email is blank" do
+      before { applicant.email = nil }
+
+      it("is a failure") { is_a_failure }
+
+      it "returns the error" do
+        expect(subject.errors).to eq(["L'email doit être renseigné"])
+      end
+    end
+
+    context "when the email format is not valid" do
+      before { applicant.email = "someinvalidmail" }
+
+      it("is a failure") { is_a_failure }
+
+      it "returns the error" do
+        expect(subject.errors).to eq(["L'email renseigné ne semble pas être une adresse valable"])
       end
     end
   end

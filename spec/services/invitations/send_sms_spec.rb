@@ -27,6 +27,7 @@ describe Invitations::SendSms, type: :service do
   end
   let!(:configuration) { create(:configuration, motif_category: category_rsa_orientation) }
   let!(:organisation) { create(:organisation, configurations: [configuration], department: department) }
+  let!(:sms_sender_name) { "provider" }
 
   let!(:invitation) do
     create(
@@ -48,16 +49,50 @@ describe Invitations::SendSms, type: :service do
 
   describe "#call" do
     before do
-      allow(Messengers::SendSms).to receive(:call).and_return(OpenStruct.new(success?: true))
+      allow(SendTransactionalSms).to receive(:call).and_return(OpenStruct.new(success?: true))
+      allow(invitation).to receive(:sms_sender_name).and_return(sms_sender_name)
       ENV["HOST"] = "www.rdv-insertion.fr"
     end
 
     it("is a success") { is_a_success }
 
-    it "calls the messenger service service" do
-      expect(Messengers::SendSms).to receive(:call)
-        .with(sendable: invitation, content: content)
+    it "calls the send sms service with the right content" do
+      expect(SendTransactionalSms).to receive(:call)
+        .with(
+          phone_number_formatted: phone_number_formatted, content: content,
+          sender_name: sms_sender_name
+        )
       subject
+    end
+
+    context "when the phone number is nil" do
+      let!(:phone_number) { nil }
+
+      it("is a failure") { is_a_failure }
+
+      it "returns the error" do
+        expect(subject.errors).to eq(["Le téléphone doit être renseigné"])
+      end
+    end
+
+    context "when the phone number is not a mobile" do
+      let!(:phone_number) { "0142249062" }
+
+      it("is a failure") { is_a_failure }
+
+      it "returns the error" do
+        expect(subject.errors).to eq(["Le numéro de téléphone doit être un mobile"])
+      end
+    end
+
+    context "when the invitation format is not sms" do
+      before { invitation.format = "email" }
+
+      it("is a failure") { is_a_failure }
+
+      it "returns the error" do
+        expect(subject.errors).to eq(["Envoi de SMS alors que le format est email"])
+      end
     end
 
     context "when it is a reminder" do
@@ -74,8 +109,11 @@ describe Invitations::SendSms, type: :service do
       end
 
       it "calls the send transactional service with the right content" do
-        expect(Messengers::SendSms).to receive(:call)
-          .with(sendable: invitation, content: content)
+        expect(SendTransactionalSms).to receive(:call)
+          .with(
+            phone_number_formatted: phone_number_formatted, content: content,
+            sender_name: sms_sender_name
+          )
         subject
       end
     end
@@ -103,8 +141,11 @@ describe Invitations::SendSms, type: :service do
         it("is a success") { is_a_success }
 
         it "calls the send transactional service with the right content" do
-          expect(Messengers::SendSms).to receive(:call)
-            .with(sendable: invitation, content: content)
+          expect(SendTransactionalSms).to receive(:call)
+            .with(
+              phone_number_formatted: phone_number_formatted, content: content,
+              sender_name: sms_sender_name
+            )
           subject
         end
 
@@ -124,8 +165,11 @@ describe Invitations::SendSms, type: :service do
           end
 
           it "calls the send transactional service with the right content" do
-            expect(Messengers::SendSms).to receive(:call)
-              .with(sendable: invitation, content: content)
+            expect(SendTransactionalSms).to receive(:call)
+              .with(
+                phone_number_formatted: phone_number_formatted, content: content,
+                sender_name: sms_sender_name
+              )
             subject
           end
         end
@@ -145,8 +189,11 @@ describe Invitations::SendSms, type: :service do
       it("is a success") { is_a_success }
 
       it "calls the send transactional service with the right content" do
-        expect(Messengers::SendSms).to receive(:call)
-          .with(sendable: invitation, content: content)
+        expect(SendTransactionalSms).to receive(:call)
+          .with(
+            phone_number_formatted: phone_number_formatted, content: content,
+            sender_name: sms_sender_name
+          )
         subject
       end
 
@@ -163,8 +210,11 @@ describe Invitations::SendSms, type: :service do
         end
 
         it "calls the send transactional service with the right content" do
-          expect(Messengers::SendSms).to receive(:call)
-            .with(sendable: invitation, content: content)
+          expect(SendTransactionalSms).to receive(:call)
+            .with(
+              phone_number_formatted: phone_number_formatted, content: content,
+              sender_name: sms_sender_name
+            )
           subject
         end
       end
@@ -186,8 +236,11 @@ describe Invitations::SendSms, type: :service do
       it("is a success") { is_a_success }
 
       it "calls the send transactional service with the right content" do
-        expect(Messengers::SendSms).to receive(:call)
-          .with(sendable: invitation, content: content)
+        expect(SendTransactionalSms).to receive(:call)
+          .with(
+            phone_number_formatted: phone_number_formatted, content: content,
+            sender_name: sms_sender_name
+          )
         subject
       end
 
@@ -207,8 +260,11 @@ describe Invitations::SendSms, type: :service do
         end
 
         it "calls the send transactional service with the right content" do
-          expect(Messengers::SendSms).to receive(:call)
-            .with(sendable: invitation, content: content)
+          expect(SendTransactionalSms).to receive(:call)
+            .with(
+              phone_number_formatted: phone_number_formatted, content: content,
+              sender_name: sms_sender_name
+            )
           subject
         end
       end
@@ -230,8 +286,11 @@ describe Invitations::SendSms, type: :service do
       it("is a success") { is_a_success }
 
       it "calls the send transactional service with the right content" do
-        expect(Messengers::SendSms).to receive(:call)
-          .with(sendable: invitation, content: content)
+        expect(SendTransactionalSms).to receive(:call)
+          .with(
+            phone_number_formatted: phone_number_formatted, content: content,
+            sender_name: sms_sender_name
+          )
         subject
       end
 
@@ -250,8 +309,11 @@ describe Invitations::SendSms, type: :service do
         end
 
         it "calls the send transactional service with the right content" do
-          expect(Messengers::SendSms).to receive(:call)
-            .with(sendable: invitation, content: content)
+          expect(SendTransactionalSms).to receive(:call)
+            .with(
+              phone_number_formatted: phone_number_formatted, content: content,
+              sender_name: sms_sender_name
+            )
           subject
         end
       end
@@ -272,8 +334,11 @@ describe Invitations::SendSms, type: :service do
       it("is a success") { is_a_success }
 
       it "calls the send transactional service with the right content" do
-        expect(Messengers::SendSms).to receive(:call)
-          .with(sendable: invitation, content: content)
+        expect(SendTransactionalSms).to receive(:call)
+          .with(
+            phone_number_formatted: phone_number_formatted, content: content,
+            sender_name: sms_sender_name
+          )
         subject
       end
 
@@ -292,8 +357,11 @@ describe Invitations::SendSms, type: :service do
         end
 
         it "calls the send transactional service with the right content" do
-          expect(Messengers::SendSms).to receive(:call)
-            .with(sendable: invitation, content: content)
+          expect(SendTransactionalSms).to receive(:call)
+            .with(
+              phone_number_formatted: phone_number_formatted, content: content,
+              sender_name: sms_sender_name
+            )
           subject
         end
       end
@@ -315,8 +383,11 @@ describe Invitations::SendSms, type: :service do
       it("is a success") { is_a_success }
 
       it "calls the send transactional service with the right content" do
-        expect(Messengers::SendSms).to receive(:call)
-          .with(sendable: invitation, content: content)
+        expect(SendTransactionalSms).to receive(:call)
+          .with(
+            phone_number_formatted: phone_number_formatted, content: content,
+            sender_name: sms_sender_name
+          )
         subject
       end
 
@@ -336,8 +407,11 @@ describe Invitations::SendSms, type: :service do
         end
 
         it "calls the send transactional service with the right content" do
-          expect(Messengers::SendSms).to receive(:call)
-            .with(sendable: invitation, content: content)
+          expect(SendTransactionalSms).to receive(:call)
+            .with(
+              phone_number_formatted: phone_number_formatted, content: content,
+              sender_name: sms_sender_name
+            )
           subject
         end
       end
@@ -358,8 +432,11 @@ describe Invitations::SendSms, type: :service do
       it("is a success") { is_a_success }
 
       it "calls the send transactional service with the right content" do
-        expect(Messengers::SendSms).to receive(:call)
-          .with(sendable: invitation, content: content)
+        expect(SendTransactionalSms).to receive(:call)
+          .with(
+            phone_number_formatted: phone_number_formatted, content: content,
+            sender_name: sms_sender_name
+          )
         subject
       end
 
@@ -378,8 +455,11 @@ describe Invitations::SendSms, type: :service do
         end
 
         it "calls the send transactional service with the right content" do
-          expect(Messengers::SendSms).to receive(:call)
-            .with(sendable: invitation, content: content)
+          expect(SendTransactionalSms).to receive(:call)
+            .with(
+              phone_number_formatted: phone_number_formatted, content: content,
+              sender_name: sms_sender_name
+            )
           subject
         end
       end
@@ -401,8 +481,11 @@ describe Invitations::SendSms, type: :service do
       it("is a success") { is_a_success }
 
       it "calls the send transactional service with the right content" do
-        expect(Messengers::SendSms).to receive(:call)
-          .with(sendable: invitation, content: content)
+        expect(SendTransactionalSms).to receive(:call)
+          .with(
+            phone_number_formatted: phone_number_formatted, content: content,
+            sender_name: sms_sender_name
+          )
         subject
       end
     end
@@ -422,8 +505,11 @@ describe Invitations::SendSms, type: :service do
       it("is a success") { is_a_success }
 
       it "calls the send transactional service with the right content" do
-        expect(Messengers::SendSms).to receive(:call)
-          .with(sendable: invitation, content: content)
+        expect(SendTransactionalSms).to receive(:call)
+          .with(
+            phone_number_formatted: phone_number_formatted, content: content,
+            sender_name: sms_sender_name
+          )
         subject
       end
     end
@@ -443,8 +529,11 @@ describe Invitations::SendSms, type: :service do
       it("is a success") { is_a_success }
 
       it "calls the send transactional service with the right content" do
-        expect(Messengers::SendSms).to receive(:call)
-          .with(sendable: invitation, content: content)
+        expect(SendTransactionalSms).to receive(:call)
+          .with(
+            phone_number_formatted: phone_number_formatted, content: content,
+            sender_name: sms_sender_name
+          )
         subject
       end
     end
@@ -464,8 +553,11 @@ describe Invitations::SendSms, type: :service do
       it("is a success") { is_a_success }
 
       it "calls the send transactional service with the right content" do
-        expect(Messengers::SendSms).to receive(:call)
-          .with(sendable: invitation, content: content)
+        expect(SendTransactionalSms).to receive(:call)
+          .with(
+            phone_number_formatted: phone_number_formatted, content: content,
+            sender_name: sms_sender_name
+          )
         subject
       end
 
@@ -485,8 +577,11 @@ describe Invitations::SendSms, type: :service do
         end
 
         it "calls the send transactional service with the right content" do
-          expect(Messengers::SendSms).to receive(:call)
-            .with(sendable: invitation, content: content)
+          expect(SendTransactionalSms).to receive(:call)
+            .with(
+              phone_number_formatted: phone_number_formatted, content: content,
+              sender_name: sms_sender_name
+            )
           subject
         end
       end

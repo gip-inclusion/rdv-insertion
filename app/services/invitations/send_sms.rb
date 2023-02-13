@@ -1,19 +1,17 @@
 module Invitations
   class SendSms < BaseService
     include Invitations::SmsContent
+    include Messengers::SendSms
 
     attr_reader :invitation
+    alias sendable invitation
 
     def initialize(invitation:)
       @invitation = invitation
     end
 
     def call
-      call_service!(
-        Messengers::SendSms,
-        sendable: @invitation,
-        content: content
-      )
+      send_sms
     end
 
     private

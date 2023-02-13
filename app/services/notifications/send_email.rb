@@ -2,18 +2,16 @@ class EmailNotificationError < StandardError; end
 
 module Notifications
   class SendEmail < BaseService
+    include Messengers::SendEmail
+
     def initialize(notification:)
       @notification = notification
     end
 
     def call
-      call_service!(
-        Messengers::SendEmail,
-        sendable: @notification,
-        mailer_class: NotificationMailer,
-        mailer_method: mailer_method,
+      NotificationMailer.with(
         notification: @notification
-      )
+      ).send(mailer_method).deliver_now
     end
 
     private
@@ -28,6 +26,10 @@ module Notifications
       else
         raise EmailNotificationError, "Message de convocation non géré pour le rdv #{@notification.rdv.id}"
       end
+    end
+
+    def sendable
+      @notification
     end
   end
 end

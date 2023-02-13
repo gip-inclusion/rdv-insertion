@@ -1,4 +1,4 @@
-<div class="d-flex align-items-center context-header">
+  <div class="d-flex align-items-center context-header">
   <span></span>
   <h5 class="text-center px-2 py-4">
     <strong>
@@ -54,7 +54,7 @@
               <td class="px-4 py-3"><%= format_date(participation.starts_at) %></td>
               <td class="px-2 py-3"><%= participation.motif_name %></td>
               <% if convocable_participations.present?  %>
-                <td class="px-4 py-2"><%= participation.convocable? ? sanitize(display_convocation_formats(participation.convocation_formats)) : " - " %></td>
+                <td class="px-4 py-2"><%= participation.convocable? ? render("convocations", participation: participation, sms_convocations: participation.sent_sms_convocations, email_convocations: participation.sent_email_convocations) : " - " %></td>
               <% end %>
               <td class="px-4 py-3 <%= background_class_for_participation_status(participation) %>">
                 <%= display_participation_status(participation) %>

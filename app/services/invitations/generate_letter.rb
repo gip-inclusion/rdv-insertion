@@ -1,13 +1,12 @@
 module Invitations
   class GenerateLetter < BaseService
+    include Messengers::GenerateLetter
+
     def initialize(invitation:)
       @invitation = invitation
     end
 
     def call
-      check_invitation_format!
-      check_address!
-      check_messages_configuration!
       generate_letter
     end
 
@@ -15,20 +14,10 @@ module Invitations
 
     def generate_letter
       @invitation.content = ApplicationController.render(
-        template: "letters/#{@invitation.template_model}_invitation",
+        template: "letters/invitations/#{@invitation.template_model}_invitation",
         layout: "pdf",
         locals: locals
       )
-    end
-
-    def check_invitation_format!
-      fail!("Génération d'une lettre alors que le format est #{@invitation.format}") unless @invitation.format_postal?
-    end
-
-    def check_address!
-      fail!("L'adresse doit être renseignée") if @invitation.address.blank?
-      fail!("Le format de l'adresse est invalide") \
-        if @invitation.street_address.blank? || @invitation.zipcode_and_city.blank?
     end
 
     def locals
@@ -54,18 +43,16 @@ module Invitations
       }
     end
 
-    def check_messages_configuration!
-      return if @invitation.direction_names.present?
-
-      fail!("La configuration des courriers pour votre organisation est incomplète")
-    end
-
     def organisation
       (@invitation.applicant.organisations & @invitation.organisations).last
     end
 
     def display_independent_from_cd_message
       @invitation.organisations.all?(&:independent_from_cd)
+    end
+
+    def sendable
+      @invitation
     end
   end
 end

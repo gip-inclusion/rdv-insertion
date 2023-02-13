@@ -9,6 +9,7 @@ describe Notifications::SendSms, type: :service do
 
   let!(:phone_number) { "0782605941" }
   let!(:phone_number_formatted) { "+33782605941" }
+  let!(:sms_sender_name) { "provider" }
   let!(:applicant) do
     create(
       :applicant,
@@ -45,7 +46,8 @@ describe Notifications::SendSms, type: :service do
 
   describe "#call" do
     before do
-      allow(Messengers::SendSms).to receive(:call).and_return(OpenStruct.new(success?: true))
+      allow(notification).to receive(:sms_sender_name).and_return(sms_sender_name)
+      allow(SendTransactionalSms).to receive(:call).and_return(OpenStruct.new(success?: true))
     end
 
     it("is a success") { is_a_success }
@@ -60,6 +62,36 @@ describe Notifications::SendSms, type: :service do
       end
     end
 
+    context "when the phone number is nil" do
+      let!(:phone_number) { nil }
+
+      it("is a failure") { is_a_failure }
+
+      it "returns the error" do
+        expect(subject.errors).to eq(["Le téléphone doit être renseigné"])
+      end
+    end
+
+    context "when the phone number is not a mobile" do
+      let!(:phone_number) { "0142249062" }
+
+      it("is a failure") { is_a_failure }
+
+      it "returns the error" do
+        expect(subject.errors).to eq(["Le numéro de téléphone doit être un mobile"])
+      end
+    end
+
+    context "when the invitation format is not sms" do
+      before { notification.format = "email" }
+
+      it("is a failure") { is_a_failure }
+
+      it "returns the error" do
+        expect(subject.errors).to eq(["Envoi de SMS alors que le format est email"])
+      end
+    end
+
     describe "RSA orientation" do
       let!(:content) do
         "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) à un " \
@@ -70,8 +102,11 @@ describe Notifications::SendSms, type: :service do
       end
 
       it "calls the messenger service with the right content" do
-        expect(Messengers::SendSms).to receive(:call)
-          .with(sendable: notification, content: content)
+        expect(SendTransactionalSms).to receive(:call)
+          .with(
+            phone_number_formatted: phone_number_formatted, content: content,
+            sender_name: sms_sender_name
+          )
         subject
       end
 
@@ -89,8 +124,11 @@ describe Notifications::SendSms, type: :service do
         end
 
         it "calls the messenger service with the right content" do
-          expect(Messengers::SendSms).to receive(:call)
-            .with(sendable: notification, content: content)
+          expect(SendTransactionalSms).to receive(:call)
+            .with(
+              phone_number_formatted: phone_number_formatted, content: content,
+              sender_name: sms_sender_name
+            )
           subject
         end
       end
@@ -106,8 +144,11 @@ describe Notifications::SendSms, type: :service do
         end
 
         it "calls the messenger service with the right content" do
-          expect(Messengers::SendSms).to receive(:call)
-            .with(sendable: notification, content: content)
+          expect(SendTransactionalSms).to receive(:call)
+            .with(
+              phone_number_formatted: phone_number_formatted, content: content,
+              sender_name: sms_sender_name
+            )
           subject
         end
       end
@@ -117,7 +158,7 @@ describe Notifications::SendSms, type: :service do
 
         let!(:content) do
           "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) à un " \
-            "rendez-vous d'orientation." \
+            "rendez-vous d'orientation téléphonique." \
             " Un travailleur social vous appellera le 20/12/2021 à " \
             "partir de 10:00 sur ce numéro. " \
             "Ce RDV est obligatoire. " \
@@ -125,8 +166,11 @@ describe Notifications::SendSms, type: :service do
         end
 
         it "calls the send transactional service with the right content" do
-          expect(Messengers::SendSms).to receive(:call)
-            .with(sendable: notification, content: content)
+          expect(SendTransactionalSms).to receive(:call)
+            .with(
+              phone_number_formatted: phone_number_formatted, content: content,
+              sender_name: sms_sender_name
+            )
           subject
         end
 
@@ -136,7 +180,8 @@ describe Notifications::SendSms, type: :service do
           end
 
           let!(:content) do
-            "Monsieur John DOE,\nVotre rendez-vous d'orientation dans le cadre de votre RSA a été modifié. " \
+            "Monsieur John DOE,\nVotre rendez-vous d'orientation téléphonique " \
+              "dans le cadre de votre RSA a été modifié. " \
               "Un travailleur social vous appellera le 20/12/2021 à " \
               "partir de 10:00 sur ce numéro. " \
               "Ce RDV est obligatoire. " \
@@ -144,8 +189,11 @@ describe Notifications::SendSms, type: :service do
           end
 
           it "calls the send transactional service with the right content" do
-            expect(Messengers::SendSms).to receive(:call)
-              .with(sendable: notification, content: content)
+            expect(SendTransactionalSms).to receive(:call)
+              .with(
+                phone_number_formatted: phone_number_formatted, content: content,
+                sender_name: sms_sender_name
+              )
             subject
           end
         end
@@ -167,8 +215,11 @@ describe Notifications::SendSms, type: :service do
         end
 
         it "calls the messenger service with the right content" do
-          expect(Messengers::SendSms).to receive(:call)
-            .with(sendable: notification, content: content)
+          expect(SendTransactionalSms).to receive(:call)
+            .with(
+              phone_number_formatted: phone_number_formatted, content: content,
+              sender_name: sms_sender_name
+            )
           subject
         end
 
@@ -187,8 +238,11 @@ describe Notifications::SendSms, type: :service do
           end
 
           it "calls the messenger service with the right content" do
-            expect(Messengers::SendSms).to receive(:call)
-              .with(sendable: notification, content: content)
+            expect(SendTransactionalSms).to receive(:call)
+              .with(
+                phone_number_formatted: phone_number_formatted, content: content,
+                sender_name: sms_sender_name
+              )
             subject
           end
         end
@@ -204,8 +258,11 @@ describe Notifications::SendSms, type: :service do
           end
 
           it "calls the messenger service with the right content" do
-            expect(Messengers::SendSms).to receive(:call)
-              .with(sendable: notification, content: content)
+            expect(SendTransactionalSms).to receive(:call)
+              .with(
+                phone_number_formatted: phone_number_formatted, content: content,
+                sender_name: sms_sender_name
+              )
             subject
           end
         end
@@ -215,7 +272,7 @@ describe Notifications::SendSms, type: :service do
 
           let!(:content) do
             "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) à un " \
-              "rendez-vous d'accompagnement. Un travailleur social " \
+              "rendez-vous d'accompagnement téléphonique. Un travailleur social " \
               "vous appellera le 20/12/2021 à partir de 10:00 sur ce numéro. " \
               "Ce RDV est obligatoire. " \
               "En cas d'absence, le versement de votre RSA pourra être suspendu ou réduit. " \
@@ -223,8 +280,11 @@ describe Notifications::SendSms, type: :service do
           end
 
           it "calls the send transactional service with the right content" do
-            expect(Messengers::SendSms).to receive(:call)
-              .with(sendable: notification, content: content)
+            expect(SendTransactionalSms).to receive(:call)
+              .with(
+                phone_number_formatted: phone_number_formatted, content: content,
+                sender_name: sms_sender_name
+              )
             subject
           end
 
@@ -234,7 +294,8 @@ describe Notifications::SendSms, type: :service do
             end
 
             let!(:content) do
-              "Monsieur John DOE,\nVotre rendez-vous d'accompagnement dans le cadre de votre RSA a été modifié. " \
+              "Monsieur John DOE,\nVotre rendez-vous d'accompagnement téléphonique " \
+                "dans le cadre de votre RSA a été modifié. " \
                 "Un travailleur social vous appellera le 20/12/2021 à " \
                 "partir de 10:00 sur ce numéro. " \
                 "Ce RDV est obligatoire. " \
@@ -243,8 +304,11 @@ describe Notifications::SendSms, type: :service do
             end
 
             it "calls the send transactional service with the right content" do
-              expect(Messengers::SendSms).to receive(:call)
-                .with(sendable: notification, content: content)
+              expect(SendTransactionalSms).to receive(:call)
+                .with(
+                  phone_number_formatted: phone_number_formatted, content: content,
+                  sender_name: sms_sender_name
+                )
               subject
             end
           end
@@ -265,8 +329,11 @@ describe Notifications::SendSms, type: :service do
       end
 
       it "calls the messenger service with the right content" do
-        expect(Messengers::SendSms).to receive(:call)
-          .with(sendable: notification, content: content)
+        expect(SendTransactionalSms).to receive(:call)
+          .with(
+            phone_number_formatted: phone_number_formatted, content: content,
+            sender_name: sms_sender_name
+          )
         subject
       end
 
@@ -285,8 +352,11 @@ describe Notifications::SendSms, type: :service do
         end
 
         it "calls the messenger service with the right content" do
-          expect(Messengers::SendSms).to receive(:call)
-            .with(sendable: notification, content: content)
+          expect(SendTransactionalSms).to receive(:call)
+            .with(
+              phone_number_formatted: phone_number_formatted, content: content,
+              sender_name: sms_sender_name
+            )
           subject
         end
       end
@@ -303,8 +373,11 @@ describe Notifications::SendSms, type: :service do
         end
 
         it "calls the messenger service with the right content" do
-          expect(Messengers::SendSms).to receive(:call)
-            .with(sendable: notification, content: content)
+          expect(SendTransactionalSms).to receive(:call)
+            .with(
+              phone_number_formatted: phone_number_formatted, content: content,
+              sender_name: sms_sender_name
+            )
           subject
         end
       end
@@ -314,7 +387,7 @@ describe Notifications::SendSms, type: :service do
 
         let!(:content) do
           "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) à un " \
-            "rendez-vous de signature de CER. " \
+            "rendez-vous téléphonique de signature de CER. " \
             "Un travailleur social vous appellera le 20/12/2021 à " \
             "partir de 10:00 sur ce numéro. " \
             "Ce RDV est obligatoire. " \
@@ -322,8 +395,11 @@ describe Notifications::SendSms, type: :service do
         end
 
         it "calls the send transactional service with the right content" do
-          expect(Messengers::SendSms).to receive(:call)
-            .with(sendable: notification, content: content)
+          expect(SendTransactionalSms).to receive(:call)
+            .with(
+              phone_number_formatted: phone_number_formatted, content: content,
+              sender_name: sms_sender_name
+            )
           subject
         end
 
@@ -333,7 +409,7 @@ describe Notifications::SendSms, type: :service do
           end
 
           let!(:content) do
-            "Monsieur John DOE,\nVotre rendez-vous de signature de CER" \
+            "Monsieur John DOE,\nVotre rendez-vous téléphonique de signature de CER" \
               " dans le cadre de votre RSA a été modifié. " \
               "Un travailleur social vous appellera le 20/12/2021 à " \
               "partir de 10:00 sur ce numéro. " \
@@ -342,8 +418,11 @@ describe Notifications::SendSms, type: :service do
           end
 
           it "calls the send transactional service with the right content" do
-            expect(Messengers::SendSms).to receive(:call)
-              .with(sendable: notification, content: content)
+            expect(SendTransactionalSms).to receive(:call)
+              .with(
+                phone_number_formatted: phone_number_formatted, content: content,
+                sender_name: sms_sender_name
+              )
             subject
           end
         end
@@ -362,8 +441,11 @@ describe Notifications::SendSms, type: :service do
       end
 
       it "calls the messenger service with the right content" do
-        expect(Messengers::SendSms).to receive(:call)
-          .with(sendable: notification, content: content)
+        expect(SendTransactionalSms).to receive(:call)
+          .with(
+            phone_number_formatted: phone_number_formatted, content: content,
+            sender_name: sms_sender_name
+          )
         subject
       end
 
@@ -380,8 +462,11 @@ describe Notifications::SendSms, type: :service do
         end
 
         it "calls the messenger service with the right content" do
-          expect(Messengers::SendSms).to receive(:call)
-            .with(sendable: notification, content: content)
+          expect(SendTransactionalSms).to receive(:call)
+            .with(
+              phone_number_formatted: phone_number_formatted, content: content,
+              sender_name: sms_sender_name
+            )
           subject
         end
       end
@@ -398,8 +483,11 @@ describe Notifications::SendSms, type: :service do
         end
 
         it "calls the messenger service with the right content" do
-          expect(Messengers::SendSms).to receive(:call)
-            .with(sendable: notification, content: content)
+          expect(SendTransactionalSms).to receive(:call)
+            .with(
+              phone_number_formatted: phone_number_formatted, content: content,
+              sender_name: sms_sender_name
+            )
           subject
         end
       end
@@ -409,15 +497,18 @@ describe Notifications::SendSms, type: :service do
 
         let!(:content) do
           "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) à un " \
-            "rendez-vous de suivi. " \
+            "rendez-vous de suivi téléphonique. " \
             "Un travailleur social vous appellera le 20/12/2021 à " \
             "partir de 10:00 sur ce numéro. " \
             "En cas d’empêchement, appelez rapidement le 0101010101."
         end
 
         it "calls the send transactional service with the right content" do
-          expect(Messengers::SendSms).to receive(:call)
-            .with(sendable: notification, content: content)
+          expect(SendTransactionalSms).to receive(:call)
+            .with(
+              phone_number_formatted: phone_number_formatted, content: content,
+              sender_name: sms_sender_name
+            )
           subject
         end
 
@@ -427,7 +518,7 @@ describe Notifications::SendSms, type: :service do
           end
 
           let!(:content) do
-            "Monsieur John DOE,\nVotre rendez-vous de suivi" \
+            "Monsieur John DOE,\nVotre rendez-vous de suivi téléphonique" \
               " dans le cadre de votre RSA a été modifié. " \
               "Un travailleur social vous appellera le 20/12/2021 à " \
               "partir de 10:00 sur ce numéro. " \
@@ -435,8 +526,11 @@ describe Notifications::SendSms, type: :service do
           end
 
           it "calls the send transactional service with the right content" do
-            expect(Messengers::SendSms).to receive(:call)
-              .with(sendable: notification, content: content)
+            expect(SendTransactionalSms).to receive(:call)
+              .with(
+                phone_number_formatted: phone_number_formatted, content: content,
+                sender_name: sms_sender_name
+              )
             subject
           end
         end
@@ -456,8 +550,11 @@ describe Notifications::SendSms, type: :service do
       end
 
       it "calls the messenger service with the right content" do
-        expect(Messengers::SendSms).to receive(:call)
-          .with(sendable: notification, content: content)
+        expect(SendTransactionalSms).to receive(:call)
+          .with(
+            phone_number_formatted: phone_number_formatted, content: content,
+            sender_name: sms_sender_name
+          )
         subject
       end
 
@@ -477,8 +574,11 @@ describe Notifications::SendSms, type: :service do
         end
 
         it "calls the messenger service with the right content" do
-          expect(Messengers::SendSms).to receive(:call)
-            .with(sendable: notification, content: content)
+          expect(SendTransactionalSms).to receive(:call)
+            .with(
+              phone_number_formatted: phone_number_formatted, content: content,
+              sender_name: sms_sender_name
+            )
           subject
         end
       end
@@ -495,8 +595,11 @@ describe Notifications::SendSms, type: :service do
         end
 
         it "calls the messenger service with the right content" do
-          expect(Messengers::SendSms).to receive(:call)
-            .with(sendable: notification, content: content)
+          expect(SendTransactionalSms).to receive(:call)
+            .with(
+              phone_number_formatted: phone_number_formatted, content: content,
+              sender_name: sms_sender_name
+            )
           subject
         end
       end
@@ -506,7 +609,7 @@ describe Notifications::SendSms, type: :service do
 
         let!(:content) do
           "Monsieur John DOE,\nVous êtes demandeur d'emploi et à ce titre vous avez été convoqué(e) à un " \
-            "rendez-vous d'accompagnement. Un travailleur social " \
+            "rendez-vous d'accompagnement téléphonique. Un travailleur social " \
             "vous appellera le 20/12/2021 à partir de 10:00 sur ce numéro. " \
             "Ce RDV est obligatoire. " \
             "En cas d'absence, le versement de votre RSA pourra être suspendu ou réduit. " \
@@ -514,8 +617,11 @@ describe Notifications::SendSms, type: :service do
         end
 
         it "calls the send transactional service with the right content" do
-          expect(Messengers::SendSms).to receive(:call)
-            .with(sendable: notification, content: content)
+          expect(SendTransactionalSms).to receive(:call)
+            .with(
+              phone_number_formatted: phone_number_formatted, content: content,
+              sender_name: sms_sender_name
+            )
           subject
         end
 
@@ -525,7 +631,7 @@ describe Notifications::SendSms, type: :service do
           end
 
           let!(:content) do
-            "Monsieur John DOE,\nVotre rendez-vous d'accompagnement dans le cadre de votre " \
+            "Monsieur John DOE,\nVotre rendez-vous d'accompagnement téléphonique dans le cadre de votre " \
               "demande d'emploi a été modifié. " \
               "Un travailleur social vous appellera le 20/12/2021 à " \
               "partir de 10:00 sur ce numéro. " \
@@ -535,8 +641,11 @@ describe Notifications::SendSms, type: :service do
           end
 
           it "calls the send transactional service with the right content" do
-            expect(Messengers::SendSms).to receive(:call)
-              .with(sendable: notification, content: content)
+            expect(SendTransactionalSms).to receive(:call)
+              .with(
+                phone_number_formatted: phone_number_formatted, content: content,
+                sender_name: sms_sender_name
+              )
             subject
           end
         end
