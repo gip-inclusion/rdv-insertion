@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_08_154729) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_13_152346) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -88,7 +88,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_08_154729) do
     t.boolean "convene_applicant", default: false
     t.integer "number_of_days_to_accept_invitation", default: 3
     t.integer "number_of_days_before_action_required", default: 10
-    t.boolean "invitation_fallbacks_set_to_applicants_organisations", default: false
+    t.boolean "invite_to_applicant_organisations_only", default: false
     t.boolean "rdv_with_referents", default: false
     t.bigint "motif_category_id"
     t.bigint "file_configuration_id"

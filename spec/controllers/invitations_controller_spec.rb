@@ -142,9 +142,9 @@ describe InvitationsController do
         post :create, params: create_params
       end
 
-      context "when the invitation fallbacks is set to applicants organisations" do
+      context "when the config invites to applicants organisations only" do
         before do
-          configuration.update!(invitation_fallbacks_set_to_applicants_organisations: true)
+          configuration.update!(invite_to_applicant_organisations_only: true)
           allow(Invitation).to receive(:new)
             .with(
               department: department, applicant: applicant, organisations: [organisation], rdv_context: rdv_context,
@@ -154,7 +154,7 @@ describe InvitationsController do
             ).and_return(invitation)
         end
 
-        it "instantiates the invitation with the applicant org only" do
+        it "instantiates the invitation with the applicant orgs only" do
           expect(Invitation).to receive(:new)
             .with(
               department: department, applicant: applicant, organisations: [organisation], rdv_context: rdv_context,
