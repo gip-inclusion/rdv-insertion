@@ -1,5 +1,5 @@
 upsert_global_stats_job:
-  cron: "0 22 * * *" # we compute global stats once a day, at 22:00
+  cron: "0 22 * * sat" # we compute global stats once a week, the saturday at 22:00
   class: "Stats::GlobalStats::UpsertStatsJob"
 upsert_monthly_stats_job:
   cron: "0 23 last * *" # we compute monthly stats the last day of the month, at 23:00
