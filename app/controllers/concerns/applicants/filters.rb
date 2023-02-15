@@ -1,4 +1,4 @@
-module FilterableApplicantsConcern
+module Applicants::Filters
   private
 
   def filter_applicants
