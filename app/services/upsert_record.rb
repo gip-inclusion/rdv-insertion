@@ -36,7 +36,7 @@ class UpsertRecord < BaseService
   end
 
   def rdv_solidarites_id_attribute_name
-    "rdv_solidarites_#{rdv_solidarites_class_name.downcase}_id"
+    "rdv_solidarites_#{rdv_solidarites_class_name.underscore}_id"
   end
 
   def rdv_solidarites_class_name
