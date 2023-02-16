@@ -66,7 +66,6 @@ MotifCategory.create!(
   name: "RSA accompagnement socio-pro",
   short_name: "rsa_accompagnement_sociopro",
   template: Template.find_or_create_by!(
-    :template,
     model: "standard",
     rdv_title: "rendez-vous d'accompagnement",
     rdv_title_by_phone: "rendez-vous d'accompagnement téléphonique",
@@ -220,7 +219,7 @@ MotifCategory.create!(
 
 # --------------------------------------------------------------------------------------------------------------------
 puts "Creating configurations and responsible..."
-drome_orientation_config = Configuration.create!(
+file_config_drome = FileConfiguration.create(
   sheet_name: "ENTRETIENS PHYSIQUES",
   column_names:
     {"required"=>
@@ -234,7 +233,11 @@ drome_orientation_config = Configuration.create!(
       "role"=>"Rôle",
       "phone_number"=>"N° Téléphones",
       "title"=>"Civilité"},
-    "optional"=>{"department_internal_id"=>"ID Iodas"}},
+    "optional"=>{"department_internal_id"=>"ID Iodas"}}
+)
+
+drome_orientation_config = Configuration.create!(
+  file_configuration: file_config_drome,
   convene_applicant: false,
   invitation_formats: ["sms", "email", "postal"],
   motif_category: orientation_category,
@@ -243,20 +246,7 @@ drome_orientation_config = Configuration.create!(
 )
 
 drome_accompagnement_config = Configuration.create!(
-  sheet_name: "ENTRETIENS PHYSIQUES",
-  column_names:
-    {"required"=>
-      {"address"=>"Adresse",
-      "last_name"=>"Nom bénéficiaire",
-      "first_name"=>"Prénom bénéficiaire",
-      "email"=>"Adresses Mails",
-      "birth_date"=>"Date de Naissance",
-      "postal_code"=>"CP Ville",
-      "affiliation_number"=>"N° Allocataire",
-      "role"=>"Rôle",
-      "phone_number"=>"N° Téléphones",
-      "title"=>"Civilité"},
-    "optional"=>{"department_internal_id"=>"ID Iodas"}},
+  file_configuration: file_config_drome,
   convene_applicant: false,
   invitation_formats: ["sms", "email", "postal"],
   motif_category: accompagnement_category,
@@ -264,7 +254,7 @@ drome_accompagnement_config = Configuration.create!(
   number_of_days_before_action_required: 10
 )
 
-yonne_orientation_config = Configuration.create!(
+file_config_yonne = FileConfiguration.create(
   sheet_name: "Feuille1",
   column_names:
     {"required"=>
@@ -276,7 +266,11 @@ yonne_orientation_config = Configuration.create!(
       "birth_date"=>"Date de naissance",
       "role"=>"Rôle",
       "title"=>"Civilité"},
-    "optional"=>{"birth_name"=>"Nom JF", "department_internal_id"=>"Code individu Iodas"}},
+    "optional"=>{"birth_name"=>"Nom JF", "department_internal_id"=>"Code individu Iodas"}}
+)
+
+yonne_orientation_config = Configuration.create!(
+  file_configuration: file_config_yonne,
   convene_applicant: true,
   invitation_formats: [],
   motif_category: orientation_category,
