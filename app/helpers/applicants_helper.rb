@@ -138,6 +138,23 @@ module ApplicantsHelper
 
     organisation_applicant_path(organisation, applicant)
   end
+
+  def rdv_solidarites_agent_searches_url(
+    rdv_solidarites_organisation_id, rdv_solidarites_user_id, rdv_solidarites_motif_id, rdv_solidarites_service_id
+  )
+    params = {
+      user_ids: [rdv_solidarites_user_id],
+      motif_id: rdv_solidarites_motif_id,
+      service_id: rdv_solidarites_service_id
+    }
+    "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{rdv_solidarites_organisation_id}/" \
+      "agent_searches?#{params.to_query}"
+  end
+
+  def should_convene_for?(rdv_context, configuration)
+    configuration.convene_applicant? &&
+      rdv_context.time_to_accept_invitation_exceeded?(configuration.number_of_days_before_action_required)
+  end
 end
 
 # rubocop:enable Metrics/ModuleLength
