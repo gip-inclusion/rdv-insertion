@@ -5,6 +5,8 @@ class RdvSolidaritesSession
     @uid = uid
     @client = client
     @access_token = access_token
+    # Ici nouveaux params de header pour le systéme avec le shared secret
+
   end
 
   def valid?

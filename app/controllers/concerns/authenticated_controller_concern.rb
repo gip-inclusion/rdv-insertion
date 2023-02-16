@@ -17,6 +17,9 @@ module AuthenticatedControllerConcern
 
   def logged_in?
     !current_agent.nil? && rdv_solidarites_session.valid?
+    # ici pas de session valide avec le nouveau systéme.
+    # On peut vérifier à chaque fois que le token est valide ?
+    # On passera qqchose dans le client rdv solidarite (un autre comportement) avec des infos suppl dans le header
   end
 
   def current_agent
