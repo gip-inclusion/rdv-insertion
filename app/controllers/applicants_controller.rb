@@ -7,16 +7,20 @@ class ApplicantsController < ApplicationController
     :status, :rights_opening_date, :archiving_reason
   ].freeze
 
-  include FilterableApplicantsConcern
+  include Applicants::Filters
 
-  before_action :set_applicant, only: [:show, :update, :edit]
-  before_action :set_organisation, :set_department, only: [:index, :new, :create, :show, :update, :edit]
-  before_action :set_all_configurations, only: [:index, :show]
-  before_action :set_applicants_scope, :set_current_configuration,
-                :set_current_motif_category, :set_applicants, :set_rdv_contexts,
-                :filter_applicants, :order_applicants, only: [:index]
-  before_action :set_organisations, only: [:index, :new, :create]
-  before_action :set_applicant_rdv_contexts, :set_back_to_list_url, only: [:show]
+  before_action :set_organisation, :set_department, :set_organisations, :set_all_configurations,
+                :set_applicants_scope,
+                :set_current_configuration, :set_current_motif_category, :set_applicants, :set_rdv_contexts,
+                :filter_applicants, :order_applicants,
+                for: :index
+  before_action :set_applicant, :set_organisation, :set_department, :set_all_configurations,
+                :set_applicant_rdv_contexts, :set_back_to_list_url,
+                for: :show
+  before_action :set_organisation, :set_department, :set_organisations,
+                for: [:new, :create]
+  before_action :set_applicant, :set_organisation, :set_department,
+                for: [:edit, :update]
   before_action :retrieve_applicants, only: [:search]
   after_action :store_back_to_list_url, only: [:index]
 

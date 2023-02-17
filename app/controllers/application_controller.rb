@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
 
   include AuthorizationConcern
   include AuthenticatedControllerConcern
+  include BeforeActionOverride
 
   private
 
