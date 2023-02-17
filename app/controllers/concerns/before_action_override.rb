@@ -35,11 +35,11 @@ module BeforeActionOverride
   def method_missing(method_name, *args)
     return super unless method_name.to_s.end_with?("for_#{action_name}")
 
-    matching_method = method_name.to_s.split("_")[0..-3].join("_")
+    matching_method = method_name.to_s.split("_")[0..-3].join("_").to_sym
     if respond_to?(matching_method, true)
       send(matching_method)
     else
-      super
+      super(matching_method, *args)
     end
   end
 
