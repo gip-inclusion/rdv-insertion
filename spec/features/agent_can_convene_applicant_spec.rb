@@ -105,6 +105,15 @@ describe "Agents can convene applicant to rdv", js: true do
       end
     end
 
+    context "when the configuration is not set to convene applicants" do
+      before { configuration.update! convene_applicant: false }
+
+      it "does not show a convocation button" do
+        visit organisation_applicants_path(organisation)
+        expect(page).not_to have_content("📅 Convoquer")
+      end
+    end
+
     context "from department level" do
       it "adds a link to convene the applicant" do
         visit department_applicants_path(department)
@@ -203,6 +212,27 @@ describe "Agents can convene applicant to rdv", js: true do
         visit organisation_applicant_path(organisation, applicant)
         expect(page).to have_content("📅 Convoquer").once
         expect(page).to have_link("📅 Convoquer", href: expected_link)
+      end
+    end
+
+    context "when one configuration is not set to convene applicants" do
+      before { configuration.update! convene_applicant: false }
+
+      it "shows only one convocation button" do
+        visit organisation_applicants_path(organisation)
+        expect(page).to have_content("📅 Convoquer").once
+      end
+    end
+
+    context "when the applicant is not invited" do
+      let!(:invitation) { nil }
+      let!(:other_invitation) { nil }
+
+      it "does not show a convocation button" do
+        [rdv_context, other_rdv_context].each(&:set_status)
+        [rdv_context, other_rdv_context].each(&:save!)
+        visit organisation_applicants_path(organisation)
+        expect(page).not_to have_content("📅 Convoquer")
       end
     end
 

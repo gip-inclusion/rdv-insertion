@@ -33,11 +33,6 @@
   <% end %>
   <div class="d-flex justify-content-center rdv-status-block">
     <div>
-       <% if should_convene_for?(rdv_context, configuration) %>
-        <div class="m-2 p-2 text-center">
-          <%= render "convocation_button", applicant: @applicant, convocation_motif: @convocation_motifs_by_rdv_context[rdv_context] %>
-        </div>
-      <% end %>
       <table class="block-white text-center align-middle mb-4 mx-4">
         <thead>
           <tr>
@@ -83,6 +78,11 @@
         <% end %>
         </tbody>
       </table>
+      <% if should_convene_for?(rdv_context, configuration) %>
+        <div class="m-2 p-2 text-center">
+          <%= render "convocation_button", applicant: @applicant, convocation_motif: @convocation_motifs_by_rdv_context[rdv_context] %>
+        </div>
+      <% end %>
     </div>
   </div>
 </div>
