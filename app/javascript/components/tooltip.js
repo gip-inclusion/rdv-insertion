@@ -20,8 +20,11 @@ const initToolTip = () => {
     placement: "bottom",
   });
 
-  tippy("#js-rdv-cancelled-by-user-tooltip", {
-    content: "Nombre de rendez-vous manqués ou annulés par l'allocataire",
+  tippy("#js-disabled-convocation-button", {
+    content:
+      "Aucun motif avec la mention 'convocation' n'a été trouvé sur RDV-Solidarités pour cette catégorie.<br/>" +
+      "Contactez-nous à data.insertion@beta.gouv.fr pour en savoir plus sur la fonctionnalité de convocation.",
+    allowHTML: true,
   });
 };
 

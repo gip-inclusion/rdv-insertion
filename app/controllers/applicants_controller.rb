@@ -7,15 +7,20 @@ class ApplicantsController < ApplicationController
     :status, :rights_opening_date, :archiving_reason
   ].freeze
 
-  include Applicants::Filters
+  include Applicants::Filterable
+  include Applicants::Convocable
 
   before_action :set_organisation, :set_department, :set_organisations, :set_all_configurations,
                 :set_applicants_scope,
-                :set_current_configuration, :set_current_motif_category, :set_applicants, :set_rdv_contexts,
+                :set_current_configuration, :set_current_motif_category,
+                :set_applicants, :set_rdv_contexts,
                 :filter_applicants, :order_applicants,
+                :set_convocation_motifs_by_applicant,
                 for: :index
   before_action :set_applicant, :set_organisation, :set_department, :set_all_configurations,
-                :set_applicant_rdv_contexts, :set_back_to_list_url,
+                :set_applicant_organisations, :set_applicant_rdv_contexts,
+                :set_convocation_motifs_by_rdv_context,
+                :set_back_to_list_url,
                 for: :show
   before_action :set_organisation, :set_department, :set_organisations,
                 for: [:new, :create]
@@ -208,6 +213,11 @@ class ApplicantsController < ApplicationController
       ).sort_by(&:motif_category_position)
   end
 
+  def set_applicant_organisations
+    @applicant_organisations = \
+      policy_scope(Organisation).where(id: @applicant.organisation_ids, department: @department)
+  end
+
   def set_applicants
     archived_scope? ? set_archived_applicants : set_applicants_for_motif_category
   end
@@ -216,7 +226,7 @@ class ApplicantsController < ApplicationController
     @applicants = policy_scope(Applicant)
                   .preload(
                     :organisations,
-                    rdv_contexts: [:notifications, :invitations, :rdvs]
+                    rdv_contexts: [:notifications, :invitations]
                   )
                   .active.distinct.archived(false)
                   .where(department_level? ? { department: @department } : { organisations: @organisation })
