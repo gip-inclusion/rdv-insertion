@@ -145,7 +145,8 @@ module ApplicantsHelper
     params = {
       user_ids: [rdv_solidarites_user_id],
       motif_id: rdv_solidarites_motif_id,
-      service_id: rdv_solidarites_service_id
+      service_id: rdv_solidarites_service_id,
+      commit: "Afficher les créneaux"
     }
     "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{rdv_solidarites_organisation_id}/" \
       "agent_searches?#{params.to_query}"
