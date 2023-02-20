@@ -51,7 +51,8 @@ describe "Agents can convene applicant to rdv", js: true do
     params = {
       user_ids: [rdv_solidarites_user_id],
       motif_id: rdv_solidarites_motif_id,
-      service_id: rdv_solidarites_service_id
+      service_id: rdv_solidarites_service_id,
+      commit: "Afficher les créneaux"
     }
     "http://www.rdv-solidarites-test.localhost/admin/organisations/#{rdv_solidarites_organisation_id}/" \
       "agent_searches?#{params.to_query}"
@@ -111,6 +112,17 @@ describe "Agents can convene applicant to rdv", js: true do
       it "does not show a convocation button" do
         visit organisation_applicants_path(organisation)
         expect(page).not_to have_content("📅 Convoquer")
+      end
+    end
+
+    context "when the motif is deleted" do
+      before { motif.update! deleted_at: 2.days.ago }
+
+      it "shows a disabled button to convene the applicant" do
+        visit organisation_applicants_path(organisation)
+        expect(page).to have_content("📅 Convoquer")
+        expect(page).not_to have_link("📅 Convoquer")
+        expect(page).to have_css("div#js-disabled-convocation-button")
       end
     end
 
@@ -179,7 +191,8 @@ describe "Agents can convene applicant to rdv", js: true do
       params = {
         user_ids: [rdv_solidarites_user_id],
         motif_id: other_rdv_solidarites_motif_id,
-        service_id: other_rdv_solidarites_service_id
+        service_id: other_rdv_solidarites_service_id,
+        commit: "Afficher les créneaux"
       }
       "http://www.rdv-solidarites-test.localhost/admin/organisations/#{rdv_solidarites_organisation_id}/" \
         "agent_searches?#{params.to_query}"
@@ -260,7 +273,8 @@ describe "Agents can convene applicant to rdv", js: true do
         params = {
           user_ids: [rdv_solidarites_user_id],
           motif_id: other_rdv_solidarites_motif_id,
-          service_id: other_rdv_solidarites_service_id
+          service_id: other_rdv_solidarites_service_id,
+          commit: "Afficher les créneaux"
         }
         "http://www.rdv-solidarites-test.localhost/admin/organisations/393/" \
           "agent_searches?#{params.to_query}"

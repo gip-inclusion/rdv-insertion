@@ -15,6 +15,7 @@ class Motif < ApplicationRecord
 
   delegate :rdv_solidarites_organisation_id, to: :organisation
 
+  scope :active, ->(active = true) { active ? where(deleted_at: nil) : where.not(deleted_at: nil) }
   scope :collectif, ->(collectif = true) { collectif ? where(collectif: true) : where(collectif: false) }
 
   def presential?

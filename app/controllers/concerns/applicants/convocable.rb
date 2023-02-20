@@ -6,7 +6,7 @@ module Applicants::Convocable
     return if archived_scope?
     return unless @current_configuration.convene_applicant?
 
-    convocation_motifs = Motif.includes(:organisation).where(
+    convocation_motifs = Motif.includes(:organisation).active.where(
       organisation_id: department_level? ? @organisations.ids : @organisation.id,
       motif_category: @current_motif_category
     ).select(&:convocation?)
@@ -25,7 +25,7 @@ module Applicants::Convocable
     return if archived_scope?
     return if @all_configurations.none?(&:convene_applicant?)
 
-    convocation_motifs = Motif.includes(:organisation).where(
+    convocation_motifs = Motif.includes(:organisation).active.where(
       organisation_id: @applicant_organisations.ids, motif_category: @all_configurations.map(&:motif_category)
     ).select(&:convocation?)
 
