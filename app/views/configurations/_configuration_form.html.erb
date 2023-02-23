@@ -1,0 +1,63 @@
+<div class="container rdv-insertion-form text-dark-blue h4-as-labels mt-4">
+  <div class="d-flex justify-content-between mb-4">
+    <div>
+      <%= link_to(return_path) do %>
+        <button class="btn btn-blue-out" type="button">Annuler</button>
+      <% end %>
+    </div>
+    <h1 class="h1-form-title d-none d-sm-inline"><%= title %></h1>
+    <div>
+      <button type="submit" class="btn btn-blue">Enregistrer</button>
+    </div>
+  </div>
+  <div class="mb-4">
+    <div class="row d-flex justify-content-start flex-wrap">
+      <% unless Configuration.exists?(@configuration.id) %>
+        <div class="d-flex flex-column align-items-center col-12 px-5 mb-4">
+          <h4>Configuration pour : *</h4>
+          <%= f.association :motif_category %>
+        </div>
+
+      <% end %>
+      <div class="col-12 col-md-6 px-5">
+        <h4><%= Configuration.human_attribute_name(:invitation_formats) %>*</h4>
+        <p class="checkboxes"><%= f.collection_check_boxes :invitation_formats, [["sms", "SMS"], ["email", "Email"], ["postal", "Courrier"]], :first, :last, include_hidden: false %></p>
+      </div>
+      <%= render "common/attribute_input", f:f, attribute: :number_of_days_to_accept_invitation, mandatory: true %>
+      <%= render "common/attribute_input", f:f, attribute: :convene_applicant, boolean: true, mandatory: true %>
+      <%= render "common/attribute_input", f:f, attribute: :number_of_days_before_action_required, mandatory: true %>
+      <%= render "common/attribute_input", f:f, attribute: :rdv_with_referents, boolean: true, mandatory: true %>
+      <%= render "common/attribute_input", f:f, attribute: :invite_to_applicant_organisations_only, boolean: true, mandatory: true %>
+    </div>
+
+    <div class="row">
+      <h4 class="px-5">Fichier d'import</h4>
+      <div class="mb-4 px-5">
+        <% @department.file_configurations.uniq.each do |file_configuration| %>
+          <div class="d-flex justify-content-between mb-2">
+            <%= radio_button_tag "configuration[file_configuration_id]",
+                file_configuration.id,
+                current_file_configuration&.id == file_configuration.id ? true : false,
+                class: "file-configuration-select",
+                id: "configuration_file_configuration_#{file_configuration.id}"
+            %>
+            <div class="background-blue-light d-flex justify-content-between px-4 pt-2 rounded flex-grow-1">
+              <div class="flex-grow-1">
+                <p class="mb-0">Utilisé pour :</p>
+                <% file_configuration.configurations.each do |configuration| %>
+                  <% next if configuration.organisations.where(department: @department).blank? %>
+                  <p class="mb-2">- <strong><%= configuration.motif_category_name %></strong> par <strong><%= configuration.organisations.where(department: @department).map(&:name).join(", ") %></strong></p>
+                <% end %>
+              </div>
+              <div class="d-flex align-items-center">
+                <%= link_to(file_configuration_path(file_configuration), data: { turbo_frame: 'remote_modal' }) do %>
+                  <button class="btn btn-blue file-configuration-modal-button">Voir le détail</button>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

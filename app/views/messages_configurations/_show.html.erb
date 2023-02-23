@@ -1,0 +1,21 @@
+<%= turbo_frame_tag @messages_configuration do %>
+  <div class="row card-white justify-content-center mb-2">
+    <div class="row d-flex justify-content-start flex-wrap">
+      <h4 class="pb-2">Courrier</h4>
+      <%= render "common/attribute_display", record: @messages_configuration, attribute: :direction_names, list: true, tooltip: true %>
+      <%= render "common/attribute_display", record: @messages_configuration, attribute: :signature_lines, list: true %>
+      <%= render "common/attribute_display", record: @messages_configuration, attribute: :sender_city, tooltip: true %>
+      <%= render "common/attribute_display", record: @messages_configuration, attribute: :letter_sender_name, tooltip: true %>
+      <%= render "common/attribute_display", record: @messages_configuration, attribute: :display_europe_logos %>
+      <%= render "common/attribute_display", record: @messages_configuration, attribute: :display_department_logo, tooltip: true %>
+      <%= render "common/attribute_display", record: @messages_configuration, attribute: :help_address, tooltip: true %>
+      <h4 class="pt-5 pb-2">SMS</h4>
+      <%= render "common/attribute_display", record: @messages_configuration, attribute: :sms_sender_name, tooltip: true %>
+    </div>
+  </div>
+  <div class="d-flex justify-content-end mb-4">
+    <%= link_to edit_messages_configuration_path(@messages_configuration) do %>
+      <button class="btn btn-blue">Modifier</button>
+    <% end %>
+  </div>
+<% end %>

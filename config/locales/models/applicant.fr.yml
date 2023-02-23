@@ -18,7 +18,7 @@ fr:
         organisations: Organisation(s)
         archiving_reason: Motif d'archivage
         uid: Le couple numéro d'allocataire + rôle
-        creation_date: Date de création
+        created_at: Date de création
         status: Statut
         archived_at: Archivé le
         agents: Référent(s)

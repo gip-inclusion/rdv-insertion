@@ -10,8 +10,8 @@ fr:
           has_many: Vous ne pouvez pas supprimer l'enregistrement parce que les %{record}
             dépendants existent
   boolean:
-    true: "oui"
-    false: "non"
+    true: Oui
+    false: Non
   date:
     helpers:
       tomorrow: demain
@@ -245,3 +245,27 @@ fr:
     la: "de la %{name}"
     l': "de l'%{name}"
     les: "des %{name}"
+  upload_column_names:
+    role: Rôle (demandeur/conjoint)
+    email: Email
+    title: Civilité
+    address: Adresse
+    last_name: Nom de famille
+    first_name: Prénom
+    birth_date: Date de naissance
+    affiliation_number: N° CAF
+    department_internal_id: ID bénéficiaire départment
+    street_number: Numéro de rue
+    address: Adresse
+    street_type: Type de voie
+    city: Ville
+    postal_code: Code postal
+    phone_number: Numéro de téléphone
+    birth_name: Nom de naissance
+    rights_opening_date: Date d'ouverture du droit
+    organisation_search_terms: Structure référente
+    referent_email: Email de l'agent référent
+  invitation_formats:
+    postal: Courrier
+    sms: SMS
+    email: Email

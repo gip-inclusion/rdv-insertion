@@ -8,7 +8,7 @@ class ReferentAssignationsController < ApplicationController
     @success = assign_referent.success?
     @errors = assign_referent.errors
     respond_to do |format|
-      format.turbo_stream
+      format.turbo_stream { render_create_flashes }
       format.json do
         render json: { success: @success, errors: @errors }, status: @success ? :ok : :unprocessable_entity
       end
@@ -16,8 +16,11 @@ class ReferentAssignationsController < ApplicationController
   end
 
   def destroy
-    @success = remove_referent.success?
-    @errors = remove_referent.errors
+    if remove_referent.success?
+      flash.now[:success] = "Le référent a bien été retiré"
+    else
+      flash.now[:error] = "Une erreur s'est produite lors du détachement du référent: #{remove_referent.errors}"
+    end
   end
 
   private
@@ -74,5 +77,13 @@ class ReferentAssignationsController < ApplicationController
       else
         raise ActiveRecord::RecordNotFound
       end
+  end
+
+  def render_create_flashes
+    if @success
+      flash.now[:success] = "Le référent a bien été assigné"
+    else
+      flash.now[:error] = "Une erreur s'est produite lors de l'assignation du référent: #{@errors}"
+    end
   end
 end

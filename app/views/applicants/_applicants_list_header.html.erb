@@ -1,4 +1,4 @@
-<div class="row mb-4 block-white justify-content-center">
+<div class="row mb-4 card-white justify-content-center">
   <div class="col-4 justify-content-center">
     <div class="mb-1">
       <% unless archived_scope?(@applicants_scope) %>
@@ -12,7 +12,7 @@
       <% end %>
     </div>
     <%= render "filter_by_invitations_dates_button" %>
-    <%= render 'search_form', url: compute_index_path(@organisation, @department) %>
+    <%= render 'search_form', url: compute_index_path(Applicant, @organisation, @department) %>
 
     <div class="d-flex justify-content-between mt-1">
       <div class="text-left mt-2">
@@ -32,7 +32,7 @@
       </div>
       <% if display_back_to_list_button? %>
         <div>
-          <%= link_to compute_index_path(@organisation, @department, motif_category_id: @current_motif_category&.id, applicants_scope: @applicants_scope), class: "btn btn-blue-out" do %>
+          <%= link_to compute_index_path(Applicant, @organisation, @department, motif_category_id: @current_motif_category&.id, applicants_scope: @applicants_scope), class: "btn btn-blue-out" do %>
             Retour à la liste
           <% end %>
         </div>
@@ -69,7 +69,7 @@
     <% unless department_level? %>
       <div class="mt-2">
         <%= link_to @organisation.rdv_solidarites_url, target: "_blank" do %>
-          <button class="btn btn-blue">Voir sur RDV-S<i class="fas fa-external-link-alt icon-sm"></i></button>
+          <button class="btn btn-blue">Voir sur RDV-Solidarités<i class="fas fa-external-link-alt icon-sm"></i></button>
         <% end %>
       </div>
     <% end %>
@@ -80,7 +80,7 @@
     </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
       <li>
-        <%= link_to(department_level? ? new_department_applicant_path(@department) : new_organisation_applicant_path(@organisation), class: "dropdown-item") do %>
+        <%= link_to(compute_new_path(Applicant, @organisation, @department), class: "dropdown-item") do %>
           Créer un allocataire
         <% end %>
       </li>
@@ -90,7 +90,16 @@
         <% end %>
       </li>
     </ul>
-    <%= link_to(compute_index_path(@organisation, @department, **params.to_unsafe_h.merge(format: "csv")), class: "btn btn-blue-out mt-2", id: "js-csv-export-tooltip", target: "_blank") do %>
+    <% if department_level? && @current_agent_roles.any?(&:admin?) %>
+      <%= link_to(department_organisations_path(@department), data: { turbo_frame: 'remote_modal' }, class: "my-2") do %>
+        <button class="btn btn-blue-out">Configurer une organisation</button>
+      <% end %>
+    <% elsif @current_agent_roles.any?(&:admin?) %>
+      <%= link_to(organisation_configurations_path(@organisation), class: "btn btn-blue-out my-2") do %>
+        Configurer l'organisation
+      <% end %>
+    <% end %>
+    <%= link_to(compute_index_path(Applicant, @organisation, @department, **params.to_unsafe_h.merge(format: "csv")), class: "btn btn-blue-out mt-2", id: "js-csv-export-tooltip", target: "_blank") do %>
       <i class="fas fa-download"></i> Exporter au format CSV
     <% end %>
   </div>

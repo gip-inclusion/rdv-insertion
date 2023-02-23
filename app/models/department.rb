@@ -9,6 +9,7 @@ class Department < ApplicationRecord
 
   has_many :configurations, through: :organisations
   has_many :motif_categories, through: :configurations
+  has_many :file_configurations, through: :configurations
   has_many :agents, through: :organisations
   has_many :rdvs, through: :organisations
   has_many :participations, through: :rdvs

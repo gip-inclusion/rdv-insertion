@@ -1,0 +1,8 @@
+<div class="text-array__row d-flex justify-content-between">
+  <input class="array-input" type="text" value="<%= array_el %>" name="<%= object_name %>[<%= attribute_name %>][]" id="<%= object_name %>_">
+  <div class="text-array__remove"
+       data-controller="array-column-input-row"
+       data-action="click->array-column-input-row#remove">
+    <i class="fas fa-trash" ></i>
+  </div>
+</div>

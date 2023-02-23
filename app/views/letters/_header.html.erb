@@ -5,8 +5,12 @@
         <%= pdf_image_tag(organisation.logo_path || department.logo_path) %>
       </div>
     </div>
-    <% direction_names.each do |direction_name| %>
-      <p><%= direction_name.upcase %></p>
+    <% if direction_names.blank? %>
+      <p><%= organisation.name.upcase %></p>
+    <% else %>
+      <% direction_names.each do |direction_name| %>
+        <p><%= direction_name.upcase %></p>
+      <% end %>
     <% end %>
   </div>
   <div class="header-right-col">

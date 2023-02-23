@@ -3,6 +3,10 @@ class OrganisationPolicy < ApplicationPolicy
     pundit_user.organisations.include?(record)
   end
 
+  def update?
+    upload?
+  end
+
   def create_and_invite_applicants?
     upload?
   end

@@ -1,9 +1,9 @@
 <%= turbo_stream.replace "organisations_list" do %>
-  <%= render partial: "applicants/organisations_list", locals: { organisations: @applicant.reload.organisations } %>
+  <%= render "common/attribute_display", record: @applicant, attribute: :organisations, list: true, id: "organisations_list" %>
 <% end %>
-<%= turbo_stream.prepend "flashes" do %>
-  <%= render partial: "common/flash", locals: { flash: @success ? { success: "L'organisation a bien été ajoutée" } : { error: "Une erreur s'est produite lors de l'ajout de l'organisation: #{@errors}" } } %>
-<% end %>
+
+<%= render_turbo_stream_flash_messages %>
+
 <% if @organisation_to_add.email? %>
   <%= turbo_stream.replace "remote_modal" do %>
     <%= render partial: "organisations/applicant_added_notifications/form", locals: { emails: [@organisation_to_add.email], applicant: @applicant, organisation: @organisation_to_add } %>

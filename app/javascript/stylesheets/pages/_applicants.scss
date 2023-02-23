@@ -5,15 +5,6 @@
   }
 }
 
-.block-white {
-  background-color: white;
-  caption-side: top;
-  border: 0.5px solid $light-grey;
-  border-radius: 5px;
-  padding: 20px;
-  box-shadow: 0 0 1px rgba(0,0,0,0.1);
-}
-
 .icon-blue {
   color: $dark-blue;
   font-size: 0.9rem;
@@ -21,15 +12,6 @@
 
 .padding-left-15 {
   padding-left: 15px !important;
-}
-
-.label-blue {
-  color: $dark-blue;
-
-  h4 {
-    font-size: 1.2rem;
-    font-weight: 700;
-  }
 }
 
 .icon-sm {

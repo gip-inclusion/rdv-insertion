@@ -1,0 +1,37 @@
+<%# Correctly displays a model attribute, depending of his type. %>
+<%# 2 locals are mandatory : record (a class instance) and attribute (a key corresponding to a class attribute) %>
+<%# All other locals are optionnal ; except id and tooltip, which can be added in all cases, only one variable must be chosen %>
+
+<%# Possible options : %>
+<%# id: adds an id to the grouping div %>
+<%# tooltip: adds a toolip next to the label ; the tooltip must be configured in javascript/components/tooltip.js %>
+<%# list: for array columns or has_many associations ; displays one line for each value %>
+<%# inline_list: for array columns or has_many associations ; displays one all values on one line %>
+<%# date: for date or datetime columns ; displays the date in a human format %>
+<%# for boolean or text columns, no optional variable is required %>
+
+<div id="<%= local_assigns[:id].present? ? id : nil %>" class="col-12 col-md-6 px-5">
+  <h4>
+    <%= record.class.human_attribute_name(attribute) %>
+    <% if local_assigns[:tooltip] %>
+      <i class="fas fa-question-circle" id="js-<%= attribute %>-attribute-tooltip"></i>
+    <% end %>
+  </h4>
+  <% if local_assigns[:list] || local_assigns[:inline_list] %>
+    <% if record.send(attribute).blank? %>
+      <p class="mb-2">-</p>
+    <% elsif local_assigns[:inline_list] %>
+      <p class="mb-2"><%= record.send(attribute).join(", ") %></p>
+    <% else %>
+      <% record.send(attribute).each do |attribute_value| %>
+        <p class="mb-2"><%= attribute_value %></p>
+      <% end %>
+    <% end %>
+  <% elsif local_assigns[:date] %>
+    <p><%= display_attribute format_date(record[attribute]) %></p>
+  <% elsif record[attribute].in? [true, false] %>
+    <p><%= display_attribute I18n.t("boolean.#{record[attribute]}") %></p>
+  <% else %>
+    <p><%= display_attribute record[attribute] %></p>
+  <% end %>
+</div>

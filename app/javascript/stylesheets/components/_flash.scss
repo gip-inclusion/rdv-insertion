@@ -1,0 +1,16 @@
+.flash_message {
+  animation: appear-then-fade 5s both;
+}
+
+.alert {
+  margin-bottom: 0;
+}
+
+@keyframes appear-then-fade {
+  0%, 100% {
+    opacity:0
+  }
+  5%, 60% {
+    opacity:1
+  }
+}

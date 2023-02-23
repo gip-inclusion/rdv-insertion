@@ -2,3 +2,12 @@ fr:
   activerecord:
     models:
       configuration: Configuration
+    attributes:
+      configuration:
+        convene_applicant: Convocation possible
+        number_of_days_to_accept_invitation: Délai pour prendre rdv (en jours)
+        number_of_days_before_action_required: Délai d'expiration (en jours)
+        invite_to_applicant_organisations_only: Invitation limitée aux organisations du bénéficiaire
+        rdv_with_referents: RDV avec référent
+        invitation_formats: Formats d'invitations
+        motif_category: Catégorie de motifs

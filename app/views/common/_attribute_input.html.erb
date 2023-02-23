@@ -1,0 +1,40 @@
+<%# Displays an attribute input field %>
+<%# 2 locals are mandatory : f (a form) and attribute (a key corresponding to a class attribute) %>
+<%# All other locals are optionnal ; except mandatory and tooltip, which can be added in all cases, only one variable must be chosen %>
+
+<%# Possible options : %>
+<%# mandatory: adds a star to the label %>
+<%# tooltip: adds a toolip next to the label ; the tooltip must be configured in javascript/components/tooltip.js %>
+<%# collection: a collection of options to display as a select input %>
+<%# start_year: for date or datetime columns ; a start year for a date select (end year is current year) %>
+<%# array: for array columns ; displays one input field per array value, with possibility to add or remove rows %>
+<%# association : for associated tables %>
+<%# boolean : for booleans, displays boolean as radio buttons %>
+<%# for boolean or text columns, no optional variable is required %>
+
+<div class="col-12 col-md-6 px-5">
+  <h4>
+    <%= f.object.class.human_attribute_name(attribute) %><%= "*" if local_assigns[:mandatory] %>
+    <% if local_assigns[:tooltip] %>
+      <i class="fas fa-question-circle" id="js-<%= attribute %>-attribute-tooltip"></i>
+    <% end %>
+  </h4>
+  <% if local_assigns[:collection] %>
+    <p><%= f.input attribute, as: :select, collection: collection, selected: f.object[attribute] %></p>
+  <% elsif local_assigns[:start_year] %>
+    <p><%= f.input attribute,
+                    input_html: { class: "date-select" },
+                    as: :date, start_year: start_year,
+                    end_year: Date.today.year,
+                    include_blank: true,
+                    order: [:day, :month, :year] %></p>
+  <% elsif local_assigns[:association] %>
+    <p><%= f.association attribute %></p>
+  <% elsif local_assigns[:array] %>
+    <p><%= f.input attribute, as: :array %></p>
+  <% elsif local_assigns[:boolean] %>
+    <p><%= f.input attribute, as: :radio_buttons %></p>
+  <% else %>
+    <p><%= f.input attribute %></p>
+  <% end %>
+</div>

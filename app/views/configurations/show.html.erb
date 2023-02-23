@@ -1,0 +1,33 @@
+
+<div class="container text-dark-blue h4-as-labels mt-4">
+  <div class="d-flex justify-content-between mb-4">
+    <div>
+      <%= link_to(compute_index_path(Configuration, @organisation, @department)) do %>
+        <button class="btn btn-blue-out">Retour</button>
+      <% end %>
+    </div>
+    <h1 class="h1-form-title d-none d-sm-inline">Contexte "<%= @configuration.motif_category_name %>"</h1>
+    <div>
+      <%= link_to compute_edit_path(@configuration, @organisation, @department) do %>
+        <button class="btn btn-blue">Modifier</button>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="row d-flex justify-content-start flex-wrap my-5">
+    <div class="col-12 col-md-6 px-5">
+      <h4><%= Configuration.human_attribute_name(:invitation_formats) %></h4>
+        <p class="mb-2"><%= @configuration.invitation_formats.map { |format| I18n.t("invitation_formats.#{format}") }.join(", ") %></p>
+    </div>
+    <%= render "common/attribute_display", record: @configuration, attribute: :number_of_days_to_accept_invitation %>
+    <%= render "common/attribute_display", record: @configuration, attribute: :convene_applicant %>
+    <%= render "common/attribute_display", record: @configuration, attribute: :number_of_days_before_action_required %>
+    <%= render "common/attribute_display", record: @configuration, attribute: :rdv_with_referents %>
+    <%= render "common/attribute_display", record: @configuration.motif_category, attribute: :participation_optional %>
+    <%= render "common/attribute_display", record: @configuration, attribute: :invite_to_applicant_organisations_only %>
+  </div>
+
+  <h4>Fichier d'import</h4>
+  <%= render "file_configurations/show", file_configuration: @file_configuration %>
+</div>
+

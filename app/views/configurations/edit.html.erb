@@ -1,0 +1,4 @@
+<%= simple_form_for(@configuration, return_path: compute_index_path(Configuration, @organisation, @department), url: compute_show_path(@configuration, @organisation, @department), html: { method: :patch }) do |f| %>
+  <%= render 'configuration_form', f: f, title: "Modifier configuration", return_path: compute_index_path(Configuration, @organisation, @department), current_file_configuration: @file_configuration %>
+<% end %>
+

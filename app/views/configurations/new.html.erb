@@ -1,0 +1,4 @@
+<%= simple_form_for(@configuration, url: department_level? ? department_configurations_path(@department, @configuration) : organisation_configurations_path(@organisation, @configuration), html: { method: :post }) do |f| %>
+  <%= render 'configuration_form', f: f, title: "Créer configuration", return_path: compute_index_path(Configuration, @organisation, @department), current_file_configuration: nil %>
+<% end %>
+

@@ -7,18 +7,20 @@ class ApplicantsController < ApplicationController
     :status, :rights_opening_date, :archiving_reason
   ].freeze
 
+  include SetOrganisationAndDepartmentConcern
   include FilterableApplicantsConcern
+  include BackToListConcern
 
   before_action :set_applicant, only: [:show, :update, :edit]
   before_action :set_organisation, :set_department, only: [:index, :new, :create, :show, :update, :edit]
   before_action :set_all_configurations, only: [:index, :show]
-  before_action :set_applicants_scope, :set_current_configuration,
+  before_action :set_organisations, only: [:index, :new, :create]
+  before_action :set_current_agent_roles, :set_applicants_scope, :set_current_configuration,
                 :set_current_motif_category, :set_applicants, :set_rdv_contexts,
                 :filter_applicants, :order_applicants, only: [:index]
-  before_action :set_organisations, only: [:index, :new, :create]
-  before_action :set_applicant_rdv_contexts, :set_back_to_list_url, only: [:show]
+  before_action :set_applicant_rdv_contexts, :set_back_to_applicants_list_url, only: [:show]
   before_action :retrieve_applicants, only: [:search]
-  after_action :store_back_to_list_url, only: [:index]
+  after_action :store_back_to_applicants_list_url, only: [:index]
 
   def index
     respond_to do |format|
@@ -132,41 +134,8 @@ class ApplicantsController < ApplicationController
       .find(params[:id])
   end
 
-  def set_organisation
-    @organisation = \
-      if department_level?
-        set_organisation_at_department_level
-      else
-        policy_scope(Organisation).find(params[:organisation_id])
-      end
-  end
-
-  def set_organisation_at_department_level
-    return set_organisation_through_form if params[:action] == "create"
-    return if @applicant.nil? # no need to set an organisation if we are not in an applicant-level page
-
-    @organisation = policy_scope(Organisation)
-                    .find_by(id: @applicant.organisation_ids, department_id: params[:department_id])
-  end
-
-  def set_organisation_through_form
-    # for now we allow only one organisation through creation
-    @organisation = Organisation.find_by(
-      id: params[:applicant][:organisation_ids], department_id: params[:department_id]
-    )
-  end
-
   def set_organisations
     @organisations = policy_scope(Organisation).where(department: @department)
-  end
-
-  def set_department
-    @department = \
-      if department_level?
-        policy_scope(Department).find(params[:department_id])
-      else
-        @organisation.department
-      end
   end
 
   def set_all_configurations
@@ -235,20 +204,18 @@ class ApplicantsController < ApplicationController
     @statuses_count = @rdv_contexts.group(:status).count
   end
 
+  def set_current_agent_roles
+    @current_agent_roles = AgentRole.where(
+      department_level? ? { organisation: @organisations } : { organisation: @organisation }, agent: current_agent
+    )
+  end
+
   def set_applicants_scope
     @applicants_scope = params[:applicants_scope]
   end
 
   def archived_scope?
     @applicants_scope == "archived"
-  end
-
-  def store_back_to_list_url
-    session[:back_to_list_url] = request.fullpath
-  end
-
-  def set_back_to_list_url
-    @back_to_list_url = session[:back_to_list_url]
   end
 
   def order_applicants
