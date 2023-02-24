@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_08_154729) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_16_152810) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -21,6 +21,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_08_154729) do
     t.bigint "rdv_solidarites_agent_role_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "last_webhook_update_received_at"
     t.index ["agent_id", "organisation_id"], name: "index_agent_roles_on_agent_id_and_organisation_id", unique: true
     t.index ["agent_id"], name: "index_agent_roles_on_agent_id"
     t.index ["level"], name: "index_agent_roles_on_level"
@@ -88,7 +89,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_08_154729) do
     t.boolean "convene_applicant", default: false
     t.integer "number_of_days_to_accept_invitation", default: 3
     t.integer "number_of_days_before_action_required", default: 10
-    t.boolean "invitation_fallbacks_set_to_applicants_organisations", default: false
+    t.boolean "invite_to_applicant_organisations_only", default: false
     t.boolean "rdv_with_referents", default: false
     t.bigint "motif_category_id"
     t.bigint "file_configuration_id"

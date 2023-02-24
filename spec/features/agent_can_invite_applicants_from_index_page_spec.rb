@@ -146,13 +146,13 @@ describe "Agents can invite from index page", js: true do
         )
       end
 
-      it "cannot invite in any format" do
+      it "cannot invite in any format and do not show the invitation fields" do
         rdv_context.set_status
         rdv_context.save!
 
         visit organisation_applicants_path(organisation, motif_category_id: motif_category.id)
-        expect(page).to have_field("sms_invite", checked: true, disabled: true)
-        expect(page).to have_field("email_invite", checked: false, disabled: true)
+        expect(page).not_to have_field("sms_invite")
+        expect(page).not_to have_field("email_invite")
         expect(page).to have_content("RDV pris")
       end
     end
