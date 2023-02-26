@@ -57,11 +57,16 @@ class ConfigurationsController < ApplicationController
   end
 
   def set_configuration
-    @configuration = policy_scope(::Configuration).find(params[:id])
+    @configuration = OrganisationConfigurationPolicy::Scope.new(current_agent, ::Configuration)
+                                                           .resolve
+                                                           .find(params[:id])
   end
 
   def set_configurations
-    @configurations = policy_scope(::Configuration).where(organisations: @organisation).includes([:motif_category])
+    @configurations = OrganisationConfigurationPolicy::Scope.new(current_agent, ::Configuration)
+                                                            .resolve
+                                                            .where(organisations: @organisation)
+                                                            .includes([:motif_category])
   end
 
   def set_messages_configuration

@@ -62,5 +62,4 @@ describe Organisation do
       end
     end
   end
-
 end

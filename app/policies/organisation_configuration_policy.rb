@@ -30,4 +30,10 @@ class OrganisationConfigurationPolicy < ApplicationPolicy
   def destroy?
     index?
   end
+
+  class Scope < Scope
+    def resolve
+      Configuration.joins(:organisations).where(organisations: pundit_user.admin_organisations)
+    end
+  end
 end

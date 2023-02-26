@@ -734,6 +734,26 @@ describe ApplicantsController do
         expect(response.body).to match(/Chabat/)
         expect(response.body).to match(/Baer/)
       end
+
+      it "does not display the configure organisation option" do
+        get :index, params: index_params
+
+        expect(response.body).not_to match(/Configurer une organisation/)
+      end
+
+      context "when the agent is admin" do
+        let!(:agent) { create(:agent, admin_role_in_organisations: [organisation]) }
+
+        before do
+          sign_in(agent)
+        end
+
+        it "displays the configure organisation option" do
+          get :index, params: index_params
+
+          expect(response.body).to match(/Configurer une organisation/)
+        end
+      end
     end
 
     context "when csv request" do
