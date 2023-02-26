@@ -33,29 +33,33 @@
     <div class="row">
       <h4 class="px-5">Fichier d'import</h4>
       <div class="mb-4 px-5">
-        <% @department.file_configurations.uniq.each do |file_configuration| %>
-          <div class="d-flex justify-content-between mb-2">
-            <%= radio_button_tag "configuration[file_configuration_id]",
-                file_configuration.id,
-                current_file_configuration&.id == file_configuration.id ? true : false,
-                class: "file-configuration-select",
-                id: "configuration_file_configuration_#{file_configuration.id}"
-            %>
-            <div class="background-blue-light d-flex justify-content-between px-4 pt-2 rounded flex-grow-1">
-              <div class="flex-grow-1">
-                <p class="mb-0">Utilisé pour :</p>
-                <% file_configuration.configurations.each do |configuration| %>
-                  <% next if configuration.organisations.where(department: @department).blank? %>
-                  <p class="mb-2">- <strong><%= configuration.motif_category_name %></strong> par <strong><%= configuration.organisations.where(department: @department).map(&:name).join(", ") %></strong></p>
-                <% end %>
-              </div>
-              <div class="d-flex align-items-center">
-                <%= link_to(file_configuration_path(file_configuration), data: { turbo_frame: 'remote_modal' }) do %>
-                  <button class="btn btn-blue file-configuration-modal-button">Voir le détail</button>
-                <% end %>
+        <% if @department.file_configurations %>
+          <% @department.file_configurations.uniq.each do |file_configuration| %>
+            <div class="d-flex justify-content-between mb-2">
+              <%= radio_button_tag "configuration[file_configuration_id]",
+                  file_configuration.id,
+                  current_file_configuration&.id == file_configuration.id ? true : false,
+                  class: "file-configuration-select",
+                  id: "configuration_file_configuration_#{file_configuration.id}"
+              %>
+              <div class="background-blue-light d-flex justify-content-between px-4 pt-2 rounded flex-grow-1">
+                <div class="flex-grow-1">
+                  <p class="mb-0">Utilisé pour :</p>
+                  <% file_configuration.configurations.each do |configuration| %>
+                    <% next if configuration.organisations.where(department: @department).blank? %>
+                    <p class="mb-2">- <strong><%= configuration.motif_category_name %></strong> par <strong><%= configuration.organisations.where(department: @department).map(&:name).join(", ") %></strong></p>
+                  <% end %>
+                </div>
+                <div class="d-flex align-items-center">
+                  <%= link_to(compute_show_path(file_configuration, @organisation), data: { turbo_frame: 'remote_modal' }) do %>
+                    <button class="btn btn-blue file-configuration-modal-button">Voir le détail</button>
+                  <% end %>
+                </div>
               </div>
             </div>
-          </div>
+          <% end %>
+        <% else %>
+          <p>Aucun fichier d'import pour ce départment ; contactez l'équipe de rdv-insertion pour en créer un.</p>
         <% end %>
       </div>
     </div>

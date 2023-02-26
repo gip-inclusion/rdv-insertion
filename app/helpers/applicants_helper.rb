@@ -1,3 +1,5 @@
+# rubocop:disable Metrics/ModuleLength
+
 module ApplicantsHelper
   def show_convocation?(configuration)
     configuration.convene_applicant?
@@ -127,3 +129,5 @@ module ApplicantsHelper
       rdv_context.time_to_accept_invitation_exceeded?(configuration.number_of_days_before_action_required)
   end
 end
+
+# rubocop:enable Metrics/ModuleLength

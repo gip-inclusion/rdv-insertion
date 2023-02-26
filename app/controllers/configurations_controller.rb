@@ -5,11 +5,12 @@ class ConfigurationsController < ApplicationController
     :file_configuration_id
   ].freeze
 
-  include SetOrganisationAndDepartmentConcern
   include BackToListConcern
 
+  before_action :set_organisation, :authorize_organisation,
+                only: [:index, :new, :create, :show, :edit, :update, :destroy]
   before_action :set_configuration, :set_file_configuration, only: [:show, :edit, :update, :destroy]
-  before_action :set_organisation, :set_department, only: [:index, :new, :create, :show, :edit, :update, :destroy]
+  before_action :set_department, only: [:new, :create, :edit, :update]
   before_action :set_back_to_applicants_list_url, :set_messages_configuration, :set_configurations, only: [:index]
 
   def index; end
@@ -25,9 +26,8 @@ class ConfigurationsController < ApplicationController
   def create
     @configuration = ::Configuration.new(organisations: [@organisation])
     @configuration.assign_attributes(**configuration_params.compact_blank)
-    authorize @configuration
     if @configuration.save
-      redirect_to after_save_path
+      redirect_to organisation_configuration_path(@organisation, @configuration)
     else
       flash.now[:error] = @configuration.errors.full_messages.to_sentence
       render :new, status: :unprocessable_entity
@@ -36,9 +36,8 @@ class ConfigurationsController < ApplicationController
 
   def update
     @configuration.assign_attributes(**configuration_params)
-    authorize @configuration
     if @configuration.save
-      redirect_to after_save_path
+      redirect_to organisation_configuration_path(@organisation, @configuration)
     else
       flash.now[:error] = @configuration.errors.full_messages.to_sentence
       render :edit, status: :unprocessable_entity
@@ -58,11 +57,11 @@ class ConfigurationsController < ApplicationController
   end
 
   def set_configuration
-    @configuration = ::Configuration.find(params[:id])
+    @configuration = policy_scope(::Configuration).find(params[:id])
   end
 
   def set_configurations
-    @configurations = @organisation.configurations.includes([:motif_category])
+    @configurations = policy_scope(::Configuration).where(organisations: @organisation).includes([:motif_category])
   end
 
   def set_messages_configuration
@@ -73,9 +72,15 @@ class ConfigurationsController < ApplicationController
     @file_configuration = @configuration.file_configuration
   end
 
-  def after_save_path
-    return department_configuration_path(@department, @configuration) if department_level?
+  def set_department
+    @department = @organisation.department
+  end
 
-    organisation_configuration_path(@organisation, @configuration)
+  def set_organisation
+    @organisation = policy_scope(Organisation).find(params[:organisation_id])
+  end
+
+  def authorize_organisation
+    authorize @organisation, policy_class: OrganisationConfigurationPolicy
   end
 end

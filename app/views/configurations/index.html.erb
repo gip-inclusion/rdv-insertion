@@ -16,11 +16,13 @@
   <h4>Contextes configurés</h4>
   <%= render "configurations/configurations_list", configurations: @configurations, organisation: @organisation, department: @department %>
   <div class="d-flex justify-content-end mb-4">
-    <%= link_to compute_new_path(Configuration, @organisation, @department) do %>
+    <%= link_to compute_new_path(Configuration, @organisation) do %>
       <button class="btn btn-blue">Ajouter</button>
     <% end %>
   </div>
 
-  <h4>Configuration des invitations</h4>
-  <%= render "messages_configurations/show", messages_configuration: @messages_configuration %>
+  <% if @messages_configuration %>
+    <h4>Configuration des invitations</h4>
+    <%= render "messages_configurations/show", messages_configuration: @messages_configuration %>
+  <% end %>
 </div>

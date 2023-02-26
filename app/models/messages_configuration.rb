@@ -11,7 +11,7 @@ class MessagesConfiguration < ApplicationRecord
 
   def remove_blank_array_fields
     # We don't want blank signature_lines or direction_names in the invitations
-    signature_lines.compact_blank!
-    direction_names.compact_blank!
+    signature_lines&.compact_blank!
+    direction_names&.compact_blank!
   end
 end

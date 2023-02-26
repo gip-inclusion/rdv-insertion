@@ -14,7 +14,7 @@ module ApplicationHelper
     end
   end
 
-  def compute_index_path(klass, organisation, department, **params)
+  def compute_index_path(klass, organisation, department = nil, **params)
     if department_level?
       send("department_#{klass.name.underscore}s_path", department, **params.compact_blank)
     else
@@ -22,19 +22,19 @@ module ApplicationHelper
     end
   end
 
-  def compute_new_path(klass, organisation, department)
+  def compute_new_path(klass, organisation, department = nil)
     return send("new_department_#{klass.name.underscore}_path", department) if department_level?
 
     send("new_organisation_#{klass.name.underscore}_path", organisation)
   end
 
-  def compute_edit_path(record, organisation, department)
+  def compute_edit_path(record, organisation, department = nil)
     return send("edit_department_#{record.class.name.underscore}_path", department, record) if department_level?
 
     send("edit_organisation_#{record.class.name.underscore}_path", organisation, record)
   end
 
-  def compute_show_path(record, organisation, department)
+  def compute_show_path(record, organisation, department = nil)
     return send("department_#{record.class.name.underscore}_path", department, record) if department_level?
 
     send("organisation_#{record.class.name.underscore}_path", organisation, record)

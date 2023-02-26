@@ -4,7 +4,7 @@ class MessagesConfigurationsController < ApplicationController
     :display_europe_logos, :display_department_logo, :sms_sender_name
   ].freeze
 
-  before_action :set_messages_configuration, only: [:show, :edit, :update]
+  before_action :set_organisation, :set_messages_configuration, only: [:show, :edit, :update]
 
   def show; end
 
@@ -12,7 +12,6 @@ class MessagesConfigurationsController < ApplicationController
 
   def update
     @messages_configuration.assign_attributes(**formatted_params)
-    authorize @messages_configuration
     if @messages_configuration.save
       render :show
     else
@@ -36,5 +35,10 @@ class MessagesConfigurationsController < ApplicationController
 
   def set_messages_configuration
     @messages_configuration = policy_scope(MessagesConfiguration).find(params[:id])
+  end
+
+  def set_organisation
+    @organisation = policy_scope(Organisation).find(params[:organisation_id])
+    authorize @organisation, policy_class: OrganisationConfigurationPolicy
   end
 end

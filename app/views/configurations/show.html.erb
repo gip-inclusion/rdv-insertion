@@ -2,13 +2,13 @@
 <div class="container text-dark-blue h4-as-labels mt-4">
   <div class="d-flex justify-content-between mb-4">
     <div>
-      <%= link_to(compute_index_path(Configuration, @organisation, @department)) do %>
+      <%= link_to(compute_index_path(Configuration, @organisation)) do %>
         <button class="btn btn-blue-out">Retour</button>
       <% end %>
     </div>
     <h1 class="h1-form-title d-none d-sm-inline">Contexte "<%= @configuration.motif_category_name %>"</h1>
     <div>
-      <%= link_to compute_edit_path(@configuration, @organisation, @department) do %>
+      <%= link_to compute_edit_path(@configuration, @organisation) do %>
         <button class="btn btn-blue">Modifier</button>
       <% end %>
     </div>

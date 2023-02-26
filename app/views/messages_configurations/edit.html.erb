@@ -1,5 +1,5 @@
 <%= turbo_frame_tag @messages_configuration do %>
-  <%= simple_form_for(@messages_configuration, html: { method: :patch }) do |f| %>
+  <%= simple_form_for(@messages_configuration, url: compute_show_path(@messages_configuration, @organisation), html: { method: :patch }) do |f| %>
     <div>
       <div class="row card-white rdv-insertion-form justify-content-center mb-2">
         <div class="mb-4">
@@ -20,7 +20,7 @@
       <div class="d-flex justify-content-end mb-4">
         <input type="hidden" name="_method" value="patch" autocomplete="off">
         <%= button_tag("Enregistrer", type: "submit", class: "btn btn-blue", form: "edit_messages_configuration_1") %>
-        <%= link_to messages_configuration_path(@messages_configuration) do %>
+        <%= link_to compute_show_path(@messages_configuration, @organisation) do %>
           <button class="btn btn-blue-out mx-2">Annuler</button>
         <% end %>
       </div>

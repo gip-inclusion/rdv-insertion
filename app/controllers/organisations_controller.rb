@@ -3,7 +3,7 @@ class OrganisationsController < ApplicationController
     :name, :phone_number, :email, :slug, :independent_from_cd
   ].freeze
 
-  before_action :set_organisation, :set_department, only: [:show, :edit, :update]
+  before_action :set_organisation, :set_department, :authorize_organisation_configuration, only: [:show, :edit, :update]
 
   def index
     @organisations = policy_scope(Organisation).includes(:department, :configurations)
@@ -20,7 +20,7 @@ class OrganisationsController < ApplicationController
     if update_organisation.success?
       render :show
     else
-      flash.now[:error] = @organisation.errors&.join(",")
+      flash.now[:error] = update_organisation.errors&.join(",")
       render :edit, status: :unprocessable_entity
     end
   end
@@ -114,5 +114,9 @@ class OrganisationsController < ApplicationController
       organisation: @organisation,
       rdv_solidarites_session: rdv_solidarites_session
     )
+  end
+
+  def authorize_organisation_configuration
+    authorize @organisation, policy_class: OrganisationConfigurationPolicy
   end
 end

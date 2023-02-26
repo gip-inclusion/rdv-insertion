@@ -1,6 +1,5 @@
 class Configuration < ApplicationRecord
   belongs_to :motif_category
-  accepts_nested_attributes_for :motif_category
   belongs_to :file_configuration
   has_many :configurations_organisations, dependent: :delete_all
   has_many :organisations, through: :configurations_organisations
