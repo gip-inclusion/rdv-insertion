@@ -20,4 +20,26 @@ describe Configuration do
       end
     end
   end
+
+  describe "invitation formats validity" do
+    context "invitation formats are valid" do
+      let(:configuration) do
+        build(:configuration, invitation_formats: %w[sms email postal])
+      end
+
+      it { expect(configuration).to be_valid }
+    end
+
+    context "invitation formats are not valid" do
+      let(:configuration) do
+        build(:configuration, invitation_formats: %w[sms test])
+      end
+
+      it "adds errors" do
+        expect(configuration).not_to be_valid
+        expect(configuration.errors.full_messages.to_sentence)
+          .to include("Les formats d'invitation ne peuvent être que : sms, email, postal")
+      end
+    end
+  end
 end
