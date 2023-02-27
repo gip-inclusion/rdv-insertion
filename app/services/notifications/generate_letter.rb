@@ -8,7 +8,7 @@ module Notifications
 
     def call
       verify_notification_event!
-      verify_applicant_phone_number! if @notification.by_phone?
+      verify_applicant_phone_number! if @notification.rdv.by_phone?
       generate_letter
     end
 
@@ -46,9 +46,9 @@ module Notifications
     def template
       return "participation_cancelled" if @notification.event == "participation_cancelled"
 
-      if @notification.presential?
+      if @notification.rdv.presential?
         "presential_#{@notification.event}"
-      elsif @notification.by_phone?
+      elsif @notification.rdv.by_phone?
         "by_phone_#{@notification.event}"
       end
     end

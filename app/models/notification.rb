@@ -12,7 +12,6 @@ class Notification < ApplicationRecord
   validates :format, :event, :rdv_solidarites_rdv_id, presence: true
 
   delegate :applicant, :rdv, :motif_category, to: :participation
-  delegate :by_phone?, :presential?, to: :rdv
   delegate :department, to: :applicant
   delegate :template, to: :motif_category
   delegate :organisation, to: :rdv, allow_nil: true
@@ -34,6 +33,6 @@ class Notification < ApplicationRecord
   end
 
   def rdv_title
-    by_phone? ? template.rdv_title_by_phone : template.rdv_title
+    rdv.by_phone? ? template.rdv_title_by_phone : template.rdv_title
   end
 end
