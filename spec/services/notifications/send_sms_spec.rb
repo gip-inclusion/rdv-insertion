@@ -101,7 +101,7 @@ describe Notifications::SendSms, type: :service do
           "En cas d’empêchement, appelez rapidement le 0101010101."
       end
 
-      it "calls the messenger service with the right content" do
+      it "sends the sms with the right content" do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number_formatted: phone_number_formatted, content: content,
@@ -147,7 +147,30 @@ describe Notifications::SendSms, type: :service do
             "En cas d’empêchement, appelez rapidement le 0101010101."
         end
 
-        it "calls the messenger service with the right content" do
+        it "sends the sms with the right content" do
+          expect(SendTransactionalSms).to receive(:call)
+            .with(
+              phone_number_formatted: phone_number_formatted, content: content,
+              sender_name: sms_sender_name
+            )
+          subject
+        end
+      end
+
+      context "when it's a reminder" do
+        let!(:notification) do
+          create(:notification, participation: participation, format: "sms", event: "participation_reminder")
+        end
+
+        let!(:content) do
+          "RAPPEL: Monsieur John DOE,\nVous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) à un " \
+            "rendez-vous d'orientation. Vous êtes attendu(e) le 20/12/2021" \
+            " à 10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
+            "Ce RDV est obligatoire. " \
+            "En cas d’empêchement, appelez rapidement le 0101010101."
+        end
+
+        it "sends the sms with the right content" do
           expect(SendTransactionalSms).to receive(:call)
             .with(
               phone_number_formatted: phone_number_formatted, content: content,
@@ -167,7 +190,7 @@ describe Notifications::SendSms, type: :service do
             "Pour plus d'informations, contactez le 0101010101."
         end
 
-        it "calls the messenger service with the right content" do
+        it "sends the sms with the right content" do
           expect(SendTransactionalSms).to receive(:call)
             .with(
               phone_number_formatted: phone_number_formatted, content: content,
@@ -221,6 +244,30 @@ describe Notifications::SendSms, type: :service do
             subject
           end
         end
+
+        context "when it's a reminder" do
+          let!(:notification) do
+            create(:notification, participation: participation, format: "sms", event: "participation_reminder")
+          end
+
+          let!(:content) do
+            "RAPPEL: Monsieur John DOE,\nVous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) à un " \
+              "rendez-vous d'orientation téléphonique." \
+              " Un travailleur social vous appellera le 20/12/2021 à " \
+              "partir de 10:00 sur ce numéro. " \
+              "Ce RDV est obligatoire. " \
+              "En cas d’empêchement, appelez rapidement le 0101010101."
+          end
+
+          it "sends the sms with the right content" do
+            expect(SendTransactionalSms).to receive(:call)
+              .with(
+                phone_number_formatted: phone_number_formatted, content: content,
+                sender_name: sms_sender_name
+              )
+            subject
+          end
+        end
       end
     end
 
@@ -238,7 +285,7 @@ describe Notifications::SendSms, type: :service do
             "En cas d’empêchement, appelez rapidement le 0101010101."
         end
 
-        it "calls the messenger service with the right content" do
+        it "sends the sms with the right content" do
           expect(SendTransactionalSms).to receive(:call)
             .with(
               phone_number_formatted: phone_number_formatted, content: content,
@@ -261,7 +308,7 @@ describe Notifications::SendSms, type: :service do
               "En cas d’empêchement, appelez rapidement le 0101010101."
           end
 
-          it "calls the messenger service with the right content" do
+          it "sends the sms with the right content" do
             expect(SendTransactionalSms).to receive(:call)
               .with(
                 phone_number_formatted: phone_number_formatted, content: content,
@@ -281,7 +328,7 @@ describe Notifications::SendSms, type: :service do
               "Pour plus d'informations, contactez le 0101010101."
           end
 
-          it "calls the messenger service with the right content" do
+          it "sends the sms with the right content" do
             expect(SendTransactionalSms).to receive(:call)
               .with(
                 phone_number_formatted: phone_number_formatted, content: content,
@@ -352,7 +399,7 @@ describe Notifications::SendSms, type: :service do
           "En cas d’empêchement, appelez rapidement le 0101010101."
       end
 
-      it "calls the messenger service with the right content" do
+      it "sends the sms with the right content" do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number_formatted: phone_number_formatted, content: content,
@@ -375,7 +422,7 @@ describe Notifications::SendSms, type: :service do
             "En cas d’empêchement, appelez rapidement le 0101010101."
         end
 
-        it "calls the messenger service with the right content" do
+        it "sends the sms with the right content" do
           expect(SendTransactionalSms).to receive(:call)
             .with(
               phone_number_formatted: phone_number_formatted, content: content,
@@ -396,7 +443,7 @@ describe Notifications::SendSms, type: :service do
             "Pour plus d'informations, contactez le 0101010101."
         end
 
-        it "calls the messenger service with the right content" do
+        it "sends the sms with the right content" do
           expect(SendTransactionalSms).to receive(:call)
             .with(
               phone_number_formatted: phone_number_formatted, content: content,
@@ -464,7 +511,7 @@ describe Notifications::SendSms, type: :service do
           "En cas d’empêchement, appelez rapidement le 0101010101."
       end
 
-      it "calls the messenger service with the right content" do
+      it "sends the sms with the right content" do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number_formatted: phone_number_formatted, content: content,
@@ -485,7 +532,7 @@ describe Notifications::SendSms, type: :service do
             "En cas d’empêchement, appelez rapidement le 0101010101."
         end
 
-        it "calls the messenger service with the right content" do
+        it "sends the sms with the right content" do
           expect(SendTransactionalSms).to receive(:call)
             .with(
               phone_number_formatted: phone_number_formatted, content: content,
@@ -506,7 +553,7 @@ describe Notifications::SendSms, type: :service do
             "Pour plus d'informations, contactez le 0101010101."
         end
 
-        it "calls the messenger service with the right content" do
+        it "sends the sms with the right content" do
           expect(SendTransactionalSms).to receive(:call)
             .with(
               phone_number_formatted: phone_number_formatted, content: content,
@@ -573,7 +620,7 @@ describe Notifications::SendSms, type: :service do
           "En cas d’empêchement, appelez rapidement le 0101010101."
       end
 
-      it "calls the messenger service with the right content" do
+      it "sends the sms with the right content" do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number_formatted: phone_number_formatted, content: content,
@@ -597,7 +644,7 @@ describe Notifications::SendSms, type: :service do
             "En cas d’empêchement, appelez rapidement le 0101010101."
         end
 
-        it "calls the messenger service with the right content" do
+        it "sends the sms with the right content" do
           expect(SendTransactionalSms).to receive(:call)
             .with(
               phone_number_formatted: phone_number_formatted, content: content,
@@ -618,7 +665,7 @@ describe Notifications::SendSms, type: :service do
             "Pour plus d'informations, contactez le 0101010101."
         end
 
-        it "calls the messenger service with the right content" do
+        it "sends the sms with the right content" do
           expect(SendTransactionalSms).to receive(:call)
             .with(
               phone_number_formatted: phone_number_formatted, content: content,

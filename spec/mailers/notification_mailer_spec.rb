@@ -846,4 +846,82 @@ RSpec.describe NotificationMailer do
       end
     end
   end
+
+  describe "#presential_participation_reminder" do
+    let!(:mail) do
+      described_class.with(notification: notification).presential_participation_reminder
+    end
+
+    it "renders the headers" do
+      expect(mail[:from].to_s).to eq("RDV-Insertion <contact@rdv-insertion.fr>")
+      expect(mail.to).to eq(["someone@gmail.com"])
+    end
+
+    it "renders the signature" do
+      expect(mail.body.encoded).to match("Signé par la DINUM")
+    end
+
+    context "for rsa orientation" do
+      it "renders the subject" do
+        expect(mail.subject).to eq(
+          "[Rappel - RSA] Vous êtes convoqué(e) à un rendez-vous d'orientation."
+        )
+      end
+
+      it "renders the body" do
+        body_string = unescape_html(mail.body.encoded)
+        expect(body_string).to include(
+          "Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) à un rendez-vous d'orientation"
+        )
+        expect(body_string).to include("Nous vous rappelons que vous êtes attendu(e)")
+        expect(body_string).to include("le 20/12/2021 à 12:00")
+        expect(body_string).to include("DINUM")
+        expect(body_string).to include("20 avenue de ségur 75007 Paris")
+        expect(body_string).to include("Ce rendez-vous est obligatoire")
+        expect(body_string).not_to include(
+          "En cas d'absence, le versement de votre RSA pourra être suspendu ou réduit."
+        )
+      end
+    end
+  end
+
+  describe "#by_phone_participation_reminder" do
+    let!(:mail) do
+      described_class.with(notification: notification).by_phone_participation_reminder
+    end
+
+    it "renders the headers" do
+      expect(mail[:from].to_s).to eq("RDV-Insertion <contact@rdv-insertion.fr>")
+      expect(mail.to).to eq(["someone@gmail.com"])
+    end
+
+    it "renders the signature" do
+      expect(mail.body.encoded).to match("Signé par la DINUM")
+    end
+
+    context "for rsa orientation" do
+      it "renders the subject" do
+        expect(mail.subject).to eq(
+          "[Rappel - RSA] Vous êtes convoqué(e) à un rendez-vous d'orientation téléphonique."
+        )
+      end
+
+      it "renders the body" do
+        body_string = unescape_html(mail.body.encoded)
+        expect(body_string).to include(
+          "Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) à un rendez-vous d'orientation" \
+          " téléphonique afin de démarrer un parcours d'accompagnement"
+        )
+        expect(body_string).to include("Nous vous rappelons qu'un travailleur social vous appellera")
+        expect(body_string).to include("le 20/12/2021 à 12:00")
+        expect(body_string).to include("sur votre numéro de téléphone:")
+        expect(body_string).to include("+33607070707")
+        expect(body_string).not_to include("20 avenue de ségur 75007 Paris")
+        expect(body_string).to include("Ce rendez-vous est obligatoire")
+        expect(body_string).not_to include(
+          "En cas d'absence, le versement de votre RSA pourra être suspendu ou réduit."
+        )
+      end
+    end
+  end
 end

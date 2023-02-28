@@ -38,6 +38,22 @@ class NotificationMailer < ApplicationMailer
     )
   end
 
+  ## participation_reminder ###
+
+  def presential_participation_reminder
+    mail(
+      to: @applicant.email,
+      subject: "[Rappel - RSA] Vous êtes convoqué(e) à un #{@rdv_title}."
+    )
+  end
+
+  def by_phone_participation_reminder
+    mail(
+      to: @applicant.email,
+      subject: "[Rappel - RSA] Vous êtes convoqué(e) à un #{@rdv_title}."
+    )
+  end
+
   ### participation_cancelled ###
   def participation_cancelled
     mail(
