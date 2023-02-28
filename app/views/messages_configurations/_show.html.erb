@@ -2,8 +2,8 @@
   <div class="row card-white justify-content-center mb-2">
     <div class="row d-flex justify-content-start flex-wrap">
       <h4 class="pb-2">Courrier</h4>
-      <%= render "common/attribute_display", record: @messages_configuration, attribute: :direction_names, list: true, tooltip: true %>
-      <%= render "common/attribute_display", record: @messages_configuration, attribute: :signature_lines, list: true %>
+      <%= render "common/attribute_display", record: @messages_configuration, attribute: :direction_names, as: :list, tooltip: true %>
+      <%= render "common/attribute_display", record: @messages_configuration, attribute: :signature_lines, as: :list %>
       <%= render "common/attribute_display", record: @messages_configuration, attribute: :sender_city, tooltip: true %>
       <%= render "common/attribute_display", record: @messages_configuration, attribute: :letter_sender_name, tooltip: true %>
       <%= render "common/attribute_display", record: @messages_configuration, attribute: :display_europe_logos %>
@@ -14,7 +14,7 @@
     </div>
   </div>
   <div class="d-flex justify-content-end mb-4">
-    <%= link_to compute_edit_path(@messages_configuration, @organisation) do %>
+    <%= link_to edit_organisation_messages_configuration_path(@organisation, @messages_configuration) do %>
       <button class="btn btn-blue">Modifier</button>
     <% end %>
   </div>

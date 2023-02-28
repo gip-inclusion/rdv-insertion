@@ -11,6 +11,6 @@ class FileConfigurationsController < ApplicationController
 
   def set_organisation
     @organisation = policy_scope(Organisation).find(params[:organisation_id])
-    authorize @organisation, policy_class: OrganisationConfigurationPolicy
+    authorize @organisation, :configure?
   end
 end

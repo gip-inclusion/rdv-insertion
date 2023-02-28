@@ -21,12 +21,12 @@ class ArrayInput < SimpleForm::Inputs::StringInput
   end
 
   def build_row(array_el, object_name, attribute_name, index)
-    @builder.template.render(partial: "array_columns/input",
+    @builder.template.render(partial: "common/array_fields/input",
                              locals: { array_el: array_el, object_name: object_name,
                                        attribute_name: attribute_name, index: index })
   end
 
   def add_new_row_button
-    @builder.template.render(partial: "array_columns/add_new_row_button")
+    @builder.template.render(partial: "common/array_fields/add_new_row_button")
   end
 end

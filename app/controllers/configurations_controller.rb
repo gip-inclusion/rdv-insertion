@@ -7,10 +7,10 @@ class ConfigurationsController < ApplicationController
 
   include BackToListConcern
 
-  before_action :set_organisation, :authorize_organisation,
+  before_action :set_organisation, :authorize_organisation_configuration,
                 only: [:index, :new, :create, :show, :edit, :update, :destroy]
   before_action :set_configuration, :set_file_configuration, only: [:show, :edit, :update, :destroy]
-  before_action :set_department, only: [:new, :create, :edit, :update]
+  before_action :set_department, :set_file_configurations, only: [:new, :create, :edit, :update]
   before_action :set_back_to_applicants_list_url, :set_messages_configuration, :set_configurations, only: [:index]
 
   def index; end
@@ -27,6 +27,7 @@ class ConfigurationsController < ApplicationController
     @configuration = ::Configuration.new(organisations: [@organisation])
     @configuration.assign_attributes(**configuration_params.compact_blank)
     if @configuration.save
+      flash.now[:success] = "La configuration a été créée avec succès"
       redirect_to organisation_configuration_path(@organisation, @configuration)
     else
       flash.now[:error] = @configuration.errors.full_messages.to_sentence
@@ -37,6 +38,7 @@ class ConfigurationsController < ApplicationController
   def update
     @configuration.assign_attributes(**configuration_params)
     if @configuration.save
+      flash.now[:success] = "La configuration a été modifiée avec succès"
       redirect_to organisation_configuration_path(@organisation, @configuration)
     else
       flash.now[:error] = @configuration.errors.full_messages.to_sentence
@@ -57,16 +59,11 @@ class ConfigurationsController < ApplicationController
   end
 
   def set_configuration
-    @configuration = OrganisationConfigurationPolicy::Scope.new(current_agent, ::Configuration)
-                                                           .resolve
-                                                           .find(params[:id])
+    @configuration = @organisation.configurations.find(params[:id])
   end
 
   def set_configurations
-    @configurations = OrganisationConfigurationPolicy::Scope.new(current_agent, ::Configuration)
-                                                            .resolve
-                                                            .where(organisations: @organisation)
-                                                            .includes([:motif_category])
+    @configurations = @organisation.configurations.includes([:motif_category])
   end
 
   def set_messages_configuration
@@ -77,6 +74,10 @@ class ConfigurationsController < ApplicationController
     @file_configuration = @configuration.file_configuration
   end
 
+  def set_file_configurations
+    @file_configurations = @department.file_configurations
+  end
+
   def set_department
     @department = @organisation.department
   end
@@ -85,7 +86,7 @@ class ConfigurationsController < ApplicationController
     @organisation = policy_scope(Organisation).find(params[:organisation_id])
   end
 
-  def authorize_organisation
-    authorize @organisation, policy_class: OrganisationConfigurationPolicy
+  def authorize_organisation_configuration
+    authorize @organisation, :configure?
   end
 end

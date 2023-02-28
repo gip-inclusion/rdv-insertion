@@ -117,6 +117,6 @@ class OrganisationsController < ApplicationController
   end
 
   def authorize_organisation_configuration
-    authorize @organisation, policy_class: OrganisationConfigurationPolicy
+    authorize @organisation, :configure?
   end
 end

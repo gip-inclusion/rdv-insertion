@@ -7,5 +7,5 @@ fr:
         name: Nom
         email: Email
         phone_number: Numéro de téléphone
-        slug: Désignation pour fichier allocataires
+        slug: Désignation dans le fichier allocataires
         independent_from_cd: Indépendante du CD

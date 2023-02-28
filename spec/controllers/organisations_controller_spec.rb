@@ -60,7 +60,7 @@ describe OrganisationsController do
       expect(response.body).to match(/Oui/)
       expect(response.body).to match(/Logo/)
       expect(response.body).to match(%r{images/logos/pie-pantin})
-      expect(response.body).to match(/Désignation pour fichier allocataires/)
+      expect(response.body).to match(/Désignation dans le fichier allocataires/)
       expect(response.body).to match(/pie-pantin/)
     end
 
@@ -110,7 +110,7 @@ describe OrganisationsController do
       expect(response.body).to match(/Oui/)
       expect(response.body).to match(/Logo/)
       expect(response.body).to match(%r{images/logos/pie-pantin})
-      expect(response.body).to match(/Désignation pour fichier allocataires/)
+      expect(response.body).to match(/Désignation dans le fichier allocataires/)
       expect(response.body).to match(/pie-pantin/)
     end
 

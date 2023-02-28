@@ -128,6 +128,32 @@ module ApplicantsHelper
     configuration.convene_applicant? &&
       rdv_context.time_to_accept_invitation_exceeded?(configuration.number_of_days_before_action_required)
   end
+
+  def compute_index_path(organisation, department, **params)
+    if department_level?
+      department_applicants_path(department, **params.compact_blank)
+    else
+      organisation_applicants_path(organisation, **params.compact_blank)
+    end
+  end
+
+  def compute_edit_path(applicant, organisation, department)
+    return edit_department_applicant_path(department, applicant) if department_level?
+
+    edit_organisation_applicant_path(organisation, applicant)
+  end
+
+  def compute_show_path(applicant, organisation, department)
+    return department_applicant_path(department, applicant) if department_level?
+
+    organisation_applicant_path(organisation, applicant)
+  end
+
+  def compute_new_path(organisation, department)
+    return new_department_applicant_path(department) if department_level?
+
+    new_department_applicant_path(organisation)
+  end
 end
 
 # rubocop:enable Metrics/ModuleLength

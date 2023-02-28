@@ -25,8 +25,8 @@ describe ConfigurationsController do
 
       expect(response).to be_successful
       expect(response.body).to match(/Détails de l'organisation /)
-      expect(response.body).to match(/Contextes configurés/)
-      expect(response.body).to match(/Configuration des invitations/)
+      expect(response.body).to match(/Catégories de motifs configurés/)
+      expect(response.body).to match(/Configuration des messages/)
     end
 
     it "displays the configurations of the organisation" do

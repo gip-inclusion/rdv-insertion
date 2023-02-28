@@ -68,7 +68,7 @@ class ApplicantsOrganisationsController < ApplicationController
   end
 
   def redirect_to_applicants_list
-    redirect_to session[:back_to__applicants_list_url] || department_applicants_path(@department)
+    redirect_to session[:back_to_applicants_list_url] || department_applicants_path(@department)
   end
 
   def redirect_to_department_applicant_path

@@ -22,3 +22,4 @@ fr:
         status: Statut
         archived_at: Archivé le
         agents: Référent(s)
+        organisation_ids: Organisation

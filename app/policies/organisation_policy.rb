@@ -11,6 +11,10 @@ class OrganisationPolicy < ApplicationPolicy
     upload?
   end
 
+  def configure?
+    pundit_user.admin_organisations.include?(record)
+  end
+
   class Scope < Scope
     def resolve
       pundit_user.organisations

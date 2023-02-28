@@ -1,14 +1,13 @@
-
 <div class="container text-dark-blue h4-as-labels mt-4">
   <div class="d-flex justify-content-between mb-4">
     <div>
-      <%= link_to(compute_index_path(Configuration, @organisation)) do %>
+      <%= link_to(organisation_configurations_path(@organisation)) do %>
         <button class="btn btn-blue-out">Retour</button>
       <% end %>
     </div>
     <h1 class="h1-form-title d-none d-sm-inline">Contexte "<%= @configuration.motif_category_name %>"</h1>
     <div>
-      <%= link_to compute_edit_path(@configuration, @organisation) do %>
+      <%= link_to edit_organisation_configuration_path(@organisation, @configuration) do %>
         <button class="btn btn-blue">Modifier</button>
       <% end %>
     </div>
@@ -28,6 +27,5 @@
   </div>
 
   <h4>Fichier d'import</h4>
-  <%= render "file_configurations/show", file_configuration: @file_configuration %>
+  <%= render "file_configurations/file_configuration", file_configuration: @file_configuration %>
 </div>
-

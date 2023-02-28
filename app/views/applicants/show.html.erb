@@ -3,7 +3,7 @@
 <div class="container text-dark-blue h4-as-labels mt-4">
   <div class="d-flex justify-content-between mb-4">
     <div>
-      <%= link_to(@back_to_applicants_list_url || compute_index_path(Applicant, @organisation, @department)) do %>
+      <%= link_to(@back_to_applicants_list_url || compute_index_path(@organisation, @department)) do %>
         <button class="btn btn-blue-out">Retour</button>
       <% end %>
       <%= link_to rdv_solidarites_user_url(@organisation, @applicant), target: "_blank" do %>
@@ -29,17 +29,17 @@
       <%= render "common/attribute_display", record: @applicant, attribute: :affiliation_number %>
       <%= render "common/attribute_display", record: @applicant, attribute: :department_internal_id %>
       <%= render "common/attribute_display", record: @applicant, attribute: :email %>
-      <%= render "common/attribute_display", record: @applicant, attribute: :birth_date, date: true %>
+      <%= render "common/attribute_display", record: @applicant, attribute: :birth_date, as: :date %>
       <%= render "common/attribute_display", record: @applicant, attribute: :address %>
       <%= render "common/attribute_display", record: @applicant, attribute: :phone_number %>
-      <%= render "common/attribute_display", record: @applicant, attribute: :rights_opening_date, date: true %>
-      <%= render "common/attribute_display", record: @applicant, attribute: :created_at, date: true %>
+      <%= render "common/attribute_display", record: @applicant, attribute: :rights_opening_date, as: :date %>
+      <%= render "common/attribute_display", record: @applicant, attribute: :created_at, as: :date %>
       <% if @applicant.archived? %>
         <%= render "common/attribute_display", record: @applicant, attribute: :archiving_reason %>
-        <%= render "common/attribute_display", record: @applicant, attribute: :archived_at, date: true %>
+        <%= render "common/attribute_display", record: @applicant, attribute: :archived_at, as: :date %>
       <% end %>
-      <%= render "common/attribute_display", record: @applicant, attribute: :organisations, list: true, id: "organisations_list" %>
-      <%= render "common/attribute_display", record: @applicant, attribute: :agents, list: true, id: "agents_list" %>
+      <%= render "common/attribute_display", record: @applicant, attribute: :organisations, as: :list, id: "organisations_list" %>
+      <%= render "common/attribute_display", record: @applicant, attribute: :agents, as: :list, id: "agents_list" %>
     </div>
 
     <div class="row d-flex justify-content-start flex-wrap">

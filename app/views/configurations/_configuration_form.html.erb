@@ -12,33 +12,29 @@
   </div>
   <div class="mb-4">
     <div class="row d-flex justify-content-start flex-wrap">
-      <% unless Configuration.exists?(@configuration.id) %>
+      <% unless @configuration.persisted? %>
         <div class="d-flex flex-column align-items-center col-12 px-5 mb-4">
           <h4>Configuration pour : *</h4>
           <%= f.association :motif_category %>
         </div>
-
       <% end %>
-      <div class="col-12 col-md-6 px-5">
-        <h4><%= Configuration.human_attribute_name(:invitation_formats) %>*</h4>
-        <p class="checkboxes"><%= f.collection_check_boxes :invitation_formats, [["sms", "SMS"], ["email", "Email"], ["postal", "Courrier"]], :first, :last, include_hidden: false %></p>
-      </div>
+      <%= render "common/attribute_input", f:f, attribute: :invitation_formats, as: :collection_check_boxes, collection: [["sms", "SMS"], ["email", "Email"], ["postal", "Courrier"]], mandatory: true %>
       <%= render "common/attribute_input", f:f, attribute: :number_of_days_to_accept_invitation, mandatory: true %>
-      <%= render "common/attribute_input", f:f, attribute: :convene_applicant, boolean: true, mandatory: true %>
+      <%= render "common/attribute_input", f:f, attribute: :convene_applicant, as: :boolean, mandatory: true %>
       <%= render "common/attribute_input", f:f, attribute: :number_of_days_before_action_required, mandatory: true %>
-      <%= render "common/attribute_input", f:f, attribute: :rdv_with_referents, boolean: true, mandatory: true %>
-      <%= render "common/attribute_input", f:f, attribute: :invite_to_applicant_organisations_only, boolean: true, mandatory: true %>
+      <%= render "common/attribute_input", f:f, attribute: :rdv_with_referents, as: :boolean, mandatory: true %>
+      <%= render "common/attribute_input", f:f, attribute: :invite_to_applicant_organisations_only, as: :boolean, mandatory: true %>
     </div>
 
     <div class="row">
       <h4 class="px-5">Fichier d'import</h4>
       <div class="mb-4 px-5">
-        <% if @department.file_configurations %>
-          <% @department.file_configurations.uniq.each do |file_configuration| %>
+        <% if @file_configurations %>
+          <% @file_configurations.uniq.each do |file_configuration| %>
             <div class="d-flex justify-content-between mb-2">
               <%= radio_button_tag "configuration[file_configuration_id]",
                   file_configuration.id,
-                  current_file_configuration&.id == file_configuration.id ? true : false,
+                  current_file_configuration&.id == file_configuration.id,
                   class: "file-configuration-select",
                   id: "configuration_file_configuration_#{file_configuration.id}"
               %>
@@ -46,12 +42,13 @@
                 <div class="flex-grow-1">
                   <p class="mb-0">Utilisé pour :</p>
                   <% file_configuration.configurations.each do |configuration| %>
-                    <% next if configuration.organisations.where(department: @department).blank? %>
-                    <p class="mb-2">- <strong><%= configuration.motif_category_name %></strong> par <strong><%= configuration.organisations.where(department: @department).map(&:name).join(", ") %></strong></p>
+                    <% organisations = @configuration.organisations.select { |organisation| organisation.department_id == @department.id } %>
+                    <% next if organisations.blank? %>
+                    <p class="mb-2">- <strong><%= configuration.motif_category_name %></strong> par <strong><%= organisations.map(&:name).join(", ") %></strong></p>
                   <% end %>
                 </div>
                 <div class="d-flex align-items-center">
-                  <%= link_to(compute_show_path(file_configuration, @organisation), data: { turbo_frame: 'remote_modal' }) do %>
+                  <%= link_to(organisation_file_configuration_path(@organisation, file_configuration), data: { turbo_frame: 'remote_modal' }) do %>
                     <button class="btn btn-blue file-configuration-modal-button">Voir le détail</button>
                   <% end %>
                 </div>

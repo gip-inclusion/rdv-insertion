@@ -19,7 +19,7 @@ class Agent < ApplicationRecord
   end
 
   def admin_organisations
-    Organisation.where(id: agent_roles.admin.map(&:organisation_id))
+    Organisation.where(id: agent_roles.select(&:admin?).map(&:organisation_id))
   end
 
   def to_s
