@@ -16,16 +16,14 @@ class InvitationMailer < ApplicationMailer
   def phone_platform_invitation
     mail(
       to: @applicant.email,
-      subject: "[#{@rdv_subject.upcase}]: Votre #{@rdv_title} dans le cadre " \
-               "de votre #{@rdv_subject}"
+      subject: "[#{@rdv_subject.upcase}]: Votre #{@rdv_title} dans le cadre de votre #{@rdv_subject}"
     )
   end
 
   def atelier_invitation
     mail(
       to: @applicant.email,
-      subject: "[#{@rdv_subject.upcase}]: Participer à un atelier dans le cadre de votre " \
-               "parcours socio-professionnel"
+      subject: "[#{@rdv_subject.upcase}]: Participer à un atelier dans le cadre de votre parcours"
     )
   end
 

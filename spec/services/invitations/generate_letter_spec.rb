@@ -183,7 +183,7 @@ describe Invitations::GenerateLetter, type: :service do
           "Objet : Participation à un atelier dans le cadre de votre RSA"
         )
         expect(content).to include(
-          "Pour profiter au mieux de cet accompagnement, nous vous invitons à vous inscrire directement" \
+          "Pour en profiter au mieux, nous vous invitons à vous inscrire directement" \
           " et librement aux ateliers et formations de votre choix"
         )
         expect(content).not_to include("Vous devez obligatoirement prendre ce rendez-vous")
@@ -203,7 +203,7 @@ describe Invitations::GenerateLetter, type: :service do
           "Objet : Participation à un atelier dans le cadre de votre RSA"
         )
         expect(content).to include(
-          "Pour profiter au mieux de cet accompagnement, nous vous invitons à vous inscrire directement" \
+          "Pour en profiter au mieux, nous vous invitons à vous inscrire directement" \
           " et librement aux ateliers et formations de votre choix"
         )
         expect(content).not_to include("Vous devez obligatoirement prendre ce rendez-vous")
@@ -223,7 +223,7 @@ describe Invitations::GenerateLetter, type: :service do
           "Objet : Participation à un atelier dans le cadre de votre RSA"
         )
         expect(content).to include(
-          "Pour profiter au mieux de cet accompagnement, nous vous invitons à vous inscrire directement" \
+          "Pour en profiter au mieux, nous vous invitons à vous inscrire directement" \
           " et librement aux ateliers et formations de votre choix"
         )
         expect(content).not_to include("Nous vous remercions de prendre ce rendez-vous")
