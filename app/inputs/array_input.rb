@@ -3,7 +3,7 @@ class ArrayInput < SimpleForm::Inputs::StringInput
   # See https://github.com/heartcombo/simple_form/wiki/Custom-inputs-examples
   def input(_wrapper_options)
     input_html_options[:type] ||= :text
-    existing_values = object.public_send(attribute_name)
+    existing_values = object.public_send(attribute_name) || []
     existing_values.push(nil) if existing_values.blank?
     build_array_input(existing_values, attribute_name)
   end

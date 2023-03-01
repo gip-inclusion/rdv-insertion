@@ -14,8 +14,14 @@
     </div>
   </div>
   <div class="d-flex justify-content-end mb-4">
-    <%= link_to edit_organisation_messages_configuration_path(@organisation, @messages_configuration) do %>
-      <button class="btn btn-blue">Modifier</button>
+    <% if @messages_configuration.persisted? %>
+      <%= link_to edit_organisation_messages_configuration_path(@organisation, @messages_configuration) do %>
+        <button class="btn btn-blue">Modifier</button>
+      <% end %>
+    <% else %>
+      <%= link_to new_organisation_messages_configuration_path(@organisation) do %>
+        <button class="btn btn-blue">Modifier</button>
+      <% end %>
     <% end %>
   </div>
 <% end %>

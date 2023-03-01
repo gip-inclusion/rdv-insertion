@@ -21,8 +21,6 @@
     <% end %>
   </div>
 
-  <% if @messages_configuration %>
-    <h4>Configuration des messages</h4>
-    <%= render "messages_configurations/messages_configuration", messages_configuration: @messages_configuration %>
-  <% end %>
+  <h4>Configuration des messages</h4>
+  <%= render "messages_configurations/messages_configuration", messages_configuration: @messages_configuration %>
 </div>

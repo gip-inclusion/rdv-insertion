@@ -1,5 +1,5 @@
 <%= turbo_frame_tag @messages_configuration do %>
-  <%= simple_form_for(@messages_configuration, url: organisation_messages_configuration_path(@organisation, @messages_configuration), html: { method: :patch }) do |f| %>
+  <%= simple_form_for(@messages_configuration, url: organisation_messages_configurations_path(@organisation, @messages_configuration), html: { method: :post }, data: { "turbo-frame" => "_top" }) do |f| %>
     <div>
       <div class="row card-white rdv-insertion-form justify-content-center mb-2">
         <div class="mb-4">
@@ -19,7 +19,7 @@
       </div>
       <div class="d-flex justify-content-end mb-4">
         <%= button_tag("Enregistrer", type: "submit", class: "btn btn-blue") %>
-        <%= link_to organisation_messages_configuration_path(@organisation, @messages_configuration) do %>
+        <%= link_to organisation_configurations_path(@organisation), data: { "turbo-frame" => "_top" } do %>
           <button class="btn btn-blue-out mx-2">Annuler</button>
         <% end %>
       </div>

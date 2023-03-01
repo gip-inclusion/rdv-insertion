@@ -4,15 +4,33 @@ class MessagesConfigurationsController < ApplicationController
     :display_europe_logos, :display_department_logo, :sms_sender_name
   ].freeze
 
-  before_action :set_organisation, :set_messages_configuration, only: [:show, :edit, :update]
+  before_action :set_organisation, only: [:show, :new, :edit, :create, :update]
+  before_action :set_messages_configuration, only: [:show, :edit, :update]
 
   def show; end
 
+  def new
+    @messages_configuration = MessagesConfiguration.new(organisations: [@organisation])
+  end
+
   def edit; end
+
+  def create
+    @messages_configuration = MessagesConfiguration.new(organisations: [@organisation])
+    @messages_configuration.assign_attributes(**formatted_params)
+    if @messages_configuration.save
+      flash.now[:success] = "Les réglages ont été modifiés avec succès"
+      redirect_to organisation_configurations_path(@organisation)
+    else
+      flash.now[:error] = @messages_configuration.errors.full_messages.to_sentence
+      render :new, status: :unprocessable_entity
+    end
+  end
 
   def update
     @messages_configuration.assign_attributes(**formatted_params)
     if @messages_configuration.save
+      flash.now[:success] = "Les réglages ont été modifiés avec succès"
       render :show
     else
       flash.now[:error] = @messages_configuration.errors.full_messages.to_sentence
