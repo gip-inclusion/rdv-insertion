@@ -9,6 +9,9 @@ module Notifications
     end
 
     def call
+      verify_format!(@notification)
+      verify_email!(@notification)
+
       NotificationMailer.with(
         notification: @notification
       ).send(mailer_method).deliver_now
@@ -26,10 +29,6 @@ module Notifications
       else
         raise EmailNotificationError, "Message de convocation non géré pour le rdv #{@notification.rdv.id}"
       end
-    end
-
-    def sendable
-      @notification
     end
   end
 end

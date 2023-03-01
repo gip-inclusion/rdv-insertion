@@ -6,14 +6,15 @@ module Notifications
     include Messengers::SendSms
 
     attr_reader :notification
-    alias sendable notification
 
     def initialize(notification:)
       @notification = notification
     end
 
     def call
-      send_sms
+      verify_format!(notification)
+      verify_phone_number!(notification)
+      send_sms(notification.sms_sender_name, notification.phone_number_formatted, content)
     end
 
     private

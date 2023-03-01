@@ -4,20 +4,21 @@ module Invitations
     include Messengers::SendSms
 
     attr_reader :invitation
-    alias sendable invitation
 
     def initialize(invitation:)
       @invitation = invitation
     end
 
     def call
-      send_sms
+      verify_format!(invitation)
+      verify_phone_number!(invitation)
+      send_sms(invitation.sms_sender_name, invitation.phone_number_formatted, content)
     end
 
     private
 
     def content
-      if @invitation.reminder?
+      if invitation.reminder?
         send("#{invitation.template_model}_reminder_content")
       else
         send("#{@invitation.template_model}_content")

@@ -7,6 +7,8 @@ module Invitations
     end
 
     def call
+      verify_format!(@invitation)
+      verify_address!(@invitation)
       generate_letter
     end
 
@@ -49,10 +51,6 @@ module Invitations
 
     def display_independent_from_cd_message
       @invitation.organisations.all?(&:independent_from_cd)
-    end
-
-    def sendable
-      @invitation
     end
   end
 end

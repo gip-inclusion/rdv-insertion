@@ -7,6 +7,9 @@ module Invitations
     end
 
     def call
+      verify_format!(@invitation)
+      verify_email!(@invitation)
+
       InvitationMailer.with(
         invitation: @invitation, applicant: @invitation.applicant
       ).send(mailer_method).deliver_now
@@ -20,10 +23,6 @@ module Invitations
       else
         :"#{@invitation.template_model}_invitation"
       end
-    end
-
-    def sendable
-      @invitation
     end
   end
 end

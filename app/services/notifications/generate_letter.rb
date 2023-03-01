@@ -7,6 +7,8 @@ module Notifications
     end
 
     def call
+      verify_format!(@notification)
+      verify_address!(@notification)
       verify_notification_event!
       verify_applicant_phone_number! if @notification.rdv.by_phone?
       generate_letter
@@ -64,10 +66,6 @@ module Notifications
         if @notification.applicant.phone_number.blank?
       fail!("Le numéro de téléphone de l'allocataire n'est pas un mobile") \
         unless @notification.applicant.phone_number_is_mobile?
-    end
-
-    def sendable
-      @notification
     end
   end
 end

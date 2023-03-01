@@ -3,13 +3,10 @@ class FailedServiceError < StandardError; end
 class UnexpectedResultBehaviourError < StandardError; end
 
 class BaseService
-  include Callbacks
-
   class << self
     def call(*args, **kwargs)
       service = new(*args, **kwargs)
       service.instance_variable_set(:@result, OpenStruct.new(errors: []))
-      service.call_before_calls
       output = service.call
       format_result(output, service.result)
     rescue FailedServiceError => e
