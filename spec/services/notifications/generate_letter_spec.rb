@@ -8,7 +8,9 @@ describe Notifications::GenerateLetter, type: :service do
   include_context "with all existing categories"
 
   let!(:address) { "20 avenue de Segur, 75007 Paris" }
-  let!(:applicant) { create(:applicant, organisations: [organisation], address: address, phone_number: "+33607070707") }
+  let!(:applicant) do
+    create(:applicant, title: "monsieur", organisations: [organisation], address: address, phone_number: "+33607070707")
+  end
   let!(:department) { create(:department) }
   let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_orientation) }
   let!(:participation) { create(:participation, rdv_context: rdv_context, rdv: rdv, applicant: applicant) }
@@ -37,11 +39,12 @@ describe Notifications::GenerateLetter, type: :service do
       expect(content).to include("20 AVENUE DE SEGUR")
       expect(content).to include("DIRECTION DÉPARTEMENTAL")
       expect(content).to include("Convocation à un rendez-vous d'orientation dans le cadre de votre RSA")
-      expect(content).to include("le 25/12/2022 à 09:30")
+      expect(content).to include("le dimanche 25 décembre 2022 à 09h30")
       expect(content).to include("Marie du 11eme")
       expect(content).to include("12 Place Léon Blum, 75011 Paris")
       expect(content).to include(
-        "Vous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) à un rendez-vous d'orientation" \
+        "Vous êtes bénéficiaire du RSA et à ce titre " \
+        "<span class=\"bold-blue\">vous êtes convoqué à un rendez-vous d'orientation</span>" \
         " afin de démarrer un parcours d'accompagnement"
       )
     end
@@ -56,7 +59,7 @@ describe Notifications::GenerateLetter, type: :service do
         expect(content).to include("DIRECTION DÉPARTEMENTAL")
         expect(content).to include("Convocation à un rendez-vous d'orientation téléphonique dans le cadre de votre RSA")
         expect(content).to include(
-          "Un travailleur social vous appellera <span class=\"bold-blue\">le 25/12/2022 à 09:30</span>" \
+          "Un travailleur social vous appellera <span class=\"bold-blue\">le dimanche 25 décembre 2022 à 09h30</span>" \
           " sur votre numéro de téléphone: <span class=\"bold-blue\">+33607070707</span>"
         )
       end
@@ -93,9 +96,10 @@ describe Notifications::GenerateLetter, type: :service do
         expect(content).to include("20 AVENUE DE SEGUR")
         expect(content).to include("DIRECTION DÉPARTEMENTAL")
         expect(content).to include("Votre rendez-vous d'orientation dans le cadre de votre RSA a été annulé")
-        expect(content).to include("le 25/12/2022 à 09:30")
+        expect(content).to include("le dimanche 25 décembre 2022 à 09h30")
         expect(content).to include(
-          "Votre rendez-vous d'orientation prévu le 25/12/2022 à 09:30 dans le cadre de votre RSA a été annulé"
+          "Votre rendez-vous d'orientation prévu le dimanche 25 décembre 2022 à 09h30 " \
+          "dans le cadre de votre RSA a été annulé"
         )
       end
     end

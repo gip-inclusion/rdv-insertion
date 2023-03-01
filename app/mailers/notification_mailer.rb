@@ -10,14 +10,16 @@ class NotificationMailer < ApplicationMailer
   def presential_participation_created
     mail(
       to: @applicant.email,
-      subject: "[Important - RSA] Vous êtes convoqué(e) à un #{@rdv_title}"
+      subject: "[Important - #{@rdv_subject.upcase}] Vous êtes #{@applicant.conjugate('convoqué')}" \
+               " à un #{@rdv_title}"
     )
   end
 
   def by_phone_participation_created
     mail(
       to: @applicant.email,
-      subject: "[Important - RSA] Vous êtes convoqué(e) à un #{@rdv_title}"
+      subject: "[Important - #{@rdv_subject.upcase}] Vous êtes #{@applicant.conjugate('convoqué')}" \
+               " à un #{@rdv_title}"
     )
   end
 
@@ -25,14 +27,14 @@ class NotificationMailer < ApplicationMailer
   def presential_participation_updated
     mail(
       to: @applicant.email,
-      subject: "[Important - RSA] Votre #{@rdv_title} a été modifié."
+      subject: "[Important - #{@rdv_subject.upcase}] Votre #{@rdv_title} a été modifié."
     )
   end
 
   def by_phone_participation_updated
     mail(
       to: @applicant.email,
-      subject: "[Important - RSA] Votre #{@rdv_title} a été modifié."
+      subject: "[Important - #{@rdv_subject.upcase}] Votre #{@rdv_title} a été modifié."
     )
   end
 
@@ -40,7 +42,7 @@ class NotificationMailer < ApplicationMailer
   def participation_cancelled
     mail(
       to: @applicant.email,
-      subject: "[Important - RSA] Votre #{@rdv_title} a été annulé."
+      subject: "[Important - #{@rdv_subject.upcase}] Votre #{@rdv_title} a été annulé."
     )
   end
 

@@ -2,15 +2,14 @@ class NotificationsController < ApplicationController
   before_action :set_participation
 
   def create
-    @success, @errors = [notify_participation.success?, notify_participation.errors]
-    if @success
+    if notify_participation.success?
       respond_to do |format|
         format.pdf { send_data pdf, filename: pdf_filename, layout: "application/pdf" }
       end
     else
       render turbo_stream: turbo_stream.replace(
         "remote_modal", partial: "common/error_modal", locals: {
-          errors: @errors
+          errors: notify_participation.errors
         }
       )
     end

@@ -16,7 +16,7 @@ module Invitations
 
     def generate_letter
       @invitation.content = ApplicationController.render(
-        template: "letters/invitations/#{@invitation.template_model}_invitation",
+        template: "letters/invitations/#{@invitation.template_model}",
         layout: "pdf",
         locals: locals
       )
