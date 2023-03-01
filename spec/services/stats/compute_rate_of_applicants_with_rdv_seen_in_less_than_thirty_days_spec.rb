@@ -48,6 +48,7 @@ describe Stats::ComputeRateOfApplicantsWithRdvSeenInLessThanThirtyDays, type: :s
   let!(:rdv_context3) { create(:rdv_context, created_at: first_day_of_last_month, applicant: applicant3) }
 
   before do
+    # this little time travel avoids bugs in the first days of march (because february is less than 30 days)
     travel_to(Time.zone.today + 3.days)
   end
 
