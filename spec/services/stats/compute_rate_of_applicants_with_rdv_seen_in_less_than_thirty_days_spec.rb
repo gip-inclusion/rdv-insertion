@@ -47,6 +47,10 @@ describe Stats::ComputeRateOfApplicantsWithRdvSeenInLessThanThirtyDays, type: :s
 
   let!(:rdv_context3) { create(:rdv_context, created_at: first_day_of_last_month, applicant: applicant3) }
 
+  before do
+    travel_to(Time.zone.today + 3.days)
+  end
+
   describe "#call" do
     let!(:result) { subject }
 
