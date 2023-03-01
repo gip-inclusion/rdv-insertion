@@ -1,5 +1,5 @@
 class InviteApplicantJob < ApplicationJob
-  sidekiq_options retry: 0
+  sidekiq_options retry: 2
 
   def perform(
     applicant_id, organisation_id, invitation_attributes, motif_category_id, rdv_solidarites_session_credentials
@@ -31,7 +31,14 @@ class InviteApplicantJob < ApplicationJob
       rdv_with_referents: matching_configuration.rdv_with_referents,
       **@invitation_attributes
     )
-    capture_exception if save_and_send_invitation.failure?
+
+    return if save_and_send_invitation.success?
+
+    raise(
+      FailedServiceError,
+      "Could not send invitation to applicant #{@applicant.id} in InviteApplicantJob: " \
+      "#{save_and_send_invitation.errors}"
+    )
   end
 
   def invitation_format
@@ -55,20 +62,8 @@ class InviteApplicantJob < ApplicationJob
     )
   end
 
-  def capture_exception
-    Sentry.capture_exception(
-      FailedServiceError.new("Save and send invitation error in InviteApplicantJob"),
-      extra: {
-        applicant: @applicant,
-        service_errors: save_and_send_invitation.errors,
-        organisation: @organisation,
-        invitation_attributes: @invitation_attributes
-      }
-    )
-  end
-
   def invitation_already_sent_today?
-    @applicant.invitations.where(format: invitation_format).where("sent_at > ?", 24.hours.ago).present?
+    rdv_context.invitations.where(format: invitation_format).where("sent_at > ?", 24.hours.ago).present?
   end
 
   def rdv_solidarites_session
