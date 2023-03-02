@@ -1,28 +1,5 @@
 <%= turbo_frame_tag @messages_configuration do %>
   <%= simple_form_for(@messages_configuration, url: organisation_messages_configurations_path(@organisation, @messages_configuration), html: { method: :post }, data: { "turbo-frame" => "_top" }) do |f| %>
-    <div>
-      <div class="row card-white rdv-insertion-form justify-content-center mb-2">
-        <div class="mb-4">
-          <div class="row d-flex justify-content-start flex-wrap">
-            <h4 class="pb-2">Courrier</h4>
-            <%= render "common/attribute_input", f:f, attribute: :direction_names, as: :array, tooltip: true %>
-            <%= render "common/attribute_input", f:f, attribute: :signature_lines, as: :array %>
-            <%= render "common/attribute_input", f:f, attribute: :sender_city, tooltip: true %>
-            <%= render "common/attribute_input", f:f, attribute: :letter_sender_name, tooltip: true %>
-            <%= render "common/attribute_input", f:f, attribute: :display_europe_logos, as: :boolean %>
-            <%= render "common/attribute_input", f:f, attribute: :display_department_logo, as: :boolean, tooltip: true %>
-            <%= render "common/attribute_input", f:f, attribute: :help_address, tooltip: true %>
-            <h4 class="pt-5 pb-2">SMS</h4>
-            <%= render "common/attribute_input", f:f, attribute: :sms_sender_name, tooltip: true %>
-          </div>
-        </div>
-      </div>
-      <div class="d-flex justify-content-end mb-4">
-        <%= button_tag("Enregistrer", type: "submit", class: "btn btn-blue") %>
-        <%= link_to organisation_configurations_path(@organisation), data: { "turbo-frame" => "_top" } do %>
-          <button class="btn btn-blue-out mx-2">Annuler</button>
-        <% end %>
-      </div>
-    </div>
+    <%= render "messages_configuration_form", f: f, action: :new, organisation: @organisation, messages_configuration: @messages_configuration %>
   <% end %>
 <% end %>

@@ -8,7 +8,13 @@ class ReferentAssignationsController < ApplicationController
     @success = assign_referent.success?
     @errors = assign_referent.errors
     respond_to do |format|
-      format.turbo_stream { render_create_flashes }
+      format.turbo_stream do
+        if @success
+          flash.now[:success] = "Le référent a bien été assigné"
+        else
+          flash.now[:error] = "Une erreur s'est produite lors de l'assignation du référent: #{@errors}"
+        end
+      end
       format.json do
         render json: { success: @success, errors: @errors }, status: @success ? :ok : :unprocessable_entity
       end
@@ -77,13 +83,5 @@ class ReferentAssignationsController < ApplicationController
       else
         raise ActiveRecord::RecordNotFound
       end
-  end
-
-  def render_create_flashes
-    if @success
-      flash.now[:success] = "Le référent a bien été assigné"
-    else
-      flash.now[:error] = "Une erreur s'est produite lors de l'assignation du référent: #{@errors}"
-    end
   end
 end

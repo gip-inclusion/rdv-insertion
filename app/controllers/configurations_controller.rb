@@ -67,7 +67,8 @@ class ConfigurationsController < ApplicationController
   end
 
   def set_messages_configuration
-    @messages_configuration = @organisation.messages_configuration || MessagesConfiguration.new
+    @messages_configuration = @organisation.messages_configuration ||
+                              MessagesConfiguration.new(organisations: [@organisation])
   end
 
   def set_file_configuration

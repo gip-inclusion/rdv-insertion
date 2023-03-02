@@ -3,7 +3,7 @@ class DepartmentOrganisationsController < ApplicationController
 
   def index
     @organisations = policy_scope(Organisation).where(department: @department)
-                                               .where(id: current_agent.admin_organisations)
+                                               .where(id: current_agent.admin_organisations_ids)
   end
 
   private

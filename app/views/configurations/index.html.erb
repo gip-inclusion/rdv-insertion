@@ -11,7 +11,7 @@
   </div>
 
   <h4>Détails de l'organisation <i class="fas fa-question-circle" id="js-organisation-details-tooltip"></i></h4>
-  <%= render "organisations/show", organisation: @organisation, department: @department %>
+  <%= render "organisations/organisation", organisation: @organisation %>
 
   <h4>Catégories de motifs configurés</h4>
   <%= render "configurations/configurations_list", configurations: @configurations, organisation: @organisation, department: @department %>

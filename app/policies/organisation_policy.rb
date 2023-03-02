@@ -4,7 +4,7 @@ class OrganisationPolicy < ApplicationPolicy
   end
 
   def update?
-    upload?
+    configure?
   end
 
   def create_and_invite_applicants?
@@ -12,7 +12,7 @@ class OrganisationPolicy < ApplicationPolicy
   end
 
   def configure?
-    pundit_user.admin_organisations.include?(record)
+    pundit_user.admin_organisations_ids.include?(record.id)
   end
 
   class Scope < Scope
