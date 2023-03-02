@@ -390,8 +390,8 @@ describe Invitations::SendSms, type: :service do
       let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_insertion_offer) }
       let!(:configuration) { create(:configuration, motif_category: category_rsa_insertion_offer) }
       let!(:content) do
-        "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement en parcours " \
-          "professionnel ou socio-professionel. Pour profiter au mieux de cet accompagnement, nous vous invitons " \
+        "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement. " \
+          "Pour en profiter au mieux, nous vous invitons " \
           "à vous inscrire directement et librement aux ateliers et formations de votre choix en cliquant sur le " \
           "lien suivant: " \
           "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
@@ -411,8 +411,8 @@ describe Invitations::SendSms, type: :service do
       let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_atelier_competences) }
       let!(:configuration) { create(:configuration, motif_category: category_rsa_atelier_competences) }
       let!(:content) do
-        "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement en parcours " \
-          "professionnel ou socio-professionel. Pour profiter au mieux de cet accompagnement, nous vous invitons " \
+        "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement. " \
+          "Pour en profiter au mieux, nous vous invitons " \
           "à vous inscrire directement et librement aux ateliers et formations de votre choix en cliquant sur le " \
           "lien suivant: " \
           "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
@@ -432,8 +432,8 @@ describe Invitations::SendSms, type: :service do
       let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_atelier_rencontres_pro) }
       let!(:configuration) { create(:configuration, motif_category: category_rsa_atelier_rencontres_pro) }
       let!(:content) do
-        "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement en parcours " \
-          "professionnel ou socio-professionel. Pour profiter au mieux de cet accompagnement, nous vous invitons " \
+        "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement. " \
+          "Pour en profiter au mieux, nous vous invitons " \
           "à vous inscrire directement et librement aux ateliers et formations de votre choix en cliquant sur le " \
           "lien suivant: " \
           "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
