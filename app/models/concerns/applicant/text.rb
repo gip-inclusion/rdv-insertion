@@ -12,6 +12,6 @@ module Applicant::Text
   end
 
   def conjugate(past_participle)
-    madame? ? "#{past_participle}e" : past_participle
+    title == "madame" ? "#{past_participle}e" : past_participle
   end
 end
