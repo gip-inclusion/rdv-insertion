@@ -55,7 +55,7 @@ describe InviteApplicantJob do
           .and_return(rdv_solidarites_session)
         allow(Invitations::SaveAndSend).to receive(:call)
           .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
-          .and_return(OpenStruct.new(failure?: false))
+          .and_return(OpenStruct.new(success?: true))
       end
 
       it "instantiates an invitation" do
@@ -78,30 +78,21 @@ describe InviteApplicantJob do
         before do
           allow(Invitations::SaveAndSend).to receive(:call)
             .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
-            .and_return(OpenStruct.new(failure?: true, errors: ["Could not send invite"]))
-          allow(Sentry).to receive(:capture_exception)
+            .and_return(OpenStruct.new(success?: false, errors: ["Could not send invite"]))
         end
 
-        it "captures the expection" do
-          exception = FailedServiceError.new("Save and send invitation error in InviteApplicantJob")
-          expect(Sentry).to receive(:capture_exception)
-            .with(
-              exception,
-              extra: {
-                applicant: applicant,
-                service_errors: ["Could not send invite"],
-                organisation: organisation,
-                invitation_attributes: invitation_attributes
-              }
-            )
-          subject
+        it "raises an error" do
+          expect { subject }.to raise_error(
+            FailedServiceError,
+            "Could not send invitation to applicant 9999 in InviteApplicantJob: [\"Could not send invite\"]"
+          )
         end
       end
     end
 
     context "when the applicant has already been invited in the last 24 hours" do
       let!(:other_invitation) do
-        create(:invitation, applicant: applicant, format: invitation_format, sent_at: 3.hours.ago)
+        create(:invitation, rdv_context: rdv_context, format: invitation_format, sent_at: 3.hours.ago)
       end
 
       it "does not invite the applicant" do
