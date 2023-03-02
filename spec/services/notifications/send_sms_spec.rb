@@ -94,7 +94,7 @@ describe Notifications::SendSms, type: :service do
 
     describe "RSA orientation" do
       let!(:content) do
-        "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué à un " \
+        "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué à un " \
           "rendez-vous d'orientation. Vous êtes attendu le 20/12/2021" \
           " à 10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
           "Ce RDV est obligatoire. " \
@@ -117,7 +117,7 @@ describe Notifications::SendSms, type: :service do
         end
 
         let!(:content) do
-          "Madame Jane DOE,\nVous êtes bénéficiaire du RSA et à ce titre vous avez été convoquée à un " \
+          "Madame Jane DOE,\nVous êtes bénéficiaire du RSA et à ce titre vous êtes convoquée à un " \
             "rendez-vous d'orientation. Vous êtes attendue le 20/12/2021" \
             " à 10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
             "Ce RDV est obligatoire. " \
@@ -163,8 +163,8 @@ describe Notifications::SendSms, type: :service do
         end
 
         let!(:content) do
-          "RAPPEL: Monsieur John DOE,\nVous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) à un " \
-            "rendez-vous d'orientation. Vous êtes attendu(e) le 20/12/2021" \
+          "RAPPEL: Monsieur John DOE,\nVous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué à un " \
+            "rendez-vous d'orientation. Vous êtes attendu le 20/12/2021" \
             " à 10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
             "Ce RDV est obligatoire. " \
             "En cas d’empêchement, appelez rapidement le 0101010101."
@@ -204,7 +204,7 @@ describe Notifications::SendSms, type: :service do
         let!(:motif) { create(:motif, location_type: "phone") }
 
         let!(:content) do
-          "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué à un " \
+          "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué à un " \
             "rendez-vous d'orientation téléphonique." \
             " Un travailleur social vous appellera le 20/12/2021 à " \
             "partir de 10:00 sur ce numéro. " \
@@ -251,7 +251,7 @@ describe Notifications::SendSms, type: :service do
           end
 
           let!(:content) do
-            "RAPPEL: Monsieur John DOE,\nVous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué(e) à un " \
+            "RAPPEL: Monsieur John DOE,\nVous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué à un " \
               "rendez-vous d'orientation téléphonique." \
               " Un travailleur social vous appellera le 20/12/2021 à " \
               "partir de 10:00 sur ce numéro. " \
@@ -277,7 +277,7 @@ describe Notifications::SendSms, type: :service do
         let!(:rdv_context) { create(:rdv_context, motif_category: send(motif_category)) }
 
         let!(:content) do
-          "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué à un " \
+          "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué à un " \
             "rendez-vous d'accompagnement. Vous êtes attendu " \
             "le 20/12/2021 à 10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
             "Ce RDV est obligatoire. " \
@@ -342,7 +342,7 @@ describe Notifications::SendSms, type: :service do
           let!(:motif) { create(:motif, location_type: "phone") }
 
           let!(:content) do
-            "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué à un " \
+            "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué à un " \
               "rendez-vous d'accompagnement téléphonique. Un travailleur social " \
               "vous appellera le 20/12/2021 à partir de 10:00 sur ce numéro. " \
               "Ce RDV est obligatoire. " \
@@ -391,7 +391,7 @@ describe Notifications::SendSms, type: :service do
       let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_cer_signature) }
 
       let!(:content) do
-        "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué à un " \
+        "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué à un " \
           "rendez-vous de signature de CER. " \
           "Vous êtes attendu le 20/12/2021 à " \
           "10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
@@ -457,7 +457,7 @@ describe Notifications::SendSms, type: :service do
         let!(:motif) { create(:motif, location_type: "phone") }
 
         let!(:content) do
-          "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué à un " \
+          "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué à un " \
             "rendez-vous téléphonique de signature de CER. " \
             "Un travailleur social vous appellera le 20/12/2021 à " \
             "partir de 10:00 sur ce numéro. " \
@@ -504,7 +504,7 @@ describe Notifications::SendSms, type: :service do
       let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_follow_up) }
 
       let!(:content) do
-        "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué à un " \
+        "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué à un " \
           "rendez-vous de suivi. " \
           "Vous êtes attendu le 20/12/2021 à " \
           "10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
@@ -567,7 +567,7 @@ describe Notifications::SendSms, type: :service do
         let!(:motif) { create(:motif, location_type: "phone") }
 
         let!(:content) do
-          "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué à un " \
+          "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué à un " \
             "rendez-vous de suivi téléphonique. " \
             "Un travailleur social vous appellera le 20/12/2021 à " \
             "partir de 10:00 sur ce numéro. " \
@@ -612,7 +612,7 @@ describe Notifications::SendSms, type: :service do
       let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_spie) }
 
       let!(:content) do
-        "Monsieur John DOE,\nVous êtes demandeur d'emploi et à ce titre vous avez été convoqué à un " \
+        "Monsieur John DOE,\nVous êtes demandeur d'emploi et à ce titre vous êtes convoqué à un " \
           "rendez-vous d'accompagnement. Vous êtes attendu " \
           "le 20/12/2021 à 10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
           "Ce RDV est obligatoire. " \
@@ -679,7 +679,7 @@ describe Notifications::SendSms, type: :service do
         let!(:motif) { create(:motif, location_type: "phone") }
 
         let!(:content) do
-          "Monsieur John DOE,\nVous êtes demandeur d'emploi et à ce titre vous avez été convoqué à un " \
+          "Monsieur John DOE,\nVous êtes demandeur d'emploi et à ce titre vous êtes convoqué à un " \
             "rendez-vous d'accompagnement téléphonique. Un travailleur social " \
             "vous appellera le 20/12/2021 à partir de 10:00 sur ce numéro. " \
             "Ce RDV est obligatoire. " \

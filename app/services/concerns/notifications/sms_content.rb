@@ -9,7 +9,7 @@ module Notifications
 
     ### participation_created
     def presential_content_for_participation_created
-      "#{applicant.full_name},\nVous êtes #{applicant_designation} et à ce titre vous avez été " \
+      "#{applicant.full_name},\nVous êtes #{applicant_designation} et à ce titre vous êtes " \
         "#{applicant.conjugate('convoqué')} à un " \
         "#{rdv_title}. Vous êtes #{applicant.conjugate('attendu')} le #{formatted_start_date} à " \
         "#{formatted_start_time} ici: #{lieu.full_name}. " \
@@ -19,7 +19,7 @@ module Notifications
     end
 
     def by_phone_content_for_participation_created
-      "#{applicant.full_name},\nVous êtes #{applicant_designation} et à ce titre vous avez été " \
+      "#{applicant.full_name},\nVous êtes #{applicant_designation} et à ce titre vous êtes " \
         "#{applicant.conjugate('convoqué')} à un " \
         "#{rdv_title}. Un travailleur social vous appellera le #{formatted_start_date}" \
         " à partir de #{formatted_start_time} sur ce numéro. " \
@@ -49,8 +49,9 @@ module Notifications
 
     ## participation_reminder
     def presential_content_for_participation_reminder
-      "RAPPEL: #{applicant.full_name},\nVous êtes #{applicant_designation} et à ce titre vous avez été convoqué(e) " \
-        "à un #{rdv_title}. Vous êtes attendu(e) le #{formatted_start_date} à " \
+      "RAPPEL: #{applicant.full_name},\nVous êtes #{applicant_designation} et à ce titre vous avez été " \
+        "#{applicant.conjugate('convoqué')} à un " \
+        "#{rdv_title}. Vous êtes #{applicant.conjugate('attendu')} le #{formatted_start_date} à " \
         "#{formatted_start_time} ici: #{lieu.full_name}. " \
         "#{mandatory_warning}" \
         "#{punishable_warning}" \
@@ -58,8 +59,9 @@ module Notifications
     end
 
     def by_phone_content_for_participation_reminder
-      "RAPPEL: #{applicant.full_name},\nVous êtes #{applicant_designation} et à ce titre vous avez été convoqué(e) " \
-        "à un #{rdv_title}. Un travailleur social vous appellera le #{formatted_start_date}" \
+      "RAPPEL: #{applicant.full_name},\nVous êtes #{applicant_designation} et à ce titre vous avez été " \
+        "#{applicant.conjugate('convoqué')} à un " \
+        "#{rdv_title}. Un travailleur social vous appellera le #{formatted_start_date}" \
         " à partir de #{formatted_start_time} sur ce numéro. " \
         "#{mandatory_warning}" \
         "#{punishable_warning}" \
