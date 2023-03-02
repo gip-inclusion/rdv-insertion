@@ -1,5 +1,5 @@
 class InviteApplicantJob < ApplicationJob
-  sidekiq_options retry: 2
+  sidekiq_options retry: 10
 
   def perform(
     applicant_id, organisation_id, invitation_attributes, motif_category_id, rdv_solidarites_session_credentials
