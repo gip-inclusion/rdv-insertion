@@ -13,7 +13,7 @@ class Participation < ApplicationRecord
   after_commit :refresh_applicant_context_statuses
   after_commit :notify_applicant, if: :rdv_notify_applicants?, on: [:create, :update]
 
-  delegate :starts_at, :convocable?, :motif_name, :rdv_solidarites_url, :rdv_solidarites_rdv_id, to: :rdv
+  delegate :starts_at, :convocable?, :motif_name, :rdv_solidarites_url, :rdv_solidarites_rdv_id, :organisation, to: :rdv
   delegate :phone_number_is_mobile?, :email?, to: :applicant
   delegate :motif_category, to: :rdv_context
   delegate :notify_applicants?, to: :rdv, prefix: true

@@ -1,7 +1,7 @@
 class InvitationsController < ApplicationController
   before_action :set_organisations, :set_department, :set_applicant,
                 :set_motif_category, :set_rdv_context, :set_current_configuration,
-                :set_invitation_format, :set_preselected_organisations, :set_new_invitation, :save_and_send_invitation,
+                :set_invitation_format, :set_preselected_organisations, :set_new_invitation,
                 only: [:create]
   before_action :set_invitation, :verify_invitation_validity, only: [:redirect]
   skip_before_action :authenticate_agent!, only: [:invitation_code, :redirect]

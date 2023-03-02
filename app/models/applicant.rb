@@ -14,6 +14,7 @@ class Applicant < ApplicationRecord
   include Phonable
   include Invitable
   include HasParticipationsToRdvs
+  include Applicant::Text
 
   before_validation :generate_uid
 
@@ -58,18 +59,6 @@ class Applicant < ApplicationRecord
 
   def participation_for(rdv)
     participations.to_a.find { |participation| participation.rdv_id == rdv.id }
-  end
-
-  def full_name
-    "#{title.capitalize} #{first_name.capitalize} #{last_name.upcase}"
-  end
-
-  def to_s
-    "#{first_name.capitalize} #{last_name.capitalize}"
-  end
-
-  def short_title
-    title == "monsieur" ? "M" : "Mme"
   end
 
   def street_address

@@ -12,6 +12,7 @@ module Notifications
         send_notification
       end
       update_notification_sent_at
+      result.notification = notification
     end
 
     private

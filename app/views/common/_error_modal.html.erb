@@ -1,7 +1,7 @@
-<%= render "common/remote_modal", title: title do %>
+<%= render "common/remote_modal", title: local_assigns[:title].presence || "Oups! Une erreur est survenue 👷‍" do %>
   <ul>
     <% errors.each do |error|  %>
-      <p><%= error %></p>
+      <p>❌ <%= error %></p>
     <% end %>
   </ul>
 <% end %>

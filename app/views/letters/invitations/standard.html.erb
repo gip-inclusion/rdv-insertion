@@ -1,4 +1,4 @@
-<%= render 'letters/header', direction_names: direction_names, sender_city: sender_city, department: department, organisation: organisation, applicant: applicant %>
+<%= render "letters/header", direction_names: direction_names, sender_city: sender_city, department: department, organisation: organisation, applicant: applicant %>
 <div class="mail-object">
   <p class="bold-blue"><span class="bold-blue">Objet : <%= rdv_title.slice(0,1).capitalize + rdv_title.slice(1..-1) %> dans le cadre de votre <%= rdv_subject %></span></p>
   <% if applicant.affiliation_number %>
@@ -19,13 +19,13 @@
       Nous vous remercions de prendre ce rendez-vous dans un délai de <%= invitation.number_of_days_to_accept_invitation %> jours à réception de ce courrier.
     <% end %>
     <% if display_punishable_warning %>
-      <%= render 'letters/punishable_warning', department: department, display_independent_from_cd_message: display_independent_from_cd_message %>
+      <%= render "letters/invitations/punishable_warning", department: department, display_independent_from_cd_message: display_independent_from_cd_message %>
     <% end %>
   </p>
-  <%= render 'letters/help_message', invitation: invitation, help_address: help_address %>
+  <%= render "letters/invitations/help_message", invitation: invitation, help_address: help_address %>
   <p>Veuillez agréer, <%= applicant.title.capitalize %>, l’expression de mes salutations distinguées.</p>
   <div class="letter-signature">
-    <%= render 'common/organisation_signature', signature_lines: signature_lines, department: department %>
+    <%= render "common/organisation_signature", signature_lines: signature_lines, department: department %>
   </div>
 </div>
-<%= render 'letters/footer', department: department, organisation: organisation, display_europe_logos: display_europe_logos, display_department_logo: display_department_logo %>
+<%= render "letters/footer", department: department, organisation: organisation, display_europe_logos: display_europe_logos, display_department_logo: display_department_logo %>

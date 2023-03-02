@@ -1,0 +1,21 @@
+<% if sms_convocations.any? %>
+  <div>SMS 📱</div>
+<% end %>
+<% if email_convocations.any? %>
+  <div>Email 📧</div>
+<% end %>
+<% if participation.in_the_future? || participation.revoked? %>
+  <%= simple_form_for(:notification, url: participation_notifications_path(participation, format: "pdf"), html: { method: :post }) do |f| %>
+    <%= f.input :format,
+                as: :hidden,
+                input_html: { class: "form-control", value: "postal" }
+    %>
+    <%= f.input :event,
+                as: :hidden,
+                input_html: { class: "form-control", value: participation.revoked? ? "participation_cancelled" : "participation_created" }
+    %>
+    <%= button_tag type: 'submit', class: "text-decoration-underline" do %>
+      <span><i class="fas fa-file-pdf"></i> Courrier</span>
+    <% end  %>
+  <% end %>
+<% end %>

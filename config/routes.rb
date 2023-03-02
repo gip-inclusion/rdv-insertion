@@ -53,6 +53,10 @@ Rails.application.routes.draw do
     resources :applicant_added_notifications, only: [:create]
   end
 
+  resources :participations, only: [] do
+    resources :notifications, only: :create
+  end
+
   resources :departments, only: [] do
     resources :applicants, only: [:index, :new, :create, :show, :edit, :update] do
       collection { resources :uploads, only: [:new] }
