@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   before_action :set_sentry_context
+  helper_method :production_env?
 
   include AuthorizationConcern
   include AuthenticatedControllerConcern

@@ -1,9 +1,11 @@
 module RdvInsertionInstanceNameHelper
   def rdv_insertion_instance_name
-    if ENV["RDV_INSERTION_INSTANCE_NAME"].present?
-      ENV["RDV_INSERTION_INSTANCE_NAME"]
-    elsif Rails.env.development?
+    return if production_env?
+
+    if Rails.env.development?
       Rails.env
+    else
+      "Démo"
     end
   end
 end
