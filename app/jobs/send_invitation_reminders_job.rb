@@ -31,10 +31,6 @@ class SendInvitationRemindersJob < ApplicationJob
                 .distinct
   end
 
-  def staging_env?
-    ENV["SENTRY_ENVIRONMENT"] == "staging"
-  end
-
   def valid_invitations_sent_3_days_ago
     @valid_invitations_sent_3_days_ago ||= \
       # we want the token to be valid for at least two days to be sure the invitation will be valid

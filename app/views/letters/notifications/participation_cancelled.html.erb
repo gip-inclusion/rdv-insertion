@@ -1,0 +1,18 @@
+<%= render 'letters/header', direction_names: direction_names, sender_city: sender_city, department: department, organisation: organisation, applicant: applicant %>
+<div class="mail-object">
+  <p class="bold-blue"><span class="bold-blue">Objet : Votre <%= rdv_title %> dans le cadre de votre <%= rdv_subject %> a été annulé</span></p>
+  <% if applicant.affiliation_number %>
+    <p>N° allocataire : <%= applicant.affiliation_number %></p>
+  <% end %>
+</div>
+<div class="main-content">
+  <p><%= applicant.title.capitalize %>,</p>
+  <p>Votre <%= rdv_title %> prévu le <%= I18n.l(rdv.starts_at, format: :human) %> dans le cadre de votre <%= rdv_subject %> a été annulé.</p>
+  <p>Pour plus d'informations, veuillez appeler le <%= rdv.phone_number %>.</p>
+  <p>Veuillez agréer, <%= applicant.title.capitalize %>, l’expression de mes salutations distinguées.</p>
+  <br/>
+  <div class="letter-signature">
+    <%= render 'common/organisation_signature', signature_lines: signature_lines, department: department %>
+  </div>
+</div>
+<%= render 'letters/footer', department: department, organisation: organisation, display_europe_logos: display_europe_logos, display_department_logo: display_department_logo %>

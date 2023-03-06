@@ -7,7 +7,8 @@ describe Invitations::GenerateLetter, type: :service do
 
   include_context "with all existing categories"
 
-  let!(:applicant) { create(:applicant, organisations: [organisation]) }
+  let!(:address) { "20 avenue de Segur, 75007 Paris" }
+  let!(:applicant) { create(:applicant, organisations: [organisation], address: address) }
   let!(:department) { create(:department) }
   let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_orientation) }
   let!(:invitation) do
@@ -16,7 +17,7 @@ describe Invitations::GenerateLetter, type: :service do
                    department: department, format: "postal", rdv_context: rdv_context
     )
   end
-  let!(:messages_configuration) { create(:messages_configuration) }
+  let!(:messages_configuration) { create(:messages_configuration, direction_names: ["Direction départemental"]) }
   let!(:configuration) { create(:configuration, motif_category: category_rsa_orientation) }
   let!(:organisation) do
     create(:organisation, messages_configuration: messages_configuration,
@@ -29,12 +30,44 @@ describe Invitations::GenerateLetter, type: :service do
     it "generates the pdf string with the invitation code" do
       subject
       content = unescape_html(invitation.content)
+      expect(content).to include("20 AVENUE DE SEGUR")
+      expect(content).to include("DIRECTION DÉPARTEMENTAL")
       expect(content).to include("Pour choisir un créneau à votre convenance, saisissez le code d’invitation")
       expect(content).to include(invitation.uuid)
       expect(content).to include(department.name)
       expect(content).to include("Vous êtes bénéficiaire du RSA")
       # letter-first-col is only used when display_europe_logos is true (false by default)
       expect(content).not_to include("europe-logos")
+    end
+
+    context "when the format is not postal" do
+      let!(:invitation) { create(:invitation, applicant: applicant, format: "sms") }
+
+      it("is a failure") { is_a_failure }
+
+      it "returns the error" do
+        expect(subject.errors).to eq(["Génération d'une lettre alors que le format est sms"])
+      end
+    end
+
+    context "when the address is blank" do
+      let!(:address) { nil }
+
+      it("is a failure") { is_a_failure }
+
+      it "returns the error" do
+        expect(subject.errors).to eq(["L'adresse doit être renseignée"])
+      end
+    end
+
+    context "when the address is invalid" do
+      let!(:address) { "10 rue quincampoix" }
+
+      it("is a failure") { is_a_failure }
+
+      it "returns the error" do
+        expect(subject.errors).to eq(["Le format de l'adresse est invalide"])
+      end
     end
 
     context "when the signature is configured" do
@@ -183,7 +216,7 @@ describe Invitations::GenerateLetter, type: :service do
           "Objet : Participation à un atelier dans le cadre de votre RSA"
         )
         expect(content).to include(
-          "Pour profiter au mieux de cet accompagnement, nous vous invitons à vous inscrire directement" \
+          "Pour en profiter au mieux, nous vous invitons à vous inscrire directement" \
           " et librement aux ateliers et formations de votre choix"
         )
         expect(content).not_to include("Vous devez obligatoirement prendre ce rendez-vous")
@@ -203,7 +236,7 @@ describe Invitations::GenerateLetter, type: :service do
           "Objet : Participation à un atelier dans le cadre de votre RSA"
         )
         expect(content).to include(
-          "Pour profiter au mieux de cet accompagnement, nous vous invitons à vous inscrire directement" \
+          "Pour en profiter au mieux, nous vous invitons à vous inscrire directement" \
           " et librement aux ateliers et formations de votre choix"
         )
         expect(content).not_to include("Vous devez obligatoirement prendre ce rendez-vous")
@@ -223,7 +256,7 @@ describe Invitations::GenerateLetter, type: :service do
           "Objet : Participation à un atelier dans le cadre de votre RSA"
         )
         expect(content).to include(
-          "Pour profiter au mieux de cet accompagnement, nous vous invitons à vous inscrire directement" \
+          "Pour en profiter au mieux, nous vous invitons à vous inscrire directement" \
           " et librement aux ateliers et formations de votre choix"
         )
         expect(content).not_to include("Nous vous remercions de prendre ce rendez-vous")
@@ -248,36 +281,6 @@ describe Invitations::GenerateLetter, type: :service do
           "mieux adaptée pour vous accompagner."
         )
         expect(content).to include("Cet appel est obligatoire dans le cadre du versement de votre allocation RSA")
-      end
-    end
-
-    context "when the format is not postal" do
-      let!(:invitation) { create(:invitation, applicant: applicant, format: "sms") }
-
-      it("is a failure") { is_a_failure }
-
-      it "returns the error" do
-        expect(subject.errors).to eq(["Génération d'une lettre alors que le format est sms"])
-      end
-    end
-
-    context "when the address is blank" do
-      let!(:applicant) { create(:applicant, address: nil) }
-
-      it("is a failure") { is_a_failure }
-
-      it "returns the error" do
-        expect(subject.errors).to eq(["L'adresse doit être renseignée"])
-      end
-    end
-
-    context "when the address is invalid" do
-      let!(:applicant) { create(:applicant, :skip_validate, address: "10 rue") }
-
-      it("is a failure") { is_a_failure }
-
-      it "returns the error" do
-        expect(subject.errors).to eq(["Le format de l'adresse est invalide"])
       end
     end
   end

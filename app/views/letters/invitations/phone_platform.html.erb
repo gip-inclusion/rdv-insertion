@@ -1,4 +1,4 @@
-<%= render 'letters/header', direction_names: direction_names, sender_city: sender_city, department: department, organisation: organisation, applicant: applicant %>
+<%= render "letters/header", direction_names: direction_names, sender_city: sender_city, department: department, organisation: organisation, applicant: applicant %>
 <div class="mail-object">
   <p class="bold-blue"><span class="bold-blue">Objet : Rendez-vous d’orientation dans le cadre de votre <%= rdv_subject %></span></p>
   <% if applicant.affiliation_number %>
@@ -15,11 +15,11 @@
   <p>Pour cela, <span class="bold-blue">merci d’appeler le <%= invitation.help_phone_number %> dans un délai de <%= invitation.number_of_days_to_accept_invitation %> jours à réception de ce courrier.</span></p>
   <p>Cet appel est obligatoire dans le cadre du versement de votre allocation RSA.</p>
   <p>Veuillez agréer, <%= applicant.title.capitalize %>, l’expression de mes salutations distinguées.</p>
-  <%= render 'letters/help_message', invitation: invitation, help_address: help_address %>
+  <%= render "letters/invitations/help_message", invitation: invitation, help_address: help_address %>
   <p>Veuillez agréer, <%= applicant.title.capitalize %>, l’expression de mes salutations distinguées.</p>
   <div class="letter-signature">
-    <%= render 'common/organisation_signature', signature_lines: signature_lines, department: department %>
+    <%= render "common/organisation_signature", signature_lines: signature_lines, department: department %>
   </div>
 </div>
-<%= render 'letters/footer', department: department, organisation: organisation, display_europe_logos: display_europe_logos, display_department_logo: display_department_logo %>
+<%= render "letters/footer", department: department, organisation: organisation, display_europe_logos: display_europe_logos, display_department_logo: display_department_logo %>
 

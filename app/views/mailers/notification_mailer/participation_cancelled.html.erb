@@ -1,5 +1,5 @@
 <h1>Bonjour <%= "#{@applicant.first_name} #{@applicant.last_name.upcase}" %>,</h1>
-<p>Votre <%= @rdv_title %> dans le cadre de votre <%= @rdv_subject %> a été annulé.</p>
+<p>Votre <%= @rdv_title %> dans le cadre de votre <%= @rdv_subject %> initialement prévu le <%= I18n.l(@rdv.starts_at, format: :human) %> a été annulé.</p>
 <p>Pour plus d'informations, veuillez appeler le <%= @rdv.phone_number %>.</p>
 <%= render 'common/organisation_signature', signature_lines: @signature_lines, department: @department %>
 <% if @logo_path %>
