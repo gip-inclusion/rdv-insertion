@@ -1,11 +1,11 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   before_action :set_sentry_context
-  helper_method :production_env?
 
   include AuthorizationConcern
   include AuthenticatedControllerConcern
   include BeforeActionOverride
+  include EnvironmentsHelper
 
   private
 
@@ -26,9 +26,5 @@ class ApplicationController < ActionController::Base
 
   def department_level?
     params[:department_id].present?
-  end
-
-  def production_env?
-    ENV["SENTRY_ENVIRONMENT"] == "production"
   end
 end
