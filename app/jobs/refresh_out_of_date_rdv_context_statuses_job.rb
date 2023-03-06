@@ -5,7 +5,7 @@ class RefreshOutOfDateRdvContextStatusesJob < ApplicationJob
       @rdv_context_ids << rdv_context.id if rdv_context.status != rdv_context.set_status.to_s
     end
 
-    notify_on_mattermost
+    notify_on_mattermost if production_env?
     RefreshRdvContextStatusesJob.perform_async(@rdv_context_ids)
   end
 
