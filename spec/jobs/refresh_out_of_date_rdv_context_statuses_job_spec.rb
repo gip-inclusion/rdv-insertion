@@ -35,6 +35,7 @@ describe RefreshOutOfDateRdvContextStatusesJob do
       RdvContext.where.not(id: [1, 2, 3, 4, 5]).each(&:destroy!)
       allow(RefreshRdvContextStatusesJob).to receive(:perform_async)
       allow(MattermostClient).to receive(:send_to_notif_channel)
+      allow(ENV).to receive(:[]).with("SENTRY_ENVIRONMENT").and_return("production")
     end
 
     it "enqueues a refresh job for out of date rdv contexts" do
