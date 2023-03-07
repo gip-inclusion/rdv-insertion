@@ -3,10 +3,15 @@ module RdvSolidaritesWebhooks
     def perform(data, meta)
       @data = data.deep_symbolize_keys
       @meta = meta.deep_symbolize_keys
+
+      return if @data[:user].blank?
       return if applicant.blank? || organisation.blank?
 
-      attach_applicant_to_org if event == "created"
-      remove_applicant_from_organisation if event == "destroyed"
+      if event == "destroyed"
+        remove_applicant_from_organisation
+      else
+        attach_applicant_to_org
+      end
     end
 
     private
