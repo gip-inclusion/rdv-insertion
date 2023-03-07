@@ -2,26 +2,25 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
   subject { described_class.call(stat: stat, date: date) }
 
   let!(:stat) { create(:stat, department_number: department.number) }
-  let!(:date) { 1.month.ago }
 
-  let!(:first_day_of_last_month) { 1.month.ago.beginning_of_month }
-  let!(:first_day_of_other_month) { 2.months.ago.beginning_of_month }
+  let(:date) { Time.zone.parse("17/03/2022 12:00") }
+  let(:date_from_previous_month) { Time.zone.parse("17/02/2022 12:00") }
 
   let!(:department) { create(:department) }
   let!(:organisation) { create(:organisation, department: department) }
-  let!(:applicant1) { create(:applicant, department: department, created_at: first_day_of_last_month) }
-  let!(:applicant2) { create(:applicant, department: department, created_at: first_day_of_other_month) }
-  let!(:rdv1) { create(:rdv, created_at: first_day_of_last_month, organisation: organisation) }
-  let!(:rdv2) { create(:rdv, created_at: first_day_of_other_month, organisation: organisation) }
-  let!(:participation1) { create(:participation, created_at: first_day_of_last_month, rdv: rdv1) }
-  let!(:participation2) { create(:participation, created_at: first_day_of_other_month, rdv: rdv2) }
-  let!(:rdv_context1) { create(:rdv_context, created_at: first_day_of_last_month, applicant: applicant1) }
-  let!(:rdv_context2) { create(:rdv_context, created_at: first_day_of_other_month, applicant: applicant2) }
+  let!(:applicant1) { create(:applicant, department: department, created_at: date) }
+  let!(:applicant2) { create(:applicant, department: department, created_at: date_from_previous_month) }
+  let!(:rdv1) { create(:rdv, created_at: date, organisation: organisation) }
+  let!(:rdv2) { create(:rdv, created_at: date_from_previous_month, organisation: organisation) }
+  let!(:participation1) { create(:participation, created_at: date, rdv: rdv1) }
+  let!(:participation2) { create(:participation, created_at: date_from_previous_month, rdv: rdv2) }
+  let!(:rdv_context1) { create(:rdv_context, created_at: date, applicant: applicant1) }
+  let!(:rdv_context2) { create(:rdv_context, created_at: date_from_previous_month, applicant: applicant2) }
   let!(:invitation1) do
-    create(:invitation, sent_at: first_day_of_last_month, department: department)
+    create(:invitation, sent_at: date, department: department)
   end
   let!(:invitation2) do
-    create(:invitation, sent_at: first_day_of_other_month, department: department)
+    create(:invitation, sent_at: date_from_previous_month, department: department)
   end
 
   describe "#call" do
@@ -34,15 +33,13 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
         .and_return(Invitation.where(id: [invitation1, invitation2]))
       allow(stat).to receive(:participations_sample)
         .and_return(Participation.where(id: [participation1, participation2]))
-      allow(stat).to receive(:rdvs_sample)
-        .and_return(Rdv.where(id: [rdv1, rdv2]))
       allow(stat).to receive(:rdv_contexts_sample)
         .and_return(RdvContext.where(id: [rdv_context1, rdv_context2]))
       allow(stat).to receive(:applicants_sample)
         .and_return(Applicant.where(id: [applicant1, applicant2]))
       allow(stat).to receive(:applicants_for_30_days_rdvs_seen_sample)
         .and_return(Applicant.where(id: [applicant1, applicant2]))
-      allow(stat).to receive(:applicants_with_rdvs_non_collectifs_sample)
+      allow(stat).to receive(:invited_applicants_with_rdvs_non_collectifs_sample)
         .and_return(Applicant.where(id: [applicant1, applicant2]))
       allow(stat).to receive(:rdvs_non_collectifs_sample)
         .and_return(Rdv.where(id: [rdv1, rdv2]))
@@ -130,12 +127,12 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
     it "computes the percentage of applicants with rdv seen in less than 30 days" do
       expect(stat).to receive(:applicants_for_30_days_rdvs_seen_sample)
       expect(Stats::ComputeRateOfApplicantsWithRdvSeenInLessThanThirtyDays).to receive(:call)
-        .with(applicants: [applicant1])
+        .with(applicants: [applicant2])
       subject
     end
 
     it "computes the percentage of invited applicants with at least on rdv taken in autonomy" do
-      expect(stat).to receive(:applicants_with_rdvs_non_collectifs_sample)
+      expect(stat).to receive(:invited_applicants_with_rdvs_non_collectifs_sample)
       expect(stat).to receive(:rdvs_non_collectifs_sample)
       expect(Stats::ComputeRateOfAutonomousApplicants).to receive(:call)
         .with(applicants: [applicant1],

@@ -18,10 +18,6 @@ class Participation < ApplicationRecord
   delegate :motif_category, to: :rdv_context
   delegate :notify_applicants?, to: :rdv, prefix: true
 
-  def delay_in_days
-    rdv.starts_at.to_datetime.mjd - created_at.to_datetime.mjd
-  end
-
   private
 
   def refresh_applicant_context_statuses

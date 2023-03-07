@@ -61,7 +61,8 @@ module Stats
 
       def rate_of_applicants_with_rdv_seen_in_less_than_30_days_for_focused_month
         ComputeRateOfApplicantsWithRdvSeenInLessThanThirtyDays.call(
-          applicants: created_during_focused_month(@stat.applicants_for_30_days_rdvs_seen_sample)
+          # we compute the applicants of the previous month because we want at least 30 days old applicants
+          applicants: @stat.applicants_for_30_days_rdvs_seen_sample.where(created_at: (@date - 1.month).all_month)
         ).value.round
       end
 
@@ -69,7 +70,7 @@ module Stats
       # the rdvs that belong to a collectif motif and the applicants that do not have at least one non collectif rdv
       def rate_of_autonomous_applicants_for_focused_month
         ComputeRateOfAutonomousApplicants.call(
-          applicants: created_during_focused_month(@stat.applicants_with_rdvs_non_collectifs_sample),
+          applicants: created_during_focused_month(@stat.invited_applicants_with_rdvs_non_collectifs_sample),
           rdvs: created_during_focused_month(@stat.rdvs_non_collectifs_sample)
         ).value.round
       end
