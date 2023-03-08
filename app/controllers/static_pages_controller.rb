@@ -7,6 +7,8 @@ class StaticPagesController < ApplicationController
 
   def legal_notice; end
 
+  def cgu; end
+
   def privacy_policy; end
 
   def accessibility; end
