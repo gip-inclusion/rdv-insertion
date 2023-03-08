@@ -1,8 +1,7 @@
 module Stats
   class ComputeRateOfAutonomousApplicants < BaseService
-    def initialize(applicants:, rdvs:)
+    def initialize(applicants:)
       @applicants = applicants
-      @rdvs = rdvs
     end
 
     def call
@@ -19,14 +18,7 @@ module Stats
     end
 
     def autonomous_applicants
-      @autonomous_applicants ||= @applicants.select do |applicant|
-        applicant.id.in?(ids_of_applicants_who_created_rdvs_themselves)
-      end
-    end
-
-    def ids_of_applicants_who_created_rdvs_themselves
-      @ids_of_applicants_who_created_rdvs_themselves ||= \
-        @rdvs.joins(:applicants).select(&:created_by_user?).flat_map(&:applicant_ids)
+      @autonomous_applicants ||= @applicants.joins(:rdvs).where(rdvs: { created_by: "user" })
     end
   end
 end

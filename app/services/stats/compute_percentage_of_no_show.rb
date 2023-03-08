@@ -11,7 +11,7 @@ module Stats
     private
 
     def compute_percentage_of_no_show
-      (@participations.count(&:noshow?) / (@participations.count(&:resolved?).nonzero? || 1).to_f) * 100
+      (@participations.noshow.count / (@participations.resolved.count.nonzero? || 1).to_f) * 100
     end
   end
 end

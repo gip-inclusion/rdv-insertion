@@ -1,5 +1,5 @@
 describe Stats::ComputeRateOfAutonomousApplicants, type: :service do
-  subject { described_class.call(applicants: applicants, rdvs: rdvs) }
+  subject { described_class.call(applicants: applicants) }
 
   let(:date) { Time.zone.parse("17/03/2022 12:00") }
 

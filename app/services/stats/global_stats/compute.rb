@@ -64,8 +64,7 @@ module Stats
       # the rdvs that belong to a collectif motif and the applicants that do not have at least one non collectif rdv
       def rate_of_autonomous_applicants
         ComputeRateOfAutonomousApplicants.call(
-          applicants: @stat.invited_applicants_with_rdvs_non_collectifs_sample,
-          rdvs: @stat.rdvs_non_collectifs_sample
+          applicants: @stat.invited_applicants_with_rdvs_non_collectifs_sample
         ).value
       end
 

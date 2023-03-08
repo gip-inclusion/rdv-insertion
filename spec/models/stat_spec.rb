@@ -223,27 +223,13 @@ describe Stat do
 
       describe "#rdvs_non_collectifs_sample" do
         let!(:applicant3) do
-          create(:applicant, department: department, organisations: [organisation_with_no_configuration])
-        end
-        let!(:rdv3) { create(:rdv, organisation: organisation_with_no_configuration, motif: motif) }
-        let!(:participation3) { create(:participation, rdv: rdv3, applicant: applicant3) }
-        let!(:applicant4) do
           create(:applicant, department: department, organisations: [organisation])
         end
-        let!(:rdv4) { create(:rdv, organisation: organisation, motif: motif_collectif) }
-        let!(:participation4) { create(:participation, rdv: rdv4, applicant: applicant4) }
-
-        it "scopes the collection to the department" do
-          expect(stat.rdvs_non_collectifs_sample).to include(rdv1)
-          expect(stat.rdvs_non_collectifs_sample).not_to include(rdv2)
-        end
-
-        it "does not include rdvs of irrelevant applicants" do
-          expect(stat.rdvs_non_collectifs_sample).not_to include(rdv3)
-        end
+        let!(:rdv3) { create(:rdv, organisation: organisation, motif: motif_collectif) }
+        let!(:participation3) { create(:participation, rdv: rdv3, applicant: applicant3) }
 
         it "does not include collectifs rdvs" do
-          expect(stat.rdvs_non_collectifs_sample).not_to include(rdv4)
+          expect(stat.rdvs_non_collectifs_sample).not_to include(rdv3)
         end
       end
 
@@ -370,12 +356,6 @@ describe Stat do
       describe "#rdv_contexts_sample" do
         it "does not scope the collection to the department" do
           expect(stat.rdv_contexts_sample).to include(rdv_context2)
-        end
-      end
-
-      describe "#rdvs_non_collectifs_sample" do
-        it "does not scope the collection to the department" do
-          expect(stat.rdvs_non_collectifs_sample).to include(rdv2)
         end
       end
 

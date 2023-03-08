@@ -29,17 +29,15 @@ class Stat < ApplicationRecord
 
   # We exclude the rdvs collectifs motifs to correctly compute the rate of autonomous applicants
   def rdvs_non_collectifs_sample
-    @rdvs_non_collectifs_sample ||= Rdv.joins(:applicants)
-                                       .where(applicants: applicants_sample)
-                                       .where(motif: Motif.collectif(false))
-                                       .distinct
+    @rdvs_non_collectifs_sample ||= Rdv.where(motif: Motif.collectif(false)).distinct
   end
 
   def invited_applicants_with_rdvs_non_collectifs_sample
-    @invited_applicants_with_rdvs_non_collectifs_sample ||= Applicant.where(participations: all_participations
-                                                                     .where(rdv: rdvs_non_collectifs_sample))
-                                                                     .with_sent_invitations
-                                                                     .distinct
+    @invited_applicants_with_rdvs_non_collectifs_sample ||= \
+      applicants_sample.joins(:rdvs)
+                       .where(rdvs: rdvs_non_collectifs_sample)
+                       .with_sent_invitations
+                       .distinct
   end
 
   # We filter the rdv_contexts to keep those where the applicants were invited and created a rdv/participation
