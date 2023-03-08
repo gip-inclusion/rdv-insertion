@@ -5,7 +5,7 @@ describe RdvSolidaritesWebhooks::ProcessMotifJob do
 
   let!(:data) do
     {
-      "id" => rdv_solidarites_organisation_id,
+      "id" => rdv_solidarites_motif_id,
       "name" => "RDV d'orientation sur site",
       "category" => "rsa_orientation",
       "service_id" => 444,
@@ -66,6 +66,23 @@ describe RdvSolidaritesWebhooks::ProcessMotifJob do
             }
           )
         subject
+      end
+    end
+
+    context "when it is the destroy event" do
+      let!(:motif) { create(:motif, rdv_solidarites_motif_id: rdv_solidarites_motif_id) }
+
+      let!(:meta) do
+        {
+          "model" => "Motif",
+          "event" => "destroyed",
+          "timestamp" => "2022-05-30 14:44:22 +0200"
+        }.deep_symbolize_keys
+      end
+
+      it "deletes the lieu" do
+        expect(UpsertRecordJob).not_to receive(:perform_async)
+        expect { subject }.to change(Motif, :count).by(-1)
       end
     end
 
