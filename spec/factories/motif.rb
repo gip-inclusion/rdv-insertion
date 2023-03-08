@@ -5,5 +5,6 @@ FactoryBot.define do
     name { "RSA orientation sur site" }
     location_type { "public_office" }
     organisation { create(:organisation) }
+    collectif { false }
   end
 end
