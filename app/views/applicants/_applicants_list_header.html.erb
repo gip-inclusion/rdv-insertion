@@ -24,7 +24,12 @@
           <div class="mt-1">
             <%= check_box("applicants_list", "action_required", class: "js-action-required-checkbox") %> Une intervention est nécessaire
             <small>
-              <i class="fas fa-question-circle" id="js-action-required-tooltip" data-number-of-days-before-action-required="<%= @current_configuration.number_of_days_before_action_required %>">
+              <i
+                class="fas fa-question-circle"
+                data-controller="tooltip"
+                data-action="mouseover->tooltip#actionRequired"
+                data-number-of-days-before-action-required="<%= @current_configuration.number_of_days_before_action_required %>"
+              >
               </i>
             </small>
           </div>
@@ -99,7 +104,7 @@
         Configurer l'organisation
       <% end %>
     <% end %>
-    <%= link_to(compute_index_path(@organisation, @department, **params.to_unsafe_h.merge(format: "csv")), class: "btn btn-blue-out mt-2", id: "js-csv-export-tooltip", target: "_blank") do %>
+    <%= link_to(compute_index_path(@organisation, @department, **params.to_unsafe_h.merge(format: "csv")), class: "btn btn-blue-out mt-2", data: { controller: "tooltip", action: "mouseover->tooltip#csvExport"}, target: "_blank") do %>
       <i class="fas fa-download"></i> Exporter au format CSV
     <% end %>
   </div>

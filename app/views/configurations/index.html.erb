@@ -10,7 +10,14 @@
     </div>
   </div>
 
-  <h4>Détails de l'organisation <i class="fas fa-question-circle" id="js-organisation-details-tooltip"></i></h4>
+  <h4>
+    Détails de l'organisation
+    <i
+      class="fas fa-question-circle"
+      data-controller="tooltip"
+      data-action="mouseover->tooltip#organisationDetails">
+    </i>
+  </h4>
   <%= render "organisations/organisation", organisation: @organisation %>
 
   <h4>Catégories de motifs configurés</h4>

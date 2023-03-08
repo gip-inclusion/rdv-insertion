@@ -16,7 +16,12 @@
   <h4>
     <%= record.class.human_attribute_name(attribute) %>
     <% if local_assigns[:tooltip] %>
-      <i class="fas fa-question-circle" id="js-<%= attribute %>-attribute-tooltip"></i>
+      <i
+        class="fas fa-question-circle"
+        data-controller="tooltip"
+        data-action="mouseover->tooltip#<%= attribute.to_s.camelize(:lower) %>Attribute"
+      >
+      </i>
     <% end %>
   </h4>
   <% if local_assigns[:as] == :list || local_assigns[:as] == :inline_list %>

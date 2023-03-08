@@ -19,7 +19,12 @@
   <h4>
     <%= f.object.class.human_attribute_name(attribute) %><%= " *" if local_assigns[:mandatory] %>
     <% if local_assigns[:tooltip] %>
-      <i class="fas fa-question-circle" id="js-<%= attribute %>-attribute-tooltip"></i>
+      <i
+        class="fas fa-question-circle"
+        data-controller="tooltip"
+        data-action="mouseover->tooltip#<%= attribute.to_s.camelize(:lower) %>Attribute"
+      >
+      </i>
     <% end %>
   </h4>
   <% if local_assigns[:as] == :select %>
