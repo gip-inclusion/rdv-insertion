@@ -88,6 +88,9 @@ Rails.application.routes.draw do
   get '/sign_in', to: "sessions#new"
   delete '/sign_out', to: "sessions#destroy"
 
+  get "inclusion_connect/auth" => "inclusion_connect#auth"
+  get "inclusion_connect/callback" => "inclusion_connect#callback"
+
   if ENV["SIDEKIQ_USERNAME"] && ENV["SIDEKIQ_PASSWORD"]
     Sidekiq::Web.use Rack::Auth::Basic do |username, password|
       check_auth(username, password, "SIDEKIQ")
