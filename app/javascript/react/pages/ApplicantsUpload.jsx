@@ -195,7 +195,7 @@ export default function ApplicantsUpload({
 
   return (
     <div className="container mt-5 mb-8">
-      <div className="row block-white justify-content-center">
+      <div className="row card-white justify-content-center">
         <div className="col-4 text-center d-flex align-items-center justify-content-start">
           <button
             type="submit"

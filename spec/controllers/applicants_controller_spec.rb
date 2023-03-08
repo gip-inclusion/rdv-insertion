@@ -18,7 +18,7 @@ describe ApplicantsController do
     create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
                           department_id: department.id, configurations: [configuration])
   end
-  let!(:agent) { create(:agent, organisations: [organisation]) }
+  let!(:agent) { create(:agent, basic_role_in_organisations: [organisation]) }
   let!(:rdv_solidarites_organisation_id) { 888 }
   let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
   let(:applicant) { create(:applicant, organisations: [organisation], department: department) }
@@ -496,6 +496,12 @@ describe ApplicantsController do
       expect(response.body).not_to match(/Barthelemy/)
     end
 
+    it "does not display the configure organisation option" do
+      get :index, params: index_params
+
+      expect(response.body).not_to match(/Configurer l'organisation/)
+    end
+
     context "when there is all types of rdv_contexts statuses" do
       before do
         RdvContext.statuses.each_key do |status|
@@ -510,6 +516,20 @@ describe ApplicantsController do
         RdvContext.statuses.each_key do |status|
           expect(response.body).to match(/"#{status}"/)
         end
+      end
+    end
+
+    context "when the agent is admin" do
+      let!(:agent) { create(:agent, admin_role_in_organisations: [organisation]) }
+
+      before do
+        sign_in(agent)
+      end
+
+      it "displays the configure organisation option" do
+        get :index, params: index_params
+
+        expect(response.body).to match(/Configurer l'organisation/)
       end
     end
 
@@ -732,6 +752,26 @@ describe ApplicantsController do
 
         expect(response.body).to match(/Chabat/)
         expect(response.body).to match(/Baer/)
+      end
+
+      it "does not display the configure organisation option" do
+        get :index, params: index_params
+
+        expect(response.body).not_to match(/Configurer une organisation/)
+      end
+
+      context "when the agent is admin" do
+        let!(:agent) { create(:agent, admin_role_in_organisations: [organisation]) }
+
+        before do
+          sign_in(agent)
+        end
+
+        it "displays the configure organisation option" do
+          get :index, params: index_params
+
+          expect(response.body).to match(/Configurer une organisation/)
+        end
       end
     end
 

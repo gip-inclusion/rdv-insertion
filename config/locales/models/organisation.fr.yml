@@ -2,3 +2,10 @@ fr:
   activerecord:
     models:
       organisation: Organisation
+    attributes:
+      organisation:
+        name: Nom
+        email: Email
+        phone_number: Numéro de téléphone
+        slug: Désignation dans le fichier allocataires
+        independent_from_cd: Indépendante du CD

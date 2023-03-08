@@ -1,6 +1,5 @@
 <%= turbo_stream.replace "organisations_list" do %>
-  <%= render partial: "applicants/organisations_list", locals: { organisations: @applicant.reload.organisations } %>
+  <%= render "common/attribute_display", record: @applicant, attribute: :organisations, as: :list, id: "organisations_list" %>
 <% end %>
-<%= turbo_stream.prepend "flashes" do %>
-  <%= render partial: "common/flash", locals: { flash: @success ? { success: "L'organisation a bien été retirée" } : { error: "Une erreur s'est produite lors du retrait de l'organisation: #{@errors}" } } %>
-<% end %>
+
+<%= render_turbo_stream_flash_messages %>

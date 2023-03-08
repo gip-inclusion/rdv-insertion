@@ -7,11 +7,12 @@ class ApplicantsController < ApplicationController
     :status, :rights_opening_date, :archiving_reason
   ].freeze
 
+  include BackToListConcern
   include Applicants::Filterable
   include Applicants::Convocable
 
   before_action :set_organisation, :set_department, :set_organisations, :set_all_configurations,
-                :set_applicants_scope,
+                :set_current_agent_roles, :set_applicants_scope,
                 :set_current_configuration, :set_current_motif_category,
                 :set_applicants, :set_rdv_contexts,
                 :filter_applicants, :order_applicants,
@@ -20,14 +21,14 @@ class ApplicantsController < ApplicationController
   before_action :set_applicant, :set_organisation, :set_department, :set_all_configurations,
                 :set_applicant_organisations, :set_applicant_rdv_contexts,
                 :set_convocation_motifs_by_rdv_context,
-                :set_back_to_list_url,
+                :set_back_to_applicants_list_url,
                 for: :show
   before_action :set_organisation, :set_department, :set_organisations,
                 for: [:new, :create]
   before_action :set_applicant, :set_organisation, :set_department,
                 for: [:edit, :update]
   before_action :retrieve_applicants, only: [:search]
-  after_action :store_back_to_list_url, only: [:index]
+  after_action :store_back_to_applicants_list_url, only: [:index]
 
   def index
     respond_to do |format|
@@ -249,20 +250,18 @@ class ApplicantsController < ApplicationController
     @statuses_count = @rdv_contexts.group(:status).count
   end
 
+  def set_current_agent_roles
+    @current_agent_roles = AgentRole.where(
+      department_level? ? { organisation: @organisations } : { organisation: @organisation }, agent: current_agent
+    )
+  end
+
   def set_applicants_scope
     @applicants_scope = params[:applicants_scope]
   end
 
   def archived_scope?
     @applicants_scope == "archived"
-  end
-
-  def store_back_to_list_url
-    session[:back_to_list_url] = request.fullpath
-  end
-
-  def set_back_to_list_url
-    @back_to_list_url = session[:back_to_list_url]
   end
 
   def order_applicants

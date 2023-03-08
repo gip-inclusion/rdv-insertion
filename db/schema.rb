@@ -215,8 +215,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_16_152810) do
     t.datetime "sent_at", precision: nil
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "format"
     t.bigint "rdv_solidarites_rdv_id"
+    t.integer "format"
     t.bigint "participation_id"
     t.index ["participation_id"], name: "index_notifications_on_participation_id"
   end

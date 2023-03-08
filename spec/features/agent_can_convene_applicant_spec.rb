@@ -69,7 +69,7 @@ describe "Agents can convene applicant to rdv", js: true do
     it "shows a link to convene the applicant" do
       visit organisation_applicants_path(organisation)
       expect(page).to have_content("📅 Convoquer")
-      expect(page).not_to have_css("div#js-disabled-convocation-button")
+      expect(page).not_to have_css("div[data-action='mouseover->tooltip#disabledConvocationButton']")
       expect(page).to have_link("📅 Convoquer", href: expected_link)
     end
 
@@ -80,7 +80,7 @@ describe "Agents can convene applicant to rdv", js: true do
         visit organisation_applicants_path(organisation)
         expect(page).to have_content("📅 Convoquer")
         expect(page).not_to have_link("📅 Convoquer")
-        expect(page).to have_css("div#js-disabled-convocation-button")
+        expect(page).to have_css("div[data-action='mouseover->tooltip#disabledConvocationButton']")
       end
     end
 
@@ -122,7 +122,7 @@ describe "Agents can convene applicant to rdv", js: true do
         visit organisation_applicants_path(organisation)
         expect(page).to have_content("📅 Convoquer")
         expect(page).not_to have_link("📅 Convoquer")
-        expect(page).to have_css("div#js-disabled-convocation-button")
+        expect(page).to have_css("div[data-action='mouseover->tooltip#disabledConvocationButton']")
       end
     end
 
@@ -130,7 +130,7 @@ describe "Agents can convene applicant to rdv", js: true do
       it "adds a link to convene the applicant" do
         visit department_applicants_path(department)
         expect(page).to have_content("📅 Convoquer")
-        expect(page).not_to have_css("div#js-disabled-convocation-button")
+        expect(page).not_to have_css("div[data-action='mouseover->tooltip#disabledConvocationButton']")
         expect(page).to have_link("📅 Convoquer", href: expected_link)
       end
 
@@ -151,7 +151,7 @@ describe "Agents can convene applicant to rdv", js: true do
           visit department_applicants_path(department)
           expect(page).to have_content("📅 Convoquer")
           expect(page).not_to have_link("📅 Convoquer")
-          expect(page).to have_css("div#js-disabled-convocation-button")
+          expect(page).to have_css("div[data-action='mouseover->tooltip#disabledConvocationButton']")
         end
       end
     end
@@ -201,7 +201,7 @@ describe "Agents can convene applicant to rdv", js: true do
     it "shows two links to convene the applicant" do
       visit organisation_applicant_path(organisation, applicant)
       expect(page).to have_content("📅 Convoquer").twice
-      expect(page).not_to have_css("div#js-disabled-convocation-button")
+      expect(page).not_to have_css("div[data-action='mouseover->tooltip#disabledConvocationButton']")
       expect(page).to have_link("📅 Convoquer", href: expected_link)
       expect(page).to have_link("📅 Convoquer", href: other_expected_link)
     end
@@ -212,7 +212,7 @@ describe "Agents can convene applicant to rdv", js: true do
       it "shows one link and one disabled button to convene the applicant" do
         visit organisation_applicant_path(organisation, applicant)
         expect(page).to have_content("📅 Convoquer").twice
-        expect(page).to have_css("div#js-disabled-convocation-button").once
+        expect(page).to have_css("div[data-action='mouseover->tooltip#disabledConvocationButton']").once
         expect(page).to have_link("📅 Convoquer", href: expected_link)
         expect(page).not_to have_link("📅 Convoquer", href: other_expected_link)
       end
@@ -283,7 +283,7 @@ describe "Agents can convene applicant to rdv", js: true do
       it "shows two links to convene the applicant" do
         visit department_applicant_path(department, applicant)
         expect(page).to have_content("📅 Convoquer").twice
-        expect(page).not_to have_css("div#js-disabled-convocation-button")
+        expect(page).not_to have_css("div[data-action='mouseover->tooltip#disabledConvocationButton']")
         expect(page).to have_link("📅 Convoquer", href: expected_link)
         expect(page).to have_link("📅 Convoquer", href: other_expected_link)
       end

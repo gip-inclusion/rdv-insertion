@@ -21,6 +21,14 @@ class RdvSolidaritesClient
     )
   end
 
+  def update_organisation(organisation_id, request_body = {})
+    Faraday.patch(
+      "#{@url}/api/v1/organisations/#{organisation_id}",
+      request_body.to_json,
+      request_headers
+    )
+  end
+
   def get_user(user_id)
     Faraday.get(
       "#{@url}/api/v1/users/#{user_id}",

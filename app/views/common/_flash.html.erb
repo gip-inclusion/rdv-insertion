@@ -1,6 +1,6 @@
 <% [:success, :notice, :error, :alert].each do |type| %>
   <% if flash[type] %>
-    <div class="row text-center">
+    <div class="row text-center flash_message" data-controller="flash" data-action="animationend->flash#remove">
       <div class="alert <%= alert_class_for(type) %> alert-dismissible fade show" role="alert">
         <%= flash[type] %>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>

@@ -1,11 +1,13 @@
 class Organisation < ApplicationRecord
+  SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [:name, :phone_number, :email].freeze
+
   include PgSearch::Model
   include HasLogo
-
-  SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [:name, :phone_number, :email].freeze
+  include Phonable
 
   validates :rdv_solidarites_organisation_id, uniqueness: true, allow_nil: true
   validates :name, presence: true
+  validates :email, allow_blank: true, format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/ }
 
   belongs_to :department
   belongs_to :messages_configuration, optional: true
@@ -32,6 +34,10 @@ class Organisation < ApplicationRecord
 
   def rdv_solidarites_url
     "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{rdv_solidarites_organisation_id}"
+  end
+
+  def to_s
+    name
   end
 
   def as_json(_opts = {})

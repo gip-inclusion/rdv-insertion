@@ -5,7 +5,7 @@
     </button>
   <% end %>
 <% else %>
-  <div id="js-disabled-convocation-button">
+  <div data-controller="tooltip" data-action="mouseover->tooltip#disabledConvocationButton">
     <button class="btn btn-warning disabled">
       📅 Convoquer <i class="fas fa-external-link-alt icon-sm"></i>
     </button>

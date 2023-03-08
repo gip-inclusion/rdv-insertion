@@ -45,6 +45,18 @@ button, input[type="button"] {
   }
 }
 
+.btn-danger {
+  background-color: $danger;
+  border-color: $danger;
+  color: white;
+  min-width: 90px;
+  &:hover, &:disabled {
+    color: white;
+    border-color: $orange-light;
+    background-color: $orange-light;
+  }
+}
+
 .btn-grey {
   border-color: $light-grey;
   background-color: white;
@@ -58,4 +70,13 @@ button, input[type="button"] {
 
 .file-input-div {
   width: 87px;
+}
+
+.text-array__remove {
+  cursor: pointer;
+}
+
+.file-configuration-modal-button {
+  width: 120px;
+  margin-left: 10px;
 }
