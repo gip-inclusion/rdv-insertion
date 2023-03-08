@@ -88,6 +88,44 @@ describe "Applicants API" do
       expect(result["success"]).to eq(true)
     end
 
+    context "with 'users' instead of 'applicants' in payload" do
+      subject do
+        post(
+          create_and_invite_many_api_v1_applicants_path(
+            rdv_solidarites_organisation_id: rdv_solidarites_organisation_id
+          ),
+          params: users_payload, headers: api_auth_headers_for_agent(agent), as: :json
+        )
+      end
+
+      let!(:users_payload) { { users: [applicant1_params, applicant2_params] } }
+
+      it "enqueues create and invite jobs" do
+        expect(CreateAndInviteApplicantJob).to receive(:perform_async)
+          .with(
+            organisation.id,
+            applicant1_params.except(:invitation),
+            applicant1_params[:invitation],
+            session_hash(agent.email)
+          )
+        expect(CreateAndInviteApplicantJob).to receive(:perform_async)
+          .with(
+            organisation.id,
+            applicant2_params.except(:invitation),
+            applicant2_params[:invitation],
+            session_hash(agent.email)
+          )
+        subject
+      end
+
+      it "is a success" do
+        subject
+        expect(response).to have_http_status(:ok)
+        result = JSON.parse(response.body)
+        expect(result["success"]).to eq(true)
+      end
+    end
+
     context "when session is invalid" do
       before do
         allow(rdv_solidarites_session).to receive(:valid?).and_return(false)

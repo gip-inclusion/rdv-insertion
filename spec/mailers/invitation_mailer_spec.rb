@@ -366,7 +366,7 @@ RSpec.describe InvitationMailer do
     it "renders the subject" do
       email_subject = unescape_html(subject.subject)
       expect(email_subject).to eq(
-        "[RSA]: Participer à un atelier dans le cadre de votre parcours socio-professionnel"
+        "[RSA]: Participer à un atelier dans le cadre de votre parcours"
       )
     end
 
@@ -376,8 +376,8 @@ RSpec.describe InvitationMailer do
       expect(body_string).to match("Le département de la Drôme.")
       expect(body_string).to match("01 39 39 39 39")
       expect(body_string).to match(
-        "Vous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement " \
-        "en parcours professionnel ou socio-professionel. Pour profiter au mieux de cet accompagnement," \
+        "Vous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement. " \
+        "Pour en profiter au mieux," \
         " nous vous invitons à vous inscrire directement et librement aux ateliers et formations de votre choix."
       )
       expect(body_string).to match("/invitations/redirect")

@@ -26,8 +26,12 @@ module Notificable
     convocations.select(&:sent_at?)
   end
 
-  def convocation_formats
-    sent_convocations.map(&:format)
+  def sent_sms_convocations
+    sent_convocations.select(&:format_sms?)
+  end
+
+  def sent_email_convocations
+    sent_convocations.select(&:format_email?)
   end
 
   def last_sent_convocation

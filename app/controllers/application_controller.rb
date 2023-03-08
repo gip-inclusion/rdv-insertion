@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
   include AuthorizationConcern
   include AuthenticatedControllerConcern
   include BeforeActionOverride
+  include EnvironmentsHelper
 
   private
 
@@ -25,9 +26,5 @@ class ApplicationController < ActionController::Base
 
   def department_level?
     params[:department_id].present?
-  end
-
-  def production_env?
-    ENV["SENTRY_ENVIRONMENT"] == "production"
   end
 end

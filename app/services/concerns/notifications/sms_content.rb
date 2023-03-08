@@ -9,8 +9,9 @@ module Notifications
 
     ### participation_created
     def presential_content_for_participation_created
-      "#{applicant.full_name},\nVous êtes #{applicant_designation} et à ce titre vous avez été convoqué(e) à un " \
-        "#{rdv_title}. Vous êtes attendu(e) le #{formatted_start_date} à " \
+      "#{applicant.full_name},\nVous êtes #{applicant_designation} et à ce titre vous avez été " \
+        "#{applicant.conjugate('convoqué')} à un " \
+        "#{rdv_title}. Vous êtes #{applicant.conjugate('attendu')} le #{formatted_start_date} à " \
         "#{formatted_start_time} ici: #{lieu.full_name}. " \
         "#{mandatory_warning}" \
         "#{punishable_warning}" \
@@ -18,7 +19,8 @@ module Notifications
     end
 
     def by_phone_content_for_participation_created
-      "#{applicant.full_name},\nVous êtes #{applicant_designation} et à ce titre vous avez été convoqué(e) à un " \
+      "#{applicant.full_name},\nVous êtes #{applicant_designation} et à ce titre vous avez été " \
+        "#{applicant.conjugate('convoqué')} à un " \
         "#{rdv_title}. Un travailleur social vous appellera le #{formatted_start_date}" \
         " à partir de #{formatted_start_time} sur ce numéro. " \
         "#{mandatory_warning}" \
@@ -29,7 +31,7 @@ module Notifications
     ### participation_updated
     def presential_content_for_participation_updated
       "#{applicant.full_name},\nVotre #{rdv_title} dans le cadre de votre #{rdv_subject} a été modifié. " \
-        "Vous êtes attendu(e) le #{formatted_start_date} à #{formatted_start_time}" \
+        "Vous êtes #{applicant.conjugate('attendu')} le #{formatted_start_date} à #{formatted_start_time}" \
         " ici: #{lieu.full_name}. " \
         "#{mandatory_warning}" \
         "#{punishable_warning}" \

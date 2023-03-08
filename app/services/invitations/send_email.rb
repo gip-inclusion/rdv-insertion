@@ -1,18 +1,18 @@
 module Invitations
   class SendEmail < BaseService
+    include Messengers::SendEmail
+
     def initialize(invitation:)
       @invitation = invitation
     end
 
     def call
-      call_service!(
-        Messengers::SendEmail,
-        sendable: @invitation,
-        mailer_class: InvitationMailer,
-        mailer_method: mailer_method,
-        invitation: @invitation,
-        applicant: @invitation.applicant
-      )
+      verify_format!(@invitation)
+      verify_email!(@invitation)
+
+      InvitationMailer.with(
+        invitation: @invitation, applicant: @invitation.applicant
+      ).send(mailer_method).deliver_now
     end
 
     private

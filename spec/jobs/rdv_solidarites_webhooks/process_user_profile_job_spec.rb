@@ -87,11 +87,10 @@ describe RdvSolidaritesWebhooks::ProcessUserProfileJob do
       end
     end
 
-    context "when the event is updated" do
-      let!(:meta) do
+    context "when there are no user infos in the payload" do
+      let!(:data) do
         {
-          "model" => "UserProfile",
-          "event" => "updated"
+          "organisation" => { "id" => rdv_solidarites_organisation_id }
         }.deep_symbolize_keys
       end
 
@@ -103,6 +102,40 @@ describe RdvSolidaritesWebhooks::ProcessUserProfileJob do
       it "does not enqueue a delete applicant job" do
         expect(SoftDeleteApplicantJob).not_to receive(:perform_async)
         subject
+      end
+    end
+
+    context "when the event is updated" do
+      let!(:meta) do
+        {
+          "model" => "UserProfile",
+          "event" => "updated"
+        }.deep_symbolize_keys
+      end
+
+      context "when the applicant does not belong to the org" do
+        let!(:other_org) { create(:organisation) }
+        let!(:applicant) do
+          create(:applicant, rdv_solidarites_user_id: rdv_solidarites_user_id, organisations: [other_org])
+        end
+
+        it "adds the applicant to the org" do
+          subject
+          expect(applicant.reload.organisations.ids).to eq([other_org.id, organisation.id])
+        end
+
+        it "does not enqueue a delete applicant job" do
+          expect(SoftDeleteApplicantJob).not_to receive(:perform_async)
+          subject
+        end
+      end
+
+      context "when the applicant already belongs to org" do
+        it "does not do anything" do
+          expect(SoftDeleteApplicantJob).not_to receive(:perform_async)
+          subject
+          expect(applicant.reload.organisations.ids).to eq([organisation.id])
+        end
       end
     end
 

@@ -57,6 +57,10 @@ Rails.application.routes.draw do
     resources :applicant_added_notifications, only: [:create]
   end
 
+  resources :participations, only: [] do
+    resources :notifications, only: :create
+  end
+
   resources :departments, only: [] do
     resources :department_organisations, only: [:index], as: :organisations, path: "/organisations"
     resources :applicants, only: [:index, :new, :create, :show, :edit, :update] do
@@ -77,6 +81,7 @@ Rails.application.routes.draw do
           resources :applicants, only: [] do
             post :create_and_invite_many, on: :collection
           end
+          post "users/create_and_invite_many", to: "applicants#create_and_invite_many"
         end
       end
     end
