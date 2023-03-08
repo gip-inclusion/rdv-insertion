@@ -24,7 +24,7 @@ describe ConfigurationsController do
       get :index, params: index_params
 
       expect(response).to be_successful
-      expect(response.body).to match(/Détails de l'organisation /)
+      expect(response.body).to match(/Détails de l'organisation/)
       expect(response.body).to match(/Catégories de motifs configurés/)
       expect(response.body).to match(/Configuration des messages/)
     end
