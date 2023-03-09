@@ -14,6 +14,7 @@ end
 Rails.application.routes.draw do
   root "static_pages#welcome"
   get "mentions-legales", to: "static_pages#legal_notice"
+  get "cgu", to: "static_pages#cgu"
   get "politique-de-confidentialite", to: "static_pages#privacy_policy"
   get "accessibilite", to: "static_pages#accessibility"
 
