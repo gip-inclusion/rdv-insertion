@@ -138,12 +138,18 @@ class RdvSolidaritesClient
   private
 
   def request_headers
-    {
+    base_headers = {
       "Content-Type" => "application/json",
       "uid" => @rdv_solidarites_session.uid,
       "access_token" => @rdv_solidarites_session.access_token,
       "client" => @rdv_solidarites_session.client
     }
+
+    x_agent_headers = {
+      "x_agent_auth_signature" => @rdv_solidarites_session.x_agent_auth_signature
+    }
+
+    base_headers.merge(@rdv_solidarites_session.x_agent_auth_signature.present? ? x_agent_headers : {})
   end
 end
 # rubocop:enable Metrics/ClassLength

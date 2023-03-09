@@ -1,12 +1,12 @@
 class RdvSolidaritesSession
   attr_reader :uid, :client, :access_token
+  attr_accessor :x_agent_auth_signature
 
-  def initialize(uid:, client:, access_token:)
+  def initialize(uid:, client: nil, access_token: nil, x_agent_auth_signature: nil)
     @uid = uid
     @client = client
     @access_token = access_token
-    # Ici nouveaux params de header pour le systéme avec le shared secret
-
+    @x_agent_auth_signature = x_agent_auth_signature
   end
 
   def valid?
