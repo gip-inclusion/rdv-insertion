@@ -14,6 +14,7 @@ module RdvSolidaritesSessionConcern
   end
 
   def rdv_solidarites_session
+    # Refactoriser cela :
     if request.headers["X-Agent-Auth-Signature"].present?
       @rdv_solidarites_session ||= RdvSolidaritesSession.new(
         uid: request.headers["uid"],
