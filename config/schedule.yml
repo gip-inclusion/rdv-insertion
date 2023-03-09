@@ -10,3 +10,6 @@ send_invitation_reminders_job:
 refresh_out_of_date_rdv_context_statuses_job:
   cron: "0 21 * * *" # we refresh out of date statuses once a day, at 21:00
   class: "RefreshOutOfDateRdvContextStatusesJob"
+designate_on_watch_developer_job:
+  cron: "0 10 * * mon" # we designate an on watch developer once a week, monday at 10:00
+  class: "DesignateOnWatchDeveloperJob"
