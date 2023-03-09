@@ -1,68 +1,50 @@
 describe Stats::ComputeRateOfAutonomousApplicants, type: :service do
-  subject { described_class.call(applicants: applicants, rdvs: rdvs) }
+  subject { described_class.call(applicants: applicants) }
 
-  let!(:first_day_of_last_month) { 1.month.ago.beginning_of_month }
+  let(:date) { Time.zone.parse("17/03/2022 12:00") }
 
-  let!(:applicants) { Applicant.where(id: [applicant1, applicant2, applicant3, applicant4, applicant5]) }
+  let!(:applicants) { Applicant.where(id: [applicant1, applicant2, applicant3, applicant4]) }
   let!(:rdvs) { Rdv.where(id: [rdv1, rdv2, rdv3]) }
 
   # First applicant : created 1 month ago, has a rdv taken in autonomy
-  let!(:applicant1) { create(:applicant, created_at: first_day_of_last_month) }
+  let!(:applicant1) { create(:applicant, created_at: date) }
   let!(:invitation1) do
-    create(:invitation, created_at: first_day_of_last_month, sent_at: first_day_of_last_month,
-                        rdv_context: rdv_context1, applicant: applicant1)
+    create(:invitation, created_at: date, sent_at: date, rdv_context: rdv_context1, applicant: applicant1)
   end
-  let!(:rdv_context1) { create(:rdv_context, created_at: first_day_of_last_month, applicant: applicant1) }
-  let!(:rdv1) do
-    create(:rdv, created_at: first_day_of_last_month, created_by: "user")
-  end
+  let!(:rdv_context1) { create(:rdv_context, created_at: date, applicant: applicant1) }
+  let!(:rdv1) { create(:rdv, created_at: date, created_by: "user") }
   let!(:participation1) do
-    create(:participation, rdv_context: rdv_context1, applicant: applicant1,
-                           rdv: rdv1, created_at: first_day_of_last_month)
+    create(:participation, rdv_context: rdv_context1, applicant: applicant1, rdv: rdv1, created_at: date)
   end
 
   # Second applicant : created 1 month ago, has a rdv not taken in autonomy
-  let!(:applicant2) { create(:applicant, created_at: first_day_of_last_month) }
+  let!(:applicant2) { create(:applicant, created_at: date) }
   let!(:invitation2) do
-    create(:invitation, created_at: first_day_of_last_month, sent_at: first_day_of_last_month,
-                        rdv_context: rdv_context2, applicant: applicant2)
+    create(:invitation, created_at: date, sent_at: date, rdv_context: rdv_context2, applicant: applicant2)
   end
-  let!(:rdv_context2) { create(:rdv_context, created_at: first_day_of_last_month, applicant: applicant2) }
-  let!(:rdv2) do
-    create(:rdv, created_at: first_day_of_last_month, created_by: "agent")
-  end
+  let!(:rdv_context2) { create(:rdv_context, created_at: date, applicant: applicant2) }
+  let!(:rdv2) { create(:rdv, created_at: date, created_by: "agent") }
   let!(:participation2) do
-    create(:participation, rdv_context: rdv_context2, applicant: applicant2,
-                           rdv: rdv2, created_at: first_day_of_last_month)
+    create(:participation, rdv_context: rdv_context2, applicant: applicant2, rdv: rdv2, created_at: date)
   end
 
   # Third applicant : created 1 month ago, has a rdv taken in autonomy
-  let!(:applicant3) { create(:applicant, created_at: first_day_of_last_month) }
+  let!(:applicant3) { create(:applicant, created_at: date) }
   let!(:invitation3) do
-    create(:invitation, created_at: first_day_of_last_month, sent_at: first_day_of_last_month,
-                        rdv_context: rdv_context3, applicant: applicant3)
+    create(:invitation, created_at: date, sent_at: date, rdv_context: rdv_context3, applicant: applicant3)
   end
-  let!(:rdv_context3) { create(:rdv_context, created_at: first_day_of_last_month, applicant: applicant3) }
-  let!(:rdv3) do
-    create(:rdv, created_at: first_day_of_last_month, created_by: "user")
-  end
+  let!(:rdv_context3) { create(:rdv_context, created_at: date, applicant: applicant3) }
+  let!(:rdv3) { create(:rdv, created_at: date, created_by: "user") }
   let!(:participation3) do
-    create(:participation, rdv_context: rdv_context3, applicant: applicant3,
-                           rdv: rdv3, created_at: first_day_of_last_month)
+    create(:participation, rdv_context: rdv_context3, applicant: applicant3, rdv: rdv3, created_at: date)
   end
 
-  # Fourth applicant : created 1 month ago, has not been invited
-  # => should not be taken into account to compute the percentage
-  let!(:applicant4) { create(:applicant, created_at: first_day_of_last_month) }
-  let!(:rdv_context4) { create(:rdv_context, created_at: first_day_of_last_month, applicant: applicant4) }
-
-  # Fifth applicant : created 1 month ago, has been invited but has not take any rdv
-  let!(:applicant5) { create(:applicant, created_at: first_day_of_last_month) }
-  let!(:invitation5) do
-    create(:invitation, created_at: first_day_of_last_month, sent_at: first_day_of_last_month,
-                        rdv_context: rdv_context5, applicant: applicant5)
+  # Fourth applicant : created 1 month ago, has been invited but has not take any rdv
+  let!(:applicant4) { create(:applicant, created_at: date) }
+  let!(:invitation4) do
+    create(:invitation, created_at: date, sent_at: date, rdv_context: rdv_context4, applicant: applicant4)
   end
-  let!(:rdv_context5) { create(:rdv_context, created_at: first_day_of_last_month, applicant: applicant5) }
+  let!(:rdv_context4) { create(:rdv_context, created_at: date, applicant: applicant4) }
 
   describe "#call" do
     let!(:result) { subject }
