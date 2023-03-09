@@ -29,11 +29,11 @@ describe Stat do
     let!(:other_department) { create(:department) }
     let!(:applicant1) do
       create(:applicant, department: department, organisations: [organisation],
-                         created_at: 1.month.ago.beginning_of_month)
+                         created_at: date)
     end
     let!(:applicant2) do
       create(:applicant, department: other_department, organisations: [other_organisation],
-                         created_at: 1.month.ago.beginning_of_month)
+                         created_at: date)
     end
     let!(:configuration) { create(:configuration) }
     let!(:organisation) { create(:organisation, department: department, configurations: [configuration]) }
@@ -216,7 +216,7 @@ describe Stat do
           expect(stat.rdv_contexts_sample).not_to include(rdv_context5)
         end
 
-        it "does not include rdv_contexts of irrelevant applicants" do
+        it "does not include the rdv_contexts of applicants from irrelevant organisations" do
           expect(stat.rdv_contexts_sample).not_to include(rdv_context6)
         end
       end
@@ -235,7 +235,7 @@ describe Stat do
 
       describe "#invited_applicants_with_rdvs_non_collectifs_sample" do
         let!(:applicant3) do
-          create(:applicant, department: department, organisations: [other_organisation])
+          create(:applicant, department: department, organisations: [organisation_with_no_configuration])
         end
         let!(:applicant4) { create(:applicant, department: department, organisations: [organisation]) }
         let!(:applicant5) { create(:applicant, department: department, organisations: [organisation]) }
@@ -259,7 +259,7 @@ describe Stat do
           expect(stat.invited_applicants_with_rdvs_non_collectifs_sample).not_to include(applicant2)
         end
 
-        it "does not include the irrelevant applicants" do
+        it "does not include the applicant from irrelevant organisations" do
           expect(stat.invited_applicants_with_rdvs_non_collectifs_sample).not_to include(applicant3)
         end
 
@@ -283,7 +283,7 @@ describe Stat do
       describe "#applicants_for_30_days_rdvs_seen_sample" do
         let!(:applicant3) do
           create(:applicant, department: department, organisations: [organisation],
-                             created_at: 1.month.ago.beginning_of_month)
+                             created_at: date)
         end
         let!(:rdv_context3) do
           create(:rdv_context, applicant: applicant3, motif_category: category_rsa_cer_signature)
