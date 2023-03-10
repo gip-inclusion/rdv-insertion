@@ -38,7 +38,7 @@ module Exporters
        Applicant.human_attribute_name(:address),
        Applicant.human_attribute_name(:phone_number),
        Applicant.human_attribute_name(:birth_date),
-       Applicant.human_attribute_name(:creation_date),
+       Applicant.human_attribute_name(:created_at),
        Applicant.human_attribute_name(:rights_opening_date),
        Applicant.human_attribute_name(:role),
        "Première invitation envoyée le",

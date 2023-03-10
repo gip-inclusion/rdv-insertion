@@ -1,0 +1,7 @@
+fr:
+  activerecord:
+    models:
+      motif_category: Catégorie de motifs
+    attributes:
+      motif_category:
+        participation_optional: RDV obligatoire

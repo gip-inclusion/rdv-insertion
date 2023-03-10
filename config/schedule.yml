@@ -1,9 +1,15 @@
 upsert_global_stats_job:
-  cron: "0 22 * * sat" # we compute global stats once a week, the saturday at 22:00
+  cron: "0 22 * * 6" # we compute global stats once a week, the saturday at 22:00
   class: "Stats::GlobalStats::UpsertStatsJob"
 upsert_monthly_stats_job:
-  cron: "0 23 last * *" # we compute monthly stats the last day of the month, at 23:00
+  cron: "0 22 * * 7" # we compute monthly stats once a week, the sunday at 22:00
   class: "Stats::MonthlyStats::UpsertStatsJob"
 send_invitation_reminders_job:
   cron: "0 11 * * *" # we send reminders once a day, at 11:00
   class: "SendInvitationRemindersJob"
+refresh_out_of_date_rdv_context_statuses_job:
+  cron: "0 21 * * *" # we refresh out of date statuses once a day, at 21:00
+  class: "RefreshOutOfDateRdvContextStatusesJob"
+designate_on_watch_developer_job:
+  cron: "0 10 * * mon" # we designate an on watch developer once a week, monday at 10:00
+  class: "DesignateOnWatchDeveloperJob"

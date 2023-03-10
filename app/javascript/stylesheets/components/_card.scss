@@ -39,3 +39,17 @@
   background-color: rgb(230, 243, 255);
   padding: 60px 20px;
 }
+
+.card-white {
+  background-color: white;
+  caption-side: top;
+  border: 0.5px solid $light-grey;
+  border-radius: 5px;
+  padding: 20px;
+  box-shadow: 0 0 1px rgba(0,0,0,0.1);
+}
+
+.large-modal-card {
+  width: 80%;
+  max-width: 1000px;
+}

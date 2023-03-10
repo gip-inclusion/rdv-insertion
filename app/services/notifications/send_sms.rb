@@ -3,21 +3,18 @@ class SmsNotificationError < StandardError; end
 module Notifications
   class SendSms < BaseService
     include Notifications::SmsContent
+    include Messengers::SendSms
 
     attr_reader :notification
-
-    delegate :rdv, to: :notification
 
     def initialize(notification:)
       @notification = notification
     end
 
     def call
-      call_service!(
-        Messengers::SendSms,
-        sendable: @notification,
-        content: content
-      )
+      verify_format!(notification)
+      verify_phone_number!(notification)
+      send_sms(notification.sms_sender_name, notification.phone_number_formatted, content)
     end
 
     private
@@ -29,12 +26,12 @@ module Notifications
     def content_method_name
       if @notification.event == "participation_cancelled"
         :content_for_participation_cancelled
-      elsif rdv.presential?
+      elsif @notification.rdv.presential?
         :"presential_content_for_#{@notification.event}"
-      elsif rdv.by_phone?
+      elsif @notification.rdv.by_phone?
         :"by_phone_content_for_#{@notification.event}"
       else
-        raise SmsNotificationError, "Message de convocation non géré pour le rdv #{rdv.id}"
+        raise SmsNotificationError, "Message de convocation non géré pour le rdv #{@notification.rdv.id}"
       end
     end
   end

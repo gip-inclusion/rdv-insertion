@@ -12,7 +12,11 @@ class Motif < ApplicationRecord
 
   validates :rdv_solidarites_motif_id, uniqueness: true, presence: true
   validates :name, :location_type, presence: true
+  validates :collectif, inclusion: { in: [true, false] }
 
+  delegate :rdv_solidarites_organisation_id, to: :organisation
+
+  scope :active, ->(active = true) { active ? where(deleted_at: nil) : where.not(deleted_at: nil) }
   scope :collectif, ->(collectif = true) { collectif ? where(collectif: true) : where(collectif: false) }
 
   def presential?
@@ -21,5 +25,9 @@ class Motif < ApplicationRecord
 
   def by_phone?
     location_type == "phone"
+  end
+
+  def convocation?
+    name.downcase.include?("convocation")
   end
 end

@@ -1,6 +1,7 @@
 module Invitations
   class SendSms < BaseService
     include Invitations::SmsContent
+    include Messengers::SendSms
 
     attr_reader :invitation
 
@@ -9,17 +10,15 @@ module Invitations
     end
 
     def call
-      call_service!(
-        Messengers::SendSms,
-        sendable: @invitation,
-        content: content
-      )
+      verify_format!(invitation)
+      verify_phone_number!(invitation)
+      send_sms(invitation.sms_sender_name, invitation.phone_number_formatted, content)
     end
 
     private
 
     def content
-      if @invitation.reminder?
+      if invitation.reminder?
         send("#{invitation.template_model}_reminder_content")
       else
         send("#{@invitation.template_model}_content")

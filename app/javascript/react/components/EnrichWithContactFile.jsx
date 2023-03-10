@@ -7,7 +7,7 @@ export default function EnrichWithContactFile({ handleContactsFile, fileSize }) 
     <>
       <div className="row my-4 justify-content-center">
         <div className="col-4" />
-        <div className="col-4 block-white text-center d-flex flex-column align-items-center">
+        <div className="col-4 card-white text-center d-flex flex-column align-items-center">
           <div className="d-flex align-items-center">
             <h3 className="new-applicants-title">Ajout données de contacts</h3>
             <Tippy

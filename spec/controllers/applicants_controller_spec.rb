@@ -18,7 +18,7 @@ describe ApplicantsController do
     create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
                           department_id: department.id, configurations: [configuration])
   end
-  let!(:agent) { create(:agent, organisations: [organisation]) }
+  let!(:agent) { create(:agent, basic_role_in_organisations: [organisation]) }
   let!(:rdv_solidarites_organisation_id) { 888 }
   let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
   let(:applicant) { create(:applicant, organisations: [organisation], department: department) }
@@ -386,16 +386,35 @@ describe ApplicantsController do
           expect(response.body).not_to include("Email 📧")
         end
 
-        context "when no notification is sent" do
-          before { notification.update!(sent_at: nil) }
+        context "when the rdv is in the future" do
+          before { rdv_orientation1.update! starts_at: 2.days.from_now }
 
-          it "warns that convocations have not been sent" do
+          it "shows the courrier generation button" do
             get :show, params: show_params
 
-            expect(response.body).to match(/Convoqué par/)
-            expect(response.body).to include("SMS et Email non envoyés")
-            expect(response.body).not_to include("SMS 📱")
-            expect(response.body).not_to include("Email 📧")
+            expect(response.body).to include("<i class=\"fas fa-file-pdf\"></i> Courrier")
+          end
+        end
+
+        context "when the rdv is passed" do
+          context "when the participation is revoked" do
+            before { participation.update! status: "revoked" }
+
+            it "shows the courrier generation button" do
+              get :show, params: show_params
+
+              expect(response.body).to include("<i class=\"fas fa-file-pdf\"></i> Courrier")
+            end
+          end
+
+          context "when the rdv participation is seen" do
+            before { participation.update! status: "seen" }
+
+            it "does not show the courrier generation button" do
+              get :show, params: show_params
+
+              expect(response.body).not_to include("<i class=\"fas fa-file-pdf\"></i> Courrier")
+            end
           end
         end
       end
@@ -477,6 +496,12 @@ describe ApplicantsController do
       expect(response.body).not_to match(/Barthelemy/)
     end
 
+    it "does not display the configure organisation option" do
+      get :index, params: index_params
+
+      expect(response.body).not_to match(/Configurer l'organisation/)
+    end
+
     context "when there is all types of rdv_contexts statuses" do
       before do
         RdvContext.statuses.each_key do |status|
@@ -491,6 +516,20 @@ describe ApplicantsController do
         RdvContext.statuses.each_key do |status|
           expect(response.body).to match(/"#{status}"/)
         end
+      end
+    end
+
+    context "when the agent is admin" do
+      let!(:agent) { create(:agent, admin_role_in_organisations: [organisation]) }
+
+      before do
+        sign_in(agent)
+      end
+
+      it "displays the configure organisation option" do
+        get :index, params: index_params
+
+        expect(response.body).to match(/Configurer l'organisation/)
       end
     end
 
@@ -713,6 +752,26 @@ describe ApplicantsController do
 
         expect(response.body).to match(/Chabat/)
         expect(response.body).to match(/Baer/)
+      end
+
+      it "does not display the configure organisation option" do
+        get :index, params: index_params
+
+        expect(response.body).not_to match(/Configurer une organisation/)
+      end
+
+      context "when the agent is admin" do
+        let!(:agent) { create(:agent, admin_role_in_organisations: [organisation]) }
+
+        before do
+          sign_in(agent)
+        end
+
+        it "displays the configure organisation option" do
+          get :index, params: index_params
+
+          expect(response.body).to match(/Configurer une organisation/)
+        end
       end
     end
 

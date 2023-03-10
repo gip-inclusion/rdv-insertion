@@ -1,17 +1,22 @@
 describe OrganisationsController do
-  describe "GET #index" do
-    render_views
-    let!(:agent) { create(:agent, organisations: [organisation]) }
-    let!(:agent2) { create(:agent, organisations: [organisation, organisation2]) }
-    let!(:organisation) { create(:organisation) }
-    let!(:organisation2) { create(:organisation) }
+  let!(:organisation) do
+    create(:organisation, name: "PIE Pantin", slug: "pie-pantin", email: "pie@pantin.fr", phone_number: "0102030405",
+                          independent_from_cd: true)
+  end
+  let!(:organisation2) { create(:organisation) }
+  let!(:agent) { create(:agent, admin_role_in_organisations: [organisation]) }
+  let!(:agent2) { create(:agent, organisations: [organisation, organisation2]) }
+  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
 
+  render_views
+
+  before do
+    sign_in(agent)
+  end
+
+  describe "#index" do
     context "when agent is authorized" do
       context "and linked to one organisation" do
-        before do
-          sign_in(agent)
-        end
-
         it "redirects to organisation_applicants_path" do
           get :index
           expect(response).to redirect_to(organisation_applicants_path(organisation))
@@ -38,7 +43,180 @@ describe OrganisationsController do
     end
   end
 
-  describe "GET #geolocated" do
+  describe "#show" do
+    let!(:show_params) { { id: organisation.id } }
+
+    it "displays the organisation" do
+      get :show, params: show_params
+
+      expect(response).to be_successful
+      expect(response.body).to match(/Nom/)
+      expect(response.body).to match(/PIE Pantin/)
+      expect(response.body).to match(/Email/)
+      expect(response.body).to match(/pie@pantin.fr/)
+      expect(response.body).to match(/Numéro de téléphone/)
+      expect(response.body).to match(/0102030405/)
+      expect(response.body).to match(/Indépendante du CD/)
+      expect(response.body).to match(/Oui/)
+      expect(response.body).to match(/Logo/)
+      expect(response.body).to match(%r{images/logos/pie-pantin})
+      expect(response.body).to match(/Désignation dans le fichier allocataires/)
+      expect(response.body).to match(/pie-pantin/)
+    end
+
+    context "when not authorized because not admin" do
+      let!(:unauthorized_agent) { create(:agent, basic_role_in_organisations: [organisation]) }
+
+      before do
+        sign_in(unauthorized_agent)
+      end
+
+      it "redirects to the homepage" do
+        get :show, params: show_params
+
+        expect(response).to redirect_to(root_path)
+      end
+    end
+
+    context "when not authorized because not admin in the right organisation" do
+      let!(:unauthorized_agent) { create(:agent, admin_role_in_organisations: [organisation2]) }
+
+      before do
+        sign_in(unauthorized_agent)
+      end
+
+      it "raises an error" do
+        expect do
+          get :show, params: show_params
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+  end
+
+  describe "#edit" do
+    let!(:edit_params) { { id: organisation.id } }
+
+    it "displays the organisation" do
+      get :edit, params: edit_params
+
+      expect(response).to be_successful
+      expect(response.body).to match(/Nom/)
+      expect(response.body).to match(/PIE Pantin/)
+      expect(response.body).to match(/Email/)
+      expect(response.body).to match(/pie@pantin.fr/)
+      expect(response.body).to match(/Numéro de téléphone/)
+      expect(response.body).to match(/0102030405/)
+      expect(response.body).to match(/Indépendante du CD/)
+      expect(response.body).to match(/Oui/)
+      expect(response.body).to match(/Logo/)
+      expect(response.body).to match(%r{images/logos/pie-pantin})
+      expect(response.body).to match(/Désignation dans le fichier allocataires/)
+      expect(response.body).to match(/pie-pantin/)
+    end
+
+    context "when not authorized because not admin" do
+      let!(:unauthorized_agent) { create(:agent, basic_role_in_organisations: [organisation]) }
+
+      before do
+        sign_in(unauthorized_agent)
+      end
+
+      it "redirects to the homepage" do
+        get :edit, params: edit_params
+
+        expect(response).to redirect_to(root_path)
+      end
+    end
+
+    context "when not authorized because not admin in the right organisation" do
+      let!(:unauthorized_agent) { create(:agent, admin_role_in_organisations: [organisation2]) }
+
+      before do
+        sign_in(unauthorized_agent)
+      end
+
+      it "raises an error" do
+        expect do
+          get :edit, params: edit_params
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+  end
+
+  describe "#update" do
+    let!(:update_organisation_attributes) do
+      {
+        name: "PIE Romainville", slug: "pie-romainville", email: "pie@romainville.fr", phone_number: "0105040302",
+        independent_from_cd: false
+      }
+    end
+    let!(:update_params) { { id: organisation.id, organisation: update_organisation_attributes } }
+
+    before do
+      allow(Organisations::Update).to receive(:call)
+        .and_return(OpenStruct.new(success?: true))
+    end
+
+    it "calls the update organisation service" do
+      expect(Organisations::Update).to receive(:call)
+        .with(organisation: organisation, rdv_solidarites_session: rdv_solidarites_session)
+      patch :update, params: update_params
+    end
+
+    context "when the update succeeds" do
+      it "renders to the show page" do
+        patch :update, params: update_params
+        expect(response).to be_successful
+        expect(response.body).not_to match(/input/)
+      end
+    end
+
+    context "when the creation fails" do
+      before do
+        allow(Organisations::Update).to receive(:call)
+          .and_return(OpenStruct.new(success?: false, errors: ["some error"]))
+      end
+
+      it "renders the edit page" do
+        patch :update, params: update_params
+        expect(response).not_to be_successful
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.body).to match(/input/)
+        expect(unescaped_response_body).to match(/flashes/)
+        expect(unescaped_response_body).to match(/some error/)
+      end
+    end
+
+    context "when not authorized because not admin" do
+      let!(:unauthorized_agent) { create(:agent, basic_role_in_organisations: [organisation]) }
+
+      before do
+        sign_in(unauthorized_agent)
+      end
+
+      it "redirects to the homepage" do
+        patch :update, params: update_params
+
+        expect(response).to redirect_to(root_path)
+      end
+    end
+
+    context "when not authorized because not admin in the right organisation" do
+      let!(:unauthorized_agent) { create(:agent, admin_role_in_organisations: [organisation2]) }
+
+      before do
+        sign_in(unauthorized_agent)
+      end
+
+      it "raises an error" do
+        expect do
+          patch :update, params: update_params
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+  end
+
+  describe "#geolocated" do
     subject { get :geolocated, params: { department_number: department_number, address: address } }
 
     let!(:agent) { create(:agent, organisations: [organisation, organisation2]) }
@@ -63,10 +241,7 @@ describe OrganisationsController do
         .with(address: address, department_number: department.number)
         .and_return(OpenStruct.new(success?: true, city_code: city_code, street_ban_id: street_ban_id))
       allow(RdvSolidaritesApi::RetrieveOrganisations).to receive(:call)
-        .with(
-          rdv_solidarites_session: rdv_solidarites_session,
-          geo_attributes: geo_attributes
-        ).and_return(OpenStruct.new(success?: true, organisations: [rdv_solidarites_organisation]))
+        .and_return(OpenStruct.new(success?: true, organisations: [rdv_solidarites_organisation]))
     end
 
     it "is a success" do
@@ -107,10 +282,7 @@ describe OrganisationsController do
     context "when it fails to retrieve the organisations" do
       before do
         allow(RdvSolidaritesApi::RetrieveOrganisations).to receive(:call)
-          .with(
-            rdv_solidarites_session: rdv_solidarites_session,
-            geo_attributes: geo_attributes
-          ).and_return(OpenStruct.new(success?: false, errors: ["some error"]))
+          .and_return(OpenStruct.new(success?: false, errors: ["some error"]))
       end
 
       it "is a failure" do
@@ -157,17 +329,16 @@ describe OrganisationsController do
     end
   end
 
-  describe "GET #search" do
+  describe "#search" do
     subject { get :search, params: { department_number: "93", search_terms: search_terms } }
 
-    let!(:agent) { create(:agent, organisations: [organisation, organisation2]) }
     let!(:department) { create(:department, number: "93") }
     let!(:organisation) { create(:organisation, name: "Mission locale", department: department) }
     let!(:organisation2) { create(:organisation, name: "PIE", department: department) }
     let!(:search_terms) { "pie" }
 
     before do
-      sign_in(agent)
+      sign_in(agent2)
     end
 
     it "is a success" do

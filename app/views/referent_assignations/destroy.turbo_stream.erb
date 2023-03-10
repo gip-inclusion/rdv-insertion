@@ -1,6 +1,4 @@
 <%= turbo_stream.replace "agents_list" do %>
-  <%= render partial: "applicants/agents_list", locals: { agents: @applicant.reload.agents } %>
+  <%= render "common/attribute_display", record: @applicant, attribute: :agents, as: :list, id: "agents_list" %>
 <% end %>
-<%= turbo_stream.prepend "flashes" do %>
-  <%= render partial: "common/flash", locals: { flash: @success ? { success: "Le référent a bien été retiré" } : { error: "Une erreur s'est produite lors du détachement du référent: #{@errors}" } } %>
-<% end %>
+<%= render_turbo_stream_flash_messages %>

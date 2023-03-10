@@ -3,8 +3,16 @@ class OrganisationPolicy < ApplicationPolicy
     pundit_user.organisations.include?(record)
   end
 
+  def update?
+    configure?
+  end
+
   def create_and_invite_applicants?
     upload?
+  end
+
+  def configure?
+    pundit_user.admin_organisations_ids.include?(record.id)
   end
 
   class Scope < Scope

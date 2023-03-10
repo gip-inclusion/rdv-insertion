@@ -2,7 +2,7 @@ describe Stats::MonthlyStats::UpsertStat, type: :service do
   subject { described_class.call(department_number: department.number, date_string: date_string) }
 
   let!(:department) { create(:department) }
-  let!(:date_string) { 1.month.ago.to_s }
+  let!(:date_string) { "2022-03-17 12:00:00 +0100" }
   let!(:date) { date_string.to_date }
   let!(:stats_values) do
     {
@@ -55,7 +55,7 @@ describe Stats::MonthlyStats::UpsertStat, type: :service do
         { date.strftime("%m/%Y") => 6 }
       )
       expect(stat.reload[:rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month]).to eq(
-        { date.strftime("%m/%Y") => 7 }
+        { (date - 1.month).strftime("%m/%Y") => 7 }
       )
       expect(stat.reload[:rate_of_autonomous_applicants_grouped_by_month]).to eq({ date.strftime("%m/%Y") => 8 })
     end

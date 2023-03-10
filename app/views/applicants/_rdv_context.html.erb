@@ -1,4 +1,4 @@
-<div class="d-flex align-items-center context-header">
+  <div class="d-flex align-items-center context-header">
   <span></span>
   <h5 class="text-center px-2 py-4">
     <strong>
@@ -33,7 +33,7 @@
   <% end %>
   <div class="d-flex justify-content-center rdv-status-block">
     <div>
-      <table class="block-white text-center align-middle mb-4 mx-4">
+      <table class="card-white text-center align-middle mb-4 mx-4">
         <thead>
           <tr>
             <th class="px-4 py-2"><h4>RDV pris le</h4></th>
@@ -54,7 +54,7 @@
               <td class="px-4 py-3"><%= format_date(participation.starts_at) %></td>
               <td class="px-2 py-3"><%= participation.motif_name %></td>
               <% if convocable_participations.present?  %>
-                <td class="px-4 py-2"><%= participation.convocable? ? sanitize(display_convocation_formats(participation.convocation_formats)) : " - " %></td>
+                <td class="px-4 py-2"><%= participation.convocable? ? render("convocations", participation: participation, sms_convocations: participation.sent_sms_convocations, email_convocations: participation.sent_email_convocations) : " - " %></td>
               <% end %>
               <td class="px-4 py-3 <%= background_class_for_participation_status(participation) %>">
                 <%= display_participation_status(participation) %>
@@ -78,6 +78,11 @@
         <% end %>
         </tbody>
       </table>
+      <% if should_convene_for?(rdv_context, configuration) %>
+        <div class="m-2 p-2 text-center">
+          <%= render "convocation_button", applicant: @applicant, convocation_motif: @convocation_motifs_by_rdv_context[rdv_context] %>
+        </div>
+      <% end %>
     </div>
   </div>
 </div>

@@ -19,22 +19,25 @@ class Stat < ApplicationRecord
 
   # We filter the participations to only keep the rdvs/participations of the applicants in the scope
   def participations_sample
-    @participations_sample ||= all_participations.preload(:rdv).where(applicant_id: applicants_sample).distinct
-  end
-
-  # We filter the rdvs to keep the rdvs of the applicants in the scope
-  def rdvs_sample
-    @rdvs_sample ||= Rdv.joins(:applicants).where(applicants: applicants_sample).distinct
+    @participations_sample ||= all_participations.where(applicant_id: applicants_sample)
+                                                 .distinct
+                                                 .joins(:rdv)
+                                                 .select("participations.id, participations.created_at,
+                                                          participations.status, participations.rdv_id,
+                                                          rdvs.starts_at AS rdv_starts_at")
   end
 
   # We exclude the rdvs collectifs motifs to correctly compute the rate of autonomous applicants
   def rdvs_non_collectifs_sample
-    @rdvs_non_collectifs_sample ||= rdvs_sample.where(motif: Motif.collectif(false)).distinct
+    @rdvs_non_collectifs_sample ||= Rdv.where(motif: Motif.collectif(false)).distinct
   end
 
-  def applicants_with_rdvs_non_collectifs_sample
-    @applicants_with_rdvs_non_collectifs_sample ||= \
-      Applicant.where(participations: participations_sample.where(rdv: rdvs_non_collectifs_sample)).distinct
+  def invited_applicants_with_rdvs_non_collectifs_sample
+    @invited_applicants_with_rdvs_non_collectifs_sample ||= \
+      applicants_sample.joins(:rdvs)
+                       .where(rdvs: rdvs_non_collectifs_sample)
+                       .with_sent_invitations
+                       .distinct
   end
 
   # We filter the rdv_contexts to keep those where the applicants were invited and created a rdv/participation
@@ -48,8 +51,7 @@ class Stat < ApplicationRecord
 
   # We filter the applicants by organisations and retrieve deleted or archived applicants
   def applicants_sample
-    @applicants_sample ||= Applicant.includes(:participations)
-                                    .preload(rdv_contexts: :participations)
+    @applicants_sample ||= Applicant.preload(:participations)
                                     .joins(:organisations)
                                     .where(organisations: organisations_sample)
                                     .active

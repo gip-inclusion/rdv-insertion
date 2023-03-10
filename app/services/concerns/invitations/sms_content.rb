@@ -29,8 +29,8 @@ module Invitations
     end
 
     def atelier_content
-      "#{applicant.full_name},\nVous êtes #{applicant_designation} et bénéficiez d'un accompagnement en parcours " \
-        "professionnel ou socio-professionel. Pour profiter au mieux de cet accompagnement, nous vous invitons " \
+      "#{applicant.full_name},\nVous êtes #{applicant_designation} et bénéficiez d'un accompagnement. " \
+        "Pour en profiter au mieux, nous vous invitons " \
         "à vous inscrire directement et librement aux ateliers et formations de votre choix en cliquant sur le lien " \
         "suivant: #{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
         "En cas de problème technique, contactez le #{help_phone_number}."

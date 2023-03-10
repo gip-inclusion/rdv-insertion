@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_13_152346) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_16_152810) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -21,6 +21,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_13_152346) do
     t.bigint "rdv_solidarites_agent_role_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "last_webhook_update_received_at"
     t.index ["agent_id", "organisation_id"], name: "index_agent_roles_on_agent_id_and_organisation_id", unique: true
     t.index ["agent_id"], name: "index_agent_roles_on_agent_id"
     t.index ["level"], name: "index_agent_roles_on_level"
@@ -214,8 +215,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_13_152346) do
     t.datetime "sent_at", precision: nil
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "format"
     t.bigint "rdv_solidarites_rdv_id"
+    t.integer "format"
     t.bigint "participation_id"
     t.index ["participation_id"], name: "index_notifications_on_participation_id"
   end

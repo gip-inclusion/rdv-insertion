@@ -3,8 +3,6 @@ describe Stats::GlobalStats::Compute, type: :service do
 
   let!(:stat) { create(:stat, department_number: department.number) }
 
-  let!(:first_day_of_last_month) { 1.month.ago.beginning_of_month }
-
   let!(:department) { create(:department) }
   let!(:organisation) { create(:organisation, department: department) }
   let!(:applicant1) { create(:applicant, department: department) }
@@ -29,18 +27,14 @@ describe Stats::GlobalStats::Compute, type: :service do
         .and_return(Invitation.where(id: [invitation1, invitation2]))
       allow(stat).to receive(:participations_sample)
         .and_return(Participation.where(id: [participation1, participation2]))
-      allow(stat).to receive(:rdvs_sample)
-        .and_return(Rdv.where(id: [rdv1, rdv2]))
       allow(stat).to receive(:rdv_contexts_sample)
         .and_return(RdvContext.where(id: [rdv_context1, rdv_context2]))
       allow(stat).to receive(:applicants_sample)
         .and_return(Applicant.where(id: [applicant1, applicant2]))
       allow(stat).to receive(:applicants_for_30_days_rdvs_seen_sample)
         .and_return(Applicant.where(id: [applicant1, applicant2]))
-      allow(stat).to receive(:applicants_with_rdvs_non_collectifs_sample)
+      allow(stat).to receive(:invited_applicants_with_rdvs_non_collectifs_sample)
         .and_return(Applicant.where(id: [applicant1, applicant2]))
-      allow(stat).to receive(:rdvs_non_collectifs_sample)
-        .and_return(Rdv.where(id: [rdv1, rdv2]))
       allow(stat).to receive(:agents_sample)
         .and_return(Agent.where(id: [agent]))
       allow(Stats::ComputePercentageOfNoShow).to receive(:call)
@@ -131,10 +125,9 @@ describe Stats::GlobalStats::Compute, type: :service do
     end
 
     it "computes the percentage of invited applicants with at least on rdv taken in autonomy" do
-      expect(stat).to receive(:applicants_with_rdvs_non_collectifs_sample)
-      expect(stat).to receive(:rdvs_non_collectifs_sample)
+      expect(stat).to receive(:invited_applicants_with_rdvs_non_collectifs_sample)
       expect(Stats::ComputeRateOfAutonomousApplicants).to receive(:call)
-        .with(applicants: [applicant1, applicant2], rdvs: [rdv1, rdv2])
+        .with(applicants: [applicant1, applicant2])
       subject
     end
 

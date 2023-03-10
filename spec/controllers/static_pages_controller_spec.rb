@@ -26,6 +26,7 @@ describe StaticPagesController do
     it "returns a success response" do
       get :accessibility
       expect(response).to be_successful
+      expect(response.body).to match(/Déclaration d'accessibilité?/)
     end
   end
 
@@ -33,6 +34,7 @@ describe StaticPagesController do
     it "returns a success response" do
       get :privacy_policy
       expect(response).to be_successful
+      expect(response.body).to match(/Qui est responsable de rdv-insertion ?/)
     end
   end
 
@@ -40,6 +42,15 @@ describe StaticPagesController do
     it "returns a success response" do
       get :legal_notice
       expect(response).to be_successful
+      expect(response.body).to match(/Le site rdv-insertion est édité par le Groupement d’intérêt public/)
+    end
+  end
+
+  describe "GET #cgu" do
+    it "returns a success response" do
+      get :cgu
+      expect(response).to be_successful
+      expect(response.body).to match(/Conditions générales d’utilisation/)
     end
   end
 end

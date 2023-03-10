@@ -82,7 +82,7 @@ export default function InvitationBlock({
 
   return (
     <div className="d-flex justify-content-center">
-      <table className="block-white text-center align-middle mb-4 mx-4">
+      <table className="card-white text-center align-middle mb-4 mx-4">
         <thead>
           <tr>
             {showInvitation("sms") && (

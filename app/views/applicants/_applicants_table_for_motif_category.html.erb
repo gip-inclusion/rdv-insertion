@@ -23,8 +23,10 @@
         <td><%= display_attribute applicant.first_name %></td>
         <% @current_configuration.invitation_formats.each do |invitation_format| %>
           <td class="d-none d-lg-table-cell">
-            <% if applicant.can_be_invited_through?(invitation_format) %>
-              <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: invitation_format, motif_category: @current_motif_category, rdv_context: rdv_context, checked: checked = rdv_context.first_invitation_relative_to_last_participation_by(invitation_format).present?, disabled: checked || applicant.inactive? || rdv_context.status == "rdv_pending" %>
+            <% if rdv_context.rdv_pending? %>
+              <!-- show nothing -->
+            <% elsif applicant.can_be_invited_through?(invitation_format) %>
+              <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: invitation_format, motif_category: @current_motif_category, rdv_context: rdv_context, checked: checked = rdv_context.first_invitation_relative_to_last_participation_by(invitation_format).present?, disabled: checked || applicant.inactive? %>
             <% else %>
               -
             <% end %>
@@ -36,7 +38,11 @@
           <td id="last-invitation-date-<%= rdv_context.id %>"><%= display_attribute(format_date(rdv_context.last_invitation_sent_at)) %></td>
         <% end %>
         <% if show_convocation?(@current_configuration) %>
-          <td><%= display_attribute format_date(rdv_context.last_sent_convocation_sent_at) %></td>
+          <% if should_convene_for?(rdv_context, @current_configuration) %>
+            <td><%= render "convocation_button", applicant: applicant, convocation_motif: @convocation_motifs_by_applicant[applicant] %></td>
+          <% else %>
+            <td><%= display_attribute format_date(rdv_context.last_sent_convocation_sent_at) %></td>
+          <% end %>
         <% end %>
         <% if applicant.archived? %>
           <td>Dossier archivé</td>
@@ -46,7 +52,7 @@
           </td>
         <% end %>
         <td class="padding-left-15">
-          <%= link_to compute_applicant_path(applicant, @organisation, @department) do %>
+          <%= link_to compute_show_path(applicant, @organisation, @department) do %>
             <button class="btn btn-blue">Gérer</button>
           <% end %>
         </td>

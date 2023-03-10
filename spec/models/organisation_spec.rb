@@ -26,4 +26,40 @@ describe Organisation do
       end
     end
   end
+
+  describe "email validation" do
+    context "email is valid" do
+      let(:organisation) { build(:organisation, email: "some@test.fr") }
+
+      it { expect(organisation).to be_valid }
+    end
+
+    context "email is invalid" do
+      let(:organisation) { build(:organisation, email: "unvalid-email") }
+
+      it "adds errors" do
+        expect(organisation).not_to be_valid
+        expect(organisation.errors.full_messages.to_sentence)
+          .to include("Email n'est pas valide")
+      end
+    end
+  end
+
+  describe "phone_number validation" do
+    context "phone_number is valid" do
+      let(:organisation) { build(:organisation, phone_number: "0602030102") }
+
+      it { expect(organisation).to be_valid }
+    end
+
+    context "phone_number is invalid" do
+      let(:organisation) { build(:organisation, phone_number: "0102") }
+
+      it "adds errors" do
+        expect(organisation).not_to be_valid
+        expect(organisation.errors.full_messages.to_sentence)
+          .to include("Numéro de téléphone n'est pas valide")
+      end
+    end
+  end
 end

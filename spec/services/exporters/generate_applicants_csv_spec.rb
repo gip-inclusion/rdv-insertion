@@ -150,10 +150,10 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
 
         it "displays the rdvs infos" do
           expect(csv).to include("25/05/2022") # last rdv date
-          expect(csv).to include("25/05/2022;oui") # last rdv taken in autonomy ?
+          expect(csv).to include("25/05/2022;Oui") # last rdv taken in autonomy ?
           expect(csv).to include("Statut du RDV à préciser") # rdv_context status
-          expect(csv).to include("Statut du RDV à préciser;oui") # first rdv in less than 30 days ?
-          expect(csv).to include("25/05/2022;oui;Statut du RDV à préciser;oui;25/05/2022") # orientation date
+          expect(csv).to include("Statut du RDV à préciser;Oui") # first rdv in less than 30 days ?
+          expect(csv).to include("25/05/2022;Oui;Statut du RDV à préciser;Oui;25/05/2022") # orientation date
         end
 
         it "displays the archiving infos" do

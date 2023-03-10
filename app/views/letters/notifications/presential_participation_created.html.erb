@@ -1,0 +1,29 @@
+<%= render 'letters/header', direction_names: direction_names, sender_city: sender_city, department: department, organisation: organisation, applicant: applicant %>
+<div class="mail-object">
+  <p class="bold-blue"><span class="bold-blue">Objet : Convocation à un <%= rdv_title %> dans le cadre de votre <%= rdv_subject %></span></p>
+  <% if applicant.affiliation_number %>
+    <p>N° allocataire : <%= applicant.affiliation_number %></p>
+  <% end %>
+</div>
+<div class="main-content">
+  <p><%= applicant.title.capitalize %>,</p>
+  <p>Vous êtes <%= applicant_designation %> et à ce titre <span class="bold-blue">vous êtes <%= applicant.conjugate("convoqué") %> à un <%= rdv_title %></span> afin de <%= rdv_purpose %>.</p>
+  <p>Vous êtes <%= applicant.conjugate("attendu") %> <span class="bold-blue">le <%= I18n.l(rdv.starts_at, format: :human) %></span> à l'adresse suivante: </p>
+  <div class="rdv-address">
+    <p><h4><%= rdv.lieu.name %></h4></p>
+    <p><h4><%= rdv.lieu.address %></h4></p>
+  </div>
+  <% if display_mandatory_warning %>
+    <p><span class="bold-blue">Ce rendez-vous est obligatoire.</span></p>
+  <% end  %>
+  <% if display_punishable_warning %>
+    <p>En cas d'absence, le versement de votre RSA pourra être suspendu ou réduit.</p>
+  <% end %>
+  <p>En cas d'empêchement, merci d'appeler rapidement le <%= rdv.phone_number %>.</p>
+  <p>Veuillez agréer, <%= applicant.title.capitalize %>, l’expression de mes salutations distinguées.</p>
+  <br/>
+  <div class="letter-signature">
+    <%= render 'common/organisation_signature', signature_lines: signature_lines, department: department %>
+  </div>
+</div>
+<%= render 'letters/footer', department: department, organisation: organisation, display_europe_logos: display_europe_logos, display_department_logo: display_department_logo %>

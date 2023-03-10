@@ -1,8 +1,28 @@
 class OrganisationsController < ApplicationController
+  PERMITTED_PARAMS = [
+    :name, :phone_number, :email, :slug, :independent_from_cd
+  ].freeze
+
+  before_action :set_organisation, :set_department, :authorize_organisation_configuration, only: [:show, :edit, :update]
+
   def index
     @organisations = policy_scope(Organisation).includes(:department, :configurations)
     @organisations_by_department = @organisations.sort_by(&:department_number).group_by(&:department)
     redirect_to organisation_applicants_path(@organisations.first) if @organisations.to_a.length == 1
+  end
+
+  def show; end
+  def edit; end
+
+  def update
+    @organisation.assign_attributes(**organisation_params)
+    authorize @organisation
+    if update_organisation.success?
+      render :show
+    else
+      flash.now[:error] = update_organisation.errors&.join(",")
+      render :edit, status: :unprocessable_entity
+    end
   end
 
   def geolocated
@@ -35,6 +55,18 @@ class OrganisationsController < ApplicationController
   end
 
   private
+
+  def organisation_params
+    params.require(:organisation).permit(*PERMITTED_PARAMS).to_h.deep_symbolize_keys
+  end
+
+  def set_organisation
+    @organisation = policy_scope(Organisation).find(params[:id])
+  end
+
+  def set_department
+    @department = @organisation.department
+  end
 
   def department
     @department ||= Department.find_by!(number: params[:department_number])
@@ -75,5 +107,16 @@ class OrganisationsController < ApplicationController
     @department_organisations.select do |org|
       org.rdv_solidarites_organisation_id.in?(retrieved_rdv_solidarites_organisations.map(&:id))
     end
+  end
+
+  def update_organisation
+    @update_organisation ||= Organisations::Update.call(
+      organisation: @organisation,
+      rdv_solidarites_session: rdv_solidarites_session
+    )
+  end
+
+  def authorize_organisation_configuration
+    authorize @organisation, :configure?
   end
 end
