@@ -17,14 +17,10 @@ class Stat < ApplicationRecord
     @invitations_sample ||= department.nil? ? Invitation.sent : Invitation.sent.where(department_id: department.id)
   end
 
-  # We filter the participations to only keep the rdvs/participations of the applicants in the scope
+  # We filter the participations to only keep the participations of the applicants in the scope
   def participations_sample
     @participations_sample ||= all_participations.where(applicant_id: applicants_sample)
                                                  .distinct
-                                                 .joins(:rdv)
-                                                 .select("participations.id, participations.created_at,
-                                                          participations.status, participations.rdv_id,
-                                                          rdvs.starts_at AS rdv_starts_at")
   end
 
   # We exclude the rdvs collectifs motifs to correctly compute the rate of autonomous applicants
