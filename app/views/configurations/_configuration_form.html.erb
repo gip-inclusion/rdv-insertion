@@ -30,7 +30,7 @@
       <h4 class="px-5">Fichier d'import</h4>
       <div class="mb-4 px-5">
         <% if @file_configurations %>
-          <% @file_configurations.uniq.each do |file_configuration| %>
+          <% @file_configurations.each do |file_configuration| %>
             <div class="d-flex justify-content-between mb-2">
               <%= radio_button_tag "configuration[file_configuration_id]",
                   file_configuration.id,
