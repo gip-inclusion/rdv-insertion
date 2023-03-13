@@ -12,10 +12,10 @@ class InclusionConnectController < ApplicationController
       return
     end
 
-    agent = InclusionConnect.new.find_agent(params[:code], inclusion_connect_callback_url)
+    @agent = InclusionConnect.new.find_agent(params[:code], inclusion_connect_callback_url)
 
-    if agent
-      handle_successful_authentication(agent)
+    if @agent
+      handle_successful_authentication
     else
       Sentry.capture_message("Failed to authenticate agent with InclusionConnect")
       handle_failed_authentication
@@ -28,11 +28,9 @@ class InclusionConnectController < ApplicationController
     session[:ic_state] = Digest::SHA1.hexdigest("InclusionConnect - #{SecureRandom.hex(13)}")
   end
 
-  def handle_successful_authentication(agent)
-    @current_agent = agent
+  def handle_successful_authentication
     set_session_credentials_for_inclusion_connect
-    session[:connected_with_inclusionconnect] = true
-    redirect_to root_path
+    redirect_to session.delete(:agent_return_to) || root_path
   end
 
   def handle_failed_authentication
@@ -42,12 +40,23 @@ class InclusionConnectController < ApplicationController
   end
 
   def set_session_credentials_for_inclusion_connect
-    session[:agent_id] = current_agent.id
+    session[:agent_id] = @agent.id
     session[:rdv_solidarites] = {
-      uid: current_agent.email,
-      x_agent_auth_signature: nil,
+      uid: @agent.email,
+      x_agent_auth_signature: signature_for_agents_auth_with_shared_secret,
       client: nil,
       access_token: nil
     }
+    session[:connected_with_inclusionconnect] = true
+  end
+
+  def signature_for_agents_auth_with_shared_secret
+    payload = {
+      id: @agent.rdv_solidarites_agent_id,
+      first_name: @agent.first_name,
+      last_name: @agent.last_name,
+      email: @agent.email
+    }
+    OpenSSL::HMAC.hexdigest("SHA256", ENV.fetch("SHARED_SECRET_FOR_AGENTS_AUTH"), payload.to_json)
   end
 end

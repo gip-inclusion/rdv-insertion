@@ -1,8 +1,7 @@
 class RdvSolidaritesSession
-  attr_reader :uid, :client, :access_token
-  attr_accessor :x_agent_auth_signature
+  attr_reader :uid, :client, :access_token, :x_agent_auth_signature
 
-  def initialize(uid:, client: nil, access_token: nil, x_agent_auth_signature: nil)
+  def initialize(uid:, client:, access_token:, x_agent_auth_signature: nil)
     @uid = uid
     @client = client
     @access_token = access_token
@@ -10,7 +9,8 @@ class RdvSolidaritesSession
   end
 
   def valid?
-    all_attributes_present? && token_valid?
+    (attributes_for_token_access_present? && token_valid?) ||
+      (attributes_for_signature_access_present? && signature_valid?)
   end
 
   def rdv_solidarites_client
@@ -27,8 +27,12 @@ class RdvSolidaritesSession
 
   private
 
-  def all_attributes_present?
+  def attributes_for_token_access_present?
     [@uid, @client, @access_token].all?(&:present?)
+  end
+
+  def attributes_for_signature_access_present?
+    [@uid, @x_agent_auth_signature].all?(&:present?)
   end
 
   def token_valid?
@@ -37,5 +41,18 @@ class RdvSolidaritesSession
 
     response_body = JSON.parse(validate_token.body)
     response_body["data"]["uid"] == @uid
+  end
+
+  def signature_valid?
+    agent = Agent.find_by(email: @uid)
+    payload = {
+      id: agent.id,
+      first_name: agent.first_name,
+      last_name: agent.last_name,
+      email: agent.email
+    }
+
+    OpenSSL::HMAC.hexdigest("SHA256", ENV.fetch("SHARED_SECRET_FOR_AGENTS_AUTH"), payload.to_json) ==
+      @x_agent_auth_signature
   end
 end
