@@ -76,7 +76,7 @@ class ConfigurationsController < ApplicationController
   end
 
   def set_file_configurations
-    @file_configurations = @department.file_configurations
+    @file_configurations = @department.file_configurations.distinct
   end
 
   def set_department
