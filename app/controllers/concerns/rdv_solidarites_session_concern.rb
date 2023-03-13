@@ -14,21 +14,12 @@ module RdvSolidaritesSessionConcern
   end
 
   def rdv_solidarites_session
-    # Refactoriser cela :
-    if request.headers["X-Agent-Auth-Signature"].present?
-      @rdv_solidarites_session ||= RdvSolidaritesSession.new(
-        uid: request.headers["uid"],
-        client: request.headers["client"],
-        access_token: request.headers["access-token"],
-        x_agent_auth_signature: request.headers["X-Agent-Auth-Signature"]
-      )
-    else
-      @rdv_solidarites_session ||= RdvSolidaritesSession.new(
-        uid: request.headers["uid"],
-        client: request.headers["client"],
-        access_token: request.headers["access-token"]
-      )
-    end
+    @rdv_solidarites_session ||= RdvSolidaritesSession.new(
+      uid: request.headers["uid"],
+      client: request.headers["client"],
+      access_token: request.headers["access-token"],
+      x_agent_auth_signature: request.headers["X-Agent-Auth-Signature"]
+    )
   end
 
   def invalid_session
