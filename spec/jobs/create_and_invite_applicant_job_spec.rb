@@ -30,15 +30,13 @@ describe CreateAndInviteApplicantJob do
   let!(:rdv_solidarites_session_credentials) do
     { "client" => "someclient", "uid" => "janedoe@gouv.fr", "access_token" => "sometoken" }.symbolize_keys
   end
-  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
 
   before do
     allow(Applicants::FindOrInitialize).to receive(:call).and_return(OpenStruct.new(applicant: applicant))
     allow(Applicants::Save).to receive(:call).and_return(OpenStruct.new(success?: true, failure?: false))
-    allow(RdvSolidaritesSession).to receive(:new)
-      .with(rdv_solidarites_session_credentials)
-      .and_return(rdv_solidarites_session)
     allow(InviteApplicantJob).to receive(:perform_async)
+    allow(RdvSolidaritesSession).to receive_message_chain(:from, :with)
+      .and_return(rdv_solidarites_session)
   end
 
   it "assigns the attributes to the applicant" do

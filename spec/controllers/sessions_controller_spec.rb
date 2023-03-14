@@ -27,11 +27,8 @@ describe SessionsController do
 
       before do
         request.headers.merge(session_headers)
-        allow(RdvSolidaritesSession).to receive(:new)
-          .with(
-            uid: session_headers["uid"], access_token: session_headers["access-token"],
-            client: session_headers["client"]
-          ).and_return(rdv_solidarites_session)
+        allow(RdvSolidaritesSession).to receive_message_chain(:from, :with)
+          .and_return(rdv_solidarites_session)
         allow(rdv_solidarites_session).to receive(:valid?)
           .and_return(true)
         allow(rdv_solidarites_session).to receive(:uid)

@@ -50,8 +50,7 @@ describe InviteApplicantJob do
             valid_until: valid_until, rdv_with_referents: false
           )
         ).and_return(invitation)
-        allow(RdvSolidaritesSession).to receive(:new)
-          .with(rdv_solidarites_session_credentials)
+        allow(RdvSolidaritesSession).to receive_message_chain(:from, :with)
           .and_return(rdv_solidarites_session)
         allow(Invitations::SaveAndSend).to receive(:call)
           .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
