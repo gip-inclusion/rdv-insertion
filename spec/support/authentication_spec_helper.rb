@@ -25,7 +25,7 @@ module AuthenticationSpecHelper
 
   # rubocop:disable Metrics/AbcSize
   def mock_rdv_solidarites_session(agent_email)
-    allow(RdvSolidaritesSession).to receive(:new)
+    allow(RdvSolidaritesSession).to receive_message_chain(:from, :with)
       .and_return(rdv_solidarites_session)
     allow(rdv_solidarites_session).to receive(:valid?)
       .and_return(true)
@@ -36,7 +36,7 @@ module AuthenticationSpecHelper
   # rubocop:enable Metrics/AbcSize
 
   def rdv_solidarites_session
-    @rdv_solidarites_session ||= instance_double(RdvSolidaritesSession)
+    @rdv_solidarites_session ||= instance_double(LoginSession)
   end
 
   def api_auth_headers_for_agent(agent)
