@@ -17,21 +17,41 @@ describe LoginSession do
           }.to_json))
       end
 
-      it "returns true" do
+      it "login_session is valid" do
         expect(login_session).to be_valid
+      end
+    end
+
+    describe "#valid?" do
+      context "when validate token responds with another uid" do
+        before do
+          allow_any_instance_of(RdvSolidaritesClient).to receive(:validate_token)
+            .and_return(OpenStruct.new(success?: true, body: {
+              data: { uid: "someagent@beta.gouv.fr" }
+            }.to_json))
+        end
+
+        it "login_session is invalid" do
+          expect(login_session).not_to be_valid
+        end
       end
     end
 
     context "when at least one required attribute is missing" do
       let(:uid) { nil }
 
-      it "returns false" do
+      it "login_session is invalid" do
         expect(login_session).not_to be_valid
       end
     end
 
-    context "when token is not valid" do
-      it "returns false" do
+    context "when validate_token is not valid" do
+      before do
+        allow_any_instance_of(RdvSolidaritesClient).to receive(:validate_token)
+          .and_return(OpenStruct.new(success?: false))
+      end
+
+      it "login_session is invalid" do
         expect(login_session).not_to be_valid
       end
     end

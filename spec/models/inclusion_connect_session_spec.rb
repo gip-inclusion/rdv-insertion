@@ -23,7 +23,7 @@ describe InclusionConnectSession do
         )
       end
 
-      it "returns true" do
+      it "session is valid" do
         expect(session).to be_valid
       end
     end
@@ -36,7 +36,7 @@ describe InclusionConnectSession do
         )
       end
 
-      it "returns false" do
+      it "session is invalid" do
         expect(session).not_to be_valid
       end
     end
@@ -48,7 +48,7 @@ describe InclusionConnectSession do
         )
       end
 
-      it "returns false" do
+      it "session is invalid" do
         expect(session).not_to be_valid
       end
     end
@@ -61,7 +61,7 @@ describe InclusionConnectSession do
         )
       end
 
-      it "returns false" do
+      it "session is invalid" do
         expect(session).not_to be_valid
       end
     end
