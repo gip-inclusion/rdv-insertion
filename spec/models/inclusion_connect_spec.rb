@@ -106,7 +106,6 @@ describe InclusionConnect do
         expect(subject.find_agent(code, inclusion_connect_callback_url)).to be_falsey
       end
     end
-
   end
 
   def stub_token_request

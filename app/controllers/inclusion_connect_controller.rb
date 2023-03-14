@@ -3,7 +3,7 @@ class InclusionConnectController < ApplicationController
 
   def auth
     state = set_session_state_for_inclusion_connect
-    redirect_to InclusionConnect.new.auth_path(state, inclusion_connect_callback_url), allow_other_host: true
+    redirect_to InclusionConnect.auth_path(state, inclusion_connect_callback_url), allow_other_host: true
   end
 
   def callback
@@ -12,7 +12,7 @@ class InclusionConnectController < ApplicationController
       return
     end
 
-    @agent = InclusionConnect.new.find_agent(params[:code], inclusion_connect_callback_url)
+    @agent = InclusionConnect.find_agent(params[:code], inclusion_connect_callback_url)
 
     if @agent
       handle_successful_authentication
