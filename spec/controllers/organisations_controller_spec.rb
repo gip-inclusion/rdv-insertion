@@ -6,7 +6,6 @@ describe OrganisationsController do
   let!(:organisation2) { create(:organisation) }
   let!(:agent) { create(:agent, admin_role_in_organisations: [organisation]) }
   let!(:agent2) { create(:agent, organisations: [organisation, organisation2]) }
-  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
 
   render_views
 
