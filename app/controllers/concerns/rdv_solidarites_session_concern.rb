@@ -14,7 +14,7 @@ module RdvSolidaritesSessionConcern
   end
 
   def rdv_solidarites_session
-    @rdv_solidarites_session ||= LoginSession.new(
+    @rdv_solidarites_session ||= RdvSolidaritesSession.from(:login).with(
       uid: request.headers["uid"],
       client: request.headers["client"],
       access_token: request.headers["access-token"]

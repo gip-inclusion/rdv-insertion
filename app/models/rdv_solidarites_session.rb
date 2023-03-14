@@ -1,15 +1,20 @@
 class RdvSolidaritesSession
-  attr_reader :provider
+  attr_reader :uid
 
-  delegate :valid?, :to_h, :uid, to: :provider
-
-  def initialize(provider:)
-    @provider = provider
-  end
+  private_class_method :new
 
   def self.from(provider)
-    new(provider: provider)
+    case provider
+    when :login
+      LoginSession
+    when :inclusion_connect
+      InclusionConnectSession
+    else
+      raise "session provider #{provider} unknown"
+    end
   end
+
+  def self.with(...) = new(...)
 
   def rdv_solidarites_client
     @rdv_solidarites_client ||= RdvSolidaritesClient.new(rdv_solidarites_session: self)

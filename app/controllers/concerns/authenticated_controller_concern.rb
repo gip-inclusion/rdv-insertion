@@ -25,11 +25,7 @@ module AuthenticatedControllerConcern
 
   def rdv_solidarites_session
     @rdv_solidarites_session ||= \
-      if inclusion_connected?
-        RdvSolidaritesSession.from(inclusion_connect_session)
-      else
-        RdvSolidaritesSession.from(login_session)
-      end
+      inclusion_connected? ? inclusion_connect_session : login_session
   end
 
   def inclusion_connected?
@@ -37,17 +33,19 @@ module AuthenticatedControllerConcern
   end
 
   def inclusion_connect_session
-    @inclusion_connect_session ||= InclusionConnectSession.new(
-      uid: session["rdv_solidarites"]["uid"],
-      x_agent_auth_signature: session["rdv_solidarites"]["x_agent_auth_signature"]
-    )
+    @inclusion_connect_session ||= \
+      RdvSolidaritesSession.from(:inclusion_connect).with(
+        uid: session["rdv_solidarites"]["uid"],
+        x_agent_auth_signature: session["rdv_solidarites"]["x_agent_auth_signature"]
+      )
   end
 
   def login_session
-    @login_session ||= LoginSession.new(
-      uid: session["rdv_solidarites"]["uid"],
-      access_token: session["rdv_solidarites"]["access_token"],
-      client: session["rdv_solidarites"]["client"]
-    )
+    @login_session ||= \
+      RdvSolidaritesSession.from(:login).with(
+        uid: session["rdv_solidarites"]["uid"],
+        client: session["rdv_solidarites"]["client"],
+        access_token: session["rdv_solidarites"]["access_token"]
+      )
   end
 end

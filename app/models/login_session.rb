@@ -1,6 +1,4 @@
-class LoginSession
-  attr_reader :uid
-
+class LoginSession < RdvSolidaritesSession
   def initialize(uid:, client:, access_token:)
     @uid = uid
     @client = client
@@ -31,9 +29,5 @@ class LoginSession
 
     response_body = JSON.parse(validate_token.body)
     response_body["data"]["uid"] == @uid
-  end
-
-  def rdv_solidarites_client
-    @rdv_solidarites_client ||= RdvSolidaritesClient.new(rdv_solidarites_session: self)
   end
 end

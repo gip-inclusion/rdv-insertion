@@ -1,7 +1,5 @@
-class InclusionConnectSession
-  attr_reader :uid
-
-  def initialize(uid:, x_agent_auth_signature:)
+class InclusionConnectSession < RdvSolidaritesSession
+  def initialize(uid, x_agent_auth_signature)
     @uid = uid
     @x_agent_auth_signature = x_agent_auth_signature
   end
