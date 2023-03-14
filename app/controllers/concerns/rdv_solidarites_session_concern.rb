@@ -14,11 +14,10 @@ module RdvSolidaritesSessionConcern
   end
 
   def rdv_solidarites_session
-    @rdv_solidarites_session ||= RdvSolidaritesSession.new(
+    @rdv_solidarites_session ||= LoginSession.new(
       uid: request.headers["uid"],
       client: request.headers["client"],
-      access_token: request.headers["access-token"],
-      x_agent_auth_signature: request.headers["X-Agent-Auth-Signature"]
+      access_token: request.headers["access-token"]
     )
   end
 
