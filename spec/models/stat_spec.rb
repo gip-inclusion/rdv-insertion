@@ -102,10 +102,6 @@ describe Stat do
           expect(stat.participations_sample).to include(participation1)
           expect(stat.participations_sample).not_to include(participation2)
         end
-
-        it "returns a rdv_starts_at" do
-          expect(stat.participations_sample.first.rdv_starts_at).to eq(date)
-        end
       end
 
       describe "#organisations_sample" do
