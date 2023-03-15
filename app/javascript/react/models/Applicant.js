@@ -14,7 +14,14 @@ const TITLES = {
 };
 
 export default class Applicant {
-  constructor(attributes, department, organisation, currentConfiguration, currentAgent) {
+  constructor(
+    attributes,
+    department,
+    organisation,
+    currentConfiguration,
+    columnNames,
+    currentAgent
+  ) {
     const formattedAttributes = {};
     Object.keys(attributes).forEach((key) => {
       formattedAttributes[key] = attributes[key]?.toString()?.trim();
@@ -48,6 +55,7 @@ export default class Applicant {
     // when creating/inviting we always consider an applicant in the scope of only one organisation
     this.currentOrganisation = organisation;
     this.currentConfiguration = currentConfiguration;
+    this.columnNames = columnNames;
     this.isDuplicate = false;
   }
 
@@ -173,27 +181,24 @@ export default class Applicant {
       this.lastName,
       this.shortRole,
     ];
-    if (this.shouldDisplay("department_internal_id")) attributes.push(this.departmentInternalId);
-    if (this.shouldDisplay("email")) attributes.push(this.email);
-    if (this.shouldDisplay("phone_number")) attributes.push(this.phoneNumber);
-    if (this.shouldDisplay("rights_opening_date")) attributes.push(this.rightsOpeningDate);
+    if (this.shouldDisplay("department_internal_id_column"))
+      attributes.push(this.departmentInternalId);
+    if (this.shouldDisplay("email_column")) attributes.push(this.email);
+    if (this.shouldDisplay("phone_number_column")) attributes.push(this.phoneNumber);
+    if (this.shouldDisplay("rights_opening_date_column")) attributes.push(this.rightsOpeningDate);
     return attributes;
   }
 
   attributesFromContactsDataFile() {
     const attributes = [];
-    if (this.shouldDisplay("email")) attributes.push(this.email);
-    if (this.shouldDisplay("phone_number")) attributes.push(this.phoneNumber);
-    if (this.shouldDisplay("rights_opening_date")) attributes.push(this.rightsOpeningDate);
+    if (this.shouldDisplay("email_column")) attributes.push(this.email);
+    if (this.shouldDisplay("phone_number_column")) attributes.push(this.phoneNumber);
+    if (this.shouldDisplay("rights_opening_date_column")) attributes.push(this.rightsOpeningDate);
     return attributes;
   }
 
   shouldDisplay(attribute) {
-    return (
-      this.currentConfiguration.column_names.required[attribute] ||
-      (this.currentConfiguration.column_names.optional &&
-        this.currentConfiguration.column_names.optional[attribute])
-    );
+    return this.columnNames[attribute];
   }
 
   canBeInvitedBy(format) {

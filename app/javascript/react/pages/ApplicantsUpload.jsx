@@ -26,15 +26,13 @@ import Applicant from "../models/Applicant";
 export default function ApplicantsUpload({
   organisation,
   configuration,
+  columnNames,
+  sheetName,
   department,
   motifCategoryName,
   currentAgent,
 }) {
-  const columnNames = configuration.column_names;
-  const parameterizedColumnNames = parameterizeObjectValues({
-    ...columnNames.required,
-    ...columnNames.optional,
-  });
+  const parameterizedColumnNames = parameterizeObjectValues({ ...columnNames });
   const isDepartmentLevel = !organisation;
   const [applicants, setApplicants] = useState([]);
   const [fileSize, setFileSize] = useState(0);
@@ -56,15 +54,10 @@ export default function ApplicantsUpload({
     await new Promise((resolve) => {
       const reader = new FileReader();
       reader.onload = function (event) {
-        const sheetName = configuration.sheet_name;
         const workbook = XLSX.read(event.target.result, { type: "binary" });
         const sheet = workbook.Sheets[sheetName] || workbook.Sheets[workbook.SheetNames[0]];
         const headerNames = getHeaderNames(sheet);
-        const missingColumnNames = checkColumnNames(
-          columnNames,
-          configuration,
-          parameterizeArray(headerNames)
-        );
+        const missingColumnNames = checkColumnNames(columnNames, parameterizeArray(headerNames));
         if (missingColumnNames.length > 0) {
           displayMissingColumnsWarning(missingColumnNames);
         } else {
@@ -72,55 +65,65 @@ export default function ApplicantsUpload({
           rows = rows.map((row) => parameterizeObjectKeys(row));
           rows.forEach((row) => {
             const applicant = new Applicant(
+              // creation and editing to work properly
               {
-                lastName: row[parameterizedColumnNames.last_name],
-                firstName: row[parameterizedColumnNames.first_name],
-                affiliationNumber: row[parameterizedColumnNames.affiliation_number],
-                role: row[parameterizedColumnNames.role],
-                title: row[parameterizedColumnNames.title],
+                lastName: row[parameterizedColumnNames.last_name_column],
+                firstName: row[parameterizedColumnNames.first_name_column],
+                affiliationNumber: row[parameterizedColumnNames.affiliation_number_column],
+                role: row[parameterizedColumnNames.role_column],
+                title: row[parameterizedColumnNames.title_column],
                 // address is street name and street number
-                address: parameterizedColumnNames.address && row[parameterizedColumnNames.address],
+                address:
+                  parameterizedColumnNames.address_column &&
+                  row[parameterizedColumnNames.address_column],
                 // sometimes street number is separated from address
                 streetNumber:
-                  parameterizedColumnNames.street_number &&
-                  row[parameterizedColumnNames.street_number],
+                  parameterizedColumnNames.street_number_column &&
+                  row[parameterizedColumnNames.street_number_column],
                 // sometimes street type is separated from address
                 streetType:
-                  parameterizedColumnNames.street_type && row[parameterizedColumnNames.street_type],
+                  parameterizedColumnNames.street_type_column &&
+                  row[parameterizedColumnNames.street_type_column],
                 // fullAddress is address with postal code and city
                 fullAddress:
-                  parameterizedColumnNames.full_address &&
-                  row[parameterizedColumnNames.full_address],
-                email: parameterizedColumnNames.email && row[parameterizedColumnNames.email],
+                  parameterizedColumnNames.full_address_column &&
+                  row[parameterizedColumnNames.full_address_column],
+                email:
+                  parameterizedColumnNames.email_column &&
+                  row[parameterizedColumnNames.email_column],
                 birthDate:
-                  parameterizedColumnNames.birth_date &&
-                  row[parameterizedColumnNames.birth_date] &&
-                  excelDateToString(row[parameterizedColumnNames.birth_date]),
-                city: parameterizedColumnNames.city && row[parameterizedColumnNames.city],
+                  parameterizedColumnNames.birth_date_column &&
+                  row[parameterizedColumnNames.birth_date_column] &&
+                  excelDateToString(row[parameterizedColumnNames.birth_date_column]),
+                city:
+                  parameterizedColumnNames.city_column && row[parameterizedColumnNames.city_column],
                 postalCode:
-                  parameterizedColumnNames.postal_code && row[parameterizedColumnNames.postal_code],
+                  parameterizedColumnNames.postal_code_column &&
+                  row[parameterizedColumnNames.postal_code_column],
                 phoneNumber:
-                  parameterizedColumnNames.phone_number &&
-                  row[parameterizedColumnNames.phone_number],
+                  parameterizedColumnNames.phone_number_column &&
+                  row[parameterizedColumnNames.phone_number_column],
                 birthName:
-                  parameterizedColumnNames.birth_name && row[parameterizedColumnNames.birth_name],
+                  parameterizedColumnNames.birth_name_column &&
+                  row[parameterizedColumnNames.birth_name_column],
                 departmentInternalId:
-                  parameterizedColumnNames.department_internal_id &&
-                  row[parameterizedColumnNames.department_internal_id],
+                  parameterizedColumnNames.department_internal_id_column &&
+                  row[parameterizedColumnNames.department_internal_id_column],
                 rightsOpeningDate:
-                  parameterizedColumnNames.rights_opening_date &&
-                  row[parameterizedColumnNames.rights_opening_date] &&
-                  excelDateToString(row[parameterizedColumnNames.rights_opening_date]),
+                  parameterizedColumnNames.rights_opening_date_column &&
+                  row[parameterizedColumnNames.rights_opening_date_column] &&
+                  excelDateToString(row[parameterizedColumnNames.rights_opening_date_column]),
                 linkedOrganisationSearchTerms:
-                  parameterizedColumnNames.organisation_search_terms &&
-                  row[parameterizedColumnNames.organisation_search_terms],
+                  parameterizedColumnNames.organisation_search_terms_column &&
+                  row[parameterizedColumnNames.organisation_search_terms_column],
                 referentEmail:
-                  parameterizedColumnNames.referent_email &&
-                  row[parameterizedColumnNames.referent_email],
+                  parameterizedColumnNames.referent_email_column &&
+                  row[parameterizedColumnNames.referent_email_column],
               },
               department,
               organisation,
               configuration,
+              columnNames,
               currentAgent
             );
             applicantsFromList.push(applicant);
@@ -282,12 +285,12 @@ export default function ApplicantsUpload({
                   <th scope="col">Prénom</th>
                   <th scope="col">Nom</th>
                   <th scope="col">Rôle</th>
-                  {parameterizedColumnNames.department_internal_id && (
+                  {parameterizedColumnNames.department_internal_id_column && (
                     <th scope="col">ID Editeur</th>
                   )}
-                  {parameterizedColumnNames.email && <th scope="col">Email</th>}
-                  {parameterizedColumnNames.phone_number && <th scope="col">Téléphone</th>}
-                  {parameterizedColumnNames.rights_opening_date && (
+                  {parameterizedColumnNames.email_column && <th scope="col">Email</th>}
+                  {parameterizedColumnNames.phone_number_column && <th scope="col">Téléphone</th>}
+                  {parameterizedColumnNames.rights_opening_date_column && (
                     <th scope="col">Date d&apos;entrée flux</th>
                   )}
                   <th scope="col" style={{ whiteSpace: "nowrap" }}>

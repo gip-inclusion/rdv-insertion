@@ -1,24 +1,19 @@
 FactoryBot.define do
   factory :file_configuration do
     sequence(:sheet_name) { |n| "LISTE DEMANDEURS_#{n}" }
-    column_names do
-      { optional: {},
-        required: {
-          city: "Commune",
-          role: "Rôle",
-          email: "Adresses Mails",
-          title: "Civilité",
-          address: "Complément lieu",
-          last_name: "Nom bénéficiaire",
-          birth_date: "Date de naissance",
-          first_name: "Prénom bénéficiaire",
-          postal_code: "CP",
-          street_type: "Complement Destinataire",
-          phone_number: "N° Téléphones",
-          street_number: "Adresse",
-          referent_email: "Référent",
-          affiliation_number: "N° Allocataire"
-        } }
-    end
+    city_column { "Commune" }
+    role_column { "Rôle" }
+    email_column { "Adresses Mails" }
+    title_column { "Civilité" }
+    address_column { "Complément lieu" }
+    last_name_column { "Nom bénéficiaire" }
+    birth_date_column { "Date de naissance" }
+    first_name_column { "Prénom bénéficiaire" }
+    postal_code_column { "CP" }
+    street_type_column { "Complement Destinataire" }
+    phone_number_column { "N° Téléphones" }
+    street_number_column { "Adresse" }
+    referent_email_column { "Référent" }
+    affiliation_number_column { "N° Allocataire" }
   end
 end

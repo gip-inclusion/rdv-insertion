@@ -12,7 +12,7 @@ export default class extends Controller {
 
   add(event) {
     event.preventDefault();
-    // if this is the only row, we display the reactivate the remove button
+    // if there was only one row, we reactivate the remove button
     this.element.previousElementSibling.childNodes[3].removeAttribute("style");
     // we duplicate the last array input field
     const newRow = this.element.previousElementSibling.cloneNode(true);
@@ -21,7 +21,7 @@ export default class extends Controller {
     this.element.before(newRow);
   }
 
-  // We need to hide button so they can't remove the only row, otherwise there would be nothing to clone.
+  // We need to hide the remove button when there's only one row, otherwise there would be nothing to clone
   hideRemoveButtonIfNecessary() {
     document.querySelectorAll(".text-array").forEach((el) => {
       const rows = el.querySelectorAll(".text-array__row");

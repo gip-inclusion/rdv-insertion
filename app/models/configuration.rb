@@ -7,14 +7,7 @@ class Configuration < ApplicationRecord
   validate :delays_validity, :invitation_formats_validity
 
   delegate :position, :name, to: :motif_category, prefix: true
-
-  def as_json(opts = {})
-    super.merge(
-      # TODO: delegate these methods to file_configuration
-      sheet_name: file_configuration.sheet_name,
-      column_names: file_configuration.column_names
-    )
-  end
+  delegate :sheet_name, to: :file_configuration
 
   private
 

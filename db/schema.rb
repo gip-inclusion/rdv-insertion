@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_16_152810) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_14_102020) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -118,9 +118,26 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_16_152810) do
 
   create_table "file_configurations", force: :cascade do |t|
     t.string "sheet_name"
-    t.jsonb "column_names"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "title_column"
+    t.string "first_name_column"
+    t.string "last_name_column"
+    t.string "role_column"
+    t.string "email_column"
+    t.string "phone_number_column"
+    t.string "birth_date_column"
+    t.string "birth_name_column"
+    t.string "street_number_column"
+    t.string "street_type_column"
+    t.string "address_column"
+    t.string "postal_code_column"
+    t.string "city_column"
+    t.string "department_internal_id_column"
+    t.string "affiliation_number_column"
+    t.string "rights_opening_date_column"
+    t.string "organisation_search_terms_column"
+    t.string "referent_email_column"
   end
 
   create_table "invitations", force: :cascade do |t|
