@@ -21,7 +21,7 @@ class FileConfigurationsController < ApplicationController
   end
 
   def create
-    @file_configuration = FileConfiguration.new(**file_configuration_params)
+    @file_configuration = FileConfiguration.new(**formatted_params)
     if @file_configuration.save
       flash.now[:success] = "Le fichier d'import a été créé avec succès"
     else
@@ -35,7 +35,7 @@ class FileConfigurationsController < ApplicationController
   end
 
   def update
-    @file_configuration.assign_attributes(**file_configuration_params)
+    @file_configuration.assign_attributes(**formatted_params)
     if @file_configuration.valid? && @file_configuration.configurations.length > 1
       confirm_file_configuration_update
     elsif @file_configuration.save
@@ -52,7 +52,7 @@ class FileConfigurationsController < ApplicationController
 
   def update_for_all_configurations
     @file_configuration = FileConfiguration.find(params[:file_configuration_id])
-    @file_configuration.assign_attributes(**file_configuration_params)
+    @file_configuration.assign_attributes(**formatted_params)
     if @file_configuration.save
       flash.now[:success] = "Le fichier d'import a été modifié avec succès"
     else
@@ -71,7 +71,7 @@ class FileConfigurationsController < ApplicationController
       "remote_modal", partial: "confirm_file_configuration_update", locals: {
         organisation: @organisation,
         current_file_configuration: @file_configuration,
-        new_file_configuration: FileConfiguration.new(**file_configuration_params.compact_blank)
+        new_file_configuration: FileConfiguration.new(**formatted_params.compact_blank)
       }
     )
   end
@@ -83,7 +83,7 @@ class FileConfigurationsController < ApplicationController
   def formatted_params
     # we nullify blank column names for validations to be accurate
     file_configuration_params.to_h do |k, v|
-      [k, k.in?(@file_configuration.column_names_array) ? v.presence : v]
+      [k, k.to_s.in?(FileConfiguration.column_names_array) ? v.presence : v]
     end
   end
 

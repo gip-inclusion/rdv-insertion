@@ -6,26 +6,26 @@ class FileConfiguration < ApplicationRecord
 
   # a hash with key-value pairs for all informed column_names
   def column_names
-    column_names_array.map do |column_name|
+    FileConfiguration.column_names_array.map do |column_name|
       send(column_name).present? ? [column_name, send(column_name)] : nil
     end.compact.to_h
   end
 
-  def column_names_array
+  def self.column_names_array
     attribute_names.select { |attribute_name| attribute_name.end_with?("column") }
   end
 
   private
 
   def column_names_uniqueness
-    return if column_names_values.compact_blank.uniq.length == column_names_values.compact_blank.length
+    return if column_names_values.uniq.length == column_names_values.length
 
     errors.add(:base, "Chaque colonne doit avoir un nom différent")
   end
 
   def column_names_values
-    column_names_array.map do |column_name|
+    FileConfiguration.column_names_array.map do |column_name|
       send(column_name)
-    end.compact
+    end.compact_blank
   end
 end
