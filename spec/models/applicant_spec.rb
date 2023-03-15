@@ -194,6 +194,54 @@ describe Applicant do
     end
   end
 
+  describe "nir validity" do
+    context "when no nir" do
+      let(:applicant) { build(:applicant, nir: nil) }
+
+      it { expect(applicant).to be_valid }
+    end
+
+    context "when nir exists already" do
+      let!(:existing_applicant) { create(:applicant, nir: "123456789012311") }
+      let(:applicant) { build(:applicant, nir: "123456789012311") }
+
+      it { expect(applicant).not_to be_valid }
+    end
+
+    context "when nir is not 15 characters" do
+      let(:applicant) { build(:applicant, nir: "1234567890123") }
+
+      it "add errors" do
+        expect(applicant).not_to be_valid
+        expect(applicant.errors.details).to eq({ nir: [{ error: :invalid }] })
+        expect(applicant.errors.full_messages.to_sentence)
+          .to include("Le NIR doit être une série de 15 chiffres")
+      end
+    end
+
+    context "when nir is not all digits" do
+      let(:applicant) { build(:applicant, nir: "123456789012A11") }
+
+      it "add errors" do
+        expect(applicant).not_to be_valid
+        expect(applicant.errors.details).to eq({ nir: [{ error: :invalid }] })
+        expect(applicant.errors.full_messages.to_sentence)
+          .to include("Le NIR doit être une série de 15 chiffres")
+      end
+    end
+
+    context "when luhn formula is not matched" do
+      let(:applicant) { build(:applicant, nir: "123456789012312") }
+
+      it "add errors" do
+        expect(applicant).not_to be_valid
+        expect(applicant.errors.details).to eq({ nir: [{ error: :invalid }] })
+        expect(applicant.errors.full_messages.to_sentence)
+          .to include("Le NIR n'est pas valide")
+      end
+    end
+  end
+
   describe "uid or department_internal_id presence" do
     context "when an affiliation_number and a role is present" do
       let(:applicant) { build(:applicant, role: "demandeur", affiliation_number: "KOKO", department_internal_id: nil) }

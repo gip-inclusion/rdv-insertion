@@ -353,6 +353,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
       let!(:webhook_endpoint) do
         create(:webhook_endpoint, organisations: [organisation])
       end
+      let!(:nir) { generate_fake_nir }
       let!(:department_internal_id) { "some-dept-id" }
       let!(:applicant) do
         create(
@@ -360,7 +361,17 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
           organisations: [organisation],
           title: "monsieur",
           rdv_solidarites_user_id: user_id1,
-          department_internal_id: department_internal_id
+          department_internal_id: department_internal_id,
+          nir: nir
+        )
+      end
+      let!(:applicant2) do
+        create(
+          :applicant,
+          organisations: [organisation],
+          title: "madame",
+          rdv_solidarites_user_id: user_id2,
+          pole_emploi_id: "Z12123"
         )
       end
 
@@ -368,8 +379,20 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
         {
           data: data.merge(
             users: [
-              { id: user_id1, department_internal_id: department_internal_id, title: "monsieur" },
-              { id: user_id2, department_internal_id: nil, title: "monsieur" }
+              {
+                id: user_id1,
+                department_internal_id: department_internal_id,
+                title: "monsieur",
+                nir: nir,
+                pole_emploi_id: nil
+              },
+              {
+                id: user_id2,
+                department_internal_id: nil,
+                title: "madame",
+                nir: nil,
+                pole_emploi_id: "Z12123"
+              }
             ]
           ),
           meta: meta

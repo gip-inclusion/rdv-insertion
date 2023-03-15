@@ -27,7 +27,9 @@
       <%= render "common/attribute_display", record: @applicant, attribute: :title %>
       <%= render "common/attribute_display", record: @applicant, attribute: :role %>
       <%= render "common/attribute_display", record: @applicant, attribute: :affiliation_number %>
-      <%= render "common/attribute_display", record: @applicant, attribute: :department_internal_id %>
+      <%= render "common/attribute_display", record: @applicant, attribute: :department_internal_id, tooltip: true %>
+      <%= render "common/attribute_display", record: @applicant, attribute: :nir %>
+      <%= render "common/attribute_display", record: @applicant, attribute: :pole_emploi_id %>
       <%= render "common/attribute_display", record: @applicant, attribute: :email %>
       <%= render "common/attribute_display", record: @applicant, attribute: :birth_date, as: :date %>
       <%= render "common/attribute_display", record: @applicant, attribute: :address %>

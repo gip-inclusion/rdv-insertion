@@ -14,7 +14,8 @@ class Applicant < ApplicationRecord
   include Phonable
   include Invitable
   include HasParticipationsToRdvs
-  include Applicant::Text
+  include Applicant::TextHelper
+  include Applicant::Nir
 
   before_validation :generate_uid
 
@@ -32,8 +33,7 @@ class Applicant < ApplicationRecord
   has_many :configurations, through: :organisations
   has_many :motif_categories, through: :rdv_contexts
 
-  validates :uid, uniqueness: true, allow_nil: true
-  validates :rdv_solidarites_user_id, uniqueness: true, allow_nil: true
+  validates :uid, :rdv_solidarites_user_id, :nir, :pole_emploi_id, uniqueness: true, allow_nil: true
   validates :department_internal_id, uniqueness: { scope: :department_id }, allow_nil: true
   validates :last_name, :first_name, :title, presence: true
   validates :email, allow_blank: true, format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/ }

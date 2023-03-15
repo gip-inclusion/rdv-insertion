@@ -98,6 +98,12 @@ export default class extends Controller {
     });
   }
 
+  departmentInternalIdAttribute() {
+    tippy(this.element, {
+      content: "ID dans l'éditeur logiciel (IODAS, SOLIS...) ou dans le SI du département",
+    });
+  }
+
   helpAddressAttribute() {
     tippy(this.element, {
       content() {
