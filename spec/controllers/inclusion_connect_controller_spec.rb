@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 describe InclusionConnectController do
   let(:base_url) { "https://test.inclusion.connect.fr" }
   let!(:agent) { create(:agent, last_name: "Leponge", first_name: "Bob", email: "bob@gmail.com") }
@@ -22,13 +20,14 @@ describe InclusionConnectController do
   describe "#callback" do
     let(:code) { "1234" }
 
-    it "returns an error if state doesn't match" do
+    it "redirect and returns an error if state doesn't match" do
       session[:ic_state] = "AZEERT"
       get :callback, params: { state: "zefjzelkf", code: code }
       expect(response).to redirect_to(sign_in_path)
+      expect_flash_error
     end
 
-    it "returns an error if token request error" do
+    it "redirect and returns an error if token request error" do
       stub_token_request.to_return(status: 500, body: { error: "an error occurs" }.to_json, headers: {})
 
       session[:ic_state] = "a state"
@@ -37,7 +36,7 @@ describe InclusionConnectController do
       expect_flash_error
     end
 
-    it "returns an error if token request doesn't contains token" do
+    it "redirect and returns an error if token request doesn't contains token" do
       stub_token_request.to_return(status: 200, body: {}.to_json, headers: {})
 
       session[:ic_state] = "a state"
@@ -46,7 +45,7 @@ describe InclusionConnectController do
       expect_flash_error
     end
 
-    it "returns an error if userinfo request doesnt work" do
+    it "redirect and returns an error if userinfo request doesnt work" do
       stub_token_request.to_return(
         status: 200, body: { access_token: "valid_token", scopes: "openid" }.to_json, headers: {}
       )
@@ -59,7 +58,7 @@ describe InclusionConnectController do
       expect_flash_error
     end
 
-    it "returns an error if email_verified is false" do
+    it "redirect and returns an error if email_verified is false" do
       stub_token_request.to_return(
         status: 200, body: { access_token: "valid_token", scopes: "openid" }.to_json, headers: {}
       )
@@ -77,7 +76,7 @@ describe InclusionConnectController do
       expect_flash_error
     end
 
-    it "returns an error if email is not the same as the agent" do
+    it "redirect and returns an error if email is not the same as the agent" do
       stub_token_request.to_return(
         status: 200, body: { access_token: "valid_token", scopes: "openid" }.to_json, headers: {}
       )
