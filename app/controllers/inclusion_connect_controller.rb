@@ -34,8 +34,8 @@ class InclusionConnectController < ApplicationController
   end
 
   def handle_failed_authentication
-    flash[:error] = "Nous n'avons pas pu vous authentifier. Contacter le support à l'adresse \
-      <data.insertion@beta.gouv.fr> si le problème persiste."
+    flash[:error] = "Nous n'avons pas pu vous authentifier. Contacter le support à l'adresse" \
+                    "<data.insertion@beta.gouv.fr> si le problème persiste."
     redirect_to sign_in_path
   end
 
