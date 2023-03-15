@@ -13,20 +13,20 @@ class FileConfigurationsController < ApplicationController
 
   def new
     @file_configuration = FileConfiguration.new
+    render partial: "new"
   end
 
-  def edit; end
+  def edit
+    render partial: "edit"
+  end
 
   def create
-    @file_configuration = FileConfiguration.new
-    if file_configuration_params.compact_blank.present?
-      @file_configuration.assign_attributes(**file_configuration_params.compact_blank)
-    end
+    @file_configuration = FileConfiguration.new(**file_configuration_params)
     if @file_configuration.save
       flash.now[:success] = "Le fichier d'import a été créé avec succès"
     else
       render turbo_stream: turbo_stream.replace(
-        "remote_modal", partial: "new_form_modal", locals: {
+        "remote_modal", partial: "new", locals: {
           organisation: @organisation, file_configuration: @file_configuration,
           errors: @file_configuration.errors.full_messages
         }
@@ -35,14 +35,14 @@ class FileConfigurationsController < ApplicationController
   end
 
   def update
-    @file_configuration.assign_attributes(**file_configuration_params.compact_blank)
+    @file_configuration.assign_attributes(**file_configuration_params)
     if @file_configuration.valid? && @file_configuration.configurations.length > 1
       confirm_file_configuration_update
     elsif @file_configuration.save
       flash.now[:success] = "Le fichier d'import a été modifié avec succès"
     else
       render turbo_stream: turbo_stream.replace(
-        "remote_modal", partial: "edit_form_modal", locals: {
+        "remote_modal", partial: "edit", locals: {
           organisation: @organisation, file_configuration: @file_configuration,
           errors: @file_configuration.errors.full_messages
         }
@@ -52,12 +52,14 @@ class FileConfigurationsController < ApplicationController
 
   def update_for_all_configurations
     @file_configuration = FileConfiguration.find(params[:file_configuration_id])
-    @file_configuration.assign_attributes(**file_configuration_params.compact_blank)
+    @file_configuration.assign_attributes(**file_configuration_params)
     if @file_configuration.save
       flash.now[:success] = "Le fichier d'import a été modifié avec succès"
     else
       render turbo_stream: turbo_stream.replace(
-        "remote_modal", partial: "error_modal", locals: { errors: @file_configuration.errors.full_messages }
+        "remote_modal", partial: "common/error_modal", locals: {
+          errors: @file_configuration.errors.full_messages
+        }
       )
     end
   end
@@ -76,6 +78,13 @@ class FileConfigurationsController < ApplicationController
 
   def file_configuration_params
     params.require(:file_configuration).permit(*PERMITTED_PARAMS).to_h.deep_symbolize_keys
+  end
+
+  def formatted_params
+    # we nullify blank column names for validations to be accurate
+    file_configuration_params.to_h do |k, v|
+      [k, k.in?(@file_configuration.column_names_array) ? v.presence : v]
+    end
   end
 
   def set_organisation

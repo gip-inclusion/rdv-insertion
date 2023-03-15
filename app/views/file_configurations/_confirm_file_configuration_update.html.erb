@@ -5,7 +5,7 @@
         <% current_file_configuration.attributes.except("id", "created_at", "updated_at").each do |attribute_name, attribute_value| %>
           <%= f.hidden_field attribute_name, value: attribute_value%>
         <% end %>
-      <button type="submit" class="btn btn-blue-out">Modifier pour tous</button>
+      <button type="submit" class="btn btn-blue-out">Modifier pour toutes</button>
     <% end %>
     <%= simple_form_for(new_file_configuration, url: organisation_file_configurations_path(organisation, new_file_configuration), html: { method: :post }) do |f| %>
         <% new_file_configuration.attributes.except("id", "created_at", "updated_at").each do |attribute_name, attribute_value| %>

@@ -1,5 +1,0 @@
-<%= render "common/remote_modal", title: "Créer fichier d'import", size: :large do %>
-  <%= simple_form_for(file_configuration, url: organisation_file_configurations_path(organisation, file_configuration), html: { method: :post }) do |f| %>
-    <%= render 'file_configuration_form', f: f, file_configuration: file_configuration, errors: local_assigns[:errors] %>
-  <% end %>
-<% end %>

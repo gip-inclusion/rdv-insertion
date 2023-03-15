@@ -276,7 +276,7 @@ describe ConfigurationsController do
       end
 
       it "redirects to the homepage" do
-        get :new, params: create_params
+        post :create, params: create_params
 
         expect(response).to redirect_to(root_path)
       end
@@ -354,7 +354,7 @@ describe ConfigurationsController do
       end
 
       it "redirects to the homepage" do
-        get :new, params: update_params
+        patch :update, params: update_params
 
         expect(response).to redirect_to(root_path)
       end
@@ -409,7 +409,7 @@ describe ConfigurationsController do
       end
 
       it "redirects to the homepage" do
-        get :new, params: destroy_params
+        delete :destroy, params: destroy_params
 
         expect(response).to redirect_to(root_path)
       end

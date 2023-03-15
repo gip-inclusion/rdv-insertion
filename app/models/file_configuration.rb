@@ -18,7 +18,7 @@ class FileConfiguration < ApplicationRecord
   private
 
   def column_names_uniqueness
-    return if column_names_values.uniq.length == column_names_values.length
+    return if column_names_values.compact_blank.uniq.length == column_names_values.compact_blank.length
 
     errors.add(:base, "Chaque colonne doit avoir un nom différent")
   end
