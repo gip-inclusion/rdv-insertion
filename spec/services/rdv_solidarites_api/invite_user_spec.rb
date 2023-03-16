@@ -8,7 +8,7 @@ describe RdvSolidaritesApi::InviteUser, type: :service do
   end
 
   let!(:rdv_solidarites_user_id) { 27 }
-  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
+  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
   let!(:rdv_solidarites_client) { instance_double(RdvSolidaritesClient) }
   let!(:invite_for) { nil }
 

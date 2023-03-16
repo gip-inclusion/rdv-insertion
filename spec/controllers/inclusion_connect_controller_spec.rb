@@ -114,11 +114,9 @@ describe InclusionConnectController do
         {
           uid: agent.email,
           x_agent_auth_signature: OpenSSL::HMAC.hexdigest("SHA256", "S3cr3T", payload.to_json),
-          client: nil,
-          access_token: nil
+          inclusion_connected: true
         }
       )
-      expect(request.session[:connected_with_inclusionconnect]).to be_truthy
     end
 
     it "call sentry about authentification failure" do

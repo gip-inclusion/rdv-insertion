@@ -1,12 +1,13 @@
-describe LoginSession do
-  let!(:uid) { "aminedhobb@beta.gouv.fr" }
-  let!(:client) { "28FNFEJF" }
-  let!(:access_token) { "EDZADZ" }
-  let(:login_session) do
-    RdvSolidaritesSession.from(:login).with(
+describe RdvSolidaritesSession::WithAccessToken do
+  subject do
+    described_class.new(
       uid: uid, client: client, access_token: access_token
     )
   end
+
+  let!(:uid) { "aminedhobb@beta.gouv.fr" }
+  let!(:client) { "28FNFEJF" }
+  let!(:access_token) { "EDZADZ" }
 
   describe "#valid?" do
     context "when all required attributes are present and token is valid" do
@@ -17,8 +18,8 @@ describe LoginSession do
           }.to_json))
       end
 
-      it "login_session is valid" do
-        expect(login_session).to be_valid
+      it "session is valid" do
+        expect(subject).to be_valid
       end
     end
 
@@ -31,8 +32,8 @@ describe LoginSession do
             }.to_json))
         end
 
-        it "login_session is invalid" do
-          expect(login_session).not_to be_valid
+        it "session is invalid" do
+          expect(subject).not_to be_valid
         end
       end
     end
@@ -40,8 +41,8 @@ describe LoginSession do
     context "when at least one required attribute is missing" do
       let(:uid) { nil }
 
-      it "login_session is invalid" do
-        expect(login_session).not_to be_valid
+      it "session is invalid" do
+        expect(subject).not_to be_valid
       end
     end
 
@@ -51,15 +52,15 @@ describe LoginSession do
           .and_return(OpenStruct.new(success?: false))
       end
 
-      it "login_session is invalid" do
-        expect(login_session).not_to be_valid
+      it "session is invalid" do
+        expect(subject).not_to be_valid
       end
     end
   end
 
   describe "#to_h" do
     it "returns a hash with the correct keys and values" do
-      expect(login_session.to_h).to eq(
+      expect(subject.to_h).to eq(
         {
           "uid" => uid,
           "client" => client,

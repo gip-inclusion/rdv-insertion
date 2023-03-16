@@ -5,7 +5,7 @@ module AuthenticationSpecHelper
   end
 
   def session_hash(agent_email)
-    { "client" => "someclient", "uid" => agent_email, "access_token" => "sometoken" }
+    { "client" => "someclient", "uid" => agent_email, "access_token" => "sometoken" }.symbolize_keys
   end
 
   def setup_request_session(agent)
@@ -25,7 +25,8 @@ module AuthenticationSpecHelper
 
   # rubocop:disable Metrics/AbcSize
   def mock_rdv_solidarites_session(agent_email)
-    allow(RdvSolidaritesSession).to receive_message_chain(:from, :with)
+    allow(RdvSolidaritesSessionFactory).to receive(:create_with)
+      .with(**session_hash(agent_email))
       .and_return(rdv_solidarites_session)
     allow(rdv_solidarites_session).to receive(:valid?)
       .and_return(true)
@@ -36,7 +37,7 @@ module AuthenticationSpecHelper
   # rubocop:enable Metrics/AbcSize
 
   def rdv_solidarites_session
-    @rdv_solidarites_session ||= instance_double(LoginSession)
+    @rdv_solidarites_session ||= instance_double(RdvSolidaritesSession::WithAccessToken)
   end
 
   def api_auth_headers_for_agent(agent)

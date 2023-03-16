@@ -9,7 +9,7 @@ describe RdvSolidaritesApi::UpdateUser, type: :service do
     { first_name: "john", last_name: "doe", address: "16 rue de la tour", email: "johndoe@example.com" }
   end
   let(:rdv_solidarites_user_id) { 1 }
-  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
+  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
   let!(:rdv_solidarites_client) { instance_double(RdvSolidaritesClient) }
 
   describe "#call" do

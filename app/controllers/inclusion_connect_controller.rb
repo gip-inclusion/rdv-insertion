@@ -44,10 +44,8 @@ class InclusionConnectController < ApplicationController
     session[:rdv_solidarites] = {
       uid: @agent.email,
       x_agent_auth_signature: signature_for_agents_auth_with_shared_secret,
-      client: nil,
-      access_token: nil
+      inclusion_connected: true
     }
-    session[:connected_with_inclusionconnect] = true
   end
 
   def signature_for_agents_auth_with_shared_secret

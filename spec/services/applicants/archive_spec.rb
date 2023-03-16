@@ -7,7 +7,7 @@ describe Applicants::Archive, type: :service do
   end
 
   let!(:applicant) { create(:applicant) }
-  let(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
+  let(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
   let!(:archiving_reason) { "some reason" }
   let!(:archived_at) { Time.zone.now }
   let!(:invitation1) { create(:invitation, applicant: applicant) }
