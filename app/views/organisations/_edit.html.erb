@@ -21,7 +21,14 @@
               <div class="d-flex justify-content-between mb-0">
                 <h4><%= f.object.class.human_attribute_name(:logo_filename) %></h4>
                 <%= link_to "https://github.com/betagouv/rdv-insertion/tree/staging/app/javascript/images/logos", target: "_blank", class: "text-dark-blue mb-0" do %>
-                  Liste des logos existants<i class="fas fa-external-link-alt icon-sm"></i>
+                  <i
+                    class="fas fa-question-circle"
+                    data-controller="tooltip"
+                    data-action="mouseover->tooltip#logoFilenameAttribute"
+                  >
+                  </i>
+                  Liste des logos existants
+                  <i class="fas fa-external-link-alt icon-sm"></i>
 
                 <% end %>
               </div>
