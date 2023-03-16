@@ -1,6 +1,6 @@
 class OrganisationsController < ApplicationController
   PERMITTED_PARAMS = [
-    :name, :phone_number, :email, :slug, :independent_from_cd
+    :name, :phone_number, :email, :slug, :independent_from_cd, :logo_filename
   ].freeze
 
   before_action :set_organisation, :set_department, :authorize_organisation_configuration, only: [:show, :edit, :update]
@@ -11,17 +11,22 @@ class OrganisationsController < ApplicationController
     redirect_to organisation_applicants_path(@organisations.first) if @organisations.to_a.length == 1
   end
 
-  def show; end
-  def edit; end
+  def show
+    render partial: "show", locals: { organisation: @organisation }
+  end
+
+  def edit
+    render partial: "edit", locals: { organisation: @organisation }
+  end
 
   def update
     @organisation.assign_attributes(**organisation_params)
     authorize @organisation
     if update_organisation.success?
-      render :show
+      render partial: "show", locals: { organisation: @organisation }
     else
       flash.now[:error] = update_organisation.errors&.join(",")
-      render :edit, status: :unprocessable_entity
+      render partial: "edit", status: :unprocessable_entity, locals: { organisation: @organisation }
     end
   end
 

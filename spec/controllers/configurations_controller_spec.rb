@@ -1,6 +1,9 @@
 describe ConfigurationsController do
   let!(:department) { create(:department) }
-  let!(:organisation) { create(:organisation, department: department) }
+  let!(:organisation) do
+    create(:organisation, name: "PIE Pantin", slug: "pie-pantin", email: "pie@pantin.fr", phone_number: "0102030405",
+                          independent_from_cd: true, department: department)
+  end
   let!(:another_organisation) { create(:organisation, department: department) }
   let!(:file_configuration) { create(:file_configuration) }
   let!(:configuration) do
@@ -27,6 +30,23 @@ describe ConfigurationsController do
       expect(response.body).to match(/Détails de l'organisation/)
       expect(response.body).to match(/Catégories de motifs configurés/)
       expect(response.body).to match(/Configuration des messages/)
+    end
+
+    it "displays the organisation" do
+      get :index, params: index_params
+
+      expect(response.body).to match(/Nom/)
+      expect(response.body).to match(/PIE Pantin/)
+      expect(response.body).to match(/Email/)
+      expect(response.body).to match(/pie@pantin.fr/)
+      expect(response.body).to match(/Numéro de téléphone/)
+      expect(response.body).to match(/0102030405/)
+      expect(response.body).to match(/Indépendante du CD/)
+      expect(response.body).to match(/Oui/)
+      expect(response.body).to match(/Logo/)
+      expect(response.body).to match(%r{images/logos/pie-pantin})
+      expect(response.body).to match(/Désignation dans le fichier allocataires/)
+      expect(response.body).to match(/pie-pantin/)
     end
 
     it "displays the configurations of the organisation" do

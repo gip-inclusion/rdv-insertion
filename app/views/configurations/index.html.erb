@@ -18,7 +18,7 @@
       data-action="mouseover->tooltip#organisationDetails">
     </i>
   </h4>
-  <%= render "organisations/organisation", organisation: @organisation %>
+  <%= render "organisations/show", organisation: @organisation %>
 
   <h4>Catégories de motifs configurés</h4>
   <%= render "configurations/configurations_list", configurations: @configurations, organisation: @organisation, department: @department %>
