@@ -11,8 +11,8 @@ class ChangeColumnNamesFormatForFileConfigurations < ActiveRecord::Migration[7.0
 
     FileConfiguration.find_each do |file_configuration|
       COLUMN_NAMES.each do |column_name|
-        required_column_names = file_configuration.column_names["required"]
-        optional_column_names = file_configuration.column_names["optional"]
+        required_column_names = file_configuration.read_attribute(:column_names)["required"]
+        optional_column_names = file_configuration.read_attribute(:column_names)["optional"]
         value = if required_column_names.present? && required_column_names[column_name.to_s]
                   required_column_names[column_name.to_s]
                 elsif optional_column_names.present? && optional_column_names[column_name.to_s]
