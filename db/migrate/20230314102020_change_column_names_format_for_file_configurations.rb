@@ -20,7 +20,7 @@ class ChangeColumnNamesFormatForFileConfigurations < ActiveRecord::Migration[7.0
                 end
         file_configuration["#{column_name}_column"] = value
       end
-      file_configuration.save!
+      file_configuration.save!(validate: false)
     end
 
     remove_column :file_configurations, :column_names
@@ -33,10 +33,11 @@ class ChangeColumnNamesFormatForFileConfigurations < ActiveRecord::Migration[7.0
     FileConfiguration.find_each do |file_configuration|
       COLUMN_NAMES.each do |column_name|
         if file_configuration["#{column_name}_column"].present?
-          file_configuration.column_names["required"][column_name.to_s] = file_configuration["#{column_name}_column"]
+          file_configuration.read_attribute(:column_names)["required"][column_name.to_s] = \
+            file_configuration["#{column_name}_column"]
         end
       end
-      file_configuration.save!
+      file_configuration.save!(validate: false)
     end
 
     COLUMN_NAMES.each do |column_name|
