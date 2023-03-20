@@ -3,13 +3,12 @@ class SessionsController < ApplicationController
   wrap_parameters false
   respond_to :json, only: :create
 
-  include LoginConcern
-  before_action :validate_session!, :retrieve_agent!, :mark_as_logged_in!, only: [:create]
+  include Agents::SignIn
+  before_action :sign_in_agent!, only: [:create]
 
   def new; end
 
   def create
-    set_session_credentials
     render json: { success: true, redirect_path: session.delete(:agent_return_to) || organisations_path }
   end
 
@@ -20,15 +19,6 @@ class SessionsController < ApplicationController
   end
 
   private
-
-  def set_session_credentials
-    session[:agent_id] = authenticated_agent.id
-    session[:rdv_solidarites] = {
-      client: request.headers["client"],
-      uid: request.headers["uid"],
-      access_token: request.headers["access-token"]
-    }
-  end
 
   def clear_session
     session.delete(:agent_id)

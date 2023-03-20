@@ -1,6 +1,6 @@
 class RdvSolidarites::InvalidSessionError < StandardError; end
 
-module LoginConcern
+module Agents::SignIn
   extend ActiveSupport::Concern
 
   included do
@@ -8,6 +8,13 @@ module LoginConcern
   end
 
   private
+
+  def sign_in_agent!
+    validate_session!
+    retrieve_agent!
+    mark_agent_as_logged_in!
+    set_session_credentials unless api?
+  end
 
   def validate_session!
     raise RdvSolidarites::InvalidSessionError unless new_rdv_solidarites_session.valid?
@@ -35,7 +42,7 @@ module LoginConcern
            status: :unprocessable_entity
   end
 
-  def mark_as_logged_in!
+  def mark_agent_as_logged_in!
     return if authenticated_agent.has_logged_in? || authenticated_agent.update(has_logged_in: true)
 
     render json: { success: false, errors: authenticated_agent.errors.full_messages }, status: :unprocessable_entity
@@ -43,5 +50,18 @@ module LoginConcern
 
   def authenticated_agent
     @authenticated_agent ||= Agent.find_by(email: new_rdv_solidarites_session.uid)
+  end
+
+  def set_session_credentials
+    session[:agent_id] = authenticated_agent.id
+    session[:rdv_solidarites] = {
+      client: request.headers["client"],
+      uid: request.headers["uid"],
+      access_token: request.headers["access-token"]
+    }
+  end
+
+  def api?
+    self.class.module_parents.include?(Api)
   end
 end
