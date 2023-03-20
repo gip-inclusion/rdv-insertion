@@ -152,7 +152,7 @@ module ApplicantsHelper
   def compute_new_path(organisation, department)
     return new_department_applicant_path(department) if department_level?
 
-    new_department_applicant_path(organisation)
+    new_organisation_applicant_path(organisation)
   end
 end
 
