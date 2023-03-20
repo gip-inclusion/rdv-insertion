@@ -11,22 +11,17 @@ class OrganisationsController < ApplicationController
     redirect_to organisation_applicants_path(@organisations.first) if @organisations.to_a.length == 1
   end
 
-  def show
-    render partial: "organisation", locals: { organisation: @organisation }
-  end
-
-  def edit
-    render partial: "organisation_form", locals: { organisation: @organisation }
-  end
+  def show; end
+  def edit; end
 
   def update
     @organisation.assign_attributes(**organisation_params)
     authorize @organisation
     if update_organisation.success?
-      render partial: "organisation", locals: { organisation: @organisation }
+      render :show
     else
       flash.now[:error] = update_organisation.errors&.join(",")
-      render partial: "organisation_form", status: :unprocessable_entity, locals: { organisation: @organisation }
+      render :edit, status: :unprocessable_entity
     end
   end
 

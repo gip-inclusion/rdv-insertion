@@ -119,9 +119,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_16_111741) do
 
   create_table "file_configurations", force: :cascade do |t|
     t.string "sheet_name"
+    t.jsonb "column_names"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.jsonb "column_names", default: {"optional"=>{}, "required"=>{}}, null: false
   end
 
   create_table "invitations", force: :cascade do |t|

@@ -6,8 +6,6 @@ module HasLogo
   end
 
   def logo_name
-    return name unless self.class.column_names.include?("logo_filename")
-
-    logo_filename.presence || name
+    respond_to?(:logo_filename) && logo_filename.present? ? logo_filename : name
   end
 end
