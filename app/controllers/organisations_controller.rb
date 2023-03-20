@@ -12,21 +12,21 @@ class OrganisationsController < ApplicationController
   end
 
   def show
-    render partial: "show", locals: { organisation: @organisation }
+    render partial: "organisation", locals: { organisation: @organisation }
   end
 
   def edit
-    render partial: "edit", locals: { organisation: @organisation }
+    render partial: "organisation_form", locals: { organisation: @organisation }
   end
 
   def update
     @organisation.assign_attributes(**organisation_params)
     authorize @organisation
     if update_organisation.success?
-      render partial: "show", locals: { organisation: @organisation }
+      render partial: "organisation", locals: { organisation: @organisation }
     else
       flash.now[:error] = update_organisation.errors&.join(",")
-      render partial: "edit", status: :unprocessable_entity, locals: { organisation: @organisation }
+      render partial: "organisation_form", status: :unprocessable_entity, locals: { organisation: @organisation }
     end
   end
 
