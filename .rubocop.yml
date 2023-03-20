@@ -43,7 +43,7 @@ Rails/UniqueValidationWithoutIndex:
 Lint/MissingSuper:
   Exclude:
     - "app/services/**/*" # Inheriting BaseService without calling super is OK.
-    - "app/models/sessions/**"
+    - "app/models/rdv_solidarites_session/**"
 
 Metrics/BlockLength:
   Exclude:
