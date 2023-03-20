@@ -11,6 +11,7 @@
           <%= image_pack_tag organisation.logo.path, class: "organisation-configuration-logo", alt: "Logo utilisé pour représenter l'organisation" %>
         <% else %>
           <p>Pas de logo défini - le logo du département sera utilisé</p>
+          <p>Contactez l'équipe rdv-insertion pour en ajouter un</p>
         <% end %>
       </div>
       <%= render "common/attribute_display", record: organisation, attribute: :slug, tooltip: true %>
