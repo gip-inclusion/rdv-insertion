@@ -1,10 +1,9 @@
 class SessionsController < ApplicationController
-  skip_before_action :authenticate_agent!
+  skip_before_action :authenticate_agent!, only: [:create, :new]
   wrap_parameters false
   respond_to :json, only: :create
 
-  include RdvSolidaritesSessionConcern
-  include RdvSolidaritesAgentConcern
+  include LoginConcern
   before_action :validate_session!, :retrieve_agent!, :mark_as_logged_in!, only: [:create]
 
   def new; end
@@ -23,7 +22,7 @@ class SessionsController < ApplicationController
   private
 
   def set_session_credentials
-    session[:agent_id] = current_agent.id
+    session[:agent_id] = authenticated_agent.id
     session[:rdv_solidarites] = {
       client: request.headers["client"],
       uid: request.headers["uid"],

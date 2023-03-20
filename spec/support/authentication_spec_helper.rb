@@ -42,7 +42,7 @@ module AuthenticationSpecHelper
 
   def api_auth_headers_for_agent(agent)
     {
-      client: "client", uid: agent.email, "access-token": "token",
+      client: "someclient", uid: agent.email, "access-token": "sometoken",
       CONTENT_TYPE: "application/json", HTTP_ACCEPT: "application/json"
     }
   end

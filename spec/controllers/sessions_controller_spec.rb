@@ -27,7 +27,7 @@ describe SessionsController do
 
       before do
         request.headers.merge(session_headers)
-        allow(RdvSolidaritesSessionFactory).to receive(create_with)
+        allow(RdvSolidaritesSessionFactory).to receive(:create_with)
           .with(
             uid: session_headers["uid"], access_token: session_headers["access-token"],
             client: session_headers["client"]
