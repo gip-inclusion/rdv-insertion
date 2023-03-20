@@ -353,7 +353,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
       let!(:webhook_endpoint) do
         create(:webhook_endpoint, organisations: [organisation])
       end
-      let!(:nir) { generate_fake_nir }
+      let!(:nir) { generate_random_nir }
       let!(:department_internal_id) { "some-dept-id" }
       let!(:applicant) do
         create(
