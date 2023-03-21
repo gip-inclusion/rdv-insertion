@@ -9,13 +9,6 @@ module Agents::SignIn
 
   private
 
-  def sign_in_agent!
-    validate_session!
-    retrieve_agent!
-    mark_agent_as_logged_in!
-    set_session_credentials unless api?
-  end
-
   def validate_session!
     raise RdvSolidarites::InvalidSessionError unless new_rdv_solidarites_session.valid?
   end
@@ -59,9 +52,5 @@ module Agents::SignIn
       uid: request.headers["uid"],
       access_token: request.headers["access-token"]
     }
-  end
-
-  def api?
-    self.class.module_parents.include?(Api)
   end
 end

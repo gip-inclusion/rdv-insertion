@@ -5,7 +5,7 @@ module Api
       respond_to :json
 
       include Agents::SignIn
-      before_action :sign_in_agent!
+      before_action :validate_session!, :retrieve_agent!, :mark_agent_as_logged_in!
       alias current_agent authenticated_agent
       alias rdv_solidarites_session new_rdv_solidarites_session
 

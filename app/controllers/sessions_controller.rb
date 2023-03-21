@@ -4,7 +4,8 @@ class SessionsController < ApplicationController
   respond_to :json, only: :create
 
   include Agents::SignIn
-  before_action :sign_in_agent!, only: [:create]
+  before_action :validate_session!, :retrieve_agent!, :mark_agent_as_logged_in!, :set_session_credentials,
+                only: [:create]
 
   def new; end
 
