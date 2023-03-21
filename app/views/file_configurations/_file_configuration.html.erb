@@ -9,7 +9,7 @@
           <th class="col">Information correspondante</th>
         </thead>
         <tbody>
-          <% file_configuration.column_names.each do |key, value| %>
+          <% file_configuration.column_attributes.each do |key, value| %>
             <tr>
               <td><%= display_attribute value %></td>
               <td><%= FileConfiguration.human_attribute_name(key) %></td>

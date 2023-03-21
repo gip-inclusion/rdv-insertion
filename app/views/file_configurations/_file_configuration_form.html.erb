@@ -14,7 +14,7 @@
         <th class="col">Nom de la colonne dans le fichier</th>
       </thead>
       <tbody>
-      <% FileConfiguration.column_names_array.map do |column_name| %>
+      <% FileConfiguration.column_attributes_names.map do |column_name| %>
         <tr>
           <td><%= FileConfiguration.human_attribute_name(column_name) %></td>
           <td><%= f.input column_name%></td>

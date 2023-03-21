@@ -13,12 +13,9 @@ class FileConfigurationsController < ApplicationController
 
   def new
     @file_configuration = FileConfiguration.new
-    render partial: "new"
   end
 
-  def edit
-    render partial: "edit"
-  end
+  def edit; end
 
   def create
     @file_configuration = FileConfiguration.new(**formatted_params)
@@ -26,7 +23,7 @@ class FileConfigurationsController < ApplicationController
       flash.now[:success] = "Le fichier d'import a été créé avec succès"
     else
       render turbo_stream: turbo_stream.replace(
-        "remote_modal", partial: "new", locals: {
+        "remote_modal", partial: "new_form", locals: {
           organisation: @organisation, file_configuration: @file_configuration,
           errors: @file_configuration.errors.full_messages
         }
@@ -42,7 +39,7 @@ class FileConfigurationsController < ApplicationController
       flash.now[:success] = "Le fichier d'import a été modifié avec succès"
     else
       render turbo_stream: turbo_stream.replace(
-        "remote_modal", partial: "edit", locals: {
+        "remote_modal", partial: "edit_form", locals: {
           organisation: @organisation, file_configuration: @file_configuration,
           errors: @file_configuration.errors.full_messages
         }
@@ -83,7 +80,7 @@ class FileConfigurationsController < ApplicationController
   def formatted_params
     # we nullify blank column names for validations to be accurate
     file_configuration_params.to_h do |k, v|
-      [k, k.to_s.in?(FileConfiguration.column_names_array) ? v.presence : v]
+      [k, k.to_s.in?(FileConfiguration.column_attributes_names) ? v.presence : v]
     end
   end
 

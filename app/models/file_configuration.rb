@@ -4,28 +4,20 @@ class FileConfiguration < ApplicationRecord
   validates :sheet_name, :last_name_column, :first_name_column, :title_column, presence: true
   validate :column_names_uniqueness
 
-  # a hash with key-value pairs for all informed column_names
-  def column_names
-    FileConfiguration.column_names_array.map do |column_name|
-      send(column_name).present? ? [column_name, send(column_name)] : nil
-    end.compact.to_h
+  # a hash with key-value pairs for all informed the column names of the file
+  def column_attributes
+    attributes.slice(*self.class.column_attributes_names).compact
   end
 
-  def self.column_names_array
+  def self.column_attributes_names
     attribute_names.select { |attribute_name| attribute_name.end_with?("column") }
   end
 
   private
 
   def column_names_uniqueness
-    return if column_names_values.uniq.length == column_names_values.length
+    return if column_attributes.values.uniq.length == column_attributes.values.length
 
     errors.add(:base, "Chaque colonne doit avoir un nom différent")
-  end
-
-  def column_names_values
-    FileConfiguration.column_names_array.map do |column_name|
-      send(column_name)
-    end.compact_blank
   end
 end
