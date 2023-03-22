@@ -15,8 +15,8 @@ class InclusionConnectController < ApplicationController
     token = InclusionConnectClient.retrieve_token(params[:code], inclusion_connect_callback_url)
     session[:ic_token] = token
 
-    agent_info = InclusionConnectClient.retrieve_agent_info(token)
-    @agent = Agent.find_by(email: agent_info)
+    agent_email = InclusionConnectClient.retrieve_agent_email(token)
+    @agent = Agent.find_by(email: agent_email)
 
     if @agent
       handle_successful_authentication

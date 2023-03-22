@@ -30,7 +30,7 @@ module InclusionConnectClient
       get_token(code, inclusion_connect_callback_url).presence || false
     end
 
-    def retrieve_agent_info(token)
+    def retrieve_agent_email(token)
       agent_info = get_agent_info(token)
       return false if agent_info.blank? || !agent_info["email_verified"]
 
