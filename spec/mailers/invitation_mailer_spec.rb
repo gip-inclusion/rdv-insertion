@@ -427,7 +427,6 @@ RSpec.describe InvitationMailer do
     end
   end
 
-
   describe "#standard_invitation_reminder" do
     subject do
       described_class.with(invitation: invitation, applicant: applicant).standard_invitation_reminder
