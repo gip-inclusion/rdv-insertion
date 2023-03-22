@@ -1,4 +1,4 @@
-module InclusionConnect
+module InclusionConnectClient
   CLIENT_ID = ENV["INCLUSION_CONNECT_CLIENT_ID"]
   CLIENT_SECRET = ENV["INCLUSION_CONNECT_CLIENT_SECRET"]
   BASE_URL = ENV["INCLUSION_CONNECT_BASE_URL"]
@@ -16,14 +16,25 @@ module InclusionConnect
       "#{BASE_URL}/auth?#{query.to_query}"
     end
 
-    def find_agent(code, inclusion_connect_callback_url)
-      token = get_token(code, inclusion_connect_callback_url)
-      return false if token.blank?
+    def logout(ic_state, token)
+      Faraday.get(
+        "#{BASE_URL}/logout",
+        {
+          state: ic_state,
+          id_token_hint: token
+        }
+      )
+    end
 
+    def retrieve_token(code, inclusion_connect_callback_url)
+      get_token(code, inclusion_connect_callback_url).presence || false
+    end
+
+    def retrieve_agent_info(token)
       agent_info = get_agent_info(token)
       return false if agent_info.blank? || !agent_info["email_verified"]
 
-      Agent.find_by(email: agent_info["email"])
+      agent_info["email"]
     end
 
     private

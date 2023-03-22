@@ -3,12 +3,13 @@ module Api
     class ApplicationController < ActionController::Base
       skip_before_action :verify_authenticity_token
       respond_to :json
-      include AuthorizationConcern
-      include LoginConcern
-      before_action :validate_session!, :retrieve_agent!, :mark_as_logged_in!
 
+      include Agents::SignIn
+      before_action :validate_session!, :retrieve_agent!, :mark_agent_as_logged_in!
       alias current_agent authenticated_agent
       alias rdv_solidarites_session new_rdv_solidarites_session
+
+      include AuthorizationConcern
 
       private
 

@@ -11,10 +11,9 @@ describe InclusionConnectController do
   end
 
   before do
-    ENV["SHARED_SECRET_FOR_AGENTS_AUTH"] = "S3cr3T"
-    stub_const("InclusionConnect::CLIENT_ID", "truc")
-    stub_const("InclusionConnect::CLIENT_SECRET", "truc secret")
-    stub_const("InclusionConnect::BASE_URL", base_url)
+    stub_const("InclusionConnectClient::CLIENT_ID", "truc")
+    stub_const("InclusionConnectClient::CLIENT_SECRET", "truc secret")
+    stub_const("InclusionConnectClient::BASE_URL", base_url)
   end
 
   describe "#callback" do
@@ -106,6 +105,7 @@ describe InclusionConnectController do
           email: "bob@gmail.com"
         }.to_json, headers: {}
       )
+      allow(ENV).to receive(:fetch).with("SHARED_SECRET_FOR_AGENTS_AUTH").and_return("S3cr3T")
       session[:ic_state] = "a state"
       get :callback, params: { state: "a state", code: code }
       expect(response).to redirect_to(root_path)
