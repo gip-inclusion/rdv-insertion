@@ -7,5 +7,5 @@ class Template < ApplicationRecord
             presence: true, if: :standard?
   validates :display_mandatory_warning, :display_punishable_warning, inclusion: [true, false], if: :standard?
 
-  enum model: { standard: 0, atelier: 1, phone_platform: 2 }
+  enum model: { standard: 0, atelier: 1, phone_platform: 2, short: 3 }
 end

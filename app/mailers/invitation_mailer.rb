@@ -13,6 +13,13 @@ class InvitationMailer < ApplicationMailer
     )
   end
 
+  def short_invitation
+    mail(
+      to: @applicant.email,
+      subject: "Votre #{@rdv_title}"
+    )
+  end
+
   def phone_platform_invitation
     mail(
       to: @applicant.email,

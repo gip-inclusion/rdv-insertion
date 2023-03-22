@@ -237,6 +237,20 @@ module MotifCategoriesHelper
         )
       )
     end
+    let!(:category_psychologue) do
+      create(
+        :motif_category,
+        name: "Psychologue",
+        short_name: "psychologue",
+        template: create(
+          :template,
+          model: "short",
+          rdv_title: "rendez-vous de suivi psychologue",
+          display_mandatory_warning: false,
+          display_punishable_warning: false
+        )
+      )
+    end
   end
 end
 # rubocop:enable Metrics/ModuleLength
