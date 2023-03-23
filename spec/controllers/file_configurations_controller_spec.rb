@@ -239,48 +239,33 @@ describe FileConfigurationsController do
       expect(file_configuration.reload.email_column).to eq("Adresses mail")
     end
 
-    context "when the file_configuration is linked to many configurations" do
-      let!(:organisation2) { create(:organisation) }
-      let!(:configuration2) { create(:configuration, organisations: [organisation2]) }
-      let!(:file_configuration) { create(:file_configuration, configurations: [configuration, configuration2]) }
-
-      it "opens a confirm modal" do
+    context "when the update succeeds" do
+      it "is a success" do
         patch :update, params: update_params, format: :turbo_stream
-        expect(unescaped_response_body).to match(/Ce fichier est utilisé par d'autres organisations/)
-        expect(unescaped_response_body).to match(/Modifier pour toutes/)
-        expect(unescaped_response_body).to match(/Dupliquer et sauvegarder/)
+        expect(unescaped_response_body).to match(/flashes/)
+        expect(unescaped_response_body).to match(/Le fichier d'import a été modifié avec succès/)
       end
     end
 
-    context "the file_configuration is linked to one configurations" do
-      context "when the update succeeds" do
-        it "is a success" do
-          patch :update, params: update_params, format: :turbo_stream
-          expect(unescaped_response_body).to match(/flashes/)
-          expect(unescaped_response_body).to match(/Le fichier d'import a été modifié avec succès/)
-        end
+    context "when the update fails" do
+      let!(:update_params) do
+        {
+          file_configuration: {
+            first_name_column: "", last_name_column: "", title_column: ""
+          },
+          organisation_id: organisation.id, id: file_configuration.id
+        }
       end
 
-      context "when the update fails" do
-        let!(:update_params) do
-          {
-            file_configuration: {
-              first_name_column: "", last_name_column: "", title_column: ""
-            },
-            organisation_id: organisation.id, id: file_configuration.id
-          }
-        end
-
-        it "renders the edit page" do
-          patch :update, params: update_params, format: :turbo_stream
-          expect(unescaped_response_body).to match(/Modifier fichier d'import/)
-          expect(unescaped_response_body).to match(/edit_file_configuration/)
-          expect(unescaped_response_body).to match(/Information collectée/)
-          expect(unescaped_response_body).to match(/Nom de la colonne dans le fichier/)
-          expect(unescaped_response_body).to match(/Civilité doit être rempli/)
-          expect(unescaped_response_body).to match(/Prénom doit être rempli/)
-          expect(unescaped_response_body).to match(/Nom de famille doit être rempli/)
-        end
+      it "renders the edit page" do
+        patch :update, params: update_params, format: :turbo_stream
+        expect(unescaped_response_body).to match(/Modifier fichier d'import/)
+        expect(unescaped_response_body).to match(/edit_file_configuration/)
+        expect(unescaped_response_body).to match(/Information collectée/)
+        expect(unescaped_response_body).to match(/Nom de la colonne dans le fichier/)
+        expect(unescaped_response_body).to match(/Civilité doit être rempli/)
+        expect(unescaped_response_body).to match(/Prénom doit être rempli/)
+        expect(unescaped_response_body).to match(/Nom de famille doit être rempli/)
       end
     end
 
@@ -313,7 +298,7 @@ describe FileConfigurationsController do
     end
   end
 
-  describe "#update_for_all_configurations" do
+  describe "#confirm_update" do
     let!(:update_params) do
       {
         file_configuration: {
@@ -324,68 +309,16 @@ describe FileConfigurationsController do
       }
     end
 
-    it "updates the configuration" do
-      patch :update_for_all_configurations, params: update_params, format: :turbo_stream
-      expect(file_configuration.reload.sheet_name).to eq("INDEX BENEFICIAIRES")
-      expect(file_configuration.reload.title_column).to eq("monsieurmadame")
-      expect(file_configuration.reload.first_name_column).to eq("Prénom")
-      expect(file_configuration.reload.last_name_column).to eq("Nom")
-      expect(file_configuration.reload.role_column).to eq("Rôle benef")
-      expect(file_configuration.reload.email_column).to eq("Adresses mail")
-    end
+    context "when the file_configuration is linked to many configurations" do
+      let!(:organisation2) { create(:organisation) }
+      let!(:configuration2) { create(:configuration, organisations: [organisation2]) }
+      let!(:file_configuration) { create(:file_configuration, configurations: [configuration, configuration2]) }
 
-    context "when the update succeeds" do
-      it "is a success" do
-        patch :update_for_all_configurations, params: update_params, format: :turbo_stream
-        expect(unescaped_response_body).to match(/flashes/)
-        expect(unescaped_response_body).to match(/Le fichier d'import a été modifié avec succès/)
-      end
-    end
-
-    context "when the update fails" do
-      let!(:update_params) do
-        {
-          file_configuration: {
-            first_name_column: "", last_name_column: "", title_column: ""
-          },
-          organisation_id: organisation.id, file_configuration_id: file_configuration.id
-        }
-      end
-
-      it "renders the edit page" do
-        patch :update_for_all_configurations, params: update_params, format: :turbo_stream
-        expect(unescaped_response_body).to match(/Oups! Une erreur est survenue/)
-        expect(unescaped_response_body).to match(/Civilité doit être rempli/)
-        expect(unescaped_response_body).to match(/Prénom doit être rempli/)
-        expect(unescaped_response_body).to match(/Nom de famille doit être rempli/)
-      end
-    end
-
-    context "when not authorized because not admin" do
-      let!(:unauthorized_agent) { create(:agent, basic_role_in_organisations: [organisation]) }
-
-      before do
-        sign_in(unauthorized_agent)
-      end
-
-      it "redirects to the homepage" do
-        patch :update_for_all_configurations, params: update_params, format: :turbo_stream
-
-        expect(response).to redirect_to(root_path)
-      end
-    end
-
-    context "when not authorized because not admin in the right organisation" do
-      let!(:unauthorized_agent) { create(:agent, admin_role_in_organisations: [another_organisation]) }
-
-      before do
-        sign_in(unauthorized_agent)
-      end
-
-      it "raises an error" do
-        expect do
-          patch :update_for_all_configurations, params: update_params, format: :turbo_stream
-        end.to raise_error(ActiveRecord::RecordNotFound)
+      it "opens a confirm modal" do
+        patch :confirm_update, params: update_params, format: :turbo_stream
+        expect(unescaped_response_body).to match(/Ce fichier est utilisé par d'autres organisations/)
+        expect(unescaped_response_body).to match(/Modifier pour toutes/)
+        expect(unescaped_response_body).to match(/Dupliquer et sauvegarder/)
       end
     end
   end

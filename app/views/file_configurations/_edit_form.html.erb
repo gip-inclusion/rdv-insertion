@@ -1,5 +1,10 @@
 <%= render "common/remote_modal", title: "Modifier fichier d'import", size: :large do %>
-  <%= simple_form_for(@file_configuration, url: organisation_file_configuration_path(@organisation, @file_configuration), html: { method: :patch }) do |f| %>
-    <%= render 'file_configuration_form', f: f, file_configuration: @file_configuration, errors: local_assigns[:errors] %>
+  <%= simple_form_for(file_configuration, url: url, html: { method: :patch }) do |f| %>
+    <%= render "file_configuration_form",
+        f: f,
+        file_configuration: file_configuration,
+        errors: errors,
+        organisation: organisation
+    %>
   <% end %>
 <% end %>
