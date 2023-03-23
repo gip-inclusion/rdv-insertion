@@ -8,7 +8,7 @@
           <%= render "common/attribute_input", f:f, attribute: :phone_number, mandatory: true %>
           <%= render "common/attribute_input", f:f, attribute: :independent_from_cd, as: :boolean, tooltip: true %>
           <div class="col-12 col-md-6 px-5 mb-3">
-            <h4><%= Logo %></h4>
+            <h4>Logo</h4>
             <% if @organisation.logo.path %>
               <%= image_pack_tag @organisation.logo.path, class: "organisation-configuration-logo", alt: "Logo utilisé pour représenter l'organisation" %>
             <% else %>
@@ -16,12 +16,31 @@
             <% end %>
           </div>
           <%= render "common/attribute_input", f:f, attribute: :slug, tooltip: true %>
+          <% if current_agent.super_admin? %>
+            <div class="col-12 col-md-6 px-5">
+              <div class="d-flex justify-content-between mb-0">
+                <h4><%= f.object.class.human_attribute_name(:logo_filename) %></h4>
+                <%= link_to "https://github.com/betagouv/rdv-insertion/tree/staging/app/javascript/images/logos", target: "_blank", class: "text-dark-blue mb-0" do %>
+                  <i
+                    class="fas fa-question-circle"
+                    data-controller="tooltip"
+                    data-action="mouseover->tooltip#logoFilenameAttribute"
+                  >
+                  </i>
+                  Liste des logos existants
+                  <i class="fas fa-external-link-alt icon-sm"></i>
+
+                <% end %>
+              </div>
+              <p><%= f.input :logo_filename %></p>
+            </div>
+          <% end %>
         </div>
       </div>
     </div>
     <div class="d-flex justify-content-end mb-4">
       <button type="submit" class="btn btn-blue">Enregistrer</button>
-      <%= link_to organisation_path(@organisation) do %>
+      <%= link_to organisation_path(@organisation), data: { turbo_frame: 'remote_modal' } do %>
         <button class="btn btn-blue-out mx-2">Annuler</button>
       <% end %>
     </div>

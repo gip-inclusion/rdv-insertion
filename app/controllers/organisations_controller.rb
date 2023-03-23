@@ -1,6 +1,6 @@
 class OrganisationsController < ApplicationController
   PERMITTED_PARAMS = [
-    :name, :phone_number, :email, :slug, :independent_from_cd
+    :name, :phone_number, :email, :slug, :independent_from_cd, :logo_filename
   ].freeze
 
   before_action :set_organisation, :set_department, :authorize_organisation_configuration, only: [:show, :edit, :update]
