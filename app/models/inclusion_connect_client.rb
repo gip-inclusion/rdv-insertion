@@ -16,14 +16,14 @@ module InclusionConnectClient
       "#{BASE_URL}/auth?#{query.to_query}"
     end
 
-    def logout(ic_state, token)
-      Faraday.get(
+    def logout(token)
+      request = Faraday.get(
         "#{BASE_URL}/logout",
         {
-          state: ic_state,
           id_token_hint: token
         }
       )
+      return false unless request.success?
     end
 
     def retrieve_token(code, inclusion_connect_callback_url)
