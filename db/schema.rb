@@ -38,6 +38,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_22_133604) do
     t.string "last_name"
     t.boolean "has_logged_in", default: false
     t.datetime "last_webhook_update_received_at"
+    t.boolean "super_admin", default: false
     t.index ["email"], name: "index_agents_on_email", unique: true
     t.index ["rdv_solidarites_agent_id"], name: "index_agents_on_rdv_solidarites_agent_id", unique: true
   end
@@ -233,6 +234,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_22_133604) do
     t.datetime "last_webhook_update_received_at"
     t.string "slug"
     t.boolean "independent_from_cd", default: false
+    t.string "logo_filename"
     t.index ["department_id"], name: "index_organisations_on_department_id"
     t.index ["messages_configuration_id"], name: "index_organisations_on_messages_configuration_id"
     t.index ["rdv_solidarites_organisation_id"], name: "index_organisations_on_rdv_solidarites_organisation_id", unique: true

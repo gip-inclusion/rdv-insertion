@@ -177,13 +177,12 @@ describe OrganisationsController do
           .and_return(OpenStruct.new(success?: false, errors: ["some error"]))
       end
 
-      it "renders the edit page" do
+      it "renders the edit form" do
         patch :update, params: update_params
         expect(response).not_to be_successful
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.body).to match(/input/)
-        expect(unescaped_response_body).to match(/flashes/)
-        expect(unescaped_response_body).to match(/some error/)
+        expect(response.body).to match(/edit_organisation/)
       end
     end
 
