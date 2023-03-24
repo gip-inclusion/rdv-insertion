@@ -30,8 +30,6 @@ module InclusionConnectClient
         data
       )
 
-      return false unless response.success?
-
       JSON.parse(response.body)
     end
 
