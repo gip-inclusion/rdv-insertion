@@ -88,6 +88,26 @@ describe Invitations::SendEmail, type: :service do
       end
     end
 
+    context "for psychologue" do
+      let!(:invitation) do
+        create(
+          :invitation,
+          format: "email",
+          applicant: applicant,
+          rdv_context: build(:rdv_context, motif_category: category_psychologue)
+        )
+      end
+
+      before { allow(mailer).to receive_message_chain(:short_invitation, :deliver_now) }
+
+      it("is a success") { is_a_success }
+
+      it "sends the email" do
+        expect(mailer).to receive_message_chain(:short_invitation, :deliver_now)
+        subject
+      end
+    end
+
     context "for rsa_orientation_on_phone_platform" do
       let!(:invitation) do
         create(
