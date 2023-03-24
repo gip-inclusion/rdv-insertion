@@ -417,6 +417,28 @@ describe Invitations::SendSms, type: :service do
       end
     end
 
+    context "for psychologue" do
+      let!(:rdv_context) { build(:rdv_context, motif_category: category_psychologue) }
+      let!(:configuration) { create(:configuration, motif_category: category_psychologue) }
+      let!(:content) do
+        "Monsieur John DOE,\n Vous êtes invité à prendre un rendez-vous de suivi psychologue." \
+          " Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant: " \
+          "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
+          "En cas de problème technique, contactez le 0147200001."
+      end
+
+      it("is a success") { is_a_success }
+
+      it "calls the send transactional service with the right content" do
+        expect(SendTransactionalSms).to receive(:call)
+          .with(
+            phone_number_formatted: phone_number_formatted, content: content,
+            sender_name: sms_sender_name
+          )
+        subject
+      end
+    end
+
     context "for rsa_integration_information" do
       let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_integration_information) }
       let!(:configuration) { create(:configuration, motif_category: category_rsa_integration_information) }
@@ -464,7 +486,6 @@ describe Invitations::SendSms, type: :service do
         end
       end
     end
-    # ici
 
     context "for rsa insertion offer" do
       let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_insertion_offer) }
