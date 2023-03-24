@@ -7,8 +7,6 @@ class SessionsController < ApplicationController
   before_action :validate_session!, :retrieve_agent!, :mark_agent_as_logged_in!, :set_session_credentials,
                 only: [:create]
 
-  before_action :logout_inclusion_connect, if: :logged_with_inclusion_connect
-
   def new; end
 
   def create
@@ -16,27 +14,38 @@ class SessionsController < ApplicationController
   end
 
   def destroy
+    if logged_with_inclusion_connect?
+      if logout_inclusion_connect
+        flash[:notice] = "Déconnexion réussie"
+      else
+        flash[:error] = "Nous n'avons pas pu vous déconnecter d'Inclusion Connect. Contacter le support à l'adresse \
+                        <data.insertion@beta.gouv.fr> si le problème persiste."
+        return redirect_to root_path
+      end
+    else
+      flash[:notice] = "Déconnexion réussie"
+    end
+
     clear_session
-    flash[:notice] = "Déconnexion réussie"
+
     redirect_to root_path
   end
 
   private
 
   def logout_inclusion_connect
-    InclusionConnectClient.logout(session[:ic_token])
-    # TODO handle errors with flash
+    InclusionConnectClient.logout(session[:id_token])
   end
 
   def clear_session
+    return unless logged_with_inclusion_connect? || session[:agent_id].present?
+
     session.delete(:agent_id)
     session.delete(:rdv_solidarites)
     @current_agent = nil
   end
 
-  def logged_with_inclusion_connect
-    return false if session.dig(:rdv_solidarites, "inclusion_connected").nil?
-
-    session[:rdv_solidarites]["inclusion_connected"]
+  def logged_with_inclusion_connect?
+    session.dig(:rdv_solidarites, "inclusion_connected") == true
   end
 end

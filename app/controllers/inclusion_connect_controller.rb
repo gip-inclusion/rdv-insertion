@@ -12,10 +12,11 @@ class InclusionConnectController < ApplicationController
       return
     end
 
-    token = InclusionConnectClient.retrieve_token(params[:code], inclusion_connect_callback_url)
-    session[:ic_token] = token
+    response = InclusionConnectClient.connect(params[:code], inclusion_connect_callback_url)
+    session[:id_token] = InclusionConnectClient.retrieve_id_token(response)
 
-    agent_email = InclusionConnectClient.retrieve_agent_email(token)
+    access_token = InclusionConnectClient.retrieve_access_token(response)
+    agent_email = InclusionConnectClient.retrieve_agent_email(access_token)
     @agent = Agent.find_by(email: agent_email)
 
     if @agent

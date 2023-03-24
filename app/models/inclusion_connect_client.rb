@@ -16,30 +16,7 @@ module InclusionConnectClient
       "#{BASE_URL}/auth?#{query.to_query}"
     end
 
-    def logout(token)
-      request = Faraday.get(
-        "#{BASE_URL}/logout",
-        {
-          id_token_hint: token
-        }
-      )
-      return false unless request.success?
-    end
-
-    def retrieve_token(code, inclusion_connect_callback_url)
-      get_token(code, inclusion_connect_callback_url).presence || false
-    end
-
-    def retrieve_agent_email(token)
-      agent_info = get_agent_info(token)
-      return false if agent_info.blank? || !agent_info["email_verified"]
-
-      agent_info["email"]
-    end
-
-    private
-
-    def get_token(code, inclusion_connect_callback_url)
+    def connect(code, inclusion_connect_callback_url)
       data = {
         client_id: CLIENT_ID,
         client_secret: CLIENT_SECRET,
@@ -55,8 +32,37 @@ module InclusionConnectClient
 
       return false unless response.success?
 
-      JSON.parse(response.body)["access_token"]
+      JSON.parse(response.body)
     end
+
+    def logout(token)
+      response = Faraday.get(
+        "#{BASE_URL}/logout",
+        {
+          id_token_hint: token
+        }
+      )
+      return false unless response.success?
+
+      true
+    end
+
+    def retrieve_access_token(response)
+      response["access_token"]
+    end
+
+    def retrieve_id_token(response)
+      response["id_token"]
+    end
+
+    def retrieve_agent_email(token)
+      agent_info = get_agent_info(token)
+      return false unless agent_info.present? && agent_info["email_verified"]
+
+      agent_info["email"]
+    end
+
+    private
 
     def get_agent_info(token)
       uri = URI("#{BASE_URL}/userinfo")
