@@ -1,4 +1,4 @@
-module Applicant::Text
+module Applicant::TextHelper
   def full_name
     "#{title.capitalize} #{first_name.capitalize} #{last_name.upcase}"
   end

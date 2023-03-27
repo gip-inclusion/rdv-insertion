@@ -2,7 +2,7 @@
 
 class ApplicantsController < ApplicationController
   PERMITTED_PARAMS = [
-    :uid, :role, :first_name, :last_name, :birth_date, :email, :phone_number,
+    :uid, :role, :first_name, :last_name, :nir, :pole_emploi_id, :birth_date, :email, :phone_number,
     :birth_name, :address, :affiliation_number, :department_internal_id, :title,
     :status, :rights_opening_date, :archiving_reason
   ].freeze

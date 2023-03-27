@@ -35,6 +35,8 @@ export default class Applicant {
     this.postalCode = formattedAttributes.postalCode;
     this.fullAddress = formattedAttributes.fullAddress || this.formatFullAddress();
     this.departmentInternalId = formattedAttributes.departmentInternalId;
+    this.nir = formattedAttributes.nir;
+    this.poleEmploiId = formattedAttributes.poleEmploiId;
     this.rightsOpeningDate = formattedAttributes.rightsOpeningDate;
     this.affiliationNumber = formattedAttributes.affiliationNumber;
     this.phoneNumber = formatPhoneNumber(formattedAttributes.phoneNumber);
@@ -316,6 +318,8 @@ export default class Applicant {
       ...(this.birthName && { birth_name: this.birthName }),
       ...(this.departmentInternalId && { department_internal_id: this.departmentInternalId }),
       ...(this.rightsOpeningDate && { rights_opening_date: this.rightsOpeningDate }),
+      ...(this.nir && { nir: this.nir }),
+      ...(this.poleEmploiId && { pole_emploi_id: this.poleEmploiId }),
     };
   }
 }

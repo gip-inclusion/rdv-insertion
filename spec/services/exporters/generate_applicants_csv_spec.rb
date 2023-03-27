@@ -10,6 +10,7 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
   end
   let!(:configuration) { create(:configuration, motif_category: motif_category) }
   let!(:structure) { organisation }
+  let!(:nir) { generate_random_nir }
   let!(:applicant1) do
     create(
       :applicant,
@@ -18,6 +19,8 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
       title: "madame",
       affiliation_number: "12345",
       department_internal_id: "33333",
+      nir: nir,
+      pole_emploi_id: "DDAAZZ",
       email: "jane@doe.com",
       address: "20 avenue de Ségur 75OO7 Paris",
       phone_number: "01 01 01 01 01",
@@ -90,6 +93,9 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
         expect(csv).to include("Prénom")
         expect(csv).to include("Numéro d'allocataire")
         expect(csv).to include("ID interne au département")
+        expect(csv).to include("Numéro de sécurité sociale")
+        expect(csv).to include("ID Pôle Emploi")
+        expect(csv).to include("ID interne au département")
         expect(csv).to include("Email")
         expect(csv).to include("Téléphone")
         expect(csv).to include("Date de naissance")
@@ -133,6 +139,8 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
           expect(csv).to include("Jane")
           expect(csv).to include("12345") # affiliation_number
           expect(csv).to include("33333") # department_internal_id
+          expect(csv).to include(nir)
+          expect(csv).to include("DDAAZZ") # pole_emploi_id
           expect(csv).to include("20 avenue de Ségur 75OO7 Paris")
           expect(csv).to include("jane@doe.com")
           expect(csv).to include("01 01 01 01 01")
