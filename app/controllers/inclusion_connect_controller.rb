@@ -7,11 +7,15 @@ class InclusionConnectController < ApplicationController
   end
 
   def callback
-    handle_failed_authentication unless valid_state?
+    return handle_failed_authentication unless valid_state?
+
     response = InclusionConnectClient.connect(params[:code], inclusion_connect_callback_url)
-    handle_failed_authentication unless response["error"].nil?
-    handle_failed_authentication unless set_session(response)
-    redirect_to session.delete(:agent_return_to) || root_path
+
+    if response["error"].nil? && set_session(response)
+      redirect_to session.delete(:agent_return_to) || root_path
+    else
+      handle_failed_authentication
+    end
   end
 
   private
@@ -25,7 +29,9 @@ class InclusionConnectController < ApplicationController
   end
 
   def set_session(response)
+    # We store id_token from response, we will need this for logging out from inclusion connect
     session[:id_token] = InclusionConnectClient.retrieve_id_token(response)
+    # access_token is used for getting agent info from inclusion connect api
     access_token = InclusionConnectClient.retrieve_access_token(response)
     agent_email = InclusionConnectClient.retrieve_agent_email(access_token)
     @agent = Agent.find_by(email: agent_email)

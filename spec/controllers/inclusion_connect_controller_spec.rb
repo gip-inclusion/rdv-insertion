@@ -9,6 +9,7 @@ describe InclusionConnectController do
       email: agent.email
     }
   end
+  let(:bearer_auth) { "Bearer valid_token" }
 
   before do
     stub_const("InclusionConnectClient::CLIENT_ID", "truc")
@@ -21,6 +22,7 @@ describe InclusionConnectController do
 
     it "redirect and returns an error if state doesn't match" do
       session[:ic_state] = "AZEERT"
+      expect(Sentry).to receive(:capture_message).with("Failed to authenticate agent with InclusionConnect")
       get :callback, params: { state: "zefjzelkf", code: code }
       expect(response).to redirect_to(sign_in_path)
       expect_flash_error
@@ -30,18 +32,26 @@ describe InclusionConnectController do
       stub_token_request.to_return(status: 500, body: { error: "an error occurs" }.to_json, headers: {})
 
       session[:ic_state] = "a state"
+      expect(Sentry).to receive(:capture_message).with("Failed to authenticate agent with InclusionConnect")
       get :callback, params: { state: "a state", code: code }
       expect(response).to redirect_to(sign_in_path)
       expect_flash_error
     end
 
-    it "redirect and returns an error if token request doesn't contains token" do
-      stub_token_request.to_return(status: 200, body: {}.to_json, headers: {})
+    describe "with an empty token" do
+      let(:bearer_auth) { "Bearer" }
 
-      session[:ic_state] = "a state"
-      get :callback, params: { state: "a state", code: code }
-      expect(response).to redirect_to(sign_in_path)
-      expect_flash_error
+      it "redirect and returns an error if token request doesn't contains token" do
+        stub_token_request.to_return(
+          status: 200, body: { access_token: "", scopes: "openid" }.to_json, headers: {}
+        )
+        stub_agent_info_request.to_return(status: 200, body: {}.to_json, headers: {})
+
+        session[:ic_state] = "a state"
+        get :callback, params: { state: "a state", code: code }
+        expect(response).to redirect_to(sign_in_path)
+        expect_flash_error
+      end
     end
 
     it "redirect and returns an error if userinfo request doesnt work" do
@@ -119,7 +129,7 @@ describe InclusionConnectController do
       )
     end
 
-    it "call sentry about authentification failure" do
+    it "call sentry if authentification failure" do
       stub_token_request.to_return(
         status: 200, body: { access_token: "valid_token", scopes: "openid" }.to_json, headers: {}
       )
