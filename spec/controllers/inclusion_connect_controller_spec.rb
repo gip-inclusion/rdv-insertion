@@ -9,7 +9,6 @@ describe InclusionConnectController do
       email: agent.email
     }
   end
-  let(:bearer_auth) { "Bearer valid_token" }
 
   before do
     stub_const("Client::InclusionConnect::CLIENT_ID", "truc")
@@ -20,48 +19,38 @@ describe InclusionConnectController do
   describe "#callback" do
     let(:code) { "1234" }
 
+    before do
+      session[:ic_state] = "a state"
+    end
+
     it "redirect and returns an error if state doesn't match" do
       session[:ic_state] = "AZEERT"
-      expect(Sentry).to receive(:capture_message).with("Failed to authenticate agent with InclusionConnect : Invalid State")
+      expect(Sentry).to receive(:capture_message).with(
+        "Failed to authenticate agent with InclusionConnect : Invalid State"
+      )
       get :callback, params: { state: "zefjzelkf", code: code }
       expect(response).to redirect_to(sign_in_path)
       expect_flash_error
     end
 
-    it "redirect and returns an error if token request error" do
+    it "redirect and returns an error if token request failed" do
       stub_token_request.to_return(status: 500, body: { error: "an error occurs" }.to_json, headers: {})
-
-      session[:ic_state] = "a state"
-      expect(Sentry).to receive(:capture_message).with("Failed to authenticate agent with InclusionConnect")
+      expect(Sentry).to receive(:capture_message).with("Inclusion Connect API Error : Connexion failed")
       get :callback, params: { state: "a state", code: code }
       expect(response).to redirect_to(sign_in_path)
       expect_flash_error
     end
 
-    describe "with an empty token" do
-      let(:bearer_auth) { "Bearer" }
-
-      it "redirect and returns an error if token request doesn't contains token" do
-        stub_token_request.to_return(
-          status: 200, body: { access_token: "", scopes: "openid" }.to_json, headers: {}
-        )
-        stub_agent_info_request.to_return(status: 200, body: {}.to_json, headers: {})
-
-        session[:ic_state] = "a state"
-        get :callback, params: { state: "a state", code: code }
-        expect(response).to redirect_to(sign_in_path)
-        expect_flash_error
-      end
-    end
-
-    it "redirect and returns an error if userinfo request doesnt work" do
+    it "redirect and returns an error if userinfo request failed" do
       stub_token_request.to_return(
         status: 200, body: { access_token: "valid_token", scopes: "openid" }.to_json, headers: {}
       )
       stub_agent_info_request.to_return(
         status: 500, body: {}.to_json, headers: {}
       )
-      session[:ic_state] = "a state"
+      expect(Sentry).to receive(:capture_message).with(
+        "Inclusion Connect API Error : Failed to retrieve user informations"
+      )
       get :callback, params: { state: "a state", code: code }
       expect(response).to redirect_to(sign_in_path)
       expect_flash_error
@@ -79,33 +68,34 @@ describe InclusionConnectController do
           email: "bob@gmail.com"
         }.to_json, headers: {}
       )
-      session[:ic_state] = "a state"
+      expect(Sentry).to receive(:capture_message).with("Inclusion Connect Error: Email not verified")
       get :callback, params: { state: "a state", code: code }
       expect(response).to redirect_to(sign_in_path)
       expect_flash_error
     end
 
-    it "redirect and returns an error if email is not the same as the agent" do
+    it "redirect and returns an error if agent email doesnt exist in rdv-i" do
       stub_token_request.to_return(
         status: 200, body: { access_token: "valid_token", scopes: "openid" }.to_json, headers: {}
       )
       stub_agent_info_request.to_return(
         status: 200, body: {
-          email_verified: false,
-          given_name: "Bob",
-          family_name: "Leponge",
-          email: "pas_bob@gmail.com"
+          email_verified: true,
+          given_name: "Patrick",
+          family_name: "Letoile",
+          email: "patrick@gmail.com"
         }.to_json, headers: {}
       )
-      session[:ic_state] = "a state"
+      expect(Sentry).to receive(:capture_message).with("Agent doesnt exist in rdv-insertion")
       get :callback, params: { state: "a state", code: code }
       expect(response).to redirect_to(sign_in_path)
       expect_flash_error
     end
 
     it "redirect and assign session variables if everything is ok" do
+      allow(ENV).to receive(:fetch).with("SHARED_SECRET_FOR_AGENTS_AUTH").and_return("S3cr3T")
       stub_token_request.to_return(
-        status: 200, body: { access_token: "valid_token", scopes: "openid" }.to_json, headers: {}
+        status: 200, body: { access_token: "valid_token", scopes: "openid", id_token: "123" }.to_json, headers: {}
       )
       stub_agent_info_request.to_return(
         status: 200, body: {
@@ -115,10 +105,9 @@ describe InclusionConnectController do
           email: "bob@gmail.com"
         }.to_json, headers: {}
       )
-      allow(ENV).to receive(:fetch).with("SHARED_SECRET_FOR_AGENTS_AUTH").and_return("S3cr3T")
-      session[:ic_state] = "a state"
       get :callback, params: { state: "a state", code: code }
       expect(response).to redirect_to(root_path)
+      expect(request.session[:inclusion_connect_token_id]).to eq("123")
       expect(request.session[:agent_id]).to eq(agent.id)
       expect(request.session[:rdv_solidarites]).to eq(
         {
@@ -127,23 +116,6 @@ describe InclusionConnectController do
           inclusion_connected: true
         }
       )
-    end
-
-    it "call sentry if authentification failure" do
-      stub_token_request.to_return(
-        status: 200, body: { access_token: "valid_token", scopes: "openid" }.to_json, headers: {}
-      )
-      stub_agent_info_request.to_return(
-        status: 200, body: {
-          email_verified: true,
-          given_name: "Autre",
-          family_name: "Utilisateur",
-          email: "pas_rdv_insertion@gmail.com"
-        }.to_json, headers: {}
-      )
-      session[:ic_state] = "a state"
-      expect(Sentry).to receive(:capture_message).with("Failed to authenticate agent with InclusionConnect")
-      get :callback, params: { state: "a state", code: code }
     end
   end
 

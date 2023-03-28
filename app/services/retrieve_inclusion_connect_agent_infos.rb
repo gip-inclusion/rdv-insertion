@@ -34,7 +34,7 @@ class RetrieveInclusionConnectAgentInfos < BaseService
   def request_agent_info!
     return if agent_info_response.success?
 
-    fail!("Inclusion Connect API Error : Failed to retrieve usr informations")
+    fail!("Inclusion Connect API Error : Failed to retrieve user informations")
   end
 
   def agent_info_response
