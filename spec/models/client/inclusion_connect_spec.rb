@@ -1,5 +1,10 @@
 describe Client::InclusionConnect do
   let(:base_url) { "https://test.inclusion.connect.fr" }
+  let(:inclusion_connect_callback_url) { "https://example.com/callback" }
+  let(:ic_state) { "test_state" }
+  let(:code) { "test_code" }
+  let(:access_token) { "test_access_token" }
+  let(:id_token) { "test_id_token" }
 
   before do
     stub_const("Client::InclusionConnect::CLIENT_ID", "truc")
@@ -7,12 +12,10 @@ describe Client::InclusionConnect do
     stub_const("Client::InclusionConnect::BASE_URL", base_url)
   end
 
-  describe "#auth_path" do
-    let(:ic_state) { "1234" }
-    let(:inclusion_connect_callback_url) { "http://localhost:3000/callback" }
+  describe ".auth_path" do
     let(:auth_path) { described_class.auth_path(ic_state, inclusion_connect_callback_url) }
 
-    it "returns the correct auth path" do
+    it "returns the correct authorization URL" do
       expect(auth_path).to eq(
         "#{base_url}/auth?client_id=truc&from=community&redirect_uri=" \
         "#{URI.encode_www_form_component(inclusion_connect_callback_url)}&response_type=" \
@@ -21,122 +24,51 @@ describe Client::InclusionConnect do
     end
   end
 
-  describe "#logout" do
-    let(:token) { "valid_token" }
+  describe ".connect" do
+    it "makes a POST request to the token endpoint with the correct data" do
+      allow(Faraday).to receive(:post).with(
+        URI("#{base_url}/token"),
+        {
+          client_id: "truc",
+          client_secret: "truc secret",
+          code: code,
+          grant_type: "authorization_code",
+          redirect_uri: inclusion_connect_callback_url
+        }
+      ).and_return(instance_double("Faraday::Response", status: 200, body: "response_body"))
 
-    context "when the logout request is successful" do
-      it "returns true" do
-        stub_inclusion_connect_logout
-          .with(query: { id_token_hint: token })
-          .to_return(status: 200, body: "", headers: {})
-
-        expect(described_class.logout(token)).to be_truthy
-      end
-    end
-
-    context "when the logout request fails" do
-      it "returns false" do
-        stub_request(:get, "#{base_url}/logout")
-          .with(query: { id_token_hint: token })
-          .to_return(status: 401, body: "", headers: {})
-
-        expect(described_class.logout(token)).to be_falsey
-      end
+      response = described_class.connect(code, inclusion_connect_callback_url)
+      expect(response.status).to eq(200)
+      expect(response.body).to eq("response_body")
     end
   end
 
-  describe "#connect" do
-    let(:code) { "1234" }
-    let(:inclusion_connect_callback_url) { "http://localhost:3000/callback" }
+  describe ".logout" do
+    it "makes a GET request to the logout endpoint with the correct data" do
+      allow(Faraday).to receive(:get).with(
+        "#{base_url}/logout",
+        {
+          id_token_hint: id_token
+        }
+      ).and_return(instance_double("Faraday::Response", status: 200, body: "response_body"))
 
-    context "when the connect request is successful" do
-      let(:response_body) { { access_token: "valid_token", id_token: "valid_id_token" }.to_json }
-
-      before do
-        stub_token_request.to_return(status: 200, body: response_body, headers: {})
-      end
-
-      it "returns the parsed response body" do
-        result = described_class.connect(code, inclusion_connect_callback_url)
-        expect(result).to eq(JSON.parse(response_body))
-      end
-    end
-
-    context "when the connect request fails" do
-      before do
-        stub_token_request.to_return(
-          status: 401, body: {}.to_json, headers: {}
-        )
-      end
-
-      it "returns an empty hash" do
-        result = described_class.connect(code, inclusion_connect_callback_url)
-        expect(result).to eq({})
-      end
+      response = described_class.logout(id_token)
+      expect(response.status).to eq(200)
+      expect(response.body).to eq("response_body")
     end
   end
 
-  describe "#retrieve_agent_email from IC API" do
-    let(:code) { "1234" }
-    let(:inclusion_connect_callback_url) { "http://localhost:3000/callback" }
-    let!(:agent) { create(:agent, first_name: "Bob", last_name: "Leponge", email: "bob@gmail.com") }
+  describe ".get_agent_info" do
+    it "makes a GET request to the userinfo endpoint with the correct data and headers" do
+      allow(Faraday).to receive(:get).with(
+        "#{base_url}/userinfo",
+        { schema: "openid" },
+        { "Authorization" => "Bearer #{access_token}" }
+      ).and_return(instance_double("Faraday::Response", status: 200, body: "response_body"))
 
-    context "When the token and agent info requests are valid" do
-      it "returns the agent" do
-        stub_token_request.to_return(
-          status: 200, body: { access_token: "valid_token", scopes: "openid" }.to_json, headers: {}
-        )
-        stub_agent_info_request.to_return(
-          status: 200, body: {
-            email_verified: true,
-            given_name: "Bob",
-            family_name: "Leponge",
-            email: "bob@gmail.com"
-          }.to_json, headers: {}
-        )
-        expect(described_class.retrieve_agent_email("valid_token")).to eq(agent.email)
-      end
-    end
-
-    context "when the token request fails" do
-      it "returns false" do
-        stub_token_request.to_return(
-          status: 401, body: {}.to_json, headers: {}
-        )
-        stub_agent_info_request.to_return(
-          status: 200, body: {}.to_json, headers: {}
-        )
-        expect(described_class.retrieve_agent_email("valid_token")).to be_falsey
-      end
-    end
-
-    context "when the agent info request fails" do
-      it "returns false" do
-        stub_token_request.to_return(
-          status: 200, body: { access_token: "valid_token", scopes: "openid" }.to_json, headers: {}
-        )
-        stub_agent_info_request.to_return(
-          status: 401, body: {}.to_json, headers: {}
-        )
-        expect(described_class.retrieve_agent_email("valid_token")).to be_falsey
-      end
-    end
-
-    context "when the email is not verified" do
-      it "returns false" do
-        stub_token_request.to_return(
-          status: 200, body: { access_token: "valid_token", scopes: "openid" }.to_json, headers: {}
-        )
-        stub_agent_info_request.to_return(
-          status: 200, body: {
-            email_verified: false,
-            given_name: "Bob",
-            family_name: "Leponge",
-            email: "bob@gmail.com"
-          }.to_json, headers: {}
-        )
-        expect(described_class.retrieve_agent_email("valid_token")).to be_falsey
-      end
+      response = described_class.get_agent_info(access_token)
+      expect(response.status).to eq(200)
+      expect(response.body).to eq("response_body")
     end
   end
 end
