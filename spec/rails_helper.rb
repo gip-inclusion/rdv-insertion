@@ -35,7 +35,6 @@ RSpec.configure do |config|
   # config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
   config.include AuthenticationSpecHelper
-  config.include InclusionConnectRequestSpecHelper
   config.include ServiceSpecHelper
   config.include UnescapeHtmlSpecHelper
   config.include JsonRequestHelper

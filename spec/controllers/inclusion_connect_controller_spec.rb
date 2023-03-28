@@ -152,4 +152,12 @@ describe InclusionConnectController do
       "<data.insertion@beta.gouv.fr> si le problème persiste."
     )
   end
+
+  def stub_token_request
+    stub_request(:post, "#{base_url}/token")
+  end
+
+  def stub_agent_info_request
+    stub_request(:get, "#{base_url}/userinfo").with(query: { schema: "openid" })
+  end
 end
