@@ -132,7 +132,9 @@ describe Invitations::GenerateLetter, type: :service do
         subject
         content = unescape_html(invitation.content)
         expect(content).to include("Objet : Rendez-vous d'orientation dans le cadre de votre RSA")
-        expect(content).to include("vous devez prendre un rendez-vous afin de démarrer un parcours d'accompagnement")
+        expect(content).to include(
+          "vous devez vous présenter à un rendez-vous d'orientation afin de démarrer un parcours d'accompagnement"
+        )
         expect(content).to include("Nous vous remercions de prendre ce rendez-vous")
         expect(content).not_to include(
           "la sanction peut aller jusqu’à une suspension ou une réduction du versement de votre RSA."
@@ -147,7 +149,9 @@ describe Invitations::GenerateLetter, type: :service do
         subject
         content = unescape_html(invitation.content)
         expect(content).to include("Objet : Rendez-vous d'accompagnement dans le cadre de votre RSA")
-        expect(content).to include("vous devez prendre un rendez-vous afin de démarrer un parcours d'accompagnement")
+        expect(content).to include(
+          "vous devez vous présenter à un rendez-vous d'accompagnement afin de démarrer un parcours d'accompagnement"
+        )
         expect(content).to include("Nous vous remercions de prendre ce rendez-vous")
         expect(content).to include(
           "la sanction peut aller jusqu’à une suspension ou une réduction du versement de votre RSA."
@@ -178,7 +182,8 @@ describe Invitations::GenerateLetter, type: :service do
           "Objet : Rendez-vous de signature de CER dans le cadre de votre RSA"
         )
         expect(content).to include(
-          "vous devez prendre un rendez-vous afin de construire et signer votre Contrat d'Engagement Réciproque"
+          "vous devez vous présenter à un rendez-vous de signature de CER afin de " \
+          "construire et signer votre Contrat d'Engagement Réciproque"
         )
         expect(content).to include("Nous vous remercions de prendre ce rendez-vous")
         expect(content).not_to include(
@@ -197,7 +202,7 @@ describe Invitations::GenerateLetter, type: :service do
           "Objet : Rendez-vous de suivi dans le cadre de votre RSA"
         )
         expect(content).to include(
-          "vous devez prendre un rendez-vous afin de faire un point avec votre référent de parcours"
+          "vous devez vous présenter à un rendez-vous de suivi afin de faire un point avec votre référent de parcours"
         )
         expect(content).not_to include("Nous vous remercions de prendre ce rendez-vous")
         expect(content).not_to include(
