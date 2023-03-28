@@ -92,8 +92,14 @@ describe InclusionConnectController do
       expect_flash_error
     end
 
-    it "redirect and assign session variables if everything is ok" do
+    it "redirect and assign session variables if everything is ok (with stub request)" do
       allow(ENV).to receive(:fetch).with("SHARED_SECRET_FOR_AGENTS_AUTH").and_return("S3cr3T")
+      allow(RetrieveInclusionConnectAgentInfos).to receive(:call).with(
+        code: code,
+        callback_url: inclusion_connect_callback_url
+      ).and_return(
+        OpenStruct.new(success?: true, agent: agent, inclusion_connect_token_id: "123", errors: [])
+      )
       stub_token_request.to_return(
         status: 200, body: { access_token: "valid_token", scopes: "openid", id_token: "123" }.to_json, headers: {}
       )
@@ -104,6 +110,27 @@ describe InclusionConnectController do
           family_name: "Leponge",
           email: "bob@gmail.com"
         }.to_json, headers: {}
+      )
+      get :callback, params: { state: "a state", code: code }
+      expect(response).to redirect_to(root_path)
+      expect(request.session[:inclusion_connect_token_id]).to eq("123")
+      expect(request.session[:agent_id]).to eq(agent.id)
+      expect(request.session[:rdv_solidarites]).to eq(
+        {
+          uid: agent.email,
+          x_agent_auth_signature: OpenSSL::HMAC.hexdigest("SHA256", "S3cr3T", payload.to_json),
+          inclusion_connected: true
+        }
+      )
+    end
+
+    it "redirect and assign session variables if everything is ok (with stub service)" do
+      allow(ENV).to receive(:fetch).with("SHARED_SECRET_FOR_AGENTS_AUTH").and_return("S3cr3T")
+      allow(RetrieveInclusionConnectAgentInfos).to receive(:call).with(
+        code: code,
+        callback_url: inclusion_connect_callback_url
+      ).and_return(
+        OpenStruct.new(success?: true, agent: agent, inclusion_connect_token_id: "123", errors: [])
       )
       get :callback, params: { state: "a state", code: code }
       expect(response).to redirect_to(root_path)
