@@ -1,10 +1,10 @@
-describe InclusionConnectClient do
+describe Client::InclusionConnect do
   let(:base_url) { "https://test.inclusion.connect.fr" }
 
   before do
-    stub_const("InclusionConnectClient::CLIENT_ID", "truc")
-    stub_const("InclusionConnectClient::CLIENT_SECRET", "truc secret")
-    stub_const("InclusionConnectClient::BASE_URL", base_url)
+    stub_const("Client::InclusionConnect::CLIENT_ID", "truc")
+    stub_const("Client::InclusionConnect::CLIENT_SECRET", "truc secret")
+    stub_const("Client::InclusionConnect::BASE_URL", base_url)
   end
 
   describe "#auth_path" do

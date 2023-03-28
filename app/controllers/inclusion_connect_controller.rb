@@ -1,20 +1,23 @@
 class InclusionConnectController < ApplicationController
   skip_before_action :authenticate_agent!
+  before_action :handle_invalid_state, only: [:callback], unless: :valid_state?
 
   def auth
     state = set_session_state
-    redirect_to InclusionConnectClient.auth_path(state, inclusion_connect_callback_url), allow_other_host: true
+    redirect_to Client::InclusionConnect.auth_path(state, inclusion_connect_callback_url), allow_other_host: true
   end
 
   def callback
-    return handle_failed_authentication unless valid_state?
+    result = RetrieveInclusionConnectAgentInfos.call(
+      code: params[:code], callback_url: inclusion_connect_callback_url
+    )
+    @agent = result.agent
 
-    response = InclusionConnectClient.connect(params[:code], inclusion_connect_callback_url)
-
-    if response["error"].nil? && set_session(response)
+    if result.errors.empty? && @agent
+      set_session_credentials(result)
       redirect_to session.delete(:agent_return_to) || root_path
     else
-      handle_failed_authentication
+      handle_failed_authentication(result.errors)
     end
   end
 
@@ -28,19 +31,8 @@ class InclusionConnectController < ApplicationController
     params[:state] == session[:ic_state]
   end
 
-  def set_session(response)
-    # We store id_token from response, we will need this for logging out from inclusion connect
-    session[:id_token] = InclusionConnectClient.retrieve_id_token(response)
-    # access_token is used for getting agent info from inclusion connect api
-    access_token = InclusionConnectClient.retrieve_access_token(response)
-    agent_email = InclusionConnectClient.retrieve_agent_email(access_token)
-    @agent = Agent.find_by(email: agent_email)
-    return false if @agent.blank?
-
-    set_session_credentials
-  end
-
-  def set_session_credentials
+  def set_session_credentials(result)
+    session[:inclusion_connect_token_id] = result.inclusion_connect_token_id
     session[:agent_id] = @agent.id
     session[:rdv_solidarites] = {
       uid: @agent.email,
@@ -59,8 +51,15 @@ class InclusionConnectController < ApplicationController
     OpenSSL::HMAC.hexdigest("SHA256", ENV.fetch("SHARED_SECRET_FOR_AGENTS_AUTH"), payload.to_json)
   end
 
-  def handle_failed_authentication
-    Sentry.capture_message("Failed to authenticate agent with InclusionConnect")
+  def handle_failed_authentication(errors)
+    Sentry.capture_message(errors.join(","))
+    flash[:error] = "Nous n'avons pas pu vous authentifier. Contacter le support à l'adresse" \
+                    "<data.insertion@beta.gouv.fr> si le problème persiste."
+    redirect_to sign_in_path
+  end
+
+  def handle_invalid_state
+    Sentry.capture_message("Failed to authenticate agent with InclusionConnect : Invalid State")
     flash[:error] = "Nous n'avons pas pu vous authentifier. Contacter le support à l'adresse" \
                     "<data.insertion@beta.gouv.fr> si le problème persiste."
     redirect_to sign_in_path

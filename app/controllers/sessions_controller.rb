@@ -34,7 +34,10 @@ class SessionsController < ApplicationController
   private
 
   def logout_inclusion_connect
-    InclusionConnectClient.logout(session[:id_token])
+    response = Client::InclusionConnect.logout(session[:inclusion_connect_token_id])
+    return false unless response.success?
+
+    true
   end
 
   def clear_session

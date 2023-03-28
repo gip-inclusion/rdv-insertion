@@ -12,9 +12,9 @@ describe InclusionConnectController do
   let(:bearer_auth) { "Bearer valid_token" }
 
   before do
-    stub_const("InclusionConnectClient::CLIENT_ID", "truc")
-    stub_const("InclusionConnectClient::CLIENT_SECRET", "truc secret")
-    stub_const("InclusionConnectClient::BASE_URL", base_url)
+    stub_const("Client::InclusionConnect::CLIENT_ID", "truc")
+    stub_const("Client::InclusionConnect::CLIENT_SECRET", "truc secret")
+    stub_const("Client::InclusionConnect::BASE_URL", base_url)
   end
 
   describe "#callback" do
@@ -22,7 +22,7 @@ describe InclusionConnectController do
 
     it "redirect and returns an error if state doesn't match" do
       session[:ic_state] = "AZEERT"
-      expect(Sentry).to receive(:capture_message).with("Failed to authenticate agent with InclusionConnect")
+      expect(Sentry).to receive(:capture_message).with("Failed to authenticate agent with InclusionConnect : Invalid State")
       get :callback, params: { state: "zefjzelkf", code: code }
       expect(response).to redirect_to(sign_in_path)
       expect_flash_error
