@@ -41,8 +41,8 @@ class SessionsController < ApplicationController
   end
 
   def clear_session
-    return unless logged_with_inclusion_connect? || session[:agent_id].present?
-
+    session.delete(:inclusion_connect_token_id)
+    session.delete(:ic_state)
     session.delete(:agent_id)
     session.delete(:rdv_solidarites)
     @current_agent = nil
