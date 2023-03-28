@@ -1,1 +1,6 @@
-<%= render "new_form", file_configuration: @file_configuration, errors: local_assigns[:errors] %>
+<%= render "file_configuration_form", title: "Créer fichier d'import",
+                                      file_configuration: @file_configuration,
+                                      errors: local_assigns[:errors].presence,
+                                      organisation: @organisation,
+                                      url: organisation_file_configurations_path(@organisation),
+                                      method: :post %>

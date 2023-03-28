@@ -200,7 +200,7 @@ export default class Applicant {
   }
 
   shouldDisplay(attribute) {
-    return this.columnNames[attribute];
+    return this.columnNames.includes(attribute);
   }
 
   canBeInvitedBy(format) {

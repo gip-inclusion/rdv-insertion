@@ -15,5 +15,7 @@ FactoryBot.define do
     street_number_column { "Adresse" }
     referent_email_column { "Référent" }
     affiliation_number_column { "N° Allocataire" }
+    pole_emploi_id_column { "ID PE" }
+    nir_column { "NIR" }
   end
 end
