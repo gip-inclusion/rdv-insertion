@@ -18,6 +18,40 @@ module MotifCategoriesHelper
         )
       )
     end
+    let!(:category_rsa_orientation_coaching) do
+      create(
+        :motif_category,
+        name: "RSA orientation - coaching emploi", short_name: "rsa_orientation_coaching",
+        template: create(
+          :template,
+          model: "standard",
+          rdv_title: "rendez-vous d'orientation",
+          rdv_title_by_phone: "rendez-vous d'orientation téléphonique",
+          rdv_purpose: "démarrer un parcours d'accompagnement",
+          applicant_designation: "bénéficiaire du RSA",
+          rdv_subject: "RSA",
+          display_mandatory_warning: true,
+          display_punishable_warning: false
+        )
+      )
+    end
+    let!(:category_rsa_orientation_freelance) do
+      create(
+        :motif_category,
+        name: "RSA orientation - travailleurs indépendants", short_name: "rsa_orientation_freelance",
+        template: create(
+          :template,
+          model: "standard",
+          rdv_title: "rendez-vous d'orientation",
+          rdv_title_by_phone: "rendez-vous d'orientation téléphonique",
+          rdv_purpose: "démarrer un parcours d'accompagnement",
+          applicant_designation: "bénéficiaire du RSA",
+          rdv_subject: "RSA",
+          display_mandatory_warning: true,
+          display_punishable_warning: false
+        )
+      )
+    end
     let!(:category_rsa_accompagnement) do
       create(
         :motif_category,
