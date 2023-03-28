@@ -11,6 +11,14 @@ module Invitations
 
     private
 
+    def short_content
+      "#{applicant.full_name},\n Vous êtes #{applicant.conjugate('invité')} à prendre un #{rdv_title}." \
+        " Pour choisir la date et l'horaire du RDV, " \
+        "cliquez sur le lien suivant: " \
+        "#{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
+        "En cas de problème technique, contactez le #{help_phone_number}."
+    end
+
     def standard_content
       "#{applicant.full_name},\nVous êtes #{applicant_designation} et vous devez vous présenter à un #{rdv_title}." \
         " Pour choisir la date et l'horaire du RDV, " \

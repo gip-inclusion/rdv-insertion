@@ -70,6 +70,8 @@ export default function ApplicantsUpload({
                 lastName: row[parameterizedColumnNames.last_name_column],
                 firstName: row[parameterizedColumnNames.first_name_column],
                 affiliationNumber: row[parameterizedColumnNames.affiliation_number_column],
+                nir: row[parameterizedColumnNames.nir_column],
+                poleEmploiId: row[parameterizedColumnNames.pole_emploi_id_column],
                 role: row[parameterizedColumnNames.role_column],
                 title: row[parameterizedColumnNames.title_column],
                 // address is street name and street number
@@ -182,9 +184,9 @@ export default function ApplicantsUpload({
     await Promise.all(
       applicants.map(async (applicant) => {
         const applicantContactsData = contactsData.find(
-          (a) =>
+          (contactRow) =>
             // padStart is used because sometimes affiliation numbers are fetched with less than 7 letters
-            a.MATRICULE.toString()?.padStart(7, "0") ===
+            contactRow.MATRICULE.toString()?.padStart(7, "0") ===
             applicant.affiliationNumber?.padStart(7, "0")
         );
         if (applicantContactsData) {
@@ -293,6 +295,8 @@ export default function ApplicantsUpload({
                   {parameterizedColumnNames.rights_opening_date_column && (
                     <th scope="col">Date d&apos;entrée flux</th>
                   )}
+                  {parameterizedColumnNames.nir && <th scope="col">NIR</th>}
+                  {parameterizedColumnNames.pole_emploi_id && <th scope="col">ID PE</th>}
                   <th scope="col" style={{ whiteSpace: "nowrap" }}>
                     Création compte
                   </th>

@@ -1,7 +1,8 @@
 class ChangeColumnNamesFormatForFileConfigurations < ActiveRecord::Migration[7.0]
   COLUMN_NAMES = [:title, :first_name, :last_name, :role, :email, :phone_number, :birth_date, :birth_name,
-                  :street_number, :street_type, :address, :postal_code, :city, :department_internal_id,
-                  :affiliation_number, :rights_opening_date, :organisation_search_terms, :referent_email].freeze
+                  :street_number, :street_type, :address, :postal_code, :city, :affiliation_number, :pole_emploi_id,
+                  :nir, :department_internal_id, :rights_opening_date, :organisation_search_terms, :referent_email]
+                 .freeze
 
   def up
     COLUMN_NAMES.each do |column_name|

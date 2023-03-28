@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_16_111741) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_29_102020) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -71,6 +71,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_16_111741) do
     t.datetime "deleted_at"
     t.datetime "last_webhook_update_received_at"
     t.datetime "archived_at"
+    t.string "nir"
+    t.string "pole_emploi_id"
     t.index ["department_id"], name: "index_applicants_on_department_id"
     t.index ["department_internal_id", "department_id"], name: "index_applicants_on_department_internal_id_and_department_id", unique: true
     t.index ["rdv_solidarites_user_id"], name: "index_applicants_on_rdv_solidarites_user_id", unique: true
@@ -134,8 +136,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_16_111741) do
     t.string "address_column"
     t.string "postal_code_column"
     t.string "city_column"
-    t.string "department_internal_id_column"
     t.string "affiliation_number_column"
+    t.string "pole_emploi_id_column"
+    t.string "nir_column"
+    t.string "department_internal_id_column"
     t.string "rights_opening_date_column"
     t.string "organisation_search_terms_column"
     t.string "referent_email_column"

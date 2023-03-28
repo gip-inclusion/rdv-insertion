@@ -237,6 +237,39 @@ module MotifCategoriesHelper
         )
       )
     end
+    let!(:category_psychologue) do
+      create(
+        :motif_category,
+        name: "Psychologue",
+        short_name: "psychologue",
+        template: create(
+          :template,
+          model: "short",
+          rdv_title: "rendez-vous de suivi psychologue",
+          display_mandatory_warning: false,
+          display_punishable_warning: false
+        )
+      )
+    end
+    let!(:category_siae_interview) do
+      create(
+        :motif_category,
+        name: "Entretien SIAE",
+        short_name: "siae_interview",
+        participation_optional: false,
+        template: create(
+          :template,
+          model: "standard",
+          rdv_title: "entretien d'embauche",
+          rdv_title_by_phone: "entretien d'embauche téléphonique",
+          applicant_designation: "candidat.e dans une Structure d’Insertion par l’Activité Economique (SIAE)",
+          rdv_subject: "candidature SIAE",
+          rdv_purpose: "poursuivre le processus de recrutement",
+          display_mandatory_warning: false,
+          display_punishable_warning: false
+        )
+      )
+    end
   end
 end
 # rubocop:enable Metrics/ModuleLength
