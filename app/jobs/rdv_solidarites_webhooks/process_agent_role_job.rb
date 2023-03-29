@@ -5,8 +5,6 @@ module RdvSolidaritesWebhooks
       @meta = meta.deep_symbolize_keys
       return if organisation.blank?
 
-      # temporary step to assign rdv_solidarites_id to existing agent_roles
-      assign_rdv_solidarites_agent_role_id if agent_role
       upsert_or_delete_agent_role
     end
 
@@ -21,7 +19,17 @@ module RdvSolidaritesWebhooks
     end
 
     def remove_agent_from_org
-      agent_role&.destroy
+      agent_role&.destroy! # we first destroy the agent role record
+      return if agent.blank?
+
+      # we ensure the agent is removed from the org in case agent role record wasn't found
+      agent.organisations.delete(organisation)
+      delete_agent if agent.reload.organisations.empty?
+    end
+
+    def delete_agent
+      agent.destroy!
+      MattermostClient.send_to_notif_channel "agent #{agent.rdv_solidarites_agent_id} destroyed"
     end
 
     def upsert_agent_and_raise
@@ -44,10 +52,6 @@ module RdvSolidaritesWebhooks
         @data,
         { organisation_id: organisation.id, agent_id: agent.id, last_webhook_update_received_at: @meta[:timestamp] }
       )
-    end
-
-    def assign_rdv_solidarites_agent_role_id
-      agent_role.update!(rdv_solidarites_agent_role_id: @data[:id])
     end
 
     def event
@@ -75,7 +79,7 @@ module RdvSolidaritesWebhooks
     end
 
     def agent_role
-      @agent_role ||= AgentRole.find_by(organisation_id: organisation.id, agent_id: agent&.id)
+      @agent_role ||= AgentRole.find_by(rdv_solidarites_agent_role_id: rdv_solidarites_agent_role_id)
     end
   end
 end
