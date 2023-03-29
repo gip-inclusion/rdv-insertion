@@ -37,11 +37,11 @@ module RdvSolidaritesWebhooks
     end
 
     def attach_applicant_to_org
-      applicant.organisations << organisation unless applicant.organisation_ids.include?(organisation.id)
+      applicant.organisations << organisation unless applicant.reload.organisation_ids.include?(organisation.id)
     end
 
     def remove_applicant_from_organisation
-      applicant.delete_organisation(organisation) if applicant.organisation_ids.include?(organisation.id)
+      applicant.delete_organisation(organisation) if applicant.reload.organisation_ids.include?(organisation.id)
       SoftDeleteApplicantJob.perform_async(rdv_solidarites_user_id) if applicant.organisations.empty?
     end
   end

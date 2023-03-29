@@ -43,13 +43,13 @@ module RdvSolidaritesWebhooks
     end
 
     def attach_agent_to_applicant
-      return if applicant.agent_ids.include?(agent.id)
+      return if applicant.reload.agent_ids.include?(agent.id)
 
       applicant.agents << agent
     end
 
     def remove_agent_from_applicant
-      return unless applicant.agent_ids.include?(agent.id)
+      return unless applicant.reload.agent_ids.include?(agent.id)
 
       applicant.agents.delete(agent)
     end
