@@ -43,4 +43,11 @@ class Organisation < ApplicationRecord
   def as_json(_opts = {})
     super.merge(department_number: department_number, motif_categories: motif_categories)
   end
+
+  def phone_number_is_valid?
+    # Override phone_number_is_valid? method from Phonable for 4 digits organisations
+    return true if phone_number.match(/^\d{4}$/)
+
+    super
+  end
 end
