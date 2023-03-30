@@ -68,9 +68,6 @@ class InclusionConnectController < ApplicationController
   end
 
   def handle_invalid_state
-    Sentry.capture_message("Failed to authenticate agent with InclusionConnect : Invalid State")
-    flash[:error] = "Nous n'avons pas pu vous authentifier. Contacter le support à l'adresse" \
-                    "<data.insertion@beta.gouv.fr> si le problème persiste."
-    redirect_to sign_in_path
+    handle_failed_authentication("Failed to authenticate agent with InclusionConnect : Invalid State")
   end
 end
