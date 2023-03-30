@@ -13,6 +13,6 @@ module Sendable
   end
 
   def letter_sender_name
-    messages_configuration.letter_sender_name || "le Conseil départemental"
+    messages_configuration&.letter_sender_name || "le Conseil départemental"
   end
 end
