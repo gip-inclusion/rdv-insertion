@@ -9,7 +9,7 @@ describe Applicants::AssignReferent, type: :service do
 
   let!(:agent) { create(:agent) }
   let!(:applicant) { create(:applicant) }
-  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
+  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
 
   describe "#call" do
     before do

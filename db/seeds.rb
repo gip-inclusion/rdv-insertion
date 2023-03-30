@@ -221,19 +221,17 @@ MotifCategory.create!(
 puts "Creating configurations and responsible..."
 file_config_drome = FileConfiguration.create(
   sheet_name: "ENTRETIENS PHYSIQUES",
-  column_names:
-    {"required"=>
-      {"address"=>"Adresse",
-      "last_name"=>"Nom bénéficiaire",
-      "first_name"=>"Prénom bénéficiaire",
-      "email"=>"Adresses Mails",
-      "birth_date"=>"Date de Naissance",
-      "postal_code"=>"CP Ville",
-      "affiliation_number"=>"N° Allocataire",
-      "role"=>"Rôle",
-      "phone_number"=>"N° Téléphones",
-      "title"=>"Civilité"},
-    "optional"=>{"department_internal_id"=>"ID Iodas"}}
+  address_column: "Adresse",
+  last_name_column: "Nom bénéficiaire",
+  first_name_column: "Prénom bénéficiaire",
+  email_column: "Adresses Mails",
+  birth_date_column: "Date de Naissance",
+  postal_code_column: "CP Ville",
+  affiliation_number_column: "N° Allocataire",
+  role_column: "Rôle",
+  phone_number_column: "N° Téléphones",
+  title_column: "Civilité",
+  department_internal_id_column: "ID Iodas"
 )
 
 drome_orientation_config = Configuration.create!(
@@ -256,17 +254,16 @@ drome_accompagnement_config = Configuration.create!(
 
 file_config_yonne = FileConfiguration.create(
   sheet_name: "Feuille1",
-  column_names:
-    {"required"=>
-      {"affiliation_number"=>"N° Allocataire",
-      "last_name"=>"Nom",
-      "first_name"=>"Prénom",
-      "phone_number"=>"Numéro(s) de téléphone",
-      "full_address"=>"Adresse",
-      "birth_date"=>"Date de naissance",
-      "role"=>"Rôle",
-      "title"=>"Civilité"},
-    "optional"=>{"birth_name"=>"Nom JF", "department_internal_id"=>"Code individu Iodas"}}
+  affiliation_number_column: "N° Allocataire",
+  last_name_column: "Nom",
+  first_name_column: "Prénom",
+  phone_number_column: "Numéro(s) de téléphone",
+  address_column: "Adresse",
+  birth_date_column: "Date de naissance",
+  role_column: "Rôle",
+  title_column: "Civilité",
+  birth_name_column: "Nom JF",
+  department_internal_id_column: "Code individu Iodas"
 )
 
 yonne_orientation_config = Configuration.create!(

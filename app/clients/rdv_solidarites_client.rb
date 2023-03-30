@@ -179,12 +179,7 @@ class RdvSolidaritesClient
   private
 
   def request_headers
-    {
-      "Content-Type" => "application/json",
-      "uid" => @rdv_solidarites_session.uid,
-      "access_token" => @rdv_solidarites_session.access_token,
-      "client" => @rdv_solidarites_session.client
-    }
+    @rdv_solidarites_session.to_h.merge("Content-Type" => "application/json")
   end
 end
 # rubocop:enable Metrics/ClassLength

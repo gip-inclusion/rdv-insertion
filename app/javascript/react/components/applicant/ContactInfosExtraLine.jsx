@@ -47,7 +47,7 @@ export default function ContactInfosExtraLine({
       </td>
       {["email", "phoneNumber", "rightsOpeningDate"].map(
         (attributeName) =>
-          applicant.shouldDisplay(camelToSnakeCase(attributeName)) && (
+          applicant.shouldDisplay(`${camelToSnakeCase(attributeName)}_column`) && (
             <td
               className="update-box"
               key={`${attributeName}${new Date().toISOString().slice(0, 19)}`}

@@ -2,7 +2,7 @@
 
 class ApplicantsController < ApplicationController
   PERMITTED_PARAMS = [
-    :uid, :role, :first_name, :last_name, :birth_date, :email, :phone_number,
+    :uid, :role, :first_name, :last_name, :nir, :pole_emploi_id, :birth_date, :email, :phone_number,
     :birth_name, :address, :affiliation_number, :department_internal_id, :title,
     :status, :rights_opening_date, :archiving_reason
   ].freeze
@@ -84,7 +84,7 @@ class ApplicantsController < ApplicationController
   def formatted_params
     # we nullify some blank params for unicity exceptions (ActiveRecord::RecordNotUnique) not to raise
     applicant_params.to_h do |k, v|
-      [k, k.in?([:affiliation_number, :department_internal_id, :email]) ? v.presence : v]
+      [k, k.in?([:affiliation_number, :department_internal_id, :email, :pole_emploi_id, :nir]) ? v.presence : v]
     end
   end
 

@@ -9,7 +9,7 @@ describe Invitations::AssignAttributes, type: :service do
     create(:applicant, invitations: [], rdv_solidarites_user_id: rdv_solidarites_user_id)
   end
 
-  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
+  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
   let!(:invitation) do
     build(:invitation, applicant: applicant, rdv_solidarites_token: nil, link: nil)
   end
