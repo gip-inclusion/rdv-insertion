@@ -1,7 +1,11 @@
 <div class="container mt-5 mb-5">
   <%= render "applicants_list_header" %>
   <div class="row card-white justify-content-center">
-    <%= render "applicants_list_tabs" %>
-    <%= render "applicants_list_table" %>
+    <% if @current_configuration %>
+      <%= render "applicants_list_tabs" %>
+      <%= render "applicants_list_table" %>
+    <% else %>
+      Merci de configurer votre organisation avant de pouvoir inviter des bénéficiaires
+    <% end %>
   </div>
 </div>

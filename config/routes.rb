@@ -63,6 +63,7 @@ Rails.application.routes.draw do
   end
 
   resources :departments, only: [] do
+    resources :organisations, only: [:new, :create]
     resources :department_organisations, only: [:index], as: :organisations, path: "/organisations"
     resources :applicants, only: [:index, :new, :create, :show, :edit, :update] do
       collection { resources :uploads, only: [:new] }

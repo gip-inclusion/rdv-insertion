@@ -3,6 +3,10 @@ class OrganisationPolicy < ApplicationPolicy
     pundit_user.organisations.include?(record)
   end
 
+  def create?
+    pundit_user.super_admin?
+  end
+
   def update?
     configure?
   end
