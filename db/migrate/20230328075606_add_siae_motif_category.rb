@@ -1,5 +1,5 @@
 class AddSiaeMotifCategory < ActiveRecord::Migration[7.0]
-  def change
+  def up
     siae_template = Template.create!(
       model: "standard",
       rdv_title: "entretien d'embauche",
@@ -17,5 +17,10 @@ class AddSiaeMotifCategory < ActiveRecord::Migration[7.0]
       template: siae_template,
       participation_optional: false
     )
+  end
+
+  def down
+    MotifCategory.find_by(short_name: "siae_interview").destroy!
+    Template.find_by(rdv_subject: "candidature SIAE", model: "standard").destroy!
   end
 end

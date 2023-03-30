@@ -33,7 +33,9 @@ Rails.application.routes.draw do
     end
     # we need to nest in organisations the different configurations record to correctly authorize them
     resources :configurations, only: [:index, :show, :new, :create, :edit, :update, :destroy]
-    resources :file_configurations, only: [:show]
+    resources :file_configurations, only: [:show, :new, :create, :edit, :update] do
+      get :confirm_update
+    end
     resources :messages_configurations, only: [:show, :new, :edit, :create, :update]
   end
 

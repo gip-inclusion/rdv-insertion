@@ -1,0 +1,17 @@
+<%= render "common/remote_modal", title: "Attention" do %>
+  <p>Ce fichier est utilisé par d'autres organisations. Souhaitez-vous le modifier pour toutes les organisations, ou en créer une nouvelle copie personnalisée ?</p>
+  <div class="d-flex justify-content-around">
+    <%= simple_form_for(current_file_configuration, url: organisation_file_configuration_path(organisation, current_file_configuration), html: { method: :patch }) do |f| %>
+        <% current_file_configuration.attributes.except("id", "created_at", "updated_at").each do |attribute_name, attribute_value| %>
+          <%= f.hidden_field attribute_name, value: attribute_value%>
+        <% end %>
+      <button type="submit" class="btn btn-blue-out">Modifier pour toutes</button>
+    <% end %>
+    <%= simple_form_for(new_file_configuration, url: organisation_file_configurations_path(organisation), html: { method: :post }) do |f| %>
+        <% new_file_configuration.attributes.except("id", "created_at", "updated_at").each do |attribute_name, attribute_value| %>
+          <%= f.hidden_field attribute_name, value: attribute_value%>
+        <% end %>
+      <button type="submit" class="btn btn-blue">Dupliquer et sauvegarder</button>
+    <% end %>
+  </div>
+<% end %>

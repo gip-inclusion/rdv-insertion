@@ -1,0 +1,30 @@
+<div class="d-flex justify-content-between mb-2">
+  <%= radio_button_tag "configuration[file_configuration_id]",
+      file_configuration.id,
+      current_file_configuration&.id == file_configuration.id,
+      class: "file-configuration-select",
+      id: "configuration_file_configuration_#{file_configuration.id}"
+  %>
+  <div class="background-blue-light d-flex justify-content-between px-4 pt-2 rounded flex-grow-1">
+    <div class="flex-grow-1 d-flex flex-column justify-content-center">
+      <% if file_configuration.configurations.present? %>
+        <p class="mb-0">Utilisé pour :</p>
+        <% file_configuration.configurations.each do |configuration_of_file_configuration| %>
+          <% organisations = configuration_of_file_configuration.organisations.select { |organisation| organisation.department_id == @department.id } %>
+          <% next if organisations.blank? %>
+          <p class="mb-2">- <strong><%= configuration_of_file_configuration.motif_category_name %></strong> par <strong><%= organisations.map(&:name).join(", ") %></strong></p>
+        <% end %>
+      <% elsif file_configuration.configurations.blank? %>
+        <p>Nouvelle configuration</p>
+      <% end %>
+    </div>
+    <div class="d-flex flex-column justify-content-center">
+      <%= link_to(organisation_file_configuration_path(organisation, file_configuration), data: { turbo_frame: 'remote_modal' }) do %>
+        <button class="btn btn-blue file-configuration-modal-button mt-2 mb-3">Voir le détail</button>
+      <% end %>
+      <%= link_to(edit_organisation_file_configuration_path(organisation, file_configuration), data: { turbo_frame: 'remote_modal' }) do %>
+        <button class="btn btn-blue file-configuration-modal-button mt-2 mb-3">Modifier</button>
+      <% end %>
+    </div>
+  </div>
+</div>

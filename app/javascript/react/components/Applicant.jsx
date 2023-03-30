@@ -35,26 +35,28 @@ export default function Applicant({ applicant, isDepartmentLevel, showReferentCo
         <td>{applicant.firstName}</td>
         <td>{applicant.lastName}</td>
         <td>{applicant.shortRole}</td>
-        {applicant.shouldDisplay("department_internal_id") && (
+        {applicant.shouldDisplay("department_internal_id_column") && (
           <td>{applicant.departmentInternalId ?? " - "}</td>
         )}
-        {applicant.shouldDisplay("email") && (
+        {applicant.shouldDisplay("email_column") && (
           <td className={applicant.emailUpdated ? "table-success" : ""}>
             {applicant.email ?? " - "}
           </td>
         )}
-        {applicant.shouldDisplay("phone_number") && (
+        {applicant.shouldDisplay("phone_number_column") && (
           <td className={applicant.phoneNumberUpdated ? "table-success" : ""}>
             {applicant.phoneNumber ?? " - "}
           </td>
         )}
-        {applicant.shouldDisplay("rights_opening_date") && (
+        {applicant.shouldDisplay("rights_opening_date_column") && (
           <td className={applicant.rightsOpeningDateUpdated ? "table-success" : ""}>
             {applicant.rightsOpeningDate ?? " - "}
           </td>
         )}
-        {applicant.shouldDisplay("nir") && <td>{applicant.nir ?? " - "}</td>}
-        {applicant.shouldDisplay("pole_emploi_id") && <td>{applicant.poleEmploiId ?? " - "}</td>}
+        {applicant.shouldDisplay("nir_column") && <td>{applicant.nir ?? " - "}</td>}
+        {applicant.shouldDisplay("pole_emploi_id_column") && (
+          <td>{applicant.poleEmploiId ?? " - "}</td>
+        )}
         {/* ------------------------------- Account creation cell ----------------------------- */}
 
         <CreationCell

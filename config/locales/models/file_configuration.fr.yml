@@ -5,4 +5,25 @@ fr:
     attributes:
       file_configuration:
         sheet_name: Nom de l'onglet Excel
-        column_names: Nom des colonnes
+        column_attributes: Nom des colonnes
+        role_column: Rôle (demandeur/conjoint)
+        email_column: Email
+        title_column: Civilité
+        address_column: Adresse
+        last_name_column: Nom de famille
+        first_name_column: Prénom
+        birth_date_column: Date de naissance
+        affiliation_number_column: N° CAF
+        department_internal_id_column: ID bénéficiaire départment
+        street_number_column: Champ adresse 1
+        street_type_column: Champ adresse 2
+        address_column: Champ adresse 3
+        postal_code_column: Champ adresse 4
+        city_column: Champ adresse 5
+        phone_number_column: Numéro de téléphone
+        birth_name_column: Nom de naissance
+        rights_opening_date_column: Date d'ouverture du droit
+        organisation_search_terms_column: Structure référente
+        referent_email_column: Email de l'agent référent
+        pole_emploi_id_column: ID Pôle emploi
+        nir_column: NIR
