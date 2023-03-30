@@ -36,7 +36,7 @@ describe Applicants::Save, type: :service do
     create(:applicant, applicant_attributes.merge(organisations: [organisation], rdv_solidarites_user_id: nil))
   end
 
-  let(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
+  let(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
 
   describe "#call" do
     before do

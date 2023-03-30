@@ -16,7 +16,7 @@ module AuthenticatedControllerConcern
   end
 
   def logged_in?
-    !current_agent.nil? && rdv_solidarites_session.valid?
+    current_agent.present? && rdv_solidarites_session.valid?
   end
 
   def current_agent
@@ -24,10 +24,6 @@ module AuthenticatedControllerConcern
   end
 
   def rdv_solidarites_session
-    @rdv_solidarites_session ||= RdvSolidaritesSession.new(
-      uid: session["rdv_solidarites"]["uid"],
-      access_token: session["rdv_solidarites"]["access_token"],
-      client: session["rdv_solidarites"]["client"]
-    )
+    @rdv_solidarites_session ||= RdvSolidaritesSessionFactory.create_with(**session[:rdv_solidarites])
   end
 end

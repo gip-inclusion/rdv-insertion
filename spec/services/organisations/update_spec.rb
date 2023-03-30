@@ -16,7 +16,7 @@ describe Organisations::Update, type: :service do
     { name: "PIE Pantin", email: "pie@pantin.fr", phone_number: "0102030405" }
   end
 
-  let(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
+  let(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
 
   describe "#call" do
     before do

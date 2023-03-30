@@ -20,7 +20,6 @@ describe ApplicantsController do
   end
   let!(:agent) { create(:agent, basic_role_in_organisations: [organisation]) }
   let!(:rdv_solidarites_organisation_id) { 888 }
-  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
   let(:applicant) { create(:applicant, organisations: [organisation], department: department) }
 
   describe "#new" do

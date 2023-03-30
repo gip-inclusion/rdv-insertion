@@ -90,6 +90,6 @@ class CreateAndInviteApplicantJob < ApplicationJob
   end
 
   def rdv_solidarites_session
-    @rdv_solidarites_session ||= RdvSolidaritesSession.new(**@rdv_solidarites_session_credentials)
+    @rdv_solidarites_session ||= RdvSolidaritesSessionFactory.create_with(**@rdv_solidarites_session_credentials)
   end
 end

@@ -36,7 +36,7 @@ describe InviteApplicantJob do
   end
   let!(:rdv_context) { create(:rdv_context, motif_category: motif_category, applicant: applicant) }
   let!(:invitation) { create(:invitation) }
-  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
+  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
 
   describe "#perform" do
     context "when the applicant has not been invited yet" do
@@ -50,8 +50,8 @@ describe InviteApplicantJob do
             valid_until: valid_until, rdv_with_referents: false
           )
         ).and_return(invitation)
-        allow(RdvSolidaritesSession).to receive(:new)
-          .with(rdv_solidarites_session_credentials)
+        allow(RdvSolidaritesSessionFactory).to receive(:create_with)
+          .with(**rdv_solidarites_session_credentials)
           .and_return(rdv_solidarites_session)
         allow(Invitations::SaveAndSend).to receive(:call)
           .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
