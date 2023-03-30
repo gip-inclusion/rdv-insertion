@@ -22,18 +22,14 @@ describe RdvSolidaritesWebhooks::ProcessAgentRoleJob do
   let!(:meta) do
     {
       "model" => "AgentRole",
-      "timestamp" => "2023-02-09 11:17:22 +0200"
+      "timestamp" => "2023-02-09 11:17:22 +0200",
+      "event" => "updated"
     }.deep_symbolize_keys
   end
 
   describe "#perform" do
     before do
       allow_any_instance_of(described_class).to receive(:sleep)
-    end
-
-    it "assigns a rdv_solidarites_agent_role_id" do
-      subject
-      expect(agent_role.reload.rdv_solidarites_agent_role_id).to eq(rdv_solidarites_agent_role_id)
     end
 
     it "upserts an agent_role record" do
@@ -54,13 +50,45 @@ describe RdvSolidaritesWebhooks::ProcessAgentRoleJob do
         }.deep_symbolize_keys
       end
 
-      it "removes the agent from the organisation" do
+      it "removes the agent from organisation" do
         expect { subject }.to change(AgentRole, :count).by(-1)
       end
 
       it "does not attach the agent to the organisation" do
         expect(UpsertRecordJob).not_to receive(:perform_async)
         subject
+      end
+
+      context "when the agent role record cannot be found through id" do
+        before { data[:id] = "some-other-id" }
+
+        it "still removes the agent from the organisation" do
+          expect { subject }.to change(AgentRole, :count).by(-1)
+        end
+      end
+
+      context "when the agent belongs to this org only" do
+        it "destroys the agent" do
+          expect { subject }.to change(Agent, :count).by(-1)
+        end
+
+        it "sends a message to mattermost" do
+          expect(MattermostClient).to receive(:send_to_notif_channel)
+            .with("agent 455 destroyed")
+          subject
+        end
+      end
+
+      context "when the agent belongs to multiple orgs" do
+        before { create(:agent_role, organisation: create(:organisation), agent: agent) }
+
+        it "does not destroy the agent" do
+          expect { subject }.not_to change(Agent, :count)
+        end
+
+        it "still removes the agent from the organisation" do
+          expect { subject }.to change(AgentRole, :count).by(-1)
+        end
       end
     end
 
