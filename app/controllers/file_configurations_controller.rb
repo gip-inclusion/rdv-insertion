@@ -34,7 +34,7 @@ class FileConfigurationsController < ApplicationController
     if @file_configuration.save
       flash.now[:success] = "Le fichier d'import a été créé avec succès"
     else
-      render_errors
+      render_errors("Créer fichier d'import", :post, organisation_file_configurations_path(@organisation))
     end
   end
 
@@ -43,7 +43,7 @@ class FileConfigurationsController < ApplicationController
     if @file_configuration.save
       flash.now[:success] = "Le fichier d'import a été modifié avec succès"
     else
-      render_errors
+      render_errors("Modifier fichier d'import", @edit_form_html_method, @edit_form_url)
     end
   end
 
@@ -60,29 +60,17 @@ class FileConfigurationsController < ApplicationController
     end
   end
 
-  def render_errors
+  def render_errors(form_title, form_method, form_url)
     render turbo_stream: turbo_stream.replace(
       "remote_modal", partial: "file_configuration_form", locals: {
         organisation: @organisation,
         file_configuration: @file_configuration,
         errors: @file_configuration.errors.full_messages,
-        url: form_url,
+        title: form_title,
         method: form_method,
-        title: form_title
+        url: form_url
       }
     )
-  end
-
-  def form_title
-    @edit_form_url ? "Modifier fichier d'import" : "Créer fichier d'import"
-  end
-
-  def form_url
-    @edit_form_url.presence || organisation_file_configurations_path(@organisation)
-  end
-
-  def form_method
-    @edit_form_html_method.presence || :post
   end
 
   def set_edit_form_url
