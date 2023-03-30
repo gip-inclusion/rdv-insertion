@@ -1,5 +1,5 @@
-describe Client::InclusionConnect do
-  let(:base_url) { "https://test.inclusion.connect.fr" }
+describe InclusionConnectClient, type: :model do
+  let(:base_url) { "https://test.inclusion.get_token.fr" }
   let(:inclusion_connect_callback_url) { "https://example.com/callback" }
   let(:ic_state) { "test_state" }
   let(:code) { "test_code" }
@@ -7,9 +7,9 @@ describe Client::InclusionConnect do
   let(:id_token) { "test_id_token" }
 
   before do
-    stub_const("Client::InclusionConnect::CLIENT_ID", "truc")
-    stub_const("Client::InclusionConnect::CLIENT_SECRET", "truc secret")
-    stub_const("Client::InclusionConnect::BASE_URL", base_url)
+    stub_const("InclusionConnectClient::CLIENT_ID", "truc")
+    stub_const("InclusionConnectClient::CLIENT_SECRET", "truc secret")
+    stub_const("InclusionConnectClient::BASE_URL", base_url)
   end
 
   describe ".auth_path" do
@@ -24,7 +24,7 @@ describe Client::InclusionConnect do
     end
   end
 
-  describe ".connect" do
+  describe ".get_token" do
     it "makes a POST request to the token endpoint with the correct data" do
       allow(Faraday).to receive(:post).with(
         URI("#{base_url}/token"),
@@ -37,7 +37,7 @@ describe Client::InclusionConnect do
         }
       ).and_return(instance_double("Faraday::Response", status: 200, body: "response_body"))
 
-      response = described_class.connect(code, inclusion_connect_callback_url)
+      response = described_class.get_token(code, inclusion_connect_callback_url)
       expect(response.status).to eq(200)
       expect(response.body).to eq("response_body")
     end

@@ -11,9 +11,9 @@ describe InclusionConnectController do
   end
 
   before do
-    stub_const("Client::InclusionConnect::CLIENT_ID", "truc")
-    stub_const("Client::InclusionConnect::CLIENT_SECRET", "truc secret")
-    stub_const("Client::InclusionConnect::BASE_URL", base_url)
+    stub_const("InclusionConnectClient::CLIENT_ID", "truc")
+    stub_const("InclusionConnectClient::CLIENT_SECRET", "truc secret")
+    stub_const("InclusionConnectClient::BASE_URL", base_url)
   end
 
   describe "#callback" do
@@ -35,7 +35,7 @@ describe InclusionConnectController do
 
     it "redirect and returns an error if token request failed" do
       stub_token_request.to_return(status: 500, body: { error: "an error occurs" }.to_json, headers: {})
-      expect(Sentry).to receive(:capture_message).with("Inclusion Connect API Error : Connexion failed")
+      expect(Sentry).to receive(:capture_message).with("Inclusion Connect API Error : Failed to retrieve token")
       get :callback, params: { state: "a state", code: code }
       expect(response).to redirect_to(sign_in_path)
       expect_flash_error
@@ -86,7 +86,7 @@ describe InclusionConnectController do
           email: "patrick@gmail.com"
         }.to_json, headers: {}
       )
-      expect(Sentry).to receive(:capture_message).with("Agent doesnt exist in rdv-insertion")
+      expect(Sentry).to receive(:capture_message).with("Agent doesn't exist in rdv-insertion")
       get :callback, params: { state: "a state", code: code }
       expect(response).to redirect_to(sign_in_path)
       expect_flash_error

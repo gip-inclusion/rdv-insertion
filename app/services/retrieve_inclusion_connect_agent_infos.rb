@@ -5,30 +5,30 @@ class RetrieveInclusionConnectAgentInfos < BaseService
   end
 
   def call
-    request_connect!
+    request_token!
     request_agent_info!
     retrieve_agent!
-    retrieve_token_id!
+    retrieve_token_id
   end
 
   private
 
-  def request_connect!
-    return if connect_response.success?
+  def request_token!
+    return if token_response.success?
 
-    fail!("Inclusion Connect API Error : Connexion failed")
+    fail!("Inclusion Connect API Error : Failed to retrieve token")
   end
 
-  def connect_response
-    @connect_response ||= Client::InclusionConnect.connect(@code, @callback_url)
+  def token_response
+    @token_response ||= InclusionConnectClient.get_token(@code, @callback_url)
   end
 
-  def connect_body
-    JSON.parse(connect_response.body)
+  def token_body
+    JSON.parse(token_response.body)
   end
 
-  def retrieve_token_id!
-    result.inclusion_connect_token_id = connect_body["id_token"]
+  def retrieve_token_id
+    result.inclusion_connect_token_id = token_body["id_token"]
   end
 
   def request_agent_info!
@@ -38,7 +38,7 @@ class RetrieveInclusionConnectAgentInfos < BaseService
   end
 
   def agent_info_response
-    @agent_info_response ||= Client::InclusionConnect.get_agent_info(connect_body["access_token"])
+    @agent_info_response ||= InclusionConnectClient.get_agent_info(token_body["access_token"])
   end
 
   def agent_info_body
@@ -46,8 +46,14 @@ class RetrieveInclusionConnectAgentInfos < BaseService
   end
 
   def retrieve_agent!
-    fail!("Inclusion Connect Error: Email not verified") unless agent_info_body["email_verified"]
+    email_verified!
     result.agent = Agent.find_by(email: agent_info_body["email"])
-    result.agent.presence || fail!("Agent doesnt exist in rdv-insertion")
+    result.agent.presence || fail!("Agent doesn't exist in rdv-insertion")
+  end
+
+  def email_verified!
+    return if agent_info_body["email_verified"]
+
+    fail!("Inclusion Connect Error: Email not verified")
   end
 end
