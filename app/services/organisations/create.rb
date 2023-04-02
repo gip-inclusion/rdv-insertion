@@ -10,8 +10,8 @@ module Organisations
         check_rdv_solidarites_organisation_id
         assign_rdv_solidarites_organisation_attributes
         save_record!(@organisation)
+        create_organisation_agent_role_for_current_agent
         upsert_rdv_solidarites_webhook_endpoint
-        # add 1 context
       end
     end
 
@@ -28,15 +28,26 @@ module Organisations
     end
 
     def assign_rdv_solidarites_organisation_attributes
-      @organisation.assign_attributes(retrieve_rdv_solidarites_organisation.organisation.attributes.except(:id))
+      @organisation.assign_attributes(rdv_solidarites_organisation.attributes.except(:id))
     end
 
-    def retrieve_rdv_solidarites_organisation
-      @retrieve_rdv_solidarites_organisation ||= call_service!(
+    def create_organisation_agent_role_for_current_agent
+      # to allow an instant redirection, we create the agent_role directl
+      # the rdv_solidarites_agent_role_id will be added to this agent_role record thanks to the webhook
+      # this is safe because the transaction succeeds only if the agent is a territorial admin in the department
+      AgentRole.create(agent_id: current_agent.id, organisation_id: @organisation.id, level: "admin")
+    end
+
+    def current_agent
+      @current_agent ||= Agent.find_by(email: @rdv_solidarites_session.uid)
+    end
+
+    def rdv_solidarites_organisation
+      @rdv_solidarites_organisation ||= call_service!(
         RdvSolidaritesApi::RetrieveOrganisation,
         rdv_solidarites_organisation_id: @organisation.rdv_solidarites_organisation_id,
         rdv_solidarites_session: @rdv_solidarites_session
-      )
+      ).organisation
     end
 
     def create_rdvs_webhook_endpoint
