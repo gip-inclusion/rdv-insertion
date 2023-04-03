@@ -39,6 +39,25 @@ describe OrganisationsController do
           expect(response.body).to match(/#{organisation.name}/)
           expect(response.body).to match(/#{organisation2.name}/)
         end
+
+        context "when agent is not super admin" do
+          it "does not display the create organisation button" do
+            expect(response.body).not_to match("Lier une organisation RDVS")
+          end
+        end
+      end
+    end
+
+    context "when agent is super admin" do
+      let!(:agent) { create(:agent, admin_role_in_organisations: [organisation, organisation2], super_admin: true) }
+
+      before do
+        sign_in(agent)
+      end
+
+      it "displays the create organisation button" do
+        get :index
+        expect(response.body).to match("Lier une organisation RDVS")
       end
     end
   end
@@ -208,6 +227,28 @@ describe OrganisationsController do
         post :create, params: create_params
 
         expect(response).to redirect_to(root_path)
+      end
+    end
+
+    context "when the organisation_id given is not correct" do
+      let!(:create_params) do
+        { department_id: department.id,
+          organisation: { rdv_solidarites_organisation_id: "test" } }
+      end
+
+      before do
+        allow(Organisations::Create).to receive(:call)
+          .and_return(OpenStruct.new(success?: false, errors:
+            ["L'ID de l'organisation RDV-Solidarités n'a pas été renseigné correctement"]))
+      end
+
+      it "renders the new form with the errors" do
+        post :create, params: create_params
+
+        expect(unescaped_response_body).to match(/ID de l'orga RDVS/)
+        expect(unescaped_response_body).to match(
+          /L'ID de l'organisation RDV-Solidarités n'a pas été renseigné correctement/
+        )
       end
     end
   end

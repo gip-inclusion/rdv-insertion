@@ -1,32 +1,27 @@
 module RdvSolidaritesApi
   class UpdateWebhookEndpoint < Base
-    def initialize(rdv_solidarites_webhook_endpoint_id:, rdv_solidarites_organisation_id:, rdv_solidarites_session:)
+    def initialize(
+      rdv_solidarites_webhook_endpoint_id:,
+      rdv_solidarites_organisation_id:,
+      rdv_solidarites_session:,
+      subscriptions: WebhookEndpoint::ALL_SUBSCRIPTIONS
+    )
       @rdv_solidarites_webhook_endpoint_id = rdv_solidarites_webhook_endpoint_id
       @rdv_solidarites_organisation_id = rdv_solidarites_organisation_id
       @rdv_solidarites_session = rdv_solidarites_session
+      @subscriptions = subscriptions
     end
 
     def call
       request!
-      result.webhook_endpoint = \
-        RdvSolidarites::WebhookEndpoint.new(rdv_solidarites_response_body["webhook_endpoint"])
     end
 
     private
 
     def rdv_solidarites_response
       @rdv_solidarites_response ||= rdv_solidarites_client.update_webhook_endpoint(
-        @rdv_solidarites_webhook_endpoint_id, webhook_endpoint_attributes
+        @rdv_solidarites_webhook_endpoint_id, @rdv_solidarites_organisation_id, @subscriptions
       )
-    end
-
-    def webhook_endpoint_attributes
-      @webhook_endpoint_attributes ||= {
-        organisation_id: @rdv_solidarites_organisation_id,
-        target_url: "#{ENV['HOST']}/rdv_solidarites_webhooks",
-        secret: ENV["RDV_SOLIDARITES_SECRET"],
-        subscriptions: %w[rdv user user_profile organisation motif lieu agent agent_role referent_assignation]
-      }
     end
   end
 end
