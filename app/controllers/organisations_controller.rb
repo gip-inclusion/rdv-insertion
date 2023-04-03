@@ -88,7 +88,7 @@ class OrganisationsController < ApplicationController
   end
 
   def retrieve_relevant_organisations
-    @retrieve_relevant_organisations ||= \
+    @retrieve_relevant_organisations ||=
       RdvSolidaritesApi::RetrieveOrganisations.call(
         rdv_solidarites_session: rdv_solidarites_session,
         geo_attributes: {

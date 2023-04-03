@@ -75,7 +75,7 @@ class ReferentAssignationsController < ApplicationController
   end
 
   def set_agent
-    @agent = \
+    @agent =
       if agent_id.present?
         @agents.find(agent_id)
       elsif agent_email.present?

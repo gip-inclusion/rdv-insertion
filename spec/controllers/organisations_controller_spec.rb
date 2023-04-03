@@ -245,13 +245,13 @@ describe OrganisationsController do
     it "is a success" do
       subject
       expect(response).to be_successful
-      result = JSON.parse(response.body)
+      result = response.parsed_body
       expect(result["success"]).to eq(true)
     end
 
     it "returns the geolocated organisations along with all the organisations" do
       subject
-      result = JSON.parse(response.body)
+      result = response.parsed_body
       expect(result["geolocated_organisations"].count).to eq(1)
       expect(result["geolocated_organisations"].pluck("id")).to contain_exactly(organisation2.id)
       expect(result["department_organisations"].count).to eq(2)
@@ -264,13 +264,13 @@ describe OrganisationsController do
       it "is a success" do
         subject
         expect(response).to be_successful
-        result = JSON.parse(response.body)
+        result = response.parsed_body
         expect(result["success"]).to eq(true)
       end
 
       it "returns empty organisations attributed to sector" do
         subject
-        result = JSON.parse(response.body)
+        result = response.parsed_body
         expect(result["geolocated_organisations"].count).to eq(0)
         expect(result["department_organisations"].count).to eq(1)
         expect(result["department_organisations"].pluck("id")).to contain_exactly(organisation.id)
@@ -286,7 +286,7 @@ describe OrganisationsController do
       it "is a failure" do
         subject
         expect(response).to be_successful
-        result = JSON.parse(response.body)
+        result = response.parsed_body
         expect(result["success"]).to eq(false)
         expect(result["errors"]).to eq(["some error"])
       end
@@ -295,7 +295,7 @@ describe OrganisationsController do
         subject
 
         expect(response).to be_successful
-        result = JSON.parse(response.body)
+        result = response.parsed_body
         expect(result["success"]).to eq(false)
         expect(result["department_organisations"].count).to eq(2)
         expect(result["department_organisations"].pluck("id")).to contain_exactly(organisation.id, organisation2.id)
@@ -311,7 +311,7 @@ describe OrganisationsController do
       it "is a failure" do
         subject
         expect(response).to be_successful
-        result = JSON.parse(response.body)
+        result = response.parsed_body
         expect(result["success"]).to eq(false)
         expect(result["errors"]).to eq(["Impossible de géolocaliser le bénéficiaire à partir de l'adresse donnée"])
       end
@@ -320,7 +320,7 @@ describe OrganisationsController do
         subject
 
         expect(response).to be_successful
-        result = JSON.parse(response.body)
+        result = response.parsed_body
         expect(result["department_organisations"].count).to eq(2)
         expect(result["department_organisations"].pluck("id")).to contain_exactly(organisation.id, organisation2.id)
       end
@@ -342,13 +342,13 @@ describe OrganisationsController do
     it "is a success" do
       subject
       expect(response).to be_successful
-      result = JSON.parse(response.body)
+      result = response.parsed_body
       expect(result["success"]).to eq(true)
     end
 
     it "returns the matching organisations along with all the department organisations" do
       subject
-      result = JSON.parse(response.body)
+      result = response.parsed_body
       expect(result["matching_organisations"].count).to eq(1)
       expect(result["matching_organisations"].pluck("id")).to contain_exactly(organisation2.id)
       expect(result["department_organisations"].count).to eq(2)
@@ -363,7 +363,7 @@ describe OrganisationsController do
         subject
         expect(response).to be_successful
 
-        result = JSON.parse(response.body)
+        result = response.parsed_body
         expect(result["success"]).to eq(true)
 
         expect(result["matching_organisations"].count).to eq(1)

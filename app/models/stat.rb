@@ -29,7 +29,7 @@ class Stat < ApplicationRecord
   end
 
   def invited_applicants_with_rdvs_non_collectifs_sample
-    @invited_applicants_with_rdvs_non_collectifs_sample ||= \
+    @invited_applicants_with_rdvs_non_collectifs_sample ||=
       applicants_sample.joins(:rdvs)
                        .where(rdvs: rdvs_non_collectifs_sample)
                        .with_sent_invitations
@@ -65,7 +65,7 @@ class Stat < ApplicationRecord
   end
 
   def all_organisations
-    @all_organisations ||= \
+    @all_organisations ||=
       department.nil? ? Organisation.all : department.organisations
   end
 
@@ -79,7 +79,7 @@ class Stat < ApplicationRecord
   # we only consider specific contexts to focus on the first RSA rdv
   def applicants_for_30_days_rdvs_seen_sample
     # Applicants invited in an orientation or accompagnement context
-    @applicants_for_30_days_rdvs_seen_sample ||= \
+    @applicants_for_30_days_rdvs_seen_sample ||=
       applicants_sample.joins(:rdv_contexts)
                        .where(rdv_contexts:
                                 RdvContext.joins(:motif_category).where(

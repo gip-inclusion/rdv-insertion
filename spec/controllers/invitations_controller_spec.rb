@@ -171,13 +171,13 @@ describe InvitationsController do
         it "is a success" do
           post :create, params: create_params
           expect(response).to be_successful
-          expect(JSON.parse(response.body)["success"]).to eq(true)
+          expect(response.parsed_body["success"]).to eq(true)
         end
 
         it "renders the invitation" do
           post :create, params: create_params
           expect(response).to be_successful
-          expect(JSON.parse(response.body)["invitation"]["id"]).to eq(invitation.id)
+          expect(response.parsed_body["invitation"]["id"]).to eq(invitation.id)
         end
       end
 
@@ -240,13 +240,13 @@ describe InvitationsController do
       it "is not a success" do
         post :create, params: create_params
         expect(response).not_to be_successful
-        expect(JSON.parse(response.body)["success"]).to eq(false)
+        expect(response.parsed_body["success"]).to eq(false)
       end
 
       it "renders the errors" do
         post :create, params: create_params
         expect(response).not_to be_successful
-        expect(JSON.parse(response.body)["errors"]).to eq(["some error"])
+        expect(response.parsed_body["errors"]).to eq(["some error"])
       end
     end
   end
