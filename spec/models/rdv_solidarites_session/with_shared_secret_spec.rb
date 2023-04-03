@@ -11,7 +11,7 @@ describe RdvSolidaritesSession::WithSharedSecret do
   let!(:shared_secret) { "S3cr3T" }
   let!(:payload) do
     {
-      id: agent.id,
+      id: agent.rdv_solidarites_agent_id,
       first_name: agent.first_name,
       last_name: agent.last_name,
       email: agent.email
