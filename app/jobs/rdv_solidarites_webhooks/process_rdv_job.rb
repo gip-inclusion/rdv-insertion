@@ -94,7 +94,7 @@ module RdvSolidaritesWebhooks
       return [] if rdv.nil?
 
       removed_applicants = rdv.applicants - applicants
-      @participations_attributes_destroyed ||= \
+      @participations_attributes_destroyed ||=
         removed_applicants.map do |applicant|
           existing_participation = Participation.find_by(applicant: applicant, rdv: rdv)
           {
@@ -106,7 +106,7 @@ module RdvSolidaritesWebhooks
     end
 
     def participations_attributes
-      @participations_attributes ||= \
+      @participations_attributes ||=
         @applicants.map do |applicant|
           participation = rdv_solidarites_rdv.participations.find { _1.user.id == applicant.rdv_solidarites_user_id }
           {
@@ -140,7 +140,7 @@ module RdvSolidaritesWebhooks
     end
 
     def lieu
-      @lieu ||= \
+      @lieu ||=
         @data[:lieu].present? ? Lieu.find_by(rdv_solidarites_lieu_id: @data[:lieu][:id]) : nil
     end
 
@@ -193,7 +193,7 @@ module RdvSolidaritesWebhooks
     end
 
     def rdv_contexts
-      @rdv_contexts ||= \
+      @rdv_contexts ||=
         applicants.map do |applicant|
           RdvContext.with_advisory_lock "setting_rdv_context_for_applicant_#{applicant.id}" do
             RdvContext.find_or_create_by!(applicant: applicant, motif_category: motif_category)

@@ -42,7 +42,7 @@ describe SessionsController do
       it "is a success" do
         post :create
         expect(response).to be_successful
-        expect(JSON.parse(response.body)["success"]).to eq(true)
+        expect(response.parsed_body["success"]).to eq(true)
       end
 
       it "marks the agent as logged in" do
@@ -66,7 +66,7 @@ describe SessionsController do
         it "returns the redirection path" do
           post :create
           expect(response).to be_successful
-          expect(JSON.parse(response.body)["redirect_path"]).to eq("/some_path")
+          expect(response.parsed_body["redirect_path"]).to eq("/some_path")
         end
 
         it "deletes the path from the session" do
@@ -84,7 +84,7 @@ describe SessionsController do
         it "returns the organisations path" do
           post :create
           expect(response).to be_successful
-          expect(JSON.parse(response.body)["redirect_path"]).to eq(organisations_path)
+          expect(response.parsed_body["redirect_path"]).to eq(organisations_path)
         end
       end
 
@@ -98,7 +98,7 @@ describe SessionsController do
           post :create
           expect(response).not_to be_successful
           expect(response).to have_http_status(:unauthorized)
-          expect(JSON.parse(response.body)["errors"]).to eq(
+          expect(response.parsed_body["errors"]).to eq(
             ["Les identifiants de session RDV-Solidarités sont invalides"]
           )
         end
@@ -111,8 +111,8 @@ describe SessionsController do
           post :create
           expect(response).not_to be_successful
           expect(response).to have_http_status(:unprocessable_entity)
-          expect(JSON.parse(response.body)["success"]).to eq(false)
-          expect(JSON.parse(response.body)["errors"]).to eq(
+          expect(response.parsed_body["success"]).to eq(false)
+          expect(response.parsed_body["errors"]).to eq(
             ["L'agent ne fait pas partie d'une organisation sur RDV-Insertion"]
           )
         end
@@ -130,8 +130,8 @@ describe SessionsController do
           post :create
           expect(response).not_to be_successful
           expect(response).to have_http_status(:unprocessable_entity)
-          expect(JSON.parse(response.body)["success"]).to eq(false)
-          expect(JSON.parse(response.body)["errors"]).to eq(["Update impossible"])
+          expect(response.parsed_body["success"]).to eq(false)
+          expect(response.parsed_body["errors"]).to eq(["Update impossible"])
         end
       end
     end

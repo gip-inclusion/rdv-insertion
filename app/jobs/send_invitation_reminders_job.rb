@@ -22,7 +22,7 @@ class SendInvitationRemindersJob < ApplicationJob
   private
 
   def rdv_contexts_with_reminder_needed
-    @rdv_contexts_with_reminder_needed ||= \
+    @rdv_contexts_with_reminder_needed ||=
       RdvContext.invitation_pending
                 .joins(:motif_category)
                 .where(motif_category: MotifCategory.participation_optional(false))
@@ -32,7 +32,7 @@ class SendInvitationRemindersJob < ApplicationJob
   end
 
   def valid_invitations_sent_3_days_ago
-    @valid_invitations_sent_3_days_ago ||= \
+    @valid_invitations_sent_3_days_ago ||=
       # we want the token to be valid for at least two days to be sure the invitation will be valid
       Invitation.where("valid_until > ?", 2.days.from_now)
                 .where(format: %w[email sms], sent_at: 3.days.ago.all_day, reminder: false)

@@ -160,13 +160,13 @@ describe ApplicantsController do
         it "is a success" do
           post :create, params: applicant_params
           expect(response).to be_successful
-          expect(JSON.parse(response.body)["success"]).to eq(true)
+          expect(response.parsed_body["success"]).to eq(true)
         end
 
         it "renders the applicant" do
           post :create, params: applicant_params
           expect(response).to be_successful
-          expect(JSON.parse(response.body)["applicant"]["id"]).to eq(applicant.id)
+          expect(response.parsed_body["applicant"]["id"]).to eq(applicant.id)
         end
       end
 
@@ -180,14 +180,14 @@ describe ApplicantsController do
           post :create, params: applicant_params
           expect(response).not_to be_successful
           expect(response).to have_http_status(:unprocessable_entity)
-          expect(JSON.parse(response.body)["success"]).to eq(false)
+          expect(response.parsed_body["success"]).to eq(false)
         end
 
         it "renders the errors" do
           post :create, params: applicant_params
           expect(response).not_to be_successful
           expect(response).to have_http_status(:unprocessable_entity)
-          expect(JSON.parse(response.body)["errors"]).to eq(["some error"])
+          expect(response.parsed_body["errors"]).to eq(["some error"])
         end
       end
     end
@@ -215,20 +215,20 @@ describe ApplicantsController do
       it "returns the policy scoped applicants" do
         post :search, params: search_params
         expect(response).to be_successful
-        expect(JSON.parse(response.body)["applicants"].pluck("id")).to contain_exactly(another_applicant.id)
+        expect(response.parsed_body["applicants"].pluck("id")).to contain_exactly(another_applicant.id)
       end
     end
 
     it "is a success" do
       post :search, params: search_params
       expect(response).to be_successful
-      expect(JSON.parse(response.body)["success"]).to eq(true)
+      expect(response.parsed_body["success"]).to eq(true)
     end
 
     it "renders the applicants" do
       post :search, params: search_params
       expect(response).to be_successful
-      expect(JSON.parse(response.body)["applicants"].pluck("id")).to contain_exactly(applicant.id)
+      expect(response.parsed_body["applicants"].pluck("id")).to contain_exactly(applicant.id)
     end
   end
 
@@ -902,7 +902,7 @@ describe ApplicantsController do
         it "is a success" do
           post :update, params: update_params
           expect(response).to be_successful
-          expect(JSON.parse(response.body)["success"]).to eq(true)
+          expect(response.parsed_body["success"]).to eq(true)
         end
       end
 
@@ -916,14 +916,14 @@ describe ApplicantsController do
           post :update, params: update_params
           expect(response).not_to be_successful
           expect(response).to have_http_status(:unprocessable_entity)
-          expect(JSON.parse(response.body)["success"]).to eq(false)
+          expect(response.parsed_body["success"]).to eq(false)
         end
 
         it "renders the errors" do
           post :update, params: update_params
           expect(response).not_to be_successful
           expect(response).to have_http_status(:unprocessable_entity)
-          expect(JSON.parse(response.body)["errors"]).to eq(["some error"])
+          expect(response.parsed_body["errors"]).to eq(["some error"])
         end
       end
     end

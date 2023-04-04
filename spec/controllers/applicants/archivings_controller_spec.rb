@@ -34,12 +34,12 @@ describe Applicants::ArchivingsController do
       it "renders a successfull response" do
         post :create, params: create_params
         expect(response).to be_successful
-        expect(JSON.parse(response.body)["success"]).to eq(true)
+        expect(response.parsed_body["success"]).to eq(true)
       end
 
       it "returns the applicant" do
         post :create, params: create_params
-        expect(JSON.parse(response.body)["applicant"]).to be_present
+        expect(response.parsed_body["applicant"]).to be_present
       end
     end
 
@@ -53,8 +53,8 @@ describe Applicants::ArchivingsController do
         post :create, params: create_params
 
         expect(response).not_to be_successful
-        expect(JSON.parse(response.body)["success"]).to eq(false)
-        expect(JSON.parse(response.body)["errors"]).to eq(["something failed"])
+        expect(response.parsed_body["success"]).to eq(false)
+        expect(response.parsed_body["errors"]).to eq(["something failed"])
       end
     end
   end
@@ -69,14 +69,14 @@ describe Applicants::ArchivingsController do
     it "unarchives the applicant" do
       delete :destroy, params: { applicant_id: applicant_id }
       expect(response).to be_successful
-      expect(JSON.parse(response.body)["success"]).to eq(true)
+      expect(response.parsed_body["success"]).to eq(true)
       expect(applicant.reload.archived_at).to eq(nil)
       expect(applicant.reload.archiving_reason).to eq(nil)
     end
 
     it "returns the applicant" do
       post :destroy, params: { applicant_id: applicant_id }
-      expect(JSON.parse(response.body)["applicant"]).to be_present
+      expect(response.parsed_body["applicant"]).to be_present
     end
   end
 end
