@@ -17,13 +17,15 @@ describe RdvSolidaritesApi::UpdateWebhookEndpoint, type: :service do
       allow(rdv_solidarites_session).to receive(:rdv_solidarites_client)
         .and_return(rdv_solidarites_client)
       allow(rdv_solidarites_client).to receive(:update_webhook_endpoint)
-        .with(rdv_solidarites_webhook_endpoint_id, rdv_solidarites_organisation_id, WebhookEndpoint::ALL_SUBSCRIPTIONS)
+        .with(rdv_solidarites_webhook_endpoint_id, rdv_solidarites_organisation_id,
+              RdvSolidarites::WebhookEndpoint::ALL_SUBSCRIPTIONS)
         .and_return(OpenStruct.new(success?: true))
     end
 
     it "tries to update a webhook endpoint in rdv solidarites" do
       expect(rdv_solidarites_client).to receive(:update_webhook_endpoint)
-        .with(rdv_solidarites_webhook_endpoint_id, rdv_solidarites_organisation_id, WebhookEndpoint::ALL_SUBSCRIPTIONS)
+        .with(rdv_solidarites_webhook_endpoint_id, rdv_solidarites_organisation_id,
+              RdvSolidarites::WebhookEndpoint::ALL_SUBSCRIPTIONS)
       subject
     end
 
@@ -62,7 +64,8 @@ describe RdvSolidaritesApi::UpdateWebhookEndpoint, type: :service do
       before do
         allow(rdv_solidarites_client).to receive(:update_webhook_endpoint)
           .with(
-            rdv_solidarites_webhook_endpoint_id, rdv_solidarites_organisation_id, WebhookEndpoint::ALL_SUBSCRIPTIONS
+            rdv_solidarites_webhook_endpoint_id, rdv_solidarites_organisation_id,
+            RdvSolidarites::WebhookEndpoint::ALL_SUBSCRIPTIONS
           )
           .and_return(OpenStruct.new(body: response_body, success?: false))
       end

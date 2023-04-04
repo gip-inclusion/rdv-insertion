@@ -2,6 +2,7 @@ describe Organisations::Create, type: :service do
   subject do
     described_class.call(
       rdv_solidarites_session: rdv_solidarites_session,
+      current_agent: agent,
       organisation: organisation
     )
   end
@@ -24,7 +25,6 @@ describe Organisations::Create, type: :service do
 
   describe "#call" do
     before do
-      allow(rdv_solidarites_session).to receive(:uid).and_return(agent.email)
       allow(RdvSolidaritesApi::RetrieveOrganisation).to receive(:call)
         .and_return(OpenStruct.new(success?: true, organisation: organisation_from_rdvs))
       allow(RdvSolidaritesApi::CreateWebhookEndpoint).to receive(:call)

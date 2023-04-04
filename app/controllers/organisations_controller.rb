@@ -18,7 +18,7 @@ class OrganisationsController < ApplicationController
   def new
     @department = Department.find(params[:department_id])
     @organisation = Organisation.new
-    authorize @organisation, :create?
+    authorize @organisation
   end
 
   def edit; end
@@ -145,6 +145,7 @@ class OrganisationsController < ApplicationController
   def create_organisation
     @create_organisation ||= Organisations::Create.call(
       organisation: @organisation,
+      current_agent: current_agent,
       rdv_solidarites_session: rdv_solidarites_session
     )
   end

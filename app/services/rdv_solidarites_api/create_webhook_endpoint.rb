@@ -1,7 +1,9 @@
 module RdvSolidaritesApi
   class CreateWebhookEndpoint < Base
     def initialize(
-      rdv_solidarites_organisation_id:, rdv_solidarites_session:, subscriptions: WebhookEndpoint::ALL_SUBSCRIPTIONS
+      rdv_solidarites_organisation_id:,
+      rdv_solidarites_session:,
+      subscriptions: RdvSolidarites::WebhookEndpoint::ALL_SUBSCRIPTIONS
     )
       @rdv_solidarites_organisation_id = rdv_solidarites_organisation_id
       @rdv_solidarites_session = rdv_solidarites_session

@@ -4,7 +4,7 @@ module RdvSolidaritesApi
       rdv_solidarites_webhook_endpoint_id:,
       rdv_solidarites_organisation_id:,
       rdv_solidarites_session:,
-      subscriptions: WebhookEndpoint::ALL_SUBSCRIPTIONS
+      subscriptions: RdvSolidarites::WebhookEndpoint::ALL_SUBSCRIPTIONS
     )
       @rdv_solidarites_webhook_endpoint_id = rdv_solidarites_webhook_endpoint_id
       @rdv_solidarites_organisation_id = rdv_solidarites_organisation_id

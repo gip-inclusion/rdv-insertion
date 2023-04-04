@@ -7,6 +7,10 @@ class OrganisationPolicy < ApplicationPolicy
     pundit_user.super_admin?
   end
 
+  def new?
+    create?
+  end
+
   def update?
     configure?
   end
