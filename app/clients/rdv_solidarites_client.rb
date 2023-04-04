@@ -162,9 +162,8 @@ class RdvSolidaritesClient
 
   def create_webhook_endpoint(organisation_id, subscriptions)
     Faraday.post(
-      "#{@url}/api/v1/webhook_endpoints",
+      "#{@url}/api/v1/organisations/#{organisation_id}/webhook_endpoints",
       {
-        organisation_id: organisation_id,
         target_url: "#{ENV['HOST']}/rdv_solidarites_webhooks",
         secret: ENV["RDV_SOLIDARITES_SECRET"],
         subscriptions: subscriptions
@@ -175,9 +174,8 @@ class RdvSolidaritesClient
 
   def update_webhook_endpoint(webhook_endpoint_id, organisation_id, subscriptions)
     Faraday.patch(
-      "#{@url}/api/v1/webhook_endpoints/#{webhook_endpoint_id}",
+      "#{@url}/api/v1/organisations/#{organisation_id}/webhook_endpoints/#{webhook_endpoint_id}",
       {
-        organisation_id: organisation_id,
         target_url: "#{ENV['HOST']}/rdv_solidarites_webhooks",
         secret: ENV["RDV_SOLIDARITES_SECRET"],
         subscriptions: subscriptions
