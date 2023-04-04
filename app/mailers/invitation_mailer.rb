@@ -34,6 +34,10 @@ class InvitationMailer < ApplicationMailer
     )
   end
 
+  ### Spécifique à un contexte
+
+  alias orientation_france_travail_invitation standard_invitation
+
   ### Reminders
 
   def standard_invitation_reminder

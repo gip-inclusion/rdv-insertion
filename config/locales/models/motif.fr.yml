@@ -6,6 +6,7 @@ fr:
       motif:
         categories:
           rsa_orientation: RSA orientation
+          rsa_orientation_france_travail: RSA Orientation France Travail
           rsa_accompagnement: RSA accompagnement
           rsa_accompagnement_social: RSA accompagnement social
           rsa_accompagnement_sociopro: RSA accompagnement socio-pro
