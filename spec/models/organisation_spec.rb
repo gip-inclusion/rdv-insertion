@@ -52,8 +52,14 @@ describe Organisation do
       it { expect(organisation).to be_valid }
     end
 
+    context "4 digits numbers are valids for organisations" do
+      let(:organisation) { build(:organisation, phone_number: "3949") }
+
+      it { expect(organisation).to be_valid }
+    end
+
     context "phone_number is invalid" do
-      let(:organisation) { build(:organisation, phone_number: "0102") }
+      let(:organisation) { build(:organisation, phone_number: "12345") }
 
       it "adds errors" do
         expect(organisation).not_to be_valid
