@@ -34,6 +34,15 @@ class InvitationMailer < ApplicationMailer
     )
   end
 
+  ### Spécifique à un contexte
+
+  def atelier_enfants_ados_invitation
+    mail(
+      to: @applicant.email,
+      subject: @rdv_title.capitalize
+    )
+  end
+
   ### Reminders
 
   def standard_invitation_reminder

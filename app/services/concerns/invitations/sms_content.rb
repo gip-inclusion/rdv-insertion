@@ -44,6 +44,16 @@ module Invitations
         "En cas de problème technique, contactez le #{help_phone_number}."
     end
 
+    ### Spécifique à un contexte
+
+    def atelier_enfants_ados_content
+      "#{applicant},\n Tu es invité à participer à un atelier organisé par le département. " \
+        "Nous te proposons de cliquer ci-dessous pour découvrir le programme. " \
+        "Si tu es intéressé pour participer, tu n’auras qu’à cliquer et t’inscrire en ligne avec le lien suivant: " \
+        "#{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
+        "En cas de problème technique, contacte le #{help_phone_number}."
+    end
+
     ### Reminders
 
     def standard_reminder_content

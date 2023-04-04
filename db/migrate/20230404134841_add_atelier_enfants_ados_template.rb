@@ -1,0 +1,17 @@
+class AddAtelierEnfantsAdosTemplate < ActiveRecord::Migration[7.0]
+  def change
+    template = Template.create(
+      model: "atelier_enfants_ados",
+      rdv_title: "atelier enfants et ados",
+      display_mandatory_warning: false,
+      display_punishable_warning: false
+    )
+
+    MotifCategory.create(
+      name: "Atelier Enfants / Ados",
+      short_name: "atelier_enfants_ados",
+      template: template,
+      participation_optional: true
+    )
+  end
+end
