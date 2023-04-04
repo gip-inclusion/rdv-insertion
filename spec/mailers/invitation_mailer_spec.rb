@@ -461,6 +461,39 @@ RSpec.describe InvitationMailer do
     end
   end
 
+  describe "#atelier_enfants_ados" do
+    subject do
+      described_class
+        .with(invitation: invitation, applicant: applicant)
+        .atelier_enfants_ados_invitation
+    end
+
+    context "for atelier_enfants_ados" do
+      let!(:rdv_context) do
+        build(:rdv_context, motif_category: category_atelier_enfants_ados)
+      end
+
+      it "renders the headers" do
+        expect(subject.to).to eq([applicant.email])
+      end
+
+      it "renders the subject" do
+        email_subject = unescape_html(subject.subject)
+        expect(email_subject).to eq("Atelier enfants et ados")
+      end
+
+      it "renders the body" do
+        body_string = unescape_html(subject.body.encoded)
+        expect(body_string).to match("Bonjour Jean VALJEAN")
+        expect(body_string).to match("Le département de la Drôme.")
+        expect(body_string).to match("01 39 39 39 39")
+        expect(body_string).to match("Tu es invité à participer à un atelier organisé par le département.")
+        expect(body_string).to match("/invitations/redirect")
+        expect(body_string).to match("uuid=#{invitation.uuid}")
+      end
+    end
+  end
+
   describe "#standard_invitation_reminder" do
     subject do
       described_class.with(invitation: invitation, applicant: applicant).standard_invitation_reminder
