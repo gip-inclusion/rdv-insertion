@@ -487,6 +487,31 @@ describe Invitations::SendSms, type: :service do
       end
     end
 
+    context "for rsa_orientation_france_travail" do
+      let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_orientation_france_travail) }
+      let!(:configuration) { create(:configuration, motif_category: category_rsa_orientation_france_travail) }
+      let!(:content) do
+        "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez vous présenter à " \
+          "un premier rendez-vous d'orientation France Travail." \
+          " Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant dans les " \
+          "9 jours: " \
+          "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
+          "Ce rendez-vous est obligatoire. " \
+          "En cas de problème technique, contactez le 0147200001."
+      end
+
+      it("is a success") { is_a_success }
+
+      it "calls the send transactional service with the right content" do
+        expect(SendTransactionalSms).to receive(:call)
+          .with(
+            phone_number_formatted: phone_number_formatted, content: content,
+            sender_name: sms_sender_name
+          )
+        subject
+      end
+    end
+
     context "for rsa_integration_information" do
       let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_integration_information) }
       let!(:configuration) { create(:configuration, motif_category: category_rsa_integration_information) }

@@ -285,6 +285,23 @@ module MotifCategoriesHelper
         )
       )
     end
+    let!(:category_rsa_orientation_france_travail) do
+      create(
+        :motif_category,
+        name: "RSA Orientation France Travail",
+        short_name: "rsa_orientation_france_travail",
+        participation_optional: false,
+        template: create(
+          :template,
+          model: "orientation_france_travail",
+          rdv_title: "premier rendez-vous d'orientation France Travail",
+          applicant_designation: "bénéficiaire du RSA",
+          rdv_subject: "RSA",
+          display_mandatory_warning: true,
+          display_punishable_warning: false
+        )
+      )
+    end
     let!(:category_siae_interview) do
       create(
         :motif_category,
