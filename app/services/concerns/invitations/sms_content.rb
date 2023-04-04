@@ -20,8 +20,8 @@ module Invitations
     end
 
     def standard_content
-      "#{applicant.full_name},\nVous êtes #{applicant_designation} et vous devez vous présenter à un #{rdv_title}." \
-        " Pour choisir la date et l'horaire du RDV, " \
+      "#{applicant.full_name},\nVous êtes #{applicant_designation} et vous êtes #{applicant.conjugate('invité')} à" \
+        " participer à un #{rdv_title}. Pour choisir la date et l'horaire du RDV, " \
         "cliquez sur le lien suivant dans les #{number_of_days_to_accept_invitation} jours: " \
         "#{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
         "#{mandatory_warning}" \
