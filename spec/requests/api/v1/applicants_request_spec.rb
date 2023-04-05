@@ -181,7 +181,6 @@ describe "Applicants API" do
           expect(response).to have_http_status(:unprocessable_entity)
           result = JSON.parse(response.body)
           expect(result["errors"]).to include({ "Entrée 1 - 11111444" => { "last_name" => ["doit être rempli(e)"] } })
-          expect(result["errors"]).to include({ "Entrée 2" => { "department_internal_id" => ["doit être rempli(e)"] } })
         end
 
         it "does not enqueue jobs" do

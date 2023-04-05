@@ -17,19 +17,13 @@ class CreateAndInviteApplicantJob < ApplicationJob
   private
 
   def assign_attributes_to_applicant
-    applicant.assign_attributes(
-      department: @department,
-      organisations: (applicant.organisations.to_a + [@organisation]).uniq,
-      **@applicant_attributes
-    )
+    applicant.assign_attributes(**@applicant_attributes)
   end
 
   def applicant
     @applicant ||= \
       Applicants::FindOrInitialize.call(
-        affiliation_number: @applicant_attributes[:affiliation_number],
-        role: @applicant_attributes[:role],
-        department_internal_id: @applicant_attributes[:department_internal_id],
+        applicant_attributes: @applicant_attributes,
         department_id: @department.id
       ).applicant
   end

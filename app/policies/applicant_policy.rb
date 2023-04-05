@@ -1,10 +1,10 @@
 class ApplicantPolicy < ApplicationPolicy
   def new?
-    pundit_user.department_ids.include?(record.department_id)
+    true
   end
 
   def create?
-    new?
+    true
   end
 
   def show?

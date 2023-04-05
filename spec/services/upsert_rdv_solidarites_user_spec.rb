@@ -142,7 +142,7 @@ describe UpsertRdvSolidaritesUser, type: :service do
           context "when there is an applicant linked to this user" do
             let!(:department) { create(:department, number: "95") }
             let!(:applicant) do
-              create(:applicant, id: 23, rdv_solidarites_user_id: existing_user_id, department: department)
+              create(:applicant, id: 23, rdv_solidarites_user_id: existing_user_id)
             end
 
             it "is a failure" do
@@ -150,7 +150,9 @@ describe UpsertRdvSolidaritesUser, type: :service do
             end
 
             it "stores the error" do
-              expect(subject.errors).to eq(["l'allocataire existe déjà sur RDVI: id 23, départment 95"])
+              expect(subject.errors).to eq(
+                ["Un allocataire avec cette adresse mail existe déjà sur RDVI avec d'autres attributs: id 23"]
+              )
             end
           end
 

@@ -11,15 +11,14 @@ class Applicant < ApplicationRecord
 
   include Searchable
   include Notificable
-  include Phonable
+  include PhoneNumberValidation
   include Invitable
   include HasParticipationsToRdvs
   include Applicant::TextHelper
   include Applicant::Nir
 
   before_validation :generate_uid
-
-  belongs_to :department
+  before_save :set_phone_number_formatted
 
   has_and_belongs_to_many :organisations
   has_and_belongs_to_many :agents
@@ -33,11 +32,10 @@ class Applicant < ApplicationRecord
   has_many :configurations, through: :organisations
   has_many :motif_categories, through: :rdv_contexts
 
-  validates :uid, :rdv_solidarites_user_id, :nir, :pole_emploi_id, uniqueness: true, allow_nil: true
-  validates :department_internal_id, uniqueness: { scope: :department_id }, allow_nil: true
+  validates :rdv_solidarites_user_id, :nir, :pole_emploi_id, uniqueness: true, allow_nil: true
   validates :last_name, :first_name, :title, presence: true
   validates :email, allow_blank: true, format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/ }
-  validate :birth_date_validity, :uid_or_department_internal_id_presence
+  validate :birth_date_validity
 
   delegate :name, :number, to: :department, prefix: true
 
@@ -104,7 +102,9 @@ class Applicant < ApplicationRecord
       affiliation_number: nil,
       role: nil,
       uid: nil,
-      department_internal_id: nil
+      department_internal_id: nil,
+      pole_emploi_id: nil,
+      nir: nil
     )
   end
 
@@ -121,24 +121,21 @@ class Applicant < ApplicationRecord
   private
 
   def generate_uid
-    # Base64 encoded "department_number - affiliation_number - role"
+    # Base64 encoded "affiliation_number - role"
     return if deleted?
-    return if department_id.blank? || affiliation_number.blank? || role.blank?
+    return if affiliation_number.blank? || role.blank?
 
-    self.uid = Base64.strict_encode64("#{department.number} - #{affiliation_number} - #{role}")
+    self.uid = Base64.strict_encode64("#{affiliation_number} - #{role}")
+  end
+
+  def set_phone_number_formatted
+    self.phone_number = format_phone_number(phone_number)
   end
 
   def birth_date_validity
     return unless birth_date.present? && (birth_date > Time.zone.today || birth_date < 130.years.ago)
 
     errors.add(:birth_date, "n'est pas valide")
-  end
-
-  def uid_or_department_internal_id_presence
-    return if deleted?
-    return if department_internal_id.present? || (affiliation_number.present? && role.present?)
-
-    errors.add(:base, "le couple numéro d'allocataire + rôle ou l'ID interne au département doivent être présents.")
   end
 
   def split_address

@@ -27,7 +27,6 @@ class ApplicantsController < ApplicationController
                 for: [:new, :create]
   before_action :set_applicant, :set_organisation, :set_department,
                 for: [:edit, :update]
-  before_action :retrieve_applicants, only: [:search]
   after_action :store_back_to_applicants_list_url, only: [:index]
 
   def index
@@ -40,7 +39,7 @@ class ApplicantsController < ApplicationController
   def show; end
 
   def new
-    @applicant = Applicant.new(department: @department)
+    @applicant = Applicant.new
     authorize @applicant
   end
 
@@ -51,19 +50,12 @@ class ApplicantsController < ApplicationController
   def create
     @applicant = find_or_initialize_applicant.applicant
     # TODO: if an applicant exists, return it to the agent to let him decide what to do
-    @applicant.assign_attributes(
-      department: @department,
-      **applicant_params.compact_blank
-    )
+    @applicant.assign_attributes(**applicant_params.compact_blank)
     authorize @applicant
     respond_to do |format|
       format.html { save_applicant_and_redirect(:new) }
       format.json { save_applicant_and_render }
     end
-  end
-
-  def search
-    render json: { success: true, applicants: @applicants }
   end
 
   def update
@@ -90,9 +82,7 @@ class ApplicantsController < ApplicationController
 
   def find_or_initialize_applicant
     @find_or_initialize_applicant ||= Applicants::FindOrInitialize.call(
-      department_internal_id: applicant_params[:department_internal_id],
-      role: applicant_params[:role],
-      affiliation_number: applicant_params[:affiliation_number],
+      applicant_attributes: applicant_params,
       department_id: @department.id
     )
   end
@@ -138,7 +128,13 @@ class ApplicantsController < ApplicationController
     @applicant = \
       policy_scope(Applicant)
       .preload(:invitations, organisations: [:department, :configurations])
-      .where(department_level? ? { department: params[:department_id] } : { organisations: params[:organisation_id] })
+      .where(
+        if department_level?
+          { organisations: { department_id: params[:department_id] } }
+        else
+          { organisations: params[:organisation_id] }
+        end
+      )
       .find(params[:id])
   end
 
@@ -230,7 +226,7 @@ class ApplicantsController < ApplicationController
                     rdv_contexts: [:notifications, :invitations]
                   )
                   .active.distinct.archived(false)
-                  .where(department_level? ? { department: @department } : { organisations: @organisation })
+                  .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
                   .joins(:rdv_contexts)
                   .where(rdv_contexts: { motif_category: @current_motif_category })
   end
@@ -238,7 +234,7 @@ class ApplicantsController < ApplicationController
   def set_archived_applicants
     @applicants = policy_scope(Applicant)
                   .active.distinct.archived
-                  .where(department_level? ? { department: @department } : { organisations: @organisation })
+                  .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
   end
 
   def set_rdv_contexts
@@ -272,19 +268,6 @@ class ApplicantsController < ApplicationController
     return department_applicant_path(@department, @applicant) if department_level?
 
     organisation_applicant_path(@organisation, @applicant)
-  end
-
-  def retrieve_applicants
-    @applicants = policy_scope(Applicant).preload(
-      :rdvs, :agents,
-      invitations: :rdv_context,
-      rdv_contexts: [:participations, :motif_category],
-      organisations: [:motif_categories, :department, :configurations]
-    ).distinct
-    @applicants = @applicants
-                  .where(department_internal_id: params.require(:applicants)[:department_internal_ids])
-                  .or(@applicants.where(uid: params.require(:applicants)[:uids]))
-                  .to_a
   end
 end
 

@@ -15,7 +15,7 @@ describe SendInvitationReminderJob do
     )
   end
   let!(:applicant) do
-    create(:applicant, id: 444, department: department)
+    create(:applicant, id: 444)
   end
   let!(:department) { create(:department) }
   let!(:organisation) { create(:organisation, department: department) }

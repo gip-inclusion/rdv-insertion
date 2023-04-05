@@ -27,56 +27,6 @@ describe Applicant do
     end
   end
 
-  describe "uid uniqueness" do
-    context "no collision" do
-      let(:applicant) { build(:applicant, uid: "123") }
-
-      it { expect(applicant).to be_valid }
-    end
-
-    context "colliding uid" do
-      let!(:applicant_existing) { create(:applicant) }
-      let!(:applicant) { build(:applicant, uid: "123") }
-
-      before do
-        # we skip the callbacks not to recompute uid
-        applicant_existing.update_columns(uid: "123")
-      end
-
-      it "adds errors" do
-        expect(applicant).not_to be_valid
-        expect(applicant.errors.details).to eq({ uid: [{ error: :taken, value: "123" }] })
-        expect(applicant.errors.full_messages.to_sentence)
-          .to include("Le couple numéro d'allocataire + rôle est déjà utilisé")
-      end
-    end
-  end
-
-  describe "department internal id uniqueness" do
-    context "no collision" do
-      let(:applicant) { build(:applicant, department_internal_id: "123") }
-
-      it { expect(applicant).to be_valid }
-    end
-
-    context "colliding department internal id" do
-      let!(:department) { create(:department) }
-      let!(:applicant_existing) do
-        create(:applicant, department: department, department_internal_id: "921", role: "demandeur")
-      end
-      let!(:applicant) do
-        build(:applicant, department: department, department_internal_id: "921", role: "conjoint")
-      end
-
-      it "adds errors" do
-        expect(applicant).not_to be_valid
-        expect(applicant.errors.details).to eq({ department_internal_id: [{ error: :taken, value: "921" }] })
-        expect(applicant.errors.full_messages.to_sentence)
-          .to include("ID interne au département est déjà utilisé")
-      end
-    end
-  end
-
   describe "#search_by_text" do
     subject { described_class.search_by_text(query) }
 
@@ -239,26 +189,6 @@ describe Applicant do
         expect(applicant.errors.full_messages.to_sentence)
           .to include("Le NIR n'est pas valide")
       end
-    end
-  end
-
-  describe "uid or department_internal_id presence" do
-    context "when an affiliation_number and a role is present" do
-      let(:applicant) { build(:applicant, role: "demandeur", affiliation_number: "KOKO", department_internal_id: nil) }
-
-      it { expect(applicant).to be_valid }
-    end
-
-    context "when a department_internal_id is present" do
-      let(:applicant) { build(:applicant, role: nil, affiliation_number: nil, department_internal_id: "32424") }
-
-      it { expect(applicant).to be_valid }
-    end
-
-    context "when no affiliation_number and no department_internal_id is present" do
-      let(:applicant) { build(:applicant, role: nil, affiliation_number: nil, department_internal_id: nil) }
-
-      it { expect(applicant).not_to be_valid }
     end
   end
 end

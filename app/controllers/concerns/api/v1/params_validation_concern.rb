@@ -50,13 +50,14 @@ module Api
 
       class ApplicantParamsValidator
         include ActiveModel::Model
-        include Phonable
+        include PhoneNumberValidation
+        validate :phone_number_is_mobile
 
         attr_accessor(*Applicant.attribute_names)
 
-        validates_presence_of :first_name, :last_name, :title, :affiliation_number, :role, :department_internal_id
+        validates_presence_of :first_name, :last_name, :title
         validates :email, allow_blank: true, format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/ }
-        validates :role, inclusion: { in: %w[demandeur conjoint] }
+        validates :role, inclusion: { in: %w[demandeur conjoint] }, allow_nil: true
         validates :title, inclusion: { in: %w[monsieur madame] }
       end
     end

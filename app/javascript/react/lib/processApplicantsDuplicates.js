@@ -4,6 +4,8 @@ const processApplicantsDuplicates = (applicantsFromList, applicant) => {
   );
   const mainApplicant = reversedApplicantsList.find(
     (a) =>
+      (applicant.nir && a.nir === applicant.nir) ||
+      (applicant.poleEmploiId && a.poleEmploiId === applicant.poleEmploiId) ||
       (applicant.departmentInternalId &&
         a.departmentInternalId === applicant.departmentInternalId) ||
       (applicant.uid && a.uid === applicant.uid)

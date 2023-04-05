@@ -39,6 +39,7 @@ module Api
         params.permit(
           applicants: [
             :first_name, :last_name, :title, :affiliation_number, :role, :email, :phone_number,
+            :nir, :pole_emploi_id,
             :birth_date, :rights_opening_date, :address, :department_internal_id, {
               invitation: [:rdv_solidarites_lieu_id, :motif_category_name]
             }
