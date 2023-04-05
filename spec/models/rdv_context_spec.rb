@@ -2,7 +2,7 @@ describe RdvContext do
   describe "#action_required" do
     subject { described_class.action_required(number_of_days_before_action_required) }
 
-    let!(:number_of_days_before_action_required) { 6 }
+    let!(:number_of_days_before_action_required) { 4 }
 
     context "when status requires action" do
       let!(:rdv_context) { create(:rdv_context, status: "rdv_noshow") }
@@ -32,10 +32,10 @@ describe RdvContext do
         end
       end
 
-      context "when the applicant has been last invited manually more than 6 days ago in this context" do
-        let!(:invitation) { create(:invitation, rdv_context: rdv_context, sent_at: 10.days.ago) }
-        let!(:invitation2) { create(:invitation, rdv_context: rdv_context, sent_at: 7.days.ago) }
-        let!(:invitation3) { create(:invitation, reminder: true, rdv_context: rdv_context, sent_at: 4.days.ago) }
+      context "when the applicant has been last invited manually more than 3 days ago in this context" do
+        let!(:invitation) { create(:invitation, rdv_context: rdv_context, sent_at: 5.days.ago) }
+        let!(:invitation2) { create(:invitation, rdv_context: rdv_context, sent_at: 4.days.ago) }
+        let!(:invitation3) { create(:invitation, reminder: true, rdv_context: rdv_context, sent_at: 1.day.ago) }
 
         it "retrieve the rdv_context" do
           expect(subject).to include(rdv_context)
@@ -257,10 +257,10 @@ describe RdvContext do
     end
 
     describe "#invited_before_time_window?" do
-      let!(:number_of_days_before_action_required) { 6 }
+      let!(:number_of_days_before_action_required) { 4 }
 
       context "when no rdv" do
-        let!(:invitation) { create(:invitation, sent_at: 9.days.ago) }
+        let!(:invitation) { create(:invitation, sent_at: 6.days.ago) }
         let!(:invitation2) { create(:invitation, sent_at: 1.day.ago) }
         let!(:rdv_context) { create(:rdv_context, invitations: [invitation, invitation2]) }
 
@@ -271,7 +271,7 @@ describe RdvContext do
         end
 
         context "when not invited in time window" do
-          let!(:invitation2) { create(:invitation, sent_at: 7.days.ago) }
+          let!(:invitation2) { create(:invitation, sent_at: 4.days.ago) }
 
           it "is true" do
             expect(rdv_context.invited_before_time_window?(number_of_days_before_action_required)).to eq(true)
@@ -293,7 +293,7 @@ describe RdvContext do
         let!(:participation) do
           create(:participation, rdv: rdv, applicant: applicant, rdv_context: rdv_context, created_at: 5.days.ago)
         end
-        let!(:invitation) { create(:invitation, sent_at: 9.days.ago) }
+        let!(:invitation) { create(:invitation, sent_at: 6.days.ago) }
         let!(:invitation2) { create(:invitation, sent_at: 2.days.ago) }
         let!(:invitation3) { create(:invitation, sent_at: 1.day.ago) }
         let!(:rdv_context) do
@@ -314,8 +314,8 @@ describe RdvContext do
         end
 
         context "when not invited in time window" do
-          let!(:invitation2) { create(:invitation, sent_at: 7.days.ago) }
-          let!(:invitation3) { create(:invitation, sent_at: 7.days.ago) }
+          let!(:invitation2) { create(:invitation, sent_at: 4.days.ago) }
+          let!(:invitation3) { create(:invitation, sent_at: 4.days.ago) }
 
           it "is true" do
             expect(rdv_context.invited_before_time_window?(number_of_days_before_action_required)).to eq(true)

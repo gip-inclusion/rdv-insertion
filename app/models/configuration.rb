@@ -14,7 +14,8 @@ class Configuration < ApplicationRecord
   def delays_validity
     return if number_of_days_before_action_required > Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER
 
-    errors.add(:base, "Le délai d'expiration de l'invtation doit être supérieur à 3 jours")
+    errors.add(:base, "Le délai d'expiration de l'invtation doit être supérieur " \
+                      "à #{Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER} jours")
   end
 
   def invitation_formats_validity
