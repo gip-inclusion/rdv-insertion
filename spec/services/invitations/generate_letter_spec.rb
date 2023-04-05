@@ -152,7 +152,10 @@ describe Invitations::GenerateLetter, type: :service do
           "Objet : Premier rendez-vous d'orientation France Travail dans le cadre de votre RSA"
         )
         expect(content).to include(
-          "vous devez vous présenter à un premier rendez-vous d'orientation France Travail."
+          "vous devez vous présenter à un premier rendez-vous d'orientation France Travail"
+        )
+        expect(content).to include(
+          "Dans le cadre du projet 'France Travail', ce rendez-vous sera réalisé par deux"
         )
         expect(content).to include("Nous vous remercions de prendre ce rendez-vous")
         expect(content).not_to include(

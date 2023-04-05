@@ -44,10 +44,6 @@ module Invitations
         "En cas de problème technique, contactez le #{help_phone_number}."
     end
 
-    ### Spécifique à un contexte
-
-    alias orientation_france_travail_content standard_content
-
     ### Reminders
 
     def standard_reminder_content

@@ -118,12 +118,12 @@ describe Invitations::SendEmail, type: :service do
         )
       end
 
-      before { allow(mailer).to receive_message_chain(:orientation_france_travail_invitation, :deliver_now) }
+      before { allow(mailer).to receive_message_chain(:standard_invitation, :deliver_now) }
 
       it("is a success") { is_a_success }
 
       it "sends the email" do
-        expect(mailer).to receive_message_chain(:orientation_france_travail_invitation, :deliver_now)
+        expect(mailer).to receive_message_chain(:standard_invitation, :deliver_now)
         subject
       end
     end
