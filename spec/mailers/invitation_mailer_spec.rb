@@ -789,5 +789,4 @@ RSpec.describe InvitationMailer do
       end
     end
   end
-
 end
