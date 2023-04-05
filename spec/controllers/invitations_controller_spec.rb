@@ -9,8 +9,7 @@ describe InvitationsController do
       create(
         :configuration,
         organisations: [organisation], number_of_days_before_action_required: 10,
-        number_of_days_to_accept_invitation: 3, motif_category: motif_category,
-        rdv_with_referents: false
+        motif_category: motif_category, rdv_with_referents: false
       )
     end
     let!(:other_org) { create(:organisation, department: department) }
@@ -57,7 +56,7 @@ describe InvitationsController do
         .with(
           department: department, applicant: applicant, organisations: organisations, rdv_context: rdv_context,
           help_phone_number: help_phone_number,
-          number_of_days_to_accept_invitation: 3, format: "sms", rdv_solidarites_lieu_id: nil, valid_until: valid_until,
+          format: "sms", rdv_solidarites_lieu_id: nil, valid_until: valid_until,
           rdv_with_referents: false
         ).and_return(invitation)
       allow(Invitations::SaveAndSend).to receive(:call)
@@ -77,7 +76,7 @@ describe InvitationsController do
           .with(
             department: department, applicant: applicant, organisations: organisations, rdv_context: rdv_context,
             help_phone_number: help_phone_number,
-            number_of_days_to_accept_invitation: 3, format: "sms", rdv_solidarites_lieu_id: nil,
+            format: "sms", rdv_solidarites_lieu_id: nil,
             valid_until: valid_until, rdv_with_referents: false
           )
         post :create, params: create_params
@@ -112,7 +111,7 @@ describe InvitationsController do
           .with(
             department: department, applicant: applicant, organisations: organisations, rdv_context: rdv_context,
             help_phone_number: help_phone_number,
-            number_of_days_to_accept_invitation: 3, format: "email", rdv_solidarites_lieu_id: "3929",
+            format: "email", rdv_solidarites_lieu_id: "3929",
             valid_until: valid_until, rdv_with_referents: false
           ).and_return(invitation)
       end
@@ -127,7 +126,7 @@ describe InvitationsController do
         expect(Invitation).to receive(:new)
           .with(
             department: department, applicant: applicant, organisations: organisations, rdv_context: rdv_context,
-            number_of_days_to_accept_invitation: 3, format: "email", help_phone_number: help_phone_number,
+            format: "email", help_phone_number: help_phone_number,
             rdv_solidarites_lieu_id: "3929", valid_until: valid_until, rdv_with_referents: false
           )
         post :create, params: create_params
@@ -149,7 +148,7 @@ describe InvitationsController do
             .with(
               department: department, applicant: applicant, organisations: [organisation], rdv_context: rdv_context,
               help_phone_number: help_phone_number,
-              number_of_days_to_accept_invitation: 3, format: "email", rdv_solidarites_lieu_id: "3929",
+              format: "email", rdv_solidarites_lieu_id: "3929",
               valid_until: valid_until, rdv_with_referents: false
             ).and_return(invitation)
         end
@@ -158,7 +157,7 @@ describe InvitationsController do
           expect(Invitation).to receive(:new)
             .with(
               department: department, applicant: applicant, organisations: [organisation], rdv_context: rdv_context,
-              number_of_days_to_accept_invitation: 3, format: "email", help_phone_number: help_phone_number,
+              format: "email", help_phone_number: help_phone_number,
               rdv_solidarites_lieu_id: "3929", valid_until: valid_until, rdv_with_referents: false
             )
           post :create, params: create_params
@@ -204,7 +203,7 @@ describe InvitationsController do
           allow(Invitation).to receive(:new)
             .with(
               department: department, applicant: applicant, organisations: organisations, rdv_context: rdv_context,
-              number_of_days_to_accept_invitation: 3, format: "postal", help_phone_number: help_phone_number,
+              format: "postal", help_phone_number: help_phone_number,
               rdv_solidarites_lieu_id: nil, valid_until: valid_until, rdv_with_referents: false
             ).and_return(invitation)
           allow(WickedPdf).to receive_message_chain(:new, :pdf_from_string)

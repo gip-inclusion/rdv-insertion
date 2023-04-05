@@ -16,7 +16,7 @@
   <div class="invitation-token">Mon code d'invitation<br/><%= invitation.uuid %></div>
   <p>
     <% if display_mandatory_warning %>
-      Nous vous remercions de prendre ce rendez-vous dans un délai de <%= invitation.number_of_days_to_accept_invitation %> jours à réception de ce courrier.
+      Nous vous remercions de prendre ce rendez-vous dans un délai de <%= Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER %> jours à réception de ce courrier.
     <% end %>
     <% if display_punishable_warning %>
       <%= render "letters/invitations/punishable_warning", department: department, display_independent_from_cd_message: display_independent_from_cd_message %>
