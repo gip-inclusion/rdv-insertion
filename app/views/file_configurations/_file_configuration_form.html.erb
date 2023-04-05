@@ -1,6 +1,6 @@
 <%= render "common/remote_modal", title: title, size: :large do %>
   <%= simple_form_for(file_configuration, url: url, html: { method: method }) do |f| %>
-    <% if errors.present? %>
+    <% if local_assigns[:errors].present? %>
       <%= render "common/error_list", errors: errors %>
     <% end %>
     <div class="container rdv-insertion-form text-dark-blue h4-as-labels mt-4">

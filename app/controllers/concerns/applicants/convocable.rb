@@ -4,7 +4,7 @@ module Applicants::Convocable
   # used on applicants#index
   def set_convocation_motifs_by_applicant
     return if archived_scope?
-    return unless @current_configuration.convene_applicant?
+    return unless @current_configuration&.convene_applicant?
 
     convocation_motifs = Motif.includes(:organisation).active.where(
       organisation_id: department_level? ? @organisations.ids : @organisation.id,
