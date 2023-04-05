@@ -293,7 +293,7 @@ module MotifCategoriesHelper
         template: create(
           :template,
           model: "atelier_enfants_ados",
-          rdv_title: "atelier enfants et ados",
+          rdv_title: "atelier destiné aux jeunes de ton âge",
           display_mandatory_warning: false,
           display_punishable_warning: false
         )

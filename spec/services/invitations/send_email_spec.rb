@@ -106,6 +106,26 @@ describe Invitations::SendEmail, type: :service do
         expect(mailer).to receive_message_chain(:short_invitation, :deliver_now)
         subject
       end
+
+      context "when the invitation is a reminder" do
+        let!(:invitation) do
+          create(
+            :invitation,
+            applicant: applicant, format: "email",
+            rdv_context: build(:rdv_context, motif_category: category_psychologue),
+            reminder: true
+          )
+        end
+
+        before { allow(mailer).to receive_message_chain(:short_invitation_reminder, :deliver_now) }
+
+        it("is a success") { is_a_success }
+
+        it "sends the email" do
+          expect(mailer).to receive_message_chain(:short_invitation_reminder, :deliver_now)
+          subject
+        end
+      end
     end
 
     context "for atelier_enfants_ados" do
@@ -125,6 +145,26 @@ describe Invitations::SendEmail, type: :service do
       it "sends the email" do
         expect(mailer).to receive_message_chain(:atelier_enfants_ados_invitation, :deliver_now)
         subject
+      end
+
+      context "when the invitation is a reminder" do
+        let!(:invitation) do
+          create(
+            :invitation,
+            applicant: applicant, format: "email",
+            rdv_context: build(:rdv_context, motif_category: category_atelier_enfants_ados),
+            reminder: true
+          )
+        end
+
+        before { allow(mailer).to receive_message_chain(:atelier_enfants_ados_invitation_reminder, :deliver_now) }
+
+        it("is a success") { is_a_success }
+
+        it "sends the email" do
+          expect(mailer).to receive_message_chain(:atelier_enfants_ados_invitation_reminder, :deliver_now)
+          subject
+        end
       end
     end
 

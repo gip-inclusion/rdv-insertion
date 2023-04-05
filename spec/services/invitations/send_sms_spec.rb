@@ -469,7 +469,7 @@ describe Invitations::SendSms, type: :service do
       let!(:rdv_context) { build(:rdv_context, motif_category: category_psychologue) }
       let!(:configuration) { create(:configuration, motif_category: category_psychologue) }
       let!(:content) do
-        "Monsieur John DOE,\n Vous êtes invité à prendre un rendez-vous de suivi psychologue." \
+        "Monsieur John DOE,\nVous êtes invité à prendre un rendez-vous de suivi psychologue." \
           " Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant: " \
           "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
           "En cas de problème technique, contactez le 0147200001."

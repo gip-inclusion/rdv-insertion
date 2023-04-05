@@ -12,7 +12,7 @@ module Invitations
     private
 
     def short_content
-      "#{applicant.full_name},\n Vous êtes #{applicant.conjugate('invité')} à prendre un #{rdv_title}." \
+      "#{applicant.full_name},\nVous êtes #{applicant.conjugate('invité')} à prendre un #{rdv_title}." \
         " Pour choisir la date et l'horaire du RDV, " \
         "cliquez sur le lien suivant: " \
         "#{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
@@ -54,6 +54,15 @@ module Invitations
 
     ### Reminders
 
+    def short_reminder_content
+      "#{applicant.full_name},\nVous avez reçu un message il y a 3 jours " \
+        "vous invitant à prendre un #{rdv_title}." \
+        " Le lien de prise de RDV suivant expire dans #{number_of_days_before_expiration} " \
+        "jours: " \
+        "#{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
+        "En cas de problème technique, contactez le #{help_phone_number}."
+    end
+
     def standard_reminder_content
       "#{applicant.full_name},\nEn tant que #{applicant_designation}, vous avez reçu un message il y a 3 jours " \
         "vous invitant à prendre RDV au créneau de votre choix afin de #{rdv_purpose}." \
@@ -70,6 +79,15 @@ module Invitations
         "invitant à contacter la plateforme départementale afin de #{rdv_purpose}. " \
         "Vous n'avez plus que #{number_of_days_before_expiration} jours pour appeler le " \
         "#{help_phone_number}. Cet appel est obligatoire pour le traitement de votre dossier."
+    end
+
+    def atelier_enfants_ados_reminder_content
+      "#{applicant.full_name},\nTu as reçu un message il y a 3 jours " \
+        "t'invitant à participer à un #{rdv_title}." \
+        " Le lien de prise de RDV suivant expire dans #{number_of_days_before_expiration} " \
+        "jours: " \
+        "#{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
+        "En cas de problème technique, tu peux contacter le #{help_phone_number}."
     end
 
     ###
