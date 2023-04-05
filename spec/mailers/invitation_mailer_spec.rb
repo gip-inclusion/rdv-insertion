@@ -13,7 +13,7 @@ RSpec.describe InvitationMailer do
       :invitation,
       rdv_context: rdv_context, applicant: applicant, department: department,
       format: "email", help_phone_number: help_phone_number,
-      number_of_days_to_accept_invitation: 5, organisations: [organisation]
+      organisations: [organisation]
     )
   end
   let!(:rdv_context) { build(:rdv_context) }
@@ -50,7 +50,7 @@ RSpec.describe InvitationMailer do
         )
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
-        expect(body_string).to match("dans les 5 jours")
+        expect(body_string).to match("dans les 3 jours")
       end
 
       context "when the signature is configured" do
@@ -93,7 +93,7 @@ RSpec.describe InvitationMailer do
           )
           expect(body_string).to match("/invitations/redirect")
           expect(body_string).to match("uuid=#{invitation.uuid}")
-          expect(body_string).to match("dans les 5 jours")
+          expect(body_string).to match("dans les 3 jours")
         end
       end
     end
@@ -130,7 +130,7 @@ RSpec.describe InvitationMailer do
         )
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
-        expect(body_string).to match("dans les 5 jours")
+        expect(body_string).to match("dans les 3 jours")
       end
     end
 
@@ -164,7 +164,7 @@ RSpec.describe InvitationMailer do
         )
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
-        expect(body_string).to match("dans les 5 jours")
+        expect(body_string).to match("dans les 3 jours")
       end
     end
 
@@ -198,7 +198,7 @@ RSpec.describe InvitationMailer do
         )
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
-        expect(body_string).to match("dans les 5 jours")
+        expect(body_string).to match("dans les 3 jours")
       end
     end
 
@@ -234,7 +234,7 @@ RSpec.describe InvitationMailer do
         )
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
-        expect(body_string).to match("dans les 5 jours")
+        expect(body_string).to match("dans les 3 jours")
       end
     end
 
@@ -269,7 +269,7 @@ RSpec.describe InvitationMailer do
         )
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
-        expect(body_string).to match("dans les 5 jours")
+        expect(body_string).to match("dans les 3 jours")
       end
     end
 
@@ -302,7 +302,7 @@ RSpec.describe InvitationMailer do
         )
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
-        expect(body_string).to match("dans les 5 jours")
+        expect(body_string).to match("dans les 3 jours")
       end
     end
 
@@ -336,7 +336,7 @@ RSpec.describe InvitationMailer do
         )
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
-        expect(body_string).to match("dans les 5 jours")
+        expect(body_string).to match("dans les 3 jours")
       end
     end
   end
@@ -370,7 +370,7 @@ RSpec.describe InvitationMailer do
         " afin de démarrer un parcours d'accompagnement"
       )
       expect(body_string).not_to match("/invitations/redirect")
-      expect(body_string).to match("dans un délai de 5 jours")
+      expect(body_string).to match("dans un délai de 3 jours")
     end
 
     context "when the signature is configured" do
@@ -416,7 +416,7 @@ RSpec.describe InvitationMailer do
       )
       expect(body_string).to match("/invitations/redirect")
       expect(body_string).to match("uuid=#{invitation.uuid}")
-      expect(body_string).not_to match("dans un délai de 5 jours")
+      expect(body_string).not_to match("dans un délai de 3 jours")
     end
 
     context "when the signature is configured" do

@@ -239,7 +239,6 @@ drome_orientation_config = Configuration.create!(
   convene_applicant: false,
   invitation_formats: ["sms", "email", "postal"],
   motif_category: orientation_category,
-  number_of_days_to_accept_invitation: 3,
   number_of_days_before_action_required: 10
 )
 
@@ -248,7 +247,6 @@ drome_accompagnement_config = Configuration.create!(
   convene_applicant: false,
   invitation_formats: ["sms", "email", "postal"],
   motif_category: accompagnement_category,
-  number_of_days_to_accept_invitation: 3,
   number_of_days_before_action_required: 10
 )
 
@@ -271,7 +269,6 @@ yonne_orientation_config = Configuration.create!(
   convene_applicant: true,
   invitation_formats: [],
   motif_category: orientation_category,
-  number_of_days_to_accept_invitation: 3,
   number_of_days_before_action_required: 10
 )
 

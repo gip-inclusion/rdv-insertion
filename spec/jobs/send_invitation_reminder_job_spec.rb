@@ -25,7 +25,7 @@ describe SendInvitationReminderJob do
       valid_until: Time.zone.parse("2022-05-15 15:05"), sent_at: Time.zone.parse("2022-05-01 14:01"),
       applicant: applicant, organisations: [organisation], rdv_context: rdv_context, rdv_solidarites_token: "123",
       link: "www.rdv-solidarités.fr/prendre_rdv",
-      number_of_days_to_accept_invitation: 3, help_phone_number: "0101010101",
+      help_phone_number: "0101010101",
       rdv_solidarites_lieu_id: nil, department: department, rdv_with_referents: false
     )
   end
@@ -49,7 +49,6 @@ describe SendInvitationReminderJob do
         organisations: [organisation],
         rdv_context: rdv_context,
         format: invitation_format,
-        number_of_days_to_accept_invitation: 3,
         help_phone_number: "0101010101",
         rdv_solidarites_lieu_id: nil,
         link: "www.rdv-solidarités.fr/prendre_rdv",

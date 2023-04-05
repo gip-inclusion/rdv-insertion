@@ -25,7 +25,6 @@ class InviteApplicantJob < ApplicationJob
       applicant: @applicant,
       department: @department,
       organisations: [@organisation],
-      number_of_days_to_accept_invitation: matching_configuration.number_of_days_to_accept_invitation,
       rdv_context: rdv_context,
       valid_until: matching_configuration.number_of_days_before_action_required.days.from_now,
       rdv_with_referents: matching_configuration.rdv_with_referents,

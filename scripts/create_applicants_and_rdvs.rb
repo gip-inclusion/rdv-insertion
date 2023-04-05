@@ -38,7 +38,6 @@ date = 1.year.ago
     help_phone_number: "0102030405",
     rdv_solidarites_token: "sometoken#{i}",
     link: "http://www.test.com/test&id=#{i}",
-    number_of_days_to_accept_invitation: 7,
     department_id: 1,
     rdv_context_id: rc.id
   )

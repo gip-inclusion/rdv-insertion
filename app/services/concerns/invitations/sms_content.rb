@@ -4,9 +4,8 @@ module Invitations
 
     include Rails.application.routes.url_helpers
 
-    delegate :applicant, :help_phone_number, :number_of_days_to_accept_invitation,
-             :number_of_days_before_expiration, :rdv_purpose, :rdv_title, :applicant_designation,
-             :display_mandatory_warning, :display_punishable_warning,
+    delegate :applicant, :help_phone_number, :number_of_days_before_expiration,
+             :rdv_purpose, :rdv_title, :applicant_designation, :display_mandatory_warning, :display_punishable_warning,
              to: :invitation
 
     private
@@ -22,7 +21,7 @@ module Invitations
     def standard_content
       "#{applicant.full_name},\nVous êtes #{applicant_designation} et vous êtes #{applicant.conjugate('invité')} à" \
         " participer à un #{rdv_title}. Pour choisir la date et l'horaire du RDV, " \
-        "cliquez sur le lien suivant dans les #{number_of_days_to_accept_invitation} jours: " \
+        "cliquez sur le lien suivant dans les #{Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER} jours: " \
         "#{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
         "#{mandatory_warning}" \
         "#{punishable_warning}" \
@@ -32,7 +31,7 @@ module Invitations
     def phone_platform_content
       "#{applicant.full_name},\nVous êtes #{applicant_designation} et vous devez contacter la plateforme " \
         "départementale afin de #{rdv_purpose}. Pour cela, merci d'appeler le " \
-        "#{help_phone_number} dans un délai de #{number_of_days_to_accept_invitation} jours. " \
+        "#{help_phone_number} dans un délai de #{Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER} jours. " \
         "Cet appel est nécessaire pour le traitement de votre dossier."
     end
 

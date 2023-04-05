@@ -1,4 +1,6 @@
 class Invitation < ApplicationRecord
+  NUMBER_OF_DAYS_BEFORE_REMINDER = 3
+
   include Sendable
   include Templatable
 
@@ -9,9 +11,7 @@ class Invitation < ApplicationRecord
 
   attr_accessor :content
 
-  validates :help_phone_number, :rdv_solidarites_token, :organisations, :link, :number_of_days_to_accept_invitation,
-            :valid_until,
-            presence: true
+  validates :help_phone_number, :rdv_solidarites_token, :organisations, :link, :valid_until, presence: true
   validates :uuid, uniqueness: true, allow_nil: true
 
   delegate :motif_category, :motif_category_name, to: :rdv_context
