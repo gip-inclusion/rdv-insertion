@@ -34,8 +34,6 @@ class InvitationMailer < ApplicationMailer
     )
   end
 
-  ### Spécifique à un contexte
-
   def atelier_enfants_ados_invitation
     mail(
       to: @applicant.email,

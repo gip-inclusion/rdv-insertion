@@ -491,11 +491,11 @@ describe Invitations::SendSms, type: :service do
       let!(:rdv_context) { build(:rdv_context, motif_category: category_atelier_enfants_ados) }
       let!(:configuration) { create(:configuration, motif_category: category_atelier_enfants_ados) }
       let!(:content) do
-        "John Doe,\n Tu es invité à participer à un atelier organisé par le département. " \
+        "John Doe,\nTu es invité à participer à un atelier organisé par le département. " \
           "Nous te proposons de cliquer ci-dessous pour découvrir le programme. " \
           "Si tu es intéressé pour participer, tu n’auras qu’à cliquer et t’inscrire en ligne avec le lien suivant: " \
           "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
-          "En cas de problème technique, contacte le 0147200001."
+          "En cas de problème technique, tu peux contacter le 0147200001."
       end
 
       it("is a success") { is_a_success }

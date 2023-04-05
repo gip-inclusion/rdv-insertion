@@ -16,8 +16,6 @@ module MotifCategory::Sortable
     rsa_atelier_collectif_mandatory
     rsa_main_tendue
     rsa_spie
-    psychologue
-    atelier_enfants_ados
   ].freeze
 
   def position

@@ -1,13 +1,13 @@
 <h1>Bonjour <%= "#{@applicant.first_name} #{@applicant.last_name.upcase}" %>,</h1>
 <p>Tu es invité à participer à un atelier organisé par le département.</p>
 <p>Nous te proposons de cliquer ci-dessous pour découvrir le programme.</p>
-<p><span class="font-weight-bold">Si tu es intéressé pour participer, tu n’auras qu’à cliquer et t’inscrire en ligne.</p>
+<p><span class="font-weight-bold">Si tu es intéressé pour participer, tu n’auras qu’à cliquer ci-dessous et t’inscrire en ligne.</p>
 <p class="btn-wrapper">
   <%= link_to redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST']), class: "btn btn-primary" do %>
     M'inscrire
   <% end %>
 </p>
-<p>En cas de problème technique, contacte le <%= @invitation.help_phone_number_formatted %></p>
+<p>En cas de problème technique, tu peux contacter le <%= @invitation.help_phone_number_formatted %></p>
 <%= render 'common/organisation_signature', signature_lines: @signature_lines, department: @department %>
 <% if @logo_path %>
   <%= image_pack_tag @logo_path, alt: "Logo département ou organisation", class: "department-logo" %>
