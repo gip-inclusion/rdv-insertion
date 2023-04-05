@@ -288,5 +288,23 @@ describe Invitations::GenerateLetter, type: :service do
         expect(content).to include("Cet appel est obligatoire dans le cadre du versement de votre allocation RSA")
       end
     end
+
+    context "when the context is atelier_enfants_ados" do
+      let!(:rdv_context) { create(:rdv_context, motif_category: category_atelier_enfants_ados) }
+
+      it "generates the pdf with the right content" do
+        subject
+        content = unescape_html(invitation.content)
+        expect(content).to include(
+          "Objet : Participation à un atelier"
+        )
+        expect(content).to include(
+          "<p>Tu es invité à participer à un atelier organisé par le département.</p>"
+        )
+        expect(content).to include(
+          "<p>Nous te proposons de découvrir le programme.</p>"
+        )
+      end
+    end
   end
 end
