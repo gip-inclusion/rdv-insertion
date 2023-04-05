@@ -36,7 +36,7 @@ module Organisations
       # to allow an instant redirection, we create the agent_role directl
       # the rdv_solidarites_agent_role_id will be added to this agent_role record thanks to the webhook
       # this is safe because the transaction succeeds only if the agent is a territorial admin in the department
-      @agent_role_for_new_organisation ||= \
+      @agent_role_for_new_organisation ||=
         AgentRole.new(agent_id: @current_agent.id, organisation_id: @organisation.id, level: "admin")
     end
 

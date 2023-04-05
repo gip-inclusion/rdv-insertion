@@ -17,7 +17,7 @@ module RdvSolidaritesApi
     private
 
     def rdv_solidarites_response
-      @rdv_solidarites_response ||= \
+      @rdv_solidarites_response ||=
         rdv_solidarites_client.create_webhook_endpoint(@rdv_solidarites_organisation_id, @subscriptions)
     end
   end
