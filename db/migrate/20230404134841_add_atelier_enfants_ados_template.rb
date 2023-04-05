@@ -17,6 +17,6 @@ class AddAtelierEnfantsAdosTemplate < ActiveRecord::Migration[7.0]
 
   def down
     MotifCategory.find_by(short_name: "atelier_enfants_ados").destroy
-    MotifCategory.find_by(rdv_title: "atelier_enfants_ados", model: "atelier_enfants_ados").destroy
+    Template.find_by(rdv_title: "atelier enfants et ados", model: "atelier_enfants_ados").destroy
   end
 end
