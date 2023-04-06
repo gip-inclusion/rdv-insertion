@@ -16,17 +16,20 @@ class AddOrientationFtTemplate < ActiveRecord::Migration[7.0]
       display_punishable_warning: false
     )
 
-    MotifCategory.create!(
+    # This context already exist on production
+    mc = MotifCategory.find_or_create_by!(
       name: "RSA orientation France Travail",
       short_name: "rsa_orientation_france_travail",
-      template: template,
       participation_optional: false
     )
+
+    mc.template = template
+    mc.save!
   end
 
   def down
-    MotifCategory.find_by(short_name: "rsa_orientation_france_travail").destroy
-    Template.find_by(rdv_title: "premier rendez-vous d'orientation France Travail", model: "standard").destroy
+    MotifCategory.find_by(short_name: "rsa_orientation_france_travail").destroy!
+    Template.find_by(rdv_title: "premier rendez-vous d'orientation France Travail", model: "standard").destroy!
 
     remove_column :templates, :custom_sentence
   end
