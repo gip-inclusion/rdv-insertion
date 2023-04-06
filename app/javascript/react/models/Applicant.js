@@ -152,7 +152,6 @@ export default class Applicant {
       "postal",
       this.currentConfiguration.motif_category_id
     );
-    this.departmentInternalId = upToDateApplicant.department_internal_id;
     this.agents = upToDateApplicant.agents;
   }
 

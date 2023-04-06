@@ -11,7 +11,7 @@ module Messengers::SendSms
   end
 
   def send_sms(sms_sender_name, phone_number_formatted, content)
-    return Rails.logger.info(content) if Rails.env.development?
+    return Rails.logger.info(content) if Rails.env.development? || Rails.env.test?
 
     SendTransactionalSms.call(phone_number_formatted: phone_number_formatted,
                               sender_name: sms_sender_name, content: content)
