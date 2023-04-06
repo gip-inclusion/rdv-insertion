@@ -2,7 +2,7 @@ describe RdvContext do
   describe "#action_required" do
     subject { described_class.action_required(number_of_days_before_action_required) }
 
-    let!(:number_of_days_before_action_required) { 3 }
+    let!(:number_of_days_before_action_required) { 4 }
 
     context "when status requires action" do
       let!(:rdv_context) { create(:rdv_context, status: "rdv_noshow") }
@@ -257,7 +257,7 @@ describe RdvContext do
     end
 
     describe "#invited_before_time_window?" do
-      let!(:number_of_days_before_action_required) { 3 }
+      let!(:number_of_days_before_action_required) { 4 }
 
       context "when no rdv" do
         let!(:invitation) { create(:invitation, sent_at: 6.days.ago) }

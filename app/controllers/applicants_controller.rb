@@ -135,7 +135,7 @@ class ApplicantsController < ApplicationController
   end
 
   def set_applicant
-    @applicant = \
+    @applicant =
       policy_scope(Applicant)
       .preload(:invitations, organisations: [:department, :configurations])
       .where(department_level? ? { department: params[:department_id] } : { organisations: params[:organisation_id] })
@@ -143,7 +143,7 @@ class ApplicantsController < ApplicationController
   end
 
   def set_organisation
-    @organisation = \
+    @organisation =
       if department_level?
         set_organisation_at_department_level
       else
@@ -171,7 +171,7 @@ class ApplicantsController < ApplicationController
   end
 
   def set_department
-    @department = \
+    @department =
       if department_level?
         policy_scope(Department).find(params[:department_id])
       else
@@ -180,7 +180,7 @@ class ApplicantsController < ApplicationController
   end
 
   def set_all_configurations
-    @all_configurations = \
+    @all_configurations =
       if department_level?
         (policy_scope(::Configuration).includes(:motif_category) & @department.configurations).uniq(&:motif_category_id)
       else
@@ -192,7 +192,7 @@ class ApplicantsController < ApplicationController
   def set_current_configuration
     return if archived_scope?
 
-    @current_configuration = \
+    @current_configuration =
       if params[:motif_category_id].present?
         @all_configurations.find { |c| c.motif_category_id == params[:motif_category_id].to_i }
       else
@@ -205,7 +205,7 @@ class ApplicantsController < ApplicationController
   end
 
   def set_applicant_rdv_contexts
-    @rdv_contexts = \
+    @rdv_contexts =
       RdvContext.preload(
         :invitations, :motif_category,
         participations: [:notifications, { rdv: [:motif, :organisation] }]
@@ -215,7 +215,7 @@ class ApplicantsController < ApplicationController
   end
 
   def set_applicant_organisations
-    @applicant_organisations = \
+    @applicant_organisations =
       policy_scope(Organisation).where(id: @applicant.organisation_ids, department: @department)
   end
 

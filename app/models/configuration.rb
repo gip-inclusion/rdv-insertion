@@ -12,10 +12,10 @@ class Configuration < ApplicationRecord
   private
 
   def delays_validity
-    return if number_of_days_to_accept_invitation <= number_of_days_before_action_required
+    return if number_of_days_before_action_required > Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER
 
-    errors.add(:base, "Le délai de prise de rendez-vous communiqué au bénéficiaire ne peut pas être inférieur " \
-                      "au délai d'expiration de l'invtation")
+    errors.add(:base, "Le délai d'expiration de l'invtation doit être supérieur " \
+                      "à #{Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER} jours")
   end
 
   def invitation_formats_validity

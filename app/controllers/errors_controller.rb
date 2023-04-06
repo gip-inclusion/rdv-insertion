@@ -43,13 +43,13 @@ class ErrorsController < ApplicationController
   end
 
   def set_unprocessable_entity_error_message
-    @unprocessable_entity_error_message = \
+    @unprocessable_entity_error_message =
       "Erreur 422 - Une erreur s'est produite," \
       " nous nous efforçons de résoudre le problème le plus vite possible"
   end
 
   def set_internal_server_error_message
-    @internal_server_error_message = \
+    @internal_server_error_message =
       "Erreur 500 - Une erreur s'est produite," \
       " nous nous efforçons de résoudre le problème le plus vite possible"
   end

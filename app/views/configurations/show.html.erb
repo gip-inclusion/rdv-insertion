@@ -18,7 +18,6 @@
       <h4><%= Configuration.human_attribute_name(:invitation_formats) %></h4>
         <p class="mb-2"><%= @configuration.invitation_formats.map { |format| I18n.t("invitation_formats.#{format}") }.join(", ") %></p>
     </div>
-    <%= render "common/attribute_display", record: @configuration, attribute: :number_of_days_to_accept_invitation %>
     <%= render "common/attribute_display", record: @configuration, attribute: :convene_applicant %>
     <%= render "common/attribute_display", record: @configuration, attribute: :number_of_days_before_action_required %>
     <%= render "common/attribute_display", record: @configuration, attribute: :rdv_with_referents %>

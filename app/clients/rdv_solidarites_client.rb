@@ -5,6 +5,14 @@ class RdvSolidaritesClient
     @url = ENV["RDV_SOLIDARITES_URL"]
   end
 
+  def get_user(user_id)
+    Faraday.get(
+      "#{@url}/api/v1/users/#{user_id}",
+      {},
+      request_headers
+    )
+  end
+
   def create_user(request_body)
     Faraday.post(
       "#{@url}/api/v1/users",
@@ -21,18 +29,18 @@ class RdvSolidaritesClient
     )
   end
 
-  def update_organisation(organisation_id, request_body = {})
-    Faraday.patch(
+  def get_organisation(organisation_id)
+    Faraday.get(
       "#{@url}/api/v1/organisations/#{organisation_id}",
-      request_body.to_json,
+      {},
       request_headers
     )
   end
 
-  def get_user(user_id)
-    Faraday.get(
-      "#{@url}/api/v1/users/#{user_id}",
-      {},
+  def update_organisation(organisation_id, request_body = {})
+    Faraday.patch(
+      "#{@url}/api/v1/organisations/#{organisation_id}",
+      request_body.to_json,
       request_headers
     )
   end
@@ -139,6 +147,39 @@ class RdvSolidaritesClient
     Faraday.delete(
       "#{@url}/api/v1/referent_assignations",
       { user_id: user_id, agent_id: agent_id },
+      request_headers
+    )
+  end
+
+  def get_webhook_endpoint(organisation_id)
+    # there is a unique webhook per organisation for a given target_url, so returns a collection with 1 result max
+    Faraday.get(
+      "#{@url}/api/v1/organisations/#{organisation_id}/webhook_endpoints",
+      { target_url: "#{ENV['HOST']}/rdv_solidarites_webhooks" },
+      request_headers
+    )
+  end
+
+  def create_webhook_endpoint(organisation_id, subscriptions)
+    Faraday.post(
+      "#{@url}/api/v1/organisations/#{organisation_id}/webhook_endpoints",
+      {
+        target_url: "#{ENV['HOST']}/rdv_solidarites_webhooks",
+        secret: ENV["RDV_SOLIDARITES_SECRET"],
+        subscriptions: subscriptions
+      }.to_json,
+      request_headers
+    )
+  end
+
+  def update_webhook_endpoint(webhook_endpoint_id, organisation_id, subscriptions)
+    Faraday.patch(
+      "#{@url}/api/v1/organisations/#{organisation_id}/webhook_endpoints/#{webhook_endpoint_id}",
+      {
+        target_url: "#{ENV['HOST']}/rdv_solidarites_webhooks",
+        secret: ENV["RDV_SOLIDARITES_SECRET"],
+        subscriptions: subscriptions
+      }.to_json,
       request_headers
     )
   end

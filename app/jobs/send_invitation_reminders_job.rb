@@ -5,8 +5,10 @@ class SendInvitationRemindersJob < ApplicationJob
     @sent_reminders_applicant_ids = []
 
     rdv_contexts_with_reminder_needed.find_each do |rdv_context|
-      # we check here that it is the **first** invitation that has been sent 3 days ago
-      next if rdv_context.first_invitation_relative_to_last_participation_sent_at.to_date != 3.days.ago.to_date
+      # we check here that it is the **first** invitation that has been sent x number of days ago,
+      # where x is fixed by the constant Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER
+      next if rdv_context.first_invitation_relative_to_last_participation_sent_at.to_date !=
+              Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER.days.ago.to_date
 
       applicant = rdv_context.applicant
 
@@ -22,7 +24,7 @@ class SendInvitationRemindersJob < ApplicationJob
   private
 
   def rdv_contexts_with_reminder_needed
-    @rdv_contexts_with_reminder_needed ||= \
+    @rdv_contexts_with_reminder_needed ||=
       RdvContext.invitation_pending
                 .joins(:motif_category)
                 .where(motif_category: MotifCategory.participation_optional(false))
@@ -32,10 +34,14 @@ class SendInvitationRemindersJob < ApplicationJob
   end
 
   def valid_invitations_sent_3_days_ago
-    @valid_invitations_sent_3_days_ago ||= \
+    @valid_invitations_sent_3_days_ago ||=
       # we want the token to be valid for at least two days to be sure the invitation will be valid
       Invitation.where("valid_until > ?", 2.days.from_now)
-                .where(format: %w[email sms], sent_at: 3.days.ago.all_day, reminder: false)
+                .where(
+                  format: %w[email sms],
+                  sent_at: Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER.days.ago.all_day,
+                  reminder: false
+                )
   end
 
   def notify_on_mattermost
