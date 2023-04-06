@@ -1,8 +1,6 @@
 <h1>Bonjour <%= "#{@applicant.first_name} #{@applicant.last_name.upcase}" %>,</h1>
 <p>Vous êtes <%= @applicant_designation %> et à ce titre vous êtes <%= @applicant.conjugate('invité') %> à participer à un <%= @rdv_title %> afin de <%= @rdv_purpose %>.</p>
-<% if @custom_sentence %>
-  <p><%= @custom_sentence %></p>
-<% end %>
+<%= tag.p(@custom_sentence) if @custom_sentence %>
 <p><span class="font-weight-bold">Pour pouvoir choisir la date et l'horaire de votre rendez-vous</span>, vous pouvez accéder au service RDV-Solidarités en cliquant sur le bouton suivant <span class="font-weight-bold">dans les <%= Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER %> jours</span>:</p>
 <p class="btn-wrapper">
   <%= link_to redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST']), class: "btn btn-primary" do %>

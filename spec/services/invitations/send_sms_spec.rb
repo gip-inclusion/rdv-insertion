@@ -492,7 +492,7 @@ describe Invitations::SendSms, type: :service do
       let!(:configuration) { create(:configuration, motif_category: category_rsa_orientation_france_travail) }
       let!(:content) do
         "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous êtes invité à participer à " \
-          "un premier rendez-vous d'orientation France Travail." \
+          "un rendez-vous d'orientation." \
           " Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant dans les " \
           "3 jours: " \
           "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \

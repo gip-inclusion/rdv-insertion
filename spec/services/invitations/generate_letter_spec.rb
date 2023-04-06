@@ -150,10 +150,10 @@ describe Invitations::GenerateLetter, type: :service do
         subject
         content = unescape_html(invitation.content)
         expect(content).to include(
-          "Objet : Premier rendez-vous d'orientation France Travail dans le cadre de votre RSA"
+          "Objet : Rendez-vous d'orientation dans le cadre de votre RSA"
         )
         expect(content).to include(
-          "vous êtes invité à participer à un premier rendez-vous d'orientation France Travail"
+          "vous êtes invité à participer à un rendez-vous d'orientation afin de démarrer un parcours d'accompagnement."
         )
         expect(content).to include(
           "Dans le cadre du projet 'France Travail', ce rendez-vous sera réalisé par deux"

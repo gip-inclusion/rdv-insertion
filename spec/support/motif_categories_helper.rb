@@ -288,16 +288,17 @@ module MotifCategoriesHelper
     let!(:category_rsa_orientation_france_travail) do
       create(
         :motif_category,
-        name: "RSA Orientation France Travail",
+        name: "RSA orientation France Travail",
         short_name: "rsa_orientation_france_travail",
         participation_optional: false,
         template: create(
           :template,
           model: "standard",
-          rdv_title: "premier rendez-vous d'orientation France Travail",
+          rdv_title: "rendez-vous d'orientation",
+          rdv_title_by_phone: "rendez-vous d'orientation téléphonique",
+          rdv_purpose: "démarrer un parcours d'accompagnement",
           applicant_designation: "bénéficiaire du RSA",
           rdv_subject: "RSA",
-          rdv_purpose: "démarrer votre parcours",
           custom_sentence: "Dans le cadre du projet 'France Travail', ce rendez-vous sera réalisé par deux" \
                            " professionnels de l’insertion (l’un de Pôle emploi, l’autre du Conseil départemental)" \
                            " et permettra de mieux comprendre votre situation afin de vous proposer" \
