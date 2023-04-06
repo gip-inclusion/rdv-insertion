@@ -4,7 +4,7 @@
 </div>
 <div class="main-content">
   <p><%= "#{applicant.first_name} #{applicant.last_name.upcase}" %>,</p>
-  <p>Tu es invité à participer à un atelier organisé par le département.</p>
+  <p>Tu es <%= applicant.conjugate('invité') %> à participer à un atelier organisé par le département.</p>
   <p>Nous te proposons de découvrir le programme.</p>
   <p><%= sender_name.capitalize %> a mis en place <span class="bold-blue">une plateforme te permettant de t'inscrire.</span></p>
   <p>Pour choisir ton créneau, saisis le code d’invitation ci-dessous <span class="bold-blue">sur <u><%= ENV['HOST'] %>/invitation</u></span>, puis suis les instructions présentes à l'écran :</p>

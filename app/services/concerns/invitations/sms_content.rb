@@ -44,9 +44,9 @@ module Invitations
     end
 
     def atelier_enfants_ados_content
-      "#{applicant},\nTu es invité à participer à un atelier organisé par le département. " \
+      "#{applicant},\nTu es #{applicant.conjugate('invité')} à participer à un atelier organisé par le département. " \
         "Nous te proposons de cliquer ci-dessous pour découvrir le programme. " \
-        "Si tu es intéressé pour participer, tu n’auras qu’à cliquer et t’inscrire en ligne avec le lien suivant: " \
+        "Si tu es #{applicant.conjugate('intéressé')} pour participer, tu n’auras qu’à cliquer et t’inscrire en ligne avec le lien suivant: " \
         "#{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
         "En cas de problème technique, tu peux contacter le #{help_phone_number}."
     end
