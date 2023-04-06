@@ -44,4 +44,9 @@ module StubHelper
       query: { "q" => applicant.address }
     ).to_return(body: { "features" => [] }.to_json)
   end
+
+  def stub_send_in_blue
+    stub_request(:post, "https://api.sendinblue.com/v3/transactionalSMS/sms")
+      .to_return(status: 200)
+  end
 end
