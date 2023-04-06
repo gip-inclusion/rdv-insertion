@@ -8,12 +8,12 @@ class InvitationDatesFilteringsController < ApplicationController
   def set_organisation
     return if department_level?
 
-    @organisation = \
+    @organisation =
       policy_scope(Organisation).find(params[:organisation_id])
   end
 
   def set_department
-    @department = \
+    @department =
       if department_level?
         policy_scope(Department).find(params[:department_id])
       else

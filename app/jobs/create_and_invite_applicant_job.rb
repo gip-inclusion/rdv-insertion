@@ -21,7 +21,7 @@ class CreateAndInviteApplicantJob < ApplicationJob
   end
 
   def applicant
-    @applicant ||= \
+    @applicant ||=
       Applicants::FindOrInitialize.call(
         applicant_attributes: @applicant_attributes,
         department_id: @department.id

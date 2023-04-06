@@ -91,7 +91,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_05_204042) do
     t.datetime "updated_at", null: false
     t.string "invitation_formats", default: ["sms", "email", "postal"], null: false, array: true
     t.boolean "convene_applicant", default: false
-    t.integer "number_of_days_to_accept_invitation", default: 3
     t.integer "number_of_days_before_action_required", default: 10
     t.boolean "invite_to_applicant_organisations_only", default: false
     t.boolean "rdv_with_referents", default: false
@@ -159,7 +158,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_05_204042) do
     t.bigint "department_id"
     t.bigint "rdv_solidarites_lieu_id"
     t.bigint "rdv_context_id"
-    t.integer "number_of_days_to_accept_invitation"
     t.datetime "valid_until"
     t.boolean "reminder", default: false
     t.string "uuid"

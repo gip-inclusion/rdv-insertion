@@ -1,6 +1,8 @@
+# rubocop:disable Metrics/ClassLength
+
 class OrganisationsController < ApplicationController
   PERMITTED_PARAMS = [
-    :name, :phone_number, :email, :slug, :independent_from_cd, :logo_filename
+    :name, :phone_number, :email, :slug, :independent_from_cd, :logo_filename, :rdv_solidarites_organisation_id
   ].freeze
 
   before_action :set_organisation, :set_department, :authorize_organisation_configuration, only: [:show, :edit, :update]
@@ -12,7 +14,31 @@ class OrganisationsController < ApplicationController
   end
 
   def show; end
+
+  def new
+    @department = Department.find(params[:department_id])
+    @organisation = Organisation.new
+    authorize @organisation
+  end
+
   def edit; end
+
+  def create
+    @department = Department.find(params[:department_id])
+    @organisation = Organisation.new(department: @department)
+    @organisation.assign_attributes(**organisation_params)
+    authorize @organisation
+    if create_organisation.success?
+      redirect_to organisation_applicants_path(@organisation)
+    else
+      render turbo_stream: turbo_stream.replace(
+        "remote_modal", partial: "organisation_form", locals: {
+          organisation: @organisation, department: @department,
+          errors: create_organisation.errors
+        }
+      )
+    end
+  end
 
   def update
     @organisation.assign_attributes(**organisation_params)
@@ -31,14 +57,14 @@ class OrganisationsController < ApplicationController
 
     if retrieve_relevant_organisations.success?
       render json: {
-        department_organisations: @department_organisations,
         success: true,
+        department_organisations: @department_organisations,
         geolocated_organisations: organisations_relevant_to_sector
       }
     else
       render json: {
-        errors: retrieve_relevant_organisations.errors,
         success: false,
+        errors: retrieve_relevant_organisations.errors,
         department_organisations: @department_organisations
       }
     end
@@ -88,7 +114,7 @@ class OrganisationsController < ApplicationController
   end
 
   def retrieve_relevant_organisations
-    @retrieve_relevant_organisations ||= \
+    @retrieve_relevant_organisations ||=
       RdvSolidaritesApi::RetrieveOrganisations.call(
         rdv_solidarites_session: rdv_solidarites_session,
         geo_attributes: {
@@ -116,7 +142,17 @@ class OrganisationsController < ApplicationController
     )
   end
 
+  def create_organisation
+    @create_organisation ||= Organisations::Create.call(
+      organisation: @organisation,
+      current_agent: current_agent,
+      rdv_solidarites_session: rdv_solidarites_session
+    )
+  end
+
   def authorize_organisation_configuration
     authorize @organisation, :configure?
   end
 end
+
+# rubocop:enable Metrics/ClassLength

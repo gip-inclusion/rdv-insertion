@@ -13,12 +13,10 @@ describe InviteApplicantJob do
   let!(:organisation) do
     create(:organisation, id: organisation_id, department: department, configurations: [configuration])
   end
-  let!(:number_of_days_to_accept_invitation) { 3 }
   let!(:configuration) do
     create(
-      :configuration,
-      motif_category: motif_category, number_of_days_to_accept_invitation: number_of_days_to_accept_invitation,
-      number_of_days_before_action_required: 10, rdv_with_referents: false
+      :configuration, motif_category: motif_category, number_of_days_before_action_required: 10,
+                      rdv_with_referents: false
     )
   end
   let!(:rdv_solidarites_session_credentials) do
@@ -30,8 +28,7 @@ describe InviteApplicantJob do
       format: invitation_format,
       help_phone_number: "01010101",
       motif_category_id: motif_category.id,
-      rdv_solidarites_lieu_id: 444,
-      number_of_days_to_accept_invitation: number_of_days_to_accept_invitation
+      rdv_solidarites_lieu_id: 444
     }
   end
   let!(:rdv_context) { create(:rdv_context, motif_category: motif_category, applicant: applicant) }
@@ -103,13 +100,7 @@ describe InviteApplicantJob do
 
     context "when no matching configuration for motif category" do
       let!(:other_motif_category) { create(:motif_category) }
-      let!(:configuration) do
-        create(
-          :configuration,
-          motif_category: other_motif_category,
-          number_of_days_to_accept_invitation: number_of_days_to_accept_invitation
-        )
-      end
+      let!(:configuration) { create(:configuration, motif_category: other_motif_category) }
 
       it "raises an error" do
         expect(Invitations::SaveAndSend).not_to receive(:call)

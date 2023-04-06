@@ -5,6 +5,7 @@ module RdvSolidaritesWebhooks
       @meta = meta.deep_symbolize_keys
       return if organisation.blank?
 
+      assign_rdv_solidarites_agent_role_id if agent_role
       upsert_or_delete_agent_role
     end
 
@@ -54,6 +55,10 @@ module RdvSolidaritesWebhooks
       )
     end
 
+    def assign_rdv_solidarites_agent_role_id
+      agent_role.update!(rdv_solidarites_agent_role_id: @data[:id])
+    end
+
     def event
       @meta[:event]
     end
@@ -79,7 +84,7 @@ module RdvSolidaritesWebhooks
     end
 
     def agent_role
-      @agent_role ||= AgentRole.find_by(rdv_solidarites_agent_role_id: rdv_solidarites_agent_role_id)
+      @agent_role ||= AgentRole.find_by(organisation_id: organisation.id, agent_id: agent&.id)
     end
   end
 end

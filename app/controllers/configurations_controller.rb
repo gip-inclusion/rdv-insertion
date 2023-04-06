@@ -1,8 +1,7 @@
 class ConfigurationsController < ApplicationController
   PERMITTED_PARAMS = [
-    { invitation_formats: [] }, :number_of_days_to_accept_invitation, :convene_applicant, :rdv_with_referents,
-    :invite_to_applicant_organisations_only, :number_of_days_before_action_required, :motif_category_id,
-    :file_configuration_id
+    { invitation_formats: [] }, :convene_applicant, :rdv_with_referents, :file_configuration_id,
+    :invite_to_applicant_organisations_only, :number_of_days_before_action_required, :motif_category_id
   ].freeze
 
   include BackToListConcern

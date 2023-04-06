@@ -84,7 +84,7 @@ describe "Applicants API" do
     it "is a success" do
       subject
       expect(response).to have_http_status(:ok)
-      result = JSON.parse(response.body)
+      result = response.parsed_body
       expect(result["success"]).to eq(true)
     end
 
@@ -121,7 +121,7 @@ describe "Applicants API" do
       it "is a success" do
         subject
         expect(response).to have_http_status(:ok)
-        result = JSON.parse(response.body)
+        result = response.parsed_body
         expect(result["success"]).to eq(true)
       end
     end
@@ -134,7 +134,7 @@ describe "Applicants API" do
       it "returns unauthorized" do
         subject
         expect(response).to have_http_status(:unauthorized)
-        result = JSON.parse(response.body)
+        result = response.parsed_body
         expect(result["errors"]).to eq(["Les identifiants de session RDV-Solidarités sont invalides"])
       end
 
@@ -153,8 +153,8 @@ describe "Applicants API" do
         subject
         expect(response).not_to be_successful
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(JSON.parse(response.body)["success"]).to eq(false)
-        expect(JSON.parse(response.body)["errors"]).to eq(
+        expect(response.parsed_body["success"]).to eq(false)
+        expect(response.parsed_body["errors"]).to eq(
           ["L'agent ne fait pas partie d'une organisation sur RDV-Insertion"]
         )
       end
@@ -179,7 +179,7 @@ describe "Applicants API" do
         it "returns 422" do
           subject
           expect(response).to have_http_status(:unprocessable_entity)
-          result = JSON.parse(response.body)
+          result = response.parsed_body
           expect(result["errors"]).to include({ "Entrée 1 - 11111444" => { "last_name" => ["doit être rempli(e)"] } })
         end
 
@@ -197,7 +197,7 @@ describe "Applicants API" do
         it "returns 422" do
           subject
           expect(response).to have_http_status(:unprocessable_entity)
-          result = JSON.parse(response.body)
+          result = response.parsed_body
           expect(result["errors"]).to include("Les allocataires doivent être envoyés par lots de 25 maximum")
         end
 
@@ -215,7 +215,7 @@ describe "Applicants API" do
         it "returns 422" do
           subject
           expect(response).to have_http_status(:unprocessable_entity)
-          result = JSON.parse(response.body)
+          result = response.parsed_body
           expect(result["errors"]).to include({ "Entrée 1" => "Catégorie de motifs RSA accompagnement invalide" })
         end
 
@@ -233,7 +233,7 @@ describe "Applicants API" do
       it "returns 403" do
         subject
         expect(response).to have_http_status(:forbidden)
-        result = JSON.parse(response.body)
+        result = response.parsed_body
         expect(result["errors"]).to eq(["Votre compte ne vous permet pas d'effectuer cette action"])
       end
     end
