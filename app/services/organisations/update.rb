@@ -22,7 +22,7 @@ module Organisations
     end
 
     def rdv_solidarites_organisation_attributes
-      @rdv_solidarites_organisation_attributes ||= \
+      @rdv_solidarites_organisation_attributes ||=
         @organisation.attributes
                      .symbolize_keys
                      .slice(*Organisation::SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES)

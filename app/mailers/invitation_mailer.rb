@@ -69,7 +69,7 @@ class InvitationMailer < ApplicationMailer
   end
 
   def set_logo_path
-    @logo_path = \
+    @logo_path =
       if @invitation.organisations.length == 1 && first_organisation.logo_path(%w[png jpg]).present?
         first_organisation.logo_path(%w[png jpg])
       else

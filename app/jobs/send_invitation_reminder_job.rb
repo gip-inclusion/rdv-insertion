@@ -17,7 +17,6 @@ class SendInvitationReminderJob < ApplicationJob
 
   private
 
-  # rubocop:disable Metrics/AbcSize
   def invitation
     @invitation ||= Invitation.new(
       reminder: true,
@@ -26,7 +25,6 @@ class SendInvitationReminderJob < ApplicationJob
       organisations: first_invitation.organisations,
       rdv_context: first_invitation.rdv_context,
       format: @invitation_format,
-      number_of_days_to_accept_invitation: first_invitation.number_of_days_to_accept_invitation,
       help_phone_number: first_invitation.help_phone_number,
       rdv_solidarites_lieu_id: first_invitation.rdv_solidarites_lieu_id,
       link: first_invitation.link,
@@ -35,7 +33,6 @@ class SendInvitationReminderJob < ApplicationJob
       rdv_with_referents: first_invitation.rdv_with_referents
     )
   end
-  # rubocop:enable Metrics/AbcSize
 
   def save_and_send_invitation
     @save_and_send_invitation ||= Invitations::SaveAndSend.call(invitation: invitation)
@@ -53,7 +50,7 @@ class SendInvitationReminderJob < ApplicationJob
 
   def eligible_for_reminder?
     @rdv_context.status == "invitation_pending" &&
-      first_invitation.sent_at.to_date == 3.days.ago.to_date &&
+      first_invitation.sent_at.to_date == Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER.days.ago.to_date &&
       first_invitation.valid_until >= 2.days.from_now
   end
 

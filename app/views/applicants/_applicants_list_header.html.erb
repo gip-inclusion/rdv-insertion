@@ -28,7 +28,7 @@
                 class="fas fa-question-circle"
                 data-controller="tooltip"
                 data-action="mouseover->tooltip#actionRequired"
-                data-number-of-days-before-action-required="<%= @current_configuration.number_of_days_before_action_required %>"
+                data-number-of-days-before-action-required="<%= @current_configuration&.number_of_days_before_action_required %>"
               >
               </i>
             </small>

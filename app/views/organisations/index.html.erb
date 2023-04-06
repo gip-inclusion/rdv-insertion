@@ -15,7 +15,7 @@
             <div class="card d-flex flex-row justify-content-center card-organisation mb-3">
               <div class="card-body card-organisation-body">
                 <div class="d-flex justify-content-between">
-                  <h4><%= department.number %> - <%= department.name %></h4>
+                  <h4 class="text-dark-blue"><%= department.number %> - <%= department.name %></h4>
                 </div>
                 <div class="p-3">
                   <ul class="list-inline">
@@ -30,9 +30,15 @@
                       <% end %>
                     <% end %>
                   </ul>
+                <% if current_agent.super_admin? %>
+                  <%= link_to new_department_organisation_path(department), data: { turbo_frame: 'remote_modal' } do %>
+                    <%= button_tag "Lier une organisation RDVS", class: "btn btn-blue-out" %>
+                  <% end %>
+                <% end %>
                 </div>
+
               </div>
-              <div class="mx-2 py-4 text-center">
+              <div class="d-flex flex-column justify-content-center mx-2 py-4 text-center">
                 <div>
                   <% if image_compiled?("maps/#{department.name.parameterize}.svg") %>
                     <%= image_pack_tag("maps/#{department.name.parameterize}.svg", alt: department.name.parameterize) %>

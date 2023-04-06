@@ -14,7 +14,7 @@ module RdvSolidaritesApi
     private
 
     def rdv_solidarites_response
-      @rdv_solidarites_response ||= \
+      @rdv_solidarites_response ||=
         if @rdv_solidarites_organisation_id.present?
           rdv_solidarites_client.get_organisation_user(@rdv_solidarites_user_id, @rdv_solidarites_organisation_id)
         else
