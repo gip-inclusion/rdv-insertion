@@ -22,7 +22,7 @@ Rails.application.routes.draw do
                                      path: '/parcours_insertion',
                                      only: [:show]
 
-  resources :organisations, only: [:index, :show, :edit, :update] do
+  resources :organisations, only: [:index, :new, :show, :edit, :create, :update] do
     get :geolocated, on: :collection
     get :search, on: :collection
     resources :applicants, only: [:index, :create, :show, :update, :edit, :new] do
@@ -65,7 +65,6 @@ Rails.application.routes.draw do
   end
 
   resources :departments, only: [] do
-    resources :organisations, only: [:new, :create]
     resources :department_organisations, only: [:index], as: :organisations, path: "/organisations"
     resources :applicants, only: [:index, :new, :create, :show, :edit, :update] do
       collection { resources :uploads, only: [:new] }

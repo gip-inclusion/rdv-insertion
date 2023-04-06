@@ -34,7 +34,21 @@ class InvitationMailer < ApplicationMailer
     )
   end
 
+  def atelier_enfants_ados_invitation
+    mail(
+      to: @applicant.email,
+      subject: "Invitation à un #{@rdv_title}"
+    )
+  end
+
   ### Reminders
+
+  def short_invitation_reminder
+    mail(
+      to: @applicant.email,
+      subject: "[Rappel]: Votre #{@rdv_title}"
+    )
+  end
 
   def standard_invitation_reminder
     mail(
@@ -47,6 +61,13 @@ class InvitationMailer < ApplicationMailer
     mail(
       to: @applicant.email,
       subject: "[Rappel]: Votre #{@rdv_title} dans le cadre de votre #{@rdv_subject}"
+    )
+  end
+
+  def atelier_enfants_ados_invitation_reminder
+    mail(
+      to: @applicant.email,
+      subject: "[Rappel]: Invitation à un #{@rdv_title}"
     )
   end
 

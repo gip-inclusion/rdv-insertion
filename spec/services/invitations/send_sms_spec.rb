@@ -14,7 +14,7 @@ describe Invitations::SendSms, type: :service do
     create(
       :applicant,
       phone_number: phone_number,
-      first_name: "John", last_name: "Doe", title: "monsieur"
+      first_name: "john", last_name: "doe", title: "monsieur"
     )
   end
   let!(:department) do
@@ -469,7 +469,7 @@ describe Invitations::SendSms, type: :service do
       let!(:rdv_context) { build(:rdv_context, motif_category: category_psychologue) }
       let!(:configuration) { create(:configuration, motif_category: category_psychologue) }
       let!(:content) do
-        "Monsieur John DOE,\n Vous êtes invité à prendre un rendez-vous de suivi psychologue." \
+        "Monsieur John DOE,\nVous êtes invité à prendre un rendez-vous de suivi psychologue." \
           " Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant: " \
           "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
           "En cas de problème technique, contactez le 0147200001."
@@ -498,6 +498,29 @@ describe Invitations::SendSms, type: :service do
           "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
           "Ce rendez-vous est obligatoire. " \
           "En cas de problème technique, contactez le 0147200001."
+      end
+
+      it("is a success") { is_a_success }
+
+      it "calls the send transactional service with the right content" do
+        expect(SendTransactionalSms).to receive(:call)
+          .with(
+            phone_number_formatted: phone_number_formatted, content: content,
+            sender_name: sms_sender_name
+          )
+        subject
+      end
+    end
+
+    context "for atelier_enfants_ados" do
+      let!(:rdv_context) { build(:rdv_context, motif_category: category_atelier_enfants_ados) }
+      let!(:configuration) { create(:configuration, motif_category: category_atelier_enfants_ados) }
+      let!(:content) do
+        "John Doe,\nTu es invité à participer à un atelier organisé par le département. " \
+          "Nous te proposons de cliquer ci-dessous pour découvrir le programme. " \
+          "Si tu es intéressé pour participer, tu n’auras qu’à cliquer et t’inscrire en ligne avec le lien suivant: " \
+          "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
+          "En cas de problème technique, tu peux contacter le 0147200001."
       end
 
       it("is a success") { is_a_success }

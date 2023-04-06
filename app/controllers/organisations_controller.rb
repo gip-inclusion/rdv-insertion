@@ -2,7 +2,8 @@
 
 class OrganisationsController < ApplicationController
   PERMITTED_PARAMS = [
-    :name, :phone_number, :email, :slug, :independent_from_cd, :logo_filename, :rdv_solidarites_organisation_id
+    :name, :phone_number, :email, :slug, :independent_from_cd, :logo_filename, :rdv_solidarites_organisation_id,
+    :department_id
   ].freeze
 
   before_action :set_organisation, :set_department, :authorize_organisation_configuration, only: [:show, :edit, :update]
@@ -16,7 +17,6 @@ class OrganisationsController < ApplicationController
   def show; end
 
   def new
-    @department = Department.find(params[:department_id])
     @organisation = Organisation.new
     authorize @organisation
   end
@@ -24,7 +24,7 @@ class OrganisationsController < ApplicationController
   def edit; end
 
   def create
-    @department = Department.find(params[:department_id])
+    @department = Department.find_by(id: params[:department_id])
     @organisation = Organisation.new(department: @department)
     @organisation.assign_attributes(**organisation_params)
     authorize @organisation
