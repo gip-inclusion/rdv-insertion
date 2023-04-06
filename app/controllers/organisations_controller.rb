@@ -29,9 +29,6 @@ class OrganisationsController < ApplicationController
     @organisation.assign_attributes(**organisation_params)
     authorize @organisation
     if create_organisation.success?
-      p @organisation
-      p @department
-      p @organisation.department
       redirect_to organisation_applicants_path(@organisation)
     else
       render turbo_stream: turbo_stream.replace(
