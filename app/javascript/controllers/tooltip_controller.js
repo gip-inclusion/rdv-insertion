@@ -130,4 +130,11 @@ export default class extends Controller {
       allowHTML: true,
     });
   }
+
+  invalidAddress() {
+    tippy(this.element, {
+      content: "Pour télécharger ce courrier, l'adresse du bénéficiaire doit être valide",
+      placement: "bottom",
+    });
+  }
 }
