@@ -18,8 +18,7 @@ module Exporters
 
     def generate_csv
       csv = CSV.generate(write_headers: true, col_sep: ";", headers: headers, encoding: "utf-8") do |row|
-        @applicants.preload(:organisations, :rdvs, rdv_contexts: [:invitations])
-          .each do |applicant|
+        @applicants.preload(:organisations, :rdvs, rdv_contexts: [:invitations]).each do |applicant|
           row << applicant_csv_row(applicant)
         end
       end
