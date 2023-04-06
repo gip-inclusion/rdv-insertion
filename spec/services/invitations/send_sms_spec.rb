@@ -494,7 +494,7 @@ describe Invitations::SendSms, type: :service do
         "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous devez vous présenter à " \
           "un premier rendez-vous d'orientation France Travail." \
           " Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant dans les " \
-          "9 jours: " \
+          "3 jours: " \
           "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
           "Ce rendez-vous est obligatoire. " \
           "En cas de problème technique, contactez le 0147200001."
