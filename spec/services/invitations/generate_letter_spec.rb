@@ -143,6 +143,28 @@ describe Invitations::GenerateLetter, type: :service do
       end
     end
 
+    context "when the context is orientation_france_travail" do
+      let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_orientation_france_travail) }
+
+      it "generates the pdf with the right content" do
+        subject
+        content = unescape_html(invitation.content)
+        expect(content).to include(
+          "Objet : Rendez-vous d'orientation dans le cadre de votre RSA"
+        )
+        expect(content).to include(
+          "vous êtes invité à participer à un rendez-vous d'orientation afin de démarrer un parcours d'accompagnement."
+        )
+        expect(content).to include(
+          "Dans le cadre du projet 'France Travail', ce rendez-vous sera réalisé par deux"
+        )
+        expect(content).to include("Nous vous remercions de prendre ce rendez-vous")
+        expect(content).not_to include(
+          "la sanction peut aller jusqu’à une suspension ou une réduction du versement de votre RSA."
+        )
+      end
+    end
+
     context "when the context is accompagnement" do
       let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_accompagnement) }
 

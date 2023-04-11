@@ -4,7 +4,7 @@ class InvitationMailer < ApplicationMailer
 
   before_action :set_rdv_title, :set_applicant_designation,
                 :set_display_mandatory_warning, :set_display_punishable_warning,
-                :set_rdv_purpose, :set_rdv_subject
+                :set_rdv_purpose, :set_rdv_subject, :set_custom_sentence
 
   def standard_invitation
     mail(
@@ -120,6 +120,10 @@ class InvitationMailer < ApplicationMailer
 
   def set_rdv_purpose
     @rdv_purpose = @invitation.rdv_purpose
+  end
+
+  def set_custom_sentence
+    @custom_sentence = @invitation.custom_sentence
   end
 
   def first_organisation
