@@ -70,6 +70,17 @@ describe Notifications::SendEmail, type: :service do
           subject
         end
       end
+
+      context "for a reminder event" do
+        let!(:notification) do
+          create(:notification, participation: participation, event: "participation_reminder", format: "email")
+        end
+
+        it "calls the emailer service with the right mailer method" do
+          expect(mailer).to receive_message_chain(:presential_participation_reminder, :deliver_now)
+          subject
+        end
+      end
     end
 
     context "for a phone rdv" do
@@ -93,6 +104,17 @@ describe Notifications::SendEmail, type: :service do
 
         it "calls the emailer service with the right mailer method" do
           allow(mailer).to receive_message_chain(:by_phone_participation_updated, :deliver_now)
+          subject
+        end
+      end
+
+      context "for a reminder event" do
+        let!(:notification) do
+          create(:notification, participation: participation, event: "participation_reminder", format: "email")
+        end
+
+        it "calls the emailer service with the right mailer method" do
+          expect(mailer).to receive_message_chain(:by_phone_participation_reminder, :deliver_now)
           subject
         end
       end
