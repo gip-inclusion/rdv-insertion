@@ -1,0 +1,33 @@
+<div class="container text-dark-blue h4-as-labels mt-5 mb-5">
+  <div class="d-flex justify-content-start mb-4">
+    <div>
+      <%= link_to(@back_to_applicants_list_url || compute_index_path(@organisation, @department)) do %>
+        <button class="btn btn-blue-out">Retour</button>
+      <% end %>
+      <%= link_to @organisation.rdv_solidarites_url, target: "_blank" do %>
+        <button class="btn btn-blue">Voir sur RDV-Solidarités<i class="fas fa-external-link-alt icon-sm"></i></button>
+      <% end %>
+    </div>
+  </div>
+
+  <h4>
+    Détails de l'organisation
+    <i
+      class="fas fa-question-circle"
+      data-controller="tooltip"
+      data-action="mouseover->tooltip#organisationDetails">
+    </i>
+  </h4>
+  <%= render "organisations/organisation", organisation: @organisation %>
+
+  <h4>Catégories de motifs configurés</h4>
+  <%= render "configurations/configurations_list", configurations: @configurations, organisation: @organisation, department: @department %>
+  <div class="d-flex justify-content-end mb-4">
+    <%= link_to new_organisation_configuration_path(@organisation) do %>
+      <button class="btn btn-blue">Ajouter</button>
+    <% end %>
+  </div>
+
+  <h4>Configuration des messages</h4>
+  <%= render "messages_configurations/messages_configuration", messages_configuration: @messages_configuration %>
+</div>

@@ -10,8 +10,8 @@ fr:
           has_many: Vous ne pouvez pas supprimer l'enregistrement parce que les %{record}
             dépendants existent
   boolean:
-    true: "oui"
-    false: "non"
+    true: Oui
+    false: Non
   date:
     helpers:
       tomorrow: demain
@@ -245,3 +245,7 @@ fr:
     la: "de la %{name}"
     l': "de l'%{name}"
     les: "des %{name}"
+  invitation_formats:
+    postal: Courrier
+    sms: SMS
+    email: Email

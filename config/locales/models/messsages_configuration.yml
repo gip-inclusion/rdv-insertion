@@ -4,4 +4,11 @@ fr:
       messages_configuration: Paramètres d'invitation
     attributes:
       messages_configuration:
+        direction_names: En-têtes
+        sender_city: Ville d'expédition
+        signature_lines: Signature
+        letter_sender_name: Nom de l'expéditeur
+        help_address: Adresse d'accueil
+        display_europe_logos: Afficher les logos européens
+        display_department_logo: Afficher le logo du département
         sms_sender_name: Nom de l'expéditeur

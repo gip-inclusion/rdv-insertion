@@ -2,16 +2,17 @@
 
 class ApplicantsController < ApplicationController
   PERMITTED_PARAMS = [
-    :uid, :role, :first_name, :last_name, :birth_date, :email, :phone_number,
+    :uid, :role, :first_name, :last_name, :nir, :pole_emploi_id, :birth_date, :email, :phone_number,
     :birth_name, :address, :affiliation_number, :department_internal_id, :title,
     :status, :rights_opening_date, :archiving_reason
   ].freeze
 
+  include BackToListConcern
   include Applicants::Filterable
   include Applicants::Convocable
 
   before_action :set_organisation, :set_department, :set_organisations, :set_all_configurations,
-                :set_applicants_scope,
+                :set_current_agent_roles, :set_applicants_scope,
                 :set_current_configuration, :set_current_motif_category,
                 :set_applicants, :set_rdv_contexts,
                 :filter_applicants, :order_applicants,
@@ -20,14 +21,14 @@ class ApplicantsController < ApplicationController
   before_action :set_applicant, :set_organisation, :set_department, :set_all_configurations,
                 :set_applicant_organisations, :set_applicant_rdv_contexts,
                 :set_convocation_motifs_by_rdv_context,
-                :set_back_to_list_url,
+                :set_back_to_applicants_list_url,
                 for: :show
   before_action :set_organisation, :set_department, :set_organisations,
                 for: [:new, :create]
   before_action :set_applicant, :set_organisation, :set_department,
                 for: [:edit, :update]
   before_action :retrieve_applicants, only: [:search]
-  after_action :store_back_to_list_url, only: [:index]
+  after_action :store_back_to_applicants_list_url, only: [:index]
 
   def index
     respond_to do |format|
@@ -83,7 +84,7 @@ class ApplicantsController < ApplicationController
   def formatted_params
     # we nullify some blank params for unicity exceptions (ActiveRecord::RecordNotUnique) not to raise
     applicant_params.to_h do |k, v|
-      [k, k.in?([:affiliation_number, :department_internal_id, :email]) ? v.presence : v]
+      [k, k.in?([:affiliation_number, :department_internal_id, :email, :pole_emploi_id, :nir]) ? v.presence : v]
     end
   end
 
@@ -134,7 +135,7 @@ class ApplicantsController < ApplicationController
   end
 
   def set_applicant
-    @applicant = \
+    @applicant =
       policy_scope(Applicant)
       .preload(:invitations, organisations: [:department, :configurations])
       .where(department_level? ? { department: params[:department_id] } : { organisations: params[:organisation_id] })
@@ -142,7 +143,7 @@ class ApplicantsController < ApplicationController
   end
 
   def set_organisation
-    @organisation = \
+    @organisation =
       if department_level?
         set_organisation_at_department_level
       else
@@ -170,7 +171,7 @@ class ApplicantsController < ApplicationController
   end
 
   def set_department
-    @department = \
+    @department =
       if department_level?
         policy_scope(Department).find(params[:department_id])
       else
@@ -179,7 +180,7 @@ class ApplicantsController < ApplicationController
   end
 
   def set_all_configurations
-    @all_configurations = \
+    @all_configurations =
       if department_level?
         (policy_scope(::Configuration).includes(:motif_category) & @department.configurations).uniq(&:motif_category_id)
       else
@@ -191,7 +192,7 @@ class ApplicantsController < ApplicationController
   def set_current_configuration
     return if archived_scope?
 
-    @current_configuration = \
+    @current_configuration =
       if params[:motif_category_id].present?
         @all_configurations.find { |c| c.motif_category_id == params[:motif_category_id].to_i }
       else
@@ -204,7 +205,7 @@ class ApplicantsController < ApplicationController
   end
 
   def set_applicant_rdv_contexts
-    @rdv_contexts = \
+    @rdv_contexts =
       RdvContext.preload(
         :invitations, :motif_category,
         participations: [:notifications, { rdv: [:motif, :organisation] }]
@@ -214,7 +215,7 @@ class ApplicantsController < ApplicationController
   end
 
   def set_applicant_organisations
-    @applicant_organisations = \
+    @applicant_organisations =
       policy_scope(Organisation).where(id: @applicant.organisation_ids, department: @department)
   end
 
@@ -249,20 +250,18 @@ class ApplicantsController < ApplicationController
     @statuses_count = @rdv_contexts.group(:status).count
   end
 
+  def set_current_agent_roles
+    @current_agent_roles = AgentRole.where(
+      department_level? ? { organisation: @organisations } : { organisation: @organisation }, agent: current_agent
+    )
+  end
+
   def set_applicants_scope
     @applicants_scope = params[:applicants_scope]
   end
 
   def archived_scope?
     @applicants_scope == "archived"
-  end
-
-  def store_back_to_list_url
-    session[:back_to_list_url] = request.fullpath
-  end
-
-  def set_back_to_list_url
-    @back_to_list_url = session[:back_to_list_url]
   end
 
   def order_applicants

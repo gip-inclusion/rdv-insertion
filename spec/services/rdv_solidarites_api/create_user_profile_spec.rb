@@ -8,7 +8,7 @@ describe RdvSolidaritesApi::CreateUserProfile, type: :service do
 
   let!(:user_id) { 33 }
   let!(:organisation_id) { 44 }
-  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
+  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
   let!(:rdv_solidarites_client) { instance_double(RdvSolidaritesClient) }
 
   describe "#call" do

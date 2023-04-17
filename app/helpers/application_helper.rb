@@ -14,6 +14,14 @@ module ApplicationHelper
     end
   end
 
+  def display_attribute(attribute)
+    attribute.presence || " - "
+  end
+
+  def format_date(date)
+    date&.strftime("%d/%m/%Y")
+  end
+
   def component_name_for_department(department_name)
     department_name.parameterize.capitalize
   end
@@ -36,5 +44,9 @@ module ApplicationHelper
 
   def url_params
     Rack::Utils.parse_nested_query(request.query_string).deep_symbolize_keys
+  end
+
+  def render_turbo_stream_flash_messages
+    turbo_stream.prepend "flashes", partial: "common/flash"
   end
 end

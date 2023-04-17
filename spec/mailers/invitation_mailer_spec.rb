@@ -13,7 +13,7 @@ RSpec.describe InvitationMailer do
       :invitation,
       rdv_context: rdv_context, applicant: applicant, department: department,
       format: "email", help_phone_number: help_phone_number,
-      number_of_days_to_accept_invitation: 5, organisations: [organisation]
+      organisations: [organisation]
     )
   end
   let!(:rdv_context) { build(:rdv_context) }
@@ -41,8 +41,8 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")
         expect(body_string).to match(
-          "Vous êtes bénéficiaire du RSA et à ce titre vous devez vous présenter à un rendez-vous d'orientation" \
-          " afin de démarrer un parcours d'accompagnement"
+          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes #{applicant.conjugate('invité')} à participer " \
+          "à un rendez-vous d'orientation afin de démarrer un parcours d'accompagnement"
         )
         expect(body_string).to match("Ce rendez-vous est obligatoire.")
         expect(body_string).not_to match(
@@ -50,7 +50,7 @@ RSpec.describe InvitationMailer do
         )
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
-        expect(body_string).to match("dans les 5 jours")
+        expect(body_string).to match("dans les 3 jours")
       end
 
       context "when the signature is configured" do
@@ -84,8 +84,8 @@ RSpec.describe InvitationMailer do
           expect(body_string).to match("Le département de la Drôme.")
           expect(body_string).to match("01 39 39 39 39")
           expect(body_string).to match(
-            "Vous êtes bénéficiaire du RSA et à ce titre vous devez vous présenter à un rendez-vous d'accompagnement" \
-            " afin de démarrer un parcours d'accompagnement"
+            "Vous êtes bénéficiaire du RSA et à ce titre vous êtes #{applicant.conjugate('invité')} à participer " \
+            "à un rendez-vous d'accompagnement afin de démarrer un parcours d'accompagnement"
           )
           expect(body_string).to match("Ce rendez-vous est obligatoire.")
           expect(body_string).to match(
@@ -93,7 +93,7 @@ RSpec.describe InvitationMailer do
           )
           expect(body_string).to match("/invitations/redirect")
           expect(body_string).to match("uuid=#{invitation.uuid}")
-          expect(body_string).to match("dans les 5 jours")
+          expect(body_string).to match("dans les 3 jours")
         end
       end
     end
@@ -121,8 +121,8 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")
         expect(body_string).to match(
-          "Vous êtes bénéficiaire du RSA et à ce titre vous devez vous présenter à un rendez-vous de signature de " \
-          "CER afin de construire et signer votre Contrat d'Engagement Réciproque"
+          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes #{applicant.conjugate('invité')} à participer à un " \
+          "rendez-vous de signature de CER afin de construire et signer votre Contrat d'Engagement Réciproque"
         )
         expect(body_string).to match("Ce rendez-vous est obligatoire.")
         expect(body_string).not_to match(
@@ -130,7 +130,7 @@ RSpec.describe InvitationMailer do
         )
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
-        expect(body_string).to match("dans les 5 jours")
+        expect(body_string).to match("dans les 3 jours")
       end
     end
 
@@ -155,8 +155,8 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")
         expect(body_string).to match(
-          "Vous êtes bénéficiaire du RSA et à ce titre vous devez vous présenter à un rendez-vous " \
-          "de suivi afin de faire un point avec votre référent de parcours"
+          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes #{applicant.conjugate('invité')} à participer " \
+          "à un rendez-vous de suivi afin de faire un point avec votre référent de parcours"
         )
         expect(body_string).not_to match("Ce rendez-vous est obligatoire.")
         expect(body_string).not_to match(
@@ -164,7 +164,7 @@ RSpec.describe InvitationMailer do
         )
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
-        expect(body_string).to match("dans les 5 jours")
+        expect(body_string).to match("dans les 3 jours")
       end
     end
 
@@ -189,8 +189,8 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")
         expect(body_string).to match(
-          "Vous êtes bénéficiaire du RSA et à ce titre vous devez vous présenter à un entretien de main tendue " \
-          "afin de faire le point sur votre situation"
+          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes #{applicant.conjugate('invité')} à participer " \
+          "à un entretien de main tendue afin de faire le point sur votre situation"
         )
         expect(body_string).to match("Ce rendez-vous est obligatoire.")
         expect(body_string).not_to match(
@@ -198,7 +198,7 @@ RSpec.describe InvitationMailer do
         )
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
-        expect(body_string).to match("dans les 5 jours")
+        expect(body_string).to match("dans les 3 jours")
       end
     end
 
@@ -225,8 +225,8 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")
         expect(body_string).to match(
-          "Vous êtes bénéficiaire du RSA et à ce titre vous devez vous présenter à un atelier collectif " \
-          "afin de vous aider dans votre parcours d'insertion"
+          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes #{applicant.conjugate('invité')} à participer " \
+          "à un atelier collectif afin de vous aider dans votre parcours d'insertion"
         )
         expect(body_string).to match("Ce rendez-vous est obligatoire.")
         expect(body_string).not_to match(
@@ -234,7 +234,7 @@ RSpec.describe InvitationMailer do
         )
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
-        expect(body_string).to match("dans les 5 jours")
+        expect(body_string).to match("dans les 3 jours")
       end
     end
 
@@ -260,8 +260,8 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")
         expect(body_string).to match(
-          "Vous êtes demandeur d'emploi et à ce titre vous devez vous présenter à un rendez-vous d'accompagnement" \
-          " afin de démarrer un parcours d'accompagnement"
+          "Vous êtes demandeur d'emploi et à ce titre vous êtes #{applicant.conjugate('invité')} à participer à un " \
+          "rendez-vous d'accompagnement afin de démarrer un parcours d'accompagnement"
         )
         expect(body_string).to match("Ce rendez-vous est obligatoire.")
         expect(body_string).to match(
@@ -269,7 +269,7 @@ RSpec.describe InvitationMailer do
         )
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
-        expect(body_string).to match("dans les 5 jours")
+        expect(body_string).to match("dans les 3 jours")
       end
     end
 
@@ -293,8 +293,8 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")
         expect(body_string).to match(
-          "Vous êtes bénéficiaire du RSA et à ce titre vous devez vous présenter à un rendez-vous d'information" \
-          " afin de vous renseigner sur vos droits et vos devoirs"
+          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes #{applicant.conjugate('invité')} à participer " \
+          "à un rendez-vous d'information afin de vous renseigner sur vos droits et vos devoirs"
         )
         expect(body_string).to match("Ce rendez-vous est obligatoire.")
         expect(body_string).not_to match(
@@ -302,7 +302,69 @@ RSpec.describe InvitationMailer do
         )
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
-        expect(body_string).to match("dans les 5 jours")
+        expect(body_string).to match("dans les 3 jours")
+      end
+    end
+
+    context "for siae_interview" do
+      let!(:rdv_context) { build(:rdv_context, motif_category: category_siae_interview) }
+
+      it "renders the headers" do
+        expect(subject.to).to eq([applicant.email])
+      end
+
+      it "renders the subject" do
+        email_subject = unescape_html(subject.subject)
+        expect(email_subject).to eq(
+          "[CANDIDATURE SIAE]: Votre entretien d'embauche dans le cadre de votre candidature SIAE"
+        )
+      end
+
+      it "renders the body" do
+        body_string = unescape_html(subject.body.encoded)
+        expect(body_string).to match("Bonjour Jean VALJEAN")
+        expect(body_string).to match("Le département de la Drôme.")
+        expect(body_string).to match("01 39 39 39 39")
+        expect(body_string).to include(
+          "Vous êtes candidat.e dans une Structure d’Insertion par l’Activité Economique (SIAE)" \
+          " et à ce titre vous êtes #{applicant.conjugate('invité')} à participer à un entretien d'embauche " \
+          "afin de poursuivre le processus de recrutement"
+        )
+        expect(body_string).not_to match("Ce rendez-vous est obligatoire.")
+        expect(body_string).not_to match(
+          "le versement de votre RSA pourra être suspendu ou son montant réduit."
+        )
+        expect(body_string).to match("/invitations/redirect")
+        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("dans les 3 jours")
+      end
+    end
+
+    context "for rsa_orientation_france_travail" do
+      let!(:rdv_context) do
+        build(:rdv_context, motif_category: category_rsa_orientation_france_travail)
+      end
+
+      it "renders the headers" do
+        expect(subject.to).to eq([applicant.email])
+      end
+
+      it "renders the subject" do
+        email_subject = unescape_html(subject.subject)
+        expect(email_subject).to eq(
+          "[RSA]: Votre rendez-vous d'orientation dans le cadre de votre RSA"
+        )
+      end
+
+      it "renders the body" do
+        body_string = unescape_html(subject.body.encoded)
+        expect(body_string).to match("Bonjour Jean VALJEAN")
+        expect(body_string).to match("Le département de la Drôme.")
+        expect(body_string).to match("01 39 39 39 39")
+        expect(body_string).to match("Dans le cadre du projet 'France Travail'")
+        expect(body_string).to match("afin de démarrer un parcours d'accompagnement.")
+        expect(body_string).to match("/invitations/redirect")
+        expect(body_string).to match("uuid=#{invitation.uuid}")
       end
     end
   end
@@ -336,7 +398,7 @@ RSpec.describe InvitationMailer do
         " afin de démarrer un parcours d'accompagnement"
       )
       expect(body_string).not_to match("/invitations/redirect")
-      expect(body_string).to match("dans un délai de 5 jours")
+      expect(body_string).to match("dans un délai de 3 jours")
     end
 
     context "when the signature is configured" do
@@ -382,10 +444,120 @@ RSpec.describe InvitationMailer do
       )
       expect(body_string).to match("/invitations/redirect")
       expect(body_string).to match("uuid=#{invitation.uuid}")
-      expect(body_string).not_to match("dans un délai de 5 jours")
+      expect(body_string).not_to match("dans un délai de 3 jours")
     end
 
     context "when the signature is configured" do
+      let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
+
+      it "renders the mail with the right signature" do
+        expect(subject.body.encoded).to match(/Fabienne Bouchet/)
+      end
+    end
+  end
+
+  describe "#short_invitation" do
+    subject do
+      described_class
+        .with(invitation: invitation, applicant: applicant)
+        .short_invitation
+    end
+
+    context "for psychologue" do
+      let!(:rdv_context) do
+        build(:rdv_context, motif_category: category_psychologue)
+      end
+
+      it "renders the headers" do
+        expect(subject.to).to eq([applicant.email])
+      end
+
+      it "renders the subject" do
+        email_subject = unescape_html(subject.subject)
+        expect(email_subject).to eq("Votre rendez-vous de suivi psychologue")
+      end
+
+      it "renders the body" do
+        body_string = unescape_html(subject.body.encoded)
+        expect(body_string).to match("Bonjour Jean VALJEAN")
+        expect(body_string).to match("Le département de la Drôme.")
+        expect(body_string).to match("01 39 39 39 39")
+        expect(body_string).to match("Vous êtes invité pour un rendez-vous de suivi psychologue.")
+        expect(body_string).to match("/invitations/redirect")
+        expect(body_string).to match("uuid=#{invitation.uuid}")
+      end
+    end
+  end
+
+  describe "#atelier_enfants_ados" do
+    subject do
+      described_class
+        .with(invitation: invitation, applicant: applicant)
+        .atelier_enfants_ados_invitation
+    end
+
+    context "for atelier_enfants_ados" do
+      let!(:rdv_context) do
+        build(:rdv_context, motif_category: category_atelier_enfants_ados)
+      end
+
+      it "renders the headers" do
+        expect(subject.to).to eq([applicant.email])
+      end
+
+      it "renders the subject" do
+        email_subject = unescape_html(subject.subject)
+        expect(email_subject).to eq("Invitation à un atelier destiné aux jeunes de ton âge")
+      end
+
+      it "renders the body" do
+        body_string = unescape_html(subject.body.encoded)
+        expect(body_string).to match("Bonjour Jean VALJEAN")
+        expect(body_string).to match("Le département de la Drôme.")
+        expect(body_string).to match("01 39 39 39 39")
+        expect(body_string).to match("Tu es invité à participer à un atelier organisé par le département.")
+        expect(body_string).to match("/invitations/redirect")
+        expect(body_string).to match("uuid=#{invitation.uuid}")
+      end
+    end
+  end
+
+  describe "#short_invitation_reminder" do
+    subject do
+      described_class.with(invitation: invitation, applicant: applicant).short_invitation_reminder
+    end
+
+    context "for psychologue" do
+      let!(:rdv_context) { build(:rdv_context, motif_category: category_psychologue) }
+
+      it "renders the headers" do
+        expect(subject.to).to eq([applicant.email])
+      end
+
+      it "renders the subject" do
+        email_subject = unescape_html(subject.subject)
+        expect(email_subject).to eq("[Rappel]: Votre rendez-vous de suivi psychologue")
+      end
+
+      it "renders the body" do
+        body_string = unescape_html(subject.body.encoded)
+        expect(body_string).to match("Bonjour Jean VALJEAN")
+        expect(body_string).to match("Le département de la Drôme.")
+        expect(body_string).to match("01 39 39 39 39")
+        expect(body_string).to match(
+          "Vous avez reçu un premier mail il y a 3 jours vous invitant à prendre un rendez-vous de suivi psychologue."
+        )
+        expect(body_string).to match("/invitations/redirect")
+        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match(
+          "Il ne vous reste plus que <span class=\"font-weight-bold\">#{invitation.number_of_days_before_expiration}" \
+          " jours</span> pour prendre rendez-vous"
+        )
+      end
+    end
+
+    context "when the signature is configured" do
+      let!(:rdv_context) { build(:rdv_context, motif_category: category_psychologue) }
       let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
 
       it "renders the mail with the right signature" do
@@ -593,6 +765,51 @@ RSpec.describe InvitationMailer do
     end
 
     context "when the signature is configured" do
+      let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
+
+      it "renders the mail with the right signature" do
+        expect(subject.body.encoded).to match(/Fabienne Bouchet/)
+      end
+    end
+  end
+
+  describe "#atelier_enfants_ados_invitation_reminder" do
+    subject do
+      described_class.with(invitation: invitation, applicant: applicant).atelier_enfants_ados_invitation_reminder
+    end
+
+    context "for atelier_enfants_ados" do
+      let!(:rdv_context) { build(:rdv_context, motif_category: category_atelier_enfants_ados) }
+
+      it "renders the headers" do
+        expect(subject.to).to eq([applicant.email])
+      end
+
+      it "renders the subject" do
+        email_subject = unescape_html(subject.subject)
+        expect(email_subject).to eq("[Rappel]: Invitation à un atelier destiné aux jeunes de ton âge")
+      end
+
+      it "renders the body" do
+        body_string = unescape_html(subject.body.encoded)
+        expect(body_string).to match("Bonjour Jean VALJEAN")
+        expect(body_string).to match("Le département de la Drôme.")
+        expect(body_string).to match("01 39 39 39 39")
+        expect(body_string).to match(
+          "Tu as reçu un premier mail il y a 3 jours t'invitant à un atelier destiné aux jeunes de ton âge."
+        )
+        expect(body_string).to match("/invitations/redirect")
+        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match(
+          "Il ne te reste plus que <span class=\"font-weight-bold\">#{invitation.number_of_days_before_expiration}" \
+          " jours</span> pour prendre rendez-vous à la date et l'horaire de ton choix en cliquant" \
+          " sur le bouton suivant."
+        )
+      end
+    end
+
+    context "when the signature is configured" do
+      let!(:rdv_context) { build(:rdv_context, motif_category: category_psychologue) }
       let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
 
       it "renders the mail with the right signature" do

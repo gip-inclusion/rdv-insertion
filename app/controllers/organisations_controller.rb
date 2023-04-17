@@ -1,8 +1,54 @@
+# rubocop:disable Metrics/ClassLength
+
 class OrganisationsController < ApplicationController
+  PERMITTED_PARAMS = [
+    :name, :phone_number, :email, :slug, :independent_from_cd, :logo_filename, :rdv_solidarites_organisation_id,
+    :department_id
+  ].freeze
+
+  before_action :set_organisation, :set_department, :authorize_organisation_configuration, only: [:show, :edit, :update]
+
   def index
     @organisations = policy_scope(Organisation).includes(:department, :configurations)
     @organisations_by_department = @organisations.sort_by(&:department_number).group_by(&:department)
     redirect_to organisation_applicants_path(@organisations.first) if @organisations.to_a.length == 1
+  end
+
+  def show; end
+
+  def new
+    @organisation = Organisation.new
+    authorize @organisation
+  end
+
+  def edit; end
+
+  def create
+    @department = Department.find_by(id: params[:department_id])
+    @organisation = Organisation.new(department: @department)
+    @organisation.assign_attributes(**organisation_params)
+    authorize @organisation
+    if create_organisation.success?
+      redirect_to organisation_applicants_path(@organisation)
+    else
+      render turbo_stream: turbo_stream.replace(
+        "remote_modal", partial: "organisation_form", locals: {
+          organisation: @organisation, department: @department,
+          errors: create_organisation.errors
+        }
+      )
+    end
+  end
+
+  def update
+    @organisation.assign_attributes(**organisation_params)
+    authorize @organisation
+    if update_organisation.success?
+      render :show
+    else
+      flash.now[:error] = update_organisation.errors&.join(",")
+      render :edit, status: :unprocessable_entity
+    end
   end
 
   def geolocated
@@ -11,14 +57,14 @@ class OrganisationsController < ApplicationController
 
     if retrieve_relevant_organisations.success?
       render json: {
-        department_organisations: @department_organisations,
         success: true,
+        department_organisations: @department_organisations,
         geolocated_organisations: organisations_relevant_to_sector
       }
     else
       render json: {
-        errors: retrieve_relevant_organisations.errors,
         success: false,
+        errors: retrieve_relevant_organisations.errors,
         department_organisations: @department_organisations
       }
     end
@@ -35,6 +81,18 @@ class OrganisationsController < ApplicationController
   end
 
   private
+
+  def organisation_params
+    params.require(:organisation).permit(*PERMITTED_PARAMS).to_h.deep_symbolize_keys
+  end
+
+  def set_organisation
+    @organisation = policy_scope(Organisation).find(params[:id])
+  end
+
+  def set_department
+    @department = @organisation.department
+  end
 
   def department
     @department ||= Department.find_by!(number: params[:department_number])
@@ -56,7 +114,7 @@ class OrganisationsController < ApplicationController
   end
 
   def retrieve_relevant_organisations
-    @retrieve_relevant_organisations ||= \
+    @retrieve_relevant_organisations ||=
       RdvSolidaritesApi::RetrieveOrganisations.call(
         rdv_solidarites_session: rdv_solidarites_session,
         geo_attributes: {
@@ -76,4 +134,25 @@ class OrganisationsController < ApplicationController
       org.rdv_solidarites_organisation_id.in?(retrieved_rdv_solidarites_organisations.map(&:id))
     end
   end
+
+  def update_organisation
+    @update_organisation ||= Organisations::Update.call(
+      organisation: @organisation,
+      rdv_solidarites_session: rdv_solidarites_session
+    )
+  end
+
+  def create_organisation
+    @create_organisation ||= Organisations::Create.call(
+      organisation: @organisation,
+      current_agent: current_agent,
+      rdv_solidarites_session: rdv_solidarites_session
+    )
+  end
+
+  def authorize_organisation_configuration
+    authorize @organisation, :configure?
+  end
 end
+
+# rubocop:enable Metrics/ClassLength

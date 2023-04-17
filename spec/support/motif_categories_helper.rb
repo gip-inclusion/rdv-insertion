@@ -18,6 +18,40 @@ module MotifCategoriesHelper
         )
       )
     end
+    let!(:category_rsa_orientation_coaching) do
+      create(
+        :motif_category,
+        name: "RSA orientation - coaching emploi", short_name: "rsa_orientation_coaching",
+        template: create(
+          :template,
+          model: "standard",
+          rdv_title: "rendez-vous d'orientation",
+          rdv_title_by_phone: "rendez-vous d'orientation téléphonique",
+          rdv_purpose: "démarrer un parcours d'accompagnement",
+          applicant_designation: "bénéficiaire du RSA",
+          rdv_subject: "RSA",
+          display_mandatory_warning: true,
+          display_punishable_warning: false
+        )
+      )
+    end
+    let!(:category_rsa_orientation_freelance) do
+      create(
+        :motif_category,
+        name: "RSA orientation - travailleurs indépendants", short_name: "rsa_orientation_freelance",
+        template: create(
+          :template,
+          model: "standard",
+          rdv_title: "rendez-vous d'orientation",
+          rdv_title_by_phone: "rendez-vous d'orientation téléphonique",
+          rdv_purpose: "démarrer un parcours d'accompagnement",
+          applicant_designation: "bénéficiaire du RSA",
+          rdv_subject: "RSA",
+          display_mandatory_warning: true,
+          display_punishable_warning: false
+        )
+      )
+    end
     let!(:category_rsa_accompagnement) do
       create(
         :motif_category,
@@ -233,6 +267,76 @@ module MotifCategoriesHelper
           rdv_subject: "RSA",
           rdv_purpose: "vous renseigner sur vos droits et vos devoirs",
           display_mandatory_warning: true,
+          display_punishable_warning: false
+        )
+      )
+    end
+    let!(:category_psychologue) do
+      create(
+        :motif_category,
+        name: "Psychologue",
+        short_name: "psychologue",
+        template: create(
+          :template,
+          model: "short",
+          rdv_title: "rendez-vous de suivi psychologue",
+          display_mandatory_warning: false,
+          display_punishable_warning: false
+        )
+      )
+    end
+    let!(:category_rsa_orientation_france_travail) do
+      create(
+        :motif_category,
+        name: "RSA orientation France Travail",
+        short_name: "rsa_orientation_france_travail",
+        participation_optional: false,
+        template: create(
+          :template,
+          model: "standard",
+          rdv_title: "rendez-vous d'orientation",
+          rdv_title_by_phone: "rendez-vous d'orientation téléphonique",
+          rdv_purpose: "démarrer un parcours d'accompagnement",
+          applicant_designation: "bénéficiaire du RSA",
+          rdv_subject: "RSA",
+          custom_sentence: "Dans le cadre du projet 'France Travail', ce rendez-vous sera réalisé par deux" \
+                           " professionnels de l’insertion (l’un de Pôle emploi, l’autre du Conseil départemental)" \
+                           " et permettra de mieux comprendre votre situation afin de vous proposer" \
+                           " un accompagnement adapté",
+          display_mandatory_warning: true,
+          display_punishable_warning: false
+        )
+      )
+    end
+    let!(:category_atelier_enfants_ados) do
+      create(
+        :motif_category,
+        name: "Atelier Enfants / Ados",
+        short_name: "atelier_enfants_ados",
+        template: create(
+          :template,
+          model: "atelier_enfants_ados",
+          rdv_title: "atelier destiné aux jeunes de ton âge",
+          display_mandatory_warning: false,
+          display_punishable_warning: false
+        )
+      )
+    end
+    let!(:category_siae_interview) do
+      create(
+        :motif_category,
+        name: "Entretien SIAE",
+        short_name: "siae_interview",
+        participation_optional: false,
+        template: create(
+          :template,
+          model: "standard",
+          rdv_title: "entretien d'embauche",
+          rdv_title_by_phone: "entretien d'embauche téléphonique",
+          applicant_designation: "candidat.e dans une Structure d’Insertion par l’Activité Economique (SIAE)",
+          rdv_subject: "candidature SIAE",
+          rdv_purpose: "poursuivre le processus de recrutement",
+          display_mandatory_warning: false,
           display_punishable_warning: false
         )
       )

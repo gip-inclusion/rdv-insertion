@@ -14,11 +14,14 @@ fr:
         email: Email
         title: Civilité
         department_internal_id: ID interne au département
+        nir: Numéro de sécurité sociale
+        pole_emploi_id: ID Pôle Emploi
         rights_opening_date: Date d'entrée flux
         organisations: Organisation(s)
         archiving_reason: Motif d'archivage
         uid: Le couple numéro d'allocataire + rôle
-        creation_date: Date de création
+        created_at: Date de création
         status: Statut
         archived_at: Archivé le
         agents: Référent(s)
+        organisation_ids: Organisation

@@ -5,6 +5,14 @@ class RdvSolidaritesClient
     @url = ENV["RDV_SOLIDARITES_URL"]
   end
 
+  def get_user(user_id)
+    Faraday.get(
+      "#{@url}/api/v1/users/#{user_id}",
+      {},
+      request_headers
+    )
+  end
+
   def create_user(request_body)
     Faraday.post(
       "#{@url}/api/v1/users",
@@ -21,10 +29,18 @@ class RdvSolidaritesClient
     )
   end
 
-  def get_user(user_id)
+  def get_organisation(organisation_id)
     Faraday.get(
-      "#{@url}/api/v1/users/#{user_id}",
+      "#{@url}/api/v1/organisations/#{organisation_id}",
       {},
+      request_headers
+    )
+  end
+
+  def update_organisation(organisation_id, request_body = {})
+    Faraday.patch(
+      "#{@url}/api/v1/organisations/#{organisation_id}",
+      request_body.to_json,
       request_headers
     )
   end
@@ -135,15 +151,43 @@ class RdvSolidaritesClient
     )
   end
 
+  def get_webhook_endpoint(organisation_id)
+    # there is a unique webhook per organisation for a given target_url, so returns a collection with 1 result max
+    Faraday.get(
+      "#{@url}/api/v1/organisations/#{organisation_id}/webhook_endpoints",
+      { target_url: "#{ENV['HOST']}/rdv_solidarites_webhooks" },
+      request_headers
+    )
+  end
+
+  def create_webhook_endpoint(organisation_id, subscriptions)
+    Faraday.post(
+      "#{@url}/api/v1/organisations/#{organisation_id}/webhook_endpoints",
+      {
+        target_url: "#{ENV['HOST']}/rdv_solidarites_webhooks",
+        secret: ENV["RDV_SOLIDARITES_SECRET"],
+        subscriptions: subscriptions
+      }.to_json,
+      request_headers
+    )
+  end
+
+  def update_webhook_endpoint(webhook_endpoint_id, organisation_id, subscriptions)
+    Faraday.patch(
+      "#{@url}/api/v1/organisations/#{organisation_id}/webhook_endpoints/#{webhook_endpoint_id}",
+      {
+        target_url: "#{ENV['HOST']}/rdv_solidarites_webhooks",
+        secret: ENV["RDV_SOLIDARITES_SECRET"],
+        subscriptions: subscriptions
+      }.to_json,
+      request_headers
+    )
+  end
+
   private
 
   def request_headers
-    {
-      "Content-Type" => "application/json",
-      "uid" => @rdv_solidarites_session.uid,
-      "access_token" => @rdv_solidarites_session.access_token,
-      "client" => @rdv_solidarites_session.client
-    }
+    @rdv_solidarites_session.to_h.merge("Content-Type" => "application/json")
   end
 end
 # rubocop:enable Metrics/ClassLength

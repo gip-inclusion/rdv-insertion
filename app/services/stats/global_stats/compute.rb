@@ -27,15 +27,15 @@ module Stats
       end
 
       def applicants_count
-        @stat.all_applicants.to_a.length
+        @stat.all_applicants.count
       end
 
       def rdvs_count
-        @stat.all_participations.to_a.length
+        @stat.all_participations.count
       end
 
       def sent_invitations_count
-        @stat.invitations_sample.to_a.length
+        @stat.invitations_sample.count
       end
 
       def percentage_of_no_show
@@ -64,13 +64,12 @@ module Stats
       # the rdvs that belong to a collectif motif and the applicants that do not have at least one non collectif rdv
       def rate_of_autonomous_applicants
         ComputeRateOfAutonomousApplicants.call(
-          applicants: @stat.applicants_with_rdvs_non_collectifs_sample,
-          rdvs: @stat.rdvs_non_collectifs_sample
+          applicants: @stat.invited_applicants_with_rdvs_non_collectifs_sample
         ).value
       end
 
       def agents_count
-        @stat.agents_sample.to_a.length
+        @stat.agents_sample.count
       end
     end
   end

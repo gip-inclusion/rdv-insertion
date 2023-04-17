@@ -4,13 +4,25 @@ class Configuration < ApplicationRecord
   has_many :configurations_organisations, dependent: :delete_all
   has_many :organisations, through: :configurations_organisations
 
-  delegate :position, :name, to: :motif_category, prefix: true
+  validate :delays_validity, :invitation_formats_validity
 
-  def as_json(opts = {})
-    super.merge(
-      # TODO: delegate these methods to file_configuration
-      sheet_name: file_configuration.sheet_name,
-      column_names: file_configuration.column_names
-    )
+  delegate :position, :name, to: :motif_category, prefix: true
+  delegate :sheet_name, to: :file_configuration
+
+  private
+
+  def delays_validity
+    return if number_of_days_before_action_required > Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER
+
+    errors.add(:base, "Le délai d'expiration de l'invtation doit être supérieur " \
+                      "à #{Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER} jours")
+  end
+
+  def invitation_formats_validity
+    invitation_formats.each do |invitation_format|
+      next if %w[sms email postal].include?(invitation_format)
+
+      errors.add(:base, "Les formats d'invitation ne peuvent être que : sms, email, postal")
+    end
   end
 end

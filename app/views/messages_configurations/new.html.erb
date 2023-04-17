@@ -1,0 +1,5 @@
+<%= turbo_frame_tag @messages_configuration do %>
+  <%= simple_form_for(@messages_configuration, url: organisation_messages_configurations_path(@organisation, @messages_configuration), html: { method: :post }, data: { "turbo-frame" => "_top" }) do |f| %>
+    <%= render "messages_configuration_form", f: f, action: :new, organisation: @organisation, messages_configuration: @messages_configuration %>
+  <% end %>
+<% end %>

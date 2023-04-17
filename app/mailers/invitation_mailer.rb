@@ -4,12 +4,19 @@ class InvitationMailer < ApplicationMailer
 
   before_action :set_rdv_title, :set_applicant_designation,
                 :set_display_mandatory_warning, :set_display_punishable_warning,
-                :set_rdv_purpose, :set_rdv_subject
+                :set_rdv_purpose, :set_rdv_subject, :set_custom_sentence
 
   def standard_invitation
     mail(
       to: @applicant.email,
       subject: "[#{@rdv_subject.upcase}]: Votre #{@rdv_title} dans le cadre de votre #{@rdv_subject}"
+    )
+  end
+
+  def short_invitation
+    mail(
+      to: @applicant.email,
+      subject: "Votre #{@rdv_title}"
     )
   end
 
@@ -27,7 +34,21 @@ class InvitationMailer < ApplicationMailer
     )
   end
 
+  def atelier_enfants_ados_invitation
+    mail(
+      to: @applicant.email,
+      subject: "Invitation à un #{@rdv_title}"
+    )
+  end
+
   ### Reminders
+
+  def short_invitation_reminder
+    mail(
+      to: @applicant.email,
+      subject: "[Rappel]: Votre #{@rdv_title}"
+    )
+  end
 
   def standard_invitation_reminder
     mail(
@@ -40,6 +61,13 @@ class InvitationMailer < ApplicationMailer
     mail(
       to: @applicant.email,
       subject: "[Rappel]: Votre #{@rdv_title} dans le cadre de votre #{@rdv_subject}"
+    )
+  end
+
+  def atelier_enfants_ados_invitation_reminder
+    mail(
+      to: @applicant.email,
+      subject: "[Rappel]: Invitation à un #{@rdv_title}"
     )
   end
 
@@ -62,8 +90,8 @@ class InvitationMailer < ApplicationMailer
   end
 
   def set_logo_path
-    @logo_path = \
-      if @invitation.organisations.length == 1 && first_organisation.logo_path.present?
+    @logo_path =
+      if @invitation.organisations.length == 1 && first_organisation.logo_path(%w[png jpg]).present?
         first_organisation.logo_path(%w[png jpg])
       else
         @department.logo_path(%w[png jpg])
@@ -92,6 +120,10 @@ class InvitationMailer < ApplicationMailer
 
   def set_rdv_purpose
     @rdv_purpose = @invitation.rdv_purpose
+  end
+
+  def set_custom_sentence
+    @custom_sentence = @invitation.custom_sentence
   end
 
   def first_organisation

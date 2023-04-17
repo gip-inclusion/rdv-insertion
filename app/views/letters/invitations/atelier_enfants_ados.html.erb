@@ -1,0 +1,16 @@
+<%= render "letters/header", direction_names: direction_names, sender_city: sender_city, department: department, organisation: organisation, applicant: applicant %>
+<div class="mail-object">
+  <p class="bold-blue"><span class="bold-blue">Objet : Participation à un atelier</span></p>
+</div>
+<div class="main-content">
+  <p><%= "#{applicant.first_name} #{applicant.last_name.upcase}" %>,</p>
+  <p>Tu es <%= applicant.conjugate('invité') %> à participer à un atelier organisé par le département.</p>
+  <p>Nous te proposons de découvrir le programme.</p>
+  <p><%= sender_name.capitalize %> a mis en place <span class="bold-blue">une plateforme te permettant de t'inscrire.</span></p>
+  <p>Pour choisir ton créneau, saisis le code d’invitation ci-dessous <span class="bold-blue">sur <u><%= ENV['HOST'] %>/invitation</u></span>, puis suis les instructions présentes à l'écran :</p>
+  <div class="invitation-token">Mon code d'invitation<br/><%= invitation.uuid %></div>
+  <div class="letter-signature">
+    <%= render "common/organisation_signature", signature_lines: signature_lines, department: department %>
+  </div>
+</div>
+<%= render "letters/footer", department: department, organisation: organisation, display_europe_logos: display_europe_logos, display_department_logo: display_department_logo %>

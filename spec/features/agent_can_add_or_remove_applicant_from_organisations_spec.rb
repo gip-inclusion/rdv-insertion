@@ -71,7 +71,7 @@ describe "Agents can add or remove applicant from organisations", js: true do
       expect(stub_other_org_user).to have_been_requested
       expect(stub_create_user_profile).to have_been_requested
       expect(stub_update_user).to have_been_requested
-      expect(applicant.reload.organisation_ids).to match_array([organisation.id, other_org.id])
+      expect(applicant.reload.organisation_ids).to contain_exactly(organisation.id, other_org.id)
     end
 
     it "can remove from org" do

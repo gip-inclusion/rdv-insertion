@@ -25,7 +25,6 @@ class InviteApplicantJob < ApplicationJob
       applicant: @applicant,
       department: @department,
       organisations: [@organisation],
-      number_of_days_to_accept_invitation: matching_configuration.number_of_days_to_accept_invitation,
       rdv_context: rdv_context,
       valid_until: matching_configuration.number_of_days_before_action_required.days.from_now,
       rdv_with_referents: matching_configuration.rdv_with_referents,
@@ -67,6 +66,6 @@ class InviteApplicantJob < ApplicationJob
   end
 
   def rdv_solidarites_session
-    @rdv_solidarites_session ||= RdvSolidaritesSession.new(**@rdv_solidarites_session_credentials)
+    @rdv_solidarites_session ||= RdvSolidaritesSessionFactory.create_with(**@rdv_solidarites_session_credentials)
   end
 end

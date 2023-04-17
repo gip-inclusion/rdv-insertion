@@ -30,7 +30,7 @@ module RdvContextStatus
 
     # If there is a pending rdv we compare to the date of the rdv, otherwise to the date of
     # the participation creation
-    participation_date_to_compare = \
+    participation_date_to_compare =
       if last_created_participation.pending?
         last_created_participation.starts_at
       else

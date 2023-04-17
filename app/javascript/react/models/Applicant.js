@@ -14,7 +14,14 @@ const TITLES = {
 };
 
 export default class Applicant {
-  constructor(attributes, department, organisation, currentConfiguration, currentAgent) {
+  constructor(
+    attributes,
+    department,
+    organisation,
+    currentConfiguration,
+    columnNames,
+    currentAgent
+  ) {
     const formattedAttributes = {};
     Object.keys(attributes).forEach((key) => {
       formattedAttributes[key] = attributes[key]?.toString()?.trim();
@@ -35,6 +42,8 @@ export default class Applicant {
     this.postalCode = formattedAttributes.postalCode;
     this.fullAddress = formattedAttributes.fullAddress || this.formatFullAddress();
     this.departmentInternalId = formattedAttributes.departmentInternalId;
+    this.nir = formattedAttributes.nir;
+    this.poleEmploiId = formattedAttributes.poleEmploiId;
     this.rightsOpeningDate = formattedAttributes.rightsOpeningDate;
     this.affiliationNumber = formattedAttributes.affiliationNumber;
     this.phoneNumber = formatPhoneNumber(formattedAttributes.phoneNumber);
@@ -48,6 +57,7 @@ export default class Applicant {
     // when creating/inviting we always consider an applicant in the scope of only one organisation
     this.currentOrganisation = organisation;
     this.currentConfiguration = currentConfiguration;
+    this.columnNames = columnNames;
     this.isDuplicate = false;
   }
 
@@ -173,27 +183,24 @@ export default class Applicant {
       this.lastName,
       this.shortRole,
     ];
-    if (this.shouldDisplay("department_internal_id")) attributes.push(this.departmentInternalId);
-    if (this.shouldDisplay("email")) attributes.push(this.email);
-    if (this.shouldDisplay("phone_number")) attributes.push(this.phoneNumber);
-    if (this.shouldDisplay("rights_opening_date")) attributes.push(this.rightsOpeningDate);
+    if (this.shouldDisplay("department_internal_id_column"))
+      attributes.push(this.departmentInternalId);
+    if (this.shouldDisplay("email_column")) attributes.push(this.email);
+    if (this.shouldDisplay("phone_number_column")) attributes.push(this.phoneNumber);
+    if (this.shouldDisplay("rights_opening_date_column")) attributes.push(this.rightsOpeningDate);
     return attributes;
   }
 
   attributesFromContactsDataFile() {
     const attributes = [];
-    if (this.shouldDisplay("email")) attributes.push(this.email);
-    if (this.shouldDisplay("phone_number")) attributes.push(this.phoneNumber);
-    if (this.shouldDisplay("rights_opening_date")) attributes.push(this.rightsOpeningDate);
+    if (this.shouldDisplay("email_column")) attributes.push(this.email);
+    if (this.shouldDisplay("phone_number_column")) attributes.push(this.phoneNumber);
+    if (this.shouldDisplay("rights_opening_date_column")) attributes.push(this.rightsOpeningDate);
     return attributes;
   }
 
   shouldDisplay(attribute) {
-    return (
-      this.currentConfiguration.column_names.required[attribute] ||
-      (this.currentConfiguration.column_names.optional &&
-        this.currentConfiguration.column_names.optional[attribute])
-    );
+    return Object.keys(this.columnNames).includes(attribute);
   }
 
   canBeInvitedBy(format) {
@@ -316,6 +323,8 @@ export default class Applicant {
       ...(this.birthName && { birth_name: this.birthName }),
       ...(this.departmentInternalId && { department_internal_id: this.departmentInternalId }),
       ...(this.rightsOpeningDate && { rights_opening_date: this.rightsOpeningDate }),
+      ...(this.nir && { nir: this.nir }),
+      ...(this.poleEmploiId && { pole_emploi_id: this.poleEmploiId }),
     };
   }
 }

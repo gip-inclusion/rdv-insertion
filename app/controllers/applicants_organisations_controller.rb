@@ -7,16 +7,22 @@ class ApplicantsOrganisationsController < ApplicationController
   def index; end
 
   def create
-    @success = save_applicant.success?
-    @errors = save_applicant.errors
-
-    # in this case we need to refresh the page in case there are new rdv contexts
-    redirect_to_department_applicant_path if @success && !@current_organisation
+    if save_applicant.success?
+      flash.now[:success] = "L'organisation a bien été ajoutée"
+      # in this case we need to refresh the page in case there are new rdv contexts
+      redirect_to_department_applicant_path unless @current_organisation
+    else
+      flash.now[:error] = "Une erreur s'est produite lors de l'ajout de l'organisation: #{save_applicant.errors}"
+    end
   end
 
   def destroy
-    @success = remove_applicant_from_org.success?
-    @errors = remove_applicant_from_org.errors
+    if remove_applicant_from_org.success?
+      flash.now[:success] = "L'organisation a bien été retirée"
+    else
+      flash.now[:error] = "Une erreur s'est produite lors du retrait de " \
+                          "l'organisation: #{remove_applicant_from_org.errors}"
+    end
     redirect_to_applicants_list if applicant_deleted_or_removed_from_current_org?
   end
 
@@ -62,7 +68,7 @@ class ApplicantsOrganisationsController < ApplicationController
   end
 
   def redirect_to_applicants_list
-    redirect_to session[:back_to_list_url] || department_applicants_path(@department)
+    redirect_to session[:back_to_applicants_list_url] || department_applicants_path(@department)
   end
 
   def redirect_to_department_applicant_path

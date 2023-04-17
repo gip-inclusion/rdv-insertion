@@ -1,8 +1,9 @@
 <%= render 'archive_banner' if @applicant.archived? %>
-<div class="container label-blue mt-4">
+
+<div class="container text-dark-blue h4-as-labels mt-4">
   <div class="d-flex justify-content-between mb-4">
     <div>
-      <%= link_to(@back_to_list_url || compute_index_path(@organisation, @department)) do %>
+      <%= link_to(@back_to_applicants_list_url || compute_index_path(@organisation, @department)) do %>
         <button class="btn btn-blue-out">Retour</button>
       <% end %>
       <%= link_to rdv_solidarites_user_url(@organisation, @applicant), target: "_blank" do %>
@@ -18,72 +19,33 @@
       <% end %>
     </div>
   </div>
+
   <div class="mb-4">
     <div class="row d-flex justify-content-start flex-wrap">
-      <div class="col-12 col-md-6 px-5">
-        <h4 class="label-blue"><%= Applicant.human_attribute_name(:first_name) %></h4>
-        <p><%= display_attribute @applicant.first_name %></p>
-      </div>
-      <div class="col-12 col-md-6 px-5">
-        <h4 class="label-blue"><%= Applicant.human_attribute_name(:last_name) %></h4>
-        <p><%= display_attribute @applicant.last_name %></p>
-      </div>
-      <div class="col-12 col-md-6 px-5">
-        <h4 class="label-blue"><%= Applicant.human_attribute_name(:title) %></h4>
-        <p><%= display_attribute @applicant.title %></p>
-      </div>
-      <div class="col-12 col-md-6 px-5">
-        <h4 class="label-blue"><%= Applicant.human_attribute_name(:role) %></h4>
-        <p><%= display_attribute @applicant.role %></p>
-      </div>
-      <div class="col-12 col-md-6 px-5">
-        <h4 class="label-blue"><%= Applicant.human_attribute_name(:affiliation_number) %></h4>
-        <p><%= display_attribute @applicant.affiliation_number %></p>
-      </div>
-      <div class="col-12 col-md-6 px-5">
-        <h4 class="label-blue"><%= Applicant.human_attribute_name(:department_internal_id) %></h4>
-        <p><%= display_attribute @applicant.department_internal_id %></p>
-      </div>
-      <div class="col-12 col-md-6 px-5">
-        <h4 class="label-blue"><%= Applicant.human_attribute_name(:email) %></h4>
-        <p><%= display_attribute @applicant.email %></p>
-      </div>
-      <div class="col-12 col-md-6 px-5">
-        <h4 class="label-blue"><%= Applicant.human_attribute_name(:birth_date) %></h4>
-        <p><%= display_attribute format_date(@applicant.birth_date) %></p>
-      </div>
-      <div class="col-12 col-md-6 px-5">
-        <h4 class="label-blue"><%= Applicant.human_attribute_name(:address) %></h4>
-        <p><%= display_attribute @applicant.address %></p>
-      </div>
-      <div class="col-12 col-md-6 px-5">
-        <h4 class="label-blue"><%= Applicant.human_attribute_name(:phone_number) %></h4>
-        <p><%= display_attribute @applicant.phone_number %></p>
-      </div>
-      <div class="col-12 col-md-6 px-5">
-        <h4 class="label-blue"><%= Applicant.human_attribute_name(:rights_opening_date) %></h4>
-        <p><%= display_attribute format_date(@applicant.rights_opening_date) %></p>
-      </div>
-      <div class="col-12 col-md-6 px-5">
-        <h4 class="label-blue"><%= Applicant.human_attribute_name(:creation_date) %></h4>
-        <p><%= display_attribute format_date(@applicant.created_at) %></p>
-      </div>
+      <%= render "common/attribute_display", record: @applicant, attribute: :first_name %>
+      <%= render "common/attribute_display", record: @applicant, attribute: :last_name %>
+      <%= render "common/attribute_display", record: @applicant, attribute: :title %>
+      <%= render "common/attribute_display", record: @applicant, attribute: :role %>
+      <%= render "common/attribute_display", record: @applicant, attribute: :affiliation_number %>
+      <%= render "common/attribute_display", record: @applicant, attribute: :department_internal_id, tooltip: true %>
+      <%= render "common/attribute_display", record: @applicant, attribute: :nir %>
+      <%= render "common/attribute_display", record: @applicant, attribute: :pole_emploi_id %>
+      <%= render "common/attribute_display", record: @applicant, attribute: :email %>
+      <%= render "common/attribute_display", record: @applicant, attribute: :birth_date, as: :date %>
+      <%= render "common/attribute_display", record: @applicant, attribute: :address %>
+      <%= render "common/attribute_display", record: @applicant, attribute: :phone_number %>
+      <%= render "common/attribute_display", record: @applicant, attribute: :rights_opening_date, as: :date %>
+      <%= render "common/attribute_display", record: @applicant, attribute: :created_at, as: :date %>
       <% if @applicant.archived? %>
-        <div class="col-12 col-md-6 px-5">
-          <h4 class="label-blue"><%= Applicant.human_attribute_name(:archiving_reason) %></h4>
-          <p><%= display_attribute @applicant.archiving_reason %></p>
-        </div>
-        <div class="col-12 col-md-6 px-5">
-          <h4 class="label-blue"><%= Applicant.human_attribute_name(:archived_at) %></h4>
-          <p><%= display_attribute format_date(@applicant.archived_at) %></p>
-        </div>
+        <%= render "common/attribute_display", record: @applicant, attribute: :archiving_reason %>
+        <%= render "common/attribute_display", record: @applicant, attribute: :archived_at, as: :date %>
       <% end %>
-      <%= render "organisations_list", organisations: @applicant.organisations %>
-      <%= render "agents_list", agents: @applicant.agents %>
+      <%= render "common/attribute_display", record: @applicant, attribute: :organisations, as: :list, id: "organisations_list" %>
+      <%= render "common/attribute_display", record: @applicant, attribute: :agents, as: :list, id: "agents_list" %>
     </div>
 
     <div class="row d-flex justify-content-start flex-wrap">
-       <div class="col-12 col-md-6 px-5">
+      <div class="col-12 col-md-6 px-5">
         <%= link_to(department_applicant_applicants_organisations_path(@department, @applicant, current_organisation_id: department_level? ? nil : @organisation.id), data: { turbo_frame: 'remote_modal' }) do %>
           <button class="btn btn-blue"><i class="fas fa-pen"></i> Ajouter ou retirer une organisation </button>
         <% end %>

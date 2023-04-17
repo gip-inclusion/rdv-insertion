@@ -1,0 +1,33 @@
+<%= render "common/remote_modal", title: title, size: :large do %>
+  <%= simple_form_for(file_configuration, url: url, html: { method: method }) do |f| %>
+    <% if local_assigns[:errors].present? %>
+      <%= render "common/error_list", errors: errors %>
+    <% end %>
+    <div class="container rdv-insertion-form text-dark-blue h4-as-labels mt-4">
+      <div class="mb-4">
+        <h4>Nom de l'onglet Excel</h4>
+        <div class="col-12 col-md-6">
+          <p><%= f.input :sheet_name %></p>
+        </div>
+        <table class="table table-hover table-responsive text-dark-blue">
+          <thead>
+            <th class="col">Information collectée</th>
+            <th class="col">Nom de la colonne dans le fichier</th>
+          </thead>
+          <tbody>
+            <% FileConfiguration.column_attributes_names.each do |column_name| %>
+              <tr>
+                <td><%= FileConfiguration.human_attribute_name(column_name) %></td>
+                <td><%= f.input column_name %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="d-flex justify-content-end">
+        <button type="submit" class="btn btn-blue">Enregistrer</button>
+      </div>
+    </div>
+  <% end %>
+<% end %>

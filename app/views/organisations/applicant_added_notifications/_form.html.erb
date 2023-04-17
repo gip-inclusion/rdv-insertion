@@ -2,7 +2,7 @@
   <%= simple_form_for(:email, url: organisations_applicant_added_notifications_path, html: { method: :post }) do |f| %>
       <div class="form-group">
         <div class="mb-3">
-          <h5 class="label-blue">Destinataire</h5>
+          <h5 class="text-dark-blue h4-as-labels">Destinataire</h5>
             <%= f.input :to,
                         as: :select,
                         collection: emails,
@@ -11,7 +11,7 @@
             %>
         </div>
         <div class="mb-3">
-          <h5 class="label-blue">Objet</h5>
+          <h5 class="text-dark-blue h4-as-labels">Objet</h5>
             <%= f.input :subject,
                         input_html: {
                           class: "form-control",
@@ -20,7 +20,7 @@
             %>
         </div>
         <div class="mb-3">
-          <h5 class="label-blue">Message</h5>
+          <h5 class="text-dark-blue h4-as-labels">Message</h5>
             <%= f.input :content,
                     as: :text,
                     input_html: {
@@ -33,7 +33,7 @@
             %>
         </div>
         <div class="mb-3">
-          <h5 class="label-blue">Pièces jointes</h5>
+          <h5 class="text-dark-blue h4-as-labels">Pièces jointes</h5>
             <%= f.input :attachments,
                         as: :file,
                         input_html: { class: "form-control", multiple: true }

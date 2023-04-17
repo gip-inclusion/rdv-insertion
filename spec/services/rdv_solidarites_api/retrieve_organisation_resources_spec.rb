@@ -11,7 +11,7 @@ describe RdvSolidaritesApi::RetrieveOrganisationResources, type: :service do
   let!(:rdv_solidarites_organisation_id) { 23 }
   let!(:additional_args) { { user_ids: user_ids } }
   let!(:user_ids) { [25] }
-  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
+  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
   let!(:rdv_solidarites_client) { instance_double(RdvSolidaritesClient) }
   let!(:resource_name) { "user" }
 

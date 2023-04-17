@@ -43,6 +43,7 @@ Rails/UniqueValidationWithoutIndex:
 Lint/MissingSuper:
   Exclude:
     - "app/services/**/*" # Inheriting BaseService without calling super is OK.
+    - "app/models/rdv_solidarites_session/**"
 
 Metrics/BlockLength:
   Exclude:
@@ -52,6 +53,10 @@ Metrics/BlockLength:
     - "config/initializers/*"
     - "config/environments/*"
     - "config/routes.rb"
+
+Naming/AccessorMethodName:
+  Exclude:
+   - "app/controllers/inclusion_connect_controller.rb"
 
 Layout/LineLength:
   Max: 120

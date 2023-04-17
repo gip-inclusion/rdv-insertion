@@ -1,17 +1,23 @@
 describe Stats::ComputeAverageTimeBetweenParticipationCreationAndRdvStartInDays, type: :service do
   subject { described_class.call(participations: participations) }
 
-  let!(:first_day_of_last_month) { 1.month.ago.beginning_of_month }
+  let(:date) { Time.zone.parse("17/03/2022 12:00") }
 
-  let!(:participations) { Participation.where(id: [participation1, participation2]) }
+  let!(:participations) do
+    Participation.where(id: [participation1, participation2])
+                 .joins(:rdv)
+                 .select("participations.id, participations.created_at,
+                          participations.status, participations.rdv_id,
+                          rdvs.starts_at AS rdv_starts_at")
+  end
 
   # First rdv : created 1 month ago, 2 days delay between created_at and starts_at
-  let!(:rdv1) { create(:rdv, starts_at: (first_day_of_last_month + 2.days)) }
-  let!(:participation1) { create(:participation, created_at: first_day_of_last_month, rdv: rdv1) }
+  let!(:rdv1) { create(:rdv, starts_at: (date + 2.days)) }
+  let!(:participation1) { create(:participation, created_at: date, rdv: rdv1) }
 
   # Second rdv : created 1 month ago, 4 days delay between created_at and starts_at
-  let!(:rdv2) { create(:rdv, starts_at: (first_day_of_last_month + 4.days)) }
-  let!(:participation2) { create(:participation, created_at: first_day_of_last_month, rdv: rdv2) }
+  let!(:rdv2) { create(:rdv, starts_at: (date + 4.days)) }
+  let!(:participation2) { create(:participation, created_at: date, rdv: rdv2) }
 
   describe "#call" do
     let!(:result) { subject }

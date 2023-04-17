@@ -10,13 +10,14 @@
 </div>
 <div class="main-content">
   <p><%= applicant.title.capitalize %>,</p>
-  <p>Vous êtes <%= applicant_designation %> et à ce titre vous devez prendre un rendez-vous afin de <%= rdv_purpose %>.</p>
+  <p>Vous êtes <%= applicant_designation %> et à ce titre vous êtes <%= applicant.conjugate('invité') %> à participer à un <%= rdv_title %> afin de <%= rdv_purpose %>.</p>
+  <%= tag.p(custom_sentence) if custom_sentence %>
   <p>Pour faciliter votre prise de rendez-vous, <%= sender_name %> a mis en place <span class="bold-blue">une plateforme vous permettant de prendre rendez-vous vous-même.</span></p>
   <p>Pour choisir un créneau à votre convenance, saisissez le code d’invitation ci-dessous <span class="bold-blue">sur <u><%= ENV['HOST'] %>/invitation</u></span>, puis suivez les instructions présentes à l'écran :</p>
   <div class="invitation-token">Mon code d'invitation<br/><%= invitation.uuid %></div>
   <p>
     <% if display_mandatory_warning %>
-      Nous vous remercions de prendre ce rendez-vous dans un délai de <%= invitation.number_of_days_to_accept_invitation %> jours à réception de ce courrier.
+      Nous vous remercions de prendre ce rendez-vous dans un délai de <%= Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER %> jours à réception de ce courrier.
     <% end %>
     <% if display_punishable_warning %>
       <%= render "letters/invitations/punishable_warning", department: department, display_independent_from_cd_message: display_independent_from_cd_message %>

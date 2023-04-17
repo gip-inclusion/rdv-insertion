@@ -27,11 +27,12 @@ describe SessionsController do
 
       before do
         request.headers.merge(session_headers)
-        allow(RdvSolidaritesSession).to receive(:new)
+        allow(RdvSolidaritesSessionFactory).to receive(:create_with)
           .with(
             uid: session_headers["uid"], access_token: session_headers["access-token"],
             client: session_headers["client"]
-          ).and_return(rdv_solidarites_session)
+          )
+          .and_return(rdv_solidarites_session)
         allow(rdv_solidarites_session).to receive(:valid?)
           .and_return(true)
         allow(rdv_solidarites_session).to receive(:uid)
@@ -41,7 +42,7 @@ describe SessionsController do
       it "is a success" do
         post :create
         expect(response).to be_successful
-        expect(JSON.parse(response.body)["success"]).to eq(true)
+        expect(response.parsed_body["success"]).to eq(true)
       end
 
       it "marks the agent as logged in" do
@@ -65,7 +66,7 @@ describe SessionsController do
         it "returns the redirection path" do
           post :create
           expect(response).to be_successful
-          expect(JSON.parse(response.body)["redirect_path"]).to eq("/some_path")
+          expect(response.parsed_body["redirect_path"]).to eq("/some_path")
         end
 
         it "deletes the path from the session" do
@@ -83,7 +84,7 @@ describe SessionsController do
         it "returns the organisations path" do
           post :create
           expect(response).to be_successful
-          expect(JSON.parse(response.body)["redirect_path"]).to eq(organisations_path)
+          expect(response.parsed_body["redirect_path"]).to eq(organisations_path)
         end
       end
 
@@ -97,7 +98,7 @@ describe SessionsController do
           post :create
           expect(response).not_to be_successful
           expect(response).to have_http_status(:unauthorized)
-          expect(JSON.parse(response.body)["errors"]).to eq(
+          expect(response.parsed_body["errors"]).to eq(
             ["Les identifiants de session RDV-Solidarités sont invalides"]
           )
         end
@@ -110,8 +111,8 @@ describe SessionsController do
           post :create
           expect(response).not_to be_successful
           expect(response).to have_http_status(:unprocessable_entity)
-          expect(JSON.parse(response.body)["success"]).to eq(false)
-          expect(JSON.parse(response.body)["errors"]).to eq(
+          expect(response.parsed_body["success"]).to eq(false)
+          expect(response.parsed_body["errors"]).to eq(
             ["L'agent ne fait pas partie d'une organisation sur RDV-Insertion"]
           )
         end
@@ -129,8 +130,8 @@ describe SessionsController do
           post :create
           expect(response).not_to be_successful
           expect(response).to have_http_status(:unprocessable_entity)
-          expect(JSON.parse(response.body)["success"]).to eq(false)
-          expect(JSON.parse(response.body)["errors"]).to eq(["Update impossible"])
+          expect(response.parsed_body["success"]).to eq(false)
+          expect(response.parsed_body["errors"]).to eq(["Update impossible"])
         end
       end
     end

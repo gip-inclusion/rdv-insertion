@@ -12,10 +12,15 @@ class Agent < ApplicationRecord
   has_many :configurations, through: :organisations
 
   scope :not_betagouv, -> { where.not("agents.email LIKE ?", "%beta.gouv.fr") }
+  scope :super_admins, -> { where(super_admin: true) }
 
   def delete_organisation(organisation)
     organisations.delete(organisation)
     save!
+  end
+
+  def admin_organisations_ids
+    agent_roles.select(&:admin?).map(&:organisation_id)
   end
 
   def to_s

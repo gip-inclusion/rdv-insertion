@@ -9,7 +9,9 @@ module RdvSolidarites
     def augmented_attributes
       @attributes.merge(
         department_internal_id: applicant&.department_internal_id,
-        title: applicant&.title
+        title: applicant&.title,
+        nir: applicant&.nir,
+        pole_emploi_id: applicant&.pole_emploi_id
       )
     end
 

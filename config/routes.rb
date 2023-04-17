@@ -14,6 +14,7 @@ end
 Rails.application.routes.draw do
   root "static_pages#welcome"
   get "mentions-legales", to: "static_pages#legal_notice"
+  get "cgu", to: "static_pages#cgu"
   get "politique-de-confidentialite", to: "static_pages#privacy_policy"
   get "accessibilite", to: "static_pages#accessibility"
 
@@ -21,7 +22,7 @@ Rails.application.routes.draw do
                                      path: '/parcours_insertion',
                                      only: [:show]
 
-  resources :organisations, only: [:index] do
+  resources :organisations, only: [:index, :new, :show, :edit, :create, :update] do
     get :geolocated, on: :collection
     get :search, on: :collection
     resources :applicants, only: [:index, :create, :show, :update, :edit, :new] do
@@ -30,6 +31,12 @@ Rails.application.routes.draw do
       end
       resources :invitations, only: [:create]
     end
+    # we need to nest in organisations the different configurations record to correctly authorize them
+    resources :configurations, only: [:index, :show, :new, :create, :edit, :update, :destroy]
+    resources :file_configurations, only: [:show, :new, :create, :edit, :update] do
+      get :confirm_update
+    end
+    resources :messages_configurations, only: [:show, :new, :edit, :create, :update]
   end
 
   resources :stats, only: [:index, :show] do
@@ -58,6 +65,7 @@ Rails.application.routes.draw do
   end
 
   resources :departments, only: [] do
+    resources :department_organisations, only: [:index], as: :organisations, path: "/organisations"
     resources :applicants, only: [:index, :new, :create, :show, :edit, :update] do
       collection { resources :uploads, only: [:new] }
       resources :invitations, only: [:create]
@@ -92,6 +100,9 @@ Rails.application.routes.draw do
   resources :sessions, only: [:create]
   get '/sign_in', to: "sessions#new"
   delete '/sign_out', to: "sessions#destroy"
+
+  get "inclusion_connect/auth" => "inclusion_connect#auth"
+  get "inclusion_connect/callback" => "inclusion_connect#callback"
 
   if ENV["SIDEKIQ_USERNAME"] && ENV["SIDEKIQ_PASSWORD"]
     Sidekiq::Web.use Rack::Auth::Basic do |username, password|

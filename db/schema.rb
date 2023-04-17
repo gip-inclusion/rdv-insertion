@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_16_152810) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_11_153056) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -38,6 +38,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_16_152810) do
     t.string "last_name"
     t.boolean "has_logged_in", default: false
     t.datetime "last_webhook_update_received_at"
+    t.boolean "super_admin", default: false
     t.index ["email"], name: "index_agents_on_email", unique: true
     t.index ["rdv_solidarites_agent_id"], name: "index_agents_on_rdv_solidarites_agent_id", unique: true
   end
@@ -70,6 +71,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_16_152810) do
     t.datetime "deleted_at"
     t.datetime "last_webhook_update_received_at"
     t.datetime "archived_at"
+    t.string "nir"
+    t.string "pole_emploi_id"
     t.index ["department_id"], name: "index_applicants_on_department_id"
     t.index ["department_internal_id", "department_id"], name: "index_applicants_on_department_internal_id_and_department_id", unique: true
     t.index ["rdv_solidarites_user_id"], name: "index_applicants_on_rdv_solidarites_user_id", unique: true
@@ -87,7 +90,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_16_152810) do
     t.datetime "updated_at", null: false
     t.string "invitation_formats", default: ["sms", "email", "postal"], null: false, array: true
     t.boolean "convene_applicant", default: false
-    t.integer "number_of_days_to_accept_invitation", default: 3
     t.integer "number_of_days_before_action_required", default: 10
     t.boolean "invite_to_applicant_organisations_only", default: false
     t.boolean "rdv_with_referents", default: false
@@ -118,9 +120,28 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_16_152810) do
 
   create_table "file_configurations", force: :cascade do |t|
     t.string "sheet_name"
-    t.jsonb "column_names"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "title_column"
+    t.string "first_name_column"
+    t.string "last_name_column"
+    t.string "role_column"
+    t.string "email_column"
+    t.string "phone_number_column"
+    t.string "birth_date_column"
+    t.string "birth_name_column"
+    t.string "street_number_column"
+    t.string "street_type_column"
+    t.string "address_column"
+    t.string "postal_code_column"
+    t.string "city_column"
+    t.string "affiliation_number_column"
+    t.string "pole_emploi_id_column"
+    t.string "nir_column"
+    t.string "department_internal_id_column"
+    t.string "rights_opening_date_column"
+    t.string "organisation_search_terms_column"
+    t.string "referent_email_column"
   end
 
   create_table "invitations", force: :cascade do |t|
@@ -136,7 +157,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_16_152810) do
     t.bigint "department_id"
     t.bigint "rdv_solidarites_lieu_id"
     t.bigint "rdv_context_id"
-    t.integer "number_of_days_to_accept_invitation"
     t.datetime "valid_until"
     t.boolean "reminder", default: false
     t.string "uuid"
@@ -215,8 +235,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_16_152810) do
     t.datetime "sent_at", precision: nil
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "format"
     t.bigint "rdv_solidarites_rdv_id"
+    t.integer "format"
     t.bigint "participation_id"
     t.index ["participation_id"], name: "index_notifications_on_participation_id"
   end
@@ -233,6 +253,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_16_152810) do
     t.datetime "last_webhook_update_received_at"
     t.string "slug"
     t.boolean "independent_from_cd", default: false
+    t.string "logo_filename"
     t.index ["department_id"], name: "index_organisations_on_department_id"
     t.index ["messages_configuration_id"], name: "index_organisations_on_messages_configuration_id"
     t.index ["rdv_solidarites_organisation_id"], name: "index_organisations_on_rdv_solidarites_organisation_id", unique: true
@@ -328,6 +349,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_16_152810) do
     t.boolean "display_punishable_warning"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "custom_sentence"
   end
 
   create_table "webhook_endpoints", force: :cascade do |t|

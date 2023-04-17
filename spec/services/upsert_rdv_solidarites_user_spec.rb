@@ -7,7 +7,7 @@ describe UpsertRdvSolidaritesUser, type: :service do
     )
   end
 
-  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
+  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
   let!(:rdv_solidarites_organisation_id) { 444 }
   let!(:rdv_solidarites_user_id) { 555 }
   let!(:rdv_solidarites_user) { instance_double(RdvSolidarites::User) }

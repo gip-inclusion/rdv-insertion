@@ -12,6 +12,7 @@ class Motif < ApplicationRecord
 
   validates :rdv_solidarites_motif_id, uniqueness: true, presence: true
   validates :name, :location_type, presence: true
+  validates :collectif, inclusion: { in: [true, false] }
 
   delegate :rdv_solidarites_organisation_id, to: :organisation
 

@@ -6,7 +6,7 @@ describe Invitations::SaveAndSend, type: :service do
   end
 
   let!(:applicant) { create(:applicant) }
-  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession) }
+  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
   let!(:invitation) { create(:invitation, applicant: applicant, sent_at: nil) }
 
   describe "#call" do

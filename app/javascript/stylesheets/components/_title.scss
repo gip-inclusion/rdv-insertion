@@ -10,10 +10,19 @@
   color: $dark-blue;
 }
 
-.applicant-form-title {
+.h1-form-title {
   font-size: 34px;
   font-weight: 700;
 }
+
+.h4-as-labels {
+  h4 {
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+}
+
+
 
 .welcome-title {
   color: $dark-blue;
@@ -26,6 +35,10 @@
     line-height: 60px;
     font-weight: 700;
   }
+}
+
+.border-title {
+  border-bottom: 2px solid $dark-blue;
 }
 
 .legal-notice {
