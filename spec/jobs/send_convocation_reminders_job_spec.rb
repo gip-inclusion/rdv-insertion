@@ -19,7 +19,7 @@ describe SendConvocationRemindersJob do
 
     it "notifies the convocable participation that starts in 2 days" do
       expect(NotifyParticipationsJob).to receive(:perform_async)
-        .with([239], "participation_reminder")
+        .with([239], "reminder")
       subject
     end
 
