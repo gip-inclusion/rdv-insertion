@@ -3,8 +3,8 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
     described_class.new.perform(data, meta)
   end
 
-  let!(:user_id1) { 442 }
-  let!(:user_id2) { 443 }
+  let!(:user_id1) { applicant.rdv_solidarites_user_id }
+  let!(:user_id2) { applicant2.rdv_solidarites_user_id }
   let!(:user_ids) { [user_id1, user_id2] }
   let!(:rdv_solidarites_rdv_id) { 22 }
   let!(:rdv_solidarites_organisation_id) { 52 }
@@ -50,8 +50,8 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
     }.deep_symbolize_keys
   end
 
-  let!(:applicant) { create(:applicant, organisations: [organisation], id: 3, rdv_solidarites_user_id: 442) }
-  let!(:applicant2) { create(:applicant, organisations: [organisation], id: 4, rdv_solidarites_user_id: 443) }
+  let!(:applicant) { create(:applicant, organisations: [organisation], id: 3) }
+  let!(:applicant2) { create(:applicant, organisations: [organisation], id: 4) }
   let!(:applicants) { Applicant.where(id: [applicant.id, applicant2.id]) }
 
   let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation") }
@@ -360,7 +360,6 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
           :applicant,
           organisations: [organisation],
           title: "monsieur",
-          rdv_solidarites_user_id: user_id1,
           department_internal_id: department_internal_id,
           nir: nir
         )
@@ -370,7 +369,6 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
           :applicant,
           organisations: [organisation],
           title: "madame",
-          rdv_solidarites_user_id: user_id2,
           pole_emploi_id: "Z12123"
         )
       end
