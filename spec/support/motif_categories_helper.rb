@@ -32,7 +32,6 @@ module MotifCategoriesHelper
           rdv_subject: "RSA",
           display_mandatory_warning: true,
           documents_warning: "Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité."
-
         )
       )
     end
@@ -50,7 +49,6 @@ module MotifCategoriesHelper
           rdv_subject: "RSA",
           display_mandatory_warning: true,
           documents_warning: "Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité."
-
         )
       )
     end
@@ -70,7 +68,6 @@ module MotifCategoriesHelper
           display_mandatory_warning: true,
           punishable_warning: "votre RSA pourra être suspendu ou réduit",
           documents_warning: "Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité."
-
         )
       )
     end
@@ -90,7 +87,6 @@ module MotifCategoriesHelper
           display_mandatory_warning: true,
           punishable_warning: "votre RSA pourra être suspendu ou réduit",
           documents_warning: "Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité."
-
         )
       )
     end
@@ -110,7 +106,6 @@ module MotifCategoriesHelper
           display_mandatory_warning: true,
           punishable_warning: "votre RSA pourra être suspendu ou réduit",
           documents_warning: "Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité."
-
         )
       )
     end
