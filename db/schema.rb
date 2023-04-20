@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_11_153056) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_19_144405) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -345,11 +345,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_11_153056) do
     t.string "rdv_purpose"
     t.string "applicant_designation"
     t.string "rdv_subject"
-    t.boolean "display_mandatory_warning"
-    t.boolean "display_punishable_warning"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "custom_sentence"
+    t.boolean "display_mandatory_warning", default: false
+    t.text "punishable_warning", default: "", null: false
+    t.text "documents_warning", default: "", null: false
   end
 
   create_table "webhook_endpoints", force: :cascade do |t|

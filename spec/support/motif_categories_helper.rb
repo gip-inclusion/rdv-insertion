@@ -14,7 +14,7 @@ module MotifCategoriesHelper
           applicant_designation: "bénéficiaire du RSA",
           rdv_subject: "RSA",
           display_mandatory_warning: true,
-          display_punishable_warning: false
+          documents_warning: "Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité."
         )
       )
     end
@@ -31,7 +31,8 @@ module MotifCategoriesHelper
           applicant_designation: "bénéficiaire du RSA",
           rdv_subject: "RSA",
           display_mandatory_warning: true,
-          display_punishable_warning: false
+          documents_warning: "Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité."
+
         )
       )
     end
@@ -48,7 +49,8 @@ module MotifCategoriesHelper
           applicant_designation: "bénéficiaire du RSA",
           rdv_subject: "RSA",
           display_mandatory_warning: true,
-          display_punishable_warning: false
+          documents_warning: "Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité."
+
         )
       )
     end
@@ -66,7 +68,9 @@ module MotifCategoriesHelper
           applicant_designation: "bénéficiaire du RSA",
           rdv_subject: "RSA",
           display_mandatory_warning: true,
-          display_punishable_warning: true
+          punishable_warning: "votre RSA pourra être suspendu ou réduit",
+          documents_warning: "Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité."
+
         )
       )
     end
@@ -84,7 +88,9 @@ module MotifCategoriesHelper
           applicant_designation: "bénéficiaire du RSA",
           rdv_subject: "RSA",
           display_mandatory_warning: true,
-          display_punishable_warning: true
+          punishable_warning: "votre RSA pourra être suspendu ou réduit",
+          documents_warning: "Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité."
+
         )
       )
     end
@@ -102,7 +108,9 @@ module MotifCategoriesHelper
           applicant_designation: "bénéficiaire du RSA",
           rdv_subject: "RSA",
           display_mandatory_warning: true,
-          display_punishable_warning: true
+          punishable_warning: "votre RSA pourra être suspendu ou réduit",
+          documents_warning: "Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité."
+
         )
       )
     end
@@ -119,8 +127,7 @@ module MotifCategoriesHelper
           rdv_purpose: "construire et signer votre Contrat d'Engagement Réciproque",
           applicant_designation: "bénéficiaire du RSA",
           rdv_subject: "RSA",
-          display_mandatory_warning: true,
-          display_punishable_warning: false
+          display_mandatory_warning: true
         )
       )
     end
@@ -137,8 +144,7 @@ module MotifCategoriesHelper
           rdv_purpose: "faire un point avec votre référent de parcours",
           applicant_designation: "bénéficiaire du RSA",
           rdv_subject: "RSA",
-          display_mandatory_warning: false,
-          display_punishable_warning: false
+          display_mandatory_warning: false
         )
       )
     end
@@ -152,7 +158,8 @@ module MotifCategoriesHelper
           :template,
           model: "atelier",
           rdv_subject: "RSA",
-          applicant_designation: "bénéficiaire du RSA"
+          applicant_designation: "bénéficiaire du RSA",
+          display_mandatory_warning: false
         )
       )
     end
@@ -167,7 +174,8 @@ module MotifCategoriesHelper
           rdv_title: "rendez-vous d'orientation téléphonique",
           rdv_subject: "RSA",
           applicant_designation: "bénéficiaire du RSA",
-          rdv_purpose: "démarrer un parcours d'accompagnement"
+          rdv_purpose: "démarrer un parcours d'accompagnement",
+          display_mandatory_warning: true
         )
       )
     end
@@ -184,8 +192,7 @@ module MotifCategoriesHelper
           rdv_purpose: "vous aider dans votre parcours d'insertion",
           applicant_designation: "bénéficiaire du RSA",
           rdv_subject: "RSA",
-          display_mandatory_warning: true,
-          display_punishable_warning: false
+          display_mandatory_warning: true
         )
       )
     end
@@ -199,7 +206,8 @@ module MotifCategoriesHelper
           :template,
           model: "atelier",
           rdv_subject: "RSA",
-          applicant_designation: "bénéficiaire du RSA"
+          applicant_designation: "bénéficiaire du RSA",
+          display_mandatory_warning: false
         )
       )
     end
@@ -213,7 +221,8 @@ module MotifCategoriesHelper
           :template,
           model: "atelier",
           rdv_subject: "RSA",
-          applicant_designation: "bénéficiaire du RSA"
+          applicant_designation: "bénéficiaire du RSA",
+          display_mandatory_warning: false
         )
       )
     end
@@ -230,8 +239,7 @@ module MotifCategoriesHelper
           rdv_purpose: "faire le point sur votre situation",
           applicant_designation: "bénéficiaire du RSA",
           rdv_subject: "RSA",
-          display_mandatory_warning: true,
-          display_punishable_warning: false
+          display_mandatory_warning: true
         )
       )
     end
@@ -249,7 +257,7 @@ module MotifCategoriesHelper
           applicant_designation: "demandeur d'emploi",
           rdv_subject: "demande d'emploi",
           display_mandatory_warning: true,
-          display_punishable_warning: true
+          punishable_warning: "votre RSA pourra être suspendu ou réduit"
         )
       )
     end
@@ -266,8 +274,7 @@ module MotifCategoriesHelper
           applicant_designation: "bénéficiaire du RSA",
           rdv_subject: "RSA",
           rdv_purpose: "vous renseigner sur vos droits et vos devoirs",
-          display_mandatory_warning: true,
-          display_punishable_warning: false
+          display_mandatory_warning: true
         )
       )
     end
@@ -280,8 +287,7 @@ module MotifCategoriesHelper
           :template,
           model: "short",
           rdv_title: "rendez-vous de suivi psychologue",
-          display_mandatory_warning: false,
-          display_punishable_warning: false
+          display_mandatory_warning: false
         )
       )
     end
@@ -303,8 +309,7 @@ module MotifCategoriesHelper
                            " professionnels de l’insertion (l’un de Pôle emploi, l’autre du Conseil départemental)" \
                            " et permettra de mieux comprendre votre situation afin de vous proposer" \
                            " un accompagnement adapté",
-          display_mandatory_warning: true,
-          display_punishable_warning: false
+          display_mandatory_warning: true
         )
       )
     end
@@ -317,8 +322,7 @@ module MotifCategoriesHelper
           :template,
           model: "atelier_enfants_ados",
           rdv_title: "atelier destiné aux jeunes de ton âge",
-          display_mandatory_warning: false,
-          display_punishable_warning: false
+          display_mandatory_warning: false
         )
       )
     end
@@ -336,8 +340,7 @@ module MotifCategoriesHelper
           applicant_designation: "candidat.e dans une Structure d’Insertion par l’Activité Economique (SIAE)",
           rdv_subject: "candidature SIAE",
           rdv_purpose: "poursuivre le processus de recrutement",
-          display_mandatory_warning: false,
-          display_punishable_warning: false
+          display_mandatory_warning: false
         )
       )
     end

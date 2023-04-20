@@ -1,7 +1,7 @@
 module Notifications
   module SmsContent
     delegate :rdv, :applicant, :rdv_title, :applicant_designation, :display_mandatory_warning,
-             :display_punishable_warning, :rdv_subject,
+             :punishable_warning, :documents_warning, :rdv_subject,
              to: :notification
     delegate :formatted_start_date, :formatted_start_time, :lieu, :phone_number, to: :rdv
 
@@ -13,8 +13,9 @@ module Notifications
         "#{applicant.conjugate('convoqué')} à un " \
         "#{rdv_title}. Vous êtes #{applicant.conjugate('attendu')} le #{formatted_start_date} à " \
         "#{formatted_start_time} ici: #{lieu.full_name}. " \
-        "#{mandatory_warning}" \
-        "#{punishable_warning}" \
+        "#{mandatory_warning_message}" \
+        "#{documents_warning_message}" \
+        "#{punishable_warning_message}" \
         "En cas d’empêchement, appelez rapidement le #{phone_number}."
     end
 
@@ -23,8 +24,8 @@ module Notifications
         "#{applicant.conjugate('convoqué')} à un " \
         "#{rdv_title}. Un travailleur social vous appellera le #{formatted_start_date}" \
         " à partir de #{formatted_start_time} sur ce numéro. " \
-        "#{mandatory_warning}" \
-        "#{punishable_warning}" \
+        "#{mandatory_warning_message}" \
+        "#{punishable_warning_message}" \
         "En cas d’empêchement, appelez rapidement le #{phone_number}."
     end
 
@@ -33,8 +34,9 @@ module Notifications
       "#{applicant.full_name},\nVotre #{rdv_title} dans le cadre de votre #{rdv_subject} a été modifié. " \
         "Vous êtes #{applicant.conjugate('attendu')} le #{formatted_start_date} à #{formatted_start_time}" \
         " ici: #{lieu.full_name}. " \
-        "#{mandatory_warning}" \
-        "#{punishable_warning}" \
+        "#{mandatory_warning_message}" \
+        "#{documents_warning_message}" \
+        "#{punishable_warning_message}" \
         "En cas d’empêchement, appelez rapidement le #{phone_number}."
     end
 
@@ -42,8 +44,8 @@ module Notifications
       "#{applicant.full_name},\nVotre #{rdv_title} dans le cadre de votre #{rdv_subject} a été modifié. " \
         "Un travailleur social vous appellera le #{formatted_start_date}" \
         " à partir de #{formatted_start_time} sur ce numéro. " \
-        "#{mandatory_warning}" \
-        "#{punishable_warning}" \
+        "#{mandatory_warning_message}" \
+        "#{punishable_warning_message}" \
         "En cas d’empêchement, appelez rapidement le #{phone_number}."
     end
 
@@ -53,8 +55,9 @@ module Notifications
         "#{applicant.conjugate('convoqué')} à un " \
         "#{rdv_title}. Vous êtes #{applicant.conjugate('attendu')} le #{formatted_start_date} à " \
         "#{formatted_start_time} ici: #{lieu.full_name}. " \
-        "#{mandatory_warning}" \
-        "#{punishable_warning}" \
+        "#{mandatory_warning_message}" \
+        "#{documents_warning_message}" \
+        "#{punishable_warning_message}" \
         "En cas d’empêchement, appelez rapidement le #{phone_number}."
     end
 
@@ -63,8 +66,8 @@ module Notifications
         "#{applicant.conjugate('convoqué')} à un " \
         "#{rdv_title}. Un travailleur social vous appellera le #{formatted_start_date}" \
         " à partir de #{formatted_start_time} sur ce numéro. " \
-        "#{mandatory_warning}" \
-        "#{punishable_warning}" \
+        "#{mandatory_warning_message}" \
+        "#{punishable_warning_message}" \
         "En cas d’empêchement, appelez rapidement le #{phone_number}."
     end
 
@@ -76,16 +79,20 @@ module Notifications
 
     ###
 
-    def mandatory_warning
-      display_mandatory_warning ? "Ce RDV est obligatoire. " : ""
+    def mandatory_warning_message
+      display_mandatory_warning ? "#{::Template::MANDATORY_WARNING} " : ""
     end
 
-    def punishable_warning
-      if display_punishable_warning
-        "En cas d'absence, le versement de votre RSA pourra être suspendu ou réduit. "
+    def punishable_warning_message
+      if punishable_warning.present?
+        "En cas d'absence, #{punishable_warning}. "
       else
         ""
       end
+    end
+
+    def documents_warning_message
+      documents_warning.present? ? "#{documents_warning} " : ""
     end
   end
 end

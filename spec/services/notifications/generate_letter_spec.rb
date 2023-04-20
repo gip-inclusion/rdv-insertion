@@ -47,6 +47,18 @@ describe Notifications::GenerateLetter, type: :service do
         "<span class=\"bold-blue\">vous êtes convoqué à un rendez-vous d'orientation</span>" \
         " afin de démarrer un parcours d'accompagnement"
       )
+      expect(content).to include("Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité")
+    end
+
+    context "when the template has no documents warning" do
+      let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_atelier_rencontres_pro) }
+      let!(:configuration) { create(:configuration, motif_category: category_rsa_atelier_rencontres_pro) }
+
+      it "generates the matching content" do
+        subject
+        content = unescape_html(notification.content)
+        expect(content).not_to include("Merci de venir au RDV avec un justificatif de domicile et une pièce")
+      end
     end
 
     context "when the rdv is by phone" do
@@ -62,6 +74,7 @@ describe Notifications::GenerateLetter, type: :service do
           "Un travailleur social vous appellera <span class=\"bold-blue\">le dimanche 25 décembre 2022 à 09h30</span>" \
           " sur votre numéro de téléphone: <span class=\"bold-blue\">+33607070707</span>"
         )
+        expect(content).not_to include("Merci de venir au RDV avec un justificatif de domicile et une pièce")
       end
 
       context "when the phone number is blank" do

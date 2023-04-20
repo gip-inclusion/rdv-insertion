@@ -1,4 +1,5 @@
 <%= render "letters/header", direction_names: direction_names, sender_city: sender_city, department: department, organisation: organisation, applicant: applicant %>
+
 <div class="mail-object">
   <p class="bold-blue"><span class="bold-blue">Objet : <%= rdv_title.slice(0,1).capitalize + rdv_title.slice(1..-1) %> dans le cadre de votre <%= rdv_subject %></span></p>
   <% if applicant.affiliation_number %>
@@ -8,25 +9,21 @@
     <p><%= "Référent".pluralize(applicant.agents.count) %> de parcours : <%= applicant.agents.order(:last_name).map(&:to_s).join(", ") %></p>
   <% end %>
 </div>
+
 <div class="main-content">
   <p><%= applicant.title.capitalize %>,</p>
   <p>Vous êtes <%= applicant_designation %> et à ce titre vous êtes <%= applicant.conjugate('invité') %> à participer à un <%= rdv_title %> afin de <%= rdv_purpose %>.</p>
   <%= tag.p(custom_sentence) if custom_sentence %>
   <p>Pour faciliter votre prise de rendez-vous, <%= sender_name %> a mis en place <span class="bold-blue">une plateforme vous permettant de prendre rendez-vous vous-même.</span></p>
-  <p>Pour choisir un créneau à votre convenance, saisissez le code d’invitation ci-dessous <span class="bold-blue">sur <u><%= ENV['HOST'] %>/invitation</u></span>, puis suivez les instructions présentes à l'écran :</p>
+  <p>Pour choisir un créneau à votre convenance, saisissez dans un délai de <%= Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER %> jours à réception de ce courrier le code d’invitation ci-dessous <span class="bold-blue">sur <u><%= ENV['HOST'] %>/invitation</u></span>, puis suivez les instructions présentes à l'écran :</p>
   <div class="invitation-token">Mon code d'invitation<br/><%= invitation.uuid %></div>
-  <p>
-    <% if display_mandatory_warning %>
-      Nous vous remercions de prendre ce rendez-vous dans un délai de <%= Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER %> jours à réception de ce courrier.
-    <% end %>
-    <% if display_punishable_warning %>
-      <%= render "letters/invitations/punishable_warning", department: department, display_independent_from_cd_message: display_independent_from_cd_message %>
-    <% end %>
-  </p>
+  <%= tag.p tag.span(::Template::MANDATORY_WARNING, class: "bold-blue") if display_mandatory_warning %>
+  <%= tag.p tag.span("En l'absence d'action de votre part, #{punishable_warning}.", class: "bold-blue") if punishable_warning.present? %>
   <%= render "letters/invitations/help_message", invitation: invitation, help_address: help_address %>
-  <p>Veuillez agréer, <%= applicant.title.capitalize %>, l’expression de mes salutations distinguées.</p>
+  <%= render "letters/salutation", applicant: applicant %>
   <div class="letter-signature">
     <%= render "common/organisation_signature", signature_lines: signature_lines, department: department %>
   </div>
 </div>
+
 <%= render "letters/footer", department: department, organisation: organisation, display_europe_logos: display_europe_logos, display_department_logo: display_department_logo %>

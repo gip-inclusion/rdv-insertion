@@ -6,6 +6,8 @@
     Choisir un créneau
   <% end %>
 </p>
+<%= tag.p tag.strong(::Template::MANDATORY_WARNING) if @display_mandatory_warning %>
+<%= tag.p tag.strong("En l'absence d'action de votre part, #{@punishable_warning}.") if @punishable_warning.present? %>
 <p>En cas de problème technique, contactez le <%= @invitation.help_phone_number_formatted %></p>
 <%= render 'common/organisation_signature', signature_lines: @signature_lines, department: @department %>
 <% if @logo_path %>

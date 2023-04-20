@@ -45,8 +45,7 @@ orientation_category = MotifCategory.create!(
     rdv_purpose: "démarrer un parcours d'accompagnement",
     applicant_designation: "bénéficiaire du RSA",
     rdv_subject: "RSA",
-    display_mandatory_warning: true,
-    display_punishable_warning: false
+    display_mandatory_warning: true
   )
 )
 accompagnement_category = MotifCategory.create!(
@@ -59,7 +58,7 @@ accompagnement_category = MotifCategory.create!(
     applicant_designation: "bénéficiaire du RSA",
     rdv_subject: "RSA",
     display_mandatory_warning: true,
-    display_punishable_warning: true
+    punishable_warning: "votre RSA pourra être suspendu ou réduit"
   )
 )
 MotifCategory.create!(
@@ -73,7 +72,7 @@ MotifCategory.create!(
     applicant_designation: "bénéficiaire du RSA",
     rdv_subject: "RSA",
     display_mandatory_warning: true,
-    display_punishable_warning: true
+    punishable_warning: "votre RSA pourra être suspendu ou réduit"
   )
 )
 MotifCategory.create!(
@@ -87,7 +86,7 @@ MotifCategory.create!(
     applicant_designation: "bénéficiaire du RSA",
     rdv_subject: "RSA",
     display_mandatory_warning: true,
-    display_punishable_warning: true
+    punishable_warning: "votre RSA pourra être suspendu ou réduit"
   )
 )
 MotifCategory.create!(
@@ -100,8 +99,7 @@ MotifCategory.create!(
     rdv_purpose: "construire et signer votre Contrat d'Engagement Réciproque",
     applicant_designation: "bénéficiaire du RSA",
     rdv_subject: "RSA",
-    display_mandatory_warning: true,
-    display_punishable_warning: false
+    display_mandatory_warning: true
   )
 )
 MotifCategory.create!(
@@ -115,7 +113,6 @@ MotifCategory.create!(
     applicant_designation: "bénéficiaire du RSA",
     rdv_subject: "RSA",
     display_mandatory_warning: false,
-    display_punishable_warning: false
   )
 )
 MotifCategory.create!(
@@ -150,8 +147,7 @@ MotifCategory.create!(
     rdv_purpose: "vous aider dans votre parcours d'insertion",
     applicant_designation: "bénéficiaire du RSA",
     rdv_subject: "RSA",
-    display_mandatory_warning: true,
-    display_punishable_warning: false
+    display_mandatory_warning: true
   )
 )
 MotifCategory.create!(
@@ -184,8 +180,7 @@ MotifCategory.create!(
     rdv_purpose: "faire le point sur votre situation",
     applicant_designation: "bénéficiaire du RSA",
     rdv_subject: "RSA",
-    display_mandatory_warning: true,
-    display_punishable_warning: false
+    display_mandatory_warning: true
   )
 )
 MotifCategory.create!(
@@ -199,7 +194,7 @@ MotifCategory.create!(
     applicant_designation: "demandeur d'emploi",
     rdv_subject: "demande d'emploi",
     display_mandatory_warning: true,
-    display_punishable_warning: true
+    punishable_warning: "votre RSA pourra être suspendu ou réduit"
   )
 )
 MotifCategory.create!(
@@ -212,8 +207,7 @@ MotifCategory.create!(
     applicant_designation: "bénéficiaire du RSA",
     rdv_subject: "RSA",
     rdv_purpose: "vous renseigner sur vos droits et vos devoirs",
-    display_mandatory_warning: true,
-    display_punishable_warning: false
+    display_mandatory_warning: true
   )
 )
 

@@ -39,7 +39,8 @@ module Notifications
         rdv_title: @notification.rdv_title,
         applicant_designation: @notification.applicant_designation,
         display_mandatory_warning: @notification.display_mandatory_warning,
-        display_punishable_warning: @notification.display_punishable_warning,
+        punishable_warning: @notification.punishable_warning,
+        documents_warning: @notification.documents_warning,
         rdv_purpose: @notification.rdv_purpose,
         rdv_subject: @notification.rdv_subject
       }

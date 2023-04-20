@@ -7,8 +7,7 @@ class AddSiaeMotifCategory < ActiveRecord::Migration[7.0]
       rdv_purpose: "poursuivre le processus de recrutement",
       applicant_designation: "candidat.e dans une Structure d’Insertion par l’Activité Economique (SIAE)",
       rdv_subject: "candidature SIAE",
-      display_mandatory_warning: false,
-      display_punishable_warning: false
+      display_mandatory_warning: false
     )
 
     MotifCategory.create!(

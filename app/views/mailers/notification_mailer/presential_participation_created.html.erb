@@ -4,12 +4,9 @@
 <p><h4><%= @rdv.lieu.name %></h4></p>
 <p><h4><%= @rdv.lieu.address %></h4></p>
 <br/>
-<% if @display_mandatory_warning %>
-  <p><span class="font-weight-bold">Ce rendez-vous est obligatoire</span>.</p>
-<% end %>
-<% if @display_punishable_warning %>
-  <p>En cas d'absence, le versement de votre RSA pourra être suspendu ou réduit.</p>
-<% end %>
+<%= tag.p tag.strong(@documents_warning, class: "bold-blue") if @documents_warning.present? %>
+<%= tag.p tag.strong(::Template::MANDATORY_WARNING) if @display_mandatory_warning %>
+<%= tag.p tag.strong("En cas d'absence, #{@punishable_warning}.") if @punishable_warning.present? %>
 <p>En cas d'empêchement, merci d'appeler rapidement le <%= @rdv.phone_number %>.</p>
 <%= render 'common/organisation_signature', signature_lines: @signature_lines, department: @department %>
 <% if @logo_path %>

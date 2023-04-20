@@ -2,8 +2,7 @@ class InvitationMailer < ApplicationMailer
   before_action :set_invitation, :set_applicant, :set_department,
                 :set_logo_path, :set_signature_lines
 
-  before_action :set_rdv_title, :set_applicant_designation,
-                :set_display_mandatory_warning, :set_display_punishable_warning,
+  before_action :set_rdv_title, :set_applicant_designation, :set_display_mandatory_warning, :set_punishable_warning,
                 :set_rdv_purpose, :set_rdv_subject, :set_custom_sentence
 
   def standard_invitation
@@ -114,8 +113,8 @@ class InvitationMailer < ApplicationMailer
     @display_mandatory_warning = @invitation.display_mandatory_warning
   end
 
-  def set_display_punishable_warning
-    @display_punishable_warning = @invitation.display_punishable_warning
+  def set_punishable_warning
+    @punishable_warning = @invitation.punishable_warning
   end
 
   def set_rdv_purpose
