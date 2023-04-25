@@ -9,7 +9,7 @@ module Notifications
 
     ### participation_created
     def presential_content_for_participation_created
-      "#{applicant.full_name},\nVous êtes #{applicant_designation} et à ce titre vous avez été " \
+      "#{applicant.full_name},\nVous êtes #{applicant_designation} et à ce titre vous êtes " \
         "#{applicant.conjugate('convoqué')} à un " \
         "#{rdv_title}. Vous êtes #{applicant.conjugate('attendu')} le #{formatted_start_date} à " \
         "#{formatted_start_time} ici: #{lieu.full_name}. " \
@@ -19,7 +19,7 @@ module Notifications
     end
 
     def by_phone_content_for_participation_created
-      "#{applicant.full_name},\nVous êtes #{applicant_designation} et à ce titre vous avez été " \
+      "#{applicant.full_name},\nVous êtes #{applicant_designation} et à ce titre vous êtes " \
         "#{applicant.conjugate('convoqué')} à un " \
         "#{rdv_title}. Un travailleur social vous appellera le #{formatted_start_date}" \
         " à partir de #{formatted_start_time} sur ce numéro. " \
@@ -41,6 +41,27 @@ module Notifications
     def by_phone_content_for_participation_updated
       "#{applicant.full_name},\nVotre #{rdv_title} dans le cadre de votre #{rdv_subject} a été modifié. " \
         "Un travailleur social vous appellera le #{formatted_start_date}" \
+        " à partir de #{formatted_start_time} sur ce numéro. " \
+        "#{mandatory_warning}" \
+        "#{punishable_warning}" \
+        "En cas d’empêchement, appelez rapidement le #{phone_number}."
+    end
+
+    ## participation_reminder
+    def presential_content_for_participation_reminder
+      "RAPPEL: #{applicant.full_name},\nVous êtes #{applicant_designation} et à ce titre vous avez été " \
+        "#{applicant.conjugate('convoqué')} à un " \
+        "#{rdv_title}. Vous êtes #{applicant.conjugate('attendu')} le #{formatted_start_date} à " \
+        "#{formatted_start_time} ici: #{lieu.full_name}. " \
+        "#{mandatory_warning}" \
+        "#{punishable_warning}" \
+        "En cas d’empêchement, appelez rapidement le #{phone_number}."
+    end
+
+    def by_phone_content_for_participation_reminder
+      "RAPPEL: #{applicant.full_name},\nVous êtes #{applicant_designation} et à ce titre vous avez été " \
+        "#{applicant.conjugate('convoqué')} à un " \
+        "#{rdv_title}. Un travailleur social vous appellera le #{formatted_start_date}" \
         " à partir de #{formatted_start_time} sur ce numéro. " \
         "#{mandatory_warning}" \
         "#{punishable_warning}" \

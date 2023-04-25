@@ -6,7 +6,9 @@ class Notification < ApplicationRecord
 
   belongs_to :participation, optional: true
 
-  enum event: { participation_created: 0, participation_updated: 1, participation_cancelled: 2 }
+  enum event: {
+    participation_created: 0, participation_updated: 1, participation_cancelled: 2, participation_reminder: 3
+  }
   enum format: { sms: 0, email: 1, postal: 2 }, _prefix: true
 
   validates :format, :event, :rdv_solidarites_rdv_id, presence: true
@@ -16,8 +18,6 @@ class Notification < ApplicationRecord
   delegate :organisation, to: :rdv, allow_nil: true
   delegate :messages_configuration, to: :organisation
 
-  # we assume a convocation is a notification of a created participation
-  scope :convocations, -> { where(event: "participation_created") }
   scope :sent, -> { where.not(sent_at: nil) }
 
   def send_to_applicant

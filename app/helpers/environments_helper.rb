@@ -1,4 +1,6 @@
 module EnvironmentsHelper
+  private
+
   def production_env?
     ENV["SENTRY_ENVIRONMENT"] == "production"
   end

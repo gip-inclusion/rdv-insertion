@@ -339,6 +339,34 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("dans les 3 jours")
       end
     end
+
+    context "for rsa_orientation_france_travail" do
+      let!(:rdv_context) do
+        build(:rdv_context, motif_category: category_rsa_orientation_france_travail)
+      end
+
+      it "renders the headers" do
+        expect(subject.to).to eq([applicant.email])
+      end
+
+      it "renders the subject" do
+        email_subject = unescape_html(subject.subject)
+        expect(email_subject).to eq(
+          "[RSA]: Votre rendez-vous d'orientation dans le cadre de votre RSA"
+        )
+      end
+
+      it "renders the body" do
+        body_string = unescape_html(subject.body.encoded)
+        expect(body_string).to match("Bonjour Jean VALJEAN")
+        expect(body_string).to match("Le département de la Drôme.")
+        expect(body_string).to match("01 39 39 39 39")
+        expect(body_string).to match("Dans le cadre du projet 'France Travail'")
+        expect(body_string).to match("afin de démarrer un parcours d'accompagnement.")
+        expect(body_string).to match("/invitations/redirect")
+        expect(body_string).to match("uuid=#{invitation.uuid}")
+      end
+    end
   end
 
   describe "#invitation_for_rsa_orientation_on_phone_platform" do
@@ -457,6 +485,83 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("Vous êtes invité pour un rendez-vous de suivi psychologue.")
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
+      end
+    end
+  end
+
+  describe "#atelier_enfants_ados" do
+    subject do
+      described_class
+        .with(invitation: invitation, applicant: applicant)
+        .atelier_enfants_ados_invitation
+    end
+
+    context "for atelier_enfants_ados" do
+      let!(:rdv_context) do
+        build(:rdv_context, motif_category: category_atelier_enfants_ados)
+      end
+
+      it "renders the headers" do
+        expect(subject.to).to eq([applicant.email])
+      end
+
+      it "renders the subject" do
+        email_subject = unescape_html(subject.subject)
+        expect(email_subject).to eq("Invitation à un atelier destiné aux jeunes de ton âge")
+      end
+
+      it "renders the body" do
+        body_string = unescape_html(subject.body.encoded)
+        expect(body_string).to match("Bonjour Jean VALJEAN")
+        expect(body_string).to match("Le département de la Drôme.")
+        expect(body_string).to match("01 39 39 39 39")
+        expect(body_string).to match("Tu es invité à participer à un atelier organisé par le département.")
+        expect(body_string).to match("/invitations/redirect")
+        expect(body_string).to match("uuid=#{invitation.uuid}")
+      end
+    end
+  end
+
+  describe "#short_invitation_reminder" do
+    subject do
+      described_class.with(invitation: invitation, applicant: applicant).short_invitation_reminder
+    end
+
+    context "for psychologue" do
+      let!(:rdv_context) { build(:rdv_context, motif_category: category_psychologue) }
+
+      it "renders the headers" do
+        expect(subject.to).to eq([applicant.email])
+      end
+
+      it "renders the subject" do
+        email_subject = unescape_html(subject.subject)
+        expect(email_subject).to eq("[Rappel]: Votre rendez-vous de suivi psychologue")
+      end
+
+      it "renders the body" do
+        body_string = unescape_html(subject.body.encoded)
+        expect(body_string).to match("Bonjour Jean VALJEAN")
+        expect(body_string).to match("Le département de la Drôme.")
+        expect(body_string).to match("01 39 39 39 39")
+        expect(body_string).to match(
+          "Vous avez reçu un premier mail il y a 3 jours vous invitant à prendre un rendez-vous de suivi psychologue."
+        )
+        expect(body_string).to match("/invitations/redirect")
+        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match(
+          "Il ne vous reste plus que <span class=\"font-weight-bold\">#{invitation.number_of_days_before_expiration}" \
+          " jours</span> pour prendre rendez-vous"
+        )
+      end
+    end
+
+    context "when the signature is configured" do
+      let!(:rdv_context) { build(:rdv_context, motif_category: category_psychologue) }
+      let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
+
+      it "renders the mail with the right signature" do
+        expect(subject.body.encoded).to match(/Fabienne Bouchet/)
       end
     end
   end
@@ -660,6 +765,51 @@ RSpec.describe InvitationMailer do
     end
 
     context "when the signature is configured" do
+      let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
+
+      it "renders the mail with the right signature" do
+        expect(subject.body.encoded).to match(/Fabienne Bouchet/)
+      end
+    end
+  end
+
+  describe "#atelier_enfants_ados_invitation_reminder" do
+    subject do
+      described_class.with(invitation: invitation, applicant: applicant).atelier_enfants_ados_invitation_reminder
+    end
+
+    context "for atelier_enfants_ados" do
+      let!(:rdv_context) { build(:rdv_context, motif_category: category_atelier_enfants_ados) }
+
+      it "renders the headers" do
+        expect(subject.to).to eq([applicant.email])
+      end
+
+      it "renders the subject" do
+        email_subject = unescape_html(subject.subject)
+        expect(email_subject).to eq("[Rappel]: Invitation à un atelier destiné aux jeunes de ton âge")
+      end
+
+      it "renders the body" do
+        body_string = unescape_html(subject.body.encoded)
+        expect(body_string).to match("Bonjour Jean VALJEAN")
+        expect(body_string).to match("Le département de la Drôme.")
+        expect(body_string).to match("01 39 39 39 39")
+        expect(body_string).to match(
+          "Tu as reçu un premier mail il y a 3 jours t'invitant à un atelier destiné aux jeunes de ton âge."
+        )
+        expect(body_string).to match("/invitations/redirect")
+        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match(
+          "Il ne te reste plus que <span class=\"font-weight-bold\">#{invitation.number_of_days_before_expiration}" \
+          " jours</span> pour prendre rendez-vous à la date et l'horaire de ton choix en cliquant" \
+          " sur le bouton suivant."
+        )
+      end
+    end
+
+    context "when the signature is configured" do
+      let!(:rdv_context) { build(:rdv_context, motif_category: category_psychologue) }
       let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
 
       it "renders the mail with the right signature" do

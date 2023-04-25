@@ -6,6 +6,7 @@ fr:
       motif:
         categories:
           rsa_orientation: RSA orientation
+          rsa_orientation_france_travail: RSA orientation France Travail
           rsa_accompagnement: RSA accompagnement
           rsa_accompagnement_social: RSA accompagnement social
           rsa_accompagnement_sociopro: RSA accompagnement socio-pro
@@ -20,3 +21,6 @@ fr:
           rsa_atelier_competences: RSA Atelier compétences
           rsa_atelier_rencontres_pro: RSA Atelier rencontres professionnelles
           psychologue: Psychologue
+          rsa_orientation_freelance: RSA orientation - travailleurs indépendants
+          rsa_orientation_coaching: RSA orientation - coaching emploi
+          atelier_enfants_ados: Atelier Enfants / Ados

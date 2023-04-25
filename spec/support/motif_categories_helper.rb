@@ -285,6 +285,43 @@ module MotifCategoriesHelper
         )
       )
     end
+    let!(:category_rsa_orientation_france_travail) do
+      create(
+        :motif_category,
+        name: "RSA orientation France Travail",
+        short_name: "rsa_orientation_france_travail",
+        participation_optional: false,
+        template: create(
+          :template,
+          model: "standard",
+          rdv_title: "rendez-vous d'orientation",
+          rdv_title_by_phone: "rendez-vous d'orientation téléphonique",
+          rdv_purpose: "démarrer un parcours d'accompagnement",
+          applicant_designation: "bénéficiaire du RSA",
+          rdv_subject: "RSA",
+          custom_sentence: "Dans le cadre du projet 'France Travail', ce rendez-vous sera réalisé par deux" \
+                           " professionnels de l’insertion (l’un de Pôle emploi, l’autre du Conseil départemental)" \
+                           " et permettra de mieux comprendre votre situation afin de vous proposer" \
+                           " un accompagnement adapté",
+          display_mandatory_warning: true,
+          display_punishable_warning: false
+        )
+      )
+    end
+    let!(:category_atelier_enfants_ados) do
+      create(
+        :motif_category,
+        name: "Atelier Enfants / Ados",
+        short_name: "atelier_enfants_ados",
+        template: create(
+          :template,
+          model: "atelier_enfants_ados",
+          rdv_title: "atelier destiné aux jeunes de ton âge",
+          display_mandatory_warning: false,
+          display_punishable_warning: false
+        )
+      )
+    end
     let!(:category_siae_interview) do
       create(
         :motif_category,
