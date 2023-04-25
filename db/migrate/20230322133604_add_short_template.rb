@@ -3,7 +3,8 @@ class AddShortTemplate < ActiveRecord::Migration[7.0]
     template = Template.create(
       model: "short",
       rdv_title: "rendez-vous de suivi psychologue",
-      display_mandatory_warning: false
+      display_mandatory_warning: false,
+      display_punishable_warning: false
     )
 
     MotifCategory.create(

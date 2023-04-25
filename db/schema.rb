@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_19_144405) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_25_121956) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -66,17 +66,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_19_144405) do
     t.date "birth_date"
     t.date "rights_opening_date"
     t.string "birth_name"
-    t.bigint "department_id"
     t.string "archiving_reason"
     t.datetime "deleted_at"
     t.datetime "last_webhook_update_received_at"
     t.datetime "archived_at"
     t.string "nir"
     t.string "pole_emploi_id"
+    t.bigint "department_id"
     t.index ["department_id"], name: "index_applicants_on_department_id"
-    t.index ["department_internal_id", "department_id"], name: "index_applicants_on_department_internal_id_and_department_id", unique: true
     t.index ["rdv_solidarites_user_id"], name: "index_applicants_on_rdv_solidarites_user_id", unique: true
-    t.index ["uid"], name: "index_applicants_on_uid", unique: true
+    t.index ["uid"], name: "index_applicants_on_uid"
   end
 
   create_table "applicants_organisations", id: false, force: :cascade do |t|
@@ -225,6 +224,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_19_144405) do
     t.datetime "updated_at", null: false
     t.boolean "follow_up", default: false
     t.bigint "motif_category_id"
+    t.text "instruction_for_rdv", default: ""
     t.index ["motif_category_id"], name: "index_motifs_on_motif_category_id"
     t.index ["organisation_id"], name: "index_motifs_on_organisation_id"
     t.index ["rdv_solidarites_motif_id"], name: "index_motifs_on_rdv_solidarites_motif_id", unique: true
@@ -350,7 +350,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_19_144405) do
     t.text "custom_sentence"
     t.boolean "display_mandatory_warning", default: false
     t.text "punishable_warning", default: "", null: false
-    t.text "documents_warning", default: "", null: false
   end
 
   create_table "webhook_endpoints", force: :cascade do |t|
@@ -373,7 +372,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_19_144405) do
 
   add_foreign_key "agent_roles", "agents"
   add_foreign_key "agent_roles", "organisations"
-  add_foreign_key "applicants", "departments"
   add_foreign_key "configurations", "file_configurations"
   add_foreign_key "configurations", "motif_categories"
   add_foreign_key "invitations", "applicants"

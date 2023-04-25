@@ -40,7 +40,7 @@ module Notifications
         applicant_designation: @notification.applicant_designation,
         display_mandatory_warning: @notification.display_mandatory_warning,
         punishable_warning: @notification.punishable_warning,
-        documents_warning: @notification.documents_warning,
+        instruction_for_rdv: @notification.instruction_for_rdv,
         rdv_purpose: @notification.rdv_purpose,
         rdv_subject: @notification.rdv_subject
       }

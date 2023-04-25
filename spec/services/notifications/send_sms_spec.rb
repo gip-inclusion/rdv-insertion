@@ -26,7 +26,12 @@ describe Notifications::SendSms, type: :service do
     )
   end
   let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_orientation) }
-  let!(:motif) { create(:motif, location_type: "public_office") }
+  let!(:motif) do
+    create(
+      :motif, location_type: "public_office",
+              instruction_for_rdv: "Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité."
+    )
+  end
   let!(:lieu) do
     create(:lieu, name: "DINUM", address: "20 avenue de Ségur 75007 Paris", phone_number: "0101010101")
   end
@@ -388,6 +393,7 @@ describe Notifications::SendSms, type: :service do
     end
 
     describe "RSA CER Signature" do
+      let!(:motif) { create(:motif, location_type: "public_office") }
       let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_cer_signature) }
 
       let!(:content) do
@@ -501,6 +507,7 @@ describe Notifications::SendSms, type: :service do
     end
 
     describe "RSA suivi" do
+      let!(:motif) { create(:motif, location_type: "public_office") }
       let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_follow_up) }
 
       let!(:content) do
@@ -609,6 +616,7 @@ describe Notifications::SendSms, type: :service do
     end
 
     describe "RSA SPIE" do
+      let!(:motif) { create(:motif, location_type: "public_office") }
       let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_spie) }
 
       let!(:content) do

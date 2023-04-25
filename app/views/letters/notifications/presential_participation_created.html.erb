@@ -15,7 +15,7 @@
     <p><h4><%= rdv.lieu.name %></h4></p>
     <p><h4><%= rdv.lieu.address %></h4></p>
   </div>
-  <%= tag.p tag.span(documents_warning, class: "bold-blue") if documents_warning.present? %>
+  <%= tag.p tag.span(instruction_for_rdv, class: "bold-blue") if instruction_for_rdv.present? %>
   <%= tag.p tag.span(::Template::MANDATORY_WARNING, class: "bold-blue") if display_mandatory_warning %>
   <%= tag.p tag.span("En cas d'absence, #{punishable_warning}.", class: "bold-blue") if punishable_warning.present? %>
   <p>En cas d'empêchement, merci d'appeler rapidement le <%= rdv.phone_number %>.</p>

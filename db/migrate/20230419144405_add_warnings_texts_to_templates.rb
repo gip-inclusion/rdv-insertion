@@ -11,7 +11,6 @@ class AddWarningsTextsToTemplates < ActiveRecord::Migration[7.0]
     end
 
     add_column :templates, :punishable_warning, :text, null: false, default: ""
-    add_column :templates, :documents_warning, :text, null: false, default: ""
 
     Template.find_each do |template|
       template.punishable_warning = if template.display_punishable_warning?
@@ -36,6 +35,5 @@ class AddWarningsTextsToTemplates < ActiveRecord::Migration[7.0]
     end
 
     remove_column :templates, :punishable_warning
-    remove_column :templates, :documents_warning
   end
 end

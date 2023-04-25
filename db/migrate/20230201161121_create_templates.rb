@@ -8,7 +8,8 @@ class CreateTemplates < ActiveRecord::Migration[7.0]
       "rdv_purpose" => "démarrer un parcours d'accompagnement",
       "applicant_designation" => "bénéficiaire du RSA",
       "rdv_subject" => "RSA",
-      "display_mandatory_warning" => true
+      "display_mandatory_warning" => true,
+      "display_punishable_warning" => false
     },
     "rsa_orientation_on_phone_platform" => {
       "model" => "phone_platform",
@@ -25,7 +26,7 @@ class CreateTemplates < ActiveRecord::Migration[7.0]
       "applicant_designation" => "bénéficiaire du RSA",
       "rdv_subject" => "RSA",
       "display_mandatory_warning" => true,
-      "punishable_warning" => "votre RSA pourra être suspendu ou réduit"
+      "display_punishable_warning" => true
     },
     "rsa_accompagnement_social" => {
       "model" => "standard",
@@ -35,7 +36,7 @@ class CreateTemplates < ActiveRecord::Migration[7.0]
       "applicant_designation" => "bénéficiaire du RSA",
       "rdv_subject" => "RSA",
       "display_mandatory_warning" => true,
-      "punishable_warning" => "votre RSA pourra être suspendu ou réduit"
+      "display_punishable_warning" => true
     },
     "rsa_accompagnement_sociopro" => {
       "model" => "standard",
@@ -45,7 +46,7 @@ class CreateTemplates < ActiveRecord::Migration[7.0]
       "applicant_designation" => "bénéficiaire du RSA",
       "rdv_subject" => "RSA",
       "display_mandatory_warning" => true,
-      "punishable_warning" => "votre RSA pourra être suspendu ou réduit"
+      "display_punishable_warning" => true
     },
     "rsa_follow_up" => {
       "model" => "standard",
@@ -54,7 +55,8 @@ class CreateTemplates < ActiveRecord::Migration[7.0]
       "rdv_purpose" => "faire un point avec votre référent de parcours",
       "applicant_designation" => "bénéficiaire du RSA",
       "rdv_subject" => "RSA",
-      "display_mandatory_warning" => false
+      "display_mandatory_warning" => false,
+      "display_punishable_warning" => false
     },
     "rsa_cer_signature" => {
       "model" => "standard",
@@ -63,7 +65,8 @@ class CreateTemplates < ActiveRecord::Migration[7.0]
       "rdv_purpose" => "construire et signer votre Contrat d'Engagement Réciproque",
       "applicant_designation" => "bénéficiaire du RSA",
       "rdv_subject" => "RSA",
-      "display_mandatory_warning" => true
+      "display_mandatory_warning" => true,
+      "display_punishable_warning" => false
     },
     "rsa_main_tendue" => {
       "model" => "standard",
@@ -72,7 +75,8 @@ class CreateTemplates < ActiveRecord::Migration[7.0]
       "rdv_purpose" => "faire le point sur votre situation",
       "applicant_designation" => "bénéficiaire du RSA",
       "rdv_subject" => "RSA",
-      "display_mandatory_warning" => true
+      "display_mandatory_warning" => true,
+      "display_punishable_warning" => false
     },
     "rsa_atelier_collectif_mandatory" => {
       "model" => "standard",
@@ -81,7 +85,8 @@ class CreateTemplates < ActiveRecord::Migration[7.0]
       "rdv_purpose" => "vous aider dans votre parcours d'insertion",
       "applicant_designation" => "bénéficiaire du RSA",
       "rdv_subject" => "RSA",
-      "display_mandatory_warning" => true
+      "display_mandatory_warning" => true,
+      "display_punishable_warning" => false
     },
     "rsa_spie" => {
       "model" => "standard",
@@ -91,7 +96,7 @@ class CreateTemplates < ActiveRecord::Migration[7.0]
       "applicant_designation" => "demandeur d'emploi",
       "rdv_subject" => "demande d'emploi",
       "display_mandatory_warning" => true,
-      "punishable_warning" => "votre RSA pourra être suspendu ou réduit"
+      "display_punishable_warning" => true
     },
     "rsa_integration_information" => {
       "model" => "standard",
@@ -100,7 +105,8 @@ class CreateTemplates < ActiveRecord::Migration[7.0]
       "applicant_designation" => "bénéficiaire du RSA",
       "rdv_subject" => "RSA",
       "rdv_purpose" => "vous renseigner sur vos droits et vos devoirs",
-      "display_mandatory_warning" => true
+      "display_mandatory_warning" => true,
+      "display_punishable_warning" => false
     },
     "rsa_insertion_offer" => {
       "model" => "atelier",

@@ -20,7 +20,12 @@ describe Notifications::GenerateLetter, type: :service do
   let!(:rdv) do
     create(:rdv, lieu: lieu, motif: motif, starts_at: Time.zone.parse("25/12/2022 09:30"), organisation: organisation)
   end
-  let!(:motif) { create(:motif, location_type: "public_office") }
+  let!(:motif) do
+    create(
+      :motif, location_type: "public_office",
+              instruction_for_rdv: "Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité."
+    )
+  end
   let!(:lieu) { create(:lieu, address: "12 Place Léon Blum, 75011 Paris", name: "Marie du 11eme") }
 
   let!(:messages_configuration) { create(:messages_configuration, direction_names: ["Direction départemental"]) }
@@ -50,9 +55,8 @@ describe Notifications::GenerateLetter, type: :service do
       expect(content).to include("Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité")
     end
 
-    context "when the template has no documents warning" do
-      let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_atelier_rencontres_pro) }
-      let!(:configuration) { create(:configuration, motif_category: category_rsa_atelier_rencontres_pro) }
+    context "when the motif has no documents warning" do
+      let!(:motif) { create(:motif, location_type: "public_office") }
 
       it "generates the matching content" do
         subject

@@ -1,7 +1,7 @@
 module Notifications
   module SmsContent
     delegate :rdv, :applicant, :rdv_title, :applicant_designation, :display_mandatory_warning,
-             :punishable_warning, :documents_warning, :rdv_subject,
+             :punishable_warning, :instruction_for_rdv, :rdv_subject,
              to: :notification
     delegate :formatted_start_date, :formatted_start_time, :lieu, :phone_number, to: :rdv
 
@@ -14,7 +14,7 @@ module Notifications
         "#{rdv_title}. Vous êtes #{applicant.conjugate('attendu')} le #{formatted_start_date} à " \
         "#{formatted_start_time} ici: #{lieu.full_name}. " \
         "#{mandatory_warning_message}" \
-        "#{documents_warning_message}" \
+        "#{instruction_for_rdv_message}" \
         "#{punishable_warning_message}" \
         "En cas d’empêchement, appelez rapidement le #{phone_number}."
     end
@@ -35,7 +35,7 @@ module Notifications
         "Vous êtes #{applicant.conjugate('attendu')} le #{formatted_start_date} à #{formatted_start_time}" \
         " ici: #{lieu.full_name}. " \
         "#{mandatory_warning_message}" \
-        "#{documents_warning_message}" \
+        "#{instruction_for_rdv_message}" \
         "#{punishable_warning_message}" \
         "En cas d’empêchement, appelez rapidement le #{phone_number}."
     end
@@ -56,7 +56,7 @@ module Notifications
         "#{rdv_title}. Vous êtes #{applicant.conjugate('attendu')} le #{formatted_start_date} à " \
         "#{formatted_start_time} ici: #{lieu.full_name}. " \
         "#{mandatory_warning_message}" \
-        "#{documents_warning_message}" \
+        "#{instruction_for_rdv_message}" \
         "#{punishable_warning_message}" \
         "En cas d’empêchement, appelez rapidement le #{phone_number}."
     end
@@ -91,8 +91,8 @@ module Notifications
       end
     end
 
-    def documents_warning_message
-      documents_warning.present? ? "#{documents_warning} " : ""
+    def instruction_for_rdv_message
+      instruction_for_rdv.present? ? "#{instruction_for_rdv} " : ""
     end
   end
 end

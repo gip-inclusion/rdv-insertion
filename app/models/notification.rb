@@ -13,7 +13,7 @@ class Notification < ApplicationRecord
 
   validates :format, :event, :rdv_solidarites_rdv_id, presence: true
 
-  delegate :applicant, :rdv, :motif_category, to: :participation
+  delegate :applicant, :rdv, :motif_category, :instruction_for_rdv, to: :participation
   delegate :department, to: :applicant
   delegate :template, to: :motif_category
   delegate :organisation, to: :rdv, allow_nil: true

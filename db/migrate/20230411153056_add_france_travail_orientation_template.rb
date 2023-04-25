@@ -10,7 +10,8 @@ class AddFranceTravailOrientationTemplate < ActiveRecord::Migration[7.0]
       custom_sentence: "Dans le cadre du projet 'France Travail', ce rendez-vous sera réalisé par deux professionnels" \
                        " de l’insertion (l’un de Pôle emploi, l’autre du Conseil départemental) et permettra de mieux" \
                        " comprendre votre situation afin de vous proposer un accompagnement adapté.",
-      display_mandatory_warning: true
+      display_mandatory_warning: true,
+      display_punishable_warning: false
     )
 
     # This context already exist on production

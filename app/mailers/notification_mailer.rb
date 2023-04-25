@@ -3,7 +3,7 @@ class NotificationMailerError < StandardError; end
 class NotificationMailer < ApplicationMailer
   before_action :set_notification, :set_applicant, :set_rdv, :set_department, :set_rdv_subject,
                 :set_signature_lines, :set_rdv_title, :set_applicant_designation,
-                :set_display_mandatory_warning, :set_punishable_warning, :set_documents_warning,
+                :set_display_mandatory_warning, :set_punishable_warning, :set_instruction_for_rdv,
                 :set_rdv_purpose, :set_logo_path, :verify_phone_number_presence
 
   ### participation_created ###
@@ -106,8 +106,8 @@ class NotificationMailer < ApplicationMailer
     @punishable_warning = @notification.punishable_warning
   end
 
-  def set_documents_warning
-    @documents_warning = @notification.documents_warning
+  def set_instruction_for_rdv
+    @instruction_for_rdv = @notification.instruction_for_rdv
   end
 
   def set_rdv_purpose

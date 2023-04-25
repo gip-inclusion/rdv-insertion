@@ -13,8 +13,7 @@ module MotifCategoriesHelper
           rdv_purpose: "démarrer un parcours d'accompagnement",
           applicant_designation: "bénéficiaire du RSA",
           rdv_subject: "RSA",
-          display_mandatory_warning: true,
-          documents_warning: "Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité."
+          display_mandatory_warning: true
         )
       )
     end
@@ -30,8 +29,7 @@ module MotifCategoriesHelper
           rdv_purpose: "démarrer un parcours d'accompagnement",
           applicant_designation: "bénéficiaire du RSA",
           rdv_subject: "RSA",
-          display_mandatory_warning: true,
-          documents_warning: "Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité."
+          display_mandatory_warning: true
         )
       )
     end
@@ -47,8 +45,7 @@ module MotifCategoriesHelper
           rdv_purpose: "démarrer un parcours d'accompagnement",
           applicant_designation: "bénéficiaire du RSA",
           rdv_subject: "RSA",
-          display_mandatory_warning: true,
-          documents_warning: "Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité."
+          display_mandatory_warning: true
         )
       )
     end
@@ -66,8 +63,7 @@ module MotifCategoriesHelper
           applicant_designation: "bénéficiaire du RSA",
           rdv_subject: "RSA",
           display_mandatory_warning: true,
-          punishable_warning: "votre RSA pourra être suspendu ou réduit",
-          documents_warning: "Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité."
+          punishable_warning: "votre RSA pourra être suspendu ou réduit"
         )
       )
     end
@@ -85,8 +81,7 @@ module MotifCategoriesHelper
           applicant_designation: "bénéficiaire du RSA",
           rdv_subject: "RSA",
           display_mandatory_warning: true,
-          punishable_warning: "votre RSA pourra être suspendu ou réduit",
-          documents_warning: "Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité."
+          punishable_warning: "votre RSA pourra être suspendu ou réduit"
         )
       )
     end
@@ -104,8 +99,7 @@ module MotifCategoriesHelper
           applicant_designation: "bénéficiaire du RSA",
           rdv_subject: "RSA",
           display_mandatory_warning: true,
-          punishable_warning: "votre RSA pourra être suspendu ou réduit",
-          documents_warning: "Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité."
+          punishable_warning: "votre RSA pourra être suspendu ou réduit"
         )
       )
     end

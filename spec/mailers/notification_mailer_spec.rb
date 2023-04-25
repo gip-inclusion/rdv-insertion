@@ -4,10 +4,16 @@ RSpec.describe NotificationMailer do
   let!(:notification) { create(:notification, participation: participation) }
   let!(:participation) { create(:participation, applicant: applicant, rdv: rdv, rdv_context: rdv_context) }
   let!(:applicant) { create(:applicant, email: "someone@gmail.com", title: "monsieur", phone_number: "0607070707") }
+  let!(:motif) do
+    create(
+      :motif, location_type: "public_office",
+              instruction_for_rdv: "Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité."
+    )
+  end
   let!(:rdv) do
     create(
-      :rdv,
-      lieu: lieu, starts_at: Time.zone.parse("20/12/2021 12:00"), organisation: organisation
+      :rdv, motif: motif, lieu: lieu,
+            starts_at: Time.zone.parse("20/12/2021 12:00"), organisation: organisation
     )
   end
   let!(:organisation) { create(:organisation, messages_configuration: messages_configuration) }
@@ -165,7 +171,7 @@ RSpec.describe NotificationMailer do
         expect(body_string).to include("DINUM")
         expect(body_string).to include("20 avenue de ségur 75007 Paris")
         expect(body_string).to include("Ce RDV est obligatoire")
-        expect(body_string).not_to include("Merci de venir au RDV avec un justificatif de domicile")
+        expect(body_string).to include("Merci de venir au RDV avec un justificatif de domicile")
         expect(body_string).not_to include(
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
         )
@@ -191,7 +197,7 @@ RSpec.describe NotificationMailer do
         expect(body_string).to include("DINUM")
         expect(body_string).to include("20 avenue de ségur 75007 Paris")
         expect(body_string).not_to include("Ce RDV est obligatoire")
-        expect(body_string).not_to include("Merci de venir au RDV avec un justificatif de domicile")
+        expect(body_string).to include("Merci de venir au RDV avec un justificatif de domicile")
         expect(body_string).not_to include(
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
         )
@@ -330,7 +336,7 @@ RSpec.describe NotificationMailer do
         expect(body_string).to include("DINUM")
         expect(body_string).to include("20 avenue de ségur 75007 Paris")
         expect(body_string).to include("Ce RDV est obligatoire")
-        expect(body_string).not_to include("Merci de venir au RDV avec un justificatif de domicile")
+        expect(body_string).to include("Merci de venir au RDV avec un justificatif de domicile")
         expect(body_string).not_to include(
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
         )
@@ -355,7 +361,7 @@ RSpec.describe NotificationMailer do
         expect(body_string).to include("DINUM")
         expect(body_string).to include("20 avenue de ségur 75007 Paris")
         expect(body_string).not_to include("Ce RDV est obligatoire")
-        expect(body_string).not_to include("Merci de venir au RDV avec un justificatif de domicile")
+        expect(body_string).to include("Merci de venir au RDV avec un justificatif de domicile")
         expect(body_string).not_to include(
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
         )
