@@ -40,7 +40,7 @@ module Applicants
       return if @attributes[:email].blank?
 
       Applicant.where(email: @attributes[:email]).find do |applicant|
-        applicant.first_name.downcase == @attributes[:first_name].downcase
+        applicant.first_name.split.first.downcase == @attributes[:first_name].split.first.downcase
       end
     end
 
@@ -48,7 +48,7 @@ module Applicants
       return if format_phone_number(@attributes[:phone_number]).blank?
 
       Applicant.where(phone_number: format_phone_number(@attributes[:phone_number])).find do |applicant|
-        applicant.first_name.downcase == @attributes[:first_name].downcase
+        applicant.first_name.split.first.downcase == @attributes[:first_name].split.first.downcase
       end
     end
 

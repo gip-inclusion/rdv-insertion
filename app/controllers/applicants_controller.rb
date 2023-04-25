@@ -48,10 +48,10 @@ class ApplicantsController < ApplicationController
   end
 
   def create
+    authorize @organisation, :add_applicant?
     @applicant = find_or_initialize_applicant.applicant
     # TODO: if an applicant exists, return it to the agent to let him decide what to do
     @applicant.assign_attributes(**applicant_params.compact_blank)
-    authorize @applicant
     respond_to do |format|
       format.html { save_applicant_and_redirect(:new) }
       format.json { save_applicant_and_render }

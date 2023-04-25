@@ -3,20 +3,8 @@ class ApplicantPolicy < ApplicationPolicy
     true
   end
 
-  def create?
-    true
-  end
-
   def show?
     pundit_user.organisation_ids.intersect?(record.organisation_ids) && !record.deleted?
-  end
-
-  def search?
-    show?
-  end
-
-  def invite?
-    show?
   end
 
   def update?

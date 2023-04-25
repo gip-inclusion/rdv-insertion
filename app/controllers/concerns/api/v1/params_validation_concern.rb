@@ -25,13 +25,15 @@ module Api
 
       def validate_applicants_attributes
         applicants_attributes.each_with_index do |applicant_attributes, idx|
-          validator = ApplicantParamsValidator.new(applicant_attributes.except(:invitation))
-          next if validator.valid?
+          applicant = Applicant.new(applicant_attributes.except(:invitation))
+          applicant.skip_uniqueness_validations = true
+
+          next if applicant.valid?
 
           department_internal_id = applicant_attributes[:department_internal_id]
           key = "Entrée #{idx + 1}" + (department_internal_id.present? ? " - #{department_internal_id}" : "")
 
-          @params_validation_errors << { "#{key}": validator.errors }
+          @params_validation_errors << { "#{key}": applicant.errors }
         end
       end
 
@@ -46,19 +48,6 @@ module Api
 
           @params_validation_errors << { "Entrée #{idx + 1}": "Catégorie de motifs #{motif_category_name} invalide" }
         end
-      end
-
-      class ApplicantParamsValidator
-        include ActiveModel::Model
-        include PhoneNumberValidation
-        validate :phone_number_is_mobile
-
-        attr_accessor(*Applicant.attribute_names)
-
-        validates_presence_of :first_name, :last_name, :title
-        validates :email, allow_blank: true, format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/ }
-        validates :role, inclusion: { in: %w[demandeur conjoint] }, allow_nil: true
-        validates :title, inclusion: { in: %w[monsieur madame] }
       end
     end
   end
