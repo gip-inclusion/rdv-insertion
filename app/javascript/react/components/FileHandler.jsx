@@ -36,7 +36,7 @@ export default function FileHandler({
       <div className="file-input-div">
         <input
           type="file"
-          id="applicants-file-upload"
+          name="file-upload"
           className="text-white"
           accept={accept}
           onChange={handleUploads}
