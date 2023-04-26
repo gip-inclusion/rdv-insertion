@@ -1,6 +1,6 @@
 module Notifications
   module SmsContent
-    delegate :rdv, :applicant, :rdv_title, :applicant_designation, :display_mandatory_warning,
+    delegate :rdv, :applicant, :rdv_title, :applicant_designation, :mandatory_warning,
              :punishable_warning, :instruction_for_rdv, :rdv_subject,
              to: :notification
     delegate :formatted_start_date, :formatted_start_time, :lieu, :phone_number, to: :rdv
@@ -25,6 +25,7 @@ module Notifications
         "#{rdv_title}. Un travailleur social vous appellera le #{formatted_start_date}" \
         " à partir de #{formatted_start_time} sur ce numéro. " \
         "#{mandatory_warning_message}" \
+        "#{instruction_for_rdv_message}" \
         "#{punishable_warning_message}" \
         "En cas d’empêchement, appelez rapidement le #{phone_number}."
     end
@@ -45,6 +46,7 @@ module Notifications
         "Un travailleur social vous appellera le #{formatted_start_date}" \
         " à partir de #{formatted_start_time} sur ce numéro. " \
         "#{mandatory_warning_message}" \
+        "#{instruction_for_rdv_message}" \
         "#{punishable_warning_message}" \
         "En cas d’empêchement, appelez rapidement le #{phone_number}."
     end
@@ -67,6 +69,7 @@ module Notifications
         "#{rdv_title}. Un travailleur social vous appellera le #{formatted_start_date}" \
         " à partir de #{formatted_start_time} sur ce numéro. " \
         "#{mandatory_warning_message}" \
+        "#{instruction_for_rdv_message}" \
         "#{punishable_warning_message}" \
         "En cas d’empêchement, appelez rapidement le #{phone_number}."
     end
@@ -80,7 +83,7 @@ module Notifications
     ###
 
     def mandatory_warning_message
-      display_mandatory_warning ? "#{::Template::MANDATORY_WARNING} " : ""
+      mandatory_warning ? "#{mandatory_warning} " : ""
     end
 
     def punishable_warning_message

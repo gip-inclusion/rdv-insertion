@@ -7,7 +7,7 @@ class AddWarningsTextsToTemplates < ActiveRecord::Migration[7.0]
       elsif template.display_mandatory_warning.nil?
         template.display_mandatory_warning = false
       end
-      template.save!(validate: false)
+      template.save!
     end
 
     add_column :templates, :punishable_warning, :text, null: false, default: ""
@@ -16,7 +16,7 @@ class AddWarningsTextsToTemplates < ActiveRecord::Migration[7.0]
       template.punishable_warning = if template.display_punishable_warning?
                                       "votre RSA pourra être suspendu ou réduit"
                                     else
-                                      false
+                                      ""
                                     end
       template.save!
     end

@@ -5,7 +5,7 @@ module Invitations
     include Rails.application.routes.url_helpers
 
     delegate :applicant, :help_phone_number, :number_of_days_before_expiration,
-             :rdv_purpose, :rdv_title, :applicant_designation, :display_mandatory_warning, :punishable_warning,
+             :rdv_purpose, :rdv_title, :applicant_designation, :mandatory_warning, :punishable_warning,
              to: :invitation
 
     private
@@ -34,7 +34,7 @@ module Invitations
       "#{applicant.full_name},\nVous êtes #{applicant_designation} et vous devez contacter la plateforme " \
         "départementale afin de #{rdv_purpose}. Pour cela, merci d'appeler le " \
         "#{help_phone_number} dans un délai de #{Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER} jours. " \
-        "#{mandatory_phone_call_warning_message}" \
+        "#{mandatory_warning_message}" \
         "#{punishable_warning_message}"
     end
 
@@ -85,7 +85,7 @@ module Invitations
         "invitant à contacter la plateforme départementale afin de #{rdv_purpose}. " \
         "Vous n'avez plus que #{number_of_days_before_expiration} jours pour appeler le " \
         "#{help_phone_number}. " \
-        "#{mandatory_phone_call_warning_message}" \
+        "#{mandatory_warning_message}" \
         "#{punishable_warning_message}"
     end
 
@@ -103,11 +103,7 @@ module Invitations
     ###
 
     def mandatory_warning_message
-      display_mandatory_warning ? "#{::Template::MANDATORY_WARNING} " : ""
-    end
-
-    def mandatory_phone_call_warning_message
-      display_mandatory_warning ? "#{::Template::MANDATORY_PHONE_CALL_WARNING} " : ""
+      mandatory_warning ? "#{mandatory_warning} " : ""
     end
 
     def punishable_warning_message

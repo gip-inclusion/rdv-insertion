@@ -66,16 +66,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_25_121956) do
     t.date "birth_date"
     t.date "rights_opening_date"
     t.string "birth_name"
+    t.bigint "department_id"
     t.string "archiving_reason"
     t.datetime "deleted_at"
     t.datetime "last_webhook_update_received_at"
     t.datetime "archived_at"
     t.string "nir"
     t.string "pole_emploi_id"
-    t.bigint "department_id"
     t.index ["department_id"], name: "index_applicants_on_department_id"
+    t.index ["department_internal_id", "department_id"], name: "index_applicants_on_department_internal_id_and_department_id", unique: true
     t.index ["rdv_solidarites_user_id"], name: "index_applicants_on_rdv_solidarites_user_id", unique: true
-    t.index ["uid"], name: "index_applicants_on_uid"
+    t.index ["uid"], name: "index_applicants_on_uid", unique: true
   end
 
   create_table "applicants_organisations", id: false, force: :cascade do |t|

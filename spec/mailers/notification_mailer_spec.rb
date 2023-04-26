@@ -401,7 +401,7 @@ RSpec.describe NotificationMailer do
         expect(body_string).to include("sur votre numéro de téléphone:")
         expect(body_string).to include("+33607070707")
         expect(body_string).not_to include("20 avenue de ségur 75007 Paris")
-        expect(body_string).not_to include("Merci de venir au RDV avec un justificatif de domicile")
+        expect(body_string).to include("Merci de venir au RDV avec un justificatif de domicile")
         expect(body_string).to include("Ce RDV est obligatoire")
         expect(body_string).not_to include(
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
@@ -429,7 +429,7 @@ RSpec.describe NotificationMailer do
         expect(body_string).to include("sur votre numéro de téléphone:")
         expect(body_string).to include("+33607070707")
         expect(body_string).not_to include("20 avenue de ségur 75007 Paris")
-        expect(body_string).not_to include("Merci de venir au RDV avec un justificatif de domicile")
+        expect(body_string).to include("Merci de venir au RDV avec un justificatif de domicile")
         expect(body_string).to include("Ce RDV est obligatoire")
         expect(body_string).to include(
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
@@ -457,7 +457,7 @@ RSpec.describe NotificationMailer do
         expect(body_string).to include("sur votre numéro de téléphone:")
         expect(body_string).to include("+33607070707")
         expect(body_string).not_to include("20 avenue de ségur 75007 Paris")
-        expect(body_string).not_to include("Merci de venir au RDV avec un justificatif de domicile")
+        expect(body_string).to include("Merci de venir au RDV avec un justificatif de domicile")
         expect(body_string).to include("Ce RDV est obligatoire")
         expect(body_string).to include(
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
@@ -485,7 +485,7 @@ RSpec.describe NotificationMailer do
         expect(body_string).to include("sur votre numéro de téléphone:")
         expect(body_string).to include("+33607070707")
         expect(body_string).not_to include("20 avenue de ségur 75007 Paris")
-        expect(body_string).not_to include("Merci de venir au RDV avec un justificatif de domicile")
+        expect(body_string).to include("Merci de venir au RDV avec un justificatif de domicile")
         expect(body_string).to include("Ce RDV est obligatoire")
         expect(body_string).to include(
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
@@ -513,7 +513,7 @@ RSpec.describe NotificationMailer do
         expect(body_string).to include("sur votre numéro de téléphone:")
         expect(body_string).to include("+33607070707")
         expect(body_string).not_to include("20 avenue de ségur 75007 Paris")
-        expect(body_string).not_to include("Merci de venir au RDV avec un justificatif de domicile")
+        expect(body_string).to include("Merci de venir au RDV avec un justificatif de domicile")
         expect(body_string).to include("Ce RDV est obligatoire")
         expect(body_string).not_to include(
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
@@ -541,7 +541,7 @@ RSpec.describe NotificationMailer do
         expect(body_string).to include("sur votre numéro de téléphone:")
         expect(body_string).to include("+33607070707")
         expect(body_string).not_to include("20 avenue de ségur 75007 Paris")
-        expect(body_string).not_to include("Merci de venir au RDV avec un justificatif de domicile")
+        expect(body_string).to include("Merci de venir au RDV avec un justificatif de domicile")
         expect(body_string).not_to include("Ce RDV est obligatoire")
         expect(body_string).not_to include(
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
@@ -592,7 +592,7 @@ RSpec.describe NotificationMailer do
         expect(body_string).to include("sur votre numéro de téléphone:")
         expect(body_string).to include("+33607070707")
         expect(body_string).not_to include("20 avenue de ségur 75007 Paris")
-        expect(body_string).not_to include("Merci de venir au RDV avec un justificatif de domicile")
+        expect(body_string).to include("Merci de venir au RDV avec un justificatif de domicile")
         expect(body_string).to include("Ce RDV est obligatoire")
         expect(body_string).not_to include(
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
@@ -619,7 +619,7 @@ RSpec.describe NotificationMailer do
         expect(body_string).to include("sur votre numéro de téléphone:")
         expect(body_string).to include("+33607070707")
         expect(body_string).not_to include("20 avenue de ségur 75007 Paris")
-        expect(body_string).not_to include("Merci de venir au RDV avec un justificatif de domicile")
+        expect(body_string).to include("Merci de venir au RDV avec un justificatif de domicile")
         expect(body_string).to include("Ce RDV est obligatoire")
         expect(body_string).to include(
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
@@ -646,7 +646,7 @@ RSpec.describe NotificationMailer do
         expect(body_string).to include("sur votre numéro de téléphone:")
         expect(body_string).to include("+33607070707")
         expect(body_string).not_to include("20 avenue de ségur 75007 Paris")
-        expect(body_string).not_to include("Merci de venir au RDV avec un justificatif de domicile")
+        expect(body_string).to include("Merci de venir au RDV avec un justificatif de domicile")
         expect(body_string).to include("Ce RDV est obligatoire")
         expect(body_string).to include(
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
@@ -673,7 +673,7 @@ RSpec.describe NotificationMailer do
         expect(body_string).to include("sur votre numéro de téléphone:")
         expect(body_string).to include("+33607070707")
         expect(body_string).not_to include("20 avenue de ségur 75007 Paris")
-        expect(body_string).not_to include("Merci de venir au RDV avec un justificatif de domicile")
+        expect(body_string).to include("Merci de venir au RDV avec un justificatif de domicile")
         expect(body_string).to include("Ce RDV est obligatoire")
         expect(body_string).to include(
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
@@ -701,7 +701,7 @@ RSpec.describe NotificationMailer do
         expect(body_string).to include("sur votre numéro de téléphone:")
         expect(body_string).to include("+33607070707")
         expect(body_string).not_to include("20 avenue de ségur 75007 Paris")
-        expect(body_string).not_to include("Merci de venir au RDV avec un justificatif de domicile")
+        expect(body_string).to include("Merci de venir au RDV avec un justificatif de domicile")
         expect(body_string).to include("Ce RDV est obligatoire")
         expect(body_string).not_to include(
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
@@ -729,7 +729,7 @@ RSpec.describe NotificationMailer do
         expect(body_string).to include("sur votre numéro de téléphone:")
         expect(body_string).to include("+33607070707")
         expect(body_string).not_to include("20 avenue de ségur 75007 Paris")
-        expect(body_string).not_to include("Merci de venir au RDV avec un justificatif de domicile")
+        expect(body_string).to include("Merci de venir au RDV avec un justificatif de domicile")
         expect(body_string).not_to include("Ce RDV est obligatoire")
         expect(body_string).not_to include(
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
@@ -955,7 +955,7 @@ RSpec.describe NotificationMailer do
         expect(body_string).to include("+33607070707")
         expect(body_string).not_to include("20 avenue de ségur 75007 Paris")
         expect(body_string).to include("Ce RDV est obligatoire")
-        expect(body_string).not_to include("Merci de venir au RDV avec un justificatif de domicile")
+        expect(body_string).to include("Merci de venir au RDV avec un justificatif de domicile")
         expect(body_string).not_to include(
           "En cas d'absence, votre RSA pourra être suspendu ou réduit."
         )

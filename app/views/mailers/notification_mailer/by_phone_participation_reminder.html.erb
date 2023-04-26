@@ -1,7 +1,8 @@
 <h1>Bonjour <%= "#{@applicant.first_name} #{@applicant.last_name.upcase}" %>,</h1>
 <p>Vous êtes <%= @applicant_designation %> et à ce titre vous avez été <%= @applicant.conjugate("convoqué") %> à un <%= @rdv_title %> afin de <%= @rdv_purpose %>.</p>
 <p>Nous vous rappelons qu'un travailleur social vous appellera <span class="font-weight-bold">le <%= @rdv.formatted_start_date %> à <%= @rdv.formatted_start_time %></span> sur votre numéro de téléphone: <span class="font-weight-bold"><%= @applicant.phone_number_formatted %></span>.</p>
-<%= tag.p tag.strong(::Template::MANDATORY_WARNING) if @display_mandatory_warning %>
+<%= tag.p tag.strong(@mandatory_warning) if @mandatory_warning %>
+<%= tag.p tag.strong(@instruction_for_rdv, class: "bold-blue") if @instruction_for_rdv.present? %>
 <%= tag.p tag.strong("En cas d'absence, #{@punishable_warning}.") if @punishable_warning.present? %>
 <p>En cas d'empêchement, merci d'appeler rapidement le <%= @rdv.phone_number %>.</p>
 <%= render 'common/organisation_signature', signature_lines: @signature_lines, department: @department %>

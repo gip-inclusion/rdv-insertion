@@ -9,8 +9,6 @@ class Motif < ApplicationRecord
   belongs_to :organisation
   belongs_to :motif_category, optional: true
   has_many :rdvs, dependent: :nullify
-  # has_many :participations, through: :rdvs
-  # has_many :notifications, through: :participations
 
   validates :rdv_solidarites_motif_id, uniqueness: true, presence: true
   validates :name, :location_type, presence: true

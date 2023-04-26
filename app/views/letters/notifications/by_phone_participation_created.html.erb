@@ -11,7 +11,8 @@
   <p><%= applicant.title.capitalize %>,</p>
   <p>Vous êtes <%= applicant_designation %> et à ce titre <span class="bold-blue">vous êtes <%= applicant.conjugate("convoqué") %> à un <%= rdv_title %></span> afin de <%= rdv_purpose %>.</p>
   <p>Un travailleur social vous appellera <span class="bold-blue">le <%= I18n.l(rdv.starts_at, format: :human) %></span> sur votre numéro de téléphone: <span class="bold-blue"><%= applicant.phone_number_formatted %></span>.</p>
-  <%= tag.p tag.span(::Template::MANDATORY_WARNING, class: "bold-blue") if display_mandatory_warning %>
+  <%= tag.p tag.span(mandatory_warning, class: "bold-blue") if mandatory_warning %>
+  <%= tag.p tag.span(instruction_for_rdv, class: "bold-blue") if instruction_for_rdv.present? %>
   <%= tag.p tag.span("En cas d'absence, #{punishable_warning}.", class: "bold-blue") if punishable_warning.present? %>
   <p>En cas d'empêchement, merci d'appeler rapidement le <%= rdv.phone_number %>.</p>
   <%= render "letters/salutation", applicant: applicant %>
