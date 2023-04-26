@@ -19,6 +19,7 @@ module Notificable
 
   def convocations
     # we assume a convocation is a notification of a created participation
+    # since we only send notifications for convocation motifs for now
     notifications.select(&:participation_created?)
   end
 

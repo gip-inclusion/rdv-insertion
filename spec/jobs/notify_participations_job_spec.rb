@@ -54,5 +54,51 @@ describe NotifyParticipationsJob do
         subject
       end
     end
+
+    context "when reminder" do
+      let!(:event_to_notify) { "reminder" }
+
+      it "enqueues notification jobs for each applicants and each format" do
+        expect(NotifyParticipationJob).to receive(:perform_async)
+          .with(participation1.id, "sms", "participation_reminder")
+        expect(NotifyParticipationJob).to receive(:perform_async)
+          .with(participation1.id, "email", "participation_reminder")
+        expect(NotifyParticipationJob).to receive(:perform_async)
+          .with(participation2.id, "sms", "participation_reminder")
+        expect(NotifyParticipationJob).to receive(:perform_async)
+          .with(participation2.id, "email", "participation_reminder")
+        subject
+      end
+
+      context "when phone number is not mobile" do
+        before { applicant1.update!(phone_number: "0101010101") }
+
+        it "does not enqueue a notification by sms job" do
+          expect(NotifyParticipationJob).not_to receive(:perform_async)
+            .with(participation1.id, "sms", "participation_reminder")
+          subject
+        end
+      end
+
+      context "when the phone number is blank" do
+        before { applicant1.update!(phone_number: nil) }
+
+        it "does not enqueue a notification by sms job" do
+          expect(NotifyParticipationJob).not_to receive(:perform_async)
+            .with(participation1.id, "sms", "participation_reminder")
+          subject
+        end
+      end
+
+      context "when there is no email" do
+        before { applicant1.update!(email: nil) }
+
+        it "does not enqueue a notification by email job" do
+          expect(NotifyParticipationJob).not_to receive(:perform_async)
+            .with(participation1.id, "email", "participation_reminder")
+          subject
+        end
+      end
+    end
   end
 end
