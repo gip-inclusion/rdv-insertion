@@ -9,7 +9,7 @@ module Applicant::Nir
   private
 
   def add_nir_key
-    self.nir = "#{nir}#{nir_key}" if nir.length == 13
+    self.nir = "#{nir}#{nir_key}" if nir&.length == 13
   end
 
   def nir_is_valid
