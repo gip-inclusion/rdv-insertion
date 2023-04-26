@@ -22,10 +22,13 @@ module Api
       private
 
       def applicants_attributes
-        create_and_invite_params.to_h.deep_symbolize_keys[:applicants]
+        create_and_invite_params.to_h.deep_symbolize_keys[:applicants].map do |applicant_attributes|
+          applicant_attributes[:invitation] ||= {}
+          applicant_attributes
+        end
       end
 
-      def invitations_params
+      def invitations_attributes
         applicants_attributes.pluck(:invitation)
       end
 

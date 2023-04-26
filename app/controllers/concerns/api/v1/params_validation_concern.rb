@@ -14,7 +14,7 @@ module Api
 
         validate_applicants_length
         validate_applicants_attributes
-        validate_invitations_params
+        validate_invitations_attributes
       end
 
       def validate_applicants_length
@@ -35,16 +35,27 @@ module Api
         end
       end
 
-      def validate_invitations_params
+      def validate_invitations_attributes
         possible_motif_category_names = @organisation.configurations.map(&:motif_category_name)
 
-        invitations_params.each_with_index do |invitation_params, idx|
+        invitations_attributes.each_with_index do |invitation_params, idx|
           motif_category_name = invitation_params[:motif_category_name]
-          # we don't have to precise the context if there is only one context possible
-          next if (motif_category_name.blank? && possible_motif_category_names.length == 1) ||
-                  motif_category_name.in?(possible_motif_category_names)
 
-          @params_validation_errors << { "Entrée #{idx + 1}": "Catégorie de motifs #{motif_category_name} invalide" }
+          if motif_category_name.blank?
+            # we don't have to precise the context if there is only one context possible
+            next if possible_motif_category_names.length == 1
+
+            @params_validation_errors << {
+              "Entrée #{idx + 1}": { "motif_category_name" => ["La catégorie de motifs doit être précisée"] }
+            }
+            next
+          end
+
+          next if motif_category_name.in?(possible_motif_category_names)
+
+          @params_validation_errors << {
+            "Entrée #{idx + 1}": { "motif_category_name" => ["Catégorie de motifs #{motif_category_name} invalide"] }
+          }
         end
       end
 

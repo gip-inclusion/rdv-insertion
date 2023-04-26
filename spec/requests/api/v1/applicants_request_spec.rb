@@ -169,6 +169,43 @@ describe "Applicants API" do
       end
     end
 
+    context "with no invitation attributes" do
+      before { applicant1_params.delete(:invitation) }
+
+      it "is a success" do
+        expect(CreateAndInviteApplicantJob).to receive(:perform_async)
+          .with(
+            organisation.id,
+            applicant1_params,
+            {},
+            session_hash(agent.email)
+          )
+        subject
+        expect(response).to have_http_status(:ok)
+        result = response.parsed_body
+        expect(result["success"]).to eq(true)
+      end
+
+      context "when there is more than one motif category" do
+        let!(:new_configuration) do
+          create(
+            :configuration,
+            motif_category: create(:motif_category, name: "RSA accompagnement"),
+            organisations: [organisation]
+          )
+        end
+
+        it "returns 422" do
+          subject
+          expect(response).to have_http_status(:unprocessable_entity)
+          result = response.parsed_body
+          expect(result["errors"]).to include(
+            { "Entrée 1" => { "motif_category_name" => ["La catégorie de motifs doit être précisée"] } }
+          )
+        end
+      end
+    end
+
     context "when params are invalid" do
       context "with invalid applicants attributes" do
         before do
@@ -217,7 +254,9 @@ describe "Applicants API" do
           subject
           expect(response).to have_http_status(:unprocessable_entity)
           result = response.parsed_body
-          expect(result["errors"]).to include({ "Entrée 1" => "Catégorie de motifs RSA accompagnement invalide" })
+          expect(result["errors"]).to include(
+            { "Entrée 1" => { "motif_category_name" => ["Catégorie de motifs RSA accompagnement invalide"] } }
+          )
         end
 
         it "does not enqueue jobs" do
