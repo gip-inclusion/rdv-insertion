@@ -2,23 +2,23 @@ module Applicant::Nir
   extend ActiveSupport::Concern
 
   included do
+    before_validation :add_nir_key, if: :nir?
     validate :nir_is_valid, if: :nir?
-    after_validation :add_nir_key
   end
 
   private
 
   def add_nir_key
-    self.nir = "#{nir}#{nir_key}" if nir&.length == 13
+    return unless nir.length == 13
+
+    self.nir = "#{nir}#{nir_key}"
   end
 
   def nir_is_valid
-    unless (nir.length == 13 || nir.length == 15) && nir.match?(/\A\d+\Z/)
+    if nir.length != 15 || nir !~ /\A\d+\Z/
       errors.add(:nir, :invalid, message: "Le NIR doit être une série de 13 ou 15 chiffres")
       return
     end
-
-    return unless nir.length == 15
 
     return if nir_sum_checked?
 
