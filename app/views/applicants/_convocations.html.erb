@@ -4,9 +4,7 @@
 <% if email_convocations.any? %>
   <div>Email 📧</div>
 <% end %>
-<% if !applicant.address_valid? %>
-  <span data-controller="tooltip" data-action="mouseover->tooltip#invalidAddress"><i class="fas fa-file-pdf"></i> Courrier</span>
-<% elsif participation.in_the_future? || participation.revoked? %>
+<% if participation.in_the_future? || participation.revoked? %>
   <%= simple_form_for(:notification, url: participation_notifications_path(participation, format: "pdf"), html: { method: :post }) do |f| %>
     <%= f.input :format,
                 as: :hidden,
@@ -21,12 +19,3 @@
     <% end  %>
   <% end %>
 <% end %>
-
-
-<div id="errorModal" class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-sm">
-    <div class="modal-content">
-      ...
-    </div>
-  </div>
-</div>

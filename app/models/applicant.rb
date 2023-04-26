@@ -69,10 +69,6 @@ class Applicant < ApplicationRecord
     split_address.present? ? split_address[2].strip : nil
   end
 
-  def address_valid?
-    street_address.present? && zipcode_and_city.present?
-  end
-
   def organisations_with_rdvs
     organisations.where(id: rdvs.pluck(:organisation_id))
   end
