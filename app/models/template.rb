@@ -1,7 +1,4 @@
 class Template < ApplicationRecord
-  MANDATORY_WARNING = "Ce RDV est obligatoire.".freeze
-  MANDATORY_PHONE_CALL_WARNING = "Cet appel est obligatoire pour le traitement de votre dossier.".freeze
-
   has_many :motif_categories, dependent: :nullify
 
   validates :model, presence: true
@@ -14,9 +11,9 @@ class Template < ApplicationRecord
 
   def mandatory_warning
     if display_mandatory_warning && model.include?("phone_platform")
-      MANDATORY_PHONE_CALL_WARNING
+      "Cet appel est obligatoire pour le traitement de votre dossier."
     elsif display_mandatory_warning
-      MANDATORY_WARNING
+      "Ce RDV est obligatoire."
     end
   end
 end
