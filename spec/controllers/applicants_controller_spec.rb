@@ -20,7 +20,7 @@ describe ApplicantsController do
   end
   let!(:agent) { create(:agent, basic_role_in_organisations: [organisation]) }
   let!(:rdv_solidarites_organisation_id) { 888 }
-  let(:applicant) { create(:applicant, organisations: [organisation], department: department) }
+  let(:applicant) { create(:applicant, organisations: [organisation]) }
 
   describe "#new" do
     let!(:new_params) { { organisation_id: organisation.id } }
@@ -150,7 +150,7 @@ describe ApplicantsController do
       end
 
       context "when the creation succeeds" do
-        let!(:applicant) { create(:applicant, organisations: [organisation], department: department) }
+        let!(:applicant) { create(:applicant, organisations: [organisation]) }
 
         before do
           allow(Applicants::Save).to receive(:call)
@@ -193,49 +193,10 @@ describe ApplicantsController do
     end
   end
 
-  describe "#search" do
-    let!(:search_params) { { applicants: { department_internal_ids: %w[331 552], uids: ["23"] }, format: "json" } }
-    let!(:applicant) { create(:applicant, organisations: [organisation], email: "borisjohnson@gov.uk") }
-
-    before do
-      applicant.update_columns(uid: "23") # used to skip callbacks and computation of uid
-      sign_in(agent)
-    end
-
-    context "policy scope" do
-      let!(:another_organisation) { create(:organisation) }
-      let!(:agent) { create(:agent, organisations: [another_organisation]) }
-      let!(:another_applicant) { create(:applicant, organisations: [another_organisation]) }
-      let!(:search_params) do
-        { applicants: { department_internal_ids: %w[331 552], uids: %w[23 0332] }, format: "json" }
-      end
-
-      before { another_applicant.update_columns(uid: "0332") }
-
-      it "returns the policy scoped applicants" do
-        post :search, params: search_params
-        expect(response).to be_successful
-        expect(response.parsed_body["applicants"].pluck("id")).to contain_exactly(another_applicant.id)
-      end
-    end
-
-    it "is a success" do
-      post :search, params: search_params
-      expect(response).to be_successful
-      expect(response.parsed_body["success"]).to eq(true)
-    end
-
-    it "renders the applicants" do
-      post :search, params: search_params
-      expect(response).to be_successful
-      expect(response.parsed_body["applicants"].pluck("id")).to contain_exactly(applicant.id)
-    end
-  end
-
   describe "#show" do
     let!(:applicant) do
       create(
-        :applicant, first_name: "Andreas", last_name: "Kopke", organisations: [organisation], department: department
+        :applicant, first_name: "Andreas", last_name: "Kopke", organisations: [organisation]
       )
     end
     let!(:show_params) { { id: applicant.id, organisation_id: organisation.id } }
@@ -447,7 +408,7 @@ describe ApplicantsController do
     let!(:applicant) do
       create(
         :applicant,
-        organisations: [organisation], department: department, last_name: "Chabat", rdv_contexts: [rdv_context1]
+        organisations: [organisation], last_name: "Chabat", rdv_contexts: [rdv_context1]
       )
     end
     let!(:rdv_context1) { build(:rdv_context, motif_category: category_orientation, status: "rdv_seen") }
@@ -455,7 +416,7 @@ describe ApplicantsController do
     let!(:applicant2) do
       create(
         :applicant,
-        organisations: [organisation], department: department, last_name: "Baer", rdv_contexts: [rdv_context2]
+        organisations: [organisation], last_name: "Baer", rdv_contexts: [rdv_context2]
       )
     end
     let!(:rdv_context2) { build(:rdv_context, motif_category: category_orientation, status: "invitation_pending") }
@@ -463,7 +424,7 @@ describe ApplicantsController do
     let!(:applicant3) do
       create(
         :applicant,
-        organisations: [organisation], department: department, last_name: "Darmon", rdv_contexts: [rdv_context3]
+        organisations: [organisation], last_name: "Darmon", rdv_contexts: [rdv_context3]
       )
     end
     let!(:rdv_context3) { build(:rdv_context, motif_category: category_orientation, status: "invitation_pending") }
@@ -471,7 +432,7 @@ describe ApplicantsController do
     let!(:archived_applicant) do
       create(
         :applicant,
-        organisations: [organisation], department: department, last_name: "Barthelemy", rdv_contexts: [rdv_context4],
+        organisations: [organisation], last_name: "Barthelemy", rdv_contexts: [rdv_context4],
         archived_at: 2.days.ago
       )
     end
@@ -506,7 +467,7 @@ describe ApplicantsController do
         RdvContext.statuses.each_key do |status|
           create(:rdv_context, motif_category: category_orientation,
                                status: status,
-                               applicant: create(:applicant, organisations: [organisation], department: department))
+                               applicant: create(:applicant, organisations: [organisation]))
         end
       end
 
@@ -815,7 +776,7 @@ describe ApplicantsController do
   end
 
   describe "#edit" do
-    let!(:applicant) { create(:applicant, organisations: [organisation], department: department) }
+    let!(:applicant) { create(:applicant, organisations: [organisation]) }
 
     render_views
 
@@ -847,7 +808,7 @@ describe ApplicantsController do
   end
 
   describe "#update" do
-    let!(:applicant) { create(:applicant, organisations: [organisation], department: department) }
+    let!(:applicant) { create(:applicant, organisations: [organisation]) }
     let!(:update_params) do
       { id: applicant.id, organisation_id: organisation.id, applicant: { birth_date: "20/12/1988" } }
     end

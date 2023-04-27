@@ -18,9 +18,7 @@ module Exporters
 
     def generate_csv
       csv = CSV.generate(write_headers: true, col_sep: ";", headers: headers, encoding: "utf-8") do |row|
-        @applicants
-          .includes(:department).preload(:organisations, :rdvs, rdv_contexts: [:invitations])
-          .each do |applicant|
+        @applicants.preload(:organisations, :rdvs, rdv_contexts: [:invitations]).each do |applicant|
           row << applicant_csv_row(applicant)
         end
       end
@@ -52,8 +50,6 @@ module Exporters
        "Date d'orientation",
        Applicant.human_attribute_name(:archived_at),
        Applicant.human_attribute_name(:archiving_reason),
-       "Numéro du département",
-       "Nom du département",
        "Nombre d'organisations",
        "Nom des organisations"]
     end
@@ -82,8 +78,6 @@ module Exporters
        display_date(applicant.first_seen_rdv_starts_at),
        display_date(applicant.archived_at),
        applicant.archiving_reason,
-       applicant.department.number,
-       applicant.department.name,
        applicant.organisations.to_a.count,
        applicant.organisations.map(&:name).join(", ")]
     end

@@ -1,12 +1,4 @@
-# Concern to include in application models
-# Models need to have a :phone_number and a :phone_number_formatted attributes
-module Phonable
-  extend ActiveSupport::Concern
-
-  included do
-    validate :validate_phone_number
-  end
-
+module PhoneNumberFormatter
   COUNTRY_CODES = [:FR, :GP, :GF, :MQ, :RE, :YT].freeze
   # See issue #1471 in RDV-Solidarités. This setup allows:
   # * international (e164) phone numbers
@@ -21,27 +13,6 @@ module Phonable
   # Cf: Plan national de numérotation téléphonique,
   # https://www.arcep.fr/uploads/tx_gsavis/05-1085.pdf  “Numéros mobiles à 10 chiffres”, page 6
 
-  def phone_number_formatted
-    parsed_number(phone_number)&.e164
-  end
-
-  def phone_number_is_mobile?
-    types = parsed_number(phone_number)&.types
-    types&.include?(:mobile)
-  end
-
-  private
-
-  def validate_phone_number
-    return if phone_number.blank?
-
-    errors.add(:phone_number, :invalid) unless phone_number_is_valid?
-  end
-
-  def phone_number_is_valid?
-    parsed_number(phone_number).present?
-  end
-
   def parsed_number(phone_number)
     return if phone_number.blank?
 
@@ -51,5 +22,9 @@ module Phonable
     end
 
     nil
+  end
+
+  def format_phone_number(phone_number)
+    parsed_number(phone_number)&.e164
   end
 end

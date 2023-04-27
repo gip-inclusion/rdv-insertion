@@ -18,7 +18,7 @@ module Invitations
 
     def retrieve_geolocalisation
       @retrieve_geolocalisation ||= RetrieveGeolocalisation.call(
-        address: applicant.address, department_number: applicant.department.number
+        address: applicant.address, department_number: @invitation.department.number
       )
     end
 
