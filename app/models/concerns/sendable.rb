@@ -1,7 +1,7 @@
 module Sendable
   extend ActiveSupport::Concern
 
-  delegate :email, :phone_number, :phone_number_formatted, :phone_number_is_mobile?,
+  delegate :email, :phone_number, :phone_number_is_mobile?,
            :address, :street_address, :zipcode_and_city,
            to: :applicant
   delegate :signature_lines, :sender_city, :help_address, :display_europe_logos, :display_department_logo,

@@ -1,7 +1,5 @@
 module Applicants
   class FindOrInitialize < BaseService
-    include PhoneNumberFormatter
-
     def initialize(applicant_attributes:, department_id:)
       @attributes = applicant_attributes.deep_symbolize_keys
       @department_id = department_id
@@ -45,9 +43,10 @@ module Applicants
     end
 
     def find_applicant_by_phone_number
-      return if format_phone_number(@attributes[:phone_number]).blank?
+      phone_number_formatted = PhoneNumberFormatter.format_phone_number(@attributes[:phone_number])
+      return if phone_number_formatted.blank?
 
-      Applicant.where(phone_number: format_phone_number(@attributes[:phone_number])).find do |applicant|
+      Applicant.where(phone_number: phone_number_formatted).find do |applicant|
         applicant.first_name.split.first.downcase == @attributes[:first_name].split.first.downcase
       end
     end

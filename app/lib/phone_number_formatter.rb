@@ -13,18 +13,20 @@ module PhoneNumberFormatter
   # Cf: Plan national de numérotation téléphonique,
   # https://www.arcep.fr/uploads/tx_gsavis/05-1085.pdf  “Numéros mobiles à 10 chiffres”, page 6
 
-  def parsed_number(phone_number)
-    return if phone_number.blank?
+  class << self
+    def parsed_number(phone_number)
+      return if phone_number.blank?
 
-    COUNTRY_CODES.each do |country_code|
-      parsed_attempt = Phonelib.parse(phone_number, country_code)
-      return parsed_attempt if parsed_attempt.valid?
+      COUNTRY_CODES.each do |country_code|
+        parsed_attempt = Phonelib.parse(phone_number, country_code)
+        return parsed_attempt if parsed_attempt.valid?
+      end
+
+      nil
     end
 
-    nil
-  end
-
-  def format_phone_number(phone_number)
-    parsed_number(phone_number)&.e164
+    def format_phone_number(phone_number)
+      parsed_number(phone_number)&.e164
+    end
   end
 end

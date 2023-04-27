@@ -18,7 +18,7 @@ class Applicant < ApplicationRecord
   include Applicant::Nir
 
   before_validation :generate_uid
-  before_save :set_phone_number_formatted
+  before_save :format_phone_number
 
   has_and_belongs_to_many :organisations
   has_and_belongs_to_many :agents
@@ -130,8 +130,8 @@ class Applicant < ApplicationRecord
     self.uid = Base64.strict_encode64("#{affiliation_number} - #{role}")
   end
 
-  def set_phone_number_formatted
-    self.phone_number = format_phone_number(phone_number)
+  def format_phone_number
+    self.phone_number = PhoneNumberFormatter.format_phone_number(phone_number)
   end
 
   def birth_date_validity

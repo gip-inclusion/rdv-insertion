@@ -1,6 +1,6 @@
 <h1>Bonjour <%= "#{@applicant.first_name} #{@applicant.last_name.upcase}" %>,</h1>
 <p>Vous êtes <%= @applicant_designation %> et à ce titre vous avez été <%= @applicant.conjugate("convoqué") %> à un <%= @rdv_title %> afin de <%= @rdv_purpose %>.</p>
-<p>Nous vous rappelons qu'un travailleur social vous appellera <span class="font-weight-bold">le <%= @rdv.formatted_start_date %> à <%= @rdv.formatted_start_time %></span> sur votre numéro de téléphone: <span class="font-weight-bold"><%= @applicant.phone_number_formatted %></span>.</p>
+<p>Nous vous rappelons qu'un travailleur social vous appellera <span class="font-weight-bold">le <%= @rdv.formatted_start_date %> à <%= @rdv.formatted_start_time %></span> sur votre numéro de téléphone: <span class="font-weight-bold"><%= @applicant.phone_number %></span>.</p>
 <% if @display_mandatory_warning %>
   <p><span class="font-weight-bold">Ce rendez-vous est obligatoire</span>.</p>
 <% end  %>
