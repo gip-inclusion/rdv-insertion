@@ -94,8 +94,10 @@ class InvitationsController < ApplicationController
   end
 
   def set_current_configuration
-    @current_configuration = @organisations.preload(:configurations)
-                                           .flat_map(&:configurations).find { |c| c.motif_category == @motif_category }
+    @current_configuration = @organisations.where(id: @applicant.organisations)
+                                           .preload(:configurations)
+                                           .flat_map(&:configurations)
+                                           .find { |c| c.motif_category == @motif_category }
   end
 
   def set_motif_category
