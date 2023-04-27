@@ -73,7 +73,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_27_122751) do
     t.datetime "archived_at"
     t.string "nir"
     t.string "pole_emploi_id"
-    t.bigint "department_id"
     t.index ["department_id"], name: "index_applicants_on_department_id"
     t.index ["department_internal_id", "department_id"], name: "index_applicants_on_department_internal_id_and_department_id", unique: true
     t.index ["rdv_solidarites_user_id"], name: "index_applicants_on_rdv_solidarites_user_id", unique: true
