@@ -56,7 +56,7 @@ class BaseService
     service_result = service.call(**kwargs)
     return service_result if service_result.success?
 
-    result.errors += service_result.errors
+    service_result.to_h.each { |key, value| result[key] = value }
     fail!
   end
 

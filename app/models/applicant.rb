@@ -17,6 +17,8 @@ class Applicant < ApplicationRecord
   include Applicant::TextHelper
   include Applicant::Nir
 
+  attr_accessor :skip_uniqueness_validations
+
   before_validation :generate_uid
   before_save :format_phone_number
 
@@ -31,13 +33,13 @@ class Applicant < ApplicationRecord
   has_many :notifications, through: :participations
   has_many :configurations, through: :organisations
   has_many :motif_categories, through: :rdv_contexts
+  has_many :departments, through: :organisations
 
   validates :last_name, :first_name, :title, presence: true
   validates :email, allow_blank: true, format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/ }
-  validate :birth_date_validity
+  validate :birth_date_validity, :identifier_must_be_present
   validates :rdv_solidarites_user_id, :nir, :pole_emploi_id,
             uniqueness: true, allow_nil: true, unless: :skip_uniqueness_validations
-  attr_accessor :skip_uniqueness_validations
 
   delegate :name, :number, to: :department, prefix: true
 
@@ -106,7 +108,9 @@ class Applicant < ApplicationRecord
       uid: nil,
       department_internal_id: nil,
       pole_emploi_id: nil,
-      nir: nil
+      nir: nil,
+      email: nil,
+      phone_number: nil
     )
   end
 
@@ -138,6 +142,12 @@ class Applicant < ApplicationRecord
     return unless birth_date.present? && (birth_date > Time.zone.today || birth_date < 130.years.ago)
 
     errors.add(:birth_date, "n'est pas valide")
+  end
+
+  def identifier_must_be_present
+    return if [nir, uid, department_internal_id, email, phone_number].any?(&:present?)
+
+    errors.add(:base, "Il doit y avoir au moins un attribut permettant d'identifier la personne")
   end
 
   def split_address

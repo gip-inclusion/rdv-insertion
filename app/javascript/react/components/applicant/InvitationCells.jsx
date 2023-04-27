@@ -17,31 +17,6 @@ export default function InvitationCells({
         Dossier archivé
         {applicant.archiving_reason && <>&nbsp;: {applicant.archiving_reason}</>}
       </td>
-    ) : applicant.isDuplicate ? (
-      <Tippy
-        content={
-          <span>
-            <strong>Cet allocataire est un doublon.</strong> Les doublons sont identifiés de 2
-            façons&nbsp;:
-            <br />
-            1) Son numéro d&apos;ID éditeur est identique à un autre allocataire présent dans ce
-            fichier.
-            <br />
-            2) Son numéro d&apos;allocataire <strong>et</strong> son rôle sont identiques à ceux
-            d&apos;un autre allocataire présent dans ce fichier.
-            <br />
-            <br />
-            Si cet allocataire a besoin d&apos;être créé, merci de modifier votre fichier et de le
-            charger à nouveau.
-          </span>
-        }
-      >
-        <td colSpan={invitationsColspan}>
-          <small className="d-inline-block mx-2">
-            <i className="fas fa-exclamation-triangle" />
-          </small>
-        </td>
-      </Tippy>
     ) : applicant.createdAt && isDepartmentLevel && !applicant.linkedToCurrentCategory() ? (
       <td colSpan={invitationsColspan}>
         L'allocataire n'appartient pas à une organisation qui gère ce type de rdv{" "}

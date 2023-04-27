@@ -7,6 +7,10 @@ class OrganisationPolicy < ApplicationPolicy
     upload?
   end
 
+  def update_applicant?
+    upload?
+  end
+
   def create?
     pundit_user.super_admin?
   end

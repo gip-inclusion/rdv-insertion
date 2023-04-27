@@ -10,6 +10,7 @@ module Applicants
       Applicant.transaction do
         assign_organisation
         save_record!(@applicant)
+        validate_applicant!
         create_rdv_contexts
         upsert_rdv_solidarites_user
         assign_rdv_solidarites_user_id unless @applicant.rdv_solidarites_user_id?
@@ -41,6 +42,13 @@ module Applicants
       )
     end
 
+    def validate_applicant!
+      call_service!(
+        Applicants::Validate,
+        applicant: @applicant
+      )
+    end
+
     def assign_rdv_solidarites_user_id
       @applicant.rdv_solidarites_user_id = upsert_rdv_solidarites_user.rdv_solidarites_user_id
       save_record!(@applicant)
@@ -52,10 +60,8 @@ module Applicants
                                   .slice(*Applicant::SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES)
                                   .transform_values(&:presence)
                                   .compact
-      return user_attributes if @applicant.demandeur? || @applicant.role.nil?
-
-      # we do not send the email to rdv-s for the conjoint
-      user_attributes.except(:email) if @applicant.conjoint?
+      user_attributes.delete(:email) if @applicant.conjoint?
+      user_attributes
     end
   end
 end

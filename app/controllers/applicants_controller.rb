@@ -3,7 +3,7 @@
 class ApplicantsController < ApplicationController
   PERMITTED_PARAMS = [
     :uid, :role, :first_name, :last_name, :nir, :pole_emploi_id, :birth_date, :email, :phone_number,
-    :birth_name, :address, :affiliation_number, :department_internal_id, :title,
+    :birth_name, :address, :affiliation_number, :department_internal_id, :title, :encrypted_id,
     :status, :rights_opening_date, :archiving_reason
   ].freeze
 
@@ -27,6 +27,7 @@ class ApplicantsController < ApplicationController
                 for: [:new, :create]
   before_action :set_applicant, :set_organisation, :set_department,
                 for: [:edit, :update]
+  before_action :process_input!, only: :create
   after_action :store_back_to_applicants_list_url, only: [:index]
 
   def index
@@ -48,22 +49,22 @@ class ApplicantsController < ApplicationController
   end
 
   def create
-    authorize @organisation, :add_applicant?
-    @applicant = find_or_initialize_applicant.applicant
-    # TODO: if an applicant exists, return it to the agent to let him decide what to do
-    @applicant.assign_attributes(**applicant_params.compact_blank)
-    respond_to do |format|
-      format.html { save_applicant_and_redirect(:new) }
-      format.json { save_applicant_and_render }
+    @applicant = process_input.matching_applicant || Applicant.new
+    @applicant.assign_attributes(**applicant_attributes.compact_blank)
+    if save_applicant.success?
+      render_save_applicant_success
+    else
+      render_errors(save_applicant.errors)
     end
   end
 
   def update
-    @applicant.assign_attributes(**formatted_params)
+    @applicant.assign_attributes(**formatted_attributes)
     authorize @applicant
-    respond_to do |format|
-      format.html { save_applicant_and_redirect(:edit) }
-      format.json { save_applicant_and_render }
+    if save_applicant.success?
+      render_save_applicant_success
+    else
+      render_errors(save_applicant.errors)
     end
   end
 
@@ -73,16 +74,29 @@ class ApplicantsController < ApplicationController
     params.require(:applicant).permit(*PERMITTED_PARAMS).to_h.deep_symbolize_keys
   end
 
-  def formatted_params
+  def applicant_attributes
+    applicant_params.slice(*Applicant.attribute_names.map(&:to_sym))
+  end
+
+  def formatted_attributes
     # we nullify some blank params for unicity exceptions (ActiveRecord::RecordNotUnique) not to raise
-    applicant_params.to_h do |k, v|
+    applicant_attributes.to_h do |k, v|
       [k, k.in?([:affiliation_number, :department_internal_id, :email, :pole_emploi_id, :nir]) ? v.presence : v]
     end
   end
 
-  def find_or_initialize_applicant
-    @find_or_initialize_applicant ||= Applicants::FindOrInitialize.call(
-      applicant_attributes: applicant_params,
+  def process_input!
+    return if process_input.success?
+    return render_create_or_update_choice(process_input.contact_duplicate, process_input.duplicate_attribute) \
+       if process_input.contact_duplicate
+
+    @applicant = process_input.matching_applicant
+    render_errors(process_input.errors)
+  end
+
+  def process_input
+    @process_input ||= Applicants::ProcessInput.call(
+      applicant_params: applicant_params,
       department_id: @department.id
     )
   end
@@ -99,20 +113,45 @@ class ApplicantsController < ApplicationController
     )
   end
 
-  def save_applicant_and_redirect(page)
-    if save_applicant.success?
-      redirect_to(after_save_path)
-    else
-      flash.now[:error] = save_applicant.errors&.join(",")
-      render page, status: :unprocessable_entity
+  def render_errors(errors)
+    respond_to do |format|
+      format.html do
+        flash.now[:error] = errors.join(",")
+        render(action_name == "update" ? :edit : :new, status: :unprocessable_entity)
+      end
+      format.json { render json: { success: false, errors: errors }, status: :unprocessable_entity }
     end
   end
 
-  def save_applicant_and_render
-    if save_applicant.success?
-      render json: { success: true, applicant: @applicant }
-    else
-      render json: { success: false, errors: save_applicant.errors }, status: :unprocessable_entity
+  def render_save_applicant_success
+    respond_to do |format|
+      format.html { redirect_to(after_save_path) }
+      format.json { render json: { success: true, applicant: @applicant } }
+    end
+  end
+
+  def render_create_or_update_choice(contact_duplicate, duplicate_attribute)
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace(
+          "remote_modal", partial: "create_or_update_choice", locals: {
+            contact_duplicate: contact_duplicate,
+            duplicate_attribute: duplicate_attribute,
+            encrypted_id: EncryptionHelper.encrypt(contact_duplicate.id),
+            applicant_attributes: applicant_attributes,
+            department: @department,
+            organisation: @organisation
+          }
+        )
+      end
+      format.json do
+        render json: {
+          success: false,
+          contact_duplicate: contact_duplicate,
+          duplicate_attribute: duplicate_attribute,
+          encrypted_id: EncryptionHelper.encrypt(contact_duplicate.id)
+        }, status: :unprocessable_entity
+      end
     end
   end
 

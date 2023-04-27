@@ -41,6 +41,8 @@ describe Applicants::Save, type: :service do
   describe "#call" do
     before do
       allow(applicant).to receive(:save).and_return(true)
+      allow(Applicants::Validate).to receive(:call)
+        .with(applicant: applicant).and_return(OpenStruct.new(success?: true))
       allow(UpsertRdvSolidaritesUser).to receive(:call)
         .and_return(OpenStruct.new(success?: true, rdv_solidarites_user_id: rdv_solidarites_user_id))
     end
@@ -151,6 +153,21 @@ describe Applicants::Save, type: :service do
 
       it "stores the error" do
         expect(subject.errors).to eq(["update error"])
+      end
+    end
+
+    context "when the validation service fails" do
+      before do
+        allow(Applicants::Validate).to receive(:call)
+          .with(applicant: applicant).and_return(OpenStruct.new(success?: false, errors: ["invalid applicant"]))
+      end
+
+      it "is a failure" do
+        is_a_failure
+      end
+
+      it "stores the error" do
+        expect(subject.errors).to eq(["invalid applicant"])
       end
     end
 

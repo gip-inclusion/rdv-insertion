@@ -143,6 +143,12 @@ module ApplicantsHelper
     edit_organisation_applicant_path(organisation, applicant)
   end
 
+  def compute_update_path(applicant, organisation, department)
+    return department_applicant_path(department, applicant) if department_level?
+
+    organisation_applicant_path(organisation, applicant)
+  end
+
   def compute_show_path(applicant, organisation, department)
     return department_applicant_path(department, applicant) if department_level?
 
@@ -153,6 +159,12 @@ module ApplicantsHelper
     return new_department_applicant_path(department) if department_level?
 
     new_organisation_applicant_path(organisation)
+  end
+
+  def compute_create_path(organisation, department)
+    return department_applicants_path(department) if department_level?
+
+    organisation_applicants_path(organisation)
   end
 end
 

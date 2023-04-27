@@ -35,6 +35,10 @@ module Applicants
       end.compact
     end
 
+    def formatted_nirs
+      applicants_params[:nirs].map { |nir| NirHelper.format_nir(nir) }.compact
+    end
+
     def search_in_department_organisations
       Applicant
         .joins(:organisations)

@@ -8,24 +8,27 @@ class CreateAndInviteApplicantJob < ApplicationJob
     @invitation_params = invitation_params.deep_symbolize_keys
     @rdv_solidarites_session_credentials = rdv_solidarites_session_credentials.deep_symbolize_keys
 
-    assign_attributes_to_applicant
-    return notify_creation_error if save_applicant.failure?
+    return notify_creation_error(process_input.errors) if process_input.failure?
+
+    applicant.assign_attributes(**@applicant_attributes)
+
+    return notify_creation_error(save_applicant.errors) if save_applicant.failure?
 
     invite_applicant
   end
 
   private
 
-  def assign_attributes_to_applicant
-    applicant.assign_attributes(**@applicant_attributes)
-  end
-
   def applicant
     @applicant ||=
-      Applicants::FindOrInitialize.call(
-        applicant_attributes: @applicant_attributes,
-        department_id: @department.id
-      ).applicant
+      process_input.matching_applicant || Applicant.new
+  end
+
+  def process_input
+    @process_input ||= Applicants::ProcessInput.call(
+      applicant_params: @applicant_attributes,
+      department_id: @department.id
+    )
   end
 
   def invite_applicant
@@ -63,16 +66,16 @@ class CreateAndInviteApplicantJob < ApplicationJob
     )
   end
 
-  def notify_creation_error
-    notify_department_by_email(save_applicant.errors)
-    capture_exception(save_applicant.errors)
+  def notify_creation_error(errors)
+    notify_department_by_email(errors)
+    capture_exception(errors)
   end
 
   def capture_exception(errors)
     Sentry.capture_exception(
       FailedServiceError.new("Error saving applicant in CreateAndInviteApplicantJob"),
       extra: {
-        applicant: applicant,
+        applicant_attributes: @applicant_attributes,
         service_errors: errors,
         organisation: @organisation
       }
@@ -80,7 +83,7 @@ class CreateAndInviteApplicantJob < ApplicationJob
   end
 
   def notify_department_by_email(errors)
-    DepartmentMailer.create_applicant_error(@department, applicant, errors).deliver_now
+    DepartmentMailer.create_applicant_error(@department, @applicant_attributes, errors).deliver_now
   end
 
   def rdv_solidarites_session
