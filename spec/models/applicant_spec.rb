@@ -201,6 +201,25 @@ describe Applicant do
       it { expect(applicant).to be_valid }
     end
 
+    context "when nir is 13 characters" do
+      let!(:nir) { generate_random_nir }
+      let(:applicant) { build(:applicant, nir: nir.first(13)) }
+
+      it { expect(applicant).to be_valid }
+
+      it "adds a 2 digits key to the nir saved in db" do
+        applicant.save
+        expect(applicant.reload.nir).to eq(nir)
+      end
+    end
+
+    context "when nir is a valid 15 characters string" do
+      let!(:nir) { generate_random_nir }
+      let(:applicant) { build(:applicant, nir: nir) }
+
+      it { expect(applicant).to be_valid }
+    end
+
     context "when nir exists already" do
       let!(:existing_applicant) { create(:applicant, nir: "123456789012311") }
       let(:applicant) { build(:applicant, nir: "123456789012311") }
@@ -208,14 +227,14 @@ describe Applicant do
       it { expect(applicant).not_to be_valid }
     end
 
-    context "when nir is not 15 characters" do
-      let(:applicant) { build(:applicant, nir: "1234567890123") }
+    context "when nir is not 13 or 15 characters" do
+      let(:applicant) { build(:applicant, nir: "12345678901") }
 
       it "add errors" do
         expect(applicant).not_to be_valid
         expect(applicant.errors.details).to eq({ nir: [{ error: :invalid }] })
         expect(applicant.errors.full_messages.to_sentence)
-          .to include("Le NIR doit être une série de 15 chiffres")
+          .to include("Le NIR doit être une série de 13 ou 15 chiffres")
       end
     end
 
@@ -226,11 +245,11 @@ describe Applicant do
         expect(applicant).not_to be_valid
         expect(applicant.errors.details).to eq({ nir: [{ error: :invalid }] })
         expect(applicant.errors.full_messages.to_sentence)
-          .to include("Le NIR doit être une série de 15 chiffres")
+          .to include("Le NIR doit être une série de 13 ou 15 chiffres")
       end
     end
 
-    context "when luhn formula is not matched" do
+    context "when nir is 15 characters and luhn formula is not matched" do
       let(:applicant) { build(:applicant, nir: "123456789012312") }
 
       it "add errors" do

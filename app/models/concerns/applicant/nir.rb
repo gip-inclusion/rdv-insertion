@@ -2,14 +2,21 @@ module Applicant::Nir
   extend ActiveSupport::Concern
 
   included do
+    before_validation :add_nir_key, if: :nir?
     validate :nir_is_valid, if: :nir?
   end
 
   private
 
+  def add_nir_key
+    return unless nir.length == 13
+
+    self.nir = "#{nir}#{nir_key}"
+  end
+
   def nir_is_valid
     if nir.length != 15 || nir !~ /\A\d+\Z/
-      errors.add(:nir, :invalid, message: "Le NIR doit être une série de 15 chiffres")
+      errors.add(:nir, :invalid, message: "Le NIR doit être une série de 13 ou 15 chiffres")
       return
     end
 
@@ -19,6 +26,10 @@ module Applicant::Nir
   end
 
   def nir_sum_checked?
-    97 - (nir.first(13).to_i % 97) == nir.last(2).to_i
+    nir_key == nir.last(2).to_i
+  end
+
+  def nir_key
+    97 - (nir.first(13).to_i % 97)
   end
 end
