@@ -25,7 +25,6 @@ describe "Agents can convene applicant to rdv", js: true do
     create(
       :applicant,
       organisations: [organisation],
-      department: department,
       rdv_solidarites_user_id: rdv_solidarites_user_id
     )
   end
@@ -142,7 +141,6 @@ describe "Agents can convene applicant to rdv", js: true do
           create(
             :applicant,
             organisations: [other_organisation],
-            department: department,
             rdv_solidarites_user_id: rdv_solidarites_user_id
           )
         end

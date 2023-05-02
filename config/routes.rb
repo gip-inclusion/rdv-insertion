@@ -48,12 +48,12 @@ Rails.application.routes.draw do
     get :redirect, on: :collection
   end
 
-  resources :applicants, only: [] do
-    post :search, on: :collection
-  end
-
   resources :applicants, module: :applicants, only: [] do
     resource :archivings, only: [:create, :destroy]
+  end
+
+  namespace :applicants do
+    resources :searches, only: :create
   end
 
   namespace :organisations do

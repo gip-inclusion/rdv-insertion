@@ -1,6 +1,5 @@
 FactoryBot.define do
   factory :applicant do
-    association :department
     sequence(:uid) { |n| "uid#{n}" }
     sequence(:rdv_solidarites_user_id)
     sequence(:affiliation_number) { |n| "numero_#{n}" }

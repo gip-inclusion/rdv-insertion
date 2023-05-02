@@ -1,57 +1,147 @@
 describe Applicants::FindOrInitialize, type: :service do
   subject do
     described_class.call(
-      department_internal_id: department_internal_id,
-      role: role,
-      affiliation_number: affiliation_number,
+      applicant_attributes: applicant_attributes,
       department_id: department_id
     )
   end
 
+  let!(:applicant_attributes) do
+    {
+      nir: nir,
+      email: email,
+      phone_number: phone_number,
+      first_name: first_name,
+      department_internal_id: department_internal_id,
+      affiliation_number: affiliation_number,
+      role: role
+    }
+  end
+  let!(:nir) { generate_random_nir }
+  let!(:email) { "janedoe@gouv.fr" }
+  let!(:phone_number) { "+33605050505" }
+  let!(:first_name) { "Jane" }
   let!(:department_internal_id) { "6789" }
   let!(:role) { "demandeur" }
   let!(:affiliation_number) { "1234" }
-  let!(:organisation) { create(:organisation) }
+  let!(:organisation) { create(:organisation, department: department) }
   let!(:department) { create(:department, id: department_id) }
   let!(:department_id) { 22 }
   let!(:another_department) { create(:department) }
+  let!(:other_org_inside_the_department) { create(:organisation, department: department) }
+  let!(:other_org_outside_the_department) { create(:organisation, department: another_department) }
 
   describe "#call" do
     it("is a success") { is_a_success }
 
-    context "when an applicant with the same department internal id exists" do
-      let!(:applicant) { create(:applicant, department: department, department_internal_id: department_internal_id) }
+    context "when an applicant with the same nir is found" do
+      let!(:applicant) { create(:applicant, nir: nir) }
 
       it "returns the found applicant" do
         expect(subject.applicant).to eq(applicant)
       end
+    end
 
-      context "for another department" do
+    context "when an applicant with the same department internal id exists" do
+      context "when the applicant is in the same department" do
         let!(:applicant) do
-          create(:applicant, department: another_department, department_internal_id: department_internal_id)
+          create(
+            :applicant, department_internal_id: department_internal_id, organisations: [other_org_inside_the_department]
+          )
         end
 
-        it "does not return the existing applicant" do
-          expect(subject).not_to eq(applicant)
+        it "returns the found applicant" do
+          expect(subject.applicant).to eq(applicant)
+        end
+
+        context "for another department" do
+          let!(:applicant) do
+            create(
+              :applicant, department_internal_id: department_internal_id,
+                          organisations: [other_org_outside_the_department]
+            )
+          end
+
+          it "returns a new applicant" do
+            expect(Applicant).to receive(:new)
+            expect(subject.applicant).not_to eq(applicant)
+          end
         end
       end
     end
 
     context "when an applicant with the same affiliation_number and role exists" do
-      let!(:applicant) do
-        create(:applicant, department: department, role: role, affiliation_number: affiliation_number)
+      context "when the applicant is in the same department" do
+        let!(:applicant) do
+          create(
+            :applicant, role: role, affiliation_number: affiliation_number,
+                        organisations: [other_org_inside_the_department]
+          )
+        end
+
+        it "returns the found applicant" do
+          expect(subject.applicant).to eq(applicant)
+        end
       end
 
-      it "returns the found applicant" do
-        expect(subject.applicant).to eq(applicant)
+      context "for another_department" do
+        let!(:applicant) do
+          create(
+            :applicant, role: role, affiliation_number: affiliation_number,
+                        organisations: [other_org_outside_the_department]
+          )
+        end
+
+        it "returns a new applicant" do
+          expect(Applicant).to receive(:new)
+          expect(subject.applicant).not_to eq(applicant)
+        end
+      end
+    end
+
+    context "when the applicant with the same email is found" do
+      let!(:applicant) do
+        create(:applicant, email: email)
+      end
+
+      context "when the first name matches" do
+        before { applicant.update! first_name: "JANE" }
+
+        it "returns the found applicant" do
+          expect(subject.applicant).to eq(applicant)
+        end
+      end
+
+      context "when the first name does not match" do
+        it "returns a new applicant" do
+          expect(Applicant).to receive(:new)
+          expect(subject.applicant).not_to eq(applicant)
+        end
+      end
+    end
+
+    context "when the applicant with the same phone is found" do
+      let!(:applicant) do
+        create(:applicant, phone_number: phone_number)
+      end
+
+      context "when the first name matches" do
+        before { applicant.update! first_name: "JANE" }
+
+        it "returns the found applicant" do
+          expect(subject.applicant).to eq(applicant)
+        end
+      end
+
+      context "when the first name does not match" do
+        it "returns a new applicant" do
+          expect(Applicant).to receive(:new)
+          expect(subject.applicant).not_to eq(applicant)
+        end
       end
     end
 
     context "when no applicant with these attributes exist" do
-      let!(:applicant) { build(:applicant) }
-
-      before { allow(Applicant).to receive(:new).and_return(applicant) }
-
       it "initializes an applicant" do
         expect(Applicant).to receive(:new)
         subject

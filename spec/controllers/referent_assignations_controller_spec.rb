@@ -1,7 +1,7 @@
 describe ReferentAssignationsController do
   let!(:applicant_id) { 2222 }
   let!(:applicant) do
-    create(:applicant, id: applicant_id, organisations: [organisation1, organisation2], department: department)
+    create(:applicant, id: applicant_id, organisations: [organisation1, organisation2])
   end
   let!(:organisation1) { create(:organisation, name: "CD de DIE") }
   let!(:organisation2) { create(:organisation, name: "CD de Valence") }

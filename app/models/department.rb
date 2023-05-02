@@ -4,9 +4,9 @@ class Department < ApplicationRecord
   validates :name, :capital, :number, :pronoun, presence: true
 
   has_many :organisations, dependent: :nullify
-  has_many :applicants, dependent: :nullify
   has_many :invitations, dependent: :nullify
 
+  has_many :applicants, through: :organisations
   has_many :configurations, through: :organisations
   has_many :motif_categories, through: :configurations
   has_many :file_configurations, through: :configurations

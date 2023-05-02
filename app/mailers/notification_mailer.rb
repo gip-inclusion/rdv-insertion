@@ -79,7 +79,7 @@ class NotificationMailer < ApplicationMailer
   end
 
   def set_department
-    @department = @applicant.department
+    @department = @notification.department
   end
 
   def set_signature_lines

@@ -28,7 +28,7 @@
     <% end %>
   </h4>
   <% if local_assigns[:as] == :select %>
-    <p><%= f.input attribute, as: :select, collection: collection, selected: f.object[attribute] %></p>
+    <p><%= f.input attribute, as: :select, collection: collection, selected: f.object[attribute], include_blank: local_assigns[:include_blank] %></p>
   <% elsif local_assigns[:as] == :date %>
     <p><%= f.input attribute,
                     input_html: { class: "date-select" },

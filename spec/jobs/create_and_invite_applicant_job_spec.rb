@@ -42,7 +42,7 @@ describe CreateAndInviteApplicantJob do
 
   it "assigns the attributes to the applicant" do
     expect(applicant).to receive(:assign_attributes)
-      .with(applicant_attributes.merge(department: department, organisations: [organisation]))
+      .with(applicant_attributes)
     subject
   end
 

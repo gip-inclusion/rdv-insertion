@@ -5,8 +5,8 @@ describe Stats::GlobalStats::Compute, type: :service do
 
   let!(:department) { create(:department) }
   let!(:organisation) { create(:organisation, department: department) }
-  let!(:applicant1) { create(:applicant, department: department) }
-  let!(:applicant2) { create(:applicant, department: department) }
+  let!(:applicant1) { create(:applicant, organisations: [organisation]) }
+  let!(:applicant2) { create(:applicant, organisations: [organisation]) }
   let!(:rdv1) { create(:rdv, organisation: organisation) }
   let!(:rdv2) { create(:rdv, organisation: organisation) }
   let!(:participation1) { create(:participation, rdv: rdv1) }

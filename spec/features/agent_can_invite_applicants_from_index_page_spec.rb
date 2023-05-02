@@ -20,8 +20,8 @@ describe "Agents can invite from index page", js: true do
 
   before do
     setup_agent_session(agent)
-    stub_rdv_solidarites_invitation_requests
-    stub_geo_api_request
+    stub_rdv_solidarites_invitation_requests(applicant.rdv_solidarites_user_id, rdv_solidarites_token)
+    stub_geo_api_request(applicant)
   end
 
   context "when no invitations is sent" do
@@ -156,22 +156,5 @@ describe "Agents can invite from index page", js: true do
         expect(page).to have_content("RDV pris")
       end
     end
-  end
-
-  def stub_rdv_solidarites_invitation_requests
-    stub_request(:post, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/users/#{applicant.rdv_solidarites_user_id}/invite")
-      .with(headers: { "Content-Type" => "application/json" }.merge(session_hash(agent.email)))
-      .to_return(body: { "invitation_token" => "123456" }.to_json)
-
-    stub_request(:get, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/invitations/#{rdv_solidarites_token}")
-      .with(headers: { "Content-Type" => "application/json" }.merge(session_hash(agent.email)))
-      .to_return(status: 404)
-  end
-
-  def stub_geo_api_request
-    stub_request(:get, RetrieveGeolocalisation::API_ADRESSE_URL).with(
-      headers: { "Content-Type" => "application/json" },
-      query: { "q" => applicant.address }
-    ).to_return(body: { "features" => [] }.to_json)
   end
 end

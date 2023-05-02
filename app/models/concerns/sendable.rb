@@ -9,7 +9,7 @@ module Sendable
            to: :messages_configuration, allow_nil: true
 
   def sms_sender_name
-    messages_configuration&.sms_sender_name || "Dept#{applicant.department_number}"
+    messages_configuration&.sms_sender_name || "Dept#{department.number}"
   end
 
   def letter_sender_name

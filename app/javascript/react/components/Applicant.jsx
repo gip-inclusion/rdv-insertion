@@ -30,11 +30,13 @@ export default function Applicant({ applicant, isDepartmentLevel, showReferentCo
   return (
     <>
       <tr className={applicant.isDuplicate || applicant.isArchived ? "table-danger" : ""}>
-        <td>{applicant.affiliationNumber}</td>
         <td>{applicant.shortTitle}</td>
         <td>{applicant.firstName}</td>
         <td>{applicant.lastName}</td>
-        <td>{applicant.shortRole}</td>
+        {applicant.shouldDisplay("affiliation_number_column") && (
+          <td>{applicant.affiliationNumber ?? " - "}</td>
+        )}
+        {applicant.shouldDisplay("role_column") && <td>{applicant.shortRole ?? " - "}</td>}
         {applicant.shouldDisplay("department_internal_id_column") && (
           <td>{applicant.departmentInternalId ?? " - "}</td>
         )}

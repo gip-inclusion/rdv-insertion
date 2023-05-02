@@ -23,13 +23,12 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
       pole_emploi_id: "DDAAZZ",
       email: "jane@doe.com",
       address: "20 avenue de Ségur 75OO7 Paris",
-      phone_number: "01 01 01 01 01",
+      phone_number: "+33610101010",
       birth_date: "20/12/1977",
       rights_opening_date: "18/05/2022",
       created_at: "20/05/2022",
       role: "demandeur",
-      organisations: [organisation],
-      department: department
+      organisations: [organisation]
     )
   end
   let(:applicant2) { create(:applicant, last_name: "Casubolo", organisations: [organisation]) }
@@ -111,8 +110,6 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
         expect(csv).to include("Dernier RDV pris en autonomie ?")
         expect(csv).to include("RDV honoré en - de 30 jours ?")
         expect(csv).to include("Date d'orientation")
-        expect(csv).to include("Numéro du département")
-        expect(csv).to include("Nom du département")
         expect(csv).to include("Nombre d'organisations")
         expect(csv).to include("Nom des organisations")
       end
@@ -143,7 +140,7 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
           expect(csv).to include("DDAAZZ") # pole_emploi_id
           expect(csv).to include("20 avenue de Ségur 75OO7 Paris")
           expect(csv).to include("jane@doe.com")
-          expect(csv).to include("01 01 01 01 01")
+          expect(csv).to include("+33610101010")
           expect(csv).to include("20/12/1977") # birth_date
           expect(csv).to include("20/05/2022") # created_at
           expect(csv).to include("18/05/2022") # rights_opening_date
@@ -169,11 +166,6 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
           expect(csv).to include("25/05/2022;\"\";;") # archiving reason
         end
 
-        it "displays the department infos" do
-          expect(csv).to include("26")
-          expect(csv).to include("Drôme")
-        end
-
         it "displays the organisation infos" do
           expect(csv).to include("1")
           expect(csv).to include("Drome RSA")
@@ -185,8 +177,7 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
               :applicant,
               archived_at: "20/06/2022",
               archiving_reason: "test",
-              organisations: [organisation],
-              department: department
+              organisations: [organisation]
             )
           end
           let!(:csv) { subject.csv }

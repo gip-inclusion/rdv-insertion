@@ -164,7 +164,7 @@ export default function ApplicantsUpload({
     const applicantsFromList = await retrieveApplicantsFromList(file);
     if (applicantsFromList.length === 0) return;
 
-    const upToDateApplicants = await retrieveUpToDateApplicants(applicantsFromList);
+    const upToDateApplicants = await retrieveUpToDateApplicants(applicantsFromList, department.id);
 
     setApplicants(upToDateApplicants);
   };
@@ -282,11 +282,13 @@ export default function ApplicantsUpload({
             <table className="table table-hover text-center align-middle table-striped table-bordered">
               <thead className="align-middle dark-blue">
                 <tr>
-                  <th scope="col">Numéro allocataire</th>
                   <th scope="col">Civilité</th>
                   <th scope="col">Prénom</th>
                   <th scope="col">Nom</th>
-                  <th scope="col">Rôle</th>
+                  {parameterizedColumnNames.affiliation_number_column && (
+                    <th scope="col">Numéro allocataire</th>
+                  )}
+                  {parameterizedColumnNames.role_column && <th scope="col">Rôle</th>}
                   {parameterizedColumnNames.department_internal_id_column && (
                     <th scope="col">ID Editeur</th>
                   )}
@@ -295,8 +297,8 @@ export default function ApplicantsUpload({
                   {parameterizedColumnNames.rights_opening_date_column && (
                     <th scope="col">Date d&apos;entrée flux</th>
                   )}
-                  {parameterizedColumnNames.nir && <th scope="col">NIR</th>}
-                  {parameterizedColumnNames.pole_emploi_id && <th scope="col">ID PE</th>}
+                  {parameterizedColumnNames.nir_column && <th scope="col">NIR</th>}
+                  {parameterizedColumnNames.pole_emploi_id_column && <th scope="col">ID PE</th>}
                   <th scope="col" style={{ whiteSpace: "nowrap" }}>
                     Création compte
                   </th>
