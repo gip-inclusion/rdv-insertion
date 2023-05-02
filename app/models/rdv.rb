@@ -28,6 +28,7 @@ class Rdv < ApplicationRecord
   enum created_by: { agent: 0, user: 1, file_attente: 2 }, _prefix: :created_by
 
   delegate :presential?, :by_phone?, to: :motif
+  delegate :department, to: :organisation
   delegate :name, to: :motif, prefix: true
   delegate :instruction_for_rdv, to: :motif
 

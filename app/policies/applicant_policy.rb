@@ -1,22 +1,10 @@
 class ApplicantPolicy < ApplicationPolicy
   def new?
-    pundit_user.department_ids.include?(record.department_id)
-  end
-
-  def create?
-    new?
+    true
   end
 
   def show?
     pundit_user.organisation_ids.intersect?(record.organisation_ids) && !record.deleted?
-  end
-
-  def search?
-    show?
-  end
-
-  def invite?
-    show?
   end
 
   def update?

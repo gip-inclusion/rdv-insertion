@@ -3,7 +3,7 @@ class Lieu < ApplicationRecord
     :name, :phone_number, :address
   ].freeze
 
-  include Phonable
+  include PhoneNumberValidation
 
   validates :name, :address, presence: true
   validates :rdv_solidarites_lieu_id, presence: true, uniqueness: true

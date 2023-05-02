@@ -28,11 +28,11 @@ describe Stat do
     let(:date) { Time.zone.parse("17/03/2022 12:00") }
     let!(:other_department) { create(:department) }
     let!(:applicant1) do
-      create(:applicant, department: department, organisations: [organisation],
+      create(:applicant, organisations: [organisation],
                          created_at: date)
     end
     let!(:applicant2) do
-      create(:applicant, department: other_department, organisations: [other_organisation],
+      create(:applicant, organisations: [other_organisation],
                          created_at: date)
     end
     let!(:configuration) { create(:configuration) }
@@ -123,13 +123,13 @@ describe Stat do
 
       describe "#applicants_sample" do
         let!(:applicant3) do
-          create(:applicant, department: department, organisations: [organisation], deleted_at: date)
+          create(:applicant, organisations: [organisation], deleted_at: date)
         end
         let!(:applicant4) do
-          create(:applicant, department: department, organisations: [organisation], archived_at: date)
+          create(:applicant, organisations: [organisation], archived_at: date)
         end
         let!(:applicant5) do
-          create(:applicant, department: department, organisations: [organisation_with_no_configuration])
+          create(:applicant, organisations: [organisation_with_no_configuration])
         end
 
         it "scopes the collection to the department" do
@@ -169,24 +169,24 @@ describe Stat do
       end
 
       describe "#rdv_contexts_sample" do
-        let!(:applicant3) { create(:applicant, department: department, organisations: [organisation]) }
+        let!(:applicant3) { create(:applicant, organisations: [organisation]) }
         let!(:rdv3) { create(:rdv, organisation: organisation) }
         let!(:participation3) { create(:participation, rdv: rdv3) }
         let!(:rdv_context3) { create(:rdv_context, applicant: applicant3, participations: [participation3]) }
-        let!(:applicant4) { create(:applicant, department: department, organisations: [organisation]) }
+        let!(:applicant4) { create(:applicant, organisations: [organisation]) }
         let!(:invitation4) { create(:invitation) }
         let!(:rdv4) { create(:rdv, organisation: organisation) }
         let!(:participation4) { create(:participation, rdv: rdv4) }
         let!(:rdv_context4) do
           create(:rdv_context, applicant: applicant4, invitations: [invitation4], participations: [participation4])
         end
-        let!(:applicant5) { create(:applicant, department: department, organisations: [organisation]) }
+        let!(:applicant5) { create(:applicant, organisations: [organisation]) }
         let!(:invitation5) { create(:invitation) }
         let!(:rdv_context5) do
           create(:rdv_context, applicant: applicant5, invitations: [invitation5])
         end
         let!(:applicant6) do
-          create(:applicant, department: department, organisations: [organisation_with_no_configuration])
+          create(:applicant, organisations: [organisation_with_no_configuration])
         end
         let!(:invitation6) { create(:invitation, sent_at: date) }
         let!(:rdv6) { create(:rdv, organisation: organisation) }
@@ -219,7 +219,7 @@ describe Stat do
 
       describe "#rdvs_non_collectifs_sample" do
         let!(:applicant3) do
-          create(:applicant, department: department, organisations: [organisation])
+          create(:applicant, organisations: [organisation])
         end
         let!(:rdv3) { create(:rdv, organisation: organisation, motif: motif_collectif) }
         let!(:participation3) { create(:participation, rdv: rdv3, applicant: applicant3) }
@@ -231,12 +231,12 @@ describe Stat do
 
       describe "#invited_applicants_with_rdvs_non_collectifs_sample" do
         let!(:applicant3) do
-          create(:applicant, department: department, organisations: [organisation_with_no_configuration])
+          create(:applicant, organisations: [organisation_with_no_configuration])
         end
-        let!(:applicant4) { create(:applicant, department: department, organisations: [organisation]) }
-        let!(:applicant5) { create(:applicant, department: department, organisations: [organisation]) }
-        let!(:applicant6) { create(:applicant, department: department, organisations: [organisation]) }
-        let!(:applicant7) { create(:applicant, department: department, organisations: [organisation]) }
+        let!(:applicant4) { create(:applicant, organisations: [organisation]) }
+        let!(:applicant5) { create(:applicant, organisations: [organisation]) }
+        let!(:applicant6) { create(:applicant, organisations: [organisation]) }
+        let!(:applicant7) { create(:applicant, organisations: [organisation]) }
         let!(:invitation3) { create(:invitation, applicant: applicant3, department: department, sent_at: date) }
         let!(:invitation5) { create(:invitation, applicant: applicant5, department: department) }
         let!(:invitation6) { create(:invitation, applicant: applicant6, department: department, sent_at: date) }
@@ -278,7 +278,7 @@ describe Stat do
 
       describe "#applicants_for_30_days_rdvs_seen_sample" do
         let!(:applicant3) do
-          create(:applicant, department: department, organisations: [organisation],
+          create(:applicant, organisations: [organisation],
                              created_at: date)
         end
         let!(:rdv_context3) do

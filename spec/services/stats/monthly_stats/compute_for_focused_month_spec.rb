@@ -8,8 +8,8 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
 
   let!(:department) { create(:department) }
   let!(:organisation) { create(:organisation, department: department) }
-  let!(:applicant1) { create(:applicant, department: department, created_at: date) }
-  let!(:applicant2) { create(:applicant, department: department, created_at: date_from_previous_month) }
+  let!(:applicant1) { create(:applicant, organisations: [organisation], created_at: date) }
+  let!(:applicant2) { create(:applicant, organisations: [organisation], created_at: date_from_previous_month) }
   let!(:rdv1) { create(:rdv, created_at: date, organisation: organisation) }
   let!(:rdv2) { create(:rdv, created_at: date_from_previous_month, organisation: organisation) }
   let!(:participation1) { create(:participation, created_at: date, rdv: rdv1) }

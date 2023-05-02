@@ -18,7 +18,7 @@ describe Invitations::ComputeLink, type: :service do
   let(:address) { "20 avenue de ségur 75007 Paris" }
 
   let!(:applicant) do
-    create(:applicant, address: address, department: department)
+    create(:applicant, address: address)
   end
   let!(:motif_category) { create(:motif_category, short_name: "rsa_accompagnement") }
   let!(:rdv_context) { build(:rdv_context, motif_category: motif_category) }

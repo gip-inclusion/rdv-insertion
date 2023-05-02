@@ -46,14 +46,6 @@ export default function CreationCell({
     setIsTriggered({ ...isTriggered, creation: false });
   };
 
-  const handleAddToOrganisationClick = async () => {
-    setIsTriggered({ ...isTriggered, creation: true });
-
-    await handleApplicantCreation(applicant, applicant.currentOrganisation.id);
-
-    setIsTriggered({ ...isTriggered, creation: false });
-  };
-
   return applicant.isArchived ? (
     <td>
       <button
@@ -66,7 +58,7 @@ export default function CreationCell({
       </button>
     </td>
   ) : applicant.createdAt ? (
-    !applicant.belongsToCurrentOrg() && !isDepartmentLevel ? (
+    !applicant.belongsToCurrentOrg() ? (
       <Tippy
         content={
           <span>
@@ -83,7 +75,7 @@ export default function CreationCell({
             type="submit"
             disabled={isTriggered.creation}
             className="btn btn-primary btn-blue"
-            onClick={() => handleAddToOrganisationClick()}
+            onClick={() => handleCreationClick()}
           >
             {isTriggered.creation ? "En cours..." : "Ajouter à cette organisation"}
           </button>

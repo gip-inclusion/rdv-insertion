@@ -22,10 +22,13 @@ module Api
       private
 
       def applicants_attributes
-        create_and_invite_params.to_h.deep_symbolize_keys[:applicants]
+        create_and_invite_params.to_h.deep_symbolize_keys[:applicants].map do |applicant_attributes|
+          applicant_attributes[:invitation] ||= {}
+          applicant_attributes
+        end
       end
 
-      def invitations_params
+      def invitations_attributes
         applicants_attributes.pluck(:invitation)
       end
 
@@ -39,6 +42,7 @@ module Api
         params.permit(
           applicants: [
             :first_name, :last_name, :title, :affiliation_number, :role, :email, :phone_number,
+            :nir, :pole_emploi_id,
             :birth_date, :rights_opening_date, :address, :department_internal_id, {
               invitation: [:rdv_solidarites_lieu_id, :motif_category_name]
             }

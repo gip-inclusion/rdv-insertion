@@ -152,7 +152,6 @@ export default class Applicant {
       "postal",
       this.currentConfiguration.motif_category_id
     );
-    this.departmentInternalId = upToDateApplicant.department_internal_id;
     this.agents = upToDateApplicant.agents;
   }
 
@@ -306,17 +305,17 @@ export default class Applicant {
     if (attributeIsMissing) {
       return null;
     }
-    return btoa(`${this.departmentNumber} - ${this.affiliationNumber} - ${this.role}`);
+    return btoa(`${this.affiliationNumber} - ${this.role}`);
   }
 
   asJson() {
     return {
-      address: this.fullAddress,
       title: this.title,
       last_name: this.lastName,
       first_name: this.firstName,
-      role: this.role,
-      affiliation_number: this.affiliationNumber,
+      ...(this.address && { address: this.fullAddress }),
+      ...(this.role && { role: this.role }),
+      ...(this.affiliationNumber && { affiliation_number: this.affiliationNumber }),
       ...(this.phoneNumber && { phone_number: this.phoneNumber }),
       ...(this.email && this.email.includes("@") && { email: this.email }),
       ...(this.birthDate && { birth_date: this.birthDate }),

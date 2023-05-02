@@ -38,7 +38,7 @@ describe Invitations::Validate, type: :service do
   end
 
   let!(:department) do
-    create(:department, organisations: [organisation], invitations: [invitation], applicants: [applicant])
+    create(:department, organisations: [organisation], invitations: [invitation])
   end
 
   describe "#call" do
