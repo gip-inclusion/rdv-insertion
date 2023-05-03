@@ -1,10 +1,8 @@
-  <div class="d-flex align-items-center context-header">
+<div class="d-flex align-items-center context-header">
   <span></span>
   <h5 class="text-center px-2 py-4">
-    <strong>
-      <%= configuration.motif_category_name %>
-    </strong>
-   <small><%= configuration.rdv_with_referents? ? " (avec référents)" : "" %></small>
+    <strong><%= configuration.motif_category_name %></strong>
+    <small><%= configuration.rdv_with_referents? ? " (avec référents)" : "" %></small>
   </h5>
   <span></span>
   <table class="mx-2">
@@ -89,6 +87,9 @@
           <%= render "convocation_button", applicant: @applicant, convocation_motif: @convocation_motifs_by_rdv_context[rdv_context] %>
         </div>
       <% end %>
+      <div class="m-2 p-2 text-center">
+        <%= render "close_rdv_context_button", rdv_context: rdv_context, applicant: @applicant, organisation: @organisation, department: @department %>
+      </div>
     </div>
   </div>
 </div>

@@ -47,6 +47,16 @@ describe RdvContext do
   describe "#set_status" do
     subject { rdv_context.set_status }
 
+    context "closed" do
+      context "when rdv_context is closed" do
+        let!(:rdv_context) { create(:rdv_context, status: "closed") }
+
+        it "is not updated" do
+          expect(subject).to eq(:closed)
+        end
+      end
+    end
+
     context "without rdvs" do
       context "without invitations or rdvs" do
         let!(:rdv_context) { create(:rdv_context, rdvs: [], invitations: []) }
