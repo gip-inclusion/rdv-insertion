@@ -7,6 +7,7 @@ describe RdvContexts::Close, type: :service do
 
   describe "#call" do
     before do
+      travel_to(Time.zone.parse("2023-05-04 12:30"))
       allow(InvalidateInvitationJob).to receive(:perform_async)
     end
 
@@ -17,6 +18,11 @@ describe RdvContexts::Close, type: :service do
     it "change the status to closed" do
       subject
       expect(rdv_context.reload.status).to eq("closed")
+    end
+
+    it "saves the closed_at date" do
+      subject
+      expect(rdv_context.reload.closed_at.strftime("%d/%m/%Y")).to eq("04/05/2023")
     end
 
     it "calls the InvalidateInvitationJob for the applicants invitations" do

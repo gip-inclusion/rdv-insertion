@@ -8,7 +8,12 @@
   <table class="mx-2">
     <tbody>
       <tr>
-        <td class="px-2 py-1 context-status <%= background_class_for_context_status(rdv_context, configuration.number_of_days_before_action_required) %>" id="js-block-status-<%= configuration.motif_category %>"><em><%= display_context_status(rdv_context, configuration.number_of_days_before_action_required) %></em></td>
+        <td class="px-2 py-1 context-status <%= background_class_for_context_status(rdv_context, configuration.number_of_days_before_action_required) %>" id="js-block-status-<%= configuration.motif_category %>">
+          <em>
+            <%= display_context_status(rdv_context, configuration.number_of_days_before_action_required) %>
+            <%= " le #{format_date(rdv_context.closed_at)}" if rdv_context.closed_at.present? %>
+          </em>
+        </td>
       </tr>
     </tbody>
   </table>

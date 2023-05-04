@@ -4,34 +4,33 @@ module RdvContexts
     before_action :set_rdv_context, :set_applicant, :set_organisation, :set_department, only: [:create, :destroy]
 
     def create
-      if close_rdv_context.success?
-        return redirect_to department_applicant_path(@department, @applicant) if department_level?
+      return reload_applicant_show_page if close_rdv_context.success?
 
-        redirect_to organisation_applicant_path(@organisation, @applicant)
-      else
-        render turbo_stream: turbo_stream.replace(
-          "remote_modal", partial: "common/error_modal", locals: {
-            errors: close_rdv_context.errors
-          }
-        )
-      end
+      display_error_modal(close_rdv_context.errors)
     end
 
     def destroy
-      if @rdv_context.update(status: "not_invited") # this will trigger set_status method and compute the right status
-        return redirect_to department_applicant_path(@department, @applicant) if department_level?
+      # updating the status triggers set_status and computes the right status
+      return reload_applicant_show_page if @rdv_context.update(status: "not_invited", closed_at: nil)
 
-        redirect_to organisation_applicant_path(@organisation, @applicant)
-      else
-        render turbo_stream: turbo_stream.replace(
-          "remote_modal", partial: "common/error_modal", locals: {
-            errors: @rdv_context.errors.full_messages
-          }
-        )
-      end
+      display_error_modal(@rdv_context.errors.full_messages)
     end
 
     private
+
+    def reload_applicant_show_page
+      return redirect_to department_applicant_path(@department, @applicant) if department_level?
+
+      redirect_to organisation_applicant_path(@organisation, @applicant)
+    end
+
+    def display_error_modal(errors)
+      render turbo_stream: turbo_stream.replace(
+        "remote_modal", partial: "common/error_modal", locals: {
+          errors: errors
+        }
+      )
+    end
 
     def close_rdv_context
       @close_rdv_context ||= RdvContexts::Close.call(rdv_context: @rdv_context)

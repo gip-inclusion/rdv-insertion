@@ -59,6 +59,7 @@ describe RdvContexts::ClosingsController do
     it "updates the rdv_context status" do
       post :destroy, params: destroy_params
       expect(rdv_context.reload.status).not_to eq("closed")
+      expect(rdv_context.reload.closed_at).to eq(nil)
     end
 
     context "when the rdv_context is closed successfully" do
