@@ -111,12 +111,7 @@ describe Applicants::ProcessInput, type: :service do
 
     context "when an applicant with the same id exists" do
       let!(:applicant) { create(:applicant) }
-      let!(:applicant_params) { { encrypted_id: "encrypted_id" } }
-
-      before do
-        allow(EncryptionHelper).to receive(:decrypt)
-          .with("encrypted_id").and_return(applicant.id)
-      end
+      let!(:applicant_params) { { encrypted_id: EncryptionHelper.encrypt(applicant.id) } }
 
       it("is a success") { is_a_success }
 
