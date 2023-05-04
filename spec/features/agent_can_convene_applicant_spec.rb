@@ -230,7 +230,7 @@ describe "Agents can convene applicant to rdv", js: true do
       before { configuration.update! convene_applicant: false }
 
       it "shows only one convocation button" do
-        visit organisation_applicants_path(organisation)
+        visit organisation_applicant_path(organisation, applicant)
         expect(page).to have_content("📅 Convoquer").once
       end
     end
@@ -242,7 +242,7 @@ describe "Agents can convene applicant to rdv", js: true do
       it "does not show a convocation button" do
         [rdv_context, other_rdv_context].each(&:set_status)
         [rdv_context, other_rdv_context].each(&:save!)
-        visit organisation_applicants_path(organisation)
+        visit organisation_applicant_path(organisation, applicant)
         expect(page).not_to have_content("📅 Convoquer")
       end
     end
