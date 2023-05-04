@@ -29,7 +29,7 @@ class Configuration < ApplicationRecord
   end
 
   def organisation_not_already_attached_to_motif_category
-    existing_categories = organisation.configurations.reject { |c| c.id == id }.map(&:motif_category)
+    existing_categories = organisation.configurations.select(&:persisted?).map(&:motif_category)
     return unless existing_categories.include?(motif_category)
 
     errors.add(:base, "L'organisation a déjà une configuration pour cette catégorie de motif")

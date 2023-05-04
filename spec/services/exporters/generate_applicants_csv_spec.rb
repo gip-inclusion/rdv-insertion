@@ -1,13 +1,13 @@
 describe Exporters::GenerateApplicantsCsv, type: :service do
-  subject { described_class.call(applicants: applicants, structure: structure, motif_category: motif_category) }
+  subject { described_class.call(applicants: applicants, structure: structure.reload, motif_category: motif_category) }
 
   let!(:now) { Time.zone.parse("22/06/2022") }
   let!(:timestamp) { now.to_i }
   let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation") }
   let!(:department) { create(:department, name: "Drôme", number: "26") }
   let!(:organisation) { create(:organisation, name: "Drome RSA", department: department) }
-  let!(:configuration) { create(:configuration, organisation: organisation, motif_category: motif_category) }
   let!(:structure) { organisation }
+  let!(:configuration) { create(:configuration, organisation: organisation, motif_category: motif_category) }
   let!(:nir) { generate_random_nir }
   let!(:applicant1) do
     create(
