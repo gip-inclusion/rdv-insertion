@@ -10,10 +10,10 @@ module Messengers::SendSms
     fail!("Le numéro de téléphone doit être un mobile") unless sendable.phone_number_is_mobile?
   end
 
-  def send_sms(sms_sender_name, phone_number_formatted, content)
+  def send_sms(sms_sender_name, phone_number, content)
     return Rails.logger.info(content) if Rails.env.development?
 
-    SendTransactionalSms.call(phone_number_formatted: phone_number_formatted,
+    SendTransactionalSms.call(phone_number: phone_number,
                               sender_name: sms_sender_name, content: content)
   end
 end

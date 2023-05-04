@@ -1,7 +1,5 @@
 module Applicants
   class SearchesController < ApplicationController
-    include PhoneNumberFormatter
-
     before_action :set_organisations, :search_applicants, only: [:create]
 
     def create
@@ -32,7 +30,9 @@ module Applicants
     end
 
     def formatted_phone_numbers
-      applicants_params[:phone_numbers].map { |phone_number| format_phone_number(phone_number) }.compact
+      applicants_params[:phone_numbers].map do |phone_number|
+        PhoneNumberHelper.format_phone_number(phone_number)
+      end.compact
     end
 
     def search_in_department_organisations

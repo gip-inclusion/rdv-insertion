@@ -8,8 +8,7 @@ describe Invitations::SendSms, type: :service do
   include_context "with all existing categories"
 
   let!(:help_phone_number) { "0147200001" }
-  let!(:phone_number) { "0782605941" }
-  let!(:phone_number_formatted) { "+33782605941" }
+  let!(:phone_number) { "+33782605941" }
   let!(:applicant) do
     create(
       :applicant,
@@ -59,7 +58,7 @@ describe Invitations::SendSms, type: :service do
     it "calls the send sms service with the right content" do
       expect(SendTransactionalSms).to receive(:call)
         .with(
-          phone_number_formatted: phone_number_formatted, content: content,
+          phone_number: phone_number, content: content,
           sender_name: sms_sender_name
         )
       subject
@@ -111,7 +110,7 @@ describe Invitations::SendSms, type: :service do
       it "calls the send transactional service with the right content" do
         expect(SendTransactionalSms).to receive(:call)
           .with(
-            phone_number_formatted: phone_number_formatted, content: content,
+            phone_number: phone_number, content: content,
             sender_name: sms_sender_name
           )
         subject
@@ -143,7 +142,7 @@ describe Invitations::SendSms, type: :service do
         it "calls the send transactional service with the right content" do
           expect(SendTransactionalSms).to receive(:call)
             .with(
-              phone_number_formatted: phone_number_formatted, content: content,
+              phone_number: phone_number, content: content,
               sender_name: sms_sender_name
             )
           subject
@@ -167,7 +166,7 @@ describe Invitations::SendSms, type: :service do
           it "calls the send transactional service with the right content" do
             expect(SendTransactionalSms).to receive(:call)
               .with(
-                phone_number_formatted: phone_number_formatted, content: content,
+                phone_number: phone_number, content: content,
                 sender_name: sms_sender_name
               )
             subject
@@ -191,7 +190,7 @@ describe Invitations::SendSms, type: :service do
       it "calls the send transactional service with the right content" do
         expect(SendTransactionalSms).to receive(:call)
           .with(
-            phone_number_formatted: phone_number_formatted, content: content,
+            phone_number: phone_number, content: content,
             sender_name: sms_sender_name
           )
         subject
@@ -212,7 +211,7 @@ describe Invitations::SendSms, type: :service do
         it "calls the send transactional service with the right content" do
           expect(SendTransactionalSms).to receive(:call)
             .with(
-              phone_number_formatted: phone_number_formatted, content: content,
+              phone_number: phone_number, content: content,
               sender_name: sms_sender_name
             )
           subject
@@ -238,7 +237,7 @@ describe Invitations::SendSms, type: :service do
       it "calls the send transactional service with the right content" do
         expect(SendTransactionalSms).to receive(:call)
           .with(
-            phone_number_formatted: phone_number_formatted, content: content,
+            phone_number: phone_number, content: content,
             sender_name: sms_sender_name
           )
         subject
@@ -262,7 +261,7 @@ describe Invitations::SendSms, type: :service do
         it "calls the send transactional service with the right content" do
           expect(SendTransactionalSms).to receive(:call)
             .with(
-              phone_number_formatted: phone_number_formatted, content: content,
+              phone_number: phone_number, content: content,
               sender_name: sms_sender_name
             )
           subject
@@ -288,7 +287,7 @@ describe Invitations::SendSms, type: :service do
       it "calls the send transactional service with the right content" do
         expect(SendTransactionalSms).to receive(:call)
           .with(
-            phone_number_formatted: phone_number_formatted, content: content,
+            phone_number: phone_number, content: content,
             sender_name: sms_sender_name
           )
         subject
@@ -311,7 +310,7 @@ describe Invitations::SendSms, type: :service do
         it "calls the send transactional service with the right content" do
           expect(SendTransactionalSms).to receive(:call)
             .with(
-              phone_number_formatted: phone_number_formatted, content: content,
+              phone_number: phone_number, content: content,
               sender_name: sms_sender_name
             )
           subject
@@ -336,7 +335,7 @@ describe Invitations::SendSms, type: :service do
       it "calls the send transactional service with the right content" do
         expect(SendTransactionalSms).to receive(:call)
           .with(
-            phone_number_formatted: phone_number_formatted, content: content,
+            phone_number: phone_number, content: content,
             sender_name: sms_sender_name
           )
         subject
@@ -359,7 +358,7 @@ describe Invitations::SendSms, type: :service do
         it "calls the send transactional service with the right content" do
           expect(SendTransactionalSms).to receive(:call)
             .with(
-              phone_number_formatted: phone_number_formatted, content: content,
+              phone_number: phone_number, content: content,
               sender_name: sms_sender_name
             )
           subject
@@ -385,7 +384,7 @@ describe Invitations::SendSms, type: :service do
       it "calls the send transactional service with the right content" do
         expect(SendTransactionalSms).to receive(:call)
           .with(
-            phone_number_formatted: phone_number_formatted, content: content,
+            phone_number: phone_number, content: content,
             sender_name: sms_sender_name
           )
         subject
@@ -409,7 +408,7 @@ describe Invitations::SendSms, type: :service do
         it "calls the send transactional service with the right content" do
           expect(SendTransactionalSms).to receive(:call)
             .with(
-              phone_number_formatted: phone_number_formatted, content: content,
+              phone_number: phone_number, content: content,
               sender_name: sms_sender_name
             )
           subject
@@ -433,7 +432,7 @@ describe Invitations::SendSms, type: :service do
       it "calls the send transactional service with the right content" do
         expect(SendTransactionalSms).to receive(:call)
           .with(
-            phone_number_formatted: phone_number_formatted, content: content,
+            phone_number: phone_number, content: content,
             sender_name: sms_sender_name
           )
         subject
@@ -457,7 +456,7 @@ describe Invitations::SendSms, type: :service do
         it "calls the send transactional service with the right content" do
           expect(SendTransactionalSms).to receive(:call)
             .with(
-              phone_number_formatted: phone_number_formatted, content: content,
+              phone_number: phone_number, content: content,
               sender_name: sms_sender_name
             )
           subject
@@ -480,7 +479,7 @@ describe Invitations::SendSms, type: :service do
       it "calls the send transactional service with the right content" do
         expect(SendTransactionalSms).to receive(:call)
           .with(
-            phone_number_formatted: phone_number_formatted, content: content,
+            phone_number: phone_number, content: content,
             sender_name: sms_sender_name
           )
         subject
@@ -505,7 +504,7 @@ describe Invitations::SendSms, type: :service do
       it "calls the send transactional service with the right content" do
         expect(SendTransactionalSms).to receive(:call)
           .with(
-            phone_number_formatted: phone_number_formatted, content: content,
+            phone_number: phone_number, content: content,
             sender_name: sms_sender_name
           )
         subject
@@ -528,7 +527,7 @@ describe Invitations::SendSms, type: :service do
       it "calls the send transactional service with the right content" do
         expect(SendTransactionalSms).to receive(:call)
           .with(
-            phone_number_formatted: phone_number_formatted, content: content,
+            phone_number: phone_number, content: content,
             sender_name: sms_sender_name
           )
         subject
@@ -552,7 +551,7 @@ describe Invitations::SendSms, type: :service do
       it "calls the send transactional service with the right content" do
         expect(SendTransactionalSms).to receive(:call)
           .with(
-            phone_number_formatted: phone_number_formatted, content: content,
+            phone_number: phone_number, content: content,
             sender_name: sms_sender_name
           )
         subject
@@ -575,7 +574,7 @@ describe Invitations::SendSms, type: :service do
         it "calls the send transactional service with the right content" do
           expect(SendTransactionalSms).to receive(:call)
             .with(
-              phone_number_formatted: phone_number_formatted, content: content,
+              phone_number: phone_number, content: content,
               sender_name: sms_sender_name
             )
           subject
@@ -600,7 +599,7 @@ describe Invitations::SendSms, type: :service do
       it "calls the send transactional service with the right content" do
         expect(SendTransactionalSms).to receive(:call)
           .with(
-            phone_number_formatted: phone_number_formatted, content: content,
+            phone_number: phone_number, content: content,
             sender_name: sms_sender_name
           )
         subject
@@ -624,7 +623,7 @@ describe Invitations::SendSms, type: :service do
       it "calls the send transactional service with the right content" do
         expect(SendTransactionalSms).to receive(:call)
           .with(
-            phone_number_formatted: phone_number_formatted, content: content,
+            phone_number: phone_number, content: content,
             sender_name: sms_sender_name
           )
         subject
@@ -648,7 +647,7 @@ describe Invitations::SendSms, type: :service do
       it "calls the send transactional service with the right content" do
         expect(SendTransactionalSms).to receive(:call)
           .with(
-            phone_number_formatted: phone_number_formatted, content: content,
+            phone_number: phone_number, content: content,
             sender_name: sms_sender_name
           )
         subject
@@ -672,7 +671,7 @@ describe Invitations::SendSms, type: :service do
       it "calls the send transactional service with the right content" do
         expect(SendTransactionalSms).to receive(:call)
           .with(
-            phone_number_formatted: phone_number_formatted, content: content,
+            phone_number: phone_number, content: content,
             sender_name: sms_sender_name
           )
         subject
@@ -696,7 +695,7 @@ describe Invitations::SendSms, type: :service do
         it "calls the send transactional service with the right content" do
           expect(SendTransactionalSms).to receive(:call)
             .with(
-              phone_number_formatted: phone_number_formatted, content: content,
+              phone_number: phone_number, content: content,
               sender_name: sms_sender_name
             )
           subject
