@@ -17,13 +17,13 @@ class ConfigurationsController < ApplicationController
   def show; end
 
   def new
-    @configuration = ::Configuration.new(organisations: [@organisation])
+    @configuration = ::Configuration.new(organisation: @organisation)
   end
 
   def edit; end
 
   def create
-    @configuration = ::Configuration.new(organisations: [@organisation])
+    @configuration = ::Configuration.new(organisation: @organisation)
     @configuration.assign_attributes(**configuration_params.compact_blank)
     if @configuration.save
       flash.now[:success] = "La configuration a été créée avec succès"
@@ -46,8 +46,7 @@ class ConfigurationsController < ApplicationController
   end
 
   def destroy
-    @configuration.organisations.delete(@organisation)
-    @configuration.destroy if @configuration.organisations.blank?
+    @configuration.destroy
     flash.now[:success] = "Le contexte a été supprimé avec succès"
   end
 
@@ -67,7 +66,7 @@ class ConfigurationsController < ApplicationController
 
   def set_messages_configuration
     @messages_configuration = @organisation.messages_configuration ||
-                              MessagesConfiguration.new(organisations: [@organisation])
+                              MessagesConfiguration.new(organisation: @organisation)
   end
 
   def set_file_configuration

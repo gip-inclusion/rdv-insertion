@@ -6,7 +6,6 @@ describe "Agents can convene applicant to rdv", js: true do
       :organisation,
       department: department,
       # needed for the organisation applicants page
-      configurations: [configuration],
       rdv_solidarites_organisation_id: rdv_solidarites_organisation_id
     )
   end
@@ -14,6 +13,7 @@ describe "Agents can convene applicant to rdv", js: true do
   let!(:configuration) do
     create(
       :configuration,
+      organisation: organisation,
       motif_category: motif_category,
       convene_applicant: true,
       number_of_days_before_action_required: 4
@@ -163,7 +163,7 @@ describe "Agents can convene applicant to rdv", js: true do
         motif_category: other_motif_category,
         convene_applicant: true,
         number_of_days_before_action_required: 7,
-        organisations: [organisation]
+        organisation: organisation
       )
     end
     let!(:other_rdv_context) do

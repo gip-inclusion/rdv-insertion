@@ -1,13 +1,13 @@
 class Configuration < ApplicationRecord
   belongs_to :motif_category
   belongs_to :file_configuration
-  has_many :configurations_organisations, dependent: :delete_all
-  has_many :organisations, through: :configurations_organisations
+  belongs_to :organisation
 
   validate :delays_validity, :invitation_formats_validity
 
   delegate :position, :name, to: :motif_category, prefix: true
   delegate :sheet_name, to: :file_configuration
+  delegate :department, to: :organisation
 
   private
 

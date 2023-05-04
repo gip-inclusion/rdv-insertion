@@ -3,8 +3,8 @@ RSpec.describe InvitationMailer do
 
   let!(:department) { create(:department, name: "Drôme", pronoun: "la") }
   let!(:help_phone_number) { "0139393939" }
-  let!(:messages_configuration) { create(:messages_configuration) }
-  let!(:organisation) { create(:organisation, department: department, messages_configuration: messages_configuration) }
+  let!(:organisation) { create(:organisation, department: department) }
+  let!(:messages_configuration) { create(:messages_configuration, organisation: organisation) }
   let!(:applicant) do
     create(:applicant, first_name: "Jean", last_name: "Valjean")
   end
@@ -54,7 +54,9 @@ RSpec.describe InvitationMailer do
       end
 
       context "when the signature is configured" do
-        let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
+        let!(:messages_configuration) do
+          create(:messages_configuration, organisation: organisation, signature_lines: ["Fabienne Bouchet"])
+        end
 
         it "renders the mail with the right signature" do
           expect(subject.body.encoded).to match(/Fabienne Bouchet/)
@@ -402,7 +404,9 @@ RSpec.describe InvitationMailer do
     end
 
     context "when the signature is configured" do
-      let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
+      let!(:messages_configuration) do
+        create(:messages_configuration, organisation: organisation, signature_lines: ["Fabienne Bouchet"])
+      end
 
       it "renders the mail with the right signature" do
         expect(subject.body.encoded).to match(/Fabienne Bouchet/)
@@ -448,7 +452,9 @@ RSpec.describe InvitationMailer do
     end
 
     context "when the signature is configured" do
-      let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
+      let!(:messages_configuration) do
+        create(:messages_configuration, organisation: organisation, signature_lines: ["Fabienne Bouchet"])
+      end
 
       it "renders the mail with the right signature" do
         expect(subject.body.encoded).to match(/Fabienne Bouchet/)
@@ -558,7 +564,9 @@ RSpec.describe InvitationMailer do
 
     context "when the signature is configured" do
       let!(:rdv_context) { build(:rdv_context, motif_category: category_psychologue) }
-      let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
+      let!(:messages_configuration) do
+        create(:messages_configuration, organisation: organisation, signature_lines: ["Fabienne Bouchet"])
+      end
 
       it "renders the mail with the right signature" do
         expect(subject.body.encoded).to match(/Fabienne Bouchet/)
@@ -607,7 +615,9 @@ RSpec.describe InvitationMailer do
 
     context "when the signature is configured" do
       let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_orientation) }
-      let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
+      let!(:messages_configuration) do
+        create(:messages_configuration, organisation: organisation, signature_lines: ["Fabienne Bouchet"])
+      end
 
       it "renders the mail with the right signature" do
         expect(subject.body.encoded).to match(/Fabienne Bouchet/)
@@ -765,7 +775,9 @@ RSpec.describe InvitationMailer do
     end
 
     context "when the signature is configured" do
-      let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
+      let!(:messages_configuration) do
+        create(:messages_configuration, organisation: organisation, signature_lines: ["Fabienne Bouchet"])
+      end
 
       it "renders the mail with the right signature" do
         expect(subject.body.encoded).to match(/Fabienne Bouchet/)
@@ -810,7 +822,9 @@ RSpec.describe InvitationMailer do
 
     context "when the signature is configured" do
       let!(:rdv_context) { build(:rdv_context, motif_category: category_psychologue) }
-      let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
+      let!(:messages_configuration) do
+        create(:messages_configuration, organisation: organisation, signature_lines: ["Fabienne Bouchet"])
+      end
 
       it "renders the mail with the right signature" do
         expect(subject.body.encoded).to match(/Fabienne Bouchet/)

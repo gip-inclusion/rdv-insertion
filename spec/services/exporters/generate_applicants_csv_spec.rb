@@ -5,10 +5,8 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
   let!(:timestamp) { now.to_i }
   let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation") }
   let!(:department) { create(:department, name: "Drôme", number: "26") }
-  let!(:organisation) do
-    create(:organisation, configurations: [configuration], name: "Drome RSA", department: department)
-  end
-  let!(:configuration) { create(:configuration, motif_category: motif_category) }
+  let!(:organisation) { create(:organisation, name: "Drome RSA", department: department) }
+  let!(:configuration) { create(:configuration, organisation: organisation, motif_category: motif_category) }
   let!(:structure) { organisation }
   let!(:nir) { generate_random_nir }
   let!(:applicant1) do
