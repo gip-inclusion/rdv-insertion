@@ -131,7 +131,7 @@ class Applicant < ApplicationRecord
   end
 
   def format_phone_number
-    self.phone_number = PhoneNumberFormatter.format_phone_number(phone_number)
+    self.phone_number = PhoneNumberHelper.format_phone_number(phone_number)
   end
 
   def birth_date_validity

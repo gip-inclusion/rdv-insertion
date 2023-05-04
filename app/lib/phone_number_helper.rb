@@ -1,4 +1,4 @@
-module PhoneNumberFormatter
+module PhoneNumberHelper
   COUNTRY_CODES = [:FR, :GP, :GF, :MQ, :RE, :YT].freeze
   # See issue #1471 in RDV-Solidarités. This setup allows:
   # * international (e164) phone numbers

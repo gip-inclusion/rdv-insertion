@@ -43,7 +43,7 @@ module Applicants
     end
 
     def find_applicant_by_phone_number
-      phone_number_formatted = PhoneNumberFormatter.format_phone_number(@attributes[:phone_number])
+      phone_number_formatted = PhoneNumberHelper.format_phone_number(@attributes[:phone_number])
       return if phone_number_formatted.blank?
 
       Applicant.where(phone_number: phone_number_formatted).find do |applicant|

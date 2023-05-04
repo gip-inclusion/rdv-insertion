@@ -31,7 +31,7 @@ module Applicants
 
     def formatted_phone_numbers
       applicants_params[:phone_numbers].map do |phone_number|
-        PhoneNumberFormatter.format_phone_number(phone_number)
+        PhoneNumberHelper.format_phone_number(phone_number)
       end.compact
     end
 

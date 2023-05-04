@@ -6,7 +6,7 @@ module PhoneNumberValidation
   end
 
   def phone_number_is_mobile?
-    types = PhoneNumberFormatter.parsed_number(phone_number)&.types
+    types = PhoneNumberHelper.parsed_number(phone_number)&.types
     types&.include?(:mobile)
   end
 
@@ -19,6 +19,6 @@ module PhoneNumberValidation
   end
 
   def phone_number_is_valid?
-    PhoneNumberFormatter.parsed_number(phone_number).present?
+    PhoneNumberHelper.parsed_number(phone_number).present?
   end
 end
