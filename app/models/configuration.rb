@@ -3,11 +3,13 @@ class Configuration < ApplicationRecord
   belongs_to :file_configuration
   belongs_to :organisation
 
-  validate :delays_validity, :invitation_formats_validity
+  validate :delays_validity, :invitation_formats_validity, :organisation_not_already_attached_to_motif_category
 
   delegate :position, :name, to: :motif_category, prefix: true
   delegate :sheet_name, to: :file_configuration
   delegate :department, to: :organisation
+
+  after_create :create_rdv_contexts_for_organisation_applicants
 
   private
 
@@ -23,6 +25,21 @@ class Configuration < ApplicationRecord
       next if %w[sms email postal].include?(invitation_format)
 
       errors.add(:base, "Les formats d'invitation ne peuvent être que : sms, email, postal")
+    end
+  end
+
+  def organisation_not_already_attached_to_motif_category
+    existing_categories = organisation.configurations.reject { |c| c.id == id }.map(&:motif_category)
+    return unless existing_categories.include?(motif_category)
+
+    errors.add(:base, "L'organisation a déjà une configuration pour cette catégorie de motif")
+  end
+
+  # When we add motif category in an organisation, we want all the applicants to be linked
+  # to this new category
+  def create_rdv_contexts_for_organisation_applicants
+    organisation.applicants.each do |applicant|
+      RdvContext.find_or_create_by!(applicant: applicant, motif_category: motif_category)
     end
   end
 end
