@@ -6,18 +6,18 @@ describe ApplicantsController do
   let!(:category_accompagnement) do
     create(:motif_category, short_name: "rsa_accompagnement", name: "RSA accompagnement")
   end
-  let!(:organisation) do
-    create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
-                          department_id: department.id)
-  end
   let!(:configuration) do
     create(
       :configuration,
-      motif_category: category_orientation, organisation: organisation,
+      motif_category: category_orientation,
       number_of_days_before_action_required: number_of_days_before_action_required
     )
   end
   let!(:number_of_days_before_action_required) { 6 }
+  let!(:organisation) do
+    create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
+                          department_id: department.id, configurations: [configuration])
+  end
   let!(:agent) { create(:agent, basic_role_in_organisations: [organisation]) }
   let!(:rdv_solidarites_organisation_id) { 888 }
   let(:applicant) { create(:applicant, organisations: [organisation]) }
@@ -245,18 +245,16 @@ describe ApplicantsController do
     end
 
     context "it shows the different contexts" do
-      let!(:organisation) do
-        create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
-                              department_id: department.id)
-      end
-
       let!(:configuration) do
-        create(:configuration, organisation: organisation, motif_category: category_orientation,
-                               invitation_formats: %w[sms email])
+        create(:configuration, motif_category: category_orientation, invitation_formats: %w[sms email])
       end
       let!(:configuration2) do
-        create(:configuration, organisation: organisation, motif_category: category_accompagnement,
-                               invitation_formats: %w[sms email postal])
+        create(:configuration, motif_category: category_accompagnement, invitation_formats: %w[sms email postal])
+      end
+
+      let!(:organisation) do
+        create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
+                              configurations: [configuration, configuration2], department_id: department.id)
       end
 
       let!(:rdv_context) do
@@ -384,12 +382,7 @@ describe ApplicantsController do
       context "when there is no matching configuration for a rdv_context" do
         let!(:organisation) do
           create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
-                                department_id: department.id)
-        end
-
-        let!(:configuration) do
-          create(:configuration, organisation: organisation, motif_category: category_accompagnement,
-                                 invitation_formats: %w[sms email])
+                                department_id: department.id, configurations: [configuration2])
         end
 
         let!(:rdv_context) do
@@ -498,9 +491,7 @@ describe ApplicantsController do
 
     context "when a context is specified" do
       let!(:rdv_context2) { build(:rdv_context, motif_category: category_accompagnement, status: "invitation_pending") }
-      let!(:configuration) do
-        create(:configuration, organisation: organisation, motif_category: category_accompagnement)
-      end
+      let!(:configuration) { create(:configuration, motif_category: category_accompagnement) }
 
       it "returns the list of applicants in the current context" do
         get :index, params: index_params.merge(motif_category_id: category_accompagnement.id)
