@@ -3,7 +3,9 @@ class Configuration < ApplicationRecord
   belongs_to :file_configuration
   belongs_to :organisation
 
-  validate :delays_validity, :invitation_formats_validity, :organisation_not_already_attached_to_motif_category
+  validates :organisation, uniqueness: { scope: :motif_category,
+                                         message: "a déjà une configuration pour cette catégorie de motif" }
+  validate :delays_validity, :invitation_formats_validity
 
   delegate :position, :name, to: :motif_category, prefix: true
   delegate :sheet_name, to: :file_configuration
@@ -26,13 +28,6 @@ class Configuration < ApplicationRecord
 
       errors.add(:base, "Les formats d'invitation ne peuvent être que : sms, email, postal")
     end
-  end
-
-  def organisation_not_already_attached_to_motif_category
-    existing_categories = organisation.configurations.select(&:persisted?).map(&:motif_category)
-    return unless existing_categories.include?(motif_category)
-
-    errors.add(:base, "L'organisation a déjà une configuration pour cette catégorie de motif")
   end
 
   # When we add motif category in an organisation, we want all the applicants to be linked

@@ -1,5 +1,5 @@
 describe Exporters::GenerateApplicantsCsv, type: :service do
-  subject { described_class.call(applicants: applicants, structure: structure.reload, motif_category: motif_category) }
+  subject { described_class.call(applicants: applicants, structure: structure, motif_category: motif_category) }
 
   let!(:now) { Time.zone.parse("22/06/2022") }
   let!(:timestamp) { now.to_i }

@@ -42,4 +42,19 @@ describe Configuration do
       end
     end
   end
+
+  describe "organisation already attached to motif_category" do
+    context "a configuration with the given motif_category already exists for the organisation" do
+      let!(:organisation) { create(:organisation) }
+      let!(:motif_category) { create(:motif_category) }
+      let!(:configuration) { create(:configuration, organisation: organisation, motif_category: motif_category) }
+      let(:new_configuration) { build(:configuration, organisation: organisation, motif_category: motif_category) }
+
+      it "adds errors" do
+        expect(new_configuration).not_to be_valid
+        expect(new_configuration.errors.full_messages.to_sentence)
+          .to include("Organisation a déjà une configuration pour cette catégorie de motif")
+      end
+    end
+  end
 end
