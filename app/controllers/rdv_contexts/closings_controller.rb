@@ -45,7 +45,7 @@ module RdvContexts
     end
 
     def set_organisation
-      @organisation = Organisation.find(params[:organisation_id])
+      @organisation = Organisation.find(params[:organisation_id]) if params[:organisation_id].present?
     end
 
     def set_department
