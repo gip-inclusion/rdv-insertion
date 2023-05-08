@@ -11,7 +11,7 @@ const handleApplicantCreation = async (applicant, organisationId) => {
       applicant,
       result.contact_duplicate,
       result.duplicate_attribute,
-      result.encrypted_id,
+      result.duplicate_encrypted_id,
       organisationId
     );
   } else {

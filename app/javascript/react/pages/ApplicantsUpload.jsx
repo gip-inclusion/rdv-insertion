@@ -63,7 +63,6 @@ export default function ApplicantsUpload({
         } else {
           let rows = XLSX.utils.sheet_to_row_object_array(sheet);
           rows = rows.map((row) => parameterizeObjectKeys(row));
-          console.log("rows", rows);
           rows.forEach((row) => {
             const applicant = new Applicant(
               // creation and editing to work properly

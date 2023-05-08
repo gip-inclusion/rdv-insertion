@@ -10,7 +10,7 @@ const createOrUpdateApplicant = async (
   newApplicant,
   contactDuplicate,
   duplicateAttribute,
-  encryptedId,
+  duplicateEncryptedId,
   organisationId
 ) => {
   const humanDuplicateAttribute = FRENCH_DULPLICATE_ATTRIBUTES[duplicateAttribute];
@@ -33,9 +33,7 @@ const createOrUpdateApplicant = async (
   });
 
   if (result.isConfirmed) {
-    newApplicant.encryptedId = encryptedId;
-    console.log("encryptedId", encryptedId);
-    console.log("asjson", newApplicant.asJson());
+    newApplicant.encryptedId = duplicateEncryptedId;
     await handleApplicantCreation(newApplicant, organisationId);
   } else if (result.isDenied) {
     const objectAttribute = duplicateAttribute === "email" ? "email" : "phoneNumber";

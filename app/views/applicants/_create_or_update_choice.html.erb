@@ -8,7 +8,7 @@
         <% applicant_attributes.each do |attribute_name, attribute_value| %>
           <%= f.hidden_field attribute_name, value: attribute_value %>
         <% end %>
-        <%= f.hidden_field :encrypted_id, value: encrypted_id %>
+        <%= f.hidden_field :encrypted_id, value: duplicate_encrypted_id %>
       <button type="submit" class="btn btn-blue-out">C'est la même personne</button>
     <% end %>
     <%= simple_form_for(:applicant, url: compute_create_path(organisation, department), html: { method: :post }, data: { "turbo-frame" => "_top" }) do |f| %>

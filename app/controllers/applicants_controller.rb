@@ -137,7 +137,7 @@ class ApplicantsController < ApplicationController
           "remote_modal", partial: "create_or_update_choice", locals: {
             contact_duplicate: contact_duplicate,
             duplicate_attribute: duplicate_attribute,
-            encrypted_id: EncryptionHelper.encrypt(contact_duplicate.id),
+            duplicate_encrypted_id: EncryptionHelper.encrypt(contact_duplicate.id),
             applicant_attributes: applicant_attributes,
             department: @department,
             organisation: @organisation
@@ -149,7 +149,7 @@ class ApplicantsController < ApplicationController
           success: false,
           contact_duplicate: contact_duplicate,
           duplicate_attribute: duplicate_attribute,
-          encrypted_id: EncryptionHelper.encrypt(contact_duplicate.id)
+          duplicate_encrypted_id: EncryptionHelper.encrypt(contact_duplicate.id)
         }, status: :unprocessable_entity
       end
     end
