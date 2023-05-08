@@ -21,9 +21,9 @@ describe "Agents can create applicant through form", js: true do
       stub_rdv_solidarites_create_user(rdv_solidarites_user_id)
       stub_rdv_solidarites_update_user(rdv_solidarites_user_id)
       stub_rdv_solidarites_get_organisation_user(rdv_solidarites_organisation_id, rdv_solidarites_user_id)
-      # somehow the tests fail on CI if we do not put this line, it seems the status are not assigned
-      # to the rdv contexts when we create them in Applicants::Save and so there is an error when redirected to
-      # show page after creation
+      # Somehow the tests fail on CI if we do not put this line, the before_save :set_status callback is not
+      # triggered on the rdv contexts when we create them (in Applicants::Save) and so there is an error when redirected
+      # to show page after creation
       allow_any_instance_of(RdvContext).to receive(:status).and_return("not_invited")
     end
 

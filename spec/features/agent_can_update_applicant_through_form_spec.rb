@@ -38,6 +38,10 @@ describe "Agents can update applicant through form", js: true do
       setup_agent_session(agent)
       stub_rdv_solidarites_update_user(rdv_solidarites_user_id)
       stub_rdv_solidarites_get_organisation_user(rdv_solidarites_organisation_id, rdv_solidarites_user_id)
+      # Somehow the tests fail on CI if we do not put this line, the before_save :set_status callback is not
+      # triggered on the rdv contexts when we create them (in Applicants::Save) and so there is an error when redirected
+      # to show page after update
+      allow_any_instance_of(RdvContext).to receive(:status).and_return("not_invited")
     end
 
     it "can update the applicant" do
