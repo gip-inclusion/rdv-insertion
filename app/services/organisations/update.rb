@@ -8,12 +8,17 @@ module Organisations
     def call
       Organisation.transaction do
         check_rdv_solidarites_organisation_id
+        set_organisation_verticale_attribute_to_rdv_insertion
         save_record!(@organisation)
         update_rdv_solidarites_organisation
       end
     end
 
     private
+
+    def set_organisation_verticale_attribute_to_rdv_insertion
+      @organisation.verticale = "rdv_insertion"
+    end
 
     def check_rdv_solidarites_organisation_id
       return if @organisation.rdv_solidarites_organisation_id
