@@ -14,8 +14,14 @@ describe Organisations::Create, type: :service do
                          name: nil, phone_number: nil, department: department)
   end
   let!(:organisation_from_rdvs) do
-    build(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
-                         name: "Nouvelle org", phone_number: "0102030405", department: department)
+    build(
+      :organisation,
+      rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
+      name: "Nouvelle org",
+      phone_number: "0102030405",
+      department: department,
+      verticale: "rdv_solidarites"
+    )
   end
   let!(:agent) { create(:agent, email: "alain.sertion@departement.fr") }
   let!(:organisation_count_before) { Organisation.count }
@@ -33,6 +39,8 @@ describe Organisations::Create, type: :service do
         .and_return(OpenStruct.new(success?: true))
       allow(RdvSolidaritesApi::RetrieveWebhookEndpoint).to receive(:call)
         .and_return(OpenStruct.new(success?: true, webhook_endpoint: nil))
+      allow(RdvSolidaritesApi::UpdateOrganisation).to receive(:call)
+        .and_return(OpenStruct.new(success?: true))
     end
 
     it "tries to retrieve an organisation from rdvs" do
@@ -42,6 +50,7 @@ describe Organisations::Create, type: :service do
 
     it "assigns attributes to the organisation" do
       expect(organisation).to receive(:assign_attributes)
+      expect(organisation.verticale).to eq("rdv_insertion")
       subject
     end
 
@@ -67,9 +76,15 @@ describe Organisations::Create, type: :service do
       subject
     end
 
+    it "calls the update webhook endpoint service (for verticale attribute)" do
+      expect(RdvSolidaritesApi::UpdateOrganisation).to receive(:call)
+      subject
+    end
+
     it "is a success" do
       subject
       expect(organisation.reload.name).to eq("Nouvelle org")
+      expect(organisation.reload.verticale).to eq("rdv_insertion")
       expect(organisation.reload.phone_number).to eq("0102030405")
     end
 

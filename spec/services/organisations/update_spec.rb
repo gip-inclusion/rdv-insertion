@@ -34,6 +34,10 @@ describe Organisations::Update, type: :service do
       is_a_success
     end
 
+    it "verticale attributes is set to rdv_insertion" do
+      expect(organisation.verticale).to eq("rdv_insertion")
+    end
+
     context "when the organisation has no rdv solidarites id" do
       let!(:organisation) do
         create(:organisation, organisation_attributes.merge(rdv_solidarites_organisation_id: nil))
