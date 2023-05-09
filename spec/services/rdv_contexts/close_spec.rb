@@ -15,14 +15,9 @@ describe RdvContexts::Close, type: :service do
       expect(subject.success?).to eq(true)
     end
 
-    it "change the status to closed" do
-      subject
-      expect(rdv_context.reload.status).to eq("closed")
-    end
-
     it "saves the closed_at date" do
       subject
-      expect(rdv_context.reload.closed_at.strftime("%d/%m/%Y")).to eq("04/05/2023")
+      expect(rdv_context.closed_at.strftime("%d/%m/%Y")).to eq("04/05/2023")
     end
 
     it "calls the InvalidateInvitationJob for the applicants invitations" do

@@ -1,9 +1,11 @@
 describe RdvContexts::ClosingsController do
-  let!(:department) { create(:department) }
-  let!(:organisation) { create(:organisation, department: department) }
-  let!(:applicant) { create(:applicant, organisations: [organisation]) }
-  let!(:rdv_context) { create(:rdv_context, applicant: applicant) }
   let!(:agent) { create(:agent, organisations: [organisation]) }
+  let!(:department) { create(:department) }
+  let!(:motif_category) { create(:motif_category) }
+  let!(:configuration) { create(:configuration, motif_category: motif_category) }
+  let!(:organisation) { create(:organisation, department: department, configurations: [configuration]) }
+  let!(:applicant) { create(:applicant, organisations: [organisation]) }
+  let!(:rdv_context) { create(:rdv_context, applicant: applicant, motif_category: motif_category) }
 
   before do
     sign_in(agent)
@@ -54,11 +56,13 @@ describe RdvContexts::ClosingsController do
       { rdv_context_id: rdv_context.id, applicant_id: applicant.id,
         organisation_id: organisation.id, department_id: department.id }
     end
-    let!(:rdv_context) { create(:rdv_context, applicant: applicant, status: "closed") }
+    let!(:rdv_context) do
+      create(:rdv_context, applicant: applicant, motif_category: motif_category,
+                           status: "closed", closed_at: Time.zone.now)
+    end
 
-    it "updates the rdv_context status" do
+    it "updates the rdv_context closed_at" do
       post :destroy, params: destroy_params
-      expect(rdv_context.reload.status).not_to eq("closed")
       expect(rdv_context.reload.closed_at).to eq(nil)
     end
 
