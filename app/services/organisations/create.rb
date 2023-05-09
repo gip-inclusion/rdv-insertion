@@ -13,15 +13,11 @@ module Organisations
         save_record!(@organisation)
         save_record!(agent_role_for_new_organisation)
         upsert_rdv_solidarites_webhook_endpoint
-        update_rdv_solidarites_organisation
+        tag_rdv_solidarites_organisation
       end
     end
 
     private
-
-    def organisation_formatted_attributes
-      @organisation.attributes.merge({ "verticale" => "rdv_insertion" })
-    end
 
     def upsert_rdv_solidarites_webhook_endpoint
       rdv_solidarites_webhook_endpoint.present? ? update_rdvs_webhook_endpoint : create_rdvs_webhook_endpoint
@@ -78,10 +74,10 @@ module Organisations
       ).webhook_endpoint
     end
 
-    def update_rdv_solidarites_organisation
-      @update_rdv_solidarites_organisation ||= call_service!(
+    def tag_rdv_solidarites_organisation
+      @tag_rdv_solidarites_organisation ||= call_service!(
         RdvSolidaritesApi::UpdateOrganisation,
-        organisation_attributes: organisation_formatted_attributes,
+        organisation_attributes: { "verticale" => "rdv_insertion" },
         rdv_solidarites_session: @rdv_solidarites_session,
         rdv_solidarites_organisation_id: @organisation.rdv_solidarites_organisation_id
       )
