@@ -278,36 +278,35 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
       let!(:configuration) { create(:configuration, convene_applicant: true, motif_category: motif_category) }
 
       it "sets the convocable attribute when upserting the rdv" do
-        expect(UpsertRecordJob).to receive(:perform_async)
-          .with(
-            "Rdv",
-            data,
-            {
-              participations_attributes: [
-                {
-                  id: nil,
-                  status: "unknown",
-                  created_by: "user",
-                  applicant_id: 3,
-                  rdv_solidarites_participation_id: 998,
-                  rdv_context_id: rdv_context.id
-                },
-                {
-                  id: nil,
-                  status: "unknown",
-                  created_by: "user",
-                  applicant_id: 4,
-                  rdv_solidarites_participation_id: 999,
-                  rdv_context_id: rdv_context2.id
-                }
-              ],
-              organisation_id: organisation.id,
-              motif_id: motif.id,
-              lieu_id: lieu.id,
-              convocable: true,
-              last_webhook_update_received_at: timestamp
-            }
-          )
+        expect(UpsertRecordJob).to receive(:perform_async).with(
+          "Rdv",
+          data,
+          {
+            participations_attributes: [
+              {
+                id: nil,
+                status: "unknown",
+                created_by: "user",
+                applicant_id: 3,
+                rdv_solidarites_participation_id: 998,
+                rdv_context_id: rdv_context.id
+              },
+              {
+                id: nil,
+                status: "unknown",
+                created_by: "user",
+                applicant_id: 4,
+                rdv_solidarites_participation_id: 999,
+                rdv_context_id: rdv_context2.id
+              }
+            ],
+            organisation_id: organisation.id,
+            motif_id: motif.id,
+            lieu_id: lieu.id,
+            convocable: true,
+            last_webhook_update_received_at: timestamp
+          }
+        )
         subject
       end
 
