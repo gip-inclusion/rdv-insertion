@@ -14,14 +14,8 @@ describe Organisations::Create, type: :service do
                          name: nil, phone_number: nil, department: department)
   end
   let!(:organisation_from_rdvs) do
-    build(
-      :organisation,
-      rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
-      name: "Nouvelle org",
-      phone_number: "0102030405",
-      department: department,
-      verticale: "rdv_solidarites"
-    )
+    build(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
+                         name: "Nouvelle org", phone_number: "0102030405", department: department)
   end
   let!(:agent) { create(:agent, email: "alain.sertion@departement.fr") }
   let!(:organisation_count_before) { Organisation.count }
