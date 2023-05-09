@@ -12,6 +12,7 @@ FactoryBot.define do
       if rdv.participations.blank?
         rdv.applicants = [create(:applicant)]
         rdv.participations.first.rdv_context = create(:rdv_context)
+        rdv.participations.first.created_by = rdv.created_by || "user"
       end
     end
   end
