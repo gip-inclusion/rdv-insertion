@@ -48,10 +48,10 @@ describe RdvContext do
     subject { rdv_context.set_status }
 
     context "closed" do
-      context "when rdv_context is closed" do
-        let!(:rdv_context) { create(:rdv_context, status: "closed") }
+      context "when closed_at is present" do
+        let!(:rdv_context) { create(:rdv_context, closed_at: Time.zone.now) }
 
-        it "is not updated" do
+        it "is closed" do
           expect(subject).to eq(:closed)
         end
       end

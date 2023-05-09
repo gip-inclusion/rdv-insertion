@@ -59,16 +59,16 @@ module ApplicantsHelper
   end
 
   def background_class_for_participation_status(participation)
-    if participation.rdv_context.closed? || !(
-      participation.seen? || participation.cancelled? || participation.needs_status_update?
-    )
-      ""
-    elsif participation.seen?
+    return "" if participation.rdv_context.closed?
+
+    if participation.seen?
       "bg-success border-success"
     elsif participation.cancelled?
       "bg-danger border-danger"
     elsif participation.needs_status_update?
       "bg-warning border-warning"
+    else
+      ""
     end
   end
 

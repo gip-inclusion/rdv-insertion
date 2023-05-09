@@ -8,8 +8,10 @@ class Agent < ApplicationRecord
   has_and_belongs_to_many :applicants
 
   has_many :organisations, through: :agent_roles
-  has_many :departments, through: :organisations
+  has_many :departments, -> { distinct }, through: :organisations
   has_many :configurations, through: :organisations
+  has_many :motif_categories, -> { distinct }, through: :organisations
+  has_many :rdv_contexts, through: :applicants
 
   scope :not_betagouv, -> { where.not("agents.email LIKE ?", "%beta.gouv.fr") }
   scope :super_admins, -> { where(super_admin: true) }

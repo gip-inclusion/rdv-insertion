@@ -11,8 +11,6 @@ module RdvContextStatus
   end
 
   def set_status
-    return :closed if status == "closed"
-
     participations.reload
     invitations.reload
     self.status = compute_status
@@ -21,6 +19,8 @@ module RdvContextStatus
   private
 
   def compute_status
+    return :closed if closed_at.present?
+
     return :not_invited if sent_invitations.empty? && rdvs.empty?
 
     invitation_sent_after_last_created_participation? ? :invitation_pending : status_from_participations
