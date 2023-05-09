@@ -112,6 +112,7 @@ module RdvSolidaritesWebhooks
           {
             id: existing_participation_for(applicant)&.id,
             status: participation.status,
+            created_by: participation.created_by,
             applicant_id: applicant.id,
             rdv_solidarites_participation_id: participation.id,
             rdv_context_id: rdv_context_for(applicant).id
