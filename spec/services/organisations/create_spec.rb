@@ -50,7 +50,6 @@ describe Organisations::Create, type: :service do
 
     it "assigns attributes to the organisation" do
       expect(organisation).to receive(:assign_attributes)
-      expect(organisation.verticale).to eq("rdv_insertion")
       subject
     end
 
@@ -77,14 +76,23 @@ describe Organisations::Create, type: :service do
     end
 
     it "calls the update webhook endpoint service (for verticale attribute)" do
-      expect(RdvSolidaritesApi::UpdateOrganisation).to receive(:call)
+      expect(RdvSolidaritesApi::UpdateOrganisation).to receive(:call).with(
+        hash_including(
+          {
+            organisation_attributes: hash_including(
+              {
+                "verticale" => "rdv_insertion"
+              }
+            )
+          }
+        )
+      )
       subject
     end
 
     it "is a success" do
       subject
       expect(organisation.reload.name).to eq("Nouvelle org")
-      expect(organisation.reload.verticale).to eq("rdv_insertion")
       expect(organisation.reload.phone_number).to eq("0102030405")
     end
 

@@ -8,7 +8,6 @@ module Organisations
     def call
       Organisation.transaction do
         check_rdv_solidarites_organisation_id
-        set_organisation_verticale_attribute_to_rdv_insertion
         save_record!(@organisation)
         update_rdv_solidarites_organisation
       end
@@ -16,8 +15,8 @@ module Organisations
 
     private
 
-    def set_organisation_verticale_attribute_to_rdv_insertion
-      @organisation.verticale = "rdv_insertion"
+    def organisation_formatted_attributes
+      rdv_solidarites_organisation_attributes.merge({ "verticale" => "rdv_insertion" })
     end
 
     def check_rdv_solidarites_organisation_id
@@ -38,7 +37,7 @@ module Organisations
     def update_rdv_solidarites_organisation
       @update_rdv_solidarites_organisation ||= call_service!(
         RdvSolidaritesApi::UpdateOrganisation,
-        organisation_attributes: rdv_solidarites_organisation_attributes,
+        organisation_attributes: organisation_formatted_attributes,
         rdv_solidarites_session: @rdv_solidarites_session,
         rdv_solidarites_organisation_id: @organisation.rdv_solidarites_organisation_id
       )

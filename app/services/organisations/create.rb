@@ -10,7 +10,6 @@ module Organisations
       Organisation.transaction do
         check_rdv_solidarites_organisation_id
         assign_rdv_solidarites_organisation_attributes
-        set_organisation_verticale_attribute_to_rdv_insertion
         save_record!(@organisation)
         save_record!(agent_role_for_new_organisation)
         upsert_rdv_solidarites_webhook_endpoint
@@ -20,8 +19,8 @@ module Organisations
 
     private
 
-    def set_organisation_verticale_attribute_to_rdv_insertion
-      @organisation.verticale = "rdv_insertion"
+    def organisation_formatted_attributes
+      @organisation.attributes.merge({ "verticale" => "rdv_insertion" })
     end
 
     def upsert_rdv_solidarites_webhook_endpoint
@@ -82,7 +81,7 @@ module Organisations
     def update_rdv_solidarites_organisation
       @update_rdv_solidarites_organisation ||= call_service!(
         RdvSolidaritesApi::UpdateOrganisation,
-        organisation_attributes: @organisation.attributes,
+        organisation_attributes: organisation_formatted_attributes,
         rdv_solidarites_session: @rdv_solidarites_session,
         rdv_solidarites_organisation_id: @organisation.rdv_solidarites_organisation_id
       )

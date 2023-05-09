@@ -21,8 +21,19 @@ describe Organisations::Update, type: :service do
   describe "#call" do
     before do
       allow(organisation).to receive(:save).and_return(true)
-      allow(RdvSolidaritesApi::UpdateOrganisation).to receive(:call)
-        .and_return(OpenStruct.new(success?: true))
+      allow(RdvSolidaritesApi::UpdateOrganisation).to receive(:call).with(
+        {
+          :organisation_attributes =>
+            {
+              :email => "pie@pantin.fr",
+              :name => "PIE Pantin",
+              :phone_number => "0102030405",
+              "verticale" => "rdv_insertion"
+            },
+          :rdv_solidarites_organisation_id => 1010,
+          :rdv_solidarites_session => rdv_solidarites_session
+        }
+      ).and_return(OpenStruct.new(success?: true))
     end
 
     it "tries to save the organisation in db" do
@@ -32,10 +43,6 @@ describe Organisations::Update, type: :service do
 
     it "is a success" do
       is_a_success
-    end
-
-    it "verticale attributes is set to rdv_insertion" do
-      expect(organisation.verticale).to eq("rdv_insertion")
     end
 
     context "when the organisation has no rdv solidarites id" do

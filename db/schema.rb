@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_08_083859) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_27_122751) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -255,7 +255,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_08_083859) do
     t.string "slug"
     t.boolean "independent_from_cd", default: false
     t.string "logo_filename"
-    t.string "verticale", default: "rdv_insertion", null: false
     t.index ["department_id"], name: "index_organisations_on_department_id"
     t.index ["messages_configuration_id"], name: "index_organisations_on_messages_configuration_id"
     t.index ["rdv_solidarites_organisation_id"], name: "index_organisations_on_rdv_solidarites_organisation_id", unique: true
