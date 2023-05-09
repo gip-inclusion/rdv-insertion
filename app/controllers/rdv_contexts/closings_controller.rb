@@ -12,7 +12,6 @@ module RdvContexts
 
     def destroy
       authorize @rdv_context, :reopen?
-      # updating the status triggers set_status and computes the right status
       return reload_applicant_show_page if @rdv_context.update(closed_at: nil)
 
       display_error_modal(@rdv_context.errors.full_messages)
