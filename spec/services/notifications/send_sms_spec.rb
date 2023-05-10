@@ -7,8 +7,7 @@ describe Notifications::SendSms, type: :service do
 
   include_context "with all existing categories"
 
-  let!(:phone_number) { "0782605941" }
-  let!(:phone_number_formatted) { "+33782605941" }
+  let!(:phone_number) { "+33782605941" }
   let!(:sms_sender_name) { "provider" }
   let!(:applicant) do
     create(
@@ -109,7 +108,7 @@ describe Notifications::SendSms, type: :service do
       it "sends the sms with the right content" do
         expect(SendTransactionalSms).to receive(:call)
           .with(
-            phone_number_formatted: phone_number_formatted, content: content,
+            phone_number: phone_number, content: content,
             sender_name: sms_sender_name
           )
         subject
@@ -132,7 +131,7 @@ describe Notifications::SendSms, type: :service do
         it "calls the messenger service with the right content" do
           expect(SendTransactionalSms).to receive(:call)
             .with(
-              phone_number_formatted: phone_number_formatted, content: content,
+              phone_number: phone_number, content: content,
               sender_name: sms_sender_name
             )
           subject
@@ -155,7 +154,7 @@ describe Notifications::SendSms, type: :service do
         it "sends the sms with the right content" do
           expect(SendTransactionalSms).to receive(:call)
             .with(
-              phone_number_formatted: phone_number_formatted, content: content,
+              phone_number: phone_number, content: content,
               sender_name: sms_sender_name
             )
           subject
@@ -178,7 +177,7 @@ describe Notifications::SendSms, type: :service do
         it "sends the sms with the right content" do
           expect(SendTransactionalSms).to receive(:call)
             .with(
-              phone_number_formatted: phone_number_formatted, content: content,
+              phone_number: phone_number, content: content,
               sender_name: sms_sender_name
             )
           subject
@@ -198,7 +197,7 @@ describe Notifications::SendSms, type: :service do
         it "sends the sms with the right content" do
           expect(SendTransactionalSms).to receive(:call)
             .with(
-              phone_number_formatted: phone_number_formatted, content: content,
+              phone_number: phone_number, content: content,
               sender_name: sms_sender_name
             )
           subject
@@ -220,7 +219,7 @@ describe Notifications::SendSms, type: :service do
         it "calls the send transactional service with the right content" do
           expect(SendTransactionalSms).to receive(:call)
             .with(
-              phone_number_formatted: phone_number_formatted, content: content,
+              phone_number: phone_number, content: content,
               sender_name: sms_sender_name
             )
           subject
@@ -243,7 +242,7 @@ describe Notifications::SendSms, type: :service do
           it "calls the send transactional service with the right content" do
             expect(SendTransactionalSms).to receive(:call)
               .with(
-                phone_number_formatted: phone_number_formatted, content: content,
+                phone_number: phone_number, content: content,
                 sender_name: sms_sender_name
               )
             subject
@@ -267,7 +266,7 @@ describe Notifications::SendSms, type: :service do
           it "sends the sms with the right content" do
             expect(SendTransactionalSms).to receive(:call)
               .with(
-                phone_number_formatted: phone_number_formatted, content: content,
+                phone_number: phone_number, content: content,
                 sender_name: sms_sender_name
               )
             subject
@@ -293,7 +292,7 @@ describe Notifications::SendSms, type: :service do
         it "sends the sms with the right content" do
           expect(SendTransactionalSms).to receive(:call)
             .with(
-              phone_number_formatted: phone_number_formatted, content: content,
+              phone_number: phone_number, content: content,
               sender_name: sms_sender_name
             )
           subject
@@ -316,7 +315,7 @@ describe Notifications::SendSms, type: :service do
           it "sends the sms with the right content" do
             expect(SendTransactionalSms).to receive(:call)
               .with(
-                phone_number_formatted: phone_number_formatted, content: content,
+                phone_number: phone_number, content: content,
                 sender_name: sms_sender_name
               )
             subject
@@ -336,7 +335,7 @@ describe Notifications::SendSms, type: :service do
           it "sends the sms with the right content" do
             expect(SendTransactionalSms).to receive(:call)
               .with(
-                phone_number_formatted: phone_number_formatted, content: content,
+                phone_number: phone_number, content: content,
                 sender_name: sms_sender_name
               )
             subject
@@ -358,7 +357,7 @@ describe Notifications::SendSms, type: :service do
           it "calls the send transactional service with the right content" do
             expect(SendTransactionalSms).to receive(:call)
               .with(
-                phone_number_formatted: phone_number_formatted, content: content,
+                phone_number: phone_number, content: content,
                 sender_name: sms_sender_name
               )
             subject
@@ -382,7 +381,7 @@ describe Notifications::SendSms, type: :service do
             it "calls the send transactional service with the right content" do
               expect(SendTransactionalSms).to receive(:call)
                 .with(
-                  phone_number_formatted: phone_number_formatted, content: content,
+                  phone_number: phone_number, content: content,
                   sender_name: sms_sender_name
                 )
               subject
@@ -408,7 +407,7 @@ describe Notifications::SendSms, type: :service do
       it "sends the sms with the right content" do
         expect(SendTransactionalSms).to receive(:call)
           .with(
-            phone_number_formatted: phone_number_formatted, content: content,
+            phone_number: phone_number, content: content,
             sender_name: sms_sender_name
           )
         subject
@@ -431,7 +430,7 @@ describe Notifications::SendSms, type: :service do
         it "sends the sms with the right content" do
           expect(SendTransactionalSms).to receive(:call)
             .with(
-              phone_number_formatted: phone_number_formatted, content: content,
+              phone_number: phone_number, content: content,
               sender_name: sms_sender_name
             )
           subject
@@ -452,7 +451,7 @@ describe Notifications::SendSms, type: :service do
         it "sends the sms with the right content" do
           expect(SendTransactionalSms).to receive(:call)
             .with(
-              phone_number_formatted: phone_number_formatted, content: content,
+              phone_number: phone_number, content: content,
               sender_name: sms_sender_name
             )
           subject
@@ -474,7 +473,7 @@ describe Notifications::SendSms, type: :service do
         it "calls the send transactional service with the right content" do
           expect(SendTransactionalSms).to receive(:call)
             .with(
-              phone_number_formatted: phone_number_formatted, content: content,
+              phone_number: phone_number, content: content,
               sender_name: sms_sender_name
             )
           subject
@@ -497,7 +496,7 @@ describe Notifications::SendSms, type: :service do
           it "calls the send transactional service with the right content" do
             expect(SendTransactionalSms).to receive(:call)
               .with(
-                phone_number_formatted: phone_number_formatted, content: content,
+                phone_number: phone_number, content: content,
                 sender_name: sms_sender_name
               )
             subject
@@ -521,7 +520,7 @@ describe Notifications::SendSms, type: :service do
       it "sends the sms with the right content" do
         expect(SendTransactionalSms).to receive(:call)
           .with(
-            phone_number_formatted: phone_number_formatted, content: content,
+            phone_number: phone_number, content: content,
             sender_name: sms_sender_name
           )
         subject
@@ -542,7 +541,7 @@ describe Notifications::SendSms, type: :service do
         it "sends the sms with the right content" do
           expect(SendTransactionalSms).to receive(:call)
             .with(
-              phone_number_formatted: phone_number_formatted, content: content,
+              phone_number: phone_number, content: content,
               sender_name: sms_sender_name
             )
           subject
@@ -563,7 +562,7 @@ describe Notifications::SendSms, type: :service do
         it "sends the sms with the right content" do
           expect(SendTransactionalSms).to receive(:call)
             .with(
-              phone_number_formatted: phone_number_formatted, content: content,
+              phone_number: phone_number, content: content,
               sender_name: sms_sender_name
             )
           subject
@@ -584,7 +583,7 @@ describe Notifications::SendSms, type: :service do
         it "calls the send transactional service with the right content" do
           expect(SendTransactionalSms).to receive(:call)
             .with(
-              phone_number_formatted: phone_number_formatted, content: content,
+              phone_number: phone_number, content: content,
               sender_name: sms_sender_name
             )
           subject
@@ -606,7 +605,7 @@ describe Notifications::SendSms, type: :service do
           it "calls the send transactional service with the right content" do
             expect(SendTransactionalSms).to receive(:call)
               .with(
-                phone_number_formatted: phone_number_formatted, content: content,
+                phone_number: phone_number, content: content,
                 sender_name: sms_sender_name
               )
             subject
@@ -631,7 +630,7 @@ describe Notifications::SendSms, type: :service do
       it "sends the sms with the right content" do
         expect(SendTransactionalSms).to receive(:call)
           .with(
-            phone_number_formatted: phone_number_formatted, content: content,
+            phone_number: phone_number, content: content,
             sender_name: sms_sender_name
           )
         subject
@@ -655,7 +654,7 @@ describe Notifications::SendSms, type: :service do
         it "sends the sms with the right content" do
           expect(SendTransactionalSms).to receive(:call)
             .with(
-              phone_number_formatted: phone_number_formatted, content: content,
+              phone_number: phone_number, content: content,
               sender_name: sms_sender_name
             )
           subject
@@ -676,7 +675,7 @@ describe Notifications::SendSms, type: :service do
         it "sends the sms with the right content" do
           expect(SendTransactionalSms).to receive(:call)
             .with(
-              phone_number_formatted: phone_number_formatted, content: content,
+              phone_number: phone_number, content: content,
               sender_name: sms_sender_name
             )
           subject
@@ -698,7 +697,7 @@ describe Notifications::SendSms, type: :service do
         it "calls the send transactional service with the right content" do
           expect(SendTransactionalSms).to receive(:call)
             .with(
-              phone_number_formatted: phone_number_formatted, content: content,
+              phone_number: phone_number, content: content,
               sender_name: sms_sender_name
             )
           subject
@@ -722,7 +721,7 @@ describe Notifications::SendSms, type: :service do
           it "calls the send transactional service with the right content" do
             expect(SendTransactionalSms).to receive(:call)
               .with(
-                phone_number_formatted: phone_number_formatted, content: content,
+                phone_number: phone_number, content: content,
                 sender_name: sms_sender_name
               )
             subject

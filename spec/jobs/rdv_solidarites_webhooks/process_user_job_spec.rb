@@ -8,7 +8,7 @@ describe RdvSolidaritesWebhooks::ProcessUserJob do
       "id" => rdv_solidarites_user_id,
       "first_name" => "John",
       "last_name" => "Doe",
-      "phone_number_formatted" => "+33624242424",
+      "phone_number" => "+33624242424",
       "affiliation_number" => "CAUCSCUAHSC",
       "email" => "user@something.com"
     }.deep_symbolize_keys

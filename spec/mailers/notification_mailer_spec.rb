@@ -16,8 +16,10 @@ RSpec.describe NotificationMailer do
             starts_at: Time.zone.parse("20/12/2021 12:00"), organisation: organisation
     )
   end
-  let!(:organisation) { create(:organisation, messages_configuration: messages_configuration) }
-  let!(:messages_configuration) { create(:messages_configuration, signature_lines: signature_lines) }
+  let!(:organisation) { create(:organisation) }
+  let!(:messages_configuration) do
+    create(:messages_configuration, organisation: organisation, signature_lines: signature_lines)
+  end
   let!(:lieu) { create(:lieu, name: "DINUM", address: "20 avenue de ségur 75007 Paris", phone_number: "0101010101") }
   let!(:signature_lines) { ["Signé par la DINUM"] }
   let!(:rdv_context) { create(:rdv_context, motif_category: motif_category) }

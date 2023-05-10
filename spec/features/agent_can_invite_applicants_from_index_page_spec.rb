@@ -13,7 +13,7 @@ describe "Agents can invite from index page", js: true do
   let!(:configuration) do
     create(
       :configuration,
-      motif_category: motif_category, organisations: [organisation], invitation_formats: %w[sms email]
+      motif_category: motif_category, organisation: organisation, invitation_formats: %w[sms email]
     )
   end
   let!(:motif) { create(:motif, motif_category: motif_category, organisation: organisation) }

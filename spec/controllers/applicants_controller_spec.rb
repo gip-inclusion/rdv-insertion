@@ -254,7 +254,7 @@ describe ApplicantsController do
 
       let!(:organisation) do
         create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
-                              department_id: department.id, configurations: [configuration, configuration2])
+                              configurations: [configuration, configuration2], department_id: department.id)
       end
 
       let!(:rdv_context) do
@@ -380,13 +380,9 @@ describe ApplicantsController do
       end
 
       context "when there is no matching configuration for a rdv_context" do
-        let!(:configuration) do
-          create(:configuration, motif_category: category_accompagnement, invitation_formats: %w[sms email])
-        end
-
         let!(:organisation) do
           create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
-                                department_id: department.id, configurations: [configuration])
+                                department_id: department.id, configurations: [configuration2])
         end
 
         let!(:rdv_context) do

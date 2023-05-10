@@ -28,12 +28,11 @@ describe Notifications::GenerateLetter, type: :service do
   end
   let!(:lieu) { create(:lieu, address: "12 Place Léon Blum, 75011 Paris", name: "Marie du 11eme") }
 
-  let!(:messages_configuration) { create(:messages_configuration, direction_names: ["Direction départemental"]) }
-  let!(:configuration) { create(:configuration, motif_category: category_rsa_orientation) }
-  let!(:organisation) do
-    create(:organisation, messages_configuration: messages_configuration,
-                          department: department, configurations: [configuration])
+  let!(:organisation) { create(:organisation, department: department) }
+  let!(:messages_configuration) do
+    create(:messages_configuration, direction_names: ["Direction départemental"], organisation: organisation)
   end
+  let!(:configuration) { create(:configuration, motif_category: category_rsa_orientation, organisation: organisation) }
 
   describe "#call" do
     it("is a success") { is_a_success }

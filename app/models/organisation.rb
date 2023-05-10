@@ -10,18 +10,17 @@ class Organisation < ApplicationRecord
   validate :validate_organisation_phone_number
 
   belongs_to :department
-  belongs_to :messages_configuration, optional: true
+  has_one :messages_configuration, dependent: :destroy
+  has_many :configurations, dependent: :destroy
   has_many :rdvs, dependent: :nullify
   has_many :lieux, dependent: :nullify
   has_many :motifs, dependent: :nullify
-  has_many :configurations_organisations, dependent: :delete_all
   has_many :agent_roles, dependent: :destroy
   has_and_belongs_to_many :applicants, dependent: :nullify
   has_and_belongs_to_many :invitations, dependent: :nullify
   has_and_belongs_to_many :webhook_endpoints
 
   has_many :agents, through: :agent_roles
-  has_many :configurations, through: :configurations_organisations
   has_many :motif_categories, through: :configurations
 
   delegate :name, :name_with_region, :number, to: :department, prefix: true

@@ -1,6 +1,6 @@
 <h1>Bonjour <%= "#{@applicant.first_name} #{@applicant.last_name.upcase}" %>,</h1>
 <p>Votre <%= @rdv_title %> dans le cadre de votre <%= @rdv_subject %> a été modifié.</p>
-<p>Un travailleur social vous appellera <span class="font-weight-bold">le <%= I18n.l(@rdv.starts_at, format: :human) %></span> sur votre numéro de téléphone: <span class="font-weight-bold"><%= @applicant.phone_number_formatted %></span>.</p>
+<p>Un travailleur social vous appellera <span class="font-weight-bold">le <%= I18n.l(@rdv.starts_at, format: :human) %></span> sur votre numéro de téléphone: <span class="font-weight-bold"><%= @applicant.phone_number %></span>.</p>
 <%= tag.p tag.strong(@mandatory_warning) if @mandatory_warning %>
 <%= tag.p tag.strong(@instruction_for_rdv, class: "bold-blue") if @instruction_for_rdv.present? %>
 <%= tag.p tag.strong("En cas d'absence, #{@punishable_warning}.") if @punishable_warning.present? %>

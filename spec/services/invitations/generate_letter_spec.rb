@@ -17,12 +17,11 @@ describe Invitations::GenerateLetter, type: :service do
                    department: department, format: "postal", rdv_context: rdv_context
     )
   end
-  let!(:messages_configuration) { create(:messages_configuration, direction_names: ["Direction départemental"]) }
-  let!(:configuration) { create(:configuration, motif_category: category_rsa_orientation) }
-  let!(:organisation) do
-    create(:organisation, messages_configuration: messages_configuration,
-                          department: department, configurations: [configuration])
+  let!(:organisation) { create(:organisation, department: department) }
+  let!(:messages_configuration) do
+    create(:messages_configuration, organisation: organisation, direction_names: ["Direction départemental"])
   end
+  let!(:configuration) { create(:configuration, motif_category: category_rsa_orientation, organisation: organisation) }
 
   describe "#call" do
     it("is a success") { is_a_success }
@@ -71,7 +70,9 @@ describe Invitations::GenerateLetter, type: :service do
     end
 
     context "when the signature is configured" do
-      let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
+      let!(:messages_configuration) do
+        create(:messages_configuration, organisation: organisation, signature_lines: ["Fabienne Bouchet"])
+      end
 
       it "generates the pdf string with the right signature" do
         subject
@@ -80,7 +81,9 @@ describe Invitations::GenerateLetter, type: :service do
     end
 
     context "when the europe logos are configured to be displayed" do
-      let!(:messages_configuration) { create(:messages_configuration, display_europe_logos: true) }
+      let!(:messages_configuration) do
+        create(:messages_configuration, organisation: organisation, display_europe_logos: true)
+      end
 
       it "generates the pdf string with the europe logos" do
         subject
@@ -91,7 +94,8 @@ describe Invitations::GenerateLetter, type: :service do
 
     context "when the help address is configured" do
       let!(:messages_configuration) do
-        create(:messages_configuration, help_address: "10, rue du Conseil départemental 75001 Paris")
+        create(:messages_configuration, organisation: organisation,
+                                        help_address: "10, rue du Conseil départemental 75001 Paris")
       end
 
       it "renders the mail with the help address" do

@@ -10,11 +10,11 @@ describe CreateAndInviteApplicantJob do
   let!(:organisation) do
     create(
       :organisation,
-      department: department, configurations: [configuration], id: organisation_id, phone_number: "0146292929"
+      department: department, id: organisation_id, phone_number: "0146292929"
     )
   end
   let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation") }
-  let!(:configuration) { create(:configuration, motif_category: motif_category) }
+  let!(:configuration) { create(:configuration, organisation: organisation, motif_category: motif_category) }
   let!(:applicant) { create(:applicant) }
   let!(:applicant_attributes) do
     { department_internal_id: "1919", affiliation_number: "00001", role: "conjoint", phone_number: "0607070707",
@@ -107,7 +107,7 @@ describe CreateAndInviteApplicantJob do
   context "when a motif category is specified" do
     let!(:category_accompagnement) { create(:motif_category, name: "RSA accompagnement") }
     let!(:new_configuration) do
-      create(:configuration, organisations: [organisation], motif_category: category_accompagnement)
+      create(:configuration, organisation: organisation, motif_category: category_accompagnement)
     end
     let!(:invitation_params) { { rdv_solidarites_lieu_id: 888, motif_category_name: "RSA accompagnement" } }
 

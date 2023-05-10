@@ -7,14 +7,13 @@
   %>
   <div class="background-blue-light d-flex justify-content-between px-4 pt-2 rounded flex-grow-1">
     <div class="flex-grow-1 d-flex flex-column justify-content-center">
-      <% if file_configuration.configurations.present? %>
+      <% department_configurations = file_configuration.configurations.select { |configuration| configuration.department == @department } %>
+      <% if department_configurations.present? %>
         <p class="mb-0">Utilisé pour :</p>
-        <% file_configuration.configurations.each do |configuration_of_file_configuration| %>
-          <% organisations = configuration_of_file_configuration.organisations.select { |organisation| organisation.department_id == @department.id } %>
-          <% next if organisations.blank? %>
-          <p class="mb-2">- <strong><%= configuration_of_file_configuration.motif_category_name %></strong> par <strong><%= organisations.map(&:name).join(", ") %></strong></p>
+        <% department_configurations.group_by(&:motif_category).each do |motif_category, configurations| %>
+          <p class="mb-2">- <strong><%= motif_category.name %></strong> par <strong><%= configurations.map(&:organisation).join(', ') %></strong></p>
         <% end %>
-      <% elsif file_configuration.configurations.blank? %>
+      <% elsif department_configurations.blank? %>
         <p>Nouvelle configuration</p>
       <% end %>
     </div>
