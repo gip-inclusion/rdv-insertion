@@ -96,14 +96,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_09_100502) do
     t.boolean "rdv_with_referents", default: false
     t.bigint "motif_category_id"
     t.bigint "file_configuration_id"
+    t.bigint "organisation_id"
     t.index ["file_configuration_id"], name: "index_configurations_on_file_configuration_id"
     t.index ["motif_category_id"], name: "index_configurations_on_motif_category_id"
-  end
-
-  create_table "configurations_organisations", id: false, force: :cascade do |t|
-    t.bigint "organisation_id", null: false
-    t.bigint "configuration_id", null: false
-    t.index ["organisation_id", "configuration_id"], name: "index_config_orgas_on_organisation_id_and_configuration_id", unique: true
+    t.index ["organisation_id"], name: "index_configurations_on_organisation_id"
   end
 
   create_table "departments", force: :cascade do |t|
@@ -197,6 +193,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_09_100502) do
     t.boolean "display_europe_logos", default: false
     t.string "sms_sender_name"
     t.boolean "display_department_logo", default: true
+    t.bigint "organisation_id"
+    t.index ["organisation_id"], name: "index_messages_configurations_on_organisation_id"
   end
 
   create_table "motif_categories", force: :cascade do |t|
@@ -250,13 +248,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_09_100502) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "department_id"
-    t.bigint "messages_configuration_id"
     t.datetime "last_webhook_update_received_at"
     t.string "slug"
     t.boolean "independent_from_cd", default: false
     t.string "logo_filename"
     t.index ["department_id"], name: "index_organisations_on_department_id"
-    t.index ["messages_configuration_id"], name: "index_organisations_on_messages_configuration_id"
     t.index ["rdv_solidarites_organisation_id"], name: "index_organisations_on_rdv_solidarites_organisation_id", unique: true
   end
 
@@ -376,16 +372,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_09_100502) do
   add_foreign_key "agent_roles", "organisations"
   add_foreign_key "configurations", "file_configurations"
   add_foreign_key "configurations", "motif_categories"
+  add_foreign_key "configurations", "organisations"
   add_foreign_key "invitations", "applicants"
   add_foreign_key "invitations", "departments"
   add_foreign_key "invitations", "rdv_contexts"
   add_foreign_key "lieux", "organisations"
+  add_foreign_key "messages_configurations", "organisations"
   add_foreign_key "motif_categories", "templates"
   add_foreign_key "motifs", "motif_categories"
   add_foreign_key "motifs", "organisations"
   add_foreign_key "notifications", "participations"
   add_foreign_key "organisations", "departments"
-  add_foreign_key "organisations", "messages_configurations"
   add_foreign_key "participations", "rdv_contexts"
   add_foreign_key "rdv_contexts", "applicants"
   add_foreign_key "rdv_contexts", "motif_categories"

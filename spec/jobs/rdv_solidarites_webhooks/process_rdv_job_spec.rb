@@ -55,11 +55,13 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
   let!(:applicants) { Applicant.where(id: [applicant.id, applicant2.id]) }
 
   let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation") }
-  let!(:configuration) { create(:configuration, convene_applicant: false, motif_category: motif_category) }
+  let!(:configuration) do
+    create(:configuration, organisation: organisation, convene_applicant: false, motif_category: motif_category)
+  end
   let!(:organisation) do
     create(
       :organisation,
-      rdv_solidarites_organisation_id: rdv_solidarites_organisation_id, configurations: [configuration]
+      rdv_solidarites_organisation_id: rdv_solidarites_organisation_id
     )
   end
   let!(:motif) { create(:motif, rdv_solidarites_motif_id: rdv_solidarites_motif_id) }
@@ -275,7 +277,9 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
           name: "RSA orientation: Convocation"
         }
       end
-      let!(:configuration) { create(:configuration, convene_applicant: true, motif_category: motif_category) }
+      let!(:configuration) do
+        create(:configuration, organisation: organisation, convene_applicant: true, motif_category: motif_category)
+      end
 
       it "sets the convocable attribute when upserting the rdv" do
         expect(UpsertRecordJob).to receive(:perform_async).with(

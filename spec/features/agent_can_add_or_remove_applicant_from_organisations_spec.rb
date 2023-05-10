@@ -4,11 +4,11 @@ describe "Agents can add or remove applicant from organisations", js: true do
   let!(:organisation) do
     create(
       :organisation,
-      department: department,
+      department: department
       # needed for the organisation applicants page
-      configurations: [create(:configuration)]
     )
   end
+  let!(:configuration) { create(:configuration, organisation: organisation) }
   let!(:rdv_solidarites_user_id) { 243 }
   let!(:applicant) do
     create(
