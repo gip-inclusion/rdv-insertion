@@ -38,8 +38,8 @@ module Invitations
         sender_city: @invitation.sender_city,
         rdv_title: @invitation.rdv_title,
         applicant_designation: @invitation.applicant_designation,
-        display_mandatory_warning: @invitation.display_mandatory_warning,
-        display_punishable_warning: @invitation.display_punishable_warning,
+        mandatory_warning: @invitation.mandatory_warning,
+        punishable_warning: @invitation.punishable_warning,
         rdv_purpose: @invitation.rdv_purpose,
         rdv_subject: @invitation.rdv_subject,
         custom_sentence: @invitation.custom_sentence

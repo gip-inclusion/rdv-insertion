@@ -30,6 +30,7 @@ class Rdv < ApplicationRecord
   delegate :presential?, :by_phone?, to: :motif
   delegate :department, to: :organisation
   delegate :name, to: :motif, prefix: true
+  delegate :instruction_for_rdv, to: :motif
 
   scope :with_lieu, -> { where.not(lieu_id: nil) }
 
