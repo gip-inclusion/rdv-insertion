@@ -25,7 +25,12 @@ describe Notifications::SendSms, type: :service do
     )
   end
   let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_orientation) }
-  let!(:motif) { create(:motif, location_type: "public_office") }
+  let!(:motif) do
+    create(
+      :motif, location_type: "public_office",
+              instruction_for_rdv: "Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité."
+    )
+  end
   let!(:lieu) do
     create(:lieu, name: "DINUM", address: "20 avenue de Ségur 75007 Paris", phone_number: "0101010101")
   end
@@ -96,7 +101,7 @@ describe Notifications::SendSms, type: :service do
         "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué à un " \
           "rendez-vous d'orientation. Vous êtes attendu le 20/12/2021" \
           " à 10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
-          "Ce RDV est obligatoire. " \
+          "Ce RDV est obligatoire. Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité. " \
           "En cas d’empêchement, appelez rapidement le 0101010101."
       end
 
@@ -119,7 +124,7 @@ describe Notifications::SendSms, type: :service do
           "Madame Jane DOE,\nVous êtes bénéficiaire du RSA et à ce titre vous êtes convoquée à un " \
             "rendez-vous d'orientation. Vous êtes attendue le 20/12/2021" \
             " à 10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
-            "Ce RDV est obligatoire. " \
+            "Ce RDV est obligatoire. Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité. " \
             "En cas d’empêchement, appelez rapidement le 0101010101."
         end
 
@@ -142,7 +147,7 @@ describe Notifications::SendSms, type: :service do
           "Monsieur John DOE,\nVotre rendez-vous d'orientation dans le cadre de votre RSA a été modifié. " \
             "Vous êtes attendu le 20/12/2021 à " \
             "10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
-            "Ce RDV est obligatoire. " \
+            "Ce RDV est obligatoire. Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité. " \
             "En cas d’empêchement, appelez rapidement le 0101010101."
         end
 
@@ -165,7 +170,7 @@ describe Notifications::SendSms, type: :service do
           "RAPPEL: Monsieur John DOE,\nVous êtes bénéficiaire du RSA et à ce titre vous avez été convoqué à un " \
             "rendez-vous d'orientation. Vous êtes attendu le 20/12/2021" \
             " à 10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
-            "Ce RDV est obligatoire. " \
+            "Ce RDV est obligatoire. Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité. " \
             "En cas d’empêchement, appelez rapidement le 0101010101."
         end
 
@@ -279,8 +284,8 @@ describe Notifications::SendSms, type: :service do
           "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et à ce titre vous êtes convoqué à un " \
             "rendez-vous d'accompagnement. Vous êtes attendu " \
             "le 20/12/2021 à 10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
-            "Ce RDV est obligatoire. " \
-            "En cas d'absence, le versement de votre RSA pourra être suspendu ou réduit. " \
+            "Ce RDV est obligatoire. Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité. " \
+            "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
             "En cas d’empêchement, appelez rapidement le 0101010101."
         end
 
@@ -302,8 +307,8 @@ describe Notifications::SendSms, type: :service do
             "Monsieur John DOE,\nVotre rendez-vous d'accompagnement dans le cadre de votre RSA a été modifié. " \
               "Vous êtes attendu le 20/12/2021 à " \
               "10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
-              "Ce RDV est obligatoire. " \
-              "En cas d'absence, le versement de votre RSA pourra être suspendu ou réduit. " \
+              "Ce RDV est obligatoire. Merci de venir au RDV avec un justificatif de domicile " \
+              "et une pièce d'identité. En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
               "En cas d’empêchement, appelez rapidement le 0101010101."
           end
 
@@ -345,7 +350,7 @@ describe Notifications::SendSms, type: :service do
               "rendez-vous d'accompagnement téléphonique. Un travailleur social " \
               "vous appellera le 20/12/2021 à partir de 10:00 sur ce numéro. " \
               "Ce RDV est obligatoire. " \
-              "En cas d'absence, le versement de votre RSA pourra être suspendu ou réduit. " \
+              "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
               "En cas d’empêchement, appelez rapidement le 0101010101."
           end
 
@@ -369,7 +374,7 @@ describe Notifications::SendSms, type: :service do
                 "Un travailleur social vous appellera le 20/12/2021 à " \
                 "partir de 10:00 sur ce numéro. " \
                 "Ce RDV est obligatoire. " \
-                "En cas d'absence, le versement de votre RSA pourra être suspendu ou réduit. " \
+                "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
                 "En cas d’empêchement, appelez rapidement le 0101010101."
             end
 
@@ -387,6 +392,7 @@ describe Notifications::SendSms, type: :service do
     end
 
     describe "RSA CER Signature" do
+      let!(:motif) { create(:motif, location_type: "public_office") }
       let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_cer_signature) }
 
       let!(:content) do
@@ -500,6 +506,7 @@ describe Notifications::SendSms, type: :service do
     end
 
     describe "RSA suivi" do
+      let!(:motif) { create(:motif, location_type: "public_office") }
       let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_follow_up) }
 
       let!(:content) do
@@ -608,6 +615,7 @@ describe Notifications::SendSms, type: :service do
     end
 
     describe "RSA SPIE" do
+      let!(:motif) { create(:motif, location_type: "public_office") }
       let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_spie) }
 
       let!(:content) do
@@ -615,7 +623,7 @@ describe Notifications::SendSms, type: :service do
           "rendez-vous d'accompagnement. Vous êtes attendu " \
           "le 20/12/2021 à 10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
           "Ce RDV est obligatoire. " \
-          "En cas d'absence, le versement de votre RSA pourra être suspendu ou réduit. " \
+          "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
           "En cas d’empêchement, appelez rapidement le 0101010101."
       end
 
@@ -639,7 +647,7 @@ describe Notifications::SendSms, type: :service do
             "Vous êtes attendu le 20/12/2021 à " \
             "10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
             "Ce RDV est obligatoire. " \
-            "En cas d'absence, le versement de votre RSA pourra être suspendu ou réduit. " \
+            "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
             "En cas d’empêchement, appelez rapidement le 0101010101."
         end
 
@@ -682,7 +690,7 @@ describe Notifications::SendSms, type: :service do
             "rendez-vous d'accompagnement téléphonique. Un travailleur social " \
             "vous appellera le 20/12/2021 à partir de 10:00 sur ce numéro. " \
             "Ce RDV est obligatoire. " \
-            "En cas d'absence, le versement de votre RSA pourra être suspendu ou réduit. " \
+            "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
             "En cas d’empêchement, appelez rapidement le 0101010101."
         end
 
@@ -706,7 +714,7 @@ describe Notifications::SendSms, type: :service do
               "Un travailleur social vous appellera le 20/12/2021 à " \
               "partir de 10:00 sur ce numéro. " \
               "Ce RDV est obligatoire. " \
-              "En cas d'absence, le versement de votre RSA pourra être suspendu ou réduit. " \
+              "En cas d'absence, votre RSA pourra être suspendu ou réduit. " \
               "En cas d’empêchement, appelez rapidement le 0101010101."
           end
 

@@ -224,6 +224,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_09_100502) do
     t.datetime "updated_at", null: false
     t.boolean "follow_up", default: false
     t.bigint "motif_category_id"
+    t.text "instruction_for_rdv", default: ""
     t.index ["motif_category_id"], name: "index_motifs_on_motif_category_id"
     t.index ["organisation_id"], name: "index_motifs_on_organisation_id"
     t.index ["rdv_solidarites_motif_id"], name: "index_motifs_on_rdv_solidarites_motif_id", unique: true
@@ -343,11 +344,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_09_100502) do
     t.string "rdv_purpose"
     t.string "applicant_designation"
     t.string "rdv_subject"
-    t.boolean "display_mandatory_warning"
-    t.boolean "display_punishable_warning"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "custom_sentence"
+    t.boolean "display_mandatory_warning", default: false
+    t.text "punishable_warning", default: "", null: false
   end
 
   create_table "webhook_endpoints", force: :cascade do |t|

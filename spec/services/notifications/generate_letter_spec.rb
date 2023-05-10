@@ -20,7 +20,12 @@ describe Notifications::GenerateLetter, type: :service do
   let!(:rdv) do
     create(:rdv, lieu: lieu, motif: motif, starts_at: Time.zone.parse("25/12/2022 09:30"), organisation: organisation)
   end
-  let!(:motif) { create(:motif, location_type: "public_office") }
+  let!(:motif) do
+    create(
+      :motif, location_type: "public_office",
+              instruction_for_rdv: "Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité."
+    )
+  end
   let!(:lieu) { create(:lieu, address: "12 Place Léon Blum, 75011 Paris", name: "Marie du 11eme") }
 
   let!(:organisation) { create(:organisation, department: department) }
@@ -46,6 +51,17 @@ describe Notifications::GenerateLetter, type: :service do
         "<span class=\"bold-blue\">vous êtes convoqué à un rendez-vous d'orientation</span>" \
         " afin de démarrer un parcours d'accompagnement"
       )
+      expect(content).to include("Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité")
+    end
+
+    context "when the motif has no documents warning" do
+      let!(:motif) { create(:motif, location_type: "public_office") }
+
+      it "generates the matching content" do
+        subject
+        content = unescape_html(notification.content)
+        expect(content).not_to include("Merci de venir au RDV avec un justificatif de domicile et une pièce")
+      end
     end
 
     context "when the rdv is by phone" do
@@ -61,6 +77,7 @@ describe Notifications::GenerateLetter, type: :service do
           "Un travailleur social vous appellera <span class=\"bold-blue\">le dimanche 25 décembre 2022 à 09h30</span>" \
           " sur votre numéro de téléphone: <span class=\"bold-blue\">+33607070707</span>"
         )
+        expect(content).not_to include("Merci de venir au RDV avec un justificatif de domicile et une pièce")
       end
 
       context "when the phone number is blank" do

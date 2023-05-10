@@ -38,8 +38,9 @@ module Notifications
         sender_city: @notification.sender_city,
         rdv_title: @notification.rdv_title,
         applicant_designation: @notification.applicant_designation,
-        display_mandatory_warning: @notification.display_mandatory_warning,
-        display_punishable_warning: @notification.display_punishable_warning,
+        mandatory_warning: @notification.mandatory_warning,
+        punishable_warning: @notification.punishable_warning,
+        instruction_for_rdv: @notification.instruction_for_rdv,
         rdv_purpose: @notification.rdv_purpose,
         rdv_subject: @notification.rdv_subject
       }
