@@ -8,7 +8,7 @@
 <div class="main-content">
   <p><%= applicant.title.capitalize %>,</p>
   <p>Vous êtes <%= applicant_designation %> et à ce titre <span class="bold-blue">vous êtes <%= applicant.conjugate("convoqué") %> à un <%= rdv_title %></span> afin de <%= rdv_purpose %>.</p>
-  <p>Un travailleur social vous appellera <span class="bold-blue">le <%= I18n.l(rdv.starts_at, format: :human) %></span> sur votre numéro de téléphone: <span class="bold-blue"><%= applicant.phone_number_formatted %></span>.</p>
+  <p>Un travailleur social vous appellera <span class="bold-blue">le <%= I18n.l(rdv.starts_at, format: :human) %></span> sur votre numéro de téléphone: <span class="bold-blue"><%= applicant.phone_number %></span>.</p>
   <% if display_mandatory_warning %>
     <p><span class="bold-blue">Ce rendez-vous est obligatoire</span>.</p>
   <% end  %>

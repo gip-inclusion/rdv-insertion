@@ -1,9 +1,9 @@
 describe MessagesConfigurationsController do
   let!(:organisation) { create(:organisation) }
   let!(:another_organisation) { create(:organisation) }
-  let!(:configuration) { create(:configuration, organisations: [organisation]) }
+  let!(:configuration) { create(:configuration, organisation: organisation) }
   let!(:messages_configuration) do
-    create(:messages_configuration, organisations: [organisation],
+    create(:messages_configuration, organisation: organisation,
                                     direction_names: ["DIRECTION GÉNÉRALE DES SERVICES DÉPARTEMENTAUX"],
                                     signature_lines: ["Antoine Dupont, ministre de l'Intérieur"],
                                     sender_city: "Toulouse",

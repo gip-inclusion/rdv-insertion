@@ -11,12 +11,12 @@ describe InviteApplicantJob do
   let!(:department) { create(:department) }
   let!(:applicant) { create(:applicant, id: applicant_id) }
   let!(:organisation) do
-    create(:organisation, id: organisation_id, department: department, configurations: [configuration])
+    create(:organisation, id: organisation_id, department: department)
   end
   let!(:configuration) do
     create(
       :configuration, motif_category: motif_category, number_of_days_before_action_required: 10,
-                      rdv_with_referents: false
+                      rdv_with_referents: false, organisation: organisation
     )
   end
   let!(:rdv_solidarites_session_credentials) do
@@ -100,7 +100,7 @@ describe InviteApplicantJob do
 
     context "when no matching configuration for motif category" do
       let!(:other_motif_category) { create(:motif_category) }
-      let!(:configuration) { create(:configuration, motif_category: other_motif_category) }
+      let!(:configuration) { create(:configuration, organisation: organisation, motif_category: other_motif_category) }
 
       it "raises an error" do
         expect(Invitations::SaveAndSend).not_to receive(:call)

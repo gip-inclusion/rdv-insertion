@@ -8,7 +8,7 @@ describe InvitationsController do
     let!(:configuration) do
       create(
         :configuration,
-        organisations: [organisation], number_of_days_before_action_required: 10,
+        organisation: organisation, number_of_days_before_action_required: 10,
         motif_category: motif_category, rdv_with_referents: false, invite_to_applicant_organisations_only: false
       )
     end

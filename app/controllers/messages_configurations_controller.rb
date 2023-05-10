@@ -10,13 +10,13 @@ class MessagesConfigurationsController < ApplicationController
   def show; end
 
   def new
-    @messages_configuration = MessagesConfiguration.new(organisations: [@organisation])
+    @messages_configuration = MessagesConfiguration.new(organisation: @organisation)
   end
 
   def edit; end
 
   def create
-    @messages_configuration = MessagesConfiguration.new(organisations: [@organisation])
+    @messages_configuration = MessagesConfiguration.new(organisation: @organisation)
     @messages_configuration.assign_attributes(**formatted_params)
     if @messages_configuration.save
       flash.now[:success] = "Les réglages ont été modifiés avec succès"

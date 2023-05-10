@@ -1,5 +1,5 @@
 class DesignateOnWatchDeveloperJob < ApplicationJob
-  DEVELOPERS_HANDLE = %w[quentin.blanc romain.neuville amine.dhobb].freeze
+  DEVELOPERS_HANDLE = %w[quentin.blanc amine.dhobb].freeze
 
   def perform
     return unless production_env?
