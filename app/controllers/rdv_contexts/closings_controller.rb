@@ -38,7 +38,7 @@ module RdvContexts
     end
 
     def set_rdv_context
-      @rdv_context = policy_scope(RdvContext).find(closing_params[:rdv_context_id])
+      @rdv_context = RdvContext.find(closing_params[:rdv_context_id])
     end
 
     def set_applicant

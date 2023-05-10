@@ -8,10 +8,4 @@ class RdvContextPolicy < ApplicationPolicy
   def reopen?
     close?
   end
-
-  class Scope < Scope
-    def resolve
-      pundit_user.rdv_contexts
-    end
-  end
 end
