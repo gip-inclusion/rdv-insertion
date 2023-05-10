@@ -109,8 +109,7 @@ export default class Applicant {
     this.createdAt = upToDateApplicant.created_at;
     this.invitedAt = upToDateApplicant.invited_at;
     this.id = upToDateApplicant.id;
-    this.isArchived = upToDateApplicant.archived_at != null;
-    this.archiving_reason = upToDateApplicant.archiving_reason;
+    this.archivings = upToDateApplicant.archivings;
     this.organisations = upToDateApplicant.organisations;
     // we assign a current organisation when we are in the context of a department
     this.currentOrganisation ||= upToDateApplicant.organisations.find(
@@ -296,6 +295,14 @@ export default class Applicant {
       this.agents &&
       this.agents.some((agent) => agent.email === this.referentEmail)
     );
+  }
+
+  currentArchiving() {
+    return this.archivings.find((archiving) => archiving.department_id === this.department.id);
+  }
+
+  isArchived() {
+    return this.archivings && this.currentArchiving();
   }
 
   generateUid() {

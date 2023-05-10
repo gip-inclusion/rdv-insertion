@@ -5,10 +5,11 @@ class SendInvitationRemindersJob < ApplicationJob
     @sent_reminders_applicant_ids = []
 
     rdv_contexts_with_reminder_needed.find_each do |rdv_context|
-      # we check here that it is the **first** invitation that has been sent x number of days ago,
-      # where x is fixed by the constant Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER
-      next if rdv_context.first_invitation_relative_to_last_participation_sent_at.to_date !=
-              Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER.days.ago.to_date
+      invitation = rdv_context.first_invitation_relative_to_last_participation
+      # we check here that the **first** invitation has been sent Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER
+      # number of days ago with that value being set to 3
+      next unless invitation_sent_3_days_ago?(invitation)
+      next if invitation_related_to_archiving?(invitation)
 
       applicant = rdv_context.applicant
 
@@ -29,7 +30,7 @@ class SendInvitationRemindersJob < ApplicationJob
                 .joins(:motif_category)
                 .where(motif_category: MotifCategory.participation_optional(false))
                 .where(id: valid_invitations_sent_3_days_ago.pluck(:rdv_context_id))
-                .where(applicant_id: Applicant.active.archived(false).ids)
+                .where(applicant_id: Applicant.active.ids)
                 .distinct
   end
 
@@ -42,6 +43,14 @@ class SendInvitationRemindersJob < ApplicationJob
                   sent_at: Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER.days.ago.all_day,
                   reminder: false
                 )
+  end
+
+  def invitation_sent_3_days_ago?(invitation)
+    invitation.sent_at.to_date == Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER.days.ago.to_date
+  end
+
+  def invitation_related_to_archiving?(invitation)
+    Archiving.exists?(applicant: invitation.applicant, department: invitation.department)
   end
 
   def notify_on_mattermost

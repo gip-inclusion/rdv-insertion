@@ -41,6 +41,7 @@ RSpec.configure do |config|
   config.include MotifCategoriesHelper
   config.include NirHelper
   config.include StubHelper
+  config.include UploadHelper
   config.include ActiveSupport::Testing::TimeHelpers
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your

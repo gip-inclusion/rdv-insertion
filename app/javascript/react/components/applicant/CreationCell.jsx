@@ -1,5 +1,4 @@
 import React from "react";
-import Swal from "sweetalert2";
 import Tippy from "@tippyjs/react";
 
 import handleApplicantCreation from "../../lib/handleApplicantCreation";
@@ -17,11 +16,8 @@ export default function CreationCell({
   const handleUnarchiveApplicantClick = async () => {
     setIsTriggered({ ...isTriggered, unarchiving: true });
 
-    const result = await handleApplicantUnarchive(applicant);
+    await handleApplicantUnarchive(applicant);
 
-    if (result.success) {
-      Swal.fire("Dossier de l'allocataire rouvert avec succès", "", "info");
-    }
     setIsTriggered({ ...isTriggered, unarchiving: false });
   };
 
@@ -46,7 +42,7 @@ export default function CreationCell({
     setIsTriggered({ ...isTriggered, creation: false });
   };
 
-  return applicant.isArchived ? (
+  return applicant.isArchived() ? (
     <td>
       <button
         type="submit"

@@ -1,4 +1,4 @@
-<%= render 'archive_banner' if @applicant.archived? %>
+<%= render 'archive_banner' if @applicant.archived_in?(@department) %>
 <%= simple_form_for(@applicant, url: compute_show_path(@applicant, @organisation, @department), html: { method: :patch }) do |f| %>
   <%= render 'applicant_form', f: f, title: "Modifier allocataire", return_path: compute_show_path(@applicant, @organisation, @department) %>
 <% end %>

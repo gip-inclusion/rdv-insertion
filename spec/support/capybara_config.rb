@@ -8,10 +8,10 @@ Capybara.register_driver :selenium do |app|
   Capybara::Selenium::Driver.new(
     app,
     browser: :chrome,
-    capabilities: [Selenium::WebDriver::Chrome::Options.new(
+    options: Selenium::WebDriver::Chrome::Options.new(
       args: args,
       "goog:loggingPrefs": { browser: "ALL" }
-    )]
+    )
   )
 end
 

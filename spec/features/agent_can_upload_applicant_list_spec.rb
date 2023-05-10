@@ -1,4 +1,6 @@
 describe "Agents can upload applicant list", js: true do
+  include_context "with file configuration"
+
   let!(:agent) { create(:agent, organisations: [organisation]) }
   let!(:department) { create(:department) }
   let!(:organisation) do
@@ -6,14 +8,15 @@ describe "Agents can upload applicant list", js: true do
       :organisation,
       department: department,
       rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
+      # needed for the organisation applicants page
+      configurations: [configuration],
       slug: "org1"
     )
   end
   let!(:motif) { create(:motif, organisation: organisation, motif_category: motif_category) }
 
   let!(:configuration) do
-    create(:configuration, organisation: organisation, motif_category: motif_category,
-                           file_configuration: file_configuration)
+    create(:configuration, motif_category: motif_category, file_configuration: file_configuration)
   end
 
   let!(:other_org_from_same_department) { create(:organisation, department: department) }
@@ -22,31 +25,6 @@ describe "Agents can upload applicant list", js: true do
 
   let!(:now) { Time.zone.parse("05/10/2022") }
 
-  let!(:file_configuration) do
-    create(
-      :file_configuration,
-      title_column: "Civilité",
-      first_name_column: "Prénom bénéficiaire",
-      last_name_column: "Nom bénéficiaire",
-      role_column: "Rôle",
-      email_column: "Adresses Mails",
-      phone_number_column: "N° Téléphones",
-      birth_date_column: "Date de Naissance",
-      birth_name_column: nil,
-      street_number_column: nil,
-      street_type_column: nil,
-      address_column: "Adresse",
-      postal_code_column: "CP Ville",
-      city_column: nil,
-      affiliation_number_column: "N° Allocataire",
-      pole_emploi_id_column: nil,
-      nir_column: "NIR",
-      department_internal_id_column: "id iodas ",
-      rights_opening_date_column: nil,
-      organisation_search_terms_column: "structure",
-      referent_email_column: nil
-    )
-  end
   let!(:motif_category) { create(:motif_category) }
   let!(:rdv_solidarites_user_id) { 2323 }
   let!(:rdv_solidarites_organisation_id) { 3234 }
@@ -69,8 +47,6 @@ describe "Agents can upload applicant list", js: true do
       ### Upload
 
       attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
-
-      expect(page).to have_content("Civilité")
 
       expect(page).to have_content("Civilité")
       expect(page).to have_content("M")

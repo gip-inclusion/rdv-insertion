@@ -5,19 +5,20 @@
     <th scope="col">Première invitation</th>
     <th scope="col">Dernière invitation</th>
     <th scope="col">Archivé le</th>
-    <th scope="col">Statut</th>
+    <th scope="col">Motif d'archivage</th>
     <th scope="col"></th>
   </thead>
   <tbody class="align-middle">
-    <% @applicants.each do |applicant| %>
+    <% @archivings.each do |archiving| %>
+      <% applicant = archiving.applicant  %>
       <tr class="table-danger">
         <td><%= display_attribute applicant.last_name %></td>
         <td><%= display_attribute applicant.first_name %></td>
         <td><%= display_attribute format_date(applicant.first_invitation_relative_to_last_participation_sent_at) %></td>
         <td><%= display_attribute(format_date(applicant
         .last_invitation_sent_at)) %></td>
-        <td><%= display_attribute format_date(applicant.archived_at) %></td>
-        <td>Dossier archivé</td>
+        <td><%= display_attribute format_date(archiving.created_at) %></td>
+        <td><%= display_attribute archiving.archiving_reason %></td>
         <td class="padding-left-15">
           <%= link_to compute_show_path(applicant, @organisation, @department) do %>
             <button class="btn btn-blue">Gérer</button>

@@ -28,6 +28,7 @@
         invitationFormats: configuration.invitation_formats,
         motifCategory: configuration.motif_category,
         status: rdv_context.status,
+        isArchived: @archiving.present?
       }
     ) %>
   <% end %>

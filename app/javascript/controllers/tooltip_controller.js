@@ -130,4 +130,15 @@ export default class extends Controller {
       allowHTML: true,
     });
   }
+
+  archivingDisabled() {
+    // the button is in a wrapper because we cannot set a tooltip on a disabled element
+    const archivingButton = document.getElementById("archive-button");
+    if (archivingButton.disabled) {
+      tippy(this.element, {
+        content:
+          "Vous devez appartenir à toutes les organisations du bénéificiaire pour pouvoir l'archiver",
+      });
+    }
+  }
 }

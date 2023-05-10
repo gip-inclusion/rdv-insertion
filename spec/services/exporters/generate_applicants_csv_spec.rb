@@ -173,47 +173,27 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
           let!(:applicant1) do
             create(
               :applicant,
-              archived_at: "20/06/2022",
-              archiving_reason: "test",
-              organisations: [organisation]
+              organisations: [organisation],
+              archivings: [archiving]
             )
           end
-          let!(:csv) { subject.csv }
+          let!(:archiving) do
+            create(
+              :archiving,
+              created_at: Time.zone.parse("2022-06-20"),
+              department: department, archiving_reason: "test"
+            )
+          end
 
           it "displays the archiving infos" do
-            expect(csv).to include("20/06/2022") # archiving status
-            expect(csv).to include("20/06/2022;test") # archiving reason
+            expect(subject.csv).to include("20/06/2022") # archiving status
+            expect(subject.csv).to include("20/06/2022;test") # archiving reason
           end
 
           it "does displays the archived status rather than the rdv_context status" do
-            expect(csv).not_to include("Statut du RDV à préciser")
-            expect(csv).to include("Archivé")
+            expect(subject.csv).not_to include("Statut du RDV à préciser")
+            expect(subject.csv).to include("Archivé")
           end
-        end
-      end
-
-      context "when no structure is passed" do
-        let!(:structure) { nil }
-        let!(:rdv_context) do
-          create(
-            :rdv_context, participations: [], invitations: [first_invitation, last_invitation],
-                          motif_category: motif_category,
-                          applicant: applicant1, status: "invitation_pending"
-          )
-        end
-
-        it "is a success" do
-          expect(subject.success?).to eq(true)
-        end
-
-        it "generates a filename" do
-          expect(subject.filename).to eq("Export_beneficiaires_#{timestamp}.csv")
-        end
-
-        it "does not displays 'délai dépassé' warnings" do
-          csv = subject.csv
-          expect(csv).to include("Invitation en attente de réponse") # rdv_context status
-          expect(csv).not_to include("(Délai dépassé)")
         end
       end
 

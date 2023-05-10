@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_09_100502) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_09_205431) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -66,10 +66,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_09_100502) do
     t.date "birth_date"
     t.date "rights_opening_date"
     t.string "birth_name"
-    t.string "archiving_reason"
     t.datetime "deleted_at"
     t.datetime "last_webhook_update_received_at"
-    t.datetime "archived_at"
     t.string "nir"
     t.string "pole_emploi_id"
     t.index ["department_internal_id"], name: "index_applicants_on_department_internal_id"
@@ -84,6 +82,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_09_100502) do
     t.bigint "organisation_id", null: false
     t.bigint "applicant_id", null: false
     t.index ["organisation_id", "applicant_id"], name: "index_applicants_orgas_on_orga_id_and_applicant_id", unique: true
+  end
+
+  create_table "archivings", force: :cascade do |t|
+    t.bigint "department_id", null: false
+    t.bigint "applicant_id", null: false
+    t.string "archiving_reason"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["applicant_id"], name: "index_archivings_on_applicant_id"
+    t.index ["department_id"], name: "index_archivings_on_department_id"
   end
 
   create_table "configurations", force: :cascade do |t|
@@ -371,6 +379,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_09_100502) do
 
   add_foreign_key "agent_roles", "agents"
   add_foreign_key "agent_roles", "organisations"
+  add_foreign_key "archivings", "applicants"
+  add_foreign_key "archivings", "departments"
   add_foreign_key "configurations", "file_configurations"
   add_foreign_key "configurations", "motif_categories"
   add_foreign_key "configurations", "organisations"

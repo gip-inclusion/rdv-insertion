@@ -1,6 +1,5 @@
 import appFetch from "../../lib/appFetch";
 
-const unarchiveApplicant = async (applicantId) =>
-  appFetch(`/applicants/${applicantId}/archivings`, "DELETE");
+const unarchiveApplicant = async (archivingId) => appFetch(`/archivings/${archivingId}`, "DELETE");
 
 export default unarchiveApplicant;
