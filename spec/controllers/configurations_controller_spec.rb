@@ -7,11 +7,11 @@ describe ConfigurationsController do
   let!(:another_organisation) { create(:organisation, department: department) }
   let!(:file_configuration) { create(:file_configuration) }
   let!(:configuration) do
-    create(:configuration, organisations: [organisation], file_configuration: file_configuration)
+    create(:configuration, organisation: organisation, file_configuration: file_configuration)
   end
-  let!(:another_configuration) { create(:configuration, organisations: [another_organisation]) }
-  let!(:config_of_other_dep) { create(:configuration) }
-  let!(:messages_configuration) { create(:messages_configuration, organisations: [organisation]) }
+  let!(:another_configuration) { create(:configuration, organisation: another_organisation) }
+  let!(:config_of_other_dep) { create(:configuration, organisation: create(:organisation)) }
+  let!(:messages_configuration) { create(:messages_configuration, organisation: organisation) }
   let!(:agent) { create(:agent, admin_role_in_organisations: [organisation]) }
 
   render_views
@@ -133,7 +133,7 @@ describe ConfigurationsController do
   end
 
   describe "#new" do
-    let!(:new_configuration) { build(:configuration, organisations: [organisation]) }
+    let!(:new_configuration) { build(:configuration, organisation: organisation) }
     let!(:new_params) { { organisation_id: organisation.id } }
 
     it "renders the new applicant page" do
@@ -398,17 +398,11 @@ describe ConfigurationsController do
       { organisation_id: organisation.id, id: configuration.id, format: "text/html" }
     end
 
-    it "removes the configuration from the organisation" do
-      expect { delete :destroy, params: destroy_params }.to change(configuration.organisations, :count).by(-1)
-    end
-
-    context "when the configuration is not linked anymore to an organisation" do
-      it "destroys the configuration" do
-        expect do
-          delete :destroy, params: destroy_params
-          Configuration.find(configuration.id)
-        end.to raise_error(ActiveRecord::RecordNotFound)
-      end
+    it "destroys the configuration" do
+      expect do
+        delete :destroy, params: destroy_params
+        Configuration.find(configuration.id)
+      end.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     context "when the destroy succeeds" do
