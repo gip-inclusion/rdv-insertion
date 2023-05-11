@@ -7,7 +7,7 @@ module Messengers::GenerateLetter
 
   def verify_address!(sendable)
     fail!("L'adresse doit être renseignée") if sendable.address.blank?
-    fail!("Le format de l'adresse est invalide") \
+    fail!("Le format de l'adresse est invalide. Le format attendu est le suivant: 10 rue de l'envoi 12345 - La Ville") \
       if sendable.street_address.blank? || sendable.zipcode_and_city.blank?
   end
 end

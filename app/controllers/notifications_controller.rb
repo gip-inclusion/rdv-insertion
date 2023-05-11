@@ -7,11 +7,12 @@ class NotificationsController < ApplicationController
         format.pdf { send_data pdf, filename: pdf_filename, layout: "application/pdf" }
       end
     else
-      render turbo_stream: turbo_stream.replace(
-        "remote_modal", partial: "common/error_modal", locals: {
-          errors: notify_participation.errors
-        }
-      )
+      respond_to do |format|
+        format.pdf do
+          flash[:error] = notify_participation.errors.join(", ")
+          redirect_to request.referer
+        end
+      end
     end
   end
 

@@ -158,7 +158,11 @@ describe Notifications::GenerateLetter, type: :service do
       it("is a failure") { is_a_failure }
 
       it "returns the error" do
-        expect(subject.errors).to eq(["Le format de l'adresse est invalide"])
+        expect(subject.errors).to eq(
+          [
+            "Le format de l'adresse est invalide. Le format attendu est le suivant: 10 rue de l'envoi 12345 - La Ville"
+          ]
+        )
       end
     end
   end

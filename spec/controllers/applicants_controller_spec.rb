@@ -346,8 +346,11 @@ describe ApplicantsController do
           expect(response.body).not_to include("Email 📧")
         end
 
-        context "when the rdv is in the future" do
-          before { rdv_orientation1.update! starts_at: 2.days.from_now }
+        context "when the rdv is pending" do
+          before do
+            rdv_orientation1.update! starts_at: 2.days.from_now
+            participation.update! status: "unknown"
+          end
 
           it "shows the courrier generation button" do
             get :show, params: show_params
