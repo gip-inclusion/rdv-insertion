@@ -5,7 +5,7 @@
   <div>Email 📧</div>
 <% end %>
 <% if participation.in_the_future? || participation.revoked? %>
-  <%= simple_form_for(:notification, url: participation_notifications_path(participation), html: { method: :post }) do |f| %>
+  <%= simple_form_for(:notification, url: participation_notifications_path(participation, format: "pdf"), html: { method: :post }) do |f| %>
     <%= f.input :format,
                 as: :hidden,
                 input_html: { class: "form-control", value: "postal" }
