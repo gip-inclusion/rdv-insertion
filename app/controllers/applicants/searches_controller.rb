@@ -17,7 +17,7 @@ module Applicants
           :rdvs, :agents, :archivings,
           invitations: :rdv_context,
           rdv_contexts: [:participations, :motif_category],
-          organisations: [:motif_categories, :department, :configurations],
+          organisations: [:motif_categories, :department, :configurations]
         ).distinct
     end
 
