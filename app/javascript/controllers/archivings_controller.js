@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
 import Swal from "sweetalert2";
-import archiveApplicant from "../react/actions/archiveApplicant";
-import unarchiveApplicant from "../react/actions/unarchiveApplicant";
+import createArchiving from "../react/actions/createArchiving";
+import deleteArchiving from "../react/actions/deleteArchiving";
 
 export default class extends Controller {
   connect() {
@@ -34,7 +34,7 @@ export default class extends Controller {
         department_id: this.departmentId,
       };
 
-      const result = await archiveApplicant(attributes);
+      const result = await createArchiving(attributes);
       this.handleResult(result);
     }
   }
@@ -52,7 +52,7 @@ export default class extends Controller {
     });
 
     if (isConfirmed) {
-      const result = await unarchiveApplicant(this.archivingId);
+      const result = await deleteArchiving(this.archivingId);
       this.handleResult(result);
     }
   }

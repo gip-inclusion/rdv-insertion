@@ -1,6 +1,6 @@
 import appFetch from "../../lib/appFetch";
 
-const archiveApplicant = async (attributes) =>
+const createArchiving = async (attributes) =>
   appFetch("/archivings", "POST", { archiving: attributes });
 
-export default archiveApplicant;
+export default createArchiving;

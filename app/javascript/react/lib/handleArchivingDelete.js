@@ -1,9 +1,9 @@
 import Swal from "sweetalert2";
-import unarchiveApplicant from "../actions/unarchiveApplicant";
+import deleteArchiving from "../actions/deleteArchiving";
 
-const handleApplicantUnarchive = async (applicant) => {
+const handleArchivingDelete = async (applicant) => {
   const archivingToDelete = applicant.currentArchiving();
-  const result = await unarchiveApplicant(archivingToDelete.id);
+  const result = await deleteArchiving(archivingToDelete.id);
   if (result.success) {
     applicant.archivings = applicant.archivings.filter(
       (archiving) => archiving.id !== archivingToDelete.id
@@ -15,4 +15,4 @@ const handleApplicantUnarchive = async (applicant) => {
   return result;
 };
 
-export default handleApplicantUnarchive;
+export default handleArchivingDelete;

@@ -2,7 +2,7 @@ import React from "react";
 import Tippy from "@tippyjs/react";
 
 import handleApplicantCreation from "../../lib/handleApplicantCreation";
-import handleApplicantUnarchive from "../../lib/handleApplicantUnarchive";
+import handleArchivingDelete from "../../lib/handleArchivingDelete";
 import retrieveRelevantOrganisation from "../../../lib/retrieveRelevantOrganisation";
 
 import { getFrenchFormatDateString } from "../../../lib/datesHelper";
@@ -13,10 +13,10 @@ export default function CreationCell({
   isTriggered,
   setIsTriggered,
 }) {
-  const handleUnarchiveApplicantClick = async () => {
+  const handleFileReopen = async () => {
     setIsTriggered({ ...isTriggered, unarchiving: true });
 
-    await handleApplicantUnarchive(applicant);
+    await handleArchivingDelete(applicant);
 
     setIsTriggered({ ...isTriggered, unarchiving: false });
   };
@@ -48,7 +48,7 @@ export default function CreationCell({
         type="submit"
         disabled={isTriggered.unarchiving}
         className="btn btn-primary btn-blue"
-        onClick={() => handleUnarchiveApplicantClick()}
+        onClick={() => handleFileReopen()}
       >
         Rouvrir le dossier
       </button>
