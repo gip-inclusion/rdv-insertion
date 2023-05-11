@@ -39,7 +39,8 @@ module ApplicantsHelper
       ["rdv_revoked", statuses_count["rdv_revoked"]],
       ["multiple_rdvs_cancelled", statuses_count["multiple_rdvs_cancelled"]],
       ["rdv_noshow", statuses_count["rdv_noshow"]],
-      ["rdv_seen", statuses_count["rdv_seen"]]
+      ["rdv_seen", statuses_count["rdv_seen"]],
+      ["closed", statuses_count["closed"]]
     ]
   end
 
@@ -50,7 +51,7 @@ module ApplicantsHelper
       "bg-danger border-danger"
     elsif context.time_to_accept_invitation_exceeded?(number_of_days_before_action_required)
       "bg-warning border-warning"
-    elsif context.rdv_seen?
+    elsif context.rdv_seen? || context.closed?
       "bg-success border-success"
     else
       ""
@@ -58,6 +59,8 @@ module ApplicantsHelper
   end
 
   def background_class_for_participation_status(participation)
+    return "" if participation.rdv_context.closed?
+
     if participation.seen?
       "bg-success border-success"
     elsif participation.cancelled?

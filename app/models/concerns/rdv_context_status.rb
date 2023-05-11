@@ -5,7 +5,7 @@ module RdvContextStatus
     enum status: {
       not_invited: 0, invitation_pending: 1, rdv_pending: 2,
       rdv_needs_status_update: 3, rdv_noshow: 4, rdv_revoked: 5, rdv_excused: 6,
-      rdv_seen: 7, multiple_rdvs_cancelled: 8
+      rdv_seen: 7, multiple_rdvs_cancelled: 8, closed: 9
     }
     before_save :set_status
   end
@@ -19,6 +19,8 @@ module RdvContextStatus
   private
 
   def compute_status
+    return :closed if closed_at.present?
+
     return :not_invited if sent_invitations.empty? && rdvs.empty?
 
     invitation_sent_after_last_created_participation? ? :invitation_pending : status_from_participations

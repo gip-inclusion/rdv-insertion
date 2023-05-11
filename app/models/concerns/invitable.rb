@@ -64,4 +64,10 @@ module Invitable
     last_invitation_sent_manually.present? &&
       last_invitation_sent_manually.sent_at < number_of_days_before_action_required.days.ago
   end
+
+  def invalidate_invitations
+    invitations.each do |invitation|
+      InvalidateInvitationJob.perform_async(invitation.id)
+    end
+  end
 end
