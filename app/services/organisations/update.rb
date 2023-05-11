@@ -15,10 +15,6 @@ module Organisations
 
     private
 
-    def organisation_formatted_attributes
-      rdv_solidarites_organisation_attributes.merge({ "verticale" => "rdv_insertion" })
-    end
-
     def check_rdv_solidarites_organisation_id
       return if @organisation.rdv_solidarites_organisation_id
 
@@ -32,12 +28,13 @@ module Organisations
                      .slice(*Organisation::SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES)
                      .transform_values(&:presence)
                      .compact
+                     .merge({ "verticale" => "rdv_insertion" })
     end
 
     def update_rdv_solidarites_organisation
       @update_rdv_solidarites_organisation ||= call_service!(
         RdvSolidaritesApi::UpdateOrganisation,
-        organisation_attributes: organisation_formatted_attributes,
+        organisation_attributes: rdv_solidarites_organisation_attributes,
         rdv_solidarites_session: @rdv_solidarites_session,
         rdv_solidarites_organisation_id: @organisation.rdv_solidarites_organisation_id
       )
