@@ -3,7 +3,9 @@ class NotificationsController < ApplicationController
 
   def create
     if notify_participation.success?
-      send_data pdf, filename: pdf_filename, layout: "application/pdf"
+      respond_to do |format|
+        format.pdf { send_data pdf, filename: pdf_filename, layout: "application/pdf" }
+      end
     else
       render turbo_stream: turbo_stream.replace(
         "remote_modal", partial: "common/error_modal", locals: {

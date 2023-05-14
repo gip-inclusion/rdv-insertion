@@ -45,8 +45,7 @@ orientation_category = MotifCategory.create!(
     rdv_purpose: "démarrer un parcours d'accompagnement",
     applicant_designation: "bénéficiaire du RSA",
     rdv_subject: "RSA",
-    display_mandatory_warning: true,
-    display_punishable_warning: false
+    display_mandatory_warning: true
   )
 )
 accompagnement_category = MotifCategory.create!(
@@ -59,7 +58,7 @@ accompagnement_category = MotifCategory.create!(
     applicant_designation: "bénéficiaire du RSA",
     rdv_subject: "RSA",
     display_mandatory_warning: true,
-    display_punishable_warning: true
+    punishable_warning: "votre RSA pourra être suspendu ou réduit"
   )
 )
 MotifCategory.create!(
@@ -73,7 +72,7 @@ MotifCategory.create!(
     applicant_designation: "bénéficiaire du RSA",
     rdv_subject: "RSA",
     display_mandatory_warning: true,
-    display_punishable_warning: true
+    punishable_warning: "votre RSA pourra être suspendu ou réduit"
   )
 )
 MotifCategory.create!(
@@ -87,7 +86,7 @@ MotifCategory.create!(
     applicant_designation: "bénéficiaire du RSA",
     rdv_subject: "RSA",
     display_mandatory_warning: true,
-    display_punishable_warning: true
+    punishable_warning: "votre RSA pourra être suspendu ou réduit"
   )
 )
 MotifCategory.create!(
@@ -100,8 +99,7 @@ MotifCategory.create!(
     rdv_purpose: "construire et signer votre Contrat d'Engagement Réciproque",
     applicant_designation: "bénéficiaire du RSA",
     rdv_subject: "RSA",
-    display_mandatory_warning: true,
-    display_punishable_warning: false
+    display_mandatory_warning: true
   )
 )
 MotifCategory.create!(
@@ -115,7 +113,6 @@ MotifCategory.create!(
     applicant_designation: "bénéficiaire du RSA",
     rdv_subject: "RSA",
     display_mandatory_warning: false,
-    display_punishable_warning: false
   )
 )
 MotifCategory.create!(
@@ -150,8 +147,7 @@ MotifCategory.create!(
     rdv_purpose: "vous aider dans votre parcours d'insertion",
     applicant_designation: "bénéficiaire du RSA",
     rdv_subject: "RSA",
-    display_mandatory_warning: true,
-    display_punishable_warning: false
+    display_mandatory_warning: true
   )
 )
 MotifCategory.create!(
@@ -184,8 +180,7 @@ MotifCategory.create!(
     rdv_purpose: "faire le point sur votre situation",
     applicant_designation: "bénéficiaire du RSA",
     rdv_subject: "RSA",
-    display_mandatory_warning: true,
-    display_punishable_warning: false
+    display_mandatory_warning: true
   )
 )
 MotifCategory.create!(
@@ -199,7 +194,7 @@ MotifCategory.create!(
     applicant_designation: "demandeur d'emploi",
     rdv_subject: "demande d'emploi",
     display_mandatory_warning: true,
-    display_punishable_warning: true
+    punishable_warning: "votre RSA pourra être suspendu ou réduit"
   )
 )
 MotifCategory.create!(
@@ -212,8 +207,7 @@ MotifCategory.create!(
     applicant_designation: "bénéficiaire du RSA",
     rdv_subject: "RSA",
     rdv_purpose: "vous renseigner sur vos droits et vos devoirs",
-    display_mandatory_warning: true,
-    display_punishable_warning: false
+    display_mandatory_warning: true
   )
 )
 
@@ -272,13 +266,6 @@ yonne_orientation_config = Configuration.create!(
   number_of_days_before_action_required: 10
 )
 
-messages_configuration = MessagesConfiguration.create!(
-  direction_names:
-    ["DIRECTION GÉNÉRALE DES SERVICES DÉPARTEMENTAUX",
-    "DIRECTION DE L’INSERTION ET DU RETOUR À L’EMPLOI",
-    "SERVICE ORIENTATION ET ACCOMPAGNEMENT VERS L’EMPLOI"]
-)
-
 # --------------------------------------------------------------------------------------------------------------------
 puts "Creating organisations..."
 drome1_organisation = Organisation.create!(
@@ -288,7 +275,14 @@ drome1_organisation = Organisation.create!(
   # rdv_solidarites_organisation_id: vérifier l'id de l'organisation correspondante sur RDV-Solidarites
   department_id: drome.id,
   configuration_ids: [drome_orientation_config.id, drome_accompagnement_config.id],
-  messages_configuration_id: messages_configuration.id
+)
+
+MessagesConfiguration.create!(
+  direction_names:
+    ["DIRECTION GÉNÉRALE DES SERVICES DÉPARTEMENTAUX",
+    "DIRECTION DE L’INSERTION ET DU RETOUR À L’EMPLOI",
+    "SERVICE ORIENTATION ET ACCOMPAGNEMENT VERS L’EMPLOI"],
+  organisation: drome1_organisation
 )
 
 drome2_organisation = Organisation.create!(
@@ -298,7 +292,14 @@ drome2_organisation = Organisation.create!(
   # rdv_solidarites_organisation_id: vérifier l'id de l'organisation correspondante sur RDV-Solidarites
   department_id: drome.id,
   configuration_ids: [drome_orientation_config.id, drome_accompagnement_config.id],
-  messages_configuration_id: messages_configuration.id
+)
+
+MessagesConfiguration.create!(
+  direction_names:
+    ["DIRECTION GÉNÉRALE DES SERVICES DÉPARTEMENTAUX",
+    "DIRECTION DE L’INSERTION ET DU RETOUR À L’EMPLOI",
+    "SERVICE ORIENTATION ET ACCOMPAGNEMENT VERS L’EMPLOI"],
+  organisation: drome2_organisation
 )
 
 yonne_organisation = Organisation.create!(
@@ -308,7 +309,14 @@ yonne_organisation = Organisation.create!(
   # rdv_solidarites_organisation_id: vérifier l'id de l'organisation correspondante sur RDV-Solidarites
   department_id: yonne.id,
   configuration_ids: [yonne_orientation_config.id],
-  messages_configuration_id: messages_configuration.id
+)
+
+MessagesConfiguration.create!(
+  direction_names:
+    ["DIRECTION GÉNÉRALE DES SERVICES DÉPARTEMENTAUX",
+    "DIRECTION DE L’INSERTION ET DU RETOUR À L’EMPLOI",
+    "SERVICE ORIENTATION ET ACCOMPAGNEMENT VERS L’EMPLOI"],
+  organisation: yonne_organisation
 )
 
 # Faking Webhooks entries (for avoiding resending them from rdv solidarites manually), update ids from rdv-s if rdv solidarite seed is changing

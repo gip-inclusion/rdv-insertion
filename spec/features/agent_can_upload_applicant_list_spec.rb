@@ -6,15 +6,14 @@ describe "Agents can upload applicant list", js: true do
       :organisation,
       department: department,
       rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
-      # needed for the organisation applicants page
-      configurations: [configuration],
       slug: "org1"
     )
   end
   let!(:motif) { create(:motif, organisation: organisation, motif_category: motif_category) }
 
   let!(:configuration) do
-    create(:configuration, motif_category: motif_category, file_configuration: file_configuration)
+    create(:configuration, organisation: organisation, motif_category: motif_category,
+                           file_configuration: file_configuration)
   end
 
   let!(:other_org_from_same_department) { create(:organisation, department: department) }

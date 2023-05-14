@@ -1,7 +1,7 @@
 describe FileConfigurationsController do
   let!(:organisation) { create(:organisation) }
   let!(:another_organisation) { create(:organisation) }
-  let!(:configuration) { create(:configuration, organisations: [organisation]) }
+  let!(:configuration) { create(:configuration, organisation: organisation) }
   let!(:file_configuration) { create(:file_configuration, configurations: [configuration]) }
   let!(:agent) { create(:agent, admin_role_in_organisations: [organisation]) }
   let!(:unauthorized_agent) { create(:agent, admin_role_in_organisations: [another_organisation]) }
@@ -311,7 +311,7 @@ describe FileConfigurationsController do
 
     context "when the file_configuration is linked to many configurations" do
       let!(:organisation2) { create(:organisation) }
-      let!(:configuration2) { create(:configuration, organisations: [organisation2]) }
+      let!(:configuration2) { create(:configuration, organisation: organisation2) }
       let!(:file_configuration) { create(:file_configuration, configurations: [configuration, configuration2]) }
 
       it "opens a confirm modal" do

@@ -3,8 +3,8 @@ RSpec.describe InvitationMailer do
 
   let!(:department) { create(:department, name: "Drôme", pronoun: "la") }
   let!(:help_phone_number) { "0139393939" }
-  let!(:messages_configuration) { create(:messages_configuration) }
-  let!(:organisation) { create(:organisation, department: department, messages_configuration: messages_configuration) }
+  let!(:organisation) { create(:organisation, department: department) }
+  let!(:messages_configuration) { create(:messages_configuration, organisation: organisation) }
   let!(:applicant) do
     create(:applicant, first_name: "Jean", last_name: "Valjean")
   end
@@ -44,17 +44,19 @@ RSpec.describe InvitationMailer do
           "Vous êtes bénéficiaire du RSA et à ce titre vous êtes #{applicant.conjugate('invité')} à participer " \
           "à un rendez-vous d'orientation afin de démarrer un parcours d'accompagnement"
         )
-        expect(body_string).to match("Ce rendez-vous est obligatoire.")
+        expect(body_string).to match("Ce RDV est obligatoire.")
         expect(body_string).not_to match(
-          "le versement de votre RSA pourra être suspendu ou son montant réduit."
+          "votre RSA pourra être suspendu ou réduit."
         )
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
-        expect(body_string).to match("dans les 3 jours")
+        expect(body_string).to match("dans un délai de 3 jours")
       end
 
       context "when the signature is configured" do
-        let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
+        let!(:messages_configuration) do
+          create(:messages_configuration, organisation: organisation, signature_lines: ["Fabienne Bouchet"])
+        end
 
         it "renders the mail with the right signature" do
           expect(subject.body.encoded).to match(/Fabienne Bouchet/)
@@ -87,13 +89,13 @@ RSpec.describe InvitationMailer do
             "Vous êtes bénéficiaire du RSA et à ce titre vous êtes #{applicant.conjugate('invité')} à participer " \
             "à un rendez-vous d'accompagnement afin de démarrer un parcours d'accompagnement"
           )
-          expect(body_string).to match("Ce rendez-vous est obligatoire.")
+          expect(body_string).to match("Ce RDV est obligatoire.")
           expect(body_string).to match(
-            "le versement de votre RSA pourra être suspendu ou son montant réduit."
+            "votre RSA pourra être suspendu ou réduit."
           )
           expect(body_string).to match("/invitations/redirect")
           expect(body_string).to match("uuid=#{invitation.uuid}")
-          expect(body_string).to match("dans les 3 jours")
+          expect(body_string).to match("dans un délai de 3 jours")
         end
       end
     end
@@ -124,13 +126,13 @@ RSpec.describe InvitationMailer do
           "Vous êtes bénéficiaire du RSA et à ce titre vous êtes #{applicant.conjugate('invité')} à participer à un " \
           "rendez-vous de signature de CER afin de construire et signer votre Contrat d'Engagement Réciproque"
         )
-        expect(body_string).to match("Ce rendez-vous est obligatoire.")
+        expect(body_string).to match("Ce RDV est obligatoire.")
         expect(body_string).not_to match(
-          "le versement de votre RSA pourra être suspendu ou son montant réduit."
+          "votre RSA pourra être suspendu ou réduit."
         )
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
-        expect(body_string).to match("dans les 3 jours")
+        expect(body_string).to match("dans un délai de 3 jours")
       end
     end
 
@@ -158,13 +160,13 @@ RSpec.describe InvitationMailer do
           "Vous êtes bénéficiaire du RSA et à ce titre vous êtes #{applicant.conjugate('invité')} à participer " \
           "à un rendez-vous de suivi afin de faire un point avec votre référent de parcours"
         )
-        expect(body_string).not_to match("Ce rendez-vous est obligatoire.")
+        expect(body_string).not_to match("Ce RDV est obligatoire.")
         expect(body_string).not_to match(
-          "le versement de votre RSA pourra être suspendu ou son montant réduit."
+          "votre RSA pourra être suspendu ou réduit."
         )
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
-        expect(body_string).to match("dans les 3 jours")
+        expect(body_string).to match("dans un délai de 3 jours")
       end
     end
 
@@ -192,13 +194,13 @@ RSpec.describe InvitationMailer do
           "Vous êtes bénéficiaire du RSA et à ce titre vous êtes #{applicant.conjugate('invité')} à participer " \
           "à un entretien de main tendue afin de faire le point sur votre situation"
         )
-        expect(body_string).to match("Ce rendez-vous est obligatoire.")
+        expect(body_string).to match("Ce RDV est obligatoire.")
         expect(body_string).not_to match(
-          "le versement de votre RSA pourra être suspendu ou son montant réduit."
+          "votre RSA pourra être suspendu ou réduit."
         )
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
-        expect(body_string).to match("dans les 3 jours")
+        expect(body_string).to match("dans un délai de 3 jours")
       end
     end
 
@@ -228,13 +230,13 @@ RSpec.describe InvitationMailer do
           "Vous êtes bénéficiaire du RSA et à ce titre vous êtes #{applicant.conjugate('invité')} à participer " \
           "à un atelier collectif afin de vous aider dans votre parcours d'insertion"
         )
-        expect(body_string).to match("Ce rendez-vous est obligatoire.")
+        expect(body_string).to match("Ce RDV est obligatoire.")
         expect(body_string).not_to match(
-          "le versement de votre RSA pourra être suspendu ou son montant réduit."
+          "votre RSA pourra être suspendu ou réduit."
         )
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
-        expect(body_string).to match("dans les 3 jours")
+        expect(body_string).to match("dans un délai de 3 jours")
       end
     end
 
@@ -263,13 +265,13 @@ RSpec.describe InvitationMailer do
           "Vous êtes demandeur d'emploi et à ce titre vous êtes #{applicant.conjugate('invité')} à participer à un " \
           "rendez-vous d'accompagnement afin de démarrer un parcours d'accompagnement"
         )
-        expect(body_string).to match("Ce rendez-vous est obligatoire.")
+        expect(body_string).to match("Ce RDV est obligatoire.")
         expect(body_string).to match(
-          "le versement de votre RSA pourra être suspendu ou son montant réduit."
+          "votre RSA pourra être suspendu ou réduit."
         )
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
-        expect(body_string).to match("dans les 3 jours")
+        expect(body_string).to match("dans un délai de 3 jours")
       end
     end
 
@@ -296,13 +298,13 @@ RSpec.describe InvitationMailer do
           "Vous êtes bénéficiaire du RSA et à ce titre vous êtes #{applicant.conjugate('invité')} à participer " \
           "à un rendez-vous d'information afin de vous renseigner sur vos droits et vos devoirs"
         )
-        expect(body_string).to match("Ce rendez-vous est obligatoire.")
+        expect(body_string).to match("Ce RDV est obligatoire.")
         expect(body_string).not_to match(
-          "le versement de votre RSA pourra être suspendu ou son montant réduit."
+          "votre RSA pourra être suspendu ou réduit."
         )
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
-        expect(body_string).to match("dans les 3 jours")
+        expect(body_string).to match("dans un délai de 3 jours")
       end
     end
 
@@ -330,13 +332,13 @@ RSpec.describe InvitationMailer do
           " et à ce titre vous êtes #{applicant.conjugate('invité')} à participer à un entretien d'embauche " \
           "afin de poursuivre le processus de recrutement"
         )
-        expect(body_string).not_to match("Ce rendez-vous est obligatoire.")
+        expect(body_string).not_to match("Ce RDV est obligatoire.")
         expect(body_string).not_to match(
-          "le versement de votre RSA pourra être suspendu ou son montant réduit."
+          "votre RSA pourra être suspendu ou réduit."
         )
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
-        expect(body_string).to match("dans les 3 jours")
+        expect(body_string).to match("dans un délai de 3 jours")
       end
     end
 
@@ -402,7 +404,9 @@ RSpec.describe InvitationMailer do
     end
 
     context "when the signature is configured" do
-      let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
+      let!(:messages_configuration) do
+        create(:messages_configuration, organisation: organisation, signature_lines: ["Fabienne Bouchet"])
+      end
 
       it "renders the mail with the right signature" do
         expect(subject.body.encoded).to match(/Fabienne Bouchet/)
@@ -448,7 +452,9 @@ RSpec.describe InvitationMailer do
     end
 
     context "when the signature is configured" do
-      let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
+      let!(:messages_configuration) do
+        create(:messages_configuration, organisation: organisation, signature_lines: ["Fabienne Bouchet"])
+      end
 
       it "renders the mail with the right signature" do
         expect(subject.body.encoded).to match(/Fabienne Bouchet/)
@@ -482,7 +488,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("Bonjour Jean VALJEAN")
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")
-        expect(body_string).to match("Vous êtes invité pour un rendez-vous de suivi psychologue.")
+        expect(body_string).to match("Vous êtes invité à participer à un rendez-vous de suivi psychologue.")
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
       end
@@ -558,7 +564,9 @@ RSpec.describe InvitationMailer do
 
     context "when the signature is configured" do
       let!(:rdv_context) { build(:rdv_context, motif_category: category_psychologue) }
-      let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
+      let!(:messages_configuration) do
+        create(:messages_configuration, organisation: organisation, signature_lines: ["Fabienne Bouchet"])
+      end
 
       it "renders the mail with the right signature" do
         expect(subject.body.encoded).to match(/Fabienne Bouchet/)
@@ -592,9 +600,9 @@ RSpec.describe InvitationMailer do
           "En tant que bénéficiaire du RSA, vous avez reçu un premier mail il y a 3 jours " \
           "vous invitant à prendre rendez-vous afin de démarrer un parcours d'accompagnement."
         )
-        expect(body_string).to match("Ce rendez-vous est obligatoire.")
+        expect(body_string).to match("Ce RDV est obligatoire.")
         expect(body_string).not_to match(
-          "le versement de votre RSA pourra être suspendu ou son montant réduit."
+          "votre RSA pourra être suspendu ou réduit."
         )
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
@@ -607,7 +615,9 @@ RSpec.describe InvitationMailer do
 
     context "when the signature is configured" do
       let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_orientation) }
-      let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
+      let!(:messages_configuration) do
+        create(:messages_configuration, organisation: organisation, signature_lines: ["Fabienne Bouchet"])
+      end
 
       it "renders the mail with the right signature" do
         expect(subject.body.encoded).to match(/Fabienne Bouchet/)
@@ -637,9 +647,9 @@ RSpec.describe InvitationMailer do
             "En tant que bénéficiaire du RSA, vous avez reçu un premier mail il y a 3 jours " \
             "vous invitant à prendre rendez-vous afin de démarrer un parcours d'accompagnement."
           )
-          expect(body_string).to match("Ce rendez-vous est obligatoire.")
+          expect(body_string).to match("Ce RDV est obligatoire.")
           expect(body_string).to match(
-            "le versement de votre RSA pourra être suspendu ou son montant réduit."
+            "votre RSA pourra être suspendu ou réduit."
           )
           expect(body_string).to match("/invitations/redirect")
           expect(body_string).to match("uuid=#{invitation.uuid}")
@@ -678,9 +688,9 @@ RSpec.describe InvitationMailer do
           "En tant que bénéficiaire du RSA, vous avez reçu un premier mail il y a 3 jours " \
           "vous invitant à prendre rendez-vous afin de construire et signer votre Contrat d'Engagement Réciproque."
         )
-        expect(body_string).to match("Ce rendez-vous est obligatoire.")
+        expect(body_string).to match("Ce RDV est obligatoire.")
         expect(body_string).not_to match(
-          "le versement de votre RSA pourra être suspendu ou son montant réduit."
+          "votre RSA pourra être suspendu ou réduit."
         )
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
@@ -715,9 +725,9 @@ RSpec.describe InvitationMailer do
           "En tant que bénéficiaire du RSA, vous avez reçu un premier mail il y a 3 jours " \
           "vous invitant à prendre rendez-vous afin de faire un point avec votre référent de parcours."
         )
-        expect(body_string).not_to match("Ce rendez-vous est obligatoire.")
+        expect(body_string).not_to match("Ce RDV est obligatoire.")
         expect(body_string).not_to match(
-          "le versement de votre RSA pourra être suspendu ou son montant réduit."
+          "votre RSA pourra être suspendu ou réduit."
         )
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
@@ -765,7 +775,9 @@ RSpec.describe InvitationMailer do
     end
 
     context "when the signature is configured" do
-      let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
+      let!(:messages_configuration) do
+        create(:messages_configuration, organisation: organisation, signature_lines: ["Fabienne Bouchet"])
+      end
 
       it "renders the mail with the right signature" do
         expect(subject.body.encoded).to match(/Fabienne Bouchet/)
@@ -810,7 +822,9 @@ RSpec.describe InvitationMailer do
 
     context "when the signature is configured" do
       let!(:rdv_context) { build(:rdv_context, motif_category: category_psychologue) }
-      let!(:messages_configuration) { create(:messages_configuration, signature_lines: ["Fabienne Bouchet"]) }
+      let!(:messages_configuration) do
+        create(:messages_configuration, organisation: organisation, signature_lines: ["Fabienne Bouchet"])
+      end
 
       it "renders the mail with the right signature" do
         expect(subject.body.encoded).to match(/Fabienne Bouchet/)

@@ -1,16 +1,19 @@
-  <div class="d-flex align-items-center context-header">
+<div class="d-flex align-items-center context-header">
   <span></span>
   <h5 class="text-center px-2 py-4">
-    <strong>
-      <%= configuration.motif_category_name %>
-    </strong>
-   <small><%= configuration.rdv_with_referents? ? " (avec référents)" : "" %></small>
+    <strong><%= configuration.motif_category_name %></strong>
+    <small><%= configuration.rdv_with_referents? ? " (avec référents)" : "" %></small>
   </h5>
   <span></span>
   <table class="mx-2">
     <tbody>
       <tr>
-        <td class="px-2 py-1 context-status <%= background_class_for_context_status(rdv_context, configuration.number_of_days_before_action_required) %>" id="js-block-status-<%= configuration.motif_category %>"><em><%= display_context_status(rdv_context, configuration.number_of_days_before_action_required) %></em></td>
+        <td class="px-2 py-1 context-status <%= background_class_for_context_status(rdv_context, configuration.number_of_days_before_action_required) %>" id="js-block-status-<%= configuration.motif_category %>">
+          <em>
+            <%= display_context_status(rdv_context, configuration.number_of_days_before_action_required) %>
+            <%= " le #{format_date(rdv_context.closed_at)}" if rdv_context.closed_at.present? %>
+          </em>
+        </td>
       </tr>
     </tbody>
   </table>
@@ -53,14 +56,8 @@
               <td class="px-4 py-3"><%= format_date(participation.created_at) %></td>
               <td class="px-4 py-3"><%= format_date(participation.starts_at) %></td>
               <td class="px-2 py-3"><%= participation.motif_name %></td>
-              <% if convocable_participations.present? %>
-                <td class="px-4 py-2">
-                  <% if participation.convocable? %>
-                    <%= render("convocations", applicant: @applicant, participation: participation, sms_convocations: participation.sent_sms_convocations, email_convocations: participation.sent_email_convocations) %>
-                  <% else %>
-                    -
-                  <% end %>
-                </td>
+              <% if convocable_participations.present?  %>
+                <td class="px-4 py-2"><%= participation.convocable? ? render("convocations", participation: participation, sms_convocations: participation.sent_sms_convocations, email_convocations: participation.sent_email_convocations) : " - " %></td>
               <% end %>
               <td class="px-4 py-3 <%= background_class_for_participation_status(participation) %>">
                 <%= display_participation_status(participation) %>
@@ -89,6 +86,9 @@
           <%= render "convocation_button", applicant: @applicant, convocation_motif: @convocation_motifs_by_rdv_context[rdv_context] %>
         </div>
       <% end %>
+      <div class="m-2 p-2 text-center">
+        <%= render "close_rdv_context_button", rdv_context: rdv_context, applicant: @applicant, organisation: @organisation, department: @department %>
+      </div>
     </div>
   </div>
 </div>

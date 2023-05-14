@@ -7,6 +7,5 @@ FactoryBot.define do
     applicant_designation { "bénéficiaire du RSA" }
     rdv_subject { "RSA" }
     display_mandatory_warning { true }
-    display_punishable_warning { false }
   end
 end

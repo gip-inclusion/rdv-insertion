@@ -13,8 +13,10 @@ class Participation < ApplicationRecord
   after_commit :refresh_applicant_context_statuses
   after_commit :notify_applicant, if: :rdv_notify_applicants?, on: [:create, :update]
 
-  delegate :starts_at, :organisation, :department,
-           :convocable?, :motif_name, :rdv_solidarites_url, :rdv_solidarites_rdv_id,
+  enum created_by: { agent: "agent", user: "user", prescripteur: "prescripteur" }, _prefix: :created_by
+
+  delegate :organisation, :department, :starts_at, :convocable?, :motif_name,
+           :rdv_solidarites_url, :rdv_solidarites_rdv_id, :instruction_for_rdv,
            to: :rdv
   delegate :department, to: :organisation
   delegate :phone_number_is_mobile?, :email?, to: :applicant

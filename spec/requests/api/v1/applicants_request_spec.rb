@@ -2,13 +2,10 @@ describe "Applicants API" do
   let!(:agent) { create(:agent, organisations: [organisation]) }
   let!(:rdv_solidarites_organisation_id) { 42 }
   let!(:organisation) do
-    create(
-      :organisation,
-      configurations: [configuration], rdv_solidarites_organisation_id: rdv_solidarites_organisation_id
-    )
+    create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id)
   end
   let!(:configuration) do
-    create(:configuration, motif_category: create(:motif_category, name: "RSA orientation"))
+    create(:configuration, organisation: organisation, motif_category: create(:motif_category, name: "RSA orientation"))
   end
   let!(:applicants_params) { { applicants: [applicant1_params, applicant2_params] } }
 
@@ -192,7 +189,7 @@ describe "Applicants API" do
           create(
             :configuration,
             motif_category: create(:motif_category, name: "RSA accompagnement"),
-            organisations: [organisation]
+            organisation: organisation
           )
         end
 
