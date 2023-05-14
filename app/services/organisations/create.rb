@@ -30,7 +30,7 @@ module Organisations
     end
 
     def assign_rdv_solidarites_organisation_attributes
-      @organisation.assign_attributes(rdv_solidarites_organisation.attributes.except(:id))
+      @organisation.assign_attributes(rdv_solidarites_organisation.attributes.except(:id, :verticale))
     end
 
     def agent_role_for_new_organisation
