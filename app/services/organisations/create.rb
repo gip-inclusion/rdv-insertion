@@ -13,6 +13,7 @@ module Organisations
         save_record!(@organisation)
         save_record!(agent_role_for_new_organisation)
         upsert_rdv_solidarites_webhook_endpoint
+        tag_rdv_solidarites_organisation
       end
     end
 
@@ -29,7 +30,7 @@ module Organisations
     end
 
     def assign_rdv_solidarites_organisation_attributes
-      @organisation.assign_attributes(rdv_solidarites_organisation.attributes.except(:id))
+      @organisation.assign_attributes(rdv_solidarites_organisation.attributes.except(:id, :verticale))
     end
 
     def agent_role_for_new_organisation
@@ -71,6 +72,15 @@ module Organisations
         rdv_solidarites_organisation_id: @organisation.rdv_solidarites_organisation_id,
         rdv_solidarites_session: @rdv_solidarites_session
       ).webhook_endpoint
+    end
+
+    def tag_rdv_solidarites_organisation
+      @tag_rdv_solidarites_organisation ||= call_service!(
+        RdvSolidaritesApi::UpdateOrganisation,
+        organisation_attributes: { "verticale" => "rdv_insertion" },
+        rdv_solidarites_session: @rdv_solidarites_session,
+        rdv_solidarites_organisation_id: @organisation.rdv_solidarites_organisation_id
+      )
     end
   end
 end

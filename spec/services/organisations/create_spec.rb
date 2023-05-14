@@ -33,6 +33,8 @@ describe Organisations::Create, type: :service do
         .and_return(OpenStruct.new(success?: true))
       allow(RdvSolidaritesApi::RetrieveWebhookEndpoint).to receive(:call)
         .and_return(OpenStruct.new(success?: true, webhook_endpoint: nil))
+      allow(RdvSolidaritesApi::UpdateOrganisation).to receive(:call)
+        .and_return(OpenStruct.new(success?: true))
     end
 
     it "tries to retrieve an organisation from rdvs" do
@@ -64,6 +66,21 @@ describe Organisations::Create, type: :service do
 
     it "calls the create webhook endpoint service" do
       expect(RdvSolidaritesApi::CreateWebhookEndpoint).to receive(:call)
+      subject
+    end
+
+    it "calls the update webhook endpoint service (for verticale attribute)" do
+      expect(RdvSolidaritesApi::UpdateOrganisation).to receive(:call).with(
+        hash_including(
+          {
+            organisation_attributes: hash_including(
+              {
+                "verticale" => "rdv_insertion"
+              }
+            )
+          }
+        )
+      )
       subject
     end
 

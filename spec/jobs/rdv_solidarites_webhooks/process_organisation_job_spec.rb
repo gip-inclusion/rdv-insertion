@@ -57,5 +57,24 @@ describe RdvSolidaritesWebhooks::ProcessOrganisationJob do
         subject
       end
     end
+
+    context "when verticale attribute is invalid" do
+      let!(:data) do
+        {
+          "id" => rdv_solidarites_organisation_id,
+          "name" => "CD 28",
+          "email" => "contact@cd28.fr",
+          "phone_number" => "+33624242424",
+          "verticale" => "rdv_solidarites"
+        }.deep_symbolize_keys
+      end
+
+      it "send a sentry message" do
+        expect(Sentry).to receive(:capture_message).with(
+          "Verticale attribute is not valid for rdv_solidarites_organisation_id : #{rdv_solidarites_organisation_id}"
+        )
+        subject
+      end
+    end
   end
 end
