@@ -45,9 +45,9 @@ class MessagesConfigurationsController < ApplicationController
   end
 
   def formatted_params
-    # we nullify some blank params for unicity exceptions (ActiveRecord::RecordNotUnique) not to raise
+    # we nullify some blank params
     messages_configuration_params.to_h do |k, v|
-      [k, k.in?([:sms_sender_name]) ? v.presence : v]
+      [k, k.in?([:sms_sender_name, :letter_sender_name, :sender_city]) ? v.presence : v]
     end
   end
 
