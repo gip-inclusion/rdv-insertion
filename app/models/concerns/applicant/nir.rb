@@ -2,16 +2,14 @@ module Applicant::Nir
   extend ActiveSupport::Concern
 
   included do
-    before_validation :add_nir_key, if: :nir?
+    before_validation :format_nir, if: :nir?
     validate :nir_is_valid, if: :nir?
   end
 
   private
 
-  def add_nir_key
-    return unless nir.length == 13
-
-    self.nir = "#{nir}#{nir_key}"
+  def format_nir
+    self.nir = NirHelper.format_nir(nir)
   end
 
   def nir_is_valid
@@ -26,10 +24,6 @@ module Applicant::Nir
   end
 
   def nir_sum_checked?
-    nir_key == nir.last(2).to_i
-  end
-
-  def nir_key
-    97 - (nir.first(13).to_i % 97)
+    NirHelper.nir_key(nir) == nir.last(2)
   end
 end
