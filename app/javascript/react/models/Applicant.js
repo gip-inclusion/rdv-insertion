@@ -313,7 +313,7 @@ export default class Applicant {
       title: this.title,
       last_name: this.lastName,
       first_name: this.firstName,
-      ...(this.address && { address: this.fullAddress }),
+      ...(this.fullAddress && { address: this.fullAddress }),
       ...(this.role && { role: this.role }),
       ...(this.affiliationNumber && { affiliation_number: this.affiliationNumber }),
       ...(this.phoneNumber && { phone_number: this.phoneNumber }),
