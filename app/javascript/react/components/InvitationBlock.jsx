@@ -121,7 +121,8 @@ export default function InvitationBlock({
                     isLoading.sms ||
                     !applicant.phone_number ||
                     isArchived ||
-                    status === "rdv_pending"
+                    status === "rdv_pending" ||
+                    status === "closed"
                   }
                   className="btn btn-blue"
                   onClick={() => handleInvitationClick("sms")}
@@ -144,7 +145,11 @@ export default function InvitationBlock({
                 <button
                   type="button"
                   disabled={
-                    isLoading.email || !applicant.email || isArchived || status === "rdv_pending"
+                    isLoading.email ||
+                    !applicant.email ||
+                    isArchived ||
+                    status === "rdv_pending" ||
+                    status === "closed"
                   }
                   className="btn btn-blue"
                   onClick={() => handleInvitationClick("email")}
@@ -167,7 +172,11 @@ export default function InvitationBlock({
                 <button
                   type="button"
                   disabled={
-                    isLoading.postal || !applicant.address || isArchived || status === "rdv_pending"
+                    isLoading.postal ||
+                    !applicant.address ||
+                    isArchived ||
+                    status === "rdv_pending" ||
+                    status === "closed"
                   }
                   className="btn btn-blue"
                   onClick={() => handleInvitationClick("postal")}

@@ -23,7 +23,7 @@
         <td><%= display_attribute applicant.first_name %></td>
         <% @current_configuration.invitation_formats.each do |invitation_format| %>
           <td class="d-none d-lg-table-cell">
-            <% if rdv_context.rdv_pending? %>
+            <% if rdv_context.rdv_pending? || rdv_context.closed? %>
               <!-- show nothing -->
             <% elsif applicant.can_be_invited_through?(invitation_format) %>
               <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: invitation_format, motif_category: @current_motif_category, rdv_context: rdv_context, checked: checked = rdv_context.first_invitation_relative_to_last_participation_by(invitation_format).present?, disabled: checked || applicant.deleted? %>

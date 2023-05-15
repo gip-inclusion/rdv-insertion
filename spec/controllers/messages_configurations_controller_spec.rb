@@ -186,7 +186,7 @@ describe MessagesConfigurationsController do
       expect { post :create, params: create_params }.to change(MessagesConfiguration, :count).by(1)
     end
 
-    it "assigns the corrent attributes" do
+    it "assigns the correct attributes" do
       post :create, params: create_params
 
       expect(MessagesConfiguration.last.direction_names).to eq(["Sous-direction à l'insertion"])
@@ -197,6 +197,19 @@ describe MessagesConfigurationsController do
       expect(MessagesConfiguration.last.display_europe_logos).to eq(true)
       expect(MessagesConfiguration.last.sms_sender_name).to eq("Marseille13")
       expect(MessagesConfiguration.last.display_department_logo).to eq(false)
+    end
+
+    context "when letter_sender_name and sender_city are blank" do
+      let!(:create_params) do
+        { messages_configuration: { sender_city: "  ", letter_sender_name: "" }, organisation_id: organisation.id }
+      end
+
+      it "saves thoses attributes as nil values" do
+        post :create, params: create_params
+
+        expect(MessagesConfiguration.last.sender_city).to eq(nil)
+        expect(MessagesConfiguration.last.letter_sender_name).to eq(nil)
+      end
     end
 
     context "when the create succeeds" do

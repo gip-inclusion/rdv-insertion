@@ -104,6 +104,21 @@ export default class extends Controller {
     });
   }
 
+  closeRdvContextButton() {
+    tippy(this.element, {
+      content:
+        "Le statut du bénéficiaire dans ce contexte passera en «Dossier traité» et ses invitations seront désactivées.",
+      placement: "bottom",
+    });
+  }
+
+  reopenRdvContextButton() {
+    tippy(this.element, {
+      content: "Le bénéficiaire pourra de nouveau être invité et suivi dans ce contexte",
+      placement: "bottom",
+    });
+  }
+
   helpAddressAttribute() {
     tippy(this.element, {
       content() {

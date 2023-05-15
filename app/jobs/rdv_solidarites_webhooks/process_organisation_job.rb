@@ -6,10 +6,21 @@ module RdvSolidaritesWebhooks
       return if organisation.blank?
       return if event == "destroyed"
 
+      send_invalid_verticale_to_sentry unless verticale_is_valid?
       update_organisation
     end
 
     private
+
+    def send_invalid_verticale_to_sentry
+      Sentry.capture_message(
+        "Verticale attribute is not valid for rdv_solidarites_organisation_id : #{rdv_solidarites_organisation_id}"
+      )
+    end
+
+    def verticale_is_valid?
+      @data[:verticale] == "rdv_insertion"
+    end
 
     def event
       @meta[:event]

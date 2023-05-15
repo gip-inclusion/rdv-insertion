@@ -48,6 +48,10 @@ Rails.application.routes.draw do
     get :redirect, on: :collection
   end
 
+  resources :rdv_contexts, module: :rdv_contexts, only: [] do
+    resource :closings, only: [:create, :destroy]
+  end
+
   namespace :applicants do
     resources :searches, only: :create
   end

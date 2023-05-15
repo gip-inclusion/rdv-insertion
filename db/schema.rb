@@ -291,6 +291,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_09_205431) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "motif_category_id"
+    t.datetime "closed_at"
     t.index ["applicant_id"], name: "index_rdv_contexts_on_applicant_id"
     t.index ["motif_category_id"], name: "index_rdv_contexts_on_motif_category_id"
     t.index ["status"], name: "index_rdv_contexts_on_status"
