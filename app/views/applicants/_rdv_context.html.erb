@@ -56,8 +56,14 @@
               <td class="px-4 py-3"><%= format_date(participation.created_at) %></td>
               <td class="px-4 py-3"><%= format_date(participation.starts_at) %></td>
               <td class="px-2 py-3"><%= participation.motif_name %></td>
-              <% if convocable_participations.present?  %>
-                <td class="px-4 py-2"><%= participation.convocable? ? render("convocations", participation: participation, sms_convocations: participation.sent_sms_convocations, email_convocations: participation.sent_email_convocations) : " - " %></td>
+              <% if convocable_participations.present? %>
+                <td class="px-4 py-2">
+                  <% if participation.convocable? %>
+                    <%= render("convocations", applicant: @applicant, participation: participation, sms_convocations: participation.sent_sms_convocations, email_convocations: participation.sent_email_convocations) %>
+                  <% else %>
+                    -
+                  <% end %>
+                </td>
               <% end %>
               <td class="px-4 py-3 <%= background_class_for_participation_status(participation) %>">
                 <%= display_participation_status(participation) %>

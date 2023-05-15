@@ -26,9 +26,7 @@ const createInvitationLetter = async (
     if (result.errors[0] === "Le format de l'adresse est invalide") {
       Swal.fire({
         title: "Impossible d'inviter l'utilisateur",
-        html: `L'adresse n'est pas complète ou elle n'est pas enregistrée correctement.
-        <br/><br/>
-        Format attendu&nbsp;:<br/>10 rue de l'envoi 12345 - La Ville`,
+        html: "L'adresse n'est pas complète ou elle n'est pas enregistrée correctement",
         icon: "error",
       });
     } else {
