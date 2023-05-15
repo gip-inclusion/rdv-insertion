@@ -137,7 +137,7 @@ export default class extends Controller {
     if (archivingButton.disabled) {
       tippy(this.element, {
         content:
-          "Vous devez appartenir à toutes les organisations du bénéificiaire pour pouvoir l'archiver",
+          "Vous devez appartenir à toutes les organisations auxquelles appartient le bénéficiaire au sein de votre département pour pouvoir l'archiver",
       });
     }
   }

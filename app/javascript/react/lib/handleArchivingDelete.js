@@ -2,7 +2,7 @@ import Swal from "sweetalert2";
 import deleteArchiving from "../actions/deleteArchiving";
 
 const handleArchivingDelete = async (applicant) => {
-  const archivingToDelete = applicant.currentArchiving();
+  const archivingToDelete = applicant.archivingInCurrentDepartment();
   const result = await deleteArchiving(archivingToDelete.id);
   if (result.success) {
     applicant.archivings = applicant.archivings.filter(

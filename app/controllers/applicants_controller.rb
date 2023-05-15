@@ -127,7 +127,7 @@ class ApplicantsController < ApplicationController
   def set_applicant
     @applicant =
       policy_scope(Applicant)
-      .preload(:invitations, :archivings, organisations: [:department, :configurations])
+      .preload(:invitations, organisations: [:department, :configurations])
       .where(
         if department_level?
           { organisations: { department_id: params[:department_id] } }

@@ -297,12 +297,12 @@ export default class Applicant {
     );
   }
 
-  currentArchiving() {
+  archivingInCurrentDepartment() {
     return this.archivings.find((archiving) => archiving.department_id === this.department.id);
   }
 
-  isArchived() {
-    return this.archivings && this.currentArchiving();
+  isArchivedInCurrentDepartment() {
+    return this.archivings && this.archivingInCurrentDepartment();
   }
 
   generateUid() {

@@ -6,6 +6,10 @@ class Archiving < ApplicationRecord
 
   after_save :invalidate_related_invitations
 
+  delegate :first_name, :last_name,
+           :last_invitation_sent_at, :first_invitation_relative_to_last_participation_sent_at,
+           to: :applicant, prefix: true
+
   private
 
   def invalidate_related_invitations

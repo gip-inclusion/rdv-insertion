@@ -12,11 +12,11 @@ export default function InvitationCells({
 }) {
   return (
     /* ----------------------------- Disabled invitations cases -------------------------- */
-    applicant.isArchived() ? (
+    applicant.isArchivedInCurrentDepartment() ? (
       <td colSpan={invitationsColspan}>
         Dossier archivé
-        {applicant.currentArchiving().archiving_reason && (
-          <>&nbsp;: {applicant.currentArchiving().archiving_reason}</>
+        {applicant.archivingInCurrentDepartment().archiving_reason && (
+          <>&nbsp;: {applicant.archivingInCurrentDepartment().archiving_reason}</>
         )}
       </td>
     ) : applicant.isDuplicate ? (

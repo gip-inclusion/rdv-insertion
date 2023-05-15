@@ -42,7 +42,7 @@ export default function CreationCell({
     setIsTriggered({ ...isTriggered, creation: false });
   };
 
-  return applicant.isArchived() ? (
+  return applicant.isArchivedInCurrentDepartment() ? (
     <td>
       <button
         type="submit"
