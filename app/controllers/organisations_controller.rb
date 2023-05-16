@@ -7,6 +7,7 @@ class OrganisationsController < ApplicationController
   ].freeze
 
   before_action :set_organisation, :set_department, :authorize_organisation_configuration, only: [:show, :edit, :update]
+  before_action :set_all_departments, only: :new
 
   def index
     @organisations = policy_scope(Organisation).includes(:department, :configurations)
@@ -92,6 +93,10 @@ class OrganisationsController < ApplicationController
 
   def set_department
     @department = @organisation.department
+  end
+
+  def set_all_departments
+    @all_departments = Department.all.order(:number)
   end
 
   def department
