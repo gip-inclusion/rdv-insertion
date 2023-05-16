@@ -3,9 +3,9 @@ FactoryBot.define do
     association :applicant
     association :motif_category
 
-    after(:build) do |a|
+    after(:build) do |rdv_context|
       # https://github.com/thoughtbot/factory_bot/issues/931#issuecomment-307542965
-      a.class.skip_callback(:save, :before, :set_status, raise: false)
+      rdv_context.class.skip_callback(:save, :before, :set_status, raise: false) if rdv_context.status.present?
     end
   end
 end
