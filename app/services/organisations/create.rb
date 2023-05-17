@@ -24,7 +24,7 @@ module Organisations
     end
 
     def check_rdv_solidarites_organisation_id
-      return if @organisation.rdv_solidarites_organisation_id
+      return if @organisation.rdv_solidarites_organisation_id?
 
       fail!("L'ID de l'organisation RDV-Solidarités n'a pas été renseigné correctement")
     end
