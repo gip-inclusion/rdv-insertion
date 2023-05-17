@@ -13,7 +13,7 @@
             :department_id,
             as: :select,
             collection: all_departments,
-            label_method: -> {  "#{_1.number} - #{_1.name}" },
+            label_method: -> { "#{_1.number} - #{_1.name}" },
             required: true
           )
         %>
