@@ -7,7 +7,16 @@
       ID de l'orga RDVS <%= f.input :rdv_solidarites_organisation_id %>
     </div>
     <div class="d-flex justify-content-between mt-2">
-      Département <%= f.input :department_id, as: :select, collection: @all_departments.map { |d| "#{d.number} - #{d.name}" }, required: true %>
+      Département
+        <%=
+          f.input(
+            :department_id,
+            as: :select,
+            collection: all_departments,
+            label_method: -> {  "#{_1.number} - #{_1.name}" },
+            required: true
+          )
+        %>
     </div>
     <%= f.button :submit, "Enregistrer", class: "btn btn-blue mt-3" %>
   <% end %>

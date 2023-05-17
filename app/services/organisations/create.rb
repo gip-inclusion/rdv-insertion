@@ -30,11 +30,13 @@ module Organisations
     end
 
     def assign_rdv_solidarites_organisation_attributes
-      @organisation.assign_attributes(rdv_solidarites_organisation.attributes.except(:id, :verticale))
+      @organisation.assign_attributes(
+        rdv_solidarites_organisation.attributes.slice(*Organisation::SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES)
+      )
     end
 
     def agent_role_for_new_organisation
-      # to allow an instant redirection, we create the agent_role directl
+      # to allow an instant redirection, we create the agent_role directly
       # the rdv_solidarites_agent_role_id will be added to this agent_role record thanks to the webhook
       # this is safe because the transaction succeeds only if the agent is a territorial admin in the department
       @agent_role_for_new_organisation ||=

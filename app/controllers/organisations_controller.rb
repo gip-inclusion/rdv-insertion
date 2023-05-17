@@ -7,7 +7,7 @@ class OrganisationsController < ApplicationController
   ].freeze
 
   before_action :set_organisation, :set_department, :authorize_organisation_configuration, only: [:show, :edit, :update]
-  before_action :set_all_departments, only: :new
+  before_action :set_all_departments, only: [:new, :create]
 
   def index
     @organisations = policy_scope(Organisation).includes(:department, :configurations)
@@ -25,16 +25,14 @@ class OrganisationsController < ApplicationController
   def edit; end
 
   def create
-    @department = Department.find_by(id: params[:department_id])
-    @organisation = Organisation.new(department: @department)
-    @organisation.assign_attributes(**organisation_params)
+    @organisation = Organisation.new(**organisation_params)
     authorize @organisation
     if create_organisation.success?
       redirect_to organisation_applicants_path(@organisation)
     else
       render turbo_stream: turbo_stream.replace(
         "remote_modal", partial: "organisation_form", locals: {
-          organisation: @organisation, department: @department,
+          organisation: @organisation, all_departments: @all_departments,
           errors: create_organisation.errors
         }
       )
