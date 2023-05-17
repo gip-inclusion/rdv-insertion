@@ -215,12 +215,12 @@ MotifCategory.create!(
 puts "Creating configurations and responsible..."
 file_config_drome = FileConfiguration.create(
   sheet_name: "ENTRETIENS PHYSIQUES",
-  address_column: "Adresse",
+  address_first_field_column: "Adresse",
   last_name_column: "Nom bénéficiaire",
   first_name_column: "Prénom bénéficiaire",
   email_column: "Adresses Mails",
   birth_date_column: "Date de Naissance",
-  postal_code_column: "CP Ville",
+  address_fifth_field_column: "CP Ville",
   affiliation_number_column: "N° Allocataire",
   role_column: "Rôle",
   phone_number_column: "N° Téléphones",
@@ -250,7 +250,7 @@ file_config_yonne = FileConfiguration.create(
   last_name_column: "Nom",
   first_name_column: "Prénom",
   phone_number_column: "Numéro(s) de téléphone",
-  address_column: "Adresse",
+  address_first_field_column: "Adresse",
   birth_date_column: "Date de naissance",
   role_column: "Rôle",
   title_column: "Civilité",
