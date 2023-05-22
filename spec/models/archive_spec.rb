@@ -1,27 +1,27 @@
-describe Archiving do
-  subject { build(:archiving, department: department, applicant: applicant) }
+describe Archive do
+  subject { build(:archive, department: department, applicant: applicant) }
 
   let!(:department) { create(:department) }
   let!(:applicant) { create(:applicant) }
 
   describe "no collision" do
     context "when the applicant is not archived" do
-      let(:archiving) { build(:archiving, department: department, applicant: applicant) }
+      let(:archive) { build(:archive, department: department, applicant: applicant) }
 
       it { expect(subject).to be_valid }
     end
 
     context "when the applicant is archived in another department" do
-      let!(:existing_archiving) do
-        create(:archiving, applicant: applicant, department: create(:department))
+      let!(:existing_archive) do
+        create(:archive, applicant: applicant, department: create(:department))
       end
 
       it { expect(subject).to be_valid }
     end
 
     context "when the applicant is already archived in the department" do
-      let!(:existing_archiving) do
-        create(:archiving, applicant: applicant, department: department)
+      let!(:existing_archive) do
+        create(:archive, applicant: applicant, department: department)
       end
 
       it { expect(subject).not_to be_valid }

@@ -1,4 +1,4 @@
-class ArchivingPolicy < ApplicationPolicy
+class ArchivePolicy < ApplicationPolicy
   def create?
     # agent must belong to all orgs where the applicant is present inside the department
     record.applicant.organisations.all? do |organisation|

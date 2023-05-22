@@ -148,8 +148,8 @@ export default class extends Controller {
 
   archivingDisabled() {
     // the button is in a wrapper because we cannot set a tooltip on a disabled element
-    const archivingButton = document.getElementById("archive-button");
-    if (archivingButton.disabled) {
+    const archiveButton = document.getElementById("archive-button");
+    if (archiveButton.disabled) {
       tippy(this.element, {
         content:
           "Vous devez appartenir à toutes les organisations auxquelles appartient le bénéficiaire au sein de votre département pour pouvoir l'archiver",

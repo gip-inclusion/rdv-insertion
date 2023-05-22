@@ -24,7 +24,7 @@ describe "Agents can archive and unarchive applicant", js: true do
       expect(page).to have_content "Motif d'archivage"
       expect(page).to have_content "déménagement"
 
-      expect(Archiving.count).to eq(1)
+      expect(Archive.count).to eq(1)
 
       expect(page).to have_button "Rouvrir le dossier"
       click_button "Rouvrir le dossier"
@@ -37,13 +37,13 @@ describe "Agents can archive and unarchive applicant", js: true do
 
       expect(page).to have_content("Archiver le dossier")
 
-      expect(Archiving.count).to eq(0)
+      expect(Archive.count).to eq(0)
     end
 
     context "when the applicant is archived in another department" do
       let!(:other_department) { create(:department) }
       let!(:other_org) { create(:organisation, department: other_department, applicants: [applicant]) }
-      let!(:archiving) { create(:archiving, applicant: applicant, department: create(:department)) }
+      let!(:archive) { create(:archive, applicant: applicant, department: create(:department)) }
 
       it "can still archive in agent department" do
         visit department_applicant_path(department, applicant)
@@ -60,7 +60,7 @@ describe "Agents can archive and unarchive applicant", js: true do
         expect(page).to have_content "Motif d'archivage"
         expect(page).to have_content "déménagement"
 
-        expect(Archiving.count).to eq(2)
+        expect(Archive.count).to eq(2)
 
         expect(page).to have_button "Rouvrir le dossier"
         click_button "Rouvrir le dossier"
@@ -73,7 +73,7 @@ describe "Agents can archive and unarchive applicant", js: true do
 
         expect(page).to have_content("Archiver le dossier")
 
-        expect(Archiving.count).to eq(1)
+        expect(Archive.count).to eq(1)
       end
     end
 
@@ -102,8 +102,8 @@ describe "Agents can archive and unarchive applicant", js: true do
         organisations: [organisation]
       )
     end
-    let!(:archiving) do
-      create(:archiving, applicant: applicant, department: department, archiving_reason: "CDI")
+    let!(:archive) do
+      create(:archive, applicant: applicant, department: department, archiving_reason: "CDI")
     end
 
     it "can unarchive an applicant" do
@@ -125,9 +125,9 @@ describe "Agents can archive and unarchive applicant", js: true do
       expect(page).to have_button "Inviter par SMS"
     end
 
-    context "when the archiving is in another department" do
-      let!(:archiving) do
-        create(:archiving, applicant: applicant, department: create(:department))
+    context "when the archive is in another department" do
+      let!(:archive) do
+        create(:archive, applicant: applicant, department: create(:department))
       end
 
       it "does not show the applicant as archived" do

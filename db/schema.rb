@@ -84,14 +84,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_09_205431) do
     t.index ["organisation_id", "applicant_id"], name: "index_applicants_orgas_on_orga_id_and_applicant_id", unique: true
   end
 
-  create_table "archivings", force: :cascade do |t|
+  create_table "archives", force: :cascade do |t|
     t.bigint "department_id", null: false
     t.bigint "applicant_id", null: false
     t.string "archiving_reason"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["applicant_id"], name: "index_archivings_on_applicant_id"
-    t.index ["department_id"], name: "index_archivings_on_department_id"
+    t.index ["applicant_id"], name: "index_archives_on_applicant_id"
+    t.index ["department_id"], name: "index_archives_on_department_id"
   end
 
   create_table "configurations", force: :cascade do |t|
@@ -380,8 +380,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_09_205431) do
 
   add_foreign_key "agent_roles", "agents"
   add_foreign_key "agent_roles", "organisations"
-  add_foreign_key "archivings", "applicants"
-  add_foreign_key "archivings", "departments"
+  add_foreign_key "archives", "applicants"
+  add_foreign_key "archives", "departments"
   add_foreign_key "configurations", "file_configurations"
   add_foreign_key "configurations", "motif_categories"
   add_foreign_key "configurations", "organisations"

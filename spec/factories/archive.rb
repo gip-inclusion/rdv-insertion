@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :archiving do
+  factory :archive do
     association :department
     association :applicant
   end

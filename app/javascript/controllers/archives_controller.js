@@ -1,19 +1,19 @@
 import { Controller } from "@hotwired/stimulus";
 import Swal from "sweetalert2";
-import createArchiving from "../react/actions/createArchiving";
-import deleteArchiving from "../react/actions/deleteArchiving";
+import createArchive from "../react/actions/createArchive";
+import deleteArchive from "../react/actions/deleteArchive";
 
 export default class extends Controller {
   connect() {
     this.applicantId = this.element.dataset.applicantId;
     this.organisationId = this.element.dataset.organisationId;
     this.departmentId = this.element.dataset.departmentId;
-    this.archivingId = this.element.dataset.archivingId;
+    this.archiveId = this.element.dataset.archiveId;
     this.navigationLevel = this.element.dataset.navigationLevel;
   }
 
   async create() {
-    const { value: archivingReason, isConfirmed } = await Swal.fire({
+    const { value: archiveReason, isConfirmed } = await Swal.fire({
       icon: "warning",
       title: "Le dossier sera archivé sur toutes les organisations",
       text: "Si des invitations envoyées au bénéificiaire sont toujours valides, il ne pourra plus les utiliser pour prendre rendez-vous",
@@ -29,12 +29,12 @@ export default class extends Controller {
 
     if (isConfirmed) {
       const attributes = {
-        archiving_reason: archivingReason,
+        archiving_reason: archiveReason,
         applicant_id: this.applicantId,
         department_id: this.departmentId,
       };
 
-      const result = await createArchiving(attributes);
+      const result = await createArchive(attributes);
       this.handleResult(result);
     }
   }
@@ -52,7 +52,7 @@ export default class extends Controller {
     });
 
     if (isConfirmed) {
-      const result = await deleteArchiving(this.archivingId);
+      const result = await deleteArchive(this.archiveId);
       this.handleResult(result);
     }
   }

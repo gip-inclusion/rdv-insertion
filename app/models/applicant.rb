@@ -27,7 +27,7 @@ class Applicant < ApplicationRecord
   has_many :rdv_contexts, dependent: :destroy
   has_many :invitations, dependent: :destroy
   has_many :participations, dependent: :destroy
-  has_many :archivings, dependent: :destroy
+  has_many :archives, dependent: :destroy
 
   has_many :rdvs, through: :participations
   has_many :notifications, through: :participations
@@ -110,7 +110,7 @@ class Applicant < ApplicationRecord
       organisations: organisations,
       rdv_contexts: rdv_contexts,
       agents: agents,
-      archivings: archivings
+      archives: archives
     )
   end
 

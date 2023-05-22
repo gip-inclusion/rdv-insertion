@@ -233,7 +233,7 @@ describe ApplicantsController do
 
     context "when applicant is archived" do
       let!(:applicant) { create(:applicant, organisations: [organisation]) }
-      let!(:archiving) { create(:archiving, applicant: applicant, department: department) }
+      let!(:archive) { create(:archive, applicant: applicant, department: department) }
       let!(:show_params) { { id: applicant.id, organisation_id: organisation.id } }
 
       it "the applicant is displayed as archived" do
@@ -435,7 +435,7 @@ describe ApplicantsController do
         organisations: [organisation], last_name: "Barthelemy", rdv_contexts: [rdv_context4]
       )
     end
-    let!(:archiving) { create(:archiving, applicant: archived_applicant, department: department) }
+    let!(:archive) { create(:archive, applicant: archived_applicant, department: department) }
     let!(:rdv_context4) { build(:rdv_context, motif_category: category_orientation, status: "invitation_pending") }
 
     let!(:index_params) { { organisation_id: organisation.id, motif_category: category_orientation } }

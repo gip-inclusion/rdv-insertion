@@ -129,7 +129,7 @@ describe Stat do
         let!(:applicant4) do
           create(:applicant, organisations: [organisation])
         end
-        let!(:archiving) { create(:archiving, applicant: applicant4, department: department) }
+        let!(:archive) { create(:archive, applicant: applicant4, department: department) }
         let!(:applicant5) do
           create(:applicant, organisations: [organisation_with_no_configuration])
         end

@@ -8,7 +8,7 @@ import ReferentAssignationCell from "./applicant/ReferentAssignationCell";
 export default function Applicant({ applicant, isDepartmentLevel, showReferentColumn }) {
   const [isTriggered, setIsTriggered] = useState({
     creation: false,
-    unarchiving: false,
+    unarchive: false,
     smsInvitation: false,
     emailInvitation: false,
     postalInvitation: false,

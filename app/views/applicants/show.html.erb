@@ -1,4 +1,4 @@
-<%= render 'archive_banner' if @archiving.present? %>
+<%= render 'archive_banner' if @archive.present? %>
 
 <div class="container text-dark-blue h4-as-labels mt-4">
   <div class="d-flex justify-content-between mb-4">
@@ -34,9 +34,9 @@
       <%= render "common/attribute_display", record: @applicant, attribute: :phone_number %>
       <%= render "common/attribute_display", record: @applicant, attribute: :rights_opening_date, as: :date %>
       <%= render "common/attribute_display", record: @applicant, attribute: :created_at, as: :date %>
-      <% if @archiving.present? %>
-        <%= render "common/attribute_display", record: @archiving, attribute: :archiving_reason %>
-        <%= render "common/attribute_display", record: @archiving, attribute: :created_at, as: :date %>
+      <% if @archive.present? %>
+        <%= render "common/attribute_display", record: @archive, attribute: :archiving_reason %>
+        <%= render "common/attribute_display", record: @archive, attribute: :created_at, as: :date %>
       <% end %>
       <%= render "common/attribute_display", record: @applicant, attribute: :organisations, as: :list, id: "organisations_list" %>
       <%= render "common/attribute_display", record: @applicant, attribute: :agents, as: :list, id: "agents_list" %>

@@ -1,9 +1,9 @@
 module Applicant::Archivable
   def archived_in?(department)
-    archiving_for(department.id).present?
+    archive_for(department.id).present?
   end
 
-  def archiving_for(department_id)
-    archivings.find { |a| a.department_id == department_id }
+  def archive_for(department_id)
+    archives.find { |a| a.department_id == department_id }
   end
 end

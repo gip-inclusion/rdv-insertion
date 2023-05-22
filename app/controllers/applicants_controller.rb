@@ -14,12 +14,12 @@ class ApplicantsController < ApplicationController
   before_action :set_organisation, :set_department, :set_organisations, :set_all_configurations,
                 :set_current_agent_roles, :set_applicants_scope,
                 :set_current_configuration, :set_current_motif_category,
-                :set_applicants, :set_rdv_contexts, :set_archivings,
+                :set_applicants, :set_rdv_contexts, :set_archives,
                 :filter_applicants, :order_applicants,
                 :set_convocation_motifs_by_applicant,
                 for: :index
   before_action :set_applicant, :set_organisation, :set_department, :set_all_configurations,
-                :set_applicant_organisations, :set_applicant_rdv_contexts, :set_applicant_archiving,
+                :set_applicant_organisations, :set_applicant_rdv_contexts, :set_applicant_archive,
                 :set_convocation_motifs_by_rdv_context,
                 :set_back_to_applicants_list_url,
                 for: :show
@@ -210,8 +210,8 @@ class ApplicantsController < ApplicationController
       ).sort_by(&:motif_category_position)
   end
 
-  def set_applicant_archiving
-    @archiving = Archiving.find_by(applicant: @applicant, department: @department)
+  def set_applicant_archive
+    @archive = Archive.find_by(applicant: @applicant, department: @department)
   end
 
   def set_applicant_organisations
@@ -243,10 +243,10 @@ class ApplicantsController < ApplicationController
                   .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
   end
 
-  def set_archivings
+  def set_archives
     return unless archived_scope?
 
-    @archivings = Archiving.where(applicant_id: @applicants.ids, department_id: @department.id).order(created_at: :desc)
+    @archives = Archive.where(applicant_id: @applicants.ids, department_id: @department.id).order(created_at: :desc)
   end
 
   def set_rdv_contexts

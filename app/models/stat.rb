@@ -12,7 +12,7 @@ class Stat < ApplicationRecord
   def archived_applicant_ids
     @archived_applicant_ids ||=
       if department.nil?
-        Applicant.where.associated(:archivings).select(:id).ids
+        Applicant.where.associated(:archives).select(:id).ids
       else
         department.archived_applicants.select(:id).ids
       end

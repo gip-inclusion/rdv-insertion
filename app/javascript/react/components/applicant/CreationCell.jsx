@@ -2,7 +2,7 @@ import React from "react";
 import Tippy from "@tippyjs/react";
 
 import handleApplicantCreation from "../../lib/handleApplicantCreation";
-import handleArchivingDelete from "../../lib/handleArchivingDelete";
+import handleArchiveDelete from "../../lib/handleArchiveDelete";
 import retrieveRelevantOrganisation from "../../../lib/retrieveRelevantOrganisation";
 
 import { getFrenchFormatDateString } from "../../../lib/datesHelper";
@@ -14,11 +14,11 @@ export default function CreationCell({
   setIsTriggered,
 }) {
   const handleFileReopen = async () => {
-    setIsTriggered({ ...isTriggered, unarchiving: true });
+    setIsTriggered({ ...isTriggered, unarchive: true });
 
-    await handleArchivingDelete(applicant);
+    await handleArchiveDelete(applicant);
 
-    setIsTriggered({ ...isTriggered, unarchiving: false });
+    setIsTriggered({ ...isTriggered, unarchive: false });
   };
 
   const handleCreationClick = async () => {
@@ -46,7 +46,7 @@ export default function CreationCell({
     <td>
       <button
         type="submit"
-        disabled={isTriggered.unarchiving}
+        disabled={isTriggered.unarchive}
         className="btn btn-primary btn-blue"
         onClick={() => handleFileReopen()}
       >

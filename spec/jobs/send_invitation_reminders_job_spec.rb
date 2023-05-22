@@ -72,7 +72,7 @@ describe SendInvitationRemindersJob do
         sent_at: 3.days.ago, valid_until: 4.days.from_now
       )
     end
-    let!(:archiving) { create(:archiving, applicant: applicant5, department: invitation5.department) }
+    let!(:archive) { create(:archive, applicant: applicant5, department: invitation5.department) }
 
     # Motif Category not eligible for reminder
     let!(:invitation6) do

@@ -1,14 +1,14 @@
-<% if @archiving.blank? %>
+<% if @archive.blank? %>
   <!-- We must set a wrapper to trigger a tooltip on a disabled element -->
   <span class="tooltip-wrapper" data-controller="tooltip" data-action="mouseover->tooltip#archivingDisabled">
     <%=
       button_tag(
         "Archiver le dossier",
         class: "btn btn-blue", id: "archive-button",
-        disabled: !policy(Archiving.new(department: @department, applicant: @applicant)).create?,
+        disabled: !policy(Archive.new(department: @department, applicant: @applicant)).create?,
         data: {
-          controller: "archivings",
-          action: "click->archivings#create",
+          controller: "archives",
+          action: "click->archives#create",
           applicant_id: @applicant.id,
           organisation_id: @organisation.id,
           department_id: @department.id,
@@ -22,11 +22,11 @@
     button_tag(
       "Rouvrir le dossier",
       class: "btn btn-blue", id: "unarchive-button",
-      disabled: !policy(@archiving).destroy?,
+      disabled: !policy(@archive).destroy?,
       data: {
-        controller: "archivings",
-        action: "click->archivings#destroy",
-        archiving_id: @archiving.id,
+        controller: "archives",
+        action: "click->archives#destroy",
+        archive_id: @archive.id,
         applicant_id: @applicant.id,
         organisation_id: @organisation.id,
         department_id: @department.id,

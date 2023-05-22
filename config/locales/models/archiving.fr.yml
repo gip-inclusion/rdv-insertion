@@ -1,8 +1,8 @@
 fr:
   activerecord:
     models:
-      archiving: Archivage
+      archive: Archive
     attributes:
-      archiving:
+      archive:
         archiving_reason: Motif d'archivage
         created_at: Archivé le

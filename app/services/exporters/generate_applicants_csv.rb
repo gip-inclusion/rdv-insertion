@@ -48,8 +48,8 @@ module Exporters
        Applicant.human_attribute_name(:status),
        "1er RDV honoré en - de 30 jours ?",
        "Date d'orientation",
-       Archiving.human_attribute_name(:created_at),
-       Archiving.human_attribute_name(:archiving_reason),
+       Archive.human_attribute_name(:created_at),
+       Archive.human_attribute_name(:archiving_reason),
        "Nombre d'organisations",
        "Nom des organisations"]
     end
@@ -76,8 +76,8 @@ module Exporters
        human_rdv_context_status(applicant),
        rdv_seen_in_less_than_30_days?(applicant),
        display_date(applicant.first_seen_rdv_starts_at),
-       display_date(applicant.archiving_for(department_id)&.created_at),
-       applicant.archiving_for(department_id)&.archiving_reason,
+       display_date(applicant.archive_for(department_id)&.created_at),
+       applicant.archive_for(department_id)&.archiving_reason,
        applicant.organisations.to_a.count,
        applicant.organisations.map(&:name).join(", ")]
     end
@@ -93,7 +93,7 @@ module Exporters
     end
 
     def human_rdv_context_status(applicant)
-      return "Archivé" if applicant.archiving_for(department_id).present?
+      return "Archivé" if applicant.archive_for(department_id).present?
 
       return "" if @motif_category.nil? || rdv_context(applicant).nil?
 

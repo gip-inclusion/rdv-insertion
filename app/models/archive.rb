@@ -1,4 +1,4 @@
-class Archiving < ApplicationRecord
+class Archive < ApplicationRecord
   belongs_to :applicant
   belongs_to :department
 

@@ -159,9 +159,9 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
           expect(csv).to include("25/05/2022;Oui;Statut du RDV à préciser;Oui;25/05/2022") # orientation date
         end
 
-        it "displays the archiving infos" do
-          expect(csv).to include("25/05/2022;\"\"") # archiving status
-          expect(csv).to include("25/05/2022;\"\";;") # archiving reason
+        it "displays the archive infos" do
+          expect(csv).to include("25/05/2022;\"\"") # archive status
+          expect(csv).to include("25/05/2022;\"\";;") # archive reason
         end
 
         it "displays the organisation infos" do
@@ -174,20 +174,20 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
             create(
               :applicant,
               organisations: [organisation],
-              archivings: [archiving]
+              archives: [archive]
             )
           end
-          let!(:archiving) do
+          let!(:archive) do
             create(
-              :archiving,
+              :archive,
               created_at: Time.zone.parse("2022-06-20"),
               department: department, archiving_reason: "test"
             )
           end
 
-          it "displays the archiving infos" do
-            expect(subject.csv).to include("20/06/2022") # archiving status
-            expect(subject.csv).to include("20/06/2022;test") # archiving reason
+          it "displays the archive infos" do
+            expect(subject.csv).to include("20/06/2022") # archive status
+            expect(subject.csv).to include("20/06/2022;test") # archive reason
           end
 
           it "does displays the archived status rather than the rdv_context status" do
