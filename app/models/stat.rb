@@ -9,6 +9,15 @@ class Stat < ApplicationRecord
     @all_applicants ||= department.nil? ? Applicant.all : department.applicants
   end
 
+  def archived_applicant_ids
+    @archived_applicant_ids ||=
+      if department.nil?
+        Applicant.where.associated(:archives).select(:id).ids
+      else
+        department.archived_applicants.select(:id).ids
+      end
+  end
+
   def all_participations
     @all_participations ||= department.nil? ? Participation.all : department.participations
   end
@@ -51,7 +60,7 @@ class Stat < ApplicationRecord
                                     .joins(:organisations)
                                     .where(organisations: organisations_sample)
                                     .active
-                                    .archived(false)
+                                    .where.not(id: archived_applicant_ids)
                                     .distinct
   end
 

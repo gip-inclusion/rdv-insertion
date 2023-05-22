@@ -8,7 +8,6 @@ import StatusSelector from "components/status-selector"
 import DepartmentSelector from "components/department-selector"
 import ActionRequiredCheckbox from "components/action-required-checkbox"
 import FilterByCurrentAgentCheckbox from "components/filter-by-current-agent-checkbox"
-import toggleApplicantArchivingButton from "components/toggle-applicant-archiving-button"
 
 import "bootstrap";
 import "stylesheets/application";
@@ -56,5 +55,4 @@ document.addEventListener("turbo:load", () => {
   new DepartmentSelector();
   new ActionRequiredCheckbox();
   new FilterByCurrentAgentCheckbox();
-  toggleApplicantArchivingButton();
 });

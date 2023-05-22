@@ -26,7 +26,7 @@
             <% if rdv_context.rdv_pending? || rdv_context.closed? %>
               <!-- show nothing -->
             <% elsif applicant.can_be_invited_through?(invitation_format) %>
-              <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: invitation_format, motif_category: @current_motif_category, rdv_context: rdv_context, checked: checked = rdv_context.first_invitation_relative_to_last_participation_by(invitation_format).present?, disabled: checked || applicant.inactive? %>
+              <%= render "invitations/checkbox_form", applicant: applicant, invitation_format: invitation_format, motif_category: @current_motif_category, rdv_context: rdv_context, checked: checked = rdv_context.first_invitation_relative_to_last_participation_by(invitation_format).present?, disabled: checked || applicant.deleted? %>
             <% else %>
               -
             <% end %>
@@ -44,13 +44,9 @@
             <td><%= display_attribute format_date(rdv_context.last_sent_convocation_sent_at) %></td>
           <% end %>
         <% end %>
-        <% if applicant.archived? %>
-          <td>Dossier archivé</td>
-        <% else %>
-          <td id="rdv-context-status-<%= rdv_context.id %>" class="<%= background_class_for_context_status(rdv_context, @current_configuration.number_of_days_before_action_required) %>">
-            <%= display_context_status(rdv_context, @current_configuration.number_of_days_before_action_required) %>
-          </td>
-        <% end %>
+        <td id="rdv-context-status-<%= rdv_context.id %>" class="<%= background_class_for_context_status(rdv_context, @current_configuration.number_of_days_before_action_required) %>">
+          <%= display_context_status(rdv_context, @current_configuration.number_of_days_before_action_required) %>
+        </td>
         <td class="padding-left-15">
           <%= link_to compute_show_path(applicant, @organisation, @department) do %>
             <button class="btn btn-blue">Gérer</button>

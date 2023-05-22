@@ -1,4 +1,4 @@
-<%= render 'archive_banner' if @applicant.archived? %>
+<%= render 'archive_banner' if @archive.present? %>
 
 <div class="container text-dark-blue h4-as-labels mt-4">
   <div class="d-flex justify-content-between mb-4">
@@ -11,9 +11,7 @@
       <% end %>
     </div>
     <div>
-      <button class="btn btn-blue" id="archive-button" data-applicant-id="<%= @applicant.id %>" data-organisation-id="<%= @organisation.id %>" data-department-id="<%= @department.id %>" data-department-level="<%= department_level? %>">
-        <%= @applicant.archived? ? "Rouvrir le dossier" : "Archiver le dossier" %>
-      </button>
+      <%= render "archiving_button" %>
       <%= link_to compute_edit_path(@applicant, @organisation, @department) do %>
         <button class="btn btn-blue">Modifier</button>
       <% end %>
@@ -36,9 +34,9 @@
       <%= render "common/attribute_display", record: @applicant, attribute: :phone_number %>
       <%= render "common/attribute_display", record: @applicant, attribute: :rights_opening_date, as: :date %>
       <%= render "common/attribute_display", record: @applicant, attribute: :created_at, as: :date %>
-      <% if @applicant.archived? %>
-        <%= render "common/attribute_display", record: @applicant, attribute: :archiving_reason %>
-        <%= render "common/attribute_display", record: @applicant, attribute: :archived_at, as: :date %>
+      <% if @archive.present? %>
+        <%= render "common/attribute_display", record: @archive, attribute: :archiving_reason %>
+        <%= render "common/attribute_display", record: @archive, attribute: :created_at, as: :date %>
       <% end %>
       <%= render "common/attribute_display", record: @applicant, attribute: :organisations, as: :list, id: "organisations_list" %>
       <%= render "common/attribute_display", record: @applicant, attribute: :agents, as: :list, id: "agents_list" %>

@@ -8,7 +8,7 @@ import ReferentAssignationCell from "./applicant/ReferentAssignationCell";
 export default function Applicant({ applicant, isDepartmentLevel, showReferentColumn }) {
   const [isTriggered, setIsTriggered] = useState({
     creation: false,
-    unarchiving: false,
+    unarchive: false,
     smsInvitation: false,
     emailInvitation: false,
     postalInvitation: false,
@@ -29,7 +29,11 @@ export default function Applicant({ applicant, isDepartmentLevel, showReferentCo
 
   return (
     <>
-      <tr className={applicant.isDuplicate || applicant.isArchived ? "table-danger" : ""}>
+      <tr
+        className={
+          applicant.isDuplicate || applicant.isArchivedInCurrentDepartment() ? "table-danger" : ""
+        }
+      >
         <td>{applicant.shortTitle}</td>
         <td>{applicant.firstName}</td>
         <td>{applicant.lastName}</td>
