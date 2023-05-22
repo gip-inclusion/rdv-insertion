@@ -164,7 +164,6 @@ export default class Applicant {
 
   formatFullAddress() {
     return (
-   return(
       (this.addressFirstField ? `${this.addressFirstField} ` : "") +
       (this.addressSecondField ? `${this.addressSecondField} ` : "") +
       (this.addressThirdField ? `${this.addressThirdField} ` : "") +
