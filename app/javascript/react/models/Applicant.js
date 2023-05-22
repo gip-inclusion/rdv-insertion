@@ -164,12 +164,13 @@ export default class Applicant {
 
   formatFullAddress() {
     return (
-      (this.addressFirstField ? `${this.addressFirstField} ` : "") +
-      (this.addressSecondField ? `${this.addressSecondField} ` : "") +
-      (this.addressThirdField ? `${this.addressThirdField} ` : "") +
-      (this.addressFourthField ? `${this.addressFourthField} ` : "") +
-      (this.addressFifthField ?? "")
-     ).trim()
+      (
+        (this.addressFirstField ? `${this.addressFirstField} ` : "") +
+        (this.addressSecondField ? `${this.addressSecondField} ` : "") +
+        (this.addressThirdField ? `${this.addressThirdField} ` : "") +
+        (this.addressFourthField ? `${this.addressFourthField} ` : "") +
+        (this.addressFifthField ?? "")
+      ).trim()
     );
   }
 
