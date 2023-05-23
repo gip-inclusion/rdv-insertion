@@ -9,7 +9,7 @@ describe SendInvitationRemindersJob do
     let!(:applicant3) { create(:applicant, email: "camille3@gouv.fr", phone_number: "0649031933") }
     let!(:applicant4) { create(:applicant, email: "camille4@gouv.fr", phone_number: "0649031934") }
     let!(:applicant5) do
-      create(:applicant, email: "camille5@gouv.fr", phone_number: "0649031935", archived_at: 2.days.ago)
+      create(:applicant, email: "camille5@gouv.fr", phone_number: "0649031935")
     end
     let!(:applicant6) { create(:applicant, email: "camille6@gouv.fr", phone_number: "0649031935") }
 
@@ -72,6 +72,7 @@ describe SendInvitationRemindersJob do
         sent_at: 3.days.ago, valid_until: 4.days.from_now
       )
     end
+    let!(:archive) { create(:archive, applicant: applicant5, department: invitation5.department) }
 
     # Motif Category not eligible for reminder
     let!(:invitation6) do

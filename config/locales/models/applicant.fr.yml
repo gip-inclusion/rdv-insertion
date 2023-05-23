@@ -18,10 +18,8 @@ fr:
         pole_emploi_id: ID Pôle Emploi
         rights_opening_date: Date d'entrée flux
         organisations: Organisation(s)
-        archiving_reason: Motif d'archivage
         uid: Le couple numéro d'allocataire + rôle
         created_at: Date de création
         status: Statut
-        archived_at: Archivé le
         agents: Référent(s)
         organisation_ids: Organisation

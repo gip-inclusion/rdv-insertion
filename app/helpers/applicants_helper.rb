@@ -114,6 +114,10 @@ module ApplicantsHelper
     params[:department_id].present?
   end
 
+  def navigation_level
+    department_level? ? "department" : "organisation"
+  end
+
   def rdv_solidarites_agent_searches_url(
     rdv_solidarites_organisation_id, rdv_solidarites_user_id, rdv_solidarites_motif_id, rdv_solidarites_service_id
   )

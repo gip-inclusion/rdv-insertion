@@ -5,6 +5,7 @@ class Department < ApplicationRecord
 
   has_many :organisations, dependent: :nullify
   has_many :invitations, dependent: :nullify
+  has_many :archives, dependent: :restrict_with_error
 
   has_many :applicants, through: :organisations
   has_many :configurations, through: :organisations
@@ -14,6 +15,7 @@ class Department < ApplicationRecord
   has_many :rdvs, through: :organisations
   has_many :participations, through: :rdvs
   has_many :rdv_contexts, through: :applicants
+  has_many :archived_applicants, through: :archives, source: :applicant
 
   scope :displayed_in_stats, -> { where(display_in_stats: true) }
 

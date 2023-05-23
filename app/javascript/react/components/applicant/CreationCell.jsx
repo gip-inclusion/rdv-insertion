@@ -1,9 +1,8 @@
 import React from "react";
-import Swal from "sweetalert2";
 import Tippy from "@tippyjs/react";
 
 import handleApplicantCreation from "../../lib/handleApplicantCreation";
-import handleApplicantUnarchive from "../../lib/handleApplicantUnarchive";
+import handleArchiveDelete from "../../lib/handleArchiveDelete";
 import retrieveRelevantOrganisation from "../../../lib/retrieveRelevantOrganisation";
 
 import { getFrenchFormatDateString } from "../../../lib/datesHelper";
@@ -14,15 +13,12 @@ export default function CreationCell({
   isTriggered,
   setIsTriggered,
 }) {
-  const handleUnarchiveApplicantClick = async () => {
-    setIsTriggered({ ...isTriggered, unarchiving: true });
+  const handleFileReopen = async () => {
+    setIsTriggered({ ...isTriggered, unarchive: true });
 
-    const result = await handleApplicantUnarchive(applicant);
+    await handleArchiveDelete(applicant);
 
-    if (result.success) {
-      Swal.fire("Dossier de l'allocataire rouvert avec succès", "", "info");
-    }
-    setIsTriggered({ ...isTriggered, unarchiving: false });
+    setIsTriggered({ ...isTriggered, unarchive: false });
   };
 
   const handleCreationClick = async () => {
@@ -46,13 +42,13 @@ export default function CreationCell({
     setIsTriggered({ ...isTriggered, creation: false });
   };
 
-  return applicant.isArchived ? (
+  return applicant.isArchivedInCurrentDepartment() ? (
     <td>
       <button
         type="submit"
-        disabled={isTriggered.unarchiving}
+        disabled={isTriggered.unarchive}
         className="btn btn-primary btn-blue"
-        onClick={() => handleUnarchiveApplicantClick()}
+        onClick={() => handleFileReopen()}
       >
         Rouvrir le dossier
       </button>

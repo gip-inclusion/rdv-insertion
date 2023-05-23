@@ -245,6 +245,7 @@ fr:
     la: "de la %{name}"
     l': "de l'%{name}"
     les: "des %{name}"
+    none: "de %{name}"
   invitation_formats:
     postal: Courrier
     sms: SMS
