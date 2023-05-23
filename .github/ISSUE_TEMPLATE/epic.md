@@ -9,8 +9,7 @@ assignees: ''
 
 ## 🚀 Objectif de l'EPIC
 
-_Une phrase qui commence par un verbe à l'infinitif et qui permet de "pitcher" l'EPIC, en insistant sur la valeur apportée pour l'usager
-Remarque : l'objectif de l'EPIC peut être le titre de l'EPIC, ou bien être plus long 
+_Une phrase qui commence par un verbe à l'infinitif et qui permet de "pitcher" l'EPIC, en insistant sur la valeur apportée pour l'usager (l'objectif de l'EPIC peut être le titre de l'EPIC, ou bien être plus long)_ 
 
 ## ❓ Définition du problème
 
@@ -22,18 +21,20 @@ _Optionnel 2 : visionner les problèmes à l'aide d'un "user mapping" format Mir
 
 ## 🏅 Définition de la solution proposée
 
-_Description fonctionnelle de la solution. Dans une V0 une description 'littéraire' et synthétique peut aider à formaliser les idées. Ensuite, il faut comprendre quel va être le déroulement du parcours utilisateur séquence par séquence quand la fonctionnalité sera développée. Cela peut prendre la forme : 
+_Description fonctionnelle de la solution. Dans une V0 une description 'littéraire' et synthétique peut aider à formaliser les idées. Ensuite, il faut comprendre quel va être le déroulement du parcours utilisateur séquence par séquence quand la fonctionnalité sera développée. Cela peut prendre la forme :_ 
 
-_- d'un 'user journey mapping' (plus d'infos ici : https://www.followtribes.io/user-story-mapping/) - support Miro / Figma,  slide ou textuel  
+_- d'un 'user journey mapping' (plus d'infos ici : https://www.followtribes.io/user-story-mapping/) - support Miro / Figma,  slide ou textuel_  
 
-_- d'une maquette Figam si on a besoin de tester la fonctionnalité entre nous ou avec les utilisateurs
+_- d'une maquette Figma si on a besoin de tester la fonctionnalité entre nous ou avec les utilisateurs_
 
-##  Tâches prioritaires dans une V0 de l'EPIC
+##  0️⃣  Tâches prioritaires dans une V0 de l'EPIC
+
 _La V0 de l'EPIC doit être raisonnablement réalisable en 1 sprint, et permet de tester un incrément de valeur suffisant, afin de savoir l'intérêt qu'il y a à faire plus de développement_
 
 - [ ] #numéro de l'issue
 
-##  Tâches pour la solution cible
+##  🎯 Tâches pour la solution cible
+
 _Si tout était possible sans contrainte de temps et de dev, quelles features on aimerait rajouter, pour solutionner le problème ?_
 
 - [ ] #numéro de l'issue
