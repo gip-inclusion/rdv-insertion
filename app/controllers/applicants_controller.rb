@@ -246,7 +246,8 @@ class ApplicantsController < ApplicationController
   def set_archives
     return unless archived_scope?
 
-    @archives = Archive.where(applicant_id: @applicants.ids, department_id: @department.id).order(created_at: :desc)
+    @archives = Archive.where(applicant_id: @applicants.ids, department_id: @department.id)
+                       .order(created_at: :desc).page(page)
   end
 
   def set_rdv_contexts

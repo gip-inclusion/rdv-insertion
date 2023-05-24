@@ -8,7 +8,7 @@ class CreateArchives < ActiveRecord::Migration[7.0]
       t.timestamps
     end
 
-    Applicant.where.not(archived_at: nil).find_each do |applicant|
+    Applicant.active.where.not(archived_at: nil).find_each do |applicant|
       archive = ::Archive.new(
         applicant_id: applicant.id,
         department_id: applicant.organisations.first.department_id,
