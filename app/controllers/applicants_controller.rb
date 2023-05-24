@@ -14,7 +14,7 @@ class ApplicantsController < ApplicationController
   before_action :set_organisation, :set_department, :set_organisations, :set_all_configurations,
                 :set_current_agent_roles, :set_applicants_scope,
                 :set_current_configuration, :set_current_motif_category,
-                :set_applicants, :set_rdv_contexts, :set_archives,
+                :set_applicants, :set_rdv_contexts,
                 :filter_applicants, :order_applicants,
                 :set_convocation_motifs_by_applicant,
                 for: :index
@@ -238,16 +238,11 @@ class ApplicantsController < ApplicationController
 
   def set_archived_applicants
     @applicants = policy_scope(Applicant)
+                  .includes(:archives)
+                  .preload(:invitations, :participations)
                   .active.distinct
                   .where(id: @department.archived_applicants)
                   .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
-  end
-
-  def set_archives
-    return unless archived_scope?
-
-    @archives = Archive.where(applicant_id: @applicants.ids, department_id: @department.id)
-                       .order(created_at: :desc).page(page)
   end
 
   def set_rdv_contexts
@@ -274,7 +269,7 @@ class ApplicantsController < ApplicationController
   end
 
   def order_applicants
-    @applicants = @applicants.order(created_at: :desc)
+    @applicants = archived_scope? ? @applicants.order("archives.created_at desc") : @applicants.order(created_at: :desc)
   end
 
   def after_save_path
