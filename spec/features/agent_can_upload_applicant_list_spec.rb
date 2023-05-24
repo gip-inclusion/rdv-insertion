@@ -36,6 +36,7 @@ describe "Agents can upload applicant list", js: true do
     stub_send_in_blue
     stub_rdv_solidarites_get_organisation_user(rdv_solidarites_organisation_id, rdv_solidarites_user_id)
     stub_rdv_solidarites_invitation_requests(rdv_solidarites_user_id)
+    stub_geo_api_request("127 RUE DE GRENELLE 75007 PARIS")
   end
 
   context "at organisation level" do
@@ -81,7 +82,7 @@ describe "Agents can upload applicant list", js: true do
 
       expect(page).to have_button("Inviter par SMS", disabled: false)
       expect(page).to have_button("Inviter par Email", disabled: false)
-      expect(page).to have_button("Générer courrier", disabled: true)
+      expect(page).to have_button("Générer courrier", disabled: false)
       expect(page).not_to have_button("Créer compte")
 
       applicant = Applicant.last
@@ -97,6 +98,7 @@ describe "Agents can upload applicant list", js: true do
       expect(applicant.email).to eq("hernan@crespo.com")
       expect(applicant.phone_number).to eq("+33620022002")
       expect(applicant.department_internal_id).to eq("8383")
+      expect(applicant.address).to eq("127 RUE DE GRENELLE 75007 PARIS")
 
       ### Invite by sms
 
@@ -105,7 +107,7 @@ describe "Agents can upload applicant list", js: true do
       expect(page).to have_css("i.fas.fa-check")
       expect(page).not_to have_button("Inviter par SMS")
       expect(page).to have_button("Inviter par Email", disabled: false)
-      expect(page).to have_button("Générer courrier", disabled: true)
+      expect(page).to have_button("Générer courrier", disabled: false)
 
       invitation = Invitation.last
 
@@ -125,7 +127,7 @@ describe "Agents can upload applicant list", js: true do
       expect(page).not_to have_button("Inviter par SMS")
 
       expect(page).to have_button("Inviter par Email", disabled: false)
-      expect(page).to have_button("Générer courrier", disabled: true)
+      expect(page).to have_button("Générer courrier", disabled: false)
     end
 
     describe "Applicants matching" do
@@ -134,7 +136,7 @@ describe "Agents can upload applicant list", js: true do
           let!(:applicant) do
             create(
               :applicant,
-              nir: "180333147687266", address: "20 avenue de ségur 75007 Paris", last_name: "Crespa",
+              nir: "180333147687266", last_name: "Crespa",
               organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
@@ -156,7 +158,7 @@ describe "Agents can upload applicant list", js: true do
           let!(:applicant) do
             create(
               :applicant,
-              nir: "180333147687266", address: "20 avenue de ségur 75007 Paris", last_name: "Crespa",
+              nir: "180333147687266", last_name: "Crespa",
               organisations: [other_org_from_other_department], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
@@ -175,7 +177,7 @@ describe "Agents can upload applicant list", js: true do
               :css, "a[href=\"/organisations/#{organisation.id}/applicants/#{applicant.id}\"]"
             )
 
-            expect(applicant.reload.address).to eq("20 avenue de ségur 75007 Paris")
+            expect(applicant.reload.address).to eq("127 RUE DE GRENELLE 75007 PARIS")
             expect(applicant.reload.first_name).to eq("Hernan")
             expect(applicant.reload.last_name).to eq("Crespo")
             expect(applicant.reload.affiliation_number).to eq("ISQCJQO")
@@ -194,8 +196,7 @@ describe "Agents can upload applicant list", js: true do
           let!(:applicant) do
             create(
               :applicant,
-              role: "demandeur", affiliation_number: "ISQCJQO",
-              address: "20 avenue de ségur 75007 Paris", last_name: "Crespa",
+              role: "demandeur", affiliation_number: "ISQCJQO", last_name: "Crespa",
               organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
@@ -218,8 +219,7 @@ describe "Agents can upload applicant list", js: true do
             let!(:applicant) do
               create(
                 :applicant,
-                role: "demandeur", affiliation_number: "ISQCJQO",
-                address: "20 avenue de ségur 75007 Paris", last_name: "Crespa",
+                role: "demandeur", affiliation_number: "ISQCJQO", last_name: "Crespa",
                 organisations: [other_org_from_same_department], rdv_solidarites_user_id: rdv_solidarites_user_id
               )
             end
@@ -238,7 +238,7 @@ describe "Agents can upload applicant list", js: true do
                 :css, "a[href=\"/organisations/#{organisation.id}/applicants/#{applicant.id}\"]"
               )
 
-              expect(applicant.reload.address).to eq("20 avenue de ségur 75007 Paris")
+              expect(applicant.reload.address).to eq("127 RUE DE GRENELLE 75007 PARIS")
               expect(applicant.reload.first_name).to eq("Hernan")
               expect(applicant.reload.last_name).to eq("Crespo")
               expect(applicant.reload.affiliation_number).to eq("ISQCJQO")
@@ -256,8 +256,7 @@ describe "Agents can upload applicant list", js: true do
           let!(:applicant) do
             create(
               :applicant,
-              role: "demandeur", affiliation_number: "ISQCJQO",
-              address: "20 avenue de ségur 75007 Paris", last_name: "Crespa",
+              role: "demandeur", affiliation_number: "ISQCJQO", last_name: "Crespa",
               organisations: [other_org_from_other_department], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
@@ -277,8 +276,7 @@ describe "Agents can upload applicant list", js: true do
           let!(:applicant) do
             create(
               :applicant,
-              department_internal_id: "8383",
-              address: "20 avenue de ségur 75007 Paris", last_name: "Crespa",
+              department_internal_id: "8383", last_name: "Crespa",
               organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
@@ -301,8 +299,7 @@ describe "Agents can upload applicant list", js: true do
             let!(:applicant) do
               create(
                 :applicant,
-                department_internal_id: "8383",
-                address: "20 avenue de ségur 75007 Paris", last_name: "Crespa",
+                department_internal_id: "8383", last_name: "Crespa",
                 organisations: [other_org_from_same_department], rdv_solidarites_user_id: rdv_solidarites_user_id
               )
             end
@@ -321,7 +318,7 @@ describe "Agents can upload applicant list", js: true do
                 :css, "a[href=\"/organisations/#{organisation.id}/applicants/#{applicant.id}\"]"
               )
 
-              expect(applicant.reload.address).to eq("20 avenue de ségur 75007 Paris")
+              expect(applicant.reload.address).to eq("127 RUE DE GRENELLE 75007 PARIS")
               expect(applicant.reload.first_name).to eq("Hernan")
               expect(applicant.reload.last_name).to eq("Crespo")
               expect(applicant.reload.affiliation_number).to eq("ISQCJQO")
@@ -339,8 +336,7 @@ describe "Agents can upload applicant list", js: true do
           let!(:applicant) do
             create(
               :applicant,
-              department_internal_id: "8383",
-              address: "20 avenue de ségur 75007 Paris", last_name: "Crespa",
+              department_internal_id: "8383", last_name: "Crespa",
               organisations: [other_org_from_other_department], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
@@ -359,9 +355,8 @@ describe "Agents can upload applicant list", js: true do
         context "when the applicant is in the same org" do
           let!(:applicant) do
             create(
-              :applicant,
-              email: "hernan@crespo.com", address: "20 avenue de ségur 75007 Paris", first_name: "hernan",
-              organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
+              :applicant, email: "hernan@crespo.com", first_name: "hernan",
+                          organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
 
@@ -381,9 +376,9 @@ describe "Agents can upload applicant list", js: true do
         context "when the applicant is in another org" do
           let!(:applicant) do
             create(
-              :applicant,
-              email: "hernan@crespo.com", address: "20 avenue de ségur 75007 Paris", first_name: "hernan",
-              organisations: [other_org_from_other_department], rdv_solidarites_user_id: rdv_solidarites_user_id
+              :applicant, email: "hernan@crespo.com", first_name: "hernan",
+                          organisations: [other_org_from_other_department],
+                          rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
 
@@ -401,7 +396,7 @@ describe "Agents can upload applicant list", js: true do
               :css, "a[href=\"/organisations/#{organisation.id}/applicants/#{applicant.id}\"]"
             )
 
-            expect(applicant.reload.address).to eq("20 avenue de ségur 75007 Paris")
+            expect(applicant.reload.address).to eq("127 RUE DE GRENELLE 75007 PARIS")
             expect(applicant.reload.first_name).to eq("Hernan")
             expect(applicant.reload.last_name).to eq("Crespo")
             expect(applicant.reload.affiliation_number).to eq("ISQCJQO")
@@ -417,9 +412,8 @@ describe "Agents can upload applicant list", js: true do
         context "when the first name is not the same" do
           let!(:applicant) do
             create(
-              :applicant,
-              email: "hernan@crespo.com", address: "20 avenue de ségur 75007 Paris", first_name: "lionel",
-              organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
+              :applicant, email: "hernan@crespo.com", first_name: "lionel",
+                          organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
 
@@ -437,9 +431,8 @@ describe "Agents can upload applicant list", js: true do
         context "when the applicant is in the same org" do
           let!(:applicant) do
             create(
-              :applicant,
-              phone_number: "0620022002", address: "20 avenue de ségur 75007 Paris", first_name: "hernan",
-              organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
+              :applicant, phone_number: "0620022002", first_name: "hernan",
+                          organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
 
@@ -460,7 +453,7 @@ describe "Agents can upload applicant list", js: true do
           let!(:applicant) do
             create(
               :applicant,
-              phone_number: "0620022002", address: "20 avenue de ségur 75007 Paris", first_name: "hernan",
+              phone_number: "0620022002", first_name: "hernan",
               organisations: [other_org_from_other_department], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
@@ -479,7 +472,7 @@ describe "Agents can upload applicant list", js: true do
               :css, "a[href=\"/organisations/#{organisation.id}/applicants/#{applicant.id}\"]"
             )
 
-            expect(applicant.reload.address).to eq("20 avenue de ségur 75007 Paris")
+            expect(applicant.reload.address).to eq("127 RUE DE GRENELLE 75007 PARIS")
             expect(applicant.reload.first_name).to eq("Hernan")
             expect(applicant.reload.last_name).to eq("Crespo")
             expect(applicant.reload.affiliation_number).to eq("ISQCJQO")
@@ -496,7 +489,7 @@ describe "Agents can upload applicant list", js: true do
           let!(:applicant) do
             create(
               :applicant,
-              phone_number: "0620022002", address: "20 avenue de ségur 75007 Paris", first_name: "lionel",
+              phone_number: "0620022002", first_name: "lionel",
               organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
@@ -561,7 +554,7 @@ describe "Agents can upload applicant list", js: true do
 
       expect(page).to have_button("Inviter par SMS", disabled: false)
       expect(page).to have_button("Inviter par Email", disabled: false)
-      expect(page).to have_button("Générer courrier", disabled: true)
+      expect(page).to have_button("Générer courrier", disabled: false)
       expect(page).not_to have_button("Créer compte")
 
       applicant = Applicant.last
@@ -585,7 +578,7 @@ describe "Agents can upload applicant list", js: true do
       expect(page).to have_css("i.fas.fa-check")
       expect(page).not_to have_button("Inviter par SMS")
       expect(page).to have_button("Inviter par Email", disabled: false)
-      expect(page).to have_button("Générer courrier", disabled: true)
+      expect(page).to have_button("Générer courrier", disabled: false)
 
       invitation = Invitation.last
 
@@ -605,7 +598,7 @@ describe "Agents can upload applicant list", js: true do
       expect(page).not_to have_button("Inviter par SMS")
 
       expect(page).to have_button("Inviter par Email", disabled: false)
-      expect(page).to have_button("Générer courrier", disabled: true)
+      expect(page).to have_button("Générer courrier", disabled: false)
     end
 
     describe "Applicants matching" do
@@ -614,7 +607,7 @@ describe "Agents can upload applicant list", js: true do
           let!(:applicant) do
             create(
               :applicant,
-              nir: "180333147687266", address: "20 avenue de ségur 75007 Paris", last_name: "Crespa",
+              nir: "180333147687266", last_name: "Crespa",
               organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
@@ -636,7 +629,7 @@ describe "Agents can upload applicant list", js: true do
           let!(:applicant) do
             create(
               :applicant,
-              nir: "180333147687266", address: "20 avenue de ségur 75007 Paris", last_name: "Crespa",
+              nir: "180333147687266", last_name: "Crespa",
               organisations: [other_org_from_other_department], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
@@ -655,7 +648,7 @@ describe "Agents can upload applicant list", js: true do
               :css, "a[href=\"/departments/#{department.id}/applicants/#{applicant.id}\"]"
             )
 
-            expect(applicant.reload.address).to eq("20 avenue de ségur 75007 Paris")
+            expect(applicant.reload.address).to eq("127 RUE DE GRENELLE 75007 PARIS")
             expect(applicant.reload.first_name).to eq("Hernan")
             expect(applicant.reload.last_name).to eq("Crespo")
             expect(applicant.reload.affiliation_number).to eq("ISQCJQO")
@@ -674,8 +667,7 @@ describe "Agents can upload applicant list", js: true do
           let!(:applicant) do
             create(
               :applicant,
-              role: "demandeur", affiliation_number: "ISQCJQO",
-              address: "20 avenue de ségur 75007 Paris", last_name: "Crespa",
+              role: "demandeur", affiliation_number: "ISQCJQO", last_name: "Crespa",
               organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
@@ -698,8 +690,7 @@ describe "Agents can upload applicant list", js: true do
             let!(:applicant) do
               create(
                 :applicant,
-                role: "demandeur", affiliation_number: "ISQCJQO",
-                address: "20 avenue de ségur 75007 Paris", last_name: "Crespa",
+                role: "demandeur", affiliation_number: "ISQCJQO", last_name: "Crespa",
                 organisations: [other_org_from_same_department], rdv_solidarites_user_id: rdv_solidarites_user_id
               )
             end
@@ -718,7 +709,7 @@ describe "Agents can upload applicant list", js: true do
                 :css, "a[href=\"/departments/#{department.id}/applicants/#{applicant.id}\"]"
               )
 
-              expect(applicant.reload.address).to eq("20 avenue de ségur 75007 Paris")
+              expect(applicant.reload.address).to eq("127 RUE DE GRENELLE 75007 PARIS")
               expect(applicant.reload.first_name).to eq("Hernan")
               expect(applicant.reload.last_name).to eq("Crespo")
               expect(applicant.reload.affiliation_number).to eq("ISQCJQO")
@@ -736,8 +727,7 @@ describe "Agents can upload applicant list", js: true do
           let!(:applicant) do
             create(
               :applicant,
-              role: "demandeur", affiliation_number: "ISQCJQO",
-              address: "20 avenue de ségur 75007 Paris", last_name: "Crespa",
+              role: "demandeur", affiliation_number: "ISQCJQO", last_name: "Crespa",
               organisations: [other_org_from_other_department], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
@@ -757,8 +747,7 @@ describe "Agents can upload applicant list", js: true do
           let!(:applicant) do
             create(
               :applicant,
-              department_internal_id: "8383",
-              address: "20 avenue de ségur 75007 Paris", last_name: "Crespa",
+              department_internal_id: "8383", last_name: "Crespa",
               organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
@@ -781,8 +770,7 @@ describe "Agents can upload applicant list", js: true do
             let!(:applicant) do
               create(
                 :applicant,
-                department_internal_id: "8383",
-                address: "20 avenue de ségur 75007 Paris", last_name: "Crespa",
+                department_internal_id: "8383", last_name: "Crespa",
                 organisations: [other_org_from_same_department], rdv_solidarites_user_id: rdv_solidarites_user_id
               )
             end
@@ -801,7 +789,7 @@ describe "Agents can upload applicant list", js: true do
                 :css, "a[href=\"/departments/#{department.id}/applicants/#{applicant.id}\"]"
               )
 
-              expect(applicant.reload.address).to eq("20 avenue de ségur 75007 Paris")
+              expect(applicant.reload.address).to eq("127 RUE DE GRENELLE 75007 PARIS")
               expect(applicant.reload.first_name).to eq("Hernan")
               expect(applicant.reload.last_name).to eq("Crespo")
               expect(applicant.reload.affiliation_number).to eq("ISQCJQO")
@@ -819,8 +807,7 @@ describe "Agents can upload applicant list", js: true do
           let!(:applicant) do
             create(
               :applicant,
-              department_internal_id: "8383",
-              address: "20 avenue de ségur 75007 Paris", last_name: "Crespa",
+              department_internal_id: "8383", last_name: "Crespa",
               organisations: [other_org_from_other_department], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
@@ -839,9 +826,8 @@ describe "Agents can upload applicant list", js: true do
         context "when the applicant is in the same org" do
           let!(:applicant) do
             create(
-              :applicant,
-              email: "hernan@crespo.com", address: "20 avenue de ségur 75007 Paris", first_name: "hernan",
-              organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
+              :applicant, email: "hernan@crespo.com", first_name: "hernan",
+                          organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
 
@@ -861,9 +847,9 @@ describe "Agents can upload applicant list", js: true do
         context "when the applicant is in another org" do
           let!(:applicant) do
             create(
-              :applicant,
-              email: "hernan@crespo.com", address: "20 avenue de ségur 75007 Paris", first_name: "hernan",
-              organisations: [other_org_from_other_department], rdv_solidarites_user_id: rdv_solidarites_user_id
+              :applicant, email: "hernan@crespo.com", first_name: "hernan",
+                          organisations: [other_org_from_other_department],
+                          rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
 
@@ -881,7 +867,7 @@ describe "Agents can upload applicant list", js: true do
               :css, "a[href=\"/departments/#{department.id}/applicants/#{applicant.id}\"]"
             )
 
-            expect(applicant.reload.address).to eq("20 avenue de ségur 75007 Paris")
+            expect(applicant.reload.address).to eq("127 RUE DE GRENELLE 75007 PARIS")
             expect(applicant.reload.first_name).to eq("Hernan")
             expect(applicant.reload.last_name).to eq("Crespo")
             expect(applicant.reload.affiliation_number).to eq("ISQCJQO")
@@ -897,9 +883,8 @@ describe "Agents can upload applicant list", js: true do
         context "when the first name is not the same" do
           let!(:applicant) do
             create(
-              :applicant,
-              email: "hernan@crespo.com", address: "20 avenue de ségur 75007 Paris", first_name: "lionel",
-              organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
+              :applicant, email: "hernan@crespo.com", first_name: "lionel",
+                          organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
 
@@ -917,9 +902,8 @@ describe "Agents can upload applicant list", js: true do
         context "when the applicant is in the same org" do
           let!(:applicant) do
             create(
-              :applicant,
-              phone_number: "0620022002", address: "20 avenue de ségur 75007 Paris", first_name: "hernan",
-              organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
+              :applicant, phone_number: "0620022002", first_name: "hernan",
+                          organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
 
@@ -939,9 +923,9 @@ describe "Agents can upload applicant list", js: true do
         context "when the applicant is in another org" do
           let!(:applicant) do
             create(
-              :applicant,
-              phone_number: "0620022002", address: "20 avenue de ségur 75007 Paris", first_name: "hernan",
-              organisations: [other_org_from_other_department], rdv_solidarites_user_id: rdv_solidarites_user_id
+              :applicant, phone_number: "0620022002", first_name: "hernan",
+                          organisations: [other_org_from_other_department],
+                          rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
 
@@ -959,7 +943,7 @@ describe "Agents can upload applicant list", js: true do
               :css, "a[href=\"/departments/#{department.id}/applicants/#{applicant.id}\"]"
             )
 
-            expect(applicant.reload.address).to eq("20 avenue de ségur 75007 Paris")
+            expect(applicant.reload.address).to eq("127 RUE DE GRENELLE 75007 PARIS")
             expect(applicant.reload.first_name).to eq("Hernan")
             expect(applicant.reload.last_name).to eq("Crespo")
             expect(applicant.reload.affiliation_number).to eq("ISQCJQO")
@@ -975,9 +959,8 @@ describe "Agents can upload applicant list", js: true do
         context "when the first name is not the same" do
           let!(:applicant) do
             create(
-              :applicant,
-              phone_number: "0620022002", address: "20 avenue de ségur 75007 Paris", first_name: "lionel",
-              organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
+              :applicant, phone_number: "0620022002", first_name: "lionel",
+                          organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
 

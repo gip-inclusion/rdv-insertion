@@ -34,14 +34,12 @@ export default class Applicant {
     this.email = formattedAttributes.email;
     this.birthDate = formattedAttributes.birthDate;
     this.birthName = formattedAttributes.birthName;
-    // address is street name and street number
-    this.address = formattedAttributes.address;
-    // sometimes street number is separated from address
-    this.streetNumber = formattedAttributes.streetNumber;
-    this.streetType = formattedAttributes.streetType;
-    this.city = formattedAttributes.city;
-    this.postalCode = formattedAttributes.postalCode;
-    this.fullAddress = formattedAttributes.fullAddress || this.formatFullAddress();
+    this.addressFirstField = formattedAttributes.addressFirstField;
+    this.addressSecondField = formattedAttributes.addressSecondField;
+    this.addressThirdField = formattedAttributes.addressThirdField;
+    this.addressFourthField = formattedAttributes.addressFourthField;
+    this.addressFifthField = formattedAttributes.addressFifthField;
+    this.fullAddress = this.formatFullAddress();
     this.departmentInternalId = formattedAttributes.departmentInternalId;
     this.nir = formattedAttributes.nir;
     this.poleEmploiId = formattedAttributes.poleEmploiId;
@@ -166,11 +164,13 @@ export default class Applicant {
 
   formatFullAddress() {
     return (
-      (this.streetNumber ? `${this.streetNumber} ` : "") +
-      (this.streetType ? `${this.streetType} ` : "") +
-      (this.address ?? "") +
-      (this.postalCode ? ` ${this.postalCode}` : "") +
-      (this.city ? ` ${this.city}` : "")
+      (
+        (this.addressFirstField ? `${this.addressFirstField} ` : "") +
+        (this.addressSecondField ? `${this.addressSecondField} ` : "") +
+        (this.addressThirdField ? `${this.addressThirdField} ` : "") +
+        (this.addressFourthField ? `${this.addressFourthField} ` : "") +
+        (this.addressFifthField ?? "")
+      ).trim()
     );
   }
 

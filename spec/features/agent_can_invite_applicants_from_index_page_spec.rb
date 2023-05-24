@@ -21,7 +21,7 @@ describe "Agents can invite from index page", js: true do
   before do
     setup_agent_session(agent)
     stub_rdv_solidarites_invitation_requests(applicant.rdv_solidarites_user_id, rdv_solidarites_token)
-    stub_geo_api_request(applicant)
+    stub_geo_api_request(applicant.address)
   end
 
   context "when no invitations is sent" do
