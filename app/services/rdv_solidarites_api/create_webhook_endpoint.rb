@@ -14,6 +14,7 @@ module RdvSolidaritesApi
 
     def call
       request!
+      result.webhook_endpoint_id = rdv_solidarites_response_body["webhook_endpoint"]["id"]
     end
 
     private

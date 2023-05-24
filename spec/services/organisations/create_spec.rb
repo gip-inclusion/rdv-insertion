@@ -21,6 +21,9 @@ describe Organisations::Create, type: :service do
   let!(:agent_roles_count_before) { AgentRole.count }
 
   let(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
+  let!(:rdv_solidarites_session_credentials) do
+    { "client" => "someclient", "uid" => "janedoe@gouv.fr", "access_token" => "sometoken" }.symbolize_keys
+  end
 
   describe "#call" do
     before do
@@ -34,6 +37,8 @@ describe Organisations::Create, type: :service do
         .and_return(OpenStruct.new(success?: true, webhook_endpoint: nil))
       allow(RdvSolidaritesApi::UpdateOrganisation).to receive(:call)
         .and_return(OpenStruct.new(success?: true))
+      allow(rdv_solidarites_session).to receive(:to_h)
+        .and_return(rdv_solidarites_session_credentials)
     end
 
     it "is a success" do
