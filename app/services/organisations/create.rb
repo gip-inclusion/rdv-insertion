@@ -15,12 +15,22 @@ module Organisations
         upsert_rdv_solidarites_webhook_endpoint
         tag_rdv_solidarites_organisation
       end
+      trigger_rdv_solidarites_webhook_endpoint
     end
 
     private
 
     def upsert_rdv_solidarites_webhook_endpoint
+      # webhook_endpoint is upserted but not triggered because organisation is not persisted yet
       rdv_solidarites_webhook_endpoint.present? ? update_rdvs_webhook_endpoint : create_rdvs_webhook_endpoint
+    end
+
+    def trigger_rdv_solidarites_webhook_endpoint
+      RdvSolidaritesWebhooks::TriggerEndpointJob.perform_async(
+        rdv_solidarites_webhook_endpoint.id,
+        @organisation.rdv_solidarites_organisation_id,
+        @rdv_solidarites_session.to_h
+      )
     end
 
     def check_rdv_solidarites_organisation_id
