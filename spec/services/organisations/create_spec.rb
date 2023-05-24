@@ -14,8 +14,7 @@ describe Organisations::Create, type: :service do
                          name: nil, phone_number: nil, department: department)
   end
   let!(:organisation_from_rdvs) do
-    build(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
-                         name: "Nouvelle org", phone_number: "0102030405", department: department)
+    RdvSolidarites::Organisation.new(name: "Nouvelle org", phone_number: "0102030405")
   end
   let!(:agent) { create(:agent, email: "alain.sertion@departement.fr") }
   let!(:organisation_count_before) { Organisation.count }
@@ -33,6 +32,12 @@ describe Organisations::Create, type: :service do
         .and_return(OpenStruct.new(success?: true))
       allow(RdvSolidaritesApi::RetrieveWebhookEndpoint).to receive(:call)
         .and_return(OpenStruct.new(success?: true, webhook_endpoint: nil))
+      allow(RdvSolidaritesApi::UpdateOrganisation).to receive(:call)
+        .and_return(OpenStruct.new(success?: true))
+    end
+
+    it "is a success" do
+      is_a_success
     end
 
     it "tries to retrieve an organisation from rdvs" do
@@ -41,8 +46,9 @@ describe Organisations::Create, type: :service do
     end
 
     it "assigns attributes to the organisation" do
-      expect(organisation).to receive(:assign_attributes)
       subject
+      expect(organisation.reload.name).to eq("Nouvelle org")
+      expect(organisation.reload.phone_number).to eq("0102030405")
     end
 
     it "saves the organisation in db" do
@@ -67,10 +73,19 @@ describe Organisations::Create, type: :service do
       subject
     end
 
-    it "is a success" do
+    it "calls the update webhook endpoint service (for verticale attribute)" do
+      expect(RdvSolidaritesApi::UpdateOrganisation).to receive(:call).with(
+        hash_including(
+          {
+            organisation_attributes: hash_including(
+              {
+                "verticale" => "rdv_insertion"
+              }
+            )
+          }
+        )
+      )
       subject
-      expect(organisation.reload.name).to eq("Nouvelle org")
-      expect(organisation.reload.phone_number).to eq("0102030405")
     end
 
     context "when the organisation has no rdv solidarites id" do

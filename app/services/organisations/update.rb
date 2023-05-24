@@ -28,6 +28,7 @@ module Organisations
                      .slice(*Organisation::SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES)
                      .transform_values(&:presence)
                      .compact
+                     .merge({ "verticale" => "rdv_insertion" })
     end
 
     def update_rdv_solidarites_organisation

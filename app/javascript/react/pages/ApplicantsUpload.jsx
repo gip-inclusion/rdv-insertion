@@ -74,37 +74,31 @@ export default function ApplicantsUpload({
                 poleEmploiId: row[parameterizedColumnNames.pole_emploi_id_column],
                 role: row[parameterizedColumnNames.role_column],
                 title: row[parameterizedColumnNames.title_column],
-                // address is street name and street number
-                address:
-                  parameterizedColumnNames.address_column &&
-                  row[parameterizedColumnNames.address_column],
-                // sometimes street number is separated from address
-                streetNumber:
-                  parameterizedColumnNames.street_number_column &&
-                  row[parameterizedColumnNames.street_number_column],
-                // sometimes street type is separated from address
-                streetType:
-                  parameterizedColumnNames.street_type_column &&
-                  row[parameterizedColumnNames.street_type_column],
-                // fullAddress is address with postal code and city
-                fullAddress:
-                  parameterizedColumnNames.full_address_column &&
-                  row[parameterizedColumnNames.full_address_column],
+                addressFirstField:
+                  parameterizedColumnNames.address_first_field_column &&
+                  row[parameterizedColumnNames.address_first_field_column],
+                addressSecondField:
+                  parameterizedColumnNames.address_second_field_column &&
+                  row[parameterizedColumnNames.address_second_field_column],
+                addressThirdField:
+                  parameterizedColumnNames.address_third_field_column &&
+                  row[parameterizedColumnNames.address_third_field_column],
+                addressFourthField:
+                  parameterizedColumnNames.address_fourth_field_column &&
+                  row[parameterizedColumnNames.address_fourth_field_column],
+                addressFifthField:
+                  parameterizedColumnNames.address_fifth_field_column &&
+                  row[parameterizedColumnNames.address_fifth_field_column],
                 email:
                   parameterizedColumnNames.email_column &&
                   row[parameterizedColumnNames.email_column],
+                phoneNumber:
+                  parameterizedColumnNames.phone_number_column &&
+                  row[parameterizedColumnNames.phone_number_column],
                 birthDate:
                   parameterizedColumnNames.birth_date_column &&
                   row[parameterizedColumnNames.birth_date_column] &&
                   excelDateToString(row[parameterizedColumnNames.birth_date_column]),
-                city:
-                  parameterizedColumnNames.city_column && row[parameterizedColumnNames.city_column],
-                postalCode:
-                  parameterizedColumnNames.postal_code_column &&
-                  row[parameterizedColumnNames.postal_code_column],
-                phoneNumber:
-                  parameterizedColumnNames.phone_number_column &&
-                  row[parameterizedColumnNames.phone_number_column],
                 birthName:
                   parameterizedColumnNames.birth_name_column &&
                   row[parameterizedColumnNames.birth_name_column],

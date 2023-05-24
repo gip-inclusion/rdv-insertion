@@ -222,7 +222,8 @@ describe ApplicantsController do
     end
 
     context "when applicant is archived" do
-      let!(:applicant) { create(:applicant, archived_at: 2.days.ago, organisations: [organisation]) }
+      let!(:applicant) { create(:applicant, organisations: [organisation]) }
+      let!(:archive) { create(:archive, applicant: applicant, department: department) }
       let!(:show_params) { { id: applicant.id, organisation_id: organisation.id } }
 
       it "the applicant is displayed as archived" do
@@ -244,7 +245,7 @@ describe ApplicantsController do
 
       let!(:organisation) do
         create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
-                              department_id: department.id, configurations: [configuration, configuration2])
+                              configurations: [configuration, configuration2], department_id: department.id)
       end
 
       let!(:rdv_context) do
@@ -336,8 +337,11 @@ describe ApplicantsController do
           expect(response.body).not_to include("Email 📧")
         end
 
-        context "when the rdv is in the future" do
-          before { rdv_orientation1.update! starts_at: 2.days.from_now }
+        context "when the rdv is pending" do
+          before do
+            rdv_orientation1.update! starts_at: 2.days.from_now
+            participation.update! status: "unknown"
+          end
 
           it "shows the courrier generation button" do
             get :show, params: show_params
@@ -370,13 +374,9 @@ describe ApplicantsController do
       end
 
       context "when there is no matching configuration for a rdv_context" do
-        let!(:configuration) do
-          create(:configuration, motif_category: category_accompagnement, invitation_formats: %w[sms email])
-        end
-
         let!(:organisation) do
           create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
-                                department_id: department.id, configurations: [configuration])
+                                department_id: department.id, configurations: [configuration2])
         end
 
         let!(:rdv_context) do
@@ -422,10 +422,10 @@ describe ApplicantsController do
     let!(:archived_applicant) do
       create(
         :applicant,
-        organisations: [organisation], last_name: "Barthelemy", rdv_contexts: [rdv_context4],
-        archived_at: 2.days.ago
+        organisations: [organisation], last_name: "Barthelemy", rdv_contexts: [rdv_context4]
       )
     end
+    let!(:archive) { create(:archive, applicant: archived_applicant, department: department) }
     let!(:rdv_context4) { build(:rdv_context, motif_category: category_orientation, status: "invitation_pending") }
 
     let!(:index_params) { { organisation_id: organisation.id, motif_category: category_orientation } }

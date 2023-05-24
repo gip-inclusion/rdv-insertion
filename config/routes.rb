@@ -48,13 +48,15 @@ Rails.application.routes.draw do
     get :redirect, on: :collection
   end
 
-  resources :applicants, module: :applicants, only: [] do
-    resource :archivings, only: [:create, :destroy]
+  resources :rdv_contexts, module: :rdv_contexts, only: [] do
+    resource :closings, only: [:create, :destroy]
   end
 
   namespace :applicants do
     resources :searches, only: :create
   end
+
+  resources :archives, only: [:create, :destroy]
 
   namespace :organisations do
     resources :applicant_added_notifications, only: [:create]

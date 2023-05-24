@@ -15,6 +15,7 @@ export default function InvitationBlock({
   isDepartmentLevel,
   invitationFormats,
   status,
+  isArchived,
 }) {
   const [isLoading, setIsLoading] = useState({
     sms: false,
@@ -119,8 +120,9 @@ export default function InvitationBlock({
                   disabled={
                     isLoading.sms ||
                     !applicant.phone_number ||
-                    applicant.archived_at != null ||
-                    status === "rdv_pending"
+                    isArchived ||
+                    status === "rdv_pending" ||
+                    status === "closed"
                   }
                   className="btn btn-blue"
                   onClick={() => handleInvitationClick("sms")}
@@ -145,8 +147,9 @@ export default function InvitationBlock({
                   disabled={
                     isLoading.email ||
                     !applicant.email ||
-                    applicant.archived_at != null ||
-                    status === "rdv_pending"
+                    isArchived ||
+                    status === "rdv_pending" ||
+                    status === "closed"
                   }
                   className="btn btn-blue"
                   onClick={() => handleInvitationClick("email")}
@@ -171,8 +174,9 @@ export default function InvitationBlock({
                   disabled={
                     isLoading.postal ||
                     !applicant.address ||
-                    applicant.archived_at != null ||
-                    status === "rdv_pending"
+                    isArchived ||
+                    status === "rdv_pending" ||
+                    status === "closed"
                   }
                   className="btn btn-blue"
                   onClick={() => handleInvitationClick("postal")}

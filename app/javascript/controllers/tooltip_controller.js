@@ -104,6 +104,21 @@ export default class extends Controller {
     });
   }
 
+  closeRdvContextButton() {
+    tippy(this.element, {
+      content:
+        "Le statut du bénéficiaire dans ce contexte passera en «Dossier traité» et ses invitations seront désactivées.",
+      placement: "bottom",
+    });
+  }
+
+  reopenRdvContextButton() {
+    tippy(this.element, {
+      content: "Le bénéficiaire pourra de nouveau être invité et suivi dans ce contexte",
+      placement: "bottom",
+    });
+  }
+
   helpAddressAttribute() {
     tippy(this.element, {
       content() {
@@ -129,5 +144,16 @@ export default class extends Controller {
       },
       allowHTML: true,
     });
+  }
+
+  archivingDisabled() {
+    // the button is in a wrapper because we cannot set a tooltip on a disabled element
+    const archiveButton = document.getElementById("archive-button");
+    if (archiveButton.disabled) {
+      tippy(this.element, {
+        content:
+          "Vous devez appartenir à toutes les organisations auxquelles appartient le bénéficiaire au sein de votre département pour pouvoir l'archiver",
+      });
+    }
   }
 }

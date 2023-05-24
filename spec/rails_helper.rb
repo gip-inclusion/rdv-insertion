@@ -41,7 +41,18 @@ RSpec.configure do |config|
   config.include MotifCategoriesHelper
   config.include NirHelper
   config.include StubHelper
+  config.include UploadHelper
+  config.include DownloadHelper
+  config.include PdfHelper
   config.include ActiveSupport::Testing::TimeHelpers
+
+  ## Clear downloads
+  config.before(:each, js: true) do
+    clear_downloads
+  end
+  config.after(:each, js: true) do
+    clear_downloads
+  end
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false

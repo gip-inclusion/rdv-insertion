@@ -1,7 +1,7 @@
 class Motif < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [
-    :name, :deleted_at, :location_type, :name, :reservable_online, :rdv_solidarites_service_id, :collectif,
-    :follow_up
+    :deleted_at, :location_type, :name, :reservable_online, :rdv_solidarites_service_id, :collectif,
+    :follow_up, :instruction_for_rdv
   ].freeze
 
   enum location_type: { public_office: 0, phone: 1, home: 2 }

@@ -38,10 +38,10 @@ module StubHelper
       .to_return(status: 404)
   end
 
-  def stub_geo_api_request(applicant)
+  def stub_geo_api_request(address)
     stub_request(:get, RetrieveGeolocalisation::API_ADRESSE_URL).with(
       headers: { "Content-Type" => "application/json" },
-      query: { "q" => applicant.address }
+      query: { "q" => address }
     ).to_return(body: { "features" => [] }.to_json)
   end
 

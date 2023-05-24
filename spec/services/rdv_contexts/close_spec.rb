@@ -1,20 +1,13 @@
-describe Applicants::Archive, type: :service do
-  subject do
-    described_class.call(
-      rdv_solidarites_session: rdv_solidarites_session,
-      applicant: applicant, archiving_reason: archiving_reason
-    )
-  end
+describe RdvContexts::Close, type: :service do
+  subject { described_class.call(rdv_context: rdv_context) }
 
-  let!(:applicant) { create(:applicant) }
-  let(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
-  let!(:archiving_reason) { "some reason" }
-  let!(:archived_at) { Time.zone.now }
-  let!(:invitation1) { create(:invitation, applicant: applicant) }
-  let!(:invitation2) { create(:invitation, applicant: applicant) }
+  let!(:rdv_context) { create(:rdv_context) }
+  let!(:invitation1) { create(:invitation, rdv_context: rdv_context) }
+  let!(:invitation2) { create(:invitation, rdv_context: rdv_context) }
 
   describe "#call" do
     before do
+      travel_to(Time.zone.parse("2023-05-04 12:30"))
       allow(InvalidateInvitationJob).to receive(:perform_async)
     end
 
@@ -22,14 +15,9 @@ describe Applicants::Archive, type: :service do
       expect(subject.success?).to eq(true)
     end
 
-    it "change the archived_at value" do
+    it "saves the closed_at date" do
       subject
-      expect(applicant.reload.archived_at.to_date).to eq(archived_at.to_date)
-    end
-
-    it "saves the archiving_reason" do
-      subject
-      expect(applicant.reload.archiving_reason).to eq(archiving_reason)
+      expect(rdv_context.closed_at.strftime("%d/%m/%Y")).to eq("04/05/2023")
     end
 
     it "calls the InvalidateInvitationJob for the applicants invitations" do
@@ -40,9 +28,9 @@ describe Applicants::Archive, type: :service do
 
     context "when the applicant cannot be updated" do
       before do
-        allow(applicant).to receive(:save)
+        allow(rdv_context).to receive(:save)
           .and_return(false)
-        allow(applicant).to receive_message_chain(:errors, :full_messages, :to_sentence)
+        allow(rdv_context).to receive_message_chain(:errors, :full_messages, :to_sentence)
           .and_return("some error")
       end
 

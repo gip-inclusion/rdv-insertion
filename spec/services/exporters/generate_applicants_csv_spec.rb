@@ -5,11 +5,9 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
   let!(:timestamp) { now.to_i }
   let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation") }
   let!(:department) { create(:department, name: "Drôme", number: "26") }
-  let!(:organisation) do
-    create(:organisation, configurations: [configuration], name: "Drome RSA", department: department)
-  end
-  let!(:configuration) { create(:configuration, motif_category: motif_category) }
+  let!(:organisation) { create(:organisation, name: "Drome RSA", department: department) }
   let!(:structure) { organisation }
+  let!(:configuration) { create(:configuration, organisation: organisation, motif_category: motif_category) }
   let!(:nir) { generate_random_nir }
   let!(:applicant1) do
     create(
@@ -161,9 +159,9 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
           expect(csv).to include("25/05/2022;Oui;Statut du RDV à préciser;Oui;25/05/2022") # orientation date
         end
 
-        it "displays the archiving infos" do
-          expect(csv).to include("25/05/2022;\"\"") # archiving status
-          expect(csv).to include("25/05/2022;\"\";;") # archiving reason
+        it "displays the archive infos" do
+          expect(csv).to include("25/05/2022;\"\"") # archive status
+          expect(csv).to include("25/05/2022;\"\";;") # archive reason
         end
 
         it "displays the organisation infos" do
@@ -175,47 +173,27 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
           let!(:applicant1) do
             create(
               :applicant,
-              archived_at: "20/06/2022",
-              archiving_reason: "test",
-              organisations: [organisation]
+              organisations: [organisation],
+              archives: [archive]
             )
           end
-          let!(:csv) { subject.csv }
+          let!(:archive) do
+            create(
+              :archive,
+              created_at: Time.zone.parse("2022-06-20"),
+              department: department, archiving_reason: "test"
+            )
+          end
 
-          it "displays the archiving infos" do
-            expect(csv).to include("20/06/2022") # archiving status
-            expect(csv).to include("20/06/2022;test") # archiving reason
+          it "displays the archive infos" do
+            expect(subject.csv).to include("20/06/2022") # archive status
+            expect(subject.csv).to include("20/06/2022;test") # archive reason
           end
 
           it "does displays the archived status rather than the rdv_context status" do
-            expect(csv).not_to include("Statut du RDV à préciser")
-            expect(csv).to include("Archivé")
+            expect(subject.csv).not_to include("Statut du RDV à préciser")
+            expect(subject.csv).to include("Archivé")
           end
-        end
-      end
-
-      context "when no structure is passed" do
-        let!(:structure) { nil }
-        let!(:rdv_context) do
-          create(
-            :rdv_context, participations: [], invitations: [first_invitation, last_invitation],
-                          motif_category: motif_category,
-                          applicant: applicant1, status: "invitation_pending"
-          )
-        end
-
-        it "is a success" do
-          expect(subject.success?).to eq(true)
-        end
-
-        it "generates a filename" do
-          expect(subject.filename).to eq("Export_beneficiaires_#{timestamp}.csv")
-        end
-
-        it "does not displays 'délai dépassé' warnings" do
-          csv = subject.csv
-          expect(csv).to include("Invitation en attente de réponse") # rdv_context status
-          expect(csv).not_to include("(Délai dépassé)")
         end
       end
 

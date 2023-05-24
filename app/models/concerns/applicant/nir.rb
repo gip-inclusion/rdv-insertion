@@ -24,6 +24,6 @@ module Applicant::Nir
   end
 
   def nir_sum_checked?
-    NirHelper.nir_key(nir) == nir.last(2).to_i
+    NirHelper.nir_key(nir) == nir.last(2)
   end
 end

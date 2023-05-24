@@ -16,6 +16,7 @@ class Applicant < ApplicationRecord
   include HasParticipationsToRdvs
   include Applicant::TextHelper
   include Applicant::Nir
+  include Applicant::Archivable
 
   attr_accessor :skip_uniqueness_validations
 
@@ -28,6 +29,7 @@ class Applicant < ApplicationRecord
   has_many :rdv_contexts, dependent: :destroy
   has_many :invitations, dependent: :destroy
   has_many :participations, dependent: :destroy
+  has_many :archives, dependent: :destroy
 
   has_many :rdvs, through: :participations
   has_many :notifications, through: :participations
@@ -47,7 +49,6 @@ class Applicant < ApplicationRecord
   enum title: { monsieur: 0, madame: 1 }
 
   scope :active, -> { where(deleted_at: nil) }
-  scope :archived, ->(archived = true) { archived ? where.not(archived_at: nil) : where(archived_at: nil) }
   scope :without_rdv_contexts, lambda { |motif_categories|
     where.not(id: joins(:rdv_contexts).where(rdv_contexts: { motif_category: motif_categories }).ids)
   }
@@ -88,16 +89,8 @@ class Applicant < ApplicationRecord
     deleted_at.present?
   end
 
-  def inactive?
-    archived? || deleted?
-  end
-
   def can_be_invited_through?(invitation_format)
     send(REQUIRED_ATTRIBUTES_FOR_INVITATION_FORMATS[invitation_format]).present?
-  end
-
-  def archived?
-    archived_at.present?
   end
 
   def soft_delete
@@ -120,7 +113,8 @@ class Applicant < ApplicationRecord
       invitations: invitations,
       organisations: organisations,
       rdv_contexts: rdv_contexts,
-      agents: agents
+      agents: agents,
+      archives: archives
     )
   end
 

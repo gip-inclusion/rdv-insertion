@@ -10,13 +10,13 @@ class MessagesConfigurationsController < ApplicationController
   def show; end
 
   def new
-    @messages_configuration = MessagesConfiguration.new(organisations: [@organisation])
+    @messages_configuration = MessagesConfiguration.new(organisation: @organisation)
   end
 
   def edit; end
 
   def create
-    @messages_configuration = MessagesConfiguration.new(organisations: [@organisation])
+    @messages_configuration = MessagesConfiguration.new(organisation: @organisation)
     @messages_configuration.assign_attributes(**formatted_params)
     if @messages_configuration.save
       flash.now[:success] = "Les réglages ont été modifiés avec succès"
@@ -45,9 +45,9 @@ class MessagesConfigurationsController < ApplicationController
   end
 
   def formatted_params
-    # we nullify some blank params for unicity exceptions (ActiveRecord::RecordNotUnique) not to raise
+    # we nullify some blank params
     messages_configuration_params.to_h do |k, v|
-      [k, k.in?([:sms_sender_name]) ? v.presence : v]
+      [k, k.in?([:sms_sender_name, :letter_sender_name, :sender_city]) ? v.presence : v]
     end
   end
 

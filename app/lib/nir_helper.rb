@@ -8,7 +8,8 @@ module NirHelper
     end
 
     def nir_key(nir)
-      97 - (nir.first(13).to_i % 97)
+      key = 97 - (nir.first(13).to_i % 97)
+      key.to_s.length == 2 ? key.to_s : "0#{key}"
     end
   end
 end

@@ -14,7 +14,7 @@ module Applicants
         .active
         .where(id: search_in_all_applicants.ids + search_in_department_organisations.ids)
         .preload(
-          :rdvs, :agents,
+          :rdvs, :agents, :archives,
           invitations: :rdv_context,
           rdv_contexts: [:participations, :motif_category],
           organisations: [:motif_categories, :department, :configurations]

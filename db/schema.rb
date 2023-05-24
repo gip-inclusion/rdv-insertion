@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_27_122751) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_17_100211) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -66,10 +66,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_27_122751) do
     t.date "birth_date"
     t.date "rights_opening_date"
     t.string "birth_name"
-    t.string "archiving_reason"
     t.datetime "deleted_at"
     t.datetime "last_webhook_update_received_at"
-    t.datetime "archived_at"
     t.string "nir"
     t.string "pole_emploi_id"
     t.index ["department_internal_id"], name: "index_applicants_on_department_internal_id"
@@ -86,6 +84,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_27_122751) do
     t.index ["organisation_id", "applicant_id"], name: "index_applicants_orgas_on_orga_id_and_applicant_id", unique: true
   end
 
+  create_table "archives", force: :cascade do |t|
+    t.bigint "department_id", null: false
+    t.bigint "applicant_id", null: false
+    t.string "archiving_reason"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["applicant_id"], name: "index_archives_on_applicant_id"
+    t.index ["department_id"], name: "index_archives_on_department_id"
+  end
+
   create_table "configurations", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -96,14 +104,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_27_122751) do
     t.boolean "rdv_with_referents", default: false
     t.bigint "motif_category_id"
     t.bigint "file_configuration_id"
+    t.bigint "organisation_id"
     t.index ["file_configuration_id"], name: "index_configurations_on_file_configuration_id"
     t.index ["motif_category_id"], name: "index_configurations_on_motif_category_id"
-  end
-
-  create_table "configurations_organisations", id: false, force: :cascade do |t|
-    t.bigint "organisation_id", null: false
-    t.bigint "configuration_id", null: false
-    t.index ["organisation_id", "configuration_id"], name: "index_config_orgas_on_organisation_id_and_configuration_id", unique: true
+    t.index ["organisation_id"], name: "index_configurations_on_organisation_id"
   end
 
   create_table "departments", force: :cascade do |t|
@@ -131,11 +135,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_27_122751) do
     t.string "phone_number_column"
     t.string "birth_date_column"
     t.string "birth_name_column"
-    t.string "street_number_column"
-    t.string "street_type_column"
-    t.string "address_column"
-    t.string "postal_code_column"
-    t.string "city_column"
+    t.string "address_first_field_column"
+    t.string "address_second_field_column"
+    t.string "address_third_field_column"
+    t.string "address_fourth_field_column"
+    t.string "address_fifth_field_column"
     t.string "affiliation_number_column"
     t.string "pole_emploi_id_column"
     t.string "nir_column"
@@ -197,6 +201,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_27_122751) do
     t.boolean "display_europe_logos", default: false
     t.string "sms_sender_name"
     t.boolean "display_department_logo", default: true
+    t.bigint "organisation_id"
+    t.index ["organisation_id"], name: "index_messages_configurations_on_organisation_id"
   end
 
   create_table "motif_categories", force: :cascade do |t|
@@ -226,6 +232,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_27_122751) do
     t.datetime "updated_at", null: false
     t.boolean "follow_up", default: false
     t.bigint "motif_category_id"
+    t.text "instruction_for_rdv", default: ""
     t.index ["motif_category_id"], name: "index_motifs_on_motif_category_id"
     t.index ["organisation_id"], name: "index_motifs_on_organisation_id"
     t.index ["rdv_solidarites_motif_id"], name: "index_motifs_on_rdv_solidarites_motif_id", unique: true
@@ -250,13 +257,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_27_122751) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "department_id"
-    t.bigint "messages_configuration_id"
     t.datetime "last_webhook_update_received_at"
     t.string "slug"
     t.boolean "independent_from_cd", default: false
     t.string "logo_filename"
     t.index ["department_id"], name: "index_organisations_on_department_id"
-    t.index ["messages_configuration_id"], name: "index_organisations_on_messages_configuration_id"
     t.index ["rdv_solidarites_organisation_id"], name: "index_organisations_on_rdv_solidarites_organisation_id", unique: true
   end
 
@@ -274,6 +279,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_27_122751) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "rdv_context_id"
+    t.string "created_by", null: false
     t.index ["applicant_id", "rdv_id"], name: "index_participations_on_applicant_id_and_rdv_id", unique: true
     t.index ["rdv_context_id"], name: "index_participations_on_rdv_context_id"
     t.index ["status"], name: "index_participations_on_status"
@@ -285,6 +291,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_27_122751) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "motif_category_id"
+    t.datetime "closed_at"
     t.index ["applicant_id"], name: "index_rdv_contexts_on_applicant_id"
     t.index ["motif_category_id"], name: "index_rdv_contexts_on_motif_category_id"
     t.index ["status"], name: "index_rdv_contexts_on_status"
@@ -346,11 +353,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_27_122751) do
     t.string "rdv_purpose"
     t.string "applicant_designation"
     t.string "rdv_subject"
-    t.boolean "display_mandatory_warning"
-    t.boolean "display_punishable_warning"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "custom_sentence"
+    t.boolean "display_mandatory_warning", default: false
+    t.text "punishable_warning", default: "", null: false
   end
 
   create_table "webhook_endpoints", force: :cascade do |t|
@@ -373,18 +380,21 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_27_122751) do
 
   add_foreign_key "agent_roles", "agents"
   add_foreign_key "agent_roles", "organisations"
+  add_foreign_key "archives", "applicants"
+  add_foreign_key "archives", "departments"
   add_foreign_key "configurations", "file_configurations"
   add_foreign_key "configurations", "motif_categories"
+  add_foreign_key "configurations", "organisations"
   add_foreign_key "invitations", "applicants"
   add_foreign_key "invitations", "departments"
   add_foreign_key "invitations", "rdv_contexts"
   add_foreign_key "lieux", "organisations"
+  add_foreign_key "messages_configurations", "organisations"
   add_foreign_key "motif_categories", "templates"
   add_foreign_key "motifs", "motif_categories"
   add_foreign_key "motifs", "organisations"
   add_foreign_key "notifications", "participations"
   add_foreign_key "organisations", "departments"
-  add_foreign_key "organisations", "messages_configurations"
   add_foreign_key "participations", "rdv_contexts"
   add_foreign_key "rdv_contexts", "applicants"
   add_foreign_key "rdv_contexts", "motif_categories"

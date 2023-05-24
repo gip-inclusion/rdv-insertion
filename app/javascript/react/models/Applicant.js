@@ -9,6 +9,7 @@ const ROLES = {
 };
 
 const TITLES = {
+  m: "monsieur",
   mr: "monsieur",
   mme: "madame",
 };
@@ -33,14 +34,12 @@ export default class Applicant {
     this.email = formattedAttributes.email;
     this.birthDate = formattedAttributes.birthDate;
     this.birthName = formattedAttributes.birthName;
-    // address is street name and street number
-    this.address = formattedAttributes.address;
-    // sometimes street number is separated from address
-    this.streetNumber = formattedAttributes.streetNumber;
-    this.streetType = formattedAttributes.streetType;
-    this.city = formattedAttributes.city;
-    this.postalCode = formattedAttributes.postalCode;
-    this.fullAddress = formattedAttributes.fullAddress || this.formatFullAddress();
+    this.addressFirstField = formattedAttributes.addressFirstField;
+    this.addressSecondField = formattedAttributes.addressSecondField;
+    this.addressThirdField = formattedAttributes.addressThirdField;
+    this.addressFourthField = formattedAttributes.addressFourthField;
+    this.addressFifthField = formattedAttributes.addressFifthField;
+    this.fullAddress = this.formatFullAddress();
     this.departmentInternalId = formattedAttributes.departmentInternalId;
     this.nir = formattedAttributes.nir;
     this.poleEmploiId = formattedAttributes.poleEmploiId;
@@ -108,8 +107,7 @@ export default class Applicant {
     this.createdAt = upToDateApplicant.created_at;
     this.invitedAt = upToDateApplicant.invited_at;
     this.id = upToDateApplicant.id;
-    this.isArchived = upToDateApplicant.archived_at != null;
-    this.archiving_reason = upToDateApplicant.archiving_reason;
+    this.archives = upToDateApplicant.archives;
     this.organisations = upToDateApplicant.organisations;
     // we assign a current organisation when we are in the context of a department
     this.currentOrganisation ||= upToDateApplicant.organisations.find(
@@ -169,11 +167,13 @@ export default class Applicant {
 
   formatFullAddress() {
     return (
-      (this.streetNumber ? `${this.streetNumber} ` : "") +
-      (this.streetType ? `${this.streetType} ` : "") +
-      (this.address ?? "") +
-      (this.postalCode ? ` ${this.postalCode}` : "") +
-      (this.city ? ` ${this.city}` : "")
+      (
+        (this.addressFirstField ? `${this.addressFirstField} ` : "") +
+        (this.addressSecondField ? `${this.addressSecondField} ` : "") +
+        (this.addressThirdField ? `${this.addressThirdField} ` : "") +
+        (this.addressFourthField ? `${this.addressFourthField} ` : "") +
+        (this.addressFifthField ?? "")
+      ).trim()
     );
   }
 
@@ -301,6 +301,14 @@ export default class Applicant {
     );
   }
 
+  archiveInCurrentDepartment() {
+    return this.archives.find((archive) => archive.department_id === this.department.id);
+  }
+
+  isArchivedInCurrentDepartment() {
+    return this.archives && this.archiveInCurrentDepartment();
+  }
+
   generateUid() {
     // Base64 encoded "departmentNumber - affiliationNumber - role"
 
@@ -316,7 +324,7 @@ export default class Applicant {
       title: this.title,
       last_name: this.lastName,
       first_name: this.firstName,
-      ...(this.address && { address: this.fullAddress }),
+      ...(this.fullAddress && { address: this.fullAddress }),
       ...(this.role && { role: this.role }),
       ...(this.affiliationNumber && { affiliation_number: this.affiliationNumber }),
       ...(this.phoneNumber && { phone_number: this.phoneNumber }),

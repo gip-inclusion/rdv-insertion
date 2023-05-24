@@ -9,10 +9,7 @@ describe Applicants::Save, type: :service do
   let!(:rdv_solidarites_organisation_id) { 1010 }
   let!(:rdv_solidarites_user_id) { 2020 }
   let!(:organisation) do
-    create(
-      :organisation,
-      configurations: [configuration], rdv_solidarites_organisation_id: rdv_solidarites_organisation_id
-    )
+    create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id)
   end
   let!(:applicant_attributes) do
     {
@@ -30,7 +27,7 @@ describe Applicants::Save, type: :service do
   end
 
   let!(:motif_category) { create(:motif_category) }
-  let!(:configuration) { create(:configuration, motif_category: motif_category) }
+  let!(:configuration) { create(:configuration, organisation: organisation, motif_category: motif_category) }
 
   let!(:applicant) do
     create(:applicant, applicant_attributes.merge(organisations: [organisation], rdv_solidarites_user_id: nil))
