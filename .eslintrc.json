@@ -20,7 +20,6 @@
     "no-param-reassign": "off",
     "class-methods-use-this": "off",
     "no-nested-ternary": "off",
-    "no-use-before-define": "off",
-    "import/no-cycle": "off"
+    "no-use-before-define": "off"
   }
 }
