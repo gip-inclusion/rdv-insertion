@@ -35,6 +35,7 @@ yonne = Department.create!(
   pronoun: "l'",
 )
 
+# --------------------------------------------------------------------------------------------------------------------
 puts "Creating motif categories..."
 orientation_category = MotifCategory.create!(
   short_name: "rsa_orientation", name: "RSA orientation",
@@ -212,7 +213,7 @@ MotifCategory.create!(
 )
 
 # --------------------------------------------------------------------------------------------------------------------
-puts "Creating configurations and responsible..."
+puts "Creating file configurations..."
 file_config_drome = FileConfiguration.create(
   sheet_name: "ENTRETIENS PHYSIQUES",
   address_first_field_column: "Adresse",
@@ -226,22 +227,6 @@ file_config_drome = FileConfiguration.create(
   phone_number_column: "N° Téléphones",
   title_column: "Civilité",
   department_internal_id_column: "ID Iodas"
-)
-
-drome_orientation_config = Configuration.create!(
-  file_configuration: file_config_drome,
-  convene_applicant: false,
-  invitation_formats: ["sms", "email", "postal"],
-  motif_category: orientation_category,
-  number_of_days_before_action_required: 10
-)
-
-drome_accompagnement_config = Configuration.create!(
-  file_configuration: file_config_drome,
-  convene_applicant: false,
-  invitation_formats: ["sms", "email", "postal"],
-  motif_category: accompagnement_category,
-  number_of_days_before_action_required: 10
 )
 
 file_config_yonne = FileConfiguration.create(
@@ -258,23 +243,32 @@ file_config_yonne = FileConfiguration.create(
   department_internal_id_column: "Code individu Iodas"
 )
 
-yonne_orientation_config = Configuration.create!(
-  file_configuration: file_config_yonne,
-  convene_applicant: true,
-  invitation_formats: [],
-  motif_category: orientation_category,
-  number_of_days_before_action_required: 10
-)
-
 # --------------------------------------------------------------------------------------------------------------------
-puts "Creating organisations..."
+puts "Creating organisations and configurations..."
 drome1_organisation = Organisation.create!(
   name: "Plateforme mutualisée d'orientation",
   phone_number: "0475796991",
   rdv_solidarites_organisation_id: 1,
   # rdv_solidarites_organisation_id: vérifier l'id de l'organisation correspondante sur RDV-Solidarites
-  department_id: drome.id,
-  configuration_ids: [drome_orientation_config.id, drome_accompagnement_config.id],
+  department_id: drome.id
+)
+
+Configuration.create!(
+  file_configuration: file_config_drome,
+  convene_applicant: false,
+  invitation_formats: ["sms", "email", "postal"],
+  motif_category: orientation_category,
+  number_of_days_before_action_required: 10,
+  organisation: drome1_organisation
+)
+
+Configuration.create!(
+  file_configuration: file_config_drome,
+  convene_applicant: false,
+  invitation_formats: ["sms", "email", "postal"],
+  motif_category: accompagnement_category,
+  number_of_days_before_action_required: 10,
+  organisation: drome1_organisation
 )
 
 MessagesConfiguration.create!(
@@ -290,8 +284,25 @@ drome2_organisation = Organisation.create!(
   phone_number: "0101010102",
   rdv_solidarites_organisation_id: 2,
   # rdv_solidarites_organisation_id: vérifier l'id de l'organisation correspondante sur RDV-Solidarites
-  department_id: drome.id,
-  configuration_ids: [drome_orientation_config.id, drome_accompagnement_config.id],
+  department_id: drome.id
+)
+
+Configuration.create!(
+  file_configuration: file_config_drome,
+  convene_applicant: false,
+  invitation_formats: ["sms", "email", "postal"],
+  motif_category: orientation_category,
+  number_of_days_before_action_required: 10,
+  organisation: drome2_organisation
+)
+
+Configuration.create!(
+  file_configuration: file_config_drome,
+  convene_applicant: false,
+  invitation_formats: ["sms", "email", "postal"],
+  motif_category: accompagnement_category,
+  number_of_days_before_action_required: 10,
+  organisation: drome2_organisation
 )
 
 MessagesConfiguration.create!(
@@ -307,8 +318,16 @@ yonne_organisation = Organisation.create!(
   phone_number: "0303030303",
   rdv_solidarites_organisation_id: 3,
   # rdv_solidarites_organisation_id: vérifier l'id de l'organisation correspondante sur RDV-Solidarites
-  department_id: yonne.id,
-  configuration_ids: [yonne_orientation_config.id],
+  department_id: yonne.id
+)
+
+Configuration.create!(
+  file_configuration: file_config_yonne,
+  convene_applicant: true,
+  invitation_formats: [],
+  motif_category: orientation_category,
+  number_of_days_before_action_required: 10,
+  organisation: yonne_organisation
 )
 
 MessagesConfiguration.create!(
@@ -319,6 +338,8 @@ MessagesConfiguration.create!(
   organisation: yonne_organisation
 )
 
+# --------------------------------------------------------------------------------------------------------------------
+puts "Creating agent and motifs..."
 # Faking Webhooks entries (for avoiding resending them from rdv solidarites manually), update ids from rdv-s if rdv solidarite seed is changing
 
 agent = Agent.create!(

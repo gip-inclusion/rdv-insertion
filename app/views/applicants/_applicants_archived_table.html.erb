@@ -9,16 +9,16 @@
     <th scope="col"></th>
   </thead>
   <tbody class="align-middle">
-    <% @archives.each do |archive| %>
+    <% @applicants.each do |applicant| %>
       <tr class="table-danger">
-        <td><%= display_attribute archive.applicant_last_name %></td>
-        <td><%= display_attribute archive.applicant_first_name %></td>
-        <td><%= display_attribute format_date(archive.applicant_first_invitation_relative_to_last_participation_sent_at) %></td>
-        <td><%= display_attribute(format_date(archive.applicant_last_invitation_sent_at)) %></td>
-        <td><%= display_attribute format_date(archive.created_at) %></td>
-        <td><%= display_attribute archive.archiving_reason %></td>
+        <td><%= display_attribute applicant.last_name %></td>
+        <td><%= display_attribute applicant.first_name %></td>
+        <td><%= display_attribute format_date(applicant.first_invitation_relative_to_last_participation_sent_at) %></td>
+        <td><%= display_attribute(format_date(applicant.last_invitation_sent_at)) %></td>
+        <td><%= display_attribute format_date(applicant.archive_for(@department.id).created_at) %></td>
+        <td><%= display_attribute applicant.archive_for(@department.id).archiving_reason %></td>
         <td class="padding-left-15">
-          <%= link_to compute_show_path(archive.applicant, @organisation, @department) do %>
+          <%= link_to compute_show_path(applicant, @organisation, @department) do %>
             <button class="btn btn-blue">Gérer</button>
           <% end %>
         </td>
