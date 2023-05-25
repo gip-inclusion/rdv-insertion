@@ -5,7 +5,7 @@ module Applicants
     end
 
     def call
-      validate_uid_uniqueness_inside_department if @applicant.uid.present?
+      validate_uid_uniqueness_inside_department if @applicant.affiliation_number? && @applicant.role?
       validate_department_internal_id_uniqueness if @applicant.department_internal_id?
       validate_email_and_first_name_uniquess if @applicant.email?
       validate_phone_number_and_first_name_uniqueness if @applicant.phone_number?
@@ -49,7 +49,9 @@ module Applicants
 
     def applicants_with_same_uid
       @applicants_with_same_uid ||=
-        applicants_from_same_departments.where(uid: @applicant.uid) - [@applicant]
+        applicants_from_same_departments.where(
+          affiliation_number: @applicant.affiliation_number, role: @applicant.role
+        ) - [@applicant]
     end
 
     def applicants_with_same_department_internal_id
@@ -67,7 +69,7 @@ module Applicants
 
     def applicants_with_same_phone_number_and_first_name
       @applicants_with_same_phone_number_and_first_name ||=
-        Applicant.active.where(phone_number: @applicant.phone_number).select do |applicant|
+        Applicant.active.where(phone_number: @applicant.phone_number_formatted).select do |applicant|
           applicant.id != @applicant.id &&
             applicant.first_name.split.first.downcase == @applicant.first_name.split.first.downcase
         end

@@ -9,8 +9,8 @@ module Applicants
     def call
       Applicant.transaction do
         assign_organisation
-        save_record!(@applicant)
         validate_applicant!
+        save_record!(@applicant)
         create_rdv_contexts
         upsert_rdv_solidarites_user
         assign_rdv_solidarites_user_id unless @applicant.rdv_solidarites_user_id?

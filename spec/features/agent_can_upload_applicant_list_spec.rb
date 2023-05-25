@@ -299,7 +299,9 @@ describe "Agents can upload applicant list", js: true do
               # it did not add the applicant
               expect(page).to have_content("Ajouter à cette organisation")
               expect(page).not_to have_css("i.fas.fa-link")
-              expect(page).to have_content("La personne #{applicant.id} correspond mais n'a pas le même NIR")
+              expect(page).to have_content(
+                "Le bénéficiaire #{applicant.id} a les mêmes attributs mais un nir différent"
+              )
             end
           end
         end
@@ -460,104 +462,6 @@ describe "Agents can upload applicant list", js: true do
             expect(applicant.reload.department_internal_id).to eq("8383")
           end
         end
-
-        context "when the first name is not the same" do
-          let!(:applicant) do
-            create(
-              :applicant,
-              email: "hernan@crespo.com", address: "20 avenue de ségur 75007 Paris", first_name: "lionel",
-              last_name: "crespo", role: nil,
-              organisations: [other_org_from_other_department], rdv_solidarites_user_id: rdv_solidarites_user_id
-            )
-          end
-
-          it "offers a choice to create or to update the applicant" do
-            visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
-
-            attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
-
-            expect(page).to have_content("Créer compte")
-
-            click_button("Créer compte")
-
-            expect(page).to have_button("C'est la même personne")
-            expect(page).to have_button("C'est une autre personne")
-
-            click_button("Annuler")
-
-            # it does not do anything
-            expect(Applicant.count).to eq(1)
-            expect(applicant.reload.first_name).to eq("lionel")
-          end
-
-          context "when we update the existing applicant" do
-            it "updates the applicant" do
-              visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
-
-              attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
-
-              expect(page).to have_content("Créer compte")
-
-              click_button("Créer compte")
-
-              expect(page).to have_button("C'est la même personne")
-              click_button("C'est la même personne")
-
-              expect(page).to have_css("i.fas.fa-link")
-              expect(page).to have_selector(
-                :css, "a[href=\"/organisations/#{organisation.id}/applicants/#{applicant.id}\"]"
-              )
-
-              expect(page).to have_content("Hernan")
-              expect(page).to have_content("180333147687266")
-
-              expect(Applicant.count).to eq(1)
-              expect(applicant.reload.first_name).to eq("Hernan")
-              expect(applicant.reload.nir).to eq("180333147687266")
-            end
-          end
-
-          context "when we create a new applicant" do
-            before { stub_rdv_solidarites_create_user("some-id") }
-
-            it "creates an applicant" do
-              visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
-
-              attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
-
-              expect(page).to have_content("Créer compte")
-
-              click_button("Créer compte")
-
-              expect(page).to have_button("C'est une autre personne")
-              click_button("C'est une autre personne")
-
-              expect(page).to have_content("Hernan")
-              expect(page).to have_content("180333147687266")
-
-              expect(Applicant.count).to eq(2)
-              new_applicant = Applicant.last
-
-              expect(page).to have_css("i.fas.fa-link")
-              expect(page).to have_selector(
-                :css, "a[href=\"/organisations/#{organisation.id}/applicants/#{new_applicant.id}\"]"
-              )
-
-              expect(new_applicant.email).to be_nil
-              expect(new_applicant.first_name).to eq("Hernan")
-              expect(new_applicant.nir).to eq("180333147687266")
-
-              expect(page).to have_css("i.fas.fa-link")
-              expect(page).to have_selector(
-                :css, "a[href=\"/organisations/#{organisation.id}/applicants/#{new_applicant.id}\"]"
-              )
-
-              # it did not modify existing applicant
-              expect(applicant.reload.first_name).to eq("lionel")
-              expect(applicant.reload.nir).to be_nil
-            end
-          end
-        end
       end
 
       describe "phone number matching" do
@@ -615,106 +519,6 @@ describe "Agents can upload applicant list", js: true do
             expect(applicant.reload.email).to eq("hernan@crespo.com")
             expect(applicant.reload.phone_number).to eq("+33620022002")
             expect(applicant.reload.department_internal_id).to eq("8383")
-          end
-        end
-
-        context "when the first name is not the same" do
-          let!(:applicant) do
-            create(
-              :applicant,
-              phone_number: "0620022002", address: "20 avenue de ségur 75007 Paris", first_name: "lionel",
-              role: nil,
-              organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
-            )
-          end
-
-          it "does not match the applicant" do
-            visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
-
-            attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
-
-            expect(page).to have_content("Créer compte")
-
-            click_button("Créer compte")
-
-            expect(page).to have_button("C'est la même personne")
-            expect(page).to have_button("C'est une autre personne")
-
-            click_button("Annuler")
-
-            # it does not do anything
-            expect(Applicant.count).to eq(1)
-            expect(applicant.reload.first_name).to eq("lionel")
-          end
-
-          context "when we update the existing applicant" do
-            it "updates the applicant" do
-              visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
-
-              attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
-
-              expect(page).to have_content("Créer compte")
-
-              click_button("Créer compte")
-
-              expect(page).to have_button("C'est la même personne")
-              click_button("C'est la même personne")
-
-              expect(page).to have_css("i.fas.fa-link")
-              expect(page).to have_selector(
-                :css, "a[href=\"/organisations/#{organisation.id}/applicants/#{applicant.id}\"]"
-              )
-
-              expect(page).to have_content("Hernan")
-              expect(page).to have_content("180333147687266")
-
-              expect(Applicant.count).to eq(1)
-              expect(applicant.reload.first_name).to eq("Hernan")
-              expect(applicant.reload.nir).to eq("180333147687266")
-            end
-          end
-
-          context "when we create a new applicant" do
-            # necessary to stub for another applicant so that it does not retrieve the same
-            # rdv_solidarites_user_id
-            before { stub_rdv_solidarites_create_user("some-id") }
-
-            it "creates an applicant" do
-              visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
-
-              attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
-
-              expect(page).to have_content("Créer compte")
-
-              click_button("Créer compte")
-
-              expect(page).to have_button("C'est une autre personne")
-              click_button("C'est une autre personne")
-
-              expect(page).to have_content("Hernan")
-              expect(page).to have_content("180333147687266")
-
-              expect(Applicant.count).to eq(2)
-              new_applicant = Applicant.last
-
-              expect(page).to have_css("i.fas.fa-link")
-              expect(page).to have_selector(
-                :css, "a[href=\"/organisations/#{organisation.id}/applicants/#{new_applicant.id}\"]"
-              )
-
-              expect(new_applicant.phone_number).to be_nil
-              expect(new_applicant.first_name).to eq("Hernan")
-              expect(new_applicant.nir).to eq("180333147687266")
-
-              expect(page).to have_css("i.fas.fa-link")
-              expect(page).to have_selector(
-                :css, "a[href=\"/organisations/#{organisation.id}/applicants/#{new_applicant.id}\"]"
-              )
-
-              # it did not modify existing applicant
-              expect(applicant.reload.first_name).to eq("lionel")
-              expect(applicant.reload.nir).to be_nil
-            end
           end
         end
       end

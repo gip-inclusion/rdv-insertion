@@ -246,7 +246,7 @@ describe "Agents can create applicant through form", js: true do
 
         click_button("Enregistrer")
 
-        expect(page).to have_content("La personne #{applicant.id} correspond mais n'a pas le même NIR")
+        expect(page).to have_content("Le bénéficiaire #{applicant.id} a les mêmes attributs mais un nir différent")
         expect(page).not_to have_content("Modifier")
         expect(Applicant.count).to eq(1)
       end
@@ -259,78 +259,6 @@ describe "Agents can create applicant through form", js: true do
           first_name: "bobby", email: "bob@kelso.com", role: nil, created_at: Time.zone.parse("04/05/2022"),
           rdv_solidarites_user_id: rdv_solidarites_user_id
         )
-      end
-
-      it "renders a choice between creating and updating" do
-        visit new_organisation_applicant_path(organisation.id)
-
-        page.fill_in "applicant_first_name", with: "Bob"
-        page.fill_in "applicant_last_name", with: "Kelso"
-        page.fill_in "applicant_email", with: "bob@kelso.com"
-
-        click_button("Enregistrer")
-
-        expect(page).to have_content(
-          "La personne ci-dessous partage le même email mais est enregistré sous un un prénom différent"
-        )
-        expect(page).to have_button("C'est la même personne")
-        expect(page).to have_button("C'est une autre personne")
-      end
-
-      it "can update the existing applicant" do
-        visit new_organisation_applicant_path(organisation.id)
-
-        page.fill_in "applicant_first_name", with: "Bob"
-        page.fill_in "applicant_last_name", with: "Kelso"
-        page.fill_in "applicant_email", with: "bob@kelso.com"
-
-        click_button("Enregistrer")
-
-        expect(page).to have_content(
-          "La personne ci-dessous partage le même email mais est enregistré sous un un prénom différent"
-        )
-        expect(page).to have_button("C'est la même personne")
-        expect(page).to have_button("C'est une autre personne")
-
-        click_button("C'est la même personne")
-
-        expect(page).to have_content("Modifier")
-        expect(page).to have_content("Date de création")
-        expect(page).to have_content("04/05/2022")
-        expect(page).to have_content("Bob")
-        expect(page).to have_content("bob@kelso.com")
-        expect(Applicant.count).to eq(1)
-      end
-
-      context "when we choose to create a new applicant" do
-        # necessary to not have the same rdv_solidarites_user_id in rdvs response
-        before { stub_rdv_solidarites_create_user("some-other-id") }
-
-        it "creates a new applicant" do
-          visit new_organisation_applicant_path(organisation.id)
-
-          page.fill_in "applicant_first_name", with: "Bob"
-          page.fill_in "applicant_last_name", with: "Kelso"
-          page.fill_in "applicant_email", with: "bob@kelso.com"
-          page.fill_in "applicant_department_internal_id", with: "ABBASS"
-
-          click_button("Enregistrer")
-
-          expect(page).to have_content(
-            "La personne ci-dessous partage le même email mais est enregistré sous un un prénom différent"
-          )
-          expect(page).to have_button("C'est la même personne")
-          expect(page).to have_button("C'est une autre personne")
-
-          click_button("C'est une autre personne")
-
-          expect(page).to have_content("Modifier")
-          expect(page).not_to have_content("04/05/2022")
-          expect(page).not_to have_content("bob@kelso.com")
-          expect(page).to have_content("Bob")
-          expect(Applicant.count).to eq(2)
-          expect(applicant.reload.first_name).to eq("bobby")
-        end
       end
 
       context "when we are creating a conjoint" do
@@ -375,88 +303,6 @@ describe "Agents can create applicant through form", js: true do
           expect(page).to have_content("Bob")
           expect(page).to have_content("bob@kelso.com")
           expect(Applicant.count).to eq(2)
-        end
-      end
-    end
-
-    context "when the phone number matches but not the first name" do
-      let!(:applicant) do
-        create(
-          :applicant,
-          first_name: "bobby", phone_number: "0782605941", role: nil, created_at: Time.zone.parse("04/05/2022"),
-          rdv_solidarites_user_id: rdv_solidarites_user_id
-        )
-      end
-
-      it "renders a choice between creating and updating" do
-        visit new_organisation_applicant_path(organisation.id)
-
-        page.fill_in "applicant_first_name", with: "Bob"
-        page.fill_in "applicant_last_name", with: "Kelso"
-        page.fill_in "applicant_phone_number", with: "0782605941"
-
-        click_button("Enregistrer")
-
-        expect(page).to have_content(
-          "La personne ci-dessous partage le même téléphone mais est enregistré sous un un prénom différent"
-        )
-        expect(page).to have_button("C'est la même personne")
-        expect(page).to have_button("C'est une autre personne")
-      end
-
-      it "can update the existing applicant" do
-        visit new_organisation_applicant_path(organisation.id)
-
-        page.fill_in "applicant_first_name", with: "Bob"
-        page.fill_in "applicant_last_name", with: "Kelso"
-        page.fill_in "applicant_phone_number", with: "0782605941"
-
-        click_button("Enregistrer")
-
-        expect(page).to have_content(
-          "La personne ci-dessous partage le même téléphone mais est enregistré sous un un prénom différent"
-        )
-        expect(page).to have_button("C'est la même personne")
-        expect(page).to have_button("C'est une autre personne")
-
-        click_button("C'est la même personne")
-
-        expect(page).to have_content("Modifier")
-        expect(page).to have_content("Date de création")
-        expect(page).to have_content("04/05/2022")
-        expect(page).to have_content("Bob")
-        expect(page).to have_content("+33782605941")
-        expect(Applicant.count).to eq(1)
-      end
-
-      context "when we choose to create a new applicant" do
-        # necessary to not have the same rdv_solidarites_user_id in rdvs response
-        before { stub_rdv_solidarites_create_user("some-other-id") }
-
-        it "creates a new applicant" do
-          visit new_organisation_applicant_path(organisation.id)
-
-          page.fill_in "applicant_first_name", with: "Bob"
-          page.fill_in "applicant_last_name", with: "Kelso"
-          page.fill_in "applicant_phone_number", with: "0782605941"
-          page.fill_in "applicant_department_internal_id", with: "ABBASS"
-
-          click_button("Enregistrer")
-
-          expect(page).to have_content(
-            "La personne ci-dessous partage le même téléphone mais est enregistré sous un un prénom différent"
-          )
-          expect(page).to have_button("C'est la même personne")
-          expect(page).to have_button("C'est une autre personne")
-
-          click_button("C'est une autre personne")
-
-          expect(page).to have_content("Modifier")
-          expect(page).not_to have_content("04/05/2022")
-          expect(page).not_to have_content("+33782605941")
-          expect(page).to have_content("Bob")
-          expect(Applicant.count).to eq(2)
-          expect(applicant.reload.first_name).to eq("bobby")
         end
       end
     end

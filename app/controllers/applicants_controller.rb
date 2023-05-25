@@ -3,7 +3,7 @@
 class ApplicantsController < ApplicationController
   PERMITTED_PARAMS = [
     :uid, :role, :first_name, :last_name, :nir, :pole_emploi_id, :birth_date, :email, :phone_number,
-    :birth_name, :address, :affiliation_number, :department_internal_id, :title, :encrypted_id,
+    :birth_name, :address, :affiliation_number, :department_internal_id, :title,
     :status, :rights_opening_date
   ].freeze
 
@@ -27,7 +27,7 @@ class ApplicantsController < ApplicationController
                 for: [:new, :create]
   before_action :set_applicant, :set_organisation, :set_department,
                 for: [:edit, :update]
-  before_action :process_input!, only: :create
+  before_action :find_or_initialize_applicant!, only: :create
   after_action :store_back_to_applicants_list_url, only: [:index]
 
   def index
@@ -49,8 +49,6 @@ class ApplicantsController < ApplicationController
   end
 
   def create
-    @applicant = process_input.matching_applicant || Applicant.new
-    @applicant.assign_attributes(**applicant_attributes.compact_blank)
     if save_applicant.success?
       render_save_applicant_success
     else
@@ -74,31 +72,11 @@ class ApplicantsController < ApplicationController
     params.require(:applicant).permit(*PERMITTED_PARAMS).to_h.deep_symbolize_keys
   end
 
-  def applicant_attributes
-    applicant_params.slice(*Applicant.attribute_names.map(&:to_sym))
-  end
-
   def formatted_attributes
     # we nullify some blank params for unicity exceptions (ActiveRecord::RecordNotUnique) not to raise
-    applicant_attributes.to_h do |k, v|
+    applicant_params.to_h do |k, v|
       [k, k.in?([:affiliation_number, :department_internal_id, :email, :pole_emploi_id, :nir]) ? v.presence : v]
     end
-  end
-
-  def process_input!
-    return if process_input.success?
-    return render_create_or_update_choice(process_input.contact_duplicate, process_input.duplicate_attribute) \
-       if process_input.contact_duplicate
-
-    @applicant = process_input.matching_applicant
-    render_errors(process_input.errors)
-  end
-
-  def process_input
-    @process_input ||= Applicants::ProcessInput.call(
-      applicant_params: applicant_params,
-      department_id: @department.id
-    )
   end
 
   def send_applicants_csv
@@ -110,6 +88,17 @@ class ApplicantsController < ApplicationController
       applicants: @applicants,
       structure: department_level? ? @department : @organisation,
       motif_category: @current_motif_category
+    )
+  end
+
+  def find_or_initialize_applicant!
+    @applicant = find_or_initialize_applicant.applicant
+    render_errors(find_or_initialize_applicant.errors) if find_or_initialize_applicant.failure?
+  end
+
+  def find_or_initialize_applicant
+    @find_or_initialize_applicant || Applicants::FindOrInitialize.call(
+      attributes: formatted_attributes.compact_blank, department_id: @department.id
     )
   end
 
@@ -127,31 +116,6 @@ class ApplicantsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to(after_save_path) }
       format.json { render json: { success: true, applicant: @applicant } }
-    end
-  end
-
-  def render_create_or_update_choice(contact_duplicate, duplicate_attribute)
-    respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: turbo_stream.replace(
-          "remote_modal", partial: "create_or_update_choice", locals: {
-            contact_duplicate: contact_duplicate,
-            duplicate_attribute: duplicate_attribute,
-            duplicate_encrypted_id: EncryptionHelper.encrypt(contact_duplicate.id),
-            applicant_attributes: applicant_attributes,
-            department: @department,
-            organisation: @organisation
-          }
-        )
-      end
-      format.json do
-        render json: {
-          success: false,
-          contact_duplicate: contact_duplicate,
-          duplicate_attribute: duplicate_attribute,
-          duplicate_encrypted_id: EncryptionHelper.encrypt(contact_duplicate.id)
-        }, status: :unprocessable_entity
-      end
     end
   end
 

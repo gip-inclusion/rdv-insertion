@@ -118,6 +118,10 @@ class Applicant < ApplicationRecord
     )
   end
 
+  def phone_number_formatted
+    PhoneNumberHelper.format_phone_number(phone_number)
+  end
+
   private
 
   def generate_uid
@@ -129,7 +133,7 @@ class Applicant < ApplicationRecord
   end
 
   def format_phone_number
-    self.phone_number = PhoneNumberHelper.format_phone_number(phone_number)
+    self.phone_number = phone_number_formatted
   end
 
   def birth_date_validity

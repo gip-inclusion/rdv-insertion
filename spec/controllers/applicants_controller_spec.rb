@@ -43,8 +43,8 @@ describe ApplicantsController do
     render_views
     before do
       sign_in(agent)
-      allow(Applicants::ProcessInput).to receive(:call)
-        .and_return(OpenStruct.new(success?: true, matching_applicant: applicant))
+      allow(Applicants::FindOrInitialize).to receive(:call)
+        .and_return(OpenStruct.new(success?: true, applicant: applicant))
       allow(Applicant).to receive(:new)
         .and_return(applicant)
       allow(applicant).to receive(:assign_attributes)
@@ -62,13 +62,8 @@ describe ApplicantsController do
       }
     end
 
-    it "calls the Applicants::ProcessInput service" do
-      expect(Applicants::ProcessInput).to receive(:call)
-      post :create, params: applicant_params
-    end
-
-    it "assigns the attributes" do
-      expect(applicant).to receive(:assign_attributes)
+    it "calls the Applicants::FindOrInitialize service" do
+      expect(Applicants::FindOrInitialize).to receive(:call)
       post :create, params: applicant_params
     end
 
