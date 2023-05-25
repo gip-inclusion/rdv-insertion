@@ -23,7 +23,7 @@ module Applicants
 
     def search_in_all_applicants
       Applicant
-        .where(nir: applicants_params[:nirs])
+        .where(nir: formatted_nirs)
         .or(Applicant.where(email: applicants_params[:emails]))
         .or(Applicant.where(phone_number: formatted_phone_numbers))
         .select(:id)
