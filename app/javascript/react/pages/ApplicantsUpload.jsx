@@ -14,7 +14,7 @@ import retrieveUpToDateApplicants from "../lib/retrieveUpToDateApplicants";
 import parseContactsData from "../lib/parseContactsData";
 import updateApplicantContactsData from "../lib/updateApplicantContactsData";
 import retrieveContactsData from "../lib/retrieveContactsData";
-import { excelDateToString } from "../../lib/datesHelper";
+import { formatDateInput } from "../../lib/datesHelper";
 import {
   parameterizeObjectKeys,
   parameterizeObjectValues,
@@ -98,7 +98,7 @@ export default function ApplicantsUpload({
                 birthDate:
                   parameterizedColumnNames.birth_date_column &&
                   row[parameterizedColumnNames.birth_date_column] &&
-                  excelDateToString(row[parameterizedColumnNames.birth_date_column]),
+                  formatDateInput(row[parameterizedColumnNames.birth_date_column]),
                 birthName:
                   parameterizedColumnNames.birth_name_column &&
                   row[parameterizedColumnNames.birth_name_column],
@@ -108,7 +108,7 @@ export default function ApplicantsUpload({
                 rightsOpeningDate:
                   parameterizedColumnNames.rights_opening_date_column &&
                   row[parameterizedColumnNames.rights_opening_date_column] &&
-                  excelDateToString(row[parameterizedColumnNames.rights_opening_date_column]),
+                  formatDateInput(row[parameterizedColumnNames.rights_opening_date_column]),
                 linkedOrganisationSearchTerms:
                   parameterizedColumnNames.organisation_search_terms_column &&
                   row[parameterizedColumnNames.organisation_search_terms_column],

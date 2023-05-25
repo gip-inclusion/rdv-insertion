@@ -62,3 +62,11 @@ export function getDateTimeString(date = new Date()) {
     mi < 10 ? `0${mi}` : mi
   }_${s < 10 ? `0${s}` : s}`;
 }
+
+export const formatDateInput = (dateInput) => {
+  if (typeof dateInput === "number") return excelDateToString(dateInput);
+
+  if (dateInput.search("/") === 2) return dateInput; // in this case, we consider it is a french formatted date
+
+  return getFrenchFormatDateString(dateInput);
+};
