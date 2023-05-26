@@ -1,0 +1,5 @@
+<td id=<%= dom_id(configuration.motif_category, "applicant_#{applicant.id}") %>>
+  <%= link_to configuration_applicant_rdv_contexts_path(configuration, applicant), method: :post do %>
+    <button class="btn btn-blue-out">Ajouter</button>
+  <% end %>
+</td>

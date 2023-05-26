@@ -191,8 +191,6 @@ class ApplicantsController < ApplicationController
     @current_configuration =
       if params[:motif_category_id].present?
         @all_configurations.find { |c| c.motif_category_id == params[:motif_category_id].to_i }
-      else
-        @all_configurations.first
       end
   end
 
@@ -220,7 +218,24 @@ class ApplicantsController < ApplicationController
   end
 
   def set_applicants
-    archived_scope? ? set_archived_applicants : set_applicants_for_motif_category
+    if archived_scope?
+      set_archived_applicants
+    elsif @current_motif_category
+      set_applicants_for_motif_category
+    else
+      set_applicants_for_meta_list
+    end
+  end
+
+  def set_applicants_for_meta_list
+    @applicants = policy_scope(Applicant)
+                  .preload(
+                    :organisations,
+                    rdv_contexts: [:notifications, :invitations]
+                  )
+                  .active.distinct
+                  .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
+                  .where.not(id: @department.archived_applicants.ids)
   end
 
   def set_applicants_for_motif_category

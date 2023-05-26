@@ -56,6 +56,12 @@ Rails.application.routes.draw do
     resources :searches, only: :create
   end
 
+  resources :configurations, only: [] do
+    resources :applicants, only: [] do
+      resources :rdv_contexts, only: [:create]
+    end
+  end
+
   resources :archives, only: [:create, :destroy]
 
   namespace :organisations do
