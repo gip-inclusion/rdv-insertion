@@ -29,12 +29,4 @@ class Configuration < ApplicationRecord
       errors.add(:base, "Les formats d'invitation ne peuvent être que : sms, email, postal")
     end
   end
-
-  # When we add motif category in an organisation, we want all the applicants to be linked
-  # to this new category
-  def create_rdv_contexts_for_organisation_applicants
-    organisation.applicants.each do |applicant|
-      RdvContext.find_or_create_by!(applicant: applicant, motif_category: motif_category)
-    end
-  end
 end

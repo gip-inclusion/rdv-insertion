@@ -43,7 +43,7 @@ class RdvContextsController < ApplicationController
   def replace_new_button_by_rdv_context_status
     render turbo_stream: turbo_stream.replace(
       "applicant_#{@applicant.id}_motif_category_#{@motif_category.id}",
-      partial: "show",
+      partial: "rdv_context_status",
       locals: { rdv_context: @rdv_context, configuration: @configuration }
     )
   end

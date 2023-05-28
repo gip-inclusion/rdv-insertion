@@ -58,7 +58,7 @@
   <% @all_configurations.each do |configuration| %>
     <% rdv_context = @rdv_contexts.find { |rc| rc.motif_category == configuration.motif_category } %>
     <% if rdv_context %>
-      <%= render "rdv_context", rdv_context: rdv_context, participations: rdv_context.participations, convocable_participations: rdv_context.participations.select(&:convocable?), configuration: configuration, applicant: @applicant, department: @department, invitations: rdv_context.invitations %>
+      <%= render "rdv_contexts/show", rdv_context: rdv_context, participations: rdv_context.participations, convocable_participations: rdv_context.participations.select(&:convocable?), configuration: configuration, applicant: @applicant, department: @department, invitations: rdv_context.invitations %>
     <% else %>
       <div class="d-flex align-items-center context-header">
         <span></span>

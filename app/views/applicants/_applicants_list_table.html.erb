@@ -2,7 +2,7 @@
   <% if no_search_results?(@applicants.to_a) %>
     <h4 class="py-4">Aucun allocataire ne correspond à votre recherche</h4>
   <% elsif archived_scope?(@applicants_scope) %>
-    <%= render "achived_applicants_table" %>
+    <%= render "archived_applicants_table" %>
   <% elsif @current_configuration %>
     <%= render "applicants_table_for_motif_category" %>
   <% else %>
