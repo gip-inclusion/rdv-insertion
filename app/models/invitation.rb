@@ -14,7 +14,7 @@ class Invitation < ApplicationRecord
   validates :help_phone_number, :rdv_solidarites_token, :organisations, :link, :valid_until, presence: true
   validates :uuid, uniqueness: true, allow_nil: true
 
-  delegate :motif_category, :motif_category_name, to: :rdv_context
+  delegate :motif_category, :motif_category_name, to: :rdv_context, allow_nil: true
   delegate :template, to: :motif_category
   delegate :model, to: :template, prefix: true
 

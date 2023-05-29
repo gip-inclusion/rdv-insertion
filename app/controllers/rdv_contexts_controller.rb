@@ -12,7 +12,7 @@ class RdvContextsController < ApplicationController
     else
       render turbo_stream: turbo_stream.replace(
         "remote_modal", partial: "common/error_modal", locals: {
-          errors: @rdv_context.errors
+          errors: @rdv_context.errors.full_messages
         }
       )
     end

@@ -19,7 +19,7 @@
           <% if rdv_context %>
             <%= render "rdv_contexts/rdv_context_status", rdv_context: rdv_context, configuration: configuration %>
           <% else %>
-            <%= render "rdv_contexts/new", applicant: applicant, configuration: configuration %>
+            <%= render "rdv_contexts/new", applicant: applicant, configuration: configuration, organisation: @organisation, department: @department %>
           <% end %>
         <% end %>
         <td class="padding-left-15">

@@ -67,7 +67,8 @@
           <small><%= configuration.rdv_with_referents? ? " (avec référents)" : "" %></small>
         </h5>
         <span></span>
-        <%= button_to configuration_applicant_rdv_contexts_path(configuration, @applicant), method: :post, data: { turbo: false }, class: "btn btn-blue-out mx-2" do %>
+        <% new_rdv_context_link = department_level? ? department_applicant_configuration_rdv_contexts_path(@department, @applicant, configuration) : organisation_applicant_configuration_rdv_contexts_path(@organisation, @applicant, configuration) %>
+        <%= button_to new_rdv_context_link, method: :post, data: { turbo: false }, class: "btn btn-blue-out mx-2" do %>
           Ouvrir un suivi
         <% end %>
         <span></span>

@@ -328,6 +328,21 @@ describe ApplicantsController do
         expect(response.body).not_to match(/Convoqué par/)
       end
 
+      context "when a rdv_context is not open" do
+        let!(:rdv_context2) { nil }
+        let!(:invitation_accompagnement) { nil }
+
+        it "show the open rdv_context button" do
+          get :show, params: show_params
+
+          expect(unescaped_response_body).to match(
+            "action=\"/organisations/#{organisation.id}/applicants/#{applicant.id}/configurations/#{configuration2.id}" \
+            "/rdv_contexts\""
+          )
+          expect(unescaped_response_body).to match(/Ouvrir un suivi/)
+        end
+      end
+
       context "when one rdv is a convocation" do
         before { rdv_orientation1.update!(convocable: true) }
 
@@ -408,6 +423,7 @@ describe ApplicantsController do
     let!(:applicant) do
       create(
         :applicant,
+        created_at: Time.zone.parse("2023-03-10 12:30"),
         organisations: [organisation], last_name: "Chabat", rdv_contexts: [rdv_context1]
       )
     end
@@ -416,6 +432,7 @@ describe ApplicantsController do
     let!(:applicant2) do
       create(
         :applicant,
+        created_at: Time.zone.parse("2023-04-10 12:30"),
         organisations: [organisation], last_name: "Baer", rdv_contexts: [rdv_context2]
       )
     end
@@ -424,10 +441,12 @@ describe ApplicantsController do
     let!(:applicant3) do
       create(
         :applicant,
+        created_at: Time.zone.parse("2023-05-10 12:30"),
         organisations: [organisation], last_name: "Darmon", rdv_contexts: [rdv_context3]
       )
     end
-    let!(:rdv_context3) { build(:rdv_context, motif_category: category_orientation, status: "invitation_pending") }
+    let!(:rdv_context3) { build(:rdv_context, motif_category: category_accompagnement, status: "invitation_pending") }
+    let!(:configuration2) { create(:configuration, motif_category: category_accompagnement) }
 
     let!(:archived_applicant) do
       create(
@@ -438,7 +457,7 @@ describe ApplicantsController do
     let!(:archive) { create(:archive, applicant: archived_applicant, department: department) }
     let!(:rdv_context4) { build(:rdv_context, motif_category: category_orientation, status: "invitation_pending") }
 
-    let!(:index_params) { { organisation_id: organisation.id, motif_category: category_orientation } }
+    let!(:index_params) { { organisation_id: organisation.id, motif_category_id: category_orientation.id } }
 
     render_views
 
@@ -446,13 +465,13 @@ describe ApplicantsController do
       sign_in(agent)
     end
 
-    it "returns a list of applicants" do
+    it "returns a list of applicants in the current context" do
       get :index, params: index_params
 
       expect(response).to be_successful
       expect(response.body).to match(/Chabat/)
       expect(response.body).to match(/Baer/)
-      expect(response.body).to match(/Darmon/)
+      expect(response.body).not_to match(/Darmon/)
       expect(response.body).not_to match(/Barthelemy/)
     end
 
@@ -493,16 +512,24 @@ describe ApplicantsController do
       end
     end
 
-    context "when a context is specified" do
-      let!(:rdv_context2) { build(:rdv_context, motif_category: category_accompagnement, status: "invitation_pending") }
-      let!(:configuration) { create(:configuration, motif_category: category_accompagnement) }
+    context "when no context is specified" do
+      let!(:index_params) { { organisation_id: organisation.id } }
 
       it "returns the list of applicants in the current context" do
-        get :index, params: index_params.merge(motif_category_id: category_accompagnement.id)
+        get :index, params: index_params
 
         expect(response).to be_successful
-        expect(response.body).not_to match(/Chabat/)
+        expect(response.body).to match(/Chabat/)
         expect(response.body).to match(/Baer/)
+        expect(response.body).to match(/Darmon/)
+        expect(response.body).not_to match(/Barthelemy/)
+      end
+
+      it "displays the applicants creation date and the corresponding filter" do
+        get :index, params: index_params
+
+        expect(response.body).to match(/Date de création/)
+        expect(response.body).to match(/Filtrer par date de création/)
       end
     end
 
@@ -516,6 +543,13 @@ describe ApplicantsController do
         expect(response.body).not_to match(/Chabat/)
         expect(response.body).not_to match(/Baer/)
         expect(response.body).to match(/Barthelemy/)
+      end
+
+      it "displays the applicants creation date and the corresponding filter" do
+        get :index, params: index_params
+
+        expect(response.body).to match(/Date de création/)
+        expect(response.body).to match(/Filtrer par date de création/)
       end
     end
 
@@ -543,7 +577,20 @@ describe ApplicantsController do
       end
     end
 
-    context "when dates are passed" do
+    context "when creation dates are passed" do
+      let!(:index_params) do
+        { organisation_id: organisation.id, creation_date_after: "01-04-2023", creation_date_before: "30-04-2023" }
+      end
+
+      it "filters by creation dates" do
+        get :index, params: index_params
+        expect(response.body).to match(/Baer/)
+        expect(response.body).not_to match(/Chabat/)
+        expect(response.body).not_to match(/Darmon/)
+      end
+    end
+
+    context "when invitations dates are passed" do
       let!(:invitation1) do
         create(
           :invitation, sent_at: Time.zone.parse("2022-06-01 12:00"), rdv_context: rdv_context1,

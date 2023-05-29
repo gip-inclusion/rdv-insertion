@@ -11,8 +11,6 @@ class Configuration < ApplicationRecord
   delegate :sheet_name, to: :file_configuration
   delegate :department, to: :organisation
 
-  after_create :create_rdv_contexts_for_organisation_applicants
-
   private
 
   def delays_validity

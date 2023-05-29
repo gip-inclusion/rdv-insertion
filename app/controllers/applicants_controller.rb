@@ -229,10 +229,7 @@ class ApplicantsController < ApplicationController
 
   def set_applicants_for_meta_list
     @applicants = policy_scope(Applicant)
-                  .preload(
-                    :organisations,
-                    rdv_contexts: [:notifications, :invitations]
-                  )
+                  .preload(rdv_contexts: [:invitations])
                   .active.distinct
                   .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
                   .where.not(id: @department.archived_applicants.ids)
@@ -240,10 +237,7 @@ class ApplicantsController < ApplicationController
 
   def set_applicants_for_motif_category
     @applicants = policy_scope(Applicant)
-                  .preload(
-                    :organisations,
-                    rdv_contexts: [:notifications, :invitations]
-                  )
+                  .preload(rdv_contexts: [:notifications, :invitations])
                   .active.distinct
                   .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
                   .where.not(id: @department.archived_applicants.ids)
