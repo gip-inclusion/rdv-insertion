@@ -336,8 +336,8 @@ describe ApplicantsController do
           get :show, params: show_params
 
           expect(unescaped_response_body).to match(
-            "action=\"/organisations/#{organisation.id}/applicants/#{applicant.id}/configurations/#{configuration2.id}" \
-            "/rdv_contexts\""
+            "action=\"/organisations/#{organisation.id}/applicants/#{applicant.id}" \
+            "/configurations/#{configuration2.id}/rdv_contexts\""
           )
           expect(unescaped_response_body).to match(/Ouvrir un suivi/)
         end

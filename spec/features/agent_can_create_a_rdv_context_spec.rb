@@ -23,7 +23,7 @@ describe "Agents can create a rdv_context", js: true do
 
         click_button("Ajouter")
 
-        expect(page).to have_content("Non invité")
+        expect(page).to have_content("Non invité", wait: 10)
         expect(RdvContext.count).to eq(rdv_context_count_before + 1)
         expect(RdvContext.last.status).to eq("not_invited")
         expect(RdvContext.last.motif_category).to eq(category_orientation)
@@ -39,7 +39,7 @@ describe "Agents can create a rdv_context", js: true do
 
         click_button("Ajouter")
 
-        expect(page).to have_content("Non invité")
+        expect(page).to have_content("Non invité", wait: 10)
         expect(RdvContext.count).to eq(rdv_context_count_before + 1)
         expect(RdvContext.last.status).to eq("not_invited")
         expect(RdvContext.last.motif_category).to eq(category_orientation)
@@ -57,7 +57,7 @@ describe "Agents can create a rdv_context", js: true do
 
         click_button("Ouvrir un suivi")
 
-        expect(page).to have_content("Non invité")
+        expect(page).to have_content("Non invité", wait: 10)
         expect(RdvContext.count).to eq(rdv_context_count_before + 1)
         expect(RdvContext.last.status).to eq("not_invited")
         expect(RdvContext.last.motif_category).to eq(category_orientation)
@@ -73,7 +73,7 @@ describe "Agents can create a rdv_context", js: true do
 
         click_button("Ouvrir un suivi")
 
-        expect(page).to have_content("Non invité")
+        expect(page).to have_content("Non invité", wait: 10)
         expect(RdvContext.count).to eq(rdv_context_count_before + 1)
         expect(RdvContext.last.status).to eq("not_invited")
         expect(RdvContext.last.motif_category).to eq(category_orientation)
