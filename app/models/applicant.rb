@@ -15,6 +15,7 @@ class Applicant < ApplicationRecord
   include Invitable
   include HasParticipationsToRdvs
   include Applicant::TextHelper
+  include Applicant::Address
   include Applicant::Nir
   include Applicant::Archivable
 
@@ -62,14 +63,6 @@ class Applicant < ApplicationRecord
 
   def participation_for(rdv)
     participations.to_a.find { |participation| participation.rdv_id == rdv.id }
-  end
-
-  def street_address
-    split_address.present? ? split_address[1].strip.gsub(/-$/, "").gsub(/,$/, "").gsub(/\.$/, "") : nil
-  end
-
-  def zipcode_and_city
-    split_address.present? ? split_address[2].strip : nil
   end
 
   def organisations_with_rdvs
@@ -150,9 +143,5 @@ class Applicant < ApplicationRecord
       "Il doit y avoir au moins un attribut permettant d'identifier la personne " \
       "(NIR, email, numéro de tel, ID interne, numéro d'allocataire/rôle)"
     )
-  end
-
-  def split_address
-    address&.match(/^(.+) (\d{5}.*)$/m)
   end
 end
