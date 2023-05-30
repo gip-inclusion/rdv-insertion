@@ -13,11 +13,11 @@ module ApplicantsHelper
     applicants.empty? && params[:search_query].present?
   end
 
-  def display_back_to_list_button?
+  def display_back_to_list_button? # rubocop:disable Metrics/AbcSize
     [
       params[:search_query], params[:status], params[:action_required], params[:first_invitation_date_before],
       params[:last_invitation_date_before], params[:first_invitation_date_after], params[:last_invitation_date_after],
-      params[:filter_by_current_agent]
+      params[:filter_by_current_agent], params[:creation_date_after], params[:creation_date_before]
     ].any?(&:present?)
   end
 

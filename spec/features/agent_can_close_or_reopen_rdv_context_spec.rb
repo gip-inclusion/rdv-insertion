@@ -23,7 +23,7 @@ describe "Agents can close or reopen rdv_context", js: true do
       expect(page).to have_content("Clôturer \"RSA orientation\"")
 
       click_button("Clôturer \"RSA orientation\"")
-      expect(page).to have_content("\"RSA orientation\"", wait: 10)
+      expect(page).to have_content("\"RSA orientation\"")
 
       expect(page).to have_content("Rouvrir \"RSA orientation\"")
       expect(page).to have_content("Dossier traité le")
@@ -31,7 +31,7 @@ describe "Agents can close or reopen rdv_context", js: true do
       expect(page).to have_current_path(department_applicant_path(department, applicant))
 
       click_button("Rouvrir \"RSA orientation\"")
-      expect(page).to have_content("\"RSA orientation\"", wait: 10)
+      expect(page).to have_content("\"RSA orientation\"")
 
       expect(page).to have_content("Clôturer \"RSA orientation\"")
       expect(page).to have_content("Non invité")
@@ -47,7 +47,7 @@ describe "Agents can close or reopen rdv_context", js: true do
       expect(page).to have_content("Clôturer \"RSA orientation\"")
 
       click_button("Clôturer \"RSA orientation\"")
-      expect(page).to have_content("\"RSA orientation\"", wait: 10)
+      expect(page).to have_content("\"RSA orientation\"")
 
       expect(page).to have_content("Rouvrir \"RSA orientation\"")
       expect(page).to have_content("Dossier traité le")
@@ -55,7 +55,7 @@ describe "Agents can close or reopen rdv_context", js: true do
       expect(page).to have_current_path(organisation_applicant_path(organisation, applicant))
 
       click_button("Rouvrir \"RSA orientation\"")
-      expect(page).to have_content("\"RSA orientation\"", wait: 10)
+      expect(page).to have_content("\"RSA orientation\"")
 
       expect(page).to have_content("Clôturer \"RSA orientation\"")
       expect(page).to have_content("Non invité")

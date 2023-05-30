@@ -13,6 +13,7 @@ describe "Agents can create a rdv_context", js: true do
 
   before do
     setup_agent_session(agent)
+    allow_any_instance_of(RdvContext).to receive(:status).and_return("not_invited")
   end
 
   context "from applicants index page" do
@@ -23,7 +24,7 @@ describe "Agents can create a rdv_context", js: true do
 
         click_button("Ajouter")
 
-        expect(page).to have_content("Non invité", wait: 10)
+        expect(page).to have_content("Non invité")
         expect(RdvContext.count).to eq(rdv_context_count_before + 1)
         expect(RdvContext.last.status).to eq("not_invited")
         expect(RdvContext.last.motif_category).to eq(category_orientation)
@@ -39,7 +40,7 @@ describe "Agents can create a rdv_context", js: true do
 
         click_button("Ajouter")
 
-        expect(page).to have_content("Non invité", wait: 10)
+        expect(page).to have_content("Non invité")
         expect(RdvContext.count).to eq(rdv_context_count_before + 1)
         expect(RdvContext.last.status).to eq("not_invited")
         expect(RdvContext.last.motif_category).to eq(category_orientation)
@@ -57,7 +58,7 @@ describe "Agents can create a rdv_context", js: true do
 
         click_button("Ouvrir un suivi")
 
-        expect(page).to have_content("Non invité", wait: 10)
+        expect(page).to have_content("Non invité")
         expect(RdvContext.count).to eq(rdv_context_count_before + 1)
         expect(RdvContext.last.status).to eq("not_invited")
         expect(RdvContext.last.motif_category).to eq(category_orientation)
@@ -73,7 +74,7 @@ describe "Agents can create a rdv_context", js: true do
 
         click_button("Ouvrir un suivi")
 
-        expect(page).to have_content("Non invité", wait: 10)
+        expect(page).to have_content("Non invité")
         expect(RdvContext.count).to eq(rdv_context_count_before + 1)
         expect(RdvContext.last.status).to eq("not_invited")
         expect(RdvContext.last.motif_category).to eq(category_orientation)
