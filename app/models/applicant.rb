@@ -99,7 +99,9 @@ class Applicant < ApplicationRecord
       uid: nil,
       department_internal_id: nil,
       pole_emploi_id: nil,
-      nir: nil
+      nir: nil,
+      email: nil,
+      phone_number: nil
     )
   end
 
