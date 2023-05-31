@@ -490,10 +490,14 @@ describe ApplicantsController do
         end
       end
 
-      it "displays all statuses in the filter list" do
+      it "displays all statuses in the filter list except closed" do
         get :index, params: index_params.merge(motif_category_id: category_orientation.id)
         RdvContext.statuses.each_key do |status|
-          expect(response.body).to match(/"#{status}"/)
+          if status == "closed"
+            expect(response.body).not_to match(/"#{status}"/)
+          else
+            expect(response.body).to match(/"#{status}"/)
+          end
         end
       end
     end
