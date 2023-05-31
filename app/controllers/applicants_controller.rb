@@ -243,6 +243,7 @@ class ApplicantsController < ApplicationController
                   .where.not(id: @department.archived_applicants.ids)
                   .joins(:rdv_contexts)
                   .where(rdv_contexts: { motif_category: @current_motif_category })
+                  .where.not(rdv_contexts: { status: "closed" })
   end
 
   def set_archived_applicants
