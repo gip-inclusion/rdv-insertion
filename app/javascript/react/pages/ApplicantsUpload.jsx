@@ -40,12 +40,14 @@ export default function ApplicantsUpload({
   // This state allows to re-renders applicants after contacts update
   const [contactsUpdated, setContactsUpdated] = useState(false);
   const [showEnrichWithContactFile, setShowEnrichWithContactFile] = useState(false);
-  const [showReferentColumn, setShowReferentColumn] = useState(configuration.rdv_with_referents);
+  const [showReferentColumn, setShowReferentColumn] = useState(
+    configuration && configuration.rdv_with_referents
+  );
 
   const redirectToApplicantList = () => {
     window.location.href = isDepartmentLevel
-      ? `/departments/${department.id}/applicants?motif_category_id=${configuration.motif_category_id}`
-      : `/organisations/${organisation.id}/applicants?motif_category_id=${configuration.motif_category_id}`;
+      ? `/departments/${department.id}/applicants`
+      : `/organisations/${organisation.id}/applicants`;
   };
 
   const retrieveApplicantsFromList = async (file) => {
@@ -208,10 +210,12 @@ export default function ApplicantsUpload({
           <h3 className="new-applicants-title">
             Ajout {isDepartmentLevel ? "au niveau du territoire" : "allocataires"}
           </h3>
-          <h6>
-            ({motifCategoryName}
-            {configuration.rdv_with_referents && " avec réferents"})
-          </h6>
+          {configuration && (
+            <h6>
+              ({motifCategoryName}
+              {configuration.rdv_with_referents && " avec réferents"})
+            </h6>
+          )}
 
           <FileHandler
             handleFile={handleApplicantsFile}
@@ -301,17 +305,17 @@ export default function ApplicantsUpload({
                       <th scope="col-3">Réferent</th>
                     </>
                   )}
-                  {configuration.invitation_formats.includes("sms") && (
+                  {configuration && configuration.invitation_formats.includes("sms") && (
                     <>
                       <th scope="col-3">Invitation SMS</th>
                     </>
                   )}
-                  {configuration.invitation_formats.includes("email") && (
+                  {configuration && configuration.invitation_formats.includes("email") && (
                     <>
                       <th scope="col-3">Invitation mail</th>
                     </>
                   )}
-                  {configuration.invitation_formats.includes("postal") && (
+                  {configuration && configuration.invitation_formats.includes("postal") && (
                     <>
                       <th scope="col-3">Invitation courrier</th>
                     </>

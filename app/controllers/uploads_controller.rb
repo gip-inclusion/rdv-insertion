@@ -1,42 +1,78 @@
 class UploadsController < ApplicationController
-  def new
-    if params[:department_id].present?
-      set_department_upload
-    elsif params[:organisation_id].present?
-      set_organisation_upload
-    end
-  end
+  before_action :set_organisation, :set_department, :check_if_category_is_selected,
+                :set_all_configurations, :set_current_configuration, :set_file_configuration,
+                for: [:new]
+  before_action :set_organisation, :set_department, :set_all_configurations,
+                for: [:category_selection]
+
+  def new; end
+
+  def category_selection; end
 
   private
 
-  def set_department_upload
-    @department = Department.find(params[:department_id])
-    authorize @department, :upload?
-    @organisation = nil
-
-    @all_configurations = (
-      policy_scope(::Configuration).includes(:motif_category, :file_configuration) &
-      @department.configurations
-    ).uniq(&:motif_category_id).sort_by(&:motif_category_position)
-
-    set_current_configuration
+  def set_organisation
+    @organisation = department_level? ? nil : Organisation.find(params[:organisation_id])
+    authorize @organisation, :upload? unless department_level?
   end
 
-  def set_organisation_upload
-    @organisation = Organisation.find(params[:organisation_id])
-    authorize @organisation, :upload?
-    @all_configurations = @organisation.configurations.includes(:motif_category).sort_by(&:motif_category_position)
-    @department = @organisation.department
-    set_current_configuration
+  def set_department
+    @department = department_level? ? Department.find(params[:department_id]) : @organisation.department
+    authorize @department, :upload? if department_level?
+  end
+
+  def set_all_configurations
+    @all_configurations =
+      if department_level?
+        (
+          policy_scope(::Configuration).includes(:motif_category, :file_configuration) &
+          @department.configurations
+        ).uniq(&:motif_category_id)
+      else
+        @organisation.configurations.includes(:motif_category, :file_configuration)
+      end
+
+    @all_configurations = @all_configurations.sort_by(&:motif_category_position)
   end
 
   def set_current_configuration
-    @current_configuration =
-      if params[:configuration_id].present?
-        @all_configurations.find { |config| config.id == params[:configuration_id].to_i }
-      elsif @all_configurations.length == 1
-        @all_configurations.first
+    return if params[:configuration_id].blank?
+
+    @current_configuration = @all_configurations.find { |config| config.id == params[:configuration_id].to_i }
+
+    if @current_configuration.nil?
+      redirect_to(category_selection_path, flash: { error: "La configuration sélectionnée n'est pas valide" })
+      return
+    end
+
+    @motif_category_name = @current_configuration.motif_category_name
+  end
+
+  def set_file_configuration
+    @file_configuration =
+      if @current_configuration.present?
+        @current_configuration.file_configuration
+      else
+        # we take the most used config in this case
+        @all_configurations.map(&:file_configuration).tally.max_by { |_file_config, count| count }.first
       end
-    @motif_category_name = @current_configuration&.motif_category_name
+  end
+
+  def check_if_category_is_selected
+    return if category_selected?
+
+    redirect_to(category_selection_path)
+  end
+
+  def category_selection_path
+    if department_level?
+      uploads_category_selection_department_applicants_path(@department)
+    else
+      uploads_category_selection_organisation_applicants_path(@organisation)
+    end
+  end
+
+  def category_selected?
+    params[:configuration_id].present? || params[:category] == "none"
   end
 end

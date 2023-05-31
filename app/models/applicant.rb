@@ -8,6 +8,7 @@ class Applicant < ApplicationRecord
     "email" => :email,
     "postal" => :address
   }.freeze
+  SEARCH_ATTRIBUTES = [:first_name, :last_name, :affiliation_number, :email, :phone_number].freeze
 
   include Searchable
   include Notificable
@@ -33,6 +34,8 @@ class Applicant < ApplicationRecord
   has_many :notifications, through: :participations
   has_many :configurations, through: :organisations
   has_many :motif_categories, through: :rdv_contexts
+
+  accepts_nested_attributes_for :rdv_contexts, reject_if: :rdv_context_category_handled_already?
 
   validates :last_name, :first_name, :title, presence: true
   validates :email, allow_blank: true, format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/ }
@@ -117,6 +120,10 @@ class Applicant < ApplicationRecord
   end
 
   private
+
+  def rdv_context_category_handled_already?(rdv_context_attributes)
+    rdv_context_attributes["motif_category_id"].in?(motif_categories.map(&:id))
+  end
 
   def generate_uid
     # Base64 encoded "affiliation_number - role"

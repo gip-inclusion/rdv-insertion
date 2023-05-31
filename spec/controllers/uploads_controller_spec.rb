@@ -29,9 +29,11 @@ describe UploadsController do
       end
 
       context "when agent is authorized" do
-        it "returns a success response" do
-          get :new, params: { organisation_id: organisation.id }
-          expect(response).to be_successful
+        context "when no configuration is specified" do
+          it "redirects to category selection" do
+            get :new, params: { organisation_id: organisation.id }
+            expect(response).to redirect_to(uploads_category_selection_organisation_applicants_path(organisation))
+          end
         end
       end
     end
@@ -58,9 +60,11 @@ describe UploadsController do
       end
 
       context "when agent is authorized" do
-        it "returns a success response" do
-          get :new, params: { department_id: department.id }
-          expect(response).to be_successful
+        context "when no configuration is specified" do
+          it "redirects to category selection" do
+            get :new, params: { department_id: department.id }
+            expect(response).to redirect_to(uploads_category_selection_department_applicants_path(department))
+          end
         end
       end
     end

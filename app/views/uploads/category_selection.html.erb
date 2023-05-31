@@ -1,12 +1,22 @@
 <div class="container mt-5">
   <div class="row mt-5 justify-content-center">
     <div class="col-8">
-      <p class="text-center">Sélectionnez dans quel contexte vous voulez inviter les allocataires:</p>
+      <p class="text-center">Sélectionnez dans quel contexte vous souhaitez créer les allocataires:</p>
     </div>
   </div>
-
   <div class="row justify-content-center mt-5">
     <div class="col-8 d-flex justify-content-between">
+      <div>
+        <%= link_to(department_level? ? new_department_upload_path(@department, category: "none") : new_organisation_upload_path(@organisation, category: "none"), class: "btn btn-blue-out") do %>
+          Pas de contexte spécifique
+          <i
+            class="fas fa-question-circle"
+            data-controller="tooltip"
+            data-action="mouseover->tooltip#noCategorySelected"
+          >
+          </i>
+        <% end %>
+      </div>
       <% @all_configurations.each do |configuration| %>
         <div>
           <%= link_to(department_level? ? new_department_upload_path(@department, configuration_id: configuration.id) : new_organisation_upload_path(@organisation, configuration_id: configuration.id), class: "btn btn-blue-out") do %>
