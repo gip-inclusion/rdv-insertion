@@ -6,25 +6,23 @@ module Applicants
     end
 
     def call
-      find_matching_applicant
-      result.applicant = @matching_applicant || Applicant.new
-      verify_nir_matches! if @matching_applicant
-      result.applicant.assign_attributes(**@attributes)
+      result.applicant = matching_applicant || Applicant.new
+      verify_nir_matches! if matching_applicant
     end
 
     private
 
-    def find_matching_applicant
-      @matching_applicant = Applicants::Find.call(
+    def matching_applicant
+      @matching_applicant ||= Applicants::Find.call(
         attributes: @attributes, department_id: @department_id
       ).applicant
     end
 
     def verify_nir_matches!
-      return if @matching_applicant.nir.blank? || @attributes[:nir].blank?
+      return if matching_applicant.nir.blank? || @attributes[:nir].blank?
       return if NirHelper.equal?(@matching_applicant.nir, @attributes[:nir])
 
-      fail!("Le bénéficiaire #{@matching_applicant.id} a les mêmes attributs mais un nir différent")
+      fail!("Le bénéficiaire #{matching_applicant.id} a les mêmes attributs mais un nir différent")
     end
   end
 end

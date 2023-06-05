@@ -42,6 +42,11 @@ describe CreateAndInviteApplicantJob do
       .and_return(rdv_solidarites_session)
   end
 
+  it "assigns the attributes" do
+    expect(applicant).to receive(:assign_attributes).with(applicant_attributes)
+    subject
+  end
+
   it "saves the applicant" do
     expect(Applicants::Save).to receive(:call)
       .with(applicant: applicant, organisation: organisation, rdv_solidarites_session: rdv_solidarites_session)
@@ -63,7 +68,7 @@ describe CreateAndInviteApplicantJob do
   end
 
   context "when there is no phone" do
-    before { applicant.phone_number = nil }
+    before { applicant_attributes[:phone_number] = nil }
 
     it "does not enqueue an invite sms job" do
       expect(InviteApplicantJob).not_to receive(:perform_async)
@@ -76,7 +81,7 @@ describe CreateAndInviteApplicantJob do
   end
 
   context "when the phone is not a mobile" do
-    before { applicant.phone_number = "0101010101" }
+    before { applicant_attributes[:phone_number] = "0101010101" }
 
     it "does not enqueue an invite sms job" do
       expect(InviteApplicantJob).not_to receive(:perform_async)
@@ -88,7 +93,7 @@ describe CreateAndInviteApplicantJob do
   end
 
   context "when there is no email" do
-    before { applicant.email = nil }
+    before { applicant_attributes[:email] = nil }
 
     it "does not enqueue an invite email job" do
       expect(InviteApplicantJob).not_to receive(:perform_async)

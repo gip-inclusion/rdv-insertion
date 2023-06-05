@@ -31,23 +31,17 @@ describe Applicants::FindOrInitialize, type: :service do
 
       it("is a success") { is_a_success }
 
-      it "returns the found applicant with the assigned attributes" do
+      it "returns the found applicant" do
         expect(subject.applicant.id).to eq(applicant.id)
-        expect(subject.applicant.email).to eq(email)
-        expect(subject.applicant.first_name).to eq(first_name)
-        expect(subject.applicant.last_name).to eq(last_name)
       end
 
-      context "when the find applicant nir is nil" do
+      context "when the found applicant nir is nil" do
         before { applicant.update! nir: nil }
 
         it("is a success") { is_a_success }
 
-        it "returns the found applicant with the assigned attributes" do
+        it "returns the found applicant" do
           expect(subject.applicant.id).to eq(applicant.id)
-          expect(subject.applicant.email).to eq(email)
-          expect(subject.applicant.first_name).to eq(first_name)
-          expect(subject.applicant.last_name).to eq(last_name)
         end
       end
 
@@ -58,10 +52,6 @@ describe Applicants::FindOrInitialize, type: :service do
 
         it "returns the found applicant with an error" do
           expect(subject.applicant.id).to eq(applicant.id)
-
-          expect(subject.applicant.email).not_to eq(email)
-          expect(subject.applicant.first_name).not_to eq(first_name)
-          expect(subject.applicant.last_name).not_to eq(last_name)
 
           expect(subject.errors).to eq(["Le bénéficiaire 424 a les mêmes attributs mais un nir différent"])
         end
@@ -80,12 +70,9 @@ describe Applicants::FindOrInitialize, type: :service do
 
       it("is a success") { is_a_success }
 
-      it "returns a new applicant with the assign_attributes" do
+      it "returns a new applicant" do
         expect(subject.applicant).to eq(new_applicant)
         expect(subject.applicant.id).to be_nil
-        expect(subject.applicant.first_name).to eq(first_name)
-        expect(subject.applicant.last_name).to eq(last_name)
-        expect(subject.applicant.email).to eq(email)
       end
     end
   end

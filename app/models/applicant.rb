@@ -136,6 +136,7 @@ class Applicant < ApplicationRecord
   end
 
   def identifier_must_be_present
+    return if deleted?
     return if [nir, uid, department_internal_id, email, phone_number].any?(&:present?)
 
     errors.add(

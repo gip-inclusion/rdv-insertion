@@ -49,6 +49,7 @@ class ApplicantsController < ApplicationController
   end
 
   def create
+    @applicant.assign_attributes(**formatted_attributes.compact_blank)
     if save_applicant.success?
       render_save_applicant_success
     else
@@ -97,8 +98,8 @@ class ApplicantsController < ApplicationController
   end
 
   def find_or_initialize_applicant
-    @find_or_initialize_applicant || Applicants::FindOrInitialize.call(
-      attributes: formatted_attributes.compact_blank, department_id: @department.id
+    @find_or_initialize_applicant ||= Applicants::FindOrInitialize.call(
+      attributes: formatted_attributes, department_id: @department.id
     )
   end
 

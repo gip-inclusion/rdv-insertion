@@ -9,6 +9,7 @@ class CreateAndInviteApplicantJob < ApplicationJob
     @rdv_solidarites_session_credentials = rdv_solidarites_session_credentials.deep_symbolize_keys
 
     find_or_initialize_applicant!
+    applicant.assign_attributes(**@applicant_attributes)
     save_applicant!
     invite_applicant
   end
@@ -16,7 +17,7 @@ class CreateAndInviteApplicantJob < ApplicationJob
   private
 
   def applicant
-    find_or_initialize_applicant.applicant
+    @applicant ||= find_or_initialize_applicant.applicant
   end
 
   def find_or_initialize_applicant!

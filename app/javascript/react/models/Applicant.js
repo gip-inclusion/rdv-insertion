@@ -167,14 +167,12 @@ export default class Applicant {
 
   formatFullAddress() {
     return (
-      (
-        (this.addressFirstField ? `${this.addressFirstField} ` : "") +
-        (this.addressSecondField ? `${this.addressSecondField} ` : "") +
-        (this.addressThirdField ? `${this.addressThirdField} ` : "") +
-        (this.addressFourthField ? `${this.addressFourthField} ` : "") +
-        (this.addressFifthField ?? "")
-      ).trim()
-    );
+      (this.addressFirstField ? `${this.addressFirstField} ` : "") +
+      (this.addressSecondField ? `${this.addressSecondField} ` : "") +
+      (this.addressThirdField ? `${this.addressThirdField} ` : "") +
+      (this.addressFourthField ? `${this.addressFourthField} ` : "") +
+      (this.addressFifthField ?? "")
+    ).trim();
   }
 
   displayedAttributes() {
@@ -335,7 +333,6 @@ export default class Applicant {
       ...(this.rightsOpeningDate && { rights_opening_date: this.rightsOpeningDate }),
       ...(this.nir && { nir: this.nir }),
       ...(this.poleEmploiId && { pole_emploi_id: this.poleEmploiId }),
-      ...(this.encryptedId && { encrypted_id: this.encryptedId }),
     };
   }
 }
