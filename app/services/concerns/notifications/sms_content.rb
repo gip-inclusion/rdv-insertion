@@ -1,7 +1,7 @@
 module Notifications
   module SmsContent
     delegate :rdv, :applicant, :rdv_title, :applicant_designation, :mandatory_warning,
-             :punishable_warning, :instruction_for_rdv, :rdv_subject,
+             :punishable_warning, :rdv_subject,
              to: :notification
     delegate :formatted_start_date, :formatted_start_time, :lieu, :phone_number, to: :rdv
 
@@ -14,7 +14,6 @@ module Notifications
         "#{rdv_title}. Vous êtes #{applicant.conjugate('attendu')} le #{formatted_start_date} à " \
         "#{formatted_start_time} ici: #{lieu.full_name}. " \
         "#{mandatory_warning_message}" \
-        "#{instruction_for_rdv_message}" \
         "#{punishable_warning_message}" \
         "En cas d’empêchement, appelez rapidement le #{phone_number}."
     end
@@ -25,7 +24,6 @@ module Notifications
         "#{rdv_title}. Un travailleur social vous appellera le #{formatted_start_date}" \
         " à partir de #{formatted_start_time} sur ce numéro. " \
         "#{mandatory_warning_message}" \
-        "#{instruction_for_rdv_message}" \
         "#{punishable_warning_message}" \
         "En cas d’empêchement, appelez rapidement le #{phone_number}."
     end
@@ -36,7 +34,6 @@ module Notifications
         "Vous êtes #{applicant.conjugate('attendu')} le #{formatted_start_date} à #{formatted_start_time}" \
         " ici: #{lieu.full_name}. " \
         "#{mandatory_warning_message}" \
-        "#{instruction_for_rdv_message}" \
         "#{punishable_warning_message}" \
         "En cas d’empêchement, appelez rapidement le #{phone_number}."
     end
@@ -46,7 +43,6 @@ module Notifications
         "Un travailleur social vous appellera le #{formatted_start_date}" \
         " à partir de #{formatted_start_time} sur ce numéro. " \
         "#{mandatory_warning_message}" \
-        "#{instruction_for_rdv_message}" \
         "#{punishable_warning_message}" \
         "En cas d’empêchement, appelez rapidement le #{phone_number}."
     end
@@ -58,7 +54,6 @@ module Notifications
         "#{rdv_title}. Vous êtes #{applicant.conjugate('attendu')} le #{formatted_start_date} à " \
         "#{formatted_start_time} ici: #{lieu.full_name}. " \
         "#{mandatory_warning_message}" \
-        "#{instruction_for_rdv_message}" \
         "#{punishable_warning_message}" \
         "En cas d’empêchement, appelez rapidement le #{phone_number}."
     end
@@ -69,7 +64,6 @@ module Notifications
         "#{rdv_title}. Un travailleur social vous appellera le #{formatted_start_date}" \
         " à partir de #{formatted_start_time} sur ce numéro. " \
         "#{mandatory_warning_message}" \
-        "#{instruction_for_rdv_message}" \
         "#{punishable_warning_message}" \
         "En cas d’empêchement, appelez rapidement le #{phone_number}."
     end
@@ -92,10 +86,6 @@ module Notifications
       else
         ""
       end
-    end
-
-    def instruction_for_rdv_message
-      instruction_for_rdv.present? ? "#{instruction_for_rdv} " : ""
     end
   end
 end
