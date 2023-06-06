@@ -36,7 +36,7 @@ describe ReferentAssignationsController do
   end
 
   describe "#index" do
-    before { applicant.update!(agents: [agent2]) }
+    before { applicant.update!(referents: [agent2]) }
 
     it "shows the agents that can be assigned/removed" do
       get :index, params: { applicant_id: applicant_id, department_id: department.id }

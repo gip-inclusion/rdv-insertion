@@ -45,7 +45,7 @@ module Invitations
     end
 
     def validate_referents_are_assigned
-      return if applicant.agent_ids.any?
+      return if applicant.referent_ids.any?
 
       result.errors << "Un référent doit être assigné au bénéficiaire pour les rdvs avec référents"
     end
