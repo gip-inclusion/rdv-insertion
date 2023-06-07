@@ -58,7 +58,7 @@
   <% @all_configurations.each do |configuration| %>
     <% rdv_context = @rdv_contexts.find { |rc| rc.motif_category == configuration.motif_category } %>
     <% if rdv_context %>
-      <%= render "rdv_contexts/show", rdv_context: rdv_context, participations: rdv_context.participations, convocable_participations: rdv_context.participations.select(&:convocable?), configuration: configuration, applicant: @applicant, department: @department, invitations: rdv_context.invitations %>
+      <%= render "rdv_contexts/rdv_context", rdv_context: rdv_context, participations: rdv_context.participations, convocable_participations: rdv_context.participations.select(&:convocable?), configuration: configuration, applicant: @applicant, department: @department, invitations: rdv_context.invitations %>
     <% else %>
       <div class="d-flex align-items-center context-header">
         <span></span>
@@ -67,13 +67,13 @@
           <small><%= configuration.rdv_with_referents? ? " (avec référents)" : "" %></small>
         </h5>
         <span></span>
-        <% new_rdv_context_link = department_level? ? department_applicant_configuration_rdv_contexts_path(@department, @applicant, configuration) : organisation_applicant_configuration_rdv_contexts_path(@organisation, @applicant, configuration) %>
-        <%= button_to new_rdv_context_link, method: :post, data: { turbo: false }, class: "btn btn-blue-out mx-2" do %>
-          Ouvrir un suivi
+        <%= simple_form_for(:rdv_context, url: compute_rdv_contexts_path(@department, @organisation, configuration), html: { method: :post }, data: { turbo: false }) do |f| %>
+          <%= f.hidden_field :applicant_id, value: @applicant.id %>
+          <%= f.hidden_field :motif_category_id, value: configuration.motif_category_id %>
+          <button type= "submit" class="btn btn-blue-out mx-2">Ouvrir un suivi</button>
         <% end %>
         <span></span>
       </div>
     <% end %>
   <% end %>
 </div>
-

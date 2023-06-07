@@ -335,10 +335,9 @@ describe ApplicantsController do
         it "show the open rdv_context button" do
           get :show, params: show_params
 
-          expect(unescaped_response_body).to match(
-            "action=\"/organisations/#{organisation.id}/applicants/#{applicant.id}" \
-            "/configurations/#{configuration2.id}/rdv_contexts\""
-          )
+          expect(unescaped_response_body).to match("class=\"simple_form rdv_context\"")
+          expect(unescaped_response_body).to match("input value=\"#{applicant.id}\"")
+          expect(unescaped_response_body).to match("input value=\"#{category_accompagnement.id}\"")
           expect(unescaped_response_body).to match(/Ouvrir un suivi/)
         end
       end

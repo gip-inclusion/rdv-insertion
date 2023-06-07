@@ -17,9 +17,9 @@
         <% @all_configurations.each do |configuration| %>
           <% rdv_context = applicant.rdv_context_for(configuration.motif_category) %>
           <% if rdv_context %>
-            <%= render "rdv_contexts/rdv_context_status", rdv_context: rdv_context, configuration: configuration %>
+            <%= render "rdv_contexts/rdv_context_status_cell", rdv_context: rdv_context, configuration: configuration %>
           <% else %>
-            <%= render "rdv_contexts/new", applicant: applicant, configuration: configuration, organisation: @organisation, department: @department %>
+            <%= render "rdv_contexts/new_button_cell", applicant: applicant, configuration: configuration, organisation: @organisation, department: @department %>
           <% end %>
         <% end %>
         <td class="padding-left-15">

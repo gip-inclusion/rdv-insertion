@@ -187,11 +187,10 @@ class ApplicantsController < ApplicationController
 
   def set_current_configuration
     return if archived_scope?
+    return unless params[:motif_category_id]
 
     @current_configuration =
-      if params[:motif_category_id].present?
-        @all_configurations.find { |c| c.motif_category_id == params[:motif_category_id].to_i }
-      end
+      @all_configurations.find { |c| c.motif_category_id == params[:motif_category_id].to_i }
   end
 
   def set_current_motif_category
@@ -223,11 +222,11 @@ class ApplicantsController < ApplicationController
     elsif @current_motif_category
       set_applicants_for_motif_category
     else
-      set_applicants_for_meta_list
+      set_all_active_applicants
     end
   end
 
-  def set_applicants_for_meta_list
+  def set_all_active_applicants
     @applicants = policy_scope(Applicant)
                   .preload(rdv_contexts: [:invitations])
                   .active.distinct

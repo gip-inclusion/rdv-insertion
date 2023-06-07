@@ -10,7 +10,11 @@ describe RdvContextsController do
   end
   let(:agent) { create(:agent, organisations: [organisation]) }
   let(:rdv_context_params) do
-    { applicant_id: applicant.id, configuration_id: configuration.id, organisation_id: organisation.id }
+    {
+      rdv_context: { applicant_id: applicant.id, motif_category_id: category_orientation.id },
+      configuration_id: configuration.id,
+      organisation_id: organisation.id
+    }
   end
   let!(:rdv_context_count_before) { RdvContext.count }
 
@@ -60,7 +64,11 @@ describe RdvContextsController do
 
       context "when department level" do
         let(:rdv_context_params) do
-          { applicant_id: applicant.id, configuration_id: configuration.id, department_id: department.id }
+          {
+            rdv_context: { applicant_id: applicant.id, motif_category_id: category_orientation.id },
+            configuration_id: configuration.id,
+            department_id: department.id
+          }
         end
 
         it "redirects to the right path" do

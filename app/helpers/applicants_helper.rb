@@ -161,6 +161,12 @@ module ApplicantsHelper
 
     new_organisation_applicant_path(organisation)
   end
+
+  def compute_rdv_contexts_path(department, organisation, configuration)
+    return rdv_contexts_path(department_id: department.id, configuration_id: configuration.id) if department_level?
+
+    rdv_contexts_path(organisation_id: organisation.id, configuration_id: configuration.id)
+  end
 end
 
 # rubocop:enable Metrics/ModuleLength

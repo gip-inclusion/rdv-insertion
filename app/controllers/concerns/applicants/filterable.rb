@@ -47,13 +47,13 @@ module Applicants::Filterable
   end
 
   def filter_applicants_by_creation_date_after
-    return if [params[:creation_date_after]].all?(&:blank?)
+    return if params[:creation_date_after].blank?
 
     @applicants = @applicants.where("applicants.created_at > ?", params[:creation_date_after].to_date.end_of_day)
   end
 
   def filter_applicants_by_creation_date_before
-    return if [params[:creation_date_before]].all?(&:blank?)
+    return if params[:creation_date_before].blank?
 
     @applicants = @applicants.where("applicants.created_at < ?", params[:creation_date_before].to_date.end_of_day)
   end
