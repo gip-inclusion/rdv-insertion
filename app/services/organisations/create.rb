@@ -15,13 +15,10 @@ module Organisations
         upsert_rdv_solidarites_webhook_endpoint
         tag_rdv_solidarites_organisation
       end
+      trigger_rdv_solidarites_webhook_endpoint
     end
 
     private
-
-    def upsert_rdv_solidarites_webhook_endpoint
-      rdv_solidarites_webhook_endpoint.present? ? update_rdvs_webhook_endpoint : create_rdvs_webhook_endpoint
-    end
 
     def check_rdv_solidarites_organisation_id
       return if @organisation.rdv_solidarites_organisation_id?
@@ -43,6 +40,28 @@ module Organisations
         AgentRole.new(agent_id: @current_agent.id, organisation_id: @organisation.id, level: "admin")
     end
 
+    def upsert_rdv_solidarites_webhook_endpoint
+      # webhook_endpoint is upserted but not triggered because organisation is not persisted yet
+      rdv_solidarites_webhook_endpoint.present? ? update_rdvs_webhook_endpoint : create_rdvs_webhook_endpoint
+    end
+
+    def trigger_rdv_solidarites_webhook_endpoint
+      RdvSolidaritesWebhooks::TriggerEndpointJob.perform_async(
+        rdv_solidarites_webhook_endpoint_id,
+        @organisation.rdv_solidarites_organisation_id,
+        @rdv_solidarites_session.to_h
+      )
+    end
+
+    def tag_rdv_solidarites_organisation
+      @tag_rdv_solidarites_organisation ||= call_service!(
+        RdvSolidaritesApi::UpdateOrganisation,
+        organisation_attributes: { "verticale" => "rdv_insertion" },
+        rdv_solidarites_session: @rdv_solidarites_session,
+        rdv_solidarites_organisation_id: @organisation.rdv_solidarites_organisation_id
+      )
+    end
+
     def rdv_solidarites_organisation
       @rdv_solidarites_organisation ||= call_service!(
         RdvSolidaritesApi::RetrieveOrganisation,
@@ -62,7 +81,7 @@ module Organisations
     def update_rdvs_webhook_endpoint
       @update_rdvs_webhook_endpoint ||= call_service!(
         RdvSolidaritesApi::UpdateWebhookEndpoint,
-        rdv_solidarites_webhook_endpoint_id: rdv_solidarites_webhook_endpoint.id,
+        rdv_solidarites_webhook_endpoint_id: rdv_solidarites_webhook_endpoint_id,
         rdv_solidarites_organisation_id: @organisation.rdv_solidarites_organisation_id,
         rdv_solidarites_session: @rdv_solidarites_session
       )
@@ -76,13 +95,9 @@ module Organisations
       ).webhook_endpoint
     end
 
-    def tag_rdv_solidarites_organisation
-      @tag_rdv_solidarites_organisation ||= call_service!(
-        RdvSolidaritesApi::UpdateOrganisation,
-        organisation_attributes: { "verticale" => "rdv_insertion" },
-        rdv_solidarites_session: @rdv_solidarites_session,
-        rdv_solidarites_organisation_id: @organisation.rdv_solidarites_organisation_id
-      )
+    def rdv_solidarites_webhook_endpoint_id
+      @rdv_solidarites_webhook_endpoint_id ||=
+        rdv_solidarites_webhook_endpoint&.id || create_rdvs_webhook_endpoint.webhook_endpoint_id
     end
   end
 end
