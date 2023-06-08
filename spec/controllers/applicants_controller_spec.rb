@@ -67,6 +67,11 @@ describe ApplicantsController do
       post :create, params: applicant_params
     end
 
+    it "assigns the attributes" do
+      expect(applicant).to receive(:assign_attributes)
+      post :create, params: applicant_params
+    end
+
     it "calls the Applicants::Save service" do
       expect(Applicants::Save).to receive(:call)
       post :create, params: applicant_params
