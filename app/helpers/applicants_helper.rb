@@ -134,7 +134,7 @@ module ApplicantsHelper
   def should_convene_for?(rdv_context, configuration)
     return unless configuration.convene_applicant?
 
-    rdv_context.status.in?(STATUSES_WITH_CONVOCATION_POSSIBLE) ||
+    rdv_context.status.in?(RdvContext::STATUSES_WITH_CONVOCATION_POSSIBLE) ||
       rdv_context.time_to_accept_invitation_exceeded?(configuration.number_of_days_before_action_required)
   end
 
