@@ -11,6 +11,7 @@ describe RdvSolidaritesApi::UpdateWebhookEndpoint, type: :service do
   let!(:rdv_solidarites_organisation_id) { 1717 }
   let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
   let!(:rdv_solidarites_client) { instance_double(RdvSolidaritesClient) }
+  let!(:trigger) { false }
 
   describe "#call" do
     before do
@@ -18,14 +19,14 @@ describe RdvSolidaritesApi::UpdateWebhookEndpoint, type: :service do
         .and_return(rdv_solidarites_client)
       allow(rdv_solidarites_client).to receive(:update_webhook_endpoint)
         .with(rdv_solidarites_webhook_endpoint_id, rdv_solidarites_organisation_id,
-              RdvSolidarites::WebhookEndpoint::ALL_SUBSCRIPTIONS)
+              RdvSolidarites::WebhookEndpoint::ALL_SUBSCRIPTIONS, trigger)
         .and_return(OpenStruct.new(success?: true))
     end
 
     it "tries to update a webhook endpoint in rdv solidarites" do
       expect(rdv_solidarites_client).to receive(:update_webhook_endpoint)
         .with(rdv_solidarites_webhook_endpoint_id, rdv_solidarites_organisation_id,
-              RdvSolidarites::WebhookEndpoint::ALL_SUBSCRIPTIONS)
+              RdvSolidarites::WebhookEndpoint::ALL_SUBSCRIPTIONS, trigger)
       subject
     end
 
@@ -45,7 +46,7 @@ describe RdvSolidaritesApi::UpdateWebhookEndpoint, type: :service do
 
       before do
         allow(rdv_solidarites_client).to receive(:update_webhook_endpoint)
-          .with(rdv_solidarites_webhook_endpoint_id, rdv_solidarites_organisation_id, subscriptions)
+          .with(rdv_solidarites_webhook_endpoint_id, rdv_solidarites_organisation_id, subscriptions, trigger)
           .and_return(OpenStruct.new(success?: true))
       end
 
@@ -53,7 +54,34 @@ describe RdvSolidaritesApi::UpdateWebhookEndpoint, type: :service do
 
       it "calls the client with the right arguments" do
         expect(rdv_solidarites_client).to receive(:update_webhook_endpoint)
-          .with(rdv_solidarites_webhook_endpoint_id, rdv_solidarites_organisation_id, subscriptions)
+          .with(rdv_solidarites_webhook_endpoint_id, rdv_solidarites_organisation_id, subscriptions, trigger)
+        subject
+      end
+    end
+
+    context "when the webhook should be triggered" do
+      subject do
+        described_class.call(
+          rdv_solidarites_webhook_endpoint_id: rdv_solidarites_webhook_endpoint_id,
+          rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
+          rdv_solidarites_session: rdv_solidarites_session,
+          trigger: trigger
+        )
+      end
+
+      let!(:trigger) { true }
+
+      before do
+        allow(rdv_solidarites_client).to receive(:update_webhook_endpoint)
+          .with(rdv_solidarites_webhook_endpoint_id, rdv_solidarites_organisation_id,
+                RdvSolidarites::WebhookEndpoint::ALL_SUBSCRIPTIONS, trigger)
+          .and_return(OpenStruct.new(success?: true))
+      end
+
+      it "calls the client with the right arguments" do
+        expect(rdv_solidarites_client).to receive(:update_webhook_endpoint)
+          .with(rdv_solidarites_webhook_endpoint_id, rdv_solidarites_organisation_id,
+                RdvSolidarites::WebhookEndpoint::ALL_SUBSCRIPTIONS, trigger)
         subject
       end
     end
@@ -65,7 +93,7 @@ describe RdvSolidaritesApi::UpdateWebhookEndpoint, type: :service do
         allow(rdv_solidarites_client).to receive(:update_webhook_endpoint)
           .with(
             rdv_solidarites_webhook_endpoint_id, rdv_solidarites_organisation_id,
-            RdvSolidarites::WebhookEndpoint::ALL_SUBSCRIPTIONS
+            RdvSolidarites::WebhookEndpoint::ALL_SUBSCRIPTIONS, trigger
           )
           .and_return(OpenStruct.new(body: response_body, success?: false))
       end
