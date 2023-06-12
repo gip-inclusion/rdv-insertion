@@ -17,6 +17,9 @@ class RdvContext < ApplicationRecord
   STATUSES_WITH_ACTION_REQUIRED = %w[
     rdv_needs_status_update rdv_noshow rdv_revoked rdv_excused multiple_rdvs_cancelled
   ].freeze
+  STATUSES_WITH_CONVOCATION_POSSIBLE = %w[
+    rdv_noshow rdv_excused multiple_rdvs_cancelled
+  ].freeze
 
   scope :status, ->(status) { where(status: status) }
   scope :action_required, lambda { |number_of_days_before_action_required|
