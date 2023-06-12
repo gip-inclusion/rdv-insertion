@@ -19,7 +19,9 @@
           <% if rdv_context %>
             <%= render "rdv_contexts/rdv_context_status_cell", rdv_context: rdv_context, configuration: configuration %>
           <% else %>
-            <%= render "rdv_contexts/new_button_cell", applicant: applicant, configuration: configuration, organisation: @organisation, department: @department %>
+            <td id=<%= dom_id(configuration.motif_category, "applicant_#{applicant.id}") %>>
+              <%= render "rdv_contexts/new_button", applicant: applicant, configuration: configuration, organisation: @organisation, department: @department, turbo: true, button_text: "Ajouter" %>
+            </td>
           <% end %>
         <% end %>
         <td class="padding-left-15">

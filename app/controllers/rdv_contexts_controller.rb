@@ -1,7 +1,7 @@
 class RdvContextsController < ApplicationController
   PERMITTED_PARAMS = [:applicant_id, :motif_category_id].freeze
 
-  before_action :set_applicant, :set_configuration, :set_organisation, :set_department, only: [:create]
+  before_action :set_applicant, :set_organisation, :set_department, only: [:create]
 
   def create
     @rdv_context = RdvContext.new(**rdv_context_params)
@@ -30,23 +30,19 @@ class RdvContextsController < ApplicationController
     @applicant = policy_scope(Applicant).find(rdv_context_params[:applicant_id])
   end
 
-  def set_configuration
-    @configuration = policy_scope(::Configuration).find(params[:configuration_id])
-  end
-
   def set_organisation
-    @organisation = @configuration.organisation
+    @organisation = policy_scope(Organisation).find(params[:organisation_id]) if params[:organisation_id]
   end
 
   def set_department
-    @department = @organisation.department
+    @department = policy_scope(Department).find(params[:department_id]) if params[:department_id]
   end
 
   def replace_new_button_cell_by_rdv_context_status_cell
     render turbo_stream: turbo_stream.replace(
       "applicant_#{@applicant.id}_motif_category_#{rdv_context_params[:motif_category_id]}",
       partial: "rdv_context_status_cell",
-      locals: { rdv_context: @rdv_context, configuration: @configuration }
+      locals: { rdv_context: @rdv_context, configuration: nil }
     )
   end
 

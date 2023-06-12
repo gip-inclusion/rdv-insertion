@@ -1,7 +1,0 @@
-<td id=<%= dom_id(configuration.motif_category, "applicant_#{applicant.id}") %>>
-  <%= simple_form_for(:rdv_context, url: compute_rdv_contexts_path(department, organisation, configuration), html: { method: :post }) do |f| %>
-    <%= f.hidden_field :applicant_id, value: applicant.id %>
-    <%= f.hidden_field :motif_category_id, value: configuration.motif_category_id %>
-    <button type= "submit" class="btn btn-blue-out">Ajouter</button>
-  <% end %>
-</td>

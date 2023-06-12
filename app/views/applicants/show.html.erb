@@ -67,11 +67,7 @@
           <small><%= configuration.rdv_with_referents? ? " (avec référents)" : "" %></small>
         </h5>
         <span></span>
-        <%= simple_form_for(:rdv_context, url: compute_rdv_contexts_path(@department, @organisation, configuration), html: { method: :post }, data: { turbo: false }) do |f| %>
-          <%= f.hidden_field :applicant_id, value: @applicant.id %>
-          <%= f.hidden_field :motif_category_id, value: configuration.motif_category_id %>
-          <button type= "submit" class="btn btn-blue-out mx-2">Ouvrir un suivi</button>
-        <% end %>
+        <%= render "rdv_contexts/new_button", applicant: @applicant, configuration: configuration, organisation: @organisation, department: @department, turbo: false, button_text: "Ouvrir un suivi" %>
         <span></span>
       </div>
     <% end %>

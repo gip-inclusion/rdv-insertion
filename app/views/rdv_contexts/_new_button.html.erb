@@ -1,0 +1,5 @@
+<%= simple_form_for(:rdv_context, url: compute_rdv_contexts_path(organisation, department), html: { method: :post }, data: { turbo: turbo }) do |f| %>
+  <%= f.hidden_field :applicant_id, value: applicant.id %>
+  <%= f.hidden_field :motif_category_id, value: configuration.motif_category_id %>
+  <button type= "submit" class="btn btn-blue-out mx-2"><%= button_text %></button>
+<% end %>
