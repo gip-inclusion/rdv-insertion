@@ -1,0 +1,5 @@
+<%= link_to rdv_context_closings_path(rdv_context.id, organisation_id: params[:organisation_id], department_id: params[:department_id], applicant_id: applicant.id), method: :delete do %>
+  <button class="btn btn-blue"  data-controller="tooltip" data-action="mouseover->tooltip#reopenRdvContextButton">
+    Rouvrir "<%= rdv_context.motif_category.name %>"
+  </button>
+<% end %>
