@@ -137,7 +137,7 @@ describe "Agents can upload applicant list", js: true do
         it "redirects to category selection" do
           visit new_organisation_upload_path(organisation)
 
-          expect(page).to have_content("Pas de contexte spécifique")
+          expect(page).to have_content("Aucune catégorie de suivi")
           expect(page).to have_content(motif_category.name)
 
           click_link(motif_category.name)
@@ -150,10 +150,10 @@ describe "Agents can upload applicant list", js: true do
           it "can create applicants without affecting a category" do
             visit new_organisation_upload_path(organisation)
 
-            expect(page).to have_content("Pas de contexte spécifique")
+            expect(page).to have_content("Aucune catégorie de suivi")
             expect(page).to have_content(motif_category.name)
 
-            click_link("Pas de contexte spécifique")
+            click_link("Aucune catégorie de suivi")
 
             expect(page).to have_content("Choisissez un fichier de nouveaux demandeurs")
 
@@ -665,7 +665,7 @@ describe "Agents can upload applicant list", js: true do
         it "redirects to category selection" do
           visit new_department_upload_path(department)
 
-          expect(page).to have_content("Pas de contexte spécifique")
+          expect(page).to have_content("Aucune catégorie de suivi")
           expect(page).to have_content(motif_category.name)
 
           click_link(motif_category.name)
@@ -678,10 +678,10 @@ describe "Agents can upload applicant list", js: true do
           it "can create applicants without affecting a category" do
             visit new_department_upload_path(department)
 
-            expect(page).to have_content("Pas de contexte spécifique")
+            expect(page).to have_content("Aucune catégorie de suivi")
             expect(page).to have_content(motif_category.name)
 
-            click_link("Pas de contexte spécifique")
+            click_link("Aucune catégorie de suivi")
 
             expect(page).to have_content("Choisissez un fichier de nouveaux demandeurs")
 
