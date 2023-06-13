@@ -37,7 +37,7 @@ module Organisations
       # the rdv_solidarites_agent_role_id will be added to this agent_role record thanks to the webhook
       # this is safe because the transaction succeeds only if the agent is a territorial admin in the department
       @agent_role_for_new_organisation ||=
-        AgentRole.new(agent_id: @current_agent.id, organisation_id: @organisation.id, level: "admin")
+        AgentRole.new(agent_id: @current_agent.id, organisation_id: @organisation.id, access_level: "admin")
     end
 
     def upsert_rdv_solidarites_webhook_endpoint

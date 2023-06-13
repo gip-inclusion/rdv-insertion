@@ -28,7 +28,7 @@ En effet pour utiliser RDV-Insertion proprement en local, il est nécessaire de 
 
 - Les territories et organisations correspondant aux départments et organisations que l'on va utiliser sur RDV-Insertion (voir [Setup](#Setup))
 
-- Rattacher l'agent aux organisations via un `AgentRole` (de préférence avec le level `admin`)
+- Rattacher l'agent aux organisations via un `AgentRole` (de préférence avec le access_level `admin`)
 
 - Configurer les webhooks de chaque organisation pour les envoyer vers l'appli RDV-Insertion en local (`POST http://localhost:8000/rdv_solidarites_webhooks`)
 

@@ -27,10 +27,10 @@ describe AgentRole do
     end
   end
 
-  describe "level inclusion validation" do
-    context "correct level value" do
-      let(:agent_role) { build(:agent_role, level: "basic") }
-      let(:agent_role2) { build(:agent_role, level: "admin") }
+  describe "access_level inclusion validation" do
+    context "correct access_level value" do
+      let(:agent_role) { build(:agent_role, access_level: "basic") }
+      let(:agent_role2) { build(:agent_role, access_level: "admin") }
 
       it { expect(agent_role).to be_valid }
       it { expect(agent_role2).to be_valid }
