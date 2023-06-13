@@ -8,7 +8,7 @@ module Applicants
 
     def call
       Applicant.transaction do
-        @applicant.agents << @agent
+        @applicant.referents << @agent
         create_rdv_solidarites_referent_assignation
       end
     end

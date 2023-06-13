@@ -27,7 +27,7 @@ describe Applicants::AssignReferent, type: :service do
 
     it "assigns the agent to the applicant" do
       subject
-      expect(applicant.reload.agents).to include(agent)
+      expect(applicant.reload.referents).to include(agent)
     end
 
     context "when it fails to assign referent through API" do
@@ -46,7 +46,7 @@ describe Applicants::AssignReferent, type: :service do
 
       it "does not assign the agent to the applicant" do
         subject
-        expect(applicant.reload.agents).not_to include(agent)
+        expect(applicant.reload.referents).not_to include(agent)
       end
 
       it "outputs an error" do

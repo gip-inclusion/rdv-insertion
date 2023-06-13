@@ -639,7 +639,7 @@ describe ApplicantsController do
         }
       end
 
-      before { applicant.agents = [agent] }
+      before { applicant.referents = [agent] }
 
       it "filters on the applicants assigned to the agent" do
         get :index, params: index_params

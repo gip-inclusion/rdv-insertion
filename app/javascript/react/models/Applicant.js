@@ -150,7 +150,7 @@ export default class Applicant {
       "postal",
       this.currentConfiguration.motif_category_id
     );
-    this.agents = upToDateApplicant.agents;
+    this.referents = upToDateApplicant.referents;
   }
 
   updatePhoneNumber(phoneNumber) {
@@ -293,8 +293,8 @@ export default class Applicant {
   referentAlreadyAssigned() {
     return (
       this.referentEmail &&
-      this.agents &&
-      this.agents.some((agent) => agent.email === this.referentEmail)
+      this.referents &&
+      this.referents.some((referent) => referent.email === this.referentEmail)
     );
   }
 
