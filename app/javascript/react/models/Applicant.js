@@ -120,6 +120,7 @@ export default class Applicant {
             .map((motifCategory) => motifCategory.id)
             .includes(this.currentConfiguration.motif_category_id))
     );
+    this.referents = upToDateApplicant.referents;
     // we update the attributes with the attributes in DB if the applicant is already created
     // and cannot be updated from the page
     if (this.belongsToCurrentOrg()) {
@@ -132,7 +133,6 @@ export default class Applicant {
         this.rightsOpeningDate = getFrenchFormatDateString(upToDateApplicant.rights_opening_date);
       }
     }
-    this.agents = upToDateApplicant.agents;
     if (this.currentConfiguration) {
       this.currentRdvContext = upToDateApplicant.rdv_contexts.find(
         (rc) => rc.motif_category_id === this.currentConfiguration.motif_category_id
@@ -295,8 +295,8 @@ export default class Applicant {
   referentAlreadyAssigned() {
     return (
       this.referentEmail &&
-      this.agents &&
-      this.agents.some((agent) => agent.email === this.referentEmail)
+      this.referents &&
+      this.referents.some((referent) => referent.email === this.referentEmail)
     );
   }
 

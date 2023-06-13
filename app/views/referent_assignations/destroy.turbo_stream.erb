@@ -1,4 +1,4 @@
-<%= turbo_stream.replace "agents_list" do %>
-  <%= render "common/attribute_display", record: @applicant, attribute: :agents, as: :list, id: "agents_list" %>
+<%= turbo_stream.replace "referents_list" do %>
+  <%= render "common/attribute_display", record: @applicant, attribute: :referents, as: :list, id: "referents_list" %>
 <% end %>
 <%= render_turbo_stream_flash_messages %>
