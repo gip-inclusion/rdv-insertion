@@ -17,7 +17,7 @@ class RdvContext < ApplicationRecord
   STATUSES_WITH_ACTION_REQUIRED = %w[
     rdv_needs_status_update rdv_noshow rdv_revoked rdv_excused multiple_rdvs_cancelled
   ].freeze
-  STATUSES_WITH_CONVOCATION_POSSIBLE = %w[
+  CONVOCABLE_STATUSES = %w[
     rdv_noshow rdv_excused multiple_rdvs_cancelled
   ].freeze
 
@@ -37,6 +37,10 @@ class RdvContext < ApplicationRecord
 
   def action_required_status?
     status.in?(STATUSES_WITH_ACTION_REQUIRED)
+  end
+
+  def convocable_status?
+    status.in?(CONVOCABLE_STATUSES)
   end
 
   def time_to_accept_invitation_exceeded?(number_of_days_before_action_required)

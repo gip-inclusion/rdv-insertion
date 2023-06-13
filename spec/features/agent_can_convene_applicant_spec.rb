@@ -83,7 +83,7 @@ describe "Agents can convene applicant to rdv", js: true do
       end
     end
 
-    context "when the time to accept invitation has not exceeded" do
+    context "when invitation is pending and the time to accept invitation has not exceeded" do
       let!(:invitation) { create(:invitation, rdv_context: rdv_context, sent_at: 3.days.ago) }
 
       it "does not show a convocation button" do
@@ -102,6 +102,45 @@ describe "Agents can convene applicant to rdv", js: true do
         rdv_context.save!
         visit organisation_applicants_path(organisation)
         expect(page).not_to have_content("📅 Convoquer")
+      end
+    end
+
+    context "when there is a noshow rdv" do
+      let!(:rdv_context) do
+        create(:rdv_context, status: "rdv_noshow", applicant: applicant, motif_category: motif_category)
+      end
+
+      it "shows a link to convene the applicant" do
+        visit organisation_applicants_path(organisation)
+        expect(page).to have_content("📅 Convoquer")
+        expect(page).not_to have_css("div[data-action='mouseover->tooltip#disabledConvocationButton']")
+        expect(page).to have_link("📅 Convoquer", href: expected_link)
+      end
+    end
+
+    context "when there is an excused rdv" do
+      let!(:rdv_context) do
+        create(:rdv_context, status: "rdv_excused", applicant: applicant, motif_category: motif_category)
+      end
+
+      it "shows a link to convene the applicant" do
+        visit organisation_applicants_path(organisation)
+        expect(page).to have_content("📅 Convoquer")
+        expect(page).not_to have_css("div[data-action='mouseover->tooltip#disabledConvocationButton']")
+        expect(page).to have_link("📅 Convoquer", href: expected_link)
+      end
+    end
+
+    context "when multiple rdvs were canceled" do
+      let!(:rdv_context) do
+        create(:rdv_context, status: "multiple_rdvs_cancelled", applicant: applicant, motif_category: motif_category)
+      end
+
+      it "shows a link to convene the applicant" do
+        visit organisation_applicants_path(organisation)
+        expect(page).to have_content("📅 Convoquer")
+        expect(page).not_to have_css("div[data-action='mouseover->tooltip#disabledConvocationButton']")
+        expect(page).to have_link("📅 Convoquer", href: expected_link)
       end
     end
 
