@@ -30,9 +30,6 @@ Rails.application.routes.draw do
         resources :uploads, only: [:new]
       end
       resources :invitations, only: [:create]
-      resources :configurations, only: [] do
-        resources :rdv_contexts, only: [:create]
-      end
     end
     # we need to nest in organisations the different configurations record to correctly authorize them
     resources :configurations, only: [:index, :show, :new, :create, :edit, :update, :destroy]
@@ -78,9 +75,6 @@ Rails.application.routes.draw do
       resources :invitations, only: [:create]
       resources :applicants_organisations, only: [:index]
       resources :referent_assignations, only: [:index]
-      resources :configurations, only: [] do
-        resources :rdv_contexts, only: [:create]
-      end
     end
     resource :applicants_organisations, only: [:create, :destroy]
     resource :referent_assignations, only: [:create, :destroy]
