@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_13_095607) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_13_163040) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -316,7 +316,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_13_095607) do
     t.index ["status"], name: "index_rdvs_on_status"
   end
 
-  create_table "referent_assignations", id: false, force: :cascade do |t|
+  create_table "referent_assignations", force: :cascade do |t|
     t.bigint "applicant_id", null: false
     t.bigint "agent_id", null: false
     t.index ["applicant_id", "agent_id"], name: "index_referent_assignations_on_applicant_id_and_agent_id", unique: true
