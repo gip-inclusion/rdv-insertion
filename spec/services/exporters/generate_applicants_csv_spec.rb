@@ -26,7 +26,8 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
       rights_opening_date: "18/05/2022",
       created_at: "20/05/2022",
       role: "demandeur",
-      organisations: [organisation]
+      organisations: [organisation],
+      referents: [referent]
     )
   end
   let(:applicant2) { create(:applicant, last_name: "Casubolo", organisations: [organisation]) }
@@ -51,6 +52,9 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
                     motif_category: motif_category, participations: [participation_rdv],
                     applicant: applicant1, status: "rdv_needs_status_update"
     )
+  end
+  let!(:referent) do
+    create(:agent, email: "monreferent@gouv.fr")
   end
 
   let!(:applicants) { Applicant.where(id: [applicant1, applicant2, applicant3]) }
@@ -108,6 +112,7 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
         expect(csv).to include("Dernier RDV pris en autonomie ?")
         expect(csv).to include("RDV honoré en - de 30 jours ?")
         expect(csv).to include("Date d'orientation")
+        expect(csv).to include("Référent(s)")
         expect(csv).to include("Nombre d'organisations")
         expect(csv).to include("Nom des organisations")
       end
@@ -167,6 +172,10 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
         it "displays the organisation infos" do
           expect(csv).to include("1")
           expect(csv).to include("Drome RSA")
+        end
+
+        it "displays the referent emails" do
+          expect(csv).to include("monreferent@gouv.fr")
         end
 
         context "when the applicant is archived" do

@@ -50,6 +50,7 @@ module Exporters
        "Date d'orientation",
        Archive.human_attribute_name(:created_at),
        Archive.human_attribute_name(:archiving_reason),
+       Applicant.human_attribute_name(:referents),
        "Nombre d'organisations",
        "Nom des organisations"]
     end
@@ -78,6 +79,7 @@ module Exporters
        display_date(applicant.first_seen_rdv_starts_at),
        display_date(applicant.archive_for(department_id)&.created_at),
        applicant.archive_for(department_id)&.archiving_reason,
+       applicant.referents.map(&:email).join(", "),
        applicant.organisations.to_a.count,
        applicant.organisations.map(&:name).join(", ")]
     end

@@ -48,7 +48,7 @@ class ReferentAssignationsController < ApplicationController
   end
 
   def set_applicant
-    @applicant = policy_scope(Applicant).includes(:agents).find(applicant_id)
+    @applicant = policy_scope(Applicant).includes(:referents).find(applicant_id)
   end
 
   def set_department

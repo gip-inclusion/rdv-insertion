@@ -8,7 +8,7 @@ describe Applicants::RemoveReferent, type: :service do
   end
 
   let!(:agent) { create(:agent) }
-  let!(:applicant) { create(:applicant, agents: [agent]) }
+  let!(:applicant) { create(:applicant, referents: [agent]) }
   let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
 
   describe "#call" do
@@ -27,7 +27,7 @@ describe Applicants::RemoveReferent, type: :service do
 
     it "removes the agent from the applicant" do
       subject
-      expect(applicant.reload.agents).not_to include(agent)
+      expect(applicant.reload.referents).to eq([])
     end
 
     context "when it fails to remove referent through API" do
@@ -46,7 +46,7 @@ describe Applicants::RemoveReferent, type: :service do
 
       it "does not remove the agent to the applicant" do
         subject
-        expect(applicant.reload.agents).to include(agent)
+        expect(applicant.reload.referents).to include(agent)
       end
 
       it "outputs an error" do

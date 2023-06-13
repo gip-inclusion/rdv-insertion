@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_17_100211) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_06_084749) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -41,12 +41,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_17_100211) do
     t.boolean "super_admin", default: false
     t.index ["email"], name: "index_agents_on_email", unique: true
     t.index ["rdv_solidarites_agent_id"], name: "index_agents_on_rdv_solidarites_agent_id", unique: true
-  end
-
-  create_table "agents_applicants", id: false, force: :cascade do |t|
-    t.bigint "applicant_id", null: false
-    t.bigint "agent_id", null: false
-    t.index ["applicant_id", "agent_id"], name: "index_agents_applicants_on_applicant_id_and_agent_id", unique: true
   end
 
   create_table "applicants", force: :cascade do |t|
@@ -320,6 +314,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_17_100211) do
     t.index ["organisation_id"], name: "index_rdvs_on_organisation_id"
     t.index ["rdv_solidarites_rdv_id"], name: "index_rdvs_on_rdv_solidarites_rdv_id", unique: true
     t.index ["status"], name: "index_rdvs_on_status"
+  end
+
+  create_table "referent_assignations", id: false, force: :cascade do |t|
+    t.bigint "applicant_id", null: false
+    t.bigint "agent_id", null: false
+    t.index ["applicant_id", "agent_id"], name: "index_referent_assignations_on_applicant_id_and_agent_id", unique: true
   end
 
   create_table "stats", force: :cascade do |t|

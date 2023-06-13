@@ -8,6 +8,7 @@ describe Organisations::Create, type: :service do
   end
 
   let!(:rdv_solidarites_organisation_id) { 1717 }
+  let!(:webhook_endpoint_id) { 171_717 }
   let!(:department) { create(:department) }
   let!(:organisation) do
     build(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
@@ -21,19 +22,26 @@ describe Organisations::Create, type: :service do
   let!(:agent_roles_count_before) { AgentRole.count }
 
   let(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
+  let!(:rdv_solidarites_session_credentials) do
+    { "client" => "someclient", "uid" => "janedoe@gouv.fr", "access_token" => "sometoken" }.symbolize_keys
+  end
 
   describe "#call" do
     before do
       allow(RdvSolidaritesApi::RetrieveOrganisation).to receive(:call)
         .and_return(OpenStruct.new(success?: true, organisation: organisation_from_rdvs))
       allow(RdvSolidaritesApi::CreateWebhookEndpoint).to receive(:call)
-        .and_return(OpenStruct.new(success?: true))
+        .and_return(OpenStruct.new(success?: true, webhook_endpoint_id: webhook_endpoint_id))
       allow(RdvSolidaritesApi::UpdateWebhookEndpoint).to receive(:call)
         .and_return(OpenStruct.new(success?: true))
       allow(RdvSolidaritesApi::RetrieveWebhookEndpoint).to receive(:call)
         .and_return(OpenStruct.new(success?: true, webhook_endpoint: nil))
       allow(RdvSolidaritesApi::UpdateOrganisation).to receive(:call)
         .and_return(OpenStruct.new(success?: true))
+      allow(rdv_solidarites_session).to receive(:to_h)
+        .and_return(rdv_solidarites_session_credentials)
+      allow(RdvSolidaritesWebhooks::TriggerEndpointJob).to receive(:perform_async)
+        .with(webhook_endpoint_id, rdv_solidarites_organisation_id, rdv_solidarites_session_credentials)
     end
 
     it "is a success" do
@@ -88,6 +96,12 @@ describe Organisations::Create, type: :service do
       subject
     end
 
+    it "calls the TriggerEndpointJob" do
+      expect(RdvSolidaritesWebhooks::TriggerEndpointJob).to receive(:perform_async)
+        .with(webhook_endpoint_id, rdv_solidarites_organisation_id, rdv_solidarites_session_credentials)
+      subject
+    end
+
     context "when the organisation has no rdv solidarites id" do
       let!(:organisation) do
         build(:organisation, rdv_solidarites_organisation_id: nil, name: nil, phone_number: nil, department: department)
@@ -99,6 +113,10 @@ describe Organisations::Create, type: :service do
 
       it "stores the error" do
         expect(subject.errors).to eq(["L'ID de l'organisation RDV-Solidarités n'a pas été renseigné correctement"])
+      end
+
+      it "does not call the TriggerEndpointJob" do
+        expect(RdvSolidaritesWebhooks::TriggerEndpointJob).not_to receive(:perform_async)
       end
     end
 
@@ -117,6 +135,10 @@ describe Organisations::Create, type: :service do
       it "stores the error" do
         expect(subject.errors).to eq(["some error"])
       end
+
+      it "does not call the TriggerEndpointJob" do
+        expect(RdvSolidaritesWebhooks::TriggerEndpointJob).not_to receive(:perform_async)
+      end
     end
 
     context "when the rdv solidarites organisation update fails" do
@@ -131,6 +153,10 @@ describe Organisations::Create, type: :service do
 
       it "stores the error" do
         expect(subject.errors).to eq(["some error"])
+      end
+
+      it "does not call the TriggerEndpointJob" do
+        expect(RdvSolidaritesWebhooks::TriggerEndpointJob).not_to receive(:perform_async)
       end
     end
 
@@ -148,6 +174,10 @@ describe Organisations::Create, type: :service do
 
       it "stores the error" do
         expect(subject.errors).to eq(["some error"])
+      end
+
+      it "does not call the TriggerEndpointJob" do
+        expect(RdvSolidaritesWebhooks::TriggerEndpointJob).not_to receive(:perform_async)
       end
     end
 
@@ -182,6 +212,10 @@ describe Organisations::Create, type: :service do
 
         it "stores the error" do
           expect(subject.errors).to eq(["some error"])
+        end
+
+        it "does not call the TriggerEndpointJob" do
+          expect(RdvSolidaritesWebhooks::TriggerEndpointJob).not_to receive(:perform_async)
         end
       end
     end
