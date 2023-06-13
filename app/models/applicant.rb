@@ -22,7 +22,6 @@ class Applicant < ApplicationRecord
   before_save :format_phone_number
 
   has_and_belongs_to_many :organisations
-  has_and_belongs_to_many :agents
 
   has_many :rdv_contexts, dependent: :destroy
   has_many :invitations, dependent: :destroy
