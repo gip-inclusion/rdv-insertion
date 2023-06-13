@@ -94,7 +94,11 @@
         </div>
       <% end %>
       <div class="m-2 p-2 text-center">
-        <%= render "close_rdv_context_button", rdv_context: rdv_context, applicant: @applicant, organisation: @organisation, department: @department %>
+        <% if rdv_context.status == "closed" %>
+          <%= render "reopen_rdv_context_button", rdv_context: rdv_context, applicant: @applicant, organisation: @organisation, department: @department %>
+        <% else %>
+          <%= render "close_rdv_context_button", rdv_context: rdv_context, applicant: @applicant, organisation: @organisation, department: @department %>
+        <% end %>
       </div>
     </div>
   </div>
