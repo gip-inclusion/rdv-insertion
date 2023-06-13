@@ -12,8 +12,10 @@ class UploadsController < ApplicationController
   private
 
   def set_organisation
-    @organisation = department_level? ? nil : Organisation.find(params[:organisation_id])
-    authorize @organisation, :upload? unless department_level?
+    return if department_level?
+
+    @organisation = Organisation.find(params[:organisation_id])
+    authorize @organisation, :upload?
   end
 
   def set_department

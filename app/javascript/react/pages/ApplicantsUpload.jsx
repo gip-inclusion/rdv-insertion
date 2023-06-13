@@ -45,9 +45,15 @@ export default function ApplicantsUpload({
   );
 
   const redirectToApplicantList = () => {
-    window.location.href = isDepartmentLevel
-      ? `/departments/${department.id}/applicants`
-      : `/organisations/${organisation.id}/applicants`;
+    if (configuration) {
+      window.location.href = isDepartmentLevel
+        ? `/departments/${department.id}/applicants?motif_category_id=${configuration.motif_category_id}`
+        : `/organisations/${organisation.id}/applicants?motif_category_id=${configuration.motif_category_id}`;
+    } else {
+      window.location.href = isDepartmentLevel
+        ? `/departments/${department.id}/applicants`
+        : `/organisations/${organisation.id}/applicants`;
+    }
   };
 
   const retrieveApplicantsFromList = async (file) => {
