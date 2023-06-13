@@ -30,7 +30,7 @@ module Applicants::Filterable
   def filter_applicants_by_current_agent
     return unless params[:filter_by_current_agent] == "true"
 
-    @applicants = @applicants.joins(:agents).where(agents: current_agent)
+    @applicants = @applicants.joins(:referents).where(referents: { id: current_agent.id })
   end
 
   def filter_applicants_by_search_query

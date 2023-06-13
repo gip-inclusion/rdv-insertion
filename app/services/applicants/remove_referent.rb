@@ -8,7 +8,7 @@ module Applicants
 
     def call
       Applicant.transaction do
-        @applicant.agents.delete(@agent)
+        @applicant.referents.delete(@agent)
         delete_rdv_solidarites_referent_assignation
       end
     end

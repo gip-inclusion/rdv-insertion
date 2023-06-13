@@ -21,7 +21,7 @@ describe RdvSolidaritesWebhooks::ProcessReferentAssignationJob do
   end
 
   let!(:applicant) do
-    create(:applicant, rdv_solidarites_user_id: rdv_solidarites_user_id, agents: [agent])
+    create(:applicant, rdv_solidarites_user_id: rdv_solidarites_user_id, referents: [agent])
   end
 
   let!(:agent) { create(:agent, rdv_solidarites_agent_id: rdv_solidarites_agent_id) }
@@ -29,17 +29,17 @@ describe RdvSolidaritesWebhooks::ProcessReferentAssignationJob do
   describe "#call" do
     it "removes the agent from the applicant" do
       subject
-      expect(applicant.reload.agents).to eq([])
+      expect(applicant.reload.referents).to eq([])
     end
 
     context "when the applicant cannot be found" do
       let!(:applicant) do
-        create(:applicant, rdv_solidarites_user_id: "some-id", agents: [agent])
+        create(:applicant, rdv_solidarites_user_id: "some-id", referents: [agent])
       end
 
       it "does not remove the organisation from the applicant" do
         subject
-        expect(applicant.reload.agents).to eq([agent])
+        expect(applicant.reload.referents).to eq([agent])
       end
     end
 
@@ -54,7 +54,7 @@ describe RdvSolidaritesWebhooks::ProcessReferentAssignationJob do
 
       it "does not remove the agent from the applicant" do
         subject
-        expect(applicant.reload.agents).to eq([agent])
+        expect(applicant.reload.referents).to eq([agent])
       end
 
       it "sends a notification to mattermost" do
@@ -77,7 +77,7 @@ describe RdvSolidaritesWebhooks::ProcessReferentAssignationJob do
 
       it "does not remove the agent from the applicant" do
         subject
-        expect(applicant.reload.agents).to eq([agent])
+        expect(applicant.reload.referents).to eq([agent])
       end
     end
 
@@ -91,12 +91,12 @@ describe RdvSolidaritesWebhooks::ProcessReferentAssignationJob do
 
       context "when the applicant does not belong to the org" do
         let!(:applicant) do
-          create(:applicant, rdv_solidarites_user_id: rdv_solidarites_user_id, agents: [])
+          create(:applicant, rdv_solidarites_user_id: rdv_solidarites_user_id, referents: [])
         end
 
         it "adds the agent to the applicant" do
           subject
-          expect(applicant.reload.agents.ids).to eq([agent.id])
+          expect(applicant.reload.referents.ids).to eq([agent.id])
         end
       end
     end

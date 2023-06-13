@@ -28,11 +28,13 @@ class Applicant < ApplicationRecord
   has_many :invitations, dependent: :destroy
   has_many :participations, dependent: :destroy
   has_many :archives, dependent: :destroy
+  has_many :referent_assignations, dependent: :destroy
 
   has_many :rdvs, through: :participations
   has_many :notifications, through: :participations
   has_many :configurations, through: :organisations
   has_many :motif_categories, through: :rdv_contexts
+  has_many :referents, through: :referent_assignations, source: :agent
 
   validates :last_name, :first_name, :title, presence: true
   validates :email, allow_blank: true, format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/ }
@@ -111,7 +113,7 @@ class Applicant < ApplicationRecord
       invitations: invitations,
       organisations: organisations,
       rdv_contexts: rdv_contexts,
-      agents: agents,
+      referents: referents,
       archives: archives
     )
   end
