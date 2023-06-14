@@ -111,7 +111,7 @@ describe "Agents can convene applicant to rdv", js: true do
       end
 
       it "shows a link to convene the applicant" do
-        visit organisation_applicants_path(organisation)
+        visit organisation_applicants_path(organisation, motif_category_id: motif_category.id)
         expect(page).to have_content("📅 Convoquer")
         expect(page).not_to have_css("div[data-action='mouseover->tooltip#disabledConvocationButton']")
         expect(page).to have_link("📅 Convoquer", href: expected_link)
@@ -124,7 +124,7 @@ describe "Agents can convene applicant to rdv", js: true do
       end
 
       it "shows a link to convene the applicant" do
-        visit organisation_applicants_path(organisation)
+        visit organisation_applicants_path(organisation, motif_category_id: motif_category.id)
         expect(page).to have_content("📅 Convoquer")
         expect(page).not_to have_css("div[data-action='mouseover->tooltip#disabledConvocationButton']")
         expect(page).to have_link("📅 Convoquer", href: expected_link)
@@ -137,7 +137,7 @@ describe "Agents can convene applicant to rdv", js: true do
       end
 
       it "shows a link to convene the applicant" do
-        visit organisation_applicants_path(organisation)
+        visit organisation_applicants_path(organisation, motif_category_id: motif_category.id)
         expect(page).to have_content("📅 Convoquer")
         expect(page).not_to have_css("div[data-action='mouseover->tooltip#disabledConvocationButton']")
         expect(page).to have_link("📅 Convoquer", href: expected_link)
