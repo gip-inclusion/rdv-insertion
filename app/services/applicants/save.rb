@@ -10,7 +10,6 @@ module Applicants
       Applicant.transaction do
         assign_organisation
         save_record!(@applicant)
-        create_rdv_contexts
         upsert_rdv_solidarites_user
         assign_rdv_solidarites_user_id unless @applicant.rdv_solidarites_user_id?
       end
@@ -20,15 +19,6 @@ module Applicants
 
     def assign_organisation
       @applicant.organisations = (@applicant.organisations.to_a + [@organisation]).uniq
-    end
-
-    # we link the applicant to all the motif categories the organisation can invite to
-    def create_rdv_contexts
-      RdvContext.with_advisory_lock "setting_rdv_context_for_applicant_#{@applicant.id}" do
-        @organisation.motif_categories.each do |motif_category|
-          RdvContext.find_or_create_by!(motif_category: motif_category, applicant: @applicant)
-        end
-      end
     end
 
     def upsert_rdv_solidarites_user

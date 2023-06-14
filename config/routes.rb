@@ -28,6 +28,7 @@ Rails.application.routes.draw do
     resources :applicants, only: [:index, :create, :show, :update, :edit, :new] do
       collection do
         resources :uploads, only: [:new]
+        get "uploads/category_selection", to: "uploads#category_selection"
       end
       resources :invitations, only: [:create]
     end
@@ -69,7 +70,10 @@ Rails.application.routes.draw do
   resources :departments, only: [] do
     resources :department_organisations, only: [:index], as: :organisations, path: "/organisations"
     resources :applicants, only: [:index, :new, :create, :show, :edit, :update] do
-      collection { resources :uploads, only: [:new] }
+      collection do
+        resources :uploads, only: [:new]
+        get "uploads/category_selection", to: "uploads#category_selection"
+      end
       resources :invitations, only: [:create]
       resources :applicants_organisations, only: [:index]
       resources :referent_assignations, only: [:index]

@@ -47,12 +47,6 @@ describe Applicants::Save, type: :service do
       subject
     end
 
-    it "finds or create a rdv context" do
-      expect(RdvContext).to receive(:find_or_create_by!)
-        .with(applicant: applicant, motif_category: motif_category)
-      subject
-    end
-
     it "upserts a rdv solidarites user" do
       expect(UpsertRdvSolidaritesUser).to receive(:call)
         .with(
