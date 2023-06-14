@@ -1,7 +1,8 @@
 class Organisation < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [:name, :phone_number, :email].freeze
+  SEARCH_ATTRIBUTES = [:name, :slug].freeze
 
-  include PgSearch::Model
+  include Searchable
   include HasLogo
 
   validates :rdv_solidarites_organisation_id, uniqueness: true, allow_nil: true
@@ -24,12 +25,6 @@ class Organisation < ApplicationRecord
   has_many :motif_categories, through: :configurations
 
   delegate :name, :name_with_region, :number, to: :department, prefix: true
-
-  pg_search_scope(
-    :search_by_text,
-    using: { tsearch: { prefix: true } },
-    against: [:name, :slug]
-  )
 
   def rdv_solidarites_url
     "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{rdv_solidarites_organisation_id}"

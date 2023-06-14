@@ -35,7 +35,7 @@ module Applicants
     end
 
     def find_applicant_by_email
-      return if @attributes[:email].blank?
+      return if @attributes[:email].blank? || @attributes[:first_name].blank?
 
       Applicant.active.where(email: @attributes[:email]).find do |applicant|
         applicant.first_name.split.first.downcase == @attributes[:first_name].split.first.downcase
@@ -44,7 +44,7 @@ module Applicants
 
     def find_applicant_by_phone_number
       phone_number_formatted = PhoneNumberHelper.format_phone_number(@attributes[:phone_number])
-      return if phone_number_formatted.blank?
+      return if phone_number_formatted.blank? || @attributes[:first_name].blank?
 
       Applicant.active.where(phone_number: phone_number_formatted).find do |applicant|
         applicant.first_name.split.first.downcase == @attributes[:first_name].split.first.downcase

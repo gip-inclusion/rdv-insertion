@@ -156,4 +156,13 @@ export default class extends Controller {
       });
     }
   }
+
+  noCategorySelected() {
+    tippy(this.element, {
+      content:
+        "L'allocataire apparaitra dans l'onglet 'Tous les contacts' seulement. " +
+        "En choisissant cette option vous ne pourrez pas inviter l'allocataire à prendre rdv à l'upload du fichier " +
+        "(mais vous pourrez le faire ultérieurement en accédant à sa fiche).",
+    });
+  }
 }

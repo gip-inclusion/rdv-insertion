@@ -10,21 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_06_084749) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_13_163040) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "agent_roles", force: :cascade do |t|
-    t.integer "level", default: 0, null: false
+    t.integer "access_level", default: 0, null: false
     t.bigint "agent_id", null: false
     t.bigint "organisation_id", null: false
     t.bigint "rdv_solidarites_agent_role_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "last_webhook_update_received_at"
+    t.index ["access_level"], name: "index_agent_roles_on_access_level"
     t.index ["agent_id", "organisation_id"], name: "index_agent_roles_on_agent_id_and_organisation_id", unique: true
     t.index ["agent_id"], name: "index_agent_roles_on_agent_id"
-    t.index ["level"], name: "index_agent_roles_on_level"
     t.index ["organisation_id"], name: "index_agent_roles_on_organisation_id"
     t.index ["rdv_solidarites_agent_role_id"], name: "index_agent_roles_on_rdv_solidarites_agent_role_id", unique: true
   end
@@ -316,7 +316,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_06_084749) do
     t.index ["status"], name: "index_rdvs_on_status"
   end
 
-  create_table "referent_assignations", id: false, force: :cascade do |t|
+  create_table "referent_assignations", force: :cascade do |t|
     t.bigint "applicant_id", null: false
     t.bigint "agent_id", null: false
     t.index ["applicant_id", "agent_id"], name: "index_referent_assignations_on_applicant_id_and_agent_id", unique: true
