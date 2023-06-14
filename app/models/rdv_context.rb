@@ -6,11 +6,14 @@ class RdvContext < ApplicationRecord
 
   belongs_to :applicant
   belongs_to :motif_category
-  has_many :invitations, dependent: :nullify
+  has_many :invitations, dependent: :destroy
   has_many :participations, dependent: :nullify
 
   has_many :rdvs, through: :participations
   has_many :notifications, through: :participations
+
+  validates :applicant, uniqueness: { scope: :motif_category,
+                                      message: "est déjà suivi pour cette catégorie de motif" }
 
   delegate :position, :name, :short_name, to: :motif_category, prefix: true
 

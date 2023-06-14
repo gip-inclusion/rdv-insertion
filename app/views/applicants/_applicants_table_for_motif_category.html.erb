@@ -39,7 +39,7 @@
         <% end %>
         <% if show_convocation?(@current_configuration) %>
           <% if should_convene_for?(rdv_context, @current_configuration) %>
-            <td><%= render "convocation_button", applicant: applicant, convocation_motif: @convocation_motifs_by_applicant[applicant] %></td>
+            <td><%= render "rdv_contexts/convocation_button", applicant: applicant, convocation_motif: @convocation_motifs_by_applicant[applicant] %></td>
           <% else %>
             <td><%= display_attribute format_date(rdv_context.last_sent_convocation_sent_at) %></td>
           <% end %>

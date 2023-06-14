@@ -1,4 +1,4 @@
-<div class="d-flex align-items-center context-header">
+<div class="d-flex align-items-center context-header" id=<%= dom_id(rdv_context) %>>
   <span></span>
   <h5 class="text-center px-2 py-4">
     <strong><%= configuration.motif_category_name %></strong>
@@ -60,7 +60,7 @@
               <% if convocable_participations.present? %>
                 <td class="px-4 py-2">
                   <% if participation.convocable? %>
-                    <%= render("convocations", applicant: @applicant, participation: participation, sms_convocations: participation.sent_sms_convocations, email_convocations: participation.sent_email_convocations) %>
+                    <%= render("rdv_contexts/convocations", applicant: @applicant, participation: participation, sms_convocations: participation.sent_sms_convocations, email_convocations: participation.sent_email_convocations) %>
                   <% else %>
                     -
                   <% end %>
@@ -90,14 +90,14 @@
       </table>
       <% if should_convene_for?(rdv_context, configuration) %>
         <div class="m-2 p-2 text-center">
-          <%= render "convocation_button", applicant: @applicant, convocation_motif: @convocation_motifs_by_rdv_context[rdv_context] %>
+          <%= render "rdv_contexts/convocation_button", applicant: @applicant, convocation_motif: @convocation_motifs_by_rdv_context[rdv_context] %>
         </div>
       <% end %>
       <div class="m-2 p-2 text-center">
         <% if rdv_context.status == "closed" %>
-          <%= render "reopen_rdv_context_button", rdv_context: rdv_context, applicant: @applicant, organisation: @organisation, department: @department %>
+          <%= render "rdv_contexts/reopen_rdv_context_button", rdv_context: rdv_context, applicant: @applicant, organisation: @organisation, department: @department %>
         <% else %>
-          <%= render "close_rdv_context_button", rdv_context: rdv_context, applicant: @applicant, organisation: @organisation, department: @department %>
+          <%= render "rdv_contexts/close_rdv_context_button", rdv_context: rdv_context, applicant: @applicant, organisation: @organisation, department: @department %>
         <% end %>
       </div>
     </div>

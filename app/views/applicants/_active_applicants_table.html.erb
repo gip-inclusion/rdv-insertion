@@ -1,0 +1,35 @@
+<table class="table table-hover table-responsive">
+  <thead class="text-dark-blue">
+    <th scope="col">Nom</th>
+    <th scope="col">Prénom</th>
+    <th scope="col">Date de création</th>
+    <% @all_configurations.each do |configuration| %>
+      <th scope="col"><%= configuration.motif_category_name %></th>
+    <% end %>
+    <th scope="col"></th>
+  </thead>
+  <tbody class="align-middle">
+    <% @applicants.each do |applicant| %>
+      <tr>
+        <td><%= display_attribute applicant.last_name %></td>
+        <td><%= display_attribute applicant.first_name %></td>
+        <td><%= display_attribute format_date(applicant.created_at) %></td>
+        <% @all_configurations.each do |configuration| %>
+          <% rdv_context = applicant.rdv_context_for(configuration.motif_category) %>
+          <% if rdv_context %>
+            <%= render "rdv_contexts/rdv_context_status_cell", rdv_context: rdv_context, configuration: configuration %>
+          <% else %>
+            <td id=<%= dom_id(configuration.motif_category, "applicant_#{applicant.id}") %>>
+              <%= render "rdv_contexts/new_button", applicant: applicant, configuration: configuration, organisation: @organisation, department: @department, turbo: true, button_text: "Ajouter" %>
+            </td>
+          <% end %>
+        <% end %>
+        <td class="padding-left-15">
+          <%= link_to compute_show_path(applicant, @organisation, @department) do %>
+            <button class="btn btn-blue">Gérer</button>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

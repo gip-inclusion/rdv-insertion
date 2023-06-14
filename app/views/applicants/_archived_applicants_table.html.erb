@@ -2,6 +2,7 @@
   <thead class="text-dark-blue">
     <th scope="col">Nom</th>
     <th scope="col">Prénom</th>
+    <th scope="col">Date de création</th>
     <th scope="col">Première invitation</th>
     <th scope="col">Dernière invitation</th>
     <th scope="col">Archivé le</th>
@@ -13,6 +14,7 @@
       <tr class="table-danger">
         <td><%= display_attribute applicant.last_name %></td>
         <td><%= display_attribute applicant.first_name %></td>
+        <td><%= display_attribute format_date(applicant.created_at) %></td>
         <td><%= display_attribute format_date(applicant.first_invitation_relative_to_last_participation_sent_at) %></td>
         <td><%= display_attribute(format_date(applicant.last_invitation_sent_at)) %></td>
         <td><%= display_attribute format_date(applicant.archive_for(@department.id).created_at) %></td>

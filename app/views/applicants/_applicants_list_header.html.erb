@@ -1,7 +1,7 @@
 <div class="row mb-4 card-white justify-content-center">
   <div class="col-4 justify-content-center">
     <div class="mb-1">
-      <% unless archived_scope?(@applicants_scope) %>
+      <% if @current_configuration.present? %>
         <%=
           select(
             "applicant", "status", options_for_select_status(@statuses_count),
@@ -11,7 +11,8 @@
         %>
       <% end %>
     </div>
-    <%= render "filter_by_invitations_dates_button" %>
+    <%= render "filter_by_creation_dates_button" if @current_configuration.nil? %>
+    <%= render "filter_by_invitations_dates_button" if @current_configuration.present? || archived_scope?(@applicants_scope) %>
     <%= render 'search_form', url: compute_index_path(@organisation, @department) %>
 
     <div class="d-flex justify-content-between mt-1">
@@ -20,7 +21,7 @@
         <div class="mt-1">
           <%= check_box("applicants_list", "filter_by_current_agent", class: "js-filter-by-current-agent-checkbox") %> Dont je suis référent
         </div>
-        <% unless archived_scope?(@applicants_scope) %>
+        <% if @current_configuration.present? %>
           <div class="mt-1">
             <%= check_box("applicants_list", "action_required", class: "js-action-required-checkbox") %> Une intervention est nécessaire
             <small>

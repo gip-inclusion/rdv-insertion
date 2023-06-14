@@ -1,4 +1,7 @@
 <ul class="nav nav-tabs">
+  <li class="nav-item">
+    <%= link_to "Tous les contacts", compute_index_path(@organisation, @department), class: "nav-link #{@current_configuration.present? || archived_scope?(@applicants_scope) ? '' : 'active'}" %>
+  </li>
   <% @all_configurations.each do |configuration| %>
     <li class="nav-item">
       <%= link_to configuration.motif_category_name, compute_index_path(@organisation, @department, motif_category_id: configuration.motif_category_id), class: "nav-link #{configuration.id == @current_configuration&.id ? 'active' : ''}"%>

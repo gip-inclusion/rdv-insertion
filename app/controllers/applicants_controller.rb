@@ -187,13 +187,10 @@ class ApplicantsController < ApplicationController
 
   def set_current_configuration
     return if archived_scope?
+    return unless params[:motif_category_id]
 
     @current_configuration =
-      if params[:motif_category_id].present?
-        @all_configurations.find { |c| c.motif_category_id == params[:motif_category_id].to_i }
-      else
-        @all_configurations.first
-      end
+      @all_configurations.find { |c| c.motif_category_id == params[:motif_category_id].to_i }
   end
 
   def set_current_motif_category
@@ -220,20 +217,32 @@ class ApplicantsController < ApplicationController
   end
 
   def set_applicants
-    archived_scope? ? set_archived_applicants : set_applicants_for_motif_category
+    if archived_scope?
+      set_archived_applicants
+    elsif @current_motif_category
+      set_applicants_for_motif_category
+    else
+      set_all_active_applicants
+    end
+  end
+
+  def set_all_active_applicants
+    @applicants = policy_scope(Applicant)
+                  .preload(rdv_contexts: [:invitations])
+                  .active.distinct
+                  .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
+                  .where.not(id: @department.archived_applicants.ids)
   end
 
   def set_applicants_for_motif_category
     @applicants = policy_scope(Applicant)
-                  .preload(
-                    :organisations,
-                    rdv_contexts: [:notifications, :invitations]
-                  )
+                  .preload(rdv_contexts: [:notifications, :invitations])
                   .active.distinct
                   .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
                   .where.not(id: @department.archived_applicants.ids)
                   .joins(:rdv_contexts)
                   .where(rdv_contexts: { motif_category: @current_motif_category })
+                  .where.not(rdv_contexts: { status: "closed" })
   end
 
   def set_archived_applicants

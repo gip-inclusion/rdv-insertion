@@ -107,7 +107,7 @@ export default class extends Controller {
   closeRdvContextButton() {
     tippy(this.element, {
       content:
-        "Le statut du bénéficiaire dans ce contexte passera en «Dossier traité» et ses invitations seront désactivées.",
+        "Le statut du bénéficiaire dans ce contexte passera en «Dossier traité» et ses invitations seront désactivées. Il n'apparaîtra plus dans la liste de suivi de ce contexte, mais restera visible dans l'onglet «Tous les contacts».",
       placement: "bottom",
     });
   }

@@ -1,0 +1,32 @@
+<%= render "common/remote_modal", title: "Filtrer par date de création" do %>
+  <%= form_with method: :get, local: true, url: compute_index_path(@organisation, @department), data: { "turbo-frame" => "_top" } do |form| %>
+    <% url_params.except(:creation_date_after, :creation_date_before).each do |key, value| %>
+      <%= form.hidden_field key, value: value %>
+    <% end %>
+
+    <p class="mb-2">Date de création</p>
+    <div class="d-flex mb-3">
+      <%= form.text_field :creation_date_after,
+        class: "w-50 form-control bg-white text-center",
+        placeholder: "du",
+        data: {
+          controller: "flatpickr",
+          flatpickr_date_format: "d-m-Y",
+          flatpickr_min_date: "2021/04/01",
+          flatpickr_max_date: Date.today
+        } %>
+      <%= form.text_field :creation_date_before,
+        class: "w-50 form-control bg-white text-center",
+        placeholder: "au",
+        data: {
+          controller: "flatpickr",
+          flatpickr_date_format: "d-m-Y",
+          flatpickr_min_date: "2021/04/01",
+          flatpickr_max_date: Date.today
+        } %>
+    </div>
+    <div class="d-flex justify-content-center mt-4">
+      <%= form.submit "Valider", name: nil, class: "btn btn-blue-out" %>
+    </div>
+  <% end %>
+<% end %>

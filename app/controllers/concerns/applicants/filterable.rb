@@ -6,6 +6,8 @@ module Applicants::Filterable
     filter_applicants_by_action_required
     filter_applicants_by_current_agent
     filter_applicants_by_status
+    filter_applicants_by_creation_date_after
+    filter_applicants_by_creation_date_before
     filter_applicants_by_first_invitations
     filter_applicants_by_last_invitations
     filter_applicants_by_page
@@ -42,6 +44,18 @@ module Applicants::Filterable
     return if request.format == "csv"
 
     @applicants = @applicants.page(page)
+  end
+
+  def filter_applicants_by_creation_date_after
+    return if params[:creation_date_after].blank?
+
+    @applicants = @applicants.where("applicants.created_at > ?", params[:creation_date_after].to_date.end_of_day)
+  end
+
+  def filter_applicants_by_creation_date_before
+    return if params[:creation_date_before].blank?
+
+    @applicants = @applicants.where("applicants.created_at < ?", params[:creation_date_before].to_date.end_of_day)
   end
 
   def filter_applicants_by_first_invitations

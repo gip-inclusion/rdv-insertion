@@ -66,7 +66,7 @@ describe "Agents can convene applicant to rdv", js: true do
 
   describe "from #index" do
     it "shows a link to convene the applicant" do
-      visit organisation_applicants_path(organisation)
+      visit organisation_applicants_path(organisation, motif_category_id: motif_category.id)
       expect(page).to have_content("📅 Convoquer")
       expect(page).not_to have_css("div[data-action='mouseover->tooltip#disabledConvocationButton']")
       expect(page).to have_link("📅 Convoquer", href: expected_link)
@@ -76,7 +76,7 @@ describe "Agents can convene applicant to rdv", js: true do
       before { motif.update! name: "regular motif" }
 
       it "shows a disabled button to convene the applicant" do
-        visit organisation_applicants_path(organisation)
+        visit organisation_applicants_path(organisation, motif_category_id: motif_category.id)
         expect(page).to have_content("📅 Convoquer")
         expect(page).not_to have_link("📅 Convoquer")
         expect(page).to have_css("div[data-action='mouseover->tooltip#disabledConvocationButton']")
@@ -87,7 +87,7 @@ describe "Agents can convene applicant to rdv", js: true do
       let!(:invitation) { create(:invitation, rdv_context: rdv_context, sent_at: 3.days.ago) }
 
       it "does not show a convocation button" do
-        visit organisation_applicants_path(organisation)
+        visit organisation_applicants_path(organisation, motif_category_id: motif_category.id)
         expect(page).not_to have_content("📅 Convoquer")
       end
     end
@@ -100,7 +100,7 @@ describe "Agents can convene applicant to rdv", js: true do
       it "does not show a convocation button" do
         rdv_context.set_status
         rdv_context.save!
-        visit organisation_applicants_path(organisation)
+        visit organisation_applicants_path(organisation, motif_category_id: motif_category.id)
         expect(page).not_to have_content("📅 Convoquer")
       end
     end
@@ -111,7 +111,7 @@ describe "Agents can convene applicant to rdv", js: true do
       end
 
       it "shows a link to convene the applicant" do
-        visit organisation_applicants_path(organisation)
+        visit organisation_applicants_path(organisation, motif_category_id: motif_category.id)
         expect(page).to have_content("📅 Convoquer")
         expect(page).not_to have_css("div[data-action='mouseover->tooltip#disabledConvocationButton']")
         expect(page).to have_link("📅 Convoquer", href: expected_link)
@@ -124,7 +124,7 @@ describe "Agents can convene applicant to rdv", js: true do
       end
 
       it "shows a link to convene the applicant" do
-        visit organisation_applicants_path(organisation)
+        visit organisation_applicants_path(organisation, motif_category_id: motif_category.id)
         expect(page).to have_content("📅 Convoquer")
         expect(page).not_to have_css("div[data-action='mouseover->tooltip#disabledConvocationButton']")
         expect(page).to have_link("📅 Convoquer", href: expected_link)
@@ -137,7 +137,7 @@ describe "Agents can convene applicant to rdv", js: true do
       end
 
       it "shows a link to convene the applicant" do
-        visit organisation_applicants_path(organisation)
+        visit organisation_applicants_path(organisation, motif_category_id: motif_category.id)
         expect(page).to have_content("📅 Convoquer")
         expect(page).not_to have_css("div[data-action='mouseover->tooltip#disabledConvocationButton']")
         expect(page).to have_link("📅 Convoquer", href: expected_link)
@@ -148,7 +148,7 @@ describe "Agents can convene applicant to rdv", js: true do
       before { configuration.update! convene_applicant: false }
 
       it "does not show a convocation button" do
-        visit organisation_applicants_path(organisation)
+        visit organisation_applicants_path(organisation, motif_category_id: motif_category.id)
         expect(page).not_to have_content("📅 Convoquer")
       end
     end
@@ -157,7 +157,7 @@ describe "Agents can convene applicant to rdv", js: true do
       before { motif.update! deleted_at: 2.days.ago }
 
       it "shows a disabled button to convene the applicant" do
-        visit organisation_applicants_path(organisation)
+        visit organisation_applicants_path(organisation, motif_category_id: motif_category.id)
         expect(page).to have_content("📅 Convoquer")
         expect(page).not_to have_link("📅 Convoquer")
         expect(page).to have_css("div[data-action='mouseover->tooltip#disabledConvocationButton']")
@@ -166,7 +166,7 @@ describe "Agents can convene applicant to rdv", js: true do
 
     context "from department level" do
       it "adds a link to convene the applicant" do
-        visit department_applicants_path(department)
+        visit department_applicants_path(department, motif_category_id: motif_category.id)
         expect(page).to have_content("📅 Convoquer")
         expect(page).not_to have_css("div[data-action='mouseover->tooltip#disabledConvocationButton']")
         expect(page).to have_link("📅 Convoquer", href: expected_link)
@@ -185,7 +185,7 @@ describe "Agents can convene applicant to rdv", js: true do
         end
 
         it "adds a disabled button to convene the applicant" do
-          visit department_applicants_path(department)
+          visit department_applicants_path(department, motif_category_id: motif_category.id)
           expect(page).to have_content("📅 Convoquer")
           expect(page).not_to have_link("📅 Convoquer")
           expect(page).to have_css("div[data-action='mouseover->tooltip#disabledConvocationButton']")
