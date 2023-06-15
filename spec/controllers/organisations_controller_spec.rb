@@ -21,6 +21,42 @@ describe OrganisationsController do
           get :index
           expect(response).to redirect_to(organisation_applicants_path(organisation))
         end
+
+        context "with only one motif_category" do
+          let!(:category_orientation) do
+            create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation")
+          end
+          let!(:configuration) do
+            create(:configuration, motif_category: category_orientation, organisation: organisation)
+          end
+
+          it "redirects to the motif_category index of the organisation" do
+            get :index
+            expect(response).to redirect_to(
+              organisation_applicants_path(organisation, motif_category_id: category_orientation.id)
+            )
+          end
+        end
+
+        context "with multiples motif_categories" do
+          let!(:category_orientation) do
+            create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation")
+          end
+          let!(:category_accompagnement) do
+            create(:motif_category, short_name: "rsa_accompagnement", name: "RSA accompagnement")
+          end
+          let!(:configuration) do
+            create(:configuration, motif_category: category_orientation, organisation: organisation)
+          end
+          let!(:configuration2) do
+            create(:configuration, motif_category: category_accompagnement, organisation: organisation)
+          end
+
+          it "redirects to the organisation_applicants_path" do
+            get :index
+            expect(response).to redirect_to(organisation_applicants_path(organisation))
+          end
+        end
       end
 
       context "and linked to multiples organisations" do
@@ -38,6 +74,55 @@ describe OrganisationsController do
 
           expect(response.body).to match(/#{organisation.name}/)
           expect(response.body).to match(/#{organisation2.name}/)
+        end
+
+        context "when an organisation has no motif_categories" do
+          it "generates links to the organisation_applicants_paths with no params" do
+            get :index
+
+            expect(response.body).to match("organisations/#{organisation.id}/applicants")
+            expect(response.body).to match("organisations/#{organisation2.id}/applicants")
+            expect(response.body).not_to match("motif_category_id")
+          end
+        end
+
+        context "when an organisation has one motif_category" do
+          let!(:category_orientation) do
+            create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation")
+          end
+          let!(:configuration) do
+            create(:configuration, motif_category: category_orientation, organisation: organisation)
+          end
+
+          it "generates a link to the motif_category index" do
+            get :index
+
+            expect(response.body).to match("organisations/#{organisation.id}/applicants")
+            expect(response.body).to match("motif_category_id=#{category_orientation.id}")
+          end
+        end
+
+        context "when an organisation has multiple motif_categories" do
+          let!(:category_orientation) do
+            create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation")
+          end
+          let!(:category_accompagnement) do
+            create(:motif_category, short_name: "rsa_accompagnement", name: "RSA accompagnement")
+          end
+          let!(:configuration) do
+            create(:configuration, motif_category: category_orientation, organisation: organisation)
+          end
+          let!(:configuration2) do
+            create(:configuration, motif_category: category_accompagnement, organisation: organisation)
+          end
+
+          it "does not link the motif_category index" do
+            get :index
+
+            expect(response.body).to match("organisations/#{organisation.id}/applicants")
+            expect(response.body).to match("organisations/#{organisation2.id}/applicants")
+            expect(response.body).not_to match("motif_category_id")
+          end
         end
 
         context "when agent is not super admin" do

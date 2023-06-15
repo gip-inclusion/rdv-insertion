@@ -518,14 +518,14 @@ describe ApplicantsController do
     context "when no context is specified" do
       let!(:index_params) { { organisation_id: organisation.id } }
 
-      it "returns the list of applicants in the current context" do
+      it "returns the list of all applicants" do
         get :index, params: index_params
 
         expect(response).to be_successful
         expect(response.body).to match(/Chabat/)
         expect(response.body).to match(/Baer/)
         expect(response.body).to match(/Darmon/)
-        expect(response.body).not_to match(/Barthelemy/)
+        expect(response.body).to match(/Barthelemy/)
       end
 
       it "displays the applicants creation date and the corresponding filter" do

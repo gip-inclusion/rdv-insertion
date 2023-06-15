@@ -222,16 +222,15 @@ class ApplicantsController < ApplicationController
     elsif @current_motif_category
       set_applicants_for_motif_category
     else
-      set_all_active_applicants
+      set_all_applicants
     end
   end
 
-  def set_all_active_applicants
+  def set_all_applicants
     @applicants = policy_scope(Applicant)
                   .preload(rdv_contexts: [:invitations])
                   .active.distinct
                   .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
-                  .where.not(id: @department.archived_applicants.ids)
   end
 
   def set_applicants_for_motif_category
