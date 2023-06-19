@@ -7,12 +7,10 @@ class ApplicantsController < ApplicationController
     :status, :rights_opening_date, { rdv_contexts_attributes: [:motif_category_id] }
   ].freeze
 
-  include DefaultIndexConcern
   include BackToListConcern
   include Applicants::Filterable
   include Applicants::Convocable
 
-  before_action :set_organisation, :set_department, for: :default_index
   before_action :set_organisation, :set_department, :set_organisations, :set_all_configurations,
                 :set_current_agent_roles, :set_applicants_scope,
                 :set_current_configuration, :set_current_motif_category,
@@ -31,8 +29,8 @@ class ApplicantsController < ApplicationController
                 for: [:edit, :update]
   after_action :store_back_to_applicants_list_url, only: [:index]
 
-  def default_index
-    redirect_to default_index_path
+  def index_landing
+    redirect_to index_landing_path
   end
 
   def index
@@ -290,6 +288,15 @@ class ApplicantsController < ApplicationController
     return department_applicant_path(@department, @applicant) if department_level?
 
     organisation_applicant_path(@organisation, @applicant)
+  end
+
+  def index_landing_path
+    structure =
+      department_level? ? Department.find(params[:department_id]) : Organisation.find(params[:organisation_id])
+    path = department_level? ? department_applicants_path(structure) : organisation_applicants_path(structure)
+    return path if structure.motif_categories.blank? || structure.motif_categories.count > 1
+
+    "#{path}?motif_category_id=#{structure.motif_categories.first.id}"
   end
 end
 

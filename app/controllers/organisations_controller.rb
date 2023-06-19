@@ -6,8 +6,6 @@ class OrganisationsController < ApplicationController
     :department_id
   ].freeze
 
-  include DefaultIndexConcern
-
   before_action :set_organisation, :set_department, :authorize_organisation_configuration, only: [:show, :edit, :update]
   before_action :set_all_departments, only: [:new, :create]
 
@@ -16,8 +14,7 @@ class OrganisationsController < ApplicationController
     @organisations_by_department = @organisations.sort_by(&:department_number).group_by(&:department)
     return unless @organisations.to_a.length == 1
 
-    @organisation = @organisations.first
-    redirect_to default_index_path
+    redirect_to organisation_index_landing_path(@organisations.first)
   end
 
   def show; end
