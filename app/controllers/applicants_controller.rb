@@ -29,6 +29,10 @@ class ApplicantsController < ApplicationController
                 for: [:edit, :update]
   after_action :store_back_to_applicants_list_url, only: [:index]
 
+  def index_landing
+    redirect_to index_landing_path
+  end
+
   def index
     respond_to do |format|
       format.html
@@ -222,16 +226,15 @@ class ApplicantsController < ApplicationController
     elsif @current_motif_category
       set_applicants_for_motif_category
     else
-      set_all_active_applicants
+      set_all_applicants
     end
   end
 
-  def set_all_active_applicants
+  def set_all_applicants
     @applicants = policy_scope(Applicant)
                   .preload(rdv_contexts: [:invitations])
                   .active.distinct
                   .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
-                  .where.not(id: @department.archived_applicants.ids)
   end
 
   def set_applicants_for_motif_category
@@ -285,6 +288,18 @@ class ApplicantsController < ApplicationController
     return department_applicant_path(@department, @applicant) if department_level?
 
     organisation_applicant_path(@organisation, @applicant)
+  end
+
+  def index_landing_path # rubocop:disable Metrics/AbcSize
+    structure = if department_level?
+                  Department.includes(:motif_categories).find(params[:department_id])
+                else
+                  Organisation.includes(:motif_categories).find(params[:organisation_id])
+                end
+    path = department_level? ? department_applicants_path(structure) : organisation_applicants_path(structure)
+    return path if structure.motif_categories.blank? || structure.motif_categories.count > 1
+
+    "#{path}?motif_category_id=#{structure.motif_categories.first.id}"
   end
 end
 
