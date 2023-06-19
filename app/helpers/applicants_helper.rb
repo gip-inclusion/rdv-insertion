@@ -140,17 +140,6 @@ module ApplicantsHelper
       rdv_context.time_to_accept_invitation_exceeded?(configuration.number_of_days_before_action_required)
   end
 
-  def compute_default_applicants_path(structure)
-    path = if structure.instance_of?(Department)
-             department_applicants_path(structure)
-           else
-             organisation_applicants_path(structure)
-           end
-    return path if structure.motif_categories.blank? || structure.motif_categories.count > 1
-
-    "#{path}?motif_category_id=#{structure.motif_categories.first.id}"
-  end
-
   def compute_index_path(organisation, department, **params)
     if department_level?
       department_applicants_path(department, **params.compact_blank)

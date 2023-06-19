@@ -11,6 +11,7 @@ class ApplicantsController < ApplicationController
   include Applicants::Filterable
   include Applicants::Convocable
 
+  before_action :set_organisation, :set_department, for: :landing
   before_action :set_organisation, :set_department, :set_organisations, :set_all_configurations,
                 :set_current_agent_roles, :set_applicants_scope,
                 :set_current_configuration, :set_current_motif_category,
@@ -28,6 +29,10 @@ class ApplicantsController < ApplicationController
   before_action :set_applicant, :set_organisation, :set_department,
                 for: [:edit, :update]
   after_action :store_back_to_applicants_list_url, only: [:index]
+
+  def landing
+    redirect_to landing_path
+  end
 
   def index
     respond_to do |format|
@@ -284,6 +289,14 @@ class ApplicantsController < ApplicationController
     return department_applicant_path(@department, @applicant) if department_level?
 
     organisation_applicant_path(@organisation, @applicant)
+  end
+
+  def landing_path
+    structure = department_level? ? @department : @organisation
+    path = department_level? ? department_applicants_path(@department) : organisation_applicants_path(@organisation)
+    return path if structure.motif_categories.blank? || structure.motif_categories.count > 1
+
+    "#{path}?motif_category_id=#{structure.motif_categories.first.id}"
   end
 end
 
