@@ -6,6 +6,8 @@ class OrganisationsController < ApplicationController
     :department_id
   ].freeze
 
+  include DefaultIndexConcern
+
   before_action :set_organisation, :set_department, :authorize_organisation_configuration, only: [:show, :edit, :update]
   before_action :set_all_departments, only: [:new, :create]
 
@@ -14,12 +16,8 @@ class OrganisationsController < ApplicationController
     @organisations_by_department = @organisations.sort_by(&:department_number).group_by(&:department)
     return unless @organisations.to_a.length == 1
 
-    organisation = @organisations.first
-    if organisation.motif_categories.blank? || organisation.motif_categories.count > 1
-      redirect_to organisation_applicants_path(organisation)
-    else
-      redirect_to organisation_applicants_path(organisation, motif_category_id: organisation.motif_categories.first.id)
-    end
+    @organisation = @organisations.first
+    redirect_to default_index_path
   end
 
   def show; end
