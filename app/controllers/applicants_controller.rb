@@ -290,16 +290,16 @@ class ApplicantsController < ApplicationController
     organisation_applicant_path(@organisation, @applicant)
   end
 
-  def index_landing_path
+  def index_landing_path # rubocop:disable Metrics/AbcSize
     structure = if department_level?
                   Department.includes(:motif_categories).find(params[:department_id])
                 else
                   Organisation.includes(:motif_categories).find(params[:organisation_id])
                 end
-    path = department_level? ? department_applicants_path(structure) : organisation_applicants_path(structure)
-    return path if structure.motif_categories.blank? || structure.motif_categories.count > 1
+    path = department_level? ? department_applicants_path(@structure) : organisation_applicants_path(@structure)
+    return path if @structure.motif_categories.blank? || @structure.motif_categories.count > 1
 
-    "#{path}?motif_category_id=#{structure.motif_categories.first.id}"
+    "#{path}?motif_category_id=#{@structure.motif_categories.first.id}"
   end
 end
 
