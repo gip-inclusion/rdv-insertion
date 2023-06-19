@@ -19,43 +19,7 @@ describe OrganisationsController do
       context "and linked to one organisation" do
         it "redirects to organisation_applicants_path" do
           get :index
-          expect(response).to redirect_to(organisation_applicants_path(organisation))
-        end
-
-        context "with only one motif_category" do
-          let!(:category_orientation) do
-            create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation")
-          end
-          let!(:configuration) do
-            create(:configuration, motif_category: category_orientation, organisation: organisation)
-          end
-
-          it "redirects to the motif_category index of the organisation" do
-            get :index
-            expect(response).to redirect_to(
-              organisation_applicants_path(organisation, motif_category_id: category_orientation.id)
-            )
-          end
-        end
-
-        context "with multiples motif_categories" do
-          let!(:category_orientation) do
-            create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation")
-          end
-          let!(:category_accompagnement) do
-            create(:motif_category, short_name: "rsa_accompagnement", name: "RSA accompagnement")
-          end
-          let!(:configuration) do
-            create(:configuration, motif_category: category_orientation, organisation: organisation)
-          end
-          let!(:configuration2) do
-            create(:configuration, motif_category: category_accompagnement, organisation: organisation)
-          end
-
-          it "redirects to the organisation_applicants_path" do
-            get :index
-            expect(response).to redirect_to(organisation_applicants_path(organisation))
-          end
+          expect(response).to redirect_to(organisation_index_landing_path(organisation))
         end
       end
 
