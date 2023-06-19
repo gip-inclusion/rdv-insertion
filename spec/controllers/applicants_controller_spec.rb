@@ -410,7 +410,7 @@ describe ApplicantsController do
     end
   end
 
-  describe "#default_index" do
+  describe "#index_landing" do
     context "when department_level" do
       let!(:index_params) { { department_id: department.id } }
 
@@ -418,7 +418,7 @@ describe ApplicantsController do
         let!(:organisation) { create(:organisation, department: department, configurations: []) }
 
         it "redirects to the department_applicants_paths with no params" do
-          get :default_index, params: index_params
+          get :index_landing, params: index_params
 
           expect(response).to redirect_to(department_applicants_path(department))
         end
@@ -432,7 +432,7 @@ describe ApplicantsController do
         let!(:organisation) { create(:organisation, department: department, configurations: [configuration]) }
 
         it "redirects to the motif_category index" do
-          get :default_index, params: index_params
+          get :index_landing, params: index_params
 
           expect(response).to redirect_to(
             department_applicants_path(department, motif_category_id: category_orientation.id)
@@ -454,7 +454,7 @@ describe ApplicantsController do
         end
 
         it "redirects to the department_applicants_paths with no params" do
-          get :default_index, params: index_params
+          get :index_landing, params: index_params
 
           expect(response).to redirect_to(department_applicants_path(department))
         end
@@ -468,7 +468,7 @@ describe ApplicantsController do
         let!(:organisation) { create(:organisation, department: department, configurations: []) }
 
         it "redirects to the organisation_applicants_paths with no params" do
-          get :default_index, params: index_params
+          get :index_landing, params: index_params
 
           expect(response).to redirect_to(organisation_applicants_path(organisation))
         end
@@ -482,7 +482,7 @@ describe ApplicantsController do
         let!(:organisation) { create(:organisation, department: department, configurations: [configuration]) }
 
         it "redirects to the motif_category index" do
-          get :default_index, params: index_params
+          get :index_landing, params: index_params
 
           expect(response).to redirect_to(
             organisation_applicants_path(organisation, motif_category_id: category_orientation.id)
@@ -504,7 +504,7 @@ describe ApplicantsController do
         end
 
         it "redirects to the organisation_applicants_paths with no params" do
-          get :default_index, params: index_params
+          get :index_landing, params: index_params
 
           expect(response).to redirect_to(organisation_applicants_path(organisation))
         end
