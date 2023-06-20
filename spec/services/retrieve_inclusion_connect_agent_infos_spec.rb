@@ -8,7 +8,7 @@ describe RetrieveInclusionConnectAgentInfos, type: :service do
   let(:token_response) { instance_double("Faraday::Response", success?: true, body: token_body) }
   let(:token_body) { { "id_token" => "test_id_token", "access_token" => "test_access_token" }.to_json }
   let(:agent_info_response) { instance_double("Faraday::Response", success?: true, body: agent_info_body) }
-  let(:agent_info_body) { { "email_verified" => true, "email" => "test@example.com" }.to_json }
+  let(:agent_info_body) { { "email" => "test@example.com" }.to_json }
   let!(:agent) { create(:agent, email: "test@example.com") }
 
   before do
@@ -47,7 +47,7 @@ describe RetrieveInclusionConnectAgentInfos, type: :service do
     end
 
     context "when the email is not verified" do
-      let(:agent_info_body) { { "email_verified" => false, "email" => "test@example.com" }.to_json }
+      let(:agent_info_body) { { "email" => "test@example.com" }.to_json }
 
       it "returns a failed result with an error message" do
         expect(subject).to be_failure
