@@ -109,6 +109,10 @@ class Applicant < ApplicationRecord
     )
   end
 
+  def assign_motif_category(motif_category_id)
+    assign_attributes(rdv_contexts_attributes: [{ motif_category_id: motif_category_id }])
+  end
+
   def as_json(_opts = {})
     super.merge(
       created_at: created_at,
@@ -123,7 +127,7 @@ class Applicant < ApplicationRecord
   private
 
   def rdv_context_category_handled_already?(rdv_context_attributes)
-    rdv_context_attributes["motif_category_id"].in?(motif_categories.map(&:id))
+    rdv_context_attributes.deep_symbolize_keys[:motif_category_id]&.to_i.in?(motif_categories.map(&:id))
   end
 
   def generate_uid

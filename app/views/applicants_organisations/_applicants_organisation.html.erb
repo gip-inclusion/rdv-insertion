@@ -20,7 +20,17 @@
             )
         %>
       <% else %>
-        <%= f.button :submit, "+ Ajouter", class: "btn btn-blue text-white" %>
+        <div class="d-flex justify-content-around">
+          <div class="mx-2">
+            <%= f.input :motif_category_id,
+                        collection: organisation.motif_categories.map { |mc| [mc.name, mc.id] },
+                        include_blank: "Aucune catégorie",
+                        input_html: { class: "form-control" }
+
+            %>
+          </div>
+          <%= f.button :submit, "+ Ajouter", class: "btn btn-blue text-white" %>
+        </div>
       <% end %>
     <% end %>
   </div>
