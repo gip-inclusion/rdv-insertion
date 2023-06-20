@@ -435,7 +435,7 @@ describe ApplicantsController do
           get :index_landing, params: index_params
 
           expect(response).to redirect_to(
-            department_applicants_path(department, motif_category_id: category_orientation.id)
+            department_motif_category_rdv_contexts_path(department, category_orientation)
           )
         end
       end
@@ -485,7 +485,7 @@ describe ApplicantsController do
           get :index_landing, params: index_params
 
           expect(response).to redirect_to(
-            organisation_applicants_path(organisation, motif_category_id: category_orientation.id)
+            organisation_motif_category_rdv_contexts_path(organisation, category_orientation)
           )
         end
       end
