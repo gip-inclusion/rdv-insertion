@@ -7,7 +7,6 @@ class RetrieveInclusionConnectAgentInfos < BaseService
   def call
     request_token!
     request_agent_info!
-    check_email_verified!
     retrieve_agent!
     retrieve_token_id
   end
@@ -49,11 +48,5 @@ class RetrieveInclusionConnectAgentInfos < BaseService
   def retrieve_agent!
     result.agent = Agent.find_by(email: agent_info_body["email"])
     result.agent.presence || fail!("Agent doesn't exist in rdv-insertion")
-  end
-
-  def check_email_verified!
-    return if agent_info_body["email_verified"]
-
-    fail!("Inclusion Connect Error: Email not verified")
   end
 end
