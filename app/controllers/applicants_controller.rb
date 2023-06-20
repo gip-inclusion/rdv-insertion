@@ -7,32 +7,30 @@ class ApplicantsController < ApplicationController
     :status, :rights_opening_date, { rdv_contexts_attributes: [:motif_category_id] }
   ].freeze
 
+  include SetOrganisationAndDepartmentConcern
+  include SetAllConfigurationsConcern
+  include SetCurrentAgentRolesConcern
   include BackToListConcern
   include Applicants::Filterable
-  include Applicants::Convocable
+  include ExtractableConcern
 
   before_action :set_organisation, :set_department, :set_organisations, :set_all_configurations,
-                :set_current_agent_roles, :set_applicants_scope,
-                :set_current_configuration, :set_current_motif_category,
-                :set_applicants, :set_rdv_contexts,
-                :filter_applicants, :order_applicants,
-                :set_convocation_motifs_by_applicant,
+                :set_current_agent_roles, :set_applicants, :filter_applicants, :order_applicants,
+                :store_back_to_list_url, :set_back_to_list_url, :set_extraction_url,
                 for: :index
   before_action :set_applicant, :set_organisation, :set_department, :set_all_configurations,
                 :set_applicant_organisations, :set_applicant_rdv_contexts, :set_applicant_archive,
-                :set_convocation_motifs_by_rdv_context,
-                :set_back_to_applicants_list_url,
+                :set_convocation_motifs_by_rdv_context, :set_back_to_list_url,
                 for: :show
-  before_action :set_organisation, :set_department, :set_organisations,
+  before_action :set_organisation, :set_department, :set_organisations, :set_back_to_list_url,
                 for: [:new, :create]
   before_action :set_applicant, :set_organisation, :set_department,
                 for: [:edit, :update]
-  after_action :store_back_to_applicants_list_url, only: [:index]
 
   def index
     respond_to do |format|
       format.html
-      format.csv { send_applicants_csv }
+      format.csv { send_csv }
     end
   end
 
@@ -87,18 +85,6 @@ class ApplicantsController < ApplicationController
     )
   end
 
-  def send_applicants_csv
-    send_data generate_applicants_csv.csv, filename: generate_applicants_csv.filename
-  end
-
-  def generate_applicants_csv
-    @generate_applicants_csv ||= Exporters::GenerateApplicantsCsv.call(
-      applicants: @applicants,
-      structure: department_level? ? @department : @organisation,
-      motif_category: @current_motif_category
-    )
-  end
-
   def save_applicant_and_redirect(page)
     if save_applicant.success?
       redirect_to(after_save_path)
@@ -138,65 +124,6 @@ class ApplicantsController < ApplicationController
       .find(params[:id])
   end
 
-  def set_organisation
-    @organisation =
-      if department_level?
-        set_organisation_at_department_level
-      else
-        policy_scope(Organisation).find(params[:organisation_id])
-      end
-  end
-
-  def set_organisation_at_department_level
-    return set_organisation_through_form if params[:action] == "create"
-    return if @applicant.nil? # no need to set an organisation if we are not in an applicant-level page
-
-    @organisation = policy_scope(Organisation)
-                    .find_by(id: @applicant.organisation_ids, department_id: params[:department_id])
-  end
-
-  def set_organisation_through_form
-    # for now we allow only one organisation through creation
-    @organisation = Organisation.find_by(
-      id: params[:applicant][:organisation_ids], department_id: params[:department_id]
-    )
-  end
-
-  def set_organisations
-    @organisations = policy_scope(Organisation).where(department: @department)
-  end
-
-  def set_department
-    @department =
-      if department_level?
-        policy_scope(Department).find(params[:department_id])
-      else
-        @organisation.department
-      end
-  end
-
-  def set_all_configurations
-    @all_configurations =
-      if department_level?
-        (policy_scope(::Configuration).includes(:motif_category) & @department.configurations).uniq(&:motif_category_id)
-      else
-        @organisation.configurations.includes(:motif_category)
-      end
-    @all_configurations = @all_configurations.sort_by(&:motif_category_position)
-  end
-
-  def set_current_configuration
-    return if archived_scope?
-    return unless params[:motif_category_id]
-
-    @current_configuration =
-      @all_configurations.find { |c| c.motif_category_id == params[:motif_category_id].to_i }
-  end
-
-  def set_current_motif_category
-    @current_motif_category = @current_configuration&.motif_category
-  end
-
   def set_applicant_rdv_contexts
     @rdv_contexts =
       RdvContext.preload(
@@ -217,16 +144,6 @@ class ApplicantsController < ApplicationController
   end
 
   def set_applicants
-    if archived_scope?
-      set_archived_applicants
-    elsif @current_motif_category
-      set_applicants_for_motif_category
-    else
-      set_all_active_applicants
-    end
-  end
-
-  def set_all_active_applicants
     @applicants = policy_scope(Applicant)
                   .preload(rdv_contexts: [:invitations])
                   .active.distinct
@@ -234,51 +151,24 @@ class ApplicantsController < ApplicationController
                   .where.not(id: @department.archived_applicants.ids)
   end
 
-  def set_applicants_for_motif_category
-    @applicants = policy_scope(Applicant)
-                  .preload(rdv_contexts: [:notifications, :invitations])
-                  .active.distinct
-                  .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
-                  .where.not(id: @department.archived_applicants.ids)
-                  .joins(:rdv_contexts)
-                  .where(rdv_contexts: { motif_category: @current_motif_category })
-                  .where.not(rdv_contexts: { status: "closed" })
-  end
+  def set_convocation_motifs_by_rdv_context
+    return if @all_configurations.none?(&:convene_applicant?)
 
-  def set_archived_applicants
-    @applicants = policy_scope(Applicant)
-                  .includes(:archives)
-                  .preload(:invitations, :participations)
-                  .active.distinct
-                  .where(id: @department.archived_applicants)
-                  .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
-  end
+    convocation_motifs = Motif.includes(:organisation).active.where(
+      organisation_id: @applicant_organisations.ids, motif_category: @all_configurations.map(&:motif_category)
+    ).select(&:convocation?)
 
-  def set_rdv_contexts
-    return if archived_scope?
-
-    @rdv_contexts = RdvContext.where(
-      applicant_id: @applicants.ids, motif_category: @current_motif_category
-    )
-    @statuses_count = @rdv_contexts.group(:status).count
-  end
-
-  def set_current_agent_roles
-    @current_agent_roles = AgentRole.where(
-      department_level? ? { organisation: @organisations } : { organisation: @organisation }, agent: current_agent
-    )
-  end
-
-  def set_applicants_scope
-    @applicants_scope = params[:applicants_scope]
-  end
-
-  def archived_scope?
-    @applicants_scope == "archived"
+    @convocation_motifs_by_rdv_context = @rdv_contexts.index_with do |rdv_context|
+      organisation_ids = department_level? ? @applicant_organisations.ids : [@organisation.id]
+      convocation_motifs.find do |motif|
+        motif.motif_category_id == rdv_context.motif_category_id &&
+          motif.organisation_id.in?(organisation_ids)
+      end
+    end
   end
 
   def order_applicants
-    @applicants = archived_scope? ? @applicants.order("archives.created_at desc") : @applicants.order(created_at: :desc)
+    @applicants = @applicants.order(created_at: :desc)
   end
 
   def after_save_path

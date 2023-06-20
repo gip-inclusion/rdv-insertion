@@ -10,7 +10,7 @@ class ConfigurationsController < ApplicationController
                 only: [:index, :new, :create, :show, :edit, :update, :destroy]
   before_action :set_configuration, :set_file_configuration, only: [:show, :edit, :update, :destroy]
   before_action :set_department, :set_file_configurations, only: [:new, :create, :edit, :update]
-  before_action :set_back_to_applicants_list_url, :set_messages_configuration, :set_configurations, only: [:index]
+  before_action :set_back_to_list_url, :set_messages_configuration, :set_configurations, only: [:index]
 
   def index; end
 

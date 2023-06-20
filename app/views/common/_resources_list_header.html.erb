@@ -1,7 +1,7 @@
 <div class="row mb-4 card-white justify-content-center">
   <div class="col-4 justify-content-center">
     <div class="mb-1">
-      <% if @current_configuration.present? %>
+      <% if controller_name == "rdv_contexts" %>
         <%=
           select(
             "applicant", "status", options_for_select_status(@statuses_count),
@@ -11,9 +11,10 @@
         %>
       <% end %>
     </div>
-    <%= render "filter_by_creation_dates_button" if @current_configuration.nil? %>
-    <%= render "filter_by_invitations_dates_button" if @current_configuration.present? || archived_scope?(@applicants_scope) %>
-    <%= render 'search_form', url: compute_index_path(@organisation, @department) %>
+    <%= render "common/filter_by_applicants_creation_dates_button" if controller_name == "applicants" || controller_name == "archives" %>
+    <%= render "common/filter_by_invitations_dates_button" if controller_name == "rdv_contexts" %>
+    <%= render "common/filter_by_archiving_dates_button" if controller_name == "archives" %>
+    <%= render 'common/search_form', url: @back_to_list_url || compute_applicants_path(@organisation, @department) %>
 
     <div class="d-flex justify-content-between mt-1">
       <div class="text-left mt-2">
@@ -21,7 +22,7 @@
         <div class="mt-1">
           <%= check_box("applicants_list", "filter_by_current_agent", class: "js-filter-by-current-agent-checkbox") %> Dont je suis référent
         </div>
-        <% if @current_configuration.present? %>
+        <% if controller_name == "rdv_contexts" %>
           <div class="mt-1">
             <%= check_box("applicants_list", "action_required", class: "js-action-required-checkbox") %> Une intervention est nécessaire
             <small>
@@ -38,7 +39,8 @@
       </div>
       <% if display_back_to_list_button? %>
         <div>
-          <%= link_to compute_index_path(@organisation, @department, motif_category_id: @current_motif_category&.id, applicants_scope: @applicants_scope), class: "btn btn-blue-out" do %>
+          <%# We use gsub! to remove params from @back_to_list_url %>
+          <%= link_to @back_to_list_url.gsub!(/\?.*/, "") || compute_applicants_path(@organisation, @department), class: "btn btn-blue-out" do %>
             Retour à la liste
           <% end %>
         </div>
@@ -86,7 +88,7 @@
     </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
       <li>
-        <%= link_to(compute_new_path(@organisation, @department), class: "dropdown-item") do %>
+        <%= link_to(compute_new_applicant_path(@organisation, @department), class: "dropdown-item") do %>
           Créer un allocataire
         <% end %>
       </li>
@@ -105,7 +107,7 @@
         Configurer l'organisation
       <% end %>
     <% end %>
-    <%= link_to(compute_index_path(@organisation, @department, **params.to_unsafe_h.merge(format: "csv")), class: "btn btn-blue-out mt-2", data: { controller: "tooltip", action: "mouseover->tooltip#csvExport"}, target: "_blank") do %>
+    <%= link_to(@extraction_url, class: "btn btn-blue-out mt-2", data: { controller: "tooltip", action: "mouseover->tooltip#csvExport"}, target: "_blank") do %>
       <i class="fas fa-download"></i> Exporter au format CSV
     <% end %>
   </div>

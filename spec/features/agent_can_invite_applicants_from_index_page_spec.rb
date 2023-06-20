@@ -29,7 +29,7 @@ describe "Agents can invite from index page", js: true do
       rdv_context.set_status
       rdv_context.save!
 
-      visit organisation_applicants_path(organisation, motif_category_id: motif_category.id)
+      visit organisation_motif_category_rdv_contexts_path(organisation, motif_category)
       expect(page).to have_field("sms_invite", checked: false, disabled: false)
       expect(page).to have_field("email_invite", checked: false, disabled: false)
       expect(page).to have_content("Non invité")
@@ -55,7 +55,7 @@ describe "Agents can invite from index page", js: true do
       rdv_context.set_status
       rdv_context.save!
 
-      visit organisation_applicants_path(organisation, motif_category_id: motif_category.id)
+      visit organisation_motif_category_rdv_contexts_path(organisation, motif_category)
       expect(page).to have_field("sms_invite", checked: true, disabled: true)
       expect(page).to have_field("email_invite", checked: false, disabled: false)
       expect(page).to have_content("Invitation en attente de réponse")
@@ -90,7 +90,7 @@ describe "Agents can invite from index page", js: true do
         rdv_context.set_status
         rdv_context.save!
 
-        visit organisation_applicants_path(organisation, motif_category_id: motif_category.id)
+        visit organisation_motif_category_rdv_contexts_path(organisation, motif_category)
         expect(page).to have_field("sms_invite", checked: false, disabled: false)
         expect(page).to have_field("email_invite", checked: false, disabled: false)
         expect(page).to have_content("RDV honoré")
@@ -116,7 +116,7 @@ describe "Agents can invite from index page", js: true do
         rdv_context.set_status
         rdv_context.save!
 
-        visit organisation_applicants_path(organisation, motif_category_id: motif_category.id)
+        visit organisation_motif_category_rdv_contexts_path(organisation, motif_category)
         expect(page).to have_field("sms_invite", checked: true, disabled: true)
         expect(page).to have_field("email_invite", checked: false, disabled: false)
         expect(page).to have_content("Invitation en attente de réponse")
@@ -150,7 +150,7 @@ describe "Agents can invite from index page", js: true do
         rdv_context.set_status
         rdv_context.save!
 
-        visit organisation_applicants_path(organisation, motif_category_id: motif_category.id)
+        visit organisation_motif_category_rdv_contexts_path(organisation, motif_category)
         expect(page).not_to have_field("sms_invite")
         expect(page).not_to have_field("email_invite")
         expect(page).to have_content("RDV pris")

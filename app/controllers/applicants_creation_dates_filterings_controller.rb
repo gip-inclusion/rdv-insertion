@@ -1,5 +1,7 @@
-class CreationDatesFilteringsController < ApplicationController
-  before_action :set_organisation, :set_department, only: [:new]
+class ApplicantsCreationDatesFilteringsController < ApplicationController
+  include BackToListConcern
+
+  before_action :set_organisation, :set_department, :set_back_to_list_url, only: [:new]
 
   def new; end
 

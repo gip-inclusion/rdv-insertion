@@ -1,6 +1,6 @@
 fr:
-  applicants:
-    applicants_table_for_motif_category:
+  rdv_contexts:
+    rdv_contexts_table:
       sms_column_title: 📱 SMS
       email_column_title: 📧 Email
       postal_column_title: 📮 Courrier

@@ -3,7 +3,7 @@
 <div class="container text-dark-blue h4-as-labels mt-4">
   <div class="d-flex justify-content-between mb-4">
     <div>
-      <%= link_to(@back_to_applicants_list_url || compute_index_path(@organisation, @department)) do %>
+      <%= link_to(@back_to_list_url || compute_applicants_path(@organisation, @department)) do %>
         <button class="btn btn-blue-out">Retour</button>
       <% end %>
       <%= link_to rdv_solidarites_user_url(@organisation, @applicant), target: "_blank" do %>
@@ -12,7 +12,7 @@
     </div>
     <div>
       <%= render "archiving_button" %>
-      <%= link_to compute_edit_path(@applicant, @organisation, @department) do %>
+      <%= link_to compute_edit_applicant_path(@applicant, @organisation, @department) do %>
         <button class="btn btn-blue">Modifier</button>
       <% end %>
     </div>

@@ -1,0 +1,18 @@
+<div class="container mt-5 mb-5">
+  <%= render "common/resources_list_header" %>
+  <div class="row card-white justify-content-center">
+    <% if @all_configurations.empty? %>
+      Merci de configurer votre organisation avant de pouvoir inviter des bénéficiaires
+    <% else %>
+      <%= render "common/resources_list_tabs" %>
+      <div class="col-12 text-center">
+        <% if no_search_results?(@applicants.to_a) %>
+          <h4 class="py-4">Aucun allocataire ne correspond à votre recherche</h4>
+        <% else %>
+          <%= render table_path %>
+        <% end %>
+        <%= render "common/resources_list_pagination", resources: resources %>
+      </div>
+    <% end %>
+  </div>
+</div>

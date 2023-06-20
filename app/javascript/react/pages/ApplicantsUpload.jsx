@@ -47,8 +47,8 @@ export default function ApplicantsUpload({
   const redirectToApplicantList = () => {
     if (configuration) {
       window.location.href = isDepartmentLevel
-        ? `/departments/${department.id}/applicants?motif_category_id=${configuration.motif_category_id}`
-        : `/organisations/${organisation.id}/applicants?motif_category_id=${configuration.motif_category_id}`;
+        ? `/departments/${department.id}/motif_categories/${configuration.motif_category_id}/rdv_contexts`
+        : `/organisations/${organisation.id}/motif_categories/${configuration.motif_category_id}/rdv_contexts`;
     } else {
       window.location.href = isDepartmentLevel
         ? `/departments/${department.id}/applicants`

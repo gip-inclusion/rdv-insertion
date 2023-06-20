@@ -1,4 +1,4 @@
-class InvitationDatesFilteringsController < ApplicationController
+class ArchivingDatesFilteringsController < ApplicationController
   include BackToListConcern
 
   before_action :set_organisation, :set_department, :set_back_to_list_url, only: [:new]

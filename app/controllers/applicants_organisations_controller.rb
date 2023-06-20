@@ -23,7 +23,7 @@ class ApplicantsOrganisationsController < ApplicationController
       flash.now[:error] = "Une erreur s'est produite lors du retrait de " \
                           "l'organisation: #{remove_applicant_from_org.errors}"
     end
-    redirect_to_applicants_list if applicant_deleted_or_removed_from_current_org?
+    redirect_to_list if applicant_deleted_or_removed_from_current_org?
   end
 
   private
@@ -67,8 +67,8 @@ class ApplicantsOrganisationsController < ApplicationController
     @applicant_organisations = @applicant.reload.organisations
   end
 
-  def redirect_to_applicants_list
-    redirect_to session[:back_to_applicants_list_url] || department_applicants_path(@department)
+  def redirect_to_list
+    redirect_to session[:back_to_list_url] || department_applicants_path(@department)
   end
 
   def redirect_to_department_applicant_path

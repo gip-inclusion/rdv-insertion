@@ -1,0 +1,13 @@
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <%= link_to "Tous les contacts", compute_applicants_path(@organisation, @department), class: "nav-link #{controller_name == "applicants" ? 'active' : ''}" %>
+  </li>
+  <% @all_configurations.each do |configuration| %>
+    <li class="nav-item">
+      <%= link_to configuration.motif_category_name, compute_rdv_contexts_list_path(@organisation, @department, configuration.motif_category_id), class: "nav-link #{configuration.id == @current_configuration&.id ? 'active' : ''}"%>
+    </li>
+  <% end %>
+  <li class="nav-item">
+    <%= link_to "Archivés", compute_archives_path(@organisation, @department), class: "nav-link #{controller_name == "archives" ? 'active' : ''}" %>
+  </li>
+</ul>

@@ -32,6 +32,10 @@ Rails.application.routes.draw do
       end
       resources :invitations, only: [:create]
     end
+    resources :motif_categories, only: [] do
+      resources :rdv_contexts, only: [:index]
+    end
+    resources :archives, only: [:index]
     # we need to nest in organisations the different configurations record to correctly authorize them
     resources :configurations, only: [:index, :show, :new, :create, :edit, :update, :destroy]
     resources :file_configurations, only: [:show, :new, :create, :edit, :update] do
@@ -80,10 +84,15 @@ Rails.application.routes.draw do
       resources :applicants_organisations, only: [:index]
       resources :referent_assignations, only: [:index]
     end
+    resources :motif_categories, only: [] do
+      resources :rdv_contexts, only: [:index]
+    end
+    resources :archives, only: [:index]
     resource :applicants_organisations, only: [:create, :destroy]
     resource :referent_assignations, only: [:create, :destroy]
   end
-  resources :invitation_dates_filterings, :creation_dates_filterings, only: [:new]
+  resources :invitation_dates_filterings, :applicants_creation_dates_filterings,
+            :archiving_dates_filterings, only: [:new]
 
   namespace :api do
     namespace :v1 do

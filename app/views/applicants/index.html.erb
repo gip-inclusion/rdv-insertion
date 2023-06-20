@@ -1,11 +1,1 @@
-<div class="container mt-5 mb-5">
-  <%= render "applicants_list_header" %>
-  <div class="row card-white justify-content-center">
-    <% if @all_configurations.empty? %>
-      Merci de configurer votre organisation avant de pouvoir inviter des bénéficiaires
-    <% else %>
-      <%= render "applicants_list_tabs" %>
-      <%= render "applicants_list_table" %>
-    <% end %>
-  </div>
-</div>
+<%= render "common/resources_list", table_path: "applicants/applicants_table", resources: @applicants %>

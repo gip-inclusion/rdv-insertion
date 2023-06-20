@@ -1,0 +1,26 @@
+<table class="table table-hover table-responsive">
+  <thead class="text-dark-blue">
+    <th scope="col">Nom</th>
+    <th scope="col">Prénom</th>
+    <th scope="col">Date de création</th>
+    <th scope="col">Archivé le</th>
+    <th scope="col">Motif d'archivage</th>
+    <th scope="col"></th>
+  </thead>
+  <tbody class="align-middle">
+    <% @archives.each do |archive| %>
+      <tr class="table-danger">
+        <td><%= display_attribute archive.applicant_last_name %></td>
+        <td><%= display_attribute archive.applicant_first_name %></td>
+        <td><%= display_attribute format_date(archive.applicant_created_at) %></td>
+        <td><%= display_attribute format_date(archive.created_at) %></td>
+        <td><%= display_attribute archive.archiving_reason %></td>
+        <td class="padding-left-15">
+          <%= link_to compute_applicant_path(archive.applicant, @organisation, @department) do %>
+            <button class="btn btn-blue">Gérer</button>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

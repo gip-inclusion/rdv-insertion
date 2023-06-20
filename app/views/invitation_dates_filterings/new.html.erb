@@ -1,5 +1,5 @@
 <%= render "common/remote_modal", title: "Filtrer par date d'invitation" do %>
-  <%= form_with method: :get, local: true, url: compute_index_path(@organisation, @department), data: { "turbo-frame" => "_top" } do |form| %>
+  <%= form_with method: :get, local: true, url: @back_to_list_url || compute_rdv_contexts_list_path(@organisation, @department, @current_motif_category), data: { "turbo-frame" => "_top" } do |form| %>
     <% url_params.except(:first_invitation_date_after, :first_invitation_date_before, :last_invitation_date_after, :last_invitation_date_before, :department_id, :organisation_id).each do |key, value| %>
       <%= form.hidden_field key, value: value %>
     <% end %>
