@@ -67,9 +67,9 @@ describe "Agents can add or remove applicant from organisations", js: true do
       expect(page).to have_content(organisation.name)
       expect(page).to have_content(other_org.name)
       expect(page).to have_select(
-        "applicants_organisation[motif_category_id]", options: ["Aucune catégorie de suivi", "RSA suivi"]
+        "applicants_organisation[motif_category_id]", options: ["Aucune catégorie", "RSA suivi"]
       )
-      select "Aucune catégorie de suivi", from: "applicants_organisation[motif_category_id]"
+      select "Aucune catégorie", from: "applicants_organisation[motif_category_id]"
 
       click_button("+ Ajouter")
 
@@ -127,7 +127,7 @@ describe "Agents can add or remove applicant from organisations", js: true do
         expect(page).to have_content(organisation.name)
         expect(page).to have_content(other_org.name)
         expect(page).to have_select(
-          "applicants_organisation[motif_category_id]", options: ["Aucune catégorie de suivi", "RSA suivi"]
+          "applicants_organisation[motif_category_id]", options: ["Aucune catégorie", "RSA suivi"]
         )
 
         select "RSA suivi", from: "applicants_organisation[motif_category_id]"
