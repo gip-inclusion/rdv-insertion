@@ -25,6 +25,7 @@ Rails.application.routes.draw do
   resources :organisations, only: [:index, :new, :show, :edit, :create, :update] do
     get :geolocated, on: :collection
     get :search, on: :collection
+    get :index_landing, as: "index_landing", to: "applicants#index_landing"
     resources :applicants, only: [:index, :create, :show, :update, :edit, :new] do
       collection do
         resources :uploads, only: [:new]
@@ -75,6 +76,7 @@ Rails.application.routes.draw do
 
   resources :departments, only: [] do
     resources :department_organisations, only: [:index], as: :organisations, path: "/organisations"
+    get :index_landing, as: "index_landing", to: "applicants#index_landing"
     resources :applicants, only: [:index, :new, :create, :show, :edit, :update] do
       collection do
         resources :uploads, only: [:new]

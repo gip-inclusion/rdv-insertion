@@ -12,7 +12,9 @@ class OrganisationsController < ApplicationController
   def index
     @organisations = policy_scope(Organisation).includes(:department, :configurations)
     @organisations_by_department = @organisations.sort_by(&:department_number).group_by(&:department)
-    redirect_to organisation_applicants_path(@organisations.first) if @organisations.to_a.length == 1
+    return unless @organisations.to_a.length == 1
+
+    redirect_to organisation_index_landing_path(@organisations.first)
   end
 
   def show; end

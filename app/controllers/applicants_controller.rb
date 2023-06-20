@@ -27,6 +27,10 @@ class ApplicantsController < ApplicationController
   before_action :set_applicant, :set_organisation, :set_department,
                 for: [:edit, :update]
 
+  def index_landing
+    redirect_to index_landing_path
+  end
+
   def index
     respond_to do |format|
       format.html
@@ -174,6 +178,20 @@ class ApplicantsController < ApplicationController
     return department_applicant_path(@department, @applicant) if department_level?
 
     organisation_applicant_path(@organisation, @applicant)
+  end
+
+  def index_landing_path # rubocop:disable Metrics/AbcSize
+    structure = if department_level?
+                  Department.includes(:motif_categories).find(params[:department_id])
+                else
+                  Organisation.includes(:motif_categories).find(params[:organisation_id])
+                end
+    path = department_level? ? department_applicants_path(structure) : organisation_applicants_path(structure)
+    return path if structure.motif_categories.blank? || structure.motif_categories.count > 1
+
+    return department_motif_category_rdv_contexts_path(structure, structure.motif_categories.first) if department_level?
+
+    organisation_motif_category_rdv_contexts_path(structure, structure.motif_categories.first)
   end
 end
 

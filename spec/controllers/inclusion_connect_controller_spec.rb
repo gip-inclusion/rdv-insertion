@@ -56,31 +56,12 @@ describe InclusionConnectController do
       expect_flash_error
     end
 
-    it "redirect and returns an error if email_verified is false" do
-      stub_token_request.to_return(
-        status: 200, body: { access_token: "valid_token", scopes: "openid" }.to_json, headers: {}
-      )
-      stub_agent_info_request.to_return(
-        status: 200, body: {
-          email_verified: false,
-          given_name: "Bob",
-          family_name: "Leponge",
-          email: "bob@gmail.com"
-        }.to_json, headers: {}
-      )
-      expect(Sentry).to receive(:capture_message).with("Inclusion Connect Error: Email not verified")
-      get :callback, params: { state: "a state", code: code }
-      expect(response).to redirect_to(sign_in_path)
-      expect_flash_error
-    end
-
     it "redirect and returns an error if agent email doesnt exist in rdv-i" do
       stub_token_request.to_return(
         status: 200, body: { access_token: "valid_token", scopes: "openid" }.to_json, headers: {}
       )
       stub_agent_info_request.to_return(
         status: 200, body: {
-          email_verified: true,
           given_name: "Patrick",
           family_name: "Letoile",
           email: "patrick@gmail.com"
@@ -105,7 +86,6 @@ describe InclusionConnectController do
       )
       stub_agent_info_request.to_return(
         status: 200, body: {
-          email_verified: true,
           given_name: "Bob",
           family_name: "Leponge",
           email: "bob@gmail.com"

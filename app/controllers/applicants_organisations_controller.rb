@@ -1,7 +1,7 @@
 class ApplicantsOrganisationsController < ApplicationController
   before_action :set_applicant, :set_department, :set_organisations, :set_current_organisation,
                 only: [:index, :create, :destroy]
-  before_action :set_organisation_to_add, only: [:create]
+  before_action :assign_motif_category, :set_organisation_to_add, only: [:create]
   before_action :set_organisation_to_remove, only: [:destroy]
 
   def index; end
@@ -29,7 +29,7 @@ class ApplicantsOrganisationsController < ApplicationController
   private
 
   def applicants_organisation_params
-    params.require(:applicants_organisation).permit(:organisation_id, :applicant_id)
+    params.require(:applicants_organisation).permit(:organisation_id, :applicant_id, :motif_category_id)
   end
 
   def applicant_id
@@ -60,7 +60,7 @@ class ApplicantsOrganisationsController < ApplicationController
   end
 
   def set_organisations
-    @organisations = @department.organisations
+    @organisations = @department.organisations.includes(:motif_categories)
   end
 
   def set_applicant_organisations
@@ -80,6 +80,12 @@ class ApplicantsOrganisationsController < ApplicationController
 
   def applicant_deleted_or_removed_from_current_org?
     @applicant.deleted? || @organisation_to_remove == @current_organisation
+  end
+
+  def assign_motif_category
+    return if applicants_organisation_params[:motif_category_id].blank?
+
+    @applicant.assign_motif_category(applicants_organisation_params[:motif_category_id])
   end
 
   def save_applicant

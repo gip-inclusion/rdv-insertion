@@ -10,18 +10,21 @@
   </thead>
   <tbody class="align-middle">
     <% @applicants.each do |applicant| %>
-      <tr>
+      <tr <%= "class=table-danger" if applicant.archived_in?(@department) %>>
         <td><%= display_attribute applicant.last_name %></td>
         <td><%= display_attribute applicant.first_name %></td>
         <td><%= display_attribute format_date(applicant.created_at) %></td>
-        <% @all_configurations.each do |configuration| %>
-          <% rdv_context = applicant.rdv_context_for(configuration.motif_category) %>
-          <% if rdv_context %>
-            <%= render "rdv_contexts/rdv_context_status_cell", rdv_context: rdv_context, configuration: configuration %>
-          <% else %>
-            <td id=<%= dom_id(configuration.motif_category, "applicant_#{applicant.id}") %>>
-              <%= render "rdv_contexts/new_button", applicant: applicant, configuration: configuration, organisation: @organisation, department: @department, turbo: true, button_text: "Ajouter" %>
-            </td>
+        <% if applicant.archived_in?(@department) %>
+          <td colspan=<%= @all_configurations.count %>>Archivé</td>
+        <% else %>
+          <% @all_configurations.each do |configuration| %>
+            <% if rdv_context = applicant.rdv_context_for(configuration.motif_category) %>
+              <%= render "rdv_contexts/rdv_context_status_cell", rdv_context: rdv_context, configuration: configuration %>
+            <% else %>
+              <td id=<%= dom_id(configuration.motif_category, "applicant_#{applicant.id}") %>>
+                <%= render "rdv_contexts/new_button", applicant: applicant, configuration: configuration, organisation: @organisation, department: @department, turbo: true, button_text: "Ajouter" %>
+              </td>
+            <% end %>
           <% end %>
         <% end %>
         <td class="padding-left-15">

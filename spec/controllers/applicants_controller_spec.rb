@@ -22,14 +22,14 @@ describe ApplicantsController do
   let!(:rdv_solidarites_organisation_id) { 888 }
   let(:applicant) { create(:applicant, organisations: [organisation]) }
 
+  render_views
+
+  before do
+    sign_in(agent)
+  end
+
   describe "#new" do
     let!(:new_params) { { organisation_id: organisation.id } }
-
-    render_views
-
-    before do
-      sign_in(agent)
-    end
 
     it "renders the new applicant page" do
       get :new, params: new_params
@@ -40,9 +40,7 @@ describe ApplicantsController do
   end
 
   describe "#create" do
-    render_views
     before do
-      sign_in(agent)
       allow(Applicants::FindOrInitialize).to receive(:call)
         .and_return(OpenStruct.new(success?: true, applicant: applicant))
       allow(Applicant).to receive(:new)
@@ -200,12 +198,6 @@ describe ApplicantsController do
       )
     end
     let!(:show_params) { { id: applicant.id, organisation_id: organisation.id } }
-
-    render_views
-
-    before do
-      sign_in(agent)
-    end
 
     context "when organisation_level" do
       it "renders the applicant page" do
@@ -418,6 +410,108 @@ describe ApplicantsController do
     end
   end
 
+  describe "#index_landing" do
+    context "when department_level" do
+      let!(:index_params) { { department_id: department.id } }
+
+      context "when department has no motif_categories" do
+        let!(:organisation) { create(:organisation, department: department, configurations: []) }
+
+        it "redirects to the department_applicants_paths with no params" do
+          get :index_landing, params: index_params
+
+          expect(response).to redirect_to(department_applicants_path(department))
+        end
+      end
+
+      context "when department has one motif_category" do
+        let!(:category_orientation) do
+          create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation")
+        end
+        let!(:configuration) { create(:configuration, motif_category: category_orientation) }
+        let!(:organisation) { create(:organisation, department: department, configurations: [configuration]) }
+
+        it "redirects to the motif_category index" do
+          get :index_landing, params: index_params
+
+          expect(response).to redirect_to(
+            department_applicants_path(department, motif_category_id: category_orientation.id)
+          )
+        end
+      end
+
+      context "when department has multiple motif_categories" do
+        let!(:category_orientation) do
+          create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation")
+        end
+        let!(:category_accompagnement) do
+          create(:motif_category, short_name: "rsa_accompagnement", name: "RSA accompagnement")
+        end
+        let!(:configuration) { create(:configuration, motif_category: category_orientation) }
+        let!(:configuration2) { create(:configuration, motif_category: category_accompagnement) }
+        let!(:organisation) do
+          create(:organisation, department: department, configurations: [configuration, configuration2])
+        end
+
+        it "redirects to the department_applicants_paths with no params" do
+          get :index_landing, params: index_params
+
+          expect(response).to redirect_to(department_applicants_path(department))
+        end
+      end
+    end
+
+    context "when organisation level" do
+      let!(:index_params) { { organisation_id: organisation.id } }
+
+      context "when organisation has no motif_categories" do
+        let!(:organisation) { create(:organisation, department: department, configurations: []) }
+
+        it "redirects to the organisation_applicants_paths with no params" do
+          get :index_landing, params: index_params
+
+          expect(response).to redirect_to(organisation_applicants_path(organisation))
+        end
+      end
+
+      context "when organisation has one motif_category" do
+        let!(:category_orientation) do
+          create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation")
+        end
+        let!(:configuration) { create(:configuration, motif_category: category_orientation) }
+        let!(:organisation) { create(:organisation, department: department, configurations: [configuration]) }
+
+        it "redirects to the motif_category index" do
+          get :index_landing, params: index_params
+
+          expect(response).to redirect_to(
+            organisation_applicants_path(organisation, motif_category_id: category_orientation.id)
+          )
+        end
+      end
+
+      context "when organisation has multiple motif_categories" do
+        let!(:category_orientation) do
+          create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation")
+        end
+        let!(:category_accompagnement) do
+          create(:motif_category, short_name: "rsa_accompagnement", name: "RSA accompagnement")
+        end
+        let!(:configuration) { create(:configuration, motif_category: category_orientation) }
+        let!(:configuration2) { create(:configuration, motif_category: category_accompagnement) }
+        let!(:organisation) do
+          create(:organisation, department: department, configurations: [configuration, configuration2])
+        end
+
+        it "redirects to the organisation_applicants_paths with no params" do
+          get :index_landing, params: index_params
+
+          expect(response).to redirect_to(organisation_applicants_path(organisation))
+        end
+      end
+    end
+  end
+
   describe "#index" do
     let!(:applicant) do
       create(
@@ -624,12 +718,6 @@ describe ApplicantsController do
 
   describe "#edit" do
     let!(:applicant) { create(:applicant, organisations: [organisation]) }
-
-    render_views
-
-    before do
-      sign_in(agent)
-    end
 
     context "when organisation_level" do
       let!(:edit_params) { { id: applicant.id, organisation_id: organisation.id } }
