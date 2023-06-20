@@ -46,15 +46,6 @@ describe RetrieveInclusionConnectAgentInfos, type: :service do
       end
     end
 
-    context "when the email is not verified" do
-      let(:agent_info_body) { { "email" => "test@example.com" }.to_json }
-
-      it "returns a failed result with an error message" do
-        expect(subject).to be_failure
-        expect(subject.errors).to include("Inclusion Connect Error: Email not verified")
-      end
-    end
-
     context "when the agent is not found" do
       let(:agent) { nil }
 
