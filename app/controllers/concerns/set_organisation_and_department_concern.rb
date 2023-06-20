@@ -1,6 +1,4 @@
 module SetOrganisationAndDepartmentConcern
-  include ActiveSupport::Concern
-
   private
 
   def set_organisation

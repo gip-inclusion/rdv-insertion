@@ -4,7 +4,7 @@ class ArchivesController < ApplicationController
   include SetCurrentAgentRolesConcern
   include BackToListConcern
   include Archives::Filterable
-  include ExtractableConcern
+  include ResourcesLists::Extractable
 
   before_action :set_organisation, :set_department, :set_organisations, :set_all_configurations,
                 :set_current_agent_roles, :set_applicants, :set_archives, :filter_archives, :order_archives,

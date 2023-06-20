@@ -456,7 +456,7 @@ describe ApplicantsController do
     let!(:archive) { create(:archive, applicant: archived_applicant, department: department) }
     let!(:rdv_context4) { build(:rdv_context, motif_category: category_orientation, status: "invitation_pending") }
 
-    let!(:index_params) { { organisation_id: organisation.id, motif_category_id: category_orientation.id } }
+    let!(:index_params) { { organisation_id: organisation.id } }
 
     render_views
 
@@ -464,41 +464,27 @@ describe ApplicantsController do
       sign_in(agent)
     end
 
-    it "returns a list of applicants in the current context" do
+    it "returns a list of all the applicants" do
       get :index, params: index_params
 
       expect(response).to be_successful
       expect(response.body).to match(/Chabat/)
       expect(response.body).to match(/Baer/)
-      expect(response.body).not_to match(/Darmon/)
-      expect(response.body).not_to match(/Barthelemy/)
+      expect(response.body).to match(/Darmon/)
+      expect(response.body).to match(/Barthelemy/)
+    end
+
+    it "displays the applicants creation date and the corresponding filter" do
+      get :index, params: index_params
+
+      expect(response.body).to match(/Date de création/)
+      expect(response.body).to match(/Filtrer par date de création/)
     end
 
     it "does not display the configure organisation option" do
       get :index, params: index_params
 
       expect(response.body).not_to match(/Configurer l'organisation/)
-    end
-
-    context "when there is all types of rdv_contexts statuses" do
-      before do
-        RdvContext.statuses.each_key do |status|
-          create(:rdv_context, motif_category: category_orientation,
-                               status: status,
-                               applicant: create(:applicant, organisations: [organisation]))
-        end
-      end
-
-      it "displays all statuses in the filter list except closed" do
-        get :index, params: index_params.merge(motif_category_id: category_orientation.id)
-        RdvContext.statuses.each_key do |status|
-          if status == "closed"
-            expect(response.body).not_to match(/"#{status}"/)
-          else
-            expect(response.body).to match(/"#{status}"/)
-          end
-        end
-      end
     end
 
     context "when the agent is admin" do
@@ -515,74 +501,24 @@ describe ApplicantsController do
       end
     end
 
-    context "when no context is specified" do
-      let!(:index_params) { { organisation_id: organisation.id } }
-
-      it "returns the list of applicants in the current context" do
-        get :index, params: index_params
-
-        expect(response).to be_successful
-        expect(response.body).to match(/Chabat/)
-        expect(response.body).to match(/Baer/)
-        expect(response.body).to match(/Darmon/)
-        expect(response.body).not_to match(/Barthelemy/)
-      end
-
-      it "displays the applicants creation date and the corresponding filter" do
-        get :index, params: index_params
-
-        expect(response.body).to match(/Date de création/)
-        expect(response.body).to match(/Filtrer par date de création/)
-      end
-    end
-
-    context "when archived applicants only" do
-      let!(:index_params) { { organisation_id: organisation.id, applicants_scope: "archived" } }
-
-      it "returns the list of archived applicants" do
-        get :index, params: index_params
-
-        expect(response).to be_successful
-        expect(response.body).not_to match(/Chabat/)
-        expect(response.body).not_to match(/Baer/)
-        expect(response.body).to match(/Barthelemy/)
-      end
-
-      it "displays the applicants creation date and the corresponding filter" do
-        get :index, params: index_params
-
-        expect(response.body).to match(/Date de création/)
-        expect(response.body).to match(/Filtrer par date de création/)
-      end
-    end
-
     context "when a search query is specified" do
       let!(:index_params) do
-        { organisation_id: organisation.id, search_query: "chabat", motif_category_id: category_orientation.id }
+        { organisation_id: organisation.id, search_query: "chabat" }
       end
 
       it "searches the applicants" do
         get :index, params: index_params
         expect(response.body).to match(/Chabat/)
         expect(response.body).not_to match(/Baer/)
-      end
-    end
-
-    context "when a status is passed" do
-      let!(:index_params) do
-        { organisation_id: organisation.id, status: "invitation_pending", motif_category_id: category_orientation.id }
-      end
-
-      it "filters by status" do
-        get :index, params: index_params
-        expect(response.body).to match(/Baer/)
-        expect(response.body).not_to match(/Chabat/)
+        expect(response.body).not_to match(/Darmon/)
+        expect(response.body).not_to match(/Barthelemy/)
       end
     end
 
     context "when creation dates are passed" do
       let!(:index_params) do
-        { organisation_id: organisation.id, creation_date_after: "01-04-2023", creation_date_before: "30-04-2023" }
+        { organisation_id: organisation.id, applicants_creation_date_after: "01-04-2023",
+          applicants_creation_date_before: "30-04-2023" }
       end
 
       it "filters by creation dates" do
@@ -590,93 +526,7 @@ describe ApplicantsController do
         expect(response.body).to match(/Baer/)
         expect(response.body).not_to match(/Chabat/)
         expect(response.body).not_to match(/Darmon/)
-      end
-    end
-
-    context "when invitations dates are passed" do
-      let!(:invitation1) do
-        create(
-          :invitation, sent_at: Time.zone.parse("2022-06-01 12:00"), rdv_context: rdv_context1,
-                       applicant: applicant
-        )
-      end
-      let!(:invitation2) do
-        create(
-          :invitation, sent_at: Time.zone.parse("2022-06-08 12:00"), rdv_context: rdv_context2, applicant: applicant2
-        )
-      end
-      let!(:invitation3) do
-        create(
-          :invitation, sent_at: Time.zone.parse("2022-06-15 12:00"), rdv_context: rdv_context3, applicant: applicant3
-        )
-      end
-
-      context "for first invitations" do
-        let!(:index_params) do
-          { organisation_id: organisation.id, motif_category_id: category_orientation.id,
-            first_invitation_date_after: "05-06-2022", first_invitation_date_before: "10-06-2022" }
-        end
-
-        it "filters by first invitations dates" do
-          get :index, params: index_params
-          expect(response.body).to match(/Baer/)
-          expect(response.body).not_to match(/Chabat/)
-          expect(response.body).not_to match(/Darmon/)
-        end
-      end
-
-      context "for last invitations" do
-        let!(:invitation4) do
-          create(:invitation, sent_at: Time.zone.parse("2022-06-19 12:00"),
-                              rdv_context: rdv_context1, applicant: applicant)
-        end
-        let!(:invitation5) do
-          create(:invitation, sent_at: Time.zone.parse("2022-06-16 12:00"),
-                              rdv_context: rdv_context2, applicant: applicant2)
-        end
-        let!(:invitation6) do
-          create(:invitation, sent_at: Time.zone.parse("2022-06-17 12:00"),
-                              rdv_context: rdv_context3, applicant: applicant3)
-        end
-
-        let!(:index_params) do
-          { organisation_id: organisation.id, motif_category: category_orientation,
-            last_invitation_date_after: "17-06-2022", last_invitation_date_before: "17-06-2022" }
-        end
-
-        it "filters by last invitations dates" do
-          get :index, params: index_params
-          expect(response.body).not_to match(/Baer/)
-          expect(response.body).not_to match(/Chabat/)
-          expect(response.body).to match(/Darmon/)
-        end
-      end
-    end
-
-    context "when action_required is passed" do
-      let!(:index_params) do
-        { organisation_id: organisation.id, action_required: "true", motif_category_id: category_orientation.id }
-      end
-      let!(:number_of_days_before_action_required) { 6 }
-
-      context "when the invitation has been sent before the number of days before action required" do
-        let!(:invitation) { create(:invitation, applicant: applicant2, rdv_context: rdv_context2, sent_at: 7.days.ago) }
-
-        it "filters by action required" do
-          get :index, params: index_params
-          expect(response.body).to match(/Baer/)
-          expect(response.body).not_to match(/Chabat/)
-        end
-      end
-
-      context "when the invitation has been sent after the number of days defined in the configuration 3 days ago" do
-        let!(:invitation) { create(:invitation, applicant: applicant2, rdv_context: rdv_context2, sent_at: 3.days.ago) }
-
-        it "filters by action required" do
-          get :index, params: index_params
-          expect(response.body).not_to match(/Baer/)
-          expect(response.body).not_to match(/Chabat/)
-        end
+        expect(response.body).not_to match(/Barthelemy/)
       end
     end
 
@@ -699,69 +549,16 @@ describe ApplicantsController do
       end
     end
 
-    context "when the organisation convene applicants" do
-      before do
-        configuration.update!(convene_applicant: true)
-        rdv_context2.update!(motif_category: category_accompagnement)
-      end
-
-      let!(:rdv) { create(:rdv) }
-      let!(:participation) do
-        create(
-          :participation,
-          rdv: rdv,
-          applicant: applicant,
-          status: "unknown",
-          rdv_context: rdv_context1
-        )
-      end
-      let!(:rdv2) { create(:rdv) }
-      let!(:participation2) do
-        create(
-          :participation,
-          rdv: rdv2,
-          applicant: applicant,
-          status: "unknown",
-          rdv_context: rdv_context2
-        )
-      end
-      let!(:notification) do
-        create(
-          :notification,
-          participation: participation, event: "participation_created", sent_at: Time.zone.parse("20/12/2021 12:00")
-        )
-      end
-      let!(:notification2) do
-        create(
-          :notification,
-          participation: participation, event: "participation_updated", sent_at: Time.zone.parse("21/12/2021 12:00")
-        )
-      end
-      let!(:notification3) do
-        create(
-          :notification,
-          participation: participation2, event: "participation_created", sent_at: Time.zone.parse("25/12/2021 12:00")
-        )
-      end
-
-      it "shows the last sent convocation on the current motif category" do
-        get :index, params: index_params
-
-        expect(response.body).to include("Dernière convocation envoyée le")
-        expect(response.body).to include("20/12/2021")
-        expect(response.body).not_to include("21/12/2021")
-        expect(response.body).not_to include("25/12/2021")
-      end
-    end
-
     context "when department level" do
-      let!(:index_params) { { department_id: department.id, motif_category_id: category_orientation.id } }
+      let!(:index_params) { { department_id: department.id } }
 
       it "renders the index page" do
         get :index, params: index_params
 
         expect(response.body).to match(/Chabat/)
         expect(response.body).to match(/Baer/)
+        expect(response.body).to match(/Darmon/)
+        expect(response.body).to match(/Barthelemy/)
       end
 
       it "does not display the configure organisation option" do

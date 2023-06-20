@@ -1,6 +1,4 @@
 module SetAllConfigurationsConcern
-  include ActiveSupport::Concern
-
   private
 
   def set_all_configurations

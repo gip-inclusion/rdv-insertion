@@ -6,7 +6,7 @@ class RdvContextsController < ApplicationController
   include SetCurrentAgentRolesConcern
   include BackToListConcern
   include RdvContexts::Filterable
-  include ExtractableConcern
+  include ResourcesLists::Extractable
 
   before_action :set_organisation, :set_department, :set_organisations, :set_all_configurations,
                 :set_current_agent_roles, :set_current_configuration, :set_current_motif_category,

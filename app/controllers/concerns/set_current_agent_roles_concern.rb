@@ -1,6 +1,4 @@
 module SetCurrentAgentRolesConcern
-  include ActiveSupport::Concern
-
   private
 
   def set_current_agent_roles

@@ -1,6 +1,4 @@
 module RdvContexts::Filterable
-  extend ActiveSupport::Concern
-
   private
 
   def filter_rdv_contexts

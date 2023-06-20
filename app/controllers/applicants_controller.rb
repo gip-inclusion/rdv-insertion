@@ -12,7 +12,7 @@ class ApplicantsController < ApplicationController
   include SetCurrentAgentRolesConcern
   include BackToListConcern
   include Applicants::Filterable
-  include ExtractableConcern
+  include ResourcesLists::Extractable
 
   before_action :set_organisation, :set_department, :set_organisations, :set_all_configurations,
                 :set_current_agent_roles, :set_applicants, :filter_applicants, :order_applicants,
@@ -148,7 +148,6 @@ class ApplicantsController < ApplicationController
                   .preload(rdv_contexts: [:invitations])
                   .active.distinct
                   .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
-                  .where.not(id: @department.archived_applicants.ids)
   end
 
   def set_convocation_motifs_by_rdv_context

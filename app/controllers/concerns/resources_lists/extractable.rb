@@ -1,6 +1,4 @@
-module ExtractableConcern
-  extend ActiveSupport::Concern
-
+module ResourcesLists::Extractable
   private
 
   def send_csv

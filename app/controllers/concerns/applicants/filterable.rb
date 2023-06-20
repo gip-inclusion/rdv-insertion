@@ -1,6 +1,4 @@
 module Applicants::Filterable
-  extend ActiveSupport::Concern
-
   private
 
   def filter_applicants

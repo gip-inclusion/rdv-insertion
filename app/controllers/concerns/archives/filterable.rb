@@ -1,6 +1,4 @@
 module Archives::Filterable
-  extend ActiveSupport::Concern
-
   private
 
   def filter_archives
