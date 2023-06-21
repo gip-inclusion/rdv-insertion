@@ -171,7 +171,7 @@ describe Applicant do
     end
 
     context "when nir is 13 characters with 2A or 2B in it" do
-      let!(:nir) { generate_random_corsica_nir }
+      let!(:nir) { "123456782A12307" }
       let(:applicant) { build(:applicant, nir: nir.first(13)) }
 
       it { expect(applicant).to be_valid }
@@ -183,7 +183,7 @@ describe Applicant do
     end
 
     context "when nir is a valid 15 characters string with 2A or 2B in it" do
-      let!(:nir) { generate_random_corsica_nir }
+      let!(:nir) { "123456782A12307" }
       let(:applicant) { build(:applicant, nir: nir) }
 
       it { expect(applicant).to be_valid }
