@@ -4,4 +4,10 @@ module NirHelper
     base_nir = "180#{10.times.map { rand(1..9) }.join}"
     NirHelper.format_nir(base_nir)
   end
+
+  def generate_random_corsica_nir
+    # choosing random male born in 80
+    base_nir = "180#{5.times.map { rand(1..9) }.join}2A#{3.times.map { rand(1..9) }.join}"
+    NirHelper.format_nir(base_nir)
+  end
 end

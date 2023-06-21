@@ -170,6 +170,25 @@ describe Applicant do
       it { expect(applicant).to be_valid }
     end
 
+    context "when nir is 13 characters with 2A or 2B in it" do
+      let!(:nir) { generate_random_corsica_nir }
+      let(:applicant) { build(:applicant, nir: nir.first(13)) }
+
+      it { expect(applicant).to be_valid }
+
+      it "adds a 2 digits key to the nir saved in db" do
+        applicant.save
+        expect(applicant.reload.nir).to eq(nir)
+      end
+    end
+
+    context "when nir is a valid 15 characters string with 2A or 2B in it" do
+      let!(:nir) { generate_random_corsica_nir }
+      let(:applicant) { build(:applicant, nir: nir) }
+
+      it { expect(applicant).to be_valid }
+    end
+
     context "when nir exists already" do
       let!(:existing_applicant) { create(:applicant, nir: "123456789012311") }
       let(:applicant) { build(:applicant, nir: "123456789012311") }
@@ -189,7 +208,7 @@ describe Applicant do
     end
 
     context "when nir is not all digits" do
-      let(:applicant) { build(:applicant, nir: "123456789012A11") }
+      let(:applicant) { build(:applicant, nir: "123456C78901211") }
 
       it "add errors" do
         expect(applicant).not_to be_valid
