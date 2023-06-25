@@ -1,0 +1,12 @@
+<% if @invitation.display_europe_logos %>
+  <%= image_pack_tag "logos/europe-logos.jpg", alt: "Logo de l'Union européene", class: "structure-logo" %>
+<% end %>
+<% if @organisation_logo_path %>
+  <%= image_pack_tag @organisation_logo_path, alt: "Logo de l'organisation", class: "structure-logo" %>
+<% end %>
+<% if @department_logo_path && @invitation.display_department_logo %>
+  <%= image_pack_tag @department_logo_path, alt: "Logo du département", class: "structure-logo" %>
+<% end %>
+<% if @invitation.display_pole_emploi_logo %>
+  <%= image_pack_tag "logos/pole-emploi.png", alt: "Logo de Pole Emploi", class: "structure-logo" %>
+<% end %>

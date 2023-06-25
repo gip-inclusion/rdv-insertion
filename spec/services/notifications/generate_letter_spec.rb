@@ -30,7 +30,8 @@ describe Notifications::GenerateLetter, type: :service do
 
   let!(:organisation) { create(:organisation, department: department) }
   let!(:messages_configuration) do
-    create(:messages_configuration, direction_names: ["Direction départemental"], organisation: organisation)
+    create(:messages_configuration, organisation: organisation,
+                                    direction_names: ["Direction départemental"], display_department_logo: false)
   end
   let!(:configuration) { create(:configuration, motif_category: category_rsa_orientation, organisation: organisation) }
 
@@ -139,6 +140,39 @@ describe Notifications::GenerateLetter, type: :service do
 
       it "returns the error" do
         expect(subject.errors).to eq(["Génération d'une lettre alors que le format est email"])
+      end
+    end
+
+    context "when the department logo is configured to be displayed" do
+      let!(:messages_configuration) do
+        create(:messages_configuration, organisation: organisation, display_department_logo: true)
+      end
+
+      it "generates the pdf string with the department logo" do
+        subject
+        expect(notification.content).to include("department-logo")
+      end
+    end
+
+    context "when the europe logos are configured to be displayed" do
+      let!(:messages_configuration) do
+        create(:messages_configuration, organisation: organisation, display_europe_logos: true)
+      end
+
+      it "generates the pdf string with the europe logos" do
+        subject
+        expect(notification.content).to include("europe-logos")
+      end
+    end
+
+    context "when the pole emploi logo is configured to be displayed" do
+      let!(:messages_configuration) do
+        create(:messages_configuration, organisation: organisation, display_pole_emploi_logo: true)
+      end
+
+      it "generates the pdf string with the pole emploi logo" do
+        subject
+        expect(notification.content).to include("pole-emploi-logo")
       end
     end
 

@@ -4,7 +4,10 @@ RSpec.describe InvitationMailer do
   let!(:department) { create(:department, name: "Drôme", pronoun: "la") }
   let!(:help_phone_number) { "0139393939" }
   let!(:organisation) { create(:organisation, department: department) }
-  let!(:messages_configuration) { create(:messages_configuration, organisation: organisation) }
+  let!(:messages_configuration) do
+    create(:messages_configuration, organisation: organisation, display_department_logo: true,
+                                    display_europe_logos: true, display_pole_emploi_logo: true)
+  end
   let!(:applicant) do
     create(:applicant, first_name: "Jean", last_name: "Valjean")
   end
@@ -51,6 +54,23 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
         expect(body_string).to match("dans un délai de 3 jours")
+        expect(body_string).to match("Logo du département")
+        expect(body_string).to match("Logo de l'Union européene")
+        expect(body_string).to match("Logo de Pole Emploi")
+      end
+
+      context "when the display logos options are disabled" do
+        let!(:messages_configuration) do
+          create(:messages_configuration, organisation: organisation, display_department_logo: false,
+                                          display_europe_logos: false, display_pole_emploi_logo: false)
+        end
+
+        it "does not display the different optional logos" do
+          body_string = unescape_html(subject.body.encoded)
+          expect(body_string).not_to match("Logo du département")
+          expect(body_string).not_to match("Logo de l'Union européene")
+          expect(body_string).not_to match("Logo de Pole Emploi")
+        end
       end
 
       context "when the signature is configured" do
@@ -96,6 +116,23 @@ RSpec.describe InvitationMailer do
           expect(body_string).to match("/invitations/redirect")
           expect(body_string).to match("uuid=#{invitation.uuid}")
           expect(body_string).to match("dans un délai de 3 jours")
+          expect(body_string).to match("Logo du département")
+          expect(body_string).to match("Logo de l'Union européene")
+          expect(body_string).to match("Logo de Pole Emploi")
+        end
+
+        context "when the display logos options are disabled" do
+          let!(:messages_configuration) do
+            create(:messages_configuration, organisation: organisation, display_department_logo: false,
+                                            display_europe_logos: false, display_pole_emploi_logo: false)
+          end
+
+          it "does not display the different optional logos" do
+            body_string = unescape_html(subject.body.encoded)
+            expect(body_string).not_to match("Logo du département")
+            expect(body_string).not_to match("Logo de l'Union européene")
+            expect(body_string).not_to match("Logo de Pole Emploi")
+          end
         end
       end
     end
@@ -133,6 +170,23 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
         expect(body_string).to match("dans un délai de 3 jours")
+        expect(body_string).to match("Logo du département")
+        expect(body_string).to match("Logo de l'Union européene")
+        expect(body_string).to match("Logo de Pole Emploi")
+      end
+
+      context "when the display logos options are disabled" do
+        let!(:messages_configuration) do
+          create(:messages_configuration, organisation: organisation, display_department_logo: false,
+                                          display_europe_logos: false, display_pole_emploi_logo: false)
+        end
+
+        it "does not display the different optional logos" do
+          body_string = unescape_html(subject.body.encoded)
+          expect(body_string).not_to match("Logo du département")
+          expect(body_string).not_to match("Logo de l'Union européene")
+          expect(body_string).not_to match("Logo de Pole Emploi")
+        end
       end
     end
 
@@ -167,6 +221,23 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
         expect(body_string).to match("dans un délai de 3 jours")
+        expect(body_string).to match("Logo du département")
+        expect(body_string).to match("Logo de l'Union européene")
+        expect(body_string).to match("Logo de Pole Emploi")
+      end
+
+      context "when the display logos options are disabled" do
+        let!(:messages_configuration) do
+          create(:messages_configuration, organisation: organisation, display_department_logo: false,
+                                          display_europe_logos: false, display_pole_emploi_logo: false)
+        end
+
+        it "does not display the different optional logos" do
+          body_string = unescape_html(subject.body.encoded)
+          expect(body_string).not_to match("Logo du département")
+          expect(body_string).not_to match("Logo de l'Union européene")
+          expect(body_string).not_to match("Logo de Pole Emploi")
+        end
       end
     end
 
@@ -201,6 +272,23 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
         expect(body_string).to match("dans un délai de 3 jours")
+        expect(body_string).to match("Logo du département")
+        expect(body_string).to match("Logo de l'Union européene")
+        expect(body_string).to match("Logo de Pole Emploi")
+      end
+
+      context "when the display logos options are disabled" do
+        let!(:messages_configuration) do
+          create(:messages_configuration, organisation: organisation, display_department_logo: false,
+                                          display_europe_logos: false, display_pole_emploi_logo: false)
+        end
+
+        it "does not display the different optional logos" do
+          body_string = unescape_html(subject.body.encoded)
+          expect(body_string).not_to match("Logo du département")
+          expect(body_string).not_to match("Logo de l'Union européene")
+          expect(body_string).not_to match("Logo de Pole Emploi")
+        end
       end
     end
 
@@ -237,6 +325,23 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
         expect(body_string).to match("dans un délai de 3 jours")
+        expect(body_string).to match("Logo du département")
+        expect(body_string).to match("Logo de l'Union européene")
+        expect(body_string).to match("Logo de Pole Emploi")
+      end
+
+      context "when the display logos options are disabled" do
+        let!(:messages_configuration) do
+          create(:messages_configuration, organisation: organisation, display_department_logo: false,
+                                          display_europe_logos: false, display_pole_emploi_logo: false)
+        end
+
+        it "does not display the different optional logos" do
+          body_string = unescape_html(subject.body.encoded)
+          expect(body_string).not_to match("Logo du département")
+          expect(body_string).not_to match("Logo de l'Union européene")
+          expect(body_string).not_to match("Logo de Pole Emploi")
+        end
       end
     end
 
@@ -272,6 +377,23 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
         expect(body_string).to match("dans un délai de 3 jours")
+        expect(body_string).to match("Logo du département")
+        expect(body_string).to match("Logo de l'Union européene")
+        expect(body_string).to match("Logo de Pole Emploi")
+      end
+
+      context "when the display logos options are disabled" do
+        let!(:messages_configuration) do
+          create(:messages_configuration, organisation: organisation, display_department_logo: false,
+                                          display_europe_logos: false, display_pole_emploi_logo: false)
+        end
+
+        it "does not display the different optional logos" do
+          body_string = unescape_html(subject.body.encoded)
+          expect(body_string).not_to match("Logo du département")
+          expect(body_string).not_to match("Logo de l'Union européene")
+          expect(body_string).not_to match("Logo de Pole Emploi")
+        end
       end
     end
 
@@ -305,6 +427,23 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
         expect(body_string).to match("dans un délai de 3 jours")
+        expect(body_string).to match("Logo du département")
+        expect(body_string).to match("Logo de l'Union européene")
+        expect(body_string).to match("Logo de Pole Emploi")
+      end
+
+      context "when the display logos options are disabled" do
+        let!(:messages_configuration) do
+          create(:messages_configuration, organisation: organisation, display_department_logo: false,
+                                          display_europe_logos: false, display_pole_emploi_logo: false)
+        end
+
+        it "does not display the different optional logos" do
+          body_string = unescape_html(subject.body.encoded)
+          expect(body_string).not_to match("Logo du département")
+          expect(body_string).not_to match("Logo de l'Union européene")
+          expect(body_string).not_to match("Logo de Pole Emploi")
+        end
       end
     end
 
@@ -339,6 +478,23 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
         expect(body_string).to match("dans un délai de 3 jours")
+        expect(body_string).to match("Logo du département")
+        expect(body_string).to match("Logo de l'Union européene")
+        expect(body_string).to match("Logo de Pole Emploi")
+      end
+
+      context "when the display logos options are disabled" do
+        let!(:messages_configuration) do
+          create(:messages_configuration, organisation: organisation, display_department_logo: false,
+                                          display_europe_logos: false, display_pole_emploi_logo: false)
+        end
+
+        it "does not display the different optional logos" do
+          body_string = unescape_html(subject.body.encoded)
+          expect(body_string).not_to match("Logo du département")
+          expect(body_string).not_to match("Logo de l'Union européene")
+          expect(body_string).not_to match("Logo de Pole Emploi")
+        end
       end
     end
 
@@ -367,6 +523,23 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("afin de démarrer un parcours d'accompagnement.")
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("Logo du département")
+        expect(body_string).to match("Logo de l'Union européene")
+        expect(body_string).to match("Logo de Pole Emploi")
+      end
+
+      context "when the display logos options are disabled" do
+        let!(:messages_configuration) do
+          create(:messages_configuration, organisation: organisation, display_department_logo: false,
+                                          display_europe_logos: false, display_pole_emploi_logo: false)
+        end
+
+        it "does not display the different optional logos" do
+          body_string = unescape_html(subject.body.encoded)
+          expect(body_string).not_to match("Logo du département")
+          expect(body_string).not_to match("Logo de l'Union européene")
+          expect(body_string).not_to match("Logo de Pole Emploi")
+        end
       end
     end
   end
@@ -401,6 +574,23 @@ RSpec.describe InvitationMailer do
       )
       expect(body_string).not_to match("/invitations/redirect")
       expect(body_string).to match("dans un délai de 3 jours")
+      expect(body_string).to match("Logo du département")
+      expect(body_string).to match("Logo de l'Union européene")
+      expect(body_string).to match("Logo de Pole Emploi")
+    end
+
+    context "when the display logos options are disabled" do
+      let!(:messages_configuration) do
+        create(:messages_configuration, organisation: organisation, display_department_logo: false,
+                                        display_europe_logos: false, display_pole_emploi_logo: false)
+      end
+
+      it "does not display the different optional logos" do
+        body_string = unescape_html(subject.body.encoded)
+        expect(body_string).not_to match("Logo du département")
+        expect(body_string).not_to match("Logo de l'Union européene")
+        expect(body_string).not_to match("Logo de Pole Emploi")
+      end
     end
 
     context "when the signature is configured" do
@@ -449,6 +639,23 @@ RSpec.describe InvitationMailer do
       expect(body_string).to match("/invitations/redirect")
       expect(body_string).to match("uuid=#{invitation.uuid}")
       expect(body_string).not_to match("dans un délai de 3 jours")
+      expect(body_string).to match("Logo du département")
+      expect(body_string).to match("Logo de l'Union européene")
+      expect(body_string).to match("Logo de Pole Emploi")
+    end
+
+    context "when the display logos options are disabled" do
+      let!(:messages_configuration) do
+        create(:messages_configuration, organisation: organisation, display_department_logo: false,
+                                        display_europe_logos: false, display_pole_emploi_logo: false)
+      end
+
+      it "does not display the different optional logos" do
+        body_string = unescape_html(subject.body.encoded)
+        expect(body_string).not_to match("Logo du département")
+        expect(body_string).not_to match("Logo de l'Union européene")
+        expect(body_string).not_to match("Logo de Pole Emploi")
+      end
     end
 
     context "when the signature is configured" do
@@ -491,6 +698,23 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("Vous êtes invité à participer à un rendez-vous de suivi psychologue.")
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("Logo du département")
+        expect(body_string).to match("Logo de l'Union européene")
+        expect(body_string).to match("Logo de Pole Emploi")
+      end
+
+      context "when the display logos options are disabled" do
+        let!(:messages_configuration) do
+          create(:messages_configuration, organisation: organisation, display_department_logo: false,
+                                          display_europe_logos: false, display_pole_emploi_logo: false)
+        end
+
+        it "does not display the different optional logos" do
+          body_string = unescape_html(subject.body.encoded)
+          expect(body_string).not_to match("Logo du département")
+          expect(body_string).not_to match("Logo de l'Union européene")
+          expect(body_string).not_to match("Logo de Pole Emploi")
+        end
       end
     end
   end
@@ -524,6 +748,23 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("Tu es invité à participer à un atelier organisé par le département.")
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("Logo du département")
+        expect(body_string).to match("Logo de l'Union européene")
+        expect(body_string).to match("Logo de Pole Emploi")
+      end
+
+      context "when the display logos options are disabled" do
+        let!(:messages_configuration) do
+          create(:messages_configuration, organisation: organisation, display_department_logo: false,
+                                          display_europe_logos: false, display_pole_emploi_logo: false)
+        end
+
+        it "does not display the different optional logos" do
+          body_string = unescape_html(subject.body.encoded)
+          expect(body_string).not_to match("Logo du département")
+          expect(body_string).not_to match("Logo de l'Union européene")
+          expect(body_string).not_to match("Logo de Pole Emploi")
+        end
       end
     end
   end
@@ -559,6 +800,23 @@ RSpec.describe InvitationMailer do
           "Il ne vous reste plus que <span class=\"font-weight-bold\">#{invitation.number_of_days_before_expiration}" \
           " jours</span> pour prendre rendez-vous"
         )
+        expect(body_string).to match("Logo du département")
+        expect(body_string).to match("Logo de l'Union européene")
+        expect(body_string).to match("Logo de Pole Emploi")
+      end
+
+      context "when the display logos options are disabled" do
+        let!(:messages_configuration) do
+          create(:messages_configuration, organisation: organisation, display_department_logo: false,
+                                          display_europe_logos: false, display_pole_emploi_logo: false)
+        end
+
+        it "does not display the different optional logos" do
+          body_string = unescape_html(subject.body.encoded)
+          expect(body_string).not_to match("Logo du département")
+          expect(body_string).not_to match("Logo de l'Union européene")
+          expect(body_string).not_to match("Logo de Pole Emploi")
+        end
       end
     end
 
@@ -610,6 +868,23 @@ RSpec.describe InvitationMailer do
           "Il ne vous reste plus que <span class=\"font-weight-bold\">#{invitation.number_of_days_before_expiration}" \
           " jours</span> pour prendre rendez-vous"
         )
+        expect(body_string).to match("Logo du département")
+        expect(body_string).to match("Logo de l'Union européene")
+        expect(body_string).to match("Logo de Pole Emploi")
+      end
+
+      context "when the display logos options are disabled" do
+        let!(:messages_configuration) do
+          create(:messages_configuration, organisation: organisation, display_department_logo: false,
+                                          display_europe_logos: false, display_pole_emploi_logo: false)
+        end
+
+        it "does not display the different optional logos" do
+          body_string = unescape_html(subject.body.encoded)
+          expect(body_string).not_to match("Logo du département")
+          expect(body_string).not_to match("Logo de l'Union européene")
+          expect(body_string).not_to match("Logo de Pole Emploi")
+        end
       end
     end
 
@@ -658,6 +933,23 @@ RSpec.describe InvitationMailer do
             "#{invitation.number_of_days_before_expiration}" \
             " jours</span> pour prendre rendez-vous"
           )
+          expect(body_string).to match("Logo du département")
+          expect(body_string).to match("Logo de l'Union européene")
+          expect(body_string).to match("Logo de Pole Emploi")
+        end
+
+        context "when the display logos options are disabled" do
+          let!(:messages_configuration) do
+            create(:messages_configuration, organisation: organisation, display_department_logo: false,
+                                            display_europe_logos: false, display_pole_emploi_logo: false)
+          end
+
+          it "does not display the different optional logos" do
+            body_string = unescape_html(subject.body.encoded)
+            expect(body_string).not_to match("Logo du département")
+            expect(body_string).not_to match("Logo de l'Union européene")
+            expect(body_string).not_to match("Logo de Pole Emploi")
+          end
         end
       end
     end
@@ -698,6 +990,23 @@ RSpec.describe InvitationMailer do
           "Il ne vous reste plus que <span class=\"font-weight-bold\">#{invitation.number_of_days_before_expiration}" \
           " jours</span> pour prendre rendez-vous"
         )
+        expect(body_string).to match("Logo du département")
+        expect(body_string).to match("Logo de l'Union européene")
+        expect(body_string).to match("Logo de Pole Emploi")
+      end
+
+      context "when the display logos options are disabled" do
+        let!(:messages_configuration) do
+          create(:messages_configuration, organisation: organisation, display_department_logo: false,
+                                          display_europe_logos: false, display_pole_emploi_logo: false)
+        end
+
+        it "does not display the different optional logos" do
+          body_string = unescape_html(subject.body.encoded)
+          expect(body_string).not_to match("Logo du département")
+          expect(body_string).not_to match("Logo de l'Union européene")
+          expect(body_string).not_to match("Logo de Pole Emploi")
+        end
       end
     end
 
@@ -735,6 +1044,23 @@ RSpec.describe InvitationMailer do
           "Il ne vous reste plus que <span class=\"font-weight-bold\">#{invitation.number_of_days_before_expiration}" \
           " jours</span> pour prendre rendez-vous"
         )
+        expect(body_string).to match("Logo du département")
+        expect(body_string).to match("Logo de l'Union européene")
+        expect(body_string).to match("Logo de Pole Emploi")
+      end
+
+      context "when the display logos options are disabled" do
+        let!(:messages_configuration) do
+          create(:messages_configuration, organisation: organisation, display_department_logo: false,
+                                          display_europe_logos: false, display_pole_emploi_logo: false)
+        end
+
+        it "does not display the different optional logos" do
+          body_string = unescape_html(subject.body.encoded)
+          expect(body_string).not_to match("Logo du département")
+          expect(body_string).not_to match("Logo de l'Union européene")
+          expect(body_string).not_to match("Logo de Pole Emploi")
+        end
       end
     end
   end
@@ -772,6 +1098,23 @@ RSpec.describe InvitationMailer do
         "Il ne vous reste plus que <span class=\"font-weight-bold\">#{invitation.number_of_days_before_expiration}" \
         " jours</span> pour appeler le <span class=\"font-weight-bold\">01 39 39 39 39</span>."
       )
+      expect(body_string).to match("Logo du département")
+      expect(body_string).to match("Logo de l'Union européene")
+      expect(body_string).to match("Logo de Pole Emploi")
+    end
+
+    context "when the display logos options are disabled" do
+      let!(:messages_configuration) do
+        create(:messages_configuration, organisation: organisation, display_department_logo: false,
+                                        display_europe_logos: false, display_pole_emploi_logo: false)
+      end
+
+      it "does not display the different optional logos" do
+        body_string = unescape_html(subject.body.encoded)
+        expect(body_string).not_to match("Logo du département")
+        expect(body_string).not_to match("Logo de l'Union européene")
+        expect(body_string).not_to match("Logo de Pole Emploi")
+      end
     end
 
     context "when the signature is configured" do
@@ -817,6 +1160,23 @@ RSpec.describe InvitationMailer do
           " jours</span> pour prendre rendez-vous à la date et l'horaire de ton choix en cliquant" \
           " sur le bouton suivant."
         )
+        expect(body_string).to match("Logo du département")
+        expect(body_string).to match("Logo de l'Union européene")
+        expect(body_string).to match("Logo de Pole Emploi")
+      end
+
+      context "when the display logos options are disabled" do
+        let!(:messages_configuration) do
+          create(:messages_configuration, organisation: organisation, display_department_logo: false,
+                                          display_europe_logos: false, display_pole_emploi_logo: false)
+        end
+
+        it "does not display the different optional logos" do
+          body_string = unescape_html(subject.body.encoded)
+          expect(body_string).not_to match("Logo du département")
+          expect(body_string).not_to match("Logo de l'Union européene")
+          expect(body_string).not_to match("Logo de Pole Emploi")
+        end
       end
     end
 

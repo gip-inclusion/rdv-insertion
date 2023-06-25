@@ -33,8 +33,8 @@ module Invitations
         signature_lines: @invitation.signature_lines,
         help_address: @invitation.help_address,
         display_europe_logos: @invitation.display_europe_logos,
-        display_independent_from_cd_message: display_independent_from_cd_message,
         display_department_logo: @invitation.display_department_logo,
+        display_pole_emploi_logo: @invitation.display_pole_emploi_logo,
         sender_city: @invitation.sender_city,
         rdv_title: @invitation.rdv_title,
         applicant_designation: @invitation.applicant_designation,
@@ -48,10 +48,6 @@ module Invitations
 
     def organisation
       (@invitation.applicant.organisations & @invitation.organisations).last
-    end
-
-    def display_independent_from_cd_message
-      @invitation.organisations.all?(&:independent_from_cd)
     end
   end
 end

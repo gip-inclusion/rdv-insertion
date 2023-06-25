@@ -19,7 +19,8 @@ describe Invitations::GenerateLetter, type: :service do
   end
   let!(:organisation) { create(:organisation, department: department) }
   let!(:messages_configuration) do
-    create(:messages_configuration, organisation: organisation, direction_names: ["Direction départemental"])
+    create(:messages_configuration, organisation: organisation,
+                                    direction_names: ["Direction départemental"], display_department_logo: false)
   end
   let!(:configuration) { create(:configuration, motif_category: category_rsa_orientation, organisation: organisation) }
 
@@ -35,8 +36,9 @@ describe Invitations::GenerateLetter, type: :service do
       expect(content).to include(invitation.uuid)
       expect(content).to include(department.name)
       expect(content).to include("Vous êtes bénéficiaire du RSA")
-      # letter-first-col is only used when display_europe_logos is true (false by default)
+      expect(content).not_to include("department-logo")
       expect(content).not_to include("europe-logos")
+      expect(content).not_to include("pole-emploi-logo")
     end
 
     context "when the format is not postal" do
@@ -84,6 +86,17 @@ describe Invitations::GenerateLetter, type: :service do
       end
     end
 
+    context "when the department logo is configured to be displayed" do
+      let!(:messages_configuration) do
+        create(:messages_configuration, organisation: organisation, display_department_logo: true)
+      end
+
+      it "generates the pdf string with the department logo" do
+        subject
+        expect(invitation.content).to include("department-logo")
+      end
+    end
+
     context "when the europe logos are configured to be displayed" do
       let!(:messages_configuration) do
         create(:messages_configuration, organisation: organisation, display_europe_logos: true)
@@ -91,8 +104,18 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf string with the europe logos" do
         subject
-        # europe-logos is only used when display_europe_logos is true
         expect(invitation.content).to include("europe-logos")
+      end
+    end
+
+    context "when the pole emploi logo is configured to be displayed" do
+      let!(:messages_configuration) do
+        create(:messages_configuration, organisation: organisation, display_pole_emploi_logo: true)
+      end
+
+      it "generates the pdf string with the pole emploi logo" do
+        subject
+        expect(invitation.content).to include("pole-emploi-logo")
       end
     end
 

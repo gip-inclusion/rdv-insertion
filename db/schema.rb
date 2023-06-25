@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_13_163040) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_25_190907) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -196,6 +196,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_13_163040) do
     t.string "sms_sender_name"
     t.boolean "display_department_logo", default: true
     t.bigint "organisation_id"
+    t.boolean "display_pole_emploi_logo", default: false
     t.index ["organisation_id"], name: "index_messages_configurations_on_organisation_id"
   end
 

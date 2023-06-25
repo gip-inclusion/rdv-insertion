@@ -91,13 +91,6 @@ export default class extends Controller {
     });
   }
 
-  displayDepartmentLogoAttribute() {
-    tippy(this.element, {
-      content:
-        "Si le logo de l'organisation n'est pas défini, le logo du département sera utilisé quoi qu'il arrive.",
-    });
-  }
-
   departmentInternalIdAttribute() {
     tippy(this.element, {
       content: "ID dans l'éditeur logiciel (IODAS, SOLIS...) ou dans le SI du département",
