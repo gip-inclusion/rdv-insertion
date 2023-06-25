@@ -2,6 +2,7 @@ module MotifCategory::Sortable
   CHRONOLOGICALLY_SORTED_CATEGORIES_SHORT_NAMES = %w[
     rsa_integration_information
     rsa_orientation
+    rsa_orientation_file_active
     rsa_orientation_france_travail
     rsa_orientation_coaching
     rsa_orientation_freelance
@@ -17,6 +18,9 @@ module MotifCategory::Sortable
     rsa_atelier_collectif_mandatory
     rsa_main_tendue
     rsa_spie
+    siae_interview
+    siae_collective_information
+    siae_follow_up
   ].freeze
 
   def position

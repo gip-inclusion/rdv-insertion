@@ -236,6 +236,72 @@ describe Invitations::GenerateLetter, type: :service do
       end
     end
 
+    context "when the context is siae_interview" do
+      let!(:rdv_context) { create(:rdv_context, motif_category: category_siae_interview) }
+
+      it "generates the pdf with the right content" do
+        subject
+        content = unescape_html(invitation.content)
+        expect(content).to include(
+          "Objet : Entretien d'embauche dans le cadre de votre candidature SIAE"
+        )
+        expect(content).to include(
+          "vous êtes #{applicant.conjugate('invité')} à participer à un entretien d'embauche afin de " \
+          "poursuivre le processus de recrutement"
+        )
+        expect(content).to include("saisissez dans un délai de 3 jours à réception de ce courrier")
+        expect(content).not_to include("N° allocataire.")
+        expect(content).not_to include("Ce RDV est obligatoire.")
+        expect(content).not_to include(
+          "En l'absence d'action de votre part, votre RSA pourra être suspendu ou réduit."
+        )
+      end
+    end
+
+    context "when the context is siae_follow_up" do
+      let!(:rdv_context) { create(:rdv_context, motif_category: category_siae_follow_up) }
+
+      it "generates the pdf with the right content" do
+        subject
+        content = unescape_html(invitation.content)
+        expect(content).to include(
+          "Objet : Rendez-vous de suivi dans le cadre de votre suivi SIAE"
+        )
+        expect(content).to include(
+          "vous êtes #{applicant.conjugate('invité')} à participer à un rendez-vous de suivi afin de faire un point" \
+          " avec votre référent"
+        )
+        expect(content).to include("saisissez dans un délai de 3 jours à réception de ce courrier")
+        expect(content).not_to include("N° allocataire.")
+        expect(content).not_to include("Ce RDV est obligatoire.")
+        expect(content).not_to include(
+          "En l'absence d'action de votre part, votre RSA pourra être suspendu ou réduit."
+        )
+      end
+    end
+
+    context "when the context is siae_collective_information" do
+      let!(:rdv_context) { create(:rdv_context, motif_category: category_siae_collective_information) }
+
+      it "generates the pdf with the right content" do
+        subject
+        content = unescape_html(invitation.content)
+        expect(content).to include(
+          "Objet : Rendez-vous collectif d'information dans le cadre de votre candidature SIAE"
+        )
+        expect(content).to include(
+          "vous êtes #{applicant.conjugate('invité')} à participer à un rendez-vous collectif d'information afin de " \
+          "découvrir cette structure"
+        )
+        expect(content).to include("saisissez dans un délai de 3 jours à réception de ce courrier")
+        expect(content).not_to include("N° allocataire.")
+        expect(content).not_to include("Ce RDV est obligatoire.")
+        expect(content).not_to include(
+          "En l'absence d'action de votre part, votre RSA pourra être suspendu ou réduit."
+        )
+      end
+    end
+
     context "when the context is rsa_insertion_offer" do
       let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_insertion_offer) }
 

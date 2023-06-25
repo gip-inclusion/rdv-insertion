@@ -2,7 +2,7 @@
 
 <div class="mail-object">
   <p class="bold-blue"><span class="bold-blue">Objet : <%= rdv_title.slice(0,1).capitalize + rdv_title.slice(1..-1) %> dans le cadre de votre <%= rdv_subject %></span></p>
-  <% if applicant.affiliation_number %>
+  <% if applicant.affiliation_number && motif_category_name.start_with?("RSA") %>
     <p>N° allocataire : <%= applicant.affiliation_number %></p>
   <% end %>
   <% if invitation.rdv_with_referents? %>

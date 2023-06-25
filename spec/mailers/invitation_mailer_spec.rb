@@ -342,6 +342,74 @@ RSpec.describe InvitationMailer do
       end
     end
 
+    context "for siae_collective_information" do
+      let!(:rdv_context) { build(:rdv_context, motif_category: category_siae_collective_information) }
+
+      it "renders the headers" do
+        expect(subject.to).to eq([applicant.email])
+      end
+
+      it "renders the subject" do
+        email_subject = unescape_html(subject.subject)
+        expect(email_subject).to eq(
+          "[CANDIDATURE SIAE]: Votre rendez-vous collectif d'information dans le cadre de votre candidature SIAE"
+        )
+      end
+
+      it "renders the body" do
+        body_string = unescape_html(subject.body.encoded)
+        expect(body_string).to match("Bonjour Jean VALJEAN")
+        expect(body_string).to match("Le département de la Drôme.")
+        expect(body_string).to match("01 39 39 39 39")
+        expect(body_string).to include(
+          "Vous êtes candidat.e dans une Structure d’Insertion par l’Activité Economique (SIAE)" \
+          " et à ce titre vous êtes #{applicant.conjugate('invité')} à participer à un rendez-vous collectif d'information " \
+          "afin de découvrir cette structure"
+        )
+        expect(body_string).not_to match("Ce RDV est obligatoire.")
+        expect(body_string).not_to match(
+          "votre RSA pourra être suspendu ou réduit."
+        )
+        expect(body_string).to match("/invitations/redirect")
+        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("dans un délai de 3 jours")
+      end
+    end
+
+    context "for siae_follow_up" do
+      let!(:rdv_context) { build(:rdv_context, motif_category: category_siae_follow_up) }
+
+      it "renders the headers" do
+        expect(subject.to).to eq([applicant.email])
+      end
+
+      it "renders the subject" do
+        email_subject = unescape_html(subject.subject)
+        expect(email_subject).to eq(
+          "[SUIVI SIAE]: Votre rendez-vous de suivi dans le cadre de votre suivi SIAE"
+        )
+      end
+
+      it "renders the body" do
+        body_string = unescape_html(subject.body.encoded)
+        expect(body_string).to match("Bonjour Jean VALJEAN")
+        expect(body_string).to match("Le département de la Drôme.")
+        expect(body_string).to match("01 39 39 39 39")
+        expect(body_string).to include(
+          "Vous êtes salarié.e au sein de notre structure" \
+          " et à ce titre vous êtes #{applicant.conjugate('invité')} à participer à un rendez-vous de suivi " \
+          "afin de faire un point avec votre référent"
+        )
+        expect(body_string).not_to match("Ce RDV est obligatoire.")
+        expect(body_string).not_to match(
+          "votre RSA pourra être suspendu ou réduit."
+        )
+        expect(body_string).to match("/invitations/redirect")
+        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("dans un délai de 3 jours")
+      end
+    end
+
     context "for rsa_orientation_france_travail" do
       let!(:rdv_context) do
         build(:rdv_context, motif_category: category_rsa_orientation_france_travail)
