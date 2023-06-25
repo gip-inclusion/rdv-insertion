@@ -40,7 +40,9 @@ class AddMotifCategoriesAndTemplatesForSiae < ActiveRecord::Migration[7.0]
   def down
     MotifCategory.find_by(short_name: "siae_follow_up").destroy!
     MotifCategory.find_by(short_name: "siae_collective_information").destroy!
-    Template.find_by(rdv_subject: "Rendez-vous de suivi SIAE", model: "standard").destroy!
-    Template.find_by(rdv_subject: "Information collective SIAE", model: "standard").destroy!
+    Template.find_by(rdv_subject: "suivi SIAE", model: "standard").destroy!
+    Template.find_by(
+      rdv_subject: "candidature SIAE", rdv_title: "rendez-vous collectif d'information", model: "standard"
+    ).destroy!
   end
 end
