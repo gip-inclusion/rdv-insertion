@@ -11,4 +11,4 @@
 </p>
 <p>En cas de problème technique, contactez le <%= @invitation.help_phone_number_formatted %></p>
 <%= render 'common/organisation_signature', signature_lines: @signature_lines, department: @department %>
-<%= render 'common/mailer_logos', invitation: @invitation, organisation_logo_path: @organisation_logo_path, department_logo_path: @department_logo_path %>
+<%= render 'common/mailer_logos', sendable: @invitation, organisation_logo_path: @organisation_logo_path, department_logo_path: @department_logo_path %>
