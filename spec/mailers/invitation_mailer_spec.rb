@@ -363,8 +363,8 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("01 39 39 39 39")
         expect(body_string).to include(
           "Vous êtes candidat.e dans une Structure d’Insertion par l’Activité Economique (SIAE)" \
-          " et à ce titre vous êtes #{applicant.conjugate('invité')} à participer à un rendez-vous collectif d'information " \
-          "afin de découvrir cette structure"
+          " et à ce titre vous êtes #{applicant.conjugate('invité')} à participer à " \
+          "un rendez-vous collectif d'information afin de découvrir cette structure"
         )
         expect(body_string).not_to match("Ce RDV est obligatoire.")
         expect(body_string).not_to match(
