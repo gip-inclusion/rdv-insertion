@@ -1,0 +1,17 @@
+<% if @all_links.length == 0 %>
+  <h4 class="text-center mt-5">Aucun motif de convocation n'a été retrouvé pour cette catégorie sur RDV-Solidarités.</h4>
+  <h4 class="text-center mt-5">Contactez-nous à l'adresse data.insertion@beta.gouv.fr pour en savoir plus.</h4>
+<% else %>
+  <%= render "common/remote_modal", title: "Choix du type de rdv" do %>
+    <h6 class="text-center mb-5">S'agit-il d'un rdv individuel ou d'un rdv collectif ?</h6>
+    <div class="d-flex justify-content-between">
+      <%= link_to @convocation_links_by_type[:individuel] do %>
+        <button class="btn btn-blue-out" type="button">Rdv individuel</button>
+      <% end %>
+      <%= link_to @convocation_links_by_type[:collectif] do %>
+        <button class="btn btn-blue-out" type="button">Rdv collectif</button>
+      <% end %>
+    </div>
+  <% end %>
+<% end  %>
+

@@ -4,13 +4,13 @@ describe SendConvocationRemindersJob do
   end
 
   describe "#perform" do
-    let!(:participation1) { create(:participation, id: 239) }
-    let!(:participation2) { create(:participation) }
-    let!(:participation3) { create(:participation) }
+    let!(:participation1) { create(:participation, id: 239, convocable: true) }
+    let!(:participation2) { create(:participation, convocable: false) }
+    let!(:participation3) { create(:participation, convocable: true) }
 
-    let!(:rdv1) { create(:rdv, starts_at: 2.days.from_now, convocable: true, participations: [participation1]) }
-    let!(:rdv2) { create(:rdv, starts_at: 2.days.from_now, convocable: false, participations: [participation2]) }
-    let!(:rdv3) { create(:rdv, starts_at: 3.days.from_now, convocable: true, participations: [participation3]) }
+    let!(:rdv1) { create(:rdv, starts_at: 2.days.from_now, participations: [participation1]) }
+    let!(:rdv2) { create(:rdv, starts_at: 2.days.from_now, participations: [participation2]) }
+    let!(:rdv3) { create(:rdv, starts_at: 3.days.from_now, participations: [participation3]) }
 
     before do
       allow(NotifyParticipationsJob).to receive(:perform_async)

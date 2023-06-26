@@ -10,7 +10,9 @@ class SendConvocationRemindersJob < ApplicationJob
 
   def participations_to_send_reminders_to
     @participations_to_send_reminders_to ||=
-      Participation.joins(:rdv).where(rdv: { convocable: true, starts_at: 2.days.from_now.all_day })
+      Participation.joins(:rdv)
+                   .where(convocable: true)
+                   .where(rdvs: { starts_at: 2.days.from_now.all_day })
   end
 
   def notify_on_mattermost

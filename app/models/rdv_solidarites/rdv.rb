@@ -2,11 +2,11 @@ module RdvSolidarites
   class Rdv < Base
     RECORD_ATTRIBUTES = [
       :id, :address, :cancelled_at, :context, :created_by, :duration_in_min, :starts_at, :status,
-      :uuid
+      :uuid, :users_count, :max_participants_count
     ].freeze
     attr_reader(*RECORD_ATTRIBUTES)
 
-    delegate :presential?, :motif_category, to: :motif
+    delegate :presential?, :collectif?, :motif_category, to: :motif
 
     def initialize(attributes = {})
       super(attributes)
@@ -17,7 +17,9 @@ module RdvSolidarites
     end
 
     def participations
-      @attributes[:rdvs_users].map { RdvSolidarites::Participation.new(_1) }
+      @attributes[:rdvs_users].map do |rdvs_user_attributes|
+        RdvSolidarites::Participation.new(rdvs_user_attributes.merge(rdv: @attributes))
+      end
     end
 
     # rubocop:disable Rails/Delegate
@@ -36,10 +38,6 @@ module RdvSolidarites
 
     def motif
       RdvSolidarites::Motif.new(@attributes[:motif])
-    end
-
-    def convocable?
-      motif.convocation?
     end
 
     def agents

@@ -19,7 +19,7 @@ describe OrganisationsController do
       context "and linked to one organisation" do
         it "redirects to organisation_applicants_path" do
           get :index
-          expect(response).to redirect_to(organisation_index_landing_path(organisation))
+          expect(response).to redirect_to(default_list_organisation_applicants_path(organisation))
         end
       end
 
