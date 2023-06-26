@@ -42,8 +42,7 @@ module Invitations
         punishable_warning: @invitation.punishable_warning,
         rdv_purpose: @invitation.rdv_purpose,
         rdv_subject: @invitation.rdv_subject,
-        custom_sentence: @invitation.custom_sentence,
-        motif_category_name: @invitation.motif_category_name
+        custom_sentence: @invitation.custom_sentence
       }
     end
 
