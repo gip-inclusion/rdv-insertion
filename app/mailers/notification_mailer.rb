@@ -4,7 +4,7 @@ class NotificationMailer < ApplicationMailer
   before_action :set_notification, :set_applicant, :set_rdv, :set_department, :set_rdv_subject,
                 :set_signature_lines, :set_rdv_title, :set_applicant_designation,
                 :set_mandatory_warning, :set_punishable_warning, :set_instruction_for_rdv,
-                :set_rdv_purpose, :set_logo_path, :verify_phone_number_presence
+                :set_rdv_purpose, :verify_phone_number_presence, :set_organisation_logo_path, :set_department_logo_path
 
   ### participation_created ###
   def presential_participation_created
@@ -114,8 +114,12 @@ class NotificationMailer < ApplicationMailer
     @rdv_purpose = @notification.rdv_purpose
   end
 
-  def set_logo_path
-    @logo_path = @rdv.organisation.logo_path(%w[png jpg]) || @department.logo_path(%w[png jpg])
+  def set_organisation_logo_path
+    @organisation_logo_path = @rdv.organisation.logo_path(%w[png jpg])
+  end
+
+  def set_department_logo_path
+    @department_logo_path = @department.logo_path(%w[png jpg])
   end
 
   def rdv_by_phone?
