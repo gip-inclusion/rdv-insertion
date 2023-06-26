@@ -26,6 +26,12 @@ $padding: 30px;
   max-height: 70px;
   margin-left: 10px;
   margin-right: 10px;
+  &:first-child {
+    margin-left: 0px !important;
+  }
+  &:last-child {
+    margin-right: 0px !important;
+  }
 }
 
 body {

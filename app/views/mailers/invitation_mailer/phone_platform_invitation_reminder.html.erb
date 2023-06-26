@@ -3,4 +3,4 @@
 <p>Il ne vous reste plus que <span class="font-weight-bold"><%= @invitation.number_of_days_before_expiration %> jours</span> pour appeler le <span class="font-weight-bold"><%= @invitation.help_phone_number_formatted %></span>.</p>
 <%= tag.p tag.strong(@mandatory_warning) if @mandatory_warning %>
 <%= render 'common/organisation_signature', signature_lines: @signature_lines, department: @department %>
-<%= render 'common/mailer_logos', sendable: @invitation, organisation_logo_path: @organisation_logo_path, department_logo_path: @department_logo_path %>
+<%= render 'common/mailer_logos', display_europe_logos: @invitation.display_europe_logos, display_pole_emploi_logo: @invitation.display_pole_emploi_logo, display_department_logo: @invitation.display_department_logo, organisation_logo_path: @organisation_logo_path, department_logo_path: @department_logo_path %>
