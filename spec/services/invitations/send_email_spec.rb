@@ -284,5 +284,62 @@ describe Invitations::SendEmail, type: :service do
         subject
       end
     end
+
+    context "for siae_interview" do
+      let!(:invitation) do
+        create(
+          :invitation,
+          applicant: applicant, format: "email",
+          rdv_context: build(:rdv_context, motif_category: category_siae_interview)
+        )
+      end
+
+      before { allow(mailer).to receive_message_chain(:standard_invitation, :deliver_now) }
+
+      it("is a success") { is_a_success }
+
+      it "sends the email" do
+        expect(mailer).to receive_message_chain(:standard_invitation, :deliver_now)
+        subject
+      end
+    end
+
+    context "for siae_follow_up" do
+      let!(:invitation) do
+        create(
+          :invitation,
+          applicant: applicant, format: "email",
+          rdv_context: build(:rdv_context, motif_category: category_siae_follow_up)
+        )
+      end
+
+      before { allow(mailer).to receive_message_chain(:standard_invitation, :deliver_now) }
+
+      it("is a success") { is_a_success }
+
+      it "sends the email" do
+        expect(mailer).to receive_message_chain(:standard_invitation, :deliver_now)
+        subject
+      end
+    end
+
+    context "for siae_collective_information" do
+      let!(:invitation) do
+        create(
+          :invitation,
+          applicant: applicant, format: "email",
+          rdv_context: build(:rdv_context, motif_category: category_siae_collective_information)
+        )
+      end
+
+      before { allow(mailer).to receive_message_chain(:standard_invitation, :deliver_now) }
+
+      it("is a success") { is_a_success }
+
+      it "sends the email" do
+        expect(mailer).to receive_message_chain(:standard_invitation, :deliver_now)
+        subject
+      end
+    end
   end
 end
