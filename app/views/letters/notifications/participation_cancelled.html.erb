@@ -2,9 +2,7 @@
 
 <div class="mail-object">
   <p class="bold-blue"><span class="bold-blue">Objet : Votre <%= rdv_title %> dans le cadre de votre <%= rdv_subject %> a été annulé</span></p>
-  <% if applicant.affiliation_number %>
-    <p>N° allocataire : <%= applicant.affiliation_number %></p>
-  <% end %>
+  <%= tag.p("N° allocataire : #{applicant.affiliation_number}") if applicant.affiliation_number %>
 </div>
 
 <div class="main-content">
