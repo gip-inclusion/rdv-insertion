@@ -1,9 +1,5 @@
-<% if @current_configuration.nil? %>
-  <%= render "category_selection" %>
-<% else %>
-  <%= react_component(
-    "pages/ApplicantsUpload", {
-      organisation: @organisation, configuration: @current_configuration, columnNames: @current_configuration.file_configuration.column_attributes, sheetName: @current_configuration.sheet_name, department: @department, motifCategoryName: @motif_category_name, currentAgent: current_agent
-    }
-  ) %>
-<% end %>
+<%= react_component(
+  "pages/ApplicantsUpload", {
+    organisation: @organisation, configuration: @current_configuration, columnNames: @file_configuration.column_attributes, sheetName: @file_configuration.sheet_name, department: @department, motifCategoryName: @motif_category_name, currentAgent: current_agent
+  }
+) %>

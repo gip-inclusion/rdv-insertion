@@ -80,14 +80,15 @@ export default function Applicant({ applicant, isDepartmentLevel, showReferentCo
         )}
 
         {/* --------------------------------- Invitations cells ------------------------------- */}
-
-        <InvitationCells
-          applicant={applicant}
-          invitationsColspan={computeInvitationsColspan()}
-          isDepartmentLevel={isDepartmentLevel}
-          isTriggered={isTriggered}
-          setIsTriggered={setIsTriggered}
-        />
+        {applicant.currentConfiguration && (
+          <InvitationCells
+            applicant={applicant}
+            invitationsColspan={computeInvitationsColspan()}
+            isDepartmentLevel={isDepartmentLevel}
+            isTriggered={isTriggered}
+            setIsTriggered={setIsTriggered}
+          />
+        )}
       </tr>
 
       {/* Contact infos extra line. It appears if the applicant contacts data when uploading the contacts file are different from the ones in DB */}

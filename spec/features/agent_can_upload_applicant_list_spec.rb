@@ -99,6 +99,8 @@ describe "Agents can upload applicant list", js: true do
       expect(applicant.phone_number).to eq("+33620022002")
       expect(applicant.department_internal_id).to eq("8383")
       expect(applicant.address).to eq("127 RUE DE GRENELLE 75007 PARIS")
+      # It added the applicant to the category
+      expect(applicant.motif_categories).to include(motif_category)
 
       ### Invite by sms
 
@@ -128,6 +130,63 @@ describe "Agents can upload applicant list", js: true do
 
       expect(page).to have_button("Inviter par Email", disabled: false)
       expect(page).to have_button("Générer courrier", disabled: false)
+    end
+
+    describe "Category selection" do
+      context "when no option is selected" do
+        it "redirects to category selection" do
+          visit new_organisation_upload_path(organisation)
+
+          expect(page).to have_content("Aucune catégorie de suivi")
+          expect(page).to have_content(motif_category.name)
+
+          click_link(motif_category.name)
+
+          expect(page).to have_content("Choisissez un fichier de nouveaux demandeurs")
+          expect(page).to have_content(motif_category.name)
+        end
+
+        context "when no category is selected" do
+          it "can create applicants without affecting a category" do
+            visit new_organisation_upload_path(organisation)
+
+            expect(page).to have_content("Aucune catégorie de suivi")
+            expect(page).to have_content(motif_category.name)
+
+            click_link("Aucune catégorie de suivi")
+
+            expect(page).to have_content("Choisissez un fichier de nouveaux demandeurs")
+
+            attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+
+            expect(page).to have_button("Créer compte")
+            expect(page).not_to have_content("Invitation SMS")
+            expect(page).not_to have_content("Invitation mail")
+            expect(page).not_to have_content("Invitation courrier")
+
+            click_button("Créer compte")
+
+            expect(page).to have_css("i.fas.fa-link")
+            applicant = Applicant.last
+            expect(page).to have_selector(
+              :css, "a[href=\"/organisations/#{organisation.id}/applicants/#{applicant.id}\"]"
+            )
+
+            expect(applicant.first_name).to eq("Hernan")
+            expect(applicant.last_name).to eq("Crespo")
+            expect(applicant.affiliation_number).to eq("ISQCJQO")
+            expect(applicant.title).to eq("monsieur")
+            expect(applicant.role).to eq("demandeur")
+            expect(applicant.nir).to eq("180333147687266")
+            expect(applicant.email).to eq("hernan@crespo.com")
+            expect(applicant.phone_number).to eq("+33620022002")
+            expect(applicant.department_internal_id).to eq("8383")
+            expect(applicant.address).to eq("127 RUE DE GRENELLE 75007 PARIS")
+            # It did not add categories
+            expect(applicant.motif_categories).to eq([])
+          end
+        end
+      end
     end
 
     describe "Applicants matching" do
@@ -618,6 +677,63 @@ describe "Agents can upload applicant list", js: true do
 
       expect(page).to have_button("Inviter par Email", disabled: false)
       expect(page).to have_button("Générer courrier", disabled: false)
+    end
+
+    describe "Category selection" do
+      context "when no option is selected" do
+        it "redirects to category selection" do
+          visit new_department_upload_path(department)
+
+          expect(page).to have_content("Aucune catégorie de suivi")
+          expect(page).to have_content(motif_category.name)
+
+          click_link(motif_category.name)
+
+          expect(page).to have_content("Choisissez un fichier de nouveaux demandeurs")
+          expect(page).to have_content(motif_category.name)
+        end
+
+        context "when no category is selected" do
+          it "can create applicants without affecting a category" do
+            visit new_department_upload_path(department)
+
+            expect(page).to have_content("Aucune catégorie de suivi")
+            expect(page).to have_content(motif_category.name)
+
+            click_link("Aucune catégorie de suivi")
+
+            expect(page).to have_content("Choisissez un fichier de nouveaux demandeurs")
+
+            attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+
+            expect(page).to have_button("Créer compte")
+            expect(page).not_to have_content("Invitation SMS")
+            expect(page).not_to have_content("Invitation mail")
+            expect(page).not_to have_content("Invitation courrier")
+
+            click_button("Créer compte")
+
+            expect(page).to have_css("i.fas.fa-link")
+            applicant = Applicant.last
+            expect(page).to have_selector(
+              :css, "a[href=\"/departments/#{department.id}/applicants/#{applicant.id}\"]"
+            )
+
+            expect(applicant.first_name).to eq("Hernan")
+            expect(applicant.last_name).to eq("Crespo")
+            expect(applicant.affiliation_number).to eq("ISQCJQO")
+            expect(applicant.title).to eq("monsieur")
+            expect(applicant.role).to eq("demandeur")
+            expect(applicant.nir).to eq("180333147687266")
+            expect(applicant.email).to eq("hernan@crespo.com")
+            expect(applicant.phone_number).to eq("+33620022002")
+            expect(applicant.department_internal_id).to eq("8383")
+            expect(applicant.address).to eq("127 RUE DE GRENELLE 75007 PARIS")
+            # It did not add categories
+            expect(applicant.motif_categories).to eq([])
+          end
+        end
+      end
     end
 
     describe "Applicants matching" do

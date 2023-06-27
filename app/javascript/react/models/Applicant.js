@@ -113,10 +113,13 @@ export default class Applicant {
     this.currentOrganisation ||= upToDateApplicant.organisations.find(
       (o) =>
         o.department_number === this.departmentNumber &&
-        o.motif_categories
-          .map((motifCategory) => motifCategory.id)
-          .includes(this.currentConfiguration.motif_category_id)
+        // if we are in a specific context we choose an org that handles that category
+        (!this.currentConfiguration ||
+          o.motif_categories
+            .map((motifCategory) => motifCategory.id)
+            .includes(this.currentConfiguration.motif_category_id))
     );
+    this.referents = upToDateApplicant.referents;
     // we update the attributes with the attributes in DB if the applicant is already created
     // and cannot be updated from the page
     if (this.belongsToCurrentOrg()) {
@@ -133,27 +136,28 @@ export default class Applicant {
       this.role = upToDateApplicant.role;
       this.departmentInternalId = upToDateApplicant.department_internal_id;
     }
-    this.currentRdvContext = upToDateApplicant.rdv_contexts.find(
-      (rc) => rc.motif_category_id === this.currentConfiguration.motif_category_id
-    );
-    this.currentContextStatus = this.currentRdvContext && this.currentRdvContext.status;
-    this.participations = this.currentRdvContext?.participations || [];
-    this.lastSmsInvitationSentAt = retrieveLastInvitationDate(
-      upToDateApplicant.invitations,
-      "sms",
-      this.currentConfiguration.motif_category_id
-    );
-    this.lastEmailInvitationSentAt = retrieveLastInvitationDate(
-      upToDateApplicant.invitations,
-      "email",
-      this.currentConfiguration.motif_category_id
-    );
-    this.lastPostalInvitationSentAt = retrieveLastInvitationDate(
-      upToDateApplicant.invitations,
-      "postal",
-      this.currentConfiguration.motif_category_id
-    );
-    this.referents = upToDateApplicant.referents;
+    if (this.currentConfiguration) {
+      this.currentRdvContext = upToDateApplicant.rdv_contexts.find(
+        (rc) => rc.motif_category_id === this.currentConfiguration.motif_category_id
+      );
+      this.currentContextStatus = this.currentRdvContext && this.currentRdvContext.status;
+      this.participations = this.currentRdvContext?.participations || [];
+      this.lastSmsInvitationSentAt = retrieveLastInvitationDate(
+        upToDateApplicant.invitations,
+        "sms",
+        this.currentConfiguration.motif_category_id
+      );
+      this.lastEmailInvitationSentAt = retrieveLastInvitationDate(
+        upToDateApplicant.invitations,
+        "email",
+        this.currentConfiguration.motif_category_id
+      );
+      this.lastPostalInvitationSentAt = retrieveLastInvitationDate(
+        upToDateApplicant.invitations,
+        "postal",
+        this.currentConfiguration.motif_category_id
+      );
+    }
   }
 
   updatePhoneNumber(phoneNumber) {
@@ -333,6 +337,11 @@ export default class Applicant {
       ...(this.rightsOpeningDate && { rights_opening_date: this.rightsOpeningDate }),
       ...(this.nir && { nir: this.nir }),
       ...(this.poleEmploiId && { pole_emploi_id: this.poleEmploiId }),
+      ...(this.currentConfiguration && {
+        rdv_contexts_attributes: [
+          { motif_category_id: this.currentConfiguration.motif_category_id },
+        ],
+      }),
     };
   }
 }

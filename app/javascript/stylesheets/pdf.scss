@@ -109,7 +109,7 @@ u {
     }
     &:first-child:nth-last-child(4),
     &:first-child:nth-last-child(4) ~ div {
-      margin-right: 20px;
+      margin: 0 20px;
       img {
         height: 50px;
       }

@@ -333,6 +333,42 @@ module MotifCategoriesHelper
         )
       )
     end
+    let!(:category_siae_collective_information) do
+      create(
+        :motif_category,
+        name: "Info coll. SIAE",
+        short_name: "siae_collective_information",
+        participation_optional: false,
+        template: create(
+          :template,
+          model: "standard",
+          rdv_title: "rendez-vous collectif d'information",
+          rdv_title_by_phone: "rendez-vous collectif d'information téléphonique",
+          applicant_designation: "candidat.e dans une Structure d’Insertion par l’Activité Economique (SIAE)",
+          rdv_subject: "candidature SIAE",
+          rdv_purpose: "découvrir cette structure",
+          display_mandatory_warning: false
+        )
+      )
+    end
+    let!(:category_siae_follow_up) do
+      create(
+        :motif_category,
+        name: "Suivi SIAE",
+        short_name: "siae_follow_up",
+        participation_optional: false,
+        template: create(
+          :template,
+          model: "standard",
+          rdv_title: "rendez-vous de suivi",
+          rdv_title_by_phone: "rendez-vous de suivi téléphonique",
+          applicant_designation: "salarié.e au sein de notre structure",
+          rdv_subject: "suivi SIAE",
+          rdv_purpose: "faire un point avec votre référent",
+          display_mandatory_warning: false
+        )
+      )
+    end
   end
 end
 # rubocop:enable Metrics/ModuleLength

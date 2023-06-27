@@ -176,7 +176,7 @@ describe MessagesConfigurationsController do
           direction_names: ["Sous-direction à l'insertion"], sender_city: "Marseille",
           letter_sender_name: "la SDI de Marseille", signature_lines: ["Payet, aucun trophée"],
           help_address: "sur la Canebière", display_europe_logos: true, sms_sender_name: "Marseille13",
-          display_department_logo: false
+          display_department_logo: false, display_pole_emploi_logo: true
         },
         organisation_id: organisation.id
       }
@@ -195,6 +195,7 @@ describe MessagesConfigurationsController do
       expect(MessagesConfiguration.last.signature_lines).to eq(["Payet, aucun trophée"])
       expect(MessagesConfiguration.last.help_address).to eq("sur la Canebière")
       expect(MessagesConfiguration.last.display_europe_logos).to eq(true)
+      expect(MessagesConfiguration.last.display_pole_emploi_logo).to eq(true)
       expect(MessagesConfiguration.last.sms_sender_name).to eq("Marseille13")
       expect(MessagesConfiguration.last.display_department_logo).to eq(false)
     end
@@ -264,7 +265,7 @@ describe MessagesConfigurationsController do
           direction_names: ["Sous-direction à l'insertion"], sender_city: "Marseille",
           letter_sender_name: "la SDI de Marseille", signature_lines: ["Payet, aucun trophée"],
           help_address: "sur la Canebière", display_europe_logos: true, sms_sender_name: "Marseille13",
-          display_department_logo: false
+          display_department_logo: false, display_pole_emploi_logo: true
         },
         organisation_id: organisation.id, id: messages_configuration.id
       }
@@ -279,6 +280,7 @@ describe MessagesConfigurationsController do
       expect(messages_configuration.reload.signature_lines).to eq(["Payet, aucun trophée"])
       expect(messages_configuration.reload.help_address).to eq("sur la Canebière")
       expect(messages_configuration.reload.display_europe_logos).to eq(true)
+      expect(messages_configuration.reload.display_pole_emploi_logo).to eq(true)
       expect(messages_configuration.reload.sms_sender_name).to eq("Marseille13")
       expect(messages_configuration.reload.display_department_logo).to eq(false)
     end

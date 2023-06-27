@@ -6,16 +6,22 @@ class RdvContext < ApplicationRecord
 
   belongs_to :applicant
   belongs_to :motif_category
-  has_many :invitations, dependent: :nullify
+  has_many :invitations, dependent: :destroy
   has_many :participations, dependent: :nullify
 
   has_many :rdvs, through: :participations
   has_many :notifications, through: :participations
 
+  validates :applicant, uniqueness: { scope: :motif_category,
+                                      message: "est déjà suivi pour cette catégorie de motif" }
+
   delegate :position, :name, :short_name, to: :motif_category, prefix: true
 
   STATUSES_WITH_ACTION_REQUIRED = %w[
     rdv_needs_status_update rdv_noshow rdv_revoked rdv_excused multiple_rdvs_cancelled
+  ].freeze
+  CONVOCABLE_STATUSES = %w[
+    rdv_noshow rdv_excused multiple_rdvs_cancelled
   ].freeze
 
   scope :status, ->(status) { where(status: status) }
@@ -34,6 +40,10 @@ class RdvContext < ApplicationRecord
 
   def action_required_status?
     status.in?(STATUSES_WITH_ACTION_REQUIRED)
+  end
+
+  def convocable_status?
+    status.in?(CONVOCABLE_STATUSES)
   end
 
   def time_to_accept_invitation_exceeded?(number_of_days_before_action_required)

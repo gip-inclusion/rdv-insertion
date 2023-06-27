@@ -4,7 +4,7 @@ class ApplicantsController < ApplicationController
   PERMITTED_PARAMS = [
     :uid, :role, :first_name, :last_name, :nir, :pole_emploi_id, :birth_date, :email, :phone_number,
     :birth_name, :address, :affiliation_number, :department_internal_id, :title,
-    :status, :rights_opening_date
+    :status, :rights_opening_date, { rdv_contexts_attributes: [:motif_category_id] }
   ].freeze
 
   include BackToListConcern
@@ -29,6 +29,10 @@ class ApplicantsController < ApplicationController
                 for: [:edit, :update]
   before_action :find_or_initialize_applicant!, only: :create
   after_action :store_back_to_applicants_list_url, only: [:index]
+
+  def index_landing
+    redirect_to index_landing_path
+  end
 
   def index
     respond_to do |format|
@@ -191,13 +195,10 @@ class ApplicantsController < ApplicationController
 
   def set_current_configuration
     return if archived_scope?
+    return unless params[:motif_category_id]
 
     @current_configuration =
-      if params[:motif_category_id].present?
-        @all_configurations.find { |c| c.motif_category_id == params[:motif_category_id].to_i }
-      else
-        @all_configurations.first
-      end
+      @all_configurations.find { |c| c.motif_category_id == params[:motif_category_id].to_i }
   end
 
   def set_current_motif_category
@@ -224,20 +225,31 @@ class ApplicantsController < ApplicationController
   end
 
   def set_applicants
-    archived_scope? ? set_archived_applicants : set_applicants_for_motif_category
+    if archived_scope?
+      set_archived_applicants
+    elsif @current_motif_category
+      set_applicants_for_motif_category
+    else
+      set_all_applicants
+    end
+  end
+
+  def set_all_applicants
+    @applicants = policy_scope(Applicant)
+                  .preload(rdv_contexts: [:invitations])
+                  .active.distinct
+                  .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
   end
 
   def set_applicants_for_motif_category
     @applicants = policy_scope(Applicant)
-                  .preload(
-                    :organisations,
-                    rdv_contexts: [:notifications, :invitations]
-                  )
+                  .preload(rdv_contexts: [:notifications, :invitations])
                   .active.distinct
                   .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
                   .where.not(id: @department.archived_applicants.ids)
                   .joins(:rdv_contexts)
                   .where(rdv_contexts: { motif_category: @current_motif_category })
+                  .where.not(rdv_contexts: { status: "closed" })
   end
 
   def set_archived_applicants
@@ -280,6 +292,18 @@ class ApplicantsController < ApplicationController
     return department_applicant_path(@department, @applicant) if department_level?
 
     organisation_applicant_path(@organisation, @applicant)
+  end
+
+  def index_landing_path # rubocop:disable Metrics/AbcSize
+    structure = if department_level?
+                  Department.includes(:motif_categories).find(params[:department_id])
+                else
+                  Organisation.includes(:motif_categories).find(params[:organisation_id])
+                end
+    path = department_level? ? department_applicants_path(structure) : organisation_applicants_path(structure)
+    return path if structure.motif_categories.blank? || structure.motif_categories.count > 1
+
+    "#{path}?motif_category_id=#{structure.motif_categories.first.id}"
   end
 end
 

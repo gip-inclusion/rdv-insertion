@@ -22,14 +22,14 @@ describe ApplicantsController do
   let!(:rdv_solidarites_organisation_id) { 888 }
   let(:applicant) { create(:applicant, organisations: [organisation]) }
 
+  render_views
+
+  before do
+    sign_in(agent)
+  end
+
   describe "#new" do
     let!(:new_params) { { organisation_id: organisation.id } }
-
-    render_views
-
-    before do
-      sign_in(agent)
-    end
 
     it "renders the new applicant page" do
       get :new, params: new_params
@@ -40,9 +40,7 @@ describe ApplicantsController do
   end
 
   describe "#create" do
-    render_views
     before do
-      sign_in(agent)
       allow(Applicants::FindOrInitialize).to receive(:call)
         .and_return(OpenStruct.new(success?: true, applicant: applicant))
       allow(Applicant).to receive(:new)
@@ -191,12 +189,6 @@ describe ApplicantsController do
     end
     let!(:show_params) { { id: applicant.id, organisation_id: organisation.id } }
 
-    render_views
-
-    before do
-      sign_in(agent)
-    end
-
     context "when organisation_level" do
       it "renders the applicant page" do
         get :show, params: show_params
@@ -318,6 +310,20 @@ describe ApplicantsController do
         expect(response.body).not_to match(/Convoqué par/)
       end
 
+      context "when a rdv_context is not open" do
+        let!(:rdv_context2) { nil }
+        let!(:invitation_accompagnement) { nil }
+
+        it "show the open rdv_context button" do
+          get :show, params: show_params
+
+          expect(unescaped_response_body).to match("class=\"simple_form rdv_context\"")
+          expect(unescaped_response_body).to match("input value=\"#{applicant.id}\"")
+          expect(unescaped_response_body).to match("input value=\"#{category_accompagnement.id}\"")
+          expect(unescaped_response_body).to match(/Ouvrir un suivi/)
+        end
+      end
+
       context "when one rdv is a convocation" do
         before { rdv_orientation1.update!(convocable: true) }
 
@@ -394,10 +400,113 @@ describe ApplicantsController do
     end
   end
 
+  describe "#index_landing" do
+    context "when department_level" do
+      let!(:index_params) { { department_id: department.id } }
+
+      context "when department has no motif_categories" do
+        let!(:organisation) { create(:organisation, department: department, configurations: []) }
+
+        it "redirects to the department_applicants_paths with no params" do
+          get :index_landing, params: index_params
+
+          expect(response).to redirect_to(department_applicants_path(department))
+        end
+      end
+
+      context "when department has one motif_category" do
+        let!(:category_orientation) do
+          create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation")
+        end
+        let!(:configuration) { create(:configuration, motif_category: category_orientation) }
+        let!(:organisation) { create(:organisation, department: department, configurations: [configuration]) }
+
+        it "redirects to the motif_category index" do
+          get :index_landing, params: index_params
+
+          expect(response).to redirect_to(
+            department_applicants_path(department, motif_category_id: category_orientation.id)
+          )
+        end
+      end
+
+      context "when department has multiple motif_categories" do
+        let!(:category_orientation) do
+          create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation")
+        end
+        let!(:category_accompagnement) do
+          create(:motif_category, short_name: "rsa_accompagnement", name: "RSA accompagnement")
+        end
+        let!(:configuration) { create(:configuration, motif_category: category_orientation) }
+        let!(:configuration2) { create(:configuration, motif_category: category_accompagnement) }
+        let!(:organisation) do
+          create(:organisation, department: department, configurations: [configuration, configuration2])
+        end
+
+        it "redirects to the department_applicants_paths with no params" do
+          get :index_landing, params: index_params
+
+          expect(response).to redirect_to(department_applicants_path(department))
+        end
+      end
+    end
+
+    context "when organisation level" do
+      let!(:index_params) { { organisation_id: organisation.id } }
+
+      context "when organisation has no motif_categories" do
+        let!(:organisation) { create(:organisation, department: department, configurations: []) }
+
+        it "redirects to the organisation_applicants_paths with no params" do
+          get :index_landing, params: index_params
+
+          expect(response).to redirect_to(organisation_applicants_path(organisation))
+        end
+      end
+
+      context "when organisation has one motif_category" do
+        let!(:category_orientation) do
+          create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation")
+        end
+        let!(:configuration) { create(:configuration, motif_category: category_orientation) }
+        let!(:organisation) { create(:organisation, department: department, configurations: [configuration]) }
+
+        it "redirects to the motif_category index" do
+          get :index_landing, params: index_params
+
+          expect(response).to redirect_to(
+            organisation_applicants_path(organisation, motif_category_id: category_orientation.id)
+          )
+        end
+      end
+
+      context "when organisation has multiple motif_categories" do
+        let!(:category_orientation) do
+          create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation")
+        end
+        let!(:category_accompagnement) do
+          create(:motif_category, short_name: "rsa_accompagnement", name: "RSA accompagnement")
+        end
+        let!(:configuration) { create(:configuration, motif_category: category_orientation) }
+        let!(:configuration2) { create(:configuration, motif_category: category_accompagnement) }
+        let!(:organisation) do
+          create(:organisation, department: department, configurations: [configuration, configuration2])
+        end
+
+        it "redirects to the organisation_applicants_paths with no params" do
+          get :index_landing, params: index_params
+
+          expect(response).to redirect_to(organisation_applicants_path(organisation))
+        end
+      end
+    end
+  end
+
   describe "#index" do
     let!(:applicant) do
       create(
         :applicant,
+        created_at: Time.zone.parse("2023-03-10 12:30"),
         organisations: [organisation], last_name: "Chabat", rdv_contexts: [rdv_context1]
       )
     end
@@ -406,6 +515,7 @@ describe ApplicantsController do
     let!(:applicant2) do
       create(
         :applicant,
+        created_at: Time.zone.parse("2023-04-10 12:30"),
         organisations: [organisation], last_name: "Baer", rdv_contexts: [rdv_context2]
       )
     end
@@ -414,10 +524,12 @@ describe ApplicantsController do
     let!(:applicant3) do
       create(
         :applicant,
+        created_at: Time.zone.parse("2023-05-10 12:30"),
         organisations: [organisation], last_name: "Darmon", rdv_contexts: [rdv_context3]
       )
     end
-    let!(:rdv_context3) { build(:rdv_context, motif_category: category_orientation, status: "invitation_pending") }
+    let!(:rdv_context3) { build(:rdv_context, motif_category: category_accompagnement, status: "invitation_pending") }
+    let!(:configuration2) { create(:configuration, motif_category: category_accompagnement) }
 
     let!(:archived_applicant) do
       create(
@@ -428,21 +540,15 @@ describe ApplicantsController do
     let!(:archive) { create(:archive, applicant: archived_applicant, department: department) }
     let!(:rdv_context4) { build(:rdv_context, motif_category: category_orientation, status: "invitation_pending") }
 
-    let!(:index_params) { { organisation_id: organisation.id, motif_category: category_orientation } }
+    let!(:index_params) { { organisation_id: organisation.id, motif_category_id: category_orientation.id } }
 
-    render_views
-
-    before do
-      sign_in(agent)
-    end
-
-    it "returns a list of applicants" do
+    it "returns a list of applicants in the current context" do
       get :index, params: index_params
 
       expect(response).to be_successful
       expect(response.body).to match(/Chabat/)
       expect(response.body).to match(/Baer/)
-      expect(response.body).to match(/Darmon/)
+      expect(response.body).not_to match(/Darmon/)
       expect(response.body).not_to match(/Barthelemy/)
     end
 
@@ -461,10 +567,14 @@ describe ApplicantsController do
         end
       end
 
-      it "displays all statuses in the filter list" do
+      it "displays all statuses in the filter list except closed" do
         get :index, params: index_params.merge(motif_category_id: category_orientation.id)
         RdvContext.statuses.each_key do |status|
-          expect(response.body).to match(/"#{status}"/)
+          if status == "closed"
+            expect(response.body).not_to match(/"#{status}"/)
+          else
+            expect(response.body).to match(/"#{status}"/)
+          end
         end
       end
     end
@@ -483,16 +593,24 @@ describe ApplicantsController do
       end
     end
 
-    context "when a context is specified" do
-      let!(:rdv_context2) { build(:rdv_context, motif_category: category_accompagnement, status: "invitation_pending") }
-      let!(:configuration) { create(:configuration, motif_category: category_accompagnement) }
+    context "when no context is specified" do
+      let!(:index_params) { { organisation_id: organisation.id } }
 
-      it "returns the list of applicants in the current context" do
-        get :index, params: index_params.merge(motif_category_id: category_accompagnement.id)
+      it "returns the list of all applicants" do
+        get :index, params: index_params
 
         expect(response).to be_successful
-        expect(response.body).not_to match(/Chabat/)
+        expect(response.body).to match(/Chabat/)
         expect(response.body).to match(/Baer/)
+        expect(response.body).to match(/Darmon/)
+        expect(response.body).to match(/Barthelemy/)
+      end
+
+      it "displays the applicants creation date and the corresponding filter" do
+        get :index, params: index_params
+
+        expect(response.body).to match(/Date de création/)
+        expect(response.body).to match(/Filtrer par date de création/)
       end
     end
 
@@ -506,6 +624,13 @@ describe ApplicantsController do
         expect(response.body).not_to match(/Chabat/)
         expect(response.body).not_to match(/Baer/)
         expect(response.body).to match(/Barthelemy/)
+      end
+
+      it "displays the applicants creation date and the corresponding filter" do
+        get :index, params: index_params
+
+        expect(response.body).to match(/Date de création/)
+        expect(response.body).to match(/Filtrer par date de création/)
       end
     end
 
@@ -533,7 +658,20 @@ describe ApplicantsController do
       end
     end
 
-    context "when dates are passed" do
+    context "when creation dates are passed" do
+      let!(:index_params) do
+        { organisation_id: organisation.id, creation_date_after: "01-04-2023", creation_date_before: "30-04-2023" }
+      end
+
+      it "filters by creation dates" do
+        get :index, params: index_params
+        expect(response.body).to match(/Baer/)
+        expect(response.body).not_to match(/Chabat/)
+        expect(response.body).not_to match(/Darmon/)
+      end
+    end
+
+    context "when invitations dates are passed" do
       let!(:invitation1) do
         create(
           :invitation, sent_at: Time.zone.parse("2022-06-01 12:00"), rdv_context: rdv_context1,
@@ -767,12 +905,6 @@ describe ApplicantsController do
 
   describe "#edit" do
     let!(:applicant) { create(:applicant, organisations: [organisation]) }
-
-    render_views
-
-    before do
-      sign_in(agent)
-    end
 
     context "when organisation_level" do
       let!(:edit_params) { { id: applicant.id, organisation_id: organisation.id } }

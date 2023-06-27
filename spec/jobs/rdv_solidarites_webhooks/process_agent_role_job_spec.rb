@@ -6,7 +6,7 @@ describe RdvSolidaritesWebhooks::ProcessAgentRoleJob do
   let!(:data) do
     {
       "id" => rdv_solidarites_agent_role_id,
-      "level" => "basic",
+      "access_level" => "basic",
       "agent" => { id: rdv_solidarites_agent_id },
       "organisation" => { id: rdv_solidarites_organisation_id }
     }.deep_symbolize_keys

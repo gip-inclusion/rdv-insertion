@@ -4,7 +4,7 @@
 
 # Pour utiliser rdv-insertion proprement en local, en plus de ces seeds, il est nécessaire de créer sur rdv-s :
 # - les territories et organisations correspondant aux départments et organisations créés ci-dessous
-# - rattacher l'agent aux organisations via un AgentRole (level: "admin")
+# - rattacher l'agent aux organisations via un AgentRole (access_level: "admin")
 # - configurer les webhooks de chaque organisation
 
 # Les seeds de rdv-solidarités permettent de créer ces différents éléments

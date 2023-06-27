@@ -13,11 +13,11 @@ module ApplicantsHelper
     applicants.empty? && params[:search_query].present?
   end
 
-  def display_back_to_list_button?
+  def display_back_to_list_button? # rubocop:disable Metrics/AbcSize
     [
       params[:search_query], params[:status], params[:action_required], params[:first_invitation_date_before],
       params[:last_invitation_date_before], params[:first_invitation_date_after], params[:last_invitation_date_after],
-      params[:filter_by_current_agent]
+      params[:filter_by_current_agent], params[:creation_date_after], params[:creation_date_before]
     ].any?(&:present?)
   end
 
@@ -49,7 +49,8 @@ module ApplicantsHelper
 
     if context.action_required_status?
       "bg-danger border-danger"
-    elsif context.time_to_accept_invitation_exceeded?(number_of_days_before_action_required)
+    elsif number_of_days_before_action_required &&
+          context.time_to_accept_invitation_exceeded?(number_of_days_before_action_required)
       "bg-warning border-warning"
     elsif context.rdv_seen? || context.closed?
       "bg-success border-success"
@@ -86,7 +87,8 @@ module ApplicantsHelper
   def display_context_status_notice(context, number_of_days_before_action_required)
     return if context.nil?
 
-    if context.time_to_accept_invitation_exceeded?(number_of_days_before_action_required)
+    if number_of_days_before_action_required &&
+       context.time_to_accept_invitation_exceeded?(number_of_days_before_action_required)
       " (Délai dépassé)"
     else
       ""
@@ -132,7 +134,9 @@ module ApplicantsHelper
   end
 
   def should_convene_for?(rdv_context, configuration)
-    configuration.convene_applicant? &&
+    return unless configuration.convene_applicant?
+
+    rdv_context.convocable_status? ||
       rdv_context.time_to_accept_invitation_exceeded?(configuration.number_of_days_before_action_required)
   end
 
@@ -160,6 +164,12 @@ module ApplicantsHelper
     return new_department_applicant_path(department) if department_level?
 
     new_organisation_applicant_path(organisation)
+  end
+
+  def compute_rdv_contexts_path(organisation, department)
+    return rdv_contexts_path(department_id: department.id) if department_level?
+
+    rdv_contexts_path(organisation_id: organisation.id)
   end
 end
 

@@ -55,8 +55,21 @@
       </div>
     </div>
   </div>
-  <% @rdv_contexts.each do |rdv_context| %>
-    <%= render "rdv_context", rdv_context: rdv_context, participations: rdv_context.participations, convocable_participations: rdv_context.participations.select(&:convocable?), configuration: @all_configurations.find { |c| c.motif_category == rdv_context.motif_category }, applicant: @applicant, department: @department, invitations: rdv_context.invitations %>
+  <% @all_configurations.each do |configuration| %>
+    <% rdv_context = @rdv_contexts.find { |rc| rc.motif_category == configuration.motif_category } %>
+    <% if rdv_context %>
+      <%= render "rdv_contexts/rdv_context", rdv_context: rdv_context, participations: rdv_context.participations, convocable_participations: rdv_context.participations.select(&:convocable?), configuration: configuration, applicant: @applicant, department: @department, invitations: rdv_context.invitations %>
+    <% else %>
+      <div class="d-flex align-items-center context-header">
+        <span></span>
+        <h5 class="text-center px-2 py-4">
+          <strong><%= configuration.motif_category_name %></strong>
+          <small><%= configuration.rdv_with_referents? ? " (avec référents)" : "" %></small>
+        </h5>
+        <span></span>
+        <%= render "rdv_contexts/new_button", applicant: @applicant, configuration: configuration, organisation: @organisation, department: @department, turbo: false, button_text: "Ouvrir un suivi" %>
+        <span></span>
+      </div>
+    <% end %>
   <% end %>
 </div>
-

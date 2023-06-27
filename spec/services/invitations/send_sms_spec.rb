@@ -474,6 +474,106 @@ describe Invitations::SendSms, type: :service do
       end
     end
 
+    context "for siae_collective_information" do
+      let!(:rdv_context) { build(:rdv_context, motif_category: category_siae_collective_information) }
+      let!(:configuration) do
+        create(:configuration, organisation: organisation, motif_category: category_siae_collective_information)
+      end
+      let!(:content) do
+        "Monsieur John DOE,\nVous êtes candidat.e dans une Structure d’Insertion par l’Activité Economique (SIAE)" \
+          " et vous êtes #{applicant.conjugate('invité')} à participer à un rendez-vous collectif d'information." \
+          " Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant " \
+          "dans les 3 jours: http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
+          "En cas de problème technique, contactez le 0147200001."
+      end
+
+      it("is a success") { is_a_success }
+
+      it "calls the send transactional service with the right content" do
+        expect(SendTransactionalSms).to receive(:call)
+          .with(
+            phone_number: phone_number, content: content,
+            sender_name: sms_sender_name
+          )
+        subject
+      end
+
+      context "when it is a reminder" do
+        let!(:content) do
+          "Monsieur John DOE,\nEn tant que candidat.e dans une Structure d’Insertion par l’Activité Economique " \
+            "(SIAE), vous avez reçu un message il y a 3 jours vous " \
+            "invitant à prendre RDV au créneau de votre choix afin de découvrir cette structure. " \
+            "Le lien de prise de RDV suivant expire dans 5 jours: " \
+            "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
+            "En cas de problème technique, contactez le " \
+            "0147200001."
+        end
+
+        before do
+          invitation.update!(reminder: true, valid_until: 5.days.from_now)
+        end
+
+        it "calls the send transactional service with the right content" do
+          expect(SendTransactionalSms).to receive(:call)
+            .with(
+              phone_number: phone_number, content: content,
+              sender_name: sms_sender_name
+            )
+          subject
+        end
+      end
+    end
+
+    context "for siae_follow_up" do
+      let!(:rdv_context) { build(:rdv_context, motif_category: category_siae_follow_up) }
+      let!(:configuration) do
+        create(:configuration, organisation: organisation, motif_category: category_siae_follow_up)
+      end
+      let!(:content) do
+        "Monsieur John DOE,\nVous êtes salarié.e au sein de notre structure" \
+          " et vous êtes #{applicant.conjugate('invité')} à participer à un rendez-vous de suivi." \
+          " Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant " \
+          "dans les 3 jours: http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
+          "En cas de problème technique, contactez le 0147200001."
+      end
+
+      it("is a success") { is_a_success }
+
+      it "calls the send transactional service with the right content" do
+        expect(SendTransactionalSms).to receive(:call)
+          .with(
+            phone_number: phone_number, content: content,
+            sender_name: sms_sender_name
+          )
+        subject
+      end
+
+      context "when it is a reminder" do
+        let!(:content) do
+          "Monsieur John DOE,\nEn tant que salarié.e au sein de notre structure, " \
+            "vous avez reçu un message il y a 3 jours vous " \
+            "invitant à prendre RDV au créneau de votre choix afin de faire un point avec votre référent. " \
+            "Le lien de prise de RDV suivant expire dans 5 jours: " \
+            "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
+            "En cas de problème technique, contactez le " \
+            "0147200001."
+        end
+
+        before do
+          invitation.update!(reminder: true, valid_until: 5.days.from_now)
+        end
+
+        it "calls the send transactional service with the right content" do
+          expect(SendTransactionalSms).to receive(:call)
+            .with(
+              phone_number: phone_number, content: content,
+              sender_name: sms_sender_name
+            )
+          subject
+        end
+      end
+    end
+
     context "for psychologue" do
       let!(:rdv_context) { build(:rdv_context, motif_category: category_psychologue) }
       let!(:configuration) { create(:configuration, organisation: organisation, motif_category: category_psychologue) }

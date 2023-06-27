@@ -91,13 +91,6 @@ export default class extends Controller {
     });
   }
 
-  displayDepartmentLogoAttribute() {
-    tippy(this.element, {
-      content:
-        "Si le logo de l'organisation n'est pas défini, le logo du département sera utilisé quoi qu'il arrive.",
-    });
-  }
-
   departmentInternalIdAttribute() {
     tippy(this.element, {
       content: "ID dans l'éditeur logiciel (IODAS, SOLIS...) ou dans le SI du département",
@@ -107,7 +100,7 @@ export default class extends Controller {
   closeRdvContextButton() {
     tippy(this.element, {
       content:
-        "Le statut du bénéficiaire dans ce contexte passera en «Dossier traité» et ses invitations seront désactivées.",
+        "Le statut du bénéficiaire dans ce contexte passera en «Dossier traité» et ses invitations seront désactivées. Il n'apparaîtra plus dans la liste de suivi de ce contexte, mais restera visible dans l'onglet «Tous les contacts».",
       placement: "bottom",
     });
   }
@@ -155,5 +148,14 @@ export default class extends Controller {
           "Vous devez appartenir à toutes les organisations auxquelles appartient le bénéficiaire au sein de votre département pour pouvoir l'archiver",
       });
     }
+  }
+
+  noCategorySelected() {
+    tippy(this.element, {
+      content:
+        "L'allocataire apparaitra dans l'onglet 'Tous les contacts' seulement. " +
+        "En choisissant cette option vous ne pourrez pas inviter l'allocataire à prendre rdv à l'upload du fichier " +
+        "(mais vous pourrez le faire ultérieurement en accédant à sa fiche).",
+    });
   }
 }
