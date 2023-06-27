@@ -92,7 +92,7 @@
         <div class="m-2 p-2 text-center">
           <%= render "rdv_contexts/convocation_button",
                      applicant_id: @applicant.id, motif_category_id: rdv_context.motif_category_id,
-                     organisation_ids: [@organisation.id]
+                     organisation_ids: department_level? ? @applicant_organisations.ids : [@organisation.id]
           %>
         </div>
       <% end %>
