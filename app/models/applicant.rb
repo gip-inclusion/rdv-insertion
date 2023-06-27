@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 class Applicant < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [
     :first_name, :last_name, :birth_date, :email, :phone_number, :address, :affiliation_number, :birth_name
@@ -16,8 +17,11 @@ class Applicant < ApplicationRecord
   include Invitable
   include HasParticipationsToRdvs
   include Applicant::TextHelper
+  include Applicant::Address
   include Applicant::Nir
   include Applicant::Archivable
+
+  attr_accessor :skip_uniqueness_validations
 
   before_validation :generate_uid
   before_save :format_phone_number
@@ -34,16 +38,16 @@ class Applicant < ApplicationRecord
   has_many :notifications, through: :participations
   has_many :configurations, through: :organisations
   has_many :motif_categories, through: :rdv_contexts
+  has_many :departments, through: :organisations
   has_many :referents, through: :referent_assignations, source: :agent
 
   accepts_nested_attributes_for :rdv_contexts, reject_if: :rdv_context_category_handled_already?
 
   validates :last_name, :first_name, :title, presence: true
   validates :email, allow_blank: true, format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/ }
-  validate :birth_date_validity
+  validate :birth_date_validity, :identifier_must_be_present
   validates :rdv_solidarites_user_id, :nir, :pole_emploi_id,
             uniqueness: true, allow_nil: true, unless: :skip_uniqueness_validations
-  attr_accessor :skip_uniqueness_validations
 
   delegate :name, :number, to: :department, prefix: true
 
@@ -64,14 +68,6 @@ class Applicant < ApplicationRecord
 
   def participation_for(rdv)
     participations.to_a.find { |participation| participation.rdv_id == rdv.id }
-  end
-
-  def street_address
-    split_address.present? ? split_address[1].strip.gsub(/-$/, "").gsub(/,$/, "").gsub(/\.$/, "") : nil
-  end
-
-  def zipcode_and_city
-    split_address.present? ? split_address[2].strip : nil
   end
 
   def organisations_with_rdvs
@@ -124,6 +120,10 @@ class Applicant < ApplicationRecord
     )
   end
 
+  def phone_number_formatted
+    PhoneNumberHelper.format_phone_number(phone_number)
+  end
+
   private
 
   def rdv_context_category_handled_already?(rdv_context_attributes)
@@ -139,7 +139,7 @@ class Applicant < ApplicationRecord
   end
 
   def format_phone_number
-    self.phone_number = PhoneNumberHelper.format_phone_number(phone_number)
+    self.phone_number = phone_number_formatted
   end
 
   def birth_date_validity
@@ -148,7 +148,15 @@ class Applicant < ApplicationRecord
     errors.add(:birth_date, "n'est pas valide")
   end
 
-  def split_address
-    address&.match(/^(.+) (\d{5}.*)$/m)
+  def identifier_must_be_present
+    return if deleted?
+    return if [nir, uid, department_internal_id, email, phone_number].any?(&:present?)
+
+    errors.add(
+      :base,
+      "Il doit y avoir au moins un attribut permettant d'identifier la personne " \
+      "(NIR, email, numéro de tel, ID interne, numéro d'allocataire/rôle)"
+    )
   end
 end
+# rubocop:enable Metrics/ClassLength

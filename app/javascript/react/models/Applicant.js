@@ -57,7 +57,6 @@ export default class Applicant {
     this.currentOrganisation = organisation;
     this.currentConfiguration = currentConfiguration;
     this.columnNames = columnNames;
-    this.isDuplicate = false;
   }
 
   get uid() {
@@ -132,6 +131,10 @@ export default class Applicant {
       if (upToDateApplicant.rights_opening_date) {
         this.rightsOpeningDate = getFrenchFormatDateString(upToDateApplicant.rights_opening_date);
       }
+      this.nir = upToDateApplicant.nir;
+      this.affiliationNumber = upToDateApplicant.affiliation_number;
+      this.role = upToDateApplicant.role;
+      this.departmentInternalId = upToDateApplicant.department_internal_id;
     }
     if (this.currentConfiguration) {
       this.currentRdvContext = upToDateApplicant.rdv_contexts.find(

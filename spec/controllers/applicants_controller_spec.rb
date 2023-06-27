@@ -47,7 +47,7 @@ describe ApplicantsController do
         .and_return(applicant)
       allow(applicant).to receive(:assign_attributes)
       allow(Applicants::Save).to receive(:call)
-        .and_return(OpenStruct.new)
+        .and_return(OpenStruct.new(success?: true))
     end
 
     let(:applicant_params) do
@@ -98,11 +98,6 @@ describe ApplicantsController do
       end
 
       context "when the creation succeeds" do
-        before do
-          allow(Applicants::Save).to receive(:call)
-            .and_return(OpenStruct.new(success?: true))
-        end
-
         it "is a success" do
           post :create, params: applicant_params
           expect(response).to redirect_to(organisation_applicant_path(organisation, applicant))
@@ -149,11 +144,6 @@ describe ApplicantsController do
 
       context "when the creation succeeds" do
         let!(:applicant) { create(:applicant, organisations: [organisation]) }
-
-        before do
-          allow(Applicants::Save).to receive(:call)
-            .and_return(OpenStruct.new(success?: true, applicant: applicant))
-        end
 
         it "is a success" do
           post :create, params: applicant_params
@@ -1029,9 +1019,8 @@ describe ApplicantsController do
 
       before do
         sign_in(agent)
-
         allow(Applicants::Save).to receive(:call)
-          .and_return(OpenStruct.new)
+          .and_return(OpenStruct.new(success?: true))
       end
 
       it "calls the service" do
@@ -1060,11 +1049,6 @@ describe ApplicantsController do
       end
 
       context "when the update succeeds" do
-        before do
-          allow(Applicants::Save).to receive(:call)
-            .and_return(OpenStruct.new(success?: true, applicant: applicant))
-        end
-
         context "when organisation level" do
           it "redirects to the show page" do
             patch :update, params: update_params

@@ -29,11 +29,7 @@ export default function Applicant({ applicant, isDepartmentLevel, showReferentCo
 
   return (
     <>
-      <tr
-        className={
-          applicant.isDuplicate || applicant.isArchivedInCurrentDepartment() ? "table-danger" : ""
-        }
-      >
+      <tr className={applicant.isArchivedInCurrentDepartment() ? "table-danger" : ""}>
         <td>{applicant.shortTitle}</td>
         <td>{applicant.firstName}</td>
         <td>{applicant.lastName}</td>

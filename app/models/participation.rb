@@ -18,7 +18,6 @@ class Participation < ApplicationRecord
   delegate :organisation, :department, :starts_at, :convocable?, :motif_name,
            :rdv_solidarites_url, :rdv_solidarites_rdv_id, :instruction_for_rdv,
            to: :rdv
-  delegate :department, to: :organisation
   delegate :phone_number_is_mobile?, :email?, to: :applicant
   delegate :motif_category, to: :rdv_context
   delegate :notify_applicants?, to: :rdv, prefix: true

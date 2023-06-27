@@ -14,6 +14,10 @@ module NirHelper
       key.to_s.length == 2 ? key.to_s : "0#{key}"
     end
 
+    def equal?(nir1, nir2)
+      format_nir(nir1) == format_nir(nir2)
+    end
+
     def nir_without_corsica_letters(nir)
       # people born in Corsica have "2A" or "2B" in their nirs ; this method deals with this case
       return nir unless nir.match?(/\A\d+(2A|2B){1}\d+\z/)

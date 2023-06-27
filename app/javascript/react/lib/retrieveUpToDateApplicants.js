@@ -50,7 +50,7 @@ const retrieveUpToDateApplicants = async (applicantsFromList, departmentId) => {
   const upToDateApplicants = applicantsFromList.map((applicant) => {
     const upToDateApplicant = retrievedApplicants.find(
       (a) =>
-        (a.nir && a.nir === applicant.nir) ||
+        (a.nir && a.nir.substring(0, 13) === applicant.nir?.substring(0, 13)) ||
         (a.department_internal_id && a.department_internal_id === applicant.departmentInternalId) ||
         (a.uid && a.uid === applicant.uid) ||
         (a.email &&
