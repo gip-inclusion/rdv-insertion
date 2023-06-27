@@ -19,7 +19,8 @@ describe Invitations::GenerateLetter, type: :service do
   end
   let!(:organisation) { create(:organisation, department: department) }
   let!(:messages_configuration) do
-    create(:messages_configuration, organisation: organisation, direction_names: ["Direction départemental"])
+    create(:messages_configuration, organisation: organisation,
+                                    direction_names: ["Direction départemental"], display_department_logo: false)
   end
   let!(:configuration) { create(:configuration, motif_category: category_rsa_orientation, organisation: organisation) }
 
@@ -35,8 +36,9 @@ describe Invitations::GenerateLetter, type: :service do
       expect(content).to include(invitation.uuid)
       expect(content).to include(department.name)
       expect(content).to include("Vous êtes bénéficiaire du RSA")
-      # letter-first-col is only used when display_europe_logos is true (false by default)
+      expect(content).not_to include("department-logo")
       expect(content).not_to include("europe-logos")
+      expect(content).not_to include("pole-emploi-logo")
     end
 
     context "when the format is not postal" do
@@ -84,6 +86,17 @@ describe Invitations::GenerateLetter, type: :service do
       end
     end
 
+    context "when the department logo is configured to be displayed" do
+      let!(:messages_configuration) do
+        create(:messages_configuration, organisation: organisation, display_department_logo: true)
+      end
+
+      it "generates the pdf string with the department logo" do
+        subject
+        expect(invitation.content).to include("department-logo")
+      end
+    end
+
     context "when the europe logos are configured to be displayed" do
       let!(:messages_configuration) do
         create(:messages_configuration, organisation: organisation, display_europe_logos: true)
@@ -91,8 +104,18 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf string with the europe logos" do
         subject
-        # europe-logos is only used when display_europe_logos is true
         expect(invitation.content).to include("europe-logos")
+      end
+    end
+
+    context "when the pole emploi logo is configured to be displayed" do
+      let!(:messages_configuration) do
+        create(:messages_configuration, organisation: organisation, display_pole_emploi_logo: true)
+      end
+
+      it "generates the pdf string with the pole emploi logo" do
+        subject
+        expect(invitation.content).to include("pole-emploi-logo")
       end
     end
 
@@ -229,6 +252,72 @@ describe Invitations::GenerateLetter, type: :service do
           " avec votre référent de parcours"
         )
         expect(content).to include("saisissez dans un délai de 3 jours à réception de ce courrier")
+        expect(content).not_to include("Ce RDV est obligatoire.")
+        expect(content).not_to include(
+          "En l'absence d'action de votre part, votre RSA pourra être suspendu ou réduit."
+        )
+      end
+    end
+
+    context "when the context is siae_interview" do
+      let!(:rdv_context) { create(:rdv_context, motif_category: category_siae_interview) }
+
+      it "generates the pdf with the right content" do
+        subject
+        content = unescape_html(invitation.content)
+        expect(content).to include(
+          "Objet : Entretien d'embauche dans le cadre de votre candidature SIAE"
+        )
+        expect(content).to include(
+          "vous êtes #{applicant.conjugate('invité')} à participer à un entretien d'embauche afin de " \
+          "poursuivre le processus de recrutement"
+        )
+        expect(content).to include("saisissez dans un délai de 3 jours à réception de ce courrier")
+        expect(content).not_to include("N° allocataire.")
+        expect(content).not_to include("Ce RDV est obligatoire.")
+        expect(content).not_to include(
+          "En l'absence d'action de votre part, votre RSA pourra être suspendu ou réduit."
+        )
+      end
+    end
+
+    context "when the context is siae_follow_up" do
+      let!(:rdv_context) { create(:rdv_context, motif_category: category_siae_follow_up) }
+
+      it "generates the pdf with the right content" do
+        subject
+        content = unescape_html(invitation.content)
+        expect(content).to include(
+          "Objet : Rendez-vous de suivi dans le cadre de votre suivi SIAE"
+        )
+        expect(content).to include(
+          "vous êtes #{applicant.conjugate('invité')} à participer à un rendez-vous de suivi afin de faire un point" \
+          " avec votre référent"
+        )
+        expect(content).to include("saisissez dans un délai de 3 jours à réception de ce courrier")
+        expect(content).not_to include("N° allocataire.")
+        expect(content).not_to include("Ce RDV est obligatoire.")
+        expect(content).not_to include(
+          "En l'absence d'action de votre part, votre RSA pourra être suspendu ou réduit."
+        )
+      end
+    end
+
+    context "when the context is siae_collective_information" do
+      let!(:rdv_context) { create(:rdv_context, motif_category: category_siae_collective_information) }
+
+      it "generates the pdf with the right content" do
+        subject
+        content = unescape_html(invitation.content)
+        expect(content).to include(
+          "Objet : Rendez-vous collectif d'information dans le cadre de votre candidature SIAE"
+        )
+        expect(content).to include(
+          "vous êtes #{applicant.conjugate('invité')} à participer à un rendez-vous collectif d'information afin de " \
+          "découvrir cette structure"
+        )
+        expect(content).to include("saisissez dans un délai de 3 jours à réception de ce courrier")
+        expect(content).not_to include("N° allocataire.")
         expect(content).not_to include("Ce RDV est obligatoire.")
         expect(content).not_to include(
           "En l'absence d'action de votre part, votre RSA pourra être suspendu ou réduit."

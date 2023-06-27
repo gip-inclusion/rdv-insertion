@@ -7,8 +7,9 @@
         <%= render "common/attribute_input", f:f, attribute: :signature_lines, as: :array %>
         <%= render "common/attribute_input", f:f, attribute: :sender_city, tooltip: true %>
         <%= render "common/attribute_input", f:f, attribute: :letter_sender_name, tooltip: true %>
+        <%= render "common/attribute_input", f:f, attribute: :display_department_logo, as: :boolean %>
         <%= render "common/attribute_input", f:f, attribute: :display_europe_logos, as: :boolean %>
-        <%= render "common/attribute_input", f:f, attribute: :display_department_logo, as: :boolean, tooltip: true %>
+        <%= render "common/attribute_input", f:f, attribute: :display_pole_emploi_logo, as: :boolean %>
         <%= render "common/attribute_input", f:f, attribute: :help_address, tooltip: true %>
         <h4 class="pt-5 pb-2">SMS</h4>
         <%= render "common/attribute_input", f:f, attribute: :sms_sender_name, tooltip: true %>

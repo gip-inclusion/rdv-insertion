@@ -196,6 +196,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_26_165441) do
     t.string "sms_sender_name"
     t.boolean "display_department_logo", default: true
     t.bigint "organisation_id"
+    t.boolean "display_pole_emploi_logo", default: false
     t.index ["organisation_id"], name: "index_messages_configurations_on_organisation_id"
   end
 
