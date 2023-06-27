@@ -1,7 +1,7 @@
 <%=
   link_to(
     new_convocation_path(motif_category_id: motif_category_id, organisation_ids: organisation_ids, applicant_id: applicant_id),
-    target: "_blank"
+    data: { turbo_frame: 'remote_modal' }
   ) do
 %>
   <button class="btn btn-warning">

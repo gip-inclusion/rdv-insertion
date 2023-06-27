@@ -64,15 +64,10 @@ describe "Agents can convene applicant to rdv", js: true do
       it "shows a message convocation is not possible" do
         visit organisation_applicants_path(organisation, motif_category_id: motif_category.id)
         expect(page).to have_link("📅 Convoquer")
-        new_window = window_opened_by { click_link("📅 Convoquer") }
-        within_window new_window do
-          expect(page).to have_content(
-            "Aucun motif de convocation n'a été retrouvé pour cette catégorie sur RDV-Solidarités."
-          )
-          expect(page).to have_content(
-            "Contactez-nous à l'adresse data.insertion@beta.gouv.fr"
-          )
-        end
+        click_link("📅 Convoquer")
+        expect(page).to have_content(
+          "Aucun motif de convocation n'a été retrouvé pour cette catégorie sur RDV-Solidarités."
+        )
       end
     end
 
@@ -90,15 +85,15 @@ describe "Agents can convene applicant to rdv", js: true do
       it "can choose a collectif motif instead of an individuel one" do
         visit organisation_applicants_path(organisation, motif_category_id: motif_category.id)
         expect(page).to have_link("📅 Convoquer")
-        new_window = window_opened_by { click_link("📅 Convoquer") }
-        within_window new_window do
-          expect(page).to have_content(
-            "S'agit-il d'un rdv individuel ou d'un rdv collectif ?"
-          )
-          expect(page).to have_link("Rdv individuel")
-          expect(page).to have_link("Rdv collectif")
+        click_link("📅 Convoquer")
+        expect(page).to have_content(
+          "S'agit-il d'un rdv individuel ou d'un rdv collectif ?"
+        )
+        expect(page).to have_link("Rdv individuel")
+        expect(page).to have_link("Rdv collectif")
 
-          click_link("Rdv collectif")
+        new_window = window_opened_by { click_link("Rdv collectif") }
+        within_window new_window do
           expect(page.current_url).to eq(collectif_rdv.add_user_url(rdv_solidarites_user_id))
         end
       end
@@ -106,15 +101,16 @@ describe "Agents can convene applicant to rdv", js: true do
       it "can still choose the individuel over the collectif" do
         visit organisation_applicants_path(organisation, motif_category_id: motif_category.id)
         expect(page).to have_link("📅 Convoquer")
-        new_window = window_opened_by { click_link("📅 Convoquer") }
-        within_window new_window do
-          expect(page).to have_content(
-            "S'agit-il d'un rdv individuel ou d'un rdv collectif ?"
-          )
-          expect(page).to have_link("Rdv individuel")
-          expect(page).to have_link("Rdv collectif")
+        click_link("📅 Convoquer")
 
-          click_link("Rdv individuel")
+        expect(page).to have_content(
+          "S'agit-il d'un rdv individuel ou d'un rdv collectif ?"
+        )
+        expect(page).to have_link("Rdv individuel")
+        expect(page).to have_link("Rdv collectif")
+
+        new_window = window_opened_by { click_link("Rdv individuel") }
+        within_window new_window do
           expect(page.current_url).to eq(motif.link_to_take_rdv_for(rdv_solidarites_user_id))
         end
       end

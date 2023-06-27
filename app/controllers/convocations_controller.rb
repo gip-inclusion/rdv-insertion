@@ -7,8 +7,6 @@ class ConvocationsController < ApplicationController
       collectif: collectif_convocation_link
     }
     @all_links = @convocation_links_by_type.values.compact
-
-    return redirect_to @all_links.first if @all_links.length == 1
   end
 
   private
