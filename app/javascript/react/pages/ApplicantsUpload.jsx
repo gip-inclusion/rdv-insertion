@@ -43,6 +43,7 @@ export default function ApplicantsUpload({
   const [showReferentColumn, setShowReferentColumn] = useState(
     configuration && configuration.rdv_with_referents
   );
+  const showCarnetColumn = !!department.carnet_de_bord_deploiement_id;
 
   const redirectToApplicantList = () => {
     if (configuration) {
@@ -306,25 +307,20 @@ export default function ApplicantsUpload({
                   <th scope="col" style={{ whiteSpace: "nowrap" }}>
                     Création compte
                   </th>
-                  {showReferentColumn && (
-                    <>
-                      <th scope="col-3">Réferent</th>
-                    </>
+                  {showCarnetColumn && (
+                    <th scope="col" style={{ whiteSpace: "nowrap" }}>
+                      Création carnet
+                    </th>
                   )}
+                  {showReferentColumn && <th scope="col-3">Réferent</th>}
                   {configuration && configuration.invitation_formats.includes("sms") && (
-                    <>
-                      <th scope="col-3">Invitation SMS</th>
-                    </>
+                    <th scope="col-3">Invitation SMS</th>
                   )}
                   {configuration && configuration.invitation_formats.includes("email") && (
-                    <>
-                      <th scope="col-3">Invitation mail</th>
-                    </>
+                    <th scope="col-3">Invitation mail</th>
                   )}
                   {configuration && configuration.invitation_formats.includes("postal") && (
-                    <>
-                      <th scope="col-3">Invitation courrier</th>
-                    </>
+                    <th scope="col-3">Invitation courrier</th>
                   )}
                 </tr>
               </thead>
@@ -333,6 +329,7 @@ export default function ApplicantsUpload({
                   showReferentColumn={showReferentColumn}
                   applicants={applicants}
                   isDepartmentLevel={isDepartmentLevel}
+                  showCarnetColumn={showCarnetColumn}
                 />
               </tbody>
             </table>

@@ -7,6 +7,7 @@ export default function ApplicantList({
   downloadInProgress,
   setDownloadInProgress,
   showReferentColumn,
+  showCarnetColumn,
 }) {
   return applicants.map((applicant) => (
     <Applicant
@@ -16,6 +17,7 @@ export default function ApplicantList({
       setDownloadInProgress={setDownloadInProgress}
       key={applicant.departmentInternalId || applicant.uid}
       showReferentColumn={showReferentColumn}
+      showCarnetColumn={showCarnetColumn}
     />
   ));
 }

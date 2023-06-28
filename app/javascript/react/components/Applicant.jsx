@@ -5,7 +5,12 @@ import InvitationCells from "./applicant/InvitationCells";
 import ContactInfosExtraLine from "./applicant/ContactInfosExtraLine";
 import ReferentAssignationCell from "./applicant/ReferentAssignationCell";
 
-export default function Applicant({ applicant, isDepartmentLevel, showReferentColumn }) {
+export default function Applicant({
+  applicant,
+  isDepartmentLevel,
+  showCarnetColumn,
+  showReferentColumn,
+}) {
   const [isTriggered, setIsTriggered] = useState({
     creation: false,
     unarchive: false,
@@ -67,6 +72,10 @@ export default function Applicant({ applicant, isDepartmentLevel, showReferentCo
           isTriggered={isTriggered}
           setIsTriggered={setIsTriggered}
         />
+
+        {/* ------------------------------- Carnet creation cell ----------------------------- */}
+
+        {showCarnetColumn && <td />}
 
         {/* ------------------------------- Referent cell ----------------------------- */}
 
