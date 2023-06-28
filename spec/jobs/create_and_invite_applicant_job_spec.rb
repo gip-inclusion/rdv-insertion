@@ -32,7 +32,9 @@ describe CreateAndInviteApplicantJob do
   end
 
   before do
-    allow(Applicants::FindOrInitialize).to receive(:call).and_return(OpenStruct.new(applicant: applicant))
+    allow(Applicants::FindOrInitialize).to receive(:call)
+      .with(attributes: applicant_attributes, department_id: department.id)
+      .and_return(OpenStruct.new(success?: true, applicant: applicant))
     allow(Applicants::Save).to receive(:call).and_return(OpenStruct.new(success?: true, failure?: false))
     allow(InviteApplicantJob).to receive(:perform_async)
     allow(RdvSolidaritesSessionFactory).to receive(:create_with)
@@ -40,9 +42,8 @@ describe CreateAndInviteApplicantJob do
       .and_return(rdv_solidarites_session)
   end
 
-  it "assigns the attributes to the applicant" do
-    expect(applicant).to receive(:assign_attributes)
-      .with(applicant_attributes)
+  it "assigns the attributes" do
+    expect(applicant).to receive(:assign_attributes).with(applicant_attributes)
     subject
   end
 
@@ -126,36 +127,46 @@ describe CreateAndInviteApplicantJob do
     end
   end
 
+  context "when the instantation fails" do
+    let!(:department_mail) { instance_double("mail") }
+
+    before do
+      allow(Applicants::FindOrInitialize).to receive(:call)
+        .and_return(OpenStruct.new(success?: false, errors: ["NIR does not match"]))
+      allow(DepartmentMailer).to receive(:create_applicant_error).and_return(department_mail)
+      allow(department_mail).to receive(:deliver_now)
+    end
+
+    it "sends an email to the department and raises" do
+      expect(DepartmentMailer).to receive(:create_applicant_error)
+        .with(department, applicant_attributes, ["NIR does not match"])
+      expect(department_mail).to receive(:deliver_now)
+      expect { subject }.to raise_error(
+        FailedServiceError,
+        'Error initializing applicant in CreateAndInviteApplicantJob: ["NIR does not match"]'
+      )
+    end
+  end
+
   context "when the save fails" do
     let!(:department_mail) { instance_double("mail") }
 
     before do
       allow(Applicants::Save).to receive(:call)
-        .and_return(OpenStruct.new(failure?: true, errors: ["could not save applicant"]))
+        .and_return(OpenStruct.new(success?: false, errors: ["could not save applicant"]))
       allow(Sentry).to receive(:capture_exception)
       allow(DepartmentMailer).to receive(:create_applicant_error).and_return(department_mail)
       allow(department_mail).to receive(:deliver_now)
     end
 
-    it "captures the exception" do
-      exception = FailedServiceError.new("Error saving applicant in CreateAndInviteApplicantJob")
-      expect(Sentry).to receive(:capture_exception)
-        .with(
-          exception,
-          extra: {
-            applicant: applicant,
-            service_errors: ["could not save applicant"],
-            organisation: organisation
-          }
-        )
-      subject
-    end
-
-    it "sends an email to the department" do
+    it "sends an email to the department and raises" do
       expect(DepartmentMailer).to receive(:create_applicant_error)
-        .with(department, applicant, ["could not save applicant"])
+        .with(department, applicant_attributes, ["could not save applicant"])
       expect(department_mail).to receive(:deliver_now)
-      subject
+      expect { subject }.to raise_error(
+        FailedServiceError,
+        'Error saving applicant in CreateAndInviteApplicantJob: ["could not save applicant"]'
+      )
     end
   end
 end

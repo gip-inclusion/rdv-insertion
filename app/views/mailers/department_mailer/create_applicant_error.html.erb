@@ -1,10 +1,10 @@
 <h1>Bonjour</h1>
 <p>L'allocataire suivant n'a pas pu être créé sur RDV-Insertion:</p>
 <ul>
-  <li>Nom: <%= @applicant.last_name %></li>
-  <li>Prénom: <%= @applicant.first_name %></li>
-  <li>ID interne: <%= @applicant.department_internal_id %></li>
-  <li>Numéro allocataire: <%= @applicant.affiliation_number %></li>
+  <li>Nom: <%= @applicant_attributes[:last_name] %></li>
+  <li>Prénom: <%= @applicant_attributes[:first_name] %></li>
+  <li>ID interne: <%= @applicant_attributes[:department_internal_id] %></li>
+  <li>Numéro allocataire: <%= @applicant_attributes[:affiliation_number] %></li>
 </ul>
 <p>Les raisons suivantes sont évoquées:<p>
 <ul>

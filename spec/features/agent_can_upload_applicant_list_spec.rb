@@ -66,7 +66,7 @@ describe "Agents can upload applicant list", js: true do
       expect(page).to have_content("Téléphone")
       expect(page).to have_content("0620022002")
       expect(page).to have_content("NIR")
-      expect(page).to have_content("180333147687266")
+      expect(page).to have_content("1803331476872")
       expect(page).to have_content("Création compte")
       expect(page).to have_button("Créer compte", disabled: false)
       expect(page).to have_content("Invitation SMS")
@@ -195,7 +195,8 @@ describe "Agents can upload applicant list", js: true do
           let!(:applicant) do
             create(
               :applicant,
-              nir: "180333147687266", last_name: "Crespa",
+              nir: "180333147687266", address: "20 avenue de ségur 75007 Paris", last_name: "Crespa",
+              phone_number: "+33782605941", email: "hernan@crespa.com",
               organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
@@ -206,6 +207,12 @@ describe "Agents can upload applicant list", js: true do
             attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
             expect(page).not_to have_content("Créer compte")
+
+            ## it displays the db attributes
+            expect(page).to have_content("Crespa")
+            expect(page).to have_content("+33782605941")
+            expect(page).to have_content("hernan@crespa.com")
+
             expect(page).to have_css("i.fas.fa-link")
             expect(page).to have_selector(
               :css, "a[href=\"/organisations/#{organisation.id}/applicants/#{applicant.id}\"]"
@@ -278,7 +285,9 @@ describe "Agents can upload applicant list", js: true do
             let!(:applicant) do
               create(
                 :applicant,
-                role: "demandeur", affiliation_number: "ISQCJQO", last_name: "Crespa",
+                role: "demandeur", affiliation_number: "ISQCJQO",
+                address: "20 avenue de ségur 75007 Paris", last_name: "Crespa",
+                phone_number: "+33782605941", email: "hernan@crespa.com",
                 organisations: [other_org_from_same_department], rdv_solidarites_user_id: rdv_solidarites_user_id
               )
             end
@@ -289,6 +298,14 @@ describe "Agents can upload applicant list", js: true do
               attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
               expect(page).to have_content("Ajouter à cette organisation")
+
+              ## it does not display the db attributes
+              expect(page).not_to have_content("Crespa")
+              expect(page).not_to have_content("+33782605941")
+              expect(page).not_to have_content("hernan@crespa.com")
+              expect(page).to have_content("Cresp")
+              expect(page).to have_content("0620022002")
+              expect(page).to have_content("hernan@crespo.com")
 
               click_button("Ajouter à cette organisation")
 
@@ -307,6 +324,43 @@ describe "Agents can upload applicant list", js: true do
               expect(applicant.reload.email).to eq("hernan@crespo.com")
               expect(applicant.reload.phone_number).to eq("+33620022002")
               expect(applicant.reload.department_internal_id).to eq("8383")
+            end
+          end
+
+          context "when the nir of does not match with the applicant in the db" do
+            let!(:applicant) do
+              create(
+                :applicant,
+                role: "demandeur", affiliation_number: "ISQCJQO",
+                address: "20 avenue de ségur 75007 Paris", last_name: "Crespa",
+                phone_number: "+33782605941", email: "hernan@crespa.com", nir: generate_random_nir,
+                organisations: [other_org_from_same_department], rdv_solidarites_user_id: rdv_solidarites_user_id
+              )
+            end
+
+            it "fails to add the applicant to the org" do
+              visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
+
+              attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+
+              expect(page).to have_content("Ajouter à cette organisation")
+
+              ## it does not display the db attributes
+              expect(page).not_to have_content("Crespa")
+              expect(page).not_to have_content("+33782605941")
+              expect(page).not_to have_content("hernan@crespa.com")
+              expect(page).to have_content("Cresp")
+              expect(page).to have_content("0620022002")
+              expect(page).to have_content("hernan@crespo.com")
+
+              click_button("Ajouter à cette organisation")
+
+              # it did not add the applicant
+              expect(page).to have_content("Ajouter à cette organisation")
+              expect(page).not_to have_css("i.fas.fa-link")
+              expect(page).to have_content(
+                "Le bénéficiaire #{applicant.id} a les mêmes attributs mais un nir différent"
+              )
             end
           end
         end
@@ -467,23 +521,6 @@ describe "Agents can upload applicant list", js: true do
             expect(applicant.reload.department_internal_id).to eq("8383")
           end
         end
-
-        context "when the first name is not the same" do
-          let!(:applicant) do
-            create(
-              :applicant, email: "hernan@crespo.com", first_name: "lionel",
-                          organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
-            )
-          end
-
-          it "does not match the applicant" do
-            visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
-
-            attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
-
-            expect(page).to have_content("Créer compte")
-          end
-        end
       end
 
       describe "phone number matching" do
@@ -543,24 +580,6 @@ describe "Agents can upload applicant list", js: true do
             expect(applicant.reload.department_internal_id).to eq("8383")
           end
         end
-
-        context "when the first name is not the same" do
-          let!(:applicant) do
-            create(
-              :applicant,
-              phone_number: "0620022002", first_name: "lionel",
-              organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
-            )
-          end
-
-          it "does not match the applicant" do
-            visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
-
-            attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
-
-            expect(page).to have_content("Créer compte")
-          end
-        end
       end
     end
   end
@@ -597,7 +616,7 @@ describe "Agents can upload applicant list", js: true do
       expect(page).to have_content("Téléphone")
       expect(page).to have_content("0620022002")
       expect(page).to have_content("NIR")
-      expect(page).to have_content("180333147687266")
+      expect(page).to have_content("1803331476872")
       expect(page).to have_content("Création compte")
       expect(page).to have_button("Créer compte", disabled: false)
       expect(page).to have_content("Invitation SMS")

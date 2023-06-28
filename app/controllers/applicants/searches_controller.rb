@@ -23,7 +23,7 @@ module Applicants
 
     def search_in_all_applicants
       Applicant
-        .where(nir: applicants_params[:nirs])
+        .where(nir: formatted_nirs)
         .or(Applicant.where(email: applicants_params[:emails]))
         .or(Applicant.where(phone_number: formatted_phone_numbers))
         .select(:id)
@@ -33,6 +33,10 @@ module Applicants
       applicants_params[:phone_numbers].map do |phone_number|
         PhoneNumberHelper.format_phone_number(phone_number)
       end.compact
+    end
+
+    def formatted_nirs
+      applicants_params[:nirs].map { |nir| NirHelper.format_nir(nir) }.compact
     end
 
     def search_in_department_organisations
