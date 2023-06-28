@@ -43,6 +43,7 @@ export default function ApplicantsUpload({
   const [showReferentColumn, setShowReferentColumn] = useState(
     configuration && configuration.rdv_with_referents
   );
+  const showCarnetColumn = !!department.carnet_de_bord_deploiement_id;
 
   const redirectToApplicantList = () => {
     if (configuration) {
@@ -306,9 +307,9 @@ export default function ApplicantsUpload({
                   <th scope="col" style={{ whiteSpace: "nowrap" }}>
                     Création compte
                   </th>
-                  {department.carnet_de_bord_deploiement_id && (
+                  {showCarnetColumn && (
                     <th scope="col" style={{ whiteSpace: "nowrap" }}>
-                      Créer carnet
+                      Création carnet
                     </th>
                   )}
                   {showReferentColumn && <th scope="col-3">Réferent</th>}
@@ -328,7 +329,7 @@ export default function ApplicantsUpload({
                   showReferentColumn={showReferentColumn}
                   applicants={applicants}
                   isDepartmentLevel={isDepartmentLevel}
-                  showCarnetColumn={department.carnet_de_bord_deploiement_id}
+                  showCarnetColumn={showCarnetColumn}
                 />
               </tbody>
             </table>
