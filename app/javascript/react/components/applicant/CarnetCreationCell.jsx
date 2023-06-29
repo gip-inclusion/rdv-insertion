@@ -13,7 +13,7 @@ export default function CarnetCreationCell({ applicant, isTriggered, setIsTrigge
     <td>
       {applicant.carnet_de_bord_carnet_id ? (
         <a
-          href={`${process.env.CARNET_DE_BORD_URL}/manager/carnet/${applicant.carnet_de_bord_carnet_id}`}
+          href={`${process.env.CARNET_DE_BORD_URL}/manager/carnets/${applicant.carnet_de_bord_carnet_id}`}
           target="_blank"
           rel="noreferrer"
         >
