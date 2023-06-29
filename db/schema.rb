@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_26_131432) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_28_210851) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -64,7 +64,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_26_131432) do
     t.datetime "last_webhook_update_received_at"
     t.string "nir"
     t.string "pole_emploi_id"
-    t.bigint "carnet_de_bord_carnet_id"
+    t.string "carnet_de_bord_carnet_id"
     t.index ["department_internal_id"], name: "index_applicants_on_department_internal_id"
     t.index ["email"], name: "index_applicants_on_email"
     t.index ["nir"], name: "index_applicants_on_nir"
@@ -116,7 +116,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_26_131432) do
     t.string "email"
     t.string "phone_number"
     t.boolean "display_in_stats", default: true
-    t.bigint "carnet_de_bord_deploiement_id"
+    t.string "carnet_de_bord_deploiement_id"
   end
 
   create_table "file_configurations", force: :cascade do |t|

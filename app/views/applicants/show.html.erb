@@ -15,6 +15,13 @@
       <%= link_to compute_edit_path(@applicant, @organisation, @department) do %>
         <button class="btn btn-blue">Modifier</button>
       <% end %>
+      <% if @department.carnet_de_bord_deploiement_id? %>
+        <% if @applicant.carnet_de_bord_carnet_id? %>
+          <%= render "carnet_de_bord_carnet_link", carnet_url: @applicant.carnet_de_bord_carnet_url %>
+        <% else %>
+          <%= render "create_carnet_button", applicant_id: @applicant.id, department_id: @department.id %>
+        <% end %>
+      <% end %>
     </div>
   </div>
 

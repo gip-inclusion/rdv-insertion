@@ -109,6 +109,7 @@ export default class Applicant {
     this.id = upToDateApplicant.id;
     this.archives = upToDateApplicant.archives;
     this.organisations = upToDateApplicant.organisations;
+    this.carnet_de_bord_carnet_id = upToDateApplicant.carnet_de_bord_carnet_id;
     // we assign a current organisation when we are in the context of a department
     this.currentOrganisation ||= upToDateApplicant.organisations.find(
       (o) =>

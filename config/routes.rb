@@ -70,6 +70,10 @@ Rails.application.routes.draw do
     resources :notifications, only: :create
   end
 
+  namespace :carnet_de_bord do
+    resources :carnets, only: [:create]
+  end
+
   resources :departments, only: [] do
     resources :department_organisations, only: [:index], as: :organisations, path: "/organisations"
     get :index_landing, as: "index_landing", to: "applicants#index_landing"
