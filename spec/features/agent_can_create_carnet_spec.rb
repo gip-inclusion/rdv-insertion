@@ -25,8 +25,6 @@ describe "Agents can create a carnet", js: true do
 
   before do
     setup_agent_session(agent)
-    ENV["CARNET_DE_BORD_URL"] = "https://demo.carnetdebord.inclusion.beta.gouv.fr"
-    ENV["CARNET_DE_BORD_API_SECRET"] = "secret_token"
     stub_request(:get, RetrieveGeolocalisation::API_ADRESSE_URL).with(
       headers: { "Content-Type" => "application/json" },
       query: { "q" => "127 RUE DE GRENELLE 75007 PARIS" }
