@@ -81,7 +81,7 @@ describe "Agents can create a carnet", js: true do
       expect(page).to have_css("i.fas.fa-link")
       expect(page).to have_selector(
         :css,
-        "a[href=\"https://demo.carnetdebord.inclusion.beta.gouv.fr/manager/carnet/12312ZD9A\"]"
+        "a[href=\"https://demo.carnetdebord.inclusion.beta.gouv.fr/manager/carnets/12312ZD9A\"]"
       )
 
       applicant = Applicant.last
@@ -124,7 +124,7 @@ describe "Agents can create a carnet", js: true do
 
       expect(page).to have_selector(
         :css,
-        "a[href=\"https://demo.carnetdebord.inclusion.beta.gouv.fr/manager/carnet/12312ZD9A\"]"
+        "a[href=\"https://demo.carnetdebord.inclusion.beta.gouv.fr/manager/carnets/12312ZD9A\"]"
       )
       expect(carnet_de_bord_stub).to have_been_requested
     end

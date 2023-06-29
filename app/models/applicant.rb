@@ -125,7 +125,7 @@ class Applicant < ApplicationRecord
   end
 
   def carnet_de_bord_carnet_url
-    "#{ENV['CARNET_DE_BORD_URL']}/manager/carnet/#{carnet_de_bord_carnet_id}"
+    "#{ENV['CARNET_DE_BORD_URL']}/manager/carnets/#{carnet_de_bord_carnet_id}"
   end
 
   private
