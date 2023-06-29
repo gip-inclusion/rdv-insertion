@@ -12,7 +12,13 @@ export default function CarnetCreationCell({ applicant, isTriggered, setIsTrigge
   return (
     <td>
       {applicant.carnet_de_bord_carnet_id ? (
-        <i className="fas fa-check" />
+        <a
+          href={`${process.env.CARNET_DE_BORD_URL}/pro/carnet/${applicant.carnet_de_bord_carnet_id}`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          <i className="fas fa-link" />
+        </a>
       ) : (
         <button
           type="submit"
