@@ -114,6 +114,8 @@ Rails.application.routes.draw do
   get "inclusion_connect/auth" => "inclusion_connect#auth"
   get "inclusion_connect/callback" => "inclusion_connect#callback"
 
+  post "/inbound_emails/brevo", controller: :inbound_emails, action: :brevo
+
   if ENV["SIDEKIQ_USERNAME"] && ENV["SIDEKIQ_PASSWORD"]
     Sidekiq::Web.use Rack::Auth::Basic do |username, password|
       check_auth(username, password, "SIDEKIQ")
