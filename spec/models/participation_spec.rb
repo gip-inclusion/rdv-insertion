@@ -31,10 +31,10 @@ describe Participation do
     subject { participation.save }
 
     let!(:participation_id) { 333 }
-    let!(:rdv) { create(:rdv, convocable: true) }
+    let!(:rdv) { create(:rdv) }
     let!(:applicant) { create(:applicant) }
     let!(:participation) do
-      build(:participation, id: participation_id, rdv: rdv, applicant: applicant, status: "unknown")
+      build(:participation, id: participation_id, convocable: true, rdv: rdv, applicant: applicant, status: "unknown")
     end
 
     context "after record creation" do
@@ -47,7 +47,7 @@ describe Participation do
       end
 
       context "when the rdv is not convocable" do
-        let!(:rdv) { create(:rdv, convocable: false) }
+        before { participation.update! convocable: false }
 
         it "does not enqueue a notify applicants job" do
           expect(NotifyParticipationJob).not_to receive(:perform_async)
@@ -86,6 +86,7 @@ describe Participation do
           :participation,
           rdv: rdv,
           applicant: applicant,
+          convocable: true,
           status: "unknown"
         )
       end
@@ -100,7 +101,7 @@ describe Participation do
       end
 
       context "when the rdv is not convocable" do
-        let!(:rdv) { create(:rdv, convocable: false) }
+        before { participation.update! convocable: false }
 
         it "does not enqueue a notify applicants job" do
           expect(NotifyParticipationJob).not_to receive(:perform_async)
@@ -114,6 +115,7 @@ describe Participation do
             :participation,
             rdv: rdv,
             applicant: applicant,
+            convocable: true,
             status: "excused"
           )
         end

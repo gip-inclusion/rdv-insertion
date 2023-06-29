@@ -10,11 +10,11 @@ module RdvSolidaritesWebhooks
       Rdv.with_advisory_lock("processing_rdv_#{rdv_solidarites_rdv.id}") do
         verify_organisation!
         verify_motif!
-        return if empty_applicants_on_new_rdv?
         return if unhandled_category?
+        return if applicants.empty? && !rdv_solidarites_rdv.collectif?
 
         # for a convocation, we have to verify the lieu is up to date in db
-        verify_lieu_sync! if rdv_convocable?
+        verify_lieu_sync! if convocable_participations?
         upsert_or_delete_rdv
         invalidate_related_invitations if created_event?
         send_outgoing_webhooks
@@ -40,10 +40,6 @@ module RdvSolidaritesWebhooks
       return if @data[:lieu].present? && rdv_solidarites_lieu == lieu
 
       raise WebhookProcessingJobError, "Lieu in webhook is not coherent. #{@data[:lieu]}"
-    end
-
-    def empty_applicants_on_new_rdv?
-      applicants.empty? && rdv.nil?
     end
 
     def matching_configuration
@@ -108,21 +104,34 @@ module RdvSolidaritesWebhooks
     def participations_attributes
       @participations_attributes ||=
         @applicants.map do |applicant|
-          participation = rdv_solidarites_rdv.participations.find { _1.user.id == applicant.rdv_solidarites_user_id }
-          {
-            id: existing_participation_for(applicant)&.id,
-            status: participation.status,
-            created_by: participation.created_by,
-            applicant_id: applicant.id,
-            rdv_solidarites_participation_id: participation.id,
-            rdv_context_id: rdv_context_for(applicant).id
-          }
+          compute_participation_attributes(applicant)
         end.compact + participations_attributes_destroyed
     end
 
-    def existing_participation_for(applicant)
-      rdv.nil? ? nil : Participation.find_by(applicant: applicant, rdv: rdv)
+    # rubocop:disable Metrics/AbcSize
+    def compute_participation_attributes(applicant)
+      rdv_solidarites_participation = rdv_solidarites_rdv.participations.find do |participation|
+        participation.user.id == applicant.rdv_solidarites_user_id
+      end
+      existing_participation = rdv&.participation_for(applicant)
+
+      attributes = {
+        id: existing_participation&.id,
+        status: rdv_solidarites_participation.status,
+        created_by: rdv_solidarites_participation.created_by,
+        applicant_id: applicant.id,
+        rdv_solidarites_participation_id: rdv_solidarites_participation.id,
+        rdv_context_id: rdv_context_for(applicant).id
+      }
+      # convocable attribute can be set only once
+      if existing_participation.nil?
+        attributes.merge!(
+          convocable: rdv_solidarites_participation.convocable? && matching_configuration.convene_applicant?
+        )
+      end
+      attributes
     end
+    # rubocop:enable Metrics/AbcSize
 
     def rdv_context_for(applicant)
       rdv_contexts.find { _1.applicant_id == applicant.id }
@@ -153,13 +162,8 @@ module RdvSolidaritesWebhooks
       @data[:organisation][:id]
     end
 
-    def delete_rdv?
-      # Destroy event or Emptied rdv
-      event == "destroyed" || (applicants.empty? && rdv.present?)
-    end
-
     def upsert_or_delete_rdv
-      if delete_rdv?
+      if event == "destroyed"
         DeleteRdvJob.perform_async(rdv_solidarites_rdv.id)
       else
         UpsertRecordJob.perform_async(
@@ -172,18 +176,12 @@ module RdvSolidaritesWebhooks
             last_webhook_update_received_at: @meta[:timestamp]
           }
           .merge(lieu.present? ? { lieu_id: lieu.id } : {})
-          .merge(set_convocable_attribute? ? { convocable: true } : {})
         )
       end
     end
 
-    def set_convocable_attribute?
-      # we only set the convocation during rdv creation
-      created_event? && rdv_convocable?
-    end
-
-    def rdv_convocable?
-      matching_configuration.convene_applicant? && rdv_solidarites_rdv.convocable?
+    def convocable_participations?
+      matching_configuration.convene_applicant? && rdv_solidarites_rdv.participations.any?(&:convocable?)
     end
 
     def invalidate_related_invitations
@@ -207,6 +205,8 @@ module RdvSolidaritesWebhooks
     end
 
     def send_outgoing_webhooks
+      return if ENV["STOP_SENDING_WEBHOOKS"] == "1"
+
       organisation.webhook_endpoints.each do |webhook_endpoint|
         SendRdvSolidaritesWebhookJob.perform_async(webhook_endpoint.id, outgoing_webhook_payload)
       end

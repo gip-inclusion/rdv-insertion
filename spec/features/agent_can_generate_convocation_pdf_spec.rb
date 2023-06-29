@@ -13,13 +13,13 @@ describe "Agents can generate convocation pdf", js: true do
   let!(:participation) do
     create(
       :participation,
-      rdv_context: rdv_context, rdv: rdv, applicant: applicant, status: "unknown"
+      rdv_context: rdv_context, rdv: rdv, applicant: applicant, status: "unknown", convocable: true
     )
   end
   let!(:rdv) do
     create(
       :rdv,
-      convocable: true, starts_at: Time.zone.parse("2022-06-22 08:30"), organisation: organisation, lieu: lieu,
+      starts_at: Time.zone.parse("2022-06-22 08:30"), organisation: organisation, lieu: lieu,
       motif: motif
     )
   end

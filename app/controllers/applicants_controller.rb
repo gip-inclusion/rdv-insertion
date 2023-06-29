@@ -9,18 +9,15 @@ class ApplicantsController < ApplicationController
 
   include BackToListConcern
   include Applicants::Filterable
-  include Applicants::Convocable
 
   before_action :set_organisation, :set_department, :set_organisations, :set_all_configurations,
                 :set_current_agent_roles, :set_applicants_scope,
                 :set_current_configuration, :set_current_motif_category,
                 :set_applicants, :set_rdv_contexts,
                 :filter_applicants, :order_applicants,
-                :set_convocation_motifs_by_applicant,
                 for: :index
   before_action :set_applicant, :set_organisation, :set_department, :set_all_configurations,
                 :set_applicant_organisations, :set_applicant_rdv_contexts, :set_applicant_archive,
-                :set_convocation_motifs_by_rdv_context,
                 :set_back_to_applicants_list_url,
                 for: :show
   before_action :set_organisation, :set_department, :set_organisations,
@@ -30,8 +27,8 @@ class ApplicantsController < ApplicationController
   before_action :find_or_initialize_applicant!, only: :create
   after_action :store_back_to_applicants_list_url, only: [:index]
 
-  def index_landing
-    redirect_to index_landing_path
+  def default_list
+    redirect_to default_list_path
   end
 
   def index
@@ -294,7 +291,7 @@ class ApplicantsController < ApplicationController
     organisation_applicant_path(@organisation, @applicant)
   end
 
-  def index_landing_path # rubocop:disable Metrics/AbcSize
+  def default_list_path # rubocop:disable Metrics/AbcSize
     structure = if department_level?
                   Department.includes(:motif_categories).find(params[:department_id])
                 else

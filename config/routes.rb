@@ -25,11 +25,11 @@ Rails.application.routes.draw do
   resources :organisations, only: [:index, :new, :show, :edit, :create, :update] do
     get :geolocated, on: :collection
     get :search, on: :collection
-    get :index_landing, as: "index_landing", to: "applicants#index_landing"
     resources :applicants, only: [:index, :create, :show, :update, :edit, :new] do
       collection do
         resources :uploads, only: [:new]
         get "uploads/category_selection", to: "uploads#category_selection"
+        get :default_list
       end
       resources :invitations, only: [:create]
     end
@@ -49,6 +49,8 @@ Rails.application.routes.draw do
   resources :invitations, only: [] do
     get :redirect, on: :collection
   end
+
+  resources :convocations, only: [:new]
 
   resources :rdv_contexts, only: [:create]
 
@@ -72,11 +74,11 @@ Rails.application.routes.draw do
 
   resources :departments, only: [] do
     resources :department_organisations, only: [:index], as: :organisations, path: "/organisations"
-    get :index_landing, as: "index_landing", to: "applicants#index_landing"
     resources :applicants, only: [:index, :new, :create, :show, :edit, :update] do
       collection do
         resources :uploads, only: [:new]
         get "uploads/category_selection", to: "uploads#category_selection"
+        get :default_list
       end
       resources :invitations, only: [:create]
       resources :applicants_organisations, only: [:index]

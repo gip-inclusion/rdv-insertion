@@ -25,15 +25,6 @@ export default class extends Controller {
     });
   }
 
-  disabledConvocationButton() {
-    tippy(this.element, {
-      content:
-        "Aucun motif avec la mention 'convocation' n'a été trouvé sur RDV-Solidarités pour cette catégorie.<br/>" +
-        "Contactez-nous à data.insertion@beta.gouv.fr pour en savoir plus sur la fonctionnalité de convocation.",
-      allowHTML: true,
-    });
-  }
-
   organisationDetails() {
     tippy(this.element, {
       content:
