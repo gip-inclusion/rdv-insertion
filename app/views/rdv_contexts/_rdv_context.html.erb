@@ -90,7 +90,10 @@
       </table>
       <% if should_convene_for?(rdv_context, configuration) %>
         <div class="m-2 p-2 text-center">
-          <%= render "rdv_contexts/convocation_button", applicant: @applicant, convocation_motif: @convocation_motifs_by_rdv_context[rdv_context] %>
+          <%= render "rdv_contexts/convocation_button",
+                     applicant_id: @applicant.id, motif_category_id: rdv_context.motif_category_id,
+                     organisation_ids: department_level? ? @applicant_organisations.ids : [@organisation.id]
+          %>
         </div>
       <% end %>
       <div class="m-2 p-2 text-center">

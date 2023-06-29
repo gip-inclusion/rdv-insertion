@@ -277,6 +277,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_28_210851) do
     t.datetime "updated_at", null: false
     t.bigint "rdv_context_id"
     t.string "created_by", null: false
+    t.boolean "convocable", default: false, null: false
     t.index ["applicant_id", "rdv_id"], name: "index_participations_on_applicant_id_and_rdv_id", unique: true
     t.index ["rdv_context_id"], name: "index_participations_on_rdv_context_id"
     t.index ["status"], name: "index_participations_on_status"
@@ -309,8 +310,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_28_210851) do
     t.text "context"
     t.datetime "last_webhook_update_received_at"
     t.bigint "motif_id"
-    t.boolean "convocable", default: false
     t.bigint "lieu_id"
+    t.integer "users_count", default: 0
+    t.integer "max_participants_count"
     t.index ["created_by"], name: "index_rdvs_on_created_by"
     t.index ["lieu_id"], name: "index_rdvs_on_lieu_id"
     t.index ["motif_id"], name: "index_rdvs_on_motif_id"

@@ -16,7 +16,7 @@ class UpsertRecord < BaseService
           .slice(*@klass::SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES)
           .merge(@additional_attributes)
       )
-      record.save! if record.changed?
+      record.save!
     end
   end
 

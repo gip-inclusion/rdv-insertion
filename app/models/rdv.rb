@@ -1,12 +1,13 @@
 class Rdv < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [
-    :address, :cancelled_at, :context, :created_by, :duration_in_min, :starts_at, :status, :uuid
+    :address, :cancelled_at, :context, :created_by, :duration_in_min, :starts_at, :status, :uuid,
+    :users_count, :max_participants_count
   ].freeze
 
   include Notificable
   include RdvParticipationStatus
 
-  after_commit :notify_applicants, if: :notify_applicants?, on: [:create, :update]
+  after_commit :notify_convocable_participations, on: :update
   after_commit :refresh_context_status, on: [:create, :update]
 
   belongs_to :organisation
@@ -20,19 +21,23 @@ class Rdv < ApplicationRecord
   # Needed to build participations in process_rdv_job
   accepts_nested_attributes_for :participations, allow_destroy: true
 
-  validates :participations, :starts_at, :duration_in_min, presence: true
+  validates :starts_at, :duration_in_min, presence: true
   validates :rdv_solidarites_rdv_id, uniqueness: true, presence: true
 
   validate :rdv_contexts_motif_categories_are_uniq
 
   enum created_by: { agent: 0, user: 1, file_attente: 2, prescripteur: 3 }, _prefix: :created_by
 
-  delegate :presential?, :by_phone?, to: :motif
-  delegate :department, to: :organisation
+  delegate :presential?, :by_phone?, :collectif?, to: :motif
+  delegate :department, :rdv_solidarites_organisation_id, to: :organisation
   delegate :name, to: :motif, prefix: true
   delegate :instruction_for_rdv, to: :motif
 
   scope :with_lieu, -> { where.not(lieu_id: nil) }
+  scope :future, -> { where("starts_at > ?", Time.zone.now) }
+  scope :collectif, -> { joins(:motif).merge(Motif.collectif) }
+  scope :with_remaining_seats, -> { where("users_count < max_participants_count OR max_participants_count IS NULL") }
+  scope :collectif_and_available_for_reservation, -> { collectif.with_remaining_seats.future.not_revoked }
 
   def rdv_solidarites_url
     "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/" \
@@ -57,24 +62,35 @@ class Rdv < ApplicationRecord
     organisation.phone_number
   end
 
+  def participation_for(applicant)
+    participations.find { |p| p.applicant == applicant }
+  end
+
+  def add_user_url(rdv_solidarites_user_id)
+    params = { add_user: [rdv_solidarites_user_id] }
+    "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{rdv_solidarites_organisation_id}/rdvs/" \
+      "#{rdv_solidarites_rdv_id}/edit?#{params.to_query}"
+  end
+
   private
 
   def refresh_context_status
     RefreshRdvContextStatusesJob.perform_async(rdv_context_ids)
   end
 
-  def notify_applicants
-    return unless event_to_notify
+  def notify_convocable_participations
+    return unless event_to_notify?
+    return if convocable_participations.empty?
 
-    NotifyParticipationsJob.perform_async(participation_ids, event_to_notify)
+    NotifyParticipationsJob.perform_async(convocable_participations.map(&:id), :updated)
   end
 
-  # event to notify in an after_commit context
-  def event_to_notify
-    # the :created notifications are handled by participations
-    return if id_previously_changed?
+  def event_to_notify?
+    address_previously_changed? || starts_at_previously_changed?
+  end
 
-    return :updated if address_previously_changed? || starts_at_previously_changed?
+  def convocable_participations
+    participations.select(&:convocable?)
   end
 
   def rdv_contexts_motif_categories_are_uniq
