@@ -84,7 +84,7 @@ class TransferEmailReplyJob < ApplicationJob
       payload.fetch(:Attachments, []).each do |attachment_payload|
         attachments[attachment_payload[:Name]] = {
           mime_type: attachment_payload[:ContentType],
-          content: "", # brevo webhook does not provide the content of attachments
+          content: "" # brevo webhook does not provide the content of attachments
         }
       end
     end
