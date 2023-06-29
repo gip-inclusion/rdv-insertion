@@ -3,7 +3,16 @@ describe CarnetDeBord::CreateCarnet, type: :service do
     described_class.call(applicant:, agent:, department:)
   end
 
-  let!(:applicant) { create(:applicant, address: "20 avenue ségur") }
+  let!(:applicant) do
+    create(
+      :applicant,
+      address: "20 avenue ségur", nir:, department_internal_id: "ISJDAIJ", first_name: "John",
+      last_name: "Doe", phone_number: "0620022002", email: "john@doe.com", affiliation_number: "AZDJZAID",
+      birth_date:
+    )
+  end
+  let!(:birth_date) { Time.zone.parse("20/11/2000").to_date }
+  let!(:nir) { generate_random_nir }
   let!(:department) { create(:department, carnet_de_bord_deploiement_id:, number: "93") }
   let!(:carnet_de_bord_deploiement_id) { "382A2" }
   let!(:agent) { create(:agent, email: "someone@gouv.fr") }
@@ -12,14 +21,14 @@ describe CarnetDeBord::CreateCarnet, type: :service do
       rdviUserEmail: "someone@gouv.fr",
       deploymentId: "382A2",
       notebook: {
-        nir: applicant.nir,
-        externalId: applicant.department_internal_id,
-        firstname: applicant.first_name,
-        lastname: applicant.last_name,
-        dateOfBirth: applicant.birth_date,
-        mobileNumber: applicant.phone_number,
-        email: applicant.email,
-        cafNumber: applicant.affiliation_number,
+        nir:,
+        externalId: "ISJDAIJ",
+        firstname: "John",
+        lastname: "Doe",
+        dateOfBirth: birth_date,
+        mobileNumber: "+33620022002",
+        email: "john@doe.com",
+        cafNumber: "AZDJZAID",
         address1: "20 avenue de Ségur",
         postalCode: "75007",
         city: "Paris"
@@ -87,20 +96,21 @@ describe CarnetDeBord::CreateCarnet, type: :service do
     end
 
     context "when the applicant does not have an adress" do
-      let!(:applicant) { create(:applicant, address: nil) }
+      before { applicant.update! address: nil }
+
       let!(:expected_payload) do
         {
           rdviUserEmail: "someone@gouv.fr",
           deploymentId: "382A2",
           notebook: {
-            nir: applicant.nir,
-            externalId: applicant.department_internal_id,
-            firstname: applicant.first_name,
-            lastname: applicant.last_name,
-            dateOfBirth: applicant.birth_date,
-            mobileNumber: applicant.phone_number,
-            email: applicant.email,
-            cafNumber: applicant.affiliation_number
+            nir:,
+            externalId: "ISJDAIJ",
+            firstname: "John",
+            lastname: "Doe",
+            dateOfBirth: birth_date,
+            mobileNumber: "+33620022002",
+            email: "john@doe.com",
+            cafNumber: "AZDJZAID"
           }
         }
       end
@@ -127,14 +137,14 @@ describe CarnetDeBord::CreateCarnet, type: :service do
           rdviUserEmail: "someone@gouv.fr",
           deploymentId: "382A2",
           notebook: {
-            nir: applicant.nir,
-            externalId: applicant.department_internal_id,
-            firstname: applicant.first_name,
-            lastname: applicant.last_name,
-            dateOfBirth: applicant.birth_date,
-            mobileNumber: applicant.phone_number,
-            email: applicant.email,
-            cafNumber: applicant.affiliation_number
+            nir:,
+            externalId: "ISJDAIJ",
+            firstname: "John",
+            lastname: "Doe",
+            dateOfBirth: birth_date,
+            mobileNumber: "+33620022002",
+            email: "john@doe.com",
+            cafNumber: "AZDJZAID"
           }
         }
       end

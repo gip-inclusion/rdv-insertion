@@ -60,7 +60,7 @@ class CarnetDeBord::CreateCarnet < BaseService
         mobileNumber: @applicant.phone_number,
         email: @applicant.email,
         cafNumber: @applicant.affiliation_number
-      }.merge(address_attributes)
+      }.merge(address_attributes).compact
     }
   end
 
