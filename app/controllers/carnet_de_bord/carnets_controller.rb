@@ -3,15 +3,16 @@ module CarnetDeBord
     before_action :set_applicant, :set_department
 
     def create
-      if (@success = create_carnet.success?)
+      @success, @errors = [create_carnet.success?, create_carnet.errors]
+      if @success
         respond_to do |format|
           format.json { render json: { success: true, applicant: @applicant } }
           format.turbo_stream { flash.now[:success] = "Le carnet a été créé avec succès" }
         end
       else
         respond_to do |format|
-          format.json { render json: { success: false, errors: create_carnet.errors }, status: :unprocessable_entity }
-          format.turbo_stream { flash.now[:error] = create_carnet.errors.join(", ") }
+          format.json { render json: { success: false, errors: @errors }, status: :unprocessable_entity }
+          format.turbo_stream { flash.now[:error] = @errors }
         end
       end
     end
