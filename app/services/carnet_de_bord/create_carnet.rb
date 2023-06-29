@@ -40,7 +40,7 @@ class CarnetDeBord::CreateCarnet < BaseService
   def create_carnet!
     return if create_carnet.success?
 
-    fail!("Erreur en créant le carnet: #{parsed_response_body['error']} - #{create_carnet.status}")
+    fail!("Erreur en créant le carnet: #{parsed_response_body['message']} - #{create_carnet.status}")
   end
 
   def create_carnet

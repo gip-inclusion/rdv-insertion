@@ -59,7 +59,7 @@ describe CarnetDeBord::CreateCarnet, type: :service do
       before do
         allow(CarnetDeBordClient).to receive(:create_carnet)
           .with(expected_payload)
-          .and_return(OpenStruct.new(success?: false, status: 401, body: { error: "Not authorized" }.to_json))
+          .and_return(OpenStruct.new(success?: false, status: 401, body: { message: "Not authorized" }.to_json))
       end
 
       it "is a failure" do
