@@ -14,9 +14,9 @@ module Applicants
         .active
         .where(id: search_in_all_applicants.ids + search_in_department_organisations.ids)
         .preload(
-          :rdvs, :referents, :archives,
-          invitations: :rdv_context,
-          rdv_contexts: [:participations, :motif_category],
+          :referents, :archives,
+          invitations: [rdv_context: :motif_category],
+          rdv_contexts: [:participations],
           organisations: [:motif_categories, :department, :configurations]
         ).distinct
     end

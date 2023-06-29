@@ -124,6 +124,10 @@ class Applicant < ApplicationRecord
     PhoneNumberHelper.format_phone_number(phone_number)
   end
 
+  def carnet_de_bord_carnet_url
+    "#{ENV['CARNET_DE_BORD_URL']}/pro/carnet/#{carnet_de_bord_carnet_id}"
+  end
+
   private
 
   def rdv_context_category_handled_already?(rdv_context_attributes)

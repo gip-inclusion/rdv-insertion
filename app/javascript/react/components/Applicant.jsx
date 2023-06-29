@@ -4,6 +4,7 @@ import CreationCell from "./applicant/CreationCell";
 import InvitationCells from "./applicant/InvitationCells";
 import ContactInfosExtraLine from "./applicant/ContactInfosExtraLine";
 import ReferentAssignationCell from "./applicant/ReferentAssignationCell";
+import CarnetCreationCell from "./applicant/CarnetCreationCell";
 
 export default function Applicant({
   applicant,
@@ -22,6 +23,7 @@ export default function Applicant({
     phoneNumberUpdate: false,
     rightsOpeningDateUpdate: false,
     allAttributesUpdate: false,
+    carnetCreation: false,
   });
 
   const computeInvitationsColspan = () => {
@@ -75,7 +77,13 @@ export default function Applicant({
 
         {/* ------------------------------- Carnet creation cell ----------------------------- */}
 
-        {showCarnetColumn && <td />}
+        {showCarnetColumn && (
+          <CarnetCreationCell
+            applicant={applicant}
+            isTriggered={isTriggered}
+            setIsTriggered={setIsTriggered}
+          />
+        )}
 
         {/* ------------------------------- Referent cell ----------------------------- */}
 

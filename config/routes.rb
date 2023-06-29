@@ -72,6 +72,10 @@ Rails.application.routes.draw do
     resources :notifications, only: :create
   end
 
+  namespace :carnet_de_bord do
+    resources :carnets, only: [:create]
+  end
+
   resources :departments, only: [] do
     resources :department_organisations, only: [:index], as: :organisations, path: "/organisations"
     resources :applicants, only: [:index, :new, :create, :show, :edit, :update] do
