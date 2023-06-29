@@ -4,7 +4,6 @@ class CarnetDeBordClient
 
   class << self
     def create_carnet(payload)
-      # OpenStruct.new(success?: true, body: { notebookId: SecureRandom.uuid }.to_json)
       Faraday.post(
         "#{CARNET_DE_BORD_URL}/api/notebooks",
         payload.to_json,
