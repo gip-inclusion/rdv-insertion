@@ -126,6 +126,23 @@ describe "Agents can convene applicant to rdv", js: true do
             expect(page.current_url).to eq(collectif_rdv.add_user_url(rdv_solidarites_user_id))
           end
         end
+
+        context "when there is another collectif available before" do
+          let!(:sooner_collectif_rdv) do
+            create(
+              :rdv, starts_at: 1.day.from_now, motif: collectif_motif, max_participants_count: nil, organisation:
+            )
+          end
+
+          it "redirects directly to the first available rdv" do
+            visit organisation_applicants_path(organisation, motif_category_id: motif_category.id)
+            expect(page).to have_link("📅 Convoquer")
+            new_window = window_opened_by { click_link("📅 Convoquer") }
+            within_window new_window do
+              expect(page.current_url).to eq(sooner_collectif_rdv.add_user_url(rdv_solidarites_user_id))
+            end
+          end
+        end
       end
 
       context "when the collectif rdv is past" do

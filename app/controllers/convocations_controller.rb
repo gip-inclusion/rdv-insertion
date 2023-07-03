@@ -39,7 +39,7 @@ class ConvocationsController < ApplicationController
       Rdv.collectif_and_available_for_reservation
          .where(motifs: { motif_category: @motif_category })
          .where(organisations: @organisations)
-         .first
+         .min_by(&:starts_at)
   end
 
   def collectif_convocation_link
