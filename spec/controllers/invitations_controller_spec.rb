@@ -289,8 +289,14 @@ describe InvitationsController do
       context "when the uuid cannot be found" do
         let!(:invite_params) { { uuid: "some_wrong_uuid" } }
 
-        it "raises an error" do
-          expect { subject }.to raise_error(ActiveRecord::RecordNotFound)
+        it "redirects back to the invitation page" do
+          subject
+          expect(response).to redirect_to :invitation_landing
+        end
+
+        it "displays an error message" do
+          subject
+          expect(flash[:error]).not_to be_nil
         end
       end
     end
