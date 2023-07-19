@@ -2,7 +2,7 @@ describe RdvSolidaritesApi::InviteUser, type: :service do
   subject do
     described_class.call(
       rdv_solidarites_session: rdv_solidarites_session,
-      rdv_solidarites_user_id: rdv_solidarites_user_id,
+      rdv_solidarites_user_id: rdv_solidarites_user_id
     )
   end
 
