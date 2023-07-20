@@ -9,6 +9,7 @@ export default function FileHandler({
   handleFile,
   fileSize,
   accept,
+  name,
   multiple = true,
   pendingMessage = DEFAULT_PENDING_MESSAGE,
   uploadMessage = DEFAULT_UPLOAD_MESSAGE,
@@ -36,7 +37,7 @@ export default function FileHandler({
       <div className="file-input-div">
         <input
           type="file"
-          name="file-upload"
+          name={name}
           className="text-white"
           accept={accept}
           onChange={handleUploads}

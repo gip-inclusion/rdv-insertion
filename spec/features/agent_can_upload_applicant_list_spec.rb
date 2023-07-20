@@ -47,7 +47,7 @@ describe "Agents can upload applicant list", js: true do
 
       ### Upload
 
-      attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+      attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
       expect(page).to have_content("Civilité")
       expect(page).to have_content("M")
@@ -121,7 +121,7 @@ describe "Agents can upload applicant list", js: true do
 
       visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-      attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+      attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
       expect(page).to have_css("i.fas.fa-link")
       expect(page).not_to have_button("Créer compte")
@@ -157,7 +157,7 @@ describe "Agents can upload applicant list", js: true do
 
             expect(page).to have_content("Choisissez un fichier de nouveaux demandeurs")
 
-            attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+            attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
             expect(page).to have_button("Créer compte")
             expect(page).not_to have_content("Invitation SMS")
@@ -204,7 +204,7 @@ describe "Agents can upload applicant list", js: true do
           it "displays the link to the applicant page" do
             visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-            attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+            attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
             expect(page).not_to have_content("Créer compte")
 
@@ -232,7 +232,7 @@ describe "Agents can upload applicant list", js: true do
           it "can add the applicant to the org" do
             visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-            attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+            attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
             expect(page).to have_content("Ajouter à cette organisation")
 
@@ -270,7 +270,7 @@ describe "Agents can upload applicant list", js: true do
           it "displays the link to the applicant page" do
             visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-            attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+            attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
             expect(page).not_to have_content("Créer compte")
             expect(page).to have_css("i.fas.fa-link")
@@ -295,7 +295,7 @@ describe "Agents can upload applicant list", js: true do
             it "can add the applicant to the org" do
               visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-              attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+              attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
               expect(page).to have_content("Ajouter à cette organisation")
 
@@ -341,7 +341,7 @@ describe "Agents can upload applicant list", js: true do
             it "fails to add the applicant to the org" do
               visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-              attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+              attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
               expect(page).to have_content("Ajouter à cette organisation")
 
@@ -377,7 +377,7 @@ describe "Agents can upload applicant list", js: true do
           it "does not match the applicant" do
             visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-            attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+            attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
             expect(page).to have_content("Créer compte")
           end
@@ -397,7 +397,7 @@ describe "Agents can upload applicant list", js: true do
           it "displays the link to the applicant page" do
             visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-            attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+            attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
             expect(page).not_to have_content("Créer compte")
             expect(page).to have_css("i.fas.fa-link")
@@ -420,7 +420,7 @@ describe "Agents can upload applicant list", js: true do
             it "can add the applicant to the org" do
               visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-              attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+              attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
               expect(page).to have_content("Ajouter à cette organisation")
 
@@ -457,7 +457,7 @@ describe "Agents can upload applicant list", js: true do
           it "does not match the applicant" do
             visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-            attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+            attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
             expect(page).to have_content("Créer compte")
           end
@@ -476,7 +476,7 @@ describe "Agents can upload applicant list", js: true do
           it "displays the link to the applicant page" do
             visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-            attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+            attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
             expect(page).not_to have_content("Créer compte")
             expect(page).to have_css("i.fas.fa-link")
@@ -498,7 +498,7 @@ describe "Agents can upload applicant list", js: true do
           it "can add the applicant to the org" do
             visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-            attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+            attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
             expect(page).to have_content("Ajouter à cette organisation")
 
@@ -535,7 +535,7 @@ describe "Agents can upload applicant list", js: true do
           it "displays the link to the applicant page" do
             visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-            attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+            attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
             expect(page).not_to have_content("Créer compte")
             expect(page).to have_css("i.fas.fa-link")
@@ -557,7 +557,7 @@ describe "Agents can upload applicant list", js: true do
           it "can add the applicant to the org" do
             visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-            attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+            attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
             expect(page).to have_content("Ajouter à cette organisation")
 
@@ -595,7 +595,7 @@ describe "Agents can upload applicant list", js: true do
 
       ### Upload
 
-      attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+      attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
       expect(page).to have_content("Civilité")
 
@@ -668,7 +668,7 @@ describe "Agents can upload applicant list", js: true do
 
       visit new_department_upload_path(department, configuration_id: configuration.id)
 
-      attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+      attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
       expect(page).to have_css("i.fas.fa-link")
       expect(page).not_to have_button("Créer compte")
@@ -704,7 +704,7 @@ describe "Agents can upload applicant list", js: true do
 
             expect(page).to have_content("Choisissez un fichier de nouveaux demandeurs")
 
-            attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+            attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
             expect(page).to have_button("Créer compte")
             expect(page).not_to have_content("Invitation SMS")
@@ -750,7 +750,7 @@ describe "Agents can upload applicant list", js: true do
           it "displays the link to the applicant page" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+            attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
             expect(page).not_to have_content("Créer compte")
             expect(page).to have_css("i.fas.fa-link")
@@ -772,7 +772,7 @@ describe "Agents can upload applicant list", js: true do
           it "can add the applicant to the org" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+            attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
             expect(page).to have_content("Ajouter à cette organisation")
 
@@ -810,7 +810,7 @@ describe "Agents can upload applicant list", js: true do
           it "displays the link to the applicant page" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+            attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
             expect(page).not_to have_content("Créer compte")
             expect(page).to have_css("i.fas.fa-link")
@@ -833,7 +833,7 @@ describe "Agents can upload applicant list", js: true do
             it "can add the applicant to the org" do
               visit new_department_upload_path(department, configuration_id: configuration.id)
 
-              attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+              attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
               expect(page).to have_content("Ajouter à cette organisation")
 
@@ -870,7 +870,7 @@ describe "Agents can upload applicant list", js: true do
           it "does not match the applicant" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+            attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
             expect(page).to have_content("Créer compte")
           end
@@ -890,7 +890,7 @@ describe "Agents can upload applicant list", js: true do
           it "displays the link to the applicant page" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+            attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
             expect(page).not_to have_content("Créer compte")
             expect(page).to have_css("i.fas.fa-link")
@@ -913,7 +913,7 @@ describe "Agents can upload applicant list", js: true do
             it "can add the applicant to the org" do
               visit new_department_upload_path(department, configuration_id: configuration.id)
 
-              attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+              attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
               expect(page).to have_content("Ajouter à cette organisation")
 
@@ -950,7 +950,7 @@ describe "Agents can upload applicant list", js: true do
           it "does not match the applicant" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+            attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
             expect(page).to have_content("Créer compte")
           end
@@ -969,7 +969,7 @@ describe "Agents can upload applicant list", js: true do
           it "displays the link to the applicant page" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+            attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
             expect(page).not_to have_content("Créer compte")
             expect(page).to have_css("i.fas.fa-link")
@@ -991,7 +991,7 @@ describe "Agents can upload applicant list", js: true do
           it "can add the applicant to the org" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+            attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
             expect(page).to have_content("Ajouter à cette organisation")
 
@@ -1026,7 +1026,7 @@ describe "Agents can upload applicant list", js: true do
           it "does not match the applicant" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+            attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
             expect(page).to have_content("Créer compte")
           end
@@ -1045,7 +1045,7 @@ describe "Agents can upload applicant list", js: true do
           it "displays the link to the applicant page" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+            attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
             expect(page).not_to have_content("Créer compte")
             expect(page).to have_css("i.fas.fa-link")
@@ -1067,7 +1067,7 @@ describe "Agents can upload applicant list", js: true do
           it "can add the applicant to the org" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+            attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
             expect(page).to have_content("Ajouter à cette organisation")
 
@@ -1102,7 +1102,7 @@ describe "Agents can upload applicant list", js: true do
           it "does not match the applicant" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+            attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
             expect(page).to have_content("Créer compte")
           end
