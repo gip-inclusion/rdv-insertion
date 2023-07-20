@@ -156,7 +156,6 @@ export default class Applicant {
     this.triggers.creation = true;
 
     if (!this.currentOrganisation) {
-      // eslint-disable-next-line no-await-in-loop
       this.currentOrganisation = await retrieveRelevantOrganisation(
         this.departmentNumber,
         this.linkedOrganisationSearchTerms,
@@ -169,7 +168,6 @@ export default class Applicant {
         return;
       }
     }
-    // eslint-disable-next-line no-await-in-loop
     await handleApplicantCreation(this, this.currentOrganisation.id);
 
     this.triggers.creation = false;
