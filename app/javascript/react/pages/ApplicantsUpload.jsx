@@ -7,6 +7,7 @@ import * as XLSX from "xlsx";
 import FileHandler from "../components/FileHandler";
 import ApplicantList from "../components/ApplicantList";
 import EnrichWithContactFile from "../components/EnrichWithContactFile";
+import ApplicantBatchActions from "../components/ApplicantBatchActions";
 
 import getHeaderNames from "../lib/getHeaderNames";
 import checkColumnNames from "../lib/checkColumnNames";
@@ -258,8 +259,9 @@ const ApplicantsUpload = observer(({
       )}
       {applicants.list.length > 0 && (
         <>
-          <div className="row my-1">
+          <div className="row my-1" style={{ height: 50 }}>
             <div className="d-flex justify-content-end align-items-center">
+              <ApplicantBatchActions isDepartmentLevel={isDepartmentLevel} applicants={applicants} />
               <i className="fas fa-user" />
               {showReferentColumn ? (
                 <Tippy content="Cacher colonne référent">
@@ -284,9 +286,11 @@ const ApplicantsUpload = observer(({
             <table className="table table-hover text-center align-middle table-striped table-bordered">
               <thead className="align-middle dark-blue">
                 <tr>
-                  <th scope="col">
+                  <th scope="col" className="text-center">
+                    Sélection
                     <input 
                       type="checkbox" 
+                      className="form-check-input"
                       checked={applicants.list.every(applicant => applicant.selected)} 
                       onChange={event => applicants.list.forEach(applicant => { applicant.selected = event.target.checked })}
                      />

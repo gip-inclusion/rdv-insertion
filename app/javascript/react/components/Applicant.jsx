@@ -24,7 +24,14 @@ function Applicant({
   return (
     <>
       <tr className={applicant.isArchivedInCurrentDepartment() ? "table-danger" : ""}>
-        <td><input type="checkbox" checked={applicant.selected} onChange={event => { applicant.selected = event.target.checked }} /></td>
+        <td>
+          <input
+            type="checkbox"
+            className="form-check-input"
+            checked={applicant.selected}
+            onChange={event => { applicant.selected = event.target.checked }}
+          />
+        </td>
         <td>{applicant.shortTitle}</td>
         <td>{applicant.firstName}</td>
         <td>{applicant.lastName}</td>

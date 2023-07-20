@@ -1,6 +1,9 @@
 import { makeAutoObservable } from "mobx"
 import formatPhoneNumber from "../../lib/formatPhoneNumber";
 import retrieveLastInvitationDate from "../../lib/retrieveLastInvitationDate";
+import handleApplicantCreation from "../lib/handleApplicantCreation";
+import retrieveRelevantOrganisation from "../../lib/retrieveRelevantOrganisation";
+import handleApplicantInvitation from "../lib/handleApplicantInvitation";
 import { getFrenchFormatDateString } from "../../lib/datesHelper";
 
 const ROLES = {
@@ -31,6 +34,7 @@ export default class Applicant {
     this._id = formattedAttributes.id;
     this._createdAt = formattedAttributes.createdAt;
     this._organisations = formattedAttributes.organisations || [];
+    this.phoneNumberNew = null;
     this.lastName = formattedAttributes.lastName;
     this.firstName = formattedAttributes.firstName;
     this.title = this.formatTitle(formattedAttributes.title);
@@ -122,6 +126,53 @@ export default class Applicant {
     role = ROLES[role] || role;
     if (!Object.values(ROLES).includes(role)) return null;
     return role;
+  }
+
+  async inviteBy(format, isDepartmentLevel) {
+    if (!this.createdAt) await this.createAccount()
+    if (format === "sms" && !this.phoneNumber) return false;
+    if (format === "email" && !this.email) return false;
+    if (format === "postal" && !this.fullAddress) return false;
+
+    this.triggers[`${format}Invitation`] = true;
+    const invitationParams = [
+      this.id,
+      this.department.id,
+      this.currentOrganisation.id,
+      isDepartmentLevel,
+      this.currentConfiguration.motif_category_id,
+      this.currentOrganisation.phone_number,
+    ];
+    const result = await handleApplicantInvitation(...invitationParams, format);
+    if (result.success) {
+      // dates are set as json to match the API format
+      this.updateLastInvitationDate(format, new Date().toJSON());
+    }
+    this.triggers[`${format}Invitation`] = false;
+    return true
+  } 
+
+  async createAccount() {
+    this.triggers.creation = true;
+
+    if (!this.currentOrganisation) {
+      // eslint-disable-next-line no-await-in-loop
+      this.currentOrganisation = await retrieveRelevantOrganisation(
+        this.departmentNumber,
+        this.linkedOrganisationSearchTerms,
+        this.fullAddress
+      );
+
+      // If there is still no organisation it means the assignation was cancelled by agent
+      if (!this.currentOrganisation) {
+        this.triggers.creation = false;
+        return;
+      }
+    }
+    // eslint-disable-next-line no-await-in-loop
+    await handleApplicantCreation(this, this.currentOrganisation.id);
+
+    this.triggers.creation = false;
   }
 
   updateWith(upToDateApplicant) {

@@ -2,7 +2,6 @@ import React from "react";
 import { observer } from "mobx-react-lite";
 import Tippy from "@tippyjs/react";
 
-import handleApplicantInvitation from "../../lib/handleApplicantInvitation";
 import { getFrenchFormatDateString } from "../../../lib/datesHelper";
 
 const CTA_BY_FORMAT = {
@@ -23,21 +22,7 @@ export default observer(({
   isDepartmentLevel,
 }) => {
   const handleInvitationClick = async () => {
-    applicant.triggers[`${format}Invitation`] = true;
-    const invitationParams = [
-      applicant.id,
-      applicant.department.id,
-      applicant.currentOrganisation.id,
-      isDepartmentLevel,
-      applicant.currentConfiguration.motif_category_id,
-      applicant.currentOrganisation.phone_number,
-    ];
-    const result = await handleApplicantInvitation(...invitationParams, format);
-    if (result.success) {
-      // dates are set as json to match the API format
-      applicant.updateLastInvitationDate(format, new Date().toJSON());
-    }
-    applicant.triggers[`${format}Invitation`] = false;
+    applicant.inviteBy(format, isDepartmentLevel);
   };
 
   return (

@@ -2,11 +2,7 @@ import React from "react";
 import { observer } from "mobx-react-lite";
 import Tippy from "@tippyjs/react";
 
-import Applicants from "../../models/Applicants";
-
-import handleApplicantCreation from "../../lib/handleApplicantCreation";
 import handleArchiveDelete from "../../lib/handleArchiveDelete";
-import retrieveRelevantOrganisation from "../../../lib/retrieveRelevantOrganisation";
 
 import { getFrenchFormatDateString } from "../../../lib/datesHelper";
 
@@ -23,35 +19,7 @@ export default observer(({
   };
 
   const handleCreationClick = async () => {
-    let elements = [applicant]
-
-    if (Applicants.selectedApplicants.length > 1 && applicant.selected && confirm("Cette action va être appliquée à tous les éléments sélectionnés. Êtes-vous sûr ?")) {
-      elements = Applicants.selectedApplicants
-    }
-
-      
-    for (const element of elements) {
-      element.triggers.creation = true;
-
-      if (!element.currentOrganisation) {
-        // eslint-disable-next-line no-await-in-loop
-        element.currentOrganisation = await retrieveRelevantOrganisation(
-          element.departmentNumber,
-          element.linkedOrganisationSearchTerms,
-          element.fullAddress
-        );
-
-        // If there is still no organisation it means the assignation was cancelled by agent
-        if (!element.currentOrganisation) {
-          element.triggers.creation = false;
-          return;
-        }
-      }
-      // eslint-disable-next-line no-await-in-loop
-      await handleApplicantCreation(element, element.currentOrganisation.id);
-
-      element.triggers.creation = false;
-    }
+    applicant.createAccount();
   };
 
   return applicant.isArchivedInCurrentDepartment() ? (
