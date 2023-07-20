@@ -23,7 +23,7 @@ export default function ContactInfosExtraLine({
 
     const result = await handleApplicantUpdate(
       applicant.currentOrganisation.id,
-      applicant.id,
+      applicant,
       attributes
     );
 
