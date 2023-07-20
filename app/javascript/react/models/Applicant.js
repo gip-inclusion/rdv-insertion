@@ -28,6 +28,9 @@ export default class Applicant {
     Object.keys(attributes).forEach((key) => {
       formattedAttributes[key] = attributes[key]?.toString()?.trim();
     });
+    this._id = formattedAttributes.id;
+    this._createdAt = formattedAttributes.createdAt;
+    this._organisations = formattedAttributes.organisations || [];
     this.lastName = formattedAttributes.lastName;
     this.firstName = formattedAttributes.firstName;
     this.title = this.formatTitle(formattedAttributes.title);
