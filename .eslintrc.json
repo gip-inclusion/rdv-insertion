@@ -22,7 +22,6 @@
     "no-nested-ternary": "off",
     "no-use-before-define": "off",
     "react/jsx-props-no-spreading": "off",
-    "no-restricted-globals": "off",
     "no-restricted-syntax": "off"
   }
 }
