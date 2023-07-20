@@ -1,16 +1,15 @@
 import React from "react";
+import { observer } from "mobx-react-lite";
 
 import handleApplicantUpdate from "../../lib/handleApplicantUpdate";
 import camelToSnakeCase from "../../../lib/stringHelper";
 
-export default function ContactInfosExtraLine({
+export default observer(({
   applicant,
   invitationsColspan,
-  isTriggered,
-  setIsTriggered,
-}) {
+}) => {
   const handleUpdateContactsDataClick = async (attribute = null) => {
-    setIsTriggered({ ...isTriggered, [`${attribute}Update`]: true });
+    applicant.triggers[`${attribute}Update`] = true;
 
     const attributes = {};
     if (attribute === "allAttributes") {
@@ -37,7 +36,7 @@ export default function ContactInfosExtraLine({
       }
     }
 
-    setIsTriggered({ ...isTriggered, [`${attribute}Update`]: false });
+    applicant.triggers[`${attribute}Update`] = false;
   };
 
   const colSpanForContactsUpdate =
@@ -65,7 +64,7 @@ export default function ContactInfosExtraLine({
                     className="btn btn-primary btn-blue btn-sm mt-2"
                     onClick={() => handleUpdateContactsDataClick(attributeName)}
                   >
-                    {isTriggered[`${attributeName}Update`] || isTriggered.allAttributesUpdate
+                    {applicant.triggers[`${attributeName}Update`] || applicant.triggers.allAttributesUpdate
                       ? "En cours..."
                       : "Mettre à jour"}
                   </button>
@@ -83,10 +82,10 @@ export default function ContactInfosExtraLine({
             className="btn btn-primary btn-blue"
             onClick={() => handleUpdateContactsDataClick("allAttributes")}
           >
-            {isTriggered.emailUpdate ||
-            isTriggered.phoneNumberUpdate ||
-            isTriggered.rightsOpeningDateUpdate ||
-            isTriggered.allAttributesUpdate
+            {applicant.triggers.emailUpdate ||
+            applicant.triggers.phoneNumberUpdate ||
+            applicant.triggers.rightsOpeningDateUpdate ||
+            applicant.triggers.allAttributesUpdate
               ? "En cours..."
               : "Tout mettre à jour"}
           </button>
@@ -95,4 +94,4 @@ export default function ContactInfosExtraLine({
       <td colSpan={invitationsColspan} />
     </tr>
   );
-}
+})

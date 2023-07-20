@@ -1,4 +1,5 @@
 import React from "react";
+import { observer } from "mobx-react-lite";
 import Tippy from "@tippyjs/react";
 
 import handleApplicantInvitation from "../../lib/handleApplicantInvitation";
@@ -16,15 +17,13 @@ const CTA_BY_FORMAT = {
   },
 };
 
-export default function InvitationCell({
+export default observer(({
   applicant,
   format,
-  isTriggered,
-  setIsTriggered,
   isDepartmentLevel,
-}) {
+}) => {
   const handleInvitationClick = async () => {
-    setIsTriggered({ ...isTriggered, [`${format}Invitation`]: true });
+    applicant.triggers[`${format}Invitation`] = true;
     const invitationParams = [
       applicant.id,
       applicant.department.id,
@@ -38,7 +37,7 @@ export default function InvitationCell({
       // dates are set as json to match the API format
       applicant.updateLastInvitationDate(format, new Date().toJSON());
     }
-    setIsTriggered({ ...isTriggered, [`${format}Invitation`]: false });
+    applicant.triggers[`${format}Invitation`] = false;
   };
 
   return (
@@ -59,7 +58,7 @@ export default function InvitationCell({
             <button
               type="submit"
               disabled={
-                isTriggered[`${format}Invitation`] ||
+                applicant.triggers[`${format}Invitation`] ||
                 !applicant.createdAt ||
                 !applicant.requiredAttributeToInviteBy(format) ||
                 !applicant.belongsToCurrentOrg()
@@ -67,7 +66,7 @@ export default function InvitationCell({
               className="btn btn-primary btn-blue"
               onClick={() => handleInvitationClick()}
             >
-              {isTriggered[`${format}Invitation`]
+              {applicant.triggers[`${format}Invitation`]
                 ? "Invitation..."
                 : applicant.hasParticipations()
                 ? CTA_BY_FORMAT[format].secondTime
@@ -78,4 +77,4 @@ export default function InvitationCell({
       </>
     )
   );
-}
+})

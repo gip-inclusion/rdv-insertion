@@ -1,5 +1,8 @@
 import React from "react";
+import { observer } from "mobx-react-lite";
 import Tippy from "@tippyjs/react";
+
+import Applicants from "../../models/Applicants";
 
 import handleApplicantCreation from "../../lib/handleApplicantCreation";
 import handleArchiveDelete from "../../lib/handleArchiveDelete";
@@ -7,46 +10,55 @@ import retrieveRelevantOrganisation from "../../../lib/retrieveRelevantOrganisat
 
 import { getFrenchFormatDateString } from "../../../lib/datesHelper";
 
-export default function CreationCell({
+export default observer(({
   applicant,
   isDepartmentLevel,
-  isTriggered,
-  setIsTriggered,
-}) {
+}) => {
   const handleFileReopen = async () => {
-    setIsTriggered({ ...isTriggered, unarchive: true });
+    applicant.triggers.unarchive = true;
 
     await handleArchiveDelete(applicant);
 
-    setIsTriggered({ ...isTriggered, unarchive: false });
+    applicant.triggers.unarchive = false;
   };
 
   const handleCreationClick = async () => {
-    setIsTriggered({ ...isTriggered, creation: true });
+    let elements = [applicant]
 
-    if (!applicant.currentOrganisation) {
-      applicant.currentOrganisation = await retrieveRelevantOrganisation(
-        applicant.departmentNumber,
-        applicant.linkedOrganisationSearchTerms,
-        applicant.fullAddress
-      );
-
-      // If there is still no organisation it means the assignation was cancelled by agent
-      if (!applicant.currentOrganisation) {
-        setIsTriggered({ ...isTriggered, creation: false });
-        return;
-      }
+    if (Applicants.selectedApplicants.length > 1 && applicant.selected && confirm("Cette action va être appliquée à tous les éléments sélectionnés. Êtes-vous sûr ?")) {
+      elements = Applicants.selectedApplicants
     }
-    await handleApplicantCreation(applicant, applicant.currentOrganisation.id);
 
-    setIsTriggered({ ...isTriggered, creation: false });
+      
+    for (const element of elements) {
+      element.triggers.creation = true;
+
+      if (!element.currentOrganisation) {
+        // eslint-disable-next-line no-await-in-loop
+        element.currentOrganisation = await retrieveRelevantOrganisation(
+          element.departmentNumber,
+          element.linkedOrganisationSearchTerms,
+          element.fullAddress
+        );
+
+        // If there is still no organisation it means the assignation was cancelled by agent
+        if (!element.currentOrganisation) {
+          element.triggers.creation = false;
+          return;
+        }
+      }
+      // eslint-disable-next-line no-await-in-loop
+      await handleApplicantCreation(element, element.currentOrganisation.id);
+
+      element.triggers.creation = false;
+    }
   };
 
   return applicant.isArchivedInCurrentDepartment() ? (
     <td>
       <button
         type="submit"
-        disabled={isTriggered.unarchive}
+        disabled={applicant.triggers.unarchive}
         className="btn btn-primary btn-blue"
         onClick={() => handleFileReopen()}
       >
@@ -69,11 +81,11 @@ export default function CreationCell({
         <td>
           <button
             type="submit"
-            disabled={isTriggered.creation}
+            disabled={applicant.triggers.creation}
             className="btn btn-primary btn-blue"
             onClick={() => handleCreationClick()}
           >
-            {isTriggered.creation ? "En cours..." : "Ajouter à cette organisation"}
+            {applicant.triggers.creation ? "En cours..." : "Ajouter à cette organisation"}
           </button>
         </td>
       </Tippy>
@@ -107,12 +119,12 @@ export default function CreationCell({
     <td>
       <button
         type="submit"
-        disabled={isTriggered.creation}
+        disabled={applicant.triggers.creation}
         className="btn btn-primary btn-blue"
         onClick={() => handleCreationClick()}
       >
-        {isTriggered.creation ? "Création..." : "Créer compte"}
+        {applicant.triggers.creation ? "Création..." : "Créer compte"}
       </button>
     </td>
   );
-}
+});

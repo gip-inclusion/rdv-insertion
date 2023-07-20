@@ -1,12 +1,12 @@
 import React from "react";
-
+import { observer } from "mobx-react-lite";
 import handleCarnetCreation from "../../lib/handleCarnetCreation";
 
-export default function CarnetCreationCell({ applicant, isTriggered, setIsTriggered }) {
+export default observer(({ applicant }) => {
   const handleClick = async () => {
-    setIsTriggered({ ...isTriggered, carnetCreation: true });
+    applicant.triggers.carnetCreation = true;
     await handleCarnetCreation(applicant);
-    setIsTriggered({ ...isTriggered, carnetCreation: false });
+    applicant.triggers.carnetCreation = false;
   };
 
   return (
@@ -22,13 +22,13 @@ export default function CarnetCreationCell({ applicant, isTriggered, setIsTrigge
       ) : (
         <button
           type="submit"
-          disabled={isTriggered.carnetCreation || !applicant.createdAt}
+          disabled={applicant.triggers.carnetCreation || !applicant.createdAt}
           className="btn btn-primary btn-blue"
           onClick={() => handleClick()}
         >
-          {isTriggered.carnetCreation ? "Création carnet..." : "Créer carnet"}
+          {applicant.triggers.carnetCreation ? "Création carnet..." : "Créer carnet"}
         </button>
       )}
     </td>
   );
-}
+})

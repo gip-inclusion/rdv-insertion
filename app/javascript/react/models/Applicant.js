@@ -1,3 +1,4 @@
+import { makeAutoObservable } from "mobx"
 import formatPhoneNumber from "../../lib/formatPhoneNumber";
 import retrieveLastInvitationDate from "../../lib/retrieveLastInvitationDate";
 import { getFrenchFormatDateString } from "../../lib/datesHelper";
@@ -57,6 +58,23 @@ export default class Applicant {
     this.currentOrganisation = organisation;
     this.currentConfiguration = currentConfiguration;
     this.columnNames = columnNames;
+    this.selected = false;
+
+    this.triggers = {
+      creation: false,
+      unarchive: false,
+      smsInvitation: false,
+      emailInvitation: false,
+      postalInvitation: false,
+      referentAssignation: false,
+      emailUpdate: false,
+      phoneNumberUpdate: false,
+      rightsOpeningDateUpdate: false,
+      allAttributesUpdate: false,
+      carnetCreation: false,
+    };
+
+    makeAutoObservable(this);
   }
 
   get uid() {
