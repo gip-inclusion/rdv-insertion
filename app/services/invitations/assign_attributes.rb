@@ -19,32 +19,20 @@ module Invitations
     end
 
     def rdv_solidarites_token
-      if last_sent_rdv_solidarites_token_valid?
-        last_sent_rdv_solidarites_token
-      else
-        retrieve_rdv_solidarites_token.invitation_token
-      end
+      same_last_and_rdvs_token? ? last_sent_rdv_solidarites_token : retrieve_rdv_solidarites_token.invitation_token
     end
 
-    # A token is no longer considered as valid if the invitation attached does not expire
-    def last_sent_rdv_solidarites_token_valid?
-      last_sent_rdv_solidarites_token.present? && invitation_user.present?
+    def same_last_and_rdvs_token?
+      last_sent_rdv_solidarites_token == retrieve_rdv_solidarites_token.invitation_token
     end
 
     def last_sent_rdv_solidarites_token
       @last_sent_rdv_solidarites_token ||= applicant.last_sent_invitation&.rdv_solidarites_token
     end
 
-    def invitation_user
-      @invitation_user ||= RdvSolidaritesApi::RetrieveInvitation.call(
-        rdv_solidarites_token: last_sent_rdv_solidarites_token,
-        rdv_solidarites_session: @rdv_solidarites_session
-      ).user
-    end
-
     def retrieve_rdv_solidarites_token
       @retrieve_rdv_solidarites_token ||= call_service!(
-        RdvSolidaritesApi::InviteUser,
+        RdvSolidaritesApi::CreateOrRetrieveInvitationToken,
         rdv_solidarites_user_id: applicant.rdv_solidarites_user_id,
         rdv_solidarites_session: @rdv_solidarites_session
       )
