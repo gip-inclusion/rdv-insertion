@@ -28,6 +28,7 @@ export default function EnrichWithContactFile({ handleContactsFile, fileSize }) 
             fileSize={fileSize}
             accept=".csv, text/plain"
             multiple={false}
+            name="contact-file-upload"
             uploadMessage={
               <span>
                 Choisissez un fichier de données de contact CNAF

@@ -47,6 +47,10 @@ export default function Applicant({
         {applicant.shouldDisplay("department_internal_id_column") && (
           <td>{applicant.departmentInternalId ?? " - "}</td>
         )}
+        {applicant.shouldDisplay("nir_column") && <td>{applicant.nir ?? " - "}</td>}
+        {applicant.shouldDisplay("pole_emploi_id_column") && (
+          <td>{applicant.poleEmploiId ?? " - "}</td>
+        )}
         {applicant.shouldDisplay("email_column") && (
           <td className={applicant.emailUpdated ? "table-success" : ""}>
             {applicant.email ?? " - "}
@@ -61,10 +65,6 @@ export default function Applicant({
           <td className={applicant.rightsOpeningDateUpdated ? "table-success" : ""}>
             {applicant.rightsOpeningDate ?? " - "}
           </td>
-        )}
-        {applicant.shouldDisplay("nir_column") && <td>{applicant.nir ?? " - "}</td>}
-        {applicant.shouldDisplay("pole_emploi_id_column") && (
-          <td>{applicant.poleEmploiId ?? " - "}</td>
         )}
         {/* ------------------------------- Account creation cell ----------------------------- */}
 
