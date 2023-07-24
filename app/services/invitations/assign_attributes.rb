@@ -19,15 +19,7 @@ module Invitations
     end
 
     def rdv_solidarites_token
-      same_last_and_rdvs_token? ? last_sent_rdv_solidarites_token : retrieve_rdv_solidarites_token.invitation_token
-    end
-
-    def same_last_and_rdvs_token?
-      last_sent_rdv_solidarites_token == retrieve_rdv_solidarites_token.invitation_token
-    end
-
-    def last_sent_rdv_solidarites_token
-      @last_sent_rdv_solidarites_token ||= applicant.last_sent_invitation&.rdv_solidarites_token
+      retrieve_rdv_solidarites_token.invitation_token
     end
 
     def retrieve_rdv_solidarites_token
