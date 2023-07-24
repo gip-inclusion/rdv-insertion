@@ -10,6 +10,13 @@ class Configuration < ApplicationRecord
   delegate :position, :name, to: :motif_category, prefix: true
   delegate :sheet_name, to: :file_configuration
   delegate :department, to: :organisation
+  delegate :template, to: :motif_category
+
+  def self.template_override_attributes
+    attribute_names.select do |attribute_name|
+      attribute_name.start_with?("template") && attribute_name.end_with?("override")
+    end
+  end
 
   private
 

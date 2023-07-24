@@ -87,7 +87,11 @@ class NotificationMailer < ApplicationMailer
   end
 
   def set_rdv_title
-    @rdv_title = rdv_by_phone? ? @notification.rdv_title_by_phone : @notification.rdv_title
+    @rdv_title = @notification.rdv_title
+  end
+
+  def set_rdv_title_by_phone
+    @rdv_title_by_phone = @notification.rdv_title_by_phone
   end
 
   def set_rdv_subject

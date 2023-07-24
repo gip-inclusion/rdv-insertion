@@ -45,6 +45,6 @@
   <% elsif local_assigns[:as] == :boolean %>
     <p><%= f.input attribute, as: :radio_buttons %></p>
   <% else %>
-    <p><%= f.input attribute %></p>
+    <p><%= f.input attribute, input_html: { value: local_assigns[:value] }  %></p>
   <% end %>
 </div>

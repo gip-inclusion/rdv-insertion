@@ -8,7 +8,7 @@ class ConfigurationsController < ApplicationController
 
   before_action :set_organisation, :authorize_organisation_configuration,
                 only: [:index, :new, :create, :show, :edit, :update, :destroy]
-  before_action :set_configuration, :set_file_configuration, only: [:show, :edit, :update, :destroy]
+  before_action :set_configuration, :set_file_configuration, :set_template, only: [:show, :edit, :update, :destroy]
   before_action :set_department, :set_file_configurations, only: [:new, :create, :edit, :update]
   before_action :set_back_to_applicants_list_url, :set_messages_configuration, :set_configurations, only: [:index]
 
@@ -75,6 +75,10 @@ class ConfigurationsController < ApplicationController
 
   def set_file_configurations
     @file_configurations = @department.file_configurations.distinct
+  end
+
+  def set_template
+    @template = @configuration.template
   end
 
   def set_department

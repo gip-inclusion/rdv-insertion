@@ -1,0 +1,62 @@
+module Previews
+  class BaseController < ApplicationController
+    private
+
+    def set_sms_contents
+      raise NotImplementedError
+    end
+
+    def set_mail_contents
+      raise NotImplementedError
+    end
+
+    def set_letter_contents
+      raise NotImplementedError
+    end
+
+    def set_and_format_contents
+      set_sms_contents
+      set_mail_contents
+      set_letter_contents
+
+      [@mail_contents, @letter_contents].each do |html_contents|
+        unescape_html_contents(html_contents)
+        downsize_html_headings(html_contents)
+        remove_images_from_html_contents(html_contents)
+      end
+
+      [@sms_contents, @mail_contents, @letter_contents].each do |contents|
+        highlight_overridable_texts(contents, overridable_texts)
+      end
+    end
+
+    def unescape_html_contents(html_contents_by_action)
+      html_contents_by_action.each do |action, content|
+        html_contents_by_action[action] = CGI.unescapeHTML(content)
+      end
+    end
+
+    def downsize_html_headings(html_contents_by_action)
+      html_contents_by_action.each do |action, content|
+        html_contents_by_action[action] = content.gsub("h1", "h6").gsub("h4", "p")
+      end
+    end
+
+    def remove_images_from_html_contents(html_contents_by_action)
+      html_contents_by_action.each do |action, content|
+        html_contents_by_action[action] = content.gsub(/<img.*\/>/, "")
+      end
+    end
+
+    def highlight_overridable_texts(contents_by_action, overridable_texts)
+      overridable_texts.each do |overridable_text|
+        contents_by_action.each do |action, content|
+          contents_by_action[action] = content.gsub(
+            overridable_text,
+            "<span class=\"text-success\">#{overridable_text}</span>"
+          )
+        end
+      end
+    end
+  end
+end

@@ -58,6 +58,10 @@ Rails.application.routes.draw do
     resource :closings, only: [:create, :destroy]
   end
 
+  resources :configurations, module: :configurations, only: [] do
+    resource :messages_content, only: [:edit, :show, :update]
+  end
+
   namespace :applicants do
     resources :searches, only: :create
   end
@@ -70,6 +74,11 @@ Rails.application.routes.draw do
 
   resources :participations, only: [] do
     resources :notifications, only: :create
+  end
+
+  namespace :previews do
+    resources :invitations, only: [:index]
+    resources :notifications, only: [:index]
   end
 
   namespace :carnet_de_bord do

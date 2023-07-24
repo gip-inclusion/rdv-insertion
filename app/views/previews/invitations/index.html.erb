@@ -1,0 +1,37 @@
+<%= render "common/remote_modal", title: "Contenus des messages invitations", size: :large do %>
+  <div class="mb-4">
+    <h5 class="text-center">SMS <i class="fas fa-sms"></i></h5>
+    <div class="d-flex justify-content-center">
+      <div class="border bg-light bg-gradient col-5 p-2 m-2">
+        <%= simple_format(@sms_contents[:first_invitation]) %>
+      </div>
+      <div class="border bg-light bg-gradient col-5 p-2 m-2">
+        <h6>**Rappel**</h6>
+        <%= simple_format(@sms_contents[:invitation_reminder]) %>
+      </div>
+    </div>
+  </div>
+
+  <div class="mb-4">
+    <h5 class="text-center">Email <i class="fas fa-inbox"></i></h5>
+    <div class="d-flex justify-content-center">
+      <div class="border bg-light bg-gradient col-5 p-2 m-2">
+        <%= sanitize(@mail_contents[:first_invitation]) %>
+      </div>
+      <div class="border bg-light bg-gradient col-5 p-2 m-2">
+        <h6>**Rappel**</h6>
+        <%= sanitize(@mail_contents[:invitation_reminder]) %>
+      </div>
+    </div>
+  </div>
+
+  <div class="mb-4">
+    <h5 class="text-center">Courrier <i class="fas fa-envelope"></i></h5>
+    <div class="d-flex justify-content-center">
+      <div class="border bg-light bg-gradient p-2 m-2">
+        <%= sanitize(@letter_contents[:first_invitation]) %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
