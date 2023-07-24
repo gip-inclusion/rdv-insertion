@@ -66,6 +66,7 @@ export default class Applicant {
     this.currentConfiguration = currentConfiguration;
     this.columnNames = columnNames;
     this.selected = false;
+    this.archives = [];
 
     this.resetErrors();
 
