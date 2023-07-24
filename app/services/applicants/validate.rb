@@ -5,6 +5,7 @@ module Applicants
     end
 
     def call
+      validate_identifier_is_present
       validate_uid_uniqueness_inside_department if @applicant.affiliation_number? && @applicant.role?
       validate_department_internal_id_uniqueness if @applicant.department_internal_id?
       validate_email_and_first_name_uniquess if @applicant.email?
@@ -39,6 +40,14 @@ module Applicants
 
       result.errors << "Un allocataire avec le même numéro de téléphone et même prénom est déjà enregistré: " \
                        "#{applicants_with_same_phone_number_and_first_name.pluck(:id)}"
+    end
+
+    def validate_identifier_is_present
+      return if @applicant.nir? || @applicant.department_internal_id? || @applicant.email? || @applicant.phone_number?
+      return if @applicant.affiliation_number? && @applicant.role?
+
+      result.errors << "Il doit y avoir au moins un attribut permettant d'identifier la personne " \
+                       "(NIR, email, numéro de tel, ID interne, numéro d'allocataire/rôle)"
     end
 
     def applicants_from_same_departments

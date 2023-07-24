@@ -45,7 +45,7 @@ class Applicant < ApplicationRecord
 
   validates :last_name, :first_name, :title, presence: true
   validates :email, allow_blank: true, format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/ }
-  validate :birth_date_validity, :identifier_must_be_present
+  validate :birth_date_validity
   validates :rdv_solidarites_user_id, :nir, :pole_emploi_id,
             uniqueness: true, allow_nil: true, unless: :skip_uniqueness_validations
 
@@ -150,17 +150,6 @@ class Applicant < ApplicationRecord
     return unless birth_date.present? && (birth_date > Time.zone.today || birth_date < 130.years.ago)
 
     errors.add(:birth_date, "n'est pas valide")
-  end
-
-  def identifier_must_be_present
-    return if deleted?
-    return if [nir, uid, department_internal_id, email, phone_number].any?(&:present?)
-
-    errors.add(
-      :base,
-      "Il doit y avoir au moins un attribut permettant d'identifier la personne " \
-      "(NIR, email, numéro de tel, ID interne, numéro d'allocataire/rôle)"
-    )
   end
 end
 # rubocop:enable Metrics/ClassLength
