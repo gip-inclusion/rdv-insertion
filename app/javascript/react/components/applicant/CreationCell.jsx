@@ -85,14 +85,26 @@ export default observer(({
     )
   ) : (
     <td>
-      <button
-        type="submit"
-        disabled={applicant.triggers.creation}
-        className="btn btn-primary btn-blue"
-        onClick={() => handleCreationClick()}
-      >
-        {applicant.triggers.creation ? "Création..." : "Créer compte"}
-      </button>
+      {
+        !applicant.isValid ? (
+          <button
+            type="submit"
+            className="btn btn-danger"
+            onClick={() => handleCreationClick()}
+          >
+            Résoudre les erreurs
+          </button>
+        ) : (
+          <button
+            type="submit"
+            disabled={applicant.triggers.creation}
+            className="btn btn-primary btn-blue"
+            onClick={() => handleCreationClick()}
+          >
+            {applicant.triggers.creation ? "Création..." : "Créer compte"}
+          </button>
+        )
+      }
     </td>
   );
 });

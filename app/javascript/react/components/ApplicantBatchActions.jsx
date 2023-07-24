@@ -30,7 +30,7 @@ export default observer(({
     for (const applicant of applicants.selectedApplicants) {
       // Using await here to avoid sending too many requests at the same time
       // eslint-disable-next-line no-await-in-loop
-      await applicant.createAccount();
+      await applicant.createAccount({ raiseError: false });
     }
   }
 

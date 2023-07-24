@@ -5,19 +5,22 @@ import searchOrganisations from "../react/actions/searchOrganisations";
 const retrieveRelevantOrganisation = async (
   departmentNumber,
   organisationSearchTerms,
-  applicantFullAddress
+  applicantFullAddress,
+  options = { raiseError: true }
 ) => {
   if (organisationSearchTerms) {
-    return retrieveThroughSearchTerms(departmentNumber, organisationSearchTerms);
+    return retrieveThroughSearchTerms(departmentNumber, organisationSearchTerms, options);
   }
 
-  return retrieveThroughGeolocalisation(departmentNumber, applicantFullAddress);
+  return retrieveThroughGeolocalisation(departmentNumber, applicantFullAddress, options);
 };
 
-const retrieveThroughSearchTerms = async (departmentNumber, organisationSearchTerms) => {
+const retrieveThroughSearchTerms = async (departmentNumber, organisationSearchTerms, options = { raiseError: true }) => {
   const result = await searchOrganisations(departmentNumber, organisationSearchTerms);
   if (result.success && result.matching_organisations.length === 1) {
     return result.matching_organisations[0];
+  } if (options.raiseError === false) {
+    return null;
   }
 
   let modalTitle;
@@ -38,11 +41,13 @@ const retrieveThroughSearchTerms = async (departmentNumber, organisationSearchTe
   );
 };
 
-const retrieveThroughGeolocalisation = async (departmentNumber, applicantFullAddress) => {
+const retrieveThroughGeolocalisation = async (departmentNumber, applicantFullAddress, options = { raiseError: true }) => {
   const result = await retrieveGeolocatedOrganisations(departmentNumber, applicantFullAddress);
 
   if (result.success && result.geolocated_organisations.length === 1) {
     return result.geolocated_organisations[0];
+  } if (options.raiseError === false) {
+    return null;
   }
 
   let modalTitle;

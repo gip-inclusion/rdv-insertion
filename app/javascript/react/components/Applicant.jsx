@@ -23,7 +23,7 @@ function Applicant({
 
   return (
     <>
-      <tr className={applicant.isArchivedInCurrentDepartment() ? "table-danger" : ""}>
+      <tr className={applicant.isArchivedInCurrentDepartment() || !applicant.isValid ? "table-danger" : ""}>
         <td>
           <input
             type="checkbox"

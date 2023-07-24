@@ -67,6 +67,8 @@ export default class Applicant {
     this.columnNames = columnNames;
     this.selected = false;
 
+    this.resetErrors();
+
     this.triggers = {
       creation: false,
       unarchive: false,
@@ -152,28 +154,46 @@ export default class Applicant {
     return true
   } 
 
-  async createAccount() {
+  async createAccount(options = { raiseError: true }) {
     this.triggers.creation = true;
+    this.resetErrors();
 
     if (!this.currentOrganisation) {
       this.currentOrganisation = await retrieveRelevantOrganisation(
         this.departmentNumber,
         this.linkedOrganisationSearchTerms,
-        this.fullAddress
+        this.fullAddress,
+        { raiseError: options.raiseError }
       );
 
       // If there is still no organisation it means the assignation was cancelled by agent
       if (!this.currentOrganisation) {
         this.triggers.creation = false;
+        if (!options.raiseError) this.errors.push("Vous devez associer une organisation à cet utilisateur")
         return;
       }
     }
-    await handleApplicantCreation(this, this.currentOrganisation.id);
+    const { errors, success } = await handleApplicantCreation(this, this.currentOrganisation.id, {
+      raiseError: options.raiseError,
+    });
+
+    if (!success) {
+      this.errors = errors;
+    }
 
     this.triggers.creation = false;
   }
 
+  resetErrors() {
+    this.errors = []
+  }
+
+  get isValid() {
+    return !this.errors || this.errors.length === 0
+  }
+
   updateWith(upToDateApplicant) {
+    this.resetErrors();
     this.createdAt = upToDateApplicant.created_at;
     this.invitedAt = upToDateApplicant.invited_at;
     this.id = upToDateApplicant.id;
