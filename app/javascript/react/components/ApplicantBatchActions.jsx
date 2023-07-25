@@ -18,8 +18,9 @@ export default observer(({
 
   const inviteBy = async (format) => {
     toggle()
+    // We need a synchronous loop with await here to avoid sending too many requests at the same time
+    // eslint-disable-next-line no-restricted-syntax
     for (const applicant of applicants.selectedApplicants) {
-      // Using await here to avoid sending too many requests at the same time
       // eslint-disable-next-line no-await-in-loop
       await applicant.inviteBy(format, isDepartmentLevel);
     }
@@ -27,8 +28,9 @@ export default observer(({
 
   const createAccounts = async () => {
     toggle()
+    // We need a synchronous loop here to avoid sending too many requests at the same time
+    // eslint-disable-next-line no-restricted-syntax
     for (const applicant of applicants.selectedApplicants) {
-      // Using await here to avoid sending too many requests at the same time
       // eslint-disable-next-line no-await-in-loop
       await applicant.createAccount({ raiseError: false });
     }
