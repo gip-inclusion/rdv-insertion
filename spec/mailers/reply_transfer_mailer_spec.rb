@@ -123,7 +123,7 @@ RSpec.describe ReplyTransferMailer do
       expect(mail.body.encoded).to match("Monsieur Bénédicte FICIAIRE")
       expect(mail.body.encoded).to match("bene_ficiaire@gmail.com")
       expect(mail.body.encoded).to match("33782605941")
-      expect(mail.body.encoded).to match("Departement n°26 - organisation@departement.fr")
+      expect(mail.body.encoded).to match("#{organisation.name} - organisation@departement.fr")
       expect(mail.body.encoded).to match(
         "href=\"#{ENV['HOST']}/organisations/#{organisation.id}/applicants/#{applicant.id}\""
       )
