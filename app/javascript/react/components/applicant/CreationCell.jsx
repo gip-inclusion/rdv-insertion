@@ -103,12 +103,6 @@ export default function CreationCell({
         </a>
       </td>
     )
-  ) : applicant.isDuplicate ? (
-    <td>
-      <button type="submit" disabled className="btn btn-primary btn-blue">
-        Création impossible
-      </button>
-    </td>
   ) : (
     <td>
       <button

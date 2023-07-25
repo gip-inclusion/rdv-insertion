@@ -21,7 +21,11 @@ export default function ContactInfosExtraLine({
       attributes[`${camelToSnakeCase(attribute)}`] = applicant[`${attribute}New`];
     }
 
-    const result = await handleApplicantUpdate(applicant, attributes);
+    const result = await handleApplicantUpdate(
+      applicant.currentOrganisation.id,
+      applicant,
+      attributes
+    );
 
     if (result.success) {
       if (attribute === "allAttributes") {

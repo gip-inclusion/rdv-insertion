@@ -14,7 +14,7 @@ class OrganisationsController < ApplicationController
     @organisations_by_department = @organisations.sort_by(&:department_number).group_by(&:department)
     return unless @organisations.to_a.length == 1
 
-    redirect_to organisation_index_landing_path(@organisations.first)
+    redirect_to default_list_organisation_applicants_path(@organisations.first)
   end
 
   def show; end

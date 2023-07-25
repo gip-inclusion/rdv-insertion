@@ -89,6 +89,11 @@ u {
 
   div {
     display: inline-block;
+
+    img {
+      max-width: 300px;
+    }
+
     &:last-child {
       margin-right: 0px !important;
     }

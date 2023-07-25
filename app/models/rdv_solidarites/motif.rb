@@ -14,6 +14,10 @@ module RdvSolidarites
       name.downcase.include?("convocation")
     end
 
+    def collectif?
+      collectif == true
+    end
+
     def name_with_location_type
       "#{name}-#{location_type}"
     end

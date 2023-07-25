@@ -1,8 +1,8 @@
 import Swal from "sweetalert2";
 import updateApplicant from "../actions/updateApplicant";
 
-const handleApplicantUpdate = async (applicant, attributes) => {
-  const result = await updateApplicant(applicant.currentOrganisation.id, applicant.id, attributes);
+const handleApplicantUpdate = async (organisationId, applicant, attributes) => {
+  const result = await updateApplicant(organisationId, applicant.id, attributes);
   if (result.success) {
     applicant.updateWith(result.applicant);
   } else {

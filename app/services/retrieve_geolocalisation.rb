@@ -32,13 +32,18 @@ class RetrieveGeolocalisation < BaseService
     JSON.parse(geo_api_response.body)
   end
 
+  # rubocop:disable Metrics/AbcSize
   def retrieve_geolocalisation!
     fail!("les coordonnées n'ont pas pu être retrouvées") if selected_feature.nil?
 
     result.longitude, result.latitude = coordinates
     result.city_code = city_code
     result.street_ban_id = street_ban_id
+    result.name = name
+    result.postcode = postcode
+    result.city = city
   end
+  # rubocop:enable Metrics/AbcSize
 
   def city_code
     selected_feature["properties"]["citycode"]
@@ -46,6 +51,18 @@ class RetrieveGeolocalisation < BaseService
 
   def coordinates
     selected_feature["geometry"]["coordinates"]
+  end
+
+  def name
+    selected_feature["properties"]["name"]
+  end
+
+  def postcode
+    selected_feature["properties"]["postcode"]
+  end
+
+  def city
+    selected_feature["properties"]["city"]
   end
 
   def street_ban_id

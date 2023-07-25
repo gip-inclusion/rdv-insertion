@@ -111,6 +111,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
     build(:rdv_context, motif_category: motif_category, applicant: applicant2)
   end
 
+  # rubocop:disable RSpec/ExampleLength
   describe "#perform" do
     before do
       allow(RdvContext).to receive(:find_or_create_by!)
@@ -155,6 +156,33 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
         end
         subject
       end
+
+      context "when it is a collectif rdv" do
+        let!(:motif_attributes) do
+          {
+            id: 53,
+            location_type: "public_office",
+            motif_category: { short_name: "rsa_orientation" },
+            name: "RSA orientation", collectif: true
+          }
+        end
+
+        it "enqueues a job to upsert the rdv" do
+          expect(UpsertRecordJob).to receive(:perform_async)
+            .with(
+              "Rdv",
+              data,
+              {
+                participations_attributes: [],
+                organisation_id: organisation.id,
+                motif_id: motif.id,
+                lieu_id: lieu.id,
+                last_webhook_update_received_at: timestamp
+              }
+            )
+          subject
+        end
+      end
     end
 
     describe "upserting the rdv" do
@@ -172,7 +200,8 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
                     created_by: "user",
                     applicant_id: 3,
                     rdv_solidarites_participation_id: 998,
-                    rdv_context_id: rdv_context.id
+                    rdv_context_id: rdv_context.id,
+                    convocable: false
                   },
                   {
                     id: nil,
@@ -180,7 +209,8 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
                     created_by: "user",
                     applicant_id: 4,
                     rdv_solidarites_participation_id: 999,
-                    rdv_context_id: rdv_context2.id
+                    rdv_context_id: rdv_context2.id,
+                    convocable: false
                   }
                 ],
                 organisation_id: organisation.id,
@@ -268,73 +298,6 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
       end
     end
 
-    context "for a convocation" do
-      let!(:motif_attributes) do
-        {
-          id: 53,
-          location_type: "public_office",
-          motif_category: { short_name: "rsa_orientation" },
-          name: "RSA orientation: Convocation"
-        }
-      end
-      let!(:configuration) do
-        create(:configuration, organisation: organisation, convene_applicant: true, motif_category: motif_category)
-      end
-
-      it "sets the convocable attribute when upserting the rdv" do
-        expect(UpsertRecordJob).to receive(:perform_async).with(
-          "Rdv",
-          data,
-          {
-            participations_attributes: [
-              {
-                id: nil,
-                status: "unknown",
-                created_by: "user",
-                applicant_id: 3,
-                rdv_solidarites_participation_id: 998,
-                rdv_context_id: rdv_context.id
-              },
-              {
-                id: nil,
-                status: "unknown",
-                created_by: "user",
-                applicant_id: 4,
-                rdv_solidarites_participation_id: 999,
-                rdv_context_id: rdv_context2.id
-              }
-            ],
-            organisation_id: organisation.id,
-            motif_id: motif.id,
-            lieu_id: lieu.id,
-            convocable: true,
-            last_webhook_update_received_at: timestamp
-          }
-        )
-        subject
-      end
-
-      context "when the lieu in the webhook is not sync with the one in db" do
-        context "when no lieu attrributes is in the webhook" do
-          let!(:lieu_attributes) { nil }
-
-          it "raises an error" do
-            expect { subject }.to raise_error(WebhookProcessingJobError, "Lieu in webhook is not coherent. ")
-          end
-        end
-
-        context "when the attributes in the webhooks do not match the ones in db" do
-          let!(:lieu_attributes) { { id: rdv_solidarites_lieu_id, name: "DITP", address: "7 avenue de Ségur" } }
-
-          it "raises an error" do
-            expect { subject }.to raise_error(
-              WebhookProcessingJobError, "Lieu in webhook is not coherent. #{lieu_attributes}"
-            )
-          end
-        end
-      end
-    end
-
     context "with an invalid category" do
       let!(:motif_attributes) { { id: 53, location_type: "public_office", category: nil } }
 
@@ -411,5 +374,226 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
         subject
       end
     end
+
+    describe "#convocations" do
+      context "when the motif mentions 'convocation'" do
+        let!(:motif_attributes) do
+          {
+            id: 53,
+            location_type: "public_office",
+            motif_category: { short_name: "rsa_orientation" },
+            name: "RSA orientation: Convocation"
+          }
+        end
+        let!(:configuration) do
+          create(:configuration, organisation: organisation, convene_applicant: true, motif_category: motif_category)
+        end
+
+        it "sets the convocable attribute when upserting the rdv" do
+          expect(UpsertRecordJob).to receive(:perform_async).with(
+            "Rdv",
+            data,
+            {
+              participations_attributes: [
+                {
+                  id: nil,
+                  status: "unknown",
+                  created_by: "user",
+                  applicant_id: 3,
+                  rdv_solidarites_participation_id: 998,
+                  rdv_context_id: rdv_context.id,
+                  convocable: true
+                },
+                {
+                  id: nil,
+                  status: "unknown",
+                  created_by: "user",
+                  applicant_id: 4,
+                  rdv_solidarites_participation_id: 999,
+                  rdv_context_id: rdv_context2.id,
+                  convocable: true
+                }
+              ],
+              organisation_id: organisation.id,
+              motif_id: motif.id,
+              lieu_id: lieu.id,
+              last_webhook_update_received_at: timestamp
+            }
+          )
+          subject
+        end
+
+        context "when the configuration does not handle convocations" do
+          before { configuration.update! convene_applicant: false }
+
+          it "sets the convocable attribute when upserting the rdv" do
+            expect(UpsertRecordJob).to receive(:perform_async).with(
+              "Rdv",
+              data,
+              {
+                participations_attributes: [
+                  {
+                    id: nil,
+                    status: "unknown",
+                    created_by: "user",
+                    applicant_id: 3,
+                    rdv_solidarites_participation_id: 998,
+                    rdv_context_id: rdv_context.id,
+                    convocable: false
+                  },
+                  {
+                    id: nil,
+                    status: "unknown",
+                    created_by: "user",
+                    applicant_id: 4,
+                    rdv_solidarites_participation_id: 999,
+                    rdv_context_id: rdv_context2.id,
+                    convocable: false
+                  }
+                ],
+                organisation_id: organisation.id,
+                motif_id: motif.id,
+                lieu_id: lieu.id,
+                last_webhook_update_received_at: timestamp
+              }
+            )
+            subject
+          end
+        end
+
+        context "when the lieu in the webhook is not sync with the one in db" do
+          context "when no lieu attrributes is in the webhook" do
+            let!(:lieu_attributes) { nil }
+
+            it "raises an error" do
+              expect { subject }.to raise_error(WebhookProcessingJobError, "Lieu in webhook is not coherent. ")
+            end
+          end
+
+          context "when the attributes in the webhooks do not match the ones in db" do
+            let!(:lieu_attributes) { { id: rdv_solidarites_lieu_id, name: "DITP", address: "7 avenue de Ségur" } }
+
+            it "raises an error" do
+              expect { subject }.to raise_error(
+                WebhookProcessingJobError, "Lieu in webhook is not coherent. #{lieu_attributes}"
+              )
+            end
+          end
+        end
+      end
+
+      context "when it is a collectif rdv with agent created participations" do
+        let!(:motif_attributes) do
+          {
+            id: 53,
+            location_type: "public_office",
+            motif_category: { short_name: "rsa_orientation" },
+            name: "RSA orientation", collectif: true
+          }
+        end
+        let!(:configuration) do
+          create(:configuration, organisation: organisation, convene_applicant: true, motif_category: motif_category)
+        end
+        let!(:participations_attributes) do
+          [
+            { id: 998, status: "unknown", created_by: "agent", user: { id: user_id1 } },
+            { id: 999, status: "unknown", created_by: "user", user: { id: user_id2 } }
+          ]
+        end
+
+        it "sets the participations created by the agent as convocable" do
+          expect(UpsertRecordJob).to receive(:perform_async).with(
+            "Rdv",
+            data,
+            {
+              participations_attributes: [
+                {
+                  id: nil,
+                  status: "unknown",
+                  created_by: "agent",
+                  applicant_id: 3,
+                  rdv_solidarites_participation_id: 998,
+                  rdv_context_id: rdv_context.id,
+                  convocable: true
+                },
+                {
+                  id: nil,
+                  status: "unknown",
+                  created_by: "user",
+                  applicant_id: 4,
+                  rdv_solidarites_participation_id: 999,
+                  rdv_context_id: rdv_context2.id,
+                  convocable: false
+                }
+              ],
+              organisation_id: organisation.id,
+              motif_id: motif.id,
+              lieu_id: lieu.id,
+              last_webhook_update_received_at: timestamp
+            }
+          )
+          subject
+        end
+
+        context "when the configuration does not handle convocations" do
+          before { configuration.update! convene_applicant: false }
+
+          it "sets the convocable attribute when upserting the rdv" do
+            expect(UpsertRecordJob).to receive(:perform_async).with(
+              "Rdv",
+              data,
+              {
+                participations_attributes: [
+                  {
+                    id: nil,
+                    status: "unknown",
+                    created_by: "agent",
+                    applicant_id: 3,
+                    rdv_solidarites_participation_id: 998,
+                    rdv_context_id: rdv_context.id,
+                    convocable: false
+                  },
+                  {
+                    id: nil,
+                    status: "unknown",
+                    created_by: "user",
+                    applicant_id: 4,
+                    rdv_solidarites_participation_id: 999,
+                    rdv_context_id: rdv_context2.id,
+                    convocable: false
+                  }
+                ],
+                organisation_id: organisation.id,
+                motif_id: motif.id,
+                lieu_id: lieu.id,
+                last_webhook_update_received_at: timestamp
+              }
+            )
+            subject
+          end
+        end
+
+        context "when the lieu in the webhook is not sync with the one in db" do
+          context "when no lieu attrributes is in the webhook" do
+            let!(:lieu_attributes) { nil }
+
+            it "raises an error" do
+              expect { subject }.to raise_error(WebhookProcessingJobError, "Lieu in webhook is not coherent. ")
+            end
+          end
+
+          context "when the attributes in the webhooks do not match the ones in db" do
+            let!(:lieu_attributes) { { id: rdv_solidarites_lieu_id, name: "DITP", address: "7 avenue de Ségur" } }
+
+            it "raises an error" do
+              expect { subject }.to raise_error(
+                WebhookProcessingJobError, "Lieu in webhook is not coherent. #{lieu_attributes}"
+              )
+            end
+          end
+        end
+      end
+    end
   end
 end
+# rubocop:enable RSpec/ExampleLength

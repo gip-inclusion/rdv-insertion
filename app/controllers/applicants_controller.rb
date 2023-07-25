@@ -9,28 +9,26 @@ class ApplicantsController < ApplicationController
 
   include BackToListConcern
   include Applicants::Filterable
-  include Applicants::Convocable
 
   before_action :set_organisation, :set_department, :set_organisations, :set_all_configurations,
                 :set_current_agent_roles, :set_applicants_scope,
                 :set_current_configuration, :set_current_motif_category,
                 :set_applicants, :set_rdv_contexts,
                 :filter_applicants, :order_applicants,
-                :set_convocation_motifs_by_applicant,
                 for: :index
   before_action :set_applicant, :set_organisation, :set_department, :set_all_configurations,
                 :set_applicant_organisations, :set_applicant_rdv_contexts, :set_applicant_archive,
-                :set_convocation_motifs_by_rdv_context,
                 :set_back_to_applicants_list_url,
                 for: :show
   before_action :set_organisation, :set_department, :set_organisations,
                 for: [:new, :create]
   before_action :set_applicant, :set_organisation, :set_department,
                 for: [:edit, :update]
+  before_action :find_or_initialize_applicant!, only: :create
   after_action :store_back_to_applicants_list_url, only: [:index]
 
-  def index_landing
-    redirect_to index_landing_path
+  def default_list
+    redirect_to default_list_path
   end
 
   def index
@@ -52,22 +50,21 @@ class ApplicantsController < ApplicationController
   end
 
   def create
-    authorize @organisation, :add_applicant?
-    @applicant = find_or_initialize_applicant.applicant
-    # TODO: if an applicant exists, return it to the agent to let him decide what to do
-    @applicant.assign_attributes(**applicant_params.compact_blank)
-    respond_to do |format|
-      format.html { save_applicant_and_redirect(:new) }
-      format.json { save_applicant_and_render }
+    @applicant.assign_attributes(**formatted_attributes.compact_blank)
+    if save_applicant.success?
+      render_save_applicant_success
+    else
+      render_errors(save_applicant.errors)
     end
   end
 
   def update
-    @applicant.assign_attributes(**formatted_params)
+    @applicant.assign_attributes(**formatted_attributes)
     authorize @applicant
-    respond_to do |format|
-      format.html { save_applicant_and_redirect(:edit) }
-      format.json { save_applicant_and_render }
+    if save_applicant.success?
+      render_save_applicant_success
+    else
+      render_errors(save_applicant.errors)
     end
   end
 
@@ -77,18 +74,11 @@ class ApplicantsController < ApplicationController
     params.require(:applicant).permit(*PERMITTED_PARAMS).to_h.deep_symbolize_keys
   end
 
-  def formatted_params
+  def formatted_attributes
     # we nullify some blank params for unicity exceptions (ActiveRecord::RecordNotUnique) not to raise
     applicant_params.to_h do |k, v|
       [k, k.in?([:affiliation_number, :department_internal_id, :email, :pole_emploi_id, :nir]) ? v.presence : v]
     end
-  end
-
-  def find_or_initialize_applicant
-    @find_or_initialize_applicant ||= Applicants::FindOrInitialize.call(
-      applicant_attributes: applicant_params,
-      department_id: @department.id
-    )
   end
 
   def send_applicants_csv
@@ -103,20 +93,31 @@ class ApplicantsController < ApplicationController
     )
   end
 
-  def save_applicant_and_redirect(page)
-    if save_applicant.success?
-      redirect_to(after_save_path)
-    else
-      flash.now[:error] = save_applicant.errors&.join(",")
-      render page, status: :unprocessable_entity
+  def find_or_initialize_applicant!
+    @applicant = find_or_initialize_applicant.applicant
+    render_errors(find_or_initialize_applicant.errors) if find_or_initialize_applicant.failure?
+  end
+
+  def find_or_initialize_applicant
+    @find_or_initialize_applicant ||= Applicants::FindOrInitialize.call(
+      attributes: formatted_attributes, department_id: @department.id
+    )
+  end
+
+  def render_errors(errors)
+    respond_to do |format|
+      format.html do
+        flash.now[:error] = errors.join(",")
+        render(action_name == "update" ? :edit : :new, status: :unprocessable_entity)
+      end
+      format.json { render json: { success: false, errors: errors }, status: :unprocessable_entity }
     end
   end
 
-  def save_applicant_and_render
-    if save_applicant.success?
-      render json: { success: true, applicant: @applicant }
-    else
-      render json: { success: false, errors: save_applicant.errors }, status: :unprocessable_entity
+  def render_save_applicant_success
+    respond_to do |format|
+      format.html { redirect_to(after_save_path) }
+      format.json { render json: { success: true, applicant: @applicant } }
     end
   end
 
@@ -290,7 +291,7 @@ class ApplicantsController < ApplicationController
     organisation_applicant_path(@organisation, @applicant)
   end
 
-  def index_landing_path # rubocop:disable Metrics/AbcSize
+  def default_list_path # rubocop:disable Metrics/AbcSize
     structure = if department_level?
                   Department.includes(:motif_categories).find(params[:department_id])
                 else

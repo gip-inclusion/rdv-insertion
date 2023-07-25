@@ -57,7 +57,6 @@ export default class Applicant {
     this.currentOrganisation = organisation;
     this.currentConfiguration = currentConfiguration;
     this.columnNames = columnNames;
-    this.isDuplicate = false;
   }
 
   get uid() {
@@ -110,6 +109,7 @@ export default class Applicant {
     this.id = upToDateApplicant.id;
     this.archives = upToDateApplicant.archives;
     this.organisations = upToDateApplicant.organisations;
+    this.carnet_de_bord_carnet_id = upToDateApplicant.carnet_de_bord_carnet_id;
     // we assign a current organisation when we are in the context of a department
     this.currentOrganisation ||= upToDateApplicant.organisations.find(
       (o) =>
@@ -132,6 +132,10 @@ export default class Applicant {
       if (upToDateApplicant.rights_opening_date) {
         this.rightsOpeningDate = getFrenchFormatDateString(upToDateApplicant.rights_opening_date);
       }
+      this.nir = upToDateApplicant.nir;
+      this.affiliationNumber = upToDateApplicant.affiliation_number;
+      this.role = upToDateApplicant.role;
+      this.departmentInternalId = upToDateApplicant.department_internal_id;
     }
     if (this.currentConfiguration) {
       this.currentRdvContext = upToDateApplicant.rdv_contexts.find(
@@ -189,6 +193,7 @@ export default class Applicant {
     if (this.shouldDisplay("email_column")) attributes.push(this.email);
     if (this.shouldDisplay("phone_number_column")) attributes.push(this.phoneNumber);
     if (this.shouldDisplay("rights_opening_date_column")) attributes.push(this.rightsOpeningDate);
+    if (this.shouldDisplay("nir_column")) attributes.push(this.nir);
     return attributes;
   }
 

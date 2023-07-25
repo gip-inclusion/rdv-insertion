@@ -1,13 +1,11 @@
-<% if convocation_motif %>
-  <%= link_to rdv_solidarites_agent_searches_url(convocation_motif.rdv_solidarites_organisation_id, applicant.rdv_solidarites_user_id, convocation_motif.rdv_solidarites_motif_id, convocation_motif.rdv_solidarites_service_id), target: "_blank" do %>
-    <button class="btn btn-warning">
-      📅 Convoquer <i class="fas fa-external-link-alt icon-sm"></i>
-    </button>
-  <% end %>
-<% else %>
-  <div data-controller="tooltip" data-action="mouseover->tooltip#disabledConvocationButton">
-    <button class="btn btn-warning disabled">
-      📅 Convoquer <i class="fas fa-external-link-alt icon-sm"></i>
-    </button>
-  </div>
+<%=
+  link_to(
+    new_convocation_path(motif_category_id: motif_category_id, organisation_ids: organisation_ids, applicant_id: applicant_id),
+    data: { turbo_frame: 'remote_modal' }
+  ) do
+%>
+  <button class="btn btn-warning">
+    📅 Convoquer <i class="fas fa-external-link-alt icon-sm"></i>
+  </button>
 <% end %>
+

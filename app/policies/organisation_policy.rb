@@ -3,10 +3,6 @@ class OrganisationPolicy < ApplicationPolicy
     pundit_user.organisations.include?(record)
   end
 
-  def add_applicant?
-    upload?
-  end
-
   def create?
     pundit_user.super_admin?
   end

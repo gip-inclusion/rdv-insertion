@@ -14,16 +14,16 @@ module Applicants
         .active
         .where(id: search_in_all_applicants.ids + search_in_department_organisations.ids)
         .preload(
-          :rdvs, :referents, :archives,
-          invitations: :rdv_context,
-          rdv_contexts: [:participations, :motif_category],
+          :referents, :archives,
+          invitations: [rdv_context: :motif_category],
+          rdv_contexts: [:participations],
           organisations: [:motif_categories, :department, :configurations]
         ).distinct
     end
 
     def search_in_all_applicants
       Applicant
-        .where(nir: applicants_params[:nirs])
+        .where(nir: formatted_nirs)
         .or(Applicant.where(email: applicants_params[:emails]))
         .or(Applicant.where(phone_number: formatted_phone_numbers))
         .select(:id)
@@ -33,6 +33,10 @@ module Applicants
       applicants_params[:phone_numbers].map do |phone_number|
         PhoneNumberHelper.format_phone_number(phone_number)
       end.compact
+    end
+
+    def formatted_nirs
+      applicants_params[:nirs].map { |nir| NirHelper.format_nir(nir) }.compact
     end
 
     def search_in_department_organisations

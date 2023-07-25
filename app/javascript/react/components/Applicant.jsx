@@ -4,8 +4,14 @@ import CreationCell from "./applicant/CreationCell";
 import InvitationCells from "./applicant/InvitationCells";
 import ContactInfosExtraLine from "./applicant/ContactInfosExtraLine";
 import ReferentAssignationCell from "./applicant/ReferentAssignationCell";
+import CarnetCreationCell from "./applicant/CarnetCreationCell";
 
-export default function Applicant({ applicant, isDepartmentLevel, showReferentColumn }) {
+export default function Applicant({
+  applicant,
+  isDepartmentLevel,
+  showCarnetColumn,
+  showReferentColumn,
+}) {
   const [isTriggered, setIsTriggered] = useState({
     creation: false,
     unarchive: false,
@@ -17,6 +23,7 @@ export default function Applicant({ applicant, isDepartmentLevel, showReferentCo
     phoneNumberUpdate: false,
     rightsOpeningDateUpdate: false,
     allAttributesUpdate: false,
+    carnetCreation: false,
   });
 
   const computeInvitationsColspan = () => {
@@ -29,11 +36,7 @@ export default function Applicant({ applicant, isDepartmentLevel, showReferentCo
 
   return (
     <>
-      <tr
-        className={
-          applicant.isDuplicate || applicant.isArchivedInCurrentDepartment() ? "table-danger" : ""
-        }
-      >
+      <tr className={applicant.isArchivedInCurrentDepartment() ? "table-danger" : ""}>
         <td>{applicant.shortTitle}</td>
         <td>{applicant.firstName}</td>
         <td>{applicant.lastName}</td>
@@ -43,6 +46,10 @@ export default function Applicant({ applicant, isDepartmentLevel, showReferentCo
         {applicant.shouldDisplay("role_column") && <td>{applicant.shortRole ?? " - "}</td>}
         {applicant.shouldDisplay("department_internal_id_column") && (
           <td>{applicant.departmentInternalId ?? " - "}</td>
+        )}
+        {applicant.shouldDisplay("nir_column") && <td>{applicant.nir ?? " - "}</td>}
+        {applicant.shouldDisplay("pole_emploi_id_column") && (
+          <td>{applicant.poleEmploiId ?? " - "}</td>
         )}
         {applicant.shouldDisplay("email_column") && (
           <td className={applicant.emailUpdated ? "table-success" : ""}>
@@ -59,10 +66,6 @@ export default function Applicant({ applicant, isDepartmentLevel, showReferentCo
             {applicant.rightsOpeningDate ?? " - "}
           </td>
         )}
-        {applicant.shouldDisplay("nir_column") && <td>{applicant.nir ?? " - "}</td>}
-        {applicant.shouldDisplay("pole_emploi_id_column") && (
-          <td>{applicant.poleEmploiId ?? " - "}</td>
-        )}
         {/* ------------------------------- Account creation cell ----------------------------- */}
 
         <CreationCell
@@ -71,6 +74,16 @@ export default function Applicant({ applicant, isDepartmentLevel, showReferentCo
           isTriggered={isTriggered}
           setIsTriggered={setIsTriggered}
         />
+
+        {/* ------------------------------- Carnet creation cell ----------------------------- */}
+
+        {showCarnetColumn && (
+          <CarnetCreationCell
+            applicant={applicant}
+            isTriggered={isTriggered}
+            setIsTriggered={setIsTriggered}
+          />
+        )}
 
         {/* ------------------------------- Referent cell ----------------------------- */}
 

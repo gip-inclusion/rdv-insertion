@@ -47,7 +47,7 @@ describe ApplicantsController do
         .and_return(applicant)
       allow(applicant).to receive(:assign_attributes)
       allow(Applicants::Save).to receive(:call)
-        .and_return(OpenStruct.new)
+        .and_return(OpenStruct.new(success?: true))
     end
 
     let(:applicant_params) do
@@ -98,11 +98,6 @@ describe ApplicantsController do
       end
 
       context "when the creation succeeds" do
-        before do
-          allow(Applicants::Save).to receive(:call)
-            .and_return(OpenStruct.new(success?: true))
-        end
-
         it "is a success" do
           post :create, params: applicant_params
           expect(response).to redirect_to(organisation_applicant_path(organisation, applicant))
@@ -149,11 +144,6 @@ describe ApplicantsController do
 
       context "when the creation succeeds" do
         let!(:applicant) { create(:applicant, organisations: [organisation]) }
-
-        before do
-          allow(Applicants::Save).to receive(:call)
-            .and_return(OpenStruct.new(success?: true, applicant: applicant))
-        end
 
         it "is a success" do
           post :create, params: applicant_params
@@ -335,7 +325,7 @@ describe ApplicantsController do
       end
 
       context "when one rdv is a convocation" do
-        before { rdv_orientation1.update!(convocable: true) }
+        before { participation.update!(convocable: true) }
 
         let!(:notification) do
           create(
@@ -410,7 +400,7 @@ describe ApplicantsController do
     end
   end
 
-  describe "#index_landing" do
+  describe "#default_list" do
     context "when department_level" do
       let!(:index_params) { { department_id: department.id } }
 
@@ -418,7 +408,7 @@ describe ApplicantsController do
         let!(:organisation) { create(:organisation, department: department, configurations: []) }
 
         it "redirects to the department_applicants_paths with no params" do
-          get :index_landing, params: index_params
+          get :default_list, params: index_params
 
           expect(response).to redirect_to(department_applicants_path(department))
         end
@@ -432,7 +422,7 @@ describe ApplicantsController do
         let!(:organisation) { create(:organisation, department: department, configurations: [configuration]) }
 
         it "redirects to the motif_category index" do
-          get :index_landing, params: index_params
+          get :default_list, params: index_params
 
           expect(response).to redirect_to(
             department_applicants_path(department, motif_category_id: category_orientation.id)
@@ -454,7 +444,7 @@ describe ApplicantsController do
         end
 
         it "redirects to the department_applicants_paths with no params" do
-          get :index_landing, params: index_params
+          get :default_list, params: index_params
 
           expect(response).to redirect_to(department_applicants_path(department))
         end
@@ -468,7 +458,7 @@ describe ApplicantsController do
         let!(:organisation) { create(:organisation, department: department, configurations: []) }
 
         it "redirects to the organisation_applicants_paths with no params" do
-          get :index_landing, params: index_params
+          get :default_list, params: index_params
 
           expect(response).to redirect_to(organisation_applicants_path(organisation))
         end
@@ -482,7 +472,7 @@ describe ApplicantsController do
         let!(:organisation) { create(:organisation, department: department, configurations: [configuration]) }
 
         it "redirects to the motif_category index" do
-          get :index_landing, params: index_params
+          get :default_list, params: index_params
 
           expect(response).to redirect_to(
             organisation_applicants_path(organisation, motif_category_id: category_orientation.id)
@@ -504,7 +494,7 @@ describe ApplicantsController do
         end
 
         it "redirects to the organisation_applicants_paths with no params" do
-          get :index_landing, params: index_params
+          get :default_list, params: index_params
 
           expect(response).to redirect_to(organisation_applicants_path(organisation))
         end
@@ -1029,9 +1019,8 @@ describe ApplicantsController do
 
       before do
         sign_in(agent)
-
         allow(Applicants::Save).to receive(:call)
-          .and_return(OpenStruct.new)
+          .and_return(OpenStruct.new(success?: true))
       end
 
       it "calls the service" do
@@ -1060,11 +1049,6 @@ describe ApplicantsController do
       end
 
       context "when the update succeeds" do
-        before do
-          allow(Applicants::Save).to receive(:call)
-            .and_return(OpenStruct.new(success?: true, applicant: applicant))
-        end
-
         context "when organisation level" do
           it "redirects to the show page" do
             patch :update, params: update_params

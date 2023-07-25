@@ -29,13 +29,9 @@ module StubHelper
   end
 
   def stub_rdv_solidarites_invitation_requests(rdv_solidarites_user_id, rdv_solidarites_token = "123456")
-    stub_request(:post, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/users/#{rdv_solidarites_user_id}/invite")
+    stub_request(:post, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/users/#{rdv_solidarites_user_id}/rdv_invitation_token")
       .with(headers: { "Content-Type" => "application/json" }.merge(session_hash(agent.email)))
       .to_return(body: { "invitation_token" => rdv_solidarites_token }.to_json)
-
-    stub_request(:get, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/invitations/#{rdv_solidarites_token}")
-      .with(headers: { "Content-Type" => "application/json" }.merge(session_hash(agent.email)))
-      .to_return(status: 404)
   end
 
   def stub_geo_api_request(address)

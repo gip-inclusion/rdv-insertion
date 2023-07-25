@@ -13,14 +13,14 @@ describe Invitations::AssignAttributes, type: :service do
   let!(:invitation) do
     build(:invitation, applicant: applicant, rdv_solidarites_token: nil, link: nil)
   end
-  let!(:rdv_solidarites_token) { "some-token" }
+  let!(:rdv_solidarites_token) { "uptodate-token" }
 
   describe "#call" do
     let!(:invitation_link) { "https://www.rdv_solidarites.com/some_params" }
 
     before do
       travel_to(Time.zone.parse("2022-04-05 13:45"))
-      allow(RdvSolidaritesApi::InviteUser).to receive(:call)
+      allow(RdvSolidaritesApi::CreateOrRetrieveInvitationToken).to receive(:call)
         .with(
           rdv_solidarites_user_id: rdv_solidarites_user_id, rdv_solidarites_session: rdv_solidarites_session
         )
@@ -35,7 +35,7 @@ describe Invitations::AssignAttributes, type: :service do
     end
 
     it "retrieves an invitation token" do
-      expect(RdvSolidaritesApi::InviteUser).to receive(:call)
+      expect(RdvSolidaritesApi::CreateOrRetrieveInvitationToken).to receive(:call)
         .with(rdv_solidarites_user_id: rdv_solidarites_user_id, rdv_solidarites_session: rdv_solidarites_session)
       subject
     end
@@ -54,7 +54,7 @@ describe Invitations::AssignAttributes, type: :service do
 
     context "when it fails to retrieve a token" do
       before do
-        allow(RdvSolidaritesApi::InviteUser).to receive(:call)
+        allow(RdvSolidaritesApi::CreateOrRetrieveInvitationToken).to receive(:call)
           .and_return(OpenStruct.new(success?: false, errors: ["something happened with token"]))
       end
 
@@ -102,11 +102,11 @@ describe Invitations::AssignAttributes, type: :service do
       end
     end
 
-    context "when the applicant has already been invited" do
+    context "when the applicant has already been invited and existing token and rdv_solidarites_token match" do
       let!(:other_invitation) do
         create(
           :invitation,
-          sent_at: Time.zone.parse("2022-04-02 13:45"), rdv_solidarites_token: "existing-token",
+          sent_at: Time.zone.parse("2022-04-02 13:45"), rdv_solidarites_token: "uptodate-token",
           valid_until: Time.zone.parse("2022-04-12 15:00")
         )
       end
@@ -116,42 +116,29 @@ describe Invitations::AssignAttributes, type: :service do
       let!(:rdv_solidarites_user) { instance_double(RdvSolidarites::User) }
 
       before do
-        allow(RdvSolidaritesApi::RetrieveInvitation).to receive(:call).with(
-          rdv_solidarites_token: "existing-token", rdv_solidarites_session: rdv_solidarites_session
-        ).and_return(OpenStruct.new(user: rdv_solidarites_user))
-      end
-
-      it "checks if the token is valid by retrieving the associated user" do
-        expect(RdvSolidaritesApi::RetrieveInvitation).to receive(:call).with(
-          rdv_solidarites_token: "existing-token", rdv_solidarites_session: rdv_solidarites_session
-        )
-        subject
+        allow(RdvSolidaritesApi::CreateOrRetrieveInvitationToken).to receive(:call)
+          .with(
+            rdv_solidarites_user_id: rdv_solidarites_user_id, rdv_solidarites_session: rdv_solidarites_session
+          )
+          .and_return(OpenStruct.new(success?: true, invitation_token: rdv_solidarites_token))
       end
 
       it "is a success" do
         is_a_success
       end
 
-      it "does not retrieve a new token" do
-        expect(RdvSolidaritesApi::InviteUser).not_to receive(:call)
-        subject
-      end
-
       it "assign the existing token to the invitation" do
         subject
-        expect(invitation.rdv_solidarites_token).to eq("existing-token")
+        expect(invitation.rdv_solidarites_token).to eq(rdv_solidarites_token)
       end
 
-      context "when the token is not associated to the user" do
-        before do
-          allow(RdvSolidaritesApi::RetrieveInvitation).to receive(:call)
-            .with(rdv_solidarites_token: "existing-token", rdv_solidarites_session: rdv_solidarites_session)
-            .and_return(OpenStruct.new)
-        end
-
-        it "retrieves a new token" do
-          expect(RdvSolidaritesApi::InviteUser).to receive(:call)
-          subject
+      context "when the existing token doesnt match the rdv_solidarites_token" do
+        let!(:other_invitation) do
+          create(
+            :invitation,
+            sent_at: Time.zone.parse("2022-04-02 13:45"), rdv_solidarites_token: "old-token",
+            valid_until: Time.zone.parse("2022-04-12 15:00")
+          )
         end
 
         it "assign the new token to the invitation" do
