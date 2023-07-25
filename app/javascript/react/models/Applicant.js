@@ -300,6 +300,7 @@ export default class Applicant {
   }
 
   canBeInvitedBy(format) {
+    if (!this.currentConfiguration) return false;
     return this.currentConfiguration.invitation_formats.includes(format);
   }
 
