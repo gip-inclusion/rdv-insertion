@@ -24,7 +24,7 @@ import {
 } from "../../lib/parameterize";
 
 import Applicant from "../models/Applicant";
-import Applicants from "../models/Applicants";
+import { applicantsStore } from "../models/Applicants";
 
 const ApplicantsUpload = observer(({
   applicants,
@@ -351,5 +351,5 @@ const ApplicantsUpload = observer(({
 
 
 export default (props) => (
-  <ApplicantsUpload applicants={Applicants} {...props} />
+  <ApplicantsUpload applicants={applicantsStore} {...props} />
 )
