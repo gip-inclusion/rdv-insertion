@@ -5,7 +5,7 @@ class InboundEmailsController < ApplicationController
 
   def brevo
     payload = request.params["items"].first
-    TransferEmailReplyJob.perform_later(payload)
+    TransferEmailReplyJob.perform_async(payload)
   end
 
   private

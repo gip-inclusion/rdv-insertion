@@ -6,7 +6,6 @@ class Rdv < ApplicationRecord
   include Notificable
   include RdvParticipationStatus
 
-  after_commit :notify_applicants, if: :notify_applicants?, on: [:create, :update]
   after_commit :refresh_context_status, on: [:create, :update]
 
   belongs_to :organisation
@@ -39,10 +38,6 @@ class Rdv < ApplicationRecord
       "#{organisation.rdv_solidarites_organisation_id}/rdvs/#{rdv_solidarites_rdv_id}"
   end
 
-  def notify_applicants?
-    convocable?
-  end
-
   def formatted_start_date
     starts_at.to_datetime.strftime("%d/%m/%Y")
   end
@@ -61,12 +56,6 @@ class Rdv < ApplicationRecord
 
   def refresh_context_status
     RefreshRdvContextStatusesJob.perform_async(rdv_context_ids)
-  end
-
-  def notify_applicants
-    return unless event_to_notify
-
-    NotifyParticipationsJob.perform_async(participation_ids, event_to_notify)
   end
 
   # event to notify in an after_commit context

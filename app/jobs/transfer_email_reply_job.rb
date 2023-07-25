@@ -1,15 +1,14 @@
 class TransferEmailReplyJob < ApplicationJob
-  # Pour éviter de fuiter des données personnelles dans les logs
-  self.log_arguments = false
-
   INVITATION_UUID_EXTRACTOR = /invitation\+([A-Z0-9-]*)@reply\.rdv-insertion\.fr/
   RDV_UUID_EXTRACTOR = /rdv\+([a-f0-9-]*)@reply\.rdv-insertion\.fr/
 
   def perform(brevo_hash)
     @brevo_hash = brevo_hash.with_indifferent_access
 
-    if invitation || rdv
-      notify_agents
+    if invitation
+      notify_agents_of_invitation_reply
+    elsif rdv
+      notify_agents_of_notification_reply
     else
       forward_to_default_mailbox
     end
@@ -17,9 +16,16 @@ class TransferEmailReplyJob < ApplicationJob
 
   private
 
-  def notify_agents
-    ReplyTransferMailer.notify_agent_of_applicant_reply(
+  def notify_agents_of_invitation_reply
+    ReplyTransferMailer.forward_invitation_reply_to_organisation(
       invitation: invitation,
+      reply_body: extracted_response,
+      source_mail: source_mail
+    ).deliver_now
+  end
+
+  def notify_agents_of_notification_reply
+    ReplyTransferMailer.forward_notification_reply_to_organisation(
       rdv: rdv,
       reply_body: extracted_response,
       source_mail: source_mail
@@ -34,21 +40,25 @@ class TransferEmailReplyJob < ApplicationJob
   end
 
   def rdv
-    Rdv.find_by(uuid: uuid) if rdv_uuid
+    @rdv ||= Rdv.find_by(uuid: rdv_uuid) if rdv_uuid
   end
 
   def invitation
-    Invitation.find_by(uuid: uuid) if invitation_uuid
+    @invitation ||= Invitation.find_by(uuid: invitation_uuid) if invitation_uuid
   end
 
   def invitation_uuid
-    source_mail.to.first.start_with?("invitation") &&
-      source_mail.to.first.match(INVITATION_UUID_EXTRACTOR)&.captures&.first
+    @invitation_uuid ||=
+      receiver_address.start_with?("invitation") && receiver_address.match(INVITATION_UUID_EXTRACTOR)&.captures&.first
   end
 
   def rdv_uuid
-    source_mail.to.first.start_with?("rdv") &&
-      source_mail.to.first.match(RDV_UUID_EXTRACTOR)&.captures&.first
+    @rdv_uuid ||=
+      receiver_address.start_with?("rdv") && receiver_address.match(RDV_UUID_EXTRACTOR)&.captures&.first
+  end
+
+  def receiver_address
+    source_mail.to.first
   end
 
   def extracted_response
@@ -61,25 +71,12 @@ class TransferEmailReplyJob < ApplicationJob
   end
 
   # @return [Mail::Message]
-  def source_mail # rubocop:disable Metrics/AbcSize
+  def source_mail
     payload = @brevo_hash
 
     @source_mail ||= Mail.new do
       headers payload[:Headers]
       subject payload[:Subject]
-
-      if payload[:RawTextBody].present?
-        text_part do
-          body payload[:RawTextBody]
-        end
-      end
-
-      if payload[:RawHtmlBody].present?
-        html_part do
-          content_type "text/html; charset=UTF-8"
-          body payload[:RawHtmlBody]
-        end
-      end
 
       payload.fetch(:Attachments, []).each do |attachment_payload|
         attachments[attachment_payload[:Name]] = {

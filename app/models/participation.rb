@@ -11,17 +11,16 @@ class Participation < ApplicationRecord
   validates :rdv_solidarites_participation_id, uniqueness: true, allow_nil: true
 
   after_commit :refresh_applicant_context_statuses
-  after_commit :notify_applicant, if: :rdv_notify_applicants?, on: [:create, :update]
+  after_commit :notify_applicant, if: :convocable?, on: [:create, :update]
 
   enum created_by: { agent: "agent", user: "user", prescripteur: "prescripteur" }, _prefix: :created_by
 
-  delegate :organisation, :department, :starts_at, :convocable?, :motif_name,
+  delegate :organisation, :department, :starts_at, :motif_name,
            :rdv_solidarites_url, :rdv_solidarites_rdv_id, :instruction_for_rdv,
            to: :rdv
   delegate :department, to: :organisation
   delegate :phone_number_is_mobile?, :email?, to: :applicant
   delegate :motif_category, to: :rdv_context
-  delegate :notify_applicants?, to: :rdv, prefix: true
 
   private
 

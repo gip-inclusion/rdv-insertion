@@ -1,6 +1,6 @@
 # Preview all emails at http://localhost:8000/rails/mailers/reply_transfer
 class ReplyTransferPreview < ActionMailer::Preview
-  def notify_agent_of_applicant_reply_for_notification
+  def forward_notification_reply_to_organisation
     rdv = Notification.last.rdv
 
     source_mail = Mail.new do
@@ -23,14 +23,13 @@ class ReplyTransferPreview < ActionMailer::Preview
     MARKDOWN
 
     ReplyTransferMailer.with(
-      invitation: nil,
       rdv: rdv,
       source_mail: source_mail,
       reply_body: body
-    ).send("notify_agent_of_applicant_reply")
+    ).send("forward_notification_reply_to_organisation")
   end
 
-  def notify_agent_of_applicant_reply_for_invitation
+  def forward_invitation_reply_to_organisation
     invitation = Invitation.last
 
     source_mail = Mail.new do
@@ -54,10 +53,9 @@ class ReplyTransferPreview < ActionMailer::Preview
 
     ReplyTransferMailer.with(
       invitation: invitation,
-      rdv: nil,
       source_mail: source_mail,
       reply_body: body
-    ).send("notify_agent_of_applicant_reply")
+    ).send("forward_invitation_reply_to_organisation")
   end
 
   def forward_to_default_mailbox
