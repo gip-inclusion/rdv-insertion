@@ -1,6 +1,6 @@
 import { makeAutoObservable } from "mobx"
 
-export class Applicants {
+class Applicants {
   constructor() {
     this.list = []
     makeAutoObservable(this)
@@ -19,4 +19,4 @@ export class Applicants {
   }
 }
 
-export const applicantsStore = new Applicants()
+export default new Applicants()

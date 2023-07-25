@@ -24,7 +24,7 @@ import {
 } from "../../lib/parameterize";
 
 import Applicant from "../models/Applicant";
-import { applicantsStore } from "../models/Applicants";
+import applicantsStore from "../models/Applicants";
 
 const ApplicantsUpload = observer(({
   applicants,
