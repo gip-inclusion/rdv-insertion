@@ -163,6 +163,7 @@ const ApplicantsUpload = observer(({
     }
 
     setFileSize(file.size);
+    applicants.setApplicants([])
     await retrieveApplicantsFromList(file);
 
     if (applicants.list.length === 0) return;
