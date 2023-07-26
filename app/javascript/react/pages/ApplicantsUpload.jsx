@@ -289,6 +289,7 @@ const ApplicantsUpload = observer(({
                 <tr>
                   <th scope="col" className="text-center">
                     Sélection
+                    <br />
                     <input 
                       type="checkbox" 
                       className="form-check-input"
