@@ -131,8 +131,12 @@ export default class Applicant {
     return role;
   }
 
-  async inviteBy(format, isDepartmentLevel) {
-    if (!this.createdAt) await this.createAccount()
+  async inviteBy(format, isDepartmentLevel, options = { raiseError: true }) {
+    if (!this.createdAt) {
+      const success = await this.createAccount(options);
+      if (!success) return false;
+    }
+
     if (format === "sms" && !this.phoneNumber) return false;
     if (format === "email" && !this.email) return false;
     if (format === "postal" && !this.fullAddress) return false;
@@ -171,8 +175,9 @@ export default class Applicant {
       if (!this.currentOrganisation) {
         this.triggers.creation = false;
         if (!options.raiseError) this.errors.push("Vous devez associer une organisation à cet utilisateur")
-        return;
+        return false;
       }
+
     }
     const { errors, success } = await handleApplicantCreation(this, this.currentOrganisation.id, {
       raiseError: options.raiseError,
@@ -183,6 +188,8 @@ export default class Applicant {
     }
 
     this.triggers.creation = false;
+
+    return success
   }
 
   resetErrors() {

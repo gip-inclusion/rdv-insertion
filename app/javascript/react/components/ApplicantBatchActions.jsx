@@ -22,7 +22,7 @@ export default observer(({
     // eslint-disable-next-line no-restricted-syntax
     for (const applicant of applicants.selectedApplicants) {
       // eslint-disable-next-line no-await-in-loop
-      await applicant.inviteBy(format, isDepartmentLevel);
+      await applicant.inviteBy(format, isDepartmentLevel, { raiseError: false });
     }
   }
 
