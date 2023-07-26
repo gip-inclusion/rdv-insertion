@@ -150,11 +150,13 @@ export default class Applicant {
       this.currentConfiguration.motif_category_id,
       this.currentOrganisation.phone_number,
     ];
-    const result = await handleApplicantInvitation(...invitationParams, format);
+    const result = await handleApplicantInvitation(...invitationParams, format, {
+      raiseError: options.raiseError,
+    });
     if (result.success) {
       // dates are set as json to match the API format
       this.updateLastInvitationDate(format, new Date().toJSON());
-    }
+    } else if (!options.raiseError) this.errors.push("Impossible d'envoyer l'invitation")
     this.triggers[`${format}Invitation`] = false;
     return true
   } 
