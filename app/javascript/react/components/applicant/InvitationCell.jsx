@@ -25,6 +25,8 @@ export default observer(({
     applicant.inviteBy(format, isDepartmentLevel);
   };
 
+  const actionType = `${format}Invitation`
+
   return (
     applicant.canBeInvitedBy(format) && (
       <>
@@ -40,23 +42,33 @@ export default observer(({
               <i className="fas fa-check" />
             </Tippy>
           ) : (
-            <button
-              type="submit"
-              disabled={
-                applicant.triggers[`${format}Invitation`] ||
-                !applicant.createdAt ||
-                !applicant.requiredAttributeToInviteBy(format) ||
-                !applicant.belongsToCurrentOrg()
-              }
-              className="btn btn-primary btn-blue"
-              onClick={() => handleInvitationClick()}
-            >
-              {applicant.triggers[`${format}Invitation`]
-                ? "Invitation..."
-                : applicant.hasParticipations()
-                ? CTA_BY_FORMAT[format].secondTime
-                : CTA_BY_FORMAT[format].firstTime}
-            </button>
+            applicant.errors.includes(actionType) ? (
+              <button
+                type="submit"
+                className="btn btn-danger"
+                onClick={() => handleInvitationClick()}
+              >
+                Résoudre les erreurs
+              </button>
+             ) : (
+              <button
+                type="submit"
+                disabled={
+                  applicant.triggers[actionType] ||
+                  !applicant.createdAt ||
+                  !applicant.requiredAttributeToInviteBy(format) ||
+                  !applicant.belongsToCurrentOrg()
+                }
+                className="btn btn-primary btn-blue"
+                onClick={() => handleInvitationClick()}
+              >
+                {applicant.triggers[actionType]
+                  ? "Invitation..."
+                  : applicant.hasParticipations()
+                  ? CTA_BY_FORMAT[format].secondTime
+                  : CTA_BY_FORMAT[format].firstTime}
+              </button>
+             )
           )}
         </td>
       </>

@@ -143,7 +143,8 @@ export default class Applicant {
     if (format === "email" && !this.email) return false;
     if (format === "postal" && !this.fullAddress) return false;
 
-    this.triggers[`${format}Invitation`] = true;
+    const actionType = `${format}Invitation`;
+    this.triggers[actionType] = true;
     const invitationParams = [
       this.id,
       this.department.id,
@@ -158,8 +159,8 @@ export default class Applicant {
     if (result.success) {
       // dates are set as json to match the API format
       this.updateLastInvitationDate(format, new Date().toJSON());
-    } else if (!options.raiseError) this.errors.push("Impossible d'envoyer l'invitation")
-    this.triggers[`${format}Invitation`] = false;
+    } else if (!options.raiseError) this.errors.push(actionType)
+    this.triggers[actionType] = false;
     return true
   } 
 
@@ -178,17 +179,17 @@ export default class Applicant {
       // If there is still no organisation it means the assignation was cancelled by agent
       if (!this.currentOrganisation) {
         this.triggers.creation = false;
-        if (!options.raiseError) this.errors.push("Vous devez associer une organisation à cet utilisateur")
+        if (!options.raiseError) this.errors.push("createAccount")
         return false;
       }
 
     }
-    const { errors, success } = await handleApplicantCreation(this, this.currentOrganisation.id, {
+    const { success } = await handleApplicantCreation(this, this.currentOrganisation.id, {
       raiseError: options.raiseError,
     });
 
     if (!success) {
-      this.errors = errors;
+      this.errors = ["createAccount"];
     }
 
     this.triggers.creation = false;
@@ -203,6 +204,8 @@ export default class Applicant {
   get isValid() {
     return !this.errors || this.errors.length === 0
   }
+
+
 
   updateWith(upToDateApplicant) {
     this.resetErrors();
