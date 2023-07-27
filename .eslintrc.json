@@ -21,6 +21,7 @@
     "class-methods-use-this": "off",
     "no-nested-ternary": "off",
     "no-use-before-define": "off",
-    "react/jsx-props-no-spreading": "off"
+    "react/jsx-props-no-spreading": "off",
+    "jsx-a11y/no-autofocus": "off"
   }
 }

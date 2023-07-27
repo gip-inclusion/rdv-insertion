@@ -17,6 +17,8 @@ function EditableCell({ applicant, cell }) {
   const handleBlur = async () => {
     setIsEditing(false);
 
+    if (value === applicant[cell]) return;
+
     const previousValue = applicant[cell];
     applicant[cell] = value;
 
@@ -54,7 +56,6 @@ function EditableCell({ applicant, cell }) {
         {isEditing ? (
           <input
             type="text"
-            // eslint-disable-next-line jsx-a11y/no-autofocus
             autoFocus
             value={value ?? ""}
             onKeyDown={onEnterKeyPress}
