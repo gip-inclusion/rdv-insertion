@@ -86,7 +86,7 @@ export default observer(({
   ) : (
     <td>
       {
-        !applicant.isValid ? (
+        applicant.errors.includes("createAccount") ? (
           <button
             type="submit"
             className="btn btn-danger"
