@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import Swal from "sweetalert2";
 import Tippy from "@tippyjs/react";
+import { observer } from "mobx-react-lite";
 
 import * as XLSX from "xlsx";
 import FileHandler from "../components/FileHandler";
 import ApplicantList from "../components/ApplicantList";
 import EnrichWithContactFile from "../components/EnrichWithContactFile";
+import ApplicantBatchActions from "../components/ApplicantBatchActions";
 
 import getHeaderNames from "../lib/getHeaderNames";
 import checkColumnNames from "../lib/checkColumnNames";
@@ -22,8 +24,10 @@ import {
 } from "../../lib/parameterize";
 
 import Applicant from "../models/Applicant";
+import applicantsStore from "../models/Applicants";
 
-export default function ApplicantsUpload({
+const ApplicantsUpload = observer(({
+  applicants,
   organisation,
   configuration,
   columnNames,
@@ -31,10 +35,9 @@ export default function ApplicantsUpload({
   department,
   motifCategoryName,
   currentAgent,
-}) {
+}) => {
   const parameterizedColumnNames = parameterizeObjectValues({ ...columnNames });
   const isDepartmentLevel = !organisation;
-  const [applicants, setApplicants] = useState([]);
   const [fileSize, setFileSize] = useState(0);
   /* eslint no-unused-vars: ["error", { "varsIgnorePattern": "contactsUpdated" }] */
   // This state allows to re-renders applicants after contacts update
@@ -58,8 +61,6 @@ export default function ApplicantsUpload({
   };
 
   const retrieveApplicantsFromList = async (file) => {
-    const applicantsFromList = [];
-
     await new Promise((resolve) => {
       const reader = new FileReader();
       reader.onload = function (event) {
@@ -131,15 +132,13 @@ export default function ApplicantsUpload({
               columnNames,
               currentAgent
             );
-            applicantsFromList.push(applicant);
+            applicants.addApplicant(applicant);
           });
         }
         resolve();
       };
       reader.readAsBinaryString(file);
     });
-
-    return applicantsFromList;
   };
 
   const isFormatValid = (file, acceptedFormats) => {
@@ -164,12 +163,12 @@ export default function ApplicantsUpload({
     }
 
     setFileSize(file.size);
-    const applicantsFromList = await retrieveApplicantsFromList(file);
-    if (applicantsFromList.length === 0) return;
+    applicants.setApplicants([])
+    await retrieveApplicantsFromList(file);
 
-    const upToDateApplicants = await retrieveUpToDateApplicants(applicantsFromList, department.id);
+    if (applicants.list.length === 0) return;
 
-    setApplicants(upToDateApplicants);
+    applicants.setApplicants(await retrieveUpToDateApplicants(applicants.list, department.id));
   };
 
   const handleContactsFile = async (file) => {
@@ -185,7 +184,7 @@ export default function ApplicantsUpload({
     if (contactsData.length === 0) return;
 
     await Promise.all(
-      applicants.map(async (applicant) => {
+      applicants.list.map(async (applicant) => {
         const applicantContactsData = contactsData.find(
           (contactRow) =>
             // padStart is used because sometimes affiliation numbers are fetched with less than 7 letters
@@ -246,7 +245,7 @@ export default function ApplicantsUpload({
           </a>
         </div>
       </div>
-      {!showEnrichWithContactFile && applicants.length > 0 && (
+      {!showEnrichWithContactFile && applicants.list.length > 0 && (
         <div className="my-4 text-center">
           <button
             type="button"
@@ -257,13 +256,14 @@ export default function ApplicantsUpload({
           </button>
         </div>
       )}
-      {showEnrichWithContactFile && applicants.length > 0 && (
+      {showEnrichWithContactFile && applicants.list.length > 0 && (
         <EnrichWithContactFile handleContactsFile={handleContactsFile} fileSize={fileSize} />
       )}
-      {applicants.length > 0 && (
+      {applicants.list.length > 0 && (
         <>
-          <div className="row my-1">
+          <div className="row my-1" style={{ height: 50 }}>
             <div className="d-flex justify-content-end align-items-center">
+              <ApplicantBatchActions isDepartmentLevel={isDepartmentLevel} applicants={applicants} />
               <i className="fas fa-user" />
               {showReferentColumn ? (
                 <Tippy content="Cacher colonne référent">
@@ -282,12 +282,22 @@ export default function ApplicantsUpload({
           </div>
         </>
       )}
-      {applicants.length > 0 && (
+      {applicants.list.length > 0 && (
         <>
           <div className="row my-5 justify-content-center">
             <table className="table table-hover text-center align-middle table-striped table-bordered">
               <thead className="align-middle dark-blue">
                 <tr>
+                  <th scope="col" className="text-center">
+                    Sélection
+                    <br />
+                    <input 
+                      type="checkbox" 
+                      className="form-check-input"
+                      checked={applicants.list.every(applicant => applicant.selected)} 
+                      onChange={event => applicants.list.forEach(applicant => { applicant.selected = event.target.checked })}
+                     />
+                  </th>
                   <th scope="col">Civilité</th>
                   <th scope="col">Prénom</th>
                   <th scope="col">Nom</th>
@@ -328,7 +338,7 @@ export default function ApplicantsUpload({
               <tbody>
                 <ApplicantList
                   showReferentColumn={showReferentColumn}
-                  applicants={applicants}
+                  applicants={applicants.list}
                   isDepartmentLevel={isDepartmentLevel}
                   showCarnetColumn={showCarnetColumn}
                 />
@@ -339,4 +349,9 @@ export default function ApplicantsUpload({
       )}
     </div>
   );
-}
+})
+
+
+export default (props) => (
+  <ApplicantsUpload applicants={applicantsStore} {...props} />
+)

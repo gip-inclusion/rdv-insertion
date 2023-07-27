@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
+import { observer } from "mobx-react-lite";
 
 import CreationCell from "./applicant/CreationCell";
 import InvitationCells from "./applicant/InvitationCells";
@@ -6,26 +7,12 @@ import ContactInfosExtraLine from "./applicant/ContactInfosExtraLine";
 import ReferentAssignationCell from "./applicant/ReferentAssignationCell";
 import CarnetCreationCell from "./applicant/CarnetCreationCell";
 
-export default function Applicant({
+function Applicant({
   applicant,
   isDepartmentLevel,
   showCarnetColumn,
   showReferentColumn,
 }) {
-  const [isTriggered, setIsTriggered] = useState({
-    creation: false,
-    unarchive: false,
-    smsInvitation: false,
-    emailInvitation: false,
-    postalInvitation: false,
-    referentAssignation: false,
-    emailUpdate: false,
-    phoneNumberUpdate: false,
-    rightsOpeningDateUpdate: false,
-    allAttributesUpdate: false,
-    carnetCreation: false,
-  });
-
   const computeInvitationsColspan = () => {
     let colSpan = 0;
     if (applicant.canBeInvitedBy("sms")) colSpan += 1;
@@ -36,7 +23,15 @@ export default function Applicant({
 
   return (
     <>
-      <tr className={applicant.isArchivedInCurrentDepartment() ? "table-danger" : ""}>
+      <tr className={applicant.isArchivedInCurrentDepartment() || !applicant.isValid ? "table-danger" : ""}>
+        <td>
+          <input
+            type="checkbox"
+            className="form-check-input"
+            checked={applicant.selected}
+            onChange={event => { applicant.selected = event.target.checked }}
+          />
+        </td>
         <td>{applicant.shortTitle}</td>
         <td>{applicant.firstName}</td>
         <td>{applicant.lastName}</td>
@@ -71,8 +66,6 @@ export default function Applicant({
         <CreationCell
           applicant={applicant}
           isDepartmentLevel={isDepartmentLevel}
-          isTriggered={isTriggered}
-          setIsTriggered={setIsTriggered}
         />
 
         {/* ------------------------------- Carnet creation cell ----------------------------- */}
@@ -80,8 +73,6 @@ export default function Applicant({
         {showCarnetColumn && (
           <CarnetCreationCell
             applicant={applicant}
-            isTriggered={isTriggered}
-            setIsTriggered={setIsTriggered}
           />
         )}
 
@@ -91,8 +82,6 @@ export default function Applicant({
           <ReferentAssignationCell
             applicant={applicant}
             isDepartmentLevel={isDepartmentLevel}
-            isTriggered={isTriggered}
-            setIsTriggered={setIsTriggered}
           />
         )}
 
@@ -102,8 +91,6 @@ export default function Applicant({
             applicant={applicant}
             invitationsColspan={computeInvitationsColspan()}
             isDepartmentLevel={isDepartmentLevel}
-            isTriggered={isTriggered}
-            setIsTriggered={setIsTriggered}
           />
         )}
       </tr>
@@ -114,10 +101,10 @@ export default function Applicant({
         <ContactInfosExtraLine
           applicant={applicant}
           invitationsColspan={computeInvitationsColspan()}
-          isTriggered={isTriggered}
-          setIsTriggered={setIsTriggered}
         />
       )}
     </>
   );
 }
+
+export default observer(Applicant)
