@@ -19,7 +19,9 @@ const retrieveThroughSearchTerms = async (departmentNumber, organisationSearchTe
   const result = await searchOrganisations(departmentNumber, organisationSearchTerms);
   if (result.success && result.matching_organisations.length === 1) {
     return result.matching_organisations[0];
-  } if (options.raiseError === false) {
+  }
+
+  if (options.raiseError === false) {
     return null;
   }
 
@@ -46,7 +48,9 @@ const retrieveThroughGeolocalisation = async (departmentNumber, applicantFullAdd
 
   if (result.success && result.geolocated_organisations.length === 1) {
     return result.geolocated_organisations[0];
-  } if (options.raiseError === false) {
+  }
+
+  if (options.raiseError === false) {
     return null;
   }
 

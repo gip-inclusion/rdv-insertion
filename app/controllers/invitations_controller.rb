@@ -114,7 +114,9 @@ class InvitationsController < ApplicationController
 
   def set_invitation
     @invitation = Invitation.find_by(uuid: params[:uuid])
-    raise ActiveRecord::RecordNotFound unless @invitation
+    return if @invitation.present?
+
+    redirect_to(:invitation_landing, flash: { error: "Ce code n'existe pas dans notre système." })
   end
 
   def verify_invitation_validity

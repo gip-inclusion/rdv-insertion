@@ -43,6 +43,10 @@ function Applicant({
         {applicant.shouldDisplay("department_internal_id_column") && (
           <td><EditableCell applicant={applicant} cell="departmentInternalId" /></td>
         )}
+        {applicant.shouldDisplay("nir_column") && <td>{applicant.nir ?? " - "}</td>}
+        {applicant.shouldDisplay("pole_emploi_id_column") && (
+          <td>{applicant.poleEmploiId ?? " - "}</td>
+        )}
         {applicant.shouldDisplay("email_column") && (
           <td className={applicant.emailUpdated ? "table-success" : ""}>
             <EditableCell applicant={applicant} cell="email" />
@@ -57,10 +61,6 @@ function Applicant({
           <td className={applicant.rightsOpeningDateUpdated ? "table-success" : ""}>
             <EditableCell applicant={applicant} cell="rightsOpeningDate" />
           </td>
-        )}
-        {applicant.shouldDisplay("nir_column") && <td><EditableCell applicant={applicant} cell="nir" /></td>}
-        {applicant.shouldDisplay("pole_emploi_id_column") && (
-          <td><EditableCell applicant={applicant} cell="poleEmploiId" /></td>
         )}
         {/* ------------------------------- Account creation cell ----------------------------- */}
 

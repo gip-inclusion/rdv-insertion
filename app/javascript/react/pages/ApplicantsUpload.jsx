@@ -24,7 +24,7 @@ import {
 } from "../../lib/parameterize";
 
 import Applicant from "../models/Applicant";
-import Applicants from "../models/Applicants";
+import applicantsStore from "../models/Applicants";
 
 const ApplicantsUpload = observer(({
   applicants,
@@ -163,6 +163,7 @@ const ApplicantsUpload = observer(({
     }
 
     setFileSize(file.size);
+    applicants.setApplicants([])
     await retrieveApplicantsFromList(file);
 
     if (applicants.list.length === 0) return;
@@ -183,7 +184,7 @@ const ApplicantsUpload = observer(({
     if (contactsData.length === 0) return;
 
     await Promise.all(
-      applicants.map(async (applicant) => {
+      applicants.list.map(async (applicant) => {
         const applicantContactsData = contactsData.find(
           (contactRow) =>
             // padStart is used because sometimes affiliation numbers are fetched with less than 7 letters
@@ -225,6 +226,7 @@ const ApplicantsUpload = observer(({
           <FileHandler
             handleFile={handleApplicantsFile}
             fileSize={fileSize}
+            name="applicants-list-upload"
             accept="text/plain, .csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, application/vnd.oasis.opendocument.spreadsheet"
             multiple={false}
             uploadMessage={<span>Choisissez un fichier de nouveaux demandeurs</span>}
@@ -288,6 +290,7 @@ const ApplicantsUpload = observer(({
                 <tr>
                   <th scope="col" className="text-center">
                     Sélection
+                    <br />
                     <input 
                       type="checkbox" 
                       className="form-check-input"
@@ -305,13 +308,13 @@ const ApplicantsUpload = observer(({
                   {parameterizedColumnNames.department_internal_id_column && (
                     <th scope="col">ID Editeur</th>
                   )}
+                  {parameterizedColumnNames.nir_column && <th scope="col">NIR</th>}
+                  {parameterizedColumnNames.pole_emploi_id_column && <th scope="col">ID PE</th>}
                   {parameterizedColumnNames.email_column && <th scope="col">Email</th>}
                   {parameterizedColumnNames.phone_number_column && <th scope="col">Téléphone</th>}
                   {parameterizedColumnNames.rights_opening_date_column && (
                     <th scope="col">Date d&apos;entrée flux</th>
                   )}
-                  {parameterizedColumnNames.nir_column && <th scope="col">NIR</th>}
-                  {parameterizedColumnNames.pole_emploi_id_column && <th scope="col">ID PE</th>}
                   <th scope="col" style={{ whiteSpace: "nowrap" }}>
                     Création compte
                   </th>
@@ -350,5 +353,5 @@ const ApplicantsUpload = observer(({
 
 
 export default (props) => (
-  <ApplicantsUpload applicants={Applicants} {...props} />
+  <ApplicantsUpload applicants={applicantsStore} {...props} />
 )

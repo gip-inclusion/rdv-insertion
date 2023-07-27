@@ -35,6 +35,8 @@ export default class Applicant {
     this._createdAt = formattedAttributes.createdAt;
     this._organisations = formattedAttributes.organisations || [];
     this.phoneNumberNew = null;
+    this.rightsOpeningDateNew = null;
+    this.emailNew = null;
     this.lastName = formattedAttributes.lastName;
     this.firstName = formattedAttributes.firstName;
     this.title = this.formatTitle(formattedAttributes.title);
@@ -131,8 +133,12 @@ export default class Applicant {
     return role;
   }
 
-  async inviteBy(format, isDepartmentLevel) {
-    if (!this.createdAt) await this.createAccount()
+  async inviteBy(format, isDepartmentLevel, options = { raiseError: true }) {
+    if (!this.createdAt) {
+      const success = await this.createAccount(options);
+      if (!success) return false;
+    }
+
     if (format === "sms" && !this.phoneNumber) return false;
     if (format === "email" && !this.email) return false;
     if (format === "postal" && !this.fullAddress) return false;
@@ -146,11 +152,13 @@ export default class Applicant {
       this.currentConfiguration.motif_category_id,
       this.currentOrganisation.phone_number,
     ];
-    const result = await handleApplicantInvitation(...invitationParams, format);
+    const result = await handleApplicantInvitation(...invitationParams, format, {
+      raiseError: options.raiseError,
+    });
     if (result.success) {
       // dates are set as json to match the API format
       this.updateLastInvitationDate(format, new Date().toJSON());
-    }
+    } else if (!options.raiseError) this.errors.push("Impossible d'envoyer l'invitation")
     this.triggers[`${format}Invitation`] = false;
     return true
   } 
@@ -171,8 +179,9 @@ export default class Applicant {
       if (!this.currentOrganisation) {
         this.triggers.creation = false;
         if (!options.raiseError) this.errors.push("Vous devez associer une organisation à cet utilisateur")
-        return;
+        return false;
       }
+
     }
     const { errors, success } = await handleApplicantCreation(this, this.currentOrganisation.id, {
       raiseError: options.raiseError,
@@ -183,6 +192,8 @@ export default class Applicant {
     }
 
     this.triggers.creation = false;
+
+    return success
   }
 
   resetErrors() {
@@ -284,6 +295,7 @@ export default class Applicant {
     if (this.shouldDisplay("email_column")) attributes.push(this.email);
     if (this.shouldDisplay("phone_number_column")) attributes.push(this.phoneNumber);
     if (this.shouldDisplay("rights_opening_date_column")) attributes.push(this.rightsOpeningDate);
+    if (this.shouldDisplay("nir_column")) attributes.push(this.nir);
     return attributes;
   }
 
@@ -300,6 +312,7 @@ export default class Applicant {
   }
 
   canBeInvitedBy(format) {
+    if (!this.currentConfiguration) return false;
     return this.currentConfiguration.invitation_formats.includes(format);
   }
 
