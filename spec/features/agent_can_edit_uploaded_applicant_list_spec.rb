@@ -1,0 +1,62 @@
+describe "Agents can upload applicant list", js: true do
+  include_context "with file configuration"
+
+  let!(:agent) { create(:agent, organisations: [organisation]) }
+  let!(:department) { create(:department) }
+  let!(:organisation) do
+    create(
+      :organisation,
+      department: department,
+      rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
+      # needed for the organisation applicants page
+      configurations: [configuration],
+      slug: "org1"
+    )
+  end
+  let!(:motif) { create(:motif, organisation: organisation, motif_category: motif_category) }
+
+  let!(:configuration) do
+    create(:configuration, motif_category: motif_category, file_configuration: file_configuration)
+  end
+
+  let!(:other_org_from_same_department) { create(:organisation, department: department) }
+  let!(:other_department) { create(:department) }
+  let!(:other_org_from_other_department) { create(:organisation, department: other_department) }
+
+  let!(:now) { Time.zone.parse("05/10/2022") }
+
+  let!(:motif_category) { create(:motif_category) }
+  let!(:rdv_solidarites_user_id) { 2323 }
+  let!(:rdv_solidarites_organisation_id) { 3234 }
+
+  before do
+    setup_agent_session(agent)
+    stub_rdv_solidarites_create_user(rdv_solidarites_user_id)
+    stub_rdv_solidarites_update_user(rdv_solidarites_user_id)
+    stub_send_in_blue
+    stub_rdv_solidarites_get_organisation_user(rdv_solidarites_organisation_id, rdv_solidarites_user_id)
+    stub_rdv_solidarites_invitation_requests(rdv_solidarites_user_id)
+    stub_geo_api_request("127 RUE DE GRENELLE 75007 PARIS")
+  end
+
+  context "at organisation level" do
+    before { travel_to now }
+
+    it "can edit an applicant infos" do
+      visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
+
+      attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+
+      editable_columns = 2..6
+
+      editable_columns.each do |column|
+        column = find("tr:first-child td:nth-child(#{column})")
+        column.double_click
+        send_keys("hello")
+        send_keys(:enter)
+
+        expect(column).to have_content("hello")
+      end
+    end
+  end
+end
