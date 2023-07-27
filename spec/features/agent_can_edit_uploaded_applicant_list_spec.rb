@@ -31,6 +31,7 @@ describe "Agents can upload applicant list", js: true do
 
   before do
     setup_agent_session(agent)
+    stub_applicant_creation(rdv_solidarites_user_id)
   end
 
   context "at organisation level" do
@@ -40,6 +41,8 @@ describe "Agents can upload applicant list", js: true do
       visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
       attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+
+      click_button("Créer compte")
 
       editable_columns = 2..6
 
@@ -51,6 +54,9 @@ describe "Agents can upload applicant list", js: true do
 
         expect(column).to have_content("hello")
       end
+
+      expect(Applicant.last.first_name).to include("hello")
+      expect(Applicant.last.last_name).to include("hello")
     end
   end
 end
