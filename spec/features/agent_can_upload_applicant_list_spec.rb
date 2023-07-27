@@ -684,7 +684,7 @@ describe "Agents can upload applicant list", js: true do
         it "can bulk create applicants" do
           visit new_department_upload_path(department, configuration_id: configuration.id)
 
-          attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+          attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
           first('input[type="checkbox"]', visible: :visible).click
           click_button("Actions pour toute la sélection")
@@ -699,7 +699,7 @@ describe "Agents can upload applicant list", js: true do
         it "can bulk invite" do
           visit new_department_upload_path(department, configuration_id: configuration.id)
 
-          attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+          attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
           first('input[type="checkbox"]', visible: :visible).click
           click_button("Actions pour toute la sélection")
@@ -714,7 +714,7 @@ describe "Agents can upload applicant list", js: true do
         it "highlights applicants with errors" do
           visit new_department_upload_path(department, configuration_id: configuration.id)
 
-          attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test_invalid.xlsx"))
+          attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test_invalid.xlsx"))
 
           first('input[type="checkbox"]', visible: :visible).click
           click_button("Actions pour toute la sélection")
