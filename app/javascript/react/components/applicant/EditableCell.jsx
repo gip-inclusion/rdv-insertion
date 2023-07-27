@@ -6,6 +6,9 @@ import handleApplicantUpdate from "../../lib/handleApplicantUpdate";
 function EditableCell({ applicant, cell }) {
   const [isEditing, setIsEditing] = useState(false);
 
+  // We use a derived state here to allow rollback if HTTP request fails
+  const [value, setValue] = useState(applicant[cell] || "");
+
   const handleDoubleClick = () => {
     setIsEditing(true);
 
@@ -13,9 +16,19 @@ function EditableCell({ applicant, cell }) {
 
   const handleBlur = async () => {
     setIsEditing(false);
+
+    const previousValue = applicant[cell];
+    applicant[cell] = value;
+
     if (applicant.createdAt) {
       applicant.triggers[`${cell}Update`] = true;
-      await handleApplicantUpdate(applicant.currentOrganisation.id, applicant, applicant.asJson())
+      const result = await handleApplicantUpdate(applicant.currentOrganisation.id, applicant, applicant.asJson())
+
+      if (!result.success) {
+        applicant[cell] = previousValue;
+        setValue(previousValue);
+      }
+
       applicant.triggers[`${cell}Update`] = false;
     }
   };
@@ -43,12 +56,12 @@ function EditableCell({ applicant, cell }) {
             type="text"
             // eslint-disable-next-line jsx-a11y/no-autofocus
             autoFocus
-            value={applicant[cell] ?? ""}
+            value={value ?? ""}
             onKeyDown={onEnterKeyPress}
-            onChange={(e) => { applicant[cell] = e.target.value }}
+            onChange={(e) => setValue(e.target.value)}
           />
         ) : (
-          <span>{applicant[cell] || " - "}</span>
+          <span>{value || " - "}</span>
         )}
       </div>
     </Tippy>
