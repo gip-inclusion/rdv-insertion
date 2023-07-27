@@ -11,7 +11,7 @@ function EditableCell({ applicant, cell }) {
 
   const handleDoubleClick = () => {
     setIsEditing(true);
-
+    setValue(applicant[cell]);
   };
 
   const handleBlur = async () => {
@@ -61,7 +61,7 @@ function EditableCell({ applicant, cell }) {
             onChange={(e) => setValue(e.target.value)}
           />
         ) : (
-          <span>{value || " - "}</span>
+          <span>{applicant[cell] || " - "}</span>
         )}
       </div>
     </Tippy>
