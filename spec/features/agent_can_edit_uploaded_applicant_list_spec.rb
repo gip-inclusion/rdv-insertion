@@ -31,12 +31,6 @@ describe "Agents can upload applicant list", js: true do
 
   before do
     setup_agent_session(agent)
-    stub_rdv_solidarites_create_user(rdv_solidarites_user_id)
-    stub_rdv_solidarites_update_user(rdv_solidarites_user_id)
-    stub_send_in_blue
-    stub_rdv_solidarites_get_organisation_user(rdv_solidarites_organisation_id, rdv_solidarites_user_id)
-    stub_rdv_solidarites_invitation_requests(rdv_solidarites_user_id)
-    stub_geo_api_request("127 RUE DE GRENELLE 75007 PARIS")
   end
 
   context "at organisation level" do
