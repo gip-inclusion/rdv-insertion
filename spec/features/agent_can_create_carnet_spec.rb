@@ -70,7 +70,7 @@ describe "Agents can create a carnet", js: true do
 
       visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-      attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+      attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
       expect(page).to have_button("Créer carnet", disabled: true)
       click_button("Créer compte")

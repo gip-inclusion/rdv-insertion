@@ -226,6 +226,7 @@ const ApplicantsUpload = observer(({
           <FileHandler
             handleFile={handleApplicantsFile}
             fileSize={fileSize}
+            name="applicants-list-upload"
             accept="text/plain, .csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, application/vnd.oasis.opendocument.spreadsheet"
             multiple={false}
             uploadMessage={<span>Choisissez un fichier de nouveaux demandeurs</span>}
@@ -307,13 +308,13 @@ const ApplicantsUpload = observer(({
                   {parameterizedColumnNames.department_internal_id_column && (
                     <th scope="col">ID Editeur</th>
                   )}
+                  {parameterizedColumnNames.nir_column && <th scope="col">NIR</th>}
+                  {parameterizedColumnNames.pole_emploi_id_column && <th scope="col">ID PE</th>}
                   {parameterizedColumnNames.email_column && <th scope="col">Email</th>}
                   {parameterizedColumnNames.phone_number_column && <th scope="col">Téléphone</th>}
                   {parameterizedColumnNames.rights_opening_date_column && (
                     <th scope="col">Date d&apos;entrée flux</th>
                   )}
-                  {parameterizedColumnNames.nir_column && <th scope="col">NIR</th>}
-                  {parameterizedColumnNames.pole_emploi_id_column && <th scope="col">ID PE</th>}
                   <th scope="col" style={{ whiteSpace: "nowrap" }}>
                     Création compte
                   </th>

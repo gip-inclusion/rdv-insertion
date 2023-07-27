@@ -1,10 +1,16 @@
 const updateExistingApplicantContactsData = async (applicant, parsedApplicantContactsData) => {
-  ["email", "phoneNumber", "rightsOpeningDate"].forEach((attributeName) => {
+  ["email", "rightsOpeningDate"].forEach((attributeName) => {
     const attribute = parsedApplicantContactsData[attributeName];
     if (attribute && applicant[attributeName] !== attribute) {
       applicant[`${attributeName}New`] = attribute;
     }
   });
+
+  const { phoneNumber } = parsedApplicantContactsData;
+  // since the phone are not formatted in the file we compare the 8 last digits
+  if (phoneNumber && applicant.phoneNumber?.slice(-8) !== phoneNumber.slice(-8)) {
+    applicant.phoneNumberNew = phoneNumber;
+  }
   return applicant;
 };
 

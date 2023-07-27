@@ -109,7 +109,7 @@ describe "Agents can archive and unarchive applicant", js: true do
     it "can unarchive an applicant" do
       visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-      attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+      attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
       expect(page).to have_button "Rouvrir le dossier"
       expect(page).to have_content "Dossier archivé"
@@ -133,7 +133,7 @@ describe "Agents can archive and unarchive applicant", js: true do
       it "does not show the applicant as archived" do
         visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-        attach_file("file-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+        attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
 
         expect(page).to have_button "Inviter par SMS"
 

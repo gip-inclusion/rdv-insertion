@@ -1,16 +1,14 @@
-describe RdvSolidaritesApi::InviteUser, type: :service do
+describe RdvSolidaritesApi::CreateOrRetrieveInvitationToken, type: :service do
   subject do
     described_class.call(
       rdv_solidarites_session: rdv_solidarites_session,
-      rdv_solidarites_user_id: rdv_solidarites_user_id,
-      invite_for: invite_for
+      rdv_solidarites_user_id: rdv_solidarites_user_id
     )
   end
 
   let!(:rdv_solidarites_user_id) { 27 }
   let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
   let!(:rdv_solidarites_client) { instance_double(RdvSolidaritesClient) }
-  let!(:invite_for) { nil }
 
   describe "#call" do
     let!(:invitation_token) { "sometoken" }
@@ -27,22 +25,12 @@ describe RdvSolidaritesApi::InviteUser, type: :service do
 
       it "invites the user" do
         expect(rdv_solidarites_client).to receive(:invite_user)
-          .with(rdv_solidarites_user_id, {})
+          .with(rdv_solidarites_user_id)
         subject
       end
 
       it "returns the token" do
         expect(subject.invitation_token).to eq(invitation_token)
-      end
-
-      context "when invite_for is passed" do
-        let!(:invite_for) { 1800 }
-
-        it "invites the user with a validity duration" do
-          expect(rdv_solidarites_client).to receive(:invite_user)
-            .with(rdv_solidarites_user_id, { invite_for: invite_for })
-          subject
-        end
       end
     end
 

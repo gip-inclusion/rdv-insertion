@@ -22,7 +22,7 @@ export default observer(({
 
     const result = await handleApplicantUpdate(
       applicant.currentOrganisation.id,
-      applicant.id,
+      applicant,
       attributes
     );
 

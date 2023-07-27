@@ -293,6 +293,7 @@ export default class Applicant {
     if (this.shouldDisplay("email_column")) attributes.push(this.email);
     if (this.shouldDisplay("phone_number_column")) attributes.push(this.phoneNumber);
     if (this.shouldDisplay("rights_opening_date_column")) attributes.push(this.rightsOpeningDate);
+    if (this.shouldDisplay("nir_column")) attributes.push(this.nir);
     return attributes;
   }
 
