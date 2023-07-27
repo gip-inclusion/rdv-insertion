@@ -19,7 +19,7 @@ class Rdv < ApplicationRecord
   has_many :applicants, through: :participations
 
   # Needed to build participations in process_rdv_job
-  accepts_nested_attributes_for :participations, allow_destroy: true
+  accepts_nested_attributes_for :participations, allow_destroy: true, reject_if: :participation_already_created?
 
   validates :starts_at, :duration_in_min, presence: true
   validates :rdv_solidarites_rdv_id, uniqueness: true, presence: true
@@ -97,5 +97,12 @@ class Rdv < ApplicationRecord
     return if rdv_contexts.map(&:motif_category).uniq.length < 2
 
     errors.add(:base, "Un RDV ne peut pas être lié à deux catégories de motifs différents")
+  end
+
+  def participation_already_created?(participation_attributes)
+    participation_attributes.deep_symbolize_keys[:id].nil? &&
+      participation_attributes.deep_symbolize_keys[:rdv_solidarites_participation_id]&.to_i.in?(
+        participations.map(&:rdv_solidarites_participation_id)
+      )
   end
 end
