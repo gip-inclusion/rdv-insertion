@@ -35,6 +35,8 @@ export default class Applicant {
     this._createdAt = formattedAttributes.createdAt;
     this._organisations = formattedAttributes.organisations || [];
     this.phoneNumberNew = null;
+    this.rightsOpeningDateNew = null;
+    this.emailNew = null;
     this.lastName = formattedAttributes.lastName;
     this.firstName = formattedAttributes.firstName;
     this.title = this.formatTitle(formattedAttributes.title);

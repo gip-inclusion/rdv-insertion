@@ -184,7 +184,7 @@ const ApplicantsUpload = observer(({
     if (contactsData.length === 0) return;
 
     await Promise.all(
-      applicants.map(async (applicant) => {
+      applicants.list.map(async (applicant) => {
         const applicantContactsData = contactsData.find(
           (contactRow) =>
             // padStart is used because sometimes affiliation numbers are fetched with less than 7 letters
