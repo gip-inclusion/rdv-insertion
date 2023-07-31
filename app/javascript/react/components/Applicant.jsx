@@ -33,7 +33,18 @@ function Applicant({
             onChange={event => { applicant.selected = event.target.checked }}
           />
         </td>
-        <td><EditableCell applicant={applicant} cell="shortTitle" /></td>
+        <td>
+          <EditableCell
+            type="select"
+            applicant={applicant}
+            cell="title"
+            value={applicant.title}
+            values={[
+              { key: "M", value: "monsieur" },
+              { key: "Mme", value: "madame" },
+            ]}
+          />
+        </td>
         <td><EditableCell applicant={applicant} cell="firstName" /></td>
         <td><EditableCell applicant={applicant} cell="lastName" /></td>
         {applicant.shouldDisplay("affiliation_number_column") && (
