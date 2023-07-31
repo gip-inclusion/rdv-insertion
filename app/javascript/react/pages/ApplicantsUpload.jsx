@@ -201,6 +201,7 @@ const ApplicantsUpload = observer(({
   };
 
   return (
+    <>
     <div className="container mt-5 mb-8">
       <div className="row card-white justify-content-center">
         <div className="col-4 text-center d-flex align-items-center justify-content-start">
@@ -282,72 +283,73 @@ const ApplicantsUpload = observer(({
           </div>
         </>
       )}
-      {applicants.list.length > 0 && (
-        <>
-          <div className="row my-5 justify-content-center">
-            <table className="table table-hover text-center align-middle table-striped table-bordered">
-              <thead className="align-middle dark-blue">
-                <tr>
-                  <th scope="col" className="text-center">
-                    Sélection
-                    <br />
-                    <input 
-                      type="checkbox" 
-                      className="form-check-input"
-                      checked={applicants.list.every(applicant => applicant.selected)} 
-                      onChange={event => applicants.list.forEach(applicant => { applicant.selected = event.target.checked })}
-                     />
-                  </th>
-                  <th scope="col">Civilité</th>
-                  <th scope="col">Prénom</th>
-                  <th scope="col">Nom</th>
-                  {parameterizedColumnNames.affiliation_number_column && (
-                    <th scope="col">Numéro allocataire</th>
-                  )}
-                  {parameterizedColumnNames.role_column && <th scope="col">Rôle</th>}
-                  {parameterizedColumnNames.department_internal_id_column && (
-                    <th scope="col">ID Editeur</th>
-                  )}
-                  {parameterizedColumnNames.nir_column && <th scope="col">NIR</th>}
-                  {parameterizedColumnNames.pole_emploi_id_column && <th scope="col">ID PE</th>}
-                  {parameterizedColumnNames.email_column && <th scope="col">Email</th>}
-                  {parameterizedColumnNames.phone_number_column && <th scope="col">Téléphone</th>}
-                  {parameterizedColumnNames.rights_opening_date_column && (
-                    <th scope="col">Date d&apos;entrée flux</th>
-                  )}
-                  <th scope="col" style={{ whiteSpace: "nowrap" }}>
-                    Création compte
-                  </th>
-                  {showCarnetColumn && (
-                    <th scope="col" style={{ whiteSpace: "nowrap" }}>
-                      Création carnet
-                    </th>
-                  )}
-                  {showReferentColumn && <th scope="col-3">Réferent</th>}
-                  {configuration && configuration.invitation_formats.includes("sms") && (
-                    <th scope="col-3">Invitation SMS</th>
-                  )}
-                  {configuration && configuration.invitation_formats.includes("email") && (
-                    <th scope="col-3">Invitation mail</th>
-                  )}
-                  {configuration && configuration.invitation_formats.includes("postal") && (
-                    <th scope="col-3">Invitation courrier</th>
-                  )}
-                </tr>
-              </thead>
-              <tbody>
-                <ApplicantList
-                  showReferentColumn={showReferentColumn}
-                  applicants={applicants}
-                  isDepartmentLevel={isDepartmentLevel}
-                  showCarnetColumn={showCarnetColumn}
-                />
-              </tbody>
-            </table>
-          </div>
-        </>
-      )}
     </div>
+    {applicants.list.length > 0 && (
+      <>
+        <div className="my-5 px-4" style={{ overflow: "scroll" }}>
+          <table className="table table-hover text-center align-middle table-striped table-bordered">
+            <thead className="align-middle dark-blue">
+              <tr>
+                <th scope="col" className="text-center">
+                  Sélection
+                  <br />
+                  <input 
+                    type="checkbox" 
+                    className="form-check-input"
+                    checked={applicants.list.every(applicant => applicant.selected)} 
+                    onChange={event => applicants.list.forEach(applicant => { applicant.selected = event.target.checked })}
+                    />
+                </th>
+                <th scope="col">Civilité</th>
+                <th scope="col">Prénom</th>
+                <th scope="col">Nom</th>
+                {parameterizedColumnNames.affiliation_number_column && (
+                  <th scope="col">Numéro allocataire</th>
+                )}
+                {parameterizedColumnNames.role_column && <th scope="col">Rôle</th>}
+                {parameterizedColumnNames.department_internal_id_column && (
+                  <th scope="col">ID Editeur</th>
+                )}
+                {parameterizedColumnNames.nir_column && <th scope="col">NIR</th>}
+                {parameterizedColumnNames.pole_emploi_id_column && <th scope="col">ID PE</th>}
+                {parameterizedColumnNames.email_column && <th scope="col">Email</th>}
+                {parameterizedColumnNames.phone_number_column && <th scope="col">Téléphone</th>}
+                {parameterizedColumnNames.rights_opening_date_column && (
+                  <th scope="col">Date d&apos;entrée flux</th>
+                )}
+                <th scope="col" style={{ whiteSpace: "nowrap" }}>
+                  Création compte
+                </th>
+                {showCarnetColumn && (
+                  <th scope="col" style={{ whiteSpace: "nowrap" }}>
+                    Création carnet
+                  </th>
+                )}
+                {showReferentColumn && <th scope="col-3">Réferent</th>}
+                {configuration && configuration.invitation_formats.includes("sms") && (
+                  <th scope="col-3">Invitation SMS</th>
+                )}
+                {configuration && configuration.invitation_formats.includes("email") && (
+                  <th scope="col-3">Invitation mail</th>
+                )}
+                {configuration && configuration.invitation_formats.includes("postal") && (
+                  <th scope="col-3">Invitation courrier</th>
+                )}
+              </tr>
+            </thead>
+            <tbody>
+              <ApplicantList
+                showReferentColumn={showReferentColumn}
+                applicants={applicants}
+                isDepartmentLevel={isDepartmentLevel}
+                showCarnetColumn={showCarnetColumn}
+              />
+            </tbody>
+          </table>
+        </div>
+      </>
+      )}
+    </>
   );
 })
 
