@@ -46,13 +46,19 @@ describe "Agents can upload applicant list", js: true do
 
       editable_columns = 2..6
 
-      editable_columns.each do |column|
-        column = find("tr:first-child td:nth-child(#{column})")
+      editable_columns.each do |index|
+        column = find("tr:first-child td:nth-child(#{index})")
         column.double_click
-        send_keys("hello")
-        send_keys(:enter)
 
-        expect(column).to have_content("hello")
+        if index == 2
+          column.find("select").set("Madame")
+          expect(column).to have_content("Mme")
+        else
+          send_keys("hello")
+          send_keys(:enter)
+
+          expect(column).to have_content("hello")
+        end
       end
 
       expect(Applicant.last.first_name).to include("hello")
