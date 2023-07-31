@@ -338,7 +338,7 @@ const ApplicantsUpload = observer(({
               <tbody>
                 <ApplicantList
                   showReferentColumn={showReferentColumn}
-                  applicants={applicants.list}
+                  applicants={applicants}
                   isDepartmentLevel={isDepartmentLevel}
                   showCarnetColumn={showCarnetColumn}
                 />

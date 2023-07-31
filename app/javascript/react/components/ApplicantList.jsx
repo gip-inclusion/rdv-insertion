@@ -9,7 +9,7 @@ export default observer(({
   setDownloadInProgress,
   showReferentColumn,
   showCarnetColumn,
-}) => applicants.map((applicant) => (
+}) => applicants.invalidFirsts.map((applicant) => (
     <Applicant
       applicant={applicant}
       isDepartmentLevel={isDepartmentLevel}
