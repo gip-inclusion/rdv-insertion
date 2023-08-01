@@ -102,7 +102,9 @@ module ApplicantsHelper
 
   def rdv_solidarites_rdv_url(organisation, applicant)
     organisation_id = organisation.rdv_solidarites_organisation_id
-    "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{organisation_id}/agent_searches?user_ids[]=#{applicant.rdv_solidarites_user_id}"
+    user_id = applicant.rdv_solidarites_user_id
+
+    "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{organisation_id}/agent_searches?user_ids[]=#{user_id}"
   end
 
   def display_convocation_formats(convocation_formats)
