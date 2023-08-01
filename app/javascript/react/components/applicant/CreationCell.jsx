@@ -22,6 +22,20 @@ export default observer(({
     applicant.createAccount();
   };
 
+  if (applicant.errors.includes("createAccount")) {
+    return (
+      <td>
+        <button
+          type="submit"
+          className="btn btn-danger"
+          onClick={() => handleCreationClick()}
+        >
+          Résoudre les erreurs
+        </button>
+      </td>
+    )
+  }
+
   return applicant.isArchivedInCurrentDepartment() ? (
     <td>
       <button
@@ -85,26 +99,14 @@ export default observer(({
     )
   ) : (
     <td>
-      {
-        applicant.errors.includes("createAccount") ? (
-          <button
-            type="submit"
-            className="btn btn-danger"
-            onClick={() => handleCreationClick()}
-          >
-            Résoudre les erreurs
-          </button>
-        ) : (
-          <button
-            type="submit"
-            disabled={applicant.triggers.creation}
-            className="btn btn-primary btn-blue"
-            onClick={() => handleCreationClick()}
-          >
-            {applicant.triggers.creation ? "Création..." : "Créer compte"}
-          </button>
-        )
-      }
+      <button
+        type="submit"
+        disabled={applicant.triggers.creation}
+        className="btn btn-primary btn-blue"
+        onClick={() => handleCreationClick()}
+      >
+        {applicant.triggers.creation ? "Création..." : "Créer compte"}
+      </button>
     </td>
   );
 });

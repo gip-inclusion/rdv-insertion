@@ -136,7 +136,7 @@ export default class Applicant {
   }
 
   async inviteBy(format, isDepartmentLevel, options = { raiseError: true }) {
-    if (!this.createdAt) {
+    if (!this.createdAt || !this.belongsToCurrentOrg()) {
       const success = await this.createAccount(options);
       if (!success) return false;
     }
@@ -189,7 +189,7 @@ export default class Applicant {
       raiseError: options.raiseError,
     });
 
-    if (!success) {
+    if (!success && !options.raiseError) {
       this.errors = ["createAccount"];
     } else {
       this.resetErrors();
