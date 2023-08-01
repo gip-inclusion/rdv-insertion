@@ -3,13 +3,14 @@ import { observer } from "mobx-react-lite";
 import Tippy from "@tippyjs/react";
 import handleApplicantUpdate from "../../lib/handleApplicantUpdate";
 
-function EditableCell({ applicant, cell }) {
+function EditableCell({ applicant, cell, type, values }) {
   const [isEditing, setIsEditing] = useState(false);
 
   // We use a derived state here to allow rollback if HTTP request fails
   const [value, setValue] = useState(applicant[cell] || "");
 
   const handleDoubleClick = () => {
+    if (isEditing) return;
     setIsEditing(true);
     setValue(applicant[cell]);
   };
@@ -41,6 +42,40 @@ function EditableCell({ applicant, cell }) {
     }
   };
 
+  let input;
+  let label = applicant[cell] || " - ";
+
+  if (type === "select") {
+    input = (
+      <select
+        type="text"
+        autoFocus
+        className="form-select"
+        onKeyDown={onEnterKeyPress}
+        onChange={(e) => setValue(e.target.value)}
+        style={{ width: 90 }}
+      >
+        <option value=""> - </option>
+        {values.map(({ key, value: v }) => (
+          <option key={key} value={v} selected={value === v}>{key}</option>
+        ))}
+      </select>
+   )
+   label = values.find(el => el.value === applicant[cell])?.key || " - "
+  } else {
+    input = (
+     <input
+       type="text"
+       autoFocus
+       className="form-control"
+       style={{ minWidth: 100 }}
+       value={value ?? ""}
+       onKeyDown={onEnterKeyPress}
+       onChange={(e) => setValue(e.target.value)}
+     />
+   )
+  }
+
   return (
     <Tippy
       delay={800}
@@ -53,17 +88,7 @@ function EditableCell({ applicant, cell }) {
         style={{ cursor: "pointer" }}
       >
 
-        {isEditing ? (
-          <input
-            type="text"
-            autoFocus
-            value={value ?? ""}
-            onKeyDown={onEnterKeyPress}
-            onChange={(e) => setValue(e.target.value)}
-          />
-        ) : (
-          <span>{applicant[cell] || " - "}</span>
-        )}
+        {isEditing ? input : ( <span>{label}</span> )}
       </div>
     </Tippy>
   );

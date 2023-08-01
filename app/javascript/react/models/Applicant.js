@@ -31,6 +31,8 @@ export default class Applicant {
     Object.keys(attributes).forEach((key) => {
       formattedAttributes[key] = attributes[key]?.toString()?.trim();
     });
+    this.uniqueKey = Math.random().toString(36).substring(7);
+ 
     this._id = formattedAttributes.id;
     this._createdAt = formattedAttributes.createdAt;
     this._organisations = formattedAttributes.organisations || [];
@@ -166,7 +168,6 @@ export default class Applicant {
 
   async createAccount(options = { raiseError: true }) {
     this.triggers.creation = true;
-    this.resetErrors();
 
     if (!this.currentOrganisation) {
       this.currentOrganisation = await retrieveRelevantOrganisation(
@@ -190,6 +191,8 @@ export default class Applicant {
 
     if (!success) {
       this.errors = ["createAccount"];
+    } else {
+      this.resetErrors();
     }
 
     this.triggers.creation = false;

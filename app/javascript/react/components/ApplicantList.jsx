@@ -10,13 +10,13 @@ export default observer(({
   showReferentColumn,
   showCarnetColumn,
 }) => applicants.invalidFirsts.map((applicant) => (
-    <Applicant
+  <Applicant
       applicant={applicant}
       isDepartmentLevel={isDepartmentLevel}
       downloadInProgress={downloadInProgress}
       setDownloadInProgress={setDownloadInProgress}
-      key={applicant.departmentInternalId || applicant.uid}
+      key={applicant.uniqueKey}
       showReferentColumn={showReferentColumn}
       showCarnetColumn={showCarnetColumn}
     />
-  )));
+)));
