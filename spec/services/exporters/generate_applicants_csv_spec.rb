@@ -109,6 +109,9 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
         expect(csv).to include("Première invitation envoyée le")
         expect(csv).to include("Dernière invitation envoyée le")
         expect(csv).to include("Date du dernier RDV")
+        expect(csv).to include("Heure du dernier RDV")
+        expect(csv).to include("Motif du dernier RDV")
+        expect(csv).to include("Nature du dernier RDV")
         expect(csv).to include("Dernier RDV pris en autonomie ?")
         expect(csv).to include("RDV honoré en - de 30 jours ?")
         expect(csv).to include("Date d'orientation")
@@ -158,10 +161,13 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
 
         it "displays the rdvs infos" do
           expect(csv).to include("25/05/2022") # last rdv date
-          expect(csv).to include("25/05/2022;Oui") # last rdv taken in autonomy ?
+          expect(csv).to include("0h00") # last rdv time
+          expect(csv).to include("RSA orientation sur site") # last rdv motif
+          expect(csv).to include("individuel") # last rdv type
+          expect(csv).to include("individuel;Oui") # last rdv taken in autonomy ?
           expect(csv).to include("Statut du RDV à préciser") # rdv_context status
           expect(csv).to include("Statut du RDV à préciser;Oui") # first rdv in less than 30 days ?
-          expect(csv).to include("25/05/2022;Oui;Statut du RDV à préciser;Oui;25/05/2022") # orientation date
+          expect(csv).to include("individuel;Oui;Statut du RDV à préciser;Oui;25/05/2022") # orientation date
         end
 
         it "displays the archive infos" do

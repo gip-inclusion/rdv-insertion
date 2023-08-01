@@ -44,6 +44,9 @@ module Exporters
        "Première invitation envoyée le",
        "Dernière invitation envoyée le",
        "Date du dernier RDV",
+       "Heure du dernier RDV",
+       "Motif du dernier RDV",
+       "Nature du dernier RDV",
        "Dernier RDV pris en autonomie ?",
        Applicant.human_attribute_name(:status),
        "1er RDV honoré en - de 30 jours ?",
@@ -73,6 +76,9 @@ module Exporters
        display_date(first_invitation_date(applicant)),
        display_date(last_invitation_date(applicant)),
        display_date(last_rdv_date(applicant)),
+       display_time(last_rdv_date(applicant)),
+       last_rdv_motif(applicant),
+       last_rdv_type(applicant),
        rdv_taken_in_autonomy?(applicant),
        human_rdv_context_status(applicant),
        rdv_seen_in_less_than_30_days?(applicant),
@@ -124,6 +130,12 @@ module Exporters
       format_date(date)
     end
 
+    def display_time(datetime)
+      return "" if datetime.blank?
+
+      format_time(datetime)
+    end
+
     def first_invitation_date(applicant)
       @motif_category.present? ? rdv_context(applicant)&.first_invitation_sent_at : applicant.first_invitation_sent_at
     end
@@ -138,6 +150,16 @@ module Exporters
 
     def last_rdv(applicant)
       @motif_category.present? ? rdv_context(applicant)&.last_rdv : applicant.last_rdv
+    end
+
+    def last_rdv_motif(applicant)
+      last_rdv(applicant).present? ? last_rdv(applicant).motif.name : ""
+    end
+
+    def last_rdv_type(applicant)
+      return "" if last_rdv(applicant).blank?
+
+      last_rdv(applicant).collectif? ? "collectif" : "individuel"
     end
 
     def rdv_taken_in_autonomy?(applicant)
@@ -162,8 +184,12 @@ module Exporters
       department_level? ? @structure.id : @structure.department_id
     end
 
-    def format_date(date)
-      date&.strftime("%d/%m/%Y")
+    def format_date(datetime)
+      datetime&.strftime("%d/%m/%Y")
+    end
+
+    def format_time(datetime)
+      datetime&.strftime("%kh%M")
     end
   end
 end
