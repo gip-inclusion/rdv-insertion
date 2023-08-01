@@ -111,6 +111,7 @@ describe Rdv do
 
     context "when id is nil and participation already exist" do
       let!(:participation) { create(:participation, rdv_solidarites_participation_id: 18) }
+      let!(:rdv) { participation.rdv }
       let!(:participation_attributes) do
         {
           id: nil, applicant: applicant, rdv_context: rdv_context,
@@ -119,10 +120,13 @@ describe Rdv do
       end
       let!(:rdv_count_before) { described_class.count }
       let!(:participation_count_before) { Participation.count }
-      let!(:rdv) { create(:rdv, participations_attributes: participation_attributes) }
 
-      it "creates a rdv but no participation" do
-        expect(described_class.count).to eq(rdv_count_before + 1)
+      before do
+        rdv.update!(status: "seen", participations_attributes: participation_attributes)
+      end
+
+      it "updates the rdv but no dot creates a participation" do
+        expect(rdv.reload.status).to eq("seen")
         expect(Participation.count).to eq(participation_count_before)
       end
     end
