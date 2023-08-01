@@ -100,6 +100,26 @@ describe Notifications::GenerateLetter, type: :service do
           expect(subject.errors).to eq(["Le numéro de téléphone de l'allocataire n'est pas un mobile"])
         end
       end
+
+      context "when the template attribute are overriden by the configuration attributes" do
+        before do
+          configuration.update!(template_rdv_title_by_phone_override: "nouveau type de rendez-vous téléphonique")
+        end
+
+        it "generates the content with the overriden attributes" do
+          subject
+          content = unescape_html(notification.content)
+          expect(content).to include("20 AVENUE DE SEGUR")
+          expect(content).to include("DIRECTION DÉPARTEMENTAL")
+          expect(content).to include(
+            "Convocation à un nouveau type de rendez-vous téléphonique dans le cadre de votre RSA"
+          )
+          expect(content).to include(
+            "Un travailleur social vous appellera <span class=\"bold-blue\">le dimanche 25 décembre 2022 à 09h30</span>" \
+            " sur votre numéro de téléphone: <span class=\"bold-blue\">+33607070707</span>"
+          )
+        end
+      end
     end
 
     context "when it is a participation cancelled notification" do

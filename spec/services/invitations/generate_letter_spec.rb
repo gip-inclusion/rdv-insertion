@@ -173,6 +173,30 @@ describe Invitations::GenerateLetter, type: :service do
           "En l'absence d'action de votre part, votre RSA pourra être suspendu ou réduit."
         )
       end
+
+      context "when the template attributes are overriden by the configuration attributes" do
+        before do
+          configuration.update!(
+            template_rdv_title_override: "nouveau type de rendez-vous",
+            template_rdv_purpose_override: "démarrer un test fonctionnel"
+          )
+        end
+
+        it "generates the pdf with the overriden content" do
+          subject
+          content = unescape_html(invitation.content)
+          expect(content).to include("Objet : Nouveau type de rendez-vous dans le cadre de votre RSA")
+          expect(content).to include(
+            "Vous êtes bénéficiaire du RSA et à ce titre vous êtes invité à participer à un " \
+            "nouveau type de rendez-vous afin de démarrer un test fonctionnel"
+          )
+          expect(content).to include("saisissez dans un délai de 3 jours à réception de ce courrier")
+          expect(content).to include("Ce RDV est obligatoire.")
+          expect(content).not_to include(
+            "En l'absence d'action de votre part, votre RSA pourra être suspendu ou réduit."
+          )
+        end
+      end
     end
 
     context "when the context is orientation_france_travail" do
