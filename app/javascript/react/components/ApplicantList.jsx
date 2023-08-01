@@ -1,15 +1,15 @@
 import React from "react";
+import { observer } from "mobx-react-lite";
 import Applicant from "./Applicant";
 
-export default function ApplicantList({
+export default observer(({
   applicants,
   isDepartmentLevel,
   downloadInProgress,
   setDownloadInProgress,
   showReferentColumn,
   showCarnetColumn,
-}) {
-  return applicants.map((applicant) => (
+}) => applicants.invalidFirsts.map((applicant) => (
     <Applicant
       applicant={applicant}
       isDepartmentLevel={isDepartmentLevel}
@@ -19,5 +19,4 @@ export default function ApplicantList({
       showReferentColumn={showReferentColumn}
       showCarnetColumn={showCarnetColumn}
     />
-  ));
-}
+  )));

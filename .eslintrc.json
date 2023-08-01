@@ -20,6 +20,8 @@
     "no-param-reassign": "off",
     "class-methods-use-this": "off",
     "no-nested-ternary": "off",
-    "no-use-before-define": "off"
+    "no-use-before-define": "off",
+    "react/jsx-props-no-spreading": "off",
+    "jsx-a11y/no-autofocus": "off"
   }
 }

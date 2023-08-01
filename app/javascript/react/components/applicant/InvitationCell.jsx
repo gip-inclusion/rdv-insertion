@@ -1,7 +1,7 @@
 import React from "react";
+import { observer } from "mobx-react-lite";
 import Tippy from "@tippyjs/react";
 
-import handleApplicantInvitation from "../../lib/handleApplicantInvitation";
 import { getFrenchFormatDateString } from "../../../lib/datesHelper";
 
 const CTA_BY_FORMAT = {
@@ -16,30 +16,16 @@ const CTA_BY_FORMAT = {
   },
 };
 
-export default function InvitationCell({
+export default observer(({
   applicant,
   format,
-  isTriggered,
-  setIsTriggered,
   isDepartmentLevel,
-}) {
+}) => {
   const handleInvitationClick = async () => {
-    setIsTriggered({ ...isTriggered, [`${format}Invitation`]: true });
-    const invitationParams = [
-      applicant.id,
-      applicant.department.id,
-      applicant.currentOrganisation.id,
-      isDepartmentLevel,
-      applicant.currentConfiguration.motif_category_id,
-      applicant.currentOrganisation.phone_number,
-    ];
-    const result = await handleApplicantInvitation(...invitationParams, format);
-    if (result.success) {
-      // dates are set as json to match the API format
-      applicant.updateLastInvitationDate(format, new Date().toJSON());
-    }
-    setIsTriggered({ ...isTriggered, [`${format}Invitation`]: false });
+    applicant.inviteBy(format, isDepartmentLevel);
   };
+
+  const actionType = `${format}Invitation`
 
   return (
     applicant.canBeInvitedBy(format) && (
@@ -56,26 +42,36 @@ export default function InvitationCell({
               <i className="fas fa-check" />
             </Tippy>
           ) : (
-            <button
-              type="submit"
-              disabled={
-                isTriggered[`${format}Invitation`] ||
-                !applicant.createdAt ||
-                !applicant.requiredAttributeToInviteBy(format) ||
-                !applicant.belongsToCurrentOrg()
-              }
-              className="btn btn-primary btn-blue"
-              onClick={() => handleInvitationClick()}
-            >
-              {isTriggered[`${format}Invitation`]
-                ? "Invitation..."
-                : applicant.hasParticipations()
-                ? CTA_BY_FORMAT[format].secondTime
-                : CTA_BY_FORMAT[format].firstTime}
-            </button>
+            applicant.errors.includes(actionType) ? (
+              <button
+                type="submit"
+                className="btn btn-danger"
+                onClick={() => handleInvitationClick()}
+              >
+                Résoudre les erreurs
+              </button>
+             ) : (
+              <button
+                type="submit"
+                disabled={
+                  applicant.triggers[actionType] ||
+                  !applicant.createdAt ||
+                  !applicant.requiredAttributeToInviteBy(format) ||
+                  !applicant.belongsToCurrentOrg()
+                }
+                className="btn btn-primary btn-blue"
+                onClick={() => handleInvitationClick()}
+              >
+                {applicant.triggers[actionType]
+                  ? "Invitation..."
+                  : applicant.hasParticipations()
+                  ? CTA_BY_FORMAT[format].secondTime
+                  : CTA_BY_FORMAT[format].firstTime}
+              </button>
+             )
           )}
         </td>
       </>
     )
   );
-}
+})

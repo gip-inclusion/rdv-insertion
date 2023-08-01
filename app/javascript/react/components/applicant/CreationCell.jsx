@@ -1,52 +1,32 @@
 import React from "react";
+import { observer } from "mobx-react-lite";
 import Tippy from "@tippyjs/react";
 
-import handleApplicantCreation from "../../lib/handleApplicantCreation";
 import handleArchiveDelete from "../../lib/handleArchiveDelete";
-import retrieveRelevantOrganisation from "../../../lib/retrieveRelevantOrganisation";
 
 import { getFrenchFormatDateString } from "../../../lib/datesHelper";
 
-export default function CreationCell({
+export default observer(({
   applicant,
   isDepartmentLevel,
-  isTriggered,
-  setIsTriggered,
-}) {
+}) => {
   const handleFileReopen = async () => {
-    setIsTriggered({ ...isTriggered, unarchive: true });
+    applicant.triggers.unarchive = true;
 
     await handleArchiveDelete(applicant);
 
-    setIsTriggered({ ...isTriggered, unarchive: false });
+    applicant.triggers.unarchive = false;
   };
 
   const handleCreationClick = async () => {
-    setIsTriggered({ ...isTriggered, creation: true });
-
-    if (!applicant.currentOrganisation) {
-      applicant.currentOrganisation = await retrieveRelevantOrganisation(
-        applicant.departmentNumber,
-        applicant.linkedOrganisationSearchTerms,
-        applicant.fullAddress
-      );
-
-      // If there is still no organisation it means the assignation was cancelled by agent
-      if (!applicant.currentOrganisation) {
-        setIsTriggered({ ...isTriggered, creation: false });
-        return;
-      }
-    }
-    await handleApplicantCreation(applicant, applicant.currentOrganisation.id);
-
-    setIsTriggered({ ...isTriggered, creation: false });
+    applicant.createAccount();
   };
 
   return applicant.isArchivedInCurrentDepartment() ? (
     <td>
       <button
         type="submit"
-        disabled={isTriggered.unarchive}
+        disabled={applicant.triggers.unarchive}
         className="btn btn-primary btn-blue"
         onClick={() => handleFileReopen()}
       >
@@ -69,11 +49,11 @@ export default function CreationCell({
         <td>
           <button
             type="submit"
-            disabled={isTriggered.creation}
+            disabled={applicant.triggers.creation}
             className="btn btn-primary btn-blue"
             onClick={() => handleCreationClick()}
           >
-            {isTriggered.creation ? "En cours..." : "Ajouter à cette organisation"}
+            {applicant.triggers.creation ? "En cours..." : "Ajouter à cette organisation"}
           </button>
         </td>
       </Tippy>
@@ -105,14 +85,26 @@ export default function CreationCell({
     )
   ) : (
     <td>
-      <button
-        type="submit"
-        disabled={isTriggered.creation}
-        className="btn btn-primary btn-blue"
-        onClick={() => handleCreationClick()}
-      >
-        {isTriggered.creation ? "Création..." : "Créer compte"}
-      </button>
+      {
+        applicant.errors.includes("createAccount") ? (
+          <button
+            type="submit"
+            className="btn btn-danger"
+            onClick={() => handleCreationClick()}
+          >
+            Résoudre les erreurs
+          </button>
+        ) : (
+          <button
+            type="submit"
+            disabled={applicant.triggers.creation}
+            className="btn btn-primary btn-blue"
+            onClick={() => handleCreationClick()}
+          >
+            {applicant.triggers.creation ? "Création..." : "Créer compte"}
+          </button>
+        )
+      }
     </td>
   );
-}
+});

@@ -1,5 +1,9 @@
+import { makeAutoObservable } from "mobx"
 import formatPhoneNumber from "../../lib/formatPhoneNumber";
 import retrieveLastInvitationDate from "../../lib/retrieveLastInvitationDate";
+import handleApplicantCreation from "../lib/handleApplicantCreation";
+import retrieveRelevantOrganisation from "../../lib/retrieveRelevantOrganisation";
+import handleApplicantInvitation from "../lib/handleApplicantInvitation";
 import { getFrenchFormatDateString } from "../../lib/datesHelper";
 
 const ROLES = {
@@ -27,6 +31,12 @@ export default class Applicant {
     Object.keys(attributes).forEach((key) => {
       formattedAttributes[key] = attributes[key]?.toString()?.trim();
     });
+    this._id = formattedAttributes.id;
+    this._createdAt = formattedAttributes.createdAt;
+    this._organisations = formattedAttributes.organisations || [];
+    this.phoneNumberNew = null;
+    this.rightsOpeningDateNew = null;
+    this.emailNew = null;
     this.lastName = formattedAttributes.lastName;
     this.firstName = formattedAttributes.firstName;
     this.title = this.formatTitle(formattedAttributes.title);
@@ -57,6 +67,26 @@ export default class Applicant {
     this.currentOrganisation = organisation;
     this.currentConfiguration = currentConfiguration;
     this.columnNames = columnNames;
+    this.selected = false;
+    this.archives = [];
+
+    this.resetErrors();
+
+    this.triggers = {
+      creation: false,
+      unarchive: false,
+      smsInvitation: false,
+      emailInvitation: false,
+      postalInvitation: false,
+      referentAssignation: false,
+      emailUpdate: false,
+      phoneNumberUpdate: false,
+      rightsOpeningDateUpdate: false,
+      allAttributesUpdate: false,
+      carnetCreation: false,
+    };
+
+    makeAutoObservable(this);
   }
 
   get uid() {
@@ -103,7 +133,82 @@ export default class Applicant {
     return role;
   }
 
+  async inviteBy(format, isDepartmentLevel, options = { raiseError: true }) {
+    if (!this.createdAt) {
+      const success = await this.createAccount(options);
+      if (!success) return false;
+    }
+
+    if (format === "sms" && !this.phoneNumber) return false;
+    if (format === "email" && !this.email) return false;
+    if (format === "postal" && !this.fullAddress) return false;
+
+    const actionType = `${format}Invitation`;
+    this.triggers[actionType] = true;
+    const invitationParams = [
+      this.id,
+      this.department.id,
+      this.currentOrganisation.id,
+      isDepartmentLevel,
+      this.currentConfiguration.motif_category_id,
+      this.currentOrganisation.phone_number,
+    ];
+    const result = await handleApplicantInvitation(...invitationParams, format, {
+      raiseError: options.raiseError,
+    });
+    if (result.success) {
+      // dates are set as json to match the API format
+      this.updateLastInvitationDate(format, new Date().toJSON());
+    } else if (!options.raiseError) this.errors.push(actionType)
+    this.triggers[actionType] = false;
+    return true
+  } 
+
+  async createAccount(options = { raiseError: true }) {
+    this.triggers.creation = true;
+    this.resetErrors();
+
+    if (!this.currentOrganisation) {
+      this.currentOrganisation = await retrieveRelevantOrganisation(
+        this.departmentNumber,
+        this.linkedOrganisationSearchTerms,
+        this.fullAddress,
+        { raiseError: options.raiseError }
+      );
+
+      // If there is still no organisation it means the assignation was cancelled by agent
+      if (!this.currentOrganisation) {
+        this.triggers.creation = false;
+        if (!options.raiseError) this.errors.push("createAccount")
+        return false;
+      }
+
+    }
+    const { success } = await handleApplicantCreation(this, this.currentOrganisation.id, {
+      raiseError: options.raiseError,
+    });
+
+    if (!success) {
+      this.errors = ["createAccount"];
+    }
+
+    this.triggers.creation = false;
+
+    return success
+  }
+
+  resetErrors() {
+    this.errors = []
+  }
+
+  get isValid() {
+    return !this.errors || this.errors.length === 0
+  }
+
+
+
   updateWith(upToDateApplicant) {
+    this.resetErrors();
     this.createdAt = upToDateApplicant.created_at;
     this.invitedAt = upToDateApplicant.invited_at;
     this.id = upToDateApplicant.id;
@@ -210,6 +315,7 @@ export default class Applicant {
   }
 
   canBeInvitedBy(format) {
+    if (!this.currentConfiguration) return false;
     return this.currentConfiguration.invitation_formats.includes(format);
   }
 

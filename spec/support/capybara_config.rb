@@ -3,10 +3,17 @@ WebMock.disable_net_connect!(
 )
 Capybara.register_driver :selenium do |app|
   browser_options = Selenium::WebDriver::Chrome::Options.new(
-    # these args seem to reduce test flakyness
-    args: %w[headless no-sandbox disable-gpu window-size=1500,1000],
     "goog:loggingPrefs": { browser: "ALL" }
   )
+
+  browser_options.add_argument("--window-size=1500,1000")
+
+  unless ENV["WITH_BROWSER_VISIBLE"]
+    browser_options.add_argument("--headless")
+    browser_options.add_argument("--no-sandbox")
+    browser_options.add_argument("--disable-gpu")
+  end
+
   browser_options.add_preference(:download, prompt_for_download: false, default_directory: DownloadHelper::PATH.to_s)
   browser_options.add_preference(:browser, set_download_behavior: { behavior: "allow" })
 
