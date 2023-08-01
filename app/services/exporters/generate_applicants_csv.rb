@@ -43,6 +43,7 @@ module Exporters
        Applicant.human_attribute_name(:role),
        "Première invitation envoyée le",
        "Dernière invitation envoyée le",
+       "Dernière convocation envoyée le",
        "Date du dernier RDV",
        "Heure du dernier RDV",
        "Motif du dernier RDV",
@@ -75,6 +76,7 @@ module Exporters
        applicant.role,
        display_date(first_invitation_date(applicant)),
        display_date(last_invitation_date(applicant)),
+       display_date(last_notification_date(applicant)),
        display_date(last_rdv_date(applicant)),
        display_time(last_rdv_date(applicant)),
        last_rdv_motif(applicant),
@@ -142,6 +144,10 @@ module Exporters
 
     def last_invitation_date(applicant)
       @motif_category.present? ? rdv_context(applicant)&.last_invitation_sent_at : applicant.last_invitation_sent_at
+    end
+
+    def last_notification_date(applicant)
+      @motif_category.present? ? rdv_context(applicant)&.last_notification_sent_at : applicant.last_notification_sent_at
     end
 
     def last_rdv_date(applicant)

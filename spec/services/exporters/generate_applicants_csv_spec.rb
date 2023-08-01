@@ -46,6 +46,9 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
   let!(:last_invitation) do
     create(:invitation, applicant: applicant1, format: "email", sent_at: Time.zone.parse("2022-05-22"))
   end
+  let!(:notification) do
+    create(:notification, participation: participation_rdv, format: "email", sent_at: Time.zone.parse("2022-06-22"))
+  end
   let!(:rdv_context) do
     create(
       :rdv_context, invitations: [first_invitation, last_invitation],
@@ -87,7 +90,7 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
         expect(subject.filename).to eq("Export_beneficiaires_rsa_orientation_organisation_drome_rsa.csv")
       end
 
-      it "generates headers" do
+      it "generates headers" do # rubocop:disable RSpec/ExampleLength
         expect(csv).to start_with("\uFEFF")
         expect(csv).to include("Civilité")
         expect(csv).to include("Nom")
@@ -108,6 +111,7 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
         expect(csv).to include("Statut")
         expect(csv).to include("Première invitation envoyée le")
         expect(csv).to include("Dernière invitation envoyée le")
+        expect(csv).to include("Dernière convocation envoyée le")
         expect(csv).to include("Date du dernier RDV")
         expect(csv).to include("Heure du dernier RDV")
         expect(csv).to include("Motif du dernier RDV")
@@ -157,6 +161,10 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
           expect(csv).to include("21/05/2022") # first invitation date
           expect(csv).to include("22/05/2022") # last invitation date
           expect(csv).not_to include("(Délai dépassé)") # invitation delay
+        end
+
+        it "displays the notifications infos" do
+          expect(csv).to include("22/06/2022") # last notification date
         end
 
         it "displays the rdvs infos" do
