@@ -16,9 +16,9 @@ describe "Agents can preview messages contents", js: true do
 
     click_button("Invitation")
 
-    expect(page).to have_css("span.text-success", text: "rendez-vous d'orientation", wait: 10)
-    expect(page).to have_css("span.text-success", text: "bénéficiaire du RSA")
-    expect(page).to have_css("span.text-success", text: "démarrer un parcours d'accompagnement")
+    expect(page).to have_css("span.text-purple", text: "rendez-vous d'orientation", wait: 10)
+    expect(page).to have_css("span.text-purple", text: "bénéficiaire du RSA")
+    expect(page).to have_css("span.text-purple", text: "démarrer un parcours d'accompagnement")
 
     find("button.btn-close").click
 
@@ -27,10 +27,10 @@ describe "Agents can preview messages contents", js: true do
 
     click_button("Notification")
 
-    expect(page).to have_css("span.text-success", text: "rendez-vous d'orientation téléphonique", wait: 10)
-    expect(page).to have_css("span.text-success", text: "rendez-vous d'orientation")
-    expect(page).to have_css("span.text-success", text: "bénéficiaire du RSA")
-    expect(page).to have_css("span.text-success", text: "démarrer un parcours d'accompagnement")
+    expect(page).to have_css("span.text-purple", text: "rendez-vous d'orientation téléphonique", wait: 10)
+    expect(page).to have_css("span.text-purple", text: "rendez-vous d'orientation")
+    expect(page).to have_css("span.text-purple", text: "bénéficiaire du RSA")
+    expect(page).to have_css("span.text-purple", text: "démarrer un parcours d'accompagnement")
 
     expect(page).to have_css("button.btn-close")
     find("button.btn-close").click
@@ -50,13 +50,13 @@ describe "Agents can preview messages contents", js: true do
 
     click_button("Invitation")
 
-    expect(page).to have_css("span.text-success", text: "nouveau type de rendez-vous", wait: 10)
-    expect(page).to have_css("span.text-success", text: "une personne remarquable")
-    expect(page).to have_css("span.text-success", text: "vous rencontrer")
+    expect(page).to have_css("span.text-purple", text: "nouveau type de rendez-vous", wait: 10)
+    expect(page).to have_css("span.text-purple", text: "une personne remarquable")
+    expect(page).to have_css("span.text-purple", text: "vous rencontrer")
 
-    expect(page).not_to have_css("span.text-success", text: "rendez-vous d'orientation")
-    expect(page).not_to have_css("span.text-success", text: "bénéficiaire du RSA")
-    expect(page).not_to have_css("span.text-success", text: "démarrer un parcours d'accompagnement")
+    expect(page).not_to have_css("span.text-purple", text: "rendez-vous d'orientation")
+    expect(page).not_to have_css("span.text-purple", text: "bénéficiaire du RSA")
+    expect(page).not_to have_css("span.text-purple", text: "démarrer un parcours d'accompagnement")
 
     find("button.btn-close").click
 
@@ -64,14 +64,14 @@ describe "Agents can preview messages contents", js: true do
 
     click_button("Notification")
 
-    expect(page).to have_css("span.text-success", text: "nouveau type de rendez-vous", wait: 10)
-    expect(page).to have_css("span.text-success", text: "nouveau coup de téléphone")
-    expect(page).to have_css("span.text-success", text: "une personne remarquable")
-    expect(page).to have_css("span.text-success", text: "vous rencontrer")
+    expect(page).to have_css("span.text-purple", text: "nouveau type de rendez-vous", wait: 10)
+    expect(page).to have_css("span.text-purple", text: "nouveau coup de téléphone")
+    expect(page).to have_css("span.text-purple", text: "une personne remarquable")
+    expect(page).to have_css("span.text-purple", text: "vous rencontrer")
 
-    expect(page).not_to have_css("span.text-success", text: "rendez-vous d'orientation téléphonique")
-    expect(page).not_to have_css("span.text-success", text: "rendez-vous d'orientation")
-    expect(page).not_to have_css("span.text-success", text: "bénéficiaire du RSA")
-    expect(page).not_to have_css("span.text-success", text: "démarrer un parcours d'accompagnement")
+    expect(page).not_to have_css("span.text-purple", text: "rendez-vous d'orientation téléphonique")
+    expect(page).not_to have_css("span.text-purple", text: "rendez-vous d'orientation")
+    expect(page).not_to have_css("span.text-purple", text: "bénéficiaire du RSA")
+    expect(page).not_to have_css("span.text-purple", text: "démarrer un parcours d'accompagnement")
   end
 end
