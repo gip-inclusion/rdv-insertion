@@ -53,6 +53,9 @@ describe "Agents can upload applicant list", js: true do
         if index == 2
           column.find("select").set("Madame")
           expect(column).to have_content("Mme")
+        elsif index == 6
+          column.find("select").set("CJT")
+          expect(column).to have_content("CJT")
         else
           send_keys("hello")
           send_keys(:enter)
