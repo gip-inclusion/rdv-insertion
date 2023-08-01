@@ -186,7 +186,10 @@ module RdvSolidaritesWebhooks
 
     def invalidate_related_invitations
       # We invalidate the invitations linked to the new or updated rdvs to avoid double appointments
-      related_invitations.each do |invitation|
+      related_invitations
+        .joins(rdv_context: :motif_category)
+        .where(motif_categories: { participation_optional: false })
+        .each do |invitation|
         InvalidateInvitationJob.perform_async(invitation.id)
       end
     end
