@@ -115,8 +115,8 @@ describe Notifications::GenerateLetter, type: :service do
             "Convocation à un nouveau type de rendez-vous téléphonique dans le cadre de votre RSA"
           )
           expect(content).to include(
-            "Un travailleur social vous appellera <span class=\"bold-blue\">le dimanche 25 décembre 2022 à 09h30</span>" \
-            " sur votre numéro de téléphone: <span class=\"bold-blue\">+33607070707</span>"
+            "Un travailleur social vous appellera <span class=\"bold-blue\">le dimanche 25 décembre 2022 " \
+            "à 09h30</span> sur votre numéro de téléphone: <span class=\"bold-blue\">+33607070707</span>"
           )
         end
       end

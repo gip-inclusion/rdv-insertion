@@ -21,7 +21,8 @@ module Previews
         department: @department,
         uuid: SecureRandom.send(:choose, [*"A".."Z", *"0".."9"], 8)
       )
-      # needed to access @invitation.configurations when the record linking @invitation and @organisation is not persisted
+      # needed to access @invitation.configurations when the record linking @invitation and @organisation
+      # is not persisted
       @invitation.association(:configurations).instance_variable_set("@target", [@configuration])
     end
 
