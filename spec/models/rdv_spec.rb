@@ -87,4 +87,75 @@ describe Rdv do
       end
     end
   end
+
+  describe "nested participation creation" do
+    let!(:applicant) { create(:applicant) }
+    let!(:rdv_context) { create(:rdv_context) }
+
+    context "when id is nil and participation does not exist" do
+      let!(:rdv_count_before) { described_class.count }
+      let!(:participation_count_before) { Participation.count }
+      let!(:participation_attributes) do
+        {
+          id: nil, applicant: applicant, rdv_context: rdv_context,
+          created_by: "agent", rdv_solidarites_participation_id: 17
+        }
+      end
+      let!(:rdv) { create(:rdv, participations_attributes: participation_attributes) }
+
+      it "creates a rdv and a participation" do
+        expect(described_class.count).to eq(rdv_count_before + 1)
+        expect(Participation.count).to eq(participation_count_before + 1)
+      end
+    end
+
+    context "when id is nil and participation already exist" do
+      let!(:participation) { create(:participation, rdv_solidarites_participation_id: 18) }
+      let!(:participation_attributes) do
+        {
+          id: nil, applicant: applicant, rdv_context: rdv_context,
+          created_by: "agent", rdv_solidarites_participation_id: 18
+        }
+      end
+      let!(:rdv_count_before) { described_class.count }
+      let!(:participation_count_before) { Participation.count }
+      let!(:rdv) { create(:rdv, participations_attributes: participation_attributes) }
+
+      it "creates a rdv but no participation" do
+        expect(described_class.count).to eq(rdv_count_before + 1)
+        expect(Participation.count).to eq(participation_count_before)
+      end
+    end
+
+    context "when participation id is present" do
+      let!(:rdv) { create(:rdv) }
+      let!(:participation) { rdv.participations.first }
+      let!(:participation_attributes) { { id: participation.id, created_by: "agent" } }
+      let!(:participation_count_before) { Participation.count }
+
+      before do
+        rdv.reload.update!({ participations_attributes: participation_attributes })
+      end
+
+      it "updates the existing participation" do
+        expect(Participation.count).to eq(participation_count_before)
+        expect(participation.reload.created_by).to eq("agent")
+      end
+    end
+
+    context "when participation id is present & destroy attributes is set to true" do
+      let!(:rdv) { create(:rdv) }
+      let!(:participation) { rdv.participations.first }
+      let!(:participation_attributes) { { id: participation.id, _destroy: true } }
+      let!(:participation_count_before) { Participation.count }
+
+      before do
+        rdv.reload.update!({ participations_attributes: participation_attributes })
+      end
+
+      it "destroys the existing participation" do
+        expect(Participation.count).to eq(participation_count_before - 1)
+      end
+    end
+  end
 end
