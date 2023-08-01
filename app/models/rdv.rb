@@ -101,16 +101,10 @@ class Rdv < ApplicationRecord
 
   def participation_already_created?(participation_attributes)
     attr = participation_attributes.deep_symbolize_keys
+    return if attr[:id].present?
 
-    if attr[:id].present? && attr[:_destroy] == true
-      participations.find(attr[:id]).destroy!
-    elsif attr[:id].present?
-      participations.find(attr[:id]).update(attr)
-    elsif (
-            participation = Participation.find_by(
-              rdv_solidarites_participation_id: attr[:rdv_solidarites_participation_id]
-            )
-          )
+    if (participation =
+          Participation.find_by(rdv_solidarites_participation_id: attr[:rdv_solidarites_participation_id]))
       self.participations = [participation]
     else
       false
