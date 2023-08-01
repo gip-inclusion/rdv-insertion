@@ -56,7 +56,7 @@ RSpec.describe ReplyTransferMailer do
       expect(mail.body.encoded).to match("Invitation à prendre rdv envoyée le jeudi 22 juin 2023 à 00h00")
       expect(mail.body.encoded).to match("Motif : RSA orientation")
       expect(mail.body.encoded).to match(
-        "href=\"#{ENV['HOST']}/organisations/#{organisation.id}/applicants/#{applicant.id}\""
+        "href=\"#{ENV['HOST']}/departments/#{organisation.department.id}/applicants/#{applicant.id}\""
       )
       expect(mail.body.encoded).to match("Voir la fiche usager")
     end
@@ -93,7 +93,7 @@ RSpec.describe ReplyTransferMailer do
       expect(mail.body.encoded).to match("Lieu : DINUM")
       expect(mail.body.encoded).to match("Adresse : 20 avenue de Ségur 75007 Paris")
       expect(mail.body.encoded).to match(
-        "href=\"#{ENV['HOST']}/organisations/#{organisation.id}/applicants/#{applicant.id}\""
+        "href=\"#{ENV['HOST']}/departments/#{organisation.department.id}/applicants/#{applicant.id}\""
       )
       expect(mail.body.encoded).to match("Voir la fiche usager")
     end
@@ -125,7 +125,7 @@ RSpec.describe ReplyTransferMailer do
       expect(mail.body.encoded).to match("33782605941")
       expect(mail.body.encoded).to match("#{organisation.name} - organisation@departement.fr")
       expect(mail.body.encoded).to match(
-        "href=\"#{ENV['HOST']}/organisations/#{organisation.id}/applicants/#{applicant.id}\""
+        "href=\"#{ENV['HOST']}/departments/#{organisation.department.id}/applicants/#{applicant.id}\""
       )
       expect(mail.body.encoded).to match("Voir la fiche usager")
     end
