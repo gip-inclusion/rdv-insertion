@@ -38,7 +38,6 @@ function Applicant({
             type="select"
             applicant={applicant}
             cell="title"
-            value={applicant.title}
             values={[
               { key: "M", value: "monsieur" },
               { key: "Mme", value: "madame" },
@@ -50,7 +49,19 @@ function Applicant({
         {applicant.shouldDisplay("affiliation_number_column") && (
           <td><EditableCell applicant={applicant} cell="affiliationNumber" /></td>
         )}
-        {applicant.shouldDisplay("role_column") && <td><EditableCell applicant={applicant} cell="shortRole" /></td>}
+        {applicant.shouldDisplay("role_column") && (
+          <td>
+            <EditableCell
+              applicant={applicant}
+              cell="role"
+              type="select"
+              values={[
+                { key: "DEM", value: "demandeur" },
+                { key: "CJT", value: "conjoint" },
+              ]}
+            />
+          </td>
+        )}
         {applicant.shouldDisplay("department_internal_id_column") && (
           <td><EditableCell applicant={applicant} cell="departmentInternalId" /></td>
         )}

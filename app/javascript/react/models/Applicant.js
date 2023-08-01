@@ -427,7 +427,6 @@ export default class Applicant {
 
     const attributeIsMissing = [this.affiliationNumber, this.role].some((attribute) => !attribute);
     if (attributeIsMissing) {
-      console.log(this)
       return null;
     }
     return btoa(`${this.affiliationNumber} - ${this.role}`);
@@ -435,7 +434,6 @@ export default class Applicant {
 
   asJson() {
     return {
-      shortTitle: this.shortTitle,
       title: this.title,
       last_name: this.lastName,
       first_name: this.firstName,

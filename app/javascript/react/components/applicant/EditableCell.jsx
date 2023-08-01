@@ -51,14 +51,13 @@ function EditableCell({ applicant, cell, type, values }) {
         type="text"
         autoFocus
         className="form-select"
-        value={applicant[cell]}
         onKeyDown={onEnterKeyPress}
         onChange={(e) => setValue(e.target.value)}
         style={{ width: 90 }}
       >
         <option value=""> - </option>
         {values.map(({ key, value: v }) => (
-          <option key={key} value={v}>{key}</option>
+          <option key={key} value={v} selected={value === v}>{key}</option>
         ))}
       </select>
    )
@@ -69,6 +68,7 @@ function EditableCell({ applicant, cell, type, values }) {
        type="text"
        autoFocus
        className="form-control"
+       style={{ minWidth: 100 }}
        value={value ?? ""}
        onKeyDown={onEnterKeyPress}
        onChange={(e) => setValue(e.target.value)}
