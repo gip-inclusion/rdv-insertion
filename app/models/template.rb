@@ -1,8 +1,4 @@
 class Template < ApplicationRecord
-  OVERRIDABLE_ATTRIBUTES = [
-    :rdv_title_by_phone, :rdv_title, :applicant_designation, :rdv_purpose
-  ].freeze
-
   validates :model, :rdv_title, :rdv_title_by_phone, :rdv_purpose, :applicant_designation, :rdv_subject,
             presence: true
 

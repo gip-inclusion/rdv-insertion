@@ -122,8 +122,8 @@ module Previews
     end
 
     def overridable_texts
-      Template::OVERRIDABLE_ATTRIBUTES.map do |attribute|
-        @notification.send(attribute)
+      ::Configuration.template_override_attributes.map do |attribute|
+        @notification.send(attribute.gsub("template_", "").gsub("_override", ""))
       end
     end
   end
