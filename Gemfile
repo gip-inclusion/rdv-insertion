@@ -118,8 +118,6 @@ group :test do
   gem "selenium-webdriver"
   gem "pdf-reader"
   gem "rack_session_access"
-  # Easy installation and use of web drivers to run system tests with browsers
-  gem "webdrivers"
   gem "webmock"
 end
 

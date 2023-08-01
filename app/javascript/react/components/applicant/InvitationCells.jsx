@@ -7,8 +7,6 @@ export default function InvitationCells({
   applicant,
   invitationsColspan,
   isDepartmentLevel,
-  isTriggered,
-  setIsTriggered,
 }) {
   return (
     /* ----------------------------- Disabled invitations cases -------------------------- */
@@ -44,23 +42,14 @@ export default function InvitationCells({
         {/* --------------------------------- Invitations ------------------------------- */}
         <InvitationCell
           applicant={applicant}
-          isTriggered={isTriggered}
-          setIsTriggered={setIsTriggered}
-          isDepartmentLevel={isDepartmentLevel}
           format="sms"
         />
         <InvitationCell
           applicant={applicant}
-          isTriggered={isTriggered}
-          setIsTriggered={setIsTriggered}
-          isDepartmentLevel={isDepartmentLevel}
           format="email"
         />
         <InvitationCell
           applicant={applicant}
-          isTriggered={isTriggered}
-          setIsTriggered={setIsTriggered}
-          isDepartmentLevel={isDepartmentLevel}
           format="postal"
         />
       </>

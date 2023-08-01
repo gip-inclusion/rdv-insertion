@@ -31,12 +31,7 @@ describe "Agents can upload applicant list", js: true do
 
   before do
     setup_agent_session(agent)
-    stub_rdv_solidarites_create_user(rdv_solidarites_user_id)
-    stub_rdv_solidarites_update_user(rdv_solidarites_user_id)
-    stub_send_in_blue
-    stub_rdv_solidarites_get_organisation_user(rdv_solidarites_organisation_id, rdv_solidarites_user_id)
-    stub_rdv_solidarites_invitation_requests(rdv_solidarites_user_id)
-    stub_geo_api_request("127 RUE DE GRENELLE 75007 PARIS")
+    stub_applicant_creation(rdv_solidarites_user_id)
   end
 
   context "at organisation level" do
@@ -677,6 +672,53 @@ describe "Agents can upload applicant list", js: true do
 
       expect(page).to have_button("Inviter par Email", disabled: false)
       expect(page).to have_button("Générer courrier", disabled: false)
+    end
+
+    describe "Bulk actions" do
+      context "without errors" do
+        it "can bulk create applicants" do
+          visit new_department_upload_path(department, configuration_id: configuration.id)
+
+          attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+
+          first('input[type="checkbox"]', visible: :visible).click
+          click_button("Actions pour toute la sélection")
+          expect(page).not_to have_css("td i.fas.fa-link")
+
+          expect do
+            click_button("Créer comptes")
+            expect(page).to have_css("td i.fas.fa-link")
+          end.to change(Applicant, :count).by(1)
+        end
+
+        it "can bulk invite" do
+          visit new_department_upload_path(department, configuration_id: configuration.id)
+
+          attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+
+          first('input[type="checkbox"]', visible: :visible).click
+          click_button("Actions pour toute la sélection")
+          expect(page).not_to have_css("td i.fas.fa-check")
+
+          click_button("Invitation par sms")
+          expect(page).to have_css("td i.fas.fa-check")
+        end
+      end
+
+      context "with errors" do
+        it "highlights applicants with errors" do
+          visit new_department_upload_path(department, configuration_id: configuration.id)
+
+          attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test_invalid.xlsx"))
+
+          first('input[type="checkbox"]', visible: :visible).click
+          click_button("Actions pour toute la sélection")
+          expect(page).not_to have_css("tr.table-danger")
+
+          click_button("Créer comptes")
+          expect(page).to have_css("tr.table-danger")
+        end
+      end
     end
 
     describe "Category selection" do

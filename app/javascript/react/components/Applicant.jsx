@@ -1,31 +1,19 @@
-import React, { useState } from "react";
+import React from "react";
+import { observer } from "mobx-react-lite";
 
 import CreationCell from "./applicant/CreationCell";
 import InvitationCells from "./applicant/InvitationCells";
 import ContactInfosExtraLine from "./applicant/ContactInfosExtraLine";
 import ReferentAssignationCell from "./applicant/ReferentAssignationCell";
 import CarnetCreationCell from "./applicant/CarnetCreationCell";
+import EditableCell from "./applicant/EditableCell";
 
-export default function Applicant({
+function Applicant({
   applicant,
   isDepartmentLevel,
   showCarnetColumn,
   showReferentColumn,
 }) {
-  const [isTriggered, setIsTriggered] = useState({
-    creation: false,
-    unarchive: false,
-    smsInvitation: false,
-    emailInvitation: false,
-    postalInvitation: false,
-    referentAssignation: false,
-    emailUpdate: false,
-    phoneNumberUpdate: false,
-    rightsOpeningDateUpdate: false,
-    allAttributesUpdate: false,
-    carnetCreation: false,
-  });
-
   const computeInvitationsColspan = () => {
     let colSpan = 0;
     if (applicant.canBeInvitedBy("sms")) colSpan += 1;
@@ -36,16 +24,46 @@ export default function Applicant({
 
   return (
     <>
-      <tr className={applicant.isArchivedInCurrentDepartment() ? "table-danger" : ""}>
-        <td>{applicant.shortTitle}</td>
-        <td>{applicant.firstName}</td>
-        <td>{applicant.lastName}</td>
+      <tr className={applicant.isArchivedInCurrentDepartment() || !applicant.isValid ? "table-danger" : ""}>
+        <td>
+          <input
+            type="checkbox"
+            className="form-check-input"
+            checked={applicant.selected}
+            onChange={event => { applicant.selected = event.target.checked }}
+          />
+        </td>
+        <td>
+          <EditableCell
+            type="select"
+            applicant={applicant}
+            cell="title"
+            values={[
+              { key: "M", value: "monsieur" },
+              { key: "Mme", value: "madame" },
+            ]}
+          />
+        </td>
+        <td><EditableCell applicant={applicant} cell="firstName" /></td>
+        <td><EditableCell applicant={applicant} cell="lastName" /></td>
         {applicant.shouldDisplay("affiliation_number_column") && (
-          <td>{applicant.affiliationNumber ?? " - "}</td>
+          <td><EditableCell applicant={applicant} cell="affiliationNumber" /></td>
         )}
-        {applicant.shouldDisplay("role_column") && <td>{applicant.shortRole ?? " - "}</td>}
+        {applicant.shouldDisplay("role_column") && (
+          <td>
+            <EditableCell
+              applicant={applicant}
+              cell="role"
+              type="select"
+              values={[
+                { key: "DEM", value: "demandeur" },
+                { key: "CJT", value: "conjoint" },
+              ]}
+            />
+          </td>
+        )}
         {applicant.shouldDisplay("department_internal_id_column") && (
-          <td>{applicant.departmentInternalId ?? " - "}</td>
+          <td><EditableCell applicant={applicant} cell="departmentInternalId" /></td>
         )}
         {applicant.shouldDisplay("nir_column") && <td>{applicant.nir ?? " - "}</td>}
         {applicant.shouldDisplay("pole_emploi_id_column") && (
@@ -53,17 +71,17 @@ export default function Applicant({
         )}
         {applicant.shouldDisplay("email_column") && (
           <td className={applicant.emailUpdated ? "table-success" : ""}>
-            {applicant.email ?? " - "}
+            <EditableCell applicant={applicant} cell="email" />
           </td>
         )}
         {applicant.shouldDisplay("phone_number_column") && (
           <td className={applicant.phoneNumberUpdated ? "table-success" : ""}>
-            {applicant.phoneNumber ?? " - "}
+            <EditableCell applicant={applicant} cell="phoneNumber" />
           </td>
         )}
         {applicant.shouldDisplay("rights_opening_date_column") && (
           <td className={applicant.rightsOpeningDateUpdated ? "table-success" : ""}>
-            {applicant.rightsOpeningDate ?? " - "}
+            <EditableCell applicant={applicant} cell="rightsOpeningDate" />
           </td>
         )}
         {/* ------------------------------- Account creation cell ----------------------------- */}
@@ -71,8 +89,6 @@ export default function Applicant({
         <CreationCell
           applicant={applicant}
           isDepartmentLevel={isDepartmentLevel}
-          isTriggered={isTriggered}
-          setIsTriggered={setIsTriggered}
         />
 
         {/* ------------------------------- Carnet creation cell ----------------------------- */}
@@ -80,8 +96,6 @@ export default function Applicant({
         {showCarnetColumn && (
           <CarnetCreationCell
             applicant={applicant}
-            isTriggered={isTriggered}
-            setIsTriggered={setIsTriggered}
           />
         )}
 
@@ -91,8 +105,6 @@ export default function Applicant({
           <ReferentAssignationCell
             applicant={applicant}
             isDepartmentLevel={isDepartmentLevel}
-            isTriggered={isTriggered}
-            setIsTriggered={setIsTriggered}
           />
         )}
 
@@ -102,8 +114,6 @@ export default function Applicant({
             applicant={applicant}
             invitationsColspan={computeInvitationsColspan()}
             isDepartmentLevel={isDepartmentLevel}
-            isTriggered={isTriggered}
-            setIsTriggered={setIsTriggered}
           />
         )}
       </tr>
@@ -114,10 +124,10 @@ export default function Applicant({
         <ContactInfosExtraLine
           applicant={applicant}
           invitationsColspan={computeInvitationsColspan()}
-          isTriggered={isTriggered}
-          setIsTriggered={setIsTriggered}
         />
       )}
     </>
   );
 }
+
+export default observer(Applicant)

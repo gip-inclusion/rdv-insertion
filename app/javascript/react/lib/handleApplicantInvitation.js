@@ -9,7 +9,8 @@ const handleApplicantInvitation = async (
   isDepartmentLevel,
   motifCategoryId,
   helpPhoneNumber,
-  invitationFormat
+  invitationFormat,
+  options = { raiseError: true }
 ) => {
   if (invitationFormat === "postal") {
     return createInvitationLetter(
@@ -30,7 +31,7 @@ const handleApplicantInvitation = async (
     helpPhoneNumber,
     motifCategoryId
   );
-  if (!result.success) {
+  if (!result.success && options.raiseError) {
     Swal.fire(
       "Impossible d'inviter l'utilisateur",
       result.errors && result.errors.join("<br/><br/>"),

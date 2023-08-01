@@ -23,6 +23,24 @@ describe Applicants::Validate, type: :service do
       it("is a success") { is_a_success }
     end
 
+    context "when an applicant has no identifier" do
+      let!(:applicant) do
+        create(
+          :applicant,
+          department_internal_id: nil, nir: nil, affiliation_number: nil, phone_number: nil, email: nil
+        )
+      end
+
+      it("is a failure") { is_a_failure }
+
+      it "returns an error" do
+        expect(subject.errors).to include(
+          "Il doit y avoir au moins un attribut permettant d'identifier la personne " \
+          "(NIR, email, numéro de tel, ID interne, numéro d'allocataire/rôle)"
+        )
+      end
+    end
+
     context "when an applicant shares the same department internal id" do
       let!(:other_applicant) do
         create(
