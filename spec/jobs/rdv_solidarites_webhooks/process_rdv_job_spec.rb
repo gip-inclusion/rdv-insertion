@@ -229,6 +229,15 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
           expect(InvalidateInvitationJob).not_to receive(:perform_async).with(invitation3.id)
           subject
         end
+
+        context "when participation is optional" do
+          let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation", participation_optional: true) }
+
+          it "does not enqueue a job to invalidate the related sent valid invitations" do
+            expect(InvalidateInvitationJob).not_to receive(:perform_async)
+            subject
+          end
+        end
       end
 
       context "it upserts the rdv (for a participation update and destroy)" do
