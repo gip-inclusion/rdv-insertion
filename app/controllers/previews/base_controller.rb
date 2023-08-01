@@ -1,17 +1,27 @@
 module Previews
   class BaseController < ApplicationController
+    before_action :set_configuration, :set_template, :set_organisation, :set_motif_category, :set_department
+
     private
 
-    def set_sms_contents
-      raise NotImplementedError
+    def set_template
+      @template = @configuration.template
     end
 
-    def set_mail_contents
-      raise NotImplementedError
+    def set_configuration
+      @configuration = ::Configuration.find(params[:configuration_id])
     end
 
-    def set_letter_contents
-      raise NotImplementedError
+    def set_organisation
+      @organisation = @configuration.organisation
+    end
+
+    def set_department
+      @department = @organisation.department
+    end
+
+    def set_motif_category
+      @motif_category = @configuration.motif_category
     end
 
     def set_and_format_contents

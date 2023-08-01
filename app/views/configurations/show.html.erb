@@ -25,9 +25,9 @@
     <%= render "common/attribute_display", record: @configuration, attribute: :invite_to_applicant_organisations_only %>
   </div>
 
-  <h3>Fichier d'import</h3>
-  <%= render "file_configurations/file_configuration", file_configuration: @file_configuration %>
-
   <h3>Contenu des messages</h3>
   <%= render "configurations/messages_contents/messages_content", template: @template, configuration: @configuration %>
+
+  <h3>Fichier d'import</h3>
+  <%= render "file_configurations/file_configuration", file_configuration: @file_configuration %>
 </div>

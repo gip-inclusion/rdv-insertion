@@ -1,5 +1,5 @@
 <div>
-  <div class="row card-white rdv-insertion-form justify-content-center mb-2">
+  <div class="row rdv-insertion-form justify-content-center my-4">
     <div class="mb-4">
       <div class="row d-flex justify-content-start flex-wrap">
         <%= render "common/attribute_input", f:f, attribute: :template_rdv_title_override, value: configuration.template_rdv_title_override || template.rdv_title %>
@@ -8,11 +8,5 @@
         <%= render "common/attribute_input", f:f, attribute: :template_rdv_purpose_override, value: configuration.template_rdv_purpose_override || template.rdv_purpose %>
       </div>
     </div>
-  </div>
-  <div class="d-flex justify-content-end mb-4">
-    <%= button_tag("Enregistrer", type: "submit", class: "btn btn-blue") %>
-    <%= link_to configuration_messages_content_path(configuration) do %>
-      <button class="btn btn-blue-out mx-2">Annuler</button>
-    <% end %>
   </div>
 </div>

@@ -1,7 +1,6 @@
 module Previews
   class NotificationsController < Previews::BaseController
-    before_action :set_configuration, :set_template, :set_organisation, :set_department, :set_motif_category,
-                  :set_applicant_example, :set_rdv_example, :set_notification_example,
+    before_action :set_applicant_example, :set_rdv_example, :set_notification_example,
                   only: [:index]
 
     attr_reader :applicant, :notification, :rdv
@@ -13,26 +12,6 @@ module Previews
     end
 
     private
-
-    def set_template
-      @template = @configuration.template
-    end
-
-    def set_configuration
-      @configuration = ::Configuration.find(params[:configuration_id])
-    end
-
-    def set_organisation
-      @organisation = @configuration.organisation
-    end
-
-    def set_department
-      @department = @organisation.department
-    end
-
-    def set_motif_category
-      @motif_category = @configuration.motif_category
-    end
 
     def set_applicant_example
       @applicant = Applicant.new(

@@ -58,10 +58,6 @@ Rails.application.routes.draw do
     resource :closings, only: [:create, :destroy]
   end
 
-  resources :configurations, module: :configurations, only: [] do
-    resource :messages_content, only: [:edit, :show, :update]
-  end
-
   namespace :applicants do
     resources :searches, only: :create
   end

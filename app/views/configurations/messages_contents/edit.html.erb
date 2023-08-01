@@ -1,5 +1,0 @@
-<%= turbo_frame_tag "messages_content_#{@configuration.id}" do %>
-  <%= simple_form_for(@configuration, url: configuration_messages_content_path(@configuration), html: { method: :patch }) do |f| %>
-    <%= render "messages_content_form", f: f, configuration: @configuration, template: @template %>
-  <% end %>
-<% end %>
