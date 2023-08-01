@@ -2,7 +2,7 @@ class NotificationMailerError < StandardError; end
 
 class NotificationMailer < ApplicationMailer
   before_action :set_notification, :set_applicant, :set_rdv, :set_department, :set_rdv_subject,
-                :set_signature_lines, :set_rdv_title, :set_applicant_designation,
+                :set_signature_lines, :set_rdv_title, :set_rdv_title_by_phone, :set_applicant_designation,
                 :set_mandatory_warning, :set_punishable_warning, :set_instruction_for_rdv,
                 :set_rdv_purpose, :verify_phone_number_presence, :set_organisation_logo_path, :set_department_logo_path
 
@@ -19,7 +19,7 @@ class NotificationMailer < ApplicationMailer
     mail(
       to: @applicant.email,
       subject: "[Important - #{@rdv_subject.upcase}] Vous êtes #{@applicant.conjugate('convoqué')}" \
-               " à un #{@rdv_title}"
+               " à un #{@rdv_title_by_phone}"
     )
   end
 
@@ -34,7 +34,7 @@ class NotificationMailer < ApplicationMailer
   def by_phone_participation_updated
     mail(
       to: @applicant.email,
-      subject: "[Important - #{@rdv_subject.upcase}] Votre #{@rdv_title} a été modifié"
+      subject: "[Important - #{@rdv_subject.upcase}] Votre #{@rdv_title_by_phone} a été modifié"
     )
   end
 
@@ -52,7 +52,7 @@ class NotificationMailer < ApplicationMailer
     mail(
       to: @applicant.email,
       subject: "[Rappel - #{@rdv_subject.upcase}] Vous êtes #{@applicant.conjugate('convoqué')}" \
-               " à un #{@rdv_title}"
+               " à un #{@rdv_title_by_phone}"
     )
   end
 
