@@ -189,7 +189,7 @@ export default class Applicant {
       raiseError: options.raiseError,
     });
 
-    if (!success) {
+    if (!success && !options.raiseError) {
       this.errors = ["createAccount"];
     } else {
       this.resetErrors();
