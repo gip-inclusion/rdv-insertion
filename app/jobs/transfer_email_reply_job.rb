@@ -3,7 +3,7 @@ class TransferEmailReplyJob < ApplicationJob
   RDV_UUID_EXTRACTOR = /rdv\+([a-f0-9-]*)@reply\.rdv-insertion\.fr/
 
   def perform(brevo_hash)
-    @brevo_hash = brevo_hash.with_indifferent_access
+    @brevo_hash = brevo_hash.deep_symbolize_keys
 
     if invitation
       notify_agents_of_invitation_reply
@@ -48,13 +48,11 @@ class TransferEmailReplyJob < ApplicationJob
   end
 
   def invitation_uuid
-    @invitation_uuid ||=
-      receiver_address.start_with?("invitation") && receiver_address.match(INVITATION_UUID_EXTRACTOR)&.captures&.first
+    @invitation_uuid ||= receiver_address.match(INVITATION_UUID_EXTRACTOR)&.captures&.first
   end
 
   def rdv_uuid
-    @rdv_uuid ||=
-      receiver_address.start_with?("rdv") && receiver_address.match(RDV_UUID_EXTRACTOR)&.captures&.first
+    @rdv_uuid ||= receiver_address.match(RDV_UUID_EXTRACTOR)&.captures&.first
   end
 
   def receiver_address
