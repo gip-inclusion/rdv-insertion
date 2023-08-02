@@ -9,6 +9,9 @@
       <%= link_to rdv_solidarites_user_url(@organisation, @applicant), target: "_blank" do %>
         <button class="btn btn-blue">Voir sur RDV-Solidarités<i class="fas fa-external-link-alt icon-sm"></i></button>
       <% end %>
+      <%= link_to rdv_solidarites_find_rdv_url(@organisation, @applicant), target: "_blank" do %>
+        <button class="btn btn-blue">Trouver un RDV sur RDV-Solidarités<i class="fas fa-external-link-alt icon-sm"></i></button>
+      <% end %>
       <% if @department.carnet_de_bord_deploiement_id? %>
         <% if @applicant.carnet_de_bord_carnet_id? %>
           <%= render "carnet_de_bord_carnet_link", carnet_url: @applicant.carnet_de_bord_carnet_url %>
