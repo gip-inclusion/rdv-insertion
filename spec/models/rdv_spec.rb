@@ -110,8 +110,9 @@ describe Rdv do
     end
 
     context "when id is nil and participation already exist" do
-      let!(:participation) { create(:participation, rdv_solidarites_participation_id: 18) }
-      let!(:rdv) { participation.rdv }
+      let!(:rdv) do
+        create(:rdv, participations: [create(:participation, rdv_solidarites_participation_id: 18)])
+      end
       let!(:participation_attributes) do
         {
           id: nil, applicant: applicant, rdv_context: rdv_context,
