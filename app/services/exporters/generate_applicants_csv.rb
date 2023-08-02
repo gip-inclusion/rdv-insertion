@@ -129,13 +129,13 @@ module Exporters
     def display_date(date)
       return "" if date.blank?
 
-      format_date(date)
+      date&.strftime("%d/%m/%Y")
     end
 
     def display_time(datetime)
       return "" if datetime.blank?
 
-      format_time(datetime)
+      datetime&.strftime("%kh%M")
     end
 
     def first_invitation_date(applicant)
@@ -147,7 +147,9 @@ module Exporters
     end
 
     def last_notification_date(applicant)
-      @motif_category.present? ? rdv_context(applicant)&.last_notification_sent_at : applicant.last_notification_sent_at
+      return rdv_context(applicant)&.last_sent_convocation_sent_at if @motif_category.present?
+
+      applicant.last_sent_convocation_sent_at
     end
 
     def last_rdv_date(applicant)
@@ -156,6 +158,12 @@ module Exporters
 
     def last_rdv(applicant)
       @motif_category.present? ? rdv_context(applicant)&.last_rdv : applicant.last_rdv
+    end
+
+    def last_participation(applicant)
+      return rdv_context(applicant)&.last_created_participation if @motif_category.present?
+
+      applicant.last_created_participation
     end
 
     def last_rdv_motif(applicant)
@@ -169,9 +177,9 @@ module Exporters
     end
 
     def rdv_taken_in_autonomy?(applicant)
-      return "" if last_rdv(applicant).blank?
+      return "" if last_participation(applicant).blank?
 
-      I18n.t("boolean.#{last_rdv(applicant).created_by_user?}")
+      I18n.t("boolean.#{last_participation(applicant).created_by_user?}")
     end
 
     def rdv_seen_in_less_than_30_days?(applicant)
@@ -188,14 +196,6 @@ module Exporters
 
     def department_id
       department_level? ? @structure.id : @structure.department_id
-    end
-
-    def format_date(datetime)
-      datetime&.strftime("%d/%m/%Y")
-    end
-
-    def format_time(datetime)
-      datetime&.strftime("%kh%M")
     end
   end
 end
