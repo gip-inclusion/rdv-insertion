@@ -100,7 +100,7 @@ module ApplicantsHelper
     "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{organisation_id}/users/#{applicant.rdv_solidarites_user_id}"
   end
 
-  def rdv_solidarites_rdv_url(organisation, applicant)
+  def rdv_solidarites_find_rdv_url(organisation, applicant)
     organisation_id = organisation.rdv_solidarites_organisation_id
     user_id = applicant.rdv_solidarites_user_id
 
