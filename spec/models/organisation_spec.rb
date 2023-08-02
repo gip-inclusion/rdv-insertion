@@ -28,6 +28,12 @@ describe Organisation do
   end
 
   describe "email validation" do
+    context "email is nil" do
+      let(:organisation) { build(:organisation, email: nil) }
+
+      it { expect(organisation).not_to be_valid }
+    end
+
     context "email is valid" do
       let(:organisation) { build(:organisation, email: "some@test.fr") }
 

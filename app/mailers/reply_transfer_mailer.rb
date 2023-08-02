@@ -7,11 +7,11 @@ class ReplyTransferMailer < ApplicationMailer
                 :set_reply_body, :set_attachment_names
 
   def forward_invitation_reply_to_organisation
-    mail(to: @organisation.email, subject: "Réponse d'un usager à une invitation")
+    mail(to: support_email, subject: "Réponse d'un usager à une invitation")
   end
 
   def forward_notification_reply_to_organisation
-    mail(to: @organisation.email, subject: "Réponse d'un usager à une convocation")
+    mail(to: support_email, subject: "Réponse d'un usager à une convocation")
   end
 
   def forward_to_default_mailbox
@@ -30,6 +30,10 @@ class ReplyTransferMailer < ApplicationMailer
 
   def set_organisation
     @organisation = @rdv.present? ? @rdv.organisation : @invitation.organisations.last
+  end
+
+  def support_email
+    @organisation.email || "support@rdv-insertion.fr"
   end
 
   def set_source_mail

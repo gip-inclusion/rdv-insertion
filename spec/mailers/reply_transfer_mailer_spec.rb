@@ -12,7 +12,7 @@ RSpec.describe ReplyTransferMailer do
   end
   let!(:reply_body) { "Je souhaite annuler mon RDV" }
   let!(:organisation) { create(:organisation, email: "organisation@departement.fr") }
-  let!(:applicant) do
+  let(:applicant) do
     create(:applicant, email: "bene_ficiaire@gmail.com",
                        first_name: "Bénédicte", last_name: "Ficiaire", organisations: [organisation])
   end
@@ -24,12 +24,12 @@ RSpec.describe ReplyTransferMailer do
     create(:rdv, uuid: rdv_uuid, organisation: organisation, participations: [participation],
                  lieu: lieu, starts_at: Date.parse("2023/06/29"))
   end
-  let!(:invitation) do
+  let(:invitation) do
     create(:invitation, applicant: applicant, organisations: [organisation], sent_at: Date.parse("2023/06/22"))
   end
 
   describe "#forward_invitation_reply_to_organisation" do
-    let!(:receiver_address) { "invitation+#{invitation.uuid}@reply.rdv-insertion.fr" }
+    let(:receiver_address) { "invitation+#{invitation.uuid}@reply.rdv-insertion.fr" }
     let!(:mail) do
       described_class.with(
         invitation: invitation,
