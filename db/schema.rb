@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_28_210851) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_07_110429) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -199,6 +199,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_28_210851) do
     t.boolean "display_department_logo", default: true
     t.bigint "organisation_id"
     t.boolean "display_pole_emploi_logo", default: false
+    t.string "custom_image"
     t.index ["organisation_id"], name: "index_messages_configurations_on_organisation_id"
   end
 
@@ -351,6 +352,30 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_28_210851) do
     t.index ["department_number"], name: "index_stats_on_department_number", unique: true
   end
 
+  create_table "tag_applicants", force: :cascade do |t|
+    t.bigint "tag_id", null: false
+    t.bigint "applicant_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["applicant_id"], name: "index_tag_applicants_on_applicant_id"
+    t.index ["tag_id"], name: "index_tag_applicants_on_tag_id"
+  end
+
+  create_table "tag_organisations", force: :cascade do |t|
+    t.bigint "tag_id", null: false
+    t.bigint "organisation_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organisation_id"], name: "index_tag_organisations_on_organisation_id"
+    t.index ["tag_id"], name: "index_tag_organisations_on_tag_id"
+  end
+
+  create_table "tags", force: :cascade do |t|
+    t.string "value", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "templates", force: :cascade do |t|
     t.integer "model"
     t.string "rdv_title"
@@ -406,5 +431,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_28_210851) do
   add_foreign_key "rdvs", "lieux"
   add_foreign_key "rdvs", "motifs"
   add_foreign_key "rdvs", "organisations"
+  add_foreign_key "tag_applicants", "applicants"
+  add_foreign_key "tag_applicants", "tags"
+  add_foreign_key "tag_organisations", "organisations"
+  add_foreign_key "tag_organisations", "tags"
   add_foreign_key "webhook_receipts", "webhook_endpoints"
 end

@@ -32,6 +32,7 @@ class Applicant < ApplicationRecord
   has_many :participations, dependent: :destroy
   has_many :archives, dependent: :destroy
   has_many :referent_assignations, dependent: :destroy
+  has_many :tag_organisations, dependent: :destroy
 
   has_many :rdvs, through: :participations
   has_many :notifications, through: :participations
@@ -39,6 +40,7 @@ class Applicant < ApplicationRecord
   has_many :motif_categories, through: :rdv_contexts
   has_many :departments, through: :organisations
   has_many :referents, through: :referent_assignations, source: :agent
+  has_many :tags, through: :tag_applicants
 
   accepts_nested_attributes_for :rdv_contexts, reject_if: :rdv_context_category_handled_already?
 
