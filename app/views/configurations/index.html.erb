@@ -33,7 +33,7 @@
     <%= turbo_frame_tag "tags", class: "d-flex flex-wrap px-0" do %>
       <%= render @organisation.tags %>
     <% end %>
-    <%= turbo_frame_tag "new_tag", class: "mt-2 px-0" do %>
+    <%= turbo_frame_tag "new_tag", class: "px-0" do %>
       <%= render "tags/new" %>
     <% end %>
   </div>
