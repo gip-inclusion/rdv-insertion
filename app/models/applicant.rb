@@ -77,7 +77,6 @@ class Applicant < ApplicationRecord
 
   def delete_organisation(organisation)
     organisations.delete(organisation)
-    save!
   end
 
   def rdv_context_for(motif_category)
@@ -136,7 +135,6 @@ class Applicant < ApplicationRecord
   end
 
   def generate_uid
-    # Base64 encoded "affiliation_number - role"
     return if deleted?
     return if affiliation_number.blank? || role.blank?
 
