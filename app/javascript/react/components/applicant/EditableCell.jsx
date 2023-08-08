@@ -2,14 +2,21 @@ import React, { useState } from "react";
 import { observer } from "mobx-react-lite";
 import Tippy from "@tippyjs/react";
 import handleApplicantUpdate from "../../lib/handleApplicantUpdate";
+import MultiSelect from "./MultiSelect";
 
 function EditableCell({ applicant, cell, type, values }) {
   const [isEditing, setIsEditing] = useState(false);
+  const [isEditingMultiselect, setIsEditingMultiselect] = useState(false);
 
   // We use a derived state here to allow rollback if HTTP request fails
   const [value, setValue] = useState(applicant[cell] || "");
 
   const handleDoubleClick = () => {
+    if (type === "multiselect") {
+      setIsEditingMultiselect(true);
+      return;
+    }
+
     if (isEditing) return;
     setIsEditing(true);
     setValue(applicant[cell]);
@@ -88,7 +95,15 @@ function EditableCell({ applicant, cell, type, values }) {
         style={{ cursor: "pointer" }}
       >
 
-        {isEditing ? input : ( <span>{label}</span> )}
+        {isEditing ? input : ( <span>{[label].flat().join(", ")}</span> )}
+        {isEditingMultiselect ? (
+          <MultiSelect
+            applicant={applicant}
+            cell={cell}
+            values={applicant[cell]}
+            setIsEditingMultiselect={setIsEditingMultiselect}
+          />
+        ) : null}
       </div>
     </Tippy>
   );

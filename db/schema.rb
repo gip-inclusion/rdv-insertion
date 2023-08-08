@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_07_110429) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_08_084135) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -143,6 +143,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_07_110429) do
     t.string "rights_opening_date_column"
     t.string "organisation_search_terms_column"
     t.string "referent_email_column"
+    t.string "tags_column"
   end
 
   create_table "invitations", force: :cascade do |t|

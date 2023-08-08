@@ -62,6 +62,7 @@ export default class Applicant {
     this.shortRole = this.role ? (this.role === "demandeur" ? "DEM" : "CJT") : null;
     this.linkedOrganisationSearchTerms = formattedAttributes.linkedOrganisationSearchTerms;
     this.referentEmail = formattedAttributes.referentEmail || currentAgent?.email;
+    this.tags = formattedAttributes.tags?.split(", ") || [];
 
     this.department = department;
     this.departmentNumber = department.number;
@@ -437,6 +438,7 @@ export default class Applicant {
       title: this.title,
       last_name: this.lastName,
       first_name: this.firstName,
+      tags: this.tags,
       ...(this.fullAddress && { address: this.fullAddress }),
       ...(this.role && { role: this.role }),
       ...(this.affiliationNumber && { affiliation_number: this.affiliationNumber }),

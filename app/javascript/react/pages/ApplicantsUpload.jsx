@@ -80,6 +80,7 @@ const ApplicantsUpload = observer(({
                 lastName: row[parameterizedColumnNames.last_name_column],
                 firstName: row[parameterizedColumnNames.first_name_column],
                 affiliationNumber: row[parameterizedColumnNames.affiliation_number_column],
+                tags: row[parameterizedColumnNames.tags_column],
                 nir: row[parameterizedColumnNames.nir_column],
                 poleEmploiId: row[parameterizedColumnNames.pole_emploi_id_column],
                 role: row[parameterizedColumnNames.role_column],
@@ -314,6 +315,7 @@ const ApplicantsUpload = observer(({
                 {parameterizedColumnNames.pole_emploi_id_column && <th scope="col">ID PE</th>}
                 {parameterizedColumnNames.email_column && <th scope="col">Email</th>}
                 {parameterizedColumnNames.phone_number_column && <th scope="col">Téléphone</th>}
+                {parameterizedColumnNames.tags_column && <th scope="col">Catégories</th>}
                 {parameterizedColumnNames.rights_opening_date_column && (
                   <th scope="col">Date d&apos;entrée flux</th>
                 )}
