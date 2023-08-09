@@ -4,7 +4,8 @@ class ApplicantsController < ApplicationController
   PERMITTED_PARAMS = [
     :uid, :role, :first_name, :last_name, :nir, :pole_emploi_id, :birth_date, :email, :phone_number,
     :birth_name, :address, :affiliation_number, :department_internal_id, :title,
-    :status, :rights_opening_date, { rdv_contexts_attributes: [:motif_category_id] }
+    :status, :rights_opening_date,
+    { rdv_contexts_attributes: [:motif_category_id], tag_applicants_attributes: [:tag_id] }
   ].freeze
 
   include BackToListConcern
@@ -59,6 +60,7 @@ class ApplicantsController < ApplicationController
   end
 
   def update
+    @applicant.tag_applicants.destroy_all if params[:applicant][:tag_applicants_attributes].present?
     @applicant.assign_attributes(**formatted_attributes)
     authorize @applicant
     if save_applicant.success?

@@ -17,7 +17,8 @@ module Applicants
           :referents, :archives,
           invitations: [rdv_context: :motif_category],
           rdv_contexts: [:participations],
-          organisations: [:motif_categories, :department, :configurations]
+          organisations: [:motif_categories, :department, :configurations],
+          tag_applicants: [:tag]
         ).distinct
     end
 

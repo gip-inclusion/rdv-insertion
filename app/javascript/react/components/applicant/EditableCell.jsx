@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { observer } from "mobx-react-lite";
 import Tippy from "@tippyjs/react";
-import handleApplicantUpdate from "../../lib/handleApplicantUpdate";
 import MultiSelect from "./MultiSelect";
 
 function EditableCell({ applicant, cell, type, values }) {
@@ -23,24 +22,12 @@ function EditableCell({ applicant, cell, type, values }) {
   };
 
   const handleBlur = async () => {
+    if (type === "multiselect") return;
+
     setIsEditing(false);
 
-    if (value === applicant[cell]) return;
-
-    const previousValue = applicant[cell];
-    applicant[cell] = value;
-
-    if (applicant.createdAt) {
-      applicant.triggers[`${cell}Update`] = true;
-      const result = await handleApplicantUpdate(applicant.currentOrganisation.id, applicant, applicant.asJson())
-
-      if (!result.success) {
-        applicant[cell] = previousValue;
-        setValue(previousValue);
-      }
-
-      applicant.triggers[`${cell}Update`] = false;
-    }
+    const success = await applicant.updateAttribute(cell, value);
+    if (!success) setValue(applicant[cell]);
   };
 
   const onEnterKeyPress = (event) => {
@@ -51,6 +38,7 @@ function EditableCell({ applicant, cell, type, values }) {
 
   let input;
   let label = applicant[cell] || " - ";
+  let newTags;
 
   if (type === "select") {
     input = (
@@ -67,8 +55,29 @@ function EditableCell({ applicant, cell, type, values }) {
           <option key={key} value={v} selected={value === v}>{key}</option>
         ))}
       </select>
-   )
-   label = values.find(el => el.value === applicant[cell])?.key || " - "
+    )
+    label = values.find(el => el.value === applicant[cell])?.key || " - "
+  } else if (type === "multiselect") {
+    const existingTags = values.filter(tag => applicant[cell].includes(tag))
+    newTags = applicant[cell].filter(tag => !values.includes(tag))
+
+    label = (
+      <div className="text-center w-100">
+        {newTags.length ? (
+          <div className="px-1 w-100 text-warning position-relative">
+            {newTags.join(", ")}
+            <i className="fas fa-exclamation-triangle icon-sm position-absolute mt-1 mx-1" />
+          </div>
+        ) : null}
+        {existingTags.length ? (
+          <div className="px-1 w-100">
+            {existingTags.join(", ")}
+          </div>
+        ) : null
+        }
+        {!newTags.length && !existingTags.length ? " - " : null}
+      </div>
+    )
   } else {
     input = (
      <input
@@ -86,8 +95,11 @@ function EditableCell({ applicant, cell, type, values }) {
   return (
     <Tippy
       delay={800}
-      disabled={isEditing}
-      content={applicant.triggers[`${cell}Update`] ? "En cours..." : "Double-cliquez pour modifier"}
+      disabled={isEditing || isEditingMultiselect}
+      content={[
+        newTags?.length ? "Les catégories signalées en orange ne seront pas prises en compte, elle doivent d'abord être créées dans la configuration de l'organisation. " : "",
+        applicant.triggers[`${cell}Update`] ? "En cours..." : "Double-cliquez pour modifier",
+      ].join("")}
     >
       <div
         onDoubleClick={handleDoubleClick}
@@ -95,12 +107,12 @@ function EditableCell({ applicant, cell, type, values }) {
         style={{ cursor: "pointer" }}
       >
 
-        {isEditing ? input : ( <span>{[label].flat().join(", ")}</span> )}
+        {isEditing ? input : ( <span>{label}</span> )}
         {isEditingMultiselect ? (
           <MultiSelect
             applicant={applicant}
             cell={cell}
-            values={applicant[cell]}
+            values={values}
             setIsEditingMultiselect={setIsEditingMultiselect}
           />
         ) : null}

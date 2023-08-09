@@ -25,18 +25,22 @@ import {
 
 import Applicant from "../models/Applicant";
 import applicantsStore from "../models/Applicants";
+import organisationTagsStore from "../models/OrganisationTags";
 
 const ApplicantsUpload = observer(({
   applicants,
+  organisationTags,
   organisation,
   configuration,
   columnNames,
+  tags,
   sheetName,
   department,
   motifCategoryName,
   currentAgent,
 }) => {
   const parameterizedColumnNames = parameterizeObjectValues({ ...columnNames });
+
   const isDepartmentLevel = !organisation;
   const [fileSize, setFileSize] = useState(0);
   /* eslint no-unused-vars: ["error", { "varsIgnorePattern": "contactsUpdated" }] */
@@ -61,6 +65,7 @@ const ApplicantsUpload = observer(({
   };
 
   const retrieveApplicantsFromList = async (file) => {
+    organisationTags.setTags(tags);
     await new Promise((resolve) => {
       const reader = new FileReader();
       reader.onload = function (event) {
@@ -80,7 +85,7 @@ const ApplicantsUpload = observer(({
                 lastName: row[parameterizedColumnNames.last_name_column],
                 firstName: row[parameterizedColumnNames.first_name_column],
                 affiliationNumber: row[parameterizedColumnNames.affiliation_number_column],
-                tags: row[parameterizedColumnNames.tags_column],
+                tags: row[parameterizedColumnNames.tags_column]?.split(",").map(tag => tag.trim()) || [],
                 nir: row[parameterizedColumnNames.nir_column],
                 poleEmploiId: row[parameterizedColumnNames.pole_emploi_id_column],
                 role: row[parameterizedColumnNames.role_column],
@@ -357,5 +362,5 @@ const ApplicantsUpload = observer(({
 
 
 export default (props) => (
-  <ApplicantsUpload applicants={applicantsStore} {...props} />
+  <ApplicantsUpload applicants={applicantsStore} organisationTags={organisationTagsStore} {...props} />
 )

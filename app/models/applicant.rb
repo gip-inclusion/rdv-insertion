@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 class Applicant < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [
     :first_name, :last_name, :birth_date, :email, :phone_number, :address, :affiliation_number, :birth_name
@@ -32,7 +33,7 @@ class Applicant < ApplicationRecord
   has_many :participations, dependent: :destroy
   has_many :archives, dependent: :destroy
   has_many :referent_assignations, dependent: :destroy
-  has_many :tag_organisations, dependent: :destroy
+  has_many :tag_applicants, dependent: :destroy
 
   has_many :rdvs, through: :participations
   has_many :notifications, through: :participations
@@ -43,6 +44,7 @@ class Applicant < ApplicationRecord
   has_many :tags, through: :tag_applicants
 
   accepts_nested_attributes_for :rdv_contexts, reject_if: :rdv_context_category_handled_already?
+  accepts_nested_attributes_for :tag_applicants
 
   validates :last_name, :first_name, :title, presence: true
   validates :email, allow_blank: true, format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/ }
@@ -116,7 +118,8 @@ class Applicant < ApplicationRecord
       organisations: organisations,
       rdv_contexts: rdv_contexts,
       referents: referents,
-      archives: archives
+      archives: archives,
+      tags: tags
     )
   end
 
@@ -151,3 +154,5 @@ class Applicant < ApplicationRecord
     errors.add(:birth_date, "n'est pas valide")
   end
 end
+
+# rubocop: enable Metrics/ClassLength

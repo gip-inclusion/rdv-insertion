@@ -8,6 +8,8 @@ import ReferentAssignationCell from "./applicant/ReferentAssignationCell";
 import CarnetCreationCell from "./applicant/CarnetCreationCell";
 import EditableCell from "./applicant/EditableCell";
 
+import organisationTagsStore from "../models/OrganisationTags";
+
 function Applicant({
   applicant,
   isDepartmentLevel,
@@ -81,7 +83,12 @@ function Applicant({
         )}
         {applicant.shouldDisplay("tags_column") && (
           <td className={applicant.tagsUpdated ? "table-success" : ""}>
-            <EditableCell applicant={applicant} cell="tags" type="multiselect" />
+            <EditableCell
+              applicant={applicant} 
+              cell="tags"
+              type="multiselect"
+              values={organisationTagsStore.list.map(tag => tag.value)}
+            />
           </td>
         )}
         {applicant.shouldDisplay("rights_opening_date_column") && (

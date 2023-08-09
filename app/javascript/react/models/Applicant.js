@@ -4,7 +4,9 @@ import retrieveLastInvitationDate from "../../lib/retrieveLastInvitationDate";
 import handleApplicantCreation from "../lib/handleApplicantCreation";
 import retrieveRelevantOrganisation from "../../lib/retrieveRelevantOrganisation";
 import handleApplicantInvitation from "../lib/handleApplicantInvitation";
+import handleApplicantUpdate from "../lib/handleApplicantUpdate";
 import { getFrenchFormatDateString } from "../../lib/datesHelper";
+import OrganisationTags from "./OrganisationTags";
 
 const ROLES = {
   allocataire: "demandeur",
@@ -62,7 +64,7 @@ export default class Applicant {
     this.shortRole = this.role ? (this.role === "demandeur" ? "DEM" : "CJT") : null;
     this.linkedOrganisationSearchTerms = formattedAttributes.linkedOrganisationSearchTerms;
     this.referentEmail = formattedAttributes.referentEmail || currentAgent?.email;
-    this.tags = formattedAttributes.tags?.split(", ") || [];
+    this.tags = attributes.tags;
 
     this.department = department;
     this.departmentNumber = department.number;
@@ -205,6 +207,26 @@ export default class Applicant {
     this.errors = []
   }
 
+  async updateAttribute(attribute, value) {
+    if (value === this[attribute]) return true;
+
+    const previousValue = this[attribute];
+    this[attribute] = value;
+
+    if (this.createdAt) {
+      this.triggers[`${attribute}Update`] = true;
+      const result = await handleApplicantUpdate(this.currentOrganisation.id, this, this.asJson())
+
+      if (!result.success) {
+        this[attribute] = previousValue;
+      }
+
+      this.triggers[`${attribute}Update`] = false;
+      return result.success
+    }
+    return true
+  }
+
   get isValid() {
     return !this.errors || this.errors.length === 0
   }
@@ -245,6 +267,9 @@ export default class Applicant {
       this.affiliationNumber = upToDateApplicant.affiliation_number;
       this.role = upToDateApplicant.role;
       this.departmentInternalId = upToDateApplicant.department_internal_id;
+    }
+    if (this.tags) {
+      this.tags = upToDateApplicant.tags.map((tag) => tag.value);
     }
     if (this.currentConfiguration) {
       this.currentRdvContext = upToDateApplicant.rdv_contexts.find(
@@ -434,11 +459,15 @@ export default class Applicant {
   }
 
   asJson() {
+    const matchingTags = OrganisationTags.list.filter((tag) =>
+      this.tags.includes(tag.value)
+    );
+
     return {
       title: this.title,
       last_name: this.lastName,
       first_name: this.firstName,
-      tags: this.tags,
+      tag_applicants_attributes: matchingTags.map((tag) => ({ tag_id: tag.id })),
       ...(this.fullAddress && { address: this.fullAddress }),
       ...(this.role && { role: this.role }),
       ...(this.affiliationNumber && { affiliation_number: this.affiliationNumber }),

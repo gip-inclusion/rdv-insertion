@@ -48,6 +48,7 @@
         <%= render "common/attribute_display", record: @archive, attribute: :archiving_reason %>
         <%= render "common/attribute_display", record: @archive, attribute: :created_at, as: :date %>
       <% end %>
+      <%= render "common/attribute_display", record: @applicant, attribute: :tags, as: :list, id: "tags_list" %>
       <%= render "common/attribute_display", record: @applicant, attribute: :organisations, as: :list, id: "organisations_list" %>
       <%= render "common/attribute_display", record: @applicant, attribute: :referents, as: :list, id: "referents_list" %>
     </div>
