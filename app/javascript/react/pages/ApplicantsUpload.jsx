@@ -232,6 +232,7 @@ const ApplicantsUpload = observer(({
 
           <FileHandler
             handleFile={handleApplicantsFile}
+            loading={(loading) => applicants.setLoading(loading)}
             fileSize={fileSize}
             name="applicants-list-upload"
             accept="text/plain, .csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, application/vnd.oasis.opendocument.spreadsheet"
@@ -290,7 +291,7 @@ const ApplicantsUpload = observer(({
         </>
       )}
     </div>
-    {applicants.list.length > 0 && (
+    {applicants.list.length > 0 && !applicants.loading && (
       <>
         <div className="my-5 px-4" style={{ overflow: "scroll" }}>
           <table className="table table-hover text-center align-middle table-striped table-bordered">
