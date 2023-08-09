@@ -93,6 +93,7 @@ Rails.application.routes.draw do
     resource :referent_assignations, only: [:create, :destroy]
   end
   resources :invitation_dates_filterings, :creation_dates_filterings, only: [:new]
+  resources :tags_filterings, :tags_filterings, only: [:new]
 
   namespace :api do
     namespace :v1 do
