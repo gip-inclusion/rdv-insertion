@@ -4,12 +4,14 @@
       <%= form.hidden_field key, value: value %>
     <% end %>
 
-    <div class="d-flex mb-3">
-      <% @tags.each do |tag| %>
-        <%= form.check_box :tag_ids, { multiple: true, id: "tag_#{tag.id}", class: 'form-check-input' }, tag.id, nil %>
-        <%= form.label "tag_#{tag.id}", tag.value, class: "mx-2" %>
-      <% end %>
-    </div>
+      <div class="mb-2">
+        <% @tags.each do |tag| %>
+          <div class="mb-1">
+            <%= form.check_box :tag_ids, { multiple: true, id: "tag_#{tag.id}", class: 'form-check-input' }, tag.id, nil %>
+            <%= form.label "tag_#{tag.id}", tag.value, class: "mx-2" %>
+          </div>
+        <% end %>
+      </div>
     <div class="d-flex justify-content-center mt-4">
       <%= form.submit "Valider", name: nil, class: "btn btn-blue-out" %>
     </div>
