@@ -60,7 +60,7 @@ class ApplicantsController < ApplicationController
   end
 
   def update
-    @applicant.tag_applicants.destroy_all if params[:applicant][:tag_applicants_attributes].present?
+    @applicant.tag_applicants.destroy_all unless params[:applicant][:tag_applicants_attributes].nil?
     @applicant.assign_attributes(**formatted_attributes)
     authorize @applicant
     if save_applicant.success?

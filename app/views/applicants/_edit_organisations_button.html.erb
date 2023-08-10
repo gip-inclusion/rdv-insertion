@@ -1,0 +1,3 @@
+<%= link_to(department_applicant_applicants_organisations_path(@department, @applicant, current_organisation_id: department_level? ? nil : @organisation.id), data: { turbo_frame: 'remote_modal' }) do %>
+  <button class="btn btn-blue"><i class="fas fa-pen"></i> Ajouter ou retirer une organisation </button>
+<% end %>
