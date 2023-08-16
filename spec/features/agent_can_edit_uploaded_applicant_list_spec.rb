@@ -49,7 +49,7 @@ describe "Agents can upload applicant list", js: true do
       editable_columns.each do |index|
         column = find("tr:first-child td:nth-child(#{index})")
         column.double_click
-        
+
         if index == 2
           column.find("select").set("Madame")
           expect(column).to have_content("Mme")
