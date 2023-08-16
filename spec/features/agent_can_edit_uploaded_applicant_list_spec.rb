@@ -51,13 +51,14 @@ describe "Agents can upload applicant list", js: true do
         column = find("tr:first-child td:nth-child(#{index})")
         column.double_click
 
-        if index == 2
+        case index
+        when 2
           column.find("select").set("Madame")
           expect(column).to have_content("Mme")
-        elsif index == 6
+        when 6
           column.find("select option[value=conjoint]").select_option
           expect(column).to have_content("CJT")
-        elsif index == 11
+        when 11
           column
             .double_click
 
