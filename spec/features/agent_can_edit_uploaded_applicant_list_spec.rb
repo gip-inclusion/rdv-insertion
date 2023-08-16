@@ -32,6 +32,7 @@ describe "Agents can upload applicant list", js: true do
   before do
     setup_agent_session(agent)
     stub_applicant_creation(rdv_solidarites_user_id)
+    organisation.tags << create(:tag, value: "Gentils")
   end
 
   context "at organisation level" do
@@ -44,7 +45,7 @@ describe "Agents can upload applicant list", js: true do
 
       click_button("Créer compte")
 
-      editable_columns = 2..6
+      editable_columns = [2, 3, 4, 6, 11]
 
       editable_columns.each do |index|
         column = find("tr:first-child td:nth-child(#{index})")
@@ -54,8 +55,19 @@ describe "Agents can upload applicant list", js: true do
           column.find("select").set("Madame")
           expect(column).to have_content("Mme")
         elsif index == 6
-          column.find("select").set("CJT")
+          column.find("select option[value=conjoint]").select_option
           expect(column).to have_content("CJT")
+        elsif index == 11
+          column
+            .double_click
+
+          modal = find(".modal")
+
+          modal.find("select option[value=Gentils]").select_option
+          modal.click_button("Ajouter")
+          modal.click_button("Fermer")
+
+          expect(column).to have_content("Gentils")
         else
           column
             .double_click
@@ -67,8 +79,8 @@ describe "Agents can upload applicant list", js: true do
         end
       end
 
-      expect(Applicant.last.first_name).to include("hello")
-      expect(Applicant.last.last_name).to include("hello")
+      expect(Applicant.last.first_name).to eq("hello")
+      expect(Applicant.last.last_name).to eq("hello")
     end
   end
 end
