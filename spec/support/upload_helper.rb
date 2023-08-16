@@ -23,7 +23,7 @@ module UploadHelper
         rights_opening_date_column: nil,
         organisation_search_terms_column: "structure",
         referent_email_column: nil,
-        tags_column: "Tags",
+        tags_column: "Tags"
       )
     end
   end
