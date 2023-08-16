@@ -1,5 +1,5 @@
 FactoryBot.define do
   factory :tag do
-    content { "MyString" }
+    value { "MyString" }
   end
 end

@@ -989,6 +989,38 @@ describe ApplicantsController do
         end
       end
 
+      context "with tags" do
+        let(:tag) { create(:tag) }
+        let(:update_params) do
+          {
+            applicant: {
+              tag_applicants_attributes: [{ tag_id: tag.id }]
+            },
+            id: applicant.id,
+            organisation_id: organisation.id,
+            format: "json"
+          }
+        end
+        let!(:existing_tag) { create(:tag, value: "lol") }
+
+        before do
+          allow(Applicants::Save).to receive(:call).and_call_original
+          allow_any_instance_of(Applicants::Save).to receive(:upsert_rdv_solidarites_user)
+            .and_return true
+          allow_any_instance_of(Applicants::Save).to receive(:assign_rdv_solidarites_user_id)
+            .and_return true
+          organisation.tags << tag
+          organisation.tags << existing_tag
+          applicant.tags << existing_tag
+        end
+
+        it "updates the tags" do
+          post :update, params: update_params
+          expect(applicant.reload.tags.size).to eq(1)
+          expect(applicant.reload.tags.first.id).to eq(tag.id)
+        end
+      end
+
       context "when the creation fails" do
         before do
           allow(Applicants::Save).to receive(:call)
