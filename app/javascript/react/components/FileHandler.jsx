@@ -8,7 +8,7 @@ const DEFAULT_PENDING_MESSAGE = "Calcul des statistiques en cours, merci de pati
 export default function FileHandler({
   handleFile,
   fileSize,
-  loading,
+  loading = () => {},
   accept,
   name,
   multiple = true,

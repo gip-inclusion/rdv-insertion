@@ -465,8 +465,8 @@ export default class Applicant {
 
     return {
       ...(this.title && { title: this.title}),
-      ...(this.last_name && { last_name: this.last_name}),
-      ...(this.first_name && { first_name: this.first_name}),
+      ...(this.lastName && { last_name: this.lastName}),
+      ...(this.firstName && { first_name: this.firstName}),
       tag_applicants_attributes: matchingTags.map((tag) => ({ tag_id: tag.id })),
       ...(this.fullAddress && { address: this.fullAddress }),
       ...(this.role && { role: this.role }),
