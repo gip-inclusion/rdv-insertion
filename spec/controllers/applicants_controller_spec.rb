@@ -671,6 +671,46 @@ describe ApplicantsController do
       end
     end
 
+    context "when tags filters are passed" do
+      let!(:tags) do
+        [
+          create(:tag, value: "tag1"),
+          create(:tag, value: "tag2"),
+          create(:tag, value: "tag3")
+        ]
+      end
+
+      let!(:applicant) do
+        create(
+          :applicant,
+          organisations: [organisation],
+          first_name: "Michael",
+          tag_applicants_attributes: [{ tag_id: tags[0].id }]
+        )
+      end
+
+      let!(:applicant2) do
+        create(:applicant, organisations: [organisation], first_name: "Marie",
+                           tag_applicants_attributes: [{ tag_id: tags[1].id }])
+      end
+
+      let!(:applicant3) do
+        create(:applicant, organisations: [organisation], first_name: "Oliva",
+                           tag_applicants_attributes: [{ tag_id: tags[2].id }])
+      end
+
+      let!(:index_params) do
+        { organisation_id: organisation.id, tag_ids: [tags[0].id, tags[1].id] }
+      end
+
+      it "filters by tag" do
+        get :index, params: index_params
+        expect(response.body).to match(/Michael/)
+        expect(response.body).to match(/Marie/)
+        expect(response.body).not_to match(/Oliva/)
+      end
+    end
+
     context "when invitations dates are passed" do
       let!(:invitation1) do
         create(
