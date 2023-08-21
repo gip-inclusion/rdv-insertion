@@ -2,7 +2,7 @@ class TagsFilteringsController < ApplicationController
   before_action :set_organisation, :set_department, only: [:new]
 
   def new
-    @tags = (@organisation || @department).tags.order(:value)
+    @tags = (@organisation || @department).tags.order(:value).distinct
   end
 
   private
