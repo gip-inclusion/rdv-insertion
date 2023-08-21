@@ -53,7 +53,7 @@ module Exporters
        Applicant.human_attribute_name(:referents),
        "Nombre d'organisations",
        "Nom des organisations",
-       "Catégories d'usagers"]
+       Applicant.human_attribute_name(:tags)]
     end
 
     def applicant_csv_row(applicant) # rubocop:disable Metrics/AbcSize
