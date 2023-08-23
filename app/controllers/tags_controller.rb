@@ -13,12 +13,10 @@ class TagsController < ApplicationController
   end
 
   def destroy
-    TagOrganisation.find_by(
-      organisation_id: @organisation.id,
-      tag_id: params[:id]
-    ).destroy!
+    tag = Tag.find(params[:id])
+    tag.organisations.delete(@organisation.id)
 
-    Tag.find(params[:id]).destroy! unless @organisation.department.tags.exists?(id: params[:id])
+    tag.destroy! unless tag.organisations.any?
 
     render turbo_stream: turbo_stream.remove("tag_#{params[:id]}")
   end

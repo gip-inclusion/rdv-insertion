@@ -1,5 +1,6 @@
 describe TagsController do
   let!(:organisation) { create(:organisation) }
+  let!(:organisation2) { create(:organisation) }
   let!(:agent) do
     create(
       :agent,
@@ -36,6 +37,19 @@ describe TagsController do
     it "destroys association with tag" do
       delete :destroy, params: { organisation_id: organisation.id, id: organisation.tags.first.id }
       expect(organisation.tags.reload.count).to eq(0)
+      expect(Tag.count).to eq(0)
+    end
+
+    context "tag is also associated with another organisation" do
+      before do
+        organisation2.tags << organisation.tags.first
+      end
+
+      it "does not destroy tag" do
+        delete :destroy, params: { organisation_id: organisation.id, id: organisation.tags.first.id }
+        expect(organisation.tags.reload.count).to eq(0)
+        expect(Tag.count).to eq(1)
+      end
     end
   end
 end
