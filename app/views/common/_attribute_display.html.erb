@@ -42,7 +42,5 @@
     <p><%= display_attribute record[attribute] %></p>
   <% end %>
 
-  <% if local_assigns[:edit_template] %>
-    <%= render local_assigns[:edit_template], record: record, attribute: attribute %>
-  <% end %>
+  <%= yield if block_given? %>
 </div>

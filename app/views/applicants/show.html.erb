@@ -50,9 +50,26 @@
       <% end %>
     </div>
     <div class="row d-flex justify-content-start flex-wrap mt-5">
-      <%= render "common/attribute_display", record: @applicant, attribute: :tags, as: :inline_list, edit_template: "edit_tags_button", id: "tags_list" %>
-      <%= render "common/attribute_display", record: @applicant, attribute: :organisations, as: :list, edit_template: "edit_organisations_button", id: "organisations_list" %>
-      <%= render "common/attribute_display", record: @applicant, attribute: :referents, as: :list, edit_template: "edit_referent_button", id: "referents_list" %>
+      <%= render "common/attribute_display", record: @applicant, attribute: :tags, as: :inline_list, id: "tags_list" do %>
+        <%= react_component(
+          "components/applicant/EditTags", {
+            applicant: @applicant, tags: (@organisation || @department).tags,
+            department: @department, organisation: @organisation,
+          }
+        ) %>
+      <% end %>
+
+      <%= render "common/attribute_display", record: @applicant, attribute: :organisations, as: :list, id: "organisations_list" do %>
+        <%= link_to(department_applicant_applicants_organisations_path(@department, @applicant, current_organisation_id: department_level? ? nil : @organisation.id), data: { turbo_frame: 'remote_modal' }) do %>
+          <button class="btn btn-blue"><i class="fas fa-pen"></i> Ajouter ou retirer une organisation </button>
+        <% end %>
+      <% end %>
+
+      <%= render "common/attribute_display", record: @applicant, attribute: :referents, as: :list, id: "referents_list" do %>
+        <%= link_to(department_applicant_referent_assignations_path(@department, @applicant), data: { turbo_frame: 'remote_modal' }) do %>
+          <button class="btn btn-blue mb-3"><i class="fas fa-user-plus"></i> Assigner le.s référent.s</button>
+        <% end %>
+      <% end %>
     </div>
   </div>
   <% @all_configurations.each do |configuration| %>
