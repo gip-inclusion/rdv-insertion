@@ -459,16 +459,20 @@ export default class Applicant {
     return btoa(`${this.affiliationNumber} - ${this.role}`);
   }
 
-  asJson() {
+  get tagsAsJson() {
     const matchingTags = this.organisationTags.filter((tag) =>
       this.tags.includes(tag.value)
     );
 
+    return matchingTags.map((tag) => ({ tag_id: tag.id }));
+  }
+
+  asJson() {
     return {
       ...(this.title && { title: this.title}),
       ...(this.lastName && { last_name: this.lastName}),
       ...(this.firstName && { first_name: this.firstName}),
-      tag_applicants_attributes: matchingTags.map((tag) => ({ tag_id: tag.id })),
+      tag_applicants_attributes: this.tagsAsJson,
       ...(this.fullAddress && { address: this.fullAddress }),
       ...(this.role && { role: this.role }),
       ...(this.affiliationNumber && { affiliation_number: this.affiliationNumber }),
