@@ -1,3 +1,12 @@
+---
+name: Nouvelle catégorie
+about: Ajout d'une nouvelle catégorie de motif
+title: "[Nouvelle catégorie] "
+labels: ''
+assignees: ''
+
+---
+
 ## À renseigner
 
 - Nom: 
