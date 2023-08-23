@@ -6,7 +6,6 @@ import retrieveRelevantOrganisation from "../../lib/retrieveRelevantOrganisation
 import handleApplicantInvitation from "../lib/handleApplicantInvitation";
 import handleApplicantUpdate from "../lib/handleApplicantUpdate";
 import { getFrenchFormatDateString } from "../../lib/datesHelper";
-import OrganisationTags from "./OrganisationTags";
 
 const ROLES = {
   allocataire: "demandeur",
@@ -25,6 +24,7 @@ export default class Applicant {
     attributes,
     department,
     organisation,
+    organisationTags = [],
     currentConfiguration,
     columnNames,
     currentAgent
@@ -65,11 +65,12 @@ export default class Applicant {
     this.linkedOrganisationSearchTerms = formattedAttributes.linkedOrganisationSearchTerms;
     this.referentEmail = formattedAttributes.referentEmail || currentAgent?.email;
     this.tags = attributes.tags;
-
+    
     this.department = department;
     this.departmentNumber = department.number;
     // when creating/inviting we always consider an applicant in the scope of only one organisation
     this.currentOrganisation = organisation;
+    this.organisationTags = organisationTags;
     this.currentConfiguration = currentConfiguration;
     this.columnNames = columnNames;
     this.selected = false;
@@ -459,7 +460,7 @@ export default class Applicant {
   }
 
   asJson() {
-    const matchingTags = OrganisationTags.list.filter((tag) =>
+    const matchingTags = this.organisationTags.filter((tag) =>
       this.tags.includes(tag.value)
     );
 

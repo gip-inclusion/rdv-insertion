@@ -8,8 +8,6 @@ import ReferentAssignationCell from "./applicant/ReferentAssignationCell";
 import CarnetCreationCell from "./applicant/CarnetCreationCell";
 import EditableCell from "./applicant/EditableCell";
 
-import organisationTagsStore from "../models/OrganisationTags";
-
 function Applicant({
   applicant,
   isDepartmentLevel,
@@ -87,7 +85,7 @@ function Applicant({
               applicant={applicant} 
               cell="tags"
               type="multiselect"
-              values={organisationTagsStore.list.map(tag => tag.value)}
+              values={applicant.organisationTags.map(tag => tag.value)}
             />
           </td>
         )}

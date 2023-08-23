@@ -25,11 +25,9 @@ import {
 
 import Applicant from "../models/Applicant";
 import applicantsStore from "../models/Applicants";
-import organisationTagsStore from "../models/OrganisationTags";
 
 const ApplicantsUpload = observer(({
   applicants,
-  organisationTags,
   organisation,
   configuration,
   columnNames,
@@ -65,7 +63,6 @@ const ApplicantsUpload = observer(({
   };
 
   const retrieveApplicantsFromList = async (file) => {
-    organisationTags.setTags(tags);
     await new Promise((resolve) => {
       const reader = new FileReader();
       reader.onload = function (event) {
@@ -134,9 +131,10 @@ const ApplicantsUpload = observer(({
               },
               department,
               organisation,
+              tags,
               configuration,
               columnNames,
-              currentAgent
+              currentAgent,
             );
             applicants.addApplicant(applicant);
           });
@@ -363,5 +361,5 @@ const ApplicantsUpload = observer(({
 
 
 export default (props) => (
-  <ApplicantsUpload applicants={applicantsStore} organisationTags={organisationTagsStore} {...props} />
+  <ApplicantsUpload applicants={applicantsStore} {...props} />
 )

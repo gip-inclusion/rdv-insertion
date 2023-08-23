@@ -4,24 +4,22 @@ import { observer } from "mobx-react-lite";
 import MultiSelect from "./MultiSelect";
 
 import Applicant from "../../models/Applicant";
-import OrganisationTags from "../../models/OrganisationTags";
 
 const EditTags = observer(({
-  tags,
   applicant: applicantProp,
   organisation,
-  department
+  department,
+  tags
 }) => {
   const [isEditingTags, setIsEditingTags] = React.useState(false)
   const [applicant, setApplicant] = React.useState(null)
 
   useEffect(() => {
-    OrganisationTags.setTags(tags)
     setApplicant(new Applicant({
       id: applicantProp.id,
       createdAt: applicantProp.created_at,
-      tags: applicantProp.tags.map(tag => tag.value)
-    }, department, organisation))
+      tags: applicantProp.tags.map(tag => tag.value),
+    }, department, organisation, tags))
   }, [])
 
   return (
