@@ -84,7 +84,7 @@ function Applicant({
             <EditableCell
               applicant={applicant} 
               cell="tags"
-              type="multiselect"
+              type="tags"
               values={applicant.organisationTags.map(tag => tag.value)}
             />
           </td>

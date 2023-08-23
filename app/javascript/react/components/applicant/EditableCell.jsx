@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import { observer } from "mobx-react-lite";
 import Tippy from "@tippyjs/react";
-import MultiSelect from "./MultiSelect";
+import EditableTags from "./EditableTags";
 
 function EditableCell({ applicant, cell, type, values }) {
   const [isEditing, setIsEditing] = useState(false);
-  const [isEditingMultiselect, setIsEditingMultiselect] = useState(false);
+  const [isEditingTags, setIsEditingTags] = useState(false);
 
   // We use a derived state here to allow rollback if HTTP request fails
   const [value, setValue] = useState(applicant[cell] || "");
 
   const handleDoubleClick = () => {
-    if (type === "multiselect") {
-      setIsEditingMultiselect(true);
+    if (type === "tags") {
+      setIsEditingTags(true);
       return;
     }
 
@@ -22,7 +22,7 @@ function EditableCell({ applicant, cell, type, values }) {
   };
 
   const handleBlur = async () => {
-    if (type === "multiselect") return;
+    if (type === "tags") return;
 
     setIsEditing(false);
 
@@ -57,7 +57,7 @@ function EditableCell({ applicant, cell, type, values }) {
       </select>
     )
     label = values.find(el => el.value === applicant[cell])?.key || " - "
-  } else if (type === "multiselect") {
+  } else if (type === "tags") {
     const existingTags = values.filter(tag => applicant[cell].includes(tag))
     newTags = applicant[cell].filter(tag => !values.includes(tag))
 
@@ -95,7 +95,7 @@ function EditableCell({ applicant, cell, type, values }) {
   return (
     <Tippy
       delay={800}
-      disabled={isEditing || isEditingMultiselect}
+      disabled={isEditing || isEditingTags}
       content={[
         newTags?.length ? "Les catégories signalées en orange ne seront pas prises en compte, elle doivent d'abord être créées dans la configuration de l'organisation. " : "",
         applicant.triggers[`${cell}Update`] ? "En cours..." : "Double-cliquez pour modifier",
@@ -108,12 +108,12 @@ function EditableCell({ applicant, cell, type, values }) {
       >
 
         {isEditing ? input : ( <span>{label}</span> )}
-        {isEditingMultiselect ? (
-          <MultiSelect
+        {isEditingTags ? (
+          <EditableTags
             applicant={applicant}
             cell={cell}
             values={values}
-            setIsEditingMultiselect={setIsEditingMultiselect}
+            setIsEditingTags={setIsEditingTags}
           />
         ) : null}
       </div>

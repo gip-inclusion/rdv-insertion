@@ -2,9 +2,9 @@ import React from "react";
 import { observer } from "mobx-react-lite";
 import Tippy from "@tippyjs/react";
 
-export default observer(({ applicant, cell, values, setIsEditingMultiselect }) => {
+export default observer(({ applicant, cell, values, setIsEditingTags }) => {
   const addTag = () => {
-    const newValue = document.getElementById("multiselect").value
+    const newValue = document.getElementById("editable-tags").value
 
     if (!newValue) return
     applicant.updateAttribute(cell, [...applicant[cell], newValue])
@@ -23,8 +23,8 @@ export default observer(({ applicant, cell, values, setIsEditingMultiselect }) =
       <div className="modal-dialog" role="document">
         <div className="modal-content">
           <div className="modal-header">
-            <h5 className="modal-title">Édition des {cell}</h5>
-            <button type="button" className="btn btn-blue-out" onClick={() => setIsEditingMultiselect(false)}>
+            <h5 className="modal-title">Édition des Catégories d'usagers</h5>
+            <button type="button" className="btn btn-blue-out" onClick={() => setIsEditingTags(false)}>
               Fermer
             </button>
           </div>
@@ -50,7 +50,7 @@ export default observer(({ applicant, cell, values, setIsEditingMultiselect }) =
           <div className="modal-footer d-flex">
             {availableValues.length ? (
               <>
-                <select id="multiselect" className="form-control w-50">
+                <select id="editable-tags" className="form-control w-50">
                   <option value=""> Choisir une catégorie </option>
                   {availableValues.map(value => (
                       <option key={value} value={value}>{value}</option>

@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback } from "react";
 import { observer } from "mobx-react-lite";
 
-import MultiSelect from "./MultiSelect";
+import EditableTags from "./EditableTags";
 
 import Applicant from "../../models/Applicant";
 
@@ -25,11 +25,11 @@ const EditTags = observer(({
   return (
     <>
       {isEditingTags && (
-        <MultiSelect
+        <EditableTags
           applicant={applicant}
           cell="tags"
           values={tags.map(tag => tag.value)}
-          setIsEditingMultiselect={() => window.location.reload()}
+          setIsEditingTags={() => window.location.reload()}
         />
       )}
       <button type="button" className="btn btn-primary mb-3" onClick={useCallback(() => setIsEditingTags(true))}>
