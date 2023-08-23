@@ -1,13 +1,13 @@
 describe "Agents can edit organisation tags", js: true do
-  let!(:agent) { create(:agent, organisations: [organisation]) }
+  let!(:agent) { create(:agent) }
   let!(:organisation) { create(:organisation) }
   let!(:configuration) { create(:configuration, organisation: organisation) }
+  let!(:agent_role) { create(:agent_role, organisation: organisation, agent: agent, access_level: 1) }
 
   let(:tag_value) { "prout" }
 
   before do
     setup_agent_session(agent)
-    allow_any_instance_of(ConfigurationsController).to receive(:authorize_organisation_configuration).and_return(nil)
   end
 
   context "from organisation page" do
