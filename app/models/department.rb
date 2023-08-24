@@ -16,6 +16,7 @@ class Department < ApplicationRecord
   has_many :participations, through: :rdvs
   has_many :rdv_contexts, through: :applicants
   has_many :archived_applicants, through: :archives, source: :applicant
+  has_many :tags, through: :organisations
 
   scope :displayed_in_stats, -> { where(display_in_stats: true) }
 

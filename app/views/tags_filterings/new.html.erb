@@ -1,0 +1,19 @@
+<%= render "common/remote_modal", title: "Filtrer par catégorie d'usager" do %>
+  <%= form_with method: :get, local: true, url: compute_index_path(@organisation, @department), data: { "turbo-frame" => "_top" } do |form| %>
+    <% url_params.except(:tag_ids).each do |key, value| %>
+      <%= form.hidden_field key, value: value %>
+    <% end %>
+
+      <div class="mb-2">
+        <% @tags.each do |tag| %>
+          <div class="mb-1">
+            <%= form.check_box :tag_ids, { multiple: true, id: "tag_#{tag.id}", class: 'form-check-input' }, tag.id, nil %>
+            <%= form.label "tag_#{tag.id}", tag.value, class: "mx-2" %>
+          </div>
+        <% end %>
+      </div>
+    <div class="d-flex justify-content-center mt-4">
+      <%= form.submit "Valider", name: nil, class: "btn btn-blue-out" %>
+    </div>
+  <% end %>
+<% end %>

@@ -23,3 +23,4 @@ fr:
         status: Statut
         referents: Référent(s)
         organisation_ids: Organisation
+        tags: Catégories d'usagers

@@ -11,6 +11,13 @@ module Applicants::Filterable
     filter_applicants_by_first_invitations
     filter_applicants_by_last_invitations
     filter_applicants_by_page
+    filter_applicants_by_tags
+  end
+
+  def filter_applicants_by_tags
+    return if params[:tag_ids].blank?
+
+    @applicants = @applicants.joins(:tag_applicants).where(tag_applicants: { tag_id: params[:tag_ids] })
   end
 
   def filter_applicants_by_status
