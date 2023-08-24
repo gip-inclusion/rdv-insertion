@@ -24,7 +24,7 @@ export default class Applicant {
     attributes,
     department,
     organisation,
-    organisationTags = [],
+    availableTags = [],
     currentConfiguration,
     columnNames,
     currentAgent
@@ -64,13 +64,13 @@ export default class Applicant {
     this.shortRole = this.role ? (this.role === "demandeur" ? "DEM" : "CJT") : null;
     this.linkedOrganisationSearchTerms = formattedAttributes.linkedOrganisationSearchTerms;
     this.referentEmail = formattedAttributes.referentEmail || currentAgent?.email;
-    this.tags = attributes.tags;
+    this.tags = attributes.tags || [];
     
     this.department = department;
     this.departmentNumber = department.number;
     // when creating/inviting we always consider an applicant in the scope of only one organisation
     this.currentOrganisation = organisation;
-    this.organisationTags = organisationTags;
+    this.availableTags = availableTags;
     this.currentConfiguration = currentConfiguration;
     this.columnNames = columnNames;
     this.selected = false;
@@ -269,9 +269,7 @@ export default class Applicant {
       this.role = upToDateApplicant.role;
       this.departmentInternalId = upToDateApplicant.department_internal_id;
     }
-    if (this.tags) {
-      this.tags = upToDateApplicant.tags.map((tag) => tag.value);
-    }
+    this.tags = upToDateApplicant.tags.map((tag) => tag.value);
     if (this.currentConfiguration) {
       this.currentRdvContext = upToDateApplicant.rdv_contexts.find(
         (rc) => rc.motif_category_id === this.currentConfiguration.motif_category_id
@@ -460,7 +458,7 @@ export default class Applicant {
   }
 
   get tagsAsJson() {
-    const matchingTags = this.organisationTags.filter((tag) =>
+    const matchingTags = this.availableTags.filter((tag) =>
       this.tags.includes(tag.value)
     );
 

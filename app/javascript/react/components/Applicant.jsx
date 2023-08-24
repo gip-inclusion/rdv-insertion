@@ -85,7 +85,7 @@ function Applicant({
               applicant={applicant} 
               cell="tags"
               type="tags"
-              values={applicant.organisationTags.map(tag => tag.value)}
+              values={applicant.availableTags.map(tag => tag.value)}
             />
           </td>
         )}
