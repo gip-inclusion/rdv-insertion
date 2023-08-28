@@ -46,7 +46,7 @@ class Applicant < ApplicationRecord
   accepts_nested_attributes_for :rdv_contexts, reject_if: :rdv_context_category_handled_already?
   accepts_nested_attributes_for :tag_applicants
 
-  validates :last_name, :first_name, :title, presence: true
+  validates :last_name, :first_name, presence: true
   validates :email, allow_blank: true, format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/ }
   validate :birth_date_validity
   validates :rdv_solidarites_user_id, :nir, :pole_emploi_id,
