@@ -1,14 +1,10 @@
 class SendPeriodicInviteJob < ApplicationJob
-  def perform(invitation_id)
-    Invitation
-      .find(invitation_id)
-      .organisations
-      .find_each do |organisation|
-      configuration = organisation.configurations.find_by!(motif_category: invitation.motif_category)
+  def perform(invitation_id, format)
+    new_invitation = Invitation.find(invitation_id).dup
+    new_invitation.format = format
+    new_invitation.reminder = false
+    new_invitation.sent_at = nil
 
-      if (Time.zone.today - invitation.sent_at.to_date).to_i == configuration.number_of_days_before_next_invite
-        Invitation::SaveAndSend.new(invitation: invitation.dup).call
-      end
-    end
+    Invitation::SaveAndSend.new(invitation: new_invitation).call
   end
 end
