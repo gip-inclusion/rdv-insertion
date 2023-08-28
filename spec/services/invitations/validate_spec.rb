@@ -58,6 +58,18 @@ describe Invitations::Validate, type: :service do
       end
     end
 
+    context "when the applicant title is missing" do
+      before { applicant.update! title: nil }
+
+      it("is a failure") { is_a_failure }
+
+      it "stores an error message" do
+        expect(subject.errors).to include(
+          "La civilité de la personne doit être précisée pour pouvoir envoyer une invitation"
+        )
+      end
+    end
+
     context "when it is a postal invitation and the validity is < 5 days" do
       before { invitation.assign_attributes(format: "postal", valid_until: 2.days.from_now) }
 
