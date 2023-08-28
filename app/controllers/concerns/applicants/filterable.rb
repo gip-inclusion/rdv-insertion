@@ -1,3 +1,5 @@
+# rubocop:disable Metrics/ModuleLength
+
 module Applicants::Filterable
   private
 
@@ -17,12 +19,14 @@ module Applicants::Filterable
   def filter_applicants_by_tags
     return if params[:tag_ids].blank?
 
-    @applicants = @applicants.joins(:tag_applicants)
+    applicant_ids = TagApplicant
+                    .select(:applicant_id)
+                    .where(tag_id: params[:tag_ids])
+                    .group(:applicant_id)
+                    .having("COUNT(DISTINCT tag_id) = ?", params[:tag_ids].count)
+                    .pluck(:applicant_id)
 
-    # We need to filter using AND instead of OR
-    params[:tag_ids].each do |tag_id|
-      @applicants = @applicants.where(tag_applicants: { tag_id: tag_id })
-    end
+    @applicants = @applicants.where(id: applicant_ids)
   end
 
   def filter_applicants_by_status
@@ -132,3 +136,5 @@ module Applicants::Filterable
     end
   end
 end
+
+# rubocop:enable Metrics/ModuleLength
