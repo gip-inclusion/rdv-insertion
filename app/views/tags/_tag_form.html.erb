@@ -2,7 +2,7 @@
   <div class="autocomplete-container" data-controller="autocomplete">
     <%= f.input :value, input_html: { class: "form-control", placeholder: "Nom du tag", autocomplete: "off" } %>
     <div class="autocomplete">
-      <% (@department || @organisation.department).tags.distinct.each do |tag| %>
+      <% @available_tags.each do |tag| %>
         <button type="button"><%= tag.value %></button>
       <% end %>
     </div>
