@@ -17,7 +17,12 @@ module Applicants::Filterable
   def filter_applicants_by_tags
     return if params[:tag_ids].blank?
 
-    @applicants = @applicants.joins(:tag_applicants).where(tag_applicants: { tag_id: params[:tag_ids] })
+    @applicants = @applicants.joins(:tag_applicants)
+
+    # We need to filter using AND instead of OR
+    params[:tag_ids].each do |tag_id|
+      @applicants = @applicants.where(tag_applicants: { tag_id: tag_id })
+    end
   end
 
   def filter_applicants_by_status

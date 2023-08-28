@@ -33,7 +33,7 @@ const EditTags = observer(({
         />
       )}
       <button type="button" className="btn btn-primary mb-3" onClick={useCallback(() => setIsEditingTags(true))}>
-        <i className="fas fa-pen" /> Modifier les catégories d'usagers
+        <i className="fas fa-pen" /> Modifier les tags
       </button>
     </>
   )

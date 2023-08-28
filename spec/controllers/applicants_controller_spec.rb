@@ -691,7 +691,7 @@ describe ApplicantsController do
 
       let!(:applicant2) do
         create(:applicant, organisations: [organisation], first_name: "Marie",
-                           tag_applicants_attributes: [{ tag_id: tags[1].id }])
+                           tag_applicants_attributes: [{ tag_id: tags[0].id }, { tag_id: tags[1].id }])
       end
 
       let!(:applicant3) do
@@ -705,7 +705,7 @@ describe ApplicantsController do
 
       it "filters by tag" do
         get :index, params: index_params
-        expect(response.body).to match(/Michael/)
+        expect(response.body).not_to match(/Michael/)
         expect(response.body).to match(/Marie/)
         expect(response.body).not_to match(/Oliva/)
       end

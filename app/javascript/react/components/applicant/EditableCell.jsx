@@ -97,7 +97,7 @@ function EditableCell({ applicant, cell, type, values }) {
       delay={800}
       disabled={isEditing || isEditingTags}
       content={[
-        newTags?.length ? "Les catégories signalées en orange ne seront pas prises en compte, elle doivent d'abord être créées dans la configuration de l'organisation. " : "",
+        newTags?.length ? "Les tags signalés en orange ne seront pas pris en compte, ils doivent d'abord être créés dans la configuration de l'organisation. " : "",
         applicant.triggers[`${cell}Update`] ? "En cours..." : "Double-cliquez pour modifier",
       ].join("")}
     >
