@@ -36,7 +36,7 @@ export default observer(({ applicant, cell, values, setIsEditingTags }) => {
                 placement="top"
                 key={tag} 
                 disabled={values.includes(tag)}
-                content="Ce tag ne sera pas prise en compte, elle doit d'abord être créée dans la configuration de l'organisation."
+                content="Ce tag ne sera pas pris en compte, il doit d'abord être créé dans la configuration de l'organisation."
               >
                 <div className={`badge w-auto d-flex justify-content-between bg-${values.includes(tag) ? "primary" : "warning text-white"} mb-1`}>
                   {tag}
