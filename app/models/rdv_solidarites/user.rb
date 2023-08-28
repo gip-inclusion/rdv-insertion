@@ -7,12 +7,8 @@ module RdvSolidarites
     attr_reader(*RECORD_ATTRIBUTES)
 
     def augmented_attributes
-      @attributes.merge(
-        department_internal_id: applicant&.department_internal_id,
-        title: applicant&.title,
-        nir: applicant&.nir,
-        pole_emploi_id: applicant&.pole_emploi_id
-      )
+      payload = applicant.nil? ? Applicant.new.as_json.merge(@attributes) : applicant.as_json.merge(@attributes)
+      payload.except(:updated_at, :rdv_contexts, :organisations, :archives)
     end
 
     def applicant

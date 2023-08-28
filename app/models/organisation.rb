@@ -38,7 +38,9 @@ class Organisation < ApplicationRecord
   end
 
   def as_json(_opts = {})
-    super.merge(department_number: department_number, motif_categories: motif_categories)
+    super.deep_symbolize_keys
+         .except(:last_webhook_update_received_at, :rdv_solidarites_organisation_id)
+         .merge(department_number: department_number, motif_categories: motif_categories)
   end
 
   def validate_organisation_phone_number

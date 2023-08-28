@@ -112,15 +112,16 @@ class Applicant < ApplicationRecord
   end
 
   def as_json(_opts = {})
-    super.merge(
-      created_at: created_at,
-      invitations: invitations,
-      organisations: organisations,
-      rdv_contexts: rdv_contexts,
-      referents: referents,
-      archives: archives,
-      tags: tags
-    )
+    super.deep_symbolize_keys
+         .except(:last_webhook_update_received_at, :deleted_at, :rdv_solidarites_user_id)
+         .merge(
+           invitations: invitations.select(&:sent_at?),
+           organisations: organisations,
+           rdv_contexts: rdv_contexts,
+           referents: referents,
+           archives: archives,
+           tags: tags
+         )
   end
 
   def phone_number_formatted
