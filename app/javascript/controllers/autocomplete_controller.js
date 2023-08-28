@@ -2,13 +2,13 @@ import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
   connect() {
-    this.input = this.element.querySelector('input')
-    this.dropdown = this.element.querySelector('.autocomplete')
+    this.input = this.element.querySelector("input")
+    this.dropdown = this.element.querySelector(".autocomplete")
     this.disableAutocomplete()
     
-    this.input.addEventListener('keyup', () => this.triggerAutocomplete())
-    this.element.querySelectorAll('button').forEach((button) => {
-      button.addEventListener('click', (event) => this.selectValue(event))
+    this.input.addEventListener("keyup", () => this.triggerAutocomplete())
+    this.element.querySelectorAll("button").forEach((button) => {
+      button.addEventListener("click", (event) => this.selectValue(event))
     })
   }
 
@@ -21,12 +21,12 @@ export default class extends Controller {
     const matches = this.values().filter((value) => value.toLowerCase().includes(this.input.value.toLowerCase()))
     
     if (this.input.value.length > 0 && matches.length > 0) {
-      this.dropdown.classList.remove('d-none')
-      this.element.querySelectorAll('button').forEach((button) => {
+      this.dropdown.classList.remove("d-none")
+      this.element.querySelectorAll("button").forEach((button) => {
         if (matches.includes(button.innerText)) {
-          button.classList.remove('d-none')
+          button.classList.remove("d-none")
         } else {
-          button.classList.add('d-none')
+          button.classList.add("d-none")
         }
       })
     } else {
@@ -35,10 +35,10 @@ export default class extends Controller {
   }
 
   disableAutocomplete() {
-    this.dropdown.classList.add('d-none')
+    this.dropdown.classList.add("d-none")
   }
 
   values() {
-    return [...this.element.querySelectorAll('button')].map((button) => button.innerText)
+    return [...this.element.querySelectorAll("button")].map((button) => button.innerText)
   }
 }
