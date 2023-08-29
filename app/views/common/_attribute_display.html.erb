@@ -41,4 +41,6 @@
   <% else %>
     <p><%= display_attribute record[attribute] %></p>
   <% end %>
+
+  <%= yield if block_given? %>
 </div>

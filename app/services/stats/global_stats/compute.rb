@@ -18,7 +18,6 @@ module Stats
           sent_invitations_count: sent_invitations_count,
           percentage_of_no_show: percentage_of_no_show,
           average_time_between_invitation_and_rdv_in_days: average_time_between_invitation_and_rdv_in_days,
-          average_time_between_rdv_creation_and_start_in_days: average_time_between_rdv_creation_and_start_in_days,
           rate_of_applicants_with_rdv_seen_in_less_than_30_days:
             rate_of_applicants_with_rdv_seen_in_less_than_30_days,
           rate_of_autonomous_applicants: rate_of_autonomous_applicants,
@@ -45,12 +44,6 @@ module Stats
       def average_time_between_invitation_and_rdv_in_days
         ComputeAverageTimeBetweenInvitationAndRdvInDays.call(
           rdv_contexts: @stat.rdv_contexts_sample
-        ).value
-      end
-
-      def average_time_between_rdv_creation_and_start_in_days
-        ComputeAverageTimeBetweenParticipationCreationAndRdvStartInDays.call(
-          participations: @stat.participations_sample
         ).value
       end
 
