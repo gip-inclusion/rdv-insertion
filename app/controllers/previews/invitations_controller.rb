@@ -108,7 +108,9 @@ module Previews
     end
 
     def overridable_texts
-      # we sort the array because we want to highlight rdv_title_by_phone before rdv_title because it often contains it
+      # we want to highlight rdv_title_by_phone before the rdv_title because the rdv_title_by_phone
+      # is often the rdv_title with "téléphonique" added, so if we highlighted the rdv_title before,
+      # only part of the rdv_title_by_phone would be highlighted. That's why we use sort_by(&:length)
       ::Configuration.template_override_attributes.sort_by(&:length).reverse.map do |attribute|
         @invitation.send(attribute.gsub("template_", "").gsub("_override", ""))
       end

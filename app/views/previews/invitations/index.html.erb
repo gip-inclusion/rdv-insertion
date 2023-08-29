@@ -1,6 +1,6 @@
-<%= render "common/remote_modal", title: "Contenus des messages invitations", size: :large do %>
+<%= render "common/remote_modal", title: "Contenu des messages invitations", size: :large do %>
   <div class="mb-4">
-    <h5 class="text-center">SMS <i class="fas fa-sms"></i></h5>
+    <h5 class="text-center"><i class="fas fa-sms"></i> SMS</h5>
     <div class="d-flex justify-content-center">
       <div class="border bg-light bg-gradient col-5 p-2 m-2">
         <%= simple_format(@sms_contents[:first_invitation]) %>
@@ -13,7 +13,7 @@
   </div>
 
   <div class="mb-4">
-    <h5 class="text-center">Email <i class="fas fa-inbox"></i></h5>
+    <h5 class="text-center"><i class="fas fa-inbox"></i> Email</h5>
     <div class="d-flex justify-content-center">
       <div class="border bg-light bg-gradient col-5 p-2 m-2">
         <%= sanitize(@mail_contents[:first_invitation]) %>
@@ -26,7 +26,7 @@
   </div>
 
   <div class="mb-4">
-    <h5 class="text-center">Courrier <i class="fas fa-envelope"></i></h5>
+    <h5 class="text-center"><i class="fas fa-envelope"></i> Courrier</h5>
     <div class="d-flex justify-content-center">
       <div class="border bg-light bg-gradient p-2 m-2">
         <%= sanitize(@letter_contents[:first_invitation]) %>
