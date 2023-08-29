@@ -67,7 +67,6 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
       expect(subject.stats_values).to include(:sent_invitations_count_grouped_by_month)
       expect(subject.stats_values).to include(:percentage_of_no_show_grouped_by_month)
       expect(subject.stats_values).to include(:average_time_between_invitation_and_rdv_in_days_by_month)
-      expect(subject.stats_values).to include(:average_time_between_rdv_creation_and_start_in_days_by_month)
       expect(subject.stats_values).to include(:rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month)
       expect(subject.stats_values).to include(:rate_of_autonomous_applicants_grouped_by_month)
     end
@@ -78,7 +77,6 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
       expect(subject.stats_values[:sent_invitations_count_grouped_by_month]).to be_a(Integer)
       expect(subject.stats_values[:percentage_of_no_show_grouped_by_month]).to be_a(Integer)
       expect(subject.stats_values[:average_time_between_invitation_and_rdv_in_days_by_month]).to be_a(Integer)
-      expect(subject.stats_values[:average_time_between_rdv_creation_and_start_in_days_by_month]).to be_a(Integer)
       expect(subject.stats_values[:rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month]).to be_a(Integer)
       expect(subject.stats_values[:rate_of_autonomous_applicants_grouped_by_month]).to be_a(Integer)
     end
