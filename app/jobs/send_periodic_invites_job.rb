@@ -2,7 +2,7 @@ class SendPeriodicInvitesJob < ApplicationJob
   def perform
     RdvContext
       .joins(:motif_category, :invitations)
-      .preload(invitations: { organisations: :configurations })
+      .preload(invitations: [{ organisations: :configurations }, :applicant])
       .where(motif_categories: { participation_optional: false })
       .where("invitations.valid_until < ?", Time.zone.now)
       .find_each do |rdv_context|
@@ -16,8 +16,11 @@ class SendPeriodicInvitesJob < ApplicationJob
 
     return unless should_send_periodic_invite?(invitation, configuration)
 
-    SendPeriodicInviteJob.perform_async(invitation.id, "email") if applicant.email?
-    SendPeriodicInviteJob.perform_async(invitation.id, "sms") if applicant.phone_number_is_mobile?
+    SendPeriodicInviteJob.perform_async(invitation.id, configuration.id, "email") if invitation.applicant.email?
+    return unless invitation.applicant.phone_number_is_mobile?
+
+    SendPeriodicInviteJob.perform_async(invitation.id, configuration.id,
+                                        "sms")
   end
 
   def should_send_periodic_invite?(invitation, configuration)

@@ -10,7 +10,6 @@ class Invitation < ApplicationRecord
   has_and_belongs_to_many :organisations
   has_many :configurations, through: :organisations
 
-
   attr_accessor :content
 
   validates :help_phone_number, :rdv_solidarites_token, :organisations, :link, :valid_until, presence: true
@@ -75,11 +74,11 @@ class Invitation < ApplicationRecord
     sent_at.present? && sent_at >= date
   end
 
-  private
-
   def assign_uuid
     self.uuid = generate_uuid
   end
+
+  private
 
   def generate_uuid
     loop do
