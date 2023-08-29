@@ -10,6 +10,7 @@ module Invitations
     end
 
     def call
+      validate_applicant_title_presence
       validate_organisations_are_not_from_different_departments
       validate_it_expires_in_more_than_5_days if @invitation.format_postal?
       validate_applicant_belongs_to_an_org_linked_to_motif_category
@@ -19,6 +20,12 @@ module Invitations
     end
 
     private
+
+    def validate_applicant_title_presence
+      return if applicant.title?
+
+      result.errors << "La civilité de la personne doit être précisée pour pouvoir envoyer une invitation"
+    end
 
     def validate_organisations_are_not_from_different_departments
       return if organisations.map(&:department_id).uniq == [department_id]

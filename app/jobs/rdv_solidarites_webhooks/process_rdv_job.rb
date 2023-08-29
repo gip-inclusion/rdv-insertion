@@ -11,7 +11,8 @@ module RdvSolidaritesWebhooks
         verify_organisation!
         verify_motif!
         return if unhandled_category?
-        return if applicants.empty? && !rdv_solidarites_rdv.collectif?
+
+        find_or_create_applicants
 
         # for a convocation, we have to verify the lieu is up to date in db
         verify_lieu_sync! if convocable_participations?
@@ -82,14 +83,28 @@ module RdvSolidaritesWebhooks
       rdv_solidarites_rdv.user_ids
     end
 
-    def applicants
-      @applicants ||= Applicant.where(rdv_solidarites_user_id: rdv_solidarites_user_ids)
+    def find_or_create_applicants
+      existing_applicants = Applicant.where(rdv_solidarites_user_id: rdv_solidarites_user_ids).to_a
+
+      new_rdv_solidarites_users = rdv_solidarites_rdv.users.reject do |user|
+        user.id.in?(existing_applicants.map(&:rdv_solidarites_user_id))
+      end
+
+      new_applicants = new_rdv_solidarites_users.map do |user|
+        Applicant.create!(
+          rdv_solidarites_user_id: user.id,
+          organisations: [organisation],
+          **user.attributes.slice(*Applicant::SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES).compact_blank
+        )
+      end
+
+      @applicants = existing_applicants + new_applicants
     end
 
     def participations_attributes_destroyed
       return [] if rdv.nil?
 
-      removed_applicants = rdv.applicants - applicants
+      removed_applicants = rdv.applicants - @applicants
       @participations_attributes_destroyed ||=
         removed_applicants.map do |applicant|
           existing_participation = Participation.find_by(applicant: applicant, rdv: rdv)
@@ -196,7 +211,7 @@ module RdvSolidaritesWebhooks
 
     def rdv_contexts
       @rdv_contexts ||=
-        applicants.map do |applicant|
+        @applicants.map do |applicant|
           RdvContext.with_advisory_lock "setting_rdv_context_for_applicant_#{applicant.id}" do
             RdvContext.find_or_create_by!(applicant: applicant, motif_category: motif_category)
           end
