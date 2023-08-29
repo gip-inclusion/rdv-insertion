@@ -4,6 +4,7 @@ import retrieveLastInvitationDate from "../../lib/retrieveLastInvitationDate";
 import handleApplicantCreation from "../lib/handleApplicantCreation";
 import retrieveRelevantOrganisation from "../../lib/retrieveRelevantOrganisation";
 import handleApplicantInvitation from "../lib/handleApplicantInvitation";
+import handleApplicantUpdate from "../lib/handleApplicantUpdate";
 import { getFrenchFormatDateString } from "../../lib/datesHelper";
 
 const ROLES = {
@@ -23,6 +24,7 @@ export default class Applicant {
     attributes,
     department,
     organisation,
+    availableTags = [],
     currentConfiguration,
     columnNames,
     currentAgent
@@ -62,11 +64,13 @@ export default class Applicant {
     this.shortRole = this.role ? (this.role === "demandeur" ? "DEM" : "CJT") : null;
     this.linkedOrganisationSearchTerms = formattedAttributes.linkedOrganisationSearchTerms;
     this.referentEmail = formattedAttributes.referentEmail || currentAgent?.email;
-
+    this.tags = attributes.tags || [];
+    
     this.department = department;
     this.departmentNumber = department.number;
     // when creating/inviting we always consider an applicant in the scope of only one organisation
     this.currentOrganisation = organisation;
+    this.availableTags = availableTags;
     this.currentConfiguration = currentConfiguration;
     this.columnNames = columnNames;
     this.selected = false;
@@ -136,7 +140,7 @@ export default class Applicant {
   }
 
   async inviteBy(format, isDepartmentLevel, options = { raiseError: true }) {
-    if (!this.createdAt) {
+    if (!this.createdAt || !this.belongsToCurrentOrg()) {
       const success = await this.createAccount(options);
       if (!success) return false;
     }
@@ -189,9 +193,9 @@ export default class Applicant {
       raiseError: options.raiseError,
     });
 
-    if (!success) {
+    if (!success && !options.raiseError) {
       this.errors = ["createAccount"];
-    } else {
+    } else if (success) {
       this.resetErrors();
     }
 
@@ -202,6 +206,26 @@ export default class Applicant {
 
   resetErrors() {
     this.errors = []
+  }
+
+  async updateAttribute(attribute, value) {
+    if (value === this[attribute]) return true;
+
+    const previousValue = this[attribute];
+    this[attribute] = value;
+
+    if (this.createdAt) {
+      this.triggers[`${attribute}Update`] = true;
+      const result = await handleApplicantUpdate(this.currentOrganisation.id, this, this.asJson())
+
+      if (!result.success) {
+        this[attribute] = previousValue;
+      }
+
+      this.triggers[`${attribute}Update`] = false;
+      return result.success
+    }
+    return true
   }
 
   get isValid() {
@@ -245,6 +269,7 @@ export default class Applicant {
       this.role = upToDateApplicant.role;
       this.departmentInternalId = upToDateApplicant.department_internal_id;
     }
+    this.tags = upToDateApplicant.tags.map((tag) => tag.value);
     if (this.currentConfiguration) {
       this.currentRdvContext = upToDateApplicant.rdv_contexts.find(
         (rc) => rc.motif_category_id === this.currentConfiguration.motif_category_id
@@ -432,11 +457,20 @@ export default class Applicant {
     return btoa(`${this.affiliationNumber} - ${this.role}`);
   }
 
+  get tagsAsJson() {
+    const matchingTags = this.availableTags.filter((tag) =>
+      this.tags.includes(tag.value)
+    );
+
+    return matchingTags.map((tag) => ({ tag_id: tag.id }));
+  }
+
   asJson() {
     return {
-      title: this.title,
-      last_name: this.lastName,
-      first_name: this.firstName,
+      ...(this.title && { title: this.title}),
+      ...(this.lastName && { last_name: this.lastName}),
+      ...(this.firstName && { first_name: this.firstName}),
+      tag_applicants_attributes: this.tagsAsJson,
       ...(this.fullAddress && { address: this.fullAddress }),
       ...(this.role && { role: this.role }),
       ...(this.affiliationNumber && { affiliation_number: this.affiliationNumber }),

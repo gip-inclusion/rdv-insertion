@@ -3,6 +3,7 @@ import { makeAutoObservable } from "mobx"
 class Applicants {
   constructor() {
     this.list = []
+    this.loading = false
     makeAutoObservable(this)
   }
   
@@ -12,6 +13,10 @@ class Applicants {
 
   setApplicants(applicants) {
     this.list = applicants
+  }
+
+  setLoading(loading) {
+    this.loading = loading
   }
 
   get selectedApplicants() {

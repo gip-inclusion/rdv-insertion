@@ -3,7 +3,7 @@ class FileConfigurationsController < ApplicationController
     :sheet_name, :title_column, :first_name_column, :last_name_column, :role_column, :email_column, :nir_column,
     :phone_number_column, :birth_date_column, :birth_name_column, :address_first_field_column,
     :address_second_field_column, :address_third_field_column, :address_fourth_field_column,
-    :address_fifth_field_column, :department_internal_id_column, :affiliation_number_column,
+    :address_fifth_field_column, :department_internal_id_column, :affiliation_number_column, :tags_column,
     :rights_opening_date_column, :organisation_search_terms_column, :referent_email_column, :pole_emploi_id_column
   ].freeze
 

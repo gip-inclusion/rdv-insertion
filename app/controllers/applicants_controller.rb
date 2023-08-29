@@ -4,7 +4,8 @@ class ApplicantsController < ApplicationController
   PERMITTED_PARAMS = [
     :uid, :role, :first_name, :last_name, :nir, :pole_emploi_id, :birth_date, :email, :phone_number,
     :birth_name, :address, :affiliation_number, :department_internal_id, :title,
-    :status, :rights_opening_date, { rdv_contexts_attributes: [:motif_category_id] }
+    :status, :rights_opening_date,
+    { rdv_contexts_attributes: [:motif_category_id], tag_applicants_attributes: [:tag_id] }
   ].freeze
 
   include BackToListConcern
@@ -25,6 +26,7 @@ class ApplicantsController < ApplicationController
   before_action :set_applicant, :set_organisation, :set_department,
                 for: [:edit, :update]
   before_action :find_or_initialize_applicant!, only: :create
+  before_action :reset_tag_applicants, only: :update
   after_action :store_back_to_applicants_list_url, only: [:index]
 
   def default_list
@@ -79,6 +81,12 @@ class ApplicantsController < ApplicationController
     applicant_params.to_h do |k, v|
       [k, k.in?([:affiliation_number, :department_internal_id, :email, :pole_emploi_id, :nir]) ? v.presence : v]
     end
+  end
+
+  def reset_tag_applicants
+    # since we send the exhaustive list of tags, we need to reset the tag_applicants list
+    # if tag_applicants_attributes is nil, it means that the user did not change the tags
+    @applicant.tag_applicants.destroy_all if params[:applicant][:tag_applicants_attributes].present?
   end
 
   def send_applicants_csv
