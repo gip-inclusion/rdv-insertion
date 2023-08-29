@@ -8,6 +8,8 @@ class Invitation < ApplicationRecord
   belongs_to :department
   belongs_to :rdv_context
   has_and_belongs_to_many :organisations
+  has_many :configurations, through: :organisations
+
 
   attr_accessor :content
 

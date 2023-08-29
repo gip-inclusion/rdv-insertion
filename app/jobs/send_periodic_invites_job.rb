@@ -12,12 +12,12 @@ class SendPeriodicInvitesJob < ApplicationJob
 
   def send_invite(rdv_context)
     invitation = rdv_context.invitations.order(sent_at: :desc).first
-    configuration = invitation.organisation.configurations.find_by!(motif_category: invitation.motif_category)
+    configuration = invitation.configurations.find_by!(motif_category: invitation.motif_category)
 
     return unless should_send_periodic_invite?(invitation, configuration)
 
-    SendPeriodicInviteJob.perform_async(rdv_context.id, "email") if applicant.email?
-    SendPeriodicInviteJob.perform_async(rdv_context.id, "sms") if applicant.phone_number_is_mobile?
+    SendPeriodicInviteJob.perform_async(invitation.id, "email") if applicant.email?
+    SendPeriodicInviteJob.perform_async(invitation.id, "sms") if applicant.phone_number_is_mobile?
   end
 
   def should_send_periodic_invite?(invitation, configuration)
