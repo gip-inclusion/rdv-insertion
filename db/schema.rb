@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_08_084135) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_29_105540) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -340,8 +340,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_08_084135) do
     t.json "percentage_of_no_show_grouped_by_month"
     t.float "average_time_between_invitation_and_rdv_in_days"
     t.json "average_time_between_invitation_and_rdv_in_days_by_month"
-    t.float "average_time_between_rdv_creation_and_start_in_days"
-    t.json "average_time_between_rdv_creation_and_start_in_days_by_month"
     t.float "rate_of_applicants_with_rdv_seen_in_less_than_30_days"
     t.json "rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month"
     t.integer "agents_count"
