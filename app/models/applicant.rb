@@ -111,7 +111,7 @@ class Applicant < ApplicationRecord
     assign_attributes(rdv_contexts_attributes: [{ motif_category_id: motif_category_id }])
   end
 
-  def as_json(_opts = {})
+  def as_json(...)
     super.deep_symbolize_keys
          .except(:last_webhook_update_received_at, :deleted_at, :rdv_solidarites_user_id)
          .merge(
