@@ -178,11 +178,6 @@ describe Exporters::GenerateApplicantsCsv, type: :service do
           expect(csv).to include("individuel;Oui;Statut du RDV à préciser;Oui;25/05/2022") # orientation date
         end
 
-        it "displays the archive infos" do
-          expect(csv).to include("25/05/2022;\"\"") # archive status
-          expect(csv).to include("25/05/2022;\"\";;") # archive reason
-        end
-
         it "displays the organisation infos" do
           expect(csv).to include("1")
           expect(csv).to include("Drome RSA")

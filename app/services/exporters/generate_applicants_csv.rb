@@ -127,14 +127,10 @@ module Exporters
     end
 
     def display_date(date)
-      return "" if date.blank?
-
       date&.strftime("%d/%m/%Y")
     end
 
     def display_time(datetime)
-      return "" if datetime.blank?
-
       datetime&.strftime("%kh%M")
     end
 
@@ -161,9 +157,7 @@ module Exporters
     end
 
     def last_participation(applicant)
-      return rdv_context(applicant)&.last_created_participation if @motif_category.present?
-
-      applicant.last_created_participation
+      last_rdv(applicant).present? ? last_rdv(applicant).participation_for(applicant) : ""
     end
 
     def last_rdv_motif(applicant)
