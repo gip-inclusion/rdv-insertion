@@ -23,20 +23,20 @@ export default observer(({ applicant, cell, values, setIsEditingTags }) => {
       <div className="modal-dialog" role="document">
         <div className="modal-content">
           <div className="modal-header">
-            <h5 className="modal-title">Édition des Catégories d'usagers</h5>
+            <h5 className="modal-title">Édition des Tags</h5>
             <button type="button" className="btn btn-blue-out" onClick={() => setIsEditingTags(false)}>
               Fermer
             </button>
           </div>
           <div className="modal-body d-flex flex-wrap">
             {availableValues.length && !applicant[cell].length ? "Choisissez un élement ci-dessous." : null}
-            {!availableValues.length && !applicant[cell].length ? "Vous pouvez créer des catégories depuis la configuration de l'organisation." : null}
+            {!availableValues.length && !applicant[cell].length ? "Vous pouvez créer des tags depuis la configuration de l'organisation." : null}
             {applicant[cell].length ? applicant[cell].map((tag) => (
               <Tippy
                 placement="top"
                 key={tag} 
                 disabled={values.includes(tag)}
-                content="Cette catégorie ne sera pas prise en compte, elle doit d'abord être créée dans la configuration de l'organisation."
+                content="Ce tag ne sera pas pris en compte, il doit d'abord être créé dans la configuration de l'organisation."
               >
                 <div className={`badge w-auto d-flex justify-content-between bg-${values.includes(tag) ? "primary" : "warning text-white"} mb-1`}>
                   {tag}
@@ -51,14 +51,14 @@ export default observer(({ applicant, cell, values, setIsEditingTags }) => {
             {availableValues.length ? (
               <>
                 <select id="editable-tags" className="form-control w-50">
-                  <option value=""> Choisir une catégorie </option>
+                  <option value=""> Choisir un tag </option>
                   {availableValues.map(value => (
                       <option key={value} value={value}>{value}</option>
                     ))}
                 </select>
                 <button type="button" onClick={addTag} className="btn btn-primary">Ajouter</button>
               </>
-            ) : <p>Aucune {applicant[cell].length ? "autre" : ""} catégorie disponible pour cette organisation.</p>
+            ) : <p>Aucun {applicant[cell].length ? "autre" : ""} tag disponible pour cette organisation.</p>
             }
           </div>
         </div>

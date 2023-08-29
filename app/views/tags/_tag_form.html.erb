@@ -1,5 +1,12 @@
 <%= simple_form_for(:tag, url: organisation_tags_path, html: { method: :post, class: "d-flex", data: { controller: :tags, action: "turbo:submit-end->tags#clear" } }) do |f| %>
-  <%= f.input :value, input_html: { class: "form-control", placeholder: "Nom du tag" } %>
+  <div class="autocomplete-container" data-controller="autocomplete">
+    <%= f.input :value, input_html: { class: "form-control", placeholder: "Nom du tag", autocomplete: "off" } %>
+    <div class="autocomplete">
+      <% @available_tags.each do |tag| %>
+        <button type="button"><%= tag.value %></button>
+      <% end %>
+    </div>
+  </div>
   <%= button_tag type: 'submit', class: "btn btn-primary mx-2" do %>
     Créer le tag
   <% end  %>

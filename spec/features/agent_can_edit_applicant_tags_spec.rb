@@ -28,7 +28,7 @@ describe "Agents can edit applicants tags", js: true do
   context "the applicant page" do
     it "allows to edit tags" do
       visit organisation_applicant_path(organisation, applicant)
-      click_button("Modifier les catégories d'usagers")
+      click_button("Modifier les tags")
       modal = find(".modal")
 
       modal.find("select option[value=prout]").select_option

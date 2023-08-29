@@ -1,7 +1,7 @@
 <div class="mb-1">
   <div class="w-100">
     <%= link_to(new_tags_filtering_path(url_params.merge(department_level? ? { department_id: @department.id } : {organisation_id: @organisation.id })), data: { turbo_frame: 'remote_modal' }) do %>
-      <button class="btn btn-grey w-100">Filtrer par catégorie d'usager</button>
+      <button class="btn btn-grey w-100">Filtrer par tags</button>
     <% end %>
   </div>
 </div>

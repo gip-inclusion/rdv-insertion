@@ -26,4 +26,4 @@ fr:
         referent_email_column: Email de l'agent référent
         pole_emploi_id_column: ID Pôle emploi
         nir_column: NIR
-        tags_column: Catégories d'usagers
+        tags_column: Tags
