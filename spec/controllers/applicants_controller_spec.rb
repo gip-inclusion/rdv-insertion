@@ -671,6 +671,46 @@ describe ApplicantsController do
       end
     end
 
+    context "when tags filters are passed" do
+      let!(:tags) do
+        [
+          create(:tag, value: "tag1"),
+          create(:tag, value: "tag2"),
+          create(:tag, value: "tag3")
+        ]
+      end
+
+      let!(:applicant) do
+        create(
+          :applicant,
+          organisations: [organisation],
+          first_name: "Michael",
+          tag_applicants_attributes: [{ tag_id: tags[0].id }]
+        )
+      end
+
+      let!(:applicant2) do
+        create(:applicant, organisations: [organisation], first_name: "Marie",
+                           tag_applicants_attributes: [{ tag_id: tags[0].id }, { tag_id: tags[1].id }])
+      end
+
+      let!(:applicant3) do
+        create(:applicant, organisations: [organisation], first_name: "Oliva",
+                           tag_applicants_attributes: [{ tag_id: tags[2].id }])
+      end
+
+      let!(:index_params) do
+        { organisation_id: organisation.id, tag_ids: [tags[0].id, tags[1].id] }
+      end
+
+      it "filters by tag" do
+        get :index, params: index_params
+        expect(response.body).not_to match(/Michael/)
+        expect(response.body).to match(/Marie/)
+        expect(response.body).not_to match(/Oliva/)
+      end
+    end
+
     context "when invitations dates are passed" do
       let!(:invitation1) do
         create(
@@ -986,6 +1026,38 @@ describe ApplicantsController do
           post :update, params: update_params
           expect(response).to be_successful
           expect(response.parsed_body["success"]).to eq(true)
+        end
+      end
+
+      context "with tags" do
+        let(:tag) { create(:tag) }
+        let(:update_params) do
+          {
+            applicant: {
+              tag_applicants_attributes: [{ tag_id: tag.id }]
+            },
+            id: applicant.id,
+            organisation_id: organisation.id,
+            format: "json"
+          }
+        end
+        let!(:existing_tag) { create(:tag, value: "lol") }
+
+        before do
+          allow(Applicants::Save).to receive(:call).and_call_original
+          allow_any_instance_of(Applicants::Save).to receive(:upsert_rdv_solidarites_user)
+            .and_return true
+          allow_any_instance_of(Applicants::Save).to receive(:assign_rdv_solidarites_user_id)
+            .and_return true
+          organisation.tags << tag
+          organisation.tags << existing_tag
+          applicant.tags << existing_tag
+        end
+
+        it "updates the tags" do
+          post :update, params: update_params
+          expect(applicant.reload.tags.size).to eq(1)
+          expect(applicant.reload.tags.first.id).to eq(tag.id)
         end
       end
 

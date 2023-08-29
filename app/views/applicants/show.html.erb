@@ -9,6 +9,9 @@
       <%= link_to rdv_solidarites_user_url(@organisation, @applicant), target: "_blank" do %>
         <button class="btn btn-blue">Voir sur RDV-Solidarités<i class="fas fa-external-link-alt icon-sm"></i></button>
       <% end %>
+      <%= link_to rdv_solidarites_find_rdv_url(@organisation, @applicant), target: "_blank" do %>
+        <button class="btn btn-blue">Trouver un RDV sur RDV-Solidarités<i class="fas fa-external-link-alt icon-sm"></i></button>
+      <% end %>
       <% if @department.carnet_de_bord_deploiement_id? %>
         <% if @applicant.carnet_de_bord_carnet_id? %>
           <%= render "carnet_de_bord_carnet_link", carnet_url: @applicant.carnet_de_bord_carnet_url %>
@@ -45,21 +48,28 @@
         <%= render "common/attribute_display", record: @archive, attribute: :archiving_reason %>
         <%= render "common/attribute_display", record: @archive, attribute: :created_at, as: :date %>
       <% end %>
-      <%= render "common/attribute_display", record: @applicant, attribute: :organisations, as: :list, id: "organisations_list" %>
-      <%= render "common/attribute_display", record: @applicant, attribute: :referents, as: :list, id: "referents_list" %>
     </div>
+    <div class="row d-flex justify-content-start flex-wrap mt-5">
+      <%= render "common/attribute_display", record: @applicant, attribute: :tags, as: :inline_list, id: "tags_list" do %>
+        <%= react_component(
+          "components/applicant/EditTags", {
+            applicant: @applicant, tags: (@organisation || @department).tags,
+            department: @department, organisation: @organisation,
+          }
+        ) %>
+      <% end %>
 
-    <div class="row d-flex justify-content-start flex-wrap">
-      <div class="col-12 col-md-6 px-5">
+      <%= render "common/attribute_display", record: @applicant, attribute: :organisations, as: :list, id: "organisations_list" do %>
         <%= link_to(department_applicant_applicants_organisations_path(@department, @applicant, current_organisation_id: department_level? ? nil : @organisation.id), data: { turbo_frame: 'remote_modal' }) do %>
           <button class="btn btn-blue"><i class="fas fa-pen"></i> Ajouter ou retirer une organisation </button>
         <% end %>
-      </div>
-      <div class="col-12 col-md-6 px-5">
+      <% end %>
+
+      <%= render "common/attribute_display", record: @applicant, attribute: :referents, as: :list, id: "referents_list" do %>
         <%= link_to(department_applicant_referent_assignations_path(@department, @applicant), data: { turbo_frame: 'remote_modal' }) do %>
-          <button class="btn btn-blue"><i class="fas fa-user-plus"></i> Assigner le.s référent.s</button>
+          <button class="btn btn-blue mb-3"><i class="fas fa-user-plus"></i> Assigner le.s référent.s</button>
         <% end %>
-      </div>
+      <% end %>
     </div>
   </div>
   <% @all_configurations.each do |configuration| %>
