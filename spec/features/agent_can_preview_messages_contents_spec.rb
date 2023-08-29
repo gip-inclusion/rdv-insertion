@@ -11,10 +11,10 @@ describe "Agents can preview messages contents", js: true do
   it "can preview and edit messages contents" do
     visit organisation_configuration_path(organisation, configuration)
 
-    expect(page).to have_button("Notification")
-    expect(page).to have_button("Invitation")
+    expect(page).to have_button("Convocations")
+    expect(page).to have_button("Invitations")
 
-    click_button("Invitation")
+    click_button("Invitations")
 
     expect(page).to have_css("span.text-purple", text: "rendez-vous d'orientation", wait: 10)
     expect(page).to have_css("span.text-purple", text: "bénéficiaire du RSA")
@@ -22,10 +22,10 @@ describe "Agents can preview messages contents", js: true do
 
     find("button.btn-close").click
 
-    expect(page).to have_button("Notification")
-    expect(page).to have_button("Invitation")
+    expect(page).to have_button("Convocations")
+    expect(page).to have_button("Invitations")
 
-    click_button("Notification")
+    click_button("Convocations")
 
     expect(page).to have_css("span.text-purple", text: "rendez-vous d'orientation téléphonique", wait: 10)
     expect(page).to have_css("span.text-purple", text: "rendez-vous d'orientation")
@@ -46,9 +46,9 @@ describe "Agents can preview messages contents", js: true do
 
     click_button("Enregistrer")
 
-    expect(page).to have_button("Invitation")
+    expect(page).to have_button("Invitations")
 
-    click_button("Invitation")
+    click_button("Invitations")
 
     expect(page).to have_css("span.text-purple", text: "nouveau type de rendez-vous", wait: 10)
     expect(page).to have_css("span.text-purple", text: "une personne remarquable")
@@ -60,9 +60,9 @@ describe "Agents can preview messages contents", js: true do
 
     find("button.btn-close").click
 
-    expect(page).to have_button("Notification")
+    expect(page).to have_button("Convocations")
 
-    click_button("Notification")
+    click_button("Convocations")
 
     expect(page).to have_css("span.text-purple", text: "nouveau type de rendez-vous", wait: 10)
     expect(page).to have_css("span.text-purple", text: "nouveau coup de téléphone")
