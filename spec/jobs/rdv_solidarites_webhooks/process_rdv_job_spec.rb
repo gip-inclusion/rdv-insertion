@@ -402,7 +402,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
                 uid: applicant2.uid,
                 affiliation_number: applicant2.affiliation_number,
                 role: applicant2.role,
-                created_at: "2021-05-29 14:20:20 +0200" ,
+                created_at: "2021-05-29 14:20:20 +0200",
                 department_internal_id: applicant2.department_internal_id,
                 first_name: "Jane",
                 last_name: "Campion",
