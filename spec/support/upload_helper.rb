@@ -22,7 +22,8 @@ module UploadHelper
         department_internal_id_column: "id iodas ",
         rights_opening_date_column: nil,
         organisation_search_terms_column: "structure",
-        referent_email_column: nil
+        referent_email_column: nil,
+        tags_column: "Tags"
       )
     end
   end

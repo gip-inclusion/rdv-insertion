@@ -8,6 +8,7 @@ const DEFAULT_PENDING_MESSAGE = "Calcul des statistiques en cours, merci de pati
 export default function FileHandler({
   handleFile,
   fileSize,
+  loading = () => {},
   accept,
   name,
   multiple = true,
@@ -19,11 +20,13 @@ export default function FileHandler({
   const handleFiles = async (filesToHandle) => {
     await Promise.all([...filesToHandle].map(async (file) => handleFile(file)));
     setIsPending(false);
+    loading(false);
   };
 
   const handleUploads = (event) => {
     const filesToHandle = event.target.files;
     setIsPending(true);
+    loading(true);
     handleFiles(filesToHandle);
   };
 

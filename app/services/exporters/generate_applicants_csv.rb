@@ -18,7 +18,7 @@ module Exporters
 
     def generate_csv
       csv = CSV.generate(write_headers: true, col_sep: ";", headers: headers, encoding: "utf-8") do |row|
-        @applicants.preload(:organisations, :rdvs, rdv_contexts: [:invitations]).each do |applicant|
+        @applicants.preload(:organisations, :rdvs, :tags, rdv_contexts: [:invitations]).each do |applicant|
           row << applicant_csv_row(applicant)
         end
       end
@@ -56,7 +56,8 @@ module Exporters
        Archive.human_attribute_name(:archiving_reason),
        Applicant.human_attribute_name(:referents),
        "Nombre d'organisations",
-       "Nom des organisations"]
+       "Nom des organisations",
+       Applicant.human_attribute_name(:tags)]
     end
 
     def applicant_csv_row(applicant) # rubocop:disable Metrics/AbcSize
@@ -89,7 +90,8 @@ module Exporters
        applicant.archive_for(department_id)&.archiving_reason,
        applicant.referents.map(&:email).join(", "),
        applicant.organisations.to_a.count,
-       applicant.organisations.map(&:name).join(", ")]
+       applicant.organisations.map(&:name).join(", "),
+       applicant.tags.pluck(:value).join(", ")]
     end
 
     def filename

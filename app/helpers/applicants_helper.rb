@@ -100,6 +100,13 @@ module ApplicantsHelper
     "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{organisation_id}/users/#{applicant.rdv_solidarites_user_id}"
   end
 
+  def rdv_solidarites_find_rdv_url(organisation, applicant)
+    organisation_id = organisation.rdv_solidarites_organisation_id
+    user_id = applicant.rdv_solidarites_user_id
+
+    "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{organisation_id}/agent_searches?user_ids[]=#{user_id}"
+  end
+
   def display_convocation_formats(convocation_formats)
     if convocation_formats.empty?
       "❌#{content_tag(:br)}SMS et Email non envoyés#{content_tag(:br)}❌"
