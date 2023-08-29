@@ -41,8 +41,6 @@ describe Stats::GlobalStats::Compute, type: :service do
         .and_return(OpenStruct.new(success?: true, value: 50.0))
       allow(Stats::ComputeAverageTimeBetweenInvitationAndRdvInDays).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 4.0))
-      allow(Stats::ComputeAverageTimeBetweenParticipationCreationAndRdvStartInDays).to receive(:call)
-        .and_return(OpenStruct.new(success?: true, value: 4.0))
       allow(Stats::ComputeRateOfApplicantsWithRdvSeenInLessThanThirtyDays).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 50.0))
       allow(Stats::ComputeRateOfAutonomousApplicants).to receive(:call)
@@ -105,13 +103,6 @@ describe Stats::GlobalStats::Compute, type: :service do
       expect(stat).to receive(:rdv_contexts_sample)
       expect(Stats::ComputeAverageTimeBetweenInvitationAndRdvInDays).to receive(:call)
         .with(rdv_contexts: [rdv_context1, rdv_context2])
-      subject
-    end
-
-    it "computes the average time between the creation of the rdvs and the rdvs date in days" do
-      expect(stat).to receive(:participations_sample)
-      expect(Stats::ComputeAverageTimeBetweenParticipationCreationAndRdvStartInDays).to receive(:call)
-        .with(participations: [participation1, participation2])
       subject
     end
 
