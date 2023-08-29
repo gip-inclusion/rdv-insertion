@@ -79,6 +79,16 @@ function Applicant({
             <EditableCell applicant={applicant} cell="phoneNumber" />
           </td>
         )}
+        {applicant.shouldDisplay("tags_column") && (
+          <td className={applicant.tagsUpdated ? "table-success" : ""}>
+            <EditableCell
+              applicant={applicant} 
+              cell="tags"
+              type="tags"
+              values={applicant.availableTags.map(tag => tag.value)}
+            />
+          </td>
+        )}
         {applicant.shouldDisplay("rights_opening_date_column") && (
           <td className={applicant.rightsOpeningDateUpdated ? "table-success" : ""}>
             <EditableCell applicant={applicant} cell="rightsOpeningDate" />

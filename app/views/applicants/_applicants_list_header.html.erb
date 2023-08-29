@@ -11,6 +11,7 @@
         %>
       <% end %>
     </div>
+    <%= render "filter_by_tag_button" %>
     <%= render "filter_by_creation_dates_button" if @current_configuration.nil? %>
     <%= render "filter_by_invitations_dates_button" if @current_configuration.present? || archived_scope?(@applicants_scope) %>
     <%= render 'search_form', url: compute_index_path(@organisation, @department) %>

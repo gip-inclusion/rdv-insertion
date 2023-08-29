@@ -200,6 +200,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_29_105540) do
     t.boolean "display_department_logo", default: true
     t.bigint "organisation_id"
     t.boolean "display_pole_emploi_logo", default: false
+    t.string "custom_image"
     t.index ["organisation_id"], name: "index_messages_configurations_on_organisation_id"
   end
 

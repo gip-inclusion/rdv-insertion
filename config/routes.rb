@@ -35,6 +35,7 @@ Rails.application.routes.draw do
     end
     # we need to nest in organisations the different configurations record to correctly authorize them
     resources :configurations, only: [:index, :show, :new, :create, :edit, :update, :destroy]
+    resources :tags, only: [:create, :destroy]
     resources :file_configurations, only: [:show, :new, :create, :edit, :update] do
       get :confirm_update
     end
@@ -92,6 +93,7 @@ Rails.application.routes.draw do
     resource :referent_assignations, only: [:create, :destroy]
   end
   resources :invitation_dates_filterings, :creation_dates_filterings, only: [:new]
+  resources :tags_filterings, :tags_filterings, only: [:new]
 
   namespace :api do
     namespace :v1 do
