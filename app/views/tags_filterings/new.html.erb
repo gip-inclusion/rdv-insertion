@@ -1,4 +1,4 @@
-<%= render "common/remote_modal", title: "Filtrer par catégorie d'usager" do %>
+<%= render "common/remote_modal", title: "Filtrer par tags" do %>
   <%= form_with method: :get, local: true, url: compute_index_path(@organisation, @department), data: { "turbo-frame" => "_top" } do |form| %>
     <% url_params.except(:tag_ids).each do |key, value| %>
       <%= form.hidden_field key, value: value %>
