@@ -12,4 +12,4 @@ fr:
         rdv_subject: Thème du RDV
         display_mandatory_warning: Rendez-vous obligatoire?
         punishable_warning: Conséquence si absence au rdv
-        custom_sentence: Phrase custom à insérer (mail et courrier)
+        custom_sentence: Phrase à insérer (mail et courrier)
