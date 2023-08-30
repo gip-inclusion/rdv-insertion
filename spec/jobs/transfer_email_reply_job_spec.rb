@@ -7,6 +7,7 @@ describe TransferEmailReplyJob do
     allow(ReplyTransferMailer).to receive_message_chain(:forward_notification_reply_to_organisation, :deliver_now)
     allow(ReplyTransferMailer).to receive_message_chain(:forward_invitation_reply_to_organisation, :deliver_now)
     allow(ReplyTransferMailer).to receive_message_chain(:forward_to_default_mailbox, :deliver_now)
+    allow(MattermostClient).to receive(:send_to_notif_channel)
   end
 
   let!(:organisation) { create(:organisation, email: "organisation@departement.fr") }
@@ -77,5 +78,11 @@ describe TransferEmailReplyJob do
       expect(ReplyTransferMailer).to receive_message_chain(:forward_to_default_mailbox, :deliver_now)
       subject
     end
+  end
+
+  it "sends a notif on mattermost" do
+    expect(MattermostClient).to receive(:send_to_notif_channel)
+      .with("📩 Un email d'un usager vient d'être transféré")
+    subject
   end
 end
