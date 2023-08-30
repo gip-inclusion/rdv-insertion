@@ -242,8 +242,11 @@ class ApplicantsController < ApplicationController
   def set_all_applicants
     @applicants = policy_scope(Applicant)
                   .preload(rdv_contexts: [:invitations])
-                  .active.distinct
+                  .joins(:applicants_organisations)
+                  .active.distinct("applicants.id")
+                  .group("applicants.id, applicants_organisations.created_at")
                   .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
+                  .order("applicants_organisations.created_at DESC")
   end
 
   def set_applicants_for_motif_category
