@@ -4,9 +4,11 @@ describe TransferEmailReplyJob do
   end
 
   before do
-    allow(ReplyTransferMailer).to receive_message_chain(:with, :send, :deliver_now)
-    allow(ReplyTransferMailer).to receive_message_chain(:with, :send, :deliver_now)
-    allow(ReplyTransferMailer).to receive_message_chain(:with, :send, :deliver_now)
+    allow(ReplyTransferMailer).to receive_message_chain(:with, :forward_invitation_reply_to_organisation, :deliver_now)
+    allow(ReplyTransferMailer).to receive_message_chain(
+      :with, :forward_notification_reply_to_organisation, :deliver_now
+    )
+    allow(ReplyTransferMailer).to receive_message_chain(:with, :forward_to_default_mailbox, :deliver_now)
     allow(MattermostClient).to receive(:send_to_notif_channel)
   end
 
@@ -25,26 +27,39 @@ describe TransferEmailReplyJob do
     create(:invitation, applicant: applicant, organisations: [organisation])
   end
 
+  let!(:headers) do
+    {
+      Subject: "coucou",
+      From: "Bénédicte Ficiaire <bene_ficiaire@gmail.com>",
+      To: "rdv+8fae4d5f-4d63-4f60-b343-854d939881a3@reply.rdv-insertion.fr",
+      Date: "Sun, 25 Jun 2023 12:22:15 +0200"
+    }
+  end
   let!(:brevo_valid_payload) do
     # The usual payload has more info, non-essential fields are removed for readability.
     {
       Subject: "coucou",
       Attachments: [],
-      Headers: {
-        Subject: "coucou",
-        From: "Bénédicte Ficiaire <bene_ficiaire@gmail.com>",
-        To: "rdv+8fae4d5f-4d63-4f60-b343-854d939881a3@reply.rdv-insertion.fr",
-        Date: "Sun, 25 Jun 2023 12:22:15 +0200"
-      },
+      Headers: headers,
       ExtractedMarkdownMessage: "Je souhaite annuler mon RDV",
       ExtractedMarkdownSignature: nil
     }
   end
   let!(:brevo_payload) { brevo_valid_payload } # use valid payload by default
+  let!(:extracted_response) { "Je souhaite annuler mon RDV" }
+  let!(:source_mail) { Mail.new(headers: headers, subject: "coucou") }
 
   context "when all goes well for a reply to a notification" do
     it "calls the ReplyTransferMailer with the right method" do
-      expect(ReplyTransferMailer).to receive_message_chain(:with, :send, :deliver_now)
+      expect(ReplyTransferMailer).to receive_message_chain(
+        :with, :forward_notification_reply_to_organisation, :deliver_now
+      )
+      expect(ReplyTransferMailer).to receive(:with)
+        .with(
+          rdv: rdv,
+          reply_body: extracted_response,
+          source_mail: source_mail
+        )
       subject
     end
   end
@@ -55,7 +70,15 @@ describe TransferEmailReplyJob do
     end
 
     it "calls the ReplyTransferMailer with the right method" do
-      expect(ReplyTransferMailer).to receive_message_chain(:with, :send, :deliver_now)
+      expect(ReplyTransferMailer).to receive_message_chain(
+        :with, :forward_invitation_reply_to_organisation, :deliver_now
+      )
+      expect(ReplyTransferMailer).to receive(:with)
+        .with(
+          invitation: invitation,
+          reply_body: extracted_response,
+          source_mail: source_mail
+        )
       subject
     end
   end
@@ -64,7 +87,12 @@ describe TransferEmailReplyJob do
     let(:rdv_uuid) { "6df62597-632e-4be1-a273-708ab58e4765" }
 
     it "calls the ReplyTransferMailer with the default method" do
-      expect(ReplyTransferMailer).to receive_message_chain(:with, :send, :deliver_now)
+      expect(ReplyTransferMailer).to receive_message_chain(:with, :forward_to_default_mailbox, :deliver_now)
+      expect(ReplyTransferMailer).to receive(:with)
+        .with(
+          reply_body: extracted_response,
+          source_mail: source_mail
+        )
       subject
     end
   end
@@ -75,7 +103,12 @@ describe TransferEmailReplyJob do
     end
 
     it "calls the ReplyTransferMailer with the default method" do
-      expect(ReplyTransferMailer).to receive_message_chain(:with, :send, :deliver_now)
+      expect(ReplyTransferMailer).to receive_message_chain(:with, :forward_to_default_mailbox, :deliver_now)
+      expect(ReplyTransferMailer).to receive(:with)
+        .with(
+          reply_body: extracted_response,
+          source_mail: source_mail
+        )
       subject
     end
   end
