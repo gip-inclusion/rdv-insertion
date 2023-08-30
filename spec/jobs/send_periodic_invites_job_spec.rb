@@ -19,7 +19,7 @@ describe SendPeriodicInvitesJob do
         :invitation,
         rdv_context: rdv_context,
         sent_at: 5.days.ago,
-        valid_until: 1.day.ago,
+        valid_until: 1.day.from_now,
         organisations: [organisation]
       )
     end
@@ -38,7 +38,7 @@ describe SendPeriodicInvitesJob do
           :invitation,
           rdv_context: rdv_context,
           sent_at: 3.days.ago,
-          valid_until: 1.day.ago,
+          valid_until: 1.day.from_now,
           organisations: [organisation]
         )
       end

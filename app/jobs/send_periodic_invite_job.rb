@@ -9,7 +9,7 @@ class SendPeriodicInviteJob < ApplicationJob
     new_invitation.sent_at = nil
     new_invitation.valid_until = configuration.number_of_days_before_action_required.days.from_now
     new_invitation.organisations = invitation.organisations
-    new_invitation.assign_uuid
+    new_invitation.uuid = nil
     new_invitation.save!
 
     Invitations::SaveAndSend.call(invitation: new_invitation)

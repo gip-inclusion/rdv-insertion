@@ -5,7 +5,7 @@ upsert_monthly_stats_job:
   cron: "0 22 * * 7" # we compute monthly stats once a week, the sunday at 22:00
   class: "Stats::MonthlyStats::UpsertStatsJob"
 send_periodic_invites_job:
-  cron: "0 10 * * *" # we send recurrent invitations X days after the previous one, at 10:00
+  cron: "0 14 * * *" # we send recurrent invitations X days after the previous one, at 14:00
   class: "SendPeriodicInvitesJob"
 send_invitation_reminders_job:
   cron: "0 11 * * *" # we send reminders once a day, at 11:00

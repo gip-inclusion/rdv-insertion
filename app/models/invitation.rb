@@ -31,6 +31,10 @@ class Invitation < ApplicationRecord
   scope :reminder, ->(reminder = true) { where(reminder: reminder) }
   scope :valid, -> { where("valid_until > ?", Time.zone.now) }
 
+  def current_configuration
+    @current_configuration ||= configurations.find { |c| c.motif_category == motif_category }
+  end
+
   def send_to_applicant
     case self.format
     when "sms"
