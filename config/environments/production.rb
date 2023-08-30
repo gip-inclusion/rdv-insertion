@@ -78,8 +78,8 @@ Rails.application.configure do
     port: "587",
     authentication: 'login',
     enable_starttls_auto: true,
-    user_name: ENV["SENDINBLUE_USERNAME"],
-    password: ENV["SENDINBLUE_PASSWORD"],
+    user_name: ENV["BREVO_USERNAME"],
+    password: ENV["BREVO_PASSWORD"],
     domain: "rdv-insertion.fr"
   }
   config.action_mailer.delivery_method = :smtp
