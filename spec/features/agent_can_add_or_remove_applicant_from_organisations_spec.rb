@@ -167,7 +167,7 @@ describe "Agents can add or remove applicant from organisations", js: true do
       expect(page).to have_button("- Retirer", disabled: false)
 
       accept_confirm(
-        "Cette action va supprimer défintivement la fiche du bénéficiaire, êtes-vous sûr de vouloir la supprimer ?"
+        "Cette action va supprimer définitivement la fiche du bénéficiaire, êtes-vous sûr de vouloir la supprimer ?"
       ) do
         click_button("- Retirer")
       end
