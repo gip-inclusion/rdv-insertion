@@ -18,26 +18,26 @@ class TransferEmailReplyJob < ApplicationJob
   private
 
   def notify_agents_of_invitation_reply
-    ReplyTransferMailer.forward_invitation_reply_to_organisation(
+    ReplyTransferMailer.with(
       invitation: invitation,
       reply_body: extracted_response,
       source_mail: source_mail
-    ).deliver_now
+    ).send(:forward_invitation_reply_to_organisation).deliver_now
   end
 
   def notify_agents_of_notification_reply
-    ReplyTransferMailer.forward_notification_reply_to_organisation(
+    ReplyTransferMailer.with(
       rdv: rdv,
       reply_body: extracted_response,
       source_mail: source_mail
-    ).deliver_now
+    ).send(:forward_notification_reply_to_organisation).deliver_now
   end
 
   def forward_to_default_mailbox
-    ReplyTransferMailer.forward_to_default_mailbox(
+    ReplyTransferMailer.with(
       reply_body: extracted_response,
       source_mail: source_mail
-    ).deliver_now
+    ).send(:forward_to_default_mailbox).deliver_now
   end
 
   def rdv

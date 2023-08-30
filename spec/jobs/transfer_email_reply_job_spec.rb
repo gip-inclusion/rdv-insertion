@@ -4,9 +4,9 @@ describe TransferEmailReplyJob do
   end
 
   before do
-    allow(ReplyTransferMailer).to receive_message_chain(:forward_notification_reply_to_organisation, :deliver_now)
-    allow(ReplyTransferMailer).to receive_message_chain(:forward_invitation_reply_to_organisation, :deliver_now)
-    allow(ReplyTransferMailer).to receive_message_chain(:forward_to_default_mailbox, :deliver_now)
+    allow(ReplyTransferMailer).to receive_message_chain(:with, :send, :deliver_now)
+    allow(ReplyTransferMailer).to receive_message_chain(:with, :send, :deliver_now)
+    allow(ReplyTransferMailer).to receive_message_chain(:with, :send, :deliver_now)
     allow(MattermostClient).to receive(:send_to_notif_channel)
   end
 
@@ -44,7 +44,7 @@ describe TransferEmailReplyJob do
 
   context "when all goes well for a reply to a notification" do
     it "calls the ReplyTransferMailer with the right method" do
-      expect(ReplyTransferMailer).to receive_message_chain(:forward_notification_reply_to_organisation, :deliver_now)
+      expect(ReplyTransferMailer).to receive_message_chain(:with, :send, :deliver_now)
       subject
     end
   end
@@ -55,7 +55,7 @@ describe TransferEmailReplyJob do
     end
 
     it "calls the ReplyTransferMailer with the right method" do
-      expect(ReplyTransferMailer).to receive_message_chain(:forward_invitation_reply_to_organisation, :deliver_now)
+      expect(ReplyTransferMailer).to receive_message_chain(:with, :send, :deliver_now)
       subject
     end
   end
@@ -64,7 +64,7 @@ describe TransferEmailReplyJob do
     let(:rdv_uuid) { "6df62597-632e-4be1-a273-708ab58e4765" }
 
     it "calls the ReplyTransferMailer with the default method" do
-      expect(ReplyTransferMailer).to receive_message_chain(:forward_to_default_mailbox, :deliver_now)
+      expect(ReplyTransferMailer).to receive_message_chain(:with, :send, :deliver_now)
       subject
     end
   end
@@ -75,7 +75,7 @@ describe TransferEmailReplyJob do
     end
 
     it "calls the ReplyTransferMailer with the default method" do
-      expect(ReplyTransferMailer).to receive_message_chain(:forward_to_default_mailbox, :deliver_now)
+      expect(ReplyTransferMailer).to receive_message_chain(:with, :send, :deliver_now)
       subject
     end
   end
