@@ -1078,7 +1078,7 @@ describe ApplicantsController do
             # that return false to .present? and tag_applicants_attributes
             # being an empty array, the controller doesn't receive it
             allow_any_instance_of(described_class).to receive(:params).and_return(
-              update_params
+              ActionController::Parameters.new(update_params)
             )
           end
 
@@ -1099,6 +1099,12 @@ describe ApplicantsController do
               organisation_id: organisation.id,
               format: "json"
             }
+          end
+
+          before do
+            allow_any_instance_of(described_class).to receive(:params).and_return(
+              ActionController::Parameters.new(update_params)
+            )
           end
 
           it "does not remove existing tags" do
