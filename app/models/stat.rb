@@ -1,29 +1,37 @@
 class Stat < ApplicationRecord
-  validates :department_number, presence: true
+  belongs_to :statable, polymorphic: true, optional: true
+
+  def structure
+    statable_type == "Department" ? department : organisation
+  end
 
   def department
-    @department ||= Department.find_by(number: department_number) if department_number != "all"
+    @department ||= Department.find(statable_id) if statable_type == "Department" && statable_id.present?
+  end
+
+  def organisation
+    @organisation ||= Organisation.find(statable_id) if statable_type == "Organisation"
   end
 
   def all_applicants
-    @all_applicants ||= department.nil? ? Applicant.all : department.applicants
+    @all_applicants ||= structure.nil? ? Applicant.all : structure.applicants
   end
 
   def archived_applicant_ids
     @archived_applicant_ids ||=
-      if department.nil?
+      if structure.nil?
         Applicant.where.associated(:archives).select(:id).ids
       else
-        department.archived_applicants.select(:id).ids
+        structure.archived_applicants.select(:id).ids
       end
   end
 
   def all_participations
-    @all_participations ||= department.nil? ? Participation.all : department.participations
+    @all_participations ||= structure.nil? ? Participation.all : structure.participations
   end
 
   def invitations_sample
-    @invitations_sample ||= department.nil? ? Invitation.sent : Invitation.sent.where(department_id: department.id)
+    @invitations_sample ||= structure.nil? ? Invitation.sent : structure.invitations.sent
   end
 
   # We filter the participations to only keep the participations of the applicants in the scope
@@ -75,7 +83,11 @@ class Stat < ApplicationRecord
 
   def all_organisations
     @all_organisations ||=
-      department.nil? ? Organisation.all : department.organisations
+      if statable_type == "Organisation"
+        Organisation.where(id: statable_id)
+      else
+        department.nil? ? Organisation.all : department.organisations
+      end
   end
 
   # We don't include in the scope the organisations who don't invite the applicants
