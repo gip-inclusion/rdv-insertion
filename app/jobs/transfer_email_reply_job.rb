@@ -12,6 +12,7 @@ class TransferEmailReplyJob < ApplicationJob
     else
       forward_to_default_mailbox
     end
+    notify_on_mattermost
   end
 
   private
@@ -83,5 +84,9 @@ class TransferEmailReplyJob < ApplicationJob
         }
       end
     end
+  end
+
+  def notify_on_mattermost
+    MattermostClient.send_to_notif_channel("📩 Un email d'un usager vient d'être transféré")
   end
 end
