@@ -78,11 +78,11 @@ class Invitation < ApplicationRecord
     sent_at.present? && sent_at >= date
   end
 
+  private
+
   def assign_uuid
     self.uuid = generate_uuid
   end
-
-  private
 
   def generate_uuid
     loop do
