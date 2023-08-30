@@ -13,15 +13,15 @@ class RdvSolidaritesWebhooksController < ApplicationController
 
   def webhook_jobs
     {
-      "User" => RdvSolidaritesWebhooks::ProcessUserJob,
-      "Rdv" => RdvSolidaritesWebhooks::ProcessRdvJob,
-      "UserProfile" => RdvSolidaritesWebhooks::ProcessUserProfileJob,
-      "Organisation" => RdvSolidaritesWebhooks::ProcessOrganisationJob,
-      "Motif" => RdvSolidaritesWebhooks::ProcessMotifJob,
-      "Lieu" => RdvSolidaritesWebhooks::ProcessLieuJob,
-      "Agent" => RdvSolidaritesWebhooks::ProcessAgentJob,
-      "AgentRole" => RdvSolidaritesWebhooks::ProcessAgentRoleJob,
-      "ReferentAssignation" => RdvSolidaritesWebhooks::ProcessReferentAssignationJob
+      "User" => InboundWebhooks::RdvSolidarites::ProcessUserJob,
+      "Rdv" => InboundWebhooks::RdvSolidarites::ProcessRdvJob,
+      "UserProfile" => InboundWebhooks::RdvSolidarites::ProcessUserProfileJob,
+      "Organisation" => InboundWebhooks::RdvSolidarites::ProcessOrganisationJob,
+      "Motif" => InboundWebhooks::RdvSolidarites::ProcessMotifJob,
+      "Lieu" => InboundWebhooks::RdvSolidarites::ProcessLieuJob,
+      "Agent" => InboundWebhooks::RdvSolidarites::ProcessAgentJob,
+      "AgentRole" => InboundWebhooks::RdvSolidarites::ProcessAgentRoleJob,
+      "ReferentAssignation" => InboundWebhooks::RdvSolidarites::ProcessReferentAssignationJob
     }
   end
 

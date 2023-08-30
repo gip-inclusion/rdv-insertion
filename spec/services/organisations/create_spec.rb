@@ -40,7 +40,7 @@ describe Organisations::Create, type: :service do
         .and_return(OpenStruct.new(success?: true))
       allow(rdv_solidarites_session).to receive(:to_h)
         .and_return(rdv_solidarites_session_credentials)
-      allow(RdvSolidaritesWebhooks::TriggerEndpointJob).to receive(:perform_async)
+      allow(TriggerRdvSolidaritesWebhooksJob).to receive(:perform_async)
         .with(webhook_endpoint_id, rdv_solidarites_organisation_id, rdv_solidarites_session_credentials)
     end
 
@@ -97,7 +97,7 @@ describe Organisations::Create, type: :service do
     end
 
     it "calls the TriggerEndpointJob" do
-      expect(RdvSolidaritesWebhooks::TriggerEndpointJob).to receive(:perform_async)
+      expect(InboundWebhooks::RdvSolidarites::TriggerEndpointJob).to receive(:perform_async)
         .with(webhook_endpoint_id, rdv_solidarites_organisation_id, rdv_solidarites_session_credentials)
       subject
     end
@@ -116,7 +116,7 @@ describe Organisations::Create, type: :service do
       end
 
       it "does not call the TriggerEndpointJob" do
-        expect(RdvSolidaritesWebhooks::TriggerEndpointJob).not_to receive(:perform_async)
+        expect(InboundWebhooks::RdvSolidarites::TriggerEndpointJob).not_to receive(:perform_async)
       end
     end
 
@@ -137,7 +137,7 @@ describe Organisations::Create, type: :service do
       end
 
       it "does not call the TriggerEndpointJob" do
-        expect(RdvSolidaritesWebhooks::TriggerEndpointJob).not_to receive(:perform_async)
+        expect(InboundWebhooks::RdvSolidarites::TriggerEndpointJob).not_to receive(:perform_async)
       end
     end
 
@@ -156,7 +156,7 @@ describe Organisations::Create, type: :service do
       end
 
       it "does not call the TriggerEndpointJob" do
-        expect(RdvSolidaritesWebhooks::TriggerEndpointJob).not_to receive(:perform_async)
+        expect(InboundWebhooks::RdvSolidarites::TriggerEndpointJob).not_to receive(:perform_async)
       end
     end
 
@@ -177,7 +177,7 @@ describe Organisations::Create, type: :service do
       end
 
       it "does not call the TriggerEndpointJob" do
-        expect(RdvSolidaritesWebhooks::TriggerEndpointJob).not_to receive(:perform_async)
+        expect(InboundWebhooks::RdvSolidarites::TriggerEndpointJob).not_to receive(:perform_async)
       end
     end
 
@@ -215,7 +215,7 @@ describe Organisations::Create, type: :service do
         end
 
         it "does not call the TriggerEndpointJob" do
-          expect(RdvSolidaritesWebhooks::TriggerEndpointJob).not_to receive(:perform_async)
+          expect(InboundWebhooks::RdvSolidarites::TriggerEndpointJob).not_to receive(:perform_async)
         end
       end
     end

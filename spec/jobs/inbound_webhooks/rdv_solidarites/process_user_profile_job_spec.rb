@@ -1,4 +1,4 @@
-describe RdvSolidaritesWebhooks::ProcessUserProfileJob do
+describe InboundWebhooks::RdvSolidarites::ProcessUserProfileJob do
   subject do
     described_class.new.perform(data, meta)
   end

@@ -1,4 +1,4 @@
-describe RdvSolidaritesWebhooks::TriggerEndpointJob do
+describe TriggerRdvSolidaritesWebhooksJob do
   subject do
     described_class.new.perform(
       rdv_solidarites_webhook_endpoint_id, rdv_solidarites_organisation_id, rdv_solidarites_session_credentials
