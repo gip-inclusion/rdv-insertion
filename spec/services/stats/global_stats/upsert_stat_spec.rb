@@ -9,7 +9,6 @@ describe Stats::GlobalStats::UpsertStat, type: :service do
       sent_invitations_count: 0,
       percentage_of_no_show: 0.0,
       average_time_between_invitation_and_rdv_in_days: 0.0,
-      average_time_between_rdv_creation_and_start_in_days: 0.0,
       rate_of_applicants_with_rdv_seen_in_less_than_30_days: 0.0,
       rate_of_autonomous_applicants: 0.0,
       agents_count: 1

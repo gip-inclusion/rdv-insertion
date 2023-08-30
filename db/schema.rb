@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_22_125225) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_29_105540) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -144,6 +144,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_125225) do
     t.string "rights_opening_date_column"
     t.string "organisation_search_terms_column"
     t.string "referent_email_column"
+    t.string "tags_column"
   end
 
   create_table "invitations", force: :cascade do |t|
@@ -200,6 +201,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_125225) do
     t.boolean "display_department_logo", default: true
     t.bigint "organisation_id"
     t.boolean "display_pole_emploi_logo", default: false
+    t.string "custom_image"
     t.index ["organisation_id"], name: "index_messages_configurations_on_organisation_id"
   end
 
@@ -339,8 +341,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_125225) do
     t.json "percentage_of_no_show_grouped_by_month"
     t.float "average_time_between_invitation_and_rdv_in_days"
     t.json "average_time_between_invitation_and_rdv_in_days_by_month"
-    t.float "average_time_between_rdv_creation_and_start_in_days"
-    t.json "average_time_between_rdv_creation_and_start_in_days_by_month"
     t.float "rate_of_applicants_with_rdv_seen_in_less_than_30_days"
     t.json "rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month"
     t.integer "agents_count"
@@ -350,6 +350,30 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_125225) do
     t.float "rate_of_autonomous_applicants"
     t.json "rate_of_autonomous_applicants_grouped_by_month"
     t.index ["department_number"], name: "index_stats_on_department_number", unique: true
+  end
+
+  create_table "tag_applicants", force: :cascade do |t|
+    t.bigint "tag_id", null: false
+    t.bigint "applicant_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["applicant_id"], name: "index_tag_applicants_on_applicant_id"
+    t.index ["tag_id"], name: "index_tag_applicants_on_tag_id"
+  end
+
+  create_table "tag_organisations", force: :cascade do |t|
+    t.bigint "tag_id", null: false
+    t.bigint "organisation_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organisation_id"], name: "index_tag_organisations_on_organisation_id"
+    t.index ["tag_id"], name: "index_tag_organisations_on_tag_id"
+  end
+
+  create_table "tags", force: :cascade do |t|
+    t.string "value", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "templates", force: :cascade do |t|
@@ -407,5 +431,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_22_125225) do
   add_foreign_key "rdvs", "lieux"
   add_foreign_key "rdvs", "motifs"
   add_foreign_key "rdvs", "organisations"
+  add_foreign_key "tag_applicants", "applicants"
+  add_foreign_key "tag_applicants", "tags"
+  add_foreign_key "tag_organisations", "organisations"
+  add_foreign_key "tag_organisations", "tags"
   add_foreign_key "webhook_receipts", "webhook_endpoints"
 end

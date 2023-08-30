@@ -31,12 +31,14 @@ const ApplicantsUpload = observer(({
   organisation,
   configuration,
   columnNames,
+  tags,
   sheetName,
   department,
   motifCategoryName,
   currentAgent,
 }) => {
   const parameterizedColumnNames = parameterizeObjectValues({ ...columnNames });
+
   const isDepartmentLevel = !organisation;
   const [fileSize, setFileSize] = useState(0);
   /* eslint no-unused-vars: ["error", { "varsIgnorePattern": "contactsUpdated" }] */
@@ -80,6 +82,7 @@ const ApplicantsUpload = observer(({
                 lastName: row[parameterizedColumnNames.last_name_column],
                 firstName: row[parameterizedColumnNames.first_name_column],
                 affiliationNumber: row[parameterizedColumnNames.affiliation_number_column],
+                tags: row[parameterizedColumnNames.tags_column]?.split(",").map(tag => tag.trim()) || [],
                 nir: row[parameterizedColumnNames.nir_column],
                 poleEmploiId: row[parameterizedColumnNames.pole_emploi_id_column],
                 role: row[parameterizedColumnNames.role_column],
@@ -128,9 +131,10 @@ const ApplicantsUpload = observer(({
               },
               department,
               organisation,
+              tags,
               configuration,
               columnNames,
-              currentAgent
+              currentAgent,
             );
             applicants.addApplicant(applicant);
           });
@@ -226,6 +230,7 @@ const ApplicantsUpload = observer(({
 
           <FileHandler
             handleFile={handleApplicantsFile}
+            loading={(loading) => applicants.setLoading(loading)}
             fileSize={fileSize}
             name="applicants-list-upload"
             accept="text/plain, .csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, application/vnd.oasis.opendocument.spreadsheet"
@@ -284,7 +289,7 @@ const ApplicantsUpload = observer(({
         </>
       )}
     </div>
-    {applicants.list.length > 0 && (
+    {applicants.list.length > 0 && !applicants.loading && (
       <>
         <div className="my-5 px-4" style={{ overflow: "scroll" }}>
           <table className="table table-hover text-center align-middle table-striped table-bordered">
@@ -314,6 +319,7 @@ const ApplicantsUpload = observer(({
                 {parameterizedColumnNames.pole_emploi_id_column && <th scope="col">ID PE</th>}
                 {parameterizedColumnNames.email_column && <th scope="col">Email</th>}
                 {parameterizedColumnNames.phone_number_column && <th scope="col">Téléphone</th>}
+                {parameterizedColumnNames.tags_column && <th scope="col">Catégories</th>}
                 {parameterizedColumnNames.rights_opening_date_column && (
                   <th scope="col">Date d&apos;entrée flux</th>
                 )}
