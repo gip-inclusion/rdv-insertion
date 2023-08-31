@@ -1,5 +1,7 @@
 class SendPeriodicInvitesJob < ApplicationJob
   def perform
+    return if staging_env?
+
     @sent_invites_applicant_ids = []
 
     RdvContext
