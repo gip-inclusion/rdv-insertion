@@ -101,6 +101,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_30_142108) do
     t.bigint "motif_category_id"
     t.bigint "file_configuration_id"
     t.bigint "organisation_id"
+    t.integer "number_of_days_before_next_invite", default: 10
     t.index ["file_configuration_id"], name: "index_configurations_on_file_configuration_id"
     t.index ["motif_category_id"], name: "index_configurations_on_motif_category_id"
     t.index ["organisation_id"], name: "index_configurations_on_organisation_id"
