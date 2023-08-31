@@ -94,6 +94,7 @@ module RdvSolidaritesWebhooks
         Applicant.create!(
           rdv_solidarites_user_id: user.id,
           organisations: [organisation],
+          created_through: "rdv_solidarites",
           **user.attributes.slice(*Applicant::SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES).compact_blank
         )
       end
