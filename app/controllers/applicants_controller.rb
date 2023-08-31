@@ -243,7 +243,7 @@ class ApplicantsController < ApplicationController
     @applicants = policy_scope(Applicant)
                   .preload(rdv_contexts: [:invitations])
                   .joins(:applicants_organisations)
-                  .active.distinct("applicants.id")
+                  .active
                   .group("applicants.id, applicants_organisations.created_at")
                   .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
                   .order("applicants_organisations.created_at DESC")
