@@ -1,0 +1,18 @@
+<h1>Bonjour,</h1>
+<p>Vous trouverez ci-dessous une réponse d'un.e bénéficiaire :</p>
+<%= render "quote_original_mail" %>
+<p>Vous trouverez ci-dessous les informations nécessaires pour contacter la personne ou transmettre ce mail à un agent en charge de son parcours.</p>
+<blockquote>
+  <h4>Éxpéditeur</h4>
+  <%= tag.p(@applicant.full_name) if @applicant %>
+  <%= tag.p(@applicant ? @applicant.email : @author) %>
+  <%= tag.p(@applicant.phone_number) if @applicant&.phone_number %>
+  <% if @applicant %>
+    <br />
+    <h4>Organisation(s) de rattachement</h4>
+    <% @applicant.organisations.each do |organisation| %>
+      <p><%= organisation.name %> - <%= organisation.email %></p>
+    <% end %>
+  <% end %>
+</blockquote>
+<%= render "link_to_applicant_page", applicant: @applicant, organisation: @applicant.organisations.last %>
