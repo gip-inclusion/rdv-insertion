@@ -19,6 +19,6 @@ class AddMotifCategoryForVar < ActiveRecord::Migration[7.0]
 
   def down
     MotifCategory.find_by(short_name: "rsa_droits_devoirs").destroy!
-    Template.find_by(rdv_title: "rendez-vous des Droits et Devoirs",).destroy!
+    Template.find_by(rdv_title: "rendez-vous des Droits et Devoirs").destroy!
   end
 end
