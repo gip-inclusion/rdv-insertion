@@ -5,6 +5,7 @@ fr:
     attributes:
       motif:
         categories:
+          rsa_droits_devoirs: RSA - droits et devoirs
           rsa_orientation: RSA orientation
           rsa_orientation_france_travail: RSA orientation France Travail
           rsa_accompagnement: RSA accompagnement
