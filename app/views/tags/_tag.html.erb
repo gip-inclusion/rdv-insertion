@@ -1,6 +1,15 @@
 <%= turbo_frame_tag tag, class: "badge w-auto d-flex justify-content-between bg-primary mb-2" do %>
     <%= tag.value %>
-    <%= link_to organisation_tag_path(organisation_id: @organisation.id, id: tag.id), data: { turbo_method: :delete }, class: 'text-white' do %>
+    <%= 
+      link_to(
+        organisation_tag_path(organisation_id: @organisation.id, id: tag.id), 
+        data: {
+          turbo_method: :delete, 
+          turbo_confirm: "Supprimer ce tag le désaffectera également des usagers qui y sont associés, êtes-vous sur de vouloir le supprimer ?"
+        },
+        class: 'text-white'
+      ) do 
+    %>
       <i class="fas fa-minus icon-sm"></i>
     <% end%>
 <% end %>
