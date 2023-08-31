@@ -241,9 +241,15 @@ class ApplicantsController < ApplicationController
 
   def set_all_applicants
     if department_level?
+      associated_applicants_organisations = ApplicantsOrganisation
+                                            .where(organisations: @organisations)
+                                            .order(created_at: :desc)
+                                            .uniq(&:applicant_id)
+                                            .map(&:id)
+
       applicants_affected_most_recently_to_an_organisation = {
         applicants_organisations: {
-          id: ApplicantsOrganisation.order(created_at: :desc).uniq(&:applicant_id).map(&:id)
+          id: associated_applicants_organisations
         }
       }
     end
