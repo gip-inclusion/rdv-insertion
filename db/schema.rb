@@ -65,6 +65,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_31_090625) do
     t.string "nir"
     t.string "pole_emploi_id"
     t.string "carnet_de_bord_carnet_id"
+    t.integer "created_through", default: 0
     t.index ["department_internal_id"], name: "index_applicants_on_department_internal_id"
     t.index ["email"], name: "index_applicants_on_email"
     t.index ["nir"], name: "index_applicants_on_nir"
@@ -100,6 +101,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_31_090625) do
     t.bigint "motif_category_id"
     t.bigint "file_configuration_id"
     t.bigint "organisation_id"
+    t.integer "number_of_days_before_next_invite", default: 10
     t.index ["file_configuration_id"], name: "index_configurations_on_file_configuration_id"
     t.index ["motif_category_id"], name: "index_configurations_on_motif_category_id"
     t.index ["organisation_id"], name: "index_configurations_on_organisation_id"

@@ -1,0 +1,5 @@
+<blockquote>
+  <h4><%= @reply_subject %></h4>
+  <div><%= simple_format(@reply_body) %></div>
+</blockquote>
+<%= tag.p("La réponse avait en pièce jointe \"#{@attachment_names}\". Il nous est impossible de vous transmettre automatiquement ce fichier. Vous pouvez contacter la personne pour qu'elle l'envoie à votre adresse.") if @attachment_names.present? %>

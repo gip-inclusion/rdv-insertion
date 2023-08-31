@@ -230,7 +230,8 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
               rdv_solidarites_user_id: user_id1,
               organisations: [organisation],
               first_name: "James",
-              last_name: "Cameron"
+              last_name: "Cameron",
+              created_through: "rdv_solidarites"
             )
             subject
           end

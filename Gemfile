@@ -44,7 +44,7 @@ gem "with_advisory_lock"
 # CSS styled emails with stylesheets
 gem "premailer-rails"
 
-# Send SMS & emails with SendInBlue
+# Send SMS & emails with Brevo
 gem "sib-api-v3-sdk"
 
 # Queuing system
