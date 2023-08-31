@@ -37,6 +37,19 @@ yonne = Department.create!(
 
 # --------------------------------------------------------------------------------------------------------------------
 puts "Creating motif categories..."
+droits_et_devoirs_category = MotifCategory.create!(
+  short_name: "rsa_droits_devoirs", name: "RSA - droits et devoirs",
+  template: Template.find_or_create_by!(
+    model: "standard",
+    rdv_title: "rendez-vous des Droits et Devoirs",
+    rdv_title_by_phone: "rendez-vous téléphonique des Droits et Devoirs",
+    rdv_purpose: "définir votre orientation",
+    applicant_designation: "bénéficiaire du RSA",
+    rdv_subject: "RSA",
+    display_mandatory_warning: true
+  )
+)
+
 orientation_category = MotifCategory.create!(
   short_name: "rsa_orientation", name: "RSA orientation",
   template: Template.find_or_create_by!(
@@ -258,6 +271,15 @@ Configuration.create!(
   convene_applicant: false,
   invitation_formats: ["sms", "email", "postal"],
   motif_category: orientation_category,
+  number_of_days_before_action_required: 10,
+  organisation: drome1_organisation
+)
+
+Configuration.create!(
+  file_configuration: file_config_drome,
+  convene_applicant: false,
+  invitation_formats: ["sms", "email", "postal"],
+  motif_category: droits_et_devoirs_category,
   number_of_days_before_action_required: 10,
   organisation: drome1_organisation
 )
