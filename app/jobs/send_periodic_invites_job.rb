@@ -1,5 +1,7 @@
 class SendPeriodicInvitesJob < ApplicationJob
   def perform
+    return if staging_env?
+
     @sent_invites_applicant_ids = []
 
     RdvContext
@@ -31,6 +33,8 @@ class SendPeriodicInvitesJob < ApplicationJob
   end
 
   def should_send_periodic_invite?(last_sent_invitation, configuration)
+    return false if configuration.number_of_days_before_next_invite.blank?
+
     (Time.zone.today - last_sent_invitation.sent_at.to_date).to_i == configuration.number_of_days_before_next_invite
   end
 

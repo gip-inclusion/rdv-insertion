@@ -49,5 +49,20 @@ describe SendPeriodicInvitesJob do
         subject
       end
     end
+
+    context "when configuration is not set" do
+      let!(:configuration) do
+        create(:configuration,
+               organisation: organisation,
+               number_of_days_before_next_invite: nil,
+               motif_category: motif_category)
+      end
+
+      it "does not send periodic invites" do
+        expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(invitation.id, configuration.id, "email")
+        expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(invitation.id, configuration.id, "sms")
+        subject
+      end
+    end
   end
 end
