@@ -1,31 +1,10 @@
 describe Stat do
   include_context "with all existing categories"
 
-  describe "department_number validation" do
-    context "when the department_number is present" do
-      let!(:stat) { build(:stat, department_number: "1") }
-
-      it "is valid" do
-        expect(stat).to be_valid
-      end
-    end
-
-    context "when no department_number is given" do
-      let!(:stat) { build(:stat, department_number: nil) }
-
-      it "adds errors" do
-        expect(stat).not_to be_valid
-        expect(stat.errors.details).to eq({ department_number: [{ :error => :blank }] })
-        expect(stat.errors.full_messages.to_sentence)
-          .to include("Department number doit être rempli(e)")
-      end
-    end
-  end
-
   describe "instance_methods" do
     let!(:department) { create(:department) }
-    let!(:stat) { build(:stat, department_number: department.number) }
-    let(:date) { Time.zone.parse("17/03/2022 12:00") }
+    let!(:stat) { build(:stat, statable_type: "Department", statable_id: department.id) }
+    let(:date) { Time.zone.parse("17/07/2023 12:00") }
     let!(:other_department) { create(:department) }
     let!(:applicant1) do
       create(:applicant, organisations: [organisation],
@@ -63,7 +42,7 @@ describe Stat do
                            participations: [participation2], motif_category: category_rsa_orientation)
     end
 
-    context "when department_number is not 'all'" do
+    context "when statable type is Department and statable_id is present" do
       describe "#all_applicants" do
         it "scopes the collection to the department" do
           expect(stat.all_applicants).to include(applicant1)
@@ -298,9 +277,8 @@ describe Stat do
       end
     end
 
-    context "when department_number is 'all'" do
-      let!(:department_number) { "all" }
-      let!(:stat) { build(:stat, department_number: department_number) }
+    context "when it is the stat record for all departments" do
+      let!(:stat) { build(:stat, statable_type: "Department", statable_id: nil) }
 
       describe "#all_applicants" do
         it "does not scope the collection to the department" do
