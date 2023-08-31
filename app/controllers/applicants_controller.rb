@@ -240,24 +240,35 @@ class ApplicantsController < ApplicationController
   end
 
   def set_all_applicants
+    if department_level?
+      applicants_affected_most_recently_to_an_organisation = {
+        applicants_organisations: {
+          id: ApplicantsOrganisation.order(created_at: :desc).uniq(&:applicant_id).map(&:id)
+        }
+      }
+    end
+
     @applicants = policy_scope(Applicant)
                   .preload(rdv_contexts: [:invitations])
                   .joins(:applicants_organisations)
                   .active
                   .group("applicants.id, applicants_organisations.created_at")
                   .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
-                  .order("applicants_organisations.created_at DESC")
+                  .where(applicants_affected_most_recently_to_an_organisation || {})
+                  .order("applicants_organisations.created_at DESC NULLS LAST")
   end
 
   def set_applicants_for_motif_category
     @applicants = policy_scope(Applicant)
                   .preload(rdv_contexts: [:notifications, :invitations])
-                  .active.distinct
+                  .active
                   .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
                   .where.not(id: @department.archived_applicants.ids)
                   .joins(:rdv_contexts)
+                  .group("applicants.id, rdv_contexts.created_at")
                   .where(rdv_contexts: { motif_category: @current_motif_category })
                   .where.not(rdv_contexts: { status: "closed" })
+                  .order("rdv_contexts.created_at DESC")
   end
 
   def set_archived_applicants
