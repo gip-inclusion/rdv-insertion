@@ -13,6 +13,8 @@ class AddOrganisationIdToStats < ActiveRecord::Migration[7.0]
       stat.save!
     end
 
+    initialize_stats_for_organisations if Stat.where(statable_type: "Organisation").empty?
+
     remove_column :stats, :department_number
     remove_column :stats, :organisation_id if Stat.column_names.include?("organisation_id")
   end
@@ -34,5 +36,15 @@ class AddOrganisationIdToStats < ActiveRecord::Migration[7.0]
     end
 
     remove_reference :stats, :statable, polymorphic: true
+  end
+
+  def initialize_stats_for_organisations
+    Organisation.find_each do |organisation|
+      date = organisation.created_at
+      while date < 1.month.ago
+        Stats::MonthlyStats::UpsertStatJob.perform_async("Organisation", organisation.id, date)
+        date += 1.month
+      end
+    end
   end
 end
