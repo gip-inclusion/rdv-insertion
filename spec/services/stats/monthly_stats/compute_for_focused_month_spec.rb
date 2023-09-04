@@ -1,7 +1,7 @@
 describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
   subject { described_class.call(stat: stat, date: date) }
 
-  let!(:stat) { create(:stat, department_number: department.number) }
+  let!(:stat) { create(:stat, statable_type: "Department", statable_id: department.id) }
 
   let(:date) { Time.zone.parse("17/03/2022 12:00") }
   let(:date_from_previous_month) { Time.zone.parse("17/02/2022 12:00") }

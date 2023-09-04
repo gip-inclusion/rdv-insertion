@@ -15,6 +15,7 @@ FactoryBot.define do
     rate_of_autonomous_applicants { 0.0 }
     rate_of_autonomous_applicants_grouped_by_month { {} }
     agents_count { 1 }
-    sequence(:department_number)
+    statable_type { "Department" }
+    sequence(:statable_id)
   end
 end
