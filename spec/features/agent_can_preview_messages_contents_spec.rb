@@ -2,7 +2,7 @@ describe "Agents can preview messages contents", js: true do
   include_context "with all existing categories"
 
   let!(:agent) { create(:agent) }
-  let!(:organisation) { create(:organisation) }
+  let!(:organisation) { create(:organisation, department: create(:department, number: "26")) }
   let!(:agent_role) { create(:agent_role, agent:, organisation:, access_level: "admin") }
   let!(:configuration) { create(:configuration, motif_category: category_rsa_orientation, organisation:) }
 

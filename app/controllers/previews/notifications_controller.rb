@@ -105,6 +105,7 @@ module Previews
         sender_name: @notification.letter_sender_name,
         direction_names: @notification.direction_names,
         signature_lines: @notification.signature_lines,
+        motif_category: @notification.motif_category,
         organisation: @notification.organisation,
         display_europe_logos: @notification.display_europe_logos,
         display_department_logo: @notification.display_department_logo,
