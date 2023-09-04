@@ -70,8 +70,12 @@ class Stat < ApplicationRecord
   end
 
   def all_organisations
-    # first 2 cases are if statable is linked to an organisation or a department ; third case is if statable is nil
-    @all_organisations ||= statable&.try(:organisation) || statable&.try(:organisations) || Organisation.all
+    @all_organisations ||=
+      if statable_type == "Organisation"
+        Organisation.where(id: statable_id)
+      else
+        statable.nil? ? Organisation.all : statable.organisations
+      end
   end
 
   # We don't include in the scope the organisations who don't invite the applicants
