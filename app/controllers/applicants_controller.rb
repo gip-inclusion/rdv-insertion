@@ -268,6 +268,7 @@ class ApplicantsController < ApplicationController
     @applicants = policy_scope(Applicant)
                   .preload(rdv_contexts: [:notifications, :invitations])
                   .active
+                  .select("DISTINCT(applicants.id), applicants.*, rdv_contexts.created_at")
                   .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
                   .where.not(id: @department.archived_applicants.ids)
                   .joins(:rdv_contexts)
