@@ -114,8 +114,6 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
       subject
     end
 
-
-
     it "computes the average time between first invitation and first rdv in days" do
       expect(stat).to receive(:rdv_contexts_sample)
       expect(Stats::ComputeAverageTimeBetweenInvitationAndRdvInDays).to receive(:call)
