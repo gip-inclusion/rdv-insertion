@@ -1,8 +1,9 @@
 module Stats
   module GlobalStats
     class UpsertStat < BaseService
-      def initialize(department_number:)
-        @department_number = department_number
+      def initialize(structure_type:, structure_id:)
+        @structure_type = structure_type
+        @structure_id = structure_id
       end
 
       def call
@@ -13,7 +14,7 @@ module Stats
       private
 
       def stat
-        @stat ||= Stat.find_or_initialize_by(department_number: @department_number)
+        @stat ||= Stat.find_or_initialize_by(statable_type: @structure_type, statable_id: @structure_id)
       end
 
       def assign_global_stats_attributes_to_stat_record

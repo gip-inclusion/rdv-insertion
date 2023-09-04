@@ -1,6 +1,6 @@
 describe Stats::GlobalStats::UpsertStatJob do
   subject do
-    described_class.new.perform(department.number)
+    described_class.new.perform("Department", department.id)
   end
 
   let!(:department) { create(:department) }
@@ -13,7 +13,7 @@ describe Stats::GlobalStats::UpsertStatJob do
 
     it "calls the appropriate service" do
       expect(Stats::GlobalStats::UpsertStat).to receive(:call)
-        .with(department_number: department.number)
+        .with(structure_type: "Department", structure_id: department.id)
       subject
     end
 

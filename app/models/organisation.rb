@@ -11,9 +11,11 @@ class Organisation < ApplicationRecord
   validate :validate_organisation_phone_number
 
   belongs_to :department
+  has_one :stat, as: :statable, dependent: :destroy
   has_one :messages_configuration, dependent: :destroy
   has_many :configurations, dependent: :destroy
   has_many :rdvs, dependent: :nullify
+  has_many :participations, through: :rdvs
   has_many :lieux, dependent: :nullify
   has_many :motifs, dependent: :nullify
   has_many :agent_roles, dependent: :destroy
@@ -21,6 +23,7 @@ class Organisation < ApplicationRecord
   has_many :motif_categories, -> { distinct }, through: :configurations
   has_many :tag_organisations, dependent: :destroy
   has_many :applicants_organisations, dependent: :nullify
+  has_many :archived_applicants, through: :department
 
   has_many :tags, through: :tag_organisations
   has_many :applicants, through: :applicants_organisations, dependent: :nullify

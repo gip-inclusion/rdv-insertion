@@ -1,7 +1,7 @@
 describe Stats::GlobalStats::Compute, type: :service do
   subject { described_class.call(stat: stat) }
 
-  let!(:stat) { create(:stat, department_number: department.number) }
+  let!(:stat) { create(:stat, statable_type: "Department", statable_id: department.id) }
 
   let!(:department) { create(:department) }
   let!(:organisation) { create(:organisation, department: department) }

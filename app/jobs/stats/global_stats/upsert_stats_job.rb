@@ -2,9 +2,14 @@ module Stats
   module GlobalStats
     class UpsertStatsJob < ApplicationJob
       def perform
-        department_numbers = Department.pluck(:number).push("all")
-        department_numbers.each do |department_number|
-          Stats::GlobalStats::UpsertStatJob.perform_async(department_number)
+        Stats::GlobalStats::UpsertStatJob.perform_async("Department", nil)
+
+        Department.find_each do |department|
+          Stats::GlobalStats::UpsertStatJob.perform_async("Department", department.id)
+        end
+
+        Organisation.find_each do |organisation|
+          Stats::GlobalStats::UpsertStatJob.perform_async("Organisation", organisation.id)
         end
       end
     end

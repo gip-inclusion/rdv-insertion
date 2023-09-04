@@ -5,4 +5,10 @@ module StatsHelper
               .map { |d| ["#{d.number} - #{d.name}", d.id] }
               .unshift(["Tous les départements", "0"])
   end
+
+  def options_for_organisation_select(department)
+    department.organisations
+              .map { |o| [o.name.to_s, o.id] }
+              .unshift(["Toutes les organisations", "0"])
+  end
 end

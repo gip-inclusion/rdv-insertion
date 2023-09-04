@@ -1,8 +1,9 @@
 module Stats
   module MonthlyStats
     class UpsertStat < BaseService
-      def initialize(department_number:, date_string:)
-        @department_number = department_number
+      def initialize(structure_type:, structure_id:, date_string:)
+        @structure_type = structure_type
+        @structure_id = structure_id
         @date_string = date_string
       end
 
@@ -14,7 +15,7 @@ module Stats
       private
 
       def stat
-        @stat ||= Stat.find_or_initialize_by(department_number: @department_number)
+        @stat ||= Stat.find_or_initialize_by(statable_type: @structure_type, statable_id: @structure_id)
       end
 
       def merge_monthly_stats_attributes_for_focused_month_to_stat_record

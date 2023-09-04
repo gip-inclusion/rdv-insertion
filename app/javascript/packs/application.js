@@ -6,6 +6,7 @@
 import LoginForm from "components/login-form";
 import StatusSelector from "components/status-selector"
 import DepartmentSelector from "components/department-selector"
+import OrganisationSelector from "components/organisation-selector"
 import ActionRequiredCheckbox from "components/action-required-checkbox"
 import FilterByCurrentAgentCheckbox from "components/filter-by-current-agent-checkbox"
 import MatomoScriptTag from "components/matomo-script-tag"
@@ -54,6 +55,7 @@ document.addEventListener("turbo:load", () => {
   new LoginForm();
   new StatusSelector();
   new DepartmentSelector();
+  new OrganisationSelector();
   new ActionRequiredCheckbox();
   new FilterByCurrentAgentCheckbox();
   if (process.env.NODE_ENV === 'production') {
