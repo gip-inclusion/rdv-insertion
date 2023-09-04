@@ -242,19 +242,23 @@ class ApplicantsController < ApplicationController
   def set_all_applicants
     @applicants = policy_scope(Applicant)
                   .preload(rdv_contexts: [:invitations])
-                  .active.distinct
+                  .active
+                  .select("DISTINCT(applicants.id), applicants.*")
                   .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
+                  .order(last_organisation_joined_at: :desc)
   end
 
   def set_applicants_for_motif_category
     @applicants = policy_scope(Applicant)
                   .preload(rdv_contexts: [:notifications, :invitations])
-                  .active.distinct
+                  .active
+                  .select("DISTINCT(applicants.id), applicants.*")
                   .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
                   .where.not(id: @department.archived_applicants.ids)
                   .joins(:rdv_contexts)
                   .where(rdv_contexts: { motif_category: @current_motif_category })
                   .where.not(rdv_contexts: { status: "closed" })
+                  .order(last_rdv_context_joined_at: :desc)
   end
 
   def set_archived_applicants

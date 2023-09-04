@@ -26,9 +26,9 @@ class Applicant < ApplicationRecord
   before_validation :generate_uid
   before_save :format_phone_number
 
-  has_and_belongs_to_many :organisations
+  has_and_belongs_to_many :organisations, after_add: :update_last_organisation_joined_at
 
-  has_many :rdv_contexts, dependent: :destroy
+  has_many :rdv_contexts, dependent: :destroy, after_add: :update_last_rdv_context_joined_at
   has_many :invitations, dependent: :destroy
   has_many :participations, dependent: :destroy
   has_many :archives, dependent: :destroy
@@ -153,6 +153,14 @@ class Applicant < ApplicationRecord
     return unless birth_date.present? && (birth_date > Time.zone.today || birth_date < 130.years.ago)
 
     errors.add(:birth_date, "n'est pas valide")
+  end
+
+  def update_last_organisation_joined_at(_organisation)
+    update_columns(last_organisation_joined_at: Time.zone.now)
+  end
+
+  def update_last_rdv_context_joined_at(_rdv_context)
+    update_columns(last_rdv_context_joined_at: Time.zone.now)
   end
 end
 
