@@ -1,37 +1,25 @@
 class Stat < ApplicationRecord
   belongs_to :statable, polymorphic: true, optional: true
 
-  def structure
-    statable_type == "Department" ? department : organisation
-  end
-
-  def department
-    @department ||= Department.find(statable_id) if statable_type == "Department" && statable_id.present?
-  end
-
-  def organisation
-    @organisation ||= Organisation.find(statable_id) if statable_type == "Organisation"
-  end
-
   def all_applicants
-    @all_applicants ||= structure.nil? ? Applicant.all : structure.applicants
+    @all_applicants ||= statable.nil? ? Applicant.all : statable.applicants
   end
 
   def archived_applicant_ids
     @archived_applicant_ids ||=
-      if structure.nil?
+      if statable.nil?
         Applicant.where.associated(:archives).select(:id).ids
       else
-        structure.archived_applicants.select(:id).ids
+        statable.archived_applicants.select(:id).ids
       end
   end
 
   def all_participations
-    @all_participations ||= structure.nil? ? Participation.all : structure.participations
+    @all_participations ||= statable.nil? ? Participation.all : statable.participations
   end
 
   def invitations_sample
-    @invitations_sample ||= structure.nil? ? Invitation.sent : structure.invitations.sent
+    @invitations_sample ||= statable.nil? ? Invitation.sent : statable.invitations.sent
   end
 
   # We filter the participations to only keep the participations of the applicants in the scope

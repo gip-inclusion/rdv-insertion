@@ -12,15 +12,17 @@ class OrganisationSelector {
     });
   }
 
+
+
   refreshQuery(selectedOrganisation) {
+    let url;
     if (selectedOrganisation && selectedOrganisation !== "0") {
-      const url = new URL(`${window.location.origin}/organisations/${selectedOrganisation}/stats`);
-      window.location.href = url;
+      url = new URL(`${window.location.origin}/organisations/${selectedOrganisation}/stats`);
     } else {
       const currentDepartmentId = document.getElementById("department_id").value
-      const url = new URL(`${window.location.origin}/departments/${currentDepartmentId}/stats`);
-      window.location.href = url;
+      url = new URL(`${window.location.origin}/departments/${currentDepartmentId}/stats`);
     }
+    window.location.href = url;
   }
 }
 

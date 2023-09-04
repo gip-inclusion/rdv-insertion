@@ -11,8 +11,6 @@ class AddOrganisationIdToStats < ActiveRecord::Migration[7.0]
       stat.save!
     end
 
-    initialize_stats_for_organisations
-
     remove_column :stats, :department_number
   end
 
@@ -33,16 +31,5 @@ class AddOrganisationIdToStats < ActiveRecord::Migration[7.0]
     end
 
     remove_reference :stats, :statable, polymorphic: true
-  end
-
-  def initialize_stats_for_organisations
-    Organisation.find_each do |organisation|
-      Stats::GlobalStats::UpsertStatJob.new.perform("Organisation", organisation.id)
-      date = organisation.created_at
-      while date < 1.month.ago
-        Stats::MonthlyStats::UpsertStatJob.new.perform("Organisation", organisation.id, date)
-        date += 1.month
-      end
-    end
   end
 end

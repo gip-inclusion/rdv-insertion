@@ -18,19 +18,11 @@ class StatsController < ApplicationController
   end
 
   def set_department
-    @department = if @organisation
-                    @organisation.department
-                  else
-                    Department.find(params[:department_id])
-                  end
+    @department = @organisation&.department || Department.find(params[:department_id])
   end
 
   def set_stat
-    @stat = if @organisation
-              Stat.find_by(statable_type: "Organisation", statable_id: @organisation.id)
-            else
-              Stat.find_by(statable_type: "Department", statable_id: @department.id)
-            end
+    @stat = Stat.find_by(statable: @organisation || @department)
   end
 
   def set_display_all_stats
