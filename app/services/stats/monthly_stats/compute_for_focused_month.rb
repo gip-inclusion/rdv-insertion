@@ -17,7 +17,8 @@ module Stats
           applicants_count_grouped_by_month: applicants_count_for_focused_month,
           rdvs_count_grouped_by_month: rdvs_count_for_focused_month,
           sent_invitations_count_grouped_by_month: sent_invitations_count_for_focused_month,
-          percentage_of_no_show_grouped_by_month: percentage_of_no_show_for_focused_month,
+          rate_of_no_show_for_invitations_grouped_by_month: rate_of_no_show_for_invitations_for_focused_month,
+          rate_of_no_show_for_convocations_grouped_by_month: rate_of_no_show_for_notifications_for_focused_month,
           average_time_between_invitation_and_rdv_in_days_by_month:
             average_time_between_invitation_and_rdv_in_days_for_focused_month,
           rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month:
@@ -39,9 +40,15 @@ module Stats
         @stat.invitations_sample.where(sent_at: @date.all_month).count
       end
 
-      def percentage_of_no_show_for_focused_month
-        ComputePercentageOfNoShow.call(
-          participations: created_during_focused_month(@stat.participations_sample)
+      def rate_of_no_show_for_invitations_for_focused_month
+        ComputeRateOfNoShow.call(
+          participations: created_during_focused_month(@stat.participations_without_notifications_sample)
+        ).value.round
+      end
+
+      def rate_of_no_show_for_notifications_for_focused_month
+        ComputeRateOfNoShow.call(
+          participations: created_during_focused_month(@stat.participations_with_notifications_sample)
         ).value.round
       end
 

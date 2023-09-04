@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_31_090625) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_04_144823) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -341,8 +341,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_31_090625) do
     t.json "rdvs_count_grouped_by_month"
     t.integer "sent_invitations_count"
     t.json "sent_invitations_count_grouped_by_month"
-    t.float "percentage_of_no_show"
-    t.json "percentage_of_no_show_grouped_by_month"
     t.float "average_time_between_invitation_and_rdv_in_days"
     t.json "average_time_between_invitation_and_rdv_in_days_by_month"
     t.float "rate_of_applicants_with_rdv_seen_in_less_than_30_days"
@@ -354,6 +352,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_31_090625) do
     t.json "rate_of_autonomous_applicants_grouped_by_month"
     t.string "statable_type"
     t.bigint "statable_id"
+    t.float "rate_of_no_show_for_convocations"
+    t.json "rate_of_no_show_for_convocations_grouped_by_month"
+    t.float "rate_of_no_show_for_invitations"
+    t.json "rate_of_no_show_for_invitations_grouped_by_month"
     t.index ["statable_type", "statable_id"], name: "index_stats_on_statable"
   end
 

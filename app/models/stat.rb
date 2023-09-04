@@ -25,7 +25,16 @@ class Stat < ApplicationRecord
   # We filter the participations to only keep the participations of the applicants in the scope
   def participations_sample
     @participations_sample ||= all_participations.where(applicant_id: applicants_sample)
-                                                 .distinct
+  end
+
+  # We filter participations to keep only convocations
+  def participations_with_notifications_sample
+    @participations_with_notifications_sample ||= participations_sample.joins(:notifications).distinct
+  end
+
+  # We filter participations to keep only invitations
+  def participations_without_notifications_sample
+    @participations_without_notifications_sample ||= participations_sample.where.missing(:notifications).distinct
   end
 
   # We exclude the rdvs collectifs motifs to correctly compute the rate of autonomous applicants
