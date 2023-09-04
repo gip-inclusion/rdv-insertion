@@ -12,7 +12,7 @@
   </ul>
 </div>
 <% unless current_page?(action: 'deployment_map') %>
-  <div class="d-flex justify-content-center mt-5">
+  <div class="d-flex justify-content-center mt-4">
     <div>
       <%=
         select(
@@ -23,4 +23,17 @@
       %>
     </div>
   </div>
+  <% if @department || @organisation %>
+    <div class="d-flex justify-content-center my-3">
+      <div>
+        <%=
+          select(
+            "organisation", "id", options_for_organisation_select(@department),
+            { },
+            class: "text-center form-select js-organisation-selector"
+          )
+        %>
+      </div>
+    </div>
+  <% end %>
 <% end %>

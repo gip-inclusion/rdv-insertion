@@ -344,12 +344,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_31_122723) do
     t.float "rate_of_applicants_with_rdv_seen_in_less_than_30_days"
     t.json "rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month"
     t.integer "agents_count"
-    t.string "department_number"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.float "rate_of_autonomous_applicants"
     t.json "rate_of_autonomous_applicants_grouped_by_month"
-    t.index ["department_number"], name: "index_stats_on_department_number", unique: true
+    t.string "statable_type"
+    t.bigint "statable_id"
+    t.index ["statable_type", "statable_id"], name: "index_stats_on_statable"
   end
 
   create_table "tag_applicants", force: :cascade do |t|

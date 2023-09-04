@@ -1,29 +1,25 @@
 class Stat < ApplicationRecord
-  validates :department_number, presence: true
-
-  def department
-    @department ||= Department.find_by(number: department_number) if department_number != "all"
-  end
+  belongs_to :statable, polymorphic: true, optional: true
 
   def all_applicants
-    @all_applicants ||= department.nil? ? Applicant.all : department.applicants
+    @all_applicants ||= statable.nil? ? Applicant.all : statable.applicants
   end
 
   def archived_applicant_ids
     @archived_applicant_ids ||=
-      if department.nil?
+      if statable.nil?
         Applicant.where.associated(:archives).select(:id).ids
       else
-        department.archived_applicants.select(:id).ids
+        statable.archived_applicants.select(:id).ids
       end
   end
 
   def all_participations
-    @all_participations ||= department.nil? ? Participation.all : department.participations
+    @all_participations ||= statable.nil? ? Participation.all : statable.participations
   end
 
   def invitations_sample
-    @invitations_sample ||= department.nil? ? Invitation.sent : Invitation.sent.where(department_id: department.id)
+    @invitations_sample ||= statable.nil? ? Invitation.sent : statable.invitations.sent
   end
 
   # We filter the participations to only keep the participations of the applicants in the scope
@@ -75,7 +71,11 @@ class Stat < ApplicationRecord
 
   def all_organisations
     @all_organisations ||=
-      department.nil? ? Organisation.all : department.organisations
+      if statable_type == "Organisation"
+        Organisation.where(id: statable_id)
+      else
+        statable.nil? ? Organisation.all : statable.organisations
+      end
   end
 
   # We don't include in the scope the organisations who don't invite the applicants

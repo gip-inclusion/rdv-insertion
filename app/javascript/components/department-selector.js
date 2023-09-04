@@ -14,7 +14,7 @@ class DepartmentSelector {
 
   refreshQuery(selectedDepartment) {
     if (selectedDepartment && selectedDepartment !== "0") {
-      const url = new URL(`${window.location.origin}/stats/${selectedDepartment}`);
+      const url = new URL(`${window.location.origin}/departments/${selectedDepartment}/stats`);
       window.location.href = url;
     } else {
       const url = new URL(`${window.location.origin}/stats`);
