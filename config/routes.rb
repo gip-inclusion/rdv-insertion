@@ -74,6 +74,11 @@ Rails.application.routes.draw do
     resources :notifications, only: :create
   end
 
+  namespace :previews do
+    resources :invitations, only: [:index]
+    resources :notifications, only: [:index]
+  end
+
   namespace :carnet_de_bord do
     resources :carnets, only: [:create]
   end

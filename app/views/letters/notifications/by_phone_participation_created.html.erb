@@ -1,7 +1,7 @@
 <%= render 'letters/header', direction_names: direction_names, sender_city: sender_city, department: department, organisation: organisation, applicant: applicant %>
 
 <div class="mail-object">
-  <p class="bold-blue">Objet : Convocation à un <%= rdv_title %> dans le cadre de votre <%= rdv_subject %></p>
+  <p class="bold-blue">Objet : Convocation à un <%= rdv_title_by_phone %> dans le cadre de votre <%= rdv_subject %></p>
   <%= tag.p("N° allocataire : #{applicant.affiliation_number}") if applicant.affiliation_number %>
 </div>
 

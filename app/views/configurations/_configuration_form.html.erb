@@ -40,8 +40,15 @@
       <%= render "common/attribute_input", f:f, attribute: :invite_to_applicant_organisations_only, as: :boolean, mandatory: true %>
     </div>
 
-    <div class="row">
-      <h4 class="px-5">Fichier d'import</h4>
+    <% if configuration.persisted? %>
+      <div class="row my-4">
+        <h3>Contenu des messages</h3>
+        <%= render "configurations/messages_contents/messages_content_form", f: f, template: template, configuration: configuration %>
+      </div>
+    <% end %>
+
+    <div class="row my-4">
+      <h3 class="px-5">Fichier d'import</h3>
       <div class="mb-4 px-5">
         <%= turbo_frame_tag "file_configurations_list" do %>
           <% @file_configurations.each do |file_configuration| %>

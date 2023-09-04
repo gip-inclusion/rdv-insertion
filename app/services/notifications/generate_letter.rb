@@ -39,6 +39,7 @@ module Notifications
         display_pole_emploi_logo: @notification.display_pole_emploi_logo,
         sender_city: @notification.sender_city,
         rdv_title: @notification.rdv_title,
+        rdv_title_by_phone: @notification.rdv_title_by_phone,
         applicant_designation: @notification.applicant_designation,
         mandatory_warning: @notification.mandatory_warning,
         punishable_warning: @notification.punishable_warning,

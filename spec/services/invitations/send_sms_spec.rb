@@ -117,6 +117,32 @@ describe Invitations::SendSms, type: :service do
       end
     end
 
+    context "when the template attributes are overriden by the configuration" do
+      before do
+        configuration.update!(
+          template_rdv_title_override: "nouveau type de rendez-vous",
+          template_applicant_designation_override: "nouveau"
+        )
+      end
+
+      let!(:content) do
+        "Monsieur John DOE,\nVous êtes nouveau et vous êtes #{applicant.conjugate('invité')} à participer" \
+          " à un nouveau type de rendez-vous. " \
+          "Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant " \
+          "dans les 3 jours: http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
+          "Ce RDV est obligatoire. En cas de problème technique, contactez le 0147200001."
+      end
+
+      it "sends the content with the overriden attributes" do
+        expect(SendTransactionalSms).to receive(:call)
+          .with(
+            phone_number: phone_number, content: content,
+            sender_name: sms_sender_name
+          )
+        subject
+      end
+    end
+
     context "for rsa accompagnement" do
       let!(:rdv_context) { build(:rdv_context) }
       let!(:configuration) { create(:configuration, organisation: organisation) }

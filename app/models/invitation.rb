@@ -16,7 +16,6 @@ class Invitation < ApplicationRecord
   validates :uuid, uniqueness: true, allow_nil: true
 
   delegate :motif_category, :motif_category_name, to: :rdv_context
-  delegate :template, to: :motif_category
   delegate :model, to: :template, prefix: true
 
   enum format: { sms: 0, email: 1, postal: 2 }, _prefix: :format

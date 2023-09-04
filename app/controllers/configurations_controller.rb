@@ -1,14 +1,16 @@
 class ConfigurationsController < ApplicationController
   PERMITTED_PARAMS = [
     { invitation_formats: [] }, :convene_applicant, :rdv_with_referents, :file_configuration_id,
-    :invite_to_applicant_organisations_only, :number_of_days_before_action_required, :motif_category_id
+    :invite_to_applicant_organisations_only, :number_of_days_before_action_required, :motif_category_id,
+    :template_rdv_title_override, :template_rdv_title_by_phone_override, :template_rdv_purpose_override,
+    :template_applicant_designation_override
   ].freeze
 
   include BackToListConcern
 
   before_action :set_organisation, :authorize_organisation_configuration,
                 only: [:index, :new, :create, :show, :edit, :update, :destroy]
-  before_action :set_configuration, :set_file_configuration, only: [:show, :edit, :update, :destroy]
+  before_action :set_configuration, :set_file_configuration, :set_template, only: [:show, :edit, :update, :destroy]
   before_action :set_department, :set_file_configurations, only: [:new, :create, :edit, :update]
   before_action :set_back_to_applicants_list_url, :set_messages_configuration, :set_configurations, only: [:index]
 
@@ -77,6 +79,10 @@ class ConfigurationsController < ApplicationController
 
   def set_file_configurations
     @file_configurations = @department.file_configurations.distinct
+  end
+
+  def set_template
+    @template = @configuration.template
   end
 
   def set_department

@@ -25,11 +25,11 @@ module Notifications
 
     def content_method_name
       if @notification.event == "participation_cancelled"
-        :content_for_participation_cancelled
+        :participation_cancelled_content
       elsif @notification.rdv.presential?
-        :"presential_content_for_#{@notification.event}"
+        :"presential_#{@notification.event}_content"
       elsif @notification.rdv.by_phone?
-        :"by_phone_content_for_#{@notification.event}"
+        :"by_phone_#{@notification.event}_content"
       else
         raise SmsNotificationError, "Message de convocation non géré pour le rdv #{@notification.rdv.id}"
       end

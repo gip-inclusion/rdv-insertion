@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_31_122723) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_31_090625) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -101,6 +101,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_31_122723) do
     t.bigint "motif_category_id"
     t.bigint "file_configuration_id"
     t.bigint "organisation_id"
+    t.string "template_rdv_title_override"
+    t.string "template_rdv_title_by_phone_override"
+    t.string "template_applicant_designation_override"
+    t.string "template_rdv_purpose_override"
     t.integer "number_of_days_before_next_invite"
     t.index ["file_configuration_id"], name: "index_configurations_on_file_configuration_id"
     t.index ["motif_category_id"], name: "index_configurations_on_motif_category_id"
