@@ -25,10 +25,17 @@ module Previews
     end
 
     def set_and_format_contents
+      set_contents
+      format_contents
+    end
+
+    def set_contents
       set_sms_contents
       set_mail_contents
       set_letter_contents
+    end
 
+    def format_contents
       [@mail_contents, @letter_contents].each do |html_contents|
         unescape_html_contents(html_contents)
         downsize_html_headings(html_contents)

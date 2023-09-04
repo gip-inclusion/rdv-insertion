@@ -146,6 +146,8 @@ module MotifCategoriesHelper
         template: create(
           :template,
           model: "atelier",
+          rdv_title: "atelier",
+          rdv_title_by_phone: "atelier téléphonique",
           rdv_subject: "RSA",
           applicant_designation: "bénéficiaire du RSA",
           display_mandatory_warning: false
@@ -161,6 +163,7 @@ module MotifCategoriesHelper
           :template,
           model: "phone_platform",
           rdv_title: "rendez-vous d'orientation téléphonique",
+          rdv_title_by_phone: "rendez-vous d'orientation téléphonique",
           rdv_subject: "RSA",
           applicant_designation: "bénéficiaire du RSA",
           rdv_purpose: "démarrer un parcours d'accompagnement",
@@ -209,6 +212,8 @@ module MotifCategoriesHelper
         template: create(
           :template,
           model: "atelier",
+          rdv_title: "atelier",
+          rdv_title_by_phone: "atelier téléphonique",
           rdv_subject: "RSA",
           applicant_designation: "bénéficiaire du RSA",
           display_mandatory_warning: false
@@ -276,6 +281,7 @@ module MotifCategoriesHelper
           :template,
           model: "short",
           rdv_title: "rendez-vous de suivi psychologue",
+          rdv_title_by_phone: "rendez-vous téléphonique de suivi psychologue",
           display_mandatory_warning: false
         )
       )
@@ -311,6 +317,7 @@ module MotifCategoriesHelper
           :template,
           model: "atelier_enfants_ados",
           rdv_title: "atelier destiné aux jeunes de ton âge",
+          rdv_title_by_phone: "atelier téléphonique destiné aux jeunes de ton âge",
           display_mandatory_warning: false
         )
       )

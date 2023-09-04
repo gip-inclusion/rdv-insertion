@@ -3,7 +3,7 @@
     <% Configuration.template_override_attributes.each do |attribute| %>
       <div class="col-12 col-md-6 px-5">
         <h4><%= ::Configuration.human_attribute_name(attribute) %></h4>
-        <p><%= configuration.send(attribute) || template.send(attribute.gsub("template_", "").gsub("_override", "")) %></p>
+        <p><%= configuration.send(attribute) || template.send(attribute.gsub("template_", "").gsub("_override", "")) || tag(:br) %></p>
       </div>
     <% end %>
   </div>
@@ -16,12 +16,14 @@
         <% end  %>
       <% end %>
     </div>
-    <div class="mx-1">
-      <%= link_to previews_notifications_path(configuration_id: configuration.id), data: { turbo_frame: 'remote_modal' } do %>
-        <%= button_tag class: "btn btn-blue" do %>
-          <i class="fas fa-eye"></i> Convocations
-        <% end  %>
-      <% end %>
-    </div>
+    <% if configuration.convene_applicant? %>
+      <div class="mx-1">
+        <%= link_to previews_notifications_path(configuration_id: configuration.id), data: { turbo_frame: 'remote_modal' } do %>
+          <%= button_tag class: "btn btn-blue" do %>
+            <i class="fas fa-eye"></i> Convocations
+          <% end  %>
+        <% end %>
+      </div>
+    <% end %>
   </div>
 <% end %>
