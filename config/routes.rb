@@ -40,9 +40,10 @@ Rails.application.routes.draw do
       get :confirm_update
     end
     resources :messages_configurations, only: [:show, :new, :edit, :create, :update]
+    resource :stats, only: [:show]
   end
 
-  resources :stats, only: [:index, :show] do
+  resources :stats, only: [:index] do
     get :deployment_map, on: :collection
   end
 
@@ -96,6 +97,7 @@ Rails.application.routes.draw do
     end
     resource :applicants_organisations, only: [:create, :destroy]
     resource :referent_assignations, only: [:create, :destroy]
+    resource :stats, only: [:show]
   end
   resources :invitation_dates_filterings, :creation_dates_filterings, only: [:new]
   resources :tags_filterings, :tags_filterings, only: [:new]
@@ -126,6 +128,8 @@ Rails.application.routes.draw do
 
   get "inclusion_connect/auth" => "inclusion_connect#auth"
   get "inclusion_connect/callback" => "inclusion_connect#callback"
+
+  post "/inbound_emails/brevo", to: "inbound_emails#brevo"
 
   if ENV["SIDEKIQ_USERNAME"] && ENV["SIDEKIQ_PASSWORD"]
     Sidekiq::Web.use Rack::Auth::Basic do |username, password|

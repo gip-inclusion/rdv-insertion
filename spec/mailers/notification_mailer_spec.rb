@@ -32,7 +32,7 @@ RSpec.describe NotificationMailer do
     end
 
     it "renders the headers" do
-      expect(mail[:from].to_s).to eq("RDV-Insertion <contact@rdv-insertion.fr>")
+      expect(mail[:from].to_s).to eq("rdv-insertion <contact@rdv-insertion.fr>")
       expect(mail.to).to eq(["someone@gmail.com"])
     end
 
@@ -247,7 +247,7 @@ RSpec.describe NotificationMailer do
     end
 
     it "renders the headers" do
-      expect(mail[:from].to_s).to eq("RDV-Insertion <contact@rdv-insertion.fr>")
+      expect(mail[:from].to_s).to eq("rdv-insertion <contact@rdv-insertion.fr>")
       expect(mail.to).to eq(["someone@gmail.com"])
     end
 
@@ -411,7 +411,7 @@ RSpec.describe NotificationMailer do
     end
 
     it "renders the headers" do
-      expect(mail[:from].to_s).to eq("RDV-Insertion <contact@rdv-insertion.fr>")
+      expect(mail[:from].to_s).to eq("rdv-insertion <contact@rdv-insertion.fr>")
       expect(mail.to).to eq(["someone@gmail.com"])
     end
 
@@ -603,7 +603,7 @@ RSpec.describe NotificationMailer do
     end
 
     it "renders the headers" do
-      expect(mail[:from].to_s).to eq("RDV-Insertion <contact@rdv-insertion.fr>")
+      expect(mail[:from].to_s).to eq("rdv-insertion <contact@rdv-insertion.fr>")
       expect(mail.to).to eq(["someone@gmail.com"])
     end
 
@@ -791,7 +791,7 @@ RSpec.describe NotificationMailer do
     end
 
     it "renders the headers" do
-      expect(mail[:from].to_s).to eq("RDV-Insertion <contact@rdv-insertion.fr>")
+      expect(mail[:from].to_s).to eq("rdv-insertion <contact@rdv-insertion.fr>")
       expect(mail.to).to eq(["someone@gmail.com"])
     end
 
@@ -925,7 +925,7 @@ RSpec.describe NotificationMailer do
     end
 
     it "renders the headers" do
-      expect(mail[:from].to_s).to eq("RDV-Insertion <contact@rdv-insertion.fr>")
+      expect(mail[:from].to_s).to eq("rdv-insertion <contact@rdv-insertion.fr>")
       expect(mail.to).to eq(["someone@gmail.com"])
     end
 
@@ -964,7 +964,7 @@ RSpec.describe NotificationMailer do
     end
 
     it "renders the headers" do
-      expect(mail[:from].to_s).to eq("RDV-Insertion <contact@rdv-insertion.fr>")
+      expect(mail[:from].to_s).to eq("rdv-insertion <contact@rdv-insertion.fr>")
       expect(mail.to).to eq(["someone@gmail.com"])
     end
 

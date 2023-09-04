@@ -29,6 +29,7 @@ module Notifications
         department: @notification.department,
         applicant: @notification.applicant,
         rdv: @notification.rdv,
+        motif_category: @notification.motif_category,
         sender_name: @notification.letter_sender_name,
         direction_names: @notification.direction_names,
         signature_lines: @notification.signature_lines,

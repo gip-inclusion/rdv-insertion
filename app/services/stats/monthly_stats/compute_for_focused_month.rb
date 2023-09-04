@@ -20,8 +20,6 @@ module Stats
           percentage_of_no_show_grouped_by_month: percentage_of_no_show_for_focused_month,
           average_time_between_invitation_and_rdv_in_days_by_month:
             average_time_between_invitation_and_rdv_in_days_for_focused_month,
-          average_time_between_rdv_creation_and_start_in_days_by_month:
-            average_time_between_rdv_creation_and_start_in_days_for_focused_month,
           rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month:
             rate_of_applicants_with_rdv_seen_in_less_than_30_days_for_focused_month,
           rate_of_autonomous_applicants_grouped_by_month:
@@ -50,12 +48,6 @@ module Stats
       def average_time_between_invitation_and_rdv_in_days_for_focused_month
         ComputeAverageTimeBetweenInvitationAndRdvInDays.call(
           rdv_contexts: created_during_focused_month(@stat.rdv_contexts_sample)
-        ).value.round
-      end
-
-      def average_time_between_rdv_creation_and_start_in_days_for_focused_month
-        ComputeAverageTimeBetweenParticipationCreationAndRdvStartInDays.call(
-          participations: created_during_focused_month(@stat.participations_sample)
         ).value.round
       end
 

@@ -5,37 +5,34 @@ class InvitationMailer < ApplicationMailer
   before_action :set_rdv_title, :set_applicant_designation, :set_mandatory_warning, :set_punishable_warning,
                 :set_rdv_purpose, :set_rdv_subject, :set_custom_sentence
 
+  default to: -> { @applicant.email }, reply_to: -> { "invitation+#{@invitation.uuid}@reply.rdv-insertion.fr" }
+
   def standard_invitation
     mail(
-      to: @applicant.email,
       subject: "[#{@rdv_subject.upcase}]: Votre #{@rdv_title} dans le cadre de votre #{@rdv_subject}"
     )
   end
 
   def short_invitation
     mail(
-      to: @applicant.email,
       subject: "Votre #{@rdv_title}"
     )
   end
 
   def phone_platform_invitation
     mail(
-      to: @applicant.email,
       subject: "[#{@rdv_subject.upcase}]: Votre #{@rdv_title} dans le cadre de votre #{@rdv_subject}"
     )
   end
 
   def atelier_invitation
     mail(
-      to: @applicant.email,
       subject: "[#{@rdv_subject.upcase}]: Participer à un atelier dans le cadre de votre parcours"
     )
   end
 
   def atelier_enfants_ados_invitation
     mail(
-      to: @applicant.email,
       subject: "Invitation à un #{@rdv_title}"
     )
   end
@@ -44,28 +41,24 @@ class InvitationMailer < ApplicationMailer
 
   def short_invitation_reminder
     mail(
-      to: @applicant.email,
       subject: "[Rappel]: Votre #{@rdv_title}"
     )
   end
 
   def standard_invitation_reminder
     mail(
-      to: @applicant.email,
       subject: "[Rappel]: Votre #{@rdv_title} dans le cadre de votre #{@rdv_subject}"
     )
   end
 
   def phone_platform_invitation_reminder
     mail(
-      to: @applicant.email,
       subject: "[Rappel]: Votre #{@rdv_title} dans le cadre de votre #{@rdv_subject}"
     )
   end
 
   def atelier_enfants_ados_invitation_reminder
     mail(
-      to: @applicant.email,
       subject: "[Rappel]: Invitation à un #{@rdv_title}"
     )
   end

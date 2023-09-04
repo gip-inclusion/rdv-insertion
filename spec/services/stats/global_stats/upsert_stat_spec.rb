@@ -1,5 +1,5 @@
 describe Stats::GlobalStats::UpsertStat, type: :service do
-  subject { described_class.call(department_number: department.number) }
+  subject { described_class.call(structure_type: structure_type, structure_id: structure_id) }
 
   let!(:department) { create(:department) }
   let!(:stat_attributes) do
@@ -9,13 +9,14 @@ describe Stats::GlobalStats::UpsertStat, type: :service do
       sent_invitations_count: 0,
       percentage_of_no_show: 0.0,
       average_time_between_invitation_and_rdv_in_days: 0.0,
-      average_time_between_rdv_creation_and_start_in_days: 0.0,
       rate_of_applicants_with_rdv_seen_in_less_than_30_days: 0.0,
       rate_of_autonomous_applicants: 0.0,
       agents_count: 1
     }
   end
-  let!(:stat) { create(:stat, department_number: department.number) }
+  let!(:stat) { create(:stat, statable_type: "Department", statable_id: department.id) }
+  let!(:structure_type) { "Department" }
+  let!(:structure_id) { department.id }
 
   describe "#call" do
     before do
@@ -33,10 +34,24 @@ describe Stats::GlobalStats::UpsertStat, type: :service do
       expect(subject.success?).to eq(true)
     end
 
-    it "finds or initializes stat record" do
-      expect(Stat).to receive(:find_or_initialize_by)
-        .with(department_number: department.number)
-      subject
+    context "when department" do
+      it "finds or initializes stat record" do
+        expect(Stat).to receive(:find_or_initialize_by)
+          .with(statable_type: "Department", statable_id: department.id)
+        subject
+      end
+    end
+
+    context "when organisation" do
+      let!(:organisation) { create(:organisation) }
+      let!(:structure_type) { "Organisation" }
+      let!(:structure_id) { organisation.id }
+
+      it "finds or initializes stat record" do
+        expect(Stat).to receive(:find_or_initialize_by)
+          .with(statable_type: "Organisation", statable_id: organisation.id)
+        subject
+      end
     end
 
     it "calls the compute stats service" do

@@ -1,7 +1,7 @@
 describe Stats::GlobalStats::Compute, type: :service do
   subject { described_class.call(stat: stat) }
 
-  let!(:stat) { create(:stat, department_number: department.number) }
+  let!(:stat) { create(:stat, statable_type: "Department", statable_id: department.id) }
 
   let!(:department) { create(:department) }
   let!(:organisation) { create(:organisation, department: department) }
@@ -41,8 +41,6 @@ describe Stats::GlobalStats::Compute, type: :service do
         .and_return(OpenStruct.new(success?: true, value: 50.0))
       allow(Stats::ComputeAverageTimeBetweenInvitationAndRdvInDays).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 4.0))
-      allow(Stats::ComputeAverageTimeBetweenParticipationCreationAndRdvStartInDays).to receive(:call)
-        .and_return(OpenStruct.new(success?: true, value: 4.0))
       allow(Stats::ComputeRateOfApplicantsWithRdvSeenInLessThanThirtyDays).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 50.0))
       allow(Stats::ComputeRateOfAutonomousApplicants).to receive(:call)
@@ -63,7 +61,6 @@ describe Stats::GlobalStats::Compute, type: :service do
       expect(subject.stat_attributes).to include(:sent_invitations_count)
       expect(subject.stat_attributes).to include(:percentage_of_no_show)
       expect(subject.stat_attributes).to include(:average_time_between_invitation_and_rdv_in_days)
-      expect(subject.stat_attributes).to include(:average_time_between_rdv_creation_and_start_in_days)
       expect(subject.stat_attributes).to include(:rate_of_applicants_with_rdv_seen_in_less_than_30_days)
       expect(subject.stat_attributes).to include(:rate_of_autonomous_applicants)
       expect(subject.stat_attributes).to include(:agents_count)
@@ -75,7 +72,6 @@ describe Stats::GlobalStats::Compute, type: :service do
       expect(subject.stat_attributes[:sent_invitations_count]).to be_a(Integer)
       expect(subject.stat_attributes[:percentage_of_no_show]).to be_a(Float)
       expect(subject.stat_attributes[:average_time_between_invitation_and_rdv_in_days]).to be_a(Float)
-      expect(subject.stat_attributes[:average_time_between_rdv_creation_and_start_in_days]).to be_a(Float)
       expect(subject.stat_attributes[:rate_of_applicants_with_rdv_seen_in_less_than_30_days]).to be_a(Float)
       expect(subject.stat_attributes[:rate_of_autonomous_applicants]).to be_a(Float)
       expect(subject.stat_attributes[:agents_count]).to be_a(Integer)
@@ -107,13 +103,6 @@ describe Stats::GlobalStats::Compute, type: :service do
       expect(stat).to receive(:rdv_contexts_sample)
       expect(Stats::ComputeAverageTimeBetweenInvitationAndRdvInDays).to receive(:call)
         .with(rdv_contexts: [rdv_context1, rdv_context2])
-      subject
-    end
-
-    it "computes the average time between the creation of the rdvs and the rdvs date in days" do
-      expect(stat).to receive(:participations_sample)
-      expect(Stats::ComputeAverageTimeBetweenParticipationCreationAndRdvStartInDays).to receive(:call)
-        .with(participations: [participation1, participation2])
       subject
     end
 

@@ -4,9 +4,8 @@ describe NotifyParticipationJob do
   end
 
   let!(:participation_id) { 3232 }
-  # let!(:rdv) { create(:rdv, id: rdv_id) }
-  # let!(:applicant) { create(:applicant, id: applicant_id) }
-  let!(:participation) { create(:participation, id: participation_id) }
+  let!(:participation) { create(:participation, id: participation_id, applicant:) }
+  let!(:applicant) { create(:applicant) }
   let!(:format) { "sms" }
   let!(:event) { "participation_created" }
 
@@ -87,6 +86,17 @@ describe NotifyParticipationJob do
               )
             subject
           end
+        end
+      end
+
+      context "when the applicant is created through rdv_solidarites and has no invitations" do
+        let!(:applicant) do
+          create(:applicant, created_through: "rdv_solidarites", invitations: [])
+        end
+
+        it "does notify the applicant" do
+          expect(Notifications::NotifyParticipation).not_to receive(:call)
+          subject
         end
       end
     end
