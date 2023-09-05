@@ -34,10 +34,10 @@ module Previews
     end
 
     def set_sms_contents
-      @sms_contents = {
-        first_invitation: send("#{@template.model}_content"),
-        invitation_reminder: send("#{@template.model}_reminder_content")
-      }
+      @sms_contents = { first_invitation: send("#{@template.model}_content") }
+      return unless respond_to?("#{@template.model}_reminder_content", true)
+
+      @sms_contents.merge!(invitation_reminder: send("#{@template.model}_reminder_content"))
     end
 
     def set_mail_contents
@@ -46,13 +46,17 @@ module Previews
           template: "mailers/invitation_mailer/#{@template.model}_invitation",
           assigns: mailer_instance_variables,
           layout: nil
-        ),
+        )
+      }
+      return unless InvitationMailer.respond_to?("#{@template.model}_invitation_reminder")
+
+      @mail_contents.merge!(
         invitation_reminder: ApplicationController.render(
           template: "mailers/invitation_mailer/#{@template.model}_invitation_reminder",
           assigns: mailer_instance_variables,
           layout: nil
         )
-      }
+      )
     end
 
     def set_letter_contents
@@ -113,7 +117,7 @@ module Previews
       # only part of the rdv_title_by_phone would be highlighted. That's why we use sort_by(&:length)
       ::Configuration.template_override_attributes.sort_by(&:length).reverse.map do |attribute|
         @invitation.send(attribute.gsub("template_", "").gsub("_override", ""))
-      end
+      end.compact
     end
   end
 end

@@ -74,4 +74,31 @@ describe "Agents can preview messages contents", js: true do
     expect(page).not_to have_css("span.text-purple", text: "bénéficiaire du RSA")
     expect(page).not_to have_css("span.text-purple", text: "démarrer un parcours d'accompagnement")
   end
+
+  context "when the category does not require all the template variables and has no reminder" do
+    let!(:configuration) { create(:configuration, motif_category: category_rsa_insertion_offer, organisation:) }
+
+    it "still can preview contents" do
+      visit organisation_configuration_path(organisation, configuration)
+
+      expect(page).to have_button("Convocations")
+      expect(page).to have_button("Invitations")
+
+      click_button("Invitations")
+
+      expect(page).to have_css("span.text-purple", text: "bénéficiaire du RSA", wait: 10)
+      expect(page).to have_content("atelier")
+
+      find("button.btn-close").click
+
+      expect(page).to have_button("Convocations")
+      expect(page).to have_button("Invitations")
+
+      click_button("Convocations")
+
+      expect(page).to have_css("span.text-purple", text: "atelier", wait: 10)
+      expect(page).to have_css("span.text-purple", text: "atelier téléphonique")
+      expect(page).to have_css("span.text-purple", text: "bénéficiaire du RSA")
+    end
+  end
 end
