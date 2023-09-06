@@ -1,24 +1,24 @@
 class MonitorWebhookActivityJob < ApplicationJob
-  MONITORED_MODELS = [
-    AgentRole,
-    Agent,
-    Applicant,
-    Lieu,
-    Motif,
-    Organisation,
-    Rdv
+  MONITORS = [
+    { acceptable_delay: 3.hours, model: Rdv },
+    { acceptable_delay: 3.hours, model: Agent },
+    { acceptable_delay: 6.hours, model: Applicant },
+    { acceptable_delay: 1.day, model: AgentRole },
+    { acceptable_delay: 1.week, model: Lieu },
+    { acceptable_delay: 1.week, model: Motif },
+    { acceptable_delay: 1.week, model: Organisation }
   ].freeze
 
   def perform
-    alertable_models = MONITORED_MODELS.select do |model|
-      model.where("last_webhook_update_received_at > ?", 24.hours.ago).empty?
+    alertable_models = MONITORS.select do |monitor|
+      monitor[:model].where("last_webhook_update_received_at > ?", monitor[:acceptable_delay].ago).empty?
     end
 
     return if alertable_models.empty?
 
     MattermostClient.send_to_notif_channel(
-      "⚠️ Pas de webhook reçus dans les dernières 24 heures pour les models suivants : \n" \
-      "#{alertable_models.map(&:name).join(', ')}"
+      "⚠️ Les models suivants semblent ne pas avoir reçus de webhooks récemment : \n" \
+      "#{alertable_models.pluck(:model).map(&:name).join(', ')}"
     )
   end
 end

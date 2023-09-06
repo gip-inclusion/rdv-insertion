@@ -4,23 +4,29 @@ describe MonitorWebhookActivityJob do
   end
 
   describe "#perform" do
-    context "when there are no models with webhook activity in the last 24 hours" do
+    context "some models without webhook in the acceptable delay" do
       before do
-        create(:agent, last_webhook_update_received_at: 23.hours.ago)
+        create(:agent, last_webhook_update_received_at: 10.minutes.ago)
       end
 
       it "sends a message to Mattermost" do
-        all_except_agent = MonitorWebhookActivityJob::MONITORED_MODELS - [Agent]
-        expect(MattermostClient).to receive(:send_to_notif_channel).with(include(all_except_agent.join(", ")))
+        all_except_agent = MonitorWebhookActivityJob::MONITORS
+                           .reject { |m| m[:model] == Agent }
+                           .pluck(:model)
+                           .map(&:name)
+                           .join(", ")
+
+        expect(MattermostClient).to receive(:send_to_notif_channel).with(include(all_except_agent))
 
         subject
       end
     end
 
-    context "when there are models with webhook activity in the last 24 hours" do
+    context "all models have webhook activity in the acceptable delay" do
       before do
-        MonitorWebhookActivityJob::MONITORED_MODELS.each do |model|
-          create(model.name.underscore.to_sym, last_webhook_update_received_at: 23.hours.ago)
+        MonitorWebhookActivityJob::MONITORS.each do |monitor|
+          create(monitor[:model].name.underscore.to_sym,
+                 last_webhook_update_received_at: monitor[:acceptable_delay].ago + 1.minute)
         end
       end
 
