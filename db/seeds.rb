@@ -122,8 +122,8 @@ MotifCategory.create!(
   participation_optional: true,
   template: Template.find_or_create_by!(
     model: "atelier",
-    rdv_title: "rendez-vous offre d'insertion professionnelle",
-    rdv_title_by_phone: "rendez-vous offre d'insertion professionnelle téléphonique",
+    rdv_title: "atelier",
+    rdv_title_by_phone: "atelier téléphonique",
     rdv_subject: "RSA",
     applicant_designation: "bénéficiaire du RSA"
   )
@@ -160,8 +160,8 @@ MotifCategory.create!(
   participation_optional: true,
   template: Template.find_or_create_by!(
     model: "atelier",
-    rdv_title: "atelier rencontres professionnelles",
-    rdv_title_by_phone: "atelier rencontres professionnelles",
+    rdv_title: "atelier",
+    rdv_title_by_phone: "atelier téléphonique",
     rdv_subject: "RSA",
     applicant_designation: "bénéficiaire du RSA"
   )
@@ -172,8 +172,8 @@ MotifCategory.create!(
   participation_optional: true,
   template: Template.find_or_create_by!(
     model: "atelier",
-    rdv_title: "atelier compétences",
-    rdv_title_by_phone: "atelier compétences",
+    rdv_title: "atelier",
+    rdv_title_by_phone: "atelier téléphonique",
     rdv_subject: "RSA",
     applicant_designation: "bénéficiaire du RSA"
   )
