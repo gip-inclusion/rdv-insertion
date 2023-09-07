@@ -34,11 +34,11 @@
   <% if show_guide_banner? %>
     <div class="sub-header d-none d-md-flex marianne">
       <div class="container d-none d-md-flex ">
-        <%= link_to "https://communaute.inclusion.beta.gouv.fr/", class: "nav-link optional-link ", target: :blank, rel: "noopener noreferrer" do %>
-          <p class="mb-0">Communauté de l'inclusion&nbsp;<i class="fas fa-external-link-alt"></i></p>
-        <% end %>
         <%= link_to "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/", target: :blank, class: "nav-link optional-link" do %>
           <p class="mb-0">Guide d'utilisation&nbsp;<i class="fas fa-external-link-alt"></i></p>
+        <% end %>
+        <%= link_to stats_path, class: "nav-link optional-link " do %>
+          <p class="mb-0">Statistiques d'utilisation</p>
         <% end %>
         <%= link_to "Contacter l'équipe", "mailto:data.insertion@beta.gouv.fr", class: "nav-link optional-link" %>
       </div>
