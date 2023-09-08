@@ -49,7 +49,13 @@
           <% end %>
         <% end %>
         <td id="rdv-context-status-<%= rdv_context.id %>" class="<%= background_class_for_context_status(rdv_context, @current_configuration.number_of_days_before_action_required) %>">
-          <%= display_context_status(rdv_context, @current_configuration.number_of_days_before_action_required) %>
+          <% if rdv_context.last_rdv.present? %>
+            <%= link_to(edit_rdv_path(rdv_context.last_rdv.id), data: { turbo_frame: 'remote_modal' }) do %>
+              <%= display_context_status(rdv_context, @current_configuration.number_of_days_before_action_required) %>
+            <% end %>
+          <% else %>
+            <%= display_context_status(rdv_context, @current_configuration.number_of_days_before_action_required) %>
+          <% end %>
         </td>
         <td class="padding-left-15">
           <%= link_to compute_show_path(applicant, @organisation, @department) do %>

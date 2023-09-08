@@ -67,7 +67,9 @@
                 </td>
               <% end %>
               <td class="px-4 py-3 <%= background_class_for_participation_status(participation) %>">
-                <%= display_participation_status(participation) %>
+                <%= link_to(edit_rdv_path(participation.rdv), data: { turbo_frame: 'remote_modal' }) do %>
+                  <%= display_participation_status(participation) %>
+                <% end %>
               </td>
               <td class="px-4 py-3">
                 <%= link_to participation.rdv_solidarites_url, target: "_blank" do %>

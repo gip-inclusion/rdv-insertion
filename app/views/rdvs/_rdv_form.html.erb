@@ -1,0 +1,11 @@
+<%= simple_form_for(@rdv, html: { method: :patch }) do |f| %>
+  <div class="d-flex flex-column mb-2">
+    <% Rdv.statuses.map do |status, value| %>
+      <label role="button">
+        <%= f.radio_button :status, status, checked: @rdv.status == status %>
+        <span><%= t("activerecord.attributes.rdv.statuses.#{status}") %></span>
+      </label>
+    <% end %>
+  </div>
+  <%= f.submit "Enregistrer", class: "form-control" %>
+<% end %>
