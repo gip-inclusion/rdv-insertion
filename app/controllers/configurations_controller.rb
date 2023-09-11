@@ -39,7 +39,7 @@ class ConfigurationsController < ApplicationController
   end
 
   def update
-    @configuration.assign_attributes(**configuration_params)
+    @configuration.assign_attributes(**formatted_configuration_params)
     if @configuration.save
       flash.now[:success] = "La configuration a été modifiée avec succès"
       redirect_to organisation_configuration_path(@organisation, @configuration)
@@ -58,6 +58,12 @@ class ConfigurationsController < ApplicationController
 
   def configuration_params
     params.require(:configuration).permit(*PERMITTED_PARAMS).to_h.deep_symbolize_keys
+  end
+
+  def formatted_configuration_params
+    configuration_params.to_h do |k, v|
+      [k, k.to_s.include?("override") ? v.presence : v]
+    end
   end
 
   def set_configuration
