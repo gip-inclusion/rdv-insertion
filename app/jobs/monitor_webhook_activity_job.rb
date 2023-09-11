@@ -10,6 +10,8 @@ class MonitorWebhookActivityJob < ApplicationJob
   ].freeze
 
   def perform
+    return if staging_env?
+
     alertable_models = MONITORS.select do |monitor|
       monitor[:model].where("last_webhook_update_received_at > ?", monitor[:acceptable_delay].ago).empty?
     end
