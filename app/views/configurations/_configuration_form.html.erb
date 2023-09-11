@@ -15,18 +15,40 @@
       <% unless configuration.persisted? %>
         <div class="d-flex flex-column align-items-center col-12 px-5 mb-4">
           <h4>Configuration pour : *</h4>
-          <%= f.association :motif_category %>
+          <div class="select">
+            <select
+              data-controller="motif-category-select" 
+              name="configuration[motif_category_id]"
+              data-action="change->motif-category-select#selectChanged"
+              id="motif_category_id"
+            >
+              <option value=""> - </option>
+              <% MotifCategory.all.each do |motif_category| %>
+                <option value="<%= motif_category.id %>" data-participation_optional="<%= motif_category.participation_optional %>"><%= motif_category.name %></option>
+              <% end %>
+            </select>
+          </div>
         </div>
       <% end %>
       <%= render "common/attribute_input", f:f, attribute: :invitation_formats, as: :collection_check_boxes, collection: [["sms", "SMS"], ["email", "Email"], ["postal", "Courrier"]], mandatory: true %>
       <%= render "common/attribute_input", f:f, attribute: :convene_applicant, as: :boolean, mandatory: true %>
       <%= render "common/attribute_input", f:f, attribute: :number_of_days_before_action_required, mandatory: true %>
+      <div id="number_of_days_before_next_invite-input-container" class="<%= configuration&.motif_category&.participation_optional ? '' : 'd-none' %> px-0">
+        <%= render "common/attribute_input", f:f, attribute: :number_of_days_before_next_invite, mandatory: true %>
+      </div>
       <%= render "common/attribute_input", f:f, attribute: :rdv_with_referents, as: :boolean, mandatory: true %>
       <%= render "common/attribute_input", f:f, attribute: :invite_to_applicant_organisations_only, as: :boolean, mandatory: true %>
     </div>
 
-    <div class="row">
-      <h4 class="px-5">Fichier d'import</h4>
+    <% if configuration.persisted? %>
+      <div class="row my-4">
+        <h3>Contenu des messages</h3>
+        <%= render "configurations/messages_contents/messages_content_form", f: f, template: template, configuration: configuration %>
+      </div>
+    <% end %>
+
+    <div class="row my-4">
+      <h3 class="px-5">Fichier d'import</h3>
       <div class="mb-4 px-5">
         <%= turbo_frame_tag "file_configurations_list" do %>
           <% @file_configurations.each do |file_configuration| %>

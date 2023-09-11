@@ -1,10 +1,11 @@
 <footer class="marianne">
   <div class="container">
-    <div class="footer-top row">
-      <div class="col-8 col-md-4">
-        <%= image_pack_tag "logos/republique-francaise-logo.svg", alt: "Logo République francaise", class: "footer-france-logo" %>
+    <div class="footer-top row d-flex">
+      <div class="col-8 col-md-6 flex-wrap">
+        <%= image_pack_tag "logos/republique-francaise-logo.svg", alt: "Logo République francaise", class: "footer-logo" %>
+        <%= image_pack_tag "logos/plateforme-inclusion.svg", alt: "Logo de la plateforme de l'inclusion", class: "footer-logo" %>
       </div>
-      <div class="footer-top-links d-flex col-8 col-md-7 col-lg-5 col-xl-4 justify-content-between flex-wrap">
+      <div class="footer-top-links d-flex col-8 col-md-6 col-lg-5 col-xl-4 justify-content-between flex-wrap">
         <div>
           <h4>Ressources</h4>
           <ul class="footer-top-list">
@@ -15,7 +16,6 @@
               <%= link_to "Statistiques", stats_path %>
             </li>
             <li>
-              <%= link_to "Lecteur flux CNAF", "https://betagouv.github.io/analyse-flux-insertion/", target: :blank %>
             </li>
           </ul>
         </div>
@@ -26,13 +26,7 @@
               <%= link_to "RDV-Solidarités", "https://www.rdv-solidarites.fr/", target: :blank %>
             </li>
             <li>
-              <%= link_to "CNAF", "https://www.caf.fr/", target: :blank %>
-            </li>
-            <li>
-              <%= link_to "Pôle emploi", "https://www.pole-emploi.fr/accueil/", target: :blank %>
-            </li>
-            <li>
-              <%= link_to "MSA", "https://www.msa.fr/lfp", target: :blank %>
+              <%= link_to "Plateforme de l'inclusion", "https://inclusion.beta.gouv.fr/qui-sommes-nous/", target: :blank %>
             </li>
           </ul>
         </div>

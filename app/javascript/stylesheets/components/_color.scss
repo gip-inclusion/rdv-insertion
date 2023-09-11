@@ -13,3 +13,14 @@
 .bg-danger {
   color: white;
 }
+
+.text-purple {
+  color: $purple;
+}
+
+.link-blue-light {
+  color: $light-blue-alt;
+  &:hover {
+    color: white;
+  }
+}

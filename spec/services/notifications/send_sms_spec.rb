@@ -34,11 +34,13 @@ describe Notifications::SendSms, type: :service do
   let!(:lieu) do
     create(:lieu, name: "DINUM", address: "20 avenue de Ségur 75007 Paris", phone_number: "0101010101")
   end
+  let!(:organisation) { create(:organisation) }
   let!(:rdv) do
     create(
       :rdv,
       motif: motif, lieu: lieu,
-      starts_at: Time.zone.parse("20/12/2021 10:00")
+      starts_at: Time.zone.parse("20/12/2021 10:00"),
+      organisation:
     )
   end
   let!(:participation) do
@@ -129,6 +131,34 @@ describe Notifications::SendSms, type: :service do
         end
 
         it "calls the messenger service with the right content" do
+          expect(SendTransactionalSms).to receive(:call)
+            .with(
+              phone_number: phone_number, content: content,
+              sender_name: sms_sender_name
+            )
+          subject
+        end
+      end
+
+      context "when the template attributes are overriden by the configuration attributes" do
+        let!(:configuration) do
+          create(
+            :configuration,
+            organisation:,
+            motif_category: category_rsa_orientation,
+            template_applicant_designation_override: "joueur d'échec"
+          )
+        end
+
+        let!(:content) do
+          "Monsieur John DOE,\nVous êtes joueur d'échec et à ce titre vous êtes convoqué à un " \
+            "rendez-vous d'orientation. Vous êtes attendu le 20/12/2021" \
+            " à 10:00 ici: DINUM - 20 avenue de Ségur 75007 Paris. " \
+            "Ce RDV est obligatoire. " \
+            "En cas d’empêchement, appelez rapidement le 0101010101."
+        end
+
+        it "calls the messenger service with the overriden content" do
           expect(SendTransactionalSms).to receive(:call)
             .with(
               phone_number: phone_number, content: content,

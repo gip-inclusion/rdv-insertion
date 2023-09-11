@@ -9,7 +9,7 @@ RSpec.describe InvitationMailer do
                                     display_europe_logos: true, display_pole_emploi_logo: true)
   end
   let!(:applicant) do
-    create(:applicant, first_name: "Jean", last_name: "Valjean")
+    create(:applicant, first_name: "Jean", last_name: "Valjean", title: "monsieur")
   end
   let!(:invitation) do
     create(
@@ -44,7 +44,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")
         expect(body_string).to match(
-          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes #{applicant.conjugate('invité')} à participer " \
+          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes invité à participer " \
           "à un rendez-vous d'orientation afin de démarrer un parcours d'accompagnement"
         )
         expect(body_string).to match("Ce RDV est obligatoire.")
@@ -82,6 +82,43 @@ RSpec.describe InvitationMailer do
           expect(subject.body.encoded).to match(/Fabienne Bouchet/)
         end
       end
+
+      context "when template attributes are overriden by configuration attributes" do
+        let!(:configuration) do
+          create(
+            :configuration,
+            motif_category: category_rsa_orientation, organisation:,
+            template_rdv_title_override: "nouveau type de rendez-vous",
+            template_rdv_purpose_override: "tester une nouvelle fonctionnalité"
+          )
+        end
+
+        it "renders the subject" do
+          email_subject = unescape_html(subject.subject)
+          expect(email_subject).to eq("[RSA]: Votre nouveau type de rendez-vous dans le cadre de votre RSA")
+        end
+
+        it "renders the body" do
+          body_string = unescape_html(subject.body.encoded)
+          expect(body_string).to match("Bonjour Jean VALJEAN")
+          expect(body_string).to match("Le département de la Drôme.")
+          expect(body_string).to match("01 39 39 39 39")
+          expect(body_string).to match(
+            "Vous êtes bénéficiaire du RSA et à ce titre vous êtes invité à participer à un" \
+            " nouveau type de rendez-vous afin de tester une nouvelle fonctionnalité."
+          )
+          expect(body_string).to match("Ce RDV est obligatoire.")
+          expect(body_string).not_to match(
+            "votre RSA pourra être suspendu ou réduit."
+          )
+          expect(body_string).to match("/invitations/redirect")
+          expect(body_string).to match("uuid=#{invitation.uuid}")
+          expect(body_string).to match("dans un délai de 3 jours")
+          expect(body_string).to match("Logo du département")
+          expect(body_string).to match("Logo de l'Union européene")
+          expect(body_string).to match("Logo de Pole Emploi")
+        end
+      end
     end
 
     context "for rsa_accompagnement" do
@@ -106,7 +143,7 @@ RSpec.describe InvitationMailer do
           expect(body_string).to match("Le département de la Drôme.")
           expect(body_string).to match("01 39 39 39 39")
           expect(body_string).to match(
-            "Vous êtes bénéficiaire du RSA et à ce titre vous êtes #{applicant.conjugate('invité')} à participer " \
+            "Vous êtes bénéficiaire du RSA et à ce titre vous êtes invité à participer " \
             "à un rendez-vous d'accompagnement afin de démarrer un parcours d'accompagnement"
           )
           expect(body_string).to match("Ce RDV est obligatoire.")
@@ -160,7 +197,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")
         expect(body_string).to match(
-          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes #{applicant.conjugate('invité')} à participer à un " \
+          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes invité à participer à un " \
           "rendez-vous de signature de CER afin de construire et signer votre Contrat d'Engagement Réciproque"
         )
         expect(body_string).to match("Ce RDV est obligatoire.")
@@ -211,7 +248,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")
         expect(body_string).to match(
-          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes #{applicant.conjugate('invité')} à participer " \
+          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes invité à participer " \
           "à un rendez-vous de suivi afin de faire un point avec votre référent de parcours"
         )
         expect(body_string).not_to match("Ce RDV est obligatoire.")
@@ -262,7 +299,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")
         expect(body_string).to match(
-          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes #{applicant.conjugate('invité')} à participer " \
+          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes invité à participer " \
           "à un entretien de main tendue afin de faire le point sur votre situation"
         )
         expect(body_string).to match("Ce RDV est obligatoire.")
@@ -315,7 +352,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")
         expect(body_string).to match(
-          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes #{applicant.conjugate('invité')} à participer " \
+          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes invité à participer " \
           "à un atelier collectif afin de vous aider dans votre parcours d'insertion"
         )
         expect(body_string).to match("Ce RDV est obligatoire.")
@@ -367,7 +404,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")
         expect(body_string).to match(
-          "Vous êtes demandeur d'emploi et à ce titre vous êtes #{applicant.conjugate('invité')} à participer à un " \
+          "Vous êtes demandeur d'emploi et à ce titre vous êtes invité à participer à un " \
           "rendez-vous d'accompagnement afin de démarrer un parcours d'accompagnement"
         )
         expect(body_string).to match("Ce RDV est obligatoire.")
@@ -417,7 +454,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")
         expect(body_string).to match(
-          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes #{applicant.conjugate('invité')} à participer " \
+          "Vous êtes bénéficiaire du RSA et à ce titre vous êtes invité à participer " \
           "à un rendez-vous d'information afin de vous renseigner sur vos droits et vos devoirs"
         )
         expect(body_string).to match("Ce RDV est obligatoire.")
@@ -468,7 +505,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("01 39 39 39 39")
         expect(body_string).to include(
           "Vous êtes candidat.e dans une Structure d’Insertion par l’Activité Economique (SIAE)" \
-          " et à ce titre vous êtes #{applicant.conjugate('invité')} à participer à un entretien d'embauche " \
+          " et à ce titre vous êtes invité à participer à un entretien d'embauche " \
           "afin de poursuivre le processus de recrutement"
         )
         expect(body_string).not_to match("Ce RDV est obligatoire.")
@@ -519,7 +556,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("01 39 39 39 39")
         expect(body_string).to include(
           "Vous êtes candidat.e dans une Structure d’Insertion par l’Activité Economique (SIAE)" \
-          " et à ce titre vous êtes #{applicant.conjugate('invité')} à participer à " \
+          " et à ce titre vous êtes invité à participer à " \
           "un rendez-vous collectif d'information afin de découvrir cette structure"
         )
         expect(body_string).not_to match("Ce RDV est obligatoire.")
@@ -553,7 +590,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("01 39 39 39 39")
         expect(body_string).to include(
           "Vous êtes salarié.e au sein de notre structure" \
-          " et à ce titre vous êtes #{applicant.conjugate('invité')} à participer à un rendez-vous de suivi " \
+          " et à ce titre vous êtes invité à participer à un rendez-vous de suivi " \
           "afin de faire un point avec votre référent"
         )
         expect(body_string).not_to match("Ce RDV est obligatoire.")

@@ -14,9 +14,8 @@ class Notification < ApplicationRecord
   validates :format, :event, :rdv_solidarites_rdv_id, presence: true
 
   delegate :department, :applicant, :rdv, :motif_category, :instruction_for_rdv, to: :participation
-  delegate :template, to: :motif_category
   delegate :organisation, to: :rdv, allow_nil: true
-  delegate :messages_configuration, to: :organisation
+  delegate :messages_configuration, :configurations, to: :organisation
 
   scope :sent, -> { where.not(sent_at: nil) }
 
@@ -29,9 +28,5 @@ class Notification < ApplicationRecord
     when "postal"
       Notifications::GenerateLetter.call(notification: self)
     end
-  end
-
-  def rdv_title
-    rdv.by_phone? ? template.rdv_title_by_phone : template.rdv_title
   end
 end

@@ -44,10 +44,6 @@ class Rdv < ApplicationRecord
       "#{organisation.rdv_solidarites_organisation_id}/rdvs/#{rdv_solidarites_rdv_id}"
   end
 
-  def notify_applicants?
-    convocable?
-  end
-
   def formatted_start_date
     starts_at.to_datetime.strftime("%d/%m/%Y")
   end

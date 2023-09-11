@@ -8,7 +8,7 @@ module RdvSolidarites
 
     def augmented_attributes
       payload = applicant.nil? ? Applicant.new.as_json.merge(@attributes) : applicant.as_json.merge(@attributes)
-      payload.except(:updated_at, :rdv_contexts, :organisations, :archives)
+      payload.except(:updated_at, :created_through, :rdv_contexts, :organisations, :archives)
     end
 
     def applicant

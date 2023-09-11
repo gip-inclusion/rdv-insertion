@@ -1,0 +1,17 @@
+<div class="row d-flex justify-content-start flex-wrap my-5">
+  <%= render "common/attribute_display", record: @template, attribute: :model %>
+  <%= render "common/attribute_display", record: @template, attribute: :rdv_title %>
+  <%= render "common/attribute_display", record: @template, attribute: :rdv_title_by_phone %>
+  <%= render "common/attribute_display", record: @template, attribute: :applicant_designation %>
+  <%= render "common/attribute_display", record: @template, attribute: :rdv_subject %>
+  <%= render "common/attribute_display", record: @template, attribute: :display_mandatory_warning %>
+  <%= render "common/attribute_display", record: @template, attribute: :punishable_warning %>
+  <%= render "common/attribute_display", record: @template, attribute: :custom_sentence %>
+</div>
+<div class="text-center my-4">
+  <%= link_to template_previews_path(@template), data: { turbo_frame: 'remote_modal' } do %>
+     <%= button_tag class: "btn btn-blue" do %>
+        Preview <i class="fas fa-eye"></i>
+     <% end  %>
+   <% end %>
+</div>

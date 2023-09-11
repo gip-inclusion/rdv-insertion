@@ -19,9 +19,11 @@ assignees: ''
 
 - Mentionner une sanction en cas d'absence ? OUI / NON
 
-- Choisissez l'un des modèles suivants et remplissez les textes contenant la mention "A REMPLIR". 
+- Choisissez l'un des modèles suivants et remplissez les textes contenant la mention "A REMPLIR".
 Les numéros à côtés de ces variables servent à montrer quand la même variable est réutilisée dans le message de rappel où l'objet de l'email.
 Les points de suspensions correspondent aux éventuelles mention d'obligation ou de sanction.
+
+Remarque: Les messages correspondent aux SMS seulement mais contiennent les variables suffisantes pour configurer la catégorie.
 
 #### STANDARD 
 ``` 

@@ -34,6 +34,9 @@ Style/ClassAndModuleChildren:
 Style/ParallelAssignment:
   Enabled: false
 
+Style/RegexpLiteral:
+  Enabled: false
+
 Rails/SkipsModelValidations:
   Enabled: false
 
@@ -132,3 +135,9 @@ RSpec/DescribeClass:
   Exclude:
     - "spec/requests/**/*"
     - "spec/features/**"
+
+Capybara/SpecificActions:
+  Enabled: false
+
+Capybara/SpecificMatcher:
+  Enabled: false

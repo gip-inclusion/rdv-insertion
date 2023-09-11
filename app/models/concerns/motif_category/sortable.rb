@@ -1,6 +1,7 @@
 module MotifCategory::Sortable
   CHRONOLOGICALLY_SORTED_CATEGORIES_SHORT_NAMES = %w[
     rsa_integration_information
+    rsa_droits_devoirs
     rsa_orientation
     rsa_orientation_file_active
     rsa_orientation_france_travail

@@ -1,5 +1,5 @@
 describe Stats::MonthlyStats::UpsertStat, type: :service do
-  subject { described_class.call(department_number: department.number, date_string: date_string) }
+  subject { described_class.call(structure_type: structure_type, structure_id: structure_id, date_string: date_string) }
 
   let!(:department) { create(:department) }
   let!(:date_string) { "2022-03-17 12:00:00 +0100" }
@@ -11,12 +11,13 @@ describe Stats::MonthlyStats::UpsertStat, type: :service do
       sent_invitations_count_grouped_by_month: 3,
       percentage_of_no_show_grouped_by_month: 4,
       average_time_between_invitation_and_rdv_in_days_by_month: 5,
-      average_time_between_rdv_creation_and_start_in_days_by_month: 6,
       rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month: 7,
       rate_of_autonomous_applicants_grouped_by_month: 8
     }
   end
-  let!(:stat) { create(:stat, department_number: department.number) }
+  let!(:stat) { create(:stat, statable_type: "Department", statable_id: department.id) }
+  let!(:structure_type) { "Department" }
+  let!(:structure_id) { department.id }
 
   describe "#call" do
     before do
@@ -30,10 +31,24 @@ describe Stats::MonthlyStats::UpsertStat, type: :service do
       expect(subject.success?).to eq(true)
     end
 
-    it "finds or initializes stat record" do
-      expect(Stat).to receive(:find_or_initialize_by)
-        .with(department_number: department.number)
-      subject
+    context "when department" do
+      it "finds or initializes stat record" do
+        expect(Stat).to receive(:find_or_initialize_by)
+          .with(statable_type: "Department", statable_id: department.id)
+        subject
+      end
+    end
+
+    context "when organisation" do
+      let!(:organisation) { create(:organisation) }
+      let!(:structure_type) { "Organisation" }
+      let!(:structure_id) { organisation.id }
+
+      it "finds or initializes stat record" do
+        expect(Stat).to receive(:find_or_initialize_by)
+          .with(statable_type: "Organisation", statable_id: organisation.id)
+        subject
+      end
     end
 
     it "calls the compute stats service" do
@@ -50,9 +65,6 @@ describe Stats::MonthlyStats::UpsertStat, type: :service do
       expect(stat.reload[:percentage_of_no_show_grouped_by_month]).to eq({ date.strftime("%m/%Y") => 4 })
       expect(stat.reload[:average_time_between_invitation_and_rdv_in_days_by_month]).to eq(
         { date.strftime("%m/%Y") => 5 }
-      )
-      expect(stat.reload[:average_time_between_rdv_creation_and_start_in_days_by_month]).to eq(
-        { date.strftime("%m/%Y") => 6 }
       )
       expect(stat.reload[:rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month]).to eq(
         { (date - 1.month).strftime("%m/%Y") => 7 }

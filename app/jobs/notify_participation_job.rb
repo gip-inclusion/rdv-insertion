@@ -6,6 +6,8 @@ class NotifyParticipationJob < ApplicationJob
     @format = format
     @event = event
 
+    return if applicant.created_through_rdv_solidarites? && applicant.invitations.sent.empty?
+
     Notification.with_advisory_lock "notifying_particpation_#{@participation.id}" do
       return send_already_notified_to_mattermost if already_notified?
 
@@ -14,6 +16,10 @@ class NotifyParticipationJob < ApplicationJob
   end
 
   private
+
+  def applicant
+    @participation.applicant
+  end
 
   def already_notified?
     if @event == "participation_updated"

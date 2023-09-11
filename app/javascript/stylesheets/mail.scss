@@ -16,24 +16,6 @@ $padding: 30px;
   font-size: 14px;
 }
 
-.rdvi-logo {
-  width: 215px;
-  margin-bottom: 5px;
-}
-
-.structure-logo {
-  max-width: 150px;
-  max-height: 70px;
-  margin-left: 10px;
-  margin-right: 10px;
-  &:first-child {
-    margin-left: 0px !important;
-  }
-  &:last-child {
-    margin-right: 0px !important;
-  }
-}
-
 body {
   -webkit-font-smoothing: antialiased;
   -webkit-text-size-adjust: none;
@@ -251,6 +233,24 @@ html,
   margin-top: 20px;
 }
 
+.rdvi-logo {
+  width: 215px;
+  margin-bottom: 5px;
+}
+
+.structure-logo {
+  max-width: 150px;
+  max-height: 70px;
+  margin-left: 10px;
+  margin-right: 10px;
+  &:first-child {
+    margin-left: 0px !important;
+  }
+  &:last-child {
+    margin-right: 0px !important;
+  }
+}
+
 .btn-primary{
   background-color: $orange;
   padding: 10px;
@@ -273,4 +273,10 @@ html,
     padding: 0 !important;
     margin: 0 !important;
   }
+}
+
+blockquote {
+  background-color: $light;
+  padding: $padding;
+  margin: 15px;
 }

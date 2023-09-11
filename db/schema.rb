@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_08_084135) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_31_090625) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -65,6 +65,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_08_084135) do
     t.string "nir"
     t.string "pole_emploi_id"
     t.string "carnet_de_bord_carnet_id"
+    t.integer "created_through", default: 0
     t.index ["department_internal_id"], name: "index_applicants_on_department_internal_id"
     t.index ["email"], name: "index_applicants_on_email"
     t.index ["nir"], name: "index_applicants_on_nir"
@@ -100,6 +101,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_08_084135) do
     t.bigint "motif_category_id"
     t.bigint "file_configuration_id"
     t.bigint "organisation_id"
+    t.string "template_rdv_title_override"
+    t.string "template_rdv_title_by_phone_override"
+    t.string "template_applicant_designation_override"
+    t.string "template_rdv_purpose_override"
+    t.integer "number_of_days_before_next_invite"
     t.index ["file_configuration_id"], name: "index_configurations_on_file_configuration_id"
     t.index ["motif_category_id"], name: "index_configurations_on_motif_category_id"
     t.index ["organisation_id"], name: "index_configurations_on_organisation_id"
@@ -200,7 +206,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_08_084135) do
     t.boolean "display_department_logo", default: true
     t.bigint "organisation_id"
     t.boolean "display_pole_emploi_logo", default: false
-    t.string "custom_image"
     t.index ["organisation_id"], name: "index_messages_configurations_on_organisation_id"
   end
 
@@ -340,17 +345,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_08_084135) do
     t.json "percentage_of_no_show_grouped_by_month"
     t.float "average_time_between_invitation_and_rdv_in_days"
     t.json "average_time_between_invitation_and_rdv_in_days_by_month"
-    t.float "average_time_between_rdv_creation_and_start_in_days"
-    t.json "average_time_between_rdv_creation_and_start_in_days_by_month"
     t.float "rate_of_applicants_with_rdv_seen_in_less_than_30_days"
     t.json "rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month"
     t.integer "agents_count"
-    t.string "department_number"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.float "rate_of_autonomous_applicants"
     t.json "rate_of_autonomous_applicants_grouped_by_month"
-    t.index ["department_number"], name: "index_stats_on_department_number", unique: true
+    t.string "statable_type"
+    t.bigint "statable_id"
+    t.index ["statable_type", "statable_id"], name: "index_stats_on_statable"
   end
 
   create_table "tag_applicants", force: :cascade do |t|

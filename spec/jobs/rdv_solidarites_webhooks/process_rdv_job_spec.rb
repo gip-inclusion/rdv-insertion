@@ -234,7 +234,8 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
               first_name: "James",
               last_name: "Cameron",
               address: "50 rue Victor Hugo 93500 Pantin",
-              phone_number: "0755929249"
+              phone_number: "0755929249",
+              created_through: "rdv_solidarites"
             )
             subject
           end

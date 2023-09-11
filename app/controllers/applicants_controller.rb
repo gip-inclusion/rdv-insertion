@@ -86,7 +86,7 @@ class ApplicantsController < ApplicationController
   def reset_tag_applicants
     # since we send the exhaustive list of tags, we need to reset the tag_applicants list
     # if tag_applicants_attributes is nil, it means that the user did not change the tags
-    @applicant.tag_applicants.destroy_all if params[:applicant][:tag_applicants_attributes].present?
+    @applicant.tag_applicants.destroy_all unless params[:applicant][:tag_applicants_attributes].nil?
   end
 
   def send_applicants_csv

@@ -16,7 +16,8 @@ RSpec.describe NotificationMailer do
             starts_at: Time.zone.parse("20/12/2021 12:00"), organisation: organisation
     )
   end
-  let!(:organisation) { create(:organisation) }
+  let!(:organisation) { create(:organisation, configurations: [configuration]) }
+  let!(:configuration) { create(:configuration, motif_category:) }
   let!(:messages_configuration) do
     create(:messages_configuration, organisation: organisation, signature_lines: signature_lines)
   end
@@ -31,7 +32,7 @@ RSpec.describe NotificationMailer do
     end
 
     it "renders the headers" do
-      expect(mail[:from].to_s).to eq("RDV-Insertion <contact@rdv-insertion.fr>")
+      expect(mail[:from].to_s).to eq("rdv-insertion <contact@rdv-insertion.fr>")
       expect(mail.to).to eq(["someone@gmail.com"])
     end
 
@@ -74,6 +75,39 @@ RSpec.describe NotificationMailer do
           body_string = unescape_html(mail.body.encoded)
           expect(body_string).to include(
             "Vous êtes bénéficiaire du RSA et à ce titre vous êtes convoquée à un rendez-vous d'orientation"
+          )
+        end
+      end
+
+      context "when template attributes are overriden by configuration attributes" do
+        before do
+          configuration.update!(
+            template_rdv_title_override: "nouveau type de rendez-vous",
+            template_applicant_designation_override: "une nouvelle désignation de personne"
+          )
+        end
+
+        it "renders the subject with the new attributes" do
+          expect(mail.subject).to eq(
+            "[Important - RSA] Vous êtes convoqué à un nouveau type de rendez-vous"
+          )
+        end
+
+        it "renders the body" do
+          body_string = unescape_html(mail.body.encoded)
+          expect(body_string).to include(
+            "Vous êtes une nouvelle désignation de personne et à ce titre vous êtes convoqué à un" \
+            " nouveau type de rendez-vous"
+          )
+          expect(body_string).to include("le lundi 20 décembre 2021 à 12h00")
+          expect(body_string).to include("DINUM")
+          expect(body_string).to include("20 avenue de ségur 75007 Paris")
+          expect(body_string).to include("Ce RDV est obligatoire")
+          expect(body_string).to include(
+            "Merci de venir au RDV avec un justificatif de domicile et une pièce d'identité"
+          )
+          expect(body_string).not_to include(
+            "En cas d'absence, votre RSA pourra être suspendu ou réduit."
           )
         end
       end
@@ -213,7 +247,7 @@ RSpec.describe NotificationMailer do
     end
 
     it "renders the headers" do
-      expect(mail[:from].to_s).to eq("RDV-Insertion <contact@rdv-insertion.fr>")
+      expect(mail[:from].to_s).to eq("rdv-insertion <contact@rdv-insertion.fr>")
       expect(mail.to).to eq(["someone@gmail.com"])
     end
 
@@ -377,7 +411,7 @@ RSpec.describe NotificationMailer do
     end
 
     it "renders the headers" do
-      expect(mail[:from].to_s).to eq("RDV-Insertion <contact@rdv-insertion.fr>")
+      expect(mail[:from].to_s).to eq("rdv-insertion <contact@rdv-insertion.fr>")
       expect(mail.to).to eq(["someone@gmail.com"])
     end
 
@@ -569,7 +603,7 @@ RSpec.describe NotificationMailer do
     end
 
     it "renders the headers" do
-      expect(mail[:from].to_s).to eq("RDV-Insertion <contact@rdv-insertion.fr>")
+      expect(mail[:from].to_s).to eq("rdv-insertion <contact@rdv-insertion.fr>")
       expect(mail.to).to eq(["someone@gmail.com"])
     end
 
@@ -757,7 +791,7 @@ RSpec.describe NotificationMailer do
     end
 
     it "renders the headers" do
-      expect(mail[:from].to_s).to eq("RDV-Insertion <contact@rdv-insertion.fr>")
+      expect(mail[:from].to_s).to eq("rdv-insertion <contact@rdv-insertion.fr>")
       expect(mail.to).to eq(["someone@gmail.com"])
     end
 
@@ -891,7 +925,7 @@ RSpec.describe NotificationMailer do
     end
 
     it "renders the headers" do
-      expect(mail[:from].to_s).to eq("RDV-Insertion <contact@rdv-insertion.fr>")
+      expect(mail[:from].to_s).to eq("rdv-insertion <contact@rdv-insertion.fr>")
       expect(mail.to).to eq(["someone@gmail.com"])
     end
 
@@ -930,7 +964,7 @@ RSpec.describe NotificationMailer do
     end
 
     it "renders the headers" do
-      expect(mail[:from].to_s).to eq("RDV-Insertion <contact@rdv-insertion.fr>")
+      expect(mail[:from].to_s).to eq("rdv-insertion <contact@rdv-insertion.fr>")
       expect(mail.to).to eq(["someone@gmail.com"])
     end
 

@@ -1059,6 +1059,59 @@ describe ApplicantsController do
           expect(applicant.reload.tags.size).to eq(1)
           expect(applicant.reload.tags.first.id).to eq(tag.id)
         end
+
+        context "with empty tags" do
+          let(:update_params) do
+            {
+              applicant: {
+                birth_date: "20/12/1988",
+                tag_applicants_attributes: []
+              },
+              id: applicant.id,
+              organisation_id: organisation.id,
+              format: "json"
+            }
+          end
+
+          before do
+            # This is unfortunately required because without it Rspec removes all params
+            # that return false to .present? and tag_applicants_attributes
+            # being an empty array, the controller doesn't receive it
+            allow_any_instance_of(described_class).to receive(:params).and_return(
+              ActionController::Parameters.new(update_params)
+            )
+          end
+
+          it "removes all existing tags" do
+            post :update, params: update_params
+            expect(applicant.reload.tags.size).to eq(0)
+          end
+        end
+
+        context "without tags given" do
+          let(:update_params) do
+            {
+              applicant: {
+                birth_date: "20/12/1988",
+                tag_applicants_attributes: nil
+              },
+              id: applicant.id,
+              organisation_id: organisation.id,
+              format: "json"
+            }
+          end
+
+          before do
+            allow_any_instance_of(described_class).to receive(:params).and_return(
+              ActionController::Parameters.new(update_params)
+            )
+          end
+
+          it "does not remove existing tags" do
+            post :update, params: update_params
+            expect(applicant.reload.tags.first).to eq(existing_tag)
+          end
+        end
       end
 
       context "when the creation fails" do
