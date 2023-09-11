@@ -19,9 +19,7 @@
         <% else %>
           <% @all_configurations.each do |configuration| %>
             <% if rdv_context = applicant.rdv_context_for(configuration.motif_category) %>
-              <td id="rdv-context-status-<%= rdv_context.id %>" class="td-height">
-                <%= render "rdv_contexts/rdv_context_status_cell", rdv_context: rdv_context, configuration: configuration %>
-              </td>
+              <%= render "rdv_contexts/rdv_context_status_cell", rdv_context: rdv_context, configuration: configuration %>
             <% else %>
               <td id=<%= dom_id(configuration.motif_category, "applicant_#{applicant.id}") %>>
                 <%= render "rdv_contexts/new_button", applicant: applicant, configuration: configuration, organisation: @organisation, department: @department, turbo: true, button_text: "Ajouter" %>

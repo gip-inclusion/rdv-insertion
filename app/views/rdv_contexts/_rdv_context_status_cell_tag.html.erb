@@ -1,4 +1,4 @@
-<%= turbo_frame_tag "rdv_context_#{rdv_context.id}_#{configuration.id}_status_tag" do %>
+<%= turbo_frame_tag "rdv_context_status_tag" do %>
   <div class="px-2 <%= background_class_for_context_status(rdv_context, configuration.number_of_days_before_action_required) %>" id="js-block-status-<%= configuration.motif_category %>">
     <em>
       <%= display_context_status(rdv_context, configuration.number_of_days_before_action_required) %>

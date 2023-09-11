@@ -1,8 +1,8 @@
-<%= simple_form_for(@rdv, html: { method: :patch }) do |f| %>
+<%= simple_form_for(@participation, html: { method: :patch }) do |f| %>
   <div class="d-flex flex-column mb-2">
-    <% Rdv.statuses.map do |status, value| %>
+    <% Participation.statuses.map do |status, value| %>
       <label role="button">
-        <%= f.radio_button :status, status, checked: @rdv.status == status %>
+        <%= f.radio_button :status, status, checked: @participation.status == status %>
         <span><%= t("activerecord.attributes.rdv.statuses.#{status}") %></span>
       </label>
     <% end %>

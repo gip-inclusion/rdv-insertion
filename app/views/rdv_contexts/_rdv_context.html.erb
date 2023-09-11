@@ -64,7 +64,7 @@
                 </td>
               <% end %>
               <td class="px-4 py-3 td-height">
-                <%= render "rdv_contexts/rdv_context_status_cell", rdv_context: rdv_context, configuration: configuration %>
+                <%= render "participations/participation_status", participation: participation, configuration: configuration %>
               </td>
               <td class="px-4 py-3">
                 <%= link_to participation.rdv_solidarites_url, target: "_blank" do %>

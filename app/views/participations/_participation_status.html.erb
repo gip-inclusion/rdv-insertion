@@ -1,0 +1,7 @@
+<%= turbo_frame_tag "participation_status" do %>
+  <div class="d-flex h-100 px-2 justify-content-center align-items-center <%= background_class_for_participation_status(participation) %>">
+    <%= link_to(edit_participation_path(participation.id), data: { turbo_frame: 'remote_modal' }) do %>
+      <%= display_participation_status(participation) %>
+    <% end %>
+  </div>
+<% end %>
