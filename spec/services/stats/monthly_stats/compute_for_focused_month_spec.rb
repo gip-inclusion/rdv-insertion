@@ -14,6 +14,7 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
   let!(:rdv2) { create(:rdv, created_at: date_from_previous_month, organisation: organisation) }
   let!(:participation1) { create(:participation, created_at: date, rdv: rdv1) }
   let!(:participation2) { create(:participation, created_at: date_from_previous_month, rdv: rdv2) }
+  let!(:notification) { create(:notification, participation: participation2) }
   let!(:rdv_context1) { create(:rdv_context, created_at: date, applicant: applicant1) }
   let!(:rdv_context2) { create(:rdv_context, created_at: date_from_previous_month, applicant: applicant2) }
   let!(:invitation1) do
@@ -31,8 +32,10 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
         .and_return(Participation.where(id: [participation1, participation2]))
       allow(stat).to receive(:invitations_sample)
         .and_return(Invitation.where(id: [invitation1, invitation2]))
-      allow(stat).to receive(:participations_sample)
-        .and_return(Participation.where(id: [participation1, participation2]))
+      allow(stat).to receive(:participations_without_notifications_sample)
+        .and_return(Participation.where(id: [participation1]))
+      allow(stat).to receive(:participations_with_notifications_sample)
+        .and_return(Participation.where(id: [participation2]))
       allow(stat).to receive(:rdv_contexts_sample)
         .and_return(RdvContext.where(id: [rdv_context1, rdv_context2]))
       allow(stat).to receive(:applicants_sample)
@@ -41,7 +44,7 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
         .and_return(Applicant.where(id: [applicant1, applicant2]))
       allow(stat).to receive(:invited_applicants_with_rdvs_non_collectifs_sample)
         .and_return(Applicant.where(id: [applicant1, applicant2]))
-      allow(Stats::ComputePercentageOfNoShow).to receive(:call)
+      allow(Stats::ComputeRateOfNoShow).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 50.0))
       allow(Stats::ComputeAverageTimeBetweenInvitationAndRdvInDays).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 4.0))
@@ -63,7 +66,8 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
       expect(subject.stats_values).to include(:applicants_count_grouped_by_month)
       expect(subject.stats_values).to include(:rdvs_count_grouped_by_month)
       expect(subject.stats_values).to include(:sent_invitations_count_grouped_by_month)
-      expect(subject.stats_values).to include(:percentage_of_no_show_grouped_by_month)
+      expect(subject.stats_values).to include(:rate_of_no_show_for_invitations_grouped_by_month)
+      expect(subject.stats_values).to include(:rate_of_no_show_for_convocations_grouped_by_month)
       expect(subject.stats_values).to include(:average_time_between_invitation_and_rdv_in_days_by_month)
       expect(subject.stats_values).to include(:rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month)
       expect(subject.stats_values).to include(:rate_of_autonomous_applicants_grouped_by_month)
@@ -73,7 +77,8 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
       expect(subject.stats_values[:applicants_count_grouped_by_month]).to be_a(Integer)
       expect(subject.stats_values[:rdvs_count_grouped_by_month]).to be_a(Integer)
       expect(subject.stats_values[:sent_invitations_count_grouped_by_month]).to be_a(Integer)
-      expect(subject.stats_values[:percentage_of_no_show_grouped_by_month]).to be_a(Integer)
+      expect(subject.stats_values[:rate_of_no_show_for_invitations_grouped_by_month]).to be_a(Integer)
+      expect(subject.stats_values[:rate_of_no_show_for_convocations_grouped_by_month]).to be_a(Integer)
       expect(subject.stats_values[:average_time_between_invitation_and_rdv_in_days_by_month]).to be_a(Integer)
       expect(subject.stats_values[:rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month]).to be_a(Integer)
       expect(subject.stats_values[:rate_of_autonomous_applicants_grouped_by_month]).to be_a(Integer)
@@ -97,10 +102,15 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
       expect(subject.stats_values[:sent_invitations_count_grouped_by_month]).to eq(1)
     end
 
-    it "computes the percentage of no show" do
-      expect(stat).to receive(:participations_sample)
-      expect(Stats::ComputePercentageOfNoShow).to receive(:call)
-        .with(participations: [participation1])
+    it "computes the percentage of no show for invitations" do
+      expect(stat).to receive(:participations_without_notifications_sample)
+      expect(Stats::ComputeRateOfNoShow).to receive(:call)
+      subject
+    end
+
+    it "computes the percentage of no show for convocations" do
+      expect(stat).to receive(:participations_with_notifications_sample)
+      expect(Stats::ComputeRateOfNoShow).to receive(:call)
       subject
     end
 

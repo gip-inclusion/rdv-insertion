@@ -1,4 +1,4 @@
-describe Stats::ComputePercentageOfNoShow, type: :service do
+describe Stats::ComputeRateOfNoShow, type: :service do
   subject { described_class.call(participations: participations) }
 
   let(:date) { Time.zone.parse("17/03/2022 12:00") }

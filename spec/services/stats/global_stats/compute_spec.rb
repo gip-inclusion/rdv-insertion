@@ -11,6 +11,7 @@ describe Stats::GlobalStats::Compute, type: :service do
   let!(:rdv2) { create(:rdv, organisation: organisation) }
   let!(:participation1) { create(:participation, rdv: rdv1) }
   let!(:participation2) { create(:participation, rdv: rdv2) }
+  let!(:notification) { create(:notification, participation: participation2) }
   let!(:rdv_context1) { create(:rdv_context, applicant: applicant1) }
   let!(:rdv_context2) { create(:rdv_context, applicant: applicant2) }
   let!(:invitation1) { create(:invitation, department: department) }
@@ -25,8 +26,10 @@ describe Stats::GlobalStats::Compute, type: :service do
         .and_return(Participation.where(id: [participation1, participation2]))
       allow(stat).to receive(:invitations_sample)
         .and_return(Invitation.where(id: [invitation1, invitation2]))
-      allow(stat).to receive(:participations_sample)
-        .and_return(Participation.where(id: [participation1, participation2]))
+      allow(stat).to receive(:participations_without_notifications_sample)
+        .and_return(Participation.where(id: [participation1]))
+      allow(stat).to receive(:participations_with_notifications_sample)
+        .and_return(Participation.where(id: [participation2]))
       allow(stat).to receive(:rdv_contexts_sample)
         .and_return(RdvContext.where(id: [rdv_context1, rdv_context2]))
       allow(stat).to receive(:applicants_sample)
@@ -37,7 +40,7 @@ describe Stats::GlobalStats::Compute, type: :service do
         .and_return(Applicant.where(id: [applicant1, applicant2]))
       allow(stat).to receive(:agents_sample)
         .and_return(Agent.where(id: [agent]))
-      allow(Stats::ComputePercentageOfNoShow).to receive(:call)
+      allow(Stats::ComputeRateOfNoShow).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 50.0))
       allow(Stats::ComputeAverageTimeBetweenInvitationAndRdvInDays).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 4.0))
@@ -59,7 +62,8 @@ describe Stats::GlobalStats::Compute, type: :service do
       expect(subject.stat_attributes).to include(:applicants_count)
       expect(subject.stat_attributes).to include(:rdvs_count)
       expect(subject.stat_attributes).to include(:sent_invitations_count)
-      expect(subject.stat_attributes).to include(:percentage_of_no_show)
+      expect(subject.stat_attributes).to include(:rate_of_no_show_for_invitations)
+      expect(subject.stat_attributes).to include(:rate_of_no_show_for_convocations)
       expect(subject.stat_attributes).to include(:average_time_between_invitation_and_rdv_in_days)
       expect(subject.stat_attributes).to include(:rate_of_applicants_with_rdv_seen_in_less_than_30_days)
       expect(subject.stat_attributes).to include(:rate_of_autonomous_applicants)
@@ -70,7 +74,8 @@ describe Stats::GlobalStats::Compute, type: :service do
       expect(subject.stat_attributes[:applicants_count]).to be_a(Integer)
       expect(subject.stat_attributes[:rdvs_count]).to be_a(Integer)
       expect(subject.stat_attributes[:sent_invitations_count]).to be_a(Integer)
-      expect(subject.stat_attributes[:percentage_of_no_show]).to be_a(Float)
+      expect(subject.stat_attributes[:rate_of_no_show_for_invitations]).to be_a(Float)
+      expect(subject.stat_attributes[:rate_of_no_show_for_convocations]).to be_a(Float)
       expect(subject.stat_attributes[:average_time_between_invitation_and_rdv_in_days]).to be_a(Float)
       expect(subject.stat_attributes[:rate_of_applicants_with_rdv_seen_in_less_than_30_days]).to be_a(Float)
       expect(subject.stat_attributes[:rate_of_autonomous_applicants]).to be_a(Float)
@@ -92,10 +97,17 @@ describe Stats::GlobalStats::Compute, type: :service do
       expect(subject.stat_attributes[:sent_invitations_count]).to eq(2)
     end
 
-    it "computes the percentage of no show" do
-      expect(stat).to receive(:participations_sample)
-      expect(Stats::ComputePercentageOfNoShow).to receive(:call)
-        .with(participations: [participation1, participation2])
+    it "computes the percentage of no show for invitations" do
+      expect(stat).to receive(:participations_without_notifications_sample)
+      expect(Stats::ComputeRateOfNoShow).to receive(:call)
+        .with(participations: [participation1])
+      subject
+    end
+
+    it "computes the percentage of no show for convocations" do
+      expect(stat).to receive(:participations_with_notifications_sample)
+      expect(Stats::ComputeRateOfNoShow).to receive(:call)
+        .with(participations: [participation2])
       subject
     end
 
