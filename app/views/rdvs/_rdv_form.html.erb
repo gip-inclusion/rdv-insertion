@@ -9,11 +9,3 @@
   </div>
   <%= f.submit "Enregistrer", class: "form-control" %>
 <% end %>
-<script>
-document.addEventListener("turbo:submit-end", function() {
-  Turbo.visit(
-    window.location.pathname + window.location.search,
-    { action: "replace" }
-  )
-})
-</script>

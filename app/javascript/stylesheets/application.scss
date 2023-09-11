@@ -50,3 +50,7 @@ body {
   width: 95%;
   max-width: 1500px;
 }
+
+.td-height {
+  height: 1px; // Allows to set a height property on children https://stackoverflow.com/a/3542470
+}
