@@ -709,6 +709,19 @@ describe ApplicantsController do
         expect(response.body).to match(/Marie/)
         expect(response.body).not_to match(/Oliva/)
       end
+
+      context "when a single tag is given as string" do
+        let!(:index_params) do
+          { organisation_id: organisation.id, tag_ids: tags[2].id }
+        end
+
+        it "filters by this tag" do
+          get :index, params: index_params
+          expect(response.body).to match(/Oliva/)
+          expect(response.body).not_to match(/Michael/)
+          expect(response.body).not_to match(/Marie/)
+        end
+      end
     end
 
     context "when invitations dates are passed" do
