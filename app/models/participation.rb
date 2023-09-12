@@ -21,6 +21,10 @@ class Participation < ApplicationRecord
   delegate :phone_number_is_mobile?, :email?, to: :applicant
   delegate :motif_category, to: :rdv_context
 
+  def current_configuration
+    organisation.configurations.find { |configuration| configuration.motif_category == motif_category }
+  end
+
   private
 
   def refresh_applicant_context_statuses

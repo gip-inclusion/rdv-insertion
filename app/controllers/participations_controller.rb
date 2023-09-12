@@ -4,19 +4,13 @@ class ParticipationsController < ApplicationController
   def edit; end
 
   def update
-    participation_update = RdvSolidaritesApi::UpdateParticipation.call(
+    @success = Participations::UpdateStatus.call(
+      participation: @participation,
       rdv_solidarites_session: rdv_solidarites_session,
-      rdv_solidarites_rdv_id: @participation.rdv.rdv_solidarites_rdv_id,
-      rdv_solidarites_user_id: @participation.applicant.rdv_solidarites_user_id,
-      participation_attributes: participation_params
-    )
+      participation_params: participation_params
+    ).success?
 
-    if participation_update.success?
-      @participation.update!(status: participation_params[:status])
-      @participation.rdv_context.set_status
-    else
-      flash.now[:error] = "Impossible de changer le statut de ce rendez-vous."
-    end
+    flash.now[:error] = "Impossible de changer le statut de ce rendez-vous." if @success
   end
 
   private

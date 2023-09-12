@@ -1,8 +1,6 @@
-<% if flash[:error] %>
-  <%= render_turbo_stream_flash_messages %>
-<% else %>
+<% if @success %>
   <%= turbo_stream.replace "participation_status", partial: "participations/participation_status", locals: { participation: @participation } %>
-  <% @participation.rdv_context.motif_category.configurations.each do |configuration| %>
-    <%= turbo_stream.replace "rdv_context_status_tag", partial: "rdv_contexts/rdv_context_status_cell_tag", locals: { rdv_context: @participation.rdv_context, configuration: configuration } %>
-  <% end %>
+  <%= turbo_stream.replace "rdv_context_status_tag", partial: "rdv_contexts/rdv_context_status_cell_tag", locals: { rdv_context: @participation.rdv_context, configuration: @participation.current_configuration } %>
+<% else %>
+  <%= render_turbo_stream_flash_messages %>
 <% end %>
