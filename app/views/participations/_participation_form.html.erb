@@ -1,11 +1,11 @@
 <%= simple_form_for(@participation, html: { method: :patch }) do |f| %>
   <div class="d-flex flex-column mb-2">
     <% Participation.statuses.map do |status, value| %>
-      <label role="button">
-        <%= f.radio_button :status, status, checked: @participation.status == status %>
-        <span><%= t("activerecord.attributes.rdv.statuses.#{status}") %></span>
+      <label role="button" class="form-check-label mb-1">
+        <%= f.radio_button :status, status, checked: @participation.status == status, class: "form-check-input" %>
+        <span class="d-inline-block mx-1"><%= t("activerecord.attributes.rdv.statuses.#{status}") %></span>
       </label>
     <% end %>
   </div>
-  <%= f.submit "Enregistrer", class: "form-control" %>
+  <%= f.submit "Enregistrer", class: "form-control btn btn-primary mt-1" %>
 <% end %>
