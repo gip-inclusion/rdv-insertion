@@ -23,7 +23,7 @@ module Applicants::Filterable
                     .select(:applicant_id)
                     .where(tag_id: params[:tag_ids])
                     .group(:applicant_id)
-                    .having("COUNT(DISTINCT tag_id) = ?", params[:tag_ids].count)
+                    .having("COUNT(DISTINCT tag_id) = ?", [params[:tag_ids]].flatten.count)
                     .pluck(:applicant_id)
 
     @applicants = @applicants.where(id: applicant_ids)
