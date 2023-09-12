@@ -95,6 +95,9 @@ describe "Agents can create a rdv_context", js: true do
           create(:participation, rdv_context: rdv_context, applicant: applicant)
         end
 
+        let(:rdvs_user_id) { participation.applicant.rdv_solidarites_user_id }
+        let(:rdvs_rdv_id) { participation.rdv.rdv_solidarites_rdv_id }
+
         it "can edit a participation status" do
           visit organisation_applicant_path(organisation, applicant)
           page.execute_script("window.scrollBy(0, 500)")
@@ -103,7 +106,7 @@ describe "Agents can create a rdv_context", js: true do
           find_by_id("participation_status").click
           find_by_id("participation_status_excused").click
 
-          stub_request(:patch, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/rdvs/2/rdvs_users/1")
+          stub_request(:patch, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/rdvs/#{rdvs_rdv_id}/rdvs_users/#{rdvs_user_id}")
             .to_return(status: 200, body: "{}")
 
           click_button("Enregistrer")
