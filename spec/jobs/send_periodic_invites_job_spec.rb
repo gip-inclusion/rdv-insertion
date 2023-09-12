@@ -64,5 +64,23 @@ describe SendPeriodicInvitesJob do
         subject
       end
     end
+
+    context "when no invitations have been sent" do
+      let!(:invitation) do
+        create(
+          :invitation,
+          rdv_context: rdv_context,
+          sent_at: nil,
+          valid_until: 1.day.from_now,
+          organisations: [organisation]
+        )
+      end
+
+      it "does not send periodic invites" do
+        expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(invitation.id, configuration.id, "email")
+        expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(invitation.id, configuration.id, "sms")
+        subject
+      end
+    end
   end
 end
