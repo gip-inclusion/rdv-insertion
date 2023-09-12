@@ -1,4 +1,4 @@
-describe "Agents can change a participation status", js: true do
+describe "Agents can update a participation status", js: true do
   let!(:department) { create(:department) }
   let!(:organisation) { create(:organisation, department: department) }
   let!(:agent) { create(:agent, organisations: [organisation]) }
