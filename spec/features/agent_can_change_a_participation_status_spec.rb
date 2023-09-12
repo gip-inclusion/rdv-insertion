@@ -26,6 +26,7 @@ describe "Agents can change a participation status", js: true do
 
   before do
     setup_agent_session(agent)
+    allow_any_instance_of(Participation).to receive(:current_configuration).and_return(configuration)
     stub_request(:patch, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/rdvs/#{rdvs_rdv_id}/rdvs_users/#{rdvs_user_id}")
       .to_return(status: 200, body: "{}")
   end
