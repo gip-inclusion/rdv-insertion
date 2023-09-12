@@ -23,6 +23,7 @@ describe Stat do
     let!(:motif_collectif) { create(:motif, collectif: true) }
     let!(:rdv1) { create(:rdv, organisation: organisation, created_by: "user", motif: motif, starts_at: date) }
     let!(:rdv2) { create(:rdv, organisation: other_organisation, created_by: "user", motif: motif) }
+    let!(:rdv3) { create(:rdv, organisation: organisation, created_by: "user", motif: motif) }
     let!(:invitation1) do
       create(:invitation, applicant: applicant1, department: department, sent_at: date)
     end
@@ -33,6 +34,8 @@ describe Stat do
     let!(:agent2) { create(:agent, organisations: [other_organisation], has_logged_in: true) }
     let!(:participation1) { create(:participation, rdv: rdv1, applicant: applicant1) }
     let!(:participation2) { create(:participation, rdv: rdv2, applicant: applicant2) }
+    let!(:participation3) { create(:participation, rdv: rdv3, applicant: applicant1) }
+    let!(:notification) { create(:notification, participation: participation3) }
     let!(:rdv_context1) do
       create(:rdv_context, applicant: applicant1, invitations: [invitation1],
                            participations: [participation1], motif_category: category_rsa_orientation)
@@ -63,6 +66,7 @@ describe Stat do
         it "scopes the collection to the department" do
           expect(stat.all_participations).to include(participation1)
           expect(stat.all_participations).not_to include(participation2)
+          expect(stat.all_participations).to include(participation3)
         end
       end
 
@@ -82,7 +86,24 @@ describe Stat do
       describe "#participations_sample" do
         it "scopes the collection to the department" do
           expect(stat.participations_sample).to include(participation1)
+          expect(stat.participations_sample).to include(participation3)
           expect(stat.participations_sample).not_to include(participation2)
+        end
+      end
+
+      describe "#participations_without_notifications_sample" do
+        it "scopes the collection to the department" do
+          expect(stat.participations_without_notifications_sample).to include(participation1)
+          expect(stat.participations_without_notifications_sample).not_to include(participation2)
+          expect(stat.participations_without_notifications_sample).not_to include(participation3)
+        end
+      end
+
+      describe "#participations_with_notifications_sample" do
+        it "scopes the collection to the department" do
+          expect(stat.participations_with_notifications_sample).not_to include(participation1)
+          expect(stat.participations_with_notifications_sample).not_to include(participation2)
+          expect(stat.participations_with_notifications_sample).to include(participation3)
         end
       end
 

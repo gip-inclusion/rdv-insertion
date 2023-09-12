@@ -6,8 +6,10 @@ FactoryBot.define do
     rdvs_count_grouped_by_month { {} }
     sent_invitations_count { 0 }
     sent_invitations_count_grouped_by_month { {} }
-    percentage_of_no_show { 0.0 }
-    percentage_of_no_show_grouped_by_month { {} }
+    rate_of_no_show_for_convocations { 0.0 }
+    rate_of_no_show_for_convocations_grouped_by_month { {} }
+    rate_of_no_show_for_invitations { 0.0 }
+    rate_of_no_show_for_invitations_grouped_by_month { {} }
     average_time_between_invitation_and_rdv_in_days { 0.0 }
     average_time_between_invitation_and_rdv_in_days_by_month { {} }
     rate_of_applicants_with_rdv_seen_in_less_than_30_days { 0.0 }

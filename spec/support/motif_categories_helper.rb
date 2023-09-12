@@ -197,6 +197,8 @@ module MotifCategoriesHelper
         template: create(
           :template,
           model: "atelier",
+          rdv_title: "atelier",
+          rdv_title_by_phone: "atelier téléphonique",
           rdv_subject: "RSA",
           applicant_designation: "bénéficiaire du RSA",
           display_mandatory_warning: false

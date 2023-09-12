@@ -16,7 +16,8 @@ module Stats
           applicants_count: applicants_count,
           rdvs_count: rdvs_count,
           sent_invitations_count: sent_invitations_count,
-          percentage_of_no_show: percentage_of_no_show,
+          rate_of_no_show_for_invitations: rate_of_no_show_for_invitations,
+          rate_of_no_show_for_convocations: rate_of_no_show_for_convocations,
           average_time_between_invitation_and_rdv_in_days: average_time_between_invitation_and_rdv_in_days,
           rate_of_applicants_with_rdv_seen_in_less_than_30_days:
             rate_of_applicants_with_rdv_seen_in_less_than_30_days,
@@ -37,8 +38,12 @@ module Stats
         @stat.invitations_sample.count
       end
 
-      def percentage_of_no_show
-        ComputePercentageOfNoShow.call(participations: @stat.participations_sample).value
+      def rate_of_no_show_for_invitations
+        ComputeRateOfNoShow.call(participations: @stat.participations_without_notifications_sample).value
+      end
+
+      def rate_of_no_show_for_convocations
+        ComputeRateOfNoShow.call(participations: @stat.participations_with_notifications_sample).value
       end
 
       def average_time_between_invitation_and_rdv_in_days

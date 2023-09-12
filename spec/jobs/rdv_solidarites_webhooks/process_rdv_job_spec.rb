@@ -28,8 +28,10 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
   end
   let!(:users) do
     [
-      { id: user_id1, first_name: "James", last_name: "Cameron" },
-      { id: user_id2, first_name: "Jane", last_name: "Campion" }
+      { id: user_id1, first_name: "James", last_name: "Cameron", created_at: "2021-05-29 14:50:22 +0200",
+        phone_number: "0755929249", email: nil, birth_date: nil, address: "50 rue Victor Hugo 93500 Pantin" },
+      { id: user_id2, first_name: "Jane", last_name: "Campion", created_at: "2021-05-29 14:20:20 +0200",
+        email: "jane@campion.com", phone_number: nil, birth_date: nil, address: nil }
     ]
   end
   let!(:starts_at) { "2021-09-08 12:00:00 UTC" }
@@ -231,6 +233,8 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
               organisations: [organisation],
               first_name: "James",
               last_name: "Cameron",
+              address: "50 rue Victor Hugo 93500 Pantin",
+              phone_number: "0755929249",
               created_through: "rdv_solidarites"
             )
             subject
@@ -374,17 +378,27 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
           organisations: [organisation],
           title: "monsieur",
           department_internal_id: department_internal_id,
-          nir: nir
+          nir: nir,
+          invitations: [invitation],
+          referents: [referent]
         )
       end
+
+      let!(:invitation) { create(:invitation, sent_at: 1.week.ago) }
+      let!(:referent) { create(:agent) }
+
       let!(:applicant2) do
         create(
           :applicant,
           organisations: [organisation],
           title: "madame",
-          pole_emploi_id: "Z12123"
+          pole_emploi_id: "Z12123",
+          archives: [archive],
+          tags: [tag]
         )
       end
+      let!(:archive) { create(:archive) }
+      let!(:tag) { create(:tag) }
 
       let!(:webhook_payload) do
         {
@@ -392,25 +406,53 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
             users: [
               {
                 id: user_id1,
+                uid: applicant.uid,
+                affiliation_number: applicant.affiliation_number,
+                role: applicant.role,
+                created_at: "2021-05-29 14:50:22 +0200",
                 department_internal_id: department_internal_id,
-                title: "monsieur",
                 first_name: "James",
                 last_name: "Cameron",
+                address: "50 rue Victor Hugo 93500 Pantin",
+                phone_number: "0755929249",
+                email: nil,
+                title: "monsieur",
+                birth_date: nil,
+                rights_opening_date: applicant.rights_opening_date,
+                birth_name: nil,
                 nir: nir,
-                pole_emploi_id: nil
+                pole_emploi_id: applicant.pole_emploi_id,
+                carnet_de_bord_carnet_id: applicant.pole_emploi_id,
+                invitations: [invitation],
+                referents: [referent],
+                tags: []
               },
               {
                 id: user_id2,
-                department_internal_id: nil,
-                title: "madame",
+                uid: applicant2.uid,
+                affiliation_number: applicant2.affiliation_number,
+                role: applicant2.role,
+                created_at: "2021-05-29 14:20:20 +0200",
+                department_internal_id: applicant2.department_internal_id,
                 first_name: "Jane",
                 last_name: "Campion",
-                nir: nil,
-                pole_emploi_id: "Z12123"
+                address: nil,
+                phone_number: nil,
+                email: "jane@campion.com",
+                title: "madame",
+                birth_date: nil,
+                rights_opening_date: applicant2.rights_opening_date,
+                birth_name: nil,
+                nir: applicant2.nir,
+                pole_emploi_id: "Z12123",
+                carnet_de_bord_carnet_id: applicant2.carnet_de_bord_carnet_id,
+                invitations: [],
+                referents: [],
+                tags: [tag]
               }
             ]
           ),
-          meta: meta
+          meta:
         }
       end
 
