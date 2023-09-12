@@ -18,7 +18,7 @@ class SendPeriodicInvitesJob < ApplicationJob
 
   def send_invite(rdv_context)
     last_sent_invitation = rdv_context.last_sent_invitation
-    configuration = last_sent_invitation.current_configuration
+    configuration = last_sent_invitation&.current_configuration
 
     return if configuration.blank?
     return unless should_send_periodic_invite?(last_sent_invitation, configuration)
