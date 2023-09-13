@@ -504,7 +504,7 @@ describe Stat do
         end
 
         it "includes the applicants whith no rdvs" do
-          expect(stat.invited_applicants_sample).not_to include(applicant6)
+          expect(stat.invited_applicants_sample).to include(applicant6)
         end
       end
 
