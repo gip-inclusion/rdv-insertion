@@ -178,9 +178,9 @@ class RdvSolidaritesClient
     )
   end
 
-  def update_participation(rdv_id, user_id, request_body = {})
+  def update_participation(rdvs_user_id, request_body = {})
     Faraday.patch(
-      "#{@url}/api/v1/rdvs/#{rdv_id}/rdvs_users/#{user_id}",
+      "#{@url}/api/v1/rdvs_users/#{rdvs_user_id}",
       request_body.to_json,
       request_headers
     )

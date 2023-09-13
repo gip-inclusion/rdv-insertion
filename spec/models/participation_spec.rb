@@ -27,6 +27,24 @@ describe Participation do
     end
   end
 
+  describe "#available_statuses" do
+    subject { participation.available_statuses }
+
+    let(:participation) { build(:participation, rdv: rdv) }
+
+    context "when rdv is in the past" do
+      let(:rdv) { create(:rdv, starts_at: DateTime.yesterday) }
+
+      it { expect(subject.keys.sort).to eq(%w[excused seen noshow revoked].sort) }
+    end
+
+    context "when rdv is in the future" do
+      let(:rdv) { create(:rdv, starts_at: DateTime.tomorrow) }
+
+      it { expect(subject.keys.sort).to eq(%w[excused unknown].sort) }
+    end
+  end
+
   describe "#notify_applicants" do
     subject { participation.save }
 

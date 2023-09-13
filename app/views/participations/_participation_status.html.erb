@@ -1,7 +1,24 @@
 <%= turbo_frame_tag "participation_status" do %>
-  <div class="d-flex h-100 px-2 justify-content-center align-items-center <%= background_class_for_participation_status(participation) %>">
-    <%= link_to(edit_participation_path(participation.id), data: { turbo_frame: 'remote_modal' }) do %>
-      <%= display_participation_status(participation) %>
+  <div class="d-flex h-100 px-2 justify-content-center align-items-center">
+    <%= simple_form_for(participation, html: { method: :patch, data: { controller: "dropdown", remote: true } }) do |f| %>
+      <%= f.input :status, as: :hidden %>
+      <div class="btn-group">
+        <button id="toggle-rdv-status" type="button" class="btn <%= background_class_for_participation_status(participation) %> dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <%= t("activerecord.attributes.rdv.statuses.#{participation.status}") %>
+        </button>
+        <div class="dropdown-menu">
+          <% participation.available_statuses.map do |status, _| %>
+            <%= link_to "#", class: "dropdown-item", data: { value: status } do %> 
+              <span class="bold">
+                <i class="fa fa-circle mr-1 <%= text_class_for_participation_status(status) %>"></i>
+                <%= t("activerecord.attributes.rdv.statuses.#{status}") %>
+              </span><br>
+              <span><%= t("activerecord.attributes.rdv.statuses.detailed.#{status}") %></span>
+            <% end %>
+          <% end %>
+        </div>
+        <%= f.submit class: 'd-none' %>
+      </div>
     <% end %>
   </div>
 <% end %>

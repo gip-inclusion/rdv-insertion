@@ -54,7 +54,7 @@ Rails.application.routes.draw do
 
   resources :convocations, only: [:new]
 
-  resources :participations, only: [:edit, :update]
+  resources :participations, only: [:update]
   resources :rdv_contexts, only: [:create]
 
   resources :rdv_contexts, module: :rdv_contexts, only: [] do
