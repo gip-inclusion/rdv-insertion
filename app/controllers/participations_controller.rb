@@ -1,5 +1,5 @@
 class ParticipationsController < ApplicationController
-  before_action :set_participation, only: [:edit, :update]
+  before_action :set_participation, only: [:update]
 
   def update
     @success = Participations::UpdateStatus.call(
