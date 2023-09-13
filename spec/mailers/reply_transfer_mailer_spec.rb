@@ -39,7 +39,7 @@ RSpec.describe ReplyTransferMailer do
     end
 
     it "renders the headers" do
-      expect(mail[:from].to_s).to eq("rdv-insertion <contact@rdv-insertion.fr>")
+      expect(mail[:from].to_s).to eq("rdv-insertion <support@rdv-insertion.fr>")
       expect(mail.to).to eq(["organisation@departement.fr"])
     end
 
@@ -73,7 +73,7 @@ RSpec.describe ReplyTransferMailer do
     end
 
     it "renders the headers" do
-      expect(mail[:from].to_s).to eq("rdv-insertion <contact@rdv-insertion.fr>")
+      expect(mail[:from].to_s).to eq("rdv-insertion <support@rdv-insertion.fr>")
       expect(mail.to).to eq(["organisation@departement.fr"])
     end
 
@@ -109,7 +109,7 @@ RSpec.describe ReplyTransferMailer do
     end
 
     it "renders the headers" do
-      expect(mail[:from].to_s).to eq("rdv-insertion <contact@rdv-insertion.fr>")
+      expect(mail[:from].to_s).to eq("rdv-insertion <support@rdv-insertion.fr>")
       expect(mail.to).to eq(["support@rdv-insertion.fr"])
     end
 
