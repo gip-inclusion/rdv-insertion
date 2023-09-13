@@ -42,7 +42,7 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
         .and_return(Applicant.where(id: [applicant1, applicant2]))
       allow(stat).to receive(:applicants_for_30_days_rdvs_seen_sample)
         .and_return(Applicant.where(id: [applicant1, applicant2]))
-      allow(stat).to receive(:invited_applicants_with_rdvs_non_collectifs_sample)
+      allow(stat).to receive(:invited_applicants_sample)
         .and_return(Applicant.where(id: [applicant1, applicant2]))
       allow(Stats::ComputeRateOfNoShow).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 50.0))
@@ -129,7 +129,7 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
     end
 
     it "computes the percentage of invited applicants with at least on rdv taken in autonomy" do
-      expect(stat).to receive(:invited_applicants_with_rdvs_non_collectifs_sample)
+      expect(stat).to receive(:invited_applicants_sample)
       expect(Stats::ComputeRateOfAutonomousApplicants).to receive(:call)
         .with(applicants: [applicant1])
       subject

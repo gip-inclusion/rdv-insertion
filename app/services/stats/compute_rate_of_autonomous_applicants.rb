@@ -18,7 +18,7 @@ module Stats
     end
 
     def autonomous_applicants
-      @autonomous_applicants ||= @applicants.joins(:rdvs).where(rdvs: { created_by: "user" })
+      @autonomous_applicants ||= @applicants.joins(:participations).where(participations: { created_by: "user" })
     end
   end
 end
