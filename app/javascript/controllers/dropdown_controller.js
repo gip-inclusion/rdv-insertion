@@ -14,7 +14,7 @@ export default class extends Controller {
       link.addEventListener("click", (e) => {
         e.preventDefault()
         this.input.value = link.dataset.value
-        Turbo.navigator.submitForm(this.element)
+        window.Turbo.navigator.submitForm(this.element)
       })
     })
   }

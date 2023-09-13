@@ -11,9 +11,6 @@
     "ecmaVersion": 12,
     "sourceType": "module"
   },
-  "globals": {
-    "Turbo": true
-  },
   "plugins": ["react"],
   "rules": {
     "quotes": ["error", "double"],
