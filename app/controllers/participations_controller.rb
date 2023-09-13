@@ -10,7 +10,7 @@ class ParticipationsController < ApplicationController
       participation_params: participation_params
     ).success?
 
-    flash.now[:error] = "Impossible de changer le statut de ce rendez-vous." if @success
+    flash.now[:error] = "Impossible de changer le statut de ce rendez-vous." unless @success
   end
 
   private
