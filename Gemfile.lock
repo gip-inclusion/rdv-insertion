@@ -76,6 +76,7 @@ GEM
       babel-source (>= 4.0, < 6)
       execjs (~> 2.0)
     bindex (0.8.1)
+    blueprinter (0.25.3)
     bootsnap (1.16.0)
       msgpack (~> 1.2)
     builder (3.2.4)
@@ -426,6 +427,7 @@ PLATFORMS
 
 DEPENDENCIES
   addressable
+  blueprinter
   bootsnap (>= 1.4.2)
   bullet
   byebug

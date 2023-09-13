@@ -85,6 +85,9 @@ gem "wkhtmltopdf-binary"
 # CORS support
 gem "rack-cors"
 
+# Simple Fast Declarative Serialization Library
+gem "blueprinter"
+
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
 
