@@ -10,9 +10,9 @@ export default class extends Controller {
     const daysBeforeInviteInput = document.querySelector("#number_of_days_before_next_invite-input-container")
 
     if (selectedElement?.dataset?.participation_optional === "true") {
-      daysBeforeInviteInput.classList.add("d-none")
-    } else {
       daysBeforeInviteInput.classList.remove("d-none")
+    } else {
+      daysBeforeInviteInput.classList.add("d-none")
     }
   }
 }
