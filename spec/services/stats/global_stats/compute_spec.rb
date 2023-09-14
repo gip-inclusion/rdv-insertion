@@ -34,7 +34,7 @@ describe Stats::GlobalStats::Compute, type: :service do
         .and_return(RdvContext.where(id: [rdv_context1, rdv_context2]))
       allow(stat).to receive(:applicants_sample)
         .and_return(Applicant.where(id: [applicant1, applicant2]))
-      allow(stat).to receive(:applicants_for_30_days_rdvs_seen_sample)
+      allow(stat).to receive(:applicants_for_orientation_stats_sample)
         .and_return(Applicant.where(id: [applicant1, applicant2]))
       allow(stat).to receive(:invited_applicants_with_rdvs_non_collectifs_sample)
         .and_return(Applicant.where(id: [applicant1, applicant2]))
@@ -119,7 +119,7 @@ describe Stats::GlobalStats::Compute, type: :service do
     end
 
     it "computes the percentage of applicants with rdv seen in less than 30 days" do
-      expect(stat).to receive(:applicants_for_30_days_rdvs_seen_sample)
+      expect(stat).to receive(:applicants_for_orientation_stats_sample)
       expect(Stats::ComputeRateOfApplicantsWithRdvSeenInLessThanThirtyDays).to receive(:call)
         .with(applicants: [applicant1, applicant2])
       subject

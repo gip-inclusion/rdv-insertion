@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_04_144823) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_13_182842) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -356,6 +356,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_04_144823) do
     t.json "rate_of_no_show_for_convocations_grouped_by_month"
     t.float "rate_of_no_show_for_invitations"
     t.json "rate_of_no_show_for_invitations_grouped_by_month"
+    t.float "rate_of_applicants_oriented"
+    t.json "rate_of_applicants_oriented_grouped_by_month"
     t.index ["statable_type", "statable_id"], name: "index_stats_on_statable"
   end
 

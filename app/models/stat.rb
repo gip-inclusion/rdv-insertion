@@ -93,18 +93,25 @@ class Stat < ApplicationRecord
                                                .where.not(configurations: { invitation_formats: [] })
   end
 
-  # For the rate of applicants with rdv seen in less than 30 days
-  # we only consider specific contexts to focus on the first RSA rdv
-  def applicants_for_30_days_rdvs_seen_sample
-    # Applicants invited in an orientation or accompagnement context
-    @applicants_for_30_days_rdvs_seen_sample ||=
+  # We only consider specific contexts to focus on the first RSA rdv
+  def applicants_for_orientation_stats_sample
+    @applicants_for_orientation_stats_sample ||=
       applicants_sample.joins(:rdv_contexts)
                        .where(rdv_contexts:
                                 RdvContext.joins(:motif_category).where(
-                                  motif_category: { short_name: %w[
-                                    rsa_orientation rsa_orientation_on_phone_platform rsa_accompagnement
-                                    rsa_accompagnement_social rsa_accompagnement_sociopro
-                                  ] }
+                                  motif_category: { short_name: MotifCategory::ORIENTATION_CATEGORIES_SHORT_NAMES }
                                 ))
+  end
+
+  def invitations_on_an_orientation_category_during_a_month_sample(date)
+    @invitations_on_an_orientation_category_during_a_month_sample ||=
+      Invitation.preload(:rdv_context, :participations)
+                .where(sent_at: date.all_month)
+                .joins(:rdv_context).where(
+                  rdv_contexts:
+                    RdvContext.joins(:motif_category).where(
+                      motif_category: { short_name: MotifCategory::ORIENTATION_CATEGORIES_SHORT_NAMES }
+                    )
+                )
   end
 end

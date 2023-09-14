@@ -23,6 +23,7 @@ module Stats
             average_time_between_invitation_and_rdv_in_days_for_focused_month,
           rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month:
             rate_of_applicants_with_rdv_seen_in_less_than_30_days_for_focused_month,
+          rate_of_applicants_oriented_grouped_by_month: rate_of_applicants_oriented_for_focused_month,
           rate_of_autonomous_applicants_grouped_by_month:
             rate_of_autonomous_applicants_for_focused_month
         }
@@ -61,7 +62,13 @@ module Stats
       def rate_of_applicants_with_rdv_seen_in_less_than_30_days_for_focused_month
         ComputeRateOfApplicantsWithRdvSeenInLessThanThirtyDays.call(
           # we compute the applicants of the previous month because we want at least 30 days old applicants
-          applicants: @stat.applicants_for_30_days_rdvs_seen_sample.where(created_at: (@date - 1.month).all_month)
+          applicants: @stat.applicants_for_orientation_stats_sample.where(created_at: (@date - 1.month).all_month)
+        ).value.round
+      end
+
+      def rate_of_applicants_oriented_for_focused_month
+        ComputeRateOfApplicantsOrientedOnAnInvitationSample.call(
+          invitations: @stat.invitations_on_an_orientation_category_during_a_month_sample(@date)
         ).value.round
       end
 

@@ -280,7 +280,7 @@ describe Stat do
         end
       end
 
-      describe "#applicants_for_30_days_rdvs_seen_sample" do
+      describe "#applicants_for_orientation_stats_sample" do
         let!(:applicant3) do
           create(:applicant, organisations: [organisation],
                              created_at: date)
@@ -290,12 +290,12 @@ describe Stat do
         end
 
         it "scopes the collection to the department" do
-          expect(stat.applicants_for_30_days_rdvs_seen_sample).to include(applicant1)
-          expect(stat.applicants_for_30_days_rdvs_seen_sample).not_to include(applicant2)
+          expect(stat.applicants_for_orientation_stats_sample).to include(applicant1)
+          expect(stat.applicants_for_orientation_stats_sample).not_to include(applicant2)
         end
 
         it "does not include the applicants with no motif category for a first rdv RSA" do
-          expect(stat.applicants_for_30_days_rdvs_seen_sample).not_to include(applicant3)
+          expect(stat.applicants_for_orientation_stats_sample).not_to include(applicant3)
         end
       end
     end
@@ -524,7 +524,7 @@ describe Stat do
         end
       end
 
-      describe "#applicants_for_30_days_rdvs_seen_sample" do
+      describe "#applicants_for_orientation_stats_sample" do
         let!(:applicant3) do
           create(:applicant, organisations: [organisation],
                              created_at: date)
@@ -534,12 +534,12 @@ describe Stat do
         end
 
         it "scopes the collection to the organisation" do
-          expect(stat.applicants_for_30_days_rdvs_seen_sample).to include(applicant1)
-          expect(stat.applicants_for_30_days_rdvs_seen_sample).not_to include(applicant2)
+          expect(stat.applicants_for_orientation_stats_sample).to include(applicant1)
+          expect(stat.applicants_for_orientation_stats_sample).not_to include(applicant2)
         end
 
         it "does not include the applicants with no motif category for a first rdv RSA" do
-          expect(stat.applicants_for_30_days_rdvs_seen_sample).not_to include(applicant3)
+          expect(stat.applicants_for_orientation_stats_sample).not_to include(applicant3)
         end
       end
     end
@@ -608,9 +608,9 @@ describe Stat do
         end
       end
 
-      describe "#applicants_for_30_days_rdvs_seen_sample" do
+      describe "#applicants_for_orientation_stats_sample" do
         it "does not scope the collection to the department" do
-          expect(stat.applicants_for_30_days_rdvs_seen_sample).to include(applicant2)
+          expect(stat.applicants_for_orientation_stats_sample).to include(applicant2)
         end
       end
     end

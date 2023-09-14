@@ -7,6 +7,7 @@ class Invitation < ApplicationRecord
   belongs_to :applicant
   belongs_to :department
   belongs_to :rdv_context
+  has_many :participations, through: :rdv_context
   has_and_belongs_to_many :organisations
   has_many :configurations, through: :organisations
 
