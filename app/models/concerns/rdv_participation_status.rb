@@ -34,7 +34,7 @@ module RdvParticipationStatus
   end
 
   def available_statuses
-    available_list = in_the_future? ? %w[unknown revoked] : %w[seen revoked excused noshow]
+    available_list = in_the_future? ? %w[unknown revoked excused] : %w[seen revoked excused noshow]
     self.class.statuses.slice(*available_list)
   end
 
