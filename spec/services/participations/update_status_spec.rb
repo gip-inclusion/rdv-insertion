@@ -15,9 +15,8 @@ describe Participations::UpdateStatus, type: :service do
     allow(RdvSolidaritesApi::UpdateParticipation).to receive(:call).once.with(
       {
         :participation_attributes => { :status => "seen" },
-        :rdv_solidarites_rdv_id => participation.rdv.rdv_solidarites_rdv_id,
         :rdv_solidarites_session => rdv_solidarites_session,
-        :rdv_solidarites_user_id => participation.applicant.rdv_solidarites_user_id
+        :rdv_solidarites_rdvs_user_id => participation.rdv_solidarites_participation_id
       }
     )
   end
