@@ -34,8 +34,8 @@ module RdvParticipationStatus
   end
 
   def available_statuses
-    not_available_list = in_the_future? ? %w[revoked noshow seen] : %w[unknown revoked]
-    self.class.statuses.except(*not_available_list)
+    available_list = in_the_future? ? %w[unknown revoked] : %w[seen revoked excused noshow]
+    self.class.statuses.slice(*available_list)
   end
 
   def needs_status_update?
