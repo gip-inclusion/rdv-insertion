@@ -1,5 +1,5 @@
 module OutgoingWebhooks
-  class SendInvitationWebhookJob < ApplicationJob
+  class SendRdvWebhookJob < ApplicationJob
     include OutgoingWebhooks
 
     JWT_PAYLOAD_KEYS = [:id, :address, :starts_at].freeze
