@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_04_144823) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_15_080347) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -66,6 +66,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_04_144823) do
     t.string "pole_emploi_id"
     t.string "carnet_de_bord_carnet_id"
     t.integer "created_through", default: 0
+    t.datetime "last_organisation_joined_at", default: -> { "now()" }
+    t.datetime "last_rdv_context_joined_at", default: -> { "now()" }
     t.index ["department_internal_id"], name: "index_applicants_on_department_internal_id"
     t.index ["email"], name: "index_applicants_on_email"
     t.index ["nir"], name: "index_applicants_on_nir"
@@ -74,9 +76,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_04_144823) do
     t.index ["uid"], name: "index_applicants_on_uid"
   end
 
-  create_table "applicants_organisations", id: false, force: :cascade do |t|
+  create_table "applicants_organisations", force: :cascade do |t|
     t.bigint "organisation_id", null: false
     t.bigint "applicant_id", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.index ["organisation_id", "applicant_id"], name: "index_applicants_orgas_on_orga_id_and_applicant_id", unique: true
   end
 
@@ -105,7 +109,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_04_144823) do
     t.string "template_rdv_title_by_phone_override"
     t.string "template_applicant_designation_override"
     t.string "template_rdv_purpose_override"
-    t.integer "number_of_days_before_next_invite"
+    t.boolean "periodic_invites_enabled"
+    t.integer "number_of_days_between_periodic_invites"
+    t.integer "day_of_the_month_periodic_invites"
     t.index ["file_configuration_id"], name: "index_configurations_on_file_configuration_id"
     t.index ["motif_category_id"], name: "index_configurations_on_motif_category_id"
     t.index ["organisation_id"], name: "index_configurations_on_organisation_id"

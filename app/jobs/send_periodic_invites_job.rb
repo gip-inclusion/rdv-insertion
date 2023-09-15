@@ -5,9 +5,8 @@ class SendPeriodicInvitesJob < ApplicationJob
     @sent_invites_applicant_ids = []
 
     RdvContext
-      .joins(:motif_category, :invitations)
+      .joins(:invitations)
       .preload(invitations: [{ organisations: :configurations }, :applicant])
-      .where(motif_categories: { participation_optional: true })
       .where(invitations: Invitation.valid.sent)
       .find_each do |rdv_context|
       send_invite(rdv_context)
@@ -33,9 +32,15 @@ class SendPeriodicInvitesJob < ApplicationJob
   end
 
   def should_send_periodic_invite?(last_sent_invitation, configuration)
-    return false if configuration.number_of_days_before_next_invite.blank?
+    return false unless configuration.periodic_invites_enabled
 
-    (Time.zone.today - last_sent_invitation.sent_at.to_date).to_i == configuration.number_of_days_before_next_invite
+    if configuration.day_of_the_month_periodic_invites.present?
+      Time.zone.today.day == configuration.day_of_the_month_periodic_invites
+    elsif configuration.number_of_days_between_periodic_invites.present?
+      (Time.zone.today - last_sent_invitation.sent_at.to_date).to_i == configuration.number_of_days_between_periodic_invites
+    else
+      false
+    end
   end
 
   def notify_on_mattermost

@@ -25,6 +25,20 @@
     <%= render "common/attribute_display", record: @configuration, attribute: :invite_to_applicant_organisations_only %>
   </div>
 
+  <h3>Invitations périodiques</h3>
+  <p>
+    <% if @configuration.periodic_invites_activated? %>
+      Les invitations périodiques sont actives et sont envoyées 
+        <% if @configuration.number_of_days_between_periodic_invites.present? %>
+          tous les <%= @configuration.number_of_days_between_periodic_invites == 1 ? '' : @configuration.number_of_days_between_periodic_invites %> jours.
+        <% else %>
+          tous les <%= @configuration.day_of_the_month_periodic_invites %> du mois.
+        <% end %>
+    <% else %>
+      Les invitations périodiques ne sont pas activées.
+    <% end %>
+  </p>
+
   <h3>Contenu des messages</h3>
   <%= render "configurations/messages_contents/messages_content", template: @template, configuration: @configuration %>
 

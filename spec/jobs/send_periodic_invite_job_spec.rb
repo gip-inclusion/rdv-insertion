@@ -12,7 +12,7 @@ describe SendPeriodicInviteJob do
     let!(:configuration) do
       create(:configuration,
              organisation: organisation,
-             number_of_days_before_next_invite: 5,
+             number_of_days_between_periodic_invites: 5,
              motif_category: motif_category)
     end
     let!(:motif_category) { create(:motif_category, participation_optional: false) }

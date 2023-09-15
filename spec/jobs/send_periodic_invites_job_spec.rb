@@ -8,7 +8,8 @@ describe SendPeriodicInvitesJob do
     let!(:configuration) do
       create(:configuration,
              organisation: organisation,
-             number_of_days_before_next_invite: 5,
+             periodic_invites_enabled: true,
+             number_of_days_between_periodic_invites: 5,
              motif_category: motif_category)
     end
 
@@ -24,23 +25,95 @@ describe SendPeriodicInvitesJob do
       )
     end
 
-    context "when renewing is due" do
-      it "sends periodic invites" do
-        expect(SendPeriodicInviteJob).to receive(:perform_async).with(invitation.id, configuration.id, "email")
-        expect(SendPeriodicInviteJob).to receive(:perform_async).with(invitation.id, configuration.id, "sms")
-        subject
+    context "when periodic invites are enabled" do
+      context "number_of_days_between_periodic_invites is set" do
+        context "when renewing is due" do
+          it "sends periodic invites" do
+            expect(SendPeriodicInviteJob).to receive(:perform_async).with(invitation.id, configuration.id, "email")
+            expect(SendPeriodicInviteJob).to receive(:perform_async).with(invitation.id, configuration.id, "sms")
+            subject
+          end
+        end
+
+        context "when renewing is not due" do
+          let!(:invitation) do
+            create(
+              :invitation,
+              rdv_context: rdv_context,
+              sent_at: 3.days.ago,
+              valid_until: 1.day.from_now,
+              organisations: [organisation]
+            )
+          end
+
+          it "does not send periodic invites" do
+            expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(invitation.id, configuration.id, "email")
+            expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(invitation.id, configuration.id, "sms")
+            subject
+          end
+        end
+      end
+
+      context "day_of_the_month_periodic_invites is set" do
+        let!(:configuration) do
+          create(:configuration,
+                  organisation: organisation,
+                  periodic_invites_enabled: true,
+                  day_of_the_month_periodic_invites: Time.zone.today.day,
+                  motif_category: motif_category)
+        end
+
+        context "when renewing is due" do
+          it "sends periodic invites" do
+            expect(SendPeriodicInviteJob).to receive(:perform_async).with(invitation.id, configuration.id, "email")
+            expect(SendPeriodicInviteJob).to receive(:perform_async).with(invitation.id, configuration.id, "sms")
+            subject
+          end
+        end
+
+        context "when renewing is not due" do
+          let!(:configuration) do
+            create(:configuration,
+                    organisation: organisation,
+                    periodic_invites_enabled: true,
+                    day_of_the_month_periodic_invites: Time.zone.yesterday.day,
+                    motif_category: motif_category)
+          end
+
+          it "sends periodic invites" do
+            expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(invitation.id, configuration.id, "email")
+            expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(invitation.id, configuration.id, "sms")
+            subject
+          end
+        end
+      end
+
+      context "when no invitations have been sent" do
+        let!(:invitation) do
+          create(
+            :invitation,
+            rdv_context: rdv_context,
+            sent_at: nil,
+            valid_until: 1.day.from_now,
+            organisations: [organisation]
+          )
+        end
+
+        it "does not send periodic invites" do
+          expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(invitation.id, configuration.id, "email")
+          expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(invitation.id, configuration.id, "sms")
+          subject
+        end
       end
     end
 
-    context "when renewing is not due" do
-      let!(:invitation) do
-        create(
-          :invitation,
-          rdv_context: rdv_context,
-          sent_at: 3.days.ago,
-          valid_until: 1.day.from_now,
-          organisations: [organisation]
-        )
+    context "when periodic invites are disabled" do
+      let!(:configuration) do
+        create(:configuration,
+               organisation: organisation,
+               periodic_invites_enabled: false,
+               number_of_days_between_periodic_invites: 5,
+               motif_category: motif_category)
       end
 
       it "does not send periodic invites" do
@@ -53,27 +126,11 @@ describe SendPeriodicInvitesJob do
     context "when configuration is not set" do
       let!(:configuration) do
         create(:configuration,
-               organisation: organisation,
-               number_of_days_before_next_invite: nil,
-               motif_category: motif_category)
-      end
-
-      it "does not send periodic invites" do
-        expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(invitation.id, configuration.id, "email")
-        expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(invitation.id, configuration.id, "sms")
-        subject
-      end
-    end
-
-    context "when no invitations have been sent" do
-      let!(:invitation) do
-        create(
-          :invitation,
-          rdv_context: rdv_context,
-          sent_at: nil,
-          valid_until: 1.day.from_now,
-          organisations: [organisation]
-        )
+              organisation: organisation,
+              periodic_invites_enabled: false,
+              number_of_days_between_periodic_invites: nil,
+              day_of_the_month_periodic_invites: nil,
+              motif_category: motif_category)
       end
 
       it "does not send periodic invites" do
