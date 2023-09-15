@@ -11,7 +11,7 @@
     <span id="next-invite-indicator"></span>
     <div class="mt-2">
       <div class="d-flex mb-2">
-        <input type="radio" name="periodicity-type" value="number_of_days_between_periodic_invites" class="mx-3">
+        <input type="radio" name="periodicity-type" value="number_of_days_between_periodic_invites" class="mx-3" <%= configuration.number_of_days_between_periodic_invites.present? ? 'checked' : '' %>>
         <div class="d-flex flex-direction-row">
           <div>
             Envoyer une nouvelle invitation
@@ -21,7 +21,7 @@
         </div>
       </div>
       <div class="d-flex">
-        <input type="radio" name="periodicity-type" value="day_of_the_month_periodic_invites" class="mx-3">
+        <input type="radio" name="periodicity-type" value="day_of_the_month_periodic_invites" class="mx-3" <%= configuration.day_of_the_month_periodic_invites.present? ? 'checked' : '' %>>
         <div class="d-flex flex-direction-row">
           <div>
             Envoyer une nouvelle invitation le 

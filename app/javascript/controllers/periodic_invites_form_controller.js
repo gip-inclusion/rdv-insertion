@@ -21,7 +21,7 @@ export default class extends Controller {
   periodicityTypeChanged() {
     if (this.typeRadio[0].checked) {
       this.numberOfDaysInputChanged()
-    } else {
+    } else if (this.typeRadio[1].checked) {
       this.dayOfTheMonthInputChanged()
     }
   }
