@@ -57,10 +57,10 @@ describe SendPeriodicInvitesJob do
       context "day_of_the_month_periodic_invites is set" do
         let!(:configuration) do
           create(:configuration,
-                  organisation: organisation,
-                  periodic_invites_enabled: true,
-                  day_of_the_month_periodic_invites: Time.zone.today.day,
-                  motif_category: motif_category)
+                 organisation: organisation,
+                 periodic_invites_enabled: true,
+                 day_of_the_month_periodic_invites: Time.zone.today.day,
+                 motif_category: motif_category)
         end
 
         context "when renewing is due" do
@@ -74,10 +74,10 @@ describe SendPeriodicInvitesJob do
         context "when renewing is not due" do
           let!(:configuration) do
             create(:configuration,
-                    organisation: organisation,
-                    periodic_invites_enabled: true,
-                    day_of_the_month_periodic_invites: Time.zone.yesterday.day,
-                    motif_category: motif_category)
+                   organisation: organisation,
+                   periodic_invites_enabled: true,
+                   day_of_the_month_periodic_invites: Time.zone.yesterday.day,
+                   motif_category: motif_category)
           end
 
           it "sends periodic invites" do
@@ -126,11 +126,11 @@ describe SendPeriodicInvitesJob do
     context "when configuration is not set" do
       let!(:configuration) do
         create(:configuration,
-              organisation: organisation,
-              periodic_invites_enabled: false,
-              number_of_days_between_periodic_invites: nil,
-              day_of_the_month_periodic_invites: nil,
-              motif_category: motif_category)
+               organisation: organisation,
+               periodic_invites_enabled: false,
+               number_of_days_between_periodic_invites: nil,
+               day_of_the_month_periodic_invites: nil,
+               motif_category: motif_category)
       end
 
       it "does not send periodic invites" do
