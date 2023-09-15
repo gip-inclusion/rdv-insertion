@@ -240,28 +240,10 @@ class ApplicantsController < ApplicationController
   end
 
   def set_all_applicants
-    if department_level?
-      associated_applicants_organisations = ApplicantsOrganisation
-                                            .where(organisations: @organisations)
-                                            .order(created_at: :desc)
-                                            .uniq(&:applicant_id)
-                                            .map(&:id)
-
-      applicants_affected_most_recently_to_an_organisation = {
-        applicants_organisations: {
-          id: associated_applicants_organisations
-        }
-      }
-    end
-
     @applicants = policy_scope(Applicant)
                   .preload(rdv_contexts: [:invitations])
-                  .joins(:applicants_organisations)
                   .active
-                  .group("applicants.id, applicants_organisations.created_at")
                   .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
-                  .where(applicants_affected_most_recently_to_an_organisation || {})
-                  .order("applicants_organisations.created_at DESC NULLS LAST")
   end
 
   def set_applicants_for_motif_category
@@ -272,10 +254,8 @@ class ApplicantsController < ApplicationController
                   .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
                   .where.not(id: @department.archived_applicants.ids)
                   .joins(:rdv_contexts)
-                  .group("applicants.id, rdv_contexts.created_at")
                   .where(rdv_contexts: { motif_category: @current_motif_category })
                   .where.not(rdv_contexts: { status: "closed" })
-                  .order("rdv_contexts.created_at DESC")
   end
 
   def set_archived_applicants
@@ -311,7 +291,48 @@ class ApplicantsController < ApplicationController
   end
 
   def order_applicants
-    @applicants = archived_scope? ? @applicants.order("archives.created_at desc") : @applicants.order(created_at: :desc)
+    return if params[:search_query].present?
+
+    if archived_scope?
+      archived_order
+    elsif @current_motif_category
+      motif_category_order
+    else
+      all_applicants_order
+    end
+  end
+
+  def archived_order
+    @applicants.order("archives.created_at desc")
+  end
+
+  def motif_category_order
+    @applicants = @applicants
+                  .select("DISTINCT(applicants.id), applicants.*, rdv_contexts.created_at")
+                  .group("applicants.id, rdv_contexts.created_at")
+                  .order("rdv_contexts.created_at desc")
+  end
+
+  def all_applicants_order
+    if department_level?
+      associated_applicants_organisations = ApplicantsOrganisation
+                                            .where(organisations: @organisations)
+                                            .order(created_at: :desc)
+                                            .uniq(&:applicant_id)
+                                            .map(&:id)
+
+      applicants_affected_most_recently_to_an_organisation = {
+        applicants_organisations: {
+          id: associated_applicants_organisations
+        }
+      }
+    end
+
+    @applicants = @applicants.joins(:applicants_organisations)
+                             .active
+                             .group("applicants.id, applicants_organisations.created_at")
+                             .where(applicants_affected_most_recently_to_an_organisation || {})
+                             .order("applicants_organisations.created_at DESC NULLS LAST")
   end
 
   def after_save_path
