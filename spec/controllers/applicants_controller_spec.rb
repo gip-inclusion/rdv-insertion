@@ -798,23 +798,6 @@ describe ApplicantsController do
       end
     end
 
-    context "ordering" do
-      let!(:applicant2) do
-        create(:applicant, organisations: [organisation], first_name: "Marie")
-      end
-
-      before do
-        ApplicantsOrganisation.where(applicant: applicant2).update!(created_at: 1.year.ago)
-      end
-
-      it "orders by date of affectation to the category" do
-        get :index, params: index_params
-
-        expect(response.body.index(applicant2.first_name)).to(be > response.body.index(applicant.first_name))
-        expect(response.body.index(applicant2.first_name)).to(be > response.body.index(applicant3.first_name))
-      end
-    end
-
     context "when filter_by_current_agent is passed" do
       let!(:index_params) do
         {
@@ -903,6 +886,44 @@ describe ApplicantsController do
         get :index, params: index_params
 
         expect(response.body).not_to match(/Configurer une organisation/)
+      end
+
+      context "ordering" do
+        context "without motif_category" do
+          let!(:index_params) do
+            { department_id: department.id }
+          end
+
+          before do
+            ApplicantsOrganisation.where(applicant: applicant2).update!(created_at: 1.year.ago)
+          end
+
+          it "orders by date of affectation to the category" do
+            get :index, params: index_params
+
+            ordered_table = Nokogiri::XML(response.body).css("td").map(&:text)
+            ordered_first_names = ordered_table & [applicant.first_name, applicant2.first_name]
+
+            expect(ordered_first_names).to eq([applicant.first_name, applicant2.first_name])
+          end
+        end
+
+        context "with motif_category" do
+          let!(:index_params) { { department_id: department.id, motif_category_id: category_orientation.id } }
+
+          before do
+            applicant.rdv_contexts.first.update!(motif_category: category_orientation, created_at: 1.year.ago)
+          end
+
+          it "orders by rdv_context creation" do
+            get :index, params: index_params
+
+            ordered_table = Nokogiri::XML(response.body).css("td").map(&:text)
+            ordered_first_names = ordered_table & [applicant.first_name, applicant2.first_name]
+
+            expect(ordered_first_names).to eq([applicant2.first_name, applicant.first_name])
+          end
+        end
       end
 
       context "when the agent is admin" do
