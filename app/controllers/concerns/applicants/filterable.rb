@@ -52,8 +52,8 @@ module Applicants::Filterable
   def filter_applicants_by_search_query
     return if params[:search_query].blank?
 
-    # with_pg_search_rank scope added to be compatible with distinct https://github.com/Casecommons/pg_search/issues/238
-    @applicants = @applicants.search_by_text(params[:search_query]).with_pg_search_rank
+    filtered_ids = policy_scope(Applicant).search_by_text(params[:search_query]).pluck(:id)
+    @applicants = @applicants.where(id: filtered_ids)
   end
 
   def filter_applicants_by_page
