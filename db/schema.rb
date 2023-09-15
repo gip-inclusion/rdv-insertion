@@ -66,8 +66,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_15_080347) do
     t.string "pole_emploi_id"
     t.string "carnet_de_bord_carnet_id"
     t.integer "created_through", default: 0
-    t.datetime "last_organisation_joined_at", default: -> { "now()" }
-    t.datetime "last_rdv_context_joined_at", default: -> { "now()" }
     t.index ["department_internal_id"], name: "index_applicants_on_department_internal_id"
     t.index ["email"], name: "index_applicants_on_email"
     t.index ["nir"], name: "index_applicants_on_nir"
@@ -76,11 +74,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_15_080347) do
     t.index ["uid"], name: "index_applicants_on_uid"
   end
 
-  create_table "applicants_organisations", force: :cascade do |t|
+  create_table "applicants_organisations", id: false, force: :cascade do |t|
     t.bigint "organisation_id", null: false
     t.bigint "applicant_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
     t.index ["organisation_id", "applicant_id"], name: "index_applicants_orgas_on_orga_id_and_applicant_id", unique: true
   end
 
