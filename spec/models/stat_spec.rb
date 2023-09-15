@@ -172,7 +172,7 @@ describe Stat do
         end
       end
 
-      describe "#rdv_contexts_sample" do
+      describe "#rdv_contexts_with_invitations_and_participations_sample" do
         let!(:applicant3) { create(:applicant, organisations: [organisation]) }
         let!(:rdv3) { create(:rdv, organisation: organisation) }
         let!(:participation3) { create(:participation, rdv: rdv3) }
@@ -200,24 +200,24 @@ describe Stat do
         end
 
         it "scopes the collection to the department" do
-          expect(stat.rdv_contexts_sample).to include(rdv_context1)
-          expect(stat.rdv_contexts_sample).not_to include(rdv_context2)
+          expect(stat.rdv_contexts_with_invitations_and_participations_sample).to include(rdv_context1)
+          expect(stat.rdv_contexts_with_invitations_and_participations_sample).not_to include(rdv_context2)
         end
 
         it "does not include rdv_contexts with no invitations" do
-          expect(stat.rdv_contexts_sample).not_to include(rdv_context3)
+          expect(stat.rdv_contexts_with_invitations_and_participations_sample).not_to include(rdv_context3)
         end
 
         it "does not include rdv_contexts with unsent invitations" do
-          expect(stat.rdv_contexts_sample).not_to include(rdv_context4)
+          expect(stat.rdv_contexts_with_invitations_and_participations_sample).not_to include(rdv_context4)
         end
 
         it "does not include rdv_contexts with no rdvs" do
-          expect(stat.rdv_contexts_sample).not_to include(rdv_context5)
+          expect(stat.rdv_contexts_with_invitations_and_participations_sample).not_to include(rdv_context5)
         end
 
         it "does not include the rdv_contexts of applicants from irrelevant organisations" do
-          expect(stat.rdv_contexts_sample).not_to include(rdv_context6)
+          expect(stat.rdv_contexts_with_invitations_and_participations_sample).not_to include(rdv_context6)
         end
       end
 
@@ -416,7 +416,7 @@ describe Stat do
         end
       end
 
-      describe "#rdv_contexts_sample" do
+      describe "#rdv_contexts_with_invitations_and_participations_sample" do
         let!(:applicant3) { create(:applicant, organisations: [organisation]) }
         let!(:rdv3) { create(:rdv, organisation: organisation) }
         let!(:participation3) { create(:participation, rdv: rdv3) }
@@ -444,24 +444,24 @@ describe Stat do
         end
 
         it "scopes the collection to the organisation" do
-          expect(stat.rdv_contexts_sample).to include(rdv_context1)
-          expect(stat.rdv_contexts_sample).not_to include(rdv_context2)
+          expect(stat.rdv_contexts_with_invitations_and_participations_sample).to include(rdv_context1)
+          expect(stat.rdv_contexts_with_invitations_and_participations_sample).not_to include(rdv_context2)
         end
 
         it "does not include rdv_contexts with no invitations" do
-          expect(stat.rdv_contexts_sample).not_to include(rdv_context3)
+          expect(stat.rdv_contexts_with_invitations_and_participations_sample).not_to include(rdv_context3)
         end
 
         it "does not include rdv_contexts with unsent invitations" do
-          expect(stat.rdv_contexts_sample).not_to include(rdv_context4)
+          expect(stat.rdv_contexts_with_invitations_and_participations_sample).not_to include(rdv_context4)
         end
 
         it "does not include rdv_contexts with no rdvs" do
-          expect(stat.rdv_contexts_sample).not_to include(rdv_context5)
+          expect(stat.rdv_contexts_with_invitations_and_participations_sample).not_to include(rdv_context5)
         end
 
         it "does not include the rdv_contexts of applicants from irrelevant organisations" do
-          expect(stat.rdv_contexts_sample).not_to include(rdv_context6)
+          expect(stat.rdv_contexts_with_invitations_and_participations_sample).not_to include(rdv_context6)
         end
       end
 
@@ -596,9 +596,9 @@ describe Stat do
         end
       end
 
-      describe "#rdv_contexts_sample" do
+      describe "#rdv_contexts_with_invitations_and_participations_sample" do
         it "does not scope the collection to the department" do
-          expect(stat.rdv_contexts_sample).to include(rdv_context2)
+          expect(stat.rdv_contexts_with_invitations_and_participations_sample).to include(rdv_context2)
         end
       end
 

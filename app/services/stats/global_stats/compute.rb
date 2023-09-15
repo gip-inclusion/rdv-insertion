@@ -49,7 +49,7 @@ module Stats
 
       def average_time_between_invitation_and_rdv_in_days
         ComputeAverageTimeBetweenInvitationAndRdvInDays.call(
-          rdv_contexts: @stat.rdv_contexts_sample
+          rdv_contexts: @stat.rdv_contexts_with_invitations_and_participations_sample
         ).value
       end
 
@@ -61,7 +61,7 @@ module Stats
 
       def rate_of_applicants_oriented
         ComputeRateOfApplicantsOriented.call(
-          applicants: @stat.applicants_for_orientation_stats_sample
+          rdv_contexts: @stat.orientation_rdv_contexts_with_sent_invitations_sample
         ).value
       end
 

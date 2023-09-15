@@ -51,12 +51,13 @@ class Stat < ApplicationRecord
   end
 
   # We filter the rdv_contexts to keep those where the applicants were invited and created a rdv/participation
-  def rdv_contexts_sample
-    @rdv_contexts_sample ||= RdvContext.preload(:participations, :invitations)
-                                       .where(applicant_id: applicants_sample)
-                                       .where.associated(:participations)
-                                       .with_sent_invitations
-                                       .distinct
+  def rdv_contexts_with_invitations_and_participations_sample
+    @rdv_contexts_with_invitations_and_participations_sample ||=
+      RdvContext.preload(:participations, :invitations)
+                .where(applicant_id: applicants_sample)
+                .where.associated(:participations)
+                .with_sent_invitations
+                .distinct
   end
 
   # We filter the applicants by organisations and retrieve deleted or archived applicants
@@ -103,15 +104,28 @@ class Stat < ApplicationRecord
                                 ))
   end
 
+  def orientation_rdv_contexts_with_sent_invitations_sample
+    @orientation_rdv_contexts_with_sent_invitations_sample ||=
+      orientation_rdv_contexts.preload(:participations, :invitations)
+                              .where(applicant: applicants_sample)
+                              .with_sent_invitations
+                              .distinct
+  end
+
   def invitations_on_an_orientation_category_during_a_month_sample(date)
     @invitations_on_an_orientation_category_during_a_month_sample ||=
       Invitation.preload(:rdv_context, :participations)
+                .where(applicant: applicants_sample)
                 .where(sent_at: date.all_month)
-                .joins(:rdv_context).where(
-                  rdv_contexts:
-                    RdvContext.joins(:motif_category).where(
-                      motif_category: { short_name: MotifCategory::ORIENTATION_CATEGORIES_SHORT_NAMES }
-                    )
-                )
+                .joins(:rdv_context)
+                .where(rdv_contexts: orientation_rdv_contexts)
+                .distinct
+  end
+
+  def orientation_rdv_contexts
+    @orientation_rdv_contexts ||=
+      RdvContext.joins(:motif_category).where(
+        motif_category: { short_name: MotifCategory::ORIENTATION_CATEGORIES_SHORT_NAMES }
+      )
   end
 end

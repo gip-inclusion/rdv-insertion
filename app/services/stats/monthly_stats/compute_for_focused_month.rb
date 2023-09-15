@@ -55,7 +55,7 @@ module Stats
 
       def average_time_between_invitation_and_rdv_in_days_for_focused_month
         ComputeAverageTimeBetweenInvitationAndRdvInDays.call(
-          rdv_contexts: created_during_focused_month(@stat.rdv_contexts_sample)
+          rdv_contexts: created_during_focused_month(@stat.rdv_contexts_with_invitations_and_participations_sample)
         ).value.round
       end
 
