@@ -37,7 +37,8 @@ class SendPeriodicInvitesJob < ApplicationJob
     if configuration.day_of_the_month_periodic_invites.present?
       Time.zone.today.day == configuration.day_of_the_month_periodic_invites
     elsif configuration.number_of_days_between_periodic_invites.present?
-      (Time.zone.today - last_sent_invitation.sent_at.to_date).to_i == configuration.number_of_days_between_periodic_invites
+      (Time.zone.today - last_sent_invitation.sent_at.to_date).to_i ==
+        configuration.number_of_days_between_periodic_invites
     else
       false
     end

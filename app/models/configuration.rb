@@ -19,7 +19,8 @@ class Configuration < ApplicationRecord
   end
 
   def periodic_invites_activated?
-    periodic_invites_enabled && (day_of_the_month_periodic_invites.present? || number_of_days_between_periodic_invites.present?)
+    periodic_invites_enabled &&
+      (day_of_the_month_periodic_invites.present? || number_of_days_between_periodic_invites.present?)
   end
 
   private
