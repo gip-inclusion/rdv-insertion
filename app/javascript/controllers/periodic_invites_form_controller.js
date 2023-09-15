@@ -56,7 +56,7 @@ export default class extends Controller {
 
   showIndicator() {
     if (!this.enableInput.checked) {
-      this.nextInviteIndicator.innerHTML = "Les invitations périodiques sont désactivées"
+      this.nextInviteIndicator.innerHTML = "Les invitations périodiques sont désactivées."
       return
     }
 
@@ -65,7 +65,7 @@ export default class extends Controller {
     } else if (this.dayOfTheMonthInput.value) {
       this.nextInviteIndicator.innerHTML = `Une invitation sera envoyée le ${this.dayOfTheMonthInput.value} de chaque mois.`
     } else if (this.enableInput.checked) {
-      this.nextInviteIndicator.innerHTML = "Vous devez configurer la récurrence afin d'activer les invitations périodiques"
+      this.nextInviteIndicator.innerHTML = "Vous devez configurer la récurrence afin d'activer les invitations périodiques."
     }
   }
 }
