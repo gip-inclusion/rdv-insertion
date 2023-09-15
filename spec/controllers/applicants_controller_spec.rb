@@ -798,6 +798,23 @@ describe ApplicantsController do
       end
     end
 
+    context "ordering" do
+      let!(:applicant2) do
+        create(:applicant, organisations: [organisation], first_name: "Marie")
+      end
+
+      before do
+        ApplicantsOrganisation.where(applicant: applicant2).update!(created_at: 1.year.ago)
+      end
+
+      it "orders by date of affectation to the category" do
+        get :index, params: index_params
+
+        expect(response.body.index(applicant2.first_name)).to(be > response.body.index(applicant.first_name))
+        expect(response.body.index(applicant2.first_name)).to(be > response.body.index(applicant3.first_name))
+      end
+    end
+
     context "when filter_by_current_agent is passed" do
       let!(:index_params) do
         {
