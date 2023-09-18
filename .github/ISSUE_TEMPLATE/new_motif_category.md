@@ -13,6 +13,8 @@ assignees: ''
 
 - Avec rappel ?  OUI /  NON
 
+- Doit-il être affiché dans un ordre précis ? Si oui, après laquelle de [ces catégories](https://github.com/betagouv/rdv-insertion/blob/staging/app/models/concerns/motif_category/sortable.rb) ?
+
 ### Contenu du message
 
 - Mentionner que le rdv est obligatoire ? OUI / NON
