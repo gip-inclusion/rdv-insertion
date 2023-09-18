@@ -1,71 +1,67 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  connect() {
-    this.enableInput = this.element.querySelector("#configuration_periodic_invites_enabled")
-    this.numberOfDaysInput = this.element.querySelector("#configuration_number_of_days_between_periodic_invites")
-    this.dayOfTheMonthInput = this.element.querySelector("#configuration_day_of_the_month_periodic_invites")
-    this.nextInviteIndicator = this.element.querySelector("#next-invite-indicator")
-    this.typeRadio = this.element.querySelectorAll("input[name=\"periodicity-type\"]")
-    this.togglePeriodicInvites();
-    this.periodicityTypeChanged()
+  static targets = [
+    "enable",
+    "numberOfDays",
+    "dayOfTheMonth",
+    "nextInviteIndicator",
+    "typeRadio"
+  ]
 
-    this.enableInput.addEventListener("change", this.togglePeriodicInvites.bind(this));
-    this.numberOfDaysInput.addEventListener("change", this.numberOfDaysInputChanged.bind(this));
-    this.dayOfTheMonthInput.addEventListener("change", this.dayOfTheMonthInputChanged.bind(this));
-    this.typeRadio.forEach((input) => {
-      input.addEventListener("change", () => this.periodicityTypeChanged())
-    })
+  connect() {
+    this.togglePeriodicInvites()
+    this.periodicityTypeChanged()
   }
 
   periodicityTypeChanged() {
-    if (this.typeRadio[0].checked) {
+    if (this.typeRadioTargets[0].checked) {
       this.numberOfDaysInputChanged()
-    } else if (this.typeRadio[1].checked) {
+    } else if (this.typeRadioTargets[1].checked) {
       this.dayOfTheMonthInputChanged()
     }
   }
 
   togglePeriodicInvites() {
-    this.numberOfDaysInput.disabled = !this.enableInput.checked
-    this.dayOfTheMonthInput.disabled = !this.enableInput.checked
-    this.element.classList.toggle("disabled", !this.enableInput.checked)
-    this.typeRadio.forEach((input) => {
-      input.disabled = !this.enableInput.checked
+    this.numberOfDaysTarget.disabled = !this.enableTarget.checked
+    this.dayOfTheMonthTarget.disabled = !this.enableTarget.checked
+    this.element.classList.toggle("disabled", !this.enableTarget.checked)
+    this.typeRadioTargets.forEach((input) => {
+      input.disabled = !this.enableTarget.checked
     })
 
     this.showIndicator()
   }
 
   numberOfDaysInputChanged() {
-    if (this.numberOfDaysInput.value < 1) this.numberOfDaysInput.value = 1
-    this.dayOfTheMonthInput.value = null
-    this.typeRadio[0].checked = true
-    this.typeRadio[1].checked = false
+    if (this.numberOfDaysTarget.value < 1) this.numberOfDaysTarget.value = 1
+    this.dayOfTheMonthTarget.value = null
+    this.typeRadioTargets[0].checked = true
+    this.typeRadioTargets[1].checked = false
     this.showIndicator()
   }
   
   dayOfTheMonthInputChanged() {
-    if (this.dayOfTheMonthInput.value < 1) this.dayOfTheMonthInput.value = 1
-    if (this.dayOfTheMonthInput.value > 31) this.dayOfTheMonthInput.value = 31
-    this.numberOfDaysInput.value = null
-    this.typeRadio[0].checked = false
-    this.typeRadio[1].checked = true
+    if (this.dayOfTheMonthTarget.value < 1) this.dayOfTheMonthTarget.value = 1
+    if (this.dayOfTheMonthTarget.value > 31) this.dayOfTheMonthTarget.value = 31
+    this.numberOfDaysTarget.value = null
+    this.typeRadioTargets[0].checked = false
+    this.typeRadioTargets[1].checked = true
     this.showIndicator()
   }
 
   showIndicator() {
-    if (!this.enableInput.checked) {
-      this.nextInviteIndicator.innerHTML = "Les invitations périodiques sont désactivées."
+    if (!this.enableTarget.checked) {
+      this.nextInviteIndicatorTarget.innerHTML = "Les invitations périodiques sont désactivées."
       return
     }
 
-    if (this.numberOfDaysInput.value) {
-      this.nextInviteIndicator.innerHTML = `Une invitation sera envoyée ${this.numberOfDaysInput.value} jour(s) suivant la dernière invitation.`
-    } else if (this.dayOfTheMonthInput.value) {
-      this.nextInviteIndicator.innerHTML = `Une invitation sera envoyée le ${this.dayOfTheMonthInput.value} de chaque mois.`
-    } else if (this.enableInput.checked) {
-      this.nextInviteIndicator.innerHTML = "Vous devez configurer la récurrence afin d'activer les invitations périodiques."
+    if (this.numberOfDaysTarget.value) {
+      this.nextInviteIndicatorTarget.innerHTML = `Une invitation sera envoyée ${this.numberOfDaysTarget.value} jour(s) suivant la dernière invitation.`
+    } else if (this.dayOfTheMonthTarget.value) {
+      this.nextInviteIndicatorTarget.innerHTML = `Une invitation sera envoyée le ${this.dayOfTheMonthTarget.value} de chaque mois.`
+    } else if (this.enable.checked) {
+      this.nextInviteIndicatorTarget.innerHTML = "Vous devez configurer la récurrence afin d'activer les invitations périodiques."
     }
   }
 }

@@ -3,30 +3,30 @@
     <h3>Invitations périodiques</h3>
     
     <div class="form-check form-switch large mx-2">
-      <%= f.input :periodic_invites_enabled, input_html: { class: "form-check-input" } %>
+      <%= f.input :periodic_invites_enabled, input_html: { class: "form-check-input", data: { 'periodic-invites-form-target': 'enable', action: 'periodic-invites-form#togglePeriodicInvites' } } %>
     </div>
   </div>
 
   <div class="periodic-invites-form-content">
-    <span id="next-invite-indicator"></span>
+    <span data-periodic-invites-form-target="nextInviteIndicator"></span>
     <div class="mt-2">
       <div class="d-flex mb-2">
-        <input type="radio" name="periodicity-type" value="number_of_days_between_periodic_invites" class="mx-3" <%= configuration.number_of_days_between_periodic_invites.present? ? 'checked' : '' %>>
+        <input data-action="periodic-invites-form#periodicityTypeChanged" data-periodic-invites-form-target="typeRadio" type="radio" name="periodicity-type" value="number_of_days_between_periodic_invites" class="mx-3" <%= configuration.number_of_days_between_periodic_invites.present? ? 'checked' : '' %>>
         <div class="d-flex flex-direction-row">
           <div>
             Envoyer une nouvelle invitation
           </div>
-          <%= f.input :number_of_days_between_periodic_invites, input_html: { placeholder: 'X', min: 1, max: 365, class: "mx-1" } %>
+          <%= f.input :number_of_days_between_periodic_invites, input_html: { placeholder: 'X', min: 1, max: 365, class: "mx-1", data: { 'periodic-invites-form-target': 'numberOfDays', action: 'periodic-invites-form#numberOfDaysInputChanged' } } %>
           <div> jours après la dernière invitation</div>
         </div>
       </div>
       <div class="d-flex">
-        <input type="radio" name="periodicity-type" value="day_of_the_month_periodic_invites" class="mx-3" <%= configuration.day_of_the_month_periodic_invites.present? ? 'checked' : '' %>>
+        <input data-action="periodic-invites-form#periodicityTypeChanged" data-periodic-invites-form-target="typeRadio" type="radio" name="periodicity-type" value="day_of_the_month_periodic_invites" class="mx-3" <%= configuration.day_of_the_month_periodic_invites.present? ? 'checked' : '' %>>
         <div class="d-flex flex-direction-row">
           <div>
             Envoyer une nouvelle invitation le 
           </div>
-          <%= f.input :day_of_the_month_periodic_invites, input_html: { placeholder: 'X', min: 1, max: 28, class: "mx-1" } %>
+          <%= f.input :day_of_the_month_periodic_invites, input_html: { placeholder: 'X', min: 1, max: 28, class: "mx-1", data: { 'periodic-invites-form-target': 'dayOfTheMonth', action: 'periodic-invites-form#dayOfTheMonthInputChanged' } } %>
           <div>du mois</div>
           
         </div>
