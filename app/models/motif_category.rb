@@ -15,6 +15,7 @@ class MotifCategory < ApplicationRecord
     rsa_accompagnement
     rsa_accompagnement_social
     rsa_accompagnement_sociopro
+    rsa_accompagnement_moins_de_30_ans
   ].freeze
 
   has_many :configurations, dependent: :restrict_with_exception

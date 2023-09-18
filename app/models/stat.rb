@@ -98,15 +98,15 @@ class Stat < ApplicationRecord
   def applicants_for_orientation_stats_sample
     @applicants_for_orientation_stats_sample ||=
       applicants_sample.joins(:rdv_contexts)
-                       .where(rdv_contexts: orientation_rdv_contexts)
+                       .where(rdv_contexts: RdvContext.orientation)
   end
 
   def orientation_rdv_contexts_sample
     @orientation_rdv_contexts_sample ||=
-      orientation_rdv_contexts.preload(:participations, :invitations)
-                              .where(applicant: applicants_sample)
-                              .with_sent_invitations
-                              .distinct
+      RdvContext.orientation.preload(:participations, :invitations)
+                .where(applicant: applicants_sample)
+                .with_sent_invitations
+                .distinct
   end
 
   def invitations_on_an_orientation_category_during_a_month_sample(date)
@@ -115,14 +115,7 @@ class Stat < ApplicationRecord
                 .where(applicant: applicants_sample)
                 .where(sent_at: date.all_month)
                 .joins(:rdv_context)
-                .where(rdv_contexts: orientation_rdv_contexts)
+                .where(rdv_contexts: RdvContext.orientation)
                 .distinct
-  end
-
-  def orientation_rdv_contexts
-    @orientation_rdv_contexts ||=
-      RdvContext.joins(:motif_category).where(
-        motif_category: { short_name: MotifCategory::ORIENTATION_CATEGORIES_SHORT_NAMES }
-      )
   end
 end

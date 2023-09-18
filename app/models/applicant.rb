@@ -70,10 +70,6 @@ class Applicant < ApplicationRecord
     first_seen_rdv_starts_at.to_datetime.mjd - created_at.to_datetime.mjd
   end
 
-  def oriented_in_the_app?
-    participations.any? { |participation| participation.motif_category.orientation? && participation.seen? }
-  end
-
   def participation_for(rdv)
     participations.to_a.find { |participation| participation.rdv_id == rdv.id }
   end

@@ -18,15 +18,14 @@ module Stats
 
     def invitations_that_led_to_a_rdv_seen
       @invitations.select do |invitation|
-        invitation_date = invitation.created_at
         invitation.participations.seen.any? do |participation|
-          participation.created_at > invitation_date
+          participation.created_at > invitation.created_at
         end
       end
     end
 
     def applicants_with_rdv_seen_posterior_to_an_invitation
-      @applicants_oriented ||=
+      @applicants_with_rdv_seen_posterior_to_an_invitation ||=
         Applicant.joins(:invitations).where(invitations: invitations_that_led_to_a_rdv_seen).distinct
     end
 
