@@ -60,8 +60,8 @@ module Stats
       end
 
       def rate_of_applicants_oriented
-        ComputeRateOfApplicantsOriented.call(
-          rdv_contexts: @stat.orientation_rdv_contexts_with_sent_invitations_sample
+        ComputeRateOfApplicantsWithRdvSeen.call(
+          rdv_contexts: @stat.orientation_rdv_contexts_sample
         ).value
       end
 

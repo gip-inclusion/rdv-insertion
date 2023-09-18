@@ -67,7 +67,7 @@ module Stats
       end
 
       def rate_of_applicants_oriented_for_focused_month
-        ComputeRateOfApplicantsOrientedOnAnInvitationSample.call(
+        ComputeRateOfApplicantsWithRdvSeenPosteriorToAnInvitation.call(
           invitations: @stat.invitations_on_an_orientation_category_during_a_month_sample(@date)
         ).value.round
       end

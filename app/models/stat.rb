@@ -98,14 +98,11 @@ class Stat < ApplicationRecord
   def applicants_for_orientation_stats_sample
     @applicants_for_orientation_stats_sample ||=
       applicants_sample.joins(:rdv_contexts)
-                       .where(rdv_contexts:
-                                RdvContext.joins(:motif_category).where(
-                                  motif_category: { short_name: MotifCategory::ORIENTATION_CATEGORIES_SHORT_NAMES }
-                                ))
+                       .where(rdv_contexts: orientation_rdv_contexts)
   end
 
-  def orientation_rdv_contexts_with_sent_invitations_sample
-    @orientation_rdv_contexts_with_sent_invitations_sample ||=
+  def orientation_rdv_contexts_sample
+    @orientation_rdv_contexts_sample ||=
       orientation_rdv_contexts.preload(:participations, :invitations)
                               .where(applicant: applicants_sample)
                               .with_sent_invitations
