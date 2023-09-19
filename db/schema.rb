@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_04_144823) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_19_135952) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -41,6 +41,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_04_144823) do
     t.boolean "super_admin", default: false
     t.index ["email"], name: "index_agents_on_email", unique: true
     t.index ["rdv_solidarites_agent_id"], name: "index_agents_on_rdv_solidarites_agent_id", unique: true
+  end
+
+  create_table "agents_rdvs", id: false, force: :cascade do |t|
+    t.bigint "agent_id", null: false
+    t.bigint "rdv_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agent_id", "rdv_id"], name: "index_agents_rdvs_on_agent_id_and_rdv_id", unique: true
   end
 
   create_table "applicants", force: :cascade do |t|
