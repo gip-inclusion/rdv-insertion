@@ -217,6 +217,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_13_182842) do
     t.datetime "updated_at", null: false
     t.bigint "template_id"
     t.boolean "participation_optional", default: false
+    t.boolean "leads_to_orientation", default: false
     t.index ["rdv_solidarites_motif_category_id"], name: "index_motif_categories_on_rdv_solidarites_motif_category_id", unique: true
     t.index ["short_name"], name: "index_motif_categories_on_short_name", unique: true
     t.index ["template_id"], name: "index_motif_categories_on_template_id"
@@ -343,8 +344,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_13_182842) do
     t.json "sent_invitations_count_grouped_by_month"
     t.float "average_time_between_invitation_and_rdv_in_days"
     t.json "average_time_between_invitation_and_rdv_in_days_by_month"
-    t.float "rate_of_applicants_with_rdv_seen_in_less_than_30_days"
-    t.json "rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month"
+    t.float "rate_of_applicants_oriented_in_less_than_30_days"
+    t.json "rate_of_applicants_oriented_in_less_than_30_days_by_month"
     t.integer "agents_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

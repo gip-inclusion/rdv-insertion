@@ -40,7 +40,7 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
         .and_return(RdvContext.where(id: [rdv_context1, rdv_context2]))
       allow(stat).to receive(:applicants_sample)
         .and_return(Applicant.where(id: [applicant1, applicant2]))
-      allow(stat).to receive(:applicants_for_orientation_stats_sample)
+      allow(stat).to receive(:applicants_with_orientation_category_sample)
         .and_return(Applicant.where(id: [applicant1, applicant2]))
       allow(stat).to receive(:invitations_on_an_orientation_category_during_a_month_sample)
         .with(date)
@@ -53,7 +53,7 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
         .and_return(OpenStruct.new(success?: true, value: 4.0))
       allow(Stats::ComputeRateOfApplicantsWithRdvSeenInLessThanThirtyDays).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 50.0))
-      allow(Stats::ComputeRateOfApplicantsWithRdvSeenPosteriorToAnInvitation).to receive(:call)
+      allow(Stats::ComputeRateOfApplicantsWithRdvSeenAfterInvitationOrConvocation).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 100.0))
       allow(Stats::ComputeRateOfAutonomousApplicants).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 50.0))
@@ -74,7 +74,7 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
       expect(subject.stats_values).to include(:rate_of_no_show_for_invitations_grouped_by_month)
       expect(subject.stats_values).to include(:rate_of_no_show_for_convocations_grouped_by_month)
       expect(subject.stats_values).to include(:average_time_between_invitation_and_rdv_in_days_by_month)
-      expect(subject.stats_values).to include(:rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month)
+      expect(subject.stats_values).to include(:rate_of_applicants_oriented_in_less_than_30_days_by_month)
       expect(subject.stats_values).to include(:rate_of_applicants_oriented_grouped_by_month)
       expect(subject.stats_values).to include(:rate_of_autonomous_applicants_grouped_by_month)
     end
@@ -86,7 +86,7 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
       expect(subject.stats_values[:rate_of_no_show_for_invitations_grouped_by_month]).to be_a(Integer)
       expect(subject.stats_values[:rate_of_no_show_for_convocations_grouped_by_month]).to be_a(Integer)
       expect(subject.stats_values[:average_time_between_invitation_and_rdv_in_days_by_month]).to be_a(Integer)
-      expect(subject.stats_values[:rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month]).to be_a(Integer)
+      expect(subject.stats_values[:rate_of_applicants_oriented_in_less_than_30_days_by_month]).to be_a(Integer)
       expect(subject.stats_values[:rate_of_applicants_oriented_grouped_by_month]).to be_a(Integer)
       expect(subject.stats_values[:rate_of_autonomous_applicants_grouped_by_month]).to be_a(Integer)
     end
@@ -129,7 +129,7 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
     end
 
     it "computes the percentage of applicants with rdv seen in less than 30 days" do
-      expect(stat).to receive(:applicants_for_orientation_stats_sample)
+      expect(stat).to receive(:applicants_with_orientation_category_sample)
       expect(Stats::ComputeRateOfApplicantsWithRdvSeenInLessThanThirtyDays).to receive(:call)
         .with(applicants: [applicant2])
       subject
@@ -138,7 +138,7 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
     it "computes the percentage of applicants with rdv seen posterior to an invitation" do
       expect(stat).to receive(:invitations_on_an_orientation_category_during_a_month_sample)
         .with(date)
-      expect(Stats::ComputeRateOfApplicantsWithRdvSeenPosteriorToAnInvitation).to receive(:call)
+      expect(Stats::ComputeRateOfApplicantsWithRdvSeenAfterInvitationOrConvocation).to receive(:call)
         .with(invitations: [invitation1])
       subject
     end

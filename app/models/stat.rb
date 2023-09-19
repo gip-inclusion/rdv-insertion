@@ -95,8 +95,8 @@ class Stat < ApplicationRecord
   end
 
   # We only consider specific contexts to focus on the first RSA rdv
-  def applicants_for_orientation_stats_sample
-    @applicants_for_orientation_stats_sample ||=
+  def applicants_with_orientation_category_sample
+    @applicants_with_orientation_category_sample ||=
       applicants_sample.joins(:rdv_contexts)
                        .where(rdv_contexts: RdvContext.orientation)
   end
@@ -117,5 +117,15 @@ class Stat < ApplicationRecord
                 .joins(:rdv_context)
                 .where(rdv_contexts: RdvContext.orientation)
                 .distinct
+  end
+
+  def notifications_on_an_orientation_category_during_a_month_sample(date)
+    @notifications_on_an_orientation_category_during_a_month_sample ||=
+      Notification.preload(:participation, :rdv_context, :applicant)
+                  .where(created_at: date.all_month)
+                  .joins(:participation)
+                  .where(participation: { applicant: applicants_sample })
+                  .where(participation: { rdv_context: RdvContext.orientation })
+                  .distinct
   end
 end

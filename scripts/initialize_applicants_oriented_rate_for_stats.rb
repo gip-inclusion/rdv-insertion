@@ -8,7 +8,7 @@ Stat.find_each do |stat|
   while date < Time.zone.parse("31/08/2023 12:00")
     oriented_rate = stat.rate_of_applicants_oriented_grouped_by_month
     oriented_rate_for_date =
-      Stats::ComputeRateOfApplicantsWithRdvSeenPosteriorToAnInvitation.call(
+      Stats::ComputeRateOfApplicantsWithRdvSeenAfterInvitationOrConvocation.call(
         invitations: stat.invitations_on_an_orientation_category_during_a_month_sample(date)
       ).value.round
 

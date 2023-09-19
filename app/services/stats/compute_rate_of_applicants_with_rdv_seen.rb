@@ -21,7 +21,11 @@ module Stats
     end
 
     def applicants_with_rdv_seen
-      @applicants_with_rdv_seen ||= Applicant.joins(:rdv_contexts).where(rdv_contexts: @rdv_contexts.rdv_seen).distinct
+      @applicants_with_rdv_seen ||= Applicant.where(participations: participations_with_rdv_seen).distinct
+    end
+
+    def participations_with_rdv_seen
+      @participations_with_rdv_seen ||= Participation.where(rdv_context: @rdv_contexts).seen
     end
   end
 end

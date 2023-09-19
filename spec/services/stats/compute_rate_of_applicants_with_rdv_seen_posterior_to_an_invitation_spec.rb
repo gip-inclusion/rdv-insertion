@@ -1,4 +1,4 @@
-describe Stats::ComputeRateOfApplicantsWithRdvSeenPosteriorToAnInvitation, type: :service do
+describe Stats::ComputeRateOfApplicantsWithRdvSeenAfterInvitationOrConvocation, type: :service do
   subject { described_class.call(invitations: invitations) }
 
   let!(:invitations) do

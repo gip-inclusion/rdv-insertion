@@ -12,7 +12,7 @@ describe Stats::MonthlyStats::UpsertStat, type: :service do
       rate_of_no_show_for_invitations_grouped_by_month: 4,
       rate_of_no_show_for_convocations_grouped_by_month: 9,
       average_time_between_invitation_and_rdv_in_days_by_month: 5,
-      rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month: 7,
+      rate_of_applicants_oriented_in_less_than_30_days_by_month: 7,
       rate_of_autonomous_applicants_grouped_by_month: 8
     }
   end
@@ -68,7 +68,7 @@ describe Stats::MonthlyStats::UpsertStat, type: :service do
       expect(stat.reload[:average_time_between_invitation_and_rdv_in_days_by_month]).to eq(
         { date.strftime("%m/%Y") => 5 }
       )
-      expect(stat.reload[:rate_of_applicants_with_rdv_seen_in_less_than_30_days_by_month]).to eq(
+      expect(stat.reload[:rate_of_applicants_oriented_in_less_than_30_days_by_month]).to eq(
         { (date - 1.month).strftime("%m/%Y") => 7 }
       )
       expect(stat.reload[:rate_of_autonomous_applicants_grouped_by_month]).to eq({ date.strftime("%m/%Y") => 8 })

@@ -5,6 +5,8 @@ class Notification < ApplicationRecord
   attr_accessor :content
 
   belongs_to :participation, optional: true
+  has_one :rdv_context, through: :participation
+  has_one :applicant, through: :participation
 
   enum event: {
     participation_created: 0, participation_updated: 1, participation_cancelled: 2, participation_reminder: 3

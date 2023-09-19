@@ -34,7 +34,7 @@ describe Stats::GlobalStats::Compute, type: :service do
         .and_return(RdvContext.where(id: [rdv_context1, rdv_context2]))
       allow(stat).to receive(:applicants_sample)
         .and_return(Applicant.where(id: [applicant1, applicant2]))
-      allow(stat).to receive(:applicants_for_orientation_stats_sample)
+      allow(stat).to receive(:applicants_with_orientation_category_sample)
         .and_return(Applicant.where(id: [applicant1, applicant2]))
       allow(stat).to receive(:orientation_rdv_contexts_sample)
         .and_return(RdvContext.where(id: [rdv_context1, rdv_context2]))
@@ -69,7 +69,7 @@ describe Stats::GlobalStats::Compute, type: :service do
       expect(subject.stat_attributes).to include(:rate_of_no_show_for_invitations)
       expect(subject.stat_attributes).to include(:rate_of_no_show_for_convocations)
       expect(subject.stat_attributes).to include(:average_time_between_invitation_and_rdv_in_days)
-      expect(subject.stat_attributes).to include(:rate_of_applicants_with_rdv_seen_in_less_than_30_days)
+      expect(subject.stat_attributes).to include(:rate_of_applicants_oriented_in_less_than_30_days)
       expect(subject.stat_attributes).to include(:rate_of_applicants_oriented)
       expect(subject.stat_attributes).to include(:rate_of_autonomous_applicants)
       expect(subject.stat_attributes).to include(:agents_count)
@@ -82,7 +82,7 @@ describe Stats::GlobalStats::Compute, type: :service do
       expect(subject.stat_attributes[:rate_of_no_show_for_invitations]).to be_a(Float)
       expect(subject.stat_attributes[:rate_of_no_show_for_convocations]).to be_a(Float)
       expect(subject.stat_attributes[:average_time_between_invitation_and_rdv_in_days]).to be_a(Float)
-      expect(subject.stat_attributes[:rate_of_applicants_with_rdv_seen_in_less_than_30_days]).to be_a(Float)
+      expect(subject.stat_attributes[:rate_of_applicants_oriented_in_less_than_30_days]).to be_a(Float)
       expect(subject.stat_attributes[:rate_of_applicants_oriented]).to be_a(Float)
       expect(subject.stat_attributes[:rate_of_autonomous_applicants]).to be_a(Float)
       expect(subject.stat_attributes[:agents_count]).to be_a(Integer)
@@ -125,7 +125,7 @@ describe Stats::GlobalStats::Compute, type: :service do
     end
 
     it "computes the percentage of applicants with rdv seen in less than 30 days" do
-      expect(stat).to receive(:applicants_for_orientation_stats_sample)
+      expect(stat).to receive(:applicants_with_orientation_category_sample)
       expect(Stats::ComputeRateOfApplicantsWithRdvSeenInLessThanThirtyDays).to receive(:call)
         .with(applicants: [applicant1, applicant2])
       subject

@@ -260,7 +260,7 @@ describe Stat do
         end
       end
 
-      describe "#applicants_for_orientation_stats_sample" do
+      describe "#applicants_with_orientation_category_sample" do
         let!(:applicant3) do
           create(:applicant, organisations: [organisation], created_at: date)
         end
@@ -269,12 +269,12 @@ describe Stat do
         end
 
         it "scopes the collection to the department" do
-          expect(stat.applicants_for_orientation_stats_sample).to include(applicant1)
-          expect(stat.applicants_for_orientation_stats_sample).not_to include(applicant2)
+          expect(stat.applicants_with_orientation_category_sample).to include(applicant1)
+          expect(stat.applicants_with_orientation_category_sample).not_to include(applicant2)
         end
 
         it "does not include the applicants with no motif category for a first rdv RSA" do
-          expect(stat.applicants_for_orientation_stats_sample).not_to include(applicant3)
+          expect(stat.applicants_with_orientation_category_sample).not_to include(applicant3)
         end
       end
 
@@ -528,19 +528,19 @@ describe Stat do
         end
       end
 
-      describe "#applicants_for_orientation_stats_sample" do
+      describe "#applicants_with_orientation_category_sample" do
         let!(:applicant3) { create(:applicant, organisations: [organisation], created_at: date) }
         let!(:rdv_context3) do
           create(:rdv_context, applicant: applicant3, motif_category: category_rsa_cer_signature)
         end
 
         it "scopes the collection to the organisation" do
-          expect(stat.applicants_for_orientation_stats_sample).to include(applicant1)
-          expect(stat.applicants_for_orientation_stats_sample).not_to include(applicant2)
+          expect(stat.applicants_with_orientation_category_sample).to include(applicant1)
+          expect(stat.applicants_with_orientation_category_sample).not_to include(applicant2)
         end
 
         it "does not include the applicants with no motif category for a first rdv RSA" do
-          expect(stat.applicants_for_orientation_stats_sample).not_to include(applicant3)
+          expect(stat.applicants_with_orientation_category_sample).not_to include(applicant3)
         end
       end
 
@@ -642,9 +642,9 @@ describe Stat do
         end
       end
 
-      describe "#applicants_for_orientation_stats_sample" do
+      describe "#applicants_with_orientation_category_sample" do
         it "does not scope the collection to the department" do
-          expect(stat.applicants_for_orientation_stats_sample).to include(applicant2)
+          expect(stat.applicants_with_orientation_category_sample).to include(applicant2)
         end
       end
 

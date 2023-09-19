@@ -10,7 +10,7 @@ describe Stats::GlobalStats::UpsertStat, type: :service do
       rate_of_no_show_for_invitations: 0.0,
       rate_of_no_show_for_convocations: 0.0,
       average_time_between_invitation_and_rdv_in_days: 0.0,
-      rate_of_applicants_with_rdv_seen_in_less_than_30_days: 0.0,
+      rate_of_applicants_oriented_in_less_than_30_days: 0.0,
       rate_of_autonomous_applicants: 0.0,
       agents_count: 1
     }
