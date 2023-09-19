@@ -623,7 +623,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
                 }
               ],
               organisation_id: organisation.id,
-              agent_ids:[agent.id],
+              agent_ids: [agent.id],
               motif_id: motif.id,
               lieu_id: lieu.id,
               last_webhook_update_received_at: timestamp
