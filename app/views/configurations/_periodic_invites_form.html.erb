@@ -3,7 +3,7 @@
     <h3>Invitations périodiques</h3>
     
     <div class="form-check form-switch large mx-2">
-      <%= f.input :periodic_invites_enabled, input_html: { class: "form-check-input", data: { 'periodic-invites-form-target': 'enable', action: 'periodic-invites-form#togglePeriodicInvites' } } %>
+      <input class="form-check-input" type="checkbox" data-periodic-invites-form-target="enable" data-action="periodic-invites-form#togglePeriodicInvites" <%= configuration.periodic_invites_activated? ? 'checked' : '' %>>
     </div>
   </div>
 

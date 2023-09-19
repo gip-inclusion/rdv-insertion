@@ -240,7 +240,6 @@ describe ConfigurationsController do
           rdv_with_referents: true, invite_to_applicant_organisations_only: true,
           number_of_days_before_action_required: 12,
           motif_category_id: motif_category.id, file_configuration_id: file_configuration.id,
-          periodic_invites_enabled: true,
           number_of_days_between_periodic_invites: 7
         },
         organisation_id: organisation.id
@@ -258,7 +257,6 @@ describe ConfigurationsController do
       expect(Configuration.last.reload.rdv_with_referents).to eq(true)
       expect(Configuration.last.reload.invite_to_applicant_organisations_only).to eq(true)
       expect(Configuration.last.reload.number_of_days_before_action_required).to eq(12)
-      expect(Configuration.last.reload.periodic_invites_enabled).to eq(true)
       expect(Configuration.last.reload.number_of_days_between_periodic_invites).to eq(7)
       expect(Configuration.last.reload.motif_category_id).to eq(motif_category.id)
       expect(Configuration.last.reload.file_configuration_id).to eq(file_configuration.id)
@@ -326,7 +324,8 @@ describe ConfigurationsController do
         configuration: {
           invitation_formats: %w[sms email postal], convene_applicant: true,
           rdv_with_referents: true, invite_to_applicant_organisations_only: true,
-          number_of_days_before_action_required: 12
+          number_of_days_before_action_required: 12,
+          day_of_the_month_periodic_invites: 5
         },
         organisation_id: organisation.id, id: configuration.id
       }
@@ -339,6 +338,25 @@ describe ConfigurationsController do
       expect(configuration.reload.rdv_with_referents).to eq(true)
       expect(configuration.reload.invite_to_applicant_organisations_only).to eq(true)
       expect(configuration.reload.number_of_days_before_action_required).to eq(12)
+      expect(configuration.reload.day_of_the_month_periodic_invites).to eq(5)
+    end
+
+    context "periodic invites" do
+      context "when no attributes are given" do
+        let(:configuration) do
+          create(:configuration, organisation: organisation, day_of_the_month_periodic_invites: 5)
+        end
+
+        let!(:update_params) do
+          { configuration: { convene_applicant: true }, organisation_id: organisation.id, id: configuration.id }
+        end
+
+        it "sets both attributes to nil" do
+          patch :update, params: update_params
+          expect(configuration.reload.day_of_the_month_periodic_invites).to be_nil
+          expect(configuration.reload.number_of_days_between_periodic_invites).to be_nil
+        end
+      end
     end
 
     context "when the update succeeds" do

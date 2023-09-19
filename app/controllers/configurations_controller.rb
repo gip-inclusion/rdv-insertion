@@ -1,7 +1,7 @@
 class ConfigurationsController < ApplicationController
   PERMITTED_PARAMS = [
     { invitation_formats: [] }, :convene_applicant, :rdv_with_referents, :file_configuration_id,
-    :invite_to_applicant_organisations_only, :number_of_days_before_action_required, :periodic_invites_enabled,
+    :invite_to_applicant_organisations_only, :number_of_days_before_action_required,
     :day_of_the_month_periodic_invites, :number_of_days_between_periodic_invites, :motif_category_id,
     :template_rdv_title_override, :template_rdv_title_by_phone_override, :template_rdv_purpose_override,
     :template_applicant_designation_override
@@ -62,8 +62,14 @@ class ConfigurationsController < ApplicationController
   end
 
   def formatted_configuration_params
-    configuration_params.to_h do |k, v|
+    formatted_configuration = configuration_params.to_h do |k, v|
       [k, k.to_s.include?("override") ? v.presence : v]
+    end
+
+    # We force those attributes to take into account nil values
+    formatted_configuration.tap do |params|
+      params[:day_of_the_month_periodic_invites] = configuration_params[:day_of_the_month_periodic_invites]
+      params[:number_of_days_between_periodic_invites] = configuration_params[:number_of_days_between_periodic_invites]
     end
   end
 

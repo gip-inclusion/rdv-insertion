@@ -24,7 +24,12 @@ export default class extends Controller {
 
   togglePeriodicInvites() {
     this.numberOfDaysTarget.disabled = !this.enableTarget.checked
+    this.numberOfDaysTarget.value = this.enableTarget.checked ? 1 : null
     this.dayOfTheMonthTarget.disabled = !this.enableTarget.checked
+    this.typeRadioTargets[0].checked = this.enableTarget.checked 
+    this.typeRadioTargets[1].checked = false
+    this.dayOfTheMonthTarget.value = null
+
     this.element.classList.toggle("disabled", !this.enableTarget.checked)
     this.typeRadioTargets.forEach((input) => {
       input.disabled = !this.enableTarget.checked

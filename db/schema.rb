@@ -105,7 +105,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_15_080347) do
     t.string "template_rdv_title_by_phone_override"
     t.string "template_applicant_designation_override"
     t.string "template_rdv_purpose_override"
-    t.boolean "periodic_invites_enabled"
     t.integer "number_of_days_between_periodic_invites"
     t.integer "day_of_the_month_periodic_invites"
     t.index ["file_configuration_id"], name: "index_configurations_on_file_configuration_id"

@@ -32,8 +32,6 @@ class SendPeriodicInvitesJob < ApplicationJob
   end
 
   def should_send_periodic_invite?(last_sent_invitation, configuration)
-    return false unless configuration.periodic_invites_enabled
-
     if configuration.day_of_the_month_periodic_invites.present?
       Time.zone.today.day == configuration.day_of_the_month_periodic_invites
     elsif configuration.number_of_days_between_periodic_invites.present?

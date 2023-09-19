@@ -8,7 +8,6 @@ describe SendPeriodicInvitesJob do
     let!(:configuration) do
       create(:configuration,
              organisation: organisation,
-             periodic_invites_enabled: true,
              number_of_days_between_periodic_invites: 5,
              motif_category: motif_category)
     end
@@ -58,7 +57,6 @@ describe SendPeriodicInvitesJob do
         let!(:configuration) do
           create(:configuration,
                  organisation: organisation,
-                 periodic_invites_enabled: true,
                  day_of_the_month_periodic_invites: Time.zone.today.day,
                  motif_category: motif_category)
         end
@@ -75,7 +73,6 @@ describe SendPeriodicInvitesJob do
           let!(:configuration) do
             create(:configuration,
                    organisation: organisation,
-                   periodic_invites_enabled: true,
                    day_of_the_month_periodic_invites: Time.zone.yesterday.day,
                    motif_category: motif_category)
           end
@@ -107,27 +104,10 @@ describe SendPeriodicInvitesJob do
       end
     end
 
-    context "when periodic invites are disabled" do
-      let!(:configuration) do
-        create(:configuration,
-               organisation: organisation,
-               periodic_invites_enabled: false,
-               number_of_days_between_periodic_invites: 5,
-               motif_category: motif_category)
-      end
-
-      it "does not send periodic invites" do
-        expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(invitation.id, configuration.id, "email")
-        expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(invitation.id, configuration.id, "sms")
-        subject
-      end
-    end
-
     context "when configuration is not set" do
       let!(:configuration) do
         create(:configuration,
                organisation: organisation,
-               periodic_invites_enabled: false,
                number_of_days_between_periodic_invites: nil,
                day_of_the_month_periodic_invites: nil,
                motif_category: motif_category)
