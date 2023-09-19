@@ -1,4 +1,4 @@
-<%= turbo_frame_tag "participation_status" do %>
+<%= turbo_frame_tag dom_id(participation, :status) do %>
   <div class="d-flex h-100 px-2 justify-content-center align-items-center">
     <%= simple_form_for(participation, html: { method: :patch, data: { controller: "dropdown", remote: true } }) do |f| %>
       <%= f.input :status, as: :hidden %>

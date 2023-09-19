@@ -1,11 +1,14 @@
 class Participation < ApplicationRecord
   include Notificable
+  include HasCurrentConfiguration
   include RdvParticipationStatus
 
   belongs_to :rdv
   belongs_to :rdv_context
   belongs_to :applicant
+  has_one :organisation, through: :rdv
   has_many :notifications, dependent: :nullify
+  has_many :configurations, through: :organisation
 
   validates :status, presence: true
   validates :rdv_solidarites_participation_id, uniqueness: true, allow_nil: true
@@ -15,15 +18,11 @@ class Participation < ApplicationRecord
 
   enum created_by: { agent: "agent", user: "user", prescripteur: "prescripteur" }, _prefix: :created_by
 
-  delegate :organisation, :department, :starts_at, :motif_name,
+  delegate :department, :starts_at, :motif_name,
            :rdv_solidarites_url, :rdv_solidarites_rdv_id, :instruction_for_rdv,
            to: :rdv
   delegate :phone_number_is_mobile?, :email?, to: :applicant
   delegate :motif_category, to: :rdv_context
-
-  def current_configuration
-    organisation.configurations.find { |configuration| configuration.motif_category == motif_category }
-  end
 
   private
 

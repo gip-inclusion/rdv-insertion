@@ -1,5 +1,5 @@
 module Participations
-  class UpdateStatus < BaseService
+  class Update < BaseService
     def initialize(participation:, rdv_solidarites_session:, participation_params:)
       @participation = participation
       @rdv_solidarites_session = rdv_solidarites_session

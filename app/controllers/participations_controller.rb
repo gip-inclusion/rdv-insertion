@@ -2,7 +2,7 @@ class ParticipationsController < ApplicationController
   before_action :set_participation, only: [:update]
 
   def update
-    @success = Participations::UpdateStatus.call(
+    @success = Participations::Update.call(
       participation: @participation,
       rdv_solidarites_session: rdv_solidarites_session,
       participation_params: participation_params

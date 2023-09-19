@@ -1,4 +1,4 @@
-describe Participations::UpdateStatus, type: :service do
+describe Participations::Update, type: :service do
   subject do
     described_class.call(
       participation: participation,
