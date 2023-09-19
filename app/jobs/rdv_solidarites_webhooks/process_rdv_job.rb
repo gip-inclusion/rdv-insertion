@@ -79,6 +79,10 @@ module RdvSolidaritesWebhooks
       @rdv ||= Rdv.find_by(rdv_solidarites_rdv_id: rdv_solidarites_rdv.id)
     end
 
+    def agents
+      @agents ||= Agent.where(rdv_solidarites_agent_id: @data[:agents].to_a.pluck(:id))
+    end
+
     def rdv_solidarites_user_ids
       rdv_solidarites_rdv.user_ids
     end
@@ -187,6 +191,7 @@ module RdvSolidaritesWebhooks
           @data,
           {
             participations_attributes: participations_attributes,
+            agent_ids: agents.ids,
             organisation_id: organisation.id,
             motif_id: motif.id,
             last_webhook_update_received_at: @meta[:timestamp]
