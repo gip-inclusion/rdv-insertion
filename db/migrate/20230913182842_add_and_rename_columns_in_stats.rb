@@ -19,10 +19,6 @@ class AddAndRenameColumnsInStats < ActiveRecord::Migration[7.0]
                           rsa_orientation_france_travail
                           rsa_orientation_file_active
                           rsa_droits_devoirs
-                          rsa_accompagnement
-                          rsa_accompagnement_social
-                          rsa_accompagnement_sociopro
-                          rsa_accompagnement_moins_de_30_ans
                         ])
                  .update_all(leads_to_orientation: true)
   end

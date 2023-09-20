@@ -14,7 +14,6 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
   let!(:rdv2) { create(:rdv, created_at: date_from_previous_month, organisation: organisation) }
   let!(:participation1) { create(:participation, created_at: date, rdv: rdv1) }
   let!(:participation2) { create(:participation, created_at: date_from_previous_month, rdv: rdv2) }
-  let!(:notification) { create(:notification, participation: participation2) }
   let!(:rdv_context1) { create(:rdv_context, created_at: date, applicant: applicant1) }
   let!(:rdv_context2) { create(:rdv_context, created_at: date_from_previous_month, applicant: applicant2) }
   let!(:invitation1) do
@@ -46,11 +45,9 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
         .and_return(Applicant.where(id: [applicant1, applicant2]))
       allow(stat).to receive(:applicants_with_orientation_category_sample)
         .and_return(Applicant.where(id: [applicant1, applicant2]))
-      allow(stat).to receive(:invitations_on_an_orientation_category_during_a_month_sample)
-        .with(date)
+      allow(stat).to receive(:invitations_on_an_orientation_category_sample)
         .and_return(Invitation.where(id: [invitation1]))
-      allow(stat).to receive(:notifications_on_an_orientation_category_during_a_month_sample)
-        .with(date)
+      allow(stat).to receive(:notifications_on_an_orientation_category_sample)
         .and_return(Notification.where(id: [notification1]))
       allow(stat).to receive(:invited_applicants_sample)
         .and_return(Applicant.where(id: [applicant1, applicant2]))
@@ -143,8 +140,8 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
     end
 
     it "computes the percentage of applicants with rdv seen posterior to an invitation" do
-      expect(stat).to receive(:invitations_on_an_orientation_category_during_a_month_sample)
-        .with(date)
+      expect(stat).to receive(:invitations_on_an_orientation_category_sample)
+      expect(stat).to receive(:notifications_on_an_orientation_category_sample)
       expect(Stats::ComputeRateOfApplicantsWithRdvSeenAfterInvitationOrConvocation).to receive(:call)
         .with(invitations: [invitation1], notifications: [notification1])
       subject

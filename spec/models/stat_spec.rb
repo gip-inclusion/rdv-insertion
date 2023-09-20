@@ -19,10 +19,12 @@ describe Stat do
     let!(:rdv2) { create(:rdv, organisation: other_organisation, created_by: "user", motif: motif) }
     let!(:rdv3) { create(:rdv, organisation: organisation, created_by: "user", motif: motif) }
     let!(:invitation1) do
-      create(:invitation, applicant: applicant1, department: department, sent_at: date, rdv_context: rdv_context1)
+      create(:invitation, applicant: applicant1, department: department, organisations: [organisation],
+                          sent_at: date, rdv_context: rdv_context1)
     end
     let!(:invitation2) do
-      create(:invitation, applicant: applicant2, department: other_department, sent_at: date, rdv_context: rdv_context2)
+      create(:invitation, applicant: applicant2, department: other_department, organisations: [other_organisation],
+                          sent_at: date, rdv_context: rdv_context2)
     end
     let!(:agent1) { create(:agent, organisations: [organisation], has_logged_in: true) }
     let!(:agent2) { create(:agent, organisations: [other_organisation], has_logged_in: true) }
@@ -288,7 +290,7 @@ describe Stat do
         end
       end
 
-      describe "#invitations_on_an_orientation_category_during_a_month_sample" do
+      describe "#invitations_on_an_orientation_category_sample" do
         let!(:applicant3) { create(:applicant, organisations: [organisation], created_at: date) }
         let!(:rdv_context3) do
           create(:rdv_context, applicant: applicant3, motif_category: category_rsa_cer_signature)
@@ -296,12 +298,32 @@ describe Stat do
         let!(:invitation3) { create(:invitation, sent_at: date, rdv_context: rdv_context3) }
 
         it "scopes the collection to the department" do
-          expect(stat.invitations_on_an_orientation_category_during_a_month_sample(date)).to include(invitation1)
-          expect(stat.invitations_on_an_orientation_category_during_a_month_sample(date)).not_to include(invitation2)
+          expect(stat.invitations_on_an_orientation_category_sample).to include(invitation1)
+          expect(stat.invitations_on_an_orientation_category_sample).not_to include(invitation2)
         end
 
-        it "does not include the rdv_contexts with no motif category for a first rdv RSA" do
-          expect(stat.invitations_on_an_orientation_category_during_a_month_sample(date)).not_to include(invitation3)
+        it "does not include the invitations related to a motif category that is not orientation" do
+          expect(stat.invitations_on_an_orientation_category_sample).not_to include(invitation3)
+        end
+      end
+
+      describe "#notifications_on_an_orientation_category_sample" do
+        let!(:notification1) { create(:notification, participation: participation1, sent_at: date) }
+        let!(:notification2) { create(:notification, participation: participation2, sent_at: date) }
+        let!(:applicant3) { create(:applicant, organisations: [organisation], created_at: date) }
+        let!(:rdv_context3) do
+          create(:rdv_context, applicant: applicant3, motif_category: category_rsa_cer_signature)
+        end
+        let!(:participation3) { create(:participation, rdv_context: rdv_context3, applicant: applicant3) }
+        let!(:notification3) { create(:notification, participation: participation3, sent_at: date) }
+
+        it "scopes the collection to the department" do
+          expect(stat.notifications_on_an_orientation_category_sample).to include(notification1)
+          expect(stat.notifications_on_an_orientation_category_sample).not_to include(notification2)
+        end
+
+        it "does not include the notifications related to a motif category that is not orientation" do
+          expect(stat.notifications_on_an_orientation_category_sample).not_to include(notification3)
         end
       end
     end
@@ -332,12 +354,6 @@ describe Stat do
       end
 
       describe "#invitations_sample" do
-        let!(:invitation1) do
-          create(:invitation, applicant: applicant1, organisations: [organisation], sent_at: date)
-        end
-        let!(:invitation2) do
-          create(:invitation, applicant: applicant2, organisations: [other_organisation], sent_at: date)
-        end
         let!(:invitation3) { create(:invitation, organisations: [organisation], sent_at: nil) }
 
         it "scopes the collection to the organisation" do
@@ -548,20 +564,40 @@ describe Stat do
         end
       end
 
-      describe "#invitations_on_an_orientation_category_during_a_month_sample" do
+      describe "#invitations_on_an_orientation_category_sample" do
         let!(:applicant3) { create(:applicant, organisations: [organisation], created_at: date) }
         let!(:rdv_context3) do
           create(:rdv_context, applicant: applicant3, motif_category: category_rsa_cer_signature)
         end
         let!(:invitation3) { create(:invitation, sent_at: date, rdv_context: rdv_context3) }
 
-        it "scopes the collection to the department" do
-          expect(stat.invitations_on_an_orientation_category_during_a_month_sample(date)).to include(invitation1)
-          expect(stat.invitations_on_an_orientation_category_during_a_month_sample(date)).not_to include(invitation2)
+        it "scopes the collection to the organisation" do
+          expect(stat.invitations_on_an_orientation_category_sample).to include(invitation1)
+          expect(stat.invitations_on_an_orientation_category_sample).not_to include(invitation2)
         end
 
         it "does not include the rdv_contexts with no motif category for a first rdv RSA" do
-          expect(stat.invitations_on_an_orientation_category_during_a_month_sample(date)).not_to include(invitation3)
+          expect(stat.invitations_on_an_orientation_category_sample).not_to include(invitation3)
+        end
+      end
+
+      describe "#notifications_on_an_orientation_category_sample" do
+        let!(:notification1) { create(:notification, participation: participation1, sent_at: date) }
+        let!(:notification2) { create(:notification, participation: participation2, sent_at: date) }
+        let!(:applicant3) { create(:applicant, organisations: [organisation], created_at: date) }
+        let!(:rdv_context3) do
+          create(:rdv_context, applicant: applicant3, motif_category: category_rsa_cer_signature)
+        end
+        let!(:participation3) { create(:participation, rdv_context: rdv_context3, applicant: applicant3) }
+        let!(:notification3) { create(:notification, participation: participation3, sent_at: date) }
+
+        it "scopes the collection to the organisation" do
+          expect(stat.notifications_on_an_orientation_category_sample).to include(notification1)
+          expect(stat.notifications_on_an_orientation_category_sample).not_to include(notification2)
+        end
+
+        it "does not include the notifications related to a motif category that is not orientation" do
+          expect(stat.notifications_on_an_orientation_category_sample).not_to include(notification3)
         end
       end
     end
@@ -642,9 +678,17 @@ describe Stat do
         end
       end
 
-      describe "#invitations_on_an_orientation_category_during_a_month_sample" do
+      describe "#invitations_on_an_orientation_category_sample" do
         it "does not scope the collection to the department" do
-          expect(stat.invitations_on_an_orientation_category_during_a_month_sample(date)).to include(invitation2)
+          expect(stat.invitations_on_an_orientation_category_sample).to include(invitation2)
+        end
+      end
+
+      describe "#notifications_on_an_orientation_category_sample" do
+        let!(:notification2) { create(:notification, participation: participation2, sent_at: date) }
+
+        it "does not scope the collection to the department" do
+          expect(stat.notifications_on_an_orientation_category_sample).to include(notification2)
         end
       end
     end

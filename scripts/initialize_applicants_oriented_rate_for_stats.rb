@@ -9,8 +9,8 @@ Stat.find_each do |stat|
     oriented_rate = stat.rate_of_applicants_oriented_grouped_by_month
     oriented_rate_for_date =
       Stats::ComputeRateOfApplicantsWithRdvSeenAfterInvitationOrConvocation.call(
-        invitations: stat.invitations_on_an_orientation_category_during_a_month_sample(date),
-        notifications: stat.notifications_on_an_orientation_category_during_a_month_sample(date)
+        invitations: stat.invitations_on_an_orientation_category_sample.where(sent_at: date.all_month),
+        notifications: stat.notifications_on_an_orientation_category_sample.where(sent_at: date.all_month)
       ).value.round
 
     # We don't want to start the hash until we have a value

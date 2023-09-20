@@ -109,20 +109,18 @@ class Stat < ApplicationRecord
                 .distinct
   end
 
-  def invitations_on_an_orientation_category_during_a_month_sample(date)
-    @invitations_on_an_orientation_category_during_a_month_sample ||=
+  def invitations_on_an_orientation_category_sample
+    @invitations_on_an_orientation_category_sample ||=
       invitations_sample.preload(:rdv_context, :participations)
                         .where(applicant: applicants_sample)
-                        .where(sent_at: date.all_month)
                         .joins(:rdv_context)
                         .where(rdv_contexts: RdvContext.orientation)
                         .distinct
   end
 
-  def notifications_on_an_orientation_category_during_a_month_sample(date)
-    @notifications_on_an_orientation_category_during_a_month_sample ||=
-      notifications_sample.preload(:participation, :rdv_context, :applicant)
-                          .where(created_at: date.all_month)
+  def notifications_on_an_orientation_category_sample
+    @notifications_on_an_orientation_category_sample ||=
+      notifications_sample.preload(:participation)
                           .joins(:participation)
                           .where(participation: { applicant: applicants_sample })
                           .where(participation: { rdv_context: RdvContext.orientation })
