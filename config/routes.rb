@@ -109,7 +109,7 @@ Rails.application.routes.draw do
           resources :users, only: [] do
             post :create_and_invite_many, on: :collection
           end
-          post "users/create_and_invite_many", to: "users#create_and_invite_many"
+          post "applicants/create_and_invite_many", to: "users#create_and_invite_many"
         end
       end
     end

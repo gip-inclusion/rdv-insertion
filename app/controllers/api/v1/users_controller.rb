@@ -50,10 +50,10 @@ module Api
         )
       end
 
-      def set_users_params
-        # we want POST users/create_and_invite_many to behave like users/create_and_invite_many,
+      def set_applicants_params
+        # we want POST applicants/create_and_invite_many to behave like users/create_and_invite_many,
         # so we're changing the payload to have users instead of users
-        params[:users] ||= params[:users]
+        params[:applicants] ||= params[:users]
       end
     end
   end

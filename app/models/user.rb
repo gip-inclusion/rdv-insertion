@@ -3,7 +3,6 @@ class User < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [
     :first_name, :last_name, :birth_date, :email, :phone_number, :address, :affiliation_number, :birth_name
   ].freeze
-  RDV_SOLIDARITES_CLASS_NAME = "User".freeze
   REQUIRED_ATTRIBUTES_FOR_INVITATION_FORMATS = {
     "sms" => :phone_number,
     "email" => :email,
