@@ -20,7 +20,8 @@ module Stats
     def applicants
       @applicants ||=
         Applicant.where(
-          id: @invitations.pluck(:applicant_id) + @notifications.joins(:participation).pluck(:applicant_id)
+          id: @invitations.pluck(:applicant_id) +
+              @notifications.joins(:participation).pluck("participation.applicant_id")
         ).distinct
     end
 
@@ -28,7 +29,7 @@ module Stats
       @applicants_with_rdv_seen_after_invitation_or_convocation ||=
         Applicant.where(
           id: invitations_that_led_to_a_rdv_seen.pluck(:applicant_id) +
-              Participation.where(notifications: notifications_that_led_to_a_rdv_seen).pluck(:applicant_id)
+              notifications_that_led_to_a_rdv_seen.pluck("participation.applicant_id")
         ).distinct
     end
 
