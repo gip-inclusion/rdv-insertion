@@ -9,8 +9,8 @@ module Participations
     def call
       Participation.transaction do
         update_rdv_solidarites_participation
-        @participation.update!(status: @participation_params[:status])
-        @participation.rdv_context.set_status
+        @participation.update!(@participation_params)
+        @participation.rdv_context.set_status if @participation_params[:status].present?
       end
     end
 
