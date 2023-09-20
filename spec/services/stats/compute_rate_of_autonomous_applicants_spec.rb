@@ -28,15 +28,16 @@ describe Stats::ComputeRateOfAutonomousApplicants, type: :service do
     create(:participation, rdv_context: rdv_context2, applicant: applicant2, rdv: rdv2, created_at: date)
   end
 
-  # Third applicant : created 1 month ago, has a rdv taken in autonomy
+  # Third applicant : created 1 month ago, has a participation to a rdv taken in autonomy
   let!(:applicant3) { create(:applicant, created_at: date) }
   let!(:invitation3) do
     create(:invitation, created_at: date, sent_at: date, rdv_context: rdv_context3, applicant: applicant3)
   end
   let!(:rdv_context3) { create(:rdv_context, created_at: date, applicant: applicant3) }
-  let!(:rdv3) { create(:rdv, created_at: date, created_by: "user") }
+  let!(:rdv3) { create(:rdv, created_at: date, created_by: "agent") }
   let!(:participation3) do
-    create(:participation, rdv_context: rdv_context3, applicant: applicant3, rdv: rdv3, created_at: date)
+    create(:participation, rdv_context: rdv_context3, applicant: applicant3,
+                           rdv: rdv3, created_at: date, created_by: "user")
   end
 
   # Fourth applicant : created 1 month ago, has been invited but has not take any rdv
@@ -58,7 +59,7 @@ describe Stats::ComputeRateOfAutonomousApplicants, type: :service do
     end
 
     # Applicant 1 and 3 are ok ; 2 and 5 are not ok ; 4 is not considered
-    it "computes the percentage of invited applicants with at least on rdv taken in autonomy" do
+    it "computes the percentage of invited applicants with at least on participation to rdv taken in autonomy" do
       expect(result.value).to eq(50)
     end
   end

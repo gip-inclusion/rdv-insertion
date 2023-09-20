@@ -7,7 +7,7 @@ class SendPeriodicInvitesJob < ApplicationJob
     RdvContext
       .joins(:motif_category, :invitations)
       .preload(invitations: [{ organisations: :configurations }, :applicant])
-      .where(motif_categories: { participation_optional: false })
+      .where(motif_categories: { participation_optional: true })
       .where(invitations: Invitation.valid.sent)
       .find_each do |rdv_context|
       send_invite(rdv_context)

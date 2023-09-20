@@ -38,7 +38,7 @@ describe Stats::GlobalStats::Compute, type: :service do
         .and_return(Applicant.where(id: [applicant1, applicant2]))
       allow(stat).to receive(:orientation_rdv_contexts_sample)
         .and_return(RdvContext.where(id: [rdv_context1, rdv_context2]))
-      allow(stat).to receive(:invited_applicants_with_rdvs_non_collectifs_sample)
+      allow(stat).to receive(:invited_applicants_sample)
         .and_return(Applicant.where(id: [applicant1, applicant2]))
       allow(stat).to receive(:agents_sample)
         .and_return(Agent.where(id: [agent]))
@@ -139,7 +139,7 @@ describe Stats::GlobalStats::Compute, type: :service do
     end
 
     it "computes the percentage of invited applicants with at least on rdv taken in autonomy" do
-      expect(stat).to receive(:invited_applicants_with_rdvs_non_collectifs_sample)
+      expect(stat).to receive(:invited_applicants_sample)
       expect(Stats::ComputeRateOfAutonomousApplicants).to receive(:call)
         .with(applicants: [applicant1, applicant2])
       subject
