@@ -22,6 +22,10 @@ class Stat < ApplicationRecord
     @invitations_sample ||= statable.nil? ? Invitation.sent : statable.invitations.sent
   end
 
+  def notifications_sample
+    @notifications_sample ||= statable.nil? ? Notification.sent : statable.notifications.sent
+  end
+
   # We filter the participations to only keep the participations of the applicants in the scope
   def participations_sample
     @participations_sample ||= all_participations.where(applicant_id: applicants_sample)
@@ -111,21 +115,21 @@ class Stat < ApplicationRecord
 
   def invitations_on_an_orientation_category_during_a_month_sample(date)
     @invitations_on_an_orientation_category_during_a_month_sample ||=
-      Invitation.preload(:rdv_context, :participations)
-                .where(applicant: applicants_sample)
-                .where(sent_at: date.all_month)
-                .joins(:rdv_context)
-                .where(rdv_contexts: RdvContext.orientation)
-                .distinct
+      invitations_sample.preload(:rdv_context, :participations)
+                        .where(applicant: applicants_sample)
+                        .where(sent_at: date.all_month)
+                        .joins(:rdv_context)
+                        .where(rdv_contexts: RdvContext.orientation)
+                        .distinct
   end
 
   def notifications_on_an_orientation_category_during_a_month_sample(date)
     @notifications_on_an_orientation_category_during_a_month_sample ||=
-      Notification.preload(:participation, :rdv_context, :applicant)
-                  .where(created_at: date.all_month)
-                  .joins(:participation)
-                  .where(participation: { applicant: applicants_sample })
-                  .where(participation: { rdv_context: RdvContext.orientation })
-                  .distinct
+      notifications_sample.preload(:participation, :rdv_context, :applicant)
+                          .where(created_at: date.all_month)
+                          .joins(:participation)
+                          .where(participation: { applicant: applicants_sample })
+                          .where(participation: { rdv_context: RdvContext.orientation })
+                          .distinct
   end
 end

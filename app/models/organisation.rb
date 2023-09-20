@@ -16,6 +16,7 @@ class Organisation < ApplicationRecord
   has_many :configurations, dependent: :destroy
   has_many :rdvs, dependent: :nullify
   has_many :participations, through: :rdvs
+  has_many :notifications, through: :participations
   has_many :lieux, dependent: :nullify
   has_many :motifs, dependent: :nullify
   has_many :agent_roles, dependent: :destroy

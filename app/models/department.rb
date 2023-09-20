@@ -14,6 +14,7 @@ class Department < ApplicationRecord
   has_many :agents, through: :organisations
   has_many :rdvs, through: :organisations
   has_many :participations, through: :rdvs
+  has_many :notifications, through: :participations
   has_many :rdv_contexts, through: :applicants
   has_many :archived_applicants, through: :archives, source: :applicant
   has_many :tags, through: :organisations
