@@ -1,7 +1,7 @@
 module Api
   module V1
     class UsersController < ApplicationController
-      before_action :set_users_params, :set_organisation
+      before_action :set_applicants_params, :set_organisation
       include ParamsValidationConcern
 
       def create_and_invite_many
