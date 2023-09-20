@@ -5,6 +5,7 @@ module MotifCategoriesHelper
       create(
         :motif_category,
         name: "RSA orientation", short_name: "rsa_orientation",
+        leads_to_orientation: true,
         template: create(
           :template,
           model: "standard",
@@ -21,6 +22,7 @@ module MotifCategoriesHelper
       create(
         :motif_category,
         name: "RSA orientation - coaching emploi", short_name: "rsa_orientation_coaching",
+        leads_to_orientation: true,
         template: create(
           :template,
           model: "standard",
@@ -37,6 +39,7 @@ module MotifCategoriesHelper
       create(
         :motif_category,
         name: "RSA orientation - travailleurs indépendants", short_name: "rsa_orientation_freelance",
+        leads_to_orientation: true,
         template: create(
           :template,
           model: "standard",
@@ -142,6 +145,7 @@ module MotifCategoriesHelper
         :motif_category,
         name: "RSA offre insertion pro",
         short_name: "rsa_insertion_offer",
+        leads_to_orientation: true,
         participation_optional: true,
         template: create(
           :template,
@@ -159,6 +163,7 @@ module MotifCategoriesHelper
         :motif_category,
         name: "RSA orientation sur plateforme téléphonique",
         short_name: "rsa_orientation_on_phone_platform",
+        leads_to_orientation: true,
         template: create(
           :template,
           model: "phone_platform",
@@ -244,6 +249,7 @@ module MotifCategoriesHelper
         :motif_category,
         name: "RSA SPIE",
         short_name: "rsa_spie",
+        leads_to_orientation: true,
         template: create(
           :template,
           model: "standard",
@@ -262,6 +268,7 @@ module MotifCategoriesHelper
         :motif_category,
         name: "RSA Information d'intégration",
         short_name: "rsa_integration_information",
+        leads_to_orientation: true,
         template: create(
           :template,
           model: "standard",
@@ -293,6 +300,7 @@ module MotifCategoriesHelper
         :motif_category,
         name: "RSA orientation France Travail",
         short_name: "rsa_orientation_france_travail",
+        leads_to_orientation: true,
         participation_optional: false,
         template: create(
           :template,
