@@ -41,7 +41,7 @@ describe RdvSolidaritesWebhooks::ProcessUserProfileJob do
       let!(:organisation2) { create(:organisation) }
       let!(:user) do
         create(:user, rdv_solidarites_user_id: rdv_solidarites_user_id,
-                           organisations: [organisation, organisation2])
+                      organisations: [organisation, organisation2])
       end
 
       it "removes the organisation from the user" do

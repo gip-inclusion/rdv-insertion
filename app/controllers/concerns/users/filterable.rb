@@ -20,11 +20,11 @@ module Users::Filterable
     return if params[:tag_ids].blank?
 
     user_ids = TagUser
-                    .select(:user_id)
-                    .where(tag_id: params[:tag_ids])
-                    .group(:user_id)
-                    .having("COUNT(DISTINCT tag_id) = ?", [params[:tag_ids]].flatten.count)
-                    .pluck(:user_id)
+               .select(:user_id)
+               .where(tag_id: params[:tag_ids])
+               .group(:user_id)
+               .having("COUNT(DISTINCT tag_id) = ?", [params[:tag_ids]].flatten.count)
+               .pluck(:user_id)
 
     @users = @users.where(id: user_ids)
   end
@@ -118,14 +118,14 @@ module Users::Filterable
 
   def users_first_invitations
     @users_first_invitations ||= @users.includes(:invitations, :rdvs)
-                                                 .map(&:first_sent_invitation)
-                                                 .compact
+                                       .map(&:first_sent_invitation)
+                                       .compact
   end
 
   def users_last_invitations
     @users_last_invitations ||= @users.includes(:invitations, :rdvs)
-                                                .map(&:last_sent_invitation)
-                                                .compact
+                                      .map(&:last_sent_invitation)
+                                      .compact
   end
 
   def invitations_belonging_to_rdv_contexts(invitations, rdv_contexts)

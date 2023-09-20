@@ -45,9 +45,9 @@ class Stat < ApplicationRecord
   def invited_users_with_rdvs_non_collectifs_sample
     @invited_users_with_rdvs_non_collectifs_sample ||=
       users_sample.joins(:rdvs)
-                       .where(rdvs: rdvs_non_collectifs_sample)
-                       .with_sent_invitations
-                       .distinct
+                  .where(rdvs: rdvs_non_collectifs_sample)
+                  .with_sent_invitations
+                  .distinct
   end
 
   # We filter the rdv_contexts to keep those where the users were invited and created a rdv/participation
@@ -62,11 +62,11 @@ class Stat < ApplicationRecord
   # We filter the users by organisations and retrieve deleted or archived users
   def users_sample
     @users_sample ||= User.preload(:participations)
-                                    .joins(:organisations)
-                                    .where(organisations: organisations_sample)
-                                    .active
-                                    .where.not(id: archived_user_ids)
-                                    .distinct
+                          .joins(:organisations)
+                          .where(organisations: organisations_sample)
+                          .active
+                          .where.not(id: archived_user_ids)
+                          .distinct
   end
 
   # We don't include in the stats the agents working for rdv-insertion
@@ -99,7 +99,7 @@ class Stat < ApplicationRecord
     # Users invited in an orientation or accompagnement context
     @users_for_30_days_rdvs_seen_sample ||=
       users_sample.joins(:rdv_contexts)
-                       .where(rdv_contexts:
+                  .where(rdv_contexts:
                                 RdvContext.joins(:motif_category).where(
                                   motif_category: { short_name: %w[
                                     rsa_orientation rsa_orientation_on_phone_platform rsa_accompagnement

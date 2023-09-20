@@ -18,10 +18,10 @@ structure = if DEPARTMENT_ID.present?
 
 users = structure&.users || User.order(:department_id)
 context_users = if CONTEXT.present?
-                       users.joins(:rdv_contexts).where(rdv_contexts: { motif_category: MOTIF_CATEGORY })
-                     else
-                       users.where.missing(:rdv_contexts)
-                     end
+                  users.joins(:rdv_contexts).where(rdv_contexts: { motif_category: MOTIF_CATEGORY })
+                else
+                  users.where.missing(:rdv_contexts)
+                end
 
 result = Exports::GenerateUsersCsv.call(
   users: context_users, structure: structure, motif_category: MOTIF_CATEGORY

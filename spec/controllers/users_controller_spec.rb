@@ -691,12 +691,12 @@ describe UsersController do
 
       let!(:user2) do
         create(:user, organisations: [organisation], first_name: "Marie",
-                           tag_users_attributes: [{ tag_id: tags[0].id }, { tag_id: tags[1].id }])
+                      tag_users_attributes: [{ tag_id: tags[0].id }, { tag_id: tags[1].id }])
       end
 
       let!(:user3) do
         create(:user, organisations: [organisation], first_name: "Oliva",
-                           tag_users_attributes: [{ tag_id: tags[2].id }])
+                      tag_users_attributes: [{ tag_id: tags[2].id }])
       end
 
       let!(:index_params) do

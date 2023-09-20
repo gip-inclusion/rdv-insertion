@@ -464,7 +464,7 @@ describe "Agents can upload user list", js: true do
           let!(:user) do
             create(
               :user, email: "hernan@crespo.com", first_name: "hernan",
-                          organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
+                     organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
 
@@ -485,8 +485,8 @@ describe "Agents can upload user list", js: true do
           let!(:user) do
             create(
               :user, email: "hernan@crespo.com", first_name: "hernan",
-                          organisations: [other_org_from_other_department],
-                          rdv_solidarites_user_id: rdv_solidarites_user_id
+                     organisations: [other_org_from_other_department],
+                     rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
 
@@ -523,7 +523,7 @@ describe "Agents can upload user list", js: true do
           let!(:user) do
             create(
               :user, phone_number: "0620022002", first_name: "hernan",
-                          organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
+                     organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
 
@@ -1004,7 +1004,7 @@ describe "Agents can upload user list", js: true do
           let!(:user) do
             create(
               :user, email: "hernan@crespo.com", first_name: "hernan",
-                          organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
+                     organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
 
@@ -1025,8 +1025,8 @@ describe "Agents can upload user list", js: true do
           let!(:user) do
             create(
               :user, email: "hernan@crespo.com", first_name: "hernan",
-                          organisations: [other_org_from_other_department],
-                          rdv_solidarites_user_id: rdv_solidarites_user_id
+                     organisations: [other_org_from_other_department],
+                     rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
 
@@ -1061,7 +1061,7 @@ describe "Agents can upload user list", js: true do
           let!(:user) do
             create(
               :user, email: "hernan@crespo.com", first_name: "lionel",
-                          organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
+                     organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
 
@@ -1080,7 +1080,7 @@ describe "Agents can upload user list", js: true do
           let!(:user) do
             create(
               :user, phone_number: "0620022002", first_name: "hernan",
-                          organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
+                     organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
 
@@ -1101,8 +1101,8 @@ describe "Agents can upload user list", js: true do
           let!(:user) do
             create(
               :user, phone_number: "0620022002", first_name: "hernan",
-                          organisations: [other_org_from_other_department],
-                          rdv_solidarites_user_id: rdv_solidarites_user_id
+                     organisations: [other_org_from_other_department],
+                     rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
 
@@ -1137,7 +1137,7 @@ describe "Agents can upload user list", js: true do
           let!(:user) do
             create(
               :user, phone_number: "0620022002", first_name: "lionel",
-                          organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
+                     organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
 

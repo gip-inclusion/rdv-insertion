@@ -8,11 +8,11 @@ describe Stat do
     let!(:other_department) { create(:department) }
     let!(:user1) do
       create(:user, organisations: [organisation],
-                         created_at: date)
+                    created_at: date)
     end
     let!(:user2) do
       create(:user, organisations: [other_organisation],
-                         created_at: date)
+                    created_at: date)
     end
     let!(:organisation) { create(:organisation, department: department) }
     let!(:configuration) { create(:configuration, organisation: organisation) }
@@ -283,7 +283,7 @@ describe Stat do
       describe "#users_for_30_days_rdvs_seen_sample" do
         let!(:user3) do
           create(:user, organisations: [organisation],
-                             created_at: date)
+                        created_at: date)
         end
         let!(:rdv_context3) do
           create(:rdv_context, user: user3, motif_category: category_rsa_cer_signature)
@@ -527,7 +527,7 @@ describe Stat do
       describe "#users_for_30_days_rdvs_seen_sample" do
         let!(:user3) do
           create(:user, organisations: [organisation],
-                             created_at: date)
+                        created_at: date)
         end
         let!(:rdv_context3) do
           create(:rdv_context, user: user3, motif_category: category_rsa_cer_signature)

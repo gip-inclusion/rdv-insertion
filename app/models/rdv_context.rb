@@ -13,7 +13,7 @@ class RdvContext < ApplicationRecord
   has_many :notifications, through: :participations
 
   validates :user, uniqueness: { scope: :motif_category,
-                                      message: "est déjà suivi pour cette catégorie de motif" }
+                                 message: "est déjà suivi pour cette catégorie de motif" }
 
   delegate :position, :name, :short_name, to: :motif_category, prefix: true
 

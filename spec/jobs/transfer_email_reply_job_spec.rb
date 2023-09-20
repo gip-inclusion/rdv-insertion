@@ -15,7 +15,7 @@ describe TransferEmailReplyJob do
   let!(:organisation) { create(:organisation, email: "organisation@departement.fr") }
   let!(:user) do
     create(:user, email: "bene_ficiaire@gmail.com",
-                       first_name: "Bénédicte", last_name: "Ficiaire", organisations: [organisation])
+                  first_name: "Bénédicte", last_name: "Ficiaire", organisations: [organisation])
   end
   let(:rdv_uuid) { "8fae4d5f-4d63-4f60-b343-854d939881a3" }
   let!(:rdv_context) { create(:rdv_context, user: user) }

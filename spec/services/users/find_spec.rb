@@ -58,7 +58,7 @@ describe Users::Find, type: :service do
           let!(:user) do
             create(
               :user, department_internal_id: department_internal_id,
-                          organisations: [other_org_outside_the_department]
+                     organisations: [other_org_outside_the_department]
             )
           end
 
@@ -76,7 +76,7 @@ describe Users::Find, type: :service do
         let!(:user) do
           create(
             :user, role: role, affiliation_number: affiliation_number,
-                        organisations: [other_org_inside_the_department]
+                   organisations: [other_org_inside_the_department]
           )
         end
 
@@ -89,7 +89,7 @@ describe Users::Find, type: :service do
         let!(:user) do
           create(
             :user, role: role, affiliation_number: affiliation_number,
-                        organisations: [other_org_outside_the_department]
+                   organisations: [other_org_outside_the_department]
           )
         end
 
