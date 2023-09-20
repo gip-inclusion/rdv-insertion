@@ -40,6 +40,7 @@ describe "Agents can update a participation status", js: true do
         find("a[data-value=revoked]").click
 
         expect(page).to have_content("Annulé (par le service)")
+        expect(applicant.rdv_contexts.pluck(:status)).to include("rdv_revoked")
       end
     end
   end

@@ -10,7 +10,11 @@ module Participations
       Participation.transaction do
         update_rdv_solidarites_participation
         @participation.update!(@participation_params)
-        @participation.rdv_context.set_status if @participation_params[:status].present?
+
+        if @participation_params[:status].present?
+          @participation.rdv_context.set_status
+          @participation.rdv_context.save!
+        end
       end
     end
 
