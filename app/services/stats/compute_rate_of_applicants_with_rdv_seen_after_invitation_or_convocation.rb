@@ -18,15 +18,18 @@ module Stats
     end
 
     def applicants
-      @applicants ||= Applicant.joins(:invitations).where(invitations: @invitations).distinct
+      @applicants ||=
+        Applicant.where(
+          id: @invitations.pluck(:applicant_id) + @notifications.joins(:participation).pluck(:applicant_id)
+        ).distinct
     end
 
     def applicants_with_rdv_seen_after_invitation_or_convocation
       @applicants_with_rdv_seen_after_invitation_or_convocation ||=
-        Applicant.where(invitations: invitations_that_led_to_a_rdv_seen)
-                 .or(Applicant.where(notifications: notifications_that_led_to_a_rdv_seen))
-                 .joins(:invitations, :notifications) # we write the .joins to avoid a know error with .or (https://github.com/rails/rails/issues/24055)
-                 .distinct
+        Applicant.where(
+          id: invitations_that_led_to_a_rdv_seen.pluck(:applicant_id) +
+              Participation.where(notifications: notifications_that_led_to_a_rdv_seen).pluck(:applicant_id)
+        ).distinct
     end
 
     def invitations_that_led_to_a_rdv_seen

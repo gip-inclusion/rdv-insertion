@@ -1,8 +1,12 @@
 describe Stats::ComputeRateOfApplicantsWithRdvSeenAfterInvitationOrConvocation, type: :service do
-  subject { described_class.call(invitations: invitations) }
+  subject { described_class.call(invitations: invitations, notifications: notifications) }
 
   let!(:invitations) do
     Invitation.where(id: [invitation1, invitation2, invitation3, invitation4, invitation5, invitation6])
+  end
+
+  let!(:notifications) do
+    Notification.where(id: [notification1, notification2])
   end
 
   # Applicant 1 : 1 invitation, 1 participation seen after the invitation
@@ -51,6 +55,24 @@ describe Stats::ComputeRateOfApplicantsWithRdvSeenAfterInvitationOrConvocation, 
   let!(:rdv_context5) { create(:rdv_context, applicant: applicant5) }
   let!(:invitation6) { create(:invitation, applicant: applicant5, rdv_context: rdv_context5) }
 
+  # Applicant 6 : 1 notification, 1 participation seen after the notification
+  let!(:applicant6) { create(:applicant) }
+  let!(:rdv_context6) { create(:rdv_context, applicant: applicant6) }
+  let!(:notification1) do
+    create(:notification, participation: participation5, event: "participation_created",
+                          created_at: invitation5.created_at)
+  end
+  let!(:rdv5) { create(:rdv, starts_at: (invitation5.created_at + 2.days), status: "seen") }
+  let!(:participation5) do
+    create(:participation, rdv: rdv5, applicant: applicant6, rdv_context: rdv_context6, status: "seen",
+                           created_at: (invitation5.created_at + 2.days))
+  end
+
+  # Applicant 7 : 1 notification, no participation
+  let!(:applicant7) { create(:applicant) }
+  let!(:rdv_context7) { create(:rdv_context, applicant: applicant7) }
+  let!(:notification2) { create(:notification, rdv_context: rdv_context7, event: "participation_created") }
+
   describe "#call" do
     let!(:result) { subject }
 
@@ -63,8 +85,8 @@ describe Stats::ComputeRateOfApplicantsWithRdvSeenAfterInvitationOrConvocation, 
     end
 
     it "computes the percentage of applicants with rdv seen posterior to an invitation" do
-      # 6 invitations, 5 applicants, 2 applicants with rdv seen posterior to an invitation
-      expect(result.value).to eq(40)
+      # 6 invitations, 2 notifications, 7 applicants, 3 applicants with rdv seen posterior to an invitation
+      expect(result.value).to eq(3 / 7.0 * 100)
     end
   end
 end
