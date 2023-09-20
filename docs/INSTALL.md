@@ -66,7 +66,7 @@ make run      ## appelle foreman s -f Procfile.dev
 
 ### Dans l'appli
 
-Vous trouverez dans le dossier [Resources](https://github.com/betagouv/rdv-insertion/tree/staging/docs/resources) 2 fichiers de test pour l'import des allocataires via l'upload dans l'application : Un fichier xlsx contenant des allocataires et un fichier csv de contacts.
+Vous trouverez dans le dossier [Resources](https://github.com/betagouv/rdv-insertion/tree/staging/docs/resources) 2 fichiers de test pour l'import des usagers via l'upload dans l'application : Un fichier xlsx contenant des usagers et un fichier csv de contacts.
 
 ## Commandes
 

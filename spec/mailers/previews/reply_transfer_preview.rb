@@ -4,7 +4,7 @@ class ReplyTransferPreview < ActionMailer::Preview
     rdv = Notification.last.rdv
 
     source_mail = Mail.new do
-      from rdv.applicants.first.email
+      from rdv.users.first.email
 
       subject "Re: [Important - RSA] Vous êtes convoquée à un rendez-vous d'orientation"
 
@@ -33,7 +33,7 @@ class ReplyTransferPreview < ActionMailer::Preview
     invitation = Invitation.last
 
     source_mail = Mail.new do
-      from invitation.applicant.email
+      from invitation.user.email
 
       subject "Re: [RSA]: Votre rendez-vous d'orientation dans le cadre de votre RSA"
 
@@ -60,7 +60,7 @@ class ReplyTransferPreview < ActionMailer::Preview
 
   def forward_to_default_mailbox
     source_mail = Mail.new do
-      from Applicant.last.email
+      from User.last.email
 
       subject "Re: [RSA]: Votre rendez-vous d'orientation dans le cadre de votre RSA"
 

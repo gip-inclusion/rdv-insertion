@@ -7,6 +7,6 @@ fr:
         name: Nom
         email: Email
         phone_number: Numéro de téléphone
-        slug: Désignation dans le fichier allocataires
+        slug: Désignation dans le fichier usagers
         independent_from_cd: Indépendante du CD
         logo_filename: Nom du logo

@@ -4,14 +4,14 @@ module Invitations
 
     include Rails.application.routes.url_helpers
 
-    delegate :applicant, :help_phone_number, :number_of_days_before_expiration,
-             :rdv_purpose, :rdv_title, :applicant_designation, :mandatory_warning, :punishable_warning,
+    delegate :user, :help_phone_number, :number_of_days_before_expiration,
+             :rdv_purpose, :rdv_title, :user_designation, :mandatory_warning, :punishable_warning,
              to: :invitation
 
     private
 
     def short_content
-      "#{applicant.full_name},\nVous êtes #{applicant.conjugate('invité')} à prendre un #{rdv_title}." \
+      "#{user.full_name},\nVous êtes #{user.conjugate('invité')} à prendre un #{rdv_title}." \
         " Pour choisir la date et l'horaire du RDV, " \
         "cliquez sur le lien suivant: " \
         "#{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
@@ -21,7 +21,7 @@ module Invitations
     end
 
     def standard_content
-      "#{applicant.full_name},\nVous êtes #{applicant_designation} et vous êtes #{applicant.conjugate('invité')} à" \
+      "#{user.full_name},\nVous êtes #{user_designation} et vous êtes #{user.conjugate('invité')} à" \
         " participer à un #{rdv_title}. Pour choisir la date et l'horaire du RDV, " \
         "cliquez sur le lien suivant dans les #{Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER} jours: " \
         "#{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
@@ -31,7 +31,7 @@ module Invitations
     end
 
     def phone_platform_content
-      "#{applicant.full_name},\nVous êtes #{applicant_designation} et vous devez contacter la plateforme " \
+      "#{user.full_name},\nVous êtes #{user_designation} et vous devez contacter la plateforme " \
         "départementale afin de #{rdv_purpose}. Pour cela, merci d'appeler le " \
         "#{help_phone_number} dans un délai de #{Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER} jours. " \
         "#{mandatory_warning_message}" \
@@ -39,7 +39,7 @@ module Invitations
     end
 
     def atelier_content
-      "#{applicant.full_name},\nVous êtes #{applicant_designation} et bénéficiez d'un accompagnement. " \
+      "#{user.full_name},\nVous êtes #{user_designation} et bénéficiez d'un accompagnement. " \
         "Pour en profiter au mieux, nous vous invitons " \
         "à vous inscrire directement et librement aux ateliers et formations de votre choix en cliquant sur le lien " \
         "suivant: #{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
@@ -49,9 +49,9 @@ module Invitations
     end
 
     def atelier_enfants_ados_content
-      "#{applicant},\nTu es #{applicant.conjugate('invité')} à participer à un atelier organisé par le département. " \
+      "#{user},\nTu es #{user.conjugate('invité')} à participer à un atelier organisé par le département. " \
         "Nous te proposons de cliquer ci-dessous pour découvrir le programme. " \
-        "Si tu es #{applicant.conjugate('intéressé')} pour participer, tu n’auras qu’à cliquer et t’inscrire en ligne" \
+        "Si tu es #{user.conjugate('intéressé')} pour participer, tu n’auras qu’à cliquer et t’inscrire en ligne" \
         " avec le lien suivant: #{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
         "En cas de problème technique, tu peux contacter le #{help_phone_number}."
     end
@@ -59,7 +59,7 @@ module Invitations
     ### Reminders
 
     def short_reminder_content
-      "#{applicant.full_name},\nVous avez reçu un message il y a 3 jours " \
+      "#{user.full_name},\nVous avez reçu un message il y a 3 jours " \
         "vous invitant à prendre un #{rdv_title}." \
         " Le lien de prise de RDV suivant expire dans #{number_of_days_before_expiration} " \
         "jours: " \
@@ -70,7 +70,7 @@ module Invitations
     end
 
     def standard_reminder_content
-      "#{applicant.full_name},\nEn tant que #{applicant_designation}, vous avez reçu un message il y a 3 jours " \
+      "#{user.full_name},\nEn tant que #{user_designation}, vous avez reçu un message il y a 3 jours " \
         "vous invitant à prendre RDV au créneau de votre choix afin de #{rdv_purpose}." \
         " Le lien de prise de RDV suivant expire dans #{number_of_days_before_expiration} " \
         "jours: " \
@@ -81,7 +81,7 @@ module Invitations
     end
 
     def phone_platform_reminder_content
-      "#{applicant.full_name},\nEn tant que #{applicant_designation}, vous avez reçu un message il y a 3 jours vous " \
+      "#{user.full_name},\nEn tant que #{user_designation}, vous avez reçu un message il y a 3 jours vous " \
         "invitant à contacter la plateforme départementale afin de #{rdv_purpose}. " \
         "Vous n'avez plus que #{number_of_days_before_expiration} jours pour appeler le " \
         "#{help_phone_number}. " \
@@ -90,7 +90,7 @@ module Invitations
     end
 
     def atelier_enfants_ados_reminder_content
-      "#{applicant.full_name},\nTu as reçu un message il y a 3 jours " \
+      "#{user.full_name},\nTu as reçu un message il y a 3 jours " \
         "t'invitant à participer à un #{rdv_title}." \
         " Le lien de prise de RDV suivant expire dans #{number_of_days_before_expiration} " \
         "jours: " \

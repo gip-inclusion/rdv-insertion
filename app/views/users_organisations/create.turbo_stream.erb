@@ -1,0 +1,11 @@
+<%= turbo_stream.replace "organisations_list" do %>
+  <%= render "common/attribute_display", record: @user, attribute: :organisations, as: :list, id: "organisations_list" %>
+<% end %>
+
+<%= render_turbo_stream_flash_messages %>
+
+<% if @organisation_to_add.email? %>
+  <%= turbo_stream.replace "remote_modal" do %>
+    <%= render partial: "organisations/user_added_notifications/form", locals: { emails: [@organisation_to_add.email], user: @user, organisation: @organisation_to_add } %>
+  <% end %>
+<% end %>

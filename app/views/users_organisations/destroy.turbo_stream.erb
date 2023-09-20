@@ -1,0 +1,5 @@
+<%= turbo_stream.replace "organisations_list" do %>
+  <%= render "common/attribute_display", record: @user, attribute: :organisations, as: :list, id: "organisations_list" %>
+<% end %>
+
+<%= render_turbo_stream_flash_messages %>

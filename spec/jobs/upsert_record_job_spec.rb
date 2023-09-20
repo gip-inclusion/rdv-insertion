@@ -11,15 +11,15 @@ describe UpsertRecordJob do
         {
           id: nil,
           status: "unknown",
-          applicant_id: applicant_id,
+          user_id: user_id,
           rdv_solidarites_participation_id: 998
         }
       ],
       organisation_id: organisation_id
     }
   end
-  let(:applicant_id) { 23 }
-  let(:applicant_ids) { [applicant_id] }
+  let(:user_id) { 23 }
+  let(:user_ids) { [user_id] }
 
   let(:organisation_id) { 3 }
 

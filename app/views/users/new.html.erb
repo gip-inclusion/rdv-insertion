@@ -1,0 +1,4 @@
+<%= simple_form_for(@user, url: department_level? ? department_users_path(@department, @user) : organisation_users_path(@organisation, @user), html: { method: :post }) do |f| %>
+  <%= render 'user_form', f: f, title: "Créer un usager", return_path: compute_index_path(@organisation, @department) %>
+<% end %>
+

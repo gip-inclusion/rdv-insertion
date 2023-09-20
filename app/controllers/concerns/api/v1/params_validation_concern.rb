@@ -12,28 +12,28 @@ module Api
       def validate_params
         @params_validation_errors = []
 
-        validate_applicants_length
-        validate_applicants_attributes
+        validate_users_length
+        validate_users_attributes
         validate_invitations_attributes
       end
 
-      def validate_applicants_length
-        return if applicants_attributes.length <= 25
+      def validate_users_length
+        return if users_attributes.length <= 25
 
-        @params_validation_errors << "Les allocataires doivent être envoyés par lots de 25 maximum"
+        @params_validation_errors << "Les usagers doivent être envoyés par lots de 25 maximum"
       end
 
-      def validate_applicants_attributes
-        applicants_attributes.each_with_index do |applicant_attributes, idx|
-          applicant = Applicant.new(applicant_attributes.except(:invitation))
-          applicant.skip_uniqueness_validations = true
+      def validate_users_attributes
+        users_attributes.each_with_index do |user_attributes, idx|
+          user = User.new(user_attributes.except(:invitation))
+          user.skip_uniqueness_validations = true
 
-          next if applicant.valid?
+          next if user.valid?
 
-          department_internal_id = applicant_attributes[:department_internal_id]
+          department_internal_id = user_attributes[:department_internal_id]
           key = "Entrée #{idx + 1}" + (department_internal_id.present? ? " - #{department_internal_id}" : "")
 
-          @params_validation_errors << { "#{key}": applicant.errors }
+          @params_validation_errors << { "#{key}": user.errors }
         end
       end
 

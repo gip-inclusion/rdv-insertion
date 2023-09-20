@@ -5,9 +5,9 @@ describe Invitations::SaveAndSend, type: :service do
     )
   end
 
-  let!(:applicant) { create(:applicant) }
+  let!(:user) { create(:user) }
   let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
-  let!(:invitation) { create(:invitation, applicant: applicant, sent_at: nil) }
+  let!(:invitation) { create(:invitation, user: user, sent_at: nil) }
 
   describe "#call" do
     before do
@@ -17,7 +17,7 @@ describe Invitations::SaveAndSend, type: :service do
       allow(Invitations::Validate).to receive(:call)
         .with(invitation: invitation)
         .and_return(OpenStruct.new(success?: true))
-      allow(invitation).to receive(:send_to_applicant)
+      allow(invitation).to receive(:send_to_user)
         .and_return(OpenStruct.new(success?: true))
       allow(invitation).to receive(:rdv_solidarites_token?).and_return(false)
       allow(invitation).to receive(:link?).and_return(false)
@@ -38,7 +38,7 @@ describe Invitations::SaveAndSend, type: :service do
     end
 
     it "sends the invitation" do
-      expect(invitation).to receive(:send_to_applicant)
+      expect(invitation).to receive(:send_to_user)
       subject
     end
 
@@ -81,7 +81,7 @@ describe Invitations::SaveAndSend, type: :service do
 
     context "when it fails to send invitation" do
       before do
-        allow(invitation).to receive(:send_to_applicant)
+        allow(invitation).to receive(:send_to_user)
           .and_return(OpenStruct.new(success?: false, errors: ["something happened"]))
       end
 

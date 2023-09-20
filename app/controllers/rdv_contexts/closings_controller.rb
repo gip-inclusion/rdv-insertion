@@ -1,28 +1,28 @@
 module RdvContexts
   class ClosingsController < ApplicationController
     wrap_parameters false
-    before_action :set_rdv_context, :set_applicant, :set_organisation, :set_department, only: [:create, :destroy]
+    before_action :set_rdv_context, :set_user, :set_organisation, :set_department, only: [:create, :destroy]
 
     def create
       authorize @rdv_context, :close?
-      return reload_applicant_show_page if close_rdv_context.success?
+      return reload_user_show_page if close_rdv_context.success?
 
       display_error_modal(close_rdv_context.errors)
     end
 
     def destroy
       authorize @rdv_context, :reopen?
-      return reload_applicant_show_page if @rdv_context.update(closed_at: nil)
+      return reload_user_show_page if @rdv_context.update(closed_at: nil)
 
       display_error_modal(@rdv_context.errors.full_messages)
     end
 
     private
 
-    def reload_applicant_show_page
-      return redirect_to department_applicant_path(@department, @applicant) if department_level?
+    def reload_user_show_page
+      return redirect_to department_user_path(@department, @user) if department_level?
 
-      redirect_to organisation_applicant_path(@organisation, @applicant)
+      redirect_to organisation_user_path(@organisation, @user)
     end
 
     def display_error_modal(errors)
@@ -41,8 +41,8 @@ module RdvContexts
       @rdv_context = RdvContext.find(closing_params[:rdv_context_id])
     end
 
-    def set_applicant
-      @applicant = policy_scope(Applicant).find(closing_params[:applicant_id])
+    def set_user
+      @user = policy_scope(User).find(closing_params[:user_id])
     end
 
     def set_organisation
@@ -56,7 +56,7 @@ module RdvContexts
     end
 
     def closing_params
-      params.permit(:rdv_context_id, :applicant_id, :organisation_id, :department_id)
+      params.permit(:rdv_context_id, :user_id, :organisation_id, :department_id)
     end
   end
 end

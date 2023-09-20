@@ -1,16 +1,16 @@
 import Swal from "sweetalert2";
-import inviteApplicant from "../actions/inviteApplicant";
+import inviteUser from "../actions/inviteUser";
 
 const createInvitationLetter = async (
-  applicantId,
+  userId,
   departmentId,
   organisationId,
   isDepartmentLevel,
   motifCategoryId,
   helpPhoneNumber
 ) => {
-  const response = await inviteApplicant(
-    applicantId,
+  const response = await inviteUser(
+    userId,
     departmentId,
     organisationId,
     isDepartmentLevel,

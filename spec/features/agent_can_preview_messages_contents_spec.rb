@@ -41,7 +41,7 @@ describe "Agents can preview messages contents", js: true do
 
     page.fill_in "configuration_template_rdv_title_override", with: "nouveau type de rendez-vous"
     page.fill_in "configuration_template_rdv_title_by_phone_override", with: "nouveau coup de téléphone"
-    page.fill_in "configuration_template_applicant_designation_override", with: "une personne remarquable"
+    page.fill_in "configuration_template_user_designation_override", with: "une personne remarquable"
     page.fill_in "configuration_template_rdv_purpose_override", with: "vous rencontrer"
 
     click_button("Enregistrer")

@@ -1,24 +1,24 @@
 class NotificationMailerError < StandardError; end
 
 class NotificationMailer < ApplicationMailer
-  before_action :set_notification, :set_applicant, :set_rdv, :set_department, :set_rdv_subject,
-                :set_signature_lines, :set_rdv_title, :set_rdv_title_by_phone, :set_applicant_designation,
+  before_action :set_notification, :set_user, :set_rdv, :set_department, :set_rdv_subject,
+                :set_signature_lines, :set_rdv_title, :set_rdv_title_by_phone, :set_user_designation,
                 :set_mandatory_warning, :set_punishable_warning, :set_instruction_for_rdv,
                 :set_rdv_purpose, :verify_phone_number_presence, :set_organisation_logo_path, :set_department_logo_path
 
-  default to: -> { @applicant.email }, reply_to: -> { "rdv+#{@rdv.uuid}@reply.rdv-insertion.fr" }
+  default to: -> { @user.email }, reply_to: -> { "rdv+#{@rdv.uuid}@reply.rdv-insertion.fr" }
 
   ### participation_created ###
   def presential_participation_created
     mail(
-      subject: "[Important - #{@rdv_subject.upcase}] Vous êtes #{@applicant.conjugate('convoqué')}" \
+      subject: "[Important - #{@rdv_subject.upcase}] Vous êtes #{@user.conjugate('convoqué')}" \
                " à un #{@rdv_title}"
     )
   end
 
   def by_phone_participation_created
     mail(
-      subject: "[Important - #{@rdv_subject.upcase}] Vous êtes #{@applicant.conjugate('convoqué')}" \
+      subject: "[Important - #{@rdv_subject.upcase}] Vous êtes #{@user.conjugate('convoqué')}" \
                " à un #{@rdv_title_by_phone}"
     )
   end
@@ -40,14 +40,14 @@ class NotificationMailer < ApplicationMailer
 
   def presential_participation_reminder
     mail(
-      subject: "[Rappel - #{@rdv_subject.upcase}] Vous êtes #{@applicant.conjugate('convoqué')}" \
+      subject: "[Rappel - #{@rdv_subject.upcase}] Vous êtes #{@user.conjugate('convoqué')}" \
                " à un #{@rdv_title}"
     )
   end
 
   def by_phone_participation_reminder
     mail(
-      subject: "[Rappel - #{@rdv_subject.upcase}] Vous êtes #{@applicant.conjugate('convoqué')}" \
+      subject: "[Rappel - #{@rdv_subject.upcase}] Vous êtes #{@user.conjugate('convoqué')}" \
                " à un #{@rdv_title_by_phone}"
     )
   end
@@ -65,8 +65,8 @@ class NotificationMailer < ApplicationMailer
     @notification = params[:notification]
   end
 
-  def set_applicant
-    @applicant = @notification.applicant
+  def set_user
+    @user = @notification.user
   end
 
   def set_rdv
@@ -93,8 +93,8 @@ class NotificationMailer < ApplicationMailer
     @rdv_subject = @notification.rdv_subject
   end
 
-  def set_applicant_designation
-    @applicant_designation = @notification.applicant_designation
+  def set_user_designation
+    @user_designation = @notification.user_designation
   end
 
   def set_mandatory_warning
@@ -126,13 +126,13 @@ class NotificationMailer < ApplicationMailer
   end
 
   def verify_phone_number_presence
-    # if we send a notif for a phone rdv we want to be sure the applicant has a phone
+    # if we send a notif for a phone rdv we want to be sure the user has a phone
     return unless rdv_by_phone?
-    return if @applicant.phone_number.present?
+    return if @user.phone_number.present?
 
     raise(
       NotificationMailerError,
-      "No valid phone found for applicant #{@applicant.id}, cannot notify him by phone"
+      "No valid phone found for user #{@user.id}, cannot notify him by phone"
     )
   end
 end

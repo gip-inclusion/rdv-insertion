@@ -1,14 +1,14 @@
 # Preview all emails at http://localhost:8000/rails/mailers/department
 class DepartmentPreview < ActionMailer::Preview
-  def create_applicant_error
-    department = Department.joins(:applicants).first
+  def create_user_error
+    department = Department.joins(:users).first
     department.email = "contact@department.fr"
 
-    applicant = department.applicants.first
-    applicant.department_internal_id = "0212211"
+    user = department.users.first
+    user.department_internal_id = "0212211"
 
     errors = ["Erreur RDV-Solidarités: Service indisponible"]
 
-    DepartmentMailer.create_applicant_error(department, applicant, errors)
+    DepartmentMailer.create_user_error(department, user, errors)
   end
 end

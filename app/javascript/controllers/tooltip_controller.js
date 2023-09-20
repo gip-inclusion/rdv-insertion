@@ -9,7 +9,7 @@ export default class extends Controller {
         return (
           "Une intervention est nécessaire quand: " +
           `<ul><li>L'invitation a été envoyée depuis + de ${numberOfDaysBeforeActionRequired} jours sans réponse</li>` +
-          "<li>Le RDV a été annulé par l'un des partis ou l'allocataire ne s'est pas présenté au RDV</li>" +
+          "<li>Le RDV a été annulé par l'un des partis ou l'usager ne s'est pas présenté au RDV</li>" +
           "<li>L'issue du RDV n'a pas été renseignée sur RDV-Solidarités</li></ul>"
         );
       },
@@ -44,8 +44,8 @@ export default class extends Controller {
   slugAttribute() {
     tippy(this.element, {
       content:
-        "Si l'assignation des allocataires à l'organisation se fait via une colonne du fichier d'import " +
-        "des allocataires, les cases de cette colonne devront faire référence à la valeur définie ici.",
+        "Si l'assignation des usagers à l'organisation se fait via une colonne du fichier d'import " +
+        "des usagers, les cases de cette colonne devront faire référence à la valeur définie ici.",
     });
   }
 
@@ -144,8 +144,8 @@ export default class extends Controller {
   noCategorySelected() {
     tippy(this.element, {
       content:
-        "L'allocataire apparaitra dans l'onglet 'Tous les contacts' seulement. " +
-        "En choisissant cette option vous ne pourrez pas inviter l'allocataire à prendre rdv à l'upload du fichier " +
+        "L'usager apparaitra dans l'onglet 'Tous les contacts' seulement. " +
+        "En choisissant cette option vous ne pourrez pas inviter l'usager à prendre rdv à l'upload du fichier " +
         "(mais vous pourrez le faire ultérieurement en accédant à sa fiche).",
     });
   }

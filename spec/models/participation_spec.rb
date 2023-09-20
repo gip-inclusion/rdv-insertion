@@ -27,18 +27,18 @@ describe Participation do
     end
   end
 
-  describe "#notify_applicants" do
+  describe "#notify_users" do
     subject { participation.save }
 
     let!(:participation_id) { 333 }
     let!(:rdv) { create(:rdv) }
-    let!(:applicant) { create(:applicant) }
+    let!(:user) { create(:user) }
     let!(:participation) do
-      build(:participation, id: participation_id, convocable: true, rdv: rdv, applicant: applicant, status: "unknown")
+      build(:participation, id: participation_id, convocable: true, rdv: rdv, user: user, status: "unknown")
     end
 
     context "after record creation" do
-      it "enqueues a job to notify the applicant" do
+      it "enqueues a job to notify the user" do
         expect(NotifyParticipationJob).to receive(:perform_async)
           .with(participation.id, "sms", "participation_created")
         expect(NotifyParticipationJob).to receive(:perform_async)
@@ -49,14 +49,14 @@ describe Participation do
       context "when the rdv is not convocable" do
         before { participation.update! convocable: false }
 
-        it "does not enqueue a notify applicants job" do
+        it "does not enqueue a notify users job" do
           expect(NotifyParticipationJob).not_to receive(:perform_async)
           subject
         end
       end
 
-      context "when the applicant has no email" do
-        let!(:applicant) { create(:applicant, email: nil) }
+      context "when the user has no email" do
+        let!(:user) { create(:user, email: nil) }
 
         it "enqueues a job to notify by sms only" do
           expect(NotifyParticipationJob).to receive(:perform_async)
@@ -67,8 +67,8 @@ describe Participation do
         end
       end
 
-      context "when the applicant has no phone" do
-        let!(:applicant) { create(:applicant, phone_number: nil) }
+      context "when the user has no phone" do
+        let!(:user) { create(:user, phone_number: nil) }
 
         it "enqueues a job to notify by sms only" do
           expect(NotifyParticipationJob).not_to receive(:perform_async)
@@ -85,13 +85,13 @@ describe Participation do
         create(
           :participation,
           rdv: rdv,
-          applicant: applicant,
+          user: user,
           convocable: true,
           status: "unknown"
         )
       end
 
-      it "enqueues a job to notify rdv applicants" do
+      it "enqueues a job to notify rdv users" do
         participation.status = "excused"
         expect(NotifyParticipationJob).to receive(:perform_async)
           .with(participation.id, "sms", "participation_cancelled")
@@ -103,7 +103,7 @@ describe Participation do
       context "when the rdv is not convocable" do
         before { participation.update! convocable: false }
 
-        it "does not enqueue a notify applicants job" do
+        it "does not enqueue a notify users job" do
           expect(NotifyParticipationJob).not_to receive(:perform_async)
           subject
         end
@@ -114,13 +114,13 @@ describe Participation do
           create(
             :participation,
             rdv: rdv,
-            applicant: applicant,
+            user: user,
             convocable: true,
             status: "excused"
           )
         end
 
-        it "does not enqueue a notify applicants job" do
+        it "does not enqueue a notify users job" do
           participation.status = "excused"
           expect(NotifyParticipationJob).not_to receive(:perform_async)
           subject
@@ -132,12 +132,12 @@ describe Participation do
   describe "#destroy" do
     subject { participation1.destroy }
 
-    let!(:participation1) { create(:participation, applicant: applicant1, rdv_context: rdv_context1) }
-    let!(:applicant1) { create(:applicant, rdv_contexts: [rdv_context1, rdv_context2]) }
+    let!(:participation1) { create(:participation, user: user1, rdv_context: rdv_context1) }
+    let!(:user1) { create(:user, rdv_contexts: [rdv_context1, rdv_context2]) }
     let!(:rdv_context1) { create(:rdv_context, motif_category: create(:motif_category), status: "rdv_seen") }
     let!(:rdv_context2) { create(:rdv_context, motif_category: create(:motif_category), status: "rdv_seen") }
 
-    it "schedules a refresh_applicant_context_statuses job" do
+    it "schedules a refresh_user_context_statuses job" do
       expect { subject }.to change { RefreshRdvContextStatusesJob.jobs.size }.by(1)
       last_job = RefreshRdvContextStatusesJob.jobs.last
       expect(last_job["args"]).to eq([rdv_context1.id])

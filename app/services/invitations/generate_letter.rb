@@ -26,7 +26,7 @@ module Invitations
       {
         invitation: @invitation,
         department: @invitation.department,
-        applicant: @invitation.applicant,
+        user: @invitation.user,
         organisation: organisation,
         sender_name: @invitation.letter_sender_name,
         direction_names: @invitation.direction_names,
@@ -37,7 +37,7 @@ module Invitations
         display_pole_emploi_logo: @invitation.display_pole_emploi_logo,
         sender_city: @invitation.sender_city,
         rdv_title: @invitation.rdv_title,
-        applicant_designation: @invitation.applicant_designation,
+        user_designation: @invitation.user_designation,
         mandatory_warning: @invitation.mandatory_warning,
         punishable_warning: @invitation.punishable_warning,
         rdv_purpose: @invitation.rdv_purpose,
@@ -47,7 +47,7 @@ module Invitations
     end
 
     def organisation
-      (@invitation.applicant.organisations & @invitation.organisations).last
+      (@invitation.user.organisations & @invitation.organisations).last
     end
   end
 end

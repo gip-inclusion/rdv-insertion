@@ -5,11 +5,11 @@ class NotificationPreview < ActionMailer::Preview
       Notification
       .joins(:participation)
       .where(
-        participation: Participation.joins(:applicant, :rdv).where.not(applicant: { phone_number: nil })
+        participation: Participation.joins(:user, :rdv).where.not(user: { phone_number: nil })
                                                               .where.not(rdv: { lieu_id: nil })
       ).first
     participation = notification.participation
-    rdv_context = RdvContext.new(motif_category: motif_category, applicant: participation.applicant)
+    rdv_context = RdvContext.new(motif_category: motif_category, user: participation.user)
     participation.rdv_context = rdv_context
 
     define_method "#{motif_category.short_name}_presential_participation_created" do

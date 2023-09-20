@@ -23,7 +23,7 @@
   <% if configuration.invitation_formats.any? %>
     <%= react_component(
       "components/InvitationBlock", {
-        applicant: @applicant,
+        user: @user,
         organisation: @organisation,
         department: @department,
         invitations: invitations,
@@ -60,7 +60,7 @@
               <% if convocable_participations.present? %>
                 <td class="px-4 py-2">
                   <% if participation.convocable? %>
-                    <%= render("rdv_contexts/convocations", applicant: @applicant, participation: participation, sms_convocations: participation.sent_sms_convocations, email_convocations: participation.sent_email_convocations) %>
+                    <%= render("rdv_contexts/convocations", user: @user, participation: participation, sms_convocations: participation.sent_sms_convocations, email_convocations: participation.sent_email_convocations) %>
                   <% else %>
                     -
                   <% end %>
@@ -91,16 +91,16 @@
       <% if should_convene_for?(rdv_context, configuration) %>
         <div class="m-2 p-2 text-center">
           <%= render "rdv_contexts/convocation_button",
-                     applicant_id: @applicant.id, motif_category_id: rdv_context.motif_category_id,
-                     organisation_ids: department_level? ? @applicant_organisations.ids : [@organisation.id]
+                     user_id: @user.id, motif_category_id: rdv_context.motif_category_id,
+                     organisation_ids: department_level? ? @user_organisations.ids : [@organisation.id]
           %>
         </div>
       <% end %>
       <div class="m-2 p-2 text-center">
         <% if rdv_context.status == "closed" %>
-          <%= render "rdv_contexts/reopen_rdv_context_button", rdv_context: rdv_context, applicant: @applicant, organisation: @organisation, department: @department %>
+          <%= render "rdv_contexts/reopen_rdv_context_button", rdv_context: rdv_context, user: @user, organisation: @organisation, department: @department %>
         <% else %>
-          <%= render "rdv_contexts/close_rdv_context_button", rdv_context: rdv_context, applicant: @applicant, organisation: @organisation, department: @department %>
+          <%= render "rdv_contexts/close_rdv_context_button", rdv_context: rdv_context, user: @user, organisation: @organisation, department: @department %>
         <% end %>
       </div>
     </div>

@@ -68,9 +68,9 @@ class UploadsController < ApplicationController
 
   def category_selection_path
     if department_level?
-      uploads_category_selection_department_applicants_path(@department)
+      uploads_category_selection_department_users_path(@department)
     else
-      uploads_category_selection_organisation_applicants_path(@organisation)
+      uploads_category_selection_organisation_users_path(@organisation)
     end
   end
 
