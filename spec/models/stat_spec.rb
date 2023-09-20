@@ -233,50 +233,42 @@ describe Stat do
         end
       end
 
-      describe "#invited_applicants_with_rdvs_non_collectifs_sample" do
+      describe "#invited_applicants_sample" do
         let!(:applicant3) do
           create(:applicant, organisations: [organisation_with_no_configuration])
         end
         let!(:applicant4) { create(:applicant, organisations: [organisation]) }
         let!(:applicant5) { create(:applicant, organisations: [organisation]) }
         let!(:applicant6) { create(:applicant, organisations: [organisation]) }
-        let!(:applicant7) { create(:applicant, organisations: [organisation]) }
         let!(:invitation3) { create(:invitation, applicant: applicant3, department: department, sent_at: date) }
         let!(:invitation5) { create(:invitation, applicant: applicant5, department: department) }
         let!(:invitation6) { create(:invitation, applicant: applicant6, department: department, sent_at: date) }
-        let!(:invitation7) { create(:invitation, applicant: applicant7, department: department, sent_at: date) }
         let!(:rdv3) { create(:rdv, organisation: organisation, created_by: "user", motif: motif) }
         let!(:rdv4) { create(:rdv, organisation: organisation, created_by: "user", motif: motif) }
         let!(:rdv5) { create(:rdv, organisation: organisation, created_by: "user", motif: motif) }
-        let!(:rdv7) { create(:rdv, organisation: organisation, created_by: "user", motif: motif_collectif) }
         let!(:participation3) { create(:participation, rdv: rdv3, applicant: applicant3) }
         let!(:participation4) { create(:participation, rdv: rdv4, applicant: applicant4) }
         let!(:participation5) { create(:participation, rdv: rdv5, applicant: applicant5) }
-        let!(:participation7) { create(:participation, rdv: rdv7, applicant: applicant7) }
 
         it "scopes the collection to the department" do
-          expect(stat.invited_applicants_with_rdvs_non_collectifs_sample).to include(applicant1)
-          expect(stat.invited_applicants_with_rdvs_non_collectifs_sample).not_to include(applicant2)
+          expect(stat.invited_applicants_sample).to include(applicant1)
+          expect(stat.invited_applicants_sample).not_to include(applicant2)
         end
 
         it "does not include the applicant from irrelevant organisations" do
-          expect(stat.invited_applicants_with_rdvs_non_collectifs_sample).not_to include(applicant3)
+          expect(stat.invited_applicants_sample).not_to include(applicant3)
         end
 
         it "does not include the applicants whith no invitations" do
-          expect(stat.invited_applicants_with_rdvs_non_collectifs_sample).not_to include(applicant4)
+          expect(stat.invited_applicants_sample).not_to include(applicant4)
         end
 
         it "does not include the applicants whith no sent invitation" do
-          expect(stat.invited_applicants_with_rdvs_non_collectifs_sample).not_to include(applicant5)
+          expect(stat.invited_applicants_sample).not_to include(applicant5)
         end
 
-        it "does not include the applicants whith no rdvs" do
-          expect(stat.invited_applicants_with_rdvs_non_collectifs_sample).not_to include(applicant6)
-        end
-
-        it "does not include the applicants whith collectifs rdvs" do
-          expect(stat.invited_applicants_with_rdvs_non_collectifs_sample).not_to include(applicant7)
+        it "includes the invited applicants whith no rdvs" do
+          expect(stat.invited_applicants_sample).to include(applicant6)
         end
       end
 
@@ -477,50 +469,42 @@ describe Stat do
         end
       end
 
-      describe "#invited_applicants_with_rdvs_non_collectifs_sample" do
+      describe "#invited_applicants_sample" do
         let!(:applicant3) do
           create(:applicant, organisations: [organisation_with_no_configuration])
         end
         let!(:applicant4) { create(:applicant, organisations: [organisation]) }
         let!(:applicant5) { create(:applicant, organisations: [organisation]) }
         let!(:applicant6) { create(:applicant, organisations: [organisation]) }
-        let!(:applicant7) { create(:applicant, organisations: [organisation]) }
         let!(:invitation3) { create(:invitation, applicant: applicant3, department: department, sent_at: date) }
         let!(:invitation5) { create(:invitation, applicant: applicant5, department: department) }
         let!(:invitation6) { create(:invitation, applicant: applicant6, department: department, sent_at: date) }
-        let!(:invitation7) { create(:invitation, applicant: applicant7, department: department, sent_at: date) }
         let!(:rdv3) { create(:rdv, organisation: organisation, created_by: "user", motif: motif) }
         let!(:rdv4) { create(:rdv, organisation: organisation, created_by: "user", motif: motif) }
         let!(:rdv5) { create(:rdv, organisation: organisation, created_by: "user", motif: motif) }
-        let!(:rdv7) { create(:rdv, organisation: organisation, created_by: "user", motif: motif_collectif) }
         let!(:participation3) { create(:participation, rdv: rdv3, applicant: applicant3) }
         let!(:participation4) { create(:participation, rdv: rdv4, applicant: applicant4) }
         let!(:participation5) { create(:participation, rdv: rdv5, applicant: applicant5) }
-        let!(:participation7) { create(:participation, rdv: rdv7, applicant: applicant7) }
 
         it "scopes the collection to the organisation" do
-          expect(stat.invited_applicants_with_rdvs_non_collectifs_sample).to include(applicant1)
-          expect(stat.invited_applicants_with_rdvs_non_collectifs_sample).not_to include(applicant2)
+          expect(stat.invited_applicants_sample).to include(applicant1)
+          expect(stat.invited_applicants_sample).not_to include(applicant2)
         end
 
         it "does not include the applicant from irrelevant organisations" do
-          expect(stat.invited_applicants_with_rdvs_non_collectifs_sample).not_to include(applicant3)
+          expect(stat.invited_applicants_sample).not_to include(applicant3)
         end
 
         it "does not include the applicants whith no invitations" do
-          expect(stat.invited_applicants_with_rdvs_non_collectifs_sample).not_to include(applicant4)
+          expect(stat.invited_applicants_sample).not_to include(applicant4)
         end
 
         it "does not include the applicants whith no sent invitation" do
-          expect(stat.invited_applicants_with_rdvs_non_collectifs_sample).not_to include(applicant5)
+          expect(stat.invited_applicants_sample).not_to include(applicant5)
         end
 
-        it "does not include the applicants whith no rdvs" do
-          expect(stat.invited_applicants_with_rdvs_non_collectifs_sample).not_to include(applicant6)
-        end
-
-        it "does not include the applicants whith collectifs rdvs" do
-          expect(stat.invited_applicants_with_rdvs_non_collectifs_sample).not_to include(applicant7)
+        it "includes the applicants whith no rdvs" do
+          expect(stat.invited_applicants_sample).to include(applicant6)
         end
       end
 
@@ -602,9 +586,9 @@ describe Stat do
         end
       end
 
-      describe "#invited_applicants_with_rdvs_non_collectifs_sample" do
+      describe "#invited_applicants_sample" do
         it "does not scope the collection to the department" do
-          expect(stat.invited_applicants_with_rdvs_non_collectifs_sample).to include(applicant2)
+          expect(stat.invited_applicants_sample).to include(applicant2)
         end
       end
 
