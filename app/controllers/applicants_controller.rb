@@ -323,12 +323,12 @@ class ApplicantsController < ApplicationController
 
       applicants_affected_most_recently_to_an_organisation = {
         applicants_organisations: {
-          id: associated_applicants_organisations
+          id: associated_applicants_organisations + [nil]
         }
       }
     end
 
-    @applicants = @applicants.joins(:applicants_organisations)
+    @applicants = @applicants.includes(:applicants_organisations)
                              .active
                              .group("applicants.id, applicants_organisations.created_at")
                              .where(applicants_affected_most_recently_to_an_organisation || {})
