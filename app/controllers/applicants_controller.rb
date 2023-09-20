@@ -309,7 +309,6 @@ class ApplicantsController < ApplicationController
   def motif_category_order
     @applicants = @applicants
                   .select("DISTINCT(applicants.id), applicants.*, rdv_contexts.created_at")
-                  .group("applicants.id, rdv_contexts.created_at")
                   .order("rdv_contexts.created_at desc")
   end
 
@@ -329,10 +328,14 @@ class ApplicantsController < ApplicationController
     end
 
     @applicants = @applicants.includes(:applicants_organisations)
+                             .select("
+                                DISTINCT(applicants.id),
+                                applicants.*,
+                                applicants_organisations.created_at as affected_at
+                              ")
                              .active
-                             .group("applicants.id, applicants_organisations.created_at")
                              .where(applicants_affected_most_recently_to_an_organisation || {})
-                             .order("applicants_organisations.created_at DESC NULLS LAST")
+                             .order("affected_at DESC NULLS LAST, applicants.id DESC")
   end
 
   def after_save_path
