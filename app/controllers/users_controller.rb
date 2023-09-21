@@ -242,21 +242,21 @@ class UsersController < ApplicationController
 
   def set_all_users
     @users = policy_scope(User)
-                  .preload(rdv_contexts: [:invitations])
-                  .active
-                  .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
+             .preload(rdv_contexts: [:invitations])
+             .active
+             .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
   end
 
   def set_users_for_motif_category
     @users = policy_scope(User)
-                  .preload(rdv_contexts: [:notifications, :invitations])
-                  .active
-                  .select("DISTINCT(users.id), users.*, rdv_contexts.created_at")
-                  .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
-                  .where.not(id: @department.archived_users.ids)
-                  .joins(:rdv_contexts)
-                  .where(rdv_contexts: { motif_category: @current_motif_category })
-                  .where.not(rdv_contexts: { status: "closed" })
+             .preload(rdv_contexts: [:notifications, :invitations])
+             .active
+             .select("DISTINCT(users.id), users.*, rdv_contexts.created_at")
+             .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
+             .where.not(id: @department.archived_users.ids)
+             .joins(:rdv_contexts)
+             .where(rdv_contexts: { motif_category: @current_motif_category })
+             .where.not(rdv_contexts: { status: "closed" })
   end
 
   def set_archived_users

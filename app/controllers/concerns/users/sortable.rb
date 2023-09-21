@@ -17,17 +17,17 @@ module Users::Sortable
 
   def motif_category_order
     @users = @users
-                  .select("DISTINCT(users.id), users.*, rdv_contexts.created_at")
-                  .order("rdv_contexts.created_at desc")
+             .select("DISTINCT(users.id), users.*, rdv_contexts.created_at")
+             .order("rdv_contexts.created_at desc")
   end
 
   def all_users_order
     if department_level?
       associated_users_organisations = UsersOrganisation
-                                            .where(organisations: @organisations)
-                                            .order(created_at: :desc)
-                                            .uniq(&:user_id)
-                                            .map(&:id)
+                                       .where(organisations: @organisations)
+                                       .order(created_at: :desc)
+                                       .uniq(&:user_id)
+                                       .map(&:id)
 
       users_affected_most_recently_to_an_organisation = {
         users_organisations: {
@@ -37,13 +37,13 @@ module Users::Sortable
     end
 
     @users = @users.includes(:users_organisations, :archives)
-                             .select("
+                   .select("
                                 DISTINCT(users.id),
                                 users.*,
                                 users_organisations.created_at as affected_at
                               ")
-                             .active
-                             .where(users_affected_most_recently_to_an_organisation || {})
-                             .order("affected_at DESC NULLS LAST, users.id DESC")
+                   .active
+                   .where(users_affected_most_recently_to_an_organisation || {})
+                   .order("affected_at DESC NULLS LAST, users.id DESC")
   end
 end
