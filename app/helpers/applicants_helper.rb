@@ -73,6 +73,13 @@ module ApplicantsHelper
     end
   end
 
+  def text_class_for_participation_status(status)
+    return "text-success" if status == "seen"
+    return "text-light" if status == "unknown"
+
+    "text-danger"
+  end
+
   def display_context_status(context, number_of_days_before_action_required)
     return "Non rattaché" if context.nil?
 

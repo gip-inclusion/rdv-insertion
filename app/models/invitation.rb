@@ -1,8 +1,9 @@
 class Invitation < ApplicationRecord
   NUMBER_OF_DAYS_BEFORE_REMINDER = 3
 
-  include Sendable
+  include HasCurrentConfiguration
   include Templatable
+  include Sendable
 
   belongs_to :applicant
   belongs_to :department
