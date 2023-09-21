@@ -22,8 +22,6 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
   let!(:invitation2) do
     create(:invitation, sent_at: date_from_previous_month, department: department)
   end
-  let!(:notification1) { create(:notification, sent_at: date, rdv_context: rdv_context1) }
-  let!(:notification2) { create(:notification, sent_at: date_from_previous_month, rdv_context: rdv_context2) }
 
   describe "#call" do
     before do
@@ -33,8 +31,6 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
         .and_return(Participation.where(id: [participation1, participation2]))
       allow(stat).to receive(:invitations_sample)
         .and_return(Invitation.where(id: [invitation1, invitation2]))
-      allow(stat).to receive(:notifications_sample)
-        .and_return(Notification.where(id: [notification1, notification2]))
       allow(stat).to receive(:participations_without_notifications_sample)
         .and_return(Participation.where(id: [participation1]))
       allow(stat).to receive(:participations_with_notifications_sample)
@@ -45,10 +41,8 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
         .and_return(Applicant.where(id: [applicant1, applicant2]))
       allow(stat).to receive(:applicants_with_orientation_category_sample)
         .and_return(Applicant.where(id: [applicant1, applicant2]))
-      allow(stat).to receive(:invitations_on_an_orientation_category_sample)
-        .and_return(Invitation.where(id: [invitation1]))
-      allow(stat).to receive(:notifications_on_an_orientation_category_sample)
-        .and_return(Notification.where(id: [notification1]))
+      allow(stat).to receive(:orientation_rdv_contexts_sample)
+        .and_return(RdvContext.where(id: [rdv_context1, rdv_context2]))
       allow(stat).to receive(:invited_applicants_sample)
         .and_return(Applicant.where(id: [applicant1, applicant2]))
       allow(Stats::ComputeRateOfNoShow).to receive(:call)
@@ -57,8 +51,8 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
         .and_return(OpenStruct.new(success?: true, value: 4.0))
       allow(Stats::ComputeRateOfApplicantsWithRdvSeenInLessThanThirtyDays).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 50.0))
-      allow(Stats::ComputeRateOfApplicantsWithRdvSeenAfterInvitationOrConvocation).to receive(:call)
-        .and_return(OpenStruct.new(success?: true, value: 100.0))
+      allow(Stats::ComputeRateOfApplicantsWithRdvSeen).to receive(:call)
+        .and_return(OpenStruct.new(success?: true, value: 50.0))
       allow(Stats::ComputeRateOfAutonomousApplicants).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 50.0))
     end
@@ -140,10 +134,9 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
     end
 
     it "computes the percentage of applicants with rdv seen posterior to an invitation" do
-      expect(stat).to receive(:invitations_on_an_orientation_category_sample)
-      expect(stat).to receive(:notifications_on_an_orientation_category_sample)
-      expect(Stats::ComputeRateOfApplicantsWithRdvSeenAfterInvitationOrConvocation).to receive(:call)
-        .with(invitations: [invitation1], notifications: [notification1])
+      expect(stat).to receive(:orientation_rdv_contexts_sample)
+      expect(Stats::ComputeRateOfApplicantsWithRdvSeen).to receive(:call)
+        .with(rdv_contexts: [rdv_context1])
       subject
     end
 

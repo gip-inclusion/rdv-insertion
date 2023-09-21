@@ -5,8 +5,6 @@ class Notification < ApplicationRecord
   attr_accessor :content
 
   belongs_to :participation, optional: true
-  has_one :rdv_context, through: :participation
-  has_one :applicant, through: :participation
 
   enum event: {
     participation_created: 0, participation_updated: 1, participation_cancelled: 2, participation_reminder: 3
@@ -15,7 +13,7 @@ class Notification < ApplicationRecord
 
   validates :format, :event, :rdv_solidarites_rdv_id, presence: true
 
-  delegate :department, :applicant, :rdv, :motif_category, :instruction_for_rdv, to: :participation
+  delegate :department, :applicant, :rdv, :motif_category, :instruction_for_rdv, :rdv_context, to: :participation
   delegate :organisation, to: :rdv, allow_nil: true
   delegate :messages_configuration, :configurations, to: :organisation
 

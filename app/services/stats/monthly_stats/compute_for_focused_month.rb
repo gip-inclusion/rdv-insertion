@@ -67,11 +67,8 @@ module Stats
       end
 
       def rate_of_applicants_oriented_for_focused_month
-        ComputeRateOfApplicantsWithRdvSeenAfterInvitationOrConvocation.call(
-          invitations: @stat.invitations_on_an_orientation_category_sample
-                            .where(sent_at: @date.all_month),
-          notifications: @stat.notifications_on_an_orientation_category_sample
-                              .where(sent_at: @date.all_month)
+        ComputeRateOfApplicantsWithRdvSeen.call(
+          rdv_contexts: created_during_focused_month(@stat.orientation_rdv_contexts_sample)
         ).value.round
       end
 

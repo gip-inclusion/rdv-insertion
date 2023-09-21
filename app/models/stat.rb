@@ -22,10 +22,6 @@ class Stat < ApplicationRecord
     @invitations_sample ||= statable.nil? ? Invitation.sent : statable.invitations.sent
   end
 
-  def notifications_sample
-    @notifications_sample ||= statable.nil? ? Notification.sent : statable.notifications.sent
-  end
-
   # We filter the participations to only keep the participations of the applicants in the scope
   def participations_sample
     @participations_sample ||= all_participations.where(applicant_id: applicants_sample)
@@ -101,29 +97,13 @@ class Stat < ApplicationRecord
                        .where(rdv_contexts: RdvContext.orientation)
   end
 
+  # To compute the rate of applicants oriented, we only consider the applicants who have been invited
+  # because the users that are directly convocated do not benefit from our added value
   def orientation_rdv_contexts_sample
     @orientation_rdv_contexts_sample ||=
       RdvContext.orientation.preload(:participations, :invitations)
                 .where(applicant: applicants_sample)
                 .with_sent_invitations
                 .distinct
-  end
-
-  def invitations_on_an_orientation_category_sample
-    @invitations_on_an_orientation_category_sample ||=
-      invitations_sample.preload(:rdv_context, :participations)
-                        .where(applicant: applicants_sample)
-                        .joins(:rdv_context)
-                        .where(rdv_contexts: RdvContext.orientation)
-                        .distinct
-  end
-
-  def notifications_on_an_orientation_category_sample
-    @notifications_on_an_orientation_category_sample ||=
-      notifications_sample.preload(:participation)
-                          .joins(:participation)
-                          .where(participation: { applicant: applicants_sample })
-                          .where(participation: { rdv_context: RdvContext.orientation })
-                          .distinct
   end
 end
