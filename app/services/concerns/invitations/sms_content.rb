@@ -17,7 +17,7 @@ module Invitations
         "#{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
-        "En cas de problème technique, contactez le #{help_phone_number}."
+        "En cas de problème, contactez le #{help_phone_number}."
     end
 
     def standard_content
@@ -27,7 +27,7 @@ module Invitations
         "#{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
-        "En cas de problème technique, contactez le #{help_phone_number}."
+        "En cas de problème, contactez le #{help_phone_number}."
     end
 
     def phone_platform_content
@@ -45,7 +45,7 @@ module Invitations
         "suivant: #{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
-        "En cas de problème technique, contactez le #{help_phone_number}."
+        "En cas de problème, contactez le #{help_phone_number}."
     end
 
     def atelier_enfants_ados_content
@@ -53,7 +53,7 @@ module Invitations
         "Nous te proposons de cliquer ci-dessous pour découvrir le programme. " \
         "Si tu es #{applicant.conjugate('intéressé')} pour participer, tu n’auras qu’à cliquer et t’inscrire en ligne" \
         " avec le lien suivant: #{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
-        "En cas de problème technique, tu peux contacter le #{help_phone_number}."
+        "En cas de problème, tu peux contacter le #{help_phone_number}."
     end
 
     ### Reminders
@@ -66,7 +66,7 @@ module Invitations
         "#{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
-        "En cas de problème technique, contactez le #{help_phone_number}."
+        "En cas de problème, contactez le #{help_phone_number}."
     end
 
     def standard_reminder_content
@@ -77,7 +77,7 @@ module Invitations
         "#{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
-        "En cas de problème technique, contactez le #{help_phone_number}."
+        "En cas de problème, contactez le #{help_phone_number}."
     end
 
     def phone_platform_reminder_content
@@ -97,7 +97,7 @@ module Invitations
         "#{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
-        "En cas de problème technique, tu peux contacter le #{help_phone_number}."
+        "En cas de problème, tu peux contacter le #{help_phone_number}."
     end
 
     ###
