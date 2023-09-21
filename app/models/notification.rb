@@ -1,6 +1,7 @@
 class Notification < ApplicationRecord
-  include Sendable
+  include HasCurrentConfiguration
   include Templatable
+  include Sendable
 
   attr_accessor :content
 

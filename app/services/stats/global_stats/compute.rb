@@ -58,11 +58,9 @@ module Stats
         ).value
       end
 
-      # as long as the "created_by" is not informed on the participation, we exclude from this calculation
-      # the rdvs that belong to a collectif motif and the users that do not have at least one non collectif rdv
       def rate_of_autonomous_users
         ComputeRateOfAutonomousUsers.call(
-          users: @stat.invited_users_with_rdvs_non_collectifs_sample
+          users: @stat.invited_users_sample
         ).value
       end
 

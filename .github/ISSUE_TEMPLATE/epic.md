@@ -27,6 +27,28 @@ _- d'un 'user journey mapping' (plus d'infos ici : https://www.followtribes.io/u
 
 _- d'une maquette Figma si on a besoin de tester la fonctionnalité entre nous ou avec les utilisateurs_
 
+## 📊  Qualification de l'impact avec la méthode RICE
+
+**R**each - quelle est la taille du "marché"  concernée par la feature ? (= nombre d'utilisateurs impactés)
+
+**I**mpact (1/2/3) - qualification de l'impact entre : 
+- facilitation de la prise en main de l'outil ?
+- amélioration de la prise de RDV en autonomie ?
+- amélioration pour permettre des mises en relation entre usager et acteurs de l'insertion ? 
+- autre ? 
+1 : l'EPIC apporte une amélioration à l'existant
+2 : l'EPIC améliore l'existant et permettra de créer de nouveaux usages  
+3 : l'EPIC est sur le "chemin critique" - la développer est vitale pour l'existence de rdv-insertion
+
+**C**onfidence (1/2/3)- quel niveau de confiance à réaliser cette impact avec la feature telle qu'elle est proposée ? 
+
+**E**ffort (S/M/L/XL) : quel est l'effort de développement estimé ?
+Taille	Estimation dev + review + correction bug (jours)
+XL	16
+L	8
+M	4
+S	1
+
 ##  0️⃣  Tâches prioritaires dans une V0 de l'EPIC
 
 _La V0 de l'EPIC doit être raisonnablement réalisable en 1 sprint, et permet de tester un incrément de valeur suffisant, afin de savoir l'intérêt qu'il y a à faire plus de développement_

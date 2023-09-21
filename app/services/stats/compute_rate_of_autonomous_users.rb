@@ -18,7 +18,7 @@ module Stats
     end
 
     def autonomous_users
-      @autonomous_users ||= @users.joins(:rdvs).where(rdvs: { created_by: "user" })
+      @autonomous_users ||= @users.joins(:participations).where(participations: { created_by: "user" })
     end
   end
 end

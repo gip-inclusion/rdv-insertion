@@ -1,7 +1,7 @@
 module Api
   module V1
     class UsersController < ApplicationController
-      before_action :set_applicants_params, :set_organisation
+      before_action :set_users_params, :set_organisation
       include ParamsValidationConcern
 
       def create_and_invite_many
@@ -50,10 +50,10 @@ module Api
         )
       end
 
-      def set_applicants_params
+      def set_users_params
         # we want POST applicants/create_and_invite_many to behave like users/create_and_invite_many,
         # so we're changing the payload to have users instead of users
-        params[:applicants] ||= params[:users]
+        params[:users] ||= params[:applicants]
       end
     end
   end

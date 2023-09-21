@@ -42,12 +42,8 @@ class Stat < ApplicationRecord
     @rdvs_non_collectifs_sample ||= Rdv.where(motif: Motif.individuel).distinct
   end
 
-  def invited_users_with_rdvs_non_collectifs_sample
-    @invited_users_with_rdvs_non_collectifs_sample ||=
-      users_sample.joins(:rdvs)
-                  .where(rdvs: rdvs_non_collectifs_sample)
-                  .with_sent_invitations
-                  .distinct
+  def invited_users_sample
+    @invited_users_sample ||= users_sample.with_sent_invitations.distinct
   end
 
   # We filter the rdv_contexts to keep those where the users were invited and created a rdv/participation

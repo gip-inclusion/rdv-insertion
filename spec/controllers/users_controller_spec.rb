@@ -901,6 +901,44 @@ describe UsersController do
         expect(response.body).not_to match(/Configurer une organisation/)
       end
 
+      context "ordering" do
+        context "without motif_category" do
+          let!(:index_params) do
+            { department_id: department.id }
+          end
+
+          before do
+            UsersOrganisation.where(user: user2).update!(created_at: 1.year.ago)
+          end
+
+          it "orders by date of affectation to the category" do
+            get :index, params: index_params
+
+            ordered_table = Nokogiri::XML(response.body).css("td").map(&:text)
+            ordered_first_names = ordered_table & [user.first_name, user2.first_name]
+
+            expect(ordered_first_names).to eq([user.first_name, user2.first_name])
+          end
+        end
+
+        context "with motif_category" do
+          let!(:index_params) { { department_id: department.id, motif_category_id: category_orientation.id } }
+
+          before do
+            user.rdv_contexts.first.update!(motif_category: category_orientation, created_at: 1.year.ago)
+          end
+
+          it "orders by rdv_context creation" do
+            get :index, params: index_params
+
+            ordered_table = Nokogiri::XML(response.body).css("td").map(&:text)
+            ordered_first_names = ordered_table & [user.first_name, user2.first_name]
+
+            expect(ordered_first_names).to eq([user2.first_name, user.first_name])
+          end
+        end
+      end
+
       context "when the agent is admin" do
         let!(:agent) { create(:agent, admin_role_in_organisations: [organisation]) }
 

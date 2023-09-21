@@ -36,7 +36,7 @@ describe Stats::GlobalStats::Compute, type: :service do
         .and_return(User.where(id: [user1, user2]))
       allow(stat).to receive(:users_for_30_days_rdvs_seen_sample)
         .and_return(User.where(id: [user1, user2]))
-      allow(stat).to receive(:invited_users_with_rdvs_non_collectifs_sample)
+      allow(stat).to receive(:invited_users_sample)
         .and_return(User.where(id: [user1, user2]))
       allow(stat).to receive(:agents_sample)
         .and_return(Agent.where(id: [agent]))
@@ -126,7 +126,7 @@ describe Stats::GlobalStats::Compute, type: :service do
     end
 
     it "computes the percentage of invited users with at least on rdv taken in autonomy" do
-      expect(stat).to receive(:invited_users_with_rdvs_non_collectifs_sample)
+      expect(stat).to receive(:invited_users_sample)
       expect(Stats::ComputeRateOfAutonomousUsers).to receive(:call)
         .with(users: [user1, user2])
       subject

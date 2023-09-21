@@ -43,7 +43,7 @@ describe Invitations::SendSms, type: :service do
       " à un rendez-vous d'orientation. " \
       "Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant " \
       "dans les 3 jours: http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
-      "Ce RDV est obligatoire. En cas de problème technique, contactez le 0147200001."
+      "Ce RDV est obligatoire. En cas de problème, contactez le 0147200001."
   end
 
   describe "#call" do
@@ -100,7 +100,7 @@ describe Invitations::SendSms, type: :service do
           "invitant à prendre RDV au créneau de votre choix afin de démarrer un parcours d'accompagnement. " \
           "Le lien de prise de RDV suivant expire dans 5 jours: " \
           "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
-          "Ce RDV est obligatoire. En cas de problème technique, contactez le 0147200001."
+          "Ce RDV est obligatoire. En cas de problème, contactez le 0147200001."
       end
 
       before do
@@ -130,7 +130,7 @@ describe Invitations::SendSms, type: :service do
           " à un nouveau type de rendez-vous. " \
           "Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant " \
           "dans les 3 jours: http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
-          "Ce RDV est obligatoire. En cas de problème technique, contactez le 0147200001."
+          "Ce RDV est obligatoire. En cas de problème, contactez le 0147200001."
       end
 
       it "sends the content with the overriden attributes" do
@@ -153,7 +153,7 @@ describe Invitations::SendSms, type: :service do
           "dans les 3 jours: http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
           "Ce RDV est obligatoire. En l'absence d'action de votre part, " \
           "votre RSA pourra être suspendu ou réduit. " \
-          "En cas de problème technique, contactez le 0147200001."
+          "En cas de problème, contactez le 0147200001."
       end
 
       %w[category_rsa_accompagnement category_rsa_accompagnement_social category_rsa_accompagnement_sociopro]
@@ -181,7 +181,7 @@ describe Invitations::SendSms, type: :service do
               "Le lien de prise de RDV suivant expire dans 5 jours: " \
               "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
               "Ce RDV est obligatoire. En l'absence d'action de votre part, " \
-              "votre RSA pourra être suspendu ou réduit. En cas de problème technique, contactez le " \
+              "votre RSA pourra être suspendu ou réduit. En cas de problème, contactez le " \
               "0147200001."
           end
 
@@ -259,7 +259,7 @@ describe Invitations::SendSms, type: :service do
           "3 jours: " \
           "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
           "Ce RDV est obligatoire. " \
-          "En cas de problème technique, contactez le 0147200001."
+          "En cas de problème, contactez le 0147200001."
       end
 
       it("is a success") { is_a_success }
@@ -280,7 +280,7 @@ describe Invitations::SendSms, type: :service do
             "votre Contrat d'Engagement Réciproque. " \
             "Le lien de prise de RDV suivant expire dans 5 jours: " \
             "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
-            "Ce RDV est obligatoire. En cas de problème technique, contactez le " \
+            "Ce RDV est obligatoire. En cas de problème, contactez le " \
             "0147200001."
         end
 
@@ -311,7 +311,7 @@ describe Invitations::SendSms, type: :service do
           "3 jours: " \
           "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
           "Ce RDV est obligatoire. " \
-          "En cas de problème technique, contactez le 0147200001."
+          "En cas de problème, contactez le 0147200001."
       end
 
       it("is a success") { is_a_success }
@@ -331,7 +331,7 @@ describe Invitations::SendSms, type: :service do
             "vous invitant à prendre RDV au créneau de votre choix afin de faire le point sur votre situation." \
             " Le lien de prise de RDV suivant expire dans 5 jours: " \
             "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
-            "Ce RDV est obligatoire. En cas de problème technique, contactez le " \
+            "Ce RDV est obligatoire. En cas de problème, contactez le " \
             "0147200001."
         end
 
@@ -361,7 +361,7 @@ describe Invitations::SendSms, type: :service do
           "3 jours: " \
           "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
           "Ce RDV est obligatoire. " \
-          "En cas de problème technique, contactez le 0147200001."
+          "En cas de problème, contactez le 0147200001."
       end
 
       it("is a success") { is_a_success }
@@ -381,7 +381,7 @@ describe Invitations::SendSms, type: :service do
             "vous invitant à prendre RDV au créneau de votre choix afin de vous aider dans votre parcours d'insertion" \
             ". Le lien de prise de RDV suivant expire dans 5 jours: " \
             "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
-            "Ce RDV est obligatoire. En cas de problème technique, contactez le " \
+            "Ce RDV est obligatoire. En cas de problème, contactez le " \
             "0147200001."
         end
 
@@ -410,7 +410,7 @@ describe Invitations::SendSms, type: :service do
           "dans les 3 jours: http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
           "Ce RDV est obligatoire. En l'absence d'action de votre part, " \
           "votre RSA pourra être suspendu ou réduit. " \
-          "En cas de problème technique, contactez le 0147200001."
+          "En cas de problème, contactez le 0147200001."
       end
 
       it("is a success") { is_a_success }
@@ -431,7 +431,7 @@ describe Invitations::SendSms, type: :service do
             "Le lien de prise de RDV suivant expire dans 5 jours: " \
             "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
             "Ce RDV est obligatoire. En l'absence d'action de votre part, " \
-            "votre RSA pourra être suspendu ou réduit. En cas de problème technique, contactez le " \
+            "votre RSA pourra être suspendu ou réduit. En cas de problème, contactez le " \
             "0147200001."
         end
 
@@ -460,7 +460,7 @@ describe Invitations::SendSms, type: :service do
           " et vous êtes #{user.conjugate('invité')} à participer à un entretien d'embauche." \
           " Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant " \
           "dans les 3 jours: http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
-          "En cas de problème technique, contactez le 0147200001."
+          "En cas de problème, contactez le 0147200001."
       end
 
       it("is a success") { is_a_success }
@@ -481,7 +481,7 @@ describe Invitations::SendSms, type: :service do
             "invitant à prendre RDV au créneau de votre choix afin de poursuivre le processus de recrutement. " \
             "Le lien de prise de RDV suivant expire dans 5 jours: " \
             "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
-            "En cas de problème technique, contactez le " \
+            "En cas de problème, contactez le " \
             "0147200001."
         end
 
@@ -510,7 +510,7 @@ describe Invitations::SendSms, type: :service do
           " et vous êtes #{user.conjugate('invité')} à participer à un rendez-vous collectif d'information." \
           " Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant " \
           "dans les 3 jours: http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
-          "En cas de problème technique, contactez le 0147200001."
+          "En cas de problème, contactez le 0147200001."
       end
 
       it("is a success") { is_a_success }
@@ -531,7 +531,7 @@ describe Invitations::SendSms, type: :service do
             "invitant à prendre RDV au créneau de votre choix afin de découvrir cette structure. " \
             "Le lien de prise de RDV suivant expire dans 5 jours: " \
             "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
-            "En cas de problème technique, contactez le " \
+            "En cas de problème, contactez le " \
             "0147200001."
         end
 
@@ -560,7 +560,7 @@ describe Invitations::SendSms, type: :service do
           " et vous êtes #{user.conjugate('invité')} à participer à un rendez-vous de suivi." \
           " Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant " \
           "dans les 3 jours: http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
-          "En cas de problème technique, contactez le 0147200001."
+          "En cas de problème, contactez le 0147200001."
       end
 
       it("is a success") { is_a_success }
@@ -581,7 +581,7 @@ describe Invitations::SendSms, type: :service do
             "invitant à prendre RDV au créneau de votre choix afin de faire un point avec votre référent. " \
             "Le lien de prise de RDV suivant expire dans 5 jours: " \
             "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
-            "En cas de problème technique, contactez le " \
+            "En cas de problème, contactez le " \
             "0147200001."
         end
 
@@ -607,7 +607,7 @@ describe Invitations::SendSms, type: :service do
         "Monsieur John DOE,\nVous êtes invité à prendre un rendez-vous de suivi psychologue." \
           " Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant: " \
           "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
-          "En cas de problème technique, contactez le 0147200001."
+          "En cas de problème, contactez le 0147200001."
       end
 
       it("is a success") { is_a_success }
@@ -634,7 +634,7 @@ describe Invitations::SendSms, type: :service do
           "3 jours: " \
           "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
           "Ce RDV est obligatoire. " \
-          "En cas de problème technique, contactez le 0147200001."
+          "En cas de problème, contactez le 0147200001."
       end
 
       it("is a success") { is_a_success }
@@ -659,7 +659,7 @@ describe Invitations::SendSms, type: :service do
           "Nous te proposons de cliquer ci-dessous pour découvrir le programme. " \
           "Si tu es intéressé pour participer, tu n’auras qu’à cliquer et t’inscrire en ligne avec le lien suivant: " \
           "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
-          "En cas de problème technique, tu peux contacter le 0147200001."
+          "En cas de problème, tu peux contacter le 0147200001."
       end
 
       it("is a success") { is_a_success }
@@ -685,7 +685,7 @@ describe Invitations::SendSms, type: :service do
           " Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant " \
           "dans les 3 jours: http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
           "Ce RDV est obligatoire. " \
-          "En cas de problème technique, contactez le 0147200001."
+          "En cas de problème, contactez le 0147200001."
       end
 
       it("is a success") { is_a_success }
@@ -705,7 +705,7 @@ describe Invitations::SendSms, type: :service do
             "invitant à prendre RDV au créneau de votre choix afin de vous renseigner sur vos droits et vos devoirs. " \
             "Le lien de prise de RDV suivant expire dans 5 jours: " \
             "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
-            "Ce RDV est obligatoire. En cas de problème technique, contactez le " \
+            "Ce RDV est obligatoire. En cas de problème, contactez le " \
             "0147200001."
         end
 
@@ -735,7 +735,7 @@ describe Invitations::SendSms, type: :service do
           "à vous inscrire directement et librement aux ateliers et formations de votre choix en cliquant sur le " \
           "lien suivant: " \
           "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
-          "En cas de problème technique, contactez le 0147200001."
+          "En cas de problème, contactez le 0147200001."
       end
 
       it("is a success") { is_a_success }
@@ -761,7 +761,7 @@ describe Invitations::SendSms, type: :service do
           "à vous inscrire directement et librement aux ateliers et formations de votre choix en cliquant sur le " \
           "lien suivant: " \
           "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
-          "En cas de problème technique, contactez le 0147200001."
+          "En cas de problème, contactez le 0147200001."
       end
 
       it("is a success") { is_a_success }
@@ -787,7 +787,7 @@ describe Invitations::SendSms, type: :service do
           "à vous inscrire directement et librement aux ateliers et formations de votre choix en cliquant sur le " \
           "lien suivant: " \
           "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
-          "En cas de problème technique, contactez le 0147200001."
+          "En cas de problème, contactez le 0147200001."
       end
 
       it("is a success") { is_a_success }
@@ -813,7 +813,7 @@ describe Invitations::SendSms, type: :service do
           "Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant dans les " \
           "3 jours: " \
           "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
-          "En cas de problème technique, contactez le 0147200001."
+          "En cas de problème, contactez le 0147200001."
       end
 
       it("is a success") { is_a_success }
@@ -834,7 +834,7 @@ describe Invitations::SendSms, type: :service do
             " de parcours. " \
             "Le lien de prise de RDV suivant expire dans 5 jours: " \
             "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
-            "En cas de problème technique, contactez le " \
+            "En cas de problème, contactez le " \
             "0147200001."
         end
 

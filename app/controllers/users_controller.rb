@@ -10,6 +10,7 @@ class UsersController < ApplicationController
 
   include BackToListConcern
   include Users::Filterable
+  include Users::Sortable
 
   before_action :set_organisation, :set_department, :set_organisations, :set_all_configurations,
                 :set_current_agent_roles, :set_users_scope,
@@ -241,20 +242,21 @@ class UsersController < ApplicationController
 
   def set_all_users
     @users = policy_scope(User)
-             .preload(rdv_contexts: [:invitations])
-             .active.distinct
-             .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
+                  .preload(rdv_contexts: [:invitations])
+                  .active
+                  .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
   end
 
   def set_users_for_motif_category
     @users = policy_scope(User)
-             .preload(rdv_contexts: [:notifications, :invitations])
-             .active.distinct
-             .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
-             .where.not(id: @department.archived_users.ids)
-             .joins(:rdv_contexts)
-             .where(rdv_contexts: { motif_category: @current_motif_category })
-             .where.not(rdv_contexts: { status: "closed" })
+                  .preload(rdv_contexts: [:notifications, :invitations])
+                  .active
+                  .select("DISTINCT(users.id), users.*, rdv_contexts.created_at")
+                  .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
+                  .where.not(id: @department.archived_users.ids)
+                  .joins(:rdv_contexts)
+                  .where(rdv_contexts: { motif_category: @current_motif_category })
+                  .where.not(rdv_contexts: { status: "closed" })
   end
 
   def set_archived_users
@@ -287,10 +289,6 @@ class UsersController < ApplicationController
 
   def archived_scope?
     @users_scope == "archived"
-  end
-
-  def order_users
-    @users = archived_scope? ? @users.order("archives.created_at desc") : @users.order(created_at: :desc)
   end
 
   def after_save_path
