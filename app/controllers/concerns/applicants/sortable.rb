@@ -31,12 +31,12 @@ module Applicants::Sortable
 
       applicants_affected_most_recently_to_an_organisation = {
         applicants_organisations: {
-          id: associated_applicants_organisations + [nil]
+          id: associated_applicants_organisations
         }
       }
     end
 
-    @applicants = @applicants.includes(:applicants_organisations)
+    @applicants = @applicants.includes(:applicants_organisations, :archives)
                              .select("
                                 DISTINCT(applicants.id),
                                 applicants.*,
