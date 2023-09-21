@@ -26,16 +26,16 @@ class Applicant < ApplicationRecord
   before_validation :generate_uid
   before_save :format_phone_number
 
-  has_and_belongs_to_many :organisations
-
   has_many :rdv_contexts, dependent: :destroy
   has_many :invitations, dependent: :destroy
   has_many :participations, dependent: :destroy
   has_many :archives, dependent: :destroy
   has_many :referent_assignations, dependent: :destroy
   has_many :tag_applicants, dependent: :destroy
+  has_many :applicants_organisations, dependent: :destroy
 
   has_many :rdvs, through: :participations
+  has_many :organisations, through: :applicants_organisations
   has_many :notifications, through: :participations
   has_many :configurations, through: :organisations
   has_many :motif_categories, through: :rdv_contexts

@@ -74,9 +74,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_04_144823) do
     t.index ["uid"], name: "index_applicants_on_uid"
   end
 
-  create_table "applicants_organisations", id: false, force: :cascade do |t|
+  create_table "applicants_organisations", force: :cascade do |t|
     t.bigint "organisation_id", null: false
     t.bigint "applicant_id", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.index ["organisation_id", "applicant_id"], name: "index_applicants_orgas_on_orga_id_and_applicant_id", unique: true
   end
 
