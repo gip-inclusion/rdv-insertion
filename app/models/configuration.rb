@@ -6,6 +6,8 @@ class Configuration < ApplicationRecord
   validates :organisation, uniqueness: { scope: :motif_category,
                                          message: "a déjà une configuration pour cette catégorie de motif" }
   validate :delays_validity, :invitation_formats_validity
+  validates :number_of_days_between_periodic_invites, numericality: { only_integer: true, greater_than: 9 },
+                                                      allow_nil: true
 
   delegate :position, :name, to: :motif_category, prefix: true
   delegate :sheet_name, to: :file_configuration

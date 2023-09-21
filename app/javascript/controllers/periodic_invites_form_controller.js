@@ -24,7 +24,7 @@ export default class extends Controller {
 
   togglePeriodicInvites() {
     this.numberOfDaysTarget.disabled = !this.enableTarget.checked
-    this.numberOfDaysTarget.value = this.enableTarget.checked ? 1 : null
+    this.numberOfDaysTarget.value = this.enableTarget.checked ? 10 : null
     this.dayOfTheMonthTarget.disabled = !this.enableTarget.checked
     this.typeRadioTargets[0].checked = this.enableTarget.checked 
     this.typeRadioTargets[1].checked = false
@@ -39,7 +39,7 @@ export default class extends Controller {
   }
 
   numberOfDaysInputChanged() {
-    if (this.numberOfDaysTarget.value < 1) this.numberOfDaysTarget.value = 1
+    if (this.numberOfDaysTarget.value < 10) this.numberOfDaysTarget.value = 10
     this.dayOfTheMonthTarget.value = null
     this.typeRadioTargets[0].checked = true
     this.typeRadioTargets[1].checked = false
