@@ -10,6 +10,7 @@ class ApplicantsController < ApplicationController
 
   include BackToListConcern
   include Applicants::Filterable
+  include Applicants::Sortable
 
   before_action :set_organisation, :set_department, :set_organisations, :set_all_configurations,
                 :set_current_agent_roles, :set_applicants_scope,
@@ -242,14 +243,15 @@ class ApplicantsController < ApplicationController
   def set_all_applicants
     @applicants = policy_scope(Applicant)
                   .preload(rdv_contexts: [:invitations])
-                  .active.distinct
+                  .active
                   .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
   end
 
   def set_applicants_for_motif_category
     @applicants = policy_scope(Applicant)
                   .preload(rdv_contexts: [:notifications, :invitations])
-                  .active.distinct
+                  .active
+                  .select("DISTINCT(applicants.id), applicants.*, rdv_contexts.created_at")
                   .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
                   .where.not(id: @department.archived_applicants.ids)
                   .joins(:rdv_contexts)
@@ -287,10 +289,6 @@ class ApplicantsController < ApplicationController
 
   def archived_scope?
     @applicants_scope == "archived"
-  end
-
-  def order_applicants
-    @applicants = archived_scope? ? @applicants.order("archives.created_at desc") : @applicants.order(created_at: :desc)
   end
 
   def after_save_path

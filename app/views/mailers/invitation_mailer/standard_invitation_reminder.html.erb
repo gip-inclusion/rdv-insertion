@@ -9,6 +9,6 @@
     Choisir un créneau
   <% end %>
 </p>
-<p>En cas de problème technique, contactez le <%= @invitation.help_phone_number_formatted %></p>
+<p>En cas de problème, contactez le <%= @invitation.help_phone_number_formatted %></p>
 <%= render 'common/organisation_signature', signature_lines: @signature_lines, department: @department %>
 <%= render 'mailers/logos', display_europe_logos: @invitation.display_europe_logos, display_pole_emploi_logo: @invitation.display_pole_emploi_logo, display_department_logo: @invitation.display_department_logo, organisation_logo_path: @organisation_logo_path, department_logo_path: @department_logo_path %>

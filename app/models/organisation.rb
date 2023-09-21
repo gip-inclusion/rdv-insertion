@@ -23,11 +23,12 @@ class Organisation < ApplicationRecord
   has_many :agents, through: :agent_roles
   has_many :motif_categories, -> { distinct }, through: :configurations
   has_many :tag_organisations, dependent: :destroy
+  has_many :applicants_organisations, dependent: :nullify
   has_many :archived_applicants, through: :department
 
   has_many :tags, through: :tag_organisations
+  has_many :applicants, through: :applicants_organisations, dependent: :nullify
 
-  has_and_belongs_to_many :applicants, dependent: :nullify
   has_and_belongs_to_many :invitations, dependent: :nullify
   has_and_belongs_to_many :webhook_endpoints
 
