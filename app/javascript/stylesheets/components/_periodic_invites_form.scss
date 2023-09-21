@@ -9,6 +9,7 @@
   &.disabled {
     .periodic-invites-form-content {
       opacity: 0.7;
+      pointer-events: none;
     }
   }
 }

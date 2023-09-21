@@ -341,24 +341,6 @@ describe ConfigurationsController do
       expect(configuration.reload.day_of_the_month_periodic_invites).to eq(5)
     end
 
-    context "periodic invites" do
-      context "when no attributes are given" do
-        let(:configuration) do
-          create(:configuration, organisation: organisation, day_of_the_month_periodic_invites: 5)
-        end
-
-        let!(:update_params) do
-          { configuration: { convene_applicant: true }, organisation_id: organisation.id, id: configuration.id }
-        end
-
-        it "sets both attributes to nil" do
-          patch :update, params: update_params
-          expect(configuration.reload.day_of_the_month_periodic_invites).to be_nil
-          expect(configuration.reload.number_of_days_between_periodic_invites).to be_nil
-        end
-      end
-    end
-
     context "when the update succeeds" do
       it "is a success" do
         patch :update, params: update_params

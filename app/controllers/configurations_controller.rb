@@ -62,14 +62,8 @@ class ConfigurationsController < ApplicationController
   end
 
   def formatted_configuration_params
-    formatted_configuration = configuration_params.to_h do |k, v|
+    configuration_params.to_h do |k, v|
       [k, k.to_s.include?("override") ? v.presence : v]
-    end
-
-    # We force those attributes to take into account nil values
-    formatted_configuration.tap do |params|
-      params[:day_of_the_month_periodic_invites] = configuration_params[:day_of_the_month_periodic_invites]
-      params[:number_of_days_between_periodic_invites] = configuration_params[:number_of_days_between_periodic_invites]
     end
   end
 
