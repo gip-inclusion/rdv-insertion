@@ -12,7 +12,7 @@ describe SendPeriodicInviteJob do
     let!(:configuration) do
       create(:configuration,
              organisation: organisation,
-             number_of_days_between_periodic_invites: 5,
+             number_of_days_between_periodic_invites: 10,
              motif_category: motif_category)
     end
     let!(:motif_category) { create(:motif_category, participation_optional: false) }
@@ -21,7 +21,7 @@ describe SendPeriodicInviteJob do
       create(
         :invitation,
         rdv_context: rdv_context,
-        sent_at: 5.days.ago,
+        sent_at: 10.days.ago,
         valid_until: 1.day.ago,
         organisations: [organisation]
       )
