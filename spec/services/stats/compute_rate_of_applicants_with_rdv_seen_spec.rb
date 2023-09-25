@@ -10,8 +10,8 @@ describe Stats::ComputeRateOfApplicantsWithRdvSeen, type: :service do
 
   let!(:applicant2) { create(:applicant) }
   let!(:rdv_context2) { create(:rdv_context, applicant: applicant2, status: "rdv_pending") }
-  let!(:rdv2) { create(:rdv, status: "waiting") }
-  let!(:participation2) { create(:participation, rdv: rdv2, rdv_context: rdv_context2, status: "waiting") }
+  let!(:rdv2) { create(:rdv, status: "unknown") }
+  let!(:participation2) { create(:participation, rdv: rdv2, rdv_context: rdv_context2, status: "unknown") }
 
   let!(:applicant3) { create(:applicant) }
   let!(:rdv_context3) { create(:rdv_context, applicant: applicant3, status: "rdv_noshow") }

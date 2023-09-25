@@ -2,15 +2,14 @@ Stat.find_each do |stat|
   stat.rate_of_applicants_oriented =
     Stats::ComputeRateOfApplicantsWithRdvSeen.call(rdv_contexts: stat.orientation_rdv_contexts_sample).value
 
-  date = stat.statable&.created_at || Time.zone.parse("01/01/2022 12:00")
+  date = stat.statable&.created_at || DateTime.parse("01/01/2022")
   stat.rate_of_applicants_oriented_grouped_by_month = {}
 
-  while date < Time.zone.parse("31/08/2023 12:00")
+  while date < Time.zone.now
     oriented_rate = stat.rate_of_applicants_oriented_grouped_by_month
     oriented_rate_for_date =
-      Stats::ComputeRateOfApplicantsWithRdvSeenAfterInvitationOrConvocation.call(
-        invitations: stat.invitations_on_an_orientation_category_sample.where(sent_at: date.all_month),
-        notifications: stat.notifications_on_an_orientation_category_sample.where(sent_at: date.all_month)
+      Stats::ComputeRateOfApplicantsWithRdvSeen.call(
+        rdv_contexts: stat.orientation_rdv_contexts_sample.where(created_at: date.all_month)
       ).value.round
 
     # We don't want to start the hash until we have a value
