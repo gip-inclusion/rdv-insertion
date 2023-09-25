@@ -117,11 +117,10 @@ class UsersController < ApplicationController
 
   def render_errors(errors)
     respond_to do |format|
-      flash.now[:error] = errors.join(",")
       format.html do
+        flash.now[:error] = errors.join(",")
         render(action_name == "update" ? :edit : :new, status: :unprocessable_entity)
       end
-      format.turbo_stream
       format.json { render json: { success: false, errors: errors }, status: :unprocessable_entity }
     end
   end
