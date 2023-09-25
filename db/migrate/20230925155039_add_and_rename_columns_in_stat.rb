@@ -6,6 +6,5 @@ class AddAndRenameColumnsInStat < ActiveRecord::Migration[7.0]
                   :rate_of_users_oriented_in_less_than_30_days
     rename_column :stats, :rate_of_users_with_rdv_seen_in_less_than_30_days_by_month,
                   :rate_of_users_oriented_in_less_than_30_days_by_month
-
   end
 end

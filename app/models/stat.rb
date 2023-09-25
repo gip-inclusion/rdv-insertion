@@ -94,7 +94,7 @@ class Stat < ApplicationRecord
   def users_with_orientation_category_sample
     @users_with_orientation_category_sample ||=
       users_sample.joins(:rdv_contexts)
-                       .where(rdv_contexts: RdvContext.orientation)
+                  .where(rdv_contexts: RdvContext.orientation)
   end
 
   # To compute the rate of users oriented, we only consider the users who have been invited
