@@ -1,11 +1,11 @@
 class InvitationMailer < ApplicationMailer
-  before_action :set_invitation, :set_applicant, :set_department, :set_signature_lines,
+  before_action :set_invitation, :set_user, :set_department, :set_signature_lines,
                 :set_organisation_logo_path, :set_department_logo_path
 
-  before_action :set_rdv_title, :set_applicant_designation, :set_mandatory_warning, :set_punishable_warning,
+  before_action :set_rdv_title, :set_user_designation, :set_mandatory_warning, :set_punishable_warning,
                 :set_rdv_purpose, :set_rdv_subject, :set_custom_sentence
 
-  default to: -> { @applicant.email }, reply_to: -> { "invitation+#{@invitation.uuid}@reply.rdv-insertion.fr" }
+  default to: -> { @user.email }, reply_to: -> { "invitation+#{@invitation.uuid}@reply.rdv-insertion.fr" }
 
   def standard_invitation
     mail(
@@ -69,8 +69,8 @@ class InvitationMailer < ApplicationMailer
     @invitation = params[:invitation]
   end
 
-  def set_applicant
-    @applicant = params[:applicant]
+  def set_user
+    @user = params[:user]
   end
 
   def set_department
@@ -99,8 +99,8 @@ class InvitationMailer < ApplicationMailer
     @rdv_subject = @invitation.rdv_subject
   end
 
-  def set_applicant_designation
-    @applicant_designation = @invitation.applicant_designation
+  def set_user_designation
+    @user_designation = @invitation.user_designation
   end
 
   def set_mandatory_warning

@@ -6,7 +6,7 @@ de s'interfacer facilement avec [RDV-Solidarites](https://github.com/betagouv/rd
 Le site est disponible
 
 - En production sur [rdv-insertion.fr/](https://rdv-insertion.fr/).
-- En démo sur [rdv-insertion-demo.fr/](https://rdv-insertion-demo.fr/).
+- En démo sur [www.rdv-insertion-demo.fr](https://www.rdv-insertion-demo.fr).
 
 ## Installation
 

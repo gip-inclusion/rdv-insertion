@@ -139,10 +139,10 @@ describe UpsertRdvSolidaritesUser, type: :service do
               .and_return(OpenStruct.new(success?: false))
           end
 
-          context "when there is an applicant linked to this user" do
+          context "when there is an user linked to this user" do
             let!(:department) { create(:department, number: "95") }
-            let!(:applicant) do
-              create(:applicant, id: 23, rdv_solidarites_user_id: existing_user_id)
+            let!(:user) do
+              create(:user, id: 23, rdv_solidarites_user_id: existing_user_id)
             end
 
             it "is a failure" do
@@ -151,12 +151,12 @@ describe UpsertRdvSolidaritesUser, type: :service do
 
             it "stores the error" do
               expect(subject.errors).to eq(
-                ["Un allocataire avec cette adresse mail existe déjà sur RDVI avec d'autres attributs: id 23"]
+                ["Un usager avec cette adresse mail existe déjà sur RDVI avec d'autres attributs: id 23"]
               )
             end
           end
 
-          context "when there is no applicant linked to this user" do
+          context "when there is no user linked to this user" do
             it "assigns the user to the org by creating a user profile" do
               expect(RdvSolidaritesApi::CreateUserProfile).to receive(:call)
                 .with(

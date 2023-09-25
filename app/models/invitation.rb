@@ -1,10 +1,11 @@
 class Invitation < ApplicationRecord
   NUMBER_OF_DAYS_BEFORE_REMINDER = 3
 
-  include Sendable
+  include HasCurrentConfiguration
   include Templatable
+  include Sendable
 
-  belongs_to :applicant
+  belongs_to :user
   belongs_to :department
   belongs_to :rdv_context
   has_and_belongs_to_many :organisations
@@ -34,7 +35,7 @@ class Invitation < ApplicationRecord
     @current_configuration ||= configurations.find { |c| c.motif_category == motif_category }
   end
 
-  def send_to_applicant
+  def send_to_user
     case self.format
     when "sms"
       Invitations::SendSms.call(invitation: self)

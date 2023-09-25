@@ -1,4 +1,4 @@
-<h1>Bonjour <%= "#{@applicant.first_name} #{@applicant.last_name.upcase}" %>,</h1>
+<h1>Bonjour <%= "#{@user.first_name} #{@user.last_name.upcase}" %>,</h1>
 <p>Vous avez reçu un premier mail il y a 3 jours vous invitant à prendre un <%= @rdv_title %>.</p>
 <p>Il ne vous reste plus que <span class="font-weight-bold"><%= @invitation.number_of_days_before_expiration %> jours</span> pour prendre rendez-vous à la date et l'horaire de votre choix en cliquant sur le bouton suivant.</p>
 <p class="btn-wrapper">
@@ -8,6 +8,6 @@
 </p>
 <%= tag.p tag.strong(@mandatory_warning) if @mandatory_warning %>
 <%= tag.p tag.strong("En l'absence d'action de votre part, #{@punishable_warning}.") if @punishable_warning.present? %>
-<p>En cas de problème technique, contactez le <%= @invitation.help_phone_number_formatted %></p>
+<p>En cas de problème, contactez le <%= @invitation.help_phone_number_formatted %></p>
 <%= render 'common/organisation_signature', signature_lines: @signature_lines, department: @department %>
 <%= render 'mailers/logos', display_europe_logos: @invitation.display_europe_logos, display_pole_emploi_logo: @invitation.display_pole_emploi_logo, display_department_logo: @invitation.display_department_logo, organisation_logo_path: @organisation_logo_path, department_logo_path: @department_logo_path %>

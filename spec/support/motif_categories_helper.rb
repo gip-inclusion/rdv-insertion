@@ -11,7 +11,7 @@ module MotifCategoriesHelper
           rdv_title: "rendez-vous d'orientation",
           rdv_title_by_phone: "rendez-vous d'orientation téléphonique",
           rdv_purpose: "démarrer un parcours d'accompagnement",
-          applicant_designation: "bénéficiaire du RSA",
+          user_designation: "bénéficiaire du RSA",
           rdv_subject: "RSA",
           display_mandatory_warning: true
         )
@@ -27,7 +27,7 @@ module MotifCategoriesHelper
           rdv_title: "rendez-vous d'orientation",
           rdv_title_by_phone: "rendez-vous d'orientation téléphonique",
           rdv_purpose: "démarrer un parcours d'accompagnement",
-          applicant_designation: "bénéficiaire du RSA",
+          user_designation: "bénéficiaire du RSA",
           rdv_subject: "RSA",
           display_mandatory_warning: true
         )
@@ -43,7 +43,7 @@ module MotifCategoriesHelper
           rdv_title: "rendez-vous d'orientation",
           rdv_title_by_phone: "rendez-vous d'orientation téléphonique",
           rdv_purpose: "démarrer un parcours d'accompagnement",
-          applicant_designation: "bénéficiaire du RSA",
+          user_designation: "bénéficiaire du RSA",
           rdv_subject: "RSA",
           display_mandatory_warning: true
         )
@@ -60,7 +60,7 @@ module MotifCategoriesHelper
           rdv_title: "rendez-vous d'accompagnement",
           rdv_title_by_phone: "rendez-vous d'accompagnement téléphonique",
           rdv_purpose: "démarrer un parcours d'accompagnement",
-          applicant_designation: "bénéficiaire du RSA",
+          user_designation: "bénéficiaire du RSA",
           rdv_subject: "RSA",
           display_mandatory_warning: true,
           punishable_warning: "votre RSA pourra être suspendu ou réduit"
@@ -78,7 +78,7 @@ module MotifCategoriesHelper
           rdv_title: "rendez-vous d'accompagnement",
           rdv_title_by_phone: "rendez-vous d'accompagnement téléphonique",
           rdv_purpose: "démarrer un parcours d'accompagnement",
-          applicant_designation: "bénéficiaire du RSA",
+          user_designation: "bénéficiaire du RSA",
           rdv_subject: "RSA",
           display_mandatory_warning: true,
           punishable_warning: "votre RSA pourra être suspendu ou réduit"
@@ -96,7 +96,7 @@ module MotifCategoriesHelper
           rdv_title: "rendez-vous d'accompagnement",
           rdv_title_by_phone: "rendez-vous d'accompagnement téléphonique",
           rdv_purpose: "démarrer un parcours d'accompagnement",
-          applicant_designation: "bénéficiaire du RSA",
+          user_designation: "bénéficiaire du RSA",
           rdv_subject: "RSA",
           display_mandatory_warning: true,
           punishable_warning: "votre RSA pourra être suspendu ou réduit"
@@ -114,7 +114,7 @@ module MotifCategoriesHelper
           rdv_title: "rendez-vous de signature de CER",
           rdv_title_by_phone: "rendez-vous téléphonique de signature de CER",
           rdv_purpose: "construire et signer votre Contrat d'Engagement Réciproque",
-          applicant_designation: "bénéficiaire du RSA",
+          user_designation: "bénéficiaire du RSA",
           rdv_subject: "RSA",
           display_mandatory_warning: true
         )
@@ -131,7 +131,7 @@ module MotifCategoriesHelper
           rdv_title: "rendez-vous de suivi",
           rdv_title_by_phone: "rendez-vous de suivi téléphonique",
           rdv_purpose: "faire un point avec votre référent de parcours",
-          applicant_designation: "bénéficiaire du RSA",
+          user_designation: "bénéficiaire du RSA",
           rdv_subject: "RSA",
           display_mandatory_warning: false
         )
@@ -149,7 +149,7 @@ module MotifCategoriesHelper
           rdv_title: "atelier",
           rdv_title_by_phone: "atelier téléphonique",
           rdv_subject: "RSA",
-          applicant_designation: "bénéficiaire du RSA",
+          user_designation: "bénéficiaire du RSA",
           display_mandatory_warning: false
         )
       )
@@ -165,7 +165,7 @@ module MotifCategoriesHelper
           rdv_title: "rendez-vous d'orientation téléphonique",
           rdv_title_by_phone: "rendez-vous d'orientation téléphonique",
           rdv_subject: "RSA",
-          applicant_designation: "bénéficiaire du RSA",
+          user_designation: "bénéficiaire du RSA",
           rdv_purpose: "démarrer un parcours d'accompagnement",
           display_mandatory_warning: true
         )
@@ -182,7 +182,7 @@ module MotifCategoriesHelper
           rdv_title: "atelier collectif",
           rdv_title_by_phone: "atelier collectif",
           rdv_purpose: "vous aider dans votre parcours d'insertion",
-          applicant_designation: "bénéficiaire du RSA",
+          user_designation: "bénéficiaire du RSA",
           rdv_subject: "RSA",
           display_mandatory_warning: true
         )
@@ -200,7 +200,7 @@ module MotifCategoriesHelper
           rdv_title: "atelier",
           rdv_title_by_phone: "atelier téléphonique",
           rdv_subject: "RSA",
-          applicant_designation: "bénéficiaire du RSA",
+          user_designation: "bénéficiaire du RSA",
           display_mandatory_warning: false
         )
       )
@@ -217,7 +217,7 @@ module MotifCategoriesHelper
           rdv_title: "atelier",
           rdv_title_by_phone: "atelier téléphonique",
           rdv_subject: "RSA",
-          applicant_designation: "bénéficiaire du RSA",
+          user_designation: "bénéficiaire du RSA",
           display_mandatory_warning: false
         )
       )
@@ -233,7 +233,7 @@ module MotifCategoriesHelper
           rdv_title: "entretien de main tendue",
           rdv_title_by_phone: "entretien téléphonique de main tendue",
           rdv_purpose: "faire le point sur votre situation",
-          applicant_designation: "bénéficiaire du RSA",
+          user_designation: "bénéficiaire du RSA",
           rdv_subject: "RSA",
           display_mandatory_warning: true
         )
@@ -250,7 +250,7 @@ module MotifCategoriesHelper
           rdv_title: "rendez-vous d'accompagnement",
           rdv_title_by_phone: "rendez-vous d'accompagnement téléphonique",
           rdv_purpose: "démarrer un parcours d'accompagnement",
-          applicant_designation: "demandeur d'emploi",
+          user_designation: "demandeur d'emploi",
           rdv_subject: "demande d'emploi",
           display_mandatory_warning: true,
           punishable_warning: "votre RSA pourra être suspendu ou réduit"
@@ -267,7 +267,7 @@ module MotifCategoriesHelper
           model: "standard",
           rdv_title: "rendez-vous d'information",
           rdv_title_by_phone: "rendez-vous d'information téléphonique",
-          applicant_designation: "bénéficiaire du RSA",
+          user_designation: "bénéficiaire du RSA",
           rdv_subject: "RSA",
           rdv_purpose: "vous renseigner sur vos droits et vos devoirs",
           display_mandatory_warning: true
@@ -300,7 +300,7 @@ module MotifCategoriesHelper
           rdv_title: "rendez-vous d'orientation",
           rdv_title_by_phone: "rendez-vous d'orientation téléphonique",
           rdv_purpose: "démarrer un parcours d'accompagnement",
-          applicant_designation: "bénéficiaire du RSA",
+          user_designation: "bénéficiaire du RSA",
           rdv_subject: "RSA",
           custom_sentence: "Dans le cadre du projet 'France Travail', ce rendez-vous sera réalisé par deux" \
                            " professionnels de l’insertion (l’un de Pôle emploi, l’autre du Conseil départemental)" \
@@ -335,7 +335,7 @@ module MotifCategoriesHelper
           model: "standard",
           rdv_title: "entretien d'embauche",
           rdv_title_by_phone: "entretien d'embauche téléphonique",
-          applicant_designation: "candidat.e dans une Structure d’Insertion par l’Activité Economique (SIAE)",
+          user_designation: "candidat.e dans une Structure d’Insertion par l’Activité Economique (SIAE)",
           rdv_subject: "candidature SIAE",
           rdv_purpose: "poursuivre le processus de recrutement",
           display_mandatory_warning: false
@@ -353,7 +353,7 @@ module MotifCategoriesHelper
           model: "standard",
           rdv_title: "rendez-vous collectif d'information",
           rdv_title_by_phone: "rendez-vous collectif d'information téléphonique",
-          applicant_designation: "candidat.e dans une Structure d’Insertion par l’Activité Economique (SIAE)",
+          user_designation: "candidat.e dans une Structure d’Insertion par l’Activité Economique (SIAE)",
           rdv_subject: "candidature SIAE",
           rdv_purpose: "découvrir cette structure",
           display_mandatory_warning: false
@@ -371,7 +371,7 @@ module MotifCategoriesHelper
           model: "standard",
           rdv_title: "rendez-vous de suivi",
           rdv_title_by_phone: "rendez-vous de suivi téléphonique",
-          applicant_designation: "salarié.e au sein de notre structure",
+          user_designation: "salarié.e au sein de notre structure",
           rdv_subject: "suivi SIAE",
           rdv_purpose: "faire un point avec votre référent",
           display_mandatory_warning: false

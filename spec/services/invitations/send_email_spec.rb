@@ -7,13 +7,13 @@ describe Invitations::SendEmail, type: :service do
 
   include_context "with all existing categories"
 
-  let!(:applicant) { create(:applicant, email: "someemail@someservice.com") }
+  let!(:user) { create(:user, email: "someemail@someservice.com") }
   let!(:mailer) { instance_double("mailer") }
 
   describe "#call" do
     before do
       allow(InvitationMailer).to receive(:with)
-        .with(invitation: invitation, applicant: applicant)
+        .with(invitation: invitation, user: user)
         .and_return(mailer)
     end
 
@@ -22,7 +22,7 @@ describe Invitations::SendEmail, type: :service do
         create(
           :invitation,
           format: "email",
-          applicant: applicant,
+          user: user,
           rdv_context: build(:rdv_context, motif_category: category_rsa_orientation)
         )
       end
@@ -41,7 +41,7 @@ describe Invitations::SendEmail, type: :service do
           create(
             :invitation,
             format: "email",
-            applicant: applicant,
+            user: user,
             rdv_context: build(:rdv_context, motif_category: category_rsa_orientation),
             reminder: true
           )
@@ -68,7 +68,7 @@ describe Invitations::SendEmail, type: :service do
       end
 
       context "when the email is blank" do
-        before { applicant.email = nil }
+        before { user.email = nil }
 
         it("is a failure") { is_a_failure }
 
@@ -78,7 +78,7 @@ describe Invitations::SendEmail, type: :service do
       end
 
       context "when the email format is not valid" do
-        before { applicant.email = "someinvalidmail" }
+        before { user.email = "someinvalidmail" }
 
         it("is a failure") { is_a_failure }
 
@@ -93,7 +93,7 @@ describe Invitations::SendEmail, type: :service do
         create(
           :invitation,
           format: "email",
-          applicant: applicant,
+          user: user,
           rdv_context: build(:rdv_context, motif_category: category_psychologue)
         )
       end
@@ -111,7 +111,7 @@ describe Invitations::SendEmail, type: :service do
         let!(:invitation) do
           create(
             :invitation,
-            applicant: applicant, format: "email",
+            user: user, format: "email",
             rdv_context: build(:rdv_context, motif_category: category_psychologue),
             reminder: true
           )
@@ -133,7 +133,7 @@ describe Invitations::SendEmail, type: :service do
         create(
           :invitation,
           format: "email",
-          applicant: applicant,
+          user: user,
           rdv_context: build(:rdv_context, motif_category: category_atelier_enfants_ados)
         )
       end
@@ -151,7 +151,7 @@ describe Invitations::SendEmail, type: :service do
         let!(:invitation) do
           create(
             :invitation,
-            applicant: applicant, format: "email",
+            user: user, format: "email",
             rdv_context: build(:rdv_context, motif_category: category_atelier_enfants_ados),
             reminder: true
           )
@@ -173,7 +173,7 @@ describe Invitations::SendEmail, type: :service do
         create(
           :invitation,
           format: "email",
-          applicant: applicant,
+          user: user,
           rdv_context: build(:rdv_context, motif_category: category_rsa_orientation_france_travail)
         )
       end
@@ -192,7 +192,7 @@ describe Invitations::SendEmail, type: :service do
       let!(:invitation) do
         create(
           :invitation,
-          applicant: applicant, format: "email",
+          user: user, format: "email",
           rdv_context: build(:rdv_context, motif_category: category_rsa_orientation_on_phone_platform)
         )
       end
@@ -210,7 +210,7 @@ describe Invitations::SendEmail, type: :service do
         let!(:invitation) do
           create(
             :invitation,
-            applicant: applicant, format: "email",
+            user: user, format: "email",
             rdv_context: build(:rdv_context, motif_category: category_rsa_orientation_on_phone_platform),
             reminder: true
           )
@@ -232,7 +232,7 @@ describe Invitations::SendEmail, type: :service do
         create(
           :invitation,
           format: "email",
-          applicant: applicant,
+          user: user,
           rdv_context: build(:rdv_context, motif_category: category_rsa_insertion_offer)
         )
       end
@@ -251,7 +251,7 @@ describe Invitations::SendEmail, type: :service do
       let!(:invitation) do
         create(
           :invitation,
-          applicant: applicant, format: "email",
+          user: user, format: "email",
           rdv_context: build(:rdv_context, motif_category: category_rsa_atelier_competences)
         )
       end
@@ -270,7 +270,7 @@ describe Invitations::SendEmail, type: :service do
       let!(:invitation) do
         create(
           :invitation,
-          applicant: applicant, format: "email",
+          user: user, format: "email",
           rdv_context: build(:rdv_context, motif_category: category_rsa_atelier_rencontres_pro)
         )
       end
@@ -289,7 +289,7 @@ describe Invitations::SendEmail, type: :service do
       let!(:invitation) do
         create(
           :invitation,
-          applicant: applicant, format: "email",
+          user: user, format: "email",
           rdv_context: build(:rdv_context, motif_category: category_siae_interview)
         )
       end
@@ -308,7 +308,7 @@ describe Invitations::SendEmail, type: :service do
       let!(:invitation) do
         create(
           :invitation,
-          applicant: applicant, format: "email",
+          user: user, format: "email",
           rdv_context: build(:rdv_context, motif_category: category_siae_follow_up)
         )
       end
@@ -327,7 +327,7 @@ describe Invitations::SendEmail, type: :service do
       let!(:invitation) do
         create(
           :invitation,
-          applicant: applicant, format: "email",
+          user: user, format: "email",
           rdv_context: build(:rdv_context, motif_category: category_siae_collective_information)
         )
       end

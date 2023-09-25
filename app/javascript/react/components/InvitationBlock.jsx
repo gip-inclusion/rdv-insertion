@@ -3,11 +3,11 @@ import Tippy from "@tippyjs/react";
 import InvitationsDatesRow from "./InvitationsDatesRow";
 
 import sortInvitationsByFormatsAndDates from "../../lib/sortInvitationsByFormatsAndDates";
-import handleApplicantInvitation from "../lib/handleApplicantInvitation";
+import handleUserInvitation from "../lib/handleUserInvitation";
 import { todaysDateString } from "../../lib/datesHelper";
 
 export default function InvitationBlock({
-  applicant,
+  user,
   invitations,
   organisation,
   department,
@@ -57,8 +57,8 @@ export default function InvitationBlock({
 
   const handleInvitationClick = async (format) => {
     setIsLoading({ ...isLoading, [format]: true });
-    const applicantParams = [
-      applicant.id,
+    const userParams = [
+      user.id,
       department.id,
       organisation.id,
       isDepartmentLevel,
@@ -67,7 +67,7 @@ export default function InvitationBlock({
     ];
     let newInvitationDate;
 
-    const result = await handleApplicantInvitation(...applicantParams, format);
+    const result = await handleUserInvitation(...userParams, format);
     if (format === "postal" && result.success) {
       newInvitationDate = todaysDateString();
     } else {
@@ -119,7 +119,7 @@ export default function InvitationBlock({
                   type="button"
                   disabled={
                     isLoading.sms ||
-                    !applicant.phone_number ||
+                    !user.phone_number ||
                     isArchived ||
                     status === "rdv_pending" ||
                     status === "closed"
@@ -146,7 +146,7 @@ export default function InvitationBlock({
                   type="button"
                   disabled={
                     isLoading.email ||
-                    !applicant.email ||
+                    !user.email ||
                     isArchived ||
                     status === "rdv_pending" ||
                     status === "closed"
@@ -173,7 +173,7 @@ export default function InvitationBlock({
                   type="button"
                   disabled={
                     isLoading.postal ||
-                    !applicant.address ||
+                    !user.address ||
                     isArchived ||
                     status === "rdv_pending" ||
                     status === "closed"

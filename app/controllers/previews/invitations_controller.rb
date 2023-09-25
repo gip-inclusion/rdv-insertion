@@ -1,8 +1,8 @@
 module Previews
   class InvitationsController < Previews::BaseController
-    before_action :set_applicant_example, :set_invitation_example, only: [:index]
+    before_action :set_user_example, :set_invitation_example, only: [:index]
 
-    attr_reader :applicant, :invitation
+    attr_reader :user, :invitation
 
     include Invitations::SmsContent
 
@@ -14,7 +14,7 @@ module Previews
 
     def set_invitation_example
       @invitation = Invitation.new(
-        applicant: @applicant, organisations: [@organisation],
+        user: @user, organisations: [@organisation],
         rdv_context: RdvContext.new(motif_category: @motif_category),
         valid_until: @configuration.number_of_days_before_action_required.days.from_now,
         help_phone_number: @organisation.phone_number,
@@ -26,8 +26,8 @@ module Previews
       @invitation.association(:configurations).instance_variable_set("@target", [@configuration])
     end
 
-    def set_applicant_example
-      @applicant = Applicant.new(
+    def set_user_example
+      @user = User.new(
         first_name: "Lara", last_name: "Croft", title: "madame",
         address: "160 rue saint Maur, 75011 Paris"
       )
@@ -71,10 +71,10 @@ module Previews
 
     def mailer_instance_variables
       {
-        applicant: @applicant,
+        user: @user,
         invitation: @invitation,
         department: @invitation.department,
-        applicant_designation: @invitation.applicant_designation,
+        user_designation: @invitation.user_designation,
         rdv_title: @invitation.rdv_title,
         rdv_purpose: @invitation.rdv_purpose,
         rdv_subject: @invitation.rdv_subject,
@@ -91,7 +91,7 @@ module Previews
       {
         invitation: @invitation,
         department: @department,
-        applicant: @applicant,
+        user: @user,
         organisation: @organisation,
         sender_name: @invitation.letter_sender_name,
         direction_names: @invitation.direction_names,
@@ -102,7 +102,7 @@ module Previews
         display_pole_emploi_logo: @invitation.display_pole_emploi_logo,
         sender_city: @invitation.sender_city,
         rdv_title: @invitation.rdv_title,
-        applicant_designation: @invitation.applicant_designation,
+        user_designation: @invitation.user_designation,
         mandatory_warning: @invitation.mandatory_warning,
         punishable_warning: @invitation.punishable_warning,
         rdv_purpose: @invitation.rdv_purpose,

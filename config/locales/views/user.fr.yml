@@ -1,0 +1,6 @@
+fr:
+  users:
+    users_table_for_motif_category:
+      sms_column_title: 📱 SMS
+      email_column_title: 📧 Email
+      postal_column_title: 📮 Courrier

@@ -3,10 +3,10 @@ module RdvSolidaritesWebhooks
     def perform(data, meta)
       @data = data.deep_symbolize_keys
       @meta = meta.deep_symbolize_keys
-      return if applicant.blank?
+      return if user.blank?
 
       remove_attributes_from_payload
-      upsert_or_delete_applicant
+      upsert_or_delete_user
     end
 
     private
@@ -27,8 +27,8 @@ module RdvSolidaritesWebhooks
       @data[:email]
     end
 
-    def applicant
-      @applicant ||= Applicant.find_by(rdv_solidarites_user_id: rdv_solidarites_user_id)
+    def user
+      @user ||= User.find_by(rdv_solidarites_user_id: rdv_solidarites_user_id)
     end
 
     def remove_attributes_from_payload
@@ -41,11 +41,11 @@ module RdvSolidaritesWebhooks
       @data.delete(:email) if email.blank?
     end
 
-    def upsert_or_delete_applicant
+    def upsert_or_delete_user
       if event == "destroyed"
-        SoftDeleteApplicantJob.perform_async(rdv_solidarites_user_id)
+        SoftDeleteUserJob.perform_async(rdv_solidarites_user_id)
       else
-        UpsertRecordJob.perform_async("Applicant", @data, { last_webhook_update_received_at: @meta[:timestamp] })
+        UpsertRecordJob.perform_async("User", @data, { last_webhook_update_received_at: @meta[:timestamp] })
       end
     end
   end

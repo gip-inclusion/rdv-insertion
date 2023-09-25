@@ -1,9 +1,9 @@
 import appFetch from "../../lib/appFetch";
 
-const createCarnet = async (applicantId, departmentId) =>
+const createCarnet = async (userId, departmentId) =>
   appFetch("/carnet_de_bord/carnets", "POST", {
     carnet: {
-      applicant_id: applicantId,
+      user_id: userId,
       department_id: departmentId,
     },
   });

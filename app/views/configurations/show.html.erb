@@ -18,11 +18,11 @@
       <h4><%= Configuration.human_attribute_name(:invitation_formats) %></h4>
         <p class="mb-2"><%= @configuration.invitation_formats.map { |format| I18n.t("invitation_formats.#{format}") }.join(", ") %></p>
     </div>
-    <%= render "common/attribute_display", record: @configuration, attribute: :convene_applicant %>
+    <%= render "common/attribute_display", record: @configuration, attribute: :convene_user %>
     <%= render "common/attribute_display", record: @configuration, attribute: :number_of_days_before_action_required %>
     <%= render "common/attribute_display", record: @configuration, attribute: :rdv_with_referents %>
     <%= render "common/attribute_display", record: @configuration.motif_category, attribute: :participation_optional %>
-    <%= render "common/attribute_display", record: @configuration, attribute: :invite_to_applicant_organisations_only %>
+    <%= render "common/attribute_display", record: @configuration, attribute: :invite_to_user_organisations_only %>
   </div>
 
   <h3>Contenu des messages</h3>

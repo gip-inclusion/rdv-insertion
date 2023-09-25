@@ -14,7 +14,7 @@ describe UpsertRecord, type: :service do
           id: nil,
           status: "unknown",
           created_by: created_by,
-          applicant_id: applicant_id,
+          user_id: user_id,
           rdv_solidarites_participation_id: 998,
           rdv_context_id: rdv_context.id
         }
@@ -24,15 +24,15 @@ describe UpsertRecord, type: :service do
       organisation_id: organisation.id
     }
   end
-  let!(:applicant_id) { 33 }
-  let!(:applicant_ids) { [applicant_id] }
+  let!(:user_id) { 33 }
+  let!(:user_ids) { [user_id] }
   let!(:organisation) { create(:organisation) }
   let!(:rdv_solidarites_rdv_id) { 12 }
   let!(:rdv_solidarites_attributes) do
     { id: 12, starts_at: starts_at, duration_in_min: duration_in_min,
       status: status, created_by: created_by }
   end
-  let!(:applicant) { create(:applicant, id: applicant_id) }
+  let!(:user) { create(:user, id: user_id) }
   let!(:rdv_context) { create(:rdv_context) }
   let!(:lieu) { create(:lieu) }
   let!(:motif) { create(:motif) }
@@ -52,12 +52,12 @@ describe UpsertRecord, type: :service do
         expect(rdv.duration_in_min).to eq(duration_in_min)
         expect(rdv.status).to eq(status)
         expect(rdv.created_by).to eq("user")
-        expect(rdv.applicant_ids).to include(*applicant_ids)
+        expect(rdv.user_ids).to include(*user_ids)
         expect(rdv.id).not_to eq(rdv_solidarites_rdv_id)
 
         # it also creates a participation in this case
         participation = Participation.order(:created_at).last
-        expect(participation.applicant_id).to eq(applicant.id)
+        expect(participation.user_id).to eq(user.id)
         expect(participation.rdv_id).to eq(rdv.id)
         expect(participation.created_by).to eq("user")
         expect(participation.rdv_context_id).to eq(rdv_context.id)
@@ -93,12 +93,12 @@ describe UpsertRecord, type: :service do
         expect(new_rdv.starts_at).to eq(starts_at)
         expect(new_rdv.duration_in_min).to eq(duration_in_min)
         expect(new_rdv.status).to eq(status)
-        expect(new_rdv.applicant_ids).to include(*applicant_ids)
+        expect(new_rdv.user_ids).to include(*user_ids)
         expect(new_rdv.id).not_to eq(rdv_solidarites_rdv_id)
 
         # it also creates a participation in this case
         participation = Participation.order(:created_at).last
-        expect(participation.applicant_id).to eq(applicant.id)
+        expect(participation.user_id).to eq(user.id)
         expect(participation.rdv_id).to eq(new_rdv.id)
         expect(participation.rdv_context_id).to eq(rdv_context.id)
       end

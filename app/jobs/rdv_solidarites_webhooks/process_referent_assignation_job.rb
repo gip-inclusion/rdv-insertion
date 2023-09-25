@@ -3,12 +3,12 @@ module RdvSolidaritesWebhooks
     def perform(data, meta)
       @data = data.deep_symbolize_keys
       @meta = meta.deep_symbolize_keys
-      return if applicant.blank?
+      return if user.blank?
       return notify_agent_not_found if agent.blank?
 
-      Applicant.with_advisory_lock "assigning_#{rdv_solidarites_agent_id}_to_#{rdv_solidarites_user_id}" do
-        attach_agent_to_applicant if event == "created"
-        remove_agent_from_applicant if event == "destroyed"
+      User.with_advisory_lock "assigning_#{rdv_solidarites_agent_id}_to_#{rdv_solidarites_user_id}" do
+        attach_agent_to_user if event == "created"
+        remove_agent_from_user if event == "destroyed"
       end
     end
 
@@ -26,8 +26,8 @@ module RdvSolidaritesWebhooks
       @data[:agent][:id]
     end
 
-    def applicant
-      @applicant ||= Applicant.find_by(rdv_solidarites_user_id: rdv_solidarites_user_id)
+    def user
+      @user ||= User.find_by(rdv_solidarites_user_id: rdv_solidarites_user_id)
     end
 
     def agent
@@ -42,16 +42,16 @@ module RdvSolidaritesWebhooks
       )
     end
 
-    def attach_agent_to_applicant
-      return if applicant.reload.referent_ids.include?(agent.id)
+    def attach_agent_to_user
+      return if user.reload.referent_ids.include?(agent.id)
 
-      applicant.referents << agent
+      user.referents << agent
     end
 
-    def remove_agent_from_applicant
-      return unless applicant.reload.referent_ids.include?(agent.id)
+    def remove_agent_from_user
+      return unless user.reload.referent_ids.include?(agent.id)
 
-      applicant.referents.delete(agent)
+      user.referents.delete(agent)
     end
   end
 end

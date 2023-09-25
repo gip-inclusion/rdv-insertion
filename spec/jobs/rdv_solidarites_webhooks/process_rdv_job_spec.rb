@@ -3,8 +3,8 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
     described_class.new.perform(data, meta)
   end
 
-  let!(:user_id1) { applicant.rdv_solidarites_user_id }
-  let!(:user_id2) { applicant2.rdv_solidarites_user_id }
+  let!(:user_id1) { user.rdv_solidarites_user_id }
+  let!(:user_id2) { user2.rdv_solidarites_user_id }
 
   let!(:user_ids) { [user_id1, user_id2] }
   let!(:rdv_solidarites_rdv_id) { 22 }
@@ -59,14 +59,14 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
     }.deep_symbolize_keys
   end
 
-  let!(:applicant) { create(:applicant, organisations: [organisation], id: 3) }
-  let!(:applicant2) { create(:applicant, organisations: [organisation], id: 4) }
+  let!(:user) { create(:user, organisations: [organisation], id: 3) }
+  let!(:user2) { create(:user, organisations: [organisation], id: 4) }
 
   let!(:agent) { create(:agent) }
 
   let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation") }
   let!(:configuration) do
-    create(:configuration, organisation: organisation, convene_applicant: false, motif_category: motif_category)
+    create(:configuration, organisation: organisation, convene_user: false, motif_category: motif_category)
   end
   let!(:organisation) do
     create(
@@ -114,21 +114,21 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
   end
 
   let!(:rdv_context) do
-    build(:rdv_context, motif_category: motif_category, applicant: applicant)
+    build(:rdv_context, motif_category: motif_category, user: user)
   end
 
   let!(:rdv_context2) do
-    build(:rdv_context, motif_category: motif_category, applicant: applicant2)
+    build(:rdv_context, motif_category: motif_category, user: user2)
   end
 
   # rubocop:disable RSpec/ExampleLength
   describe "#perform" do
     before do
       allow(RdvContext).to receive(:find_or_create_by!)
-        .with(applicant: applicant, motif_category: motif_category)
+        .with(user: user, motif_category: motif_category)
         .and_return(rdv_context)
       allow(RdvContext).to receive(:find_or_create_by!)
-        .with(applicant: applicant2, motif_category: motif_category)
+        .with(user: user2, motif_category: motif_category)
         .and_return(rdv_context2)
       allow(UpsertRecordJob).to receive(:perform_async)
       allow(InvalidateInvitationJob).to receive(:perform_async)
@@ -160,7 +160,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
             id: nil,
             status: "unknown",
             created_by: "user",
-            applicant_id: applicant.id,
+            user_id: user.id,
             rdv_solidarites_participation_id: 998,
             rdv_context_id: rdv_context.id,
             convocable: false
@@ -169,7 +169,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
             id: nil,
             status: "unknown",
             created_by: "user",
-            applicant_id: applicant2.id,
+            user_id: user2.id,
             rdv_solidarites_participation_id: 999,
             rdv_context_id: rdv_context2.id,
             convocable: false
@@ -212,27 +212,27 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
           end
         end
 
-        it "does not change the applicant count" do
-          expect { subject }.not_to change(Applicant, :count)
+        it "does not change the user count" do
+          expect { subject }.not_to change(User, :count)
         end
 
-        context "when one of the applicant is not yet created" do
+        context "when one of the user is not yet created" do
           let!(:user_id1) { 555 }
 
-          let!(:new_applicant) { build(:applicant, rdv_solidarites_user_id: user_id1) }
+          let!(:new_user) { build(:user, rdv_solidarites_user_id: user_id1) }
           let!(:new_rdv_context) do
-            build(:rdv_context, motif_category: motif_category, applicant: new_applicant)
+            build(:rdv_context, motif_category: motif_category, user: new_user)
           end
 
           before do
-            allow(Applicant).to receive(:create!).and_return(new_applicant)
+            allow(User).to receive(:create!).and_return(new_user)
             allow(RdvContext).to receive(:find_or_create_by!)
-              .with(applicant: new_applicant, motif_category: motif_category)
+              .with(user: new_user, motif_category: motif_category)
               .and_return(new_rdv_context)
           end
 
-          it "creates the applicant" do
-            expect(Applicant).to receive(:create!).with(
+          it "creates the user" do
+            expect(User).to receive(:create!).with(
               rdv_solidarites_user_id: user_id1,
               organisations: [organisation],
               first_name: "James",
@@ -255,7 +255,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
                       id: nil,
                       status: "unknown",
                       created_by: "user",
-                      applicant_id: applicant2.id,
+                      user_id: user2.id,
                       rdv_solidarites_participation_id: 999,
                       rdv_context_id: rdv_context2.id,
                       convocable: false
@@ -264,7 +264,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
                       id: nil,
                       status: "unknown",
                       created_by: "user",
-                      applicant_id: new_applicant.id,
+                      user_id: new_user.id,
                       rdv_solidarites_participation_id: 998,
                       rdv_context_id: new_rdv_context.id,
                       convocable: false
@@ -288,14 +288,14 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
         end
         let!(:users) { [{ id: user_id2 }] }
 
-        # Rdv create factory create a new applicant (and participation) by default
+        # Rdv create factory create a new user (and participation) by default
         let!(:rdv) { create(:rdv, rdv_solidarites_rdv_id: rdv_solidarites_rdv_id, organisation: organisation) }
-        let!(:default_applicant) { rdv.applicants.first }
+        let!(:default_user) { rdv.users.first }
         let!(:default_participation) { rdv.participations.first }
         let!(:participation2) do
           create(
             :participation,
-            applicant: applicant2,
+            user: user2,
             rdv: rdv,
             status: "unknown",
             id: 2,
@@ -308,13 +308,13 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
               id: 2,
               status: "seen",
               created_by: "user",
-              applicant_id: 4,
+              user_id: 4,
               rdv_solidarites_participation_id: 999,
               rdv_context_id: rdv_context2.id
             },
             {
               _destroy: true,
-              applicant_id: default_applicant.id,
+              user_id: default_user.id,
               id: default_participation.id
             }
           ]
@@ -378,9 +378,9 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
       end
       let!(:nir) { generate_random_nir }
       let!(:department_internal_id) { "some-dept-id" }
-      let!(:applicant) do
+      let!(:user) do
         create(
-          :applicant,
+          :user,
           organisations: [organisation],
           title: "monsieur",
           department_internal_id: department_internal_id,
@@ -393,9 +393,9 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
       let!(:invitation) { create(:invitation, sent_at: 1.week.ago) }
       let!(:referent) { create(:agent) }
 
-      let!(:applicant2) do
+      let!(:user2) do
         create(
-          :applicant,
+          :user,
           organisations: [organisation],
           title: "madame",
           pole_emploi_id: "Z12123",
@@ -412,9 +412,9 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
             users: [
               {
                 id: user_id1,
-                uid: applicant.uid,
-                affiliation_number: applicant.affiliation_number,
-                role: applicant.role,
+                uid: user.uid,
+                affiliation_number: user.affiliation_number,
+                role: user.role,
                 created_at: "2021-05-29 14:50:22 +0200",
                 department_internal_id: department_internal_id,
                 first_name: "James",
@@ -424,22 +424,22 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
                 email: nil,
                 title: "monsieur",
                 birth_date: nil,
-                rights_opening_date: applicant.rights_opening_date,
+                rights_opening_date: user.rights_opening_date,
                 birth_name: nil,
                 nir: nir,
-                pole_emploi_id: applicant.pole_emploi_id,
-                carnet_de_bord_carnet_id: applicant.pole_emploi_id,
+                pole_emploi_id: user.pole_emploi_id,
+                carnet_de_bord_carnet_id: user.pole_emploi_id,
                 invitations: [invitation],
                 referents: [referent],
                 tags: []
               },
               {
                 id: user_id2,
-                uid: applicant2.uid,
-                affiliation_number: applicant2.affiliation_number,
-                role: applicant2.role,
+                uid: user2.uid,
+                affiliation_number: user2.affiliation_number,
+                role: user2.role,
                 created_at: "2021-05-29 14:20:20 +0200",
-                department_internal_id: applicant2.department_internal_id,
+                department_internal_id: user2.department_internal_id,
                 first_name: "Jane",
                 last_name: "Campion",
                 address: nil,
@@ -447,11 +447,11 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
                 email: "jane@campion.com",
                 title: "madame",
                 birth_date: nil,
-                rights_opening_date: applicant2.rights_opening_date,
+                rights_opening_date: user2.rights_opening_date,
                 birth_name: nil,
-                nir: applicant2.nir,
+                nir: user2.nir,
                 pole_emploi_id: "Z12123",
-                carnet_de_bord_carnet_id: applicant2.carnet_de_bord_carnet_id,
+                carnet_de_bord_carnet_id: user2.carnet_de_bord_carnet_id,
                 invitations: [],
                 referents: [],
                 tags: [tag]
@@ -480,7 +480,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
           }
         end
         let!(:configuration) do
-          create(:configuration, organisation: organisation, convene_applicant: true, motif_category: motif_category)
+          create(:configuration, organisation: organisation, convene_user: true, motif_category: motif_category)
         end
 
         it "sets the convocable attribute when upserting the rdv" do
@@ -493,7 +493,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
                   id: nil,
                   status: "unknown",
                   created_by: "user",
-                  applicant_id: 3,
+                  user_id: 3,
                   rdv_solidarites_participation_id: 998,
                   rdv_context_id: rdv_context.id,
                   convocable: true
@@ -502,7 +502,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
                   id: nil,
                   status: "unknown",
                   created_by: "user",
-                  applicant_id: 4,
+                  user_id: 4,
                   rdv_solidarites_participation_id: 999,
                   rdv_context_id: rdv_context2.id,
                   convocable: true
@@ -519,7 +519,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
         end
 
         context "when the configuration does not handle convocations" do
-          before { configuration.update! convene_applicant: false }
+          before { configuration.update! convene_user: false }
 
           it "sets the convocable attribute when upserting the rdv" do
             expect(UpsertRecordJob).to receive(:perform_async).with(
@@ -531,7 +531,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
                     id: nil,
                     status: "unknown",
                     created_by: "user",
-                    applicant_id: 3,
+                    user_id: 3,
                     rdv_solidarites_participation_id: 998,
                     rdv_context_id: rdv_context.id,
                     convocable: false
@@ -540,7 +540,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
                     id: nil,
                     status: "unknown",
                     created_by: "user",
-                    applicant_id: 4,
+                    user_id: 4,
                     rdv_solidarites_participation_id: 999,
                     rdv_context_id: rdv_context2.id,
                     convocable: false
@@ -588,7 +588,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
           }
         end
         let!(:configuration) do
-          create(:configuration, organisation: organisation, convene_applicant: true, motif_category: motif_category)
+          create(:configuration, organisation: organisation, convene_user: true, motif_category: motif_category)
         end
         let!(:participations_attributes) do
           [
@@ -607,7 +607,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
                   id: nil,
                   status: "unknown",
                   created_by: "agent",
-                  applicant_id: 3,
+                  user_id: 3,
                   rdv_solidarites_participation_id: 998,
                   rdv_context_id: rdv_context.id,
                   convocable: true
@@ -616,7 +616,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
                   id: nil,
                   status: "unknown",
                   created_by: "user",
-                  applicant_id: 4,
+                  user_id: 4,
                   rdv_solidarites_participation_id: 999,
                   rdv_context_id: rdv_context2.id,
                   convocable: false
@@ -633,7 +633,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
         end
 
         context "when the configuration does not handle convocations" do
-          before { configuration.update! convene_applicant: false }
+          before { configuration.update! convene_user: false }
 
           it "sets the convocable attribute when upserting the rdv" do
             expect(UpsertRecordJob).to receive(:perform_async).with(
@@ -645,7 +645,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
                     id: nil,
                     status: "unknown",
                     created_by: "agent",
-                    applicant_id: 3,
+                    user_id: 3,
                     rdv_solidarites_participation_id: 998,
                     rdv_context_id: rdv_context.id,
                     convocable: false
@@ -654,7 +654,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
                     id: nil,
                     status: "unknown",
                     created_by: "user",
-                    applicant_id: 4,
+                    user_id: 4,
                     rdv_solidarites_participation_id: 999,
                     rdv_context_id: rdv_context2.id,
                     convocable: false

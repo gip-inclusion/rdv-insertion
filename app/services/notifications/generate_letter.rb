@@ -10,7 +10,7 @@ module Notifications
       verify_format!(@notification)
       verify_address!(@notification)
       verify_notification_event!
-      verify_applicant_phone_number! if @notification.rdv.by_phone?
+      verify_user_phone_number! if @notification.rdv.by_phone?
       generate_letter
     end
 
@@ -27,7 +27,7 @@ module Notifications
     def locals
       {
         department: @notification.department,
-        applicant: @notification.applicant,
+        user: @notification.user,
         rdv: @notification.rdv,
         motif_category: @notification.motif_category,
         sender_name: @notification.letter_sender_name,
@@ -40,7 +40,7 @@ module Notifications
         sender_city: @notification.sender_city,
         rdv_title: @notification.rdv_title,
         rdv_title_by_phone: @notification.rdv_title_by_phone,
-        applicant_designation: @notification.applicant_designation,
+        user_designation: @notification.user_designation,
         mandatory_warning: @notification.mandatory_warning,
         punishable_warning: @notification.punishable_warning,
         instruction_for_rdv: @notification.instruction_for_rdv,
@@ -65,11 +65,11 @@ module Notifications
       fail!("L'évènement #{@notification.event} n'est pas pris en charge pour le courrier")
     end
 
-    def verify_applicant_phone_number!
-      fail!("Le numéro de téléphone de l'allocataire n'est pas renseigné") \
-        if @notification.applicant.phone_number.blank?
-      fail!("Le numéro de téléphone de l'allocataire n'est pas un mobile") \
-        unless @notification.applicant.phone_number_is_mobile?
+    def verify_user_phone_number!
+      fail!("Le numéro de téléphone de l'usager n'est pas renseigné") \
+        if @notification.user.phone_number.blank?
+      fail!("Le numéro de téléphone de l'usager n'est pas un mobile") \
+        unless @notification.user.phone_number_is_mobile?
     end
   end
 end

@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
 import { navigator } from "@hotwired/turbo";
 import tippy from "tippy.js";
-import handleApplicantInvitation from "../react/lib/handleApplicantInvitation";
+import handleUserInvitation from "../react/lib/handleUserInvitation";
 import { getFrenchFormatDateString, todaysDateString } from "../lib/datesHelper";
 
 export default class extends Controller {
@@ -31,12 +31,12 @@ export default class extends Controller {
     // We have to use JSON instead of Turbostream because postal invitation return raw data as pdfs
     const body = Object.fromEntries(event.detail.formSubmission.fetchRequest.entries);
     event.detail.formSubmission.stop();
-    const { applicantId, departmentId, organisationId } = this.element.dataset;
+    const { userId, departmentId, organisationId } = this.element.dataset;
     const rdvContext = JSON.parse(this.element.dataset.rdvContext);
 
     const isDepartmentLevel = !organisationId;
-    const result = await handleApplicantInvitation(
-      applicantId,
+    const result = await handleUserInvitation(
+      userId,
       departmentId,
       organisationId,
       isDepartmentLevel,

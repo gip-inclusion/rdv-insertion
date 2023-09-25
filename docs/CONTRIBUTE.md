@@ -15,7 +15,7 @@ Aujourd'hui nous essayons d’aller dans cette direction:
 
 1. Plutôt du rails monolithique
 
-- Minimiser le JS utilisant des API spécifiques: Nous avons une partie de l'application en React (qui s'occupe du chargement des fichiers des allocataires), nous ne souhaitons pas étendre l'utilisation de React à d'autres parties de l'application et peut-être même enlever cette partie à terme
+- Minimiser le JS utilisant des API spécifiques: Nous avons une partie de l'application en React (qui s'occupe du chargement des fichiers des usagers), nous ne souhaitons pas étendre l'utilisation de React à d'autres parties de l'application et peut-être même enlever cette partie à terme
 - Nous commençons à utiliser Hotwire lorsque l'on peut pour rendre les pages plus dynamiques en minimisant l'utilisation du JS
 
 2. Tester le code

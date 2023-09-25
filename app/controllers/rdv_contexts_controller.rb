@@ -1,7 +1,7 @@
 class RdvContextsController < ApplicationController
-  PERMITTED_PARAMS = [:applicant_id, :motif_category_id].freeze
+  PERMITTED_PARAMS = [:user_id, :motif_category_id].freeze
 
-  before_action :set_applicant, :set_organisation, :set_department, only: [:create]
+  before_action :set_user, :set_organisation, :set_department, only: [:create]
 
   def create
     @rdv_context = RdvContext.new(**rdv_context_params)
@@ -26,8 +26,8 @@ class RdvContextsController < ApplicationController
     params.require(:rdv_context).permit(*PERMITTED_PARAMS).to_h.deep_symbolize_keys
   end
 
-  def set_applicant
-    @applicant = policy_scope(Applicant).find(rdv_context_params[:applicant_id])
+  def set_user
+    @user = policy_scope(User).find(rdv_context_params[:user_id])
   end
 
   def set_organisation
@@ -40,16 +40,16 @@ class RdvContextsController < ApplicationController
 
   def replace_new_button_cell_by_rdv_context_status_cell
     render turbo_stream: turbo_stream.replace(
-      "applicant_#{@applicant.id}_motif_category_#{rdv_context_params[:motif_category_id]}",
+      "user_#{@user.id}_motif_category_#{rdv_context_params[:motif_category_id]}",
       partial: "rdv_context_status_cell",
       locals: { rdv_context: @rdv_context, configuration: nil }
     )
   end
 
   def after_save_path
-    return department_applicant_path(@department, @applicant, anchor: anchor) if department_level?
+    return department_user_path(@department, @user, anchor: anchor) if department_level?
 
-    organisation_applicant_path(@organisation, @applicant, anchor: anchor)
+    organisation_user_path(@organisation, @user, anchor: anchor)
   end
 
   def anchor

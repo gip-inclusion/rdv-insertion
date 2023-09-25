@@ -8,7 +8,7 @@ fr:
         rdv_title: Titre du rendez-vous
         rdv_title_by_phone: Titre du rendez-vous téléphonique
         rdv_purpose: But du rendez-vous
-        applicant_designation: Désignation de la personne
+        user_designation: Désignation de la personne
         rdv_subject: Thème du RDV
         display_mandatory_warning: Rendez-vous obligatoire?
         punishable_warning: Conséquence si absence au rdv
