@@ -70,7 +70,7 @@ describe "Agents can create a carnet", js: true do
 
       visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-      attach_file("applicants-list-upload", Rails.root.join("spec/fixtures/fichier_allocataire_test.xlsx"))
+      attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
 
       expect(page).to have_button("Créer carnet", disabled: true)
       click_button("Créer compte")
@@ -84,17 +84,17 @@ describe "Agents can create a carnet", js: true do
         "a[href=\"https://demo.carnetdebord.inclusion.beta.gouv.fr/manager/carnets/12312ZD9A\"]"
       )
 
-      applicant = Applicant.last
-      expect(applicant.carnet_de_bord_carnet_id).to eq(carnet_de_bord_carnet_id)
+      user = User.last
+      expect(user.carnet_de_bord_carnet_id).to eq(carnet_de_bord_carnet_id)
 
       expect(carnet_de_bord_stub).to have_been_requested
     end
   end
 
   describe "from show page" do
-    let!(:applicant) do
+    let!(:user) do
       create(
-        :applicant,
+        :user,
         organisations: [organisation], nir: "180333147687266", department_internal_id: "8383",
         first_name: "Hernan", last_name: "Crespo", birth_date: Time.zone.parse("1987-11-21"),
         phone_number: "+33620022002", email: "hernan@crespo.com", affiliation_number: "ISQCJQO",
@@ -113,7 +113,7 @@ describe "Agents can create a carnet", js: true do
         }
       ).to_return(body: { "notebookId" => carnet_de_bord_carnet_id }.to_json)
 
-      visit organisation_applicant_path(organisation, applicant)
+      visit organisation_user_path(organisation, user)
 
       expect(page).to have_button("Créer carnet")
       expect(page).not_to have_content("Voir sur Carnet de bord")

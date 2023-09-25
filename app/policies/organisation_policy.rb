@@ -15,7 +15,7 @@ class OrganisationPolicy < ApplicationPolicy
     configure?
   end
 
-  def create_and_invite_applicants?
+  def create_and_invite_users?
     upload?
   end
 

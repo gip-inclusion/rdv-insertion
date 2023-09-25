@@ -1,10 +1,10 @@
 import Swal from "sweetalert2";
 import createCarnet from "../actions/createCarnet";
 
-const handleCarnetCreation = async (applicant) => {
-  const result = await createCarnet(applicant.id, applicant.department.id);
+const handleCarnetCreation = async (user) => {
+  const result = await createCarnet(user.id, user.department.id);
   if (result.success) {
-    applicant.updateWith(result.applicant);
+    user.updateWith(result.user);
   } else {
     Swal.fire("Impossible de créer le carnet", result.errors.join("\n"), "error");
   }

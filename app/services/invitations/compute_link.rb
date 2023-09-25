@@ -12,13 +12,13 @@ module Invitations
 
     private
 
-    def applicant
-      @invitation.applicant
+    def user
+      @invitation.user
     end
 
     def retrieve_geolocalisation
       @retrieve_geolocalisation ||= RetrieveGeolocalisation.call(
-        address: applicant.address, department_number: @invitation.department.number
+        address: user.address, department_number: @invitation.department.number
       )
     end
 
@@ -47,12 +47,12 @@ module Invitations
       }
         .merge(@invitation.rdv_solidarites_lieu_id? ? { lieu_id: @invitation.rdv_solidarites_lieu_id } : geo_attributes)
         .merge(
-          @invitation.rdv_with_referents? ? { referent_ids: applicant.referents.map(&:rdv_solidarites_agent_id) } : {}
+          @invitation.rdv_with_referents? ? { referent_ids: user.referents.map(&:rdv_solidarites_agent_id) } : {}
         )
     end
 
     def address
-      applicant.address.presence || @invitation.department.name_with_region
+      user.address.presence || @invitation.department.name_with_region
     end
   end
 end

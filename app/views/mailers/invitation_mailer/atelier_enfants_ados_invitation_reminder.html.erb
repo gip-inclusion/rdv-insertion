@@ -1,4 +1,4 @@
-<h1>Bonjour <%= "#{@applicant.first_name} #{@applicant.last_name.upcase}" %>,</h1>
+<h1>Bonjour <%= "#{@user.first_name} #{@user.last_name.upcase}" %>,</h1>
 <p>Tu as reçu un premier mail il y a <%= Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER %> jours t'invitant à un <%= @rdv_title %>.</p>
 <p>Il ne te reste plus que <span class="font-weight-bold"><%= @invitation.number_of_days_before_expiration %> jours</span> pour prendre rendez-vous à la date et l'horaire de ton choix en cliquant sur le bouton suivant.</p>
 <p class="btn-wrapper">

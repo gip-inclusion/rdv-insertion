@@ -8,12 +8,12 @@ describe Invitations::GenerateLetter, type: :service do
   include_context "with all existing categories"
 
   let!(:address) { "20 avenue de Segur, 75007 Paris" }
-  let!(:applicant) { create(:applicant, organisations: [organisation], address: address) }
+  let!(:user) { create(:user, organisations: [organisation], address: address) }
   let!(:department) { create(:department) }
   let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_orientation) }
   let!(:invitation) do
     create(
-      :invitation, content: nil, applicant: applicant, organisations: [organisation],
+      :invitation, content: nil, user: user, organisations: [organisation],
                    department: department, format: "postal", rdv_context: rdv_context
     )
   end
@@ -42,7 +42,7 @@ describe Invitations::GenerateLetter, type: :service do
     end
 
     context "when the format is not postal" do
-      let!(:invitation) { create(:invitation, applicant: applicant, format: "sms") }
+      let!(:invitation) { create(:invitation, user: user, format: "sms") }
 
       it("is a failure") { is_a_failure }
 
@@ -138,15 +138,15 @@ describe Invitations::GenerateLetter, type: :service do
       end
     end
 
-    context "when the invitation is in a referent context and the applicant has a referent" do
+    context "when the invitation is in a referent context and the user has a referent" do
       let!(:invitation) do
         create(
-          :invitation, content: nil, applicant: applicant, organisations: [organisation],
+          :invitation, content: nil, user: user, organisations: [organisation],
                        department: department, format: "postal", rdv_context: rdv_context, rdv_with_referents: true
         )
       end
       let!(:agent) do
-        create(:agent, organisations: [organisation], applicants: [applicant],
+        create(:agent, organisations: [organisation], users: [user],
                        first_name: "Kylian", last_name: "Mbappé")
       end
 
@@ -164,7 +164,7 @@ describe Invitations::GenerateLetter, type: :service do
         content = unescape_html(invitation.content)
         expect(content).to include("Objet : Rendez-vous d'orientation dans le cadre de votre RSA")
         expect(content).to include(
-          "vous êtes #{applicant.conjugate('invité')} à participer à un rendez-vous d'orientation afin de démarrer " \
+          "vous êtes #{user.conjugate('invité')} à participer à un rendez-vous d'orientation afin de démarrer " \
           "un parcours d'accompagnement"
         )
         expect(content).to include("saisissez dans un délai de 3 jours à réception de ce courrier")
@@ -230,7 +230,7 @@ describe Invitations::GenerateLetter, type: :service do
         content = unescape_html(invitation.content)
         expect(content).to include("Objet : Rendez-vous d'accompagnement dans le cadre de votre RSA")
         expect(content).to include(
-          "vous êtes #{applicant.conjugate('invité')} à participer à un rendez-vous d'accompagnement " \
+          "vous êtes #{user.conjugate('invité')} à participer à un rendez-vous d'accompagnement " \
           "afin de démarrer un parcours d'accompagnement"
         )
         expect(content).to include("saisissez dans un délai de 3 jours à réception de ce courrier")
@@ -251,7 +251,7 @@ describe Invitations::GenerateLetter, type: :service do
           "Objet : Rendez-vous de signature de CER dans le cadre de votre RSA"
         )
         expect(content).to include(
-          "vous êtes #{applicant.conjugate('invité')} à participer à un rendez-vous de signature de CER afin de " \
+          "vous êtes #{user.conjugate('invité')} à participer à un rendez-vous de signature de CER afin de " \
           "construire et signer votre Contrat d'Engagement Réciproque"
         )
         expect(content).to include("saisissez dans un délai de 3 jours à réception de ce courrier")
@@ -272,7 +272,7 @@ describe Invitations::GenerateLetter, type: :service do
           "Objet : Rendez-vous de suivi dans le cadre de votre RSA"
         )
         expect(content).to include(
-          "vous êtes #{applicant.conjugate('invité')} à participer à un rendez-vous de suivi afin de faire un point" \
+          "vous êtes #{user.conjugate('invité')} à participer à un rendez-vous de suivi afin de faire un point" \
           " avec votre référent de parcours"
         )
         expect(content).to include("saisissez dans un délai de 3 jours à réception de ce courrier")
@@ -293,11 +293,11 @@ describe Invitations::GenerateLetter, type: :service do
           "Objet : Entretien d'embauche dans le cadre de votre candidature SIAE"
         )
         expect(content).to include(
-          "vous êtes #{applicant.conjugate('invité')} à participer à un entretien d'embauche afin de " \
+          "vous êtes #{user.conjugate('invité')} à participer à un entretien d'embauche afin de " \
           "poursuivre le processus de recrutement"
         )
         expect(content).to include("saisissez dans un délai de 3 jours à réception de ce courrier")
-        expect(content).not_to include("N° allocataire.")
+        expect(content).not_to include("N° usager.")
         expect(content).not_to include("Ce RDV est obligatoire.")
         expect(content).not_to include(
           "En l'absence d'action de votre part, votre RSA pourra être suspendu ou réduit."
@@ -315,11 +315,11 @@ describe Invitations::GenerateLetter, type: :service do
           "Objet : Rendez-vous de suivi dans le cadre de votre suivi SIAE"
         )
         expect(content).to include(
-          "vous êtes #{applicant.conjugate('invité')} à participer à un rendez-vous de suivi afin de faire un point" \
+          "vous êtes #{user.conjugate('invité')} à participer à un rendez-vous de suivi afin de faire un point" \
           " avec votre référent"
         )
         expect(content).to include("saisissez dans un délai de 3 jours à réception de ce courrier")
-        expect(content).not_to include("N° allocataire.")
+        expect(content).not_to include("N° usager.")
         expect(content).not_to include("Ce RDV est obligatoire.")
         expect(content).not_to include(
           "En l'absence d'action de votre part, votre RSA pourra être suspendu ou réduit."
@@ -337,11 +337,11 @@ describe Invitations::GenerateLetter, type: :service do
           "Objet : Rendez-vous collectif d'information dans le cadre de votre candidature SIAE"
         )
         expect(content).to include(
-          "vous êtes #{applicant.conjugate('invité')} à participer à un rendez-vous collectif d'information afin de " \
+          "vous êtes #{user.conjugate('invité')} à participer à un rendez-vous collectif d'information afin de " \
           "découvrir cette structure"
         )
         expect(content).to include("saisissez dans un délai de 3 jours à réception de ce courrier")
-        expect(content).not_to include("N° allocataire.")
+        expect(content).not_to include("N° usager.")
         expect(content).not_to include("Ce RDV est obligatoire.")
         expect(content).not_to include(
           "En l'absence d'action de votre part, votre RSA pourra être suspendu ou réduit."

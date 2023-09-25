@@ -2,8 +2,8 @@ RSpec.describe NotificationMailer do
   include_context "with all existing categories"
 
   let!(:notification) { create(:notification, participation: participation) }
-  let!(:participation) { create(:participation, applicant: applicant, rdv: rdv, rdv_context: rdv_context) }
-  let!(:applicant) { create(:applicant, email: "someone@gmail.com", title: "monsieur", phone_number: "0607070707") }
+  let!(:participation) { create(:participation, user: user, rdv: rdv, rdv_context: rdv_context) }
+  let!(:user) { create(:user, email: "someone@gmail.com", title: "monsieur", phone_number: "0607070707") }
   let!(:motif) do
     create(
       :motif, location_type: "public_office",
@@ -62,8 +62,8 @@ RSpec.describe NotificationMailer do
         )
       end
 
-      context "when the applicant is a woman" do
-        before { applicant.title = "madame" }
+      context "when the user is a woman" do
+        before { user.title = "madame" }
 
         it "renders the subject" do
           expect(mail.subject).to eq(
@@ -83,7 +83,7 @@ RSpec.describe NotificationMailer do
         before do
           configuration.update!(
             template_rdv_title_override: "nouveau type de rendez-vous",
-            template_applicant_designation_override: "une nouvelle désignation de personne"
+            template_user_designation_override: "une nouvelle désignation de personne"
           )
         end
 
@@ -585,13 +585,13 @@ RSpec.describe NotificationMailer do
       end
     end
 
-    context "when applicant does not have a phone number" do
-      let!(:applicant) { create(:applicant, email: "someone@gmail.com", phone_number: nil) }
+    context "when user does not have a phone number" do
+      let!(:user) { create(:user, email: "someone@gmail.com", phone_number: nil) }
 
       it "raises an error" do
         expect { mail.deliver_now }.to raise_error(
           NotificationMailerError,
-          "No valid phone found for applicant #{applicant.id}, cannot notify him by phone"
+          "No valid phone found for user #{user.id}, cannot notify him by phone"
         )
       end
     end
@@ -773,13 +773,13 @@ RSpec.describe NotificationMailer do
       end
     end
 
-    context "when applicant does not have a phone number" do
-      let!(:applicant) { create(:applicant, email: "someone@gmail.com", phone_number: nil) }
+    context "when user does not have a phone number" do
+      let!(:user) { create(:user, email: "someone@gmail.com", phone_number: nil) }
 
       it "raises an error" do
         expect { mail.deliver_now }.to raise_error(
           NotificationMailerError,
-          "No valid phone found for applicant #{applicant.id}, cannot notify him by phone"
+          "No valid phone found for user #{user.id}, cannot notify him by phone"
         )
       end
     end

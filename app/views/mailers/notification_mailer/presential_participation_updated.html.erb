@@ -1,6 +1,6 @@
-<h1>Bonjour <%= "#{@applicant.first_name} #{@applicant.last_name.upcase}" %>,</h1>
+<h1>Bonjour <%= "#{@user.first_name} #{@user.last_name.upcase}" %>,</h1>
 <p>Votre <%= @rdv_title %> dans le cadre de votre <%= @rdv_subject %> a été modifié.</p>
-<p>Vous êtes <%= @applicant.conjugate("attendu") %> <span class="font-weight-bold">le <%= I18n.l(@rdv.starts_at, format: :human) %></span> à l'adresse suivante: </p>
+<p>Vous êtes <%= @user.conjugate("attendu") %> <span class="font-weight-bold">le <%= I18n.l(@rdv.starts_at, format: :human) %></span> à l'adresse suivante: </p>
 <p><h4><%= @rdv.lieu.name %></h4></p>
 <p><h4><%= @rdv.lieu.address %></h4></p>
 <br/>

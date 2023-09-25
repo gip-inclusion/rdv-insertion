@@ -16,12 +16,12 @@
                 <div class="p-3">
                   <ul class="list-inline">
                     <% if organisations.length > 1 %>
-                      <%= link_to default_list_department_applicants_path(department) do %>
+                      <%= link_to default_list_department_users_path(department) do %>
                         <li class="my-4"><div class="col-5 pb-2 border-bottom">⭐ Toutes les organisations ⭐</div></li>
                       <% end %>
                     <% end %>
                     <% organisations.sort_by(&:name).each do |organisation| %>
-                      <%= link_to default_list_organisation_applicants_path(organisation) do %>
+                      <%= link_to default_list_organisation_users_path(organisation) do %>
                         <li class="my-3"><div class="col-5 pb-2 border-bottom"><%= organisation.name %></div></li>
                       <% end %>
                     <% end %>

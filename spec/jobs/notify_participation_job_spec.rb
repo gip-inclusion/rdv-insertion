@@ -4,8 +4,8 @@ describe NotifyParticipationJob do
   end
 
   let!(:participation_id) { 3232 }
-  let!(:participation) { create(:participation, id: participation_id, applicant:) }
-  let!(:applicant) { create(:applicant) }
+  let!(:participation) { create(:participation, id: participation_id, user:) }
+  let!(:user) { create(:user) }
   let!(:format) { "sms" }
   let!(:event) { "participation_created" }
 
@@ -16,7 +16,7 @@ describe NotifyParticipationJob do
       allow(MattermostClient).to receive(:send_to_notif_channel)
     end
 
-    it "calls the notify applicant service" do
+    it "calls the notify user service" do
       expect(Notifications::NotifyParticipation).to receive(:call)
         .with(participation: participation, format: format, event: event)
       subject
@@ -33,12 +33,12 @@ describe NotifyParticipationJob do
       end
     end
 
-    context "when the applicant has already been notified for this rdv" do
+    context "when the user has already been notified for this rdv" do
       let!(:notification) do
         create(:notification, participation: participation, event: event, sent_at: 2.days.ago)
       end
 
-      it "does not calls the notify applicant service" do
+      it "does not calls the notify user service" do
         expect(Notifications::NotifyParticipation).not_to receive(:call)
         subject
       end
@@ -46,7 +46,7 @@ describe NotifyParticipationJob do
       it "sends a message to mattermost" do
         expect(MattermostClient).to receive(:send_to_notif_channel)
           .with(
-            "Rdv already notified to applicant. Skipping notification sending.\n" \
+            "Rdv already notified to user. Skipping notification sending.\n" \
             "participation id: #{participation.id}\n" \
             "format: #{format}\n" \
             "event: #{event}"
@@ -57,7 +57,7 @@ describe NotifyParticipationJob do
       context "when the event is participation_updated" do
         let!(:event) { "participation_updated" }
 
-        it "still calls the notify applicant service" do
+        it "still calls the notify user service" do
           expect(Notifications::NotifyParticipation).to receive(:call)
             .with(participation: participation, format: format, event: event)
           subject
@@ -71,7 +71,7 @@ describe NotifyParticipationJob do
             create(:notification, participation: participation, event: event, sent_at: 20.minutes.ago)
           end
 
-          it "does not calls the notify applicant service" do
+          it "does not calls the notify user service" do
             expect(Notifications::NotifyParticipation).not_to receive(:call)
             subject
           end
@@ -79,7 +79,7 @@ describe NotifyParticipationJob do
           it "sends a message to mattermost" do
             expect(MattermostClient).to receive(:send_to_notif_channel)
               .with(
-                "Rdv already notified to applicant. Skipping notification sending.\n" \
+                "Rdv already notified to user. Skipping notification sending.\n" \
                 "participation id: #{participation.id}\n" \
                 "format: #{format}\n" \
                 "event: #{event}"
@@ -89,12 +89,12 @@ describe NotifyParticipationJob do
         end
       end
 
-      context "when the applicant is created through rdv_solidarites and has no invitations" do
-        let!(:applicant) do
-          create(:applicant, created_through: "rdv_solidarites", invitations: [])
+      context "when the user is created through rdv_solidarites and has no invitations" do
+        let!(:user) do
+          create(:user, created_through: "rdv_solidarites", invitations: [])
         end
 
-        it "does notify the applicant" do
+        it "does notify the user" do
           expect(Notifications::NotifyParticipation).not_to receive(:call)
           subject
         end

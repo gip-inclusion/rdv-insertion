@@ -9,9 +9,9 @@ describe Invitations::SendSms, type: :service do
 
   let!(:help_phone_number) { "0147200001" }
   let!(:phone_number) { "+33782605941" }
-  let!(:applicant) do
+  let!(:user) do
     create(
-      :applicant,
+      :user,
       phone_number: phone_number,
       first_name: "john", last_name: "doe", title: "monsieur"
     )
@@ -31,7 +31,7 @@ describe Invitations::SendSms, type: :service do
   let!(:invitation) do
     create(
       :invitation,
-      applicant: applicant, department: department, rdv_solidarites_token: "123", help_phone_number: help_phone_number,
+      user: user, department: department, rdv_solidarites_token: "123", help_phone_number: help_phone_number,
       organisations: [organisation],
       link: "https://www.rdv-solidarites.fr/lieux?invitation_token=123", format: "sms", rdv_context: rdv_context
     )
@@ -39,7 +39,7 @@ describe Invitations::SendSms, type: :service do
 
   let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_orientation) }
   let!(:content) do
-    "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous êtes #{applicant.conjugate('invité')} à participer" \
+    "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous êtes #{user.conjugate('invité')} à participer" \
       " à un rendez-vous d'orientation. " \
       "Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant " \
       "dans les 3 jours: http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
@@ -121,12 +121,12 @@ describe Invitations::SendSms, type: :service do
       before do
         configuration.update!(
           template_rdv_title_override: "nouveau type de rendez-vous",
-          template_applicant_designation_override: "nouveau"
+          template_user_designation_override: "nouveau"
         )
       end
 
       let!(:content) do
-        "Monsieur John DOE,\nVous êtes nouveau et vous êtes #{applicant.conjugate('invité')} à participer" \
+        "Monsieur John DOE,\nVous êtes nouveau et vous êtes #{user.conjugate('invité')} à participer" \
           " à un nouveau type de rendez-vous. " \
           "Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant " \
           "dans les 3 jours: http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
@@ -147,7 +147,7 @@ describe Invitations::SendSms, type: :service do
       let!(:rdv_context) { build(:rdv_context) }
       let!(:configuration) { create(:configuration, organisation: organisation) }
       let!(:content) do
-        "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous êtes #{applicant.conjugate('invité')} à " \
+        "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous êtes #{user.conjugate('invité')} à " \
           "participer à un rendez-vous d'accompagnement." \
           " Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant " \
           "dans les 3 jours: http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
@@ -253,7 +253,7 @@ describe Invitations::SendSms, type: :service do
         create(:configuration, organisation: organisation, motif_category: category_rsa_cer_signature)
       end
       let!(:content) do
-        "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous êtes #{applicant.conjugate('invité')} à participer" \
+        "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous êtes #{user.conjugate('invité')} à participer" \
           " à un rendez-vous de signature de CER." \
           " Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant dans les " \
           "3 jours: " \
@@ -305,7 +305,7 @@ describe Invitations::SendSms, type: :service do
         create(:configuration, organisation: organisation, motif_category: category_rsa_main_tendue)
       end
       let!(:content) do
-        "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous êtes #{applicant.conjugate('invité')} à participer" \
+        "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous êtes #{user.conjugate('invité')} à participer" \
           " à un entretien de main tendue." \
           " Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant dans les " \
           "3 jours: " \
@@ -356,7 +356,7 @@ describe Invitations::SendSms, type: :service do
         create(:configuration, organisation: organisation, motif_category: category_rsa_atelier_collectif_mandatory)
       end
       let!(:content) do
-        "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous êtes #{applicant.conjugate('invité')} à participer" \
+        "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous êtes #{user.conjugate('invité')} à participer" \
           " à un atelier collectif. Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant dans les " \
           "3 jours: " \
           "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
@@ -404,7 +404,7 @@ describe Invitations::SendSms, type: :service do
       let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_spie) }
       let!(:configuration) { create(:configuration, organisation: organisation, motif_category: category_rsa_spie) }
       let!(:content) do
-        "Monsieur John DOE,\nVous êtes demandeur d'emploi et vous êtes #{applicant.conjugate('invité')} à participer" \
+        "Monsieur John DOE,\nVous êtes demandeur d'emploi et vous êtes #{user.conjugate('invité')} à participer" \
           " à un rendez-vous d'accompagnement." \
           " Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant " \
           "dans les 3 jours: http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
@@ -457,7 +457,7 @@ describe Invitations::SendSms, type: :service do
       end
       let!(:content) do
         "Monsieur John DOE,\nVous êtes candidat.e dans une Structure d’Insertion par l’Activité Economique (SIAE)" \
-          " et vous êtes #{applicant.conjugate('invité')} à participer à un entretien d'embauche." \
+          " et vous êtes #{user.conjugate('invité')} à participer à un entretien d'embauche." \
           " Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant " \
           "dans les 3 jours: http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
           "En cas de problème, contactez le 0147200001."
@@ -507,7 +507,7 @@ describe Invitations::SendSms, type: :service do
       end
       let!(:content) do
         "Monsieur John DOE,\nVous êtes candidat.e dans une Structure d’Insertion par l’Activité Economique (SIAE)" \
-          " et vous êtes #{applicant.conjugate('invité')} à participer à un rendez-vous collectif d'information." \
+          " et vous êtes #{user.conjugate('invité')} à participer à un rendez-vous collectif d'information." \
           " Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant " \
           "dans les 3 jours: http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
           "En cas de problème, contactez le 0147200001."
@@ -557,7 +557,7 @@ describe Invitations::SendSms, type: :service do
       end
       let!(:content) do
         "Monsieur John DOE,\nVous êtes salarié.e au sein de notre structure" \
-          " et vous êtes #{applicant.conjugate('invité')} à participer à un rendez-vous de suivi." \
+          " et vous êtes #{user.conjugate('invité')} à participer à un rendez-vous de suivi." \
           " Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant " \
           "dans les 3 jours: http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
           "En cas de problème, contactez le 0147200001."
@@ -680,7 +680,7 @@ describe Invitations::SendSms, type: :service do
         create(:configuration, organisation: organisation, motif_category: category_rsa_integration_information)
       end
       let!(:content) do
-        "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous êtes #{applicant.conjugate('invité')} à participer" \
+        "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous êtes #{user.conjugate('invité')} à participer" \
           " à un rendez-vous d'information." \
           " Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant " \
           "dans les 3 jours: http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
@@ -808,7 +808,7 @@ describe Invitations::SendSms, type: :service do
         create(:configuration, organisation: organisation, motif_category: category_rsa_follow_up)
       end
       let!(:content) do
-        "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous êtes #{applicant.conjugate('invité')} à participer" \
+        "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et vous êtes #{user.conjugate('invité')} à participer" \
           " à un rendez-vous de suivi. " \
           "Pour choisir la date et l'horaire du RDV, cliquez sur le lien suivant dans les " \
           "3 jours: " \

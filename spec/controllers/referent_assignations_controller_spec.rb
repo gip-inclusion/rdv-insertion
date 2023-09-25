@@ -1,7 +1,7 @@
 describe ReferentAssignationsController do
-  let!(:applicant_id) { 2222 }
-  let!(:applicant) do
-    create(:applicant, id: applicant_id, organisations: [organisation1, organisation2])
+  let!(:user_id) { 2222 }
+  let!(:user) do
+    create(:user, id: user_id, organisations: [organisation1, organisation2])
   end
   let!(:organisation1) { create(:organisation, name: "CD de DIE") }
   let!(:organisation2) { create(:organisation, name: "CD de Valence") }
@@ -36,10 +36,10 @@ describe ReferentAssignationsController do
   end
 
   describe "#index" do
-    before { applicant.update!(referents: [agent2]) }
+    before { user.update!(referents: [agent2]) }
 
     it "shows the agents that can be assigned/removed" do
-      get :index, params: { applicant_id: applicant_id, department_id: department.id }
+      get :index, params: { user_id: user_id, department_id: department.id }
 
       expect(response).to be_successful
       expect(response.body).to match(/Bernard Lama \(bernardlama@france98.fr\)/)
@@ -57,14 +57,14 @@ describe ReferentAssignationsController do
 
     let!(:create_params) do
       {
-        department_id: department.id, referent_assignation: { applicant_id: applicant.id, agent_id: agent2.id },
+        department_id: department.id, referent_assignation: { user_id: user.id, agent_id: agent2.id },
         format: "turbo_stream"
       }
     end
 
     before do
-      allow(Applicants::AssignReferent).to receive(:call)
-        .with(applicant: applicant, agent: agent2, rdv_solidarites_session: rdv_solidarites_session)
+      allow(Users::AssignReferent).to receive(:call)
+        .with(user: user, agent: agent2, rdv_solidarites_session: rdv_solidarites_session)
         .and_return(OpenStruct.new(success?: true))
     end
 
@@ -78,8 +78,8 @@ describe ReferentAssignationsController do
 
     context "when the assignation fails" do
       before do
-        allow(Applicants::AssignReferent).to receive(:call)
-          .with(applicant: applicant, agent: agent2, rdv_solidarites_session: rdv_solidarites_session)
+        allow(Users::AssignReferent).to receive(:call)
+          .with(user: user, agent: agent2, rdv_solidarites_session: rdv_solidarites_session)
           .and_return(OpenStruct.new(success?: false, errors: ["Something wrong happened"]))
       end
 
@@ -96,20 +96,20 @@ describe ReferentAssignationsController do
     context "when the agent email is passed and the request is JSON" do
       let!(:create_params) do
         {
-          department_id: department.id, referent_assignation: { applicant_id: applicant.id, agent_email: agent2.email },
+          department_id: department.id, referent_assignation: { user_id: user.id, agent_email: agent2.email },
           format: "json"
         }
       end
 
       before do
-        allow(Applicants::AssignReferent).to receive(:call)
-          .with(applicant: applicant, agent: agent2, rdv_solidarites_session: rdv_solidarites_session)
+        allow(Users::AssignReferent).to receive(:call)
+          .with(user: user, agent: agent2, rdv_solidarites_session: rdv_solidarites_session)
           .and_return(OpenStruct.new(success?: true))
       end
 
       it "assigns the agent with a success message" do
-        expect(Applicants::AssignReferent).to receive(:call)
-          .with(applicant: applicant, agent: agent2, rdv_solidarites_session: rdv_solidarites_session)
+        expect(Users::AssignReferent).to receive(:call)
+          .with(user: user, agent: agent2, rdv_solidarites_session: rdv_solidarites_session)
 
         subject
 
@@ -122,15 +122,15 @@ describe ReferentAssignationsController do
   describe "#destroy" do
     subject do
       post :destroy, params: {
-        applicant_id: applicant_id, department_id: department.id, referent_assignation: {
+        user_id: user_id, department_id: department.id, referent_assignation: {
           agent_id: agent2.id
         }, format: "turbo_stream"
       }
     end
 
     before do
-      allow(Applicants::RemoveReferent).to receive(:call)
-        .with(applicant: applicant, agent: agent2, rdv_solidarites_session: rdv_solidarites_session)
+      allow(Users::RemoveReferent).to receive(:call)
+        .with(user: user, agent: agent2, rdv_solidarites_session: rdv_solidarites_session)
         .and_return(OpenStruct.new(success?: true))
     end
 
@@ -144,8 +144,8 @@ describe ReferentAssignationsController do
 
     context "when the assignation fails" do
       before do
-        allow(Applicants::RemoveReferent).to receive(:call)
-          .with(applicant: applicant, agent: agent2, rdv_solidarites_session: rdv_solidarites_session)
+        allow(Users::RemoveReferent).to receive(:call)
+          .with(user: user, agent: agent2, rdv_solidarites_session: rdv_solidarites_session)
           .and_return(OpenStruct.new(success?: false, errors: ["Something wrong happened"]))
       end
 

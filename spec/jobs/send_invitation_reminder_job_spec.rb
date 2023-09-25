@@ -9,13 +9,13 @@ describe SendInvitationReminderJob do
     create(
       :rdv_context,
       id: rdv_context_id,
-      applicant: applicant,
+      user: user,
       status: "invitation_pending",
       motif_category: create(:motif_category, name: "RSA accompagnement")
     )
   end
-  let!(:applicant) do
-    create(:applicant, id: 444)
+  let!(:user) do
+    create(:user, id: 444)
   end
   let!(:department) { create(:department) }
   let!(:organisation) { create(:organisation, department: department) }
@@ -23,7 +23,7 @@ describe SendInvitationReminderJob do
     create(
       :invitation,
       valid_until: Time.zone.parse("2022-05-15 15:05"), sent_at: Time.zone.parse("2022-05-01 14:01"),
-      applicant: applicant, organisations: [organisation], rdv_context: rdv_context, rdv_solidarites_token: "123",
+      user: user, organisations: [organisation], rdv_context: rdv_context, rdv_solidarites_token: "123",
       link: "www.rdv-solidarités.fr/prendre_rdv",
       help_phone_number: "0101010101",
       rdv_solidarites_lieu_id: nil, department: department, rdv_with_referents: false
@@ -44,7 +44,7 @@ describe SendInvitationReminderJob do
     expect(Invitation).to receive(:new)
       .with(
         reminder: true,
-        applicant: applicant,
+        user: user,
         department: department,
         organisations: [organisation],
         rdv_context: rdv_context,
@@ -79,7 +79,7 @@ describe SendInvitationReminderJob do
 
     it "sends a notification to mattermost" do
       expect(MattermostClient).to receive(:send_to_notif_channel)
-        .with("🚫 L'allocataire 444 n'est pas éligible à la relance pour RSA accompagnement.")
+        .with("🚫 L'usager 444 n'est pas éligible à la relance pour RSA accompagnement.")
       subject
     end
   end
@@ -99,7 +99,7 @@ describe SendInvitationReminderJob do
 
     it "sends a notification to mattermost" do
       expect(MattermostClient).to receive(:send_to_notif_channel)
-        .with("🚫 L'allocataire 444 n'est pas éligible à la relance pour RSA accompagnement.")
+        .with("🚫 L'usager 444 n'est pas éligible à la relance pour RSA accompagnement.")
       subject
     end
   end
@@ -119,7 +119,7 @@ describe SendInvitationReminderJob do
 
     it "sends a notification to mattermost" do
       expect(MattermostClient).to receive(:send_to_notif_channel)
-        .with("🚫 L'allocataire 444 n'est pas éligible à la relance pour RSA accompagnement.")
+        .with("🚫 L'usager 444 n'est pas éligible à la relance pour RSA accompagnement.")
       subject
     end
   end

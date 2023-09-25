@@ -5,17 +5,21 @@ import searchOrganisations from "../react/actions/searchOrganisations";
 const retrieveRelevantOrganisation = async (
   departmentNumber,
   organisationSearchTerms,
-  applicantFullAddress,
+  userFullAddress,
   options = { raiseError: true }
 ) => {
   if (organisationSearchTerms) {
     return retrieveThroughSearchTerms(departmentNumber, organisationSearchTerms, options);
   }
 
-  return retrieveThroughGeolocalisation(departmentNumber, applicantFullAddress, options);
+  return retrieveThroughGeolocalisation(departmentNumber, userFullAddress, options);
 };
 
-const retrieveThroughSearchTerms = async (departmentNumber, organisationSearchTerms, options = { raiseError: true }) => {
+const retrieveThroughSearchTerms = async (
+  departmentNumber,
+  organisationSearchTerms,
+  options = { raiseError: true }
+) => {
   const result = await searchOrganisations(departmentNumber, organisationSearchTerms);
   if (result.success && result.matching_organisations.length === 1) {
     return result.matching_organisations[0];
@@ -43,8 +47,12 @@ const retrieveThroughSearchTerms = async (departmentNumber, organisationSearchTe
   );
 };
 
-const retrieveThroughGeolocalisation = async (departmentNumber, applicantFullAddress, options = { raiseError: true }) => {
-  const result = await retrieveGeolocatedOrganisations(departmentNumber, applicantFullAddress);
+const retrieveThroughGeolocalisation = async (
+  departmentNumber,
+  userFullAddress,
+  options = { raiseError: true }
+) => {
+  const result = await retrieveGeolocatedOrganisations(departmentNumber, userFullAddress);
 
   if (result.success && result.geolocated_organisations.length === 1) {
     return result.geolocated_organisations[0];
@@ -62,7 +70,7 @@ const retrieveThroughGeolocalisation = async (departmentNumber, applicantFullAdd
     modalTitle = "Il n'y a pas d'organisation spécifique à ce secteur.";
   }
 
-  const modalText = `Veuillez choisir une organisation pour l'adresse: <strong>${applicantFullAddress}</strong>`;
+  const modalText = `Veuillez choisir une organisation pour l'adresse: <strong>${userFullAddress}</strong>`;
 
   return chooseOrganisationModal(
     result.geolocated_organisations && result.geolocated_organisations.length > 1

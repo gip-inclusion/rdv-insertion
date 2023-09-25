@@ -25,7 +25,7 @@ Rails.application.routes.draw do
   resources :organisations, only: [:index, :new, :show, :edit, :create, :update] do
     get :geolocated, on: :collection
     get :search, on: :collection
-    resources :applicants, only: [:index, :create, :show, :update, :edit, :new] do
+    resources :users, only: [:index, :create, :show, :update, :edit, :new] do
       collection do
         resources :uploads, only: [:new]
         get "uploads/category_selection", to: "uploads#category_selection"
@@ -61,14 +61,14 @@ Rails.application.routes.draw do
     resource :closings, only: [:create, :destroy]
   end
 
-  namespace :applicants do
+  namespace :users do
     resources :searches, only: :create
   end
 
   resources :archives, only: [:create, :destroy]
 
   namespace :organisations do
-    resources :applicant_added_notifications, only: [:create]
+    resources :user_added_notifications, only: [:create]
   end
 
   resources :participations, only: [] do
@@ -86,17 +86,17 @@ Rails.application.routes.draw do
 
   resources :departments, only: [] do
     resources :department_organisations, only: [:index], as: :organisations, path: "/organisations"
-    resources :applicants, only: [:index, :new, :create, :show, :edit, :update] do
+    resources :users, only: [:index, :new, :create, :show, :edit, :update] do
       collection do
         resources :uploads, only: [:new]
         get "uploads/category_selection", to: "uploads#category_selection"
         get :default_list
       end
       resources :invitations, only: [:create]
-      resources :applicants_organisations, only: [:index]
+      resources :users_organisations, only: [:index]
       resources :referent_assignations, only: [:index]
     end
-    resource :applicants_organisations, only: [:create, :destroy]
+    resource :users_organisations, only: [:create, :destroy]
     resource :referent_assignations, only: [:create, :destroy]
     resource :stats, only: [:show]
   end
@@ -107,10 +107,10 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :organisations, param: "rdv_solidarites_organisation_id", only: [] do
         member do
-          resources :applicants, only: [] do
+          resources :users, only: [] do
             post :create_and_invite_many, on: :collection
           end
-          post "users/create_and_invite_many", to: "applicants#create_and_invite_many"
+          post "applicants/create_and_invite_many", to: "users#create_and_invite_many"
         end
       end
     end

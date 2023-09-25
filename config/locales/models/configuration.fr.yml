@@ -4,10 +4,10 @@ fr:
       configuration: Configuration
     attributes:
       configuration:
-        convene_applicant: Convocation possible
+        convene_user: Convocation possible
         number_of_days_before_action_required: Délai d'expiration (en jours)
         number_of_days_before_next_invite: Délai entre 2 invitations récurrentes (en jours)
-        invite_to_applicant_organisations_only: Invitation limitée aux organisations du bénéficiaire
+        invite_to_user_organisations_only: Invitation limitée aux organisations du bénéficiaire
         rdv_with_referents: RDV avec référent
         invitation_formats: Formats d'invitations
         motif_category: Catégorie de motifs
@@ -15,4 +15,4 @@ fr:
         template_rdv_title_override: Titre du rendez-vous
         template_rdv_title_by_phone_override: Titre du rendez-vous téléphonique
         template_rdv_purpose_override: But du rendez-vous
-        template_applicant_designation_override: Désignation de la personne
+        template_user_designation_override: Désignation de la personne

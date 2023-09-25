@@ -5,13 +5,13 @@ describe Invitations::AssignAttributes, type: :service do
 
   let!(:organisation) { create(:organisation) }
   let!(:rdv_solidarites_user_id) { 12 }
-  let!(:applicant) do
-    create(:applicant, invitations: [], rdv_solidarites_user_id: rdv_solidarites_user_id)
+  let!(:user) do
+    create(:user, invitations: [], rdv_solidarites_user_id: rdv_solidarites_user_id)
   end
 
   let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
   let!(:invitation) do
-    build(:invitation, applicant: applicant, rdv_solidarites_token: nil, link: nil)
+    build(:invitation, user: user, rdv_solidarites_token: nil, link: nil)
   end
   let!(:rdv_solidarites_token) { "uptodate-token" }
 
@@ -102,7 +102,7 @@ describe Invitations::AssignAttributes, type: :service do
       end
     end
 
-    context "when the applicant has already been invited and existing token and rdv_solidarites_token match" do
+    context "when the user has already been invited and existing token and rdv_solidarites_token match" do
       let!(:other_invitation) do
         create(
           :invitation,
@@ -110,8 +110,8 @@ describe Invitations::AssignAttributes, type: :service do
           valid_until: Time.zone.parse("2022-04-12 15:00")
         )
       end
-      let!(:applicant) do
-        create(:applicant, invitations: [other_invitation], rdv_solidarites_user_id: rdv_solidarites_user_id)
+      let!(:user) do
+        create(:user, invitations: [other_invitation], rdv_solidarites_user_id: rdv_solidarites_user_id)
       end
       let!(:rdv_solidarites_user) { instance_double(RdvSolidarites::User) }
 

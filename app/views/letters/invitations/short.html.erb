@@ -1,23 +1,23 @@
-<%= render "letters/header", direction_names: direction_names, sender_city: sender_city, department: department, organisation: organisation, applicant: applicant %>
+<%= render "letters/header", direction_names: direction_names, sender_city: sender_city, department: department, organisation: organisation, user: user %>
 
 <div class="mail-object">
   <p class="bold-blue"><span class="bold-blue">Objet : <%= rdv_title.slice(0,1).capitalize + rdv_title.slice(1..-1) %></span></p>
-  <%= tag.p("N° allocataire : #{applicant.affiliation_number}") if applicant.affiliation_number %>
+  <%= tag.p("N° allocataire : #{user.affiliation_number}") if user.affiliation_number %>
   <% if invitation.rdv_with_referents? %>
-    <p><%= "Référent".pluralize(applicant.referents.count) %> de parcours : <%= applicant.referents.order(:last_name).map(&:to_s).join(", ") %></p>
+    <p><%= "Référent".pluralize(user.referents.count) %> de parcours : <%= user.referents.order(:last_name).map(&:to_s).join(", ") %></p>
   <% end %>
 </div>
 
 <div class="main-content">
-  <p><%= applicant.title.capitalize %>,</p>
-  <p>Vous êtes <%= applicant.conjugate('invité') %> pour un <%= rdv_title %>.</p>
+  <p><%= user.title.capitalize %>,</p>
+  <p>Vous êtes <%= user.conjugate('invité') %> pour un <%= rdv_title %>.</p>
   <p>Pour faciliter votre prise de rendez-vous, <%= sender_name %> a mis en place <span class="bold-blue">une plateforme vous permettant de prendre rendez-vous vous-même.</span></p>
   <p>Pour choisir un créneau à votre convenance, saisissez le code d’invitation ci-dessous <span class="bold-blue">sur <u><%= ENV['HOST'] %>/invitation</u></span>, puis suivez les instructions présentes à l'écran :</p>
   <div class="invitation-token">Mon code d'invitation<br/><%= invitation.uuid %></div>
   <%= tag.p tag.span(mandatory_warning, class: "bold-blue") if mandatory_warning %>
   <%= tag.p tag.span("En l'absence d'action de votre part, #{punishable_warning}.", class: "bold-blue") if punishable_warning.present? %>
   <%= render "letters/invitations/help_message", invitation: invitation, help_address: help_address %>
-  <%= render "letters/salutation", applicant: applicant %>
+  <%= render "letters/salutation", user: user %>
   <div class="letter-signature">
     <%= render "common/organisation_signature", signature_lines: signature_lines, department: department %>
   </div>

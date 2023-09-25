@@ -11,7 +11,7 @@ module Invitations
       verify_email!(@invitation)
 
       InvitationMailer.with(
-        invitation: @invitation, applicant: @invitation.applicant
+        invitation: @invitation, user: @invitation.user
       ).send(mailer_method).deliver_now
     end
 

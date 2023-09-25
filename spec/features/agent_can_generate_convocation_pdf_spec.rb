@@ -1,19 +1,19 @@
 describe "Agents can generate convocation pdf", js: true do
   let!(:agent) { create(:agent, organisations: [organisation]) }
   let!(:organisation) { create(:organisation) }
-  let!(:applicant) { create(:applicant, organisations: [organisation]) }
+  let!(:user) { create(:user, organisations: [organisation]) }
   let!(:motif_category) { create(:motif_category) }
   let!(:motif) do
     create(:motif, organisation: organisation, motif_category: motif_category, location_type: "public_office")
   end
   let!(:rdv_context) do
-    create(:rdv_context, motif_category: motif_category, applicant: applicant, status: "rdv_pending")
+    create(:rdv_context, motif_category: motif_category, user: user, status: "rdv_pending")
   end
   let!(:configuration) { create(:configuration, organisation: organisation, motif_category: motif_category) }
   let!(:participation) do
     create(
       :participation,
-      rdv_context: rdv_context, rdv: rdv, applicant: applicant, status: "unknown", convocable: true
+      rdv_context: rdv_context, rdv: rdv, user: user, status: "unknown", convocable: true
     )
   end
   let!(:rdv) do
@@ -31,7 +31,7 @@ describe "Agents can generate convocation pdf", js: true do
   end
 
   it "can generate a pdf" do
-    visit organisation_applicant_path(organisation, applicant)
+    visit organisation_user_path(organisation, user)
 
     expect(page).to have_button "Courrier"
 
@@ -52,7 +52,7 @@ describe "Agents can generate convocation pdf", js: true do
     before { motif.update! location_type: "phone" }
 
     it "generates the matching pdf" do
-      visit organisation_applicant_path(organisation, applicant)
+      visit organisation_user_path(organisation, user)
 
       expect(page).to have_button "Courrier"
 
@@ -66,7 +66,7 @@ describe "Agents can generate convocation pdf", js: true do
 
       expect(pdf_text).not_to include(lieu.name)
       expect(pdf_text).not_to include(lieu.address)
-      expect(pdf_text).to include(applicant.phone_number)
+      expect(pdf_text).to include(user.phone_number)
       expect(pdf_text).to include("mercredi 22 juin 2022 à 08h30")
     end
   end
@@ -75,7 +75,7 @@ describe "Agents can generate convocation pdf", js: true do
     before { rdv.update! starts_at: 2.days.ago }
 
     it "cannot generate a pdf" do
-      visit organisation_applicant_path(organisation, applicant)
+      visit organisation_user_path(organisation, user)
 
       expect(page).not_to have_button "Courrier"
     end
@@ -84,7 +84,7 @@ describe "Agents can generate convocation pdf", js: true do
       before { participation.update! status: "revoked" }
 
       it "can generate a revoked participation pdf" do
-        visit organisation_applicant_path(organisation, applicant)
+        visit organisation_user_path(organisation, user)
 
         expect(page).to have_button "Courrier"
 
@@ -102,10 +102,10 @@ describe "Agents can generate convocation pdf", js: true do
   end
 
   context "when the pdf cannot be generated" do
-    before { applicant.update! address: "format invalide" }
+    before { user.update! address: "format invalide" }
 
     it "returns an error" do
-      visit organisation_applicant_path(organisation, applicant)
+      visit organisation_user_path(organisation, user)
 
       expect(page).to have_button "Courrier"
 

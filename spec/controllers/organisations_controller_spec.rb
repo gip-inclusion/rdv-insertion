@@ -17,9 +17,9 @@ describe OrganisationsController do
   describe "#index" do
     context "when agent is authorized" do
       context "and linked to one organisation" do
-        it "redirects to organisation_applicants_path" do
+        it "redirects to organisation_users_path" do
           get :index
-          expect(response).to redirect_to(default_list_organisation_applicants_path(organisation))
+          expect(response).to redirect_to(default_list_organisation_users_path(organisation))
         end
       end
 
@@ -79,7 +79,7 @@ describe OrganisationsController do
       expect(response.body).to match(/Oui/)
       expect(response.body).to match(/Logo/)
       expect(response.body).to match(%r{images/logos/pie-pantin})
-      expect(response.body).to match(/Désignation dans le fichier allocataires/)
+      expect(response.body).to match(/Désignation dans le fichier usagers/)
       expect(response.body).to match(/pie-pantin/)
     end
 
@@ -155,7 +155,7 @@ describe OrganisationsController do
       expect(response.body).to match(/Oui/)
       expect(response.body).to match(/Logo/)
       expect(response.body).to match(%r{images/logos/pie-pantin})
-      expect(response.body).to match(/Désignation dans le fichier allocataires/)
+      expect(response.body).to match(/Désignation dans le fichier usagers/)
       expect(response.body).to match(/pie-pantin/)
     end
 
@@ -212,7 +212,7 @@ describe OrganisationsController do
       it "redirects to the orgnisation show page" do
         post :create, params: create_params
 
-        expect(response).to redirect_to(organisation_applicants_path(organisation))
+        expect(response).to redirect_to(organisation_users_path(organisation))
       end
     end
 

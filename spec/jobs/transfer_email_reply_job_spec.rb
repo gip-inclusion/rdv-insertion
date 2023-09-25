@@ -13,18 +13,18 @@ describe TransferEmailReplyJob do
   end
 
   let!(:organisation) { create(:organisation, email: "organisation@departement.fr") }
-  let!(:applicant) do
-    create(:applicant, email: "bene_ficiaire@gmail.com",
-                       first_name: "Bénédicte", last_name: "Ficiaire", organisations: [organisation])
+  let!(:user) do
+    create(:user, email: "bene_ficiaire@gmail.com",
+                  first_name: "Bénédicte", last_name: "Ficiaire", organisations: [organisation])
   end
   let(:rdv_uuid) { "8fae4d5f-4d63-4f60-b343-854d939881a3" }
-  let!(:rdv_context) { create(:rdv_context, applicant: applicant) }
-  let!(:participation) { create(:participation, convocable: true, rdv_context: rdv_context, applicant: applicant) }
+  let!(:rdv_context) { create(:rdv_context, user: user) }
+  let!(:participation) { create(:participation, convocable: true, rdv_context: rdv_context, user: user) }
   let!(:rdv) do
     create(:rdv, uuid: rdv_uuid, organisation: organisation, participations: [participation])
   end
   let!(:invitation) do
-    create(:invitation, applicant: applicant, organisations: [organisation])
+    create(:invitation, user: user, organisations: [organisation])
   end
 
   let!(:headers) do

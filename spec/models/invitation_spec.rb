@@ -2,13 +2,13 @@ describe Invitation do
   describe "#valid?" do
     let!(:department) { create(:department) }
     let!(:organisation) { create(:organisation, department: department) }
-    let!(:applicant) { create(:applicant) }
+    let!(:user) { create(:user) }
     let!(:rdv_context) { build(:rdv_context) }
     let!(:invitation) do
       build(
         :invitation,
         organisations: [organisation], department: department, rdv_context: rdv_context,
-        help_phone_number: "0101010101", applicant: applicant, rdv_solidarites_token: "rdv_solidarites_token",
+        help_phone_number: "0101010101", user: user, rdv_solidarites_token: "rdv_solidarites_token",
         link: "https://www.rdv-solidarites.fr"
       )
     end
