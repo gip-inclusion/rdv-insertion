@@ -16,7 +16,7 @@ describe RefreshRdvContextStatusesJob do
       allow(rdv_context).to receive(:save!)
     end
 
-    it "retrieves the applicants" do
+    it "retrieves the users" do
       expect(RdvContext).to receive(:where)
         .with(id: rdv_context_ids)
       subject

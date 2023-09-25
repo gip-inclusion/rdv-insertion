@@ -8,12 +8,12 @@ describe Notifications::GenerateLetter, type: :service do
   include_context "with all existing categories"
 
   let!(:address) { "20 avenue de Segur, 75007 Paris" }
-  let!(:applicant) do
-    create(:applicant, title: "monsieur", organisations: [organisation], address: address, phone_number: "+33607070707")
+  let!(:user) do
+    create(:user, title: "monsieur", organisations: [organisation], address: address, phone_number: "+33607070707")
   end
   let!(:department) { create(:department) }
   let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_orientation) }
-  let!(:participation) { create(:participation, rdv_context: rdv_context, rdv: rdv, applicant: applicant) }
+  let!(:participation) { create(:participation, rdv_context: rdv_context, rdv: rdv, user: user) }
   let!(:notification) do
     create(:notification, participation: participation, event: "participation_created", format: "postal")
   end
@@ -82,22 +82,22 @@ describe Notifications::GenerateLetter, type: :service do
       end
 
       context "when the phone number is blank" do
-        before { applicant.phone_number = nil }
+        before { user.phone_number = nil }
 
         it("is a failure") { is_a_failure }
 
         it "returns the error" do
-          expect(subject.errors).to eq(["Le numéro de téléphone de l'allocataire n'est pas renseigné"])
+          expect(subject.errors).to eq(["Le numéro de téléphone de l'usager n'est pas renseigné"])
         end
       end
 
       context "when the phone number is not mobile" do
-        before { applicant.phone_number = "0142244444" }
+        before { user.phone_number = "0142244444" }
 
         it("is a failure") { is_a_failure }
 
         it "returns the error" do
-          expect(subject.errors).to eq(["Le numéro de téléphone de l'allocataire n'est pas un mobile"])
+          expect(subject.errors).to eq(["Le numéro de téléphone de l'usager n'est pas un mobile"])
         end
       end
 

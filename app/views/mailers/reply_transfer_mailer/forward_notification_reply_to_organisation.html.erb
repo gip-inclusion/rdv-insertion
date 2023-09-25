@@ -5,9 +5,9 @@
 <p>Merci de ne pas répondre à cet e-mail. Pour contacter la personne, vous pouvez utiliser les informations contenues dans cet e-mail.</p>
 <blockquote>
   <h4>Éxpéditeur</h4>
-  <%= tag.p(@applicant.full_name) if @applicant %>
-  <%= tag.p(@applicant ? @applicant.email : @author) %>
-  <%= tag.p(@applicant.phone_number) if @applicant&.phone_number %>
+  <%= tag.p(@user.full_name) if @user %>
+  <%= tag.p(@user ? @user.email : @author) %>
+  <%= tag.p(@user.phone_number) if @user&.phone_number %>
   <br />
   <h4>Message envoyé par rdv-insertion</h4>
   <p>Convocation pour un rdv le <%= I18n.l(@rdv.starts_at, format: :human) %></p>
@@ -15,4 +15,4 @@
   <p>Lieu : <%= @rdv.lieu.name %></p>
   <p>Adresse : <%= @rdv.lieu.address %></p>
 </blockquote>
-<%= render "link_to_applicant_page", applicant: @applicant, organisation: @organisation %>
+<%= render "link_to_user_page", user: @user, organisation: @organisation %>

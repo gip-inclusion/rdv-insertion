@@ -46,7 +46,7 @@ module StubHelper
       .to_return(status: 200)
   end
 
-  def stub_applicant_creation(rdv_solidarites_user_id)
+  def stub_user_creation(rdv_solidarites_user_id)
     stub_rdv_solidarites_create_user(rdv_solidarites_user_id)
     stub_rdv_solidarites_update_user(rdv_solidarites_user_id)
     stub_send_in_blue

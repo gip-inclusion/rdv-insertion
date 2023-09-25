@@ -1,8 +1,8 @@
 import appFetch from "../../lib/appFetch";
 
-const assignReferent = async (departmentId, applicantId, referentEmail) =>
+const assignReferent = async (departmentId, userId, referentEmail) =>
   appFetch(`/departments/${departmentId}/referent_assignations`, "POST", {
-    referent_assignation: { applicant_id: applicantId, agent_email: referentEmail },
+    referent_assignation: { user_id: userId, agent_email: referentEmail },
   });
 
 export default assignReferent;

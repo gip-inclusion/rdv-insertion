@@ -7,7 +7,7 @@ class UpsertRecord < BaseService
 
   def call
     @klass.with_advisory_lock(
-      "upserting_#{@klass.name.underscore}_rdv_solidarites_id_#{@rdv_solidarites_attributes[:id]}"
+      "upserting_#{rdv_solidarites_class_name}_rdv_solidarites_id_#{@rdv_solidarites_attributes[:id]}"
     ) do
       return if old_update?
 
@@ -36,10 +36,10 @@ class UpsertRecord < BaseService
   end
 
   def rdv_solidarites_id_attribute_name
-    "rdv_solidarites_#{rdv_solidarites_class_name.underscore}_id"
+    "rdv_solidarites_#{rdv_solidarites_class_name}_id"
   end
 
   def rdv_solidarites_class_name
-    defined?(@klass::RDV_SOLIDARITES_CLASS_NAME) ? @klass::RDV_SOLIDARITES_CLASS_NAME : @klass.name
+    @klass.name.underscore
   end
 end

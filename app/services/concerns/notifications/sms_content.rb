@@ -1,6 +1,6 @@
 module Notifications
   module SmsContent
-    delegate :rdv, :applicant, :rdv_title, :rdv_title_by_phone, :applicant_designation, :mandatory_warning,
+    delegate :rdv, :user, :rdv_title, :rdv_title_by_phone, :user_designation, :mandatory_warning,
              :punishable_warning, :rdv_subject,
              to: :notification
     delegate :formatted_start_date, :formatted_start_time, :lieu, :phone_number, to: :rdv
@@ -10,9 +10,9 @@ module Notifications
     ### participation_created
 
     def presential_participation_created_content
-      "#{applicant.full_name},\nVous êtes #{applicant_designation} et à ce titre vous êtes " \
-        "#{applicant.conjugate('convoqué')} à un " \
-        "#{rdv_title}. Vous êtes #{applicant.conjugate('attendu')} le #{formatted_start_date} à " \
+      "#{user.full_name},\nVous êtes #{user_designation} et à ce titre vous êtes " \
+        "#{user.conjugate('convoqué')} à un " \
+        "#{rdv_title}. Vous êtes #{user.conjugate('attendu')} le #{formatted_start_date} à " \
         "#{formatted_start_time} ici: #{lieu.full_name}. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
@@ -20,8 +20,8 @@ module Notifications
     end
 
     def by_phone_participation_created_content
-      "#{applicant.full_name},\nVous êtes #{applicant_designation} et à ce titre vous êtes " \
-        "#{applicant.conjugate('convoqué')} à un " \
+      "#{user.full_name},\nVous êtes #{user_designation} et à ce titre vous êtes " \
+        "#{user.conjugate('convoqué')} à un " \
         "#{rdv_title_by_phone}. Un travailleur social vous appellera le #{formatted_start_date}" \
         " à partir de #{formatted_start_time} sur ce numéro. " \
         "#{mandatory_warning_message}" \
@@ -32,8 +32,8 @@ module Notifications
     ### participation_updated
 
     def presential_participation_updated_content
-      "#{applicant.full_name},\nVotre #{rdv_title} dans le cadre de votre #{rdv_subject} a été modifié. " \
-        "Vous êtes #{applicant.conjugate('attendu')} le #{formatted_start_date} à #{formatted_start_time}" \
+      "#{user.full_name},\nVotre #{rdv_title} dans le cadre de votre #{rdv_subject} a été modifié. " \
+        "Vous êtes #{user.conjugate('attendu')} le #{formatted_start_date} à #{formatted_start_time}" \
         " ici: #{lieu.full_name}. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
@@ -41,7 +41,7 @@ module Notifications
     end
 
     def by_phone_participation_updated_content
-      "#{applicant.full_name},\nVotre #{rdv_title_by_phone} dans le cadre de votre #{rdv_subject} a été modifié. " \
+      "#{user.full_name},\nVotre #{rdv_title_by_phone} dans le cadre de votre #{rdv_subject} a été modifié. " \
         "Un travailleur social vous appellera le #{formatted_start_date}" \
         " à partir de #{formatted_start_time} sur ce numéro. " \
         "#{mandatory_warning_message}" \
@@ -52,9 +52,9 @@ module Notifications
     ### participation_reminder
 
     def presential_participation_reminder_content
-      "RAPPEL: #{applicant.full_name},\nVous êtes #{applicant_designation} et à ce titre vous avez été " \
-        "#{applicant.conjugate('convoqué')} à un " \
-        "#{rdv_title}. Vous êtes #{applicant.conjugate('attendu')} le #{formatted_start_date} à " \
+      "RAPPEL: #{user.full_name},\nVous êtes #{user_designation} et à ce titre vous avez été " \
+        "#{user.conjugate('convoqué')} à un " \
+        "#{rdv_title}. Vous êtes #{user.conjugate('attendu')} le #{formatted_start_date} à " \
         "#{formatted_start_time} ici: #{lieu.full_name}. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
@@ -62,8 +62,8 @@ module Notifications
     end
 
     def by_phone_participation_reminder_content
-      "RAPPEL: #{applicant.full_name},\nVous êtes #{applicant_designation} et à ce titre vous avez été " \
-        "#{applicant.conjugate('convoqué')} à un " \
+      "RAPPEL: #{user.full_name},\nVous êtes #{user_designation} et à ce titre vous avez été " \
+        "#{user.conjugate('convoqué')} à un " \
         "#{rdv_title_by_phone}. Un travailleur social vous appellera le #{formatted_start_date}" \
         " à partir de #{formatted_start_time} sur ce numéro. " \
         "#{mandatory_warning_message}" \
@@ -74,7 +74,7 @@ module Notifications
     ### participation_cancelled
 
     def participation_cancelled_content
-      "#{applicant.full_name},\nVotre #{rdv_title} dans le cadre de votre #{rdv_subject} a été annulé. " \
+      "#{user.full_name},\nVotre #{rdv_title} dans le cadre de votre #{rdv_subject} a été annulé. " \
         "Pour plus d'informations, contactez le #{phone_number}."
     end
 

@@ -23,7 +23,7 @@ describe RdvContext do
     context "when status needs attention" do
       let!(:rdv_context) { create(:rdv_context, status: "invitation_pending") }
 
-      context "when the applicant has been invited less than 3 days ago in this context" do
+      context "when the user has been invited less than 3 days ago in this context" do
         let!(:invitation) { create(:invitation, rdv_context: rdv_context, sent_at: 5.days.ago) }
         let!(:invitation2) { create(:invitation, rdv_context: rdv_context, sent_at: 2.hours.ago) }
 
@@ -32,7 +32,7 @@ describe RdvContext do
         end
       end
 
-      context "when the applicant has been last invited manually more than 3 days ago in this context" do
+      context "when the user has been last invited manually more than 3 days ago in this context" do
         let!(:invitation) { create(:invitation, rdv_context: rdv_context, sent_at: 5.days.ago) }
         let!(:invitation2) { create(:invitation, rdv_context: rdv_context, sent_at: 4.days.ago) }
         let!(:invitation3) { create(:invitation, reminder: true, rdv_context: rdv_context, sent_at: 1.day.ago) }
@@ -76,9 +76,9 @@ describe RdvContext do
       end
 
       context "with sent invitation" do
-        let!(:applicant) { create(:applicant) }
-        let!(:invitation) { create(:invitation, sent_at: 2.days.ago, applicant: applicant) }
-        let!(:rdv_context) { create(:rdv_context, applicant: applicant, invitations: [invitation]) }
+        let!(:user) { create(:user) }
+        let!(:invitation) { create(:invitation, sent_at: 2.days.ago, user: user) }
+        let!(:rdv_context) { create(:rdv_context, user: user, invitations: [invitation]) }
 
         context "with no participations" do
           it "is in invitation pending" do
@@ -91,7 +91,7 @@ describe RdvContext do
             let!(:participation) do
               create(
                 :participation,
-                created_at: 4.days.ago, applicant: applicant, rdv_context: rdv_context, status: "seen"
+                created_at: 4.days.ago, user: user, rdv_context: rdv_context, status: "seen"
               )
             end
 
@@ -104,7 +104,7 @@ describe RdvContext do
             let!(:participation) do
               create(
                 :participation,
-                created_at: 1.day.ago, applicant: applicant, rdv_context: rdv_context, status: "seen"
+                created_at: 1.day.ago, user: user, rdv_context: rdv_context, status: "seen"
               )
             end
 
@@ -118,7 +118,7 @@ describe RdvContext do
             let!(:participation) do
               create(
                 :participation,
-                created_at: 1.day.ago, rdv: rdv, applicant: applicant, rdv_context: rdv_context, status: "seen"
+                created_at: 1.day.ago, rdv: rdv, user: user, rdv_context: rdv_context, status: "seen"
               )
             end
             let!(:other_participation) do
@@ -135,7 +135,7 @@ describe RdvContext do
             let!(:participation) do
               create(
                 :participation,
-                created_at: 3.days.ago, rdv: rdv, applicant: applicant, rdv_context: rdv_context, status: "seen"
+                created_at: 3.days.ago, rdv: rdv, user: user, rdv_context: rdv_context, status: "seen"
               )
             end
             let!(:other_participation) do
@@ -156,7 +156,7 @@ describe RdvContext do
           let!(:participation) do
             create(
               :participation,
-              created_at: 4.days.ago, rdv: rdv, applicant: applicant, rdv_context: rdv_context, status: "unknown"
+              created_at: 4.days.ago, rdv: rdv, user: user, rdv_context: rdv_context, status: "unknown"
             )
           end
 
@@ -171,7 +171,7 @@ describe RdvContext do
             let!(:participation) do
               create(
                 :participation,
-                created_at: 4.days.ago, rdv: rdv, applicant: applicant, rdv_context: rdv_context, status: "noshow"
+                created_at: 4.days.ago, rdv: rdv, user: user, rdv_context: rdv_context, status: "noshow"
               )
             end
 
@@ -185,7 +185,7 @@ describe RdvContext do
             let!(:participation) do
               create(
                 :participation,
-                created_at: 1.day.ago, rdv: rdv, applicant: applicant, rdv_context: rdv_context, status: "noshow"
+                created_at: 1.day.ago, rdv: rdv, user: user, rdv_context: rdv_context, status: "noshow"
               )
             end
 
@@ -201,7 +201,7 @@ describe RdvContext do
           let!(:participation) do
             create(
               :participation,
-              created_at: 4.days.ago, rdv: rdv, applicant: applicant, rdv_context: rdv_context, status: "seen"
+              created_at: 4.days.ago, rdv: rdv, user: user, rdv_context: rdv_context, status: "seen"
             )
           end
 
@@ -209,7 +209,7 @@ describe RdvContext do
           let!(:participation2) do
             create(
               :participation,
-              created_at: 5.days.ago, rdv: rdv2, applicant: applicant, rdv_context: rdv_context, status: "noshow"
+              created_at: 5.days.ago, rdv: rdv2, user: user, rdv_context: rdv_context, status: "noshow"
             )
           end
 
@@ -223,7 +223,7 @@ describe RdvContext do
             let!(:participation3) do
               create(
                 :participation,
-                created_at: 8.days.ago, rdv: rdv3, applicant: applicant, rdv_context: rdv_context, status: "unknown"
+                created_at: 8.days.ago, rdv: rdv3, user: user, rdv_context: rdv_context, status: "unknown"
               )
             end
 
@@ -237,7 +237,7 @@ describe RdvContext do
             let!(:participation) do
               create(
                 :participation,
-                created_at: 1.day.ago, rdv: rdv3, applicant: applicant, rdv_context: rdv_context, status: "excused"
+                created_at: 1.day.ago, rdv: rdv3, user: user, rdv_context: rdv_context, status: "excused"
               )
             end
 
@@ -254,7 +254,7 @@ describe RdvContext do
             let!(:participation3) do
               create(
                 :participation,
-                created_at: 1.day.ago, rdv: rdv3, applicant: applicant, rdv_context: rdv_context, status: "unknown"
+                created_at: 1.day.ago, rdv: rdv3, user: user, rdv_context: rdv_context, status: "unknown"
               )
             end
 
@@ -298,16 +298,16 @@ describe RdvContext do
       end
 
       context "when there is a rdv" do
-        let!(:applicant) { create(:applicant) }
+        let!(:user) { create(:user) }
         let!(:rdv) { create(:rdv) }
         let!(:participation) do
-          create(:participation, rdv: rdv, applicant: applicant, rdv_context: rdv_context, created_at: 5.days.ago)
+          create(:participation, rdv: rdv, user: user, rdv_context: rdv_context, created_at: 5.days.ago)
         end
         let!(:invitation) { create(:invitation, sent_at: 6.days.ago) }
         let!(:invitation2) { create(:invitation, sent_at: 2.days.ago) }
         let!(:invitation3) { create(:invitation, sent_at: 1.day.ago) }
         let!(:rdv_context) do
-          create(:rdv_context, status: "invitation_pending", applicant: applicant,
+          create(:rdv_context, status: "invitation_pending", user: user,
                                invitations: [invitation, invitation2, invitation3])
         end
 

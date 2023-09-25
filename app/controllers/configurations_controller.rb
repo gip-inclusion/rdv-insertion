@@ -1,10 +1,10 @@
 class ConfigurationsController < ApplicationController
   PERMITTED_PARAMS = [
     { invitation_formats: [] }, :convene_applicant, :rdv_with_referents, :file_configuration_id,
-    :invite_to_applicant_organisations_only, :number_of_days_before_action_required,
+    :invite_to_user_organisations_only, :number_of_days_before_action_required,
     :day_of_the_month_periodic_invites, :number_of_days_between_periodic_invites, :motif_category_id,
     :template_rdv_title_override, :template_rdv_title_by_phone_override, :template_rdv_purpose_override,
-    :template_applicant_designation_override
+    :template_user_designation_override
   ].freeze
 
   include BackToListConcern
@@ -13,7 +13,7 @@ class ConfigurationsController < ApplicationController
                 only: [:index, :new, :create, :show, :edit, :update, :destroy]
   before_action :set_configuration, :set_file_configuration, :set_template, only: [:show, :edit, :update, :destroy]
   before_action :set_department, :set_file_configurations, only: [:new, :create, :edit, :update]
-  before_action :set_back_to_applicants_list_url, :set_messages_configuration, :set_configurations, only: [:index]
+  before_action :set_back_to_users_list_url, :set_messages_configuration, :set_configurations, only: [:index]
 
   def index
     @available_tags = (@department || @organisation.department).tags.distinct

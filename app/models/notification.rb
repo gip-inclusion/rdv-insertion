@@ -1,6 +1,7 @@
 class Notification < ApplicationRecord
-  include Sendable
+  include HasCurrentConfiguration
   include Templatable
+  include Sendable
 
   attr_accessor :content
 
@@ -13,13 +14,13 @@ class Notification < ApplicationRecord
 
   validates :format, :event, :rdv_solidarites_rdv_id, presence: true
 
-  delegate :department, :applicant, :rdv, :motif_category, :instruction_for_rdv, to: :participation
+  delegate :department, :user, :rdv, :motif_category, :instruction_for_rdv, to: :participation
   delegate :organisation, to: :rdv, allow_nil: true
   delegate :messages_configuration, :configurations, to: :organisation
 
   scope :sent, -> { where.not(sent_at: nil) }
 
-  def send_to_applicant
+  def send_to_user
     case format
     when "sms"
       Notifications::SendSms.call(notification: self)

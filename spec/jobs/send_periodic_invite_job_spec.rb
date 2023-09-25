@@ -35,7 +35,7 @@ describe SendPeriodicInviteJob do
         expect(invitation).to have_attributes(
           rdv_context: invitation.rdv_context,
           motif_category: invitation.motif_category,
-          applicant: invitation.applicant,
+          user: invitation.user,
           format: "email"
         )
 

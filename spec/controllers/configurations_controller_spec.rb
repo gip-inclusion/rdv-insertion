@@ -45,7 +45,7 @@ describe ConfigurationsController do
       expect(response.body).to match(/Oui/)
       expect(response.body).to match(/Logo/)
       expect(response.body).to match(%r{images/logos/pie-pantin})
-      expect(response.body).to match(/Désignation dans le fichier allocataires/)
+      expect(response.body).to match(/Désignation dans le fichier usagers/)
       expect(response.body).to match(/pie-pantin/)
     end
 
@@ -136,7 +136,7 @@ describe ConfigurationsController do
     let!(:new_configuration) { build(:configuration, organisation: organisation) }
     let!(:new_params) { { organisation_id: organisation.id } }
 
-    it "renders the new applicant page" do
+    it "renders the new user page" do
       get :new, params: new_params
 
       expect(response).to be_successful
@@ -185,7 +185,7 @@ describe ConfigurationsController do
   describe "#edit" do
     let!(:edit_params) { { organisation_id: organisation.id, id: configuration.id } }
 
-    it "renders the edit applicant page" do
+    it "renders the edit user page" do
       get :edit, params: edit_params
 
       expect(response).to be_successful
@@ -236,8 +236,8 @@ describe ConfigurationsController do
     let!(:create_params) do
       {
         configuration: {
-          invitation_formats: %w[sms email postal], convene_applicant: true,
-          rdv_with_referents: true, invite_to_applicant_organisations_only: true,
+          invitation_formats: %w[sms email postal], convene_user: true,
+          rdv_with_referents: true, invite_to_user_organisations_only: true,
           number_of_days_before_action_required: 12,
           motif_category_id: motif_category.id, file_configuration_id: file_configuration.id,
           number_of_days_between_periodic_invites: 15
@@ -253,9 +253,9 @@ describe ConfigurationsController do
     it "assigns the corrects attributes" do
       post :create, params: create_params
       expect(Configuration.last.reload.invitation_formats).to eq(%w[sms email postal])
-      expect(Configuration.last.reload.convene_applicant).to eq(true)
+      expect(Configuration.last.reload.convene_user).to eq(true)
       expect(Configuration.last.reload.rdv_with_referents).to eq(true)
-      expect(Configuration.last.reload.invite_to_applicant_organisations_only).to eq(true)
+      expect(Configuration.last.reload.invite_to_user_organisations_only).to eq(true)
       expect(Configuration.last.reload.number_of_days_before_action_required).to eq(12)
       expect(Configuration.last.reload.number_of_days_between_periodic_invites).to eq(15)
       expect(Configuration.last.reload.motif_category_id).to eq(motif_category.id)
@@ -322,8 +322,8 @@ describe ConfigurationsController do
     let!(:update_params) do
       {
         configuration: {
-          invitation_formats: %w[sms email postal], convene_applicant: true,
-          rdv_with_referents: true, invite_to_applicant_organisations_only: true,
+          invitation_formats: %w[sms email postal], convene_user: true,
+          rdv_with_referents: true, invite_to_user_organisations_only: true,
           number_of_days_before_action_required: 12,
           day_of_the_month_periodic_invites: 5
         },
@@ -334,9 +334,9 @@ describe ConfigurationsController do
     it "updates the configuration" do
       patch :update, params: update_params
       expect(configuration.reload.invitation_formats).to eq(%w[sms email postal])
-      expect(configuration.reload.convene_applicant).to eq(true)
+      expect(configuration.reload.convene_user).to eq(true)
       expect(configuration.reload.rdv_with_referents).to eq(true)
-      expect(configuration.reload.invite_to_applicant_organisations_only).to eq(true)
+      expect(configuration.reload.invite_to_user_organisations_only).to eq(true)
       expect(configuration.reload.number_of_days_before_action_required).to eq(12)
       expect(configuration.reload.day_of_the_month_periodic_invites).to eq(5)
     end

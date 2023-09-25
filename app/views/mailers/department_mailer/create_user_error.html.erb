@@ -1,0 +1,15 @@
+<h1>Bonjour</h1>
+<p>L'usager suivant n'a pas pu être créé sur RDV-Insertion:</p>
+<ul>
+  <li>Nom: <%= @user_attributes[:last_name] %></li>
+  <li>Prénom: <%= @user_attributes[:first_name] %></li>
+  <li>ID interne: <%= @user_attributes[:department_internal_id] %></li>
+  <li>Numéro usager: <%= @user_attributes[:affiliation_number] %></li>
+</ul>
+<p>Les raisons suivantes sont évoquées:<p>
+<ul>
+  <% @errors.each do |error| %><li><%= error %></li><% end %>
+</ul>
+<p>Nous avons également été prévenu de l'erreur, nous faisons notre possible pour régler le problème.</p>
+<p>Merci de votre compréhension,</p>
+<p>L'équipe RDV-Insertion</p>

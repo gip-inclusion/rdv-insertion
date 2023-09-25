@@ -1,6 +1,6 @@
 describe InvitationsController do
   describe "#create" do
-    let!(:applicant_id) { "24" }
+    let!(:user_id) { "24" }
     let!(:organisation_id) { "22" }
     let!(:help_phone_number) { "0101010101" }
     let!(:department) { create(:department) }
@@ -9,18 +9,18 @@ describe InvitationsController do
       create(
         :configuration,
         organisation: organisation, number_of_days_before_action_required: 10,
-        motif_category: motif_category, rdv_with_referents: false, invite_to_applicant_organisations_only: false
+        motif_category: motif_category, rdv_with_referents: false, invite_to_user_organisations_only: false
       )
     end
     let!(:other_org) { create(:organisation, department: department) }
 
     let!(:organisations) { Organisation.where(id: organisation.id) }
     let!(:agent) { create(:agent, organisations: organisations) }
-    let!(:applicant) do
+    let!(:user) do
       create(
-        :applicant,
+        :user,
         first_name: "JANE", last_name: "DOE", title: "madame",
-        id: applicant_id, organisations: [organisation]
+        id: user_id, organisations: [organisation]
       )
     end
     let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation") }
@@ -28,7 +28,7 @@ describe InvitationsController do
     let!(:create_params) do
       {
         organisation_id: organisation.id,
-        applicant_id: applicant_id,
+        user_id: user_id,
         invitation_format: "sms",
         help_phone_number: help_phone_number,
         motif_category_id: motif_category.id,
@@ -38,23 +38,23 @@ describe InvitationsController do
     let!(:invitation) do
       create(
         :invitation,
-        applicant: applicant, department: department, organisations: organisations,
+        user: user, department: department, organisations: organisations,
         help_phone_number: help_phone_number, rdv_context: rdv_context
       )
     end
 
-    let!(:rdv_context) { build(:rdv_context, applicant: applicant, motif_category: motif_category) }
+    let!(:rdv_context) { build(:rdv_context, user: user, motif_category: motif_category) }
     let!(:valid_until) { Time.zone.parse("2022-05-14 12:30") }
 
     before do
       sign_in(agent)
       travel_to(Time.zone.parse("2022-05-04 12:30"))
       allow(RdvContext).to receive(:find_or_create_by!)
-        .with(motif_category: motif_category, applicant: applicant)
+        .with(motif_category: motif_category, user: user)
         .and_return(rdv_context)
       allow(Invitation).to receive(:new)
         .with(
-          department: department, applicant: applicant, organisations: organisations, rdv_context: rdv_context,
+          department: department, user: user, organisations: organisations, rdv_context: rdv_context,
           help_phone_number: help_phone_number,
           format: "sms", rdv_solidarites_lieu_id: nil, valid_until: valid_until,
           rdv_with_referents: false
@@ -67,14 +67,14 @@ describe InvitationsController do
     context "organisation level" do
       it "finds or create a context" do
         expect(RdvContext).to receive(:find_or_create_by!)
-          .with(motif_category: motif_category, applicant: applicant)
+          .with(motif_category: motif_category, user: user)
         post :create, params: create_params
       end
 
       it "instantiate the invitation" do
         expect(Invitation).to receive(:new)
           .with(
-            department: department, applicant: applicant, organisations: organisations, rdv_context: rdv_context,
+            department: department, user: user, organisations: organisations, rdv_context: rdv_context,
             help_phone_number: help_phone_number,
             format: "sms", rdv_solidarites_lieu_id: nil,
             valid_until: valid_until, rdv_with_referents: false
@@ -97,7 +97,7 @@ describe InvitationsController do
       let!(:create_params) do
         {
           department_id: department.id,
-          applicant_id: applicant_id,
+          user_id: user_id,
           invitation_format: "email",
           help_phone_number: help_phone_number,
           motif_category_id: motif_category.id,
@@ -109,7 +109,7 @@ describe InvitationsController do
       before do
         allow(Invitation).to receive(:new)
           .with(
-            department: department, applicant: applicant, organisations: organisations, rdv_context: rdv_context,
+            department: department, user: user, organisations: organisations, rdv_context: rdv_context,
             help_phone_number: help_phone_number,
             format: "email", rdv_solidarites_lieu_id: "3929",
             valid_until: valid_until, rdv_with_referents: false
@@ -118,14 +118,14 @@ describe InvitationsController do
 
       it "finds or create a context" do
         expect(RdvContext).to receive(:find_or_create_by!)
-          .with(motif_category: motif_category, applicant: applicant)
+          .with(motif_category: motif_category, user: user)
         post :create, params: create_params
       end
 
       it "instantiate the invitation" do
         expect(Invitation).to receive(:new)
           .with(
-            department: department, applicant: applicant, organisations: organisations, rdv_context: rdv_context,
+            department: department, user: user, organisations: organisations, rdv_context: rdv_context,
             format: "email", help_phone_number: help_phone_number,
             rdv_solidarites_lieu_id: "3929", valid_until: valid_until, rdv_with_referents: false
           )
@@ -141,22 +141,22 @@ describe InvitationsController do
         post :create, params: create_params
       end
 
-      context "when the config invites to applicants organisations only" do
+      context "when the config invites to users organisations only" do
         before do
-          configuration.update!(invite_to_applicant_organisations_only: true)
+          configuration.update!(invite_to_user_organisations_only: true)
           allow(Invitation).to receive(:new)
             .with(
-              department: department, applicant: applicant, organisations: [organisation], rdv_context: rdv_context,
+              department: department, user: user, organisations: [organisation], rdv_context: rdv_context,
               help_phone_number: help_phone_number,
               format: "email", rdv_solidarites_lieu_id: "3929",
               valid_until: valid_until, rdv_with_referents: false
             ).and_return(invitation)
         end
 
-        it "instantiates the invitation with the applicant orgs only" do
+        it "instantiates the invitation with the user orgs only" do
           expect(Invitation).to receive(:new)
             .with(
-              department: department, applicant: applicant, organisations: [organisation], rdv_context: rdv_context,
+              department: department, user: user, organisations: [organisation], rdv_context: rdv_context,
               format: "email", help_phone_number: help_phone_number,
               rdv_solidarites_lieu_id: "3929", valid_until: valid_until, rdv_with_referents: false
             )
@@ -184,14 +184,14 @@ describe InvitationsController do
         let!(:invitation) do
           create(
             :invitation,
-            applicant: applicant, department: department, organisations: organisations,
+            user: user, department: department, organisations: organisations,
             help_phone_number: help_phone_number, format: "postal"
           )
         end
         let!(:create_params) do
           {
             organisation_id: organisation.id,
-            applicant_id: applicant_id,
+            user_id: user_id,
             invitation_format: "postal",
             help_phone_number: help_phone_number,
             motif_category_id: motif_category.id,
@@ -202,7 +202,7 @@ describe InvitationsController do
         before do
           allow(Invitation).to receive(:new)
             .with(
-              department: department, applicant: applicant, organisations: organisations, rdv_context: rdv_context,
+              department: department, user: user, organisations: organisations, rdv_context: rdv_context,
               format: "postal", help_phone_number: help_phone_number,
               rdv_solidarites_lieu_id: nil, valid_until: valid_until, rdv_with_referents: false
             ).and_return(invitation)
@@ -223,8 +223,8 @@ describe InvitationsController do
           post :create, params: create_params
           expect(response).to be_successful
           expect(response.headers["Content-Disposition"]).to start_with("attachment; filename=")
-          first_name = applicant.first_name
-          last_name = applicant.last_name
+          first_name = user.first_name
+          last_name = user.last_name
           expect(response.headers["Content-Disposition"]).to end_with("_#{last_name}_#{first_name}.pdf")
         end
       end
@@ -263,7 +263,7 @@ describe InvitationsController do
   describe "#redirect" do
     subject { get :redirect, params: invite_params }
 
-    let!(:applicant_id) { "24" }
+    let!(:user_id) { "24" }
     let!(:invitation) { create(:invitation, format: "sms") }
     let!(:invitation2) { create(:invitation, format: "email") }
 

@@ -16,7 +16,7 @@
         <% end  %>
       <% end %>
     </div>
-    <% if configuration.convene_applicant? %>
+    <% if configuration.convene_user? %>
       <div class="mx-1">
         <%= link_to previews_notifications_path(configuration_id: configuration.id), data: { turbo_frame: 'remote_modal' } do %>
           <%= button_tag class: "btn btn-blue" do %>

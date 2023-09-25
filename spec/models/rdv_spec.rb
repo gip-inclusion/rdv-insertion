@@ -30,7 +30,7 @@ describe Rdv do
     end
   end
 
-  describe "#notify_applicants" do
+  describe "#notify_users" do
     subject { rdv.save }
 
     let!(:participation) { create(:participation, convocable: true) }
@@ -38,7 +38,7 @@ describe Rdv do
     context "when the lieu is updated" do
       let!(:rdv) { create(:rdv, participations: [participation], address: "some place") }
 
-      it "enqueues a job to notify rdv applicants" do
+      it "enqueues a job to notify rdv users" do
         rdv.address = "some other place"
         expect(NotifyParticipationsJob).to receive(:perform_async)
           .with([participation.id], :updated)
@@ -48,7 +48,7 @@ describe Rdv do
       context "when the rdv is not convocable" do
         before { participation.update! convocable: false }
 
-        it "does not enqueue a notify applicants job" do
+        it "does not enqueue a notify users job" do
           rdv.address = "some other place"
           expect(NotifyParticipationsJob).not_to receive(:perform_async)
           subject
@@ -59,7 +59,7 @@ describe Rdv do
     context "when the start time is updated" do
       let!(:rdv) { create(:rdv, participations: [participation], starts_at: 2.days.from_now) }
 
-      it "enqueues a job to notify rdv applicants" do
+      it "enqueues a job to notify rdv users" do
         rdv.starts_at = 3.days.from_now
         expect(NotifyParticipationsJob).to receive(:perform_async)
           .with([participation.id], :updated)
@@ -69,7 +69,7 @@ describe Rdv do
       context "when the rdv is not convocable" do
         before { participation.update! convocable: false }
 
-        it "does not enqueue a notify applicants job" do
+        it "does not enqueue a notify users job" do
           rdv.starts_at = 3.days.from_now
           expect(NotifyParticipationsJob).not_to receive(:perform_async)
           subject
@@ -80,7 +80,7 @@ describe Rdv do
     context "when the another attribute is updated" do
       let!(:rdv) { create(:rdv, participations: [participation], duration_in_min: 30) }
 
-      it "does not enqueue a notify applicants job" do
+      it "does not enqueue a notify users job" do
         rdv.duration_in_min = 45
         expect(NotifyParticipationJob).not_to receive(:perform_async)
         subject
@@ -89,7 +89,7 @@ describe Rdv do
   end
 
   describe "nested participation creation" do
-    let!(:applicant) { create(:applicant) }
+    let!(:user) { create(:user) }
     let!(:rdv_context) { create(:rdv_context) }
 
     context "when id is nil and participation does not exist" do
@@ -97,7 +97,7 @@ describe Rdv do
       let!(:participation_count_before) { Participation.count }
       let!(:participation_attributes) do
         {
-          id: nil, applicant: applicant, rdv_context: rdv_context,
+          id: nil, user: user, rdv_context: rdv_context,
           created_by: "agent", rdv_solidarites_participation_id: 17
         }
       end
@@ -115,7 +115,7 @@ describe Rdv do
       end
       let!(:participation_attributes) do
         {
-          id: nil, applicant: applicant, rdv_context: rdv_context,
+          id: nil, user: user, rdv_context: rdv_context,
           created_by: "agent", rdv_solidarites_participation_id: 18
         }
       end

@@ -1,5 +1,5 @@
 class InvitationsController < ApplicationController
-  before_action :set_organisations, :set_department, :set_applicant,
+  before_action :set_organisations, :set_department, :set_user,
                 :set_motif_category, :set_rdv_context, :set_current_configuration,
                 :set_invitation_format, :set_preselected_organisations, :set_new_invitation,
                 only: [:create]
@@ -35,7 +35,7 @@ class InvitationsController < ApplicationController
 
   def set_new_invitation
     @invitation = Invitation.new(
-      applicant: @applicant,
+      user: @user,
       department: @department,
       organisations: @preselected_organisations,
       rdv_context: @rdv_context,
@@ -43,7 +43,7 @@ class InvitationsController < ApplicationController
       help_phone_number: invitation_params[:help_phone_number],
       rdv_solidarites_lieu_id: invitation_params[:rdv_solidarites_lieu_id],
       # the validity of an invitation is equal to the number of days before an action is required,
-      # then the organisation usually convene the applicant
+      # then the organisation usually convene the user
       valid_until: @current_configuration.number_of_days_before_action_required.days.from_now,
       rdv_with_referents: @current_configuration.rdv_with_referents
     )
@@ -59,7 +59,7 @@ class InvitationsController < ApplicationController
   end
 
   def pdf_filename
-    "Invitation_#{Time.now.to_i}_#{@applicant.last_name}_#{@applicant.first_name}.pdf"
+    "Invitation_#{Time.now.to_i}_#{@user.last_name}_#{@user.first_name}.pdf"
   end
 
   def save_and_send_invitation
@@ -77,24 +77,24 @@ class InvitationsController < ApplicationController
   end
 
   def set_rdv_context
-    RdvContext.with_advisory_lock "setting_rdv_context_for_applicant_#{@applicant.id}" do
+    RdvContext.with_advisory_lock "setting_rdv_context_for_user_#{@user.id}" do
       @rdv_context = RdvContext.find_or_create_by!(
-        motif_category: @motif_category, applicant: @applicant
+        motif_category: @motif_category, user: @user
       )
     end
   end
 
   def set_preselected_organisations
     @preselected_organisations =
-      if @current_configuration.invite_to_applicant_organisations_only?
-        @organisations & @applicant.organisations
+      if @current_configuration.invite_to_user_organisations_only?
+        @organisations & @user.organisations
       else
         @organisations
       end
   end
 
   def set_current_configuration
-    @current_configuration = @organisations.where(id: @applicant.organisations)
+    @current_configuration = @organisations.where(id: @user.organisations)
                                            .preload(:configurations)
                                            .flat_map(&:configurations)
                                            .find { |c| c.motif_category == @motif_category }
@@ -108,8 +108,8 @@ class InvitationsController < ApplicationController
     @department = @organisations.first.department
   end
 
-  def set_applicant
-    @applicant = policy_scope(Applicant).includes(:invitations).find(params[:applicant_id])
+  def set_user
+    @user = policy_scope(User).includes(:invitations).find(params[:user_id])
   end
 
   def set_invitation

@@ -1,6 +1,6 @@
 require "csv"
 
-# rails runner scripts/extract_applicants_to_csv.rb email organisation_id department_id
+# rails runner scripts/extract_users_to_csv.rb email organisation_id department_id
 # email must be written as a string, ids as integers
 # if csv wanted in console, precise nil for mail
 # if extraction on department level wished, precise nil for organisation_id arg
@@ -16,19 +16,19 @@ structure = if DEPARTMENT_ID.present?
               Organisation.find(ORGANISATION_ID)
             end
 
-applicants = structure&.applicants || Applicant.order(:department_id)
-context_applicants = if CONTEXT.present?
-                       applicants.joins(:rdv_contexts).where(rdv_contexts: { motif_category: MOTIF_CATEGORY })
-                     else
-                       applicants.where.missing(:rdv_contexts)
-                     end
+users = structure&.users || User.order(:department_id)
+context_users = if CONTEXT.present?
+                  users.joins(:rdv_contexts).where(rdv_contexts: { motif_category: MOTIF_CATEGORY })
+                else
+                  users.where.missing(:rdv_contexts)
+                end
 
-result = Exports::GenerateApplicantsCsv.call(
-  applicants: context_applicants, structure: structure, motif_category: MOTIF_CATEGORY
+result = Exports::GenerateUsersCsv.call(
+  users: context_users, structure: structure, motif_category: MOTIF_CATEGORY
 )
 
 if EMAIL.present?
-  CsvExportMailer.applicants_csv_export(EMAIL, result.csv, result.filename).deliver_now
+  CsvExportMailer.users_csv_export(EMAIL, result.csv, result.filename).deliver_now
 else
   puts result.csv
 end

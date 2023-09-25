@@ -1,5 +1,5 @@
-<h1>Bonjour <%= "#{@applicant.first_name} #{@applicant.last_name.upcase}" %>,</h1>
-<p>Vous êtes <%= @applicant_designation %> et bénéficiez d'un accompagnement. Pour en profiter au mieux, nous vous invitons à vous inscrire directement et librement aux ateliers et formations de votre choix.</p>
+<h1>Bonjour <%= "#{@user.first_name} #{@user.last_name.upcase}" %>,</h1>
+<p>Vous êtes <%= @user_designation %> et bénéficiez d'un accompagnement. Pour en profiter au mieux, nous vous invitons à vous inscrire directement et librement aux ateliers et formations de votre choix.</p>
 <p><span class="font-weight-bold">Pour choisir vous-même la date et l'horaire</span>, vous pouvez accéder au service RDV-Solidarités en cliquant sur le bouton suivant.</p>
 <p class="btn-wrapper">
   <%= link_to redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST']), class: "btn btn-primary" do %>
@@ -8,6 +8,6 @@
 </p>
 <%= tag.p tag.strong(@mandatory_warning) if @mandatory_warning %>
 <%= tag.p tag.strong("En l'absence d'action de votre part, #{@punishable_warning}.") if @punishable_warning.present? %>
-<p>En cas de problème technique, contactez le <%= @invitation.help_phone_number_formatted %></p>
+<p>En cas de problème, contactez le <%= @invitation.help_phone_number_formatted %></p>
 <%= render 'common/organisation_signature', signature_lines: @signature_lines, department: @department %>
 <%= render 'mailers/logos', display_europe_logos: @invitation.display_europe_logos, display_pole_emploi_logo: @invitation.display_pole_emploi_logo, display_department_logo: @invitation.display_department_logo, organisation_logo_path: @organisation_logo_path, department_logo_path: @department_logo_path %>

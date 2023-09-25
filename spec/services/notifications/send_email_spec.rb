@@ -19,7 +19,7 @@ describe Notifications::SendEmail, type: :service do
       allow(mailer).to receive_message_chain(:participation_cancelled, :deliver_now)
     end
 
-    let!(:applicant) { create(:applicant) }
+    let!(:user) { create(:user) }
     let!(:rdv) do
       create(
         :rdv,
@@ -30,7 +30,7 @@ describe Notifications::SendEmail, type: :service do
     let!(:participation) do
       create(
         :participation,
-        applicant: applicant, rdv: rdv
+        user: user, rdv: rdv
       )
     end
     let!(:notification) do
@@ -141,7 +141,7 @@ describe Notifications::SendEmail, type: :service do
     end
 
     context "when the email is blank" do
-      before { applicant.email = nil }
+      before { user.email = nil }
 
       it("is a failure") { is_a_failure }
 
@@ -151,7 +151,7 @@ describe Notifications::SendEmail, type: :service do
     end
 
     context "when the email format is not valid" do
-      before { applicant.email = "someinvalidmail" }
+      before { user.email = "someinvalidmail" }
 
       it("is a failure") { is_a_failure }
 

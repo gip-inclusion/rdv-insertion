@@ -1,16 +1,16 @@
 class Stat < ApplicationRecord
   belongs_to :statable, polymorphic: true, optional: true
 
-  def all_applicants
-    @all_applicants ||= statable.nil? ? Applicant.all : statable.applicants
+  def all_users
+    @all_users ||= statable.nil? ? User.all : statable.users
   end
 
-  def archived_applicant_ids
-    @archived_applicant_ids ||=
+  def archived_user_ids
+    @archived_user_ids ||=
       if statable.nil?
-        Applicant.where.associated(:archives).select(:id).ids
+        User.where.associated(:archives).select(:id).ids
       else
-        statable.archived_applicants.select(:id).ids
+        statable.archived_users.select(:id).ids
       end
   end
 
@@ -22,9 +22,9 @@ class Stat < ApplicationRecord
     @invitations_sample ||= statable.nil? ? Invitation.sent : statable.invitations.sent
   end
 
-  # We filter the participations to only keep the participations of the applicants in the scope
+  # We filter the participations to only keep the participations of the users in the scope
   def participations_sample
-    @participations_sample ||= all_participations.where(applicant_id: applicants_sample)
+    @participations_sample ||= all_participations.where(user_id: users_sample)
   end
 
   # We filter participations to keep only convocations
@@ -37,36 +37,32 @@ class Stat < ApplicationRecord
     @participations_without_notifications_sample ||= participations_sample.where.missing(:notifications).distinct
   end
 
-  # We exclude the rdvs collectifs motifs to correctly compute the rate of autonomous applicants
+  # We exclude the rdvs collectifs motifs to correctly compute the rate of autonomous users
   def rdvs_non_collectifs_sample
     @rdvs_non_collectifs_sample ||= Rdv.where(motif: Motif.individuel).distinct
   end
 
-  def invited_applicants_with_rdvs_non_collectifs_sample
-    @invited_applicants_with_rdvs_non_collectifs_sample ||=
-      applicants_sample.joins(:rdvs)
-                       .where(rdvs: rdvs_non_collectifs_sample)
-                       .with_sent_invitations
-                       .distinct
+  def invited_users_sample
+    @invited_users_sample ||= users_sample.with_sent_invitations.distinct
   end
 
-  # We filter the rdv_contexts to keep those where the applicants were invited and created a rdv/participation
+  # We filter the rdv_contexts to keep those where the users were invited and created a rdv/participation
   def rdv_contexts_sample
     @rdv_contexts_sample ||= RdvContext.preload(:participations, :invitations)
-                                       .where(applicant_id: applicants_sample)
+                                       .where(user_id: users_sample)
                                        .where.associated(:participations)
                                        .with_sent_invitations
                                        .distinct
   end
 
-  # We filter the applicants by organisations and retrieve deleted or archived applicants
-  def applicants_sample
-    @applicants_sample ||= Applicant.preload(:participations)
-                                    .joins(:organisations)
-                                    .where(organisations: organisations_sample)
-                                    .active
-                                    .where.not(id: archived_applicant_ids)
-                                    .distinct
+  # We filter the users by organisations and retrieve deleted or archived users
+  def users_sample
+    @users_sample ||= User.preload(:participations)
+                          .joins(:organisations)
+                          .where(organisations: organisations_sample)
+                          .active
+                          .where.not(id: archived_user_ids)
+                          .distinct
   end
 
   # We don't include in the stats the agents working for rdv-insertion
@@ -87,19 +83,19 @@ class Stat < ApplicationRecord
       end
   end
 
-  # We don't include in the scope the organisations who don't invite the applicants
+  # We don't include in the scope the organisations who don't invite the users
   def organisations_sample
     @organisations_sample ||= all_organisations.joins(:configurations)
                                                .where.not(configurations: { invitation_formats: [] })
   end
 
-  # For the rate of applicants with rdv seen in less than 30 days
+  # For the rate of users with rdv seen in less than 30 days
   # we only consider specific contexts to focus on the first RSA rdv
-  def applicants_for_30_days_rdvs_seen_sample
-    # Applicants invited in an orientation or accompagnement context
-    @applicants_for_30_days_rdvs_seen_sample ||=
-      applicants_sample.joins(:rdv_contexts)
-                       .where(rdv_contexts:
+  def users_for_30_days_rdvs_seen_sample
+    # Users invited in an orientation or accompagnement context
+    @users_for_30_days_rdvs_seen_sample ||=
+      users_sample.joins(:rdv_contexts)
+                  .where(rdv_contexts:
                                 RdvContext.joins(:motif_category).where(
                                   motif_category: { short_name: %w[
                                     rsa_orientation rsa_orientation_on_phone_platform rsa_accompagnement
