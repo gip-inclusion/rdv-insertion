@@ -9,6 +9,8 @@ export default class extends Controller {
     "typeRadio"
   ]
 
+  static minValueForNumberOfDays = 14
+
   connect() {
     this.togglePeriodicInvites()
     this.periodicityTypeChanged()
@@ -24,7 +26,7 @@ export default class extends Controller {
 
   togglePeriodicInvites() {
     this.numberOfDaysTarget.readOnly = !this.enableTarget.checked
-    this.numberOfDaysTarget.value = this.enableTarget.checked ? 10 : null
+    this.numberOfDaysTarget.value = this.enableTarget.checked ? this.constructor.minValueForNumberOfDays : null
     this.dayOfTheMonthTarget.readOnly = !this.enableTarget.checked
     this.typeRadioTargets[0].checked = this.enableTarget.checked 
     this.typeRadioTargets[1].checked = false
@@ -39,7 +41,7 @@ export default class extends Controller {
   }
 
   numberOfDaysInputChanged() {
-    if (this.numberOfDaysTarget.value < 10) this.numberOfDaysTarget.value = 10
+    if (this.numberOfDaysTarget.value < this.constructor.minValueForNumberOfDays) this.numberOfDaysTarget.value = this.constructor.minValueForNumberOfDays
     this.dayOfTheMonthTarget.value = null
     this.typeRadioTargets[0].checked = true
     this.typeRadioTargets[1].checked = false

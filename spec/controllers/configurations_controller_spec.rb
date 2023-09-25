@@ -240,7 +240,7 @@ describe ConfigurationsController do
           rdv_with_referents: true, invite_to_applicant_organisations_only: true,
           number_of_days_before_action_required: 12,
           motif_category_id: motif_category.id, file_configuration_id: file_configuration.id,
-          number_of_days_between_periodic_invites: 10
+          number_of_days_between_periodic_invites: 15
         },
         organisation_id: organisation.id
       }
@@ -257,7 +257,7 @@ describe ConfigurationsController do
       expect(Configuration.last.reload.rdv_with_referents).to eq(true)
       expect(Configuration.last.reload.invite_to_applicant_organisations_only).to eq(true)
       expect(Configuration.last.reload.number_of_days_before_action_required).to eq(12)
-      expect(Configuration.last.reload.number_of_days_between_periodic_invites).to eq(10)
+      expect(Configuration.last.reload.number_of_days_between_periodic_invites).to eq(15)
       expect(Configuration.last.reload.motif_category_id).to eq(motif_category.id)
       expect(Configuration.last.reload.file_configuration_id).to eq(file_configuration.id)
     end
