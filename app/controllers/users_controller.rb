@@ -3,7 +3,7 @@
 class UsersController < ApplicationController
   PERMITTED_PARAMS = [
     :uid, :role, :first_name, :last_name, :nir, :pole_emploi_id, :birth_date, :email, :phone_number,
-    :birth_name, :address, :affiliation_number, :department_internal_id, :title,
+    :birth_name, :address, :affiliation_number, :department_internal_id, :title, :orientation,
     :status, :rights_opening_date,
     { rdv_contexts_attributes: [:motif_category_id], tag_users_attributes: [:tag_id] }
   ].freeze
@@ -115,10 +115,11 @@ class UsersController < ApplicationController
 
   def render_errors(errors)
     respond_to do |format|
+      flash.now[:error] = errors.join(",")
       format.html do
-        flash.now[:error] = errors.join(",")
         render(action_name == "update" ? :edit : :new, status: :unprocessable_entity)
       end
+      format.turbo_stream
       format.json { render json: { success: false, errors: errors }, status: :unprocessable_entity }
     end
   end
@@ -127,6 +128,7 @@ class UsersController < ApplicationController
     respond_to do |format|
       format.html { redirect_to(after_save_path) }
       format.json { render json: { success: true, user: @user } }
+      format.turbo_stream { flash.now[:success] = "Usager mis à jour avec succès" }
     end
   end
 

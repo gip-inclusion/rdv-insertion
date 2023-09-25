@@ -55,6 +55,7 @@ class User < ApplicationRecord
 
   enum role: { demandeur: 0, conjoint: 1 }
   enum title: { monsieur: 0, madame: 1 }
+  enum orientation: { sociale: 0, socio_professionnelle: 1, professionelle: 2  }
   enum created_through: { rdv_insertion: 0, rdv_solidarites: 1 }, _prefix: true
 
   scope :active, -> { where(deleted_at: nil) }

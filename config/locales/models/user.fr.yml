@@ -24,3 +24,7 @@ fr:
         referents: Référent(s)
         organisation_ids: Organisation
         tags: Tags
+        orientations:
+          sociale: Sociale
+          socio_professionnelle: Socio-professionnelle
+          professionelle: Professionnelle

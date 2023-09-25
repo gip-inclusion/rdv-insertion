@@ -70,6 +70,20 @@
           <button class="btn btn-blue mb-3"><i class="fas fa-user-plus"></i> Assigner le.s référent.s</button>
         <% end %>
       <% end %>
+
+      <div class="col-lg-3 col-md-6 px-5">
+        <h4>Orientation</h4>
+        <p>Choisissez une orientation</p>
+        <%= simple_form_for(@user, url: compute_show_path(@user, @organisation, @department), html: { method: :patch }, data: { turbo: true }) do |f| %>
+          <%= f.input(
+            :orientation,
+            as: :select,
+            collection: User.orientations.map { |k, v| [I18n.t("activerecord.attributes.user.orientations.#{k}"), k] },
+            prompt: "Choisissez une orientation", 
+            input_html: { class: "form-select", onchange: "Turbo.navigator.submitForm(this.form)" }
+          ) %>
+        <% end %>
+      </div>
     </div>
   </div>
   <% @all_configurations.each do |configuration| %>
