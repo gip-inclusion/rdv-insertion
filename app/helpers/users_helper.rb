@@ -162,10 +162,10 @@ module UsersHelper
     end
   end
 
-  def compute_edit_path(user, organisation, department)
-    return edit_department_user_path(department, user) if department_level?
+  def compute_edit_path(user, organisation, department, options = {})
+    return edit_department_user_path(department, user, options) if department_level?
 
-    edit_organisation_user_path(organisation, user)
+    edit_organisation_user_path(organisation, user, options)
   end
 
   def compute_show_path(user, organisation, department)

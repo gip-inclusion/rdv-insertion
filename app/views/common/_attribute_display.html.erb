@@ -38,6 +38,8 @@
     <p><%= display_attribute format_date(record[attribute]) %></p>
   <% elsif record[attribute].in? [true, false] %>
     <p><%= display_attribute I18n.t("boolean.#{record[attribute]}") %></p>
+  <% elsif local_assigns[:as] == :translated_value %>
+    <p><%= display_attribute translated_attribute_value(record, attribute) %></p>
   <% else %>
     <p><%= display_attribute record[attribute] %></p>
   <% end %>

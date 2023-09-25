@@ -14,6 +14,10 @@ module ApplicationHelper
     end
   end
 
+  def translated_attribute_value(record, attribute)
+    I18n.t("activerecord.attributes.#{record.class.name.downcase}.#{attribute.to_s.pluralize}.#{record[attribute]}")
+  end
+
   def display_attribute(attribute)
     attribute.presence || " - "
   end

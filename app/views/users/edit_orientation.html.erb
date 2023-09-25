@@ -1,0 +1,12 @@
+<%= render "common/remote_modal", title: "Modifier l'orientation de l'usager" do %>
+  <%= simple_form_for(@user, url: compute_show_path(@user, @organisation, @department), html: { method: :patch }) do |f| %>
+    <%= f.input(
+      :orientation,
+      as: :select,
+      collection: User.orientations.map { |k, v| [I18n.t("activerecord.attributes.user.orientations.#{k}"), k] },
+      prompt: "Choisissez une orientation", 
+      input_html: { class: "form-select" }
+    ) %>
+    <%= f.button :submit, "Enregistrer", class: "btn btn-blue mt-3" %>
+  <% end %>
+<% end %>

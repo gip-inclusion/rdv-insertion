@@ -71,19 +71,11 @@
         <% end %>
       <% end %>
 
-      <div class="col-lg-3 col-md-6 px-5">
-        <h4>Orientation</h4>
-        <p>Choisissez une orientation</p>
-        <%= simple_form_for(@user, url: compute_show_path(@user, @organisation, @department), html: { method: :patch }, data: { turbo: true }) do |f| %>
-          <%= f.input(
-            :orientation,
-            as: :select,
-            collection: User.orientations.map { |k, v| [I18n.t("activerecord.attributes.user.orientations.#{k}"), k] },
-            prompt: "Choisissez une orientation", 
-            input_html: { class: "form-select", onchange: "Turbo.navigator.submitForm(this.form)" }
-          ) %>
+      <%= render "common/attribute_display", record: @user, attribute: :orientation, as: :translated_value do %>
+        <%= link_to(compute_edit_path(@user, @organisation, @department, scope: 'edit_orientation'), data: { turbo_frame: 'remote_modal' }) do %>
+          <button class="btn btn-blue mb-3"><i class="fas fa-pen"></i> Modifier l'orientation</button>
         <% end %>
-      </div>
+      <% end %>
     </div>
   </div>
   <% @all_configurations.each do |configuration| %>

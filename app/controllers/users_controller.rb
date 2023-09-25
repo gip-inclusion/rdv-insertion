@@ -50,6 +50,8 @@ class UsersController < ApplicationController
 
   def edit
     authorize @user
+
+    render "edit_orientation" if params[:scope] == "edit_orientation"
   end
 
   def create
@@ -128,7 +130,6 @@ class UsersController < ApplicationController
     respond_to do |format|
       format.html { redirect_to(after_save_path) }
       format.json { render json: { success: true, user: @user } }
-      format.turbo_stream { flash.now[:success] = "Usager mis à jour avec succès" }
     end
   end
 
