@@ -14,7 +14,7 @@ class OrganisationsController < ApplicationController
     @organisations_by_department = @organisations.sort_by(&:department_number).group_by(&:department)
     return unless @organisations.to_a.length == 1
 
-    redirect_to default_list_organisation_applicants_path(@organisations.first)
+    redirect_to default_list_organisation_users_path(@organisations.first)
   end
 
   def show; end
@@ -30,7 +30,7 @@ class OrganisationsController < ApplicationController
     @organisation = Organisation.new(**organisation_params)
     authorize @organisation
     if create_organisation.success?
-      redirect_to organisation_applicants_path(@organisation)
+      redirect_to organisation_users_path(@organisation)
     else
       render turbo_stream: turbo_stream.replace(
         "remote_modal", partial: "organisation_form", locals: {

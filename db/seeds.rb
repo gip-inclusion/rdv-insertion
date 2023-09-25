@@ -26,7 +26,7 @@ drome = Department.create!(
   pronoun: "la",
 )
 
-# Dans l'Yonne, pas de système d'invitation : les bénéficiaires sont directement convoqués (convene_applicant: true)
+# Dans l'Yonne, pas de système d'invitation : les bénéficiaires sont directement convoqués (convene_user: true)
 yonne = Department.create!(
   name: "Yonne",
   number: "89",
@@ -44,7 +44,7 @@ orientation_category = MotifCategory.create!(
     rdv_title: "rendez-vous d'orientation",
     rdv_title_by_phone: "rendez-vous d'orientation téléphonique",
     rdv_purpose: "démarrer un parcours d'accompagnement",
-    applicant_designation: "bénéficiaire du RSA",
+    user_designation: "bénéficiaire du RSA",
     rdv_subject: "RSA",
     display_mandatory_warning: true
   )
@@ -56,7 +56,7 @@ accompagnement_category = MotifCategory.create!(
     rdv_title: "rendez-vous d'accompagnement",
     rdv_title_by_phone: "rendez-vous d'accompagnement téléphonique",
     rdv_purpose: "démarrer un parcours d'accompagnement",
-    applicant_designation: "bénéficiaire du RSA",
+    user_designation: "bénéficiaire du RSA",
     rdv_subject: "RSA",
     display_mandatory_warning: true,
     punishable_warning: "votre RSA pourra être suspendu ou réduit"
@@ -70,7 +70,7 @@ MotifCategory.create!(
     rdv_title: "rendez-vous d'accompagnement",
     rdv_title_by_phone: "rendez-vous d'accompagnement téléphonique",
     rdv_purpose: "démarrer un parcours d'accompagnement",
-    applicant_designation: "bénéficiaire du RSA",
+    user_designation: "bénéficiaire du RSA",
     rdv_subject: "RSA",
     display_mandatory_warning: true,
     punishable_warning: "votre RSA pourra être suspendu ou réduit"
@@ -84,7 +84,7 @@ MotifCategory.create!(
     rdv_title: "rendez-vous d'accompagnement",
     rdv_title_by_phone: "rendez-vous d'accompagnement téléphonique",
     rdv_purpose: "démarrer un parcours d'accompagnement",
-    applicant_designation: "bénéficiaire du RSA",
+    user_designation: "bénéficiaire du RSA",
     rdv_subject: "RSA",
     display_mandatory_warning: true,
     punishable_warning: "votre RSA pourra être suspendu ou réduit"
@@ -98,7 +98,7 @@ MotifCategory.create!(
     rdv_title: "rendez-vous de signature de CER",
     rdv_title_by_phone: "rendez-vous téléphonique de signature de CER",
     rdv_purpose: "construire et signer votre Contrat d'Engagement Réciproque",
-    applicant_designation: "bénéficiaire du RSA",
+    user_designation: "bénéficiaire du RSA",
     rdv_subject: "RSA",
     display_mandatory_warning: true
   )
@@ -111,7 +111,7 @@ MotifCategory.create!(
     rdv_title: "rendez-vous de suivi",
     rdv_title_by_phone: "rendez-vous de suivi téléphonique",
     rdv_purpose: "faire un point avec votre référent de parcours",
-    applicant_designation: "bénéficiaire du RSA",
+    user_designation: "bénéficiaire du RSA",
     rdv_subject: "RSA",
     display_mandatory_warning: false,
   )
@@ -125,7 +125,7 @@ MotifCategory.create!(
     rdv_title: "atelier",
     rdv_title_by_phone: "atelier téléphonique",
     rdv_subject: "RSA",
-    applicant_designation: "bénéficiaire du RSA"
+    user_designation: "bénéficiaire du RSA"
   )
 )
 
@@ -137,7 +137,7 @@ MotifCategory.create!(
     rdv_title: "rendez-vous d'orientation téléphonique",
     rdv_title_by_phone: "rendez-vous d'orientation téléphonique",
     rdv_subject: "RSA",
-    applicant_designation: "bénéficiaire du RSA",
+    user_designation: "bénéficiaire du RSA",
     rdv_purpose: "démarrer un parcours d'accompagnement"
   )
 )
@@ -149,7 +149,7 @@ MotifCategory.create!(
     rdv_title: "atelier collectif",
     rdv_title_by_phone: "atelier collectif",
     rdv_purpose: "vous aider dans votre parcours d'insertion",
-    applicant_designation: "bénéficiaire du RSA",
+    user_designation: "bénéficiaire du RSA",
     rdv_subject: "RSA",
     display_mandatory_warning: true
   )
@@ -163,7 +163,7 @@ MotifCategory.create!(
     rdv_title: "atelier",
     rdv_title_by_phone: "atelier téléphonique",
     rdv_subject: "RSA",
-    applicant_designation: "bénéficiaire du RSA"
+    user_designation: "bénéficiaire du RSA"
   )
 )
 MotifCategory.create!(
@@ -175,7 +175,7 @@ MotifCategory.create!(
     rdv_title: "atelier",
     rdv_title_by_phone: "atelier téléphonique",
     rdv_subject: "RSA",
-    applicant_designation: "bénéficiaire du RSA"
+    user_designation: "bénéficiaire du RSA"
   )
 )
 MotifCategory.create!(
@@ -186,7 +186,7 @@ MotifCategory.create!(
     rdv_title: "entretien de main tendue",
     rdv_title_by_phone: "entretien téléphonique de main tendue",
     rdv_purpose: "faire le point sur votre situation",
-    applicant_designation: "bénéficiaire du RSA",
+    user_designation: "bénéficiaire du RSA",
     rdv_subject: "RSA",
     display_mandatory_warning: true
   )
@@ -199,7 +199,7 @@ MotifCategory.create!(
     rdv_title: "rendez-vous d'accompagnement",
     rdv_title_by_phone: "rendez-vous d'accompagnement téléphonique",
     rdv_purpose: "démarrer un parcours d'accompagnement",
-    applicant_designation: "demandeur d'emploi",
+    user_designation: "demandeur d'emploi",
     rdv_subject: "demande d'emploi",
     display_mandatory_warning: true,
     punishable_warning: "votre RSA pourra être suspendu ou réduit"
@@ -212,7 +212,7 @@ MotifCategory.create!(
     model: "standard",
     rdv_title: "rendez-vous d'information",
     rdv_title_by_phone: "rendez-vous d'information téléphonique",
-    applicant_designation: "bénéficiaire du RSA",
+    user_designation: "bénéficiaire du RSA",
     rdv_subject: "RSA",
     rdv_purpose: "vous renseigner sur vos droits et vos devoirs",
     display_mandatory_warning: true
@@ -262,7 +262,7 @@ drome1_organisation = Organisation.create!(
 
 Configuration.create!(
   file_configuration: file_config_drome,
-  convene_applicant: false,
+  convene_user: false,
   invitation_formats: ["sms", "email", "postal"],
   motif_category: orientation_category,
   number_of_days_before_action_required: 10,
@@ -271,7 +271,7 @@ Configuration.create!(
 
 Configuration.create!(
   file_configuration: file_config_drome,
-  convene_applicant: false,
+  convene_user: false,
   invitation_formats: ["sms", "email", "postal"],
   motif_category: accompagnement_category,
   number_of_days_before_action_required: 10,
@@ -296,7 +296,7 @@ drome2_organisation = Organisation.create!(
 
 Configuration.create!(
   file_configuration: file_config_drome,
-  convene_applicant: false,
+  convene_user: false,
   invitation_formats: ["sms", "email", "postal"],
   motif_category: orientation_category,
   number_of_days_before_action_required: 10,
@@ -305,7 +305,7 @@ Configuration.create!(
 
 Configuration.create!(
   file_configuration: file_config_drome,
-  convene_applicant: false,
+  convene_user: false,
   invitation_formats: ["sms", "email", "postal"],
   motif_category: accompagnement_category,
   number_of_days_before_action_required: 10,
@@ -330,7 +330,7 @@ yonne_organisation = Organisation.create!(
 
 Configuration.create!(
   file_configuration: file_config_yonne,
-  convene_applicant: true,
+  convene_user: true,
   invitation_formats: [],
   motif_category: orientation_category,
   number_of_days_before_action_required: 10,

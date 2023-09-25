@@ -4,15 +4,15 @@
 <p>Vous trouverez ci-dessous les informations nécessaires pour contacter la personne ou transmettre ce mail à un agent en charge de son parcours.</p>
 <blockquote>
   <h4>Éxpéditeur</h4>
-  <%= tag.p(@applicant.full_name) if @applicant %>
-  <%= tag.p(@applicant ? @applicant.email : @author) %>
-  <%= tag.p(@applicant.phone_number) if @applicant&.phone_number %>
-  <% if @applicant %>
+  <%= tag.p(@user.full_name) if @user %>
+  <%= tag.p(@user ? @user.email : @author) %>
+  <%= tag.p(@user.phone_number) if @user&.phone_number %>
+  <% if @user %>
     <br />
     <h4>Organisation(s) de rattachement</h4>
-    <% @applicant.organisations.each do |organisation| %>
+    <% @user.organisations.each do |organisation| %>
       <p><%= organisation.name %> - <%= organisation.email %></p>
     <% end %>
   <% end %>
 </blockquote>
-<%= render "link_to_applicant_page", applicant: @applicant, organisation: @applicant.organisations.last %>
+<%= render "link_to_user_page", user: @user, organisation: @user.organisations.last %>

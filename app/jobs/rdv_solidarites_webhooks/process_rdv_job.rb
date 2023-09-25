@@ -12,7 +12,7 @@ module RdvSolidaritesWebhooks
         verify_motif!
         return if unhandled_category?
 
-        find_or_create_applicants
+        find_or_create_users
 
         # for a convocation, we have to verify the lieu is up to date in db
         verify_lieu_sync! if convocable_participations?
@@ -83,35 +83,35 @@ module RdvSolidaritesWebhooks
       rdv_solidarites_rdv.user_ids
     end
 
-    def find_or_create_applicants
-      existing_applicants = Applicant.where(rdv_solidarites_user_id: rdv_solidarites_user_ids).to_a
+    def find_or_create_users
+      existing_users = User.where(rdv_solidarites_user_id: rdv_solidarites_user_ids).to_a
 
       new_rdv_solidarites_users = rdv_solidarites_rdv.users.reject do |user|
-        user.id.in?(existing_applicants.map(&:rdv_solidarites_user_id))
+        user.id.in?(existing_users.map(&:rdv_solidarites_user_id))
       end
 
-      new_applicants = new_rdv_solidarites_users.map do |user|
-        Applicant.create!(
+      new_users = new_rdv_solidarites_users.map do |user|
+        User.create!(
           rdv_solidarites_user_id: user.id,
           organisations: [organisation],
           created_through: "rdv_solidarites",
-          **user.attributes.slice(*Applicant::SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES).compact_blank
+          **user.attributes.slice(*User::SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES).compact_blank
         )
       end
 
-      @applicants = existing_applicants + new_applicants
+      @users = existing_users + new_users
     end
 
     def participations_attributes_destroyed
       return [] if rdv.nil?
 
-      removed_applicants = rdv.applicants - @applicants
+      removed_users = rdv.users - @users
       @participations_attributes_destroyed ||=
-        removed_applicants.map do |applicant|
-          existing_participation = Participation.find_by(applicant: applicant, rdv: rdv)
+        removed_users.map do |user|
+          existing_participation = Participation.find_by(user: user, rdv: rdv)
           {
             id: existing_participation&.id,
-            applicant_id: applicant.id,
+            user_id: user.id,
             _destroy: true
           }
         end.compact
@@ -119,38 +119,38 @@ module RdvSolidaritesWebhooks
 
     def participations_attributes
       @participations_attributes ||=
-        @applicants.map do |applicant|
-          compute_participation_attributes(applicant)
+        @users.map do |user|
+          compute_participation_attributes(user)
         end.compact + participations_attributes_destroyed
     end
 
     # rubocop:disable Metrics/AbcSize
-    def compute_participation_attributes(applicant)
+    def compute_participation_attributes(user)
       rdv_solidarites_participation = rdv_solidarites_rdv.participations.find do |participation|
-        participation.user.id == applicant.rdv_solidarites_user_id
+        participation.user.id == user.rdv_solidarites_user_id
       end
-      existing_participation = rdv&.participation_for(applicant)
+      existing_participation = rdv&.participation_for(user)
 
       attributes = {
         id: existing_participation&.id,
         status: rdv_solidarites_participation.status,
         created_by: rdv_solidarites_participation.created_by,
-        applicant_id: applicant.id,
+        user_id: user.id,
         rdv_solidarites_participation_id: rdv_solidarites_participation.id,
-        rdv_context_id: rdv_context_for(applicant).id
+        rdv_context_id: rdv_context_for(user).id
       }
       # convocable attribute can be set only once
       if existing_participation.nil?
         attributes.merge!(
-          convocable: rdv_solidarites_participation.convocable? && matching_configuration.convene_applicant?
+          convocable: rdv_solidarites_participation.convocable? && matching_configuration.convene_user?
         )
       end
       attributes
     end
     # rubocop:enable Metrics/AbcSize
 
-    def rdv_context_for(applicant)
-      rdv_contexts.find { _1.applicant_id == applicant.id }
+    def rdv_context_for(user)
+      rdv_contexts.find { _1.user_id == user.id }
     end
 
     def related_invitations
@@ -197,7 +197,7 @@ module RdvSolidaritesWebhooks
     end
 
     def convocable_participations?
-      matching_configuration.convene_applicant? && rdv_solidarites_rdv.participations.any?(&:convocable?)
+      matching_configuration.convene_user? && rdv_solidarites_rdv.participations.any?(&:convocable?)
     end
 
     def invalidate_related_invitations
@@ -212,9 +212,9 @@ module RdvSolidaritesWebhooks
 
     def rdv_contexts
       @rdv_contexts ||=
-        @applicants.map do |applicant|
-          RdvContext.with_advisory_lock "setting_rdv_context_for_applicant_#{applicant.id}" do
-            RdvContext.find_or_create_by!(applicant: applicant, motif_category: motif_category)
+        @users.map do |user|
+          RdvContext.with_advisory_lock "setting_rdv_context_for_user_#{user.id}" do
+            RdvContext.find_or_create_by!(user: user, motif_category: motif_category)
           end
         end
     end

@@ -22,6 +22,6 @@ class ArchivesController < ApplicationController
   private
 
   def archive_params
-    params.require(:archive).permit(:archiving_reason, :applicant_id, :department_id).to_h.symbolize_keys
+    params.require(:archive).permit(:archiving_reason, :user_id, :department_id).to_h.symbolize_keys
   end
 end

@@ -1,8 +1,8 @@
 class Tag < ApplicationRecord
-  has_many :tag_applicants, dependent: :destroy
+  has_many :tag_users, dependent: :destroy
   has_many :tag_organisations, dependent: :destroy
 
-  has_many :applicants, through: :tag_applicants
+  has_many :users, through: :tag_users
   has_many :organisations, through: :tag_organisations
 
   validates :value, presence: true

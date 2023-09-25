@@ -1,4 +1,0 @@
-<%= simple_form_for(@applicant, url: department_level? ? department_applicants_path(@department, @applicant) : organisation_applicants_path(@organisation, @applicant), html: { method: :post }) do |f| %>
-  <%= render 'applicant_form', f: f, title: "Créer allocataire", return_path: compute_index_path(@organisation, @department) %>
-<% end %>
-

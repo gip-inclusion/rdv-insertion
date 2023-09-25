@@ -7,12 +7,12 @@ module RdvSolidarites
     attr_reader(*RECORD_ATTRIBUTES)
 
     def augmented_attributes
-      payload = applicant.nil? ? Applicant.new.as_json.merge(@attributes) : applicant.as_json.merge(@attributes)
+      payload = rdvi_user.nil? ? ::User.new.as_json.merge(@attributes) : rdvi_user.as_json.merge(@attributes)
       payload.except(:updated_at, :created_through, :rdv_contexts, :organisations, :archives)
     end
 
-    def applicant
-      @applicant ||= Applicant.find_by(rdv_solidarites_user_id: @id)
+    def rdvi_user
+      @rdvi_user ||= ::User.find_by(rdv_solidarites_user_id: @id)
     end
   end
 end

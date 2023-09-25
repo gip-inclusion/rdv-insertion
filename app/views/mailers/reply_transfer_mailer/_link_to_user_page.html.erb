@@ -1,0 +1,7 @@
+<% if user %>
+  <p class="btn-wrapper">
+    <%= link_to department_user_url(organisation.department, user, host: ENV['HOST']), class: "btn btn-primary" do %>
+      Voir la fiche usager
+    <% end %>
+  </p>
+<% end %>

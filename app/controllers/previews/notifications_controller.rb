@@ -1,9 +1,9 @@
 module Previews
   class NotificationsController < Previews::BaseController
-    before_action :set_applicant_example, :set_rdv_example, :set_notification_example,
+    before_action :set_user_example, :set_rdv_example, :set_notification_example,
                   only: [:index]
 
-    attr_reader :applicant, :notification, :rdv
+    attr_reader :user, :notification, :rdv
 
     include Notifications::SmsContent
 
@@ -13,8 +13,8 @@ module Previews
 
     private
 
-    def set_applicant_example
-      @applicant = Applicant.new(
+    def set_user_example
+      @user = User.new(
         first_name: "Lara", last_name: "Croft", title: "madame",
         address: "160 rue Saint-Maur, 75011 Paris", phone_number: "+33607070707"
       )
@@ -67,11 +67,11 @@ module Previews
 
     def mailer_instance_variables
       {
-        applicant: @applicant,
+        user: @user,
         notification: @notification,
         rdv: @notification.rdv,
         department: @notification.department,
-        applicant_designation: @notification.applicant_designation,
+        user_designation: @notification.user_designation,
         rdv_title: @notification.rdv_title,
         rdv_title_by_phone: @notification.rdv_title_by_phone,
         rdv_purpose: @notification.rdv_purpose,
@@ -100,7 +100,7 @@ module Previews
     def letter_locals
       {
         department: @notification.department,
-        applicant: @applicant,
+        user: @user,
         rdv: @notification.rdv,
         sender_name: @notification.letter_sender_name,
         direction_names: @notification.direction_names,
@@ -113,7 +113,7 @@ module Previews
         sender_city: @notification.sender_city,
         rdv_title: @notification.rdv_title,
         rdv_title_by_phone: @notification.rdv_title_by_phone,
-        applicant_designation: @notification.applicant_designation,
+        user_designation: @notification.user_designation,
         mandatory_warning: @notification.mandatory_warning,
         punishable_warning: @notification.punishable_warning,
         instruction_for_rdv: @notification.instruction_for_rdv,

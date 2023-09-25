@@ -1,19 +1,19 @@
-<%= render 'letters/header', direction_names: direction_names, sender_city: sender_city, department: department, organisation: organisation, applicant: applicant %>
+<%= render 'letters/header', direction_names: direction_names, sender_city: sender_city, department: department, organisation: organisation, user: user %>
 
 <div class="mail-object">
   <p class="bold-blue">Objet : Convocation à un <%= rdv_title_by_phone %> dans le cadre de votre <%= rdv_subject %></p>
-  <%= tag.p("N° allocataire : #{applicant.affiliation_number}") if applicant.affiliation_number %>
+  <%= tag.p("N° allocataire : #{user.affiliation_number}") if user.affiliation_number %>
 </div>
 
 <div class="main-content">
-  <p><%= applicant.title.capitalize %>,</p>
-  <p>Vous êtes <%= applicant_designation %> et à ce titre <span class="bold-blue">vous êtes <%= applicant.conjugate("convoqué") %> à un <%= rdv_title %></span> afin de <%= rdv_purpose %>.</p>
-  <p>Un travailleur social vous appellera <span class="bold-blue">le <%= I18n.l(rdv.starts_at, format: :human) %></span> sur votre numéro de téléphone: <span class="bold-blue"><%= applicant.phone_number %></span>.</p>
+  <p><%= user.title.capitalize %>,</p>
+  <p>Vous êtes <%= user_designation %> et à ce titre <span class="bold-blue">vous êtes <%= user.conjugate("convoqué") %> à un <%= rdv_title %></span> afin de <%= rdv_purpose %>.</p>
+  <p>Un travailleur social vous appellera <span class="bold-blue">le <%= I18n.l(rdv.starts_at, format: :human) %></span> sur votre numéro de téléphone: <span class="bold-blue"><%= user.phone_number %></span>.</p>
   <%= tag.p tag.span(mandatory_warning, class: "bold-blue") if mandatory_warning %>
   <%= tag.p tag.span(instruction_for_rdv, class: "bold-blue") if instruction_for_rdv.present? %>
   <%= tag.p tag.span("En cas d'absence, #{punishable_warning}.", class: "bold-blue") if punishable_warning.present? %>
   <p>En cas d'empêchement, merci d'appeler rapidement le <%= rdv.phone_number %>.</p>
-  <%= render "letters/salutation", applicant: applicant %>
+  <%= render "letters/salutation", user: user %>
   <br/>
   <div class="letter-signature">
     <%= render 'common/organisation_signature', signature_lines: signature_lines, department: department %>

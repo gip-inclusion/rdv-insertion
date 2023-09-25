@@ -4,35 +4,35 @@ describe SendInvitationRemindersJob do
   end
 
   describe "#perform" do
-    let!(:applicant1) { create(:applicant, email: "camille1@gouv.fr", phone_number: "0649031931") }
-    let!(:applicant2) { create(:applicant, email: "camille2@gouv.fr", phone_number: "0649031932") }
-    let!(:applicant3) { create(:applicant, email: "camille3@gouv.fr", phone_number: "0649031933") }
-    let!(:applicant4) { create(:applicant, email: "camille4@gouv.fr", phone_number: "0649031934") }
-    let!(:applicant5) do
-      create(:applicant, email: "camille5@gouv.fr", phone_number: "0649031935")
+    let!(:user1) { create(:user, email: "camille1@gouv.fr", phone_number: "0649031931") }
+    let!(:user2) { create(:user, email: "camille2@gouv.fr", phone_number: "0649031932") }
+    let!(:user3) { create(:user, email: "camille3@gouv.fr", phone_number: "0649031933") }
+    let!(:user4) { create(:user, email: "camille4@gouv.fr", phone_number: "0649031934") }
+    let!(:user5) do
+      create(:user, email: "camille5@gouv.fr", phone_number: "0649031935")
     end
-    let!(:applicant6) { create(:applicant, email: "camille6@gouv.fr", phone_number: "0649031935") }
+    let!(:user6) { create(:user, email: "camille6@gouv.fr", phone_number: "0649031935") }
 
-    let!(:rdv_context1) { create(:rdv_context, status: "invitation_pending", applicant: applicant1) }
-    let!(:rdv_context2) { create(:rdv_context, status: "invitation_pending", applicant: applicant2) }
-    let!(:rdv_context3) { create(:rdv_context, status: "invitation_pending", applicant: applicant3) }
-    let!(:rdv_context4) { create(:rdv_context, status: "rdv_pending", applicant: applicant4) }
-    let!(:rdv_context5) { create(:rdv_context, status: "invitation_pending", applicant: applicant5) }
+    let!(:rdv_context1) { create(:rdv_context, status: "invitation_pending", user: user1) }
+    let!(:rdv_context2) { create(:rdv_context, status: "invitation_pending", user: user2) }
+    let!(:rdv_context3) { create(:rdv_context, status: "invitation_pending", user: user3) }
+    let!(:rdv_context4) { create(:rdv_context, status: "rdv_pending", user: user4) }
+    let!(:rdv_context5) { create(:rdv_context, status: "invitation_pending", user: user5) }
     let!(:rdv_context6) do
       create(
         :rdv_context,
         status: "invitation_pending",
         motif_category: create(:motif_category, participation_optional: true),
-        applicant: applicant6
+        user: user6
       )
     end
-    let!(:rdv_context7) { create(:rdv_context, status: "invitation_pending", applicant: applicant1) }
+    let!(:rdv_context7) { create(:rdv_context, status: "invitation_pending", user: user1) }
 
     # OK
     let!(:invitation1) do
       create(
         :invitation,
-        applicant: applicant1, rdv_context: rdv_context1,
+        user: user1, rdv_context: rdv_context1,
         sent_at: 3.days.ago, valid_until: 4.days.from_now
       )
     end
@@ -41,7 +41,7 @@ describe SendInvitationRemindersJob do
     let!(:invitation2) do
       create(
         :invitation,
-        applicant: applicant2, rdv_context: rdv_context2,
+        user: user2, rdv_context: rdv_context2,
         sent_at: 4.days.ago, valid_until: 4.days.from_now
       )
     end
@@ -50,7 +50,7 @@ describe SendInvitationRemindersJob do
     let!(:invitation3) do
       create(
         :invitation,
-        applicant: applicant3, rdv_context: rdv_context3,
+        user: user3, rdv_context: rdv_context3,
         sent_at: 3.days.ago, valid_until: 4.hours.from_now
       )
     end
@@ -59,26 +59,26 @@ describe SendInvitationRemindersJob do
     let!(:invitation4) do
       create(
         :invitation,
-        applicant: applicant4, rdv_context: rdv_context4,
+        user: user4, rdv_context: rdv_context4,
         sent_at: 3.days.ago, valid_until: 4.days.from_now
       )
     end
 
-    # applicant is archived
+    # user is archived
     let!(:invitation5) do
       create(
         :invitation,
-        applicant: applicant5, rdv_context: rdv_context5,
+        user: user5, rdv_context: rdv_context5,
         sent_at: 3.days.ago, valid_until: 4.days.from_now
       )
     end
-    let!(:archive) { create(:archive, applicant: applicant5, department: invitation5.department) }
+    let!(:archive) { create(:archive, user: user5, department: invitation5.department) }
 
     # Motif Category not eligible for reminder
     let!(:invitation6) do
       create(
         :invitation,
-        applicant: applicant6, rdv_context: rdv_context6,
+        user: user6, rdv_context: rdv_context6,
         sent_at: 3.days.ago, valid_until: 4.days.from_now
       )
     end
@@ -87,7 +87,7 @@ describe SendInvitationRemindersJob do
     let!(:invitation7) do
       create(
         :invitation,
-        applicant: applicant1, rdv_context: rdv_context7,
+        user: user1, rdv_context: rdv_context7,
         sent_at: 3.days.ago, valid_until: 4.days.from_now,
         reminder: true
       )
@@ -134,14 +134,14 @@ describe SendInvitationRemindersJob do
       expect(MattermostClient).to receive(:send_to_notif_channel)
         .with(
           "📬 1 relances en cours!\n" \
-          "Les allocataires sont: [#{applicant1.id}]"
+          "Les usagers sont: [#{user1.id}]"
         )
       subject
     end
 
-    context "when the eligible applicants do not have email or mobile phone number" do
-      let!(:applicant1) { create(:applicant, phone_number: nil, email: "") }
-      let!(:applicant2) { create(:applicant, phone_number: "0123456789", email: "") }
+    context "when the eligible users do not have email or mobile phone number" do
+      let!(:user1) { create(:user, phone_number: nil, email: "") }
+      let!(:user2) { create(:user, phone_number: "0123456789", email: "") }
 
       it "does not enqueue reminder jobs" do
         expect(SendInvitationReminderJob).not_to receive(:perform_async)

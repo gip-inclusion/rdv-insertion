@@ -9,9 +9,9 @@ describe Notifications::SendSms, type: :service do
 
   let!(:phone_number) { "+33782605941" }
   let!(:sms_sender_name) { "provider" }
-  let!(:applicant) do
+  let!(:user) do
     create(
-      :applicant,
+      :user,
       phone_number: phone_number,
       first_name: "John", last_name: "Doe", title: "monsieur"
     )
@@ -44,7 +44,7 @@ describe Notifications::SendSms, type: :service do
     )
   end
   let!(:participation) do
-    create(:participation, applicant: applicant, rdv: rdv, rdv_context: rdv_context)
+    create(:participation, user: user, rdv: rdv, rdv_context: rdv_context)
   end
   let!(:notification) do
     create(:notification, participation: participation, format: "sms", event: "participation_created")
@@ -116,10 +116,10 @@ describe Notifications::SendSms, type: :service do
         subject
       end
 
-      context "when it is a feminine applicant" do
+      context "when it is a feminine user" do
         before do
-          applicant.title = "madame"
-          applicant.first_name = "Jane"
+          user.title = "madame"
+          user.first_name = "Jane"
         end
 
         let!(:content) do
@@ -146,7 +146,7 @@ describe Notifications::SendSms, type: :service do
             :configuration,
             organisation:,
             motif_category: category_rsa_orientation,
-            template_applicant_designation_override: "joueur d'échec"
+            template_user_designation_override: "joueur d'échec"
           )
         end
 

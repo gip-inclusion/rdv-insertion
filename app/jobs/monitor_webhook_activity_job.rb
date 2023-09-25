@@ -1,7 +1,7 @@
 class MonitorWebhookActivityJob < ApplicationJob
   MONITORS = [
     { acceptable_delay: 3.hours, model: Rdv },
-    { acceptable_delay: 12.hours, model: Applicant },
+    { acceptable_delay: 12.hours, model: User },
     { acceptable_delay: 12.hours, model: Agent },
     { acceptable_delay: 1.day, model: AgentRole },
     { acceptable_delay: 1.week, model: Lieu },

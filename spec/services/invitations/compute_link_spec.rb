@@ -17,8 +17,8 @@ describe Invitations::ComputeLink, type: :service do
 
   let(:address) { "20 avenue de ségur 75007 Paris" }
 
-  let!(:applicant) do
-    create(:applicant, address: address)
+  let!(:user) do
+    create(:user, address: address)
   end
   let!(:motif_category) { create(:motif_category, short_name: "rsa_accompagnement") }
   let!(:rdv_context) { build(:rdv_context, motif_category: motif_category) }
@@ -27,7 +27,7 @@ describe Invitations::ComputeLink, type: :service do
       :invitation,
       department: department,
       organisations: [organisation1, organisation2],
-      applicant: applicant,
+      user: user,
       rdv_context: rdv_context,
       rdv_solidarites_token: rdv_solidarites_token
     )
@@ -105,7 +105,7 @@ describe Invitations::ComputeLink, type: :service do
           :invitation,
           department: department,
           organisations: [organisation1, organisation2],
-          applicant: applicant,
+          user: user,
           rdv_context: rdv_context,
           rdv_solidarites_token: rdv_solidarites_token,
           rdv_solidarites_lieu_id: 5
@@ -127,7 +127,7 @@ describe Invitations::ComputeLink, type: :service do
     end
 
     context "when the rdv is with a referent" do
-      let!(:agent) { create(:agent, applicants: [applicant], rdv_solidarites_agent_id: 2442) }
+      let!(:agent) { create(:agent, users: [user], rdv_solidarites_agent_id: 2442) }
 
       before { invitation.rdv_with_referents = true }
 

@@ -3,7 +3,7 @@ class SendInvitationReminderJobError < StandardError; end
 class SendInvitationReminderJob < ApplicationJob
   def perform(rdv_context_id, invitation_format)
     @rdv_context = RdvContext.find(rdv_context_id)
-    @applicant = @rdv_context.applicant
+    @user = @rdv_context.user
     @invitation_format = invitation_format
 
     return if invitation_already_sent_today?
@@ -20,7 +20,7 @@ class SendInvitationReminderJob < ApplicationJob
   def invitation
     @invitation ||= Invitation.new(
       reminder: true,
-      applicant: @applicant,
+      user: @user,
       department: first_invitation.department,
       organisations: first_invitation.organisations,
       rdv_context: first_invitation.rdv_context,
@@ -44,7 +44,7 @@ class SendInvitationReminderJob < ApplicationJob
 
   def notify_non_eligible_for_reminder
     MattermostClient.send_to_notif_channel(
-      "🚫 L'allocataire #{@applicant.id} n'est pas éligible à la relance pour #{@rdv_context.motif_category_name}."
+      "🚫 L'usager #{@user.id} n'est pas éligible à la relance pour #{@rdv_context.motif_category_name}."
     )
   end
 

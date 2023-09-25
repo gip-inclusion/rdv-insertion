@@ -6,7 +6,7 @@ module Invitations
     end
 
     def call
-      Invitation.with_advisory_lock "invite_applicant_#{applicant.id}" do
+      Invitation.with_advisory_lock "invite_user_#{user.id}" do
         assign_link_and_token
         validate_invitation
         save_record!(@invitation)
@@ -31,10 +31,10 @@ module Invitations
     end
 
     def send_invitation
-      send_to_applicant = @invitation.send_to_applicant
-      return if send_to_applicant.success?
+      send_to_user = @invitation.send_to_user
+      return if send_to_user.success?
 
-      result.errors += send_to_applicant.errors
+      result.errors += send_to_user.errors
       fail!
     end
 
@@ -48,8 +48,8 @@ module Invitations
       )
     end
 
-    def applicant
-      @invitation.applicant
+    def user
+      @invitation.user
     end
   end
 end

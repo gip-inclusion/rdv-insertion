@@ -32,11 +32,11 @@ class UpsertRdvSolidaritesUser < BaseService
     # If the user already exists in RDV-S, we check if he is in RDVI. If not we assign the user to the org
     # by creating the user profile and we then update the user.
     if email_taken_error?
-      return assign_to_org_and_update unless existing_applicant
+      return assign_to_org_and_update unless existing_user
 
       fail!(
-        "Un allocataire avec cette adresse mail existe déjà sur RDVI avec d'autres attributs: " \
-        "id #{existing_applicant.id}"
+        "Un usager avec cette adresse mail existe déjà sur RDVI avec d'autres attributs: " \
+        "id #{existing_user.id}"
       )
     end
 
@@ -44,8 +44,8 @@ class UpsertRdvSolidaritesUser < BaseService
     fail!
   end
 
-  def existing_applicant
-    @existing_applicant ||= Applicant.find_by(rdv_solidarites_user_id: rdv_solidarites_user_id)
+  def existing_user
+    @existing_user ||= User.find_by(rdv_solidarites_user_id: rdv_solidarites_user_id)
   end
 
   def assign_to_org_and_update

@@ -5,7 +5,7 @@ class AddMotifCategoryForVar < ActiveRecord::Migration[7.0]
       rdv_title: "rendez-vous des Droits et Devoirs",
       rdv_title_by_phone: "rendez-vous téléphonique des Droits et Devoirs",
       rdv_purpose: "définir votre orientation",
-      applicant_designation: "bénéficiaire du RSA",
+      user_designation: "bénéficiaire du RSA",
       rdv_subject: "RSA",
       display_mandatory_warning: true
     )

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_21_160915) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_25_155039) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -43,69 +43,30 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_21_160915) do
     t.index ["rdv_solidarites_agent_id"], name: "index_agents_on_rdv_solidarites_agent_id", unique: true
   end
 
-  create_table "applicants", force: :cascade do |t|
-    t.string "uid"
-    t.bigint "rdv_solidarites_user_id"
-    t.string "affiliation_number"
-    t.integer "role"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "department_internal_id"
-    t.string "first_name"
-    t.string "last_name"
-    t.string "address"
-    t.string "phone_number"
-    t.string "email"
-    t.integer "title"
-    t.date "birth_date"
-    t.date "rights_opening_date"
-    t.string "birth_name"
-    t.datetime "deleted_at"
-    t.datetime "last_webhook_update_received_at"
-    t.string "nir"
-    t.string "pole_emploi_id"
-    t.string "carnet_de_bord_carnet_id"
-    t.integer "created_through", default: 0
-    t.index ["department_internal_id"], name: "index_applicants_on_department_internal_id"
-    t.index ["email"], name: "index_applicants_on_email"
-    t.index ["nir"], name: "index_applicants_on_nir"
-    t.index ["phone_number"], name: "index_applicants_on_phone_number"
-    t.index ["rdv_solidarites_user_id"], name: "index_applicants_on_rdv_solidarites_user_id", unique: true
-    t.index ["uid"], name: "index_applicants_on_uid"
-  end
-
-  create_table "applicants_organisations", force: :cascade do |t|
-    t.bigint "organisation_id", null: false
-    t.bigint "applicant_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.index ["organisation_id", "applicant_id"], name: "index_applicants_orgas_on_orga_id_and_applicant_id", unique: true
-  end
-
   create_table "archives", force: :cascade do |t|
     t.bigint "department_id", null: false
-    t.bigint "applicant_id", null: false
+    t.bigint "user_id", null: false
     t.string "archiving_reason"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["applicant_id"], name: "index_archives_on_applicant_id"
     t.index ["department_id"], name: "index_archives_on_department_id"
+    t.index ["user_id"], name: "index_archives_on_user_id"
   end
 
   create_table "configurations", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "invitation_formats", default: ["sms", "email", "postal"], null: false, array: true
-    t.boolean "convene_applicant", default: true
+    t.boolean "convene_user", default: true
     t.integer "number_of_days_before_action_required", default: 10
-    t.boolean "invite_to_applicant_organisations_only", default: true
+    t.boolean "invite_to_user_organisations_only", default: true
     t.boolean "rdv_with_referents", default: false
     t.bigint "motif_category_id"
     t.bigint "file_configuration_id"
     t.bigint "organisation_id"
     t.string "template_rdv_title_override"
     t.string "template_rdv_title_by_phone_override"
-    t.string "template_applicant_designation_override"
+    t.string "template_user_designation_override"
     t.string "template_rdv_purpose_override"
     t.integer "number_of_days_before_next_invite"
     t.index ["file_configuration_id"], name: "index_configurations_on_file_configuration_id"
@@ -159,7 +120,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_21_160915) do
     t.string "link"
     t.string "rdv_solidarites_token"
     t.datetime "sent_at", precision: nil
-    t.bigint "applicant_id", null: false
+    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "clicked", default: false
@@ -171,9 +132,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_21_160915) do
     t.boolean "reminder", default: false
     t.string "uuid"
     t.boolean "rdv_with_referents", default: false
-    t.index ["applicant_id"], name: "index_invitations_on_applicant_id"
     t.index ["department_id"], name: "index_invitations_on_department_id"
     t.index ["rdv_context_id"], name: "index_invitations_on_rdv_context_id"
+    t.index ["user_id"], name: "index_invitations_on_user_id"
     t.index ["uuid"], name: "index_invitations_on_uuid", unique: true
   end
 
@@ -279,7 +240,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_21_160915) do
   end
 
   create_table "participations", force: :cascade do |t|
-    t.bigint "applicant_id", null: false
+    t.bigint "user_id", null: false
     t.bigint "rdv_id", null: false
     t.integer "status", default: 0
     t.bigint "rdv_solidarites_participation_id"
@@ -288,21 +249,21 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_21_160915) do
     t.bigint "rdv_context_id"
     t.string "created_by", null: false
     t.boolean "convocable", default: false, null: false
-    t.index ["applicant_id", "rdv_id"], name: "index_participations_on_applicant_id_and_rdv_id", unique: true
     t.index ["rdv_context_id"], name: "index_participations_on_rdv_context_id"
     t.index ["status"], name: "index_participations_on_status"
+    t.index ["user_id", "rdv_id"], name: "index_participations_on_user_id_and_rdv_id", unique: true
   end
 
   create_table "rdv_contexts", force: :cascade do |t|
     t.integer "status"
-    t.bigint "applicant_id", null: false
+    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "motif_category_id"
     t.datetime "closed_at"
-    t.index ["applicant_id"], name: "index_rdv_contexts_on_applicant_id"
     t.index ["motif_category_id"], name: "index_rdv_contexts_on_motif_category_id"
     t.index ["status"], name: "index_rdv_contexts_on_status"
+    t.index ["user_id"], name: "index_rdv_contexts_on_user_id"
   end
 
   create_table "rdvs", force: :cascade do |t|
@@ -332,45 +293,36 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_21_160915) do
   end
 
   create_table "referent_assignations", force: :cascade do |t|
-    t.bigint "applicant_id", null: false
+    t.bigint "user_id", null: false
     t.bigint "agent_id", null: false
-    t.index ["applicant_id", "agent_id"], name: "index_referent_assignations_on_applicant_id_and_agent_id", unique: true
+    t.index ["user_id", "agent_id"], name: "index_referent_assignations_on_user_id_and_agent_id", unique: true
   end
 
   create_table "stats", force: :cascade do |t|
-    t.integer "applicants_count"
-    t.json "applicants_count_grouped_by_month"
+    t.integer "users_count"
+    t.json "users_count_grouped_by_month"
     t.integer "rdvs_count"
     t.json "rdvs_count_grouped_by_month"
     t.integer "sent_invitations_count"
     t.json "sent_invitations_count_grouped_by_month"
     t.float "average_time_between_invitation_and_rdv_in_days"
     t.json "average_time_between_invitation_and_rdv_in_days_by_month"
-    t.float "rate_of_applicants_oriented_in_less_than_30_days"
-    t.json "rate_of_applicants_oriented_in_less_than_30_days_by_month"
+    t.float "rate_of_users_oriented_in_less_than_30_days"
+    t.json "rate_of_users_oriented_in_less_than_30_days_by_month"
     t.integer "agents_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.float "rate_of_autonomous_applicants"
-    t.json "rate_of_autonomous_applicants_grouped_by_month"
+    t.float "rate_of_autonomous_users"
+    t.json "rate_of_autonomous_users_grouped_by_month"
     t.string "statable_type"
     t.bigint "statable_id"
     t.float "rate_of_no_show_for_convocations"
     t.json "rate_of_no_show_for_convocations_grouped_by_month"
     t.float "rate_of_no_show_for_invitations"
     t.json "rate_of_no_show_for_invitations_grouped_by_month"
-    t.float "rate_of_applicants_oriented"
-    t.json "rate_of_applicants_oriented_grouped_by_month"
+    t.float "rate_of_users_oriented"
+    t.json "rate_of_users_oriented_grouped_by_month"
     t.index ["statable_type", "statable_id"], name: "index_stats_on_statable"
-  end
-
-  create_table "tag_applicants", force: :cascade do |t|
-    t.bigint "tag_id", null: false
-    t.bigint "applicant_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["applicant_id"], name: "index_tag_applicants_on_applicant_id"
-    t.index ["tag_id"], name: "index_tag_applicants_on_tag_id"
   end
 
   create_table "tag_organisations", force: :cascade do |t|
@@ -380,6 +332,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_21_160915) do
     t.datetime "updated_at", null: false
     t.index ["organisation_id"], name: "index_tag_organisations_on_organisation_id"
     t.index ["tag_id"], name: "index_tag_organisations_on_tag_id"
+  end
+
+  create_table "tag_users", force: :cascade do |t|
+    t.bigint "tag_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tag_id"], name: "index_tag_users_on_tag_id"
+    t.index ["user_id"], name: "index_tag_users_on_user_id"
   end
 
   create_table "tags", force: :cascade do |t|
@@ -393,13 +354,52 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_21_160915) do
     t.string "rdv_title"
     t.string "rdv_title_by_phone"
     t.string "rdv_purpose"
-    t.string "applicant_designation"
+    t.string "user_designation"
     t.string "rdv_subject"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "custom_sentence"
     t.boolean "display_mandatory_warning", default: false
     t.text "punishable_warning", default: "", null: false
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "uid"
+    t.bigint "rdv_solidarites_user_id"
+    t.string "affiliation_number"
+    t.integer "role"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "department_internal_id"
+    t.string "first_name"
+    t.string "last_name"
+    t.string "address"
+    t.string "phone_number"
+    t.string "email"
+    t.integer "title"
+    t.date "birth_date"
+    t.date "rights_opening_date"
+    t.string "birth_name"
+    t.datetime "deleted_at"
+    t.datetime "last_webhook_update_received_at"
+    t.string "nir"
+    t.string "pole_emploi_id"
+    t.string "carnet_de_bord_carnet_id"
+    t.integer "created_through", default: 0
+    t.index ["department_internal_id"], name: "index_users_on_department_internal_id"
+    t.index ["email"], name: "index_users_on_email"
+    t.index ["nir"], name: "index_users_on_nir"
+    t.index ["phone_number"], name: "index_users_on_phone_number"
+    t.index ["rdv_solidarites_user_id"], name: "index_users_on_rdv_solidarites_user_id", unique: true
+    t.index ["uid"], name: "index_users_on_uid"
+  end
+
+  create_table "users_organisations", force: :cascade do |t|
+    t.bigint "organisation_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["organisation_id", "user_id"], name: "index_applicants_orgas_on_orga_id_and_applicant_id", unique: true
   end
 
   create_table "webhook_endpoints", force: :cascade do |t|
@@ -422,14 +422,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_21_160915) do
 
   add_foreign_key "agent_roles", "agents"
   add_foreign_key "agent_roles", "organisations"
-  add_foreign_key "archives", "applicants"
   add_foreign_key "archives", "departments"
+  add_foreign_key "archives", "users"
   add_foreign_key "configurations", "file_configurations"
   add_foreign_key "configurations", "motif_categories"
   add_foreign_key "configurations", "organisations"
-  add_foreign_key "invitations", "applicants"
   add_foreign_key "invitations", "departments"
   add_foreign_key "invitations", "rdv_contexts"
+  add_foreign_key "invitations", "users"
   add_foreign_key "lieux", "organisations"
   add_foreign_key "messages_configurations", "organisations"
   add_foreign_key "motif_categories", "templates"
@@ -438,14 +438,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_21_160915) do
   add_foreign_key "notifications", "participations"
   add_foreign_key "organisations", "departments"
   add_foreign_key "participations", "rdv_contexts"
-  add_foreign_key "rdv_contexts", "applicants"
   add_foreign_key "rdv_contexts", "motif_categories"
+  add_foreign_key "rdv_contexts", "users"
   add_foreign_key "rdvs", "lieux"
   add_foreign_key "rdvs", "motifs"
   add_foreign_key "rdvs", "organisations"
-  add_foreign_key "tag_applicants", "applicants"
-  add_foreign_key "tag_applicants", "tags"
   add_foreign_key "tag_organisations", "organisations"
   add_foreign_key "tag_organisations", "tags"
+  add_foreign_key "tag_users", "tags"
+  add_foreign_key "tag_users", "users"
   add_foreign_key "webhook_receipts", "webhook_endpoints"
 end

@@ -6,14 +6,14 @@ describe Stats::MonthlyStats::UpsertStat, type: :service do
   let!(:date) { date_string.to_date }
   let!(:stats_values) do
     {
-      applicants_count_grouped_by_month: 1,
+      users_count_grouped_by_month: 1,
       rdvs_count_grouped_by_month: 2,
       sent_invitations_count_grouped_by_month: 3,
       rate_of_no_show_for_invitations_grouped_by_month: 4,
       rate_of_no_show_for_convocations_grouped_by_month: 9,
       average_time_between_invitation_and_rdv_in_days_by_month: 5,
-      rate_of_applicants_oriented_in_less_than_30_days_by_month: 7,
-      rate_of_autonomous_applicants_grouped_by_month: 8
+      rate_of_users_oriented_in_less_than_30_days_by_month: 7,
+      rate_of_autonomous_users_grouped_by_month: 8
     }
   end
   let!(:stat) { create(:stat, statable_type: "Department", statable_id: department.id) }
@@ -60,7 +60,7 @@ describe Stats::MonthlyStats::UpsertStat, type: :service do
 
     it "computes the monthly stats" do
       subject
-      expect(stat.reload[:applicants_count_grouped_by_month]).to eq(
+      expect(stat.reload[:users_count_grouped_by_month]).to eq(
         { "01/2022" => 1, "02/2022" => 1, "03/2022" => 1, "04/2022" => 1 }
       )
       expect(stat.reload[:rdvs_count_grouped_by_month]).to eq(
@@ -78,10 +78,10 @@ describe Stats::MonthlyStats::UpsertStat, type: :service do
       expect(stat.reload[:average_time_between_invitation_and_rdv_in_days_by_month]).to eq(
         { "01/2022" => 5, "02/2022" => 5, "03/2022" => 5, "04/2022" => 5 }
       )
-      expect(stat.reload[:rate_of_applicants_oriented_in_less_than_30_days_by_month]).to eq(
+      expect(stat.reload[:rate_of_users_oriented_in_less_than_30_days_by_month]).to eq(
         { "12/2021" => 7, "01/2022" => 7, "02/2022" => 7, "03/2022" => 7 }
       )
-      expect(stat.reload[:rate_of_autonomous_applicants_grouped_by_month]).to eq(
+      expect(stat.reload[:rate_of_autonomous_users_grouped_by_month]).to eq(
         { "01/2022" => 8, "02/2022" => 8, "03/2022" => 8, "04/2022" => 8 }
       )
     end

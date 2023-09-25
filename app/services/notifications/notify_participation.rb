@@ -28,10 +28,10 @@ module Notifications
     end
 
     def send_notification
-      send_to_applicant = @notification.send_to_applicant
-      return if send_to_applicant.success?
+      send_to_user = @notification.send_to_user
+      return if send_to_user.success?
 
-      result.errors += send_to_applicant.errors
+      result.errors += send_to_user.errors
       fail!
     end
 

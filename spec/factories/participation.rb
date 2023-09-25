@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :participation do
-    association :applicant
+    association :user
     association :rdv
     association :rdv_context
     sequence(:rdv_solidarites_participation_id)

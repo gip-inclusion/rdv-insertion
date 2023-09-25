@@ -2,9 +2,9 @@
   <div><p><%= "#{agent.first_name} #{agent.last_name} (#{agent.email})" %></p></div>
   <div>
     <%= simple_form_for(:referent_assignation, url: department_referent_assignations_path(department), html: { method: assigned ? :delete : :post }) do |f| %>
-      <%= f.input :applicant_id,
+      <%= f.input :user_id,
                   as: :hidden,
-                  input_html: { class: "form-control", value: applicant.id }
+                  input_html: { class: "form-control", value: user.id }
       %>
       <%= f.input :agent_id,
                   as: :hidden,

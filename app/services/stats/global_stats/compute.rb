@@ -13,22 +13,22 @@ module Stats
 
       def global_stats
         @global_stats ||= {
-          applicants_count: applicants_count,
+          users_count: users_count,
           rdvs_count: rdvs_count,
           sent_invitations_count: sent_invitations_count,
           rate_of_no_show_for_invitations: rate_of_no_show_for_invitations,
           rate_of_no_show_for_convocations: rate_of_no_show_for_convocations,
           average_time_between_invitation_and_rdv_in_days: average_time_between_invitation_and_rdv_in_days,
-          rate_of_applicants_oriented_in_less_than_30_days:
-            rate_of_applicants_oriented_in_less_than_30_days,
-          rate_of_applicants_oriented: rate_of_applicants_oriented,
-          rate_of_autonomous_applicants: rate_of_autonomous_applicants,
+          rate_of_users_oriented_in_less_than_30_days:
+            rate_of_users_oriented_in_less_than_30_days,
+          rate_of_users_oriented: rate_of_users_oriented,
+          rate_of_autonomous_users: rate_of_autonomous_users,
           agents_count: agents_count
         }
       end
 
-      def applicants_count
-        @stat.all_applicants.count
+      def users_count
+        @stat.all_users.count
       end
 
       def rdvs_count
@@ -53,21 +53,21 @@ module Stats
         ).value
       end
 
-      def rate_of_applicants_oriented_in_less_than_30_days
-        ComputeRateOfApplicantsWithRdvSeenInLessThanThirtyDays.call(
-          applicants: @stat.applicants_with_orientation_category_sample
+      def rate_of_users_oriented_in_less_than_30_days
+        ComputeRateOfUsersWithRdvSeenInLessThanThirtyDays.call(
+          users: @stat.users_with_orientation_category_sample
         ).value
       end
 
-      def rate_of_applicants_oriented
-        ComputeRateOfApplicantsWithRdvSeen.call(
+      def rate_of_users_oriented
+        ComputeRateOfUsersWithRdvSeen.call(
           rdv_contexts: @stat.orientation_rdv_contexts_sample
         ).value
       end
 
-      def rate_of_autonomous_applicants
-        ComputeRateOfAutonomousApplicants.call(
-          applicants: @stat.invited_applicants_sample
+      def rate_of_autonomous_users
+        ComputeRateOfAutonomousUsers.call(
+          users: @stat.invited_users_sample
         ).value
       end
 

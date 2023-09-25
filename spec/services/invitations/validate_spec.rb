@@ -15,14 +15,14 @@ describe Invitations::Validate, type: :service do
   let!(:invitation) do
     create(
       :invitation,
-      applicant: applicant,
+      user: user,
       rdv_context: build(:rdv_context, motif_category: category_orientation),
       organisations: [organisation]
     )
   end
 
-  let!(:applicant) do
-    create(:applicant, organisations: [organisation])
+  let!(:user) do
+    create(:user, organisations: [organisation])
   end
 
   let!(:organisation) do
@@ -58,8 +58,8 @@ describe Invitations::Validate, type: :service do
       end
     end
 
-    context "when the applicant title is missing" do
-      before { applicant.update! title: nil }
+    context "when the user title is missing" do
+      before { user.update! title: nil }
 
       it("is a failure") { is_a_failure }
 
@@ -82,7 +82,7 @@ describe Invitations::Validate, type: :service do
       end
     end
 
-    context "when the applicant does not belong to an org for that category" do
+    context "when the user does not belong to an org for that category" do
       let!(:configuration) do
         create(:configuration, organisation: organisation, motif_category: category_accompagnement)
       end
@@ -91,7 +91,7 @@ describe Invitations::Validate, type: :service do
 
       it "stores an error message" do
         expect(subject.errors).to include(
-          "L'allocataire n'appartient pas à une organisation qui gère la catégorie RSA orientation"
+          "L'usager n'appartient pas à une organisation qui gère la catégorie RSA orientation"
         )
       end
     end
@@ -114,14 +114,14 @@ describe Invitations::Validate, type: :service do
       end
 
       let!(:motif) { create(:motif, motif_category: category_orientation, follow_up: true) }
-      let!(:agent) { create(:agent, applicants: [applicant]) }
+      let!(:agent) { create(:agent, users: [user]) }
 
       it "is_a_success" do
         is_a_success
       end
 
       context "when no referents is assigned" do
-        let!(:agent) { create(:agent, applicants: []) }
+        let!(:agent) { create(:agent, users: []) }
 
         it("is a failure") { is_a_failure }
 

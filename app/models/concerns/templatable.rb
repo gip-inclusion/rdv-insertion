@@ -11,8 +11,8 @@ module Templatable
     current_configuration&.template_rdv_title_by_phone_override || template.rdv_title_by_phone
   end
 
-  def applicant_designation
-    current_configuration&.template_applicant_designation_override || template.applicant_designation
+  def user_designation
+    current_configuration&.template_user_designation_override || template.user_designation
   end
 
   def rdv_purpose

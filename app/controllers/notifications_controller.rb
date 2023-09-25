@@ -40,11 +40,11 @@ class NotificationsController < ApplicationController
   end
 
   def pdf_filename
-    "Convocation_de_#{applicant.first_name}_#{applicant.last_name}_le_#{rdv.formatted_start_date}.pdf"
+    "Convocation_de_#{user.first_name}_#{user.last_name}_le_#{rdv.formatted_start_date}.pdf"
   end
 
-  def applicant
-    @participation.applicant
+  def user
+    @participation.user
   end
 
   def rdv
