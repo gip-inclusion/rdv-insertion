@@ -4,6 +4,7 @@ class Invitation < ApplicationRecord
   include HasCurrentConfiguration
   include Templatable
   include Sendable
+  include WebhookDeliverable
 
   belongs_to :user
   belongs_to :department
@@ -72,6 +73,12 @@ class Invitation < ApplicationRecord
 
   def sent_after?(date)
     sent_at.present? && sent_at >= date
+  end
+
+  def should_send_webhook?
+    return false if @should_send_webhook == false
+
+    sent_at.present? && sent_at_previously_changed?
   end
 
   private

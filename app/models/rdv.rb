@@ -6,6 +6,7 @@ class Rdv < ApplicationRecord
 
   include Notificable
   include RdvParticipationStatus
+  include WebhookDeliverable
 
   after_commit :notify_convocable_participations, on: :update
   after_commit :refresh_context_status, on: [:create, :update]
