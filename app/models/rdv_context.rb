@@ -54,5 +54,7 @@ class RdvContext < ApplicationRecord
     first_participation_creation_date.to_datetime.mjd - first_invitation_sent_at.to_datetime.mjd
   end
 
-  def human_status = I18n.t("activerecord.attributes.rdv_context.statuses.#{status}")
+  def human_status
+    I18n.t("activerecord.attributes.rdv_context.statuses.#{status}")
+  end
 end

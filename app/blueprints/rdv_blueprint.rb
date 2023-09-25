@@ -1,5 +1,10 @@
 class RdvBlueprint < Blueprinter::Base
-  identifier :id
+  # To delete after BDR make the change
+  if ENV["ROLLOUT_NEW_API_VERSION"] == "1"
+    identifier :id
+  else
+    identifier :rdv_solidarites_rdv_id, name: :id
+  end
   fields :starts_at, :duration_in_min, :cancelled_at, :address, :uuid, :created_by,
          :status, :context, :users_count, :max_participants_count
 
@@ -8,6 +13,6 @@ class RdvBlueprint < Blueprinter::Base
     association :participations, blueprint: ParticipationBlueprint
     association :lieu, blueprint: LieuBlueprint
     association :motif, blueprint: MotifBlueprint
-    association :applicants, blueprint: ApplicantBlueprint
+    association :users, blueprint: UserBlueprint
   end
 end

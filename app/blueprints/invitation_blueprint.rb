@@ -4,6 +4,6 @@ class InvitationBlueprint < Blueprinter::Base
 
   view :extended do
     association :motif_category, blueprint: MotifCategoryBlueprint
-    association :applicant, blueprint: ApplicantBlueprint
+    association :user, blueprint: UserBlueprint
   end
 end

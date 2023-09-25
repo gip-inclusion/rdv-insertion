@@ -50,8 +50,6 @@ class Invitation < ApplicationRecord
     Phonelib.parse(help_phone_number).national
   end
 
-  def as_json(...) = super.merge(motif_category: motif_category)
-
   def messages_configuration
     organisations.map(&:messages_configuration).compact.first
   end

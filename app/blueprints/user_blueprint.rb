@@ -1,5 +1,10 @@
-class ApplicantBlueprint < Blueprinter::Base
-  identifier :id
+class UserBlueprint < Blueprinter::Base
+  # To delete after BDR make the change
+  if ENV["ROLLOUT_NEW_API_VERSION"] == "1"
+    identifier :id
+  else
+    identifier :rdv_solidarites_user_id, name: :id
+  end
 
   fields  :uid, :affiliation_number, :role, :created_at, :department_internal_id,
           :first_name, :last_name, :title, :address, :phone_number, :email, :birth_date, :rights_opening_date,
