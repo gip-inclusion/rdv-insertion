@@ -1,6 +1,6 @@
 class CarnetDeBord::CreateCarnet < BaseService
-  def initialize(applicant:, agent:, department:)
-    @applicant = applicant
+  def initialize(user:, agent:, department:)
+    @user = user
     @agent = agent
     @department = department
   end
@@ -8,7 +8,7 @@ class CarnetDeBord::CreateCarnet < BaseService
   def call
     verify_deploiement_id!
     verify_carnet_is_not_created!
-    Applicant.transaction do
+    User.transaction do
       create_carnet!
       assign_carnet_de_bord_carnet_id
     end
@@ -23,14 +23,14 @@ class CarnetDeBord::CreateCarnet < BaseService
   end
 
   def verify_carnet_is_not_created!
-    return if @applicant.carnet_de_bord_carnet_id.blank?
+    return if @user.carnet_de_bord_carnet_id.blank?
 
-    fail!("le carnet existe déjà pour la personne #{@applicant.id}")
+    fail!("le carnet existe déjà pour la personne #{@user.id}")
   end
 
   def assign_carnet_de_bord_carnet_id
-    @applicant.carnet_de_bord_carnet_id = parsed_response_body["notebookId"]
-    save_record!(@applicant)
+    @user.carnet_de_bord_carnet_id = parsed_response_body["notebookId"]
+    save_record!(@user)
   end
 
   def parsed_response_body
@@ -52,20 +52,20 @@ class CarnetDeBord::CreateCarnet < BaseService
       rdviUserEmail: @agent.email,
       deploymentId: @department.carnet_de_bord_deploiement_id,
       notebook: {
-        nir: @applicant.nir,
-        externalId: @applicant.department_internal_id,
-        firstname: @applicant.first_name,
-        lastname: @applicant.last_name,
-        dateOfBirth: @applicant.birth_date,
-        mobileNumber: @applicant.phone_number,
-        email: @applicant.email,
-        cafNumber: @applicant.affiliation_number
+        nir: @user.nir,
+        externalId: @user.department_internal_id,
+        firstname: @user.first_name,
+        lastname: @user.last_name,
+        dateOfBirth: @user.birth_date,
+        mobileNumber: @user.phone_number,
+        email: @user.email,
+        cafNumber: @user.affiliation_number
       }.merge(address_attributes).compact
     }
   end
 
   def address_attributes
-    return {} if @applicant.address.blank?
+    return {} if @user.address.blank?
     return {} if retrieve_geolocalisation.failure?
 
     {
@@ -77,7 +77,7 @@ class CarnetDeBord::CreateCarnet < BaseService
 
   def retrieve_geolocalisation
     @retrieve_geolocalisation ||= RetrieveGeolocalisation.call(
-      address: @applicant.address, department_number: @department.number
+      address: @user.address, department_number: @department.number
     )
   end
 end

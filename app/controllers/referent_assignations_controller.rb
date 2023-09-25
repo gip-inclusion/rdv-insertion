@@ -1,5 +1,5 @@
 class ReferentAssignationsController < ApplicationController
-  before_action :set_applicant, :set_department, :set_agents, only: [:index, :create, :destroy]
+  before_action :set_user, :set_department, :set_agents, only: [:index, :create, :destroy]
   before_action :set_agent, only: [:create, :destroy]
 
   def index; end
@@ -32,11 +32,11 @@ class ReferentAssignationsController < ApplicationController
   private
 
   def referent_assignation_params
-    params.require(:referent_assignation).permit(:agent_id, :applicant_id, :agent_email)
+    params.require(:referent_assignation).permit(:agent_id, :user_id, :agent_email)
   end
 
-  def applicant_id
-    params[:applicant_id] || referent_assignation_params[:applicant_id]
+  def user_id
+    params[:user_id] || referent_assignation_params[:user_id]
   end
 
   def agent_id
@@ -47,8 +47,8 @@ class ReferentAssignationsController < ApplicationController
     referent_assignation_params[:agent_email]
   end
 
-  def set_applicant
-    @applicant = policy_scope(Applicant).includes(:referents).find(applicant_id)
+  def set_user
+    @user = policy_scope(User).includes(:referents).find(user_id)
   end
 
   def set_department
@@ -57,20 +57,20 @@ class ReferentAssignationsController < ApplicationController
 
   def set_agents
     @agents = Agent.joins(:organisations).where(
-      organisations: @applicant.organisations.where(department_id: params[:department_id])
+      organisations: @user.organisations.where(department_id: params[:department_id])
     ).distinct.order(:email)
     @agents = @agents.not_betagouv if production_env?
   end
 
   def assign_referent
-    @assign_referent ||= Applicants::AssignReferent.call(
-      applicant: @applicant, agent: @agent, rdv_solidarites_session: rdv_solidarites_session
+    @assign_referent ||= Users::AssignReferent.call(
+      user: @user, agent: @agent, rdv_solidarites_session: rdv_solidarites_session
     )
   end
 
   def remove_referent
-    @remove_referent ||= Applicants::RemoveReferent.call(
-      applicant: @applicant, agent: @agent, rdv_solidarites_session: rdv_solidarites_session
+    @remove_referent ||= Users::RemoveReferent.call(
+      user: @user, agent: @agent, rdv_solidarites_session: rdv_solidarites_session
     )
   end
 

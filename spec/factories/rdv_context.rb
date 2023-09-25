@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :rdv_context do
-    association :applicant
+    association :user
     association :motif_category
 
     after(:build) do |rdv_context|

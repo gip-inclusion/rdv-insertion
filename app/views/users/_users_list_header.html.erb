@@ -1,0 +1,113 @@
+<div class="row mb-4 card-white justify-content-center">
+  <div class="col-4 justify-content-center">
+    <div class="mb-1">
+      <% if @current_configuration.present? %>
+        <%=
+          select(
+            "user", "status", options_for_select_status(@statuses_count),
+            { prompt: "Filtrer par statut" },
+            class: "text-center form-select js-status-selector"
+          )
+        %>
+      <% end %>
+    </div>
+    <%= render "filter_by_tag_button" %>
+    <%= render "filter_by_creation_dates_button" if @current_configuration.nil? %>
+    <%= render "filter_by_invitations_dates_button" if @current_configuration.present? || archived_scope?(@users_scope) %>
+    <%= render 'search_form', url: compute_index_path(@organisation, @department) %>
+
+    <div class="d-flex justify-content-between mt-1">
+      <div class="text-left mt-2">
+        <i class="fas fa-filter"></i> Filtrer usagers:
+        <div class="mt-1">
+          <%= check_box("users_list", "filter_by_current_agent", class: "js-filter-by-current-agent-checkbox") %> Dont je suis référent
+        </div>
+        <% if @current_configuration.present? %>
+          <div class="mt-1">
+            <%= check_box("users_list", "action_required", class: "js-action-required-checkbox") %> Une intervention est nécessaire
+            <small>
+              <i
+                class="fas fa-question-circle"
+                data-controller="tooltip"
+                data-action="mouseover->tooltip#actionRequired"
+                data-number-of-days-before-action-required="<%= @current_configuration&.number_of_days_before_action_required %>"
+              >
+              </i>
+            </small>
+          </div>
+        <% end %>
+      </div>
+      <% if display_back_to_list_button? %>
+        <div>
+          <%= link_to compute_index_path(@organisation, @department, motif_category_id: @current_motif_category&.id, users_scope: @users_scope), class: "btn btn-blue-out" do %>
+            Retour à la liste
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+  </div>
+
+  <div class="col-4 d-flex flex-column justify-content-center align-items-center">
+    <% if image_compiled?("maps/#{@department.name.parameterize}.svg") %>
+      <%= image_pack_tag("maps/#{@department.name.parameterize}.svg", alt: @department.name.parameterize, width: 50, height: 50) %>
+      <% if @organisations.length > 1 %>
+        <div class="dropdown">
+          <a class="dropdown-toggle text-center department-map-title mb-0" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+            <%= department_level? ? @department.name : @organisation.name %>
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            <%= link_to department_users_path(@department) do %>
+              <li><div class="dropdown-item">⭐ Toutes les organisations ⭐</div></li>
+            <% end %>
+            <% @organisations.sort_by(&:name).each do |organisation| %>
+              <%= link_to organisation_users_path(organisation) do %>
+                <li><div class="dropdown-item"><%= organisation.name %></div></li>
+              <% end %>
+            <% end %>
+          </ul>
+        </div>
+      <% else %>
+        <h4 class="text-center department-map-title mb-0">
+          <%= department_level? ? @department.name : @organisation.name %>
+        </h4>
+      <% end %>
+    <% end %>
+    <% unless department_level? %>
+      <div class="mt-2">
+        <%= link_to @organisation.rdv_solidarites_url, target: "_blank" do %>
+          <button class="btn btn-blue">Voir sur RDV-Solidarités<i class="fas fa-external-link-alt icon-sm"></i></button>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+  <div class="col-4 d-flex flex-column justify-content-center align-items-end dropdown">
+    <a class="btn btn-blue dropdown-toggle mb-2" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+      Créer usager(s)
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
+      <li>
+        <%= link_to(compute_new_path(@organisation, @department), class: "dropdown-item") do %>
+          Créer un usager
+        <% end %>
+      </li>
+      <li>
+        <%= link_to(department_level? ? new_department_upload_path(@department) : new_organisation_upload_path(@organisation), class: "dropdown-item") do %>
+          Charger fichier usagers
+        <% end %>
+      </li>
+    </ul>
+    <% if department_level? && @current_agent_roles.any?(&:admin?) %>
+      <%= link_to(department_organisations_path(@department), data: { turbo_frame: 'remote_modal' }, class: "my-2") do %>
+        <button class="btn btn-blue-out">Configurer une organisation</button>
+      <% end %>
+    <% elsif !department_level? && @current_agent_roles.any?(&:admin?) %>
+      <%= link_to(organisation_configurations_path(@organisation), class: "btn btn-blue-out my-2") do %>
+        Configurer l'organisation
+      <% end %>
+    <% end %>
+    <%= link_to(compute_index_path(@organisation, @department, **params.to_unsafe_h.merge(format: "csv")), class: "btn btn-blue-out mt-2", data: { controller: "tooltip", action: "mouseover->tooltip#csvExport"}, target: "_blank") do %>
+      <i class="fas fa-download"></i> Exporter au format CSV
+    <% end %>
+  </div>
+</div>

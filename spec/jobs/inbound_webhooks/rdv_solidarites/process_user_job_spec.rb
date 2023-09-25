@@ -25,17 +25,17 @@ describe InboundWebhooks::RdvSolidarites::ProcessUserJob do
     }.deep_symbolize_keys
   end
 
-  let!(:applicant) { create(:applicant, rdv_solidarites_user_id: rdv_solidarites_user_id) }
+  let!(:user) { create(:user, rdv_solidarites_user_id: rdv_solidarites_user_id) }
 
   describe "#call" do
     before do
       allow(UpsertRecordJob).to receive(:perform_async)
-      allow(SoftDeleteApplicantJob).to receive(:perform_async)
+      allow(SoftDeleteUserJob).to receive(:perform_async)
     end
 
     it "enqueues upsert record job" do
       expect(UpsertRecordJob).to receive(:perform_async)
-        .with("Applicant", data, { last_webhook_update_received_at: timestamp })
+        .with("User", data, { last_webhook_update_received_at: timestamp })
       subject
     end
 
@@ -45,7 +45,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessUserJob do
       it "enqueues an upsert record job without affiliation_number" do
         filtered_data = data.except(:affiliation_number)
         expect(UpsertRecordJob).to receive(:perform_async)
-          .with("Applicant", filtered_data, { last_webhook_update_received_at: timestamp })
+          .with("User", filtered_data, { last_webhook_update_received_at: timestamp })
         subject
       end
     end
@@ -56,13 +56,13 @@ describe InboundWebhooks::RdvSolidarites::ProcessUserJob do
       it "enqueues an upsert record job without the email" do
         filtered_data = data.except(:email)
         expect(UpsertRecordJob).to receive(:perform_async)
-          .with("Applicant", filtered_data, { last_webhook_update_received_at: timestamp })
+          .with("User", filtered_data, { last_webhook_update_received_at: timestamp })
         subject
       end
     end
 
-    context "when the applicant is not found" do
-      let!(:applicant) { create(:applicant, rdv_solidarites_user_id: "some-id") }
+    context "when the user is not found" do
+      let!(:user) { create(:user, rdv_solidarites_user_id: "some-id") }
 
       it "does not enqueue a job" do
         expect(UpsertRecordJob).not_to receive(:perform_async)
@@ -78,8 +78,8 @@ describe InboundWebhooks::RdvSolidarites::ProcessUserJob do
         }.deep_symbolize_keys
       end
 
-      it "enqueues a delete applicant job" do
-        expect(SoftDeleteApplicantJob).to receive(:perform_async)
+      it "enqueues a delete user job" do
+        expect(SoftDeleteUserJob).to receive(:perform_async)
           .with(rdv_solidarites_user_id)
         subject
       end

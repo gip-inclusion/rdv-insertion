@@ -1,5 +1,5 @@
 class ConvocationsController < ApplicationController
-  before_action :set_organisations, :set_motif_category, :set_applicant
+  before_action :set_organisations, :set_motif_category, :set_user
 
   def new
     @convocation_links_by_type = {
@@ -19,8 +19,8 @@ class ConvocationsController < ApplicationController
     @motif_category = MotifCategory.find(params[:motif_category_id])
   end
 
-  def set_applicant
-    @applicant = policy_scope(Applicant).find(params[:applicant_id])
+  def set_user
+    @user = policy_scope(User).find(params[:user_id])
   end
 
   def individuel_convocation_motif
@@ -30,7 +30,7 @@ class ConvocationsController < ApplicationController
   end
 
   def individuel_convocation_motif_link
-    individuel_convocation_motif&.link_to_take_rdv_for(@applicant.rdv_solidarites_user_id)
+    individuel_convocation_motif&.link_to_take_rdv_for(@user.rdv_solidarites_user_id)
   end
 
   def collectif_available_rdv
@@ -43,6 +43,6 @@ class ConvocationsController < ApplicationController
   end
 
   def collectif_convocation_link
-    collectif_available_rdv&.add_user_url(@applicant.rdv_solidarites_user_id)
+    collectif_available_rdv&.add_user_url(@user.rdv_solidarites_user_id)
   end
 end

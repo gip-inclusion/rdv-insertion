@@ -12,20 +12,20 @@ RSpec.describe ReplyTransferMailer do
   end
   let!(:reply_body) { "Je souhaite annuler mon RDV" }
   let!(:organisation) { create(:organisation, email: "organisation@departement.fr") }
-  let(:applicant) do
-    create(:applicant, email: "bene_ficiaire@gmail.com",
-                       first_name: "Bénédicte", last_name: "Ficiaire", organisations: [organisation])
+  let(:user) do
+    create(:user, email: "bene_ficiaire@gmail.com",
+                  first_name: "Bénédicte", last_name: "Ficiaire", organisations: [organisation])
   end
   let(:rdv_uuid) { "8fae4d5f-4d63-4f60-b343-854d939881a3" }
-  let!(:rdv_context) { create(:rdv_context, applicant: applicant) }
-  let!(:participation) { create(:participation, convocable: true, rdv_context: rdv_context, applicant: applicant) }
+  let!(:rdv_context) { create(:rdv_context, user: user) }
+  let!(:participation) { create(:participation, convocable: true, rdv_context: rdv_context, user: user) }
   let!(:lieu) { create(:lieu) }
   let!(:rdv) do
     create(:rdv, uuid: rdv_uuid, organisation: organisation, participations: [participation],
                  lieu: lieu, starts_at: Date.parse("2023/06/29"))
   end
   let(:invitation) do
-    create(:invitation, applicant: applicant, organisations: [organisation], sent_at: Date.parse("2023/06/22"))
+    create(:invitation, user: user, organisations: [organisation], sent_at: Date.parse("2023/06/22"))
   end
 
   describe "#forward_invitation_reply_to_organisation" do
@@ -39,7 +39,7 @@ RSpec.describe ReplyTransferMailer do
     end
 
     it "renders the headers" do
-      expect(mail[:from].to_s).to eq("rdv-insertion <contact@rdv-insertion.fr>")
+      expect(mail[:from].to_s).to eq("rdv-insertion <support@rdv-insertion.fr>")
       expect(mail.to).to eq(["organisation@departement.fr"])
     end
 
@@ -56,7 +56,7 @@ RSpec.describe ReplyTransferMailer do
       expect(mail.body.encoded).to match("Invitation à prendre rdv envoyée le jeudi 22 juin 2023 à 00h00")
       expect(mail.body.encoded).to match("Motif : RSA orientation")
       expect(mail.body.encoded).to match(
-        "href=\"#{ENV['HOST']}/departments/#{organisation.department.id}/applicants/#{applicant.id}\""
+        "href=\"#{ENV['HOST']}/departments/#{organisation.department.id}/users/#{user.id}\""
       )
       expect(mail.body.encoded).to match("Voir la fiche usager")
     end
@@ -73,7 +73,7 @@ RSpec.describe ReplyTransferMailer do
     end
 
     it "renders the headers" do
-      expect(mail[:from].to_s).to eq("rdv-insertion <contact@rdv-insertion.fr>")
+      expect(mail[:from].to_s).to eq("rdv-insertion <support@rdv-insertion.fr>")
       expect(mail.to).to eq(["organisation@departement.fr"])
     end
 
@@ -93,7 +93,7 @@ RSpec.describe ReplyTransferMailer do
       expect(mail.body.encoded).to match("Lieu : DINUM")
       expect(mail.body.encoded).to match("Adresse : 20 avenue de Ségur 75007 Paris")
       expect(mail.body.encoded).to match(
-        "href=\"#{ENV['HOST']}/departments/#{organisation.department.id}/applicants/#{applicant.id}\""
+        "href=\"#{ENV['HOST']}/departments/#{organisation.department.id}/users/#{user.id}\""
       )
       expect(mail.body.encoded).to match("Voir la fiche usager")
     end
@@ -109,7 +109,7 @@ RSpec.describe ReplyTransferMailer do
     end
 
     it "renders the headers" do
-      expect(mail[:from].to_s).to eq("rdv-insertion <contact@rdv-insertion.fr>")
+      expect(mail[:from].to_s).to eq("rdv-insertion <support@rdv-insertion.fr>")
       expect(mail.to).to eq(["support@rdv-insertion.fr"])
     end
 
@@ -125,7 +125,7 @@ RSpec.describe ReplyTransferMailer do
       expect(mail.body.encoded).to match("33782605941")
       expect(mail.body.encoded).to match("#{organisation.name} - organisation@departement.fr")
       expect(mail.body.encoded).to match(
-        "href=\"#{ENV['HOST']}/departments/#{organisation.department.id}/applicants/#{applicant.id}\""
+        "href=\"#{ENV['HOST']}/departments/#{organisation.department.id}/users/#{user.id}\""
       )
       expect(mail.body.encoded).to match("Voir la fiche usager")
     end

@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :archive do
     association :department
-    association :applicant
+    association :user
   end
 end

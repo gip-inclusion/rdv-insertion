@@ -4,7 +4,7 @@ class RdvContext < ApplicationRecord
   include Notificable
   include HasParticipationsToRdvs
 
-  belongs_to :applicant
+  belongs_to :user
   belongs_to :motif_category
   has_many :invitations, dependent: :destroy
   has_many :participations, dependent: :nullify
@@ -12,8 +12,8 @@ class RdvContext < ApplicationRecord
   has_many :rdvs, through: :participations
   has_many :notifications, through: :participations
 
-  validates :applicant, uniqueness: { scope: :motif_category,
-                                      message: "est déjà suivi pour cette catégorie de motif" }
+  validates :user, uniqueness: { scope: :motif_category,
+                                 message: "est déjà suivi pour cette catégorie de motif" }
 
   delegate :position, :name, :short_name, to: :motif_category, prefix: true
 

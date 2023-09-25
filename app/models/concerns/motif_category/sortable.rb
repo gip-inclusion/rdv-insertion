@@ -11,6 +11,7 @@ module MotifCategory::Sortable
     rsa_accompagnement
     rsa_accompagnement_social
     rsa_accompagnement_sociopro
+    rsa_accompagnement_moins_de_30_ans
     rsa_follow_up
     rsa_cer_signature
     rsa_insertion_offer

@@ -6,12 +6,12 @@ module InboundWebhooks
         @meta = meta.deep_symbolize_keys
 
         return if @data[:user].blank?
-        return if applicant.blank? || organisation.blank?
+        return if user.blank? || organisation.blank?
 
         if event == "destroyed"
-          remove_applicant_from_organisation
+          remove_user_from_organisation
         else
-          attach_applicant_to_org
+          attach_user_to_org
         end
       end
 
@@ -29,21 +29,21 @@ module InboundWebhooks
         @data[:organisation][:id]
       end
 
-      def applicant
-        @applicant ||= Applicant.find_by(rdv_solidarites_user_id: rdv_solidarites_user_id)
+      def user
+        @user ||= User.find_by(rdv_solidarites_user_id: rdv_solidarites_user_id)
       end
 
       def organisation
         @organisation ||= Organisation.find_by(rdv_solidarites_organisation_id: rdv_solidarites_organisation_id)
       end
 
-      def attach_applicant_to_org
-        applicant.organisations << organisation unless applicant.reload.organisation_ids.include?(organisation.id)
+      def attach_user_to_org
+        user.organisations << organisation unless user.reload.organisation_ids.include?(organisation.id)
       end
 
-      def remove_applicant_from_organisation
-        applicant.delete_organisation(organisation) if applicant.reload.organisation_ids.include?(organisation.id)
-        SoftDeleteApplicantJob.perform_async(rdv_solidarites_user_id) if applicant.reload.organisations.empty?
+      def remove_user_from_organisation
+        user.delete_organisation(organisation) if user.reload.organisation_ids.include?(organisation.id)
+        SoftDeleteUserJob.perform_async(rdv_solidarites_user_id) if user.reload.organisations.empty?
       end
     end
   end

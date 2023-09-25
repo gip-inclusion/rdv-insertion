@@ -1,11 +1,11 @@
 describe CarnetDeBord::CreateCarnet, type: :service do
   subject do
-    described_class.call(applicant:, agent:, department:)
+    described_class.call(user:, agent:, department:)
   end
 
-  let!(:applicant) do
+  let!(:user) do
     create(
-      :applicant,
+      :user,
       address: "20 avenue ségur", nir:, department_internal_id: "ISJDAIJ", first_name: "John",
       last_name: "Doe", phone_number: "0620022002", email: "john@doe.com", affiliation_number: "AZDJZAID",
       birth_date:
@@ -52,7 +52,7 @@ describe CarnetDeBord::CreateCarnet, type: :service do
 
     it "assigns the carnet id" do
       subject
-      expect(applicant.reload.carnet_de_bord_carnet_id).to eq("92119")
+      expect(user.reload.carnet_de_bord_carnet_id).to eq("92119")
     end
 
     context "when the carnet creation fails" do
@@ -83,20 +83,20 @@ describe CarnetDeBord::CreateCarnet, type: :service do
       end
     end
 
-    context "when the applicant has a carnet id already assigned" do
-      before { applicant.update! carnet_de_bord_carnet_id: "02012139" }
+    context "when the user has a carnet id already assigned" do
+      before { user.update! carnet_de_bord_carnet_id: "02012139" }
 
       it "is a failure" do
         is_a_failure
       end
 
       it "returns an error" do
-        expect(subject.errors).to eq(["le carnet existe déjà pour la personne #{applicant.id}"])
+        expect(subject.errors).to eq(["le carnet existe déjà pour la personne #{user.id}"])
       end
     end
 
-    context "when the applicant does not have an adress" do
-      before { applicant.update! address: nil }
+    context "when the user does not have an adress" do
+      before { user.update! address: nil }
 
       let!(:expected_payload) do
         {

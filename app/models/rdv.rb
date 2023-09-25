@@ -16,7 +16,7 @@ class Rdv < ApplicationRecord
   has_many :participations, dependent: :destroy
   has_many :notifications, through: :participations
   has_many :rdv_contexts, through: :participations
-  has_many :applicants, through: :participations
+  has_many :users, through: :participations
 
   # Needed to build participations in process_rdv_job
   accepts_nested_attributes_for :participations, allow_destroy: true, reject_if: :new_participation_already_created?
@@ -58,8 +58,8 @@ class Rdv < ApplicationRecord
     organisation.phone_number
   end
 
-  def participation_for(applicant)
-    participations.find { |p| p.applicant == applicant }
+  def participation_for(user)
+    participations.find { |p| p.user == user }
   end
 
   def add_user_url(rdv_solidarites_user_id)

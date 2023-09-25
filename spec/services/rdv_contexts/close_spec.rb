@@ -20,13 +20,13 @@ describe RdvContexts::Close, type: :service do
       expect(rdv_context.closed_at.strftime("%d/%m/%Y")).to eq("04/05/2023")
     end
 
-    it "calls the InvalidateInvitationJob for the applicants invitations" do
+    it "calls the InvalidateInvitationJob for the users invitations" do
       expect(InvalidateInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation1.id)
       expect(InvalidateInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation2.id)
       subject
     end
 
-    context "when the applicant cannot be updated" do
+    context "when the user cannot be updated" do
       before do
         allow(rdv_context).to receive(:save)
           .and_return(false)

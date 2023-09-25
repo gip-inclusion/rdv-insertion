@@ -2,12 +2,12 @@ class SendPeriodicInvitesJob < ApplicationJob
   def perform
     return if staging_env?
 
-    @sent_invites_applicant_ids = []
+    @sent_invites_user_ids = []
 
     RdvContext
       .joins(:motif_category, :invitations)
-      .preload(invitations: [{ organisations: :configurations }, :applicant])
-      .where(motif_categories: { participation_optional: false })
+      .preload(invitations: [{ organisations: :configurations }, :user])
+      .where(motif_categories: { participation_optional: true })
       .where(invitations: Invitation.valid.sent)
       .find_each do |rdv_context|
       send_invite(rdv_context)
@@ -23,10 +23,10 @@ class SendPeriodicInvitesJob < ApplicationJob
     return if configuration.blank?
     return unless should_send_periodic_invite?(last_sent_invitation, configuration)
 
-    @sent_invites_applicant_ids << last_sent_invitation.applicant.id
+    @sent_invites_user_ids << last_sent_invitation.user.id
 
     %w[email sms].each do |format|
-      next unless last_sent_invitation.applicant.can_be_invited_through?(format)
+      next unless last_sent_invitation.user.can_be_invited_through?(format)
 
       SendPeriodicInviteJob.perform_async(last_sent_invitation.id, configuration.id, format)
     end
@@ -40,8 +40,8 @@ class SendPeriodicInvitesJob < ApplicationJob
 
   def notify_on_mattermost
     MattermostClient.send_to_notif_channel(
-      "📬 #{@sent_invites_applicant_ids.length} invitations périodiques envoyées!\n" \
-      "Les allocataires sont: #{@sent_invites_applicant_ids}"
+      "📬 #{@sent_invites_user_ids.length} invitations périodiques envoyées!\n" \
+      "Les usagers sont: #{@sent_invites_user_ids}"
     )
   end
 end

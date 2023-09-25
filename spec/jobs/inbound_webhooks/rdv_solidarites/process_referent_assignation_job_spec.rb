@@ -20,26 +20,26 @@ describe InboundWebhooks::RdvSolidarites::ProcessReferentAssignationJob do
     }.deep_symbolize_keys
   end
 
-  let!(:applicant) do
-    create(:applicant, rdv_solidarites_user_id: rdv_solidarites_user_id, referents: [agent])
+  let!(:user) do
+    create(:user, rdv_solidarites_user_id: rdv_solidarites_user_id, referents: [agent])
   end
 
   let!(:agent) { create(:agent, rdv_solidarites_agent_id: rdv_solidarites_agent_id) }
 
   describe "#call" do
-    it "removes the agent from the applicant" do
+    it "removes the agent from the user" do
       subject
-      expect(applicant.reload.referents).to eq([])
+      expect(user.reload.referents).to eq([])
     end
 
-    context "when the applicant cannot be found" do
-      let!(:applicant) do
-        create(:applicant, rdv_solidarites_user_id: "some-id", referents: [agent])
+    context "when the user cannot be found" do
+      let!(:user) do
+        create(:user, rdv_solidarites_user_id: "some-id", referents: [agent])
       end
 
-      it "does not remove the organisation from the applicant" do
+      it "does not remove the organisation from the user" do
         subject
-        expect(applicant.reload.referents).to eq([agent])
+        expect(user.reload.referents).to eq([agent])
       end
     end
 
@@ -52,9 +52,9 @@ describe InboundWebhooks::RdvSolidarites::ProcessReferentAssignationJob do
         allow(MattermostClient).to receive(:send_to_notif_channel)
       end
 
-      it "does not remove the agent from the applicant" do
+      it "does not remove the agent from the user" do
         subject
-        expect(applicant.reload.referents).to eq([agent])
+        expect(user.reload.referents).to eq([agent])
       end
 
       it "sends a notification to mattermost" do
@@ -75,9 +75,9 @@ describe InboundWebhooks::RdvSolidarites::ProcessReferentAssignationJob do
         }.deep_symbolize_keys
       end
 
-      it "does not remove the agent from the applicant" do
+      it "does not remove the agent from the user" do
         subject
-        expect(applicant.reload.referents).to eq([agent])
+        expect(user.reload.referents).to eq([agent])
       end
     end
 
@@ -89,14 +89,14 @@ describe InboundWebhooks::RdvSolidarites::ProcessReferentAssignationJob do
         }.deep_symbolize_keys
       end
 
-      context "when the applicant does not belong to the org" do
-        let!(:applicant) do
-          create(:applicant, rdv_solidarites_user_id: rdv_solidarites_user_id, referents: [])
+      context "when the user does not belong to the org" do
+        let!(:user) do
+          create(:user, rdv_solidarites_user_id: rdv_solidarites_user_id, referents: [])
         end
 
-        it "adds the agent to the applicant" do
+        it "adds the agent to the user" do
           subject
-          expect(applicant.reload.referents.ids).to eq([agent.id])
+          expect(user.reload.referents.ids).to eq([agent.id])
         end
       end
     end

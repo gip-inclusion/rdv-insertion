@@ -8,11 +8,8 @@
   <table class="mx-2">
     <tbody>
       <tr>
-        <td class="px-2 py-1 context-status <%= background_class_for_context_status(rdv_context, configuration.number_of_days_before_action_required) %>" id="js-block-status-<%= configuration.motif_category %>">
-          <em>
-            <%= display_context_status(rdv_context, configuration.number_of_days_before_action_required) %>
-            <%= " le #{format_date(rdv_context.closed_at)}" if rdv_context.closed_at.present? %>
-          </em>
+        <td class="px-2 py-1 context-status td-height">
+          <%= render "rdv_contexts/rdv_context_status_cell_tag", rdv_context: rdv_context, configuration: configuration %>
         </td>
       </tr>
     </tbody>
@@ -23,7 +20,7 @@
   <% if configuration.invitation_formats.any? %>
     <%= react_component(
       "components/InvitationBlock", {
-        applicant: @applicant,
+        user: @user,
         organisation: @organisation,
         department: @department,
         invitations: invitations,
@@ -60,14 +57,14 @@
               <% if convocable_participations.present? %>
                 <td class="px-4 py-2">
                   <% if participation.convocable? %>
-                    <%= render("rdv_contexts/convocations", applicant: @applicant, participation: participation, sms_convocations: participation.sent_sms_convocations, email_convocations: participation.sent_email_convocations) %>
+                    <%= render("rdv_contexts/convocations", user: @user, participation: participation, sms_convocations: participation.sent_sms_convocations, email_convocations: participation.sent_email_convocations) %>
                   <% else %>
                     -
                   <% end %>
                 </td>
               <% end %>
-              <td class="px-4 py-3 <%= background_class_for_participation_status(participation) %>">
-                <%= display_participation_status(participation) %>
+              <td class="px-4 py-3 participation_status" >
+                <%= render "participations/participation_status", participation: participation, configuration: configuration %>
               </td>
               <td class="px-4 py-3">
                 <%= link_to participation.rdv_solidarites_url, target: "_blank" do %>
@@ -91,16 +88,16 @@
       <% if should_convene_for?(rdv_context, configuration) %>
         <div class="m-2 p-2 text-center">
           <%= render "rdv_contexts/convocation_button",
-                     applicant_id: @applicant.id, motif_category_id: rdv_context.motif_category_id,
-                     organisation_ids: department_level? ? @applicant_organisations.ids : [@organisation.id]
+                     user_id: @user.id, motif_category_id: rdv_context.motif_category_id,
+                     organisation_ids: department_level? ? @user_organisations.ids : [@organisation.id]
           %>
         </div>
       <% end %>
       <div class="m-2 p-2 text-center">
         <% if rdv_context.status == "closed" %>
-          <%= render "rdv_contexts/reopen_rdv_context_button", rdv_context: rdv_context, applicant: @applicant, organisation: @organisation, department: @department %>
+          <%= render "rdv_contexts/reopen_rdv_context_button", rdv_context: rdv_context, user: @user, organisation: @organisation, department: @department %>
         <% else %>
-          <%= render "rdv_contexts/close_rdv_context_button", rdv_context: rdv_context, applicant: @applicant, organisation: @organisation, department: @department %>
+          <%= render "rdv_contexts/close_rdv_context_button", rdv_context: rdv_context, user: @user, organisation: @organisation, department: @department %>
         <% end %>
       </div>
     </div>

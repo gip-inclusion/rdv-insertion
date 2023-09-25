@@ -3,7 +3,7 @@ class ReplyTransferMailer < ApplicationMailer
   before_action :set_rdv, only: [:forward_notification_reply_to_organisation]
   before_action :set_organisation, :set_recipient_email,
                 only: [:forward_invitation_reply_to_organisation, :forward_notification_reply_to_organisation]
-  before_action :set_source_mail, :set_author, :set_applicant, :set_reply_subject,
+  before_action :set_source_mail, :set_author, :set_user, :set_reply_subject,
                 :set_reply_body, :set_attachment_names
 
   def forward_invitation_reply_to_organisation
@@ -44,8 +44,8 @@ class ReplyTransferMailer < ApplicationMailer
     @author = @source_mail.header[:from]
   end
 
-  def set_applicant
-    @applicant = Applicant.find_by(email: @source_mail.from.first)
+  def set_user
+    @user = User.find_by(email: @source_mail.from.first)
   end
 
   def set_reply_subject

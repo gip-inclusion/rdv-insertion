@@ -3,7 +3,7 @@ class Template < ApplicationRecord
 
   validates :model, :rdv_title, :rdv_title_by_phone, presence: true
 
-  validates :rdv_purpose, :applicant_designation, :rdv_subject, presence: true, if: :standard?
+  validates :rdv_purpose, :user_designation, :rdv_subject, presence: true, if: :standard?
   validates :rdv_subject, presence: true, if: :atelier?
   validates :rdv_purpose, presence: true, if: :phone_platform?
 
