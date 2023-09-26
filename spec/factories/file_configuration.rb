@@ -14,7 +14,7 @@ FactoryBot.define do
     address_fifth_field_column { "Commune" }
     phone_number_column { "N° Téléphones" }
     referent_email_column { "Référent" }
-    affiliation_number_column { "N° Allocataire" }
+    affiliation_number_column { "N° CAF" }
     pole_emploi_id_column { "ID PE" }
     nir_column { "NIR" }
   end

@@ -109,7 +109,7 @@ describe "Agents can update user through form", js: true do
           click_button "Enregistrer"
 
           expect(page).to have_content(
-            "Un usager avec le même numéro d'allocataire et rôle se trouve au sein du département: [22]"
+            "Un usager avec le même numéro CAF et rôle se trouve au sein du département: [22]"
           )
           expect(user.reload.affiliation_number).not_to eq(affiliation_number)
         end

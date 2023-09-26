@@ -229,7 +229,7 @@ file_config_drome = FileConfiguration.create(
   email_column: "Adresses Mails",
   birth_date_column: "Date de Naissance",
   address_fifth_field_column: "CP Ville",
-  affiliation_number_column: "N° Allocataire",
+  affiliation_number_column: "N° CAF",
   role_column: "Rôle",
   phone_number_column: "N° Téléphones",
   title_column: "Civilité",
@@ -238,7 +238,7 @@ file_config_drome = FileConfiguration.create(
 
 file_config_yonne = FileConfiguration.create(
   sheet_name: "Feuille1",
-  affiliation_number_column: "N° Allocataire",
+  affiliation_number_column: "N° CAF",
   last_name_column: "Nom",
   first_name_column: "Prénom",
   phone_number_column: "Numéro(s) de téléphone",
