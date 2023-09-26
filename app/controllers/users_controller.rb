@@ -96,7 +96,9 @@ class UsersController < ApplicationController
 
   def generate_users_csv
     @generate_users_csv ||= Exporters::GenerateUsersCsv.call(
-      users: @users,
+      users: @users.preload(:invitations, :notifications, :archives, :organisations, :tags, :referents, :notifications,
+                            :participations, rdvs: [:motif, :participations, :users])
+                   .preload(rdv_contexts: [rdvs: [:motif, :participations, :users]]),
       structure: department_level? ? @department : @organisation,
       motif_category: @current_motif_category
     )
@@ -157,7 +159,7 @@ class UsersController < ApplicationController
       if department_level?
         set_organisation_at_department_level
       else
-        policy_scope(Organisation).find(params[:organisation_id])
+        policy_scope(Organisation).preload(configurations: [:motif_categories]).find(params[:organisation_id])
       end
   end
 
@@ -183,7 +185,7 @@ class UsersController < ApplicationController
   def set_department
     @department =
       if department_level?
-        policy_scope(Department).find(params[:department_id])
+        policy_scope(Department).preload(configurations: [:motif_category]).find(params[:department_id])
       else
         @organisation.department
       end
