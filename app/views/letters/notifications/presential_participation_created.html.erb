@@ -2,7 +2,7 @@
 
 <div class="mail-object">
   <p class="bold-blue"><span class="bold-blue">Objet : Convocation à un <%= rdv_title %> dans le cadre de votre <%= rdv_subject %></span></p>
-  <%= tag.p("N° allocataire : #{user.affiliation_number}") if user.affiliation_number %>
+  <%= tag.p("N° CAF : #{user.affiliation_number}") if user.affiliation_number %>
   <%= image_pack_tag "illustrations/parcours-drome-courriers.png", alt: "Illustration du parcours du demandeur", class: 'w-100' if department.number == "26" && motif_category&.name == "RSA Main Tendue" %>
 </div>
 
