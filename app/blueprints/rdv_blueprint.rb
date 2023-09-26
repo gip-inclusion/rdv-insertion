@@ -10,7 +10,6 @@ class RdvBlueprint < Blueprinter::Base
 
   view :extended do
     association :agents, blueprint: AgentBlueprint
-    association :participations, blueprint: ParticipationBlueprint
     association :lieu, blueprint: LieuBlueprint
     association :motif, blueprint: MotifBlueprint
     association :users, blueprint: UserBlueprint

@@ -10,7 +10,9 @@ class Invitation < ApplicationRecord
   belongs_to :department
   belongs_to :rdv_context
   has_and_belongs_to_many :organisations
+
   has_many :configurations, through: :organisations
+  has_many :webhook_endpoints, through: :organisations
 
   attr_accessor :content
 
@@ -31,10 +33,6 @@ class Invitation < ApplicationRecord
   }
   scope :reminder, ->(reminder = true) { where(reminder: reminder) }
   scope :valid, -> { where("valid_until > ?", Time.zone.now) }
-
-  def current_configuration
-    @current_configuration ||= configurations.find { |c| c.motif_category == motif_category }
-  end
 
   def send_to_user
     case self.format

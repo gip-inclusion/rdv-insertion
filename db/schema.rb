@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_20_140928) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_26_150031) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -413,12 +413,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_20_140928) do
     t.string "secret"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "subscriptions", array: true
+    t.integer "signature_type", default: 0
   end
 
   create_table "webhook_receipts", force: :cascade do |t|
     t.bigint "resource_id"
-    t.datetime "rdvs_webhook_timestamp"
-    t.datetime "sent_at"
+    t.datetime "timestamp"
     t.bigint "webhook_endpoint_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

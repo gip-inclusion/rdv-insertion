@@ -28,7 +28,7 @@ module OutgoingWebhooks
       case @webhook_endpoint.signature_type
       when "jwt"
         jwt_signature
-      when "hash"
+      when "hmac"
         hash_signature
       end
     end

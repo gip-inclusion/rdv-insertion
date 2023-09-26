@@ -17,7 +17,7 @@ module WebhookDeliverable
 
   def generate_payload_and_send_webhook(action)
     subscribed_webhook_endpoints.each do |endpoint|
-      OutgoingWebhooks::SendWebhookJob.perfom_async(endpoint.id, generate_webhook_payload(action))
+      OutgoingWebhooks::SendWebhookJob.perform_async(endpoint.id, generate_webhook_payload(action))
     end
   end
 
