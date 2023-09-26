@@ -159,7 +159,7 @@ class UsersController < ApplicationController
       if department_level?
         set_organisation_at_department_level
       else
-        policy_scope(Organisation).preload(configurations: [:motif_categories]).find(params[:organisation_id])
+        policy_scope(Organisation).preload(configurations: [:motif_category]).find(params[:organisation_id])
       end
   end
 
