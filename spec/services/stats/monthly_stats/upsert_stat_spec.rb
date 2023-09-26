@@ -1,5 +1,8 @@
 describe Stats::MonthlyStats::UpsertStat, type: :service do
-  subject { described_class.call(structure_type: structure_type, structure_id: structure_id, until_date_string: until_date_string) }
+  subject do
+    described_class.call(structure_type: structure_type, structure_id: structure_id,
+                         until_date_string: until_date_string)
+  end
 
   let!(:department) { create(:department, created_at: Time.zone.parse("2022-01-17 12:00:00 +0100")) }
   let!(:until_date_string) { "2022-05-01 12:00:00 +0100" }
