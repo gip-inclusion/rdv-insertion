@@ -424,6 +424,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
                 pole_emploi_id: user.pole_emploi_id,
                 carnet_de_bord_carnet_id: user.pole_emploi_id,
                 invitations: [invitation],
+                orientation: nil,
                 referents: [referent],
                 tags: []
               },
@@ -446,6 +447,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
                 nir: user2.nir,
                 pole_emploi_id: "Z12123",
                 carnet_de_bord_carnet_id: user2.carnet_de_bord_carnet_id,
+                orientation: nil,
                 invitations: [],
                 referents: [],
                 tags: [tag]
