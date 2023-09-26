@@ -17,7 +17,7 @@ module Users
     def validate_uid_uniqueness_inside_department
       return if users_with_same_uid.empty?
 
-      result.errors << "Un usager avec le même numéro d'allocataire et rôle se trouve au sein du département: " \
+      result.errors << "Un usager avec le même numéro CAF et rôle se trouve au sein du département: " \
                        "#{users_with_same_uid.pluck(:id)}"
     end
 
@@ -47,7 +47,7 @@ module Users
       return if @user.affiliation_number? && @user.role?
 
       result.errors << "Il doit y avoir au moins un attribut permettant d'identifier la personne " \
-                       "(NIR, email, numéro de tel, ID interne, numéro d'allocataire/rôle)"
+                       "(NIR, email, numéro de tel, ID interne, numéro CAF/rôle)"
     end
 
     def users_from_same_departments

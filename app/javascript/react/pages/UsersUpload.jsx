@@ -317,7 +317,7 @@ const UsersUpload = observer(
                     <th scope="col">Prénom</th>
                     <th scope="col">Nom</th>
                     {parameterizedColumnNames.affiliation_number_column && (
-                      <th scope="col">Numéro usager</th>
+                      <th scope="col">Numéro CAF</th>
                     )}
                     {parameterizedColumnNames.role_column && <th scope="col">Rôle</th>}
                     {parameterizedColumnNames.department_internal_id_column && (

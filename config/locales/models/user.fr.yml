@@ -7,7 +7,7 @@ fr:
         phone_number: Téléphone
         first_name: Prénom
         last_name: Nom
-        affiliation_number: Numéro d'allocataire
+        affiliation_number: Numéro CAF
         birth_date: Date de naissance
         role: Rôle
         address: Adresse
@@ -18,7 +18,7 @@ fr:
         pole_emploi_id: ID Pôle Emploi
         rights_opening_date: Date d'entrée flux
         organisations: Organisation(s)
-        uid: Le couple numéro d'allocataire + rôle
+        uid: Le couple numéro CAF + rôle
         created_at: Date de création
         status: Statut
         referents: Référent(s)
