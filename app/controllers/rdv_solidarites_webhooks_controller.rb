@@ -5,24 +5,14 @@ class RdvSolidaritesWebhooksController < ApplicationController
   include FilterRdvSolidaritesWebhooksConcern
 
   def create
-    webhook_jobs[model].perform_async(data_params.to_h, meta_params.to_h)
+    webhook_job_for(model).perform_async(data_params.to_h, meta_params.to_h)
     head :ok
   end
 
   private
 
-  def webhook_jobs
-    {
-      "User" => RdvSolidaritesWebhooks::ProcessUserJob,
-      "Rdv" => RdvSolidaritesWebhooks::ProcessRdvJob,
-      "UserProfile" => RdvSolidaritesWebhooks::ProcessUserProfileJob,
-      "Organisation" => RdvSolidaritesWebhooks::ProcessOrganisationJob,
-      "Motif" => RdvSolidaritesWebhooks::ProcessMotifJob,
-      "Lieu" => RdvSolidaritesWebhooks::ProcessLieuJob,
-      "Agent" => RdvSolidaritesWebhooks::ProcessAgentJob,
-      "AgentRole" => RdvSolidaritesWebhooks::ProcessAgentRoleJob,
-      "ReferentAssignation" => RdvSolidaritesWebhooks::ProcessReferentAssignationJob
-    }
+  def webhook_job_for(model)
+    "RdvSolidaritesWebhooks::Process#{model}Job".constantize
   end
 
   def model

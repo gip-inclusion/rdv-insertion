@@ -43,6 +43,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_20_140928) do
     t.index ["rdv_solidarites_agent_id"], name: "index_agents_on_rdv_solidarites_agent_id", unique: true
   end
 
+  create_table "agents_rdvs", force: :cascade do |t|
+    t.bigint "agent_id", null: false
+    t.bigint "rdv_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agent_id", "rdv_id"], name: "index_agents_rdvs_on_agent_id_and_rdv_id", unique: true
+  end
+
   create_table "archives", force: :cascade do |t|
     t.bigint "department_id", null: false
     t.bigint "user_id", null: false
