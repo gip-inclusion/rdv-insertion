@@ -1,10 +1,10 @@
 module Stats
   module MonthlyStats
     class UpsertStat < BaseService
-      def initialize(structure_type:, structure_id:, date_string:)
+      def initialize(structure_type:, structure_id:, until_date_string:)
         @structure_type = structure_type
         @structure_id = structure_id
-        @date_string = date_string
+        @until_date_string = until_date_string
       end
 
       def call
@@ -25,7 +25,7 @@ module Stats
         stat.attributes.keys.select { |key| key.end_with?("month") }
             .each { |attribute_name| stat[attribute_name] = {} }
 
-        while @date < current_date
+        while @date < @until_date_string.to_date
           compute_monthly_stats
 
           @date += 1.month
@@ -54,10 +54,6 @@ module Stats
           stat: stat,
           date: @date
         )
-      end
-
-      def current_date
-        @current_date ||= @date_string.to_date
       end
     end
   end
