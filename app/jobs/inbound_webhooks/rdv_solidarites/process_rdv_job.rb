@@ -19,7 +19,6 @@ module InboundWebhooks
           verify_lieu_sync! if convocable_participations?
           upsert_or_delete_rdv
           invalidate_related_invitations if created_event?
-          send_outgoing_webhooks
         end
       end
 
@@ -227,21 +226,6 @@ module InboundWebhooks
 
       def rdv_context_ids
         rdv_contexts.map(&:id)
-      end
-
-      def send_outgoing_webhooks
-        return if ENV["STOP_SENDING_WEBHOOKS"] == "1"
-
-        organisation.webhook_endpoints.each do |webhook_endpoint|
-          SendRdvSolidaritesWebhookJob.perform_async(webhook_endpoint.id, outgoing_webhook_payload)
-        end
-      end
-
-      def outgoing_webhook_payload
-        {
-          data: @data.merge(users: rdv_solidarites_rdv.users.map(&:augmented_attributes)),
-          meta: @meta
-        }
       end
     end
     # rubocop:enable Metrics/ClassLength

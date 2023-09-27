@@ -424,7 +424,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_26_150031) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "resource_model"
-    t.index ["resource_id"], name: "index_webhook_receipts_on_resource_id", unique: true
     t.index ["webhook_endpoint_id"], name: "index_webhook_receipts_on_webhook_endpoint_id"
   end
 

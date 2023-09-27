@@ -1,9 +1,12 @@
 module OutgoingWebhooks
+  class OutgoingWebhookError < StandardError; end
+
   class SendWebhookJob < ApplicationJob
     def perform(webhook_endpoint_id, webhook_payload)
       @webhook_endpoint = WebhookEndpoint.find(webhook_endpoint_id)
       @webhook_payload = webhook_payload.deep_symbolize_keys
-      send_webhoook!
+
+      send_webhook!
     end
 
     private
@@ -18,8 +21,8 @@ module OutgoingWebhooks
 
     def send_webhook
       @send_webhook ||= OutgoingWebhooks::SendWebhook.call(
-        webhook_endpoint: webhook_endpoint,
-        webhook_payload: webhook_payload,
+        webhook_endpoint: @webhook_endpoint,
+        webhook_payload: @webhook_payload,
         webhook_signature: webhook_signature
       )
     end
@@ -40,7 +43,7 @@ module OutgoingWebhooks
       end
 
       jwt = JWT.encode(
-        @webhook_payload.slice(*resource_klass.jwt_payload_keys),
+        @webhook_payload[:data].slice(*resource_klass.jwt_payload_keys),
         secret, "HS256", { typ: "JWT", exp: 10.minutes.from_now.to_i }
       )
 
