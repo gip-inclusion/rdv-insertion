@@ -34,7 +34,7 @@ export default observer(({ users, isDepartmentLevel }) => {
 
   return (
     users.list.some((user) => user.selected) && (
-      <div style={{ marginRight: 20 }}>
+      <div style={{ marginRight: 20, position: "relative" }}>
         <button type="button" className="btn btn-primary dropdown-toggle" onClick={toggle}>
           Actions pour toute la sélection
         </button>
