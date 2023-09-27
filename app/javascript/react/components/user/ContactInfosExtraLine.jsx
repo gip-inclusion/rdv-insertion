@@ -32,8 +32,9 @@ export default observer(({ user, invitationsColspan }) => {
     user.triggers[`${attribute}Update`] = false;
   };
 
+  // We need to add 1 to the colSpan offset because of the multiple selection checkbox
   const colSpanForContactsUpdate =
-    user.displayedAttributes().length - user.attributesFromContactsDataFile().length;
+    user.displayedAttributes().length - user.attributesFromContactsDataFile().length + 1;
 
   return (
     <tr className="table-success">
