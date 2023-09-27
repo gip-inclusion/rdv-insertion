@@ -96,9 +96,7 @@ class UsersController < ApplicationController
 
   def generate_users_csv
     @generate_users_csv ||= Exporters::GenerateUsersCsv.call(
-      users: @users.preload(:invitations, :notifications, :archives, :organisations, :tags, :referents, :notifications,
-                            :participations, rdvs: [:motif, :participations, :users])
-                   .preload(rdv_contexts: [rdvs: [:motif, :participations, :users]]),
+      users: @users,
       structure: department_level? ? @department : @organisation,
       motif_category: @current_motif_category
     )
