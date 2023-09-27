@@ -936,6 +936,29 @@ describe UsersController do
 
             expect(ordered_first_names).to eq([user2.first_name, user.first_name])
           end
+
+          context "when sorting by invitations" do
+            let!(:index_params) do
+              {
+                department_id: department.id,
+                motif_category_id: category_orientation.id,
+                sort_by: "invitations",
+                sort_order: "desc"
+              }
+            end
+
+            let!(:invitation) { create(:invitation, rdv_context: user.rdv_contexts.first, sent_at: 1.year.ago) }
+            let!(:invitation2) { create(:invitation, rdv_context: user2.rdv_contexts.first, sent_at: 2.years.ago) }
+
+            it "orders by rdv_context creation" do
+              get :index, params: index_params
+
+              ordered_table = Nokogiri::XML(response.body).css("td").map(&:text)
+              ordered_first_names = ordered_table & [user.first_name, user2.first_name]
+
+              expect(ordered_first_names).to eq([user.first_name, user2.first_name])
+            end
+          end
         end
       end
 

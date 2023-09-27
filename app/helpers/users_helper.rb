@@ -9,6 +9,10 @@ module UsersHelper
     configuration.invitation_formats.present?
   end
 
+  def sorting_by_invites?(order)
+    params[:sort_by] == "invitations" && params[:sort_order] == order
+  end
+
   def no_search_results?(users)
     users.empty? && params[:search_query].present?
   end

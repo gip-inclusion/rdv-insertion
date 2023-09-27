@@ -16,9 +16,16 @@ module Users::Sortable
   end
 
   def motif_category_order
-    @users = @users
-             .select("DISTINCT(users.id), users.*, rdv_contexts.created_at")
-             .order("rdv_contexts.created_at desc")
+    @users = if params[:sort_by] == "invitations"
+               @users
+                 .includes(:invitations)
+                 .reselect("DISTINCT(users.id), users.*, invitations.created_at")
+                 .order("invitations.created_at #{params[:sort_order] == 'asc' ? 'asc' : 'desc'}")
+             else
+               @users
+                 .select("DISTINCT(users.id), users.*, rdv_contexts.created_at")
+                 .order("rdv_contexts.created_at desc")
+             end
   end
 
   def all_users_order
