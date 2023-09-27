@@ -1,4 +1,4 @@
-describe SendRdvSolidaritesWebhookJob do
+describe OutgoingWebhooks::SendWebhookJob do
   subject do
     described_class.new.perform(webhook_endpoint_id, webhook_payload)
   end

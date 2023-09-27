@@ -157,10 +157,6 @@ module InboundWebhooks
         rdv_contexts.find { _1.user_id == user.id }
       end
 
-      def related_invitations
-        @related_invitations ||= Invitation.sent.valid.where(rdv_context_id: rdv_context_ids)
-      end
-
       def organisation
         @organisation ||= Organisation.find_by(rdv_solidarites_organisation_id: rdv_solidarites_organisation_id)
       end
@@ -205,14 +201,16 @@ module InboundWebhooks
         matching_configuration.convene_user? && rdv_solidarites_rdv.participations.any?(&:convocable?)
       end
 
+      def invitations_to_invalidate
+        # we don't invalidate invitations when the participation is optional
+        @invitations_to_invalidate ||=
+          Invitation.sent.valid.where(rdv_context_id: rdv_context_ids)
+                    .joins(rdv_context: :motif_category)
+                    .where(motif_categories: { participation_optional: false })
+      end
+
       def invalidate_related_invitations
-        # We invalidate the invitations linked to the new or updated rdvs to avoid double appointments
-        related_invitations
-          .joins(rdv_context: :motif_category)
-          .where(motif_categories: { participation_optional: false })
-          .each do |invitation|
-          InvalidateInvitationJob.perform_async(invitation.id)
-        end
+        invitations_to_invalidate.each { |invitation| InvalidateInvitationJob.perform_async(invitation.id) }
       end
 
       def rdv_contexts

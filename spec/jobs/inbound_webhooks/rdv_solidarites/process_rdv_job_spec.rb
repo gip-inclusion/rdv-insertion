@@ -133,7 +133,6 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
       allow(UpsertRecordJob).to receive(:perform_async)
       allow(InvalidateInvitationJob).to receive(:perform_async)
       allow(DeleteRdvJob).to receive(:perform_async)
-      allow(SendRdvSolidaritesWebhookJob).to receive(:perform_async)
       allow(MattermostClient).to receive(:send_to_notif_channel)
     end
 
@@ -368,103 +367,6 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
         [UpsertRecordJob, DeleteRdvJob].each do |klass|
           expect(klass).not_to receive(:perform_async)
         end
-        subject
-      end
-    end
-
-    context "when there are webhook endpoints associated to the org" do
-      let!(:webhook_endpoint) do
-        create(:webhook_endpoint, organisations: [organisation])
-      end
-      let!(:nir) { generate_random_nir }
-      let!(:department_internal_id) { "some-dept-id" }
-      let!(:user) do
-        create(
-          :user,
-          organisations: [organisation],
-          title: "monsieur",
-          department_internal_id: department_internal_id,
-          nir: nir,
-          invitations: [invitation],
-          referents: [referent]
-        )
-      end
-
-      let!(:invitation) { create(:invitation, sent_at: 1.week.ago) }
-      let!(:referent) { create(:agent) }
-
-      let!(:user2) do
-        create(
-          :user,
-          organisations: [organisation],
-          title: "madame",
-          pole_emploi_id: "Z12123",
-          archives: [archive],
-          tags: [tag]
-        )
-      end
-      let!(:archive) { create(:archive) }
-      let!(:tag) { create(:tag) }
-
-      let!(:webhook_payload) do
-        {
-          data: data.merge(
-            users: [
-              {
-                id: user_id1,
-                uid: user.uid,
-                affiliation_number: user.affiliation_number,
-                role: user.role,
-                created_at: "2021-05-29 14:50:22 +0200",
-                department_internal_id: department_internal_id,
-                first_name: "James",
-                last_name: "Cameron",
-                address: "50 rue Victor Hugo 93500 Pantin",
-                phone_number: "0755929249",
-                email: nil,
-                title: "monsieur",
-                birth_date: nil,
-                rights_opening_date: user.rights_opening_date,
-                birth_name: nil,
-                nir: nir,
-                pole_emploi_id: user.pole_emploi_id,
-                carnet_de_bord_carnet_id: user.pole_emploi_id,
-                invitations: [invitation],
-                referents: [referent],
-                tags: []
-              },
-              {
-                id: user_id2,
-                uid: user2.uid,
-                affiliation_number: user2.affiliation_number,
-                role: user2.role,
-                created_at: "2021-05-29 14:20:20 +0200",
-                department_internal_id: user2.department_internal_id,
-                first_name: "Jane",
-                last_name: "Campion",
-                address: nil,
-                phone_number: nil,
-                email: "jane@campion.com",
-                title: "madame",
-                birth_date: nil,
-                rights_opening_date: user2.rights_opening_date,
-                birth_name: nil,
-                nir: user2.nir,
-                pole_emploi_id: "Z12123",
-                carnet_de_bord_carnet_id: user2.carnet_de_bord_carnet_id,
-                invitations: [],
-                referents: [],
-                tags: [tag]
-              }
-            ]
-          ),
-          meta:
-        }
-      end
-
-      it "enqueues a webhook job with an augmented payload" do
-        expect(SendRdvSolidaritesWebhookJob).to receive(:perform_async)
-          .with(webhook_endpoint.id, webhook_payload)
         subject
       end
     end

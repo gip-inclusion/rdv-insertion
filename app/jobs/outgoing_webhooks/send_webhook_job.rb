@@ -32,7 +32,7 @@ module OutgoingWebhooks
       when "jwt"
         jwt_signature
       when "hmac"
-        hash_signature
+        hmac_signature
       end
     end
 
@@ -50,8 +50,8 @@ module OutgoingWebhooks
       { "Authorization" => "Bearer #{jwt}" }
     end
 
-    def hash_signature
-      { "X-RDVI-SIGNATURE" => OpenSSL::HMAC.hexdigest("SHA256", secret, @webhook_payload) }
+    def hmac_signature
+      { "X-RDVI-SIGNATURE" => OpenSSL::HMAC.hexdigest("SHA256", secret, @webhook_payload.to_json) }
     end
   end
 end
