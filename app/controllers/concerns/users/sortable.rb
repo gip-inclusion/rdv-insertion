@@ -20,7 +20,7 @@ module Users::Sortable
                @users
                  .includes(:invitations)
                  .reselect("DISTINCT(users.id), users.*, invitations.created_at")
-                 .order("invitations.created_at #{params[:sort_order] == 'asc' ? 'asc' : 'desc'}")
+                 .order("invitations.created_at #{sort_order_from_params}")
              else
                @users
                  .select("DISTINCT(users.id), users.*, rdv_contexts.created_at")
@@ -52,5 +52,9 @@ module Users::Sortable
                    .active
                    .where(users_affected_most_recently_to_an_organisation || {})
                    .order("affected_at DESC NULLS LAST, users.id DESC")
+  end
+
+  def sort_order_from_params
+    params[:sort_order] == "asc" ? "asc" : "desc"
   end
 end
