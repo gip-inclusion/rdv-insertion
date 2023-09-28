@@ -850,7 +850,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("Bonjour Jean VALJEAN")
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")
-        expect(body_string).to match("Tu es invité à participer à un atelier organisé par le département.")
+        expect(body_string).to match("Tu es invité à participer à un atelier organisé par le Département.")
         expect(body_string).to match("/invitations/redirect")
         expect(body_string).to match("uuid=#{invitation.uuid}")
         expect(body_string).to match("Logo du département")
