@@ -6,7 +6,8 @@ fr:
       configuration:
         convene_user: Convocation possible
         number_of_days_before_action_required: Délai d'expiration (en jours)
-        number_of_days_before_next_invite: Délai entre 2 invitations récurrentes (en jours)
+        number_of_days_between_periodic_invites: Délai entre 2 invitations récurrentes (en jours)
+        day_of_the_month_periodic_invites: Jour du mois auquel envoyer les invitations récurrentes
         invite_to_user_organisations_only: Invitation limitée aux organisations du bénéficiaire
         rdv_with_referents: RDV avec référent
         invitation_formats: Formats d'invitations

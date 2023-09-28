@@ -45,7 +45,8 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
       "motif" => motif_attributes,
       "users" => users,
       "rdvs_users" => participations_attributes,
-      "organisation" => { id: rdv_solidarites_organisation_id }
+      "organisation" => { id: rdv_solidarites_organisation_id },
+      "agents" => [{ id: agent.rdv_solidarites_agent_id }]
     }.deep_symbolize_keys
   end
 
@@ -60,6 +61,8 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
 
   let!(:user) { create(:user, organisations: [organisation], id: 3) }
   let!(:user2) { create(:user, organisations: [organisation], id: 4) }
+
+  let!(:agent) { create(:agent) }
 
   let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation") }
   let!(:configuration) do
@@ -182,6 +185,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
               data,
               {
                 participations_attributes: expected_participation_attributes,
+                agent_ids: [agent.id],
                 organisation_id: organisation.id,
                 motif_id: motif.id,
                 lieu_id: lieu.id,
@@ -267,6 +271,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
                     }
                   ],
                   organisation_id: organisation.id,
+                  agent_ids: [agent.id],
                   motif_id: motif.id,
                   lieu_id: lieu.id,
                   last_webhook_update_received_at: timestamp
@@ -322,6 +327,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
               data,
               {
                 participations_attributes: participations_attributes_expected,
+                agent_ids: [agent.id],
                 organisation_id: organisation.id,
                 motif_id: motif.id,
                 lieu_id: lieu.id,
@@ -503,6 +509,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
                 }
               ],
               organisation_id: organisation.id,
+              agent_ids: [agent.id],
               motif_id: motif.id,
               lieu_id: lieu.id,
               last_webhook_update_received_at: timestamp
@@ -540,6 +547,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
                   }
                 ],
                 organisation_id: organisation.id,
+                agent_ids: [agent.id],
                 motif_id: motif.id,
                 lieu_id: lieu.id,
                 last_webhook_update_received_at: timestamp
@@ -615,6 +623,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
                 }
               ],
               organisation_id: organisation.id,
+              agent_ids: [agent.id],
               motif_id: motif.id,
               lieu_id: lieu.id,
               last_webhook_update_received_at: timestamp
@@ -652,6 +661,7 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
                   }
                 ],
                 organisation_id: organisation.id,
+                agent_ids: [agent.id],
                 motif_id: motif.id,
                 lieu_id: lieu.id,
                 last_webhook_update_received_at: timestamp

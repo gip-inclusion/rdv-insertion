@@ -13,6 +13,7 @@ module MotifCategory::Sortable
     rsa_accompagnement_sociopro
     rsa_accompagnement_moins_de_30_ans
     rsa_follow_up
+    rsa_suivi_plie
     rsa_cer_signature
     rsa_insertion_offer
     rsa_atelier_competences

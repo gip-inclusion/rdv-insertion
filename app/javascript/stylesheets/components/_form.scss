@@ -81,3 +81,9 @@
     border: 3px solid $orange;
   }
 }
+
+.form-switch.large .form-check-input {
+  height: 20px;
+  width: 40px;
+  cursor: pointer;
+}

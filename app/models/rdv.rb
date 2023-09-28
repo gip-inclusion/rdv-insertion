@@ -13,9 +13,13 @@ class Rdv < ApplicationRecord
   belongs_to :organisation
   belongs_to :motif
   belongs_to :lieu, optional: true
+
   has_many :participations, dependent: :destroy
+  has_many :agents_rdvs, dependent: :destroy
+
   has_many :notifications, through: :participations
   has_many :rdv_contexts, through: :participations
+  has_many :agents, through: :agents_rdvs
   has_many :users, through: :participations
 
   # Needed to build participations in process_rdv_job

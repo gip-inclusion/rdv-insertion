@@ -2,7 +2,7 @@ module FilterRdvSolidaritesWebhooksConcern
   extend ActiveSupport::Concern
 
   SUPPORTED_MODELS_TYPES = %w[
-    Rdv User UserProfile Organisation Motif Lieu Agent AgentRole ReferentAssignation
+    Rdv User UserProfile Organisation Motif Lieu Agent AgentRole ReferentAssignation AgentsRdv
   ].freeze
 
   included do
