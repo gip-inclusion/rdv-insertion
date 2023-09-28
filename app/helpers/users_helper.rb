@@ -9,7 +9,7 @@ module UsersHelper
     configuration.invitation_formats.present?
   end
 
-  def sorting_by_invites?(order)
+  def sorting_invites_by?(order)
     params[:sort_by] == "invitations" && params[:sort_order] == order
   end
 

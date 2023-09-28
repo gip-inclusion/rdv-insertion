@@ -950,7 +950,7 @@ describe UsersController do
             let!(:invitation) { create(:invitation, rdv_context: user.rdv_contexts.first, sent_at: 1.year.ago) }
             let!(:invitation2) { create(:invitation, rdv_context: user2.rdv_contexts.first, sent_at: 2.years.ago) }
 
-            it "orders by rdv_context creation" do
+            it "orders by invitation creation" do
               get :index, params: index_params
 
               ordered_table = Nokogiri::XML(response.body).css("td").map(&:text)

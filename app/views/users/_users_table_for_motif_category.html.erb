@@ -6,13 +6,13 @@
       <th scope="col" class="d-none d-lg-table-cell"><%= t(".#{invitation_format}_column_title") %></th>
     <% end  %>
     <% if show_invitations?(@current_configuration) %>
-      <th scope="col" class="<%= sorting_by_invites?("asc") && "dropup" %>">
-        <%= link_to compute_index_path(@organisation, @department, motif_category_id: @current_motif_category&.id, sort_by: sorting_by_invites?("asc") ? nil : :invitations, sort_order: :asc), class: 'text-primary dropdown-toggle' do %>
+      <th scope="col" class="<%= "dropup" if sorting_invites_by?("asc")  %>">
+        <%= link_to compute_index_path(@organisation, @department, motif_category_id: @current_motif_category&.id, sort_by: sorting_invites_by?("asc") ? nil : :invitations, sort_order: :asc), class: 'text-primary dropdown-toggle' do %>
           Première invitation
         <% end %>
       </th>
-      <th scope="col" class="<%= sorting_by_invites?("desc") && "dropup" %>">
-        <%= link_to compute_index_path(@organisation, @department, motif_category_id: @current_motif_category&.id, sort_by: sorting_by_invites?("desc") ? nil : :invitations, sort_order: :desc), class: 'text-primary  dropdown-toggle' do %>
+      <th scope="col" class="<%= "dropup" if sorting_invites_by?("desc")  %>">
+        <%= link_to compute_index_path(@organisation, @department, motif_category_id: @current_motif_category&.id, sort_by: sorting_invites_by?("desc") ? nil : :invitations, sort_order: :desc), class: 'text-primary  dropdown-toggle' do %>
           Dernière invitation
         <% end %>
       </th>
