@@ -126,5 +126,33 @@ describe "Agents can update contact info with caf file", js: true do
       expect(user.reload.email).to eq("hernan.crespo@hotmail.fr")
       expect(user.reload.phone_number).to eq("+33698943255")
     end
+
+    context "when user does not belong to the organisation" do
+      let!(:other_organisation) do
+        create(:organisation, agents: [agent], department: department, rdv_solidarites_organisation_id: "1123")
+      end
+
+      let!(:user) do
+        create(
+          :user,
+          first_name: "Hernan", last_name: "Crespo", email: "hernan@crespo.com", phone_number: "0620022002",
+          affiliation_number: "ISQCJQO", organisations: [other_organisation], rdv_solidarites_user_id:
+        )
+      end
+
+      it "does not show the update button" do
+        visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
+
+        attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+
+        expect(page).to have_content("hernan@crespo.com")
+        expect(page).to have_content("Ajouter à cette organisation")
+        click_button("Enrichir avec des données de contacts CNAF")
+
+        attach_file("contact-file-upload", Rails.root.join("spec/fixtures/fichier_contact_test.csv"))
+
+        expect(page).not_to have_content("Nouvelles données trouvées pour Hernan Crespo")
+      end
+    end
   end
 end
