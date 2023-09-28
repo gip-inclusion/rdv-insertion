@@ -43,6 +43,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_25_155039) do
     t.index ["rdv_solidarites_agent_id"], name: "index_agents_on_rdv_solidarites_agent_id", unique: true
   end
 
+  create_table "agents_rdvs", force: :cascade do |t|
+    t.bigint "agent_id", null: false
+    t.bigint "rdv_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agent_id", "rdv_id"], name: "index_agents_rdvs_on_agent_id_and_rdv_id", unique: true
+  end
+
   create_table "archives", force: :cascade do |t|
     t.bigint "department_id", null: false
     t.bigint "user_id", null: false
@@ -68,7 +76,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_25_155039) do
     t.string "template_rdv_title_by_phone_override"
     t.string "template_user_designation_override"
     t.string "template_rdv_purpose_override"
-    t.integer "number_of_days_before_next_invite"
+    t.integer "number_of_days_between_periodic_invites"
+    t.integer "day_of_the_month_periodic_invites"
     t.index ["file_configuration_id"], name: "index_configurations_on_file_configuration_id"
     t.index ["motif_category_id"], name: "index_configurations_on_motif_category_id"
     t.index ["organisation_id"], name: "index_configurations_on_organisation_id"
