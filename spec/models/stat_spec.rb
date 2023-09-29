@@ -24,26 +24,24 @@ describe Stat do
     let!(:rdv1) { create(:rdv, organisation: organisation, created_by: "user", motif: motif, starts_at: date) }
     let!(:rdv2) { create(:rdv, organisation: other_organisation, created_by: "user", motif: motif) }
     let!(:rdv3) { create(:rdv, organisation: organisation, created_by: "user", motif: motif) }
+    let!(:rdv4) { create(:rdv, organisation: organisation, created_by: "user", motif: motif) }
     let!(:invitation1) do
-      create(:invitation, user: user1, department: department, sent_at: date)
+      create(:invitation, user: user1, department: department, organisations: [organisation],
+                          sent_at: date, rdv_context: rdv_context1)
     end
     let!(:invitation2) do
-      create(:invitation, user: user2, department: other_department, sent_at: date)
+      create(:invitation, user: user2, department: other_department, organisations: [other_organisation],
+                          sent_at: date, rdv_context: rdv_context2)
     end
     let!(:agent1) { create(:agent, organisations: [organisation], has_logged_in: true) }
     let!(:agent2) { create(:agent, organisations: [other_organisation], has_logged_in: true) }
-    let!(:participation1) { create(:participation, rdv: rdv1, user: user1) }
-    let!(:participation2) { create(:participation, rdv: rdv2, user: user2) }
+    let!(:participation1) { create(:participation, rdv: rdv1, user: user1, rdv_context: rdv_context1) }
+    let!(:participation2) { create(:participation, rdv: rdv2, user: user2, rdv_context: rdv_context2) }
     let!(:participation3) { create(:participation, rdv: rdv3, user: user1) }
+    let!(:participation4) { create(:participation, rdv: rdv4, user: user1) }
     let!(:notification) { create(:notification, participation: participation3) }
-    let!(:rdv_context1) do
-      create(:rdv_context, user: user1, invitations: [invitation1],
-                           participations: [participation1], motif_category: category_rsa_orientation)
-    end
-    let!(:rdv_context2) do
-      create(:rdv_context, user: user2, invitations: [invitation2],
-                           participations: [participation2], motif_category: category_rsa_orientation)
-    end
+    let!(:rdv_context1) { create(:rdv_context, user: user1, motif_category: category_rsa_orientation) }
+    let!(:rdv_context2) { create(:rdv_context, user: user2, motif_category: category_rsa_orientation) }
     let!(:structure_type) { "Department" }
     let!(:structure_id) { department.id }
 
@@ -91,11 +89,12 @@ describe Stat do
         end
       end
 
-      describe "#participations_without_notifications_sample" do
+      describe "#participations_with_invitations_sample" do
         it "scopes the collection to the department" do
-          expect(stat.participations_without_notifications_sample).to include(participation1)
-          expect(stat.participations_without_notifications_sample).not_to include(participation2)
-          expect(stat.participations_without_notifications_sample).not_to include(participation3)
+          expect(stat.participations_with_invitations_sample).to include(participation1)
+          expect(stat.participations_with_invitations_sample).not_to include(participation2)
+          expect(stat.participations_with_invitations_sample).not_to include(participation3)
+          expect(stat.participations_with_invitations_sample).not_to include(participation4)
         end
       end
 
@@ -104,6 +103,7 @@ describe Stat do
           expect(stat.participations_with_notifications_sample).not_to include(participation1)
           expect(stat.participations_with_notifications_sample).not_to include(participation2)
           expect(stat.participations_with_notifications_sample).to include(participation3)
+          expect(stat.participations_with_notifications_sample).not_to include(participation4)
         end
       end
 

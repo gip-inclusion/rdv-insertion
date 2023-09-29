@@ -8,8 +8,7 @@ class Participation < ApplicationRecord
   belongs_to :user
 
   has_many :notifications, dependent: :nullify
-
-  has_one :organisation, through: :rdv
+  has_many :invitations, through: :rdv_context
   has_many :configurations, through: :organisation
 
   validates :status, presence: true
@@ -20,7 +19,7 @@ class Participation < ApplicationRecord
 
   enum created_by: { agent: "agent", user: "user", prescripteur: "prescripteur" }, _prefix: :created_by
 
-  delegate :department, :starts_at, :motif_name,
+  delegate :department, :organisation, :starts_at, :motif_name,
            :rdv_solidarites_url, :rdv_solidarites_rdv_id, :instruction_for_rdv,
            to: :rdv
   delegate :phone_number_is_mobile?, :email?, to: :user

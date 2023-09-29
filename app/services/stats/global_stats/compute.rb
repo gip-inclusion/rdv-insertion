@@ -39,7 +39,7 @@ module Stats
       end
 
       def rate_of_no_show_for_invitations
-        ComputeRateOfNoShow.call(participations: @stat.participations_without_notifications_sample).value
+        ComputeRateOfNoShow.call(participations: @stat.participations_with_invitations_sample).value
       end
 
       def rate_of_no_show_for_convocations

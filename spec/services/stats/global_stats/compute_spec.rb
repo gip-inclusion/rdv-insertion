@@ -26,7 +26,7 @@ describe Stats::GlobalStats::Compute, type: :service do
         .and_return(Participation.where(id: [participation1, participation2]))
       allow(stat).to receive(:invitations_sample)
         .and_return(Invitation.where(id: [invitation1, invitation2]))
-      allow(stat).to receive(:participations_without_notifications_sample)
+      allow(stat).to receive(:participations_with_invitations_sample)
         .and_return(Participation.where(id: [participation1]))
       allow(stat).to receive(:participations_with_notifications_sample)
         .and_return(Participation.where(id: [participation2]))
@@ -98,7 +98,7 @@ describe Stats::GlobalStats::Compute, type: :service do
     end
 
     it "computes the percentage of no show for invitations" do
-      expect(stat).to receive(:participations_without_notifications_sample)
+      expect(stat).to receive(:participations_with_invitations_sample)
       expect(Stats::ComputeRateOfNoShow).to receive(:call)
         .with(participations: [participation1])
       subject
