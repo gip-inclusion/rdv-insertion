@@ -63,10 +63,28 @@ class InvitationsController < ApplicationController
   end
 
   def save_and_send_invitation
-    @save_and_send_invitation ||= Invitations::SaveAndSend.call(
-      invitation: @invitation,
+    update_creneaux_call = Configurations::UpdateAvailableCreneauxCount.call(
+      configuration: @current_configuration,
       rdv_solidarites_session: rdv_solidarites_session
     )
+
+    if update_creneaux_call.fails?
+      OpenStruct.new(success?: false, errors: update_creneaux_call.errors)
+    elsif @current_configuration.available_creneaux_count.zero?
+      OpenStruct.new(
+        success?: false,
+        errors: [
+          "L'envoi d'une invitation est impossible car il n'y a plus de créneaux disponibles.
+          Nous invitons donc à créer de nouvelles plages d'ouverture depuis l'interface
+          RDV-Solidarités pour pouvoir à nouveau envoyer des invitations"
+        ]
+      )
+    else
+      @save_and_send_invitation ||= Invitations::SaveAndSend.call(
+        invitation: @invitation,
+        rdv_solidarites_session: rdv_solidarites_session
+      )
+    end
   end
 
   def set_organisations
@@ -86,11 +104,7 @@ class InvitationsController < ApplicationController
 
   def set_preselected_organisations
     @preselected_organisations =
-      if @current_configuration.invite_to_user_organisations_only?
-        @organisations & @user.organisations
-      else
-        @organisations
-      end
+      @current_configuration.invite_to_user_organisations_only? ? @organisations & @user.organisations : @organisations
   end
 
   def set_current_configuration

@@ -119,6 +119,17 @@ class RdvSolidaritesClient
     )
   end
 
+  def get_available_creneaux_count(organisation_id, max_delay, motif_category_short_name = nil)
+    Faraday.get(
+      "#{@url}/api/rdvi/organisations/#{organisation_id}/available_creneaux_count",
+      {
+        motif_category_short_name: motif_category_short_name,
+        max_delay: max_delay
+      },
+      request_headers
+    )
+  end
+
   def validate_token
     Faraday.get(
       "#{@url}/api/v1/auth/validate_token",
