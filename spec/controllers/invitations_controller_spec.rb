@@ -9,7 +9,8 @@ describe InvitationsController do
       create(
         :configuration,
         organisation: organisation, number_of_days_before_action_required: 10,
-        motif_category: motif_category, rdv_with_referents: false, invite_to_user_organisations_only: false
+        motif_category: motif_category, rdv_with_referents: false, invite_to_user_organisations_only: false,
+        available_creneaux_count: 10
       )
     end
     let!(:other_org) { create(:organisation, department: department) }
@@ -61,6 +62,9 @@ describe InvitationsController do
         ).and_return(invitation)
       allow(Invitations::SaveAndSend).to receive(:call)
         .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
+        .and_return(OpenStruct.new(success?: true))
+      allow(Configurations::UpdateAvailableCreneauxCount).to receive(:call)
+        .with(configuration: configuration, rdv_solidarites_session: rdv_solidarites_session)
         .and_return(OpenStruct.new(success?: true))
     end
 

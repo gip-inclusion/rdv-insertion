@@ -16,7 +16,12 @@ describe "Agents can upload user list", js: true do
   let!(:motif) { create(:motif, organisation: organisation, motif_category: motif_category) }
 
   let!(:configuration) do
-    create(:configuration, motif_category: motif_category, file_configuration: file_configuration)
+    create(
+      :configuration,
+      motif_category: motif_category,
+      file_configuration: file_configuration,
+      available_creneaux_count: 10
+    )
   end
 
   let!(:other_org_from_same_department) { create(:organisation, department: department) }
