@@ -2,6 +2,8 @@ describe Stat do
   include_context "with all existing categories"
 
   describe "instance_methods" do
+    # 2 records each time : first record is linked to the department scoped, the second is not
+
     let!(:department) { create(:department) }
     let!(:stat) { build(:stat, statable_type: structure_type, statable_id: structure_id) }
     let(:date) { Time.zone.parse("17/07/2023 12:00") }
@@ -23,8 +25,6 @@ describe Stat do
     let!(:motif_collectif) { create(:motif, collectif: true) }
     let!(:rdv1) { create(:rdv, organisation: organisation, created_by: "user", motif: motif, starts_at: date) }
     let!(:rdv2) { create(:rdv, organisation: other_organisation, created_by: "user", motif: motif) }
-    let!(:rdv3) { create(:rdv, organisation: organisation, created_by: "user", motif: motif) }
-    let!(:rdv4) { create(:rdv, organisation: organisation, created_by: "user", motif: motif) }
     let!(:invitation1) do
       create(:invitation, user: user1, department: department, organisations: [organisation],
                           sent_at: date, rdv_context: rdv_context1)
@@ -37,9 +37,6 @@ describe Stat do
     let!(:agent2) { create(:agent, organisations: [other_organisation], has_logged_in: true) }
     let!(:participation1) { create(:participation, rdv: rdv1, user: user1, rdv_context: rdv_context1) }
     let!(:participation2) { create(:participation, rdv: rdv2, user: user2, rdv_context: rdv_context2) }
-    let!(:participation3) { create(:participation, rdv: rdv3, user: user1) }
-    let!(:participation4) { create(:participation, rdv: rdv4, user: user1) }
-    let!(:notification) { create(:notification, participation: participation3) }
     let!(:rdv_context1) { create(:rdv_context, user: user1, motif_category: category_rsa_orientation) }
     let!(:rdv_context2) { create(:rdv_context, user: user2, motif_category: category_rsa_orientation) }
     let!(:structure_type) { "Department" }
@@ -64,7 +61,6 @@ describe Stat do
         it "scopes the collection to the department" do
           expect(stat.all_participations).to include(participation1)
           expect(stat.all_participations).not_to include(participation2)
-          expect(stat.all_participations).to include(participation3)
         end
       end
 
@@ -84,26 +80,45 @@ describe Stat do
       describe "#participations_sample" do
         it "scopes the collection to the department" do
           expect(stat.participations_sample).to include(participation1)
-          expect(stat.participations_sample).to include(participation3)
           expect(stat.participations_sample).not_to include(participation2)
         end
       end
 
-      describe "#participations_with_invitations_sample" do
-        it "scopes the collection to the department" do
-          expect(stat.participations_with_invitations_sample).to include(participation1)
-          expect(stat.participations_with_invitations_sample).not_to include(participation2)
-          expect(stat.participations_with_invitations_sample).not_to include(participation3)
-          expect(stat.participations_with_invitations_sample).not_to include(participation4)
+      describe "participations scopes for noshows" do
+        # participation with notification
+        let!(:participation3) { create(:participation, rdv: rdv3, user: user1) }
+        let!(:rdv3) { create(:rdv, organisation: organisation, created_by: "user", motif: motif) }
+        let!(:notification) { create(:notification, participation: participation3) }
+        # participation without neither notification nor invitation
+        let!(:participation4) { create(:participation, rdv: rdv4, user: user1) }
+        let!(:rdv4) { create(:rdv, organisation: organisation, created_by: "user", motif: motif) }
+        # participation with notification and invitation
+        let!(:participation5) { create(:participation, rdv: rdv5, user: user1) }
+        let!(:rdv5) { create(:rdv, organisation: organisation, created_by: "user", motif: motif) }
+        let(:invitation_for_participation5) do
+          create(:invitation, user: user1, department: department, organisations: [organisation],
+                              sent_at: date, rdv_context: rdv_context1)
         end
-      end
+        let!(:notification_for_participation5) { create(:notification, participation: participation5) }
 
-      describe "#participations_with_notifications_sample" do
-        it "scopes the collection to the department" do
-          expect(stat.participations_with_notifications_sample).not_to include(participation1)
-          expect(stat.participations_with_notifications_sample).not_to include(participation2)
-          expect(stat.participations_with_notifications_sample).to include(participation3)
-          expect(stat.participations_with_notifications_sample).not_to include(participation4)
+        describe "#participations_after_invitations_sample" do
+          it "scopes the collection to the department" do
+            expect(stat.participations_after_invitations_sample).to include(participation1)
+            expect(stat.participations_after_invitations_sample).not_to include(participation2)
+            expect(stat.participations_after_invitations_sample).not_to include(participation3)
+            expect(stat.participations_after_invitations_sample).not_to include(participation4)
+            expect(stat.participations_after_invitations_sample).not_to include(participation5)
+          end
+        end
+
+        describe "#participations_with_notifications_sample" do
+          it "scopes the collection to the department" do
+            expect(stat.participations_with_notifications_sample).not_to include(participation1)
+            expect(stat.participations_with_notifications_sample).not_to include(participation2)
+            expect(stat.participations_with_notifications_sample).to include(participation3)
+            expect(stat.participations_with_notifications_sample).not_to include(participation4)
+            expect(stat.participations_with_notifications_sample).to include(participation5)
+          end
         end
       end
 

@@ -42,7 +42,7 @@ module Stats
 
       def rate_of_no_show_for_invitations_for_focused_month
         ComputeRateOfNoShow.call(
-          participations: created_during_focused_month(@stat.participations_with_invitations_sample)
+          participations: created_during_focused_month(@stat.participations_after_invitations_sample)
         ).value.round
       end
 

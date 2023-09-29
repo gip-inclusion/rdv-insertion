@@ -33,8 +33,8 @@ class Stat < ApplicationRecord
   end
 
   # We filter participations to keep only invitations
-  def participations_with_invitations_sample
-    @participations_with_invitations_sample ||= participations_sample.joins(:invitations).distinct
+  def participations_after_invitations_sample
+    @participations_after_invitations_sample ||= participations_sample.where.missing(:notifications).joins(:invitations).distinct
   end
 
   # We exclude the rdvs collectifs motifs to correctly compute the rate of autonomous users
