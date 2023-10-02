@@ -929,7 +929,7 @@ describe UsersController do
             user2.rdv_contexts.first.update!(motif_category: category_orientation, created_at: 1.year.ago)
           end
 
-          it "orders by rdv creation" do
+          it "orders by rdv_context creation" do
             get :index, params: index_params
 
             ordered_table = Nokogiri::XML(response.body).css("td").map(&:text)
