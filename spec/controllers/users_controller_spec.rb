@@ -690,12 +690,12 @@ describe UsersController do
       end
 
       let!(:user2) do
-        create(:user, organisations: [organisation], first_name: "Marie",
+        create(:user, organisations: [organisation], rdv_contexts: [rdv_context1],  first_name: "Marie",
                       tag_users_attributes: [{ tag_id: tags[0].id }, { tag_id: tags[1].id }])
       end
 
       let!(:user3) do
-        create(:user, organisations: [organisation], first_name: "Oliva",
+        create(:user, organisations: [organisation], rdv_contexts: [rdv_context1], first_name: "Oliva",
                       tag_users_attributes: [{ tag_id: tags[2].id }])
       end
 
@@ -925,10 +925,11 @@ describe UsersController do
           let!(:index_params) { { department_id: department.id, motif_category_id: category_orientation.id } }
 
           before do
-            user.rdv_contexts.first.update!(motif_category: category_orientation, created_at: 1.year.ago)
+            user.rdv_contexts.first.update!(motif_category: category_orientation, created_at: 2.years.ago)
+            user2.rdv_contexts.first.update!(motif_category: category_orientation, created_at: 1.year.ago)
           end
 
-          it "orders by rdv_context creation" do
+          it "orders by rdv creation" do
             get :index, params: index_params
 
             ordered_table = Nokogiri::XML(response.body).css("td").map(&:text)
@@ -947,8 +948,13 @@ describe UsersController do
               }
             end
 
-            let!(:invitation) { create(:invitation, rdv_context: user.rdv_contexts.first, sent_at: 1.year.ago) }
-            let!(:invitation2) { create(:invitation, rdv_context: user2.rdv_contexts.first, sent_at: 2.years.ago) }
+            let!(:invitation) do
+              create(:invitation, rdv_context: user.rdv_contexts.first, user: user, sent_at: 1.year.ago)
+            end
+
+            let!(:invitation2) do
+              create(:invitation, rdv_context: user2.rdv_contexts.first, user: user2, sent_at: 2.years.ago)
+            end
 
             it "orders by invitation creation" do
               get :index, params: index_params
