@@ -20,10 +20,10 @@ module Users::Sortable
                first_or_last = sort_order_from_params == "asc" ? "MIN" : "MAX"
 
                @users
-                 .joins(:invitations)
+                 .left_joins(:invitations)
                  .reselect("DISTINCT(users.id), users.*, #{first_or_last}(invitations.sent_at) as relevant_invitation")
                  .group("users.id")
-                 .order("relevant_invitation #{sort_order_from_params}")
+                 .order("relevant_invitation #{sort_order_from_params} NULLS LAST")
              else
                @users
                  .select("DISTINCT(users.id), users.*, rdv_contexts.created_at")
