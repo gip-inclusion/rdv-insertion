@@ -12,19 +12,22 @@ module Users::Sortable
   end
 
   def archived_order
-    @users.order("archives.created_at desc")
+    @users = @users.order("archives.created_at desc")
   end
 
   def motif_category_order
-    @users = if params[:sort_by] == "invitations"
+    @users = if %w[first_invitation_sent_at last_invitation_sent_at].include?(params[:sort_by])
+               first_or_last = sort_order_from_params == "asc" ? "MIN" : "MAX"
+
                @users
-                 .includes(:invitations)
-                 .reselect("DISTINCT(users.id), users.*, invitations.sent_at")
-                 .order("invitations.sent_at #{sort_order_from_params}")
+                 .joins(:invitations)
+                 .reselect("DISTINCT(users.id), users.*, #{first_or_last}(invitations.sent_at) as relevant_invitation")
+                 .group("users.id")
+                 .order("relevant_invitation #{sort_order_from_params}")
              else
                @users
                  .select("DISTINCT(users.id), users.*, rdv_contexts.created_at")
-                 .order("rdv_contexts.created_at desc")
+                 .order("rdv_contexts.created_at #{sort_order_from_params}")
              end
   end
 

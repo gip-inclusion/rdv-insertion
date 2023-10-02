@@ -690,12 +690,12 @@ describe UsersController do
       end
 
       let!(:user2) do
-        create(:user, organisations: [organisation], rdv_contexts: [rdv_context1],  first_name: "Marie",
+        create(:user, organisations: [organisation], rdv_contexts: [rdv_context1], first_name: "Marie",
                       tag_users_attributes: [{ tag_id: tags[0].id }, { tag_id: tags[1].id }])
       end
 
       let!(:user3) do
-        create(:user, organisations: [organisation], rdv_contexts: [rdv_context1], first_name: "Oliva",
+        create(:user, organisations: [organisation], rdv_contexts: [rdv_context2], first_name: "Oliva",
                       tag_users_attributes: [{ tag_id: tags[2].id }])
       end
 
@@ -943,7 +943,7 @@ describe UsersController do
               {
                 department_id: department.id,
                 motif_category_id: category_orientation.id,
-                sort_by: "invitations",
+                sort_by: "last_invitation_sent_at",
                 sort_order: "desc"
               }
             end

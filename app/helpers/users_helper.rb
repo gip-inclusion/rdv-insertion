@@ -9,8 +9,20 @@ module UsersHelper
     configuration.invitation_formats.present?
   end
 
-  def sorting_invites_by?(order)
-    params[:sort_by] == "invitations" && params[:sort_order] == order
+  def sorting_users_by?(column)
+    params[:sort_by] == column
+  end
+
+  def sort_order_for(column)
+    return "desc" unless sorting_users_by?(column)
+
+    params[:sort_order] == "asc" ? "desc" : "asc"
+  end
+
+  def display_sorting_icon(column)
+    return unless sorting_users_by?(column)
+
+    params[:sort_order] == "asc" ? "▲" : "▼"
   end
 
   def no_search_results?(users)
