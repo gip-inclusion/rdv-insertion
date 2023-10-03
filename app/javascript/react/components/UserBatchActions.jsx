@@ -1,7 +1,7 @@
 import React from "react";
 import { observer } from "mobx-react-lite";
 
-export default observer(({ users, isDepartmentLevel }) => {
+export default observer(({ users }) => {
   const toggle = () => {
     const dropdown = document.getElementById("batch-actions");
     dropdown.classList.toggle("show");
@@ -18,7 +18,7 @@ export default observer(({ users, isDepartmentLevel }) => {
     // eslint-disable-next-line no-restricted-syntax
     for (const user of users.selectedUsers) {
       // eslint-disable-next-line no-await-in-loop
-      await user.inviteBy(format, isDepartmentLevel, { raiseError: false });
+      await user.inviteBy(format, { raiseError: false });
     }
   };
 

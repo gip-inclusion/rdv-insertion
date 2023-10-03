@@ -32,33 +32,32 @@ export default observer(({ user, invitationsColspan }) => {
     user.triggers[`${attribute}Update`] = false;
   };
 
-  // We need to add 1 to the colSpan offset because of the multiple selection checkbox
-  const colSpanForContactsUpdate =
-    user.displayedAttributes().length - user.attributesFromContactsDataFile().length + 1;
+  const editableColumns = user.list.columns.filter((column) => column.visible && column.isInContactFile)
+
 
   return (
     <tr className="table-success">
-      <td colSpan={colSpanForContactsUpdate} className="text-align-right">
+      <td colSpan={user.list.numberOfColumnsBeforeContactListUpdate} className="text-align-right">
         <i className="fas fa-level-up-alt" />
         Nouvelles données trouvées pour {user.firstName} {user.lastName}
       </td>
-      {["email", "phoneNumber", "rightsOpeningDate"].map(
-        (attributeName) =>
-          user.shouldDisplay(`${camelToSnakeCase(attributeName)}_column`) && (
+      {editableColumns.map(
+        (column) =>
+          (
             <td
               className="update-box"
-              key={`${attributeName}${new Date().toISOString().slice(0, 19)}`}
+              key={`${column.key}${new Date().toISOString().slice(0, 19)}`}
             >
-              {user[`${attributeName}New`] && (
+              {user[`${column.key}New`] && (
                 <>
-                  {user[`${attributeName}New`]}
+                  {user[`${column.key}New`]}
                   <br />
                   <button
                     type="submit"
                     className="btn btn-primary btn-blue btn-sm mt-2"
-                    onClick={() => handleUpdateContactsDataClick(attributeName)}
+                    onClick={() => handleUpdateContactsDataClick(column.key)}
                   >
-                    {user.triggers[`${attributeName}Update`] || user.triggers.allAttributesUpdate
+                    {user.triggers[`${column.key}Update`] || user.triggers.allAttributesUpdate
                       ? "En cours..."
                       : "Mettre à jour"}
                   </button>
@@ -68,7 +67,7 @@ export default observer(({ user, invitationsColspan }) => {
           )
       )}
       <td>
-        {[user.emailNew, user.phoneNumberNew, user.rightsOpeningDateNew].filter((e) => e != null)
+        {editableColumns.map(column => user[`${column.key}New`]).filter((e) => e != null)
           .length > 1 && (
           <button
             type="submit"

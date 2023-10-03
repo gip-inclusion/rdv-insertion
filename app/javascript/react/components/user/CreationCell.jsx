@@ -6,7 +6,7 @@ import handleArchiveDelete from "../../lib/handleArchiveDelete";
 
 import { getFrenchFormatDateString } from "../../../lib/datesHelper";
 
-export default observer(({ user, isDepartmentLevel }) => {
+export default observer(({ user }) => {
   const handleFileReopen = async () => {
     user.triggers.unarchive = true;
 
@@ -68,7 +68,7 @@ export default observer(({ user, isDepartmentLevel }) => {
       <td>
         <a
           href={
-            isDepartmentLevel
+            user.list.isDepartmentLevel
               ? `/departments/${user.department.id}/users/${user.id}`
               : `/organisations/${user.currentOrganisation.id}/users/${user.id}`
           }

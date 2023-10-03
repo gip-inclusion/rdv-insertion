@@ -76,6 +76,13 @@ const UsersUpload = observer(
           } else {
             let rows = XLSX.utils.sheet_to_row_object_array(sheet);
             rows = rows.map((row) => parameterizeObjectKeys(row));
+            
+            users.columnConfig = parameterizedColumnNames;
+            users.showCarnetColumn = showCarnetColumn;
+            users.showReferentColumn = showReferentColumn.value;
+            users.configuration = configuration;
+            users.isDepartmentLevel = isDepartmentLevel;
+
             rows.forEach((row) => {
               const user = new User(
                 // creation and editing to work properly
@@ -138,7 +145,8 @@ const UsersUpload = observer(
                 tags,
                 configuration,
                 columnNames,
-                currentAgent
+                currentAgent,
+                users
               );
               users.addUser(user);
             });
@@ -273,7 +281,7 @@ const UsersUpload = observer(
             <>
               <div className="row my-1" style={{ height: 50 }}>
                 <div className="d-flex justify-content-end align-items-center">
-                  <UserBatchActions isDepartmentLevel={isDepartmentLevel} users={users} />
+                  <UserBatchActions users={users} />
                   <i className="fas fa-user" />
                   {showReferentColumn ? (
                     <Tippy content="Cacher colonne référent">
@@ -299,64 +307,20 @@ const UsersUpload = observer(
               <table className="table table-hover text-center align-middle table-striped table-bordered">
                 <thead className="align-middle dark-blue">
                   <tr>
-                    <th scope="col" className="text-center">
-                      Sélection
-                      <br />
-                      <input
-                        type="checkbox"
-                        className="form-check-input"
-                        checked={users.list.every((user) => user.selected)}
-                        onChange={(event) =>
-                          users.list.forEach((user) => {
-                            user.selected = event.target.checked;
-                          })
-                        }
-                      />
-                    </th>
-                    <th scope="col">Civilité</th>
-                    <th scope="col">Prénom</th>
-                    <th scope="col">Nom</th>
-                    {parameterizedColumnNames.affiliation_number_column && (
-                      <th scope="col">Numéro CAF</th>
-                    )}
-                    {parameterizedColumnNames.role_column && <th scope="col">Rôle</th>}
-                    {parameterizedColumnNames.department_internal_id_column && (
-                      <th scope="col">ID Editeur</th>
-                    )}
-                    {parameterizedColumnNames.nir_column && <th scope="col">NIR</th>}
-                    {parameterizedColumnNames.pole_emploi_id_column && <th scope="col">ID PE</th>}
-                    {parameterizedColumnNames.email_column && <th scope="col">Email</th>}
-                    {parameterizedColumnNames.phone_number_column && <th scope="col">Téléphone</th>}
-                    {parameterizedColumnNames.tags_column && <th scope="col">Catégories</th>}
-                    {parameterizedColumnNames.rights_opening_date_column && (
-                      <th scope="col">Date d&apos;entrée flux</th>
-                    )}
-                    <th scope="col" style={{ whiteSpace: "nowrap" }}>
-                      Création compte
-                    </th>
-                    {showCarnetColumn && (
-                      <th scope="col" style={{ whiteSpace: "nowrap" }}>
-                        Création carnet
-                      </th>
-                    )}
-                    {showReferentColumn && <th scope="col-3">Réferent</th>}
-                    {configuration && configuration.invitation_formats.includes("sms") && (
-                      <th scope="col-3">Invitation SMS</th>
-                    )}
-                    {configuration && configuration.invitation_formats.includes("email") && (
-                      <th scope="col-3">Invitation mail</th>
-                    )}
-                    {configuration && configuration.invitation_formats.includes("postal") && (
-                      <th scope="col-3">Invitation courrier</th>
-                    )}
+                    {users.columns.map((column) => {
+                      if (!column.visible) return null;
+
+                      return (
+                        <th {...column.attributes}>
+                          {column.name}
+                        </th>
+                      )
+                    })}
                   </tr>
                 </thead>
                 <tbody>
                   <UserList
-                    showReferentColumn={showReferentColumn}
                     users={users}
-                    isDepartmentLevel={isDepartmentLevel}
-                    showCarnetColumn={showCarnetColumn}
                   />
                 </tbody>
               </table>
