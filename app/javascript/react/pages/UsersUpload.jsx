@@ -5,9 +5,9 @@ import { observer } from "mobx-react-lite";
 
 import * as XLSX from "xlsx";
 import FileHandler from "../components/FileHandler";
-import UserList from "../components/UserList";
 import EnrichWithContactFile from "../components/EnrichWithContactFile";
 import UserBatchActions from "../components/UserBatchActions";
+import UserRow from "../components/User";
 
 import getHeaderNames from "../lib/getHeaderNames";
 import checkColumnNames from "../lib/checkColumnNames";
@@ -319,7 +319,9 @@ const UsersUpload = observer(
                   </tr>
                 </thead>
                 <tbody>
-                  <UserList users={users} />
+                  {users.invalidFirsts.map((user) => (
+                    <UserRow user={user} key={user.uniqueKey} />
+                  ))}
                 </tbody>
               </table>
             </div>
