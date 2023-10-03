@@ -55,8 +55,8 @@ Rails.application.configure do
   config.active_record.verbose_query_logs = true
 
   config.after_initialize do
-    Bullet.enable = true
-    Bullet.rails_logger = true
+    Prosopite.enabled = true
+    Prosopite.rails_logger = true
   end
 
   # Debug mode disables concatenation and preprocessing of assets.
