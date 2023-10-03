@@ -357,24 +357,10 @@ describe UsersController do
         end
 
         context "when the rdv is passed" do
-          context "when the participation is revoked" do
-            before { participation.update! status: "revoked" }
+          it "does not show the courrier generation button" do
+            get :show, params: show_params
 
-            it "shows the courrier generation button" do
-              get :show, params: show_params
-
-              expect(response.body).to include("<i class=\"fas fa-file-pdf\"></i> Courrier")
-            end
-          end
-
-          context "when the rdv participation is seen" do
-            before { participation.update! status: "seen" }
-
-            it "does not show the courrier generation button" do
-              get :show, params: show_params
-
-              expect(response.body).not_to include("<i class=\"fas fa-file-pdf\"></i> Courrier")
-            end
+            expect(response.body).not_to include("<i class=\"fas fa-file-pdf\"></i> Courrier")
           end
         end
       end
