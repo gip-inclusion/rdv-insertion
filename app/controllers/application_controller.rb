@@ -27,15 +27,4 @@ class ApplicationController < ActionController::Base
   def department_level?
     params[:department_id].present?
   end
-
-  if Rails.env.development?
-    around_action :n_plus_one_detection
-
-    def n_plus_one_detection
-      Prosopite.scan
-      yield
-    ensure
-      Prosopite.finish
-    end
-  end
 end

@@ -157,7 +157,7 @@ class UsersController < ApplicationController
       if department_level?
         set_organisation_at_department_level
       else
-        policy_scope(Organisation).preload(configurations: [:motif_category]).find(params[:organisation_id])
+        policy_scope(Organisation).find(params[:organisation_id])
       end
   end
 
@@ -183,7 +183,7 @@ class UsersController < ApplicationController
   def set_department
     @department =
       if department_level?
-        policy_scope(Department).preload(configurations: [:motif_category]).find(params[:department_id])
+        policy_scope(Department).find(params[:department_id])
       else
         @organisation.department
       end
@@ -242,9 +242,11 @@ class UsersController < ApplicationController
 
   def set_all_users
     @users = policy_scope(User)
-             .preload(rdv_contexts: [:invitations])
              .active
              .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
+    return if request.format == "csv"
+
+    @users = @users.preload(rdv_contexts: [:invitations])
   end
 
   def set_users_for_motif_category

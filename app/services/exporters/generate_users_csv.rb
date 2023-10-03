@@ -27,7 +27,7 @@ module Exporters
         else
           @users.preload(
             :invitations, :notifications, :archives, :organisations, :tags, :referents,
-            :participations, rdvs: [:motif, :participations, :users]
+            rdvs: [:motif, :participations, :users]
           )
         end
     end
@@ -139,7 +139,7 @@ module Exporters
     end
 
     def number_of_days_before_action_required
-      @number_of_days_before_action_required ||= @structure.configurations.find do |c|
+      @number_of_days_before_action_required ||= @structure.configurations.includes(:motif_category).find do |c|
         c.motif_category == @motif_category
       end.number_of_days_before_action_required
     end
