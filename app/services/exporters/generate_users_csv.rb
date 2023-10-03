@@ -18,15 +18,29 @@ module Exporters
 
     def generate_csv
       csv = CSV.generate(write_headers: true, col_sep: ";", headers: headers, encoding: "utf-8") do |row|
-        @users.preload(:invitations, :notifications, :archives, :organisations, :tags, :referents, :notifications,
-                       :participations, rdvs: [:motif, :participations, :users])
-              .preload(rdv_contexts: [rdvs: [:motif, :participations, :users]])
-              .each do |user|
+        users_for_export.find_each do |user|
           row << user_csv_row(user)
         end
       end
       # We add a BOM at the beginning of the file to enable a correct parsing of accented characters in Excel
       "\uFEFF#{csv}"
+    end
+
+    def users_for_export
+      @motif_category.present? ? users_for_structure_in_motif_category : all_users_for_structure
+    end
+
+    def users_for_structure_in_motif_category
+      @users_for_structure_in_motif_category ||=
+        @users.preload(:archives, :organisations, :tags, :referents,
+                       participations: [:rdv],
+                       rdv_contexts: [:invitations, :notifications, { rdvs: [:motif, :users] }])
+    end
+
+    def all_users_for_structure
+      @all_users_for_structure ||=
+        @users.preload(:invitations, :notifications, :archives, :organisations, :tags, :referents,
+                       rdvs: [:motif, :users])
     end
 
     def headers
@@ -86,7 +100,7 @@ module Exporters
        last_rdv_motif(user),
        last_rdv_type(user),
        rdv_taken_in_autonomy?(user),
-       human_rdv_context_status(user),
+       human_status(user),
        rdv_seen_in_less_than_30_days?(user),
        display_date(user.first_seen_rdv_starts_at),
        display_date(user.archive_for(department_id)&.created_at),
@@ -107,13 +121,17 @@ module Exporters
       end
     end
 
-    def human_rdv_context_status(user)
+    def human_status(user)
       return "Archivé" if user.archive_for(department_id).present?
 
-      return "" if @motif_category.nil? || rdv_context(user).nil?
-
-      I18n.t("activerecord.attributes.rdv_context.statuses.#{rdv_context(user).status}") +
-        display_context_status_notice(rdv_context(user))
+      if @motif_category.present? && rdv_context(user).present?
+        I18n.t("activerecord.attributes.rdv_context.statuses.#{rdv_context(user).status}") +
+          display_context_status_notice(rdv_context(user))
+      elsif last_rdv(user).present?
+        I18n.t("activerecord.attributes.rdv.statuses.#{last_rdv(user).status}")
+      else
+        ""
+      end
     end
 
     def display_context_status_notice(rdv_context)

@@ -242,9 +242,12 @@ class UsersController < ApplicationController
 
   def set_all_users
     @users = policy_scope(User)
-             .preload(rdv_contexts: [:invitations])
              .active
              .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
+
+    return if request.format == "csv"
+
+    @users = @users.preload(rdv_contexts: [:invitations])
   end
 
   def set_users_for_motif_category
@@ -269,7 +272,7 @@ class UsersController < ApplicationController
   end
 
   def set_rdv_contexts
-    return if archived_scope?
+    return if archived_scope? || request.format == "csv"
 
     @rdv_contexts = RdvContext.where(
       user_id: @users.ids, motif_category: @current_motif_category
