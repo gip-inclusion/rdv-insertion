@@ -21,25 +21,21 @@ export default observer(({ user }) => {
 
   if (user.errors.includes("createAccount")) {
     return (
-      <td>
-        <button type="submit" className="btn btn-danger" onClick={() => handleCreationClick()}>
-          Résoudre les erreurs
-        </button>
-      </td>
+      <button type="submit" className="btn btn-danger" onClick={() => handleCreationClick()}>
+        Résoudre les erreurs
+      </button>
     );
   }
 
   return user.isArchivedInCurrentDepartment() ? (
-    <td>
-      <button
-        type="submit"
-        disabled={user.triggers.unarchive}
-        className="btn btn-primary btn-blue"
-        onClick={() => handleFileReopen()}
-      >
-        Rouvrir le dossier
-      </button>
-    </td>
+    <button
+      type="submit"
+      disabled={user.triggers.unarchive}
+      className="btn btn-primary btn-blue"
+      onClick={() => handleFileReopen()}
+    >
+      Rouvrir le dossier
+    </button>
   ) : user.createdAt ? (
     !user.belongsToCurrentOrg() ? (
       <Tippy
@@ -53,53 +49,47 @@ export default observer(({ user }) => {
           </span>
         }
       >
-        <td>
-          <button
-            type="submit"
-            disabled={user.triggers.creation}
-            className="btn btn-primary btn-blue"
-            onClick={() => handleCreationClick()}
-          >
-            {user.triggers.creation ? "En cours..." : "Ajouter à cette organisation"}
-          </button>
-        </td>
+        <button
+          type="submit"
+          disabled={user.triggers.creation}
+          className="btn btn-primary btn-blue"
+          onClick={() => handleCreationClick()}
+        >
+          {user.triggers.creation ? "En cours..." : "Ajouter à cette organisation"}
+        </button>
       </Tippy>
     ) : (
-      <td>
-        <a
-          href={
-            user.list.isDepartmentLevel
-              ? `/departments/${user.department.id}/users/${user.id}`
-              : `/organisations/${user.currentOrganisation.id}/users/${user.id}`
+      <a
+        href={
+          user.list.isDepartmentLevel
+            ? `/departments/${user.department.id}/users/${user.id}`
+            : `/organisations/${user.currentOrganisation.id}/users/${user.id}`
+        }
+        target="_blank"
+        rel="noreferrer"
+      >
+        <Tippy
+          content={
+            <span>
+              Compte créé le&nbsp;
+              {getFrenchFormatDateString(user.createdAt)}
+              <br />
+              Vous pouvez consulter sa fiche en cliquant
+            </span>
           }
-          target="_blank"
-          rel="noreferrer"
         >
-          <Tippy
-            content={
-              <span>
-                Compte créé le&nbsp;
-                {getFrenchFormatDateString(user.createdAt)}
-                <br />
-                Vous pouvez consulter sa fiche en cliquant
-              </span>
-            }
-          >
-            <i className="fas fa-link" />
-          </Tippy>
-        </a>
-      </td>
+          <i className="fas fa-link" />
+        </Tippy>
+      </a>
     )
   ) : (
-    <td>
-      <button
-        type="submit"
-        disabled={user.triggers.creation}
-        className="btn btn-primary btn-blue"
-        onClick={() => handleCreationClick()}
-      >
-        {user.triggers.creation ? "Création..." : "Créer compte"}
-      </button>
-    </td>
+    <button
+      type="submit"
+      disabled={user.triggers.creation}
+      className="btn btn-primary btn-blue"
+      onClick={() => handleCreationClick()}
+    >
+      {user.triggers.creation ? "Création..." : "Créer compte"}
+    </button>
   );
 });

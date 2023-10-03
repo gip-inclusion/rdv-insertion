@@ -311,7 +311,7 @@ const UsersUpload = observer(
                       if (!column.visible) return null;
 
                       return (
-                        <th {...column.attributes}>
+                        <th {...column.attributes} key={column.name}>
                           {column.name}
                         </th>
                       )
@@ -319,9 +319,7 @@ const UsersUpload = observer(
                   </tr>
                 </thead>
                 <tbody>
-                  <UserList
-                    users={users}
-                  />
+                  <UserList users={users} />
                 </tbody>
               </table>
             </div>

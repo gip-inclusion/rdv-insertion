@@ -19,7 +19,7 @@ function User({ user }) {
         {user.list.columns.map((column) => {
           if (!column.visible || !column.content) return null
           
-          return column.content({ user })
+          return <td key={column.name} className={user[`${column.key}Updated`] ? "table-success" : ""}>{column.content({ user })}</td>
         })}
 
         {/* --------------------------------- Invitations cells ------------------------------- */}

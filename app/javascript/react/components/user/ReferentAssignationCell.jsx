@@ -25,24 +25,22 @@ export default observer(({ user }) => {
 
   return (
     <>
-      <td>
-        {assignationDone || user.referentAlreadyAssigned() ? (
-          <i className="fas fa-check" />
-        ) : (
-          <button
-            type="submit"
-            disabled={!user.createdAt || user.triggers.referentAssignation}
-            className="btn btn-primary btn-blue"
-            onClick={() => handleReferentAssignationClick()}
-          >
-            <small>
-              {user.triggers.referentAssignation
-                ? "Assignation..."
-                : `Assigner ${user.referentEmail}`}
-            </small>
-          </button>
-        )}
-      </td>
+      {assignationDone || user.referentAlreadyAssigned() ? (
+        <i className="fas fa-check" />
+      ) : (
+        <button
+          type="submit"
+          disabled={!user.createdAt || user.triggers.referentAssignation}
+          className="btn btn-primary btn-blue"
+          onClick={() => handleReferentAssignationClick()}
+        >
+          <small>
+            {user.triggers.referentAssignation
+              ? "Assignation..."
+              : `Assigner ${user.referentEmail}`}
+          </small>
+        </button>
+      )}
     </>
   );
 });
