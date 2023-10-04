@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_26_150031) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_04_140750) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -424,6 +424,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_26_150031) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "resource_model"
+    t.index ["resource_model", "resource_id", "webhook_endpoint_id"], name: "index_on_webhook_endpoint_and_resource_model_and_id"
     t.index ["webhook_endpoint_id"], name: "index_webhook_receipts_on_webhook_endpoint_id"
   end
 
