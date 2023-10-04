@@ -3,28 +3,21 @@ import Swal from "sweetalert2";
 import Tippy from "@tippyjs/react";
 import { observer } from "mobx-react-lite";
 
-import * as XLSX from "xlsx";
 import FileHandler from "../components/FileHandler";
 import EnrichWithContactFile from "../components/EnrichWithContactFile";
 import UserBatchActions from "../components/UserBatchActions";
 import UserRow from "../components/User";
 
-import getHeaderNames from "../lib/getHeaderNames";
-import checkColumnNames from "../lib/checkColumnNames";
-import displayMissingColumnsWarning from "../lib/displayMissingColumnsWarning";
 import retrieveUpToDateUsers from "../lib/retrieveUpToDateUsers";
 import parseContactsData from "../lib/parseContactsData";
 import updateUserContactsData from "../lib/updateUserContactsData";
 import retrieveContactsData from "../lib/retrieveContactsData";
 import { formatDateInput } from "../../lib/datesHelper";
-import {
-  parameterizeObjectKeys,
-  parameterizeObjectValues,
-  parameterizeArray,
-} from "../../lib/parameterize";
+import { parameterizeObjectValues } from "../../lib/parameterize";
 
 import User from "../models/User";
 import usersStore from "../models/Users";
+import uploadFile from "../lib/uploadFile";
 
 const UsersUpload = observer(
   ({
@@ -42,118 +35,51 @@ const UsersUpload = observer(
 
     const isDepartmentLevel = !organisation;
     const [fileSize, setFileSize] = useState(0);
-    /* eslint no-unused-vars: ["error", { "varsIgnorePattern": "contactsUpdated" }] */
-    // This state allows to re-renders users after contacts update
-    const [contactsUpdated, setContactsUpdated] = useState(false);
     const [showEnrichWithContactFile, setShowEnrichWithContactFile] = useState(false);
-    const [showReferentColumn, setShowReferentColumn] = useState(
-      configuration && configuration.rdv_with_referents
-    );
-    const showCarnetColumn = !!department.carnet_de_bord_deploiement_id;
 
     const redirectToUserList = () => {
-      if (configuration) {
-        window.location.href = isDepartmentLevel
-          ? `/departments/${department.id}/users?motif_category_id=${configuration.motif_category_id}`
-          : `/organisations/${organisation.id}/users?motif_category_id=${configuration.motif_category_id}`;
-      } else {
-        window.location.href = isDepartmentLevel
-          ? `/departments/${department.id}/users`
-          : `/organisations/${organisation.id}/users`;
-      }
+      const scope = isDepartmentLevel ? "departments" : "organisations";
+      const url = `/${scope}/${(organisation || department).id}/users`;
+      const queryParams = configuration ? `?motif_category_id=${configuration.motif_category_id}` : ""
+
+      window.location.href = url + queryParams;
     };
 
     const retrieveUsersFromList = async (file) => {
-      await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = function (event) {
-          const workbook = XLSX.read(event.target.result, { type: "binary" });
-          const sheet = workbook.Sheets[sheetName] || workbook.Sheets[workbook.SheetNames[0]];
-          const headerNames = getHeaderNames(sheet);
-          const missingColumnNames = checkColumnNames(columnNames, parameterizeArray(headerNames));
-          if (missingColumnNames.length > 0) {
-            displayMissingColumnsWarning(missingColumnNames);
-          } else {
-            let rows = XLSX.utils.sheet_to_row_object_array(sheet);
-            rows = rows.map((row) => parameterizeObjectKeys(row));
-            
-            users.columnConfig = parameterizedColumnNames;
-            users.showCarnetColumn = showCarnetColumn;
-            users.showReferentColumn = showReferentColumn.value;
-            users.configuration = configuration;
-            users.isDepartmentLevel = isDepartmentLevel;
+      users.columnConfig = parameterizedColumnNames;
+      users.showCarnetColumn = !!department.carnet_de_bord_deploiement_id;
+      users.showReferentColumn = configuration?.rdv_with_referents;
+      users.configuration = configuration;
+      users.isDepartmentLevel = isDepartmentLevel;
 
-            rows.forEach((row) => {
-              const user = new User(
-                // creation and editing to work properly
-                {
-                  lastName: row[parameterizedColumnNames.last_name_column],
-                  firstName: row[parameterizedColumnNames.first_name_column],
-                  affiliationNumber: row[parameterizedColumnNames.affiliation_number_column],
-                  tags:
-                    row[parameterizedColumnNames.tags_column]
-                      ?.split(",")
-                      .map((tag) => tag.trim()) || [],
-                  nir: row[parameterizedColumnNames.nir_column],
-                  poleEmploiId: row[parameterizedColumnNames.pole_emploi_id_column],
-                  role: row[parameterizedColumnNames.role_column],
-                  title: row[parameterizedColumnNames.title_column],
-                  addressFirstField:
-                    parameterizedColumnNames.address_first_field_column &&
-                    row[parameterizedColumnNames.address_first_field_column],
-                  addressSecondField:
-                    parameterizedColumnNames.address_second_field_column &&
-                    row[parameterizedColumnNames.address_second_field_column],
-                  addressThirdField:
-                    parameterizedColumnNames.address_third_field_column &&
-                    row[parameterizedColumnNames.address_third_field_column],
-                  addressFourthField:
-                    parameterizedColumnNames.address_fourth_field_column &&
-                    row[parameterizedColumnNames.address_fourth_field_column],
-                  addressFifthField:
-                    parameterizedColumnNames.address_fifth_field_column &&
-                    row[parameterizedColumnNames.address_fifth_field_column],
-                  email:
-                    parameterizedColumnNames.email_column &&
-                    row[parameterizedColumnNames.email_column],
-                  phoneNumber:
-                    parameterizedColumnNames.phone_number_column &&
-                    row[parameterizedColumnNames.phone_number_column],
-                  birthDate:
-                    parameterizedColumnNames.birth_date_column &&
-                    row[parameterizedColumnNames.birth_date_column] &&
-                    formatDateInput(row[parameterizedColumnNames.birth_date_column]),
-                  birthName:
-                    parameterizedColumnNames.birth_name_column &&
-                    row[parameterizedColumnNames.birth_name_column],
-                  departmentInternalId:
-                    parameterizedColumnNames.department_internal_id_column &&
-                    row[parameterizedColumnNames.department_internal_id_column],
-                  rightsOpeningDate:
-                    parameterizedColumnNames.rights_opening_date_column &&
-                    row[parameterizedColumnNames.rights_opening_date_column] &&
-                    formatDateInput(row[parameterizedColumnNames.rights_opening_date_column]),
-                  linkedOrganisationSearchTerms:
-                    parameterizedColumnNames.organisation_search_terms_column &&
-                    row[parameterizedColumnNames.organisation_search_terms_column],
-                  referentEmail:
-                    parameterizedColumnNames.referent_email_column &&
-                    row[parameterizedColumnNames.referent_email_column],
-                },
-                department,
-                organisation,
-                tags,
-                configuration,
-                columnNames,
-                currentAgent,
-                users
-              );
-              users.addUser(user);
-            });
-          }
-          resolve();
-        };
-        reader.readAsBinaryString(file);
+      const rows = await uploadFile(file, sheetName, columnNames)
+      
+      rows.forEach((row) => {
+        const user = new User({
+          lastName: row[parameterizedColumnNames.last_name_column],
+          firstName: row[parameterizedColumnNames.first_name_column],
+          affiliationNumber: row[parameterizedColumnNames.affiliation_number_column],
+          tags: row[parameterizedColumnNames.tags_column]?.split(",").map((tag) => tag.trim()) || [],
+          nir: row[parameterizedColumnNames.nir_column],
+          poleEmploiId: row[parameterizedColumnNames.pole_emploi_id_column],
+          role: row[parameterizedColumnNames.role_column],
+          title: row[parameterizedColumnNames.title_column],
+          addressFirstField: row[parameterizedColumnNames.address_first_field_column],
+          addressSecondField: row[parameterizedColumnNames.address_second_field_column],
+          addressThirdField: row[parameterizedColumnNames.address_third_field_column],
+          addressFourthField: row[parameterizedColumnNames.address_fourth_field_column],
+          addressFifthField: row[parameterizedColumnNames.address_fifth_field_column],
+          email: row[parameterizedColumnNames.email_column],
+          phoneNumber: row[parameterizedColumnNames.phone_number_column],
+          birthDate: formatDateInput(row[parameterizedColumnNames.birth_date_column]),
+          birthName: row[parameterizedColumnNames.birth_name_column],
+          departmentInternalId: row[parameterizedColumnNames.department_internal_id_column],
+          rightsOpeningDate: formatDateInput(row[parameterizedColumnNames.rights_opening_date_column]),
+          linkedOrganisationSearchTerms: row[parameterizedColumnNames.organisation_search_terms_column],
+          referentEmail: row[parameterizedColumnNames.referent_email_column],
+        }, department, organisation, tags, configuration, columnNames, currentAgent, users);
+
+        users.addUser(user);
       });
     };
 
@@ -194,7 +120,6 @@ const UsersUpload = observer(
         return;
       }
 
-      setContactsUpdated(false);
       setFileSize(file.size);
       const contactsData = await retrieveContactsData(file);
       if (contactsData.length === 0) return;
@@ -213,7 +138,6 @@ const UsersUpload = observer(
           }
         })
       );
-      setContactsUpdated(true);
     };
 
     return (
@@ -224,7 +148,7 @@ const UsersUpload = observer(
               <button
                 type="submit"
                 className="btn btn-secondary btn-blue-out"
-                onClick={() => redirectToUserList()}
+                onClick={redirectToUserList}
               >
                 Retour au suivi
               </button>
@@ -283,15 +207,15 @@ const UsersUpload = observer(
                 <div className="d-flex justify-content-end align-items-center">
                   <UserBatchActions users={users} />
                   <i className="fas fa-user" />
-                  {showReferentColumn ? (
+                  {users.showReferentColumn ? (
                     <Tippy content="Cacher colonne référent">
-                      <button type="button" onClick={() => setShowReferentColumn(false)}>
+                      <button type="button" onClick={() => { users.showReferentColumn = false }}>
                         <i className="fas fa-minus" />
                       </button>
                     </Tippy>
                   ) : (
                     <Tippy content="Montrer colonne référent">
-                      <button type="button" onClick={() => setShowReferentColumn(true)}>
+                      <button type="button" onClick={() => { users.showReferentColumn = true }}>
                         <i className="fas fa-plus" />
                       </button>
                     </Tippy>
