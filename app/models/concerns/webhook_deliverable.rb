@@ -16,7 +16,6 @@ module WebhookDeliverable
   end
 
   def generate_payload_and_send_webhook(action)
-
     subscribed_webhook_endpoints.each do |endpoint|
       OutgoingWebhooks::SendWebhookJob.perform_async(endpoint.id, generate_webhook_payload(action))
     end
@@ -41,7 +40,7 @@ module WebhookDeliverable
     # Execute la suppression, après avoir construit les données à envoyer
     yield if block_given?
     payloads.each do |endpoint, payload|
-      WebhookJob.perform_later(payload, endpoint.id)
+      OutgoingWebhooks::SendWebhookJob.perform_async(endpoint.id, payload)
     end
   end
 

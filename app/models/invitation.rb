@@ -76,6 +76,7 @@ class Invitation < ApplicationRecord
   def should_send_webhook?
     return false if @should_send_webhook == false
 
+    # we only send one webhook for invitations, when invitation is sent
     sent_at.present? && sent_at_previously_changed?
   end
 

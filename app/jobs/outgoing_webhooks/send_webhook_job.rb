@@ -1,6 +1,6 @@
-module OutgoingWebhooks
-  class OutgoingWebhookError < StandardError; end
+class OutgoingWebhookError < StandardError; end
 
+module OutgoingWebhooks
   class SendWebhookJob < ApplicationJob
     def perform(webhook_endpoint_id, webhook_payload)
       @webhook_endpoint = WebhookEndpoint.find(webhook_endpoint_id)
