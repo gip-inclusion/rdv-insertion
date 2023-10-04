@@ -99,7 +99,8 @@ group :development, :test do
   gem "rubocop"
   gem "rubocop-rails"
   gem "rubocop-rspec"
-  gem "bullet"
+  gem "prosopite"
+  gem "pg_query"
 end
 
 group :development do
