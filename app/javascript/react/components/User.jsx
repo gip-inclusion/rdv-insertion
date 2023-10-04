@@ -22,7 +22,6 @@ function User({ user }) {
           return <td key={column.name} className={user[`${column.key}Updated`] ? "table-success" : ""}>{column.content({ user })}</td>
         })}
 
-        {/* --------------------------------- Invitations cells ------------------------------- */}
         {user.currentConfiguration && (
           <InvitationCells
             user={user}
