@@ -9,6 +9,8 @@ import EditableCell from "../components/user/EditableCell";
 class Users {
   constructor() {
     this.list = [];
+    this.sortBy = null;
+    this.sortDirection = "asc";
     this.loading = false;
     this.columnConfig = [];
     this.showCarnetColumn = false
@@ -36,6 +38,8 @@ class Users {
       },
       {
         name: "Civilité",
+        sortable: true,
+        key: "title",
         content: ({ user }) => (
           <EditableCell
             type="select"
@@ -50,19 +54,25 @@ class Users {
       },
       {
         name: "Prénom",
+        sortable: true,
+        key: "firstName",
         content: ({ user }) => <EditableCell type="text" user={user} cell="firstName" />
       },
       {
         name: "Nom",
+        sortable: true,
+        key: "lastName",
         content: ({ user }) => <EditableCell type="text" user={user} cell="lastName" />
       },
       {
-        name: "Numéro CAF", 
+        name: "Numéro CAF",
         visible: this.columnConfig.affiliation_number_column,
         content: ({ user }) => <EditableCell type="text" user={user} cell="affiliationNumber" />
       },
       {
         name: "Rôle",
+        sortable: true,
+        key: "role",
         visible: this.columnConfig.role_column,
         content: ({ user }) => (
           <EditableCell
@@ -187,6 +197,35 @@ class Users {
 
   get selectedUsers() {
     return this.list.filter((user) => user.selected);
+  }
+
+  sort(column) {
+    if (this.sortBy === column) {
+      // Everytime we click on the same column,
+      // we go to the next sorting (asc, then desc, then back to no sorting)
+      const sortings = ["up", "down", null]
+      const index = sortings.indexOf(this.sortDirection)
+      this.sortDirection = sortings[(index + 1) % sortings.length]
+    } else {
+      this.sortBy = column;
+      this.sortDirection = "up";
+    }
+  }
+
+  get sorted() {
+    if (this.sortBy && this.sortDirection) {
+      return this.list.slice().sort((a, b) => {
+        if (a[this.sortBy] < b[this.sortBy]) {
+          return this.sortDirection === "up" ? -1 : 1;
+        }
+        if (a[this.sortBy] > b[this.sortBy]) {
+          return this.sortDirection === "up" ? 1 : -1;
+        }
+
+        return 0;
+      });
+    }
+    return this.invalidFirsts;
   }
 
   get invalidFirsts() {

@@ -236,14 +236,18 @@ const UsersUpload = observer(
 
                       return (
                         <th {...column.attributes} key={column.name}>
-                          {column.name}
+                          {column.sortable ? (
+                            <button type="button" onClick={() => users.sort(column.key)} >
+                              {column.name} <i className={`fas fa-sort fa-sort-${users.sortBy === column.key && users.sortDirection} />`} />
+                            </button>
+                          ) : column.name}
                         </th>
                       )
                     })}
                   </tr>
                 </thead>
                 <tbody>
-                  {users.invalidFirsts.map((user) => <UserRow user={user} key={user.uniqueKey} />)}
+                  {users.sorted.map((user) => <UserRow user={user} key={user.uniqueKey} />)}
                 </tbody>
               </table>
             </div>
