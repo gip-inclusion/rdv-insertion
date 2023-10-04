@@ -86,7 +86,7 @@ module Exporters
        last_rdv_motif(user),
        last_rdv_type(user),
        rdv_taken_in_autonomy?(user),
-       human_rdv_context_status(user),
+       human_status(user),
        rdv_seen_in_less_than_30_days?(user),
        display_date(user.first_seen_rdv_starts_at),
        display_date(user.archive_for(department_id)&.created_at),
@@ -107,13 +107,17 @@ module Exporters
       end
     end
 
-    def human_rdv_context_status(user)
+    def human_status(user)
       return "Archivé" if user.archive_for(department_id).present?
 
-      return "" if @motif_category.nil? || rdv_context(user).nil?
-
-      I18n.t("activerecord.attributes.rdv_context.statuses.#{rdv_context(user).status}") +
-        display_context_status_notice(rdv_context(user))
+      if @motif_category.present? && rdv_context(user).present?
+        I18n.t("activerecord.attributes.rdv_context.statuses.#{rdv_context(user).status}") +
+          display_context_status_notice(rdv_context(user))
+      elsif last_rdv(user).present?
+        I18n.t("activerecord.attributes.rdv.statuses.#{last_rdv(user).status}")
+      else
+        ""
+      end
     end
 
     def display_context_status_notice(rdv_context)
