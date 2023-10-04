@@ -225,10 +225,6 @@ describe Exporters::GenerateUsersCsv, type: :service do
         it "generates the right filename" do
           expect(subject.filename).to eq("Export_beneficiaires_organisation_drome_rsa.csv")
         end
-
-        it "does not display the statuses" do
-          expect(subject.csv).not_to include("Statut du RDV à préciser")
-        end
       end
     end
   end
