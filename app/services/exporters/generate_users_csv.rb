@@ -10,18 +10,31 @@ module Exporters
     end
 
     def call
+      preload_associations
       result.filename = filename
       result.csv = generate_csv
     end
 
     private
 
+    def preload_associations
+      @users =
+        if @motif_category
+          @users.preload(
+            :archives, :organisations, :tags, :referents, :rdvs,
+            rdv_contexts: [:invitations, :notifications, { rdvs: [:motif, :participations, :users] }]
+          )
+        else
+          @users.preload(
+            :invitations, :notifications, :archives, :organisations, :tags, :referents,
+            rdvs: [:motif, :users, { rdv_contexts: [:motif_category, :invitations] }]
+          )
+        end
+    end
+
     def generate_csv
       csv = CSV.generate(write_headers: true, col_sep: ";", headers: headers, encoding: "utf-8") do |row|
-        @users.preload(:invitations, :notifications, :archives, :organisations, :tags, :referents, :notifications,
-                       :participations, rdvs: [:motif, :participations, :users])
-              .preload(rdv_contexts: [rdvs: [:motif, :participations, :users]])
-              .each do |user|
+        @users.find_each do |user|
           row << user_csv_row(user)
         end
       end
@@ -127,9 +140,15 @@ module Exporters
     end
 
     def number_of_days_before_action_required(rdv_context)
-      @structure.configurations.find do |c|
+      return "" if @structure.blank?
+
+      structure_configurations.find do |c|
         c.motif_category == rdv_context.motif_category
       end.number_of_days_before_action_required
+    end
+
+    def structure_configurations
+      @structure_configurations ||= @structure.configurations.preload(:motif_category)
     end
 
     def display_date(date)
