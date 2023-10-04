@@ -65,7 +65,7 @@ describe WebhookDeliverable, type: :concern do
       end
     end
 
-    context "when the webhook endpoint is triggered by the model changes but webhook callbacks are disabled explicitly" do
+    context "when the webhook callbacks are disabled explicitly" do
       context "on creation" do
         let!(:rdv) { build(:rdv, organisation: organisation) }
 
