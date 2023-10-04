@@ -66,6 +66,10 @@ class Rdv < ApplicationRecord
     participations.find { |p| p.user == user }
   end
 
+  def rdv_context_for(user)
+    rdv_contexts.to_a.find { |rc| rc.user_id == user.id }
+  end
+
   def add_user_url(rdv_solidarites_user_id)
     params = { add_user: [rdv_solidarites_user_id] }
     "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{rdv_solidarites_organisation_id}/rdvs/" \

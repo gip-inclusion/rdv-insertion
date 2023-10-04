@@ -52,7 +52,7 @@ module Exporters
        "Motif du dernier RDV",
        "Nature du dernier RDV",
        "Dernier RDV pris en autonomie ?",
-       User.human_attribute_name(:status),
+       RdvContext.human_attribute_name(:status),
        "1er RDV honoré en - de 30 jours ?",
        "Date d'orientation",
        Archive.human_attribute_name(:created_at),
@@ -86,7 +86,7 @@ module Exporters
        last_rdv_motif(user),
        last_rdv_type(user),
        rdv_taken_in_autonomy?(user),
-       human_status(user),
+       human_rdv_context_status(user),
        rdv_seen_in_less_than_30_days?(user),
        display_date(user.first_seen_rdv_starts_at),
        display_date(user.archive_for(department_id)&.created_at),
@@ -107,21 +107,18 @@ module Exporters
       end
     end
 
-    def human_status(user)
+    def human_rdv_context_status(user)
       return "Archivé" if user.archive_for(department_id).present?
 
-      if @motif_category.present? && rdv_context(user).present?
-        I18n.t("activerecord.attributes.rdv_context.statuses.#{rdv_context(user).status}") +
-          display_context_status_notice(rdv_context(user))
-      elsif last_rdv(user).present?
-        I18n.t("activerecord.attributes.rdv.statuses.#{last_rdv(user).status}")
-      else
-        ""
-      end
+      return "" if rdv_context_for_export(user).nil?
+
+      I18n.t("activerecord.attributes.rdv_context.statuses.#{rdv_context_for_export(user).status}") +
+        display_context_status_notice(rdv_context_for_export(user))
     end
 
     def display_context_status_notice(rdv_context)
-      if @structure.present? && rdv_context.invited_before_time_window?(number_of_days_before_action_required) &&
+      if @structure.present? &&
+         rdv_context.invited_before_time_window?(number_of_days_before_action_required(rdv_context)) &&
          rdv_context.invitation_pending?
         " (Délai dépassé)"
       else
@@ -129,9 +126,9 @@ module Exporters
       end
     end
 
-    def number_of_days_before_action_required
-      @number_of_days_before_action_required ||= @structure.configurations.find do |c|
-        c.motif_category == @motif_category
+    def number_of_days_before_action_required(rdv_context)
+      @structure.configurations.find do |c|
+        c.motif_category == rdv_context.motif_category
       end.number_of_days_before_action_required
     end
 
@@ -144,25 +141,25 @@ module Exporters
     end
 
     def first_invitation_date(user)
-      @motif_category.present? ? rdv_context(user)&.first_invitation_sent_at : user.first_invitation_sent_at
+      @motif_category.present? ? rdv_context_for_export(user)&.first_invitation_sent_at : user.first_invitation_sent_at
     end
 
     def last_invitation_date(user)
-      @motif_category.present? ? rdv_context(user)&.last_invitation_sent_at : user.last_invitation_sent_at
+      @motif_category.present? ? rdv_context_for_export(user)&.last_invitation_sent_at : user.last_invitation_sent_at
     end
 
     def last_notification_date(user)
-      return rdv_context(user)&.last_sent_convocation_sent_at if @motif_category.present?
+      return rdv_context_for_export(user)&.last_sent_convocation_sent_at if @motif_category.present?
 
       user.last_sent_convocation_sent_at
     end
 
     def last_rdv_date(user)
-      @motif_category.present? ? rdv_context(user)&.last_rdv_starts_at : user.last_rdv_starts_at
+      @motif_category.present? ? rdv_context_for_export(user)&.last_rdv_starts_at : user.last_rdv_starts_at
     end
 
     def last_rdv(user)
-      @motif_category.present? ? rdv_context(user)&.last_rdv : user.last_rdv
+      @motif_category.present? ? rdv_context_for_export(user)&.last_rdv : user.last_rdv
     end
 
     def last_participation(user)
@@ -189,8 +186,8 @@ module Exporters
       I18n.t("boolean.#{user.rdv_seen_delay_in_days.present? && user.rdv_seen_delay_in_days < 30}")
     end
 
-    def rdv_context(user)
-      user.rdv_context_for(@motif_category)
+    def rdv_context_for_export(user)
+      @motif_category.present? ? user.rdv_context_for(@motif_category) : last_rdv(user)&.rdv_context_for(user)
     end
 
     def department_level?
