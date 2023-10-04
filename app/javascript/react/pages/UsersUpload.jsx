@@ -243,9 +243,7 @@ const UsersUpload = observer(
                   </tr>
                 </thead>
                 <tbody>
-                  {users.invalidFirsts.map((user) => (
-                    <UserRow user={user} key={user.uniqueKey} />
-                  ))}
+                  {users.invalidFirsts.map((user) => <UserRow user={user} key={user.uniqueKey} />)}
                 </tbody>
               </table>
             </div>
