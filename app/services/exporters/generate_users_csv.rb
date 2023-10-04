@@ -10,15 +10,31 @@ module Exporters
     end
 
     def call
+      preload_associations
       result.filename = filename
       result.csv = generate_csv
     end
 
     private
 
+    def preload_associations
+      @users =
+        if @motif_category
+          @users.preload(
+            :invitations, :notifications, :archives, :organisations, :tags, :referents, :rdvs,
+            rdv_contexts: [rdvs: [:motif, :participations, :users]]
+          )
+        else
+          @users.preload(
+            :invitations, :notifications, :archives, :organisations, :tags, :referents,
+            rdvs: [:motif, :participations, :users]
+          )
+        end
+    end
+
     def generate_csv
       csv = CSV.generate(write_headers: true, col_sep: ";", headers: headers, encoding: "utf-8") do |row|
-        @users.preload(:organisations, :rdvs, :tags, rdv_contexts: [:invitations]).each do |user|
+        @users.find_each do |user|
           row << user_csv_row(user)
         end
       end
@@ -123,7 +139,7 @@ module Exporters
     end
 
     def number_of_days_before_action_required
-      @number_of_days_before_action_required ||= @structure.configurations.find do |c|
+      @number_of_days_before_action_required ||= @structure.configurations.includes(:motif_category).find do |c|
         c.motif_category == @motif_category
       end.number_of_days_before_action_required
     end

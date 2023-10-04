@@ -5,13 +5,13 @@ module Stats
     end
 
     def call
-      result.value = compute_rate_of_users_with_rdv_seen_in_less_than_30_days
+      result.value = compute_rate_of_users_oriented_in_less_than_30_days
     end
 
     private
 
     # Rate of users with rdv seen in less than 30 days
-    def compute_rate_of_users_with_rdv_seen_in_less_than_30_days
+    def compute_rate_of_users_oriented_in_less_than_30_days
       (users_oriented_in_less_than_30_days.count / (
         users_created_more_than_30_days_ago.count.nonzero? || 1
       ).to_f) * 100

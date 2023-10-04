@@ -123,7 +123,7 @@ function User({ user, isDepartmentLevel, showCarnetColumn, showReferentColumn })
 
       {/* Contact infos extra line. It appears if the user contacts data when uploading the contacts file are different from the ones in DB */}
 
-      {(user.phoneNumberNew || user.emailNew || user.rightsOpeningDateNew) && (
+      {(user.belongsToCurrentOrg() && (user.phoneNumberNew || user.emailNew || user.rightsOpeningDateNew)) && (
         <ContactInfosExtraLine user={user} invitationsColspan={computeInvitationsColspan()} />
       )}
     </>

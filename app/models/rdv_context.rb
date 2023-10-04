@@ -37,6 +37,7 @@ class RdvContext < ApplicationRecord
     )
   }
   scope :with_sent_invitations, -> { joins(:invitations).where.not(invitations: { sent_at: nil }) }
+  scope :orientation, -> { joins(:motif_category).where(motif_category: { leads_to_orientation: true }) }
 
   def action_required_status?
     status.in?(STATUSES_WITH_ACTION_REQUIRED)

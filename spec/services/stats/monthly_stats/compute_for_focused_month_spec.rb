@@ -36,12 +36,14 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
         .and_return(Participation.where(id: [participation1]))
       allow(stat).to receive(:participations_with_notifications_sample)
         .and_return(Participation.where(id: [participation2]))
-      allow(stat).to receive(:rdv_contexts_sample)
+      allow(stat).to receive(:rdv_contexts_with_invitations_and_participations_sample)
         .and_return(RdvContext.where(id: [rdv_context1, rdv_context2]))
       allow(stat).to receive(:users_sample)
         .and_return(User.where(id: [user1, user2]))
-      allow(stat).to receive(:users_for_30_days_rdvs_seen_sample)
+      allow(stat).to receive(:users_with_orientation_category_sample)
         .and_return(User.where(id: [user1, user2]))
+      allow(stat).to receive(:orientation_rdv_contexts_sample)
+        .and_return(RdvContext.where(id: [rdv_context1, rdv_context2]))
       allow(stat).to receive(:invited_users_sample)
         .and_return(User.where(id: [user1, user2]))
       allow(Stats::ComputeRateOfNoShow).to receive(:call)
@@ -49,6 +51,8 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
       allow(Stats::ComputeAverageTimeBetweenInvitationAndRdvInDays).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 4.0))
       allow(Stats::ComputeRateOfUsersWithRdvSeenInLessThanThirtyDays).to receive(:call)
+        .and_return(OpenStruct.new(success?: true, value: 50.0))
+      allow(Stats::ComputeRateOfUsersWithRdvSeen).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 50.0))
       allow(Stats::ComputeRateOfAutonomousUsers).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 50.0))
@@ -69,7 +73,8 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
       expect(subject.stats_values).to include(:rate_of_no_show_for_invitations_grouped_by_month)
       expect(subject.stats_values).to include(:rate_of_no_show_for_convocations_grouped_by_month)
       expect(subject.stats_values).to include(:average_time_between_invitation_and_rdv_in_days_by_month)
-      expect(subject.stats_values).to include(:rate_of_users_with_rdv_seen_in_less_than_30_days_by_month)
+      expect(subject.stats_values).to include(:rate_of_users_oriented_in_less_than_30_days_by_month)
+      expect(subject.stats_values).to include(:rate_of_users_oriented_grouped_by_month)
       expect(subject.stats_values).to include(:rate_of_autonomous_users_grouped_by_month)
     end
 
@@ -80,7 +85,8 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
       expect(subject.stats_values[:rate_of_no_show_for_invitations_grouped_by_month]).to be_a(Integer)
       expect(subject.stats_values[:rate_of_no_show_for_convocations_grouped_by_month]).to be_a(Integer)
       expect(subject.stats_values[:average_time_between_invitation_and_rdv_in_days_by_month]).to be_a(Integer)
-      expect(subject.stats_values[:rate_of_users_with_rdv_seen_in_less_than_30_days_by_month]).to be_a(Integer)
+      expect(subject.stats_values[:rate_of_users_oriented_in_less_than_30_days_by_month]).to be_a(Integer)
+      expect(subject.stats_values[:rate_of_users_oriented_grouped_by_month]).to be_a(Integer)
       expect(subject.stats_values[:rate_of_autonomous_users_grouped_by_month]).to be_a(Integer)
     end
 
@@ -115,16 +121,23 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
     end
 
     it "computes the average time between first invitation and first rdv in days" do
-      expect(stat).to receive(:rdv_contexts_sample)
+      expect(stat).to receive(:rdv_contexts_with_invitations_and_participations_sample)
       expect(Stats::ComputeAverageTimeBetweenInvitationAndRdvInDays).to receive(:call)
         .with(rdv_contexts: [rdv_context1])
       subject
     end
 
     it "computes the percentage of users with rdv seen in less than 30 days" do
-      expect(stat).to receive(:users_for_30_days_rdvs_seen_sample)
+      expect(stat).to receive(:users_with_orientation_category_sample)
       expect(Stats::ComputeRateOfUsersWithRdvSeenInLessThanThirtyDays).to receive(:call)
         .with(users: [user2])
+      subject
+    end
+
+    it "computes the percentage of users with rdv seen posterior to an invitation" do
+      expect(stat).to receive(:orientation_rdv_contexts_sample)
+      expect(Stats::ComputeRateOfUsersWithRdvSeen).to receive(:call)
+        .with(rdv_contexts: [rdv_context1])
       subject
     end
 
