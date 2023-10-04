@@ -68,6 +68,18 @@ class InvitationsController < ApplicationController
       rdv_solidarites_session: rdv_solidarites_session
     )
 
+
+    # Tester en batch invitations (une seule requete pour plusieurs invitations)
+    # Testing
+    # réduire la taille de ce fichier
+    # on bloque la possibilité d'envoyer une invitation sur les pages index / show / UPLOAD avec un message explicatif dans une box
+    # Demander une précision pour les rdv collectifs
+
+    # Search Context à refactoriser en d'autres classes et services, on va utiliser les memes params
+    # Vérifier individuellement l'invitation dans le search context
+    # Service pour le filter_motifs ?...
+    # créneaux disponibles doit renvoyer des creneaux ?
+
     if update_creneaux_call.fails?
       OpenStruct.new(success?: false, errors: update_creneaux_call.errors)
     elsif @current_configuration.available_creneaux_count.zero?
