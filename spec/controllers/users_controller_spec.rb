@@ -944,7 +944,7 @@ describe UsersController do
                 department_id: department.id,
                 motif_category_id: category_orientation.id,
                 sort_by: "last_invitation_sent_at",
-                sort_order: "desc"
+                sort_order: "down"
               }
             end
 

@@ -16,8 +16,8 @@ module Users::Sortable
   end
 
   def motif_category_order
-    @users = if %w[first_invitation_sent_at last_invitation_sent_at].include?(params[:sort_by])
-               first_or_last = sort_order_from_params == "asc" ? "MIN" : "MAX"
+    @users = if %w[first_invitation_sent_at last_invitation_sent_at].include?(params[:sort_by]) && params[:sort_order]
+               first_or_last = sort_order_from_params == "up" ? "MIN" : "MAX"
 
                @users
                  .left_joins(rdv_contexts: :invitations)
@@ -58,6 +58,6 @@ module Users::Sortable
   end
 
   def sort_order_from_params
-    params[:sort_order] == "asc" ? "asc" : "desc"
+    params[:sort_order] == "up" ? "asc" : "desc"
   end
 end

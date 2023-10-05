@@ -8,12 +8,12 @@
     <% if show_invitations?(@current_configuration) %>
       <th scope="col">
         <%= link_to compute_index_path(@organisation, @department, motif_category_id: @current_motif_category&.id, sort_by: :first_invitation_sent_at, sort_order: sort_order_for("first_invitation_sent_at")), class: 'text-primary' do %>
-          Première invitation <%= display_sorting_icon("first_invitation_sent_at") %>
+          Première invitation <i class="fas fa-sort fa-sort-<%= params[:sort_by] == "first_invitation_sent_at" && params[:sort_order] %>"></i>
         <% end %>
       </th>
       <th scope="col">
         <%= link_to compute_index_path(@organisation, @department, motif_category_id: @current_motif_category&.id, sort_by: :last_invitation_sent_at, sort_order: sort_order_for("last_invitation_sent_at")), class: 'text-primary' do %>
-          Dernière invitation <%= display_sorting_icon("last_invitation_sent_at") %>
+          Dernière invitation <i class="fas fa-sort fa-sort-<%= params[:sort_by] == "last_invitation_sent_at" && params[:sort_order] %>"></i>
         <% end %>
       </th>
     <% end %>

@@ -14,15 +14,10 @@ module UsersHelper
   end
 
   def sort_order_for(column)
-    return "desc" unless sorting_users_by?(column)
+    return "up" unless sorting_users_by?(column)
 
-    params[:sort_order] == "asc" ? "desc" : "asc"
-  end
-
-  def display_sorting_icon(column)
-    return unless sorting_users_by?(column)
-
-    params[:sort_order] == "asc" ? "▲" : "▼"
+    sortings = ["up", "down", nil]
+    sortings[(sortings.index(params[:sort_order]) + 1) % sortings.length]
   end
 
   def no_search_results?(users)
