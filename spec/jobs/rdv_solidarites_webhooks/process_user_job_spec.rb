@@ -61,6 +61,18 @@ describe RdvSolidaritesWebhooks::ProcessUserJob do
       end
     end
 
+    context "when the destroy comes from the user itself" do
+      before do
+        data.merge!(deleted_at: Time.zone.now.to_s)
+        meta.merge!(event: "destroyed", trigger: "user")
+      end
+
+      it "does not enqueue a job" do
+        expect(UpsertRecordJob).not_to receive(:perform_async)
+        subject
+      end
+    end
+
     context "when the user is not found" do
       let!(:user) { create(:user, rdv_solidarites_user_id: "some-id") }
 
