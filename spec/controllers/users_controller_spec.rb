@@ -956,6 +956,15 @@ describe UsersController do
               create(:invitation, rdv_context: user2.rdv_contexts.first, user: user2, sent_at: 2.years.ago)
             end
 
+            # This is to make sure only the invitations of the current motif_category are taken into account
+            let!(:invitation_unused) do
+              create(:invitation, rdv_context: rdv_context_unused, user: user2, sent_at: 1.day.ago)
+            end
+
+            let(:rdv_context_unused) do
+              create(:rdv_context, motif_category: category_accompagnement, status: "rdv_seen")
+            end
+
             it "orders by invitation creation" do
               get :index, params: index_params
 
