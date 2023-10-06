@@ -2,8 +2,13 @@ module Invitations
   class Validate < BaseService
     attr_reader :invitation
 
-    delegate :user, :organisations, :motif_category, :valid_until, :motif_category_name, :department_id, :invitation_link_params,
-             to: :invitation
+    delegate :user,
+             :organisations,
+             :motif_category,
+             :valid_until,
+             :motif_category_name,
+             :department_id,
+             :invitation_link_params, to: :invitation
 
     def initialize(invitation:, rdv_solidarites_session:)
       @invitation = invitation
@@ -13,12 +18,12 @@ module Invitations
     def call
       validate_user_title_presence
       validate_organisations_are_not_from_different_departments
-      validate_existing_creneau_in_rdv_solidarites
       validate_it_expires_in_more_than_5_days if @invitation.format_postal?
       validate_user_belongs_to_an_org_linked_to_motif_category
       validate_motif_of_this_category_is_defined_in_organisations
       validate_referents_are_assigned if @invitation.rdv_with_referents?
       validate_follow_up_motifs_are_defined if @invitation.rdv_with_referents?
+      validate_existing_creneau_in_rdv_solidarites
     end
 
     private

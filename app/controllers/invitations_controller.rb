@@ -86,7 +86,11 @@ class InvitationsController < ApplicationController
 
   def set_preselected_organisations
     @preselected_organisations =
-      @current_configuration.invite_to_user_organisations_only? ? @organisations & @user.organisations : @organisations
+      if @current_configuration.invite_to_user_organisations_only?
+        @organisations & @user.organisations
+      else
+        @organisations
+      end
   end
 
   def set_current_configuration
