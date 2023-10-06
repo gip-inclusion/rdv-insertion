@@ -63,40 +63,10 @@ class InvitationsController < ApplicationController
   end
 
   def save_and_send_invitation
-    update_creneaux_call = Configurations::UpdateAvailableCreneauxCount.call(
-      configuration: @current_configuration,
+    @save_and_send_invitation ||= Invitations::SaveAndSend.call(
+      invitation: @invitation,
       rdv_solidarites_session: rdv_solidarites_session
     )
-
-
-    # Tester en batch invitations (une seule requete pour plusieurs invitations)
-    # Testing
-    # réduire la taille de ce fichier
-    # on bloque la possibilité d'envoyer une invitation sur les pages index / show / UPLOAD avec un message explicatif dans une box
-    # Demander une précision pour les rdv collectifs
-
-    # Search Context à refactoriser en d'autres classes et services, on va utiliser les memes params
-    # Vérifier individuellement l'invitation dans le search context
-    # Service pour le filter_motifs ?...
-    # créneaux disponibles doit renvoyer des creneaux ?
-
-    if update_creneaux_call.fails?
-      OpenStruct.new(success?: false, errors: update_creneaux_call.errors)
-    elsif @current_configuration.available_creneaux_count.zero?
-      OpenStruct.new(
-        success?: false,
-        errors: [
-          "L'envoi d'une invitation est impossible car il n'y a plus de créneaux disponibles.
-          Nous invitons donc à créer de nouvelles plages d'ouverture depuis l'interface
-          RDV-Solidarités pour pouvoir à nouveau envoyer des invitations"
-        ]
-      )
-    else
-      @save_and_send_invitation ||= Invitations::SaveAndSend.call(
-        invitation: @invitation,
-        rdv_solidarites_session: rdv_solidarites_session
-      )
-    end
   end
 
   def set_organisations

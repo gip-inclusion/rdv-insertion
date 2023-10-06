@@ -79,18 +79,6 @@
           <button class="btn btn-blue">Voir sur RDV-Solidarités<i class="fas fa-external-link-alt icon-sm"></i></button>
         <% end %>
       </div>
-      <% if @current_configuration.present? && @current_configuration.available_creneaux_count.present? %>
-        <div class="mt-2">
-          <% if @current_configuration.available_creneaux_count.zero? %>
-            <p class="small text-center"><b> Il n'y a plus de créneaux disponibles pour ce contexte.
-              Nous vous invitons donc à créer de nouvelles plages d'ouverture depuis l'interface
-              RDV-Solidarités pour pouvoir à nouveau envoyer des invitations.
-            </b></p>
-          <% else %>
-            <p><%= @current_configuration.class.human_attribute_name(:available_creneaux_count) %> : <b><%= @current_configuration.available_creneaux_count %></b></p>
-          <% end %>
-        </div>
-      <% end %>
     <% end %>
   </div>
   <div class="col-4 d-flex flex-column justify-content-center align-items-end dropdown">

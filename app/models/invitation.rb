@@ -76,6 +76,11 @@ class Invitation < ApplicationRecord
     sent_at.present? && sent_at >= date
   end
 
+  def invitation_link_params(link)
+    uri = URI.parse(link)
+    URI.decode_www_form(uri.query).to_h
+  end
+
   private
 
   def assign_uuid

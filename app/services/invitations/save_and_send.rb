@@ -26,7 +26,8 @@ module Invitations
     def validate_invitation
       call_service!(
         Invitations::Validate,
-        invitation: @invitation
+        invitation: @invitation,
+        rdv_solidarites_session: @rdv_solidarites_session
       )
     end
 
