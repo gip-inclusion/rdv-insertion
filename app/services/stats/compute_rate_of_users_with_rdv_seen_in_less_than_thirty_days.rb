@@ -18,14 +18,20 @@ module Stats
     end
 
     def users_with_rdv_seen_in_less_than_30_days
-      @users_with_rdv_seen_in_less_than_30_days ||=
-        users_with_rdvs_seen_created_more_than_30_days_ago.select do |user|
-          user.rdv_seen_delay_in_days < 30
+      @users_with_rdv_seen_in_less_than_30_days ||= begin
+        users = []
+
+        users_with_rdvs_seen_created_more_than_30_days_ago.find_in_batches(batch_size: 100) do |batch|
+          users += batch.select { |user| user.rdv_seen_delay_in_days < 30 }
         end
+
+        users
+      end
     end
 
     def users_with_rdvs_seen_created_more_than_30_days_ago
-      @users_with_rdvs_created_more_than_30_days_ago ||= @users_created_more_than_30_days_ago.joins(:participations).where(participations: { status: "seen" }).distinct
+      @users_with_rdvs_seen_created_more_than_30_days_ago ||=
+        users_created_more_than_30_days_ago.joins(:participations).where(participations: { status: "seen" }).distinct
     end
 
     def users_created_more_than_30_days_ago
