@@ -93,7 +93,8 @@ class Stat < ApplicationRecord
   # We only consider specific contexts to focus on the first RSA rdv
   def users_with_orientation_category_sample
     @users_with_orientation_category_sample ||=
-      users_sample.joins(:rdv_contexts)
+      users_sample.preload(:rdvs)
+                  .joins(:rdv_contexts)
                   .where(rdv_contexts: RdvContext.orientation)
   end
 
