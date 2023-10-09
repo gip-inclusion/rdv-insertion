@@ -22,7 +22,7 @@ const inviteUser = async (
     {
       invitation_format: invitationFormat,
       help_phone_number: helpPhoneNumber,
-      motif_category_id: motifCategoryId,
+      motif_category: { id: motifCategoryId },
     },
     types
   );

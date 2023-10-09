@@ -7,6 +7,7 @@ module Users
     end
 
     def call
+      result.user = @user
       User.transaction do
         assign_organisation
         validate_user!

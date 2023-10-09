@@ -26,7 +26,6 @@ class UsersController < ApplicationController
                 for: [:new, :create]
   before_action :set_user, :set_organisation, :set_department,
                 for: [:edit, :update]
-  before_action :find_or_initialize_user!, only: :create
   before_action :reset_tag_users, only: :update
   after_action :store_back_to_users_list_url, only: [:index]
 
@@ -53,11 +52,16 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user.assign_attributes(**formatted_attributes.compact_blank)
-    if save_user.success?
+    upsert_user = Users::Upsert.call(
+      user_attributes: user_params,
+      organisation: @organisation,
+      rdv_solidarites_session: rdv_solidarites_session
+    )
+    @user = upsert_user.user
+    if upsert_user.success?
       render_save_user_success
     else
-      render_errors(save_user.errors)
+      render_errors(upsert_user.errors)
     end
   end
 
@@ -99,17 +103,6 @@ class UsersController < ApplicationController
       users: @users,
       structure: department_level? ? @department : @organisation,
       motif_category: @current_motif_category
-    )
-  end
-
-  def find_or_initialize_user!
-    @user = find_or_initialize_user.user
-    render_errors(find_or_initialize_user.errors) if find_or_initialize_user.failure?
-  end
-
-  def find_or_initialize_user
-    @find_or_initialize_user ||= Users::FindOrInitialize.call(
-      attributes: formatted_attributes, department_id: @department.id
     )
   end
 

@@ -73,6 +73,10 @@ class Invitation < ApplicationRecord
     sent_at.present? && sent_at >= date
   end
 
+  def invitation_format=(format)
+    send("format=", format)
+  end
+
   private
 
   def assign_uuid
