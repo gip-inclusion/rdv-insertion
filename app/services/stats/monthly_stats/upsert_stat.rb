@@ -1,14 +1,14 @@
 module Stats
   module MonthlyStats
     class UpsertStat < BaseService
-      def initialize(structure_type:, structure_id:, date_string:)
+      def initialize(structure_type:, structure_id:, until_date_string:)
         @structure_type = structure_type
         @structure_id = structure_id
-        @date_string = date_string
+        @until_date_string = until_date_string
       end
 
       def call
-        merge_monthly_stats_attributes_for_focused_month_to_stat_record
+        assign_monthly_stats_attributes_to_stat_record
         save_record!(stat)
       end
 
@@ -18,28 +18,42 @@ module Stats
         @stat ||= Stat.find_or_initialize_by(statable_type: @structure_type, statable_id: @structure_id)
       end
 
-      def merge_monthly_stats_attributes_for_focused_month_to_stat_record
+      def assign_monthly_stats_attributes_to_stat_record
+        @date = stat.statable&.created_at || DateTime.parse("01/01/2022")
+
+        # We first reinitialize the monthly stats
+        stat.attributes.keys.select { |key| key.end_with?("month") }
+            .each { |attribute_name| stat[attribute_name] = {} }
+
+        while @date < @until_date_string.to_date
+          compute_monthly_stats
+
+          @date += 1.month
+        end
+      end
+
+      def compute_monthly_stats
         compute_monthly_stats_for_focused_month.stats_values.each do |stat_name, stat_value|
-          stat_attribute = stat[stat_name] || {}
-          if stat_name == :rate_of_users_with_rdv_seen_in_less_than_30_days_by_month
-            # cette stat est calculée avec 1 mois de décalage par rapport aux autres
-            stat_attribute.merge!({ (date - 1.month).strftime("%m/%Y") => stat_value })
+          stat_attribute = stat[stat_name]
+
+          # We don't want to start the hash until we have a value
+          next if stat_attribute == {} && stat_value.zero?
+
+          if stat_name == :rate_of_users_oriented_in_less_than_30_days_by_month
+            # this stat is computed with 1 month lag
+            stat_attribute.merge!({ (@date - 1.month).strftime("%m/%Y") => stat_value })
           else
-            stat_attribute.merge!({ date.strftime("%m/%Y") => stat_value })
+            stat_attribute.merge!({ @date.strftime("%m/%Y") => stat_value })
           end
           stat[stat_name] = stat_attribute
         end
       end
 
       def compute_monthly_stats_for_focused_month
-        @compute_monthly_stats_for_focused_month ||= Stats::MonthlyStats::ComputeForFocusedMonth.call(
+        Stats::MonthlyStats::ComputeForFocusedMonth.call(
           stat: stat,
-          date: date
+          date: @date
         )
-      end
-
-      def date
-        @date ||= @date_string.to_date
       end
     end
   end

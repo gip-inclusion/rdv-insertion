@@ -1,9 +1,12 @@
 describe Stats::MonthlyStats::UpsertStat, type: :service do
-  subject { described_class.call(structure_type: structure_type, structure_id: structure_id, date_string: date_string) }
+  subject do
+    described_class.call(structure_type: structure_type, structure_id: structure_id,
+                         until_date_string: until_date_string)
+  end
 
-  let!(:department) { create(:department) }
-  let!(:date_string) { "2022-03-17 12:00:00 +0100" }
-  let!(:date) { date_string.to_date }
+  let!(:department) { create(:department, created_at: Time.zone.parse("2022-01-17 12:00:00 +0100")) }
+  let!(:until_date_string) { "2022-05-01 12:00:00 +0100" }
+  let!(:date) { until_date_string.to_date }
   let!(:stats_values) do
     {
       users_count_grouped_by_month: 1,
@@ -12,7 +15,7 @@ describe Stats::MonthlyStats::UpsertStat, type: :service do
       rate_of_no_show_for_invitations_grouped_by_month: 4,
       rate_of_no_show_for_convocations_grouped_by_month: 9,
       average_time_between_invitation_and_rdv_in_days_by_month: 5,
-      rate_of_users_with_rdv_seen_in_less_than_30_days_by_month: 7,
+      rate_of_users_oriented_in_less_than_30_days_by_month: 7,
       rate_of_autonomous_users_grouped_by_month: 8
     }
   end
@@ -54,24 +57,36 @@ describe Stats::MonthlyStats::UpsertStat, type: :service do
 
     it "calls the compute stats service" do
       expect(Stats::MonthlyStats::ComputeForFocusedMonth).to receive(:call)
-        .with(stat: stat, date: date)
+        .exactly(4).times
       subject
     end
 
-    it "merges the monthly stats attributes retrieved to the existing stat record" do
+    it "computes the monthly stats" do
       subject
-      expect(stat.reload[:users_count_grouped_by_month]).to eq({ date.strftime("%m/%Y") => 1 })
-      expect(stat.reload[:rdvs_count_grouped_by_month]).to eq({ date.strftime("%m/%Y") => 2 })
-      expect(stat.reload[:sent_invitations_count_grouped_by_month]).to eq({ date.strftime("%m/%Y") => 3 })
-      expect(stat.reload[:rate_of_no_show_for_invitations_grouped_by_month]).to eq({ date.strftime("%m/%Y") => 4 })
-      expect(stat.reload[:rate_of_no_show_for_convocations_grouped_by_month]).to eq({ date.strftime("%m/%Y") => 9 })
+      expect(stat.reload[:users_count_grouped_by_month]).to eq(
+        { "01/2022" => 1, "02/2022" => 1, "03/2022" => 1, "04/2022" => 1 }
+      )
+      expect(stat.reload[:rdvs_count_grouped_by_month]).to eq(
+        { "01/2022" => 2, "02/2022" => 2, "03/2022" => 2, "04/2022" => 2 }
+      )
+      expect(stat.reload[:sent_invitations_count_grouped_by_month]).to eq(
+        { "01/2022" => 3, "02/2022" => 3, "03/2022" => 3, "04/2022" => 3 }
+      )
+      expect(stat.reload[:rate_of_no_show_for_invitations_grouped_by_month]).to eq(
+        { "01/2022" => 4, "02/2022" => 4, "03/2022" => 4, "04/2022" => 4 }
+      )
+      expect(stat.reload[:rate_of_no_show_for_convocations_grouped_by_month]).to eq(
+        { "01/2022" => 9, "02/2022" => 9, "03/2022" => 9, "04/2022" => 9 }
+      )
       expect(stat.reload[:average_time_between_invitation_and_rdv_in_days_by_month]).to eq(
-        { date.strftime("%m/%Y") => 5 }
+        { "01/2022" => 5, "02/2022" => 5, "03/2022" => 5, "04/2022" => 5 }
       )
-      expect(stat.reload[:rate_of_users_with_rdv_seen_in_less_than_30_days_by_month]).to eq(
-        { (date - 1.month).strftime("%m/%Y") => 7 }
+      expect(stat.reload[:rate_of_users_oriented_in_less_than_30_days_by_month]).to eq(
+        { "12/2021" => 7, "01/2022" => 7, "02/2022" => 7, "03/2022" => 7 }
       )
-      expect(stat.reload[:rate_of_autonomous_users_grouped_by_month]).to eq({ date.strftime("%m/%Y") => 8 })
+      expect(stat.reload[:rate_of_autonomous_users_grouped_by_month]).to eq(
+        { "01/2022" => 8, "02/2022" => 8, "03/2022" => 8, "04/2022" => 8 }
+      )
     end
 
     it "saves a stat record" do

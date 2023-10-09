@@ -8,14 +8,8 @@ describe Stat do
     let!(:stat) { build(:stat, statable_type: structure_type, statable_id: structure_id) }
     let(:date) { Time.zone.parse("17/07/2023 12:00") }
     let!(:other_department) { create(:department) }
-    let!(:user1) do
-      create(:user, organisations: [organisation],
-                    created_at: date)
-    end
-    let!(:user2) do
-      create(:user, organisations: [other_organisation],
-                    created_at: date)
-    end
+    let!(:user1) { create(:user, organisations: [organisation], created_at: date) }
+    let!(:user2) { create(:user, organisations: [other_organisation], created_at: date) }
     let!(:organisation) { create(:organisation, department: department) }
     let!(:configuration) { create(:configuration, organisation: organisation) }
     let!(:organisation_with_no_configuration) { create(:organisation, department: department) }
@@ -187,52 +181,46 @@ describe Stat do
         end
       end
 
-      describe "#rdv_contexts_sample" do
+      describe "#rdv_contexts_with_invitations_and_participations_sample" do
         let!(:user3) { create(:user, organisations: [organisation]) }
         let!(:rdv3) { create(:rdv, organisation: organisation) }
-        let!(:participation3) { create(:participation, rdv: rdv3) }
-        let!(:rdv_context3) { create(:rdv_context, user: user3, participations: [participation3]) }
+        let!(:participation3) { create(:participation, rdv: rdv3, rdv_context: rdv_context3) }
+        let!(:rdv_context3) { create(:rdv_context, user: user3) }
         let!(:user4) { create(:user, organisations: [organisation]) }
-        let!(:invitation4) { create(:invitation) }
+        let!(:invitation4) { create(:invitation, rdv_context: rdv_context4) }
         let!(:rdv4) { create(:rdv, organisation: organisation) }
-        let!(:participation4) { create(:participation, rdv: rdv4) }
-        let!(:rdv_context4) do
-          create(:rdv_context, user: user4, invitations: [invitation4], participations: [participation4])
-        end
+        let!(:participation4) { create(:participation, rdv: rdv4, rdv_context: rdv_context4) }
+        let!(:rdv_context4) { create(:rdv_context, user: user4) }
         let!(:user5) { create(:user, organisations: [organisation]) }
-        let!(:invitation5) { create(:invitation) }
-        let!(:rdv_context5) do
-          create(:rdv_context, user: user5, invitations: [invitation5])
-        end
+        let!(:invitation5) { create(:invitation, rdv_context: rdv_context5) }
+        let!(:rdv_context5) { create(:rdv_context, user: user5) }
         let!(:user6) do
           create(:user, organisations: [organisation_with_no_configuration])
         end
-        let!(:invitation6) { create(:invitation, sent_at: date) }
+        let!(:invitation6) { create(:invitation, sent_at: date, rdv_context: rdv_context6) }
         let!(:rdv6) { create(:rdv, organisation: organisation) }
-        let!(:participation6) { create(:participation, rdv: rdv6) }
-        let!(:rdv_context6) do
-          create(:rdv_context, user: user6, invitations: [invitation6], participations: [participation6])
-        end
+        let!(:participation6) { create(:participation, rdv: rdv6, rdv_context: rdv_context6) }
+        let!(:rdv_context6) { create(:rdv_context, user: user6) }
 
         it "scopes the collection to the department" do
-          expect(stat.rdv_contexts_sample).to include(rdv_context1)
-          expect(stat.rdv_contexts_sample).not_to include(rdv_context2)
+          expect(stat.rdv_contexts_with_invitations_and_participations_sample).to include(rdv_context1)
+          expect(stat.rdv_contexts_with_invitations_and_participations_sample).not_to include(rdv_context2)
         end
 
         it "does not include rdv_contexts with no invitations" do
-          expect(stat.rdv_contexts_sample).not_to include(rdv_context3)
+          expect(stat.rdv_contexts_with_invitations_and_participations_sample).not_to include(rdv_context3)
         end
 
         it "does not include rdv_contexts with unsent invitations" do
-          expect(stat.rdv_contexts_sample).not_to include(rdv_context4)
+          expect(stat.rdv_contexts_with_invitations_and_participations_sample).not_to include(rdv_context4)
         end
 
         it "does not include rdv_contexts with no rdvs" do
-          expect(stat.rdv_contexts_sample).not_to include(rdv_context5)
+          expect(stat.rdv_contexts_with_invitations_and_participations_sample).not_to include(rdv_context5)
         end
 
         it "does not include the rdv_contexts of users from irrelevant organisations" do
-          expect(stat.rdv_contexts_sample).not_to include(rdv_context6)
+          expect(stat.rdv_contexts_with_invitations_and_participations_sample).not_to include(rdv_context6)
         end
       end
 
@@ -287,22 +275,37 @@ describe Stat do
         end
       end
 
-      describe "#users_for_30_days_rdvs_seen_sample" do
+      describe "#users_with_orientation_category_sample" do
         let!(:user3) do
-          create(:user, organisations: [organisation],
-                        created_at: date)
+          create(:user, organisations: [organisation], created_at: date)
         end
         let!(:rdv_context3) do
           create(:rdv_context, user: user3, motif_category: category_rsa_cer_signature)
         end
 
         it "scopes the collection to the department" do
-          expect(stat.users_for_30_days_rdvs_seen_sample).to include(user1)
-          expect(stat.users_for_30_days_rdvs_seen_sample).not_to include(user2)
+          expect(stat.users_with_orientation_category_sample).to include(user1)
+          expect(stat.users_with_orientation_category_sample).not_to include(user2)
         end
 
         it "does not include the users with no motif category for a first rdv RSA" do
-          expect(stat.users_for_30_days_rdvs_seen_sample).not_to include(user3)
+          expect(stat.users_with_orientation_category_sample).not_to include(user3)
+        end
+      end
+
+      describe "#orientation_rdv_contexts_sample" do
+        let!(:user3) { create(:user, organisations: [organisation], created_at: date) }
+        let!(:rdv_context3) do
+          create(:rdv_context, user: user3, motif_category: category_rsa_cer_signature)
+        end
+
+        it "scopes the collection to the department" do
+          expect(stat.orientation_rdv_contexts_sample).to include(rdv_context1)
+          expect(stat.orientation_rdv_contexts_sample).not_to include(rdv_context2)
+        end
+
+        it "does not include the rdv_contexts with no motif category for a first rdv RSA" do
+          expect(stat.orientation_rdv_contexts_sample).not_to include(rdv_context3)
         end
       end
     end
@@ -333,12 +336,6 @@ describe Stat do
       end
 
       describe "#invitations_sample" do
-        let!(:invitation1) do
-          create(:invitation, user: user1, organisations: [organisation], sent_at: date)
-        end
-        let!(:invitation2) do
-          create(:invitation, user: user2, organisations: [other_organisation], sent_at: date)
-        end
         let!(:invitation3) { create(:invitation, organisations: [organisation], sent_at: nil) }
 
         it "scopes the collection to the organisation" do
@@ -423,52 +420,46 @@ describe Stat do
         end
       end
 
-      describe "#rdv_contexts_sample" do
+      describe "#rdv_contexts_with_invitations_and_participations_sample" do
         let!(:user3) { create(:user, organisations: [organisation]) }
         let!(:rdv3) { create(:rdv, organisation: organisation) }
-        let!(:participation3) { create(:participation, rdv: rdv3) }
-        let!(:rdv_context3) { create(:rdv_context, user: user3, participations: [participation3]) }
+        let!(:participation3) { create(:participation, rdv: rdv3, rdv_context: rdv_context3) }
+        let!(:rdv_context3) { create(:rdv_context, user: user3) }
         let!(:user4) { create(:user, organisations: [organisation]) }
-        let!(:invitation4) { create(:invitation) }
+        let!(:invitation4) { create(:invitation, rdv_context: rdv_context4) }
         let!(:rdv4) { create(:rdv, organisation: organisation) }
-        let!(:participation4) { create(:participation, rdv: rdv4) }
-        let!(:rdv_context4) do
-          create(:rdv_context, user: user4, invitations: [invitation4], participations: [participation4])
-        end
+        let!(:participation4) { create(:participation, rdv: rdv4, rdv_context: rdv_context4) }
+        let!(:rdv_context4) { create(:rdv_context, user: user4) }
         let!(:user5) { create(:user, organisations: [organisation]) }
-        let!(:invitation5) { create(:invitation) }
-        let!(:rdv_context5) do
-          create(:rdv_context, user: user5, invitations: [invitation5])
-        end
+        let!(:invitation5) { create(:invitation, rdv_context: rdv_context5) }
+        let!(:rdv_context5) { create(:rdv_context, user: user5) }
         let!(:user6) do
           create(:user, organisations: [organisation_with_no_configuration])
         end
-        let!(:invitation6) { create(:invitation, sent_at: date) }
+        let!(:invitation6) { create(:invitation, sent_at: date, rdv_context: rdv_context6) }
         let!(:rdv6) { create(:rdv, organisation: organisation) }
-        let!(:participation6) { create(:participation, rdv: rdv6) }
-        let!(:rdv_context6) do
-          create(:rdv_context, user: user6, invitations: [invitation6], participations: [participation6])
-        end
+        let!(:participation6) { create(:participation, rdv: rdv6, rdv_context: rdv_context6) }
+        let!(:rdv_context6) { create(:rdv_context, user: user6) }
 
         it "scopes the collection to the organisation" do
-          expect(stat.rdv_contexts_sample).to include(rdv_context1)
-          expect(stat.rdv_contexts_sample).not_to include(rdv_context2)
+          expect(stat.rdv_contexts_with_invitations_and_participations_sample).to include(rdv_context1)
+          expect(stat.rdv_contexts_with_invitations_and_participations_sample).not_to include(rdv_context2)
         end
 
         it "does not include rdv_contexts with no invitations" do
-          expect(stat.rdv_contexts_sample).not_to include(rdv_context3)
+          expect(stat.rdv_contexts_with_invitations_and_participations_sample).not_to include(rdv_context3)
         end
 
         it "does not include rdv_contexts with unsent invitations" do
-          expect(stat.rdv_contexts_sample).not_to include(rdv_context4)
+          expect(stat.rdv_contexts_with_invitations_and_participations_sample).not_to include(rdv_context4)
         end
 
         it "does not include rdv_contexts with no rdvs" do
-          expect(stat.rdv_contexts_sample).not_to include(rdv_context5)
+          expect(stat.rdv_contexts_with_invitations_and_participations_sample).not_to include(rdv_context5)
         end
 
         it "does not include the rdv_contexts of users from irrelevant organisations" do
-          expect(stat.rdv_contexts_sample).not_to include(rdv_context6)
+          expect(stat.rdv_contexts_with_invitations_and_participations_sample).not_to include(rdv_context6)
         end
       end
 
@@ -523,22 +514,35 @@ describe Stat do
         end
       end
 
-      describe "#users_for_30_days_rdvs_seen_sample" do
-        let!(:user3) do
-          create(:user, organisations: [organisation],
-                        created_at: date)
-        end
+      describe "#users_with_orientation_category_sample" do
+        let!(:user3) { create(:user, organisations: [organisation], created_at: date) }
         let!(:rdv_context3) do
           create(:rdv_context, user: user3, motif_category: category_rsa_cer_signature)
         end
 
         it "scopes the collection to the organisation" do
-          expect(stat.users_for_30_days_rdvs_seen_sample).to include(user1)
-          expect(stat.users_for_30_days_rdvs_seen_sample).not_to include(user2)
+          expect(stat.users_with_orientation_category_sample).to include(user1)
+          expect(stat.users_with_orientation_category_sample).not_to include(user2)
         end
 
         it "does not include the users with no motif category for a first rdv RSA" do
-          expect(stat.users_for_30_days_rdvs_seen_sample).not_to include(user3)
+          expect(stat.users_with_orientation_category_sample).not_to include(user3)
+        end
+      end
+
+      describe "#orientation_rdv_contexts_sample" do
+        let!(:user3) { create(:user, organisations: [organisation], created_at: date) }
+        let!(:rdv_context3) do
+          create(:rdv_context, user: user3, motif_category: category_rsa_cer_signature)
+        end
+
+        it "scopes the collection to the organisation" do
+          expect(stat.orientation_rdv_contexts_sample).to include(rdv_context1)
+          expect(stat.orientation_rdv_contexts_sample).not_to include(rdv_context2)
+        end
+
+        it "does not include the rdv_contexts with no motif category for a first rdv RSA" do
+          expect(stat.orientation_rdv_contexts_sample).not_to include(rdv_context3)
         end
       end
     end
@@ -595,9 +599,9 @@ describe Stat do
         end
       end
 
-      describe "#rdv_contexts_sample" do
+      describe "#rdv_contexts_with_invitations_and_participations_sample" do
         it "does not scope the collection to the department" do
-          expect(stat.rdv_contexts_sample).to include(rdv_context2)
+          expect(stat.rdv_contexts_with_invitations_and_participations_sample).to include(rdv_context2)
         end
       end
 
@@ -607,9 +611,15 @@ describe Stat do
         end
       end
 
-      describe "#users_for_30_days_rdvs_seen_sample" do
+      describe "#users_with_orientation_category_sample" do
         it "does not scope the collection to the department" do
-          expect(stat.users_for_30_days_rdvs_seen_sample).to include(user2)
+          expect(stat.users_with_orientation_category_sample).to include(user2)
+        end
+      end
+
+      describe "#orientation_rdv_contexts_sample" do
+        it "does not scope the collection to the department" do
+          expect(stat.orientation_rdv_contexts_sample).to include(rdv_context2)
         end
       end
     end

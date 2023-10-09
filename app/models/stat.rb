@@ -35,7 +35,7 @@ class Stat < ApplicationRecord
   # We filter participations to keep only invitations
   def participations_after_invitations_sample
     @participations_after_invitations_sample ||=
-      participations_sample.where.missing(:notifications).joins(:invitations).distinct
+      participations_sample.where.missing(:notifications).joins(:rdv_context_invitations).distinct
   end
 
   # We exclude the rdvs collectifs motifs to correctly compute the rate of autonomous users
@@ -48,12 +48,13 @@ class Stat < ApplicationRecord
   end
 
   # We filter the rdv_contexts to keep those where the users were invited and created a rdv/participation
-  def rdv_contexts_sample
-    @rdv_contexts_sample ||= RdvContext.preload(:participations, :invitations)
-                                       .where(user_id: users_sample)
-                                       .where.associated(:participations)
-                                       .with_sent_invitations
-                                       .distinct
+  def rdv_contexts_with_invitations_and_participations_sample
+    @rdv_contexts_with_invitations_and_participations_sample ||=
+      RdvContext.preload(:participations, :invitations)
+                .where(user_id: users_sample)
+                .where.associated(:participations)
+                .with_sent_invitations
+                .distinct
   end
 
   # We filter the users by organisations and retrieve deleted or archived users
@@ -90,18 +91,21 @@ class Stat < ApplicationRecord
                                                .where.not(configurations: { invitation_formats: [] })
   end
 
-  # For the rate of users with rdv seen in less than 30 days
-  # we only consider specific contexts to focus on the first RSA rdv
-  def users_for_30_days_rdvs_seen_sample
-    # Users invited in an orientation or accompagnement context
-    @users_for_30_days_rdvs_seen_sample ||=
-      users_sample.joins(:rdv_contexts)
-                  .where(rdv_contexts:
-                                RdvContext.joins(:motif_category).where(
-                                  motif_category: { short_name: %w[
-                                    rsa_orientation rsa_orientation_on_phone_platform rsa_accompagnement
-                                    rsa_accompagnement_social rsa_accompagnement_sociopro
-                                  ] }
-                                ))
+  # We only consider specific contexts to focus on the first RSA rdv
+  def users_with_orientation_category_sample
+    @users_with_orientation_category_sample ||=
+      users_sample.preload(:rdvs)
+                  .joins(:rdv_contexts)
+                  .where(rdv_contexts: RdvContext.orientation)
+  end
+
+  # To compute the rate of users oriented, we only consider the users who have been invited
+  # because the users that are directly convocated do not benefit from our added value
+  def orientation_rdv_contexts_sample
+    @orientation_rdv_contexts_sample ||=
+      RdvContext.orientation.preload(:participations, :invitations)
+                .where(user: users_sample)
+                .with_sent_invitations
+                .distinct
   end
 end

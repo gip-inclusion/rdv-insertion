@@ -21,8 +21,9 @@ module Stats
           rate_of_no_show_for_convocations_grouped_by_month: rate_of_no_show_for_notifications_for_focused_month,
           average_time_between_invitation_and_rdv_in_days_by_month:
             average_time_between_invitation_and_rdv_in_days_for_focused_month,
-          rate_of_users_with_rdv_seen_in_less_than_30_days_by_month:
-            rate_of_users_with_rdv_seen_in_less_than_30_days_for_focused_month,
+          rate_of_users_oriented_in_less_than_30_days_by_month:
+            rate_of_users_oriented_in_less_than_30_days_for_focused_month,
+          rate_of_users_oriented_grouped_by_month: rate_of_users_oriented_for_focused_month,
           rate_of_autonomous_users_grouped_by_month:
             rate_of_autonomous_users_for_focused_month
         }
@@ -54,14 +55,20 @@ module Stats
 
       def average_time_between_invitation_and_rdv_in_days_for_focused_month
         ComputeAverageTimeBetweenInvitationAndRdvInDays.call(
-          rdv_contexts: created_during_focused_month(@stat.rdv_contexts_sample)
+          rdv_contexts: created_during_focused_month(@stat.rdv_contexts_with_invitations_and_participations_sample)
         ).value.round
       end
 
-      def rate_of_users_with_rdv_seen_in_less_than_30_days_for_focused_month
+      def rate_of_users_oriented_in_less_than_30_days_for_focused_month
         ComputeRateOfUsersWithRdvSeenInLessThanThirtyDays.call(
           # we compute the users of the previous month because we want at least 30 days old users
-          users: @stat.users_for_30_days_rdvs_seen_sample.where(created_at: (@date - 1.month).all_month)
+          users: @stat.users_with_orientation_category_sample.where(created_at: (@date - 1.month).all_month)
+        ).value.round
+      end
+
+      def rate_of_users_oriented_for_focused_month
+        ComputeRateOfUsersWithRdvSeen.call(
+          rdv_contexts: created_during_focused_month(@stat.orientation_rdv_contexts_sample)
         ).value.round
       end
 
