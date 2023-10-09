@@ -41,7 +41,7 @@ module InboundWebhooks
       end
 
       def remove_agent_from_rdv
-        rdv.agents.delete(agent) 
+        rdv.agents.delete(agent)
       end
     end
   end

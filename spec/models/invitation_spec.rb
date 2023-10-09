@@ -45,15 +45,15 @@ describe Invitation do
     let!(:organisation) { create(:organisation) }
     let!(:webhook_endpoint) { create(:webhook_endpoint, organisations: [organisation], subscriptions: ["invitation"]) }
 
-    it "does not send a webhook if the invitation is not sent" do 
+    it "does not send a webhook if the invitation is not sent" do
       expect(OutgoingWebhooks::SendWebhookJob).not_to receive(:perform_async)
-      invitation.save 
+      invitation.save
     end
 
     it "sends a webhook if the invitation is sent" do
-      invitation.sent_at = Time.zone.now 
+      invitation.sent_at = Time.zone.now
       expect(OutgoingWebhooks::SendWebhookJob).to receive(:perform_async)
-      invitation.save 
+      invitation.save
     end
   end
 end
