@@ -79,6 +79,7 @@ class Rdv < ApplicationRecord
   end
 
   def notify_convocable_participations
+    return if in_the_past?
     return unless event_to_notify?
     return if convocable_participations.empty?
 

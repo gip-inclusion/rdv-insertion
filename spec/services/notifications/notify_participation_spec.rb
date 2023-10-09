@@ -7,7 +7,7 @@ describe Notifications::NotifyParticipation, type: :service do
 
   let!(:participation) { create(:participation, rdv: rdv) }
   let!(:rdv_solidarites_rdv_id) { 444 }
-  let!(:rdv) { create(:rdv, rdv_solidarites_rdv_id: rdv_solidarites_rdv_id) }
+  let!(:rdv) { create(:rdv, rdv_solidarites_rdv_id: rdv_solidarites_rdv_id, starts_at: 2.days.from_now) }
   let!(:event) { "participation_created" }
   let!(:format) { "sms" }
 
@@ -47,6 +47,17 @@ describe Notifications::NotifyParticipation, type: :service do
 
       it "fails with an error" do
         expect(subject.errors).to eq(["cannot send notification"])
+      end
+    end
+
+    context "when the rdv is in the past" do
+      before { rdv.update! starts_at: 2.days.ago }
+
+      it("is a success") { is_a_success }
+
+      it "does not send a notification" do
+        expect(Notifications::SendSms).not_to receive(:call)
+        subject
       end
     end
   end

@@ -42,6 +42,7 @@ class Participation < ApplicationRecord
   end
 
   def notify_user
+    return if in_the_past?
     return unless event_to_notify
 
     NotifyParticipationJob.perform_async(id, "sms", "participation_#{event_to_notify}") if phone_number_is_mobile?
