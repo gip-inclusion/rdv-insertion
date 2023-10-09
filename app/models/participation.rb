@@ -8,7 +8,7 @@ class Participation < ApplicationRecord
   belongs_to :user
 
   has_many :notifications, dependent: :nullify
-  has_many :invitations, through: :rdv_context
+  has_many :rdv_context_invitations, through: :rdv_context, source: :invitations
 
   has_one :organisation, through: :rdv
   has_many :configurations, through: :organisation
