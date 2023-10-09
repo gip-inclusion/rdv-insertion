@@ -9,6 +9,17 @@ module UsersHelper
     configuration.invitation_formats.present?
   end
 
+  def sorting_users_by?(column)
+    params[:sort_by] == column
+  end
+
+  def sort_order_for(column)
+    return "up" unless sorting_users_by?(column)
+
+    sortings = ["up", "down", nil]
+    sortings[(sortings.index(params[:sort_order]) + 1) % sortings.length]
+  end
+
   def no_search_results?(users)
     users.empty? && params[:search_query].present?
   end
