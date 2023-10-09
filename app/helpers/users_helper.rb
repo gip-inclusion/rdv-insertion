@@ -17,7 +17,7 @@ module UsersHelper
     [
       params[:search_query], params[:status], params[:action_required], params[:first_invitation_date_before],
       params[:last_invitation_date_before], params[:first_invitation_date_after], params[:last_invitation_date_after],
-      params[:filter_by_current_agent], params[:creation_date_after], params[:creation_date_before]
+      params[:filter_by_current_agent], params[:creation_date_after], params[:creation_date_before], params[:tag_ids]
     ].any?(&:present?)
   end
 

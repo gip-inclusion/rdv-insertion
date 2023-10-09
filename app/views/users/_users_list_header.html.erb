@@ -11,20 +11,19 @@
         %>
       <% end %>
     </div>
-    <%= render "filter_by_tag_button" %>
     <%= render "filter_by_creation_dates_button" if @current_configuration.nil? %>
     <%= render "filter_by_invitations_dates_button" if @current_configuration.present? || archived_scope?(@users_scope) %>
     <%= render 'search_form', url: compute_index_path(@organisation, @department) %>
 
-    <div class="d-flex justify-content-between mt-1">
+    <div class="d-flex justify-content-between mt-1" data-controller="index-filters">
       <div class="text-left mt-2">
         <i class="fas fa-filter"></i> Filtrer usagers:
         <div class="mt-1">
-          <%= check_box("users_list", "filter_by_current_agent", class: "js-filter-by-current-agent-checkbox") %> Dont je suis référent
+          <%= check_box("filter_by_current_agent", nil, class: "form-check-input") %> Dont je suis référent
         </div>
         <% if @current_configuration.present? %>
           <div class="mt-1">
-            <%= check_box("users_list", "action_required", class: "js-action-required-checkbox") %> Une intervention est nécessaire
+            <%= check_box("action_required", nil, class: "form-check-input") %> Une intervention est nécessaire
             <small>
               <i
                 class="fas fa-question-circle"
@@ -36,6 +35,18 @@
             </small>
           </div>
         <% end %>
+        <% @tags.sort_by(&:value).each do |tag| %>
+          <div>
+            <%= check_box :tag_ids, nil, { checked: params[:tag_ids]&.include?(tag.id.to_s), multiple: true, id: "tag_#{tag.id}", class: 'form-check-input' }, tag.id %>
+            <%= tag.value %>
+          </div>
+        <% end if @tags.present? %>
+      </div>
+
+      <div class="expand-button-container">
+        <button data-action="index-filters#expand">
+          <i class="fas fa-arrow-down"></i> Voir plus de filtres
+        </button>
       </div>
       <% if display_back_to_list_button? %>
         <div>
