@@ -27,7 +27,6 @@ export default class extends Controller {
   setInitialValue(checkbox) {
     const url = new URL(window.location.href);
     const value = url.searchParams.get(checkbox.name);
-    console.log(checkbox.name, value)
     if (value) {
       checkbox.checked = true;
     }
@@ -36,7 +35,6 @@ export default class extends Controller {
   setInitialValueMultiple(checkbox) {
     const url = new URL(window.location.href);
     const values = url.searchParams.getAll(checkbox.name);
-    console.log(checkbox.name, values)
     if (values.includes(checkbox.value)) {
       checkbox.checked = true;
     }
