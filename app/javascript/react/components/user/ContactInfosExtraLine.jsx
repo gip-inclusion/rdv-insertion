@@ -64,7 +64,7 @@ export default observer(({ user }) => {
           ) : <td />)}
           
       <td>
-        {user.filter((column) => column.isInContactFile && column.user[`${column.key}New`] !== null)
+        {user.list.columnsAfterFirstContactListUpdate.filter((column) => column.isInContactFile && column.user[`${column.key}New`] !== null)
           .length && (
           <button
             type="submit"
