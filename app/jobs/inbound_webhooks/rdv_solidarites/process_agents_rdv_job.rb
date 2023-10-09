@@ -41,7 +41,7 @@ module InboundWebhooks
       end
 
       def remove_agent_from_rdv
-        rdv.agents.delete(agent) if rdv.reload.agent_ids.include?(agent.id)
+        rdv.agents.delete(agent) 
       end
     end
   end

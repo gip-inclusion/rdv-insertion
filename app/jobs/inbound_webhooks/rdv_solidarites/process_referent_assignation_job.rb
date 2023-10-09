@@ -50,8 +50,6 @@ module InboundWebhooks
       end
 
       def remove_agent_from_user
-        return unless user.reload.referent_ids.include?(agent.id)
-
         user.referents.delete(agent)
       end
     end
