@@ -2,7 +2,6 @@ import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
   connect() {
-    // if small enough and not expanded in query params, clip
     if (this.element.clientHeight > 200 && !window.location.href.includes("expanded-filters=true")) {
       this.element.classList.add("is-clipped");
     }
