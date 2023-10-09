@@ -2,7 +2,7 @@ describe Stat do
   include_context "with all existing categories"
 
   describe "instance_methods" do
-    # 2 records each time : first record is linked to the department scoped, the second is not
+    # 2 records each time : first record is linked to the department scope, the second is not
 
     let!(:department) { create(:department) }
     let!(:stat) { build(:stat, statable_type: structure_type, statable_id: structure_id) }
