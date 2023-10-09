@@ -19,11 +19,11 @@
       <div class="text-left mt-2">
         <i class="fas fa-filter"></i> Filtrer usagers:
         <div class="mt-1">
-          <%= check_box("filter_by_current_agent", nil, class: "form-check-input") %> Dont je suis référent
+          <input type="checkbox" name="filter_by_current_agent" class="form-check-input"></input> Dont je suis référent
         </div>
         <% if @current_configuration.present? %>
           <div class="mt-1">
-            <%= check_box("action_required", nil, class: "form-check-input") %> Une intervention est nécessaire
+            <input type="checkbox" name="action_required" class="form-check-input"></input> Une intervention est nécessaire
             <small>
               <i
                 class="fas fa-question-circle"
@@ -37,7 +37,7 @@
         <% end %>
         <% @tags.sort_by(&:value).each do |tag| %>
           <div>
-            <%= check_box :tag_ids, nil, { checked: params[:tag_ids]&.include?(tag.id.to_s), multiple: true, id: "tag_#{tag.id}", class: 'form-check-input' }, tag.id %>
+            <input type="checkbox" name="tag_ids[]" <%= "checked" if params[:tag_ids]&.include?(tag.id.to_s) %> value="<%= tag.id %>" class="form-check-input"></input>
             <%= tag.value %>
           </div>
         <% end if @tags.present? %>
