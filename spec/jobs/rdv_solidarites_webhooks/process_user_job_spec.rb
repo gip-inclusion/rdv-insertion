@@ -64,7 +64,7 @@ describe RdvSolidaritesWebhooks::ProcessUserJob do
     context "when the destroy comes from the user itself" do
       before do
         data.merge!(deleted_at: Time.zone.now.to_s)
-        meta.merge!(event: "destroyed", trigger: "user")
+        meta.merge!(event: "destroyed", webhook_reason: "user")
       end
 
       it "does not enqueue a job" do

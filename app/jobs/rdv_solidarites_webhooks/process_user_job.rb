@@ -4,7 +4,7 @@ module RdvSolidaritesWebhooks
       @data = data.deep_symbolize_keys
       @meta = meta.deep_symbolize_keys
       # If a user deletes his account in rdv-s, we do not want to delete it in rdv-i
-      return if user.blank? || (event == "destroyed" && trigger == "user")
+      return if user.blank? || (event == "destroyed" && webhook_reason == "user")
 
       remove_attributes_from_payload
       upsert_or_delete_user
@@ -16,8 +16,8 @@ module RdvSolidaritesWebhooks
       @meta[:event]
     end
 
-    def trigger
-      @meta[:trigger]
+    def webhook_reason
+      @meta[:webhook_reason]
     end
 
     def rdv_solidarites_user_id
