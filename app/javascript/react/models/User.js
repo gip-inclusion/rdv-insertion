@@ -413,6 +413,14 @@ export default class User {
     );
   }
 
+  get invitationsColSpan() {
+    let colSpan = 0;
+    if (this.canBeInvitedBy("sms")) colSpan += 1;
+    if (this.canBeInvitedBy("email")) colSpan += 1;
+    if (this.canBeInvitedBy("postal")) colSpan += 1;
+    return colSpan;
+  }
+
   archiveInCurrentDepartment() {
     return this.archives.find((archive) => archive.department_id === this.department.id);
   }

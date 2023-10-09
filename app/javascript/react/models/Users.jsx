@@ -173,6 +173,10 @@ class Users {
     return offset
   }
 
+  get columnsAfterFirstContactListUpdate() {
+    return this.columns.filter(column => column.visible).slice(this.numberOfColumnsBeforeContactListUpdate)
+  }
+
   addUser(user) {
     this.list.push(user);
   }
