@@ -7,6 +7,8 @@ module Notifications
     end
 
     def call
+      return if @participation.in_the_past?
+
       Notification.transaction do
         save_record!(notification)
         send_notification

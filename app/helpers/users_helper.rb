@@ -9,6 +9,17 @@ module UsersHelper
     configuration.invitation_formats.present?
   end
 
+  def sorting_users_by?(column)
+    params[:sort_by] == column
+  end
+
+  def sort_order_for(column)
+    return "up" unless sorting_users_by?(column)
+
+    sortings = ["up", "down", nil]
+    sortings[(sortings.index(params[:sort_order]) + 1) % sortings.length]
+  end
+
   def no_search_results?(users)
     users.empty? && params[:search_query].present?
   end
@@ -17,7 +28,7 @@ module UsersHelper
     [
       params[:search_query], params[:status], params[:action_required], params[:first_invitation_date_before],
       params[:last_invitation_date_before], params[:first_invitation_date_after], params[:last_invitation_date_after],
-      params[:filter_by_current_agent], params[:creation_date_after], params[:creation_date_before]
+      params[:filter_by_current_agent], params[:creation_date_after], params[:creation_date_before], params[:tag_ids]
     ].any?(&:present?)
   end
 

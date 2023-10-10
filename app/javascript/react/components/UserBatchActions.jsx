@@ -1,7 +1,7 @@
 import React from "react";
 import { observer } from "mobx-react-lite";
 
-export default observer(({ users, isDepartmentLevel }) => {
+export default observer(({ users }) => {
   const toggle = () => {
     const dropdown = document.getElementById("batch-actions");
     dropdown.classList.toggle("show");
@@ -18,7 +18,7 @@ export default observer(({ users, isDepartmentLevel }) => {
     // eslint-disable-next-line no-restricted-syntax
     for (const user of users.selectedUsers) {
       // eslint-disable-next-line no-await-in-loop
-      await user.inviteBy(format, isDepartmentLevel, { raiseError: false });
+      await user.inviteBy(format, { raiseError: false });
     }
   };
 
@@ -47,7 +47,7 @@ export default observer(({ users, isDepartmentLevel }) => {
             <span>Créer comptes</span>
             <i className="fas fa-user" />
           </button>
-          {users.list.some((user) => user.canBeInvitedBy("email")) && (
+          {users.canBeInvitedBy("email") && (
             <button
               type="button"
               className="dropdown-item d-flex justify-content-between align-items-center"
@@ -57,7 +57,7 @@ export default observer(({ users, isDepartmentLevel }) => {
               <i className="fas fa-inbox" />
             </button>
           )}
-          {users.list.some((user) => user.canBeInvitedBy("sms")) && (
+          {users.canBeInvitedBy("sms") && (
             <button
               type="button"
               className="dropdown-item d-flex justify-content-between align-items-center"
@@ -67,7 +67,7 @@ export default observer(({ users, isDepartmentLevel }) => {
               <i className="fas fa-comment" />
             </button>
           )}
-          {users.list.some((user) => user.canBeInvitedBy("postal")) && (
+          {users.canBeInvitedBy("postal") && (
             <button
               type="button"
               className="dropdown-item d-flex justify-content-between align-items-center"

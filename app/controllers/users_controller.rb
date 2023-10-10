@@ -15,7 +15,7 @@ class UsersController < ApplicationController
   before_action :set_organisation, :set_department, :set_organisations, :set_all_configurations,
                 :set_current_agent_roles, :set_users_scope,
                 :set_current_configuration, :set_current_motif_category,
-                :set_users, :set_rdv_contexts,
+                :set_users, :set_rdv_contexts, :set_tags,
                 :filter_users, :order_users,
                 for: :index
   before_action :set_user, :set_organisation, :set_department, :set_all_configurations,
@@ -160,6 +160,10 @@ class UsersController < ApplicationController
 
     @organisation = policy_scope(Organisation)
                     .find_by(id: @user.organisation_ids, department_id: params[:department_id])
+  end
+
+  def set_tags
+    @tags = (@organisation || @department).tags.order(:value).distinct
   end
 
   def set_organisation_through_form

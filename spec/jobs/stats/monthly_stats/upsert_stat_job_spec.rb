@@ -1,10 +1,10 @@
 describe Stats::MonthlyStats::UpsertStatJob do
   subject do
-    described_class.new.perform("Department", department.id, date_string)
+    described_class.new.perform("Department", department.id, until_date_string)
   end
 
   let!(:department) { create(:department) }
-  let!(:date_string) { 1.month.ago.to_s }
+  let!(:until_date_string) { 1.month.ago.to_s }
 
   describe "#perform" do
     before do
@@ -14,7 +14,7 @@ describe Stats::MonthlyStats::UpsertStatJob do
 
     it "calls the appropriate service" do
       expect(Stats::MonthlyStats::UpsertStat).to receive(:call)
-        .with(structure_type: "Department", structure_id: department.id, date_string: date_string)
+        .with(structure_type: "Department", structure_id: department.id, until_date_string: until_date_string)
       subject
     end
 

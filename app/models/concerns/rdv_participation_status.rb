@@ -21,6 +21,10 @@ module RdvParticipationStatus
     starts_at > Time.zone.now
   end
 
+  def in_the_past?
+    starts_at < Time.zone.now
+  end
+
   def cancelled?
     status.in?(CANCELLED_STATUSES)
   end

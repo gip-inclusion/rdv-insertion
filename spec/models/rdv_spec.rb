@@ -36,7 +36,9 @@ describe Rdv do
     let!(:participation) { create(:participation, convocable: true) }
 
     context "when the lieu is updated" do
-      let!(:rdv) { create(:rdv, participations: [participation], address: "some place") }
+      let!(:rdv) do
+        create(:rdv, participations: [participation], address: "some place", starts_at: 2.days.from_now)
+      end
 
       it "enqueues a job to notify rdv users" do
         rdv.address = "some other place"
@@ -74,6 +76,15 @@ describe Rdv do
           expect(NotifyParticipationsJob).not_to receive(:perform_async)
           subject
         end
+      end
+    end
+
+    context "when the rdv is in the past" do
+      let!(:rdv) { create(:rdv, participations: [participation], starts_at: 2.days.ago) }
+
+      it "does not enqueue a job to notify rdv users" do
+        expect(NotifyParticipationsJob).not_to receive(:perform_async)
+        subject
       end
     end
 

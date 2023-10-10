@@ -33,8 +33,9 @@ class Stat < ApplicationRecord
   end
 
   # We filter participations to keep only invitations
-  def participations_without_notifications_sample
-    @participations_without_notifications_sample ||= participations_sample.where.missing(:notifications).distinct
+  def participations_after_invitations_sample
+    @participations_after_invitations_sample ||=
+      participations_sample.where.missing(:notifications).joins(:rdv_context_invitations).distinct
   end
 
   # We exclude the rdvs collectifs motifs to correctly compute the rate of autonomous users
@@ -93,7 +94,8 @@ class Stat < ApplicationRecord
   # We only consider specific contexts to focus on the first RSA rdv
   def users_with_orientation_category_sample
     @users_with_orientation_category_sample ||=
-      users_sample.joins(:rdv_contexts)
+      users_sample.preload(:rdvs)
+                  .joins(:rdv_contexts)
                   .where(rdv_contexts: RdvContext.orientation)
   end
 

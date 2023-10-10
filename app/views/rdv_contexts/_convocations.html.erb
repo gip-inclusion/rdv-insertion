@@ -4,7 +4,7 @@
 <% if email_convocations.any? %>
   <div>Email 📧</div>
 <% end %>
-<% if participation.pending? || participation.revoked? %>
+<% if participation.in_the_future? && participation.status.in?(["unknown", "revoked"]) %>
   <%= simple_form_for(:notification, url: participation_notifications_path(participation, format: "pdf"), html: { method: :post }) do |f| %>
     <%= f.input :format,
                 as: :hidden,

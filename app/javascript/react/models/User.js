@@ -27,7 +27,8 @@ export default class User {
     availableTags = [],
     currentConfiguration,
     columnNames,
-    currentAgent
+    currentAgent,
+    list
   ) {
     const formattedAttributes = {};
     Object.keys(attributes).forEach((key) => {
@@ -75,6 +76,7 @@ export default class User {
     this.columnNames = columnNames;
     this.selected = false;
     this.archives = [];
+    this.list = list;
 
     this.resetErrors();
 
@@ -139,7 +141,7 @@ export default class User {
     return role;
   }
 
-  async inviteBy(format, isDepartmentLevel, options = { raiseError: true }) {
+  async inviteBy(format, options = { raiseError: true }) {
     if (!this.createdAt || !this.belongsToCurrentOrg()) {
       const success = await this.createAccount(options);
       if (!success) return false;
@@ -155,7 +157,7 @@ export default class User {
       this.id,
       this.department.id,
       this.currentOrganisation.id,
-      isDepartmentLevel,
+      this.list.isDepartmentLevel,
       this.currentConfiguration.motif_category_id,
       this.currentOrganisation.phone_number,
     ];
@@ -309,38 +311,8 @@ export default class User {
     ).trim();
   }
 
-  displayedAttributes() {
-    const attributes = [
-      this.affiliationNumber,
-      this.shortTitle,
-      this.firstName,
-      this.lastName,
-      this.shortRole,
-    ];
-    if (this.shouldDisplay("department_internal_id_column"))
-      attributes.push(this.departmentInternalId);
-    if (this.shouldDisplay("email_column")) attributes.push(this.email);
-    if (this.shouldDisplay("phone_number_column")) attributes.push(this.phoneNumber);
-    if (this.shouldDisplay("rights_opening_date_column")) attributes.push(this.rightsOpeningDate);
-    if (this.shouldDisplay("nir_column")) attributes.push(this.nir);
-    return attributes;
-  }
-
-  attributesFromContactsDataFile() {
-    const attributes = [];
-    if (this.shouldDisplay("email_column")) attributes.push(this.email);
-    if (this.shouldDisplay("phone_number_column")) attributes.push(this.phoneNumber);
-    if (this.shouldDisplay("rights_opening_date_column")) attributes.push(this.rightsOpeningDate);
-    return attributes;
-  }
-
   shouldDisplay(attribute) {
     return Object.keys(this.columnNames).includes(attribute);
-  }
-
-  canBeInvitedBy(format) {
-    if (!this.currentConfiguration) return false;
-    return this.currentConfiguration.invitation_formats.includes(format);
   }
 
   belongsToCurrentOrg() {

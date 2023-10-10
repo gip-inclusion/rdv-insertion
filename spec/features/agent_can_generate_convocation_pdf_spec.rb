@@ -79,25 +79,25 @@ describe "Agents can generate convocation pdf", js: true do
 
       expect(page).not_to have_button "Courrier"
     end
+  end
 
-    context "when the participation is revoked" do
-      before { participation.update! status: "revoked" }
+  context "when the participation is revoked" do
+    before { participation.update! status: "revoked" }
 
-      it "can generate a revoked participation pdf" do
-        visit organisation_user_path(organisation, user)
+    it "can generate a revoked participation pdf" do
+      visit organisation_user_path(organisation, user)
 
-        expect(page).to have_button "Courrier"
+      expect(page).to have_button "Courrier"
 
-        click_button "Courrier"
+      click_button "Courrier"
 
-        wait_for_download
-        expect(downloads.length).to eq(1)
+      wait_for_download
+      expect(downloads.length).to eq(1)
 
-        pdf = download_content(format: "pdf")
-        pdf_text = extract_raw_text(pdf)
+      pdf = download_content(format: "pdf")
+      pdf_text = extract_raw_text(pdf)
 
-        expect(pdf_text).to include("a été annulé")
-      end
+      expect(pdf_text).to include("a été annulé")
     end
   end
 

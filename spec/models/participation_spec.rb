@@ -49,7 +49,7 @@ describe Participation do
     subject { participation.save }
 
     let!(:participation_id) { 333 }
-    let!(:rdv) { create(:rdv) }
+    let!(:rdv) { create(:rdv, starts_at: 2.days.from_now) }
     let!(:user) { create(:user) }
     let!(:participation) do
       build(:participation, id: participation_id, convocable: true, rdv: rdv, user: user, status: "unknown")
@@ -95,6 +95,15 @@ describe Participation do
             .with(participation_id, "email", "participation_created")
           subject
         end
+      end
+    end
+
+    context "when the rdv is in the past" do
+      before { rdv.update! starts_at: 2.days.ago }
+
+      it "doess not enqueue jobs" do
+        expect(NotifyParticipationJob).not_to receive(:perform_async)
+        subject
       end
     end
 
