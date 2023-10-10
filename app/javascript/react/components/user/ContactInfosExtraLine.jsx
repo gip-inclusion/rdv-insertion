@@ -4,7 +4,7 @@ import { observer } from "mobx-react-lite";
 import handleUserUpdate from "../../lib/handleUserUpdate";
 import camelToSnakeCase from "../../../lib/stringHelper";
 
-export default observer(({ user, invitationsColspan }) => {
+export default observer(({ user }) => {
   const handleUpdateContactsDataClick = async (attribute = null) => {
     user.triggers[`${attribute}Update`] = true;
 
@@ -32,44 +32,40 @@ export default observer(({ user, invitationsColspan }) => {
     user.triggers[`${attribute}Update`] = false;
   };
 
-  // We need to add 1 to the colSpan offset because of the multiple selection checkbox
-  const colSpanForContactsUpdate =
-    user.displayedAttributes().length - user.attributesFromContactsDataFile().length + 1;
-
   return (
     <tr className="table-success">
-      <td colSpan={colSpanForContactsUpdate} className="text-align-right">
+      <td colSpan={user.list.numberOfColumnsBeforeContactListUpdate} className="text-align-right">
         <i className="fas fa-level-up-alt" />
         Nouvelles données trouvées pour {user.firstName} {user.lastName}
       </td>
-      {["email", "phoneNumber", "rightsOpeningDate"].map(
-        (attributeName) =>
-          user.shouldDisplay(`${camelToSnakeCase(attributeName)}_column`) && (
+      {user.list.columnsAfterFirstContactListUpdate.map(
+        (column) => column.visible && column.isInContactFile ?
+          (
             <td
               className="update-box"
-              key={`${attributeName}${new Date().toISOString().slice(0, 19)}`}
+              key={`${column.key}${new Date().toISOString().slice(0, 19)}`}
             >
-              {user[`${attributeName}New`] && (
+              {user[`${column.key}New`] && (
                 <>
-                  {user[`${attributeName}New`]}
+                  {user[`${column.key}New`]}
                   <br />
                   <button
                     type="submit"
                     className="btn btn-primary btn-blue btn-sm mt-2"
-                    onClick={() => handleUpdateContactsDataClick(attributeName)}
+                    onClick={() => handleUpdateContactsDataClick(column.key)}
                   >
-                    {user.triggers[`${attributeName}Update`] || user.triggers.allAttributesUpdate
+                    {user.triggers[`${column.key}Update`] || user.triggers.allAttributesUpdate
                       ? "En cours..."
                       : "Mettre à jour"}
                   </button>
                 </>
               )}
             </td>
-          )
-      )}
+          ) : <td />)}
+          
       <td>
-        {[user.emailNew, user.phoneNumberNew, user.rightsOpeningDateNew].filter((e) => e != null)
-          .length > 1 && (
+        {user.list.columnsAfterFirstContactListUpdate.filter((column) => column.isInContactFile && user[`${column.key}New`] !== null)
+          .length && (
           <button
             type="submit"
             className="btn btn-primary btn-blue"
@@ -84,7 +80,6 @@ export default observer(({ user, invitationsColspan }) => {
           </button>
         )}
       </td>
-      <td colSpan={invitationsColspan} />
     </tr>
   );
 });
