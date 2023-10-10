@@ -24,7 +24,7 @@ export default observer(({ user, format }) => {
   const actionType = `${format}Invitation`;
 
   return (
-    user.canBeInvitedBy(format) && (
+    user.list.canBeInvitedBy(format) && (
       <>
         <td>
           {user.markAsAlreadyInvitedBy(format) ? (

@@ -47,7 +47,7 @@ export default observer(({ users }) => {
             <span>Créer comptes</span>
             <i className="fas fa-user" />
           </button>
-          {users.list.some((user) => user.canBeInvitedBy("email")) && (
+          {users.canBeInvitedBy("email") && (
             <button
               type="button"
               className="dropdown-item d-flex justify-content-between align-items-center"
@@ -57,7 +57,7 @@ export default observer(({ users }) => {
               <i className="fas fa-inbox" />
             </button>
           )}
-          {users.list.some((user) => user.canBeInvitedBy("sms")) && (
+          {users.canBeInvitedBy("sms") && (
             <button
               type="button"
               className="dropdown-item d-flex justify-content-between align-items-center"
@@ -67,7 +67,7 @@ export default observer(({ users }) => {
               <i className="fas fa-comment" />
             </button>
           )}
-          {users.list.some((user) => user.canBeInvitedBy("postal")) && (
+          {users.canBeInvitedBy("postal") && (
             <button
               type="button"
               className="dropdown-item d-flex justify-content-between align-items-center"

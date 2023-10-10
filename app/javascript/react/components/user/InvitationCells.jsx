@@ -7,14 +7,14 @@ export default function InvitationCells({ user }) {
   return (
     /* ----------------------------- Disabled invitations cases -------------------------- */
     user.isArchivedInCurrentDepartment() ? (
-      <td colSpan={user.invitationsColspan}>
+      <td colSpan={user.list.invitationsColspan}>
         Dossier archivé
         {user.archiveInCurrentDepartment().archiving_reason && (
           <>&nbsp;: {user.archiveInCurrentDepartment().archiving_reason}</>
         )}
       </td>
     ) : user.createdAt && user.list.isDepartmentLevel && !user.linkedToCurrentCategory() ? (
-      <td colSpan={user.invitationsColspan}>
+      <td colSpan={user.list.invitationsColspan}>
         L'usager n'appartient pas à une organisation qui gère ce type de rdv{" "}
         <Tippy
           content={
@@ -29,7 +29,7 @@ export default function InvitationCells({ user }) {
       </td>
     ) : user.currentContextStatus === "rdv_pending" ? (
       <>
-        <td colSpan={user.invitationsColspan}>{user.currentRdvContext.human_status}</td>
+        <td colSpan={user.list.invitationsColspan}>{user.currentRdvContext.human_status}</td>
       </>
     ) : (
       /* ----------------------------- Enabled invitations cases --------------------------- */

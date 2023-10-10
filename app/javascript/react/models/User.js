@@ -316,11 +316,6 @@ export default class User {
     return Object.keys(this.columnNames).includes(attribute);
   }
 
-  canBeInvitedBy(format) {
-    if (!this.currentConfiguration) return false;
-    return this.currentConfiguration.invitation_formats.includes(format);
-  }
-
   belongsToCurrentOrg() {
     return (
       this.currentOrganisation &&
@@ -411,14 +406,6 @@ export default class User {
       this.referents &&
       this.referents.some((referent) => referent.email === this.referentEmail)
     );
-  }
-
-  get invitationsColSpan() {
-    let colSpan = 0;
-    if (this.canBeInvitedBy("sms")) colSpan += 1;
-    if (this.canBeInvitedBy("email")) colSpan += 1;
-    if (this.canBeInvitedBy("postal")) colSpan += 1;
-    return colSpan;
   }
 
   archiveInCurrentDepartment() {
