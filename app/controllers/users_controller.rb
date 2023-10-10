@@ -15,7 +15,7 @@ class UsersController < ApplicationController
   before_action :set_organisation, :set_department, :set_organisations, :set_all_configurations,
                 :set_current_agent_roles, :set_users_scope,
                 :set_current_configuration, :set_current_motif_category,
-                :set_users, :set_rdv_contexts,
+                :set_users, :set_rdv_contexts, :set_tags,
                 :filter_users, :order_users,
                 for: :index
   before_action :set_user, :set_organisation, :set_department, :set_all_configurations,
@@ -157,7 +157,7 @@ class UsersController < ApplicationController
       if department_level?
         set_organisation_at_department_level
       else
-        policy_scope(Organisation).preload(configurations: [:motif_category]).find(params[:organisation_id])
+        policy_scope(Organisation).find(params[:organisation_id])
       end
   end
 
@@ -167,6 +167,10 @@ class UsersController < ApplicationController
 
     @organisation = policy_scope(Organisation)
                     .find_by(id: @user.organisation_ids, department_id: params[:department_id])
+  end
+
+  def set_tags
+    @tags = (@organisation || @department).tags.order(:value).distinct
   end
 
   def set_organisation_through_form
@@ -183,7 +187,7 @@ class UsersController < ApplicationController
   def set_department
     @department =
       if department_level?
-        policy_scope(Department).preload(configurations: [:motif_category]).find(params[:department_id])
+        policy_scope(Department).find(params[:department_id])
       else
         @organisation.department
       end
@@ -242,14 +246,16 @@ class UsersController < ApplicationController
 
   def set_all_users
     @users = policy_scope(User)
-             .preload(rdv_contexts: [:invitations])
              .active
              .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
+    return if request.format == "csv"
+
+    @users = @users.preload(rdv_contexts: [:invitations])
   end
 
   def set_users_for_motif_category
     @users = policy_scope(User)
-             .preload(rdv_contexts: [:notifications, :invitations])
+             .preload(:organisations, rdv_contexts: [:notifications, :invitations])
              .active
              .select("DISTINCT(users.id), users.*, rdv_contexts.created_at")
              .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })

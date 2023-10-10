@@ -26,16 +26,18 @@ describe Stats::GlobalStats::Compute, type: :service do
         .and_return(Participation.where(id: [participation1, participation2]))
       allow(stat).to receive(:invitations_sample)
         .and_return(Invitation.where(id: [invitation1, invitation2]))
-      allow(stat).to receive(:participations_without_notifications_sample)
+      allow(stat).to receive(:participations_after_invitations_sample)
         .and_return(Participation.where(id: [participation1]))
       allow(stat).to receive(:participations_with_notifications_sample)
         .and_return(Participation.where(id: [participation2]))
-      allow(stat).to receive(:rdv_contexts_sample)
+      allow(stat).to receive(:rdv_contexts_with_invitations_and_participations_sample)
         .and_return(RdvContext.where(id: [rdv_context1, rdv_context2]))
       allow(stat).to receive(:users_sample)
         .and_return(User.where(id: [user1, user2]))
-      allow(stat).to receive(:users_for_30_days_rdvs_seen_sample)
+      allow(stat).to receive(:users_with_orientation_category_sample)
         .and_return(User.where(id: [user1, user2]))
+      allow(stat).to receive(:orientation_rdv_contexts_sample)
+        .and_return(RdvContext.where(id: [rdv_context1, rdv_context2]))
       allow(stat).to receive(:invited_users_sample)
         .and_return(User.where(id: [user1, user2]))
       allow(stat).to receive(:agents_sample)
@@ -45,6 +47,8 @@ describe Stats::GlobalStats::Compute, type: :service do
       allow(Stats::ComputeAverageTimeBetweenInvitationAndRdvInDays).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 4.0))
       allow(Stats::ComputeRateOfUsersWithRdvSeenInLessThanThirtyDays).to receive(:call)
+        .and_return(OpenStruct.new(success?: true, value: 50.0))
+      allow(Stats::ComputeRateOfUsersWithRdvSeen).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 50.0))
       allow(Stats::ComputeRateOfAutonomousUsers).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 50.0))
@@ -65,7 +69,8 @@ describe Stats::GlobalStats::Compute, type: :service do
       expect(subject.stat_attributes).to include(:rate_of_no_show_for_invitations)
       expect(subject.stat_attributes).to include(:rate_of_no_show_for_convocations)
       expect(subject.stat_attributes).to include(:average_time_between_invitation_and_rdv_in_days)
-      expect(subject.stat_attributes).to include(:rate_of_users_with_rdv_seen_in_less_than_30_days)
+      expect(subject.stat_attributes).to include(:rate_of_users_oriented_in_less_than_30_days)
+      expect(subject.stat_attributes).to include(:rate_of_users_oriented)
       expect(subject.stat_attributes).to include(:rate_of_autonomous_users)
       expect(subject.stat_attributes).to include(:agents_count)
     end
@@ -77,7 +82,8 @@ describe Stats::GlobalStats::Compute, type: :service do
       expect(subject.stat_attributes[:rate_of_no_show_for_invitations]).to be_a(Float)
       expect(subject.stat_attributes[:rate_of_no_show_for_convocations]).to be_a(Float)
       expect(subject.stat_attributes[:average_time_between_invitation_and_rdv_in_days]).to be_a(Float)
-      expect(subject.stat_attributes[:rate_of_users_with_rdv_seen_in_less_than_30_days]).to be_a(Float)
+      expect(subject.stat_attributes[:rate_of_users_oriented_in_less_than_30_days]).to be_a(Float)
+      expect(subject.stat_attributes[:rate_of_users_oriented]).to be_a(Float)
       expect(subject.stat_attributes[:rate_of_autonomous_users]).to be_a(Float)
       expect(subject.stat_attributes[:agents_count]).to be_a(Integer)
     end
@@ -98,7 +104,7 @@ describe Stats::GlobalStats::Compute, type: :service do
     end
 
     it "computes the percentage of no show for invitations" do
-      expect(stat).to receive(:participations_without_notifications_sample)
+      expect(stat).to receive(:participations_after_invitations_sample)
       expect(Stats::ComputeRateOfNoShow).to receive(:call)
         .with(participations: [participation1])
       subject
@@ -112,16 +118,23 @@ describe Stats::GlobalStats::Compute, type: :service do
     end
 
     it "computes the average time between first invitation and first rdv in days" do
-      expect(stat).to receive(:rdv_contexts_sample)
+      expect(stat).to receive(:rdv_contexts_with_invitations_and_participations_sample)
       expect(Stats::ComputeAverageTimeBetweenInvitationAndRdvInDays).to receive(:call)
         .with(rdv_contexts: [rdv_context1, rdv_context2])
       subject
     end
 
     it "computes the percentage of users with rdv seen in less than 30 days" do
-      expect(stat).to receive(:users_for_30_days_rdvs_seen_sample)
+      expect(stat).to receive(:users_with_orientation_category_sample)
       expect(Stats::ComputeRateOfUsersWithRdvSeenInLessThanThirtyDays).to receive(:call)
         .with(users: [user1, user2])
+      subject
+    end
+
+    it "computes the percentage of users oriented" do
+      expect(stat).to receive(:orientation_rdv_contexts_sample)
+      expect(Stats::ComputeRateOfUsersWithRdvSeen).to receive(:call)
+        .with(rdv_contexts: [rdv_context1, rdv_context2])
       subject
     end
 

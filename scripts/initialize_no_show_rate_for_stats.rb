@@ -1,6 +1,6 @@
 Stat.find_each do |stat|
   stat.rate_of_no_show_for_invitations =
-    Stats::ComputeRateOfNoShow.call(participations: stat.participations_without_notifications_sample).value
+    Stats::ComputeRateOfNoShow.call(participations: stat.participations_after_invitations_sample).value
   stat.rate_of_no_show_for_convocations =
     Stats::ComputeRateOfNoShow.call(participations: stat.participations_with_notifications_sample).value
 
@@ -12,7 +12,7 @@ Stat.find_each do |stat|
     rate_for_invitations = stat.rate_of_no_show_for_invitations_grouped_by_month
     rate_for_invitations_for_date =
       Stats::ComputeRateOfNoShow.call(
-        participations: stat.participations_without_notifications_sample.where(created_at: date.all_month)
+        participations: stat.participations_after_invitations_sample.where(created_at: date.all_month)
       ).value.round
 
     if rate_for_invitations != {} || rate_for_invitations_for_date != 0

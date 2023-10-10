@@ -54,9 +54,10 @@ Rails.application.configure do
   # Highlight code that triggered database queries in logs.
   config.active_record.verbose_query_logs = true
 
+  # N+1 detection
   config.after_initialize do
-    Bullet.enable = true
-    Bullet.rails_logger = true
+    Prosopite.enabled = true
+    Prosopite.rails_logger = true
   end
 
   # Debug mode disables concatenation and preprocessing of assets.

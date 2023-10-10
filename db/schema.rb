@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_20_140928) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_25_155039) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -140,7 +140,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_20_140928) do
     t.datetime "valid_until"
     t.boolean "reminder", default: false
     t.string "uuid"
-    t.boolean "rdv_with_referents"
+    t.boolean "rdv_with_referents", default: false
     t.index ["department_id"], name: "index_invitations_on_department_id"
     t.index ["rdv_context_id"], name: "index_invitations_on_rdv_context_id"
     t.index ["user_id"], name: "index_invitations_on_user_id"
@@ -187,8 +187,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_20_140928) do
     t.bigint "rdv_solidarites_motif_category_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "participation_optional", default: false
     t.bigint "template_id"
+    t.boolean "participation_optional", default: false
+    t.boolean "leads_to_orientation", default: false
     t.index ["rdv_solidarites_motif_category_id"], name: "index_motif_categories_on_rdv_solidarites_motif_category_id", unique: true
     t.index ["short_name"], name: "index_motif_categories_on_short_name", unique: true
     t.index ["template_id"], name: "index_motif_categories_on_template_id"
@@ -219,8 +220,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_20_140928) do
     t.datetime "sent_at", precision: nil
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "format"
     t.bigint "rdv_solidarites_rdv_id"
+    t.integer "format"
     t.bigint "participation_id"
     t.index ["participation_id"], name: "index_notifications_on_participation_id"
   end
@@ -315,8 +316,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_20_140928) do
     t.json "sent_invitations_count_grouped_by_month"
     t.float "average_time_between_invitation_and_rdv_in_days"
     t.json "average_time_between_invitation_and_rdv_in_days_by_month"
-    t.float "rate_of_users_with_rdv_seen_in_less_than_30_days"
-    t.json "rate_of_users_with_rdv_seen_in_less_than_30_days_by_month"
+    t.float "rate_of_users_oriented_in_less_than_30_days"
+    t.json "rate_of_users_oriented_in_less_than_30_days_by_month"
     t.integer "agents_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -328,6 +329,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_20_140928) do
     t.json "rate_of_no_show_for_convocations_grouped_by_month"
     t.float "rate_of_no_show_for_invitations"
     t.json "rate_of_no_show_for_invitations_grouped_by_month"
+    t.float "rate_of_users_oriented"
+    t.json "rate_of_users_oriented_grouped_by_month"
     t.index ["statable_type", "statable_id"], name: "index_stats_on_statable"
   end
 
@@ -362,10 +365,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_20_140928) do
     t.string "rdv_purpose"
     t.string "user_designation"
     t.string "rdv_subject"
-    t.boolean "display_mandatory_warning", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "custom_sentence"
+    t.boolean "display_mandatory_warning", default: false
     t.text "punishable_warning", default: "", null: false
   end
 

@@ -8,6 +8,7 @@ class Participation < ApplicationRecord
   belongs_to :user
 
   has_many :notifications, dependent: :nullify
+  has_many :rdv_context_invitations, through: :rdv_context, source: :invitations
 
   has_one :organisation, through: :rdv
   has_many :configurations, through: :organisation
@@ -42,6 +43,7 @@ class Participation < ApplicationRecord
   end
 
   def notify_user
+    return if in_the_past?
     return unless event_to_notify
 
     NotifyParticipationJob.perform_async(id, "sms", "participation_#{event_to_notify}") if phone_number_is_mobile?

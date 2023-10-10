@@ -19,8 +19,9 @@ module Stats
           rate_of_no_show_for_invitations: rate_of_no_show_for_invitations,
           rate_of_no_show_for_convocations: rate_of_no_show_for_convocations,
           average_time_between_invitation_and_rdv_in_days: average_time_between_invitation_and_rdv_in_days,
-          rate_of_users_with_rdv_seen_in_less_than_30_days:
-            rate_of_users_with_rdv_seen_in_less_than_30_days,
+          rate_of_users_oriented_in_less_than_30_days:
+            rate_of_users_oriented_in_less_than_30_days,
+          rate_of_users_oriented: rate_of_users_oriented,
           rate_of_autonomous_users: rate_of_autonomous_users,
           agents_count: agents_count
         }
@@ -39,7 +40,7 @@ module Stats
       end
 
       def rate_of_no_show_for_invitations
-        ComputeRateOfNoShow.call(participations: @stat.participations_without_notifications_sample).value
+        ComputeRateOfNoShow.call(participations: @stat.participations_after_invitations_sample).value
       end
 
       def rate_of_no_show_for_convocations
@@ -48,13 +49,19 @@ module Stats
 
       def average_time_between_invitation_and_rdv_in_days
         ComputeAverageTimeBetweenInvitationAndRdvInDays.call(
-          rdv_contexts: @stat.rdv_contexts_sample
+          rdv_contexts: @stat.rdv_contexts_with_invitations_and_participations_sample
         ).value
       end
 
-      def rate_of_users_with_rdv_seen_in_less_than_30_days
+      def rate_of_users_oriented_in_less_than_30_days
         ComputeRateOfUsersWithRdvSeenInLessThanThirtyDays.call(
-          users: @stat.users_for_30_days_rdvs_seen_sample
+          users: @stat.users_with_orientation_category_sample
+        ).value
+      end
+
+      def rate_of_users_oriented
+        ComputeRateOfUsersWithRdvSeen.call(
+          rdv_contexts: @stat.orientation_rdv_contexts_sample
         ).value
       end
 

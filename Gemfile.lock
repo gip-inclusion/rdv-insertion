@@ -79,9 +79,6 @@ GEM
     bootsnap (1.16.0)
       msgpack (~> 1.2)
     builder (3.2.4)
-    bullet (7.0.7)
-      activesupport (>= 3.0.0)
-      uniform_notifier (~> 1.11)
     byebug (11.1.3)
     capybara (3.39.2)
       addressable
@@ -128,6 +125,9 @@ GEM
       raabro (~> 1.4)
     globalid (1.1.0)
       activesupport (>= 5.0)
+    google-protobuf (3.24.3-arm64-darwin)
+    google-protobuf (3.24.3-x86_64-darwin)
+    google-protobuf (3.24.3-x86_64-linux)
     groupdate (6.2.0)
       activesupport (>= 5.2)
     hashdiff (1.0.1)
@@ -204,6 +204,8 @@ GEM
       ruby-rc4
       ttfunk
     pg (1.4.6)
+    pg_query (4.2.3)
+      google-protobuf (>= 3.22.3)
     pg_search (2.3.6)
       activerecord (>= 5.2)
       activesupport (>= 5.2)
@@ -216,6 +218,7 @@ GEM
       actionmailer (>= 3)
       net-smtp
       premailer (~> 1.7, >= 1.7.9)
+    prosopite (1.4.1)
     public_suffix (5.0.3)
     puma (5.6.7)
       nio4r (~> 2.0)
@@ -390,7 +393,6 @@ GEM
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.4.2)
-    uniform_notifier (1.16.0)
     web-console (4.2.0)
       actionview (>= 6.0.0)
       activemodel (>= 6.0.0)
@@ -427,7 +429,6 @@ PLATFORMS
 DEPENDENCIES
   addressable
   bootsnap (>= 1.4.2)
-  bullet
   byebug
   capybara (>= 2.15)
   chartkick
@@ -442,9 +443,11 @@ DEPENDENCIES
   listen (~> 3.2)
   pdf-reader
   pg (>= 0.18, < 2.0)
+  pg_query
   pg_search
   phonelib
   premailer-rails
+  prosopite
   puma (~> 5.6)
   pundit
   rack-cors

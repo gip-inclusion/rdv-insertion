@@ -6,8 +6,16 @@
       <th scope="col" class="d-none d-lg-table-cell"><%= t(".#{invitation_format}_column_title") %></th>
     <% end  %>
     <% if show_invitations?(@current_configuration) %>
-      <th scope="col">Première invitation</th>
-      <th scope="col">Dernière invitation</th>
+      <th scope="col">
+        <%= link_to compute_index_path(@organisation, @department, motif_category_id: @current_motif_category&.id, sort_by: :first_invitation_sent_at, sort_order: sort_order_for("first_invitation_sent_at")), class: 'text-primary' do %>
+          Première invitation <i class="fas fa-sort fa-sort-<%= params[:sort_order] if params[:sort_by] == "first_invitation_sent_at" %>"></i>
+        <% end %>
+      </th>
+      <th scope="col">
+        <%= link_to compute_index_path(@organisation, @department, motif_category_id: @current_motif_category&.id, sort_by: :last_invitation_sent_at, sort_order: sort_order_for("last_invitation_sent_at")), class: 'text-primary' do %>
+          Dernière invitation <i class="fas fa-sort fa-sort-<%= params[:sort_order] if params[:sort_by] == "last_invitation_sent_at" %>"></i>
+        <% end %>
+      </th>
     <% end %>
     <% if show_convocation?(@current_configuration) %>
       <th scope="col">Dernière convocation envoyée le</th>
