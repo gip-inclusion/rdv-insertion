@@ -18,11 +18,6 @@ class Agent < ApplicationRecord
   scope :not_betagouv, -> { where.not("agents.email LIKE ?", "%beta.gouv.fr") }
   scope :super_admins, -> { where(super_admin: true) }
 
-  def as_json(...)
-    super.deep_symbolize_keys
-         .except(:last_webhook_update_received_at, :rdv_solidarites_agent_id, :has_logged_in, :super_admin)
-  end
-
   def delete_organisation(organisation)
     organisations.delete(organisation)
     save!

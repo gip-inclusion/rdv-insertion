@@ -95,7 +95,7 @@ describe Invitations::SaveAndSend, type: :service do
 
       it "does not mark the invitation as sent" do
         subject
-        expect(invitation.sent_at).to be_nil
+        expect(invitation.reload.sent_at).to be_nil
       end
     end
 

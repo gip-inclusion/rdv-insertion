@@ -16,6 +16,4 @@ class MotifCategory < ApplicationRecord
   scope :participation_optional, lambda { |participation_optional = true|
     where(participation_optional: participation_optional)
   }
-
-  def as_json(...) = super.deep_symbolize_keys.except(:rdv_solidarites_motif_category_id)
 end
