@@ -83,10 +83,7 @@ const UsersUpload = observer(
                   lastName: row[parameterizedColumnNames.last_name_column],
                   firstName: row[parameterizedColumnNames.first_name_column],
                   affiliationNumber: row[parameterizedColumnNames.affiliation_number_column],
-                  tags:
-                    row[parameterizedColumnNames.tags_column]
-                      ?.split(",")
-                      .map((tag) => tag.trim()) || [],
+                  tags: row[parameterizedColumnNames.tags_column]?.toString().split(",").map((tag) => tag.trim()) || [],
                   nir: row[parameterizedColumnNames.nir_column],
                   poleEmploiId: row[parameterizedColumnNames.pole_emploi_id_column],
                   role: row[parameterizedColumnNames.role_column],
