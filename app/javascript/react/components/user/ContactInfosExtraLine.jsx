@@ -4,7 +4,7 @@ import { observer } from "mobx-react-lite";
 import handleUserUpdate from "../../lib/handleUserUpdate";
 import camelToSnakeCase from "../../../lib/stringHelper";
 
-export default observer(({ user, invitationsColspan }) => {
+export default observer(({ user }) => {
   const handleUpdateContactsDataClick = async (attribute = null) => {
     user.triggers[`${attribute}Update`] = true;
 
@@ -32,17 +32,14 @@ export default observer(({ user, invitationsColspan }) => {
     user.triggers[`${attribute}Update`] = false;
   };
 
-  const editableColumns = user.list.columns.filter((column) => column.visible && column.isInContactFile)
-
-
   return (
     <tr className="table-success">
       <td colSpan={user.list.numberOfColumnsBeforeContactListUpdate} className="text-align-right">
         <i className="fas fa-level-up-alt" />
         Nouvelles données trouvées pour {user.firstName} {user.lastName}
       </td>
-      {editableColumns.map(
-        (column) =>
+      {user.list.columnsAfterFirstContactListUpdate.map(
+        (column) => column.visible && column.isInContactFile ?
           (
             <td
               className="update-box"
@@ -64,11 +61,11 @@ export default observer(({ user, invitationsColspan }) => {
                 </>
               )}
             </td>
-          )
-      )}
+          ) : <td />)}
+          
       <td>
-        {editableColumns.map(column => user[`${column.key}New`]).filter((e) => e != null)
-          .length > 1 && (
+        {user.list.columnsAfterFirstContactListUpdate.filter((column) => column.isInContactFile && user[`${column.key}New`] !== null)
+          .length && (
           <button
             type="submit"
             className="btn btn-primary btn-blue"
@@ -83,7 +80,6 @@ export default observer(({ user, invitationsColspan }) => {
           </button>
         )}
       </td>
-      <td colSpan={invitationsColspan} />
     </tr>
   );
 });

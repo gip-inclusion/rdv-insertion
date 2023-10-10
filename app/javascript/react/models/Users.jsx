@@ -12,7 +12,7 @@ class Users {
     this.sortBy = null;
     this.sortDirection = "asc";
     this.loading = false;
-    this.columnConfig = [];
+    this.fileColumnNames = [];
     this.showCarnetColumn = false
     this.configuration = null
     this.showReferentColumn = false
@@ -65,15 +65,15 @@ class Users {
         content: ({ user }) => <EditableCell type="text" user={user} cell="lastName" />
       },
       {
-        name: "Numéro CAF",
-        visible: this.columnConfig.affiliation_number_column,
+        name: "Numéro CAF", 
+        visible: this.fileColumnNames.affiliation_number_column,
         content: ({ user }) => <EditableCell type="text" user={user} cell="affiliationNumber" />
       },
       {
         name: "Rôle",
         sortable: true,
         key: "role",
-        visible: this.columnConfig.role_column,
+        visible: this.fileColumnNames.role_column,
         content: ({ user }) => (
           <EditableCell
             user={user}
@@ -88,36 +88,36 @@ class Users {
       },
       {
         name: "ID Editeur",
-        visible: this.columnConfig.department_internal_id_column,
+        visible: this.fileColumnNames.department_internal_id_column,
         content: ({ user }) => <EditableCell user={user} cell="departmentInternalId" />
       },
       {
         name: "NIR",
-        visible: this.columnConfig.nir_column,
+        visible: this.fileColumnNames.nir_column,
         content: ({ user }) => user.nir ?? " - "
       },
       {
         name: "ID PE",
-        visible: this.columnConfig.pole_emploi_id_column,
+        visible: this.fileColumnNames.pole_emploi_id_column,
         content: ({ user }) => user.poleEmploiId ?? " - "
       },
       {
         name: "Email",
         key: "email",
         isInContactFile: true,
-        visible: this.columnConfig.email_column,
+        visible: this.fileColumnNames.email_column,
         content: ({ user }) => <EditableCell user={user} cell="email" />
       },
       {
         name: "Téléphone",
         key: "phoneNumber",
         isInContactFile: true,
-        visible: this.columnConfig.phone_number_column,
+        visible: this.fileColumnNames.phone_number_column,
         content: ({ user }) => <EditableCell user={user} cell="phoneNumber" />
       },
       {
         name: "Tags",
-        visible: this.columnConfig.tags_column,
+        visible: this.fileColumnNames.tags_column,
         content: ({ user }) => (
           <EditableCell
             user={user}
@@ -131,7 +131,7 @@ class Users {
         name:  "Date d&apos;entrée flux",
         key: "rightsOpeningDate",
         isInContactFile: true,
-        visible: this.columnConfig.rights_opening_date_column,
+        visible: this.fileColumnNames.rights_opening_date_column,
         content: ({ user }) => <EditableCell user={user} cell="rightsOpeningDate" />
       },
       {
@@ -181,6 +181,10 @@ class Users {
       if (column.visible) offset += 1;
     }
     return offset
+  }
+
+  get columnsAfterFirstContactListUpdate() {
+    return this.columns.filter(column => column.visible).slice(this.numberOfColumnsBeforeContactListUpdate)
   }
 
   addUser(user) {
