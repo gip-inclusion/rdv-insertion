@@ -19,8 +19,8 @@ module Api
         head :not_found
       end
 
-      def render_error(error)
-        render json: { success: false, error: }, status: :unprocessable_entity
+      def render_errors(errors)
+        render json: { success: false, errors: }, status: :unprocessable_entity
       end
     end
   end

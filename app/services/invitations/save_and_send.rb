@@ -7,7 +7,7 @@ module Invitations
 
     def call
       result.invitation = @invitation
-      
+
       Invitation.with_advisory_lock "invite_user_#{user.id}" do
         Invitation.transaction do
           assign_link_and_token

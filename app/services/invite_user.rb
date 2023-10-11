@@ -68,7 +68,12 @@ class InviteUser < BaseService
   def set_current_configuration
     @current_configuration =
       if motif_category.nil?
-        fail!("La configuration n'est pas sélectionnable") if all_configurations.length != 1
+
+        if all_configurations.length != 1
+          fail!("Plusieurs catégories de motifs disponibles et aucune n'a été choisie")
+          return
+        end
+
         all_configurations.first
       else
         all_configurations.find { |c| c.motif_category_id == motif_category.id }

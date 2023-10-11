@@ -26,13 +26,12 @@ module Api
 
       # this endpoint allows to create and invite a user synchronously
       def create_and_invite
-        upsert_user
         @user = upsert_user.user
-        return render_error("Impossible de créer l'usager: #{upsert_user.errors}") if upsert_user.failure?
+        return render_errors(["Impossible de créer l'usager: #{upsert_user.errors.join(', ')}"]) if upsert_user.failure?
 
         @invitations, @invitation_errors = [[], []]
-        invite_user_by_phone if @user.phone_number_is_mobile?
-        invite_user_by_email if @user.email?
+        invite_user_by("sms") if @user.phone_number_is_mobile?
+        invite_user_by("email") if @user.email?
         return render_error(@invitation_errors) unless @invitation_errors.empty?
 
         render json: { success: true, user: @user, invitations: @invitations }
@@ -46,23 +45,16 @@ module Api
         )
       end
 
-      def invite_user_by_phone
-        invite_user_by_phone = invite_user_by("phone")
-        unless invite_user_by_phone.success?
-          @invitation_errors << "Erreur en envoyant l'invitation téléphonique: #{invite_user_by_phone.errors}"
-        end
-        @invitations << invite_user_by_phone.invitation
-      end
-
-      def invite_user_by_email
-        invite_user_by_email = invite_user_by("email")
-        unless invite_user_by_email.success?
-          @invitation_errors << "Erreur en envoyant l'invitation par email: #{invite_user_by_email.errors}"
-        end
-        @invitations << invite_user_by_email.invitation
-      end
-
       def invite_user_by(format)
+        invite_user_service = call_invite_user_service_by("sms")
+        unless invite_user_service.success?
+          @invitation_errors <<
+            "Erreur en envoyant l'invitation par #{format}: #{invite_user_service.errors.join(', ')}"
+        end
+        @invitations << invite_user_service.invitation
+      end
+
+      def call_invite_user_service_by(format)
         InviteUser.call(
           user: @user, organisations: [@organisation], motif_category_attributes:, rdv_solidarites_session:,
           invitation_attributes: invitation_attributes.except(:motif_category)

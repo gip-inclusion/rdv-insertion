@@ -46,7 +46,8 @@ module Api
 
         @params_validation_errors << {
           error_details: user.errors.to_hash,
-          department_internal_id: user_attributes[:department_internal_id]
+          first_name: user_attributes[:first_name],
+          last_name: user_attributes[:last_name]
         }.merge(idx.present? ? { index: idx } : {})
       end
     end
