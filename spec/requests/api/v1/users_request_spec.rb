@@ -43,7 +43,7 @@ describe "Users API" do
       pole_emploi_id: "22233333",
       invitation: {
         rdv_solidarites_lieu_id: 363,
-        motif_category_name: "RSA orientation"
+        motif_category: { name: "RSA orientation" }
       }
     }
   end
@@ -86,17 +86,17 @@ describe "Users API" do
       expect(result["success"]).to eq(true)
     end
 
-    context "with 'users' instead of 'users' in payload" do
+    context "with 'applicants' instead of 'users' in payload" do
       subject do
         post(
-          create_and_invite_many_api_v1_users_path(
+          applicants_create_and_invite_many_api_v1_organisation_path(
             rdv_solidarites_organisation_id: rdv_solidarites_organisation_id
           ),
-          params: users_payload, headers: api_auth_headers_for_agent(agent), as: :json
+          params: applicants_payload, headers: api_auth_headers_for_agent(agent), as: :json
         )
       end
 
-      let!(:users_payload) { { users: [user1_params, user2_params] } }
+      let!(:applicants_payload) { { applicants: [user1_params, user2_params] } }
 
       it "enqueues create and invite jobs" do
         expect(CreateAndInviteUserJob).to receive(:perform_async)
@@ -183,25 +183,6 @@ describe "Users API" do
         result = response.parsed_body
         expect(result["success"]).to eq(true)
       end
-
-      context "when there is more than one motif category" do
-        let!(:new_configuration) do
-          create(
-            :configuration,
-            motif_category: create(:motif_category, name: "RSA accompagnement"),
-            organisation: organisation
-          )
-        end
-
-        it "returns 422" do
-          subject
-          expect(response).to have_http_status(:unprocessable_entity)
-          result = response.parsed_body
-          expect(result["errors"]).to include(
-            { "Entrée 1" => { "motif_category_name" => ["La catégorie de motifs doit être précisée"] } }
-          )
-        end
-      end
     end
 
     context "when params are invalid" do
@@ -215,7 +196,16 @@ describe "Users API" do
           subject
           expect(response).to have_http_status(:unprocessable_entity)
           result = response.parsed_body
-          expect(result["errors"]).to include({ "Entrée 1 - 11111444" => { "last_name" => ["doit être rempli(e)"] } })
+          expect(result["errors"]).to eq(
+            [
+              {
+                "index" => 0,
+                "first_name" => "Didier",
+                "last_name" => "",
+                "error_details" => { "last_name" => ["doit être rempli(e)"] }
+              }
+            ]
+          )
         end
 
         it "does not enqueue jobs" do
@@ -234,26 +224,6 @@ describe "Users API" do
           expect(response).to have_http_status(:unprocessable_entity)
           result = response.parsed_body
           expect(result["errors"]).to include("Les usagers doivent être envoyés par lots de 25 maximum")
-        end
-
-        it "does not enqueue jobs" do
-          expect(CreateAndInviteUserJob).not_to receive(:perform_async)
-          subject
-        end
-      end
-
-      context "with invalid invitation context for organisation" do
-        before do
-          user1_params[:invitation][:motif_category_name] = "RSA accompagnement"
-        end
-
-        it "returns 422" do
-          subject
-          expect(response).to have_http_status(:unprocessable_entity)
-          result = response.parsed_body
-          expect(result["errors"]).to include(
-            { "Entrée 1" => { "motif_category_name" => ["Catégorie de motifs RSA accompagnement invalide"] } }
-          )
         end
 
         it "does not enqueue jobs" do
