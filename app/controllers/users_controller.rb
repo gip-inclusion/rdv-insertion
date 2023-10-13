@@ -200,7 +200,7 @@ class UsersController < ApplicationController
       else
         @organisation.configurations.includes(:motif_category)
       end
-    @all_configurations = @all_configurations.order(position: :asc)
+    @all_configurations = @all_configurations.sort_by(&:position)
   end
 
   def set_current_configuration
