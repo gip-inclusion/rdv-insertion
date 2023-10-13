@@ -90,7 +90,7 @@ class UsersController < ApplicationController
     @user
       .tags
       .joins(:organisations)
-      .where(organisations: { id: department_level? ? @department.organisation_ids : @organisation.id })
+      .where(organisations: @organisation || @department.organisations)
       .each do |tag|
       @user.tags.delete(tag)
     end
