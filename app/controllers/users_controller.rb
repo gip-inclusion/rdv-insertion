@@ -200,7 +200,7 @@ class UsersController < ApplicationController
       else
         @organisation.configurations.includes(:motif_category)
       end
-    @all_configurations = @all_configurations.sort_by(&:motif_category_position)
+    @all_configurations = @all_configurations.order(position: :asc)
   end
 
   def set_current_configuration
@@ -222,7 +222,7 @@ class UsersController < ApplicationController
         participations: [:notifications, { rdv: [:motif, :organisation] }]
       ).where(
         user: @user, motif_category: @all_configurations.map(&:motif_category)
-      ).sort_by(&:motif_category_position)
+      ).sort_by { |rdv_context| @all_configurations.find_index { |c| c.motif_category == rdv_context.motif_category } }
   end
 
   def set_user_archive

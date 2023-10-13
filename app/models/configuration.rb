@@ -1,4 +1,6 @@
 class Configuration < ApplicationRecord
+  acts_as_list scope: :organisation
+
   belongs_to :motif_category
   belongs_to :file_configuration
   belongs_to :organisation
@@ -9,7 +11,7 @@ class Configuration < ApplicationRecord
   validates :number_of_days_between_periodic_invites, numericality: { only_integer: true, greater_than: 13 },
                                                       allow_nil: true
 
-  delegate :position, :name, to: :motif_category, prefix: true
+  delegate :name, to: :motif_category, prefix: true
   delegate :sheet_name, to: :file_configuration
   delegate :department, to: :organisation
   delegate :template, to: :motif_category

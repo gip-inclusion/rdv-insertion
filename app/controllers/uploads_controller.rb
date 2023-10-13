@@ -34,7 +34,7 @@ class UploadsController < ApplicationController
         @organisation.configurations.includes(:motif_category, :file_configuration)
       end
 
-    @all_configurations = @all_configurations.sort_by(&:motif_category_position)
+    @all_configurations = @all_configurations.sort_by(&:position)
   end
 
   def set_current_configuration

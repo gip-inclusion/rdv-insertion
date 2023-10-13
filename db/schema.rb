@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_25_155039) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_22_125225) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -78,6 +78,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_25_155039) do
     t.string "template_rdv_purpose_override"
     t.integer "number_of_days_between_periodic_invites"
     t.integer "day_of_the_month_periodic_invites"
+    t.integer "position"
     t.index ["file_configuration_id"], name: "index_configurations_on_file_configuration_id"
     t.index ["motif_category_id"], name: "index_configurations_on_motif_category_id"
     t.index ["organisation_id"], name: "index_configurations_on_organisation_id"

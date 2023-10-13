@@ -1,4 +1,6 @@
 class ConfigurationsController < ApplicationController
+  skip_before_action :verify_authenticity_token, only: :update
+
   PERMITTED_PARAMS = [
     { invitation_formats: [] }, :convene_user, :rdv_with_referents, :file_configuration_id,
     :invite_to_user_organisations_only, :number_of_days_before_action_required,
@@ -40,6 +42,8 @@ class ConfigurationsController < ApplicationController
   end
 
   def update
+    return update_position if params[:position].present?
+
     @configuration.assign_attributes(**formatted_configuration_params)
     if @configuration.save
       flash.now[:success] = "La configuration a été modifiée avec succès"
@@ -57,6 +61,11 @@ class ConfigurationsController < ApplicationController
 
   private
 
+  def update_position
+    @configuration.insert_at(params[:position].to_i)
+    head :ok
+  end
+
   def configuration_params
     params.require(:configuration).permit(*PERMITTED_PARAMS).to_h.deep_symbolize_keys
   end
@@ -72,7 +81,7 @@ class ConfigurationsController < ApplicationController
   end
 
   def set_configurations
-    @configurations = @organisation.configurations.includes([:motif_category])
+    @configurations = @organisation.configurations.includes([:motif_category]).order(position: :asc)
   end
 
   def set_messages_configuration
