@@ -5,7 +5,7 @@ import EditableTags from "./EditableTags";
 
 import User from "../../models/User";
 
-const EditTags = observer(({ user: userProp, organisation, department, tags }) => {
+const EditTags = observer(({ user: userProp,  availableTagsInScope, affectedTagsInScope, organisation, department }) => {
   const [isEditingTags, setIsEditingTags] = React.useState(false);
   const [user, setUser] = React.useState(null);
 
@@ -15,11 +15,11 @@ const EditTags = observer(({ user: userProp, organisation, department, tags }) =
         {
           id: userProp.id,
           createdAt: userProp.created_at,
-          tags: userProp.tags.map((tag) => tag.value),
+          tags: affectedTagsInScope.map((tag) => tag.value),
         },
         department,
         organisation,
-        tags
+        availableTagsInScope
       )
     );
   }, []);
@@ -28,9 +28,10 @@ const EditTags = observer(({ user: userProp, organisation, department, tags }) =
     <>
       {isEditingTags && (
         <EditableTags
+          scope="show"
           user={user}
           cell="tags"
-          values={tags.map((tag) => tag.value)}
+          values={availableTagsInScope.map((tag) => tag.value)}
           setIsEditingTags={() => window.location.reload()}
         />
       )}

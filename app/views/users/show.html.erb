@@ -50,14 +50,25 @@
       <% end %>
     </div>
     <div class="row d-flex justify-content-start flex-wrap mt-5">
-      <%= render "common/attribute_display", record: @user, attribute: :tags, as: :inline_list, id: "tags_list" do %>
+      <div class="col-12 col-md-6 px-5">
+        <h4> Tags </h4>
+        <p class="mb-2">
+          <% if @tags.blank? %>
+            -
+          <% else %>
+            <%= @tags.join(', ') %>
+          <% end %>
+        </p>
+
         <%= react_component(
           "components/user/EditTags", {
-            user: @user, tags: (@organisation || @department).tags,
+            user: @user, 
+            availableTagsInScope: (@organisation || @department).tags,
+            affectedTagsInScope: @tags,
             department: @department, organisation: @organisation,
           }
         ) %>
-      <% end %>
+      </div>
 
       <%= render "common/attribute_display", record: @user, attribute: :organisations, as: :list, id: "organisations_list" do %>
         <%= link_to(department_user_users_organisations_path(@department, @user, current_organisation_id: department_level? ? nil : @organisation.id), data: { turbo_frame: 'remote_modal' }) do %>

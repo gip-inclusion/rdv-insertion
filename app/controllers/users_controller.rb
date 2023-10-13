@@ -15,11 +15,11 @@ class UsersController < ApplicationController
   before_action :set_organisation, :set_department, :set_organisations, :set_all_configurations,
                 :set_current_agent_roles, :set_users_scope,
                 :set_current_configuration, :set_current_motif_category,
-                :set_users, :set_rdv_contexts, :set_tags,
+                :set_users, :set_rdv_contexts, :set_filterable_tags,
                 :filter_users, :order_users,
                 for: :index
   before_action :set_user, :set_organisation, :set_department, :set_all_configurations,
-                :set_user_organisations, :set_user_rdv_contexts, :set_user_archive,
+                :set_user_organisations, :set_user_rdv_contexts, :set_user_archive, :set_tags,
                 :set_back_to_users_list_url,
                 for: :show
   before_action :set_organisation, :set_department, :set_organisations,
@@ -85,9 +85,15 @@ class UsersController < ApplicationController
   end
 
   def reset_tag_users
-    # since we send the exhaustive list of tags, we need to reset the tag_users list
-    # if tag_users_attributes is nil, it means that the user did not change the tags
-    @user.tag_users.destroy_all unless params[:user][:tag_users_attributes].nil?
+    return unless user_params[:tag_users_attributes]
+
+    @user
+      .tags
+      .joins(:organisations)
+      .where(organisations: { id: department_level? ? @department.organisation_ids : @organisation.id })
+      .each do |tag|
+      @user.tags.delete(tag)
+    end
   end
 
   def send_users_csv
@@ -169,8 +175,17 @@ class UsersController < ApplicationController
                     .find_by(id: @user.organisation_ids, department_id: params[:department_id])
   end
 
-  def set_tags
+  def set_filterable_tags
     @tags = (@organisation || @department).tags.order(:value).distinct
+  end
+
+  def set_tags
+    @tags = @user
+            .tags
+            .joins(:organisations)
+            .where(organisations: @organisation || @department.organisations)
+            .order(:value)
+            .distinct
   end
 
   def set_organisation_through_form

@@ -119,8 +119,7 @@ class User < ApplicationRecord
            organisations: organisations,
            rdv_contexts: rdv_contexts,
            referents: referents,
-           archives: archives,
-           tags: tags
+           archives: archives
          )
   end
 
