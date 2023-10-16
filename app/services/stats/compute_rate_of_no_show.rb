@@ -11,7 +11,7 @@ module Stats
     private
 
     def compute_rate_of_no_show
-      (@participations.noshow.count / (@participations.resolved.count.nonzero? || 1).to_f) * 100
+      (@participations.noshow.size / (@participations.resolved.size.nonzero? || 1).to_f) * 100
     end
   end
 end
