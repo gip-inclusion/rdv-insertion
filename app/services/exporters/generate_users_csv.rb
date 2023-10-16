@@ -65,7 +65,7 @@ module Exporters
        "Motif du dernier RDV",
        "Nature du dernier RDV",
        "Dernier RDV pris en autonomie ?",
-       RdvContext.human_attribute_name(:status),
+       Rdv.human_attribute_name(:status),
        "1er RDV honoré en - de 30 jours ?",
        "Date d'orientation",
        Archive.human_attribute_name(:created_at),
