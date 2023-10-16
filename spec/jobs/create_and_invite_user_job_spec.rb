@@ -1,7 +1,7 @@
 describe CreateAndInviteUserJob do
   subject do
     described_class.new.perform(
-      organisation_id, user_attributes, invitation_params, rdv_solidarites_session_credentials
+      organisation_id, user_attributes, invitation_attributes, motif_category_attributes, rdv_solidarites_session_credentials
     )
   end
 
@@ -18,11 +18,10 @@ describe CreateAndInviteUserJob do
     { department_internal_id: "1919", affiliation_number: "00001", role: "conjoint", phone_number: "0607070707",
       email: "john.doe@apijob.com" }
   end
-  let!(:invitation_params) { { rdv_solidarites_lieu_id: 888, motif_category: motif_category_attributes } }
+  let!(:invitation_attributes) { { rdv_solidarites_lieu_id: 888 } }
   let!(:motif_category_attributes) { { short_name: "rsa_orientation" } }
-  let!(:invitation_attributes) { { rdv_solidarites_lieu_id: 888, help_phone_number: "0146292929" } }
-  let!(:email_invitation_attributes) { invitation_attributes.merge(format: "email") }
-  let!(:sms_invitation_attributes) { invitation_attributes.merge(format: "sms") }
+  let!(:email_invitation_attributes) { invitation_attributes.merge(format: "email", help_phone_number: "0146292929") }
+  let!(:sms_invitation_attributes) { invitation_attributes.merge(format: "sms", help_phone_number: "0146292929") }
 
   let!(:rdv_solidarites_session_credentials) do
     { "client" => "someclient", "uid" => "janedoe@gouv.fr", "access_token" => "sometoken" }.symbolize_keys

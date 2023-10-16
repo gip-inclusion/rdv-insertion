@@ -21,9 +21,7 @@ describe "Users API" do
       birth_date: "11/03/1978",
       address: "13 rue de la République 13001 MARSEILLE",
       department_internal_id: "11111444",
-      invitation: {
-        rdv_solidarites_lieu_id: 363
-      }
+      invitation: { rdv_solidarites_lieu_id: 363 }
     }
   end
 
@@ -66,14 +64,16 @@ describe "Users API" do
         .with(
           organisation.id,
           user1_params.except(:invitation),
-          user1_params[:invitation],
+          { rdv_solidarites_lieu_id: 363 },
+          {},
           session_hash(agent.email)
         )
       expect(CreateAndInviteUserJob).to receive(:perform_async)
         .with(
           organisation.id,
           user2_params.except(:invitation),
-          user2_params[:invitation],
+          { rdv_solidarites_lieu_id: 363 },
+          { name: "RSA orientation" },
           session_hash(agent.email)
         )
       subject
@@ -103,14 +103,16 @@ describe "Users API" do
           .with(
             organisation.id,
             user1_params.except(:invitation),
-            user1_params[:invitation],
+            { rdv_solidarites_lieu_id: 363 },
+            {},
             session_hash(agent.email)
           )
         expect(CreateAndInviteUserJob).to receive(:perform_async)
           .with(
             organisation.id,
             user2_params.except(:invitation),
-            user2_params[:invitation],
+            { rdv_solidarites_lieu_id: 363 },
+            { name: "RSA orientation" },
             session_hash(agent.email)
           )
         subject
@@ -175,6 +177,7 @@ describe "Users API" do
           .with(
             organisation.id,
             user1_params,
+            {},
             {},
             session_hash(agent.email)
           )

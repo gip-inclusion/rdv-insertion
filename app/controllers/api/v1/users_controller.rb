@@ -17,8 +17,13 @@ module Api
 
       def create_and_invite_many
         users_attributes.each do |attrs|
+          user_attributes = attrs.except(:invitation)
+          invitation_attributes = (attrs[:invitation] || {}).except(:motif_category)
+          motif_category_attributes = attrs.dig(:invitation, :motif_category) || {}
+
           CreateAndInviteUserJob.perform_async(
-            @organisation.id, attrs.except(:invitation), attrs[:invitation], rdv_solidarites_session.to_h
+            @organisation.id, user_attributes, invitation_attributes, motif_category_attributes,
+            rdv_solidarites_session.to_h
           )
         end
         render json: { success: true }
@@ -57,8 +62,7 @@ module Api
       def call_invite_user_service_by(format)
         InviteUser.call(
           user: @user, organisations: [@organisation], motif_category_attributes:, rdv_solidarites_session:,
-          invitation_attributes: invitation_attributes.except(:motif_category)
-                                                      .merge(format:, help_phone_number: @organisation.phone_number)
+          invitation_attributes: invitation_attributes.merge(format:, help_phone_number: @organisation.phone_number)
         )
       end
 
@@ -74,11 +78,11 @@ module Api
       end
 
       def invitation_attributes
-        user_params[:invitation] || {}
+        (user_params[:invitation] || {}).except(:motif_category)
       end
 
       def motif_category_attributes
-        invitation_attributes[:motif_category] || {}
+        user_attributes.dig(:invitation, :motif_category) || {}
       end
 
       def user_params

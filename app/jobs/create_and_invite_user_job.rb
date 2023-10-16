@@ -1,11 +1,12 @@
 class CreateAndInviteUserJob < ApplicationJob
   sidekiq_options retry: 0
 
-  def perform(organisation_id, user_attributes, invitation_params, rdv_solidarites_session_credentials)
+  def perform(organisation_id, user_attributes, invitation_attributes, motif_category_attributes, rdv_solidarites_session_credentials)
     @organisation = Organisation.find(organisation_id)
     @department = @organisation.department
     @user_attributes = user_attributes.deep_symbolize_keys
-    @invitation_params = invitation_params.deep_symbolize_keys
+    @invitation_attributes = invitation_attributes.deep_symbolize_keys
+    @motif_category_attributes = motif_category_attributes.deep_symbolize_keys
     @rdv_solidarites_session_credentials = rdv_solidarites_session_credentials.deep_symbolize_keys
 
     upsert_user!
@@ -43,11 +44,11 @@ class CreateAndInviteUserJob < ApplicationJob
     InviteUserJob.perform_async(
       @user.id,
       @organisation.id,
-      @invitation_params.except(:motif_category).merge(
+      @invitation_attributes.merge(
         format: invitation_format,
         help_phone_number: @organisation.phone_number
       ),
-      @invitation_params[:motif_category] || {},
+      @motif_category_attributes,
       @rdv_solidarites_session_credentials
     )
   end
