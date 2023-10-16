@@ -1,9 +1,6 @@
 Sidekiq.configure_server do |config|
   config.redis = { url: (ENV["REDIS_URL"] || "redis://localhost:6379/0") }
   config.logger.level = Logger::INFO
-  config.server_middleware do |chain|
-    chain.add SidekiqArCache
-  end
 
   Rails.logger = Sidekiq.logger
   ActiveRecord::Base.logger = Sidekiq.logger
