@@ -1,7 +1,8 @@
 describe CreateAndInviteUserJob do
   subject do
     described_class.new.perform(
-      organisation_id, user_attributes, invitation_attributes, motif_category_attributes, rdv_solidarites_session_credentials
+      organisation_id, user_attributes, invitation_attributes, motif_category_attributes,
+      rdv_solidarites_session_credentials
     )
   end
 
