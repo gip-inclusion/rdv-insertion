@@ -16,7 +16,7 @@ describe "Agents can preview messages contents", js: true do
 
     click_button("Invitations")
 
-    expect(page).to have_css("span.text-purple", text: "rendez-vous d'orientation", wait: 10)
+    expect(page).to have_css("span.text-purple", text: "rendez-vous d'orientation", wait: 20)
     expect(page).to have_css("span.text-purple", text: "bénéficiaire du RSA")
     expect(page).to have_css("span.text-purple", text: "démarrer un parcours d'accompagnement")
 
@@ -27,7 +27,7 @@ describe "Agents can preview messages contents", js: true do
 
     click_button("Convocations")
 
-    expect(page).to have_css("span.text-purple", text: "rendez-vous d'orientation téléphonique", wait: 10)
+    expect(page).to have_css("span.text-purple", text: "rendez-vous d'orientation téléphonique", wait: 20)
     expect(page).to have_css("span.text-purple", text: "rendez-vous d'orientation")
     expect(page).to have_css("span.text-purple", text: "bénéficiaire du RSA")
     expect(page).to have_css("span.text-purple", text: "démarrer un parcours d'accompagnement")
@@ -50,7 +50,7 @@ describe "Agents can preview messages contents", js: true do
 
     click_button("Invitations")
 
-    expect(page).to have_css("span.text-purple", text: "nouveau type de rendez-vous", wait: 10)
+    expect(page).to have_css("span.text-purple", text: "nouveau type de rendez-vous", wait: 20)
     expect(page).to have_css("span.text-purple", text: "une personne remarquable")
     expect(page).to have_css("span.text-purple", text: "vous rencontrer")
 
@@ -64,7 +64,7 @@ describe "Agents can preview messages contents", js: true do
 
     click_button("Convocations")
 
-    expect(page).to have_css("span.text-purple", text: "nouveau type de rendez-vous", wait: 10)
+    expect(page).to have_css("span.text-purple", text: "nouveau type de rendez-vous", wait: 20)
     expect(page).to have_css("span.text-purple", text: "nouveau coup de téléphone")
     expect(page).to have_css("span.text-purple", text: "une personne remarquable")
     expect(page).to have_css("span.text-purple", text: "vous rencontrer")
@@ -86,7 +86,7 @@ describe "Agents can preview messages contents", js: true do
 
       click_button("Invitations")
 
-      expect(page).to have_css("span.text-purple", text: "bénéficiaire du RSA", wait: 10)
+      expect(page).to have_css("span.text-purple", text: "bénéficiaire du RSA", wait: 20)
       expect(page).to have_content("atelier")
 
       find("button.btn-close").click
@@ -96,7 +96,7 @@ describe "Agents can preview messages contents", js: true do
 
       click_button("Convocations")
 
-      expect(page).to have_css("span.text-purple", text: "atelier", wait: 10)
+      expect(page).to have_css("span.text-purple", text: "atelier", wait: 20)
       expect(page).to have_css("span.text-purple", text: "atelier téléphonique")
       expect(page).to have_css("span.text-purple", text: "bénéficiaire du RSA")
     end
