@@ -3,9 +3,9 @@ class DepartmentPolicy < ApplicationPolicy
     pundit_user.organisation_ids.intersect?(record.organisation_ids)
   end
 
-  def index?
-    upload?
-  end
+  def show? = upload?
+
+  def index? = upload?
 
   class Scope < Scope
     def resolve

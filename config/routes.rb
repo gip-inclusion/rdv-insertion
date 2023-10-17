@@ -105,6 +105,8 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
+      resources :departments, param: "department_number", only: [:show]
+      resources :rdvs, param: "uuid", only: [:show]
       resources :organisations, param: "rdv_solidarites_organisation_id", only: [] do
         member do
           resources :users, only: [] do

@@ -37,9 +37,14 @@ module Api
         @invitations, @invitation_errors = [[], []]
         invite_user_by("sms") if @user.phone_number_is_mobile?
         invite_user_by("email") if @user.email?
-        return render_error(@invitation_errors) unless @invitation_errors.empty?
+        return render_errors(@invitation_errors) unless @invitation_errors.empty?
 
-        render json: { success: true, user: @user, invitations: @invitations }
+        render json: {
+          success: true,
+          # we call the blueprint explicitely here because we don't want the extended view
+          user: UserBlueprint.render_as_json(@user),
+          invitations: InvitationBlueprint.render_as_json(@invitations)
+        }
       end
 
       private
