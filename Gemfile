@@ -44,6 +44,13 @@ gem "with_advisory_lock"
 # CSS styled emails with stylesheets
 gem "premailer-rails"
 
+# API documentation
+
+# A Rails Engine that exposes OpenAPI (formerly called Swagger) files as JSON endpoints
+gem "rswag-api"
+# A Rails Engine that includes swagger-ui and powers it from configured OpenAPI (formerly named Swagger) endpoints
+gem "rswag-ui"
+
 # Send SMS & emails with Brevo
 gem "sib-api-v3-sdk"
 
