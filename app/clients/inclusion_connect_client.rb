@@ -13,7 +13,7 @@ class InclusionConnectClient
         state: ic_state,
         from: "community"
       }
-      "#{BASE_URL}/auth?#{query.to_query}"
+      "#{BASE_URL}/authorize?#{query.to_query}"
     end
 
     def get_token(code, inclusion_connect_callback_url)
