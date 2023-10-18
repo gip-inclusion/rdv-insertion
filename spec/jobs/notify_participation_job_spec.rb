@@ -13,7 +13,6 @@ describe NotifyParticipationJob do
     before do
       allow(Notifications::NotifyParticipation).to receive(:call)
         .and_return(OpenStruct.new(success?: true))
-      allow(MattermostClient).to receive(:send_to_notif_channel)
     end
 
     it "calls the notify user service" do
@@ -43,17 +42,6 @@ describe NotifyParticipationJob do
         subject
       end
 
-      it "sends a message to mattermost" do
-        expect(MattermostClient).to receive(:send_to_notif_channel)
-          .with(
-            "Rdv already notified to user. Skipping notification sending.\n" \
-            "participation id: #{participation.id}\n" \
-            "format: #{format}\n" \
-            "event: #{event}"
-          )
-        subject
-      end
-
       context "when the event is participation_updated" do
         let!(:event) { "participation_updated" }
 
@@ -73,17 +61,6 @@ describe NotifyParticipationJob do
 
           it "does not calls the notify user service" do
             expect(Notifications::NotifyParticipation).not_to receive(:call)
-            subject
-          end
-
-          it "sends a message to mattermost" do
-            expect(MattermostClient).to receive(:send_to_notif_channel)
-              .with(
-                "Rdv already notified to user. Skipping notification sending.\n" \
-                "participation id: #{participation.id}\n" \
-                "format: #{format}\n" \
-                "event: #{event}"
-              )
             subject
           end
         end

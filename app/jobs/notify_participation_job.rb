@@ -9,7 +9,7 @@ class NotifyParticipationJob < ApplicationJob
     return if user.created_through_rdv_solidarites? && user.invitations.sent.empty?
 
     Notification.with_advisory_lock "notifying_particpation_#{@participation.id}" do
-      return send_already_notified_to_mattermost if already_notified?
+      return if already_notified?
 
       notify_participation!
     end
@@ -31,15 +31,6 @@ class NotifyParticipationJob < ApplicationJob
     else
       @participation.notifications.sent.find_by(event: @event, format: @format).present?
     end
-  end
-
-  def send_already_notified_to_mattermost
-    MattermostClient.send_to_notif_channel(
-      "Rdv already notified to user. Skipping notification sending.\n" \
-      "participation id: #{@participation.id}\n" \
-      "format: #{@format}\n" \
-      "event: #{@event}"
-    )
   end
 
   def notify_participation!

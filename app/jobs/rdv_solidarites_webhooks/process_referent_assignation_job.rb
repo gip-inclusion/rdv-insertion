@@ -3,8 +3,7 @@ module RdvSolidaritesWebhooks
     def perform(data, meta)
       @data = data.deep_symbolize_keys
       @meta = meta.deep_symbolize_keys
-      return if user.blank?
-      return notify_agent_not_found if agent.blank?
+      return if user.blank? || agent.blank?
 
       User.with_advisory_lock "assigning_#{rdv_solidarites_agent_id}_to_#{rdv_solidarites_user_id}" do
         attach_agent_to_user if event == "created"
@@ -32,14 +31,6 @@ module RdvSolidaritesWebhooks
 
     def agent
       @agent ||= Agent.find_by(rdv_solidarites_agent_id: rdv_solidarites_agent_id)
-    end
-
-    def notify_agent_not_found
-      MattermostClient.send_to_notif_channel(
-        "Referent not found for RDV-S referent assignation.\n" \
-        "agent id: #{rdv_solidarites_agent_id}\n" \
-        "user id: #{rdv_solidarites_user_id}"
-      )
     end
 
     def attach_agent_to_user

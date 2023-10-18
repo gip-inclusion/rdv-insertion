@@ -48,22 +48,9 @@ describe RdvSolidaritesWebhooks::ProcessReferentAssignationJob do
         create(:agent, rdv_solidarites_agent_id: "some-orga")
       end
 
-      before do
-        allow(MattermostClient).to receive(:send_to_notif_channel)
-      end
-
       it "does not remove the agent from the user" do
         subject
         expect(user.reload.referents).to eq([agent])
-      end
-
-      it "sends a notification to mattermost" do
-        expect(MattermostClient).to receive(:send_to_notif_channel).with(
-          "Referent not found for RDV-S referent assignation.\n" \
-          "agent id: #{rdv_solidarites_agent_id}\n" \
-          "user id: #{rdv_solidarites_user_id}"
-        )
-        subject
       end
     end
 
