@@ -20,7 +20,7 @@ RSpec.configure do |config|
       info: {
         title: "API RDV insertion",
         version: "v1",
-        description: File.read(Rails.root.join("docs/api/v1/description_api.md"))
+        description: Rails.root.join("docs/api/description.md").read
       },
       components: {
         securitySchemes: {
@@ -50,15 +50,15 @@ RSpec.configure do |config|
                 type: "array",
                 items: { "$ref" => "#/components/schemas/agent" }
               },
-              cancelled_at: { type: "string", nullable: true },
+              cancelled_at: { type: "string", format: "date", nullable: true },
               collectif: { type: "boolean" },
               created_by: { type: "string", enum: %w[agent user prescripteur] },
               duration_in_min: { type: "integer" },
-              lieu: { "$ref" => "#/components/schemas/lieu" },
+              lieu: { "$ref" => "#/components/schemas/lieu", nullable: true },
               max_participants_count: { type: "integer", nullable: true },
               motif: { "$ref" => "#/components/schemas/motif" },
               organisation: { "$ref" => "#/components/schemas/organisation" },
-              starts_at: { type: "string" },
+              starts_at: { type: "string", format: "date" },
               status: { type: "string", enum: %w[unknown seen excused revoked noshow] },
               users: {
                 type: "array",
@@ -70,7 +70,7 @@ RSpec.configure do |config|
             },
             required: %w[
               id starts_at duration_in_min cancelled_at address uuid created_by status
-              context users_count max_participants_count rdv_solidarites_rdv_id
+              users_count max_participants_count rdv_solidarites_rdv_id
               agents lieu motif users organisation
             ]
           },
@@ -79,7 +79,7 @@ RSpec.configure do |config|
             properties: {
               rdv: { "$ref" => "#/components/schemas/rdv" }
             },
-            required: %w[user]
+            required: %w[rdv]
           },
           agents: {
             type: "object",
@@ -100,7 +100,7 @@ RSpec.configure do |config|
               last_name: { type: "string", nullable: true },
               rdv_solidarites_agent_id: { type: "integer" }
             },
-            required: %w[id email first_name last_name rdv_solidarites_agent_i]
+            required: %w[id email first_name last_name rdv_solidarites_agent_id]
           },
           user_with_root: {
             type: "object",
@@ -121,14 +121,13 @@ RSpec.configure do |config|
           },
           user: {
             type: "object",
-            nullable: true,
             properties: {
               id: { type: "integer" },
               address: { type: "string", nullable: true },
               affiliation_number: { type: "string", nullable: true },
-              bith_date: { type: "string", format: "date", nullable: true },
-              bith_name: { type: "string", nullable: true },
-              created_at: { type: "string" },
+              birth_date: { type: "string", format: "date", nullable: true },
+              birth_name: { type: "string", nullable: true },
+              created_at: { type: "string", format: "date" },
               email: { type: "string", nullable: true },
               first_name: { type: "string" },
               last_name: { type: "string" },
@@ -183,6 +182,16 @@ RSpec.configure do |config|
             },
             required: %w[id name email phone_number department_number rdv_solidarites_organisation_id motif_categories]
           },
+          invitations: {
+            type: "object",
+            properties: {
+              invitations: {
+                type: "array",
+                items: { "$ref" => "#/components/schemas/invitation" }
+              }
+            },
+            required: %w[invitations]
+          },
           invitation: {
             type: "object",
             properties: {
@@ -194,7 +203,6 @@ RSpec.configure do |config|
             },
             required: %w[id format sent_at clicked rdv_with_referents motif_category]
           },
-          # phone_number rdv_solidarites_lieu_id
           lieu: {
             type: "object",
             properties: {
@@ -215,7 +223,6 @@ RSpec.configure do |config|
             },
             required: %w[motifs]
           },
-          #   collectif  follow_up
           motif: {
             type: "object",
             properties: {
@@ -237,7 +244,13 @@ RSpec.configure do |config|
             },
             required: %w[id name short_name]
           },
-          errors_unprocessable_entity: {
+          success_response: {
+            type: "object",
+            properties: {
+              success: { type: "boolean" }
+            }
+          },
+          error_unprocessable_entity: {
             type: "object",
             properties: {
               errors: {
@@ -321,6 +334,10 @@ RSpec.configure do |config|
         }
       ],
       servers: [
+        {
+          url: "http://localhost:8000/",
+          description: "Serveur de développement"
+        },
         {
           url: "https://www.rdv-insertion-demo.fr",
           description: "Serveur de démo"

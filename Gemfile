@@ -111,6 +111,7 @@ group :development, :test do
   gem "rubocop-rspec"
   gem "prosopite"
   gem "pg_query"
+  gem 'rswag-specs'
 end
 
 group :development do

@@ -15,8 +15,18 @@ module ApiSpecHelper
     end
   end
 
+  # rubocop:disable Metrics/AbcSize
   def with_authentication
     security [{ access_token: [], uid: [], client: [] }]
+
+    let!(:auth_headers) do
+      {
+        "client" => "someclient", "uid" => agent.email, "access-token" => "sometoken"
+      }
+    end
+    let!(:"access-token") { auth_headers["access-token"] }
+    let!(:uid) { auth_headers["uid"] }
+    let!(:client) { auth_headers["client"] }
 
     parameter(
       name: "access-token", in: :header, type: :string,
@@ -30,39 +40,16 @@ module ApiSpecHelper
       name: "uid", in: :header, type: :string,
       description: "Identifiant d'accès (authentification)", example: "martine@demo.rdv-solidarites.fr"
     )
-  end
 
-  shared_context "an endpoint that returns 401 - unauthorized" do
-    response 401, "Renvoie 'unauthorized' quand l'authentification est impossible" do
-      let(:"access-token") { "false" }
+    let(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
 
-      schema "$ref" => "#/components/schemas/error_authentication"
+    ENV["RDV_SOLIDARITES_URL"] = "http://www.rdv-solidarites-test.localhost"
 
-      run_test!
+    before do
+      stub_request(:get, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/auth/validate_token")
+        .with(headers: auth_headers.merge({ "Content-Type" => "application/json" }))
+        .to_return(body: { "data" => { "uid" => agent.email } }.to_json)
     end
   end
-
-  shared_context "an endpoint that returns 403 - forbidden" do |details|
-    response 403, "Renvoie 'forbidden' quand #{details}" do
-      schema "$ref" => "#/components/schemas/error_forbidden"
-
-      run_test!
-    end
-  end
-
-  shared_context "an endpoint that returns 404 - not found" do |details|
-    response 404, "Renvoie 'not_found' quand #{details}" do
-      schema "$ref" => "#/components/schemas/error_not_found"
-
-      run_test!
-    end
-  end
-
-  shared_context "an endpoint that returns 422 - unprocessable_entity" do |details, document|
-    response 422, "Renvoie 'unprocessable_entity' quand #{details}", document: document do
-      schema "$ref" => "#/components/schemas/error_unprocessable_entity"
-
-      run_test!
-    end
-  end
+  # rubocop:enable Metrics/AbcSize
 end

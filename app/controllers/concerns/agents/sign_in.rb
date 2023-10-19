@@ -32,7 +32,7 @@ module Agents::SignIn
     return if authenticated_agent
 
     render json: { success: false, errors: ["L'agent ne fait pas partie d'une organisation sur RDV-Insertion"] },
-           status: :unprocessable_entity
+           status: :forbidden
   end
 
   def mark_agent_as_logged_in!

@@ -1,6 +1,6 @@
 module AuthenticationSpecHelper
-  def sign_in(agent, for_api: false)
-    setup_request_session(agent) unless for_api
+  def sign_in(agent)
+    setup_request_session(agent)
     mock_rdv_solidarites_session(agent.email)
   end
 
@@ -38,12 +38,5 @@ module AuthenticationSpecHelper
 
   def rdv_solidarites_session
     @rdv_solidarites_session ||= instance_double(RdvSolidaritesSession::WithAccessToken)
-  end
-
-  def api_auth_headers_for_agent(agent)
-    {
-      client: "someclient", uid: agent.email, "access-token": "sometoken",
-      CONTENT_TYPE: "application/json", HTTP_ACCEPT: "application/json"
-    }
   end
 end

@@ -45,7 +45,7 @@ module Api
         return if user.valid?
 
         @params_validation_errors << {
-          error_details: user.errors.to_hash,
+          error_details: user.errors.full_messages.to_sentence,
           first_name: user_attributes[:first_name],
           last_name: user_attributes[:last_name]
         }.merge(idx.present? ? { index: idx } : {})
