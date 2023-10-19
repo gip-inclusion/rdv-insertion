@@ -26,7 +26,7 @@ class Rdv < ApplicationRecord
   accepts_nested_attributes_for :participations, allow_destroy: true, reject_if: :new_participation_already_created?
 
   validates :starts_at, :duration_in_min, presence: true
-  validates :rdv_solidarites_rdv_id, uniqueness: true, presence: true
+  validates :rdv_solidarites_rdv_id, uniqueness: true, allow_nil: true
 
   validate :rdv_contexts_motif_categories_are_uniq
 
@@ -70,6 +70,10 @@ class Rdv < ApplicationRecord
     params = { add_user: [rdv_solidarites_user_id] }
     "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{rdv_solidarites_organisation_id}/rdvs/" \
       "#{rdv_solidarites_rdv_id}/edit?#{params.to_query}"
+  end
+
+  def nullify_rdv_solidarites_id
+    self.rdv_solidarites_rdv_id = nil
   end
 
   private

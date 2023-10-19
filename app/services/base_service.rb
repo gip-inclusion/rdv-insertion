@@ -61,7 +61,7 @@ class BaseService
   end
 
   def save_record!(record)
-    return if record.save
+    return if record.save!
 
     result.errors << record.errors.full_messages.to_sentence
     fail!

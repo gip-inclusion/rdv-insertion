@@ -107,6 +107,10 @@ class User < ApplicationRecord
     )
   end
 
+  def nullify_rdv_solidarites_id
+    self.rdv_solidarites_user_id = nil
+  end
+
   def assign_motif_category(motif_category_id)
     assign_attributes(rdv_contexts_attributes: [{ motif_category_id: motif_category_id }])
   end
