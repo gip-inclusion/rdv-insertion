@@ -55,7 +55,6 @@ class InvitationsController < ApplicationController
       policy_scope(Organisation)
       .includes(:motif_categories, :department, :messages_configuration)
       .where(department_level? ? { department_id: params[:department_id] } : { id: params[:organisation_id] })
-      .to_a
   end
 
   def set_user

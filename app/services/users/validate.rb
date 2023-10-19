@@ -5,7 +5,6 @@ module Users
     end
 
     def call
-      validate_record
       validate_identifier_is_present
       validate_uid_uniqueness_inside_department if @user.affiliation_number? && @user.role?
       validate_department_internal_id_uniqueness if @user.department_internal_id?
@@ -14,12 +13,6 @@ module Users
     end
 
     private
-
-    def validate_record
-      return if @user.valid?
-
-      result.errors += @user.errors.full_messages
-    end
 
     def validate_uid_uniqueness_inside_department
       return if users_with_same_uid.empty?
@@ -36,16 +29,14 @@ module Users
     end
 
     def validate_email_and_first_name_uniquess
-      return if @user.first_name.blank?
-      return if users_with_same_email_and_first_name.empty?
+      return if @user.first_name.blank? || users_with_same_email_and_first_name.empty?
 
       result.errors << "Un usager avec le même email et même prénom est déjà enregistré: " \
                        "#{users_with_same_email_and_first_name.pluck(:id)}"
     end
 
     def validate_phone_number_and_first_name_uniqueness
-      return if @user.first_name.blank?
-      return if users_with_same_phone_number_and_first_name.empty?
+      return if @user.first_name.blank? || users_with_same_phone_number_and_first_name.empty?
 
       result.errors << "Un usager avec le même numéro de téléphone et même prénom est déjà enregistré: " \
                        "#{users_with_same_phone_number_and_first_name.pluck(:id)}"

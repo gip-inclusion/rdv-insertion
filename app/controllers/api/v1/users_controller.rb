@@ -51,7 +51,7 @@ module Api
       end
 
       def invite_user_by(format)
-        invite_user_service = call_invite_user_service_by("sms")
+        invite_user_service = call_invite_user_service_by(format)
         unless invite_user_service.success?
           @invitation_errors <<
             "Erreur en envoyant l'invitation par #{format}: #{invite_user_service.errors.join(', ')}"

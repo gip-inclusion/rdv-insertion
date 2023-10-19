@@ -155,6 +155,19 @@ describe InviteUser, type: :service do
           expect(Invitations::SaveAndSend).not_to receive(:call)
           subject
         end
+
+        context "when the format is postal" do
+          let!(:existing_invitation) { create(:invitation, format: "postal", sent_at: 4.hours.ago, rdv_context:) }
+
+          it "is a success" do
+            is_a_success
+          end
+
+          it "still sends the invitation" do
+            expect(Invitations::SaveAndSend).to receive(:call)
+            subject
+          end
+        end
       end
     end
   end
