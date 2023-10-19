@@ -22,15 +22,17 @@ describe InvitationsController do
       {
         organisation_id: organisation.id,
         user_id: user_id,
-        invitation_format: "sms",
-        help_phone_number: help_phone_number,
-        motif_category: motif_category_attributes,
+        invitation: {
+          format: "sms",
+          help_phone_number: help_phone_number,
+          motif_category: motif_category_attributes
+        },
         format: "json"
       }
     end
 
     let!(:invitation_attributes) do
-      { help_phone_number: help_phone_number, invitation_format: "sms" }
+      { help_phone_number: help_phone_number, format: "sms" }
     end
 
     let!(:motif_category_attributes) { { id: motif_category.id.to_s } }
@@ -58,15 +60,17 @@ describe InvitationsController do
         {
           department_id: department.id,
           user_id: user_id,
-          invitation_format: "email",
-          help_phone_number: help_phone_number,
-          motif_category: motif_category_attributes,
-          rdv_solidarites_lieu_id: "3929",
+          invitation: {
+            format: "email",
+            help_phone_number: help_phone_number,
+            motif_category: motif_category_attributes,
+            rdv_solidarites_lieu_id: "3929"
+          },
           format: "json"
         }
       end
       let!(:invitation_attributes) do
-        { help_phone_number: help_phone_number, invitation_format: "email", rdv_solidarites_lieu_id: "3929" }
+        { help_phone_number: help_phone_number, format: "email", rdv_solidarites_lieu_id: "3929" }
       end
 
       it "calls the service" do
@@ -96,15 +100,17 @@ describe InvitationsController do
           {
             organisation_id: organisation.id,
             user_id: user_id,
-            invitation_format: "postal",
-            help_phone_number: help_phone_number,
-            motif_category: motif_category_attributes,
+            invitation: {
+              format: "postal",
+              help_phone_number: help_phone_number,
+              motif_category: motif_category_attributes,
+            },
             format: "pdf"
           }
         end
 
         let!(:invitation_attributes) do
-          { help_phone_number: help_phone_number, invitation_format: "postal" }
+          { help_phone_number: help_phone_number, format: "postal" }
         end
 
         before do

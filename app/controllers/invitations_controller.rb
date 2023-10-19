@@ -25,8 +25,8 @@ class InvitationsController < ApplicationController
   private
 
   def invitation_params
-    params.permit(
-      :invitation_format, :help_phone_number, :rdv_solidarites_lieu_id, { motif_category: [:id] }
+    params.require(:invitation).permit(
+      :format, :help_phone_number, :rdv_solidarites_lieu_id, { motif_category: [:id] }
     ).to_h.deep_symbolize_keys
   end
 
