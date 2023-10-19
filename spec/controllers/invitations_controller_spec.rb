@@ -103,7 +103,7 @@ describe InvitationsController do
             invitation: {
               format: "postal",
               help_phone_number: help_phone_number,
-              motif_category: motif_category_attributes,
+              motif_category: motif_category_attributes
             },
             format: "pdf"
           }
