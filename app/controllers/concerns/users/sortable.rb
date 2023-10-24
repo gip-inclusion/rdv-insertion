@@ -10,7 +10,7 @@ module Users::Sortable
   end
 
   def archived_order
-    @user = @users.order("archives.created_at desc")
+    @users = @users.order("archives.created_at desc")
   end
 
   def motif_category_order
