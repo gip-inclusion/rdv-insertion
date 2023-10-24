@@ -42,7 +42,7 @@ module Exporters
       "\uFEFF#{csv}"
     end
 
-    def headers
+    def headers # rubocop:disable Metrics/AbcSize
       [User.human_attribute_name(:title),
        User.human_attribute_name(:last_name),
        User.human_attribute_name(:first_name),
@@ -66,6 +66,7 @@ module Exporters
        "Nature du dernier RDV",
        "Dernier RDV pris en autonomie ?",
        Rdv.human_attribute_name(:status),
+       *(RdvContext.human_attribute_name(:status) if @motif_category),
        "1er RDV honoré en - de 30 jours ?",
        "Date d'orientation",
        Archive.human_attribute_name(:created_at),
@@ -100,6 +101,7 @@ module Exporters
        last_rdv_type(user),
        rdv_taken_in_autonomy?(user),
        human_rdv_status(user),
+       *(human_rdv_context_status(user) if @motif_category),
        rdv_seen_in_less_than_30_days?(user),
        display_date(user.first_seen_rdv_starts_at),
        display_date(user.archive_for(department_id)&.created_at),
@@ -124,6 +126,28 @@ module Exporters
       return I18n.t("activerecord.attributes.rdv.statuses.#{last_rdv(user).status}") if last_rdv(user).present?
 
       ""
+    end
+
+    def human_rdv_context_status(user)
+      return "" if @motif_category.nil? || rdv_context_for_export(user).nil?
+
+      I18n.t("activerecord.attributes.rdv_context.statuses.#{rdv_context_for_export(user).status}") +
+        display_context_status_notice(rdv_context_for_export(user))
+    end
+
+    def display_context_status_notice(rdv_context)
+      if @structure.present? && rdv_context.invited_before_time_window?(number_of_days_before_action_required) &&
+         rdv_context.invitation_pending?
+        " (Délai dépassé)"
+      else
+        ""
+      end
+    end
+
+    def number_of_days_before_action_required
+      @number_of_days_before_action_required ||= @structure.configurations.includes(:motif_category).find do |c|
+        c.motif_category == @motif_category
+      end.number_of_days_before_action_required
     end
 
     def display_date(date)

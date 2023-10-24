@@ -94,7 +94,8 @@ describe Exporters::GenerateUsersCsv, type: :service do
         expect(csv).to include("Rôle")
         expect(csv).to include("Archivé le")
         expect(csv).to include("Motif d'archivage")
-        expect(csv).to include("Statut")
+        expect(csv).to include("Statut du rdv")
+        expect(csv).to include("Statut de la catégorie de motifs")
         expect(csv).to include("Première invitation envoyée le")
         expect(csv).to include("Dernière invitation envoyée le")
         expect(csv).to include("Dernière convocation envoyée le")
@@ -159,9 +160,10 @@ describe Exporters::GenerateUsersCsv, type: :service do
           expect(csv).to include("RSA orientation sur site") # last rdv motif
           expect(csv).to include("individuel") # last rdv type
           expect(csv).to include("individuel;Oui") # last rdv taken in autonomy ?
-          expect(csv).to include("Non déterminé") # rdv_context status
-          expect(csv).to include("Non déterminé;Oui") # first rdv in less than 30 days ?
-          expect(csv).to include("individuel;Oui;Non déterminé;Oui;25/05/2022") # orientation date
+          expect(csv).to include("Non déterminé") # rdv status
+          expect(csv).to include("Statut du RDV à préciser") # rdv_context status
+          expect(csv).to include("Statut du RDV à préciser;Oui") # first rdv in less than 30 days ?
+          expect(csv).to include("Non déterminé;Statut du RDV à préciser;Oui;25/05/2022") # orientation date
         end
 
         it "displays the organisation infos" do
@@ -205,6 +207,11 @@ describe Exporters::GenerateUsersCsv, type: :service do
 
         it "generates the right filename" do
           expect(subject.filename).to eq("Export_beneficiaires_organisation_drome_rsa.csv")
+        end
+
+        it "generates headers" do
+          expect(csv).to start_with("\uFEFF")
+          expect(csv).not_to include("Statut de la catégorie de motifs")
         end
       end
     end
