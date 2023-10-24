@@ -78,7 +78,7 @@ class Invitation < ApplicationRecord
 
   def invitation_link_params(link)
     uri = URI.parse(link)
-    URI.decode_www_form(uri.query).to_h
+    Rack::Utils.parse_nested_query(uri.query)
   end
 
   private

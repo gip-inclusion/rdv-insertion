@@ -73,7 +73,7 @@ module Invitations
     end
 
     def validate_existing_creneau_in_rdv_solidarites
-      return if retrieve_available_creneaux_count.available_creneaux_count.positive?
+      return if retrieve_creneau_availability.creneau_availability
 
       result.errors << "L'envoi d'une invitation est impossible car il n'y a plus de créneaux disponibles.
       Nous invitons donc à créer de nouvelles plages d'ouverture depuis l'interface
@@ -84,9 +84,9 @@ module Invitations
       @organisations_motifs ||= Motif.includes(:motif_category).where(organisation_id: organisations.map(&:id))
     end
 
-    def retrieve_available_creneaux_count
-      @retrieve_available_creneaux_count ||= call_service!(
-        RdvSolidaritesApi::RetrieveAvailableCreneauxCount,
+    def retrieve_creneau_availability
+      @retrieve_creneau_availability ||= call_service!(
+        RdvSolidaritesApi::RetrieveCreneauAvailability,
         rdv_solidarites_session: @rdv_solidarites_session,
         invitation_link_params: invitation_link_params(@invitation.link)
       )

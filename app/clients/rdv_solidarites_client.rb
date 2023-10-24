@@ -119,9 +119,9 @@ class RdvSolidaritesClient
     )
   end
 
-  def get_available_creneaux_count(invitation_link_params = {})
+  def get_creneau_availability(invitation_link_params = {})
     Faraday.get(
-      "#{@url}/api/rdvi/invitations/available_creneaux_count",
+      "#{@url}/api/rdvinsertion/invitations/creneau_availability",
       invitation_link_params,
       request_headers
     )
