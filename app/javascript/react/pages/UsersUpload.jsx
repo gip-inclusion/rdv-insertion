@@ -53,7 +53,7 @@ const UsersUpload = observer(
       users.isDepartmentLevel = isDepartmentLevel;
 
       const rows = await uploadFile(file, sheetName, columnNames)
-      
+
       rows.forEach((row) => {
         const user = new User({
           lastName: row[parameterizedColumnNames.last_name_column],
@@ -236,7 +236,21 @@ const UsersUpload = observer(
 
                       return (
                         <th {...column.attributes} key={column.name}>
-                          {column.sortable ? (
+                          {column.name === "Séléction" ? (
+                            <>
+                              {column.name}<br />
+                              <input
+                                type="checkbox"
+                                className="form-check-input"
+                                checked={users.list.every((user) => user.selected)}
+                                onChange={(event) =>
+                                  users.list.forEach((user) => {
+                                    user.selected = event.target.checked;
+                                  })
+                                }
+                              />
+                            </>
+                          ) : column.sortable ? (
                             <button type="button" onClick={() => users.sort(column.key)} >
                               {column.name} <i className={`fas fa-sort fa-sort-${users.sortBy === column.key && users.sortDirection} />`} />
                             </button>
