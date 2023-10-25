@@ -8,7 +8,7 @@ module Users
 
     def call
       User.transaction do
-        @user.referents << @agent
+        @user.referents << @agent unless @user.referents.include?(@agent)
         create_rdv_solidarites_referent_assignation
       end
     end

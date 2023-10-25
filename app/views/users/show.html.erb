@@ -11,7 +11,7 @@
           <button class="btn btn-blue">Trouver un RDV<i class="fas fa-external-link-alt icon-sm"></i></button>
         <% end %>
       <% else %>
-        <%= render "create_rdvs_user_and_redirect_to_find_rdv_button", user: @user %>
+        <%= render "create_rdvs_user_and_redirect_to_find_rdv_button", user: @user, organisation: @organisation, department: @department %>
       <% end %>
       <% if @department.carnet_de_bord_deploiement_id? %>
         <% if @user.carnet_de_bord_carnet_id? %>

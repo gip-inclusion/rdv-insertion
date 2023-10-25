@@ -5,16 +5,11 @@ class ReferentAssignationsController < ApplicationController
   def index; end
 
   def create
-    @success = assign_referent.success?
-    @errors = assign_referent.errors
+    save_user if @user.rdv_solidarites_user_id.nil? # saving user will recreate it on rdvs
+    @success = save_user.success? && assign_referent.success?
+    @errors = assign_referent.errors || save_user.errors
     respond_to do |format|
-      format.turbo_stream do
-        if @success
-          flash.now[:success] = "Le référent a bien été assigné"
-        else
-          flash.now[:error] = "Une erreur s'est produite lors de l'assignation du référent: #{@errors}"
-        end
-      end
+      format.turbo_stream { render_result_in_flash }
       format.json do
         render json: { success: @success, errors: @errors }, status: @success ? :ok : :unprocessable_entity
       end
@@ -30,6 +25,14 @@ class ReferentAssignationsController < ApplicationController
   end
 
   private
+
+  def render_result_in_flash
+    if @success
+      flash.now[:success] = "Le référent a bien été assigné"
+    else
+      flash.now[:error] = "Une erreur s'est produite lors de l'assignation du référent: #{@errors}"
+    end
+  end
 
   def referent_assignation_params
     params.require(:referent_assignation).permit(:agent_id, :user_id, :agent_email)
@@ -71,6 +74,12 @@ class ReferentAssignationsController < ApplicationController
   def remove_referent
     @remove_referent ||= Users::RemoveReferent.call(
       user: @user, agent: @agent, rdv_solidarites_session: rdv_solidarites_session
+    )
+  end
+
+  def save_user
+    @save_user ||= Users::Save.call(
+      user: @user, organisation: @user.organisations.first, rdv_solidarites_session: rdv_solidarites_session
     )
   end
 

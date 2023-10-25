@@ -12,7 +12,10 @@ module Users
         validate_user!
         save_record!(@user)
         upsert_rdv_solidarites_user
-        assign_rdv_solidarites_user_id unless @user.rdv_solidarites_user_id?
+        if @user.rdv_solidarites_user_id.nil?
+          assign_rdv_solidarites_user_id
+          assign_referents if @user.referents.present?
+        end
       end
     end
 
@@ -47,6 +50,17 @@ module Users
     def assign_rdv_solidarites_user_id
       @user.rdv_solidarites_user_id = upsert_rdv_solidarites_user.rdv_solidarites_user_id
       save_record!(@user)
+    end
+
+    def assign_referents
+      @user.referents.each do |referent|
+        call_service!(
+          Users::AssignReferent,
+          user: @user,
+          agent: referent,
+          rdv_solidarites_session: @rdv_solidarites_session
+        )
+      end
     end
   end
 end
