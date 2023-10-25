@@ -11,7 +11,7 @@ class MattermostClient
     private
 
     def send_message(url, text)
-      return unless Rails.env.production?
+      return unless ENV["SENTRY_ENVIRONMENT"] == "production"
 
       Faraday.post(
         url,
