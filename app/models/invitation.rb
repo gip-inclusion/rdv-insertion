@@ -76,7 +76,7 @@ class Invitation < ApplicationRecord
     sent_at.present? && sent_at >= date
   end
 
-  def invitation_link_params(link)
+  def link_params
     uri = URI.parse(link)
     Rack::Utils.parse_nested_query(uri.query)
   end
