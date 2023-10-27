@@ -8,6 +8,10 @@ describe SendPeriodicInviteJob do
   let!(:agent) { create(:agent, email: "admin_jobs@rdv-insertion.fr") }
   let!(:rdv_solidarites_session) { admin_jobs_agent_session }
 
+  before do
+    allow(ENV).to receive(:fetch).with("SHARED_SECRET_FOR_AGENTS_AUTH").and_return("S3cr3T")
+  end
+
   describe "#perform" do
     subject do
       described_class.new.perform(invitation.id, configuration.id, "email", rdv_solidarites_session)

@@ -36,6 +36,7 @@ describe SendInvitationReminderJob do
   let!(:invitation) { build(:invitation) }
 
   before do
+    allow(ENV).to receive(:fetch).with("SHARED_SECRET_FOR_AGENTS_AUTH").and_return("S3cr3T")
     travel_to(Time.zone.parse("2022-05-04 11:00"))
     allow(Invitation).to receive(:new).and_return(invitation)
     allow(Invitations::SaveAndSend).to receive(:call)

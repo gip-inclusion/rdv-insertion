@@ -1,6 +1,6 @@
 module AdminJobsAgentHelper
   def admin_jobs_agent_session
-    # Afin de vérifier la validité des invitations dans les jobs, il faut utiliser un agent pour l'api (créneau dispo dans rdvs)
+    # Afin de vérifier la validité des invitations (créneaux dispos) dans les jobs, il faut utiliser un agent pour l'api
     # Je propose ici d'utiliser un agent admin qui sera créé en db au préalable pour envoyer les invitations
     # On réutilise le systéme de secret partagé implémenté avec IC plutot que le système de token d'accés
 
