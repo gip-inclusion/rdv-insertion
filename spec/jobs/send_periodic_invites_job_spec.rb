@@ -1,7 +1,11 @@
 describe SendPeriodicInvitesJob do
+  include AdminJobsAgentHelper
+
   subject do
     described_class.new.perform
   end
+
+  let!(:agent) { create(:agent, email: "admin_jobs@rdv-insertion.fr") }
 
   describe "#perform" do
     let!(:organisation) { create(:organisation) }
@@ -28,8 +32,18 @@ describe SendPeriodicInvitesJob do
       context "number_of_days_between_periodic_invites is set" do
         context "when renewing is due" do
           it "sends periodic invites" do
-            expect(SendPeriodicInviteJob).to receive(:perform_async).with(invitation.id, configuration.id, "email")
-            expect(SendPeriodicInviteJob).to receive(:perform_async).with(invitation.id, configuration.id, "sms")
+            expect(SendPeriodicInviteJob).to receive(:perform_async).with(
+              invitation.id,
+              configuration.id,
+              "email",
+              kind_of(RdvSolidaritesSession::WithSharedSecret)
+            )
+            expect(SendPeriodicInviteJob).to receive(:perform_async).with(
+              invitation.id,
+              configuration.id,
+              "sms",
+              kind_of(RdvSolidaritesSession::WithSharedSecret)
+            )
             subject
           end
         end
@@ -46,8 +60,18 @@ describe SendPeriodicInvitesJob do
           end
 
           it "does not send periodic invites" do
-            expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(invitation.id, configuration.id, "email")
-            expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(invitation.id, configuration.id, "sms")
+            expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(
+              invitation.id,
+              configuration.id,
+              "email",
+              kind_of(RdvSolidaritesSession::WithSharedSecret)
+            )
+            expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(
+              invitation.id,
+              configuration.id,
+              "sms",
+              kind_of(RdvSolidaritesSession::WithSharedSecret)
+            )
             subject
           end
         end
@@ -63,8 +87,18 @@ describe SendPeriodicInvitesJob do
 
         context "when renewing is due" do
           it "sends periodic invites" do
-            expect(SendPeriodicInviteJob).to receive(:perform_async).with(invitation.id, configuration.id, "email")
-            expect(SendPeriodicInviteJob).to receive(:perform_async).with(invitation.id, configuration.id, "sms")
+            expect(SendPeriodicInviteJob).to receive(:perform_async).with(
+              invitation.id,
+              configuration.id,
+              "email",
+              kind_of(RdvSolidaritesSession::WithSharedSecret)
+            )
+            expect(SendPeriodicInviteJob).to receive(:perform_async).with(
+              invitation.id,
+              configuration.id,
+              "sms",
+              kind_of(RdvSolidaritesSession::WithSharedSecret)
+            )
             subject
           end
         end
@@ -78,8 +112,18 @@ describe SendPeriodicInvitesJob do
           end
 
           it "sends periodic invites" do
-            expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(invitation.id, configuration.id, "email")
-            expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(invitation.id, configuration.id, "sms")
+            expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(
+              invitation.id,
+              configuration.id,
+              "email",
+              kind_of(RdvSolidaritesSession::WithSharedSecret)
+            )
+            expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(
+              invitation.id,
+              configuration.id,
+              "sms",
+              kind_of(RdvSolidaritesSession::WithSharedSecret)
+            )
             subject
           end
         end
@@ -97,8 +141,18 @@ describe SendPeriodicInvitesJob do
         end
 
         it "does not send periodic invites" do
-          expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(invitation.id, configuration.id, "email")
-          expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(invitation.id, configuration.id, "sms")
+          expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(
+            invitation.id,
+            configuration.id,
+            "email",
+            kind_of(RdvSolidaritesSession::WithSharedSecret)
+          )
+          expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(
+            invitation.id,
+            configuration.id,
+            "sms",
+            kind_of(RdvSolidaritesSession::WithSharedSecret)
+          )
           subject
         end
       end
@@ -114,8 +168,18 @@ describe SendPeriodicInvitesJob do
       end
 
       it "does not send periodic invites" do
-        expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(invitation.id, configuration.id, "email")
-        expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(invitation.id, configuration.id, "sms")
+        expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(
+          invitation.id,
+          configuration.id,
+          "email",
+          kind_of(RdvSolidaritesSession::WithSharedSecret)
+        )
+        expect(SendPeriodicInviteJob).not_to receive(:perform_async).with(
+          invitation.id,
+          configuration.id,
+          "sms",
+          kind_of(RdvSolidaritesSession::WithSharedSecret)
+        )
         subject
       end
     end

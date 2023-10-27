@@ -1,7 +1,11 @@
 describe SendInvitationRemindersJob do
+  include AdminJobsAgentHelper
+
   subject do
     described_class.new.perform
   end
+
+  let!(:agent) { create(:agent, email: "admin_jobs@rdv-insertion.fr") }
 
   describe "#perform" do
     let!(:user1) { create(:user, email: "camille1@gouv.fr", phone_number: "0649031931") }
@@ -100,33 +104,33 @@ describe SendInvitationRemindersJob do
 
     it "enqueues reminder jobs for the eligible contexts only" do
       expect(SendInvitationReminderJob).to receive(:perform_async)
-        .with(rdv_context1.id, "sms")
+        .with(rdv_context1.id, "sms", kind_of(RdvSolidaritesSession::WithSharedSecret))
       expect(SendInvitationReminderJob).to receive(:perform_async)
-        .with(rdv_context1.id, "email")
+        .with(rdv_context1.id, "email", kind_of(RdvSolidaritesSession::WithSharedSecret))
       expect(SendInvitationReminderJob).not_to receive(:perform_async)
-        .with(rdv_context2.id, "sms")
+        .with(rdv_context2.id, "sms", kind_of(RdvSolidaritesSession::WithSharedSecret))
       expect(SendInvitationReminderJob).not_to receive(:perform_async)
-        .with(rdv_context2.id, "email")
+        .with(rdv_context2.id, "email", kind_of(RdvSolidaritesSession::WithSharedSecret))
       expect(SendInvitationReminderJob).not_to receive(:perform_async)
-        .with(rdv_context3.id, "sms")
+        .with(rdv_context3.id, "sms", kind_of(RdvSolidaritesSession::WithSharedSecret))
       expect(SendInvitationReminderJob).not_to receive(:perform_async)
-        .with(rdv_context3.id, "email")
+        .with(rdv_context3.id, "email", kind_of(RdvSolidaritesSession::WithSharedSecret))
       expect(SendInvitationReminderJob).not_to receive(:perform_async)
-        .with(rdv_context4.id, "sms")
+        .with(rdv_context4.id, "sms", kind_of(RdvSolidaritesSession::WithSharedSecret))
       expect(SendInvitationReminderJob).not_to receive(:perform_async)
-        .with(rdv_context4.id, "email")
+        .with(rdv_context4.id, "email", kind_of(RdvSolidaritesSession::WithSharedSecret))
       expect(SendInvitationReminderJob).not_to receive(:perform_async)
-        .with(rdv_context5.id, "sms")
+        .with(rdv_context5.id, "sms", kind_of(RdvSolidaritesSession::WithSharedSecret))
       expect(SendInvitationReminderJob).not_to receive(:perform_async)
-        .with(rdv_context5.id, "email")
+        .with(rdv_context5.id, "email", kind_of(RdvSolidaritesSession::WithSharedSecret))
       expect(SendInvitationReminderJob).not_to receive(:perform_async)
-        .with(rdv_context6.id, "sms")
+        .with(rdv_context6.id, "sms", kind_of(RdvSolidaritesSession::WithSharedSecret))
       expect(SendInvitationReminderJob).not_to receive(:perform_async)
-        .with(rdv_context6.id, "email")
+        .with(rdv_context6.id, "email", kind_of(RdvSolidaritesSession::WithSharedSecret))
       expect(SendInvitationReminderJob).not_to receive(:perform_async)
-        .with(rdv_context7.id, "sms")
+        .with(rdv_context7.id, "sms", kind_of(RdvSolidaritesSession::WithSharedSecret))
       expect(SendInvitationReminderJob).not_to receive(:perform_async)
-        .with(rdv_context7.id, "email")
+        .with(rdv_context7.id, "email", kind_of(RdvSolidaritesSession::WithSharedSecret))
       subject
     end
 
@@ -145,13 +149,9 @@ describe SendInvitationRemindersJob do
 
       it "does not enqueue reminder jobs" do
         expect(SendInvitationReminderJob).not_to receive(:perform_async)
-          .with(rdv_context1.id, "sms")
         expect(SendInvitationReminderJob).not_to receive(:perform_async)
-          .with(rdv_context2.id, "sms")
         expect(SendInvitationReminderJob).not_to receive(:perform_async)
-          .with(rdv_context1.id, "email")
         expect(SendInvitationReminderJob).not_to receive(:perform_async)
-          .with(rdv_context1.id, "email")
         subject
       end
     end

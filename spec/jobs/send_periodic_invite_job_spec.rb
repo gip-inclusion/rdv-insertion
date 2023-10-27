@@ -1,11 +1,16 @@
 describe SendPeriodicInviteJob do
+  include AdminJobsAgentHelper
+
   subject do
     described_class.new.perform
   end
 
+  let!(:agent) { create(:agent, email: "admin_jobs@rdv-insertion.fr") }
+  let!(:rdv_solidarites_session) { admin_jobs_agent_session }
+
   describe "#perform" do
     subject do
-      described_class.new.perform(invitation.id, configuration.id, "email")
+      described_class.new.perform(invitation.id, configuration.id, "email", rdv_solidarites_session)
     end
 
     let!(:organisation) { create(:organisation) }
@@ -28,6 +33,10 @@ describe SendPeriodicInviteJob do
     end
 
     describe "#perform" do
+      before do
+        allow(Invitations::SaveAndSend).to receive(:call).and_return(OpenStruct.new(success?: true))
+      end
+
       it "duplicates previous invitation" do
         expect { subject }.to change(Invitation, :count).by(1)
         invitation = Invitation.last
