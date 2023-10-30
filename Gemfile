@@ -78,6 +78,10 @@ gem "chartkick"
 gem "rexml"
 gem "addressable"
 
+# Easily manage records positions within a list
+# https://github.com/brendon/acts_as_list
+gem "acts_as_list", "~> 1.1"
+
 # Easily generate PDF from HTML
 gem "wicked_pdf"
 gem "wkhtmltopdf-binary"
@@ -124,5 +128,3 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
-
-gem "acts_as_list", "~> 1.1"
