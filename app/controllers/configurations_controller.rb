@@ -1,6 +1,4 @@
 class ConfigurationsController < ApplicationController
-  skip_before_action :verify_authenticity_token, only: :update
-
   PERMITTED_PARAMS = [
     { invitation_formats: [] }, :convene_user, :rdv_with_referents, :file_configuration_id,
     :invite_to_user_organisations_only, :number_of_days_before_action_required,
@@ -12,9 +10,10 @@ class ConfigurationsController < ApplicationController
   include BackToListConcern
 
   before_action :set_organisation, :authorize_organisation_configuration,
-                only: [:index, :new, :create, :show, :edit, :update, :destroy]
-  before_action :set_configuration, :set_file_configuration, :set_template, only: [:show, :edit, :update, :destroy]
-  before_action :set_department, :set_file_configurations, only: [:new, :create, :edit, :update]
+                only: [:index, :new, :create, :show, :edit, :update, :update_position, :destroy]
+  before_action :set_configuration, :set_file_configuration, :set_template,
+                only: [:show, :edit, :update, :update_position, :destroy]
+  before_action :set_department, :set_file_configurations, only: [:new, :create, :edit, :update, :update_position]
   before_action :set_back_to_users_list_url, :set_messages_configuration, :set_configurations, only: [:index]
 
   def index
@@ -42,8 +41,6 @@ class ConfigurationsController < ApplicationController
   end
 
   def update
-    return update_position if params[:position].present?
-
     @configuration.assign_attributes(**formatted_configuration_params)
     if @configuration.save
       flash.now[:success] = "La configuration a été modifiée avec succès"
@@ -54,17 +51,17 @@ class ConfigurationsController < ApplicationController
     end
   end
 
+  def update_position
+    @configuration.insert_at(params[:position].to_i)
+    head :ok
+  end
+
   def destroy
     @configuration.destroy
     flash.now[:success] = "Le contexte a été supprimé avec succès"
   end
 
   private
-
-  def update_position
-    @configuration.insert_at(params[:position].to_i)
-    head :ok
-  end
 
   def configuration_params
     params.require(:configuration).permit(*PERMITTED_PARAMS).to_h.deep_symbolize_keys
@@ -77,7 +74,7 @@ class ConfigurationsController < ApplicationController
   end
 
   def set_configuration
-    @configuration = @organisation.configurations.find(params[:id])
+    @configuration = @organisation.configurations.find(params[:id] || params[:configuration_id])
   end
 
   def set_configurations

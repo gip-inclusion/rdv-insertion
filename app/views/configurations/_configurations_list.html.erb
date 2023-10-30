@@ -1,4 +1,4 @@
-<div data-controller="drag" data-drag-url="/organisations/<%= organisation.id %>/configurations/:id">
+<div data-controller="drag" data-drag-url="/organisations/<%= organisation.id %>/configurations/:id/update_position">
   <% configurations.each do |configuration| %>
     <%= turbo_frame_tag configuration do %>
       <div class="row draggable card-white d-flex justify-content-around mb-2">

@@ -11,12 +11,14 @@ export default class extends Controller {
 
   end(event) {
     const id = event.item.id.split("_")[1];
-    const data = new FormData();
-    data.append("position", event.newIndex + 1);
 
     fetch(this.data.get("url").replace(":id", id), {
       method: "PATCH",
-      body: data
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": document.querySelector("meta[name=csrf-token]").content
+      },
+      body: JSON.stringify({ position: event.newIndex + 1 })
     });
   }
 }
