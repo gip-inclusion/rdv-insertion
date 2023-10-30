@@ -16,7 +16,9 @@ describe RdvSolidaritesWebhooks::ProcessAgentRoleJob do
   let!(:rdv_solidarites_organisation_id) { 222 }
   let!(:rdv_solidarites_agent_id) { 455 }
 
-  let!(:organisation) { create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id) }
+  let!(:organisation) do
+    create(:organisation, rdv_solidarites_organisation_id:, id: 923, name: "Pôle Parcours")
+  end
   let!(:agent) { create(:agent, rdv_solidarites_agent_id: rdv_solidarites_agent_id) }
   let!(:agent_role) { create(:agent_role, organisation: organisation, agent: agent) }
   let!(:meta) do
@@ -74,7 +76,7 @@ describe RdvSolidaritesWebhooks::ProcessAgentRoleJob do
 
         it "sends a message to mattermost" do
           expect(MattermostClient).to receive(:send_to_notif_channel)
-            .with("agent 455 destroyed")
+            .with("agent removed from organisation Pôle Parcours (923) and deleted")
           subject
         end
       end

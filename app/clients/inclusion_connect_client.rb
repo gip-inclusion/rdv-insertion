@@ -13,7 +13,7 @@ class InclusionConnectClient
         state: ic_state,
         from: "community"
       }
-      "#{BASE_URL}/auth?#{query.to_query}"
+      "#{BASE_URL}/authorize/?#{query.to_query}"
     end
 
     def get_token(code, inclusion_connect_callback_url)
@@ -25,7 +25,7 @@ class InclusionConnectClient
         redirect_uri: inclusion_connect_callback_url
       }
       Faraday.post(
-        URI("#{BASE_URL}/token"),
+        URI("#{BASE_URL}/token/"),
         data
       )
     end
@@ -35,7 +35,7 @@ class InclusionConnectClient
         id_token_hint: id_token
       }
       Faraday.get(
-        "#{BASE_URL}/logout",
+        "#{BASE_URL}/logout/",
         data
       )
     end
@@ -45,7 +45,7 @@ class InclusionConnectClient
       request_headers = { "Authorization" => "Bearer #{access_token}" }
 
       Faraday.get(
-        "#{BASE_URL}/userinfo",
+        "#{BASE_URL}/userinfo/",
         data,
         request_headers
       )

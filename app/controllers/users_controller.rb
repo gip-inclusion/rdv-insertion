@@ -246,18 +246,17 @@ class UsersController < ApplicationController
 
   def set_all_users
     @users = policy_scope(User)
-             .active
+             .active.distinct
              .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
     return if request.format == "csv"
 
-    @users = @users.preload(rdv_contexts: [:invitations])
+    @users = @users.preload(:archives, rdv_contexts: [:invitations])
   end
 
   def set_users_for_motif_category
     @users = policy_scope(User)
              .preload(:organisations, rdv_contexts: [:notifications, :invitations])
-             .active
-             .select("DISTINCT(users.id), users.*, rdv_contexts.created_at")
+             .active.distinct
              .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
              .where.not(id: @department.archived_users.ids)
              .joins(:rdv_contexts)
