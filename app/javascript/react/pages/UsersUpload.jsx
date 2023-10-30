@@ -236,25 +236,7 @@ const UsersUpload = observer(
 
                       return (
                         <th {...column.attributes} key={column.name}>
-                          {column.name === "Séléction" ? (
-                            <>
-                              {column.name}<br />
-                              <input
-                                type="checkbox"
-                                className="form-check-input"
-                                checked={users.list.every((user) => user.selected)}
-                                onChange={(event) =>
-                                  users.list.forEach((user) => {
-                                    user.selected = event.target.checked;
-                                  })
-                                }
-                              />
-                            </>
-                          ) : column.sortable ? (
-                            <button type="button" onClick={() => users.sort(column.key)} >
-                              {column.name} <i className={`fas fa-sort fa-sort-${users.sortBy === column.key && users.sortDirection} />`} />
-                            </button>
-                          ) : column.name}
+                          {column.header({ column, users })}
                         </th>
                       )
                     })}
