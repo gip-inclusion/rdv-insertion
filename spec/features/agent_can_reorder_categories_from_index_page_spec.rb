@@ -47,7 +47,7 @@ describe "Agents can invite from index page", js: true do
       expect(find(".draggable li:last-child").text).to eq(first_configuration_text)
       expect(find(".draggable li:first-child").text).to eq(last_configuration_text)
     end
-  end 
+  end
 
   context "when viewing a specific org" do
     before do
