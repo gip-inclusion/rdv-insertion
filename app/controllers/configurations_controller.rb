@@ -10,11 +10,12 @@ class ConfigurationsController < ApplicationController
   include BackToListConcern
 
   before_action :set_organisation, :authorize_organisation_configuration,
-                only: [:index, :new, :create, :show, :edit, :update, :update_position, :destroy]
+                only: [:index, :new, :create, :show, :edit, :update, :update_positions, :destroy]
   before_action :set_configuration, :set_file_configuration, :set_template,
-                only: [:show, :edit, :update, :update_position, :destroy]
-  before_action :set_department, :set_file_configurations, only: [:new, :create, :edit, :update, :update_position]
-  before_action :set_back_to_users_list_url, :set_messages_configuration, :set_configurations, only: [:index]
+                only: [:show, :edit, :update, :destroy]
+  before_action :set_department, :set_file_configurations, only: [:new, :create, :edit, :update]
+  before_action :set_configurations, only: [:index, :update_positions]
+  before_action :set_back_to_users_list_url, :set_messages_configuration, only: [:index]
 
   def index
     @available_tags = (@department || @organisation.department).tags.distinct
@@ -51,8 +52,13 @@ class ConfigurationsController < ApplicationController
     end
   end
 
-  def update_position
-    @configuration.insert_at(params[:position].to_i)
+  def update_positions
+    column = department_level? ? :department_position : :position
+    params[:all_positions].each do |position|
+      configuration = @configurations.where(motif_category: @configurations.find(position[:id]).motif_category)
+      configuration.update_all(column => position[:position].to_i)
+    end
+
     head :ok
   end
 
@@ -74,11 +80,15 @@ class ConfigurationsController < ApplicationController
   end
 
   def set_configuration
-    @configuration = @organisation.configurations.find(params[:id] || params[:configuration_id])
+    @configuration = @organisation.configurations.find(params[:id])
   end
 
   def set_configurations
-    @configurations = @organisation.configurations.includes([:motif_category]).order(position: :asc)
+    @configurations = if department_level?
+                        policy_scope(Department).find(params[:department_id]).configurations.includes([:motif_category])
+                      else
+                        @organisation.configurations.includes([:motif_category]).order(position: :asc)
+                      end
   end
 
   def set_messages_configuration
@@ -103,10 +113,14 @@ class ConfigurationsController < ApplicationController
   end
 
   def set_organisation
+    return if department_level?
+
     @organisation = policy_scope(Organisation).find(params[:organisation_id])
   end
 
   def authorize_organisation_configuration
+    return if department_level?
+
     authorize @organisation, :configure?
   end
 end

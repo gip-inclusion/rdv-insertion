@@ -1,12 +1,8 @@
-<div data-controller="drag" data-drag-url="/organisations/<%= organisation.id %>/configurations/:id/update_position">
+<div>
   <% configurations.each do |configuration| %>
     <%= turbo_frame_tag configuration do %>
-      <div class="row draggable card-white d-flex justify-content-around mb-2">
+      <div class="row card-white d-flex justify-content-around mb-2">
         <div class="col-12 col-md-6 d-flex align-items-center">
-          <div class="draggable-arrows d-flex justify-content-center align-items-center flex-column">
-            <i class="fas fa-arrow-up"></i>
-            <i class="fas fa-arrow-down"></i>
-          </div>
           <%= link_to(organisation_configuration_path(organisation, configuration), class: "col-12 col-md-6 d-flex align-items-center", data: { turbo: :false }) do %>
             <%= configuration.motif_category_name %>
           <% end %>

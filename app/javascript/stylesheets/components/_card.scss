@@ -47,26 +47,6 @@
   border-radius: 5px;
   padding: 20px;
   box-shadow: 0 0 1px rgba(0,0,0,0.1);
-
-  &.draggable {
-    cursor: move;
-
-    .draggable-arrows {
-      margin-right: 20px;
-
-      i {
-        color: #b4c0d8;
-        &:first-child {
-          position: relative;
-          top: 2px;
-        }
-        &:last-child {
-          position: relative;
-          top: -2px;
-        }
-      }
-    }
-  }
 }
 
 .large-modal-card {

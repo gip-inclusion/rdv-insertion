@@ -78,10 +78,6 @@ gem "chartkick"
 gem "rexml"
 gem "addressable"
 
-# Easily manage records positions within a list
-# https://github.com/brendon/acts_as_list
-gem "acts_as_list", "~> 1.1"
-
 # Easily generate PDF from HTML
 gem "wicked_pdf"
 gem "wkhtmltopdf-binary"

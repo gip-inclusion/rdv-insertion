@@ -149,4 +149,11 @@ export default class extends Controller {
         "(mais vous pourrez le faire ultérieurement en accédant à sa fiche).",
     });
   }
+
+  reOrderCategories() {
+    tippy(this.element, {
+      content:
+        "Vous pouvez réorganiser l'ordre d'affichage des catégories en les faisant glisser-déposer.",
+    });
+  }
 }

@@ -9,16 +9,16 @@ export default class extends Controller {
     });
   }
 
-  end(event) {
-    const id = event.item.id.split("_")[1];
-
-    fetch(this.data.get("url").replace(":id", id), {
+  end() {
+    fetch(this.data.get("url"), {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
         "X-CSRF-Token": document.querySelector("meta[name=csrf-token]").content
       },
-      body: JSON.stringify({ position: event.newIndex + 1 })
+      body: JSON.stringify({
+        all_positions: this.sortable.toArray().map((id, index) => ({ id, position: index }))
+      })
     });
   }
 }

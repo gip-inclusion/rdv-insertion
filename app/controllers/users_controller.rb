@@ -196,11 +196,12 @@ class UsersController < ApplicationController
   def set_all_configurations
     @all_configurations =
       if department_level?
-        (policy_scope(::Configuration).includes(:motif_category) & @department.configurations).uniq(&:motif_category_id)
+        (policy_scope(::Configuration).includes(:motif_category) & @department.configurations)
+          .uniq(&:motif_category_id)
+          .sort_by(&:department_position)
       else
-        @organisation.configurations.includes(:motif_category)
+        @organisation.configurations.includes(:motif_category).sort_by(&:position)
       end
-    @all_configurations = @all_configurations.sort_by(&:position)
   end
 
   def set_current_configuration

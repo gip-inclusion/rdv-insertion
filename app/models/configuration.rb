@@ -1,6 +1,4 @@
 class Configuration < ApplicationRecord
-  acts_as_list scope: :organisation
-
   belongs_to :motif_category
   belongs_to :file_configuration
   belongs_to :organisation
