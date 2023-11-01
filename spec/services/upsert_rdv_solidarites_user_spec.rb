@@ -1,17 +1,38 @@
 describe UpsertRdvSolidaritesUser, type: :service do
   subject do
     described_class.call(
-      rdv_solidarites_session: rdv_solidarites_session,
-      rdv_solidarites_user_attributes: rdv_solidarites_user_attributes,
-      rdv_solidarites_organisation_id: rdv_solidarites_organisation_id, rdv_solidarites_user_id: rdv_solidarites_user_id
+      user: user, organisation: organisation, rdv_solidarites_session: rdv_solidarites_session
+    )
+  end
+
+  let!(:rdv_solidarites_organisation_id) { 444 }
+  let!(:rdv_solidarites_user_id) { 555 }
+  let!(:organisation) do
+    create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id)
+  end
+  let!(:user_attributes) do
+    {
+      uid: "1234xyz", first_name: "john", last_name: "doe",
+      address: "16 rue de la tour", email: "johndoe@example.com", birth_name: "",
+      role: "demandeur", birth_date: Date.new(1989, 3, 17), affiliation_number: "aff123", phone_number: "+33612459567"
+    }
+  end
+  let!(:rdv_solidarites_user_attributes) do
+    {
+      first_name: "john", last_name: "doe",
+      address: "16 rue de la tour", email: "johndoe@example.com",
+      birth_date: Date.new(1989, 3, 17), affiliation_number: "aff123", phone_number: "+33612459567"
+    }
+  end
+  let!(:user) do
+    create(
+      :user,
+      user_attributes.merge(organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id)
     )
   end
 
   let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
-  let!(:rdv_solidarites_organisation_id) { 444 }
-  let!(:rdv_solidarites_user_id) { 555 }
   let!(:rdv_solidarites_user) { instance_double(RdvSolidarites::User) }
-  let!(:rdv_solidarites_user_attributes) { { first_name: "Alain", last_name: "Souchon" } }
 
   describe "#call" do
     before do
@@ -84,7 +105,7 @@ describe UpsertRdvSolidaritesUser, type: :service do
       end
     end
 
-    context "when the rdv_solidarites_user_id is not passed" do
+    context "when the rdv_solidarites_user_id is nil" do
       let!(:rdv_solidarites_user_id) { nil }
 
       before do
@@ -108,6 +129,35 @@ describe UpsertRdvSolidaritesUser, type: :service do
 
       it "stores the rdv_solidarites_user_id" do
         expect(subject.rdv_solidarites_user_id).to eq(42)
+      end
+
+      context "when the user has a department_internal_id but no role" do
+        before { user.update!(role: nil, department_internal_id: 666) }
+
+        it "creates the user normally, with the email" do
+          expect(RdvSolidaritesApi::CreateUser).to receive(:call)
+            .with(
+              user_attributes:
+                rdv_solidarites_user_attributes.merge(organisation_ids: [rdv_solidarites_organisation_id]),
+              rdv_solidarites_session: rdv_solidarites_session
+            )
+          subject
+        end
+      end
+
+      context "when the user is a conjoint" do
+        before { user.update!(role: "conjoint") }
+
+        it "creates the user without the email" do
+          expect(RdvSolidaritesApi::CreateUser).to receive(:call)
+            .with(
+              user_attributes:
+                rdv_solidarites_user_attributes.except(:email)
+                                               .merge(organisation_ids: [rdv_solidarites_organisation_id]),
+              rdv_solidarites_session: rdv_solidarites_session
+            )
+          subject
+        end
       end
 
       context "when the creation fails" do
@@ -137,23 +187,6 @@ describe UpsertRdvSolidaritesUser, type: :service do
               )
             allow(RdvSolidaritesApi::RetrieveUser).to receive(:call)
               .and_return(OpenStruct.new(success?: false))
-          end
-
-          context "when there is an user linked to this user" do
-            let!(:department) { create(:department, number: "95") }
-            let!(:user) do
-              create(:user, id: 23, rdv_solidarites_user_id: existing_user_id)
-            end
-
-            it "is a failure" do
-              is_a_failure
-            end
-
-            it "stores the error" do
-              expect(subject.errors).to eq(
-                ["Un usager avec cette adresse mail existe déjà sur RDVI avec d'autres attributs: id 23"]
-              )
-            end
           end
 
           context "when there is no user linked to this user" do

@@ -25,21 +25,10 @@ class UpsertRdvSolidaritesUser < BaseService
 
     # If the user already exists in RDV-S, we check if he is in RDVI. If not we assign the user to the org
     # by creating the user profile and we then update the user.
-    if email_taken_error?
-      return assign_to_org_and_update unless existing_user
-
-      fail!(
-        "Un usager avec cette adresse mail existe déjà sur RDVI avec d'autres attributs: " \
-        "id #{existing_user.id}"
-      )
-    end
+    return assign_to_org_and_update if email_taken_error?
 
     result.errors += create_rdv_solidarites_user.errors
     fail!
-  end
-
-  def existing_user
-    @existing_user ||= User.find_by(rdv_solidarites_user_id: @user.rdv_solidarites_user_id)
   end
 
   def assign_to_org_and_update

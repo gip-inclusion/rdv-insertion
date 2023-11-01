@@ -11,27 +11,11 @@ describe Users::Save, type: :service do
   let!(:organisation) do
     create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id)
   end
-  let!(:user_attributes) do
-    {
-      uid: "1234xyz", first_name: "john", last_name: "doe",
-      address: "16 rue de la tour", email: "johndoe@example.com", birth_name: "",
-      role: "demandeur", birth_date: Date.new(1989, 3, 17), affiliation_number: "aff123", phone_number: "+33612459567"
-    }
-  end
-  let!(:rdv_solidarites_user_attributes) do
-    {
-      first_name: "john", last_name: "doe",
-      address: "16 rue de la tour", email: "johndoe@example.com", birth_name: "",
-      birth_date: Date.new(1989, 3, 17), affiliation_number: "aff123", phone_number: "+33612459567"
-    }
-  end
 
   let!(:motif_category) { create(:motif_category) }
   let!(:configuration) { create(:configuration, organisation: organisation, motif_category: motif_category) }
 
-  let!(:user) do
-    create(:user, user_attributes.merge(organisations: [organisation], rdv_solidarites_user_id: nil))
-  end
+  let!(:user) { create(:user, organisations: [organisation], rdv_solidarites_user_id: nil) }
 
   let(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
 
@@ -52,10 +36,9 @@ describe Users::Save, type: :service do
     it "upserts a rdv solidarites user" do
       expect(UpsertRdvSolidaritesUser).to receive(:call)
         .with(
-          rdv_solidarites_session: rdv_solidarites_session,
-          rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
-          rdv_solidarites_user_attributes: rdv_solidarites_user_attributes.except(:birth_name),
-          rdv_solidarites_user_id: nil
+          user: user,
+          organisation: organisation,
+          rdv_solidarites_session: rdv_solidarites_session
         )
       subject
     end
@@ -83,36 +66,6 @@ describe Users::Save, type: :service do
 
       it "stores the error" do
         expect(subject.errors).to eq(["some error"])
-      end
-    end
-
-    context "when the user has a department_internal_id but no role" do
-      before { user.update!(role: nil, department_internal_id: 666) }
-
-      it "creates the user normally, with the email" do
-        expect(UpsertRdvSolidaritesUser).to receive(:call)
-          .with(
-            rdv_solidarites_user_attributes: rdv_solidarites_user_attributes.except(:birth_name),
-            rdv_solidarites_session: rdv_solidarites_session,
-            rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
-            rdv_solidarites_user_id: nil
-          )
-        subject
-      end
-    end
-
-    context "when the user is a conjoint" do
-      before { user.update!(role: "conjoint") }
-
-      it "creates the user without the email" do
-        expect(UpsertRdvSolidaritesUser).to receive(:call)
-          .with(
-            rdv_solidarites_user_attributes: rdv_solidarites_user_attributes.except(:email, :birth_name),
-            rdv_solidarites_session: rdv_solidarites_session,
-            rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
-            rdv_solidarites_user_id: nil
-          )
-        subject
       end
     end
 
@@ -163,12 +116,7 @@ describe Users::Save, type: :service do
     end
 
     context "when the user is already linked to a rdv solidarites user" do
-      let!(:user) do
-        create(:user, user_attributes
-          .merge(
-            organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
-          ))
-      end
+      let!(:user) { create(:user, organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id) }
 
       it "does not reassign the user id" do
         expect(user).to receive(:save).at_most(1).time

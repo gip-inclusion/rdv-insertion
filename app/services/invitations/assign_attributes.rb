@@ -50,6 +50,5 @@ module Invitations
     def invitation_link
       compute_invitation_link.invitation_link
     end
-
   end
 end

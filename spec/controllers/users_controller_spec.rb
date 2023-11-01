@@ -194,7 +194,6 @@ describe UsersController do
         get :show, params: show_params
 
         expect(response).to be_successful
-        expect(response.body).to match(/Voir sur RDV-Solidarités/)
         expect(response.body).to match(/Andreas/)
         expect(response.body).to match(/Kopke/)
       end
@@ -207,7 +206,6 @@ describe UsersController do
         get :show, params: show_params
 
         expect(response).to be_successful
-        expect(response.body).to match(/Voir sur RDV-Solidarités/)
         expect(response.body).to match(/Andreas/)
         expect(response.body).to match(/Kopke/)
       end

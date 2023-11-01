@@ -63,6 +63,9 @@ describe ReferentAssignationsController do
     end
 
     before do
+      allow(Users::Save).to receive(:call)
+        .with(user: user, organisation: organisation1, rdv_solidarites_session: rdv_solidarites_session)
+        .and_return(OpenStruct.new(success?: true))
       allow(Users::AssignReferent).to receive(:call)
         .with(user: user, agent: agent2, rdv_solidarites_session: rdv_solidarites_session)
         .and_return(OpenStruct.new(success?: true))
@@ -76,6 +79,23 @@ describe ReferentAssignationsController do
       expect(response.body).to match(/Le référent a bien été assigné/)
     end
 
+    context "when the save fails" do
+      before do
+        allow(Users::Save).to receive(:call)
+          .with(user: user, organisation: organisation1, rdv_solidarites_session: rdv_solidarites_session)
+          .and_return(OpenStruct.new(success?: false, errors: ["Something went wrong"]))
+      end
+
+      it "displays an error message" do
+        subject
+
+        expect(response).to be_successful
+        expect(unescaped_response_body).to match(/flashes/)
+        expect(unescaped_response_body).to match(/Something went wrong/)
+        expect(unescaped_response_body).to match(/Une erreur s'est produite lors de l'assignation du référent/)
+      end
+    end
+
     context "when the assignation fails" do
       before do
         allow(Users::AssignReferent).to receive(:call)
@@ -83,7 +103,7 @@ describe ReferentAssignationsController do
           .and_return(OpenStruct.new(success?: false, errors: ["Something wrong happened"]))
       end
 
-      it "assigns the agent with a success message" do
+      it "displays an error message" do
         subject
 
         expect(response).to be_successful
