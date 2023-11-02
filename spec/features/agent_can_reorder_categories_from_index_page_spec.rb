@@ -10,7 +10,8 @@ describe "Agents can invite from index page", js: true do
   let!(:motif_category) { create(:motif_category, short_name: "rsa_follow_up") }
   let!(:motif_category2) { create(:motif_category, short_name: "rsa_insertion_offer") }
   let!(:rdv_solidarites_token) { "123456" }
-  let!(:rdv_context) { create(:rdv_context, user: user, motif_category: motif_category) }
+  let!(:rdv_context) { create(:rdv_context, user: user, motif_category: motif_category, status: "rdv_seen") }
+  let!(:rdv_context2) { create(:rdv_context, user: user, motif_category: motif_category2, status: "rdv_seen") }
   let!(:configuration) do
     create(
       :configuration,
