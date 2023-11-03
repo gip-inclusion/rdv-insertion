@@ -7,10 +7,6 @@ describe SendPeriodicInvitesJob do
 
   let!(:agent) { create(:agent, email: "admin_jobs@rdv-insertion.fr") }
 
-  before do
-    allow(ENV).to receive(:fetch).with("SHARED_SECRET_FOR_AGENTS_AUTH").and_return("S3cr3T")
-  end
-
   describe "#perform" do
     let!(:organisation) { create(:organisation) }
     let!(:configuration) do

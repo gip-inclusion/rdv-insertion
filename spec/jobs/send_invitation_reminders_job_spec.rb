@@ -7,10 +7,6 @@ describe SendInvitationRemindersJob do
 
   let!(:agent) { create(:agent, email: "admin_jobs@rdv-insertion.fr") }
 
-  before do
-    allow(ENV).to receive(:fetch).with("SHARED_SECRET_FOR_AGENTS_AUTH").and_return("S3cr3T")
-  end
-
   describe "#perform" do
     let!(:user1) { create(:user, email: "camille1@gouv.fr", phone_number: "0649031931") }
     let!(:user2) { create(:user, email: "camille2@gouv.fr", phone_number: "0649031932") }

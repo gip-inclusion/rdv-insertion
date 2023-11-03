@@ -19,10 +19,6 @@ describe RdvSolidaritesSession::WithSharedSecret do
   end
 
   describe "#valid?" do
-    before do
-      allow(ENV).to receive(:fetch).with("SHARED_SECRET_FOR_AGENTS_AUTH").and_return("S3cr3T")
-    end
-
     context "when required attributes are present and signature is valid" do
       it "session is valid" do
         expect(subject).to be_valid
