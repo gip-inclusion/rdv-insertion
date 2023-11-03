@@ -74,7 +74,6 @@ describe InclusionConnectController do
     end
 
     it "redirect and assign session variables if everything is ok (with stub request)" do
-      allow(ENV).to receive(:fetch).with("SHARED_SECRET_FOR_AGENTS_AUTH").and_return("S3cr3T")
       allow(RetrieveInclusionConnectAgentInfos).to receive(:call).with(
         code: code,
         callback_url: inclusion_connect_callback_url
@@ -105,7 +104,6 @@ describe InclusionConnectController do
     end
 
     it "redirect and assign session variables if everything is ok (with stub service)" do
-      allow(ENV).to receive(:fetch).with("SHARED_SECRET_FOR_AGENTS_AUTH").and_return("S3cr3T")
       allow(RetrieveInclusionConnectAgentInfos).to receive(:call).with(
         code: code,
         callback_url: inclusion_connect_callback_url
