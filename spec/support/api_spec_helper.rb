@@ -43,12 +43,13 @@ module ApiSpecHelper
 
     let(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
 
-    ENV["RDV_SOLIDARITES_URL"] = "http://www.rdv-solidarites-test.localhost"
-
     before do
-      stub_request(:get, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/auth/validate_token")
-        .with(headers: auth_headers.merge({ "Content-Type" => "application/json" }))
-        .to_return(body: { "data" => { "uid" => agent.email } }.to_json)
+      allow(RdvSolidaritesSessionFactory).to receive(:create_with)
+        .with(uid:, client:, access_token: auth_headers["access-token"])
+        .and_return(rdv_solidarites_session)
+      allow(rdv_solidarites_session).to receive(:to_h).and_return(auth_headers)
+      allow(rdv_solidarites_session).to receive(:valid?).and_return(true)
+      allow(rdv_solidarites_session).to receive(:uid).and_return(uid)
     end
   end
   # rubocop:enable Metrics/AbcSize

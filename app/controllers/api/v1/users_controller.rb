@@ -5,10 +5,8 @@ module Api
 
       PERMITTED_USER_PARAMS = [
         :first_name, :last_name, :title, :affiliation_number, :role, :email, :phone_number,
-        :nir, :pole_emploi_id,
-        :birth_date, :rights_opening_date, :address, :department_internal_id, {
-          invitation: [:rdv_solidarites_lieu_id, { motif_category: [:name, :short_name, :id] }]
-        }
+        :nir, :pole_emploi_id, :birth_date, :rights_opening_date, :address, :department_internal_id,
+        { invitation: [:rdv_solidarites_lieu_id, { motif_category: [:name] }] }
       ].freeze
 
       before_action :set_organisation
@@ -87,7 +85,7 @@ module Api
       end
 
       def motif_category_attributes
-        user_attributes.dig(:invitation, :motif_category) || {}
+        user_params.dig(:invitation, :motif_category) || {}
       end
 
       def user_params

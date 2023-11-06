@@ -196,9 +196,10 @@ RSpec.configure do |config|
             type: "object",
             properties: {
               id: { type: "integer" },
-              format: { type: "string", enum: %w[sms postal string] },
+              format: { type: "string", enum: %w[sms postal email] },
               sent_at: { type: "string" },
               clicked: { type: "boolean" },
+              rdv_with_referents: { type: "boolean" },
               motif_category: { "$ref" => "#/components/schemas/motif_category" }
             },
             required: %w[id format sent_at clicked rdv_with_referents motif_category]
@@ -243,6 +244,37 @@ RSpec.configure do |config|
               short_name: { type: "string" }
             },
             required: %w[id name short_name]
+          },
+          department: {
+            type: "object",
+            properties: {
+              id: { type: "integer" },
+              number: { type: "string" },
+              capital: { type: "string" },
+              region: { type: "string" },
+              organisations: {
+                type: "array",
+                items: {
+                  "$ref" => "#/components/schemas/organisation",
+                  lieux: {
+                    type: "array",
+                    items: { "$ref" => "#/components/schemas/lieu" }
+                  },
+                  motifs: {
+                    type: "array",
+                    items: { "$ref" => "#/components/schemas/motif" }
+                  }
+                }
+              }
+            },
+            required: %w[id number capital region organisations]
+          },
+          department_with_root: {
+            type: "object",
+            properties: {
+              department: { "$ref" => "#/components/schemas/department" }
+            },
+            required: %w[department]
           },
           success_response: {
             type: "object",
@@ -355,4 +387,16 @@ RSpec.configure do |config|
   # the key, this may want to be changed to avoid putting yaml in json files.
   # Defaults to json. Accepts ':json' and ':yaml'.
   config.swagger_format = :json
+
+  config.after(:each, operation: true, use_as_request_example: true) do |spec|
+    spec.metadata[:operation][:request_examples] ||= []
+
+    example = {
+      value: JSON.parse(request.body.string, symbolize_names: true),
+      name: 'request_example_1',
+      summary: 'A request example'
+    }
+
+    spec.metadata[:operation][:request_examples] << example
+  end
 end

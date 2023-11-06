@@ -14,6 +14,7 @@ end
 Rails.application.routes.draw do
   mount Rswag::Api::Engine => '/api-docs'
   mount Rswag::Ui::Engine => '/api-docs'
+
   root "static_pages#welcome"
   get "mentions-legales", to: "static_pages#legal_notice"
   get "cgu", to: "static_pages#cgu"
