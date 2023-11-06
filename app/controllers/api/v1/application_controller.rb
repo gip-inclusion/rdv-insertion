@@ -18,6 +18,10 @@ module Api
       def record_not_found(_)
         head :not_found
       end
+
+      def render_errors(errors)
+        render json: { success: false, errors: }, status: :unprocessable_entity
+      end
     end
   end
 end
