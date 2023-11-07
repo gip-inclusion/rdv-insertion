@@ -52,22 +52,11 @@
     <div class="row d-flex justify-content-start flex-wrap mt-5">
       <div class="col-12 col-md-6 px-5">
         <h4> Tags </h4>
-        <p class="mb-2">
-          <% if @tags.blank? %>
-            -
-          <% else %>
-            <%= @tags.join(', ') %>
-          <% end %>
-        </p>
+        <%= render "user_tags", tags: @tags %>
 
-        <%= react_component(
-          "components/user/EditTags", {
-            user: @user, 
-            availableTagsInScope: (@organisation || @department).tags,
-            affectedTagsInScope: @tags,
-            department: @department, organisation: @organisation,
-          }
-        ) %>
+        <%= link_to(compute_user_tag_assignations_path(@organisation, @department, @user), data: { turbo_frame: 'remote_modal' }) do %>
+          <button class="btn btn-blue mb-3"><i class="fas fa-pen"></i> Ajouter ou retirer un tag </button>
+        <% end %>
       </div>
 
       <%= render "common/attribute_display", record: @user, attribute: :organisations, as: :list, id: "organisations_list" do %>

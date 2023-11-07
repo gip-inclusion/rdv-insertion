@@ -1,0 +1,7 @@
+<p class="mb-2" id="tags_list">
+  <% if tags.blank? %>
+    -
+  <% else %>
+    <%= tags.join(', ') %>
+  <% end %>
+</p>

@@ -1,0 +1,5 @@
+<div id="tag_form">
+  <% tags.each do |tag| %>
+    <%= render "tag_assignation", tag: tag, assigned: @user.tag_ids.include?(tag.id) %>
+  <% end %>
+</div>

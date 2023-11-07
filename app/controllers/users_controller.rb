@@ -183,7 +183,7 @@ class UsersController < ApplicationController
     @tags = @user
             .tags
             .joins(:organisations)
-            .where(organisations: @organisation || @department.organisations)
+            .where(organisations: department_level? ? @department.organisations : @organisation)
             .order(:value)
             .distinct
   end
