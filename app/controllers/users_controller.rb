@@ -19,7 +19,7 @@ class UsersController < ApplicationController
                 :filter_users, :order_users,
                 for: :index
   before_action :set_user, :set_organisation, :set_department, :set_all_configurations,
-                :set_user_organisations, :set_user_rdv_contexts, :set_user_archive, :set_tags,
+                :set_user_organisations, :set_user_rdv_contexts, :set_user_archive, :set_user_tags,
                 :set_back_to_users_list_url,
                 for: :show
   before_action :set_organisation, :set_department, :set_organisations,
@@ -179,7 +179,7 @@ class UsersController < ApplicationController
     @tags = (@organisation || @department).tags.order(:value).distinct
   end
 
-  def set_tags
+  def set_user_tags
     @tags = @user
             .tags
             .joins(:organisations)
