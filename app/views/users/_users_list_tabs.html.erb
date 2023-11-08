@@ -2,11 +2,20 @@
   <li class="nav-item">
     <%= link_to "Tous les contacts", compute_index_path(@organisation, @department), class: "nav-link #{@current_configuration.present? || archived_scope?(@users_scope) ? '' : 'active'}" %>
   </li>
-  <% @all_configurations.each do |configuration| %>
-    <li class="nav-item">
-      <%= link_to configuration.motif_category_name, compute_index_path(@organisation, @department, motif_category_id: configuration.motif_category_id), class: "nav-link #{configuration.id == @current_configuration&.id ? 'active' : ''}"%>
-    </li>
-  <% end %>
+  <li>
+    <ul data-controller="drag" data-drag-url="<%= compute_update_position_path(@organisation, @department) %>" class="<%= "draggable" if @current_agent_roles.any?(&:admin?) %> nav">
+    <% @all_configurations.each do |configuration| %>
+      <li class="nav-item" data-id="<%= configuration.id %>">
+        <%= link_to compute_index_path(@organisation, @department, motif_category_id: configuration.motif_category_id), class: "nav-link d-flex align-items-center #{configuration.id == @current_configuration&.id ? 'active' : ''}" do %>
+          <%= configuration.motif_category_name %>
+          <% if @current_agent_roles.any?(&:admin?) %>
+            <i data-controller="tooltip" data-action="mouseover->tooltip#reOrderCategories" class="fas fa-grip-vertical"></i>
+          <% end %>
+        <% end %>
+      </li>
+    <% end %>
+    </ul>
+  </li>
   <li class="nav-item">
     <%= link_to "Archivés", compute_index_path(@organisation, @department, users_scope: "archived"), class: "nav-link #{archived_scope?(@users_scope) ? 'active' : ''}" %>
   </li>

@@ -28,3 +28,13 @@ header {
     color: black;
   }
 }
+
+.nav {
+  &.draggable {
+    
+    i {
+      cursor: ew-resize;
+      margin-left: 10px;
+    }
+  }
+}

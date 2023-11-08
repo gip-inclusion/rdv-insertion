@@ -196,11 +196,12 @@ class UsersController < ApplicationController
   def set_all_configurations
     @all_configurations =
       if department_level?
-        (policy_scope(::Configuration).includes(:motif_category) & @department.configurations).uniq(&:motif_category_id)
+        (policy_scope(::Configuration).includes(:motif_category) & @department.configurations)
+          .uniq(&:motif_category_id)
+          .sort_by(&:department_position)
       else
-        @organisation.configurations.includes(:motif_category)
+        @organisation.configurations.includes(:motif_category).sort_by(&:position)
       end
-    @all_configurations = @all_configurations.sort_by(&:motif_category_position)
   end
 
   def set_current_configuration
@@ -222,7 +223,7 @@ class UsersController < ApplicationController
         participations: [:notifications, { rdv: [:motif, :organisation] }]
       ).where(
         user: @user, motif_category: @all_configurations.map(&:motif_category)
-      ).sort_by(&:motif_category_position)
+      ).sort_by { |rdv_context| @all_configurations.find_index { |c| c.motif_category == rdv_context.motif_category } }
   end
 
   def set_user_archive
