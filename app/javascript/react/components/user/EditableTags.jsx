@@ -38,7 +38,7 @@ export default observer(({ user, cell, values, setIsEditingTags }) => {
               ? "Vous pouvez créer des tags depuis la configuration de l'organisation."
               : null}
             {user[cell].length
-              ? user[cell].map((tag) => (
+              ? user[cell].slice().sort().map((tag) => (
                   <Tippy
                     placement="top"
                     key={tag}

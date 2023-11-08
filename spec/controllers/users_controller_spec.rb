@@ -1123,6 +1123,22 @@ describe UsersController do
             post :update, params: update_params
             expect(user.reload.tags.size).to eq(0)
           end
+
+          context "with tags on other organisations" do
+            let(:other_organisation) { create(:organisation) }
+            let(:other_tag) { create(:tag, value: "ok") }
+
+            before do
+              other_organisation.tags << other_tag
+              user.tags << other_tag
+            end
+
+            it "removes only correct tags" do
+              post :update, params: update_params
+              expect(user.reload.tags.first).to eq(other_tag)
+              expect(user.reload.tags.size).to eq(1)
+            end
+          end
         end
 
         context "without tags given" do

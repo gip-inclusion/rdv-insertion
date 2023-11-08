@@ -32,6 +32,9 @@ Rails.application.routes.draw do
         get :default_list
       end
       resources :invitations, only: [:create]
+      resources :tag_assignations, only: [:index, :create] do
+        delete :destroy, on: :collection
+      end
     end
     # we need to nest in organisations the different configurations record to correctly authorize them
     resources :configurations, only: [:index, :show, :new, :create, :edit, :update, :destroy]
@@ -97,6 +100,9 @@ Rails.application.routes.draw do
       resources :invitations, only: [:create]
       resources :users_organisations, only: [:index]
       resources :referent_assignations, only: [:index]
+      resources :tag_assignations, only: [:index, :create] do
+        delete :destroy, on: :collection
+      end
     end
     resource :users_organisations, only: [:create, :destroy]
     resource :referent_assignations, only: [:create, :destroy]

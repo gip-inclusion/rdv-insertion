@@ -49,4 +49,10 @@ module ApplicationHelper
   def render_turbo_stream_flash_messages
     turbo_stream.prepend "flashes", partial: "common/flash"
   end
+
+  def compute_user_tag_assignations_path(organisation, department, user)
+    return department_user_tag_assignations_path(department, user) if department_level?
+
+    organisation_user_tag_assignations_path(organisation, user)
+  end
 end
