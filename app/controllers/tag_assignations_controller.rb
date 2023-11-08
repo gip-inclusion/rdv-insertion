@@ -4,12 +4,12 @@ class TagAssignationsController < ApplicationController
   def index; end
 
   def create
-    Users::AssignTag.call(user: @user, tag:)
+    @user.tags << tag
     set_user_tags
   end
 
   def destroy
-    Users::RemoveTag.call(user: @user, tag:)
+    @user.tags.delete(tag)
     set_user_tags
   end
 
