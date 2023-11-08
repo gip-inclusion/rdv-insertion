@@ -33,23 +33,23 @@ class AddPositionToConfiguration < ActiveRecord::Migration[7.0]
       siae_follow_up
     ]
 
-    Organisation.all.each do |organisation|
+    Organisation.includes(:configurations, :motif_categories).find_each do |organisation|
       ordered_motifs.each_with_index do |motif_name, index|
-        motif = organisation.motif_categories.find_by(short_name: motif_name)
+        motif_category = organisation.motif_categories.find_by(short_name: motif_name)
 
-        next if motif.nil?
+        next if motif_category.nil?
 
-        organisation.configurations.find_by(motif_category: motif).update_column(:position, index)
+        organisation.configurations.find_by(motif_category: motif_category).update_column(:position, index)
       end
     end
 
-    Department.all.each do |department|
+    Department.includes(:configurations, :motif_categories).find_each do |department|
       ordered_motifs.each_with_index do |motif_name, index|
-        motif = department.motif_categories.find_by(short_name: motif_name)
+        motif_category = department.motif_categories.find_by(short_name: motif_name)
 
-        next if motif.nil?
+        next if motif_category.nil?
 
-        department.configurations.find_by(motif_category: motif).update_column(:department_position, index)
+        department.configurations.find_by(motif_category: motif_category).update_column(:department_position, index)
       end
     end
   end
