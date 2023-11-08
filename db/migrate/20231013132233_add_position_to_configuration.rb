@@ -1,8 +1,8 @@
 class AddPositionToConfiguration < ActiveRecord::Migration[7.0]
   # rubocop:disable Metrics/AbcSize
   def change
-    add_column :configurations, :position, :integer
-    add_column :configurations, :department_position, :integer
+    add_column :configurations, :position, :integer, default: 0
+    add_column :configurations, :department_position, :integer, default: 0
 
     ordered_motifs = %w[
       rsa_integration_information
