@@ -34,9 +34,8 @@ Rails.application.routes.draw do
       resources :invitations, only: [:create]
     end
     # we need to nest in organisations the different configurations record to correctly authorize them
-    resources :configurations, only: [:index, :show, :new, :create, :edit, :update, :destroy] do
-      patch :update_positions, on: :collection
-    end
+    resources :configurations, only: [:index, :show, :new, :create, :edit, :update, :destroy]
+    patch "configurations_positions/update", to: "configurations_positions#update"
     resources :tags, only: [:create, :destroy]
     resources :file_configurations, only: [:show, :new, :create, :edit, :update] do
       get :confirm_update
@@ -87,9 +86,7 @@ Rails.application.routes.draw do
   end
 
   resources :departments, only: [] do
-    resources :configurations, only: [] do
-      patch :update_positions, on: :collection
-    end
+    patch "configurations_positions/update", to: "configurations_positions#update"
     resources :department_organisations, only: [:index], as: :organisations, path: "/organisations"
     resources :users, only: [:index, :new, :create, :show, :edit, :update] do
       collection do

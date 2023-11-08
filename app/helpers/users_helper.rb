@@ -163,9 +163,9 @@ module UsersHelper
   end
 
   def compute_update_position_path(organisation, department)
-    return update_positions_department_configurations_path(department) if department_level?
+    return department_configurations_positions_update_path(department) if department_level?
 
-    update_positions_organisation_configurations_path(organisation)
+    organisation_configurations_positions_update_path(organisation)
   end
 
   def compute_edit_path(user, organisation, department)

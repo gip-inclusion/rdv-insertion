@@ -17,7 +17,7 @@ export default class extends Controller {
         "X-CSRF-Token": document.querySelector("meta[name=csrf-token]").content
       },
       body: JSON.stringify({
-        all_positions: this.sortable.toArray().map((id, index) => ({ id, position: index }))
+        configuration_ids_and_positions: this.sortable.toArray().map((id, index) => ({ id, position: index }))
       })
     });
   }
