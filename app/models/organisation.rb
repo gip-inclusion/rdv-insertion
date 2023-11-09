@@ -5,6 +5,8 @@ class Organisation < ApplicationRecord
   include Searchable
   include HasLogo
 
+  before_create { build_messages_configuration }
+
   validates :rdv_solidarites_organisation_id, uniqueness: true, allow_nil: true
   validates :name, presence: true
   validates :email, allow_blank: true, format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/ }
