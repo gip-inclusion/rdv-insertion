@@ -149,6 +149,29 @@ RSpec.configure do |config|
               carnet_de_bord_carnet_id
             ]
           },
+          user_params: {
+            type: "object",
+            properties: {
+              address: { type: "string", nullable: true },
+              affiliation_number: { type: "string", nullable: true },
+              birth_date: { type: "string", format: "date", nullable: true },
+              birth_name: { type: "string", nullable: true },
+              email: { type: "string", nullable: true },
+              first_name: { type: "string" },
+              last_name: { type: "string" },
+              phone_number: { type: "string", nullable: true },
+              department_internal_id: { type: "string", nullable: true },
+              rights_opening_date: { type: "string", nullable: true },
+              title: { type: "string", enum: %w[monsieur madame] },
+              role: { type: "string", nullable: true, enum: %w[demandeur conjoint] },
+              nir: { type: "string", nullable: true },
+              pole_emploi_id: { type: "string", nullable: true },
+              carnet_de_bord_carnet_id: { type: "string", nullable: true }
+            },
+            required: %w[
+              first_name last_name title
+            ]
+          },
           organisation_with_root: {
             type: "object",
             properties: {
@@ -285,6 +308,7 @@ RSpec.configure do |config|
           error_unprocessable_entity: {
             type: "object",
             properties: {
+              success: { type: "boolean" },
               errors: {
                 type: "array",
                 items: {
@@ -327,44 +351,6 @@ RSpec.configure do |config|
           }
         }
       },
-      tags: [
-        {
-          name: "Invitation",
-          description:
-            "Désigne une invitation à prendre rdv.
-             Elle est liée à un·e usager·ère, a un format (sms, mail ou postal), une catégorie de motif.
-             Elle est unique."
-        },
-        {
-          name: "User",
-          description:
-            "Désigne le compte unique d'un·e usager·ère.
-            Il contient les informations de l'état civil ainsi que des informations
-            communes comme le NIR, l'ID interne au département."
-        },
-        {
-          name: "Agent",
-          description: "Désigne un·e agent·e. Un·e agent·e est lié·e à une ou plusieurs organisations."
-        },
-        {
-          name: "RDV",
-          description:
-            "Désigne un rendez-vous.
-            Il contient des informations sur le rendez-vous lui-même, le ou les agent·es,
-            le ou les usager·ères, le lieu, le motif, l'organisation."
-        },
-        {
-          name: "Motif",
-          description:
-            "Désigne le motif d'un rendez-vous.
-            Il contient des informations telles que le nom du motif, s'il est téléphonique,
-            sur place ou à domicile, ainsi que des détails annexes (collectif ou non, catégorie)."
-        },
-        {
-          name: "Organisation",
-          description: "Désigne une organisation. Une organisation contient des agent·es."
-        }
-      ],
       servers: [
         {
           url: "http://localhost:8000/",
@@ -387,16 +373,4 @@ RSpec.configure do |config|
   # the key, this may want to be changed to avoid putting yaml in json files.
   # Defaults to json. Accepts ':json' and ':yaml'.
   config.swagger_format = :json
-
-  config.after(:each, operation: true, use_as_request_example: true) do |spec|
-    spec.metadata[:operation][:request_examples] ||= []
-
-    example = {
-      value: JSON.parse(request.body.string, symbolize_names: true),
-      name: 'request_example_1',
-      summary: 'A request example'
-    }
-
-    spec.metadata[:operation][:request_examples] << example
-  end
 end

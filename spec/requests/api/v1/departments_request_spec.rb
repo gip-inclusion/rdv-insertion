@@ -13,13 +13,15 @@ describe "Departement API", swagger_doc: "v1/api.json" do
           region: "Provence-Alpes-Côte d'Azur"
         )
       end
-      let!(:organisation) { create(:organisation, department:) }
+      let!(:organisation) do
+        create(:organisation, department:, name: "Pôle Parcours", email: "pole-parcours@departement13.fr")
+      end
       let!(:motif) { create(:motif, organisation:, motif_category:) }
       let!(:motif_category) { create(:motif_category) }
       let!(:agent) { create(:agent, organisations: [organisation]) }
       let!(:lieu) { create(:lieu, organisation:) }
 
-      tags "Rdv"
+      tags "Departement"
       produces "application/json"
       description "Renvoie les organisations, lieux et motifs du département"
 

@@ -11,8 +11,8 @@ module ApiSpecSharedExamples
     end
   end
 
-  shared_context "an endpoint that returns 403 - forbidden" do |details|
-    response 403, "Renvoie 'forbidden' quand #{details}" do
+  shared_context "an endpoint that returns 403 - forbidden" do
+    response 403, "Renvoie 'forbidden' quand l'agent n'a pas les droits pour effectuer cette action" do
       schema "$ref" => "#/components/schemas/error_forbidden"
 
       run_test!
@@ -30,6 +30,14 @@ module ApiSpecSharedExamples
   shared_context "an endpoint that returns 422 - unprocessable_entity" do |details, document|
     response 422, "Renvoie 'unprocessable_entity' quand #{details}", document: document do
       schema "$ref" => "#/components/schemas/error_unprocessable_entity"
+
+      run_test!
+    end
+  end
+
+  shared_context "an endpoint that returns 422 - unprocessable_entity with details" do |details, document|
+    response 422, "Renvoie 'unprocessable_entity' quand #{details}", document: document do
+      schema "$ref" => "#/components/schemas/error_unprocessable_entity_with_details"
 
       run_test!
     end

@@ -3,7 +3,7 @@
   "info": {
     "title": "API RDV insertion",
     "version": "v1",
-    "description": "L'API de RDV-Solidarités vous permet de lire des données dans notre base depuis votre logiciel.\n\nToutes les fonctionnalités de RDV-Solidarités ne sont pas encore disponibles via l’API. Contactez-nous si vous avez besoin de fonctionnalités qui ne sont pas encore présentes.\n\n# Requêtes\n\nL'API adhère aux principes REST :\n\n- requêtes `GET` : lecture sans modification\n- requêtes `POST` : création de nouvelle ressource\n- requêtes `PATCH` : mise à jour d'une ressource existante\n- requêtes `DELETE` : suppression d'une ressource\n\nLes paramètres des requêtes `GET` doivent être envoyés via les query string de la requête.\n\nLes paramètres des requêtes `POST` doivent être transmis dans le corps de la requête sous un format JSON valide, et doivent contenir le header `Content-Type: application/json`.\n\nLes paramètres doivent respecter les formats suivants :\n\n- `DATE` : \"YYYY-MM-DD\" par exemple : \"2021-10-21\"\n- `TIME` : H:m[:s], par exemple : \"10:30\"\n\n# Versionnage\n\nL'API est versionnée. La version actuelle est 1.0 (référencée comme v1 dans les points de terminaison).\n\n# Routes\n\nLes points de terminaison de l'API sont accessibles par une route de la forme : `https://<domain>/api/<version>/<endpoint>`.\n\nAvec :\n\n- `version` est la version de l'API\n- `endpoint` est le nom du point de terminaison\n\nPar exemple, on aura : `https://<domain>/api/v1/absences`\n\nPour la version production, les requêtes doivent être adressées à https://www.rdv-solidarites.fr et non à https://rdv-solidarites.fr.\n\nPour la version démo, les requêtes doivent être adressées à https://demo.rdv-solidarites.fr.\n\n# Authentification\n\nCertains points de terminaison sont réservés aux agents authentifiés, dans la limite de leur rôle au sein de l'application.\n\n## Headers d'authentification\n\nTous les agents peuvent utiliser l'API. Les requêtes faites sur l'API sont authentifiées grace à des tokens d'accès associés à chaque agent. Chaque action faite via l'API est donc attribuable à un agent.\n\nPour récupérer le token d'accès d'un agent il faut faire une première requête `POST` à l'url `https://www.rdv-solidarites.fr/api/v1/auth/sign_in` en passant en paramètres JSON l'email et le mot de passe de l'agent. Par exemple (avec HTTPie) :\n\n```httpie\nhttp --json POST 'https://www.rdv-solidarites.fr/api/v1/auth/sign_in' \\\n  email='martine@demo.rdv-solidarites.fr' password='123456'\n```\n\nEn cas de succès d'authentification, la réponse à cette requête contiendra dans le corps le détail de l'agent, et dans les headers les token d'accès à l'API. Par exemple :\n\n```http\nHTTP/1.1 200 OK\nX-Frame-Options: SAMEORIGIN\nX-XSS-Protection: 1; mode=block\nX-Content-Type-Options: nosniff\nX-Download-Options: noopen\nX-Permitted-Cross-Domain-Policies: none\nReferrer-Policy: strict-origin-when-cross-origin\nContent-Type: application/json; charset=utf-8\naccess-token: SFYBngO55ImjD1HOcv-ivQ< token-type: Bearer\nclient: Z6EihQAY9NWsZByfZ47i_Q< expiry: 1605600758\nuid: martine@demo.rdv-solidarites.fr\nETag: W/\"0fe52663d6745c922160384e13afe1e1\"\nCache-Control: max-age=0, private, must-revalidate\nX-Meta-Request-Version: 0.7.2\nX-Request-Id: 291fab6a-043b-4b9c-b4b9-3c7fc9c9453a\nX-Runtime: 0.194743< Transfer-Encoding: chunked\n* Connection #0 to host rdv-solidarites.fr left intact\n{\n  \"data\": {\n    \"id\":1,\n    \"deleted_at\":null,\n    \"email\":\"martine@demo.rdv-solidarites.fr\",\n    \"provider\":\"email\",\n    \"service_id\":1,\n    \"role\":\"admin\",\n    \"last_name\":\"VALIDAY\",\n    \"first_name\":\"Martine\",\n    \"uid\":\"martine@demo.rdv-solidarites.fr\",\n    \"email_original\":null,\n    \"allow_password_change\":false\n  }\n}\n* Closing connection 0\n```\n\nLes 3 headers essentiels pour l'authentification sont les suivants :\n\n```http\naccess-token: SFYBngO55ImjD1HOcv-ivQ\nclient: Z6EihQAY9NWsZByfZ47i_Q\nuid: martine@demo.rdv-solidarites.fr\n```\n\n- `access-token` : c'est le jeton d'accès qui vous a été attribué. Il a une durée de vie de 24h, après ça il vous faudra reproduire cette procédure pour en récupérer un nouveau.\n- `client` : un identifiant unique associé à l'appareil depuis lequel vous avez effectué la requête\n- `uid` : l'identifiant de l'agent dans l'API, égal à l'email de l'agent.\n\n**Ces 3 headers doivent être transmis avec chacune de vos requêtes successives à l'API**, peu importe la méthode HTTP.\n\n## Permissions\n\nLes rôles et permissions des agents sont les mêmes via l'API que depuis l'interface web.\n\nC'est à dire que les agents classiques ont accès à leur service uniquement, les agents du service secrétariat peuvent accéder aux agendas des agents des autres services, les agents admin ont accès à toute l'organisation, etc.\n\nPar défaut, les requêtes en lecture n'appliquent aucun filtre et retourneront toutes les ressources auxquelles a accès l'agent connecté. Par exemple si un agent admin fait une requête pour accéder à la liste des absences sans filtre, l'API retournera toutes les absences de tous les agents appartenant aux organisations dont fait partie cet agent admin, ce qui peut faire beaucoup.\n\n# Sérialisation\n\nL'API supporte uniquement le format JSON. Toutes les réponses envoyées par l'API contiendront le header `Content-Type: application/json` et leur contenu est présent dans le body dans un format JSON à désérialiser.\n\n# Pagination des réponses par listes\n\nTous les points de terminaison qui retournent des listes sont paginés. De manière générale, tout point de terminaison qui retourne une liste peut retourner une liste vide.\n\n## Paramètres\n\nLe paramètre (optionnel) `page` permet d'accéder à une page donnée. Sauf précision contraire dans la documentation d'un point de terminaison donné, on retrouve 100 éléments par page.\n\n## Résultats\n\nLa réponse contient en outre un objet meta qui indique le nombre total de pages et d’items, par exemple :\n\n```rb\n{\n  […],\n  \"meta\": {\n      \"current_page\": 1,\n      \"total_count\": 112,\n      \"total_pages\": 2\n  }\n}\n```\n\n# Rate limiting\n\nL'utilisation de l'API est limitée pour les points de terminaison sans authentification. Vous pouvez effectuer au maximum 50 appels par minutes. Si vous dépassez cette limite, une erreur 429 vous sera renvoyée et vous trouverez le temps que vous devez attendre avant de relancer une requête dans le header (`Retry-After`).\n\n# Codes de retour\n\nL'API est susceptible de retourner les codes suivants :\n\n| Code  | Nom                   | Description                                                                   |\n| ----- | --------------------- | ----------------------------------------------------------------------------- |\n| `200` | Success               | Succès                                                                        |\n| `204` | No Content            | Succès mais la réponse ne contient pas de données (exemple : suppression)     |\n| `400` | Bad Request           | La requête est invalide                                                       |\n| `401` | Unauthorized          | L'authentification a échoué                                                   |\n| `403` | Forbidden             | Droits insuffisants pour réaliser l'action demandée                           |\n| `404` | Not Found             | La ressource est introuvable                                                  |\n| `422` | Unprocessable Entity  | La donnée transmise est mal formattée                                         |\n| `429` | Too Many Requests     | Trop de requêtes ont été effectuées                                           |\n| `500` | Internal Server Error | Une erreur serveur produite (l'équipe technique est notifiée automatiquement) |\n\n# Erreurs\n\nEn cas d'erreur reconnue par le système (par exemple erreur 422), les champs suivants seront présents dans la réponse pour vous informer sur les problèmes :\n\n- `errors` : [ERREUR] : liste d'erreurs groupées par attribut problèmatique au format machine\n- `error_messages` : [ERREUR] : idem mais dans un format plus facilement lisible.\n\n# Principes fonctionnels\n\n- Les statuts des RDV et des participants.\n\nLe statut du RDV (status) est un statut général. **Il n'est pas représentatif des statuts individuels des usagers.**\n\n**Chaque participant au RDV a son propre statut de participation porté par l'association `rdvs_users` du RDV.**\n\nPour les RDV avec l'attribut collectif à false les statuts du/des participants et du RDV seront tous identiques. (dans l'exemple suivant : `seen`)\n\nIl est conseillé malgrés tout d'utiliser les statuts des participants (dans `rdvs_users`) quelque soit le type de rdv.\n\n```rb\n{\n  \"rdvs\": [\n    {\n      \"id\": 8,\n      \"collectif\": false,\n      \"status\": \"seen\",\n      \"rdvs_users\": [\n        {\n          \"id\": 8,\n          \"status\": \"seen\",\n          \"user\": {\n            \"id\": 10,\n            \"first_name\": \"Tristan\",\n            \"last_name\": \"LEROUX\",\n          }\n        },\n        {\n          \"id\": 9,\n          \"status\": \"seen\",\n          \"user\": {\n            \"id\": 11,\n            \"first_name\": \"Marie\",\n            \"last_name\": \"LEROUX\",\n          }\n        }\n      ],\n      \"users_count\": 2,\n    }\n  ],\n}\n```\n\nPour les RDV avec l'attribut collectif à true les statuts du/des participants peuvent être différents.\n\nIci, le RDV a un status `seen` mais les 3 participants ont des status de participation différents.\n\n- Tristan Leroux s'est présenté au RDV collectif : `seen`\n- Roger Lapin ne s'est pas présenté et n'a pas annulé : `noshow`\n- Marie Dupont a annulé sa venue : `excused`\n\n`users_count` représente le nombre d'inscrits au RDV en temps réél (Tous les statuts hors `revoked` et `excused`)\n\n```rb\n{\n  \"rdvs\": [\n    {\n      \"id\": 8,\n      \"collectif\": true,\n      \"status\": \"seen\",\n      \"rdvs_users\": [\n        {\n          \"id\": 8,\n          \"status\": \"seen\",\n          \"user\": {\n            \"id\": 10,\n            \"first_name\": \"Tristan\",\n            \"last_name\": \"LEROUX\",\n          }\n        },\n        {\n          \"id\": 9,\n          \"status\": \"noshow\",\n          \"user\": {\n            \"id\": 11,\n            \"first_name\": \"Roger\",\n            \"last_name\": \"LAPIN\",\n          }\n        },\n        {\n          \"id\": 7,\n          \"status\": \"excused\",\n          \"user\": {\n            \"id\": 12,\n            \"first_name\": \"Marie\",\n            \"last_name\": \"DUPONT\",\n          }\n        },\n      ],\n      \"users_count\": 2,\n    }\n  ],\n}\n```\n"
+    "description": "L'API de rdv-insertion vous permet d'inviter des personnes en insertion à prendre rdv à prendre rdv avec votre structure.\nQuand l'usager aura pris rendez-vous suite à son invitation, vous pouvez récupérer les informations du rdv via les webhooks (API sortante).\n\nToutes les fonctionnalités de rdv-insertion ne sont pas encore disponibles via l’API. Contactez-nous si vous avez besoin de fonctionnalités qui ne sont pas encore présentes.\n\n# Requêtes\n\nL'API adhère aux principes REST :\n\n- requêtes `GET` : lecture sans modification\n- requêtes `POST` : création de nouvelle ressource\n- requêtes `PATCH` : mise à jour d'une ressource existante\n- requêtes `DELETE` : suppression d'une ressource\n\nLes paramètres des requêtes `GET` doivent être envoyés via les query string de la requête.\n\nLes paramètres des requêtes `POST` doivent être transmis dans le corps de la requête sous un format JSON valide, et doivent contenir le header `Content-Type: application/json`.\n\n# Versionnage\n\nL'API est versionnée. La version actuelle est 1.0 (référencée comme v1 dans les points de terminaison).\n\n# Routes\n\nLes points de terminaison de l'API sont accessibles par une route de la forme : `https://<domain>/api/<version>/<endpoint>`.\n\nAvec :\n\n- `version` est la version de l'API\n- `endpoint` est le nom du point de terminaison\n\nPar exemple, on aura : `https://<domain>/api/v1/rdvs/:id`\n\nPour la version production, les requêtes doivent être adressées à https://www.rdv-insertion.fr.\n\nPour la version démo, les requêtes doivent être adressées à https://www.rdv-insertion-demo.fr.\n\n# Authentification\n\nLes points de terminaison sont réservés aux agents authentifiés, dans la limite de leur rôle au sein de l'application.\n\nComme sur l'interface web, l'authentification se fait via les identifiants rdv-solidarités. **Il est donc nécessaire pour l'authentification d'appeler un endpoint sur rdv-solidarités et non pas sur rdv-insertion**. Les modalités de cet endpoint sont décrits ci-dessous.\n\n## Headers d'authentification\n\nTous les agents peuvent utiliser l'API. Les requêtes faites sur l'API sont authentifiées grace à des tokens d'accès associés à chaque agent. Chaque action faite via l'API est donc attribuable à un agent.\n\nPour récupérer le token d'accès d'un agent il faut faire une première requête `POST` à l'url `https://www.rdv-solidarites.fr/api/v1/auth/sign_in` en passant en paramètres JSON l'email et le mot de passe de l'agent. Par exemple (avec HTTPie) :\n\n```httpie\nhttp --json POST 'https://www.rdv-solidarites.fr/api/v1/auth/sign_in' \\\n  email='amine.dhobb@beta.gouv.fr' password='123456'\n```\n\nEn cas de succès d'authentification, la réponse à cette requête contiendra dans le corps le détail de l'agent, et dans les headers les token d'accès à l'API. Par exemple :\n\n```http\nHTTP/1.1 200 OK\nX-Frame-Options: SAMEORIGIN\nX-XSS-Protection: 1; mode=block\nX-Content-Type-Options: nosniff\nX-Download-Options: noopen\nX-Permitted-Cross-Domain-Policies: none\nReferrer-Policy: strict-origin-when-cross-origin\nContent-Type: application/json; charset=utf-8\naccess-token: SFYBngO55ImjD1HOcv-ivQ< token-type: Bearer\nclient: Z6EihQAY9NWsZByfZ47i_Q< expiry: 1605600758\nuid: amine.dhobb@beta.gouv.fr\nETag: W/\"0fe52663d6745c922160384e13afe1e1\"\nCache-Control: max-age=0, private, must-revalidate\nX-Meta-Request-Version: 0.7.2\nX-Request-Id: 291fab6a-043b-4b9c-b4b9-3c7fc9c9453a\nX-Runtime: 0.194743< Transfer-Encoding: chunked\n* Connection #0 to host rdv-solidarites.fr left intact\n{\n  \"data\": {\n    \"email\": \"amine.dhobb@beta.gouv.fr\",\n    \"first_name\": \"Amine\",\n    \"last_name\": \"DHOBB\",\n    \"provider\": \"email\",\n    \"uid\": \"amine.dhobb@beta.gouv.fr\",\n    \"id\": 7,\n    \"deleted_at\": null,\n    \"service_id\": 4,\n    \"email_original\": null,\n    \"allow_password_change\": false,\n    \"rdv_notifications_level\": \"soon\",\n    \"unknown_past_rdv_count\": 171,\n    \"display_saturdays\": false,\n    \"display_cancelled_rdv\": true,\n    \"plage_ouverture_notification_level\": \"all\",\n    \"absence_notification_level\": \"all\",\n    \"external_id\": null,\n    \"calendar_uid\": null,\n    \"microsoft_graph_token\": null,\n    \"refresh_microsoft_graph_token\": null,\n    \"cnfs_secondary_email\": null,\n    \"outlook_disconnect_in_progress\": false,\n    \"account_deletion_warning_sent_at\": null\n  }\n}\n* Closing connection 0\n```\n\nLes 3 headers essentiels pour l'authentification sont les suivants :\n\n```http\naccess-token: SFYBngO55ImjD1HOcv-ivQ\nclient: Z6EihQAY9NWsZByfZ47i_Q\nuid: amine.dhobb@beta.gouv.fr\n```\n\n- `access-token` : c'est le jeton d'accès qui vous a été attribué. Il a une durée de vie de 24h, après ça il vous faudra reproduire cette procédure pour en récupérer un nouveau.\n- `client` : un identifiant unique associé à l'appareil depuis lequel vous avez effectué la requête\n- `uid` : l'identifiant de l'agent dans l'API, égal à l'email de l'agent.\n\n**Ces 3 headers doivent être transmis avec chacune de vos requêtes successives à l'API**, peu importe la méthode HTTP.\n\n## Permissions\n\nLes rôles et permissions des agents sont les mêmes via l'API que depuis l'interface web.\n\n# Sérialisation\n\nL'API supporte uniquement le format JSON. Toutes les réponses envoyées par l'API contiendront le header `Content-Type: application/json` et leur contenu est présent dans le body dans un format JSON à désérialiser.\n\n# Codes de retour\n\nL'API est susceptible de retourner les codes suivants :\n\n| Code  | Nom                   | Description                                                                   |\n| ----- | --------------------- | ----------------------------------------------------------------------------- |\n| `200` | Success               | Succès                                                                        |\n| `204` | No Content            | Succès mais la réponse ne contient pas de données (exemple : suppression)     |\n| `400` | Bad Request           | La requête est invalide                                                       |\n| `401` | Unauthorized          | L'authentification a échoué                                                   |\n| `403` | Forbidden             | Droits insuffisants pour réaliser l'action demandée                           |\n| `404` | Not Found             | La ressource est introuvable                                                  |\n| `422` | Unprocessable Entity  | La donnée transmise est mal formattée                                         |\n| `429` | Too Many Requests     | Trop de requêtes ont été effectuées                                           |\n| `500` | Internal Server Error | Une erreur serveur produite (l'équipe technique est notifiée automatiquement) |\n\n# Erreurs\n\nEn cas d'erreur reconnue par le système (par exemple erreur 422), les champs suivants seront présents dans la réponse pour vous informer sur les problèmes :\n\n- `errors` : [ERREUR] : liste d'erreurs groupées par attribut problèmatique au format machine.\n\n# Endpoints\n\nLes endpoints exposés par l'API se trouvent en bas de page. Pour chaque endpoint, vous trouverez en plus du schéma d'entrée et de sortie un exemple de payload envoyé à l'API et un exemple de réponse de l'API.\nLe fonctionnement des endpoints de création et invitation des usagers est explicité dans la partie suivante.\n\n# Création et invitations des usagers à prendre rdv\n\nIl y a 2 façons dinviter les usagers à prendre rdv:\n\n- En envoyant dans une seule requête une liste d'usager à inviter (endpoint `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/create_and_invite_many`). **La création des fiches usagers et l'envoi des invitatons se fera alors de manière asynchrone**.\n\n- En invitant une seule personne par requête (endpoint `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/create_and_invite`). **La création de la fiche usager et l'envoi des invitatons (mail et sms) se fera alors de manière synchrone**.\n\n**Pour ces 2 endpoints, une invitation par mail sera envoyée que si le mail de l'usager est présent, et une invitation par SMS est envoyée que si le téléphone de l'usager est renseigné**.\n\n## Paramètres de l'URL\n\n- `rdv_solidarites_organisation_id`: c'est l'ID de l'organisation sur RDV-Solidarités dans laquelle on veut créer et inviter l'usager. Ces IDs peuvent être récupérés en requêtant l'endpoint `GET https://www.rdv-insertion.fr/api/v1/departments/{number}`. Le format de réponse est détaillé au bas de cette page.\n\n## Paramètres dans le body de la requête\n\nLe schéma détaillé avec exemple se trouve en bas de page. Ci-dessous on explique à quoi correspondent les attributs des usagers:\n\n- `first_name`: STRING (requis): Prénom du bénéficiaire\n- `last_name`: STRING (requis): Nom du bénéficiaire\n- `title`: STRING (requis): Civilité du bénéficaire. Valeurs possibles: monsieur, madame.\n- `affiliation_number`: STRING (requis) : Numéro d'allocataire du bénéficaire.\n- `role`: STRING (requis) : Le rôle de la personne au sein du dossier de demande RSA. Valeurs possibles: demandeur, conjoint.\n- `email`: STRING (optionnel) : L'email du bénéficiaire. S'il n'est pas présent l'invitation par email ne sera pas envoyée.\n- `phone_number`: STRING (optionnel) : Le numéro de téléphone du bénéficiaire. S'il n'est pas présent l'invitation par SMS ne sera pas envoyée.\n- `birth_date`: STRING (optionnel) : Date de naissance du bénéficiaire au format DD/MM/YYYY\n- `nir` (optionnel) : NIR\n- `pole_emploi_id` (optionnel) : numéro d'identification Pole emploi\n- `rights_opening_date`: STRING (optionnel): Date de notification que l'allocataire est bénéficiaire du RSA (= date de réception du 1er flux bénéficiaire quotidien qui montre que l'allocataire est un nouvel entrant). Au format DD/MM/YYYY.\n- `address`: STRING (optionnel) : L'addresse de l'utilisateur. Cette addresse comprend le code postal et la ville.\n- `birth_name` : STRING (optionnel) : Le nom de naissance du bénéficiaire\n- `department_internal_id`: STRING (optionnel) : ID interne de la personne au sein du système d'information du département (cela peut être l'ID lié à l'éditeur comme l'ID de IODAS par exemple). Cet ID est nécessaire si l'on veut que RDV-Insertion notifie de la prise/annulation de RDV sur une API côté département ou éditeur.\n- `invitation`: OBJECT (optionnel): Contient les informations ci-dessous liés à l'invitation à prendre rdv:\n  - `rdv_solidarites_lieu_d`: INTEGER (optionnel): L'ID du lieu dans lequel l'on veut que le RDV ait lieu. S'il est précisé l'utilisateur sera invité directement à choisir un créneau sur ce lieu. Attention, il faut faire attention à ce qu'une plage d'ouverture pour le motif en question (voir attribut précédent) relie le motif au lieu en question. Ces valeurs peuvent être récupérérés en requêtant l'endpoint `GET https://www.rdv-insertion.fr/api/v1/departments/{number}`.\n  - `motif_category: OBJECT (optionnel):\n    - `name`: STRING: Le nom de la catégorie de motif pour laquelle on veut inviter l'allocataire. Il peut ne pas être précisé si l'organisation ne peut inviter que sur une seule catégorie. Ces valeurs peuvent être récupérérés en requêtant l'endpoint `GET https://www.rdv-insertion.fr/api/v1/departments/{number}`.\n\n## Idempotence\n\nCes 2 endpoints sont idempotents, ce qui veut dire que le fait de jouer ces requêtes plusieurs fois aura le même effet que de les jouer une seule fois. Plus précisément:\n\n- Si l'usager que l'on essaie de créer est déjà présent dans l'application, il ne sera pas créé une deuxième fois. Il sera mis à jour si les attributs passés dans la requête sont changés par rapport à ce qui est enregistré en base de données.\n- On ne renverra pas d'invitation à l'usager si une invitation a déjà été envoyée à l'usager il y a moins de 24 heures.\n\n## Création et invitation asynchrone d'une liste d'usagers\n\n- `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/create_and_invite_many`\n\nCet endpoint permet de créer et inviter jusqu'à **25** usagers en une seule requête. La création de la fiche usager et son invitation à prendre rendez-vous se fait de manière asynchrone. Une requête aboutissant à un succès ne signifie donc pas forcément que les usagers seront créés et invités (voir détails ci-dessous).\n\n### Réponse\n\nLors de l'envoi, nous allons vérifier que pour chaque usager les attributs requis sont présents et que tous les attributs passés sont au bon format (email, téléphone etc). Si c'est le cas la requête sera un succès. Cela ne veut pas dire que la création et l'invitation des allocataires et l'invitation ont été un succès car ces actions se feront de manière asynchrone.\n\n#### En cas de succès\n\nSi la requête est un succès, nous répondrons avec un statut 200 et un body en JSON notifiant le succès de la requête (voir détails du format de réponse en bas de page).\n\n#### En cas d'échec\n\nSi la requête est un échec (voir conditions plus haut), nous répondrons avec un statut 422 et un body en JSON contenant les erreurs de la requête, avec pour chaque entrée les erreurs (voir détails du format de réponse en bas de page).\n\n### Notifications asynchrones\n\nLors du processus asynchrone de création et des invitations des allocataires des erreurs peuvent avoir lieu, bien que la réponse à la requête ait été un succès. Il faut alors notifier l'organisation de ces échecs.\n\n#### En cas de problèmes à la création de l'allocataire\n\nEn cas d'échec de la création de l'utilisateur, un mail sera envoyé à la personne ayant fait la requête avec l'identité de l'utilisateur en question et les erreurs associées à sa création.\n\n![mail-notification](https://github.com/betagouv/rdv-insertion/blob/staging/docs/api/mail-notification.png)\n\n#### En cas de problèmes à l'invitation de l'allocataire\n\nS'il y a un problème lors de l'invitation d'un allocataire, l'organisation ne sera pas notifiée directement.\nPour voir si les personnes ont bien été invitées, on peut:\n\n- Aller sur l'interface web RDV-I et vérifier dans la liste que les personnes ont bien été invitées (les coches sont cochées pour chaque format d'invitation dans la liste des usagers)\n- Souscrire au webhook envoyé lorsqu'une invitation est envoyée. Les détails de ces webhooks sont explicités dans la partie webhooks ci-dessous.\n\n## Création et invitation synchrone d'un usager\n\n- `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/create_and_invite`\n\nCet endpoint permet de créer et inviter un seul usager à prendre rdv. Contrairement à l'endpoint permettant d'inviter une liste d'usager, la réponse est ici synchrone: La requête est un succès que si la personne a été créée et invitée.\n\nLes formats des réponses sont spécifiées en bas de page.\n\n# Webhooks (API de notifications)\n\nrdv-insertion peut notifier des évènements ayant lieu sur l'application dans votre système d’information à l’aide de webhooks.\n\nrdv-insertion peut notifier n'importe quel système d'information accessible en ligne lors de **modifications** (création, modification, suppression) sur les **RDV** et les **invitations**.\n\nAinsi, lorsqu'un rdv est créé, modifié ou supprimé sur rdv-insertion, nous avons la possiblité de vous envoyer une requête à un endpoint de votre côté avec en payload les informations du rdv.\n\nPour cela, ce système d'informations doit :\n\n- être accessible à une URL publique par exemple et accepter des requêtes HTTP POST à cette URL\n\n## Configuration\n\nPour pouvoir configurer un endpoint prêt à recevoir les webhooks de rdv-insertion, [vous devez prendre contact avec l'équipe rdv-insertion](mailto:rdv-insertion@beta.gouv.fr) et leur donner l'URL qui les recevra et convenir d'un token `secret` partagé.\n\n## Signatures des requêtes\n\nUn **secret partagé** est associé à chacune de ces URLs pour vous permettre de vérifier que nous sommes bien à l'origine de l'envoi d'information. La requête envoyée en HTTP POST contient un entête `X-Lapin-Signature` qui contient une signature SHA256 hexadécimale du corps de la requête.\n\nPar exemple, pour vérifier que la signature vient bien de notre application, cela donnerait en `ruby` :\n\n![webhook-signature-check-example](https://github.com/betagouv/rdv-insertion/blob/staging/docs/api/webhook-signature-check-example.png)\n\n## Format des données\n\nLe payload des requêtes est envoyés sont un format JSON. Ce payload contient deux attributs:\n\n- `data` : c'est le payload de la ressource au format JSON. Les payloads de chaque ressource sont disponibles en bas de page.\n- `meta` : un objet contenant les trois attributs suivants:\n  - `model` : Le nom de la ressource que l'on envoie. Pour les rdvs elle sera égale à `Rdv`\n  - `event` : l'évènement ayant déclenché l'envoi du webhook. Il a trois valeurs possibles: `created`, `updated` et `destroyed`\n  - `timestamp` : un string représentant le moment où le webhook est envoyé.\n\n## Exemple\n\nCi-dessous un exemple de payload envoyé lorsqu'un rdv est créé:\n\n```json\n{\n  \"data\": {\n    \"id\": 325,\n    \"starts_at\": \"2023-11-14T09:00:00.000+01:00\",\n    \"duration_in_min\": 25,\n    \"cancelled_at\": null,\n    \"address\": \"Die, 26150, 26, Drôme, Auvergne-Rhône-Alpes\",\n    \"uuid\": \"2bc2393b-bf2c-47f0-9f84-e30a6b067138\",\n    \"created_by\": \"agent\",\n    \"status\": \"unknown\",\n    \"users_count\": 1,\n    \"max_participants_count\": null,\n    \"rdv_solidarites_rdv_id\": 344,\n    \"agents\": [\n      {\n        \"id\": 2,\n        \"email\": \"amine.dhobb@beta.gouv.fr\",\n        \"first_name\": \"Amine\",\n        \"last_name\": \"DHOBB\",\n        \"rdv_solidarites_agent_id\": 7\n      }\n    ],\n    \"lieu\": {\n      \"rdv_solidarites_lieu_id\": 9,\n      \"name\": \"Batiment région Rhône-Alpes\",\n      \"address\": \"Die, 26150, 26, Drôme, Auvergne-Rhône-Alpes\",\n      \"phone_number\": \"0839230303\"\n    },\n    \"motif\": {\n      \"rdv_solidarites_motif_id\": 45,\n      \"name\": \"RSA Orientation : Convocation sur site\",\n      \"collectif\": false,\n      \"location_type\": \"public_office\",\n      \"follow_up\": false,\n      \"motif_category\": {\n        \"id\": 1,\n        \"short_name\": \"rsa_orientation\",\n        \"name\": \"RSA orientation\"\n      }\n    },\n    \"users\": [\n      {\n        \"id\": 722,\n        \"uid\": \"Nzg2NzY4NyAtIGRlbWFuZGV1cg==\",\n        \"affiliation_number\": \"7867687\",\n        \"role\": \"demandeur\",\n        \"created_at\": \"2023-07-26T12:19:08.522+02:00\",\n        \"department_internal_id\": null,\n        \"first_name\": \"Andreas\",\n        \"last_name\": \"Kopke\",\n        \"title\": \"monsieur\",\n        \"address\": \"165 rue saint maur 75011 Paris\",\n        \"phone_number\": \"+33664891033\",\n        \"email\": \"remi.betagouv+demo67576567@gmail.com\",\n        \"birth_date\": \"1987-12-20\",\n        \"rights_opening_date\": null,\n        \"birth_name\": null,\n        \"rdv_solidarites_user_id\": 468,\n        \"nir\": null,\n        \"pole_emploi_id\": null,\n        \"carnet_de_bord_carnet_id\": null\n      }\n    ],\n    \"organisation\": {\n      \"id\": 4,\n      \"name\": \"CD de DIE\",\n      \"email\": null,\n      \"phone_number\": \"01 01 01 01 01\",\n      \"department_number\": \"26\",\n      \"rdv_solidarites_organisation_id\": 29,\n      \"motif_categories\": [\n        {\n          \"id\": 1,\n          \"short_name\": \"rsa_orientation\",\n          \"name\": \"RSA orientation\"\n        },\n        {\n          \"id\": 2,\n          \"short_name\": \"rsa_accompagnement\",\n          \"name\": \"RSA accompagnement\"\n        },\n        {\n          \"id\": 4,\n          \"short_name\": \"rsa_cer_signature\",\n          \"name\": \"RSA signature CER\"\n        },\n        {\n          \"id\": 17,\n          \"short_name\": \"psychologue\",\n          \"name\": \"Psychologue\"\n        }\n      ]\n    }\n  },\n  \"meta\": {\n    \"model\": \"Rdv\",\n    \"event\": \"created\",\n    \"timestamp\": \"2023-11-13 19:53:07 +0100\"\n  }\n}\n```\n"
   },
   "components": {
     "securitySchemes": {
@@ -306,6 +306,82 @@
           "carnet_de_bord_carnet_id"
         ]
       },
+      "user_params": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "nullable": true
+          },
+          "affiliation_number": {
+            "type": "string",
+            "nullable": true
+          },
+          "birth_date": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "birth_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "first_name": {
+            "type": "string"
+          },
+          "last_name": {
+            "type": "string"
+          },
+          "phone_number": {
+            "type": "string",
+            "nullable": true
+          },
+          "department_internal_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "rights_opening_date": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "enum": [
+              "monsieur",
+              "madame"
+            ]
+          },
+          "role": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "demandeur",
+              "conjoint"
+            ]
+          },
+          "nir": {
+            "type": "string",
+            "nullable": true
+          },
+          "pole_emploi_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "carnet_de_bord_carnet_id": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "first_name",
+          "last_name",
+          "title"
+        ]
+      },
       "organisation_with_root": {
         "type": "object",
         "properties": {
@@ -577,6 +653,9 @@
       "error_unprocessable_entity": {
         "type": "object",
         "properties": {
+          "success": {
+            "type": "boolean"
+          },
           "errors": {
             "type": "array",
             "items": {
@@ -637,32 +716,6 @@
       }
     }
   },
-  "tags": [
-    {
-      "name": "Invitation",
-      "description": "Désigne une invitation à prendre rdv.\n             Elle est liée à un·e usager·ère, a un format (sms, mail ou postal), une catégorie de motif.\n             Elle est unique."
-    },
-    {
-      "name": "User",
-      "description": "Désigne le compte unique d'un·e usager·ère.\n            Il contient les informations de l'état civil ainsi que des informations\n            communes comme le NIR, l'ID interne au département."
-    },
-    {
-      "name": "Agent",
-      "description": "Désigne un·e agent·e. Un·e agent·e est lié·e à une ou plusieurs organisations."
-    },
-    {
-      "name": "RDV",
-      "description": "Désigne un rendez-vous.\n            Il contient des informations sur le rendez-vous lui-même, le ou les agent·es,\n            le ou les usager·ères, le lieu, le motif, l'organisation."
-    },
-    {
-      "name": "Motif",
-      "description": "Désigne le motif d'un rendez-vous.\n            Il contient des informations telles que le nom du motif, s'il est téléphonique,\n            sur place ou à domicile, ainsi que des détails annexes (collectif ou non, catégorie)."
-    },
-    {
-      "name": "Organisation",
-      "description": "Désigne une organisation. Une organisation contient des agent·es."
-    }
-  ],
   "servers": [
     {
       "url": "http://localhost:8000/",
@@ -682,7 +735,7 @@
       "get": {
         "summary": "Retrieves a department",
         "tags": [
-          "Rdv"
+          "Departement"
         ],
         "description": "Renvoie les organisations, lieux et motifs du département",
         "parameters": [
@@ -718,7 +771,7 @@
             "name": "uid",
             "in": "header",
             "description": "Identifiant d'accès (authentification)",
-            "example": "martine@demo.rdv-solidarites.fr",
+            "example": "amine.dhobb@beta.gouv.fr",
             "schema": {
               "type": "string"
             }
@@ -743,18 +796,18 @@
             "content": {
               "application/json": {
                 "examples": {
-                  "test_example": {
+                  "succès": {
                     "value": {
                       "department": {
-                        "id": 7198,
+                        "id": 9194,
                         "number": "13",
                         "capital": "Marseille",
                         "region": "Provence-Alpes-Côte d'Azur",
                         "organisations": [
                           {
-                            "id": 6260,
-                            "name": "Departement n°1",
-                            "email": "organisation1@rdv-insertion.fr",
+                            "id": 7734,
+                            "name": "Pôle Parcours",
+                            "email": "pole-parcours@departement13.fr",
                             "phone_number": "0101010101",
                             "department_number": "13",
                             "rdv_solidarites_organisation_id": 1,
@@ -769,7 +822,7 @@
                                 "location_type": "public_office",
                                 "follow_up": false,
                                 "motif_category": {
-                                  "id": 17161,
+                                  "id": 18021,
                                   "short_name": "rsa_orientation_1",
                                   "name": "RSA orientation"
                                 }
@@ -796,11 +849,11 @@
             }
           },
           "403": {
-            "description": "Renvoie 'forbidden' quand ",
+            "description": "Renvoie 'forbidden' quand l'agent n'a pas les droits pour effectuer cette action",
             "content": {
               "application/json": {
                 "examples": {
-                  "test_example": {
+                  "Renvoie 'forbidden' quand l'agent n'a pas les droits pour effectuer cette action": {
                     "value": {
                       "errors": [
                         "Votre compte ne vous permet pas d'effectuer cette action"
@@ -819,7 +872,7 @@
             "content": {
               "application/json": {
                 "examples": {
-                  "test_example": {
+                  "Renvoie 'unauthorized' quand l'authentification est impossible": {
                     "value": {
                       "errors": [
                         "Les identifiants de session RDV-Solidarités sont invalides"
@@ -838,7 +891,7 @@
             "content": {
               "application/json": {
                 "examples": {
-                  "test_example": {
+                  "Renvoie 'not_found' quand le rdv n'existe pas": {
                     "value": {
                       "not_found": "Department"
                     }
@@ -893,7 +946,7 @@
             "name": "uid",
             "in": "header",
             "description": "Identifiant d'accès (authentification)",
-            "example": "martine@demo.rdv-solidarites.fr",
+            "example": "amine.dhobb@beta.gouv.fr",
             "schema": {
               "type": "string"
             }
@@ -918,15 +971,15 @@
             "content": {
               "application/json": {
                 "examples": {
-                  "test_example": {
+                  "Renvoie le rdv": {
                     "value": {
                       "rdv": {
-                        "id": 942,
-                        "starts_at": "2023-10-23T01:12:47.568+02:00",
+                        "id": 1062,
+                        "starts_at": "2023-11-16T20:07:56.572+01:00",
                         "duration_in_min": 30,
                         "cancelled_at": null,
                         "address": "2O avenue de Ségur, 75007 Paris",
-                        "uuid": "63866a6f-34a5-4a2b-a511-f27f6d67d62b",
+                        "uuid": "5f88a066-dab6-4188-86c3-0e454ad5b76f",
                         "created_by": "user",
                         "status": "unknown",
                         "users_count": 0,
@@ -934,7 +987,7 @@
                         "rdv_solidarites_rdv_id": 2,
                         "agents": [
                           {
-                            "id": 1825,
+                            "id": 2657,
                             "email": "agent7@gouv.fr",
                             "first_name": "jane7",
                             "last_name": "doe7",
@@ -954,19 +1007,19 @@
                           "location_type": "public_office",
                           "follow_up": false,
                           "motif_category": {
-                            "id": 17167,
+                            "id": 18027,
                             "short_name": "rsa_orientation_7",
                             "name": "RSA orientation"
                           }
                         },
                         "users": [
                           {
-                            "id": 6259,
+                            "id": 7282,
                             "uid": "bnVtZXJvXzMgLSBjb25qb2ludA==",
                             "affiliation_number": "numero_3",
                             "role": "conjoint",
                             "created_at": "0024-12-02T22:22:00.000+00:09",
-                            "department_internal_id": "4061",
+                            "department_internal_id": "4059",
                             "first_name": "john3",
                             "last_name": "doe3",
                             "title": "monsieur",
@@ -983,9 +1036,9 @@
                           }
                         ],
                         "organisation": {
-                          "id": 6267,
-                          "name": "Departement n°8",
-                          "email": "organisation8@rdv-insertion.fr",
+                          "id": 7741,
+                          "name": "Departement n°4",
+                          "email": "organisation4@rdv-insertion.fr",
                           "phone_number": "0101010101",
                           "department_number": "4",
                           "rdv_solidarites_organisation_id": 8,
@@ -1004,11 +1057,11 @@
             }
           },
           "403": {
-            "description": "Renvoie 'forbidden' quand ",
+            "description": "Renvoie 'forbidden' quand l'agent n'a pas les droits pour effectuer cette action",
             "content": {
               "application/json": {
                 "examples": {
-                  "test_example": {
+                  "Renvoie 'forbidden' quand l'agent n'a pas les droits pour effectuer cette action": {
                     "value": {
                       "errors": [
                         "Votre compte ne vous permet pas d'effectuer cette action"
@@ -1027,7 +1080,7 @@
             "content": {
               "application/json": {
                 "examples": {
-                  "test_example": {
+                  "Renvoie 'unauthorized' quand l'authentification est impossible": {
                     "value": {
                       "errors": [
                         "Les identifiants de session RDV-Solidarités sont invalides"
@@ -1046,7 +1099,7 @@
             "content": {
               "application/json": {
                 "examples": {
-                  "test_example": {
+                  "Renvoie 'not_found' quand le rdv n'existe pas": {
                     "value": {
                       "not_found": "Rdv"
                     }
@@ -1065,7 +1118,7 @@
       "post": {
         "summary": "create and invite users",
         "tags": [
-          "Users"
+          "User"
         ],
         "description": "Créé et invite une liste d'usagers à prendre rdv.\n      La création et l'invitation se font de manière asynchrone.",
         "parameters": [
@@ -1101,7 +1154,7 @@
             "name": "uid",
             "in": "header",
             "description": "Identifiant d'accès (authentification)",
-            "example": "martine@demo.rdv-solidarites.fr",
+            "example": "amine.dhobb@beta.gouv.fr",
             "schema": {
               "type": "string"
             }
@@ -1120,56 +1173,13 @@
             ]
           }
         ],
-        "request_examples": [
-          {
-            "value": {
-              "users": [
-                {
-                  "first_name": "Didier",
-                  "last_name": "Drogba",
-                  "title": "monsieur",
-                  "affiliation_number": "10492390",
-                  "role": "demandeur",
-                  "email": "didier@drogba.com",
-                  "phone_number": "0782605941",
-                  "birth_date": "11/03/1978",
-                  "address": "13 rue de la République 13001 MARSEILLE",
-                  "department_internal_id": "11111444",
-                  "nir": "180768374859404"
-                },
-                {
-                  "first_name": "Dimitri",
-                  "last_name": "Payet",
-                  "title": "monsieur",
-                  "affiliation_number": "0782605941",
-                  "role": "conjoint",
-                  "email": "amine.dhobb+testapi2@gmail.com",
-                  "phone_number": "0782605941",
-                  "birth_date": "29/03/1987",
-                  "rights_opening_date": "15/11/2021",
-                  "address": "5 Avenue du Moulin des Baux, 13260 Cassis",
-                  "department_internal_id": "22221111",
-                  "pole_emploi_id": "22233333",
-                  "nir": "180428848848853",
-                  "invitation": {
-                    "motif_category": {
-                      "name": "RSA orientation"
-                    }
-                  }
-                }
-              ]
-            },
-            "name": "request_example_1",
-            "summary": "A request example"
-          }
-        ],
         "responses": {
           "200": {
             "description": "succès",
             "content": {
               "application/json": {
                 "examples": {
-                  "test_example": {
+                  "succès": {
                     "value": {
                       "success": true
                     }
@@ -1182,11 +1192,11 @@
             }
           },
           "403": {
-            "description": "Renvoie 'forbidden' quand ",
+            "description": "Renvoie 'forbidden' quand l'agent n'a pas les droits pour effectuer cette action",
             "content": {
               "application/json": {
                 "examples": {
-                  "test_example": {
+                  "Renvoie 'forbidden' quand l'agent n'a pas les droits pour effectuer cette action": {
                     "value": {
                       "errors": [
                         "Votre compte ne vous permet pas d'effectuer cette action"
@@ -1205,7 +1215,7 @@
             "content": {
               "application/json": {
                 "examples": {
-                  "test_example": {
+                  "Renvoie 'unauthorized' quand l'authentification est impossible": {
                     "value": {
                       "errors": [
                         "Les identifiants de session RDV-Solidarités sont invalides"
@@ -1220,11 +1230,11 @@
             }
           },
           "404": {
-            "description": "Renvoie 'not_found' quand le rdv n'existe pas",
+            "description": "Renvoie 'not_found' quand l'organisation n'existe pas",
             "content": {
               "application/json": {
                 "examples": {
-                  "test_example": {
+                  "Renvoie 'not_found' quand l'organisation n'existe pas": {
                     "value": {
                       "not_found": "Organisation"
                     }
@@ -1241,7 +1251,33 @@
             "content": {
               "application/json": {
                 "examples": {
-                  "test_example": {
+                  "Renvoie 'unprocessable_entity' quand quand les paramètres sont incomplets": {
+                    "value": {
+                      "success": false,
+                      "errors": [
+                        {
+                          "error_details": "Prénom doit être rempli(e)",
+                          "first_name": "",
+                          "last_name": "Drogba",
+                          "index": 0
+                        }
+                      ]
+                    }
+                  },
+                  "Renvoie 'unprocessable_entity' quand quand les paramètres sont invalide": {
+                    "value": {
+                      "success": false,
+                      "errors": [
+                        {
+                          "error_details": "Email n'est pas valide",
+                          "first_name": "Didier",
+                          "last_name": "Drogba",
+                          "index": 0
+                        }
+                      ]
+                    }
+                  },
+                  "Renvoie 'unprocessable_entity' quand quand + de 25 usagers sont envoyés": {
                     "value": {
                       "success": false,
                       "errors": [
@@ -1268,7 +1304,7 @@
                   "users": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/user",
+                      "$ref": "#/components/schemas/user_params",
                       "invitation": {
                         "type": "object",
                         "nullable": true,
@@ -1293,6 +1329,645 @@
                   "required": [
                     "users"
                   ]
+                }
+              },
+              "examples": {
+                "succes": {
+                  "summary": "succès",
+                  "value": {
+                    "users": [
+                      {
+                        "first_name": "Didier",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "didier@drogba.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180421148794259"
+                      },
+                      {
+                        "first_name": "Dimitri",
+                        "last_name": "Payet",
+                        "title": "monsieur",
+                        "affiliation_number": "0782605941",
+                        "role": "conjoint",
+                        "email": "amine.dhobb+testapi2@gmail.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "29/03/1987",
+                        "rights_opening_date": "15/11/2021",
+                        "address": "5 Avenue du Moulin des Baux, 13260 Cassis",
+                        "department_internal_id": "22221111",
+                        "pole_emploi_id": "22233333",
+                        "nir": "180332226951586",
+                        "invitation": {
+                          "motif_category": {
+                            "name": "RSA orientation"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                "renvoie_forbidden_quand_l_agent_n_a_pas_les_droits_pour_effectuer_cette_action": {
+                  "summary": "Renvoie 'forbidden' quand l'agent n'a pas les droits pour effectuer cette action",
+                  "value": {
+                    "users": [
+                      {
+                        "first_name": "Didier",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "didier@drogba.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180739878357473"
+                      },
+                      {
+                        "first_name": "Dimitri",
+                        "last_name": "Payet",
+                        "title": "monsieur",
+                        "affiliation_number": "0782605941",
+                        "role": "conjoint",
+                        "email": "amine.dhobb+testapi2@gmail.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "29/03/1987",
+                        "rights_opening_date": "15/11/2021",
+                        "address": "5 Avenue du Moulin des Baux, 13260 Cassis",
+                        "department_internal_id": "22221111",
+                        "pole_emploi_id": "22233333",
+                        "nir": "180785625677914",
+                        "invitation": {
+                          "motif_category": {
+                            "name": "RSA orientation"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                "renvoie_unauthorized_quand_l_authentification_est_impossible": {
+                  "summary": "Renvoie 'unauthorized' quand l'authentification est impossible",
+                  "value": {
+                    "users": [
+                      {
+                        "first_name": "Didier",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "didier@drogba.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180913947299202"
+                      },
+                      {
+                        "first_name": "Dimitri",
+                        "last_name": "Payet",
+                        "title": "monsieur",
+                        "affiliation_number": "0782605941",
+                        "role": "conjoint",
+                        "email": "amine.dhobb+testapi2@gmail.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "29/03/1987",
+                        "rights_opening_date": "15/11/2021",
+                        "address": "5 Avenue du Moulin des Baux, 13260 Cassis",
+                        "department_internal_id": "22221111",
+                        "pole_emploi_id": "22233333",
+                        "nir": "180215751873982",
+                        "invitation": {
+                          "motif_category": {
+                            "name": "RSA orientation"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                "renvoie_not_found_quand_l_organisation_n_existe_pas": {
+                  "summary": "Renvoie 'not_found' quand l'organisation n'existe pas",
+                  "value": {
+                    "users": [
+                      {
+                        "first_name": "Didier",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "didier@drogba.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180378273673811"
+                      },
+                      {
+                        "first_name": "Dimitri",
+                        "last_name": "Payet",
+                        "title": "monsieur",
+                        "affiliation_number": "0782605941",
+                        "role": "conjoint",
+                        "email": "amine.dhobb+testapi2@gmail.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "29/03/1987",
+                        "rights_opening_date": "15/11/2021",
+                        "address": "5 Avenue du Moulin des Baux, 13260 Cassis",
+                        "department_internal_id": "22221111",
+                        "pole_emploi_id": "22233333",
+                        "nir": "180748645161748",
+                        "invitation": {
+                          "motif_category": {
+                            "name": "RSA orientation"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                "renvoie_unprocessable_entity_quand_quand_les_parametres_sont_incomplets": {
+                  "summary": "Renvoie 'unprocessable_entity' quand quand les paramètres sont incomplets",
+                  "value": {
+                    "users": [
+                      {
+                        "first_name": "",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "didier@drogba.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180469117625922"
+                      },
+                      {
+                        "first_name": "Dimitri",
+                        "last_name": "Payet",
+                        "title": "monsieur",
+                        "affiliation_number": "0782605941",
+                        "role": "conjoint",
+                        "email": "amine.dhobb+testapi2@gmail.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "29/03/1987",
+                        "rights_opening_date": "15/11/2021",
+                        "address": "5 Avenue du Moulin des Baux, 13260 Cassis",
+                        "department_internal_id": "22221111",
+                        "pole_emploi_id": "22233333",
+                        "nir": "180494635111262",
+                        "invitation": {
+                          "motif_category": {
+                            "name": "RSA orientation"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                "renvoie_unprocessable_entity_quand_quand_les_parametres_sont_invalide": {
+                  "summary": "Renvoie 'unprocessable_entity' quand quand les paramètres sont invalide",
+                  "value": {
+                    "users": [
+                      {
+                        "first_name": "Didier",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "invalid@email",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180268747676108"
+                      },
+                      {
+                        "first_name": "Dimitri",
+                        "last_name": "Payet",
+                        "title": "monsieur",
+                        "affiliation_number": "0782605941",
+                        "role": "conjoint",
+                        "email": "amine.dhobb+testapi2@gmail.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "29/03/1987",
+                        "rights_opening_date": "15/11/2021",
+                        "address": "5 Avenue du Moulin des Baux, 13260 Cassis",
+                        "department_internal_id": "22221111",
+                        "pole_emploi_id": "22233333",
+                        "nir": "180552347187901",
+                        "invitation": {
+                          "motif_category": {
+                            "name": "RSA orientation"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                "renvoie_unprocessable_entity_quand_quand_de_25_usagers_sont_envoyes": {
+                  "summary": "Renvoie 'unprocessable_entity' quand quand + de 25 usagers sont envoyés",
+                  "value": {
+                    "users": [
+                      {
+                        "first_name": "Didier",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "didier@drogba.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180831728311234"
+                      },
+                      {
+                        "first_name": "Didier",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "didier@drogba.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180831728311234"
+                      },
+                      {
+                        "first_name": "Didier",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "didier@drogba.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180831728311234"
+                      },
+                      {
+                        "first_name": "Didier",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "didier@drogba.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180831728311234"
+                      },
+                      {
+                        "first_name": "Didier",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "didier@drogba.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180831728311234"
+                      },
+                      {
+                        "first_name": "Didier",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "didier@drogba.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180831728311234"
+                      },
+                      {
+                        "first_name": "Didier",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "didier@drogba.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180831728311234"
+                      },
+                      {
+                        "first_name": "Didier",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "didier@drogba.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180831728311234"
+                      },
+                      {
+                        "first_name": "Didier",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "didier@drogba.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180831728311234"
+                      },
+                      {
+                        "first_name": "Didier",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "didier@drogba.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180831728311234"
+                      },
+                      {
+                        "first_name": "Didier",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "didier@drogba.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180831728311234"
+                      },
+                      {
+                        "first_name": "Didier",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "didier@drogba.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180831728311234"
+                      },
+                      {
+                        "first_name": "Didier",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "didier@drogba.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180831728311234"
+                      },
+                      {
+                        "first_name": "Didier",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "didier@drogba.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180831728311234"
+                      },
+                      {
+                        "first_name": "Didier",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "didier@drogba.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180831728311234"
+                      },
+                      {
+                        "first_name": "Didier",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "didier@drogba.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180831728311234"
+                      },
+                      {
+                        "first_name": "Didier",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "didier@drogba.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180831728311234"
+                      },
+                      {
+                        "first_name": "Didier",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "didier@drogba.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180831728311234"
+                      },
+                      {
+                        "first_name": "Didier",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "didier@drogba.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180831728311234"
+                      },
+                      {
+                        "first_name": "Didier",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "didier@drogba.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180831728311234"
+                      },
+                      {
+                        "first_name": "Didier",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "didier@drogba.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180831728311234"
+                      },
+                      {
+                        "first_name": "Didier",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "didier@drogba.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180831728311234"
+                      },
+                      {
+                        "first_name": "Didier",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "didier@drogba.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180831728311234"
+                      },
+                      {
+                        "first_name": "Didier",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "didier@drogba.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180831728311234"
+                      },
+                      {
+                        "first_name": "Didier",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "didier@drogba.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180831728311234"
+                      },
+                      {
+                        "first_name": "Didier",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "didier@drogba.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180831728311234"
+                      },
+                      {
+                        "first_name": "Didier",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "didier@drogba.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180831728311234"
+                      },
+                      {
+                        "first_name": "Didier",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "didier@drogba.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180831728311234"
+                      },
+                      {
+                        "first_name": "Didier",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "didier@drogba.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180831728311234"
+                      },
+                      {
+                        "first_name": "Didier",
+                        "last_name": "Drogba",
+                        "title": "monsieur",
+                        "affiliation_number": "10492390",
+                        "role": "demandeur",
+                        "email": "didier@drogba.com",
+                        "phone_number": "0782605941",
+                        "birth_date": "11/03/1978",
+                        "address": "13 rue de la République 13001 MARSEILLE",
+                        "department_internal_id": "11111444",
+                        "nir": "180831728311234"
+                      }
+                    ]
+                  }
                 }
               }
             }
@@ -1343,7 +2018,7 @@
             "name": "uid",
             "in": "header",
             "description": "Identifiant d'accès (authentification)",
-            "example": "martine@demo.rdv-solidarites.fr",
+            "example": "amine.dhobb@beta.gouv.fr",
             "schema": {
               "type": "string"
             }
@@ -1362,43 +2037,17 @@
             ]
           }
         ],
-        "request_examples": [
-          {
-            "value": {
-              "user": {
-                "first_name": "Didier",
-                "last_name": "Drogba",
-                "title": "monsieur",
-                "affiliation_number": "10492390",
-                "role": "demandeur",
-                "email": "didier@drogba.com",
-                "phone_number": "0782605941",
-                "birth_date": "11/03/1978",
-                "address": "13 rue de la République 13001 MARSEILLE",
-                "department_internal_id": "11111444",
-                "nir": "180212929958197",
-                "invitation": {
-                  "motif_category": {
-                    "name": "RSA orientation"
-                  }
-                }
-              }
-            },
-            "name": "request_example_1",
-            "summary": "A request example"
-          }
-        ],
         "responses": {
           "200": {
             "description": "succès",
             "content": {
               "application/json": {
                 "examples": {
-                  "test_example": {
+                  "succès": {
                     "value": {
                       "success": true,
                       "user": {
-                        "id": 6267,
+                        "id": 7290,
                         "uid": "MTA0OTIzOTAgLSBkZW1hbmRldXI=",
                         "affiliation_number": "10492390",
                         "role": "demandeur",
@@ -1414,32 +2063,32 @@
                         "rights_opening_date": null,
                         "birth_name": null,
                         "rdv_solidarites_user_id": 11,
-                        "nir": "180212929958197",
+                        "nir": "180652246377151",
                         "pole_emploi_id": null,
                         "carnet_de_bord_carnet_id": null
                       },
                       "invitations": [
                         {
-                          "id": 1354,
+                          "id": 1876,
                           "format": "sms",
-                          "sent_at": "2023-10-20T01:12:48.721+02:00",
+                          "sent_at": "2023-11-13T20:07:57.257+01:00",
                           "clicked": false,
                           "rdv_with_referents": false,
                           "motif_category": {
-                            "id": 17176,
+                            "id": 18036,
                             "short_name": "rsa_orientation_16",
                             "name": "RSA orientation"
                           }
                         },
                         {
-                          "id": 1354,
-                          "format": "sms",
-                          "sent_at": "2023-10-20T01:12:48.721+02:00",
+                          "id": 1875,
+                          "format": "email",
+                          "sent_at": "2023-11-13T20:07:57.222+01:00",
                           "clicked": false,
                           "rdv_with_referents": false,
                           "motif_category": {
-                            "id": 17176,
-                            "short_name": "rsa_orientation_16",
+                            "id": 18035,
+                            "short_name": "rsa_orientation_15",
                             "name": "RSA orientation"
                           }
                         }
@@ -1474,11 +2123,11 @@
             }
           },
           "403": {
-            "description": "Renvoie 'forbidden' quand ",
+            "description": "Renvoie 'forbidden' quand l'agent n'a pas les droits pour effectuer cette action",
             "content": {
               "application/json": {
                 "examples": {
-                  "test_example": {
+                  "Renvoie 'forbidden' quand l'agent n'a pas les droits pour effectuer cette action": {
                     "value": {
                       "errors": [
                         "Votre compte ne vous permet pas d'effectuer cette action"
@@ -1497,7 +2146,7 @@
             "content": {
               "application/json": {
                 "examples": {
-                  "test_example": {
+                  "Renvoie 'unauthorized' quand l'authentification est impossible": {
                     "value": {
                       "errors": [
                         "Les identifiants de session RDV-Solidarités sont invalides"
@@ -1512,11 +2161,11 @@
             }
           },
           "404": {
-            "description": "Renvoie 'not_found' quand le rdv n'existe pas",
+            "description": "Renvoie 'not_found' quand l'organisation n'existe pas",
             "content": {
               "application/json": {
                 "examples": {
-                  "test_example": {
+                  "Renvoie 'not_found' quand l'organisation n'existe pas": {
                     "value": {
                       "not_found": "Organisation"
                     }
@@ -1529,19 +2178,53 @@
             }
           },
           "422": {
-            "description": "Renvoie 'unprocessable_entity' quand quand une invitation ne peut pas être envoyée",
+            "description": "Renvoie 'unprocessable_entity' quand une invitation ne peut pas être envoyée",
             "content": {
               "application/json": {
                 "examples": {
-                  "test_example": {
+                  "Renvoie 'unprocessable_entity' quand les paramètres sont incomplets": {
                     "value": {
                       "success": false,
                       "errors": [
                         {
-                          "error_details": "Erreur en envoyant l'invitation par sms: l'invitation par sms n'a pas pu être délivrée"
+                          "error_details": "Prénom doit être rempli(e)",
+                          "first_name": "",
+                          "last_name": "Drogba"
+                        }
+                      ]
+                    }
+                  },
+                  "Renvoie 'unprocessable_entity' quand les paramètres sont invalide": {
+                    "value": {
+                      "success": false,
+                      "errors": [
+                        {
+                          "error_details": "Email n'est pas valide",
+                          "first_name": "Didier",
+                          "last_name": "Drogba"
+                        }
+                      ]
+                    }
+                  },
+                  "Renvoie 'unprocessable_entity' quand l'usager ne peut pas être créé": {
+                    "value": {
+                      "success": false,
+                      "errors": [
+                        {
+                          "error_details": "Impossible de créer l'usager: L'usager n'a pas pu être créé"
+                        }
+                      ]
+                    }
+                  },
+                  "Renvoie 'unprocessable_entity' quand une invitation ne peut pas être envoyée": {
+                    "value": {
+                      "success": false,
+                      "errors": [
+                        {
+                          "error_details": "Erreur en envoyant l'invitation par sms: l'invitation n'a pas pu être délivrée"
                         },
                         {
-                          "error_details": "Erreur en envoyant l'invitation par email: l'invitation par sms n'a pas pu être délivrée"
+                          "error_details": "Erreur en envoyant l'invitation par email: l'invitation n'a pas pu être délivrée"
                         }
                       ]
                     }
@@ -1553,6 +2236,229 @@
               }
             }
           }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user": {
+                    "$ref": "#/components/schemas/user_params"
+                  },
+                  "invitation": {
+                    "type": "object",
+                    "nullable": true,
+                    "properties": {
+                      "rdv_solidarites_lieu_id": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "motif_category": {
+                        "type": "object",
+                        "nullable": true,
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "users"
+                  ]
+                }
+              },
+              "examples": {
+                "succes": {
+                  "summary": "succès",
+                  "value": {
+                    "user": {
+                      "first_name": "Didier",
+                      "last_name": "Drogba",
+                      "title": "monsieur",
+                      "affiliation_number": "10492390",
+                      "role": "demandeur",
+                      "email": "didier@drogba.com",
+                      "phone_number": "0782605941",
+                      "birth_date": "11/03/1978",
+                      "address": "13 rue de la République 13001 MARSEILLE",
+                      "department_internal_id": "11111444",
+                      "nir": "180652246377151",
+                      "invitation": {
+                        "motif_category": {
+                          "name": "RSA orientation"
+                        }
+                      }
+                    }
+                  }
+                },
+                "renvoie_forbidden_quand_l_agent_n_a_pas_les_droits_pour_effectuer_cette_action": {
+                  "summary": "Renvoie 'forbidden' quand l'agent n'a pas les droits pour effectuer cette action",
+                  "value": {
+                    "user": {
+                      "first_name": "Didier",
+                      "last_name": "Drogba",
+                      "title": "monsieur",
+                      "affiliation_number": "10492390",
+                      "role": "demandeur",
+                      "email": "didier@drogba.com",
+                      "phone_number": "0782605941",
+                      "birth_date": "11/03/1978",
+                      "address": "13 rue de la République 13001 MARSEILLE",
+                      "department_internal_id": "11111444",
+                      "nir": "180195368862225",
+                      "invitation": {
+                        "motif_category": {
+                          "name": "RSA orientation"
+                        }
+                      }
+                    }
+                  }
+                },
+                "renvoie_unauthorized_quand_l_authentification_est_impossible": {
+                  "summary": "Renvoie 'unauthorized' quand l'authentification est impossible",
+                  "value": {
+                    "user": {
+                      "first_name": "Didier",
+                      "last_name": "Drogba",
+                      "title": "monsieur",
+                      "affiliation_number": "10492390",
+                      "role": "demandeur",
+                      "email": "didier@drogba.com",
+                      "phone_number": "0782605941",
+                      "birth_date": "11/03/1978",
+                      "address": "13 rue de la République 13001 MARSEILLE",
+                      "department_internal_id": "11111444",
+                      "nir": "180998731124447",
+                      "invitation": {
+                        "motif_category": {
+                          "name": "RSA orientation"
+                        }
+                      }
+                    }
+                  }
+                },
+                "renvoie_not_found_quand_l_organisation_n_existe_pas": {
+                  "summary": "Renvoie 'not_found' quand l'organisation n'existe pas",
+                  "value": {
+                    "user": {
+                      "first_name": "Didier",
+                      "last_name": "Drogba",
+                      "title": "monsieur",
+                      "affiliation_number": "10492390",
+                      "role": "demandeur",
+                      "email": "didier@drogba.com",
+                      "phone_number": "0782605941",
+                      "birth_date": "11/03/1978",
+                      "address": "13 rue de la République 13001 MARSEILLE",
+                      "department_internal_id": "11111444",
+                      "nir": "180145769827281",
+                      "invitation": {
+                        "motif_category": {
+                          "name": "RSA orientation"
+                        }
+                      }
+                    }
+                  }
+                },
+                "renvoie_unprocessable_entity_quand_les_parametres_sont_incomplets": {
+                  "summary": "Renvoie 'unprocessable_entity' quand les paramètres sont incomplets",
+                  "value": {
+                    "user": {
+                      "first_name": "",
+                      "last_name": "Drogba",
+                      "title": "monsieur",
+                      "affiliation_number": "10492390",
+                      "role": "demandeur",
+                      "email": "didier@drogba.com",
+                      "phone_number": "0782605941",
+                      "birth_date": "11/03/1978",
+                      "address": "13 rue de la République 13001 MARSEILLE",
+                      "department_internal_id": "11111444",
+                      "nir": "180283123214876",
+                      "invitation": {
+                        "motif_category": {
+                          "name": "RSA orientation"
+                        }
+                      }
+                    }
+                  }
+                },
+                "renvoie_unprocessable_entity_quand_les_parametres_sont_invalide": {
+                  "summary": "Renvoie 'unprocessable_entity' quand les paramètres sont invalide",
+                  "value": {
+                    "user": {
+                      "first_name": "Didier",
+                      "last_name": "Drogba",
+                      "title": "monsieur",
+                      "affiliation_number": "10492390",
+                      "role": "demandeur",
+                      "email": "invalid@email",
+                      "phone_number": "0782605941",
+                      "birth_date": "11/03/1978",
+                      "address": "13 rue de la République 13001 MARSEILLE",
+                      "department_internal_id": "11111444",
+                      "nir": "180443759717260",
+                      "invitation": {
+                        "motif_category": {
+                          "name": "RSA orientation"
+                        }
+                      }
+                    }
+                  }
+                },
+                "renvoie_unprocessable_entity_quand_l_usager_ne_peut_pas_etre_cree": {
+                  "summary": "Renvoie 'unprocessable_entity' quand l'usager ne peut pas être créé",
+                  "value": {
+                    "user": {
+                      "first_name": "Didier",
+                      "last_name": "Drogba",
+                      "title": "monsieur",
+                      "affiliation_number": "10492390",
+                      "role": "demandeur",
+                      "email": "didier@drogba.com",
+                      "phone_number": "0782605941",
+                      "birth_date": "11/03/1978",
+                      "address": "13 rue de la République 13001 MARSEILLE",
+                      "department_internal_id": "11111444",
+                      "nir": "180816876782972",
+                      "invitation": {
+                        "motif_category": {
+                          "name": "RSA orientation"
+                        }
+                      }
+                    }
+                  }
+                },
+                "renvoie_unprocessable_entity_quand_une_invitation_ne_peut_pas_etre_envoyee": {
+                  "summary": "Renvoie 'unprocessable_entity' quand une invitation ne peut pas être envoyée",
+                  "value": {
+                    "user": {
+                      "first_name": "Didier",
+                      "last_name": "Drogba",
+                      "title": "monsieur",
+                      "affiliation_number": "10492390",
+                      "role": "demandeur",
+                      "email": "didier@drogba.com",
+                      "phone_number": "0782605941",
+                      "birth_date": "11/03/1978",
+                      "address": "13 rue de la République 13001 MARSEILLE",
+                      "department_internal_id": "11111444",
+                      "nir": "180653888791247",
+                      "invitation": {
+                        "motif_category": {
+                          "name": "RSA orientation"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "required": true
         }
       }
     }

@@ -1,17 +1,25 @@
 module ApiSpecHelper
   def with_examples
     after do |example|
-      content = example.metadata[:response][:content] || {}
-      example_spec = {
+      example.metadata[:response][:content] = {
         "application/json" => {
           examples: {
-            test_example: {
+            example.metadata[:example_group][:description] => {
               value: JSON.parse(response.body, symbolize_names: true)
             }
           }
         }
       }
-      example.metadata[:response][:content] = content.deep_merge(example_spec)
+
+      if request.body.string.present?
+        example.metadata[:operation][:request_examples] ||= []
+        request_example = {
+          value: JSON.parse(request.body.string, symbolize_names: true),
+          name: example.metadata[:response][:description].parameterize.underscore,
+          summary: example.metadata[:response][:description]
+        }
+        example.metadata[:operation][:request_examples] << request_example
+      end
     end
   end
 
@@ -38,7 +46,7 @@ module ApiSpecHelper
     )
     parameter(
       name: "uid", in: :header, type: :string,
-      description: "Identifiant d'accès (authentification)", example: "martine@demo.rdv-solidarites.fr"
+      description: "Identifiant d'accès (authentification)", example: "amine.dhobb@beta.gouv.fr"
     )
 
     let(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }

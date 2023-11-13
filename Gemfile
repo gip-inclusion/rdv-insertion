@@ -45,11 +45,7 @@ gem "with_advisory_lock"
 gem "premailer-rails"
 
 # API documentation
-
-# A Rails Engine that exposes OpenAPI (formerly called Swagger) files as JSON endpoints
-gem "rswag-api"
-# A Rails Engine that includes swagger-ui and powers it from configured OpenAPI (formerly named Swagger) endpoints
-gem "rswag-ui"
+gem "rswag"
 
 # Send SMS & emails with Brevo
 gem "sib-api-v3-sdk"
@@ -111,7 +107,7 @@ group :development, :test do
   gem "rubocop-rspec"
   gem "prosopite"
   gem "pg_query"
-  gem 'rswag-specs'
+  # gem 'rswag-specs'
 end
 
 group :development do

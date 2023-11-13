@@ -5,7 +5,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
 
   path "api/v1/organisations/{rdv_solidarites_organisation_id}/users/create_and_invite_many" do
     post "create and invite users" do
-      tags "Users"
+      tags "User"
       consumes "application/json"
       produces "application/json"
       description "Créé et invite une liste d'usagers à prendre rdv.
@@ -21,7 +21,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
           users: {
             type: "array",
             items: {
-              "$ref" => "#/components/schemas/user",
+              "$ref" => "#/components/schemas/user_params",
               invitation: {
                 type: "object",
                 nullable: true,
@@ -88,7 +88,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
       before { allow(CreateAndInviteUserJob).to receive(:perform_async) }
       with_authentication
 
-      response 200, "succès", use_as_request_example: true do
+      response 200, "succès" do
         schema "$ref" => "#/components/schemas/success_response"
 
         run_test! do
@@ -118,7 +118,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
 
       it_behaves_like "an endpoint that returns 401 - unauthorized"
 
-      it_behaves_like "an endpoint that returns 404 - not found", "le rdv n'existe pas" do
+      it_behaves_like "an endpoint that returns 404 - not found", "l'organisation n'existe pas" do
         let!(:organisation) { create(:organisation, rdv_solidarites_organisation_id: "some-other-id") }
       end
 
@@ -150,25 +150,20 @@ describe "Users API", swagger_doc: "v1/api.json" do
       description "Créé et invite une liste d'usagers à prendre rdv.
       La création et l'invitation se font de manière synchrone."
 
-      parameter name: :user_params, in: :body, required: true, properties: {
+      parameter name: :user_params, in: :body, required: true, schema: {
         type: "object",
         properties: {
-          user: {
+          user: { "$ref" => "#/components/schemas/user_params" },
+          invitation: {
             type: "object",
+            nullable: true,
             properties: {
-              "$ref" => "#/components/schemas/user",
-              invitation: {
+              rdv_solidarites_lieu_id: { type: "string", nullable: true },
+              motif_category: {
                 type: "object",
                 nullable: true,
                 properties: {
-                  rdv_solidarites_lieu_id: { type: "string", nullable: true },
-                  motif_category: {
-                    type: "object",
-                    nullable: true,
-                    properties: {
-                      name: { type: "string" }
-                    }
-                  }
+                  name: { type: "string" }
                 }
               }
             }
@@ -240,7 +235,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
 
       with_authentication
 
-      response 200, "succès", use_as_request_example: true do
+      response 200, "succès" do
         schema type: "object",
                properties: {
                  success: { type: "boolean" },
@@ -264,29 +259,29 @@ describe "Users API", swagger_doc: "v1/api.json" do
 
       it_behaves_like "an endpoint that returns 401 - unauthorized"
 
-      it_behaves_like "an endpoint that returns 404 - not found", "le rdv n'existe pas" do
+      it_behaves_like "an endpoint that returns 404 - not found", "l'organisation n'existe pas" do
         let!(:organisation) { create(:organisation, rdv_solidarites_organisation_id: "some-other-id") }
       end
 
-      it_behaves_like "an endpoint that returns 422 - unprocessable_entity", "quand les paramètres sont incomplets", true do
+      it_behaves_like "an endpoint that returns 422 - unprocessable_entity", "les paramètres sont incomplets", true do
         before { user_params[:user][:first_name] = "" }
       end
 
-      it_behaves_like "an endpoint that returns 422 - unprocessable_entity", "quand les paramètres sont invalide", true do
+      it_behaves_like "an endpoint that returns 422 - unprocessable_entity", "les paramètres sont invalide", true do
         before { user_params[:user][:email] = "invalid@email" }
       end
 
-      it_behaves_like "an endpoint that returns 422 - unprocessable_entity", "quand l'usager ne peut pas être créé", true do
+      it_behaves_like "an endpoint that returns 422 - unprocessable_entity", "l'usager ne peut pas être créé", true do
         before do
           allow(Users::Upsert).to receive(:call)
             .and_return(OpenStruct.new(failure?: true, errors: ["L'usager n'a pas pu être créé"]))
         end
       end
 
-      it_behaves_like "an endpoint that returns 422 - unprocessable_entity", "quand une invitation ne peut pas être envoyée", true do
+      it_behaves_like "an endpoint that returns 422 - unprocessable_entity", "une invitation ne peut pas être envoyée", true do
         before do
           allow(InviteUser).to receive(:call)
-            .and_return(OpenStruct.new(success?: false, errors: ["l'invitation par sms n'a pas pu être délivrée"]))
+            .and_return(OpenStruct.new(success?: false, errors: ["l'invitation n'a pas pu être délivrée"]))
         end
       end
     end

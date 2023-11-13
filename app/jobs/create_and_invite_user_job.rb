@@ -10,7 +10,7 @@ class CreateAndInviteUserJob < ApplicationJob
     @user_attributes = user_attributes.deep_symbolize_keys
     @invitation_attributes = invitation_attributes.deep_symbolize_keys
     @motif_category_attributes = motif_category_attributes.deep_symbolize_keys
-    @rdv_solidarites_session_credentials = rdv_solidarites_session_credentials.deep_symbolize_keys
+    @rdv_solidarites_session_credentials = rdv_solidarites_session_credentials
 
     upsert_user!
     invite_user
@@ -57,6 +57,10 @@ class CreateAndInviteUserJob < ApplicationJob
   end
 
   def rdv_solidarites_session
-    @rdv_solidarites_session ||= RdvSolidaritesSessionFactory.create_with(**@rdv_solidarites_session_credentials)
+    @rdv_solidarites_session ||= RdvSolidaritesSessionFactory.create_with(
+      uid: @rdv_solidarites_session_credentials["uid"],
+      client: @rdv_solidarites_session_credentials["client"],
+      access_token: @rdv_solidarites_session_credentials["access-token"]
+    )
   end
 end
