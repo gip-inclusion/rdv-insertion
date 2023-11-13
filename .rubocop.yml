@@ -37,6 +37,9 @@ Style/ParallelAssignment:
 Style/RegexpLiteral:
   Enabled: false
 
+Style/StringConcatenation:
+  Enabled: false
+
 Rails/SkipsModelValidations:
   Enabled: false
 
@@ -59,7 +62,7 @@ Metrics/BlockLength:
 
 Naming/AccessorMethodName:
   Exclude:
-   - "app/controllers/inclusion_connect_controller.rb"
+    - "app/controllers/inclusion_connect_controller.rb"
 
 Layout/LineLength:
   Max: 120
@@ -135,6 +138,13 @@ RSpec/DescribeClass:
   Exclude:
     - "spec/requests/**/*"
     - "spec/features/**"
+
+RSpec/ScatteredSetup:
+  Exclude:
+    - "spec/requests/**/*"
+
+RSpec/MessageSpies:
+  Enabled: false
 
 Capybara/SpecificActions:
   Enabled: false

@@ -1,4 +1,5 @@
 module ApiSpecHelper
+  # rubocop:disable Metrics/AbcSize
   def with_examples
     after do |example|
       example.metadata[:response][:content] = {
@@ -23,7 +24,6 @@ module ApiSpecHelper
     end
   end
 
-  # rubocop:disable Metrics/AbcSize
   def with_authentication
     security [{ access_token: [], uid: [], client: [] }]
 

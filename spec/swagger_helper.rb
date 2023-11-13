@@ -257,7 +257,7 @@ RSpec.configure do |config|
               collectif: { type: "boolean" },
               follow_up: { type: "boolean" }
             },
-            required: %w[rdv_solidarites_motif_id name collectif location_type follow_up motif_category],
+            required: %w[rdv_solidarites_motif_id name collectif location_type follow_up motif_category]
           },
           motif_category: {
             type: "object",

@@ -123,15 +123,18 @@ describe "Users API", swagger_doc: "v1/api.json" do
         let!(:organisation) { create(:organisation, rdv_solidarites_organisation_id: "some-other-id") }
       end
 
-      it_behaves_like "an endpoint that returns 422 - unprocessable_entity", "quand les paramètres sont incomplets", true do
+      it_behaves_like "an endpoint that returns 422 - unprocessable_entity", "quand les paramètres sont incomplets",
+                      true do
         before { user1_params[:first_name] = "" }
       end
 
-      it_behaves_like "an endpoint that returns 422 - unprocessable_entity", "quand les paramètres sont invalide", true do
+      it_behaves_like "an endpoint that returns 422 - unprocessable_entity", "quand les paramètres sont invalide",
+                      true do
         before { user1_params[:email] = "invalid@email" }
       end
 
-      it_behaves_like "an endpoint that returns 422 - unprocessable_entity", "quand + de 25 usagers sont envoyés", true do
+      it_behaves_like "an endpoint that returns 422 - unprocessable_entity", "quand + de 25 usagers sont envoyés",
+                      true do
         let!(:users_params) do
           { users: 30.times.map { user1_params } }
         end
@@ -279,7 +282,8 @@ describe "Users API", swagger_doc: "v1/api.json" do
         end
       end
 
-      it_behaves_like "an endpoint that returns 422 - unprocessable_entity", "une invitation ne peut pas être envoyée", true do
+      it_behaves_like "an endpoint that returns 422 - unprocessable_entity", "une invitation ne peut pas être envoyée",
+                      true do
         before do
           allow(InviteUser).to receive(:call)
             .and_return(OpenStruct.new(success?: false, errors: ["l'invitation n'a pas pu être délivrée"]))
