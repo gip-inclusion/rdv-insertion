@@ -86,6 +86,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
       let!(:agent) { create(:agent, organisations: [organisation]) }
 
       before { allow(CreateAndInviteUserJob).to receive(:perform_async) }
+
       with_authentication
 
       response 200, "succès" do

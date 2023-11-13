@@ -13,7 +13,7 @@ class InviteUser < BaseService
     set_invitation_organisations
     set_invitation
     result.invitation = @invitation
-    return if invitation_already_sent_today?
+    return if invitation_already_sent_today? && !@invitation.format_postal?
 
     save_and_send_invitation!
   end

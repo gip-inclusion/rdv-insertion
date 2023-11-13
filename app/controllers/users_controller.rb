@@ -52,11 +52,6 @@ class UsersController < ApplicationController
   end
 
   def create
-    upsert_user = Users::Upsert.call(
-      user_attributes: user_params,
-      organisation: @organisation,
-      rdv_solidarites_session: rdv_solidarites_session
-    )
     @user = upsert_user.user
     if upsert_user.success?
       render_save_user_success
@@ -126,6 +121,14 @@ class UsersController < ApplicationController
   def save_user
     @save_user ||= Users::Save.call(
       user: @user,
+      organisation: @organisation,
+      rdv_solidarites_session: rdv_solidarites_session
+    )
+  end
+
+  def upsert_user
+    @upsert_user ||= Users::Upsert.call(
+      user_attributes: user_params,
       organisation: @organisation,
       rdv_solidarites_session: rdv_solidarites_session
     )

@@ -32,6 +32,7 @@ module ApiSpecHelper
         "client" => "someclient", "uid" => agent.email, "access-token" => "sometoken"
       }
     end
+
     let!(:"access-token") { auth_headers["access-token"] }
     let!(:uid) { auth_headers["uid"] }
     let!(:client) { auth_headers["client"] }
@@ -49,7 +50,7 @@ module ApiSpecHelper
       description: "Identifiant d'accès (authentification)", example: "amine.dhobb@beta.gouv.fr"
     )
 
-    let(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
+    let(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::WithAccessToken) }
 
     before do
       allow(RdvSolidaritesSessionFactory).to receive(:create_with)
