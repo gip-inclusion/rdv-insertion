@@ -166,7 +166,19 @@ RSpec.configure do |config|
               role: { type: "string", nullable: true, enum: %w[demandeur conjoint] },
               nir: { type: "string", nullable: true },
               pole_emploi_id: { type: "string", nullable: true },
-              carnet_de_bord_carnet_id: { type: "string", nullable: true }
+              carnet_de_bord_carnet_id: { type: "string", nullable: true },
+              invitation: {
+                type: "object",
+                properties: {
+                  rdv_solidarites_lieu_id: { type: "string" },
+                  motif_category: {
+                    type: "object",
+                    properties: {
+                      name: { type: "string" }
+                    }
+                  }
+                }
+              }
             },
             required: %w[
               first_name last_name title

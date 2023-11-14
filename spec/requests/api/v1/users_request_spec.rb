@@ -243,13 +243,10 @@ describe "Users API", swagger_doc: "v1/api.json" do
         schema type: "object",
                properties: {
                  success: { type: "boolean" },
-                 "$ref" => "#/components/schemas/user",
+                 user: { "$ref" => "#/components/schemas/user" },
                  invitations: {
                    type: "array",
-                   items: {
-                     "$ref" => "#/components/schemas/invitation",
-                     motif_category: { "$ref" => "#/components/schemas/invitation" }
-                   }
+                   items: { "$ref" => "#/components/schemas/invitation" }
                  }
                },
                required: %w[success user invitations]

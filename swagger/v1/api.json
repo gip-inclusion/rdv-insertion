@@ -374,6 +374,22 @@
           "carnet_de_bord_carnet_id": {
             "type": "string",
             "nullable": true
+          },
+          "invitation": {
+            "type": "object",
+            "properties": {
+              "rdv_solidarites_lieu_id": {
+                "type": "string"
+              },
+              "motif_category": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
           }
         },
         "required": [
@@ -799,13 +815,14 @@
                   "succès": {
                     "value": {
                       "department": {
-                        "id": 9194,
+                        "id": 14850,
                         "number": "13",
                         "capital": "Marseille",
                         "region": "Provence-Alpes-Côte d'Azur",
+                        "carnet_de_bord_deploiement_id": null,
                         "organisations": [
                           {
-                            "id": 7734,
+                            "id": 12738,
                             "name": "Pôle Parcours",
                             "email": "pole-parcours@departement13.fr",
                             "phone_number": "0101010101",
@@ -822,7 +839,7 @@
                                 "location_type": "public_office",
                                 "follow_up": false,
                                 "motif_category": {
-                                  "id": 18021,
+                                  "id": 31630,
                                   "short_name": "rsa_orientation_1",
                                   "name": "RSA orientation"
                                 }
@@ -974,12 +991,12 @@
                   "Renvoie le rdv": {
                     "value": {
                       "rdv": {
-                        "id": 1062,
-                        "starts_at": "2023-11-16T20:07:56.572+01:00",
+                        "id": 1812,
+                        "starts_at": "2023-11-17T16:55:29.851+01:00",
                         "duration_in_min": 30,
                         "cancelled_at": null,
                         "address": "2O avenue de Ségur, 75007 Paris",
-                        "uuid": "5f88a066-dab6-4188-86c3-0e454ad5b76f",
+                        "uuid": "5b874361-a5d2-4412-bb9b-7abfcbd59928",
                         "created_by": "user",
                         "status": "unknown",
                         "users_count": 0,
@@ -987,7 +1004,7 @@
                         "rdv_solidarites_rdv_id": 2,
                         "agents": [
                           {
-                            "id": 2657,
+                            "id": 4671,
                             "email": "agent7@gouv.fr",
                             "first_name": "jane7",
                             "last_name": "doe7",
@@ -1007,19 +1024,19 @@
                           "location_type": "public_office",
                           "follow_up": false,
                           "motif_category": {
-                            "id": 18027,
+                            "id": 31636,
                             "short_name": "rsa_orientation_7",
                             "name": "RSA orientation"
                           }
                         },
                         "users": [
                           {
-                            "id": 7282,
+                            "id": 11974,
                             "uid": "bnVtZXJvXzMgLSBjb25qb2ludA==",
                             "affiliation_number": "numero_3",
                             "role": "conjoint",
                             "created_at": "0024-12-02T22:22:00.000+00:09",
-                            "department_internal_id": "4059",
+                            "department_internal_id": "4061",
                             "first_name": "john3",
                             "last_name": "doe3",
                             "title": "monsieur",
@@ -1036,7 +1053,7 @@
                           }
                         ],
                         "organisation": {
-                          "id": 7741,
+                          "id": 12745,
                           "name": "Departement n°4",
                           "email": "organisation4@rdv-insertion.fr",
                           "phone_number": "0101010101",
@@ -1347,7 +1364,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180421148794259"
+                        "nir": "180871815491831"
                       },
                       {
                         "first_name": "Dimitri",
@@ -1362,7 +1379,7 @@
                         "address": "5 Avenue du Moulin des Baux, 13260 Cassis",
                         "department_internal_id": "22221111",
                         "pole_emploi_id": "22233333",
-                        "nir": "180332226951586",
+                        "nir": "180962251781745",
                         "invitation": {
                           "motif_category": {
                             "name": "RSA orientation"
@@ -1387,7 +1404,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180739878357473"
+                        "nir": "180119398693342"
                       },
                       {
                         "first_name": "Dimitri",
@@ -1402,7 +1419,7 @@
                         "address": "5 Avenue du Moulin des Baux, 13260 Cassis",
                         "department_internal_id": "22221111",
                         "pole_emploi_id": "22233333",
-                        "nir": "180785625677914",
+                        "nir": "180464499993776",
                         "invitation": {
                           "motif_category": {
                             "name": "RSA orientation"
@@ -1427,7 +1444,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180913947299202"
+                        "nir": "180245462789781"
                       },
                       {
                         "first_name": "Dimitri",
@@ -1442,7 +1459,7 @@
                         "address": "5 Avenue du Moulin des Baux, 13260 Cassis",
                         "department_internal_id": "22221111",
                         "pole_emploi_id": "22233333",
-                        "nir": "180215751873982",
+                        "nir": "180492756183551",
                         "invitation": {
                           "motif_category": {
                             "name": "RSA orientation"
@@ -1467,7 +1484,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180378273673811"
+                        "nir": "180538481822611"
                       },
                       {
                         "first_name": "Dimitri",
@@ -1482,7 +1499,7 @@
                         "address": "5 Avenue du Moulin des Baux, 13260 Cassis",
                         "department_internal_id": "22221111",
                         "pole_emploi_id": "22233333",
-                        "nir": "180748645161748",
+                        "nir": "180499753675459",
                         "invitation": {
                           "motif_category": {
                             "name": "RSA orientation"
@@ -1507,7 +1524,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180469117625922"
+                        "nir": "180946895224666"
                       },
                       {
                         "first_name": "Dimitri",
@@ -1522,7 +1539,7 @@
                         "address": "5 Avenue du Moulin des Baux, 13260 Cassis",
                         "department_internal_id": "22221111",
                         "pole_emploi_id": "22233333",
-                        "nir": "180494635111262",
+                        "nir": "180889674958914",
                         "invitation": {
                           "motif_category": {
                             "name": "RSA orientation"
@@ -1547,7 +1564,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180268747676108"
+                        "nir": "180313622775517"
                       },
                       {
                         "first_name": "Dimitri",
@@ -1562,7 +1579,7 @@
                         "address": "5 Avenue du Moulin des Baux, 13260 Cassis",
                         "department_internal_id": "22221111",
                         "pole_emploi_id": "22233333",
-                        "nir": "180552347187901",
+                        "nir": "180716746837254",
                         "invitation": {
                           "motif_category": {
                             "name": "RSA orientation"
@@ -1587,7 +1604,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180831728311234"
+                        "nir": "180521264298954"
                       },
                       {
                         "first_name": "Didier",
@@ -1600,7 +1617,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180831728311234"
+                        "nir": "180521264298954"
                       },
                       {
                         "first_name": "Didier",
@@ -1613,7 +1630,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180831728311234"
+                        "nir": "180521264298954"
                       },
                       {
                         "first_name": "Didier",
@@ -1626,7 +1643,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180831728311234"
+                        "nir": "180521264298954"
                       },
                       {
                         "first_name": "Didier",
@@ -1639,7 +1656,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180831728311234"
+                        "nir": "180521264298954"
                       },
                       {
                         "first_name": "Didier",
@@ -1652,7 +1669,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180831728311234"
+                        "nir": "180521264298954"
                       },
                       {
                         "first_name": "Didier",
@@ -1665,7 +1682,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180831728311234"
+                        "nir": "180521264298954"
                       },
                       {
                         "first_name": "Didier",
@@ -1678,7 +1695,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180831728311234"
+                        "nir": "180521264298954"
                       },
                       {
                         "first_name": "Didier",
@@ -1691,7 +1708,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180831728311234"
+                        "nir": "180521264298954"
                       },
                       {
                         "first_name": "Didier",
@@ -1704,7 +1721,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180831728311234"
+                        "nir": "180521264298954"
                       },
                       {
                         "first_name": "Didier",
@@ -1717,7 +1734,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180831728311234"
+                        "nir": "180521264298954"
                       },
                       {
                         "first_name": "Didier",
@@ -1730,7 +1747,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180831728311234"
+                        "nir": "180521264298954"
                       },
                       {
                         "first_name": "Didier",
@@ -1743,7 +1760,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180831728311234"
+                        "nir": "180521264298954"
                       },
                       {
                         "first_name": "Didier",
@@ -1756,7 +1773,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180831728311234"
+                        "nir": "180521264298954"
                       },
                       {
                         "first_name": "Didier",
@@ -1769,7 +1786,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180831728311234"
+                        "nir": "180521264298954"
                       },
                       {
                         "first_name": "Didier",
@@ -1782,7 +1799,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180831728311234"
+                        "nir": "180521264298954"
                       },
                       {
                         "first_name": "Didier",
@@ -1795,7 +1812,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180831728311234"
+                        "nir": "180521264298954"
                       },
                       {
                         "first_name": "Didier",
@@ -1808,7 +1825,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180831728311234"
+                        "nir": "180521264298954"
                       },
                       {
                         "first_name": "Didier",
@@ -1821,7 +1838,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180831728311234"
+                        "nir": "180521264298954"
                       },
                       {
                         "first_name": "Didier",
@@ -1834,7 +1851,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180831728311234"
+                        "nir": "180521264298954"
                       },
                       {
                         "first_name": "Didier",
@@ -1847,7 +1864,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180831728311234"
+                        "nir": "180521264298954"
                       },
                       {
                         "first_name": "Didier",
@@ -1860,7 +1877,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180831728311234"
+                        "nir": "180521264298954"
                       },
                       {
                         "first_name": "Didier",
@@ -1873,7 +1890,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180831728311234"
+                        "nir": "180521264298954"
                       },
                       {
                         "first_name": "Didier",
@@ -1886,7 +1903,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180831728311234"
+                        "nir": "180521264298954"
                       },
                       {
                         "first_name": "Didier",
@@ -1899,7 +1916,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180831728311234"
+                        "nir": "180521264298954"
                       },
                       {
                         "first_name": "Didier",
@@ -1912,7 +1929,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180831728311234"
+                        "nir": "180521264298954"
                       },
                       {
                         "first_name": "Didier",
@@ -1925,7 +1942,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180831728311234"
+                        "nir": "180521264298954"
                       },
                       {
                         "first_name": "Didier",
@@ -1938,7 +1955,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180831728311234"
+                        "nir": "180521264298954"
                       },
                       {
                         "first_name": "Didier",
@@ -1951,7 +1968,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180831728311234"
+                        "nir": "180521264298954"
                       },
                       {
                         "first_name": "Didier",
@@ -1964,7 +1981,7 @@
                         "birth_date": "11/03/1978",
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
-                        "nir": "180831728311234"
+                        "nir": "180521264298954"
                       }
                     ]
                   }
@@ -2047,7 +2064,7 @@
                     "value": {
                       "success": true,
                       "user": {
-                        "id": 7290,
+                        "id": 11982,
                         "uid": "MTA0OTIzOTAgLSBkZW1hbmRldXI=",
                         "affiliation_number": "10492390",
                         "role": "demandeur",
@@ -2063,31 +2080,31 @@
                         "rights_opening_date": null,
                         "birth_name": null,
                         "rdv_solidarites_user_id": 11,
-                        "nir": "180652246377151",
+                        "nir": "180899654672864",
                         "pole_emploi_id": null,
                         "carnet_de_bord_carnet_id": null
                       },
                       "invitations": [
                         {
-                          "id": 1876,
+                          "id": 3069,
                           "format": "sms",
-                          "sent_at": "2023-11-13T20:07:57.257+01:00",
+                          "sent_at": "2023-11-14T16:55:30.545+01:00",
                           "clicked": false,
                           "rdv_with_referents": false,
                           "motif_category": {
-                            "id": 18036,
+                            "id": 31645,
                             "short_name": "rsa_orientation_16",
                             "name": "RSA orientation"
                           }
                         },
                         {
-                          "id": 1875,
+                          "id": 3068,
                           "format": "email",
-                          "sent_at": "2023-11-13T20:07:57.222+01:00",
+                          "sent_at": "2023-11-14T16:55:30.512+01:00",
                           "clicked": false,
                           "rdv_with_referents": false,
                           "motif_category": {
-                            "id": 18035,
+                            "id": 31644,
                             "short_name": "rsa_orientation_15",
                             "name": "RSA orientation"
                           }
@@ -2102,14 +2119,13 @@
                     "success": {
                       "type": "boolean"
                     },
-                    "$ref": "#/components/schemas/user",
+                    "user": {
+                      "$ref": "#/components/schemas/user"
+                    },
                     "invitations": {
                       "type": "array",
                       "items": {
-                        "$ref": "#/components/schemas/invitation",
-                        "motif_category": {
-                          "$ref": "#/components/schemas/invitation"
-                        }
+                        "$ref": "#/components/schemas/invitation"
                       }
                     }
                   },
@@ -2285,7 +2301,7 @@
                       "birth_date": "11/03/1978",
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
-                      "nir": "180652246377151",
+                      "nir": "180899654672864",
                       "invitation": {
                         "motif_category": {
                           "name": "RSA orientation"
@@ -2308,7 +2324,7 @@
                       "birth_date": "11/03/1978",
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
-                      "nir": "180195368862225",
+                      "nir": "180933479472984",
                       "invitation": {
                         "motif_category": {
                           "name": "RSA orientation"
@@ -2331,7 +2347,7 @@
                       "birth_date": "11/03/1978",
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
-                      "nir": "180998731124447",
+                      "nir": "180568997729136",
                       "invitation": {
                         "motif_category": {
                           "name": "RSA orientation"
@@ -2354,7 +2370,7 @@
                       "birth_date": "11/03/1978",
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
-                      "nir": "180145769827281",
+                      "nir": "180565671594483",
                       "invitation": {
                         "motif_category": {
                           "name": "RSA orientation"
@@ -2377,7 +2393,7 @@
                       "birth_date": "11/03/1978",
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
-                      "nir": "180283123214876",
+                      "nir": "180427427271984",
                       "invitation": {
                         "motif_category": {
                           "name": "RSA orientation"
@@ -2400,7 +2416,7 @@
                       "birth_date": "11/03/1978",
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
-                      "nir": "180443759717260",
+                      "nir": "180583218298924",
                       "invitation": {
                         "motif_category": {
                           "name": "RSA orientation"
@@ -2423,7 +2439,7 @@
                       "birth_date": "11/03/1978",
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
-                      "nir": "180816876782972",
+                      "nir": "180489671642444",
                       "invitation": {
                         "motif_category": {
                           "name": "RSA orientation"
@@ -2446,7 +2462,7 @@
                       "birth_date": "11/03/1978",
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
-                      "nir": "180653888791247",
+                      "nir": "180337121151617",
                       "invitation": {
                         "motif_category": {
                           "name": "RSA orientation"
