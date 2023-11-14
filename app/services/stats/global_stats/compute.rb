@@ -40,11 +40,19 @@ module Stats
       end
 
       def rate_of_no_show_for_invitations
-        ComputeRateOfNoShow.call(participations: @stat.participations_after_invitations_sample).value
+        scope = @stat.statable || Department.new
+        number_of_seen = ::Stats::CounterCache::RateOfNoShowForInvitations.counter_for("seen", scope:)
+        number_of_noshow = ::Stats::CounterCache::RateOfNoShowForInvitations.counter_for("noshow", scope:)
+
+        (number_of_noshow / (number_of_seen.nonzero? || 1).to_f) * 100
       end
 
       def rate_of_no_show_for_convocations
-        ComputeRateOfNoShow.call(participations: @stat.participations_with_notifications_sample).value
+        scope = @stat.statable || Department.new
+        number_of_seen = ::Stats::CounterCache::RateOfNoShowForConvocations.counter_for("seen", scope:)
+        number_of_noshow = ::Stats::CounterCache::RateOfNoShowForConvocations.counter_for("noshow", scope:)
+
+        (number_of_noshow / (number_of_seen.nonzero? || 1).to_f) * 100
       end
 
       def average_time_between_invitation_and_rdv_in_days
