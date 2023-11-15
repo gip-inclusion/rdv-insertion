@@ -1,12 +1,8 @@
 describe SendInvitationReminderJob do
-  include AdminJobsAgentHelper
-
   subject do
-    described_class.new.perform(rdv_context_id, invitation_format, rdv_solidarites_session)
+    described_class.new.perform(rdv_context_id, invitation_format)
   end
 
-  let!(:agent) { create(:agent, email: "admin_jobs@rdv-insertion.fr") }
-  let!(:rdv_solidarites_session) { admin_jobs_agent_session }
   let!(:rdv_context_id) { 3333 }
   let!(:invitation_format) { "sms" }
   let!(:rdv_context) do
@@ -39,7 +35,7 @@ describe SendInvitationReminderJob do
     travel_to(Time.zone.parse("2022-05-04 11:00"))
     allow(Invitation).to receive(:new).and_return(invitation)
     allow(Invitations::SaveAndSend).to receive(:call)
-      .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
+      .with(invitation: invitation)
       .and_return(OpenStruct.new(success?: true))
     allow(MattermostClient).to receive(:send_to_notif_channel)
   end

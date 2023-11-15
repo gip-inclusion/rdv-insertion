@@ -1,6 +1,4 @@
 class SendPeriodicInvitesJob < ApplicationJob
-  include AdminJobsAgentHelper
-
   def perform
     return if staging_env?
 
@@ -29,7 +27,7 @@ class SendPeriodicInvitesJob < ApplicationJob
     %w[email sms].each do |format|
       next unless last_sent_invitation.user.can_be_invited_through?(format)
 
-      SendPeriodicInviteJob.perform_async(last_sent_invitation.id, configuration.id, format, admin_jobs_agent_session)
+      SendPeriodicInviteJob.perform_async(last_sent_invitation.id, configuration.id, format)
     end
   end
 

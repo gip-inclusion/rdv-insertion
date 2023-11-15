@@ -1,11 +1,10 @@
 class SendInvitationReminderJobError < StandardError; end
 
 class SendInvitationReminderJob < ApplicationJob
-  def perform(rdv_context_id, invitation_format, rdv_solidarites_session)
+  def perform(rdv_context_id, invitation_format)
     @rdv_context = RdvContext.find(rdv_context_id)
     @user = @rdv_context.user
     @invitation_format = invitation_format
-    @rdv_solidarites_session = rdv_solidarites_session
 
     return if invitation_already_sent_today?
 
@@ -36,8 +35,7 @@ class SendInvitationReminderJob < ApplicationJob
   end
 
   def save_and_send_invitation
-    @save_and_send_invitation ||= Invitations::SaveAndSend.call(invitation: invitation,
-                                                                rdv_solidarites_session: @rdv_solidarites_session)
+    @save_and_send_invitation ||= Invitations::SaveAndSend.call(invitation: invitation)
   end
 
   def invitation_already_sent_today?

@@ -1,6 +1,4 @@
 class SendInvitationRemindersJob < ApplicationJob
-  include AdminJobsAgentHelper
-
   def perform
     return if staging_env?
 
@@ -15,10 +13,8 @@ class SendInvitationRemindersJob < ApplicationJob
 
       user = rdv_context.user
 
-      SendInvitationReminderJob.perform_async(rdv_context.id, "email", admin_jobs_agent_session) if user.email?
-      if user.phone_number_is_mobile?
-        SendInvitationReminderJob.perform_async(rdv_context.id, "sms", admin_jobs_agent_session)
-      end
+      SendInvitationReminderJob.perform_async(rdv_context.id, "email") if user.email?
+      SendInvitationReminderJob.perform_async(rdv_context.id, "sms") if user.phone_number_is_mobile?
 
       @sent_reminders_user_ids << user.id
     end
