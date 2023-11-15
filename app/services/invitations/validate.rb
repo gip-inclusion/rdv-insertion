@@ -23,6 +23,8 @@ module Invitations
       validate_motif_of_this_category_is_defined_in_organisations
       validate_referents_are_assigned if @invitation.rdv_with_referents?
       validate_follow_up_motifs_are_defined if @invitation.rdv_with_referents?
+      return if result.errors.any?
+
       # rdv_solidarites_session is nil in CronJob. We do not want to validate creneau availability in this case
       # because it would prevent the cron job from sending specific invitations and agents will not be informed
       validate_existing_creneau_in_rdv_solidarites unless @rdv_solidarites_session.nil?
