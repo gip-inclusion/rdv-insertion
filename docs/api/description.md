@@ -153,11 +153,11 @@ Le fonctionnement des endpoints de création et invitation des usagers est expli
 
 # Création et invitations des usagers à prendre rdv
 
-Il y a 2 façons dinviter les usagers à prendre rdv:
+Il y a 2 façons d'inviter les usagers à prendre rdv:
 
-- En envoyant dans une seule requête une liste d'usager à inviter (endpoint `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/create_and_invite_many`). **La création des fiches usagers et l'envoi des invitatons se fera alors de manière asynchrone**.
+- En envoyant dans une seule requête une liste d'usager à inviter (endpoint `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/create_and_invite_many`). **La création des fiches d'usagers et l'envoi des invitations se fera alors de manière asynchrone**.
 
-- En invitant une seule personne par requête (endpoint `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/create_and_invite`). **La création de la fiche usager et l'envoi des invitatons (mail et sms) se fera alors de manière synchrone**.
+- En invitant une seule personne par requête (endpoint `POST https://www.rdv-insertion.fr/api/v1/organisations/{rdv_solidarites_organisation_id}/users/create_and_invite`). **La création de la fiche d'usager et l'envoi des invitations (mail et sms) se fera alors de manière synchrone**.
 
 **Pour ces 2 endpoints, une invitation par mail sera envoyée que si le mail de l'usager est présent, et une invitation par SMS est envoyée que si le téléphone de l'usager est renseigné**.
 
@@ -169,24 +169,24 @@ Il y a 2 façons dinviter les usagers à prendre rdv:
 
 Le schéma détaillé avec exemple se trouve en bas de page. Ci-dessous on explique à quoi correspondent les attributs des usagers:
 
-- `first_name`: STRING (requis): Prénom du bénéficiaire
-- `last_name`: STRING (requis): Nom du bénéficiaire
-- `title`: STRING (requis): Civilité du bénéficaire. Valeurs possibles: monsieur, madame.
-- `affiliation_number`: STRING (requis) : Numéro d'allocataire du bénéficaire.
+- `first_name`: STRING (requis): Prénom de l'usager
+- `last_name`: STRING (requis): Nom de l'usager
+- `title`: STRING (requis): Civilité de l'usager. Valeurs possibles: monsieur, madame.
+- `affiliation_number`: STRING (requis) : Numéro CAF de l'usager.
 - `role`: STRING (requis) : Le rôle de la personne au sein du dossier de demande RSA. Valeurs possibles: demandeur, conjoint.
-- `email`: STRING (optionnel) : L'email du bénéficiaire. S'il n'est pas présent l'invitation par email ne sera pas envoyée.
-- `phone_number`: STRING (optionnel) : Le numéro de téléphone du bénéficiaire. S'il n'est pas présent l'invitation par SMS ne sera pas envoyée.
-- `birth_date`: STRING (optionnel) : Date de naissance du bénéficiaire au format DD/MM/YYYY
+- `email`: STRING (optionnel) : L'email e l'usager. S'il n'est pas présent l'invitation par email ne sera pas envoyée.
+- `phone_number`: STRING (optionnel) : Le numéro de téléphone de l'usager. S'il n'est pas présent l'invitation par SMS ne sera pas envoyée.
+- `birth_date`: STRING (optionnel) : Date de naissance de l'usager au format DD/MM/YYYY
 - `nir` (optionnel) : NIR
 - `pole_emploi_id` (optionnel) : numéro d'identification Pole emploi
-- `rights_opening_date`: STRING (optionnel): Date de notification que l'allocataire est bénéficiaire du RSA (= date de réception du 1er flux bénéficiaire quotidien qui montre que l'allocataire est un nouvel entrant). Au format DD/MM/YYYY.
-- `address`: STRING (optionnel) : L'addresse de l'utilisateur. Cette addresse comprend le code postal et la ville.
-- `birth_name` : STRING (optionnel) : Le nom de naissance du bénéficiaire
-- `department_internal_id`: STRING (optionnel) : ID interne de la personne au sein du système d'information du département (cela peut être l'ID lié à l'éditeur comme l'ID de IODAS par exemple). Cet ID est nécessaire si l'on veut que RDV-Insertion notifie de la prise/annulation de RDV sur une API côté département ou éditeur.
-- `invitation`: OBJECT (optionnel): Contient les informations ci-dessous liés à l'invitation à prendre rdv:
-  - `rdv_solidarites_lieu_d`: INTEGER (optionnel): L'ID du lieu dans lequel l'on veut que le RDV ait lieu. S'il est précisé l'utilisateur sera invité directement à choisir un créneau sur ce lieu. Attention, il faut faire attention à ce qu'une plage d'ouverture pour le motif en question (voir attribut précédent) relie le motif au lieu en question. Ces valeurs peuvent être récupérérés en requêtant l'endpoint `GET https://www.rdv-insertion.fr/api/v1/departments/{number}`.
+- `rights_opening_date`: STRING (optionnel): Si l'usager est bénéficiaire du RSA, c'est la date de réception du 1er flux bénéficiaire quotidien qui montre que l'usager est un nouvel entrant). Au format DD/MM/YYYY.
+- `address`: STRING (optionnel) : L'addresse de l'usager. Cette addresse comprend le code postal et la ville.
+- `birth_name` : STRING (optionnel) : Le nom de naissance de l'usager
+- `department_internal_id`: STRING (optionnel) : ID interne de la personne au sein du système d'information du département (cela peut être l'ID lié à l'éditeur comme l'ID de IODAS par exemple). Cet ID est nécessaire si l'on veut que rdv-insertion notifie de la prise/annulation de RDV sur une API côté département ou éditeur.
+- `invitation`: OBJECT (optionnel): Contient les informations ci-dessous liées à l'invitation à prendre rdv:
+  - `rdv_solidarites_lieu_d`: INTEGER (optionnel): L'ID du lieu dans lequel l'on veut que le RDV ait lieu. S'il est précisé l'usager sera invité directement à choisir un créneau sur ce lieu. Attention, il faut faire attention à ce qu'une plage d'ouverture pour le motif en question (voir attribut précédent) relie le motif au lieu en question. Ces valeurs peuvent être récupérérés en requêtant l'endpoint `GET https://www.rdv-insertion.fr/api/v1/departments/{number}`.
   - `motif_category: OBJECT (optionnel):
-    - `name`: STRING: Le nom de la catégorie de motif pour laquelle on veut inviter l'allocataire. Il peut ne pas être précisé si l'organisation ne peut inviter que sur une seule catégorie. Ces valeurs peuvent être récupérérés en requêtant l'endpoint `GET https://www.rdv-insertion.fr/api/v1/departments/{number}`.
+    - `name`: STRING: Le nom de la catégorie de motif pour laquelle on veut inviter l'usager. Il peut ne pas être précisé si l'organisation ne peut inviter que sur une seule catégorie. Ces valeurs peuvent être récupérérés en requêtant l'endpoint `GET https://www.rdv-insertion.fr/api/v1/departments/{number}`.
 
 ## Idempotence
 
@@ -203,7 +203,7 @@ Cet endpoint permet de créer et inviter jusqu'à **25** usagers en une seule re
 
 ### Réponse
 
-Lors de l'envoi, nous allons vérifier que pour chaque usager les attributs requis sont présents et que tous les attributs passés sont au bon format (email, téléphone etc). Si c'est le cas la requête sera un succès. Cela ne veut pas dire que la création et l'invitation des allocataires et l'invitation ont été un succès car ces actions se feront de manière asynchrone.
+Lors de l'envoi, nous allons vérifier que pour chaque usager les attributs requis sont présents et que tous les attributs passés sont au bon format (email, téléphone etc). Si c'est le cas la requête sera un succès. Cela ne veut pas dire que la création et l'invitation des usagers et l'invitation ont été un succès car ces actions se feront de manière asynchrone.
 
 #### En cas de succès
 
@@ -215,17 +215,17 @@ Si la requête est un échec (voir conditions plus haut), nous répondrons avec 
 
 ### Notifications asynchrones
 
-Lors du processus asynchrone de création et des invitations des allocataires des erreurs peuvent avoir lieu, bien que la réponse à la requête ait été un succès. Il faut alors notifier l'organisation de ces échecs.
+Lors du processus asynchrone de création et des invitations des usagers des erreurs peuvent avoir lieu, bien que la réponse à la requête ait été un succès. Il faut alors notifier l'organisation de ces échecs.
 
-#### En cas de problèmes à la création de l'allocataire
+#### En cas de problèmes à la création de l'usager
 
-En cas d'échec de la création de l'utilisateur, un mail sera envoyé à la personne ayant fait la requête avec l'identité de l'utilisateur en question et les erreurs associées à sa création.
+En cas d'échec de la création de l'usager, un mail sera envoyé à la personne ayant fait la requête avec l'identité de l'usager en question et les erreurs associées à sa création.
 
 ![mail-notification](https://github.com/betagouv/rdv-insertion/blob/staging/docs/api/mail-notification.png)
 
-#### En cas de problèmes à l'invitation de l'allocataire
+#### En cas de problèmes à l'invitation de l'usager
 
-S'il y a un problème lors de l'invitation d'un allocataire, l'organisation ne sera pas notifiée directement.
+S'il y a un problème lors de l'invitation d'un usager, l'organisation ne sera pas notifiée directement.
 Pour voir si les personnes ont bien été invitées, on peut:
 
 - Aller sur l'interface web RDV-I et vérifier dans la liste que les personnes ont bien été invitées (les coches sont cochées pour chaque format d'invitation dans la liste des usagers)
@@ -237,7 +237,7 @@ Pour voir si les personnes ont bien été invitées, on peut:
 
 Cet endpoint permet de créer et inviter un seul usager à prendre rdv. Contrairement à l'endpoint permettant d'inviter une liste d'usager, la réponse est ici synchrone: La requête est un succès que si la personne a été créée et invitée.
 
-Les formats des réponses sont spécifiées en bas de page.
+Les formats des réponses sont spécifiés en bas de page.
 
 # Webhooks (API de notifications)
 
