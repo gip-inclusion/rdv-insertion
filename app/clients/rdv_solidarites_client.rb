@@ -119,6 +119,14 @@ class RdvSolidaritesClient
     )
   end
 
+  def get_creneau_availability(link_params = {})
+    Faraday.get(
+      "#{@url}/api/rdvinsertion/invitations/creneau_availability",
+      link_params,
+      request_headers
+    )
+  end
+
   def validate_token
     Faraday.get(
       "#{@url}/api/v1/auth/validate_token",
