@@ -23,6 +23,7 @@ module Invitations
       validate_motif_of_this_category_is_defined_in_organisations
       validate_referents_are_assigned if @invitation.rdv_with_referents?
       validate_follow_up_motifs_are_defined if @invitation.rdv_with_referents?
+      # we return here because we do not want to make a call to rdv_solidarites_api if invitation is already invalid
       return if result.errors.any?
 
       # rdv_solidarites_session is nil in CronJob. We do not want to validate creneau availability in this case
