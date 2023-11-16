@@ -15,11 +15,12 @@ module Api
 
       rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
 
-      def record_not_found(_)
-        head :not_found
+      def record_not_found(exception)
+        render json: { not_found: exception.model }, status: :not_found
       end
 
-      def render_errors(errors)
+      def render_errors(error_messages)
+        errors = error_messages.map { |error_msg| { error_details: error_msg } }
         render json: { success: false, errors: }, status: :unprocessable_entity
       end
     end

@@ -8,7 +8,7 @@ class InviteUserJob < ApplicationJob
     @organisation = Organisation.find(organisation_id)
     @invitation_attributes = invitation_attributes.deep_symbolize_keys
     @motif_category_attributes = motif_category_attributes
-    @rdv_solidarites_session_credentials = rdv_solidarites_session_credentials.deep_symbolize_keys
+    @rdv_solidarites_session_credentials = rdv_solidarites_session_credentials
 
     Invitation.with_advisory_lock "invite_user_job_#{@user.id}" do
       invite_user!

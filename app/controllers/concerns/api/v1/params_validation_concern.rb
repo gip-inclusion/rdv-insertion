@@ -28,7 +28,9 @@ module Api
       def validate_users_length
         return if users_attributes.length <= 25
 
-        @params_validation_errors << "Les usagers doivent être envoyés par lots de 25 maximum"
+        @params_validation_errors << {
+          error_details: "Les usagers doivent être envoyés par lots de 25 maximum"
+        }
       end
 
       def validate_users_attributes
@@ -45,7 +47,7 @@ module Api
         return if user.valid?
 
         @params_validation_errors << {
-          error_details: user.errors.to_hash,
+          error_details: user.errors.full_messages.to_sentence,
           first_name: user_attributes[:first_name],
           last_name: user_attributes[:last_name]
         }.merge(idx.present? ? { index: idx } : {})

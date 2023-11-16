@@ -44,6 +44,9 @@ gem "with_advisory_lock"
 # CSS styled emails with stylesheets
 gem "premailer-rails"
 
+# API documentation
+gem "rswag"
+
 # Send SMS & emails with Brevo
 gem "sib-api-v3-sdk"
 
