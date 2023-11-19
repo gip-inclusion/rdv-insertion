@@ -32,6 +32,7 @@ Rails.application.routes.draw do
         get :default_list
       end
       resources :invitations, only: [:create]
+      resources :rdvs, only: [:new]
     end
     # we need to nest in organisations the different configurations record to correctly authorize them
     resources :configurations, only: [:index, :show, :new, :create, :edit, :update, :destroy]

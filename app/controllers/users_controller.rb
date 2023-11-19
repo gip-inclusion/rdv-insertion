@@ -87,7 +87,7 @@ class UsersController < ApplicationController
   def reset_tag_users
     # since we send the exhaustive list of tags, we need to reset the tag_users list
     # if tag_users_attributes is nil, it means that the user did not change the tags
-    @user.tag_users.destroy_all unless request.format != "json" || params[:user][:tag_users_attributes].nil?
+    @user.tag_users.destroy_all unless params[:user][:tag_users_attributes].nil?
   end
 
   def send_users_csv
@@ -124,8 +124,6 @@ class UsersController < ApplicationController
   end
 
   def render_save_user_success
-    redirect_to(rdv_solidarites_find_rdv_url) && return if params[:create_rdvs_user_and_find_rdv]
-
     respond_to do |format|
       format.html { redirect_to(after_save_path) }
       format.json { render json: { success: true, user: @user } }
@@ -296,11 +294,6 @@ class UsersController < ApplicationController
 
   def archived_scope?
     @users_scope == "archived"
-  end
-
-  def rdv_solidarites_find_rdv_url
-    "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{@organisation.rdv_solidarites_organisation_id}" \
-      "/agent_searches?user_ids[]=#{@user.rdv_solidarites_user_id}"
   end
 
   def after_save_path

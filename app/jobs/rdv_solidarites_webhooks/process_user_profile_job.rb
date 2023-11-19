@@ -3,9 +3,11 @@ module RdvSolidaritesWebhooks
     def perform(data, meta)
       @data = data.deep_symbolize_keys
       @meta = meta.deep_symbolize_keys
+      return if @data[:user].blank? || user.blank? || organisation.blank?
 
-      # if webhook_reason is rgpd, the ProcessUserJob will also receive a webhook, we let him nullify the rdvs relation
-      return if @data[:user].blank? || user.blank? || organisation.blank? || webhook_reason == "rgpd"
+      # if webhook_reason is rgpd we don't want to delete the user, only nullify the relation with rdvs
+      # in this case, the ProcessUserJob will also receive a webhook, we let him do that
+      return if webhook_reason == "rgpd"
 
       if event == "destroyed"
         remove_user_from_organisation

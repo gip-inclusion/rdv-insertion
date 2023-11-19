@@ -72,10 +72,6 @@ class Rdv < ApplicationRecord
       "#{rdv_solidarites_rdv_id}/edit?#{params.to_query}"
   end
 
-  def nullify_rdv_solidarites_id
-    self.rdv_solidarites_rdv_id = nil
-  end
-
   private
 
   def refresh_context_status

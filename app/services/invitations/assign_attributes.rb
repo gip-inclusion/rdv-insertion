@@ -6,7 +6,6 @@ module Invitations
     end
 
     def call
-      recreate_user_on_rdv_solidarites if @invitation.user.rdv_solidarites_user_id.nil?
       @invitation.rdv_solidarites_token = rdv_solidarites_token
       @invitation.link = invitation_link
     end
@@ -21,15 +20,6 @@ module Invitations
 
     def rdv_solidarites_token
       retrieve_rdv_solidarites_token.invitation_token
-    end
-
-    def recreate_user_on_rdv_solidarites
-      @recreate_user_on_rdv_solidarites ||= call_service!(
-        Users::Save, # saving the user will recreate it on rdv_solidarites
-        user: user,
-        organisation: user.organisations.first,
-        rdv_solidarites_session: @rdv_solidarites_session
-      )
     end
 
     def retrieve_rdv_solidarites_token

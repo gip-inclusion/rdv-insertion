@@ -1,13 +1,13 @@
 class ReferentAssignationsController < ApplicationController
   before_action :set_user, :set_department, :set_agents, only: [:index, :create, :destroy]
   before_action :set_agent, only: [:create, :destroy]
+  before_action :save_user, only: [:create]
 
   def index; end
 
   def create
-    save_user if @user.rdv_solidarites_user_id.nil? # saving user will recreate it on rdvs
-    @success = save_user.success? && assign_referent.success?
-    @errors = assign_referent.errors || save_user.errors
+    @success = assign_referent.success?
+    @errors = assign_referent.errors
     respond_to do |format|
       format.turbo_stream { render_result_in_flash }
       format.json do
@@ -52,6 +52,7 @@ class ReferentAssignationsController < ApplicationController
 
   def set_user
     @user = policy_scope(User).includes(:referents).find(user_id)
+    sync_user_with_rdv_solidarites(@user) if action_name == "create" && @user.rdv_solidarites_user_id.nil?
   end
 
   def set_department
@@ -74,12 +75,6 @@ class ReferentAssignationsController < ApplicationController
   def remove_referent
     @remove_referent ||= Users::RemoveReferent.call(
       user: @user, agent: @agent, rdv_solidarites_session: rdv_solidarites_session
-    )
-  end
-
-  def save_user
-    @save_user ||= Users::Save.call(
-      user: @user, organisation: @user.organisations.first, rdv_solidarites_session: rdv_solidarites_session
     )
   end
 

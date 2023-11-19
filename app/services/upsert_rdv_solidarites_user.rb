@@ -17,7 +17,7 @@ class UpsertRdvSolidaritesUser < BaseService
   end
 
   def upsert_rdv_solidarites_user
-    @user.rdv_solidarites_user_id.present? ? assign_to_org_and_update : create_or_update_rdv_solidarites_user
+    @user.rdv_solidarites_user_id.present? ? update_rdv_solidarites_user : create_or_update_rdv_solidarites_user
   end
 
   def create_or_update_rdv_solidarites_user
@@ -25,15 +25,10 @@ class UpsertRdvSolidaritesUser < BaseService
 
     # If the user already exists in RDV-S, we check if he is in RDVI. If not we assign the user to the org
     # by creating the user profile and we then update the user.
-    return assign_to_org_and_update if email_taken_error?
+    return update_rdv_solidarites_user if email_taken_error?
 
     result.errors += create_rdv_solidarites_user.errors
     fail!
-  end
-
-  def assign_to_org_and_update
-    create_user_profile unless user_belongs_to_org?
-    update_rdv_solidarites_user
   end
 
   def user_id_from_email_taken_error
@@ -67,15 +62,9 @@ class UpsertRdvSolidaritesUser < BaseService
 
   def create_rdv_solidarites_user
     @create_rdv_solidarites_user ||= RdvSolidaritesApi::CreateUser.call(
-      user_attributes: rdv_solidarites_user_attributes.merge(organisation_ids: rdv_solidarites_organisation_ids),
+      user_attributes: rdv_solidarites_user_attributes,
       rdv_solidarites_session: @rdv_solidarites_session
     )
-  end
-
-  def rdv_solidarites_organisation_ids
-    return @user.organisations.map(&:rdv_solidarites_organisation_id) if @user.organisations.present?
-
-    [@organisation.rdv_solidarites_organisation_id]
   end
 
   def update_rdv_solidarites_user
@@ -94,6 +83,6 @@ class UpsertRdvSolidaritesUser < BaseService
                            .transform_values(&:presence)
                            .compact
     user_attributes.delete(:email) if @user.conjoint?
-    user_attributes
+    user_attributes.merge(organisation_ids: @user.organisations.map(&:rdv_solidarites_organisation_id))
   end
 end

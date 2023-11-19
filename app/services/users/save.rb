@@ -11,11 +11,7 @@ module Users
         assign_organisation
         validate_user!
         save_record!(@user)
-        upsert_rdv_solidarites_user
-        if @user.rdv_solidarites_user_id.nil?
-          assign_rdv_solidarites_user_id
-          assign_referents if @user.referents.present?
-        end
+        sync_user_with_rdv_solidarites
       end
     end
 
@@ -25,19 +21,13 @@ module Users
       @user.organisations = (@user.organisations.to_a + [@organisation]).uniq
     end
 
-    def upsert_rdv_solidarites_user
-      @upsert_rdv_solidarites_user ||= call_service!(
-        UpsertRdvSolidaritesUser,
+    def sync_user_with_rdv_solidarites
+      call_service!(
+        SyncWithRdvSolidarites,
         user: @user,
         organisation: @organisation,
         rdv_solidarites_session: @rdv_solidarites_session
       )
-    end
-
-    def rdv_solidarites_organisation_ids
-      return [@organisation.rdv_solidarites_organisation_id] if @organisation
-
-      @user.organisations.map(&:rdv_solidarites_organisation_id)
     end
 
     def validate_user!
@@ -45,22 +35,6 @@ module Users
         Users::Validate,
         user: @user
       )
-    end
-
-    def assign_rdv_solidarites_user_id
-      @user.rdv_solidarites_user_id = upsert_rdv_solidarites_user.rdv_solidarites_user_id
-      save_record!(@user)
-    end
-
-    def assign_referents
-      @user.referents.each do |referent|
-        call_service!(
-          Users::AssignReferent,
-          user: @user,
-          agent: referent,
-          rdv_solidarites_session: @rdv_solidarites_session
-        )
-      end
     end
   end
 end

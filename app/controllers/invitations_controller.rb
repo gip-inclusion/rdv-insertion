@@ -110,6 +110,7 @@ class InvitationsController < ApplicationController
 
   def set_user
     @user = policy_scope(User).includes(:invitations).find(params[:user_id])
+    sync_user_with_rdv_solidarites(@user) if @user.rdv_solidarites_user_id.nil?
   end
 
   def set_invitation
