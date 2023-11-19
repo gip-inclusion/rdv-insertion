@@ -119,6 +119,14 @@ class RdvSolidaritesClient
     )
   end
 
+  def get_creneau_availability(link_params = {})
+    Faraday.get(
+      "#{@url}/api/rdvinsertion/invitations/creneau_availability",
+      link_params,
+      request_headers
+    )
+  end
+
   def validate_token
     Faraday.get(
       "#{@url}/api/v1/auth/validate_token",
@@ -178,9 +186,9 @@ class RdvSolidaritesClient
     )
   end
 
-  def update_participation(rdvs_user_id, request_body = {})
+  def update_participation(participation_id, request_body = {})
     Faraday.patch(
-      "#{@url}/api/v1/rdvs_users/#{rdvs_user_id}",
+      "#{@url}/api/v1/participations/#{participation_id}",
       request_body.to_json,
       request_headers
     )

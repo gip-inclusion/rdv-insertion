@@ -19,24 +19,7 @@ module Users::Sortable
   end
 
   def all_users_order
-    if department_level?
-      associated_users_organisations = UsersOrganisation
-                                       .where(organisations: @organisations)
-                                       .order(created_at: :desc)
-                                       .uniq(&:user_id)
-                                       .map(&:id)
-
-      users_affected_most_recently_to_an_organisation = {
-        users_organisations: {
-          id: associated_users_organisations
-        }
-      }
-    end
-
-    @users = @users.includes(:users_organisations, :archives)
-                   .select("users.*, users_organisations.created_at as affected_at")
-                   .active
-                   .where(users_affected_most_recently_to_an_organisation || {})
+    @users = @users.select("users.*, users_organisations.created_at as affected_at")
                    .order("affected_at DESC NULLS LAST, users.id DESC")
   end
 end

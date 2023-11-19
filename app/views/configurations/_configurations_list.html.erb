@@ -1,9 +1,11 @@
 <% configurations.each do |configuration| %>
   <%= turbo_frame_tag configuration do %>
     <div class="row card-white d-flex justify-content-around mb-2">
-      <%= link_to(organisation_configuration_path(organisation, configuration), class: "col-12 col-md-6 d-flex align-items-center", data: { turbo: :false }) do %>
-        <%= configuration.motif_category_name %>
-      <% end %>
+      <div class="col-12 col-md-6 d-flex align-items-center">
+        <%= link_to(organisation_configuration_path(organisation, configuration), class: "col-12 col-md-6 d-flex align-items-center", data: { turbo: :false }) do %>
+          <%= configuration.motif_category_name %>
+        <% end %>
+      </div>
       <div class="col-12 col-md-6 d-flex justify-content-end">
         <%= link_to organisation_configuration_path(organisation, configuration), data: { turbo: :false } do %>
           <button class="btn btn-blue-out">Afficher</button>

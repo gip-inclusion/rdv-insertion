@@ -22,6 +22,10 @@ describe "Agents can invite from index page", js: true do
     setup_agent_session(agent)
     stub_rdv_solidarites_invitation_requests(user.rdv_solidarites_user_id, rdv_solidarites_token)
     stub_geo_api_request(user.address)
+    stub_request(
+      :get,
+      /#{Regexp.quote(ENV['RDV_SOLIDARITES_URL'])}\/api\/rdvinsertion\/invitations\/creneau_availability.*/
+    ).to_return(status: 200, body: { "creneau_availability" => true }.to_json, headers: {})
   end
 
   context "when no invitations is sent" do
@@ -39,6 +43,29 @@ describe "Agents can invite from index page", js: true do
       expect(page).to have_field("email_invite", checked: true, disabled: true)
       expect(page).to have_field("sms_invite", checked: false, disabled: false)
       expect(page).to have_content("Invitation en attente de réponse")
+    end
+
+    context "when there is no creneau available" do
+      before do
+        stub_request(
+          :get,
+          /#{Regexp.quote(ENV['RDV_SOLIDARITES_URL'])}\/api\/rdvinsertion\/invitations\/creneau_availability.*/
+        ).to_return(status: 200, body: { "creneau_availability" => false }.to_json, headers: {})
+      end
+
+      it "cannot invite the user" do
+        rdv_context.set_status
+        rdv_context.save!
+
+        visit organisation_users_path(organisation, motif_category_id: motif_category.id)
+        check("email_invite")
+        expect(page).to have_content("Impossible d'inviter l'utilisateur")
+        expect(page).to have_content(
+          "L'envoi d'une invitation est impossible car il n'y a plus de créneaux disponibles. " \
+          "Nous invitons donc à créer de nouvelles plages d'ouverture depuis l'interface RDV-Solidarités " \
+          "pour pouvoir à nouveau envoyer des invitations"
+        )
+      end
     end
   end
 
@@ -100,6 +127,29 @@ describe "Agents can invite from index page", js: true do
         expect(page).to have_field("email_invite", checked: true, disabled: true)
         expect(page).to have_field("sms_invite", checked: false, disabled: false)
         expect(page).to have_content("Invitation en attente de réponse")
+      end
+
+      context "when there is no creneau available" do
+        before do
+          stub_request(
+            :get,
+            /#{Regexp.quote(ENV['RDV_SOLIDARITES_URL'])}\/api\/rdvinsertion\/invitations\/creneau_availability.*/
+          ).to_return(status: 200, body: { "creneau_availability" => false }.to_json, headers: {})
+        end
+
+        it "cannot invite the user" do
+          rdv_context.set_status
+          rdv_context.save!
+
+          visit organisation_users_path(organisation, motif_category_id: motif_category.id)
+          check("email_invite")
+          expect(page).to have_content("Impossible d'inviter l'utilisateur")
+          expect(page).to have_content(
+            "L'envoi d'une invitation est impossible car il n'y a plus de créneaux disponibles. " \
+            "Nous invitons donc à créer de nouvelles plages d'ouverture depuis l'interface RDV-Solidarités " \
+            "pour pouvoir à nouveau envoyer des invitations"
+          )
+        end
       end
     end
 

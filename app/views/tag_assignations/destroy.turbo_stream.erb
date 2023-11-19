@@ -1,0 +1,7 @@
+<%= turbo_stream.replace "tags_list" do %>
+  <%= render "users/user_tags", tags: @user_tags %>
+<% end %>
+
+<%= turbo_stream.replace "tag_form" do %>
+  <%= render "form", tags: @available_tags %>
+<% end %>

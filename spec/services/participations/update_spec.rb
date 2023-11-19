@@ -16,7 +16,7 @@ describe Participations::Update, type: :service do
       {
         :participation_attributes => { :status => "seen" },
         :rdv_solidarites_session => rdv_solidarites_session,
-        :rdv_solidarites_rdvs_user_id => participation.rdv_solidarites_participation_id
+        :rdv_solidarites_participation_id => participation.rdv_solidarites_participation_id
       }
     )
   end

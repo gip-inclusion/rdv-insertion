@@ -15,7 +15,7 @@ describe Invitations::SaveAndSend, type: :service do
         .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
         .and_return(OpenStruct.new(success?: true))
       allow(Invitations::Validate).to receive(:call)
-        .with(invitation: invitation)
+        .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
         .and_return(OpenStruct.new(success?: true))
       allow(invitation).to receive(:send_to_user)
         .and_return(OpenStruct.new(success?: true))
@@ -66,7 +66,7 @@ describe Invitations::SaveAndSend, type: :service do
     context "when the validation fails" do
       before do
         allow(Invitations::Validate).to receive(:call)
-          .with(invitation: invitation)
+          .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
           .and_return(OpenStruct.new(success?: false, errors: ["validation failed"]))
       end
 
