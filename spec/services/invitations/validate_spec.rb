@@ -42,7 +42,6 @@ describe Invitations::Validate, type: :service do
   end
 
   describe "#call" do
-
     it("is_a_success") do
       is_a_success
     end
