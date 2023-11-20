@@ -739,7 +739,8 @@ RSpec.describe InvitationMailer do
       expect(body_string).to match(
         "Vous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement. " \
         "Pour en profiter au mieux," \
-        " nous vous invitons à vous inscrire directement et librement aux ateliers et formations de votre choix."
+        " nous vous invitons à vous inscrire directement et librement aux ateliers et formations de votre choix, " \
+        "dans la limite des places disponibles."
       )
       expect(body_string).to match("/invitations/redirect")
       expect(body_string).to match("uuid=#{invitation.uuid}")
