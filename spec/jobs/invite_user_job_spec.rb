@@ -51,7 +51,10 @@ describe InviteUserJob do
           .with(**rdv_solidarites_session_credentials)
           .and_return(rdv_solidarites_session)
         allow(Invitations::SaveAndSend).to receive(:call)
-          .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
+          .with(
+            invitation: invitation, rdv_solidarites_session: rdv_solidarites_session,
+            check_creneaux_availability: false
+          )
           .and_return(OpenStruct.new(success?: true))
       end
 
@@ -67,14 +70,20 @@ describe InviteUserJob do
 
       it "invites the user" do
         expect(Invitations::SaveAndSend).to receive(:call)
-          .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
+          .with(
+            invitation: invitation, rdv_solidarites_session: rdv_solidarites_session,
+            check_creneaux_availability: false
+          )
         subject
       end
 
       context "when it fails to send it" do
         before do
           allow(Invitations::SaveAndSend).to receive(:call)
-            .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
+            .with(
+              invitation: invitation, rdv_solidarites_session: rdv_solidarites_session,
+              check_creneaux_availability: false
+            )
             .and_return(OpenStruct.new(success?: false, errors: ["Could not send invite"]))
         end
 

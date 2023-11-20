@@ -1,11 +1,10 @@
 describe Invitations::Validate, type: :service do
   subject do
     described_class.call(
-      invitation: invitation, rdv_solidarites_session: rdv_solidarites_session
+      invitation: invitation
     )
   end
 
-  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
   let!(:category_orientation) do
     create(:motif_category, name: "RSA orientation", short_name: "rsa_orientation")
   end
@@ -43,11 +42,6 @@ describe Invitations::Validate, type: :service do
   end
 
   describe "#call" do
-    before do
-      allow(RdvSolidaritesApi::RetrieveCreneauAvailability).to receive(:call)
-        .with(link_params: invitation.link_params, rdv_solidarites_session: rdv_solidarites_session)
-        .and_return(OpenStruct.new(success?: true, creneau_availability: true))
-    end
 
     it("is_a_success") do
       is_a_success
@@ -149,24 +143,6 @@ describe Invitations::Validate, type: :service do
             "Aucun motif de suivi n'a été défini pour la catégorie RSA orientation"
           )
         end
-      end
-    end
-
-    context "when there are no creneau available on rdvs" do
-      before do
-        allow(RdvSolidaritesApi::RetrieveCreneauAvailability).to receive(:call)
-          .with(link_params: invitation.link_params, rdv_solidarites_session: rdv_solidarites_session)
-          .and_return(OpenStruct.new(success?: true, creneau_availability: false))
-      end
-
-      it("is a failure") { is_a_failure }
-
-      it "stores an error message" do
-        expect(subject.errors).to include(
-          "L'envoi d'une invitation est impossible car il n'y a plus de créneaux disponibles. " \
-          "Nous invitons donc à créer de nouvelles plages d'ouverture depuis l'interface " \
-          "RDV-Solidarités pour pouvoir à nouveau envoyer des invitations"
-        )
       end
     end
   end
