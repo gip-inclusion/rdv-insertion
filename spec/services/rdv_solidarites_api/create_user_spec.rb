@@ -18,6 +18,7 @@ describe RdvSolidaritesApi::CreateUser, type: :service do
     before do
       allow(rdv_solidarites_session).to receive(:rdv_solidarites_client)
         .and_return(rdv_solidarites_client)
+      allow(rdv_solidarites_session).to receive(:valid?).and_return(true)
       allow(rdv_solidarites_client).to receive(:create_user)
         .with(user_attributes)
         .and_return(OpenStruct.new(body: response_body))

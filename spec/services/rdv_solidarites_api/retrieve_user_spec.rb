@@ -18,6 +18,7 @@ describe RdvSolidaritesApi::RetrieveUser, type: :service do
     before do
       allow(rdv_solidarites_session).to receive(:rdv_solidarites_client)
         .and_return(rdv_solidarites_client)
+      allow(rdv_solidarites_session).to receive(:valid?).and_return(true)
       allow(rdv_solidarites_client).to receive(:get_user)
         .and_return(OpenStruct.new(success?: true, body: { "user" => user }.to_json))
     end
