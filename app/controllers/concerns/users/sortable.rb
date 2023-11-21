@@ -14,18 +14,13 @@ module Users::Sortable
   end
 
   def motif_category_order
-    @users = @users.select(
-      "users.*," \
-      "(SELECT MAX(rdv_contexts.created_at) " \
-      "FROM rdv_contexts WHERE rdv_contexts.user_id = users.id) AS affected_at"
-    ).order("affected_at DESC, users.id DESC")
+    @users = @users.select("users.*, rdv_contexts.created_at")
+                   .order("rdv_contexts.created_at desc")
   end
 
   def all_users_order
-    @users = @users.select(
-      "users.*," \
-      "(SELECT MAX(users_organisations.created_at) " \
-      "FROM users_organisations WHERE users_organisations.user_id = users.id) AS affected_at" \
-    ).order("affected_at DESC NULLS last, users.id DESC")
+    @users = @users.select("users.*, MIN(users_organisations.created_at) AS min_created_at")
+                   .group("users.id")
+                   .order("min_created_at DESC")
   end
 end

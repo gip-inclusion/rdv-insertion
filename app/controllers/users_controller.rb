@@ -262,7 +262,7 @@ class UsersController < ApplicationController
 
   def set_all_users
     @users = policy_scope(User)
-             .active.distinct
+             .active
              .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
     return if request.format == "csv"
 
