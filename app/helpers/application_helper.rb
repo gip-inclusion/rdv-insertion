@@ -35,7 +35,7 @@ module ApplicationHelper
   end
 
   def show_login_button?
-    !logged_in? && controller_name.include?("static_pages")
+    current_agent.nil? && controller_name.include?("static_pages")
   end
 
   def show_guide_banner?

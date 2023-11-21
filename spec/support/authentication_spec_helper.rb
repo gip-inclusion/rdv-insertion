@@ -16,8 +16,6 @@ module AuthenticationSpecHelper
   def setup_agent_session(agent)
     page.set_rack_session(agent_id: agent.id, rdv_solidarites: session_hash(agent.email))
 
-    ENV["RDV_SOLIDARITES_URL"] = "http://www.rdv-solidarites-test.localhost"
-
     stub_request(:get, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/auth/validate_token")
       .with(headers: { "Content-Type" => "application/json" }.merge(session_hash(agent.email)))
       .to_return(body: { "data" => { "uid" => agent.email } }.to_json)
