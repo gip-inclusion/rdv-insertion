@@ -1,7 +1,6 @@
 class ReferentAssignationsController < ApplicationController
   before_action :set_user, :set_department, :set_agents, only: [:index, :create, :destroy]
   before_action :set_agent, only: [:create, :destroy]
-  before_action :save_user, only: [:create]
 
   def index; end
 

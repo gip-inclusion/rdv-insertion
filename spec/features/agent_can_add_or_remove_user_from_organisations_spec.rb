@@ -28,26 +28,6 @@ describe "Agents can add or remove user from organisations", js: true do
 
   context "from department user page" do
     it "can add to an organisation" do
-      stub_other_org_user = stub_request(
-        :get,
-        "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/organisations/#{other_org.rdv_solidarites_organisation_id}/" \
-        "users/#{rdv_solidarites_user_id}"
-      ).with(
-        headers: { "Content-Type" => "application/json" }.merge(session_hash(agent.email))
-      ).to_return(status: 404)
-
-      stub_create_user_profile = stub_request(
-        :post, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/user_profiles"
-      ).with(
-        headers: { "Content-Type" => "application/json" }.merge(session_hash(agent.email)),
-        body: { user_id: rdv_solidarites_user_id, organisation_id: other_org.rdv_solidarites_organisation_id }.to_json
-      ).to_return(
-        status: 200,
-        body: {
-          user_profile: { user_id: rdv_solidarites_user_id, organisation_id: other_org.rdv_solidarites_organisation_id }
-        }.to_json
-      )
-
       stub_update_user = stub_request(
         :patch, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/users/#{rdv_solidarites_user_id}"
       ).to_return(
@@ -77,8 +57,6 @@ describe "Agents can add or remove user from organisations", js: true do
       expect(page).to have_content(other_org.name)
       expect(page).to have_content(user.last_name)
 
-      expect(stub_other_org_user).to have_been_requested
-      expect(stub_create_user_profile).to have_been_requested
       expect(stub_update_user).to have_been_requested
       expect(user.reload.organisation_ids).to contain_exactly(organisation.id, other_org.id)
       expect(user.reload.motif_categories).not_to include(other_motif_category)
@@ -86,28 +64,6 @@ describe "Agents can add or remove user from organisations", js: true do
 
     context "when a motif category is specified" do
       it "adds the user in that specific category" do
-        stub_other_org_user = stub_request(
-          :get,
-          "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/organisations/#{other_org.rdv_solidarites_organisation_id}/" \
-          "users/#{rdv_solidarites_user_id}"
-        ).with(
-          headers: { "Content-Type" => "application/json" }.merge(session_hash(agent.email))
-        ).to_return(status: 404)
-
-        stub_create_user_profile = stub_request(
-          :post, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/user_profiles"
-        ).with(
-          headers: { "Content-Type" => "application/json" }.merge(session_hash(agent.email)),
-          body: { user_id: rdv_solidarites_user_id, organisation_id: other_org.rdv_solidarites_organisation_id }.to_json
-        ).to_return(
-          status: 200,
-          body: {
-            user_profile: {
-              user_id: rdv_solidarites_user_id, organisation_id: other_org.rdv_solidarites_organisation_id
-            }
-          }.to_json
-        )
-
         stub_update_user = stub_request(
           :patch, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/users/#{rdv_solidarites_user_id}"
         ).to_return(
@@ -138,8 +94,6 @@ describe "Agents can add or remove user from organisations", js: true do
         expect(page).to have_content(other_org.name)
         expect(page).to have_content(user.last_name)
 
-        expect(stub_other_org_user).to have_been_requested
-        expect(stub_create_user_profile).to have_been_requested
         expect(stub_update_user).to have_been_requested
         expect(user.reload.organisation_ids).to contain_exactly(organisation.id, other_org.id)
         expect(user.reload.motif_categories).to include(other_motif_category)

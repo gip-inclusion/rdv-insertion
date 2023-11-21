@@ -63,7 +63,7 @@ describe ReferentAssignationsController do
     end
 
     before do
-      allow(Users::Save).to receive(:call)
+      allow(Users::SyncWithRdvSolidarites).to receive(:call)
         .with(user: user, organisation: organisation1, rdv_solidarites_session: rdv_solidarites_session)
         .and_return(OpenStruct.new(success?: true))
       allow(Users::AssignReferent).to receive(:call)
@@ -79,9 +79,13 @@ describe ReferentAssignationsController do
       expect(response.body).to match(/Le référent a bien été assigné/)
     end
 
-    context "when the save fails" do
+    context "when the user has no rdvs_id and the sync with rdvs fails" do
+      let!(:user) do
+        create(:user, id: user_id, organisations: [organisation1, organisation2], rdv_solidarites_user_id: nil)
+      end
+
       before do
-        allow(Users::Save).to receive(:call)
+        allow(Users::SyncWithRdvSolidarites).to receive(:call)
           .with(user: user, organisation: organisation1, rdv_solidarites_session: rdv_solidarites_session)
           .and_return(OpenStruct.new(success?: false, errors: ["Something went wrong"]))
       end
@@ -92,7 +96,7 @@ describe ReferentAssignationsController do
         expect(response).to be_successful
         expect(unescaped_response_body).to match(/flashes/)
         expect(unescaped_response_body).to match(/Something went wrong/)
-        expect(unescaped_response_body).to match(/Une erreur s'est produite lors de l'assignation du référent/)
+        expect(unescaped_response_body).to match(/L'utilisateur n'est plus lié à rdv-solidarités/)
       end
     end
 

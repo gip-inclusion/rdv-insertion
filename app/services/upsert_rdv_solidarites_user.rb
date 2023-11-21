@@ -23,8 +23,7 @@ class UpsertRdvSolidaritesUser < BaseService
   def create_or_update_rdv_solidarites_user
     return if create_rdv_solidarites_user.success?
 
-    # If the user already exists in RDV-S, we check if he is in RDVI. If not we assign the user to the org
-    # by creating the user profile and we then update the user.
+    # If the user already exists in RDV-S, we assign the user to the org by updating him.
     return update_rdv_solidarites_user if email_taken_error?
 
     result.errors += create_rdv_solidarites_user.errors
@@ -37,27 +36,6 @@ class UpsertRdvSolidaritesUser < BaseService
 
   def email_taken_error?
     create_rdv_solidarites_user.error_details&.dig("email")&.any? { _1["error"] == "taken" }
-  end
-
-  def create_user_profile
-    @create_user_profile ||= call_service!(
-      RdvSolidaritesApi::CreateUserProfile,
-      user_id: rdv_solidarites_user_id,
-      organisation_id: @organisation.rdv_solidarites_organisation_id,
-      rdv_solidarites_session: @rdv_solidarites_session
-    )
-  end
-
-  def user_belongs_to_org?
-    retrieve_organisation_user.user.present?
-  end
-
-  def retrieve_organisation_user
-    @retrieve_organisation_user ||= RdvSolidaritesApi::RetrieveUser.call(
-      rdv_solidarites_user_id: rdv_solidarites_user_id,
-      rdv_solidarites_organisation_id: @organisation.rdv_solidarites_organisation_id,
-      rdv_solidarites_session: @rdv_solidarites_session
-    )
   end
 
   def create_rdv_solidarites_user

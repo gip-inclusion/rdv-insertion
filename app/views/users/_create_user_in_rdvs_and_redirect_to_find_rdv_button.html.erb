@@ -1,9 +1,0 @@
-<div class="d-inline-block">
-  <%= simple_form_for(user, url: "#{compute_show_path(user, organisation, department)}?create_user_in_rdvs_and_find_rdv=true", html: { method: :patch }, data: { turbo: false }) do |f| %>
-    <%# we pass a hidden_field that changes nothing in order to send the user hash param requested by the update action %>
-    <%= f.hidden_field :role, value: user.role %>
-    <%= button_tag type: :submit, class: "btn btn-blue", formtarget: "_blank" do %>
-      Trouver un RDV<i class="fas fa-external-link-alt icon-sm"></i>
-    <% end %>
-  <% end %>
-</div>

@@ -23,7 +23,7 @@ module Users
 
     def sync_user_with_rdv_solidarites
       call_service!(
-        SyncWithRdvSolidarites,
+        Users::SyncWithRdvSolidarites,
         user: @user,
         organisation: @organisation,
         rdv_solidarites_session: @rdv_solidarites_session

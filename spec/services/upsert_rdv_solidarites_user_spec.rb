@@ -19,7 +19,7 @@ describe UpsertRdvSolidaritesUser, type: :service do
   end
   let!(:rdv_solidarites_user_attributes) do
     {
-      first_name: "john", last_name: "doe",
+      first_name: "john", last_name: "doe", organisation_ids: [rdv_solidarites_organisation_id],
       address: "16 rue de la tour", email: "johndoe@example.com",
       birth_date: Date.new(1989, 3, 17), affiliation_number: "aff123", phone_number: "+33612459567"
     }
@@ -36,10 +36,6 @@ describe UpsertRdvSolidaritesUser, type: :service do
 
   describe "#call" do
     before do
-      allow(RdvSolidaritesApi::CreateUserProfile).to receive(:call)
-        .and_return(OpenStruct.new(success?: true))
-      allow(RdvSolidaritesApi::RetrieveUser).to receive(:call)
-        .and_return(OpenStruct.new(success?: true, user: rdv_solidarites_user))
       allow(RdvSolidaritesApi::UpdateUser).to receive(:call)
         .and_return(OpenStruct.new(success?: true, user: rdv_solidarites_user))
     end
@@ -70,17 +66,12 @@ describe UpsertRdvSolidaritesUser, type: :service do
     end
 
     context "when the user does not belong to the org" do
-      before do
-        allow(RdvSolidaritesApi::RetrieveUser).to receive(:call)
-          .and_return(OpenStruct.new(success?: false))
-      end
-
-      it "assigns the user to the org by creating a user profile" do
-        expect(RdvSolidaritesApi::CreateUserProfile).to receive(:call)
+      it "assigns the user to the org" do
+        expect(RdvSolidaritesApi::UpdateUser).to receive(:call)
           .with(
-            user_id: rdv_solidarites_user_id,
-            organisation_id: rdv_solidarites_organisation_id,
-            rdv_solidarites_session: rdv_solidarites_session
+            user_attributes: rdv_solidarites_user_attributes,
+            rdv_solidarites_session: rdv_solidarites_session,
+            rdv_solidarites_user_id: rdv_solidarites_user_id
           )
         subject
       end
@@ -89,9 +80,9 @@ describe UpsertRdvSolidaritesUser, type: :service do
         is_a_success
       end
 
-      context "when the user profile creation fails" do
+      context "when the update to assign org fails" do
         before do
-          allow(RdvSolidaritesApi::CreateUserProfile).to receive(:call)
+          allow(RdvSolidaritesApi::UpdateUser).to receive(:call)
             .and_return(OpenStruct.new(success?: false, errors: ["creation profile error"]))
         end
 
@@ -185,22 +176,10 @@ describe UpsertRdvSolidaritesUser, type: :service do
                   error_details: { "email" => [{ "error" => "taken", "id" => existing_user_id }] }
                 )
               )
-            allow(RdvSolidaritesApi::RetrieveUser).to receive(:call)
-              .and_return(OpenStruct.new(success?: false))
           end
 
           context "when there is no user linked to this user" do
-            it "assigns the user to the org by creating a user profile" do
-              expect(RdvSolidaritesApi::CreateUserProfile).to receive(:call)
-                .with(
-                  user_id: 42,
-                  organisation_id: rdv_solidarites_organisation_id,
-                  rdv_solidarites_session: rdv_solidarites_session
-                )
-              subject
-            end
-
-            it "updates the user" do
+            it "assigns the user to the org by updating him" do
               expect(RdvSolidaritesApi::UpdateUser).to receive(:call)
                 .with(
                   user_attributes: rdv_solidarites_user_attributes,
