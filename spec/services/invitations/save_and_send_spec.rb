@@ -1,13 +1,15 @@
 describe Invitations::SaveAndSend, type: :service do
   subject do
     described_class.call(
-      invitation: invitation, rdv_solidarites_session: rdv_solidarites_session
+      invitation: invitation, rdv_solidarites_session: rdv_solidarites_session,
+      check_creneaux_availability:
     )
   end
 
   let!(:user) { create(:user) }
   let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
   let!(:invitation) { create(:invitation, user: user, sent_at: nil) }
+  let(:check_creneaux_availability) { true }
 
   describe "#call" do
     before do
@@ -15,8 +17,11 @@ describe Invitations::SaveAndSend, type: :service do
         .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
         .and_return(OpenStruct.new(success?: true))
       allow(Invitations::Validate).to receive(:call)
-        .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
+        .with(invitation: invitation)
         .and_return(OpenStruct.new(success?: true))
+      allow(RdvSolidaritesApi::RetrieveCreneauAvailability).to receive(:call)
+        .with(link_params: invitation.link_params, rdv_solidarites_session: rdv_solidarites_session)
+        .and_return(OpenStruct.new(success?: true, creneau_availability: true))
       allow(invitation).to receive(:send_to_user)
         .and_return(OpenStruct.new(success?: true))
       allow(invitation).to receive(:rdv_solidarites_token?).and_return(false)
@@ -66,7 +71,7 @@ describe Invitations::SaveAndSend, type: :service do
     context "when the validation fails" do
       before do
         allow(Invitations::Validate).to receive(:call)
-          .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
+          .with(invitation: invitation)
           .and_return(OpenStruct.new(success?: false, errors: ["validation failed"]))
       end
 
@@ -127,6 +132,35 @@ describe Invitations::SaveAndSend, type: :service do
 
       it "stores the error" do
         expect(subject.errors).to eq(["some error"])
+      end
+    end
+
+    context "when there are no creneau available on rdvs" do
+      before do
+        allow(RdvSolidaritesApi::RetrieveCreneauAvailability).to receive(:call)
+          .with(link_params: invitation.link_params, rdv_solidarites_session: rdv_solidarites_session)
+          .and_return(OpenStruct.new(success?: true, creneau_availability: false))
+      end
+
+      it("is a failure") { is_a_failure }
+
+      it "stores an error message" do
+        expect(subject.errors).to include(
+          "L'envoi d'une invitation est impossible car il n'y a plus de créneaux disponibles. " \
+          "Nous invitons donc à créer de nouvelles plages d'ouverture depuis l'interface " \
+          "RDV-Solidarités pour pouvoir à nouveau envoyer des invitations"
+        )
+      end
+
+      context "when we don't check the creneau availability" do
+        let!(:check_creneaux_availability) { false }
+
+        it("is a success") { is_a_success }
+
+        it "does not call the retrieve creneau service" do
+          expect(RdvSolidaritesApi::RetrieveCreneauAvailability).not_to receive(:call)
+          subject
+        end
       end
     end
   end

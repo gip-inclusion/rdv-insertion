@@ -12,6 +12,6 @@ class SendPeriodicInviteJob < ApplicationJob
     new_invitation.uuid = nil
     new_invitation.save!
 
-    Invitations::SaveAndSend.call(invitation: new_invitation)
+    Invitations::SaveAndSend.call(invitation: new_invitation, check_creneaux_availability: false)
   end
 end
