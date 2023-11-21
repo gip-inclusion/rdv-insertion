@@ -3,7 +3,7 @@ module AuthenticatedControllerConcern
 
   included do
     before_action :authenticate_agent!
-    helper_method :logged_in?, :current_agent
+    helper_method :current_agent
   end
 
   private

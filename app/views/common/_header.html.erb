@@ -7,7 +7,7 @@
       <% end %>
     </div>
     <div class="nav justify-content-around">
-      <% if logged_in? %>
+      <% if current_agent %>
         <div class="text-center mx-3 col">
           <%= link_to sign_out_path, method: :delete do %>
             <button class="btn btn-default btn-logout w-100">
