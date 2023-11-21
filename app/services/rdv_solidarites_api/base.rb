@@ -28,12 +28,10 @@ module RdvSolidaritesApi
     end
 
     def verify_rdv_solidarites_session!
-      if @rdv_solidarites_session.nil?
-        Sentry.capture_message("rdv_solidarites_session should not be nil")
-        fail!("Impossible d'appeler RDV-Solidarités. L'équipe a été notifée de l'erreur et tente de la résoudre.")
-      end
+      return unless @rdv_solidarites_session.nil?
 
-      fail!("La session n'est plus valide. Reconnectez-vous et réessayez") unless @rdv_solidarites_session.valid?
+      Sentry.capture_message("rdv_solidarites_session should not be nil")
+      fail!("Impossible d'appeler RDV-Solidarités. L'équipe a été notifée de l'erreur et tente de la résoudre.")
     end
 
     def rdv_solidarites_response
