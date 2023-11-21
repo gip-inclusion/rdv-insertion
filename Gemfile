@@ -85,6 +85,10 @@ gem "wkhtmltopdf-binary"
 # CORS support
 gem "rack-cors"
 
+# Internal PubSub
+gem "wisper", "2.0.0"
+gem "wisper-activerecord"
+
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
 

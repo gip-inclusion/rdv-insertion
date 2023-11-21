@@ -413,6 +413,10 @@ GEM
     websocket-extensions (0.1.5)
     wicked_pdf (2.6.3)
       activesupport
+    wisper (2.0.0)
+    wisper-activerecord (1.0.0)
+      activerecord (>= 3.0.0)
+      wisper (~> 2.0)
     with_advisory_lock (4.6.0)
       activerecord (>= 4.2)
     wkhtmltopdf-binary (0.12.6.6)
@@ -479,6 +483,8 @@ DEPENDENCIES
   webmock
   webpacker (~> 5.x)
   wicked_pdf
+  wisper (= 2.0.0)
+  wisper-activerecord
   with_advisory_lock
   wkhtmltopdf-binary
 

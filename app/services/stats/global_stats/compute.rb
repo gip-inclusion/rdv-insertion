@@ -41,16 +41,16 @@ module Stats
 
       def rate_of_no_show_for_invitations
         scope = @stat.statable || Department.new
-        number_of_seen = ::Stats::CounterCache::RateOfNoShowForInvitations.counter_for("seen", scope:)
-        number_of_noshow = ::Stats::CounterCache::RateOfNoShowForInvitations.counter_for("noshow", scope:)
+        number_of_seen = ::Stats::CounterCache::RateOfNoShowForInvitations.counter_for(group: "seen", scope:)
+        number_of_noshow = ::Stats::CounterCache::RateOfNoShowForInvitations.counter_for(group: "noshow", scope:)
 
         (number_of_noshow / (number_of_seen.nonzero? || 1).to_f) * 100
       end
 
       def rate_of_no_show_for_convocations
         scope = @stat.statable || Department.new
-        number_of_seen = ::Stats::CounterCache::RateOfNoShowForConvocations.counter_for("seen", scope:)
-        number_of_noshow = ::Stats::CounterCache::RateOfNoShowForConvocations.counter_for("noshow", scope:)
+        number_of_seen = ::Stats::CounterCache::RateOfNoShowForConvocations.counter_for(group: "seen", scope:)
+        number_of_noshow = ::Stats::CounterCache::RateOfNoShowForConvocations.counter_for(group: "noshow", scope:)
 
         (number_of_noshow / (number_of_seen.nonzero? || 1).to_f) * 100
       end

@@ -27,11 +27,6 @@ class Participation < ApplicationRecord
   delegate :phone_number_is_mobile?, :email?, to: :user
   delegate :motif_category, to: :rdv_context
 
-  after_commit on: [:update] do
-    Stats::CounterCache::RateOfNoShowForConvocations.new(self).perform
-    Stats::CounterCache::RateOfNoShowForInvitations.new(self).perform
-  end
-
   private
 
   def refresh_user_context_statuses
