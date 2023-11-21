@@ -12,6 +12,7 @@ class SendConvocationRemindersJob < ApplicationJob
     @participations_to_send_reminders_to ||=
       Participation.joins(:rdv)
                    .where(convocable: true)
+                   .where.not(status: Participation::CANCELLED_STATUSES)
                    .where(rdvs: { starts_at: 2.days.from_now.all_day })
   end
 

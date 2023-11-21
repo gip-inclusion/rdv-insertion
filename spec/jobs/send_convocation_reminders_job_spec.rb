@@ -7,10 +7,12 @@ describe SendConvocationRemindersJob do
     let!(:participation1) { create(:participation, id: 239, convocable: true) }
     let!(:participation2) { create(:participation, convocable: false) }
     let!(:participation3) { create(:participation, convocable: true) }
+    let!(:participation4) { create(:participation, convocable: true, status: "revoked") }
 
     let!(:rdv1) { create(:rdv, starts_at: 2.days.from_now, participations: [participation1]) }
     let!(:rdv2) { create(:rdv, starts_at: 2.days.from_now, participations: [participation2]) }
     let!(:rdv3) { create(:rdv, starts_at: 3.days.from_now, participations: [participation3]) }
+    let!(:rdv4) { create(:rdv, starts_at: 2.days.from_now, participations: [participation4]) }
 
     before do
       allow(NotifyParticipationsJob).to receive(:perform_async)
