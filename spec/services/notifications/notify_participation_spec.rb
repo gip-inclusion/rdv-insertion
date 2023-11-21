@@ -60,5 +60,18 @@ describe Notifications::NotifyParticipation, type: :service do
         subject
       end
     end
+
+    context "when it is a reminder of a cancelled participation" do
+      let!(:event) { "participation_reminder" }
+
+      before { participation.update! status: "revoked" }
+
+      it("is a success") { is_a_success }
+
+      it "does not send a notification" do
+        expect(Notifications::SendSms).not_to receive(:call)
+        subject
+      end
+    end
   end
 end

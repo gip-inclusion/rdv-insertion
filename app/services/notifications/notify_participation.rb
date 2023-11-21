@@ -7,7 +7,7 @@ module Notifications
     end
 
     def call
-      return if @participation.in_the_past?
+      return if @participation.in_the_past? || reminder_of_cancelled_participation?
 
       Notification.transaction do
         save_record!(notification)
@@ -40,6 +40,10 @@ module Notifications
     def update_notification_sent_at
       notification.sent_at = Time.zone.now
       save_record!(notification)
+    end
+
+    def reminder_of_cancelled_participation?
+      @event == "participation_reminder" && @participation.cancelled?
     end
   end
 end
