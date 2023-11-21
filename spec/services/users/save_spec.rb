@@ -7,7 +7,6 @@ describe Users::Save, type: :service do
   end
 
   let!(:rdv_solidarites_organisation_id) { 1010 }
-  let!(:rdv_solidarites_user_id) { 2020 }
   let!(:organisation) do
     create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id)
   end
@@ -24,8 +23,8 @@ describe Users::Save, type: :service do
       allow(user).to receive(:save).and_return(true)
       allow(Users::Validate).to receive(:call)
         .with(user: user).and_return(OpenStruct.new(success?: true))
-      allow(UpsertRdvSolidaritesUser).to receive(:call)
-        .and_return(OpenStruct.new(success?: true, rdv_solidarites_user_id: rdv_solidarites_user_id))
+      allow(Users::SyncWithRdvSolidarites).to receive(:call)
+        .and_return(OpenStruct.new(success?: true))
     end
 
     it "tries to save the user in db" do
@@ -33,19 +32,14 @@ describe Users::Save, type: :service do
       subject
     end
 
-    it "upserts a rdv solidarites user" do
-      expect(UpsertRdvSolidaritesUser).to receive(:call)
+    it "syncs the user with Rdv Solidarites" do
+      expect(Users::SyncWithRdvSolidarites).to receive(:call)
         .with(
           user: user,
           organisation: organisation,
           rdv_solidarites_session: rdv_solidarites_session
         )
       subject
-    end
-
-    it "assign the rdv solidarites user id" do
-      subject
-      expect(user.rdv_solidarites_user_id).not_to be_nil
     end
 
     it "is a success" do
@@ -69,9 +63,9 @@ describe Users::Save, type: :service do
       end
     end
 
-    context "when the rdv solidarites user upsert fails" do
+    context "when the rdv solidarites user sync fails" do
       before do
-        allow(UpsertRdvSolidaritesUser).to receive(:call)
+        allow(Users::SyncWithRdvSolidarites).to receive(:call)
           .and_return(OpenStruct.new(errors: ["some error"], success?: false))
       end
 
@@ -112,15 +106,6 @@ describe Users::Save, type: :service do
 
       it "stores the error" do
         expect(subject.errors).to eq(["invalid user"])
-      end
-    end
-
-    context "when the user is already linked to a rdv solidarites user" do
-      let!(:user) { create(:user, organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id) }
-
-      it "does not reassign the user id" do
-        expect(user).to receive(:save).at_most(1).time
-        subject
       end
     end
   end

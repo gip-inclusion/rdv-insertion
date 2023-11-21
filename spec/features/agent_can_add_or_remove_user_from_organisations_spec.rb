@@ -100,6 +100,45 @@ describe "Agents can add or remove user from organisations", js: true do
       end
     end
 
+    context "when the user has no rdv_solidarites_user_id" do
+      let!(:user) { create(:user, organisations: [organisation], rdv_solidarites_user_id: nil) }
+
+      it "recreates the user on rdvs and directly adds it to the right organisations" do
+        stub_create_user = stub_request(
+          :post, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/users"
+        ).to_return(
+          status: 200,
+          body: {
+            user: { id: rdv_solidarites_user_id }
+          }.to_json
+        )
+
+        visit department_user_path(department, user)
+
+        expect(page).to have_content(organisation.name)
+        expect(page).not_to have_content(other_org.name)
+
+        click_link("Ajouter ou retirer une organisation")
+
+        expect(page).to have_content(organisation.name)
+        expect(page).to have_content(other_org.name)
+        expect(page).to have_select(
+          "users_organisation[motif_category_id]", options: ["Aucune catégorie", "RSA suivi"]
+        )
+        select "Aucune catégorie", from: "users_organisation[motif_category_id]"
+
+        click_button("+ Ajouter")
+
+        expect(page).to have_content(organisation.name)
+        expect(page).to have_content(other_org.name)
+        expect(page).to have_content(user.last_name)
+
+        expect(stub_create_user).to have_been_requested
+        expect(user.reload.organisation_ids).to contain_exactly(organisation.id, other_org.id)
+        expect(user.reload.motif_categories).not_to include(other_motif_category)
+      end
+    end
+
     it "can remove from org" do
       stub_delete_user_profile = stub_request(
         :delete, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/user_profiles"

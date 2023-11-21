@@ -348,6 +348,22 @@ describe RdvSolidaritesWebhooks::ProcessRdvJob do
           .with(rdv_solidarites_rdv_id)
         subject
       end
+
+      context "when the webhook reason is rgpd" do
+        let!(:meta) { { "model" => "Rdv", "event" => "destroyed", "webhook_reason" => "rgpd" }.deep_symbolize_keys }
+        let!(:rdv) { create(:rdv, rdv_solidarites_rdv_id: rdv_solidarites_rdv_id, organisation: organisation) }
+
+        it "enqueues a nullify job" do
+          expect(NullifyRdvSolidaritesIdJob).to receive(:perform_async)
+            .with("Rdv", rdv.id)
+          subject
+        end
+
+        it "does not enqueue a delete job" do
+          expect(DeleteRdvJob).not_to receive(:perform_async)
+          subject
+        end
+      end
     end
 
     context "with an invalid category" do

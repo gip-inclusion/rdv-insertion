@@ -172,5 +172,20 @@ describe RdvSolidaritesWebhooks::ProcessUserProfileJob do
         end
       end
     end
+
+    context "when the webhook reason is rgpd" do
+      let!(:meta) do
+        {
+          "model" => "UserProfile",
+          "event" => "destroyed",
+          "webhook_reason" => "rgpd"
+        }.deep_symbolize_keys
+      end
+
+      it "does not enqueue a soft delete user job" do
+        expect(SoftDeleteUserJob).not_to receive(:perform_async)
+        subject
+      end
+    end
   end
 end
