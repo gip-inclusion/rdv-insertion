@@ -894,16 +894,46 @@ describe UsersController do
           end
 
           before do
-            UsersOrganisation.where(user: user2).update!(created_at: 1.year.ago)
+            UsersOrganisation.find_by(user: user2, organisation: organisation)
+                             .update!(created_at: 1.year.ago)
           end
 
-          it "orders by date of affectation to the category" do
+          it "orders by date of affectation to the department organisations" do
             get :index, params: index_params
 
             ordered_table = Nokogiri::XML(response.body).css("td").map(&:text)
             ordered_first_names = ordered_table & [user.first_name, user2.first_name]
 
             expect(ordered_first_names).to eq([user.first_name, user2.first_name])
+          end
+
+          context "when there are several organisations linked to a user" do
+            let!(:other_org) { create(:organisation, department:, users: [user], agents: [agent]) }
+
+            before do
+              UsersOrganisation.find_by(user: user, organisation: other_org)
+                               .update!(created_at: 2.years.ago)
+            end
+
+            it "orders by date of affectation to the department organisations" do
+              get :index, params: index_params
+
+              ordered_table = Nokogiri::XML(response.body).css("td").map(&:text)
+              ordered_first_names = ordered_table & [user.first_name, user2.first_name]
+
+              expect(ordered_first_names).to eq([user2.first_name, user.first_name])
+            end
+
+            context "at organisation level" do
+              it "orders by date of affectation to the organisation" do
+                get :index, params: { organisation_id: organisation.id }
+
+                ordered_table = Nokogiri::XML(response.body).css("td").map(&:text)
+                ordered_first_names = ordered_table & [user.first_name, user2.first_name]
+
+                expect(ordered_first_names).to eq([user.first_name, user2.first_name])
+              end
+            end
           end
         end
 
