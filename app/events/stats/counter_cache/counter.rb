@@ -63,10 +63,14 @@ module Stats
         params["created_at"].to_date.strftime("%Y-%m")
       end
 
+      def identifier
+        params["id"]
+      end
+
       def all_counters_of(group:)
         [month_to_set, nil].each do |month|
           scopes_with_global.each do |scope|
-            yield self.class.key_for(group:, scope:, month:), params["id"]
+            yield self.class.key_for(group:, scope:, month:), identifier
           end
         end
       end
