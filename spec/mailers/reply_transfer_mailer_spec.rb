@@ -129,5 +129,32 @@ RSpec.describe ReplyTransferMailer do
       )
       expect(mail.body.encoded).to match("Voir la fiche usager")
     end
+
+    context "when user is nil" do
+      let(:user) { nil }
+      let!(:rdv_context) { nil }
+      let!(:participation) { nil }
+      let!(:rdv) { nil }
+      let!(:invitation) { nil }
+
+      it "renders the headers" do
+        expect(mail[:from].to_s).to eq("rdv-insertion <support@rdv-insertion.fr>")
+        expect(mail.to).to eq(["support@rdv-insertion.fr"])
+      end
+
+      it "renders the content" do
+        expect(mail.body.encoded).to match("Vous trouverez ci-dessous une réponse d'un.e bénéficiaire")
+        expect(mail.body.encoded).to match("<h4>coucou</h4>")
+        expect(mail.body.encoded).to match("Je souhaite annuler mon RDV")
+        expect(mail.body.encoded).to match("Vous trouverez ci-dessous les informations nécessaires pour contacter")
+        expect(mail.body.encoded).to match(" la personne ou transmettre ce mail à un agent en charge de son parcours.")
+        expect(mail.body.encoded).to match("<h4>Éxpéditeur</h4>")
+        expect(mail.body.encoded).not_to match("Monsieur Bénédicte FICIAIRE")
+        expect(mail.body.encoded).to match("bene_ficiaire@gmail.com")
+        expect(mail.body.encoded).not_to match("33782605941")
+        expect(mail.body.encoded).not_to match("#{organisation.name} - organisation@departement.fr")
+        expect(mail.body.encoded).not_to match("Voir la fiche usager")
+      end
+    end
   end
 end
