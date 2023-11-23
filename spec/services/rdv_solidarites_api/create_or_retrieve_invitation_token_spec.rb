@@ -46,5 +46,19 @@ describe RdvSolidaritesApi::CreateOrRetrieveInvitationToken, type: :service do
         expect(subject.errors).to eq(["Erreur RDV-Solidarités: some error"])
       end
     end
+
+    context "when the session is nil" do
+      let!(:rdv_solidarites_session) { nil }
+
+      before { allow(Sentry).to receive(:capture_message) }
+
+      it("is a failure") { is_a_failure }
+
+      it "returns the error" do
+        expect(subject.errors).to eq(
+          ["Impossible d'appeler RDV-Solidarités. L'équipe a été notifée de l'erreur et tente de la résoudre."]
+        )
+      end
+    end
   end
 end

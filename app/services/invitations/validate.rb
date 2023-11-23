@@ -2,7 +2,12 @@ module Invitations
   class Validate < BaseService
     attr_reader :invitation
 
-    delegate :user, :organisations, :motif_category, :valid_until, :motif_category_name, :department_id,
+    delegate :user,
+             :organisations,
+             :motif_category,
+             :valid_until,
+             :motif_category_name,
+             :department_id,
              to: :invitation
 
     def initialize(invitation:)

@@ -25,7 +25,7 @@ describe "Agents can update a participation status", js: true do
 
   before do
     setup_agent_session(agent)
-    stub_request(:patch, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/rdvs_users/#{rdvs_participation_id}")
+    stub_request(:patch, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/participations/#{rdvs_participation_id}")
       .to_return(status: 200, body: "{}")
   end
 

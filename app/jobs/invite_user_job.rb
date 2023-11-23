@@ -57,7 +57,8 @@ class InviteUserJob < ApplicationJob
   def save_and_send_invitation
     @save_and_send_invitation ||= Invitations::SaveAndSend.call(
       invitation: @invitation,
-      rdv_solidarites_session: rdv_solidarites_session
+      rdv_solidarites_session: rdv_solidarites_session,
+      check_creneaux_availability: false
     )
   end
 

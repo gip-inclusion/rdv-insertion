@@ -52,8 +52,8 @@ module Users::Filterable
   def filter_users_by_search_query
     return if params[:search_query].blank?
 
-    # with_pg_search_rank scope added to be compatible with distinct https://github.com/Casecommons/pg_search/issues/238
-    @users = @users.search_by_text(params[:search_query]).with_pg_search_rank
+    # reorder is necessary to use distinct and ordering https://github.com/Casecommons/pg_search/issues/238#issuecomment-543702501
+    @users = @users.search_by_text(params[:search_query]).reorder("")
   end
 
   def filter_users_by_page

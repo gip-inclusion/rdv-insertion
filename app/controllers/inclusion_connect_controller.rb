@@ -45,19 +45,9 @@ class InclusionConnectController < ApplicationController
     session[:agent_id] = agent.id
     session[:rdv_solidarites] = {
       uid: agent.email,
-      x_agent_auth_signature: signature_for_agents_auth_with_shared_secret,
+      x_agent_auth_signature: agent.signature_auth_with_shared_secret,
       inclusion_connected: true
     }
-  end
-
-  def signature_for_agents_auth_with_shared_secret
-    payload = {
-      id: agent.rdv_solidarites_agent_id,
-      first_name: agent.first_name,
-      last_name: agent.last_name,
-      email: agent.email
-    }
-    OpenSSL::HMAC.hexdigest("SHA256", ENV.fetch("SHARED_SECRET_FOR_AGENTS_AUTH"), payload.to_json)
   end
 
   def handle_failed_authentication(errors)

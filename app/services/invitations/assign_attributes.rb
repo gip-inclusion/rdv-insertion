@@ -12,12 +12,6 @@ module Invitations
 
     private
 
-    def user
-      # we reload in case the user had a new invitation attached to it after
-      # the invitation has been instantiated
-      @invitation.user.reload
-    end
-
     def rdv_solidarites_token
       retrieve_rdv_solidarites_token.invitation_token
     end
@@ -25,7 +19,7 @@ module Invitations
     def retrieve_rdv_solidarites_token
       @retrieve_rdv_solidarites_token ||= call_service!(
         RdvSolidaritesApi::CreateOrRetrieveInvitationToken,
-        rdv_solidarites_user_id: user.rdv_solidarites_user_id,
+        rdv_solidarites_user_id: @invitation.user.rdv_solidarites_user_id,
         rdv_solidarites_session: @rdv_solidarites_session
       )
     end

@@ -9,6 +9,7 @@ module RdvParticipationStatus
     enum status: { unknown: 0, seen: 2, excused: 3, revoked: 4, noshow: 5 }
 
     scope :cancelled_by_user, -> { where(status: CANCELLED_BY_USER_STATUSES) }
+    scope :not_cancelled, -> { where.not(status: CANCELLED_STATUSES) }
     scope :status, ->(status) { where(status: status) }
     scope :resolved, -> { where(status: %w[seen excused revoked noshow]) }
   end
