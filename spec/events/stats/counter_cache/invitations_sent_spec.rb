@@ -9,7 +9,7 @@ describe Stats::CounterCache::InvitationsSent do
         Sidekiq::Testing.inline! do
           invitation = create(:invitation, sent_at: nil)
           invitation.update!(sent_at: Time.zone.now)
-          expect(described_class.counter_for(scope: invitation.department)).to eq(1)
+          expect(described_class.number_of_elements_in(scope: invitation.department)).to eq(1)
           expect(described_class.value(scope: Department.new)).to eq(1)
         end
       end

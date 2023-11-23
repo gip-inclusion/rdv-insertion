@@ -10,8 +10,8 @@ module Stats
 
         class_methods do
           def value(scope:, month: nil)
-            number_of_seen = counter_for(group: "seen", scope:, month:)
-            number_of_noshow = counter_for(group: "noshow", scope:, month:)
+            number_of_seen = number_of_elements_in(group: "seen", scope:, month:)
+            number_of_noshow = number_of_elements_in(group: "noshow", scope:, month:)
 
             (number_of_noshow / ((number_of_seen + number_of_noshow).nonzero? || 1).to_f) * 100
           end

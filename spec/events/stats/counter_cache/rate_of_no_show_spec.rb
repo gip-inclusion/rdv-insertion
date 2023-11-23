@@ -15,15 +15,15 @@ describe Stats::CounterCache::RateOfNoShow do
           create(:notification, participation: participation2)
 
           participation.update!(status: "seen")
-          expect(convocation_class.counter_for(group: "seen", scope: participation.department)).to eq(1)
+          expect(convocation_class.number_of_elements_in(group: "seen", scope: participation.department)).to eq(1)
 
           participation.update!(status: "noshow")
-          expect(convocation_class.counter_for(group: "seen", scope: participation.department)).to eq(0)
-          expect(convocation_class.counter_for(group: "noshow", scope: participation.department)).to eq(1)
+          expect(convocation_class.number_of_elements_in(group: "seen", scope: participation.department)).to eq(0)
+          expect(convocation_class.number_of_elements_in(group: "noshow", scope: participation.department)).to eq(1)
 
           participation2.update!(status: "seen")
-          expect(convocation_class.counter_for(group: "seen", scope: participation.department)).to eq(1)
-          expect(convocation_class.counter_for(group: "noshow", scope: participation.department)).to eq(1)
+          expect(convocation_class.number_of_elements_in(group: "seen", scope: participation.department)).to eq(1)
+          expect(convocation_class.number_of_elements_in(group: "noshow", scope: participation.department)).to eq(1)
           expect(convocation_class.value(scope: participation.department)).to eq(50.0)
         end
       end
@@ -48,13 +48,13 @@ describe Stats::CounterCache::RateOfNoShow do
           participation4.update!(status: "seen", created_at: 2.months.ago)
           participation4.update!(status: "noshow")
 
-          expect(convocation_class.counter_for(group: "noshow", scope: participation.department,
-                                               month: 1.month.ago.strftime("%Y-%m"))).to eq(1)
-          expect(convocation_class.counter_for(group: "seen", scope: Department.new,
-                                               month: 2.months.ago.strftime("%Y-%m"))).to eq(2)
-          expect(convocation_class.counter_for(group: "noshow", scope: participation4.department,
-                                               month: 2.months.ago.strftime("%Y-%m"))).to eq(1)
-          expect(convocation_class.counter_for(group: "seen", scope: Department.new)).to eq(2)
+          expect(convocation_class.number_of_elements_in(group: "noshow", scope: participation.department,
+                                                         month: 1.month.ago.strftime("%Y-%m"))).to eq(1)
+          expect(convocation_class.number_of_elements_in(group: "seen", scope: Department.new,
+                                                         month: 2.months.ago.strftime("%Y-%m"))).to eq(2)
+          expect(convocation_class.number_of_elements_in(group: "noshow", scope: participation4.department,
+                                                         month: 2.months.ago.strftime("%Y-%m"))).to eq(1)
+          expect(convocation_class.number_of_elements_in(group: "seen", scope: Department.new)).to eq(2)
           expect(convocation_class.value(scope: Department.new)).to eq(50)
           values_grouped_by_month = convocation_class.values_grouped_by_month(scope: Department.new)
 
