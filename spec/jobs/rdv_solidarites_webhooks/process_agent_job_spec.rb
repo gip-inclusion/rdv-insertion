@@ -43,5 +43,19 @@ describe RdvSolidaritesWebhooks::ProcessAgentJob do
         expect { subject }.to change(Agent, :count).by(-1)
       end
     end
+
+    context "when the email is blank" do
+      let!(:data) do
+        {
+          "id" => rdv_solidarites_agent_id,
+          "email" => ""
+        }.deep_symbolize_keys
+      end
+
+      it "does not upsert the agent" do
+        expect(UpsertRecordJob).not_to receive(:perform_async)
+        subject
+      end
+    end
   end
 end

@@ -129,5 +129,21 @@ describe RdvSolidaritesWebhooks::ProcessAgentRoleJob do
         )
       end
     end
+
+    context "for an intervenant" do
+      let!(:data) do
+        {
+          "id" => rdv_solidarites_agent_role_id,
+          "access_level" => "intervenant",
+          "agent" => { id: rdv_solidarites_agent_id },
+          "organisation" => { id: rdv_solidarites_organisation_id }
+        }.deep_symbolize_keys
+      end
+
+      it "does not process the upsert" do
+        expect(UpsertRecordJob).not_to receive(:perform_async)
+        subject
+      end
+    end
   end
 end
