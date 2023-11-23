@@ -51,6 +51,13 @@ module Stats
             [month.strftime("%m/%Y"), value(scope: scope, month: month.strftime("%Y-%m")).round(2)]
           end
         end
+
+        def initialize_with(subject, options = {})
+          counter = new
+          return unless options[:skip_validation] || (counter.respond_to?(:run_if) ? counter.run_if(subject) : true)
+
+          counter.perform(subject)
+        end
       end
 
       protected

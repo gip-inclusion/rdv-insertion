@@ -17,7 +17,7 @@ module Stats
           end
         end
 
-        def process_event
+        def update_noshow_and_seen_counters
           if participation&.status == "noshow"
             increment(group: "noshow")
             decrement(group: "seen")

@@ -6,8 +6,12 @@ module Stats
         include Common
 
         catch_events :update_participation_successful, if: lambda { |participation|
-          participation.previous_changes[:status].present? && participation.notifications.any?
+          participation.previous_changes[:status].present?
         }
+
+        def process_event
+          update_noshow_and_seen_counters if participation.notifications.any?
+        end
       end
     end
   end
