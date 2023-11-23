@@ -15,17 +15,12 @@ module Stats
         (number_of_autonomous / (total_users.nonzero? || 1).to_f) * 100
       end
 
-      def scopes
-        [@participation.department, @participation.organisation]
-      end
-
       def identifier
-        @participation.user_id
+        participation.user_id
       end
 
       def process_event
-        @participation = Participation.find_by(id: params["id"])
-        increment(group: @participation.created_by)
+        increment(group: participation.created_by)
       end
     end
   end

@@ -5,9 +5,9 @@ module Stats
         include Counter
         include Common
 
-        def run_if(participation)
+        catch_events :update_participation_successful, if: lambda { |participation|
           participation.previous_changes[:status].present? && participation.notifications.any?
-        end
+        }
       end
     end
   end

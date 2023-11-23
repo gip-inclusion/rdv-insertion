@@ -6,8 +6,6 @@ module Stats
 
         included do
           include EventSubscriber
-
-          catch_events :update_participation_successful
         end
 
         class_methods do
@@ -19,16 +17,11 @@ module Stats
           end
         end
 
-        def scopes
-          [@participation.department, @participation.organisation]
-        end
-
         def process_event
-          @participation = Participation.find_by(id: params["id"])
-          if @participation&.status == "noshow"
+          if participation&.status == "noshow"
             increment(group: "noshow")
             decrement(group: "seen")
-          elsif @participation&.resolved?
+          elsif participation&.resolved?
             increment(group: "seen")
             decrement(group: "noshow")
           end

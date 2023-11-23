@@ -67,6 +67,10 @@ module Stats
         params["id"]
       end
 
+      def scopes
+        [subject.department, subject.organisation]
+      end
+
       def all_counters_of(group:)
         [month_to_set, nil].each do |month|
           scopes_with_global.each do |scope|
