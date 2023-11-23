@@ -4,6 +4,7 @@ fr:
       rdv: Rendez-vous
     attributes:
       rdv:
+        status: Statut du rdv
         statuses:
           unknown: Non déterminé
           seen: Rendez-vous honoré

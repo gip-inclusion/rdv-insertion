@@ -44,7 +44,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
       "lieu" => lieu_attributes,
       "motif" => motif_attributes,
       "users" => users,
-      "rdvs_users" => participations_attributes,
+      "participations" => participations_attributes,
       "organisation" => { id: rdv_solidarites_organisation_id },
       "agents" => [{ id: agent.rdv_solidarites_agent_id }]
     }.deep_symbolize_keys

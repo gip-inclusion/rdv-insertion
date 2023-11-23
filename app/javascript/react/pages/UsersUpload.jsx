@@ -55,7 +55,6 @@ const UsersUpload = observer(
       users.isDepartmentLevel = isDepartmentLevel;
 
       const rows = await uploadFile(file, sheetName, columnNames);
-
       rows.forEach((row) => {
         const user = new User(
           {
@@ -260,18 +259,7 @@ const UsersUpload = observer(
 
                       return (
                         <th {...column.attributes} key={column.name}>
-                          {column.sortable ? (
-                            <button type="button" onClick={() => users.sort(column.key)}>
-                              {column.name}{" "}
-                              <i
-                                className={`fas fa-sort fa-sort-${
-                                  users.sortBy === column.key && users.sortDirection
-                                } />`}
-                              />
-                            </button>
-                          ) : (
-                            column.name
-                          )}
+                          {column.header({ column, users })}
                         </th>
                       );
                     })}

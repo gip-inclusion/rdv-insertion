@@ -9,17 +9,6 @@ module UsersHelper
     configuration.invitation_formats.present?
   end
 
-  def sorting_users_by?(column)
-    params[:sort_by] == column
-  end
-
-  def sort_order_for(column)
-    return "up" unless sorting_users_by?(column)
-
-    sortings = ["up", "down", nil]
-    sortings[(sortings.index(params[:sort_order]) + 1) % sortings.length]
-  end
-
   def no_search_results?(users)
     users.empty? && params[:search_query].present?
   end
@@ -171,6 +160,12 @@ module UsersHelper
     else
       organisation_users_path(organisation, **params.compact_blank)
     end
+  end
+
+  def compute_update_position_path(organisation, department)
+    return department_configurations_positions_update_path(department) if department_level?
+
+    organisation_configurations_positions_update_path(organisation)
   end
 
   def compute_edit_path(user, organisation, department)

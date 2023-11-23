@@ -236,7 +236,7 @@ describe ConfigurationsController do
     let!(:create_params) do
       {
         configuration: {
-          invitation_formats: %w[sms email postal], convene_user: true,
+          invitation_formats: %w[sms email postal], convene_user: false,
           rdv_with_referents: true, invite_to_user_organisations_only: true,
           number_of_days_before_action_required: 12,
           motif_category_id: motif_category.id, file_configuration_id: file_configuration.id,
@@ -253,7 +253,7 @@ describe ConfigurationsController do
     it "assigns the corrects attributes" do
       post :create, params: create_params
       expect(Configuration.last.reload.invitation_formats).to eq(%w[sms email postal])
-      expect(Configuration.last.reload.convene_user).to eq(true)
+      expect(Configuration.last.reload.convene_user).to eq(false)
       expect(Configuration.last.reload.rdv_with_referents).to eq(true)
       expect(Configuration.last.reload.invite_to_user_organisations_only).to eq(true)
       expect(Configuration.last.reload.number_of_days_before_action_required).to eq(12)
@@ -322,7 +322,7 @@ describe ConfigurationsController do
     let!(:update_params) do
       {
         configuration: {
-          invitation_formats: %w[sms email postal], convene_user: true,
+          invitation_formats: %w[sms email postal], convene_user: false,
           rdv_with_referents: true, invite_to_user_organisations_only: true,
           number_of_days_before_action_required: 12,
           day_of_the_month_periodic_invites: 5
@@ -334,7 +334,7 @@ describe ConfigurationsController do
     it "updates the configuration" do
       patch :update, params: update_params
       expect(configuration.reload.invitation_formats).to eq(%w[sms email postal])
-      expect(configuration.reload.convene_user).to eq(true)
+      expect(configuration.reload.convene_user).to eq(false)
       expect(configuration.reload.rdv_with_referents).to eq(true)
       expect(configuration.reload.invite_to_user_organisations_only).to eq(true)
       expect(configuration.reload.number_of_days_before_action_required).to eq(12)

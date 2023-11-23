@@ -25,6 +25,21 @@ class Users {
       {
         name: "Séléction",
         attributes: { className: "text-center", scope: "col" },
+        header: ({ users, column }) => (
+          <>
+            {column.name}<br />
+            <input
+              type="checkbox"
+              className="form-check-input"
+              checked={users.list.every((user) => user.selected)}
+              onChange={(event) =>
+                users.list.forEach((user) => {
+                  user.selected = event.target.checked;
+                })
+              }
+            />
+          </>
+        ),
         content: ({ user }) => (
             <input
               type="checkbox"
@@ -169,6 +184,17 @@ class Users {
     ].map(column => ({
       attributes: { scope: "col" },
       visible: true,
+      header: ({ users, column: c }) => {
+        if (c.sortable) {
+          return (
+            <button type="button" onClick={() => users.sort(c.key)} >
+              {c.name} <i className={`fas fa-sort fa-sort-${users.sortBy === c.key && users.sortDirection} />`} />
+            </button>
+          )
+        }
+
+        return column.name        
+      },
       ...column
     }))
   }

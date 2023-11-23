@@ -19,11 +19,12 @@ class UsersOrganisationsController < ApplicationController
   def destroy
     if remove_user_from_org.success?
       flash.now[:success] = "L'organisation a bien été retirée"
+
+      redirect_to_users_list if user_deleted_or_removed_from_current_org?
     else
       flash.now[:error] = "Une erreur s'est produite lors du retrait de " \
                           "l'organisation: #{remove_user_from_org.errors}"
     end
-    redirect_to_users_list if user_deleted_or_removed_from_current_org?
   end
 
   private

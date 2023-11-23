@@ -676,12 +676,12 @@ describe UsersController do
       end
 
       let!(:user2) do
-        create(:user, organisations: [organisation], rdv_contexts: [rdv_context1], first_name: "Marie",
+        create(:user, organisations: [organisation], first_name: "Marie",
                       tag_users_attributes: [{ tag_id: tags[0].id }, { tag_id: tags[1].id }])
       end
 
       let!(:user3) do
-        create(:user, organisations: [organisation], rdv_contexts: [rdv_context2], first_name: "Oliva",
+        create(:user, organisations: [organisation], first_name: "Oliva",
                       tag_users_attributes: [{ tag_id: tags[2].id }])
       end
 
@@ -894,10 +894,11 @@ describe UsersController do
           end
 
           before do
-            UsersOrganisation.where(user: user2).update!(created_at: 1.year.ago)
+            UsersOrganisation.find_by(user: user2, organisation: organisation)
+                             .update!(created_at: 1.year.ago)
           end
 
-          it "orders by date of affectation to the category" do
+          it "orders by date of affectation to the department organisations" do
             get :index, params: index_params
 
             ordered_table = Nokogiri::XML(response.body).css("td").map(&:text)
@@ -905,14 +906,42 @@ describe UsersController do
 
             expect(ordered_first_names).to eq([user.first_name, user2.first_name])
           end
+
+          context "when there are several organisations linked to a user" do
+            let!(:other_org) { create(:organisation, department:, users: [user], agents: [agent]) }
+
+            before do
+              UsersOrganisation.find_by(user: user, organisation: other_org)
+                               .update!(created_at: 2.years.ago)
+            end
+
+            it "orders by date of affectation to the department organisations" do
+              get :index, params: index_params
+
+              ordered_table = Nokogiri::XML(response.body).css("td").map(&:text)
+              ordered_first_names = ordered_table & [user.first_name, user2.first_name]
+
+              expect(ordered_first_names).to eq([user2.first_name, user.first_name])
+            end
+
+            context "at organisation level" do
+              it "orders by date of affectation to the organisation" do
+                get :index, params: { organisation_id: organisation.id }
+
+                ordered_table = Nokogiri::XML(response.body).css("td").map(&:text)
+                ordered_first_names = ordered_table & [user.first_name, user2.first_name]
+
+                expect(ordered_first_names).to eq([user.first_name, user2.first_name])
+              end
+            end
+          end
         end
 
         context "with motif_category" do
           let!(:index_params) { { department_id: department.id, motif_category_id: category_orientation.id } }
 
           before do
-            user.rdv_contexts.first.update!(motif_category: category_orientation, created_at: 2.years.ago)
-            user2.rdv_contexts.first.update!(motif_category: category_orientation, created_at: 1.year.ago)
+            user.rdv_contexts.first.update!(motif_category: category_orientation, created_at: 1.year.ago)
           end
 
           it "orders by rdv_context creation" do
@@ -922,43 +951,6 @@ describe UsersController do
             ordered_first_names = ordered_table & [user.first_name, user2.first_name]
 
             expect(ordered_first_names).to eq([user2.first_name, user.first_name])
-          end
-
-          context "when sorting by invitations" do
-            let!(:index_params) do
-              {
-                department_id: department.id,
-                motif_category_id: category_orientation.id,
-                sort_by: "last_invitation_sent_at",
-                sort_order: "down"
-              }
-            end
-
-            let!(:invitation) do
-              create(:invitation, rdv_context: user.rdv_contexts.first, user: user, sent_at: 1.year.ago)
-            end
-
-            let!(:invitation2) do
-              create(:invitation, rdv_context: user2.rdv_contexts.first, user: user2, sent_at: 2.years.ago)
-            end
-
-            # This is to make sure only the invitations of the current motif_category are taken into account
-            let!(:invitation_unused) do
-              create(:invitation, rdv_context: rdv_context_unused, user: user2, sent_at: 1.day.ago)
-            end
-
-            let(:rdv_context_unused) do
-              create(:rdv_context, motif_category: category_accompagnement, status: "rdv_seen")
-            end
-
-            it "orders by invitation creation" do
-              get :index, params: index_params
-
-              ordered_table = Nokogiri::XML(response.body).css("td").map(&:text)
-              ordered_first_names = ordered_table & [user.first_name, user2.first_name]
-
-              expect(ordered_first_names).to eq([user.first_name, user2.first_name])
-            end
           end
         end
       end
@@ -1160,6 +1152,22 @@ describe UsersController do
           it "removes all existing tags" do
             post :update, params: update_params
             expect(user.reload.tags.size).to eq(0)
+          end
+
+          context "with tags on other organisations" do
+            let(:other_organisation) { create(:organisation) }
+            let(:other_tag) { create(:tag, value: "ok") }
+
+            before do
+              other_organisation.tags << other_tag
+              user.tags << other_tag
+            end
+
+            it "removes only correct tags" do
+              post :update, params: update_params
+              expect(user.reload.tags.first).to eq(other_tag)
+              expect(user.reload.tags.size).to eq(1)
+            end
           end
         end
 

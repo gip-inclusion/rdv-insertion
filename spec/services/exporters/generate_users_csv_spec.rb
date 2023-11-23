@@ -65,20 +65,6 @@ describe Exporters::GenerateUsersCsv, type: :service do
   describe "#call" do
     before { travel_to(now) }
 
-    context "when the invitation deadline has passed" do
-      let!(:rdv_context) do
-        create(
-          :rdv_context, invitations: [first_invitation, last_invitation],
-                        participations: [], motif_category: motif_category,
-                        user: user1, status: "invitation_pending"
-        )
-      end
-
-      it "displays 'délai dépassé'" do
-        expect(subject.csv).to include("Invitation en attente de réponse (Délai dépassé)") # rdv_context status
-      end
-    end
-
     context "it exports users to csv" do
       let!(:csv) { subject.csv }
 
@@ -108,7 +94,8 @@ describe Exporters::GenerateUsersCsv, type: :service do
         expect(csv).to include("Rôle")
         expect(csv).to include("Archivé le")
         expect(csv).to include("Motif d'archivage")
-        expect(csv).to include("Statut")
+        expect(csv).to include("Statut du rdv")
+        expect(csv).to include("Statut de la catégorie de motifs")
         expect(csv).to include("Première invitation envoyée le")
         expect(csv).to include("Dernière invitation envoyée le")
         expect(csv).to include("Dernière convocation envoyée le")
@@ -173,9 +160,10 @@ describe Exporters::GenerateUsersCsv, type: :service do
           expect(csv).to include("RSA orientation sur site") # last rdv motif
           expect(csv).to include("individuel") # last rdv type
           expect(csv).to include("individuel;Oui") # last rdv taken in autonomy ?
+          expect(csv).to include("Non déterminé") # rdv status
           expect(csv).to include("Statut du RDV à préciser") # rdv_context status
           expect(csv).to include("Statut du RDV à préciser;Oui") # first rdv in less than 30 days ?
-          expect(csv).to include("individuel;Oui;Statut du RDV à préciser;Oui;25/05/2022") # orientation date
+          expect(csv).to include("Non déterminé;Statut du RDV à préciser;Oui;25/05/2022") # orientation date
         end
 
         it "displays the organisation infos" do
@@ -207,11 +195,6 @@ describe Exporters::GenerateUsersCsv, type: :service do
             expect(subject.csv).to include("20/06/2022") # archive status
             expect(subject.csv).to include("20/06/2022;test") # archive reason
           end
-
-          it "does displays the archived status rather than the rdv_context status" do
-            expect(subject.csv).not_to include("Statut du RDV à préciser")
-            expect(subject.csv).to include("Archivé")
-          end
         end
       end
 
@@ -226,8 +209,9 @@ describe Exporters::GenerateUsersCsv, type: :service do
           expect(subject.filename).to eq("Export_beneficiaires_organisation_drome_rsa.csv")
         end
 
-        it "does not display the statuses" do
-          expect(subject.csv).not_to include("Statut du RDV à préciser")
+        it "generates headers" do
+          expect(csv).to start_with("\uFEFF")
+          expect(csv).not_to include("Statut de la catégorie de motifs")
         end
       end
     end

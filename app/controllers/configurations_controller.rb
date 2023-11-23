@@ -1,6 +1,6 @@
 class ConfigurationsController < ApplicationController
   PERMITTED_PARAMS = [
-    { invitation_formats: [] }, :convene_applicant, :rdv_with_referents, :file_configuration_id,
+    { invitation_formats: [] }, :convene_user, :rdv_with_referents, :file_configuration_id,
     :invite_to_user_organisations_only, :number_of_days_before_action_required,
     :day_of_the_month_periodic_invites, :number_of_days_between_periodic_invites, :motif_category_id,
     :template_rdv_title_override, :template_rdv_title_by_phone_override, :template_rdv_purpose_override,
@@ -76,8 +76,7 @@ class ConfigurationsController < ApplicationController
   end
 
   def set_messages_configuration
-    @messages_configuration = @organisation.messages_configuration ||
-                              MessagesConfiguration.new(organisation: @organisation)
+    @messages_configuration = @organisation.messages_configuration
   end
 
   def set_file_configuration

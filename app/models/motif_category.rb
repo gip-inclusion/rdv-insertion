@@ -1,6 +1,4 @@
 class MotifCategory < ApplicationRecord
-  include MotifCategory::Sortable
-
   has_many :configurations, dependent: :restrict_with_exception
   has_many :rdv_contexts, dependent: :restrict_with_exception
   has_many :motifs, dependent: :restrict_with_exception

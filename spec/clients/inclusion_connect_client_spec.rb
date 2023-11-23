@@ -17,7 +17,7 @@ describe InclusionConnectClient, type: :model do
 
     it "returns the correct authorization URL" do
       expect(auth_path).to eq(
-        "#{base_url}/auth?client_id=truc&from=community&redirect_uri=" \
+        "#{base_url}/authorize/?client_id=truc&from=community&redirect_uri=" \
         "#{URI.encode_www_form_component(inclusion_connect_callback_url)}&response_type=" \
         "code&scope=openid+email&state=#{ic_state}"
       )
@@ -27,7 +27,7 @@ describe InclusionConnectClient, type: :model do
   describe ".get_token" do
     it "makes a POST request to the token endpoint with the correct data" do
       allow(Faraday).to receive(:post).with(
-        URI("#{base_url}/token"),
+        URI("#{base_url}/token/"),
         {
           client_id: "truc",
           client_secret: "truc secret",
@@ -46,7 +46,7 @@ describe InclusionConnectClient, type: :model do
   describe ".logout" do
     it "makes a GET request to the logout endpoint with the correct data" do
       allow(Faraday).to receive(:get).with(
-        "#{base_url}/logout",
+        "#{base_url}/logout/",
         {
           id_token_hint: id_token
         }
@@ -61,7 +61,7 @@ describe InclusionConnectClient, type: :model do
   describe ".get_agent_info" do
     it "makes a GET request to the userinfo endpoint with the correct data and headers" do
       allow(Faraday).to receive(:get).with(
-        "#{base_url}/userinfo",
+        "#{base_url}/userinfo/",
         { schema: "openid" },
         { "Authorization" => "Bearer #{access_token}" }
       ).and_return(instance_double("Faraday::Response", status: 200, body: "response_body"))

@@ -32,6 +32,10 @@ describe "Agents can upload user list", js: true do
   before do
     setup_agent_session(agent)
     stub_user_creation(rdv_solidarites_user_id)
+    stub_request(
+      :get,
+      /#{Regexp.quote(ENV['RDV_SOLIDARITES_URL'])}\/api\/rdvinsertion\/invitations\/creneau_availability.*/
+    ).to_return(status: 200, body: { "creneau_availability" => true }.to_json, headers: {})
   end
 
   context "at organisation level" do
@@ -706,17 +710,41 @@ describe "Agents can upload user list", js: true do
       end
 
       context "with errors" do
-        it "highlights users with errors" do
-          visit new_department_upload_path(department, configuration_id: configuration.id)
+        context "in case of creneau availability returning false" do
+          before do
+            stub_request(
+              :get,
+              /#{Regexp.quote(ENV['RDV_SOLIDARITES_URL'])}\/api\/rdvinsertion\/invitations\/creneau_availability.*/
+            ).to_return(status: 200, body: { "creneau_availability" => false }.to_json, headers: {})
+          end
 
-          attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test_invalid.xlsx"))
+          it "highlights users with errors" do
+            visit new_department_upload_path(department, configuration_id: configuration.id)
 
-          first('input[type="checkbox"]', visible: :visible).click
-          click_button("Actions pour toute la sélection")
-          expect(page).not_to have_css("tr.table-danger")
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
 
-          click_button("Créer comptes")
-          expect(page).to have_css("tr.table-danger")
+            first('input[type="checkbox"]', visible: :visible).click
+            click_button("Actions pour toute la sélection")
+            expect(page).not_to have_css("td i.fas.fa-check")
+
+            click_button("Invitation par sms")
+            expect(page).to have_css("tr.table-danger")
+          end
+        end
+
+        context "in case of invalid uploaded file" do
+          it "highlights users with errors" do
+            visit new_department_upload_path(department, configuration_id: configuration.id)
+
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test_invalid.xlsx"))
+
+            first('input[type="checkbox"]', visible: :visible).click
+            click_button("Actions pour toute la sélection")
+            expect(page).not_to have_css("tr.table-danger")
+
+            click_button("Créer comptes")
+            expect(page).to have_css("tr.table-danger")
+          end
         end
       end
     end
