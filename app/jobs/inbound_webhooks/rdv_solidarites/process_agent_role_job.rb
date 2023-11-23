@@ -4,7 +4,7 @@ module InboundWebhooks
       def perform(data, meta)
         @data = data.deep_symbolize_keys
         @meta = meta.deep_symbolize_keys
-        return if organisation.blank?
+        return if organisation.blank? || @data[:access_level] == "intervenant"
 
         assign_rdv_solidarites_agent_role_id if agent_role
         upsert_or_delete_agent_role
