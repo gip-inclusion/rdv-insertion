@@ -3,6 +3,8 @@ module RdvSolidaritesWebhooks
     def perform(data, meta)
       @data = data.deep_symbolize_keys
       @meta = meta.deep_symbolize_keys
+      # email is blank for intervenant role
+      return if @data[:email].blank?
 
       upsert_or_delete_agent
     end
