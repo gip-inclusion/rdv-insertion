@@ -28,11 +28,10 @@ module EventSubscriber
         next if check_options(event_name)
 
         define_method(event_name.to_s) do |subject|
-          subject_hash = subject.is_a?(Hash) ? subject : JSON.parse(subject.to_json)
-          subject_hash.merge!(previous_changes: subject&.previous_changes || {})
           should_run = respond_to?(:run_if) ? run_if(subject) : true
+          attributes = subject.attributes.merge(previous_changes: subject&.previous_changes || {})
 
-          self.class.perform_async(subject_hash.with_indifferent_access) if should_run
+          self.class.perform_async(attributes) if should_run
         end
 
         define_subject_method(event_name)
