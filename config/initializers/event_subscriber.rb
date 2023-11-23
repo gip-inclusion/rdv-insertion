@@ -10,19 +10,6 @@ module EventSubscriber
   end
 
   class_methods do
-    def catch_changes_on(*classes_to_catch)
-      events = []
-
-      classes_to_catch.each do |klass|
-        class_name = klass.parameterize.underscore
-        events << "create_#{class_name}_successful"
-        events << "update_#{class_name}_successful"
-        events << "destroy_#{class_name}_successful"
-      end
-
-      catch_events(*events.map(&:to_sym))
-    end
-
     def catch_events(*events)
       events.each do |event_name|
         next if check_options(event_name)
