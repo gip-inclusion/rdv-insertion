@@ -13,6 +13,14 @@ class RdvSolidaritesClient
     )
   end
 
+  def create_user_profiles(user_id, organisation_ids)
+    Faraday.post(
+      "#{@url}/api/v1/user_profiles/create_many",
+      { user_id: user_id, organisation_ids: organisation_ids }.to_json,
+      request_headers
+    )
+  end
+
   def update_user(user_id, request_body = {})
     Faraday.patch(
       "#{@url}/api/v1/users/#{user_id}",
