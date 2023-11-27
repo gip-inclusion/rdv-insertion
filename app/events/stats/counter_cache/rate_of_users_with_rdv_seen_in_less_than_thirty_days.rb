@@ -9,7 +9,7 @@ module Stats
       }
 
       def self.value(scope:, month: nil)
-        number_of_users = Stats::CounterCache::UsersCreated.value(scope:, month:)
+        number_of_users = Stats::CounterCache::UsersWithRdvTaken.value(scope:, month:)
         number_of_users_with_rdv_seen_in_less_than_30_days = number_of_elements_in(scope:, month:)
 
         (number_of_users_with_rdv_seen_in_less_than_30_days / (

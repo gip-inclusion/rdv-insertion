@@ -68,9 +68,29 @@ module Stats
         #   "03/2024" => 38.2,
         # }
         #
-        def values_grouped_by_month(scope:)
-          twelve_last_months = (0..11).map { |i| (11 - i).months.ago.beginning_of_month }
-          twelve_last_months.to_h do |month|
+        # @param scope: the scope of the counter (an Organisation or a Department)
+        # @param start_at: the date from which you want to start counting (optional)
+        # @param stop_at: the date at which you want to stop counting (optional)
+        #
+        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable Metrics/PerceivedComplexity
+        def values_grouped_by_month(scope:, start_at: nil, stop_at: nil)
+          x_months = 24
+
+          if start_at.present? || scope&.created_at.present?
+            start_at ||= scope.created_at
+            x_months = ((Time.zone.today.year * 12) + Time.zone.today.month) - ((start_at.year * 12) + start_at.month)
+          end
+
+          relevant_months = (0..x_months).map do |i|
+            if stop_at.present? && (Time.zone.today - i.months).beginning_of_month > stop_at
+              nil
+            else
+              (x_months - i).months.ago.beginning_of_month
+            end
+          end
+
+          relevant_months.compact.to_h do |month|
             [month.strftime("%m/%Y"), value(scope: scope, month: month.strftime("%Y-%m")).round(2)]
           end
         end
@@ -84,6 +104,34 @@ module Stats
           return unless options[:skip_validation] || (counter.respond_to?(:run_if) ? counter.run_if(subject) : true)
 
           counter.perform(subject)
+        end
+
+        #
+        # Returns the list of all the keys of this counter for a given scope (optional)
+        # and a given month (optional)
+        #
+        def all_keys(scope: nil, month: nil, group: nil) # rubocop:disable Metrics/AbcSize
+          redis_client.keys("*\"counter\":\"#{name.demodulize.underscore}\"*").filter do |json|
+            key = JSON.parse(json)
+
+            scope_matches = scope.nil? || (key["scope_type"] == scope.class.name && key["scope_id"] == scope.id)
+            month_matches = month.nil? || key["month"] == month
+            group_matches = group.nil? || key["group"] == group
+
+            scope_matches && month_matches && group_matches
+          end
+        end
+
+        # 
+        # This allows to reset all the counters for a given scope (optional)
+        # and a given month (optional)
+        #
+        def reset(scope: nil, month: nil, group: nil)
+          all_keys(scope:, month:, group:).each do |key|
+            redis_client.del(key)
+          end
+
+          true
         end
       end
 

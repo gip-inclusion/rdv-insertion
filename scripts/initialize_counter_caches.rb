@@ -8,6 +8,7 @@ end
 
 Participation.find_each do |participation|
   Stats::CounterCache::RdvsTaken.initialize_with(participation)
+  Stats::CounterCache::UsersWithRdvTaken.initialize_with(participation)
   Stats::CounterCache::RateOfUsersWithRdvSeenInLessThanThirtyDays.initialize_with(participation)
   Stats::CounterCache::RateOfUsersWithRdvSeen.initialize_with(participation)
   Stats::CounterCache::DaysBetweenInvitationAndRdv.initialize_with(participation)

@@ -7,7 +7,7 @@ module Stats
       catch_events :update_participation_successful, if: ->(subject) { subject.seen? }
 
       def self.value(scope:, month: nil)
-        number_of_users = Stats::CounterCache::UsersCreated.value(scope:, month:)
+        number_of_users = Stats::CounterCache::UsersWithRdvTaken.value(scope:, month:)
         number_of_users_with_rdv_seen = number_of_elements_in(scope:, month:)
 
         (number_of_users_with_rdv_seen / (number_of_users.nonzero? || 1).to_f) * 100
