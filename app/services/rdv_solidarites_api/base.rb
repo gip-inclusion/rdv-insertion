@@ -35,7 +35,7 @@ module RdvSolidaritesApi
     end
 
     def rdv_solidarites_response
-      raise NotImplementedError
+      raise NoMethodError
     end
   end
 end
