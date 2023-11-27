@@ -7,7 +7,6 @@ module Users
     end
 
     def call
-      result.user = @user
       User.transaction do
         assign_organisation
         validate_user!
@@ -15,6 +14,7 @@ module Users
         upsert_rdv_solidarites_user
         assign_rdv_solidarites_user_id unless @user.rdv_solidarites_user_id?
       end
+      result.user = @user
     end
 
     private
