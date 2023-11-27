@@ -110,7 +110,7 @@ describe SessionsController do
         it "is a failure" do
           post :create
           expect(response).not_to be_successful
-          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to have_http_status(:forbidden)
           expect(response.parsed_body["success"]).to eq(false)
           expect(response.parsed_body["errors"]).to eq(
             ["L'agent ne fait pas partie d'une organisation sur RDV-Insertion"]

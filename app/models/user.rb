@@ -1,4 +1,3 @@
-# rubocop:disable Metrics/ClassLength
 class User < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [
     :first_name, :last_name, :birth_date, :email, :phone_number, :address, :affiliation_number, :birth_name
@@ -111,19 +110,6 @@ class User < ApplicationRecord
     assign_attributes(rdv_contexts_attributes: [{ motif_category_id: motif_category_id }])
   end
 
-  def as_json(...)
-    super.deep_symbolize_keys
-         .except(:last_webhook_update_received_at, :deleted_at, :rdv_solidarites_user_id)
-         .merge(
-           invitations: invitations.select(&:sent_at?),
-           organisations: organisations,
-           rdv_contexts: rdv_contexts,
-           referents: referents,
-           archives: archives,
-           tags: tags
-         )
-  end
-
   def phone_number_formatted
     PhoneNumberHelper.format_phone_number(phone_number)
   end
@@ -155,5 +141,3 @@ class User < ApplicationRecord
     errors.add(:birth_date, "n'est pas valide")
   end
 end
-
-# rubocop: enable Metrics/ClassLength

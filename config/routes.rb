@@ -12,6 +12,9 @@ def check_auth(username, password, service)
 end
 
 Rails.application.routes.draw do
+  mount Rswag::Api::Engine => '/api-docs'
+  mount Rswag::Ui::Engine => '/api-docs'
+
   root "static_pages#welcome"
   get "mentions-legales", to: "static_pages#legal_notice"
   get "cgu", to: "static_pages#cgu"
@@ -113,10 +116,13 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
+      resources :departments, param: "department_number", only: [:show]
+      resources :rdvs, param: "uuid", only: [:show]
       resources :organisations, param: "rdv_solidarites_organisation_id", only: [] do
         member do
           resources :users, only: [] do
             post :create_and_invite_many, on: :collection
+            post :create_and_invite, on: :collection
           end
           post "applicants/create_and_invite_many", to: "users#create_and_invite_many"
         end

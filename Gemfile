@@ -44,6 +44,9 @@ gem "with_advisory_lock"
 # CSS styled emails with stylesheets
 gem "premailer-rails"
 
+# API documentation
+gem "rswag"
+
 # Send SMS & emails with Brevo
 gem "sib-api-v3-sdk"
 
@@ -84,6 +87,9 @@ gem "wkhtmltopdf-binary"
 
 # CORS support
 gem "rack-cors"
+
+# Simple Fast Declarative Serialization Library
+gem "blueprinter"
 
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'

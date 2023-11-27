@@ -418,16 +418,18 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_21_133009) do
     t.string "secret"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "subscriptions", array: true
+    t.integer "signature_type", default: 0
   end
 
   create_table "webhook_receipts", force: :cascade do |t|
-    t.bigint "rdv_solidarites_rdv_id"
-    t.datetime "rdvs_webhook_timestamp"
-    t.datetime "sent_at"
+    t.bigint "resource_id"
+    t.datetime "timestamp"
     t.bigint "webhook_endpoint_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["rdv_solidarites_rdv_id"], name: "index_webhook_receipts_on_rdv_solidarites_rdv_id", unique: true
+    t.string "resource_model"
+    t.index ["resource_model", "resource_id", "webhook_endpoint_id"], name: "index_on_webhook_endpoint_and_resource_model_and_id"
     t.index ["webhook_endpoint_id"], name: "index_webhook_receipts_on_webhook_endpoint_id"
   end
 
