@@ -2,6 +2,7 @@ require "swagger_helper"
 
 describe "Departement API", swagger_doc: "v1/api.json" do
   with_examples
+  include_context "with all existing categories"
 
   path "api/v1/departments/{number}" do
     get "Retrieves a department" do
@@ -14,10 +15,14 @@ describe "Departement API", swagger_doc: "v1/api.json" do
         )
       end
       let!(:organisation) do
-        create(:organisation, department:, name: "Pôle Parcours", email: "pole-parcours@departement13.fr")
+        create(
+          :organisation,
+          department:, name: "Pôle Parcours", email: "pole-parcours@departement13.fr",
+          configurations: [configuration]
+        )
       end
-      let!(:motif) { create(:motif, organisation:, motif_category:) }
-      let!(:motif_category) { create(:motif_category) }
+      let!(:motif) { create(:motif, organisation:, motif_category: category_rsa_orientation) }
+      let!(:configuration) { create(:configuration, motif_category: category_rsa_orientation) }
       let!(:agent) { create(:agent, organisations: [organisation]) }
       let!(:lieu) { create(:lieu, organisation:) }
 

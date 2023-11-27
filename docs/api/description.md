@@ -1,5 +1,5 @@
-L'API de rdv-insertion vous permet d'inviter des personnes en insertion à prendre rdv à prendre rdv avec votre structure.
-Quand l'usager aura pris rendez-vous suite à son invitation, vous pouvez récupérer les informations du rdv via les webhooks (API sortante).
+L'API de rdv-insertion vous permet d'inviter des personnes en insertion à prendre rdv avec votre structure.
+Quand l'usager aura pris rendez-vous suite à son invitation, vous pouvez récupérer les informations du rdv via les webhooks (API de notifications).
 
 Toutes les fonctionnalités de rdv-insertion ne sont pas encore disponibles via l’API. Contactez-nous si vous avez besoin de fonctionnalités qui ne sont pas encore présentes.
 
@@ -31,9 +31,9 @@ Avec :
 
 Par exemple, on aura : `https://<domain>/api/v1/rdvs/:id`
 
-Pour la version production, les requêtes doivent être adressées à https://www.rdv-insertion.fr.
+Pour la version production, les requêtes doivent être adressées à **https://www.rdv-insertion.fr**.
 
-Pour la version démo, les requêtes doivent être adressées à https://www.rdv-insertion-demo.fr.
+Pour la version démo, les requêtes doivent être adressées à **https://www.rdv-insertion-demo.fr**.
 
 # Authentification
 
@@ -184,7 +184,7 @@ Le schéma détaillé avec exemple se trouve en bas de page. Ci-dessous on expli
 - `birth_name` : STRING (optionnel) : Le nom de naissance de l'usager
 - `department_internal_id`: STRING (optionnel) : ID interne de la personne au sein du système d'information du département (cela peut être l'ID lié à l'éditeur comme l'ID de IODAS par exemple). Cet ID est nécessaire si l'on veut que rdv-insertion notifie de la prise/annulation de RDV sur une API côté département ou éditeur.
 - `invitation`: OBJECT (optionnel): Contient les informations ci-dessous liées à l'invitation à prendre rdv:
-  - `rdv_solidarites_lieu_d`: INTEGER (optionnel): L'ID du lieu dans lequel l'on veut que le RDV ait lieu. S'il est précisé l'usager sera invité directement à choisir un créneau sur ce lieu. Attention, il faut faire attention à ce qu'une plage d'ouverture pour le motif en question (voir attribut précédent) relie le motif au lieu en question. Ces valeurs peuvent être récupérérés en requêtant l'endpoint `GET https://www.rdv-insertion.fr/api/v1/departments/{number}`.
+  - `rdv_solidarites_lieu_id`: INTEGER (optionnel): L'ID du lieu dans lequel l'on veut que le RDV ait lieu. S'il est précisé l'usager sera invité directement à choisir un créneau sur ce lieu. Attention, il faut faire attention à ce qu'une plage d'ouverture pour le motif en question (voir attribut précédent) relie le motif au lieu en question. Ces valeurs peuvent être récupérérés en requêtant l'endpoint `GET https://www.rdv-insertion.fr/api/v1/departments/{number}`.
   - `motif_category: OBJECT (optionnel):
     - `name`: STRING: Le nom de la catégorie de motif pour laquelle on veut inviter l'usager. Il peut ne pas être précisé si l'organisation ne peut inviter que sur une seule catégorie. Ces valeurs peuvent être récupérérés en requêtant l'endpoint `GET https://www.rdv-insertion.fr/api/v1/departments/{number}`.
 
@@ -221,7 +221,7 @@ Lors du processus asynchrone de création et des invitations des usagers des err
 
 En cas d'échec de la création de l'usager, un mail sera envoyé à la personne ayant fait la requête avec l'identité de l'usager en question et les erreurs associées à sa création.
 
-![mail-notification](https://github.com/betagouv/rdv-insertion/blob/staging/docs/api/mail-notification.png)
+![mail-notification](/api_doc/mail-notification.png)
 
 #### En cas de problèmes à l'invitation de l'usager
 
@@ -249,7 +249,7 @@ Ainsi, lorsqu'un rdv est créé, modifié ou supprimé sur rdv-insertion, nous a
 
 Pour cela, ce système d'informations doit :
 
-- être accessible à une URL publique par exemple et accepter des requêtes HTTP POST à cette URL
+- être accessible à une URL publique et accepter des requêtes HTTP POST à cette URL
 
 ## Configuration
 
@@ -257,11 +257,11 @@ Pour pouvoir configurer un endpoint prêt à recevoir les webhooks de rdv-insert
 
 ## Signatures des requêtes
 
-Un **secret partagé** est associé à chacune de ces URLs pour vous permettre de vérifier que nous sommes bien à l'origine de l'envoi d'information. La requête envoyée en HTTP POST contient un entête `X-Lapin-Signature` qui contient une signature SHA256 hexadécimale du corps de la requête.
+Un **secret partagé** est associé à chacune de ces URLs pour vous permettre de vérifier que nous sommes bien à l'origine de l'envoi d'information. La requête envoyée en HTTP POST contient un entête `X-RDVI-Signature` qui contient une signature SHA256 hexadécimale du corps de la requête.
 
 Par exemple, pour vérifier que la signature vient bien de notre application, cela donnerait en `ruby` :
 
-![webhook-signature-check-example](https://github.com/betagouv/rdv-insertion/blob/staging/docs/api/webhook-signature-check-example.png)
+![webhook-signature-check-example](/api_doc/webhook-signature-check-example.png)
 
 ## Format des données
 

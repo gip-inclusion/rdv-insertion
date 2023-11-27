@@ -5,9 +5,13 @@ describe "Rdv API", swagger_doc: "v1/api.json" do
 
   path "api/v1/rdvs/{uuid}" do
     get "Retrieves a rdv" do
+      include_context "with all existing categories"
+
       let!(:uuid) { SecureRandom.uuid }
-      let!(:organisation) { create(:organisation) }
-      let!(:rdv) { create(:rdv, uuid:, organisation:) }
+      let!(:organisation) { create(:organisation, configurations: [configuration], motifs: [motif]) }
+      let!(:configuration) { create(:configuration, motif_category: category_rsa_orientation) }
+      let!(:motif) { create(:motif, motif_category: category_rsa_orientation) }
+      let!(:rdv) { create(:rdv, uuid:, organisation:, motif:) }
       let!(:agent) { create(:agent, organisations: [organisation]) }
 
       tags "Rdv"
