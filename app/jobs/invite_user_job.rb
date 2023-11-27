@@ -23,7 +23,8 @@ class InviteUserJob < ApplicationJob
       organisations: [@organisation],
       invitation_attributes: @invitation_attributes,
       motif_category_attributes: @motif_category_attributes,
-      rdv_solidarites_session:
+      rdv_solidarites_session:,
+      check_creneaux_availability: false
     )
     return if invite_user_service.success?
 
