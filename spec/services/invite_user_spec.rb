@@ -1,10 +1,12 @@
 describe InviteUser, type: :service do
   subject do
     described_class.call(
-      user:, organisations:, invitation_attributes:, motif_category_attributes:, rdv_solidarites_session:
+      user:, organisations:, invitation_attributes:, motif_category_attributes:, rdv_solidarites_session:,
+      check_creneaux_availability:
     )
   end
 
+  let!(:check_creneaux_availability) { true }
   let!(:department) { create(:department) }
   let!(:user) { create(:user, organisations: [organisation]) }
   let!(:organisation) { create(:organisation, department:, configurations: [configuration]) }
@@ -49,6 +51,7 @@ describe InviteUser, type: :service do
 
     it "saves and send the invitation" do
       expect(Invitations::SaveAndSend).to receive(:call)
+        .with(invitation:, rdv_solidarites_session:, check_creneaux_availability:)
       subject
     end
 
@@ -71,6 +74,7 @@ describe InviteUser, type: :service do
 
         it "saves and send the invitation" do
           expect(Invitations::SaveAndSend).to receive(:call)
+            .with(invitation:, rdv_solidarites_session:, check_creneaux_availability:)
           subject
         end
       end

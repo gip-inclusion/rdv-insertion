@@ -34,7 +34,7 @@ describe InviteUserJob do
       allow(InviteUser).to receive(:call)
         .with(
           user:, organisations: [organisation], invitation_attributes:, motif_category_attributes:,
-          rdv_solidarites_session:
+          rdv_solidarites_session:, check_creneaux_availability: false
         )
         .and_return(OpenStruct.new(success?: true))
     end
@@ -43,7 +43,7 @@ describe InviteUserJob do
       expect(InviteUser).to receive(:call)
         .with(
           user:, organisations: [organisation], invitation_attributes:, motif_category_attributes:,
-          rdv_solidarites_session:
+          rdv_solidarites_session:, check_creneaux_availability: false
         )
       subject
     end

@@ -1,11 +1,17 @@
 class InviteUser < BaseService
-  def initialize(user:, organisations:, invitation_attributes:, motif_category_attributes:, rdv_solidarites_session:)
+  # rubocop:disable Metrics/ParameterLists
+  def initialize(
+    user:, organisations:, invitation_attributes:, motif_category_attributes:, rdv_solidarites_session:,
+    check_creneaux_availability: true
+  )
     @user = user
     @organisations = organisations
     @invitation_attributes = invitation_attributes
     @motif_category_attributes = motif_category_attributes
     @rdv_solidarites_session = rdv_solidarites_session
+    @check_creneaux_availability = check_creneaux_availability
   end
+  # rubocop:enable Metrics/ParameterLists
 
   def call
     set_current_configuration
@@ -84,7 +90,8 @@ class InviteUser < BaseService
     call_service!(
       Invitations::SaveAndSend,
       invitation: @invitation,
-      rdv_solidarites_session: @rdv_solidarites_session
+      rdv_solidarites_session: @rdv_solidarites_session,
+      check_creneaux_availability: @check_creneaux_availability
     )
   end
 end
