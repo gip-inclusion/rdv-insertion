@@ -27,14 +27,6 @@ class SessionsController < ApplicationController
     InclusionConnectClient.logout(session[:inclusion_connect_token_id])
   end
 
-  def clear_session
-    session.delete(:inclusion_connect_token_id)
-    session.delete(:ic_state)
-    session.delete(:agent_id)
-    session.delete(:rdv_solidarites)
-    @current_agent = nil
-  end
-
   def logged_with_inclusion_connect?
     session.dig(:rdv_solidarites, "inclusion_connected") == true
   end
