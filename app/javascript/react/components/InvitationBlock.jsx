@@ -73,11 +73,13 @@ export default function InvitationBlock({
     } else {
       newInvitationDate = result.invitation?.sent_at;
     }
-    setInvitationsDatesByFormat((prevState) => ({
-      ...prevState,
-      [format]: [newInvitationDate, ...prevState[format]],
-    }));
-    updateStatusBlock();
+    if (newInvitationDate) {
+      setInvitationsDatesByFormat((prevState) => ({
+        ...prevState,
+        [format]: [newInvitationDate, ...prevState[format]],
+      }));
+      updateStatusBlock();
+    }
     setIsLoading({ ...isLoading, [format]: false });
   };
 

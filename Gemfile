@@ -44,6 +44,9 @@ gem "with_advisory_lock"
 # CSS styled emails with stylesheets
 gem "premailer-rails"
 
+# API documentation
+gem "rswag"
+
 # Send SMS & emails with Brevo
 gem "sib-api-v3-sdk"
 
@@ -88,6 +91,9 @@ gem "rack-cors"
 # Internal PubSub
 gem "wisper", "2.0.0"
 gem "wisper-activerecord"
+
+# Simple Fast Declarative Serialization Library
+gem "blueprinter"
 
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'

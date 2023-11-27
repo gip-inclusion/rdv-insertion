@@ -43,12 +43,6 @@ class Organisation < ApplicationRecord
     name
   end
 
-  def as_json(...)
-    super.deep_symbolize_keys
-         .except(:last_webhook_update_received_at, :rdv_solidarites_organisation_id)
-         .merge(department_number: department_number, motif_categories: motif_categories)
-  end
-
   def validate_organisation_phone_number
     return if phone_number_is_valid?
 

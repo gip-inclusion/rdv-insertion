@@ -20,7 +20,7 @@ class RdvSolidaritesSessionFactory
       RdvSolidaritesSession::WithAccessToken.new(
         uid: credentials[:uid],
         client: credentials[:client],
-        access_token: credentials[:access_token]
+        access_token: credentials[:access_token] || credentials[:"access-token"]
       )
     end
   end
