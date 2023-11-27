@@ -73,7 +73,6 @@ module Stats
         # @param stop_at: the date at which you want to stop counting (optional)
         #
         # rubocop:disable Metrics/AbcSize
-        # rubocop:disable Metrics/PerceivedComplexity
         def values_grouped_by_month(scope:, start_at: nil, stop_at: nil)
           x_months = 24
 
@@ -83,14 +82,12 @@ module Stats
           end
 
           relevant_months = (0..x_months).map do |i|
-            if stop_at.present? && (Time.zone.today - i.months).beginning_of_month > stop_at
-              nil
-            else
-              (x_months - i).months.ago.beginning_of_month
-            end
+            (x_months - i).months.ago.beginning_of_month
           end
 
-          relevant_months.compact.to_h do |month|
+          relevant_months
+            .filter { |month| stop_at.blank? || month < stop_at }
+            .to_h do |month|
             [month.strftime("%m/%Y"), value(scope: scope, month: month.strftime("%Y-%m")).round(2)]
           end
         end

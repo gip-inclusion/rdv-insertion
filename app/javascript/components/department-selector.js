@@ -13,13 +13,18 @@ class DepartmentSelector {
   }
 
   refreshQuery(selectedDepartment) {
+    let url;
     if (selectedDepartment && selectedDepartment !== "0") {
-      const url = new URL(`${window.location.origin}/departments/${selectedDepartment}/stats`);
-      window.location.href = url;
+      url = new URL(`${window.location.origin}/departments/${selectedDepartment}/stats`);
     } else {
-      const url = new URL(`${window.location.origin}/stats`);
-      window.location.href = url;
+      url = new URL(`${window.location.origin}/stats`);
     }
+
+    new URL(window.location.href).searchParams.forEach((value, key) => {
+      url.searchParams.append(key, value);
+    });
+  
+    window.location.href = url;
   }
 }
 
