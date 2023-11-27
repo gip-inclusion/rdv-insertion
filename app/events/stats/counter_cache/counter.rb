@@ -1,3 +1,5 @@
+# rubocop:disable Metrics/ModuleLength
+
 module Stats
   module CounterCache
     module Counter
@@ -91,6 +93,7 @@ module Stats
             [month.strftime("%m/%Y"), value(scope: scope, month: month.strftime("%Y-%m")).round(2)]
           end
         end
+        # rubocop:enable Metrics/AbcSize
 
         #
         # This allows to run a counter increment manually
@@ -119,7 +122,7 @@ module Stats
           end
         end
 
-        # 
+        #
         # This allows to reset all the counters for a given scope (optional)
         # and a given month (optional)
         #
@@ -193,3 +196,5 @@ module Stats
     end
   end
 end
+
+# rubocop:enable Metrics/ModuleLength
