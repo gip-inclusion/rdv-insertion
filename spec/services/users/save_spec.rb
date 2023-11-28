@@ -23,7 +23,7 @@ describe Users::Save, type: :service do
       allow(user).to receive(:save).and_return(true)
       allow(Users::Validate).to receive(:call)
         .with(user: user).and_return(OpenStruct.new(success?: true))
-      allow(Users::SyncWithRdvSolidarites).to receive(:call)
+      allow(UpsertRdvSolidaritesUser).to receive(:call)
         .and_return(OpenStruct.new(success?: true))
     end
 
@@ -33,7 +33,7 @@ describe Users::Save, type: :service do
     end
 
     it "syncs the user with Rdv Solidarites" do
-      expect(Users::SyncWithRdvSolidarites).to receive(:call)
+      expect(UpsertRdvSolidaritesUser).to receive(:call)
         .with(
           user: user,
           organisation: organisation,
@@ -65,7 +65,7 @@ describe Users::Save, type: :service do
 
     context "when the rdv solidarites user sync fails" do
       before do
-        allow(Users::SyncWithRdvSolidarites).to receive(:call)
+        allow(UpsertRdvSolidaritesUser).to receive(:call)
           .and_return(OpenStruct.new(errors: ["some error"], success?: false))
       end
 

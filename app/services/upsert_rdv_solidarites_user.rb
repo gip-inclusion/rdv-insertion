@@ -7,16 +7,19 @@ class UpsertRdvSolidaritesUser < BaseService
 
   def call
     upsert_rdv_solidarites_user
-    result.rdv_solidarites_user_id = rdv_solidarites_user_id
+    return unless @user.rdv_solidarites_user_id.nil?
+
+    @user.rdv_solidarites_user_id = rdv_solidarites_user_id
+    save_record!(@user)
   end
 
   private
 
   def upsert_rdv_solidarites_user
-    @user.rdv_solidarites_user_id.present? ? sync_and_update : create_or_update_rdv_solidarites_user
+    @user.rdv_solidarites_user_id.present? ? sync_with_rdv_solidarites : create_or_update_rdv_solidarites_user
   end
 
-  def sync_and_update
+  def sync_with_rdv_solidarites
     sync_organisations
     sync_referents if @user.referents.present?
     update_rdv_solidarites_user
@@ -27,7 +30,7 @@ class UpsertRdvSolidaritesUser < BaseService
 
     # If the user already exists in RDV-S, we assign the user to the org by updating him.
     if email_taken_error?
-      return sync_and_update unless existing_user
+      return sync_with_rdv_solidarites unless existing_user
 
       fail!(
         "Un usager avec cette adresse mail existe déjà sur RDVI avec d'autres attributs: " \
@@ -59,8 +62,8 @@ class UpsertRdvSolidaritesUser < BaseService
     @create_rdv_solidarites_user ||= RdvSolidaritesApi::CreateUser.call(
       user_attributes:
         rdv_solidarites_user_attributes
-          .merge(organisation_ids: department_organisation_ids)
-          .merge(referent_agent_ids: referent_ids),
+          .merge(organisation_ids: department_rdv_solidarites_organisation_ids)
+          .merge(referent_agent_ids: referent_rdv_solidarites_ids),
       rdv_solidarites_session: @rdv_solidarites_session
     )
   end
@@ -68,8 +71,8 @@ class UpsertRdvSolidaritesUser < BaseService
   def sync_organisations
     @sync_organisations ||= call_service!(
       RdvSolidaritesApi::CreateUserProfiles,
-      user_id: rdv_solidarites_user_id,
-      organisation_ids: department_organisation_ids,
+      rdv_solidarites_user_id: rdv_solidarites_user_id,
+      rdv_solidarites_organisation_ids: department_rdv_solidarites_organisation_ids,
       rdv_solidarites_session: @rdv_solidarites_session
     )
   end
@@ -77,8 +80,8 @@ class UpsertRdvSolidaritesUser < BaseService
   def sync_referents
     @sync_referents ||= call_service!(
       RdvSolidaritesApi::CreateReferentAssignations,
-      user_id: rdv_solidarites_user_id,
-      agent_ids: referent_ids,
+      rdv_solidarites_user_id: rdv_solidarites_user_id,
+      rdv_solidarites_agent_ids: referent_rdv_solidarites_ids,
       rdv_solidarites_session: @rdv_solidarites_session
     )
   end
@@ -102,11 +105,11 @@ class UpsertRdvSolidaritesUser < BaseService
     user_attributes
   end
 
-  def department_organisation_ids
+  def department_rdv_solidarites_organisation_ids
     @user.organisations.where(department: @organisation.department).map(&:rdv_solidarites_organisation_id)
   end
 
-  def referent_ids
+  def referent_rdv_solidarites_ids
     @user.referents.map(&:rdv_solidarites_agent_id)
   end
 end

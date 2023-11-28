@@ -50,8 +50,8 @@ describe UpsertRdvSolidaritesUser, type: :service do
       it "assigns the user to the department organisations by creating user profiles on rdvs" do
         expect(RdvSolidaritesApi::CreateUserProfiles).to receive(:call)
           .with(
-            user_id: rdv_solidarites_user_id,
-            organisation_ids: [rdv_solidarites_organisation_id],
+            rdv_solidarites_user_id: rdv_solidarites_user_id,
+            rdv_solidarites_organisation_ids: [rdv_solidarites_organisation_id],
             rdv_solidarites_session: rdv_solidarites_session
           )
         subject
@@ -60,8 +60,8 @@ describe UpsertRdvSolidaritesUser, type: :service do
       it "creates the referents on rdvs" do
         expect(RdvSolidaritesApi::CreateReferentAssignations).to receive(:call)
           .with(
-            user_id: rdv_solidarites_user_id,
-            agent_ids: [agent.rdv_solidarites_agent_id],
+            rdv_solidarites_user_id: rdv_solidarites_user_id,
+            rdv_solidarites_agent_ids: [agent.rdv_solidarites_agent_id],
             rdv_solidarites_session: rdv_solidarites_session
           )
         subject
@@ -81,8 +81,9 @@ describe UpsertRdvSolidaritesUser, type: :service do
         is_a_success
       end
 
-      it "stores the rdv_solidarites_user_id" do
-        expect(subject.rdv_solidarites_user_id).to eq(rdv_solidarites_user_id)
+      it "does not reassign the rdv solidarites user id" do
+        subject
+        expect(user).not_to receive(:save)
       end
 
       context "when the referent assignation fails" do
@@ -151,12 +152,31 @@ describe UpsertRdvSolidaritesUser, type: :service do
         subject
       end
 
-      it "is a success" do
-        is_a_success
+      it "assign the rdv solidarites user id" do
+        subject
+        expect(user.rdv_solidarites_user_id).to eq(42)
       end
 
-      it "stores the rdv_solidarites_user_id" do
-        expect(subject.rdv_solidarites_user_id).to eq(42)
+      it "tries to save the user in db" do
+        expect(user).to receive(:save)
+        subject
+      end
+
+      context "when the user cannot be saved in db" do
+        before do
+          allow(user).to receive(:save)
+            .and_return(false)
+          allow(user).to receive_message_chain(:errors, :full_messages, :to_sentence)
+            .and_return("some error")
+        end
+
+        it "is a failure" do
+          is_a_failure
+        end
+
+        it "stores the error" do
+          expect(subject.errors).to eq(["some error"])
+        end
       end
 
       context "when the user has a department_internal_id but no role" do
@@ -221,8 +241,8 @@ describe UpsertRdvSolidaritesUser, type: :service do
             it "assigns the user to the department organisations by creating user profiles on rdvs" do
               expect(RdvSolidaritesApi::CreateUserProfiles).to receive(:call)
                 .with(
-                  user_id: 42,
-                  organisation_ids: [rdv_solidarites_organisation_id],
+                  rdv_solidarites_user_id: 42,
+                  rdv_solidarites_organisation_ids: [rdv_solidarites_organisation_id],
                   rdv_solidarites_session: rdv_solidarites_session
                 )
               subject
@@ -231,8 +251,8 @@ describe UpsertRdvSolidaritesUser, type: :service do
             it "creates the referents on rdvs" do
               expect(RdvSolidaritesApi::CreateReferentAssignations).to receive(:call)
                 .with(
-                  user_id: 42,
-                  agent_ids: [agent.rdv_solidarites_agent_id],
+                  rdv_solidarites_user_id: 42,
+                  rdv_solidarites_agent_ids: [agent.rdv_solidarites_agent_id],
                   rdv_solidarites_session: rdv_solidarites_session
                 )
               subject
@@ -252,8 +272,9 @@ describe UpsertRdvSolidaritesUser, type: :service do
               is_a_success
             end
 
-            it "stores the rdv_solidarites_user_id" do
-              expect(subject.rdv_solidarites_user_id).to eq(42)
+            it "assign the rdv solidarites user id" do
+              subject
+              expect(user.rdv_solidarites_user_id).to eq(42)
             end
           end
         end

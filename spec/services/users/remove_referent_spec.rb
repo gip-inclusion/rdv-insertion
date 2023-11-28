@@ -15,8 +15,8 @@ describe Users::RemoveReferent, type: :service do
     before do
       allow(RdvSolidaritesApi::DeleteReferentAssignation).to receive(:call)
         .with(
-          user_id: user.rdv_solidarites_user_id,
-          agent_id: agent.rdv_solidarites_agent_id,
+          rdv_solidarites_user_id: user.rdv_solidarites_user_id,
+          rdv_solidarites_agent_id: agent.rdv_solidarites_agent_id,
           rdv_solidarites_session: rdv_solidarites_session
         ).and_return(OpenStruct.new(success?: true))
     end
@@ -34,8 +34,8 @@ describe Users::RemoveReferent, type: :service do
       before do
         allow(RdvSolidaritesApi::DeleteReferentAssignation).to receive(:call)
           .with(
-            user_id: user.rdv_solidarites_user_id,
-            agent_id: agent.rdv_solidarites_agent_id,
+            rdv_solidarites_user_id: user.rdv_solidarites_user_id,
+            rdv_solidarites_agent_id: agent.rdv_solidarites_agent_id,
             rdv_solidarites_session: rdv_solidarites_session
           ).and_return(OpenStruct.new(success?: false, errors: ["impossible to remove"]))
       end
