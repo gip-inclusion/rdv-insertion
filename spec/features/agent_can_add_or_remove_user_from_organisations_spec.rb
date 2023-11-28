@@ -28,6 +28,17 @@ describe "Agents can add or remove user from organisations", js: true do
 
   context "from department user page" do
     it "can add to an organisation" do
+      stub_create_user_profiles = stub_request(
+        :post, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/user_profiles/create_many"
+      ).to_return(
+        status: 200,
+        body: {
+          user: { id: rdv_solidarites_user_id,
+                  organisation_ids: [
+                    organisation.rdv_solidarites_organisation_id, other_org.rdv_solidarites_organisation_id
+                  ] }
+        }.to_json
+      )
       stub_update_user = stub_request(
         :patch, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/users/#{rdv_solidarites_user_id}"
       ).to_return(
@@ -57,6 +68,7 @@ describe "Agents can add or remove user from organisations", js: true do
       expect(page).to have_content(other_org.name)
       expect(page).to have_content(user.last_name)
 
+      expect(stub_create_user_profiles).to have_been_requested
       expect(stub_update_user).to have_been_requested
       expect(user.reload.organisation_ids).to contain_exactly(organisation.id, other_org.id)
       expect(user.reload.motif_categories).not_to include(other_motif_category)
@@ -64,6 +76,18 @@ describe "Agents can add or remove user from organisations", js: true do
 
     context "when a motif category is specified" do
       it "adds the user in that specific category" do
+        stub_create_user_profiles = stub_request(
+          :post, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/user_profiles/create_many"
+        ).to_return(
+          status: 200,
+          body: {
+            user: { id: rdv_solidarites_user_id,
+                    organisation_ids: [
+                      organisation.rdv_solidarites_organisation_id, other_org.rdv_solidarites_organisation_id
+                    ] }
+          }.to_json
+        )
+
         stub_update_user = stub_request(
           :patch, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/users/#{rdv_solidarites_user_id}"
         ).to_return(
@@ -94,6 +118,7 @@ describe "Agents can add or remove user from organisations", js: true do
         expect(page).to have_content(other_org.name)
         expect(page).to have_content(user.last_name)
 
+        expect(stub_create_user_profiles).to have_been_requested
         expect(stub_update_user).to have_been_requested
         expect(user.reload.organisation_ids).to contain_exactly(organisation.id, other_org.id)
         expect(user.reload.motif_categories).to include(other_motif_category)
