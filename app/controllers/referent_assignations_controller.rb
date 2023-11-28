@@ -1,5 +1,6 @@
 class ReferentAssignationsController < ApplicationController
   before_action :set_user, :set_department, :set_agents, only: [:index, :create, :destroy]
+  before_action :verify_user_is_sync_with_rdv_solidarites, only: [:create]
   before_action :set_agent, only: [:create, :destroy]
 
   def index; end
@@ -51,7 +52,10 @@ class ReferentAssignationsController < ApplicationController
 
   def set_user
     @user = policy_scope(User).includes(:referents).find(user_id)
-    sync_user_with_rdv_solidarites(@user) if action_name == "create" && @user.rdv_solidarites_user_id.nil?
+  end
+
+  def verify_user_is_sync_with_rdv_solidarites
+    sync_user_with_rdv_solidarites(@user) if @user.rdv_solidarites_user_id.nil?
   end
 
   def set_department

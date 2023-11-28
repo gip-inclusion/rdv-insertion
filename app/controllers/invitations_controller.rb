@@ -1,5 +1,5 @@
 class InvitationsController < ApplicationController
-  before_action :set_organisations, :set_department, :set_user,
+  before_action :set_organisations, :set_department, :set_user, :verify_user_is_sync_with_rdv_solidarites,
                 :set_motif_category, :set_rdv_context, :set_current_configuration,
                 :set_invitation_format, :set_preselected_organisations, :set_new_invitation,
                 only: [:create]
@@ -110,6 +110,9 @@ class InvitationsController < ApplicationController
 
   def set_user
     @user = policy_scope(User).includes(:invitations).find(params[:user_id])
+  end
+
+  def verify_user_is_sync_with_rdv_solidarites
     sync_user_with_rdv_solidarites(@user) if @user.rdv_solidarites_user_id.nil?
   end
 
