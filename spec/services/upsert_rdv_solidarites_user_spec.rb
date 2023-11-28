@@ -5,6 +5,7 @@ describe UpsertRdvSolidaritesUser, type: :service do
     )
   end
 
+  let!(:agent) { create(:agent) }
   let!(:rdv_solidarites_organisation_id) { 444 }
   let!(:rdv_solidarites_user_id) { 555 }
   let!(:organisation) do
@@ -19,7 +20,7 @@ describe UpsertRdvSolidaritesUser, type: :service do
   end
   let!(:rdv_solidarites_user_attributes) do
     {
-      first_name: "john", last_name: "doe", organisation_ids: [rdv_solidarites_organisation_id],
+      first_name: "john", last_name: "doe",
       address: "16 rue de la tour", email: "johndoe@example.com",
       birth_date: Date.new(1989, 3, 17), affiliation_number: "aff123", phone_number: "+33612459567"
     }
@@ -36,14 +37,34 @@ describe UpsertRdvSolidaritesUser, type: :service do
 
   describe "#call" do
     before do
+      allow(RdvSolidaritesApi::CreateUserProfiles).to receive(:call)
+        .and_return(OpenStruct.new(success?: true))
+      allow(RdvSolidaritesApi::CreateReferentAssignations).to receive(:call)
+        .and_return(OpenStruct.new(success?: true))
       allow(RdvSolidaritesApi::UpdateUser).to receive(:call)
         .and_return(OpenStruct.new(success?: true, user: rdv_solidarites_user))
+      user.referents = [agent]
     end
 
     context "when the rdv_solidarites_user_id is present" do
-      before do
-        allow(RdvSolidaritesApi::UpdateUser).to receive(:call)
-          .and_return(OpenStruct.new(success?: true))
+      it "assigns the user to the department organisations by creating user profiles on rdvs" do
+        expect(RdvSolidaritesApi::CreateUserProfiles).to receive(:call)
+          .with(
+            user_id: rdv_solidarites_user_id,
+            organisation_ids: [rdv_solidarites_organisation_id],
+            rdv_solidarites_session: rdv_solidarites_session
+          )
+        subject
+      end
+
+      it "creates the referents on rdvs" do
+        expect(RdvSolidaritesApi::CreateReferentAssignations).to receive(:call)
+          .with(
+            user_id: rdv_solidarites_user_id,
+            agent_ids: [agent.rdv_solidarites_agent_id],
+            rdv_solidarites_session: rdv_solidarites_session
+          )
+        subject
       end
 
       it "updates the user" do
@@ -63,27 +84,11 @@ describe UpsertRdvSolidaritesUser, type: :service do
       it "stores the rdv_solidarites_user_id" do
         expect(subject.rdv_solidarites_user_id).to eq(rdv_solidarites_user_id)
       end
-    end
 
-    context "when the user does not belong to the org" do
-      it "assigns the user to the org" do
-        expect(RdvSolidaritesApi::UpdateUser).to receive(:call)
-          .with(
-            user_attributes: rdv_solidarites_user_attributes,
-            rdv_solidarites_session: rdv_solidarites_session,
-            rdv_solidarites_user_id: rdv_solidarites_user_id
-          )
-        subject
-      end
-
-      it "is a success" do
-        is_a_success
-      end
-
-      context "when the update to assign org fails" do
+      context "when the referent assignation fails" do
         before do
-          allow(RdvSolidaritesApi::UpdateUser).to receive(:call)
-            .and_return(OpenStruct.new(success?: false, errors: ["creation profile error"]))
+          allow(RdvSolidaritesApi::CreateReferentAssignations).to receive(:call)
+            .and_return(OpenStruct.new(success?: false, errors: ["referent assignation error"]))
         end
 
         it "is a failure" do
@@ -91,7 +96,37 @@ describe UpsertRdvSolidaritesUser, type: :service do
         end
 
         it "outputs the errors" do
-          expect(subject.errors).to eq(["creation profile error"])
+          expect(subject.errors).to eq(["referent assignation error"])
+        end
+      end
+
+      context "when the organisation sync fails" do
+        before do
+          allow(RdvSolidaritesApi::CreateUserProfiles).to receive(:call)
+            .and_return(OpenStruct.new(success?: false, errors: ["user profiles creation error"]))
+        end
+
+        it "is a failure" do
+          is_a_failure
+        end
+
+        it "outputs the errors" do
+          expect(subject.errors).to eq(["user profiles creation error"])
+        end
+      end
+
+      context "when the update fails" do
+        before do
+          allow(RdvSolidaritesApi::UpdateUser).to receive(:call)
+            .and_return(OpenStruct.new(success?: false, errors: ["update error"]))
+        end
+
+        it "is a failure" do
+          is_a_failure
+        end
+
+        it "outputs the errors" do
+          expect(subject.errors).to eq(["update error"])
         end
       end
     end
@@ -108,7 +143,9 @@ describe UpsertRdvSolidaritesUser, type: :service do
       it "creates the user" do
         expect(RdvSolidaritesApi::CreateUser).to receive(:call)
           .with(
-            user_attributes: rdv_solidarites_user_attributes.merge(organisation_ids: [rdv_solidarites_organisation_id]),
+            user_attributes:
+            rdv_solidarites_user_attributes.merge(organisation_ids: [rdv_solidarites_organisation_id])
+                                           .merge(referent_agent_ids: [agent.rdv_solidarites_agent_id]),
             rdv_solidarites_session: rdv_solidarites_session
           )
         subject
@@ -129,7 +166,8 @@ describe UpsertRdvSolidaritesUser, type: :service do
           expect(RdvSolidaritesApi::CreateUser).to receive(:call)
             .with(
               user_attributes:
-                rdv_solidarites_user_attributes.merge(organisation_ids: [rdv_solidarites_organisation_id]),
+              rdv_solidarites_user_attributes.merge(organisation_ids: [rdv_solidarites_organisation_id])
+                                             .merge(referent_agent_ids: [agent.rdv_solidarites_agent_id]),
               rdv_solidarites_session: rdv_solidarites_session
             )
           subject
@@ -144,7 +182,8 @@ describe UpsertRdvSolidaritesUser, type: :service do
             .with(
               user_attributes:
                 rdv_solidarites_user_attributes.except(:email)
-                                               .merge(organisation_ids: [rdv_solidarites_organisation_id]),
+                                               .merge(organisation_ids: [rdv_solidarites_organisation_id])
+                                               .merge(referent_agent_ids: [agent.rdv_solidarites_agent_id]),
               rdv_solidarites_session: rdv_solidarites_session
             )
           subject
@@ -179,7 +218,27 @@ describe UpsertRdvSolidaritesUser, type: :service do
           end
 
           context "when there is no user linked to this user" do
-            it "assigns the user to the org by updating him" do
+            it "assigns the user to the department organisations by creating user profiles on rdvs" do
+              expect(RdvSolidaritesApi::CreateUserProfiles).to receive(:call)
+                .with(
+                  user_id: 42,
+                  organisation_ids: [rdv_solidarites_organisation_id],
+                  rdv_solidarites_session: rdv_solidarites_session
+                )
+              subject
+            end
+
+            it "creates the referents on rdvs" do
+              expect(RdvSolidaritesApi::CreateReferentAssignations).to receive(:call)
+                .with(
+                  user_id: 42,
+                  agent_ids: [agent.rdv_solidarites_agent_id],
+                  rdv_solidarites_session: rdv_solidarites_session
+                )
+              subject
+            end
+
+            it "updates the user" do
               expect(RdvSolidaritesApi::UpdateUser).to receive(:call)
                 .with(
                   user_attributes: rdv_solidarites_user_attributes,

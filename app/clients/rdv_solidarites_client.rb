@@ -21,6 +21,14 @@ class RdvSolidaritesClient
     )
   end
 
+  def create_referent_assignations(user_id, agent_ids)
+    Faraday.post(
+      "#{@url}/api/v1/referent_assignations/create_many",
+      { user_id: user_id, agent_ids: agent_ids }.to_json,
+      request_headers
+    )
+  end
+
   def update_user(user_id, request_body = {})
     Faraday.patch(
       "#{@url}/api/v1/users/#{user_id}",

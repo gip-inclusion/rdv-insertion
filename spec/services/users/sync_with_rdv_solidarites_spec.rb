@@ -23,8 +23,6 @@ describe Users::SyncWithRdvSolidarites, type: :service do
       allow(user).to receive(:save).and_return(true)
       allow(UpsertRdvSolidaritesUser).to receive(:call)
         .and_return(OpenStruct.new(success?: true, rdv_solidarites_user_id: 123))
-      allow(Users::AssignReferent).to receive(:call)
-        .and_return(OpenStruct.new(success?: true))
     end
 
     it "upsert the user on Rdv Solidarites" do
@@ -65,21 +63,9 @@ describe Users::SyncWithRdvSolidarites, type: :service do
       let!(:user) { create(:user, organisations: [organisation], rdv_solidarites_user_id: nil) }
       let!(:agent) { create(:agent, admin_role_in_organisations: [organisation]) }
 
-      before { user.referents = [agent] }
-
       it "assign the rdv solidarites user id" do
         subject
         expect(user.rdv_solidarites_user_id).to eq(123)
-      end
-
-      it "assign the referents" do
-        expect(Users::AssignReferent).to receive(:call)
-          .with(
-            user: user,
-            agent: agent,
-            rdv_solidarites_session: rdv_solidarites_session
-          )
-        subject
       end
 
       it "tries to save the user in db" do

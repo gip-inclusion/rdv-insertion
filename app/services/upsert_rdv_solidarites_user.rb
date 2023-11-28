@@ -12,12 +12,14 @@ class UpsertRdvSolidaritesUser < BaseService
 
   private
 
-  def rdv_solidarites_user_id
-    @user.rdv_solidarites_user_id || user_id_from_email_taken_error || create_rdv_solidarites_user.user.id
+  def upsert_rdv_solidarites_user
+    @user.rdv_solidarites_user_id.present? ? sync_and_update : create_or_update_rdv_solidarites_user
   end
 
-  def upsert_rdv_solidarites_user
-    @user.rdv_solidarites_user_id.present? ? sync_orgs_and_update : create_or_update_rdv_solidarites_user
+  def sync_and_update
+    sync_organisations
+    sync_referents if @user.referents.present?
+    update_rdv_solidarites_user
   end
 
   def create_or_update_rdv_solidarites_user
@@ -25,7 +27,7 @@ class UpsertRdvSolidaritesUser < BaseService
 
     # If the user already exists in RDV-S, we assign the user to the org by updating him.
     if email_taken_error?
-      return sync_orgs_and_update unless existing_user
+      return sync_and_update unless existing_user
 
       fail!(
         "Un usager avec cette adresse mail existe déjà sur RDVI avec d'autres attributs: " \
@@ -37,13 +39,12 @@ class UpsertRdvSolidaritesUser < BaseService
     fail!
   end
 
-  def existing_user
-    @existing_user ||= User.find_by(rdv_solidarites_user_id: rdv_solidarites_user_id)
+  def rdv_solidarites_user_id
+    @user.rdv_solidarites_user_id || user_id_from_email_taken_error || create_rdv_solidarites_user.user.id
   end
 
-  def sync_orgs_and_update
-    sync_organisations
-    update_rdv_solidarites_user
+  def existing_user
+    @existing_user ||= User.find_by(rdv_solidarites_user_id: rdv_solidarites_user_id)
   end
 
   def user_id_from_email_taken_error
@@ -54,21 +55,30 @@ class UpsertRdvSolidaritesUser < BaseService
     create_rdv_solidarites_user.error_details&.dig("email")&.any? { _1["error"] == "taken" }
   end
 
-  def sync_organisations
-    @sync_organisations ||= call_service!(
-      RdvSolidaritesApi::CreateUserProfiles,
-      user_id: rdv_solidarites_user_id,
-      organisation_ids: @user.organisations.map(&:rdv_solidarites_organisation_id),
+  def create_rdv_solidarites_user
+    @create_rdv_solidarites_user ||= RdvSolidaritesApi::CreateUser.call(
+      user_attributes:
+        rdv_solidarites_user_attributes
+          .merge(organisation_ids: department_organisation_ids)
+          .merge(referent_agent_ids: referent_ids),
       rdv_solidarites_session: @rdv_solidarites_session
     )
   end
 
-  def create_rdv_solidarites_user
-    @create_rdv_solidarites_user ||= RdvSolidaritesApi::CreateUser.call(
-      user_attributes:
-        rdv_solidarites_user_attributes.merge(
-          organisation_ids: @user.organisations.map(&:rdv_solidarites_organisation_id)
-        ),
+  def sync_organisations
+    @sync_organisations ||= call_service!(
+      RdvSolidaritesApi::CreateUserProfiles,
+      user_id: rdv_solidarites_user_id,
+      organisation_ids: department_organisation_ids,
+      rdv_solidarites_session: @rdv_solidarites_session
+    )
+  end
+
+  def sync_referents
+    @sync_referents ||= call_service!(
+      RdvSolidaritesApi::CreateReferentAssignations,
+      user_id: rdv_solidarites_user_id,
+      agent_ids: referent_ids,
       rdv_solidarites_session: @rdv_solidarites_session
     )
   end
@@ -90,5 +100,13 @@ class UpsertRdvSolidaritesUser < BaseService
                            .compact
     user_attributes.delete(:email) if @user.conjoint?
     user_attributes
+  end
+
+  def department_organisation_ids
+    @user.organisations.where(department: @organisation.department).map(&:rdv_solidarites_organisation_id)
+  end
+
+  def referent_ids
+    @user.referents.map(&:rdv_solidarites_agent_id)
   end
 end
