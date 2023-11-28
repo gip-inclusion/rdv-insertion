@@ -55,6 +55,7 @@ Rails.application.routes.draw do
   end
 
   get "invitation", to: "invitations#invitation_code", as: :invitation_landing
+  get '/r/:uuid', to: "invitations#shortcut", as: :redirect_invitation_shortcut
   resources :invitations, only: [] do
     get :redirect, on: :collection
   end
