@@ -64,7 +64,7 @@ describe RdvSolidaritesSession::WithAccessToken do
         {
           "uid" => uid,
           "client" => client,
-          "access_token" => access_token
+          "access-token" => access_token
         }
       )
     end

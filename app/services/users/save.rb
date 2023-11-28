@@ -13,6 +13,7 @@ module Users
         save_record!(@user)
         upsert_rdv_solidarites_user
       end
+      result.user = @user
     end
 
     private

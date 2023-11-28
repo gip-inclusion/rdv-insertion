@@ -40,8 +40,8 @@ module Invitations
 
     def atelier_content
       "#{user.full_name},\nVous êtes #{user_designation} et bénéficiez d'un accompagnement. " \
-        "Pour en profiter au mieux, nous vous invitons " \
-        "à vous inscrire directement et librement aux ateliers et formations de votre choix en cliquant sur le lien " \
+        "Vous pouvez consulter le(s) atelier(s) et formation(s) proposé(s) et vous y inscrire directement et " \
+        "librement, dans la limite des places disponibles, en cliquant sur le lien " \
         "suivant: #{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \

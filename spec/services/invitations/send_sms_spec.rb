@@ -731,9 +731,8 @@ describe Invitations::SendSms, type: :service do
       end
       let!(:content) do
         "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement. " \
-          "Pour en profiter au mieux, nous vous invitons " \
-          "à vous inscrire directement et librement aux ateliers et formations de votre choix en cliquant sur le " \
-          "lien suivant: " \
+          "Vous pouvez consulter le(s) atelier(s) et formation(s) proposé(s) et vous y inscrire directement et " \
+          "librement, dans la limite des places disponibles, en cliquant sur le lien suivant: " \
           "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
           "En cas de problème, contactez le 0147200001."
       end
@@ -757,9 +756,8 @@ describe Invitations::SendSms, type: :service do
       end
       let!(:content) do
         "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement. " \
-          "Pour en profiter au mieux, nous vous invitons " \
-          "à vous inscrire directement et librement aux ateliers et formations de votre choix en cliquant sur le " \
-          "lien suivant: " \
+          "Vous pouvez consulter le(s) atelier(s) et formation(s) proposé(s) et vous y inscrire directement et " \
+          "librement, dans la limite des places disponibles, en cliquant sur le lien suivant: " \
           "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
           "En cas de problème, contactez le 0147200001."
       end
@@ -783,9 +781,8 @@ describe Invitations::SendSms, type: :service do
       end
       let!(:content) do
         "Monsieur John DOE,\nVous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement. " \
-          "Pour en profiter au mieux, nous vous invitons " \
-          "à vous inscrire directement et librement aux ateliers et formations de votre choix en cliquant sur le " \
-          "lien suivant: " \
+          "Vous pouvez consulter le(s) atelier(s) et formation(s) proposé(s) et vous y inscrire directement et " \
+          "librement, dans la limite des places disponibles, en cliquant sur le lien suivant: " \
           "http://www.rdv-insertion.fr/invitations/redirect?uuid=#{invitation.uuid}\n" \
           "En cas de problème, contactez le 0147200001."
       end
