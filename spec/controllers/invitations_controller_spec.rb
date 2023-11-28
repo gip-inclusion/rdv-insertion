@@ -165,6 +165,19 @@ describe InvitationsController do
     end
   end
 
+  describe "#shortcut" do
+    subject { get :shortcut, params: { uuid: invitation.uuid } }
+
+    let!(:invitation) { create(:invitation, format: "sms") }
+
+    it "redirects to the invitation link" do
+      subject
+      expect(response).to redirect_to(
+        Rails.application.routes.url_helpers.redirect_invitations_path(params: { uuid: invitation.uuid })
+      )
+    end
+  end
+
   describe "#redirect" do
     subject { get :redirect, params: invite_params }
 
