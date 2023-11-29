@@ -8,16 +8,16 @@ module InboundWebhooks
         @data = data.deep_symbolize_keys
         @meta = meta.deep_symbolize_keys
 
-      if event == "destroyed"
-        delete_or_nullify_rdv
-      else
-        process_rdv
+        if event == "destroyed"
+          delete_or_nullify_rdv
+        else
+          process_rdv
+        end
       end
-    end
 
-    private
+      private
 
-    def process_rdv
+      def process_rdv
         Rdv.with_advisory_lock("processing_rdv_#{rdv_solidarites_rdv.id}") do
           verify_organisation!
           verify_motif!
@@ -31,8 +31,6 @@ module InboundWebhooks
           invalidate_related_invitations if created_event?
         end
       end
-
-      private
 
       def delete_or_nullify_rdv
         if webhook_reason == "rgpd"
