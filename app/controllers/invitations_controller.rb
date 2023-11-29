@@ -1,7 +1,7 @@
 class InvitationsController < ApplicationController
   before_action :set_organisations, :set_user, only: [:create]
   before_action :set_invitation, :verify_invitation_validity, only: [:redirect]
-  skip_before_action :authenticate_agent!, only: [:invitation_code, :redirect]
+  skip_before_action :authenticate_agent!, only: [:invitation_code, :redirect, :redirect_shortcut]
 
   def create
     if invite_user.success?
@@ -15,6 +15,10 @@ class InvitationsController < ApplicationController
   end
 
   def invitation_code; end
+
+  def redirect_shortcut
+    redirect_to redirect_invitations_path(params: { uuid: params[:uuid] })
+  end
 
   def redirect
     @invitation.clicked = true
