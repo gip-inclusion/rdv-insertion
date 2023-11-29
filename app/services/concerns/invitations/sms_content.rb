@@ -115,7 +115,7 @@ module Invitations
     end
 
     def redirect_sms_link
-      host = ENV["HOST"].gsub("www.", "")
+      host = ENV["HOST"].gsub("www.", "").gsub("https://", "")
       path = redirect_invitation_shortcut_path(uuid: @invitation.uuid)
       host + path
     end
