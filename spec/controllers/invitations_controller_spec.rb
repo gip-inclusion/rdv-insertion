@@ -165,8 +165,8 @@ describe InvitationsController do
     end
   end
 
-  describe "#shortcut" do
-    subject { get :shortcut, params: { uuid: invitation.uuid } }
+  describe "#redirect_shortcut" do
+    subject { get :redirect_shortcut, params: { uuid: invitation.uuid } }
 
     let!(:invitation) { create(:invitation, format: "sms") }
 
