@@ -6,7 +6,7 @@ module StubHelper
 
   def stub_rdv_solidarites_assign_organisations(rdv_solidarites_user_id)
     stub_request(
-      :post, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/user_profiles/create_many"
+      :post, "#{ENV['RDV_SOLIDARITES_URL']}/api/rdvinsertion/user_profiles/create_many"
     ).to_return(
       status: 200,
       body: {
@@ -17,7 +17,7 @@ module StubHelper
 
   def stub_rdv_solidarites_assign_referents(rdv_solidarites_user_id)
     stub_request(
-      :post, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/referent_assignations/create_many"
+      :post, "#{ENV['RDV_SOLIDARITES_URL']}/api/rdvinsertion/referent_assignations/create_many"
     ).to_return(
       status: 200,
       body: {

@@ -15,7 +15,7 @@ class RdvSolidaritesClient
 
   def create_user_profiles(user_id, organisation_ids)
     Faraday.post(
-      "#{@url}/api/v1/user_profiles/create_many",
+      "#{@url}/api/rdvinsertion/user_profiles/create_many",
       { user_id: user_id, organisation_ids: organisation_ids }.to_json,
       request_headers
     )
@@ -23,7 +23,7 @@ class RdvSolidaritesClient
 
   def create_referent_assignations(user_id, agent_ids)
     Faraday.post(
-      "#{@url}/api/v1/referent_assignations/create_many",
+      "#{@url}/api/rdvinsertion/referent_assignations/create_many",
       { user_id: user_id, agent_ids: agent_ids }.to_json,
       request_headers
     )

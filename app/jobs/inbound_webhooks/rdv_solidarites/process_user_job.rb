@@ -16,10 +16,6 @@ module InboundWebhooks
         @meta[:event]
       end
 
-    def webhook_reason
-      @meta[:webhook_reason]
-    end
-
       def rdv_solidarites_user_id
         @data[:id]
       end
@@ -47,9 +43,7 @@ module InboundWebhooks
       end
 
       def upsert_or_delete_user
-        if webhook_reason == "rgpd"
-          NullifyRdvSolidaritesIdJob.perform_async("User", user&.id)
-        elsif event == "destroyed"
+        if event == "destroyed"
           SoftDeleteUserJob.perform_async(rdv_solidarites_user_id)
         else
           UpsertRecordJob.perform_async("User", @data, { last_webhook_update_received_at: @meta[:timestamp] })

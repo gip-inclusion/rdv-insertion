@@ -89,31 +89,5 @@ describe InboundWebhooks::RdvSolidarites::ProcessUserJob do
         subject
       end
     end
-
-    context "when webohook reason is rgpd" do
-      let!(:meta) do
-        {
-          "model" => "User",
-          "event" => "destroyed",
-          "webhook_reason" => "rgpd"
-        }.deep_symbolize_keys
-      end
-
-      it "enqueues a nullify job" do
-        expect(NullifyRdvSolidaritesIdJob).to receive(:perform_async)
-          .with("User", user.id)
-        subject
-      end
-
-      it "does not enqueue a delete user job" do
-        expect(SoftDeleteUserJob).not_to receive(:perform_async)
-        subject
-      end
-
-      it "does not enque an upsert record job" do
-        expect(UpsertRecordJob).not_to receive(:perform_async)
-        subject
-      end
-    end
   end
 end

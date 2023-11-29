@@ -29,7 +29,7 @@ describe "Agents can add or remove user from organisations", js: true do
   context "from department user page" do
     it "can add to an organisation" do
       stub_create_user_profiles = stub_request(
-        :post, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/user_profiles/create_many"
+        :post, "#{ENV['RDV_SOLIDARITES_URL']}/api/rdvinsertion/user_profiles/create_many"
       ).to_return(
         status: 200,
         body: {
@@ -77,7 +77,7 @@ describe "Agents can add or remove user from organisations", js: true do
     context "when a motif category is specified" do
       it "adds the user in that specific category" do
         stub_create_user_profiles = stub_request(
-          :post, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/user_profiles/create_many"
+          :post, "#{ENV['RDV_SOLIDARITES_URL']}/api/rdvinsertion/user_profiles/create_many"
         ).to_return(
           status: 200,
           body: {
