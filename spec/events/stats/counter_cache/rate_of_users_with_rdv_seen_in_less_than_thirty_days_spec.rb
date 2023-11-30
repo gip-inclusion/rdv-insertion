@@ -12,8 +12,8 @@ describe Stats::CounterCache::RateOfUsersWithRdvSeenInLessThanThirtyDays do
             participation = create(:participation, user: user)
 
             expect { participation.seen! }.to change {
-              described_class.number_of_elements_in(scope: Department.new)
-            }.from(0).to(1)
+              described_class.value(scope: Department.new)
+            }.from(0).to(50.0)
           end
         end
       end
@@ -25,7 +25,7 @@ describe Stats::CounterCache::RateOfUsersWithRdvSeenInLessThanThirtyDays do
             participation = create(:participation, user: user)
 
             expect { participation.seen! }.not_to change {
-              described_class.number_of_elements_in(scope: Department.new)
+              described_class.value(scope: Department.new)
             }.from(0)
           end
         end
