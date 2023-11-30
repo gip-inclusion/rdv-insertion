@@ -1,7 +1,6 @@
 module Stats
   module CounterCache
     class NumberOfConvocationsNoShow
-      include EventSubscriber
       include Counter
 
       catch_events :update_participation_successful, if: lambda { |participation|

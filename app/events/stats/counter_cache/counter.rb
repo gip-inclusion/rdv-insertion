@@ -193,6 +193,10 @@ module Stats
       def process_event
         increment
       end
+
+      included do
+        include EventSubscriber
+      end
     end
   end
 end

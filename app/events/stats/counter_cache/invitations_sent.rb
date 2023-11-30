@@ -1,7 +1,6 @@
 module Stats
   module CounterCache
     class InvitationsSent
-      include EventSubscriber
       include Counter
 
       catch_events :create_invitation_successful, :update_invitation_successful, if: lambda { |invitation|

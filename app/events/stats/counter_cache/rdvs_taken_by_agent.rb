@@ -1,7 +1,6 @@
 module Stats
   module CounterCache
     class RdvsTakenByAgent
-      include EventSubscriber
       include Counter
 
       catch_events :create_participation_successful, if: ->(participation) { participation.created_by == "agent" }

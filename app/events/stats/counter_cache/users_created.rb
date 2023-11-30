@@ -1,7 +1,6 @@
 module Stats
   module CounterCache
     class UsersCreated
-      include EventSubscriber
       include Counter
 
       catch_events :create_user_successful

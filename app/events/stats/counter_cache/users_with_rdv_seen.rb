@@ -1,7 +1,6 @@
 module Stats
   module CounterCache
     class UsersWithRdvSeen
-      include EventSubscriber
       include Counter
 
       catch_events :update_participation_successful, if: ->(subject) { subject.seen? }

@@ -2,7 +2,6 @@ module Stats
   module CounterCache
     class NumberOfConvocationsSeen
       include Counter
-      include EventSubscriber
 
       catch_events :update_participation_successful, if: lambda { |participation|
         participation.previous_changes[:status].present?
