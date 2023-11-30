@@ -27,14 +27,14 @@
     </div>
     <div class="row d-flex justify-content-center flex-wrap">
       <div class="col-12 col-md-6 px-5 pb-5">
-        <p class="highlight-stat big margin-left"><%= Stats::CounterCache::RateOfNoShow::Invitations.value(scope: @scope)&.round %> %</p>
+        <p class="highlight-stat big margin-left"><%= Stats::CounterCache::RateOfNoShowInvitations.value(scope: @scope)&.round %> %</p>
         <p class="highlight-stat margin-left">de rendez-vous non honorés avec rdv-insertion <strong>après invitation</strong></p>
-        <%= line_chart Stats::CounterCache::RateOfNoShow::Invitations.values_grouped_by_month(scope: @scope), title: "Taux de rdvs non honorés après invitation par mois", suffix: "%", colors: ["#083b66"] %>
+        <%= line_chart Stats::CounterCache::RateOfNoShowInvitations.values_grouped_by_month(scope: @scope), title: "Taux de rdvs non honorés après invitation par mois", suffix: "%", colors: ["#083b66"] %>
       </div>
       <div class="col-12 col-md-6 px-5 pb-5 background-blue-light">
-        <p class="highlight-stat big margin-left"><%= Stats::CounterCache::RateOfNoShow::Convocations.value(scope: @scope)&.round %> %</p>
+        <p class="highlight-stat big margin-left"><%= Stats::CounterCache::RateOfNoShowConvocations.value(scope: @scope)&.round %> %</p>
         <p class="highlight-stat margin-left">de rendez-vous non honorés avec rdv-insertion <strong>après convocation</strong></p>
-        <%= line_chart Stats::CounterCache::RateOfNoShow::Convocations.values_grouped_by_month(scope: @scope, start_at: Time.zone.parse("2022-10-01")), title: "Taux de rdvs non honorés après convocation par mois", suffix: "%", colors: ["#083b66"] %>
+        <%= line_chart Stats::CounterCache::RateOfNoShowConvocations.values_grouped_by_month(scope: @scope, start_at: Time.zone.parse("2022-10-01")), title: "Taux de rdvs non honorés après convocation par mois", suffix: "%", colors: ["#083b66"] %>
       </div>
     </div>
     <div class="row d-flex justify-content-center flex-wrap-reverse">

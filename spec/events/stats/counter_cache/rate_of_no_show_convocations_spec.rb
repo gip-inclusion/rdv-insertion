@@ -1,5 +1,6 @@
-describe Stats::CounterCache::RateOfNoShow do
-  let(:convocation_class) { Stats::CounterCache::RateOfNoShow::Convocations }
+describe Stats::CounterCache::RateOfNoShowConvocations do
+  let(:number_of_seen) { Stats::CounterCache::NumberOfConvocationsSeen }
+  let(:number_of_no_show) { Stats::CounterCache::NumberOfConvocationsNoShow }
 
   before do
     Redis.new.flushall
@@ -15,16 +16,16 @@ describe Stats::CounterCache::RateOfNoShow do
           create(:notification, participation: participation2)
 
           participation.update!(status: "seen")
-          expect(convocation_class.number_of_elements_in(group: "seen", scope: participation.department)).to eq(1)
+          expect(number_of_seen.value(scope: participation.department)).to eq(1)
 
           participation.update!(status: "noshow")
-          expect(convocation_class.number_of_elements_in(group: "seen", scope: participation.department)).to eq(0)
-          expect(convocation_class.number_of_elements_in(group: "noshow", scope: participation.department)).to eq(1)
+          expect(number_of_seen.value(scope: participation.department)).to eq(0)
+          expect(number_of_no_show.value(scope: participation.department)).to eq(1)
 
           participation2.update!(status: "seen")
-          expect(convocation_class.number_of_elements_in(group: "seen", scope: participation.department)).to eq(1)
-          expect(convocation_class.number_of_elements_in(group: "noshow", scope: participation.department)).to eq(1)
-          expect(convocation_class.value(scope: participation.department)).to eq(50.0)
+          expect(number_of_seen.value(scope: participation.department)).to eq(1)
+          expect(number_of_no_show.value(scope: participation.department)).to eq(1)
+          expect(described_class.value(scope: participation.department)).to eq(50.0)
         end
       end
     end
@@ -48,15 +49,15 @@ describe Stats::CounterCache::RateOfNoShow do
           participation4.update!(status: "seen", created_at: 2.months.ago)
           participation4.update!(status: "noshow")
 
-          expect(convocation_class.number_of_elements_in(group: "noshow", scope: participation.department,
-                                                         month: 1.month.ago.strftime("%Y-%m"))).to eq(1)
-          expect(convocation_class.number_of_elements_in(group: "seen", scope: Department.new,
-                                                         month: 2.months.ago.strftime("%Y-%m"))).to eq(2)
-          expect(convocation_class.number_of_elements_in(group: "noshow", scope: participation4.department,
-                                                         month: 2.months.ago.strftime("%Y-%m"))).to eq(1)
-          expect(convocation_class.number_of_elements_in(group: "seen", scope: Department.new)).to eq(2)
-          expect(convocation_class.value(scope: Department.new)).to eq(50)
-          values_grouped_by_month = convocation_class.values_grouped_by_month(scope: Department.new)
+          expect(number_of_no_show.value(scope: participation.department,
+                                         month: 1.month.ago.strftime("%Y-%m"))).to eq(1)
+          expect(number_of_seen.value(scope: Department.new,
+                                      month: 2.months.ago.strftime("%Y-%m"))).to eq(2)
+          expect(number_of_no_show.value(scope: participation4.department,
+                                         month: 2.months.ago.strftime("%Y-%m"))).to eq(1)
+          expect(number_of_seen.value(scope: Department.new)).to eq(2)
+          expect(described_class.value(scope: Department.new)).to eq(50)
+          values_grouped_by_month = described_class.values_grouped_by_month(scope: Department.new)
 
           expect(values_grouped_by_month[1.month.ago.strftime("%m/%Y").to_s].round).to eq(100)
           expect(values_grouped_by_month[2.months.ago.strftime("%m/%Y").to_s].round).to eq(33)
