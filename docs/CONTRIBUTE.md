@@ -59,3 +59,15 @@ bundle exec rspec file_path/file_name_spec.rb
 ```bash
 bundle exec rspec file_path/file_name_spec.rb:line_number
 ```
+
+## Documentation API
+
+Nous utilisons la libraire [rswag]() pour générer la documentation au format `openAPI` à partir des tests de requêtes (définis dans `/spec/request/`).
+
+Pour mettre à jour le fichier swagger qui alimente la page de documentation de l'API, il faut lancer cette commande:
+
+```bash
+make rswag
+```
+
+La documentation est visible sur l'URL `/api-docs`.

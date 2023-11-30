@@ -12,7 +12,7 @@ class RdvSolidaritesWebhooksController < ApplicationController
   private
 
   def webhook_job_for(model)
-    "RdvSolidaritesWebhooks::Process#{model}Job".constantize
+    "InboundWebhooks::RdvSolidarites::Process#{model}Job".constantize
   end
 
   def model

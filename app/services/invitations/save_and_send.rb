@@ -8,19 +8,21 @@ module Invitations
 
     def call
       Invitation.with_advisory_lock "invite_user_#{user.id}" do
-        assign_link_and_token
-        validate_invitation
-        verify_creneaux_are_available if @check_creneaux_availability
-        save_record!(@invitation)
-        send_invitation
-        update_invitation_sent_at
+        Invitation.transaction do
+          assign_link_and_token
+          validate_invitation
+          verify_creneaux_are_available if @check_creneaux_availability
+          save_record!(@invitation)
+          send_invitation
+          assign_invitation_sent_at
+        end
       end
       result.invitation = @invitation
     end
 
     private
 
-    def update_invitation_sent_at
+    def assign_invitation_sent_at
       @invitation.sent_at = Time.zone.now
       save_record!(@invitation)
     end
