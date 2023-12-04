@@ -10,26 +10,19 @@ module EventSubscriber
   end
 
   class_methods do
-    def catch_events(*event_names, **conditions)
-      define_run_if_method(conditions)
+    def catch_events(*event_names, **options)
+      define_method(:should_run?, &options[:if] || -> { true })
 
       event_names.each do |event_name|
         define_method(event_name.to_s) do |subject|
           @subject = subject
-          should_run = respond_to?(:run_if) ? run_if : true
           attributes = subject.attributes.merge(previous_changes: subject&.previous_changes || {})
 
-          self.class.perform_async(attributes) if should_run
+          self.class.perform_async(attributes) if should_run?
         end
 
         define_subject_method(event_name)
       end
-    end
-
-    def define_run_if_method(options = {})
-      return unless options[:if]
-
-      define_method(:run_if, &options[:if])
     end
 
     def define_subject_method(event_name)

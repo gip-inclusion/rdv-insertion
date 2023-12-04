@@ -147,7 +147,7 @@ module Stats
         #
         def initialize_with(subject, options = {})
           counter = new
-          return unless options[:skip_validation] || (counter.respond_to?(:run_if) ? counter.run_if(subject) : true)
+          return unless options[:skip_validation] || counter.should_run?
 
           counter.perform(subject)
         end
