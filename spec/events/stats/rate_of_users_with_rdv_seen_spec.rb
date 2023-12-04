@@ -1,4 +1,4 @@
-describe Stats::Counters::RateOfUsersWithRdvSeen do
+describe Stats::RateOfUsersWithRdvSeen do
   before do
     Redis.new.flushall
   end

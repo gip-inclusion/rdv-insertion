@@ -1,4 +1,4 @@
-describe Stats::Counters::RateOfNoShowConvocations do
+describe Stats::RateOfNoShowConvocations do
   let(:number_of_seen) { Stats::Counters::NumberOfConvocationsSeen }
   let(:number_of_no_show) { Stats::Counters::NumberOfConvocationsNoShow }
 

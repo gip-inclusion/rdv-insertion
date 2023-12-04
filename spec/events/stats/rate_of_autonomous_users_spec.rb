@@ -1,4 +1,4 @@
-describe Stats::Counters::RateOfAutonomousUsers do
+describe Stats::RateOfAutonomousUsers do
   before do
     Redis.new.flushall
   end

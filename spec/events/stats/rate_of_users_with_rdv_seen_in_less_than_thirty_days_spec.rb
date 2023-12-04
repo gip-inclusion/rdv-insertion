@@ -1,4 +1,4 @@
-describe Stats::Counters::RateOfUsersWithRdvSeenInLessThanThirtyDays do
+describe Stats::RateOfUsersWithRdvSeenInLessThanThirtyDays do
   before do
     Redis.new.flushall
   end
