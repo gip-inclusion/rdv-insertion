@@ -3,13 +3,10 @@ module Stats
     class NumberOfInvitationsSeen
       include Counter
 
-      count every: [:update_participation], where: -> { participation.previous_changes[:status].present? }
-
-      def process_event
-        return unless participation.notifications.blank? && participation.rdv_context_invitations.present?
-
-        participation.status == "seen" ? increment : decrement
-      end
+      count every: [:update_participation],
+            where: -> { participation.previous_changes[:status].present? },
+            where_async: -> { participation.invitation? },
+            decrement_if: -> { participation.status != "seen" }
     end
   end
 end

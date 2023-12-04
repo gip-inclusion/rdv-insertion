@@ -6,6 +6,18 @@ module Stats
       extend ActiveSupport::Concern
 
       class_methods do
+        #
+        # This is a DSL method that helps you define a counter
+        # It will create a method that will be called when the event is triggered
+        # It will also create a method that will be called when you want to get the value of the counter
+        #
+        # @param every: the event(s) that will trigger the counter
+        # @param type: by default it increments, but you can also use :average
+        # @param where: a block that returns a condition that must be met for the counter to be incremented (optional)
+        # @param uniq_by: a block to get the identifier of the element to be counted (optional)
+        # @param scopes: a block to get the list of scopes for which the counter must be incremented (optional)
+        #
+        # rubocop:disable Metrics/AbcSize
         def count(args = {})
           raise ArgumentError, "You must provide at least one event" if args[:every].blank?
 
@@ -14,9 +26,26 @@ module Stats
             if: args[:where] || -> { true }
           )
 
-          define_method(:identifier, &args[:uniq_by]) if args[:uniq_by].present?
+          define_method(:identifier, args[:uniq_by]) if args[:uniq_by].present?
           define_method(:scopes, args[:scopes]) if args[:scopes].present?
-          define_method(:process_event, args[:behaviour]) if args[:behaviour].respond_to?(:call)
+          define_process_event_method(args)
+          const_set(:COUNTER_TYPE, args[:type] || :increment)
+        end
+        # rubocop:enable Metrics/AbcSize
+
+        def define_process_event_method(args)
+          define_method(:where_async, args[:where_async] || -> { true })
+          define_method(:decrement?, args[:decrement_if] || -> { false })
+          define_method(:value, args[:value] || -> {})
+          define_method(:process_event) do
+            next unless where_async
+
+            if args[:value]
+              append(value:)
+            else
+              decrement? ? decrement : increment
+            end
+          end
         end
 
         #
@@ -30,7 +59,11 @@ module Stats
         # @param month: the month for which you want the value of the counter (optional)
         #
         def value(scope:, month: nil)
-          number_of_elements_in(scope:, month:)
+          if const_get(:COUNTER_TYPE) == :average
+            average_for(scope:, month:)
+          else
+            number_of_elements_in(scope:, month:)
+          end
         end
 
         def number_of_elements_in(scope:, month: nil, group: nil)
@@ -197,14 +230,6 @@ module Stats
         all_counters_of(group:) do |key|
           self.class.redis_client.rpush(key, value)
         end
-      end
-
-      #
-      # Default behaviour is to increment the counter
-      # You can override this method if you want to do something else
-      #
-      def process_event
-        increment
       end
 
       included do

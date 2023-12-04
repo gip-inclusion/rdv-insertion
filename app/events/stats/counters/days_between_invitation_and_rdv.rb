@@ -3,19 +3,13 @@ module Stats
     class DaysBetweenInvitationAndRdv
       include Counter
 
-      catch_events :create_participation_successful, if: lambda {
-        participation.rdv_context.participations.size < 2 &&
-          participation.rdv_context.invitations.present?
-      }
-
-      def self.value(scope:, month: nil)
-        average_for(scope:, month:)
-      end
-
-      def process_event
-        offset = participation.rdv_context.time_between_invitation_and_rdv_in_days
-        append(value: offset)
-      end
+      count every: :create_participation,
+            type: :average,
+            value: -> { participation.rdv_context.time_between_invitation_and_rdv_in_days },
+            where: lambda {
+              participation.rdv_context.participations.size < 2 &&
+                participation.rdv_context.invitations.present?
+            }
     end
   end
 end

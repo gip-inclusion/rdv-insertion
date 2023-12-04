@@ -4,13 +4,10 @@ module Stats
       include Counters::Counter
 
       def self.value(scope:, month: nil)
-        number_of_users = Counters::UsersWithRdvTaken.value(scope:, month:)
-        number_of_users_with_rdv_seen_in_less_than_30_days = Counters::UsersWithRdvTakenInLessThan30Days.value(scope:,
-                                                                                                               month:)
+        users_count = Counters::UsersWithRdvTaken.value(scope:, month:).nonzero? || 1
+        users_with_rdv_in_less_than_30_days_count = Counters::UsersWithRdvTakenInLessThan30Days.value(scope:, month:)
 
-        (number_of_users_with_rdv_seen_in_less_than_30_days / (
-          number_of_users.nonzero? || 1
-        ).to_f) * 100
+        users_with_rdv_in_less_than_30_days_count / users_count.to_f * 100
       end
     end
   end
