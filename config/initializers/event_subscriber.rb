@@ -2,7 +2,7 @@ module EventSubscriber
   extend ActiveSupport::Concern
 
   included do
-    attr_reader :params
+    attr_accessor :params
 
     include Sidekiq::Worker
 
@@ -41,10 +41,10 @@ module EventSubscriber
   # This is the method that will be called when an event is triggered
   # It will be executed in the background by Sidekiq
   #
-  # @params [Hash] params The attributes of the model that triggered the event + the previous_changes
+  # @resource_or_hash [Hash] The attributes of the model that triggered the event + the previous_changes
   #
-  def perform(params)
-    @params = params
+  def perform(resource_or_hash)
+    @params = resource_or_hash
     process_event
   end
 end

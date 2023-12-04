@@ -145,11 +145,13 @@ module Stats
         # This allows to run a counter increment manually
         # It is useful when you want to backfill counters
         #
-        def initialize_with(subject, options = {})
+        def initialize_with(resource, options = {})
           counter = new
+          counter.params = resource
+
           return unless options[:skip_validation] || counter.should_run?
 
-          counter.perform(subject)
+          counter.perform(resource)
         end
 
         #
