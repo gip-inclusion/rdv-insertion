@@ -1,14 +1,6 @@
 class DepartmentOrganisationsController < ApplicationController
-  before_action :set_department, only: [:index]
-
   def index
-    @organisations = policy_scope(Organisation).where(department: @department)
+    @organisations = policy_scope(Organisation).where(department_id: params[:department_id])
                                                .where(id: current_agent.admin_organisations_ids)
-  end
-
-  private
-
-  def set_department
-    @department = Department.find(params[:department_id])
   end
 end

@@ -4,6 +4,8 @@ class ApplicationController < ActionController::Base
 
   include AuthorizationConcern
   include AuthenticatedControllerConcern
+  include CurrentStructure
+  include NavigationHelper
   include BeforeActionOverride
   include EnvironmentsHelper
 
@@ -22,9 +24,5 @@ class ApplicationController < ActionController::Base
 
   def page
     params[:page] || 1
-  end
-
-  def department_level?
-    params[:department_id].present?
   end
 end

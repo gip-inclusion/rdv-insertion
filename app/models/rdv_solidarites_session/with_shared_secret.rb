@@ -23,19 +23,7 @@ module RdvSolidaritesSession
     end
 
     def signature_valid?
-      payload = {
-        id: agent.rdv_solidarites_agent_id,
-        first_name: agent.first_name,
-        last_name: agent.last_name,
-        email: agent.email
-      }
-
-      OpenSSL::HMAC.hexdigest("SHA256", ENV.fetch("SHARED_SECRET_FOR_AGENTS_AUTH"), payload.to_json) ==
-        @x_agent_auth_signature
-    end
-
-    def agent
-      @agent ||= Agent.find_by(email: @uid)
+      Current.agent.signature_auth_with_shared_secret == @x_agent_auth_signature
     end
   end
 end

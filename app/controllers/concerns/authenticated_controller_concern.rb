@@ -20,7 +20,7 @@ module AuthenticatedControllerConcern
   end
 
   def current_agent
-    @current_agent ||= Agent.find_by(id: session[:agent_id])
+    Current.agent ||= Agent.find_by(id: session[:agent_id])
   end
 
   def rdv_solidarites_session
