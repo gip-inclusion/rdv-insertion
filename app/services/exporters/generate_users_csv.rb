@@ -78,8 +78,7 @@ module Exporters
        "Prénom du prescripteur",
        "Nom du prescripteur",
        "Email du prescripteur",
-       User.human_attribute_name(:tags)
-      ]
+       User.human_attribute_name(:tags)]
     end
 
     def user_csv_row(user) # rubocop:disable Metrics/AbcSize
