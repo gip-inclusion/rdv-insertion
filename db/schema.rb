@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_21_133009) do
+ActiveRecord::Schema[7.0].define(version: 2023_12_04_154228) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -265,6 +265,18 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_21_133009) do
     t.index ["user_id", "rdv_id"], name: "index_participations_on_user_id_and_rdv_id", unique: true
   end
 
+  create_table "prescripteurs", force: :cascade do |t|
+    t.string "first_name"
+    t.string "last_name"
+    t.string "email"
+    t.bigint "participation_id", null: false
+    t.bigint "rdv_solidarites_prescripteur_id"
+    t.datetime "last_webhook_update_received_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["participation_id"], name: "index_prescripteurs_on_participation_id"
+  end
+
   create_table "rdv_contexts", force: :cascade do |t|
     t.integer "status"
     t.bigint "user_id", null: false
@@ -451,6 +463,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_21_133009) do
   add_foreign_key "notifications", "participations"
   add_foreign_key "organisations", "departments"
   add_foreign_key "participations", "rdv_contexts"
+  add_foreign_key "prescripteurs", "participations"
   add_foreign_key "rdv_contexts", "motif_categories"
   add_foreign_key "rdv_contexts", "users"
   add_foreign_key "rdvs", "lieux"
