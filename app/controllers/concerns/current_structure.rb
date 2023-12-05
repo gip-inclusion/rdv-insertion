@@ -2,9 +2,8 @@ module CurrentStructure
   extend ActiveSupport::Concern
 
   included do
-    before_action :set_structure_type_in_session,
-                  :set_session_organisation_id, :set_session_department_id,
-                  :current_structure_attributes
+    before_action :set_structure_type_in_session, :set_session_organisation_id, :set_session_department_id,
+                  :set_current_structure_attributes
 
     helper_method :structure_type, :department_level?
   end
@@ -31,7 +30,7 @@ module CurrentStructure
     end
   end
 
-  def current_structure_attributes
+  def set_current_structure_attributes
     Current.structure_type = session[:structure_type]
     Current.organisation_id = session[:organisation_id]
     Current.department_id = session[:department_id]
