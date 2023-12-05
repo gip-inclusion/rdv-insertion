@@ -60,7 +60,7 @@ describe UpsertRdvSolidaritesUser, type: :service do
         expect(RdvSolidaritesApi::CreateReferentAssignations).to receive(:call)
           .with(
             rdv_solidarites_user_id: rdv_solidarites_user_id,
-            rdv_solidarites_agent_ids: [agent.rdv_solidarites_agent_id],
+            rdv_solidarites_agent_ids: [agent.rdv_solidarites_agent_id]
           )
         subject
       end
@@ -249,7 +249,7 @@ describe UpsertRdvSolidaritesUser, type: :service do
               expect(RdvSolidaritesApi::CreateReferentAssignations).to receive(:call)
                 .with(
                   rdv_solidarites_user_id: 42,
-                  rdv_solidarites_agent_ids: [agent.rdv_solidarites_agent_id],
+                  rdv_solidarites_agent_ids: [agent.rdv_solidarites_agent_id]
                 )
               subject
             end
