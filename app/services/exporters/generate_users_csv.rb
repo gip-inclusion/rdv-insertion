@@ -27,7 +27,7 @@ module Exporters
         else
           @users.preload(
             :invitations, :notifications, :archives, :organisations, :tags, :referents,
-            rdvs: [:motif, :participations, :users]
+            rdvs: [:motif, :users, { participations: :prescripteur }]
           )
         end
     end
@@ -74,7 +74,12 @@ module Exporters
        User.human_attribute_name(:referents),
        "Nombre d'organisations",
        "Nom des organisations",
-       User.human_attribute_name(:tags)]
+       "Rendez-vous prescrit",
+       "Prénom du prescripteur",
+       "Nom du prescripteur",
+       "Email du prescripteur",
+       User.human_attribute_name(:tags)
+      ]
     end
 
     def user_csv_row(user) # rubocop:disable Metrics/AbcSize
@@ -109,6 +114,10 @@ module Exporters
        user.referents.map(&:email).join(", "),
        user.organisations.to_a.count,
        user.organisations.map(&:name).join(", "),
+       last_rdv_prescripted?(user),
+       last_rdv_prescripteur(user)&.first_name,
+       last_rdv_prescripteur(user)&.last_name,
+       last_rdv_prescripteur(user)&.email,
        user.tags.pluck(:value).join(", ")]
     end
 
@@ -198,6 +207,18 @@ module Exporters
       return "" if last_participation(user).blank?
 
       I18n.t("boolean.#{last_participation(user).created_by_user?}")
+    end
+
+    def last_rdv_prescripted?(user)
+      return "" if last_participation(user).blank?
+
+      I18n.t("boolean.#{last_participation(user).created_by_prescripteur?}")
+    end
+
+    def last_rdv_prescripteur(user)
+      return if last_participation(user).blank?
+
+      last_participation(user).prescripteur
     end
 
     def rdv_seen_in_less_than_30_days?(user)
