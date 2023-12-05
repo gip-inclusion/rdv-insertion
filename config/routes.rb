@@ -92,10 +92,6 @@ Rails.application.routes.draw do
     resources :carnets, only: [:create]
   end
 
-  resources :users, only: [] do
-    resource :parcours
-  end
-
   resources :users_organisations, only: [:index, :create]
   resource :users_organisations, only: [:destroy]
   resources :referent_assignations, only: [:index, :create]
