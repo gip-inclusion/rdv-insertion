@@ -476,7 +476,7 @@ DEPENDENCIES
   redis (~> 4.0)
   responders
   rexml
-  rspec-rails (~> 5.0.0)
+  rspec-rails
   rswag
   rubocop
   rubocop-rails

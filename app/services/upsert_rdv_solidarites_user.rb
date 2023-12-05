@@ -72,8 +72,7 @@ class UpsertRdvSolidaritesUser < BaseService
     @sync_organisations ||= call_service!(
       RdvSolidaritesApi::CreateUserProfiles,
       rdv_solidarites_user_id: rdv_solidarites_user_id,
-      rdv_solidarites_organisation_ids: department_rdv_solidarites_organisation_ids,
-      rdv_solidarites_session: @rdv_solidarites_session
+      rdv_solidarites_organisation_ids: department_rdv_solidarites_organisation_ids
     )
   end
 
@@ -81,8 +80,7 @@ class UpsertRdvSolidaritesUser < BaseService
     @sync_referents ||= call_service!(
       RdvSolidaritesApi::CreateReferentAssignations,
       rdv_solidarites_user_id: rdv_solidarites_user_id,
-      rdv_solidarites_agent_ids: referent_rdv_solidarites_ids,
-      rdv_solidarites_session: @rdv_solidarites_session
+      rdv_solidarites_agent_ids: referent_rdv_solidarites_ids
     )
   end
 

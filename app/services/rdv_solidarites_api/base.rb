@@ -37,5 +37,12 @@ module RdvSolidaritesApi
     def rdv_solidarites_response
       raise NotImplementedError
     end
+
+    def rdv_solidarites_session_with_shared_secret
+      RdvSolidaritesSession::WithSharedSecret.new(
+        uid: Current.agent.email,
+        x_agent_auth_signature: Current.agent.signature_auth_with_shared_secret
+      )
+    end
   end
 end
