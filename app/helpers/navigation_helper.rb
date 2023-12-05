@@ -36,10 +36,10 @@ module NavigationHelper
   end
 
   def structure_user_invitations_path(user_id)
-    send(:"#{structure_type}_user_invitations_path", { id: user_id })
+    send(:"#{structure_type}_user_invitations_path", { user_id: })
   end
 
   def structure_user_tag_assignations_path(user_id)
-    send(:"#{structure_type}_user_tag_assignations_path", { id: user_id })
+    send(:"#{structure_type}_user_tag_assignations_path", { user_id: })
   end
 end
