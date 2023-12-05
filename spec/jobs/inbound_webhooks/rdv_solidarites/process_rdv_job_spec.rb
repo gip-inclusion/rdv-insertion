@@ -18,6 +18,9 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
     ]
   end
   let!(:prescripteur_attributes) { { id: 1, first_name: "Michael", last_name: "Villeneuve" } }
+  let!(:prescripteur_attributes_computed) do
+    prescripteur_attributes.slice(:last_name, :first_name).merge(rdv_solidarites_prescripteur_id: 1)
+  end
   let!(:lieu_attributes) { { id: rdv_solidarites_lieu_id, name: "DINUM", address: "20 avenue de Ségur" } }
   let!(:motif_attributes) do
     {
@@ -164,7 +167,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
             rdv_solidarites_participation_id: 998,
             rdv_context_id: rdv_context.id,
             convocable: false,
-            prescripteur_attributes: prescripteur_attributes.slice(:first_name, :last_name)
+            prescripteur_attributes: prescripteur_attributes_computed
           },
           {
             id: nil,
@@ -174,7 +177,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
             rdv_solidarites_participation_id: 999,
             rdv_context_id: rdv_context2.id,
             convocable: false,
-            prescripteur_attributes: prescripteur_attributes.slice(:first_name, :last_name)
+            prescripteur_attributes: prescripteur_attributes_computed
           }
         ]
       end
@@ -261,7 +264,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                       rdv_solidarites_participation_id: 999,
                       rdv_context_id: rdv_context2.id,
                       convocable: false,
-                      prescripteur_attributes: prescripteur_attributes.slice(:first_name, :last_name)
+                      prescripteur_attributes: prescripteur_attributes_computed
                     },
                     {
                       id: nil,
@@ -271,7 +274,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                       rdv_solidarites_participation_id: 998,
                       rdv_context_id: new_rdv_context.id,
                       convocable: false,
-                      prescripteur_attributes: prescripteur_attributes.slice(:first_name, :last_name)
+                      prescripteur_attributes: prescripteur_attributes_computed
                     }
                   ],
                   organisation_id: organisation.id,
@@ -288,7 +291,8 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
 
       context "for a participation update and destroy" do
         let!(:participations_attributes) do
-          [{ id: 999, status: "seen", created_by: "user", user: { id: user_id2 }, prescripteur: prescripteur_attributes }]
+          [{ id: 999, status: "seen", created_by: "user", user: { id: user_id2 },
+             prescripteur: prescripteur_attributes }]
         end
         let!(:users) { [{ id: user_id2 }] }
 
@@ -315,7 +319,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
               user_id: 4,
               rdv_solidarites_participation_id: 999,
               rdv_context_id: rdv_context2.id,
-              prescripteur_attributes: prescripteur_attributes.slice(:first_name, :last_name)
+              prescripteur_attributes: prescripteur_attributes_computed
             },
             {
               _destroy: true,
@@ -405,7 +409,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                   rdv_solidarites_participation_id: 998,
                   rdv_context_id: rdv_context.id,
                   convocable: true,
-                  prescripteur_attributes: prescripteur_attributes.slice(:first_name, :last_name)
+                  prescripteur_attributes: prescripteur_attributes_computed
                 },
                 {
                   id: nil,
@@ -415,7 +419,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                   rdv_solidarites_participation_id: 999,
                   rdv_context_id: rdv_context2.id,
                   convocable: true,
-                  prescripteur_attributes: prescripteur_attributes.slice(:first_name, :last_name)
+                  prescripteur_attributes: prescripteur_attributes_computed
                 }
               ],
               organisation_id: organisation.id,
@@ -445,7 +449,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                     rdv_solidarites_participation_id: 998,
                     rdv_context_id: rdv_context.id,
                     convocable: false,
-                    prescripteur_attributes: prescripteur_attributes.slice(:first_name, :last_name)
+                    prescripteur_attributes: prescripteur_attributes_computed
                   },
                   {
                     id: nil,
@@ -455,7 +459,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                     rdv_solidarites_participation_id: 999,
                     rdv_context_id: rdv_context2.id,
                     convocable: false,
-                    prescripteur_attributes: prescripteur_attributes.slice(:first_name, :last_name)
+                    prescripteur_attributes: prescripteur_attributes_computed
                   }
                 ],
                 organisation_id: organisation.id,
@@ -504,8 +508,10 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
         end
         let!(:participations_attributes) do
           [
-            { id: 998, status: "unknown", created_by: "agent", user: { id: user_id1 }, prescripteur: prescripteur_attributes },
-            { id: 999, status: "unknown", created_by: "user", user: { id: user_id2 }, prescripteur: prescripteur_attributes }
+            { id: 998, status: "unknown", created_by: "agent", user: { id: user_id1 },
+              prescripteur: prescripteur_attributes },
+            { id: 999, status: "unknown", created_by: "user", user: { id: user_id2 },
+              prescripteur: prescripteur_attributes }
           ]
         end
 
@@ -523,7 +529,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                   rdv_solidarites_participation_id: 998,
                   rdv_context_id: rdv_context.id,
                   convocable: true,
-                  prescripteur_attributes: prescripteur_attributes.slice(:first_name, :last_name)
+                  prescripteur_attributes: prescripteur_attributes_computed
                 },
                 {
                   id: nil,
@@ -533,7 +539,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                   rdv_solidarites_participation_id: 999,
                   rdv_context_id: rdv_context2.id,
                   convocable: false,
-                  prescripteur_attributes: prescripteur_attributes.slice(:first_name, :last_name)
+                  prescripteur_attributes: prescripteur_attributes_computed
                 }
               ],
               organisation_id: organisation.id,
@@ -563,7 +569,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                     rdv_solidarites_participation_id: 998,
                     rdv_context_id: rdv_context.id,
                     convocable: false,
-                    prescripteur_attributes: prescripteur_attributes.slice(:first_name, :last_name)
+                    prescripteur_attributes: prescripteur_attributes_computed
                   },
                   {
                     id: nil,
@@ -573,7 +579,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                     rdv_solidarites_participation_id: 999,
                     rdv_context_id: rdv_context2.id,
                     convocable: false,
-                    prescripteur_attributes: prescripteur_attributes.slice(:first_name, :last_name)
+                    prescripteur_attributes: prescripteur_attributes_computed
                   }
                 ],
                 organisation_id: organisation.id,

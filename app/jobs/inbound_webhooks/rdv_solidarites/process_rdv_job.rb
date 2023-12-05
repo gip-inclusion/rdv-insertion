@@ -142,9 +142,7 @@ module InboundWebhooks
           user_id: user.id,
           rdv_solidarites_participation_id: rdv_solidarites_participation.id,
           rdv_context_id: rdv_context_for(user).id,
-          prescripteur_attributes: rdv_solidarites_participation.prescripteur&.attributes&.slice(
-            *Prescripteur::SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES
-          )&.compact_blank
+          prescripteur_attributes: prescripteur_attributes(rdv_solidarites_participation)
         }
         # convocable attribute can be set only once
         if existing_participation.nil?
@@ -155,6 +153,14 @@ module InboundWebhooks
         attributes
       end
       # rubocop:enable Metrics/AbcSize
+
+      def prescripteur_attributes(rdv_solidarites_participation)
+        return {} if rdv_solidarites_participation.prescripteur.blank?
+
+        rdv_solidarites_participation.prescripteur.attributes.slice(
+          *Prescripteur::SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES
+        ).merge(rdv_solidarites_prescripteur_id: rdv_solidarites_participation.prescripteur&.id)
+      end
 
       def rdv_context_for(user)
         rdv_contexts.find { _1.user_id == user.id }

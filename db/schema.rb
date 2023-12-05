@@ -271,7 +271,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_04_154228) do
     t.string "email"
     t.bigint "participation_id", null: false
     t.bigint "rdv_solidarites_prescripteur_id"
-    t.datetime "last_webhook_update_received_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["participation_id"], name: "index_prescripteurs_on_participation_id"
