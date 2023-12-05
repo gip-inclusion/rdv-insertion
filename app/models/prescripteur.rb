@@ -5,6 +5,5 @@ class Prescripteur < ApplicationRecord
   has_one :rdv, through: :participation
   has_one :user, through: :participation
 
-  validates :participation_id, uniqueness: true
   validates :first_name, :last_name, :email, presence: true
 end
