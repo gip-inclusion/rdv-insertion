@@ -14,6 +14,8 @@ class Participation < ApplicationRecord
   has_one :organisation, through: :rdv
   has_many :configurations, through: :organisation
 
+  accepts_nested_attributes_for :prescripteur
+
   validates :status, presence: true
   validates :rdv_solidarites_participation_id, uniqueness: true, allow_nil: true
 

@@ -11,6 +11,10 @@ module RdvSolidarites
       RdvSolidarites::Rdv.new(@attributes[:rdv])
     end
 
+    def prescripteur
+      RdvSolidarites::Prescripteur.new(@attributes[:prescripteur])
+    end
+
     def user
       RdvSolidarites::User.new(@attributes[:user])
     end

@@ -16,7 +16,12 @@ describe UpsertRecord, type: :service do
           created_by: created_by,
           user_id: user_id,
           rdv_solidarites_participation_id: 998,
-          rdv_context_id: rdv_context.id
+          rdv_context_id: rdv_context.id,
+          prescripteur_attributes: {
+            first_name: "Michael",
+            last_name: "Villeneuve",
+            email: "michael.villeneuve@beta.gouv.fr"
+          }
         }
       ],
       lieu_id: lieu.id,
@@ -61,6 +66,11 @@ describe UpsertRecord, type: :service do
         expect(participation.rdv_id).to eq(rdv.id)
         expect(participation.created_by).to eq("user")
         expect(participation.rdv_context_id).to eq(rdv_context.id)
+
+        # it also creates a prescripteur
+        prescripteur = Prescripteur.order(:created_at).last
+        expect(prescripteur.first_name).to eq("Michael")
+        expect(prescripteur.last_name).to eq("Villeneuve")
       end
 
       context "when it is an old update" do

@@ -141,7 +141,10 @@ module InboundWebhooks
           created_by: rdv_solidarites_participation.created_by,
           user_id: user.id,
           rdv_solidarites_participation_id: rdv_solidarites_participation.id,
-          rdv_context_id: rdv_context_for(user).id
+          rdv_context_id: rdv_context_for(user).id,
+          prescripteur_attributes: rdv_solidarites_participation.prescripteur&.attributes&.slice(
+            *Prescripteur::SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES
+          )&.compact_blank
         }
         # convocable attribute can be set only once
         if existing_participation.nil?
