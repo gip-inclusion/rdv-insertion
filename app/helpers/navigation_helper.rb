@@ -1,10 +1,6 @@
 module NavigationHelper
   def structure_id_param
-    if department_level?
-      { department_id: Current.department_id }
-    else
-      { organisation_id: Current.organisation_id }
-    end
+    department_level? ? { department_id: Current.department_id } : { organisation_id: Current.organisation_id }
   end
 
   def structure_users_path(**params)
