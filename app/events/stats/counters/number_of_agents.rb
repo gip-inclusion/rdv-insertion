@@ -5,7 +5,7 @@ module Stats
 
       count every: [:create_agent, :update_agent],
             where: -> { agent.has_logged_in? },
-            scopes: -> { [agent.departments.to_a, agent.organisations.to_a] }
+            scopes: -> { [agent.departments, agent.organisations] }
     end
   end
 end

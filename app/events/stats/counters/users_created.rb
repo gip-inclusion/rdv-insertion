@@ -4,7 +4,7 @@ module Stats
       include Counter
 
       count every: :create_user,
-            scopes: -> { [user.departments.to_a, user.organisations.to_a] }
+            scopes: -> { [user.departments, user.organisations] }
     end
   end
 end
