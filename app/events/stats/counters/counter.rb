@@ -14,38 +14,30 @@ module Stats
         # @param every: the event(s) that will trigger the counter
         # @param type: by default it increments, but you can also use :average
         # @param if: a block that returns a condition that must be met for the counter to be incremented (optional)
+        # @param if_async: same as if option but runs async to avoid slowing down inserts and updates (optional)
         # @param uniq_by: a block to get the identifier of the element to be counted (optional)
         # @param scopes: a block to get the list of scopes for which the counter must be incremented (optional)
         #
-        # rubocop:disable Metrics/AbcSize
         def count(args = {})
           raise ArgumentError, "You must provide at least one event" if args[:every].blank?
 
-          catch_events(
-            *[*args[:every]].flatten.map { |event| "#{event}_successful".to_sym },
-            if: args[:if] || -> { true }
-          )
-
-          define_method(:identifier, args[:uniq_by]) if args[:uniq_by].present?
-          define_method(:scopes, args[:scopes]) if args[:scopes].present?
-          define_process_event_method(args)
+          wisper_event_names = [*args[:every]].flatten.map { |event| "#{event}_successful".to_sym }
+          catch_events(*wisper_event_names, if: args[:if] || -> { true })
+          apply_default_counter_options(args)
           const_set(:COUNTER_TYPE, args[:type] || :increment)
         end
-        # rubocop:enable Metrics/AbcSize
 
-        def define_process_event_method(args)
-          define_method(:where_async, args[:where_async] || -> { true })
+        #
+        # This method serves as a syntactic sugar
+        # The below methods could be written directly in the class definition
+        # but the `count` DSL defines them automatically based on the options provided
+        #
+        def apply_default_counter_options(args)
+          define_method(:identifier, args[:uniq_by] || -> { params["id"] })
+          define_method(:scopes, args[:scopes]) if args[:scopes].present?
+          define_method(:if_async, args[:if_async] || -> { true })
           define_method(:decrement?, args[:decrement_if] || -> { false })
           define_method(:value, args[:value] || -> {})
-          define_method(:process_event) do
-            next unless where_async
-
-            if args[:value]
-              append(value:)
-            else
-              decrement? ? decrement : increment
-            end
-          end
         end
 
         #
@@ -193,12 +185,18 @@ module Stats
         params["created_at"].to_date.strftime("%Y-%m")
       end
 
-      def identifier
-        params["id"]
-      end
-
       def scopes
         [subject.department, subject.organisation]
+      end
+
+      def process_event
+        return unless if_async
+
+        if value.present?
+          append(value:)
+        else
+          decrement? ? decrement : increment
+        end
       end
 
       #

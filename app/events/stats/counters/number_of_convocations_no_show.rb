@@ -5,7 +5,7 @@ module Stats
 
       count every: :update_participation,
             if: -> { participation.previous_changes[:status].present? },
-            where_async: -> { participation.notified? },
+            if_async: -> { participation.notified? },
             decrement_if: -> { participation.status != "noshow" }
     end
   end
