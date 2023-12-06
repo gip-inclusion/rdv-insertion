@@ -13,7 +13,7 @@ module Stats
         #
         # @param every: the event(s) that will trigger the counter
         # @param type: by default it increments, but you can also use :average
-        # @param where: a block that returns a condition that must be met for the counter to be incremented (optional)
+        # @param if: a block that returns a condition that must be met for the counter to be incremented (optional)
         # @param uniq_by: a block to get the identifier of the element to be counted (optional)
         # @param scopes: a block to get the list of scopes for which the counter must be incremented (optional)
         #
@@ -23,7 +23,7 @@ module Stats
 
           catch_events(
             *[*args[:every]].flatten.map { |event| "#{event}_successful".to_sym },
-            if: args[:where] || -> { true }
+            if: args[:if] || -> { true }
           )
 
           define_method(:identifier, args[:uniq_by]) if args[:uniq_by].present?

@@ -4,7 +4,7 @@ module Stats
       include Counter
 
       count every: [:create_agent, :update_agent],
-            where: -> { agent.has_logged_in? },
+            if: -> { agent.has_logged_in? },
             scopes: -> { [agent.departments, agent.organisations] }
     end
   end

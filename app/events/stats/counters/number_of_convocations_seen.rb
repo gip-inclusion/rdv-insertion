@@ -4,8 +4,8 @@ module Stats
       include Counter
 
       count every: :update_participation,
-            where: -> { participation.previous_changes[:status].present? },
-            where_async: -> { participation.convocation? },
+            if: -> { participation.previous_changes[:status].present? },
+            where_async: -> { participation.notified? },
             decrement_if: -> { participation.status != "seen" }
     end
   end

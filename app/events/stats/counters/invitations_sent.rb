@@ -4,7 +4,7 @@ module Stats
       include Counter
 
       count every: [:create_invitation, :update_invitation],
-            where: -> { invitation.previous_changes[:sent_at].present? && invitation.sent_at.present? },
+            if: -> { invitation.previous_changes[:sent_at].present? && invitation.sent_at.present? },
             scopes: -> { [invitation.department, invitation.organisations] }
     end
   end

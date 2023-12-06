@@ -12,8 +12,8 @@ describe Stats::RateOfNoShowConvocations do
         Sidekiq::Testing.inline! do
           participation = create(:participation, status: "noshow")
           participation2 = create(:participation, status: "noshow", rdv: participation.rdv)
-          create(:notification, participation: participation)
-          create(:notification, participation: participation2)
+          create(:notification, participation: participation, sent_at: 1.month.ago)
+          create(:notification, participation: participation2, sent_at: 1.month.ago)
 
           participation.update!(status: "seen")
           expect(number_of_seen.value(scope: participation.department)).to eq(1)
@@ -38,10 +38,10 @@ describe Stats::RateOfNoShowConvocations do
           participation3 = create(:participation, status: "noshow")
           participation4 = create(:participation, status: "noshow")
 
-          create(:notification, participation: participation)
-          create(:notification, participation: participation2)
-          create(:notification, participation: participation3)
-          create(:notification, participation: participation4)
+          create(:notification, participation: participation, sent_at: 1.month.ago)
+          create(:notification, participation: participation2, sent_at: 2.months.ago)
+          create(:notification, participation: participation3, sent_at: 2.months.ago)
+          create(:notification, participation: participation4, sent_at: 2.months.ago)
 
           participation.update!(status: "noshow", created_at: 1.month.ago)
           participation2.update!(status: "seen", created_at: 2.months.ago)

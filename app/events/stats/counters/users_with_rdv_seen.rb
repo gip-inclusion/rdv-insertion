@@ -4,7 +4,7 @@ module Stats
       include Counter
 
       count every: :update_participation,
-            where: -> { participation.seen? },
+            if: -> { participation.seen? },
             uniq_by: -> { participation.user_id }
     end
   end

@@ -1,14 +1,6 @@
 module Notificable
   extend ActiveSupport::Concern
 
-  def invitation?
-    notifications.blank? && rdv_context_invitations.present?
-  end
-
-  def convocation?
-    notifications.present?
-  end
-
   def notified?
     notifications.any?(&:sent_at?)
   end
