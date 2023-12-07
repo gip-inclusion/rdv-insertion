@@ -1,9 +1,9 @@
 module Stats
   module Counters
     class UsersWithRdvSeen
-      include Counter
+      include Statisfy::Counter
 
-      count every: :update_participation,
+      count every: :participation_updated,
             if: -> { participation.seen? },
             uniq_by: -> { participation.user_id }
     end

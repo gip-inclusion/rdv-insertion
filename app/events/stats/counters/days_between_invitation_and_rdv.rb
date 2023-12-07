@@ -1,9 +1,9 @@
 module Stats
   module Counters
     class DaysBetweenInvitationAndRdv
-      include Counter
+      include Statisfy::Counter
 
-      count every: :create_participation,
+      count every: :participation_created,
             type: :average,
             value: -> { participation.rdv_context.time_between_invitation_and_rdv_in_days },
             if: lambda {

@@ -1,9 +1,9 @@
 module Stats
   module Counters
     class RdvsTaken
-      include Counter
+      include Statisfy::Counter
 
-      count every: :create_participation
+      count every: :participation_created
     end
   end
 end

@@ -1,9 +1,9 @@
 module Stats
   module Counters
     class UsersWithRdvTaken
-      include Counter
+      include Statisfy::Counter
 
-      count every: :create_participation,
+      count every: :participation_created,
             uniq_by: -> { participation.user_id }
     end
   end

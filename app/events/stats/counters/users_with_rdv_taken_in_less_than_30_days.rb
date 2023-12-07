@@ -1,9 +1,9 @@
 module Stats
   module Counters
     class UsersWithRdvTakenInLessThan30Days
-      include Counter
+      include Statisfy::Counter
 
-      count every: :update_participation,
+      count every: :participation_updated,
             if: -> { participation.seen? && participation.user.created_at > participation.created_at - 30.days },
             uniq_by: -> { participation.user_id }
     end

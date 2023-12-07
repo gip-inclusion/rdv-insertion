@@ -1,9 +1,9 @@
 module Stats
   module Counters
     class NumberOfAgents
-      include Counter
+      include Statisfy::Counter
 
-      count every: [:create_agent, :update_agent],
+      count every: [:agent_created, :agent_updated],
             if: -> { agent.has_logged_in? },
             scopes: -> { [agent.departments, agent.organisations] }
     end

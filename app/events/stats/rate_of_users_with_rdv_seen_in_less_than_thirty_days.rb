@@ -1,6 +1,6 @@
 module Stats
   class RateOfUsersWithRdvSeenInLessThanThirtyDays
-    include Counters::Counter
+    include Statisfy::Counter
 
     def self.value(scope:, month: nil)
       users_count = Counters::UsersWithRdvTaken.value(scope:, month:).nonzero? || 1

@@ -1,6 +1,6 @@
 module Stats
   class RateOfNoShowInvitations
-    include Counters::Counter
+    include Statisfy::Counter
 
     def self.value(scope:, month: nil)
       number_of_seen = Counters::NumberOfInvitationsSeen.value(scope:, month:)

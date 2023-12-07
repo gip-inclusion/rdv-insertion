@@ -1,9 +1,9 @@
 module Stats
   module Counters
     class RdvsTakenByPrescripteur
-      include Counter
+      include Statisfy::Counter
 
-      count every: :create_participation,
+      count every: :participation_created,
             if: -> { participation.created_by == "prescripteur" },
             uniq_by: -> { participation.user_id }
     end

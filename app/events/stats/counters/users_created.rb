@@ -1,9 +1,9 @@
 module Stats
   module Counters
     class UsersCreated
-      include Counter
+      include Statisfy::Counter
 
-      count every: :create_user,
+      count every: :user_created,
             scopes: -> { [user.departments, user.organisations] }
     end
   end

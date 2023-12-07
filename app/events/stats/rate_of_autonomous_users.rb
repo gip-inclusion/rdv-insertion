@@ -1,6 +1,6 @@
 module Stats
   class RateOfAutonomousUsers
-    include Counters::Counter
+    include Statisfy::Counter
 
     def self.value(scope:, month: nil)
       number_of_autonomous = Counters::RdvsTakenAutonomously.value(scope:, month:)

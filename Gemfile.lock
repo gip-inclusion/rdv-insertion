@@ -1,3 +1,9 @@
+GIT
+  remote: https://github.com/Michaelvilleneuve/statisfy.git
+  revision: 02a6765b858a58cb4b574b636dc17e9726f4bb22
+  specs:
+    statisfy (0.0.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -495,6 +501,7 @@ DEPENDENCIES
   sidekiq-cron
   simple_form
   spring (~> 3.0.0)
+  statisfy!
   turbo-rails
   turbolinks (~> 5)
   tzinfo-data
