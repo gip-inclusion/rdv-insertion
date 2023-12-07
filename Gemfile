@@ -88,10 +88,6 @@ gem "wkhtmltopdf-binary"
 # CORS support
 gem "rack-cors"
 
-# Internal PubSub
-gem "wisper", "2.0.0"
-gem "wisper-activerecord"
-
 # Simple Fast Declarative Serialization Library
 gem "blueprinter"
 

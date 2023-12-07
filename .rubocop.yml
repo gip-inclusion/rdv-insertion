@@ -59,7 +59,6 @@ Metrics/BlockLength:
     - "config/initializers/*"
     - "config/environments/*"
     - "config/routes.rb"
-    - "app/events/stats/counters/counter.rb"
 
 Naming/AccessorMethodName:
   Exclude:
