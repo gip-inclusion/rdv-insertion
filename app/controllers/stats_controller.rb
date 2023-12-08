@@ -5,7 +5,6 @@ class StatsController < ApplicationController
   def index
     @department_count = Department.displayed_in_stats.count
     @stat = Stat.find_by(statable_type: "Department", statable_id: nil)
-    @scope = Department.new
   end
 
   def show

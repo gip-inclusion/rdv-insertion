@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/Michaelvilleneuve/statisfy.git
-  revision: 02a6765b858a58cb4b574b636dc17e9726f4bb22
+  revision: 264df0f557f1ee2e66c7e0a2de65346350864f38
   specs:
     statisfy (0.0.1)
 
