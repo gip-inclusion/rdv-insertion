@@ -95,7 +95,7 @@ gem "blueprinter"
 # gem 'image_processing', '~> 1.2'
 
 # A gem that allows to declare counters for stat purposes
-gem "statisfy", git: "https://github.com/Michaelvilleneuve/statisfy.git"
+gem "statisfy", "~> 0.0.1"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", ">= 1.4.2", require: false
