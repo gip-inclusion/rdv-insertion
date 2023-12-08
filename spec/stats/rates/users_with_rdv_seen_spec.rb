@@ -10,9 +10,7 @@ describe Rates::UsersWithRdvSeen do
           user = create(:user)
           participation = create(:participation, user: user)
 
-          expect { participation.seen! }.to change {
-            described_class.value
-          }.from(0).to(50.0)
+          expect { participation.seen! }.to change(described_class, :value).from(0).to(50.0)
         end
       end
     end

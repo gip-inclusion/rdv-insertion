@@ -9,15 +9,11 @@ describe Rates::AutonomousUsers do
 
       it "adds the offset in days with the invitation" do
         Sidekiq::Testing.inline! do
-          expect { rdv }.to change {
-            described_class.value
-          }.from(0).to(100.0)
+          expect { rdv }.to change(described_class, :value).from(0).to(100.0)
 
           expect do
             rdv.participations.first.dup.update!(user: create(:user), created_by: "agent")
-          end.to change {
-            described_class.value
-          }.from(100.0).to(50.0)
+          end.to change(described_class, :value).from(100.0).to(50.0)
         end
       end
     end

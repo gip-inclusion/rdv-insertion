@@ -11,9 +11,7 @@ describe Rates::UsersWithRdvSeenInLessThanThirtyDays do
             user = create(:user, created_at: 10.days.ago)
             participation = create(:participation, user: user)
 
-            expect { participation.seen! }.to change {
-              described_class.value
-            }.from(0).to(50.0)
+            expect { participation.seen! }.to change(described_class, :value).from(0).to(50.0)
           end
         end
       end
@@ -24,9 +22,7 @@ describe Rates::UsersWithRdvSeenInLessThanThirtyDays do
             user = create(:user, created_at: 2.months.ago)
             participation = create(:participation, user: user)
 
-            expect { participation.seen! }.not_to change {
-              described_class.value
-            }.from(0)
+            expect { participation.seen! }.not_to change(described_class, :value).from(0)
           end
         end
       end

@@ -1,9 +1,9 @@
 module Counters
-    class RdvsTakenByAgent
-      include Statisfy::Counter
+  class RdvsTakenByAgent
+    include Statisfy::Counter
 
-      count every: :participation_created,
-            if: -> { participation.created_by == "agent" },
-            uniq_by: -> { participation.user_id }
+    count every: :participation_created,
+          if: -> { participation.created_by == "agent" },
+          uniq_by: -> { participation.user_id }
   end
 end

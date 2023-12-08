@@ -1,10 +1,10 @@
 module Counters
-    class NumberOfInvitationsNoShow
-      include Statisfy::Counter
+  class NumberOfInvitationsNoShow
+    include Statisfy::Counter
 
-      count every: :participation_updated,
-            if: -> { participation.previous_changes[:status].present? },
-            if_async: -> { participation.invitation? },
-            decrement_if: -> { participation.status != "noshow" }
+    count every: :participation_updated,
+          if: -> { participation.previous_changes[:status].present? },
+          if_async: -> { !participation.notified? && participation.rdv_context.sent_invitations.any? },
+          decrement_if: -> { participation.status != "noshow" }
   end
 end

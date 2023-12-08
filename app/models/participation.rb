@@ -27,10 +27,6 @@ class Participation < ApplicationRecord
   delegate :phone_number_is_mobile?, :email?, to: :user
   delegate :motif_category, to: :rdv_context
 
-  def invitation?
-    notifications.blank? && rdv_context_invitations.sent.any?
-  end
-
   private
 
   def refresh_user_context_statuses

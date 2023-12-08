@@ -11,9 +11,10 @@ describe Counters::DaysBetweenInvitationAndRdv do
           rdv_context.invitations << create(:invitation, user: rdv_context.user, sent_at: 10.days.ago)
           rdv = create(:rdv)
 
-          expect { rdv_context.participations.create!(user: rdv_context.user, rdv:, created_by: "agent") }.to change {
-            described_class.value
-          }.from(0).to(10.0)
+          expect do
+            rdv_context.participations.create!(user: rdv_context.user, rdv:,
+                                               created_by: "agent")
+          end.to change(described_class, :value).from(0).to(10.0)
 
           other_rdv_context = create(:rdv_context)
           other_rdv_context.invitations << create(:invitation, user: other_rdv_context.user, sent_at: 5.days.ago)
@@ -21,9 +22,7 @@ describe Counters::DaysBetweenInvitationAndRdv do
 
           expect do
             other_rdv_context.participations.create!(user: other_rdv_context.user, rdv:, created_by: "agent")
-          end.to change {
-                   described_class.value
-                 }.from(10.0).to(7.5)
+          end.to change(described_class, :value).from(10.0).to(7.5)
           expect(
             described_class.values_grouped_by_month[Time.zone.now.strftime("%m/%Y")]
           ).to eq(7.5)
