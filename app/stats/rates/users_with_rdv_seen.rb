@@ -1,6 +1,6 @@
 module Rates
   class UsersWithRdvSeen
-    include Statisfy::Counter
+    include Statisfy::Monthly
 
     def self.value(scope: nil, month: nil)
       number_of_users = Counters::UsersWithRdvTaken.value(scope:, month:).nonzero? || 1
