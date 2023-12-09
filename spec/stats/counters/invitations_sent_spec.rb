@@ -9,7 +9,7 @@ describe Counters::InvitationsSent do
         Sidekiq::Testing.inline! do
           invitation = create(:invitation, sent_at: nil)
           invitation.update!(sent_at: Time.zone.now)
-          expect(described_class.size(scope: invitation.department)).to eq(1)
+          expect(described_class.value(scope: invitation.department)).to eq(1)
           expect(described_class.value).to eq(1)
         end
       end

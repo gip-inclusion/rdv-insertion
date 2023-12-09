@@ -4,7 +4,6 @@ module Counters
 
     count every: [:agent_created, :agent_updated],
           if: -> { agent.has_logged_in? },
-          scopes: -> { [agent.departments, agent.organisations] },
-          decrement_on_destroy: true
+          scopes: -> { [agent.departments, agent.organisations] }
   end
 end

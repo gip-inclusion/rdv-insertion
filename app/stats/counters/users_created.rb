@@ -3,7 +3,6 @@ module Counters
     include Statisfy::Counter
 
     count every: :user_created,
-          scopes: -> { [user.departments, user.organisations] },
-          decrement_on_destroy: true
+          scopes: -> { [user.departments, user.organisations] }
   end
 end
