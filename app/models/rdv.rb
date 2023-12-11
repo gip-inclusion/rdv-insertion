@@ -6,6 +6,7 @@ class Rdv < ApplicationRecord
 
   include Notificable
   include RdvParticipationStatus
+  include WebhookDeliverable
 
   after_commit :notify_convocable_participations, on: :update
   after_commit :refresh_context_status, on: [:create, :update]
@@ -21,6 +22,7 @@ class Rdv < ApplicationRecord
   has_many :rdv_contexts, through: :participations
   has_many :agents, through: :agents_rdvs
   has_many :users, through: :participations
+  has_many :webhook_endpoints, through: :organisation
 
   # Needed to build participations in process_rdv_job
   accepts_nested_attributes_for :participations, allow_destroy: true, reject_if: :new_participation_already_created?
@@ -42,6 +44,8 @@ class Rdv < ApplicationRecord
   scope :collectif, -> { joins(:motif).merge(Motif.collectif) }
   scope :with_remaining_seats, -> { where("users_count < max_participants_count OR max_participants_count IS NULL") }
   scope :collectif_and_available_for_reservation, -> { collectif.with_remaining_seats.future.not_revoked }
+
+  def self.jwt_payload_keys = [:id, :address, :starts_at]
 
   def rdv_solidarites_url
     "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/" \

@@ -4,8 +4,8 @@ class UnexpectedResultBehaviourError < StandardError; end
 
 class BaseService
   class << self
-    def call(*args, **kwargs)
-      service = new(*args, **kwargs)
+    def call(**kwargs)
+      service = new(**kwargs)
       service.instance_variable_set(:@result, OpenStruct.new(errors: []))
       output = service.call
       format_result(output, service.result)
@@ -47,13 +47,13 @@ class BaseService
   attr_reader :result
 
   def call
-    raise NotImplementedError
+    raise NoMethodError
   end
 
   private
 
-  def call_service!(service, **kwargs)
-    service_result = service.call(**kwargs)
+  def call_service!(service_class, **kwargs)
+    service_result = service_class.call(**kwargs)
     return service_result if service_result.success?
 
     service_result.to_h.each { |key, value| result[key] = value }

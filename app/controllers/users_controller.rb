@@ -26,7 +26,6 @@ class UsersController < ApplicationController
                 for: [:new, :create]
   before_action :set_user, :set_organisation, :set_department,
                 for: [:edit, :update]
-  before_action :find_or_initialize_user!, only: :create
   before_action :reset_tag_users, only: :update
   after_action :store_back_to_users_list_url, only: [:index]
 
@@ -53,11 +52,11 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user.assign_attributes(**formatted_attributes.compact_blank)
-    if save_user.success?
+    @user = upsert_user.user
+    if upsert_user.success?
       render_save_user_success
     else
-      render_errors(save_user.errors)
+      render_errors(upsert_user.errors)
     end
   end
 
@@ -108,17 +107,6 @@ class UsersController < ApplicationController
     )
   end
 
-  def find_or_initialize_user!
-    @user = find_or_initialize_user.user
-    render_errors(find_or_initialize_user.errors) if find_or_initialize_user.failure?
-  end
-
-  def find_or_initialize_user
-    @find_or_initialize_user ||= Users::FindOrInitialize.call(
-      attributes: formatted_attributes, department_id: @department.id
-    )
-  end
-
   def render_errors(errors)
     respond_to do |format|
       format.html do
@@ -144,17 +132,19 @@ class UsersController < ApplicationController
     )
   end
 
+  def upsert_user
+    @upsert_user ||= Users::Upsert.call(
+      user_attributes: user_params,
+      organisation: @organisation,
+      rdv_solidarites_session: rdv_solidarites_session
+    )
+  end
+
   def set_user
     @user =
       policy_scope(User)
       .preload(:invitations, organisations: [:department, :configurations])
-      .where(
-        if department_level?
-          { organisations: { department_id: params[:department_id] } }
-        else
-          { organisations: params[:organisation_id] }
-        end
-      )
+      .where(current_organisations_filter)
       .find(params[:id])
   end
 
@@ -318,16 +308,14 @@ class UsersController < ApplicationController
     organisation_user_path(@organisation, @user)
   end
 
-  def default_list_path # rubocop:disable Metrics/AbcSize
-    structure = if department_level?
-                  Department.includes(:motif_categories).find(params[:department_id])
-                else
-                  Organisation.includes(:motif_categories).find(params[:organisation_id])
-                end
-    path = department_level? ? department_users_path(structure) : organisation_users_path(structure)
-    return path if structure.motif_categories.blank? || structure.motif_categories.count > 1
-
-    "#{path}?motif_category_id=#{structure.motif_categories.first.id}"
+  def default_list_path
+    motif_category_param =
+      if current_structure.motif_categories.length == 1
+        { motif_category_id: current_structure.motif_categories.first.id }
+      else
+        {}
+      end
+    structure_users_path(**motif_category_param)
   end
 end
 

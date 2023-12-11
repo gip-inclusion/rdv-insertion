@@ -18,18 +18,6 @@ class ConfigurationsPositionsController < ApplicationController
   end
 
   def configurations
-    @configurations ||= department_or_organisation.configurations.includes([:motif_category]).order(position: :asc)
-  end
-
-  def department_or_organisation
-    department_level? ? department : organisation
-  end
-
-  def department
-    @department ||= policy_scope(Department).find(params[:department_id])
-  end
-
-  def organisation
-    @organisation ||= policy_scope(Organisation).find(params[:organisation_id])
+    @configurations ||= current_structure.configurations.includes([:motif_category]).order(position: :asc)
   end
 end

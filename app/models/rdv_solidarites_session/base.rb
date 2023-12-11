@@ -3,11 +3,11 @@ module RdvSolidaritesSession
     attr_reader :uid
 
     def valid?
-      raise NotImplementedError
+      raise NoMethodError
     end
 
     def to_h
-      raise NotImplementedError
+      raise NoMethodError
     end
 
     def rdv_solidarites_client

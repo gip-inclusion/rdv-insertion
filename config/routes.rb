@@ -12,6 +12,9 @@ def check_auth(username, password, service)
 end
 
 Rails.application.routes.draw do
+  mount Rswag::Api::Engine => '/api-docs'
+  mount Rswag::Ui::Engine => '/api-docs'
+
   root "static_pages#welcome"
   get "mentions-legales", to: "static_pages#legal_notice"
   get "cgu", to: "static_pages#cgu"
@@ -52,6 +55,7 @@ Rails.application.routes.draw do
   end
 
   get "invitation", to: "invitations#invitation_code", as: :invitation_landing
+  get '/r/:uuid', to: "invitations#redirect_shortcut", as: :redirect_invitation_shortcut
   resources :invitations, only: [] do
     get :redirect, on: :collection
   end
@@ -88,6 +92,11 @@ Rails.application.routes.draw do
     resources :carnets, only: [:create]
   end
 
+  resources :users_organisations, only: [:index, :create]
+  resource :users_organisations, only: [:destroy]
+  resources :referent_assignations, only: [:index, :create]
+  resource :referent_assignations, only: [:destroy]
+
   resources :departments, only: [] do
     patch "configurations_positions/update", to: "configurations_positions#update"
     resources :department_organisations, only: [:index], as: :organisations, path: "/organisations"
@@ -98,25 +107,23 @@ Rails.application.routes.draw do
         get :default_list
       end
       resources :invitations, only: [:create]
-      resources :users_organisations, only: [:index]
-      resources :referent_assignations, only: [:index]
       resources :tag_assignations, only: [:index, :create] do
         delete :destroy, on: :collection
       end
     end
-    resource :users_organisations, only: [:create, :destroy]
-    resource :referent_assignations, only: [:create, :destroy]
     resource :stats, only: [:show]
   end
   resources :invitation_dates_filterings, :creation_dates_filterings, only: [:new]
-  resources :tags_filterings, :tags_filterings, only: [:new]
 
   namespace :api do
     namespace :v1 do
+      resources :departments, param: "department_number", only: [:show]
+      resources :rdvs, param: "uuid", only: [:show]
       resources :organisations, param: "rdv_solidarites_organisation_id", only: [] do
         member do
           resources :users, only: [] do
             post :create_and_invite_many, on: :collection
+            post :create_and_invite, on: :collection
           end
           post "applicants/create_and_invite_many", to: "users#create_and_invite_many"
         end

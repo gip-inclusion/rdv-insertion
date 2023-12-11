@@ -1,5 +1,5 @@
 <%= render 'archive_banner' if @user.archived_in?(@department) %>
-<%= simple_form_for(@user, url: compute_show_path(@user, @organisation, @department), html: { method: :patch }) do |f| %>
-  <%= render 'user_form', f: f, title: "Modifier usager", return_path: compute_show_path(@user, @organisation, @department) %>
+<%= simple_form_for(@user, url: structure_user_path(@user.id), html: { method: :patch }) do |f| %>
+  <%= render 'user_form', f: f, title: "Modifier usager", return_path: structure_user_path(@user.id) %>
 <% end %>
 

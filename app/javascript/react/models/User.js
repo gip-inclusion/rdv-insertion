@@ -236,7 +236,6 @@ export default class User {
   updateWith(upToDateUser) {
     this.resetErrors();
     this.createdAt = upToDateUser.created_at;
-    this.invitedAt = upToDateUser.invited_at;
     this.id = upToDateUser.id;
     this.archives = upToDateUser.archives;
     this.organisations = upToDateUser.organisations;

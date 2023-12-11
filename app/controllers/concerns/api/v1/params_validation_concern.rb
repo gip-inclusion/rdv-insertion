@@ -3,62 +3,54 @@ module Api
     module ParamsValidationConcern
       extend ActiveSupport::Concern
 
-      included do
-        before_action :validate_params
-      end
-
       private
 
-      def validate_params
+      def validate_users_params
         @params_validation_errors = []
 
         validate_users_length
         validate_users_attributes
-        validate_invitations_attributes
+
+        return if @params_validation_errors.empty?
+
+        render json: { success: false, errors: @params_validation_errors }, status: :unprocessable_entity
+      end
+
+      def validate_user_params
+        @params_validation_errors = []
+        validate_user_attributes(user_attributes)
+
+        return if @params_validation_errors.empty?
+
+        render json: { success: false, errors: @params_validation_errors }, status: :unprocessable_entity
       end
 
       def validate_users_length
         return if users_attributes.length <= 25
 
-        @params_validation_errors << "Les usagers doivent être envoyés par lots de 25 maximum"
+        @params_validation_errors << {
+          error_details: "Les usagers doivent être envoyés par lots de 25 maximum"
+        }
       end
 
       def validate_users_attributes
         users_attributes.each_with_index do |user_attributes, idx|
-          user = User.new(user_attributes.except(:invitation))
-          user.skip_uniqueness_validations = true
-
-          next if user.valid?
-
-          department_internal_id = user_attributes[:department_internal_id]
-          key = "Entrée #{idx + 1}" + (department_internal_id.present? ? " - #{department_internal_id}" : "")
-
-          @params_validation_errors << { "#{key}": user.errors }
+          validate_user_attributes(user_attributes.except(:invitation), idx)
         end
       end
 
-      def validate_invitations_attributes
-        possible_motif_category_names = @organisation.configurations.map(&:motif_category_name)
+      def validate_user_attributes(user_attributes, idx = nil)
+        user = User.new(user_attributes)
+        # since it is an upsert we don't check the uniqueness validations
+        user.skip_uniqueness_validations = true
 
-        invitations_attributes.each_with_index do |invitation_params, idx|
-          motif_category_name = invitation_params[:motif_category_name]
+        return if user.valid?
 
-          if motif_category_name.blank?
-            # we don't have to precise the context if there is only one context possible
-            next if possible_motif_category_names.length == 1
-
-            @params_validation_errors << {
-              "Entrée #{idx + 1}": { "motif_category_name" => ["La catégorie de motifs doit être précisée"] }
-            }
-            next
-          end
-
-          next if motif_category_name.in?(possible_motif_category_names)
-
-          @params_validation_errors << {
-            "Entrée #{idx + 1}": { "motif_category_name" => ["Catégorie de motifs #{motif_category_name} invalide"] }
-          }
-        end
+        @params_validation_errors << {
+          error_details: user.errors.full_messages.to_sentence,
+          first_name: user_attributes[:first_name],
+          last_name: user_attributes[:last_name]
+        }.merge(idx.present? ? { index: idx } : {})
       end
     end
   end

@@ -40,7 +40,9 @@ const UsersUpload = observer(
     const redirectToUserList = () => {
       const scope = isDepartmentLevel ? "departments" : "organisations";
       const url = `/${scope}/${(organisation || department).id}/users`;
-      const queryParams = configuration ? `?motif_category_id=${configuration.motif_category_id}` : ""
+      const queryParams = configuration
+        ? `?motif_category_id=${configuration.motif_category_id}`
+        : "";
 
       window.location.href = url + queryParams;
     };
@@ -52,42 +54,50 @@ const UsersUpload = observer(
       users.configuration = configuration;
       users.isDepartmentLevel = isDepartmentLevel;
 
-      const rows = await uploadFile(file, sheetName, columnNames)
-
+      const rows = await uploadFile(file, sheetName, columnNames);
       rows.forEach((row) => {
-        const user = new User({
-          lastName: row[parameterizedColumnNames.last_name_column],
-          firstName: row[parameterizedColumnNames.first_name_column],
-          affiliationNumber: row[parameterizedColumnNames.affiliation_number_column],
-          tags: row[parameterizedColumnNames.tags_column]?.toString().split(",").map((tag) => tag.trim()) || [],
-          nir: row[parameterizedColumnNames.nir_column],
-          poleEmploiId: row[parameterizedColumnNames.pole_emploi_id_column],
-          role: row[parameterizedColumnNames.role_column],
-          title: row[parameterizedColumnNames.title_column],
-          addressFirstField: row[parameterizedColumnNames.address_first_field_column],
-          addressSecondField: row[parameterizedColumnNames.address_second_field_column],
-          addressThirdField: row[parameterizedColumnNames.address_third_field_column],
-          addressFourthField: row[parameterizedColumnNames.address_fourth_field_column],
-          addressFifthField: row[parameterizedColumnNames.address_fifth_field_column],
-          email: row[parameterizedColumnNames.email_column],
-          phoneNumber: row[parameterizedColumnNames.phone_number_column],
-          birthDate: formatDateInput(row[parameterizedColumnNames.birth_date_column]),
-          birthName: row[parameterizedColumnNames.birth_name_column],
-          departmentInternalId: row[parameterizedColumnNames.department_internal_id_column],
-          rightsOpeningDate: formatDateInput(row[parameterizedColumnNames.rights_opening_date_column]),
-          linkedOrganisationSearchTerms: row[parameterizedColumnNames.organisation_search_terms_column],
-          referentEmail: row[parameterizedColumnNames.referent_email_column],
-        }, department, organisation, tags, configuration, columnNames, currentAgent, users);
+        const user = new User(
+          {
+            lastName: row[parameterizedColumnNames.last_name_column],
+            firstName: row[parameterizedColumnNames.first_name_column],
+            affiliationNumber: row[parameterizedColumnNames.affiliation_number_column],
+            tags:
+              row[parameterizedColumnNames.tags_column]
+                ?.toString()
+                .split(",")
+                .map((tag) => tag.trim()) || [],
+            nir: row[parameterizedColumnNames.nir_column],
+            poleEmploiId: row[parameterizedColumnNames.pole_emploi_id_column],
+            role: row[parameterizedColumnNames.role_column],
+            title: row[parameterizedColumnNames.title_column],
+            addressFirstField: row[parameterizedColumnNames.address_first_field_column],
+            addressSecondField: row[parameterizedColumnNames.address_second_field_column],
+            addressThirdField: row[parameterizedColumnNames.address_third_field_column],
+            addressFourthField: row[parameterizedColumnNames.address_fourth_field_column],
+            addressFifthField: row[parameterizedColumnNames.address_fifth_field_column],
+            email: row[parameterizedColumnNames.email_column],
+            phoneNumber: row[parameterizedColumnNames.phone_number_column],
+            birthDate: formatDateInput(row[parameterizedColumnNames.birth_date_column]),
+            birthName: row[parameterizedColumnNames.birth_name_column],
+            departmentInternalId: row[parameterizedColumnNames.department_internal_id_column],
+            rightsOpeningDate: formatDateInput(
+              row[parameterizedColumnNames.rights_opening_date_column]
+            ),
+            linkedOrganisationSearchTerms:
+              row[parameterizedColumnNames.organisation_search_terms_column],
+            referentEmail: row[parameterizedColumnNames.referent_email_column],
+          },
+          department,
+          organisation,
+          tags,
+          configuration,
+          columnNames,
+          currentAgent,
+          users
+        );
 
         users.addUser(user);
       });
-    };
-
-    const isFormatValid = (file, acceptedFormats) => {
-      if (acceptedFormats.some((format) => file.name.endsWith(format))) {
-        return true;
-      }
-      return false;
     };
 
     const displayFormatErrorMessage = (acceptedFormats) => {
@@ -96,6 +106,9 @@ const UsersUpload = observer(
         icon: "error",
       });
     };
+
+    const isFormatValid = (file, acceptedFormats) =>
+      acceptedFormats.some((format) => file.name.endsWith(format));
 
     const handleUsersFile = async (file) => {
       const acceptedFormats = [".csv", ".xls", ".xlsx", ".ods"];
@@ -209,13 +222,23 @@ const UsersUpload = observer(
                   <i className="fas fa-user" />
                   {users.showReferentColumn ? (
                     <Tippy content="Cacher colonne référent">
-                      <button type="button" onClick={() => { users.showReferentColumn = false }}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          users.showReferentColumn = false;
+                        }}
+                      >
                         <i className="fas fa-minus" />
                       </button>
                     </Tippy>
                   ) : (
                     <Tippy content="Montrer colonne référent">
-                      <button type="button" onClick={() => { users.showReferentColumn = true }}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          users.showReferentColumn = true;
+                        }}
+                      >
                         <i className="fas fa-plus" />
                       </button>
                     </Tippy>
@@ -238,12 +261,14 @@ const UsersUpload = observer(
                         <th {...column.attributes} key={column.name}>
                           {column.header({ column, users })}
                         </th>
-                      )
+                      );
                     })}
                   </tr>
                 </thead>
                 <tbody>
-                  {users.sorted.map((user) => <UserRow user={user} key={user.uniqueKey} />)}
+                  {users.sorted.map((user) => (
+                    <UserRow user={user} key={user.uniqueKey} />
+                  ))}
                 </tbody>
               </table>
             </div>

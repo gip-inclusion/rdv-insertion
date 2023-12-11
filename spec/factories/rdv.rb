@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :rdv do
-    sequence(:uuid) { |n| "uid#{n}" }
+    sequence(:uuid) { SecureRandom.uuid }
     sequence(:rdv_solidarites_rdv_id)
     starts_at { 3.days.from_now }
     duration_in_min { 30 }
@@ -8,6 +8,9 @@ FactoryBot.define do
     motif { create(:motif) }
     status { "unknown" }
     created_by { "user" }
+    address { "2O avenue de Ségur, 75007 Paris" }
+    lieu { create(:lieu) }
+    agents { [create(:agent)] }
 
     after(:build) do |rdv|
       if rdv.participations.blank?

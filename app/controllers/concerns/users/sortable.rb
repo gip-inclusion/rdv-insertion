@@ -19,7 +19,8 @@ module Users::Sortable
   end
 
   def all_users_order
-    @users = @users.select("users.*, users_organisations.created_at as affected_at")
-                   .order("affected_at DESC NULLS LAST, users.id DESC")
+    @users = @users.select("users.*, MIN(users_organisations.created_at) AS min_created_at")
+                   .group("users.id")
+                   .order("min_created_at DESC")
   end
 end

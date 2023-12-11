@@ -14,7 +14,7 @@ module Invitations
       "#{user.full_name},\nVous êtes #{user.conjugate('invité')} à prendre un #{rdv_title}." \
         " Pour choisir la date et l'horaire du RDV, " \
         "cliquez sur le lien suivant: " \
-        "#{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
+        "#{redirect_sms_link}\n" \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
         "En cas de problème, contactez le #{help_phone_number}."
@@ -24,7 +24,7 @@ module Invitations
       "#{user.full_name},\nVous êtes #{user_designation} et vous êtes #{user.conjugate('invité')} à" \
         " participer à un #{rdv_title}. Pour choisir la date et l'horaire du RDV, " \
         "cliquez sur le lien suivant dans les #{Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER} jours: " \
-        "#{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
+        "#{redirect_sms_link}\n" \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
         "En cas de problème, contactez le #{help_phone_number}."
@@ -42,7 +42,7 @@ module Invitations
       "#{user.full_name},\nVous êtes #{user_designation} et bénéficiez d'un accompagnement. " \
         "Vous pouvez consulter le(s) atelier(s) et formation(s) proposé(s) et vous y inscrire directement et " \
         "librement, dans la limite des places disponibles, en cliquant sur le lien " \
-        "suivant: #{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
+        "suivant: #{redirect_sms_link}\n" \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
         "En cas de problème, contactez le #{help_phone_number}."
@@ -52,7 +52,7 @@ module Invitations
       "#{user},\nTu es #{user.conjugate('invité')} à participer à un atelier organisé par le département. " \
         "Nous te proposons de cliquer ci-dessous pour découvrir le programme. " \
         "Si tu es #{user.conjugate('intéressé')} pour participer, tu n’auras qu’à cliquer et t’inscrire en ligne" \
-        " avec le lien suivant: #{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
+        " avec le lien suivant: #{redirect_sms_link}\n" \
         "En cas de problème, tu peux contacter le #{help_phone_number}."
     end
 
@@ -63,7 +63,7 @@ module Invitations
         "vous invitant à prendre un #{rdv_title}." \
         " Le lien de prise de RDV suivant expire dans #{number_of_days_before_expiration} " \
         "jours: " \
-        "#{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
+        "#{redirect_sms_link}\n" \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
         "En cas de problème, contactez le #{help_phone_number}."
@@ -74,7 +74,7 @@ module Invitations
         "vous invitant à prendre RDV au créneau de votre choix afin de #{rdv_purpose}." \
         " Le lien de prise de RDV suivant expire dans #{number_of_days_before_expiration} " \
         "jours: " \
-        "#{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
+        "#{redirect_sms_link}\n" \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
         "En cas de problème, contactez le #{help_phone_number}."
@@ -94,7 +94,7 @@ module Invitations
         "t'invitant à participer à un #{rdv_title}." \
         " Le lien de prise de RDV suivant expire dans #{number_of_days_before_expiration} " \
         "jours: " \
-        "#{redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST'])}\n" \
+        "#{redirect_sms_link}\n" \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
         "En cas de problème, tu peux contacter le #{help_phone_number}."
@@ -112,6 +112,12 @@ module Invitations
       else
         ""
       end
+    end
+
+    def redirect_sms_link
+      host = ENV["HOST"].gsub("www.", "").gsub("https://", "")
+      path = redirect_invitation_shortcut_path(uuid: @invitation.uuid)
+      host + path
     end
   end
 end

@@ -7,7 +7,7 @@
   <div class="row justify-content-center mt-5">
     <div class="col-8 d-flex justify-content-between">
       <div>
-        <%= link_to(department_level? ? new_department_upload_path(@department, category: "none") : new_organisation_upload_path(@organisation, category: "none"), class: "btn btn-blue-out") do %>
+        <%= link_to(new_structure_upload_path(category: "none"), class: "btn btn-blue-out") do %>
           Aucune catégorie de suivi
           <i
             class="fas fa-question-circle"
@@ -19,7 +19,7 @@
       </div>
       <% @all_configurations.each do |configuration| %>
         <div>
-          <%= link_to(department_level? ? new_department_upload_path(@department, configuration_id: configuration.id) : new_organisation_upload_path(@organisation, configuration_id: configuration.id), class: "btn btn-blue-out") do %>
+          <%= link_to(new_structure_upload_path(configuration_id: configuration.id), class: "btn btn-blue-out") do %>
             <%= configuration.motif_category_name %>
           <% end %>
         </div>
