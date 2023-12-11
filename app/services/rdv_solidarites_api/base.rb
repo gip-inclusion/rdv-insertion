@@ -35,7 +35,7 @@ module RdvSolidaritesApi
     end
 
     def rdv_solidarites_response
-      raise NotImplementedError
+      raise NoMethodError
     end
 
     # this session is used to certify the API calls are emited by the rdv-insertion servers

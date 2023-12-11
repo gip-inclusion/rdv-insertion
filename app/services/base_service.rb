@@ -47,7 +47,7 @@ class BaseService
   attr_reader :result
 
   def call
-    raise NotImplementedError
+    raise NoMethodError
   end
 
   private

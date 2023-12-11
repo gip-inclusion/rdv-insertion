@@ -121,14 +121,6 @@ module UsersHelper
     scope == "archived"
   end
 
-  def department_level?
-    params[:department_id].present?
-  end
-
-  def navigation_level
-    department_level? ? "department" : "organisation"
-  end
-
   def rdv_solidarites_agent_searches_url(
     rdv_solidarites_organisation_id, rdv_solidarites_user_id, rdv_solidarites_motif_id, rdv_solidarites_service_id
   )
@@ -147,44 +139,6 @@ module UsersHelper
 
     rdv_context.convocable_status? ||
       rdv_context.time_to_accept_invitation_exceeded?(configuration.number_of_days_before_action_required)
-  end
-
-  def compute_index_path(organisation, department, **params)
-    if department_level?
-      department_users_path(department, **params.compact_blank)
-    else
-      organisation_users_path(organisation, **params.compact_blank)
-    end
-  end
-
-  def compute_update_position_path(organisation, department)
-    return department_configurations_positions_update_path(department) if department_level?
-
-    organisation_configurations_positions_update_path(organisation)
-  end
-
-  def compute_edit_path(user, organisation, department)
-    return edit_department_user_path(department, user) if department_level?
-
-    edit_organisation_user_path(organisation, user)
-  end
-
-  def compute_show_path(user, organisation, department)
-    return department_user_path(department, user) if department_level?
-
-    organisation_user_path(organisation, user)
-  end
-
-  def compute_new_path(organisation, department)
-    return new_department_user_path(department) if department_level?
-
-    new_organisation_user_path(organisation)
-  end
-
-  def compute_rdv_contexts_path(organisation, department)
-    return rdv_contexts_path(department_id: department.id) if department_level?
-
-    rdv_contexts_path(organisation_id: organisation.id)
   end
 end
 

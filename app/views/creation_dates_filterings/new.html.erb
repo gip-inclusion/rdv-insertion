@@ -1,5 +1,5 @@
 <%= render "common/remote_modal", title: "Filtrer par date de création" do %>
-  <%= form_with method: :get, local: true, url: compute_index_path(@organisation, @department), data: { "turbo-frame" => "_top" } do |form| %>
+  <%= form_with method: :get, local: true, url: structure_users_path, data: { "turbo-frame" => "_top" } do |form| %>
     <% url_params.except(:creation_date_after, :creation_date_before).each do |key, value| %>
       <%= form.hidden_field key, value: value %>
     <% end %>

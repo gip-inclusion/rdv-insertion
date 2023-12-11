@@ -3,7 +3,7 @@
 <div class="container text-dark-blue h4-as-labels mt-4">
   <div class="d-flex justify-content-between mb-4">
     <div>
-      <%= link_to(@back_to_users_list_url || compute_index_path(@organisation, @department)) do %>
+      <%= link_to(@back_to_users_list_url || structure_users_path) do %>
         <button class="btn btn-blue-out">Retour</button>
       <% end %>
       <%= link_to new_organisation_user_rdv_path(@organisation, @user), target: "_blank" do %>
@@ -19,7 +19,7 @@
     </div>
     <div>
       <%= render "archiving_button" %>
-      <%= link_to compute_edit_path(@user, @organisation, @department) do %>
+      <%= link_to edit_structure_user_path(@user.id) do %>
         <button class="btn btn-blue">Modifier</button>
       <% end %>
     </div>
@@ -51,22 +51,13 @@
         <h4> Tags </h4>
         <%= render "user_tags", tags: @tags %>
 
-        <%= link_to(compute_user_tag_assignations_path(@organisation, @department, @user), data: { turbo_frame: 'remote_modal' }) do %>
+        <%= link_to(structure_user_tag_assignations_path(@user.id), data: { turbo_frame: 'remote_modal' }) do %>
           <button class="btn btn-blue mb-3"><i class="fas fa-pen"></i> Ajouter ou retirer un tag </button>
         <% end %>
       </div>
 
-      <%= render "common/attribute_display", record: @user, attribute: :organisations, as: :list, id: "organisations_list" do %>
-        <%= link_to(department_user_users_organisations_path(@department, @user, current_organisation_id: department_level? ? nil : @organisation.id), data: { turbo_frame: 'remote_modal' }) do %>
-          <button class="btn btn-blue"><i class="fas fa-pen"></i> Ajouter ou retirer une organisation </button>
-        <% end %>
-      <% end %>
-
-      <%= render "common/attribute_display", record: @user, attribute: :referents, as: :list, id: "referents_list" do %>
-        <%= link_to(department_user_referent_assignations_path(@department, @user), data: { turbo_frame: 'remote_modal' }) do %>
-          <button class="btn btn-blue mb-3"><i class="fas fa-user-plus"></i> Assigner le.s référent.s</button>
-        <% end %>
-      <% end %>
+      <%= render "users/user_organisations_list", user: @user %>
+      <%= render "users/user_referents_list", user: @user %>
     </div>
   </div>
   <% @all_configurations.each do |configuration| %>

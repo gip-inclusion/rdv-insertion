@@ -1,5 +1,5 @@
 <%= turbo_stream.replace "referents_list" do %>
-  <%= render "common/attribute_display", record: @user, attribute: :referents, as: :list, id: "referents_list" %>
+  <%= render partial: "users/user_referents_list", locals: { user: @user.reload } %>
 <% end %>
 
 <%= render_turbo_stream_flash_messages %>

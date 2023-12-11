@@ -24,8 +24,6 @@ class TagsController < ApplicationController
   private
 
   def set_organisation
-    return if department_level?
-
     @organisation = policy_scope(Organisation).find(params[:organisation_id])
   end
 

@@ -59,6 +59,7 @@ RSpec.configure do |config|
   config.before do
     ActiveSupport::CurrentAttributes.reset_all
   end
+
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
