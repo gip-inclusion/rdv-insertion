@@ -144,13 +144,7 @@ class UsersController < ApplicationController
     @user =
       policy_scope(User)
       .preload(:invitations, organisations: [:department, :configurations])
-      .where(
-        if department_level?
-          { organisations: { department_id: params[:department_id] } }
-        else
-          { organisations: params[:organisation_id] }
-        end
-      )
+      .where(current_organisations_filter)
       .find(params[:id])
   end
 
@@ -314,16 +308,14 @@ class UsersController < ApplicationController
     organisation_user_path(@organisation, @user)
   end
 
-  def default_list_path # rubocop:disable Metrics/AbcSize
-    structure = if department_level?
-                  Department.includes(:motif_categories).find(params[:department_id])
-                else
-                  Organisation.includes(:motif_categories).find(params[:organisation_id])
-                end
-    path = department_level? ? department_users_path(structure) : organisation_users_path(structure)
-    return path if structure.motif_categories.blank? || structure.motif_categories.count > 1
-
-    "#{path}?motif_category_id=#{structure.motif_categories.first.id}"
+  def default_list_path
+    motif_category_param =
+      if current_structure.motif_categories.length == 1
+        { motif_category_id: current_structure.motif_categories.first.id }
+      else
+        {}
+      end
+    structure_users_path(**motif_category_param)
   end
 end
 

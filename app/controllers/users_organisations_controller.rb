@@ -1,5 +1,5 @@
 class UsersOrganisationsController < ApplicationController
-  before_action :set_user, :set_department, :set_organisations, :set_current_organisation,
+  before_action :set_user, :set_department, :set_organisations,
                 only: [:index, :create, :destroy]
   before_action :assign_motif_category, :set_organisation_to_add, only: [:create]
   before_action :set_organisation_to_remove, only: [:destroy]
@@ -10,7 +10,7 @@ class UsersOrganisationsController < ApplicationController
     if save_user.success?
       flash.now[:success] = "L'organisation a bien été ajoutée"
       # in this case we need to refresh the page in case there are new rdv contexts
-      redirect_to_department_user_path unless @current_organisation
+      redirect_to_department_user_path if department_level?
     else
       flash.now[:error] = "Une erreur s'est produite lors de l'ajout de l'organisation: #{save_user.errors}"
     end
@@ -42,7 +42,7 @@ class UsersOrganisationsController < ApplicationController
   end
 
   def set_department
-    @department = policy_scope(Department).find(params[:department_id])
+    @department = policy_scope(Department).find(current_department.id)
   end
 
   def set_organisation_to_add
@@ -51,13 +51,6 @@ class UsersOrganisationsController < ApplicationController
 
   def set_organisation_to_remove
     @organisation_to_remove = @department.organisations.find(users_organisation_params[:organisation_id])
-  end
-
-  # this lets us know from which organisation we are seeing the user if we are at the org level
-  def set_current_organisation
-    return unless params[:current_organisation_id]
-
-    @current_organisation = policy_scope(Organisation).find(params[:current_organisation_id])
   end
 
   def set_organisations
@@ -69,7 +62,7 @@ class UsersOrganisationsController < ApplicationController
   end
 
   def redirect_to_users_list
-    redirect_to session[:back_to_users_list_url] || department_users_path(@department)
+    redirect_to session[:back_to_users_list_url] || structure_users_path
   end
 
   def redirect_to_department_user_path
@@ -80,7 +73,7 @@ class UsersOrganisationsController < ApplicationController
   end
 
   def user_deleted_or_removed_from_current_org?
-    @user.deleted? || @organisation_to_remove == @current_organisation
+    @user.deleted? || @organisation_to_remove.id.to_s == Current.organisation_id
   end
 
   def assign_motif_category

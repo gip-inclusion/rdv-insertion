@@ -1,7 +1,7 @@
 <div class="container text-dark-blue h4-as-labels mt-5 mb-5">
   <div class="d-flex justify-content-start mb-4">
     <div>
-      <%= link_to(@back_to_users_list_url || compute_index_path(@organisation, @department)) do %>
+      <%= link_to(@back_to_users_list_url || structure_users_path) do %>
         <button class="btn btn-blue-out">Retour</button>
       <% end %>
       <%= link_to @organisation.rdv_solidarites_url, target: "_blank" do %>
