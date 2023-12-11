@@ -1,7 +1,7 @@
 <div id="<%= dom_id(organisation, :users_organisation) %>" class="d-flex justify-content-between my-4">
   <div class="col-5"><p><%= organisation.name %></p></div>
   <div class="col-7">
-    <%= simple_form_for(:users_organisation, url: department_users_organisations_path(department, current_organisation_id: @current_organisation&.id), html: { method: belongs_to_org ? :delete : :post }) do |f| %>
+    <%= simple_form_for(:users_organisation, url: users_organisations_path, html: { method: belongs_to_org ? :delete : :post }) do |f| %>
       <%= f.input :user_id,
                   as: :hidden,
                   input_html: { class: "form-control", value: user.id }

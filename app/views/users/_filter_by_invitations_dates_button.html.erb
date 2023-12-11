@@ -1,6 +1,6 @@
 <div class="mb-1">
   <div class="w-100">
-    <%= link_to(new_invitation_dates_filtering_path(url_params.merge(department_level? ? { department_id: @department.id } : {organisation_id: @organisation.id })), data: { turbo_frame: 'remote_modal' }) do %>
+    <%= link_to(new_invitation_dates_filtering_path(url_params), data: { turbo_frame: 'remote_modal' }) do %>
       <button class="btn btn-grey w-100">Filtrer par date d'invitation</button>
     <% end %>
   </div>

@@ -19,8 +19,7 @@ describe RdvContexts::ClosingsController do
     end
 
     let(:create_params) do
-      { rdv_context_id: rdv_context.id, user_id: user.id,
-        organisation_id: organisation.id, department_id: department.id }
+      { rdv_context_id: rdv_context.id, user_id: user.id, department_id: department.id }
     end
 
     it "calls the close rdv_context service" do
@@ -39,7 +38,7 @@ describe RdvContexts::ClosingsController do
     context "when not department_level" do
       let(:create_params) do
         { rdv_context_id: rdv_context.id, user_id: user.id,
-          organisation_id: organisation.id, department_id: nil }
+          organisation_id: organisation.id }
       end
 
       context "when the rdv_context is closed successfully" do
@@ -54,7 +53,7 @@ describe RdvContexts::ClosingsController do
   describe "#destroy" do
     let(:destroy_params) do
       { rdv_context_id: rdv_context.id, user_id: user.id,
-        organisation_id: organisation.id, department_id: department.id }
+        department_id: department.id }
     end
     let!(:rdv_context) do
       create(:rdv_context, user: user, motif_category: motif_category,
@@ -76,7 +75,7 @@ describe RdvContexts::ClosingsController do
     context "when not department_level" do
       let(:destroy_params) do
         { rdv_context_id: rdv_context.id, user_id: user.id,
-          organisation_id: organisation.id, department_id: nil }
+          organisation_id: organisation.id }
       end
 
       context "when the rdv_context is closed successfully" do

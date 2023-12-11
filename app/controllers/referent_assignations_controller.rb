@@ -1,5 +1,5 @@
 class ReferentAssignationsController < ApplicationController
-  before_action :set_user, :set_department, :set_agents, only: [:index, :create, :destroy]
+  before_action :set_department, :set_user, :set_agents, only: [:index, :create, :destroy]
   before_action :set_agent, only: [:create, :destroy]
 
   def index; end
@@ -52,12 +52,12 @@ class ReferentAssignationsController < ApplicationController
   end
 
   def set_department
-    @department = policy_scope(Department).find(params[:department_id])
+    @department = policy_scope(Department).find(current_department.id)
   end
 
   def set_agents
     @agents = Agent.joins(:organisations).where(
-      organisations: @user.organisations.where(department_id: params[:department_id])
+      organisations: @user.organisations.where(department: @department)
     ).distinct.order(:email)
     @agents = @agents.not_betagouv if production_env?
   end
