@@ -33,7 +33,6 @@ describe DestroyOldRessourcesJob do
     )
   end
 
-
   let!(:user_created_25_months_ago_with_a_recent_invitation) { create(:user, created_at: 25.months.ago) }
   let!(:users_organisation2) do
     create(:users_organisation, user: user_created_25_months_ago_with_a_recent_invitation,
@@ -73,7 +72,6 @@ describe DestroyOldRessourcesJob do
       sent_at: 1.month.ago, created_at: 1.month.ago
     )
   end
-
 
   let!(:user_created_25_months_ago_with_a_recent_organisation) { create(:user, created_at: 25.months.ago) }
   let!(:users_organisation4) do
