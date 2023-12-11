@@ -42,7 +42,7 @@ class UsersOrganisationsController < ApplicationController
   end
 
   def set_department
-    @department = policy_scope(Department).find(current_department.id)
+    @department = policy_scope(Department).find(current_department_id)
   end
 
   def set_organisation_to_add

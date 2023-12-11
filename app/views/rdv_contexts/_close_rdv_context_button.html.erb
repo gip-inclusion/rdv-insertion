@@ -1,5 +1,5 @@
-<%= link_to rdv_context_closings_path(rdv_context.id), method: :post do %>
-  <button class="btn btn-blue" data-controller="tooltip" data-action="mouseover->tooltip#closeRdvContextButton">
-    Clôturer "<%= rdv_context.motif_category.name %>"
+<%= link_to rdv_context_closings_path(rdv_context.id), id: "rdv-context-closings-#{rdv_context.id}", data: { turbo_frame: "user_page" }, method: :post do %>
+  <button class="btn btn-blue-out" id="rdv-context-closings-<% dom_id(rdv_context) %>" data-controller="tooltip" data-action="mouseover->tooltip#closeRdvContextButton">
+    <i class="fas fa-lock"></i> Clôturer
   </button>
 <% end %>

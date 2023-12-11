@@ -54,6 +54,11 @@ Rails.application.routes.draw do
     get :deployment_map, on: :collection
   end
 
+  resources :users, module: :users, only: [] do
+    resources :rdv_contexts, only: [:index]
+    resource :parcours, only: [:show]
+  end
+
   get "invitation", to: "invitations#invitation_code", as: :invitation_landing
   get '/r/:uuid', to: "invitations#redirect_shortcut", as: :redirect_invitation_shortcut
   resources :invitations, only: [] do

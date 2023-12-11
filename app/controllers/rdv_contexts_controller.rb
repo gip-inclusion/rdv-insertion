@@ -8,7 +8,7 @@ class RdvContextsController < ApplicationController
     authorize @rdv_context
     if @rdv_context.save
       respond_to do |format|
-        format.html { redirect_to(structure_user_path(@user.id, anchor:)) } # html is used for the show page
+        format.html { redirect_to(user_rdv_contexts_path(user_id: @user.id, anchor:)) } # html is used for the show page
         format.turbo_stream { replace_new_button_cell_by_rdv_context_status_cell } # turbo is used for index page
       end
     else

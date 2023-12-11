@@ -1,0 +1,6 @@
+<%= turbo_stream.replace "rdv-context-closings-#{@rdv_context.id}" do %>
+  <%= render partial: "rdv_contexts/reopen_rdv_context_button", locals: { rdv_context: @rdv_context } %>
+<% end %>
+<%= turbo_stream.replace "rdv-context-status-text-#{@rdv_context.id}" do %>
+  <span>Dossier traité le <%= @rdv_context.closed_at %></span>
+<% end %> -->

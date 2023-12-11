@@ -1,103 +1,93 @@
-<div class="d-flex align-items-center context-header" id=<%= dom_id(rdv_context) %>>
-  <span></span>
-  <h5 class="text-center px-2 py-4">
-    <strong><%= configuration.motif_category_name %></strong>
-    <small><%= configuration.rdv_with_referents? ? " (avec référents)" : "" %></small>
-  </h5>
-  <span></span>
-  <table class="mx-2">
-    <tbody>
-      <tr>
-        <td class="px-2 py-1 context-status td-height">
-          <%= render "rdv_contexts/rdv_context_status_cell_tag", rdv_context: rdv_context, configuration: configuration %>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <span></span>
-</div>
-<div class="context-block d-flex justify-content-center">
-  <% if configuration.invitation_formats.any? %>
-    <%= react_component(
-      "components/InvitationBlock", {
-        user: @user,
-        organisation: @organisation,
-        department: @department,
-        invitations: invitations,
-        isDepartmentLevel: department_level?,
-        invitationFormats: configuration.invitation_formats,
-        motifCategory: configuration.motif_category,
-        status: rdv_context.status,
-        isArchived: @archive.present?
-      }
-    ) %>
-  <% end %>
-  <div class="d-flex justify-content-center rdv-status-block">
-    <div>
-      <table class="card-white text-center align-middle mb-4 mx-4">
-        <thead>
-          <tr>
-            <th class="px-4 py-2"><h4>RDV pris le</h4></th>
-            <th class="px-4 py-2"><h4>Date du RDV</h4></th>
-            <th class="px-5 py-2"><h4>Motif</h4></th>
-            <% if convocable_participations.present? %>
-              <th class="px-4 py-2"><h4>Convoqué par</h4></th>
-            <% end %>
-            <th class="px-4 py-2"><h4>Statut RDV</h4></th>
-            <th class="px-4 py-2"><h4>Lien</h4></th>
-          </tr>
-        </thead>
-        <tbody>
-        <% if participations.present? %>
-          <% participations.sort_by(&:created_at).each do |participation| %>
-            <tr>
-              <td class="px-4 py-3"><%= format_date(participation.created_at) %></td>
-              <td class="px-4 py-3"><%= format_date(participation.starts_at) %></td>
-              <td class="px-2 py-3"><%= participation.motif_name %></td>
-              <% if convocable_participations.present? %>
-                <td class="px-4 py-2">
-                  <% if participation.convocable? %>
-                    <%= render("rdv_contexts/convocations", user: @user, participation: participation, sms_convocations: participation.sent_sms_convocations, email_convocations: participation.sent_email_convocations) %>
-                  <% else %>
-                    -
-                  <% end %>
-                </td>
-              <% end %>
-              <td class="px-4 py-3 participation_status" >
-                <%= render "participations/participation_status", participation: participation, configuration: configuration %>
-              </td>
-              <td class="px-4 py-3">
-                <%= link_to participation.rdv_solidarites_url, target: "_blank" do %>
-                  <button class="btn btn-blue">
-                    Voir sur RDV-S<i class="fas fa-external-link-alt icon-sm"></i>
-                  </button>
-                <% end %>
-              </td>
-            </tr>
-          <% end %>
-        <% else %>
-          <tr>
-            <td class="px-4 py-3">-</td>
-            <td class="px-4 py-3">-</td>
-            <td class="px-4 py-3">-</td>
-            <td class="px-4 py-3"></td>
-          </tr>
-        <% end %>
-        </tbody>
-      </table>
-      <% if should_convene_for?(rdv_context, configuration) %>
-        <div class="m-2 p-2 text-center">
-          <%= render "rdv_contexts/convocation_button",
-                     user_id: @user.id, motif_category_id: rdv_context.motif_category_id,
-                     organisation_ids: department_level? ? @user_organisations.ids : [@organisation.id]
-          %>
+<div class="m-4">
+  <div class="card  my-3 mx-auto w-75" id=<%= dom_id(rdv_context) %>>
+    <div class="card-header blue-out">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h5>
+            <strong><%= configuration.motif_category_name %></strong>
+            <small><%= configuration.rdv_with_referents? ? " (avec référents)" : "" %></small>
+          </h5>
+          <%= render "rdv_contexts/rdv_context_status_badge", rdv_context: rdv_context, configuration: configuration %>
         </div>
-      <% end %>
-      <div class="m-2 p-2 text-center">
-        <% if rdv_context.status == "closed" %>
-          <%= render "rdv_contexts/reopen_rdv_context_button", rdv_context: rdv_context %>
-        <% else %>
-          <%= render "rdv_contexts/close_rdv_context_button", rdv_context: rdv_context %>
+        <div class="d-flex justify-content-center">
+          <% if should_convene_for?(rdv_context, configuration) %>
+            <div class="mx-2">
+              <%= render "rdv_contexts/convocation_button",
+                         user_id: @user.id, motif_category_id: rdv_context.motif_category_id,
+                         organisation_ids: department_level? ? @user_organisations.ids : [@organisation.id]
+              %>
+            </div>
+          <% end %>
+          <% if rdv_context.status == "closed" %>
+            <%= render "rdv_contexts/reopen_rdv_context_button", rdv_context: rdv_context %>
+          <% else %>
+            <%= render "rdv_contexts/close_rdv_context_button", rdv_context: rdv_context %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <div class="card-body bg-light">
+      <div>
+        <% if configuration.invitation_formats.any? %>
+          <%= react_component(
+            "components/InvitationBlock", {
+              user: @user,
+              organisation: @organisation,
+              department: @department,
+              invitations: invitations,
+              isDepartmentLevel: department_level?,
+              invitationFormats: configuration.invitation_formats,
+              motifCategory: configuration.motif_category,
+              status: rdv_context.status,
+              isArchived: @user.archived_in?(@department)
+            }
+          ) %>
+        <% end %>
+        <% if participations.present? %>
+          <div class="d-flex justify-content-center">
+            <table class="card-white text-center align-middle m-3 shadow-sm">
+              <thead>
+                <tr>
+                  <th class="px-4 py-2"><h4>RDV pris le</h4></th>
+                  <th class="px-4 py-2"><h4>Date du RDV</h4></th>
+                  <th class="px-5 py-2"><h4>Motif</h4></th>
+                  <% if convocable_participations.present? %>
+                    <th class="px-4 py-2"><h4>Convoqué par</h4></th>
+                  <% end %>
+                  <th class="px-4 py-2"><h4>Statut RDV</h4></th>
+                  <th class="px-4 py-2"><h4>Lien</h4></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% participations.sort_by(&:created_at).reverse.each do |participation| %>
+                  <tr>
+                    <td class="px-4 py-3"><%= format_date(participation.created_at) %></td>
+                    <td class="px-4 py-3"><%= format_date(participation.starts_at) %></td>
+                    <td class="px-2 py-3"><%= participation.motif_name %></td>
+                    <% if convocable_participations.present? %>
+                      <td class="px-4 py-2">
+                        <% if participation.convocable? %>
+                          <%= render("rdv_contexts/convocations", user: @user, participation: participation, sms_convocations: participation.sent_sms_convocations, email_convocations: participation.sent_email_convocations) %>
+                        <% else %>
+                          -
+                        <% end %>
+                      </td>
+                    <% end %>
+                    <td class="px-4 py-3 participation_status" >
+                      <%= render "participations/participation_status", participation: participation, configuration: configuration %>
+                    </td>
+                    <td class="px-4 py-3">
+                      <%= link_to participation.rdv_solidarites_url, target: "_blank" do %>
+                        <button class="btn btn-blue">
+                          Voir sur RDV-S<i class="fas fa-external-link-alt icon-sm"></i>
+                        </button>
+                      <% end %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
         <% end %>
       </div>
     </div>

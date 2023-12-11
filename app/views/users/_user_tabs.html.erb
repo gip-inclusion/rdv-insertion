@@ -1,0 +1,17 @@
+<ul class="nav nav-tabs m-3">
+  <li class="nav-item">
+    <%= link_to structure_user_path(user.id), class: "nav-link d-flex align-items-center #{tab == "infos" ? 'active' : ''}" do %>
+      Infos
+    <% end %>
+  </li>
+  <li class="nav-item">
+    <%= link_to user_rdv_contexts_path(user_id: user.id), class: "nav-link d-flex align-items-center #{tab == "rdvs" ? 'active' : ''}" do %>
+      Suivi
+    <% end %>
+  </li>
+  <li class="nav-item">
+    <%= link_to user_parcours_path(user_id: user.id), class: "nav-link d-flex align-items-center #{tab == "parcours" ? 'active' : ''}" do %>
+      Parcours
+    <% end %>
+  </li>
+</ul>
