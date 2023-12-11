@@ -1,6 +1,6 @@
-<% if user && department %>
+<% if user_page_url %>
   <p class="btn-wrapper">
-    <%= link_to department_user_url(department, user, host: ENV['HOST']), class: "btn btn-primary" do %>
+    <%= link_to user_page_url, class: "btn btn-primary" do %>
       Voir la fiche usager
     <% end %>
   </p>
