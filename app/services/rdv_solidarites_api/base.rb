@@ -38,6 +38,7 @@ module RdvSolidaritesApi
       raise NotImplementedError
     end
 
+    # this session is used to certify the API calls are emited by the rdv-insertion servers
     def rdv_solidarites_session_with_shared_secret
       RdvSolidaritesSession::WithSharedSecret.new(
         uid: Current.agent.email,

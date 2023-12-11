@@ -62,7 +62,7 @@ class UpsertRdvSolidaritesUser < BaseService
     @create_rdv_solidarites_user ||= RdvSolidaritesApi::CreateUser.call(
       user_attributes:
         rdv_solidarites_user_attributes
-          .merge(organisation_ids: department_rdv_solidarites_organisation_ids)
+          .merge(organisation_ids: rdv_solidarites_organisation_ids)
           .merge(referent_agent_ids: referent_rdv_solidarites_ids),
       rdv_solidarites_session: @rdv_solidarites_session
     )
@@ -72,7 +72,7 @@ class UpsertRdvSolidaritesUser < BaseService
     @sync_organisations ||= call_service!(
       RdvSolidaritesApi::CreateUserProfiles,
       rdv_solidarites_user_id: rdv_solidarites_user_id,
-      rdv_solidarites_organisation_ids: department_rdv_solidarites_organisation_ids
+      rdv_solidarites_organisation_ids: rdv_solidarites_organisation_ids
     )
   end
 
@@ -103,8 +103,8 @@ class UpsertRdvSolidaritesUser < BaseService
     user_attributes
   end
 
-  def department_rdv_solidarites_organisation_ids
-    @user.organisations.where(department: @organisation.department).map(&:rdv_solidarites_organisation_id)
+  def rdv_solidarites_organisation_ids
+    @user.organisations.map(&:rdv_solidarites_organisation_id)
   end
 
   def referent_rdv_solidarites_ids
