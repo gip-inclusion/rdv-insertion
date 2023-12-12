@@ -96,10 +96,10 @@ module Users
 
     def rdv_solidarites_user_attributes
       user_attributes = @user.attributes
-                            .symbolize_keys
-                            .slice(*User::SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES)
-                            .transform_values(&:presence)
-                            .compact
+                             .symbolize_keys
+                             .slice(*User::SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES)
+                             .transform_values(&:presence)
+                             .compact
       user_attributes.delete(:email) if @user.conjoint?
       user_attributes
     end
