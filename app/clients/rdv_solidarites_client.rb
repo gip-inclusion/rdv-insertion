@@ -5,18 +5,26 @@ class RdvSolidaritesClient
     @url = ENV["RDV_SOLIDARITES_URL"]
   end
 
-  def get_user(user_id)
-    Faraday.get(
-      "#{@url}/api/v1/users/#{user_id}",
-      {},
-      request_headers
-    )
-  end
-
   def create_user(request_body)
     Faraday.post(
       "#{@url}/api/v1/users",
       request_body.to_json,
+      request_headers
+    )
+  end
+
+  def create_user_profiles(user_id, organisation_ids)
+    Faraday.post(
+      "#{@url}/api/rdvinsertion/user_profiles/create_many",
+      { user_id: user_id, organisation_ids: organisation_ids }.to_json,
+      request_headers
+    )
+  end
+
+  def create_referent_assignations(user_id, agent_ids)
+    Faraday.post(
+      "#{@url}/api/rdvinsertion/referent_assignations/create_many",
+      { user_id: user_id, agent_ids: agent_ids }.to_json,
       request_headers
     )
   end
@@ -45,42 +53,10 @@ class RdvSolidaritesClient
     )
   end
 
-  def get_organisation_user(user_id, organisation_id)
-    Faraday.get(
-      "#{@url}/api/v1/organisations/#{organisation_id}/users/#{user_id}",
-      {},
-      request_headers
-    )
-  end
-
-  def create_user_profile(user_id, organisation_id)
-    Faraday.post(
-      "#{@url}/api/v1/user_profiles",
-      { user_id: user_id, organisation_id: organisation_id }.to_json,
-      request_headers
-    )
-  end
-
   def delete_user_profile(user_id, organisation_id)
     Faraday.delete(
       "#{@url}/api/v1/user_profiles",
       { user_id: user_id, organisation_id: organisation_id },
-      request_headers
-    )
-  end
-
-  def get_organisation_users(organisation_id, page = 1, **kwargs)
-    Faraday.get(
-      "#{@url}/api/v1/organisations/#{organisation_id}/users",
-      { page: page }.merge(**kwargs),
-      request_headers
-    )
-  end
-
-  def get_users(user_params = {})
-    Faraday.get(
-      "#{@url}/api/v1/users",
-      user_params,
       request_headers
     )
   end
@@ -97,24 +73,6 @@ class RdvSolidaritesClient
     Faraday.post(
       "#{@url}/api/v1/users/#{user_id}/rdv_invitation_token",
       request_body.to_json,
-      request_headers
-    )
-  end
-
-  def get_motifs(organisation_id, service_id = nil)
-    Faraday.get(
-      "#{@url}/api/v1/organisations/#{organisation_id}/motifs",
-      {
-        active: true, reservable_online: true
-      }.merge(service_id.present? ? { service_id: service_id } : {}),
-      request_headers
-    )
-  end
-
-  def get_organisation_rdvs(organisation_id, page = 1)
-    Faraday.get(
-      "#{@url}/api/v1/organisations/#{organisation_id}/rdvs",
-      { page: page },
       request_headers
     )
   end

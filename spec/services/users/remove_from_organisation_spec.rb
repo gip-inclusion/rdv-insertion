@@ -15,8 +15,8 @@ describe Users::RemoveFromOrganisation, type: :service do
     before do
       allow(RdvSolidaritesApi::DeleteUserProfile).to receive(:call)
         .with(
-          user_id: user.rdv_solidarites_user_id,
-          organisation_id: organisation.rdv_solidarites_organisation_id,
+          rdv_solidarites_user_id: user.rdv_solidarites_user_id,
+          rdv_solidarites_organisation_id: organisation.rdv_solidarites_organisation_id,
           rdv_solidarites_session: rdv_solidarites_session
         ).and_return(OpenStruct.new(success?: true))
     end
@@ -49,8 +49,8 @@ describe Users::RemoveFromOrganisation, type: :service do
       before do
         allow(RdvSolidaritesApi::DeleteUserProfile).to receive(:call)
           .with(
-            user_id: user.rdv_solidarites_user_id,
-            organisation_id: organisation.rdv_solidarites_organisation_id,
+            rdv_solidarites_user_id: user.rdv_solidarites_user_id,
+            rdv_solidarites_organisation_id: organisation.rdv_solidarites_organisation_id,
             rdv_solidarites_session: rdv_solidarites_session
           ).and_return(OpenStruct.new(success?: false, errors: ["impossible to remove"]))
       end

@@ -25,4 +25,18 @@ class ApplicationController < ActionController::Base
   def page
     params[:page] || 1
   end
+
+  def sync_user_with_rdv_solidarites(user)
+    sync = Users::SyncWithRdvSolidarites.call(
+      user: user,
+      organisation: user.organisations.first,
+      rdv_solidarites_session: rdv_solidarites_session
+    )
+    return if sync.success?
+
+    respond_to do |format|
+      format.turbo_stream { flash.now[:error] = "L'utilisateur n'est plus lié à rdv-solidarités: #{sync.errors}" }
+      format.json { render json: { errors: sync.errors }, status: :unprocessable_entity }
+    end
+  end
 end

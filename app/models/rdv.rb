@@ -28,7 +28,7 @@ class Rdv < ApplicationRecord
   accepts_nested_attributes_for :participations, allow_destroy: true, reject_if: :new_participation_already_created?
 
   validates :starts_at, :duration_in_min, presence: true
-  validates :rdv_solidarites_rdv_id, uniqueness: true, presence: true
+  validates :rdv_solidarites_rdv_id, uniqueness: true, allow_nil: true
 
   validate :rdv_contexts_motif_categories_are_uniq
 

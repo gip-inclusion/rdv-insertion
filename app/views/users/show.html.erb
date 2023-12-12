@@ -6,11 +6,8 @@
       <%= link_to(@back_to_users_list_url || structure_users_path) do %>
         <button class="btn btn-blue-out">Retour</button>
       <% end %>
-      <%= link_to rdv_solidarites_user_url(@organisation, @user), target: "_blank" do %>
-        <button class="btn btn-blue">Voir sur RDV-Solidarités<i class="fas fa-external-link-alt icon-sm"></i></button>
-      <% end %>
-      <%= link_to rdv_solidarites_find_rdv_url(@organisation, @user), target: "_blank" do %>
-        <button class="btn btn-blue">Trouver un RDV sur RDV-Solidarités<i class="fas fa-external-link-alt icon-sm"></i></button>
+      <%= link_to new_organisation_user_rdv_path(@organisation, @user), target: "_blank" do %>
+        <button class="btn btn-blue">Trouver un RDV<i class="fas fa-external-link-alt icon-sm"></i></button>
       <% end %>
       <% if @department.carnet_de_bord_deploiement_id? %>
         <% if @user.carnet_de_bord_carnet_id? %>

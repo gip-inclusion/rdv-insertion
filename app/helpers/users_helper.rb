@@ -102,11 +102,6 @@ module UsersHelper
     end
   end
 
-  def rdv_solidarites_user_url(organisation, user)
-    organisation_id = organisation.rdv_solidarites_organisation_id
-    "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{organisation_id}/users/#{user.rdv_solidarites_user_id}"
-  end
-
   def rdv_solidarites_find_rdv_url(organisation, user)
     organisation_id = organisation.rdv_solidarites_organisation_id
     user_id = user.rdv_solidarites_user_id

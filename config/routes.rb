@@ -35,6 +35,7 @@ Rails.application.routes.draw do
         get :default_list
       end
       resources :invitations, only: [:create]
+      resources :rdvs, only: [:new]
       resources :tag_assignations, only: [:index, :create] do
         delete :destroy, on: :collection
       end

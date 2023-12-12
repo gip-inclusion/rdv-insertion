@@ -83,6 +83,11 @@ describe InboundWebhooks::RdvSolidarites::ProcessUserJob do
           .with(rdv_solidarites_user_id)
         subject
       end
+
+      it "does not enque an upsert record job" do
+        expect(UpsertRecordJob).not_to receive(:perform_async)
+        subject
+      end
     end
   end
 end

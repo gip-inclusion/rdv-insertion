@@ -21,7 +21,6 @@ describe "Agents can edit users tags", js: true do
   before do
     setup_agent_session(agent)
     stub_rdv_solidarites_update_user(rdv_solidarites_user_id)
-    stub_rdv_solidarites_get_organisation_user(rdv_solidarites_organisation_id, rdv_solidarites_user_id)
     organisation.tags << Tag.create!(value: "prout")
   end
 

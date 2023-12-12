@@ -29,6 +29,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessUserProfileJob do
   describe "#call" do
     before do
       allow(SoftDeleteUserJob).to receive(:perform_async)
+      allow(NullifyRdvSolidaritesIdJob).to receive(:perform_async)
     end
 
     it "enqueues a soft delete user job" do
@@ -169,6 +170,34 @@ describe InboundWebhooks::RdvSolidarites::ProcessUserProfileJob do
           expect(SoftDeleteUserJob).not_to receive(:perform_async)
           subject
           expect(user.reload.organisations.ids).to eq([organisation.id])
+        end
+      end
+    end
+
+    context "when the webhook reason is rgpd" do
+      let!(:meta) do
+        {
+          "model" => "UserProfile",
+          "event" => "destroyed",
+          "webhook_reason" => "rgpd"
+        }.deep_symbolize_keys
+      end
+
+      it "enqueues a nullify rdv_solidarites_id job" do
+        expect(NullifyRdvSolidaritesIdJob).to receive(:perform_async)
+          .with("User", user.id)
+        subject
+      end
+
+      context "when the rdv_solidarites_id is nil" do
+        let!(:user) do
+          create(:user, rdv_solidarites_user_id: nil, organisations: [organisation])
+        end
+
+        it "does not enqueue any job" do
+          expect(NullifyRdvSolidaritesIdJob).not_to receive(:perform_async)
+          expect(SoftDeleteUserJob).not_to receive(:perform_async)
+          subject
         end
       end
     end

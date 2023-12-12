@@ -4,11 +4,12 @@ module InboundWebhooks
       def perform(data, meta)
         @data = data.deep_symbolize_keys
         @meta = meta.deep_symbolize_keys
+        return if @data[:user].blank? || user.blank? || organisation.blank?
 
-        return if @data[:user].blank?
-        return if user.blank? || organisation.blank?
-
-        if event == "destroyed"
+        # if webhook_reason is rgpd, it means the user has been deleted in RDV-S
+        if webhook_reason == "rgpd"
+          nullify_user_rdv_solidarites_id
+        elsif event == "destroyed"
           remove_user_from_organisation
         else
           attach_user_to_org
@@ -19,6 +20,10 @@ module InboundWebhooks
 
       def event
         @meta[:event]
+      end
+
+      def webhook_reason
+        @meta[:webhook_reason]
       end
 
       def rdv_solidarites_user_id
@@ -35,6 +40,12 @@ module InboundWebhooks
 
       def organisation
         @organisation ||= Organisation.find_by(rdv_solidarites_organisation_id: rdv_solidarites_organisation_id)
+      end
+
+      def nullify_user_rdv_solidarites_id
+        return unless user # if the user is in multiple organisations, he will already have been nullified
+
+        NullifyRdvSolidaritesIdJob.perform_async("User", user&.id)
       end
 
       def attach_user_to_org
