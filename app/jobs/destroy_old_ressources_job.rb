@@ -36,8 +36,8 @@ class DestroyOldRessourcesJob < ApplicationJob
   end
 
   def destroy_useless_notifications
-    # notifications have no dependent: :destroy and are useless code-wise, so we can clean them manually
-    Notification.where("created_at < ?", date_limit).destroy_all
+    # notifications with no participation_id are useless code-wise, so we can clean them manually
+    Notification.where(participation_id: nil).where("created_at < ?", date_limit).destroy_all
   end
 
   def date_limit

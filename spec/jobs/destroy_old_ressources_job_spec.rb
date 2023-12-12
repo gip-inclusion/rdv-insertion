@@ -25,7 +25,7 @@ describe DestroyOldRessourcesJob do
   let!(:rdv1) do
     create(:rdv, participations: [participation1], created_at: 25.months.ago)
   end
-  let!(:old_notification) do
+  let!(:nullified_old_notification) do
     create(
       :notification,
       participation: participation1, event: "participation_created", format: "sms",
@@ -46,6 +46,13 @@ describe DestroyOldRessourcesJob do
   end
   let!(:rdv2) do
     create(:rdv, participations: [participation2], created_at: 1.month.ago)
+  end
+  let!(:old_notification_with_participation_id) do
+    create(
+      :notification,
+      participation: participation2, event: "participation_created", format: "sms",
+      sent_at: 25.months.ago, created_at: 25.months.ago
+    )
   end
 
   let!(:user_created_25_months_ago_with_recent_and_old_records) { create(:user, created_at: 25.months.ago) }
@@ -105,7 +112,8 @@ describe DestroyOldRessourcesJob do
     it "destroys the useless notifications" do
       subject
       expect(Notification.all).to include(recent_notification)
-      expect(Notification.all).not_to include(old_notification)
+      expect(Notification.all).to include(old_notification_with_participation_id)
+      expect(Notification.all).not_to include(nullified_old_notification)
     end
   end
 end
