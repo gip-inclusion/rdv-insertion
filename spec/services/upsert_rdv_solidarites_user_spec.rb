@@ -1,4 +1,4 @@
-describe UpsertRdvSolidaritesUser, type: :service do
+describe Users::SyncWithRdvSolidarites, type: :service do
   subject do
     described_class.call(
       user: user, organisation: organisation, rdv_solidarites_session: rdv_solidarites_session

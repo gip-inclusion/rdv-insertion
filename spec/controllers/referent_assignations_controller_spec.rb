@@ -63,7 +63,7 @@ describe ReferentAssignationsController do
     end
 
     before do
-      allow(UpsertRdvSolidaritesUser).to receive(:call)
+      allow(Users::SyncWithRdvSolidarites).to receive(:call)
         .with(user: user, organisation: organisation1, rdv_solidarites_session: rdv_solidarites_session)
         .and_return(OpenStruct.new(success?: true))
       allow(Users::AssignReferent).to receive(:call)
@@ -85,7 +85,7 @@ describe ReferentAssignationsController do
       end
 
       before do
-        allow(UpsertRdvSolidaritesUser).to receive(:call)
+        allow(Users::SyncWithRdvSolidarites).to receive(:call)
           .with(user: user, organisation: organisation1, rdv_solidarites_session: rdv_solidarites_session)
           .and_return(OpenStruct.new(success?: false, errors: ["Something went wrong"]))
       end

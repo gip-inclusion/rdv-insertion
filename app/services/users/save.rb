@@ -11,7 +11,7 @@ module Users
         assign_organisation
         validate_user!
         save_record!(@user)
-        upsert_rdv_solidarites_user
+        sync_with_rdv_solidarites
       end
       result.user = @user
     end
@@ -22,9 +22,9 @@ module Users
       @user.organisations = (@user.organisations.to_a + [@organisation]).uniq
     end
 
-    def upsert_rdv_solidarites_user
+    def sync_with_rdv_solidarites
       call_service!(
-        UpsertRdvSolidaritesUser,
+        Users::SyncWithRdvSolidarites,
         user: @user,
         organisation: @organisation,
         rdv_solidarites_session: @rdv_solidarites_session
