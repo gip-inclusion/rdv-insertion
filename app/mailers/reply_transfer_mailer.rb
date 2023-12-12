@@ -3,8 +3,8 @@ class ReplyTransferMailer < ApplicationMailer
   before_action :set_rdv, only: [:forward_notification_reply_to_organisation]
   before_action :set_organisation, :set_recipient_email,
                 only: [:forward_invitation_reply_to_organisation, :forward_notification_reply_to_organisation]
-  before_action :set_source_mail, :set_author, :set_user, :set_reply_subject,
-                :set_reply_body, :set_attachment_names
+  before_action :set_source_mail, :set_author, :set_user, :set_department, :set_user_page_url,
+                :set_reply_subject, :set_reply_body, :set_attachment_names
 
   def forward_invitation_reply_to_organisation
     mail(to: @recipient_email, subject: "Réponse d'un usager à une invitation")
@@ -30,6 +30,18 @@ class ReplyTransferMailer < ApplicationMailer
 
   def set_organisation
     @organisation = @rdv.present? ? @rdv.organisation : @invitation.organisations.last
+  end
+
+  def set_department
+    @department = @organisation&.department || @user&.departments&.last
+  end
+
+  def set_user_page_url
+    @user_page_url = if @organisation.present?
+                       organisation_user_url(@organisation, @user, host: ENV["HOST"])
+                     elsif @department.present?
+                       department_user_url(@department, @user, host: ENV["HOST"])
+                     end
   end
 
   def set_recipient_email
