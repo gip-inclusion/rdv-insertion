@@ -1,12 +1,14 @@
-User.find_each do |user|
+User.includes(:departments, :organisations).find_each(batch_size: 30_000) do |user|
   Counters::UsersCreated.trigger_with(user)
 end
 
-Agent.find_each do |agent|
+Agent.includes(:departments, :organisations).find_each(batch_size: 30_000) do |agent|
   Counters::NumberOfAgents.trigger_with(agent)
 end
 
-Participation.find_each do |participation|
+Participation
+  .includes(:user, :department, :organisation, :notifications, :rdv_context_invitations, rdv_context: :participations)
+  .find_each do |participation|
   Counters::RdvsTaken.trigger_with(participation)
   Counters::UsersWithRdvTaken.trigger_with(participation)
   Counters::UsersWithRdvTakenInLessThan30Days.trigger_with(participation)
@@ -21,6 +23,6 @@ Participation.find_each do |participation|
   Counters::NumberOfInvitationsSeen.trigger_with(participation, skip_validation: true)
 end
 
-Invitation.where.not(sent_at: nil).find_each do |invitation|
+Invitation.includes(:department, :organisations).where.not(sent_at: nil).find_each do |invitation|
   Counters::InvitationsSent.trigger_with(invitation, skip_validation: true)
 end
