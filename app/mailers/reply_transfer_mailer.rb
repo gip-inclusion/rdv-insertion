@@ -57,7 +57,11 @@ class ReplyTransferMailer < ApplicationMailer
   end
 
   def set_user
-    @user = User.find_by(email: @source_mail.from.first)
+    @user = if @rdv.present? && @rdv.users.one?
+              @rdv.users.first
+            else
+              @invitation&.user || User.find_by(email: @source_mail.from.first)
+            end
   end
 
   def set_reply_subject
