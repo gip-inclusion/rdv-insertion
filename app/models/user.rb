@@ -31,6 +31,7 @@ class User < ApplicationRecord
   has_many :referent_assignations, dependent: :destroy
   has_many :tag_users, dependent: :destroy
   has_many :users_organisations, dependent: :destroy
+  has_many :orientations, dependent: :destroy
 
   has_many :rdvs, through: :participations
   has_many :organisations, through: :users_organisations

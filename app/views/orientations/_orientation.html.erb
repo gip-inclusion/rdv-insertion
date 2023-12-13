@@ -1,0 +1,21 @@
+<div class="d-flex">
+  <div>
+    <% if orientation.ends_at? %>
+      Depuis le <%= format_date(orientation.starts_at) %> au <% format_date(orientation.ends_at) %>
+    <% else %>
+      Depuis le <%= format_date(orientation.starts_at) %> à aujourd'hui
+    <% end %>
+  </div>
+  <div>
+    <%= I18n.t("activerecord.attributes.orientation.types.#{orientation.type}") %>
+  </div>
+  <div>
+    Structure <%= orientation.organisation.name %>
+  </div>
+  <div>
+    Agent <%= orientation.agent.to_s %>
+  </div>
+  <div>
+    <i class="fas fa-pencil-alt"></i>
+  </div>
+</div>

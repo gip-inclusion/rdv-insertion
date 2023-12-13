@@ -69,6 +69,7 @@ Rails.application.routes.draw do
 
   resources :participations, only: [:update]
   resources :rdv_contexts, only: [:create]
+  resources :orientations, only: [:new, :edit]
 
   resources :rdv_contexts, module: :rdv_contexts, only: [] do
     resource :closings, only: [:create, :destroy]

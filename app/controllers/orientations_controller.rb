@@ -1,8 +1,8 @@
-class ParcoursController < ApplicationController
+class OrientationsController < ApplicationController
   before_action :set_user
 
-  def index
-    authorize(current_department)
+  def new
+    @orentation = Orientation.new(user: @user)
   end
 
   private

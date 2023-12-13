@@ -1,15 +1,16 @@
 module Users
   class ParcoursController < ApplicationController
-    before_action :set_user, :set_department, only: :show
+    before_action :set_user, :set_department, only: [:show]
 
     def show
-      # @orientations = @user.orientations
+      @orientations = @user.orientations.order(starts_at: :desc)
     end
 
     private
 
     def set_department
       @department = policy_scope(Department).find(current_department_id)
+      authorize(@department)
     end
 
     def set_user
