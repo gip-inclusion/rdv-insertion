@@ -23,7 +23,7 @@ module WebhookDeliverable
 
   def generate_webhook_payload(action)
     {
-      data: as_json,
+      data: department.number == "13" ? blueprint_class.render_as_json(self, view: :webhook_tmp) : as_json,
       meta: {
         model: self.class.name,
         event: action,
