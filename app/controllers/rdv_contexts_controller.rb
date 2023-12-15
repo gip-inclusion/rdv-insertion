@@ -12,11 +12,7 @@ class RdvContextsController < ApplicationController
         format.turbo_stream { replace_new_button_cell_by_rdv_context_status_cell } # turbo is used for index page
       end
     else
-      render turbo_stream: turbo_stream.replace(
-        "remote_modal", partial: "common/error_modal", locals: {
-          errors: @rdv_context.errors.full_messages
-        }
-      )
+      turbo_stream_display_error_modal(@rdv_context.errors.full_messages)
     end
   end
 
@@ -31,10 +27,10 @@ class RdvContextsController < ApplicationController
   end
 
   def replace_new_button_cell_by_rdv_context_status_cell
-    render turbo_stream: turbo_stream.replace(
+    turbo_stream_replace(
       "user_#{@user.id}_motif_category_#{rdv_context_params[:motif_category_id]}",
-      partial: "rdv_context_status_cell",
-      locals: { rdv_context: @rdv_context, configuration: nil }
+      "rdv_context_status_cell",
+      { rdv_context: @rdv_context, configuration: nil }
     )
   end
 

@@ -8,7 +8,7 @@ module RdvContexts
       if close_rdv_context.success?
         redirect_to user_rdv_contexts_path(user_id: @rdv_context.user_id, anchor:)
       else
-        display_error_modal(@rdv_context.errors.full_messages)
+        turbo_stream_display_error_modal(@rdv_context.errors.full_messages)
       end
     end
 
@@ -17,19 +17,11 @@ module RdvContexts
       if @rdv_context.update(closed_at: nil)
         redirect_to user_rdv_contexts_path(user_id: @rdv_context.user_id, anchor:)
       else
-        display_error_modal(@rdv_context.errors.full_messages)
+        turbo_stream_display_error_modal(@rdv_context.errors.full_messages)
       end
     end
 
     private
-
-    def display_error_modal(errors)
-      render turbo_stream: turbo_stream.replace(
-        "remote_modal", partial: "common/error_modal", locals: {
-          errors: errors
-        }
-      )
-    end
 
     def close_rdv_context
       @close_rdv_context ||= RdvContexts::Close.call(rdv_context: @rdv_context)
