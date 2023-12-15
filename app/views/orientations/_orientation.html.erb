@@ -1,21 +1,22 @@
-<div class="d-flex">
-  <div>
+<div class="d-flex justify-content-between align-items-center my-4" id="<%= dom_id(orientation) %>">
+  <div class="w-100">
     <% if orientation.ends_at? %>
-      Depuis le <%= format_date(orientation.starts_at) %> au <% format_date(orientation.ends_at) %>
+      Du <%= format_date(orientation.starts_at) %> au <%= format_date(orientation.ends_at) %>:
     <% else %>
-      Depuis le <%= format_date(orientation.starts_at) %> à aujourd'hui
+      Du <%= format_date(orientation.starts_at) %> à Aujourd'hui:
     <% end %>
   </div>
-  <div>
-    <%= I18n.t("activerecord.attributes.orientation.types.#{orientation.type}") %>
+  <div class="w-100">
+    Orientation <strong><%= I18n.t("activerecord.attributes.orientation.orientation_types.#{orientation.orientation_type}") %></strong>
   </div>
-  <div>
-    Structure <%= orientation.organisation.name %>
-  </div>
-  <div>
-    Agent <%= orientation.agent.to_s %>
-  </div>
-  <div>
-    <i class="fas fa-pencil-alt"></i>
+  <div class="w-100">Structure <strong><%= orientation.organisation.name %></strong></div>
+  <div class="w-100">Référent <strong><%= orientation.agent.to_s %></strong></div>
+  <div class="w-100 text-end">
+    <%= link_to edit_user_orientation_path(id: orientation.id, user_id: orientation.user_id), data: { turbo_frame: 'remote_modal' } do %>
+      <i class="fas fa-pencil-alt"></i>
+    <% end %>
+    <%= link_to user_orientation_path(id: orientation.id, user_id: orientation.user_id), method: :delete do %>
+      <i class="fas fa-trash"></i>
+    <% end %>
   </div>
 </div>

@@ -1,1 +1,77 @@
-_orientation_form.rb
+<div class="m-3" data-controller="orientation-form" data-agent-ids-by-organisation-id="<%= @agent_ids_by_organisation_id.to_json %>">
+  <%= turbo_frame_tag "error_list" %>
+  <div class="form-group text-center">
+    <label><%= Orientation.human_attribute_name(:starts_at) %></label>
+    <%=
+      form.text_field(
+        :starts_at,
+        class: "w-50 form-control bg-white text-center mx-auto",
+        placeholder: "du",
+        data: {
+          controller: "flatpickr",
+          flatpickr_min_date: "2012/04/01",
+          flatpickr_max_date: Date.today
+        }
+      )
+    %>
+  </div>
+  <div class="form-group text-center">
+    <label><%= Orientation.human_attribute_name(:ends_at) %></label>
+    <%=
+      form.text_field(
+        :ends_at,
+        class: "w-50 form-control bg-white text-center mx-auto",
+        placeholder: "au",
+        data: {
+          controller: "flatpickr",
+          flatpickr_min_date: "2012/04/01",
+          flatpickr_max_date: Date.today
+        }
+      )
+    %>
+  </div>
+  <div class="form-group text-center">
+    <label><%= Orientation.human_attribute_name(:orientation_type) %></label>
+    <%=
+      form.input(
+        :orientation_type,
+        as: :select,
+        collection: Orientation.orientation_types.keys,
+        label_method: -> { I18n.t("activerecord.attributes.orientation.orientation_types.#{_1}") },
+        input_html: { class: "form-control w-75 text-center mx-auto" }
+      )
+    %>
+  </div>
+  <div class="form-group text-center">
+   <label><%= Orientation.human_attribute_name(:organisation) %></label>
+    <%=
+      form.input(
+        :organisation_id,
+        as: :select,
+        collection: organisations,
+        label_method: -> { _1.name },
+        input_html: {
+          class: "form-control w-75 text-center mx-auto",
+          data: { orientation_form_target: "organisationsList", action: "change->orientation-form#setAgentsList" }
+        }
+      )
+    %>
+  </div>
+  <div class="form-group text-center">
+    <label><%= Orientation.human_attribute_name(:agent) %></label>
+    <%=
+      form.input(
+        :agent_id,
+        as: :select,
+        collection: agents,
+        input_html: {
+          class: "form-control w-75 text-center mx-auto",
+          data: { orientation_form_target: "agentsList" }
+        }
+      )
+    %>
+  </div>
+  <div class="form-group text-center">
+    <%= form.button :submit, "Enregistrer", class: "btn btn-blue mt-3" %>
+  </div>
+</div>

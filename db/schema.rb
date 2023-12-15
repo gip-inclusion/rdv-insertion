@@ -254,9 +254,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_12_173606) do
     t.bigint "user_id", null: false
     t.bigint "organisation_id", null: false
     t.bigint "agent_id", null: false
-    t.integer "type"
-    t.datetime "starts_at"
-    t.datetime "ends_at"
+    t.integer "orientation_type"
+    t.date "starts_at"
+    t.date "ends_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["agent_id"], name: "index_orientations_on_agent_id"

@@ -57,6 +57,7 @@ Rails.application.routes.draw do
   resources :users, module: :users, only: [] do
     resources :rdv_contexts, only: [:index]
     resource :parcours, only: [:show]
+    resources :orientations, only: [:new, :create, :edit, :update, :destroy]
   end
 
   get "invitation", to: "invitations#invitation_code", as: :invitation_landing
@@ -69,7 +70,6 @@ Rails.application.routes.draw do
 
   resources :participations, only: [:update]
   resources :rdv_contexts, only: [:create]
-  resources :orientations, only: [:new, :edit]
 
   resources :rdv_contexts, module: :rdv_contexts, only: [] do
     resource :closings, only: [:create, :destroy]
