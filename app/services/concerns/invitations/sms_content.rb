@@ -12,28 +12,28 @@ module Invitations
 
     def short_content
       "#{user.full_name},\nVous êtes #{user.conjugate('invité')} à prendre un #{rdv_title}." \
-        " Pour choisir la date et l'horaire du RDV, " \
-        "cliquez sur le lien suivant: " \
+        " Pour choisir la date du RDV, " \
+        "cliquez sur ce lien: " \
         "#{redirect_sms_link}\n" \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
-        "En cas de problème, contactez le #{help_phone_number}."
+        "En cas de problème, contactez le #{formatted_phone_number}."
     end
 
     def standard_content
-      "#{user.full_name},\nVous êtes #{user_designation} et vous êtes #{user.conjugate('invité')} à" \
-        " participer à un #{rdv_title}. Pour choisir la date et l'horaire du RDV, " \
-        "cliquez sur le lien suivant dans les #{Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER} jours: " \
+      "#{user.full_name},\nVous êtes #{user_designation} et êtes #{user.conjugate('invité')} à" \
+        " participer à un #{rdv_title}. Pour choisir la date du RDV, " \
+        "cliquez sur ce lien dans les #{Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER} jours: " \
         "#{redirect_sms_link}\n" \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
-        "En cas de problème, contactez le #{help_phone_number}."
+        "En cas de problème, contactez le #{formatted_phone_number}."
     end
 
     def phone_platform_content
-      "#{user.full_name},\nVous êtes #{user_designation} et vous devez contacter la plateforme " \
+      "#{user.full_name},\nVous êtes #{user_designation} et devez contacter la plateforme " \
         "départementale afin de #{rdv_purpose}. Pour cela, merci d'appeler le " \
-        "#{help_phone_number} dans un délai de #{Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER} jours. " \
+        "#{formatted_phone_number} dans un délai de #{Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER} jours. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}"
     end
@@ -41,11 +41,11 @@ module Invitations
     def atelier_content
       "#{user.full_name},\nVous êtes #{user_designation} et bénéficiez d'un accompagnement. " \
         "Vous pouvez consulter le(s) atelier(s) et formation(s) proposé(s) et vous y inscrire directement et " \
-        "librement, dans la limite des places disponibles, en cliquant sur le lien " \
-        "suivant: #{redirect_sms_link}\n" \
+        "librement, dans la limite des places disponibles, en cliquant sur ce lien:" \
+        " #{redirect_sms_link}\n" \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
-        "En cas de problème, contactez le #{help_phone_number}."
+        "En cas de problème, contactez le #{formatted_phone_number}."
     end
 
     def atelier_enfants_ados_content
@@ -53,7 +53,7 @@ module Invitations
         "Nous te proposons de cliquer ci-dessous pour découvrir le programme. " \
         "Si tu es #{user.conjugate('intéressé')} pour participer, tu n’auras qu’à cliquer et t’inscrire en ligne" \
         " avec le lien suivant: #{redirect_sms_link}\n" \
-        "En cas de problème, tu peux contacter le #{help_phone_number}."
+        "En cas de problème, tu peux contacter le #{formatted_phone_number}."
     end
 
     ### Reminders
@@ -61,30 +61,30 @@ module Invitations
     def short_reminder_content
       "#{user.full_name},\nVous avez reçu un message il y a 3 jours " \
         "vous invitant à prendre un #{rdv_title}." \
-        " Le lien de prise de RDV suivant expire dans #{number_of_days_before_expiration} " \
+        " Ce lien de prise de RDV expire dans #{number_of_days_before_expiration} " \
         "jours: " \
         "#{redirect_sms_link}\n" \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
-        "En cas de problème, contactez le #{help_phone_number}."
+        "En cas de problème, contactez le #{formatted_phone_number}."
     end
 
     def standard_reminder_content
       "#{user.full_name},\nEn tant que #{user_designation}, vous avez reçu un message il y a 3 jours " \
         "vous invitant à prendre RDV au créneau de votre choix afin de #{rdv_purpose}." \
-        " Le lien de prise de RDV suivant expire dans #{number_of_days_before_expiration} " \
+        " Ce lien de prise de RDV expire dans #{number_of_days_before_expiration} " \
         "jours: " \
         "#{redirect_sms_link}\n" \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
-        "En cas de problème, contactez le #{help_phone_number}."
+        "En cas de problème, contactez le #{formatted_phone_number}."
     end
 
     def phone_platform_reminder_content
       "#{user.full_name},\nEn tant que #{user_designation}, vous avez reçu un message il y a 3 jours vous " \
         "invitant à contacter la plateforme départementale afin de #{rdv_purpose}. " \
-        "Vous n'avez plus que #{number_of_days_before_expiration} jours pour appeler le " \
-        "#{help_phone_number}. " \
+        "Il vous reste #{number_of_days_before_expiration} jours pour appeler le " \
+        "#{formatted_phone_number}. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}"
     end
@@ -97,7 +97,7 @@ module Invitations
         "#{redirect_sms_link}\n" \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
-        "En cas de problème, tu peux contacter le #{help_phone_number}."
+        "En cas de problème, tu peux contacter le #{formatted_phone_number}."
     end
 
     ###
@@ -118,6 +118,10 @@ module Invitations
       host = ENV["HOST"].gsub("www.", "").gsub("https://", "")
       path = redirect_invitation_shortcut_path(uuid: @invitation.uuid)
       host + path
+    end
+
+    def formatted_phone_number
+      help_phone_number.gsub(" ", "")
     end
   end
 end
