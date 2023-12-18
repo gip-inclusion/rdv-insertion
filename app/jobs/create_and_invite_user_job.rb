@@ -11,6 +11,7 @@ class CreateAndInviteUserJob < ApplicationJob
     @invitation_attributes = invitation_attributes.deep_symbolize_keys
     @motif_category_attributes = motif_category_attributes.deep_symbolize_keys
     @rdv_solidarites_session_credentials = rdv_solidarites_session_credentials.deep_symbolize_keys
+    Current.agent = current_agent(@rdv_solidarites_session_credentials)
 
     upsert_user!
     invite_user
@@ -22,7 +23,7 @@ class CreateAndInviteUserJob < ApplicationJob
     upsert_user = Users::Upsert.call(
       user_attributes: @user_attributes,
       organisation: @organisation,
-      rdv_solidarites_session:
+      rdv_solidarites_session: rdv_solidarites_session(@rdv_solidarites_session_credentials)
     )
     @user = upsert_user.user
     return if upsert_user.success?
@@ -54,9 +55,5 @@ class CreateAndInviteUserJob < ApplicationJob
       @motif_category_attributes,
       @rdv_solidarites_session_credentials
     )
-  end
-
-  def rdv_solidarites_session
-    @rdv_solidarites_session ||= RdvSolidaritesSessionFactory.create_with(**@rdv_solidarites_session_credentials)
   end
 end

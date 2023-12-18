@@ -24,8 +24,9 @@ describe CreateAndInviteUserJob do
   let!(:email_invitation_attributes) { invitation_attributes.merge(format: "email", help_phone_number: "0146292929") }
   let!(:sms_invitation_attributes) { invitation_attributes.merge(format: "sms", help_phone_number: "0146292929") }
 
+  let!(:agent) { create(:agent, email: "janedoe@gouv.fr") }
   let!(:rdv_solidarites_session_credentials) do
-    { "client" => "someclient", "uid" => "janedoe@gouv.fr", "access_token" => "sometoken" }.symbolize_keys
+    { "client" => "someclient", "uid" => agent.email.to_s, "access_token" => "sometoken" }.symbolize_keys
   end
 
   before do
@@ -36,6 +37,11 @@ describe CreateAndInviteUserJob do
     allow(Users::Upsert).to receive(:call)
       .with(organisation:, user_attributes:, rdv_solidarites_session:)
       .and_return(OpenStruct.new(success?: true, user: user))
+  end
+
+  it "sets the current agent" do
+    subject
+    expect(Current.agent).to eq(agent)
   end
 
   it "upserts the user" do
