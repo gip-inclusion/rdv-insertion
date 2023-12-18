@@ -34,6 +34,9 @@ Rails.application.routes.draw do
         get "uploads/category_selection", to: "uploads#category_selection"
         get :default_list
       end
+      scope module: :users do
+        resources :rdv_contexts, only: [:index]
+      end
       resources :invitations, only: [:create]
       resources :tag_assignations, only: [:index, :create] do
         delete :destroy, on: :collection
@@ -55,7 +58,6 @@ Rails.application.routes.draw do
   end
 
   resources :users, module: :users, only: [] do
-    resources :rdv_contexts, only: [:index]
     resource :parcours, only: [:show]
     resources :orientations, only: [:new, :create, :edit, :update, :destroy]
     resources :rdvs, only: [:new]
@@ -112,6 +114,9 @@ Rails.application.routes.draw do
         resources :uploads, only: [:new]
         get "uploads/category_selection", to: "uploads#category_selection"
         get :default_list
+      end
+      scope module: :users do
+        resources :rdv_contexts, only: [:index]
       end
       resources :invitations, only: [:create]
       resources :tag_assignations, only: [:index, :create] do

@@ -59,19 +59,19 @@ export default class extends Controller {
   }
 
   updateFirstInvitationDate(rdvContextId) {
-    const firstInvitationDate = document.getElementById(`first-invitation-date-${rdvContextId.id}`);
+    const firstInvitationDate = document.getElementById(`first-invitation-date-${rdvContextId}`);
     if (firstInvitationDate.innerHTML === " - ") {
       firstInvitationDate.innerHTML = getFrenchFormatDateString(todaysDateString());
     }
   }
 
   updateLastInvitationDate(rdvContextId) {
-    const lastInvitationDate = document.getElementById(`last-invitation-date-${rdvContextId.id}`);
+    const lastInvitationDate = document.getElementById(`last-invitation-date-${rdvContextId}`);
     lastInvitationDate.innerHTML = getFrenchFormatDateString(todaysDateString());
   }
 
   updateStatus(rdvContextId) {
-    const status = document.getElementById(`rdv-context-status-${rdvContextId.id}`);
+    const status = document.getElementById(`rdv-context-status-${rdvContextId}`);
     status.classList = [];
     status.innerHTML = "Invitation en attente de réponse";
   }

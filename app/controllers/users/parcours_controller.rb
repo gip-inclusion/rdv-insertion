@@ -10,7 +10,7 @@ module Users
 
     def set_department
       @department = policy_scope(Department).find(current_department_id)
-      authorize(@department)
+      authorize(@department, :parcours?)
     end
 
     def set_user
