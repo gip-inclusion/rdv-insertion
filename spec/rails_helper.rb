@@ -46,6 +46,7 @@ RSpec.configure do |config|
   config.include PdfHelper
   config.extend ApiSpecHelper
   config.include ApiSpecSharedExamples
+  config.include RdvSolidaritesClientSpecHelper
   config.include ActiveSupport::Testing::TimeHelpers
 
   ## Clear downloads

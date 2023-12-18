@@ -42,14 +42,14 @@ describe InvitationsController do
       sign_in(agent)
       travel_to(Time.zone.parse("2022-05-04 12:30"))
       allow(InviteUser).to receive(:call)
-        .with(user:, organisations:, invitation_attributes:, motif_category_attributes:, rdv_solidarites_session:)
+        .with(user:, organisations:, invitation_attributes:, motif_category_attributes:)
         .and_return(OpenStruct.new(success?: true, invitation:))
     end
 
     context "organisation level" do
       it "calls the invite user service" do
         expect(InviteUser).to receive(:call)
-          .with(user:, organisations:, invitation_attributes:, motif_category_attributes:, rdv_solidarites_session:)
+          .with(user:, organisations:, invitation_attributes:, motif_category_attributes:)
         post :create, params: create_params
       end
     end
@@ -75,7 +75,7 @@ describe InvitationsController do
 
       it "calls the service" do
         expect(InviteUser).to receive(:call)
-          .with(user:, organisations:, invitation_attributes:, motif_category_attributes:, rdv_solidarites_session:)
+          .with(user:, organisations:, invitation_attributes:, motif_category_attributes:)
         post :create, params: create_params
       end
     end

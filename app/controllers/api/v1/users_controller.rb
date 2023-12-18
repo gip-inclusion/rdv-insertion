@@ -21,7 +21,7 @@ module Api
 
           CreateAndInviteUserJob.perform_async(
             @organisation.id, user_attributes, invitation_attributes, motif_category_attributes,
-            rdv_solidarites_session.to_h
+            current_agent.email
           )
         end
         render json: { success: true }
@@ -49,7 +49,7 @@ module Api
 
       def upsert_user
         @upsert_user ||= Users::Upsert.call(
-          user_attributes: user_attributes, organisation: @organisation, rdv_solidarites_session:
+          user_attributes: user_attributes, organisation: @organisation
         )
       end
 
@@ -64,7 +64,7 @@ module Api
 
       def call_invite_user_service_by(format)
         InviteUser.call(
-          user: @user, organisations: [@organisation], motif_category_attributes:, rdv_solidarites_session:,
+          user: @user, organisations: [@organisation], motif_category_attributes:,
           invitation_attributes: invitation_attributes.merge(format:, help_phone_number: @organisation.phone_number)
         )
       end

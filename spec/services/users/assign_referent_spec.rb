@@ -1,23 +1,17 @@
 describe Users::AssignReferent, type: :service do
   subject do
-    described_class.call(
-      agent: agent,
-      user: user,
-      rdv_solidarites_session: rdv_solidarites_session
-    )
+    described_class.call(agent:, user:)
   end
 
   let!(:agent) { create(:agent) }
   let!(:user) { create(:user) }
-  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
 
   describe "#call" do
     before do
       allow(RdvSolidaritesApi::CreateReferentAssignation).to receive(:call)
         .with(
           rdv_solidarites_user_id: user.rdv_solidarites_user_id,
-          rdv_solidarites_agent_id: agent.rdv_solidarites_agent_id,
-          rdv_solidarites_session: rdv_solidarites_session
+          rdv_solidarites_agent_id: agent.rdv_solidarites_agent_id
         ).and_return(OpenStruct.new(success?: true))
     end
 
@@ -35,8 +29,7 @@ describe Users::AssignReferent, type: :service do
         allow(RdvSolidaritesApi::CreateReferentAssignation).to receive(:call)
           .with(
             rdv_solidarites_user_id: user.rdv_solidarites_user_id,
-            rdv_solidarites_agent_id: agent.rdv_solidarites_agent_id,
-            rdv_solidarites_session: rdv_solidarites_session
+            rdv_solidarites_agent_id: agent.rdv_solidarites_agent_id
           ).and_return(OpenStruct.new(success?: false, errors: ["Not found"]))
       end
 

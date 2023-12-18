@@ -1,15 +1,12 @@
 describe RdvSolidaritesApi::CreateReferentAssignations, type: :service do
   subject do
-    described_class.call(
-      rdv_solidarites_user_id: rdv_solidarites_user_id, rdv_solidarites_agent_ids: rdv_solidarites_agent_ids
-    )
+    described_class.call(rdv_solidarites_user_id:, rdv_solidarites_agent_ids:)
   end
 
   let!(:agent) { create(:agent) }
+  let!(:rdv_solidarites_client) { instance_double(RdvSolidaritesClient) }
   let!(:rdv_solidarites_user_id) { 33 }
   let!(:rdv_solidarites_agent_ids) { [44, 55] }
-  let!(:rdv_solidarites_session_with_shared_secret) { instance_double(RdvSolidaritesSession::WithSharedSecret) }
-  let!(:rdv_solidarites_client) { instance_double(RdvSolidaritesClient) }
 
   describe "#call" do
     let(:response_body) do
@@ -18,11 +15,7 @@ describe RdvSolidaritesApi::CreateReferentAssignations, type: :service do
     end
 
     before do
-      allow(Current).to receive(:agent).and_return(agent)
-      allow(RdvSolidaritesSession::WithSharedSecret).to receive(:new)
-        .and_return(rdv_solidarites_session_with_shared_secret)
-      allow(rdv_solidarites_session_with_shared_secret).to receive(:rdv_solidarites_client)
-        .and_return(rdv_solidarites_client)
+      mock_rdv_solidarites_client(agent)
       allow(rdv_solidarites_client).to receive(:create_referent_assignations)
         .with(rdv_solidarites_user_id, rdv_solidarites_agent_ids)
         .and_return(OpenStruct.new(success?: true, body: response_body))

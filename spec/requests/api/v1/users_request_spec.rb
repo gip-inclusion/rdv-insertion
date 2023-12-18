@@ -99,7 +99,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
               user1_params,
               {},
               {},
-              auth_headers
+              uid
             )
           expect(CreateAndInviteUserJob).to have_received(:perform_async)
             .with(
@@ -107,7 +107,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
               user2_params.except(:invitation),
               {},
               { name: "RSA orientation" },
-              auth_headers
+              uid
             )
           expect(parsed_response_body["success"]).to eq(true)
         end
@@ -222,18 +222,18 @@ describe "Users API", swagger_doc: "v1/api.json" do
 
       before do
         allow(Users::Upsert).to receive(:call)
-          .with(user_attributes:, rdv_solidarites_session:, organisation:)
+          .with(user_attributes:, organisation:)
           .and_return(OpenStruct.new(success?: true, user:))
         allow(InviteUser).to receive(:call)
           .with(
             user:, organisations: [organisation], motif_category_attributes:,
-            invitation_attributes: sms_attributes, rdv_solidarites_session:
+            invitation_attributes: sms_attributes
           )
           .and_return(OpenStruct.new(success?: true, invitation: sms_invitation))
         allow(InviteUser).to receive(:call)
           .with(
             user:, organisations: [organisation], motif_category_attributes:,
-            invitation_attributes: email_attributes, rdv_solidarites_session:
+            invitation_attributes: email_attributes
           ).and_return(OpenStruct.new(success?: true, invitation: email_invitation))
       end
 

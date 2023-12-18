@@ -1,8 +1,7 @@
 module Invitations
   class AssignAttributes < BaseService
-    def initialize(invitation:, rdv_solidarites_session:)
+    def initialize(invitation:)
       @invitation = invitation
-      @rdv_solidarites_session = rdv_solidarites_session
     end
 
     def call
@@ -19,8 +18,7 @@ module Invitations
     def retrieve_rdv_solidarites_token
       @retrieve_rdv_solidarites_token ||= call_service!(
         RdvSolidaritesApi::CreateOrRetrieveInvitationToken,
-        rdv_solidarites_user_id: @invitation.user.rdv_solidarites_user_id,
-        rdv_solidarites_session: @rdv_solidarites_session
+        rdv_solidarites_user_id: @invitation.user.rdv_solidarites_user_id
       )
     end
 

@@ -1,7 +1,6 @@
 module RdvSolidaritesApi
   class CreateOrRetrieveInvitationToken < Base
-    def initialize(rdv_solidarites_session:, rdv_solidarites_user_id:)
-      @rdv_solidarites_session = rdv_solidarites_session
+    def initialize(rdv_solidarites_user_id:)
       @rdv_solidarites_user_id = rdv_solidarites_user_id
     end
 

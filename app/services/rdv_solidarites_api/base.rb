@@ -1,7 +1,5 @@
 module RdvSolidaritesApi
   class Base < BaseService
-    attr_reader :rdv_solidarites_session
-
     delegate :rdv_solidarites_client, to: :rdv_solidarites_session
 
     protected
@@ -28,7 +26,7 @@ module RdvSolidaritesApi
     end
 
     def verify_rdv_solidarites_session!
-      return unless @rdv_solidarites_session.nil?
+      return unless rdv_solidarites_session.nil?
 
       Sentry.capture_message("rdv_solidarites_session should not be nil")
       fail!("Impossible d'appeler RDV-Solidarités. L'équipe a été notifée de l'erreur et tente de la résoudre.")
@@ -39,7 +37,7 @@ module RdvSolidaritesApi
     end
 
     # this session is used to certify the API calls are emited by the rdv-insertion servers
-    def rdv_solidarites_session_with_shared_secret
+    def rdv_solidarites_session
       RdvSolidaritesSession::WithSharedSecret.new(
         uid: Current.agent.email,
         x_agent_auth_signature: Current.agent.signature_auth_with_shared_secret

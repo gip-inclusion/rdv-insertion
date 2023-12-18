@@ -1,21 +1,17 @@
 describe RdvSolidaritesApi::CreateWebhookEndpoint, type: :service do
   subject do
-    described_class.call(
-      rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
-      rdv_solidarites_session: rdv_solidarites_session
-    )
+    described_class.call(rdv_solidarites_organisation_id:)
   end
 
+  let!(:agent) { create(:agent) }
+  let(:rdv_solidarites_client) { instance_double(RdvSolidaritesClient) }
   let!(:rdv_solidarites_organisation_id) { 1717 }
-  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
-  let!(:rdv_solidarites_client) { instance_double(RdvSolidaritesClient) }
   let!(:trigger) { false }
   let(:response_body) { { webhook_endpoint: { id: 3 } }.to_json }
 
   describe "#call" do
     before do
-      allow(rdv_solidarites_session).to receive(:rdv_solidarites_client)
-        .and_return(rdv_solidarites_client)
+      mock_rdv_solidarites_client(agent)
       allow(rdv_solidarites_client).to receive(:create_webhook_endpoint)
         .with(rdv_solidarites_organisation_id, RdvSolidarites::WebhookEndpoint::ALL_SUBSCRIPTIONS, trigger)
         .and_return(OpenStruct.new(body: response_body, success?: true))
@@ -37,11 +33,7 @@ describe RdvSolidaritesApi::CreateWebhookEndpoint, type: :service do
 
     context "when a subscriptions list is passed" do
       subject do
-        described_class.call(
-          rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
-          rdv_solidarites_session: rdv_solidarites_session,
-          subscriptions: subscriptions
-        )
+        described_class.call(rdv_solidarites_organisation_id:, subscriptions:)
       end
 
       before do
@@ -61,11 +53,7 @@ describe RdvSolidaritesApi::CreateWebhookEndpoint, type: :service do
 
     context "when the webhook should be triggered" do
       subject do
-        described_class.call(
-          rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
-          rdv_solidarites_session: rdv_solidarites_session,
-          trigger: trigger
-        )
+        described_class.call(rdv_solidarites_organisation_id:, trigger:)
       end
 
       let!(:trigger) { true }

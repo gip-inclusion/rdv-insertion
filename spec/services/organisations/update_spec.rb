@@ -1,9 +1,6 @@
 describe Organisations::Update, type: :service do
   subject do
-    described_class.call(
-      rdv_solidarites_session: rdv_solidarites_session,
-      organisation: organisation
-    )
+    described_class.call(organisation:)
   end
 
   let!(:rdv_solidarites_organisation_id) { 1010 }
@@ -15,8 +12,6 @@ describe Organisations::Update, type: :service do
   let!(:organisation_attributes) do
     { name: "PIE Pantin", email: "pie@pantin.fr", phone_number: "0102030405" }
   end
-
-  let(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
 
   describe "#call" do
     before do
@@ -30,8 +25,7 @@ describe Organisations::Update, type: :service do
               :phone_number => "0102030405",
               "verticale" => "rdv_insertion"
             },
-          :rdv_solidarites_organisation_id => 1010,
-          :rdv_solidarites_session => rdv_solidarites_session
+          :rdv_solidarites_organisation_id => 1010
         }
       ).and_return(OpenStruct.new(success?: true))
     end

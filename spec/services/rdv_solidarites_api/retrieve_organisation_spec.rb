@@ -1,14 +1,11 @@
 describe RdvSolidaritesApi::RetrieveOrganisation, type: :service do
   subject do
-    described_class.call(
-      rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
-      rdv_solidarites_session: rdv_solidarites_session
-    )
+    described_class.call(rdv_solidarites_organisation_id:)
   end
 
+  let!(:agent) { create(:agent) }
+  let(:rdv_solidarites_client) { instance_double(RdvSolidaritesClient) }
   let!(:rdv_solidarites_organisation_id) { 1717 }
-  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
-  let!(:rdv_solidarites_client) { instance_double(RdvSolidaritesClient) }
 
   describe "#call" do
     let!(:organisation) do
@@ -20,8 +17,7 @@ describe RdvSolidaritesApi::RetrieveOrganisation, type: :service do
     end
 
     before do
-      allow(rdv_solidarites_session).to receive(:rdv_solidarites_client)
-        .and_return(rdv_solidarites_client)
+      mock_rdv_solidarites_client(agent)
       allow(rdv_solidarites_client).to receive(:get_organisation)
         .with(rdv_solidarites_organisation_id)
         .and_return(OpenStruct.new(success?: true, body: { "organisation" => organisation }.to_json))

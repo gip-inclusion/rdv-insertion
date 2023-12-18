@@ -41,8 +41,7 @@ class InvitationsController < ApplicationController
       user: @user,
       organisations: @organisations,
       invitation_attributes: invitation_params.except(:motif_category),
-      motif_category_attributes: invitation_params[:motif_category] || {},
-      rdv_solidarites_session:
+      motif_category_attributes: invitation_params[:motif_category] || {}
     )
   end
 

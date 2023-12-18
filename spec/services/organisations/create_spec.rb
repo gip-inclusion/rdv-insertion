@@ -1,10 +1,6 @@
 describe Organisations::Create, type: :service do
   subject do
-    described_class.call(
-      rdv_solidarites_session: rdv_solidarites_session,
-      current_agent: agent,
-      organisation: organisation
-    )
+    described_class.call(organisation:)
   end
 
   let!(:rdv_solidarites_organisation_id) { 1717 }
@@ -21,13 +17,9 @@ describe Organisations::Create, type: :service do
   let!(:organisation_count_before) { Organisation.count }
   let!(:agent_roles_count_before) { AgentRole.count }
 
-  let(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
-  let!(:rdv_solidarites_session_credentials) do
-    { "client" => "someclient", "uid" => "janedoe@gouv.fr", "access_token" => "sometoken" }.symbolize_keys
-  end
-
   describe "#call" do
     before do
+      allow(Current).to receive(:agent).and_return(agent)
       allow(RdvSolidaritesApi::RetrieveOrganisation).to receive(:call)
         .and_return(OpenStruct.new(success?: true, organisation: organisation_from_rdvs))
       allow(RdvSolidaritesApi::CreateWebhookEndpoint).to receive(:call)
@@ -38,10 +30,8 @@ describe Organisations::Create, type: :service do
         .and_return(OpenStruct.new(success?: true, webhook_endpoint: nil))
       allow(RdvSolidaritesApi::UpdateOrganisation).to receive(:call)
         .and_return(OpenStruct.new(success?: true))
-      allow(rdv_solidarites_session).to receive(:to_h)
-        .and_return(rdv_solidarites_session_credentials)
       allow(TriggerRdvSolidaritesWebhooksJob).to receive(:perform_async)
-        .with(webhook_endpoint_id, rdv_solidarites_organisation_id, rdv_solidarites_session_credentials)
+        .with(webhook_endpoint_id, rdv_solidarites_organisation_id, agent.email)
     end
 
     it "is a success" do
@@ -98,7 +88,7 @@ describe Organisations::Create, type: :service do
 
     it "calls the TriggerRdvSolidaritesWebhooksJob" do
       expect(TriggerRdvSolidaritesWebhooksJob).to receive(:perform_async)
-        .with(webhook_endpoint_id, rdv_solidarites_organisation_id, rdv_solidarites_session_credentials)
+        .with(webhook_endpoint_id, rdv_solidarites_organisation_id, agent.email)
       subject
     end
 

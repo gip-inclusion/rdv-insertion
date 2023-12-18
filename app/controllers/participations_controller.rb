@@ -4,7 +4,6 @@ class ParticipationsController < ApplicationController
   def update
     @success = Participations::Update.call(
       participation: @participation,
-      rdv_solidarites_session: rdv_solidarites_session,
       participation_params: participation_params
     ).success?
 
