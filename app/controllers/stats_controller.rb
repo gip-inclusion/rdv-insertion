@@ -7,7 +7,9 @@ class StatsController < ApplicationController
     @stat = Stat.find_by(statable_type: "Department", statable_id: nil)
   end
 
-  def show; end
+  def show
+    @scope = @organisation || @department
+  end
 
   def deployment_map; end
 
