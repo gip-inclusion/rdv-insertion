@@ -31,8 +31,7 @@ export default class extends Controller {
     // We have to use JSON instead of Turbostream because postal invitation return raw data as pdfs
     const body = Object.fromEntries(event.detail.formSubmission.fetchRequest.entries);
     event.detail.formSubmission.stop();
-    const { userId, departmentId, organisationId } = this.element.dataset;
-    const rdvContext = JSON.parse(this.element.dataset.rdvContext);
+    const { userId, departmentId, organisationId, rdvContextId } = this.element.dataset;
 
     const isDepartmentLevel = !organisationId;
     const result = await handleUserInvitation(
@@ -51,28 +50,28 @@ export default class extends Controller {
     checkbox.parentElement.classList.remove("spinner-border", "spinner-border-sm");
     if (result.success) {
       checkbox.disabled = true;
-      this.updateFirstInvitationDate(rdvContext);
-      this.updateLastInvitationDate(rdvContext);
-      this.updateStatus(rdvContext);
+      this.updateFirstInvitationDate(rdvContextId);
+      this.updateLastInvitationDate(rdvContextId);
+      this.updateStatus(rdvContextId);
     } else {
       checkbox.checked = false;
     }
   }
 
-  updateFirstInvitationDate(rdvContext) {
-    const firstInvitationDate = document.getElementById(`first-invitation-date-${rdvContext.id}`);
+  updateFirstInvitationDate(rdvContextId) {
+    const firstInvitationDate = document.getElementById(`first-invitation-date-${rdvContextId.id}`);
     if (firstInvitationDate.innerHTML === " - ") {
       firstInvitationDate.innerHTML = getFrenchFormatDateString(todaysDateString());
     }
   }
 
-  updateLastInvitationDate(rdvContext) {
-    const lastInvitationDate = document.getElementById(`last-invitation-date-${rdvContext.id}`);
+  updateLastInvitationDate(rdvContextId) {
+    const lastInvitationDate = document.getElementById(`last-invitation-date-${rdvContextId.id}`);
     lastInvitationDate.innerHTML = getFrenchFormatDateString(todaysDateString());
   }
 
-  updateStatus(rdvContext) {
-    const status = document.getElementById(`rdv-context-status-${rdvContext.id}`);
+  updateStatus(rdvContextId) {
+    const status = document.getElementById(`rdv-context-status-${rdvContextId.id}`);
     status.classList = [];
     status.innerHTML = "Invitation en attente de réponse";
   }

@@ -3,7 +3,7 @@ module Users
     before_action :set_user, :set_department, only: [:show]
 
     def show
-      @orientations = @user.orientations.order(starts_at: :asc)
+      @orientations = @user.orientations.includes(:agent, :organisation).order(starts_at: :asc)
     end
 
     private

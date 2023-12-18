@@ -1,6 +1,6 @@
 module Users
   class RdvsController < ApplicationController
-    before_action :set_user, :verify_user_is_sync_with_rdv_solidarites, only: [:new]
+    before_action :set_user, :verify_user_is_sync_with_rdv_solidarites, :set_organisation, only: [:new]
 
     def new
       redirect_to(rdv_solidarites_find_rdv_url)
@@ -14,7 +14,7 @@ module Users
     end
 
     def set_user
-      @user = policy_scope(User).includes(:organisations).find(params[:user_id])
+      @user = policy_scope(User).preload(:organisations).find(params[:user_id])
     end
 
     def verify_user_is_sync_with_rdv_solidarites
@@ -22,7 +22,7 @@ module Users
     end
 
     def set_organisation
-      @organisation = policy_scope(Organisation).find_by(id: current_organisation_ids & user.organisation_ids)
+      @organisation = policy_scope(Organisation).find_by(id: current_organisation_ids & @user.organisation_ids)
     end
   end
 end

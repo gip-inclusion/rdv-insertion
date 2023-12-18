@@ -142,7 +142,6 @@ class UsersController < ApplicationController
   def set_user
     @user =
       policy_scope(User)
-      .preload(:invitations, organisations: [:department, :configurations])
       .where(current_organisations_filter)
       .find(params[:id])
   end

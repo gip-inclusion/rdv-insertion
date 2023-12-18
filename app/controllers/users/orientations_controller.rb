@@ -14,7 +14,7 @@ module Users
       @orientation = Orientation.new(user: @user, **orientation_params)
       if save_orientation.success?
         turbo_stream_replace("orientations_list", "orientations/orientations_list",
-                             { orientations: @user.reload.orientations.sort_by(&:starts_at) })
+                             { orientations: reloaded_user_orientations.sort_by(&:starts_at) })
       else
         turbo_stream_replace_error_list_with(save_orientation.errors)
       end
@@ -24,7 +24,7 @@ module Users
       @orientation.assign_attributes(**orientation_params)
       if save_orientation.success?
         turbo_stream_replace("orientations_list", "orientations/orientations_list",
-                             { orientations: @user.reload.orientations.sort_by(&:starts_at) })
+                             { orientations: reloaded_user_orientations.sort_by(&:starts_at) })
       else
         turbo_stream_replace_error_list_with(save_orientation.errors)
       end
@@ -67,6 +67,10 @@ module Users
     def set_orientation
       @orientation = Orientation.find(params[:id])
       authorize @orientation
+    end
+
+    def reloaded_user_orientations
+      @user.reload.orientations.includes(:organisation, :agent)
     end
 
     def save_orientation

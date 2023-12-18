@@ -13,8 +13,8 @@
           <% if should_convene_for?(rdv_context, configuration) %>
             <div class="mx-2">
               <%= render "rdv_contexts/convocation_button",
-                         user_id: @user.id, motif_category_id: rdv_context.motif_category_id,
-                         organisation_ids: department_level? ? @user_organisations.ids : [@organisation.id]
+                         user_id: user.id, motif_category_id: rdv_context.motif_category_id,
+                         organisation_ids: department_level? ? user_organisations.ids : [organisation.id]
               %>
             </div>
           <% end %>
@@ -31,15 +31,15 @@
         <% if configuration.invitation_formats.any? %>
           <%= react_component(
             "components/InvitationBlock", {
-              user: @user,
-              organisation: @organisation,
-              department: @department,
+              user: user,
+              organisation: organisation,
+              department: department,
               invitations: invitations,
               isDepartmentLevel: department_level?,
               invitationFormats: configuration.invitation_formats,
               motifCategory: configuration.motif_category,
               status: rdv_context.status,
-              isArchived: @user.archived_in?(@department)
+              isArchived: user.archived_in?(department)
             }
           ) %>
         <% end %>
@@ -67,7 +67,7 @@
                     <% if convocable_participations.present? %>
                       <td class="px-4 py-2">
                         <% if participation.convocable? %>
-                          <%= render("rdv_contexts/convocations", user: @user, participation: participation, sms_convocations: participation.sent_sms_convocations, email_convocations: participation.sent_email_convocations) %>
+                          <%= render("rdv_contexts/convocations", user: user, participation: participation, sms_convocations: participation.sent_sms_convocations, email_convocations: participation.sent_email_convocations) %>
                         <% else %>
                           -
                         <% end %>

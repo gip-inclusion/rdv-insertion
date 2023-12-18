@@ -6,35 +6,42 @@ module Users
     def index
       @rdv_contexts =
         RdvContext.preload(
-          :invitations, :motif_category,
-          participations: [:notifications, { rdv: [:motif, :organisation] }]
+          :invitations, participations: [:notifications, { rdv: [:motif, :organisation] }]
         ).where(
           user: @user, motif_category: @all_configurations.map(&:motif_category)
-        ).sort_by { |rdv_context| @all_configurations.find_index { |c| c.motif_category == rdv_context.motif_category } }
+        ).sort_by do |rdv_context|
+          @all_configurations.find_index do |c|
+            c.motif_category_id == rdv_context.motif_category_id
+          end
+        end
     end
 
     private
 
     def set_user
-      @user = policy_scope(User).find(params[:user_id])
+      @user = policy_scope(User).preload(
+        :invitations, :referents, :archives, :tags,
+        organisations: [:department, :motif_categories], rdv_contexts: :participations
+      ).find(params[:user_id])
     end
 
     def set_department
-      @department = policy_scope(Department).find(current_department_id)
+      @department = policy_scope(Department).preload(organisations: [:motif_categories, :motifs, :lieux])
+                                            .find(current_department_id)
     end
 
     def set_organisation
       # needed for now even if department level to retrieve the help_phone_number and to compute the invitation path in
       # the InvitationBlock react component
       @organisation = policy_scope(Organisation).includes(:department, :motif_categories)
-                                                .where(id: current_organisation_ids & @user.organisation_ids)
-                                                .first
+                                                .find_by(id: current_organisation_ids & @user.organisation_ids)
     end
 
     def set_all_configurations
       @all_configurations =
         policy_scope(::Configuration).joins(:organisation)
                                      .where(current_organisation_filter)
+                                     .preload(:motif_category)
                                      .uniq(&:motif_category_id)
 
       @all_configurations =
