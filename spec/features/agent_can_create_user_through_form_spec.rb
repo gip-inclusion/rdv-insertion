@@ -37,7 +37,7 @@ describe "Agents can create user through form", js: true do
 
       click_button("Enregistrer")
 
-      expect(page).to have_content("Modifier")
+      expect(page).to have_content("Infos")
       expect(page).to have_content("Date de création")
       expect(page).to have_content("Bob")
       expect(page).to have_content("Kelso")
@@ -55,7 +55,7 @@ describe "Agents can create user through form", js: true do
           click_button("Enregistrer")
 
           expect(page).to have_content("Prénom doit être rempli(e)")
-          expect(page).not_to have_content("Modifier")
+          expect(page).not_to have_content("Infos")
         end
       end
 
@@ -69,7 +69,7 @@ describe "Agents can create user through form", js: true do
           click_button("Enregistrer")
 
           expect(page).to have_content("Il doit y avoir au moins un attribut permettant d'identifier la personne")
-          expect(page).not_to have_content("Modifier")
+          expect(page).not_to have_content("Infos")
         end
       end
     end
@@ -95,7 +95,7 @@ describe "Agents can create user through form", js: true do
 
           click_button("Enregistrer")
 
-          expect(page).to have_content("Modifier")
+          expect(page).to have_content("Infos")
           expect(page).to have_content("Date de création")
           expect(page).to have_content("04/05/2022")
           expect(page).to have_content("bob@kelso.com")
@@ -125,7 +125,7 @@ describe "Agents can create user through form", js: true do
 
           click_button("Enregistrer")
 
-          expect(page).to have_content("Modifier")
+          expect(page).to have_content("Infos")
           expect(page).to have_content("Date de création")
           expect(page).to have_content("04/05/2022")
           expect(page).to have_content("bob@kelso.com")
@@ -157,7 +157,7 @@ describe "Agents can create user through form", js: true do
 
           click_button("Enregistrer")
 
-          expect(page).to have_content("Modifier")
+          expect(page).to have_content("Infos")
           expect(page).to have_content("Date de création")
           expect(page).to have_content("04/05/2022")
           expect(page).to have_content("bob@kelso.com")
@@ -185,7 +185,7 @@ describe "Agents can create user through form", js: true do
 
           click_button("Enregistrer")
 
-          expect(page).to have_content("Modifier")
+          expect(page).to have_content("Infos")
           expect(page).to have_content("Date de création")
           expect(page).to have_content("04/05/2022")
           expect(page).to have_content("bob@kelso.com")
@@ -213,7 +213,7 @@ describe "Agents can create user through form", js: true do
 
           click_button("Enregistrer")
 
-          expect(page).to have_content("Modifier")
+          expect(page).to have_content("Infos")
           expect(page).to have_content("Date de création")
           expect(page).to have_content("04/05/2022")
           expect(page).to have_content("bob@kelso.com")
@@ -246,7 +246,7 @@ describe "Agents can create user through form", js: true do
         click_button("Enregistrer")
 
         expect(page).to have_content("Le bénéficiaire #{user.id} a les mêmes attributs mais un nir différent")
-        expect(page).not_to have_content("Modifier")
+        expect(page).not_to have_content("Infos")
         expect(User.count).to eq(1)
       end
     end
@@ -274,7 +274,7 @@ describe "Agents can create user through form", js: true do
 
           click_button("Enregistrer")
 
-          expect(page).to have_content("Modifier")
+          expect(page).to have_content("Infos")
           expect(page).to have_content("Bob")
           expect(page).to have_content("bob@kelso.com")
           expect(User.count).to eq(2)
@@ -298,7 +298,7 @@ describe "Agents can create user through form", js: true do
 
           click_button("Enregistrer")
 
-          expect(page).to have_content("Modifier")
+          expect(page).to have_content("Infos")
           expect(page).to have_content("Bob")
           expect(page).to have_content("bob@kelso.com")
           expect(User.count).to eq(2)

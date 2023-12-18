@@ -108,6 +108,7 @@ class UsersController < ApplicationController
 
   def render_errors(errors)
     respond_to do |format|
+      format.turbo_stream { turbo_stream_append_flash_message(error: errors.join(", ")) }
       format.html do
         flash.now[:error] = errors.join(",")
         render(action_name == "update" ? :edit : :new, status: :unprocessable_entity)

@@ -29,9 +29,10 @@ describe RdvContexts::ClosingsController do
     end
 
     context "when the rdv_context is closed successfully" do
-      it "redirects to user show" do
+      it "redirects to user rdv_contexts" do
         post :create, params: create_params
-        expect(response).to redirect_to(department_user_path(department, user))
+        expect(response).to redirect_to(department_user_rdv_contexts_path(department_id: department.id,
+                                                                          user_id: user.id))
       end
     end
 
@@ -44,7 +45,8 @@ describe RdvContexts::ClosingsController do
       context "when the rdv_context is closed successfully" do
         it "redirects to user show at organisation level" do
           post :create, params: create_params
-          expect(response).to redirect_to(organisation_user_path(organisation, user))
+          expect(response).to redirect_to(organisation_user_rdv_contexts_path(organisation_id: organisation.id,
+                                                                              user_id: user.id))
         end
       end
     end
@@ -68,7 +70,8 @@ describe RdvContexts::ClosingsController do
     context "when the rdv_context is closed successfully" do
       it "redirects to user show" do
         post :destroy, params: destroy_params
-        expect(response).to redirect_to(department_user_path(department, user))
+        expect(response).to redirect_to(department_user_rdv_contexts_path(department_id: department.id,
+                                                                          user_id: user.id))
       end
     end
 
@@ -81,7 +84,8 @@ describe RdvContexts::ClosingsController do
       context "when the rdv_context is closed successfully" do
         it "redirects to user show at organisation level" do
           post :destroy, params: destroy_params
-          expect(response).to redirect_to(organisation_user_path(organisation, user))
+          expect(response).to redirect_to(organisation_user_rdv_contexts_path(organisation_id: organisation.id,
+                                                                              user_id: user.id))
         end
       end
     end
