@@ -1,4 +1,5 @@
 module Invitations
+  # rubocop:disable Metrics/ModuleLength
   module SmsContent
     extend ActiveSupport::Concern
 
@@ -124,4 +125,5 @@ module Invitations
       help_phone_number.gsub(" ", "")
     end
   end
+  # rubocop:enable Metrics/ModuleLength
 end
