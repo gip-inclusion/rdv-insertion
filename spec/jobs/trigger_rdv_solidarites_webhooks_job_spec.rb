@@ -7,8 +7,9 @@ describe TriggerRdvSolidaritesWebhooksJob do
 
   let!(:rdv_solidarites_webhook_endpoint_id) { 17 }
   let!(:rdv_solidarites_organisation_id) { 1717 }
+  let!(:agent) { create(:agent, email: "janedoe@gouv.fr") }
   let!(:rdv_solidarites_session_credentials) do
-    { "client" => "someclient", "uid" => "janedoe@gouv.fr", "access_token" => "sometoken" }.symbolize_keys
+    { "client" => "someclient", "uid" => agent.email.to_s, "access_token" => "sometoken" }.symbolize_keys
   end
   let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
 
@@ -25,6 +26,11 @@ describe TriggerRdvSolidaritesWebhooksJob do
           trigger: true
         )
         .and_return(OpenStruct.new(success?: true))
+    end
+
+    it "sets the current agent" do
+      subject
+      expect(Current.agent).to eq(agent)
     end
 
     it "calls the update webhook service with the trigger option on" do
