@@ -62,6 +62,49 @@ RSpec.describe ReplyTransferMailer do
     end
   end
 
+  describe "when the sender is not the user linked to the invitation or the rdv" do
+    let!(:source_mail_headers) do
+      {
+        Subject: "coucou",
+        From: "Random <random@gmail.com>",
+        To: receiver_address,
+        Date: "Sun, 25 Jun 2023 12:22:15 +0200"
+      }
+    end
+
+    let(:receiver_address) { "invitation+#{invitation.uuid}@reply.rdv-insertion.fr" }
+    let!(:mail) do
+      described_class.with(
+        invitation: invitation,
+        reply_body: reply_body,
+        source_mail: source_mail
+      ).forward_invitation_reply_to_organisation
+    end
+
+    it "renders the headers" do
+      expect(mail[:from].to_s).to eq("rdv-insertion <support@rdv-insertion.fr>")
+      expect(mail.to).to eq(["organisation@departement.fr"])
+    end
+
+    it "renders the content" do
+      expect(mail.body.encoded).to match("Vous trouverez ci-dessous une réponse d'un.e bénéficiaire à une invitation :")
+      expect(mail.body.encoded).to match("<h4>coucou</h4>")
+      expect(mail.body.encoded).to match("Je souhaite annuler mon RDV")
+      expect(mail.body.encoded).to match("Merci de ne pas répondre à cet e-mail. Pour contacter la personne, ")
+      expect(mail.body.encoded).to match("vous pouvez utiliser les informations contenues dans cet e-mail.")
+      expect(mail.body.encoded).to match("<h4>Éxpéditeur</h4>")
+      expect(mail.body.encoded).to match("Monsieur Bénédicte FICIAIRE")
+      expect(mail.body.encoded).to match("bene_ficiaire@gmail.com")
+      expect(mail.body.encoded).to match("33782605941")
+      expect(mail.body.encoded).to match("Invitation à prendre rdv envoyée le jeudi 22 juin 2023 à 00h00")
+      expect(mail.body.encoded).to match("Motif : RSA orientation")
+      expect(mail.body.encoded).to match(
+        "href=\"#{ENV['HOST']}/organisations/#{organisation.id}/users/#{user.id}\""
+      )
+      expect(mail.body.encoded).to match("Voir la fiche usager")
+    end
+  end
+
   describe "#forward_notification_reply_to_organisation" do
     let!(:receiver_address) { "rdv+8fae4d5f-4d63-4f60-b343-854d939881a3@reply.rdv-insertion.fr" }
     let!(:mail) do
