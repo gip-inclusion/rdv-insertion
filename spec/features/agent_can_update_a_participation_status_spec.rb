@@ -43,5 +43,19 @@ describe "Agents can update a participation status", js: true do
         expect(user.rdv_contexts.pluck(:status)).to include("rdv_revoked")
       end
     end
+
+    context "when rdv_solidarites_rdv_id is nil" do
+      let(:rdv) do
+        create(:rdv, organisation: organisation, rdv_solidarites_rdv_id: nil)
+      end
+
+      it "does not display the toggle button" do
+        visit organisation_user_path(organisation, user)
+        page.execute_script("window.scrollBy(0, 500)")
+        expect(page).to have_content("RDV honoré")
+
+        expect(page).not_to have_selector("#toggle-rdv-status")
+      end
+    end
   end
 end

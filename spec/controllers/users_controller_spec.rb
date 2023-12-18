@@ -194,7 +194,6 @@ describe UsersController do
         get :show, params: show_params
 
         expect(response).to be_successful
-        expect(response.body).to match(/Voir sur RDV-Solidarités/)
         expect(response.body).to match(/Andreas/)
         expect(response.body).to match(/Kopke/)
       end
@@ -207,7 +206,6 @@ describe UsersController do
         get :show, params: show_params
 
         expect(response).to be_successful
-        expect(response.body).to match(/Voir sur RDV-Solidarités/)
         expect(response.body).to match(/Andreas/)
         expect(response.body).to match(/Kopke/)
       end
@@ -1112,9 +1110,7 @@ describe UsersController do
 
         before do
           allow(Users::Save).to receive(:call).and_call_original
-          allow_any_instance_of(Users::Save).to receive(:upsert_rdv_solidarites_user)
-            .and_return true
-          allow_any_instance_of(Users::Save).to receive(:assign_rdv_solidarites_user_id)
+          allow_any_instance_of(Users::Save).to receive(:sync_with_rdv_solidarites)
             .and_return true
           organisation.tags << tag
           organisation.tags << existing_tag

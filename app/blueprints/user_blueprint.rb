@@ -12,4 +12,8 @@ class UserBlueprint < Blueprinter::Base
     association :archives, blueprint: ArchiveBlueprint
     association :tags, blueprint: TagBlueprint
   end
+
+  view :webhook_tmp do
+    field :rdv_solidarites_user_id, name: :id
+  end
 end

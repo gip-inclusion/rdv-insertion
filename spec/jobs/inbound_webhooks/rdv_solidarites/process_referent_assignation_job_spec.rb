@@ -54,6 +54,21 @@ describe InboundWebhooks::RdvSolidarites::ProcessReferentAssignationJob do
       end
     end
 
+    context "when the webhook reason is rgpd" do
+      let!(:meta) do
+        {
+          "model" => "ReferentAssignation",
+          "event" => "destroyed",
+          "webhook_reason" => "rgpd"
+        }.deep_symbolize_keys
+      end
+
+      it "does not remove the agent from the user" do
+        subject
+        expect(user.reload.referents).to eq([agent])
+      end
+    end
+
     context "when the event is updated" do
       let!(:meta) do
         {

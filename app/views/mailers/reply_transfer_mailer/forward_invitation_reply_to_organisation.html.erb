@@ -13,4 +13,4 @@
   <p>Invitation à prendre rdv envoyée le <%= I18n.l(@invitation.sent_at, format: :human) %></p>
   <p>Motif : <%= @invitation.motif_category_name %></p>
 </blockquote>
-<%= render "link_to_user_page", user: @user, organisation: @organisation %>
+<%= render "link_to_user_page", user_page_url: @user_page_url %>

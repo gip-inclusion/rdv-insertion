@@ -8,6 +8,16 @@ module InboundWebhooks
         @data = data.deep_symbolize_keys
         @meta = meta.deep_symbolize_keys
 
+        if event == "destroyed"
+          delete_or_nullify_rdv
+        else
+          process_rdv
+        end
+      end
+
+      private
+
+      def process_rdv
         Rdv.with_advisory_lock("processing_rdv_#{rdv_solidarites_rdv.id}") do
           verify_organisation!
           verify_motif!
@@ -17,12 +27,18 @@ module InboundWebhooks
 
           # for a convocation, we have to verify the lieu is up to date in db
           verify_lieu_sync! if convocable_participations?
-          upsert_or_delete_rdv
+          upsert_rdv
           invalidate_related_invitations if created_event?
         end
       end
 
-      private
+      def delete_or_nullify_rdv
+        if webhook_reason == "rgpd"
+          NullifyRdvSolidaritesIdJob.perform_async("Rdv", rdv&.id)
+        else
+          DeleteRdvJob.perform_async(rdv_solidarites_rdv.id)
+        end
+      end
 
       def verify_organisation!
         return if organisation
@@ -57,6 +73,10 @@ module InboundWebhooks
 
       def event
         @meta[:event]
+      end
+
+      def webhook_reason
+        @meta[:webhook_reason]
       end
 
       def rdv_solidarites_lieu
@@ -178,23 +198,19 @@ module InboundWebhooks
         @data[:organisation][:id]
       end
 
-      def upsert_or_delete_rdv
-        if event == "destroyed"
-          DeleteRdvJob.perform_async(rdv_solidarites_rdv.id)
-        else
-          UpsertRecordJob.perform_async(
-            "Rdv",
-            @data,
-            {
-              participations_attributes: participations_attributes,
-              agent_ids: agents.ids,
-              organisation_id: organisation.id,
-              motif_id: motif.id,
-              last_webhook_update_received_at: @meta[:timestamp]
-            }
-            .merge(lieu.present? ? { lieu_id: lieu.id } : {})
-          )
-        end
+      def upsert_rdv
+        UpsertRecordJob.perform_async(
+          "Rdv",
+          @data,
+          {
+            participations_attributes: participations_attributes,
+            agent_ids: agents.ids,
+            organisation_id: organisation.id,
+            motif_id: motif.id,
+            last_webhook_update_received_at: @meta[:timestamp]
+          }
+          .merge(lieu.present? ? { lieu_id: lieu.id } : {})
+        )
       end
 
       def convocable_participations?

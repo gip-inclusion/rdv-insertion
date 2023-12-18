@@ -4,7 +4,8 @@ module InboundWebhooks
       def perform(data, meta)
         @data = data.deep_symbolize_keys
         @meta = meta.deep_symbolize_keys
-        return if user.blank? || agent.blank?
+        # if webhook_reason is rgpd we want to keep the relation to be able to recreate it on rdvs if necessary
+        return if user.blank? || agent.blank? || webhook_reason == "rgpd"
 
         User.with_advisory_lock "assigning_#{rdv_solidarites_agent_id}_to_#{rdv_solidarites_user_id}" do
           attach_agent_to_user if event == "created"
@@ -16,6 +17,10 @@ module InboundWebhooks
 
       def event
         @meta[:event]
+      end
+
+      def webhook_reason
+        @meta[:webhook_reason]
       end
 
       def rdv_solidarites_user_id

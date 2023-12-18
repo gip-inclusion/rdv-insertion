@@ -58,6 +58,7 @@ Rails.application.routes.draw do
     resources :rdv_contexts, only: [:index]
     resource :parcours, only: [:show]
     resources :orientations, only: [:new, :create, :edit, :update, :destroy]
+    resources :rdvs, only: [:new]
   end
 
   get "invitation", to: "invitations#invitation_code", as: :invitation_landing

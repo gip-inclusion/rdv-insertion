@@ -59,7 +59,7 @@ module UsersHelper
     end
   end
 
-  def badge_background_class(context, number_of_days_before_action_required )
+  def badge_background_class(context, number_of_days_before_action_required)
     return "blue-out border border-blue" if context.nil?
 
     if context.action_required_status?
@@ -115,18 +115,6 @@ module UsersHelper
     else
       ""
     end
-  end
-
-  def rdv_solidarites_user_url(organisation, user)
-    organisation_id = organisation.rdv_solidarites_organisation_id
-    "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{organisation_id}/users/#{user.rdv_solidarites_user_id}"
-  end
-
-  def rdv_solidarites_find_rdv_url(user)
-    organisation_id = (current_organisation_ids & user.organisation_ids).first
-    user_id = user.rdv_solidarites_user_id
-
-    "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{organisation_id}/agent_searches?user_ids[]=#{user_id}"
   end
 
   def display_convocation_formats(convocation_formats)
