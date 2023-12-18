@@ -37,9 +37,9 @@ class ReplyTransferMailer < ApplicationMailer
   end
 
   def set_user_page_url
-    @user_page_url = if @organisation.present?
+    @user_page_url = if @organisation && @user
                        organisation_user_url(@organisation, @user, host: ENV["HOST"])
-                     elsif @department.present?
+                     elsif @department && @user
                        department_user_url(@department, @user, host: ENV["HOST"])
                      end
   end
@@ -57,7 +57,11 @@ class ReplyTransferMailer < ApplicationMailer
   end
 
   def set_user
-    @user = User.find_by(email: @source_mail.from.first)
+    @user = if @rdv.present? && @rdv.users.one?
+              @rdv.users.first
+            else
+              @invitation&.user || User.find_by(email: @source_mail.from.first)
+            end
   end
 
   def set_reply_subject

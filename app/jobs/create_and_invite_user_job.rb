@@ -1,10 +1,7 @@
 class CreateAndInviteUserJob < ApplicationJob
   sidekiq_options retry: 0
 
-  def perform(
-    organisation_id, user_attributes, invitation_attributes, motif_category_attributes,
-    agent_email
-  )
+  def perform(organisation_id, user_attributes, invitation_attributes, motif_category_attributes, agent_email)
     @organisation = Organisation.find(organisation_id)
     @department = @organisation.department
     @user_attributes = user_attributes.deep_symbolize_keys
