@@ -40,10 +40,10 @@ describe InviteUserJob do
         .and_return(OpenStruct.new(success?: true))
     end
 
-  it "sets the current agent" do
-    subject
-    expect(Current.agent).to eq(agent)
-  end
+    it "sets the current agent" do
+      subject
+      expect(Current.agent).to eq(agent)
+    end
 
     it "invites the user" do
       expect(InviteUser).to receive(:call)
