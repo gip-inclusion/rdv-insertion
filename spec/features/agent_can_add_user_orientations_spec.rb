@@ -13,8 +13,10 @@ describe "Agents can add user orientation", js: true do
   end
 
   let!(:other_organisation) do
-    create(:organisation, agents: [create(:agent, first_name: "Jean-Paul", last_name: "Rouve")], department:)
+    create(:organisation, name: "Asso 26", agents: other_organisation_agents, department:)
   end
+
+  let!(:other_organisation_agents) { [create(:agent, first_name: "Jean-Paul", last_name: "Rouve")] }
 
   before { setup_agent_session(agent) }
 
@@ -60,6 +62,31 @@ describe "Agents can add user orientation", js: true do
       expect(page).to have_content("Orientation Sociale")
       expect(page).to have_content("Structure CD 26")
       expect(page).to have_content("Référent Kad Merad")
+
+      click_button("Ajouter une orientation")
+
+      page.select "Professionnelle", from: "orientation_orientation_type"
+      # need to use js for flatpickr input
+      page.execute_script("document.querySelector('#orientation_starts_at').value = '2023-10-03'")
+
+      expect(page).to have_selector("select#orientation_agent_id[disabled]")
+
+      page.select "Asso 26", from: "orientation_organisation_id"
+      expect(page).to have_select("orientation_agent_id", with_options: other_organisation_agents)
+
+      page.select "Jean-Paul Rouve", from: "orientation_agent_id"
+
+      click_button "Enregistrer"
+
+      expect(page).to have_content("Du 03/07/2023 au 03/10/2023")
+      expect(page).to have_content("Orientation Sociale")
+      expect(page).to have_content("Structure CD 26")
+      expect(page).to have_content("Référent Kad Merad")
+
+      expect(page).to have_content("Du 03/10/2023 à Aujourd'hui")
+      expect(page).to have_content("Orientation Professionnelle")
+      expect(page).to have_content("Structure Asso 26")
+      expect(page).to have_content("Référent Jean-Paul Rouve")
     end
   end
 end
