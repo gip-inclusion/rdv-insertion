@@ -2,7 +2,7 @@ describe "Agents can add user orientation", js: true do
   let!(:agent) { create(:agent) }
   let!(:department) { create(:department, number: "26") }
   let!(:organisation) do
-    create(:organisation, name: "Pôle Parcours", agents: organisation_agents, department: department)
+    create(:organisation, name: "CD 26", agents: organisation_agents, department: department)
   end
   let!(:user) do
     create(:user, organisations: [organisation])
@@ -48,7 +48,7 @@ describe "Agents can add user orientation", js: true do
 
       expect(page).to have_selector("select#orientation_agent_id[disabled]")
 
-      page.select "Pôle Parcours", from: "orientation_organisation_id"
+      page.select "CD 26", from: "orientation_organisation_id"
       expect(page).to have_select("orientation_agent_id", with_options: organisation_agents)
 
       page.select "Kad Merad", from: "orientation_agent_id"
@@ -58,7 +58,7 @@ describe "Agents can add user orientation", js: true do
       expect(page).not_to have_content("Pas d'orientation renseignée")
       expect(page).to have_content("Du 03/07/2023 à Aujourd'hui")
       expect(page).to have_content("Orientation Sociale")
-      expect(page).to have_content("Structure Pôle Parcours")
+      expect(page).to have_content("Structure CD 26")
       expect(page).to have_content("Référent Kad Merad")
     end
   end
