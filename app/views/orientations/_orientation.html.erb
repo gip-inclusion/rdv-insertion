@@ -13,10 +13,10 @@
   <div class="w-100">Référent <strong><%= orientation.agent.to_s %></strong></div>
   <div class="w-100 text-end">
     <%= link_to edit_user_orientation_path(id: orientation.id, user_id: orientation.user_id), data: { turbo_frame: 'remote_modal' } do %>
-      <i class="fas fa-pencil-alt"></i>
+      <i class="fas fa-pencil-alt text-dark-blue"></i>
     <% end %>
     <%= link_to user_orientation_path(id: orientation.id, user_id: orientation.user_id), method: :delete do %>
-      <i class="fas fa-trash"></i>
+      <i class="fas fa-trash text-dark-blue"></i>
     <% end %>
   </div>
 </div>
