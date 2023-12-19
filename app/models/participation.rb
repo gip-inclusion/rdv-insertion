@@ -11,7 +11,6 @@ class Participation < ApplicationRecord
   has_many :rdv_context_invitations, through: :rdv_context, source: :invitations
 
   has_one :organisation, through: :rdv
-  has_one :department, through: :rdv
   has_many :configurations, through: :organisation
 
   validates :status, presence: true
