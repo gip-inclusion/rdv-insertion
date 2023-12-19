@@ -93,7 +93,7 @@ RSpec.describe ReplyTransferMailer do
       expect(mail.body.encoded).to match("Merci de ne pas répondre à cet e-mail. Pour contacter la personne, ")
       expect(mail.body.encoded).to match("vous pouvez utiliser les informations contenues dans cet e-mail.")
       expect(mail.body.encoded).to match("<h4>Éxpéditeur</h4>")
-      expect(mail.body.encoded).to match("Monsieur Bénédicte FICIAIRE")
+      expect(mail.body.encoded).to match("M. Bénédicte FICIAIRE")
       expect(mail.body.encoded).to match("bene_ficiaire@gmail.com")
       expect(mail.body.encoded).to match("33782605941")
       expect(mail.body.encoded).to match("Invitation à prendre rdv envoyée le jeudi 22 juin 2023 à 00h00")
