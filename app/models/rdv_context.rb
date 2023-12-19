@@ -52,8 +52,6 @@ class RdvContext < ApplicationRecord
   end
 
   def time_between_invitation_and_rdv_in_days
-    return unless first_invitation_sent_at && first_participation_creation_date
-
     first_participation_creation_date.to_datetime.mjd - first_invitation_sent_at.to_datetime.mjd
   end
 
