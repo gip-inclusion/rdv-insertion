@@ -49,6 +49,10 @@ describe Stat do
           expect(stat.all_organisations).to include(organisation)
           expect(stat.all_organisations).not_to include(other_organisation)
         end
+
+        it "does not scope the collection to the department" do
+          expect(stat.all_organisations).to include(other_organisation)
+        end
       end
 
       describe "#all_participations" do
@@ -113,18 +117,6 @@ describe Stat do
             expect(stat.participations_with_notifications_sample).not_to include(participation4)
             expect(stat.participations_with_notifications_sample).to include(participation5)
           end
-        end
-      end
-
-      describe "#all_organisations" do
-        let!(:organisation_with_no_invitations_formats) { create(:organisation, department: department) }
-        let!(:configuration_with_no_invitations_formats) do
-          create(:configuration, organisation: organisation_with_no_invitations_formats, invitation_formats: [])
-        end
-
-        it "scopes the collection to the department" do
-          expect(stat.all_organisations).to include(organisation)
-          expect(stat.all_organisations).not_to include(other_organisation)
         end
       end
 
@@ -539,12 +531,6 @@ describe Stat do
       describe "#participations_sample" do
         it "does not scope the collection to the department" do
           expect(stat.participations_sample).to include(participation2)
-        end
-      end
-
-      describe "#all_organisations" do
-        it "does not scope the collection to the department" do
-          expect(stat.all_organisations).to include(other_organisation)
         end
       end
 
