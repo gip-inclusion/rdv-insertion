@@ -23,7 +23,10 @@ class Stat < ApplicationRecord
 
   # We filter the participations to only keep the participations of the users in the scope
   def participations_sample
-    participations = all_participations.where.not(user_id: archived_user_ids)
+    participations = all_participations
+                     .where.not(user_id: archived_user_ids)
+                     .left_outer_joins(:user)
+                     .where(users: { deleted_at: nil })
 
     if statable.present?
       participations = participations.left_outer_joins(user: :organisations)
