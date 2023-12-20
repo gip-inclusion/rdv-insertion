@@ -49,10 +49,6 @@ describe Stat do
           expect(stat.all_organisations).to include(organisation)
           expect(stat.all_organisations).not_to include(other_organisation)
         end
-
-        it "does not scope the collection to the department" do
-          expect(stat.all_organisations).to include(other_organisation)
-        end
       end
 
       describe "#all_participations" do
