@@ -31,6 +31,14 @@ class Agent < ApplicationRecord
     "#{first_name} #{last_name}"
   end
 
+  def rdv_solidarites_client
+    RdvSolidaritesClient.new(rdv_solidarites_credentials:)
+  end
+
+  def rdv_solidarites_credentials
+    { uid: email, x_agent_auth_signature: signature_auth_with_shared_secret }
+  end
+
   def signature_auth_with_shared_secret
     payload = {
       id: rdv_solidarites_agent_id,
