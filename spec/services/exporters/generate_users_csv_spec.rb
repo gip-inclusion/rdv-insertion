@@ -160,10 +160,10 @@ describe Exporters::GenerateUsersCsv, type: :service do
           expect(csv).to include("RSA orientation sur site") # last rdv motif
           expect(csv).to include("individuel") # last rdv type
           expect(csv).to include("individuel;Oui") # last rdv taken in autonomy ?
-          expect(csv).to include("Non déterminé") # rdv status
+          expect(csv).to include("Rendez-vous honoré") # rdv status
           expect(csv).to include("Statut du RDV à préciser") # rdv_context status
           expect(csv).to include("Statut du RDV à préciser;Oui") # first rdv in less than 30 days ?
-          expect(csv).to include("Non déterminé;Statut du RDV à préciser;Oui;25/05/2022") # orientation date
+          expect(csv).to include("Rendez-vous honoré;Statut du RDV à préciser;Oui;25/05/2022") # orientation date
         end
 
         it "displays the organisation infos" do
