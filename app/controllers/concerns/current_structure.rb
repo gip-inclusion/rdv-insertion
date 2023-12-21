@@ -39,30 +39,4 @@ module CurrentStructure
   def department_level?
     Current.structure_type == "department"
   end
-
-  def current_structure
-    Current.structure ||=
-      department_level? ? Department.find(Current.department_id) : Organisation.find(Current.organisation_id)
-  end
-
-  def current_department
-    @current_department ||=
-      department_level? ? current_structure : current_structure.department
-  end
-
-  def current_organisations_filter
-    if department_level?
-      { organisations: { department_id: Current.department_id } }
-    else
-      { organisations: [Current.organisation_id] }
-    end
-  end
-
-  def current_organisation_filter
-    if department_level?
-      { organisation: { department_id: Current.department_id } }
-    else
-      { organisation_id: Current.organisation_id }
-    end
-  end
 end

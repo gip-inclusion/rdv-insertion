@@ -18,6 +18,6 @@ class ConfigurationsPositionsController < ApplicationController
   end
 
   def configurations
-    @configurations ||= current_structure.configurations.includes([:motif_category]).order(position: :asc)
+    @configurations ||= Current.structure.configurations.includes([:motif_category]).order(position: :asc)
   end
 end

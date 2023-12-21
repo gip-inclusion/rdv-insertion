@@ -26,7 +26,7 @@ class UploadsController < ApplicationController
   def set_all_configurations
     @all_configurations =
       policy_scope(::Configuration).joins(:organisation)
-                                   .where(current_organisation_filter)
+                                   .where(Current.organisation_filter)
                                    .uniq(&:motif_category_id)
 
     @all_configurations =

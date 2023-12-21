@@ -7,6 +7,10 @@ module NavigationHelper
     send(:"#{Current.structure_type}_users_path", { **structure_id_param, **params.compact_blank })
   end
 
+  def structure_participations_path(**params)
+    send(:"#{Current.structure_type}_participations_path", { **structure_id_param, **params.compact_blank })
+  end
+
   def structure_configurations_positions_update_path
     send(:"#{Current.structure_type}_configurations_positions_update_path", structure_id_param)
   end

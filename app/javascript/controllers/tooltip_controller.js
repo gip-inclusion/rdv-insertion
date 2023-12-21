@@ -17,10 +17,18 @@ export default class extends Controller {
     });
   }
 
-  csvExport() {
+  csvExportUsers() {
     tippy(this.element, {
       content:
         "Les bénéficiaires seront exportés en fonction du contexte et des éventuels filtres sélectionnés",
+      placement: "bottom",
+    });
+  }
+
+  csvExportParticipations() {
+    tippy(this.element, {
+      content:
+        "Les participations seront exportées en fonction du contexte et des éventuels filtres sélectionnés",
       placement: "bottom",
     });
   }

@@ -9,14 +9,9 @@ class UsersController < ApplicationController
   ].freeze
 
   include BackToListConcern
-  include Users::Filterable
-  include Users::Sortable
 
   before_action :set_organisation, :set_department, :set_organisations, :set_all_configurations,
-                :set_current_agent_roles, :set_users_scope,
-                :set_current_configuration, :set_current_motif_category,
-                :set_users, :set_rdv_contexts, :set_filterable_tags,
-                :filter_users, :order_users,
+                :set_current_agent_roles, :set_filterable_tags,
                 for: :index
   before_action :set_user, :set_organisation, :set_department, :set_all_configurations,
                 :set_user_organisations, :set_user_rdv_contexts, :set_user_archive, :set_user_tags,
@@ -34,6 +29,15 @@ class UsersController < ApplicationController
   end
 
   def index
+    filtered_list = Users::FilterList.new(params:, page:, scoped_user_class: policy_scope(User)).perform
+
+    @users                  = filtered_list.users
+    @rdv_contexts           = filtered_list.rdv_contexts
+    @current_configuration  = filtered_list.current_configuration
+    @current_motif_category = filtered_list.current_motif_category
+
+    @statuses_count         = @rdv_contexts.group(:status).count
+
     respond_to do |format|
       format.html
       format.csv { send_users_csv }
@@ -83,6 +87,10 @@ class UsersController < ApplicationController
     end
   end
 
+  def set_users_scope
+    @users_scope = params[:users_scope]
+  end
+
   def reset_tag_users
     return unless user_params[:tag_users_attributes]
 
@@ -101,7 +109,7 @@ class UsersController < ApplicationController
 
   def generate_users_csv
     @generate_users_csv ||= Exporters::GenerateUsersCsv.call(
-      users: @users,
+      elements: @users,
       structure: department_level? ? @department : @organisation,
       motif_category: @current_motif_category
     )
@@ -144,7 +152,7 @@ class UsersController < ApplicationController
     @user =
       policy_scope(User)
       .preload(:invitations, organisations: [:department, :configurations])
-      .where(current_organisations_filter)
+      .where(Current.organisation_filter)
       .find(params[:id])
   end
 
@@ -209,18 +217,6 @@ class UsersController < ApplicationController
       end
   end
 
-  def set_current_configuration
-    return if archived_scope?
-    return unless params[:motif_category_id]
-
-    @current_configuration =
-      @all_configurations.find { |c| c.motif_category_id == params[:motif_category_id].to_i }
-  end
-
-  def set_current_motif_category
-    @current_motif_category = @current_configuration&.motif_category
-  end
-
   def set_user_rdv_contexts
     @rdv_contexts =
       RdvContext.preload(
@@ -240,66 +236,10 @@ class UsersController < ApplicationController
       policy_scope(Organisation).where(id: @user.organisation_ids, department: @department)
   end
 
-  def set_users
-    if archived_scope?
-      set_archived_users
-    elsif @current_motif_category
-      set_users_for_motif_category
-    else
-      set_all_users
-    end
-  end
-
-  def set_all_users
-    @users = policy_scope(User)
-             .active.distinct
-             .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
-    return if request.format == "csv"
-
-    @users = @users.preload(:archives, rdv_contexts: [:invitations])
-  end
-
-  def set_users_for_motif_category
-    @users = policy_scope(User)
-             .preload(:organisations, rdv_contexts: [:notifications, :invitations])
-             .active.distinct
-             .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
-             .where.not(id: @department.archived_users.ids)
-             .joins(:rdv_contexts)
-             .where(rdv_contexts: { motif_category: @current_motif_category })
-             .where.not(rdv_contexts: { status: "closed" })
-  end
-
-  def set_archived_users
-    @users = policy_scope(User)
-             .includes(:archives)
-             .preload(:invitations, :participations)
-             .active.distinct
-             .where(id: @department.archived_users)
-             .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
-  end
-
-  def set_rdv_contexts
-    return if archived_scope?
-
-    @rdv_contexts = RdvContext.where(
-      user_id: @users.ids, motif_category: @current_motif_category
-    )
-    @statuses_count = @rdv_contexts.group(:status).count
-  end
-
   def set_current_agent_roles
     @current_agent_roles = AgentRole.where(
       department_level? ? { organisation: @organisations } : { organisation: @organisation }, agent: current_agent
     )
-  end
-
-  def set_users_scope
-    @users_scope = params[:users_scope]
-  end
-
-  def archived_scope?
-    @users_scope == "archived"
   end
 
   def after_save_path
@@ -310,8 +250,8 @@ class UsersController < ApplicationController
 
   def default_list_path
     motif_category_param =
-      if current_structure.motif_categories.length == 1
-        { motif_category_id: current_structure.motif_categories.first.id }
+      if Current.structure.motif_categories.length == 1
+        { motif_category_id: Current.structure.motif_categories.first.id }
       else
         {}
       end

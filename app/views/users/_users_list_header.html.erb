@@ -117,8 +117,20 @@
         Configurer l'organisation
       <% end %>
     <% end %>
-    <%= link_to(structure_users_path(**params.to_unsafe_h.merge(format: "csv")), class: "btn btn-blue-out mt-2", data: { controller: "tooltip", action: "mouseover->tooltip#csvExport"}, target: "_blank") do %>
+    <a class="btn btn-blue-out dropdown-toggle mb-2" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
       <i class="fas fa-download"></i> Exporter au format CSV
-    <% end %>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
+      <li>
+        <%= link_to(structure_users_path(**params.to_unsafe_h.merge(format: "csv")), class: "dropdown-item", data: { controller: "tooltip", action: "mouseover->tooltip#csvExportUsers"}, target: "_blank") do %>
+           Bénéficiaires
+        <% end %>
+      </li>
+      <li>
+        <%= link_to(structure_participations_path(**params.to_unsafe_h.merge(format: "csv")), class: "dropdown-item", data: { controller: "tooltip", action: "mouseover->tooltip#csvExportParticipations"}, target: "_blank") do %>
+          Participations aux RDVs
+        <% end %>
+      </li>
+    </ul>
   </div>
 </div>

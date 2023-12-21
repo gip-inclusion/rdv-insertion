@@ -40,6 +40,7 @@ Rails.application.routes.draw do
         delete :destroy, on: :collection
       end
     end
+    resources :participations, only: :index
     # we need to nest in organisations the different configurations record to correctly authorize them
     resources :configurations, only: [:index, :show, :new, :create, :edit, :update, :destroy]
     patch "configurations_positions/update", to: "configurations_positions#update"
@@ -101,6 +102,7 @@ Rails.application.routes.draw do
   resources :departments, only: [] do
     patch "configurations_positions/update", to: "configurations_positions#update"
     resources :department_organisations, only: [:index], as: :organisations, path: "/organisations"
+    resources :participations, only: :index
     resources :users, only: [:index, :new, :create, :show, :edit, :update] do
       collection do
         resources :uploads, only: [:new]
