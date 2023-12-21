@@ -100,7 +100,7 @@ module Exporters
        last_rdv_motif(user),
        last_rdv_type(user),
        rdv_taken_in_autonomy?(user),
-       human_rdv_status(user),
+       human_last_participation_status(user),
        *(human_rdv_context_status(user) if @motif_category),
        rdv_seen_in_less_than_30_days?(user),
        display_date(user.first_seen_rdv_starts_at),
@@ -122,10 +122,10 @@ module Exporters
       end
     end
 
-    def human_rdv_status(user)
-      return I18n.t("activerecord.attributes.rdv.statuses.#{last_rdv(user).status}") if last_rdv(user).present?
+    def human_last_participation_status(user)
+      return "" if last_participation(user).blank?
 
-      ""
+      I18n.t("activerecord.attributes.rdv.statuses.#{last_participation(user).status}")
     end
 
     def human_rdv_context_status(user)
