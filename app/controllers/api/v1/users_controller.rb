@@ -20,8 +20,7 @@ module Api
           motif_category_attributes = attrs.dig(:invitation, :motif_category) || {}
 
           CreateAndInviteUserJob.perform_async(
-            @organisation.id, user_attributes, invitation_attributes, motif_category_attributes,
-            current_agent.email
+            @organisation.id, user_attributes, invitation_attributes, motif_category_attributes
           )
         end
         render json: { success: true }

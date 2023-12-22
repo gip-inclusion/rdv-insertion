@@ -3,7 +3,6 @@ describe RdvSolidaritesApi::UpdateUser, type: :service do
     described_class.call(user_attributes:, rdv_solidarites_user_id:)
   end
 
-  let!(:agent) { create(:agent) }
   let(:rdv_solidarites_client) { instance_double(RdvSolidaritesClient) }
   let(:user_attributes) do
     { first_name: "john", last_name: "doe", address: "16 rue de la tour", email: "johndoe@example.com" }
@@ -18,7 +17,7 @@ describe RdvSolidaritesApi::UpdateUser, type: :service do
     let(:parsed_response) { JSON.parse(response_body) }
 
     before do
-      mock_rdv_solidarites_client(agent)
+      allow(Current).to receive(:rdv_solidarites_client).and_return(rdv_solidarites_client)
       allow(rdv_solidarites_client).to receive(:update_user)
         .with(rdv_solidarites_user_id, user_attributes)
         .and_return(OpenStruct.new(body: response_body))

@@ -1,15 +1,13 @@
 class CreateAndInviteUserJob < ApplicationJob
   sidekiq_options retry: 0
 
-  def perform(organisation_id, user_attributes, invitation_attributes, motif_category_attributes, agent_email)
+  def perform(organisation_id, user_attributes, invitation_attributes, motif_category_attributes)
     @organisation = Organisation.find(organisation_id)
     @department = @organisation.department
     @user_attributes = user_attributes.deep_symbolize_keys
     @invitation_attributes = invitation_attributes.deep_symbolize_keys
     @motif_category_attributes = motif_category_attributes.deep_symbolize_keys
-    @agent_email = agent_email
 
-    set_current_agent(@agent_email)
     upsert_user!
     invite_user
   end
@@ -48,8 +46,7 @@ class CreateAndInviteUserJob < ApplicationJob
         format: invitation_format,
         help_phone_number: @organisation.phone_number
       ),
-      @motif_category_attributes,
-      @agent_email
+      @motif_category_attributes
     )
   end
 end

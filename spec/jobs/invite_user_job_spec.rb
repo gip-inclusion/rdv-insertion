@@ -1,7 +1,7 @@
 describe InviteUserJob do
   subject do
     described_class.new.perform(
-      user_id, organisation_id, invitation_attributes, motif_category_attributes, agent.email
+      user_id, organisation_id, invitation_attributes, motif_category_attributes
     )
   end
 
@@ -21,7 +21,6 @@ describe InviteUserJob do
     }
   end
   let!(:motif_category_attributes) { { short_name: "rsa_accompagnement" } }
-  let!(:agent) { create(:agent) }
 
   describe "#perform" do
     before do
@@ -31,11 +30,6 @@ describe InviteUserJob do
           check_creneaux_availability: false
         )
         .and_return(OpenStruct.new(success?: true))
-    end
-
-    it "sets the current agent" do
-      subject
-      expect(Current.agent).to eq(agent)
     end
 
     it "invites the user" do

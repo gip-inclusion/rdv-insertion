@@ -58,9 +58,9 @@ describe RdvSolidaritesSession::WithAccessToken do
     end
   end
 
-  describe "#to_h" do
+  describe "#credentials" do
     it "returns a hash with the correct keys and values" do
-      expect(subject.to_h).to eq(
+      expect(subject.credentials).to eq(
         {
           "uid" => uid,
           "client" => client,

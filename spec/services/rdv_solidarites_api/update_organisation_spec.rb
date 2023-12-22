@@ -3,7 +3,6 @@ describe RdvSolidaritesApi::UpdateOrganisation, type: :service do
     described_class.call(organisation_attributes:, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id)
   end
 
-  let!(:agent) { create(:agent) }
   let(:rdv_solidarites_client) { instance_double(RdvSolidaritesClient) }
   let(:organisation_attributes) do
     { name: "PIE Pantin", email: "pie@pantin.fr", phone_number: "0102030405" }
@@ -18,7 +17,7 @@ describe RdvSolidaritesApi::UpdateOrganisation, type: :service do
     let(:parsed_response) { JSON.parse(response_body) }
 
     before do
-      mock_rdv_solidarites_client(agent)
+      allow(Current).to receive(:rdv_solidarites_client).and_return(rdv_solidarites_client)
       allow(rdv_solidarites_client).to receive(:update_organisation)
         .with(rdv_solidarites_organisation_id, organisation_attributes)
         .and_return(OpenStruct.new(body: response_body))

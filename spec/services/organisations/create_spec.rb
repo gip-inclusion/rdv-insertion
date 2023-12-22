@@ -31,7 +31,7 @@ describe Organisations::Create, type: :service do
       allow(RdvSolidaritesApi::UpdateOrganisation).to receive(:call)
         .and_return(OpenStruct.new(success?: true))
       allow(TriggerRdvSolidaritesWebhooksJob).to receive(:perform_async)
-        .with(webhook_endpoint_id, rdv_solidarites_organisation_id, agent.email)
+        .with(webhook_endpoint_id, rdv_solidarites_organisation_id)
     end
 
     it "is a success" do
@@ -88,7 +88,7 @@ describe Organisations::Create, type: :service do
 
     it "calls the TriggerRdvSolidaritesWebhooksJob" do
       expect(TriggerRdvSolidaritesWebhooksJob).to receive(:perform_async)
-        .with(webhook_endpoint_id, rdv_solidarites_organisation_id, agent.email)
+        .with(webhook_endpoint_id, rdv_solidarites_organisation_id)
       subject
     end
 

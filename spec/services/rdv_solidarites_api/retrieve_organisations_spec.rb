@@ -3,7 +3,6 @@ describe RdvSolidaritesApi::RetrieveOrganisations, type: :service do
     described_class.call
   end
 
-  let!(:agent) { create(:agent) }
   let(:rdv_solidarites_client) { instance_double(RdvSolidaritesClient) }
 
   describe "#call" do
@@ -15,7 +14,7 @@ describe RdvSolidaritesApi::RetrieveOrganisations, type: :service do
     end
 
     before do
-      mock_rdv_solidarites_client(agent)
+      allow(Current).to receive(:rdv_solidarites_client).and_return(rdv_solidarites_client)
       allow(rdv_solidarites_client).to receive(:get_organisations)
         .with({})
         .and_return(OpenStruct.new(success?: true, body: { "organisations" => organisations }.to_json))

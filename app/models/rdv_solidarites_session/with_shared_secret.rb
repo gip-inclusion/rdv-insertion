@@ -9,7 +9,7 @@ module RdvSolidaritesSession
       required_attributes_present? && signature_valid?
     end
 
-    def to_h
+    def credentials
       {
         "uid" => @uid,
         "x_agent_auth_signature" => @x_agent_auth_signature

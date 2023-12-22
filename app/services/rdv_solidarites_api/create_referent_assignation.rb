@@ -1,10 +1,8 @@
 module RdvSolidaritesApi
   class CreateReferentAssignation < Base
-    def initialize(rdv_solidarites_user_id:, rdv_solidarites_agent_id:,
-                   rdv_solidarites_client: Current.rdv_solidarites_client)
+    def initialize(rdv_solidarites_user_id:, rdv_solidarites_agent_id:)
       @rdv_solidarites_user_id = rdv_solidarites_user_id
       @rdv_solidarites_agent_id = rdv_solidarites_agent_id
-      @rdv_solidarites_client = rdv_solidarites_client
     end
 
     def call

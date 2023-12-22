@@ -6,12 +6,12 @@ module RdvSolidaritesSession
       raise NoMethodError
     end
 
-    def to_h
+    def credentials
       raise NoMethodError
     end
 
     def rdv_solidarites_client
-      @rdv_solidarites_client ||= RdvSolidaritesClient.new(rdv_solidarites_credentials: to_h)
+      @rdv_solidarites_client ||= RdvSolidaritesClient.new(rdv_solidarites_credentials: credentials)
     end
   end
 end

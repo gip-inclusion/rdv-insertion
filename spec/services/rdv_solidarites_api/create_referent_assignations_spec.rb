@@ -3,7 +3,6 @@ describe RdvSolidaritesApi::CreateReferentAssignations, type: :service do
     described_class.call(rdv_solidarites_user_id:, rdv_solidarites_agent_ids:)
   end
 
-  let!(:agent) { create(:agent) }
   let!(:rdv_solidarites_client) { instance_double(RdvSolidaritesClient) }
   let!(:rdv_solidarites_user_id) { 33 }
   let!(:rdv_solidarites_agent_ids) { [44, 55] }
@@ -15,7 +14,7 @@ describe RdvSolidaritesApi::CreateReferentAssignations, type: :service do
     end
 
     before do
-      mock_rdv_solidarites_client(agent)
+      allow(Current).to receive(:rdv_solidarites_client).and_return(rdv_solidarites_client)
       allow(rdv_solidarites_client).to receive(:create_referent_assignations)
         .with(rdv_solidarites_user_id, rdv_solidarites_agent_ids)
         .and_return(OpenStruct.new(success?: true, body: response_body))

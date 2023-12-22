@@ -1,6 +1,8 @@
 module RdvSolidaritesApi
   class Base < BaseService
-    attr_reader :rdv_solidarites_client
+    def rdv_solidarites_client
+      Current.rdv_solidarites_client
+    end
 
     protected
 

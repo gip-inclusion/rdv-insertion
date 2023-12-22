@@ -10,7 +10,7 @@ module RdvSolidaritesSession
       required_attributes_present? && token_valid?
     end
 
-    def to_h
+    def credentials
       {
         "uid" => @uid,
         "client" => @client,

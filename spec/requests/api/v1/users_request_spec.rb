@@ -98,16 +98,14 @@ describe "Users API", swagger_doc: "v1/api.json" do
               organisation.id,
               user1_params,
               {},
-              {},
-              uid
+              {}
             )
           expect(CreateAndInviteUserJob).to have_received(:perform_async)
             .with(
               organisation.id,
               user2_params.except(:invitation),
               {},
-              { name: "RSA orientation" },
-              uid
+              { name: "RSA orientation" }
             )
           expect(parsed_response_body["success"]).to eq(true)
         end

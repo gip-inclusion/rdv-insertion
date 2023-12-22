@@ -8,6 +8,10 @@ module AuthenticationSpecHelper
     { "client" => "someclient", "uid" => agent_email, "access_token" => "sometoken" }.symbolize_keys
   end
 
+  def shared_secret_session_hash(agent)
+    { "uid" => agent.email, "x_agent_auth_signature" => agent.signature_auth_with_shared_secret }.symbolize_keys
+  end
+
   def setup_request_session(agent)
     request.session["agent_id"] = agent.id
     request.session["rdv_solidarites"] = session_hash(agent.email)
@@ -29,7 +33,7 @@ module AuthenticationSpecHelper
     allow(rdv_solidarites_session).to receive(:valid?)
       .and_return(true)
     allow(rdv_solidarites_session).to receive(:uid).and_return(agent_email)
-    allow(rdv_solidarites_session).to receive(:to_h)
+    allow(rdv_solidarites_session).to receive(:credentials)
       .and_return(session_hash(agent_email))
   end
   # rubocop:enable Metrics/AbcSize

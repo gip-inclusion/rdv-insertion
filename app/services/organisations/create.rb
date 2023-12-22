@@ -1,7 +1,8 @@
 module Organisations
   class Create < BaseService
-    def initialize(organisation:)
+    def initialize(organisation:, agent: Current.agent)
       @organisation = organisation
+      @agent = agent
     end
 
     def call
@@ -35,7 +36,7 @@ module Organisations
       # the rdv_solidarites_agent_role_id will be added to this agent_role record thanks to the webhook
       # this is safe because the transaction succeeds only if the agent is a territorial admin in the department
       @agent_role_for_new_organisation ||=
-        AgentRole.new(agent_id: Current.agent.id, organisation_id: @organisation.id, access_level: "admin")
+        AgentRole.new(agent_id: @agent.id, organisation_id: @organisation.id, access_level: "admin")
     end
 
     def upsert_rdv_solidarites_webhook_endpoint
@@ -46,8 +47,7 @@ module Organisations
     def trigger_rdv_solidarites_webhook_endpoint
       TriggerRdvSolidaritesWebhooksJob.perform_async(
         rdv_solidarites_webhook_endpoint_id,
-        @organisation.rdv_solidarites_organisation_id,
-        Current.agent.email
+        @organisation.rdv_solidarites_organisation_id
       )
     end
 

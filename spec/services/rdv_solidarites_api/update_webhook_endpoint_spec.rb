@@ -3,7 +3,6 @@ describe RdvSolidaritesApi::UpdateWebhookEndpoint, type: :service do
     described_class.call(rdv_solidarites_webhook_endpoint_id:, rdv_solidarites_organisation_id:)
   end
 
-  let!(:agent) { create(:agent) }
   let(:rdv_solidarites_client) { instance_double(RdvSolidaritesClient) }
   let!(:rdv_solidarites_webhook_endpoint_id) { 17 }
   let!(:rdv_solidarites_organisation_id) { 1717 }
@@ -11,7 +10,7 @@ describe RdvSolidaritesApi::UpdateWebhookEndpoint, type: :service do
 
   describe "#call" do
     before do
-      mock_rdv_solidarites_client(agent)
+      allow(Current).to receive(:rdv_solidarites_client).and_return(rdv_solidarites_client)
       allow(rdv_solidarites_client).to receive(:update_webhook_endpoint)
         .with(rdv_solidarites_webhook_endpoint_id, rdv_solidarites_organisation_id,
               RdvSolidarites::WebhookEndpoint::ALL_SUBSCRIPTIONS, trigger)
