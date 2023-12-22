@@ -26,7 +26,7 @@ class RdvContextsController < ApplicationController
   end
 
   def set_user
-    @user = policy_scope(User).find(rdv_context_params[:user_id])
+    @user = policy_scope(User).preload(:archives).find(rdv_context_params[:user_id])
   end
 
   def replace_new_button_cell_by_rdv_context_status_cell

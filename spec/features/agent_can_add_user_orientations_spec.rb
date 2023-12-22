@@ -83,7 +83,7 @@ describe "Agents can add user orientation", js: true do
       expect(page).to have_content("Structure CD 26")
       expect(page).to have_content("Référent Kad Merad")
 
-      expect(page).to have_content("Du 03/10/2023 à Aujourd'hui")
+      expect(page).to have_content("Du 03/10/2023 à aujourd'hui")
       expect(page).to have_content("Orientation Professionnelle")
       expect(page).to have_content("Structure Asso 26")
       expect(page).to have_content("Référent Jean-Paul Rouve")

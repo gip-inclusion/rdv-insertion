@@ -15,6 +15,10 @@ class Orientation < ApplicationRecord
     starts_at...(ends_at.presence || Time.zone.today)
   end
 
+  def current?
+    ends_at.nil?
+  end
+
   private
 
   def ends_at_after_starts_at

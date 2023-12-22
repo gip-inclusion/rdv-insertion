@@ -1,9 +1,9 @@
 <div class="d-flex justify-content-between align-items-center my-4" id="<%= dom_id(orientation) %>">
   <div class="w-100">
-    <% if orientation.ends_at? %>
-      Du <%= format_date(orientation.starts_at) %> au <%= format_date(orientation.ends_at) %>:
+    <% if orientation.current? %>
+      Du <%= format_date(orientation.starts_at) %> à <strong>aujourd'hui</strong>&nbsp;:
     <% else %>
-      Du <%= format_date(orientation.starts_at) %> à Aujourd'hui:
+      Du <%= format_date(orientation.starts_at) %> au <%= format_date(orientation.ends_at) %>&nbsp;:
     <% end %>
   </div>
   <div class="w-100">

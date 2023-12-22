@@ -1,5 +1,5 @@
 <div class="m-4">
-  <div class="card  my-3 mx-auto w-75" id=<%= dom_id(rdv_context) %>>
+  <div class="card my-3 mx-auto w-75" id=<%= dom_id(rdv_context) %>>
     <div class="card-header blue-out">
       <div class="d-flex justify-content-between align-items-center">
         <div>
@@ -28,24 +28,9 @@
     </div>
     <div class="card-body bg-light">
       <div>
-        <% if configuration.invitation_formats.any? %>
-          <%= react_component(
-            "components/InvitationBlock", {
-              user: user,
-              organisation: organisation,
-              department: department,
-              invitations: invitations,
-              isDepartmentLevel: department_level?,
-              invitationFormats: configuration.invitation_formats,
-              motifCategory: configuration.motif_category,
-              status: rdv_context.status,
-              isArchived: user.archived_in?(department)
-            }
-          ) %>
-        <% end %>
         <% if participations.present? %>
           <div class="d-flex justify-content-center">
-            <table class="card-white text-center align-middle m-3 shadow-sm">
+            <table class="card-white text-center align-middle m-4 shadow">
               <thead>
                 <tr>
                   <th class="px-4 py-2"><h4>RDV pris le</h4></th>
@@ -94,6 +79,21 @@
               </tbody>
             </table>
           </div>
+        <% end %>
+        <% if configuration.invitation_formats.any? %>
+          <%= react_component(
+            "components/InvitationBlock", {
+              user: user,
+              organisation: organisation,
+              department: department,
+              invitations: invitations,
+              isDepartmentLevel: department_level?,
+              invitationFormats: configuration.invitation_formats,
+              motifCategory: configuration.motif_category,
+              status: rdv_context.status,
+              isArchived: user.archived_in?(department)
+            }
+          ) %>
         <% end %>
       </div>
     </div>

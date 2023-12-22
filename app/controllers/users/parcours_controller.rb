@@ -14,7 +14,7 @@ module Users
     end
 
     def set_user
-      @user = policy_scope(User).find(params[:user_id])
+      @user = policy_scope(User).preload(:archives).find(params[:user_id])
     end
   end
 end
