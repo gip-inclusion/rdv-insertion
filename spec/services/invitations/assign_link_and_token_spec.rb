@@ -1,4 +1,4 @@
-describe Invitations::AssignAttributes, type: :service do
+describe Invitations::AssignLinkAndToken, type: :service do
   subject do
     described_class.call(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
   end
