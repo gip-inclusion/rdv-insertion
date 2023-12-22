@@ -6,18 +6,21 @@ module InboundWebhooks
         @meta = meta.deep_symbolize_keys
         return if organisation.blank? || @data[:access_level] == "intervenant"
 
-        assign_rdv_solidarites_agent_role_id if agent_role
-        upsert_or_delete_agent_role
+        event == "destroyed" ? remove_agent_from_org : upsert_agent_role
       end
 
       private
 
-      def upsert_or_delete_agent_role
-        return remove_agent_from_org if event == "destroyed"
+      def upsert_agent_role
+        return if agent_attributes.blank?
 
-        return upsert_agent_and_raise if agent.nil?
+        upsert_agent! if agent.nil?
 
-        upsert_agent_role
+        UpsertRecordJob.perform_async(
+          "AgentRole",
+          @data,
+          { organisation_id: organisation.id, agent_id: agent.id, last_webhook_update_received_at: @meta[:timestamp] }
+        )
       end
 
       def remove_agent_from_org
@@ -36,30 +39,16 @@ module InboundWebhooks
         )
       end
 
-      def upsert_agent_and_raise
-        UpsertRecordJob.perform_async(
-          "Agent",
-          @data[:agent],
-          { last_webhook_update_received_at: @meta[:timestamp] }
-        )
-        sleep 2
-
-        raise(
-          "Could not find agent #{rdv_solidarites_agent_id}. " \
-          "Launched upsert agent job and will retry"
-        )
+      def upsert_agent!
+        raise "Could not upsert agent #{agent_attributes}" unless upsert_agent.success?
       end
 
-      def upsert_agent_role
-        UpsertRecordJob.perform_async(
-          "AgentRole",
-          @data,
-          { organisation_id: organisation.id, agent_id: agent.id, last_webhook_update_received_at: @meta[:timestamp] }
+      def upsert_agent
+        @upsert_agent ||= UpsertRecord.call(
+          klass: Agent,
+          rdv_solidarites_attributes: @data[:agent],
+          additional_attributes: { last_webhook_update_received_at: @meta[:timestamp] }
         )
-      end
-
-      def assign_rdv_solidarites_agent_role_id
-        agent_role.update!(rdv_solidarites_agent_role_id: @data[:id])
       end
 
       def event
@@ -72,6 +61,10 @@ module InboundWebhooks
 
       def rdv_solidarites_agent_id
         @data[:agent][:id]
+      end
+
+      def agent_attributes
+        @data[:agent]
       end
 
       def rdv_solidarites_organisation_id
