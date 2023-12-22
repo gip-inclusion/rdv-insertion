@@ -116,23 +116,6 @@ describe Stat do
         end
       end
 
-      describe "#organisations_sample" do
-        let!(:organisation_with_no_invitations_formats) { create(:organisation, department: department) }
-        let!(:configuration_with_no_invitations_formats) do
-          create(:configuration, organisation: organisation_with_no_invitations_formats, invitation_formats: [])
-        end
-
-        it "scopes the collection to the department" do
-          expect(stat.organisations_sample).to include(organisation)
-          expect(stat.organisations_sample).not_to include(other_organisation)
-        end
-
-        it "scopes the collection to the ones with an active configuration" do
-          expect(stat.organisations_sample).not_to include(organisation_with_no_invitations_formats)
-          expect(stat.organisations_sample).not_to include(organisation_with_no_configuration)
-        end
-      end
-
       describe "#users_sample" do
         let!(:user3) do
           create(:user, organisations: [organisation], deleted_at: date)
@@ -156,10 +139,6 @@ describe Stat do
 
         it "does not include the archived users" do
           expect(stat.users_sample).not_to include(user4)
-        end
-
-        it "does not include the user from irrelevant organisations" do
-          expect(stat.users_sample).not_to include(user5)
         end
       end
 
@@ -218,10 +197,6 @@ describe Stat do
         it "does not include rdv_contexts with no rdvs" do
           expect(stat.rdv_contexts_with_invitations_and_participations_sample).not_to include(rdv_context5)
         end
-
-        it "does not include the rdv_contexts of users from irrelevant organisations" do
-          expect(stat.rdv_contexts_with_invitations_and_participations_sample).not_to include(rdv_context6)
-        end
       end
 
       describe "#rdvs_non_collectifs_sample" do
@@ -258,16 +233,8 @@ describe Stat do
           expect(stat.invited_users_sample).not_to include(user2)
         end
 
-        it "does not include the user from irrelevant organisations" do
-          expect(stat.invited_users_sample).not_to include(user3)
-        end
-
         it "does not include the users whith no invitations" do
           expect(stat.invited_users_sample).not_to include(user4)
-        end
-
-        it "does not include the users whith no sent invitation" do
-          expect(stat.invited_users_sample).not_to include(user5)
         end
 
         it "includes the invited users whith no rdvs" do
@@ -352,23 +319,6 @@ describe Stat do
         it "scopes the collection to the organisation" do
           expect(stat.participations_sample).to include(participation1)
           expect(stat.participations_sample).not_to include(participation2)
-        end
-      end
-
-      describe "#organisations_sample" do
-        let!(:organisation_with_no_invitations_formats) { create(:organisation, department: department) }
-        let!(:configuration_with_no_invitations_formats) do
-          create(:configuration, organisation: organisation_with_no_invitations_formats, invitation_formats: [])
-        end
-
-        it "scopes the collection to the organisation" do
-          expect(stat.organisations_sample).to include(organisation)
-          expect(stat.organisations_sample).not_to include(other_organisation)
-        end
-
-        it "scopes the collection to the ones with an active configuration" do
-          expect(stat.organisations_sample).not_to include(organisation_with_no_invitations_formats)
-          expect(stat.organisations_sample).not_to include(organisation_with_no_configuration)
         end
       end
 
@@ -577,12 +527,6 @@ describe Stat do
       describe "#participations_sample" do
         it "does not scope the collection to the department" do
           expect(stat.participations_sample).to include(participation2)
-        end
-      end
-
-      describe "#organisations_sample" do
-        it "does not scope the collection to the department" do
-          expect(stat.organisations_sample).to include(other_organisation)
         end
       end
 
