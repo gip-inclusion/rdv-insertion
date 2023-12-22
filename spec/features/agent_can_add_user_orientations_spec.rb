@@ -58,7 +58,7 @@ describe "Agents can add user orientation", js: true do
       click_button "Enregistrer"
 
       expect(page).not_to have_content("Pas d'orientation renseignée")
-      expect(page).to have_content("Du 03/07/2023 à Aujourd'hui")
+      expect(page).to have_content("Du 03/07/2023 à aujourd'hui")
       expect(page).to have_content("Orientation Sociale")
       expect(page).to have_content("Structure CD 26")
       expect(page).to have_content("Référent Kad Merad")
