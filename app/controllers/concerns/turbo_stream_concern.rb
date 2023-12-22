@@ -6,7 +6,7 @@ module TurboStreamConcern
     )
   end
 
-  def turbo_stream_append_flash_message(flash)
+  def turbo_stream_prepend_flash_message(flash)
     render turbo_stream: turbo_stream.prepend("flashes", partial: "common/flash", locals: { flash: })
   end
 

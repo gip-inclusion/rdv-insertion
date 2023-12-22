@@ -34,7 +34,7 @@ module Users
       if @orientation.destroy
         turbo_stream_remove(helpers.dom_id(@orientation))
       else
-        turbo_stream_append_flash_message(
+        turbo_stream_prepend_flash_message(
           error: "Impossible de supprimer l'orientation: #{@orientation.errors.full_messages}"
         )
       end
