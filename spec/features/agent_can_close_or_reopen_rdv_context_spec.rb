@@ -19,48 +19,52 @@ describe "Agents can close or reopen rdv_context", js: true do
 
   context "from department user page" do
     it "can close and reopen a rdv_context" do
-      visit department_user_path(department, user)
-      expect(page).to have_content("Clôturer \"RSA orientation\"")
+      visit department_user_rdv_contexts_path(department_id: department.id, user_id: user.id)
+      expect(page).to have_content("Clôturer")
 
-      click_button("Clôturer \"RSA orientation\"")
-      expect(page).to have_content("\"RSA orientation\"")
+      click_button("Clôturer")
+      expect(page).to have_content("RSA orientation")
 
-      expect(page).to have_content("Rouvrir \"RSA orientation\"")
-      expect(page).to have_content("Dossier traité le")
+      expect(page).to have_content("Rouvrir")
+      expect(page).to have_content("Traité le")
       expect(rdv_context.reload.status).to eq("closed")
-      expect(page).to have_current_path(department_user_path(department, user))
+      expect(page).to have_current_path(department_user_rdv_contexts_path(department_id: department.id,
+                                                                          user_id: user.id))
 
-      click_button("Rouvrir \"RSA orientation\"")
-      expect(page).to have_content("\"RSA orientation\"")
+      click_button("Rouvrir")
+      expect(page).to have_content("RSA orientation")
 
-      expect(page).to have_content("Clôturer \"RSA orientation\"")
+      expect(page).to have_content("Clôturer")
       expect(page).to have_content("Non invité")
       expect(rdv_context.reload.status).to eq("not_invited")
       expect(rdv_context.reload.closed_at).to eq(nil)
-      expect(page).to have_current_path(department_user_path(department, user))
+      expect(page).to have_current_path(department_user_rdv_contexts_path(department_id: department.id,
+                                                                          user_id: user.id))
     end
   end
 
   context "from organisation user page" do
     it "can close and reopen rdv_context" do
-      visit organisation_user_path(organisation, user)
-      expect(page).to have_content("Clôturer \"RSA orientation\"")
+      visit organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id)
+      expect(page).to have_content("Clôturer")
 
-      click_button("Clôturer \"RSA orientation\"")
-      expect(page).to have_content("\"RSA orientation\"")
+      click_button("Clôturer")
+      expect(page).to have_content("RSA orientation")
 
-      expect(page).to have_content("Rouvrir \"RSA orientation\"")
-      expect(page).to have_content("Dossier traité le")
+      expect(page).to have_content("Rouvrir")
+      expect(page).to have_content("Traité le")
       expect(rdv_context.reload.status).to eq("closed")
-      expect(page).to have_current_path(organisation_user_path(organisation, user))
+      expect(page).to have_current_path(organisation_user_rdv_contexts_path(organisation_id: organisation.id,
+                                                                            user_id: user.id))
 
-      click_button("Rouvrir \"RSA orientation\"")
-      expect(page).to have_content("\"RSA orientation\"")
+      click_button("Rouvrir")
+      expect(page).to have_content("RSA orientation")
 
-      expect(page).to have_content("Clôturer \"RSA orientation\"")
+      expect(page).to have_content("Clôturer")
       expect(page).to have_content("Non invité")
       expect(rdv_context.reload.closed_at).to eq(nil)
-      expect(page).to have_current_path(organisation_user_path(organisation, user))
+      expect(page).to have_current_path(organisation_user_rdv_contexts_path(organisation_id: organisation.id,
+                                                                            user_id: user.id))
     end
   end
 end

@@ -31,7 +31,7 @@ describe "Agents can generate convocation pdf", js: true do
   end
 
   it "can generate a pdf" do
-    visit organisation_user_path(organisation, user)
+    visit organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id)
 
     expect(page).to have_button "Courrier"
 
@@ -52,7 +52,7 @@ describe "Agents can generate convocation pdf", js: true do
     before { motif.update! location_type: "phone" }
 
     it "generates the matching pdf" do
-      visit organisation_user_path(organisation, user)
+      visit organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id)
 
       expect(page).to have_button "Courrier"
 
@@ -75,7 +75,7 @@ describe "Agents can generate convocation pdf", js: true do
     before { rdv.update! starts_at: 2.days.ago }
 
     it "cannot generate a pdf" do
-      visit organisation_user_path(organisation, user)
+      visit organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id)
 
       expect(page).not_to have_button "Courrier"
     end
@@ -85,7 +85,7 @@ describe "Agents can generate convocation pdf", js: true do
     before { participation.update! status: "revoked" }
 
     it "can generate a revoked participation pdf" do
-      visit organisation_user_path(organisation, user)
+      visit organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id)
 
       expect(page).to have_button "Courrier"
 
@@ -105,7 +105,7 @@ describe "Agents can generate convocation pdf", js: true do
     before { user.update! address: "format invalide" }
 
     it "returns an error" do
-      visit organisation_user_path(organisation, user)
+      visit organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id)
 
       expect(page).to have_button "Courrier"
 

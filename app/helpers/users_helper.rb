@@ -59,6 +59,21 @@ module UsersHelper
     end
   end
 
+  def badge_background_class(context, number_of_days_before_action_required)
+    return "blue-out border border-blue" if context.nil?
+
+    if context.action_required_status?
+      "bg-danger border-danger"
+    elsif number_of_days_before_action_required &&
+          context.time_to_accept_invitation_exceeded?(number_of_days_before_action_required)
+      "bg-warning border-warning"
+    elsif context.rdv_seen? || context.closed?
+      "bg-success border-success"
+    else
+      "blue-out border border-blue"
+    end
+  end
+
   def background_class_for_participation_status(participation)
     return "" if participation.rdv_context.closed?
 
@@ -102,13 +117,6 @@ module UsersHelper
     end
   end
 
-  def rdv_solidarites_find_rdv_url(organisation, user)
-    organisation_id = organisation.rdv_solidarites_organisation_id
-    user_id = user.rdv_solidarites_user_id
-
-    "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{organisation_id}/agent_searches?user_ids[]=#{user_id}"
-  end
-
   def display_convocation_formats(convocation_formats)
     if convocation_formats.empty?
       "❌#{content_tag(:br)}SMS et Email non envoyés#{content_tag(:br)}❌"
@@ -139,6 +147,10 @@ module UsersHelper
 
     rdv_context.convocable_status? ||
       rdv_context.time_to_accept_invitation_exceeded?(configuration.number_of_days_before_action_required)
+  end
+
+  def show_parcours?(department)
+    department.number.in?(ENV["DEPARTMENTS_WHERE_PARCOURS_ENABLED"].split(","))
   end
 end
 

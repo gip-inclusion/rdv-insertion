@@ -8,6 +8,7 @@ class ApplicationController < ActionController::Base
   include NavigationHelper
   include BeforeActionOverride
   include EnvironmentsHelper
+  include TurboStreamConcern
 
   private
 

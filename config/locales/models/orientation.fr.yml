@@ -1,0 +1,15 @@
+fr:
+  activerecord:
+    models:
+      orientation: orientation
+    attributes:
+      orientation:
+        starts_at: Date de début
+        ends_at: Date de fin
+        organisation: Structure référente
+        agent: Agent réferent
+        orientation_type: Type d'orientation
+        orientation_types:
+          social: Sociale
+          pro: Professionnelle
+          socio_pro: Socio-Professionelle

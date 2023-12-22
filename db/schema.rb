@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_21_133009) do
+ActiveRecord::Schema[7.0].define(version: 2023_12_12_173606) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -250,6 +250,20 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_21_133009) do
     t.index ["organisation_id", "webhook_endpoint_id"], name: "index_webhook_orgas_on_orga_id_and_webhook_id", unique: true
   end
 
+  create_table "orientations", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "organisation_id", null: false
+    t.bigint "agent_id", null: false
+    t.integer "orientation_type"
+    t.date "starts_at"
+    t.date "ends_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agent_id"], name: "index_orientations_on_agent_id"
+    t.index ["organisation_id"], name: "index_orientations_on_organisation_id"
+    t.index ["user_id"], name: "index_orientations_on_user_id"
+  end
+
   create_table "participations", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "rdv_id", null: false
@@ -450,6 +464,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_21_133009) do
   add_foreign_key "motifs", "organisations"
   add_foreign_key "notifications", "participations"
   add_foreign_key "organisations", "departments"
+  add_foreign_key "orientations", "agents"
+  add_foreign_key "orientations", "organisations"
+  add_foreign_key "orientations", "users"
   add_foreign_key "participations", "rdv_contexts"
   add_foreign_key "rdv_contexts", "motif_categories"
   add_foreign_key "rdv_contexts", "users"

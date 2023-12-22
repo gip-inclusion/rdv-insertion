@@ -10,9 +10,7 @@
           controller: "archives",
           action: "click->archives#create",
           user_id: @user.id,
-          organisation_id: @organisation.id,
           department_id: @department.id,
-          navigation_level: Current.structure_type
         }
       )
     %>
@@ -28,9 +26,7 @@
         action: "click->archives#destroy",
         archive_id: @archive.id,
         user_id: @user.id,
-        organisation_id: @organisation.id,
         department_id: @department.id,
-        navigation_level: Current.structure_type
       }
     )
   %>
