@@ -73,7 +73,7 @@ class UsersOrganisationsController < ApplicationController
   end
 
   def user_deleted_or_removed_from_current_org?
-    @user.deleted? || @organisation_to_remove.id.to_s == Current.organisation_id
+    @user.deleted? || @organisation_to_remove.id == Current.organisation_id
   end
 
   def assign_motif_category

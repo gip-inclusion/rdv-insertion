@@ -32,12 +32,7 @@ class OrganisationsController < ApplicationController
     if create_organisation.success?
       redirect_to organisation_users_path(@organisation)
     else
-      render turbo_stream: turbo_stream.replace(
-        "remote_modal", partial: "organisation_form", locals: {
-          organisation: @organisation, all_departments: @all_departments,
-          errors: create_organisation.errors
-        }
-      )
+      turbo_stream_replace_error_list_with(create_organisation.errors)
     end
   end
 

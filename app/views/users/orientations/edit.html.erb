@@ -1,0 +1,5 @@
+<%= render "common/remote_modal", title: "Modifier une orientation" do %>
+  <%= simple_form_for(@orientation, url: user_orientation_path(id: @orientation.id, user_id: @orientation.user_id), html: { method: :patch }) do |form| %>
+    <%= render "orientations/orientation_form", form:, orientation: @orientation, organisations: @organisations, agents: @agents %>
+  <% end %>
+<% end %>

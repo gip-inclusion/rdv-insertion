@@ -5,7 +5,7 @@ module CurrentStructure
     before_action :set_structure_type_in_session, :set_session_organisation_id, :set_session_department_id,
                   :set_current_structure_attributes
 
-    helper_method :department_level?
+    helper_method :department_level?, :current_organisation_ids
   end
 
   def set_structure_type_in_session
@@ -16,7 +16,7 @@ module CurrentStructure
 
   def set_session_organisation_id
     if session[:structure_type] == "organisation"
-      session[:organisation_id] = params[:organisation_id] if params[:organisation_id]
+      session[:organisation_id] = params[:organisation_id].to_i if params[:organisation_id]
     else
       session[:organisation_id] = nil
     end
@@ -24,7 +24,7 @@ module CurrentStructure
 
   def set_session_department_id
     if session[:structure_type] == "department"
-      session[:department_id] = params[:department_id] if params[:department_id]
+      session[:department_id] = params[:department_id].to_i if params[:department_id]
     else
       session[:department_id] = nil
     end

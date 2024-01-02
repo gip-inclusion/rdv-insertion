@@ -32,7 +32,7 @@ describe "Agents can update a participation status", js: true do
   context "when user has rdvs" do
     context "rdv is in the past" do
       it "can edit a participation status" do
-        visit organisation_user_path(organisation, user)
+        visit organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id)
         page.execute_script("window.scrollBy(0, 500)")
         expect(page).to have_content("RDV honoré")
 
@@ -50,7 +50,7 @@ describe "Agents can update a participation status", js: true do
       end
 
       it "does not display the toggle button" do
-        visit organisation_user_path(organisation, user)
+        visit organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id)
         page.execute_script("window.scrollBy(0, 500)")
         expect(page).to have_content("RDV honoré")
 

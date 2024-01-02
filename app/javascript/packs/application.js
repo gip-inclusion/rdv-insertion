@@ -49,6 +49,11 @@ if (process.env.NODE_ENV === 'production') {
   });
 };
 
+// https://github.com/reactjs/react-rails/issues/1103#issuecomment-1212205462
+ReactRailsUJS.handleEvent('turbo:frame-load', ReactRailsUJS.handleMount)
+ReactRailsUJS.handleEvent('turbo:frame-render', ReactRailsUJS.handleUnmount)
+
+
 document.addEventListener("turbo:load", () => {
   new LoginForm();
   new StatusSelector();
