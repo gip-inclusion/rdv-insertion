@@ -5,6 +5,10 @@ class Current < ActiveSupport::CurrentAttributes
     structure_type == "department"
   end
 
+  def self.organisation_ids
+    @organisation_ids ||= department_level? ? department.organisation_ids : [organisation_id]
+  end
+
   def self.structure
     @structure ||=  department_level? ? Department.find(department_id) : Organisation.find(organisation_id)
   end

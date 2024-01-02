@@ -5,7 +5,7 @@ module CurrentStructure
     before_action :set_structure_type_in_session, :set_session_organisation_id, :set_session_department_id,
                   :set_current_structure_attributes
 
-    helper_method :department_level?, :current_organisation_ids
+    helper_method :department_level?
   end
 
   def set_structure_type_in_session

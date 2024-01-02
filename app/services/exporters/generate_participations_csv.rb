@@ -2,17 +2,28 @@ module Exporters
   class GenerateParticipationsCsv < GenerateUsersCsv
     private
 
-    def each_element
+    def each_element(&)
       @elements.find_each do |element|
-        element.participations.find_each do
-          yield element
-        end
+        element.participations
+               .to_a
+               .each(&)
       end
     end
 
     def preload_associations
       super
-      @elements = @elements.preload(:participations)
+      @elements =
+        if @motif_category
+          @elements.preload(
+            :archives, :tags, :referents, :organisations,
+            participations: [:organisation, { rdv_context: [:invitations, :notifications, { rdvs: [:motif, :organisation, :participations, :users] }]}]
+          )
+        else
+          @elements.preload(
+            :invitations, :notifications, :archives, :organisations, :tags, :referents,
+            participations: [:organisation, { rdv_context: [:invitations, :notifications, { rdvs: [:motif, :organisation, :participations, :users] }]}]
+          )
+        end
     end
 
     def headers # rubocop:disable Metrics/AbcSize
