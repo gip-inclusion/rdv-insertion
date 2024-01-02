@@ -1,21 +1,7 @@
-require "csv"
-
 # rubocop:disable Metrics/ClassLength
 module Exporters
-  class GenerateUsersCsv < BaseService
-    def initialize(users:, structure: nil, motif_category: nil)
-      @users = users
-      @structure = structure
-      @motif_category = motif_category
-    end
-
-    def call
-      preload_associations
-      result.filename = filename
-      result.csv = generate_csv
-    end
-
-    private
+  class GenerateUsersCsv < Csv
+    protected
 
     def preload_associations
       @users =
@@ -30,16 +16,6 @@ module Exporters
             rdvs: [:motif, :participations, :users]
           )
         end
-    end
-
-    def generate_csv
-      csv = CSV.generate(write_headers: true, col_sep: ";", headers: headers, encoding: "utf-8") do |row|
-        @users.find_each do |user|
-          row << user_csv_row(user)
-        end
-      end
-      # We add a BOM at the beginning of the file to enable a correct parsing of accented characters in Excel
-      "\uFEFF#{csv}"
     end
 
     def headers # rubocop:disable Metrics/AbcSize
@@ -77,7 +53,7 @@ module Exporters
        User.human_attribute_name(:tags)]
     end
 
-    def user_csv_row(user) # rubocop:disable Metrics/AbcSize
+    def csv_row(user) # rubocop:disable Metrics/AbcSize
       [user.title,
        user.last_name,
        user.first_name,
@@ -112,14 +88,8 @@ module Exporters
        user.tags.pluck(:value).join(", ")]
     end
 
-    def filename
-      if @structure.present?
-        "Export_beneficiaires_#{@motif_category.present? ? "#{@motif_category.short_name}_" : ''}" \
-          "#{@structure.class.model_name.human.downcase}_" \
-          "#{@structure.name.parameterize(separator: '_')}.csv"
-      else
-        "Export_beneficiaires_#{Time.zone.now.to_i}.csv"
-      end
+    def resource_human_name
+      "beneficiaires"
     end
 
     def human_last_participation_status(user)
@@ -206,14 +176,6 @@ module Exporters
 
     def rdv_context_for_export(user)
       user.rdv_context_for(@motif_category)
-    end
-
-    def department_level?
-      @structure.instance_of?(Department)
-    end
-
-    def department_id
-      department_level? ? @structure.id : @structure.department_id
     end
   end
 end
