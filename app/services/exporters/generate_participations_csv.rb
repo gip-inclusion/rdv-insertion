@@ -11,19 +11,25 @@ module Exporters
     end
 
     def preload_associations
-      super
       @elements =
         if @motif_category
-          @elements.preload(
-            :archives, :tags, :referents, :organisations,
-            participations: [:organisation, { rdv_context: [:invitations, :notifications, { rdvs: [:motif, :organisation, :participations, :users] }]}]
-          )
+          @elements.preload(:archives, :tags, :referents, :organisations)
         else
-          @elements.preload(
-            :invitations, :notifications, :archives, :organisations, :tags, :referents,
-            participations: [:organisation, { rdv_context: [:invitations, :notifications, { rdvs: [:motif, :organisation, :participations, :users] }]}]
-          )
+          @elements.preload(:invitations, :notifications, :archives, :organisations, :tags, :referents)
         end
+
+      @elements = @elements.preload(
+        participations: [
+          :organisation,
+          {
+            rdv_context: [
+              :invitations,
+              :notifications,
+              { rdvs: [:motif, :organisation, :participations, :users] }
+            ]
+          }
+        ]
+      )
     end
 
     def headers # rubocop:disable Metrics/AbcSize
