@@ -99,7 +99,7 @@ class UsersController < ApplicationController
     send_data generate_users_csv.csv, filename: generate_users_csv.filename
   end
 
-  def csv_type
+  def csv_exporter
     if params[:export_type] == "participations"
       Exporters::GenerateParticipationsCsv
     else
@@ -108,7 +108,7 @@ class UsersController < ApplicationController
   end
 
   def generate_users_csv
-    @generate_users_csv ||= csv_type.call(
+    @generate_users_csv ||= csv_exporter.call(
       users: @users,
       structure: department_level? ? @department : @organisation,
       motif_category: @current_motif_category
