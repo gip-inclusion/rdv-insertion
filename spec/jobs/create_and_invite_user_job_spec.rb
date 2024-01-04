@@ -21,8 +21,8 @@ describe CreateAndInviteUserJob do
   end
   let!(:invitation_attributes) { { rdv_solidarites_lieu_id: 888 } }
   let!(:motif_category_attributes) { { short_name: "rsa_orientation" } }
-  let!(:email_invitation_attributes) { invitation_attributes.merge(format: "email", help_phone_number: "0146292929") }
-  let!(:sms_invitation_attributes) { invitation_attributes.merge(format: "sms", help_phone_number: "0146292929") }
+  let!(:email_invitation_attributes) { invitation_attributes.merge(format: "email") }
+  let!(:sms_invitation_attributes) { invitation_attributes.merge(format: "sms") }
 
   let!(:agent) { create(:agent, email: "janedoe@gouv.fr") }
   let!(:rdv_solidarites_session_credentials) do
