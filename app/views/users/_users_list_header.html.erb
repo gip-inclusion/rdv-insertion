@@ -117,10 +117,10 @@
         Configurer l'organisation
       <% end %>
     <% end %>
-    <a class="btn btn-blue-out dropdown-toggle mb-2" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+    <a class="btn btn-blue-out dropdown-toggle mb-2" href="#" role="button" id="csvExportButton" data-bs-toggle="dropdown" aria-expanded="false">
       <i class="fas fa-download"></i> Exporter au format CSV
     </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="csvExportButton">
       <li>
         <%= link_to(structure_users_path(**params.to_unsafe_h.merge(format: "csv")), class: "dropdown-item", data: { controller: "tooltip", action: "mouseover->tooltip#csvExportUsers"}, target: "_blank") do %>
            Bénéficiaires
