@@ -7,7 +7,7 @@ fr:
         starts_at: Date de début
         ends_at: Date de fin
         organisation: Structure référente
-        agent: Agent réferent
+        agent: Réferent unique
         orientation_type: Type d'orientation
         orientation_types:
           social: Sociale

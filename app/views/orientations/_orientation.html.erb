@@ -10,7 +10,7 @@
     Orientation <strong><%= I18n.t("activerecord.attributes.orientation.orientation_types.#{orientation.orientation_type}") %></strong>
   </div>
   <div class="w-100">Structure <strong><%= orientation.organisation.name %></strong></div>
-  <div class="w-100">Référent <strong><%= orientation.agent.to_s %></strong></div>
+  <div class="w-100">Référent unique <strong><%= orientation.agent.to_s %></strong></div>
   <div class="w-100 text-end">
     <%= link_to edit_user_orientation_path(id: orientation.id, user_id: orientation.user_id), data: { turbo_frame: 'remote_modal' } do %>
       <i class="fas fa-pencil-alt text-dark-blue"></i>
