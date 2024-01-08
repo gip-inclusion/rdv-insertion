@@ -40,7 +40,7 @@ describe "Agents can update a participation status", js: true do
         find("a[data-value=revoked]").click
 
         expect(page).to have_content("Annulé (par le service)")
-        expect(user.rdv_contexts.pluck(:status)).to include("rdv_revoked")
+        Timeout.timeout(2) { loop until user.rdv_contexts.where(status: :rdv_revoked).any? }
       end
     end
 
