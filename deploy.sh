@@ -109,9 +109,9 @@ if [ "$deploy_choice" == "y" ]; then
 
   print_text "\n"
 
-  # git push origin main
-  # print_text "Pushing to 'main': "
-  # print_text "OK\n" "success"
+  git push origin main
+  print_text "Pushing to 'main': "
+  print_text "OK\n" "success"
 
   print_text "\n"
 
