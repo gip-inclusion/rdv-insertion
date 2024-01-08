@@ -103,6 +103,8 @@ Rails.application.routes.draw do
 
   resources :users_organisations, only: [:index, :create]
   resource :users_organisations, only: [:destroy]
+  resources :referent_assignations, only: [:index, :create]
+  resource :referent_assignations, only: [:destroy]
 
   resources :departments, only: [] do
     patch "configurations_positions/update", to: "configurations_positions#update"
