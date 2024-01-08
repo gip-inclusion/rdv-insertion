@@ -51,7 +51,7 @@ describe "Agents can add user orientation", js: true do
       expect(page).to have_selector("select#orientation_agent_id[disabled]")
 
       page.select "CD 26", from: "orientation_organisation_id"
-      expect(page).to have_select("orientation_agent_id", with_options: organisation_agents)
+      expect(page).to have_select("orientation_agent_id", with_options: organisation_agents.map(&:to_s))
 
       page.select "Kad Merad", from: "orientation_agent_id"
 
@@ -61,7 +61,7 @@ describe "Agents can add user orientation", js: true do
       expect(page).to have_content("Du 03/07/2023 à aujourd'hui")
       expect(page).to have_content("Orientation Sociale")
       expect(page).to have_content("Structure CD 26")
-      expect(page).to have_content("Référent Kad Merad")
+      expect(page).to have_content("Référent unique Kad Merad")
 
       click_button("Ajouter une orientation")
 
@@ -72,7 +72,7 @@ describe "Agents can add user orientation", js: true do
       expect(page).to have_selector("select#orientation_agent_id[disabled]")
 
       page.select "Asso 26", from: "orientation_organisation_id"
-      expect(page).to have_select("orientation_agent_id", with_options: other_organisation_agents)
+      expect(page).to have_select("orientation_agent_id", with_options: other_organisation_agents.map(&:to_s))
 
       page.select "Jean-Paul Rouve", from: "orientation_agent_id"
 
@@ -81,12 +81,12 @@ describe "Agents can add user orientation", js: true do
       expect(page).to have_content("Du 03/07/2023 au 03/10/2023")
       expect(page).to have_content("Orientation Sociale")
       expect(page).to have_content("Structure CD 26")
-      expect(page).to have_content("Référent Kad Merad")
+      expect(page).to have_content("Référent unique Kad Merad")
 
       expect(page).to have_content("Du 03/10/2023 à aujourd'hui")
       expect(page).to have_content("Orientation Professionnelle")
       expect(page).to have_content("Structure Asso 26")
-      expect(page).to have_content("Référent Jean-Paul Rouve")
+      expect(page).to have_content("Référent unique Jean-Paul Rouve")
     end
   end
 end
