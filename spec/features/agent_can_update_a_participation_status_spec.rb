@@ -18,7 +18,7 @@ describe "Agents can update a participation status", js: true do
   end
 
   let(:participation) do
-    create(:participation, rdv_context: rdv_context, user: user, rdv: rdv)
+    create(:participation, rdv_context: rdv_context, user: user, rdv: rdv, status: "seen")
   end
 
   let(:rdvs_participation_id) { participation.rdv_solidarites_participation_id }
@@ -40,7 +40,7 @@ describe "Agents can update a participation status", js: true do
         find("a[data-value=revoked]").click
 
         expect(page).to have_content("Annulé (par le service)")
-        Timeout.timeout(2) { loop until user.rdv_contexts.where(status: :rdv_revoked).any? }
+        expect(participation.reload.status).to eq("revoked")
       end
     end
 
