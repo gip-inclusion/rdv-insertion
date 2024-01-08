@@ -103,8 +103,6 @@ Rails.application.routes.draw do
 
   resources :users_organisations, only: [:index, :create]
   resource :users_organisations, only: [:destroy]
-  resources :referent_assignations, only: [:index, :create]
-  resource :referent_assignations, only: [:destroy]
 
   resources :departments, only: [] do
     patch "configurations_positions/update", to: "configurations_positions#update"
@@ -119,13 +117,11 @@ Rails.application.routes.draw do
         resources :rdv_contexts, only: [:index]
       end
       resources :invitations, only: [:create]
-      resources :referent_assignations, only: [:create]
       resources :tag_assignations, only: [:index, :create] do
         delete :destroy, on: :collection
       end
     end
     resource :stats, only: [:show]
-    resources :referent_assignations, only: [:create]
   end
   resources :invitation_dates_filterings, :creation_dates_filterings, only: [:new]
 
