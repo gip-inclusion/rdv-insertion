@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_12_12_173606) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_04_105413) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -80,6 +80,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_12_173606) do
     t.integer "day_of_the_month_periodic_invites"
     t.integer "position", default: 0
     t.integer "department_position", default: 0
+    t.string "phone_number"
     t.index ["file_configuration_id"], name: "index_configurations_on_file_configuration_id"
     t.index ["motif_category_id"], name: "index_configurations_on_motif_category_id"
     t.index ["organisation_id"], name: "index_configurations_on_organisation_id"

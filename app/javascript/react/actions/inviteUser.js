@@ -6,7 +6,6 @@ const inviteUser = async (
   organisationId,
   isDepartmentLevel,
   invitationFormat,
-  helpPhoneNumber,
   motifCategoryId,
   types = "application/json"
 ) => {
@@ -22,7 +21,6 @@ const inviteUser = async (
     {
       invitation: {
         format: invitationFormat,
-        help_phone_number: helpPhoneNumber,
         motif_category: { id: motifCategoryId },
       },
     },

@@ -8,7 +8,6 @@ const handleUserInvitation = async (
   organisationId,
   isDepartmentLevel,
   motifCategoryId,
-  helpPhoneNumber,
   invitationFormat,
   options = { raiseError: true }
 ) => {
@@ -18,8 +17,7 @@ const handleUserInvitation = async (
       departmentId,
       organisationId,
       isDepartmentLevel,
-      motifCategoryId,
-      helpPhoneNumber
+      motifCategoryId
     );
   }
   const result = await inviteUser(
@@ -28,7 +26,6 @@ const handleUserInvitation = async (
     organisationId,
     isDepartmentLevel,
     invitationFormat,
-    helpPhoneNumber,
     motifCategoryId
   );
   if (!result.success && options.raiseError) {

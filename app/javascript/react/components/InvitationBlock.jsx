@@ -62,7 +62,6 @@ export default function InvitationBlock({
       organisation.id,
       isDepartmentLevel,
       motifCategory.id,
-      organisation.phone_number,
     ];
     let newInvitationDate;
 
