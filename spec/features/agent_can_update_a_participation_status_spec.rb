@@ -34,12 +34,13 @@ describe "Agents can update a participation status", js: true do
       it "can edit a participation status" do
         visit organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id)
         page.execute_script("window.scrollBy(0, 500)")
-        expect(page).to have_content("RDV honoré")
+        status_update_button = find_by_id("toggle-rdv-status")
+        expect(status_update_button).to have_content("Rendez-vous honoré")
 
-        find_by_id("toggle-rdv-status").click
+        status_update_button.click
         find("a[data-value=revoked]").click
 
-        expect(page).to have_content("Annulé (par le service)")
+        expect(status_update_button).to have_content("Annulé (par le service)")
         expect(participation.reload.status).to eq("revoked")
       end
     end
