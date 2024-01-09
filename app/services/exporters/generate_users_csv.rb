@@ -9,6 +9,10 @@ module Exporters
 
     protected
 
+    def each_element(&)
+      @users.find_each(&)
+    end
+
     def preload_associations
       @users =
         if @motif_category

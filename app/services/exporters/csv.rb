@@ -18,10 +18,6 @@ module Exporters
       "\uFEFF#{csv}"
     end
 
-    def each_element(&)
-      @users.find_each(&)
-    end
-
     def department_level?
       @structure.instance_of?(Department)
     end
