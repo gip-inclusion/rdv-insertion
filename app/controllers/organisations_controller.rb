@@ -1,5 +1,3 @@
-# rubocop:disable Metrics/ClassLength
-
 class OrganisationsController < ApplicationController
   PERMITTED_PARAMS = [
     :name, :phone_number, :email, :slug, :independent_from_cd, :logo_filename, :rdv_solidarites_organisation_id,
@@ -146,5 +144,3 @@ class OrganisationsController < ApplicationController
     authorize @organisation, :configure?
   end
 end
-
-# rubocop:enable Metrics/ClassLength
