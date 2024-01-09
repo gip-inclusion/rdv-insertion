@@ -22,7 +22,7 @@ class User < ApplicationRecord
   attr_accessor :skip_uniqueness_validations
 
   before_validation :generate_uid
-  before_save :format_phone_number
+  normalizes :phone_number, with: -> phone_number { PhoneNumberHelper.format_phone_number(phone_number) }
 
   has_many :rdv_contexts, dependent: :destroy
   has_many :invitations, dependent: :destroy
@@ -130,10 +130,6 @@ class User < ApplicationRecord
     return if affiliation_number.blank? || role.blank?
 
     self.uid = Base64.strict_encode64("#{affiliation_number} - #{role}")
-  end
-
-  def format_phone_number
-    self.phone_number = phone_number_formatted
   end
 
   def birth_date_validity
