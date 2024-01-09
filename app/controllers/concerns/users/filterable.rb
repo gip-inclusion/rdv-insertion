@@ -132,7 +132,7 @@ module Users::Filterable
     if rdv_contexts.blank?
       invitations
     else
-      invitations.select { |i| rdv_contexts.include?(i.rdv_context) }
+      invitations.select { |i| rdv_contexts.map(&:id).include?(i.rdv_context_id) }
     end
   end
 end
