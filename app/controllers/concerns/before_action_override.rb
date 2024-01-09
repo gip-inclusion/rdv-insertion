@@ -10,6 +10,7 @@ module BeforeActionOverride
   # we have to use method_missing hook to call the matching method.
 
   class_methods do
+    # rubocop:disable Naming/BlockForwarding
     def before_action(*names, &block)
       names_dup = names.dup
       opts = names_dup.extract_options!
@@ -30,6 +31,7 @@ module BeforeActionOverride
         super
       end
     end
+    # rubocop:enable Naming/BlockForwarding
   end
 
   def method_missing(method_name, *args)

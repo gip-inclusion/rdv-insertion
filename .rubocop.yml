@@ -143,6 +143,9 @@ RSpec/ScatteredSetup:
 RSpec/MessageSpies:
   Enabled: false
 
+RSpec/IndexedLet:
+  Enabled: false
+
 Capybara/SpecificActions:
   Enabled: false
 

@@ -16,10 +16,6 @@ Capybara.register_driver :selenium do |app|
   browser_options.add_preference(:download, prompt_for_download: false, default_directory: DownloadHelper::PATH.to_s)
   browser_options.add_preference(:browser, set_download_behavior: { behavior: "allow" })
 
-  unless ENV['CI']
-    Selenium::WebDriver::Chrome::Service.driver_path = ENV.fetch('CHROMEDRIVER_PATH', "/usr/local/bin/chromedriver")
-  end
-
   Capybara::Selenium::Driver.new(
     app,
     browser: :chrome,

@@ -523,7 +523,7 @@ DEPENDENCIES
   rubocop-rails
   rubocop-rspec
   sass-rails (>= 6)
-  selenium-webdriver
+  selenium-webdriver (~> 4.4)
   sentry-rails
   sentry-ruby
   sentry-sidekiq
