@@ -36,7 +36,7 @@ class UsersController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.csv { send_users_csv }
+      format.csv { send_csv }
     end
   end
 
@@ -95,8 +95,8 @@ class UsersController < ApplicationController
     end
   end
 
-  def send_users_csv
-    send_data generate_users_csv.csv, filename: generate_users_csv.filename
+  def send_csv
+    send_data generate_csv.csv, filename: generate_csv.filename
   end
 
   def csv_exporter
@@ -107,8 +107,8 @@ class UsersController < ApplicationController
     end
   end
 
-  def generate_users_csv
-    @generate_users_csv ||= csv_exporter.call(
+  def generate_csv
+    @generate_csv ||= csv_exporter.call(
       users: @users,
       structure: department_level? ? @department : @organisation,
       motif_category: @current_motif_category

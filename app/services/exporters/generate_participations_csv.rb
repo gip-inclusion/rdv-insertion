@@ -103,7 +103,7 @@ module Exporters
     end
 
     def resource_human_name
-      "participations"
+      "rdvs"
     end
 
     def rdv_date(participation)

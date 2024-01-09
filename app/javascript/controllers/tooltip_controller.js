@@ -20,7 +20,7 @@ export default class extends Controller {
   csvExportUsers() {
     tippy(this.element, {
       content:
-        "Les bénéficiaires seront exportés en fonction du contexte et des éventuels filtres sélectionnés",
+        "Les usagers seront exportés en fonction du contexte et des éventuels filtres sélectionnés",
       placement: "bottom",
     });
   }
@@ -28,7 +28,7 @@ export default class extends Controller {
   csvExportParticipations() {
     tippy(this.element, {
       content:
-        "Les participations seront exportées en fonction du contexte et des éventuels filtres sélectionnés",
+        "Les RDVs seront exportés en fonction du contexte et des éventuels filtres sélectionnés",
       placement: "bottom",
     });
   }

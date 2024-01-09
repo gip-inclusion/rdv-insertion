@@ -73,7 +73,7 @@ describe Exporters::GenerateParticipationsCsv, type: :service do
       end
 
       it "generates a filename" do
-        expect(subject.filename).to eq("Export_participations_rsa_orientation_organisation_drome_rsa.csv")
+        expect(subject.filename).to eq("Export_rdvs_rsa_orientation_organisation_drome_rsa.csv")
       end
 
       it "generates headers" do # rubocop:disable RSpec/ExampleLength
@@ -204,7 +204,7 @@ describe Exporters::GenerateParticipationsCsv, type: :service do
         end
 
         it "generates the right filename" do
-          expect(subject.filename).to eq("Export_participations_organisation_drome_rsa.csv")
+          expect(subject.filename).to eq("Export_rdvs_organisation_drome_rsa.csv")
         end
 
         it "generates headers" do
