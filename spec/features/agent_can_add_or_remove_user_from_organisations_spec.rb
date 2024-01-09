@@ -168,7 +168,7 @@ describe "Agents can add or remove user from organisations", js: true do
       stub_delete_user_profile = stub_request(
         :delete, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/user_profiles"
       ).with(
-        headers: { "Content-Type" => "application/json" }.merge(shared_secret_session_hash(agent)),
+        headers: { "Content-Type" => "application/json" }.merge(shared_secret_credentials_hash(agent)),
         query: {
           "user_id" => rdv_solidarites_user_id, "organisation_id" => organisation.rdv_solidarites_organisation_id
         }
@@ -212,7 +212,7 @@ describe "Agents can add or remove user from organisations", js: true do
       stub_delete_user_profile = stub_request(
         :delete, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/user_profiles"
       ).with(
-        headers: { "Content-Type" => "application/json" }.merge(shared_secret_session_hash(agent)),
+        headers: { "Content-Type" => "application/json" }.merge(shared_secret_credentials_hash(agent)),
         query: {
           "user_id" => rdv_solidarites_user_id, "organisation_id" => organisation.rdv_solidarites_organisation_id
         }

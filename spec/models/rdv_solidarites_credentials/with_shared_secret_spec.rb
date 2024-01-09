@@ -1,4 +1,4 @@
-describe RdvSolidaritesSession::WithSharedSecret do
+describe RdvSolidaritesCredentials::WithSharedSecret do
   subject do
     described_class.new(
       uid: uid, x_agent_auth_signature: x_agent_auth_signature
@@ -22,7 +22,7 @@ describe RdvSolidaritesSession::WithSharedSecret do
     before { allow(Current).to receive(:agent).and_return(agent) }
 
     context "when required attributes are present and signature is valid" do
-      it "session is valid" do
+      it "credentials are valid" do
         expect(subject).to be_valid
       end
     end
@@ -30,7 +30,7 @@ describe RdvSolidaritesSession::WithSharedSecret do
     context "when uid is missing" do
       let!(:uid) { nil }
 
-      it "session is invalid" do
+      it "credentials are invalid" do
         expect(subject).not_to be_valid
       end
     end
@@ -38,7 +38,7 @@ describe RdvSolidaritesSession::WithSharedSecret do
     context "when x_agent_auth_signature is missing" do
       let!(:x_agent_auth_signature) { nil }
 
-      it "session is invalid" do
+      it "credentials are invalid" do
         expect(subject).not_to be_valid
       end
     end
@@ -46,15 +46,15 @@ describe RdvSolidaritesSession::WithSharedSecret do
     context "when x_agent_auth_signature is invalid" do
       let(:x_agent_auth_signature) { "invalid_signature" }
 
-      it "session is invalid" do
+      it "credentials are invalid" do
         expect(subject).not_to be_valid
       end
     end
   end
 
-  describe "#credentials" do
+  describe "#to_h" do
     it "returns a hash with uid and x_agent_auth_signature" do
-      expect(subject.credentials).to eq(
+      expect(subject.to_h).to eq(
         {
           "uid" => uid,
           "x_agent_auth_signature" => x_agent_auth_signature

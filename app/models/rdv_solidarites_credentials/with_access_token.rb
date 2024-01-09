@@ -1,6 +1,7 @@
-module RdvSolidaritesSession
+module RdvSolidaritesCredentials
   class WithAccessToken < Base
     def initialize(uid:, client:, access_token:)
+      super()
       @uid = uid
       @client = client
       @access_token = access_token
@@ -10,7 +11,7 @@ module RdvSolidaritesSession
       required_attributes_present? && token_valid?
     end
 
-    def credentials
+    def to_h
       {
         "uid" => @uid,
         "client" => @client,
