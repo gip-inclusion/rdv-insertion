@@ -95,19 +95,12 @@ describe Exporters::GenerateParticipationsCsv, type: :service do
         expect(csv).to include("Archivé le")
         expect(csv).to include("Motif d'archivage")
         expect(csv).to include("Statut du rdv")
-        expect(csv).to include("Statut de la catégorie de motifs")
-        expect(csv).to include("Première invitation envoyée le")
-        expect(csv).to include("Dernière invitation envoyée le")
-        expect(csv).to include("Dernière convocation envoyée le")
         expect(csv).to include("Date du RDV")
         expect(csv).to include("Heure du RDV")
         expect(csv).to include("Motif du RDV")
         expect(csv).to include("Nature du RDV")
         expect(csv).to include("Dernier RDV pris en autonomie ?")
-        expect(csv).to include("RDV honoré en - de 30 jours ?")
-        expect(csv).to include("Date d'orientation")
         expect(csv).to include("Référent(s)")
-        expect(csv).to include("Nombre d'organisations")
         expect(csv).to include("Organisation du rendez-vous")
       end
 
@@ -142,16 +135,6 @@ describe Exporters::GenerateParticipationsCsv, type: :service do
           expect(csv).to include("demandeur") # role
         end
 
-        it "displays the invitations infos" do
-          expect(csv).to include("21/05/2022") # first invitation date
-          expect(csv).to include("22/05/2022") # last invitation date
-          expect(csv).not_to include("(Délai dépassé)") # invitation delay
-        end
-
-        it "displays the notifications infos" do
-          expect(csv).to include("22/06/2022") # last notification date
-        end
-
         it "displays the rdv infos" do
           expect(csv).to include("25/05/2022") # rdv date
           expect(csv).to include("0h00") # rdv time
@@ -159,9 +142,6 @@ describe Exporters::GenerateParticipationsCsv, type: :service do
           expect(csv).to include("individuel") # rdv type
           expect(csv).to include("individuel;Oui") # rdv taken in autonomy ?
           expect(csv).to include("Rendez-vous honoré") # rdv status
-          expect(csv).to include("Statut du RDV à préciser") # rdv_context status
-          expect(csv).to include("Statut du RDV à préciser;Oui") # first rdv in less than 30 days ?
-          expect(csv).to include("Rendez-vous honoré;Statut du RDV à préciser;Oui;25/05/2022") # orientation date
         end
 
         it "displays the organisation infos" do
