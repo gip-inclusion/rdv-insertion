@@ -33,10 +33,6 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentRoleJob do
   end
 
   describe "#perform" do
-    before do
-      allow_any_instance_of(described_class).to receive(:sleep)
-    end
-
     it "upserts an agent_role record" do
       expect(UpsertRecordJob).to receive(:perform_async)
         .with(
@@ -111,6 +107,11 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentRoleJob do
       end
     end
 
+    it "assigns the rdv solidarites agent role id" do
+      subject
+      expect(agent_role.reload.rdv_solidarites_agent_role_id).to eq(rdv_solidarites_agent_role_id)
+    end
+
     context "when the agent cannot be found" do
       let!(:meta) do
         {
@@ -121,7 +122,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentRoleJob do
       end
 
       before do
-        allow(Agent).to receive(:find_by).and_return(nil, agent)
+        allow(Agent).to receive(:find_by).and_return(nil, nil, agent)
         allow(UpsertRecord).to receive(:call).and_return(OpenStruct.new(success?: true))
       end
 

@@ -6,6 +6,9 @@ module InboundWebhooks
         @meta = meta.deep_symbolize_keys
         return if organisation.blank? || @data[:access_level] == "intervenant"
 
+        # This is necessary when the agent role has been created through rdv-i without the rdv-s record
+        # when importing an organisation
+        assign_rdv_solidarites_agent_role_id if agent_role
         event == "destroyed" ? remove_agent_from_org : upsert_agent_role
       end
 
@@ -49,6 +52,10 @@ module InboundWebhooks
           rdv_solidarites_attributes: @data[:agent],
           additional_attributes: { last_webhook_update_received_at: @meta[:timestamp] }
         )
+      end
+
+      def assign_rdv_solidarites_agent_role_id
+        agent_role.update!(rdv_solidarites_agent_role_id: @data[:id])
       end
 
       def event
