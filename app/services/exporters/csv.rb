@@ -2,12 +2,6 @@ require "csv"
 
 module Exporters
   class Csv < BaseService
-    def initialize(users:, structure: nil, motif_category: nil)
-      @users = users
-      @structure = structure
-      @motif_category = motif_category
-    end
-
     def call
       preload_associations
       result.filename = filename

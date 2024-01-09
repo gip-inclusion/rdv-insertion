@@ -1,6 +1,12 @@
 # rubocop:disable Metrics/ClassLength
 module Exporters
   class GenerateUsersCsv < Csv
+    def initialize(users:, structure: nil, motif_category: nil)
+      @users = users
+      @structure = structure
+      @motif_category = motif_category
+    end
+
     protected
 
     def preload_associations
