@@ -3,7 +3,7 @@ class ArchivesController < ApplicationController
     @archive = Archive.new(**archive_params)
     authorize @archive
     if @archive.save
-      render json: { success: true, archive: @archive }
+      render json: { success: true, archive: @archive, redirect_path: structure_user_path(archive_params[:user_id]) }
     else
       render json: { success: false, errors: @archive.errors.full_messages }, status: :unprocessable_entity
     end
@@ -13,7 +13,7 @@ class ArchivesController < ApplicationController
     @archive = Archive.find(params[:id])
     authorize @archive
     if @archive.destroy
-      render json: { success: true, archive: @archive }
+      render json: { success: true, archive: @archive, redirect_path: structure_user_path(@archive.user_id) }
     else
       render json: { success: false, errors: @archive.errors.full_messages }, status: :unprocessable_entity
     end

@@ -37,7 +37,7 @@ class InclusionConnectController < ApplicationController
   end
 
   def valid_state?
-    params[:state] == session[:ic_state]
+    ActiveSupport::SecurityUtils.secure_compare(params[:state], session[:ic_state])
   end
 
   def set_session_credentials

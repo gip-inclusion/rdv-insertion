@@ -64,7 +64,7 @@ module Api
       def call_invite_user_service_by(format)
         InviteUser.call(
           user: @user, organisations: [@organisation], motif_category_attributes:,
-          invitation_attributes: invitation_attributes.merge(format:, help_phone_number: @organisation.phone_number)
+          invitation_attributes: invitation_attributes.merge(format:)
         )
       end
 

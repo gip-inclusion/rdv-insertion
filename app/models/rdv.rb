@@ -12,7 +12,6 @@ class Rdv < ApplicationRecord
   after_commit :refresh_context_status, on: [:create, :update]
 
   belongs_to :organisation
-  has_one :department, through: :organisation
   belongs_to :motif
   belongs_to :lieu, optional: true
 
@@ -36,7 +35,7 @@ class Rdv < ApplicationRecord
   enum created_by: { agent: 0, user: 1, file_attente: 2, prescripteur: 3 }, _prefix: :created_by
 
   delegate :presential?, :by_phone?, :collectif?, to: :motif
-  delegate :rdv_solidarites_organisation_id, to: :organisation
+  delegate :department, :rdv_solidarites_organisation_id, to: :organisation
   delegate :name, to: :motif, prefix: true
   delegate :instruction_for_rdv, to: :motif
 

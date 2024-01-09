@@ -197,12 +197,11 @@ describe "Users API", swagger_doc: "v1/api.json" do
           nir: generate_random_nir
         }
       end
-      let!(:help_phone_number) { "0134499424" }
       let!(:email_attributes) do
-        { help_phone_number:, format: "email" }
+        { format: "email" }
       end
       let!(:sms_attributes) do
-        { help_phone_number:, format: "sms" }
+        { format: "sms" }
       end
 
       let!(:motif_category_attributes) { { name: "RSA orientation" } }

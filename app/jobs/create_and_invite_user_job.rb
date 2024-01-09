@@ -42,10 +42,7 @@ class CreateAndInviteUserJob < ApplicationJob
     InviteUserJob.perform_async(
       @user.id,
       @organisation.id,
-      @invitation_attributes.merge(
-        format: invitation_format,
-        help_phone_number: @organisation.phone_number
-      ),
+      @invitation_attributes.merge(format: invitation_format),
       @motif_category_attributes
     )
   end

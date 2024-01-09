@@ -1,6 +1,6 @@
 module User::TextHelper
   def full_name
-    "#{title.capitalize} #{first_name.capitalize} #{last_name.upcase}"
+    "#{short_title.capitalize} #{first_name.capitalize} #{last_name.upcase}"
   end
 
   def to_s
@@ -8,7 +8,7 @@ module User::TextHelper
   end
 
   def short_title
-    title == "monsieur" ? "M" : "Mme"
+    title == "monsieur" ? "M." : "Mme"
   end
 
   def conjugate(past_participle)

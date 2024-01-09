@@ -6,10 +6,8 @@ import deleteArchive from "../react/actions/deleteArchive";
 export default class extends Controller {
   connect() {
     this.userId = this.element.dataset.userId;
-    this.organisationId = this.element.dataset.organisationId;
     this.departmentId = this.element.dataset.departmentId;
     this.archiveId = this.element.dataset.archiveId;
-    this.navigationLevel = this.element.dataset.navigationLevel;
   }
 
   async create() {
@@ -59,11 +57,7 @@ export default class extends Controller {
 
   handleResult(result) {
     if (result.success) {
-      if (this.navigationLevel === "department") {
-        window.location.replace(`/departments/${this.departmentId}/users/${this.userId}`);
-      } else {
-        window.location.replace(`/organisations/${this.organisationId}/users/${this.userId}`);
-      }
+      window.location.replace(result.redirect_path);
     } else {
       Swal.fire("Impossible d'archiver le dossier", result.errors[0], "error");
     }
