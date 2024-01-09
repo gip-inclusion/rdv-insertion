@@ -30,7 +30,7 @@ module Exporters
       )
     end
 
-    def headers # rubocop:disable Metrics/AbcSize
+    def headers
       [User.human_attribute_name(:title),
        User.human_attribute_name(:last_name),
        User.human_attribute_name(:first_name),

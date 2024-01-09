@@ -76,7 +76,7 @@ describe Exporters::GenerateParticipationsCsv, type: :service do
         expect(subject.filename).to eq("Export_rdvs_rsa_orientation_organisation_drome_rsa.csv")
       end
 
-      it "generates headers" do # rubocop:disable RSpec/ExampleLength
+      it "generates headers" do
         expect(csv).to start_with("\uFEFF")
         expect(csv).to include("Civilité")
         expect(csv).to include("Nom")
