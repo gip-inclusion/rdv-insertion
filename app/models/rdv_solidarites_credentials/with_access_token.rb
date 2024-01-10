@@ -1,8 +1,7 @@
 module RdvSolidaritesCredentials
   class WithAccessToken < Base
     def initialize(uid:, client:, access_token:)
-      super()
-      @uid = uid
+      super(uid:)
       @client = client
       @access_token = access_token
     end
@@ -31,6 +30,10 @@ module RdvSolidaritesCredentials
 
       response_body = JSON.parse(validate_token.body)
       response_body["data"]["uid"] == @uid
+    end
+
+    def rdv_solidarites_client
+      @rdv_solidarites_client ||= RdvSolidaritesClient.new(rdv_solidarites_credentials: to_h)
     end
   end
 end
