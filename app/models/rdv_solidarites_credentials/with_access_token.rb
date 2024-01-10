@@ -1,7 +1,7 @@
 module RdvSolidaritesCredentials
   class WithAccessToken < Base
-    def initialize(uid:, client:, access_token:)
-      super(uid:)
+    def initialize(uid:, client:, access_token:) # rubocop:disable Lint/MissingSuper
+      @uid = uid
       @client = client
       @access_token = access_token
     end
