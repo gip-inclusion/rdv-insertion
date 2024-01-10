@@ -18,7 +18,7 @@
     <%= render "users/user_icon", user: @user %> <%= @user.to_s %>
   </h4>
   <div class="col-sm-4 text-end">
-    <%= render "users/archiving_button" %>
+    <%= render "users/archiving_button", user: @user, department: @department, archive: @user.archive_for(@department.id) %>
   </div>
 </div>
 
