@@ -55,7 +55,7 @@ module InboundWebhooks
       end
 
       def assign_rdv_solidarites_agent_role_id
-        agent_role.update!(rdv_solidarites_agent_role_id: @data[:id])
+        agent_role.update!(rdv_solidarites_agent_role_id: @data[:id]) if agent_role.rdv_solidarites_agent_role_id.nil?
       end
 
       def event

@@ -23,7 +23,9 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentRoleJob do
     create(:organisation, rdv_solidarites_organisation_id:, id: 923, name: "Pôle Parcours")
   end
   let!(:agent) { create(:agent, rdv_solidarites_agent_id: rdv_solidarites_agent_id) }
-  let!(:agent_role) { create(:agent_role, organisation: organisation, agent: agent) }
+  let!(:agent_role) do
+    create(:agent_role, organisation: organisation, agent: agent, rdv_solidarites_agent_role_id: nil)
+  end
   let!(:meta) do
     {
       "model" => "AgentRole",
@@ -41,6 +43,11 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentRoleJob do
             last_webhook_update_received_at: "2023-02-09 11:17:22 +0200" }
         )
       subject
+    end
+
+    it "assigns the rdv solidarites agent role id" do
+      subject
+      expect(agent_role.reload.rdv_solidarites_agent_role_id).to eq(rdv_solidarites_agent_role_id)
     end
 
     context "for destroyed event" do
@@ -105,11 +112,6 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentRoleJob do
         expect(UpsertRecordJob).not_to receive(:perform_async)
         subject
       end
-    end
-
-    it "assigns the rdv solidarites agent role id" do
-      subject
-      expect(agent_role.reload.rdv_solidarites_agent_role_id).to eq(rdv_solidarites_agent_role_id)
     end
 
     context "when the agent cannot be found" do
