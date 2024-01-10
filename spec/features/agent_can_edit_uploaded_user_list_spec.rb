@@ -1,4 +1,4 @@
-describe "Agents can upload user list", js: true do
+describe "Agents can upload user list", :js do
   include_context "with file configuration"
 
   let!(:agent) { create(:agent, organisations: [organisation]) }

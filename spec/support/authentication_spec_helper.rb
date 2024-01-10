@@ -21,18 +21,12 @@ module AuthenticationSpecHelper
       .to_return(body: { "data" => { "uid" => agent.email } }.to_json)
   end
 
-  # rubocop:disable Metrics/AbcSize
   def mock_rdv_solidarites_session(agent_email)
     allow(RdvSolidaritesSessionFactory).to receive(:create_with)
       .with(**session_hash(agent_email))
       .and_return(rdv_solidarites_session)
-    allow(rdv_solidarites_session).to receive(:valid?)
-      .and_return(true)
-    allow(rdv_solidarites_session).to receive(:uid).and_return(agent_email)
-    allow(rdv_solidarites_session).to receive(:to_h)
-      .and_return(session_hash(agent_email))
+    allow(rdv_solidarites_session).to receive_messages(valid?: true, uid: agent_email, to_h: session_hash(agent_email))
   end
-  # rubocop:enable Metrics/AbcSize
 
   def rdv_solidarites_session
     @rdv_solidarites_session ||= instance_double(RdvSolidaritesSession::WithAccessToken)

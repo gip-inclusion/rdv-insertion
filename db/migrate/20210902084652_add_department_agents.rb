@@ -6,7 +6,7 @@ class AddDepartmentAgents < ActiveRecord::Migration[6.1]
     end
 
     up_only do
-      Agent.all.each do |agent|
+      Agent.find_each do |agent|
         agent.update(departments: [Department.find(agent.department_id)]) unless agent.department_id.nil?
       end
     end

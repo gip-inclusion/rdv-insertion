@@ -56,9 +56,7 @@ module ApiSpecHelper
       allow(RdvSolidaritesSessionFactory).to receive(:create_with)
         .with(uid:, client:, access_token: auth_headers["access-token"])
         .and_return(rdv_solidarites_session)
-      allow(rdv_solidarites_session).to receive(:to_h).and_return(auth_headers)
-      allow(rdv_solidarites_session).to receive(:valid?).and_return(true)
-      allow(rdv_solidarites_session).to receive(:uid).and_return(uid)
+      allow(rdv_solidarites_session).to receive_messages(to_h: auth_headers, valid?: true, uid: uid)
     end
   end
   # rubocop:enable Metrics/AbcSize

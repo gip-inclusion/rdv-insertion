@@ -1,5 +1,5 @@
 Sidekiq.configure_server do |config|
-  config.redis = { url: (ENV["REDIS_URL"] || "redis://localhost:6379/0") }
+  config.redis = { url: ENV["REDIS_URL"] || "redis://localhost:6379/0" }
   config.logger.level = Logger::INFO
 
   Rails.logger = Sidekiq.logger
@@ -17,5 +17,5 @@ Sidekiq.logger.level = Logger::WARN if Rails.env.test?
 Sidekiq.strict_args!(false)
 
 Sidekiq.configure_client do |config|
-  config.redis = { url: (ENV["REDIS_URL"] || "redis://localhost:6379/0") }
+  config.redis = { url: ENV["REDIS_URL"] || "redis://localhost:6379/0" }
 end
