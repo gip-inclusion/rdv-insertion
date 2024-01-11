@@ -18,22 +18,16 @@ module Exporters
       "\uFEFF#{csv}"
     end
 
-    def department_level?
-      @structure.instance_of?(Department)
+    def each_element(&)
+      raise NoMethodError
     end
 
-    def department_id
-      department_level? ? @structure.id : @structure.department_id
+    def preload_associations
+      raise NoMethodError
     end
 
-    def filename
-      if @structure.present?
-        "Export_#{resource_human_name}_#{@motif_category.present? ? "#{@motif_category.short_name}_" : ''}" \
-          "#{@structure.class.model_name.human.downcase}_" \
-          "#{@structure.name.parameterize(separator: '_')}.csv"
-      else
-        "Export_#{resource_human_name}_#{Time.zone.now.to_i}.csv"
-      end
+    def resource_human_name
+      raise NoMethodError
     end
   end
 end

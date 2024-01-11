@@ -1,19 +1,19 @@
 module Exporters
-  class GenerateParticipationsCsv < GenerateUsersCsv
+  class GenerateUsersParticipationsCsv < GenerateUsersCsv
     private
 
     def each_element(&)
-      @users.find_each do |user|
-        user.participations.to_a.each(&)
+      @users.each do |user|
+        user.participations.joins(:organisation).where(organisations: @agent.organisations).to_a.each(&)
       end
     end
 
     def preload_associations
       @users =
         if @motif_category
-          @users.preload(:archives, :tags, :referents, :organisations)
+          User.preload(:archives, :tags, :referents, :organisations)
         else
-          @users.preload(:invitations, :notifications, :archives, :organisations, :tags, :referents)
+          User.preload(:invitations, :notifications, :archives, :organisations, :tags, :referents)
         end
 
       @users = @users.preload(
@@ -28,6 +28,7 @@ module Exporters
           }
         ]
       )
+      @users = @users.find(@user_ids)
     end
 
     def headers

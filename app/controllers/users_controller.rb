@@ -36,7 +36,13 @@ class UsersController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.csv { send_csv }
+      format.csv do
+        generate_csv
+        flash[:success] = "Le fichier CSV est en train d'être généré." \
+                          " Il sera envoyé l'adresse email #{current_agent.email}." \
+                          " Pensez à vérifier vos spams."
+        redirect_to structure_users_path(**params.to_unsafe_h.except(:format))
+      end
     end
   end
 
@@ -95,23 +101,21 @@ class UsersController < ApplicationController
     end
   end
 
-  def send_csv
-    send_data generate_csv.csv, filename: generate_csv.filename
-  end
-
   def csv_exporter
     if params[:export_type] == "participations"
-      Exporters::GenerateParticipationsCsv
+      Exporters::SendUsersParticipationsCsvJob
     else
-      Exporters::GenerateUsersCsv
+      Exporters::SendUsersCsvJob
     end
   end
 
   def generate_csv
-    @generate_csv ||= csv_exporter.call(
-      users: @users,
-      structure: department_level? ? @department : @organisation,
-      motif_category: @current_motif_category
+    csv_exporter.perform_async(
+      @users.map(&:id),
+      department_level? ? "Department" : "Organisation",
+      department_level? ? @department.id : @organisation.id,
+      @current_motif_category&.id,
+      current_agent.id
     )
   end
 

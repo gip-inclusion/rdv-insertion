@@ -4,7 +4,7 @@ class CsvExportMailer < ApplicationMailer
     mail(
       to: email,
       subject: "Export csv d'usagers",
-      body: ""
+      body: "Voici l'export CSV demandé sur Rdv-Insertion."
     )
   end
 end

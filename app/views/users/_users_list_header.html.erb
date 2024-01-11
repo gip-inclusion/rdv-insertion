@@ -122,12 +122,12 @@
     </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="csvExportButton">
       <li>
-        <%= link_to(structure_users_path(**params.to_unsafe_h.merge(format: "csv")), class: "dropdown-item", data: { controller: "tooltip", action: "mouseover->tooltip#csvExportUsers"}, target: "_blank") do %>
+        <%= link_to(structure_users_path(**params.to_unsafe_h.merge(format: "csv")), class: "dropdown-item", data: { controller: "tooltip", action: "mouseover->tooltip#csvExportUsers"}) do %>
            Export des usagers
         <% end %>
       </li>
       <li>
-        <%= link_to(structure_users_path(**params.to_unsafe_h.merge(format: "csv", export_type: "participations")), class: "dropdown-item", data: { controller: "tooltip", action: "mouseover->tooltip#csvExportParticipations"}, target: "_blank") do %>
+        <%= link_to(structure_users_path(**params.to_unsafe_h.merge(format: "csv", export_type: "participations")), class: "dropdown-item", data: { controller: "tooltip", action: "mouseover->tooltip#csvExportParticipations"}) do %>
           Export de l'historique des rendez-vous
         <% end %>
       </li>

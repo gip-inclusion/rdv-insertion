@@ -1,30 +1,53 @@
 # rubocop:disable Metrics/ClassLength
 module Exporters
   class GenerateUsersCsv < Csv
-    def initialize(users:, structure: nil, motif_category: nil)
-      @users = users
+    def initialize(user_ids:, structure: nil, motif_category: nil, agent: nil)
+      @user_ids = user_ids
       @structure = structure
       @motif_category = motif_category
+      @agent = agent
     end
 
     protected
 
+    def department_level?
+      @structure.instance_of?(Department)
+    end
+
+    def department_id
+      department_level? ? @structure.id : @structure.department_id
+    end
+
+    def filename
+      if @structure.present?
+        "Export_#{resource_human_name}_#{@motif_category.present? ? "#{@motif_category.short_name}_" : ''}" \
+          "#{@structure.class.model_name.human.downcase}_" \
+          "#{@structure.name.parameterize(separator: '_')}.csv"
+      else
+        "Export_#{resource_human_name}_#{Time.zone.now.to_i}.csv"
+      end
+    end
+
+    def resource_human_name
+      "beneficiaires"
+    end
+
     def each_element(&)
-      @users.find_each(&)
+      @users.each(&)
     end
 
     def preload_associations
       @users =
         if @motif_category
-          @users.preload(
+          User.preload(
             :archives, :organisations, :tags, :referents, :rdvs,
             rdv_contexts: [:invitations, :notifications, { rdvs: [:motif, :participations, :users] }]
-          )
+          ).find(@user_ids)
         else
-          @users.preload(
+          User.preload(
             :invitations, :notifications, :archives, :organisations, :tags, :referents,
             rdvs: [:motif, :participations, :users]
-          )
+          ).find(@user_ids)
         end
     end
 
@@ -96,10 +119,6 @@ module Exporters
        user.organisations.to_a.count,
        user.organisations.map(&:name).join(", "),
        user.tags.pluck(:value).join(", ")]
-    end
-
-    def resource_human_name
-      "beneficiaires"
     end
 
     def human_last_participation_status(user)
