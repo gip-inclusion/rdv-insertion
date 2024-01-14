@@ -2,3 +2,14 @@ fr:
   activerecord:
     models:
       department: Département
+    attributes:
+      department:
+        pronoun: Pronom
+        name: Nom
+        capital: Chef-lieu
+        number: Numéro
+        region: Région
+        email: Email
+        phone_number: Téléphone
+        carnet_de_bord_deploiement_id: ID du territoire Carnet de bord
+        display_in_stats: Afficher dans les statistiques

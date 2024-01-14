@@ -12,6 +12,15 @@ def check_auth(username, password, service)
 end
 
 Rails.application.routes.draw do
+  namespace :admin do
+    resources :departments, only: [:index, :show, :new, :create, :edit, :update]
+    resources :organisations, only: [:index, :show, :new, :create, :edit, :update]
+    resources :users, only: [:index, :show, :edit, :update]
+    resources :motif_categories, only: [:index, :show, :new, :create]
+    resources :templates, only: [:index, :show]
+
+    root to: "organisations#index"
+  end
   mount Rswag::Api::Engine => '/api-docs'
   mount Rswag::Ui::Engine => '/api-docs'
 

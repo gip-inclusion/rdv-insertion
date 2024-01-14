@@ -30,11 +30,11 @@ class ConfigurationsController < ApplicationController
   def create
     @configuration = ::Configuration.new(organisation: @organisation)
     @configuration.assign_attributes(**configuration_params.compact_blank)
-    if @configuration.save
+    if create_configuration.success?
       flash.now[:success] = "La configuration a été créée avec succès"
       redirect_to organisation_configuration_path(@organisation, @configuration)
     else
-      flash.now[:error] = @configuration.errors.full_messages.to_sentence
+      flash.now[:error] = create_configuration.errors.join(",")
       render :new, status: :unprocessable_entity
     end
   end
@@ -65,6 +65,10 @@ class ConfigurationsController < ApplicationController
     configuration_params.to_h do |k, v|
       [k, k.to_s.include?("override") ? v.presence : v]
     end
+  end
+
+  def create_configuration
+    @create_configuration ||= Configurations::Create.call(configuration: @configuration)
   end
 
   def set_configuration

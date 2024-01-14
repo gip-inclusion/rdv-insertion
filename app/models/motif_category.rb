@@ -1,4 +1,8 @@
 class MotifCategory < ApplicationRecord
+  SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [
+    :name, :short_name
+  ].freeze
+
   has_many :configurations, dependent: :restrict_with_exception
   has_many :rdv_contexts, dependent: :restrict_with_exception
   has_many :motifs, dependent: :restrict_with_exception

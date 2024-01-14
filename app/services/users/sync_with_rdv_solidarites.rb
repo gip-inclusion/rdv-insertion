@@ -1,8 +1,7 @@
 module Users
   class SyncWithRdvSolidarites < BaseService
-    def initialize(user:, organisation:, rdv_solidarites_session:)
+    def initialize(user:, rdv_solidarites_session:)
       @user = user
-      @organisation = organisation
       @rdv_solidarites_session = rdv_solidarites_session
     end
 
