@@ -21,21 +21,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
           users: {
             type: "array",
             items: {
-              "$ref" => "#/components/schemas/user_params",
-              invitation: {
-                type: "object",
-                nullable: true,
-                properties: {
-                  rdv_solidarites_lieu_id: { type: "string", nullable: true },
-                  motif_category: {
-                    type: "object",
-                    nullable: true,
-                    properties: {
-                      name: { type: "string" }
-                    }
-                  }
-                }
-              }
+              "$ref" => "#/components/schemas/user_params"
             }
           },
           required: %w[users]
@@ -54,9 +40,14 @@ describe "Users API", swagger_doc: "v1/api.json" do
           birth_date: "11/03/1978",
           address: "13 rue de la République 13001 MARSEILLE",
           department_internal_id: "11111444",
-          nir: generate_random_nir
+          nir: generate_random_nir,
+          referents_to_add: [
+            { email: "agentreferent@nomdedomaine.fr" }
+          ]
         }
       end
+
+      let!(:agent_referent) { create(:agent, email: "agentreferent@nomdedomaine.fr", organisations: [organisation]) }
 
       let!(:user2_params) do
         {
@@ -139,6 +130,14 @@ describe "Users API", swagger_doc: "v1/api.json" do
           { users: 30.times.map { user1_params } }
         end
       end
+
+      it_behaves_like(
+        "an endpoint that returns 422 - unprocessable_entity",
+        "quand l'adresse mail du réferent ne correspond à aucun agent enregistré",
+        true
+      ) do
+        before { user1_params[:referents_to_add] = [{ email: "agentnontrouve@nomdedomaine.fr" }] }
+      end
     end
   end
 
@@ -158,20 +157,6 @@ describe "Users API", swagger_doc: "v1/api.json" do
         type: "object",
         properties: {
           user: { "$ref" => "#/components/schemas/user_params" },
-          invitation: {
-            type: "object",
-            nullable: true,
-            properties: {
-              rdv_solidarites_lieu_id: { type: "string", nullable: true },
-              motif_category: {
-                type: "object",
-                nullable: true,
-                properties: {
-                  name: { type: "string" }
-                }
-              }
-            }
-          },
           required: %w[users]
         }
       }
@@ -196,7 +181,10 @@ describe "Users API", swagger_doc: "v1/api.json" do
           birth_date: "11/03/1978",
           address: "13 rue de la République 13001 MARSEILLE",
           department_internal_id: "11111444",
-          nir: generate_random_nir
+          nir: generate_random_nir,
+          referents_to_add: [
+            { email: "agentreferent@nomdedomaine.fr" }
+          ]
         }
       end
       let!(:email_attributes) do
@@ -205,6 +193,8 @@ describe "Users API", swagger_doc: "v1/api.json" do
       let!(:sms_attributes) do
         { format: "sms" }
       end
+
+      let!(:agent_referent) { create(:agent, email: "agentreferent@nomdedomaine.fr", organisations: [organisation]) }
 
       let!(:motif_category_attributes) { { name: "RSA orientation" } }
 
@@ -242,7 +232,9 @@ describe "Users API", swagger_doc: "v1/api.json" do
         schema type: "object",
                properties: {
                  success: { type: "boolean" },
-                 user: { "$ref" => "#/components/schemas/user" },
+                 user: {
+                   "$ref" => "#/components/schemas/user_with_referents"
+                 },
                  invitations: {
                    type: "array",
                    items: { "$ref" => "#/components/schemas/invitation" }
@@ -283,6 +275,31 @@ describe "Users API", swagger_doc: "v1/api.json" do
         before do
           allow(InviteUser).to receive(:call)
             .and_return(OpenStruct.new(success?: false, errors: ["l'invitation n'a pas pu être délivrée"]))
+        end
+      end
+
+      it_behaves_like(
+        "an endpoint that returns 422 - unprocessable_entity",
+        "quand l'adresse mail du réferent ne correspond à aucun agent enregistré",
+        true
+      ) do
+        let!(:user_attributes) do
+          {
+            first_name: "Didier",
+            last_name: "Drogba",
+            title: "monsieur",
+            affiliation_number: "10492390",
+            role: "demandeur",
+            email: "didier@drogba.com",
+            phone_number: "0782605941",
+            birth_date: "11/03/1978",
+            address: "13 rue de la République 13001 MARSEILLE",
+            department_internal_id: "11111444",
+            nir: generate_random_nir,
+            referents_to_add: [
+              { email: "agentnontrouve@nomdedomaine.fr" }
+            ]
+          }
         end
       end
     end
