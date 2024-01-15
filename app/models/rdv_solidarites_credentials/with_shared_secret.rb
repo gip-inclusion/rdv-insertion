@@ -1,7 +1,7 @@
 module RdvSolidaritesCredentials
   class WithSharedSecret < Base
-    def initialize(uid:, x_agent_auth_signature:) # rubocop:disable Lint/MissingSuper
-      @uid = uid
+    def initialize(uid:, x_agent_auth_signature:)
+      super(uid:)
       @x_agent_auth_signature = x_agent_auth_signature
     end
 
