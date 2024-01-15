@@ -25,7 +25,7 @@ module AuthenticatedControllerConcern
   end
 
   def logged_in?
-    current_agent.present? && rdv_solidarites_credentials.valid?
+    current_agent.present? && session[:rdv_solidarites_credentials].present? && rdv_solidarites_credentials.valid?
   end
 
   def current_agent
