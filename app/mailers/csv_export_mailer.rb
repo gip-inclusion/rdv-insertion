@@ -3,8 +3,7 @@ class CsvExportMailer < ApplicationMailer
     attachments[filename] = { mime_type: "text/csv", content: csv }
     mail(
       to: email,
-      subject: "Export csv d'usagers",
-      body: "Voici l'export CSV demandé sur Rdv-Insertion."
+      subject: "[RDV-Insertion] Export CSV"
     )
   end
 end

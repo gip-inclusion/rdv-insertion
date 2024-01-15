@@ -34,17 +34,17 @@ describe "Agents can download csv from index page", js: true do
 
   shared_examples "downloading csv" do
     it "can download participation csv" do
+      expect(Exporters::SendUsersParticipationsCsvJob).to receive(:perform_async).once
       find_by_id("csvExportButton").click
 
       click_link("Export de l'historique des rendez-vous")
-      expect(downloaded_content).to include("Nature du RDV")
     end
 
     it "can download users csv" do
+      expect(Exporters::SendUsersCsvJob).to receive(:perform_async).once
       find_by_id("csvExportButton").click
 
       click_link("Export des usagers")
-      expect(downloaded_content).to include("Nature du dernier RDV")
     end
   end
 
