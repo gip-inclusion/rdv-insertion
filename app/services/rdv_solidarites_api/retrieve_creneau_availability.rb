@@ -1,8 +1,7 @@
 module RdvSolidaritesApi
   class RetrieveCreneauAvailability < Base
-    def initialize(link_params:, rdv_solidarites_session:)
+    def initialize(link_params:)
       @link_params = link_params
-      @rdv_solidarites_session = rdv_solidarites_session
     end
 
     def call

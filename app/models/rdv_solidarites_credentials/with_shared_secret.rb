@@ -1,7 +1,7 @@
-module RdvSolidaritesSession
+module RdvSolidaritesCredentials
   class WithSharedSecret < Base
     def initialize(uid:, x_agent_auth_signature:)
-      @uid = uid
+      super(uid:)
       @x_agent_auth_signature = x_agent_auth_signature
     end
 

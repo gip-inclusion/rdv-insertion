@@ -1,13 +1,11 @@
 describe Users::Upsert, type: :service do
   subject do
-    described_class.call(user_attributes:, organisation:, rdv_solidarites_session:)
+    described_class.call(user_attributes:, organisation:)
   end
 
   let!(:user_attributes) { { first_name: "Noah", last_name: "Baumbach" } }
   let!(:organisation) { create(:organisation, department:) }
   let!(:department) { create(:department) }
-  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
-
   let!(:user) { create(:user) }
 
   describe "#call" do
@@ -16,7 +14,7 @@ describe Users::Upsert, type: :service do
         .with(attributes: user_attributes, department_id: department.id)
         .and_return(OpenStruct.new(success?: true, user:))
       allow(Users::Save).to receive(:call)
-        .with(user:, organisation:, rdv_solidarites_session:)
+        .with(user:, organisation:)
         .and_return(OpenStruct.new(success?: true, user:))
     end
 
@@ -42,7 +40,7 @@ describe Users::Upsert, type: :service do
 
     it "calls the save service" do
       expect(Users::Save).to receive(:call)
-        .with(user:, organisation:, rdv_solidarites_session:)
+        .with(user:, organisation:)
       subject
     end
 
@@ -73,7 +71,7 @@ describe Users::Upsert, type: :service do
     context "when the save service fails" do
       before do
         allow(Users::Save).to receive(:call)
-          .with(user:, organisation:, rdv_solidarites_session:)
+          .with(user:, organisation:)
           .and_return(OpenStruct.new(success?: false, user:, errors: ["something else happened"]))
       end
 

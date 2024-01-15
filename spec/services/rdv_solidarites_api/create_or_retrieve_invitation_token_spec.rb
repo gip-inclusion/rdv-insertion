@@ -1,21 +1,16 @@
 describe RdvSolidaritesApi::CreateOrRetrieveInvitationToken, type: :service do
   subject do
-    described_class.call(
-      rdv_solidarites_session: rdv_solidarites_session,
-      rdv_solidarites_user_id: rdv_solidarites_user_id
-    )
+    described_class.call(rdv_solidarites_user_id:)
   end
 
-  let!(:rdv_solidarites_user_id) { 27 }
-  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
   let!(:rdv_solidarites_client) { instance_double(RdvSolidaritesClient) }
+  let!(:rdv_solidarites_user_id) { 27 }
 
   describe "#call" do
     let!(:invitation_token) { "sometoken" }
 
     before do
-      allow(rdv_solidarites_session).to receive(:rdv_solidarites_client)
-        .and_return(rdv_solidarites_client)
+      allow(Current).to receive(:rdv_solidarites_client).and_return(rdv_solidarites_client)
       allow(rdv_solidarites_client).to receive(:invite_user)
         .and_return(OpenStruct.new(success?: true, body: { "invitation_token" => invitation_token }.to_json))
     end
@@ -47,10 +42,11 @@ describe RdvSolidaritesApi::CreateOrRetrieveInvitationToken, type: :service do
       end
     end
 
-    context "when the session is nil" do
-      let!(:rdv_solidarites_session) { nil }
-
-      before { allow(Sentry).to receive(:capture_message) }
+    context "when the client is nil" do
+      before do
+        allow(Current).to receive(:rdv_solidarites_client).and_return(nil)
+        allow(Sentry).to receive(:capture_message)
+      end
 
       it("is a failure") { is_a_failure }
 

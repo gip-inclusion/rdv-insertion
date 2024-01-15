@@ -1,23 +1,17 @@
 describe Users::RemoveFromOrganisation, type: :service do
   subject do
-    described_class.call(
-      organisation: organisation,
-      user: user,
-      rdv_solidarites_session: rdv_solidarites_session
-    )
+    described_class.call(organisation:, user:)
   end
 
   let!(:organisation) { create(:organisation) }
   let!(:user) { create(:user, organisations: [organisation]) }
-  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
 
   describe "#call" do
     before do
       allow(RdvSolidaritesApi::DeleteUserProfile).to receive(:call)
         .with(
           rdv_solidarites_user_id: user.rdv_solidarites_user_id,
-          rdv_solidarites_organisation_id: organisation.rdv_solidarites_organisation_id,
-          rdv_solidarites_session: rdv_solidarites_session
+          rdv_solidarites_organisation_id: organisation.rdv_solidarites_organisation_id
         ).and_return(OpenStruct.new(success?: true))
     end
 
@@ -50,8 +44,7 @@ describe Users::RemoveFromOrganisation, type: :service do
         allow(RdvSolidaritesApi::DeleteUserProfile).to receive(:call)
           .with(
             rdv_solidarites_user_id: user.rdv_solidarites_user_id,
-            rdv_solidarites_organisation_id: organisation.rdv_solidarites_organisation_id,
-            rdv_solidarites_session: rdv_solidarites_session
+            rdv_solidarites_organisation_id: organisation.rdv_solidarites_organisation_id
           ).and_return(OpenStruct.new(success?: false, errors: ["impossible to remove"]))
       end
 

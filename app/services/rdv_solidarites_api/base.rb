@@ -1,8 +1,8 @@
 module RdvSolidaritesApi
   class Base < BaseService
-    attr_reader :rdv_solidarites_session
-
-    delegate :rdv_solidarites_client, to: :rdv_solidarites_session
+    def rdv_solidarites_client
+      Current.rdv_solidarites_client
+    end
 
     protected
 
@@ -11,7 +11,7 @@ module RdvSolidaritesApi
     end
 
     def request!
-      verify_rdv_solidarites_session!
+      verify_rdv_solidarites_client!
 
       result.status = rdv_solidarites_response.status
       return if rdv_solidarites_response.success?
@@ -27,23 +27,15 @@ module RdvSolidaritesApi
       fail!
     end
 
-    def verify_rdv_solidarites_session!
-      return unless @rdv_solidarites_session.nil?
+    def verify_rdv_solidarites_client!
+      return unless rdv_solidarites_client.nil?
 
-      Sentry.capture_message("rdv_solidarites_session should not be nil")
+      Sentry.capture_message("rdv_solidarites_client should not be nil")
       fail!("Impossible d'appeler RDV-Solidarités. L'équipe a été notifée de l'erreur et tente de la résoudre.")
     end
 
     def rdv_solidarites_response
       raise NoMethodError
-    end
-
-    # this session is used to certify the API calls are emited by the rdv-insertion servers
-    def rdv_solidarites_session_with_shared_secret
-      RdvSolidaritesSession::WithSharedSecret.new(
-        uid: Current.agent.email,
-        x_agent_auth_signature: Current.agent.signature_auth_with_shared_secret
-      )
     end
   end
 end

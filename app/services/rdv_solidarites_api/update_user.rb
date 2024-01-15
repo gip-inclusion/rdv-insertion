@@ -1,8 +1,7 @@
 module RdvSolidaritesApi
   class UpdateUser < Base
-    def initialize(user_attributes:, rdv_solidarites_session:, rdv_solidarites_user_id:)
+    def initialize(user_attributes:, rdv_solidarites_user_id:)
       @user_attributes = user_attributes
-      @rdv_solidarites_session = rdv_solidarites_session
       @rdv_solidarites_user_id = rdv_solidarites_user_id
     end
 

@@ -1,8 +1,7 @@
 module Invitations
   class AssignLinkAndToken < BaseService
-    def initialize(invitation:, rdv_solidarites_session:)
+    def initialize(invitation:)
       @invitation = invitation
-      @rdv_solidarites_session = rdv_solidarites_session
     end
 
     def call
@@ -20,8 +19,7 @@ module Invitations
       Invitation.with_advisory_lock "retrieving_token_for_user_#{@invitation.user_id}" do
         @retrieve_rdv_solidarites_token ||= call_service!(
           RdvSolidaritesApi::CreateOrRetrieveInvitationToken,
-          rdv_solidarites_user_id: @invitation.user.rdv_solidarites_user_id,
-          rdv_solidarites_session: @rdv_solidarites_session
+          rdv_solidarites_user_id: @invitation.user.rdv_solidarites_user_id
         )
       end
     end

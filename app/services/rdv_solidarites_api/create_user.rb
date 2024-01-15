@@ -1,8 +1,7 @@
 module RdvSolidaritesApi
   class CreateUser < Base
-    def initialize(user_attributes:, rdv_solidarites_session:)
+    def initialize(user_attributes:)
       @user_attributes = user_attributes
-      @rdv_solidarites_session = rdv_solidarites_session
     end
 
     def call

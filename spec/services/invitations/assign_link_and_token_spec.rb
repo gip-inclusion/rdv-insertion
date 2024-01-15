@@ -1,6 +1,6 @@
 describe Invitations::AssignLinkAndToken, type: :service do
   subject do
-    described_class.call(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
+    described_class.call(invitation:)
   end
 
   let!(:organisation) { create(:organisation) }
@@ -8,8 +8,6 @@ describe Invitations::AssignLinkAndToken, type: :service do
   let!(:user) do
     create(:user, invitations: [], rdv_solidarites_user_id: rdv_solidarites_user_id)
   end
-
-  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
   let!(:invitation) do
     build(:invitation, user: user, rdv_solidarites_token: nil, link: nil)
   end
@@ -21,9 +19,7 @@ describe Invitations::AssignLinkAndToken, type: :service do
     before do
       travel_to(Time.zone.parse("2022-04-05 13:45"))
       allow(RdvSolidaritesApi::CreateOrRetrieveInvitationToken).to receive(:call)
-        .with(
-          rdv_solidarites_user_id: rdv_solidarites_user_id, rdv_solidarites_session: rdv_solidarites_session
-        )
+        .with(rdv_solidarites_user_id:)
         .and_return(OpenStruct.new(success?: true, invitation_token: rdv_solidarites_token))
       allow(Invitations::ComputeLink).to receive(:call)
         .with(invitation: invitation)
@@ -36,7 +32,7 @@ describe Invitations::AssignLinkAndToken, type: :service do
 
     it "retrieves an invitation token" do
       expect(RdvSolidaritesApi::CreateOrRetrieveInvitationToken).to receive(:call)
-        .with(rdv_solidarites_user_id: rdv_solidarites_user_id, rdv_solidarites_session: rdv_solidarites_session)
+        .with(rdv_solidarites_user_id:)
       subject
     end
 
@@ -117,9 +113,7 @@ describe Invitations::AssignLinkAndToken, type: :service do
 
       before do
         allow(RdvSolidaritesApi::CreateOrRetrieveInvitationToken).to receive(:call)
-          .with(
-            rdv_solidarites_user_id: rdv_solidarites_user_id, rdv_solidarites_session: rdv_solidarites_session
-          )
+          .with(rdv_solidarites_user_id:)
           .and_return(OpenStruct.new(success?: true, invitation_token: rdv_solidarites_token))
       end
 

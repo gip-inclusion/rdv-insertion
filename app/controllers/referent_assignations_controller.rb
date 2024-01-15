@@ -70,15 +70,11 @@ class ReferentAssignationsController < ApplicationController
   end
 
   def assign_referent
-    @assign_referent ||= Users::AssignReferent.call(
-      user: @user, agent: @agent, rdv_solidarites_session: rdv_solidarites_session
-    )
+    @assign_referent ||= Users::AssignReferent.call(user: @user, agent: @agent)
   end
 
   def remove_referent
-    @remove_referent ||= Users::RemoveReferent.call(
-      user: @user, agent: @agent, rdv_solidarites_session: rdv_solidarites_session
-    )
+    @remove_referent ||= Users::RemoveReferent.call(user: @user, agent: @agent)
   end
 
   def set_agent
