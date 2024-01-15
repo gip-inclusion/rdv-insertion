@@ -7,11 +7,14 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentRoleJob do
     {
       "id" => rdv_solidarites_agent_role_id,
       "access_level" => "basic",
-      "agent" => { id: rdv_solidarites_agent_id },
+      "agent" => agent_attributes,
       "organisation" => { id: rdv_solidarites_organisation_id }
     }.deep_symbolize_keys
   end
 
+  let!(:agent_attributes) do
+    { id: rdv_solidarites_agent_id, first_name: "Josiane", last_name: "balasko" }
+  end
   let!(:rdv_solidarites_agent_role_id) { 17 }
   let!(:rdv_solidarites_organisation_id) { 222 }
   let!(:rdv_solidarites_agent_id) { 455 }
@@ -20,7 +23,9 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentRoleJob do
     create(:organisation, rdv_solidarites_organisation_id:, id: 923, name: "Pôle Parcours")
   end
   let!(:agent) { create(:agent, rdv_solidarites_agent_id: rdv_solidarites_agent_id) }
-  let!(:agent_role) { create(:agent_role, organisation: organisation, agent: agent) }
+  let!(:agent_role) do
+    create(:agent_role, organisation: organisation, agent: agent, rdv_solidarites_agent_role_id: nil)
+  end
   let!(:meta) do
     {
       "model" => "AgentRole",
@@ -30,10 +35,6 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentRoleJob do
   end
 
   describe "#perform" do
-    before do
-      allow_any_instance_of(described_class).to receive(:sleep)
-    end
-
     it "upserts an agent_role record" do
       expect(UpsertRecordJob).to receive(:perform_async)
         .with(
@@ -42,6 +43,11 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentRoleJob do
             last_webhook_update_received_at: "2023-02-09 11:17:22 +0200" }
         )
       subject
+    end
+
+    it "assigns the rdv solidarites agent role id" do
+      subject
+      expect(agent_role.reload.rdv_solidarites_agent_role_id).to eq(rdv_solidarites_agent_role_id)
     end
 
     context "for destroyed event" do
@@ -109,7 +115,6 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentRoleJob do
     end
 
     context "when the agent cannot be found" do
-      let!(:agent) { create(:agent, rdv_solidarites_agent_id: 4444) }
       let!(:meta) do
         {
           "model" => "AgentRole",
@@ -118,15 +123,36 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentRoleJob do
         }.deep_symbolize_keys
       end
 
-      it "raises an error" do
+      before do
+        allow(Agent).to receive(:find_by).and_return(nil, nil, agent)
+        allow(UpsertRecord).to receive(:call).and_return(OpenStruct.new(success?: true))
+      end
+
+      it "upserts the agent and the role" do
+        expect(UpsertRecord).to receive(:call)
+          .with(
+            klass: Agent,
+            rdv_solidarites_attributes: agent_attributes,
+            additional_attributes: { last_webhook_update_received_at: meta[:timestamp] }
+          )
         expect(UpsertRecordJob).to receive(:perform_async)
           .with(
-            "Agent", data[:agent], { last_webhook_update_received_at: "2022-05-30 14:44:22 +0200" }
+            "AgentRole",
+            data,
+            { organisation_id: organisation.id, agent_id: agent.id, last_webhook_update_received_at: meta[:timestamp] }
           )
-        expect { subject }.to raise_error(
-          StandardError,
-          "Could not find agent 455. Launched upsert agent job and will retry"
-        )
+        subject
+      end
+
+      context "when the agent upsert fails" do
+        before do
+          allow(Agent).to receive(:find_by).and_return(nil)
+          allow(UpsertRecord).to receive(:call).and_return(OpenStruct.new(success?: false))
+        end
+
+        it "raises an error" do
+          expect { subject }.to raise_error(StandardError, "Could not upsert agent #{agent_attributes}")
+        end
       end
     end
 

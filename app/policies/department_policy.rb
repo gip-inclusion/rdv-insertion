@@ -7,6 +7,10 @@ class DepartmentPolicy < ApplicationPolicy
 
   def index? = upload?
 
+  def parcours?
+    record.number.in?(ENV["DEPARTMENTS_WHERE_PARCOURS_ENABLED"].split(","))
+  end
+
   class Scope < Scope
     def resolve
       Department.where(id: pundit_user.organisations.pluck(:department_id))

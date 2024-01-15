@@ -245,7 +245,6 @@ describe OrganisationsController do
       it "renders the new form with the errors" do
         post :create, params: create_params
 
-        expect(unescaped_response_body).to match(/ID de l'orga RDVS/)
         expect(unescaped_response_body).to match(
           /L'ID de l'organisation RDV-Solidarités n'a pas été renseigné correctement/
         )

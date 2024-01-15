@@ -1,8 +1,6 @@
 <%= render "common/remote_modal", title: "Lier une organisation" do %>
   <%= simple_form_for(organisation, url: organisations_path, html: { method: :post }) do |f| %>
-    <% if local_assigns[:errors].present? %>
-      <%= render "common/error_list", errors: errors %>
-    <% end %>
+    <%= turbo_frame_tag "error_list" %>
     <div class="d-flex justify-content-between">
       ID de l'orga RDVS <%= f.input :rdv_solidarites_organisation_id %>
     </div>

@@ -27,7 +27,9 @@ module FilterRdvSolidaritesWebhooksConcern
   end
 
   def webhook_correctly_signed?
-    OpenSSL::HMAC.hexdigest("SHA256", ENV["RDV_SOLIDARITES_SECRET"], request.body.read) ==
+    ActiveSupport::SecurityUtils.secure_compare(
+      OpenSSL::HMAC.hexdigest("SHA256", ENV["RDV_SOLIDARITES_SECRET"], request.body.read),
       request.headers["X-Lapin-Signature"]
+    )
   end
 end

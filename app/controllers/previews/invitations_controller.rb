@@ -17,7 +17,7 @@ module Previews
         user: @user, organisations: [@organisation],
         rdv_context: RdvContext.new(motif_category: @motif_category),
         valid_until: @configuration.number_of_days_before_action_required.days.from_now,
-        help_phone_number: @organisation.phone_number,
+        help_phone_number: @configuration.phone_number,
         department: @department,
         uuid: SecureRandom.send(:choose, [*"A".."Z", *"0".."9"], 8)
       )

@@ -23,6 +23,7 @@ class Organisation < ApplicationRecord
   has_many :agent_roles, dependent: :destroy
   has_many :users_organisations, dependent: :destroy
   has_many :tag_organisations, dependent: :destroy
+  has_many :orientations, dependent: :restrict_with_error
 
   has_many :users, through: :users_organisations
   has_many :agents, through: :agent_roles
