@@ -5,6 +5,8 @@
       <%= render "common/attribute_display", record: organisation, attribute: :email %>
       <%= render "common/attribute_display", record: organisation, attribute: :phone_number %>
       <%= render "common/attribute_display", record: organisation, attribute: :independent_from_cd, tooltip: true %>
+      <%= render "common/attribute_display", record: organisation, attribute: :slug, tooltip: true %>
+      <%= render "common/attribute_display", record: organisation, attribute: :code_safir %>
       <div class="col-12 col-md-6 px-5 mb-3">
         <h4>Logo</h4>
         <% if organisation.logo.path %>
@@ -14,7 +16,6 @@
           <p>Contactez l'équipe rdv-insertion pour en ajouter un</p>
         <% end %>
       </div>
-      <%= render "common/attribute_display", record: organisation, attribute: :slug, tooltip: true %>
     </div>
   </div>
   <div class="d-flex justify-content-end mb-4">
