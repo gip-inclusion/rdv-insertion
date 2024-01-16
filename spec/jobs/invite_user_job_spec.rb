@@ -1,7 +1,7 @@
 describe InviteUserJob do
   subject do
     described_class.new.perform(
-      user_id, organisation_id, invitation_attributes, motif_category_attributes, rdv_solidarites_session_credentials
+      user_id, organisation_id, invitation_attributes, motif_category_attributes
     )
   end
 
@@ -11,10 +11,6 @@ describe InviteUserJob do
   let!(:user) { create(:user, id: user_id) }
   let!(:organisation) do
     create(:organisation, id: organisation_id, department: department)
-  end
-  let!(:agent) { create(:agent, email: "janedoe@gouv.fr") }
-  let!(:rdv_solidarites_session_credentials) do
-    { "client" => "someclient", "uid" => agent.email.to_s, "access_token" => "sometoken" }.symbolize_keys
   end
   let!(:invitation_format) { "sms" }
   let!(:invitation_attributes) do
@@ -26,30 +22,21 @@ describe InviteUserJob do
   end
   let!(:motif_category_attributes) { { short_name: "rsa_accompagnement" } }
 
-  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
-
   describe "#perform" do
     before do
-      allow(RdvSolidaritesSessionFactory).to receive(:create_with)
-        .with(rdv_solidarites_session_credentials).and_return(rdv_solidarites_session)
       allow(InviteUser).to receive(:call)
         .with(
           user:, organisations: [organisation], invitation_attributes:, motif_category_attributes:,
-          rdv_solidarites_session:, check_creneaux_availability: false
+          check_creneaux_availability: false
         )
         .and_return(OpenStruct.new(success?: true))
-    end
-
-    it "sets the current agent" do
-      subject
-      expect(Current.agent).to eq(agent)
     end
 
     it "invites the user" do
       expect(InviteUser).to receive(:call)
         .with(
           user:, organisations: [organisation], invitation_attributes:, motif_category_attributes:,
-          rdv_solidarites_session:, check_creneaux_availability: false
+          check_creneaux_availability: false
         )
       subject
     end

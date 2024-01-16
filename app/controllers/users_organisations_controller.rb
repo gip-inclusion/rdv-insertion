@@ -85,16 +85,14 @@ class UsersOrganisationsController < ApplicationController
   def save_user
     @save_user ||= Users::Save.call(
       user: @user,
-      organisation: @organisation_to_add,
-      rdv_solidarites_session: rdv_solidarites_session
+      organisation: @organisation_to_add
     )
   end
 
   def remove_user_from_org
     @remove_user_from_org ||= Users::RemoveFromOrganisation.call(
       user: @user,
-      organisation: @organisation_to_remove,
-      rdv_solidarites_session: rdv_solidarites_session
+      organisation: @organisation_to_remove
     )
   end
 end

@@ -1,6 +1,8 @@
 class Agent < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [:email, :first_name, :last_name].freeze
 
+  include Agent::RdvSolidaritesClient
+
   validates :email, presence: true, uniqueness: true
   validates :rdv_solidarites_agent_id, uniqueness: true, allow_nil: true
 
@@ -30,15 +32,5 @@ class Agent < ApplicationRecord
 
   def to_s
     "#{first_name} #{last_name}"
-  end
-
-  def signature_auth_with_shared_secret
-    payload = {
-      id: rdv_solidarites_agent_id,
-      first_name: first_name,
-      last_name: last_name,
-      email: email
-    }
-    OpenSSL::HMAC.hexdigest("SHA256", ENV.fetch("SHARED_SECRET_FOR_AGENTS_AUTH"), payload.to_json)
   end
 end

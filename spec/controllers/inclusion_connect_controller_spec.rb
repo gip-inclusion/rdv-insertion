@@ -94,7 +94,7 @@ describe InclusionConnectController do
       expect(response).to redirect_to(root_path)
       expect(request.session[:inclusion_connect_token_id]).to eq("123")
       expect(request.session[:agent_id]).to eq(agent.id)
-      expect(request.session[:rdv_solidarites]).to eq(
+      expect(request.session[:rdv_solidarites_credentials]).to eq(
         {
           uid: agent.email,
           x_agent_auth_signature: OpenSSL::HMAC.hexdigest("SHA256", "S3cr3T", payload.to_json),
@@ -114,7 +114,7 @@ describe InclusionConnectController do
       expect(response).to redirect_to(root_path)
       expect(request.session[:inclusion_connect_token_id]).to eq("123")
       expect(request.session[:agent_id]).to eq(agent.id)
-      expect(request.session[:rdv_solidarites]).to eq(
+      expect(request.session[:rdv_solidarites_credentials]).to eq(
         {
           uid: agent.email,
           x_agent_auth_signature: OpenSSL::HMAC.hexdigest("SHA256", "S3cr3T", payload.to_json),

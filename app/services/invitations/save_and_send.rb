@@ -1,8 +1,7 @@
 module Invitations
   class SaveAndSend < BaseService
-    def initialize(invitation:, rdv_solidarites_session: nil, check_creneaux_availability: true)
+    def initialize(invitation:, check_creneaux_availability: true)
       @invitation = invitation
-      @rdv_solidarites_session = rdv_solidarites_session
       @check_creneaux_availability = check_creneaux_availability
     end
 
@@ -50,7 +49,6 @@ module Invitations
     def retrieve_creneau_availability
       @retrieve_creneau_availability ||= call_service!(
         RdvSolidaritesApi::RetrieveCreneauAvailability,
-        rdv_solidarites_session: @rdv_solidarites_session,
         link_params: @invitation.link_params
       )
     end
@@ -60,8 +58,7 @@ module Invitations
 
       call_service!(
         Invitations::AssignLinkAndToken,
-        invitation: @invitation,
-        rdv_solidarites_session: @rdv_solidarites_session
+        invitation: @invitation
       )
     end
 

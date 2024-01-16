@@ -1,4 +1,4 @@
-describe RdvSolidaritesSession::WithAccessToken do
+describe RdvSolidaritesCredentials::WithAccessToken do
   subject do
     described_class.new(
       uid: uid, client: client, access_token: access_token
@@ -18,7 +18,7 @@ describe RdvSolidaritesSession::WithAccessToken do
           }.to_json))
       end
 
-      it "session is valid" do
+      it "credentials are valid" do
         expect(subject).to be_valid
       end
     end
@@ -32,7 +32,7 @@ describe RdvSolidaritesSession::WithAccessToken do
             }.to_json))
         end
 
-        it "session is invalid" do
+        it "credentials are invalid" do
           expect(subject).not_to be_valid
         end
       end
@@ -41,7 +41,7 @@ describe RdvSolidaritesSession::WithAccessToken do
     context "when at least one required attribute is missing" do
       let(:uid) { nil }
 
-      it "session is invalid" do
+      it "credentials are invalid" do
         expect(subject).not_to be_valid
       end
     end
@@ -52,7 +52,7 @@ describe RdvSolidaritesSession::WithAccessToken do
           .and_return(OpenStruct.new(success?: false))
       end
 
-      it "session is invalid" do
+      it "credentials are invalid" do
         expect(subject).not_to be_valid
       end
     end

@@ -35,7 +35,7 @@ describe SendInvitationReminderJob do
     travel_to(Time.zone.parse("2022-05-04 11:00"))
     allow(Invitation).to receive(:new).and_return(invitation)
     allow(Invitations::SaveAndSend).to receive(:call)
-      .with(invitation: invitation, check_creneaux_availability: false)
+      .with(invitation:, check_creneaux_availability: false)
       .and_return(OpenStruct.new(success?: true))
     allow(MattermostClient).to receive(:send_to_notif_channel)
   end
