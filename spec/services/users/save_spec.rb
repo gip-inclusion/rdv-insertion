@@ -1,22 +1,15 @@
 describe Users::Save, type: :service do
   subject do
-    described_class.call(
-      rdv_solidarites_session: rdv_solidarites_session,
-      organisation: organisation, user: user
-    )
+    described_class.call(organisation:, user:)
   end
 
   let!(:rdv_solidarites_organisation_id) { 1010 }
   let!(:organisation) do
     create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id)
   end
-
   let!(:motif_category) { create(:motif_category) }
   let!(:configuration) { create(:configuration, organisation: organisation, motif_category: motif_category) }
-
   let!(:user) { create(:user, organisations: [organisation], rdv_solidarites_user_id: nil) }
-
-  let(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
 
   describe "#call" do
     before do
@@ -41,10 +34,7 @@ describe Users::Save, type: :service do
 
     it "syncs the user with Rdv Solidarites" do
       expect(Users::SyncWithRdvSolidarites).to receive(:call)
-        .with(
-          user: user,
-          rdv_solidarites_session: rdv_solidarites_session
-        )
+        .with(user: user)
       subject
     end
 
@@ -53,7 +43,7 @@ describe Users::Save, type: :service do
     end
 
     context "when organisation is nil" do
-      subject { described_class.call(rdv_solidarites_session: rdv_solidarites_session, user: user) }
+      subject { described_class.call(user: user) }
 
       it "is a success" do
         is_a_success

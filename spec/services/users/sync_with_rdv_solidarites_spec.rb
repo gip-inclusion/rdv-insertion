@@ -1,8 +1,6 @@
 describe Users::SyncWithRdvSolidarites, type: :service do
   subject do
-    described_class.call(
-      user: user, rdv_solidarites_session: rdv_solidarites_session
-    )
+    described_class.call(user:)
   end
 
   let!(:agent) { create(:agent) }
@@ -32,7 +30,6 @@ describe Users::SyncWithRdvSolidarites, type: :service do
     )
   end
 
-  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
   let!(:rdv_solidarites_user) { instance_double(RdvSolidarites::User) }
 
   describe "#call" do
@@ -69,7 +66,6 @@ describe Users::SyncWithRdvSolidarites, type: :service do
         expect(RdvSolidaritesApi::UpdateUser).to receive(:call)
           .with(
             user_attributes: rdv_solidarites_user_attributes,
-            rdv_solidarites_session: rdv_solidarites_session,
             rdv_solidarites_user_id: rdv_solidarites_user_id
           )
         subject
@@ -144,8 +140,7 @@ describe Users::SyncWithRdvSolidarites, type: :service do
           .with(
             user_attributes:
             rdv_solidarites_user_attributes.merge(organisation_ids: [rdv_solidarites_organisation_id])
-                                           .merge(referent_agent_ids: [agent.rdv_solidarites_agent_id]),
-            rdv_solidarites_session: rdv_solidarites_session
+                                           .merge(referent_agent_ids: [agent.rdv_solidarites_agent_id])
           )
         subject
       end
@@ -185,8 +180,7 @@ describe Users::SyncWithRdvSolidarites, type: :service do
             .with(
               user_attributes:
               rdv_solidarites_user_attributes.merge(organisation_ids: [rdv_solidarites_organisation_id])
-                                             .merge(referent_agent_ids: [agent.rdv_solidarites_agent_id]),
-              rdv_solidarites_session: rdv_solidarites_session
+                                             .merge(referent_agent_ids: [agent.rdv_solidarites_agent_id])
             )
           subject
         end
@@ -201,8 +195,7 @@ describe Users::SyncWithRdvSolidarites, type: :service do
               user_attributes:
                 rdv_solidarites_user_attributes.except(:email)
                                                .merge(organisation_ids: [rdv_solidarites_organisation_id])
-                                               .merge(referent_agent_ids: [agent.rdv_solidarites_agent_id]),
-              rdv_solidarites_session: rdv_solidarites_session
+                                               .merge(referent_agent_ids: [agent.rdv_solidarites_agent_id])
             )
           subject
         end
@@ -258,7 +251,6 @@ describe Users::SyncWithRdvSolidarites, type: :service do
               expect(RdvSolidaritesApi::UpdateUser).to receive(:call)
                 .with(
                   user_attributes: rdv_solidarites_user_attributes,
-                  rdv_solidarites_session: rdv_solidarites_session,
                   rdv_solidarites_user_id: 42
                 )
               subject

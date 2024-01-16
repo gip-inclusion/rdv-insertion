@@ -10,4 +10,13 @@ class RdvBlueprint < Blueprinter::Base
     association :users, blueprint: UserBlueprint
     association :organisation, blueprint: OrganisationBlueprint
   end
+
+  view :webhook_tmp do
+    field :rdv_solidarites_rdv_id, name: :id
+    association :agents, blueprint: AgentBlueprint, view: :webhook_tmp
+    association :lieu, blueprint: LieuBlueprint, view: :webhook_tmp
+    association :motif, blueprint: MotifBlueprint, view: :webhook_tmp
+    association :users, blueprint: UserBlueprint, view: :webhook_tmp
+    association :organisation, blueprint: OrganisationBlueprint, view: :webhook_tmp
+  end
 end

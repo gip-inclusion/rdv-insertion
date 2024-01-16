@@ -18,18 +18,11 @@ module Admin
     end
 
     def create_organisation
-      @create_organisation ||= Organisations::Create.call(
-        organisation: resource,
-        current_agent: current_agent,
-        rdv_solidarites_session: rdv_solidarites_session
-      )
+      @create_organisation ||= Organisations::Create.call(organisation: resource)
     end
 
     def update_organisation
-      @update_organisation ||= Organisations::Update.call(
-        organisation: requested_resource,
-        rdv_solidarites_session: rdv_solidarites_session
-      )
+      @update_organisation ||= Organisations::Update.call(organisation: requested_resource)
     end
 
     def default_sorting_attribute

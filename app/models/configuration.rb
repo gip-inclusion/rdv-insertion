@@ -1,4 +1,6 @@
 class Configuration < ApplicationRecord
+  include PhoneNumberValidation
+
   belongs_to :motif_category
   belongs_to :file_configuration
   belongs_to :organisation
@@ -22,6 +24,10 @@ class Configuration < ApplicationRecord
 
   def periodic_invites_activated?
     day_of_the_month_periodic_invites.present? || number_of_days_between_periodic_invites.present?
+  end
+
+  def phone_number
+    attributes["phone_number"].presence || organisation.phone_number
   end
 
   private

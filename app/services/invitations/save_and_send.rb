@@ -1,21 +1,18 @@
 module Invitations
   class SaveAndSend < BaseService
-    def initialize(invitation:, rdv_solidarites_session: nil, check_creneaux_availability: true)
+    def initialize(invitation:, check_creneaux_availability: true)
       @invitation = invitation
-      @rdv_solidarites_session = rdv_solidarites_session
       @check_creneaux_availability = check_creneaux_availability
     end
 
     def call
-      Invitation.with_advisory_lock "invite_user_#{user.id}" do
-        Invitation.transaction do
-          assign_link_and_token
-          validate_invitation
-          verify_creneaux_are_available if @check_creneaux_availability
-          save_record!(@invitation)
-          send_invitation
-          assign_invitation_sent_at
-        end
+      Invitation.transaction do
+        assign_link_and_token
+        validate_invitation
+        verify_creneaux_are_available if @check_creneaux_availability
+        save_record!(@invitation)
+        send_invitation
+        assign_invitation_sent_at
       end
       result.invitation = @invitation
     end
@@ -52,7 +49,6 @@ module Invitations
     def retrieve_creneau_availability
       @retrieve_creneau_availability ||= call_service!(
         RdvSolidaritesApi::RetrieveCreneauAvailability,
-        rdv_solidarites_session: @rdv_solidarites_session,
         link_params: @invitation.link_params
       )
     end
@@ -61,9 +57,8 @@ module Invitations
       return if @invitation.link? && @invitation.rdv_solidarites_token?
 
       call_service!(
-        Invitations::AssignAttributes,
-        invitation: @invitation,
-        rdv_solidarites_session: @rdv_solidarites_session
+        Invitations::AssignLinkAndToken,
+        invitation: @invitation
       )
     end
 

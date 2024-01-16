@@ -1,8 +1,7 @@
 module Users
   class Save < BaseService
-    def initialize(user:, rdv_solidarites_session:, organisation: nil)
+    def initialize(user:, organisation: nil)
       @user = user
-      @rdv_solidarites_session = rdv_solidarites_session
       @organisation = organisation
     end
 
@@ -25,8 +24,7 @@ module Users
     def sync_with_rdv_solidarites
       call_service!(
         Users::SyncWithRdvSolidarites,
-        user: @user,
-        rdv_solidarites_session: @rdv_solidarites_session
+        user: @user
       )
     end
 

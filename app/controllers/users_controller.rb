@@ -19,8 +19,7 @@ class UsersController < ApplicationController
                 :filter_users, :order_users,
                 for: :index
   before_action :set_user, :set_organisation, :set_department, :set_all_configurations,
-                :set_user_organisations, :set_user_rdv_contexts, :set_user_archive, :set_user_tags,
-                :set_back_to_users_list_url,
+                :set_user_archive, :set_user_tags, :set_back_to_users_list_url,
                 for: :show
   before_action :set_organisation, :set_department, :set_organisations,
                 for: [:new, :create]
@@ -109,6 +108,7 @@ class UsersController < ApplicationController
 
   def render_errors(errors)
     respond_to do |format|
+      format.turbo_stream { turbo_stream_prepend_flash_message(error: errors.join(", ")) }
       format.html do
         flash.now[:error] = errors.join(",")
         render(action_name == "update" ? :edit : :new, status: :unprocessable_entity)
@@ -127,23 +127,20 @@ class UsersController < ApplicationController
   def save_user
     @save_user ||= Users::Save.call(
       user: @user,
-      organisation: @organisation,
-      rdv_solidarites_session: rdv_solidarites_session
+      organisation: @organisation
     )
   end
 
   def upsert_user
     @upsert_user ||= Users::Upsert.call(
       user_attributes: user_params,
-      organisation: @organisation,
-      rdv_solidarites_session: rdv_solidarites_session
+      organisation: @organisation
     )
   end
 
   def set_user
     @user =
       policy_scope(User)
-      .preload(:invitations, organisations: [:department, :configurations])
       .where(current_organisations_filter)
       .find(params[:id])
   end
@@ -190,23 +187,18 @@ class UsersController < ApplicationController
   end
 
   def set_department
-    @department =
-      if department_level?
-        policy_scope(Department).find(params[:department_id])
-      else
-        @organisation.department
-      end
+    @department = policy_scope(Department).find(current_department_id)
   end
 
   def set_all_configurations
     @all_configurations =
-      if department_level?
-        (policy_scope(::Configuration).includes(:motif_category) & @department.configurations)
-          .uniq(&:motif_category_id)
-          .sort_by(&:department_position)
-      else
-        @organisation.configurations.includes(:motif_category).sort_by(&:position)
-      end
+      policy_scope(::Configuration).joins(:organisation)
+                                   .includes(:motif_category)
+                                   .where(current_organisation_filter)
+                                   .uniq(&:motif_category_id)
+
+    @all_configurations =
+      department_level? ? @all_configurations.sort_by(&:department_position) : @all_configurations.sort_by(&:position)
   end
 
   def set_current_configuration
@@ -221,23 +213,8 @@ class UsersController < ApplicationController
     @current_motif_category = @current_configuration&.motif_category
   end
 
-  def set_user_rdv_contexts
-    @rdv_contexts =
-      RdvContext.preload(
-        :invitations, :motif_category,
-        participations: [:notifications, { rdv: [:motif, :organisation] }]
-      ).where(
-        user: @user, motif_category: @all_configurations.map(&:motif_category)
-      ).sort_by { |rdv_context| @all_configurations.find_index { |c| c.motif_category == rdv_context.motif_category } }
-  end
-
   def set_user_archive
     @archive = Archive.find_by(user: @user, department: @department)
-  end
-
-  def set_user_organisations
-    @user_organisations =
-      policy_scope(Organisation).where(id: @user.organisation_ids, department: @department)
   end
 
   def set_users

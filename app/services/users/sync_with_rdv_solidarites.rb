@@ -1,8 +1,7 @@
 module Users
   class SyncWithRdvSolidarites < BaseService
-    def initialize(user:, rdv_solidarites_session:)
-      @user = user
-      @rdv_solidarites_session = rdv_solidarites_session
+    def initialize(user:)
+      @user = user.reload # we need to be sure the associations are correctly loaded
     end
 
     def call
@@ -63,8 +62,7 @@ module Users
         user_attributes:
           rdv_solidarites_user_attributes
             .merge(organisation_ids: rdv_solidarites_organisation_ids)
-            .merge(referent_agent_ids: referent_rdv_solidarites_ids),
-        rdv_solidarites_session: @rdv_solidarites_session
+            .merge(referent_agent_ids: referent_rdv_solidarites_ids)
       )
     end
 
@@ -88,7 +86,6 @@ module Users
       @update_rdv_solidarites_user ||= call_service!(
         RdvSolidaritesApi::UpdateUser,
         user_attributes: rdv_solidarites_user_attributes,
-        rdv_solidarites_session: @rdv_solidarites_session,
         rdv_solidarites_user_id: rdv_solidarites_user_id
       )
     end

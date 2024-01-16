@@ -4,7 +4,7 @@ class ConfigurationsController < ApplicationController
     :invite_to_user_organisations_only, :number_of_days_before_action_required,
     :day_of_the_month_periodic_invites, :number_of_days_between_periodic_invites, :motif_category_id,
     :template_rdv_title_override, :template_rdv_title_by_phone_override, :template_rdv_purpose_override,
-    :template_user_designation_override
+    :template_user_designation_override, :phone_number
   ].freeze
 
   include BackToListConcern

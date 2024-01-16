@@ -1,8 +1,7 @@
 module RdvSolidaritesApi
   class UpdateOrganisation < Base
-    def initialize(organisation_attributes:, rdv_solidarites_session:, rdv_solidarites_organisation_id:)
+    def initialize(organisation_attributes:, rdv_solidarites_organisation_id:)
       @organisation_attributes = organisation_attributes
-      @rdv_solidarites_session = rdv_solidarites_session
       @rdv_solidarites_organisation_id = rdv_solidarites_organisation_id
     end
 

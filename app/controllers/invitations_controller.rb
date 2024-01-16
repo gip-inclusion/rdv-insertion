@@ -30,7 +30,7 @@ class InvitationsController < ApplicationController
 
   def invitation_params
     params.require(:invitation).permit(
-      :format, :help_phone_number, :rdv_solidarites_lieu_id, { motif_category: [:id] }
+      :format, :rdv_solidarites_lieu_id, { motif_category: [:id] }
     ).to_h.deep_symbolize_keys
   end
 
@@ -41,8 +41,7 @@ class InvitationsController < ApplicationController
       user: @user,
       organisations: @organisations,
       invitation_attributes: invitation_params.except(:motif_category),
-      motif_category_attributes: invitation_params[:motif_category] || {},
-      rdv_solidarites_session:
+      motif_category_attributes: invitation_params[:motif_category] || {}
     )
   end
 

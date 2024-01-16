@@ -9,16 +9,11 @@ describe RdvSolidaritesApi::CreateMotifCategoryTerritory, type: :service do
   let!(:agent) { create(:agent) }
   let!(:motif_category_short_name) { "rsa_orientation" }
   let!(:organisation_id) { 44 }
-  let!(:rdv_solidarites_session_with_shared_secret) { instance_double(RdvSolidaritesSession::WithSharedSecret) }
   let!(:rdv_solidarites_client) { instance_double(RdvSolidaritesClient) }
 
   describe "#call" do
     before do
-      allow(Current).to receive(:agent).and_return(agent)
-      allow(RdvSolidaritesSession::WithSharedSecret).to receive(:new)
-        .and_return(rdv_solidarites_session_with_shared_secret)
-      allow(rdv_solidarites_session_with_shared_secret).to receive(:rdv_solidarites_client)
-        .and_return(rdv_solidarites_client)
+      allow(Current).to receive(:rdv_solidarites_client).and_return(rdv_solidarites_client)
       allow(rdv_solidarites_client).to receive(:create_motif_category_territory)
         .and_return(OpenStruct.new(success?: true))
     end

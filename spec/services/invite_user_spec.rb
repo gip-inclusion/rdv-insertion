@@ -1,8 +1,7 @@
 describe InviteUser, type: :service do
   subject do
     described_class.call(
-      user:, organisations:, invitation_attributes:, motif_category_attributes:, rdv_solidarites_session:,
-      check_creneaux_availability:
+      user:, organisations:, invitation_attributes:, motif_category_attributes:, check_creneaux_availability:
     )
   end
 
@@ -24,7 +23,6 @@ describe InviteUser, type: :service do
   let!(:motif_category_attributes) { { short_name: "rsa_accompagnement" } }
   let!(:rdv_context) { create(:rdv_context, user:, motif_category:) }
 
-  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
   let!(:invitation) { build(:invitation) }
   let!(:now) { Time.zone.parse("24/12/2022") }
 
@@ -44,14 +42,15 @@ describe InviteUser, type: :service do
       expect(Invitation).to receive(:new)
         .with(
           organisations: [organisation], user:, department:, rdv_context:, valid_until: 5.days.from_now,
-          rdv_with_referents: true, format: "sms", rdv_solidarites_lieu_id: 2
+          rdv_with_referents: true, format: "sms", rdv_solidarites_lieu_id: 2,
+          help_phone_number: organisation.phone_number
         )
       subject
     end
 
     it "saves and send the invitation" do
       expect(Invitations::SaveAndSend).to receive(:call)
-        .with(invitation:, rdv_solidarites_session:, check_creneaux_availability:)
+        .with(invitation:, check_creneaux_availability:)
       subject
     end
 
@@ -67,14 +66,15 @@ describe InviteUser, type: :service do
           expect(Invitation).to receive(:new)
             .with(
               organisations: [organisation], user:, department:, rdv_context:, valid_until: 5.days.from_now,
-              rdv_with_referents: true, format: "sms", rdv_solidarites_lieu_id: 2
+              rdv_with_referents: true, format: "sms", rdv_solidarites_lieu_id: 2,
+              help_phone_number: organisation.phone_number
             )
           subject
         end
 
         it "saves and send the invitation" do
           expect(Invitations::SaveAndSend).to receive(:call)
-            .with(invitation:, rdv_solidarites_session:, check_creneaux_availability:)
+            .with(invitation:, check_creneaux_availability:)
           subject
         end
       end
@@ -114,13 +114,30 @@ describe InviteUser, type: :service do
             expect(Invitation).to receive(:new)
               .with(
                 organisations: [organisation], user:, department:, rdv_context:, valid_until: 5.days.from_now,
-                rdv_with_referents: true, format: "sms", rdv_solidarites_lieu_id: 2
+                rdv_with_referents: true, format: "sms", rdv_solidarites_lieu_id: 2,
+                help_phone_number: organisation.phone_number
               )
             subject
           end
 
           it "saves and send the invitation" do
             expect(Invitations::SaveAndSend).to receive(:call)
+            subject
+          end
+        end
+
+        context "when the configuration has a custom phone number" do
+          let(:phone_number) { "0102030405" }
+
+          before { configuration.update!(phone_number:) }
+
+          it "invites with the proper phone number" do
+            expect(Invitation).to receive(:new)
+              .with(
+                organisations: [organisation], user:, department:, rdv_context:, valid_until: 5.days.from_now,
+                rdv_with_referents: true, format: "sms", rdv_solidarites_lieu_id: 2,
+                help_phone_number: phone_number
+              )
             subject
           end
         end
@@ -136,7 +153,8 @@ describe InviteUser, type: :service do
             expect(Invitation).to receive(:new)
               .with(
                 organisations:, user:, department:, rdv_context:, valid_until: 5.days.from_now,
-                rdv_with_referents: true, format: "sms", rdv_solidarites_lieu_id: 2
+                rdv_with_referents: true, format: "sms", rdv_solidarites_lieu_id: 2,
+                help_phone_number: organisation.phone_number
               )
             subject
           end

@@ -3,7 +3,6 @@ module RdvSolidaritesApi
     def initialize(motif_category_short_name:, organisation_id:)
       @motif_category_short_name = motif_category_short_name
       @organisation_id = organisation_id
-      @rdv_solidarites_session = rdv_solidarites_session_with_shared_secret
     end
 
     def call

@@ -92,10 +92,10 @@ describe "Super admin can manage users" do
 
     it "can navigate to a user edit page" do
       expect(page).to have_link(
-        "Modifier #{user.first_name} }", href: edit_admin_user_path(user)
+        "Modifier #{user.first_name} #{user.last_name}", href: edit_admin_user_path(user)
       )
 
-      click_link("Modifier #{user.first_name} }")
+      click_link("Modifier #{user.first_name} #{user.last_name}")
 
       expect(page).to have_current_path(edit_admin_user_path(user))
     end
@@ -117,7 +117,7 @@ describe "Super admin can manage users" do
 
     it "can edit a user" do
       expect(page).to have_current_path(edit_admin_user_path(user))
-      expect(page).to have_content("Modifier #{user.first_name} }")
+      expect(page).to have_content("Modifier #{user.first_name} #{user.last_name}")
       expect(page).to have_css("label[for=\"user_rdv_solidarites_user_id\"]", text: "ID de l'usager RDV-Solidarités")
       expect(page).to have_field("user[rdv_solidarites_user_id]", with: user.rdv_solidarites_user_id)
       expect(page).to have_css("label[for=\"user_title-selectized\"]", text: "Civilité")

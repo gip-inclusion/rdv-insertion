@@ -36,7 +36,7 @@ class SendInvitationReminderJob < ApplicationJob
 
   def save_and_send_invitation
     @save_and_send_invitation ||= Invitations::SaveAndSend.call(
-      invitation: invitation, check_creneaux_availability: false
+      invitation:, check_creneaux_availability: false
     )
   end
 

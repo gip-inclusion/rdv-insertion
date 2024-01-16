@@ -2,13 +2,13 @@ class ParticipationsController < ApplicationController
   before_action :set_participation, only: [:update]
 
   def update
-    @success = Participations::Update.call(
+    participation_update = Participations::Update.call(
       participation: @participation,
-      rdv_solidarites_session: rdv_solidarites_session,
       participation_params: participation_params
-    ).success?
+    )
 
-    flash.now[:error] = "Impossible de changer le statut de ce rendez-vous." unless @success
+    @success = participation_update.success?
+    flash.now[:error] = participation_update.errors.join(" ") unless @success
   end
 
   private

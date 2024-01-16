@@ -18,6 +18,7 @@ class User < ApplicationRecord
   include User::Address
   include User::Nir
   include User::Archivable
+  include User::Referents
 
   attr_accessor :skip_uniqueness_validations
 
@@ -28,9 +29,9 @@ class User < ApplicationRecord
   has_many :invitations, dependent: :destroy
   has_many :participations, dependent: :destroy
   has_many :archives, dependent: :destroy
-  has_many :referent_assignations, dependent: :destroy
   has_many :tag_users, dependent: :destroy
   has_many :users_organisations, dependent: :destroy
+  has_many :orientations, dependent: :destroy
 
   has_many :rdvs, through: :participations
   has_many :organisations, through: :users_organisations
@@ -38,7 +39,6 @@ class User < ApplicationRecord
   has_many :configurations, through: :organisations
   has_many :motif_categories, through: :rdv_contexts
   has_many :departments, through: :organisations
-  has_many :referents, through: :referent_assignations, source: :agent
   has_many :tags, through: :tag_users
 
   accepts_nested_attributes_for :rdv_contexts, reject_if: :rdv_context_category_handled_already?

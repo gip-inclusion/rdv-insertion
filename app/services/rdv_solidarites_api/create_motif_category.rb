@@ -2,7 +2,6 @@ module RdvSolidaritesApi
   class CreateMotifCategory < Base
     def initialize(motif_category_attributes:)
       @motif_category_attributes = motif_category_attributes
-      @rdv_solidarites_session = rdv_solidarites_session_with_shared_secret
     end
 
     def call

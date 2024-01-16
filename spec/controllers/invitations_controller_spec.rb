@@ -2,7 +2,6 @@ describe InvitationsController do
   describe "#create" do
     let!(:user_id) { "24" }
     let!(:organisation_id) { "22" }
-    let!(:help_phone_number) { "0101010101" }
     let!(:department) { create(:department) }
     let!(:organisation) { create(:organisation, id: organisation_id, department: department) }
     let!(:other_org) { create(:organisation, department: department) }
@@ -24,7 +23,6 @@ describe InvitationsController do
         user_id: user_id,
         invitation: {
           format: "sms",
-          help_phone_number: help_phone_number,
           motif_category: motif_category_attributes
         },
         format: "json"
@@ -32,7 +30,7 @@ describe InvitationsController do
     end
 
     let!(:invitation_attributes) do
-      { help_phone_number: help_phone_number, format: "sms" }
+      { format: "sms" }
     end
 
     let!(:motif_category_attributes) { { id: motif_category.id.to_s } }
@@ -42,14 +40,14 @@ describe InvitationsController do
       sign_in(agent)
       travel_to(Time.zone.parse("2022-05-04 12:30"))
       allow(InviteUser).to receive(:call)
-        .with(user:, organisations:, invitation_attributes:, motif_category_attributes:, rdv_solidarites_session:)
+        .with(user:, organisations:, invitation_attributes:, motif_category_attributes:)
         .and_return(OpenStruct.new(success?: true, invitation:))
     end
 
     context "organisation level" do
       it "calls the invite user service" do
         expect(InviteUser).to receive(:call)
-          .with(user:, organisations:, invitation_attributes:, motif_category_attributes:, rdv_solidarites_session:)
+          .with(user:, organisations:, invitation_attributes:, motif_category_attributes:)
         post :create, params: create_params
       end
     end
@@ -62,7 +60,6 @@ describe InvitationsController do
           user_id: user_id,
           invitation: {
             format: "email",
-            help_phone_number: help_phone_number,
             motif_category: motif_category_attributes,
             rdv_solidarites_lieu_id: "3929"
           },
@@ -70,12 +67,12 @@ describe InvitationsController do
         }
       end
       let!(:invitation_attributes) do
-        { help_phone_number: help_phone_number, format: "email", rdv_solidarites_lieu_id: "3929" }
+        { format: "email", rdv_solidarites_lieu_id: "3929" }
       end
 
       it "calls the service" do
         expect(InviteUser).to receive(:call)
-          .with(user:, organisations:, invitation_attributes:, motif_category_attributes:, rdv_solidarites_session:)
+          .with(user:, organisations:, invitation_attributes:, motif_category_attributes:)
         post :create, params: create_params
       end
     end
@@ -102,7 +99,6 @@ describe InvitationsController do
             user_id: user_id,
             invitation: {
               format: "postal",
-              help_phone_number: help_phone_number,
               motif_category: motif_category_attributes
             },
             format: "pdf"
@@ -110,7 +106,7 @@ describe InvitationsController do
         end
 
         let!(:invitation_attributes) do
-          { help_phone_number: help_phone_number, format: "postal" }
+          { format: "postal" }
         end
 
         before do

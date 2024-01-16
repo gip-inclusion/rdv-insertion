@@ -1,7 +1,7 @@
-module RdvSolidaritesSession
+module RdvSolidaritesCredentials
   class WithSharedSecret < Base
     def initialize(uid:, x_agent_auth_signature:)
-      @uid = uid
+      super(uid:)
       @x_agent_auth_signature = x_agent_auth_signature
     end
 
@@ -23,7 +23,9 @@ module RdvSolidaritesSession
     end
 
     def signature_valid?
-      Current.agent.signature_auth_with_shared_secret == @x_agent_auth_signature
+      ActiveSupport::SecurityUtils.secure_compare(
+        Current.agent.signature_auth_with_shared_secret, @x_agent_auth_signature
+      )
     end
   end
 end

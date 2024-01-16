@@ -20,10 +20,7 @@ module Admin
     end
 
     def save_user
-      @save_user ||= Users::Save.call(
-        user: requested_resource,
-        rdv_solidarites_session: rdv_solidarites_session
-      )
+      @save_user ||= Users::Save.call(user: requested_resource)
     end
 
     def default_sorting_attribute

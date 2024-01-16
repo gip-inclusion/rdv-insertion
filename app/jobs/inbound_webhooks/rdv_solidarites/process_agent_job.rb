@@ -4,10 +4,11 @@ module InboundWebhooks
       def perform(data, meta)
         @data = data.deep_symbolize_keys
         @meta = meta.deep_symbolize_keys
+
         # email is blank for intervenant role
         return if @data[:email].blank?
 
-        upsert_or_delete_agent
+        event == "destroyed" ? agent&.destroy! : upsert_agent
       end
 
       private
@@ -20,9 +21,7 @@ module InboundWebhooks
         @agent ||= Agent.find_by(rdv_solidarites_agent_id: @data[:id])
       end
 
-      def upsert_or_delete_agent
-        return agent.destroy! if event == "destroyed"
-
+      def upsert_agent
         UpsertRecordJob.perform_async("Agent", @data, { last_webhook_update_received_at: @meta[:timestamp] })
       end
     end

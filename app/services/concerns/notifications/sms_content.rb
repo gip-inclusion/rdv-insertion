@@ -10,23 +10,23 @@ module Notifications
     ### participation_created
 
     def presential_participation_created_content
-      "#{user.full_name},\nVous êtes #{user_designation} et à ce titre vous êtes " \
+      "#{user.full_name},\nVous êtes #{user_designation} et êtes " \
         "#{user.conjugate('convoqué')} à un " \
         "#{rdv_title}. Vous êtes #{user.conjugate('attendu')} le #{formatted_start_date} à " \
         "#{formatted_start_time} ici: #{lieu.full_name}. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
-        "En cas d’empêchement, appelez rapidement le #{phone_number}."
+        "En cas d’empêchement, appelez rapidement le #{formatted_phone_number}."
     end
 
     def by_phone_participation_created_content
-      "#{user.full_name},\nVous êtes #{user_designation} et à ce titre vous êtes " \
+      "#{user.full_name},\nVous êtes #{user_designation} et êtes " \
         "#{user.conjugate('convoqué')} à un " \
         "#{rdv_title_by_phone}. Un travailleur social vous appellera le #{formatted_start_date}" \
         " à partir de #{formatted_start_time} sur ce numéro. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
-        "En cas d’empêchement, appelez rapidement le #{phone_number}."
+        "En cas d’empêchement, appelez rapidement le #{formatted_phone_number}."
     end
 
     ### participation_updated
@@ -37,7 +37,7 @@ module Notifications
         " ici: #{lieu.full_name}. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
-        "En cas d’empêchement, appelez rapidement le #{phone_number}."
+        "En cas d’empêchement, appelez rapidement le #{formatted_phone_number}."
     end
 
     def by_phone_participation_updated_content
@@ -46,36 +46,36 @@ module Notifications
         " à partir de #{formatted_start_time} sur ce numéro. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
-        "En cas d’empêchement, appelez rapidement le #{phone_number}."
+        "En cas d’empêchement, appelez rapidement le #{formatted_phone_number}."
     end
 
     ### participation_reminder
 
     def presential_participation_reminder_content
-      "RAPPEL: #{user.full_name},\nVous êtes #{user_designation} et à ce titre vous avez été " \
+      "RAPPEL: #{user.full_name},\nVous êtes #{user_designation} et avez été " \
         "#{user.conjugate('convoqué')} à un " \
         "#{rdv_title}. Vous êtes #{user.conjugate('attendu')} le #{formatted_start_date} à " \
         "#{formatted_start_time} ici: #{lieu.full_name}. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
-        "En cas d’empêchement, appelez rapidement le #{phone_number}."
+        "En cas d’empêchement, appelez rapidement le #{formatted_phone_number}."
     end
 
     def by_phone_participation_reminder_content
-      "RAPPEL: #{user.full_name},\nVous êtes #{user_designation} et à ce titre vous avez été " \
+      "RAPPEL: #{user.full_name},\nVous êtes #{user_designation} et avez été " \
         "#{user.conjugate('convoqué')} à un " \
         "#{rdv_title_by_phone}. Un travailleur social vous appellera le #{formatted_start_date}" \
         " à partir de #{formatted_start_time} sur ce numéro. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
-        "En cas d’empêchement, appelez rapidement le #{phone_number}."
+        "En cas d’empêchement, appelez rapidement le #{formatted_phone_number}."
     end
 
     ### participation_cancelled
 
     def participation_cancelled_content
       "#{user.full_name},\nVotre #{rdv_title} dans le cadre de votre #{rdv_subject} a été annulé. " \
-        "Pour plus d'informations, contactez le #{phone_number}."
+        "Pour plus d'informations, contactez le #{formatted_phone_number}."
     end
 
     ###
@@ -90,6 +90,10 @@ module Notifications
       else
         ""
       end
+    end
+
+    def formatted_phone_number
+      phone_number.gsub(" ", "")
     end
   end
 end

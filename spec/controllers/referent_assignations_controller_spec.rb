@@ -64,10 +64,10 @@ describe ReferentAssignationsController do
 
     before do
       allow(Users::SyncWithRdvSolidarites).to receive(:call)
-        .with(user: user, rdv_solidarites_session: rdv_solidarites_session)
+        .with(user: user)
         .and_return(OpenStruct.new(success?: true))
       allow(Users::AssignReferent).to receive(:call)
-        .with(user: user, agent: agent2, rdv_solidarites_session: rdv_solidarites_session)
+        .with(user: user, agent: agent2)
         .and_return(OpenStruct.new(success?: true))
     end
 
@@ -86,7 +86,7 @@ describe ReferentAssignationsController do
 
       before do
         allow(Users::SyncWithRdvSolidarites).to receive(:call)
-          .with(user: user, rdv_solidarites_session: rdv_solidarites_session)
+          .with(user: user)
           .and_return(OpenStruct.new(success?: false, errors: ["Something went wrong"]))
       end
 
@@ -103,7 +103,7 @@ describe ReferentAssignationsController do
     context "when the assignation fails" do
       before do
         allow(Users::AssignReferent).to receive(:call)
-          .with(user: user, agent: agent2, rdv_solidarites_session: rdv_solidarites_session)
+          .with(user: user, agent: agent2)
           .and_return(OpenStruct.new(success?: false, errors: ["Something wrong happened"]))
       end
 
@@ -127,13 +127,13 @@ describe ReferentAssignationsController do
 
       before do
         allow(Users::AssignReferent).to receive(:call)
-          .with(user: user, agent: agent2, rdv_solidarites_session: rdv_solidarites_session)
+          .with(user: user, agent: agent2)
           .and_return(OpenStruct.new(success?: true))
       end
 
       it "assigns the agent with a success message" do
         expect(Users::AssignReferent).to receive(:call)
-          .with(user: user, agent: agent2, rdv_solidarites_session: rdv_solidarites_session)
+          .with(user: user, agent: agent2)
 
         subject
 
@@ -154,7 +154,7 @@ describe ReferentAssignationsController do
 
     before do
       allow(Users::RemoveReferent).to receive(:call)
-        .with(user: user, agent: agent2, rdv_solidarites_session: rdv_solidarites_session)
+        .with(user: user, agent: agent2)
         .and_return(OpenStruct.new(success?: true))
     end
 
@@ -169,7 +169,7 @@ describe ReferentAssignationsController do
     context "when the assignation fails" do
       before do
         allow(Users::RemoveReferent).to receive(:call)
-          .with(user: user, agent: agent2, rdv_solidarites_session: rdv_solidarites_session)
+          .with(user: user, agent: agent2)
           .and_return(OpenStruct.new(success?: false, errors: ["Something wrong happened"]))
       end
 
