@@ -32,11 +32,17 @@ describe Users::Save, type: :service do
       subject
     end
 
+    context "when an organisation is present" do
+      it "assigns the user to the organisation" do
+        expect(user.reload.organisations).to include(organisation)
+        subject
+      end
+    end
+
     it "syncs the user with Rdv Solidarites" do
       expect(Users::SyncWithRdvSolidarites).to receive(:call)
         .with(
           user: user,
-          organisation: organisation,
           rdv_solidarites_session: rdv_solidarites_session
         )
       subject
@@ -44,6 +50,14 @@ describe Users::Save, type: :service do
 
     it "is a success" do
       is_a_success
+    end
+
+    context "when organisation is nil" do
+      subject { described_class.call(rdv_solidarites_session: rdv_solidarites_session, user: user) }
+
+      it "is a success" do
+        is_a_success
+      end
     end
 
     context "when the user cannot be saved in db" do

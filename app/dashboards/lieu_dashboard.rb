@@ -17,7 +17,7 @@ class LieuDashboard < Administrate::BaseDashboard
     rdv_solidarites_lieu_id: Field::Number,
     rdvs: Field::HasMany,
     created_at: Field::DateTime,
-    updated_at: Field::DateTime,
+    updated_at: Field::DateTime
   }.freeze
 
   # COLLECTION_ATTRIBUTES

@@ -22,7 +22,7 @@ describe User do
         expect(user).not_to be_valid
         expect(user.errors.details).to eq({ rdv_solidarites_user_id: [{ error: :taken, value: 1 }] })
         expect(user.errors.full_messages.to_sentence)
-          .to include("Rdv solidarites user est déjà utilisé")
+          .to include("ID de l'usager RDV-Solidarités est déjà utilisé")
       end
     end
   end

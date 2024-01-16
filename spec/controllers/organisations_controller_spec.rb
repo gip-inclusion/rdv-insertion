@@ -39,25 +39,6 @@ describe OrganisationsController do
           expect(response.body).to match(/#{organisation.name}/)
           expect(response.body).to match(/#{organisation2.name}/)
         end
-
-        context "when agent is not super admin" do
-          it "does not display the create organisation button" do
-            expect(response.body).not_to match("Lier une organisation RDVS")
-          end
-        end
-      end
-    end
-
-    context "when agent is super admin" do
-      let!(:agent) { create(:agent, admin_role_in_organisations: [organisation, organisation2], super_admin: true) }
-
-      before do
-        sign_in(agent)
-      end
-
-      it "displays the create organisation button" do
-        get :index
-        expect(response.body).to match("Lier une organisation RDVS")
       end
     end
   end
@@ -112,32 +93,6 @@ describe OrganisationsController do
     end
   end
 
-  describe "#new" do
-    let!(:new_params) { { department_id: department.id } }
-
-    it "displays the new organisation form" do
-      get :new, params: new_params
-
-      expect(response).to be_successful
-      expect(response.body).to match(/ID de l'orga RDVS/)
-      expect(response.body).to match(/Enregistrer/)
-    end
-
-    context "when not authorized because not super admin" do
-      let!(:unauthorized_agent) { create(:agent, super_admin: false) }
-
-      before do
-        sign_in(unauthorized_agent)
-      end
-
-      it "redirects to the homepage" do
-        get :new, params: new_params
-
-        expect(response).to redirect_to(root_path)
-      end
-    end
-  end
-
   describe "#edit" do
     let!(:edit_params) { { id: organisation.id } }
 
@@ -184,71 +139,6 @@ describe OrganisationsController do
         expect do
           get :edit, params: edit_params
         end.to raise_error(ActiveRecord::RecordNotFound)
-      end
-    end
-  end
-
-  describe "#create" do
-    let!(:create_params) do
-      { department_id: department.id,
-        organisation: { rdv_solidarites_organisation_id: organisation.rdv_solidarites_organisation_id } }
-    end
-
-    before do
-      allow(Organisations::Create).to receive(:call)
-        .and_return(OpenStruct.new(success?: true, organisation: organisation))
-      allow(Organisation).to receive(:new)
-        .and_return(organisation)
-    end
-
-    it "calls the create organisation service" do
-      expect(Organisations::Create).to receive(:call)
-        .with(organisation: organisation, current_agent: agent, rdv_solidarites_session: rdv_solidarites_session)
-
-      post :create, params: create_params
-    end
-
-    context "when the create succeeds" do
-      it "redirects to the orgnisation show page" do
-        post :create, params: create_params
-
-        expect(response).to redirect_to(organisation_users_path(organisation))
-      end
-    end
-
-    context "when not authorized because not super admin" do
-      let!(:unauthorized_agent) { create(:agent, super_admin: false) }
-
-      before do
-        sign_in(unauthorized_agent)
-      end
-
-      it "redirects to the homepage" do
-        post :create, params: create_params
-
-        expect(response).to redirect_to(root_path)
-      end
-    end
-
-    context "when the organisation_id given is not correct" do
-      let!(:create_params) do
-        { department_id: department.id,
-          organisation: { rdv_solidarites_organisation_id: "test" } }
-      end
-
-      before do
-        allow(Organisations::Create).to receive(:call)
-          .and_return(OpenStruct.new(success?: false, errors:
-            ["L'ID de l'organisation RDV-Solidarités n'a pas été renseigné correctement"]))
-      end
-
-      it "renders the new form with the errors" do
-        post :create, params: create_params
-
-        expect(unescaped_response_body).to match(/ID de l'orga RDVS/)
-        expect(unescaped_response_body).to match(
-          /L'ID de l'organisation RDV-Solidarités n'a pas été renseigné correctement/
-        )
       end
     end
   end

@@ -6,8 +6,8 @@ module MotifCategories
 
     def call
       MotifCategory.transaction do
-        create_rdvs_motif_category
         save_record!(@motif_category)
+        create_rdvs_motif_category
       end
     end
 

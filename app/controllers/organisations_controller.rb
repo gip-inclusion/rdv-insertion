@@ -1,5 +1,3 @@
-# rubocop:disable Metrics/ClassLength
-
 class OrganisationsController < ApplicationController
   PERMITTED_PARAMS = [
     :name, :phone_number, :email, :slug, :independent_from_cd, :logo_filename, :rdv_solidarites_organisation_id,
@@ -7,7 +5,6 @@ class OrganisationsController < ApplicationController
   ].freeze
 
   before_action :set_organisation, :set_department, :authorize_organisation_configuration, only: [:show, :edit, :update]
-  before_action :set_all_departments, only: [:new, :create]
 
   def index
     @organisations = policy_scope(Organisation).includes(:department, :configurations)
@@ -19,27 +16,7 @@ class OrganisationsController < ApplicationController
 
   def show; end
 
-  def new
-    @organisation = Organisation.new
-    authorize @organisation
-  end
-
   def edit; end
-
-  def create
-    @organisation = Organisation.new(**organisation_params)
-    authorize @organisation
-    if create_organisation.success?
-      redirect_to organisation_users_path(@organisation)
-    else
-      render turbo_stream: turbo_stream.replace(
-        "remote_modal", partial: "organisation_form", locals: {
-          organisation: @organisation, all_departments: @all_departments,
-          errors: create_organisation.errors
-        }
-      )
-    end
-  end
 
   def update
     @organisation.assign_attributes(**organisation_params)
@@ -95,10 +72,6 @@ class OrganisationsController < ApplicationController
     @department = @organisation.department
   end
 
-  def set_all_departments
-    @all_departments = Department.all.order(:number)
-  end
-
   def department
     @department ||= Department.find_by!(number: params[:department_number])
   end
@@ -147,17 +120,7 @@ class OrganisationsController < ApplicationController
     )
   end
 
-  def create_organisation
-    @create_organisation ||= Organisations::Create.call(
-      organisation: @organisation,
-      current_agent: current_agent,
-      rdv_solidarites_session: rdv_solidarites_session
-    )
-  end
-
   def authorize_organisation_configuration
     authorize @organisation, :configure?
   end
 end
-
-# rubocop:enable Metrics/ClassLength

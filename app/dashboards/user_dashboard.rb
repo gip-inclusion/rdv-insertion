@@ -16,7 +16,9 @@ class UserDashboard < Administrate::BaseDashboard
     birth_name: Field::String,
     carnet_de_bord_carnet_id: Field::String,
     configurations: Field::HasMany,
-    created_through: Field::Select.with_options(searchable: false, collection: ->(field) { field.resource.class.send(field.attribute.to_s.pluralize).keys }),
+    created_through: Field::Select.with_options(
+      searchable: false, collection: ->(field) { field.resource.class.send(field.attribute.to_s.pluralize).keys }
+    ),
     deleted_at: Field::DateTime,
     department_internal_id: Field::String,
     departments: Field::HasMany,
@@ -38,10 +40,14 @@ class UserDashboard < Administrate::BaseDashboard
     referent_assignations: Field::HasMany,
     referents: Field::HasMany,
     rights_opening_date: Field::Date,
-    role: Field::Select.with_options(searchable: false, collection: ->(field) { field.resource.class.send(field.attribute.to_s.pluralize).keys }),
+    role: Field::Select.with_options(
+      searchable: false, collection: ->(field) { field.resource.class.send(field.attribute.to_s.pluralize).keys }
+    ),
     tag_users: Field::HasMany,
     tags: Field::HasMany,
-    title: Field::Select.with_options(searchable: false, collection: ->(field) { field.resource.class.send(field.attribute.to_s.pluralize).keys }),
+    title: Field::Select.with_options(
+      searchable: false, collection: ->(field) { field.resource.class.send(field.attribute.to_s.pluralize).keys }
+    ),
     uid: Field::String,
     users_organisations: Field::HasMany,
     created_at: Field::DateTime,
@@ -63,6 +69,8 @@ class UserDashboard < Administrate::BaseDashboard
   # SHOW_PAGE_ATTRIBUTES
   # an array of attributes that will be displayed on the model's show page.
   SHOW_PAGE_ATTRIBUTES = [
+    :id,
+    :rdv_solidarites_user_id,
     :title,
     :first_name,
     :last_name,
@@ -87,6 +95,7 @@ class UserDashboard < Administrate::BaseDashboard
   # an array of attributes that will be displayed
   # on the model's form (`new` and `edit`) pages.
   FORM_ATTRIBUTES = [
+    :rdv_solidarites_user_id,
     :title,
     :first_name,
     :last_name,

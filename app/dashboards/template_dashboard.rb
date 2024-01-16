@@ -22,7 +22,7 @@ class TemplateDashboard < Administrate::BaseDashboard
     rdv_title_by_phone: Field::String,
     user_designation: Field::String,
     created_at: Field::DateTime,
-    updated_at: Field::DateTime,
+    updated_at: Field::DateTime
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -88,6 +88,6 @@ class TemplateDashboard < Administrate::BaseDashboard
   # across all pages of the admin dashboard.
   #
   def display_resource(template)
-    "#{template.rdv_subject} - #{template.rdv_title}"
+    template.name
   end
 end

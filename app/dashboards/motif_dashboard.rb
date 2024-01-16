@@ -14,7 +14,9 @@ class MotifDashboard < Administrate::BaseDashboard
     follow_up: Field::Boolean,
     instruction_for_rdv: Field::Text,
     last_webhook_update_received_at: Field::DateTime,
-    location_type: Field::Select.with_options(searchable: false, collection: ->(field) { field.resource.class.send(field.attribute.to_s.pluralize).keys }),
+    location_type: Field::Select.with_options(
+      searchable: false, collection: ->(field) { field.resource.class.send(field.attribute.to_s.pluralize).keys }
+    ),
     motif_category: Field::BelongsTo,
     name: Field::String,
     organisation: Field::BelongsTo,
@@ -23,7 +25,7 @@ class MotifDashboard < Administrate::BaseDashboard
     rdvs: Field::HasMany,
     reservable_online: Field::Boolean,
     created_at: Field::DateTime,
-    updated_at: Field::DateTime,
+    updated_at: Field::DateTime
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -33,9 +35,11 @@ class MotifDashboard < Administrate::BaseDashboard
   # Feel free to add, remove, or rearrange items.
   COLLECTION_ATTRIBUTES = %i[
     id
+    name
     collectif
-    deleted_at
     follow_up
+    reservable_online
+    organisation
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
@@ -53,7 +57,6 @@ class MotifDashboard < Administrate::BaseDashboard
     organisation
     rdv_solidarites_motif_id
     rdv_solidarites_service_id
-    rdvs
     reservable_online
     created_at
     updated_at
@@ -74,7 +77,6 @@ class MotifDashboard < Administrate::BaseDashboard
     organisation
     rdv_solidarites_motif_id
     rdv_solidarites_service_id
-    rdvs
     reservable_online
   ].freeze
 

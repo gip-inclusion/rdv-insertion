@@ -26,7 +26,7 @@ class AgentDashboard < Administrate::BaseDashboard
     super_admin: Field::Boolean,
     users: Field::HasMany,
     created_at: Field::DateTime,
-    updated_at: Field::DateTime,
+    updated_at: Field::DateTime
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -102,6 +102,6 @@ class AgentDashboard < Administrate::BaseDashboard
   # across all pages of the admin dashboard.
   #
   def display_resource(agent)
-    "#{agent.first_name} #{agent.last_name}"
+    agent.to_s
   end
 end

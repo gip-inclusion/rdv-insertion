@@ -26,7 +26,7 @@ class ConfigurationDashboard < Administrate::BaseDashboard
     template_rdv_title_override: Field::String,
     template_user_designation_override: Field::String,
     created_at: Field::DateTime,
-    updated_at: Field::DateTime,
+    updated_at: Field::DateTime
   }.freeze
 
   # COLLECTION_ATTRIBUTES

@@ -20,7 +20,7 @@ class MessagesConfigurationDashboard < Administrate::BaseDashboard
     signature_lines: Field::String,
     sms_sender_name: Field::String,
     created_at: Field::DateTime,
-    updated_at: Field::DateTime,
+    updated_at: Field::DateTime
   }.freeze
 
   # COLLECTION_ATTRIBUTES

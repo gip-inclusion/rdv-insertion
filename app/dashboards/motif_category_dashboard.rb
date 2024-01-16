@@ -19,7 +19,7 @@ class MotifCategoryDashboard < Administrate::BaseDashboard
     short_name: Field::String,
     template: Field::BelongsTo,
     created_at: Field::DateTime,
-    updated_at: Field::DateTime,
+    updated_at: Field::DateTime
   }.freeze
 
   # COLLECTION_ATTRIBUTES

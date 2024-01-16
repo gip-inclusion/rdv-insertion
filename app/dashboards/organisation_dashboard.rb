@@ -36,7 +36,7 @@ class OrganisationDashboard < Administrate::BaseDashboard
     users_organisations: Field::HasMany,
     webhook_endpoints: Field::HasMany,
     created_at: Field::DateTime,
-    updated_at: Field::DateTime,
+    updated_at: Field::DateTime
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -54,9 +54,9 @@ class OrganisationDashboard < Administrate::BaseDashboard
   # an array of attributes that will be displayed on the model's show page.
   SHOW_PAGE_ATTRIBUTES = %i[
     id
+    rdv_solidarites_organisation_id
     name
     phone_number
-    rdv_solidarites_organisation_id
     slug
     department
     email
@@ -74,9 +74,9 @@ class OrganisationDashboard < Administrate::BaseDashboard
   # an array of attributes that will be displayed
   # on the model's form (`new` and `edit`) pages.
   FORM_ATTRIBUTES = %i[
+    rdv_solidarites_organisation_id
     name
     phone_number
-    rdv_solidarites_organisation_id
     slug
     department
     email

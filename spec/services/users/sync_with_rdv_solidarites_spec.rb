@@ -1,7 +1,7 @@
 describe Users::SyncWithRdvSolidarites, type: :service do
   subject do
     described_class.call(
-      user: user, organisation: organisation, rdv_solidarites_session: rdv_solidarites_session
+      user: user, rdv_solidarites_session: rdv_solidarites_session
     )
   end
 

@@ -9,13 +9,15 @@ class AgentRoleDashboard < Administrate::BaseDashboard
   # on pages throughout the dashboard.
   ATTRIBUTE_TYPES = {
     id: Field::Number,
-    access_level: Field::Select.with_options(searchable: false, collection: ->(field) { field.resource.class.send(field.attribute.to_s.pluralize).keys }),
+    access_level: Field::Select.with_options(
+      searchable: false, collection: ->(field) { field.resource.class.send(field.attribute.to_s.pluralize).keys }
+    ),
     agent: Field::BelongsTo,
     last_webhook_update_received_at: Field::DateTime,
     organisation: Field::BelongsTo,
     rdv_solidarites_agent_role_id: Field::Number,
     created_at: Field::DateTime,
-    updated_at: Field::DateTime,
+    updated_at: Field::DateTime
   }.freeze
 
   # COLLECTION_ATTRIBUTES

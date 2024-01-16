@@ -92,7 +92,7 @@ gem "rack-cors"
 gem "blueprinter"
 
 # A Rails engine for creating super-flexible admin dashboards
-gem "administrate", git: 'https://github.com/thoughtbot/administrate.git'
+gem "administrate", git: "https://github.com/thoughtbot/administrate.git"
 
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
