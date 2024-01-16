@@ -61,7 +61,7 @@ describe "Super admin can manage motif categories" do
       within("tr.js-table-row") { expect(page).to have_css("td.cell-data", text: motif.name) }
       expect(page).to have_css("dt", id: "leads_to_orientation", text: "LEADS TO ORIENTATION")
       expect(page).to have_css("dd", class: "attribute-data", text: motif_category.leads_to_orientation)
-      expect(page).to have_css("dt", id: "participation_optional", text: "RDV facultatif")
+      expect(page).to have_css("dt", id: "participation_optional", text: "RDV FACULTATIF")
       expect(page).to have_css("dd", class: "attribute-data", text: motif_category.participation_optional)
     end
 
