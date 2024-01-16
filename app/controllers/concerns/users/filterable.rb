@@ -117,22 +117,30 @@ module Users::Filterable
   end
 
   def users_first_invitations
-    @users_first_invitations ||= @users.includes(:invitations, :rdvs)
-                                       .map(&:first_sent_invitation)
-                                       .compact
+    @users_first_invitations ||= Invitation.joins(:user)
+                                           .where(user_id: @users.ids)
+                                           .order("invitations.sent_at ASC")
+                                           .group_by(&:user_id)
+                                           .transform_values(&:first)
+                                           .values
   end
 
   def users_last_invitations
-    @users_last_invitations ||= @users.includes(:invitations, :rdvs)
-                                      .map(&:last_sent_invitation)
-                                      .compact
+    @users_last_invitations ||= Invitation.joins(:user)
+                                          .where(user_id: @users.ids)
+                                          .order("invitations.sent_at DESC")
+                                          .group_by(&:user_id)
+                                          .transform_values(&:first)
+                                          .values
   end
 
   def invitations_belonging_to_rdv_contexts(invitations, rdv_contexts)
     if rdv_contexts.blank?
       invitations
     else
-      invitations.select { |i| rdv_contexts.map(&:id).include?(i.rdv_context_id) }
+      invitation_ids = invitations.pluck(:id)
+      rdv_context_ids = rdv_contexts.pluck(:id)
+      Invitation.where(id: invitation_ids, rdv_context_id: rdv_context_ids)
     end
   end
 end
