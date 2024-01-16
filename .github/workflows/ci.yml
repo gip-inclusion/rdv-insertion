@@ -78,7 +78,7 @@ jobs:
           POSTGRES_USER: rdv_insertion_test
           POSTGRES_PASSWORD: rdv_insertion_test
           POSTGRES_DB: rdv_insertion_test
-        run: RAILS_ENV=test bundle exec rspec --exclude-pattern "spec/features/**"
+        run: RAILS_ENV=test bundle exec rspec --exclude-pattern "spec/features/**/*"
   test_features:
     name: Feature Tests
     runs-on: ubuntu-latest
