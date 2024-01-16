@@ -4,4 +4,4 @@ fr:
       motif_category: Catégorie de motifs
     attributes:
       motif_category:
-        participation_optional: RDV obligatoire
+        participation_optional: RDV facultatif

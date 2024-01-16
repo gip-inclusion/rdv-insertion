@@ -61,7 +61,7 @@ describe "Super admin can manage motif categories" do
       within("tr.js-table-row") { expect(page).to have_css("td.cell-data", text: motif.name) }
       expect(page).to have_css("dt", id: "leads_to_orientation", text: "LEADS TO ORIENTATION")
       expect(page).to have_css("dd", class: "attribute-data", text: motif_category.leads_to_orientation)
-      expect(page).to have_css("dt", id: "participation_optional", text: "RDV OBLIGATOIRE")
+      expect(page).to have_css("dt", id: "participation_optional", text: "RDV facultatif")
       expect(page).to have_css("dd", class: "attribute-data", text: motif_category.participation_optional)
     end
 
@@ -91,7 +91,7 @@ describe "Super admin can manage motif categories" do
       expect(page).to have_css("label[for=\"motif_category_template_id-selectized\"]", text: "Template")
       expect(page).to have_field("motif_category_template_id-selectized")
       expect(page).to have_css("label[for=\"motif_category_leads_to_orientation\"]", text: "Leads to orientation")
-      expect(page).to have_css("label[for=\"motif_category_participation_optional\"]", text: "RDV obligatoire")
+      expect(page).to have_css("label[for=\"motif_category_participation_optional\"]", text: "RDV facultatif")
       expect(page).to have_button("Enregistrer")
 
       fill_in "motif_category_name", with: "France Travail orientation"
