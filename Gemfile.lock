@@ -62,6 +62,8 @@ GEM
       activesupport (= 7.0.4.3)
       marcel (~> 1.0)
       mini_mime (>= 1.1.0)
+    activestorage-validator (0.4.0)
+      rails (>= 6.1.0)
     activesupport (7.0.4.3)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
@@ -467,6 +469,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  activestorage-validator
   addressable
   aws-sdk-s3
   blueprinter

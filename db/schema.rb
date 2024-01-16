@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_16_093639) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_16_133624) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -126,6 +126,20 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_16_093639) do
     t.string "phone_number"
     t.boolean "display_in_stats", default: true
     t.string "carnet_de_bord_deploiement_id"
+  end
+
+  create_table "documents", force: :cascade do |t|
+    t.bigint "organisation_id", null: false
+    t.bigint "department_id", null: false
+    t.bigint "user_id", null: false
+    t.bigint "agent_id", null: false
+    t.string "document_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agent_id"], name: "index_documents_on_agent_id"
+    t.index ["department_id"], name: "index_documents_on_department_id"
+    t.index ["organisation_id"], name: "index_documents_on_organisation_id"
+    t.index ["user_id"], name: "index_documents_on_user_id"
   end
 
   create_table "file_configurations", force: :cascade do |t|
@@ -485,6 +499,10 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_16_093639) do
   add_foreign_key "configurations", "file_configurations"
   add_foreign_key "configurations", "motif_categories"
   add_foreign_key "configurations", "organisations"
+  add_foreign_key "documents", "agents"
+  add_foreign_key "documents", "departments"
+  add_foreign_key "documents", "organisations"
+  add_foreign_key "documents", "users"
   add_foreign_key "invitations", "departments"
   add_foreign_key "invitations", "rdv_contexts"
   add_foreign_key "invitations", "users"
