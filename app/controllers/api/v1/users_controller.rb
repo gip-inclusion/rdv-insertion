@@ -6,7 +6,7 @@ module Api
       PERMITTED_USER_PARAMS = [
         :first_name, :last_name, :title, :affiliation_number, :role, :email, :phone_number,
         :nir, :pole_emploi_id, :birth_date, :rights_opening_date, :address, :department_internal_id,
-        { invitation: [:rdv_solidarites_lieu_id, { motif_category: [:name] }] }
+        { invitation: [:rdv_solidarites_lieu_id, { motif_category: [:name] }], referents_to_add: [:email] }
       ].freeze
 
       before_action :set_organisation
@@ -38,8 +38,8 @@ module Api
 
         render json: {
           success: true,
-          # we call the blueprint explicitely here because we don't want the extended view
-          user: UserBlueprint.render_as_json(@user),
+          # we call the blueprint explicitely here because we don't want the extended view: we only show relevant infos
+          user: UserBlueprint.render_as_json(@user, view: :with_referents),
           invitations: InvitationBlueprint.render_as_json(@invitations)
         }
       end
