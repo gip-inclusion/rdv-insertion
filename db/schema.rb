@@ -129,7 +129,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_16_133624) do
   end
 
   create_table "documents", force: :cascade do |t|
-    t.bigint "organisation_id", null: false
+    t.bigint "organisation_id"
     t.bigint "department_id", null: false
     t.bigint "user_id", null: false
     t.bigint "agent_id", null: false
@@ -138,7 +138,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_16_133624) do
     t.datetime "updated_at", null: false
     t.index ["agent_id"], name: "index_documents_on_agent_id"
     t.index ["department_id"], name: "index_documents_on_department_id"
-    t.index ["organisation_id"], name: "index_documents_on_organisation_id"
     t.index ["user_id"], name: "index_documents_on_user_id"
   end
 
@@ -501,7 +500,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_16_133624) do
   add_foreign_key "configurations", "organisations"
   add_foreign_key "documents", "agents"
   add_foreign_key "documents", "departments"
-  add_foreign_key "documents", "organisations"
   add_foreign_key "documents", "users"
   add_foreign_key "invitations", "departments"
   add_foreign_key "invitations", "rdv_contexts"

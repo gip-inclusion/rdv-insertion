@@ -1,0 +1,17 @@
+<%= turbo_frame_tag "documents_list_#{document_type}" do %>
+  <% if user.send(document_type.pluralize).empty? %>
+    <i>Aucun <%= t("activerecord.attributes.document.document_type.#{document_type}") %> renseigné.</i>
+  <% else %>
+    <% user.send(document_type.pluralize).each do |document| %>
+      <%= render "documents/document", document: %>
+    <% end %>
+  <% end %>
+
+  <%= simple_form_for(:document, url: user_documents_path(user_id: user.id), html: { method: :post }) do |f| %>
+    <%= f.hidden_field :document_type, value: document_type %>
+    <div class="w-50 my-4">
+      <%= f.file_field :file, class: "form-control my-2" %>
+    </div>
+    <%= f.submit "Ajouter", class: "btn btn-blue" %>
+  <% end %>
+<% end %>

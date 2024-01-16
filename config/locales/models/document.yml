@@ -1,0 +1,10 @@
+fr:
+  activerecord:
+    models:
+      document: Documents
+    attributes:
+      document:
+        file: "Document :"
+        document_type:
+          contract: contrat
+          diagnostic: diagnostic
