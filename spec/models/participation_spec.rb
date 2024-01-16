@@ -107,7 +107,7 @@ describe Participation do
       end
     end
 
-    context "after cancellation" do
+    context "after revocation" do
       let!(:participation) do
         create(
           :participation,
@@ -119,7 +119,7 @@ describe Participation do
       end
 
       it "enqueues a job to notify rdv users" do
-        participation.status = "excused"
+        participation.status = "revoked"
         expect(NotifyParticipationJob).to receive(:perform_async)
           .with(participation.id, "sms", "participation_cancelled")
         expect(NotifyParticipationJob).to receive(:perform_async)
@@ -143,11 +143,19 @@ describe Participation do
             rdv: rdv,
             user: user,
             convocable: true,
-            status: "excused"
+            status: "revoked"
           )
         end
 
         it "does not enqueue a notify users job" do
+          participation.status = "revoked"
+          expect(NotifyParticipationJob).not_to receive(:perform_async)
+          subject
+        end
+      end
+
+      context "when the rdv is excused" do
+        it "does not notify the user" do
           participation.status = "excused"
           expect(NotifyParticipationJob).not_to receive(:perform_async)
           subject
