@@ -1,9 +1,10 @@
 WebMock.disable_net_connect!(
   allow: ["127.0.0.1", "localhost", "chromedriver.storage.googleapis.com"]
 )
-
 Capybara.register_driver :selenium do |app|
-  browser_options = Selenium::WebDriver::Chrome::Options.chrome
+  browser_options = Selenium::WebDriver::Chrome::Options.new(
+    "goog:loggingPrefs": { browser: "ALL" }
+  )
 
   browser_options.add_argument("--window-size=1500,1000")
 

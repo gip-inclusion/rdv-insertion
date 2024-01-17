@@ -89,7 +89,7 @@ class OrganisationsController < ApplicationController
   end
 
   def set_all_departments
-    @all_departments = Department.order(:number)
+    @all_departments = Department.all.order(:number)
   end
 
   def department

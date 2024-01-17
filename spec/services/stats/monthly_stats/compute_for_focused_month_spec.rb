@@ -26,18 +26,26 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
 
   describe "#call" do
     before do
-      allow(stat).to receive_messages(
-        all_users: User.where(id: [user1, user2]),
-        all_participations: Participation.where(id: [participation1, participation2]),
-        invitations_sample: Invitation.where(id: [invitation1, invitation2]),
-        participations_after_invitations_sample: Participation.where(id: [participation1]),
-        participations_with_notifications_sample: Participation.where(id: [participation2]),
-        rdv_contexts_with_invitations_and_participations_sample: RdvContext.where(id: [rdv_context1, rdv_context2]),
-        users_sample: User.where(id: [user1, user2]),
-        users_with_orientation_category_sample: User.where(id: [user1, user2]),
-        orientation_rdv_contexts_sample: RdvContext.where(id: [rdv_context1, rdv_context2]),
-        invited_users_sample: User.where(id: [user1, user2])
-      )
+      allow(stat).to receive(:all_users)
+        .and_return(User.where(id: [user1, user2]))
+      allow(stat).to receive(:all_participations)
+        .and_return(Participation.where(id: [participation1, participation2]))
+      allow(stat).to receive(:invitations_sample)
+        .and_return(Invitation.where(id: [invitation1, invitation2]))
+      allow(stat).to receive(:participations_after_invitations_sample)
+        .and_return(Participation.where(id: [participation1]))
+      allow(stat).to receive(:participations_with_notifications_sample)
+        .and_return(Participation.where(id: [participation2]))
+      allow(stat).to receive(:rdv_contexts_with_invitations_and_participations_sample)
+        .and_return(RdvContext.where(id: [rdv_context1, rdv_context2]))
+      allow(stat).to receive(:users_sample)
+        .and_return(User.where(id: [user1, user2]))
+      allow(stat).to receive(:users_with_orientation_category_sample)
+        .and_return(User.where(id: [user1, user2]))
+      allow(stat).to receive(:orientation_rdv_contexts_sample)
+        .and_return(RdvContext.where(id: [rdv_context1, rdv_context2]))
+      allow(stat).to receive(:invited_users_sample)
+        .and_return(User.where(id: [user1, user2]))
       allow(Stats::ComputeRateOfNoShow).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 50.0))
       allow(Stats::ComputeAverageTimeBetweenInvitationAndRdvInDays).to receive(:call)

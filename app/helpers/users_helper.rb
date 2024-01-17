@@ -143,7 +143,7 @@ module UsersHelper
   end
 
   def should_convene_for?(rdv_context, configuration)
-    return false unless configuration.convene_user?
+    return unless configuration.convene_user?
 
     rdv_context.convocable_status? ||
       rdv_context.time_to_accept_invitation_exceeded?(configuration.number_of_days_before_action_required)

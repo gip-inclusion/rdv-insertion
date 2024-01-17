@@ -3,6 +3,6 @@ FactoryBot.define do
     resource_id { 33 }
     resource_model { "Rdv" }
     timestamp { "2021-20-05" }
-    webhook_endpoint
+    association :webhook_endpoint
   end
 end

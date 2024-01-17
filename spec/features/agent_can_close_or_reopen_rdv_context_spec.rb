@@ -1,4 +1,4 @@
-describe "Agents can close or reopen rdv_context", :js do
+describe "Agents can close or reopen rdv_context", js: true do
   let!(:department) { create(:department) }
   let!(:organisation) { create(:organisation, department: department) }
   let!(:agent) { create(:agent, organisations: [organisation]) }

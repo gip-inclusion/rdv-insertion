@@ -1,4 +1,4 @@
-describe "Agents can create user through form", :js do
+describe "Agents can create user through form", js: true do
   let!(:agent) { create(:agent, organisations: [organisation]) }
   let!(:department) { create(:department) }
   let!(:organisation) do
@@ -55,7 +55,7 @@ describe "Agents can create user through form", :js do
           click_button("Enregistrer")
 
           expect(page).to have_content("Prénom doit être rempli(e)")
-          expect(page).to have_no_content("Infos")
+          expect(page).not_to have_content("Infos")
         end
       end
 
@@ -69,7 +69,7 @@ describe "Agents can create user through form", :js do
           click_button("Enregistrer")
 
           expect(page).to have_content("Il doit y avoir au moins un attribut permettant d'identifier la personne")
-          expect(page).to have_no_content("Infos")
+          expect(page).not_to have_content("Infos")
         end
       end
     end
@@ -246,7 +246,7 @@ describe "Agents can create user through form", :js do
         click_button("Enregistrer")
 
         expect(page).to have_content("Le bénéficiaire #{user.id} a les mêmes attributs mais un nir différent")
-        expect(page).to have_no_content("Infos")
+        expect(page).not_to have_content("Infos")
         expect(User.count).to eq(1)
       end
     end

@@ -1,8 +1,8 @@
 FactoryBot.define do
   factory :orientation do
-    user
-    organisation
-    agent
+    association :user
+    association :organisation
+    association :agent
     orientation_type { "social" }
   end
 end

@@ -1,4 +1,4 @@
-describe "Agents can update a participation status", :js do
+describe "Agents can update a participation status", js: true do
   let(:department) { create(:department) }
   let(:organisation) { create(:organisation, department: department) }
   let(:agent) { create(:agent, organisations: [organisation]) }
@@ -55,7 +55,7 @@ describe "Agents can update a participation status", :js do
         page.execute_script("window.scrollBy(0, 500)")
         expect(page).to have_content("RDV honoré")
 
-        expect(page).to have_no_css("#toggle-rdv-status")
+        expect(page).not_to have_selector("#toggle-rdv-status")
       end
     end
   end

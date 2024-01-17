@@ -3,6 +3,6 @@ FactoryBot.define do
     sequence(:rdv_solidarites_lieu_id)
     name { "DINUM" }
     address { "20 avenue de Ségur 75007 Paris" }
-    organisation
+    organisation { create(:organisation) }
   end
 end

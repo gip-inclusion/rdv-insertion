@@ -1,4 +1,4 @@
-describe "Agents can update contact info with caf file", :js do
+describe "Agents can update contact info with caf file", js: true do
   let!(:agent) { create(:agent) }
   let!(:department) { create(:department) }
   let!(:organisation) do
@@ -71,7 +71,7 @@ describe "Agents can update contact info with caf file", :js do
       expect(page).to have_content("+33620022002")
 
       expect(page).to have_css("i.fas.fa-link")
-      expect(page).to have_css("a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]")
+      expect(page).to have_selector(:css, "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]")
 
       click_button("Enrichir avec des données de contacts CNAF")
 
@@ -88,7 +88,7 @@ describe "Agents can update contact info with caf file", :js do
       click_on("Mettre à jour", match: :first)
 
       expect(page).to have_content("hernan.crespo@hotmail.fr")
-      expect(page).to have_no_content("hernan@crespo.com")
+      expect(page).not_to have_content("hernan@crespo.com")
 
       expect(user.reload.email).to eq("hernan.crespo@hotmail.fr")
       expect(user.reload.phone_number).to eq("+33620022002")
@@ -96,7 +96,7 @@ describe "Agents can update contact info with caf file", :js do
       click_button("Mettre à jour")
 
       expect(page).to have_content("+33698943255")
-      expect(page).to have_no_content("+33620022002")
+      expect(page).not_to have_content("+33620022002")
 
       expect(user.reload.phone_number).to eq("+33698943255")
     end
@@ -150,7 +150,7 @@ describe "Agents can update contact info with caf file", :js do
 
         attach_file("contact-file-upload", Rails.root.join("spec/fixtures/fichier_contact_test.csv"))
 
-        expect(page).to have_no_content("Nouvelles données trouvées pour Hernan Crespo")
+        expect(page).not_to have_content("Nouvelles données trouvées pour Hernan Crespo")
       end
     end
   end
