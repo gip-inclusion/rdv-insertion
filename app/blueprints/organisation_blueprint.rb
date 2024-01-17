@@ -7,8 +7,4 @@ class OrganisationBlueprint < Blueprinter::Base
     association :motifs, blueprint: MotifBlueprint
     association :lieux, blueprint: LieuBlueprint
   end
-
-  view :webhook_tmp do
-    field :rdv_solidarites_organisation_id, name: :id
-  end
 end
