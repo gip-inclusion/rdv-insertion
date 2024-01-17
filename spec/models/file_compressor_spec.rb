@@ -1,10 +1,12 @@
-describe CompressFile, type: :service do
+describe FileCompressor do
+  subject { described_class.new(data, filename) }
+
   let(:data) { "data" }
   let(:filename) { "filename" }
 
-  describe "#call" do
+  describe "#compress" do
     it "returns a zip file" do
-      described_class.new(data, filename).call do |zip|
+      subject.compress do |zip|
         expect(zip.mime_type).to eq("application/zip")
         expect(zip.read).to be_a(String)
 
@@ -16,7 +18,7 @@ describe CompressFile, type: :service do
     end
 
     it "deletes temp files" do
-      described_class.new(data, filename).call do
+      subject.compress do
         expect(Rails.root.glob("tmp/*#{filename}.zip")).not_to be_empty
       end
       expect(Rails.root.glob("tmp/*#{filename}.zip")).to be_empty
