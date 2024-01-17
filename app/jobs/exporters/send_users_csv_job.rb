@@ -8,6 +8,10 @@ module Exporters
       @motif_category = motif_category_id.present? ? MotifCategory.find(motif_category_id) : nil
       @agent = Agent.find(agent_id)
 
+      send_csv
+    end
+
+    def send_csv
       CsvExportMailer.users_csv_export(agent.email, generate_csv.csv, generate_csv.filename).deliver_now
     end
 

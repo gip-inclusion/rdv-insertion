@@ -29,7 +29,7 @@ module Exporters
     end
 
     def resource_human_name
-      "beneficiaires"
+      "usagers"
     end
 
     def each_element(&)

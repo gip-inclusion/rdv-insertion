@@ -88,6 +88,9 @@ gem "wkhtmltopdf-binary"
 # CORS support
 gem "rack-cors"
 
+# Sending ZIP
+gem "rubyzip"
+
 # Simple Fast Declarative Serialization Library
 gem "blueprinter"
 
