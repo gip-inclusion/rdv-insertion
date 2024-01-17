@@ -1078,8 +1078,7 @@ describe UsersController do
         expect(Users::Save).to receive(:call)
           .with(
             user: user,
-            organisation: organisation,
-            rdv_solidarites_session: rdv_solidarites_session
+            organisation: organisation
           )
         patch :update, params: update_params
       end

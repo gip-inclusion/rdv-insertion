@@ -1,9 +1,8 @@
 module Users
   class Upsert < BaseService
-    def initialize(user_attributes:, organisation:, rdv_solidarites_session:)
+    def initialize(user_attributes:, organisation:)
       @user_attributes = user_attributes
       @organisation = organisation
-      @rdv_solidarites_session = rdv_solidarites_session
     end
 
     def call
@@ -27,8 +26,7 @@ module Users
       call_service!(
         Users::Save,
         user: @user,
-        organisation: @organisation,
-        rdv_solidarites_session: @rdv_solidarites_session
+        organisation: @organisation
       )
     end
   end

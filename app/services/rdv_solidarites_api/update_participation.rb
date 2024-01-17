@@ -1,7 +1,6 @@
 module RdvSolidaritesApi
   class UpdateParticipation < Base
-    def initialize(participation_attributes:, rdv_solidarites_session:, rdv_solidarites_participation_id:)
-      @rdv_solidarites_session = rdv_solidarites_session
+    def initialize(participation_attributes:, rdv_solidarites_participation_id:)
       @rdv_solidarites_participation_id = rdv_solidarites_participation_id
       @participation_attributes = participation_attributes
     end

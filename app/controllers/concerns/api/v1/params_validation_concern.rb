@@ -18,7 +18,8 @@ module Api
 
       def validate_user_params
         @params_validation_errors = []
-        validate_user_attributes(user_attributes)
+        validate_user_attributes(user_attributes.except(:referents_to_add))
+        Array(user_attributes[:referents_to_add]).each { validate_referent_exists(_1[:email]) }
 
         return if @params_validation_errors.empty?
 
@@ -35,8 +36,18 @@ module Api
 
       def validate_users_attributes
         users_attributes.each_with_index do |user_attributes, idx|
-          validate_user_attributes(user_attributes.except(:invitation), idx)
+          validate_user_attributes(user_attributes.except(:invitation, :referents_to_add), idx)
+          Array(user_attributes[:referents_to_add]).each { validate_referent_exists(_1[:email], idx) }
         end
+      end
+
+      def validate_referent_exists(referent_email, idx = nil)
+        return if @organisation.agents.find_by(email: referent_email)
+
+        @params_validation_errors << {
+          error_details: "Assignation du référent impossible car aucun agent n'a été retrouvé " \
+                         "avec l'adresse #{referent_email} au sein de l'organisation #{@organisation.name}. "
+        }.merge(idx.present? ? { index: idx } : {})
       end
 
       def validate_user_attributes(user_attributes, idx = nil)

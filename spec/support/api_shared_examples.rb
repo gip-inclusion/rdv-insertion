@@ -2,7 +2,7 @@ module ApiSpecSharedExamples
   shared_context "an endpoint that returns 401 - unauthorized" do
     response 401, "Renvoie 'unauthorized' quand l'authentification est impossible" do
       before do
-        allow(rdv_solidarites_session).to receive(:valid?).and_return(false)
+        allow(rdv_solidarites_credentials).to receive(:valid?).and_return(false)
       end
 
       schema "$ref" => "#/components/schemas/error_authentication"

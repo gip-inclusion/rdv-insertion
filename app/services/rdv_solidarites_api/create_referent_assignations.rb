@@ -3,7 +3,6 @@ module RdvSolidaritesApi
     def initialize(rdv_solidarites_user_id:, rdv_solidarites_agent_ids:)
       @rdv_solidarites_user_id = rdv_solidarites_user_id
       @rdv_solidarites_agent_ids = rdv_solidarites_agent_ids
-      @rdv_solidarites_session = rdv_solidarites_session_with_shared_secret
     end
 
     def call

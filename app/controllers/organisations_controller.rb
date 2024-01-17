@@ -1,5 +1,3 @@
-# rubocop:disable Metrics/ClassLength
-
 class OrganisationsController < ApplicationController
   PERMITTED_PARAMS = [
     :name, :phone_number, :email, :slug, :independent_from_cd, :logo_filename, :rdv_solidarites_organisation_id,
@@ -116,7 +114,6 @@ class OrganisationsController < ApplicationController
   def retrieve_relevant_organisations
     @retrieve_relevant_organisations ||=
       RdvSolidaritesApi::RetrieveOrganisations.call(
-        rdv_solidarites_session: rdv_solidarites_session,
         geo_attributes: {
           departement_number: department.number,
           city_code: retrieve_geolocalisation.city_code,
@@ -136,23 +133,14 @@ class OrganisationsController < ApplicationController
   end
 
   def update_organisation
-    @update_organisation ||= Organisations::Update.call(
-      organisation: @organisation,
-      rdv_solidarites_session: rdv_solidarites_session
-    )
+    @update_organisation ||= Organisations::Update.call(organisation: @organisation)
   end
 
   def create_organisation
-    @create_organisation ||= Organisations::Create.call(
-      organisation: @organisation,
-      current_agent: current_agent,
-      rdv_solidarites_session: rdv_solidarites_session
-    )
+    @create_organisation ||= Organisations::Create.call(organisation: @organisation)
   end
 
   def authorize_organisation_configuration
     authorize @organisation, :configure?
   end
 end
-
-# rubocop:enable Metrics/ClassLength

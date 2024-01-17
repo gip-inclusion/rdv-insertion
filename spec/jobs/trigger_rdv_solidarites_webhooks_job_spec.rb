@@ -1,36 +1,22 @@
 describe TriggerRdvSolidaritesWebhooksJob do
   subject do
     described_class.new.perform(
-      rdv_solidarites_webhook_endpoint_id, rdv_solidarites_organisation_id, rdv_solidarites_session_credentials
+      rdv_solidarites_webhook_endpoint_id, rdv_solidarites_organisation_id
     )
   end
 
   let!(:rdv_solidarites_webhook_endpoint_id) { 17 }
   let!(:rdv_solidarites_organisation_id) { 1717 }
-  let!(:agent) { create(:agent, email: "janedoe@gouv.fr") }
-  let!(:rdv_solidarites_session_credentials) do
-    { "client" => "someclient", "uid" => agent.email.to_s, "access_token" => "sometoken" }.symbolize_keys
-  end
-  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
 
   describe "#perform" do
     before do
-      allow(RdvSolidaritesSessionFactory).to receive(:create_with)
-        .with(**rdv_solidarites_session_credentials)
-        .and_return(rdv_solidarites_session)
       allow(RdvSolidaritesApi::UpdateWebhookEndpoint).to receive(:call)
         .with(
           rdv_solidarites_webhook_endpoint_id: rdv_solidarites_webhook_endpoint_id,
           rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
-          rdv_solidarites_session: rdv_solidarites_session,
           trigger: true
         )
         .and_return(OpenStruct.new(success?: true))
-    end
-
-    it "sets the current agent" do
-      subject
-      expect(Current.agent).to eq(agent)
     end
 
     it "calls the update webhook service with the trigger option on" do
@@ -38,7 +24,6 @@ describe TriggerRdvSolidaritesWebhooksJob do
         .with(
           rdv_solidarites_webhook_endpoint_id: rdv_solidarites_webhook_endpoint_id,
           rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
-          rdv_solidarites_session: rdv_solidarites_session,
           trigger: true
         )
       subject
@@ -50,7 +35,6 @@ describe TriggerRdvSolidaritesWebhooksJob do
           .with(
             rdv_solidarites_webhook_endpoint_id: rdv_solidarites_webhook_endpoint_id,
             rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
-            rdv_solidarites_session: rdv_solidarites_session,
             trigger: true
           )
           .and_return(OpenStruct.new(success?: false, errors: ["something went wrong"]))

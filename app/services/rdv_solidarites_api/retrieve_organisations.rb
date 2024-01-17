@@ -1,7 +1,6 @@
 module RdvSolidaritesApi
   class RetrieveOrganisations < Base
-    def initialize(rdv_solidarites_session:, geo_attributes: {})
-      @rdv_solidarites_session = rdv_solidarites_session
+    def initialize(geo_attributes: {})
       @geo_attributes = geo_attributes
     end
 
