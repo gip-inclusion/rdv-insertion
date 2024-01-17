@@ -11,7 +11,7 @@ class CsvExportMailer < ApplicationMailer
 
   def send_csv(subject, email, csv, filename)
     CompressFile.new(csv, filename).call do |zip|
-      attachments[filename] = { mime_type: zip.mime_type, content: zip.read }
+      attachments[zip.compressed_filename] = { mime_type: zip.mime_type, content: zip.read }
       mail(to: email, subject:)
     end
   rescue StandardError => e

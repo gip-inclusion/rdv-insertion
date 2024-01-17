@@ -27,6 +27,10 @@ class CompressFile < BaseService
     File.read(@temp_zip_path)
   end
 
+  def compressed_filename
+    "#{filename}.zip"
+  end
+
   def mime_type
     "application/zip"
   end
