@@ -23,7 +23,13 @@ module WebhookDeliverable
 
   def generate_webhook_payload(action)
     {
-      data: department.number == "13" ? blueprint_class.render_as_json(self, view: :webhook_tmp) : as_json,
+      data: if department.number == "13" && ENV["SENTRY_ENVIRONMENT"] == "production"
+              blueprint_class.render_as_json(
+                self, view: :webhook_tmp
+              )
+            else
+              as_json
+            end,
       meta: {
         model: self.class.name,
         event: action,

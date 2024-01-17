@@ -260,9 +260,9 @@ describe "Agents can convene user to rdv", js: true do
     end
   end
 
-  describe "from #show" do
+  describe "from users#rdv_contexts" do
     it "can also convene an user" do
-      visit organisation_user_path(organisation, user)
+      visit organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id)
       expect(page).to have_link("📅 Convoquer")
       new_window = window_opened_by { click_link("📅 Convoquer") }
       within_window new_window do

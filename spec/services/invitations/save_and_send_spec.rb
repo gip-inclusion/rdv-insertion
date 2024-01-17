@@ -13,7 +13,7 @@ describe Invitations::SaveAndSend, type: :service do
 
   describe "#call" do
     before do
-      allow(Invitations::AssignAttributes).to receive(:call)
+      allow(Invitations::AssignLinkAndToken).to receive(:call)
         .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
         .and_return(OpenStruct.new(success?: true))
       allow(Invitations::Validate).to receive(:call)
@@ -37,7 +37,7 @@ describe Invitations::SaveAndSend, type: :service do
     end
 
     it "saves an invitation" do
-      expect(Invitations::AssignAttributes).to receive(:call)
+      expect(Invitations::AssignLinkAndToken).to receive(:call)
         .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
       subject
     end
@@ -54,7 +54,7 @@ describe Invitations::SaveAndSend, type: :service do
 
     context "when it fails to assign attributes" do
       before do
-        allow(Invitations::AssignAttributes).to receive(:call)
+        allow(Invitations::AssignLinkAndToken).to receive(:call)
           .with(invitation: invitation, rdv_solidarites_session: rdv_solidarites_session)
           .and_return(OpenStruct.new(success?: false, errors: ["cannot assign token"]))
       end
@@ -113,7 +113,7 @@ describe Invitations::SaveAndSend, type: :service do
       it("is a success") { is_a_success }
 
       it "does not call the assign link and token service" do
-        expect(Invitations::AssignAttributes).not_to receive(:call)
+        expect(Invitations::AssignLinkAndToken).not_to receive(:call)
         subject
       end
     end

@@ -1,0 +1,9 @@
+<%= turbo_frame_tag "orientations_list" do %>
+  <% if orientations.empty? %>
+    <p id="no-orientation-text">Pas d'orientation renseignée</p>
+  <% else %>
+    <% orientations.each do |orientation| %>
+      <%= render "orientations/orientation", orientation:  %>
+    <% end %>
+  <% end %>
+<% end %>

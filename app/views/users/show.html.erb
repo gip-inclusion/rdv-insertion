@@ -1,80 +1,54 @@
 <%= render 'archive_banner' if @archive.present? %>
 
 <div class="container text-dark-blue h4-as-labels mt-4">
-  <div class="d-flex justify-content-between mb-4">
-    <div>
-      <%= link_to(@back_to_users_list_url || structure_users_path) do %>
-        <button class="btn btn-blue-out">Retour</button>
-      <% end %>
-      <%= link_to new_organisation_user_rdv_path(@organisation, @user), target: "_blank" do %>
-        <button class="btn btn-blue">Trouver un RDV<i class="fas fa-external-link-alt icon-sm"></i></button>
-      <% end %>
-      <% if @department.carnet_de_bord_deploiement_id? %>
-        <% if @user.carnet_de_bord_carnet_id? %>
-          <%= render "carnet_de_bord_carnet_link", carnet_url: @user.carnet_de_bord_carnet_url %>
-        <% else %>
-          <%= render "create_carnet_button", user_id: @user.id, department_id: @department.id %>
-        <% end %>
-      <% end %>
-    </div>
-    <div>
-      <%= render "archiving_button" %>
-      <%= link_to edit_structure_user_path(@user.id) do %>
-        <button class="btn btn-blue">Modifier</button>
-      <% end %>
-    </div>
-  </div>
+  <%= render "user_page_header" %>
 
-  <div class="mb-4">
-    <div class="row d-flex justify-content-start flex-wrap">
-      <%= render "common/attribute_display", record: @user, attribute: :first_name %>
-      <%= render "common/attribute_display", record: @user, attribute: :last_name %>
-      <%= render "common/attribute_display", record: @user, attribute: :title %>
-      <%= render "common/attribute_display", record: @user, attribute: :role %>
-      <%= render "common/attribute_display", record: @user, attribute: :affiliation_number %>
-      <%= render "common/attribute_display", record: @user, attribute: :department_internal_id, tooltip: true %>
-      <%= render "common/attribute_display", record: @user, attribute: :nir %>
-      <%= render "common/attribute_display", record: @user, attribute: :pole_emploi_id %>
-      <%= render "common/attribute_display", record: @user, attribute: :email %>
-      <%= render "common/attribute_display", record: @user, attribute: :birth_date, as: :date %>
-      <%= render "common/attribute_display", record: @user, attribute: :address %>
-      <%= render "common/attribute_display", record: @user, attribute: :phone_number %>
-      <%= render "common/attribute_display", record: @user, attribute: :rights_opening_date, as: :date %>
-      <%= render "common/attribute_display", record: @user, attribute: :created_at, as: :date %>
-      <% if @archive.present? %>
-        <%= render "common/attribute_display", record: @archive, attribute: :archiving_reason %>
-        <%= render "common/attribute_display", record: @archive, attribute: :created_at, as: :date %>
-      <% end %>
-    </div>
-    <div class="row d-flex justify-content-start flex-wrap mt-5">
-      <div class="col-12 col-md-6 px-5">
-        <h4> Tags </h4>
-        <%= render "user_tags", tags: @tags %>
+  <%= turbo_frame_tag "user_page_body" do %>
 
-        <%= link_to(structure_user_tag_assignations_path(@user.id), data: { turbo_frame: 'remote_modal' }) do %>
-          <button class="btn btn-blue mb-3"><i class="fas fa-pen"></i> Ajouter ou retirer un tag </button>
+    <%= render "user_tabs", user: @user, tab: "infos" %>
+
+    <div class="mb-4">
+      <div class="row">
+        <div class="col-md-6"></div>
+        <div class="col-md-6 text-end">
+          <%= link_to edit_structure_user_path(@user.id), class: "px-4" do %>
+            <i class="fas fa-pencil-alt text-dark-blue"></i>
+          <% end %>
+        </div>
+      </div>
+      <div class="row d-flex justify-content-start flex-wrap">
+        <%= render "common/attribute_display", record: @user, attribute: :first_name %>
+        <%= render "common/attribute_display", record: @user, attribute: :last_name %>
+        <%= render "common/attribute_display", record: @user, attribute: :title %>
+        <%= render "common/attribute_display", record: @user, attribute: :role %>
+        <%= render "common/attribute_display", record: @user, attribute: :affiliation_number %>
+        <%= render "common/attribute_display", record: @user, attribute: :department_internal_id, tooltip: true %>
+        <%= render "common/attribute_display", record: @user, attribute: :nir %>
+        <%= render "common/attribute_display", record: @user, attribute: :pole_emploi_id %>
+        <%= render "common/attribute_display", record: @user, attribute: :email %>
+        <%= render "common/attribute_display", record: @user, attribute: :birth_date, as: :date %>
+        <%= render "common/attribute_display", record: @user, attribute: :address %>
+        <%= render "common/attribute_display", record: @user, attribute: :phone_number %>
+        <%= render "common/attribute_display", record: @user, attribute: :rights_opening_date, as: :date %>
+        <%= render "common/attribute_display", record: @user, attribute: :created_at, as: :date %>
+        <% if @archive.present? %>
+          <%= render "common/attribute_display", record: @archive, attribute: :archiving_reason %>
+          <%= render "common/attribute_display", record: @archive, attribute: :created_at, as: :date %>
         <% end %>
       </div>
+      <div class="row d-flex justify-content-start flex-wrap mt-5">
+        <div class="col-12 col-md-6 px-5">
+          <h4> Tags </h4>
+          <%= render "user_tags", tags: @tags %>
 
-      <%= render "users/user_organisations_list", user: @user %>
-      <%= render "users/user_referents_list", user: @user %>
-    </div>
-  </div>
-  <% @all_configurations.each do |configuration| %>
-    <% rdv_context = @rdv_contexts.find { |rc| rc.motif_category == configuration.motif_category } %>
-    <% if rdv_context %>
-      <%= render "rdv_contexts/rdv_context", rdv_context: rdv_context, participations: rdv_context.participations, convocable_participations: rdv_context.participations.select(&:convocable?), configuration: configuration, user: @user, department: @department, invitations: rdv_context.invitations %>
-    <% else %>
-      <div class="d-flex align-items-center context-header">
-        <span></span>
-        <h5 class="text-center px-2 py-4">
-          <strong><%= configuration.motif_category_name %></strong>
-          <small><%= configuration.rdv_with_referents? ? " (avec référents)" : "" %></small>
-        </h5>
-        <span></span>
-        <%= render "rdv_contexts/new_button", user: @user, configuration: configuration, organisation: @organisation, department: @department, turbo: false, button_text: "Ouvrir un suivi" %>
-        <span></span>
+          <%= link_to(structure_user_tag_assignations_path(@user.id), data: { turbo_frame: 'remote_modal' }) do %>
+            <button class="btn btn-blue mb-3"><i class="fas fa-pen"></i> Ajouter ou retirer un tag </button>
+          <% end %>
+        </div>
+
+        <%= render "users/user_organisations_list", user: @user %>
+        <%= render "users/user_referents_list", user: @user %>
       </div>
-    <% end %>
+    </div>
   <% end %>
 </div>

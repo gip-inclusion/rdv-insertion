@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_21_133009) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_04_105413) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -80,6 +80,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_21_133009) do
     t.integer "day_of_the_month_periodic_invites"
     t.integer "position", default: 0
     t.integer "department_position", default: 0
+    t.string "phone_number"
     t.index ["file_configuration_id"], name: "index_configurations_on_file_configuration_id"
     t.index ["motif_category_id"], name: "index_configurations_on_motif_category_id"
     t.index ["organisation_id"], name: "index_configurations_on_organisation_id"
@@ -248,6 +249,20 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_21_133009) do
     t.bigint "organisation_id", null: false
     t.bigint "webhook_endpoint_id", null: false
     t.index ["organisation_id", "webhook_endpoint_id"], name: "index_webhook_orgas_on_orga_id_and_webhook_id", unique: true
+  end
+
+  create_table "orientations", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "organisation_id", null: false
+    t.bigint "agent_id", null: false
+    t.integer "orientation_type"
+    t.date "starts_at"
+    t.date "ends_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agent_id"], name: "index_orientations_on_agent_id"
+    t.index ["organisation_id"], name: "index_orientations_on_organisation_id"
+    t.index ["user_id"], name: "index_orientations_on_user_id"
   end
 
   create_table "participations", force: :cascade do |t|
@@ -450,6 +465,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_21_133009) do
   add_foreign_key "motifs", "organisations"
   add_foreign_key "notifications", "participations"
   add_foreign_key "organisations", "departments"
+  add_foreign_key "orientations", "agents"
+  add_foreign_key "orientations", "organisations"
+  add_foreign_key "orientations", "users"
   add_foreign_key "participations", "rdv_contexts"
   add_foreign_key "rdv_contexts", "motif_categories"
   add_foreign_key "rdv_contexts", "users"

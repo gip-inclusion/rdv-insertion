@@ -159,7 +159,6 @@ export default class User {
       this.currentOrganisation.id,
       this.list.isDepartmentLevel,
       this.currentConfiguration.motif_category_id,
-      this.currentOrganisation.phone_number,
     ];
     const result = await handleUserInvitation(...invitationParams, format, {
       raiseError: options.raiseError,

@@ -229,6 +229,7 @@ describe "Agents can add or remove user from organisations", js: true do
 
       expect(page).to have_button("- Retirer", disabled: false)
       expect(page).to have_button("- Retirer", disabled: true)
+
       click_button("- Retirer")
 
       expect(page).to have_content("Filtrer")

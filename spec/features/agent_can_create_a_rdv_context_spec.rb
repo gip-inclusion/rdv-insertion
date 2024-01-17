@@ -50,10 +50,10 @@ describe "Agents can create a rdv_context", js: true do
     end
   end
 
-  context "from user show page" do
+  context "from user rdv_contexts page" do
     context "at department level" do
       it "can create a rdv_context" do
-        visit department_user_path(department, user)
+        visit department_user_rdv_contexts_path(department_id: department.id, user_id: user.id)
         expect(page).to have_content("Ouvrir un suivi")
 
         click_button("Ouvrir un suivi")
@@ -63,13 +63,14 @@ describe "Agents can create a rdv_context", js: true do
         expect(RdvContext.last.status).to eq("not_invited")
         expect(RdvContext.last.motif_category).to eq(category_orientation)
         expect(RdvContext.last.user).to eq(user)
-        expect(page).to have_current_path(department_user_path(department, user))
+        expect(page).to have_current_path(department_user_rdv_contexts_path(department_id: department.id,
+                                                                            user_id: user.id))
       end
     end
 
     context "at organisation level" do
       it "can create a rdv_context" do
-        visit organisation_user_path(organisation, user)
+        visit organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id)
         expect(page).to have_content("Ouvrir un suivi")
 
         click_button("Ouvrir un suivi")
@@ -79,7 +80,8 @@ describe "Agents can create a rdv_context", js: true do
         expect(RdvContext.last.status).to eq("not_invited")
         expect(RdvContext.last.motif_category).to eq(category_orientation)
         expect(RdvContext.last.user).to eq(user)
-        expect(page).to have_current_path(organisation_user_path(organisation, user))
+        expect(page).to have_current_path(organisation_user_rdv_contexts_path(organisation_id: organisation.id,
+                                                                              user_id: user.id))
       end
     end
   end

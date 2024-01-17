@@ -7,6 +7,7 @@ class Agent < ApplicationRecord
   has_many :agent_roles, dependent: :destroy
   has_many :referent_assignations, dependent: :destroy
   has_many :agents_rdvs, dependent: :destroy
+  has_many :orientations, dependent: :restrict_with_error
 
   has_many :organisations, through: :agent_roles
   has_many :departments, -> { distinct }, through: :organisations

@@ -1,0 +1,25 @@
+<div class="d-flex justify-content-between my-5">
+  <div class="col-sm-4">
+    <%= link_to(@back_to_users_list_url || structure_users_path) do %>
+      <button class="btn btn-blue-out">Retour</button>
+    <% end %>
+    <%= link_to new_user_rdv_path(@user), target: "_blank" do %>
+      <button class="btn btn-blue">Trouver un RDV<i class="fas fa-external-link-alt icon-sm"></i></button>
+    <% end %>
+    <% if @department.carnet_de_bord_deploiement_id? %>
+      <% if @user.carnet_de_bord_carnet_id? %>
+        <%= render "users/carnet_de_bord_carnet_link", carnet_url: @user.carnet_de_bord_carnet_url %>
+      <% else %>
+        <%= render "users/create_carnet_button", user_id: @user.id, department_id: @department.id %>
+      <% end %>
+    <% end %>
+  </div>
+  <h4 class="col-sm-4 text-center">
+    <%= render "users/user_icon", user: @user %> <%= @user.to_s %>
+  </h4>
+  <div class="col-sm-4 text-end">
+    <%= render "users/archiving_button", user: @user, department: @department, archive: @user.archive_for(@department.id) %>
+  </div>
+</div>
+
+

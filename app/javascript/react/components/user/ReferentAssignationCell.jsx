@@ -10,7 +10,7 @@ export default observer(({ user }) => {
   const handleReferentAssignationClick = async () => {
     user.triggers.referentAssignation = true;
 
-    const result = await assignReferent(user.department.id, user.id, user.referentEmail);
+    const result = await assignReferent(user.id, user.referentEmail);
     if (result.success) {
       setAssignationDone(true);
     } else {

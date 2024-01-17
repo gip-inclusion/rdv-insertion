@@ -93,18 +93,34 @@ print_text "OK\n" "success"
 
 print_text "\n"
 
-git merge --ff-only staging
-print_text "Merging 'staging' changes: "
-print_text "OK\n" "success"
+git_log_output=$(git log main..staging)
 
-print_text "\n"
+echo "Voici ce qui va être déployé en production :"
+echo "--------------------------------------------"
+echo "$git_log_output"
+echo "--------------------------------------------"
 
-git push origin main
-print_text "Pushing to 'main': "
-print_text "OK\n" "success"
+read -p "Souhaitez-vous toujours déployer ? (y/n): " deploy_choice
 
-print_text "\n"
+if [ "$deploy_choice" == "y" ]; then
+  git merge --ff-only staging
+  print_text "Merging 'staging' changes: "
+  print_text "OK\n" "success"
 
-git checkout staging
-print_text "All done!\n" "success"
-print_text "Scalingo will take care of starting the deployment.\n" "info"
+  print_text "\n"
+
+  git push origin main
+  print_text "Pushing to 'main': "
+  print_text "OK\n" "success"
+
+  print_text "\n"
+
+  git checkout staging
+  print_text "All done!\n" "success"
+  print_text "Scalingo will take care of starting the deployment.\n" "info"
+else
+  git checkout staging
+  echo "Déploiement annulé"
+  exit 1
+fi
+
