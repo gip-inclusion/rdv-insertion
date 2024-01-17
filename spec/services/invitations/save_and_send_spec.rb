@@ -18,8 +18,10 @@ describe Invitations::SaveAndSend, type: :service do
       allow(RdvSolidaritesApi::RetrieveCreneauAvailability).to receive(:call)
         .with(link_params: invitation.link_params)
         .and_return(OpenStruct.new(success?: true, creneau_availability: true))
-      allow(invitation).to receive_messages(send_to_user: OpenStruct.new(success?: true),
-                                            rdv_solidarites_token?: false, link?: false)
+      allow(invitation).to receive(:send_to_user)
+        .and_return(OpenStruct.new(success?: true))
+      allow(invitation).to receive(:rdv_solidarites_token?).and_return(false)
+      allow(invitation).to receive(:link?).and_return(false)
     end
 
     it "is a success" do
@@ -100,7 +102,8 @@ describe Invitations::SaveAndSend, type: :service do
 
     context "when there is a token and a link assigned already" do
       before do
-        allow(invitation).to receive_messages(rdv_solidarites_token?: true, link?: true)
+        allow(invitation).to receive(:rdv_solidarites_token?).and_return(true)
+        allow(invitation).to receive(:link?).and_return(true)
       end
 
       it("is a success") { is_a_success }

@@ -1,4 +1,4 @@
-describe "Agents can update user through form", :js do
+describe "Agents can update user through form", js: true do
   let!(:agent) { create(:agent, organisations: [organisation]) }
   let!(:department) { create(:department) }
   let!(:organisation) do

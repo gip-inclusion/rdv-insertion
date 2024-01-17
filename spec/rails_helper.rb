@@ -49,10 +49,10 @@ RSpec.configure do |config|
   config.include ActiveSupport::Testing::TimeHelpers
 
   ## Clear downloads
-  config.before(:each, :js) do
+  config.before(:each, js: true) do
     clear_downloads
   end
-  config.after(:each, :js) do
+  config.after(:each, js: true) do
     clear_downloads
   end
 

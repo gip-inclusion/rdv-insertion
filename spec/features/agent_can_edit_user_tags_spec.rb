@@ -1,4 +1,4 @@
-describe "Agents can edit users tags", :js do
+describe "Agents can edit users tags", js: true do
   let!(:agent) { create(:agent, organisations: [organisation]) }
   let!(:organisation) do
     create(

@@ -1,4 +1,4 @@
-describe "Agents can invite from index page", :js do
+describe "Agents can invite from index page", js: true do
   let!(:agent) { create(:agent, admin_role_in_organisations: [organisation]) }
   let!(:organisation) { create(:organisation) }
   let!(:user) do

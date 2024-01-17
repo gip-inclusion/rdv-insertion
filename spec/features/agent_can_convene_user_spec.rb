@@ -1,4 +1,4 @@
-describe "Agents can convene user to rdv", :js do
+describe "Agents can convene user to rdv", js: true do
   let!(:agent) { create(:agent, organisations: [organisation]) }
   let!(:department) { create(:department) }
   let!(:organisation) do
@@ -188,7 +188,7 @@ describe "Agents can convene user to rdv", :js do
 
         it "does not show a convocation button" do
           visit organisation_users_path(organisation, motif_category_id: motif_category.id)
-          expect(page).to have_no_content("📅 Convoquer")
+          expect(page).not_to have_content("📅 Convoquer")
         end
       end
 
@@ -201,7 +201,7 @@ describe "Agents can convene user to rdv", :js do
           rdv_context.set_status
           rdv_context.save!
           visit organisation_users_path(organisation, motif_category_id: motif_category.id)
-          expect(page).to have_no_content("📅 Convoquer")
+          expect(page).not_to have_content("📅 Convoquer")
         end
       end
 
@@ -243,7 +243,7 @@ describe "Agents can convene user to rdv", :js do
 
         it "does not show a convocation button" do
           visit organisation_users_path(organisation, motif_category_id: motif_category.id)
-          expect(page).to have_no_link("📅 Convoquer")
+          expect(page).not_to have_link("📅 Convoquer")
         end
       end
 

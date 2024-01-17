@@ -1,5 +1,4 @@
 class AddStatusAndIdToApplicantsRdvs < ActiveRecord::Migration[7.0]
-  # rubocop:disable Rails/DangerousColumnNames
   def change
     add_column :applicants_rdvs, :status, :integer, default: 0
     add_column :applicants_rdvs, :rdv_solidarites_participation_id, :bigint
@@ -20,5 +19,4 @@ class AddStatusAndIdToApplicantsRdvs < ActiveRecord::Migration[7.0]
     change_column_null :applicants_rdvs, :created_at, false
     change_column_null :applicants_rdvs, :updated_at, false
   end
-  # rubocop:enable Rails/DangerousColumnNames
 end

@@ -6,7 +6,7 @@ class ChangeColumnNamesFormatForFileConfigurations < ActiveRecord::Migration[7.0
 
   def up
     COLUMN_NAMES.each do |column_name|
-      add_column :file_configurations, :"#{column_name}_column", :string
+      add_column :file_configurations, "#{column_name}_column".to_sym, :string
     end
 
     FileConfiguration.find_each do |file_configuration|
@@ -35,7 +35,7 @@ class ChangeColumnNamesFormatForFileConfigurations < ActiveRecord::Migration[7.0
     end
 
     COLUMN_NAMES.each do |column_name|
-      remove_column :file_configurations, :"#{column_name}_column"
+      remove_column :file_configurations, "#{column_name}_column".to_sym
     end
   end
 end
