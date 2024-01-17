@@ -2,7 +2,7 @@ module User::Address
   extend ActiveSupport::Concern
 
   included do
-    before_save :format_address
+    normalizes :address, with: ->(address) { address.squish }
   end
 
   def street_address
@@ -14,12 +14,6 @@ module User::Address
   end
 
   private
-
-  def format_address
-    return if address.blank?
-
-    self.address = address.squish
-  end
 
   def split_address
     address&.match(/^(.+) (\d{5}.*)$/m)

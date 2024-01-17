@@ -1,4 +1,4 @@
-describe "Agents can generate convocation pdf", js: true do
+describe "Agents can generate convocation pdf", :js do
   let!(:agent) { create(:agent, organisations: [organisation]) }
   let!(:organisation) { create(:organisation) }
   let!(:user) { create(:user, organisations: [organisation]) }
@@ -77,7 +77,7 @@ describe "Agents can generate convocation pdf", js: true do
     it "cannot generate a pdf" do
       visit organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id)
 
-      expect(page).not_to have_button "Courrier"
+      expect(page).to have_no_button "Courrier"
     end
   end
 

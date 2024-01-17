@@ -1,4 +1,4 @@
-describe "Agents can create a rdv_context", js: true do
+describe "Agents can create a rdv_context", :js do
   let!(:department) { create(:department) }
   let!(:organisation) { create(:organisation, department: department) }
   let!(:agent) { create(:agent, organisations: [organisation]) }

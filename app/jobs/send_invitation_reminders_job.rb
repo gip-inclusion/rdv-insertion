@@ -30,7 +30,7 @@ class SendInvitationRemindersJob < ApplicationJob
                 .joins(:motif_category)
                 .where(motif_category: MotifCategory.participation_optional(false))
                 .where(id: valid_invitations_sent_3_days_ago.pluck(:rdv_context_id))
-                .where(user_id: User.active.ids)
+                .where(user_id: User.active.select(:id))
                 .distinct
   end
 

@@ -25,10 +25,7 @@ describe Stats::GlobalStats::UpsertStat, type: :service do
         .and_return(OpenStruct.new(success?: true, stat_attributes: stat_attributes))
       allow(Stat).to receive(:find_or_initialize_by)
         .and_return(stat)
-      allow(stat).to receive(:assign_attributes)
-        .and_return(true)
-      allow(stat).to receive(:save)
-        .and_return(true)
+      allow(stat).to receive_messages(assign_attributes: true, save: true)
     end
 
     it "is a success" do

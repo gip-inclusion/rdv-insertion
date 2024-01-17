@@ -46,6 +46,9 @@ Rails/SkipsModelValidations:
 Rails/UniqueValidationWithoutIndex:
   Enabled: false
 
+Rails/ThreeStateBooleanColumn:
+  Enabled: false
+
 Lint/MissingSuper:
   Exclude:
     - "app/services/**/*" # Inheriting BaseService without calling super is OK.
@@ -143,8 +146,14 @@ RSpec/ScatteredSetup:
 RSpec/MessageSpies:
   Enabled: false
 
+RSpec/IndexedLet:
+  Enabled: false
+
 Capybara/SpecificActions:
   Enabled: false
 
 Capybara/SpecificMatcher:
+  Enabled: false
+
+Capybara/ClickLinkOrButtonStyle:
   Enabled: false

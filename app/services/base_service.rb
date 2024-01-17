@@ -4,8 +4,8 @@ class UnexpectedResultBehaviourError < StandardError; end
 
 class BaseService
   class << self
-    def call(**kwargs)
-      service = new(**kwargs)
+    def call(**)
+      service = new(**)
       service.instance_variable_set(:@result, OpenStruct.new(errors: []))
       output = service.call
       format_result(output, service.result)
@@ -52,8 +52,8 @@ class BaseService
 
   private
 
-  def call_service!(service_class, **kwargs)
-    service_result = service_class.call(**kwargs)
+  def call_service!(service_class, **)
+    service_result = service_class.call(**)
     return service_result if service_result.success?
 
     service_result.to_h.each { |key, value| result[key] = value }
