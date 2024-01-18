@@ -93,7 +93,8 @@ describe "Super admin can manage organisations" do
       expect(page).not_to have_css("td", class: "cell-data--belongs-to", text: lieu2.name)
       expect(page).to have_css("dt", id: "motif_categories", text: "MOTIF CATEGORIES")
       expect(page).to have_selector(
-        "a[href=\"#{super_admins_motif_category_path(motif_category)}\"]", class: "action-show", text: motif_category.name
+        "a[href=\"#{super_admins_motif_category_path(motif_category)}\"]",
+        class: "action-show", text: motif_category.name
       )
     end
 
