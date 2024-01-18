@@ -178,4 +178,38 @@ describe Participation do
       expect(last_job["args"]).to eq([rdv_context1.id])
     end
   end
+
+  describe "#notifiable?" do
+    subject { participation.notifiable? }
+    let!(:rdv) { create(:rdv, starts_at: 2.days.from_now) }
+    let!(:participation) { create(:participation, convocable: true, rdv:, status: "unknown") }
+
+    it "is notifiable if it is convocable and in the future" do
+      expect(subject).to eq(true)
+    end
+
+    context "when the rdv is in the past" do
+      let!(:rdv) { create(:rdv, starts_at: 2.days.ago) }
+
+      it "is not notifiable" do
+        expect(subject).to eq(false)
+      end
+    end
+
+    context "when it is not convocable" do
+      before { participation.update! convocable: false }
+
+      it "is not notifiable" do
+        expect(subject).to eq(false)
+      end
+    end
+
+    context "when the status is excused" do
+      before { participation.update! status: "excused" }
+
+      it "is not notifiable" do
+        expect(subject).to eq(false)
+      end
+    end
+  end
 end
