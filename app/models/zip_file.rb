@@ -8,7 +8,7 @@ class ZipFile
     @initial_filename = initial_filename
   end
 
-  def compress
+  def zip
     temp_path = Rails.root.join("tmp", SecureRandom.uuid + initial_filename)
     File.write(temp_path, data)
 

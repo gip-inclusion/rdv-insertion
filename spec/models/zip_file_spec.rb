@@ -4,9 +4,9 @@ describe ZipFile do
   let(:data) { "data" }
   let(:filename) { "filename" }
 
-  describe "#compress" do
+  describe "#zip" do
     it "returns a zip file" do
-      subject.compress do |zip|
+      subject.zip do |zip|
         expect(zip.mime_type).to eq("application/zip")
         expect(zip.read).to be_a(String)
 
@@ -18,7 +18,7 @@ describe ZipFile do
     end
 
     it "deletes temp files" do
-      subject.compress do
+      subject.zip do
         expect(Rails.root.glob("tmp/*#{filename}.zip")).not_to be_empty
       end
       expect(Rails.root.glob("tmp/*#{filename}.zip")).to be_empty
