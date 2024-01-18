@@ -181,6 +181,7 @@ describe Participation do
 
   describe "#notifiable?" do
     subject { participation.notifiable? }
+
     let!(:rdv) { create(:rdv, starts_at: 2.days.from_now) }
     let!(:participation) { create(:participation, convocable: true, rdv:, status: "unknown") }
 

@@ -232,6 +232,7 @@ describe User do
 
   describe "#notifiable?" do
     subject { user.notifiable? }
+
     let!(:user) { create(:user, title: "monsieur") }
     let!(:invitation) { create(:invitation, sent_at: 2.years.ago, user:) }
 
