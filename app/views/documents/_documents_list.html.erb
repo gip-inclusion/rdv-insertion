@@ -7,11 +7,5 @@
     <% end %>
   <% end %>
 
-  <%= simple_form_for(:document, url: user_documents_path(user_id: user.id), html: { method: :post }) do |f| %>
-    <%= f.hidden_field :document_type, value: document_type %>
-    <div class="w-50 my-4">
-      <%= f.file_field :file, class: "form-control my-2", id: "file-input-#{document_type}" %>
-    </div>
-    <%= f.submit "Ajouter un #{t("activerecord.attributes.document.document_type.#{document_type}")}", class: "btn btn-blue" %>
-  <% end %>
+  <%= render "documents/document_form", user:, document_type: %>
 <% end %>
