@@ -187,6 +187,9 @@ Le schéma détaillé avec exemple se trouve en bas de page. Ci-dessous on expli
   - `rdv_solidarites_lieu_id`: INTEGER (optionnel): L'ID du lieu dans lequel l'on veut que le RDV ait lieu. S'il est précisé l'usager sera invité directement à choisir un créneau sur ce lieu. Attention, il faut faire attention à ce qu'une plage d'ouverture pour le motif en question (voir attribut précédent) relie le motif au lieu en question. Ces valeurs peuvent être récupérérés en requêtant l'endpoint `GET https://www.rdv-insertion.fr/api/v1/departments/{number}`.
   - `motif_category: OBJECT (optionnel):
     - `name`: STRING: Le nom de la catégorie de motif pour laquelle on veut inviter l'usager. Il peut ne pas être précisé si l'organisation ne peut inviter que sur une seule catégorie. Ces valeurs peuvent être récupérérés en requêtant l'endpoint `GET https://www.rdv-insertion.fr/api/v1/departments/{number}`.
+- `referents_to_add`: ARRAY(optionnel):
+  - OBJECT:
+    - `email` : STRING: email du referent à ajouter à l'usager. Si l'email ne correspond à aucun agent de l'organisation la requête échoue.
 
 ## Idempotence
 

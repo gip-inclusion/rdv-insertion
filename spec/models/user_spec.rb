@@ -229,4 +229,37 @@ describe User do
       end
     end
   end
+
+  describe "#referents_to_add=" do
+    subject { user.save }
+
+    let!(:user) { build(:user) }
+
+    let!(:agent) { create(:agent, email: "someagent@gmail.com") }
+    let!(:other_agent) { create(:agent, email: "otheragent@gmail.com") }
+
+    it "assigns the referents" do
+      user.referents_to_add = [{ email: "someagent@gmail.com" }, { email: "otheragent@gmail.com" }]
+      expect { subject }.to change(ReferentAssignation, :count).by(2)
+      expect(user.reload.referent_ids).to contain_exactly(agent.id, other_agent.id)
+    end
+
+    context "when the email does not match an existing agent" do
+      it "does not assign the referent" do
+        user.referents_to_add = [{ email: "donotexist@gmail.com" }]
+        expect { subject }.not_to change(ReferentAssignation, :count)
+        expect(user.reload.referents).to eq([])
+      end
+    end
+
+    context "when the agent is already assigned" do
+      let!(:user) { create(:user, referents: [agent]) }
+
+      it "does not reassign the assigned referent" do
+        user.referents_to_add = [{ email: "someagent@gmail.com" }, { email: "otheragent@gmail.com" }]
+        expect { subject }.to change(ReferentAssignation, :count).by(1)
+        expect(user.reload.referent_ids).to contain_exactly(agent.id, other_agent.id)
+      end
+    end
+  end
 end
