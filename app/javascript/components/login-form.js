@@ -53,7 +53,7 @@ class LoginForm {
     } else {
       Swal.fire(
         `Une erreur s'est produite: ${signInResult.errors[0]}`,
-        "Veuillez contacter l'équipe par mail à data.insertion@beta.gouv.fr pour pouvoir vous connecter.",
+        "Veuillez contacter l'équipe par mail à rdv-insertion@beta.gouv.fr pour pouvoir vous connecter.",
         "warning"
       );
       this.resetButton();

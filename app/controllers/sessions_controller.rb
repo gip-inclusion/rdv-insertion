@@ -35,7 +35,7 @@ class SessionsController < ApplicationController
     return if logout_inclusion_connect.success?
 
     flash[:error] = "Nous n'avons pas pu vous déconnecter d'Inclusion Connect. Contacter le support à l'adresse
-                    <data.insertion@beta.gouv.fr> si le problème persiste."
+                    <rdv-insertion@beta.gouv.fr> si le problème persiste."
     redirect_to root_path
   end
 end

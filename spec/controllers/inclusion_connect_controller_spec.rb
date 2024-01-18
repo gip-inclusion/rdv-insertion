@@ -127,7 +127,7 @@ describe InclusionConnectController do
   def expect_flash_error
     expect(flash[:error]).to eq(
       "Nous n'avons pas pu vous authentifier. Contacter le support à l'adresse" \
-      "<data.insertion@beta.gouv.fr> si le problème persiste."
+      "<rdv-insertion@beta.gouv.fr> si le problème persiste."
     )
   end
 

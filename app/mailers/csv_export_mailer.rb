@@ -23,7 +23,7 @@ class CsvExportMailer < ApplicationMailer
     mail(to: email, subject:)
   rescue StandardError => e
     body = "Une erreur est survenue lors de la création de l'export CSV que vous avez demandé. \n" \
-           "Veuillez réessayer ou nous contacter à l'adresse data.insertion@beta.gouv.fr.  \n" \
+           "Veuillez réessayer ou nous contacter à l'adresse rdv-insertion@beta.gouv.fr.  \n" \
            "Merci de nous excuser pour la gêne occasionnée.  \n" \
            "L'équipe RDV-Insertion"
 
