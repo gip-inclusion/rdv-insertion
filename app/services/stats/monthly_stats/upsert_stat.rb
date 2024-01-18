@@ -45,7 +45,6 @@ module Stats
           else
             stat_attribute.merge!({ @date.strftime("%m/%Y") => stat_value })
           end
-          stat[stat_name] = stat_attribute
         end
       end
 
