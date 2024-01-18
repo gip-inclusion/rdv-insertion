@@ -10,10 +10,10 @@ describe "Super admin can manage users" do
   end
 
   context "from users admin index page" do
-    before { visit admin_users_path }
+    before { visit super_admins_users_path }
 
     it "can see the list of users" do
-      expect(page).to have_current_path(admin_users_path)
+      expect(page).to have_current_path(super_admins_users_path)
       expect(page).to have_content(user.id)
       expect(page).to have_content(user.first_name)
       expect(page).to have_content(user.last_name)
@@ -21,19 +21,19 @@ describe "Super admin can manage users" do
     end
 
     it "can navigate to a user show page" do
-      expect(page).to have_link(href: admin_user_path(user))
+      expect(page).to have_link(href: super_admins_user_path(user))
 
-      first(:link, href: admin_user_path(user)).click
+      first(:link, href: super_admins_user_path(user)).click
 
-      expect(page).to have_current_path(admin_user_path(user))
+      expect(page).to have_current_path(super_admins_user_path(user))
     end
 
     it "can navigate to a user edit page" do
-      expect(page).to have_link("Modifier", href: edit_admin_user_path(user))
+      expect(page).to have_link("Modifier", href: edit_super_admins_user_path(user))
 
-      click_link(href: edit_admin_user_path(user))
+      click_link(href: edit_super_admins_user_path(user))
 
-      expect(page).to have_current_path(edit_admin_user_path(user))
+      expect(page).to have_current_path(edit_super_admins_user_path(user))
     end
 
     it "cannot create a user" do
@@ -46,10 +46,10 @@ describe "Super admin can manage users" do
   end
 
   context "from user admin show page" do
-    before { visit admin_user_path(user) }
+    before { visit super_admins_user_path(user) }
 
     it "can see a user's details" do
-      expect(page).to have_current_path(admin_user_path(user))
+      expect(page).to have_current_path(super_admins_user_path(user))
       expect(page).to have_content("Détails #{user.first_name} #{user.last_name}")
       expect(page).to have_css("dt", id: "id", text: "ID")
       expect(page).to have_css("dd", class: "attribute-data", text: user.id)
@@ -85,19 +85,19 @@ describe "Super admin can manage users" do
       expect(page).to have_css("dd", class: "attribute-data", text: user.rights_opening_date)
       expect(page).to have_css("dt", id: "organisations", text: "ORGANISATION(S)")
       expect(page).to have_selector(
-        "a[href=\"#{admin_organisation_path(organisation)}\"]", class: "action-show", text: organisation.name
+        "a[href=\"#{super_admins_organisation_path(organisation)}\"]", class: "action-show", text: organisation.name
       )
       expect(page).to have_css("dt", id: "tags", text: "TAGS")
     end
 
     it "can navigate to a user edit page" do
       expect(page).to have_link(
-        "Modifier #{user.first_name} #{user.last_name}", href: edit_admin_user_path(user)
+        "Modifier #{user.first_name} #{user.last_name}", href: edit_super_admins_user_path(user)
       )
 
       click_link("Modifier #{user.first_name} #{user.last_name}")
 
-      expect(page).to have_current_path(edit_admin_user_path(user))
+      expect(page).to have_current_path(edit_super_admins_user_path(user))
     end
 
     it "cannot delete a user" do
@@ -112,11 +112,11 @@ describe "Super admin can manage users" do
       # triggered on the rdv contexts when we create them (in Users::Save) and so there is an error when redirected
       # to show page after update
       allow_any_instance_of(RdvContext).to receive(:status).and_return("not_invited")
-      visit edit_admin_user_path(user)
+      visit edit_super_admins_user_path(user)
     end
 
     it "can edit a user" do
-      expect(page).to have_current_path(edit_admin_user_path(user))
+      expect(page).to have_current_path(edit_super_admins_user_path(user))
       expect(page).to have_content("Modifier #{user.first_name} #{user.last_name}")
       expect(page).to have_css("label[for=\"user_rdv_solidarites_user_id\"]", text: "ID de l'usager RDV-Solidarités")
       expect(page).to have_field("user[rdv_solidarites_user_id]", with: user.rdv_solidarites_user_id)
@@ -159,7 +159,7 @@ describe "Super admin can manage users" do
 
       click_button("Enregistrer")
 
-      expect(page).to have_current_path(admin_user_path(user))
+      expect(page).to have_current_path(super_admins_user_path(user))
       expect(page).to have_content("Usager a été correctement modifié(e)")
       expect(page).to have_content("Détails #{user.first_name} Newname")
     end
@@ -186,19 +186,19 @@ describe "Super admin can manage users" do
     end
 
     it "cannot access the index page" do
-      visit admin_users_path
+      visit super_admins_users_path
 
       expect(page).to have_current_path(organisations_path)
     end
 
     it "cannot access the show page" do
-      visit admin_user_path(user)
+      visit super_admins_user_path(user)
 
       expect(page).to have_current_path(organisations_path)
     end
 
     it "cannot access the edit page" do
-      visit edit_admin_user_path(user)
+      visit edit_super_admins_user_path(user)
 
       expect(page).to have_current_path(organisations_path)
     end

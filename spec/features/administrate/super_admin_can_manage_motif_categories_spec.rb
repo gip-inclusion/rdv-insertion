@@ -9,28 +9,28 @@ describe "Super admin can manage motif categories" do
   end
 
   context "from motif categories admin index page" do
-    before { visit admin_motif_categories_path }
+    before { visit super_admins_motif_categories_path }
 
     it "can see the list of motif_categories" do
-      expect(page).to have_current_path(admin_motif_categories_path)
+      expect(page).to have_current_path(super_admins_motif_categories_path)
       expect(page).to have_content(motif_category.id)
       expect(page).to have_content(motif_category.name)
     end
 
     it "can navigate to a motif_category show page" do
-      expect(page).to have_link(href: admin_motif_category_path(motif_category))
+      expect(page).to have_link(href: super_admins_motif_category_path(motif_category))
 
-      first(:link, href: admin_motif_category_path(motif_category)).click
+      first(:link, href: super_admins_motif_category_path(motif_category)).click
 
-      expect(page).to have_current_path(admin_motif_category_path(motif_category))
+      expect(page).to have_current_path(super_admins_motif_category_path(motif_category))
     end
 
     it "can navigate to a motif_category new page" do
-      expect(page).to have_link("Création catégorie de motifs", href: new_admin_motif_category_path)
+      expect(page).to have_link("Création catégorie de motifs", href: new_super_admins_motif_category_path)
 
-      click_link(href: new_admin_motif_category_path)
+      click_link(href: new_super_admins_motif_category_path)
 
-      expect(page).to have_current_path(new_admin_motif_category_path)
+      expect(page).to have_current_path(new_super_admins_motif_category_path)
     end
 
     it "cannot edit a motif_category" do
@@ -43,10 +43,10 @@ describe "Super admin can manage motif categories" do
   end
 
   context "from motif cateogry admin show page" do
-    before { visit admin_motif_category_path(motif_category) }
+    before { visit super_admins_motif_category_path(motif_category) }
 
     it "can see a motif cateogry's details" do
-      expect(page).to have_current_path(admin_motif_category_path(motif_category))
+      expect(page).to have_current_path(super_admins_motif_category_path(motif_category))
       expect(page).to have_content("Détails MotifCategory ##{motif_category.id}")
       expect(page).to have_css("dt", id: "id", text: "ID")
       expect(page).to have_css("dd", class: "attribute-data", text: motif_category.id)
@@ -55,7 +55,7 @@ describe "Super admin can manage motif categories" do
       expect(page).to have_css("dt", id: "short_name", text: "SHORT NAME")
       expect(page).to have_css("dd", class: "attribute-data", text: motif_category.short_name)
       expect(page).to have_css("dt", id: "template", text: "TEMPLATE")
-      expect(page).to have_link(motif_category.template.name, href: admin_template_path(template))
+      expect(page).to have_link(motif_category.template.name, href: super_admins_template_path(template))
       expect(page).to have_css("dt", id: "motifs", text: "MOTIFS")
       expect(page).to have_css("tr", class: "js-table-row", count: 1)
       within("tr.js-table-row") { expect(page).to have_css("td.cell-data", text: motif.name) }
@@ -75,14 +75,14 @@ describe "Super admin can manage motif categories" do
   end
 
   context "from motif category admin new page" do
-    before { visit new_admin_motif_category_path }
+    before { visit new_super_admins_motif_category_path }
 
     it "can create a new motif category" do
       stub_create_motif_category = stub_request(
         :post, "#{ENV['RDV_SOLIDARITES_URL']}/api/rdvinsertion/motif_categories"
       ).to_return(status: 200, body: {}.to_json)
 
-      expect(page).to have_current_path(new_admin_motif_category_path)
+      expect(page).to have_current_path(new_super_admins_motif_category_path)
       expect(page).to have_content("Création Catégorie De Motifs")
       expect(page).to have_css("label[for=\"motif_category_name\"]", text: "Name")
       expect(page).to have_field("motif_category[name]")
@@ -102,7 +102,7 @@ describe "Super admin can manage motif categories" do
       click_button("Enregistrer")
 
       expect(stub_create_motif_category).to have_been_requested
-      expect(page).to have_current_path(admin_motif_category_path(MotifCategory.last))
+      expect(page).to have_current_path(super_admins_motif_category_path(MotifCategory.last))
       expect(page).to have_content("Catégorie de motifs a été correctement créé(e)")
       expect(page).to have_content("Détails MotifCategory ##{MotifCategory.last.id}")
     end
@@ -133,19 +133,19 @@ describe "Super admin can manage motif categories" do
     end
 
     it "cannot access the index page" do
-      visit admin_motif_categories_path
+      visit super_admins_motif_categories_path
 
       expect(page).to have_current_path(organisations_path)
     end
 
     it "cannot access the new page" do
-      visit new_admin_motif_category_path(motif_category)
+      visit new_super_admins_motif_category_path(motif_category)
 
       expect(page).to have_current_path(organisations_path)
     end
 
     it "cannot access the show page" do
-      visit admin_motif_category_path(motif_category)
+      visit super_admins_motif_category_path(motif_category)
 
       expect(page).to have_current_path(organisations_path)
     end

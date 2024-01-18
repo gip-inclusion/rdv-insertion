@@ -1,20 +1,12 @@
-module Admin
-  class MotifCategoriesController < Admin::ApplicationController
+module SuperAdmins
+  class DepartmentsController < SuperAdmins::ApplicationController
     # Overwrite any of the RESTful controller actions to implement custom behavior
     # For example, you may want to send an email after a foo is updated.
     #
-
-    def create
-      create_motif_category.success? ? redirect_after_successful_create : render_new
-    end
-
-    def create_motif_category
-      @create_motif_category ||= MotifCategories::Create.call(motif_category: resource)
-    end
-
-    def resource
-      @resource ||= MotifCategory.new(resource_params)
-    end
+    # def update
+    #   super
+    #   send_foo_updated_email(requested_resource)
+    # end
 
     # Override this method to specify custom lookup behavior.
     # This will be used to set the resource for the `show`, `edit`, and `update`
@@ -48,8 +40,10 @@ module Admin
     #     transform_values { |value| value == "" ? nil : value }
     # end
 
+    private
+
     def default_sorting_attribute
-      :name
+      :number
     end
   end
 end

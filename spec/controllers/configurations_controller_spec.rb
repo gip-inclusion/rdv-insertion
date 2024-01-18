@@ -440,19 +440,3 @@ describe ConfigurationsController do
     end
   end
 end
-
-# it "creates the configuration" do
-#   expect { post :create, params: create_params }.to change(Configuration, :count).by(1)
-# end
-
-# it "assigns the corrects attributes" do
-#   post :create, params: create_params
-#   expect(Configuration.last.reload.invitation_formats).to eq(%w[sms email postal])
-#   expect(Configuration.last.reload.convene_user).to eq(false)
-#   expect(Configuration.last.reload.rdv_with_referents).to eq(true)
-#   expect(Configuration.last.reload.invite_to_user_organisations_only).to eq(true)
-#   expect(Configuration.last.reload.number_of_days_before_action_required).to eq(12)
-#   expect(Configuration.last.reload.number_of_days_between_periodic_invites).to eq(15)
-#   expect(Configuration.last.reload.motif_category_id).to eq(motif_category.id)
-#   expect(Configuration.last.reload.file_configuration_id).to eq(file_configuration.id)
-# end

@@ -1,4 +1,4 @@
-module Admin
+module SuperAdmins
   module RedirectAndRenderConcern
     # the methods below are extracted from the default actions in Administrate::ApplicationController
     # they are redefined here to allow an easier customization of the actions

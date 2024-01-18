@@ -1,12 +1,35 @@
-module Admin
-  class TemplatesController < Admin::ApplicationController
+module SuperAdmins
+  class OrganisationsController < SuperAdmins::ApplicationController
     # Overwrite any of the RESTful controller actions to implement custom behavior
     # For example, you may want to send an email after a foo is updated.
     #
-    # def update
-    #   super
-    #   send_foo_updated_email(requested_resource)
-    # end
+
+    def create
+      create_organisation.success? ? redirect_after_successful_create : render_new
+    end
+
+    def update
+      requested_resource.assign_attributes(**resource_params)
+      update_organisation.success? ? redirect_after_successful_update : render_edit
+    end
+
+    private
+
+    def resource
+      @resource ||= Organisation.new(resource_params)
+    end
+
+    def create_organisation
+      @create_organisation ||= Organisations::Create.call(organisation: resource)
+    end
+
+    def update_organisation
+      @update_organisation ||= Organisations::Update.call(organisation: requested_resource)
+    end
+
+    def default_sorting_attribute
+      :department
+    end
 
     # Override this method to specify custom lookup behavior.
     # This will be used to set the resource for the `show`, `edit`, and `update`
@@ -39,8 +62,5 @@ module Admin
     #     permit(dashboard.permitted_attributes).
     #     transform_values { |value| value == "" ? nil : value }
     # end
-    def default_sorting_attribute
-      :id
-    end
   end
 end

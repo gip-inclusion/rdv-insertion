@@ -16,10 +16,10 @@ describe "Super admin can manage organisations" do
   end
 
   context "from organisations admin index page" do
-    before { visit admin_organisations_path }
+    before { visit super_admins_organisations_path }
 
     it "can see the list of organisations" do
-      expect(page).to have_current_path(admin_organisations_path)
+      expect(page).to have_current_path(super_admins_organisations_path)
       expect(page).to have_content(organisation1.id)
       expect(page).to have_content(organisation1.name)
       expect(page).to have_content(department1.name)
@@ -29,29 +29,29 @@ describe "Super admin can manage organisations" do
     end
 
     it "can navigate to an organisation show page" do
-      expect(page).to have_link(href: admin_organisation_path(organisation1))
-      expect(page).to have_link(href: admin_organisation_path(organisation2))
+      expect(page).to have_link(href: super_admins_organisation_path(organisation1))
+      expect(page).to have_link(href: super_admins_organisation_path(organisation2))
 
-      first(:link, href: admin_organisation_path(organisation1)).click
+      first(:link, href: super_admins_organisation_path(organisation1)).click
 
-      expect(page).to have_current_path(admin_organisation_path(organisation1))
+      expect(page).to have_current_path(super_admins_organisation_path(organisation1))
     end
 
     it "can navigate to an organisation new page" do
-      expect(page).to have_link("Création organisation", href: new_admin_organisation_path)
+      expect(page).to have_link("Création organisation", href: new_super_admins_organisation_path)
 
-      click_link(href: new_admin_organisation_path)
+      click_link(href: new_super_admins_organisation_path)
 
-      expect(page).to have_current_path(new_admin_organisation_path)
+      expect(page).to have_current_path(new_super_admins_organisation_path)
     end
 
     it "can navigate to an organisation edit page" do
-      expect(page).to have_link("Modifier", href: edit_admin_organisation_path(organisation1))
-      expect(page).to have_link("Modifier", href: edit_admin_organisation_path(organisation2))
+      expect(page).to have_link("Modifier", href: edit_super_admins_organisation_path(organisation1))
+      expect(page).to have_link("Modifier", href: edit_super_admins_organisation_path(organisation2))
 
-      click_link(href: edit_admin_organisation_path(organisation1))
+      click_link(href: edit_super_admins_organisation_path(organisation1))
 
-      expect(page).to have_current_path(edit_admin_organisation_path(organisation1))
+      expect(page).to have_current_path(edit_super_admins_organisation_path(organisation1))
     end
 
     it "cannot delete an organisation" do
@@ -60,10 +60,10 @@ describe "Super admin can manage organisations" do
   end
 
   context "from organisation admin show page" do
-    before { visit admin_organisation_path(organisation1) }
+    before { visit super_admins_organisation_path(organisation1) }
 
     it "can see an organisation's details" do
-      expect(page).to have_current_path(admin_organisation_path(organisation1))
+      expect(page).to have_current_path(super_admins_organisation_path(organisation1))
       expect(page).to have_content("Détails #{organisation1.name} (#{department1.name})")
       expect(page).to have_css("dt", id: "id", text: "ID")
       expect(page).to have_css("dd", class: "attribute-data", text: organisation1.id)
@@ -93,18 +93,18 @@ describe "Super admin can manage organisations" do
       expect(page).not_to have_css("td", class: "cell-data--belongs-to", text: lieu2.name)
       expect(page).to have_css("dt", id: "motif_categories", text: "MOTIF CATEGORIES")
       expect(page).to have_selector(
-        "a[href=\"#{admin_motif_category_path(motif_category)}\"]", class: "action-show", text: motif_category.name
+        "a[href=\"#{super_admins_motif_category_path(motif_category)}\"]", class: "action-show", text: motif_category.name
       )
     end
 
     it "can navigate to an organisation edit page" do
       expect(page).to have_link(
-        "Modifier #{organisation1.name} (#{department1.name})", href: edit_admin_organisation_path(organisation1)
+        "Modifier #{organisation1.name} (#{department1.name})", href: edit_super_admins_organisation_path(organisation1)
       )
 
       click_link("Modifier #{organisation1.name} (#{department1.name})")
 
-      expect(page).to have_current_path(edit_admin_organisation_path(organisation1))
+      expect(page).to have_current_path(edit_super_admins_organisation_path(organisation1))
     end
 
     it "cannot delete a organisation" do
@@ -115,7 +115,7 @@ describe "Super admin can manage organisations" do
   context "from organisation admin new page" do
     let!(:new_organisation_rdv_solidarites_id) { 5 }
 
-    before { visit new_admin_organisation_path }
+    before { visit new_super_admins_organisation_path }
 
     it "can create an organisation" do
       stub_retrieve_rdv_solidarites_organisation = stub_request(
@@ -168,7 +168,7 @@ describe "Super admin can manage organisations" do
         }.to_json
       )
 
-      expect(page).to have_current_path(new_admin_organisation_path)
+      expect(page).to have_current_path(new_super_admins_organisation_path)
       expect(page).to have_content("Création Organisation")
       expect(page).to have_css(
         "label[for=\"organisation_rdv_solidarites_organisation_id\"]",
@@ -189,7 +189,7 @@ describe "Super admin can manage organisations" do
       expect(stub_retrieve_webhook_endpoint).to have_been_requested.at_least_once
       expect(stub_create_webhook_endpoint).to have_been_requested
       expect(stub_update_rdv_solidarites_organisation).to have_been_requested
-      expect(page).to have_current_path(admin_organisation_path(Organisation.last))
+      expect(page).to have_current_path(super_admins_organisation_path(Organisation.last))
       expect(page).to have_content("Organisation a été correctement créé(e)")
       expect(page).to have_content("Détails Some name")
     end
@@ -238,7 +238,7 @@ describe "Super admin can manage organisations" do
   end
 
   context "from organisation admin edit page" do
-    before { visit edit_admin_organisation_path(organisation1) }
+    before { visit edit_super_admins_organisation_path(organisation1) }
 
     it "can edit an organisation" do
       stub_update_rdv_solidarites_organisation = stub_request(
@@ -256,7 +256,7 @@ describe "Super admin can manage organisations" do
         }.to_json
       )
 
-      expect(page).to have_current_path(edit_admin_organisation_path(organisation1))
+      expect(page).to have_current_path(edit_super_admins_organisation_path(organisation1))
       expect(page).to have_content("Modifier #{organisation1.name} (#{department1.name})")
       expect(page).to have_css("label[for=\"organisation_name\"]", text: "Nom")
       expect(page).to have_field("organisation[name]", with: organisation1.name)
@@ -288,7 +288,7 @@ describe "Super admin can manage organisations" do
       click_button("Enregistrer")
 
       expect(stub_update_rdv_solidarites_organisation).to have_been_requested
-      expect(page).to have_current_path(admin_organisation_path(organisation1))
+      expect(page).to have_current_path(super_admins_organisation_path(organisation1))
       expect(page).to have_content("Organisation a été correctement modifié(e)")
       expect(page).to have_content("Détails Some other name")
     end
@@ -299,7 +299,7 @@ describe "Super admin can manage organisations" do
           :patch, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/organisations/#{organisation1.rdv_solidarites_organisation_id}"
         )
 
-        expect(page).to have_current_path(edit_admin_organisation_path(organisation1))
+        expect(page).to have_current_path(edit_super_admins_organisation_path(organisation1))
 
         fill_in "organisation_name", with: ""
 
@@ -321,25 +321,25 @@ describe "Super admin can manage organisations" do
     end
 
     it "cannot access the index page" do
-      visit admin_organisations_path
+      visit super_admins_organisations_path
 
       expect(page).to have_current_path(organisations_path)
     end
 
     it "cannot access the new page" do
-      visit new_admin_organisation_path(organisation1)
+      visit new_super_admins_organisation_path(organisation1)
 
       expect(page).to have_current_path(organisations_path)
     end
 
     it "cannot access the show page" do
-      visit admin_organisation_path(organisation1)
+      visit super_admins_organisation_path(organisation1)
 
       expect(page).to have_current_path(organisations_path)
     end
 
     it "cannot access the edit page" do
-      visit edit_admin_organisation_path(organisation1)
+      visit edit_super_admins_organisation_path(organisation1)
 
       expect(page).to have_current_path(organisations_path)
     end

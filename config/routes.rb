@@ -12,7 +12,7 @@ def check_auth(username, password, service)
 end
 
 Rails.application.routes.draw do
-  namespace :admin do
+  namespace :super_admins do
     resources :departments, only: [:index, :show, :new, :create, :edit, :update]
     resources :organisations, only: [:index, :show, :new, :create, :edit, :update]
     resources :users, only: [:index, :show, :edit, :update]

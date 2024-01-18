@@ -8,10 +8,10 @@ describe "Super admin can manage templates" do
   end
 
   context "from templates admin index page" do
-    before { visit admin_templates_path }
+    before { visit super_admins_templates_path }
 
     it "can see the list of templates" do
-      expect(page).to have_current_path(admin_templates_path)
+      expect(page).to have_current_path(super_admins_templates_path)
       expect(page).to have_content(template.id)
       expect(page).to have_content(template.rdv_subject)
       expect(page).to have_content(template.rdv_title)
@@ -20,11 +20,11 @@ describe "Super admin can manage templates" do
     end
 
     it "can navigate to a template show page" do
-      expect(page).to have_link(href: admin_template_path(template))
+      expect(page).to have_link(href: super_admins_template_path(template))
 
-      first(:link, href: admin_template_path(template)).click
+      first(:link, href: super_admins_template_path(template)).click
 
-      expect(page).to have_current_path(admin_template_path(template))
+      expect(page).to have_current_path(super_admins_template_path(template))
     end
 
     it "cannot create a template" do
@@ -41,10 +41,10 @@ describe "Super admin can manage templates" do
   end
 
   context "from template admin show page" do
-    before { visit admin_template_path(template) }
+    before { visit super_admins_template_path(template) }
 
     it "can see a template's details" do
-      expect(page).to have_current_path(admin_template_path(template))
+      expect(page).to have_current_path(super_admins_template_path(template))
       expect(page).to have_content("Détails #{template.name}")
       expect(page).to have_css("dt", id: "id", text: "ID")
       expect(page).to have_css("dd", class: "attribute-data", text: template.id)
@@ -84,13 +84,13 @@ describe "Super admin can manage templates" do
     end
 
     it "cannot access the index page" do
-      visit admin_templates_path
+      visit super_admins_templates_path
 
       expect(page).to have_current_path(organisations_path)
     end
 
     it "cannot access the show page" do
-      visit admin_template_path(template)
+      visit super_admins_template_path(template)
 
       expect(page).to have_current_path(organisations_path)
     end

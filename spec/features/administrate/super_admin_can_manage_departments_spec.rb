@@ -8,10 +8,10 @@ describe "Super admin can manage departments" do
   end
 
   context "from departments admin index page" do
-    before { visit admin_departments_path }
+    before { visit super_admins_departments_path }
 
     it "can see the list of departments" do
-      expect(page).to have_current_path(admin_departments_path)
+      expect(page).to have_current_path(super_admins_departments_path)
       expect(page).to have_content(department.id)
       expect(page).to have_content(department.name)
       expect(page).to have_content(department.number)
@@ -19,27 +19,27 @@ describe "Super admin can manage departments" do
     end
 
     it "can navigate to a department show page" do
-      expect(page).to have_link(href: admin_department_path(department))
+      expect(page).to have_link(href: super_admins_department_path(department))
 
-      first(:link, href: admin_department_path(department)).click
+      first(:link, href: super_admins_department_path(department)).click
 
-      expect(page).to have_current_path(admin_department_path(department))
+      expect(page).to have_current_path(super_admins_department_path(department))
     end
 
     it "can navigate to a department new page" do
-      expect(page).to have_link("Création département", href: new_admin_department_path)
+      expect(page).to have_link("Création département", href: new_super_admins_department_path)
 
-      click_link(href: new_admin_department_path)
+      click_link(href: new_super_admins_department_path)
 
-      expect(page).to have_current_path(new_admin_department_path)
+      expect(page).to have_current_path(new_super_admins_department_path)
     end
 
     it "can navigate to a department edit page" do
-      expect(page).to have_link("Modifier", href: edit_admin_department_path(department))
+      expect(page).to have_link("Modifier", href: edit_super_admins_department_path(department))
 
-      click_link(href: edit_admin_department_path(department))
+      click_link(href: edit_super_admins_department_path(department))
 
-      expect(page).to have_current_path(edit_admin_department_path(department))
+      expect(page).to have_current_path(edit_super_admins_department_path(department))
     end
 
     it "cannot delete a department" do
@@ -48,10 +48,10 @@ describe "Super admin can manage departments" do
   end
 
   context "from department admin show page" do
-    before { visit admin_department_path(department) }
+    before { visit super_admins_department_path(department) }
 
     it "can see a department's details" do
-      expect(page).to have_current_path(admin_department_path(department))
+      expect(page).to have_current_path(super_admins_department_path(department))
       expect(page).to have_content("Détails #{department.name}")
       expect(page).to have_css("dt", id: "id", text: "ID")
       expect(page).to have_css("dd", class: "attribute-data", text: department.id)
@@ -75,15 +75,15 @@ describe "Super admin can manage departments" do
       expect(page).to have_css("dt", id: "organisations", text: "ORGANISATIONS")
       expect(page).to have_css("tr", class: "js-table-row", count: 1)
       expect(page).to have_css("a", class: "action-show")
-      expect(page).to have_selector("a[href=\"#{admin_organisation_path(organisation)}\"]")
+      expect(page).to have_selector("a[href=\"#{super_admins_organisation_path(organisation)}\"]")
     end
 
     it "can navigate to a department edit page" do
-      expect(page).to have_link("Modifier #{department.name}", href: edit_admin_department_path(department))
+      expect(page).to have_link("Modifier #{department.name}", href: edit_super_admins_department_path(department))
 
       click_link("Modifier #{department.name}")
 
-      expect(page).to have_current_path(edit_admin_department_path(department))
+      expect(page).to have_current_path(edit_super_admins_department_path(department))
     end
 
     it "cannot delete a department" do
@@ -92,10 +92,10 @@ describe "Super admin can manage departments" do
   end
 
   context "from department admin new page" do
-    before { visit new_admin_department_path }
+    before { visit new_super_admins_department_path }
 
     it "can create a department" do
-      expect(page).to have_current_path(new_admin_department_path)
+      expect(page).to have_current_path(new_super_admins_department_path)
       expect(page).to have_content("Création Département")
       expect(page).to have_css("label[for=\"department_pronoun\"]", text: "Pronom")
       expect(page).to have_field("department[pronoun]")
@@ -127,7 +127,7 @@ describe "Super admin can manage departments" do
 
       click_button("Enregistrer")
 
-      expect(page).to have_current_path(admin_department_path(Department.last))
+      expect(page).to have_current_path(super_admins_department_path(Department.last))
       expect(page).to have_content("Département a été correctement créé(e)")
       expect(page).to have_content("Détails Yvelines")
     end
@@ -149,10 +149,10 @@ describe "Super admin can manage departments" do
   end
 
   context "from department admin edit page" do
-    before { visit edit_admin_department_path(department) }
+    before { visit edit_super_admins_department_path(department) }
 
     it "can edit a department" do
-      expect(page).to have_current_path(edit_admin_department_path(department))
+      expect(page).to have_current_path(edit_super_admins_department_path(department))
       expect(page).to have_content("Modifier #{department.name}")
       expect(page).to have_css("label[for=\"department_pronoun\"]", text: "Pronom")
       expect(page).to have_field("department[pronoun]", with: department.pronoun)
@@ -182,7 +182,7 @@ describe "Super admin can manage departments" do
 
       click_button("Enregistrer")
 
-      expect(page).to have_current_path(admin_department_path(department))
+      expect(page).to have_current_path(super_admins_department_path(department))
       expect(page).to have_content("Département a été correctement modifié(e)")
       expect(page).to have_content("Détails Yvelines")
     end
@@ -208,25 +208,25 @@ describe "Super admin can manage departments" do
     end
 
     it "cannot access the index page" do
-      visit admin_departments_path
+      visit super_admins_departments_path
 
       expect(page).to have_current_path(organisations_path)
     end
 
     it "cannot access the new page" do
-      visit new_admin_department_path(department)
+      visit new_super_admins_department_path(department)
 
       expect(page).to have_current_path(organisations_path)
     end
 
     it "cannot access the show page" do
-      visit admin_department_path(department)
+      visit super_admins_department_path(department)
 
       expect(page).to have_current_path(organisations_path)
     end
 
     it "cannot access the edit page" do
-      visit edit_admin_department_path(department)
+      visit edit_super_admins_department_path(department)
 
       expect(page).to have_current_path(organisations_path)
     end
