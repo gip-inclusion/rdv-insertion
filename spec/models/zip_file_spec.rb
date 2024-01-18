@@ -1,4 +1,4 @@
-describe FileCompressor do
+describe ZipFile do
   subject { described_class.new(data, filename) }
 
   let(:data) { "data" }

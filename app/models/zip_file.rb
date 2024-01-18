@@ -1,6 +1,6 @@
 require "zip"
 
-class FileCompressor
+class ZipFile
   attr_reader :data, :initial_filename
 
   def initialize(data, initial_filename)

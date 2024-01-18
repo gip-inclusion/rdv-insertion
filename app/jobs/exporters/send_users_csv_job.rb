@@ -8,7 +8,7 @@ module Exporters
       @motif_category = motif_category_id.present? ? MotifCategory.find(motif_category_id) : nil
       @agent = Agent.find(agent_id)
 
-      FileCompressor.new(generate_csv.csv, generate_csv.filename).compress do |file|
+      ZipFile.new(generate_csv.csv, generate_csv.filename).zip do |file|
         send_email(file)
       end
     end
