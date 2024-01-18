@@ -5,7 +5,7 @@ describe "Agents can upload documents for users", js: true do
     create(:organisation, name: "CD 26", agents: organisation_agents, department: department)
   end
   let!(:user) do
-    create(:user, organisations: [organisation])
+    create(:user, organisations: [organisation, other_organisation])
   end
   let!(:organisation_agents) do
     [agent, create(:agent, first_name: "Kad", last_name: "Merad"),
@@ -44,6 +44,22 @@ describe "Agents can upload documents for users", js: true do
       expect(page).to have_content("dummy.pdf")
       expect(page).to have_selector(".document-link", count: 2)
       expect(user.contracts.first.file.filename).to eq("dummy.pdf")
+
+      # Other agents can see the files
+      setup_agent_session(other_organisation_agents.first)
+      visit organisation_user_path(organisation_id: other_organisation.id, id: user.id)
+      click_link("Parcours")
+
+      expect(page).to have_selector(".document-link", count: 2)
+
+      # Only the agent who uploaded the file can delete it
+      expect(page).not_to have_selector("#delete-button-#{user.contracts.first.id}")
+
+      # Back to the first agent
+      setup_agent_session(agent)
+
+      visit organisation_user_path(organisation_id: organisation.id, id: user.id)
+      click_link("Parcours")
 
       accept_alert do
         find_by_id("delete-button-#{user.contracts.first.id}").click
