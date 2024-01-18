@@ -82,6 +82,15 @@ export default class extends Controller {
     });
   }
 
+  safirCodeAttribute() {
+    tippy(this.element, {
+      content() {
+        return "Il ne concerne que les agences France Travail";
+      },
+      allowHTML: true,
+    });
+  }
+
   departmentInternalIdAttribute() {
     tippy(this.element, {
       content: "ID dans l'éditeur logiciel (IODAS, SOLIS...) ou dans le SI du département",
