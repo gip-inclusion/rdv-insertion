@@ -6,7 +6,7 @@ module Users::Filterable
   def filter_users
     filter_users_by_search_query
     filter_users_by_action_required
-    filter_users_by_current_agent
+    filter_users_by_referent
     filter_users_by_status
     filter_users_by_creation_date_after
     filter_users_by_creation_date_before
@@ -43,10 +43,10 @@ module Users::Filterable
     )
   end
 
-  def filter_users_by_current_agent
-    return unless params[:filter_by_current_agent] == "true"
+  def filter_users_by_referent
+    return if params[:referent_id].blank?
 
-    @users = @users.joins(:referents).where(referents: { id: current_agent.id })
+    @users = @users.joins(:referents).where(referents: { id: params[:referent_id] })
   end
 
   def filter_users_by_search_query

@@ -125,7 +125,7 @@ Rails.application.routes.draw do
     end
     resource :stats, only: [:show]
   end
-  resources :invitation_dates_filterings, :creation_dates_filterings, only: [:new]
+  resources :invitation_dates_filterings, :creation_dates_filterings, :referents_filterings, only: [:new]
 
   namespace :api do
     namespace :v1 do

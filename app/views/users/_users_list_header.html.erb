@@ -13,17 +13,14 @@
     </div>
     <%= render "filter_by_creation_dates_button" if @current_configuration.nil? %>
     <%= render "filter_by_invitations_dates_button" if @current_configuration.present? || archived_scope?(@users_scope) %>
-    <%= render 'search_form', url: structure_users_path %>
+    <%= render "filter_by_referents_button" if @current_configuration.present? %>
+    <%= render "search_form", url: structure_users_path %>
 
     <div class="d-flex justify-content-between mt-1" data-controller="index-filters">
       <div class="text-left mt-2">
-        <i class="fas fa-filter"></i> Filtrer usagers:
-        <div class="mt-1">
-          <input type="checkbox" name="filter_by_current_agent" class="form-check-input"></input> Dont je suis référent
-        </div>
         <% if @current_configuration.present? %>
           <div class="mt-1">
-            <input type="checkbox" name="action_required" class="form-check-input"></input> Une intervention est nécessaire
+            <input type="checkbox" name="action_required" class="form-check-input"></input> Usagers avec intervention nécessaire
             <small>
               <i
                 class="fas fa-question-circle"
