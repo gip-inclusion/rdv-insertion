@@ -5,6 +5,7 @@
 // Vanilla components
 import LoginForm from "components/login-form";
 import StatusSelector from "components/status-selector"
+import ReferentSelector from "components/referent-selector"
 import DepartmentSelector from "components/department-selector"
 import OrganisationSelector from "components/organisation-selector"
 import MatomoScriptTag from "components/matomo-script-tag"
@@ -57,6 +58,7 @@ ReactRailsUJS.handleEvent('turbo:frame-render', ReactRailsUJS.handleUnmount)
 document.addEventListener("turbo:load", () => {
   new LoginForm();
   new StatusSelector();
+  new ReferentSelector();
   new DepartmentSelector();
   new OrganisationSelector();
   if (process.env.NODE_ENV === 'production') {

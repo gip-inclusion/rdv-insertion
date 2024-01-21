@@ -1,7 +1,7 @@
 <div class="row mb-4 card-white justify-content-center">
   <div class="col-4 justify-content-center">
-    <div class="mb-1">
-      <% if @current_configuration.present? %>
+    <% if @current_configuration.present? %>
+      <div class="mb-1">
         <%=
           select(
             "user", "status", options_for_select_status(@statuses_count),
@@ -9,11 +9,21 @@
             class: "text-center form-select js-status-selector"
           )
         %>
-      <% end %>
-    </div>
+      </div>
+      <div class="mb-1">
+        <%=
+          select(
+            "user",
+            "referent_id",
+            @referents_list.uniq.map { |agent| [agent.to_s, agent.id]},
+            { prompt: "Filtrer par référent" },
+            class: "text-center form-select js-referent-selector"
+          )
+        %>
+      </div>
+    <% end %>
     <%= render "filter_by_creation_dates_button" if @current_configuration.nil? %>
     <%= render "filter_by_invitations_dates_button" if @current_configuration.present? || archived_scope?(@users_scope) %>
-    <%= render "filter_by_referents_button" if @current_configuration.present? %>
     <%= render "search_form", url: structure_users_path %>
 
     <div class="d-flex justify-content-between mt-1" data-controller="index-filters">
