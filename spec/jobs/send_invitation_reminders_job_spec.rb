@@ -22,7 +22,7 @@ describe SendInvitationRemindersJob do
       create(
         :rdv_context,
         status: "invitation_pending",
-        motif_category: create(:motif_category, participation_optional: true),
+        motif_category: create(:motif_category, optional_rdv_subscription: true),
         user: user6
       )
     end

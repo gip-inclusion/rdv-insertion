@@ -15,7 +15,7 @@ class MotifCategory < ApplicationRecord
   delegate :model, to: :template, prefix: true
   delegate :atelier?, to: :template
 
-  scope :participation_optional, lambda { |participation_optional = true|
-    where(participation_optional: participation_optional)
+  scope :optional_rdv_subscription, lambda { |optional_rdv_subscription = true|
+    where(optional_rdv_subscription: optional_rdv_subscription)
   }
 end

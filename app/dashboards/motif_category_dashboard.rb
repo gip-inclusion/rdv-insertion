@@ -13,7 +13,7 @@ class MotifCategoryDashboard < Administrate::BaseDashboard
     leads_to_orientation: Field::Boolean,
     motifs: Field::HasMany,
     name: Field::String,
-    participation_optional: Field::Boolean,
+    optional_rdv_subscription: Field::Boolean,
     rdv_contexts: Field::HasMany,
     rdv_solidarites_motif_category_id: Field::Number,
     short_name: Field::String,
@@ -41,7 +41,7 @@ class MotifCategoryDashboard < Administrate::BaseDashboard
     template
     motifs
     leads_to_orientation
-    participation_optional
+    optional_rdv_subscription
     created_at
     updated_at
   ].freeze
@@ -54,7 +54,7 @@ class MotifCategoryDashboard < Administrate::BaseDashboard
     short_name
     template
     leads_to_orientation
-    participation_optional
+    optional_rdv_subscription
   ].freeze
 
   # COLLECTION_FILTERS
