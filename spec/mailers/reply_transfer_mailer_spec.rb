@@ -145,7 +145,7 @@ RSpec.describe ReplyTransferMailer do
       let!(:lieu) { nil }
 
       it "renders the content without the lieu" do
-        expect(mail.body.encoded).to match("Vous trouverez ci-dessous une réponse d'un.e bénéficiaire à une convocation")
+        expect(mail.body.encoded).to match("Vous trouverez ci-dessous une réponse d'un.e bénéficiaire")
         expect(mail.body.encoded).to match("<h4>coucou</h4>")
         expect(mail.body.encoded).to match("Je souhaite annuler mon RDV")
         expect(mail.body.encoded).to match("Merci de ne pas répondre à cet e-mail. Pour contacter la personne, ")
