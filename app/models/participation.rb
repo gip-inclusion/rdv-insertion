@@ -17,7 +17,7 @@ class Participation < ApplicationRecord
   validates :rdv_solidarites_participation_id, uniqueness: true, allow_nil: true
 
   after_commit :refresh_user_context_statuses
-  after_commit :notify_user, if: :convocable?, on: [:create, :update]
+  after_commit :notify_user, if: :should_notify?, on: [:create, :update]
 
   enum created_by: { agent: "agent", user: "user", prescripteur: "prescripteur" }, _prefix: :created_by
 
@@ -26,6 +26,10 @@ class Participation < ApplicationRecord
            to: :rdv
   delegate :phone_number_is_mobile?, :email?, to: :user
   delegate :motif_category, to: :rdv_context
+
+  def notifiable?
+    convocable? && in_the_future? && status.in?(%w[unknown revoked])
+  end
 
   private
 
@@ -37,15 +41,16 @@ class Participation < ApplicationRecord
     status_previously_was.in?(CANCELLED_STATUSES) && status == "unknown"
   end
 
-  def participation_cancelled?
+  def participation_just_cancelled?
     # Do not notify users for a cancelled event for a previously cancelled participation
-    (status.in? CANCELLED_STATUSES) && !status_previously_was.in?(CANCELLED_STATUSES)
+    status.in?(CANCELLED_STATUSES) && !status_previously_was.in?(CANCELLED_STATUSES)
+  end
+
+  def should_notify?
+    notifiable? && event_to_notify
   end
 
   def notify_user
-    return if in_the_past?
-    return unless event_to_notify
-
     NotifyParticipationJob.perform_async(id, "sms", "participation_#{event_to_notify}") if phone_number_is_mobile?
     NotifyParticipationJob.perform_async(id, "email", "participation_#{event_to_notify}") if email?
   end
@@ -53,7 +58,7 @@ class Participation < ApplicationRecord
   def event_to_notify
     if id_previously_changed? || status_reloaded_from_cancelled?
       :created
-    elsif participation_cancelled?
+    elsif participation_just_cancelled?
       :cancelled
     end
   end

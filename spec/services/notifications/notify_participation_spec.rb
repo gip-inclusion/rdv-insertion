@@ -14,6 +14,7 @@ describe Notifications::NotifyParticipation, type: :service do
   describe "#call" do
     before do
       allow(Notifications::SendSms).to receive(:call).and_return(OpenStruct.new(success?: true))
+      allow(participation).to receive(:notifiable?).and_return(true)
     end
 
     it("is a success") { is_a_success }
@@ -47,30 +48,6 @@ describe Notifications::NotifyParticipation, type: :service do
 
       it "fails with an error" do
         expect(subject.errors).to eq(["cannot send notification"])
-      end
-    end
-
-    context "when the rdv is in the past" do
-      before { rdv.update! starts_at: 2.days.ago }
-
-      it("is a success") { is_a_success }
-
-      it "does not send a notification" do
-        expect(Notifications::SendSms).not_to receive(:call)
-        subject
-      end
-    end
-
-    context "when it is a reminder of a cancelled participation" do
-      let!(:event) { "participation_reminder" }
-
-      before { participation.update! status: "revoked" }
-
-      it("is a success") { is_a_success }
-
-      it "does not send a notification" do
-        expect(Notifications::SendSms).not_to receive(:call)
-        subject
       end
     end
   end

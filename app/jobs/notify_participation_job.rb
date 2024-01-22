@@ -6,7 +6,8 @@ class NotifyParticipationJob < ApplicationJob
     @format = format
     @event = event
 
-    return if user.created_through_rdv_solidarites? && user.invitations.sent.empty?
+    return unless @participation.notifiable? && user.notifiable?
+    return if reminder_of_cancelled_participation?
 
     Notification.with_advisory_lock "notifying_particpation_#{@participation.id}" do
       return if already_notified?
@@ -41,5 +42,9 @@ class NotifyParticipationJob < ApplicationJob
     @notify_participation ||= Notifications::NotifyParticipation.call(
       participation: @participation, format: @format, event: @event
     )
+  end
+
+  def reminder_of_cancelled_participation?
+    @event == "participation_reminder" && @participation.cancelled?
   end
 end
