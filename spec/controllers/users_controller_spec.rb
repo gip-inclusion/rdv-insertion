@@ -639,11 +639,11 @@ describe UsersController do
       end
     end
 
-    context "when filter_by_current_agent is passed" do
+    context "when referent_id is passed" do
       let!(:index_params) do
         {
           organisation_id: organisation.id,
-          filter_by_current_agent: "true",
+          referent_id: agent.id,
           motif_category_id: category_orientation.id
         }
       end
