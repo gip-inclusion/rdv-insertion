@@ -12,7 +12,7 @@
   <h4>Message envoyé par rdv-insertion</h4>
   <p>Convocation pour un rdv le <%= I18n.l(@rdv.starts_at, format: :human) %></p>
   <p>Motif : <%= @rdv.motif_name %> </p>
-  <p>Lieu : <%= @rdv.lieu.name %></p>
-  <p>Adresse : <%= @rdv.lieu.address %></p>
+  <%= tag.p("Lieu : #{@rdv.lieu.name}") if @rdv.lieu.present? %>
+  <%= tag.p("Adresse : #{@rdv.lieu.address}") if @rdv.lieu.present? %>
 </blockquote>
 <%= render "link_to_user_page", user_page_url: @user_page_url %>
