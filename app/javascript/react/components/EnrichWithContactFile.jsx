@@ -40,7 +40,7 @@ export default function EnrichWithContactFile({ handleContactsFile, fileSize }) 
           />
           <p className="mt-3 mb-0">
             <a
-              href="https://forum.inclusion.beta.gouv.fr/t/communication-aux-departements-des-coordonnees-de-contact-des-beneficiaires-rsa-mise-a-disposition-hebdomadaire/7112"
+              href="https://resana.numerique.gouv.fr/public/information/consulterAccessUrl?cle_url=1564704891UjgFZVdbAj5QPVcxVjgHJwQ6XmNVdAJrDGcHOgZnW2EGN1VjUjFVMldjATdQYA=="
               target="_blank"
               rel="noreferrer"
             >

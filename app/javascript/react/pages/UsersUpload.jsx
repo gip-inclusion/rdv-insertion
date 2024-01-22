@@ -184,7 +184,7 @@ const UsersUpload = observer(
                 name="users-list-upload"
                 accept="text/plain, .csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, application/vnd.oasis.opendocument.spreadsheet"
                 multiple={false}
-                uploadMessage={<span>Choisissez un fichier de nouveaux demandeurs</span>}
+                uploadMessage={<span>Choisissez un fichier d'usagers</span>}
                 pendingMessage="Récupération des informations, merci de patienter"
               />
             </div>
