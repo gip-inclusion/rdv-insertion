@@ -117,8 +117,20 @@
         Configurer l'organisation
       <% end %>
     <% end %>
-    <%= link_to(structure_users_path(**params.to_unsafe_h.merge(format: "csv")), class: "btn btn-blue-out mt-2", data: { controller: "tooltip", action: "mouseover->tooltip#csvExport"}, target: "_blank") do %>
+    <a class="btn btn-blue-out dropdown-toggle mb-2" href="#" role="button" id="csvExportButton" data-bs-toggle="dropdown" aria-expanded="false">
       <i class="fas fa-download"></i> Exporter au format CSV
-    <% end %>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="csvExportButton">
+      <li>
+        <%= link_to(structure_users_path(**params.to_unsafe_h.merge(format: "csv", export_type: nil)), class: "dropdown-item", data: { controller: "tooltip", action: "mouseover->tooltip#csvExportUsers"}) do %>
+           Export des usagers
+        <% end %>
+      </li>
+      <li>
+        <%= link_to(structure_users_path(**params.to_unsafe_h.merge(format: "csv", export_type: "participations")), class: "dropdown-item", data: { controller: "tooltip", action: "mouseover->tooltip#csvExportParticipations"}) do %>
+          Export de l'historique des rendez-vous
+        <% end %>
+      </li>
+    </ul>
   </div>
 </div>

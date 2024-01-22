@@ -28,7 +28,7 @@ result = Exports::GenerateUsersCsv.call(
 )
 
 if EMAIL.present?
-  CsvExportMailer.users_csv_export(EMAIL, result.csv, result.filename).deliver_now
+  CsvExportMailer.internal_users_csv_export(EMAIL, result.csv, result.filename).deliver_now
 else
   puts result.csv
 end

@@ -1,45 +1,54 @@
-require "csv"
-
 # rubocop:disable Metrics/ClassLength
 module Exporters
-  class GenerateUsersCsv < BaseService
-    def initialize(users:, structure: nil, motif_category: nil)
-      @users = users
+  class GenerateUsersCsv < Csv
+    def initialize(user_ids:, structure: nil, motif_category: nil, agent: nil)
+      @user_ids = user_ids
       @structure = structure
       @motif_category = motif_category
+      @agent = agent
     end
 
-    def call
-      preload_associations
-      result.filename = filename
-      result.csv = generate_csv
+    protected
+
+    def department_level?
+      @structure.instance_of?(Department)
     end
 
-    private
+    def department_id
+      department_level? ? @structure.id : @structure.department_id
+    end
+
+    def filename
+      if @structure.present?
+        "Export_#{resource_human_name}_#{@motif_category.present? ? "#{@motif_category.short_name}_" : ''}" \
+          "#{@structure.class.model_name.human.downcase}_" \
+          "#{@structure.name.parameterize(separator: '_')}.csv"
+      else
+        "Export_#{resource_human_name}_#{Time.zone.now.to_i}.csv"
+      end
+    end
+
+    def resource_human_name
+      "usagers"
+    end
+
+    def each_element(&)
+      @users.each(&)
+    end
 
     def preload_associations
       @users =
         if @motif_category
-          @users.preload(
+          User.preload(
             :archives, :organisations, :tags, :referents, :rdvs,
             rdv_contexts: [:invitations, :notifications, { rdvs: [:motif, :participations, :users] }]
-          )
+          ).find(@user_ids)
         else
-          @users.preload(
+          User.preload(
             :invitations, :notifications, :archives, :organisations, :tags, :referents,
             rdvs: [:motif, :participations, :users]
-          )
+          ).find(@user_ids)
         end
-    end
-
-    def generate_csv
-      csv = CSV.generate(write_headers: true, col_sep: ";", headers: headers, encoding: "utf-8") do |row|
-        @users.find_each do |user|
-          row << user_csv_row(user)
-        end
-      end
-      # We add a BOM at the beginning of the file to enable a correct parsing of accented characters in Excel
-      "\uFEFF#{csv}"
     end
 
     def headers # rubocop:disable Metrics/AbcSize
@@ -77,7 +86,7 @@ module Exporters
        User.human_attribute_name(:tags)]
     end
 
-    def user_csv_row(user) # rubocop:disable Metrics/AbcSize
+    def csv_row(user) # rubocop:disable Metrics/AbcSize
       [user.title,
        user.last_name,
        user.first_name,
@@ -110,16 +119,6 @@ module Exporters
        user.organisations.to_a.count,
        user.organisations.map(&:name).join(", "),
        user.tags.pluck(:value).join(", ")]
-    end
-
-    def filename
-      if @structure.present?
-        "Export_beneficiaires_#{@motif_category.present? ? "#{@motif_category.short_name}_" : ''}" \
-          "#{@structure.class.model_name.human.downcase}_" \
-          "#{@structure.name.parameterize(separator: '_')}.csv"
-      else
-        "Export_beneficiaires_#{Time.zone.now.to_i}.csv"
-      end
     end
 
     def human_last_participation_status(user)
@@ -206,14 +205,6 @@ module Exporters
 
     def rdv_context_for_export(user)
       user.rdv_context_for(@motif_category)
-    end
-
-    def department_level?
-      @structure.instance_of?(Department)
-    end
-
-    def department_id
-      department_level? ? @structure.id : @structure.department_id
     end
   end
 end
