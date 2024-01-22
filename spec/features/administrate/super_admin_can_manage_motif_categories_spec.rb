@@ -1,5 +1,5 @@
 describe "Super admin can manage motif categories" do
-  let!(:super_admin) { create(:agent, super_admin: true) }
+  let!(:super_admin) { create(:agent, :super_admin) }
   let!(:template) { create(:template) }
   let!(:motif_category) { create(:motif_category, template: template) }
   let!(:motif) { create(:motif, motif_category: motif_category) }
