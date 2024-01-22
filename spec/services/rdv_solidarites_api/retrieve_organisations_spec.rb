@@ -1,12 +1,9 @@
 describe RdvSolidaritesApi::RetrieveOrganisations, type: :service do
   subject do
-    described_class.call(
-      rdv_solidarites_session: rdv_solidarites_session
-    )
+    described_class.call
   end
 
-  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
-  let!(:rdv_solidarites_client) { instance_double(RdvSolidaritesClient) }
+  let(:rdv_solidarites_client) { instance_double(RdvSolidaritesClient) }
 
   describe "#call" do
     let!(:organisations) do
@@ -17,8 +14,7 @@ describe RdvSolidaritesApi::RetrieveOrganisations, type: :service do
     end
 
     before do
-      allow(rdv_solidarites_session).to receive(:rdv_solidarites_client)
-        .and_return(rdv_solidarites_client)
+      allow(Current).to receive(:rdv_solidarites_client).and_return(rdv_solidarites_client)
       allow(rdv_solidarites_client).to receive(:get_organisations)
         .with({})
         .and_return(OpenStruct.new(success?: true, body: { "organisations" => organisations }.to_json))
@@ -52,9 +48,7 @@ describe RdvSolidaritesApi::RetrieveOrganisations, type: :service do
 
     context "with geo attributes" do
       subject do
-        described_class.call(
-          rdv_solidarites_session: rdv_solidarites_session, geo_attributes: geo_attributes
-        )
+        described_class.call(geo_attributes:)
       end
 
       let!(:geo_attributes) { { city_code: "26323" } }

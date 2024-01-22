@@ -1,8 +1,7 @@
 describe CreateAndInviteUserJob do
   subject do
     described_class.new.perform(
-      organisation_id, user_attributes, invitation_attributes, motif_category_attributes,
-      rdv_solidarites_session_credentials
+      organisation_id, user_attributes, invitation_attributes, motif_category_attributes
     )
   end
 
@@ -24,42 +23,27 @@ describe CreateAndInviteUserJob do
   let!(:email_invitation_attributes) { invitation_attributes.merge(format: "email") }
   let!(:sms_invitation_attributes) { invitation_attributes.merge(format: "sms") }
 
-  let!(:agent) { create(:agent, email: "janedoe@gouv.fr") }
-  let!(:rdv_solidarites_session_credentials) do
-    { "client" => "someclient", "uid" => agent.email.to_s, "access_token" => "sometoken" }.symbolize_keys
-  end
-
   before do
     allow(InviteUserJob).to receive(:perform_async)
-    allow(RdvSolidaritesSessionFactory).to receive(:create_with)
-      .with(**rdv_solidarites_session_credentials)
-      .and_return(rdv_solidarites_session)
     allow(Users::Upsert).to receive(:call)
-      .with(organisation:, user_attributes:, rdv_solidarites_session:)
+      .with(organisation:, user_attributes:)
       .and_return(OpenStruct.new(success?: true, user: user))
-  end
-
-  it "sets the current agent" do
-    subject
-    expect(Current.agent).to eq(agent)
   end
 
   it "upserts the user" do
     expect(Users::Upsert).to receive(:call)
-      .with(user_attributes:, organisation: organisation, rdv_solidarites_session: rdv_solidarites_session)
+      .with(user_attributes:, organisation: organisation)
     subject
   end
 
   it "enqueues invite user jobs" do
     expect(InviteUserJob).to receive(:perform_async)
       .with(
-        user.id, organisation.id, sms_invitation_attributes, motif_category_attributes,
-        rdv_solidarites_session_credentials
+        user.id, organisation.id, sms_invitation_attributes, motif_category_attributes
       )
     expect(InviteUserJob).to receive(:perform_async)
       .with(
-        user.id, organisation.id, email_invitation_attributes, motif_category_attributes,
-        rdv_solidarites_session_credentials
+        user.id, organisation.id, email_invitation_attributes, motif_category_attributes
       )
     subject
   end
@@ -70,8 +54,7 @@ describe CreateAndInviteUserJob do
     it "does not enqueue an invite sms job" do
       expect(InviteUserJob).not_to receive(:perform_async)
         .with(
-          user.id, organisation.id, sms_invitation_attributes, motif_category_attributes,
-          rdv_solidarites_session_credentials
+          user.id, organisation.id, sms_invitation_attributes, motif_category_attributes
         )
       subject
     end
@@ -83,8 +66,7 @@ describe CreateAndInviteUserJob do
     it "does not enqueue an invite sms job" do
       expect(InviteUserJob).not_to receive(:perform_async)
         .with(
-          user.id, organisation.id, sms_invitation_attributes, motif_category_attributes,
-          rdv_solidarites_session_credentials
+          user.id, organisation.id, sms_invitation_attributes, motif_category_attributes
         )
       subject
     end
@@ -96,8 +78,7 @@ describe CreateAndInviteUserJob do
     it "does not enqueue an invite email job" do
       expect(InviteUserJob).not_to receive(:perform_async)
         .with(
-          user.id, organisation.id,
-          email_invitation_attributes, motif_category_attributes, rdv_solidarites_session_credentials
+          user.id, organisation.id, email_invitation_attributes, motif_category_attributes
         )
       subject
     end

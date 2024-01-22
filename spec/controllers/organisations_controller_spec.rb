@@ -203,7 +203,7 @@ describe OrganisationsController do
 
     it "calls the create organisation service" do
       expect(Organisations::Create).to receive(:call)
-        .with(organisation: organisation, current_agent: agent, rdv_solidarites_session: rdv_solidarites_session)
+        .with(organisation: organisation)
 
       post :create, params: create_params
     end
@@ -268,7 +268,7 @@ describe OrganisationsController do
 
     it "calls the update organisation service" do
       expect(Organisations::Update).to receive(:call)
-        .with(organisation: organisation, rdv_solidarites_session: rdv_solidarites_session)
+        .with(organisation: organisation)
       patch :update, params: update_params
     end
 

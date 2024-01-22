@@ -1,16 +1,13 @@
 describe RdvSolidaritesApi::UpdateOrganisation, type: :service do
   subject do
-    described_class.call(organisation_attributes: organisation_attributes,
-                         rdv_solidarites_session: rdv_solidarites_session,
-                         rdv_solidarites_organisation_id: rdv_solidarites_organisation_id)
+    described_class.call(organisation_attributes:, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id)
   end
 
+  let(:rdv_solidarites_client) { instance_double(RdvSolidaritesClient) }
   let(:organisation_attributes) do
     { name: "PIE Pantin", email: "pie@pantin.fr", phone_number: "0102030405" }
   end
   let(:rdv_solidarites_organisation_id) { 1 }
-  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
-  let!(:rdv_solidarites_client) { instance_double(RdvSolidaritesClient) }
 
   describe "#call" do
     let(:response_body) do
@@ -20,8 +17,7 @@ describe RdvSolidaritesApi::UpdateOrganisation, type: :service do
     let(:parsed_response) { JSON.parse(response_body) }
 
     before do
-      allow(rdv_solidarites_session).to receive(:rdv_solidarites_client)
-        .and_return(rdv_solidarites_client)
+      allow(Current).to receive(:rdv_solidarites_client).and_return(rdv_solidarites_client)
       allow(rdv_solidarites_client).to receive(:update_organisation)
         .with(rdv_solidarites_organisation_id, organisation_attributes)
         .and_return(OpenStruct.new(body: response_body))

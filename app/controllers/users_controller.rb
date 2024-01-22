@@ -127,16 +127,14 @@ class UsersController < ApplicationController
   def save_user
     @save_user ||= Users::Save.call(
       user: @user,
-      organisation: @organisation,
-      rdv_solidarites_session: rdv_solidarites_session
+      organisation: @organisation
     )
   end
 
   def upsert_user
     @upsert_user ||= Users::Upsert.call(
       user_attributes: user_params,
-      organisation: @organisation,
-      rdv_solidarites_session: rdv_solidarites_session
+      organisation: @organisation
     )
   end
 

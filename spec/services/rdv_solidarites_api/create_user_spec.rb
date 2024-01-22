@@ -1,13 +1,12 @@
 describe RdvSolidaritesApi::CreateUser, type: :service do
   subject do
-    described_class.call(user_attributes: user_attributes, rdv_solidarites_session: rdv_solidarites_session)
+    described_class.call(user_attributes:)
   end
 
+  let(:rdv_solidarites_client) { instance_double(RdvSolidaritesClient) }
   let(:user_attributes) do
     { first_name: "john", last_name: "doe", address: "16 rue de la tour", email: "johndoe@example.com" }
   end
-  let(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
-  let(:rdv_solidarites_client) { instance_double(RdvSolidaritesClient) }
 
   describe "#call" do
     let(:response_body) do
@@ -16,8 +15,7 @@ describe RdvSolidaritesApi::CreateUser, type: :service do
     let(:parsed_response) { JSON.parse(response_body) }
 
     before do
-      allow(rdv_solidarites_session).to receive(:rdv_solidarites_client)
-        .and_return(rdv_solidarites_client)
+      allow(Current).to receive(:rdv_solidarites_client).and_return(rdv_solidarites_client)
       allow(rdv_solidarites_client).to receive(:create_user)
         .with(user_attributes)
         .and_return(OpenStruct.new(body: response_body))
