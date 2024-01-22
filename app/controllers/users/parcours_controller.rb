@@ -1,6 +1,8 @@
 module Users
   class ParcoursController < ApplicationController
-    before_action :set_user, :set_department, only: [:show]
+    before_action :set_user, :set_department, :set_back_to_users_list_url, only: [:show]
+
+    include BackToListConcern
 
     def show
       @orientations = @user.orientations.includes(:agent, :organisation).order(starts_at: :asc)
