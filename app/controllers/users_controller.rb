@@ -263,7 +263,7 @@ class UsersController < ApplicationController
       user_id: @users.ids, motif_category: @current_motif_category
     )
     @statuses_count = @rdv_contexts.group(:status).count
-    @referents_list = current_structure.agents
+    @referents_list = current_structure.agents.distinct
   end
 
   def set_current_agent_roles

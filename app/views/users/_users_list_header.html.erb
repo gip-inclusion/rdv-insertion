@@ -10,18 +10,18 @@
           )
         %>
       </div>
-      <div class="mb-1">
-        <%=
-          select(
-            "user",
-            "referent_id",
-            @referents_list.uniq.map { |agent| [agent.to_s, agent.id]},
-            { prompt: "Filtrer par référent" },
-            class: "text-center form-select js-referent-selector"
-          )
-        %>
-      </div>
     <% end %>
+    <div class="mb-1">
+      <%=
+        select(
+          "user",
+          "referent_id",
+          @referents_list.map { |agent| [agent.to_s, agent.id]},
+          { prompt: "Filtrer par référent" },
+          class: "text-center form-select js-referent-selector"
+        )
+      %>
+    </div>
     <%= render "filter_by_creation_dates_button" if @current_configuration.nil? %>
     <%= render "filter_by_invitations_dates_button" if @current_configuration.present? || archived_scope?(@users_scope) %>
     <%= render "search_form", url: structure_users_path %>
