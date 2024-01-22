@@ -4,7 +4,7 @@ class CreateParcoursDocuments < ActiveRecord::Migration[7.0]
       t.references :department, null: false, foreign_key: true
       t.references :user, null: false, foreign_key: true
       t.references :agent, null: false, foreign_key: true
-      t.string :document_type
+      t.string :type, index: true
 
       t.timestamps
     end

@@ -32,8 +32,8 @@ class User < ApplicationRecord
   has_many :tag_users, dependent: :destroy
   has_many :users_organisations, dependent: :destroy
   has_many :orientations, dependent: :destroy
-  has_many :diagnostics,  -> { diagnostic }, class_name: "ParcoursDocument", dependent: :destroy, inverse_of: :user
-  has_many :contracts, -> { contract }, class_name: "ParcoursDocument", dependent: :destroy, inverse_of: :user
+  has_many :diagnostics, dependent: :destroy
+  has_many :contracts, dependent: :destroy
 
   has_many :rdvs, through: :participations
   has_many :organisations, through: :users_organisations

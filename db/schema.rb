@@ -297,11 +297,12 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_16_133624) do
     t.bigint "department_id", null: false
     t.bigint "user_id", null: false
     t.bigint "agent_id", null: false
-    t.string "document_type"
+    t.string "type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["agent_id"], name: "index_parcours_documents_on_agent_id"
     t.index ["department_id"], name: "index_parcours_documents_on_department_id"
+    t.index ["type"], name: "index_parcours_documents_on_type"
     t.index ["user_id"], name: "index_parcours_documents_on_user_id"
   end
 

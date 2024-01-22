@@ -9,9 +9,9 @@ module Users
         turbo_stream_prepend_flash_message(error: @parcours_document.errors.full_messages.join(". "))
       else
         turbo_stream_replace(
-          "documents_list_#{parcours_document_params[:document_type]}",
+          "documents_list_#{@parcours_document.type.downcase}",
           "parcours_documents/documents_list",
-          { user: @user, document_type: parcours_document_params[:document_type] }
+          { user: @user, type: @parcours_document.type.downcase }
         )
       end
     end
@@ -27,7 +27,7 @@ module Users
 
     def parcours_document_params
       params.require(:parcours_document)
-            .permit(:document_type, :file, :user_id)
+            .permit(:type, :file, :user_id)
             .merge(agent: current_agent, user: @user)
             .merge(department: current_department)
     end

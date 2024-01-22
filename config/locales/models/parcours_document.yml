@@ -4,7 +4,6 @@ fr:
       parcours_document: Documents
     attributes:
       parcours_document:
-        file: "Document :"
-        document_type:
+        type:
           contract: contrat
           diagnostic: diagnostic

@@ -3,11 +3,6 @@ class ParcoursDocument < ApplicationRecord
   belongs_to :agent
   belongs_to :user
 
-  enum document_type: {
-    diagnostic: "diagnostic",
-    contract: "contract"
-  }
-
   has_one_attached :file
 
   validates :file, presence: true
