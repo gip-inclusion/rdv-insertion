@@ -149,6 +149,40 @@ RSpec.configure do |config|
               carnet_de_bord_carnet_id
             ]
           },
+          user_with_referents: {
+            type: "object",
+            properties: {
+              id: { type: "integer" },
+              address: { type: "string", nullable: true },
+              affiliation_number: { type: "string", nullable: true },
+              birth_date: { type: "string", format: "date", nullable: true },
+              birth_name: { type: "string", nullable: true },
+              created_at: { type: "string", format: "date" },
+              email: { type: "string", nullable: true },
+              first_name: { type: "string" },
+              last_name: { type: "string" },
+              phone_number: { type: "string", nullable: true },
+              department_internal_id: { type: "string", nullable: true },
+              rights_opening_date: { type: "string", nullable: true },
+              title: { type: "string", enum: %w[monsieur madame] },
+              uid: { type: "string", nullable: true },
+              role: { type: "string", nullable: true, enum: %w[demandeur conjoint] },
+              nir: { type: "string", nullable: true },
+              pole_emploi_id: { type: "string", nullable: true },
+              carnet_de_bord_carnet_id: { type: "string", nullable: true },
+              rdv_solidarites_user_id: { type: "integer" },
+              referents: {
+                type: "array",
+                items: { "$ref" => "#/components/schemas/agent" }
+              }
+            },
+            required: %w[
+              id uid affiliation_number role created_at department_internal_id
+              first_name last_name title address phone_number email birth_date
+              rights_opening_date birth_name rdv_solidarites_user_id nir pole_emploi_id
+              carnet_de_bord_carnet_id
+            ]
+          },
           user_params: {
             type: "object",
             properties: {
@@ -176,6 +210,15 @@ RSpec.configure do |config|
                     properties: {
                       name: { type: "string" }
                     }
+                  }
+                }
+              },
+              referents_to_add: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    email: { type: "string" }
                   }
                 }
               }
@@ -216,6 +259,29 @@ RSpec.configure do |config|
               }
             },
             required: %w[id name email phone_number department_number rdv_solidarites_organisation_id motif_categories]
+          },
+          rdv_context: {
+            type: "object",
+            properties: {
+              id: { type: "integer" },
+              status: { type: "string" },
+              human_status: { type: "string" },
+              motif_category_id: { type: "integer" },
+              participations: {
+                type: "array",
+                items: { "$ref" => "#/components/schemas/participation" }
+              }
+            }
+          },
+          participation: {
+            type: "object",
+            properties: {
+              id: { type: "integer" },
+              status: { type: "string" },
+              created_by: { type: "string" },
+              created_at: { type: "string", format: "date" },
+              user: { "$ref" => "#/components/schemas/user" }
+            }
           },
           invitations: {
             type: "object",
