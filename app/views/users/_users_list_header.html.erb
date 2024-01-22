@@ -120,7 +120,7 @@
         <button class="btn btn-blue-out">Configurer une organisation</button>
       <% end %>
     <% elsif !department_level? && @current_agent_roles.any?(&:admin?) %>
-      <%= link_to(organisation_configurations_path(@organisation), class: "btn btn-blue-out my-2") do %>
+      <%= link_to(organisation_configurations_path(@organisation), class: "btn btn-blue-out mb-2") do %>
         Configurer l'organisation
       <% end %>
     <% end %>
@@ -130,12 +130,12 @@
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="csvExportButton">
       <li>
         <%= link_to(structure_users_path(**params.to_unsafe_h.merge(format: "csv", export_type: nil)), class: "dropdown-item", data: { controller: "tooltip", action: "mouseover->tooltip#csvExportUsers"}) do %>
-           Export des usagers
+          Export des usagers
         <% end %>
       </li>
       <li>
         <%= link_to(structure_users_path(**params.to_unsafe_h.merge(format: "csv", export_type: "participations")), class: "dropdown-item", data: { controller: "tooltip", action: "mouseover->tooltip#csvExportParticipations"}) do %>
-          Export de l'historique des rendez-vous
+          Export des rendez-vous des usagers
         <% end %>
       </li>
     </ul>
