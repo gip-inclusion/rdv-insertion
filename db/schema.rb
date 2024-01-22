@@ -269,6 +269,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_22_104935) do
     t.string "slug"
     t.boolean "independent_from_cd", default: false
     t.string "logo_filename"
+    t.string "safir_code"
     t.index ["department_id"], name: "index_organisations_on_department_id"
     t.index ["rdv_solidarites_organisation_id"], name: "index_organisations_on_rdv_solidarites_organisation_id", unique: true
   end

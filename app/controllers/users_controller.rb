@@ -15,7 +15,7 @@ class UsersController < ApplicationController
   before_action :set_organisation, :set_department, :set_organisations, :set_all_configurations,
                 :set_current_agent_roles, :set_users_scope,
                 :set_current_configuration, :set_current_motif_category,
-                :set_users, :set_rdv_contexts, :set_filterable_tags,
+                :set_users, :set_rdv_contexts, :set_filterable_tags, :set_referents_list,
                 :filter_users, :order_users,
                 for: :index
   before_action :set_user, :set_organisation, :set_department, :set_all_configurations,
@@ -35,7 +35,13 @@ class UsersController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.csv { send_users_csv }
+      format.csv do
+        generate_csv
+        flash[:success] = "Le fichier CSV est en train d'être généré." \
+                          " Il sera envoyé l'adresse email #{current_agent.email}." \
+                          " Pensez à vérifier vos spams."
+        redirect_to structure_users_path(**params.to_unsafe_h.except(:format))
+      end
     end
   end
 
@@ -94,15 +100,21 @@ class UsersController < ApplicationController
     end
   end
 
-  def send_users_csv
-    send_data generate_users_csv.csv, filename: generate_users_csv.filename
+  def csv_exporter
+    if params[:export_type] == "participations"
+      Exporters::SendUsersParticipationsCsvJob
+    else
+      Exporters::SendUsersCsvJob
+    end
   end
 
-  def generate_users_csv
-    @generate_users_csv ||= Exporters::GenerateUsersCsv.call(
-      users: @users,
-      structure: department_level? ? @department : @organisation,
-      motif_category: @current_motif_category
+  def generate_csv
+    csv_exporter.perform_async(
+      @users.map(&:id),
+      department_level? ? "Department" : "Organisation",
+      department_level? ? @department.id : @organisation.id,
+      @current_motif_category&.id,
+      current_agent.id
     )
   end
 
@@ -263,6 +275,10 @@ class UsersController < ApplicationController
       user_id: @users.ids, motif_category: @current_motif_category
     )
     @statuses_count = @rdv_contexts.group(:status).count
+  end
+
+  def set_referents_list
+    @referents_list = current_structure.agents.distinct
   end
 
   def set_current_agent_roles

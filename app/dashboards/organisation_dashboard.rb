@@ -15,6 +15,7 @@ class OrganisationDashboard < Administrate::BaseDashboard
     configurations: Field::HasMany,
     department: Field::BelongsTo,
     email: Field::String,
+    safir_code: Field::String,
     independent_from_cd: Field::Boolean,
     invitations: Field::HasMany,
     last_webhook_update_received_at: Field::DateTime,
@@ -60,6 +61,7 @@ class OrganisationDashboard < Administrate::BaseDashboard
     slug
     department
     email
+    safir_code
     independent_from_cd
     logo_filename
     agent_roles
@@ -80,6 +82,7 @@ class OrganisationDashboard < Administrate::BaseDashboard
     slug
     department
     email
+    safir_code
     independent_from_cd
     logo_filename
   ].freeze

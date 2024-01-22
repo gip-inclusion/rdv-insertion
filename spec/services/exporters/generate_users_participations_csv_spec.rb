@@ -1,5 +1,5 @@
-describe Exporters::GenerateUsersCsv, type: :service do
-  subject { described_class.call(user_ids: users.ids, structure: structure, motif_category: motif_category) }
+describe Exporters::GenerateUsersParticipationsCsv, type: :service do
+  subject { described_class.call(user_ids: users.ids, structure: structure, motif_category: motif_category, agent:) }
 
   let!(:now) { Time.zone.parse("22/06/2022") }
   let!(:timestamp) { now.to_i }
@@ -32,10 +32,12 @@ describe Exporters::GenerateUsersCsv, type: :service do
   end
   let(:user2) { create(:user, last_name: "Casubolo", organisations: [organisation]) }
   let(:user3) { create(:user, last_name: "Blanc", organisations: [organisation]) }
+  let!(:agent) { create(:agent, organisations: [organisation]) }
 
   let!(:rdv) do
     create(:rdv, starts_at: Time.zone.parse("2022-05-25"),
                  created_by: "user",
+                 organisation: organisation,
                  participations: [participation_rdv])
   end
   let!(:participation_rdv) { create(:participation, user: user1, status: "seen") }
@@ -73,10 +75,10 @@ describe Exporters::GenerateUsersCsv, type: :service do
       end
 
       it "generates a filename" do
-        expect(subject.filename).to eq("Export_usagers_rsa_orientation_organisation_drome_rsa.csv")
+        expect(subject.filename).to eq("Export_rdvs_rsa_orientation_organisation_drome_rsa.csv")
       end
 
-      it "generates headers" do # rubocop:disable RSpec/ExampleLength
+      it "generates headers" do
         expect(csv).to start_with("\uFEFF")
         expect(csv).to include("Civilité")
         expect(csv).to include("Nom")
@@ -95,31 +97,22 @@ describe Exporters::GenerateUsersCsv, type: :service do
         expect(csv).to include("Archivé le")
         expect(csv).to include("Motif d'archivage")
         expect(csv).to include("Statut du rdv")
-        expect(csv).to include("Statut de la catégorie de motifs")
-        expect(csv).to include("Première invitation envoyée le")
-        expect(csv).to include("Dernière invitation envoyée le")
-        expect(csv).to include("Dernière convocation envoyée le")
-        expect(csv).to include("Date du dernier RDV")
-        expect(csv).to include("Heure du dernier RDV")
-        expect(csv).to include("Motif du dernier RDV")
-        expect(csv).to include("Nature du dernier RDV")
+        expect(csv).to include("Date du RDV")
+        expect(csv).to include("Heure du RDV")
+        expect(csv).to include("Motif du RDV")
+        expect(csv).to include("Nature du RDV")
         expect(csv).to include("Dernier RDV pris en autonomie ?")
-        expect(csv).to include("RDV honoré en - de 30 jours ?")
-        expect(csv).to include("Date d'orientation")
         expect(csv).to include("Référent(s)")
-        expect(csv).to include("Nombre d'organisations")
-        expect(csv).to include("Nom des organisations")
+        expect(csv).to include("Organisation du rendez-vous")
       end
 
       context "it exports all the concerned users" do
-        it "generates one line for each user required" do
-          expect(csv.scan(/(?=\n)/).count).to eq(4) # one line per users + 1 line of headers
+        it "generates one line for each participation" do
+          expect(csv.scan(/(?=\n)/).count).to eq(2) # one line per participation + 1 line of headers
         end
 
-        it "displays all the users" do
+        it "displays all participations" do
           expect(csv).to include("Doe")
-          expect(csv).to include("Casubolo")
-          expect(csv).to include("Blanc")
         end
       end
 
@@ -144,31 +137,18 @@ describe Exporters::GenerateUsersCsv, type: :service do
           expect(csv).to include("demandeur") # role
         end
 
-        it "displays the invitations infos" do
-          expect(csv).to include("21/05/2022") # first invitation date
-          expect(csv).to include("22/05/2022") # last invitation date
-          expect(csv).not_to include("(Délai dépassé)") # invitation delay
-        end
-
-        it "displays the notifications infos" do
-          expect(csv).to include("22/06/2022") # last notification date
-        end
-
-        it "displays the rdvs infos" do
-          expect(csv).to include("25/05/2022") # last rdv date
-          expect(csv).to include("0h00") # last rdv time
-          expect(csv).to include("RSA orientation sur site") # last rdv motif
-          expect(csv).to include("individuel") # last rdv type
-          expect(csv).to include("individuel;Oui") # last rdv taken in autonomy ?
+        it "displays the rdv infos" do
+          expect(csv).to include("25/05/2022") # rdv date
+          expect(csv).to include("0h00") # rdv time
+          expect(csv).to include("RSA orientation sur site") # rdv motif
+          expect(csv).to include("individuel") # rdv type
+          expect(csv).to include("individuel;Oui") # rdv taken in autonomy ?
           expect(csv).to include("Rendez-vous honoré") # rdv status
-          expect(csv).to include("Statut du RDV à préciser") # rdv_context status
-          expect(csv).to include("Statut du RDV à préciser;Oui") # first rdv in less than 30 days ?
-          expect(csv).to include("Rendez-vous honoré;Statut du RDV à préciser;Oui;25/05/2022") # orientation date
         end
 
         it "displays the organisation infos" do
           expect(csv).to include("1")
-          expect(csv).to include("Drome RSA")
+          expect(csv).to include(participation_rdv.organisation.name)
         end
 
         it "displays the referent emails" do
@@ -199,14 +179,14 @@ describe Exporters::GenerateUsersCsv, type: :service do
       end
 
       context "when no motif category is passed" do
-        subject { described_class.call(user_ids: users.ids, structure: structure, motif_category: nil) }
+        subject { described_class.call(user_ids: users.ids, structure: structure, motif_category: nil, agent:) }
 
         it "is a success" do
           expect(subject.success?).to eq(true)
         end
 
         it "generates the right filename" do
-          expect(subject.filename).to eq("Export_usagers_organisation_drome_rsa.csv")
+          expect(subject.filename).to eq("Export_rdvs_organisation_drome_rsa.csv")
         end
 
         it "generates headers" do

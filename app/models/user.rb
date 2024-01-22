@@ -118,6 +118,10 @@ class User < ApplicationRecord
     "#{ENV['CARNET_DE_BORD_URL']}/manager/carnets/#{carnet_de_bord_carnet_id}"
   end
 
+  def notifiable?
+    sent_invitations.any? && title.present?
+  end
+
   private
 
   def rdv_context_category_handled_already?(rdv_context_attributes)

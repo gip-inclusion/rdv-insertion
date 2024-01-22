@@ -1,7 +1,9 @@
 module Users
   class RdvContextsController < ApplicationController
     before_action :set_user, :set_all_configurations, :set_department, :set_organisation, :set_user_organisations,
-                  only: [:index]
+                  :set_back_to_users_list_url, only: [:index]
+
+    include BackToListConcern
 
     def index
       @rdv_contexts =

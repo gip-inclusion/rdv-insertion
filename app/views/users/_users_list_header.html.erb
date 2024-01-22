@@ -1,7 +1,7 @@
 <div class="row mb-4 card-white justify-content-center">
   <div class="col-4 justify-content-center">
-    <div class="mb-1">
-      <% if @current_configuration.present? %>
+    <% if @current_configuration.present? %>
+      <div class="mb-1">
         <%=
           select(
             "user", "status", options_for_select_status(@statuses_count),
@@ -9,21 +9,28 @@
             class: "text-center form-select js-status-selector"
           )
         %>
-      <% end %>
+      </div>
+    <% end %>
+    <div class="mb-1">
+      <%=
+        select(
+          "user",
+          "referent_id",
+          @referents_list.map { |agent| [agent.to_s, agent.id]},
+          { prompt: "Filtrer par référent" },
+          class: "text-center form-select js-referent-selector"
+        )
+      %>
     </div>
     <%= render "filter_by_creation_dates_button" if @current_configuration.nil? %>
     <%= render "filter_by_invitations_dates_button" if @current_configuration.present? || archived_scope?(@users_scope) %>
-    <%= render 'search_form', url: structure_users_path %>
+    <%= render "search_form", url: structure_users_path %>
 
     <div class="d-flex justify-content-between mt-1" data-controller="index-filters">
       <div class="text-left mt-2">
-        <i class="fas fa-filter"></i> Filtrer usagers:
-        <div class="mt-1">
-          <input type="checkbox" name="filter_by_current_agent" class="form-check-input"></input> Dont je suis référent
-        </div>
         <% if @current_configuration.present? %>
           <div class="mt-1">
-            <input type="checkbox" name="action_required" class="form-check-input"></input> Une intervention est nécessaire
+            <input type="checkbox" name="action_required" class="form-check-input"></input> Usagers avec intervention nécessaire
             <small>
               <i
                 class="fas fa-question-circle"
@@ -117,8 +124,20 @@
         Configurer l'organisation
       <% end %>
     <% end %>
-    <%= link_to(structure_users_path(**params.to_unsafe_h.merge(format: "csv")), class: "btn btn-blue-out mt-2", data: { controller: "tooltip", action: "mouseover->tooltip#csvExport"}, target: "_blank") do %>
+    <a class="btn btn-blue-out dropdown-toggle mb-2" href="#" role="button" id="csvExportButton" data-bs-toggle="dropdown" aria-expanded="false">
       <i class="fas fa-download"></i> Exporter au format CSV
-    <% end %>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="csvExportButton">
+      <li>
+        <%= link_to(structure_users_path(**params.to_unsafe_h.merge(format: "csv", export_type: nil)), class: "dropdown-item", data: { controller: "tooltip", action: "mouseover->tooltip#csvExportUsers"}) do %>
+           Export des usagers
+        <% end %>
+      </li>
+      <li>
+        <%= link_to(structure_users_path(**params.to_unsafe_h.merge(format: "csv", export_type: "participations")), class: "dropdown-item", data: { controller: "tooltip", action: "mouseover->tooltip#csvExportParticipations"}) do %>
+          Export de l'historique des rendez-vous
+        <% end %>
+      </li>
+    </ul>
   </div>
 </div>

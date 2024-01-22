@@ -639,11 +639,11 @@ describe UsersController do
       end
     end
 
-    context "when filter_by_current_agent is passed" do
+    context "when referent_id is passed" do
       let!(:index_params) do
         {
           organisation_id: organisation.id,
-          filter_by_current_agent: "true",
+          referent_id: agent.id,
           motif_category_id: category_orientation.id
         }
       end
@@ -814,12 +814,12 @@ describe UsersController do
 
     context "when csv request" do
       before do
-        allow(Exporters::GenerateUsersCsv).to receive(:call)
+        allow(Exporters::SendUsersCsvJob).to receive(:perform_async)
           .and_return(OpenStruct.new)
       end
 
       it "calls the service" do
-        expect(Exporters::GenerateUsersCsv).to receive(:call)
+        expect(Exporters::SendUsersCsvJob).to receive(:perform_async)
         get :index, params: index_params.merge(format: :csv)
       end
 
@@ -840,13 +840,12 @@ describe UsersController do
 
       context "when the csv creation succeeds" do
         before do
-          allow(Exporters::GenerateUsersCsv).to receive(:call)
-            .and_return(OpenStruct.new(success?: true))
+          allow(Exporters::SendUsersCsvJob).to receive(:perform_async)
         end
 
-        it "is a success" do
+        it "redirects to users page" do
           get :index, params: index_params.merge(format: :csv)
-          expect(response).to be_successful
+          expect(response).to redirect_to(/#{organisation_users_path(organisation)}/)
         end
       end
     end

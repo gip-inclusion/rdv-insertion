@@ -13,6 +13,10 @@ describe NotifyParticipationJob do
     before do
       allow(Notifications::NotifyParticipation).to receive(:call)
         .and_return(OpenStruct.new(success?: true))
+      allow(Participation).to receive(:find).and_return(participation)
+      allow(participation).to receive(:user).and_return(user)
+      allow(participation).to receive(:notifiable?).and_return(true)
+      allow(user).to receive(:notifiable?).and_return(true)
     end
 
     it "calls the notify user service" do
@@ -66,10 +70,28 @@ describe NotifyParticipationJob do
         end
       end
 
-      context "when the user is created through rdv_solidarites and has no invitations" do
-        let!(:user) do
-          create(:user, created_through: "rdv_solidarites", invitations: [])
+      context "when the user is not notifiable" do
+        before { allow(user).to receive(:notifiable?).and_return(false) }
+
+        it "does notify the user" do
+          expect(Notifications::NotifyParticipation).not_to receive(:call)
+          subject
         end
+      end
+
+      context "when the participation is not notifiable" do
+        before { allow(participation).to receive(:notifiable?).and_return(false) }
+
+        it "does notify the user" do
+          expect(Notifications::NotifyParticipation).not_to receive(:call)
+          subject
+        end
+      end
+
+      context "when it is a reminder of cancelled participation" do
+        let!(:event) { "participation_reminder" }
+
+        before { participation.update! status: "revoked" }
 
         it "does notify the user" do
           expect(Notifications::NotifyParticipation).not_to receive(:call)

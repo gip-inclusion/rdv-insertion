@@ -12,3 +12,4 @@ fr:
         logo_filename: Nom du logo
         rdv_solidarites_organisation_id: ID de l'organisation dans RDV-Solidarités
         department: Département
+        safir_code: Code SAFIR

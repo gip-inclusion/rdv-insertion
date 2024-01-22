@@ -21,6 +21,11 @@ module DownloadHelper
     end
   end
 
+  def downloaded_content(format: nil)
+    wait_for_download
+    download_content(format:)
+  end
+
   def downloaded?
     !downloading? && downloads.any?
   end

@@ -1,4 +1,4 @@
-describe "Agents can reorder categories from index page", js: true do
+describe "Agents can download csv from index page", js: true do
   let!(:agent) { create(:agent, admin_role_in_organisations: [organisation]) }
   let!(:organisation) { create(:organisation) }
   let!(:user) do
@@ -32,21 +32,19 @@ describe "Agents can reorder categories from index page", js: true do
     stub_geo_api_request(user.address)
   end
 
-  shared_examples "a working reordering" do
-    it "can drag n drop to reorder" do
-      first_configuration = find(".draggable li:first-child")
-      last_configuration = find(".draggable li:last-child")
+  shared_examples "downloading csv" do
+    it "can download participation csv" do
+      expect(Exporters::SendUsersParticipationsCsvJob).to receive(:perform_async).once
+      find_by_id("csvExportButton").click
 
-      first_configuration_text = first_configuration.text
-      last_configuration_text = last_configuration.text
+      click_link("Export de l'historique des rendez-vous")
+    end
 
-      first_configuration.drag_to(last_configuration)
+    it "can download users csv" do
+      expect(Exporters::SendUsersCsvJob).to receive(:perform_async).once
+      find_by_id("csvExportButton").click
 
-      visit current_path
-
-      # Ensure that the configuration order has changed even after a page refresh
-      expect(find(".draggable li:last-child").text).to eq(first_configuration_text)
-      expect(find(".draggable li:first-child").text).to eq(last_configuration_text)
+      click_link("Export des usagers")
     end
   end
 
@@ -55,7 +53,7 @@ describe "Agents can reorder categories from index page", js: true do
       visit organisation_users_path(organisation, motif_category_id: motif_category.id)
     end
 
-    it_behaves_like "a working reordering"
+    it_behaves_like "downloading csv"
   end
 
   context "when viewing the whole department" do
@@ -63,6 +61,6 @@ describe "Agents can reorder categories from index page", js: true do
       visit department_users_path(organisation.department)
     end
 
-    it_behaves_like "a working reordering"
+    it_behaves_like "downloading csv"
   end
 end

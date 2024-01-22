@@ -107,7 +107,7 @@ describe Participation do
       end
     end
 
-    context "after cancellation" do
+    context "after revocation" do
       let!(:participation) do
         create(
           :participation,
@@ -119,7 +119,7 @@ describe Participation do
       end
 
       it "enqueues a job to notify rdv users" do
-        participation.status = "excused"
+        participation.status = "revoked"
         expect(NotifyParticipationJob).to receive(:perform_async)
           .with(participation.id, "sms", "participation_cancelled")
         expect(NotifyParticipationJob).to receive(:perform_async)
@@ -143,11 +143,19 @@ describe Participation do
             rdv: rdv,
             user: user,
             convocable: true,
-            status: "excused"
+            status: "revoked"
           )
         end
 
         it "does not enqueue a notify users job" do
+          participation.status = "revoked"
+          expect(NotifyParticipationJob).not_to receive(:perform_async)
+          subject
+        end
+      end
+
+      context "when the rdv is excused" do
+        it "does not notify the user" do
           participation.status = "excused"
           expect(NotifyParticipationJob).not_to receive(:perform_async)
           subject
@@ -168,6 +176,41 @@ describe Participation do
       expect { subject }.to change { RefreshRdvContextStatusesJob.jobs.size }.by(1)
       last_job = RefreshRdvContextStatusesJob.jobs.last
       expect(last_job["args"]).to eq([rdv_context1.id])
+    end
+  end
+
+  describe "#notifiable?" do
+    subject { participation.notifiable? }
+
+    let!(:rdv) { create(:rdv, starts_at: 2.days.from_now) }
+    let!(:participation) { create(:participation, convocable: true, rdv:, status: "unknown") }
+
+    it "is notifiable if it is convocable and in the future" do
+      expect(subject).to eq(true)
+    end
+
+    context "when the rdv is in the past" do
+      let!(:rdv) { create(:rdv, starts_at: 2.days.ago) }
+
+      it "is not notifiable" do
+        expect(subject).to eq(false)
+      end
+    end
+
+    context "when it is not convocable" do
+      before { participation.update! convocable: false }
+
+      it "is not notifiable" do
+        expect(subject).to eq(false)
+      end
+    end
+
+    context "when the status is excused" do
+      before { participation.update! status: "excused" }
+
+      it "is not notifiable" do
+        expect(subject).to eq(false)
+      end
     end
   end
 end
