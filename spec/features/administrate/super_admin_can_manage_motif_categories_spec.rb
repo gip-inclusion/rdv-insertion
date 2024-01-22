@@ -91,7 +91,9 @@ describe "Super admin can manage motif categories" do
       expect(page).to have_css("label[for=\"motif_category_template_id-selectized\"]", text: "Template")
       expect(page).to have_field("motif_category_template_id-selectized")
       expect(page).to have_css("label[for=\"motif_category_leads_to_orientation\"]", text: "Leads to orientation")
-      expect(page).to have_css("label[for=\"motif_category_optional_rdv_subscription\"]", text: "Prise de rdv facultative")
+      expect(page).to have_css(
+        "label[for=\"motif_category_optional_rdv_subscription\"]", text: "Prise de rdv facultative"
+      )
       expect(page).to have_button("Enregistrer")
 
       fill_in "motif_category_name", with: "France Travail orientation"
