@@ -141,7 +141,7 @@ describe "Agents can upload user list", js: true do
 
           click_link(motif_category.name)
 
-          expect(page).to have_content("Choisissez un fichier de nouveaux demandeurs")
+          expect(page).to have_content("Choisissez un fichier d'usagers")
           expect(page).to have_content(motif_category.name)
         end
 
@@ -154,7 +154,7 @@ describe "Agents can upload user list", js: true do
 
             click_link("Aucune catégorie de suivi")
 
-            expect(page).to have_content("Choisissez un fichier de nouveaux demandeurs")
+            expect(page).to have_content("Choisissez un fichier d'usagers")
 
             attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
 
@@ -759,7 +759,7 @@ describe "Agents can upload user list", js: true do
 
           click_link(motif_category.name)
 
-          expect(page).to have_content("Choisissez un fichier de nouveaux demandeurs")
+          expect(page).to have_content("Choisissez un fichier d'usagers")
           expect(page).to have_content(motif_category.name)
         end
 
@@ -772,7 +772,7 @@ describe "Agents can upload user list", js: true do
 
             click_link("Aucune catégorie de suivi")
 
-            expect(page).to have_content("Choisissez un fichier de nouveaux demandeurs")
+            expect(page).to have_content("Choisissez un fichier d'usagers")
 
             attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
 
