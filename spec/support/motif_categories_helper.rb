@@ -146,7 +146,7 @@ module MotifCategoriesHelper
         name: "RSA offre insertion pro",
         short_name: "rsa_insertion_offer",
         leads_to_orientation: true,
-        participation_optional: true,
+        optional_rdv_subscription: true,
         template: create(
           :template,
           model: "atelier",
@@ -198,7 +198,7 @@ module MotifCategoriesHelper
         :motif_category,
         name: "RSA Atelier rencontres professionnelles",
         short_name: "rsa_atelier_rencontres_pro",
-        participation_optional: true,
+        optional_rdv_subscription: true,
         template: create(
           :template,
           model: "atelier",
@@ -215,7 +215,7 @@ module MotifCategoriesHelper
         :motif_category,
         name: "RSA Atelier compétences",
         short_name: "rsa_atelier_competences",
-        participation_optional: true,
+        optional_rdv_subscription: true,
         template: create(
           :template,
           model: "atelier",
@@ -301,7 +301,7 @@ module MotifCategoriesHelper
         name: "RSA orientation France Travail",
         short_name: "rsa_orientation_france_travail",
         leads_to_orientation: true,
-        participation_optional: false,
+        optional_rdv_subscription: false,
         template: create(
           :template,
           model: "standard",
@@ -337,7 +337,7 @@ module MotifCategoriesHelper
         :motif_category,
         name: "Entretien SIAE",
         short_name: "siae_interview",
-        participation_optional: false,
+        optional_rdv_subscription: false,
         template: create(
           :template,
           model: "standard",
@@ -355,7 +355,7 @@ module MotifCategoriesHelper
         :motif_category,
         name: "Info coll. SIAE",
         short_name: "siae_collective_information",
-        participation_optional: false,
+        optional_rdv_subscription: false,
         template: create(
           :template,
           model: "standard",
@@ -373,7 +373,7 @@ module MotifCategoriesHelper
         :motif_category,
         name: "Suivi SIAE",
         short_name: "siae_follow_up",
-        participation_optional: false,
+        optional_rdv_subscription: false,
         template: create(
           :template,
           model: "standard",

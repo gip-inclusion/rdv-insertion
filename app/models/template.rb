@@ -18,4 +18,8 @@ class Template < ApplicationRecord
       "Ce RDV est obligatoire."
     end
   end
+
+  def name
+    "#{rdv_subject} - #{rdv_title}"
+  end
 end

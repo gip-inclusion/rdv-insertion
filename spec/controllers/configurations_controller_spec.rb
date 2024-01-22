@@ -189,7 +189,7 @@ describe ConfigurationsController do
       get :edit, params: edit_params
 
       expect(response).to be_successful
-      expect(response.body).to match(/Modifier configuration/)
+      expect(unescaped_response_body).to include("Modifier \"#{configuration.motif_category_name}\"")
     end
 
     it "displays the file_configurations of the department" do
@@ -233,50 +233,44 @@ describe ConfigurationsController do
 
   describe "#create" do
     let!(:motif_category) { create(:motif_category) }
-    let!(:create_params) do
+    let!(:create_params) { { configuration: configuration_attributes, organisation_id: organisation.id } }
+    let!(:configuration_attributes) do
       {
-        configuration: {
-          invitation_formats: %w[sms email postal], convene_user: false,
-          rdv_with_referents: true, invite_to_user_organisations_only: true,
-          number_of_days_before_action_required: 12,
-          motif_category_id: motif_category.id, file_configuration_id: file_configuration.id,
-          number_of_days_between_periodic_invites: 15
-        },
-        organisation_id: organisation.id
+        invitation_formats: %w[sms email postal], convene_user: false,
+        rdv_with_referents: true, invite_to_user_organisations_only: true,
+        number_of_days_before_action_required: 12,
+        motif_category_id: motif_category.id, file_configuration_id: file_configuration.id,
+        number_of_days_between_periodic_invites: 15
       }
     end
+    let!(:configuration) { create(:configuration, **configuration_attributes, organisation: organisation) }
 
-    it "creates the configuration" do
-      expect { post :create, params: create_params }.to change(Configuration, :count).by(1)
+    before do
+      allow(Configurations::Create).to receive(:call)
+        .and_return(OpenStruct.new(success?: true, configuration: configuration))
+      allow(Configuration).to receive(:new).and_return(configuration)
     end
 
-    it "assigns the corrects attributes" do
+    it "tries to create the configuration" do
+      expect(Configurations::Create).to receive(:call)
+        .with(configuration: configuration)
       post :create, params: create_params
-      expect(Configuration.last.reload.invitation_formats).to eq(%w[sms email postal])
-      expect(Configuration.last.reload.convene_user).to eq(false)
-      expect(Configuration.last.reload.rdv_with_referents).to eq(true)
-      expect(Configuration.last.reload.invite_to_user_organisations_only).to eq(true)
-      expect(Configuration.last.reload.number_of_days_before_action_required).to eq(12)
-      expect(Configuration.last.reload.number_of_days_between_periodic_invites).to eq(15)
-      expect(Configuration.last.reload.motif_category_id).to eq(motif_category.id)
-      expect(Configuration.last.reload.file_configuration_id).to eq(file_configuration.id)
     end
 
     context "when the creation succeeds" do
       it "is a success" do
         post :create, params: create_params
-        expect(response).to redirect_to(organisation_configuration_path(organisation, Configuration.last))
+        expect(response).to redirect_to(organisation_configuration_path(organisation, configuration))
       end
     end
 
     context "when the creation fails" do
-      let!(:create_params) do
-        {
-          configuration: {
-            file_configuration_id: file_configuration.id
-          },
-          organisation_id: organisation.id
-        }
+      let!(:configuration) { build(:configuration, **configuration_attributes, organisation: organisation) }
+
+      before do
+        allow(Configurations::Create).to receive(:call)
+          .and_return(OpenStruct.new(success?: false, errors:
+            ["Catégorie de motifs doit exister"]))
       end
 
       it "renders the new page" do
@@ -362,7 +356,7 @@ describe ConfigurationsController do
         patch :update, params: update_params
         expect(response).not_to be_successful
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.body).to match(/Modifier configuration/)
+        expect(unescaped_response_body).to include("Modifier \"#{configuration.motif_category_name}\"")
         expect(unescaped_response_body).to match(/flashes/)
         expect(unescaped_response_body).to match(/Le délai d'expiration de l'invtation doit être supérieur à 3 jours/)
       end

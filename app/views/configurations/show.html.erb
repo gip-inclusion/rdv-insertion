@@ -21,7 +21,6 @@
     <%= render "common/attribute_display", record: @configuration, attribute: :convene_user %>
     <%= render "common/attribute_display", record: @configuration, attribute: :number_of_days_before_action_required %>
     <%= render "common/attribute_display", record: @configuration, attribute: :rdv_with_referents %>
-    <%= render "common/attribute_display", record: @configuration.motif_category, attribute: :participation_optional %>
     <%= render "common/attribute_display", record: @configuration, attribute: :invite_to_user_organisations_only %>
     <%= render "common/attribute_display", record: @configuration, attribute: :phone_number %>
   </div>
@@ -29,7 +28,7 @@
   <h3>Invitations périodiques</h3>
   <p>
     <% if @configuration.periodic_invites_activated? %>
-      Les invitations périodiques sont actives et sont envoyées 
+      Les invitations périodiques sont actives et sont envoyées
         <% if @configuration.number_of_days_between_periodic_invites.present? %>
           tous les <%= @configuration.number_of_days_between_periodic_invites == 1 ? '' : @configuration.number_of_days_between_periodic_invites %> jours.
         <% else %>

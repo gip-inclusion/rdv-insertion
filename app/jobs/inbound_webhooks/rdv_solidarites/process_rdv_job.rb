@@ -222,7 +222,7 @@ module InboundWebhooks
         @invitations_to_invalidate ||=
           Invitation.sent.valid.where(rdv_context_id: rdv_context_ids)
                     .joins(rdv_context: :motif_category)
-                    .where(motif_categories: { participation_optional: false })
+                    .where(motif_categories: { optional_rdv_subscription: false })
       end
 
       def invalidate_related_invitations

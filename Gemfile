@@ -94,6 +94,9 @@ gem "rubyzip"
 # Simple Fast Declarative Serialization Library
 gem "blueprinter"
 
+# A Rails engine for creating super-flexible admin dashboards
+gem "administrate", git: "https://github.com/thoughtbot/administrate.git"
+
 # Required for ActiveStorage for S3 compatible storage
 gem "aws-sdk-s3", require: false
 

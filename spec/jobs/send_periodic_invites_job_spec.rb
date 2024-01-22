@@ -12,7 +12,7 @@ describe SendPeriodicInvitesJob do
              motif_category: motif_category)
     end
 
-    let!(:motif_category) { create(:motif_category, participation_optional: true) }
+    let!(:motif_category) { create(:motif_category, optional_rdv_subscription: true) }
     let!(:rdv_context) { create(:rdv_context, motif_category: motif_category) }
     let!(:invitation) do
       create(

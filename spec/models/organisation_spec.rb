@@ -22,7 +22,7 @@ describe Organisation do
         expect(organisation).not_to be_valid
         expect(organisation.errors.details).to eq({ rdv_solidarites_organisation_id: [{ error: :taken, value: 1 }] })
         expect(organisation.errors.full_messages.to_sentence)
-          .to include("Rdv solidarites organisation est déjà utilisé")
+          .to include("ID de l'organisation dans RDV-Solidarités est déjà utilisé")
       end
     end
   end

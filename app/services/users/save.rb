@@ -1,13 +1,13 @@
 module Users
   class Save < BaseService
-    def initialize(user:, organisation:)
+    def initialize(user:, organisation: nil)
       @user = user
       @organisation = organisation
     end
 
     def call
       User.transaction do
-        assign_organisation
+        assign_organisation if @organisation.present?
         validate_user!
         save_record!(@user)
         sync_with_rdv_solidarites
@@ -24,8 +24,7 @@ module Users
     def sync_with_rdv_solidarites
       call_service!(
         Users::SyncWithRdvSolidarites,
-        user: @user,
-        organisation: @organisation
+        user: @user
       )
     end
 

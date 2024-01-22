@@ -10,4 +10,6 @@ fr:
         slug: Désignation dans le fichier usagers
         independent_from_cd: Indépendante du CD
         logo_filename: Nom du logo
+        rdv_solidarites_organisation_id: ID de l'organisation dans RDV-Solidarités
+        department: Département
         safir_code: Code SAFIR

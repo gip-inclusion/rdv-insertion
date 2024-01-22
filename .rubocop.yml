@@ -40,6 +40,9 @@ Style/RegexpLiteral:
 Style/StringConcatenation:
   Enabled: false
 
+Style/SymbolArray:
+  Enabled: false
+
 Rails/SkipsModelValidations:
   Enabled: false
 
@@ -134,7 +137,7 @@ RSpec/NoExpectationExample:
 RSpec/DescribeClass:
   Exclude:
     - "spec/requests/**/*"
-    - "spec/features/**"
+    - "spec/features/**/*"
 
 RSpec/ScatteredSetup:
   Exclude:

@@ -203,7 +203,9 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
         end
 
         context "when participation is optional" do
-          let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation", participation_optional: true) }
+          let!(:motif_category) do
+            create(:motif_category, short_name: "rsa_orientation", optional_rdv_subscription: true)
+          end
 
           it "does not enqueue a job to invalidate the related sent valid invitations" do
             expect(InvalidateInvitationJob).not_to receive(:perform_async)
@@ -288,7 +290,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
         let!(:users) { [{ id: user_id2 }] }
 
         # Rdv create factory create a new user (and participation) by default
-        let!(:rdv) { create(:rdv, rdv_solidarites_rdv_id: rdv_solidarites_rdv_id, organisation: organisation) }
+        let!(:rdv) { create(:rdv, rdv_solidarites_rdv_id: rdv_solidarites_rdv_id, organisation: organisation, motif:) }
         let!(:default_user) { rdv.users.first }
         let!(:default_participation) { rdv.participations.first }
         let!(:participation2) do
@@ -350,7 +352,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
 
       context "when the webhook reason is rgpd" do
         let!(:meta) { { "model" => "Rdv", "event" => "destroyed", "webhook_reason" => "rgpd" }.deep_symbolize_keys }
-        let!(:rdv) { create(:rdv, rdv_solidarites_rdv_id: rdv_solidarites_rdv_id, organisation: organisation) }
+        let!(:rdv) { create(:rdv, rdv_solidarites_rdv_id: rdv_solidarites_rdv_id, organisation: organisation, motif:) }
 
         it "enqueues a nullify job" do
           expect(NullifyRdvSolidaritesIdJob).to receive(:perform_async)
