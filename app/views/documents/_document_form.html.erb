@@ -1,9 +1,16 @@
 <%= simple_form_for(:document, url: user_documents_path(user_id: user.id), html: { method: :post, data: { controller: :documents, action: "turbo:submit-start->documents#spin turbo:submit-end->documents#stopSpin" }}) do |f| %>
   <%= f.hidden_field :document_type, value: document_type %>
   <div class="w-50 my-4">
-    <%= f.file_field :file, class: "form-control my-2", id: "file-input-#{document_type}" %>
+    <%= f.file_field(
+      :file,
+      class: "form-control my-2", 
+      id: "file-input-#{document_type}", 
+      data: {
+        action: "change->documents#enableSubmit",
+      }
+    ) %>
   </div>
-  <%= button_tag type: 'submit', class: "btn btn-primary" do %>
+  <%= button_tag type: 'submit', class: "btn btn-primary", disabled: true do %>
     <i class="fas fa-plus"></i>
     <div class="spinner-border spinner-border-sm text-white d-none" role="status">
       <span class="visually-hidden">Loading...</span>

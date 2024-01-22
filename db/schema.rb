@@ -129,7 +129,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_16_133624) do
   end
 
   create_table "documents", force: :cascade do |t|
-    t.bigint "organisation_id"
     t.bigint "department_id", null: false
     t.bigint "user_id", null: false
     t.bigint "agent_id", null: false

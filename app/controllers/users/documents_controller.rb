@@ -29,7 +29,7 @@ module Users
       params.require(:document)
             .permit(:document_type, :file, :user_id)
             .merge(agent: current_agent, user: @user)
-            .merge(Current.structure_type => current_structure, department: current_department)
+            .merge(department: current_department)
     end
 
     def set_user
