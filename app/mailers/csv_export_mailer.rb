@@ -1,13 +1,4 @@
 class CsvExportMailer < ApplicationMailer
-  def internal_users_csv_export(email, csv, filename)
-    attachments[filename] = { mime_type: "text/csv", content: csv }
-    mail(
-      to: email,
-      subject: "Export csv d'usagers",
-      body: ""
-    )
-  end
-
   def users_csv_export(email, file)
     send_csv("[RDV-Insertion] Export CSV des usagers", email, file)
   end
