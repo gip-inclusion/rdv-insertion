@@ -1,0 +1,11 @@
+<%= turbo_frame_tag "documents_list_#{document_type}" do %>
+  <% if user.send(document_type.pluralize).empty? %>
+    <i>Aucun <%= t("activerecord.attributes.parcours_document.document_type.#{document_type}") %> renseigné.</i>
+  <% else %>
+    <% user.send(document_type.pluralize).each do |document| %>
+      <%= render "parcours_documents/document", document: %>
+    <% end %>
+  <% end %>
+
+  <%= render "parcours_documents/document_form", user:, document_type: %>
+<% end %>

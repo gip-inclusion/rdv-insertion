@@ -33,7 +33,7 @@ describe "Agents can upload documents for users", js: true do
       find_by_id("file-input-diagnostic").set(Rails.root.join("spec/fixtures/fichier_contact_test.csv"))
       click_button("Ajouter un diagnostic")
 
-      expect(page).to have_content("n'est pas un format de fichier valide")
+      expect(page).to have_content("Seuls les formats PDF")
       expect(page).to have_content("Aucun diagnostic renseigné.")
 
       find_by_id("file-input-diagnostic").set(Rails.root.join("spec/fixtures/dummy.pdf"))

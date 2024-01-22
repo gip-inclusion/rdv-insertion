@@ -128,18 +128,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_16_133624) do
     t.string "carnet_de_bord_deploiement_id"
   end
 
-  create_table "documents", force: :cascade do |t|
-    t.bigint "department_id", null: false
-    t.bigint "user_id", null: false
-    t.bigint "agent_id", null: false
-    t.string "document_type"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["agent_id"], name: "index_documents_on_agent_id"
-    t.index ["department_id"], name: "index_documents_on_department_id"
-    t.index ["user_id"], name: "index_documents_on_user_id"
-  end
-
   create_table "file_configurations", force: :cascade do |t|
     t.string "sheet_name"
     t.datetime "created_at", null: false
@@ -303,6 +291,18 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_16_133624) do
     t.index ["agent_id"], name: "index_orientations_on_agent_id"
     t.index ["organisation_id"], name: "index_orientations_on_organisation_id"
     t.index ["user_id"], name: "index_orientations_on_user_id"
+  end
+
+  create_table "parcours_documents", force: :cascade do |t|
+    t.bigint "department_id", null: false
+    t.bigint "user_id", null: false
+    t.bigint "agent_id", null: false
+    t.string "document_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agent_id"], name: "index_parcours_documents_on_agent_id"
+    t.index ["department_id"], name: "index_parcours_documents_on_department_id"
+    t.index ["user_id"], name: "index_parcours_documents_on_user_id"
   end
 
   create_table "participations", force: :cascade do |t|
@@ -497,9 +497,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_16_133624) do
   add_foreign_key "configurations", "file_configurations"
   add_foreign_key "configurations", "motif_categories"
   add_foreign_key "configurations", "organisations"
-  add_foreign_key "documents", "agents"
-  add_foreign_key "documents", "departments"
-  add_foreign_key "documents", "users"
   add_foreign_key "invitations", "departments"
   add_foreign_key "invitations", "rdv_contexts"
   add_foreign_key "invitations", "users"
@@ -513,6 +510,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_16_133624) do
   add_foreign_key "orientations", "agents"
   add_foreign_key "orientations", "organisations"
   add_foreign_key "orientations", "users"
+  add_foreign_key "parcours_documents", "agents"
+  add_foreign_key "parcours_documents", "departments"
+  add_foreign_key "parcours_documents", "users"
   add_foreign_key "participations", "rdv_contexts"
   add_foreign_key "rdv_contexts", "motif_categories"
   add_foreign_key "rdv_contexts", "users"

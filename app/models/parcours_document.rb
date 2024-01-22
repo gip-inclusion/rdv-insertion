@@ -1,4 +1,4 @@
-class Document < ApplicationRecord
+class ParcoursDocument < ApplicationRecord
   belongs_to :department
   belongs_to :agent
   belongs_to :user
@@ -11,13 +11,18 @@ class Document < ApplicationRecord
   has_one_attached :file
 
   validates :file, presence: true
+
+  validate :file_size_validation
   validate :file_format_validation
 
+  def file_size_validation
+    return unless file.blob.byte_size > 5.megabytes
+
+    errors.add(:base, "Le fichier est trop volumineux (5mo maximum)")
+  end
+
   def file_format_validation
-    if file.blob.byte_size > 5.megabytes
-      file.purge
-      errors.add(:base, "Le fichier est trop volumineux (5mo maximum).")
-    elsif [
+    if [
       "application/pdf",
       "image/jpeg",
       "image/png",
@@ -33,7 +38,6 @@ class Document < ApplicationRecord
       "application/vnd.ms-excel",
       "application/zip"
     ].exclude?(file.blob.content_type)
-      file.purge
       errors.add(:base, "Seuls les formats PDF, JPG, PNG, ODT, DOCX, XLSX, PPT, DOC et ZIP sont acceptés.")
     end
   end

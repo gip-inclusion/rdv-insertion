@@ -1,9 +1,9 @@
 fr:
   activerecord:
     models:
-      document: Documents
+      parcours_document: Documents
     attributes:
-      document:
+      parcours_document:
         file: "Document :"
         document_type:
           contract: contrat

@@ -1,4 +1,4 @@
-<%= simple_form_for(:document, url: user_documents_path(user_id: user.id), html: { method: :post, data: { controller: :documents, action: "turbo:submit-start->documents#spin turbo:submit-end->documents#stopSpin" }}) do |f| %>
+<%= simple_form_for(:parcours_document, url: user_parcours_documents_path(user_id: user.id), html: { method: :post, data: { controller: "parcours-documents", action: "turbo:submit-start->parcours-documents#spin turbo:submit-end->parcours-documents#stopSpin" }}) do |f| %>
   <%= f.hidden_field :document_type, value: document_type %>
   <div class="w-50 my-4">
     <%= f.file_field(
@@ -6,7 +6,7 @@
       class: "form-control my-2", 
       id: "file-input-#{document_type}", 
       data: {
-        action: "change->documents#enableSubmit",
+        action: "change->parcours-documents#enableSubmit",
       }
     ) %>
   </div>
@@ -16,6 +16,6 @@
       <span class="visually-hidden">Loading...</span>
     </div>
 
-    Ajouter un <%= t("activerecord.attributes.document.document_type.#{document_type}") %>
+    Ajouter un <%= t("activerecord.attributes.parcours_document.document_type.#{document_type}") %>
   <% end  %>
 <% end %>
