@@ -5,7 +5,11 @@ module SuperAdmins
     #
 
     def create
-      create_motif_category.success? ? redirect_after_successful_create : render_new
+      if create_motif_category.success?
+        redirect_after_succesful_action("create")
+      else
+        render_page(:new, resource, create_motif_category.errors)
+      end
     end
 
     private

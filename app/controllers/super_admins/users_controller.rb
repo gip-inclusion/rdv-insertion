@@ -6,7 +6,11 @@ module SuperAdmins
 
     def update
       requested_resource.assign_attributes(**formatted_attributes)
-      save_user.success? ? redirect_after_successful_update : render_edit
+      if save_user.success?
+        redirect_after_succesful_action("update")
+      else
+        render_page(:edit, requested_resource, save_user.errors)
+      end
     end
 
     private
