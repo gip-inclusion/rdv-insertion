@@ -6,7 +6,7 @@ module SuperAdmins
 
     def create
       if create_organisation.success?
-        redirect_after_succesful_action("create")
+        redirect_after_succesful_action("create", resource)
       else
         render_page(:new, resource, create_organisation.errors)
       end
@@ -15,7 +15,7 @@ module SuperAdmins
     def update
       requested_resource.assign_attributes(**resource_params)
       if update_organisation.success?
-        redirect_after_succesful_action("update")
+        redirect_after_succesful_action("update", requested_resource)
       else
         render_page(:edit, requested_resource, update_organisation.errors)
       end

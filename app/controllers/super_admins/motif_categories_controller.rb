@@ -6,7 +6,7 @@ module SuperAdmins
 
     def create
       if create_motif_category.success?
-        redirect_after_succesful_action("create")
+        redirect_after_succesful_action("create", resource)
       else
         render_page(:new, resource, create_motif_category.errors)
       end
