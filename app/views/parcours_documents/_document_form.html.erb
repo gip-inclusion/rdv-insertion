@@ -5,6 +5,7 @@
       :file,
       class: "form-control my-2", 
       id: "file-input-#{type}", 
+      accept: ParcoursDocument::MIME_TYPES.join(', '),
       data: {
         action: "change->parcours-documents#enableSubmit",
       }

@@ -1,6 +1,7 @@
 module Users
   class ParcoursDocumentsController < ApplicationController
     before_action :set_user
+    before_action :set_parcours_document, only: :destroy
 
     def create
       @parcours_document = ParcoursDocument.create(parcours_document_params)
@@ -17,10 +18,11 @@ module Users
     end
 
     def destroy
-      @parcours_document = ParcoursDocument.find_by!(id: params[:id], user: @user, agent: current_agent)
-      @parcours_document.destroy!
-
-      turbo_stream_remove(@parcours_document)
+      if @parcours_document.destroy
+        turbo_stream_remove(@parcours_document)
+      else
+        turbo_stream_prepend_flash_message(error: "Impossible de supprimer ce document")
+      end
     end
 
     private
@@ -30,6 +32,11 @@ module Users
             .permit(:type, :file, :user_id)
             .merge(agent: current_agent, user: @user)
             .merge(department: current_department)
+    end
+
+    def set_parcours_document
+      @parcours_document = ParcoursDocument.find(params[:id])
+      authorize @parcours_document, :destroy?
     end
 
     def set_user
