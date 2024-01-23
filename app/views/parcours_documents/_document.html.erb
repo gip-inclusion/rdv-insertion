@@ -20,7 +20,7 @@
     ) do 
     %>
       <i class="fas fa-trash text-dark-blue"></i>
-    <% end if document.agent == current_agent %>
+    <% end if policy(document).destroy? %>
   </div>
  </div>
 <% end %>
