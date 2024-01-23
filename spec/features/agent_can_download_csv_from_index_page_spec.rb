@@ -37,7 +37,7 @@ describe "Agents can download csv from index page", js: true do
       expect(Exporters::SendUsersParticipationsCsvJob).to receive(:perform_async).once
       find_by_id("csvExportButton").click
 
-      click_link("Export de l'historique des rendez-vous")
+      click_link("Export des rendez-vous des usagers")
     end
 
     it "can download users csv" do
