@@ -29,4 +29,23 @@ describe Agent do
       end
     end
   end
+
+  describe "cannot save as super admin" do
+    let!(:agent) { create(:agent, super_admin: false) }
+
+    it "cannot update" do
+      expect(agent.update(super_admin: true)).to eq(false)
+      expect(agent.errors.full_messages.to_sentence).to include("Super admin ne peut pas être mis à jour")
+    end
+
+    context "on creation" do
+      let!(:agent) { build(:agent) }
+
+      it "is not valid" do
+        agent.super_admin = true
+        expect(agent).not_to be_valid
+        expect(agent.errors.full_messages.to_sentence).to include("Super admin ne peut pas être mis à jour")
+      end
+    end
+  end
 end

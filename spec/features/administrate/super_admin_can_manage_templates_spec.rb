@@ -1,5 +1,5 @@
 describe "Super admin can manage templates" do
-  let!(:super_admin) { create(:agent, super_admin: true) }
+  let!(:super_admin) { create(:agent, :super_admin) }
   let!(:template) { create(:template) }
   let!(:motif_category) { create(:motif_category, template: template) }
 

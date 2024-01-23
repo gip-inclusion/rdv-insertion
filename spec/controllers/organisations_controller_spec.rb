@@ -5,7 +5,7 @@ describe OrganisationsController do
                           independent_from_cd: true, department: department)
   end
   let!(:organisation2) { create(:organisation, department: department) }
-  let!(:agent) { create(:agent, admin_role_in_organisations: [organisation], super_admin: true) }
+  let!(:agent) { create(:agent, admin_role_in_organisations: [organisation]) }
   let(:agent2) { create(:agent, organisations: [organisation, organisation2]) }
 
   render_views
