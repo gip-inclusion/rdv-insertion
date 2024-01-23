@@ -22,6 +22,9 @@ module Stats
 
         invitation_delays << rdv_context.time_between_invitation_and_rdv_in_days
       end
+
+      return 0.0 if invitation_delays.empty?
+
       invitation_delays.sum / invitation_delays.size.to_f
     end
   end

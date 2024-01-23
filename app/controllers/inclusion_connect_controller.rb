@@ -54,7 +54,7 @@ class InclusionConnectController < ApplicationController
   def handle_failed_authentication(errors)
     Sentry.capture_message(errors)
     flash[:error] = "Nous n'avons pas pu vous authentifier. Contacter le support à l'adresse" \
-                    "<data.insertion@beta.gouv.fr> si le problème persiste."
+                    "<rdv-insertion@beta.gouv.fr> si le problème persiste."
     redirect_to sign_in_path
   end
 

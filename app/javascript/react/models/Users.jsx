@@ -23,7 +23,7 @@ class Users {
   get columns() {
     return [
       {
-        name: "Séléction",
+        name: "Sélection",
         attributes: { className: "text-center", scope: "col" },
         header: ({ users, column }) => (
           <>

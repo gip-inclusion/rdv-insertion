@@ -23,3 +23,5 @@ fr:
         referents: Référent(s)
         organisation_ids: Organisation
         tags: Tags
+        rdv_solidarites_user_id: ID de l'usager RDV-Solidarités
+        birth_name: Nom de naissance

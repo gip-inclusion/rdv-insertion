@@ -8,7 +8,7 @@ class Rdv < ApplicationRecord
   include RdvParticipationStatus
   include WebhookDeliverable
 
-  after_commit :notify_convocable_participations, on: :update
+  after_commit :notify_participations, on: :update, if: :should_notify?
   after_commit :refresh_context_status, on: [:create, :update]
 
   belongs_to :organisation
@@ -82,20 +82,20 @@ class Rdv < ApplicationRecord
     RefreshRdvContextStatusesJob.perform_async(rdv_context_ids)
   end
 
-  def notify_convocable_participations
-    return if in_the_past?
-    return unless event_to_notify?
-    return if convocable_participations.empty?
-
-    NotifyParticipationsJob.perform_async(convocable_participations.map(&:id), :updated)
+  def notify_participations
+    NotifyParticipationsJob.perform_async(notifiable_participations.map(&:id), :updated)
   end
 
-  def event_to_notify?
+  def should_notify?
+    in_the_future? && notifiable_participations.any? && reason_to_notify?
+  end
+
+  def reason_to_notify?
     address_previously_changed? || starts_at_previously_changed?
   end
 
-  def convocable_participations
-    participations.select(&:convocable?)
+  def notifiable_participations
+    participations.select(&:notifiable?)
   end
 
   def rdv_contexts_motif_categories_are_uniq

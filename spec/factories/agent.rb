@@ -13,6 +13,13 @@ FactoryBot.define do
       admin_role_in_organisations { [] }
     end
 
+    trait :super_admin do
+      to_create do |instance|
+        instance.super_admin = true
+        instance.save(validate: false)
+      end
+    end
+
     after(:create) do |agent, evaluator|
       evaluator.basic_role_in_organisations.each do |organisation|
         create(:agent_role, agent: agent, organisation: organisation)

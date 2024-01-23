@@ -1,5 +1,5 @@
 describe Exporters::GenerateUsersCsv, type: :service do
-  subject { described_class.call(users: users, structure: structure, motif_category: motif_category) }
+  subject { described_class.call(user_ids: users.ids, structure: structure, motif_category: motif_category) }
 
   let!(:now) { Time.zone.parse("22/06/2022") }
   let!(:timestamp) { now.to_i }
@@ -73,7 +73,7 @@ describe Exporters::GenerateUsersCsv, type: :service do
       end
 
       it "generates a filename" do
-        expect(subject.filename).to eq("Export_beneficiaires_rsa_orientation_organisation_drome_rsa.csv")
+        expect(subject.filename).to eq("Export_usagers_rsa_orientation_organisation_drome_rsa.csv")
       end
 
       it "generates headers" do # rubocop:disable RSpec/ExampleLength
@@ -199,14 +199,14 @@ describe Exporters::GenerateUsersCsv, type: :service do
       end
 
       context "when no motif category is passed" do
-        subject { described_class.call(users: users, structure: structure, motif_category: nil) }
+        subject { described_class.call(user_ids: users.ids, structure: structure, motif_category: nil) }
 
         it "is a success" do
           expect(subject.success?).to eq(true)
         end
 
         it "generates the right filename" do
-          expect(subject.filename).to eq("Export_beneficiaires_organisation_drome_rsa.csv")
+          expect(subject.filename).to eq("Export_usagers_organisation_drome_rsa.csv")
         end
 
         it "generates headers" do

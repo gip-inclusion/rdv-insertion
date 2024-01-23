@@ -15,7 +15,7 @@ describe SendPeriodicInviteJob do
              number_of_days_between_periodic_invites: 15,
              motif_category: motif_category)
     end
-    let!(:motif_category) { create(:motif_category, participation_optional: false) }
+    let!(:motif_category) { create(:motif_category, optional_rdv_subscription: false) }
     let!(:rdv_context) { create(:rdv_context, motif_category: motif_category) }
     let!(:invitation) do
       create(

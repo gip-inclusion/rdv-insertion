@@ -152,6 +152,22 @@ class RdvSolidaritesClient
     )
   end
 
+  def create_motif_category(request_body)
+    Faraday.post(
+      "#{@url}/api/rdvinsertion/motif_categories",
+      request_body.to_json,
+      request_headers
+    )
+  end
+
+  def create_motif_category_territory(motif_category_short_name, organisation_id)
+    Faraday.post(
+      "#{@url}/api/rdvinsertion/motif_category_territories",
+      { motif_category_short_name: motif_category_short_name, organisation_id: organisation_id }.to_json,
+      request_headers
+    )
+  end
+
   private
 
   def request_headers

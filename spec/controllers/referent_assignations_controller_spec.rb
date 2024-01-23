@@ -64,7 +64,7 @@ describe ReferentAssignationsController do
 
     before do
       allow(Users::SyncWithRdvSolidarites).to receive(:call)
-        .with(user: user, organisation: organisation1)
+        .with(user: user)
         .and_return(OpenStruct.new(success?: true))
       allow(Users::AssignReferent).to receive(:call)
         .with(user: user, agent: agent2)
@@ -86,7 +86,7 @@ describe ReferentAssignationsController do
 
       before do
         allow(Users::SyncWithRdvSolidarites).to receive(:call)
-          .with(user: user, organisation: organisation1)
+          .with(user: user)
           .and_return(OpenStruct.new(success?: false, errors: ["Something went wrong"]))
       end
 
