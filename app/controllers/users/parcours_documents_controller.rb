@@ -21,7 +21,7 @@ module Users
       if @parcours_document.destroy
         turbo_stream_remove(@parcours_document)
       else
-        turbo_stream_prepend_flash_message(error: "Impossible de supprimer ce document")
+        turbo_stream_prepend_flash_message(error: @parcours_document.errors.full_messages.join(". "))
       end
     end
 
