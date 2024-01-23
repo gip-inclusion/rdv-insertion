@@ -30,7 +30,7 @@ describe Agent do
     end
   end
 
-  describe "cannot update as super admin" do
+  describe "cannot save as super admin" do
     let!(:agent) { create(:agent, super_admin: false) }
 
     it "cannot update" do
