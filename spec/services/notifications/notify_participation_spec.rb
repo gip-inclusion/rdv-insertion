@@ -7,13 +7,14 @@ describe Notifications::NotifyParticipation, type: :service do
 
   let!(:participation) { create(:participation, rdv: rdv) }
   let!(:rdv_solidarites_rdv_id) { 444 }
-  let!(:rdv) { create(:rdv, rdv_solidarites_rdv_id: rdv_solidarites_rdv_id) }
+  let!(:rdv) { create(:rdv, rdv_solidarites_rdv_id: rdv_solidarites_rdv_id, starts_at: 2.days.from_now) }
   let!(:event) { "participation_created" }
   let!(:format) { "sms" }
 
   describe "#call" do
     before do
       allow(Notifications::SendSms).to receive(:call).and_return(OpenStruct.new(success?: true))
+      allow(participation).to receive(:notifiable?).and_return(true)
     end
 
     it("is a success") { is_a_success }

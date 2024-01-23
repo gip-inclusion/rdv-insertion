@@ -1,4 +1,3 @@
-# rubocop:disable Metrics/ClassLength
 class User < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [
     :first_name, :last_name, :birth_date, :email, :phone_number, :address, :affiliation_number, :birth_name
@@ -19,6 +18,7 @@ class User < ApplicationRecord
   include User::Address
   include User::Nir
   include User::Archivable
+  include User::Referents
 
   attr_accessor :skip_uniqueness_validations
 
@@ -29,9 +29,9 @@ class User < ApplicationRecord
   has_many :invitations, dependent: :destroy
   has_many :participations, dependent: :destroy
   has_many :archives, dependent: :destroy
-  has_many :referent_assignations, dependent: :destroy
   has_many :tag_users, dependent: :destroy
   has_many :users_organisations, dependent: :destroy
+  has_many :orientations, dependent: :destroy
 
   has_many :rdvs, through: :participations
   has_many :organisations, through: :users_organisations
@@ -39,7 +39,6 @@ class User < ApplicationRecord
   has_many :configurations, through: :organisations
   has_many :motif_categories, through: :rdv_contexts
   has_many :departments, through: :organisations
-  has_many :referents, through: :referent_assignations, source: :agent
   has_many :tags, through: :tag_users
 
   accepts_nested_attributes_for :rdv_contexts, reject_if: :rdv_context_category_handled_already?
@@ -111,25 +110,16 @@ class User < ApplicationRecord
     assign_attributes(rdv_contexts_attributes: [{ motif_category_id: motif_category_id }])
   end
 
-  def as_json(...)
-    super.deep_symbolize_keys
-         .except(:last_webhook_update_received_at, :deleted_at, :rdv_solidarites_user_id)
-         .merge(
-           invitations: invitations.select(&:sent_at?),
-           organisations: organisations,
-           rdv_contexts: rdv_contexts,
-           referents: referents,
-           archives: archives,
-           tags: tags
-         )
-  end
-
   def phone_number_formatted
     PhoneNumberHelper.format_phone_number(phone_number)
   end
 
   def carnet_de_bord_carnet_url
     "#{ENV['CARNET_DE_BORD_URL']}/manager/carnets/#{carnet_de_bord_carnet_id}"
+  end
+
+  def notifiable?
+    sent_invitations.any? && title.present?
   end
 
   private
@@ -155,5 +145,3 @@ class User < ApplicationRecord
     errors.add(:birth_date, "n'est pas valide")
   end
 end
-
-# rubocop: enable Metrics/ClassLength

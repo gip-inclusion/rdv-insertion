@@ -37,33 +37,24 @@ class InclusionConnectController < ApplicationController
   end
 
   def valid_state?
-    params[:state] == session[:ic_state]
+    params[:state].present? && session[:ic_state].present? &&
+      ActiveSupport::SecurityUtils.secure_compare(params[:state], session[:ic_state])
   end
 
   def set_session_credentials
     session[:inclusion_connect_token_id] = inclusion_connect_token_id
     session[:agent_id] = agent.id
-    session[:rdv_solidarites] = {
+    session[:rdv_solidarites_credentials] = {
       uid: agent.email,
-      x_agent_auth_signature: signature_for_agents_auth_with_shared_secret,
+      x_agent_auth_signature: agent.signature_auth_with_shared_secret,
       inclusion_connected: true
     }
-  end
-
-  def signature_for_agents_auth_with_shared_secret
-    payload = {
-      id: agent.rdv_solidarites_agent_id,
-      first_name: agent.first_name,
-      last_name: agent.last_name,
-      email: agent.email
-    }
-    OpenSSL::HMAC.hexdigest("SHA256", ENV.fetch("SHARED_SECRET_FOR_AGENTS_AUTH"), payload.to_json)
   end
 
   def handle_failed_authentication(errors)
     Sentry.capture_message(errors)
     flash[:error] = "Nous n'avons pas pu vous authentifier. Contacter le support à l'adresse" \
-                    "<data.insertion@beta.gouv.fr> si le problème persiste."
+                    "<rdv-insertion@beta.gouv.fr> si le problème persiste."
     redirect_to sign_in_path
   end
 

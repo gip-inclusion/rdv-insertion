@@ -23,7 +23,7 @@ describe UsersOrganisationsController do
 
     before do
       allow(Users::Save).to receive(:call)
-        .with(user: user, organisation: organisation2, rdv_solidarites_session: rdv_solidarites_session)
+        .with(user: user, organisation: organisation2)
         .and_return(OpenStruct.new(success?: true))
     end
 
@@ -36,14 +36,14 @@ describe UsersOrganisationsController do
 
     it "saves the user with the organisation" do
       expect(Users::Save).to receive(:call)
-        .with(user: user, organisation: organisation2, rdv_solidarites_session: rdv_solidarites_session)
+        .with(user: user, organisation: organisation2)
       subject
     end
 
     context "when the save fails" do
       before do
         allow(Users::Save).to receive(:call)
-          .with(user: user, organisation: organisation2, rdv_solidarites_session: rdv_solidarites_session)
+          .with(user: user, organisation: organisation2)
           .and_return(OpenStruct.new(success?: false, errors: ["something failed"]))
       end
 
@@ -67,7 +67,7 @@ describe UsersOrganisationsController do
 
     before do
       allow(Users::RemoveFromOrganisation).to receive(:call)
-        .with(user: user, organisation: organisation1, rdv_solidarites_session: rdv_solidarites_session)
+        .with(user: user, organisation: organisation1)
         .and_return(OpenStruct.new(success?: true))
     end
 
@@ -81,14 +81,14 @@ describe UsersOrganisationsController do
 
     it "saves the user with the organisation" do
       expect(Users::RemoveFromOrganisation).to receive(:call)
-        .with(user: user, organisation: organisation1, rdv_solidarites_session: rdv_solidarites_session)
+        .with(user: user, organisation: organisation1)
       subject
     end
 
     context "when the save fails" do
       before do
         allow(Users::RemoveFromOrganisation).to receive(:call)
-          .with(user: user, organisation: organisation1, rdv_solidarites_session: rdv_solidarites_session)
+          .with(user: user, organisation: organisation1)
           .and_return(OpenStruct.new(success?: false, errors: ["something failed"]))
       end
 

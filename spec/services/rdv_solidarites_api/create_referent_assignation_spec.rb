@@ -1,32 +1,28 @@
 describe RdvSolidaritesApi::CreateReferentAssignation, type: :service do
   subject do
-    described_class.call(
-      rdv_solidarites_session: rdv_solidarites_session,
-      user_id: user_id, agent_id: agent_id
-    )
+    described_class.call(rdv_solidarites_user_id:, rdv_solidarites_agent_id:)
   end
 
-  let!(:user_id) { 33 }
-  let!(:agent_id) { 44 }
-  let!(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
   let!(:rdv_solidarites_client) { instance_double(RdvSolidaritesClient) }
+  let!(:rdv_solidarites_user_id) { 33 }
+  let!(:rdv_solidarites_agent_id) { 44 }
 
   describe "#call" do
     let(:response_body) do
-      { referent_assignations: { user_id: user_id, agent_id: agent_id } }.to_json
+      { referent_assignations: { rdv_solidarites_user_id: rdv_solidarites_user_id,
+                                 rdv_solidarites_agent_id: rdv_solidarites_agent_id } }.to_json
     end
 
     before do
-      allow(rdv_solidarites_session).to receive(:rdv_solidarites_client)
-        .and_return(rdv_solidarites_client)
+      allow(Current).to receive(:rdv_solidarites_client).and_return(rdv_solidarites_client)
       allow(rdv_solidarites_client).to receive(:create_referent_assignation)
-        .with(user_id, agent_id)
+        .with(rdv_solidarites_user_id, rdv_solidarites_agent_id)
         .and_return(OpenStruct.new(success?: true, body: response_body))
     end
 
     it "tries to creates a referent assignation in rdv solidarites" do
       expect(rdv_solidarites_client).to receive(:create_referent_assignation)
-        .with(user_id, agent_id)
+        .with(rdv_solidarites_user_id, rdv_solidarites_agent_id)
       subject
     end
 
@@ -39,7 +35,7 @@ describe RdvSolidaritesApi::CreateReferentAssignation, type: :service do
 
       before do
         allow(rdv_solidarites_client).to receive(:create_referent_assignation)
-          .with(user_id, agent_id)
+          .with(rdv_solidarites_user_id, rdv_solidarites_agent_id)
           .and_return(OpenStruct.new(body: response_body, success?: false))
       end
 

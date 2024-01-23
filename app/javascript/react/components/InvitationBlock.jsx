@@ -34,10 +34,9 @@ export default function InvitationBlock({
   );
 
   const updateStatusBlock = () => {
-    const statusBlock = document.getElementById(`js-block-status-${motifCategory}`);
+    const statusBlock = document.getElementById(`js-block-status-${motifCategory.id}`);
     if (statusBlock) {
-      statusBlock.textContent = "Invitation en attente de réponse";
-      statusBlock.className = "p-4";
+      statusBlock.innerHTML = "<em>Invitation en attente de réponse</em>";
     }
   };
 
@@ -63,7 +62,6 @@ export default function InvitationBlock({
       organisation.id,
       isDepartmentLevel,
       motifCategory.id,
-      organisation.phone_number,
     ];
     let newInvitationDate;
 
@@ -73,17 +71,19 @@ export default function InvitationBlock({
     } else {
       newInvitationDate = result.invitation?.sent_at;
     }
-    setInvitationsDatesByFormat((prevState) => ({
-      ...prevState,
-      [format]: [newInvitationDate, ...prevState[format]],
-    }));
-    updateStatusBlock();
+    if (newInvitationDate) {
+      setInvitationsDatesByFormat((prevState) => ({
+        ...prevState,
+        [format]: [newInvitationDate, ...prevState[format]],
+      }));
+      updateStatusBlock();
+    }
     setIsLoading({ ...isLoading, [format]: false });
   };
 
   return (
     <div className="d-flex justify-content-center">
-      <table className="card-white text-center align-middle mb-4 mx-4">
+      <table className="card-white text-center align-middle m-3 shadow-sm">
         <thead>
           <tr>
             {showInvitation("sms") && (

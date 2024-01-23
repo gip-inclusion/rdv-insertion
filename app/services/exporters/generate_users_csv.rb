@@ -1,48 +1,57 @@
-require "csv"
-
 # rubocop:disable Metrics/ClassLength
 module Exporters
-  class GenerateUsersCsv < BaseService
-    def initialize(users:, structure: nil, motif_category: nil)
-      @users = users
+  class GenerateUsersCsv < Csv
+    def initialize(user_ids:, structure: nil, motif_category: nil, agent: nil)
+      @user_ids = user_ids
       @structure = structure
       @motif_category = motif_category
+      @agent = agent
     end
 
-    def call
-      preload_associations
-      result.filename = filename
-      result.csv = generate_csv
+    protected
+
+    def department_level?
+      @structure.instance_of?(Department)
     end
 
-    private
+    def department_id
+      department_level? ? @structure.id : @structure.department_id
+    end
+
+    def filename
+      if @structure.present?
+        "Export_#{resource_human_name}_#{@motif_category.present? ? "#{@motif_category.short_name}_" : ''}" \
+          "#{@structure.class.model_name.human.downcase}_" \
+          "#{@structure.name.parameterize(separator: '_')}.csv"
+      else
+        "Export_#{resource_human_name}_#{Time.zone.now.to_i}.csv"
+      end
+    end
+
+    def resource_human_name
+      "usagers"
+    end
+
+    def each_element(&)
+      @users.each(&)
+    end
 
     def preload_associations
       @users =
         if @motif_category
-          @users.preload(
-            :invitations, :notifications, :archives, :organisations, :tags, :referents, :rdvs,
-            rdv_contexts: [rdvs: [:motif, :participations, :users]]
-          )
+          User.preload(
+            :archives, :organisations, :tags, :referents, :rdvs,
+            rdv_contexts: [:invitations, :notifications, { rdvs: [:motif, :participations, :users] }]
+          ).find(@user_ids)
         else
-          @users.preload(
+          User.preload(
             :invitations, :notifications, :archives, :organisations, :tags, :referents,
             rdvs: [:motif, :participations, :users]
-          )
+          ).find(@user_ids)
         end
     end
 
-    def generate_csv
-      csv = CSV.generate(write_headers: true, col_sep: ";", headers: headers, encoding: "utf-8") do |row|
-        @users.find_each do |user|
-          row << user_csv_row(user)
-        end
-      end
-      # We add a BOM at the beginning of the file to enable a correct parsing of accented characters in Excel
-      "\uFEFF#{csv}"
-    end
-
-    def headers
+    def headers # rubocop:disable Metrics/AbcSize
       [User.human_attribute_name(:title),
        User.human_attribute_name(:last_name),
        User.human_attribute_name(:first_name),
@@ -65,7 +74,8 @@ module Exporters
        "Motif du dernier RDV",
        "Nature du dernier RDV",
        "Dernier RDV pris en autonomie ?",
-       User.human_attribute_name(:status),
+       Rdv.human_attribute_name(:status),
+       *(RdvContext.human_attribute_name(:status) if @motif_category),
        "1er RDV honoré en - de 30 jours ?",
        "Date d'orientation",
        Archive.human_attribute_name(:created_at),
@@ -76,7 +86,7 @@ module Exporters
        User.human_attribute_name(:tags)]
     end
 
-    def user_csv_row(user) # rubocop:disable Metrics/AbcSize
+    def csv_row(user) # rubocop:disable Metrics/AbcSize
       [user.title,
        user.last_name,
        user.first_name,
@@ -99,7 +109,8 @@ module Exporters
        last_rdv_motif(user),
        last_rdv_type(user),
        rdv_taken_in_autonomy?(user),
-       human_rdv_context_status(user),
+       human_last_participation_status(user),
+       *(human_rdv_context_status(user) if @motif_category),
        rdv_seen_in_less_than_30_days?(user),
        display_date(user.first_seen_rdv_starts_at),
        display_date(user.archive_for(department_id)&.created_at),
@@ -110,23 +121,17 @@ module Exporters
        user.tags.pluck(:value).join(", ")]
     end
 
-    def filename
-      if @structure.present?
-        "Export_beneficiaires_#{@motif_category.present? ? "#{@motif_category.short_name}_" : ''}" \
-          "#{@structure.class.model_name.human.downcase}_" \
-          "#{@structure.name.parameterize(separator: '_')}.csv"
-      else
-        "Export_beneficiaires_#{Time.zone.now.to_i}.csv"
-      end
+    def human_last_participation_status(user)
+      return "" if last_participation(user).blank?
+
+      I18n.t("activerecord.attributes.rdv.statuses.#{last_participation(user).status}")
     end
 
     def human_rdv_context_status(user)
-      return "Archivé" if user.archive_for(department_id).present?
+      return "" if @motif_category.nil? || rdv_context_for_export(user).nil?
 
-      return "" if @motif_category.nil? || rdv_context(user).nil?
-
-      I18n.t("activerecord.attributes.rdv_context.statuses.#{rdv_context(user).status}") +
-        display_context_status_notice(rdv_context(user))
+      I18n.t("activerecord.attributes.rdv_context.statuses.#{rdv_context_for_export(user).status}") +
+        display_context_status_notice(rdv_context_for_export(user))
     end
 
     def display_context_status_notice(rdv_context)
@@ -153,25 +158,25 @@ module Exporters
     end
 
     def first_invitation_date(user)
-      @motif_category.present? ? rdv_context(user)&.first_invitation_sent_at : user.first_invitation_sent_at
+      @motif_category.present? ? rdv_context_for_export(user)&.first_invitation_sent_at : user.first_invitation_sent_at
     end
 
     def last_invitation_date(user)
-      @motif_category.present? ? rdv_context(user)&.last_invitation_sent_at : user.last_invitation_sent_at
+      @motif_category.present? ? rdv_context_for_export(user)&.last_invitation_sent_at : user.last_invitation_sent_at
     end
 
     def last_notification_date(user)
-      return rdv_context(user)&.last_sent_convocation_sent_at if @motif_category.present?
+      return rdv_context_for_export(user)&.last_sent_convocation_sent_at if @motif_category.present?
 
       user.last_sent_convocation_sent_at
     end
 
     def last_rdv_date(user)
-      @motif_category.present? ? rdv_context(user)&.last_rdv_starts_at : user.last_rdv_starts_at
+      @motif_category.present? ? rdv_context_for_export(user)&.last_rdv_starts_at : user.last_rdv_starts_at
     end
 
     def last_rdv(user)
-      @motif_category.present? ? rdv_context(user)&.last_rdv : user.last_rdv
+      @motif_category.present? ? rdv_context_for_export(user)&.last_rdv : user.last_rdv
     end
 
     def last_participation(user)
@@ -198,16 +203,8 @@ module Exporters
       I18n.t("boolean.#{user.rdv_seen_delay_in_days.present? && user.rdv_seen_delay_in_days < 30}")
     end
 
-    def rdv_context(user)
+    def rdv_context_for_export(user)
       user.rdv_context_for(@motif_category)
-    end
-
-    def department_level?
-      @structure.instance_of?(Department)
-    end
-
-    def department_id
-      department_level? ? @structure.id : @structure.department_id
     end
   end
 end

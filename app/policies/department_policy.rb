@@ -3,8 +3,12 @@ class DepartmentPolicy < ApplicationPolicy
     pundit_user.organisation_ids.intersect?(record.organisation_ids)
   end
 
-  def index?
-    upload?
+  def show? = upload?
+
+  def index? = upload?
+
+  def parcours?
+    record.number.in?(ENV["DEPARTMENTS_WHERE_PARCOURS_ENABLED"].split(","))
   end
 
   class Scope < Scope

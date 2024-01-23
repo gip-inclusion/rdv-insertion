@@ -1,9 +1,9 @@
 class UploadsController < ApplicationController
-  before_action :set_organisation, :set_department, :check_if_category_is_selected,
-                :set_all_configurations, :set_current_configuration, :set_file_configuration,
+  before_action :set_all_configurations, for: [:category_selection]
+
+  before_action :set_organisation, :set_department, :check_if_category_is_selected, :set_all_configurations,
+                :set_current_configuration, :set_motif_category_name, :set_file_configuration,
                 for: [:new]
-  before_action :set_organisation, :set_department, :set_all_configurations,
-                for: [:category_selection]
 
   def new; end
 
@@ -25,29 +25,29 @@ class UploadsController < ApplicationController
 
   def set_all_configurations
     @all_configurations =
-      if department_level?
-        (
-          policy_scope(::Configuration).includes(:motif_category, :file_configuration) &
-          @department.configurations
-        ).uniq(&:motif_category_id)
-      else
-        @organisation.configurations.includes(:motif_category, :file_configuration)
-      end
+      policy_scope(::Configuration).joins(:organisation)
+                                   .where(current_organisation_filter)
+                                   .uniq(&:motif_category_id)
 
-    @all_configurations = @all_configurations.sort_by(&:motif_category_position)
+    @all_configurations =
+      department_level? ? @all_configurations.sort_by(&:department_position) : @all_configurations.sort_by(&:position)
   end
 
   def set_current_configuration
     return if params[:configuration_id].blank?
 
-    @current_configuration = @all_configurations.find { |config| config.id == params[:configuration_id].to_i }
+    @current_configuration = policy_scope(::Configuration).preload(:file_configuration).find(params[:configuration_id])
 
-    if @current_configuration.nil?
-      redirect_to(category_selection_path, flash: { error: "La configuration sélectionnée n'est pas valide" })
-      return
-    end
+    return if @current_configuration
 
-    @motif_category_name = @current_configuration.motif_category_name
+    redirect_to(
+      uploads_category_selection_structure_users_path,
+      flash: { error: "La configuration sélectionnée n'est pas valide" }
+    )
+  end
+
+  def set_motif_category_name
+    @motif_category_name = @current_configuration&.motif_category_name
   end
 
   def set_file_configuration
@@ -63,15 +63,7 @@ class UploadsController < ApplicationController
   def check_if_category_is_selected
     return if category_selected?
 
-    redirect_to(category_selection_path)
-  end
-
-  def category_selection_path
-    if department_level?
-      uploads_category_selection_department_users_path(@department)
-    else
-      uploads_category_selection_organisation_users_path(@organisation)
-    end
+    redirect_to(uploads_category_selection_structure_users_path)
   end
 
   def category_selected?

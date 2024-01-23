@@ -6,10 +6,11 @@ class NotifyParticipationJob < ApplicationJob
     @format = format
     @event = event
 
-    return if user.created_through_rdv_solidarites? && user.invitations.sent.empty?
+    return unless @participation.notifiable? && user.notifiable?
+    return if reminder_of_cancelled_participation?
 
     Notification.with_advisory_lock "notifying_particpation_#{@participation.id}" do
-      return send_already_notified_to_mattermost if already_notified?
+      return if already_notified?
 
       notify_participation!
     end
@@ -33,15 +34,6 @@ class NotifyParticipationJob < ApplicationJob
     end
   end
 
-  def send_already_notified_to_mattermost
-    MattermostClient.send_to_notif_channel(
-      "Rdv already notified to user. Skipping notification sending.\n" \
-      "participation id: #{@participation.id}\n" \
-      "format: #{@format}\n" \
-      "event: #{@event}"
-    )
-  end
-
   def notify_participation!
     raise NotificationsJobError, notify_participation.errors.join(" - ") unless notify_participation.success?
   end
@@ -50,5 +42,9 @@ class NotifyParticipationJob < ApplicationJob
     @notify_participation ||= Notifications::NotifyParticipation.call(
       participation: @participation, format: @format, event: @event
     )
+  end
+
+  def reminder_of_cancelled_participation?
+    @event == "participation_reminder" && @participation.cancelled?
   end
 end

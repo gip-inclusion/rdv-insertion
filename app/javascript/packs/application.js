@@ -5,10 +5,9 @@
 // Vanilla components
 import LoginForm from "components/login-form";
 import StatusSelector from "components/status-selector"
+import ReferentSelector from "components/referent-selector"
 import DepartmentSelector from "components/department-selector"
 import OrganisationSelector from "components/organisation-selector"
-import ActionRequiredCheckbox from "components/action-required-checkbox"
-import FilterByCurrentAgentCheckbox from "components/filter-by-current-agent-checkbox"
 import MatomoScriptTag from "components/matomo-script-tag"
 
 import "bootstrap";
@@ -51,13 +50,17 @@ if (process.env.NODE_ENV === 'production') {
   });
 };
 
+// https://github.com/reactjs/react-rails/issues/1103#issuecomment-1212205462
+ReactRailsUJS.handleEvent('turbo:frame-load', ReactRailsUJS.handleMount)
+ReactRailsUJS.handleEvent('turbo:frame-render', ReactRailsUJS.handleUnmount)
+
+
 document.addEventListener("turbo:load", () => {
   new LoginForm();
   new StatusSelector();
+  new ReferentSelector();
   new DepartmentSelector();
   new OrganisationSelector();
-  new ActionRequiredCheckbox();
-  new FilterByCurrentAgentCheckbox();
   if (process.env.NODE_ENV === 'production') {
     new MatomoScriptTag();
   }

@@ -1,10 +1,10 @@
 class ConfigurationsController < ApplicationController
   PERMITTED_PARAMS = [
-    { invitation_formats: [] }, :convene_applicant, :rdv_with_referents, :file_configuration_id,
+    { invitation_formats: [] }, :convene_user, :rdv_with_referents, :file_configuration_id,
     :invite_to_user_organisations_only, :number_of_days_before_action_required,
     :day_of_the_month_periodic_invites, :number_of_days_between_periodic_invites, :motif_category_id,
     :template_rdv_title_override, :template_rdv_title_by_phone_override, :template_rdv_purpose_override,
-    :template_user_designation_override
+    :template_user_designation_override, :phone_number
   ].freeze
 
   include BackToListConcern
@@ -30,11 +30,11 @@ class ConfigurationsController < ApplicationController
   def create
     @configuration = ::Configuration.new(organisation: @organisation)
     @configuration.assign_attributes(**configuration_params.compact_blank)
-    if @configuration.save
+    if create_configuration.success?
       flash.now[:success] = "La configuration a été créée avec succès"
       redirect_to organisation_configuration_path(@organisation, @configuration)
     else
-      flash.now[:error] = @configuration.errors.full_messages.to_sentence
+      flash.now[:error] = create_configuration.errors.join(",")
       render :new, status: :unprocessable_entity
     end
   end
@@ -67,6 +67,10 @@ class ConfigurationsController < ApplicationController
     end
   end
 
+  def create_configuration
+    @create_configuration ||= Configurations::Create.call(configuration: @configuration)
+  end
+
   def set_configuration
     @configuration = @organisation.configurations.find(params[:id])
   end
@@ -76,8 +80,7 @@ class ConfigurationsController < ApplicationController
   end
 
   def set_messages_configuration
-    @messages_configuration = @organisation.messages_configuration ||
-                              MessagesConfiguration.new(organisation: @organisation)
+    @messages_configuration = @organisation.messages_configuration
   end
 
   def set_file_configuration

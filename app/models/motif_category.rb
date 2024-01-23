@@ -1,5 +1,7 @@
 class MotifCategory < ApplicationRecord
-  include MotifCategory::Sortable
+  SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [
+    :name, :short_name
+  ].freeze
 
   has_many :configurations, dependent: :restrict_with_exception
   has_many :rdv_contexts, dependent: :restrict_with_exception
@@ -13,9 +15,7 @@ class MotifCategory < ApplicationRecord
   delegate :model, to: :template, prefix: true
   delegate :atelier?, to: :template
 
-  scope :participation_optional, lambda { |participation_optional = true|
-    where(participation_optional: participation_optional)
+  scope :optional_rdv_subscription, lambda { |optional_rdv_subscription = true|
+    where(optional_rdv_subscription: optional_rdv_subscription)
   }
-
-  def as_json(...) = super.deep_symbolize_keys.except(:rdv_solidarites_motif_category_id)
 end

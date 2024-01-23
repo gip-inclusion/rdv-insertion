@@ -1,7 +1,7 @@
 <div class="row mb-4 card-white justify-content-center">
   <div class="col-4 justify-content-center">
-    <div class="mb-1">
-      <% if @current_configuration.present? %>
+    <% if @current_configuration.present? %>
+      <div class="mb-1">
         <%=
           select(
             "user", "status", options_for_select_status(@statuses_count),
@@ -9,22 +9,28 @@
             class: "text-center form-select js-status-selector"
           )
         %>
-      <% end %>
+      </div>
+    <% end %>
+    <div class="mb-1">
+      <%=
+        select(
+          "user",
+          "referent_id",
+          @referents_list.map { |agent| [agent.to_s, agent.id]},
+          { prompt: "Filtrer par référent" },
+          class: "text-center form-select js-referent-selector"
+        )
+      %>
     </div>
-    <%= render "filter_by_tag_button" %>
     <%= render "filter_by_creation_dates_button" if @current_configuration.nil? %>
     <%= render "filter_by_invitations_dates_button" if @current_configuration.present? || archived_scope?(@users_scope) %>
-    <%= render 'search_form', url: compute_index_path(@organisation, @department) %>
+    <%= render "search_form", url: structure_users_path %>
 
-    <div class="d-flex justify-content-between mt-1">
+    <div class="d-flex justify-content-between mt-1" data-controller="index-filters">
       <div class="text-left mt-2">
-        <i class="fas fa-filter"></i> Filtrer usagers:
-        <div class="mt-1">
-          <%= check_box("users_list", "filter_by_current_agent", class: "js-filter-by-current-agent-checkbox") %> Dont je suis référent
-        </div>
         <% if @current_configuration.present? %>
           <div class="mt-1">
-            <%= check_box("users_list", "action_required", class: "js-action-required-checkbox") %> Une intervention est nécessaire
+            <input type="checkbox" name="action_required" class="form-check-input"></input> Usagers avec intervention nécessaire
             <small>
               <i
                 class="fas fa-question-circle"
@@ -36,10 +42,22 @@
             </small>
           </div>
         <% end %>
+        <% @tags.sort_by(&:value).each do |tag| %>
+          <div>
+            <input type="checkbox" name="tag_ids[]" <%= "checked" if params[:tag_ids]&.include?(tag.id.to_s) %> value="<%= tag.id %>" class="form-check-input"></input>
+            <%= tag.value %>
+          </div>
+        <% end if @tags.present? %>
+      </div>
+
+      <div class="expand-button-container">
+        <button data-action="index-filters#expand">
+          <i class="fas fa-arrow-down"></i> Voir plus de filtres
+        </button>
       </div>
       <% if display_back_to_list_button? %>
         <div>
-          <%= link_to compute_index_path(@organisation, @department, motif_category_id: @current_motif_category&.id, users_scope: @users_scope), class: "btn btn-blue-out" do %>
+          <%= link_to structure_users_path(motif_category_id: @current_motif_category&.id, users_scope: @users_scope), class: "btn btn-blue-out" do %>
             Retour à la liste
           <% end %>
         </div>
@@ -87,12 +105,12 @@
     </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
       <li>
-        <%= link_to(compute_new_path(@organisation, @department), class: "dropdown-item") do %>
+        <%= link_to(new_structure_user_path, class: "dropdown-item") do %>
           Créer un usager
         <% end %>
       </li>
       <li>
-        <%= link_to(department_level? ? new_department_upload_path(@department) : new_organisation_upload_path(@organisation), class: "dropdown-item") do %>
+        <%= link_to(new_structure_upload_path, class: "dropdown-item") do %>
           Charger fichier usagers
         <% end %>
       </li>
@@ -102,12 +120,24 @@
         <button class="btn btn-blue-out">Configurer une organisation</button>
       <% end %>
     <% elsif !department_level? && @current_agent_roles.any?(&:admin?) %>
-      <%= link_to(organisation_configurations_path(@organisation), class: "btn btn-blue-out my-2") do %>
+      <%= link_to(organisation_configurations_path(@organisation), class: "btn btn-blue-out mb-2") do %>
         Configurer l'organisation
       <% end %>
     <% end %>
-    <%= link_to(compute_index_path(@organisation, @department, **params.to_unsafe_h.merge(format: "csv")), class: "btn btn-blue-out mt-2", data: { controller: "tooltip", action: "mouseover->tooltip#csvExport"}, target: "_blank") do %>
+    <a class="btn btn-blue-out dropdown-toggle mb-2" href="#" role="button" id="csvExportButton" data-bs-toggle="dropdown" aria-expanded="false">
       <i class="fas fa-download"></i> Exporter au format CSV
-    <% end %>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="csvExportButton">
+      <li>
+        <%= link_to(structure_users_path(**params.to_unsafe_h.merge(format: "csv", export_type: nil)), class: "dropdown-item", data: { controller: "tooltip", action: "mouseover->tooltip#csvExportUsers"}) do %>
+          Export des usagers
+        <% end %>
+      </li>
+      <li>
+        <%= link_to(structure_users_path(**params.to_unsafe_h.merge(format: "csv", export_type: "participations")), class: "dropdown-item", data: { controller: "tooltip", action: "mouseover->tooltip#csvExportParticipations"}) do %>
+          Export des rendez-vous des usagers
+        <% end %>
+      </li>
+    </ul>
   </div>
 </div>

@@ -58,7 +58,8 @@ describe RdvContextsController do
         post :create, params: rdv_context_params, format: :html
 
         expect(response).to redirect_to(
-          organisation_user_path(organisation, user, anchor: "rdv_context_#{RdvContext.last.id}")
+          organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id,
+                                              anchor: "rdv_context_#{RdvContext.last.id}")
         )
       end
 
@@ -75,7 +76,8 @@ describe RdvContextsController do
           post :create, params: rdv_context_params, format: :html
 
           expect(response).to redirect_to(
-            department_user_path(department, user, anchor: "rdv_context_#{RdvContext.last.id}")
+            department_user_rdv_contexts_path(department_id: department.id, user_id: user.id,
+                                              anchor: "rdv_context_#{RdvContext.last.id}")
           )
         end
       end

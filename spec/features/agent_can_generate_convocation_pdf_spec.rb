@@ -1,7 +1,10 @@
 describe "Agents can generate convocation pdf", js: true do
   let!(:agent) { create(:agent, organisations: [organisation]) }
   let!(:organisation) { create(:organisation) }
-  let!(:user) { create(:user, organisations: [organisation]) }
+  let!(:user) do
+    create(:user, organisations: [organisation], title: "monsieur",
+                  invitations: [create(:invitation, sent_at: 1.week.ago)])
+  end
   let!(:motif_category) { create(:motif_category) }
   let!(:motif) do
     create(:motif, organisation: organisation, motif_category: motif_category, location_type: "public_office")
@@ -31,7 +34,7 @@ describe "Agents can generate convocation pdf", js: true do
   end
 
   it "can generate a pdf" do
-    visit organisation_user_path(organisation, user)
+    visit organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id)
 
     expect(page).to have_button "Courrier"
 
@@ -52,7 +55,7 @@ describe "Agents can generate convocation pdf", js: true do
     before { motif.update! location_type: "phone" }
 
     it "generates the matching pdf" do
-      visit organisation_user_path(organisation, user)
+      visit organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id)
 
       expect(page).to have_button "Courrier"
 
@@ -75,29 +78,61 @@ describe "Agents can generate convocation pdf", js: true do
     before { rdv.update! starts_at: 2.days.ago }
 
     it "cannot generate a pdf" do
-      visit organisation_user_path(organisation, user)
+      visit organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id)
 
       expect(page).not_to have_button "Courrier"
     end
+  end
 
-    context "when the participation is revoked" do
-      before { participation.update! status: "revoked" }
+  context "when the participation is excused" do
+    before { participation.update! status: "excused" }
 
-      it "can generate a revoked participation pdf" do
-        visit organisation_user_path(organisation, user)
+    it "cannot generate a pdf" do
+      visit organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id)
 
-        expect(page).to have_button "Courrier"
+      expect(page).not_to have_button "Courrier"
+    end
+  end
 
-        click_button "Courrier"
+  context "when the user has no title" do
+    before { user.update! title: nil }
 
-        wait_for_download
-        expect(downloads.length).to eq(1)
+    it "cannot generate a pdf" do
+      visit organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id)
 
-        pdf = download_content(format: "pdf")
-        pdf_text = extract_raw_text(pdf)
+      expect(page).not_to have_button "Courrier"
+    end
+  end
 
-        expect(pdf_text).to include("a été annulé")
-      end
+  context "when the user has no sent invitations" do
+    let!(:user) do
+      create(:user, organisations: [organisation], title: "monsieur")
+    end
+
+    it "cannot generate a pdf" do
+      visit organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id)
+
+      expect(page).not_to have_button "Courrier"
+    end
+  end
+
+  context "when the participation is revoked" do
+    before { participation.update! status: "revoked" }
+
+    it "can generate a revoked participation pdf" do
+      visit organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id)
+
+      expect(page).to have_button "Courrier"
+
+      click_button "Courrier"
+
+      wait_for_download
+      expect(downloads.length).to eq(1)
+
+      pdf = download_content(format: "pdf")
+      pdf_text = extract_raw_text(pdf)
+
+      expect(pdf_text).to include("a été annulé")
     end
   end
 
@@ -105,7 +140,7 @@ describe "Agents can generate convocation pdf", js: true do
     before { user.update! address: "format invalide" }
 
     it "returns an error" do
-      visit organisation_user_path(organisation, user)
+      visit organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id)
 
       expect(page).to have_button "Courrier"
 

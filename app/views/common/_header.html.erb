@@ -7,7 +7,7 @@
       <% end %>
     </div>
     <div class="nav justify-content-around">
-      <% if logged_in? %>
+      <% if current_agent %>
         <div class="text-center mx-3 col">
           <%= link_to sign_out_path, method: :delete do %>
             <button class="btn btn-default btn-logout w-100">
@@ -40,7 +40,7 @@
         <%= link_to stats_path, class: "nav-link optional-link " do %>
           <p class="mb-0">Statistiques d'utilisation</p>
         <% end %>
-        <%= link_to "Contacter l'équipe", "mailto:data.insertion@beta.gouv.fr", class: "nav-link optional-link" %>
+        <%= link_to "Contacter l'équipe", "mailto:rdv-insertion@beta.gouv.fr", class: "nav-link optional-link" %>
       </div>
     </div>
   <% end %>

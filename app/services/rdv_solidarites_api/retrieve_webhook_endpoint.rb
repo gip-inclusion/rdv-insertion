@@ -1,8 +1,7 @@
 module RdvSolidaritesApi
   class RetrieveWebhookEndpoint < Base
-    def initialize(rdv_solidarites_organisation_id:, rdv_solidarites_session:)
+    def initialize(rdv_solidarites_organisation_id:)
       @rdv_solidarites_organisation_id = rdv_solidarites_organisation_id
-      @rdv_solidarites_session = rdv_solidarites_session
     end
 
     def call

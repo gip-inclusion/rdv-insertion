@@ -3,18 +3,18 @@ import Tippy from "@tippyjs/react";
 
 import InvitationCell from "./InvitationCell";
 
-export default function InvitationCells({ user, invitationsColspan, isDepartmentLevel }) {
+export default function InvitationCells({ user }) {
   return (
     /* ----------------------------- Disabled invitations cases -------------------------- */
     user.isArchivedInCurrentDepartment() ? (
-      <td colSpan={invitationsColspan}>
+      <td colSpan={user.list.invitationsColspan}>
         Dossier archivé
         {user.archiveInCurrentDepartment().archiving_reason && (
           <>&nbsp;: {user.archiveInCurrentDepartment().archiving_reason}</>
         )}
       </td>
-    ) : user.createdAt && isDepartmentLevel && !user.linkedToCurrentCategory() ? (
-      <td colSpan={invitationsColspan}>
+    ) : user.createdAt && user.list.isDepartmentLevel && !user.linkedToCurrentCategory() ? (
+      <td colSpan={user.list.invitationsColspan}>
         L'usager n'appartient pas à une organisation qui gère ce type de rdv{" "}
         <Tippy
           content={
@@ -29,7 +29,7 @@ export default function InvitationCells({ user, invitationsColspan, isDepartment
       </td>
     ) : user.currentContextStatus === "rdv_pending" ? (
       <>
-        <td colSpan={invitationsColspan}>{user.currentRdvContext.human_status}</td>
+        <td colSpan={user.list.invitationsColspan}>{user.currentRdvContext.human_status}</td>
       </>
     ) : (
       /* ----------------------------- Enabled invitations cases --------------------------- */

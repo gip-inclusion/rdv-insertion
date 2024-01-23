@@ -1,8 +1,7 @@
 module Participations
   class Update < BaseService
-    def initialize(participation:, rdv_solidarites_session:, participation_params:)
+    def initialize(participation:, participation_params:)
       @participation = participation
-      @rdv_solidarites_session = rdv_solidarites_session
       @participation_params = participation_params
     end
 
@@ -21,8 +20,7 @@ module Participations
     def update_rdv_solidarites_participation
       @update_rdv_solidarites_participation ||= call_service!(
         RdvSolidaritesApi::UpdateParticipation,
-        rdv_solidarites_session: @rdv_solidarites_session,
-        rdv_solidarites_rdvs_user_id: @participation.rdv_solidarites_participation_id,
+        rdv_solidarites_participation_id: @participation.rdv_solidarites_participation_id,
         participation_attributes: @participation_params
       )
     end

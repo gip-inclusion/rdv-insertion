@@ -1,47 +1,23 @@
 describe Users::Save, type: :service do
   subject do
-    described_class.call(
-      rdv_solidarites_session: rdv_solidarites_session,
-      organisation: organisation, user: user
-    )
+    described_class.call(organisation:, user:)
   end
 
   let!(:rdv_solidarites_organisation_id) { 1010 }
-  let!(:rdv_solidarites_user_id) { 2020 }
   let!(:organisation) do
     create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id)
   end
-  let!(:user_attributes) do
-    {
-      uid: "1234xyz", first_name: "john", last_name: "doe",
-      address: "16 rue de la tour", email: "johndoe@example.com", birth_name: "",
-      role: "demandeur", birth_date: Date.new(1989, 3, 17), affiliation_number: "aff123", phone_number: "+33612459567"
-    }
-  end
-  let!(:rdv_solidarites_user_attributes) do
-    {
-      first_name: "john", last_name: "doe",
-      address: "16 rue de la tour", email: "johndoe@example.com", birth_name: "",
-      birth_date: Date.new(1989, 3, 17), affiliation_number: "aff123", phone_number: "+33612459567"
-    }
-  end
-
   let!(:motif_category) { create(:motif_category) }
   let!(:configuration) { create(:configuration, organisation: organisation, motif_category: motif_category) }
-
-  let!(:user) do
-    create(:user, user_attributes.merge(organisations: [organisation], rdv_solidarites_user_id: nil))
-  end
-
-  let(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
+  let!(:user) { create(:user, organisations: [organisation], rdv_solidarites_user_id: nil) }
 
   describe "#call" do
     before do
       allow(user).to receive(:save).and_return(true)
       allow(Users::Validate).to receive(:call)
         .with(user: user).and_return(OpenStruct.new(success?: true))
-      allow(UpsertRdvSolidaritesUser).to receive(:call)
-        .and_return(OpenStruct.new(success?: true, rdv_solidarites_user_id: rdv_solidarites_user_id))
+      allow(Users::SyncWithRdvSolidarites).to receive(:call)
+        .and_return(OpenStruct.new(success?: true))
     end
 
     it "tries to save the user in db" do
@@ -49,24 +25,29 @@ describe Users::Save, type: :service do
       subject
     end
 
-    it "upserts a rdv solidarites user" do
-      expect(UpsertRdvSolidaritesUser).to receive(:call)
-        .with(
-          rdv_solidarites_session: rdv_solidarites_session,
-          rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
-          rdv_solidarites_user_attributes: rdv_solidarites_user_attributes.except(:birth_name),
-          rdv_solidarites_user_id: nil
-        )
-      subject
+    context "when an organisation is present" do
+      it "assigns the user to the organisation" do
+        expect(user.reload.organisations).to include(organisation)
+        subject
+      end
     end
 
-    it "assign the rdv solidarites user id" do
+    it "syncs the user with Rdv Solidarites" do
+      expect(Users::SyncWithRdvSolidarites).to receive(:call)
+        .with(user: user)
       subject
-      expect(user.rdv_solidarites_user_id).not_to be_nil
     end
 
     it "is a success" do
       is_a_success
+    end
+
+    context "when organisation is nil" do
+      subject { described_class.call(user: user) }
+
+      it "is a success" do
+        is_a_success
+      end
     end
 
     context "when the user cannot be saved in db" do
@@ -86,39 +67,9 @@ describe Users::Save, type: :service do
       end
     end
 
-    context "when the user has a department_internal_id but no role" do
-      before { user.update!(role: nil, department_internal_id: 666) }
-
-      it "creates the user normally, with the email" do
-        expect(UpsertRdvSolidaritesUser).to receive(:call)
-          .with(
-            rdv_solidarites_user_attributes: rdv_solidarites_user_attributes.except(:birth_name),
-            rdv_solidarites_session: rdv_solidarites_session,
-            rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
-            rdv_solidarites_user_id: nil
-          )
-        subject
-      end
-    end
-
-    context "when the user is a conjoint" do
-      before { user.update!(role: "conjoint") }
-
-      it "creates the user without the email" do
-        expect(UpsertRdvSolidaritesUser).to receive(:call)
-          .with(
-            rdv_solidarites_user_attributes: rdv_solidarites_user_attributes.except(:email, :birth_name),
-            rdv_solidarites_session: rdv_solidarites_session,
-            rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
-            rdv_solidarites_user_id: nil
-          )
-        subject
-      end
-    end
-
-    context "when the rdv solidarites user upsert fails" do
+    context "when the rdv solidarites user sync fails" do
       before do
-        allow(UpsertRdvSolidaritesUser).to receive(:call)
+        allow(Users::SyncWithRdvSolidarites).to receive(:call)
           .and_return(OpenStruct.new(errors: ["some error"], success?: false))
       end
 
@@ -159,20 +110,6 @@ describe Users::Save, type: :service do
 
       it "stores the error" do
         expect(subject.errors).to eq(["invalid user"])
-      end
-    end
-
-    context "when the user is already linked to a rdv solidarites user" do
-      let!(:user) do
-        create(:user, user_attributes
-          .merge(
-            organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
-          ))
-      end
-
-      it "does not reassign the user id" do
-        expect(user).to receive(:save).at_most(1).time
-        subject
       end
     end
   end

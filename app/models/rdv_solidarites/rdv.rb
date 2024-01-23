@@ -17,8 +17,8 @@ module RdvSolidarites
     end
 
     def participations
-      @attributes[:rdvs_users].map do |rdvs_user_attributes|
-        RdvSolidarites::Participation.new(rdvs_user_attributes.merge(rdv: @attributes))
+      @attributes[:participations].map do |participation_attributes|
+        RdvSolidarites::Participation.new(participation_attributes.merge(rdv: @attributes))
       end
     end
 

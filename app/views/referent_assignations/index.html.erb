@@ -1,6 +1,6 @@
 <%= render "common/remote_modal", title: "Choisissez un agent référent" do %>
   <% @agents.each do |agent| %>
-    <%= render "referent_assignation", department: @department, agent: agent, user: @user, assigned: @user.referent_ids.include?(agent.id) %>
+    <%= render "referent_assignation", agent: agent, user: @user, assigned: @user.referent_ids.include?(agent.id) %>
   <% end %>
 <% end %>
 

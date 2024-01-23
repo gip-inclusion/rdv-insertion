@@ -21,20 +21,25 @@ describe "Agents can edit users tags", js: true do
   before do
     setup_agent_session(agent)
     stub_rdv_solidarites_update_user(rdv_solidarites_user_id)
-    stub_rdv_solidarites_get_organisation_user(rdv_solidarites_organisation_id, rdv_solidarites_user_id)
     organisation.tags << Tag.create!(value: "prout")
   end
 
   context "the user page" do
     it "allows to edit tags" do
       visit organisation_user_path(organisation, user)
-      click_button("Modifier les tags")
+      click_button("Ajouter ou retirer un tag")
       modal = find(".modal")
+      tag_list = find_by_id("tags_list")
 
-      modal.find("select option[value=prout]").select_option
-      modal.click_button("Ajouter")
-      modal.click_button("Fermer")
+      modal.click_button("+ Assigner")
+      expect(tag_list).to have_content("prout")
       expect(user.reload.tags.first.value).to eq("prout")
+
+      modal.click_button("- Retirer")
+      expect(tag_list).to have_content("-")
+      expect(user.reload.tags).to be_empty
+
+      find(".btn-close").click
     end
   end
 end

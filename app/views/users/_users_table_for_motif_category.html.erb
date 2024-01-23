@@ -52,7 +52,7 @@
           <%= display_context_status(rdv_context, @current_configuration.number_of_days_before_action_required) %>
         </td>
         <td class="padding-left-15">
-          <%= link_to compute_show_path(user, @organisation, @department) do %>
+          <%= link_to structure_user_rdv_contexts_path(user.id) do %>
             <button class="btn btn-blue">Gérer</button>
           <% end %>
         </td>

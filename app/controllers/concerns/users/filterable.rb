@@ -6,7 +6,7 @@ module Users::Filterable
   def filter_users
     filter_users_by_search_query
     filter_users_by_action_required
-    filter_users_by_current_agent
+    filter_users_by_referent
     filter_users_by_status
     filter_users_by_creation_date_after
     filter_users_by_creation_date_before
@@ -43,17 +43,17 @@ module Users::Filterable
     )
   end
 
-  def filter_users_by_current_agent
-    return unless params[:filter_by_current_agent] == "true"
+  def filter_users_by_referent
+    return if params[:referent_id].blank?
 
-    @users = @users.joins(:referents).where(referents: { id: current_agent.id })
+    @users = @users.joins(:referents).where(referents: { id: params[:referent_id] })
   end
 
   def filter_users_by_search_query
     return if params[:search_query].blank?
 
-    # with_pg_search_rank scope added to be compatible with distinct https://github.com/Casecommons/pg_search/issues/238
-    @users = @users.search_by_text(params[:search_query]).with_pg_search_rank
+    # reorder is necessary to use distinct and ordering https://github.com/Casecommons/pg_search/issues/238#issuecomment-543702501
+    @users = @users.search_by_text(params[:search_query]).reorder("")
   end
 
   def filter_users_by_page
@@ -117,22 +117,30 @@ module Users::Filterable
   end
 
   def users_first_invitations
-    @users_first_invitations ||= @users.includes(:invitations, :rdvs)
-                                       .map(&:first_sent_invitation)
-                                       .compact
+    @users_first_invitations ||= Invitation.joins(:user)
+                                           .where(user_id: @users.ids)
+                                           .order("invitations.sent_at ASC")
+                                           .group_by(&:user_id)
+                                           .transform_values(&:first)
+                                           .values
   end
 
   def users_last_invitations
-    @users_last_invitations ||= @users.includes(:invitations, :rdvs)
-                                      .map(&:last_sent_invitation)
-                                      .compact
+    @users_last_invitations ||= Invitation.joins(:user)
+                                          .where(user_id: @users.ids)
+                                          .order("invitations.sent_at DESC")
+                                          .group_by(&:user_id)
+                                          .transform_values(&:first)
+                                          .values
   end
 
   def invitations_belonging_to_rdv_contexts(invitations, rdv_contexts)
     if rdv_contexts.blank?
       invitations
     else
-      invitations.select { |i| rdv_contexts.include?(i.rdv_context) }
+      invitation_ids = invitations.pluck(:id)
+      rdv_context_ids = rdv_contexts.pluck(:id)
+      Invitation.where(id: invitation_ids, rdv_context_id: rdv_context_ids)
     end
   end
 end

@@ -1,4 +1,6 @@
 class Configuration < ApplicationRecord
+  include PhoneNumberValidation
+
   belongs_to :motif_category
   belongs_to :file_configuration
   belongs_to :organisation
@@ -9,9 +11,9 @@ class Configuration < ApplicationRecord
   validates :number_of_days_between_periodic_invites, numericality: { only_integer: true, greater_than: 13 },
                                                       allow_nil: true
 
-  delegate :position, :name, to: :motif_category, prefix: true
+  delegate :name, :short_name, to: :motif_category, prefix: true
   delegate :sheet_name, to: :file_configuration
-  delegate :department, to: :organisation
+  delegate :department, :rdv_solidarites_organisation_id, to: :organisation
   delegate :template, to: :motif_category
 
   def self.template_override_attributes
@@ -22,6 +24,10 @@ class Configuration < ApplicationRecord
 
   def periodic_invites_activated?
     day_of_the_month_periodic_invites.present? || number_of_days_between_periodic_invites.present?
+  end
+
+  def phone_number
+    attributes["phone_number"].presence || organisation.phone_number
   end
 
   private

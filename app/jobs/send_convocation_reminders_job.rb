@@ -13,6 +13,7 @@ class SendConvocationRemindersJob < ApplicationJob
       Participation.joins(:rdv)
                    .where(convocable: true)
                    .where(rdvs: { starts_at: 2.days.from_now.all_day })
+                   .not_cancelled
   end
 
   def notify_on_mattermost

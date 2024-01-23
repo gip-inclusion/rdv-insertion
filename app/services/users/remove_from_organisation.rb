@@ -1,9 +1,8 @@
 module Users
   class RemoveFromOrganisation < BaseService
-    def initialize(user:, organisation:, rdv_solidarites_session:)
+    def initialize(user:, organisation:)
       @user = user
       @organisation = organisation
-      @rdv_solidarites_session = rdv_solidarites_session
     end
 
     def call
@@ -19,9 +18,8 @@ module Users
     def delete_rdv_solidarites_user_profile
       @delete_rdv_solidarites_user_profile ||= call_service!(
         RdvSolidaritesApi::DeleteUserProfile,
-        user_id: @user.rdv_solidarites_user_id,
-        organisation_id: @organisation.rdv_solidarites_organisation_id,
-        rdv_solidarites_session: @rdv_solidarites_session
+        rdv_solidarites_user_id: @user.rdv_solidarites_user_id,
+        rdv_solidarites_organisation_id: @organisation.rdv_solidarites_organisation_id
       )
     end
   end

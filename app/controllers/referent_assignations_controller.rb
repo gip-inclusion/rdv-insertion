@@ -1,5 +1,6 @@
 class ReferentAssignationsController < ApplicationController
-  before_action :set_user, :set_department, :set_agents, only: [:index, :create, :destroy]
+  before_action :set_department, :set_user, :set_agents, only: [:index, :create, :destroy]
+  before_action :verify_user_is_sync_with_rdv_solidarites, only: [:create]
   before_action :set_agent, only: [:create, :destroy]
 
   def index; end
@@ -8,13 +9,7 @@ class ReferentAssignationsController < ApplicationController
     @success = assign_referent.success?
     @errors = assign_referent.errors
     respond_to do |format|
-      format.turbo_stream do
-        if @success
-          flash.now[:success] = "Le référent a bien été assigné"
-        else
-          flash.now[:error] = "Une erreur s'est produite lors de l'assignation du référent: #{@errors}"
-        end
-      end
+      format.turbo_stream { render_result_in_flash }
       format.json do
         render json: { success: @success, errors: @errors }, status: @success ? :ok : :unprocessable_entity
       end
@@ -30,6 +25,14 @@ class ReferentAssignationsController < ApplicationController
   end
 
   private
+
+  def render_result_in_flash
+    if @success
+      flash.now[:success] = "Le référent a bien été assigné"
+    else
+      flash.now[:error] = "Une erreur s'est produite lors de l'assignation du référent: #{@errors}"
+    end
+  end
 
   def referent_assignation_params
     params.require(:referent_assignation).permit(:agent_id, :user_id, :agent_email)
@@ -51,27 +54,27 @@ class ReferentAssignationsController < ApplicationController
     @user = policy_scope(User).includes(:referents).find(user_id)
   end
 
+  def verify_user_is_sync_with_rdv_solidarites
+    sync_user_with_rdv_solidarites(@user) if @user.rdv_solidarites_user_id.nil?
+  end
+
   def set_department
-    @department = policy_scope(Department).find(params[:department_id])
+    @department = policy_scope(Department).find(current_department_id)
   end
 
   def set_agents
     @agents = Agent.joins(:organisations).where(
-      organisations: @user.organisations.where(department_id: params[:department_id])
+      organisations: @user.organisations.where(department: @department)
     ).distinct.order(:email)
     @agents = @agents.not_betagouv if production_env?
   end
 
   def assign_referent
-    @assign_referent ||= Users::AssignReferent.call(
-      user: @user, agent: @agent, rdv_solidarites_session: rdv_solidarites_session
-    )
+    @assign_referent ||= Users::AssignReferent.call(user: @user, agent: @agent)
   end
 
   def remove_referent
-    @remove_referent ||= Users::RemoveReferent.call(
-      user: @user, agent: @agent, rdv_solidarites_session: rdv_solidarites_session
-    )
+    @remove_referent ||= Users::RemoveReferent.call(user: @user, agent: @agent)
   end
 
   def set_agent

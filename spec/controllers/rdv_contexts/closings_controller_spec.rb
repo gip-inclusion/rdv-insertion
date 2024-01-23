@@ -19,8 +19,7 @@ describe RdvContexts::ClosingsController do
     end
 
     let(:create_params) do
-      { rdv_context_id: rdv_context.id, user_id: user.id,
-        organisation_id: organisation.id, department_id: department.id }
+      { rdv_context_id: rdv_context.id, user_id: user.id, department_id: department.id }
     end
 
     it "calls the close rdv_context service" do
@@ -30,22 +29,24 @@ describe RdvContexts::ClosingsController do
     end
 
     context "when the rdv_context is closed successfully" do
-      it "redirects to user show" do
+      it "redirects to user rdv_contexts" do
         post :create, params: create_params
-        expect(response).to redirect_to(department_user_path(department, user))
+        expect(response).to redirect_to(department_user_rdv_contexts_path(department_id: department.id,
+                                                                          user_id: user.id))
       end
     end
 
     context "when not department_level" do
       let(:create_params) do
         { rdv_context_id: rdv_context.id, user_id: user.id,
-          organisation_id: organisation.id, department_id: nil }
+          organisation_id: organisation.id }
       end
 
       context "when the rdv_context is closed successfully" do
         it "redirects to user show at organisation level" do
           post :create, params: create_params
-          expect(response).to redirect_to(organisation_user_path(organisation, user))
+          expect(response).to redirect_to(organisation_user_rdv_contexts_path(organisation_id: organisation.id,
+                                                                              user_id: user.id))
         end
       end
     end
@@ -54,7 +55,7 @@ describe RdvContexts::ClosingsController do
   describe "#destroy" do
     let(:destroy_params) do
       { rdv_context_id: rdv_context.id, user_id: user.id,
-        organisation_id: organisation.id, department_id: department.id }
+        department_id: department.id }
     end
     let!(:rdv_context) do
       create(:rdv_context, user: user, motif_category: motif_category,
@@ -69,20 +70,22 @@ describe RdvContexts::ClosingsController do
     context "when the rdv_context is closed successfully" do
       it "redirects to user show" do
         post :destroy, params: destroy_params
-        expect(response).to redirect_to(department_user_path(department, user))
+        expect(response).to redirect_to(department_user_rdv_contexts_path(department_id: department.id,
+                                                                          user_id: user.id))
       end
     end
 
     context "when not department_level" do
       let(:destroy_params) do
         { rdv_context_id: rdv_context.id, user_id: user.id,
-          organisation_id: organisation.id, department_id: nil }
+          organisation_id: organisation.id }
       end
 
       context "when the rdv_context is closed successfully" do
         it "redirects to user show at organisation level" do
           post :destroy, params: destroy_params
-          expect(response).to redirect_to(organisation_user_path(organisation, user))
+          expect(response).to redirect_to(organisation_user_rdv_contexts_path(organisation_id: organisation.id,
+                                                                              user_id: user.id))
         end
       end
     end

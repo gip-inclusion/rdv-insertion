@@ -40,7 +40,7 @@ class LoginForm {
       return;
     }
 
-    this.rdvSolidaritesSession = {
+    this.rdvSolidaritesCredentials = {
       accessToken: loginRdvResult.headers.get("access-token"),
       uid: loginRdvResult.headers.get("uid"),
       client: loginRdvResult.headers.get("client"),
@@ -53,7 +53,7 @@ class LoginForm {
     } else {
       Swal.fire(
         `Une erreur s'est produite: ${signInResult.errors[0]}`,
-        "Veuillez contacter l'équipe par mail à data.insertion@beta.gouv.fr pour pouvoir vous connecter.",
+        "Veuillez contacter l'équipe par mail à rdv-insertion@beta.gouv.fr pour pouvoir vous connecter.",
         "warning"
       );
       this.resetButton();
@@ -67,9 +67,9 @@ class LoginForm {
       headers: {
         "Content-Type": "application/json",
         "X-CSRF-Token": this.headerAuthenticityToken,
-        uid: this.rdvSolidaritesSession.uid,
-        access_token: this.rdvSolidaritesSession.accessToken,
-        client: this.rdvSolidaritesSession.client,
+        uid: this.rdvSolidaritesCredentials.uid,
+        access_token: this.rdvSolidaritesCredentials.accessToken,
+        client: this.rdvSolidaritesCredentials.client,
       },
       body: JSON.stringify({
         authenticity_token: this.formAuthenticityToken,

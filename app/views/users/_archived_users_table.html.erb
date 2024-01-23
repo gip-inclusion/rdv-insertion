@@ -15,12 +15,12 @@
         <td><%= display_attribute user.last_name %></td>
         <td><%= display_attribute user.first_name %></td>
         <td><%= display_attribute format_date(user.created_at) %></td>
-        <td><%= display_attribute format_date(user.first_invitation_relative_to_last_participation_sent_at) %></td>
+        <td><%= display_attribute format_date(user.first_invitation_sent_at) %></td>
         <td><%= display_attribute(format_date(user.last_invitation_sent_at)) %></td>
         <td><%= display_attribute format_date(user.archive_for(@department.id).created_at) %></td>
         <td><%= display_attribute user.archive_for(@department.id).archiving_reason %></td>
         <td class="padding-left-15">
-          <%= link_to compute_show_path(user, @organisation, @department) do %>
+          <%= link_to structure_user_path(user.id) do %>
             <button class="btn btn-blue">Gérer</button>
           <% end %>
         </td>

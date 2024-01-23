@@ -1,23 +1,24 @@
 class InvitationsController < ApplicationController
-  before_action :set_organisations, :set_department, :set_user,
-                :set_motif_category, :set_rdv_context, :set_current_configuration,
-                :set_invitation_format, :set_preselected_organisations, :set_new_invitation,
-                only: [:create]
+  before_action :set_organisations, :set_user, :verify_user_is_sync_with_rdv_solidarites, only: [:create]
   before_action :set_invitation, :verify_invitation_validity, only: [:redirect]
-  skip_before_action :authenticate_agent!, only: [:invitation_code, :redirect]
+  skip_before_action :authenticate_agent!, only: [:invitation_code, :redirect, :redirect_shortcut]
 
   def create
-    if save_and_send_invitation.success?
+    if invite_user.success?
       respond_to do |format|
-        format.json { render json: { success: true, invitation: @invitation } }
+        format.json { render json: { success: true, invitation: invitation } }
         format.pdf { send_data pdf, filename: pdf_filename, layout: "application/pdf" }
       end
     else
-      render json: { success: false, errors: save_and_send_invitation.errors }, status: :unprocessable_entity
+      render json: { success: false, errors: invite_user.errors }, status: :unprocessable_entity
     end
   end
 
   def invitation_code; end
+
+  def redirect_shortcut
+    redirect_to redirect_invitations_path(params: { uuid: params[:uuid] })
+  end
 
   def redirect
     @invitation.clicked = true
@@ -28,45 +29,28 @@ class InvitationsController < ApplicationController
   private
 
   def invitation_params
-    params.permit(
-      :invitation_format, :help_phone_number, :rdv_solidarites_lieu_id, :motif_category_id
-    )
+    params.require(:invitation).permit(
+      :format, :rdv_solidarites_lieu_id, { motif_category: [:id] }
+    ).to_h.deep_symbolize_keys
   end
 
-  def set_new_invitation
-    @invitation = Invitation.new(
+  def invitation = invite_user.invitation
+
+  def invite_user
+    @invite_user ||= InviteUser.call(
       user: @user,
-      department: @department,
-      organisations: @preselected_organisations,
-      rdv_context: @rdv_context,
-      format: @invitation_format,
-      help_phone_number: invitation_params[:help_phone_number],
-      rdv_solidarites_lieu_id: invitation_params[:rdv_solidarites_lieu_id],
-      # the validity of an invitation is equal to the number of days before an action is required,
-      # then the organisation usually convene the user
-      valid_until: @current_configuration.number_of_days_before_action_required.days.from_now,
-      rdv_with_referents: @current_configuration.rdv_with_referents
+      organisations: @organisations,
+      invitation_attributes: invitation_params.except(:motif_category),
+      motif_category_attributes: invitation_params[:motif_category] || {}
     )
-    authorize @invitation
-  end
-
-  def set_invitation_format
-    @invitation_format = invitation_params[:invitation_format]
   end
 
   def pdf
-    WickedPdf.new.pdf_from_string(@invitation.content, encoding: "utf-8")
+    WickedPdf.new.pdf_from_string(invitation.content, encoding: "utf-8")
   end
 
   def pdf_filename
     "Invitation_#{Time.now.to_i}_#{@user.last_name}_#{@user.first_name}.pdf"
-  end
-
-  def save_and_send_invitation
-    @save_and_send_invitation ||= Invitations::SaveAndSend.call(
-      invitation: @invitation,
-      rdv_solidarites_session: rdv_solidarites_session
-    )
   end
 
   def set_organisations
@@ -76,40 +60,12 @@ class InvitationsController < ApplicationController
       .where(department_level? ? { department_id: params[:department_id] } : { id: params[:organisation_id] })
   end
 
-  def set_rdv_context
-    RdvContext.with_advisory_lock "setting_rdv_context_for_user_#{@user.id}" do
-      @rdv_context = RdvContext.find_or_create_by!(
-        motif_category: @motif_category, user: @user
-      )
-    end
-  end
-
-  def set_preselected_organisations
-    @preselected_organisations =
-      if @current_configuration.invite_to_user_organisations_only?
-        @organisations & @user.organisations
-      else
-        @organisations
-      end
-  end
-
-  def set_current_configuration
-    @current_configuration = @organisations.where(id: @user.organisations)
-                                           .preload(:configurations)
-                                           .flat_map(&:configurations)
-                                           .find { |c| c.motif_category == @motif_category }
-  end
-
-  def set_motif_category
-    @motif_category = MotifCategory.find(invitation_params[:motif_category_id])
-  end
-
-  def set_department
-    @department = @organisations.first.department
-  end
-
   def set_user
     @user = policy_scope(User).includes(:invitations).find(params[:user_id])
+  end
+
+  def verify_user_is_sync_with_rdv_solidarites
+    sync_user_with_rdv_solidarites(@user) if @user.rdv_solidarites_user_id.nil?
   end
 
   def set_invitation
@@ -123,9 +79,5 @@ class InvitationsController < ApplicationController
     return unless @invitation.expired?
 
     render :invalid
-  end
-
-  def invitation_format
-    params[:format] || "sms" # sms by default to keep the sms link the shortest possible
   end
 end

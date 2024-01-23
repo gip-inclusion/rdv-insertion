@@ -1,0 +1,5 @@
+<%= render "common/attribute_display", record: user, attribute: :referents, as: :list, id: "referents_list" do %>
+  <%= link_to(referent_assignations_path(user_id: user.id), data: { turbo_frame: 'remote_modal' }) do %>
+    <button class="btn btn-blue mb-3"><i class="fas fa-user-plus"></i> Assigner le.s référent.s</button>
+  <% end %>
+<% end %>

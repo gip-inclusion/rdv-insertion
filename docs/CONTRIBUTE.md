@@ -2,11 +2,11 @@
 
 ## Signaler un problème
 
-Si vous rencontrez un problème, [contactez-nous par email](mailto:data.insertion@beta.gouv.fr).
+Si vous rencontrez un problème, [contactez-nous par email](mailto:rdv-insertion@beta.gouv.fr).
 
 ## Soumettre une modification
 
-Les pull requests sont bienvenues ! N’hésitez pas à [nous en parler à l’avance](mailto:data.insertion@beta.gouv.fr). La démarche est habituelle: faites un fork, créez une branche, faites un PR. Pour les petites corrections de fautes d’orthographe, n’hésitez pas à proposer une modification directement depuis github.com.
+Les pull requests sont bienvenues ! N’hésitez pas à [nous en parler à l’avance](mailto:rdv-insertion@beta.gouv.fr). La démarche est habituelle: faites un fork, créez une branche, faites un PR. Pour les petites corrections de fautes d’orthographe, n’hésitez pas à proposer une modification directement depuis github.com.
 
 ## Style de code
 
@@ -59,3 +59,15 @@ bundle exec rspec file_path/file_name_spec.rb
 ```bash
 bundle exec rspec file_path/file_name_spec.rb:line_number
 ```
+
+## Documentation API
+
+Nous utilisons la libraire [rswag]() pour générer la documentation au format `openAPI` à partir des tests de requêtes (définis dans `/spec/request/`).
+
+Pour mettre à jour le fichier swagger qui alimente la page de documentation de l'API, il faut lancer cette commande:
+
+```bash
+make rswag
+```
+
+La documentation est visible sur l'URL `/api-docs`.

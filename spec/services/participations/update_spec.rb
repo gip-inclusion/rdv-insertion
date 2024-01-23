@@ -2,21 +2,18 @@ describe Participations::Update, type: :service do
   subject do
     described_class.call(
       participation: participation,
-      rdv_solidarites_session: rdv_solidarites_session,
       participation_params: participation_params
     )
   end
 
   let(:participation) { create(:participation, status: "unknown") }
   let(:participation_params) { { status: "seen" } }
-  let(:rdv_solidarites_session) { instance_double(RdvSolidaritesSession::Base) }
 
   let(:stub_rdvs) do
     allow(RdvSolidaritesApi::UpdateParticipation).to receive(:call).once.with(
       {
         :participation_attributes => { :status => "seen" },
-        :rdv_solidarites_session => rdv_solidarites_session,
-        :rdv_solidarites_rdvs_user_id => participation.rdv_solidarites_participation_id
+        :rdv_solidarites_participation_id => participation.rdv_solidarites_participation_id
       }
     )
   end

@@ -22,7 +22,7 @@ describe User do
         expect(user).not_to be_valid
         expect(user.errors.details).to eq({ rdv_solidarites_user_id: [{ error: :taken, value: 1 }] })
         expect(user.errors.full_messages.to_sentence)
-          .to include("Rdv solidarites user est déjà utilisé")
+          .to include("ID de l'usager RDV-Solidarités est déjà utilisé")
       end
     end
   end
@@ -226,6 +226,66 @@ describe User do
         expect(user.errors.details).to eq({ nir: [{ error: :invalid }] })
         expect(user.errors.full_messages.to_sentence)
           .to include("Le NIR n'est pas valide")
+      end
+    end
+  end
+
+  describe "#notifiable?" do
+    subject { user.notifiable? }
+
+    let!(:user) { create(:user, title: "monsieur") }
+    let!(:invitation) { create(:invitation, sent_at: 2.years.ago, user:) }
+
+    it "is notifiable if the title is present and the user has been invited" do
+      expect(subject).to eq(true)
+    end
+
+    context "when the user has no title" do
+      let!(:user) { create(:user, title: nil) }
+
+      it "is not notifiable" do
+        expect(subject).to eq(false)
+      end
+    end
+
+    context "when the user has no invitations" do
+      let!(:invitation) { nil }
+
+      it "is not notifiable" do
+        expect(subject).to eq(false)
+      end
+    end
+  end
+
+  describe "#referents_to_add=" do
+    subject { user.save }
+
+    let!(:user) { build(:user) }
+
+    let!(:agent) { create(:agent, email: "someagent@gmail.com") }
+    let!(:other_agent) { create(:agent, email: "otheragent@gmail.com") }
+
+    it "assigns the referents" do
+      user.referents_to_add = [{ email: "someagent@gmail.com" }, { email: "otheragent@gmail.com" }]
+      expect { subject }.to change(ReferentAssignation, :count).by(2)
+      expect(user.reload.referent_ids).to contain_exactly(agent.id, other_agent.id)
+    end
+
+    context "when the email does not match an existing agent" do
+      it "does not assign the referent" do
+        user.referents_to_add = [{ email: "donotexist@gmail.com" }]
+        expect { subject }.not_to change(ReferentAssignation, :count)
+        expect(user.reload.referents).to eq([])
+      end
+    end
+
+    context "when the agent is already assigned" do
+      let!(:user) { create(:user, referents: [agent]) }
+
+      it "does not reassign the assigned referent" do
+        user.referents_to_add = [{ email: "someagent@gmail.com" }, { email: "otheragent@gmail.com" }]
+        expect { subject }.to change(ReferentAssignation, :count).by(1)
+        expect(user.reload.referent_ids).to contain_exactly(agent.id, other_agent.id)
       end
     end
   end

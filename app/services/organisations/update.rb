@@ -1,8 +1,7 @@
 module Organisations
   class Update < BaseService
-    def initialize(organisation:, rdv_solidarites_session:)
+    def initialize(organisation:)
       @organisation = organisation
-      @rdv_solidarites_session = rdv_solidarites_session
     end
 
     def call
@@ -35,7 +34,6 @@ module Organisations
       @update_rdv_solidarites_organisation ||= call_service!(
         RdvSolidaritesApi::UpdateOrganisation,
         organisation_attributes: rdv_solidarites_organisation_attributes,
-        rdv_solidarites_session: @rdv_solidarites_session,
         rdv_solidarites_organisation_id: @organisation.rdv_solidarites_organisation_id
       )
     end

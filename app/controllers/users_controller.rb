@@ -15,18 +15,16 @@ class UsersController < ApplicationController
   before_action :set_organisation, :set_department, :set_organisations, :set_all_configurations,
                 :set_current_agent_roles, :set_users_scope,
                 :set_current_configuration, :set_current_motif_category,
-                :set_users, :set_rdv_contexts,
+                :set_users, :set_rdv_contexts, :set_filterable_tags, :set_referents_list,
                 :filter_users, :order_users,
                 for: :index
   before_action :set_user, :set_organisation, :set_department, :set_all_configurations,
-                :set_user_organisations, :set_user_rdv_contexts, :set_user_archive,
-                :set_back_to_users_list_url,
+                :set_user_archive, :set_user_tags, :set_back_to_users_list_url,
                 for: :show
   before_action :set_organisation, :set_department, :set_organisations,
                 for: [:new, :create]
   before_action :set_user, :set_organisation, :set_department,
                 for: [:edit, :update]
-  before_action :find_or_initialize_user!, only: :create
   before_action :reset_tag_users, only: :update
   after_action :store_back_to_users_list_url, only: [:index]
 
@@ -37,7 +35,13 @@ class UsersController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.csv { send_users_csv }
+      format.csv do
+        generate_csv
+        flash[:success] = "Le fichier CSV est en train d'être généré." \
+                          " Il sera envoyé l'adresse email #{current_agent.email}." \
+                          " Pensez à vérifier vos spams."
+        redirect_to structure_users_path(**params.to_unsafe_h.except(:format))
+      end
     end
   end
 
@@ -53,11 +57,11 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user.assign_attributes(**formatted_attributes.compact_blank)
-    if save_user.success?
+    @user = upsert_user.user
+    if upsert_user.success?
       render_save_user_success
     else
-      render_errors(save_user.errors)
+      render_errors(upsert_user.errors)
     end
   end
 
@@ -85,36 +89,38 @@ class UsersController < ApplicationController
   end
 
   def reset_tag_users
-    # since we send the exhaustive list of tags, we need to reset the tag_users list
-    # if tag_users_attributes is nil, it means that the user did not change the tags
-    @user.tag_users.destroy_all unless params[:user][:tag_users_attributes].nil?
+    return unless user_params[:tag_users_attributes]
+
+    @user
+      .tags
+      .joins(:organisations)
+      .where(organisations: department_level? ? @department.organisations : @organisation)
+      .each do |tag|
+      @user.tags.delete(tag)
+    end
   end
 
-  def send_users_csv
-    send_data generate_users_csv.csv, filename: generate_users_csv.filename
+  def csv_exporter
+    if params[:export_type] == "participations"
+      Exporters::SendUsersParticipationsCsvJob
+    else
+      Exporters::SendUsersCsvJob
+    end
   end
 
-  def generate_users_csv
-    @generate_users_csv ||= Exporters::GenerateUsersCsv.call(
-      users: @users,
-      structure: department_level? ? @department : @organisation,
-      motif_category: @current_motif_category
-    )
-  end
-
-  def find_or_initialize_user!
-    @user = find_or_initialize_user.user
-    render_errors(find_or_initialize_user.errors) if find_or_initialize_user.failure?
-  end
-
-  def find_or_initialize_user
-    @find_or_initialize_user ||= Users::FindOrInitialize.call(
-      attributes: formatted_attributes, department_id: @department.id
+  def generate_csv
+    csv_exporter.perform_async(
+      @users.map(&:id),
+      department_level? ? "Department" : "Organisation",
+      department_level? ? @department.id : @organisation.id,
+      @current_motif_category&.id,
+      current_agent.id
     )
   end
 
   def render_errors(errors)
     respond_to do |format|
+      format.turbo_stream { turbo_stream_prepend_flash_message(error: errors.join(", ")) }
       format.html do
         flash.now[:error] = errors.join(",")
         render(action_name == "update" ? :edit : :new, status: :unprocessable_entity)
@@ -133,22 +139,21 @@ class UsersController < ApplicationController
   def save_user
     @save_user ||= Users::Save.call(
       user: @user,
-      organisation: @organisation,
-      rdv_solidarites_session: rdv_solidarites_session
+      organisation: @organisation
+    )
+  end
+
+  def upsert_user
+    @upsert_user ||= Users::Upsert.call(
+      user_attributes: user_params,
+      organisation: @organisation
     )
   end
 
   def set_user
     @user =
       policy_scope(User)
-      .preload(:invitations, organisations: [:department, :configurations])
-      .where(
-        if department_level?
-          { organisations: { department_id: params[:department_id] } }
-        else
-          { organisations: params[:organisation_id] }
-        end
-      )
+      .where(current_organisations_filter)
       .find(params[:id])
   end
 
@@ -169,6 +174,19 @@ class UsersController < ApplicationController
                     .find_by(id: @user.organisation_ids, department_id: params[:department_id])
   end
 
+  def set_filterable_tags
+    @tags = (@organisation || @department).tags.order(:value).distinct
+  end
+
+  def set_user_tags
+    @tags = @user
+            .tags
+            .joins(:organisations)
+            .where(organisations: department_level? ? @department.organisations : @organisation)
+            .order(:value)
+            .distinct
+  end
+
   def set_organisation_through_form
     # for now we allow only one organisation through creation
     @organisation = Organisation.find_by(
@@ -181,22 +199,18 @@ class UsersController < ApplicationController
   end
 
   def set_department
-    @department =
-      if department_level?
-        policy_scope(Department).find(params[:department_id])
-      else
-        @organisation.department
-      end
+    @department = policy_scope(Department).find(current_department_id)
   end
 
   def set_all_configurations
     @all_configurations =
-      if department_level?
-        (policy_scope(::Configuration).includes(:motif_category) & @department.configurations).uniq(&:motif_category_id)
-      else
-        @organisation.configurations.includes(:motif_category)
-      end
-    @all_configurations = @all_configurations.sort_by(&:motif_category_position)
+      policy_scope(::Configuration).joins(:organisation)
+                                   .includes(:motif_category)
+                                   .where(current_organisation_filter)
+                                   .uniq(&:motif_category_id)
+
+    @all_configurations =
+      department_level? ? @all_configurations.sort_by(&:department_position) : @all_configurations.sort_by(&:position)
   end
 
   def set_current_configuration
@@ -211,23 +225,8 @@ class UsersController < ApplicationController
     @current_motif_category = @current_configuration&.motif_category
   end
 
-  def set_user_rdv_contexts
-    @rdv_contexts =
-      RdvContext.preload(
-        :invitations, :motif_category,
-        participations: [:notifications, { rdv: [:motif, :organisation] }]
-      ).where(
-        user: @user, motif_category: @all_configurations.map(&:motif_category)
-      ).sort_by(&:motif_category_position)
-  end
-
   def set_user_archive
     @archive = Archive.find_by(user: @user, department: @department)
-  end
-
-  def set_user_organisations
-    @user_organisations =
-      policy_scope(Organisation).where(id: @user.organisation_ids, department: @department)
   end
 
   def set_users
@@ -242,18 +241,17 @@ class UsersController < ApplicationController
 
   def set_all_users
     @users = policy_scope(User)
-             .active
+             .active.distinct
              .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
     return if request.format == "csv"
 
-    @users = @users.preload(rdv_contexts: [:invitations])
+    @users = @users.preload(:archives, rdv_contexts: [:invitations])
   end
 
   def set_users_for_motif_category
     @users = policy_scope(User)
              .preload(:organisations, rdv_contexts: [:notifications, :invitations])
-             .active
-             .select("DISTINCT(users.id), users.*, rdv_contexts.created_at")
+             .active.distinct
              .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
              .where.not(id: @department.archived_users.ids)
              .joins(:rdv_contexts)
@@ -279,6 +277,10 @@ class UsersController < ApplicationController
     @statuses_count = @rdv_contexts.group(:status).count
   end
 
+  def set_referents_list
+    @referents_list = current_structure.agents.distinct
+  end
+
   def set_current_agent_roles
     @current_agent_roles = AgentRole.where(
       department_level? ? { organisation: @organisations } : { organisation: @organisation }, agent: current_agent
@@ -299,16 +301,14 @@ class UsersController < ApplicationController
     organisation_user_path(@organisation, @user)
   end
 
-  def default_list_path # rubocop:disable Metrics/AbcSize
-    structure = if department_level?
-                  Department.includes(:motif_categories).find(params[:department_id])
-                else
-                  Organisation.includes(:motif_categories).find(params[:organisation_id])
-                end
-    path = department_level? ? department_users_path(structure) : organisation_users_path(structure)
-    return path if structure.motif_categories.blank? || structure.motif_categories.count > 1
-
-    "#{path}?motif_category_id=#{structure.motif_categories.first.id}"
+  def default_list_path
+    motif_category_param =
+      if current_structure.motif_categories.length == 1
+        { motif_category_id: current_structure.motif_categories.first.id }
+      else
+        {}
+      end
+    structure_users_path(**motif_category_param)
   end
 end
 

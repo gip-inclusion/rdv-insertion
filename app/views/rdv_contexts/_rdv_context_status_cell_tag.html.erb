@@ -1,8 +1,0 @@
-<%= turbo_frame_tag dom_id(rdv_context, :status_tag) do %>
-  <div class="px-2 <%= background_class_for_context_status(rdv_context, configuration.number_of_days_before_action_required) %>" id="js-block-status-<%= configuration.motif_category %>">
-    <em>
-      <%= display_context_status(rdv_context, configuration.number_of_days_before_action_required) %>
-      <%= " le #{format_date(rdv_context.closed_at)}" if rdv_context.closed_at.present? %>
-    </em>
-  </div>
-<% end %>

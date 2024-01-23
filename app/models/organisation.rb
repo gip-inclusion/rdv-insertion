@@ -5,6 +5,8 @@ class Organisation < ApplicationRecord
   include Searchable
   include HasLogo
 
+  before_create { build_messages_configuration }
+
   validates :rdv_solidarites_organisation_id, uniqueness: true, allow_nil: true
   validates :name, presence: true
   validates :email, allow_blank: true, format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/ }
@@ -21,6 +23,7 @@ class Organisation < ApplicationRecord
   has_many :agent_roles, dependent: :destroy
   has_many :users_organisations, dependent: :destroy
   has_many :tag_organisations, dependent: :destroy
+  has_many :orientations, dependent: :restrict_with_error
 
   has_many :users, through: :users_organisations
   has_many :agents, through: :agent_roles
@@ -39,12 +42,6 @@ class Organisation < ApplicationRecord
 
   def to_s
     name
-  end
-
-  def as_json(...)
-    super.deep_symbolize_keys
-         .except(:last_webhook_update_received_at, :rdv_solidarites_organisation_id)
-         .merge(department_number: department_number, motif_categories: motif_categories)
   end
 
   def validate_organisation_phone_number

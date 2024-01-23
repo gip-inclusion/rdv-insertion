@@ -44,6 +44,9 @@ gem "with_advisory_lock"
 # CSS styled emails with stylesheets
 gem "premailer-rails"
 
+# API documentation
+gem "rswag"
+
 # Send SMS & emails with Brevo
 gem "sib-api-v3-sdk"
 
@@ -85,8 +88,20 @@ gem "wkhtmltopdf-binary"
 # CORS support
 gem "rack-cors"
 
+# Sending ZIP
+gem "rubyzip"
+
+# Simple Fast Declarative Serialization Library
+gem "blueprinter"
+
+# A Rails engine for creating super-flexible admin dashboards
+gem "administrate", git: "https://github.com/thoughtbot/administrate.git"
+
+# Required for ActiveStorage for S3 compatible storage
+gem "aws-sdk-s3", require: false
+
 # Use Active Storage variant
-# gem 'image_processing', '~> 1.2'
+gem "image_processing", "~> 1.2"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", ">= 1.4.2", require: false
@@ -94,7 +109,7 @@ gem "bootsnap", ">= 1.4.2", require: false
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem "byebug", platforms: [:mri, :mingw, :x64_mingw]
-  gem "rspec-rails", "~> 5.0.0"
+  gem "rspec-rails"
   gem "factory_bot_rails"
   gem "rubocop"
   gem "rubocop-rails"

@@ -74,7 +74,6 @@ describe InclusionConnectController do
     end
 
     it "redirect and assign session variables if everything is ok (with stub request)" do
-      allow(ENV).to receive(:fetch).with("SHARED_SECRET_FOR_AGENTS_AUTH").and_return("S3cr3T")
       allow(RetrieveInclusionConnectAgentInfos).to receive(:call).with(
         code: code,
         callback_url: inclusion_connect_callback_url
@@ -95,7 +94,7 @@ describe InclusionConnectController do
       expect(response).to redirect_to(root_path)
       expect(request.session[:inclusion_connect_token_id]).to eq("123")
       expect(request.session[:agent_id]).to eq(agent.id)
-      expect(request.session[:rdv_solidarites]).to eq(
+      expect(request.session[:rdv_solidarites_credentials]).to eq(
         {
           uid: agent.email,
           x_agent_auth_signature: OpenSSL::HMAC.hexdigest("SHA256", "S3cr3T", payload.to_json),
@@ -105,7 +104,6 @@ describe InclusionConnectController do
     end
 
     it "redirect and assign session variables if everything is ok (with stub service)" do
-      allow(ENV).to receive(:fetch).with("SHARED_SECRET_FOR_AGENTS_AUTH").and_return("S3cr3T")
       allow(RetrieveInclusionConnectAgentInfos).to receive(:call).with(
         code: code,
         callback_url: inclusion_connect_callback_url
@@ -116,7 +114,7 @@ describe InclusionConnectController do
       expect(response).to redirect_to(root_path)
       expect(request.session[:inclusion_connect_token_id]).to eq("123")
       expect(request.session[:agent_id]).to eq(agent.id)
-      expect(request.session[:rdv_solidarites]).to eq(
+      expect(request.session[:rdv_solidarites_credentials]).to eq(
         {
           uid: agent.email,
           x_agent_auth_signature: OpenSSL::HMAC.hexdigest("SHA256", "S3cr3T", payload.to_json),
@@ -129,15 +127,15 @@ describe InclusionConnectController do
   def expect_flash_error
     expect(flash[:error]).to eq(
       "Nous n'avons pas pu vous authentifier. Contacter le support à l'adresse" \
-      "<data.insertion@beta.gouv.fr> si le problème persiste."
+      "<rdv-insertion@beta.gouv.fr> si le problème persiste."
     )
   end
 
   def stub_token_request
-    stub_request(:post, "#{base_url}/token")
+    stub_request(:post, "#{base_url}/token/")
   end
 
   def stub_agent_info_request
-    stub_request(:get, "#{base_url}/userinfo").with(query: { schema: "openid" })
+    stub_request(:get, "#{base_url}/userinfo/").with(query: { schema: "openid" })
   end
 end

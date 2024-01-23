@@ -6,8 +6,9 @@ class Rdv < ApplicationRecord
 
   include Notificable
   include RdvParticipationStatus
+  include WebhookDeliverable
 
-  after_commit :notify_convocable_participations, on: :update
+  after_commit :notify_participations, on: :update, if: :should_notify?
   after_commit :refresh_context_status, on: [:create, :update]
 
   belongs_to :organisation
@@ -21,12 +22,13 @@ class Rdv < ApplicationRecord
   has_many :rdv_contexts, through: :participations
   has_many :agents, through: :agents_rdvs
   has_many :users, through: :participations
+  has_many :webhook_endpoints, through: :organisation
 
   # Needed to build participations in process_rdv_job
   accepts_nested_attributes_for :participations, allow_destroy: true, reject_if: :new_participation_already_created?
 
   validates :starts_at, :duration_in_min, presence: true
-  validates :rdv_solidarites_rdv_id, uniqueness: true, presence: true
+  validates :rdv_solidarites_rdv_id, uniqueness: true, allow_nil: true
 
   validate :rdv_contexts_motif_categories_are_uniq
 
@@ -42,6 +44,8 @@ class Rdv < ApplicationRecord
   scope :collectif, -> { joins(:motif).merge(Motif.collectif) }
   scope :with_remaining_seats, -> { where("users_count < max_participants_count OR max_participants_count IS NULL") }
   scope :collectif_and_available_for_reservation, -> { collectif.with_remaining_seats.future.not_revoked }
+
+  def self.jwt_payload_keys = [:id, :address, :starts_at]
 
   def rdv_solidarites_url
     "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/" \
@@ -78,19 +82,20 @@ class Rdv < ApplicationRecord
     RefreshRdvContextStatusesJob.perform_async(rdv_context_ids)
   end
 
-  def notify_convocable_participations
-    return unless event_to_notify?
-    return if convocable_participations.empty?
-
-    NotifyParticipationsJob.perform_async(convocable_participations.map(&:id), :updated)
+  def notify_participations
+    NotifyParticipationsJob.perform_async(notifiable_participations.map(&:id), :updated)
   end
 
-  def event_to_notify?
+  def should_notify?
+    in_the_future? && notifiable_participations.any? && reason_to_notify?
+  end
+
+  def reason_to_notify?
     address_previously_changed? || starts_at_previously_changed?
   end
 
-  def convocable_participations
-    participations.select(&:convocable?)
+  def notifiable_participations
+    participations.select(&:notifiable?)
   end
 
   def rdv_contexts_motif_categories_are_uniq

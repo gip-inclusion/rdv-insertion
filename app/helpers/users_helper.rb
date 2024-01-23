@@ -17,7 +17,7 @@ module UsersHelper
     [
       params[:search_query], params[:status], params[:action_required], params[:first_invitation_date_before],
       params[:last_invitation_date_before], params[:first_invitation_date_after], params[:last_invitation_date_after],
-      params[:filter_by_current_agent], params[:creation_date_after], params[:creation_date_before]
+      params[:referent_id], params[:creation_date_after], params[:creation_date_before], params[:tag_ids]
     ].any?(&:present?)
   end
 
@@ -56,6 +56,21 @@ module UsersHelper
       "bg-success border-success"
     else
       ""
+    end
+  end
+
+  def badge_background_class(context, number_of_days_before_action_required)
+    return "blue-out border border-blue" if context.nil?
+
+    if context.action_required_status?
+      "bg-danger border-danger"
+    elsif number_of_days_before_action_required &&
+          context.time_to_accept_invitation_exceeded?(number_of_days_before_action_required)
+      "bg-warning border-warning"
+    elsif context.rdv_seen? || context.closed?
+      "bg-success border-success"
+    else
+      "blue-out border border-blue"
     end
   end
 
@@ -102,18 +117,6 @@ module UsersHelper
     end
   end
 
-  def rdv_solidarites_user_url(organisation, user)
-    organisation_id = organisation.rdv_solidarites_organisation_id
-    "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{organisation_id}/users/#{user.rdv_solidarites_user_id}"
-  end
-
-  def rdv_solidarites_find_rdv_url(organisation, user)
-    organisation_id = organisation.rdv_solidarites_organisation_id
-    user_id = user.rdv_solidarites_user_id
-
-    "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/#{organisation_id}/agent_searches?user_ids[]=#{user_id}"
-  end
-
   def display_convocation_formats(convocation_formats)
     if convocation_formats.empty?
       "❌#{content_tag(:br)}SMS et Email non envoyés#{content_tag(:br)}❌"
@@ -124,14 +127,6 @@ module UsersHelper
 
   def archived_scope?(scope)
     scope == "archived"
-  end
-
-  def department_level?
-    params[:department_id].present?
-  end
-
-  def navigation_level
-    department_level? ? "department" : "organisation"
   end
 
   def rdv_solidarites_agent_searches_url(
@@ -154,36 +149,8 @@ module UsersHelper
       rdv_context.time_to_accept_invitation_exceeded?(configuration.number_of_days_before_action_required)
   end
 
-  def compute_index_path(organisation, department, **params)
-    if department_level?
-      department_users_path(department, **params.compact_blank)
-    else
-      organisation_users_path(organisation, **params.compact_blank)
-    end
-  end
-
-  def compute_edit_path(user, organisation, department)
-    return edit_department_user_path(department, user) if department_level?
-
-    edit_organisation_user_path(organisation, user)
-  end
-
-  def compute_show_path(user, organisation, department)
-    return department_user_path(department, user) if department_level?
-
-    organisation_user_path(organisation, user)
-  end
-
-  def compute_new_path(organisation, department)
-    return new_department_user_path(department) if department_level?
-
-    new_organisation_user_path(organisation)
-  end
-
-  def compute_rdv_contexts_path(organisation, department)
-    return rdv_contexts_path(department_id: department.id) if department_level?
-
-    rdv_contexts_path(organisation_id: organisation.id)
+  def show_parcours?(department)
+    department.number.in?(ENV["DEPARTMENTS_WHERE_PARCOURS_ENABLED"].split(","))
   end
 end
 

@@ -10,9 +10,37 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_25_155039) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_22_104935) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "active_storage_attachments", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "filename", null: false
+    t.string "content_type"
+    t.text "metadata"
+    t.string "service_name", null: false
+    t.bigint "byte_size", null: false
+    t.string "checksum"
+    t.datetime "created_at", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "active_storage_variant_records", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.string "variation_digest", null: false
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
 
   create_table "agent_roles", force: :cascade do |t|
     t.integer "access_level", default: 0, null: false
@@ -78,6 +106,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_25_155039) do
     t.string "template_rdv_purpose_override"
     t.integer "number_of_days_between_periodic_invites"
     t.integer "day_of_the_month_periodic_invites"
+    t.integer "position", default: 0
+    t.integer "department_position", default: 0
+    t.string "phone_number"
     t.index ["file_configuration_id"], name: "index_configurations_on_file_configuration_id"
     t.index ["motif_category_id"], name: "index_configurations_on_motif_category_id"
     t.index ["organisation_id"], name: "index_configurations_on_organisation_id"
@@ -188,7 +219,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_25_155039) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "template_id"
-    t.boolean "participation_optional", default: false
+    t.boolean "optional_rdv_subscription", default: false
     t.boolean "leads_to_orientation", default: false
     t.index ["rdv_solidarites_motif_category_id"], name: "index_motif_categories_on_rdv_solidarites_motif_category_id", unique: true
     t.index ["short_name"], name: "index_motif_categories_on_short_name", unique: true
@@ -238,6 +269,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_25_155039) do
     t.string "slug"
     t.boolean "independent_from_cd", default: false
     t.string "logo_filename"
+    t.string "safir_code"
     t.index ["department_id"], name: "index_organisations_on_department_id"
     t.index ["rdv_solidarites_organisation_id"], name: "index_organisations_on_rdv_solidarites_organisation_id", unique: true
   end
@@ -246,6 +278,20 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_25_155039) do
     t.bigint "organisation_id", null: false
     t.bigint "webhook_endpoint_id", null: false
     t.index ["organisation_id", "webhook_endpoint_id"], name: "index_webhook_orgas_on_orga_id_and_webhook_id", unique: true
+  end
+
+  create_table "orientations", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "organisation_id", null: false
+    t.bigint "agent_id", null: false
+    t.integer "orientation_type"
+    t.date "starts_at"
+    t.date "ends_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agent_id"], name: "index_orientations_on_agent_id"
+    t.index ["organisation_id"], name: "index_orientations_on_organisation_id"
+    t.index ["user_id"], name: "index_orientations_on_user_id"
   end
 
   create_table "participations", force: :cascade do |t|
@@ -416,19 +462,23 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_25_155039) do
     t.string "secret"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "subscriptions", array: true
+    t.integer "signature_type", default: 0
   end
 
   create_table "webhook_receipts", force: :cascade do |t|
-    t.bigint "rdv_solidarites_rdv_id"
-    t.datetime "rdvs_webhook_timestamp"
-    t.datetime "sent_at"
+    t.bigint "resource_id"
+    t.datetime "timestamp"
     t.bigint "webhook_endpoint_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["rdv_solidarites_rdv_id"], name: "index_webhook_receipts_on_rdv_solidarites_rdv_id", unique: true
+    t.string "resource_model"
+    t.index ["resource_model", "resource_id", "webhook_endpoint_id"], name: "index_on_webhook_endpoint_and_resource_model_and_id"
     t.index ["webhook_endpoint_id"], name: "index_webhook_receipts_on_webhook_endpoint_id"
   end
 
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "agent_roles", "agents"
   add_foreign_key "agent_roles", "organisations"
   add_foreign_key "archives", "departments"
@@ -446,6 +496,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_25_155039) do
   add_foreign_key "motifs", "organisations"
   add_foreign_key "notifications", "participations"
   add_foreign_key "organisations", "departments"
+  add_foreign_key "orientations", "agents"
+  add_foreign_key "orientations", "organisations"
+  add_foreign_key "orientations", "users"
   add_foreign_key "participations", "rdv_contexts"
   add_foreign_key "rdv_contexts", "motif_categories"
   add_foreign_key "rdv_contexts", "users"

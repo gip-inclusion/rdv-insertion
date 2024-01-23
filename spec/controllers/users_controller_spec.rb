@@ -35,7 +35,8 @@ describe UsersController do
       get :new, params: new_params
 
       expect(response).to be_successful
-      expect(response.body).to match(/Créer un usager/)
+      expect(response.body).to match(/Prénom/)
+      expect(response.body).to match(/Enregistrer/)
     end
   end
 
@@ -114,7 +115,8 @@ describe UsersController do
           post :create, params: user_params
           expect(response).not_to be_successful
           expect(response).to have_http_status(:unprocessable_entity)
-          expect(response.body).to match(/Créer un usager/)
+          expect(response.body).to match(/Prénom/)
+          expect(response.body).to match(/Enregistrer/)
         end
       end
     end
@@ -194,7 +196,6 @@ describe UsersController do
         get :show, params: show_params
 
         expect(response).to be_successful
-        expect(response.body).to match(/Voir sur RDV-Solidarités/)
         expect(response.body).to match(/Andreas/)
         expect(response.body).to match(/Kopke/)
       end
@@ -207,7 +208,6 @@ describe UsersController do
         get :show, params: show_params
 
         expect(response).to be_successful
-        expect(response.body).to match(/Voir sur RDV-Solidarités/)
         expect(response.body).to match(/Andreas/)
         expect(response.body).to match(/Kopke/)
       end
@@ -224,178 +224,6 @@ describe UsersController do
         expect(response).to be_successful
         expect(response.body).to match(/Dossier archivé/)
         expect(response.body).to match(/Motif d&#39;archivage/)
-      end
-    end
-
-    context "it shows the different contexts" do
-      let!(:configuration) do
-        create(:configuration, motif_category: category_orientation, invitation_formats: %w[sms email])
-      end
-      let!(:configuration2) do
-        create(:configuration, motif_category: category_accompagnement, invitation_formats: %w[sms email postal])
-      end
-
-      let!(:organisation) do
-        create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
-                              configurations: [configuration, configuration2], department_id: department.id)
-      end
-
-      let!(:rdv_context) do
-        create(:rdv_context, status: "rdv_seen", user: user, motif_category: category_orientation)
-      end
-      let!(:invitation_orientation) do
-        create(:invitation, sent_at: "2021-10-20", format: "sms", rdv_context: rdv_context)
-      end
-
-      let!(:motif) { create(:motif, name: "RSA Orientation sur site") }
-
-      let!(:rdv_orientation1) do
-        create(
-          :rdv,
-          starts_at: "2021-10-22", motif: motif,
-          organisation: organisation
-        )
-      end
-      let!(:participation) do
-        create(
-          :participation,
-          rdv: rdv_orientation1, rdv_context: rdv_context, user: user, status: "noshow",
-          created_at: "2021-10-21"
-        )
-      end
-
-      let!(:rdv_orientation2) do
-        create(
-          :rdv,
-          starts_at: "2021-10-24", motif: motif, organisation: organisation
-        )
-      end
-      let!(:participation2) do
-        create(
-          :participation,
-          rdv_context: rdv_context, rdv: rdv_orientation2, user: user, status: "seen",
-          created_at: "2021-10-23"
-        )
-      end
-
-      let!(:rdv_context2) do
-        create(
-          :rdv_context, status: "invitation_pending", user: user, motif_category: category_accompagnement
-        )
-      end
-
-      let!(:invitation_accompagnement) do
-        create(:invitation, sent_at: "2021-11-20", format: "sms", rdv_context: rdv_context2)
-      end
-
-      it "shows all the contexts" do
-        get :show, params: show_params
-
-        expect(response).to be_successful
-        expect(response.body).to match(/RSA orientation/)
-        expect(response.body).to match(/RSA accompagnement/)
-        expect(response.body).to match(/RDV honoré/)
-        expect(response.body).to match(/RDV pris le/)
-        expect(response.body).to match(/Date du RDV/)
-        expect(response.body).to match(/Statut RDV/)
-        expect(response.body).to include("21/10/2021")
-        expect(response.body).to include("22/10/2021")
-        expect(response.body).to include("23/10/2021")
-        expect(response.body).to include("24/10/2021")
-        expect(response.body).to match(/Absence non excusée/)
-        expect(response.body).to match(/Rendez-vous honoré/)
-        expect(response.body).to match(/Statut RDV/)
-        expect(response.body).to match(/Invitation en attente de réponse/)
-        expect(response.body).to match(/RSA Orientation sur site/)
-        expect(response.body).not_to match(/Convoqué par/)
-      end
-
-      context "when a rdv_context is not open" do
-        let!(:rdv_context2) { nil }
-        let!(:invitation_accompagnement) { nil }
-
-        it "show the open rdv_context button" do
-          get :show, params: show_params
-
-          expect(unescaped_response_body).to match("class=\"simple_form rdv_context\"")
-          expect(unescaped_response_body).to match("input value=\"#{user.id}\"")
-          expect(unescaped_response_body).to match("input value=\"#{category_accompagnement.id}\"")
-          expect(unescaped_response_body).to match(/Ouvrir un suivi/)
-        end
-      end
-
-      context "when one rdv is a convocation" do
-        before { participation.update!(convocable: true) }
-
-        let!(:notification) do
-          create(
-            :notification,
-            participation: participation, event: "participation_created", format: "sms",
-            sent_at: 2.days.ago
-          )
-        end
-
-        it "shows the convocation formats" do
-          get :show, params: show_params
-
-          expect(response.body).to match(/Convoqué par/)
-          expect(response.body).to include("SMS 📱")
-          expect(response.body).not_to include("Email 📧")
-        end
-
-        context "when the rdv is pending" do
-          before do
-            rdv_orientation1.update! starts_at: 2.days.from_now
-            participation.update! status: "unknown"
-          end
-
-          it "shows the courrier generation button" do
-            get :show, params: show_params
-
-            expect(response.body).to include("<i class=\"fas fa-file-pdf\"></i> Courrier")
-          end
-        end
-
-        context "when the rdv is passed" do
-          context "when the participation is revoked" do
-            before { participation.update! status: "revoked" }
-
-            it "shows the courrier generation button" do
-              get :show, params: show_params
-
-              expect(response.body).to include("<i class=\"fas fa-file-pdf\"></i> Courrier")
-            end
-          end
-
-          context "when the rdv participation is seen" do
-            before { participation.update! status: "seen" }
-
-            it "does not show the courrier generation button" do
-              get :show, params: show_params
-
-              expect(response.body).not_to include("<i class=\"fas fa-file-pdf\"></i> Courrier")
-            end
-          end
-        end
-      end
-
-      context "when there is no matching configuration for a rdv_context" do
-        let!(:organisation) do
-          create(:organisation, rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
-                                department_id: department.id, configurations: [configuration2])
-        end
-
-        let!(:rdv_context) do
-          create(:rdv_context, status: "rdv_seen", user: user, motif_category: category_orientation)
-        end
-
-        it "does not display the context" do
-          get :show, params: show_params
-
-          expect(response).to be_successful
-          expect(response.body).to match(/InvitationBlock/)
-          expect(response.body).not_to match(/RSA orientation/)
-        end
       end
     end
   end
@@ -811,11 +639,11 @@ describe UsersController do
       end
     end
 
-    context "when filter_by_current_agent is passed" do
+    context "when referent_id is passed" do
       let!(:index_params) do
         {
           organisation_id: organisation.id,
-          filter_by_current_agent: "true",
+          referent_id: agent.id,
           motif_category_id: category_orientation.id
         }
       end
@@ -908,16 +736,46 @@ describe UsersController do
           end
 
           before do
-            UsersOrganisation.where(user: user2).update!(created_at: 1.year.ago)
+            UsersOrganisation.find_by(user: user2, organisation: organisation)
+                             .update!(created_at: 1.year.ago)
           end
 
-          it "orders by date of affectation to the category" do
+          it "orders by date of affectation to the department organisations" do
             get :index, params: index_params
 
             ordered_table = Nokogiri::XML(response.body).css("td").map(&:text)
             ordered_first_names = ordered_table & [user.first_name, user2.first_name]
 
             expect(ordered_first_names).to eq([user.first_name, user2.first_name])
+          end
+
+          context "when there are several organisations linked to a user" do
+            let!(:other_org) { create(:organisation, department:, users: [user], agents: [agent]) }
+
+            before do
+              UsersOrganisation.find_by(user: user, organisation: other_org)
+                               .update!(created_at: 2.years.ago)
+            end
+
+            it "orders by date of affectation to the department organisations" do
+              get :index, params: index_params
+
+              ordered_table = Nokogiri::XML(response.body).css("td").map(&:text)
+              ordered_first_names = ordered_table & [user.first_name, user2.first_name]
+
+              expect(ordered_first_names).to eq([user2.first_name, user.first_name])
+            end
+
+            context "at organisation level" do
+              it "orders by date of affectation to the organisation" do
+                get :index, params: { organisation_id: organisation.id }
+
+                ordered_table = Nokogiri::XML(response.body).css("td").map(&:text)
+                ordered_first_names = ordered_table & [user.first_name, user2.first_name]
+
+                expect(ordered_first_names).to eq([user.first_name, user2.first_name])
+              end
+            end
           end
         end
 
@@ -956,12 +814,12 @@ describe UsersController do
 
     context "when csv request" do
       before do
-        allow(Exporters::GenerateUsersCsv).to receive(:call)
+        allow(Exporters::SendUsersCsvJob).to receive(:perform_async)
           .and_return(OpenStruct.new)
       end
 
       it "calls the service" do
-        expect(Exporters::GenerateUsersCsv).to receive(:call)
+        expect(Exporters::SendUsersCsvJob).to receive(:perform_async)
         get :index, params: index_params.merge(format: :csv)
       end
 
@@ -982,13 +840,12 @@ describe UsersController do
 
       context "when the csv creation succeeds" do
         before do
-          allow(Exporters::GenerateUsersCsv).to receive(:call)
-            .and_return(OpenStruct.new(success?: true))
+          allow(Exporters::SendUsersCsvJob).to receive(:perform_async)
         end
 
-        it "is a success" do
+        it "redirects to users page" do
           get :index, params: index_params.merge(format: :csv)
-          expect(response).to be_successful
+          expect(response).to redirect_to(/#{organisation_users_path(organisation)}/)
         end
       end
     end
@@ -1004,7 +861,9 @@ describe UsersController do
         get :edit, params: edit_params
 
         expect(response).to be_successful
-        expect(response.body).to match(/Modifier usager/)
+        expect(response.body).to match(/Prénom/)
+        expect(response.body).to match(/"#{user.first_name}"/)
+        expect(response.body).to match(/Enregistrer/)
       end
     end
 
@@ -1014,8 +873,9 @@ describe UsersController do
       it "renders the edit user page" do
         get :edit, params: edit_params
 
-        expect(response).to be_successful
-        expect(response.body).to match(/Modifier usager/)
+        expect(response.body).to match(/Prénom/)
+        expect(response.body).to match(/"#{user.first_name}"/)
+        expect(response.body).to match(/Enregistrer/)
       end
     end
   end
@@ -1096,9 +956,7 @@ describe UsersController do
 
         before do
           allow(Users::Save).to receive(:call).and_call_original
-          allow_any_instance_of(Users::Save).to receive(:upsert_rdv_solidarites_user)
-            .and_return true
-          allow_any_instance_of(Users::Save).to receive(:assign_rdv_solidarites_user_id)
+          allow_any_instance_of(Users::Save).to receive(:sync_with_rdv_solidarites)
             .and_return true
           organisation.tags << tag
           organisation.tags << existing_tag
@@ -1136,6 +994,22 @@ describe UsersController do
           it "removes all existing tags" do
             post :update, params: update_params
             expect(user.reload.tags.size).to eq(0)
+          end
+
+          context "with tags on other organisations" do
+            let(:other_organisation) { create(:organisation) }
+            let(:other_tag) { create(:tag, value: "ok") }
+
+            before do
+              other_organisation.tags << other_tag
+              user.tags << other_tag
+            end
+
+            it "removes only correct tags" do
+              post :update, params: update_params
+              expect(user.reload.tags.first).to eq(other_tag)
+              expect(user.reload.tags.size).to eq(1)
+            end
           end
         end
 
@@ -1203,8 +1077,7 @@ describe UsersController do
         expect(Users::Save).to receive(:call)
           .with(
             user: user,
-            organisation: organisation,
-            rdv_solidarites_session: rdv_solidarites_session
+            organisation: organisation
           )
         patch :update, params: update_params
       end

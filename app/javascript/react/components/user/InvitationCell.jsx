@@ -16,15 +16,15 @@ const CTA_BY_FORMAT = {
   },
 };
 
-export default observer(({ user, format, isDepartmentLevel }) => {
+export default observer(({ user, format }) => {
   const handleInvitationClick = async () => {
-    user.inviteBy(format, isDepartmentLevel);
+    user.inviteBy(format);
   };
 
   const actionType = `${format}Invitation`;
 
   return (
-    user.canBeInvitedBy(format) && (
+    user.list.canBeInvitedBy(format) && (
       <>
         <td>
           {user.markAsAlreadyInvitedBy(format) ? (

@@ -17,10 +17,18 @@ export default class extends Controller {
     });
   }
 
-  csvExport() {
+  csvExportUsers() {
     tippy(this.element, {
       content:
-        "Les bénéficiaires seront exportés en fonction du contexte et des éventuels filtres sélectionnés",
+        "Les usagers seront exportés en fonction du contexte et des éventuels filtres sélectionnés",
+      placement: "bottom",
+    });
+  }
+
+  csvExportParticipations() {
+    tippy(this.element, {
+      content:
+        "Les RDVs seront exportés en fonction du contexte et des éventuels filtres sélectionnés",
       placement: "bottom",
     });
   }
@@ -77,6 +85,15 @@ export default class extends Controller {
           "<i>Pour faciliter votre prise de rendez-vous, le Conseil départemental a mis en place.<br/><br/></i>" +
           "Si cette option est définie, la valeur renseignée remplacera <i>le Conseil départemental</i> dans cette phrase."
         );
+      },
+      allowHTML: true,
+    });
+  }
+
+  safirCodeAttribute() {
+    tippy(this.element, {
+      content() {
+        return "Il ne concerne que les agences France Travail";
       },
       allowHTML: true,
     });
@@ -147,6 +164,13 @@ export default class extends Controller {
         "L'usager apparaitra dans l'onglet 'Tous les contacts' seulement. " +
         "En choisissant cette option vous ne pourrez pas inviter l'usager à prendre rdv à l'upload du fichier " +
         "(mais vous pourrez le faire ultérieurement en accédant à sa fiche).",
+    });
+  }
+
+  reOrderCategories() {
+    tippy(this.element, {
+      content:
+        "Vous pouvez réorganiser l'ordre d'affichage des catégories en les faisant glisser-déposer.",
     });
   }
 }
