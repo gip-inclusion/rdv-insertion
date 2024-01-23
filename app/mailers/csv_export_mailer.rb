@@ -4,7 +4,7 @@ class CsvExportMailer < ApplicationMailer
   end
 
   def users_participations_csv_export(email, file)
-    send_csv("[RDV-Insertion] Export CSV des rendez-vous", email, file)
+    send_csv("[RDV-Insertion] Export CSV des rendez-vous des usagers", email, file)
   end
 
   private
