@@ -18,7 +18,8 @@ class OrganisationMailer < ApplicationMailer
     @motifs = motifs
     mail(
       to: organisation.email,
-      subject: "[Alerte créneaux] Vérifier qu'il y a suffisamment de créneaux de libre relativement au stock d'invitations en cours",
+      subject: "[Alerte créneaux] Vérifier qu'il y a suffisamment de créneaux" \
+               " de libre relativement au stock d'invitations en cours",
       reply_to: "rdv-insertion@beta.gouv.fr"
     )
   end

@@ -28,9 +28,11 @@ class SendCreneauAvailabilityAlertJob < ApplicationJob
   end
 
   def formated_string_for_mattermost_message(organisation, motif)
-    string = "Créneaux indisponibles pour l'organisation #{organisation.name} (Département: #{organisation.department.name})\n" \
-             "#{organisation.name} (Département: #{organisation.department.name})\n" \
-             " Motif : #{motif[:motif_name]}"
+    string =
+      "Créneaux indisponibles pour l'organisation #{organisation.name}" \
+      " (Département: #{organisation.department.name})\n" \
+      "#{organisation.name} (Département: #{organisation.department.name})\n" \
+      " Motif : #{motif[:motif_name]}"
 
     string += "\n Code postaux : #{motif[:city_codes].join(', ')}" \
 

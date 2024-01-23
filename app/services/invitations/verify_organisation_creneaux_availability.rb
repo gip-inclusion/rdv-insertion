@@ -2,7 +2,8 @@ module Invitations
   class VerifyOrganisationCreneauxAvailability < BaseService
     def initialize(organisation_id:)
       @organisation = Organisation.find(organisation_id)
-      # Quid de l'agent connecté pour la vérication des créneaux disponibles ? utiliser un super agent ? comme proposé ici https://github.com/betagouv/rdv-insertion/blob/2526b569660d32ad1d15fcdc7b8e4c596125f8b4/app/helpers/admin_jobs_agent_helper.rb
+      # Quid de l'agent connecté pour la vérication des créneaux disponibles ? utiliser un super agent ? comme proposé
+      # ici : https://github.com/betagouv/rdv-insertion/pull/1449/commits/2526b569660d32ad1d15fcdc7b8e4c596125f8b4
       Current.agent = @organisation.agents.first
       @invitations_params_without_creneau = []
       @unavailable_motifs = []
@@ -31,10 +32,11 @@ module Invitations
     end
 
     def map_invitation_params(invitation, default_token)
-      # We take the first invitation token as default token
-      # this mapping is done to reduce the number of calls to the RDVSP API.
+      # We map relevant params only (for creneaux search in rdvs) is done to reduce the number of calls to the RDVSP API
       # The uniq filter on this mapping reduce the number of average calls to the API by /3
+      # We take the first invitation token as default token
       # We keep the original invitation_token only if the invitation has a referent_id
+      token = invitation.link_params["referent_ids"].nil? ? default_token : invitation.link_params["invitation_token"]
       {
         organisation_ids: invitation.link_params["organisation_ids"],
         referent_ids: invitation.link_params["referent_ids"],
@@ -42,7 +44,7 @@ module Invitations
         departement: invitation.link_params["departement"],
         city_code: invitation.link_params["city_code"],
         street_ban_id: invitation.link_params["street_ban_id"],
-        invitation_token: invitation.link_params["referent_ids"].nil? ? default_token : invitation.link_params["invitation_token"]
+        invitation_token: token
       }
     end
 

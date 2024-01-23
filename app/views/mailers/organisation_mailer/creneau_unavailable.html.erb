@@ -1,8 +1,8 @@
 <h1>Madame, Monsieur,</h1>
 <% @motifs.each do |motif| %>
-  <p>Vous avez ouvert des motifs de RDV sur la catégorie <%= motif[:motif_name] %>. et vous avez invité des personnes à prendre rendez-vous.</p>
+  <p>Vous avez ouvert des motifs de RDV sur la catégorie <b><%= motif[:motif_name] %></b> et vous avez invité des personnes à prendre rendez-vous.</p>
   <%= tag.p ("Les codes postaux concernés sont : #{motif[:city_codes].join(", ")}.") if motif[:city_codes].present? %>
-  <%= tag.p ("Les référents concernés sont, #{motif[:referent_ids].join(", ")}.") if motif[:referent_ids].present? %>
+  <%= tag.p ("Les référents concernés sont : #{motif[:referent_ids].join(", ")}.") if motif[:referent_ids].present? %>
 <% end %>
 <p>Hors, il n'y a désormais plus assez de créneaux de libre pour ces RDV dans l'organisation <%= @organisation.name %>. Nous vous invitons donc à créer de nouvelles plages d'ouverture pour des RDV individuels (ou bien créer de nouveau RDV collectifs) et à faire passer le message à vos équipes, afin que les usagers puissent bien prendre rendez-vous. Une autre solution est d'allonger le délai de visibilité de votre motif (n'hésitez pas à nous contacter par retour de mail si vous avez besoin d'aide pour le faire).</p>
 <p>Vous remerciant par avance et restant à votre disposition,</p>
