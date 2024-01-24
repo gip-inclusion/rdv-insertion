@@ -122,6 +122,10 @@ class User < ApplicationRecord
     sent_invitations.any? && title.present?
   end
 
+  def organisations_motif_category_ids
+    organisations.map(&:motif_category_ids).flatten
+  end
+
   private
 
   def rdv_context_category_handled_already?(rdv_context_attributes)

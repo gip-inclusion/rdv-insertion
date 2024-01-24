@@ -15,7 +15,7 @@ class InviteUser < BaseService
     set_invitation_organisations
     set_invitation
     result.invitation = @invitation
-    check_if_invitation_should_be_sent
+    check_if_invitation_should_be_sent!
     save_and_send_invitation!
   end
 
@@ -49,7 +49,7 @@ class InviteUser < BaseService
       end
   end
 
-  def check_if_invitation_should_be_sent
+  def check_if_invitation_should_be_sent!
     return unless invitation_already_sent_today? && !@invitation.format_postal?
 
     fail!("Une invitation #{@invitation.format} a déjà été envoyée aujourd'hui à cet utilisateur")
