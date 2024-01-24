@@ -169,13 +169,17 @@ describe InviteUser, type: :service do
       context "when there is already a sent invitation today" do
         let!(:existing_invitation) { create(:invitation, format: "sms", sent_at: 4.hours.ago, rdv_context:) }
 
-        it "is a success" do
-          is_a_success
+        it "is a failure" do
+          is_a_failure
         end
 
         it "does not call the save and send service" do
           expect(Invitations::SaveAndSend).not_to receive(:call)
           subject
+        end
+
+        it "stores the error" do
+          expect(subject.errors).to eq(["Une invitation sms a déjà été envoyée aujourd'hui à cet utilisateur"])
         end
 
         context "when the format is postal" do
