@@ -36,6 +36,12 @@ class Stat < ApplicationRecord
     participations
   end
 
+  def user_ids_with_rdv_sample
+    participations_sample.where(status: %w[seen unknown])
+                         .select(:user_id)
+                         .distinct
+  end
+
   # We filter participations to keep only convocations
   def participations_with_notifications_sample
     participations_sample.joins(:notifications).select("participations.id, participations.status").distinct

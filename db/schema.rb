@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_22_104935) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_24_101508) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -377,6 +377,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_22_104935) do
     t.json "rate_of_no_show_for_invitations_grouped_by_month"
     t.float "rate_of_users_oriented"
     t.json "rate_of_users_oriented_grouped_by_month"
+    t.integer "users_with_rdv_count"
+    t.json "users_with_rdv_count_grouped_by_month"
     t.index ["statable_type", "statable_id"], name: "index_stats_on_statable"
   end
 

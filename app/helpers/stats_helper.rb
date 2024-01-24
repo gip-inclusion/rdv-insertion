@@ -13,6 +13,6 @@ module StatsHelper
   end
 
   def exclude_current_month(stat)
-    stat.delete_if { |key, _value| key == Time.zone.now.strftime("%m/%Y") }
+    stat&.delete_if { |key, _value| key == Time.zone.now.strftime("%m/%Y") }
   end
 end
