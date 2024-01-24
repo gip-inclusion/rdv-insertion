@@ -294,6 +294,19 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_22_104935) do
     t.index ["user_id"], name: "index_orientations_on_user_id"
   end
 
+  create_table "parcours_documents", force: :cascade do |t|
+    t.bigint "department_id", null: false
+    t.bigint "user_id", null: false
+    t.bigint "agent_id", null: false
+    t.string "type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agent_id"], name: "index_parcours_documents_on_agent_id"
+    t.index ["department_id"], name: "index_parcours_documents_on_department_id"
+    t.index ["type"], name: "index_parcours_documents_on_type"
+    t.index ["user_id"], name: "index_parcours_documents_on_user_id"
+  end
+
   create_table "participations", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "rdv_id", null: false
@@ -499,6 +512,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_22_104935) do
   add_foreign_key "orientations", "agents"
   add_foreign_key "orientations", "organisations"
   add_foreign_key "orientations", "users"
+  add_foreign_key "parcours_documents", "agents"
+  add_foreign_key "parcours_documents", "departments"
+  add_foreign_key "parcours_documents", "users"
   add_foreign_key "participations", "rdv_contexts"
   add_foreign_key "rdv_contexts", "motif_categories"
   add_foreign_key "rdv_contexts", "users"
