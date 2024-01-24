@@ -10,7 +10,7 @@
       <div class="col-12 col-md-6 px-5 mb-3">
         <h4>Logo</h4>
         <% if organisation.logo.path %>
-          <%= image_pack_tag organisation.logo.path, class: "organisation-configuration-logo", alt: "Logo utilisé pour représenter l'organisation" %>
+          <%= image_tag organisation.logo.path, class: "organisation-configuration-logo", alt: "Logo utilisé pour représenter l'organisation" %>
         <% else %>
           <p>Pas de logo défini - le logo du département sera utilisé</p>
           <p>Contactez l'équipe rdv-insertion pour en ajouter un</p>

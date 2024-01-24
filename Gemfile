@@ -17,8 +17,9 @@ gem "pg", ">= 0.18", "< 2.0"
 gem "puma", "~> 5.6"
 # Use SCSS for stylesheets
 gem "sass-rails", ">= 6"
-# Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
-gem "webpacker", "~> 5.x"
+
+# JavaScript Bundling for Rails
+gem "jsbundling-rails"
 
 # Easy use of react with rails
 gem "react-rails"
