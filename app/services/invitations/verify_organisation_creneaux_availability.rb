@@ -2,11 +2,9 @@ module Invitations
   class VerifyOrganisationCreneauxAvailability < BaseService
     def initialize(organisation_id:)
       @organisation = Organisation.find(organisation_id)
-      # Quid de l'agent connecté pour la vérication des créneaux disponibles ? utiliser un super agent ? comme proposé
-      # ici : https://github.com/betagouv/rdv-insertion/pull/1449/commits/2526b569660d32ad1d15fcdc7b8e4c596125f8b4
       Current.agent = @organisation.agents.first
       @invitations_params_without_creneau = []
-      @unavailable_motifs = []
+      @grouped_invitation_params_by_category = []
     end
 
     def call
@@ -26,7 +24,7 @@ module Invitations
 
     def grouped_invitations_params
       default_token = @organisation.invitations.valid.first.rdv_solidarites_token
-      @organisation.invitations.valid.map do |invitation|
+      @organisation.invitations.valid.select("DISTINCT ON (rdv_context_id) *").to_a.map do |invitation|
         map_invitation_params(invitation, default_token)
       end.uniq
     end
@@ -54,30 +52,34 @@ module Invitations
 
     def process_invitations_params_without_creneau
       @invitations_params_without_creneau.each do |invitation_params|
-        add_invitation_motif_to_unavailable_motifs(invitation_params)
+        group_invitation_params_by_category(invitation_params)
       end
 
-      @unavailable_motifs
+      @grouped_invitation_params_by_category
     end
 
-    def add_invitation_motif_to_unavailable_motifs(invitation)
-      motif_name = MotifCategory.find_by(short_name: invitation[:motif_category_short_name]).name
+    def group_invitation_params_by_category(invitation)
+      motif_category_name = MotifCategory.find_by(short_name: invitation[:motif_category_short_name]).name
       city_code = invitation[:city_code]
       referent_ids = invitation[:referent_ids]
-      motif_hash = find_or_initialize_motif_hash(motif_name)
-      motif_hash[:city_codes] << city_code unless motif_hash[:city_codes].include?(city_code) || city_code.nil?
-      return if motif_hash[:referent_ids].include?(referent_ids) || referent_ids.nil?
+      category_params_group = find_or_initialize_category_params_group(motif_category_name)
+      unless category_params_group[:city_codes].include?(city_code) || city_code.nil?
+        category_params_group[:city_codes] << city_code
+      end
+      return if category_params_group[:referent_ids].include?(referent_ids) || referent_ids.nil?
 
-      motif_hash[:referent_ids] << referent_ids
+      category_params_group[:referent_ids] << referent_ids
     end
 
-    def find_or_initialize_motif_hash(motif_name)
-      motif_hash = @unavailable_motifs.find { |m| m[:motif_name] == motif_name }
-      return motif_hash if motif_hash.present?
+    def find_or_initialize_category_params_group(motif_category_name)
+      category_params_group = @grouped_invitation_params_by_category.find do |m|
+        m[:motif_category_name] == motif_category_name
+      end
+      return category_params_group if category_params_group.present?
 
-      motif_hash = { motif_name: motif_name, city_codes: [], referent_ids: [] }
-      @unavailable_motifs << motif_hash
-      motif_hash
+      category_params_group = { motif_category_name: motif_category_name, city_codes: [], referent_ids: [] }
+      @grouped_invitation_params_by_category << category_params_group
+      category_params_group
     end
   end
 end
