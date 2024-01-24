@@ -2,29 +2,17 @@ module SuperAdmins
   module RedirectAndRenderConcern
     # the methods below are extracted from the default actions in Administrate::ApplicationController
     # they are redefined here to allow an easier customization of the actions
-    def redirect_after_successful_create
+    def redirect_after_succesful_action(record)
       redirect_to(
-        after_resource_created_path(resource),
-        notice: translate_with_resource("create.success")
+        send("after_resource_#{action_name}d_path", record),
+        notice: translate_with_resource("#{action_name}.success")
       )
     end
 
-    def redirect_after_successful_update
-      redirect_to(
-        after_resource_updated_path(requested_resource),
-        notice: translate_with_resource("update.success")
-      )
-    end
-
-    def render_new
-      render :new, locals: {
-        page: Administrate::Page::Form.new(dashboard, resource)
-      }, status: :unprocessable_entity
-    end
-
-    def render_edit
-      render :edit, locals: {
-        page: Administrate::Page::Form.new(dashboard, requested_resource)
+    def render_page(page, record, errors)
+      flash[:error] = errors.join("<br/>")
+      render page, locals: {
+        page: Administrate::Page::Form.new(dashboard, record)
       }, status: :unprocessable_entity
     end
   end
