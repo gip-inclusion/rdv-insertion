@@ -25,7 +25,7 @@ class NotifyUnavailableCreneauJob < ApplicationJob
 
   def notify_on_mattermost(organisation, unavailable_params_motifs)
     unavailable_params_motifs.each do |motif|
-      MattermostClient.send_to_rgpd_channel(formated_string_for_mattermost_message(organisation, motif))
+      MattermostClient.send_to_notif_channel(formated_string_for_mattermost_message(organisation, motif))
     end
   end
 
