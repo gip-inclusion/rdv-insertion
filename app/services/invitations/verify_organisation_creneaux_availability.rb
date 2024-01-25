@@ -9,7 +9,7 @@ module Invitations
 
     def call
       process_invitations
-      process_invitations_params_without_creneau
+      result.unavailable_params_motifs = process_invitations_params_without_creneau
     end
 
     private
@@ -47,7 +47,6 @@ module Invitations
       @invitations_params_without_creneau.each do |invitation_params|
         group_invitation_params_by_category(invitation_params)
       end
-
       @grouped_invitation_params_by_category
     end
 

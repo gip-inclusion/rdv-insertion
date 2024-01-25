@@ -1,8 +1,8 @@
 class NotifyUnavailableCreneauJob < ApplicationJob
   def perform(organisation_id)
-    unavailable_params_motifs =
-      Invitations::VerifyOrganisationCreneauxAvailability.new(organisation_id: organisation_id).call
-    return if unavailable_params_motifs.empty?
+    result =
+      Invitations::VerifyOrganisationCreneauxAvailability.call(organisation_id: organisation_id)
+    return if result.unavailable_params_motifs.empty?
 
     # unavailable_params_motifs = [{
     #   motif_category_name: "RSA Orientation",
@@ -10,8 +10,8 @@ class NotifyUnavailableCreneauJob < ApplicationJob
     #   referent_ids: ["1", "2", "3"]
     # },...]
     organisation = Organisation.find(organisation_id)
-    deliver_email(organisation, unavailable_params_motifs)
-    notify_on_mattermost(organisation, unavailable_params_motifs)
+    deliver_email(organisation, result.unavailable_params_motifs)
+    notify_on_mattermost(organisation, result.unavailable_params_motifs)
   end
 
   private
