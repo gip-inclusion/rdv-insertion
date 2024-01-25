@@ -48,10 +48,16 @@ RSpec.configure do |config|
   config.include ApiSpecSharedExamples
   config.include ActiveSupport::Testing::TimeHelpers
 
+  # needed until we store the orgs logo in a scaleway bucket
+  config.before do
+    allow_any_instance_of(Department).to receive(:logo_path).and_return("logos/ain.png")
+  end
+
   ## Clear downloads
   config.before(:each, js: true) do
     clear_downloads
   end
+
   config.after(:each, js: true) do
     clear_downloads
   end
