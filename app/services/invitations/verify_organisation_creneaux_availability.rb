@@ -30,20 +30,13 @@ module Invitations
     end
 
     def map_invitation_params(invitation, default_token)
-      # We map relevant params only (for creneaux search in rdvs) is done to reduce the number of calls to the RDVSP API
-      # The uniq filter on this mapping reduce the number of average calls to the API by /3
+      # We keep uniq relevant params only (for creneaux search in rdvs) to reduce the number of calls to the RDVSP API
       # We take the first invitation token as default token
       # We keep the original invitation_token only if the invitation has a referent_id
-      token = invitation.link_params["referent_ids"].nil? ? default_token : invitation.link_params["invitation_token"]
-      {
-        organisation_ids: invitation.link_params["organisation_ids"],
-        referent_ids: invitation.link_params["referent_ids"],
-        motif_category_short_name: invitation.link_params["motif_category_short_name"],
-        departement: invitation.link_params["departement"],
-        city_code: invitation.link_params["city_code"],
-        street_ban_id: invitation.link_params["street_ban_id"],
-        invitation_token: token
-      }
+      invitation.link_params.symbolize_keys.merge(
+        invitation_token:
+          invitation.link_params["referent_ids"].nil? ? default_token : invitation.link_params["invitation_token"]
+      ).except(:latitude, :longitude, :address)
     end
 
     def creneau_available?(params)
