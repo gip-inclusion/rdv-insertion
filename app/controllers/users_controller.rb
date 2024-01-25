@@ -278,10 +278,8 @@ class UsersController < ApplicationController
   end
 
   def set_referents_list
-    @referents_list = current_structure.agents
-                                       .where.not(last_name: nil)
-                                       .where(super_admin: false)
-                                       .distinct.order(:last_name)
+    @referents_list = current_structure.agents.where.not(last_name: nil).distinct.order(:last_name)
+    @referents_list = @referents_list.where(super_admin: false) if Rails.env.production?
   end
 
   def set_current_agent_roles
