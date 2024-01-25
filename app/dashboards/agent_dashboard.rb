@@ -15,7 +15,7 @@ class AgentDashboard < Administrate::BaseDashboard
     departments: Field::HasMany,
     email: Field::String,
     first_name: Field::String,
-    has_logged_in: Field::Boolean,
+    last_sign_in_at: Field::DateTime,
     last_name: Field::String,
     last_webhook_update_received_at: Field::DateTime,
     motif_categories: Field::HasMany,
@@ -50,7 +50,7 @@ class AgentDashboard < Administrate::BaseDashboard
     departments
     email
     first_name
-    has_logged_in
+    last_sign_in_at
     last_name
     last_webhook_update_received_at
     motif_categories
@@ -74,7 +74,6 @@ class AgentDashboard < Administrate::BaseDashboard
     departments
     email
     first_name
-    has_logged_in
     last_name
     last_webhook_update_received_at
     motif_categories

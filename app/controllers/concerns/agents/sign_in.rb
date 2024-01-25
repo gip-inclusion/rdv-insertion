@@ -36,7 +36,7 @@ module Agents::SignIn
   end
 
   def mark_agent_as_logged_in!
-    return if authenticated_agent.has_logged_in? || authenticated_agent.update(has_logged_in: true)
+    return if authenticated_agent.update(last_sign_in_at: Time.zone.now)
 
     render json: { success: false, errors: authenticated_agent.errors.full_messages }, status: :unprocessable_entity
   end
