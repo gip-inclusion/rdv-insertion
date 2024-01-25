@@ -1,6 +1,7 @@
 <h1>Madame, Monsieur,</h1>
 <% @motifs.each do |motif| %>
   <p>Vous avez ouvert des motifs de RDV sur la catégorie <b><%= motif[:motif_category_name] %></b> et vous avez invité des personnes à prendre rendez-vous.</p>
+  <p>Nombre d'invitations concernnées : <b><%= motif[:invations_counter] %></b></p>
   <%= tag.p ("Les codes postaux concernés sont : #{motif[:city_codes].join(", ")}.") if motif[:city_codes].present? %>
   <p>Les codes postaux n'ont de l'importance que si la sectorisation n'est pas activée.</p>
   <%= tag.p ("Les email des référents concernés sont : #{Agent.where(rdv_solidarites_agent_id: motif[:referent_ids]).map(&:email).join(", ")}.") if motif[:referent_ids].present? %>

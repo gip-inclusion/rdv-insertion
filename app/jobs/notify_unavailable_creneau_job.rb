@@ -33,7 +33,8 @@ class NotifyUnavailableCreneauJob < ApplicationJob
     string =
       "Créneaux indisponibles pour l'organisation #{organisation.name}" \
       " (Département: #{organisation.department.name})\n" \
-      " Motif : #{motif[:motif_category_name]}\n"
+      " Motif : #{motif[:motif_category_name]}\n" \
+      " Nombre d'invitations concernées : #{motif[:invations_counter]}\n"
 
     string += " Codes postaux : #{motif[:city_codes].join(', ')}\n" if motif[:city_codes].present?
 
