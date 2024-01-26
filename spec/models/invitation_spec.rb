@@ -28,9 +28,17 @@ describe Invitation do
     end
 
     context "when no help_phone_number" do
-      before { invitation.help_phone_number = nil }
+      before do
+        invitation.help_phone_number = nil
+        organisation.update!(phone_number: nil)
+      end
 
-      it { expect(invitation).not_to be_valid }
+      it "has an error message" do
+        expect(invitation).not_to be_valid
+        expect(invitation.errors.messages[:base]).to include(
+          "Le téléphone de contact de l'organisation #{organisation.name} doit être indiqué."
+        )
+      end
     end
 
     context "when no organisations" do
