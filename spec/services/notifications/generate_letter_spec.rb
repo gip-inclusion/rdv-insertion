@@ -192,7 +192,7 @@ describe Notifications::GenerateLetter, type: :service do
 
       it "generates the pdf string with the pole emploi logo" do
         subject
-        expect(notification.content).to include("pole-emploi-logo")
+        expect(notification.content).to include("france-travail-logo")
       end
     end
 

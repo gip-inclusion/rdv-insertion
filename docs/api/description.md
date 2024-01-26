@@ -178,7 +178,7 @@ Le schéma détaillé avec exemple se trouve en bas de page. Ci-dessous on expli
 - `phone_number`: STRING (optionnel) : Le numéro de téléphone de l'usager. S'il n'est pas présent l'invitation par SMS ne sera pas envoyée.
 - `birth_date`: STRING (optionnel) : Date de naissance de l'usager au format DD/MM/YYYY
 - `nir` (optionnel) : NIR
-- `pole_emploi_id` (optionnel) : numéro d'identification Pole emploi
+- `pole_emploi_id` (optionnel) : numéro d'identification France Travail
 - `rights_opening_date`: STRING (optionnel): Si l'usager est bénéficiaire du RSA, c'est la date de réception du 1er flux bénéficiaire quotidien qui montre que l'usager est un nouvel entrant). Au format DD/MM/YYYY.
 - `address`: STRING (optionnel) : L'addresse de l'usager. Cette addresse comprend le code postal et la ville.
 - `birth_name` : STRING (optionnel) : Le nom de naissance de l'usager

@@ -86,7 +86,7 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
         expect(csv).to include("Numéro CAF")
         expect(csv).to include("ID interne au département")
         expect(csv).to include("Numéro de sécurité sociale")
-        expect(csv).to include("ID Pôle Emploi")
+        expect(csv).to include("ID France Travail")
         expect(csv).to include("ID interne au département")
         expect(csv).to include("Email")
         expect(csv).to include("Téléphone")

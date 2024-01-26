@@ -38,7 +38,7 @@ describe Invitations::GenerateLetter, type: :service do
       expect(content).to include("Vous êtes bénéficiaire du RSA")
       expect(content).not_to include("department-logo")
       expect(content).not_to include("europe-logos")
-      expect(content).not_to include("pole-emploi-logo")
+      expect(content).not_to include("france-travail-logo")
     end
 
     context "when the format is not postal" do
@@ -115,7 +115,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "generates the pdf string with the pole emploi logo" do
         subject
-        expect(invitation.content).to include("pole-emploi-logo")
+        expect(invitation.content).to include("france-travail-logo")
       end
     end
 
