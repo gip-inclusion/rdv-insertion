@@ -86,7 +86,7 @@ class Stat < ApplicationRecord
     @agents_sample ||= Agent.not_betagouv
                             .joins(:organisations)
                             .where(organisations: all_organisations)
-                            .where(has_logged_in: true)
+                            .where.not(last_sign_in_at: nil)
                             .distinct
   end
 

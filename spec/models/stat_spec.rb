@@ -27,8 +27,8 @@ describe Stat do
       create(:invitation, user: user2, department: other_department, organisations: [other_organisation],
                           sent_at: date, rdv_context: rdv_context2)
     end
-    let!(:agent1) { create(:agent, organisations: [organisation], has_logged_in: true) }
-    let!(:agent2) { create(:agent, organisations: [other_organisation], has_logged_in: true) }
+    let!(:agent1) { create(:agent, organisations: [organisation], last_sign_in_at: Time.zone.now) }
+    let!(:agent2) { create(:agent, organisations: [other_organisation], last_sign_in_at: Time.zone.now) }
     let!(:participation1) { create(:participation, rdv: rdv1, user: user1, rdv_context: rdv_context1) }
     let!(:participation2) { create(:participation, rdv: rdv2, user: user2, rdv_context: rdv_context2) }
     let!(:rdv_context1) { create(:rdv_context, user: user1, motif_category: category_rsa_orientation) }
@@ -143,8 +143,10 @@ describe Stat do
       end
 
       describe "#agents_sample" do
-        let!(:agent3) { create(:agent, organisations: [organisation], has_logged_in: true, email: "a@beta.gouv.fr") }
-        let!(:agent4) { create(:agent, organisations: [organisation], has_logged_in: false) }
+        let!(:agent3) do
+          create(:agent, organisations: [organisation], last_sign_in_at: Time.zone.now, email: "a@beta.gouv.fr")
+        end
+        let!(:agent4) { create(:agent, organisations: [organisation], last_sign_in_at: nil) }
 
         it "scopes the collection to the department" do
           expect(stat.agents_sample).to include(agent1)
@@ -353,8 +355,10 @@ describe Stat do
       end
 
       describe "#agents_sample" do
-        let!(:agent3) { create(:agent, organisations: [organisation], has_logged_in: true, email: "a@beta.gouv.fr") }
-        let!(:agent4) { create(:agent, organisations: [organisation], has_logged_in: false) }
+        let!(:agent3) do
+          create(:agent, organisations: [organisation], last_sign_in_at: Time.zone.now, email: "a@beta.gouv.fr")
+        end
+        let!(:agent4) { create(:agent, organisations: [organisation], last_sign_in_at: nil) }
 
         it "scopes the collection to the organisation" do
           expect(stat.agents_sample).to include(agent1)
