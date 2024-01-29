@@ -1,9 +1,8 @@
 const path = require("path");
 const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-// Removes exported JavaScript files from CSS-only entries
-// in this example, entry.custom will create a corresponding empty custom.js file
 const RemoveEmptyScriptsPlugin = require("webpack-remove-empty-scripts");
+// The RAILS_ENV variable is set as "development" in Procfile.dev
 const mode = process.env.RAILS_ENV === "development" ? "development" : "production";
 
 module.exports = {
