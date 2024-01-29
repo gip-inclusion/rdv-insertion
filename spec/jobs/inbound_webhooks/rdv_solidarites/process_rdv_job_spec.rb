@@ -124,12 +124,12 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
   # rubocop:disable RSpec/ExampleLength
   describe "#perform" do
     before do
-      allow(RdvContext).to receive(:find_or_create_by!)
+      allow(RdvContexts::FindOrCreate).to receive(:call)
         .with(user: user, motif_category: motif_category)
-        .and_return(rdv_context)
-      allow(RdvContext).to receive(:find_or_create_by!)
+        .and_return(OpenStruct.new(success?: true, rdv_context: rdv_context))
+      allow(RdvContexts::FindOrCreate).to receive(:call)
         .with(user: user2, motif_category: motif_category)
-        .and_return(rdv_context2)
+        .and_return(OpenStruct.new(success?: true, rdv_context: rdv_context2))
       allow(UpsertRecordJob).to receive(:perform_async)
       allow(InvalidateInvitationJob).to receive(:perform_async)
       allow(DeleteRdvJob).to receive(:perform_async)
@@ -195,6 +195,14 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
           subject
         end
 
+        it "calls the RdvContexts::FindOrCreate service for each user" do
+          expect(RdvContexts::FindOrCreate).to receive(:call)
+            .with(user: user, motif_category: motif_category)
+          expect(RdvContexts::FindOrCreate).to receive(:call)
+            .with(user: user2, motif_category: motif_category)
+          subject
+        end
+
         it "enqueues jobs to invalidate the related sent valid invitations" do
           expect(InvalidateInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation.id)
           expect(InvalidateInvitationJob).to receive(:perform_async).exactly(1).time.with(invitation2.id)
@@ -227,9 +235,9 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
 
           before do
             allow(User).to receive(:create!).and_return(new_user)
-            allow(RdvContext).to receive(:find_or_create_by!)
+            allow(RdvContexts::FindOrCreate).to receive(:call)
               .with(user: new_user, motif_category: motif_category)
-              .and_return(new_rdv_context)
+              .and_return(OpenStruct.new(success?: true, rdv_context: new_rdv_context))
           end
 
           it "creates the user" do

@@ -1,12 +1,11 @@
 class RdvContextsController < ApplicationController
   PERMITTED_PARAMS = [:user_id, :motif_category_id].freeze
 
-  before_action :set_user, only: [:create]
+  before_action :set_user, :set_motif_category, only: [:create]
 
   def create
-    @rdv_context = RdvContext.new(**rdv_context_params)
-    authorize @rdv_context
-    if create_rdv_context.success?
+    @rdv_context = find_or_create_rdv_context.rdv_context
+    if find_or_create_rdv_context.success?
       respond_to do |format|
         # html is used for the show page
         format.html do
@@ -15,7 +14,7 @@ class RdvContextsController < ApplicationController
         format.turbo_stream { replace_new_button_cell_by_rdv_context_status_cell } # turbo is used for index page
       end
     else
-      turbo_stream_display_error_modal(create_rdv_context.errors)
+      turbo_stream_display_error_modal(find_or_create_rdv_context.errors)
     end
   end
 
@@ -29,8 +28,12 @@ class RdvContextsController < ApplicationController
     @user = policy_scope(User).preload(:archives).find(rdv_context_params[:user_id])
   end
 
-  def create_rdv_context
-    @create_rdv_context ||= RdvContexts::Create.call(rdv_context: @rdv_context, user: @user)
+  def set_motif_category
+    @motif_category = MotifCategory.find(rdv_context_params[:motif_category_id])
+  end
+
+  def find_or_create_rdv_context
+    @find_or_create_rdv_context ||= RdvContexts::FindOrCreate.call(user: @user, motif_category: @motif_category)
   end
 
   def replace_new_button_cell_by_rdv_context_status_cell

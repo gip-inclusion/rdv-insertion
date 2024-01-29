@@ -29,6 +29,8 @@ describe InviteUser, type: :service do
   describe "#call" do
     before do
       travel_to now
+      allow(RdvContexts::FindOrCreate).to receive(:call)
+        .and_return(OpenStruct.new(success?: true, rdv_context: rdv_context))
       allow(Invitation).to receive(:new).and_return(invitation)
       allow(Invitations::SaveAndSend).to receive(:call)
         .and_return(OpenStruct.new(success?: true))
@@ -36,6 +38,12 @@ describe InviteUser, type: :service do
 
     it "is a success" do
       is_a_success
+    end
+
+    it "finds or creates the rdv context" do
+      expect(RdvContexts::FindOrCreate).to receive(:call)
+        .with(user: user, motif_category: motif_category)
+      subject
     end
 
     it "instanciates an invitation" do
