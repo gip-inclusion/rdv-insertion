@@ -3,27 +3,28 @@
 // a relevant structure within app/javascript and only use these pack files to reference
 // that code so it'll be compiled.
 // Vanilla components
-require("@rails/ujs").start();
-require("@rails/activestorage").start();
-import LoginForm from "./components/login-form.js";
-import StatusSelector from "./components/status-selector.js";
-import ReferentSelector from "./components/referent-selector.js";
-import DepartmentSelector from "./components/department-selector.js";
-import OrganisationSelector from "./components/organisation-selector.js";
-import MatomoScriptTag from "./components/matomo-script-tag.js";
-
 import "bootstrap";
-import "./stylesheets/application";
+import "./stylesheets/application.scss";
 import "@hotwired/turbo-rails";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
-import { cable } from "@hotwired/turbo-rails";
 import { Application } from "@hotwired/stimulus";
 import { definitionsFromContext } from "@hotwired/stimulus-webpack-helpers";
 import "chartkick/chart.js";
 
+import LoginForm from "./components/login-form";
+import StatusSelector from "./components/status-selector";
+import ReferentSelector from "./components/referent-selector";
+import DepartmentSelector from "./components/department-selector";
+import OrganisationSelector from "./components/organisation-selector";
+import MatomoScriptTag from "./components/matomo-script-tag";
+
+require("@rails/ujs").start();
+require("@rails/activestorage").start();
+
 const componentRequireContext = require.context("./react/", true);
 const ReactRailsUJS = require("react_ujs");
+
 ReactRailsUJS.useContext(componentRequireContext);
 
 window.Stimulus = Application.start();
