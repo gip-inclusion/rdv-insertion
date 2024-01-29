@@ -64,9 +64,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_29_172812) do
     t.bigint "rdv_solidarites_agent_id"
     t.string "first_name"
     t.string "last_name"
-    t.boolean "has_logged_in", default: false
     t.datetime "last_webhook_update_received_at"
     t.boolean "super_admin", default: false
+    t.datetime "last_sign_in_at"
     t.index ["email"], name: "index_agents_on_email", unique: true
     t.index ["rdv_solidarites_agent_id"], name: "index_agents_on_rdv_solidarites_agent_id", unique: true
   end
