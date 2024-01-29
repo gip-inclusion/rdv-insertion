@@ -2,8 +2,7 @@ describe "Agents can generate convocation pdf", js: true do
   let!(:agent) { create(:agent, organisations: [organisation]) }
   let!(:organisation) { create(:organisation) }
   let!(:user) do
-    create(:user, organisations: [organisation], title: "monsieur",
-                  invitations: [create(:invitation, sent_at: 1.week.ago)])
+    create(:user, organisations: [organisation], title: "monsieur")
   end
   let!(:motif_category) { create(:motif_category) }
   let!(:motif) do
@@ -96,18 +95,6 @@ describe "Agents can generate convocation pdf", js: true do
 
   context "when the user has no title" do
     before { user.update! title: nil }
-
-    it "cannot generate a pdf" do
-      visit organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id)
-
-      expect(page).not_to have_button "Courrier"
-    end
-  end
-
-  context "when the user has no sent invitations" do
-    let!(:user) do
-      create(:user, organisations: [organisation], title: "monsieur")
-    end
 
     it "cannot generate a pdf" do
       visit organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id)
