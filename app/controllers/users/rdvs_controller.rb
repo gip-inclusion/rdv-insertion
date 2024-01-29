@@ -3,7 +3,7 @@ module Users
     before_action :set_user, :verify_user_is_sync_with_rdv_solidarites, :set_organisation, only: [:new]
 
     def new
-      redirect_to rdv_solidarites_find_rdv_url
+      redirect_to(rdv_solidarites_find_rdv_url)
     end
 
     private

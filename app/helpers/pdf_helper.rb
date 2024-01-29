@@ -4,8 +4,8 @@ module PdfHelper
   end
 
   def pdf_stylesheet_link_tag(source)
-    # wicked_pdf_stylesheet_link_tag produces prevents from forming a pdf
     if Rails.env.test?
+      # wicked_pdf_stylesheet_link_tag produces prevents from forming a pdf in test
       stylesheet_link_tag(source)
     else
       wicked_pdf_stylesheet_link_tag(source)
