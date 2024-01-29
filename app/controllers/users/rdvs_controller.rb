@@ -4,6 +4,7 @@ module Users
 
     def new
       redirect_to rdv_solidarites_find_rdv_url
+    end
 
     private
 
