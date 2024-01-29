@@ -234,22 +234,13 @@ describe User do
     subject { user.notifiable? }
 
     let!(:user) { create(:user, title: "monsieur") }
-    let!(:invitation) { create(:invitation, sent_at: 2.years.ago, user:) }
 
-    it "is notifiable if the title is present and the user has been invited" do
+    it "is notifiable if the title is present" do
       expect(subject).to eq(true)
     end
 
     context "when the user has no title" do
       let!(:user) { create(:user, title: nil) }
-
-      it "is not notifiable" do
-        expect(subject).to eq(false)
-      end
-    end
-
-    context "when the user has no invitations" do
-      let!(:invitation) { nil }
 
       it "is not notifiable" do
         expect(subject).to eq(false)
