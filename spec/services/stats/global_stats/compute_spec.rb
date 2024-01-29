@@ -22,6 +22,8 @@ describe Stats::GlobalStats::Compute, type: :service do
     before do
       allow(stat).to receive(:all_users)
         .and_return(User.where(id: [user1, user2]))
+      allow(stat).to receive(:user_ids_with_rdv_sample)
+        .and_return(Participation.where(id: [participation1, participation2]).select(:user_id))
       allow(stat).to receive(:all_participations)
         .and_return(Participation.where(id: [participation1, participation2]))
       allow(stat).to receive(:invitations_sample)
@@ -64,6 +66,7 @@ describe Stats::GlobalStats::Compute, type: :service do
 
     it "renders all the stats" do
       expect(subject.stat_attributes).to include(:users_count)
+      expect(subject.stat_attributes).to include(:users_with_rdv_count)
       expect(subject.stat_attributes).to include(:rdvs_count)
       expect(subject.stat_attributes).to include(:sent_invitations_count)
       expect(subject.stat_attributes).to include(:rate_of_no_show_for_invitations)
@@ -77,6 +80,7 @@ describe Stats::GlobalStats::Compute, type: :service do
 
     it "renders the stats in the right format" do
       expect(subject.stat_attributes[:users_count]).to be_a(Integer)
+      expect(subject.stat_attributes[:users_with_rdv_count]).to be_a(Integer)
       expect(subject.stat_attributes[:rdvs_count]).to be_a(Integer)
       expect(subject.stat_attributes[:sent_invitations_count]).to be_a(Integer)
       expect(subject.stat_attributes[:rate_of_no_show_for_invitations]).to be_a(Float)
@@ -91,6 +95,11 @@ describe Stats::GlobalStats::Compute, type: :service do
     it "counts the users" do
       expect(stat).to receive(:all_users)
       expect(subject.stat_attributes[:users_count]).to eq(2)
+    end
+
+    it "counts the users with rdv" do
+      expect(stat).to receive(:user_ids_with_rdv_sample)
+      expect(subject.stat_attributes[:users_with_rdv_count]).to eq(2)
     end
 
     it "counts the rdvs" do

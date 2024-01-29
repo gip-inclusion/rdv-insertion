@@ -121,7 +121,7 @@ class User < ApplicationRecord
   end
 
   def notifiable?
-    sent_invitations.any? && title.present?
+    title.present?
   end
 
   private
