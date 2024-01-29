@@ -15,6 +15,7 @@ module Stats
       def stats_for_focused_month
         @stats_for_focused_month ||= {
           users_count_grouped_by_month: users_count_for_focused_month,
+          users_with_rdv_count_grouped_by_month: users_with_rdv_count_grouped_by_month,
           rdvs_count_grouped_by_month: rdvs_count_for_focused_month,
           sent_invitations_count_grouped_by_month: sent_invitations_count_for_focused_month,
           rate_of_no_show_for_invitations_grouped_by_month: rate_of_no_show_for_invitations_for_focused_month,
@@ -31,6 +32,10 @@ module Stats
 
       def users_count_for_focused_month
         created_during_focused_month(@stat.all_users).count
+      end
+
+      def users_with_rdv_count_grouped_by_month
+        created_during_focused_month(@stat.user_ids_with_rdv_sample).count
       end
 
       def rdvs_count_for_focused_month
