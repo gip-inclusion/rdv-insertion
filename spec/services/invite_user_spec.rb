@@ -179,7 +179,7 @@ describe InviteUser, type: :service do
         end
 
         it "stores the error" do
-          expect(subject.errors).to eq(["Une invitation sms a déjà été envoyée aujourd'hui à cet utilisateur"])
+          expect(subject.errors).to eq(["Une invitation sms a déjà été envoyée aujourd'hui à cet usager"])
         end
 
         context "when the format is postal" do

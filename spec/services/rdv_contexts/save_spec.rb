@@ -1,5 +1,5 @@
-describe RdvContexts::Create do
-  subject { described_class.call(rdv_context:, user:) }
+describe RdvContexts::Save do
+  subject { described_class.call(rdv_context:) }
 
   let!(:user) { create(:user, organisations: [organisation]) }
   let!(:organisation) { create(:organisation, configurations: [configuration]) }
@@ -22,7 +22,7 @@ describe RdvContexts::Create do
 
       it "stores the error" do
         expect(subject.errors).to eq(
-          ["L'utilisateur n'appartient à aucune organisation gérant cette catégorie de motifs"]
+          ["L'usager n'appartient à aucune organisation gérant cette catégorie de motifs"]
         )
       end
     end
