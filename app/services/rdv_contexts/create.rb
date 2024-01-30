@@ -6,11 +6,9 @@ module RdvContexts
     end
 
     def call
-      RdvContext.transaction do
-        check_if_user_has_an_organisation_for_this_motif_category!
-        save_record!(@rdv_context)
-        result.rdv_context = @rdv_context
-      end
+      check_if_user_has_an_organisation_for_this_motif_category!
+      save_record!(@rdv_context)
+      result.rdv_context = @rdv_context
     end
 
     def check_if_user_has_an_organisation_for_this_motif_category!
