@@ -10,6 +10,8 @@ module RdvContexts
       result.rdv_context = @rdv_context
     end
 
+    private
+
     def check_if_user_has_an_organisation_for_this_motif_category!
       return if user.organisations_motif_category_ids.include?(@rdv_context.motif_category_id)
 
