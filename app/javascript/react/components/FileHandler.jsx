@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 
 import PendingMessage from "./PendingMessage";
 
@@ -16,6 +16,7 @@ export default function FileHandler({
   uploadMessage = DEFAULT_UPLOAD_MESSAGE,
 }) {
   const [isPending, setIsPending] = useState(false);
+  const fileInputRef = useRef(null);
 
   const handleFiles = async (filesToHandle) => {
     await Promise.all([...filesToHandle].map(async (file) => handleFile(file)));
@@ -32,20 +33,27 @@ export default function FileHandler({
 
   return (
     <>
-      {/* <p className={styles.description}> */}
       <p className="text-center">
         {isPending && <PendingMessage message={pendingMessage} fileSize={fileSize} />}
         {!isPending && uploadMessage}
       </p>
-      <div className="file-input-div">
+      <div className="text-center">
         <input
           type="file"
           name={name}
-          className="text-white"
+          className="d-none"
           accept={accept}
           onChange={handleUploads}
           multiple={multiple}
+          ref={fileInputRef}
         />
+        <button
+          type="button"
+          className="btn btn-blue"
+          onClick={() => fileInputRef.current.click()}
+        >
+          Choisir un fichier
+        </button>
       </div>
     </>
   );
