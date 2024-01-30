@@ -27,6 +27,12 @@ describe Invitation do
       it { expect(invitation).not_to be_valid }
     end
 
+    context "when no help_phone_number" do
+      before { invitation.help_phone_number = nil }
+
+      it { expect(invitation).not_to be_valid }
+    end
+
     context "when no organisations" do
       before { invitation.organisations = [] }
 
