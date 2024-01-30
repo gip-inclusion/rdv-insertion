@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_24_174406) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_29_172812) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -283,7 +283,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_24_174406) do
   create_table "orientations", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "organisation_id", null: false
-    t.bigint "agent_id", null: false
+    t.bigint "agent_id"
     t.integer "orientation_type"
     t.date "starts_at"
     t.date "ends_at"
