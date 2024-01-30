@@ -60,8 +60,9 @@ class InviteUser < BaseService
   end
 
   def find_or_create_rdv_context
-    @rdv_context =
-      RdvContexts::FindOrCreate.call(user: @user, motif_category: @current_configuration.motif_category).rdv_context
+    RdvContext.with_advisory_lock "setting_rdv_context_for_user_#{@user.id}" do
+      @rdv_context = RdvContext.find_or_create_by!(motif_category: @current_configuration.motif_category, user: @user)
+    end
   end
 
   def motif_category

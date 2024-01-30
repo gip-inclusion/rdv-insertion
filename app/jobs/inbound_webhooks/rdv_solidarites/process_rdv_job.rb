@@ -232,7 +232,9 @@ module InboundWebhooks
       def rdv_contexts
         @rdv_contexts ||=
           @users.map do |user|
-            RdvContexts::FindOrCreate.call(user:, motif_category:).rdv_context
+            RdvContext.with_advisory_lock "setting_rdv_context_for_user_#{user.id}" do
+              RdvContext.find_or_create_by!(user: user, motif_category: motif_category)
+            end
           end
       end
 

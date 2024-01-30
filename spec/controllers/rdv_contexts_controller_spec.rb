@@ -17,29 +17,32 @@ describe RdvContextsController do
     }
   end
   let!(:rdv_context_count_before) { RdvContext.count }
-  let!(:rdv_context) { create(:rdv_context, motif_category: category_orientation, user: user) }
 
   describe "#create" do
     before do
       sign_in(agent)
-      allow(RdvContexts::FindOrCreate).to receive(:call)
-        .with(user: user, motif_category: category_orientation)
-        .and_return(OpenStruct.new(success?: true, rdv_context: rdv_context))
     end
 
     it "creates a new rdv_context" do
-      expect(RdvContexts::FindOrCreate).to receive(:call)
-        .with(user: user, motif_category: category_orientation)
-
       post :create, params: rdv_context_params
+      expect(RdvContext.count).to eq(rdv_context_count_before + 1)
+      expect(RdvContext.last.user).to eq(user)
+      expect(RdvContext.last.motif_category).to eq(category_orientation)
+    end
+
+    context "when not authorized" do
+      let!(:another_organisation) { create(:organisation) }
+      let(:user) { create(:user, organisations: [another_organisation]) }
+
+      it "raises an error" do
+        expect do
+          post :create, params: rdv_context_params
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
     end
 
     context "when te creation fails" do
-      before do
-        allow(RdvContexts::FindOrCreate).to receive(:call)
-          .with(user: user, motif_category: category_orientation)
-          .and_return(OpenStruct.new(success?: false, errors: ["some error"]))
-      end
+      let!(:rdv_context) { create(:rdv_context, motif_category: category_orientation, user: user) }
 
       it "opens an error modal" do
         post :create, params: rdv_context_params
@@ -56,7 +59,7 @@ describe RdvContextsController do
 
         expect(response).to redirect_to(
           organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id,
-                                              anchor: "rdv_context_#{rdv_context.id}")
+                                              anchor: "rdv_context_#{RdvContext.last.id}")
         )
       end
 
@@ -74,7 +77,7 @@ describe RdvContextsController do
 
           expect(response).to redirect_to(
             department_user_rdv_contexts_path(department_id: department.id, user_id: user.id,
-                                              anchor: "rdv_context_#{rdv_context.id}")
+                                              anchor: "rdv_context_#{RdvContext.last.id}")
           )
         end
       end
