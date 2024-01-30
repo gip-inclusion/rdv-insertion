@@ -52,7 +52,7 @@ class InviteUser < BaseService
   def check_if_invitation_should_be_sent!
     return unless invitation_already_sent_today? && !@invitation.format_postal?
 
-    fail!("Une invitation #{@invitation.format} a déjà été envoyée aujourd'hui à cet utilisateur")
+    fail!("Une invitation #{@invitation.format} a déjà été envoyée aujourd'hui à cet usager")
   end
 
   def invitation_already_sent_today?
