@@ -13,7 +13,7 @@ describe Invitations::Validate, type: :service do
   end
 
   let!(:invitation) do
-    create(
+    build(
       :invitation,
       user: user,
       rdv_context: build(:rdv_context, motif_category: category_orientation),
@@ -44,6 +44,20 @@ describe Invitations::Validate, type: :service do
   describe "#call" do
     it("is_a_success") do
       is_a_success
+    end
+
+    context "when the organisation phone number is missing" do
+      before do
+        organisation.update! phone_number: nil
+      end
+
+      it("is a failure") { is_a_failure }
+
+      it "stores an error message" do
+        expect(subject.errors).to include(
+          "Le téléphone de contact de l'organisation #{organisation.name} doit être indiqué."
+        )
+      end
     end
 
     context "when organisations are from different departments" do

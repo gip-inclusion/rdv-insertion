@@ -16,6 +16,7 @@ module Invitations
 
     def call
       validate_user_title_presence
+      validate_help_phone_number_presence
       validate_organisations_are_not_from_different_departments
       validate_it_expires_in_more_than_5_days if @invitation.format_postal?
       validate_user_belongs_to_an_org_linked_to_motif_category
@@ -72,6 +73,18 @@ module Invitations
 
     def organisations_motifs
       @organisations_motifs ||= Motif.includes(:motif_category).where(organisation_id: organisations.map(&:id))
+    end
+
+    def validate_help_phone_number_presence
+      organisations_without_phone_number = organisations.select { |orga| orga.phone_number.blank? }
+
+      if organisations_without_phone_number.size > 1
+        organisation_names = organisations_without_phone_number.map(&:name).to_sentence(last_word_connector: " et ")
+        result.errors << "Les téléphones de contact des organisations (#{organisation_names}) doivent être indiqués."
+      elsif organisations_without_phone_number.size == 1
+        organisation_name = organisations_without_phone_number.first.name
+        result.errors << "Le téléphone de contact de l'organisation #{organisation_name} doit être indiqué."
+      end
     end
   end
 end

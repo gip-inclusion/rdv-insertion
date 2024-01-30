@@ -16,9 +16,8 @@ class Invitation < ApplicationRecord
 
   attr_accessor :content
 
-  validates :rdv_solidarites_token, :organisations, :link, :valid_until, presence: true
+  validates :help_phone_number, :rdv_solidarites_token, :organisations, :link, :valid_until, presence: true
   validates :uuid, uniqueness: true, allow_nil: true
-  validate :help_phone_number_organisation_presence
 
   delegate :motif_category, :motif_category_name, to: :rdv_context
   delegate :model, to: :template, prefix: true
@@ -94,23 +93,5 @@ class Invitation < ApplicationRecord
 
   def set_rdv_context_status
     RefreshRdvContextStatusesJob.perform_async(rdv_context_id)
-  end
-
-  def help_phone_number_organisation_presence # rubocop:disable Metrics/AbcSize
-    return if help_phone_number.present?
-
-    organisations_without_phone_number = organisations.select { |orga| orga.phone_number.blank? }
-
-    if organisations_without_phone_number.size > 1
-      organisation_names = organisations_without_phone_number.map(&:name).to_sentence(last_word_connector: " et ")
-      errors.add(:base,
-                 "Les téléphones de contact des organisations (#{organisation_names}) doivent être indiqués.")
-    elsif organisations_without_phone_number.size == 1
-      organisation_name = organisations_without_phone_number.first.name
-      errors.add(:base,
-                 "Le téléphone de contact de l'organisation #{organisation_name} doit être indiqué.")
-    else
-      errors.add(:base, "Le téléphone de contact doit être indiqué.")
-    end
   end
 end
