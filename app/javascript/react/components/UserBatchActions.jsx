@@ -32,61 +32,66 @@ export default observer(({ users }) => {
     }
   };
 
+  const isAnyUserSelected = users.list.some((user) => user.selected);
+
   return (
-    users.list.some((user) => user.selected) && (
-      <div style={{ marginRight: 20, position: "relative" }}>
-        <button type="button" className="btn btn-primary dropdown-toggle" onClick={toggle}>
-          Actions pour toute la sélection
+    <div style={{ marginRight: 20, position: "relative" }}>
+      <button
+        type="button"
+        className="btn btn-primary dropdown-toggle"
+        onClick={toggle}
+        disabled={!isAnyUserSelected}
+      >
+        Actions pour toute la sélection
+      </button>
+      <div className="dropdown-menu" id="batch-actions">
+        <button
+          type="button"
+          className="dropdown-item d-flex justify-content-between align-items-center"
+          onClick={createAccounts}
+        >
+          <span>Créer comptes</span>
+          <i className="fas fa-user" />
         </button>
-        <div className="dropdown-menu" id="batch-actions">
+        {users.canBeInvitedBy("email") && (
           <button
             type="button"
             className="dropdown-item d-flex justify-content-between align-items-center"
-            onClick={createAccounts}
+            onClick={() => inviteBy("email")}
           >
-            <span>Créer comptes</span>
-            <i className="fas fa-user" />
+            <span>Invitation par mail</span>
+            <i className="fas fa-inbox" />
           </button>
-          {users.canBeInvitedBy("email") && (
-            <button
-              type="button"
-              className="dropdown-item d-flex justify-content-between align-items-center"
-              onClick={() => inviteBy("email")}
-            >
-              <span>Invitation par mail</span>
-              <i className="fas fa-inbox" />
-            </button>
-          )}
-          {users.canBeInvitedBy("sms") && (
-            <button
-              type="button"
-              className="dropdown-item d-flex justify-content-between align-items-center"
-              onClick={() => inviteBy("sms")}
-            >
-              <span>Invitation par sms</span>
-              <i className="fas fa-comment" />
-            </button>
-          )}
-          {users.canBeInvitedBy("postal") && (
-            <button
-              type="button"
-              className="dropdown-item d-flex justify-content-between align-items-center"
-              onClick={() => inviteBy("postal")}
-            >
-              <span>Invitation par courrier &nbsp;</span>
-              <i className="fas fa-envelope" />
-            </button>
-          )}
+        )}
+        {users.canBeInvitedBy("sms") && (
           <button
             type="button"
             className="dropdown-item d-flex justify-content-between align-items-center"
-            onClick={deleteAll}
+            onClick={() => inviteBy("sms")}
           >
-            <span>Cacher la sélection</span>
-            <i className="fas fa-eye-slash" />
+            <span>Invitation par sms</span>
+            <i className="fas fa-comment" />
           </button>
-        </div>
+        )}
+        {users.canBeInvitedBy("postal") && (
+          <button
+            type="button"
+            className="dropdown-item d-flex justify-content-between align-items-center"
+            onClick={() => inviteBy("postal")}
+          >
+            <span>Invitation par courrier &nbsp;</span>
+            <i className="fas fa-envelope" />
+          </button>
+        )}
+        <button
+          type="button"
+          className="dropdown-item d-flex justify-content-between align-items-center"
+          onClick={deleteAll}
+        >
+          <span>Cacher la sélection</span>
+          <i className="fas fa-eye-slash" />
+        </button>
       </div>
-    )
-  );
+    </div>
+  )
 });

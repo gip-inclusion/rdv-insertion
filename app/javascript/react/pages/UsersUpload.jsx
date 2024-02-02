@@ -217,32 +217,34 @@ const UsersUpload = observer(
           {users.list.length > 0 && (
             <>
               <div className="row my-1" style={{ height: 50 }}>
-                <div className="d-flex justify-content-end align-items-center">
+                <div className="d-flex justify-content-between align-items-center">
                   <UserBatchActions users={users} />
-                  <i className="fas fa-user" />
-                  {users.showReferentColumn ? (
-                    <Tippy content="Cacher colonne référent">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          users.showReferentColumn = false;
-                        }}
-                      >
-                        <i className="fas fa-minus" />
-                      </button>
-                    </Tippy>
-                  ) : (
-                    <Tippy content="Montrer colonne référent">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          users.showReferentColumn = true;
-                        }}
-                      >
-                        <i className="fas fa-plus" />
-                      </button>
-                    </Tippy>
-                  )}
+                  <div>
+                    <i className="fas fa-user" />
+                    {users.showReferentColumn ? (
+                      <Tippy content="Cacher colonne référent">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            users.showReferentColumn = false;
+                          }}
+                        >
+                          <i className="fas fa-minus" />
+                        </button>
+                      </Tippy>
+                    ) : (
+                      <Tippy content="Montrer colonne référent">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            users.showReferentColumn = true;
+                          }}
+                        >
+                          <i className="fas fa-plus" />
+                        </button>
+                      </Tippy>
+                    )}
+                  </div>
                 </div>
               </div>
             </>
