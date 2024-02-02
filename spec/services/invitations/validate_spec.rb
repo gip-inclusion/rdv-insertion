@@ -48,7 +48,8 @@ describe Invitations::Validate, type: :service do
 
     context "when the organisation phone number is missing" do
       before do
-        organisation.update! phone_number: nil
+        organisation.update!(phone_number: nil)
+        invitation.update(help_phone_number: nil)
       end
 
       it("is a failure") { is_a_failure }
