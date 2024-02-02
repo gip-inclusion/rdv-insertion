@@ -80,7 +80,7 @@ class Users {
         content: ({ user }) => <EditableCell type="text" user={user} cell="lastName" />
       },
       {
-        name: "Numéro CAF", 
+        name: "Numéro CAF",
         visible: this.fileColumnNames.affiliation_number_column,
         content: ({ user }) => <EditableCell type="text" user={user} cell="affiliationNumber" />
       },
@@ -113,8 +113,8 @@ class Users {
       },
       {
         name: "ID PE",
-        visible: this.fileColumnNames.pole_emploi_id_column,
-        content: ({ user }) => user.poleEmploiId ?? " - "
+        visible: this.fileColumnNames.france_travail_id_column,
+        content: ({ user }) => user.franceTravailId ?? " - "
       },
       {
         name: "Email",
@@ -193,7 +193,7 @@ class Users {
           )
         }
 
-        return column.name        
+        return column.name
       },
       ...column
     }))

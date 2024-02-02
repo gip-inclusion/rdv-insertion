@@ -187,7 +187,7 @@ describe Notifications::GenerateLetter, type: :service do
 
     context "when the pole emploi logo is configured to be displayed" do
       let!(:messages_configuration) do
-        create(:messages_configuration, organisation: organisation, display_pole_emploi_logo: true)
+        create(:messages_configuration, organisation: organisation, display_france_travail_logo: true)
       end
 
       it "generates the pdf string with the pole emploi logo" do

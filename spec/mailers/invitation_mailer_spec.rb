@@ -6,7 +6,7 @@ RSpec.describe InvitationMailer do
   let!(:organisation) { create(:organisation, department: department) }
   let!(:messages_configuration) do
     create(:messages_configuration, organisation: organisation, display_department_logo: true,
-                                    display_europe_logos: true, display_pole_emploi_logo: true)
+                                    display_europe_logos: true, display_france_travail_logo: true)
   end
   let!(:user) do
     create(:user, first_name: "Jean", last_name: "Valjean", title: "monsieur")
@@ -62,7 +62,7 @@ RSpec.describe InvitationMailer do
       context "when the display logos options are disabled" do
         let!(:messages_configuration) do
           create(:messages_configuration, organisation: organisation, display_department_logo: false,
-                                          display_europe_logos: false, display_pole_emploi_logo: false)
+                                          display_europe_logos: false, display_france_travail_logo: false)
         end
 
         it "does not display the different optional logos" do
@@ -161,7 +161,7 @@ RSpec.describe InvitationMailer do
         context "when the display logos options are disabled" do
           let!(:messages_configuration) do
             create(:messages_configuration, organisation: organisation, display_department_logo: false,
-                                            display_europe_logos: false, display_pole_emploi_logo: false)
+                                            display_europe_logos: false, display_france_travail_logo: false)
           end
 
           it "does not display the different optional logos" do
@@ -215,7 +215,7 @@ RSpec.describe InvitationMailer do
       context "when the display logos options are disabled" do
         let!(:messages_configuration) do
           create(:messages_configuration, organisation: organisation, display_department_logo: false,
-                                          display_europe_logos: false, display_pole_emploi_logo: false)
+                                          display_europe_logos: false, display_france_travail_logo: false)
         end
 
         it "does not display the different optional logos" do
@@ -266,7 +266,7 @@ RSpec.describe InvitationMailer do
       context "when the display logos options are disabled" do
         let!(:messages_configuration) do
           create(:messages_configuration, organisation: organisation, display_department_logo: false,
-                                          display_europe_logos: false, display_pole_emploi_logo: false)
+                                          display_europe_logos: false, display_france_travail_logo: false)
         end
 
         it "does not display the different optional logos" do
@@ -317,7 +317,7 @@ RSpec.describe InvitationMailer do
       context "when the display logos options are disabled" do
         let!(:messages_configuration) do
           create(:messages_configuration, organisation: organisation, display_department_logo: false,
-                                          display_europe_logos: false, display_pole_emploi_logo: false)
+                                          display_europe_logos: false, display_france_travail_logo: false)
         end
 
         it "does not display the different optional logos" do
@@ -370,7 +370,7 @@ RSpec.describe InvitationMailer do
       context "when the display logos options are disabled" do
         let!(:messages_configuration) do
           create(:messages_configuration, organisation: organisation, display_department_logo: false,
-                                          display_europe_logos: false, display_pole_emploi_logo: false)
+                                          display_europe_logos: false, display_france_travail_logo: false)
         end
 
         it "does not display the different optional logos" do
@@ -422,7 +422,7 @@ RSpec.describe InvitationMailer do
       context "when the display logos options are disabled" do
         let!(:messages_configuration) do
           create(:messages_configuration, organisation: organisation, display_department_logo: false,
-                                          display_europe_logos: false, display_pole_emploi_logo: false)
+                                          display_europe_logos: false, display_france_travail_logo: false)
         end
 
         it "does not display the different optional logos" do
@@ -472,7 +472,7 @@ RSpec.describe InvitationMailer do
       context "when the display logos options are disabled" do
         let!(:messages_configuration) do
           create(:messages_configuration, organisation: organisation, display_department_logo: false,
-                                          display_europe_logos: false, display_pole_emploi_logo: false)
+                                          display_europe_logos: false, display_france_travail_logo: false)
         end
 
         it "does not display the different optional logos" do
@@ -523,7 +523,7 @@ RSpec.describe InvitationMailer do
       context "when the display logos options are disabled" do
         let!(:messages_configuration) do
           create(:messages_configuration, organisation: organisation, display_department_logo: false,
-                                          display_europe_logos: false, display_pole_emploi_logo: false)
+                                          display_europe_logos: false, display_france_travail_logo: false)
         end
 
         it "does not display the different optional logos" do
@@ -636,7 +636,7 @@ RSpec.describe InvitationMailer do
       context "when the display logos options are disabled" do
         let!(:messages_configuration) do
           create(:messages_configuration, organisation: organisation, display_department_logo: false,
-                                          display_europe_logos: false, display_pole_emploi_logo: false)
+                                          display_europe_logos: false, display_france_travail_logo: false)
         end
 
         it "does not display the different optional logos" do
@@ -687,7 +687,7 @@ RSpec.describe InvitationMailer do
     context "when the display logos options are disabled" do
       let!(:messages_configuration) do
         create(:messages_configuration, organisation: organisation, display_department_logo: false,
-                                        display_europe_logos: false, display_pole_emploi_logo: false)
+                                        display_europe_logos: false, display_france_travail_logo: false)
       end
 
       it "does not display the different optional logos" do
@@ -753,7 +753,7 @@ RSpec.describe InvitationMailer do
     context "when the display logos options are disabled" do
       let!(:messages_configuration) do
         create(:messages_configuration, organisation: organisation, display_department_logo: false,
-                                        display_europe_logos: false, display_pole_emploi_logo: false)
+                                        display_europe_logos: false, display_france_travail_logo: false)
       end
 
       it "does not display the different optional logos" do
@@ -812,7 +812,7 @@ RSpec.describe InvitationMailer do
       context "when the display logos options are disabled" do
         let!(:messages_configuration) do
           create(:messages_configuration, organisation: organisation, display_department_logo: false,
-                                          display_europe_logos: false, display_pole_emploi_logo: false)
+                                          display_europe_logos: false, display_france_travail_logo: false)
         end
 
         it "does not display the different optional logos" do
@@ -862,7 +862,7 @@ RSpec.describe InvitationMailer do
       context "when the display logos options are disabled" do
         let!(:messages_configuration) do
           create(:messages_configuration, organisation: organisation, display_department_logo: false,
-                                          display_europe_logos: false, display_pole_emploi_logo: false)
+                                          display_europe_logos: false, display_france_travail_logo: false)
         end
 
         it "does not display the different optional logos" do
@@ -914,7 +914,7 @@ RSpec.describe InvitationMailer do
       context "when the display logos options are disabled" do
         let!(:messages_configuration) do
           create(:messages_configuration, organisation: organisation, display_department_logo: false,
-                                          display_europe_logos: false, display_pole_emploi_logo: false)
+                                          display_europe_logos: false, display_france_travail_logo: false)
         end
 
         it "does not display the different optional logos" do
@@ -982,7 +982,7 @@ RSpec.describe InvitationMailer do
       context "when the display logos options are disabled" do
         let!(:messages_configuration) do
           create(:messages_configuration, organisation: organisation, display_department_logo: false,
-                                          display_europe_logos: false, display_pole_emploi_logo: false)
+                                          display_europe_logos: false, display_france_travail_logo: false)
         end
 
         it "does not display the different optional logos" do
@@ -1047,7 +1047,7 @@ RSpec.describe InvitationMailer do
         context "when the display logos options are disabled" do
           let!(:messages_configuration) do
             create(:messages_configuration, organisation: organisation, display_department_logo: false,
-                                            display_europe_logos: false, display_pole_emploi_logo: false)
+                                            display_europe_logos: false, display_france_travail_logo: false)
           end
 
           it "does not display the different optional logos" do
@@ -1104,7 +1104,7 @@ RSpec.describe InvitationMailer do
       context "when the display logos options are disabled" do
         let!(:messages_configuration) do
           create(:messages_configuration, organisation: organisation, display_department_logo: false,
-                                          display_europe_logos: false, display_pole_emploi_logo: false)
+                                          display_europe_logos: false, display_france_travail_logo: false)
         end
 
         it "does not display the different optional logos" do
@@ -1158,7 +1158,7 @@ RSpec.describe InvitationMailer do
       context "when the display logos options are disabled" do
         let!(:messages_configuration) do
           create(:messages_configuration, organisation: organisation, display_department_logo: false,
-                                          display_europe_logos: false, display_pole_emploi_logo: false)
+                                          display_europe_logos: false, display_france_travail_logo: false)
         end
 
         it "does not display the different optional logos" do
@@ -1212,7 +1212,7 @@ RSpec.describe InvitationMailer do
     context "when the display logos options are disabled" do
       let!(:messages_configuration) do
         create(:messages_configuration, organisation: organisation, display_department_logo: false,
-                                        display_europe_logos: false, display_pole_emploi_logo: false)
+                                        display_europe_logos: false, display_france_travail_logo: false)
       end
 
       it "does not display the different optional logos" do
@@ -1274,7 +1274,7 @@ RSpec.describe InvitationMailer do
       context "when the display logos options are disabled" do
         let!(:messages_configuration) do
           create(:messages_configuration, organisation: organisation, display_department_logo: false,
-                                          display_europe_logos: false, display_pole_emploi_logo: false)
+                                          display_europe_logos: false, display_france_travail_logo: false)
         end
 
         it "does not display the different optional logos" do

@@ -15,7 +15,7 @@ FactoryBot.define do
     phone_number_column { "N° Téléphones" }
     referent_email_column { "Référent" }
     affiliation_number_column { "N° CAF" }
-    pole_emploi_id_column { "ID PE" }
+    france_travail_id_column { "ID FT" }
     nir_column { "NIR" }
   end
 end
