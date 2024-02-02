@@ -15,8 +15,7 @@ class InviteUser < BaseService
     set_invitation_organisations
     set_invitation
     result.invitation = @invitation
-    return if invitation_already_sent_today? && !@invitation.format_postal?
-
+    check_if_invitation_should_be_sent!
     save_and_send_invitation!
   end
 
@@ -50,6 +49,12 @@ class InviteUser < BaseService
       end
   end
 
+  def check_if_invitation_should_be_sent!
+    return unless invitation_already_sent_today? && !@invitation.format_postal?
+
+    fail!("Une invitation #{@invitation.format} a déjà été envoyée aujourd'hui à cet usager")
+  end
+
   def invitation_already_sent_today?
     @rdv_context.invitations.where(format: @invitation.format).where("sent_at > ?", 24.hours.ago).present?
   end
@@ -65,7 +70,7 @@ class InviteUser < BaseService
   end
 
   def all_configurations
-    @all_configurations ||= Configuration.where(organisation: @organisations).to_a
+    @all_configurations ||= Configuration.where(organisation: @organisations & @user.organisations).to_a
   end
 
   def set_current_configuration

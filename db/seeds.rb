@@ -355,7 +355,7 @@ agent = Agent.create!(
   # rdv_solidarites_agent_id: vérifier l'id de l'agent correspondant sur RDV-Solidarites
   first_name: "Alain",
   last_name: "Sertion",
-  has_logged_in: true,
+  last_sign_in_at: Time.zone.now,
   last_webhook_update_received_at: Time.zone.now
 )
 

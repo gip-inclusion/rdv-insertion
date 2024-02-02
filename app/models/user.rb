@@ -121,7 +121,11 @@ class User < ApplicationRecord
   end
 
   def notifiable?
-    sent_invitations.any? && title.present?
+    title.present?
+  end
+
+  def organisations_motif_category_ids
+    organisations.map(&:motif_category_ids).flatten
   end
 
   private

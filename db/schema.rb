@@ -64,9 +64,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_02_132147) do
     t.bigint "rdv_solidarites_agent_id"
     t.string "first_name"
     t.string "last_name"
-    t.boolean "has_logged_in", default: false
     t.datetime "last_webhook_update_received_at"
     t.boolean "super_admin", default: false
+    t.datetime "last_sign_in_at"
     t.index ["email"], name: "index_agents_on_email", unique: true
     t.index ["rdv_solidarites_agent_id"], name: "index_agents_on_rdv_solidarites_agent_id", unique: true
   end
@@ -283,7 +283,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_02_132147) do
   create_table "orientations", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "organisation_id", null: false
-    t.bigint "agent_id", null: false
+    t.bigint "agent_id"
     t.integer "orientation_type"
     t.date "starts_at"
     t.date "ends_at"
@@ -390,6 +390,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_02_132147) do
     t.json "rate_of_no_show_for_invitations_grouped_by_month"
     t.float "rate_of_users_oriented"
     t.json "rate_of_users_oriented_grouped_by_month"
+    t.integer "users_with_rdv_count"
+    t.json "users_with_rdv_count_grouped_by_month"
     t.index ["statable_type", "statable_id"], name: "index_stats_on_statable"
   end
 

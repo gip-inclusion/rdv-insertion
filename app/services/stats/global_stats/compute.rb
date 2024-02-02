@@ -13,21 +13,26 @@ module Stats
 
       def global_stats
         @global_stats ||= {
-          users_count: users_count,
-          rdvs_count: rdvs_count,
-          sent_invitations_count: sent_invitations_count,
-          rate_of_no_show_for_invitations: rate_of_no_show_for_invitations,
-          rate_of_no_show_for_convocations: rate_of_no_show_for_convocations,
-          average_time_between_invitation_and_rdv_in_days: average_time_between_invitation_and_rdv_in_days,
-          rate_of_users_oriented_in_less_than_30_days: rate_of_users_oriented_in_less_than_30_days,
-          rate_of_users_oriented: rate_of_users_oriented,
-          rate_of_autonomous_users: rate_of_autonomous_users,
-          agents_count: agents_count
+          users_count:,
+          users_with_rdv_count:,
+          rdvs_count:,
+          sent_invitations_count:,
+          rate_of_no_show_for_invitations:,
+          rate_of_no_show_for_convocations:,
+          average_time_between_invitation_and_rdv_in_days:,
+          rate_of_users_oriented_in_less_than_30_days:,
+          rate_of_users_oriented:,
+          rate_of_autonomous_users:,
+          agents_count:
         }
       end
 
       def users_count
         @stat.all_users.count
+      end
+
+      def users_with_rdv_count
+        @stat.user_ids_with_rdv_sample.count
       end
 
       def rdvs_count
