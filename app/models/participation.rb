@@ -26,6 +26,7 @@ class Participation < ApplicationRecord
            :rdv_solidarites_url, :rdv_solidarites_rdv_id, :instruction_for_rdv,
            to: :rdv
   delegate :phone_number_is_mobile?, :email?, to: :user
+  delegate :motif_category, to: :rdv_context
 
   def notifiable?
     convocable? && in_the_future? && status.in?(%w[unknown revoked])
