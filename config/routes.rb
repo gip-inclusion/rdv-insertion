@@ -39,9 +39,11 @@ Rails.application.routes.draw do
     get :search, on: :collection
     resources :users, only: [:index, :create, :show, :update, :edit, :new] do
       collection do
-        resources :uploads, only: [:new]
-        get "uploads/category_selection", to: "uploads#category_selection"
         get :default_list
+        scope module: :users do
+          resources :uploads, only: [:new]
+          get "uploads/category_selection", to: "uploads#category_selection"
+        end
       end
       scope module: :users do
         resources :rdv_contexts, only: [:index]
@@ -121,8 +123,10 @@ Rails.application.routes.draw do
     resources :department_organisations, only: [:index], as: :organisations, path: "/organisations"
     resources :users, only: [:index, :new, :create, :show, :edit, :update] do
       collection do
-        resources :uploads, only: [:new]
-        get "uploads/category_selection", to: "uploads#category_selection"
+        scope module: :users do
+          resources :uploads, only: [:new]
+          get "uploads/category_selection", to: "uploads#category_selection"
+        end
         get :default_list
       end
       scope module: :users do
