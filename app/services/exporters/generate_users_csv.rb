@@ -198,11 +198,14 @@ module Exporters
                      .participations
                      .seen
                      .joins(:motif_category)
-                     .joins(:organisation)
                      .where("motif_categories.short_name ilike ?", "%orientation%")
                      .order(created_at: :asc)
 
-      orientations = orientations.where(organisations: @agent.organisations) if @agent.present?
+      if @agent.present?
+        orientations = orientations
+                       .joins(:organisation)
+                       .where(organisations: @agent.organisations)
+      end
 
       display_date(orientations.first&.created_at)
     end
