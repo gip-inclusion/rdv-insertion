@@ -38,7 +38,7 @@ describe Exporters::GenerateUsersCsv, type: :service do
                  created_by: "user",
                  participations: [participation_rdv])
   end
-  let!(:participation_rdv) { create(:participation, user: user1, status: "seen") }
+  let!(:participation_rdv) { create(:participation, user: user1, status: "seen", created_at: "2022-05-23") }
 
   let!(:first_invitation) do
     create(:invitation, user: user1, format: "email", sent_at: Time.zone.parse("2022-05-21"))
@@ -163,7 +163,7 @@ describe Exporters::GenerateUsersCsv, type: :service do
           expect(csv).to include("Rendez-vous honoré") # rdv status
           expect(csv).to include("Statut du RDV à préciser") # rdv_context status
           expect(csv).to include("Statut du RDV à préciser;Oui") # first rdv in less than 30 days ?
-          expect(csv).to include("Rendez-vous honoré;Statut du RDV à préciser;Oui;25/05/2022") # orientation date
+          expect(csv).to include("Rendez-vous honoré;Statut du RDV à préciser;Oui;23/05/2022") # orientation date
         end
 
         it "displays the organisation infos" do

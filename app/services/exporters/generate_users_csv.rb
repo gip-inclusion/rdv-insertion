@@ -112,7 +112,7 @@ module Exporters
        human_last_participation_status(user),
        *(human_rdv_context_status(user) if @motif_category),
        rdv_seen_in_less_than_30_days?(user),
-       display_date(user.first_seen_rdv_starts_at),
+       orientation_date(user),
        display_date(user.archive_for(department_id)&.created_at),
        user.archive_for(department_id)&.archiving_reason,
        user.referents.map(&:email).join(", "),
@@ -191,6 +191,20 @@ module Exporters
       return "" if last_rdv(user).blank?
 
       last_rdv(user).collectif? ? "collectif" : "individuel"
+    end
+
+    def orientation_date(user)
+      orientations = user
+                     .participations
+                     .seen
+                     .joins(:motif_category)
+                     .joins(:organisation)
+                     .where("motif_categories.short_name ilike ?", "%orientation%")
+                     .order(created_at: :asc)
+
+      orientations = orientations.where(organisations: @agent.organisations) if @agent.present?
+
+      display_date(orientations.first&.created_at)
     end
 
     def rdv_taken_in_autonomy?(user)

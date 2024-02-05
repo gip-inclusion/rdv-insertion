@@ -11,6 +11,7 @@ class Participation < ApplicationRecord
   has_many :rdv_context_invitations, through: :rdv_context, source: :invitations
 
   has_one :organisation, through: :rdv
+  has_one :motif_category, through: :rdv_context
   has_many :configurations, through: :organisation
 
   validates :status, presence: true
@@ -25,7 +26,6 @@ class Participation < ApplicationRecord
            :rdv_solidarites_url, :rdv_solidarites_rdv_id, :instruction_for_rdv,
            to: :rdv
   delegate :phone_number_is_mobile?, :email?, to: :user
-  delegate :motif_category, to: :rdv_context
 
   def notifiable?
     convocable? && in_the_future? && status.in?(%w[unknown revoked])
