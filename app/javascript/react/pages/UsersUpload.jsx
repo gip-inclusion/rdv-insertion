@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import Swal from "sweetalert2";
-import Tippy from "@tippyjs/react";
 import { observer } from "mobx-react-lite";
 
 import FileHandler from "../components/FileHandler";
 import EnrichWithContactFile from "../components/EnrichWithContactFile";
-import UserBatchActions from "../components/UserBatchActions";
-import UserRow from "../components/User";
+import UsersActionsList from "../components/UsersActionsList";
 
 import retrieveUpToDateUsers from "../lib/retrieveUpToDateUsers";
 import parseContactsData from "../lib/parseContactsData";
@@ -53,6 +51,7 @@ const UsersUpload = observer(
       users.showReferentColumn = configuration?.rdv_with_referents;
       users.configuration = configuration;
       users.isDepartmentLevel = isDepartmentLevel;
+      users.comesFromUploadFile = true;
 
       const rows = await uploadFile(file, sheetName, columnNames);
       rows.forEach((row) => {
@@ -89,13 +88,12 @@ const UsersUpload = observer(
           },
           department,
           organisation,
-          tags,
           configuration,
-          columnNames,
           currentAgent,
-          users
+          users,
+          tags,
+          columnNames
         );
-
         users.addUser(user);
       });
     };
@@ -155,7 +153,7 @@ const UsersUpload = observer(
 
     return (
       <>
-        <div className="container mt-5 mb-8">
+        <div className="container mt-5">
           <div className="row card-white justify-content-center">
             <div className="col-4 text-center d-flex align-items-center justify-content-start">
               <button
@@ -201,7 +199,7 @@ const UsersUpload = observer(
             </div>
           </div>
           {!showEnrichWithContactFile && users.list.length > 0 && (
-            <div className="my-4 text-center">
+            <div className="mt-4 text-center">
               <button
                 type="button"
                 className="btn btn-blue-out"
@@ -214,65 +212,9 @@ const UsersUpload = observer(
           {showEnrichWithContactFile && users.list.length > 0 && (
             <EnrichWithContactFile handleContactsFile={handleContactsFile} fileSize={fileSize} />
           )}
-          {users.list.length > 0 && (
-            <>
-              <div className="row my-1" style={{ height: 50 }}>
-                <div className="d-flex justify-content-end align-items-center">
-                  <UserBatchActions users={users} />
-                  <i className="fas fa-user" />
-                  {users.showReferentColumn ? (
-                    <Tippy content="Cacher colonne référent">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          users.showReferentColumn = false;
-                        }}
-                      >
-                        <i className="fas fa-minus" />
-                      </button>
-                    </Tippy>
-                  ) : (
-                    <Tippy content="Montrer colonne référent">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          users.showReferentColumn = true;
-                        }}
-                      >
-                        <i className="fas fa-plus" />
-                      </button>
-                    </Tippy>
-                  )}
-                </div>
-              </div>
-            </>
-          )}
         </div>
         {users.list.length > 0 && !users.loading && (
-          <>
-            <div className="my-5 px-4" style={{ overflow: "scroll" }}>
-              <table className="table table-hover text-center align-middle table-striped table-bordered">
-                <thead className="align-middle dark-blue">
-                  <tr>
-                    {users.columns.map((column) => {
-                      if (!column.visible) return null;
-
-                      return (
-                        <th {...column.attributes} key={column.name}>
-                          {column.header({ column, users })}
-                        </th>
-                      );
-                    })}
-                  </tr>
-                </thead>
-                <tbody>
-                  {users.sorted.map((user) => (
-                    <UserRow user={user} key={user.uniqueKey} />
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </>
+          <UsersActionsList users={users} />
         )}
       </>
     );

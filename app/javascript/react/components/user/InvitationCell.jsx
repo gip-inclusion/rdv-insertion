@@ -27,40 +27,45 @@ export default observer(({ user, format }) => {
     user.list.canBeInvitedBy(format) && (
       <>
         <td>
-          {user.markAsAlreadyInvitedBy(format) ? (
-            <Tippy
-              content={
-                <span>Invité le {getFrenchFormatDateString(user.lastInvitationDate(format))}</span>
-              }
-            >
-              <i className="fas fa-check" />
-            </Tippy>
-          ) : user.errors.includes(actionType) ? (
+          {user.errors.includes(actionType) ? (
             <button
               type="submit"
               className="btn btn-danger"
               onClick={() => handleInvitationClick()}
             >
-              Résoudre les erreurs
+              L'envoi a échoué
             </button>
           ) : (
-            <button
-              type="submit"
-              disabled={
-                user.triggers[actionType] ||
-                !user.createdAt ||
-                !user.requiredAttributeToInviteBy(format) ||
-                !user.belongsToCurrentOrg()
+            <Tippy
+              onShow={() => user.lastInvitationDate(format) !== undefined}
+              content={
+                <span>
+                  {user.lastInvitationDate(format) &&
+                    `Dernière invitation le ${getFrenchFormatDateString(user.lastInvitationDate(format))}`
+                  }
+                  {user.lastInvitationDate(format) && user.lastParticipationRdvStartsAt() && <br />}
+                  {user.lastParticipationRdvStartsAt() &&
+                    `Dernier rendez-vous le ${getFrenchFormatDateString(user.lastParticipationRdvStartsAt())}`
+                  }
+                </span>
               }
-              className="btn btn-primary btn-blue"
-              onClick={() => handleInvitationClick()}
             >
-              {user.triggers[actionType]
-                ? "Invitation..."
-                : user.hasParticipations()
-                ? CTA_BY_FORMAT[format].secondTime
-                : CTA_BY_FORMAT[format].firstTime}
-            </button>
+              <button
+                type="submit"
+                disabled={
+                  user.triggers[actionType] ||
+                  !user.createdAt ||
+                  !user.requiredAttributeToInviteBy(format) ||
+                  !user.belongsToCurrentOrg()
+                }
+                className="btn btn-primary btn-blue"
+                onClick={() => handleInvitationClick()}
+              >
+                {user.triggers[actionType] ? "Invitation..."
+                  : user.hasParticipations() || user.lastInvitationDate(format) ? CTA_BY_FORMAT[format].secondTime
+                  : CTA_BY_FORMAT[format].firstTime}
+                </button>
+            </Tippy>
           )}
         </td>
       </>

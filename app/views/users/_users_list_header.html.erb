@@ -99,45 +99,55 @@
       </div>
     <% end %>
   </div>
-  <div class="col-4 d-flex flex-column justify-content-center align-items-end dropdown">
-    <a class="btn btn-blue dropdown-toggle mb-2" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-      Créer usager(s)
-    </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
-      <li>
-        <%= link_to(new_structure_user_path, class: "dropdown-item") do %>
-          Créer un usager
+
+  <div class="col-4 d-flex flex-column justify-content-around align-items-end">
+    <div class="d-flex flex-column align-items-end dropdown">
+      <a class="btn btn-blue dropdown-toggle mb-2" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+        Créer usager(s)
+      </a>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
+        <li>
+          <%= link_to(new_structure_user_path, class: "dropdown-item") do %>
+            Créer un usager
+          <% end %>
+        </li>
+        <li>
+          <%= link_to(new_structure_upload_path, class: "dropdown-item") do %>
+            Charger fichier usagers
+          <% end %>
+        </li>
+      </ul>
+      <% if department_level? && @current_agent_roles.any?(&:admin?) %>
+        <%= link_to(department_organisations_path(@department), data: { turbo_frame: 'remote_modal' }, class: "mb-2") do %>
+          <button class="btn btn-blue-out">Configurer une organisation</button>
         <% end %>
-      </li>
-      <li>
-        <%= link_to(new_structure_upload_path, class: "dropdown-item") do %>
-          Charger fichier usagers
+      <% elsif !department_level? && @current_agent_roles.any?(&:admin?) %>
+        <%= link_to(organisation_configurations_path(@organisation), class: "btn btn-blue-out mb-2") do %>
+          Configurer l'organisation
         <% end %>
-      </li>
-    </ul>
-    <% if department_level? && @current_agent_roles.any?(&:admin?) %>
-      <%= link_to(department_organisations_path(@department), data: { turbo_frame: 'remote_modal' }, class: "my-2") do %>
-        <button class="btn btn-blue-out">Configurer une organisation</button>
       <% end %>
-    <% elsif !department_level? && @current_agent_roles.any?(&:admin?) %>
-      <%= link_to(organisation_configurations_path(@organisation), class: "btn btn-blue-out mb-2") do %>
-        Configurer l'organisation
-      <% end %>
+      <a class="btn btn-blue-out dropdown-toggle mb-2" href="#" role="button" id="csvExportButton" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fas fa-download"></i> Exporter au format CSV
+      </a>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="csvExportButton">
+        <li>
+          <%= link_to(structure_users_path(**params.to_unsafe_h.merge(format: "csv", export_type: nil)), class: "dropdown-item", data: { controller: "tooltip", action: "mouseover->tooltip#csvExportUsers"}) do %>
+            Export des usagers
+          <% end %>
+        </li>
+        <li>
+          <%= link_to(structure_users_path(**params.to_unsafe_h.merge(format: "csv", export_type: "participations")), class: "dropdown-item", data: { controller: "tooltip", action: "mouseover->tooltip#csvExportParticipations"}) do %>
+            Export des rendez-vous des usagers
+          <% end %>
+        </li>
+      </ul>
+    </div>
+    <% if @current_configuration.present? %>
+      <div class="d-flex flex-column align-items-end dropdown">
+        <%= link_to(new_structure_batch_action_path(**params.to_unsafe_h), class: "btn btn-blue") do %>
+          Envoyer des invitations en masse
+        <% end %>
+      </div>
     <% end %>
-    <a class="btn btn-blue-out dropdown-toggle mb-2" href="#" role="button" id="csvExportButton" data-bs-toggle="dropdown" aria-expanded="false">
-      <i class="fas fa-download"></i> Exporter au format CSV
-    </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="csvExportButton">
-      <li>
-        <%= link_to(structure_users_path(**params.to_unsafe_h.merge(format: "csv", export_type: nil)), class: "dropdown-item", data: { controller: "tooltip", action: "mouseover->tooltip#csvExportUsers"}) do %>
-          Export des usagers
-        <% end %>
-      </li>
-      <li>
-        <%= link_to(structure_users_path(**params.to_unsafe_h.merge(format: "csv", export_type: "participations")), class: "dropdown-item", data: { controller: "tooltip", action: "mouseover->tooltip#csvExportParticipations"}) do %>
-          Export des rendez-vous des usagers
-        <% end %>
-      </li>
-    </ul>
   </div>
 </div>

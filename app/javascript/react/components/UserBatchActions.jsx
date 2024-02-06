@@ -39,14 +39,16 @@ export default observer(({ users }) => {
           Actions pour toute la sélection
         </button>
         <div className="dropdown-menu" id="batch-actions">
-          <button
-            type="button"
-            className="dropdown-item d-flex justify-content-between align-items-center"
-            onClick={createAccounts}
-          >
-            <span>Créer comptes</span>
-            <i className="fas fa-user" />
-          </button>
+          {users.comesFromUploadFile && (
+            <button
+              type="button"
+              className="dropdown-item d-flex justify-content-between align-items-center"
+              onClick={createAccounts}
+            >
+              <span>Créer comptes</span>
+              <i className="fas fa-user" />
+            </button>
+          )}
           {users.canBeInvitedBy("email") && (
             <button
               type="button"
