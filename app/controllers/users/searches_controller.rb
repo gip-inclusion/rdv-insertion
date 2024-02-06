@@ -16,9 +16,12 @@ module Users
         .preload(
           :referents, :archives, :tags,
           invitations: [rdv_context: :motif_category],
-          rdv_contexts: [:participations],
           organisations: [:motif_categories, :department, :configurations]
-        ).distinct
+        )
+        .includes(rdv_contexts: [participations: :rdv])
+        .references(:rdv)
+        .where("rdvs.organisation_id" => current_agent.organisations.ids + [nil])
+        .distinct
     end
 
     def search_in_all_users
