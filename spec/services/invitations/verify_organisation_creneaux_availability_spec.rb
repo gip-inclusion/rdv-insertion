@@ -126,16 +126,16 @@ describe Invitations::VerifyOrganisationCreneauxAvailability, type: :service do
             motif_category_name: "RSA orientation",
             city_codes: ["12255"],
             referent_ids: [],
-            invations_counter: 2
+            invitations_counter: 2
           },
           {
             motif_category_name: "RSA accompagnement socio-pro",
             city_codes: ["10000"],
-            referent_ids: [["1"]],
-            invations_counter: 1
+            referent_ids: ["1"],
+            invitations_counter: 1
           }
         ]
-        expect(result.unavailable_params_motifs).to eq(excepted_result)
+        expect(result.grouped_invitation_params_by_category).to eq(excepted_result)
       end
     end
   end
