@@ -175,12 +175,11 @@ class UsersController < ApplicationController
   end
 
   def set_filterable_tags
-    @tags = (@organisation || @department).tags.order(:value).distinct
+    @tags = policy_scope((@organisation || @department).tags).order(:value).distinct
   end
 
   def set_user_tags
-    @tags = @user
-            .tags
+    @tags = policy_scope(@user.tags)
             .joins(:organisations)
             .where(organisations: department_level? ? @department.organisations : @organisation)
             .order(:value)
