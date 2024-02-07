@@ -105,8 +105,8 @@ describe "Agents can upload user list", js: true do
 
       click_button("Inviter par SMS")
 
-      expect(page).to have_css("i.fas.fa-check")
       expect(page).not_to have_button("Inviter par SMS")
+      expect(page).to have_button("Réinviter par SMS")
       expect(page).to have_button("Inviter par Email", disabled: false)
       expect(page).to have_button("Générer courrier", disabled: false)
 
@@ -124,8 +124,8 @@ describe "Agents can upload user list", js: true do
 
       expect(page).to have_css("i.fas.fa-link")
       expect(page).not_to have_button("Créer compte")
-      expect(page).to have_css("i.fas.fa-check")
       expect(page).not_to have_button("Inviter par SMS")
+      expect(page).to have_button("Réinviter par SMS")
 
       expect(page).to have_button("Inviter par Email", disabled: false)
       expect(page).to have_button("Générer courrier", disabled: false)
@@ -652,8 +652,8 @@ describe "Agents can upload user list", js: true do
 
       click_button("Inviter par SMS")
 
-      expect(page).to have_css("i.fas.fa-check")
       expect(page).not_to have_button("Inviter par SMS")
+      expect(page).to have_button("Réinviter par SMS")
       expect(page).to have_button("Inviter par Email", disabled: false)
       expect(page).to have_button("Générer courrier", disabled: false)
 
@@ -671,8 +671,8 @@ describe "Agents can upload user list", js: true do
 
       expect(page).to have_css("i.fas.fa-link")
       expect(page).not_to have_button("Créer compte")
-      expect(page).to have_css("i.fas.fa-check")
       expect(page).not_to have_button("Inviter par SMS")
+      expect(page).to have_button("Réinviter par SMS")
 
       expect(page).to have_button("Inviter par Email", disabled: false)
       expect(page).to have_button("Générer courrier", disabled: false)
@@ -702,10 +702,10 @@ describe "Agents can upload user list", js: true do
 
           first('input[type="checkbox"]', visible: :visible).click
           click_button("Actions pour toute la sélection")
-          expect(page).not_to have_css("td i.fas.fa-check")
+          expect(page).not_to have_button("Réinviter par SMS")
 
           click_button("Invitation par sms")
-          expect(page).to have_css("td i.fas.fa-check")
+          expect(page).to have_button("Réinviter par SMS")
         end
       end
 

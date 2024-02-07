@@ -22,6 +22,7 @@ describe "Agents can invite from index page", js: true do
     setup_agent_session(agent)
     stub_rdv_solidarites_invitation_requests(user.rdv_solidarites_user_id, rdv_solidarites_token)
     stub_geo_api_request(user.address)
+    stub_brevo
     stub_request(
       :get,
       /#{Regexp.quote(ENV['RDV_SOLIDARITES_URL'])}\/api\/rdvinsertion\/invitations\/creneau_availability.*/
@@ -34,14 +35,14 @@ describe "Agents can invite from index page", js: true do
       rdv_context.save!
 
       visit organisation_users_path(organisation, motif_category_id: motif_category.id)
-      expect(page).to have_field("sms_invite", checked: false, disabled: false)
-      expect(page).to have_field("email_invite", checked: false, disabled: false)
+      expect(page).to have_field("sms_invite_for_user_#{user.id}", checked: false, disabled: false)
+      expect(page).to have_field("email_invite_for_user_#{user.id}", checked: false, disabled: false)
       expect(page).to have_content("Non invité")
 
-      check("email_invite")
+      check("email_invite_for_user_#{user.id}")
 
-      expect(page).to have_field("email_invite", checked: true, disabled: true)
-      expect(page).to have_field("sms_invite", checked: false, disabled: false)
+      expect(page).to have_field("email_invite_for_user_#{user.id}", checked: true, disabled: true)
+      expect(page).to have_field("sms_invite_for_user_#{user.id}", checked: false, disabled: false)
       expect(page).to have_content("Invitation en attente de réponse")
     end
 
@@ -58,7 +59,7 @@ describe "Agents can invite from index page", js: true do
         rdv_context.save!
 
         visit organisation_users_path(organisation, motif_category_id: motif_category.id)
-        check("email_invite")
+        check("email_invite_for_user_#{user.id}")
         expect(page).to have_content("Impossible d'inviter l'utilisateur")
         expect(page).to have_content(
           "L'envoi d'une invitation est impossible car il n'y a plus de créneaux disponibles. " \
@@ -83,15 +84,24 @@ describe "Agents can invite from index page", js: true do
       rdv_context.save!
 
       visit organisation_users_path(organisation, motif_category_id: motif_category.id)
-      expect(page).to have_field("sms_invite", checked: true, disabled: true)
-      expect(page).to have_field("email_invite", checked: false, disabled: false)
-      expect(page).to have_content("Invitation en attente de réponse")
+      expect(page).to have_field("email_invite_for_user_#{user.id}", checked: false, disabled: false)
 
-      check("email_invite")
+      check("email_invite_for_user_#{user.id}")
 
-      expect(page).to have_field("sms_invite", checked: true, disabled: true)
-      expect(page).to have_field("email_invite", checked: true, disabled: true)
-      expect(page).to have_content("Invitation en attente de réponse")
+      expect(page).to have_field("email_invite_for_user_#{user.id}", checked: true, disabled: true)
+    end
+
+    it "can re-invite in the format where invitation has been sent" do
+      rdv_context.set_status
+      rdv_context.save!
+
+      visit organisation_users_path(organisation, motif_category_id: motif_category.id)
+      expect(page).not_to have_field("sms_invite_for_user_#{user.id}")
+      expect(page).to have_css("label[for=\"sms_invite_for_user_#{user.id}\"]")
+
+      find("label[for=\"sms_invite_for_user_#{user.id}\"]").click
+
+      expect(page).to have_field("sms_invite_for_user_#{user.id}", checked: true, disabled: true)
     end
   end
 
@@ -118,14 +128,14 @@ describe "Agents can invite from index page", js: true do
         rdv_context.save!
 
         visit organisation_users_path(organisation, motif_category_id: motif_category.id)
-        expect(page).to have_field("sms_invite", checked: false, disabled: false)
-        expect(page).to have_field("email_invite", checked: false, disabled: false)
+        expect(page).to have_field("sms_invite_for_user_#{user.id}", checked: false, disabled: false)
+        expect(page).to have_field("email_invite_for_user_#{user.id}", checked: false, disabled: false)
         expect(page).to have_content("RDV honoré")
 
-        check("email_invite")
+        check("email_invite_for_user_#{user.id}")
 
-        expect(page).to have_field("email_invite", checked: true, disabled: true)
-        expect(page).to have_field("sms_invite", checked: false, disabled: false)
+        expect(page).to have_field("email_invite_for_user_#{user.id}", checked: true, disabled: true)
+        expect(page).to have_field("sms_invite_for_user_#{user.id}", checked: false, disabled: false)
         expect(page).to have_content("Invitation en attente de réponse")
       end
 
@@ -142,7 +152,7 @@ describe "Agents can invite from index page", js: true do
           rdv_context.save!
 
           visit organisation_users_path(organisation, motif_category_id: motif_category.id)
-          check("email_invite")
+          check("email_invite_for_user_#{user.id}")
           expect(page).to have_content("Impossible d'inviter l'utilisateur")
           expect(page).to have_content(
             "L'envoi d'une invitation est impossible car il n'y a plus de créneaux disponibles. " \
@@ -167,15 +177,24 @@ describe "Agents can invite from index page", js: true do
         rdv_context.save!
 
         visit organisation_users_path(organisation, motif_category_id: motif_category.id)
-        expect(page).to have_field("sms_invite", checked: true, disabled: true)
-        expect(page).to have_field("email_invite", checked: false, disabled: false)
-        expect(page).to have_content("Invitation en attente de réponse")
+        expect(page).to have_field("email_invite_for_user_#{user.id}", checked: false, disabled: false)
 
-        check("email_invite")
+        check("email_invite_for_user_#{user.id}")
 
-        expect(page).to have_field("sms_invite", checked: true, disabled: true)
-        expect(page).to have_field("email_invite", checked: true, disabled: true)
-        expect(page).to have_content("Invitation en attente de réponse")
+        expect(page).to have_field("email_invite_for_user_#{user.id}", checked: true, disabled: true)
+      end
+
+      it "can re-invite in the format where invitation has been sent" do
+        rdv_context.set_status
+        rdv_context.save!
+
+        visit organisation_users_path(organisation, motif_category_id: motif_category.id)
+        expect(page).not_to have_field("sms_invite_for_user_#{user.id}")
+        expect(page).to have_css("label[for=\"sms_invite_for_user_#{user.id}\"]")
+
+        find("label[for=\"sms_invite_for_user_#{user.id}\"]").click
+
+        expect(page).to have_field("sms_invite_for_user_#{user.id}", checked: true, disabled: true)
       end
     end
 
@@ -201,8 +220,8 @@ describe "Agents can invite from index page", js: true do
         rdv_context.save!
 
         visit organisation_users_path(organisation, motif_category_id: motif_category.id)
-        expect(page).not_to have_field("sms_invite")
-        expect(page).not_to have_field("email_invite")
+        expect(page).not_to have_field("sms_invite_for_user_#{user.id}")
+        expect(page).not_to have_field("email_invite_for_user_#{user.id}")
         expect(page).to have_content("RDV pris")
       end
     end

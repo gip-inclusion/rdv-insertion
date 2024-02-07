@@ -10,7 +10,7 @@ describe "Agents can update contact info with caf file", js: true do
     setup_agent_session(agent)
     stub_rdv_solidarites_create_user(rdv_solidarites_user_id)
     stub_sync_with_rdv_solidarites_user(rdv_solidarites_user_id)
-    stub_send_in_blue
+    stub_brevo
     stub_geo_api_request("127 RUE DE GRENELLE 75007 PARIS")
   end
 

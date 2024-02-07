@@ -36,7 +36,7 @@ describe "Agent can invite users by batch from index" do
       :get,
       /#{Regexp.quote(ENV['RDV_SOLIDARITES_URL'])}\/api\/rdvinsertion\/invitations\/creneau_availability.*/
     ).to_return(status: 200, body: { "creneau_availability" => true }.to_json, headers: {})
-    stub_send_in_blue
+    stub_brevo
     rdv_context3.set_status
     rdv_context3.save!
   end
@@ -158,7 +158,7 @@ describe "Agent can invite users by batch from index" do
       click_button("OK")
 
       click_button("Actions pour toute la sélection", wait: 10)
-      click_button("Invitation par sms", wait: 10000000000000)
+      click_button("Invitation par sms", wait: 10)
 
       expect(page).not_to have_content("Inviter par SMS")
       expect(page).to have_content("Réinviter par SMS").exactly(2).times

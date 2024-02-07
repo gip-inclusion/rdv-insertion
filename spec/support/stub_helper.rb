@@ -50,7 +50,7 @@ module StubHelper
     ).to_return(body: { "features" => [] }.to_json)
   end
 
-  def stub_send_in_blue
+  def stub_brevo
     stub_request(:post, "https://api.sendinblue.com/v3/transactionalSMS/sms")
       .to_return(status: 200)
   end
@@ -60,7 +60,7 @@ module StubHelper
     stub_rdv_solidarites_assign_organisations(rdv_solidarites_user_id)
     stub_rdv_solidarites_assign_referents(rdv_solidarites_user_id)
     stub_rdv_solidarites_update_user(rdv_solidarites_user_id)
-    stub_send_in_blue
+    stub_brevo
     stub_rdv_solidarites_invitation_requests(rdv_solidarites_user_id)
     stub_geo_api_request("127 RUE DE GRENELLE 75007 PARIS")
   end
