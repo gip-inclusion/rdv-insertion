@@ -12,7 +12,7 @@ class OrganisationMailer < ApplicationMailer
   end
 
   def creneau_unavailable(organisation:, grouped_invitation_params_by_category:)
-    return if organisation.email.blank? || staging_env?
+    return if organisation.email.blank?
 
     @organisation = organisation
     @grouped_invitation_params_by_category = grouped_invitation_params_by_category
