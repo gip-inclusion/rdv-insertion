@@ -124,14 +124,14 @@ describe Invitations::VerifyOrganisationCreneauxAvailability, type: :service do
         excepted_result = [
           {
             motif_category_name: "RSA orientation",
-            city_codes: ["12255"],
-            referent_ids: [],
+            city_codes: Set.new(["12255"]),
+            referent_ids: Set.new([]),
             invitations_counter: 2
           },
           {
             motif_category_name: "RSA accompagnement socio-pro",
-            city_codes: ["10000"],
-            referent_ids: ["1"],
+            city_codes: Set.new(["10000"]),
+            referent_ids: Set.new(["1"]),
             invitations_counter: 1
           }
         ]
