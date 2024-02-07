@@ -46,7 +46,7 @@ describe "Agents can upload user list", js: true do
 
       ### Upload
 
-      attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+      attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"), make_visible: true)
 
       expect(page).to have_content("Civilité")
       expect(page).to have_content("M")
@@ -120,7 +120,7 @@ describe "Agents can upload user list", js: true do
 
       visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-      attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+      attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"), make_visible: true)
 
       expect(page).to have_css("i.fas.fa-link")
       expect(page).not_to have_button("Créer compte")
@@ -156,7 +156,8 @@ describe "Agents can upload user list", js: true do
 
             expect(page).to have_content("Choisissez un fichier d'usagers")
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).to have_button("Créer compte")
             expect(page).not_to have_content("Invitation SMS")
@@ -203,7 +204,8 @@ describe "Agents can upload user list", js: true do
           it "displays the link to the user page" do
             visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).not_to have_content("Créer compte")
 
@@ -231,7 +233,8 @@ describe "Agents can upload user list", js: true do
           it "can add the user to the org" do
             visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).to have_content("Ajouter à cette organisation")
 
@@ -269,7 +272,8 @@ describe "Agents can upload user list", js: true do
           it "displays the link to the user page" do
             visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).not_to have_content("Créer compte")
             expect(page).to have_css("i.fas.fa-link")
@@ -294,7 +298,8 @@ describe "Agents can upload user list", js: true do
             it "can add the user to the org" do
               visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-              attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+              attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                          make_visible: true)
 
               expect(page).to have_content("Ajouter à cette organisation")
 
@@ -340,7 +345,8 @@ describe "Agents can upload user list", js: true do
             it "fails to add the user to the org" do
               visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-              attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+              attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                          make_visible: true)
 
               expect(page).to have_content("Ajouter à cette organisation")
 
@@ -376,7 +382,8 @@ describe "Agents can upload user list", js: true do
           it "does not match the user" do
             visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).to have_content("Créer compte")
           end
@@ -396,7 +403,8 @@ describe "Agents can upload user list", js: true do
           it "displays the link to the user page" do
             visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).not_to have_content("Créer compte")
             expect(page).to have_css("i.fas.fa-link")
@@ -419,7 +427,8 @@ describe "Agents can upload user list", js: true do
             it "can add the user to the org" do
               visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-              attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+              attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                          make_visible: true)
 
               expect(page).to have_content("Ajouter à cette organisation")
 
@@ -456,7 +465,8 @@ describe "Agents can upload user list", js: true do
           it "does not match the user" do
             visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).to have_content("Créer compte")
           end
@@ -475,7 +485,8 @@ describe "Agents can upload user list", js: true do
           it "displays the link to the user page" do
             visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).not_to have_content("Créer compte")
             expect(page).to have_css("i.fas.fa-link")
@@ -497,7 +508,8 @@ describe "Agents can upload user list", js: true do
           it "can add the user to the org" do
             visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).to have_content("Ajouter à cette organisation")
 
@@ -534,7 +546,8 @@ describe "Agents can upload user list", js: true do
           it "displays the link to the user page" do
             visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).not_to have_content("Créer compte")
             expect(page).to have_css("i.fas.fa-link")
@@ -556,7 +569,8 @@ describe "Agents can upload user list", js: true do
           it "can add the user to the org" do
             visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).to have_content("Ajouter à cette organisation")
 
@@ -594,7 +608,7 @@ describe "Agents can upload user list", js: true do
 
       ### Upload
 
-      attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+      attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"), make_visible: true)
 
       expect(page).to have_content("Civilité")
 
@@ -667,7 +681,7 @@ describe "Agents can upload user list", js: true do
 
       visit new_department_upload_path(department, configuration_id: configuration.id)
 
-      attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+      attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"), make_visible: true)
 
       expect(page).to have_css("i.fas.fa-link")
       expect(page).not_to have_button("Créer compte")
@@ -683,7 +697,8 @@ describe "Agents can upload user list", js: true do
         it "can bulk create users" do
           visit new_department_upload_path(department, configuration_id: configuration.id)
 
-          attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+          attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                      make_visible: true)
 
           first('input[type="checkbox"]', visible: :visible).click
           click_button("Actions pour toute la sélection")
@@ -698,7 +713,8 @@ describe "Agents can upload user list", js: true do
         it "can bulk invite" do
           visit new_department_upload_path(department, configuration_id: configuration.id)
 
-          attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+          attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                      make_visible: true)
 
           first('input[type="checkbox"]', visible: :visible).click
           click_button("Actions pour toute la sélection")
@@ -721,7 +737,8 @@ describe "Agents can upload user list", js: true do
           it "highlights users with errors" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             first('input[type="checkbox"]', visible: :visible).click
             click_button("Actions pour toute la sélection")
@@ -736,7 +753,8 @@ describe "Agents can upload user list", js: true do
           it "highlights users with errors" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test_invalid.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test_invalid.xlsx"),
+                        make_visible: true)
 
             first('input[type="checkbox"]', visible: :visible).click
             click_button("Actions pour toute la sélection")
@@ -774,7 +792,8 @@ describe "Agents can upload user list", js: true do
 
             expect(page).to have_content("Choisissez un fichier d'usagers")
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).to have_button("Créer compte")
             expect(page).not_to have_content("Invitation SMS")
@@ -820,7 +839,8 @@ describe "Agents can upload user list", js: true do
           it "displays the link to the user page" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).not_to have_content("Créer compte")
             expect(page).to have_css("i.fas.fa-link")
@@ -842,7 +862,8 @@ describe "Agents can upload user list", js: true do
           it "can add the user to the org" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).to have_content("Ajouter à cette organisation")
 
@@ -880,7 +901,8 @@ describe "Agents can upload user list", js: true do
           it "displays the link to the user page" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).not_to have_content("Créer compte")
             expect(page).to have_css("i.fas.fa-link")
@@ -903,7 +925,8 @@ describe "Agents can upload user list", js: true do
             it "can add the user to the org" do
               visit new_department_upload_path(department, configuration_id: configuration.id)
 
-              attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+              attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                          make_visible: true)
 
               expect(page).to have_content("Ajouter à cette organisation")
 
@@ -940,7 +963,8 @@ describe "Agents can upload user list", js: true do
           it "does not match the user" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).to have_content("Créer compte")
           end
@@ -960,7 +984,8 @@ describe "Agents can upload user list", js: true do
           it "displays the link to the user page" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).not_to have_content("Créer compte")
             expect(page).to have_css("i.fas.fa-link")
@@ -983,7 +1008,8 @@ describe "Agents can upload user list", js: true do
             it "can add the user to the org" do
               visit new_department_upload_path(department, configuration_id: configuration.id)
 
-              attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+              attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                          make_visible: true)
 
               expect(page).to have_content("Ajouter à cette organisation")
 
@@ -1020,7 +1046,8 @@ describe "Agents can upload user list", js: true do
           it "does not match the user" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).to have_content("Créer compte")
           end
@@ -1039,7 +1066,8 @@ describe "Agents can upload user list", js: true do
           it "displays the link to the user page" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).not_to have_content("Créer compte")
             expect(page).to have_css("i.fas.fa-link")
@@ -1061,7 +1089,8 @@ describe "Agents can upload user list", js: true do
           it "can add the user to the org" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).to have_content("Ajouter à cette organisation")
 
@@ -1096,7 +1125,8 @@ describe "Agents can upload user list", js: true do
           it "does not match the user" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).to have_content("Créer compte")
           end
@@ -1115,7 +1145,8 @@ describe "Agents can upload user list", js: true do
           it "displays the link to the user page" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).not_to have_content("Créer compte")
             expect(page).to have_css("i.fas.fa-link")
@@ -1137,7 +1168,8 @@ describe "Agents can upload user list", js: true do
           it "can add the user to the org" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).to have_content("Ajouter à cette organisation")
 
@@ -1172,7 +1204,8 @@ describe "Agents can upload user list", js: true do
           it "does not match the user" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).to have_content("Créer compte")
           end

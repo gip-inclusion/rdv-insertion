@@ -16,7 +16,7 @@ export default function FileHandler({
   uploadMessage = DEFAULT_UPLOAD_MESSAGE,
 }) {
   const [isPending, setIsPending] = useState(false);
-  const fileInputRef = useRef(null);
+  const hiddenFileInput = useRef(null);
 
   const handleFiles = async (filesToHandle) => {
     await Promise.all([...filesToHandle].map(async (file) => handleFile(file)));
@@ -45,12 +45,12 @@ export default function FileHandler({
           accept={accept}
           onChange={handleUploads}
           multiple={multiple}
-          ref={fileInputRef}
+          ref={hiddenFileInput}
         />
         <button
           type="button"
           className="btn btn-blue"
-          onClick={() => fileInputRef.current.click()}
+          onClick={() => hiddenFileInput.current.click()}
         >
           Choisir un fichier
         </button>
