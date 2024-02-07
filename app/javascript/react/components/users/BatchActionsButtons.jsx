@@ -55,16 +55,6 @@ export default observer(({ users }) => {
             <i className="fas fa-user" />
           </button>
         )}
-        {users.canBeInvitedBy("email") && (
-          <button
-            type="button"
-            className="dropdown-item d-flex justify-content-between align-items-center"
-            onClick={() => inviteBy("email")}
-          >
-            <span>Invitation par mail</span>
-            <i className="fas fa-inbox" />
-          </button>
-        )}
         {users.canBeInvitedBy("sms") && (
           <button
             type="button"
@@ -73,6 +63,16 @@ export default observer(({ users }) => {
           >
             <span>Invitation par sms</span>
             <i className="fas fa-comment" />
+          </button>
+        )}
+        {users.canBeInvitedBy("email") && (
+          <button
+            type="button"
+            className="dropdown-item d-flex justify-content-between align-items-center"
+            onClick={() => inviteBy("email")}
+          >
+            <span>Invitation par mail</span>
+            <i className="fas fa-inbox" />
           </button>
         )}
         {users.canBeInvitedBy("postal") && (
