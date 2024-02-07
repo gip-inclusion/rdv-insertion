@@ -1,5 +1,5 @@
 import React from "react";
-import { getFrenchFormatDateString } from "../../lib/datesHelper";
+import { getFrenchFormatDateString } from "../../../../lib/datesHelper";
 
 export default function InvitationsDatesRow({
   invitationsDatesByFormat,

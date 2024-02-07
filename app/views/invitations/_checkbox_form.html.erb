@@ -4,7 +4,12 @@
       <%= f.hidden_field :motif_category_id, value: motif_category.id %>
       <%= f.hidden_field :invitation_format, value: invitation_format %>
       <div>
-        <%= f.check_box "#{invitation_format}_invite", { checked: checked, disabled: disabled, data: { controller: "invitations-checkbox-form", action: "change->invitations-checkbox-form#submit" } }, checked %>
+        <% if checked %>
+          <%= f.label "#{invitation_format}_invite_for_user_#{user.id}" do %>
+            <i class="fas fa-redo-alt"></i>
+          <% end %>
+        <% end %>
+        <%= f.check_box "#{invitation_format}_invite_for_user_#{user.id}", { checked: false, disabled: false, class: checked ? "d-none" : "", data: { controller: "invitations-checkbox-form", action: "change->invitations-checkbox-form#submit" } }, false %>
       </div>
     </div>
   <% end %>

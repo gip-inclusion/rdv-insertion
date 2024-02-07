@@ -82,7 +82,7 @@
         <% end %>
         <% if configuration.invitation_formats.any? %>
           <%= react_component(
-            "components/InvitationBlock", {
+            "components/railsApp/user/InvitationBlock", {
               user: user,
               organisation: organisation,
               department: department,

@@ -23,6 +23,9 @@ export default class extends Controller {
 
   submit() {
     this.element.hidden = true;
+    if (this.element.labels[0]) {
+      this.element.labels[0].hidden = true;
+    }
     this.element.parentElement.classList.add("spinner-border", "spinner-border-sm");
     navigator.submitForm(this.element.closest("form"));
   }
@@ -49,11 +52,15 @@ export default class extends Controller {
     checkbox.parentElement.classList.remove("spinner-border", "spinner-border-sm");
     if (result.success) {
       checkbox.disabled = true;
+      checkbox.classList = "";
       this.updateFirstInvitationDate(rdvContextId);
       this.updateLastInvitationDate(rdvContextId);
       this.updateStatus(rdvContextId);
     } else {
       checkbox.checked = false;
+      if (checkbox.labels[0]) {
+        checkbox.labels[0].hidden = false;
+      }
     }
   }
 

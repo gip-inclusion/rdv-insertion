@@ -2,22 +2,24 @@ import React, { useState } from "react";
 import Swal from "sweetalert2";
 import { observer } from "mobx-react-lite";
 
-import FileHandler from "../components/FileHandler";
-import EnrichWithContactFile from "../components/EnrichWithContactFile";
-import UsersActionsList from "../components/UsersActionsList";
+import FileHandler from "../../components/FileHandler";
+import EnrichWithContactFile from "../../components/users/EnrichWithContactFile";
+import BatchActionsButtons from "../../components/users/BatchActionsButtons";
+import DisplayReferentsColumnButton from "../../components/users/DisplayReferentsColumnButton";
+import UsersList from "../../components/users/UsersList";
 
-import retrieveUpToDateUsers from "../lib/retrieveUpToDateUsers";
-import parseContactsData from "../lib/parseContactsData";
-import updateUserContactsData from "../lib/updateUserContactsData";
-import retrieveContactsData from "../lib/retrieveContactsData";
-import { formatDateInput } from "../../lib/datesHelper";
-import { parameterizeObjectValues } from "../../lib/parameterize";
+import uploadFile from "../../lib/uploadFile";
+import retrieveUpToDateUsers from "../../lib/retrieveUpToDateUsers";
+import parseContactsData from "../../lib/parseContactsData";
+import updateUserContactsData from "../../lib/updateUserContactsData";
+import retrieveContactsData from "../../lib/retrieveContactsData";
+import { formatDateInput } from "../../../lib/datesHelper";
+import { parameterizeObjectValues } from "../../../lib/parameterize";
 
-import User from "../models/User";
-import usersStore from "../models/Users";
-import uploadFile from "../lib/uploadFile";
+import User from "../../models/User";
+import usersStore from "../../models/Users";
 
-const UsersUpload = observer(
+const UsersUploads = observer(
   ({
     users,
     organisation,
@@ -35,7 +37,7 @@ const UsersUpload = observer(
     const [fileSize, setFileSize] = useState(0);
     const [showEnrichWithContactFile, setShowEnrichWithContactFile] = useState(false);
 
-    const redirectToUserList = () => {
+    const redirectToUsersList = () => {
       const scope = isDepartmentLevel ? "departments" : "organisations";
       const url = `/${scope}/${(organisation || department).id}/users`;
       const queryParams = configuration
@@ -159,7 +161,7 @@ const UsersUpload = observer(
               <button
                 type="submit"
                 className="btn btn-secondary btn-blue-out"
-                onClick={redirectToUserList}
+                onClick={redirectToUsersList}
               >
                 Retour au suivi
               </button>
@@ -214,11 +216,21 @@ const UsersUpload = observer(
           )}
         </div>
         {users.list.length > 0 && !users.loading && (
-          <UsersActionsList users={users} />
+          <>
+            <div className="container mt-3 mb-3">
+              <div className="row my-1" style={{ height: 50 }}>
+                <div className="d-flex justify-content-end align-items-center">
+                  <BatchActionsButtons users={users} />
+                  <DisplayReferentsColumnButton users={users} />
+                </div>
+              </div>
+            </div>
+            <UsersList users={users} />
+          </>
         )}
       </>
     );
   }
 );
 
-export default (props) => <UsersUpload users={usersStore} {...props} />;
+export default (props) => <UsersUploads users={usersStore} {...props} />;

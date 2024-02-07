@@ -33,6 +33,9 @@ button, input[type="button"] {
     border-color: $dark-blue-dim;
     background-color: $dark-blue-dim;
   }
+  &.sm {
+    min-width: 0;
+  }
 }
 
 .btn-blue-out {

@@ -74,7 +74,7 @@ export default class User {
     this.availableTags = availableTags;
     this.currentConfiguration = currentConfiguration;
     this.columnNames = columnNames;
-    this.selected = false;
+    this.selected = formattedAttributes.selected || false;
     this.archives = [];
     this.list = list;
 

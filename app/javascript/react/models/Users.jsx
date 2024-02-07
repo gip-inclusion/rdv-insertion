@@ -45,7 +45,7 @@ class Users {
             <input
               type="checkbox"
               className="form-check-input"
-              checked={user.selected}
+              checked={Boolean(user.selected)}
               onChange={(event) => {
                 user.selected = event.target.checked;
               }}
