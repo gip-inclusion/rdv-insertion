@@ -17,7 +17,7 @@ module UploadHelper
         address_fourth_field_column: "CP Ville",
         address_fifth_field_column: nil,
         affiliation_number_column: "N° Allocataire",
-        pole_emploi_id_column: nil,
+        france_travail_id_column: nil,
         nir_column: "NIR",
         department_internal_id_column: "id iodas ",
         rights_opening_date_column: nil,
