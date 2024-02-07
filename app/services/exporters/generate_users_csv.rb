@@ -198,7 +198,7 @@ module Exporters
                      .participations
                      .seen
                      .joins(:motif_category)
-                     .where("motif_categories.short_name ilike ?", "%orientation%")
+                     .where(motif_categories: { leads_to_orientation: true })
                      .order(created_at: :asc)
 
       if @agent.present?

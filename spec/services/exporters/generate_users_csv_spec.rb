@@ -3,7 +3,9 @@ describe Exporters::GenerateUsersCsv, type: :service do
 
   let!(:now) { Time.zone.parse("22/06/2022") }
   let!(:timestamp) { now.to_i }
-  let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation") }
+  let!(:motif_category) do
+    create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation", leads_to_orientation: true)
+  end
   let!(:department) { create(:department, name: "Drôme", number: "26") }
   let!(:organisation) { create(:organisation, name: "Drome RSA", department: department) }
   let!(:structure) { organisation }
