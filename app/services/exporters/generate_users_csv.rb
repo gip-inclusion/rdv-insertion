@@ -1,7 +1,7 @@
 # rubocop:disable Metrics/ClassLength
 module Exporters
   class GenerateUsersCsv < Csv
-    def initialize(user_ids:, structure: nil, motif_category: nil, agent: nil)
+    def initialize(user_ids:, agent:, structure: nil, motif_category: nil)
       @user_ids = user_ids
       @structure = structure
       @motif_category = motif_category
