@@ -57,7 +57,7 @@ export default class User {
     this.fullAddress = this.formatFullAddress();
     this.departmentInternalId = formattedAttributes.departmentInternalId;
     this.nir = formattedAttributes.nir;
-    this.poleEmploiId = formattedAttributes.poleEmploiId;
+    this.franceTravailId = formattedAttributes.franceTravailId;
     this.rightsOpeningDate = formattedAttributes.rightsOpeningDate;
     this.affiliationNumber = formattedAttributes.affiliationNumber;
     this.phoneNumber = formatPhoneNumber(formattedAttributes.phoneNumber);
@@ -435,7 +435,7 @@ export default class User {
       ...(this.departmentInternalId && { department_internal_id: this.departmentInternalId }),
       ...(this.rightsOpeningDate && { rights_opening_date: this.rightsOpeningDate }),
       ...(this.nir && { nir: this.nir }),
-      ...(this.poleEmploiId && { pole_emploi_id: this.poleEmploiId }),
+      ...(this.franceTravailId && { france_travail_id: this.franceTravailId }),
       ...(this.currentConfiguration && {
         rdv_contexts_attributes: [
           { motif_category_id: this.currentConfiguration.motif_category_id },

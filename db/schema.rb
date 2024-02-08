@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_29_172812) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_02_132147) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -146,7 +146,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_29_172812) do
     t.string "address_fourth_field_column"
     t.string "address_fifth_field_column"
     t.string "affiliation_number_column"
-    t.string "pole_emploi_id_column"
+    t.string "france_travail_id_column"
     t.string "nir_column"
     t.string "department_internal_id_column"
     t.string "rights_opening_date_column"
@@ -208,7 +208,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_29_172812) do
     t.string "sms_sender_name"
     t.boolean "display_department_logo", default: true
     t.bigint "organisation_id"
-    t.boolean "display_pole_emploi_logo", default: false
+    t.boolean "display_france_travail_logo", default: false
     t.index ["organisation_id"], name: "index_messages_configurations_on_organisation_id"
   end
 
@@ -453,7 +453,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_29_172812) do
     t.datetime "deleted_at"
     t.datetime "last_webhook_update_received_at"
     t.string "nir"
-    t.string "pole_emploi_id"
+    t.string "france_travail_id"
     t.string "carnet_de_bord_carnet_id"
     t.integer "created_through", default: 0
     t.index ["department_internal_id"], name: "index_users_on_department_internal_id"

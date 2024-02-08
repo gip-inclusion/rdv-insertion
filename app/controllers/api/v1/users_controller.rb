@@ -5,7 +5,7 @@ module Api
 
       PERMITTED_USER_PARAMS = [
         :first_name, :last_name, :title, :affiliation_number, :role, :email, :phone_number,
-        :nir, :pole_emploi_id, :birth_date, :rights_opening_date, :address, :department_internal_id,
+        :nir, :france_travail_id, :birth_date, :rights_opening_date, :address, :department_internal_id,
         { invitation: [:rdv_solidarites_lieu_id, { motif_category: [:name] }], referents_to_add: [:email] }
       ].freeze
 

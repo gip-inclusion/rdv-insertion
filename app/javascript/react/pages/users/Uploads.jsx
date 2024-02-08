@@ -68,7 +68,7 @@ const UsersUploads = observer(
                 .split(",")
                 .map((tag) => tag.trim()) || [],
             nir: row[parameterizedColumnNames.nir_column],
-            poleEmploiId: row[parameterizedColumnNames.pole_emploi_id_column],
+            franceTravailId: row[parameterizedColumnNames.france_travail_id_column],
             role: row[parameterizedColumnNames.role_column],
             title: row[parameterizedColumnNames.title_column],
             addressFirstField: row[parameterizedColumnNames.address_first_field_column],

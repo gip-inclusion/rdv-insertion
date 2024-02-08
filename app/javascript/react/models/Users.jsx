@@ -114,8 +114,8 @@ class Users {
       },
       {
         name: "ID PE",
-        visible: this.fileColumnNames?.pole_emploi_id_column,
-        content: ({ user }) => user.poleEmploiId ?? " - "
+        visible: this.fileColumnNames?.france_travail_id_column,
+        content: ({ user }) => user.franceTravailId ?? " - "
       },
       {
         name: "Email",

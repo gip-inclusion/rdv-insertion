@@ -138,14 +138,14 @@ RSpec.configure do |config|
               uid: { type: "string", nullable: true },
               role: { type: "string", nullable: true, enum: %w[demandeur conjoint] },
               nir: { type: "string", nullable: true },
-              pole_emploi_id: { type: "string", nullable: true },
+              france_travail_id: { type: "string", nullable: true },
               carnet_de_bord_carnet_id: { type: "string", nullable: true },
               rdv_solidarites_user_id: { type: "integer" }
             },
             required: %w[
               id uid affiliation_number role created_at department_internal_id
               first_name last_name title address phone_number email birth_date
-              rights_opening_date birth_name rdv_solidarites_user_id nir pole_emploi_id
+              rights_opening_date birth_name rdv_solidarites_user_id nir france_travail_id
               carnet_de_bord_carnet_id
             ]
           },
@@ -168,7 +168,7 @@ RSpec.configure do |config|
               uid: { type: "string", nullable: true },
               role: { type: "string", nullable: true, enum: %w[demandeur conjoint] },
               nir: { type: "string", nullable: true },
-              pole_emploi_id: { type: "string", nullable: true },
+              france_travail_id: { type: "string", nullable: true },
               carnet_de_bord_carnet_id: { type: "string", nullable: true },
               rdv_solidarites_user_id: { type: "integer" },
               referents: {
@@ -179,7 +179,7 @@ RSpec.configure do |config|
             required: %w[
               id uid affiliation_number role created_at department_internal_id
               first_name last_name title address phone_number email birth_date
-              rights_opening_date birth_name rdv_solidarites_user_id nir pole_emploi_id
+              rights_opening_date birth_name rdv_solidarites_user_id nir france_travail_id
               carnet_de_bord_carnet_id
             ]
           },
@@ -199,7 +199,7 @@ RSpec.configure do |config|
               title: { type: "string", enum: %w[monsieur madame] },
               role: { type: "string", nullable: true, enum: %w[demandeur conjoint] },
               nir: { type: "string", nullable: true },
-              pole_emploi_id: { type: "string", nullable: true },
+              france_travail_id: { type: "string", nullable: true },
               carnet_de_bord_carnet_id: { type: "string", nullable: true },
               invitation: {
                 type: "object",
