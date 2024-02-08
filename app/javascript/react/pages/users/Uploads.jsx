@@ -56,6 +56,8 @@ const UsersUploads = observer(
       users.comesFromUploadFile = true;
 
       const rows = await uploadFile(file, sheetName, columnNames);
+      if (typeof(rows) === "undefined") return;
+
       rows.forEach((row) => {
         const user = new User(
           {

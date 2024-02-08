@@ -14,6 +14,7 @@ export default async function uploadFile(file, sheetName, columnNames) {
       const missingColumnNames = checkColumnNames(columnNames, parameterizeArray(headerNames));
       if (missingColumnNames.length > 0) {
         displayMissingColumnsWarning(missingColumnNames);
+        resolve();
       } else {
         let rows = XLSX.utils.sheet_to_row_object_array(sheet);
         rows = rows.map((row) => parameterizeObjectKeys(row));

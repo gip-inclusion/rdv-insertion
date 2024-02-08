@@ -24,14 +24,14 @@ describe "Agents can update contact info with caf file", js: true do
     it "updates the user list with the info from the csv file" do
       visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-      attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+      attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"), make_visible: true)
 
       expect(page).to have_content("hernan@crespo.com")
       expect(page).to have_content("0620022002")
 
       click_button("Enrichir avec des données de contacts CNAF")
 
-      attach_file("contact-file-upload", Rails.root.join("spec/fixtures/fichier_contact_test.csv"))
+      attach_file("contact-file-upload", Rails.root.join("spec/fixtures/fichier_contact_test.csv"), make_visible: true)
 
       expect(page).to have_content("hernan.crespo@hotmail.fr")
       expect(page).to have_content("698943255")
@@ -65,7 +65,7 @@ describe "Agents can update contact info with caf file", js: true do
     it "can update the user attributes with the info from the csv file one by one" do
       visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-      attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+      attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"), make_visible: true)
 
       expect(page).to have_content("hernan@crespo.com")
       expect(page).to have_content("+33620022002")
@@ -75,7 +75,7 @@ describe "Agents can update contact info with caf file", js: true do
 
       click_button("Enrichir avec des données de contacts CNAF")
 
-      attach_file("contact-file-upload", Rails.root.join("spec/fixtures/fichier_contact_test.csv"))
+      attach_file("contact-file-upload", Rails.root.join("spec/fixtures/fichier_contact_test.csv"), make_visible: true)
 
       expect(page).to have_content("Nouvelles données trouvées pour Hernan Crespo")
       expect(page).to have_content("hernan.crespo@hotmail.fr")
@@ -104,14 +104,14 @@ describe "Agents can update contact info with caf file", js: true do
     it "can update all the attributes at once" do
       visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-      attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+      attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"), make_visible: true)
 
       expect(page).to have_content("hernan@crespo.com")
       expect(page).to have_content("+33620022002")
 
       click_button("Enrichir avec des données de contacts CNAF")
 
-      attach_file("contact-file-upload", Rails.root.join("spec/fixtures/fichier_contact_test.csv"))
+      attach_file("contact-file-upload", Rails.root.join("spec/fixtures/fichier_contact_test.csv"), make_visible: true)
 
       expect(page).to have_content("Nouvelles données trouvées pour Hernan Crespo")
       expect(page).to have_content("hernan.crespo@hotmail.fr")
@@ -142,13 +142,14 @@ describe "Agents can update contact info with caf file", js: true do
       it "does not show the update button" do
         visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-        attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+        attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"), make_visible: true)
 
         expect(page).to have_content("hernan@crespo.com")
         expect(page).to have_content("Ajouter à cette organisation")
         click_button("Enrichir avec des données de contacts CNAF")
 
-        attach_file("contact-file-upload", Rails.root.join("spec/fixtures/fichier_contact_test.csv"))
+        attach_file("contact-file-upload", Rails.root.join("spec/fixtures/fichier_contact_test.csv"),
+                    make_visible: true)
 
         expect(page).not_to have_content("Nouvelles données trouvées pour Hernan Crespo")
       end

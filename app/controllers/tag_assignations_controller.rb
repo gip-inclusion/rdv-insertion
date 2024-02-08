@@ -16,7 +16,7 @@ class TagAssignationsController < ApplicationController
   private
 
   def set_available_tags
-    @available_tags = department_level? ? department.tags : organisation.tags
+    @available_tags = department_level? ? policy_scope(department.tags).distinct : organisation.tags
   end
 
   def set_user
