@@ -50,7 +50,7 @@ describe "Agent can invite users by batch from index" do
       visit organisation_users_path(organisation, motif_category_id: motif_category.id)
 
       expect(page).to have_link(
-        "Envoyer des invitations en masse",
+        "Envoyer des invitations à la sélection",
         href: "#{new_organisation_batch_action_path(organisation)}?action=index&controller=users" \
               "&motif_category_id=#{motif_category.id}&organisation_id=#{organisation.id}"
       )
@@ -62,7 +62,7 @@ describe "Agent can invite users by batch from index" do
       select("Non invité", from: "user_status")
       expect(page).not_to have_content(user3.last_name)
 
-      click_link "Envoyer des invitations en masse"
+      click_link "Envoyer des invitations à la sélection"
 
       expect(page).to have_current_path(
         "#{new_organisation_batch_action_path(organisation)}?action=index&controller=users" \
@@ -103,7 +103,7 @@ describe "Agent can invite users by batch from index" do
     it "can return to index page with the same arguments" do
       visit organisation_users_path(organisation, motif_category_id: motif_category.id)
       select("Non invité", from: "user_status")
-      click_link "Envoyer des invitations en masse"
+      click_link "Envoyer des invitations à la sélection"
 
       expect(page).to have_button("Retour au suivi")
       click_button("Retour au suivi")
@@ -119,7 +119,7 @@ describe "Agent can invite users by batch from index" do
       visit department_users_path(department, motif_category_id: motif_category.id)
 
       expect(page).to have_link(
-        "Envoyer des invitations en masse",
+        "Envoyer des invitations à la sélection",
         href: "#{new_department_batch_action_path(department)}?action=index&controller=users" \
               "&department_id=#{department.id}&motif_category_id=#{motif_category.id}"
       )
@@ -131,7 +131,7 @@ describe "Agent can invite users by batch from index" do
       select("Non invité", from: "user_status")
       expect(page).not_to have_content(user3.last_name)
 
-      click_link "Envoyer des invitations en masse"
+      click_link "Envoyer des invitations à la sélection"
 
       expect(page).to have_current_path(
         "#{new_department_batch_action_path(department)}?action=index&controller=users" \
@@ -172,7 +172,7 @@ describe "Agent can invite users by batch from index" do
     it "can return to index page with the same arguments" do
       visit department_users_path(department, motif_category_id: motif_category.id)
       select("Non invité", from: "user_status")
-      click_link "Envoyer des invitations en masse"
+      click_link "Envoyer des invitations à la sélection"
 
       expect(page).to have_button("Retour au suivi")
       click_button("Retour au suivi")

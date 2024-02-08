@@ -78,8 +78,9 @@ const UsersBatchActions = observer(
                   Retour au suivi
                 </button>
             </div>
-            <div className="col-4 text-center d-flex align-items-center justify-content-center">
+            <div className="col-4 text-center">
               <h2 className="text-center new-users-title">Envoyer des invitations</h2>
+              <p>Les usagers présentés sur cette page correspondent aux usagers filtrés sur la page précédente.<br />Pour modifier la liste, vous pouvez retourner au suivi et modifiez vos filtres.</p>
             </div>
             <div className="col-4" />
           </div>

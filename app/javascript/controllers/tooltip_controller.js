@@ -21,6 +21,7 @@ export default class extends Controller {
     tippy(this.element, {
       content:
         "Les usagers correspondant aux filtres actuels seront exportés",
+      placement: "bottom",
     });
   }
 
@@ -28,6 +29,7 @@ export default class extends Controller {
     tippy(this.element, {
       content:
         "Les RDVs des usagers correspondant aux filtres actuels seront exportés",
+      placement: "bottom",
     });
   }
 
@@ -35,6 +37,7 @@ export default class extends Controller {
     tippy(this.element, {
       content:
         "Les usagers présentés correspondront aux filtres actuels",
+      placement: "bottom",
     });
   }
 

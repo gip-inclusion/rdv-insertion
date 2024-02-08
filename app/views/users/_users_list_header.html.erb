@@ -145,7 +145,7 @@
     <% if @current_configuration.present? %>
       <div class="d-flex flex-column align-items-end dropdown">
         <%= link_to(new_structure_batch_action_path(**params.to_unsafe_h), class: "btn btn-blue", data: { controller: "tooltip", action: "mouseover->tooltip#batchActions"}) do %>
-          Envoyer des invitations en masse
+          Envoyer des invitations à la sélection
         <% end %>
       </div>
     <% end %>
