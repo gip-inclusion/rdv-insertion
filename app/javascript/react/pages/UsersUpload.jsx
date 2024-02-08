@@ -55,6 +55,8 @@ const UsersUpload = observer(
       users.isDepartmentLevel = isDepartmentLevel;
 
       const rows = await uploadFile(file, sheetName, columnNames);
+      if (typeof(rows) === "undefined") return;
+
       rows.forEach((row) => {
         const user = new User(
           {
