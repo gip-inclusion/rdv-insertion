@@ -93,7 +93,7 @@ module Exporters
        user.archive_for(department_id)&.archiving_reason,
        user.referents.map(&:email).join(", "),
        participation.organisation.name,
-       agent_prescripteur.present? ? "oui" : "non",
+       participation.rdv_solidarites_agent_prescripteur_id.present? ? "oui" : "non",
        agent_prescripteur&.first_name,
        agent_prescripteur&.last_name,
        agent_prescripteur&.email,

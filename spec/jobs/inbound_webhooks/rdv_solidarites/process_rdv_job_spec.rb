@@ -611,6 +611,63 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
           end
         end
       end
+
+      context "when it is a prescribed rdv" do
+        let!(:motif_attributes) do
+          {
+            id: 53,
+            location_type: "public_office",
+            motif_category: { short_name: "rsa_orientation" },
+            name: "RSA orientation", collectif: true
+          }
+        end
+        let!(:configuration) do
+          create(:configuration, organisation: organisation, convene_user: true, motif_category: motif_category)
+        end
+        let!(:participations_attributes) do
+          [
+            { id: 998, status: "unknown", created_by: "agent", user: { id: user_id1 },
+              created_by_agent_prescripteur: true, created_by_id: agent.rdv_solidarites_agent_id },
+            { id: 999, status: "unknown", created_by: "user", user: { id: user_id2 } }
+          ]
+        end
+
+        it "sets the participations rdv_solidarites_agent_prescripteur_id" do
+          expect(UpsertRecordJob).to receive(:perform_async).with(
+            "Rdv",
+            data,
+            {
+              participations_attributes: [
+                {
+                  id: nil,
+                  status: "unknown",
+                  created_by: "agent",
+                  user_id: 3,
+                  rdv_solidarites_participation_id: 998,
+                  rdv_context_id: rdv_context.id,
+                  convocable: true,
+                  rdv_solidarites_agent_prescripteur_id: agent.rdv_solidarites_agent_id
+                },
+                {
+                  id: nil,
+                  status: "unknown",
+                  created_by: "user",
+                  user_id: 4,
+                  rdv_solidarites_participation_id: 999,
+                  rdv_context_id: rdv_context2.id,
+                  convocable: false
+                }
+              ],
+              organisation_id: organisation.id,
+              agent_ids: [agent.id],
+              motif_id: motif.id,
+              lieu_id: lieu.id,
+              last_webhook_update_received_at: timestamp
+            }
+          )
+          subject
+        end
+      end
     end
   end
 end
