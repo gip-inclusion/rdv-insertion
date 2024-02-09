@@ -55,7 +55,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16.19.1
+          node-version: 18.15.0
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -64,6 +64,8 @@ jobs:
           rubygems: latest
       - name: Install JS dependencies
         run: yarn install
+      - name: Precompile assets
+        run: RAILS_ENV=test bundle exec rake assets:precompile
       - name: Setup test database
         env:
           POSTGRES_USER: rdv_insertion_test
@@ -107,7 +109,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16.19.1
+          node-version: 18.15.0
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -115,6 +117,8 @@ jobs:
           bundler-cache: true
       - name: Install JS dependencies
         run: yarn install
+      - name: Precompile assets
+        run: RAILS_ENV=test bundle exec rake assets:precompile
       - name: Setup test database
         env:
           POSTGRES_USER: rdv_insertion_test

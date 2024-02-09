@@ -1,20 +1,20 @@
 <div class="letter-footer">
   <% if display_europe_logos %>
     <div id="europe-logos">
-      <%= pdf_image_tag(logo_path("europe-logos")) %>
+      <%= image_tag(logo_path("europe-logos")) %>
     </div>
   <% end %>
   <div>
-    <%= pdf_image_tag(logo_path("rdv-insertion", ["png"])) %>
+    <%= image_tag(logo_path("rdv-insertion", ["png"])) %>
   </div>
   <% if display_department_logo %>
     <div id="department-logo">
-      <%= pdf_image_tag(department.logo_path) %>
+      <%= image_tag(department.logo_path) %>
     </div>
   <% end %>
   <% if display_france_travail_logo %>
     <div id="france-travail-logo">
-      <%= pdf_image_tag(logo_path("france-travail", ["png"])) %>
+      <%= image_tag(logo_path("france-travail", ["png"])) %>
     </div>
   <% end %>
 </div>
