@@ -1,7 +1,7 @@
 class Orientation < ApplicationRecord
   belongs_to :user
   belongs_to :organisation
-  belongs_to :agent
+  belongs_to :agent, optional: true
 
   validates :starts_at, :orientation_type, presence: true
 

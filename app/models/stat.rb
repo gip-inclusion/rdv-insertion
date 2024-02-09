@@ -36,6 +36,12 @@ class Stat < ApplicationRecord
     participations
   end
 
+  def user_ids_with_rdv_sample
+    participations_sample.where(status: %w[seen unknown])
+                         .select(:user_id)
+                         .distinct
+  end
+
   # We filter participations to keep only convocations
   def participations_with_notifications_sample
     participations_sample.joins(:notifications).select("participations.id, participations.status").distinct
@@ -80,7 +86,7 @@ class Stat < ApplicationRecord
     @agents_sample ||= Agent.not_betagouv
                             .joins(:organisations)
                             .where(organisations: all_organisations)
-                            .where(has_logged_in: true)
+                            .where.not(last_sign_in_at: nil)
                             .distinct
   end
 

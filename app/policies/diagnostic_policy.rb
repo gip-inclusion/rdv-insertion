@@ -1,0 +1,2 @@
+class DiagnosticPolicy < ParcoursDocumentPolicy
+end

@@ -2,8 +2,8 @@ describe SessionsController do
   render_views
 
   let!(:organisation) { create(:organisation) }
-  let!(:agent_email) {  "agent@beta.gouv.fr" }
-  let!(:agent) { create(:agent, email: agent_email, organisations: [organisation], has_logged_in: false) }
+  let!(:agent_email) { "agent@beta.gouv.fr" }
+  let!(:agent) { create(:agent, email: agent_email, organisations: [organisation], last_sign_in_at: nil) }
 
   describe "GET /sign_in" do
     it "renders the login form" do
@@ -47,7 +47,7 @@ describe SessionsController do
 
       it "marks the agent as logged in" do
         post :create
-        expect(agent.reload.has_logged_in).to eq(true)
+        expect(agent.reload.last_sign_in_at).not_to be_nil
       end
 
       it "sets a session" do

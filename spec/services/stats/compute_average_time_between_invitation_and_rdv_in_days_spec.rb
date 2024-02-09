@@ -50,6 +50,22 @@ describe Stats::ComputeAverageTimeBetweenInvitationAndRdvInDays, type: :service 
       it "doesn't take into account negative values" do
         expect(result.value).to eq(4)
       end
+
+      context "no positive values" do
+        let!(:participation1) do
+          create(:participation, rdv_context: rdv_context1, created_at: (date - 2.days), status: "seen")
+        end
+        let!(:rdv1) { create(:rdv, created_at: (date - 2.days), participations: [participation1]) }
+
+        let!(:participation2) do
+          create(:participation, rdv_context: rdv_context2, created_at: (date - 4.days), status: "seen")
+        end
+        let!(:rdv2) { create(:rdv, created_at: (date - 4.days), participations: [participation2]) }
+
+        it "returns 0" do
+          expect(result.value).to eq(0)
+        end
+      end
     end
   end
 end

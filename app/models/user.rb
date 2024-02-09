@@ -32,6 +32,8 @@ class User < ApplicationRecord
   has_many :tag_users, dependent: :destroy
   has_many :users_organisations, dependent: :destroy
   has_many :orientations, dependent: :destroy
+  has_many :diagnostics, dependent: :destroy
+  has_many :contracts, dependent: :destroy
 
   has_many :rdvs, through: :participations
   has_many :organisations, through: :users_organisations
@@ -47,7 +49,7 @@ class User < ApplicationRecord
   validates :last_name, :first_name, presence: true
   validates :email, allow_blank: true, format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/ }
   validate :birth_date_validity
-  validates :rdv_solidarites_user_id, :nir, :pole_emploi_id,
+  validates :rdv_solidarites_user_id, :nir, :france_travail_id,
             uniqueness: true, allow_nil: true, unless: :skip_uniqueness_validations
 
   delegate :name, :number, to: :department, prefix: true
@@ -99,7 +101,7 @@ class User < ApplicationRecord
       role: nil,
       uid: nil,
       department_internal_id: nil,
-      pole_emploi_id: nil,
+      france_travail_id: nil,
       nir: nil,
       email: nil,
       phone_number: nil
@@ -119,7 +121,11 @@ class User < ApplicationRecord
   end
 
   def notifiable?
-    sent_invitations.any? && title.present?
+    title.present?
+  end
+
+  def organisations_motif_category_ids
+    organisations.map(&:motif_category_ids).flatten
   end
 
   private

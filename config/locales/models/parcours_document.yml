@@ -1,0 +1,9 @@
+fr:
+  activerecord:
+    models:
+      parcours_document: Documents
+    attributes:
+      parcours_document:
+        type:
+          contract: contrat
+          diagnostic: diagnostic

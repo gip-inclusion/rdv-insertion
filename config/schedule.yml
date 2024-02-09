@@ -21,7 +21,10 @@ send_convocation_reminders_job:
   class: "SendConvocationRemindersJob"
 destroy_old_ressources_job:
   cron: "0 0 * * *" # we destroy inactive users and useless ressources once a day, at 00:00
-  class: "DestroyInactiveUsersJob"
+  class: "DestroyOldRessourcesJob"
 designate_on_watch_developer_job:
   cron: "0 10 * * mon" # we designate an on watch developer once a week, monday at 10:00
   class: "DesignateOnWatchDeveloperJob"
+send_creneau_availability_alert_job:
+  cron: "0 01 * * *" # we verify organisations creneaux availability once a day, at 01:00
+  class: "SendCreneauAvailabilityAlertJob"

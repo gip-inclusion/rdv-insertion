@@ -6,7 +6,11 @@ module SuperAdmins
 
     def update
       requested_resource.assign_attributes(**formatted_attributes)
-      save_user.success? ? redirect_after_successful_update : render_edit
+      if save_user.success?
+        redirect_after_succesful_action(requested_resource)
+      else
+        render_page(:edit, requested_resource, save_user.errors)
+      end
     end
 
     private
@@ -16,7 +20,7 @@ module SuperAdmins
       attributes = {}
       resource_params.to_h.deep_symbolize_keys.each do |k, v|
         attributes[k] =
-          k.in?([:affiliation_number, :department_internal_id, :email, :pole_emploi_id, :nir]) ? v.presence : v
+          k.in?([:affiliation_number, :department_internal_id, :email, :france_travail_id, :nir]) ? v.presence : v
       end
       attributes
     end

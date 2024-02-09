@@ -28,6 +28,8 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
     before do
       allow(stat).to receive(:all_users)
         .and_return(User.where(id: [user1, user2]))
+      allow(stat).to receive(:user_ids_with_rdv_sample)
+        .and_return(Participation.where(id: [participation1, participation2]).select(:user_id))
       allow(stat).to receive(:all_participations)
         .and_return(Participation.where(id: [participation1, participation2]))
       allow(stat).to receive(:invitations_sample)
@@ -68,6 +70,7 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
 
     it "renders all the stats" do
       expect(subject.stats_values).to include(:users_count_grouped_by_month)
+      expect(subject.stats_values).to include(:users_with_rdv_count_grouped_by_month)
       expect(subject.stats_values).to include(:rdvs_count_grouped_by_month)
       expect(subject.stats_values).to include(:sent_invitations_count_grouped_by_month)
       expect(subject.stats_values).to include(:rate_of_no_show_for_invitations_grouped_by_month)
@@ -80,6 +83,7 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
 
     it "renders the stats in the right format" do
       expect(subject.stats_values[:users_count_grouped_by_month]).to be_a(Integer)
+      expect(subject.stats_values[:users_with_rdv_count_grouped_by_month]).to be_a(Integer)
       expect(subject.stats_values[:rdvs_count_grouped_by_month]).to be_a(Integer)
       expect(subject.stats_values[:sent_invitations_count_grouped_by_month]).to be_a(Integer)
       expect(subject.stats_values[:rate_of_no_show_for_invitations_grouped_by_month]).to be_a(Integer)
@@ -94,6 +98,11 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
       expect(stat).to receive(:all_users)
       # user1 is ok, user2 is not created in the focused month
       expect(subject.stats_values[:users_count_grouped_by_month]).to eq(1)
+    end
+
+    it "counts the users with rdv for the focused month" do
+      expect(stat).to receive(:user_ids_with_rdv_sample)
+      expect(subject.stats_values[:users_with_rdv_count_grouped_by_month]).to eq(1)
     end
 
     it "counts the rdvs for the focused month" do
