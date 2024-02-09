@@ -1,12 +1,12 @@
 module AssetHelper
   class << self
     def find_asset(asset_path)
-      if Rails.configuration.assets.respond_to?(:find_asset)
-        # Dynamic compilation
-        Rails.application.assets.find_asset(asset_path).present?
-      else
+      if Rails.env.production?
         # Pre-compiled
         Rails.application.assets_manifest.assets.key?(asset_path)
+      else
+        # Dynamic compilation
+        Rails.application.assets.find_asset(asset_path).present?
       end
     end
   end
