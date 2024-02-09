@@ -33,7 +33,7 @@ export default observer(({ user, format }) => {
               className="btn btn-danger"
               onClick={() => handleInvitationClick()}
             >
-              L'envoi a échoué
+              Afficher les erreurs
             </button>
           ) : (
             <Tippy

@@ -97,7 +97,7 @@ describe "Agent can invite users by batch from index" do
 
       expect(page).not_to have_content("Inviter par SMS")
       expect(page).to have_content("Réinviter par SMS").exactly(2).times
-      expect(page).to have_content("L'envoi a échoué").exactly(1).times
+      expect(page).to have_content("Afficher les erreurs").exactly(1).times
     end
 
     it "can return to index page with the same arguments" do
@@ -166,7 +166,7 @@ describe "Agent can invite users by batch from index" do
 
       expect(page).not_to have_content("Inviter par SMS")
       expect(page).to have_content("Réinviter par SMS").exactly(2).times
-      expect(page).to have_content("L'envoi a échoué").exactly(1).times
+      expect(page).to have_content("Afficher les erreurs").exactly(1).times
     end
 
     it "can return to index page with the same arguments" do
