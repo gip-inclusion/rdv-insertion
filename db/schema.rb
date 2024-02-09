@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_02_132147) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_08_163202) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -317,6 +317,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_02_132147) do
     t.bigint "rdv_context_id"
     t.string "created_by", null: false
     t.boolean "convocable", default: false, null: false
+    t.integer "rdv_solidarites_agent_prescripteur_id"
     t.index ["rdv_context_id"], name: "index_participations_on_rdv_context_id"
     t.index ["status"], name: "index_participations_on_status"
     t.index ["user_id", "rdv_id"], name: "index_participations_on_user_id_and_rdv_id", unique: true

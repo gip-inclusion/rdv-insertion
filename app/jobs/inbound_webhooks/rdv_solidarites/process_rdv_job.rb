@@ -148,13 +148,21 @@ module InboundWebhooks
           end.compact + participations_attributes_destroyed
       end
 
-      # rubocop:disable Metrics/AbcSize
       def compute_participation_attributes(user)
-        rdv_solidarites_participation = rdv_solidarites_rdv.participations.find do |participation|
-          participation.user.id == user.rdv_solidarites_user_id
-        end
-        existing_participation = rdv&.participation_for(user)
+        rdv_solidarites_participation = rdv_solidarites_rdv.participation_for(user)
+        return nil unless rdv_solidarites_participation
 
+        existing_participation = rdv&.participation_for(user)
+        attributes = base_participation_attributes(rdv_solidarites_participation, existing_participation, user)
+
+        if existing_participation.nil?
+          attributes[:convocable] = rdv_solidarites_participation.convocable? && matching_configuration.convene_user?
+        end
+
+        attributes
+      end
+
+      def base_participation_attributes(rdv_solidarites_participation, existing_participation, user)
         attributes = {
           id: existing_participation&.id,
           status: rdv_solidarites_participation.status,
@@ -163,15 +171,25 @@ module InboundWebhooks
           rdv_solidarites_participation_id: rdv_solidarites_participation.id,
           rdv_context_id: rdv_context_for(user).id
         }
-        # convocable attribute can be set only once
-        if existing_participation.nil?
-          attributes.merge!(
-            convocable: rdv_solidarites_participation.convocable? && matching_configuration.convene_user?
-          )
+
+        rdv_solidarites_agent_prescripteur_id = rdv_solidarites_agent_prescripteur_id(rdv_solidarites_participation)
+        if rdv_solidarites_agent_prescripteur_id
+          attributes[:rdv_solidarites_agent_prescripteur_id] =
+            rdv_solidarites_agent_prescripteur_id
         end
+
         attributes
       end
-      # rubocop:enable Metrics/AbcSize
+
+      def rdv_solidarites_agent_prescripteur_id(rdv_solidarites_participation)
+        # Nous avons choisi de ne pas implémenter le polymorphisme des created_by de rdvs tant qu'on en a pas besoin
+        # - created_by_agent_prescripteur est un boolean qui indique
+        # si la participation a été créée par un agent prescripteur
+        # - created_by_id est l'id de l'agent qui a prescrit la participation
+        return unless rdv_solidarites_participation.created_by_agent_prescripteur
+
+        rdv_solidarites_participation.created_by_id
+      end
 
       def rdv_context_for(user)
         rdv_contexts.find { _1.user_id == user.id }

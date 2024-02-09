@@ -56,11 +56,18 @@ module Exporters
        Archive.human_attribute_name(:archiving_reason),
        User.human_attribute_name(:referents),
        "Organisation du rendez-vous",
+       "Rendez-vous prescrit ?",
+       "Prénom du prescripteur",
+       "Nom du prescripteur",
+       "Mail du prescripteur",
        User.human_attribute_name(:tags)]
     end
 
     def csv_row(participation) # rubocop:disable Metrics/AbcSize
       user = participation.user
+      agent_prescripteur = Agent.find_by(
+        rdv_solidarites_agent_id: participation.rdv_solidarites_agent_prescripteur_id
+      )
 
       [user.title,
        user.last_name,
@@ -86,6 +93,10 @@ module Exporters
        user.archive_for(department_id)&.archiving_reason,
        user.referents.map(&:email).join(", "),
        participation.organisation.name,
+       agent_prescripteur.present? ? "oui" : "non",
+       agent_prescripteur&.first_name,
+       agent_prescripteur&.last_name,
+       agent_prescripteur&.email,
        user.tags.pluck(:value).join(", ")]
     end
 
