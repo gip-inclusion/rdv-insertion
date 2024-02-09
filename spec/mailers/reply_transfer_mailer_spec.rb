@@ -140,6 +140,31 @@ RSpec.describe ReplyTransferMailer do
       )
       expect(mail.body.encoded).to match("Voir la fiche usager")
     end
+
+    context "when rdv has no lieu" do
+      let!(:lieu) { nil }
+
+      it "renders the content without the lieu" do
+        expect(mail.body.encoded).to match("Vous trouverez ci-dessous une réponse d'un.e bénéficiaire")
+        expect(mail.body.encoded).to match("<h4>coucou</h4>")
+        expect(mail.body.encoded).to match("Je souhaite annuler mon RDV")
+        expect(mail.body.encoded).to match("Merci de ne pas répondre à cet e-mail. Pour contacter la personne, ")
+        expect(mail.body.encoded).to match("vous pouvez utiliser les informations contenues dans cet e-mail.")
+        expect(mail.body.encoded).to match("<h4>Éxpéditeur</h4>")
+        expect(mail.body.encoded).to match("M. Bénédicte FICIAIRE")
+        expect(mail.body.encoded).to match("bene_ficiaire@gmail.com")
+        expect(mail.body.encoded).to match("33782605941")
+        expect(mail.body.encoded).to match("Message envoyé par rdv-insertion")
+        expect(mail.body.encoded).to match("Convocation pour un rdv le jeudi 29 juin 2023 à 00h00")
+        expect(mail.body.encoded).to match("Motif : RSA orientation sur site")
+        expect(mail.body.encoded).not_to match("Lieu")
+        expect(mail.body.encoded).not_to match("Adresse")
+        expect(mail.body.encoded).to match(
+          "href=\"#{ENV['HOST']}/organisations/#{organisation.id}/users/#{user.id}\""
+        )
+        expect(mail.body.encoded).to match("Voir la fiche usager")
+      end
+    end
   end
 
   describe "#forward_to_default_mailbox" do

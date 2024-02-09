@@ -53,7 +53,7 @@ describe Users::RdvContextsController do
         )
       end
       let!(:invitation_accompagnement) do
-        create(:invitation, sent_at: "2021-11-20", format: "sms", rdv_context: rdv_context2)
+        create(:invitation, sent_at: "2021-11-20", format: "sms", rdv_context: rdv_context2, user:)
       end
       let!(:category_orientation) do
         create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation")
@@ -146,6 +146,16 @@ describe Users::RdvContextsController do
         end
 
         context "when the rdv is passed" do
+          it "does not show the courrier generation button" do
+            get :index, params: index_params
+
+            expect(response.body).not_to include("<i class=\"fas fa-file-pdf\"></i> Courrier")
+          end
+        end
+
+        context "when the user has no title" do
+          before { user.update! title: nil }
+
           it "does not show the courrier generation button" do
             get :index, params: index_params
 

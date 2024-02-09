@@ -15,7 +15,7 @@ fr:
         title: Civilité
         department_internal_id: ID interne au département
         nir: Numéro de sécurité sociale
-        pole_emploi_id: ID Pôle Emploi
+        france_travail_id: ID France Travail
         rights_opening_date: Date d'entrée flux
         organisations: Organisation(s)
         uid: Le couple numéro CAF + rôle
@@ -23,3 +23,5 @@ fr:
         referents: Référent(s)
         organisation_ids: Organisation
         tags: Tags
+        rdv_solidarites_user_id: ID de l'usager RDV-Solidarités
+        birth_name: Nom de naissance

@@ -1,7 +1,9 @@
 describe "Agents can generate convocation pdf", :js do
   let!(:agent) { create(:agent, organisations: [organisation]) }
   let!(:organisation) { create(:organisation) }
-  let!(:user) { create(:user, organisations: [organisation]) }
+  let!(:user) do
+    create(:user, organisations: [organisation], title: "monsieur")
+  end
   let!(:motif_category) { create(:motif_category) }
   let!(:motif) do
     create(:motif, organisation: organisation, motif_category: motif_category, location_type: "public_office")
@@ -78,6 +80,26 @@ describe "Agents can generate convocation pdf", :js do
       visit organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id)
 
       expect(page).to have_no_button "Courrier"
+    end
+  end
+
+  context "when the participation is excused" do
+    before { participation.update! status: "excused" }
+
+    it "cannot generate a pdf" do
+      visit organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id)
+
+      expect(page).not_to have_button "Courrier"
+    end
+  end
+
+  context "when the user has no title" do
+    before { user.update! title: nil }
+
+    it "cannot generate a pdf" do
+      visit organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id)
+
+      expect(page).not_to have_button "Courrier"
     end
   end
 

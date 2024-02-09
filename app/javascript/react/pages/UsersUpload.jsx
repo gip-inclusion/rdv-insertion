@@ -55,6 +55,8 @@ const UsersUpload = observer(
       users.isDepartmentLevel = isDepartmentLevel;
 
       const rows = await uploadFile(file, sheetName, columnNames);
+      if (typeof(rows) === "undefined") return;
+
       rows.forEach((row) => {
         const user = new User(
           {
@@ -67,7 +69,7 @@ const UsersUpload = observer(
                 .split(",")
                 .map((tag) => tag.trim()) || [],
             nir: row[parameterizedColumnNames.nir_column],
-            poleEmploiId: row[parameterizedColumnNames.pole_emploi_id_column],
+            franceTravailId: row[parameterizedColumnNames.france_travail_id_column],
             role: row[parameterizedColumnNames.role_column],
             title: row[parameterizedColumnNames.title_column],
             addressFirstField: row[parameterizedColumnNames.address_first_field_column],
@@ -184,7 +186,7 @@ const UsersUpload = observer(
                 name="users-list-upload"
                 accept="text/plain, .csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, application/vnd.oasis.opendocument.spreadsheet"
                 multiple={false}
-                uploadMessage={<span>Choisissez un fichier de nouveaux demandeurs</span>}
+                uploadMessage={<span>Choisissez un fichier d'usagers</span>}
                 pendingMessage="Récupération des informations, merci de patienter"
               />
             </div>

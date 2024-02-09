@@ -1,0 +1,2 @@
+class Contract < ParcoursDocument
+end

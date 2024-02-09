@@ -1,8 +1,7 @@
 module Users
   class SyncWithRdvSolidarites < BaseService
-    def initialize(user:, organisation:)
+    def initialize(user:)
       @user = user.reload # we need to be sure the associations are correctly loaded
-      @organisation = organisation
     end
 
     def call

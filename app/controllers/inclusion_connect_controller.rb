@@ -10,6 +10,7 @@ class InclusionConnectController < ApplicationController
   def callback
     if retrieve_inclusion_connect_infos.success?
       set_session_credentials
+      mark_agent_as_logged_in!
       redirect_to session.delete(:agent_return_to) || root_path
     else
       handle_failed_authentication(retrieve_inclusion_connect_infos.errors.join(", "))
@@ -51,10 +52,16 @@ class InclusionConnectController < ApplicationController
     }
   end
 
+  def mark_agent_as_logged_in!
+    return if agent.update(last_sign_in_at: Time.zone.now)
+
+    handle_failed_authentication(agent.errors.full_messages)
+  end
+
   def handle_failed_authentication(errors)
     Sentry.capture_message(errors)
     flash[:error] = "Nous n'avons pas pu vous authentifier. Contacter le support à l'adresse" \
-                    "<data.insertion@beta.gouv.fr> si le problème persiste."
+                    "<rdv-insertion@beta.gouv.fr> si le problème persiste."
     redirect_to sign_in_path
   end
 

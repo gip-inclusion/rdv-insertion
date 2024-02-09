@@ -22,7 +22,7 @@ describe User do
         expect(user).not_to be_valid
         expect(user.errors.details).to eq({ rdv_solidarites_user_id: [{ error: :taken, value: 1 }] })
         expect(user.errors.full_messages.to_sentence)
-          .to include("Rdv solidarites user est déjà utilisé")
+          .to include("ID de l'usager RDV-Solidarités est déjà utilisé")
       end
     end
   end
@@ -226,6 +226,24 @@ describe User do
         expect(user.errors.details).to eq({ nir: [{ error: :invalid }] })
         expect(user.errors.full_messages.to_sentence)
           .to include("Le NIR n'est pas valide")
+      end
+    end
+  end
+
+  describe "#notifiable?" do
+    subject { user.notifiable? }
+
+    let!(:user) { create(:user, title: "monsieur") }
+
+    it "is notifiable if the title is present" do
+      expect(subject).to eq(true)
+    end
+
+    context "when the user has no title" do
+      let!(:user) { create(:user, title: nil) }
+
+      it "is not notifiable" do
+        expect(subject).to eq(false)
       end
     end
   end

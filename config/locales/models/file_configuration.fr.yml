@@ -24,6 +24,6 @@ fr:
         rights_opening_date_column: Date d'ouverture du droit
         organisation_search_terms_column: Structure référente
         referent_email_column: Email de l'agent référent
-        pole_emploi_id_column: ID Pôle emploi
+        france_travail_id_column: ID France Travail
         nir_column: NIR
         tags_column: Tags

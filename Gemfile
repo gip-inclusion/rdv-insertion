@@ -17,8 +17,9 @@ gem "pg", ">= 0.18", "< 2.0"
 gem "puma", "< 7"
 # Use SCSS for stylesheets
 gem "sass-rails", ">= 6"
-# Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
-gem "webpacker", "~> 5.x"
+
+# JavaScript Bundling for Rails
+gem "jsbundling-rails"
 
 # Easy use of react with rails
 gem "react-rails"
@@ -88,11 +89,20 @@ gem "wkhtmltopdf-binary"
 # CORS support
 gem "rack-cors"
 
+# Sending ZIP
+gem "rubyzip"
+
 # Simple Fast Declarative Serialization Library
 gem "blueprinter"
 
+# A Rails engine for creating super-flexible admin dashboards
+gem "administrate", git: "https://github.com/thoughtbot/administrate.git"
+
+# Required for ActiveStorage for S3 compatible storage
+gem "aws-sdk-s3", require: false
+
 # Use Active Storage variant
-# gem 'image_processing', '~> 1.2'
+gem "image_processing", "~> 1.2"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", ">= 1.4.2", require: false

@@ -5,16 +5,17 @@
       <%= render "common/attribute_display", record: organisation, attribute: :email %>
       <%= render "common/attribute_display", record: organisation, attribute: :phone_number %>
       <%= render "common/attribute_display", record: organisation, attribute: :independent_from_cd, tooltip: true %>
+      <%= render "common/attribute_display", record: organisation, attribute: :slug, tooltip: true %>
+      <%= render "common/attribute_display", record: organisation, attribute: :safir_code, tooltip: true %>
       <div class="col-12 col-md-6 px-5 mb-3">
         <h4>Logo</h4>
         <% if organisation.logo.path %>
-          <%= image_pack_tag organisation.logo.path, class: "organisation-configuration-logo", alt: "Logo utilisé pour représenter l'organisation" %>
+          <%= image_tag organisation.logo.path, class: "organisation-configuration-logo", alt: "Logo utilisé pour représenter l'organisation" %>
         <% else %>
           <p>Pas de logo défini - le logo du département sera utilisé</p>
           <p>Contactez l'équipe rdv-insertion pour en ajouter un</p>
         <% end %>
       </div>
-      <%= render "common/attribute_display", record: organisation, attribute: :slug, tooltip: true %>
     </div>
   </div>
   <div class="d-flex justify-content-end mb-4">

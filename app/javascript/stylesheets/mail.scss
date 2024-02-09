@@ -280,3 +280,11 @@ blockquote {
   padding: $padding;
   margin: 15px;
 }
+
+.margined-paragraph {
+  margin-left: 25px;
+  margin-bottom: 15px;
+  p {
+    margin: 0
+  }
+}

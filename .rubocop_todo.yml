@@ -12,22 +12,13 @@
 # Include: **/*.gemfile, **/Gemfile, **/gems.rb
 Bundler/OrderedGems:
   Exclude:
-    - 'Gemfile'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, IndentationWidth.
-# SupportedStyles: with_first_argument, with_fixed_indentation
-Layout/ArgumentAlignment:
-  Exclude:
-    - 'bin/webpack'
-    - 'bin/webpack-dev-server'
+    - "Gemfile"
 
 # Offense count: 6
 # Cop supports --auto-correct.
 Layout/EmptyLineAfterGuardClause:
   Exclude:
-    - 'bin/bundle'
+    - "bin/bundle"
 
 # Offense count: 2
 # Cop supports --auto-correct.
@@ -35,7 +26,7 @@ Layout/EmptyLineAfterGuardClause:
 # SupportedStyles: empty_lines, no_empty_lines
 Layout/EmptyLinesAroundBlockBody:
   Exclude:
-    - 'db/schema.rb'
+    - "db/schema.rb"
 
 # Offense count: 1
 # Cop supports --auto-correct.
@@ -43,7 +34,7 @@ Layout/EmptyLinesAroundBlockBody:
 # SupportedStyles: aligned, indented
 Layout/MultilineOperationIndentation:
   Exclude:
-    - 'bin/bundle'
+    - "bin/bundle"
 
 # Offense count: 2
 # Cop supports --auto-correct.
@@ -52,7 +43,7 @@ Layout/MultilineOperationIndentation:
 # SupportedStylesForEmptyBrackets: space, no_space
 Layout/SpaceInsideArrayLiteralBrackets:
   Exclude:
-    - 'config/environments/production.rb'
+    - "config/environments/production.rb"
 
 # Offense count: 1
 # Configuration parameters: IgnoredMethods.
@@ -75,26 +66,26 @@ Metrics/PerceivedComplexity:
 # SupportedStyles: nested, compact
 Style/ClassAndModuleChildren:
   Exclude:
-    - 'test/channels/application_cable/connection_test.rb'
-    - 'test/test_helper.rb'
+    - "test/channels/application_cable/connection_test.rb"
+    - "test/test_helper.rb"
 
 # Offense count: 4
 Style/Documentation:
   Exclude:
-    - 'spec/**/*'
-    - 'test/**/*'
-    - 'app/helpers/application_helper.rb'
-    - 'app/models/application_record.rb'
-    - 'config/application.rb'
-    - 'db/migrate/20210608160009_create_departments.rb'
+    - "spec/**/*"
+    - "test/**/*"
+    - "app/helpers/application_helper.rb"
+    - "app/models/application_record.rb"
+    - "config/application.rb"
+    - "db/migrate/20210608160009_create_departments.rb"
 
 # Offense count: 3
 # Cop supports --auto-correct.
 Style/ExpandPathArguments:
   Exclude:
-    - 'bin/bundle'
-    - 'bin/rails'
-    - 'bin/rake'
+    - "bin/bundle"
+    - "bin/rails"
+    - "bin/rake"
 
 # Offense count: 44
 # Cop supports --auto-correct.
@@ -107,32 +98,32 @@ Style/FrozenStringLiteralComment:
 # Cop supports --auto-correct.
 Style/GlobalStdStream:
   Exclude:
-    - 'config/environments/production.rb'
+    - "config/environments/production.rb"
 
 # Offense count: 2
 # Cop supports --auto-correct.
 Style/IfUnlessModifier:
   Exclude:
-    - 'bin/bundle'
+    - "bin/bundle"
 
 # Offense count: 1
 # Cop supports --auto-correct.
 Style/PerlBackrefs:
   Exclude:
-    - 'bin/bundle'
+    - "bin/bundle"
 
 # Offense count: 1
 # Cop supports --auto-correct.
 Style/RedundantBegin:
   Exclude:
-    - 'bin/yarn'
+    - "bin/yarn"
 
 # Offense count: 2
 # Cop supports --auto-correct.
 # Configuration parameters: SafeForConstants.
 Style/RedundantFetchBlock:
   Exclude:
-    - 'config/puma.rb'
+    - "config/puma.rb"
 
 # Offense count: 1
 # Cop supports --auto-correct.
@@ -145,7 +136,7 @@ Style/SpecialGlobalVars:
 # Cop supports --auto-correct.
 Style/StderrPuts:
   Exclude:
-    - 'bin/yarn'
+    - "bin/yarn"
 
 # Offense count: 57
 # Cop supports --auto-correct.
@@ -153,24 +144,19 @@ Style/StderrPuts:
 # SupportedStyles: single_quotes, double_quotes
 Style/StringLiterals:
   Exclude:
-    - 'bin/bundle'
-    - 'bin/webpack'
-    - 'bin/webpack-dev-server'
-    - 'bin/yarn'
-    - 'config/environments/production.rb'
-    - 'config/puma.rb'
-    - 'config/routes.rb'
-    - 'config/spring.rb'
-    - 'db/schema.rb'
-    - 'test/application_system_test_case.rb'
-    - 'test/channels/application_cable/connection_test.rb'
+    - "bin/bundle"
+    - "bin/yarn"
+    - "config/environments/production.rb"
+    - "config/puma.rb"
+    - "config/routes.rb"
+    - "config/spring.rb"
+    - "db/schema.rb"
+    - "test/application_system_test_case.rb"
+    - "test/channels/application_cable/connection_test.rb"
 
 # Offense count: 2
 # Cop supports --auto-correct.
 # Configuration parameters: MinSize.
-# SupportedStyles: percent, brackets
-Style/SymbolArray:
-  EnforcedStyle: brackets
 
 # Offense count: 2
 # Cop supports --auto-correct.

@@ -1,7 +1,7 @@
 <div class="container mt-5">
   <% if @organisations.empty? %>
     <h4 class="text-center mt-5">Vous n'appartenez à aucune organisation présente sur RDV Insertion</h4>
-    <h4 class="text-center mt-5">Contactez-nous à l'adresse data.insertion@beta.gouv.fr</h4>
+    <h4 class="text-center mt-5">Contactez-nous à l'adresse rdv-insertion@beta.gouv.fr</h4>
   <% else %>
     <div class="row mt-5 justify-content-center">
       <div class="col-8">
@@ -30,8 +30,8 @@
               </div>
               <div class="d-flex flex-column justify-content-center mx-2 py-4 text-center">
                 <div>
-                  <% if image_compiled?("maps/#{department.name.parameterize}.svg") %>
-                    <%= image_pack_tag("maps/#{department.name.parameterize}.svg", alt: department.name.parameterize) %>
+                  <% if asset_exists?("maps/#{department.name.parameterize}.svg") %>
+                    <%= image_tag("maps/#{department.name.parameterize}.svg", alt: department.name.parameterize) %>
                   <% end %>
                 </div>
                 <div>
@@ -41,13 +41,6 @@
                 </div>
               </div>
             </div>
-          </div>
-        <% end %>
-        <% if current_agent.super_admin? %>
-          <div class="my-4 d-flex justify-content-center">
-            <%= link_to new_organisation_path, data: { turbo_frame: 'remote_modal' } do %>
-              <%= button_tag "Lier une organisation RDVS", class: "btn btn-blue" %>
-            <% end %>
           </div>
         <% end %>
       </div>

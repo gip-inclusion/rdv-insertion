@@ -10,9 +10,37 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_04_105413) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_02_132147) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "active_storage_attachments", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "filename", null: false
+    t.string "content_type"
+    t.text "metadata"
+    t.string "service_name", null: false
+    t.bigint "byte_size", null: false
+    t.string "checksum"
+    t.datetime "created_at", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "active_storage_variant_records", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.string "variation_digest", null: false
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
 
   create_table "agent_roles", force: :cascade do |t|
     t.integer "access_level", default: 0, null: false
@@ -36,9 +64,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_04_105413) do
     t.bigint "rdv_solidarites_agent_id"
     t.string "first_name"
     t.string "last_name"
-    t.boolean "has_logged_in", default: false
     t.datetime "last_webhook_update_received_at"
     t.boolean "super_admin", default: false
+    t.datetime "last_sign_in_at"
     t.index ["email"], name: "index_agents_on_email", unique: true
     t.index ["rdv_solidarites_agent_id"], name: "index_agents_on_rdv_solidarites_agent_id", unique: true
   end
@@ -118,7 +146,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_04_105413) do
     t.string "address_fourth_field_column"
     t.string "address_fifth_field_column"
     t.string "affiliation_number_column"
-    t.string "pole_emploi_id_column"
+    t.string "france_travail_id_column"
     t.string "nir_column"
     t.string "department_internal_id_column"
     t.string "rights_opening_date_column"
@@ -180,7 +208,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_04_105413) do
     t.string "sms_sender_name"
     t.boolean "display_department_logo", default: true
     t.bigint "organisation_id"
-    t.boolean "display_pole_emploi_logo", default: false
+    t.boolean "display_france_travail_logo", default: false
     t.index ["organisation_id"], name: "index_messages_configurations_on_organisation_id"
   end
 
@@ -191,7 +219,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_04_105413) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "template_id"
-    t.boolean "participation_optional", default: false
+    t.boolean "optional_rdv_subscription", default: false
     t.boolean "leads_to_orientation", default: false
     t.index ["rdv_solidarites_motif_category_id"], name: "index_motif_categories_on_rdv_solidarites_motif_category_id", unique: true
     t.index ["short_name"], name: "index_motif_categories_on_short_name", unique: true
@@ -241,6 +269,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_04_105413) do
     t.string "slug"
     t.boolean "independent_from_cd", default: false
     t.string "logo_filename"
+    t.string "safir_code"
     t.index ["department_id"], name: "index_organisations_on_department_id"
     t.index ["rdv_solidarites_organisation_id"], name: "index_organisations_on_rdv_solidarites_organisation_id", unique: true
   end
@@ -254,7 +283,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_04_105413) do
   create_table "orientations", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "organisation_id", null: false
-    t.bigint "agent_id", null: false
+    t.bigint "agent_id"
     t.integer "orientation_type"
     t.date "starts_at"
     t.date "ends_at"
@@ -263,6 +292,19 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_04_105413) do
     t.index ["agent_id"], name: "index_orientations_on_agent_id"
     t.index ["organisation_id"], name: "index_orientations_on_organisation_id"
     t.index ["user_id"], name: "index_orientations_on_user_id"
+  end
+
+  create_table "parcours_documents", force: :cascade do |t|
+    t.bigint "department_id", null: false
+    t.bigint "user_id", null: false
+    t.bigint "agent_id", null: false
+    t.string "type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agent_id"], name: "index_parcours_documents_on_agent_id"
+    t.index ["department_id"], name: "index_parcours_documents_on_department_id"
+    t.index ["type"], name: "index_parcours_documents_on_type"
+    t.index ["user_id"], name: "index_parcours_documents_on_user_id"
   end
 
   create_table "participations", force: :cascade do |t|
@@ -348,6 +390,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_04_105413) do
     t.json "rate_of_no_show_for_invitations_grouped_by_month"
     t.float "rate_of_users_oriented"
     t.json "rate_of_users_oriented_grouped_by_month"
+    t.integer "users_with_rdv_count"
+    t.json "users_with_rdv_count_grouped_by_month"
     t.index ["statable_type", "statable_id"], name: "index_stats_on_statable"
   end
 
@@ -409,7 +453,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_04_105413) do
     t.datetime "deleted_at"
     t.datetime "last_webhook_update_received_at"
     t.string "nir"
-    t.string "pole_emploi_id"
+    t.string "france_travail_id"
     t.string "carnet_de_bord_carnet_id"
     t.integer "created_through", default: 0
     t.index ["department_internal_id"], name: "index_users_on_department_internal_id"
@@ -448,6 +492,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_04_105413) do
     t.index ["webhook_endpoint_id"], name: "index_webhook_receipts_on_webhook_endpoint_id"
   end
 
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "agent_roles", "agents"
   add_foreign_key "agent_roles", "organisations"
   add_foreign_key "archives", "departments"
@@ -468,6 +514,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_04_105413) do
   add_foreign_key "orientations", "agents"
   add_foreign_key "orientations", "organisations"
   add_foreign_key "orientations", "users"
+  add_foreign_key "parcours_documents", "agents"
+  add_foreign_key "parcours_documents", "departments"
+  add_foreign_key "parcours_documents", "users"
   add_foreign_key "participations", "rdv_contexts"
   add_foreign_key "rdv_contexts", "motif_categories"
   add_foreign_key "rdv_contexts", "users"

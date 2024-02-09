@@ -1,7 +1,9 @@
 module Users
   class RdvContextsController < ApplicationController
-    before_action :set_user, :set_all_configurations, :set_department, :set_organisation, :set_user_organisations,
-                  only: [:index]
+    before_action :set_user, :set_department, :set_organisation, :set_user_organisations, :set_all_configurations,
+                  :set_back_to_users_list_url, only: [:index]
+
+    include BackToListConcern
 
     def index
       @rdv_contexts =
@@ -41,6 +43,7 @@ module Users
       @all_configurations =
         policy_scope(::Configuration).joins(:organisation)
                                      .where(current_organisation_filter)
+                                     .where({ organisation: @user_organisations.map(&:id) })
                                      .preload(:motif_category)
                                      .uniq(&:motif_category_id)
 

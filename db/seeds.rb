@@ -119,7 +119,7 @@ MotifCategory.create!(
 MotifCategory.create!(
   name: "RSA offre insertion pro",
   short_name: "rsa_insertion_offer",
-  participation_optional: true,
+  optional_rdv_subscription: true,
   template: Template.find_or_create_by!(
     model: "atelier",
     rdv_title: "atelier",
@@ -157,7 +157,7 @@ MotifCategory.create!(
 MotifCategory.create!(
   name: "RSA Atelier rencontres professionnelles",
   short_name: "rsa_atelier_rencontres_pro",
-  participation_optional: true,
+  optional_rdv_subscription: true,
   template: Template.find_or_create_by!(
     model: "atelier",
     rdv_title: "atelier",
@@ -169,7 +169,7 @@ MotifCategory.create!(
 MotifCategory.create!(
   name: "RSA Atelier compétences",
   short_name: "rsa_atelier_competences",
-  participation_optional: true,
+  optional_rdv_subscription: true,
   template: Template.find_or_create_by!(
     model: "atelier",
     rdv_title: "atelier",
@@ -355,7 +355,7 @@ agent = Agent.create!(
   # rdv_solidarites_agent_id: vérifier l'id de l'agent correspondant sur RDV-Solidarites
   first_name: "Alain",
   last_name: "Sertion",
-  has_logged_in: true,
+  last_sign_in_at: Time.zone.now,
   last_webhook_update_received_at: Time.zone.now
 )
 

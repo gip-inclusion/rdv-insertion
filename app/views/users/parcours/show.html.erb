@@ -14,5 +14,16 @@
         <button class="btn btn-blue mb-3"><i class="fas fa-plus"></i> Ajouter une orientation</button>
       <% end %>
     </div>
+
+    <div class="mx-3 my-4">
+      <h4>Diagnostics</h4>
+      <%= render "parcours_documents/documents_list", user: @user, type: "diagnostic" %>
+      <%= render "parcours_documents/document_form", user: @user, type: "diagnostic" %>
+    </div>
+    <div class="mx-3 my-4">
+      <h4>Contrats</h4>
+      <%= render "parcours_documents/documents_list", user: @user, type: "contract" %>
+      <%= render "parcours_documents/document_form", user: @user, type: "contract" %>
+    </div>
   <% end %>
 </div>

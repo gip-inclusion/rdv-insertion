@@ -3,9 +3,6 @@ class Agent < ApplicationRecord
 
   include Agent::RdvSolidaritesClient
 
-  validates :email, presence: true, uniqueness: true
-  validates :rdv_solidarites_agent_id, uniqueness: true, allow_nil: true
-
   has_many :agent_roles, dependent: :destroy
   has_many :referent_assignations, dependent: :destroy
   has_many :agents_rdvs, dependent: :destroy
@@ -17,6 +14,11 @@ class Agent < ApplicationRecord
   has_many :motif_categories, -> { distinct }, through: :organisations
   has_many :rdvs, through: :agents_rdvs
   has_many :users, through: :referent_assignations
+
+  validates :email, presence: true, uniqueness: true
+  validates :rdv_solidarites_agent_id, uniqueness: true, allow_nil: true
+
+  validate :cannot_save_as_super_admin
 
   scope :not_betagouv, -> { where.not("agents.email LIKE ?", "%beta.gouv.fr") }
   scope :super_admins, -> { where(super_admin: true) }
@@ -32,5 +34,15 @@ class Agent < ApplicationRecord
 
   def to_s
     "#{first_name} #{last_name}"
+  end
+
+  private
+
+  # This is to make sure an agent can't be set as super_admin through an agent creation or update in the app.
+  # To set an agent as superadmin a developer should use agent#update_column.
+  def cannot_save_as_super_admin
+    return unless super_admin_changed? && super_admin == true
+
+    errors.add(:super_admin, "ne peut pas être mis à jour")
   end
 end

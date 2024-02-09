@@ -62,7 +62,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
           rights_opening_date: "15/11/2021",
           address: "5 Avenue du Moulin des Baux, 13260 Cassis",
           department_internal_id: "22221111",
-          pole_emploi_id: "22233333",
+          france_travail_id: "22233333",
           nir: generate_random_nir,
           invitation: {
             motif_category: { name: "RSA orientation" }
