@@ -47,6 +47,10 @@ class Rdv < ApplicationRecord
 
   def self.jwt_payload_keys = [:id, :address, :starts_at]
 
+  def self.latest
+    all.to_a.max_by(&:starts_at)
+  end
+
   def rdv_solidarites_url
     "#{ENV['RDV_SOLIDARITES_URL']}/admin/organisations/" \
       "#{organisation.rdv_solidarites_organisation_id}/rdvs/#{rdv_solidarites_rdv_id}"

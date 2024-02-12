@@ -1,7 +1,9 @@
 # rubocop:disable Metrics/ClassLength
 module Exporters
   class GenerateUsersCsv < Csv
-    def initialize(user_ids:, structure: nil, motif_category: nil, agent: nil)
+    attr_reader :agent
+
+    def initialize(user_ids:, agent:, structure: nil, motif_category: nil)
       @user_ids = user_ids
       @structure = structure
       @motif_category = motif_category
@@ -112,7 +114,7 @@ module Exporters
        human_last_participation_status(user),
        *(human_rdv_context_status(user) if @motif_category),
        rdv_seen_in_less_than_30_days?(user),
-       display_date(user.first_seen_rdv_starts_at),
+       orientation_date(user),
        display_date(user.archive_for(department_id)&.created_at),
        user.archive_for(department_id)&.archiving_reason,
        user.referents.map(&:email).join(", "),
@@ -172,11 +174,13 @@ module Exporters
     end
 
     def last_rdv_date(user)
-      @motif_category.present? ? rdv_context_for_export(user)&.last_rdv_starts_at : user.last_rdv_starts_at
+      last_rdv(user)&.starts_at
     end
 
     def last_rdv(user)
-      @motif_category.present? ? rdv_context_for_export(user)&.last_rdv : user.last_rdv
+      rdvs = @motif_category.present? ? rdv_context_for_export(user)&.rdvs : user.rdvs
+
+      RdvPolicy::Scope.new(agent, rdvs).resolve.latest if rdvs.present?
     end
 
     def last_participation(user)
@@ -191,6 +195,19 @@ module Exporters
       return "" if last_rdv(user).blank?
 
       last_rdv(user).collectif? ? "collectif" : "individuel"
+    end
+
+    def orientation_date(user)
+      scoped_participations = user.participations.joins(:organisation).where(organisations: { department_id: })
+      created_at = scoped_participations
+                   .seen
+                   .joins(:rdv_context)
+                   .joins("INNER JOIN motif_categories ON motif_categories.id = rdv_contexts.motif_category_id")
+                   .where(motif_categories: { leads_to_orientation: true })
+                   .order(created_at: :asc)
+                   .first&.created_at
+
+      display_date(created_at)
     end
 
     def rdv_taken_in_autonomy?(user)

@@ -1,11 +1,14 @@
 describe Exporters::GenerateUsersCsv, type: :service do
-  subject { described_class.call(user_ids: users.ids, structure: structure, motif_category: motif_category) }
+  subject { described_class.call(user_ids: users.ids, structure:, motif_category:, agent:) }
 
   let!(:now) { Time.zone.parse("22/06/2022") }
   let!(:timestamp) { now.to_i }
-  let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation") }
+  let!(:motif_category) do
+    create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation", leads_to_orientation: true)
+  end
   let!(:department) { create(:department, name: "Drôme", number: "26") }
   let!(:organisation) { create(:organisation, name: "Drome RSA", department: department) }
+  let!(:agent) { create(:agent, organisations: [organisation]) }
   let!(:structure) { organisation }
   let!(:configuration) { create(:configuration, organisation: organisation, motif_category: motif_category) }
   let!(:nir) { generate_random_nir }
@@ -36,9 +39,11 @@ describe Exporters::GenerateUsersCsv, type: :service do
   let!(:rdv) do
     create(:rdv, starts_at: Time.zone.parse("2022-05-25"),
                  created_by: "user",
+                 organisation:,
                  participations: [participation_rdv])
   end
-  let!(:participation_rdv) { create(:participation, user: user1, status: "seen") }
+
+  let!(:participation_rdv) { create(:participation, user: user1, status: "seen", created_at: "2022-05-23") }
 
   let!(:first_invitation) do
     create(:invitation, user: user1, format: "email", sent_at: Time.zone.parse("2022-05-21"))
@@ -163,7 +168,7 @@ describe Exporters::GenerateUsersCsv, type: :service do
           expect(csv).to include("Rendez-vous honoré") # rdv status
           expect(csv).to include("Statut du RDV à préciser") # rdv_context status
           expect(csv).to include("Statut du RDV à préciser;Oui") # first rdv in less than 30 days ?
-          expect(csv).to include("Rendez-vous honoré;Statut du RDV à préciser;Oui;25/05/2022") # orientation date
+          expect(csv).to include("Rendez-vous honoré;Statut du RDV à préciser;Oui;23/05/2022") # orientation date
         end
 
         it "displays the organisation infos" do
@@ -198,8 +203,40 @@ describe Exporters::GenerateUsersCsv, type: :service do
         end
       end
 
+      context "when rdvs are in a different department" do
+        let!(:rdv) do
+          create(:rdv, starts_at: Time.zone.parse("2022-06-03"),
+                       created_by: "user",
+                       organisation: other_organisation,
+                       participations: [participation_rdv])
+        end
+
+        let!(:other_department) { create(:department, name: "Gironde", number: "33") }
+
+        let!(:other_organisation) { create(:organisation, name: "Drome RSA", department: department) }
+
+        it "does not take it into account" do
+          expect(csv).not_to include("03/06/2022")
+        end
+      end
+
+      context "when last_rdv is not authorized for agent" do
+        let!(:other_organisation) { create(:organisation, name: "Drome RSA", department: department) }
+
+        let!(:rdv) do
+          create(:rdv, starts_at: Time.zone.parse("2022-05-31"),
+                       created_by: "user",
+                       organisation: other_organisation,
+                       participations: [participation_rdv])
+        end
+
+        it "does not take it into account" do
+          expect(csv).not_to include("31/05/2022")
+        end
+      end
+
       context "when no motif category is passed" do
-        subject { described_class.call(user_ids: users.ids, structure: structure, motif_category: nil) }
+        subject { described_class.call(user_ids: users.ids, structure: structure, motif_category: nil, agent:) }
 
         it "is a success" do
           expect(subject.success?).to eq(true)
