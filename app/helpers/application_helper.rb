@@ -27,7 +27,7 @@ module ApplicationHelper
   end
 
   def asset_exists?(asset_path)
-    AssetHelper.find_asset(asset_path).present?
+    AssetHelper.asset_exists?(asset_path)
   end
 
   def show_login_button?

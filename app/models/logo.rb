@@ -16,7 +16,7 @@ class Logo
 
   def available_formats
     %w[svg png jpg].select do |format|
-      AssetHelper.find_asset("#{BASE_PATH}#{@name}.#{format}")
+      AssetHelper.asset_exists?("#{BASE_PATH}#{@name}.#{format}")
     end
   end
 end
