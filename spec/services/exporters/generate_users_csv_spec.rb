@@ -203,6 +203,23 @@ describe Exporters::GenerateUsersCsv, type: :service do
         end
       end
 
+      context "when rdvs are in a different department" do
+        let!(:rdv) do
+          create(:rdv, starts_at: Time.zone.parse("2022-06-03"),
+                       created_by: "user",
+                       organisation: other_organisation,
+                       participations: [participation_rdv])
+        end
+
+        let!(:other_department) { create(:department, name: "Gironde", number: "33") }
+
+        let!(:other_organisation) { create(:organisation, name: "Drome RSA", department: department) }
+
+        it "does not take it into account" do
+          expect(csv).not_to include("03/06/2022")
+        end
+      end
+
       context "when last_rdv is not authorized for agent" do
         let!(:other_organisation) { create(:organisation, name: "Drome RSA", department: department) }
 

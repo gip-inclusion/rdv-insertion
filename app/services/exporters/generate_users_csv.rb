@@ -198,7 +198,7 @@ module Exporters
     end
 
     def orientation_date(user)
-      scoped_participations = ParticipationPolicy::Scope.new(@agent, user.participations).resolve
+      scoped_participations = user.participations.joins(:organisation).where(organisations: { department_id: })
       created_at = scoped_participations
                    .seen
                    .joins(:rdv_context)
