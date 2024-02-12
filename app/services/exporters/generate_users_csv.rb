@@ -198,15 +198,16 @@ module Exporters
     end
 
     def orientation_date(user)
-      participations_for_orientations = ParticipationPolicy::Scope
-                                        .new(@agent, user.participations)
-                                        .resolve
-                                        .seen
-                                        .joins(:motif_category)
-                                        .where(motif_categories: { leads_to_orientation: true })
-                                        .order(created_at: :asc)
+      scoped_participations = ParticipationPolicy::Scope.new(@agent, user.participations).resolve
+      created_at = scoped_participations
+                   .seen
+                   .joins(:rdv_context)
+                   .joins("INNER JOIN motif_categories ON motif_categories.id = rdv_contexts.motif_category_id")
+                   .where(motif_categories: { leads_to_orientation: true })
+                   .order(created_at: :asc)
+                   .first&.created_at
 
-      display_date(participations_for_orientations.first&.created_at)
+      display_date(created_at)
     end
 
     def rdv_taken_in_autonomy?(user)
