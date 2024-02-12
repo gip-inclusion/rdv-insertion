@@ -42,6 +42,7 @@ describe Exporters::GenerateUsersCsv, type: :service do
                  organisation:,
                  participations: [participation_rdv])
   end
+
   let!(:participation_rdv) { create(:participation, user: user1, status: "seen", created_at: "2022-05-23") }
 
   let!(:first_invitation) do
@@ -199,6 +200,21 @@ describe Exporters::GenerateUsersCsv, type: :service do
             expect(subject.csv).to include("20/06/2022") # archive status
             expect(subject.csv).to include("20/06/2022;test") # archive reason
           end
+        end
+      end
+
+      context "when last_rdv is not authorized for agent" do
+        let!(:other_organisation) { create(:organisation, name: "Drome RSA", department: department) }
+
+        let!(:rdv) do
+          create(:rdv, starts_at: Time.zone.parse("2022-05-31"),
+                       created_by: "user",
+                       organisation: other_organisation,
+                       participations: [participation_rdv])
+        end
+
+        it "does not take it into account" do
+          expect(csv).not_to include("31/05/2022")
         end
       end
 

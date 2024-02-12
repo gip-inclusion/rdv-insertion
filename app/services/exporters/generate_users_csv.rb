@@ -1,6 +1,8 @@
 # rubocop:disable Metrics/ClassLength
 module Exporters
   class GenerateUsersCsv < Csv
+    attr_reader :agent
+
     def initialize(user_ids:, agent:, structure: nil, motif_category: nil)
       @user_ids = user_ids
       @structure = structure
@@ -172,11 +174,13 @@ module Exporters
     end
 
     def last_rdv_date(user)
-      @motif_category.present? ? rdv_context_for_export(user)&.last_rdv_starts_at : user.last_rdv_starts_at
+      last_rdv(user)&.starts_at
     end
 
     def last_rdv(user)
-      @motif_category.present? ? rdv_context_for_export(user)&.last_rdv : user.last_rdv
+      rdvs = @motif_category.present? ? rdv_context_for_export(user)&.rdvs : user.rdvs
+
+      RdvPolicy::Scope.new(agent, rdvs).resolve.latest if rdvs.present?
     end
 
     def last_participation(user)
