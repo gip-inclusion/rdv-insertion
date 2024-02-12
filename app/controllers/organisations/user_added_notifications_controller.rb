@@ -15,7 +15,7 @@ module Organisations
     end
 
     def user_attachements
-      (email_params[:attachments] || []).reject(&:blank?)
+      (email_params[:attachments] || []).compact_blank
     end
   end
 end

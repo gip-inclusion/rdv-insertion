@@ -1,4 +1,4 @@
-describe "Agents can upload documents for users", js: true do
+describe "Agents can upload documents for users", :js do
   let!(:agent) { create(:agent) }
   let!(:department) { create(:department, number: "26") }
   let!(:organisation) do
@@ -39,17 +39,17 @@ describe "Agents can upload documents for users", js: true do
       find_by_id("file-input-diagnostic").set(Rails.root.join("spec/fixtures/dummy.pdf"))
       click_button("Ajouter un diagnostic")
 
-      expect(page).not_to have_content("Aucun diagnostic renseigné.")
+      expect(page).to have_no_content("Aucun diagnostic renseigné.")
       expect(page).to have_content("dummy.pdf")
-      expect(page).to have_selector(".document-link", count: 1)
+      expect(page).to have_css(".document-link", count: 1)
       expect(user.diagnostics.first.file.filename).to eq("dummy.pdf")
 
       find_by_id("file-input-contract").set(Rails.root.join("spec/fixtures/dummy.pdf"))
       click_button("Ajouter un contrat")
 
-      expect(page).not_to have_content("Aucun contrat renseigné.")
+      expect(page).to have_no_content("Aucun contrat renseigné.")
       expect(page).to have_content("dummy.pdf")
-      expect(page).to have_selector(".document-link", count: 2)
+      expect(page).to have_css(".document-link", count: 2)
       expect(user.contracts.first.file.filename).to eq("dummy.pdf")
 
       # Other agents can see the files
@@ -57,10 +57,10 @@ describe "Agents can upload documents for users", js: true do
       visit organisation_user_path(organisation_id: other_organisation.id, id: user.id)
       click_link("Parcours")
 
-      expect(page).to have_selector(".document-link", count: 2)
+      expect(page).to have_css(".document-link", count: 2)
 
       # Only the agent who uploaded the file can delete it
-      expect(page).not_to have_selector("#delete-button-#{user.contracts.first.id}")
+      expect(page).to have_no_css("#delete-button-#{user.contracts.first.id}")
 
       # Back to the first agent
       setup_agent_session(agent)
@@ -76,7 +76,7 @@ describe "Agents can upload documents for users", js: true do
         find_by_id("delete-button-#{user.diagnostics.first.id}").click
       end
 
-      expect(page).not_to have_selector(".document-link")
+      expect(page).to have_no_css(".document-link")
 
       expect(user.contracts.count).to eq(0)
       expect(user.diagnostics.count).to eq(0)

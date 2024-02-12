@@ -89,7 +89,7 @@ describe "Agents can generate convocation pdf", :js do
     it "cannot generate a pdf" do
       visit organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id)
 
-      expect(page).not_to have_button "Courrier"
+      expect(page).to have_no_button "Courrier"
     end
   end
 
@@ -99,7 +99,7 @@ describe "Agents can generate convocation pdf", :js do
     it "cannot generate a pdf" do
       visit organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id)
 
-      expect(page).not_to have_button "Courrier"
+      expect(page).to have_no_button "Courrier"
     end
   end
 

@@ -34,11 +34,11 @@ describe "Super admin can manage motif categories" do
     end
 
     it "cannot edit a motif_category" do
-      expect(page).not_to have_link("Modifier")
+      expect(page).to have_no_link("Modifier")
     end
 
     it "cannot delete a motif_category" do
-      expect(page).not_to have_link("Supprimer")
+      expect(page).to have_no_link("Supprimer")
     end
   end
 
@@ -66,11 +66,11 @@ describe "Super admin can manage motif categories" do
     end
 
     it "cannot edit a motif_category" do
-      expect(page).not_to have_link("Modifier")
+      expect(page).to have_no_link("Modifier")
     end
 
     it "cannot delete a motif_category" do
-      expect(page).not_to have_link("Supprimer")
+      expect(page).to have_no_link("Supprimer")
     end
   end
 

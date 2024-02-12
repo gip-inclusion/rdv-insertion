@@ -26,7 +26,9 @@ class ConvocationsController < ApplicationController
   def individuel_convocation_motif
     # first motif mentionning "convocation" in that category
     @individuel_convocation_motif ||=
-      Motif.active.individuel.where(organisations: @organisations, motif_category: @motif_category).find(&:convocation?)
+      Motif.active.individuel.where(
+        organisation_id: @organisations.map(&:id), motif_category: @motif_category
+      ).find(&:convocation?)
   end
 
   def individuel_convocation_motif_link
@@ -38,7 +40,7 @@ class ConvocationsController < ApplicationController
     @collectif_available_rdv ||=
       Rdv.collectif_and_available_for_reservation
          .where(motifs: { motif_category: @motif_category })
-         .where(organisations: @organisations)
+         .where(organisation: @organisations)
          .min_by(&:starts_at)
   end
 

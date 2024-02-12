@@ -31,7 +31,8 @@ describe Stats::GlobalStats::Compute, type: :service do
         users_with_orientation_category_sample: User.where(id: [user1, user2]),
         orientation_rdv_contexts_sample: RdvContext.where(id: [rdv_context1, rdv_context2]),
         invited_users_sample: User.where(id: [user1, user2]),
-        agents_sample: Agent.where(id: [agent])
+        agents_sample: Agent.where(id: [agent]),
+        user_ids_with_rdv_sample: Participation.where(id: [participation1, participation2]).select(:user_id)
       )
       allow(Stats::ComputeRateOfNoShow).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 50.0))
