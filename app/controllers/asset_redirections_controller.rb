@@ -14,6 +14,6 @@ class AssetRedirectionsController < ApplicationController
     asset_path = AssetHelper.retrieve_asset_path("logos/#{logo_name}.#{logo_format}")
     return unless asset_path
 
-    redirect_to "#{ENV["HOST"]}/assets/#{asset_path}", status: :moved_permanently
+    redirect_to "#{ENV['HOST']}/assets/#{asset_path}", status: :moved_permanently
   end
 end
