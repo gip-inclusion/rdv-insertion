@@ -426,6 +426,8 @@ GEM
     simple_form (5.2.0)
       actionpack (>= 5.2)
       activemodel (>= 5.2)
+    skylight (5.3.4)
+      activesupport (>= 5.2.0)
     spring (3.0.0)
     sprockets (4.2.0)
       concurrent-ruby (~> 1.0)
@@ -530,6 +532,7 @@ DEPENDENCIES
   sidekiq
   sidekiq-cron
   simple_form
+  skylight
   spring (~> 3.0.0)
   turbo-rails
   turbolinks (~> 5)
