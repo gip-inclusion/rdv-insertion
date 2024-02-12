@@ -42,7 +42,7 @@
             <td>
               <%= render "rdv_contexts/convocation_button",
                           user_id: user.id, motif_category_id: @current_motif_category.id,
-                          organisation_ids: department_level? ? @organisations.map(&:id) : [@organisation.id] %>
+                          organisation_ids: department_level? ? (@organisations.map(&:id) & user.organisation_ids) : [@organisation.id] %>
             </td>
           <% else %>
             <td><%= display_attribute format_date(rdv_context.last_sent_convocation_sent_at) %></td>
