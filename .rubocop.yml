@@ -89,6 +89,9 @@ Metrics/AbcSize:
 Style/HashSyntax:
   Enabled: false
 
+Naming/BlockForwarding:
+  Enabled: false
+
 Rails/HasAndBelongsToMany:
   Enabled: false
 
