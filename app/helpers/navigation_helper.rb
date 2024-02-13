@@ -3,43 +3,16 @@ module NavigationHelper
     department_level? ? { department_id: Current.department_id } : { organisation_id: Current.organisation_id }
   end
 
-  def structure_users_path(**params)
-    send(:"#{Current.structure_type}_users_path", { **structure_id_param, **params.compact_blank })
+  # enables to call methods like structure_user_path(id: user.id) with structure being the current organisation
+  # or the current department
+  def method_missing(method_name, **params)
+    method_name = method_name.to_s
+    return super unless method_name.include?("structure")
+
+    send(method_name.gsub("structure", Current.structure_type), **params.merge(structure_id_param))
   end
 
-  def structure_configurations_positions_update_path
-    send(:"#{Current.structure_type}_configurations_positions_update_path", structure_id_param)
-  end
-
-  def edit_structure_user_path(user_id)
-    send(:"edit_#{Current.structure_type}_user_path", { id: user_id, **structure_id_param })
-  end
-
-  def structure_user_path(user_id, **params)
-    send(:"#{Current.structure_type}_user_path", { id: user_id, **structure_id_param, **params })
-  end
-
-  def new_structure_user_path
-    send(:"new_#{Current.structure_type}_user_path", **structure_id_param)
-  end
-
-  def new_structure_upload_path(**params)
-    send(:"new_#{Current.structure_type}_upload_path", { **structure_id_param, **params })
-  end
-
-  def uploads_category_selection_structure_users_path(**params)
-    send(:"uploads_category_selection_#{Current.structure_type}_users_path", { **structure_id_param, **params })
-  end
-
-  def structure_user_invitations_path(user_id)
-    send(:"#{Current.structure_type}_user_invitations_path", { user_id:, **structure_id_param })
-  end
-
-  def structure_user_tag_assignations_path(user_id)
-    send(:"#{Current.structure_type}_user_tag_assignations_path", { user_id:, **structure_id_param })
-  end
-
-  def structure_user_rdv_contexts_path(user_id, **params)
-    send(:"#{Current.structure_type}_user_rdv_contexts_path", { user_id:, **structure_id_param, **params })
+  def respond_to_missing?(method_name, include_private = false)
+    method_name.to_s.include?("structure") || super
   end
 end

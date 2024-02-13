@@ -20,7 +20,7 @@
         <td><%= display_attribute format_date(user.archive_for(@department.id).created_at) %></td>
         <td><%= display_attribute user.archive_for(@department.id).archiving_reason %></td>
         <td class="padding-left-15">
-          <%= link_to structure_user_path(user.id) do %>
+          <%= link_to structure_user_path(id: user.id) do %>
             <button class="btn btn-blue">Gérer</button>
           <% end %>
         </td>
