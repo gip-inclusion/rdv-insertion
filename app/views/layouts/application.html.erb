@@ -16,9 +16,7 @@
   <body>
     <%= render 'layouts/rdv_insertion_instance_name' %>
     <%= render 'common/header' %>
-    <div id="flashes">
-      <%= render 'common/flash' %>
-    </div>
+    <%= render 'common/flash' %>
     <div class="wrapper">
       <%= turbo_frame_tag "remote_modal", target: "_top" %>
       <%= yield %>
