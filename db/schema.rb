@@ -170,7 +170,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_14_161238) do
     t.datetime "valid_until"
     t.boolean "reminder", default: false
     t.string "uuid"
-    t.boolean "rdv_with_referents", default: false
+    t.boolean "rdv_with_referents"
     t.index ["department_id"], name: "index_invitations_on_department_id"
     t.index ["rdv_context_id"], name: "index_invitations_on_rdv_context_id"
     t.index ["user_id"], name: "index_invitations_on_user_id"
@@ -217,8 +217,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_14_161238) do
     t.bigint "rdv_solidarites_motif_category_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "template_id"
     t.boolean "optional_rdv_subscription", default: false
+    t.bigint "template_id"
     t.boolean "leads_to_orientation", default: false
     t.index ["rdv_solidarites_motif_category_id"], name: "index_motif_categories_on_rdv_solidarites_motif_category_id", unique: true
     t.index ["short_name"], name: "index_motif_categories_on_short_name", unique: true
@@ -424,10 +424,10 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_14_161238) do
     t.string "rdv_purpose"
     t.string "user_designation"
     t.string "rdv_subject"
+    t.boolean "display_mandatory_warning", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "custom_sentence"
-    t.boolean "display_mandatory_warning", default: false
     t.text "punishable_warning", default: "", null: false
   end
 

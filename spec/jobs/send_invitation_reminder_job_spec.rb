@@ -22,7 +22,7 @@ describe SendInvitationReminderJob do
   let!(:first_invitation) do
     create(
       :invitation,
-      valid_until: Time.zone.parse("2022-05-15 15:05"), sent_at: Time.zone.parse("2022-05-01 14:01"),
+      valid_until: Time.zone.parse("2022-05-15 15:05"), created_at: Time.zone.parse("2022-05-01 14:01"),
       user: user, organisations: [organisation], rdv_context: rdv_context, rdv_solidarites_token: "123",
       link: "www.rdv-solidarités.fr/prendre_rdv",
       help_phone_number: "0101010101",
@@ -65,7 +65,7 @@ describe SendInvitationReminderJob do
   end
 
   context "when the first invitation was not sent 3 days ago" do
-    before { first_invitation.update! sent_at: Time.zone.parse("2022-05-02 14:01") }
+    before { first_invitation.update! created_at: Time.zone.parse("2022-05-02 14:01") }
 
     it "does not instanciate an invitation" do
       expect(Invitation).not_to receive(:new)
@@ -125,7 +125,7 @@ describe SendInvitationReminderJob do
   end
 
   context "when an invitation has already been sent in the last 24hrs in the same format" do
-    let!(:invitation) { create(:invitation, sent_at: Time.zone.parse("2022-05-04 08:00"), rdv_context: rdv_context) }
+    let!(:invitation) { create(:invitation, created_at: Time.zone.parse("2022-05-04 08:00"), rdv_context: rdv_context) }
 
     it "does not instanciate an invitation" do
       expect(Invitation).not_to receive(:new)

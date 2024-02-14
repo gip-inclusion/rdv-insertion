@@ -38,7 +38,7 @@ describe NotifyParticipationJob do
 
     context "when the user has already been notified for this rdv" do
       let!(:notification) do
-        create(:notification, participation: participation, event: event, sent_at: 2.days.ago)
+        create(:notification, participation: participation, event: event)
       end
 
       it "does not calls the notify user service" do
@@ -57,10 +57,10 @@ describe NotifyParticipationJob do
 
         context "when there has been two sent notifications in the past hour" do
           let!(:notification) do
-            create(:notification, participation: participation, event: event, sent_at: 40.minutes.ago)
+            create(:notification, participation: participation, event: event, created_at: 40.minutes.ago)
           end
           let!(:notification2) do
-            create(:notification, participation: participation, event: event, sent_at: 20.minutes.ago)
+            create(:notification, participation: participation, event: event, created_at: 20.minutes.ago)
           end
 
           it "does not calls the notify user service" do

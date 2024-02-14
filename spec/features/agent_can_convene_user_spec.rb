@@ -33,7 +33,7 @@ describe "Agents can convene user to rdv", js: true do
   let!(:rdv_context) do
     create(:rdv_context, status: "invitation_pending", user: user, motif_category: motif_category)
   end
-  let!(:invitation) { create(:invitation, rdv_context: rdv_context, sent_at: 5.days.ago) }
+  let!(:invitation) { create(:invitation, rdv_context: rdv_context, created_at: 5.days.ago) }
 
   let!(:motif) do
     create(
@@ -184,7 +184,7 @@ describe "Agents can convene user to rdv", js: true do
 
     describe "button visbility" do
       context "when invitation is pending and the time to accept invitation has not exceeded" do
-        let!(:invitation) { create(:invitation, rdv_context: rdv_context, sent_at: 3.days.ago) }
+        let!(:invitation) { create(:invitation, rdv_context: rdv_context, created_at: 3.days.ago) }
 
         it "does not show a convocation button" do
           visit organisation_users_path(organisation, motif_category_id: motif_category.id)

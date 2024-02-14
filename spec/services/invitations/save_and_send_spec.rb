@@ -4,7 +4,7 @@ describe Invitations::SaveAndSend, type: :service do
   end
 
   let!(:user) { create(:user) }
-  let!(:invitation) { create(:invitation, user: user, sent_at: nil) }
+  let!(:invitation) { build(:invitation, user: user) }
   let(:check_creneaux_availability) { true }
 
   describe "#call" do
@@ -32,20 +32,19 @@ describe Invitations::SaveAndSend, type: :service do
       expect(subject.invitation).to eq(invitation)
     end
 
-    it "saves an invitation" do
+    it "assigns link and token to the invitation" do
       expect(Invitations::AssignLinkAndToken).to receive(:call)
         .with(invitation:)
       subject
     end
 
+    it "saves an invitation" do
+      expect { subject }.to change(Invitation, :count).by(1)
+    end
+
     it "sends the invitation" do
       expect(invitation).to receive(:send_to_user)
       subject
-    end
-
-    it "marks the invitation as sent" do
-      subject
-      expect(invitation.reload.sent_at).not_to be_nil
     end
 
     context "when it fails to assign attributes" do
@@ -94,9 +93,8 @@ describe Invitations::SaveAndSend, type: :service do
         expect(subject.errors).to eq(["something happened"])
       end
 
-      it "does not mark the invitation as sent" do
-        subject
-        expect(invitation.reload.sent_at).to be_nil
+      it "does not create an invitation" do
+        expect { subject }.not_to change(Invitation, :count)
       end
     end
 
@@ -111,23 +109,6 @@ describe Invitations::SaveAndSend, type: :service do
       it "does not call the assign link and token service" do
         expect(Invitations::AssignLinkAndToken).not_to receive(:call)
         subject
-      end
-    end
-
-    context "when it fails to mark as sent" do
-      before do
-        allow(invitation).to receive(:save)
-          .and_return(false)
-        allow(invitation).to receive_message_chain(:errors, :full_messages, :to_sentence)
-          .and_return("some error")
-      end
-
-      it "is a failure" do
-        is_a_failure
-      end
-
-      it "stores the error" do
-        expect(subject.errors).to eq(["some error"])
       end
     end
 

@@ -1,7 +1,7 @@
 # Preview all emails at http://localhost:8000/rails/mailers/invitation
 class InvitationPreview < ActionMailer::Preview
   MotifCategory.find_each do |motif_category|
-    invitation = Invitation.sent.format_email.last
+    invitation = Invitation.format_email.last
     user = invitation.user
     rdv_context = RdvContext.new(motif_category: motif_category, user: user)
     invitation.rdv_context = rdv_context

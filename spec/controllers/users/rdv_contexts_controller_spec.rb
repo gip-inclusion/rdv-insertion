@@ -17,7 +17,7 @@ describe Users::RdvContextsController do
         create(:rdv_context, status: "rdv_seen", user: user, motif_category: category_orientation)
       end
       let!(:invitation_orientation) do
-        create(:invitation, sent_at: "2021-10-20", format: "sms", rdv_context: rdv_context)
+        create(:invitation, created_at: "2021-10-20", format: "sms", rdv_context: rdv_context)
       end
       let!(:motif) { create(:motif, name: "RSA Orientation sur site") }
       let!(:rdv_orientation1) do
@@ -53,7 +53,7 @@ describe Users::RdvContextsController do
         )
       end
       let!(:invitation_accompagnement) do
-        create(:invitation, sent_at: "2021-11-20", format: "sms", rdv_context: rdv_context2, user:)
+        create(:invitation, created_at: "2021-11-20", format: "sms", rdv_context: rdv_context2, user:)
       end
       let!(:category_orientation) do
         create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation")
@@ -120,7 +120,7 @@ describe Users::RdvContextsController do
           create(
             :notification,
             participation: participation, event: "participation_created", format: "sms",
-            sent_at: 2.days.ago
+            created_at: 2.days.ago
           )
         end
 
