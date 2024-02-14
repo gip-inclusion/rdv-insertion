@@ -119,7 +119,7 @@ module Users::Filterable
   def users_first_invitations
     @users_first_invitations ||= Invitation.joins(:user)
                                            .where(user_id: @users.ids)
-                                           .order("invitations.sent_at ASC")
+                                           .order("invitations.created_at ASC")
                                            .group_by(&:user_id)
                                            .transform_values(&:first)
                                            .values
@@ -128,7 +128,7 @@ module Users::Filterable
   def users_last_invitations
     @users_last_invitations ||= Invitation.joins(:user)
                                           .where(user_id: @users.ids)
-                                          .order("invitations.sent_at DESC")
+                                          .order("invitations.created_at DESC")
                                           .group_by(&:user_id)
                                           .transform_values(&:first)
                                           .values

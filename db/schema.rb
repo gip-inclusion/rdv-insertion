@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_02_132147) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_14_161238) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -159,7 +159,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_02_132147) do
     t.integer "format"
     t.string "link"
     t.string "rdv_solidarites_token"
-    t.datetime "sent_at", precision: nil
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -248,11 +247,10 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_02_132147) do
 
   create_table "notifications", force: :cascade do |t|
     t.integer "event"
-    t.datetime "sent_at", precision: nil
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "rdv_solidarites_rdv_id"
     t.integer "format"
+    t.bigint "rdv_solidarites_rdv_id"
     t.bigint "participation_id"
     t.index ["participation_id"], name: "index_notifications_on_participation_id"
   end

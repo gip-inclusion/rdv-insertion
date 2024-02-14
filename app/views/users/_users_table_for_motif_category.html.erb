@@ -45,7 +45,7 @@
                           organisation_ids: department_level? ? (@organisations.map(&:id) & user.organisation_ids) : [@organisation.id] %>
             </td>
           <% else %>
-            <td><%= display_attribute format_date(rdv_context.last_sent_convocation_sent_at) %></td>
+            <td><%= display_attribute format_date(rdv_context.last_convocation_sent_at) %></td>
           <% end %>
         <% end %>
         <td id="rdv-context-status-<%= rdv_context.id %>" class="<%= background_class_for_context_status(rdv_context, @current_configuration.number_of_days_before_action_required) %>">

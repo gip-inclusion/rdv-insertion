@@ -168,9 +168,9 @@ module Exporters
     end
 
     def last_notification_date(user)
-      return rdv_context_for_export(user)&.last_sent_convocation_sent_at if @motif_category.present?
+      return rdv_context_for_export(user)&.last_convocation_sent_at if @motif_category.present?
 
-      user.last_sent_convocation_sent_at
+      user.last_convocation_sent_at
     end
 
     def last_rdv_date(user)
