@@ -28,7 +28,9 @@
 
     <div class="d-flex justify-content-between mt-1" data-controller="index-filters">
       <div class="text-left mt-2">
-        <i class="fas fa-filter"></i> Filtrer par :
+        <% if @tags.any? || @current_configuration.present? %>
+          <i class="fas fa-filter"></i> Filtrer par :
+        <% end %>
         <% if @current_configuration.present? %>
           <div class="mt-1">
             <input type="checkbox" name="action_required" class="form-check-input"></input> Usagers avec intervention nécessaire
