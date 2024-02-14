@@ -1,7 +1,7 @@
 class RdvPolicy < ApplicationPolicy
   class Scope < Scope
     def resolve
-      scope.joins(:organisation).where(organisations: pundit_user.organisations)
+      scope.where(organisation_id: pundit_user.organisation_ids)
     end
   end
 
