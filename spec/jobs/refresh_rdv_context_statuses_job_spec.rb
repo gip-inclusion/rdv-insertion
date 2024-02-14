@@ -8,10 +8,7 @@ describe RefreshRdvContextStatusesJob do
 
   describe "#perform" do
     before do
-      allow(RdvContext).to receive(:includes)
-        .and_return(RdvContext)
-      allow(RdvContext).to receive(:where)
-        .and_return([rdv_context])
+      allow(RdvContext).to receive_messages(includes: RdvContext, where: [rdv_context])
       allow(rdv_context).to receive(:set_status)
       allow(rdv_context).to receive(:save!)
     end

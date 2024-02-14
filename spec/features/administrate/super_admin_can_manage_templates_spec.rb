@@ -28,15 +28,15 @@ describe "Super admin can manage templates" do
     end
 
     it "cannot create a template" do
-      expect(page).not_to have_link("Création template")
+      expect(page).to have_no_link("Création template")
     end
 
     it "cannot edit a template" do
-      expect(page).not_to have_link("Modifier")
+      expect(page).to have_no_link("Modifier")
     end
 
     it "cannot delete a template" do
-      expect(page).not_to have_link("Supprimer")
+      expect(page).to have_no_link("Supprimer")
     end
   end
 
@@ -68,11 +68,11 @@ describe "Super admin can manage templates" do
     end
 
     it "cannot edit a template" do
-      expect(page).not_to have_link("Modifier")
+      expect(page).to have_no_link("Modifier")
     end
 
     it "cannot delete a template" do
-      expect(page).not_to have_link("Supprimer")
+      expect(page).to have_no_link("Supprimer")
     end
   end
 

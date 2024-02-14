@@ -2,9 +2,9 @@ module Exporters
   class GenerateUsersParticipationsCsv < GenerateUsersCsv
     private
 
-    def each_element(&)
+    def each_element(&block)
       @users.each do |user|
-        user.participations.joins(:organisation).where(organisations: @agent.organisations).to_a.each(&)
+        user.participations.joins(:rdv).where(rdv: { organisation_id: @agent.organisation_ids }).to_a.each(&block)
       end
     end
 

@@ -3,8 +3,6 @@ module Invitations
   module SmsContent
     extend ActiveSupport::Concern
 
-    include Rails.application.routes.url_helpers
-
     delegate :user, :help_phone_number, :number_of_days_before_expiration,
              :rdv_purpose, :rdv_title, :user_designation, :mandatory_warning, :punishable_warning,
              to: :invitation
@@ -117,7 +115,7 @@ module Invitations
 
     def redirect_sms_link
       host = ENV["HOST"].gsub("www.", "").gsub("https://", "")
-      path = redirect_invitation_shortcut_path(uuid: @invitation.uuid)
+      path = Rails.application.routes.url_helpers.redirect_invitation_shortcut_path(uuid: @invitation.uuid)
       host + path
     end
 

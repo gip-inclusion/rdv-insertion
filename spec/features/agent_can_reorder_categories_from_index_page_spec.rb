@@ -1,4 +1,4 @@
-describe "Agents can reorder categories from index page", js: true do
+describe "Agents can reorder categories from index page", :js do
   let!(:agent) { create(:agent, admin_role_in_organisations: [organisation]) }
   let!(:organisation) { create(:organisation) }
   let!(:user) do
