@@ -11,10 +11,21 @@ class UserBlueprint < Blueprinter::Base
   view :extended do
     association :invitations, blueprint: InvitationBlueprint
     association :organisations, blueprint: OrganisationBlueprint
-    association :rdv_contexts, blueprint: RdvContextBlueprint
+
+    association :rdv_contexts, blueprint: RdvContextBlueprint do |user, options|
+      next if options[:motif_category_ids].blank?
+
+      user.rdv_contexts.select { |rdv_context| rdv_context.motif_category_id.in?(options[:motif_category_ids]) }
+    end
+
+    association :tags, blueprint: TagBlueprint do |user, options|
+      next if options[:tag_ids].blank?
+
+      user.tags.select { |tag| tag.id.in?(options[:tag_ids]) }
+    end
+
     association :referents, blueprint: AgentBlueprint
     association :archives, blueprint: ArchiveBlueprint
-    association :tags, blueprint: TagBlueprint
   end
 
   view :searches do

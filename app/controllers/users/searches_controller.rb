@@ -3,10 +3,19 @@ module Users
     before_action :set_organisations, :search_users, only: [:create]
 
     def create
-      render json: { success: true, users: UserBlueprint.render_as_json(@users, view: :searches) }
+      render json: { success: true, users: users_as_json }
     end
 
     private
+
+    def users_as_json
+      UserBlueprint.render_as_json(
+        @users,
+        view: :searches,
+        motif_category_ids: current_agent.motif_category_ids,
+        tags_ids: policy_scope(Tag).where(organisations: @organisations).ids
+      )
+    end
 
     def search_users
       @users =
@@ -16,12 +25,9 @@ module Users
         .preload(
           :referents, :archives, :tags,
           invitations: [rdv_context: :motif_category],
+          rdv_contexts: [:participations],
           organisations: [:motif_categories, :department, :configurations]
-        )
-        .includes(rdv_contexts: [participations: :rdv])
-        .references(:rdv)
-        .where("rdvs.organisation_id" => current_agent.organisations.ids + [nil])
-        .distinct
+        ).distinct
     end
 
     def search_in_all_users
