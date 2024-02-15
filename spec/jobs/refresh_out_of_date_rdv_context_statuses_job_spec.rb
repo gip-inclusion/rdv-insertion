@@ -32,7 +32,7 @@ describe RefreshOutOfDateRdvContextStatusesJob do
   describe "#perform" do
     before do
       # remove rdv contexts created in callbacks
-      RdvContext.where.not(id: [1, 2, 3, 4, 5]).each(&:destroy!)
+      RdvContext.where.not(id: [1, 2, 3, 4, 5]).find_each(&:destroy!)
       allow(RefreshRdvContextStatusesJob).to receive(:perform_async)
       allow(MattermostClient).to receive(:send_to_notif_channel)
       allow(ENV).to receive(:[]).with("SENTRY_ENVIRONMENT").and_return("production")

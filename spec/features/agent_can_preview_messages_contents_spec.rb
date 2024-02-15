@@ -1,4 +1,4 @@
-describe "Agents can preview messages contents", js: true do
+describe "Agents can preview messages contents", :js do
   include_context "with all existing categories"
 
   let!(:agent) { create(:agent) }
@@ -54,9 +54,9 @@ describe "Agents can preview messages contents", js: true do
     expect(page).to have_css("span.text-purple", text: "une personne remarquable")
     expect(page).to have_css("span.text-purple", text: "vous rencontrer")
 
-    expect(page).not_to have_css("span.text-purple", text: "rendez-vous d'orientation")
-    expect(page).not_to have_css("span.text-purple", text: "bénéficiaire du RSA")
-    expect(page).not_to have_css("span.text-purple", text: "démarrer un parcours d'accompagnement")
+    expect(page).to have_no_css("span.text-purple", text: "rendez-vous d'orientation")
+    expect(page).to have_no_css("span.text-purple", text: "bénéficiaire du RSA")
+    expect(page).to have_no_css("span.text-purple", text: "démarrer un parcours d'accompagnement")
 
     find("button.btn-close").click
 
@@ -69,10 +69,10 @@ describe "Agents can preview messages contents", js: true do
     expect(page).to have_css("span.text-purple", text: "une personne remarquable")
     expect(page).to have_css("span.text-purple", text: "vous rencontrer")
 
-    expect(page).not_to have_css("span.text-purple", text: "rendez-vous d'orientation téléphonique")
-    expect(page).not_to have_css("span.text-purple", text: "rendez-vous d'orientation")
-    expect(page).not_to have_css("span.text-purple", text: "bénéficiaire du RSA")
-    expect(page).not_to have_css("span.text-purple", text: "démarrer un parcours d'accompagnement")
+    expect(page).to have_no_css("span.text-purple", text: "rendez-vous d'orientation téléphonique")
+    expect(page).to have_no_css("span.text-purple", text: "rendez-vous d'orientation")
+    expect(page).to have_no_css("span.text-purple", text: "bénéficiaire du RSA")
+    expect(page).to have_no_css("span.text-purple", text: "démarrer un parcours d'accompagnement")
   end
 
   context "when the category does not require all the template variables and has no reminder" do

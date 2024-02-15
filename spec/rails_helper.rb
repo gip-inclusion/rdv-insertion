@@ -54,11 +54,10 @@ RSpec.configure do |config|
   end
 
   ## Clear downloads
-  config.before(:each, js: true) do
+  config.before(:each, :js) do
     clear_downloads
   end
-
-  config.after(:each, js: true) do
+  config.after(:each, :js) do
     clear_downloads
   end
 

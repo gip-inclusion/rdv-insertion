@@ -14,8 +14,7 @@ describe NotifyParticipationJob do
       allow(Notifications::NotifyParticipation).to receive(:call)
         .and_return(OpenStruct.new(success?: true))
       allow(Participation).to receive(:find).and_return(participation)
-      allow(participation).to receive(:user).and_return(user)
-      allow(participation).to receive(:notifiable?).and_return(true)
+      allow(participation).to receive_messages(user: user, notifiable?: true)
       allow(user).to receive(:notifiable?).and_return(true)
     end
 
