@@ -13,15 +13,19 @@ class UserBlueprint < Blueprinter::Base
     association :organisations, blueprint: OrganisationBlueprint
 
     association :rdv_contexts, blueprint: RdvContextBlueprint do |user, options|
-      next if options[:motif_category_ids].blank?
-
-      user.rdv_contexts.select { |rdv_context| rdv_context.motif_category_id.in?(options[:motif_category_ids]) }
+      if options.key?(:motif_category_ids)
+        user.rdv_contexts.select { |rdv_context| rdv_context.motif_category_id.in?(options[:motif_category_ids] || []) }
+      else
+        user.rdv_contexts
+      end
     end
 
     association :tags, blueprint: TagBlueprint do |user, options|
-      next if options[:tag_ids].blank?
-
-      user.tags.select { |tag| tag.id.in?(options[:tag_ids]) }
+      if options.key?(:tag_ids)
+        user.tags.select { |tag| tag.id.in?(options[:tag_ids] || []) }
+      else
+        user.tags
+      end
     end
 
     association :referents, blueprint: AgentBlueprint
