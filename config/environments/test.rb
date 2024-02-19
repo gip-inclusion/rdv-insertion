@@ -60,5 +60,4 @@ Rails.application.configure do
   # Temporary support for unencrypted data during the migration process
   # Must be disabled once the migration is complete
   config.active_record.encryption.support_unencrypted_data = true
-
 end
