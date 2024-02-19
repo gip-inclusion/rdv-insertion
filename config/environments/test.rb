@@ -51,13 +51,4 @@ Rails.application.configure do
 
   # Raises error for missing translations.
   # config.action_view.raise_on_missing_translations = true
-
-  # ActiveRecord encryption keys
-  config.active_record.encryption.primary_key = ENV["ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY"]
-  config.active_record.encryption.deterministic_key = ENV["ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY"]
-  config.active_record.encryption.key_derivation_salt = ENV["ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY"]
-
-  # Temporary support for unencrypted data during the migration process
-  # Must be disabled once the migration is complete
-  config.active_record.encryption.support_unencrypted_data = true
 end

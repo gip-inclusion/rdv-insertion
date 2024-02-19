@@ -21,5 +21,14 @@ module RdvInsertion
     config.i18n.default_locale = :fr
     config.i18n.load_path += Dir[Rails.root.join("config/locales/**/*.{rb,yml}")]
     config.exceptions_app = routes
+
+    # ActiveRecord encryption keys
+    config.active_record.encryption.primary_key = ENV["ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY"]
+    config.active_record.encryption.deterministic_key = ENV["ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY"]
+    config.active_record.encryption.key_derivation_salt = ENV["ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY"]
+
+    # Temporary support for unencrypted data during the migration process
+    # Must be disabled once the migration is complete
+    config.active_record.encryption.support_unencrypted_data = true
   end
 end

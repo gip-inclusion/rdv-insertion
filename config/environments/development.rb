@@ -54,15 +54,6 @@ Rails.application.configure do
   # Highlight code that triggered database queries in logs.
   config.active_record.verbose_query_logs = true
 
-  # ActiveRecord encryption keys
-  config.active_record.encryption.primary_key = ENV["ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY"]
-  config.active_record.encryption.deterministic_key = ENV["ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY"]
-  config.active_record.encryption.key_derivation_salt = ENV["ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY"]
-
-  # Temporary support for unencrypted data during the migration process
-  # Must be disabled once the migration is complete
-  config.active_record.encryption.support_unencrypted_data = true
-
   # N+1 detection
   config.after_initialize do
     Prosopite.enabled = true
