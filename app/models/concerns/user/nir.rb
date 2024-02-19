@@ -4,6 +4,8 @@ module User::Nir
   included do
     before_validation :format_nir, if: :nir?
     validate :nir_is_valid, if: :nir?
+
+    encrypts :nir
   end
 
   private
