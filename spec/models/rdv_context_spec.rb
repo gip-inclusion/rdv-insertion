@@ -312,7 +312,7 @@ describe RdvContext do
 
         context "when there is a participation" do
           it "is selecting the invitation after the participation" do
-            expect(rdv_context.first_invitation_relative_to_last_participation_sent_at).to eq(invitation2.created_at)
+            expect(rdv_context.first_invitation_relative_to_last_participation_created_at).to eq(invitation2.created_at)
           end
         end
 

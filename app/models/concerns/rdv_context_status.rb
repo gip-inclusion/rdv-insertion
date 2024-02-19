@@ -39,7 +39,7 @@ module RdvContextStatus
         last_created_participation.created_at
       end
 
-    last_invitation_sent_at > participation_date_to_compare
+    last_invitation_created_at > participation_date_to_compare
   end
 
   def multiple_cancelled_participations?
