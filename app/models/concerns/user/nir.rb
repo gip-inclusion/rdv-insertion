@@ -5,7 +5,7 @@ module User::Nir
     before_validation :format_nir, if: :nir?
     validate :nir_is_valid, if: :nir?
 
-    encrypts :nir
+    encrypts :nir, deterministic: true
   end
 
   private
