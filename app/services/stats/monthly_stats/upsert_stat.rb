@@ -39,8 +39,8 @@ module Stats
           # We don't want to start the hash until we have a value
           next if stat_attribute == {} && stat_value.zero?
 
-          if stat_name == :rate_of_users_oriented_in_less_than_30_days_by_month
-            # this stat is computed with 1 month lag
+          if stat_name.to_s.include?("rate_of_users_oriented_in_less_than_")
+            # these stats is computed with 1 month lag
             stat_attribute.merge!({ (@date - 1.month).strftime("%m/%Y") => stat_value })
           else
             stat_attribute.merge!({ @date.strftime("%m/%Y") => stat_value })
