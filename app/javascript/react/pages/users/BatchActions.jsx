@@ -24,7 +24,9 @@ const UsersBatchActions = observer(
       setUsersFromApp();
     }, [usersFromApp]);
 
-    const redirectToUsersList = () => {window.location.href = backToUsersListUrl;};
+    const redirectToUsersList = () => {
+      window.location.href = backToUsersListUrl;
+    };
 
     const setUsersFromApp = () => {
       users.setUsers([]);
@@ -79,8 +81,7 @@ const UsersBatchActions = observer(
                 </button>
             </div>
             <div className="col-4 text-center">
-              <h2 className="text-center new-users-title">Envoyer des invitations</h2>
-              <p>Les usagers présentés sur cette page correspondent aux usagers filtrés sur la page précédente.<br />Pour modifier la liste, vous pouvez retourner au suivi et modifiez vos filtres.</p>
+              <h2 className="text-center new-users-title">Envoyer des invitations aux usagers non-invités</h2>
             </div>
             <div className="col-4" />
           </div>

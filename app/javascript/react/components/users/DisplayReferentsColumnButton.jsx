@@ -6,7 +6,7 @@ export default observer(({ users }) => (
   <Tippy content={users.showReferentColumn ? "Cacher colonne référent" : "Montrer colonne référent"}>
     <button
       type="button"
-      className={users.showReferentColumn ? "btn btn-blue sm" : "btn btn-blue-out"}
+      className={users.showReferentColumn ? "btn btn-blue show-referent-button" : "btn btn-blue-out"}
       style={{ cursor: "pointer" }}
       onClick={() => { users.showReferentColumn = !users.showReferentColumn } }
     >

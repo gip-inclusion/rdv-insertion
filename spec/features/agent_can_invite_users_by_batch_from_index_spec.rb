@@ -46,64 +46,55 @@ describe "Agent can invite users by batch from index" do
   end
 
   context "when agent is at organisation level" do
-    it "can export a users selection to a batch_actions page" do
+    it "can export non invited users to a batch_actions page" do
       visit organisation_users_path(organisation, motif_category_id: motif_category.id)
 
       expect(page).to have_link(
-        "Envoyer des invitations à la sélection",
-        href: "#{new_organisation_batch_action_path(organisation)}?action=index&controller=users" \
-              "&motif_category_id=#{motif_category.id}&organisation_id=#{organisation.id}"
+        "Envoyer des invitations aux non-invités",
+        href: "#{new_organisation_batch_action_path(organisation)}?motif_category_id=#{motif_category.id}"
       )
       expect(page).to have_content(user1.last_name)
       expect(page).to have_content(user2.last_name)
       expect(page).to have_content(user3.last_name)
-      expect(page).not_to have_content(user4.last_name)
+      expect(page).to have_no_content(user4.last_name)
 
-      select("Non invité", from: "user_status")
-      expect(page).not_to have_content(user3.last_name)
-
-      click_link "Envoyer des invitations à la sélection"
+      click_link "Envoyer des invitations aux non-invités"
 
       expect(page).to have_current_path(
-        "#{new_organisation_batch_action_path(organisation)}?action=index&controller=users" \
-        "&motif_category_id=#{motif_category.id}&organisation_id=#{organisation.id}&status=not_invited"
+        "#{new_organisation_batch_action_path(organisation)}?motif_category_id=#{motif_category.id}"
       )
       expect(page).to have_content(user1.last_name)
       expect(page).to have_content(user2.last_name)
-      expect(page).not_to have_content(user3.last_name)
-      expect(page).not_to have_content(user4.last_name)
+      expect(page).to have_no_content(user3.last_name)
+      expect(page).to have_no_content(user4.last_name)
     end
 
     it "can invite a selection of users" do
-      visit "#{new_organisation_batch_action_path(organisation)}?action=index&controller=users" \
-            "&motif_category_id=#{motif_category.id}&organisation_id=#{organisation.id}"
+      visit "#{new_organisation_batch_action_path(organisation)}?motif_category_id=#{motif_category.id}"
 
       expect(page).to have_content(user1.last_name)
       expect(page).to have_content(user2.last_name)
-      expect(page).to have_content(user3.last_name)
-      expect(page).not_to have_content(user4.last_name)
+      expect(page).to have_no_content(user3.last_name)
+      expect(page).to have_no_content(user4.last_name)
 
       expect(page).to have_button("Actions pour toute la sélection", disabled: false)
       expect(page).to have_content("Inviter par SMS").exactly(2).times
-      expect(page).to have_content("Réinviter par SMS").exactly(1).times
-      expect(page).to have_content("Inviter par Email").exactly(3).times
-
-      click_button("Réinviter par SMS", wait: 10)
-      expect(page).to have_content("Une invitation sms a déjà été envoyée aujourd'hui à cet usager")
-      click_button("OK")
+      expect(page).to have_content("Inviter par Email").exactly(2).times
+      expect(page).to have_no_css("i.fas.fa-check")
+      expect(page).to have_no_css("i.fas.fa-redo-alt")
 
       click_button("Actions pour toute la sélection", wait: 10)
       click_button("Invitation par sms", wait: 10)
 
-      expect(page).not_to have_content("Inviter par SMS")
-      expect(page).to have_content("Réinviter par SMS").exactly(2).times
-      expect(page).to have_content("Afficher les erreurs").exactly(1).times
+      expect(page).to have_no_content("Inviter par SMS")
+      expect(page).to have_css("i.fas.fa-check").exactly(2).times
+      expect(page).to have_css("i.fas.fa-redo-alt").exactly(2).times
     end
 
     it "can return to index page with the same arguments" do
       visit organisation_users_path(organisation, motif_category_id: motif_category.id)
       select("Non invité", from: "user_status")
-      click_link "Envoyer des invitations à la sélection"
+      click_link "Envoyer des invitations aux non-invités"
 
       expect(page).to have_button("Retour au suivi")
       click_button("Retour au suivi")
@@ -115,64 +106,55 @@ describe "Agent can invite users by batch from index" do
   end
 
   context "when agent is at department level" do
-    it "can export a users selection to a batch_actions page" do
+    it "can export non invited users to a batch_actions page" do
       visit department_users_path(department, motif_category_id: motif_category.id)
 
       expect(page).to have_link(
-        "Envoyer des invitations à la sélection",
-        href: "#{new_department_batch_action_path(department)}?action=index&controller=users" \
-              "&department_id=#{department.id}&motif_category_id=#{motif_category.id}"
+        "Envoyer des invitations aux non-invités",
+        href: "#{new_department_batch_action_path(department)}?motif_category_id=#{motif_category.id}"
       )
       expect(page).to have_content(user1.last_name)
       expect(page).to have_content(user2.last_name)
       expect(page).to have_content(user3.last_name)
-      expect(page).not_to have_content(user4.last_name)
+      expect(page).to have_no_content(user4.last_name)
 
-      select("Non invité", from: "user_status")
-      expect(page).not_to have_content(user3.last_name)
-
-      click_link "Envoyer des invitations à la sélection"
+      click_link "Envoyer des invitations aux non-invités"
 
       expect(page).to have_current_path(
-        "#{new_department_batch_action_path(department)}?action=index&controller=users" \
-        "&department_id=#{department.id}&motif_category_id=#{motif_category.id}&status=not_invited"
+        "#{new_department_batch_action_path(department)}?motif_category_id=#{motif_category.id}"
       )
       expect(page).to have_content(user1.last_name)
       expect(page).to have_content(user2.last_name)
-      expect(page).not_to have_content(user3.last_name)
-      expect(page).not_to have_content(user4.last_name)
+      expect(page).to have_no_content(user3.last_name)
+      expect(page).to have_no_content(user4.last_name)
     end
 
     it "can invite a selection of users" do
-      visit "#{new_department_batch_action_path(department)}?action=index&controller=users" \
-            "&department_id=#{department.id}&motif_category_id=#{motif_category.id}"
+      visit "#{new_department_batch_action_path(department)}?motif_category_id=#{motif_category.id}"
 
       expect(page).to have_content(user1.last_name)
       expect(page).to have_content(user2.last_name)
-      expect(page).to have_content(user3.last_name)
-      expect(page).not_to have_content(user4.last_name)
+      expect(page).to have_no_content(user3.last_name)
+      expect(page).to have_no_content(user4.last_name)
 
       expect(page).to have_button("Actions pour toute la sélection", disabled: false)
       expect(page).to have_content("Inviter par SMS").exactly(2).times
-      expect(page).to have_content("Réinviter par SMS").exactly(1).times
-      expect(page).to have_content("Inviter par Email").exactly(3).times
-
-      click_button("Réinviter par SMS", wait: 10)
-      expect(page).to have_content("Une invitation sms a déjà été envoyée aujourd'hui à cet usager")
-      click_button("OK")
+      expect(page).to have_content("Inviter par Email").exactly(2).times
+      expect(page).to have_no_css("i.fas.fa-check")
+      expect(page).to have_no_css("i.fas.fa-redo-alt")
 
       click_button("Actions pour toute la sélection", wait: 10)
       click_button("Invitation par sms", wait: 10)
 
-      expect(page).not_to have_content("Inviter par SMS")
-      expect(page).to have_content("Réinviter par SMS").exactly(2).times
-      expect(page).to have_content("Afficher les erreurs").exactly(1).times
+      expect(page).to have_no_content("Inviter par SMS")
+      expect(page).to have_css("i.fas.fa-check").exactly(2).times
+      expect(page).to have_css("i.fas.fa-redo-alt").exactly(2).times
     end
 
     it "can return to index page with the same arguments" do
       visit department_users_path(department, motif_category_id: motif_category.id)
       select("Non invité", from: "user_status")
-      click_link "Envoyer des invitations à la sélection"
+      click_link "Envoyer des invitations aux non-invités"
 
       expect(page).to have_button("Retour au suivi")
       click_button("Retour au suivi")

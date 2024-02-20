@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import Tippy from "@tippyjs/react";
 import InvitationsDatesRow from "./InvitationsDatesRow";
 
-import sortInvitationsByFormatsAndDates from "../../../../lib/sortInvitationsByFormatsAndDates";
-import handleUserInvitation from "../../../lib/handleUserInvitation";
-import { todaysDateString } from "../../../../lib/datesHelper";
+import sortInvitationsByFormatsAndDates from "../../../lib/sortInvitationsByFormatsAndDates";
+import handleUserInvitation from "../../lib/handleUserInvitation";
+import { todaysDateString } from "../../../lib/datesHelper";
 
 export default function InvitationBlock({
   user,

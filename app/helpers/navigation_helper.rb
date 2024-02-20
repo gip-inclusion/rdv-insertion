@@ -43,7 +43,7 @@ module NavigationHelper
     send(:"#{Current.structure_type}_user_rdv_contexts_path", { user_id:, **structure_id_param, **params })
   end
 
-  def new_structure_batch_action_path(**params)
-    send(:"new_#{Current.structure_type}_batch_action_path", **structure_id_param, **params)
+  def new_structure_batch_action_path(motif_category_id)
+    send(:"new_#{Current.structure_type}_batch_action_path", { **structure_id_param, motif_category_id: })
   end
 end

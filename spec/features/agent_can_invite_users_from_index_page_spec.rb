@@ -96,7 +96,7 @@ describe "Agents can invite from index page", :js do
       rdv_context.save!
 
       visit organisation_users_path(organisation, motif_category_id: motif_category.id)
-      expect(page).not_to have_field("sms_invite_for_user_#{user.id}")
+      expect(page).to have_no_field("sms_invite_for_user_#{user.id}")
       expect(page).to have_css("label[for=\"sms_invite_for_user_#{user.id}\"]")
 
       find("label[for=\"sms_invite_for_user_#{user.id}\"]").click
@@ -189,7 +189,7 @@ describe "Agents can invite from index page", :js do
         rdv_context.save!
 
         visit organisation_users_path(organisation, motif_category_id: motif_category.id)
-        expect(page).not_to have_field("sms_invite_for_user_#{user.id}")
+        expect(page).to have_no_field("sms_invite_for_user_#{user.id}")
         expect(page).to have_css("label[for=\"sms_invite_for_user_#{user.id}\"]")
 
         find("label[for=\"sms_invite_for_user_#{user.id}\"]").click

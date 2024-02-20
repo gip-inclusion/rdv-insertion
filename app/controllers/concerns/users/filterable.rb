@@ -57,7 +57,7 @@ module Users::Filterable
   end
 
   def filter_users_by_page
-    return if request.format == "csv" || controller_name != "users"
+    return if request.format == "csv"
 
     @users = @users.page(page)
   end

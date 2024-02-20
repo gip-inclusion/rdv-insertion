@@ -1,13 +1,12 @@
 module Users
   class BatchActionsController < ApplicationController
     include BackToListConcern
-    include Users::Filterable
     include Users::Sortable
 
     before_action :set_organisation, :set_department, :set_organisations, :set_all_configurations,
                   :set_current_configuration, :set_current_motif_category, :set_motif_category_name, :set_users,
-                  :set_rdv_contexts, :set_back_to_users_list_url, :filter_users, :order_users,
-                  for: :new
+                  :set_rdv_contexts, :set_back_to_users_list_url, :filter_users_by_non_invited_status,
+                  :order_by_rdv_contexts, for: :new
 
     def new; end
 
@@ -51,15 +50,14 @@ module Users
       @current_motif_category = @current_configuration&.motif_category
     end
 
-    # needed for sortable concern to work properly
-    def archived_scope?
-      false
-    end
-
     def set_rdv_contexts
       @rdv_contexts = RdvContext.where(
         user_id: @users.ids, motif_category: @current_motif_category
       )
+    end
+
+    def filter_users_by_non_invited_status
+      @users = @users.joins(:rdv_contexts).where(rdv_contexts: @rdv_contexts.status("not_invited"))
     end
 
     def set_users
