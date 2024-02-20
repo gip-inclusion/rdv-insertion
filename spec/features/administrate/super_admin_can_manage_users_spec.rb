@@ -37,11 +37,11 @@ describe "Super admin can manage users" do
     end
 
     it "cannot create a user" do
-      expect(page).not_to have_link("Création usager")
+      expect(page).to have_no_link("Création usager")
     end
 
     it "cannot delete a user" do
-      expect(page).not_to have_link("Supprimer")
+      expect(page).to have_no_link("Supprimer")
     end
   end
 
@@ -84,7 +84,7 @@ describe "Super admin can manage users" do
       expect(page).to have_css("dt", id: "rights_opening_date", text: "DATE D'ENTRÉE FLUX")
       expect(page).to have_css("dd", class: "attribute-data", text: user.rights_opening_date)
       expect(page).to have_css("dt", id: "organisations", text: "ORGANISATION(S)")
-      expect(page).to have_selector(
+      expect(page).to have_css(
         "a[href=\"#{super_admins_organisation_path(organisation)}\"]", class: "action-show", text: organisation.name
       )
       expect(page).to have_css("dt", id: "tags", text: "TAGS")
@@ -101,7 +101,7 @@ describe "Super admin can manage users" do
     end
 
     it "cannot delete a user" do
-      expect(page).not_to have_link("Supprimer")
+      expect(page).to have_no_link("Supprimer")
     end
   end
 
@@ -173,7 +173,7 @@ describe "Super admin can manage users" do
 
         expect(page).to have_content("1 erreur ont empêché Usager d'être sauvegardé(e)")
         expect(page).to have_content("Prénom doit être rempli(e)")
-        expect(page).not_to have_content("Détails #{user.first_name} Newname")
+        expect(page).to have_no_content("Détails #{user.first_name} Newname")
       end
     end
   end

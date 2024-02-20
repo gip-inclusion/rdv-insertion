@@ -55,7 +55,7 @@ describe "Super admin can manage organisations" do
     end
 
     it "cannot delete an organisation" do
-      expect(page).not_to have_link("Supprimer")
+      expect(page).to have_no_link("Supprimer")
     end
   end
 
@@ -89,12 +89,12 @@ describe "Super admin can manage organisations" do
       expect(page).to have_css("dd", class: "attribute-data", text: organisation1.logo_filename)
       expect(page).to have_css("dt", id: "agent_roles", text: "AGENT ROLES")
       expect(page).to have_css("td", class: "cell-data--belongs-to", text: agent1.to_s)
-      expect(page).not_to have_css("td", class: "cell-data--belongs-to", text: agent2.to_s)
+      expect(page).to have_no_css("td", class: "cell-data--belongs-to", text: agent2.to_s)
       expect(page).to have_css("dt", id: "lieux", text: "LIEUX")
       expect(page).to have_css("td", class: "cell-data--string", text: lieu1.name)
-      expect(page).not_to have_css("td", class: "cell-data--belongs-to", text: lieu2.name)
+      expect(page).to have_no_css("td", class: "cell-data--belongs-to", text: lieu2.name)
       expect(page).to have_css("dt", id: "motif_categories", text: "MOTIF CATEGORIES")
-      expect(page).to have_selector(
+      expect(page).to have_css(
         "a[href=\"#{super_admins_motif_category_path(motif_category)}\"]",
         class: "action-show", text: motif_category.name
       )
@@ -111,7 +111,7 @@ describe "Super admin can manage organisations" do
     end
 
     it "cannot delete a organisation" do
-      expect(page).not_to have_link("Supprimer")
+      expect(page).to have_no_link("Supprimer")
     end
   end
 
@@ -235,7 +235,7 @@ describe "Super admin can manage organisations" do
         expect(stub_update_rdv_solidarites_organisation).not_to have_been_requested
         expect(page).to have_content("1 erreur ont empêché Organisation d'être sauvegardé(e)")
         expect(page).to have_content("Département doit exister")
-        expect(page).not_to have_content("Détails Some name")
+        expect(page).to have_no_content("Détails Some name")
       end
     end
   end
@@ -313,7 +313,7 @@ describe "Super admin can manage organisations" do
         expect(stub_update_rdv_solidarites_organisation).not_to have_been_requested
         expect(page).to have_content("1 erreur ont empêché Organisation d'être sauvegardé(e)")
         expect(page).to have_content("Nom doit être rempli(e)")
-        expect(page).not_to have_content("Détails #{organisation1.name} (#{department1.name})")
+        expect(page).to have_no_content("Détails #{organisation1.name} (#{department1.name})")
       end
     end
   end

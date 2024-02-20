@@ -1,4 +1,4 @@
-describe "Agents can invite from index page", js: true do
+describe "Agents can invite from index page", :js do
   let!(:agent) { create(:agent) }
   let!(:organisation) { create(:organisation, agents: [agent]) }
   let!(:user) do
@@ -220,8 +220,8 @@ describe "Agents can invite from index page", js: true do
         rdv_context.save!
 
         visit organisation_users_path(organisation, motif_category_id: motif_category.id)
-        expect(page).not_to have_field("sms_invite_for_user_#{user.id}")
-        expect(page).not_to have_field("email_invite_for_user_#{user.id}")
+        expect(page).to have_no_field("sms_invite_for_user_#{user.id}")
+        expect(page).to have_no_field("email_invite_for_user_#{user.id}")
         expect(page).to have_content("RDV pris")
       end
     end

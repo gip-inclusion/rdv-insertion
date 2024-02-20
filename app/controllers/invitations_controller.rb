@@ -23,7 +23,7 @@ class InvitationsController < ApplicationController
   def redirect
     @invitation.clicked = true
     @invitation.save
-    redirect_to @invitation.link
+    redirect_to @invitation.link, allow_other_host: true
   end
 
   private

@@ -25,18 +25,14 @@ module AuthenticationSpecHelper
       .to_return(body: { "data" => { "uid" => agent.email } }.to_json)
   end
 
-  # rubocop:disable Metrics/AbcSize
   def mock_rdv_solidarites_credentials(agent_email)
     allow(RdvSolidaritesCredentialsFactory).to receive(:create_with)
       .with(**credentials_hash(agent_email))
       .and_return(rdv_solidarites_credentials)
-    allow(rdv_solidarites_credentials).to receive(:valid?)
-      .and_return(true)
-    allow(rdv_solidarites_credentials).to receive(:uid).and_return(agent_email)
-    allow(rdv_solidarites_credentials).to receive(:to_h)
-      .and_return(credentials_hash(agent_email))
+    allow(rdv_solidarites_credentials).to receive_messages(
+      valid?: true, uid: agent_email, to_h: credentials_hash(agent_email)
+    )
   end
-  # rubocop:enable Metrics/AbcSize
 
   def rdv_solidarites_credentials
     @rdv_solidarites_credentials ||= instance_double(RdvSolidaritesCredentials::WithAccessToken)
