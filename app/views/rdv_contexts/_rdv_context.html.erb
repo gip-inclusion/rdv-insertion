@@ -85,6 +85,7 @@
             "components/InvitationBlock", {
               user: UserBlueprint.render_as_json(
                 user,
+                view: :extended,
                 motif_category_ids: current_agent.motif_category_ids,
                 tags_ids: TagPolicy::Scope.new(current_agent, Tag).resolve.where(organisations: [@organisation]).ids
               ),

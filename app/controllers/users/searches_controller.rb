@@ -11,6 +11,7 @@ module Users
     def users_as_json
       UserBlueprint.render_as_json(
         @users,
+        view: :extended,
         motif_category_ids: current_agent.motif_category_ids,
         tags_ids: policy_scope(Tag).where(organisations: @organisations).ids
       )
