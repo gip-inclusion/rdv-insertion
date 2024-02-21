@@ -83,7 +83,11 @@
         <% if configuration.invitation_formats.any? %>
           <%= react_component(
             "components/InvitationBlock", {
-              user: user,
+              user: UserBlueprint.render_as_json(
+                user,
+                motif_category_ids: current_agent.motif_category_ids,
+                tags_ids: TagPolicy::Scope.new(current_agent, Tag).resolve.where(organisations: [@organisation]).ids
+              ),
               organisation: organisation,
               department: department,
               invitations: invitations,

@@ -31,15 +31,4 @@ class UserBlueprint < Blueprinter::Base
     association :referents, blueprint: AgentBlueprint
     association :archives, blueprint: ArchiveBlueprint
   end
-
-  view :searches do
-    include_view :extended
-    include_view :with_referents
-
-    exclude :rdv_solidarites_user_id
-    exclude :title
-    exclude :birth_date
-    exclude :birth_name
-    exclude :pole_emploi_id
-  end
 end
