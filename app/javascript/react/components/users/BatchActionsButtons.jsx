@@ -45,7 +45,7 @@ export default observer(({ users }) => {
         Actions pour toute la sélection
       </button>
       <div className="dropdown-menu" id="batch-actions">
-        {users.comesFromUploadFile && (
+        {users.sourcePage === "upload" && (
           <button
             type="button"
             className="dropdown-item d-flex justify-content-between align-items-center"

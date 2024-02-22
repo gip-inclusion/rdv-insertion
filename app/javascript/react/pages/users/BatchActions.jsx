@@ -21,6 +21,10 @@ const UsersBatchActions = observer(
     backToUsersListUrl
   }) => {
     useEffect(() => {
+      console.log("usersFromApp", usersFromApp)
+      console.log("organisation", organisation)
+      console.log("configuration", configuration)
+      console.log("department", department)
       setUsersFromApp();
     }, [usersFromApp]);
 
@@ -33,6 +37,7 @@ const UsersBatchActions = observer(
       users.showReferentColumn = configuration?.rdv_with_referents;
       users.configuration = configuration;
       users.isDepartmentLevel = !organisation;
+      users.sourcePage = "batchActions";
 
       usersFromApp.forEach((userFromApp) => {
         const user = new User(

@@ -15,12 +15,19 @@ module Users
     def set_organisation
       return if department_level?
 
-      @organisation = Organisation.find(params[:organisation_id])
+      @organisation =
+        Organisation.preload(department: { organisations: [:motif_categories, :motifs, :lieux] })
+                    .find(params[:organisation_id])
       authorize @organisation, :batch_actions?
     end
 
     def set_department
-      @department = department_level? ? Department.find(params[:department_id]) : @organisation.department
+      @department =
+        if department_level?
+          Department.preload(organisations: [:motif_categories, :motifs, :lieux]).find(params[:department_id])
+        else
+          @organisation.department
+        end
       authorize @department, :batch_actions? if department_level?
     end
 
@@ -62,6 +69,7 @@ module Users
 
     def set_users
       @users = policy_scope(User)
+               .preload({ organisations: [:motif_categories], rdv_contexts: [:participations] })
                .active.distinct
                .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
                .where.not(id: @department.archived_users.ids)

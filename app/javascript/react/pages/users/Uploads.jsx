@@ -53,7 +53,7 @@ const UsersUploads = observer(
       users.showReferentColumn = configuration?.rdv_with_referents;
       users.configuration = configuration;
       users.isDepartmentLevel = isDepartmentLevel;
-      users.comesFromUploadFile = true;
+      users.sourcePage = "upload";
 
       const rows = await uploadFile(file, sheetName, columnNames);
       if (typeof(rows) === "undefined") return;

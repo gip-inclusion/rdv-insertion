@@ -82,7 +82,7 @@
         <% end %>
         <% if configuration.invitation_formats.any? %>
           <%= react_component(
-            "components/railsApp/user/InvitationBlock", {
+            "components/rdvContext/InvitationBlock", {
               user: user,
               organisation: organisation,
               department: department,

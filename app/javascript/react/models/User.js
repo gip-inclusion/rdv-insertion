@@ -334,14 +334,14 @@ export default class User {
   }
 
   sortedParticipationsByRdvStartsAt() {
-    return this.participations.sort((a, b) => new Date(a.rdv.starts_at) - new Date(b.rdv.starts_at));
+    return this.participations.sort((a, b) => new Date(a.starts_at) - new Date(b.starts_at));
   }
 
   lastParticipationRdvStartsAt() {
     return this.hasParticipations()
       ? this.sortedParticipationsByRdvStartsAt()[
           this.sortedParticipationsByRdvStartsAt().length - 1
-        ].rdv.starts_at
+        ].starts_at
       : null;
   }
 

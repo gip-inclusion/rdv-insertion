@@ -17,7 +17,7 @@ class Users {
     this.configuration = null
     this.showReferentColumn = false
     this.isDepartmentLevel = false
-    this.comesFromUploadFile = false
+    this.sourcePage = ""
     makeAutoObservable(this);
   }
 
@@ -82,14 +82,14 @@ class Users {
       },
       {
         name: "Numéro CAF",
-        visible: this.fileColumnNames?.affiliation_number_column && this.comesFromUploadFile,
+        visible: this.sourcePage === "upload" && this.fileColumnNames?.affiliation_number_column,
         content: ({ user }) => <EditableCell type="text" user={user} cell="affiliationNumber" />
       },
       {
         name: "Rôle",
         sortable: true,
         key: "role",
-        visible: this.fileColumnNames?.role_column || !this.comesFromUploadFile,
+        visible: (this.sourcePage === "upload" && this.fileColumnNames?.role_column) || this.sourcePage === "batchActions",
         content: ({ user }) => (
           <EditableCell
             user={user}
@@ -121,14 +121,14 @@ class Users {
         name: "Email",
         key: "email",
         isInContactFile: true,
-        visible: this.fileColumnNames?.email_column || !this.comesFromUploadFile,
+        visible: (this.sourcePage === "upload" && this.fileColumnNames?.email_column) || this.sourcePage === "batchActions",
         content: ({ user }) => <EditableCell user={user} cell="email" />
       },
       {
         name: "Téléphone",
         key: "phoneNumber",
         isInContactFile: true,
-        visible: this.fileColumnNames?.phone_number_column || !this.comesFromUploadFile,
+        visible: (this.sourcePage === "upload" && this.fileColumnNames?.phone_number_column) || this.sourcePage === "batchActions",
         content: ({ user }) => <EditableCell user={user} cell="phoneNumber" />
       },
       {
@@ -151,7 +151,7 @@ class Users {
         content: ({ user }) => <EditableCell user={user} cell="rightsOpeningDate" />
       },
       {
-        name: this.comesFromUploadFile === true ? "Création compte" : "Voir compte",
+        name: this.sourcePage === "upload" ? "Création compte" : "Voir compte",
         attributes: { style: { whiteSpace: "nowrap" }, scope: "col" },
         content: ({ user }) => <CreationCell user={user} />
       },
