@@ -118,6 +118,5 @@ describe UsersOrganisationsController do
         expect(unescaped_response_body).to match(/L'utilisateur n'est plus lié à rdv-solidarités/)
       end
     end
-
   end
 end
