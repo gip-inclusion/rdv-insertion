@@ -42,7 +42,7 @@ module Invitations
       fail!(
         "<strong>Il n'y a plus de créneaux disponibles</strong> pour inviter cet utilisateur. " \
         "<br/><br/>" \
-        "Nous invitons à créer de nouvelles plages d'ouverture depuis l'interface " \
+        "Nous vous invitons à créer de nouvelles plages d'ouverture ou augmenter le délai de prise de rdv depuis " \
         "RDV-Solidarités pour pouvoir à nouveau envoyer des invitations." \
         "<br/><br/>" \
         "Plus d'informations sur " \
