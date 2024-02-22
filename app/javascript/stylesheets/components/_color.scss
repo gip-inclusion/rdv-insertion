@@ -25,6 +25,14 @@
   }
 }
 
+.link-purple-underlined {
+  text-decoration: underline;
+  color: $purple;
+  &:hover {
+    color: $alt-grey;
+  }
+}
+
 .blue-out {
   background-color: white;
   color: $dark-blue;

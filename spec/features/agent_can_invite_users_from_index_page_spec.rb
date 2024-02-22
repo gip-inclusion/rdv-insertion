@@ -62,9 +62,9 @@ describe "Agents can invite from index page", :js do
         check("email_invite_for_user_#{user.id}")
         expect(page).to have_content("Impossible d'inviter l'utilisateur")
         expect(page).to have_content(
-          "L'envoi d'une invitation est impossible car il n'y a plus de créneaux disponibles. " \
-          "Nous invitons donc à créer de nouvelles plages d'ouverture depuis l'interface RDV-Solidarités " \
-          "pour pouvoir à nouveau envoyer des invitations"
+          "Il n'y a plus de créneaux disponibles pour inviter cet utilisateur.\n\n" \
+          "Nous vous invitons à créer de nouvelles plages d'ouverture ou augmenter le délai de prise de rdv depuis " \
+          "RDV-Solidarités pour pouvoir à nouveau envoyer des invitations.\n\nPlus d'informations sur notre guide"
         )
       end
     end
@@ -155,9 +155,9 @@ describe "Agents can invite from index page", :js do
           check("email_invite_for_user_#{user.id}")
           expect(page).to have_content("Impossible d'inviter l'utilisateur")
           expect(page).to have_content(
-            "L'envoi d'une invitation est impossible car il n'y a plus de créneaux disponibles. " \
-            "Nous invitons donc à créer de nouvelles plages d'ouverture depuis l'interface RDV-Solidarités " \
-            "pour pouvoir à nouveau envoyer des invitations"
+            "Il n'y a plus de créneaux disponibles pour inviter cet utilisateur.\n\n" \
+            "Nous vous invitons à créer de nouvelles plages d'ouverture ou augmenter le délai de prise de rdv depuis " \
+            "RDV-Solidarités pour pouvoir à nouveau envoyer des invitations.\n\nPlus d'informations sur notre guide"
           )
         end
       end
