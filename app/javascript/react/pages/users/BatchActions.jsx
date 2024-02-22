@@ -21,10 +21,6 @@ const UsersBatchActions = observer(
     backToUsersListUrl
   }) => {
     useEffect(() => {
-      console.log("usersFromApp", usersFromApp)
-      console.log("organisation", organisation)
-      console.log("configuration", configuration)
-      console.log("department", department)
       setUsersFromApp();
     }, [usersFromApp]);
 
