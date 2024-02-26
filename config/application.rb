@@ -22,10 +22,19 @@ module RdvInsertion
     config.i18n.load_path += Dir[Rails.root.join("config/locales/**/*.{rb,yml}")]
     config.exceptions_app = routes
 
-    # ActiveRecord encryption keys
+    # The following keys are generated using the following command:
+    # bundle exec rails db:encryption:init
+    #
+    # These generated values are 32 bytes in length.
+    # If you generate these yourself, the minimum lengths you should use are 12 bytes for the primary key
+    # (this will be used to derive the AES 32 bytes key) and 20 bytes for the salt.
+    #
+    # See: https://guides.rubyonrails.org/active_record_encryption.html
+    #
     config.active_record.encryption.primary_key = ENV["ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY"]
     config.active_record.encryption.deterministic_key = ENV["ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY"]
     config.active_record.encryption.key_derivation_salt = ENV["ACTIVE_RECORD_KEY_DERIVATION_SALT"]
+    config.active_record.encryption.extend_queries = true
 
     # Temporary support for unencrypted data during the migration process
     # Must be disabled once the migration is complete
