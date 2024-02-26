@@ -12,7 +12,7 @@ class SendPeriodicInvitesJob < ApplicationJob
       send_invite(rdv_context)
     end
 
-    notify_on_mattermost
+    notify_on_mattermost if @sent_invites_user_ids.any?
   end
 
   def send_invite(rdv_context)
