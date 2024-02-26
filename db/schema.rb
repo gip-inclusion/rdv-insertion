@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_20_123509) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_26_140143) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -458,6 +458,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_20_123509) do
     t.string "france_travail_id"
     t.string "carnet_de_bord_carnet_id"
     t.integer "created_through", default: 0
+    t.bigint "old_rdv_solidarites_user_id"
     t.index ["department_internal_id"], name: "index_users_on_department_internal_id"
     t.index ["email"], name: "index_users_on_email"
     t.index ["nir"], name: "index_users_on_nir"
