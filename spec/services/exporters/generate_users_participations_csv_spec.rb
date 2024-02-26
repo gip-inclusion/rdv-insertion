@@ -80,6 +80,14 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
 
       it "generates headers" do
         expect(csv).to start_with("\uFEFF")
+        expect(csv).to include("Statut du rdv")
+        expect(csv).to include("Date du RDV")
+        expect(csv).to include("Heure du RDV")
+        expect(csv).to include("Motif du RDV")
+        expect(csv).to include("Nature du RDV")
+        expect(csv).to include("RDV pris en autonomie ?")
+        expect(csv).to include("Référent(s)")
+        expect(csv).to include("Organisation du rendez-vous")
         expect(csv).to include("Civilité")
         expect(csv).to include("Nom")
         expect(csv).to include("Prénom")
@@ -94,16 +102,6 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
         expect(csv).to include("Date de création")
         expect(csv).to include("Date d'entrée flux")
         expect(csv).to include("Rôle")
-        expect(csv).to include("Archivé le")
-        expect(csv).to include("Motif d'archivage")
-        expect(csv).to include("Statut du rdv")
-        expect(csv).to include("Date du RDV")
-        expect(csv).to include("Heure du RDV")
-        expect(csv).to include("Motif du RDV")
-        expect(csv).to include("Nature du RDV")
-        expect(csv).to include("Dernier RDV pris en autonomie ?")
-        expect(csv).to include("Référent(s)")
-        expect(csv).to include("Organisation du rendez-vous")
       end
 
       context "it exports all the concerned users" do
@@ -153,28 +151,6 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
 
         it "displays the referent emails" do
           expect(csv).to include("monreferent@gouv.fr")
-        end
-
-        context "when the user is archived" do
-          let!(:user1) do
-            create(
-              :user,
-              organisations: [organisation],
-              archives: [archive]
-            )
-          end
-          let!(:archive) do
-            create(
-              :archive,
-              created_at: Time.zone.parse("2022-06-20"),
-              department: department, archiving_reason: "test"
-            )
-          end
-
-          it "displays the archive infos" do
-            expect(subject.csv).to include("20/06/2022") # archive status
-            expect(subject.csv).to include("20/06/2022;test") # archive reason
-          end
         end
       end
 

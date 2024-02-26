@@ -38,8 +38,12 @@ describe Stats::GlobalStats::Compute, type: :service do
         .and_return(OpenStruct.new(success?: true, value: 50.0))
       allow(Stats::ComputeAverageTimeBetweenInvitationAndRdvInDays).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 4.0))
-      allow(Stats::ComputeRateOfUsersWithRdvSeenInLessThanThirtyDays).to receive(:call)
+      allow(Stats::ComputeRateOfUsersWithRdvSeenInLessThanNDays).to receive(:call)
+        .with(users: stat.users_with_orientation_category_sample, number_of_days: 30)
         .and_return(OpenStruct.new(success?: true, value: 50.0))
+      allow(Stats::ComputeRateOfUsersWithRdvSeenInLessThanNDays).to receive(:call)
+        .with(users: stat.users_with_orientation_category_sample, number_of_days: 15)
+        .and_return(OpenStruct.new(success?: true, value: 25.0))
       allow(Stats::ComputeRateOfUsersWithRdvSeen).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 50.0))
       allow(Stats::ComputeRateOfAutonomousUsers).to receive(:call)
@@ -63,6 +67,7 @@ describe Stats::GlobalStats::Compute, type: :service do
       expect(subject.stat_attributes).to include(:rate_of_no_show_for_convocations)
       expect(subject.stat_attributes).to include(:average_time_between_invitation_and_rdv_in_days)
       expect(subject.stat_attributes).to include(:rate_of_users_oriented_in_less_than_30_days)
+      expect(subject.stat_attributes).to include(:rate_of_users_oriented_in_less_than_15_days)
       expect(subject.stat_attributes).to include(:rate_of_users_oriented)
       expect(subject.stat_attributes).to include(:rate_of_autonomous_users)
       expect(subject.stat_attributes).to include(:agents_count)
@@ -77,6 +82,7 @@ describe Stats::GlobalStats::Compute, type: :service do
       expect(subject.stat_attributes[:rate_of_no_show_for_convocations]).to be_a(Float)
       expect(subject.stat_attributes[:average_time_between_invitation_and_rdv_in_days]).to be_a(Float)
       expect(subject.stat_attributes[:rate_of_users_oriented_in_less_than_30_days]).to be_a(Float)
+      expect(subject.stat_attributes[:rate_of_users_oriented_in_less_than_15_days]).to be_a(Float)
       expect(subject.stat_attributes[:rate_of_users_oriented]).to be_a(Float)
       expect(subject.stat_attributes[:rate_of_autonomous_users]).to be_a(Float)
       expect(subject.stat_attributes[:agents_count]).to be_a(Integer)
@@ -125,9 +131,16 @@ describe Stats::GlobalStats::Compute, type: :service do
 
     it "computes the percentage of users with rdv seen in less than 30 days" do
       expect(stat).to receive(:users_with_orientation_category_sample)
-      expect(Stats::ComputeRateOfUsersWithRdvSeenInLessThanThirtyDays).to receive(:call)
-        .with(users: [user1, user2])
-      subject
+      expect(Stats::ComputeRateOfUsersWithRdvSeenInLessThanNDays).to receive(:call)
+        .with(users: [user1, user2], number_of_days: 30)
+      expect(subject.stat_attributes[:rate_of_users_oriented_in_less_than_30_days]).to eq(50.0)
+    end
+
+    it "computes the percentage of users with rdv seen in less than 15 days" do
+      expect(stat).to receive(:users_with_orientation_category_sample)
+      expect(Stats::ComputeRateOfUsersWithRdvSeenInLessThanNDays).to receive(:call)
+        .with(users: [user1, user2], number_of_days: 15)
+      expect(subject.stat_attributes[:rate_of_users_oriented_in_less_than_15_days]).to eq(25.0)
     end
 
     it "computes the percentage of users oriented" do
