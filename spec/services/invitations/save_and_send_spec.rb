@@ -139,9 +139,12 @@ describe Invitations::SaveAndSend, type: :service do
 
       it "stores an error message" do
         expect(subject.errors).to include(
-          "L'envoi d'une invitation est impossible car il n'y a plus de créneaux disponibles. " \
-          "Nous invitons donc à créer de nouvelles plages d'ouverture depuis l'interface " \
-          "RDV-Solidarités pour pouvoir à nouveau envoyer des invitations"
+          "<strong>Il n'y a plus de créneaux disponibles</strong> pour inviter cet utilisateur. <br/><br/>" \
+          "Nous vous invitons à créer de nouvelles plages d'ouverture ou augmenter le délai de prise de rdv depuis " \
+          "RDV-Solidarités pour pouvoir à nouveau envoyer des invitations.<br/><br/>Plus d'informations sur " \
+          "<a href='https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/configurer-loutil-et-envoyer" \
+          "-des-invitations/envoyer-des-invitations-ou-convocations/inviter-les-personnes-a-prendre-rdv#cas-" \
+          "des-creneaux-indisponibles' target='_blank' class='link-purple-underlined'>notre guide</a>."
         )
       end
 

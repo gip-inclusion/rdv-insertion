@@ -43,8 +43,12 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
         .and_return(OpenStruct.new(success?: true, value: 50.0))
       allow(Stats::ComputeAverageTimeBetweenInvitationAndRdvInDays).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 4.0))
-      allow(Stats::ComputeRateOfUsersWithRdvSeenInLessThanThirtyDays).to receive(:call)
+      allow(Stats::ComputeRateOfUsersWithRdvSeenInLessThanNDays).to receive(:call)
+        .with(users: [user2], number_of_days: 30)
         .and_return(OpenStruct.new(success?: true, value: 50.0))
+      allow(Stats::ComputeRateOfUsersWithRdvSeenInLessThanNDays).to receive(:call)
+        .with(users: [user2], number_of_days: 15)
+        .and_return(OpenStruct.new(success?: true, value: 25.0))
       allow(Stats::ComputeRateOfUsersWithRdvSeen).to receive(:call)
         .and_return(OpenStruct.new(success?: true, value: 50.0))
       allow(Stats::ComputeRateOfAutonomousUsers).to receive(:call)
@@ -129,9 +133,16 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
 
     it "computes the percentage of users with rdv seen in less than 30 days" do
       expect(stat).to receive(:users_with_orientation_category_sample)
-      expect(Stats::ComputeRateOfUsersWithRdvSeenInLessThanThirtyDays).to receive(:call)
-        .with(users: [user2])
-      subject
+      expect(Stats::ComputeRateOfUsersWithRdvSeenInLessThanNDays).to receive(:call)
+        .with(users: [user2], number_of_days: 30)
+      expect(subject.stats_values[:rate_of_users_oriented_in_less_than_30_days_by_month]).to eq(50.0)
+    end
+
+    it "computes the percentage of users with rdv seen in less than 15 days" do
+      expect(stat).to receive(:users_with_orientation_category_sample)
+      expect(Stats::ComputeRateOfUsersWithRdvSeenInLessThanNDays).to receive(:call)
+        .with(users: [user2], number_of_days: 15)
+      expect(subject.stats_values[:rate_of_users_oriented_in_less_than_15_days_by_month]).to eq(25.0)
     end
 
     it "computes the percentage of users with rdv seen posterior to an invitation" do
