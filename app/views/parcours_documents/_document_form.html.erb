@@ -3,15 +3,15 @@
   <div class="w-50 my-4">
     <%= f.file_field(
       :file,
-      class: "form-control my-2", 
+      class: "d-none", 
       id: "file-input-#{type}", 
       accept: ParcoursDocument::MIME_TYPES.join(', '),
       data: {
-        action: "change->parcours-documents#enableSubmit",
+        action: "change->parcours-documents#submit",
       }
     ) %>
   </div>
-  <%= button_tag type: 'submit', class: "btn btn-primary", disabled: true do %>
+  <%= button_tag type: 'button', class: "btn btn-primary", data: { action: "click->parcours-documents#fetchFile" } do %>
     <i class="fas fa-plus"></i>
     <div class="spinner-border spinner-border-sm text-white d-none" role="status">
       <span class="visually-hidden">Loading...</span>

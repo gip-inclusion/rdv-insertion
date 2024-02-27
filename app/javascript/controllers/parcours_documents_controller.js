@@ -1,9 +1,13 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  enableSubmit(event) {
+  fetchFile() {
+    this.element.querySelector("input[type=file]").click()
+  }
+
+  submit(event) {
     if (event.target.value.length > 0) {
-      this.element.querySelector("button").removeAttribute("disabled")
+      window.Turbo.navigator.submitForm(this.element)
     }
   }
 
