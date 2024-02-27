@@ -10,8 +10,7 @@ class Participation < ApplicationRecord
              class_name: "Agent",
              primary_key: "rdv_solidarites_agent_id",
              foreign_key: "rdv_solidarites_agent_prescripteur_id",
-             optional: true,
-             inverse_of: :prescriptions
+             optional: true
 
   has_many :notifications, dependent: :nullify
   has_many :rdv_context_invitations, through: :rdv_context, source: :invitations
