@@ -150,4 +150,8 @@ class User < ApplicationRecord
 
     errors.add(:birth_date, "n'est pas valide")
   end
+
+  def blueprint_view_opts
+    {}
+  end
 end
