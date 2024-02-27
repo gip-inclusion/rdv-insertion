@@ -24,14 +24,20 @@ describe Orientation do
     end
   end
 
-  describe "starts_at is in the past" do
+  describe "starts_at is in the future" do
     let(:orientation) { build(:orientation, starts_at: Date.tomorrow) }
 
     it "adds errors" do
       expect(orientation).not_to be_valid
       expect(orientation.errors.full_messages.to_sentence)
-        .to include("la date de début doit être antérieure à la date d'aujourd'hui")
+        .to include("la date de début doit être antérieure ou égale à la date d'aujourd'hui")
     end
+  end
+
+  describe "starts_at is today" do
+    let(:orientation) { build(:orientation, starts_at: Date.today) }
+
+    it { expect(orientation).to be_valid }
   end
 
   describe "ends_at after starts_at" do
