@@ -11,10 +11,8 @@ class UserBlueprint < Blueprinter::Base
   view :extended do
     association :invitations, blueprint: InvitationBlueprint
     association :organisations, blueprint: OrganisationBlueprint
-
     association :rdv_contexts, blueprint: RdvContextBlueprint
     association :tags, blueprint: TagBlueprint
-
     association :referents, blueprint: AgentBlueprint
     association :archives, blueprint: ArchiveBlueprint
   end
