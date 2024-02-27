@@ -74,8 +74,7 @@ describe "Agents can invite from index page", :js do
     let!(:sms_invitation) do
       create(
         :invitation,
-        format: "sms", user: user, rdv_context: rdv_context, sent_at: 2.days.ago,
-        rdv_solidarites_token: rdv_solidarites_token
+        format: "sms", user: user, rdv_context: rdv_context, rdv_solidarites_token: rdv_solidarites_token
       )
     end
 
@@ -118,7 +117,7 @@ describe "Agents can invite from index page", :js do
       let!(:sms_invitation) do
         create(
           :invitation,
-          format: "sms", user: user, rdv_context: rdv_context, sent_at: 6.days.ago,
+          format: "sms", user: user, rdv_context: rdv_context, created_at: 6.days.ago,
           rdv_solidarites_token: rdv_solidarites_token
         )
       end
@@ -167,7 +166,7 @@ describe "Agents can invite from index page", :js do
       let!(:sms_invitation) do
         create(
           :invitation,
-          format: "sms", user: user, rdv_context: rdv_context, sent_at: 2.days.ago,
+          format: "sms", user: user, rdv_context: rdv_context, created_at: 2.days.ago,
           rdv_solidarites_token: rdv_solidarites_token
         )
       end
@@ -210,7 +209,7 @@ describe "Agents can invite from index page", :js do
       let!(:sms_invitation) do
         create(
           :invitation,
-          format: "sms", user: user, rdv_context: rdv_context, sent_at: 2.days.ago,
+          format: "sms", user: user, rdv_context: rdv_context, created_at: 2.days.ago,
           rdv_solidarites_token: rdv_solidarites_token
         )
       end

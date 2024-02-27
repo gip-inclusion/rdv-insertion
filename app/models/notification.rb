@@ -18,8 +18,6 @@ class Notification < ApplicationRecord
   delegate :organisation, to: :rdv, allow_nil: true
   delegate :messages_configuration, :configurations, to: :organisation
 
-  scope :sent, -> { where.not(sent_at: nil) }
-
   def send_to_user
     case format
     when "sms"

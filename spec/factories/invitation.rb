@@ -8,6 +8,7 @@ FactoryBot.define do
     help_phone_number { "0139393939" }
     valid_until { 1.week.from_now }
     rdv_context
+    rdv_with_referents { false }
     organisations { [create(:organisation)] }
   end
 end

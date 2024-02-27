@@ -52,7 +52,7 @@
                     <% if convocable_participations.present? %>
                       <td class="px-4 py-2">
                         <% if participation.convocable? %>
-                          <%= render("rdv_contexts/convocations", user: user, participation: participation, sms_convocations: participation.sent_sms_convocations, email_convocations: participation.sent_email_convocations) %>
+                          <%= render("rdv_contexts/convocations", user: user, participation: participation, sms_convocations: participation.sms_convocations, email_convocations: participation.email_convocations) %>
                         <% else %>
                           -
                         <% end %>

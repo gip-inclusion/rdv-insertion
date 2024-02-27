@@ -12,17 +12,11 @@ module Invitations
         verify_creneaux_are_available if @check_creneaux_availability
         save_record!(@invitation)
         send_invitation
-        assign_invitation_sent_at
       end
       result.invitation = @invitation
     end
 
     private
-
-    def assign_invitation_sent_at
-      @invitation.sent_at = Time.zone.now
-      save_record!(@invitation)
-    end
 
     def validate_invitation
       call_service!(Invitations::Validate, invitation: @invitation)

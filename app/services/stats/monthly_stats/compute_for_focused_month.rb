@@ -45,7 +45,7 @@ module Stats
       end
 
       def sent_invitations_count_for_focused_month
-        @stat.invitations_sample.where(sent_at: @date.all_month).count
+        created_during_focused_month(@stat.invitations_sample).count
       end
 
       def rate_of_no_show_for_invitations_for_focused_month

@@ -298,12 +298,12 @@ RSpec.configure do |config|
             properties: {
               id: { type: "integer" },
               format: { type: "string", enum: %w[sms postal email] },
-              sent_at: { type: "string" },
               clicked: { type: "boolean" },
               rdv_with_referents: { type: "boolean" },
+              created_at: { type: "string" },
               motif_category: { "$ref" => "#/components/schemas/motif_category" }
             },
-            required: %w[id format sent_at clicked rdv_with_referents motif_category]
+            required: %w[id format clicked rdv_with_referents created_at motif_category]
           },
           lieu: {
             type: "object",

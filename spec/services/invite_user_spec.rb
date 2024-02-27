@@ -167,7 +167,7 @@ describe InviteUser, type: :service do
       end
 
       context "when there is already a sent invitation today" do
-        let!(:existing_invitation) { create(:invitation, format: "sms", sent_at: 4.hours.ago, rdv_context:) }
+        let!(:existing_invitation) { create(:invitation, format: "sms", created_at: 4.hours.ago, rdv_context:) }
 
         it "is a failure" do
           is_a_failure
@@ -183,7 +183,7 @@ describe InviteUser, type: :service do
         end
 
         context "when the format is postal" do
-          let!(:existing_invitation) { create(:invitation, format: "postal", sent_at: 4.hours.ago, rdv_context:) }
+          let!(:existing_invitation) { create(:invitation, format: "postal", created_at: 4.hours.ago, rdv_context:) }
 
           it "is a success" do
             is_a_success
