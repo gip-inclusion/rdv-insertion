@@ -3,20 +3,14 @@ module Users
     before_action :set_organisations, :search_users, only: [:create]
 
     def create
-      render json: { success: true, users: users_as_json }
+      render json: { success: true, users: UserBlueprint.render_as_json(@users, view: :extended) }
     end
 
     private
 
-    def users_as_json
-      UserBlueprint.render_as_json(
-        @users,
-        view: :extended
-      )
-    end
-
     def search_users
       @users = User.active.where(id: search_in_all_users.ids + search_in_department_organisations.ids)
+
       preload_users_associations
       keep_only_authorized_rdvs
       keep_only_authorized_tags

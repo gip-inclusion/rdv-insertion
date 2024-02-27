@@ -132,7 +132,7 @@ class UsersController < ApplicationController
   def render_save_user_success
     respond_to do |format|
       format.html { redirect_to(after_save_path) }
-      format.json { render json: { success: true, user: @user } }
+      format.json { render json: { success: true, user: UserBlueprint.render_as_json(@user, view: :extended) } }
     end
   end
 
