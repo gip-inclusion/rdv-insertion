@@ -35,7 +35,7 @@ describe Orientation do
   end
 
   describe "starts_at is today" do
-    let(:orientation) { build(:orientation, starts_at: Date.today) }
+    let(:orientation) { build(:orientation, starts_at: Time.zone.today) }
 
     it { expect(orientation).to be_valid }
   end
