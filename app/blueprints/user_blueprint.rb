@@ -12,21 +12,8 @@ class UserBlueprint < Blueprinter::Base
     association :invitations, blueprint: InvitationBlueprint
     association :organisations, blueprint: OrganisationBlueprint
 
-    association :rdv_contexts, blueprint: RdvContextBlueprint do |user, options|
-      if options.key?(:motif_category_ids)
-        user.rdv_contexts.select { |rdv_context| rdv_context.motif_category_id.in?(options[:motif_category_ids] || []) }
-      else
-        user.rdv_contexts
-      end
-    end
-
-    association :tags, blueprint: TagBlueprint do |user, options|
-      if options.key?(:tag_ids)
-        user.tags.select { |tag| tag.id.in?(options[:tag_ids] || []) }
-      else
-        user.tags
-      end
-    end
+    association :rdv_contexts, blueprint: RdvContextBlueprint
+    association :tags, blueprint: TagBlueprint
 
     association :referents, blueprint: AgentBlueprint
     association :archives, blueprint: ArchiveBlueprint
