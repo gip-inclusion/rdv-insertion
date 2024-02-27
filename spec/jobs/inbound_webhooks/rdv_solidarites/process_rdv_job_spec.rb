@@ -159,7 +159,8 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
             user_id: user.id,
             rdv_solidarites_participation_id: 998,
             rdv_context_id: rdv_context.id,
-            convocable: false
+            convocable: false,
+            rdv_solidarites_agent_prescripteur_id: nil
           },
           {
             id: nil,
@@ -168,7 +169,8 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
             user_id: user2.id,
             rdv_solidarites_participation_id: 999,
             rdv_context_id: rdv_context2.id,
-            convocable: false
+            convocable: false,
+            rdv_solidarites_agent_prescripteur_id: nil
           }
         ]
       end
@@ -256,7 +258,8 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                       user_id: user2.id,
                       rdv_solidarites_participation_id: 999,
                       rdv_context_id: rdv_context2.id,
-                      convocable: false
+                      convocable: false,
+                      rdv_solidarites_agent_prescripteur_id: nil
                     },
                     {
                       id: nil,
@@ -265,7 +268,8 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                       user_id: new_user.id,
                       rdv_solidarites_participation_id: 998,
                       rdv_context_id: new_rdv_context.id,
-                      convocable: false
+                      convocable: false,
+                      rdv_solidarites_agent_prescripteur_id: nil
                     }
                   ],
                   organisation_id: organisation.id,
@@ -308,7 +312,8 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
               created_by: "user",
               user_id: 4,
               rdv_solidarites_participation_id: 999,
-              rdv_context_id: rdv_context2.id
+              rdv_context_id: rdv_context2.id,
+              rdv_solidarites_agent_prescripteur_id: nil
             },
             {
               _destroy: true,
@@ -413,7 +418,8 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                   user_id: 3,
                   rdv_solidarites_participation_id: 998,
                   rdv_context_id: rdv_context.id,
-                  convocable: true
+                  convocable: true,
+                  rdv_solidarites_agent_prescripteur_id: nil
                 },
                 {
                   id: nil,
@@ -422,7 +428,8 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                   user_id: 4,
                   rdv_solidarites_participation_id: 999,
                   rdv_context_id: rdv_context2.id,
-                  convocable: true
+                  convocable: true,
+                  rdv_solidarites_agent_prescripteur_id: nil
                 }
               ],
               organisation_id: organisation.id,
@@ -451,7 +458,8 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                     user_id: 3,
                     rdv_solidarites_participation_id: 998,
                     rdv_context_id: rdv_context.id,
-                    convocable: false
+                    convocable: false,
+                    rdv_solidarites_agent_prescripteur_id: nil
                   },
                   {
                     id: nil,
@@ -460,7 +468,8 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                     user_id: 4,
                     rdv_solidarites_participation_id: 999,
                     rdv_context_id: rdv_context2.id,
-                    convocable: false
+                    convocable: false,
+                    rdv_solidarites_agent_prescripteur_id: nil
                   }
                 ],
                 organisation_id: organisation.id,
@@ -527,7 +536,8 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                   user_id: 3,
                   rdv_solidarites_participation_id: 998,
                   rdv_context_id: rdv_context.id,
-                  convocable: true
+                  convocable: true,
+                  rdv_solidarites_agent_prescripteur_id: nil
                 },
                 {
                   id: nil,
@@ -536,7 +546,8 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                   user_id: 4,
                   rdv_solidarites_participation_id: 999,
                   rdv_context_id: rdv_context2.id,
-                  convocable: false
+                  convocable: false,
+                  rdv_solidarites_agent_prescripteur_id: nil
                 }
               ],
               organisation_id: organisation.id,
@@ -565,7 +576,8 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                     user_id: 3,
                     rdv_solidarites_participation_id: 998,
                     rdv_context_id: rdv_context.id,
-                    convocable: false
+                    convocable: false,
+                    rdv_solidarites_agent_prescripteur_id: nil
                   },
                   {
                     id: nil,
@@ -574,7 +586,8 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                     user_id: 4,
                     rdv_solidarites_participation_id: 999,
                     rdv_context_id: rdv_context2.id,
-                    convocable: false
+                    convocable: false,
+                    rdv_solidarites_agent_prescripteur_id: nil
                   }
                 ],
                 organisation_id: organisation.id,
@@ -652,7 +665,8 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                   user_id: 4,
                   rdv_solidarites_participation_id: 999,
                   rdv_context_id: rdv_context2.id,
-                  convocable: false
+                  convocable: false,
+                  rdv_solidarites_agent_prescripteur_id: nil
                 }
               ],
               organisation_id: organisation.id,

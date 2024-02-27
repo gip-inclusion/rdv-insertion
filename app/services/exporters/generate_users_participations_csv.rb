@@ -22,6 +22,7 @@ module Exporters
 
       @users = @users.preload(
         participations: [
+          :agent_prescripteur,
           :organisation,
           {
             rdv_context: [
@@ -67,9 +68,6 @@ module Exporters
 
     def csv_row(participation) # rubocop:disable Metrics/AbcSize
       user = participation.user
-      agent_prescripteur = Agent.find_by(
-        rdv_solidarites_agent_id: participation.rdv_solidarites_agent_prescripteur_id
-      )
 
       [display_date(rdv_date(participation)),
        display_time(rdv_date(participation)),
@@ -93,10 +91,10 @@ module Exporters
        display_date(user.created_at),
        display_date(user.rights_opening_date),
        user.role,
-       participation.rdv_solidarites_agent_prescripteur_id.present? ? "oui" : "non",
-       agent_prescripteur&.first_name,
-       agent_prescripteur&.last_name,
-       agent_prescripteur&.email,
+       participation.agent_prescripteur.present? ? "oui" : "non",
+       participation.agent_prescripteur&.first_name,
+       participation.agent_prescripteur&.last_name,
+       participation.agent_prescripteur&.email,
        user.tags.pluck(:value).join(", ")]
     end
 
