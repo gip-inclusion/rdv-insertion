@@ -3,6 +3,8 @@ class RemoveSentAtTimestamps < ActiveRecord::Migration[7.0]
     Notification.where(sent_at: nil).destroy_all
     Invitation.where(sent_at: nil).destroy_all
 
+    Invitation.find_each { |invitation| invitation.update_column(:created_at, invitation.sent_at) }
+
     remove_column :invitations, :sent_at, :datetime
     remove_column :notifications, :sent_at, :datetime
   end
