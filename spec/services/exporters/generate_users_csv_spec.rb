@@ -46,13 +46,13 @@ describe Exporters::GenerateUsersCsv, type: :service do
   let!(:participation_rdv) { create(:participation, user: user1, status: "seen", created_at: "2022-05-23") }
 
   let!(:first_invitation) do
-    create(:invitation, user: user1, format: "email", sent_at: Time.zone.parse("2022-05-21"))
+    create(:invitation, user: user1, format: "email", created_at: Time.zone.parse("2022-05-21"))
   end
   let!(:last_invitation) do
-    create(:invitation, user: user1, format: "email", sent_at: Time.zone.parse("2022-05-22"))
+    create(:invitation, user: user1, format: "email", created_at: Time.zone.parse("2022-05-22"))
   end
   let!(:notification) do
-    create(:notification, participation: participation_rdv, format: "email", sent_at: Time.zone.parse("2022-06-22"))
+    create(:notification, participation: participation_rdv, format: "email", created_at: Time.zone.parse("2022-06-22"))
   end
   let!(:rdv_context) do
     create(

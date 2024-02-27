@@ -31,12 +31,12 @@ class RdvContext < ApplicationRecord
   }
   scope :invited_before_time_window, lambda { |number_of_days_before_action_required|
     where.not(
-      id: joins(:invitations).where("invitations.sent_at > ?", number_of_days_before_action_required.days.ago)
+      id: joins(:invitations).where("invitations.created_at > ?", number_of_days_before_action_required.days.ago)
                              .where(invitations: { reminder: false })
                              .pluck(:rdv_context_id)
     )
   }
-  scope :with_sent_invitations, -> { joins(:invitations).where.not(invitations: { sent_at: nil }) }
+  scope :with_sent_invitations, -> { where.associated(:invitations) }
   scope :orientation, -> { joins(:motif_category).where(motif_category: { leads_to_orientation: true }) }
 
   def action_required_status?
@@ -52,7 +52,7 @@ class RdvContext < ApplicationRecord
   end
 
   def time_between_invitation_and_rdv_in_days
-    first_participation_creation_date.to_datetime.mjd - first_invitation_sent_at.to_datetime.mjd
+    first_participation_creation_date.to_datetime.mjd - first_invitation_created_at.to_datetime.mjd
   end
 
   def closed?

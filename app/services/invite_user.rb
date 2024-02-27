@@ -56,7 +56,7 @@ class InviteUser < BaseService
   end
 
   def invitation_already_sent_today?
-    @rdv_context.invitations.where(format: @invitation.format).where("sent_at > ?", 24.hours.ago).present?
+    @rdv_context.invitations.where(format: @invitation.format).where("created_at > ?", 24.hours.ago).present?
   end
 
   def find_or_create_rdv_context

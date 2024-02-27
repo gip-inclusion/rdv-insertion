@@ -6,7 +6,6 @@ class SendPeriodicInviteJob < ApplicationJob
 
     new_invitation.format = format
     new_invitation.reminder = false
-    new_invitation.sent_at = nil
     new_invitation.valid_until = configuration.number_of_days_before_action_required.days.from_now
     new_invitation.organisations = invitation.organisations
     new_invitation.uuid = nil

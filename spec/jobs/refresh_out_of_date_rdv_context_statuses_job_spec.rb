@@ -13,7 +13,7 @@ describe RefreshOutOfDateRdvContextStatusesJob do
 
   # status out of date
   let!(:rdv_context3) { create(:rdv_context, status: "invitation_pending", id: 3) }
-  let!(:invitation) { create(:invitation, sent_at: 3.days.ago) }
+  let!(:invitation) { create(:invitation, created_at: 3.days.ago) }
   let!(:rdv3) { create(:rdv, participations: [participation3]) }
   let!(:participation3) { create(:participation, created_at: 2.days.ago, status: "unknown", rdv_context: rdv_context3) }
 

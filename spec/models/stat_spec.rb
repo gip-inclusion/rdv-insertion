@@ -21,11 +21,11 @@ describe Stat do
     let!(:rdv2) { create(:rdv, organisation: other_organisation, created_by: "user", motif: motif) }
     let!(:invitation1) do
       create(:invitation, user: user1, department: department, organisations: [organisation],
-                          sent_at: date, rdv_context: rdv_context1)
+                          created_at: date, rdv_context: rdv_context1)
     end
     let!(:invitation2) do
       create(:invitation, user: user2, department: other_department, organisations: [other_organisation],
-                          sent_at: date, rdv_context: rdv_context2)
+                          created_at: date, rdv_context: rdv_context2)
     end
     let!(:agent1) { create(:agent, organisations: [organisation], last_sign_in_at: Time.zone.now) }
     let!(:agent2) { create(:agent, organisations: [other_organisation], last_sign_in_at: Time.zone.now) }
@@ -59,15 +59,9 @@ describe Stat do
       end
 
       describe "#invitations_sample" do
-        let!(:invitation3) { create(:invitation, department: department, sent_at: nil) }
-
         it "scopes the collection to the department" do
           expect(stat.invitations_sample).to include(invitation1)
           expect(stat.invitations_sample).not_to include(invitation2)
-        end
-
-        it "scopes the collection to sent invitations" do
-          expect(stat.invitations_sample).not_to include(invitation3)
         end
       end
 
@@ -91,7 +85,7 @@ describe Stat do
         let!(:rdv5) { create(:rdv, organisation: organisation, created_by: "user", motif: motif) }
         let(:invitation_for_participation5) do
           create(:invitation, user: user1, department: department, organisations: [organisation],
-                              sent_at: date, rdv_context: rdv_context1)
+                              created_at: date, rdv_context: rdv_context1)
         end
         let!(:notification_for_participation5) { create(:notification, participation: participation5) }
 
@@ -178,7 +172,7 @@ describe Stat do
         let!(:user6) do
           create(:user, organisations: [organisation_with_no_configuration])
         end
-        let!(:invitation6) { create(:invitation, sent_at: date, rdv_context: rdv_context6) }
+        let!(:invitation6) { create(:invitation, created_at: date, rdv_context: rdv_context6) }
         let!(:rdv6) { create(:rdv, organisation: organisation) }
         let!(:participation6) { create(:participation, rdv: rdv6, rdv_context: rdv_context6) }
         let!(:rdv_context6) { create(:rdv_context, user: user6) }
@@ -190,10 +184,6 @@ describe Stat do
 
         it "does not include rdv_contexts with no invitations" do
           expect(stat.rdv_contexts_with_invitations_and_participations_sample).not_to include(rdv_context3)
-        end
-
-        it "does not include rdv_contexts with unsent invitations" do
-          expect(stat.rdv_contexts_with_invitations_and_participations_sample).not_to include(rdv_context4)
         end
 
         it "does not include rdv_contexts with no rdvs" do
@@ -220,9 +210,9 @@ describe Stat do
         let!(:user4) { create(:user, organisations: [organisation]) }
         let!(:user5) { create(:user, organisations: [organisation]) }
         let!(:user6) { create(:user, organisations: [organisation]) }
-        let!(:invitation3) { create(:invitation, user: user3, department: department, sent_at: date) }
+        let!(:invitation3) { create(:invitation, user: user3, department: department, created_at: date) }
         let!(:invitation5) { create(:invitation, user: user5, department: department) }
-        let!(:invitation6) { create(:invitation, user: user6, department: department, sent_at: date) }
+        let!(:invitation6) { create(:invitation, user: user6, department: department, created_at: date) }
         let!(:rdv3) { create(:rdv, organisation: organisation, created_by: "user", motif: motif) }
         let!(:rdv4) { create(:rdv, organisation: organisation, created_by: "user", motif: motif) }
         let!(:rdv5) { create(:rdv, organisation: organisation, created_by: "user", motif: motif) }
@@ -305,15 +295,9 @@ describe Stat do
       end
 
       describe "#invitations_sample" do
-        let!(:invitation3) { create(:invitation, organisations: [organisation], sent_at: nil) }
-
         it "scopes the collection to the organisation" do
           expect(stat.invitations_sample).to include(invitation1)
           expect(stat.invitations_sample).not_to include(invitation2)
-        end
-
-        it "scopes the collection to sent invitations" do
-          expect(stat.invitations_sample).not_to include(invitation3)
         end
       end
 
@@ -390,7 +374,7 @@ describe Stat do
         let!(:user6) do
           create(:user, organisations: [organisation_with_no_configuration])
         end
-        let!(:invitation6) { create(:invitation, sent_at: date, rdv_context: rdv_context6) }
+        let!(:invitation6) { create(:invitation, created_at: date, rdv_context: rdv_context6) }
         let!(:rdv6) { create(:rdv, organisation: organisation) }
         let!(:participation6) { create(:participation, rdv: rdv6, rdv_context: rdv_context6) }
         let!(:rdv_context6) { create(:rdv_context, user: user6) }
@@ -402,10 +386,6 @@ describe Stat do
 
         it "does not include rdv_contexts with no invitations" do
           expect(stat.rdv_contexts_with_invitations_and_participations_sample).not_to include(rdv_context3)
-        end
-
-        it "does not include rdv_contexts with unsent invitations" do
-          expect(stat.rdv_contexts_with_invitations_and_participations_sample).not_to include(rdv_context4)
         end
 
         it "does not include rdv_contexts with no rdvs" do
@@ -436,9 +416,9 @@ describe Stat do
         let!(:user4) { create(:user, organisations: [organisation]) }
         let!(:user5) { create(:user, organisations: [organisation]) }
         let!(:user6) { create(:user, organisations: [organisation]) }
-        let!(:invitation3) { create(:invitation, user: user3, department: department, sent_at: date) }
+        let!(:invitation3) { create(:invitation, user: user3, department: department, created_at: date) }
         let!(:invitation5) { create(:invitation, user: user5, department: department) }
-        let!(:invitation6) { create(:invitation, user: user6, department: department, sent_at: date) }
+        let!(:invitation6) { create(:invitation, user: user6, department: department, created_at: date) }
         let!(:rdv3) { create(:rdv, organisation: organisation, created_by: "user", motif: motif) }
         let!(:rdv4) { create(:rdv, organisation: organisation, created_by: "user", motif: motif) }
         let!(:rdv5) { create(:rdv, organisation: organisation, created_by: "user", motif: motif) }
@@ -457,10 +437,6 @@ describe Stat do
 
         it "does not include the users whith no invitations" do
           expect(stat.invited_users_sample).not_to include(user4)
-        end
-
-        it "does not include the users whith no sent invitation" do
-          expect(stat.invited_users_sample).not_to include(user5)
         end
 
         it "includes the users whith no rdvs" do

@@ -160,17 +160,25 @@ module Exporters
     end
 
     def first_invitation_date(user)
-      @motif_category.present? ? rdv_context_for_export(user)&.first_invitation_sent_at : user.first_invitation_sent_at
+      if @motif_category.present?
+        rdv_context_for_export(user)&.first_invitation_created_at
+      else
+        user.first_invitation_created_at
+      end
     end
 
     def last_invitation_date(user)
-      @motif_category.present? ? rdv_context_for_export(user)&.last_invitation_sent_at : user.last_invitation_sent_at
+      if @motif_category.present?
+        rdv_context_for_export(user)&.last_invitation_created_at
+      else
+        user.last_invitation_created_at
+      end
     end
 
     def last_notification_date(user)
-      return rdv_context_for_export(user)&.last_sent_convocation_sent_at if @motif_category.present?
+      return rdv_context_for_export(user)&.last_convocation_created_at if @motif_category.present?
 
-      user.last_sent_convocation_sent_at
+      user.last_convocation_created_at
     end
 
     def last_rdv_date(user)

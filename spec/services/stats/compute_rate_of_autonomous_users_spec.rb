@@ -9,7 +9,7 @@ describe Stats::ComputeRateOfAutonomousUsers, type: :service do
   # First user : created 1 month ago, has a rdv taken in autonomy
   let!(:user1) { create(:user, created_at: date) }
   let!(:invitation1) do
-    create(:invitation, created_at: date, sent_at: date, rdv_context: rdv_context1, user: user1)
+    create(:invitation, created_at: date, rdv_context: rdv_context1, user: user1)
   end
   let!(:rdv_context1) { create(:rdv_context, created_at: date, user: user1) }
   let!(:rdv1) { create(:rdv, created_at: date, created_by: "user") }
@@ -20,7 +20,7 @@ describe Stats::ComputeRateOfAutonomousUsers, type: :service do
   # Second user : created 1 month ago, has a rdv not taken in autonomy
   let!(:user2) { create(:user, created_at: date) }
   let!(:invitation2) do
-    create(:invitation, created_at: date, sent_at: date, rdv_context: rdv_context2, user: user2)
+    create(:invitation, created_at: date, rdv_context: rdv_context2, user: user2)
   end
   let!(:rdv_context2) { create(:rdv_context, created_at: date, user: user2) }
   let!(:rdv2) { create(:rdv, created_at: date, created_by: "agent") }
@@ -31,7 +31,7 @@ describe Stats::ComputeRateOfAutonomousUsers, type: :service do
   # Third user : created 1 month ago, has a participation to a rdv taken in autonomy
   let!(:user3) { create(:user, created_at: date) }
   let!(:invitation3) do
-    create(:invitation, created_at: date, sent_at: date, rdv_context: rdv_context3, user: user3)
+    create(:invitation, created_at: date, rdv_context: rdv_context3, user: user3)
   end
   let!(:rdv_context3) { create(:rdv_context, created_at: date, user: user3) }
   let!(:rdv3) { create(:rdv, created_at: date, created_by: "agent") }
@@ -43,7 +43,7 @@ describe Stats::ComputeRateOfAutonomousUsers, type: :service do
   # Fourth user : created 1 month ago, has been invited but has not take any rdv
   let!(:user4) { create(:user, created_at: date) }
   let!(:invitation4) do
-    create(:invitation, created_at: date, sent_at: date, rdv_context: rdv_context4, user: user4)
+    create(:invitation, created_at: date, rdv_context: rdv_context4, user: user4)
   end
   let!(:rdv_context4) { create(:rdv_context, created_at: date, user: user4) }
 

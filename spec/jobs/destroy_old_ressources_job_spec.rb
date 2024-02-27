@@ -29,7 +29,7 @@ describe DestroyOldRessourcesJob do
     create(
       :notification,
       participation: participation1, event: "participation_created", format: "sms",
-      sent_at: 25.months.ago, created_at: 25.months.ago
+      created_at: 25.months.ago
     )
   end
 
@@ -51,7 +51,7 @@ describe DestroyOldRessourcesJob do
     create(
       :notification,
       participation: participation2, event: "participation_created", format: "sms",
-      sent_at: 25.months.ago, created_at: 25.months.ago
+      created_at: 25.months.ago
     )
   end
 
@@ -75,8 +75,7 @@ describe DestroyOldRessourcesJob do
   let!(:recent_notification) do
     create(
       :notification,
-      participation: participation4, event: "participation_created", format: "sms",
-      sent_at: 1.month.ago, created_at: 1.month.ago
+      participation: participation4, event: "participation_created", format: "sms", created_at: 1.month.ago
     )
   end
 

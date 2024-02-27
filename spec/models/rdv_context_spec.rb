@@ -24,8 +24,8 @@ describe RdvContext do
       let!(:rdv_context) { create(:rdv_context, status: "invitation_pending") }
 
       context "when the user has been invited less than 3 days ago in this context" do
-        let!(:invitation) { create(:invitation, rdv_context: rdv_context, sent_at: 5.days.ago) }
-        let!(:invitation2) { create(:invitation, rdv_context: rdv_context, sent_at: 2.hours.ago) }
+        let!(:invitation) { create(:invitation, rdv_context: rdv_context, created_at: 5.days.ago) }
+        let!(:invitation2) { create(:invitation, rdv_context: rdv_context, created_at: 2.hours.ago) }
 
         it "does not retrieve the rdv_context" do
           expect(subject).not_to include(rdv_context)
@@ -33,9 +33,9 @@ describe RdvContext do
       end
 
       context "when the user has been last invited manually more than 3 days ago in this context" do
-        let!(:invitation) { create(:invitation, rdv_context: rdv_context, sent_at: 5.days.ago) }
-        let!(:invitation2) { create(:invitation, rdv_context: rdv_context, sent_at: 4.days.ago) }
-        let!(:invitation3) { create(:invitation, reminder: true, rdv_context: rdv_context, sent_at: 1.day.ago) }
+        let!(:invitation) { create(:invitation, rdv_context: rdv_context, created_at: 5.days.ago) }
+        let!(:invitation2) { create(:invitation, rdv_context: rdv_context, created_at: 4.days.ago) }
+        let!(:invitation3) { create(:invitation, reminder: true, rdv_context: rdv_context, created_at: 1.day.ago) }
 
         it "retrieve the rdv_context" do
           expect(subject).to include(rdv_context)
@@ -67,7 +67,6 @@ describe RdvContext do
       end
 
       context "with no sent invitation" do
-        let!(:invitation) { create(:invitation, sent_at: nil, rdv_context: rdv_context) }
         let!(:rdv_context) { create(:rdv_context, rdvs: []) }
 
         it "is not invited" do
@@ -75,9 +74,9 @@ describe RdvContext do
         end
       end
 
-      context "with sent invitation" do
+      context "with invitations" do
         let!(:user) { create(:user) }
-        let!(:invitation) { create(:invitation, sent_at: 2.days.ago, user: user) }
+        let!(:invitation) { create(:invitation, user: user, created_at: 2.days.ago) }
         let!(:rdv_context) { create(:rdv_context, user: user, invitations: [invitation]) }
 
         context "with no participations" do
@@ -196,7 +195,7 @@ describe RdvContext do
         end
 
         context "with mutliple participation after invitation" do
-          let!(:invitation) { create(:invitation, sent_at: 10.days.ago) }
+          let!(:invitation) { create(:invitation, created_at: 10.days.ago) }
           let!(:rdv) { create(:rdv, starts_at: 2.days.ago) }
           let!(:participation) do
             create(
@@ -270,8 +269,8 @@ describe RdvContext do
       let!(:number_of_days_before_action_required) { 4 }
 
       context "when no rdv" do
-        let!(:invitation) { create(:invitation, sent_at: 6.days.ago) }
-        let!(:invitation2) { create(:invitation, sent_at: 1.day.ago) }
+        let!(:invitation) { create(:invitation, created_at: 6.days.ago) }
+        let!(:invitation2) { create(:invitation, created_at: 1.day.ago) }
         let!(:rdv_context) { create(:rdv_context, invitations: [invitation, invitation2]) }
 
         context "when invited in time window" do
@@ -281,14 +280,14 @@ describe RdvContext do
         end
 
         context "when not invited in time window" do
-          let!(:invitation2) { create(:invitation, sent_at: 4.days.ago) }
+          let!(:invitation2) { create(:invitation, created_at: 4.days.ago) }
 
           it "is true" do
             expect(rdv_context.invited_before_time_window?(number_of_days_before_action_required)).to eq(true)
           end
 
           context "when there is a reminder" do
-            let!(:invitation3) { create(:invitation, rdv_context: rdv_context, reminder: true, sent_at: 1.day.ago) }
+            let!(:invitation3) { create(:invitation, rdv_context: rdv_context, reminder: true, created_at: 1.day.ago) }
 
             it "is not taken into account" do
               expect(rdv_context.invited_before_time_window?(number_of_days_before_action_required)).to eq(true)
@@ -303,9 +302,9 @@ describe RdvContext do
         let!(:participation) do
           create(:participation, rdv: rdv, user: user, rdv_context: rdv_context, created_at: 5.days.ago)
         end
-        let!(:invitation) { create(:invitation, sent_at: 6.days.ago) }
-        let!(:invitation2) { create(:invitation, sent_at: 2.days.ago) }
-        let!(:invitation3) { create(:invitation, sent_at: 1.day.ago) }
+        let!(:invitation) { create(:invitation, created_at: 6.days.ago) }
+        let!(:invitation2) { create(:invitation, created_at: 2.days.ago) }
+        let!(:invitation3) { create(:invitation, created_at: 1.day.ago) }
         let!(:rdv_context) do
           create(:rdv_context, status: "invitation_pending", user: user,
                                invitations: [invitation, invitation2, invitation3])
@@ -313,7 +312,7 @@ describe RdvContext do
 
         context "when there is a participation" do
           it "is selecting the invitation after the participation" do
-            expect(rdv_context.first_invitation_relative_to_last_participation_sent_at).to eq(invitation2.sent_at)
+            expect(rdv_context.first_invitation_relative_to_last_participation_created_at).to eq(invitation2.created_at)
           end
         end
 
@@ -324,8 +323,8 @@ describe RdvContext do
         end
 
         context "when not invited in time window" do
-          let!(:invitation2) { create(:invitation, sent_at: 4.days.ago) }
-          let!(:invitation3) { create(:invitation, sent_at: 4.days.ago) }
+          let!(:invitation2) { create(:invitation, created_at: 4.days.ago) }
+          let!(:invitation3) { create(:invitation, created_at: 4.days.ago) }
 
           it "is true" do
             expect(rdv_context.invited_before_time_window?(number_of_days_before_action_required)).to eq(true)

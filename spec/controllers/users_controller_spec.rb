@@ -555,18 +555,18 @@ describe UsersController do
     context "when invitations dates are passed" do
       let!(:invitation1) do
         create(
-          :invitation, sent_at: Time.zone.parse("2022-06-01 12:00"), rdv_context: rdv_context1,
+          :invitation, created_at: Time.zone.parse("2022-06-01 12:00"), rdv_context: rdv_context1,
                        user: user
         )
       end
       let!(:invitation2) do
         create(
-          :invitation, sent_at: Time.zone.parse("2022-06-08 12:00"), rdv_context: rdv_context2, user: user2
+          :invitation, created_at: Time.zone.parse("2022-06-08 12:00"), rdv_context: rdv_context2, user: user2
         )
       end
       let!(:invitation3) do
         create(
-          :invitation, sent_at: Time.zone.parse("2022-06-15 12:00"), rdv_context: rdv_context3, user: user3
+          :invitation, created_at: Time.zone.parse("2022-06-15 12:00"), rdv_context: rdv_context3, user: user3
         )
       end
 
@@ -586,15 +586,15 @@ describe UsersController do
 
       context "for last invitations" do
         let!(:invitation4) do
-          create(:invitation, sent_at: Time.zone.parse("2022-06-19 12:00"),
+          create(:invitation, created_at: Time.zone.parse("2022-06-19 12:00"),
                               rdv_context: rdv_context1, user: user)
         end
         let!(:invitation5) do
-          create(:invitation, sent_at: Time.zone.parse("2022-06-16 12:00"),
+          create(:invitation, created_at: Time.zone.parse("2022-06-16 12:00"),
                               rdv_context: rdv_context2, user: user2)
         end
         let!(:invitation6) do
-          create(:invitation, sent_at: Time.zone.parse("2022-06-17 12:00"),
+          create(:invitation, created_at: Time.zone.parse("2022-06-17 12:00"),
                               rdv_context: rdv_context3, user: user3)
         end
 
@@ -619,7 +619,7 @@ describe UsersController do
       let!(:number_of_days_before_action_required) { 6 }
 
       context "when the invitation has been sent before the number of days before action required" do
-        let!(:invitation) { create(:invitation, user: user2, rdv_context: rdv_context2, sent_at: 7.days.ago) }
+        let!(:invitation) { create(:invitation, user: user2, rdv_context: rdv_context2, created_at: 7.days.ago) }
 
         it "filters by action required" do
           get :index, params: index_params
@@ -629,7 +629,7 @@ describe UsersController do
       end
 
       context "when the invitation has been sent after the number of days defined in the configuration 3 days ago" do
-        let!(:invitation) { create(:invitation, user: user2, rdv_context: rdv_context2, sent_at: 3.days.ago) }
+        let!(:invitation) { create(:invitation, user: user2, rdv_context: rdv_context2, created_at: 3.days.ago) }
 
         it "filters by action required" do
           get :index, params: index_params
@@ -687,19 +687,19 @@ describe UsersController do
       let!(:notification) do
         create(
           :notification,
-          participation: participation, event: "participation_created", sent_at: Time.zone.parse("20/12/2021 12:00")
+          participation: participation, event: "participation_created", created_at: Time.zone.parse("20/12/2021 12:00")
         )
       end
       let!(:notification2) do
         create(
           :notification,
-          participation: participation, event: "participation_updated", sent_at: Time.zone.parse("21/12/2021 12:00")
+          participation: participation, event: "participation_updated", created_at: Time.zone.parse("21/12/2021 12:00")
         )
       end
       let!(:notification3) do
         create(
           :notification,
-          participation: participation2, event: "participation_created", sent_at: Time.zone.parse("25/12/2021 12:00")
+          participation: participation2, event: "participation_created", created_at: Time.zone.parse("25/12/2021 12:00")
         )
       end
 

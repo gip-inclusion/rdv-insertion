@@ -18,10 +18,10 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
   let!(:rdv_context1) { create(:rdv_context, created_at: date, user: user1) }
   let!(:rdv_context2) { create(:rdv_context, created_at: date_from_previous_month, user: user2) }
   let!(:invitation1) do
-    create(:invitation, sent_at: date, department: department)
+    create(:invitation, created_at: date, department: department)
   end
   let!(:invitation2) do
-    create(:invitation, sent_at: date_from_previous_month, department: department)
+    create(:invitation, created_at: date_from_previous_month, department: department)
   end
 
   describe "#call" do
