@@ -13,7 +13,7 @@ describe RefreshOutOfDateRdvContextStatusesJob do
 
   # status out of date
   let!(:rdv_context3) { create(:rdv_context, status: "invitation_pending", id: 3) }
-  let!(:invitation) { create(:invitation, sent_at: 3.days.ago) }
+  let!(:invitation) { create(:invitation, created_at: 3.days.ago) }
   let!(:rdv3) { create(:rdv, participations: [participation3]) }
   let!(:participation3) { create(:participation, created_at: 2.days.ago, status: "unknown", rdv_context: rdv_context3) }
 
@@ -32,7 +32,7 @@ describe RefreshOutOfDateRdvContextStatusesJob do
   describe "#perform" do
     before do
       # remove rdv contexts created in callbacks
-      RdvContext.where.not(id: [1, 2, 3, 4, 5]).each(&:destroy!)
+      RdvContext.where.not(id: [1, 2, 3, 4, 5]).find_each(&:destroy!)
       allow(RefreshRdvContextStatusesJob).to receive(:perform_async)
       allow(MattermostClient).to receive(:send_to_notif_channel)
       allow(ENV).to receive(:[]).with("SENTRY_ENVIRONMENT").and_return("production")

@@ -10,6 +10,10 @@ module TurboStreamConcern
     render turbo_stream: turbo_stream.prepend("flashes", partial: "common/flash", locals: { flash: })
   end
 
+  def turbo_stream_replace_flash_message(flash)
+    render turbo_stream: turbo_stream.replace("flashes", partial: "common/flash", locals: { flash: })
+  end
+
   def turbo_stream_remove(element_id)
     render turbo_stream: turbo_stream.remove(element_id)
   end

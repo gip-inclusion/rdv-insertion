@@ -33,10 +33,7 @@ describe SessionsController do
             client: session_headers["client"]
           )
           .and_return(rdv_solidarites_credentials)
-        allow(rdv_solidarites_credentials).to receive(:valid?)
-          .and_return(true)
-        allow(rdv_solidarites_credentials).to receive(:uid)
-          .and_return(agent_email)
+        allow(rdv_solidarites_credentials).to receive_messages(valid?: true, uid: agent_email)
       end
 
       it "is a success" do

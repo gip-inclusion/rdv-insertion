@@ -97,49 +97,5 @@ describe Invitations::AssignLinkAndToken, type: :service do
         expect(invitation.id).to be_nil
       end
     end
-
-    context "when the user has already been invited and existing token and rdv_solidarites_token match" do
-      let!(:other_invitation) do
-        create(
-          :invitation,
-          sent_at: Time.zone.parse("2022-04-02 13:45"), rdv_solidarites_token: "uptodate-token",
-          valid_until: Time.zone.parse("2022-04-12 15:00")
-        )
-      end
-      let!(:user) do
-        create(:user, invitations: [other_invitation], rdv_solidarites_user_id: rdv_solidarites_user_id)
-      end
-      let!(:rdv_solidarites_user) { instance_double(RdvSolidarites::User) }
-
-      before do
-        allow(RdvSolidaritesApi::CreateOrRetrieveInvitationToken).to receive(:call)
-          .with(rdv_solidarites_user_id:)
-          .and_return(OpenStruct.new(success?: true, invitation_token: rdv_solidarites_token))
-      end
-
-      it "is a success" do
-        is_a_success
-      end
-
-      it "assign the existing token to the invitation" do
-        subject
-        expect(invitation.rdv_solidarites_token).to eq(rdv_solidarites_token)
-      end
-
-      context "when the existing token doesnt match the rdv_solidarites_token" do
-        let!(:other_invitation) do
-          create(
-            :invitation,
-            sent_at: Time.zone.parse("2022-04-02 13:45"), rdv_solidarites_token: "old-token",
-            valid_until: Time.zone.parse("2022-04-12 15:00")
-          )
-        end
-
-        it "assign the new token to the invitation" do
-          subject
-          expect(invitation.rdv_solidarites_token).to eq(rdv_solidarites_token)
-        end
-      end
-    end
   end
 end

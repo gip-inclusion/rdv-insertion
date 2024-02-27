@@ -1,4 +1,4 @@
-describe "Agents can add user orientation", js: true do
+describe "Agents can add user orientation", :js do
   let!(:agent) { create(:agent) }
   let!(:department) { create(:department, number: "26") }
   let!(:organisation) do
@@ -25,10 +25,10 @@ describe "Agents can add user orientation", js: true do
 
     it "does not show the parcours" do
       visit organisation_user_path(organisation_id: organisation.id, id: user.id)
-      expect(page).not_to have_content("Parcours")
+      expect(page).to have_no_content("Parcours")
 
       visit user_parcours_path(user_id: user.id)
-      expect(page).not_to have_content("Ajouter une orientation")
+      expect(page).to have_no_content("Ajouter une orientation")
     end
   end
 
@@ -48,7 +48,7 @@ describe "Agents can add user orientation", js: true do
       # need to use js for flatpickr input
       page.execute_script("document.querySelector('#orientation_starts_at').value = '2023-07-03'")
 
-      expect(page).to have_selector("select#orientation_agent_id[disabled]")
+      expect(page).to have_css("select#orientation_agent_id[disabled]")
 
       page.select "CD 26", from: "orientation_organisation_id"
       expect(page).to have_select("orientation_agent_id", with_options: organisation_agents.map(&:to_s))
@@ -57,7 +57,7 @@ describe "Agents can add user orientation", js: true do
 
       click_button "Enregistrer"
 
-      expect(page).not_to have_content("Pas d'orientation renseignée")
+      expect(page).to have_no_content("Pas d'orientation renseignée")
       expect(page).to have_content("Du 03/07/2023 à aujourd'hui")
       expect(page).to have_content("Orientation Sociale")
       expect(page).to have_content("Structure CD 26")
@@ -70,7 +70,7 @@ describe "Agents can add user orientation", js: true do
       # need to use js for flatpickr input
       page.execute_script("document.querySelector('#orientation_starts_at').value = '2023-10-03'")
 
-      expect(page).to have_selector("select#orientation_agent_id[disabled]")
+      expect(page).to have_css("select#orientation_agent_id[disabled]")
 
       page.select "Asso 26", from: "orientation_organisation_id"
       expect(page).to have_select("orientation_agent_id", with_options: other_organisation_agents.map(&:to_s))

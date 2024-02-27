@@ -7,12 +7,13 @@ const retrieveLastInvitationDate = (invitations, format = null, motifCategoryId 
       (invitation) => invitation.motif_category.id === motifCategoryId
     );
   }
-  const sentInvitations = invitations.filter((invitation) => !!invitation.sent_at);
-  // Trier de la plus récente à la plus ancienne
-  sentInvitations.sort((a, b) => new Date(b.sent_at) - new Date(a.sent_at));
-  const [lastInvitation] = sentInvitations;
 
-  return lastInvitation?.sent_at;
+  const sortedInvitations = invitations.sort(
+    (a, b) => new Date(b.created_at) - new Date(a.created_at)
+  );
+  const [lastInvitation] = sortedInvitations;
+
+  return lastInvitation?.created_at;
 };
 
 export default retrieveLastInvitationDate;

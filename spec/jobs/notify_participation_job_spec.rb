@@ -14,8 +14,7 @@ describe NotifyParticipationJob do
       allow(Notifications::NotifyParticipation).to receive(:call)
         .and_return(OpenStruct.new(success?: true))
       allow(Participation).to receive(:find).and_return(participation)
-      allow(participation).to receive(:user).and_return(user)
-      allow(participation).to receive(:notifiable?).and_return(true)
+      allow(participation).to receive_messages(user: user, notifiable?: true)
       allow(user).to receive(:notifiable?).and_return(true)
     end
 
@@ -38,7 +37,7 @@ describe NotifyParticipationJob do
 
     context "when the user has already been notified for this rdv" do
       let!(:notification) do
-        create(:notification, participation: participation, event: event, sent_at: 2.days.ago)
+        create(:notification, participation: participation, event: event)
       end
 
       it "does not calls the notify user service" do
@@ -57,10 +56,10 @@ describe NotifyParticipationJob do
 
         context "when there has been two sent notifications in the past hour" do
           let!(:notification) do
-            create(:notification, participation: participation, event: event, sent_at: 40.minutes.ago)
+            create(:notification, participation: participation, event: event, created_at: 40.minutes.ago)
           end
           let!(:notification2) do
-            create(:notification, participation: participation, event: event, sent_at: 20.minutes.ago)
+            create(:notification, participation: participation, event: event, created_at: 20.minutes.ago)
           end
 
           it "does not calls the notify user service" do

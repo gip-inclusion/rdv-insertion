@@ -28,14 +28,13 @@ describe Notifications::NotifyParticipation, type: :service do
       subject
     end
 
-    it "assigns the attributes to the notification and mark it as sent" do
+    it "assigns the attributes to the notification" do
       subject
       notification = Notification.last
       expect(notification.participation_id).to eq(participation.id)
       expect(notification.format).to eq(format)
       expect(notification.event).to eq(event)
       expect(notification.rdv_solidarites_rdv_id).to eq(rdv_solidarites_rdv_id)
-      expect(notification.sent_at).not_to be_nil
     end
 
     context "when it fails to send the notification" do

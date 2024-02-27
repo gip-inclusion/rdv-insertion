@@ -69,7 +69,7 @@ export default function InvitationBlock({
     if (format === "postal" && result.success) {
       newInvitationDate = todaysDateString();
     } else {
-      newInvitationDate = result.invitation?.sent_at;
+      newInvitationDate = result.invitation?.created_at;
     }
     if (newInvitationDate) {
       setInvitationsDatesByFormat((prevState) => ({

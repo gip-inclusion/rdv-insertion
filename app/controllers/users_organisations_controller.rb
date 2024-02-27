@@ -2,7 +2,7 @@ class UsersOrganisationsController < ApplicationController
   before_action :set_user, :set_department, :set_organisations,
                 only: [:index, :create, :destroy]
   before_action :assign_motif_category, :set_organisation_to_add, only: [:create]
-  before_action :set_organisation_to_remove, only: [:destroy]
+  before_action :set_organisation_to_remove, :verify_user_is_sync_with_rdv_solidarites, only: [:destroy]
 
   def index; end
 
@@ -80,6 +80,10 @@ class UsersOrganisationsController < ApplicationController
     return if users_organisation_params[:motif_category_id].blank?
 
     @user.assign_motif_category(users_organisation_params[:motif_category_id])
+  end
+
+  def verify_user_is_sync_with_rdv_solidarites
+    sync_user_with_rdv_solidarites(@user) if @user.rdv_solidarites_user_id.nil?
   end
 
   def save_user

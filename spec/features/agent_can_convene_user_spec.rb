@@ -1,4 +1,4 @@
-describe "Agents can convene user to rdv", js: true do
+describe "Agents can convene user to rdv", :js do
   let!(:agent) { create(:agent, organisations: [organisation]) }
   let!(:department) { create(:department) }
   let!(:organisation) do
@@ -33,7 +33,7 @@ describe "Agents can convene user to rdv", js: true do
   let!(:rdv_context) do
     create(:rdv_context, status: "invitation_pending", user: user, motif_category: motif_category)
   end
-  let!(:invitation) { create(:invitation, rdv_context: rdv_context, sent_at: 5.days.ago) }
+  let!(:invitation) { create(:invitation, rdv_context: rdv_context, created_at: 5.days.ago) }
 
   let!(:motif) do
     create(
@@ -184,11 +184,11 @@ describe "Agents can convene user to rdv", js: true do
 
     describe "button visbility" do
       context "when invitation is pending and the time to accept invitation has not exceeded" do
-        let!(:invitation) { create(:invitation, rdv_context: rdv_context, sent_at: 3.days.ago) }
+        let!(:invitation) { create(:invitation, rdv_context: rdv_context, created_at: 3.days.ago) }
 
         it "does not show a convocation button" do
           visit organisation_users_path(organisation, motif_category_id: motif_category.id)
-          expect(page).not_to have_content("📅 Convoquer")
+          expect(page).to have_no_content("📅 Convoquer")
         end
       end
 
@@ -201,7 +201,7 @@ describe "Agents can convene user to rdv", js: true do
           rdv_context.set_status
           rdv_context.save!
           visit organisation_users_path(organisation, motif_category_id: motif_category.id)
-          expect(page).not_to have_content("📅 Convoquer")
+          expect(page).to have_no_content("📅 Convoquer")
         end
       end
 
@@ -243,7 +243,7 @@ describe "Agents can convene user to rdv", js: true do
 
         it "does not show a convocation button" do
           visit organisation_users_path(organisation, motif_category_id: motif_category.id)
-          expect(page).not_to have_link("📅 Convoquer")
+          expect(page).to have_no_link("📅 Convoquer")
         end
       end
 

@@ -27,9 +27,8 @@ class Invitation < ApplicationRecord
   before_create :assign_uuid
   after_commit :set_rdv_context_status
 
-  scope :sent, -> { where.not(sent_at: nil) }
   scope :sent_in_time_window, lambda { |number_of_days_before_action_required|
-    where("sent_at > ?", number_of_days_before_action_required.days.ago)
+    where("created_at > ?", number_of_days_before_action_required.days.ago)
   }
   scope :reminder, ->(reminder = true) { where(reminder: reminder) }
   scope :valid, -> { where("valid_until > ?", Time.zone.now) }
@@ -66,11 +65,11 @@ class Invitation < ApplicationRecord
   end
 
   def sent_before?(date)
-    sent_at.present? && sent_at <= date
+    created_at <= date
   end
 
   def sent_after?(date)
-    sent_at.present? && sent_at >= date
+    created_at >= date
   end
 
   def link_params

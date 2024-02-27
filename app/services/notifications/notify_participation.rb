@@ -11,7 +11,6 @@ module Notifications
         save_record!(notification)
         send_notification
       end
-      update_notification_sent_at
       result.notification = notification
     end
 
@@ -33,11 +32,6 @@ module Notifications
 
       result.errors += send_to_user.errors
       fail!
-    end
-
-    def update_notification_sent_at
-      notification.sent_at = Time.zone.now
-      save_record!(notification)
     end
   end
 end

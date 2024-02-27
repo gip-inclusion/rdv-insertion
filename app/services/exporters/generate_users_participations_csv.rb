@@ -2,18 +2,22 @@ module Exporters
   class GenerateUsersParticipationsCsv < GenerateUsersCsv
     private
 
-    def each_element(&)
+    def each_element(&block)
       @users.each do |user|
-        user.participations.joins(:organisation).where(organisations: @agent.organisations).to_a.each(&)
+        user.participations
+            .joins(:rdv)
+            .order("rdvs.starts_at desc")
+            .where(rdvs: { organisation_id: @agent.organisation_ids })
+            .to_a.each(&block)
       end
     end
 
     def preload_associations
       @users =
         if @motif_category
-          User.preload(:archives, :tags, :referents, :organisations)
+          User.preload(:tags, :referents, :organisations)
         else
-          User.preload(:invitations, :notifications, :archives, :organisations, :tags, :referents)
+          User.preload(:invitations, :notifications, :organisations, :tags, :referents)
         end
 
       @users = @users.preload(
@@ -32,7 +36,15 @@ module Exporters
     end
 
     def headers
-      [User.human_attribute_name(:title),
+      ["Date du RDV",
+       "Heure du RDV",
+       "Motif du RDV",
+       "Nature du RDV",
+       "RDV pris en autonomie ?",
+       Rdv.human_attribute_name(:status),
+       User.human_attribute_name(:referents),
+       "Organisation du rendez-vous",
+       User.human_attribute_name(:title),
        User.human_attribute_name(:last_name),
        User.human_attribute_name(:first_name),
        User.human_attribute_name(:affiliation_number),
@@ -46,16 +58,6 @@ module Exporters
        User.human_attribute_name(:created_at),
        User.human_attribute_name(:rights_opening_date),
        User.human_attribute_name(:role),
-       "Date du RDV",
-       "Heure du RDV",
-       "Motif du RDV",
-       "Nature du RDV",
-       "Dernier RDV pris en autonomie ?",
-       Rdv.human_attribute_name(:status),
-       Archive.human_attribute_name(:created_at),
-       Archive.human_attribute_name(:archiving_reason),
-       User.human_attribute_name(:referents),
-       "Organisation du rendez-vous",
        "Rendez-vous prescrit ?",
        "Prénom du prescripteur",
        "Nom du prescripteur",
@@ -69,7 +71,15 @@ module Exporters
         rdv_solidarites_agent_id: participation.rdv_solidarites_agent_prescripteur_id
       )
 
-      [user.title,
+      [display_date(rdv_date(participation)),
+       display_time(rdv_date(participation)),
+       rdv_motif(participation),
+       rdv_type(participation),
+       rdv_taken_in_autonomy?(participation),
+       human_status(participation),
+       user.referents.map(&:email).join(", "),
+       participation.organisation.name,
+       user.title,
        user.last_name,
        user.first_name,
        user.affiliation_number,
@@ -83,16 +93,6 @@ module Exporters
        display_date(user.created_at),
        display_date(user.rights_opening_date),
        user.role,
-       display_date(rdv_date(participation)),
-       display_time(rdv_date(participation)),
-       rdv_motif(participation),
-       rdv_type(participation),
-       rdv_taken_in_autonomy?(participation),
-       human_status(participation),
-       display_date(user.archive_for(department_id)&.created_at),
-       user.archive_for(department_id)&.archiving_reason,
-       user.referents.map(&:email).join(", "),
-       participation.organisation.name,
        participation.rdv_solidarites_agent_prescripteur_id.present? ? "oui" : "non",
        agent_prescripteur&.first_name,
        agent_prescripteur&.last_name,

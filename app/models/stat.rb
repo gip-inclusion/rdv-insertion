@@ -18,7 +18,7 @@ class Stat < ApplicationRecord
   end
 
   def invitations_sample
-    @invitations_sample ||= statable.nil? ? Invitation.sent : statable.invitations.sent
+    @invitations_sample ||= statable.nil? ? Invitation.all : statable.invitations
   end
 
   # We filter the participations to only keep the participations of the users in the scope

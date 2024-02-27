@@ -95,7 +95,7 @@ class UsersController < ApplicationController
       .tags
       .joins(:organisations)
       .where(organisations: department_level? ? @department.organisations : @organisation)
-      .each do |tag|
+      .find_each do |tag|
       @user.tags.delete(tag)
     end
   end
@@ -120,7 +120,7 @@ class UsersController < ApplicationController
 
   def render_errors(errors)
     respond_to do |format|
-      format.turbo_stream { turbo_stream_prepend_flash_message(error: errors.join(", ")) }
+      format.turbo_stream { turbo_stream_replace_flash_message(error: errors.join(", ")) }
       format.html do
         flash.now[:error] = errors.join(",")
         render(action_name == "update" ? :edit : :new, status: :unprocessable_entity)

@@ -99,5 +99,24 @@ describe UsersOrganisationsController do
         expect(unescaped_response_body).to match(/something failed/)
       end
     end
+
+    context "when the user has no rdv_solidarites_user_id and the sync with rdvs fails" do
+      let!(:user) { create(:user, id: user_id, organisations: [organisation1], rdv_solidarites_user_id: nil) }
+
+      before do
+        allow(Users::SyncWithRdvSolidarites).to receive(:call)
+          .with(user: user)
+          .and_return(OpenStruct.new(success?: false, errors: ["Something went wrong"]))
+      end
+
+      it "displays an error message" do
+        subject
+
+        expect(response).to be_successful
+        expect(unescaped_response_body).to match(/flashes/)
+        expect(unescaped_response_body).to match(/Something went wrong/)
+        expect(unescaped_response_body).to match(/L'utilisateur n'est plus lié à rdv-solidarités/)
+      end
+    end
   end
 end

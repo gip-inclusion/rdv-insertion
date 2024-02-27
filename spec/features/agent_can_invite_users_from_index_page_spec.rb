@@ -1,4 +1,4 @@
-describe "Agents can invite from index page", js: true do
+describe "Agents can invite from index page", :js do
   let!(:agent) { create(:agent) }
   let!(:organisation) { create(:organisation, agents: [agent]) }
   let!(:user) do
@@ -61,9 +61,9 @@ describe "Agents can invite from index page", js: true do
         check("email_invite")
         expect(page).to have_content("Impossible d'inviter l'utilisateur")
         expect(page).to have_content(
-          "L'envoi d'une invitation est impossible car il n'y a plus de créneaux disponibles. " \
-          "Nous invitons donc à créer de nouvelles plages d'ouverture depuis l'interface RDV-Solidarités " \
-          "pour pouvoir à nouveau envoyer des invitations"
+          "Il n'y a plus de créneaux disponibles pour inviter cet utilisateur.\n\n" \
+          "Nous vous invitons à créer de nouvelles plages d'ouverture ou augmenter le délai de prise de rdv depuis " \
+          "RDV-Solidarités pour pouvoir à nouveau envoyer des invitations.\n\nPlus d'informations sur notre guide"
         )
       end
     end
@@ -73,8 +73,7 @@ describe "Agents can invite from index page", js: true do
     let!(:sms_invitation) do
       create(
         :invitation,
-        format: "sms", user: user, rdv_context: rdv_context, sent_at: 2.days.ago,
-        rdv_solidarites_token: rdv_solidarites_token
+        format: "sms", user: user, rdv_context: rdv_context, rdv_solidarites_token: rdv_solidarites_token
       )
     end
 
@@ -108,7 +107,7 @@ describe "Agents can invite from index page", js: true do
       let!(:sms_invitation) do
         create(
           :invitation,
-          format: "sms", user: user, rdv_context: rdv_context, sent_at: 6.days.ago,
+          format: "sms", user: user, rdv_context: rdv_context, created_at: 6.days.ago,
           rdv_solidarites_token: rdv_solidarites_token
         )
       end
@@ -145,9 +144,9 @@ describe "Agents can invite from index page", js: true do
           check("email_invite")
           expect(page).to have_content("Impossible d'inviter l'utilisateur")
           expect(page).to have_content(
-            "L'envoi d'une invitation est impossible car il n'y a plus de créneaux disponibles. " \
-            "Nous invitons donc à créer de nouvelles plages d'ouverture depuis l'interface RDV-Solidarités " \
-            "pour pouvoir à nouveau envoyer des invitations"
+            "Il n'y a plus de créneaux disponibles pour inviter cet utilisateur.\n\n" \
+            "Nous vous invitons à créer de nouvelles plages d'ouverture ou augmenter le délai de prise de rdv depuis " \
+            "RDV-Solidarités pour pouvoir à nouveau envoyer des invitations.\n\nPlus d'informations sur notre guide"
           )
         end
       end
@@ -157,7 +156,7 @@ describe "Agents can invite from index page", js: true do
       let!(:sms_invitation) do
         create(
           :invitation,
-          format: "sms", user: user, rdv_context: rdv_context, sent_at: 2.days.ago,
+          format: "sms", user: user, rdv_context: rdv_context, created_at: 2.days.ago,
           rdv_solidarites_token: rdv_solidarites_token
         )
       end
@@ -191,7 +190,7 @@ describe "Agents can invite from index page", js: true do
       let!(:sms_invitation) do
         create(
           :invitation,
-          format: "sms", user: user, rdv_context: rdv_context, sent_at: 2.days.ago,
+          format: "sms", user: user, rdv_context: rdv_context, created_at: 2.days.ago,
           rdv_solidarites_token: rdv_solidarites_token
         )
       end
@@ -201,8 +200,8 @@ describe "Agents can invite from index page", js: true do
         rdv_context.save!
 
         visit organisation_users_path(organisation, motif_category_id: motif_category.id)
-        expect(page).not_to have_field("sms_invite")
-        expect(page).not_to have_field("email_invite")
+        expect(page).to have_no_field("sms_invite")
+        expect(page).to have_no_field("email_invite")
         expect(page).to have_content("RDV pris")
       end
     end

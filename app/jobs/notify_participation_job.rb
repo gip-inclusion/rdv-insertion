@@ -26,11 +26,11 @@ class NotifyParticipationJob < ApplicationJob
     if @event == "participation_updated"
       # we assume here there should not be more than 2 lieu/time updates in one hour. The mattermost notification
       # would let us double check anyway.
-      @participation.notifications.sent
+      @participation.notifications
                     .where(event: "participation_updated", format: @format)
-                    .where("sent_at > ?", 1.hour.ago).count > 1
+                    .where("created_at > ?", 1.hour.ago).count > 1
     else
-      @participation.notifications.sent.find_by(event: @event, format: @format).present?
+      @participation.notifications.find_by(event: @event, format: @format).present?
     end
   end
 

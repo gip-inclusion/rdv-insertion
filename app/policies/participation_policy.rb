@@ -1,4 +1,10 @@
 class ParticipationPolicy < ApplicationPolicy
+  class Scope < Scope
+    def resolve
+      scope.joins(:organisation).where(organisations: pundit_user.organisations)
+    end
+  end
+
   def create?
     member_of_organisation?
   end

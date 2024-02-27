@@ -33,7 +33,7 @@ describe SendInvitationRemindersJob do
       create(
         :invitation,
         user: user1, rdv_context: rdv_context1,
-        sent_at: 3.days.ago, valid_until: 4.days.from_now
+        created_at: 3.days.ago, valid_until: 4.days.from_now
       )
     end
 
@@ -42,7 +42,7 @@ describe SendInvitationRemindersJob do
       create(
         :invitation,
         user: user2, rdv_context: rdv_context2,
-        sent_at: 4.days.ago, valid_until: 4.days.from_now
+        created_at: 4.days.ago, valid_until: 4.days.from_now
       )
     end
 
@@ -51,7 +51,7 @@ describe SendInvitationRemindersJob do
       create(
         :invitation,
         user: user3, rdv_context: rdv_context3,
-        sent_at: 3.days.ago, valid_until: 4.hours.from_now
+        created_at: 3.days.ago, valid_until: 4.hours.from_now
       )
     end
 
@@ -60,7 +60,7 @@ describe SendInvitationRemindersJob do
       create(
         :invitation,
         user: user4, rdv_context: rdv_context4,
-        sent_at: 3.days.ago, valid_until: 4.days.from_now
+        created_at: 3.days.ago, valid_until: 4.days.from_now
       )
     end
 
@@ -69,7 +69,7 @@ describe SendInvitationRemindersJob do
       create(
         :invitation,
         user: user5, rdv_context: rdv_context5,
-        sent_at: 3.days.ago, valid_until: 4.days.from_now
+        created_at: 3.days.ago, valid_until: 4.days.from_now
       )
     end
     let!(:archive) { create(:archive, user: user5, department: invitation5.department) }
@@ -79,7 +79,7 @@ describe SendInvitationRemindersJob do
       create(
         :invitation,
         user: user6, rdv_context: rdv_context6,
-        sent_at: 3.days.ago, valid_until: 4.days.from_now
+        created_at: 3.days.ago, valid_until: 4.days.from_now
       )
     end
 
@@ -88,7 +88,7 @@ describe SendInvitationRemindersJob do
       create(
         :invitation,
         user: user1, rdv_context: rdv_context7,
-        sent_at: 3.days.ago, valid_until: 4.days.from_now,
+        created_at: 3.days.ago, valid_until: 4.days.from_now,
         reminder: true
       )
     end

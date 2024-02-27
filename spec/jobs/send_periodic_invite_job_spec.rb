@@ -21,7 +21,7 @@ describe SendPeriodicInviteJob do
       create(
         :invitation,
         rdv_context: rdv_context,
-        sent_at: 15.days.ago,
+        created_at: 15.days.ago,
         valid_until: 1.day.ago,
         organisations: [organisation]
       )

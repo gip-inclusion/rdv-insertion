@@ -31,7 +31,6 @@ date = 1.year.ago
   )
   invitation = Invitation.new(
     format: "sms",
-    sent_at: date,
     user_id: user.id,
     created_at: date,
     updated_at: date,

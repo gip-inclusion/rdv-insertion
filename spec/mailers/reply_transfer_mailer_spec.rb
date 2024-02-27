@@ -25,7 +25,7 @@ RSpec.describe ReplyTransferMailer do
                  lieu: lieu, starts_at: Date.parse("2023/06/29"))
   end
   let(:invitation) do
-    create(:invitation, user: user, organisations: [organisation], sent_at: Date.parse("2023/06/22"))
+    create(:invitation, user: user, organisations: [organisation], created_at: Date.parse("2023/06/22"))
   end
 
   describe "#forward_invitation_reply_to_organisation" do

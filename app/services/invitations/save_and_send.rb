@@ -12,17 +12,11 @@ module Invitations
         verify_creneaux_are_available if @check_creneaux_availability
         save_record!(@invitation)
         send_invitation
-        assign_invitation_sent_at
       end
       result.invitation = @invitation
     end
 
     private
-
-    def assign_invitation_sent_at
-      @invitation.sent_at = Time.zone.now
-      save_record!(@invitation)
-    end
 
     def validate_invitation
       call_service!(Invitations::Validate, invitation: @invitation)
@@ -40,9 +34,15 @@ module Invitations
       return if retrieve_creneau_availability.creneau_availability
 
       fail!(
-        "L'envoi d'une invitation est impossible car il n'y a plus de créneaux disponibles. " \
-        "Nous invitons donc à créer de nouvelles plages d'ouverture depuis l'interface " \
-        "RDV-Solidarités pour pouvoir à nouveau envoyer des invitations"
+        "<strong>Il n'y a plus de créneaux disponibles</strong> pour inviter cet utilisateur. " \
+        "<br/><br/>" \
+        "Nous vous invitons à créer de nouvelles plages d'ouverture ou augmenter le délai de prise de rdv depuis " \
+        "RDV-Solidarités pour pouvoir à nouveau envoyer des invitations." \
+        "<br/><br/>" \
+        "Plus d'informations sur " \
+        "<a href='https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/configurer-loutil-et-envoyer" \
+        "-des-invitations/envoyer-des-invitations-ou-convocations/inviter-les-personnes-a-prendre-rdv" \
+        "#cas-des-creneaux-indisponibles' target='_blank' class='link-purple-underlined'>notre guide</a>." \
       )
     end
 

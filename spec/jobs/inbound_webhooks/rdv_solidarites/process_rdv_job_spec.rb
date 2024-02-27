@@ -87,7 +87,6 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
       :invitation,
       organisations: [organisation],
       rdv_context: rdv_context,
-      sent_at: 2.days.ago,
       valid_until: 3.days.from_now
     )
   end
@@ -98,7 +97,6 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
       organisations:
       [organisation],
       rdv_context: rdv_context2,
-      sent_at: 2.days.ago,
       valid_until: 3.days.from_now
     )
   end
@@ -108,7 +106,6 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
       :invitation,
       organisations: [organisation],
       rdv_context: rdv_context,
-      sent_at: 4.days.ago,
       valid_until: 3.days.ago
     )
   end

@@ -24,6 +24,8 @@ module Stats
             average_time_between_invitation_and_rdv_in_days_for_focused_month,
           rate_of_users_oriented_in_less_than_30_days_by_month:
             rate_of_users_oriented_in_less_than_30_days_for_focused_month,
+          rate_of_users_oriented_in_less_than_15_days_by_month:
+            rate_of_users_oriented_in_less_than_15_days_for_focused_month,
           rate_of_users_oriented_grouped_by_month: rate_of_users_oriented_for_focused_month,
           rate_of_autonomous_users_grouped_by_month:
             rate_of_autonomous_users_for_focused_month
@@ -43,7 +45,7 @@ module Stats
       end
 
       def sent_invitations_count_for_focused_month
-        @stat.invitations_sample.where(sent_at: @date.all_month).count
+        created_during_focused_month(@stat.invitations_sample).count
       end
 
       def rate_of_no_show_for_invitations_for_focused_month
@@ -65,9 +67,18 @@ module Stats
       end
 
       def rate_of_users_oriented_in_less_than_30_days_for_focused_month
-        ComputeRateOfUsersWithRdvSeenInLessThanThirtyDays.call(
+        ComputeRateOfUsersWithRdvSeenInLessThanNDays.call(
           # we compute the users of the previous month because we want at least 30 days old users
-          users: @stat.users_with_orientation_category_sample.where(created_at: (@date - 1.month).all_month)
+          users: @stat.users_with_orientation_category_sample.where(created_at: (@date - 1.month).all_month),
+          number_of_days: 30
+        ).value.round
+      end
+
+      def rate_of_users_oriented_in_less_than_15_days_for_focused_month
+        ComputeRateOfUsersWithRdvSeenInLessThanNDays.call(
+          # we compute the users of the previous month to be sure to have at least a 15 days window
+          users: @stat.users_with_orientation_category_sample.where(created_at: (@date - 1.month).all_month),
+          number_of_days: 15
         ).value.round
       end
 

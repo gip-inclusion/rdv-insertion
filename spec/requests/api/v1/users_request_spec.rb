@@ -204,8 +204,8 @@ describe "Users API", swagger_doc: "v1/api.json" do
 
       let!(:user) { create(:user, **user_attributes) }
 
-      let!(:email_invitation) { create(:invitation, user:, sent_at: Time.zone.now, **email_attributes) }
-      let!(:sms_invitation) { create(:invitation, user:, sent_at: Time.zone.now, **sms_attributes) }
+      let!(:email_invitation) { create(:invitation, user:, **email_attributes) }
+      let!(:sms_invitation) { create(:invitation, user:, **sms_attributes) }
 
       before do
         allow(Users::Upsert).to receive(:call)
