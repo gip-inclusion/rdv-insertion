@@ -4,7 +4,7 @@
   </li>
   <li>
     <ul data-controller="drag" data-drag-url="<%= structure_configurations_positions_update_path %>" class="<%= "draggable" if @current_agent_roles.any?(&:admin?) %> nav">
-    <% @all_configurations.each do |configuration| %>
+    <% @configurations_by_motif_category.each do |configuration| %>
       <li class="nav-item" data-id="<%= configuration.id %>">
         <%= link_to structure_users_path(motif_category_id: configuration.motif_category_id), class: "nav-link d-flex align-items-center #{configuration.id == @current_configuration&.id ? 'active' : ''}" do %>
           <%= configuration.motif_category_name %>

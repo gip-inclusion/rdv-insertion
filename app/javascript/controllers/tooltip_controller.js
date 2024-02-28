@@ -33,14 +33,6 @@ export default class extends Controller {
     });
   }
 
-  batchActions() {
-    tippy(this.element, {
-      content:
-        "Les usagers présentés correspondront aux filtres actuels",
-      placement: "bottom",
-    });
-  }
-
   organisationDetails() {
     tippy(this.element, {
       content:

@@ -3,8 +3,8 @@ module Users
     include BackToListConcern
     include Users::Sortable
 
-    before_action :set_organisation, :set_department, :set_organisations, :set_all_configurations,
-                  :set_current_configuration, :set_current_motif_category, :set_motif_category_name, :set_users,
+    before_action :set_organisation, :set_department, :set_all_configurations, :set_current_configuration,
+                  :set_current_motif_category, :set_organisations, :set_motif_category_name, :set_users,
                   :set_rdv_contexts, :set_back_to_users_list_url, :filter_users_by_non_invited_status,
                   :order_by_rdv_contexts, for: :new
 
@@ -32,14 +32,16 @@ module Users
     end
 
     def set_organisations
-      @organisations = policy_scope(Organisation).where(department: @department)
+      @organisations =
+        policy_scope(Organisation).where(department: @department)
+                                  .where(configurations: @all_configurations
+                                    .where(motif_category: @current_motif_category))
     end
 
     def set_all_configurations
       @all_configurations =
         policy_scope(::Configuration).joins(:organisation)
                                      .where(current_organisation_filter)
-                                     .uniq(&:motif_category_id)
     end
 
     def set_current_configuration

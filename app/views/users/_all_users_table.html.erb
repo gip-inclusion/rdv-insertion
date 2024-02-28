@@ -3,7 +3,7 @@
     <th scope="col">Nom</th>
     <th scope="col">Prénom</th>
     <th scope="col">Date de création</th>
-    <% @all_configurations.each do |configuration| %>
+    <% @configurations_by_motif_category.each do |configuration| %>
       <th scope="col"><%= configuration.motif_category_name %></th>
     <% end %>
     <th scope="col"></th>
@@ -17,7 +17,7 @@
         <% if user.archived_in?(@department) %>
           <td colspan=<%= @all_configurations.count %>>Archivé</td>
         <% else %>
-          <% @all_configurations.each do |configuration| %>
+          <% @configurations_by_motif_category.each do |configuration| %>
             <% if rdv_context = user.rdv_context_for(configuration.motif_category) %>
               <%= render "rdv_contexts/rdv_context_status_cell", rdv_context: rdv_context, configuration: configuration %>
             <% else %>

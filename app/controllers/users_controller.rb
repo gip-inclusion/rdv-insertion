@@ -12,11 +12,10 @@ class UsersController < ApplicationController
   include Users::Filterable
   include Users::Sortable
 
-  before_action :set_organisation, :set_department, :set_organisations, :set_all_configurations,
-                :set_current_agent_roles, :set_users_scope,
-                :set_current_configuration, :set_current_motif_category,
-                :set_users, :set_rdv_contexts, :set_filterable_tags, :set_referents_list,
-                :filter_users, :order_users,
+  before_action :set_organisation, :set_department, :set_users_scope, :set_all_configurations,
+                :set_configurations_by_motif_category, :set_current_configuration, :set_current_motif_category,
+                :set_organisations, :set_current_agent_roles, :set_users, :set_rdv_contexts, :set_filterable_tags,
+                :set_referents_list, :filter_users, :order_users,
                 for: :index
   before_action :set_user, :set_organisation, :set_department, :set_all_configurations,
                 :set_user_archive, :set_user_tags, :set_back_to_users_list_url,
@@ -195,6 +194,10 @@ class UsersController < ApplicationController
 
   def set_organisations
     @organisations = policy_scope(Organisation).where(department: @department)
+    return unless params[:motif_category_id]
+
+    @organisations = @organisations.where(configurations: @all_configurations
+                                   .where(motif_category: @current_motif_category))
   end
 
   def set_department
@@ -206,10 +209,12 @@ class UsersController < ApplicationController
       policy_scope(::Configuration).joins(:organisation)
                                    .includes(:motif_category)
                                    .where(current_organisation_filter)
-                                   .uniq(&:motif_category_id)
-
     @all_configurations =
       department_level? ? @all_configurations.sort_by(&:department_position) : @all_configurations.sort_by(&:position)
+  end
+
+  def set_configurations_by_motif_category
+    @configurations_by_motif_category = @all_configurations.uniq(&:motif_category_id)
   end
 
   def set_current_configuration

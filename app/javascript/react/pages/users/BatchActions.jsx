@@ -53,8 +53,7 @@ const UsersBatchActions = observer(
             birthName: userFromApp.birth_name,
             departmentInternalId: userFromApp.department_internal_id,
             rightsOpeningDate: formatDateInput(userFromApp.rights_opening_date),
-            referentEmail: userFromApp.referent_email,
-            selected: true
+            referentEmail: userFromApp.referent_email
           },
           department,
           organisation,
