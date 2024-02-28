@@ -6,7 +6,7 @@ module RdvSolidaritesApi
 
     def call
       request!
-      result.organisation = \
+      result.organisation =
         RdvSolidarites::Organisation.new(rdv_solidarites_response_body["organisation"])
     end
 

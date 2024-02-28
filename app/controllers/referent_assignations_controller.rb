@@ -1,6 +1,6 @@
 class ReferentAssignationsController < ApplicationController
   before_action :set_department, :set_user, :set_agents, only: [:index, :create, :destroy]
-  before_action :verify_user_is_sync_with_rdv_solidarites, only: [:create]
+  before_action :verify_user_is_sync_with_rdv_solidarites, only: [:create, :destroy]
   before_action :set_agent, only: [:create, :destroy]
 
   def index; end

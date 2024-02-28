@@ -1,4 +1,4 @@
-describe "Agents can upload user list", js: true do
+describe "Agents can upload user list", :js do
   include_context "with file configuration"
 
   let!(:agent) { create(:agent, organisations: [organisation]) }
@@ -46,7 +46,7 @@ describe "Agents can upload user list", js: true do
 
       ### Upload
 
-      attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+      attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"), make_visible: true)
 
       expect(page).to have_content("Civilité")
       expect(page).to have_content("M")
@@ -82,11 +82,11 @@ describe "Agents can upload user list", js: true do
       expect(page).to have_button("Inviter par SMS", disabled: false)
       expect(page).to have_button("Inviter par Email", disabled: false)
       expect(page).to have_button("Générer courrier", disabled: false)
-      expect(page).not_to have_button("Créer compte")
+      expect(page).to have_no_button("Créer compte")
 
       user = User.last
       expect(page).to have_css("i.fas.fa-link")
-      expect(page).to have_selector(:css, "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]")
+      expect(page).to have_css("a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]")
 
       expect(user.first_name).to eq("Hernan")
       expect(user.last_name).to eq("Crespo")
@@ -106,7 +106,7 @@ describe "Agents can upload user list", js: true do
       click_button("Inviter par SMS")
 
       expect(page).to have_css("i.fas.fa-check")
-      expect(page).not_to have_button("Inviter par SMS")
+      expect(page).to have_no_button("Inviter par SMS")
       expect(page).to have_button("Inviter par Email", disabled: false)
       expect(page).to have_button("Générer courrier", disabled: false)
 
@@ -120,12 +120,12 @@ describe "Agents can upload user list", js: true do
 
       visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-      attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+      attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"), make_visible: true)
 
       expect(page).to have_css("i.fas.fa-link")
-      expect(page).not_to have_button("Créer compte")
+      expect(page).to have_no_button("Créer compte")
       expect(page).to have_css("i.fas.fa-check")
-      expect(page).not_to have_button("Inviter par SMS")
+      expect(page).to have_no_button("Inviter par SMS")
 
       expect(page).to have_button("Inviter par Email", disabled: false)
       expect(page).to have_button("Générer courrier", disabled: false)
@@ -156,19 +156,20 @@ describe "Agents can upload user list", js: true do
 
             expect(page).to have_content("Choisissez un fichier d'usagers")
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).to have_button("Créer compte")
-            expect(page).not_to have_content("Invitation SMS")
-            expect(page).not_to have_content("Invitation mail")
-            expect(page).not_to have_content("Invitation courrier")
+            expect(page).to have_no_content("Invitation SMS")
+            expect(page).to have_no_content("Invitation mail")
+            expect(page).to have_no_content("Invitation courrier")
 
             click_button("Créer compte")
 
             expect(page).to have_css("i.fas.fa-link")
             user = User.last
-            expect(page).to have_selector(
-              :css, "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]"
+            expect(page).to have_css(
+              "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]"
             )
 
             expect(user.first_name).to eq("Hernan")
@@ -203,9 +204,10 @@ describe "Agents can upload user list", js: true do
           it "displays the link to the user page" do
             visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
-            expect(page).not_to have_content("Créer compte")
+            expect(page).to have_no_content("Créer compte")
 
             ## it displays the db attributes
             expect(page).to have_content("Crespa")
@@ -213,8 +215,8 @@ describe "Agents can upload user list", js: true do
             expect(page).to have_content("hernan@crespa.com")
 
             expect(page).to have_css("i.fas.fa-link")
-            expect(page).to have_selector(
-              :css, "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]"
+            expect(page).to have_css(
+              "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]"
             )
           end
         end
@@ -231,15 +233,16 @@ describe "Agents can upload user list", js: true do
           it "can add the user to the org" do
             visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).to have_content("Ajouter à cette organisation")
 
             click_button("Ajouter à cette organisation")
 
             expect(page).to have_css("i.fas.fa-link")
-            expect(page).to have_selector(
-              :css, "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]"
+            expect(page).to have_css(
+              "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]"
             )
 
             expect(user.reload.address).to eq("127 RUE DE GRENELLE 75007 PARIS")
@@ -269,12 +272,13 @@ describe "Agents can upload user list", js: true do
           it "displays the link to the user page" do
             visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
-            expect(page).not_to have_content("Créer compte")
+            expect(page).to have_no_content("Créer compte")
             expect(page).to have_css("i.fas.fa-link")
-            expect(page).to have_selector(
-              :css, "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]"
+            expect(page).to have_css(
+              "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]"
             )
           end
         end
@@ -294,14 +298,15 @@ describe "Agents can upload user list", js: true do
             it "can add the user to the org" do
               visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-              attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+              attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                          make_visible: true)
 
               expect(page).to have_content("Ajouter à cette organisation")
 
               ## it does not display the db attributes
-              expect(page).not_to have_content("Crespa")
-              expect(page).not_to have_content("+33782605941")
-              expect(page).not_to have_content("hernan@crespa.com")
+              expect(page).to have_no_content("Crespa")
+              expect(page).to have_no_content("+33782605941")
+              expect(page).to have_no_content("hernan@crespa.com")
               expect(page).to have_content("Cresp")
               expect(page).to have_content("0620022002")
               expect(page).to have_content("hernan@crespo.com")
@@ -309,8 +314,8 @@ describe "Agents can upload user list", js: true do
               click_button("Ajouter à cette organisation")
 
               expect(page).to have_css("i.fas.fa-link")
-              expect(page).to have_selector(
-                :css, "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]"
+              expect(page).to have_css(
+                "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]"
               )
 
               expect(user.reload.address).to eq("127 RUE DE GRENELLE 75007 PARIS")
@@ -340,14 +345,15 @@ describe "Agents can upload user list", js: true do
             it "fails to add the user to the org" do
               visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-              attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+              attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                          make_visible: true)
 
               expect(page).to have_content("Ajouter à cette organisation")
 
               ## it does not display the db attributes
-              expect(page).not_to have_content("Crespa")
-              expect(page).not_to have_content("+33782605941")
-              expect(page).not_to have_content("hernan@crespa.com")
+              expect(page).to have_no_content("Crespa")
+              expect(page).to have_no_content("+33782605941")
+              expect(page).to have_no_content("hernan@crespa.com")
               expect(page).to have_content("Cresp")
               expect(page).to have_content("0620022002")
               expect(page).to have_content("hernan@crespo.com")
@@ -356,7 +362,7 @@ describe "Agents can upload user list", js: true do
 
               # it did not add the user
               expect(page).to have_content("Ajouter à cette organisation")
-              expect(page).not_to have_css("i.fas.fa-link")
+              expect(page).to have_no_css("i.fas.fa-link")
               expect(page).to have_content(
                 "Le bénéficiaire #{user.id} a les mêmes attributs mais un nir différent"
               )
@@ -376,7 +382,8 @@ describe "Agents can upload user list", js: true do
           it "does not match the user" do
             visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).to have_content("Créer compte")
           end
@@ -396,12 +403,13 @@ describe "Agents can upload user list", js: true do
           it "displays the link to the user page" do
             visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
-            expect(page).not_to have_content("Créer compte")
+            expect(page).to have_no_content("Créer compte")
             expect(page).to have_css("i.fas.fa-link")
-            expect(page).to have_selector(
-              :css, "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]"
+            expect(page).to have_css(
+              "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]"
             )
           end
         end
@@ -419,15 +427,16 @@ describe "Agents can upload user list", js: true do
             it "can add the user to the org" do
               visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-              attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+              attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                          make_visible: true)
 
               expect(page).to have_content("Ajouter à cette organisation")
 
               click_button("Ajouter à cette organisation")
 
               expect(page).to have_css("i.fas.fa-link")
-              expect(page).to have_selector(
-                :css, "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]"
+              expect(page).to have_css(
+                "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]"
               )
 
               expect(user.reload.address).to eq("127 RUE DE GRENELLE 75007 PARIS")
@@ -456,7 +465,8 @@ describe "Agents can upload user list", js: true do
           it "does not match the user" do
             visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).to have_content("Créer compte")
           end
@@ -475,12 +485,13 @@ describe "Agents can upload user list", js: true do
           it "displays the link to the user page" do
             visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
-            expect(page).not_to have_content("Créer compte")
+            expect(page).to have_no_content("Créer compte")
             expect(page).to have_css("i.fas.fa-link")
-            expect(page).to have_selector(
-              :css, "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]"
+            expect(page).to have_css(
+              "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]"
             )
           end
         end
@@ -497,15 +508,16 @@ describe "Agents can upload user list", js: true do
           it "can add the user to the org" do
             visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).to have_content("Ajouter à cette organisation")
 
             click_button("Ajouter à cette organisation")
 
             expect(page).to have_css("i.fas.fa-link")
-            expect(page).to have_selector(
-              :css, "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]"
+            expect(page).to have_css(
+              "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]"
             )
 
             expect(user.reload.address).to eq("127 RUE DE GRENELLE 75007 PARIS")
@@ -534,12 +546,13 @@ describe "Agents can upload user list", js: true do
           it "displays the link to the user page" do
             visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
-            expect(page).not_to have_content("Créer compte")
+            expect(page).to have_no_content("Créer compte")
             expect(page).to have_css("i.fas.fa-link")
-            expect(page).to have_selector(
-              :css, "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]"
+            expect(page).to have_css(
+              "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]"
             )
           end
         end
@@ -556,15 +569,16 @@ describe "Agents can upload user list", js: true do
           it "can add the user to the org" do
             visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).to have_content("Ajouter à cette organisation")
 
             click_button("Ajouter à cette organisation")
 
             expect(page).to have_css("i.fas.fa-link")
-            expect(page).to have_selector(
-              :css, "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]"
+            expect(page).to have_css(
+              "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]"
             )
 
             expect(user.reload.address).to eq("127 RUE DE GRENELLE 75007 PARIS")
@@ -594,7 +608,7 @@ describe "Agents can upload user list", js: true do
 
       ### Upload
 
-      attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+      attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"), make_visible: true)
 
       expect(page).to have_content("Civilité")
 
@@ -632,11 +646,11 @@ describe "Agents can upload user list", js: true do
       expect(page).to have_button("Inviter par SMS", disabled: false)
       expect(page).to have_button("Inviter par Email", disabled: false)
       expect(page).to have_button("Générer courrier", disabled: false)
-      expect(page).not_to have_button("Créer compte")
+      expect(page).to have_no_button("Créer compte")
 
       user = User.last
       expect(page).to have_css("i.fas.fa-link")
-      expect(page).to have_selector(:css, "a[href=\"/departments/#{department.id}/users/#{user.id}\"]")
+      expect(page).to have_css("a[href=\"/departments/#{department.id}/users/#{user.id}\"]")
 
       expect(user.first_name).to eq("Hernan")
       expect(user.last_name).to eq("Crespo")
@@ -653,7 +667,7 @@ describe "Agents can upload user list", js: true do
       click_button("Inviter par SMS")
 
       expect(page).to have_css("i.fas.fa-check")
-      expect(page).not_to have_button("Inviter par SMS")
+      expect(page).to have_no_button("Inviter par SMS")
       expect(page).to have_button("Inviter par Email", disabled: false)
       expect(page).to have_button("Générer courrier", disabled: false)
 
@@ -667,12 +681,12 @@ describe "Agents can upload user list", js: true do
 
       visit new_department_upload_path(department, configuration_id: configuration.id)
 
-      attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+      attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"), make_visible: true)
 
       expect(page).to have_css("i.fas.fa-link")
-      expect(page).not_to have_button("Créer compte")
+      expect(page).to have_no_button("Créer compte")
       expect(page).to have_css("i.fas.fa-check")
-      expect(page).not_to have_button("Inviter par SMS")
+      expect(page).to have_no_button("Inviter par SMS")
 
       expect(page).to have_button("Inviter par Email", disabled: false)
       expect(page).to have_button("Générer courrier", disabled: false)
@@ -683,11 +697,12 @@ describe "Agents can upload user list", js: true do
         it "can bulk create users" do
           visit new_department_upload_path(department, configuration_id: configuration.id)
 
-          attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+          attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                      make_visible: true)
 
           first('input[type="checkbox"]', visible: :visible).click
           click_button("Actions pour toute la sélection")
-          expect(page).not_to have_css("td i.fas.fa-link")
+          expect(page).to have_no_css("td i.fas.fa-link")
 
           expect do
             click_button("Créer comptes")
@@ -698,11 +713,12 @@ describe "Agents can upload user list", js: true do
         it "can bulk invite" do
           visit new_department_upload_path(department, configuration_id: configuration.id)
 
-          attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+          attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                      make_visible: true)
 
           first('input[type="checkbox"]', visible: :visible).click
           click_button("Actions pour toute la sélection")
-          expect(page).not_to have_css("td i.fas.fa-check")
+          expect(page).to have_no_css("td i.fas.fa-check")
 
           click_button("Invitation par sms")
           expect(page).to have_css("td i.fas.fa-check")
@@ -721,11 +737,12 @@ describe "Agents can upload user list", js: true do
           it "highlights users with errors" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             first('input[type="checkbox"]', visible: :visible).click
             click_button("Actions pour toute la sélection")
-            expect(page).not_to have_css("td i.fas.fa-check")
+            expect(page).to have_no_css("td i.fas.fa-check")
 
             click_button("Invitation par sms")
             expect(page).to have_css("tr.table-danger")
@@ -736,11 +753,12 @@ describe "Agents can upload user list", js: true do
           it "highlights users with errors" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test_invalid.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test_invalid.xlsx"),
+                        make_visible: true)
 
             first('input[type="checkbox"]', visible: :visible).click
             click_button("Actions pour toute la sélection")
-            expect(page).not_to have_css("tr.table-danger")
+            expect(page).to have_no_css("tr.table-danger")
 
             click_button("Créer comptes")
             expect(page).to have_css("tr.table-danger")
@@ -774,19 +792,20 @@ describe "Agents can upload user list", js: true do
 
             expect(page).to have_content("Choisissez un fichier d'usagers")
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).to have_button("Créer compte")
-            expect(page).not_to have_content("Invitation SMS")
-            expect(page).not_to have_content("Invitation mail")
-            expect(page).not_to have_content("Invitation courrier")
+            expect(page).to have_no_content("Invitation SMS")
+            expect(page).to have_no_content("Invitation mail")
+            expect(page).to have_no_content("Invitation courrier")
 
             click_button("Créer compte")
 
             expect(page).to have_css("i.fas.fa-link")
             user = User.last
-            expect(page).to have_selector(
-              :css, "a[href=\"/departments/#{department.id}/users/#{user.id}\"]"
+            expect(page).to have_css(
+              "a[href=\"/departments/#{department.id}/users/#{user.id}\"]"
             )
 
             expect(user.first_name).to eq("Hernan")
@@ -820,12 +839,13 @@ describe "Agents can upload user list", js: true do
           it "displays the link to the user page" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
-            expect(page).not_to have_content("Créer compte")
+            expect(page).to have_no_content("Créer compte")
             expect(page).to have_css("i.fas.fa-link")
-            expect(page).to have_selector(
-              :css, "a[href=\"/departments/#{department.id}/users/#{user.id}\"]"
+            expect(page).to have_css(
+              "a[href=\"/departments/#{department.id}/users/#{user.id}\"]"
             )
           end
         end
@@ -842,15 +862,16 @@ describe "Agents can upload user list", js: true do
           it "can add the user to the org" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).to have_content("Ajouter à cette organisation")
 
             click_button("Ajouter à cette organisation")
 
             expect(page).to have_css("i.fas.fa-link")
-            expect(page).to have_selector(
-              :css, "a[href=\"/departments/#{department.id}/users/#{user.id}\"]"
+            expect(page).to have_css(
+              "a[href=\"/departments/#{department.id}/users/#{user.id}\"]"
             )
 
             expect(user.reload.address).to eq("127 RUE DE GRENELLE 75007 PARIS")
@@ -880,12 +901,13 @@ describe "Agents can upload user list", js: true do
           it "displays the link to the user page" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
-            expect(page).not_to have_content("Créer compte")
+            expect(page).to have_no_content("Créer compte")
             expect(page).to have_css("i.fas.fa-link")
-            expect(page).to have_selector(
-              :css, "a[href=\"/departments/#{department.id}/users/#{user.id}\"]"
+            expect(page).to have_css(
+              "a[href=\"/departments/#{department.id}/users/#{user.id}\"]"
             )
           end
         end
@@ -903,15 +925,16 @@ describe "Agents can upload user list", js: true do
             it "can add the user to the org" do
               visit new_department_upload_path(department, configuration_id: configuration.id)
 
-              attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+              attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                          make_visible: true)
 
               expect(page).to have_content("Ajouter à cette organisation")
 
               click_button("Ajouter à cette organisation")
 
               expect(page).to have_css("i.fas.fa-link")
-              expect(page).to have_selector(
-                :css, "a[href=\"/departments/#{department.id}/users/#{user.id}\"]"
+              expect(page).to have_css(
+                "a[href=\"/departments/#{department.id}/users/#{user.id}\"]"
               )
 
               expect(user.reload.address).to eq("127 RUE DE GRENELLE 75007 PARIS")
@@ -940,7 +963,8 @@ describe "Agents can upload user list", js: true do
           it "does not match the user" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).to have_content("Créer compte")
           end
@@ -960,12 +984,13 @@ describe "Agents can upload user list", js: true do
           it "displays the link to the user page" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
-            expect(page).not_to have_content("Créer compte")
+            expect(page).to have_no_content("Créer compte")
             expect(page).to have_css("i.fas.fa-link")
-            expect(page).to have_selector(
-              :css, "a[href=\"/departments/#{department.id}/users/#{user.id}\"]"
+            expect(page).to have_css(
+              "a[href=\"/departments/#{department.id}/users/#{user.id}\"]"
             )
           end
         end
@@ -983,15 +1008,16 @@ describe "Agents can upload user list", js: true do
             it "can add the user to the org" do
               visit new_department_upload_path(department, configuration_id: configuration.id)
 
-              attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+              attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                          make_visible: true)
 
               expect(page).to have_content("Ajouter à cette organisation")
 
               click_button("Ajouter à cette organisation")
 
               expect(page).to have_css("i.fas.fa-link")
-              expect(page).to have_selector(
-                :css, "a[href=\"/departments/#{department.id}/users/#{user.id}\"]"
+              expect(page).to have_css(
+                "a[href=\"/departments/#{department.id}/users/#{user.id}\"]"
               )
 
               expect(user.reload.address).to eq("127 RUE DE GRENELLE 75007 PARIS")
@@ -1020,7 +1046,8 @@ describe "Agents can upload user list", js: true do
           it "does not match the user" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).to have_content("Créer compte")
           end
@@ -1039,12 +1066,13 @@ describe "Agents can upload user list", js: true do
           it "displays the link to the user page" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
-            expect(page).not_to have_content("Créer compte")
+            expect(page).to have_no_content("Créer compte")
             expect(page).to have_css("i.fas.fa-link")
-            expect(page).to have_selector(
-              :css, "a[href=\"/departments/#{department.id}/users/#{user.id}\"]"
+            expect(page).to have_css(
+              "a[href=\"/departments/#{department.id}/users/#{user.id}\"]"
             )
           end
         end
@@ -1061,15 +1089,16 @@ describe "Agents can upload user list", js: true do
           it "can add the user to the org" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).to have_content("Ajouter à cette organisation")
 
             click_button("Ajouter à cette organisation")
 
             expect(page).to have_css("i.fas.fa-link")
-            expect(page).to have_selector(
-              :css, "a[href=\"/departments/#{department.id}/users/#{user.id}\"]"
+            expect(page).to have_css(
+              "a[href=\"/departments/#{department.id}/users/#{user.id}\"]"
             )
 
             expect(user.reload.address).to eq("127 RUE DE GRENELLE 75007 PARIS")
@@ -1096,7 +1125,8 @@ describe "Agents can upload user list", js: true do
           it "does not match the user" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).to have_content("Créer compte")
           end
@@ -1115,12 +1145,13 @@ describe "Agents can upload user list", js: true do
           it "displays the link to the user page" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
-            expect(page).not_to have_content("Créer compte")
+            expect(page).to have_no_content("Créer compte")
             expect(page).to have_css("i.fas.fa-link")
-            expect(page).to have_selector(
-              :css, "a[href=\"/departments/#{department.id}/users/#{user.id}\"]"
+            expect(page).to have_css(
+              "a[href=\"/departments/#{department.id}/users/#{user.id}\"]"
             )
           end
         end
@@ -1137,15 +1168,16 @@ describe "Agents can upload user list", js: true do
           it "can add the user to the org" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).to have_content("Ajouter à cette organisation")
 
             click_button("Ajouter à cette organisation")
 
             expect(page).to have_css("i.fas.fa-link")
-            expect(page).to have_selector(
-              :css, "a[href=\"/departments/#{department.id}/users/#{user.id}\"]"
+            expect(page).to have_css(
+              "a[href=\"/departments/#{department.id}/users/#{user.id}\"]"
             )
 
             expect(user.reload.address).to eq("127 RUE DE GRENELLE 75007 PARIS")
@@ -1172,7 +1204,8 @@ describe "Agents can upload user list", js: true do
           it "does not match the user" do
             visit new_department_upload_path(department, configuration_id: configuration.id)
 
-            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+            attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
+                        make_visible: true)
 
             expect(page).to have_content("Créer compte")
           end

@@ -43,7 +43,7 @@ describe "Super admin can manage departments" do
     end
 
     it "cannot delete a department" do
-      expect(page).not_to have_link("Supprimer")
+      expect(page).to have_no_link("Supprimer")
     end
   end
 
@@ -75,7 +75,7 @@ describe "Super admin can manage departments" do
       expect(page).to have_css("dt", id: "organisations", text: "ORGANISATIONS")
       expect(page).to have_css("tr", class: "js-table-row", count: 1)
       expect(page).to have_css("a", class: "action-show")
-      expect(page).to have_selector("a[href=\"#{super_admins_organisation_path(organisation)}\"]")
+      expect(page).to have_css("a[href=\"#{super_admins_organisation_path(organisation)}\"]")
     end
 
     it "can navigate to a department edit page" do
@@ -87,7 +87,7 @@ describe "Super admin can manage departments" do
     end
 
     it "cannot delete a department" do
-      expect(page).not_to have_link("Supprimer")
+      expect(page).to have_no_link("Supprimer")
     end
   end
 
@@ -143,7 +143,7 @@ describe "Super admin can manage departments" do
         expect(page).to have_content("2 erreur ont empêché Département d'être sauvegardé(e)")
         expect(page).to have_content("Numéro doit être rempli(e)")
         expect(page).to have_content("Région doit être rempli(e)")
-        expect(page).not_to have_content("Détails Yvelines")
+        expect(page).to have_no_content("Détails Yvelines")
       end
     end
   end
@@ -195,7 +195,7 @@ describe "Super admin can manage departments" do
 
         expect(page).to have_content("1 erreur ont empêché Département d'être sauvegardé(e)")
         expect(page).to have_content("Nom doit être rempli(e)")
-        expect(page).not_to have_content("Détails Yvelines")
+        expect(page).to have_no_content("Détails Yvelines")
       end
     end
   end

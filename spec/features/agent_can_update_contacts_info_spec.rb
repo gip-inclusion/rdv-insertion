@@ -1,4 +1,4 @@
-describe "Agents can update contact info with caf file", js: true do
+describe "Agents can update contact info with caf file", :js do
   let!(:agent) { create(:agent) }
   let!(:department) { create(:department) }
   let!(:organisation) do
@@ -24,14 +24,14 @@ describe "Agents can update contact info with caf file", js: true do
     it "updates the user list with the info from the csv file" do
       visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-      attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+      attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"), make_visible: true)
 
       expect(page).to have_content("hernan@crespo.com")
       expect(page).to have_content("0620022002")
 
       click_button("Enrichir avec des données de contacts CNAF")
 
-      attach_file("contact-file-upload", Rails.root.join("spec/fixtures/fichier_contact_test.csv"))
+      attach_file("contact-file-upload", Rails.root.join("spec/fixtures/fichier_contact_test.csv"), make_visible: true)
 
       expect(page).to have_content("hernan.crespo@hotmail.fr")
       expect(page).to have_content("698943255")
@@ -65,17 +65,17 @@ describe "Agents can update contact info with caf file", js: true do
     it "can update the user attributes with the info from the csv file one by one" do
       visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-      attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+      attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"), make_visible: true)
 
       expect(page).to have_content("hernan@crespo.com")
       expect(page).to have_content("+33620022002")
 
       expect(page).to have_css("i.fas.fa-link")
-      expect(page).to have_selector(:css, "a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]")
+      expect(page).to have_css("a[href=\"/organisations/#{organisation.id}/users/#{user.id}\"]")
 
       click_button("Enrichir avec des données de contacts CNAF")
 
-      attach_file("contact-file-upload", Rails.root.join("spec/fixtures/fichier_contact_test.csv"))
+      attach_file("contact-file-upload", Rails.root.join("spec/fixtures/fichier_contact_test.csv"), make_visible: true)
 
       expect(page).to have_content("Nouvelles données trouvées pour Hernan Crespo")
       expect(page).to have_content("hernan.crespo@hotmail.fr")
@@ -88,7 +88,7 @@ describe "Agents can update contact info with caf file", js: true do
       click_on("Mettre à jour", match: :first)
 
       expect(page).to have_content("hernan.crespo@hotmail.fr")
-      expect(page).not_to have_content("hernan@crespo.com")
+      expect(page).to have_no_content("hernan@crespo.com")
 
       expect(user.reload.email).to eq("hernan.crespo@hotmail.fr")
       expect(user.reload.phone_number).to eq("+33620022002")
@@ -96,7 +96,7 @@ describe "Agents can update contact info with caf file", js: true do
       click_button("Mettre à jour")
 
       expect(page).to have_content("+33698943255")
-      expect(page).not_to have_content("+33620022002")
+      expect(page).to have_no_content("+33620022002")
 
       expect(user.reload.phone_number).to eq("+33698943255")
     end
@@ -104,14 +104,14 @@ describe "Agents can update contact info with caf file", js: true do
     it "can update all the attributes at once" do
       visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-      attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+      attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"), make_visible: true)
 
       expect(page).to have_content("hernan@crespo.com")
       expect(page).to have_content("+33620022002")
 
       click_button("Enrichir avec des données de contacts CNAF")
 
-      attach_file("contact-file-upload", Rails.root.join("spec/fixtures/fichier_contact_test.csv"))
+      attach_file("contact-file-upload", Rails.root.join("spec/fixtures/fichier_contact_test.csv"), make_visible: true)
 
       expect(page).to have_content("Nouvelles données trouvées pour Hernan Crespo")
       expect(page).to have_content("hernan.crespo@hotmail.fr")
@@ -142,15 +142,16 @@ describe "Agents can update contact info with caf file", js: true do
       it "does not show the update button" do
         visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-        attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+        attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"), make_visible: true)
 
         expect(page).to have_content("hernan@crespo.com")
         expect(page).to have_content("Ajouter à cette organisation")
         click_button("Enrichir avec des données de contacts CNAF")
 
-        attach_file("contact-file-upload", Rails.root.join("spec/fixtures/fichier_contact_test.csv"))
+        attach_file("contact-file-upload", Rails.root.join("spec/fixtures/fichier_contact_test.csv"),
+                    make_visible: true)
 
-        expect(page).not_to have_content("Nouvelles données trouvées pour Hernan Crespo")
+        expect(page).to have_no_content("Nouvelles données trouvées pour Hernan Crespo")
       end
     end
   end

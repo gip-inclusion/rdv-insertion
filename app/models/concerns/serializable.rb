@@ -8,6 +8,6 @@ module Serializable
   end
 
   def blueprint_view_opts
-    blueprint_class.has_view?(:extended) ? { view: :extended } : {}
+    blueprint_class.view?(:extended) ? { view: :extended } : {}
   end
 end

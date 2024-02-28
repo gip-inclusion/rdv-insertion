@@ -7,18 +7,16 @@
     <meta name="turbo-cache-control" content="no-cache">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-    <%= favicon_pack_tag 'logos/rdvi-favicon.png' %>
+    <%= favicon_link_tag 'logos/rdvi-favicon.png' %>
 
-    <%= stylesheet_pack_tag 'application', media: 'all', 'data-turbo-track': 'reload' %>
-    <%= javascript_pack_tag 'application', 'data-turbo-track': 'reload' %>
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbo-track': 'reload' %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
   </head>
 
   <body>
     <%= render 'layouts/rdv_insertion_instance_name' %>
     <%= render 'common/header' %>
-    <div id="flashes">
-      <%= render 'common/flash' %>
-    </div>
+    <%= render 'common/flash' %>
     <div class="wrapper">
       <%= turbo_frame_tag "remote_modal", target: "_top" %>
       <%= yield %>

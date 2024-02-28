@@ -7,7 +7,7 @@ module Stats
 
       def perform(structure_type, structure_id, until_date_string)
         # to do : add timeout as a global concern for all jobs and remove it here
-        Timeout.timeout(30.minutes) do
+        Timeout.timeout(60.minutes) do
           upsert_stat_record_for_monthly_stats =
             Stats::MonthlyStats::UpsertStat.call(
               structure_type: structure_type, structure_id: structure_id, until_date_string: until_date_string

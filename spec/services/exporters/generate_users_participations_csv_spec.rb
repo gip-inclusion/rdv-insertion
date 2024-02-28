@@ -18,7 +18,7 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
       affiliation_number: "12345",
       department_internal_id: "33333",
       nir: nir,
-      pole_emploi_id: "DDAAZZ",
+      france_travail_id: "DDAAZZ",
       email: "jane@doe.com",
       address: "20 avenue de Ségur 75OO7 Paris",
       phone_number: "+33610101010",
@@ -80,13 +80,21 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
 
       it "generates headers" do
         expect(csv).to start_with("\uFEFF")
+        expect(csv).to include("Statut du rdv")
+        expect(csv).to include("Date du RDV")
+        expect(csv).to include("Heure du RDV")
+        expect(csv).to include("Motif du RDV")
+        expect(csv).to include("Nature du RDV")
+        expect(csv).to include("RDV pris en autonomie ?")
+        expect(csv).to include("Référent(s)")
+        expect(csv).to include("Organisation du rendez-vous")
         expect(csv).to include("Civilité")
         expect(csv).to include("Nom")
         expect(csv).to include("Prénom")
         expect(csv).to include("Numéro CAF")
         expect(csv).to include("ID interne au département")
         expect(csv).to include("Numéro de sécurité sociale")
-        expect(csv).to include("ID Pôle Emploi")
+        expect(csv).to include("ID France Travail")
         expect(csv).to include("ID interne au département")
         expect(csv).to include("Email")
         expect(csv).to include("Téléphone")
@@ -94,16 +102,6 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
         expect(csv).to include("Date de création")
         expect(csv).to include("Date d'entrée flux")
         expect(csv).to include("Rôle")
-        expect(csv).to include("Archivé le")
-        expect(csv).to include("Motif d'archivage")
-        expect(csv).to include("Statut du rdv")
-        expect(csv).to include("Date du RDV")
-        expect(csv).to include("Heure du RDV")
-        expect(csv).to include("Motif du RDV")
-        expect(csv).to include("Nature du RDV")
-        expect(csv).to include("Dernier RDV pris en autonomie ?")
-        expect(csv).to include("Référent(s)")
-        expect(csv).to include("Organisation du rendez-vous")
       end
 
       context "it exports all the concerned users" do
@@ -127,7 +125,7 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
           expect(csv).to include("12345") # affiliation_number
           expect(csv).to include("33333") # department_internal_id
           expect(csv).to include(nir)
-          expect(csv).to include("DDAAZZ") # pole_emploi_id
+          expect(csv).to include("DDAAZZ") # france_travail_id
           expect(csv).to include("20 avenue de Ségur 75OO7 Paris")
           expect(csv).to include("jane@doe.com")
           expect(csv).to include("+33610101010")
@@ -153,28 +151,6 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
 
         it "displays the referent emails" do
           expect(csv).to include("monreferent@gouv.fr")
-        end
-
-        context "when the user is archived" do
-          let!(:user1) do
-            create(
-              :user,
-              organisations: [organisation],
-              archives: [archive]
-            )
-          end
-          let!(:archive) do
-            create(
-              :archive,
-              created_at: Time.zone.parse("2022-06-20"),
-              department: department, archiving_reason: "test"
-            )
-          end
-
-          it "displays the archive infos" do
-            expect(subject.csv).to include("20/06/2022") # archive status
-            expect(subject.csv).to include("20/06/2022;test") # archive reason
-          end
         end
       end
 

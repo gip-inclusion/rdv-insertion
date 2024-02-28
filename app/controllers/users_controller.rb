@@ -2,7 +2,7 @@
 
 class UsersController < ApplicationController
   PERMITTED_PARAMS = [
-    :uid, :role, :first_name, :last_name, :nir, :pole_emploi_id, :birth_date, :email, :phone_number,
+    :uid, :role, :first_name, :last_name, :nir, :france_travail_id, :birth_date, :email, :phone_number,
     :birth_name, :address, :affiliation_number, :department_internal_id, :title,
     :status, :rights_opening_date,
     { rdv_contexts_attributes: [:motif_category_id], tag_users_attributes: [:tag_id] }
@@ -84,7 +84,7 @@ class UsersController < ApplicationController
   def formatted_attributes
     # we nullify some blank params for unicity exceptions (ActiveRecord::RecordNotUnique) not to raise
     user_params.to_h do |k, v|
-      [k, k.in?([:affiliation_number, :department_internal_id, :email, :pole_emploi_id, :nir]) ? v.presence : v]
+      [k, k.in?([:affiliation_number, :department_internal_id, :email, :france_travail_id, :nir]) ? v.presence : v]
     end
   end
 
@@ -95,7 +95,7 @@ class UsersController < ApplicationController
       .tags
       .joins(:organisations)
       .where(organisations: department_level? ? @department.organisations : @organisation)
-      .each do |tag|
+      .find_each do |tag|
       @user.tags.delete(tag)
     end
   end
@@ -120,7 +120,7 @@ class UsersController < ApplicationController
 
   def render_errors(errors)
     respond_to do |format|
-      format.turbo_stream { turbo_stream_prepend_flash_message(error: errors.join(", ")) }
+      format.turbo_stream { turbo_stream_replace_flash_message(error: errors.join(", ")) }
       format.html do
         flash.now[:error] = errors.join(",")
         render(action_name == "update" ? :edit : :new, status: :unprocessable_entity)
@@ -175,12 +175,11 @@ class UsersController < ApplicationController
   end
 
   def set_filterable_tags
-    @tags = (@organisation || @department).tags.order(:value).distinct
+    @tags = policy_scope((@organisation || @department).tags).order(:value).distinct
   end
 
   def set_user_tags
-    @tags = @user
-            .tags
+    @tags = policy_scope(@user.tags)
             .joins(:organisations)
             .where(organisations: department_level? ? @department.organisations : @organisation)
             .order(:value)

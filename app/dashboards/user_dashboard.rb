@@ -33,7 +33,7 @@ class UserDashboard < Administrate::BaseDashboard
     organisations: Field::HasMany,
     participations: Field::HasMany,
     phone_number: Field::String,
-    pole_emploi_id: Field::String,
+    france_travail_id: Field::String,
     rdv_contexts: Field::HasMany,
     rdv_solidarites_user_id: Field::Number,
     rdvs: Field::HasMany,
@@ -83,7 +83,7 @@ class UserDashboard < Administrate::BaseDashboard
     :affiliation_number,
     :nir,
     :department_internal_id,
-    :pole_emploi_id,
+    :france_travail_id,
     :rights_opening_date,
     :organisations,
     :tags,
@@ -108,7 +108,7 @@ class UserDashboard < Administrate::BaseDashboard
     :affiliation_number,
     :nir,
     :department_internal_id,
-    :pole_emploi_id,
+    :france_travail_id,
     :rights_opening_date,
     :tags
   ].freeze

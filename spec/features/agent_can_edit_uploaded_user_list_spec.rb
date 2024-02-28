@@ -1,4 +1,4 @@
-describe "Agents can upload user list", js: true do
+describe "Agents can upload user list", :js do
   include_context "with file configuration"
 
   let!(:agent) { create(:agent, organisations: [organisation]) }
@@ -41,7 +41,7 @@ describe "Agents can upload user list", js: true do
     it "can edit an user infos" do
       visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-      attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+      attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"), make_visible: true)
 
       click_button("Créer compte")
 

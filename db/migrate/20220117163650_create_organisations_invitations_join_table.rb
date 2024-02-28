@@ -13,7 +13,7 @@ class CreateOrganisationsInvitationsJoinTable < ActiveRecord::Migration[6.1]
 
     add_reference :invitations, :department, foreign_key: true
 
-    Invitation.all.find_each do |invitation|
+    Invitation.find_each do |invitation|
       organisation = Organisation.find(invitation.organisation_id)
       invitation.update!(
         help_phone_number: organisation&.phone_number,
@@ -29,7 +29,7 @@ class CreateOrganisationsInvitationsJoinTable < ActiveRecord::Migration[6.1]
   def down
     add_reference :invitations, :organisation, foreign_key: true
 
-    Invitation.all.find_each do |invitation|
+    Invitation.find_each do |invitation|
       invitation.update!(organisation_id: invitation.organisation_ids.first)
     end
 

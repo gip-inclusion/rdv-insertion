@@ -79,7 +79,7 @@ describe ReferentAssignationsController do
       expect(response.body).to match(/Le référent a bien été assigné/)
     end
 
-    context "when the user has no rdvs_id and the sync with rdvs fails" do
+    context "when the user has no rdv_solidarites_user_id and the sync with rdvs fails" do
       let!(:user) do
         create(:user, id: user_id, organisations: [organisation1, organisation2], rdv_solidarites_user_id: nil)
       end
@@ -180,6 +180,27 @@ describe ReferentAssignationsController do
         expect(unescaped_response_body).to match(/flashes/)
         expect(unescaped_response_body).to match(/Something wrong happened/)
         expect(unescaped_response_body).to match(/Une erreur s'est produite lors du détachement du référent/)
+      end
+    end
+
+    context "when the user has no rdv_solidarites_user_id and the sync with rdvs fails" do
+      let!(:user) do
+        create(:user, id: user_id, organisations: [organisation1, organisation2], rdv_solidarites_user_id: nil)
+      end
+
+      before do
+        allow(Users::SyncWithRdvSolidarites).to receive(:call)
+          .with(user: user)
+          .and_return(OpenStruct.new(success?: false, errors: ["Something went wrong"]))
+      end
+
+      it "displays an error message" do
+        subject
+
+        expect(response).to be_successful
+        expect(unescaped_response_body).to match(/flashes/)
+        expect(unescaped_response_body).to match(/Something went wrong/)
+        expect(unescaped_response_body).to match(/L'utilisateur n'est plus lié à rdv-solidarités/)
       end
     end
   end

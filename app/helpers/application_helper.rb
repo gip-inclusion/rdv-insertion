@@ -26,12 +26,8 @@ module ApplicationHelper
     department_name.parameterize.capitalize
   end
 
-  def asset_compiled?(asset_path)
-    Webpacker.manifest.lookup(asset_path).present?
-  end
-
-  def image_compiled?(image_path)
-    asset_compiled?("media/images/#{image_path}")
+  def asset_exists?(asset_path)
+    AssetHelper.asset_exists?(asset_path)
   end
 
   def show_login_button?

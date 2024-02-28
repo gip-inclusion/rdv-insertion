@@ -12,7 +12,7 @@ class MessagesConfigurationDashboard < Administrate::BaseDashboard
     direction_names: Field::String,
     display_department_logo: Field::Boolean,
     display_europe_logos: Field::Boolean,
-    display_pole_emploi_logo: Field::Boolean,
+    display_france_travail_logo: Field::Boolean,
     help_address: Field::String,
     letter_sender_name: Field::String,
     organisation: Field::BelongsTo,
@@ -42,7 +42,7 @@ class MessagesConfigurationDashboard < Administrate::BaseDashboard
     direction_names
     display_department_logo
     display_europe_logos
-    display_pole_emploi_logo
+    display_france_travail_logo
     help_address
     letter_sender_name
     organisation
@@ -60,7 +60,7 @@ class MessagesConfigurationDashboard < Administrate::BaseDashboard
     direction_names
     display_department_logo
     display_europe_logos
-    display_pole_emploi_logo
+    display_france_travail_logo
     help_address
     letter_sender_name
     organisation

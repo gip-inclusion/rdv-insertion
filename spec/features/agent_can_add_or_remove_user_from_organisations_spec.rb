@@ -1,4 +1,4 @@
-describe "Agents can add or remove user from organisations", js: true do
+describe "Agents can add or remove user from organisations", :js do
   let!(:agent) { create(:agent, organisations: [organisation]) }
   let!(:department) { create(:department) }
   let!(:organisation) do
@@ -51,7 +51,7 @@ describe "Agents can add or remove user from organisations", js: true do
       visit department_user_path(department, user)
 
       expect(page).to have_content(organisation.name)
-      expect(page).not_to have_content(other_org.name)
+      expect(page).to have_no_content(other_org.name)
 
       click_link("Ajouter ou retirer une organisation")
 
@@ -100,7 +100,7 @@ describe "Agents can add or remove user from organisations", js: true do
         visit department_user_path(department, user)
 
         expect(page).to have_content(organisation.name)
-        expect(page).not_to have_content(other_org.name)
+        expect(page).to have_no_content(other_org.name)
 
         click_link("Ajouter ou retirer une organisation")
 
@@ -141,7 +141,7 @@ describe "Agents can add or remove user from organisations", js: true do
         visit department_user_path(department, user)
 
         expect(page).to have_content(organisation.name)
-        expect(page).not_to have_content(other_org.name)
+        expect(page).to have_no_content(other_org.name)
 
         click_link("Ajouter ou retirer une organisation")
 
@@ -176,7 +176,7 @@ describe "Agents can add or remove user from organisations", js: true do
 
       visit department_user_path(department, user)
       expect(page).to have_content(organisation.name)
-      expect(page).not_to have_content(other_org.name)
+      expect(page).to have_no_content(other_org.name)
 
       click_link("Ajouter ou retirer une organisation")
 

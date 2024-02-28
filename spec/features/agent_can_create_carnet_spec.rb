@@ -1,4 +1,4 @@
-describe "Agents can create a carnet", js: true do
+describe "Agents can create a carnet", :js do
   let!(:agent) { create(:agent, email: "someone@gouv.fr") }
   let!(:department) { create(:department, carnet_de_bord_deploiement_id: "9213124", number: "75") }
   let!(:organisation) { create(:organisation, agents: [agent], department: department) }
@@ -70,17 +70,16 @@ describe "Agents can create a carnet", js: true do
 
       visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-      attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+      attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"), make_visible: true)
 
       expect(page).to have_button("Créer carnet", disabled: true)
       click_button("Créer compte")
       expect(page).to have_button("Créer carnet", disabled: false)
 
       click_button("Créer carnet")
-      expect(page).not_to have_content("Créer carnet")
+      expect(page).to have_no_content("Créer carnet")
       expect(page).to have_css("i.fas.fa-link")
-      expect(page).to have_selector(
-        :css,
+      expect(page).to have_css(
         "a[href=\"https://demo.carnetdebord.inclusion.beta.gouv.fr/manager/carnets/12312ZD9A\"]"
       )
 
@@ -116,14 +115,13 @@ describe "Agents can create a carnet", js: true do
       visit organisation_user_path(organisation, user)
 
       expect(page).to have_button("Créer carnet")
-      expect(page).not_to have_content("Voir sur Carnet de bord")
+      expect(page).to have_no_content("Voir sur Carnet de bord")
       click_button("Créer carnet")
 
       expect(page).to have_content("Voir sur Carnet de bord")
-      expect(page).not_to have_button("Créer carnet")
+      expect(page).to have_no_button("Créer carnet")
 
-      expect(page).to have_selector(
-        :css,
+      expect(page).to have_css(
         "a[href=\"https://demo.carnetdebord.inclusion.beta.gouv.fr/manager/carnets/12312ZD9A\"]"
       )
       expect(carnet_de_bord_stub).to have_been_requested

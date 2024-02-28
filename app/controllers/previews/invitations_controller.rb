@@ -99,7 +99,7 @@ module Previews
         help_address: @invitation.help_address,
         display_europe_logos: @invitation.display_europe_logos,
         display_department_logo: @invitation.display_department_logo,
-        display_pole_emploi_logo: @invitation.display_pole_emploi_logo,
+        display_france_travail_logo: @invitation.display_france_travail_logo,
         sender_city: @invitation.sender_city,
         rdv_title: @invitation.rdv_title,
         user_designation: @invitation.user_designation,

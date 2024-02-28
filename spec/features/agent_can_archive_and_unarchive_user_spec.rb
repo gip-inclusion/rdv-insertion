@@ -1,4 +1,4 @@
-describe "Agents can archive and unarchive user", js: true do
+describe "Agents can archive and unarchive user", :js do
   let!(:agent) { create(:agent) }
   let!(:department) { create(:department) }
   let!(:organisation) { create(:organisation, agents: [agent], department: department) }
@@ -31,9 +31,9 @@ describe "Agents can archive and unarchive user", js: true do
       expect(page).to have_content "Le dossier sera rouvert"
       click_button "Oui"
 
-      expect(page).not_to have_content "Dossier archivé"
-      expect(page).not_to have_content "Motif d'archivage"
-      expect(page).not_to have_content "déménagement"
+      expect(page).to have_no_content "Dossier archivé"
+      expect(page).to have_no_content "Motif d'archivage"
+      expect(page).to have_no_content "déménagement"
 
       expect(page).to have_content("Archiver le dossier")
 
@@ -67,9 +67,9 @@ describe "Agents can archive and unarchive user", js: true do
         expect(page).to have_content "Le dossier sera rouvert"
         click_button "Oui"
 
-        expect(page).not_to have_content "Dossier archivé"
-        expect(page).not_to have_content "Motif d'archivage"
-        expect(page).not_to have_content "déménagement"
+        expect(page).to have_no_content "Dossier archivé"
+        expect(page).to have_no_content "Motif d'archivage"
+        expect(page).to have_no_content "déménagement"
 
         expect(page).to have_content("Archiver le dossier")
 
@@ -109,13 +109,13 @@ describe "Agents can archive and unarchive user", js: true do
     it "can unarchive an user" do
       visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-      attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+      attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"), make_visible: true)
 
       expect(page).to have_button "Rouvrir le dossier"
       expect(page).to have_content "Dossier archivé"
       expect(page).to have_content "CDI"
 
-      expect(page).not_to have_button "Inviter par SMS"
+      expect(page).to have_no_button "Inviter par SMS"
 
       click_button "Rouvrir le dossier"
 
@@ -133,12 +133,12 @@ describe "Agents can archive and unarchive user", js: true do
       it "does not show the user as archived" do
         visit new_organisation_upload_path(organisation, configuration_id: configuration.id)
 
-        attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"))
+        attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"), make_visible: true)
 
         expect(page).to have_button "Inviter par SMS"
 
-        expect(page).not_to have_button "Rouvrir le dossier"
-        expect(page).not_to have_content "Dossier archivé"
+        expect(page).to have_no_button "Rouvrir le dossier"
+        expect(page).to have_no_content "Dossier archivé"
       end
     end
   end

@@ -18,10 +18,8 @@ describe Invitations::SaveAndSend, type: :service do
       allow(RdvSolidaritesApi::RetrieveCreneauAvailability).to receive(:call)
         .with(link_params: invitation.link_params)
         .and_return(OpenStruct.new(success?: true, creneau_availability: true))
-      allow(invitation).to receive(:send_to_user)
-        .and_return(OpenStruct.new(success?: true))
-      allow(invitation).to receive(:rdv_solidarites_token?).and_return(false)
-      allow(invitation).to receive(:link?).and_return(false)
+      allow(invitation).to receive_messages(send_to_user: OpenStruct.new(success?: true),
+                                            rdv_solidarites_token?: false, link?: false)
     end
 
     it "is a success" do
@@ -102,8 +100,7 @@ describe Invitations::SaveAndSend, type: :service do
 
     context "when there is a token and a link assigned already" do
       before do
-        allow(invitation).to receive(:rdv_solidarites_token?).and_return(true)
-        allow(invitation).to receive(:link?).and_return(true)
+        allow(invitation).to receive_messages(rdv_solidarites_token?: true, link?: true)
       end
 
       it("is a success") { is_a_success }
@@ -142,9 +139,12 @@ describe Invitations::SaveAndSend, type: :service do
 
       it "stores an error message" do
         expect(subject.errors).to include(
-          "L'envoi d'une invitation est impossible car il n'y a plus de créneaux disponibles. " \
-          "Nous invitons donc à créer de nouvelles plages d'ouverture depuis l'interface " \
-          "RDV-Solidarités pour pouvoir à nouveau envoyer des invitations"
+          "<strong>Il n'y a plus de créneaux disponibles</strong> pour inviter cet utilisateur. <br/><br/>" \
+          "Nous vous invitons à créer de nouvelles plages d'ouverture ou augmenter le délai de prise de rdv depuis " \
+          "RDV-Solidarités pour pouvoir à nouveau envoyer des invitations.<br/><br/>Plus d'informations sur " \
+          "<a href='https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/configurer-loutil-et-envoyer" \
+          "-des-invitations/envoyer-des-invitations-ou-convocations/inviter-les-personnes-a-prendre-rdv#cas-" \
+          "des-creneaux-indisponibles' target='_blank' class='link-purple-underlined'>notre guide</a>."
         )
       end
 
