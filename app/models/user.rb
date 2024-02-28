@@ -64,12 +64,6 @@ class User < ApplicationRecord
   }
   scope :with_sent_invitations, -> { where.associated(:invitations) }
 
-  def rdv_seen_delay_in_days
-    return if first_seen_rdv_starts_at.blank?
-
-    first_seen_rdv_starts_at.to_datetime.mjd - created_at.to_datetime.mjd
-  end
-
   def participation_for(rdv)
     participations.to_a.find { |participation| participation.rdv_id == rdv.id }
   end
@@ -126,6 +120,10 @@ class User < ApplicationRecord
 
   def organisations_motif_category_ids
     organisations.map(&:motif_category_ids).flatten
+  end
+
+  def first_orientation_rdv_context
+    rdv_contexts.select(&:orientation?).min_by(&:created_at)
   end
 
   private
