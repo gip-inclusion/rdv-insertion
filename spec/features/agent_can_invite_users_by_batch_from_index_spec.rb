@@ -16,7 +16,7 @@ describe "Agent can invite users by batch from index" do
   let!(:rdv_context3) { create(:rdv_context, user: user3, motif_category: motif_category) }
   let!(:invitation3) do
     create(:invitation, rdv_context: rdv_context3, user: user3, department: department,
-                        organisations: [organisation], sent_at: Time.zone.now, format: "sms")
+                        organisations: [organisation], created_at: Time.zone.now, format: "sms")
   end
   let!(:user4) { create(:user, last_name: "Neuville", organisations: [organisation]) }
 

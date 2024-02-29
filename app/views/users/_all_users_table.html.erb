@@ -15,7 +15,7 @@
         <td><%= display_attribute user.first_name %></td>
         <td><%= display_attribute format_date(user.created_at) %></td>
         <% if user.archived_in?(@department) %>
-          <td colspan=<%= @all_configurations.count %>>Archivé</td>
+          <td colspan=<%= @configurations_by_motif_category.count %>>Archivé</td>
         <% else %>
           <% @configurations_by_motif_category.each do |configuration| %>
             <% if rdv_context = user.rdv_context_for(configuration.motif_category) %>

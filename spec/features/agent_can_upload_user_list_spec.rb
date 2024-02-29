@@ -738,7 +738,6 @@ describe "Agents can upload user list", :js do
           attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
                       make_visible: true)
 
-          first('input[type="checkbox"]', visible: :visible).click
           click_button("Actions pour toute la sélection")
           expect(page).to have_no_css("td i.fas.fa-link")
 
@@ -754,7 +753,6 @@ describe "Agents can upload user list", :js do
           attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
                       make_visible: true)
 
-          first('input[type="checkbox"]', visible: :visible).click
           click_button("Actions pour toute la sélection")
           expect(page).to have_no_button("Réinviter par SMS")
 
@@ -779,7 +777,6 @@ describe "Agents can upload user list", :js do
             attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
                         make_visible: true)
 
-            first('input[type="checkbox"]', visible: :visible).click
             click_button("Actions pour toute la sélection")
             expect(page).to have_no_css("td i.fas.fa-check")
 
@@ -795,7 +792,6 @@ describe "Agents can upload user list", :js do
             attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test_invalid.xlsx"),
                         make_visible: true)
 
-            first('input[type="checkbox"]', visible: :visible).click
             click_button("Actions pour toute la sélection")
             expect(page).to have_no_css("tr.table-danger")
 

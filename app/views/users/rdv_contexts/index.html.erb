@@ -5,7 +5,7 @@
 
   <%= turbo_frame_tag "user_page_body" do %>
     <%= render "users/user_tabs", user: @user, tab: "rdvs" %>
-    <% @configurations_by_motif_category.each do |configuration| %>
+    <% @all_configurations.each do |configuration| %>
       <% rdv_context = @rdv_contexts.find { |rc| rc.motif_category_id == configuration.motif_category_id } %>
       <% if rdv_context %>
         <%=

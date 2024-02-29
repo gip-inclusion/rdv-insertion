@@ -74,7 +74,8 @@ describe "Agents can invite from index page", :js do
     let!(:sms_invitation) do
       create(
         :invitation,
-        format: "sms", user: user, rdv_context: rdv_context, rdv_solidarites_token: rdv_solidarites_token
+        format: "sms", user: user, rdv_context: rdv_context, rdv_solidarites_token: rdv_solidarites_token,
+        created_at: 2.days.ago
       )
     end
 

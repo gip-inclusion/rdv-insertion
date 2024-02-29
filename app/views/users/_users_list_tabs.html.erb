@@ -8,7 +8,7 @@
       <li class="nav-item" data-id="<%= configuration.id %>">
         <%= link_to structure_users_path(motif_category_id: configuration.motif_category_id), class: "nav-link d-flex align-items-center #{configuration.id == @current_configuration&.id ? 'active' : ''}" do %>
           <%= configuration.motif_category_name %>
-          <% if @current_agent_roles.any?(&:admin?) && @all_configurations.size > 1 %>
+          <% if @current_agent_roles.any?(&:admin?) && @configurations_by_motif_category.size > 1 %>
             <i data-controller="tooltip" data-action="mouseover->tooltip#reOrderCategories" class="fas fa-grip-vertical"></i>
           <% end %>
         <% end %>

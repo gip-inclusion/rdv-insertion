@@ -209,12 +209,12 @@ class UsersController < ApplicationController
       policy_scope(::Configuration).joins(:organisation)
                                    .includes(:motif_category)
                                    .where(current_organisation_filter)
-    @all_configurations =
-      department_level? ? @all_configurations.sort_by(&:department_position) : @all_configurations.sort_by(&:position)
   end
 
   def set_configurations_by_motif_category
     @configurations_by_motif_category = @all_configurations.uniq(&:motif_category_id)
+    @configurations_by_motif_category =
+      @configurations_by_motif_category.sort_by { |c| department_level? ? c.department_position : c.position }
   end
 
   def set_current_configuration
