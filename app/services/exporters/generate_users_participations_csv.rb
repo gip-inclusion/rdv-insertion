@@ -59,10 +59,10 @@ module Exporters
        User.human_attribute_name(:created_at),
        User.human_attribute_name(:rights_opening_date),
        User.human_attribute_name(:role),
-       "Rendez-vous prescrit ?",
-       "Prénom du prescripteur",
-       "Nom du prescripteur",
-       "Mail du prescripteur",
+       "Rendez-vous prescrit ? (interne)",
+       "Prénom du prescripteur (interne)",
+       "Nom du prescripteur (interne)",
+       "Mail du prescripteur (interne)",
        User.human_attribute_name(:tags)]
     end
 

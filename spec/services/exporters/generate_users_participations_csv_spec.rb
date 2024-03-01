@@ -117,10 +117,10 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
         expect(csv).to include("Date de création")
         expect(csv).to include("Date d'entrée flux")
         expect(csv).to include("Rôle")
-        expect(csv).to include("Rendez-vous prescrit ?")
-        expect(csv).to include("Prénom du prescripteur")
-        expect(csv).to include("Nom du prescripteur")
-        expect(csv).to include("Mail du prescripteur")
+        expect(csv).to include("Rendez-vous prescrit ? (interne)")
+        expect(csv).to include("Prénom du prescripteur (interne)")
+        expect(csv).to include("Nom du prescripteur (interne)")
+        expect(csv).to include("Mail du prescripteur (interne)")
         expect(csv).to include("Tags")
       end
 
