@@ -29,8 +29,8 @@ class Orientation < ApplicationRecord
   end
 
   def starts_at_in_the_past
-    return if starts_at < Time.zone.today
+    return if starts_at <= Time.zone.today
 
-    errors.add(:starts_at, "la date de début doit être antérieure à la date d'aujourd'hui")
+    errors.add(:starts_at, "la date de début doit être antérieure ou égale à la date d'aujourd'hui")
   end
 end
