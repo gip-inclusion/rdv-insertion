@@ -1,5 +1,6 @@
 module Users
   class ParcoursDocumentsController < ApplicationController
+    # Needed to generate ActiveStorage urls locally, it sets the host and protocol
     include ActiveStorage::SetCurrent
 
     before_action :set_user
