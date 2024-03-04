@@ -27,10 +27,12 @@ class ParcoursDocument < ApplicationRecord
     "application/zip"
   ].freeze
 
+  MAX_FILE_SIZE = 5.megabytes
+
   private
 
   def file_size_validation
-    return unless file.blob.byte_size > 5.megabytes
+    return unless file.blob.byte_size > MAX_FILE_SIZE
 
     errors.add(:base, "Le fichier est trop volumineux (5mo maximum)")
   end
