@@ -32,10 +32,9 @@ module Users
     end
 
     def set_organisations
-      @organisations =
-        policy_scope(Organisation).where(department: @department)
-                                  .where(configurations: @all_configurations
-                                    .where(motif_category: @current_motif_category))
+      @organisations = policy_scope(Organisation)
+                       .where(department: @department)
+                       .where(configurations: @all_configurations.where(motif_category: @current_motif_category))
     end
 
     def set_all_configurations
