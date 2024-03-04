@@ -3,7 +3,7 @@ module Users
     before_action :set_organisations, :search_users, only: [:create]
 
     def create
-      render json: { success: true, users: UserBlueprint.render_as_json(@users, view: :extended) }
+      render json: { success: true, users: @users }
     end
 
     private
