@@ -9,37 +9,17 @@ module Users
     private
 
     def search_users
-      @users = User.active.where(id: search_in_all_users.ids + search_in_department_organisations.ids)
-
-      preload_users_associations
-      keep_only_authorized_rdvs
-      keep_only_authorized_tags
-    end
-
-    def preload_users_associations
-      @users = @users.preload(
-        :referents, :archives,
-        invitations: [rdv_context: :motif_category],
-        rdv_contexts: [:participations],
-        organisations: [:motif_categories, :department, :configurations]
-      )
-    end
-
-    def keep_only_authorized_rdvs
-      @users = @users.includes(rdv_contexts: [participations: :rdv])
-                     .references(:rdv)
-                     .where("rdvs.organisation_id" => agent_organisations)
-    end
-
-    def keep_only_authorized_tags
-      @users = @users.includes(tags: :tag_organisations)
-                     .references(:rdv, :tag_organisations)
-                     .where("tag_organisations.organisation_id" => agent_organisations)
-                     .distinct
-    end
-
-    def agent_organisations
-      @agent_organisations ||= current_agent.organisations.ids + [nil]
+      @users =
+        User
+        .active
+        .where(id: search_in_all_users.ids + search_in_department_organisations.ids)
+        .preload(
+          :referents, :archives,
+          invitations: [rdv_context: :motif_category],
+          rdv_contexts: [:participations],
+          tags: [:tag_organisations],
+          organisations: [:motif_categories, :department, :configurations]
+        ).distinct
     end
 
     def search_in_all_users
