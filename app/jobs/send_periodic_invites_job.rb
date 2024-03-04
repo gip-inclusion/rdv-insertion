@@ -8,6 +8,7 @@ class SendPeriodicInvitesJob < ApplicationJob
       .joins(:invitations)
       .preload(invitations: [{ organisations: :configurations }, :user])
       .where(invitations: Invitation.valid)
+      .distinct
       .find_each do |rdv_context|
       send_invite(rdv_context)
     end
