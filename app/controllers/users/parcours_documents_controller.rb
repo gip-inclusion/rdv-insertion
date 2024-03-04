@@ -1,7 +1,14 @@
 module Users
   class ParcoursDocumentsController < ApplicationController
+    include ActiveStorage::SetCurrent
+
     before_action :set_user
-    before_action :set_parcours_document, only: :destroy
+    before_action :set_parcours_document, only: [:destroy, :show]
+
+    def show
+      authorize @parcours_document, :show?
+      redirect_to @parcours_document.file.url
+    end
 
     def create
       @parcours_document = ParcoursDocument.create(parcours_document_params)
@@ -18,6 +25,8 @@ module Users
     end
 
     def destroy
+      authorize @parcours_document, :destroy?
+
       if @parcours_document.destroy
         turbo_stream_remove(@parcours_document)
       else
@@ -36,7 +45,6 @@ module Users
 
     def set_parcours_document
       @parcours_document = ParcoursDocument.find(params[:id])
-      authorize @parcours_document, :destroy?
     end
 
     def set_user
