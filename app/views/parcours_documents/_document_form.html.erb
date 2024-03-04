@@ -1,7 +1,6 @@
 <%= simple_form_for(:parcours_document, url: user_parcours_documents_path(user_id: user.id), html: { method: :post, data: { controller: "parcours-documents", action: "turbo:submit-start->parcours-documents#spin turbo:submit-end->parcours-documents#stopSpin" }}) do |f| %>
   <%= f.hidden_field :type, value: type.camelize %>
-  <div class="w-50 my-4">
-    <%= f.file_field(
+  <%= f.file_field(
       :file,
       class: "d-none", 
       id: "file-input-#{type}", 
@@ -9,8 +8,7 @@
       data: {
         action: "change->parcours-documents#submit",
       }
-    ) %>
-  </div>
+  ) %>
   <%= button_tag type: 'button', class: "btn btn-primary", data: { action: "click->parcours-documents#fetchFile" } do %>
     <i class="fas fa-plus"></i>
     <div class="spinner-border spinner-border-sm text-white d-none" role="status">
