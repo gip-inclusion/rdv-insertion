@@ -207,7 +207,7 @@ class UsersController < ApplicationController
                                    .includes(:motif_category)
                                    .where(current_organisation_filter)
                                    .uniq(&:motif_category_id)
-    @all_configurations.sort_by { |c| department_level? ? c.department_position : c.position }
+    @all_configurations.sort_by! { |c| department_level? ? c.department_position : c.position }
   end
 
   def set_current_configuration
