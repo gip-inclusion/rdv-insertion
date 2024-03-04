@@ -41,7 +41,7 @@ class SendInvitationReminderJob < ApplicationJob
   end
 
   def invitation_already_sent_today?
-    @rdv_context.invitations.where(format: @invitation_format).where("sent_at > ?", 24.hours.ago).present?
+    @rdv_context.invitations.where(format: @invitation_format).where("created_at > ?", 24.hours.ago).present?
   end
 
   def notify_non_eligible_for_reminder
@@ -52,7 +52,7 @@ class SendInvitationReminderJob < ApplicationJob
 
   def eligible_for_reminder?
     @rdv_context.status == "invitation_pending" &&
-      first_invitation.sent_at.to_date == Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER.days.ago.to_date &&
+      first_invitation.created_at.to_date == Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER.days.ago.to_date &&
       first_invitation.valid_until >= 2.days.from_now
   end
 

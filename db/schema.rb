@@ -159,7 +159,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_20_123509) do
     t.integer "format"
     t.string "link"
     t.string "rdv_solidarites_token"
-    t.datetime "sent_at", precision: nil
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -248,7 +247,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_20_123509) do
 
   create_table "notifications", force: :cascade do |t|
     t.integer "event"
-    t.datetime "sent_at", precision: nil
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "rdv_solidarites_rdv_id"

@@ -5,9 +5,10 @@ describe SendPeriodicInviteJob do
 
   describe "#perform" do
     subject do
-      described_class.new.perform(invitation.id, configuration.id, "email")
+      described_class.new.perform(invitation.id, configuration.id, format)
     end
 
+    let!(:format) { "email" }
     let!(:organisation) { create(:organisation) }
     let!(:configuration) do
       create(:configuration,
@@ -21,7 +22,7 @@ describe SendPeriodicInviteJob do
       create(
         :invitation,
         rdv_context: rdv_context,
-        sent_at: 15.days.ago,
+        created_at: 15.days.ago,
         valid_until: 1.day.ago,
         organisations: [organisation]
       )
@@ -52,6 +53,15 @@ describe SendPeriodicInviteJob do
         expect(Invitations::SaveAndSend).to receive(:call).once
 
         subject
+      end
+
+      context "when the user has already been invited in this category less than 1 day ago" do
+        let!(:other_invitation) { create(:invitation, rdv_context:, format:, created_at: 2.hours.ago) }
+
+        it "does not send an invitation" do
+          expect(Invitations::SaveAndSend).not_to receive(:call)
+          expect { subject }.not_to change(Invitation, :count)
+        end
       end
     end
   end

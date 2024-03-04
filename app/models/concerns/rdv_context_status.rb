@@ -21,13 +21,13 @@ module RdvContextStatus
   def compute_status
     return :closed if closed_at.present?
 
-    return :not_invited if sent_invitations.empty? && rdvs.empty?
+    return :not_invited if invitations.empty? && rdvs.empty?
 
     invitation_sent_after_last_created_participation? ? :invitation_pending : status_from_participations
   end
 
   def invitation_sent_after_last_created_participation?
-    return false if sent_invitations.empty?
+    return false if invitations.empty?
     return true if participations.empty?
 
     # If there is a pending rdv we compare to the date of the rdv, otherwise to the date of
@@ -39,7 +39,7 @@ module RdvContextStatus
         last_created_participation.created_at
       end
 
-    last_sent_invitation.sent_at > participation_date_to_compare
+    last_invitation_created_at > participation_date_to_compare
   end
 
   def multiple_cancelled_participations?

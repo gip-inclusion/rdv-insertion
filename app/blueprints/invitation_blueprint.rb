@@ -1,6 +1,6 @@
 class InvitationBlueprint < Blueprinter::Base
   identifier :id
-  fields :format, :sent_at, :clicked, :rdv_with_referents
+  fields :format, :clicked, :rdv_with_referents, :created_at
   association :motif_category, blueprint: MotifCategoryBlueprint
 
   view :extended do

@@ -30,22 +30,19 @@ describe "Agents can upload documents for users", :js do
       expect(page).to have_content("Aucun diagnostic renseigné.")
 
       # Making sure the file is not uploaded if the format is not correct
-      find_by_id("file-input-diagnostic").set(Rails.root.join("spec/fixtures/fichier_contact_test.csv"))
-      click_button("Ajouter un diagnostic")
+      find_by_id("file-input-diagnostic", visible: false).set(Rails.root.join("spec/fixtures/fichier_contact_test.csv"))
 
       expect(page).to have_content("Seuls les formats PDF")
       expect(page).to have_content("Aucun diagnostic renseigné.")
 
-      find_by_id("file-input-diagnostic").set(Rails.root.join("spec/fixtures/dummy.pdf"))
-      click_button("Ajouter un diagnostic")
+      find_by_id("file-input-diagnostic", visible: false).set(Rails.root.join("spec/fixtures/dummy.pdf"))
 
       expect(page).to have_no_content("Aucun diagnostic renseigné.")
       expect(page).to have_content("dummy.pdf")
       expect(page).to have_css(".document-link", count: 1)
       expect(user.diagnostics.first.file.filename).to eq("dummy.pdf")
 
-      find_by_id("file-input-contract").set(Rails.root.join("spec/fixtures/dummy.pdf"))
-      click_button("Ajouter un contrat")
+      find_by_id("file-input-contract", visible: false).set(Rails.root.join("spec/fixtures/dummy.pdf"))
 
       expect(page).to have_no_content("Aucun contrat renseigné.")
       expect(page).to have_content("dummy.pdf")

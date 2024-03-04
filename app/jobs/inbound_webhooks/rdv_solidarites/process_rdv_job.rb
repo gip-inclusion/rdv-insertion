@@ -220,7 +220,7 @@ module InboundWebhooks
       def invitations_to_invalidate
         # we don't invalidate invitations when the participation is optional
         @invitations_to_invalidate ||=
-          Invitation.sent.valid.where(rdv_context_id: rdv_context_ids)
+          Invitation.valid.where(rdv_context_id: rdv_context_ids)
                     .joins(rdv_context: :motif_category)
                     .where(motif_categories: { optional_rdv_subscription: false })
       end
