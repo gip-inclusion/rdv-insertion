@@ -6,6 +6,7 @@ module Users
     include BackToListConcern
 
     def index
+      debugger
       @rdv_contexts =
         RdvContext.preload(
           :invitations, participations: [:notifications, { rdv: [:motif, :organisation] }]
@@ -22,7 +23,6 @@ module Users
 
     def set_user
       @user = policy_scope(User).preload(
-        :invitations, :referents, :archives,
         organisations: [:department, :motif_categories], rdv_contexts: :participations,
         tags: [:tag_organisations]
       ).find(params[:user_id])
