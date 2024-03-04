@@ -1,16 +1,16 @@
 import React from "react";
 import { observer } from "mobx-react-lite";
 
-import ContactInfosExtraLine from "./user/ContactInfosExtraLine";
-import InvitationCells from "./user/InvitationCells";
+import ContactInfosExtraLine from "./ContactInfosExtraLine";
+import InvitationCells from "./InvitationCells";
 
-function User({ user }) {
+function TableRow({ user }) {
   return (
     <>
       <tr className={user.isArchivedInCurrentDepartment() || !user.isValid ? "table-danger" : ""}>
         {user.list.columns.map((column) => {
           if (!column.visible || !column.content) return null
-          
+
           return <td key={column.name} className={user[`${column.key}Updated`] ? "table-success" : ""}>{column.content({ user })}</td>
         })}
 
@@ -26,4 +26,4 @@ function User({ user }) {
   );
 }
 
-export default observer(User);
+export default observer(TableRow);

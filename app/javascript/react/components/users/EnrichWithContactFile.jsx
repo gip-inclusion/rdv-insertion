@@ -1,6 +1,6 @@
 import React from "react";
 import Tippy from "@tippyjs/react";
-import FileHandler from "./FileHandler";
+import FileHandler from "../FileHandler";
 
 export default function EnrichWithContactFile({ handleContactsFile, fileSize }) {
   return (

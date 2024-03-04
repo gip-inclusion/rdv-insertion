@@ -24,11 +24,11 @@ export default class User {
     attributes,
     department,
     organisation,
-    availableTags = [],
     currentConfiguration,
-    columnNames,
     currentAgent,
-    list
+    list,
+    availableTags = [],
+    columnNames = null
   ) {
     const formattedAttributes = {};
     Object.keys(attributes).forEach((key) => {
@@ -74,7 +74,7 @@ export default class User {
     this.availableTags = availableTags;
     this.currentConfiguration = currentConfiguration;
     this.columnNames = columnNames;
-    this.selected = false;
+    this.selected = formattedAttributes.selected || true;
     this.archives = [];
     this.list = list;
 
@@ -333,15 +333,15 @@ export default class User {
     return this.participations && this.participations.length > 0;
   }
 
-  sortedParticipationsByCreationDate() {
-    return this.participations.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+  sortedParticipationsByRdvStartsAt() {
+    return this.participations.sort((a, b) => new Date(a.starts_at) - new Date(b.starts_at));
   }
 
-  lastParticipationCreatedAt() {
+  lastParticipationRdvStartsAt() {
     return this.hasParticipations()
-      ? this.sortedParticipationsByCreationDate()[
-          this.sortedParticipationsByCreationDate().length - 1
-        ].created_at
+      ? this.sortedParticipationsByRdvStartsAt()[
+          this.sortedParticipationsByRdvStartsAt().length - 1
+        ].starts_at
       : null;
   }
 
@@ -385,17 +385,6 @@ export default class User {
       default:
         return null;
     }
-  }
-
-  markAsAlreadyInvitedBy(format) {
-    // We cannot re-invite if the user is invited in this format and if the user has no rdvs yet,
-    // or if he has been reinvted after the last rdv
-    const lastInvitationDate = this.lastInvitationDate(format);
-    return (
-      lastInvitationDate &&
-      (!this.hasParticipations() ||
-        new Date(lastInvitationDate) > new Date(this.lastParticipationCreatedAt()))
-    );
   }
 
   referentAlreadyAssigned() {

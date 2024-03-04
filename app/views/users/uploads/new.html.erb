@@ -1,0 +1,12 @@
+<%= react_component(
+  "pages/users/Uploads", {
+    organisation: @organisation,
+    configuration: @current_configuration,
+    columnNames: @file_configuration.column_attributes,
+    sheetName: @file_configuration.sheet_name,
+    department: @department,
+    motifCategoryName: @motif_category_name,
+    currentAgent: current_agent,
+    tags: (@organisation || @department).tags
+  }
+) %>

@@ -19,6 +19,10 @@ class OrganisationPolicy < ApplicationPolicy
     upload?
   end
 
+  def batch_actions?
+    upload?
+  end
+
   def configure?
     pundit_user.admin_organisations_ids.include?(record.id)
   end

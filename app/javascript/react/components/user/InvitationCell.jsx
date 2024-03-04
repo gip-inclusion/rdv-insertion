@@ -5,15 +5,9 @@ import Tippy from "@tippyjs/react";
 import { getFrenchFormatDateString } from "../../../lib/datesHelper";
 
 const CTA_BY_FORMAT = {
-  sms: { firstTime: "Inviter par SMS", secondTime: "Réinviter par SMS" },
-  email: {
-    firstTime: "Inviter par Email",
-    secondTime: "Réinviter par Email",
-  },
-  postal: {
-    firstTime: "Générer courrier",
-    secondTime: "Regénérer courrier",
-  },
+  sms: "Inviter par SMS",
+  email: "Inviter par Email",
+  postal: "Générer courrier",
 };
 
 export default observer(({ user, format }) => {
@@ -27,40 +21,56 @@ export default observer(({ user, format }) => {
     user.list.canBeInvitedBy(format) && (
       <>
         <td>
-          {user.markAsAlreadyInvitedBy(format) ? (
-            <Tippy
-              content={
-                <span>Invité le {getFrenchFormatDateString(user.lastInvitationDate(format))}</span>
-              }
-            >
-              <i className="fas fa-check" />
-            </Tippy>
-          ) : user.errors.includes(actionType) ? (
+          {user.errors.includes(actionType) ? (
             <button
               type="submit"
               className="btn btn-danger"
               onClick={() => handleInvitationClick()}
             >
-              Résoudre les erreurs
+              Afficher les erreurs
             </button>
           ) : (
-            <button
-              type="submit"
-              disabled={
-                user.triggers[actionType] ||
-                !user.createdAt ||
-                !user.requiredAttributeToInviteBy(format) ||
-                !user.belongsToCurrentOrg()
+            <Tippy
+              onShow={() => user.lastInvitationDate(format) !== undefined}
+              content={
+                <span>
+                  {user.lastInvitationDate(format) &&
+                    `Dernière invitation ${format} le ${getFrenchFormatDateString(user.lastInvitationDate(format))}`
+                  }
+                  {user.lastInvitationDate(format) && user.lastParticipationRdvStartsAt() && <br />}
+                  {user.lastParticipationRdvStartsAt() &&
+                    `Dernier rendez-vous le ${getFrenchFormatDateString(user.lastParticipationRdvStartsAt())}`
+                  }
+                </span>
               }
-              className="btn btn-primary btn-blue"
-              onClick={() => handleInvitationClick()}
             >
-              {user.triggers[actionType]
-                ? "Invitation..."
-                : user.hasParticipations()
-                ? CTA_BY_FORMAT[format].secondTime
-                : CTA_BY_FORMAT[format].firstTime}
-            </button>
+              <div className="d-flex justify-content-center">
+                {user.lastInvitationDate(format) !== undefined && (
+                  <i className="fas fa-check d-block p-1" />
+                )}
+                <button
+                  type="submit"
+                  disabled={
+                    user.triggers[actionType] ||
+                    !user.createdAt ||
+                    !user.requiredAttributeToInviteBy(format) ||
+                    !user.belongsToCurrentOrg()
+                  }
+                    className={
+                      user.lastInvitationDate(format) === undefined || user.triggers[actionType] ? `btn btn-primary btn-blue invitation-${format}` : `reinvitation-${format}`
+                    }
+                  onClick={() => handleInvitationClick()}
+                >
+                    {user.triggers[actionType] ? "Invitation..."
+                      : user.lastInvitationDate(format) === undefined ? (
+                        CTA_BY_FORMAT[format]
+                      ) : (
+                        < i className="fas fa-redo-alt small-wheel d-block p-1" />
+                      )
+                    }
+                </button>
+              </div>
+            </Tippy>
           )}
         </td>
       </>

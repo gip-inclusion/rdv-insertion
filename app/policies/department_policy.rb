@@ -7,6 +7,8 @@ class DepartmentPolicy < ApplicationPolicy
 
   def index? = upload?
 
+  def batch_actions? = upload?
+
   def parcours?
     record.number.in?(ENV["DEPARTMENTS_WHERE_PARCOURS_ENABLED"].split(","))
   end

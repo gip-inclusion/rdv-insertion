@@ -17,6 +17,7 @@ class Users {
     this.configuration = null
     this.showReferentColumn = false
     this.isDepartmentLevel = false
+    this.sourcePage = ""
     makeAutoObservable(this);
   }
 
@@ -44,7 +45,7 @@ class Users {
             <input
               type="checkbox"
               className="form-check-input"
-              checked={user.selected}
+              checked={Boolean(user.selected)}
               onChange={(event) => {
                 user.selected = event.target.checked;
               }}
@@ -81,14 +82,14 @@ class Users {
       },
       {
         name: "Numéro CAF",
-        visible: this.fileColumnNames.affiliation_number_column,
+        visible: this.sourcePage === "upload" && this.fileColumnNames?.affiliation_number_column,
         content: ({ user }) => <EditableCell type="text" user={user} cell="affiliationNumber" />
       },
       {
         name: "Rôle",
         sortable: true,
         key: "role",
-        visible: this.fileColumnNames.role_column,
+        visible: (this.sourcePage === "upload" && this.fileColumnNames?.role_column) || this.sourcePage === "batchActions",
         content: ({ user }) => (
           <EditableCell
             user={user}
@@ -103,36 +104,36 @@ class Users {
       },
       {
         name: "ID Editeur",
-        visible: this.fileColumnNames.department_internal_id_column,
+        visible: this.fileColumnNames?.department_internal_id_column,
         content: ({ user }) => <EditableCell user={user} cell="departmentInternalId" />
       },
       {
         name: "NIR",
-        visible: this.fileColumnNames.nir_column,
+        visible: this.fileColumnNames?.nir_column,
         content: ({ user }) => user.nir ?? " - "
       },
       {
         name: "ID PE",
-        visible: this.fileColumnNames.france_travail_id_column,
+        visible: this.fileColumnNames?.france_travail_id_column,
         content: ({ user }) => user.franceTravailId ?? " - "
       },
       {
         name: "Email",
         key: "email",
         isInContactFile: true,
-        visible: this.fileColumnNames.email_column,
+        visible: (this.sourcePage === "upload" && this.fileColumnNames?.email_column) || this.sourcePage === "batchActions",
         content: ({ user }) => <EditableCell user={user} cell="email" />
       },
       {
         name: "Téléphone",
         key: "phoneNumber",
         isInContactFile: true,
-        visible: this.fileColumnNames.phone_number_column,
+        visible: (this.sourcePage === "upload" && this.fileColumnNames?.phone_number_column) || this.sourcePage === "batchActions",
         content: ({ user }) => <EditableCell user={user} cell="phoneNumber" />
       },
       {
         name: "Tags",
-        visible: this.fileColumnNames.tags_column,
+        visible: this.fileColumnNames?.tags_column,
         content: ({ user }) => (
           <EditableCell
             user={user}
@@ -143,14 +144,14 @@ class Users {
         )
       },
       {
-        name:  "Date d&apos;entrée flux",
+        name: "Date d&apos;entrée flux",
         key: "rightsOpeningDate",
         isInContactFile: true,
-        visible: this.fileColumnNames.rights_opening_date_column,
+        visible: this.fileColumnNames?.rights_opening_date_column,
         content: ({ user }) => <EditableCell user={user} cell="rightsOpeningDate" />
       },
       {
-        name: "Création compte",
+        name: this.sourcePage === "upload" ? "Création compte" : "Voir compte",
         attributes: { style: { whiteSpace: "nowrap" }, scope: "col" },
         content: ({ user }) => <CreationCell user={user} />
       },

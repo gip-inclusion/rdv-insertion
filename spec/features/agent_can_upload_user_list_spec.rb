@@ -105,13 +105,31 @@ describe "Agents can upload user list", :js do
 
       click_button("Inviter par SMS")
 
-      expect(page).to have_css("i.fas.fa-check")
       expect(page).to have_no_button("Inviter par SMS")
+      expect(page).to have_css("i.fas.fa-check")
+      expect(page).to have_css("i.fas.fa-redo-alt")
       expect(page).to have_button("Inviter par Email", disabled: false)
       expect(page).to have_button("Générer courrier", disabled: false)
 
       invitation = Invitation.last
 
+      expect(invitation.format).to eq("sms")
+      expect(invitation.user).to eq(user)
+      expect(invitation.motif_category).to eq(motif_category)
+
+      ### Re-invite by sms
+
+      click_button(class: "reinvitation-sms")
+
+      expect(page).to have_content("Une invitation sms a déjà été envoyée aujourd'hui à cet usager")
+      click_button("OK")
+
+      invitation = Invitation.last
+      invitation.destroy!
+
+      click_button(class: "reinvitation-sms")
+
+      expect(page).to have_no_content("Une invitation sms a déjà été envoyée aujourd'hui à cet usager")
       expect(invitation.format).to eq("sms")
       expect(invitation.user).to eq(user)
       expect(invitation.motif_category).to eq(motif_category)
@@ -124,8 +142,9 @@ describe "Agents can upload user list", :js do
 
       expect(page).to have_css("i.fas.fa-link")
       expect(page).to have_no_button("Créer compte")
-      expect(page).to have_css("i.fas.fa-check")
       expect(page).to have_no_button("Inviter par SMS")
+      expect(page).to have_css("i.fas.fa-check")
+      expect(page).to have_css("i.fas.fa-redo-alt")
 
       expect(page).to have_button("Inviter par Email", disabled: false)
       expect(page).to have_button("Générer courrier", disabled: false)
@@ -666,13 +685,31 @@ describe "Agents can upload user list", :js do
 
       click_button("Inviter par SMS")
 
-      expect(page).to have_css("i.fas.fa-check")
       expect(page).to have_no_button("Inviter par SMS")
+      expect(page).to have_css("i.fas.fa-check")
+      expect(page).to have_css("i.fas.fa-redo-alt")
       expect(page).to have_button("Inviter par Email", disabled: false)
       expect(page).to have_button("Générer courrier", disabled: false)
 
       invitation = Invitation.last
 
+      expect(invitation.format).to eq("sms")
+      expect(invitation.user).to eq(user)
+      expect(invitation.motif_category).to eq(motif_category)
+
+      ### Re-invite by sms
+
+      click_button(class: "reinvitation-sms")
+
+      expect(page).to have_content("Une invitation sms a déjà été envoyée aujourd'hui à cet usager")
+      click_button("OK")
+
+      invitation = Invitation.last
+      invitation.destroy!
+
+      click_button(class: "reinvitation-sms")
+
+      expect(page).to have_no_content("Une invitation sms a déjà été envoyée aujourd'hui à cet usager")
       expect(invitation.format).to eq("sms")
       expect(invitation.user).to eq(user)
       expect(invitation.motif_category).to eq(motif_category)
@@ -685,8 +722,9 @@ describe "Agents can upload user list", :js do
 
       expect(page).to have_css("i.fas.fa-link")
       expect(page).to have_no_button("Créer compte")
-      expect(page).to have_css("i.fas.fa-check")
       expect(page).to have_no_button("Inviter par SMS")
+      expect(page).to have_css("i.fas.fa-check")
+      expect(page).to have_css("i.fas.fa-redo-alt")
 
       expect(page).to have_button("Inviter par Email", disabled: false)
       expect(page).to have_button("Générer courrier", disabled: false)
@@ -700,7 +738,6 @@ describe "Agents can upload user list", :js do
           attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
                       make_visible: true)
 
-          first('input[type="checkbox"]', visible: :visible).click
           click_button("Actions pour toute la sélection")
           expect(page).to have_no_css("td i.fas.fa-link")
 
@@ -716,12 +753,12 @@ describe "Agents can upload user list", :js do
           attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
                       make_visible: true)
 
-          first('input[type="checkbox"]', visible: :visible).click
           click_button("Actions pour toute la sélection")
-          expect(page).to have_no_css("td i.fas.fa-check")
+          expect(page).to have_no_button("Réinviter par SMS")
 
           click_button("Invitation par sms")
-          expect(page).to have_css("td i.fas.fa-check")
+          expect(page).to have_css("i.fas.fa-check")
+          expect(page).to have_css("i.fas.fa-redo-alt")
         end
       end
 
@@ -740,7 +777,6 @@ describe "Agents can upload user list", :js do
             attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"),
                         make_visible: true)
 
-            first('input[type="checkbox"]', visible: :visible).click
             click_button("Actions pour toute la sélection")
             expect(page).to have_no_css("td i.fas.fa-check")
 
@@ -756,7 +792,6 @@ describe "Agents can upload user list", :js do
             attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test_invalid.xlsx"),
                         make_visible: true)
 
-            first('input[type="checkbox"]', visible: :visible).click
             click_button("Actions pour toute la sélection")
             expect(page).to have_no_css("tr.table-danger")
 

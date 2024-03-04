@@ -1,4 +1,4 @@
-describe UploadsController do
+describe Users::UploadsController do
   let!(:department) { create(:department) }
   let!(:organisation) { create(:organisation, department: department) }
   let!(:agent) { create(:agent, organisations: [organisation]) }
