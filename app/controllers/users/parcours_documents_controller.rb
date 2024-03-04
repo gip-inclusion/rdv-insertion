@@ -6,8 +6,8 @@ module Users
     before_action :set_parcours_document, only: [:destroy, :show]
 
     def show
-      authorize @parcours_document, :show?
-      redirect_to @parcours_document.file.url
+      authorize @parcours_document
+      redirect_to @parcours_document.file.url, allow_other_host: true
     end
 
     def create
@@ -25,7 +25,7 @@ module Users
     end
 
     def destroy
-      authorize @parcours_document, :destroy?
+      authorize @parcours_document
 
       if @parcours_document.destroy
         turbo_stream_remove(@parcours_document)
