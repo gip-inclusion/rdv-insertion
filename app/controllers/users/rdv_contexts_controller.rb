@@ -6,7 +6,6 @@ module Users
     include BackToListConcern
 
     def index
-      debugger
       @rdv_contexts =
         RdvContext.preload(
           :invitations, participations: [:notifications, { rdv: [:motif, :organisation] }]
