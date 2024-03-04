@@ -1,7 +1,15 @@
 module Users
   class ParcoursDocumentsController < ApplicationController
+    # Needed to generate ActiveStorage urls locally, it sets the host and protocol
+    include ActiveStorage::SetCurrent
+
     before_action :set_user
-    before_action :set_parcours_document, only: :destroy
+    before_action :set_parcours_document, only: [:destroy, :show]
+
+    def show
+      authorize @parcours_document
+      redirect_to @parcours_document.file.url, allow_other_host: true
+    end
 
     def create
       @parcours_document = ParcoursDocument.create(parcours_document_params)
@@ -18,6 +26,8 @@ module Users
     end
 
     def destroy
+      authorize @parcours_document
+
       if @parcours_document.destroy
         turbo_stream_remove(@parcours_document)
       else
@@ -36,7 +46,6 @@ module Users
 
     def set_parcours_document
       @parcours_document = ParcoursDocument.find(params[:id])
-      authorize @parcours_document, :destroy?
     end
 
     def set_user
