@@ -22,8 +22,9 @@ module Users
 
     def set_user
       @user = policy_scope(User).preload(
-        :invitations, :referents, :archives, :tags,
-        organisations: [:department, :motif_categories], rdv_contexts: :participations
+        :invitations, :referents, :archives,
+        organisations: [:department, :motif_categories], rdv_contexts: :participations,
+        tags: [:tag_organisations]
       ).find(params[:user_id])
     end
 
