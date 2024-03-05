@@ -3,14 +3,14 @@ class CsvExportsController < ApplicationController
   include ActiveStorage::SetCurrent
 
   def show
-    @csv_export = CsvExport.find(params[:id])
-    authorize @csv_export
+    csv_export = CsvExport.find(params[:id])
+    authorize csv_export
 
-    if @csv_export.expired?
+    if csv_export.expired?
       flash[:alert] = "Ce fichier CSV a expiré"
       redirect_to root_path
     else
-      redirect_to @csv_export.file.url, allow_other_host: true
+      redirect_to csv_export.file.url, allow_other_host: true
     end
   end
 end
