@@ -6,11 +6,17 @@ class Participation < ApplicationRecord
   belongs_to :rdv
   belongs_to :rdv_context
   belongs_to :user
+  belongs_to :agent_prescripteur,
+             class_name: "Agent",
+             primary_key: "rdv_solidarites_agent_id",
+             foreign_key: "rdv_solidarites_agent_prescripteur_id",
+             optional: true
 
   has_many :notifications, dependent: :nullify
   has_many :rdv_context_invitations, through: :rdv_context, source: :invitations
 
   has_one :organisation, through: :rdv
+
   has_many :configurations, through: :organisation
 
   validates :status, presence: true
