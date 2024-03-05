@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 class User < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [
     :first_name, :last_name, :birth_date, :email, :phone_number, :address, :affiliation_number, :birth_name
@@ -59,6 +60,7 @@ class User < ApplicationRecord
   enum created_through: { rdv_insertion: 0, rdv_solidarites: 1 }, _prefix: true
 
   scope :active, -> { where(deleted_at: nil) }
+  scope :deleted, -> { where.not(deleted_at: nil) }
   scope :without_rdv_contexts, lambda { |motif_categories|
     where.not(id: joins(:rdv_contexts).where(rdv_contexts: { motif_category: motif_categories }).ids)
   }
@@ -104,7 +106,9 @@ class User < ApplicationRecord
       france_travail_id: nil,
       nir: nil,
       email: nil,
-      phone_number: nil
+      phone_number: nil,
+      old_rdv_solidarites_user_id: rdv_solidarites_user_id,
+      rdv_solidarites_user_id: nil
     )
   end
 
@@ -151,3 +155,4 @@ class User < ApplicationRecord
     errors.add(:birth_date, "n'est pas valide")
   end
 end
+# rubocop:enable Metrics/ClassLength
