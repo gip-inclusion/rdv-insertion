@@ -43,7 +43,7 @@ describe Exporters::GenerateUsersCsv, type: :service do
                  participations: [participation_rdv])
   end
 
-  let!(:participation_rdv) { create(:participation, user: user1, status: "seen", created_at: "2022-05-23") }
+  let!(:participation_rdv) { create(:participation, user: user1, status: "seen") }
 
   let!(:first_invitation) do
     create(:invitation, user: user1, format: "email", created_at: Time.zone.parse("2022-05-21"))
@@ -58,7 +58,8 @@ describe Exporters::GenerateUsersCsv, type: :service do
     create(
       :rdv_context, invitations: [first_invitation, last_invitation],
                     motif_category: motif_category, participations: [participation_rdv],
-                    user: user1, status: "rdv_needs_status_update"
+                    user: user1, status: "rdv_needs_status_update",
+                    created_at: Time.zone.parse("2022-05-08")
     )
   end
   let!(:referent) do
@@ -109,7 +110,8 @@ describe Exporters::GenerateUsersCsv, type: :service do
         expect(csv).to include("Motif du dernier RDV")
         expect(csv).to include("Nature du dernier RDV")
         expect(csv).to include("Dernier RDV pris en autonomie ?")
-        expect(csv).to include("RDV honoré en - de 30 jours ?")
+        expect(csv).to include("Rendez-vous d'orientation (RSA) honoré en - moins de 30 jours?")
+        expect(csv).to include("Rendez-vous d'orientation (RSA) honoré en - moins de 15 jours?")
         expect(csv).to include("Date d'orientation")
         expect(csv).to include("Référent(s)")
         expect(csv).to include("Nombre d'organisations")
@@ -167,8 +169,9 @@ describe Exporters::GenerateUsersCsv, type: :service do
           expect(csv).to include("individuel;Oui") # last rdv taken in autonomy ?
           expect(csv).to include("Rendez-vous honoré") # rdv status
           expect(csv).to include("Statut du RDV à préciser") # rdv_context status
-          expect(csv).to include("Statut du RDV à préciser;Oui") # first rdv in less than 30 days ?
-          expect(csv).to include("Rendez-vous honoré;Statut du RDV à préciser;Oui;23/05/2022") # orientation date
+          # oriented in less than 30 days ?; oriented in less than 15 days?
+          expect(csv).to include("Statut du RDV à préciser;Oui;Non")
+          expect(csv).to include("Rendez-vous honoré;Statut du RDV à préciser;Oui;Non;25/05/2022") # orientation date
         end
 
         it "displays the organisation infos" do

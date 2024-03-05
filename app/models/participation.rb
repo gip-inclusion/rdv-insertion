@@ -21,11 +21,12 @@ class Participation < ApplicationRecord
 
   enum created_by: { agent: "agent", user: "user", prescripteur: "prescripteur" }, _prefix: :created_by
 
-  delegate :department, :starts_at, :motif_name,
+  delegate :starts_at, :motif_name,
            :rdv_solidarites_url, :rdv_solidarites_rdv_id, :instruction_for_rdv,
            to: :rdv
+  delegate :department, :department_id, to: :organisation
   delegate :phone_number_is_mobile?, :email?, to: :user
-  delegate :motif_category, to: :rdv_context
+  delegate :motif_category, :orientation?, to: :rdv_context
 
   def notifiable?
     convocable? && in_the_future? && status.in?(%w[unknown revoked])

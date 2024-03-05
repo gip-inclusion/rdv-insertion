@@ -60,7 +60,7 @@ class RdvContext < ApplicationRecord
   end
 
   def orientation?
-    leads_to_orientation?
+    motif_category.leads_to_orientation?
   end
 
   def human_status

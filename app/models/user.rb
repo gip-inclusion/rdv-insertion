@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 class User < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [
     :first_name, :last_name, :birth_date, :email, :phone_number, :address, :affiliation_number, :birth_name
@@ -40,7 +41,7 @@ class User < ApplicationRecord
   has_many :notifications, through: :participations
   has_many :configurations, through: :organisations
   has_many :motif_categories, through: :rdv_contexts
-  has_many :departments, through: :organisations
+  has_many :departments, -> { distinct }, through: :organisations
   has_many :tags, through: :tag_users
 
   accepts_nested_attributes_for :rdv_contexts, reject_if: :rdv_context_category_handled_already?
@@ -126,6 +127,10 @@ class User < ApplicationRecord
     rdv_contexts.select(&:orientation?).min_by(&:created_at)
   end
 
+  def in_many_departments?
+    organisations.map(&:department_id).uniq.length > 1
+  end
+
   private
 
   def rdv_context_category_handled_already?(rdv_context_attributes)
@@ -149,3 +154,4 @@ class User < ApplicationRecord
     errors.add(:birth_date, "n'est pas valide")
   end
 end
+# rubocop:enable Metrics/ClassLength
