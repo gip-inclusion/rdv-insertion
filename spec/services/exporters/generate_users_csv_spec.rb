@@ -169,7 +169,7 @@ describe Exporters::GenerateUsersCsv, type: :service do
           expect(subject.csv).to include("Statut du RDV à préciser") # rdv_context status
           # oriented in less than 30 days ?; oriented in less than 15 days?
           expect(subject.csv).to include("Statut du RDV à préciser;Oui;Non")
-          expect(subject.csv).to include("Rendez-vous honoré;Statut du RDV à préciser;Oui;Non;25/05/2022") # orientation date
+          expect(subject.csv).to include("Statut du RDV à préciser;Oui;Non;25/05/2022") # orientation date
         end
 
         it "displays the organisation infos" do

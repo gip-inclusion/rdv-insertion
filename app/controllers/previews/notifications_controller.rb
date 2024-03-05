@@ -33,7 +33,8 @@ module Previews
       @notification = Notification.new(
         participation: Participation.new(
           rdv: @rdv,
-          rdv_context: RdvContext.new(motif_category: @motif_category)
+          rdv_context: RdvContext.new(motif_category: @motif_category),
+          organisation: @organisation
         )
       )
     end
