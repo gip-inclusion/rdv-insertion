@@ -1,5 +1,7 @@
 module Users
   class SyncWithRdvSolidarites < BaseService
+    attr_reader :rdv_solidarites_user_id
+
     def initialize(user:)
       @user = user.reload # we need to be sure the associations are correctly loaded
       @rdv_solidarites_user_id = @user.rdv_solidarites_user_id
@@ -76,7 +78,7 @@ module Users
     def sync_organisations
       @sync_organisations ||= call_service!(
         RdvSolidaritesApi::CreateUserProfiles,
-        rdv_solidarites_user_id: @rdv_solidarites_user_id,
+        rdv_solidarites_user_id: rdv_solidarites_user_id,
         rdv_solidarites_organisation_ids: rdv_solidarites_organisation_ids
       )
     end
@@ -84,7 +86,7 @@ module Users
     def sync_referents
       @sync_referents ||= call_service!(
         RdvSolidaritesApi::CreateReferentAssignations,
-        rdv_solidarites_user_id: @rdv_solidarites_user_id,
+        rdv_solidarites_user_id: rdv_solidarites_user_id,
         rdv_solidarites_agent_ids: referent_rdv_solidarites_ids
       )
     end
@@ -93,7 +95,7 @@ module Users
       @update_rdv_solidarites_user ||= call_service!(
         RdvSolidaritesApi::UpdateUser,
         user_attributes: rdv_solidarites_user_attributes,
-        rdv_solidarites_user_id: @rdv_solidarites_user_id
+        rdv_solidarites_user_id: rdv_solidarites_user_id
       )
     end
 
