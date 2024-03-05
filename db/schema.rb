@@ -10,10 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_20_123509) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_05_094354) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
+  
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -112,6 +112,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_20_123509) do
     t.index ["file_configuration_id"], name: "index_configurations_on_file_configuration_id"
     t.index ["motif_category_id"], name: "index_configurations_on_motif_category_id"
     t.index ["organisation_id"], name: "index_configurations_on_organisation_id"
+  end
+
+  create_table "csv_exports", force: :cascade do |t|
+    t.bigint "agent_id", null: false
+    t.string "structure_type", null: false
+    t.bigint "structure_id", null: false
+    t.integer "motif_category_id"
+    t.string "kind", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agent_id"], name: "index_csv_exports_on_agent_id"
+    t.index ["structure_type", "structure_id"], name: "index_csv_exports_on_structure"
   end
 
   create_table "departments", force: :cascade do |t|
@@ -501,6 +513,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_20_123509) do
   add_foreign_key "configurations", "file_configurations"
   add_foreign_key "configurations", "motif_categories"
   add_foreign_key "configurations", "organisations"
+  add_foreign_key "csv_exports", "agents"
   add_foreign_key "invitations", "departments"
   add_foreign_key "invitations", "rdv_contexts"
   add_foreign_key "invitations", "users"

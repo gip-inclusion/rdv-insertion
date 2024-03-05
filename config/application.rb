@@ -21,7 +21,7 @@ module RdvInsertion
     config.i18n.default_locale = :fr
     config.i18n.load_path += Dir[Rails.root.join("config/locales/**/*.{rb,yml}")]
     config.exceptions_app = routes
-    config.active_storage.draw_routes = false
+    config.active_storage.draw_routes = false unless Rails.env.development?
 
     # The following keys are generated using the following command:
     # bundle exec rails db:encryption:init
