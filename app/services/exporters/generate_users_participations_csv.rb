@@ -22,6 +22,7 @@ module Exporters
 
       @users = @users.preload(
         participations: [
+          :agent_prescripteur,
           :organisation,
           {
             rdv_context: [
@@ -58,6 +59,10 @@ module Exporters
        User.human_attribute_name(:created_at),
        User.human_attribute_name(:rights_opening_date),
        User.human_attribute_name(:role),
+       "Rendez-vous prescrit ? (interne)",
+       "Prénom du prescripteur (interne)",
+       "Nom du prescripteur (interne)",
+       "Mail du prescripteur (interne)",
        User.human_attribute_name(:tags)]
     end
 
@@ -86,6 +91,10 @@ module Exporters
        display_date(user.created_at),
        display_date(user.rights_opening_date),
        user.role,
+       participation.agent_prescripteur.present? ? "oui" : "non",
+       participation.agent_prescripteur&.first_name,
+       participation.agent_prescripteur&.last_name,
+       participation.agent_prescripteur&.email,
        user.tags.pluck(:value).join(", ")]
     end
 

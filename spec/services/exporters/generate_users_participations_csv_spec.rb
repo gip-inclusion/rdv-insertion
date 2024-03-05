@@ -6,6 +6,7 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
   let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation") }
   let!(:department) { create(:department, name: "Drôme", number: "26") }
   let!(:organisation) { create(:organisation, name: "Drome RSA", department: department) }
+  let!(:organisation_prescripteur) { create(:organisation, name: "Ailleurs", department: department) }
   let!(:structure) { organisation }
   let!(:configuration) { create(:configuration, organisation: organisation, motif_category: motif_category) }
   let!(:nir) { generate_random_nir }
@@ -33,6 +34,11 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
   let(:user2) { create(:user, last_name: "Casubolo", organisations: [organisation]) }
   let(:user3) { create(:user, last_name: "Blanc", organisations: [organisation]) }
   let!(:agent) { create(:agent, organisations: [organisation]) }
+  let!(:agent_prescripteur) do
+    create(:agent, first_name: "Georges", last_name: "Prescipteur", email: "g@prescripteur.fr",
+                   rdv_solidarites_agent_id: 123,
+                   organisations: [organisation_prescripteur])
+  end
 
   let!(:rdv) do
     create(:rdv, starts_at: Time.zone.parse("2022-05-25"),
@@ -42,6 +48,15 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
   end
   let!(:participation_rdv) { create(:participation, user: user1, status: "seen") }
 
+  let!(:rdv_prescrit) do
+    create(:rdv, starts_at: Time.zone.parse("2022-05-25"),
+                 created_by: "agent",
+                 organisation: organisation,
+                 participations: [participation_rdv_prescrit])
+  end
+  let!(:participation_rdv_prescrit) do
+    create(:participation, user: user2, status: "seen", rdv_solidarites_agent_prescripteur_id: 123)
+  end
   let!(:first_invitation) do
     create(:invitation, user: user1, format: "email", created_at: Time.zone.parse("2022-05-21"))
   end
@@ -102,15 +117,21 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
         expect(csv).to include("Date de création")
         expect(csv).to include("Date d'entrée flux")
         expect(csv).to include("Rôle")
+        expect(csv).to include("Rendez-vous prescrit ? (interne)")
+        expect(csv).to include("Prénom du prescripteur (interne)")
+        expect(csv).to include("Nom du prescripteur (interne)")
+        expect(csv).to include("Mail du prescripteur (interne)")
+        expect(csv).to include("Tags")
       end
 
       context "it exports all the concerned users" do
         it "generates one line for each participation" do
-          expect(csv.scan(/(?=\n)/).count).to eq(2) # one line per participation + 1 line of headers
+          expect(csv.scan(/(?=\n)/).count).to eq(3) # one line per participation + 1 line of headers
         end
 
         it "displays all participations" do
           expect(csv).to include("Doe")
+          expect(csv).to include("Casubolo")
         end
       end
 
@@ -151,6 +172,19 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
 
         it "displays the referent emails" do
           expect(csv).to include("monreferent@gouv.fr")
+        end
+      end
+
+      context "it displays the right attributes for a prescribed participation row" do
+        let!(:users) { User.where(id: [user2]) }
+
+        it "displays the prescripteur attributes" do
+          expect(csv.scan(/(?=\n)/).count).to eq(2) # we check there is only one user for this test
+          expect(csv).to include("Casubolo")
+          expect(csv).to include("oui")
+          expect(csv).to include("Georges")
+          expect(csv).to include("Prescipteur")
+          expect(csv).to include("g@prescripteur.fr")
         end
       end
 
