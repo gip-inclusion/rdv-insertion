@@ -5,8 +5,9 @@ export default class extends Controller {
     this.input = this.element.querySelector("input")
     this.dropdown = this.element.querySelector(".autocomplete")
     this.disableAutocomplete()
-    
+
     this.input.addEventListener("keyup", () => this.triggerAutocomplete())
+    this.element.parentElement.addEventListener("submit", () => this.disableAutocomplete())
     this.element.querySelectorAll("button").forEach((button) => {
       button.addEventListener("click", (event) => this.selectValue(event))
     })
