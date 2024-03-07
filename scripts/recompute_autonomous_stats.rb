@@ -1,6 +1,6 @@
 Stat.find_each do |stat|
   stat.rate_of_autonomous_users =
-    Stats::ComputeRateOfAutonomousUsers.call(users: stat.invited_users_sample).value
+    Stats::ComputeRateOfAutonomousUsers.call(users: stat.invited_users_set).value
 
   date = stat.statable&.created_at || Time.zone.parse("01/01/2022 12:00")
   stat.rate_of_autonomous_users_grouped_by_month = {}
@@ -9,7 +9,7 @@ Stat.find_each do |stat|
     autonomous_rate = stat.rate_of_autonomous_users_grouped_by_month
     autonomous_rate_for_date =
       Stats::ComputeRateOfAutonomousUsers.call(
-        users: stat.invited_users_sample.where(created_at: date.all_month)
+        users: stat.invited_users_set.where(created_at: date.all_month)
       ).value.round
 
     # We don't want to start the hash until we have a value

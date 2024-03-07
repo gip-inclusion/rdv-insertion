@@ -43,12 +43,15 @@ module Exporters
         if @motif_category
           User.preload(
             :archives, :organisations, :tags, :referents, :rdvs,
-            rdv_contexts: [:invitations, :notifications, { rdvs: [:motif, :participations, :users] }]
+            participations: [:organisation, :rdv_context],
+            rdv_contexts: [:invitations, :motif_category, :notifications, { rdvs: [:motif, :participations, :users] }]
           ).find(@user_ids)
         else
           User.preload(
             :invitations, :notifications, :archives, :organisations, :tags, :referents,
-            rdvs: [:motif, :participations, :users]
+            rdv_contexts: [:motif_category, :participations, :rdvs],
+            participations: [:organisation, :rdv, { rdv_context: :motif_category }],
+            rdvs: [:motif, :participations]
           ).find(@user_ids)
         end
     end
@@ -78,7 +81,8 @@ module Exporters
        "Dernier RDV pris en autonomie ?",
        Rdv.human_attribute_name(:status),
        *(RdvContext.human_attribute_name(:status) if @motif_category),
-       "1er RDV honoré en - de 30 jours ?",
+       "Rendez-vous d'orientation (RSA) honoré en - moins de 30 jours?",
+       "Rendez-vous d'orientation (RSA) honoré en - moins de 15 jours?",
        "Date d'orientation",
        Archive.human_attribute_name(:created_at),
        Archive.human_attribute_name(:archiving_reason),
@@ -113,7 +117,8 @@ module Exporters
        rdv_taken_in_autonomy?(user),
        human_last_participation_status(user),
        *(human_rdv_context_status(user) if @motif_category),
-       rdv_seen_in_less_than_30_days?(user),
+       oriented_in_less_than_n_days?(user, 30),
+       oriented_in_less_than_n_days?(user, 15),
        orientation_date(user),
        display_date(user.archive_for(department_id)&.created_at),
        user.archive_for(department_id)&.archiving_reason,
@@ -187,8 +192,9 @@ module Exporters
 
     def last_rdv(user)
       rdvs = @motif_category.present? ? rdv_context_for_export(user)&.rdvs : user.rdvs
+      return if rdvs.blank?
 
-      RdvPolicy::Scope.new(agent, rdvs).resolve.latest if rdvs.present?
+      rdvs.select { |rdv| Pundit.policy!(agent, rdv).show? }.max_by(&:starts_at)
     end
 
     def last_participation(user)
@@ -206,16 +212,11 @@ module Exporters
     end
 
     def orientation_date(user)
-      scoped_participations = user.participations.joins(:organisation).where(organisations: { department_id: })
-      created_at = scoped_participations
-                   .seen
-                   .joins(:rdv_context)
-                   .joins("INNER JOIN motif_categories ON motif_categories.id = rdv_contexts.motif_category_id")
-                   .where(motif_categories: { leads_to_orientation: true })
-                   .order(created_at: :asc)
-                   .first&.created_at
+      orientation = user.participations.select do |participation|
+        participation.seen? && participation.orientation? && participation.department_id == department_id
+      end.min_by(&:starts_at)
 
-      display_date(created_at)
+      display_date(orientation&.starts_at)
     end
 
     def rdv_taken_in_autonomy?(user)
@@ -224,8 +225,13 @@ module Exporters
       I18n.t("boolean.#{last_participation(user).created_by_user?}")
     end
 
-    def rdv_seen_in_less_than_30_days?(user)
-      I18n.t("boolean.#{user.rdv_seen_delay_in_days.present? && user.rdv_seen_delay_in_days < 30}")
+    def oriented_in_less_than_n_days?(user, number_of_days)
+      return "Non calculable" if user.in_many_departments?
+
+      rdv_context = user.first_orientation_rdv_context
+      result = rdv_context.present? && rdv_context.rdv_seen_delay_in_days.present? &&
+               rdv_context.rdv_seen_delay_in_days < number_of_days
+      I18n.t("boolean.#{result}")
     end
 
     def rdv_context_for_export(user)

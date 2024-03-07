@@ -71,7 +71,7 @@ class Rdv < ApplicationRecord
   end
 
   def participation_for(user)
-    participations.find { |p| p.user == user }
+    participations.find { |p| p.user_id == user.id }
   end
 
   def add_user_url(rdv_solidarites_user_id)

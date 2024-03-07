@@ -41,7 +41,7 @@ class User < ApplicationRecord
   has_many :notifications, through: :participations
   has_many :configurations, through: :organisations
   has_many :motif_categories, through: :rdv_contexts
-  has_many :departments, through: :organisations
+  has_many :departments, -> { distinct }, through: :organisations
   has_many :tags, through: :tag_users
 
   accepts_nested_attributes_for :rdv_contexts, reject_if: :rdv_context_category_handled_already?
@@ -65,12 +65,6 @@ class User < ApplicationRecord
     where.not(id: joins(:rdv_contexts).where(rdv_contexts: { motif_category: motif_categories }).ids)
   }
   scope :with_sent_invitations, -> { where.associated(:invitations) }
-
-  def rdv_seen_delay_in_days
-    return if first_seen_rdv_starts_at.blank?
-
-    first_seen_rdv_starts_at.to_datetime.mjd - created_at.to_datetime.mjd
-  end
 
   def participation_for(rdv)
     participations.to_a.find { |participation| participation.rdv_id == rdv.id }
@@ -130,6 +124,14 @@ class User < ApplicationRecord
 
   def organisations_motif_category_ids
     organisations.map(&:motif_category_ids).flatten
+  end
+
+  def first_orientation_rdv_context
+    rdv_contexts.select(&:orientation?).min_by(&:created_at)
+  end
+
+  def in_many_departments?
+    organisations.map(&:department_id).uniq.length > 1
   end
 
   private
