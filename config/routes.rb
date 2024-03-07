@@ -164,6 +164,8 @@ Rails.application.routes.draw do
   get "422", to: "errors#unprocessable_entity"
   get "500", to: "errors#internal_server_error"
 
+  # draw routes for logos uploaded on Scaleway
+  resources :uploaded_logos, only: [:show]
   # redirect logos that used to be served through webpacker
   get "/packs/media/images/logos/*old_path", to: "asset_redirections#new", format: false
 

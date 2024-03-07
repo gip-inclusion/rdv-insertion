@@ -1,6 +1,6 @@
 class InvitationMailer < ApplicationMailer
   before_action :set_invitation, :set_user, :set_department, :set_signature_lines,
-                :set_organisation_logo, :set_department_logo
+                :set_organisation_logo_path, :set_department_logo_path
 
   before_action :set_rdv_title, :set_user_designation, :set_mandatory_warning, :set_punishable_warning,
                 :set_rdv_purpose, :set_rdv_subject, :set_custom_sentence
@@ -81,16 +81,16 @@ class InvitationMailer < ApplicationMailer
     @signature_lines = @invitation.messages_configuration&.signature_lines
   end
 
-  def set_organisation_logo
+  def set_organisation_logo_path
     return if @invitation.organisations.length != 1 || first_organisation.logo.blank?
 
-    @organisation_logo = first_organisation.logo
+    @organisation_logo_path = uploaded_logo_path(first_organisation.logo)
   end
 
-  def set_department_logo
+  def set_department_logo_path
     return if @department.logo.blank?
 
-    @department_logo = @department.logo
+    @department_logo_path = uploaded_logo_path(@department.logo)
   end
 
   def set_rdv_title
