@@ -814,12 +814,12 @@ describe UsersController do
 
     context "when csv request" do
       before do
-        allow(Exporters::SendUsersCsvJob).to receive(:perform_async)
+        allow(Exporters::CreateUsersCsvExportJobJob).to receive(:perform_async)
           .and_return(OpenStruct.new)
       end
 
       it "calls the service" do
-        expect(Exporters::SendUsersCsvJob).to receive(:perform_async)
+        expect(Exporters::CreateUsersCsvExportJobJob).to receive(:perform_async)
         get :index, params: index_params.merge(format: :csv)
       end
 
@@ -840,7 +840,7 @@ describe UsersController do
 
       context "when the csv creation succeeds" do
         before do
-          allow(Exporters::SendUsersCsvJob).to receive(:perform_async)
+          allow(Exporters::CreateUsersCsvExportJobJob).to receive(:perform_async)
         end
 
         it "redirects to users page" do

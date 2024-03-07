@@ -12,12 +12,14 @@
 
 ActiveRecord::Schema[7.1].define(version: 2024_03_05_094354) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pgcrypto"
   enable_extension "plpgsql"
+  enable_extension "uuid-ossp"
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
-    t.bigint "record_id", null: false
+    t.integer "record_id", null: false
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
     t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
@@ -119,7 +121,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_05_094354) do
     t.string "structure_type", null: false
     t.bigint "structure_id", null: false
     t.integer "motif_category_id"
-    t.string "kind", null: false
+    t.integer "kind"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["agent_id"], name: "index_csv_exports_on_agent_id"

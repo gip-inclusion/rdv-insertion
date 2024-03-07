@@ -1,5 +1,7 @@
 module Exporters
-  class SendUsersParticipationsCsvJob < SendUsersCsvJob
+  class CreateUsersParticipationsCsvExportJob < CreateUsersCsvExportJobJob
+    EXPORT_KIND = :users_participations_csv
+
     private
 
     def generate_csv

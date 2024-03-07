@@ -4,6 +4,8 @@ class CsvExport < ApplicationRecord
 
   has_one_attached :file
 
+  enum kind: { users_csv: 0, users_participations_csv: 1 }
+
   VALIDITY_PERIOD = 2.days
 
   after_create do

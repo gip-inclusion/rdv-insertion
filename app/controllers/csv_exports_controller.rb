@@ -1,7 +1,4 @@
 class CsvExportsController < ApplicationController
-  # Needed to generate ActiveStorage urls locally, it sets the host and protocol
-  include ActiveStorage::SetCurrent
-
   def show
     csv_export = CsvExport.find(params[:id])
     authorize csv_export
