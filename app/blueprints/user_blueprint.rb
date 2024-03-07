@@ -9,11 +9,26 @@ class UserBlueprint < Blueprinter::Base
   end
 
   view :extended do
-    association :invitations, blueprint: InvitationBlueprint
     association :organisations, blueprint: OrganisationBlueprint
-    association :rdv_contexts, blueprint: RdvContextBlueprint
     association :referents, blueprint: AgentBlueprint
     association :archives, blueprint: ArchiveBlueprint
-    association :tags, blueprint: TagBlueprint
+
+    association :invitations, blueprint: InvitationBlueprint do |user, _options|
+      user.invitations.select do |invitation|
+        Pundit.policy!(Current.agent, invitation).show?
+      end
+    end
+
+    association :rdv_contexts, blueprint: RdvContextBlueprint do |user, _options|
+      user.rdv_contexts.select do |rdv_context|
+        Pundit.policy!(Current.agent, rdv_context).show?
+      end
+    end
+
+    association :tags, blueprint: TagBlueprint do |user, _options|
+      user.tags.select do |tag|
+        Pundit.policy!(Current.agent, tag).show?
+      end
+    end
   end
 end

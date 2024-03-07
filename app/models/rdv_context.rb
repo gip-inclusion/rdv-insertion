@@ -59,6 +59,10 @@ class RdvContext < ApplicationRecord
     closed_at.present?
   end
 
+  def orientation?
+    motif_category.leads_to_orientation?
+  end
+
   def human_status
     I18n.t("activerecord.attributes.rdv_context.statuses.#{status}")
   end

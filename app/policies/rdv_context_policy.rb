@@ -14,4 +14,8 @@ class RdvContextPolicy < ApplicationPolicy
   def reopen?
     close?
   end
+
+  def show?
+    record.motif_category_id.in?(pundit_user.motif_category_ids)
+  end
 end

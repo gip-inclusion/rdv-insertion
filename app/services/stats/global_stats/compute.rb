@@ -33,7 +33,7 @@ module Stats
       end
 
       def users_with_rdv_count
-        @stat.user_ids_with_rdv_sample.count
+        @stat.user_ids_with_rdv_set.count
       end
 
       def rdvs_count
@@ -41,49 +41,49 @@ module Stats
       end
 
       def sent_invitations_count
-        @stat.invitations_sample.count
+        @stat.invitations_set.count
       end
 
       def rate_of_no_show_for_invitations
-        ComputeRateOfNoShow.call(participations: @stat.participations_after_invitations_sample).value
+        ComputeRateOfNoShow.call(participations: @stat.participations_after_invitations_set).value
       end
 
       def rate_of_no_show_for_convocations
-        ComputeRateOfNoShow.call(participations: @stat.participations_with_notifications_sample).value
+        ComputeRateOfNoShow.call(participations: @stat.participations_with_notifications_set).value
       end
 
       def average_time_between_invitation_and_rdv_in_days
         ComputeAverageTimeBetweenInvitationAndRdvInDays.call(
-          rdv_contexts: @stat.rdv_contexts_with_invitations_and_participations_sample
+          rdv_contexts: @stat.rdv_contexts_with_invitations_and_participations_set
         ).value
       end
 
       def rate_of_users_oriented_in_less_than_30_days
-        ComputeRateOfUsersWithRdvSeenInLessThanNDays.call(
-          users: @stat.users_with_orientation_category_sample, number_of_days: 30
+        ComputeRateOfRdvSeenInLessThanNDays.call(
+          rdv_contexts: @stat.users_first_orientation_rdv_context, number_of_days: 30
         ).value
       end
 
       def rate_of_users_oriented_in_less_than_15_days
-        ComputeRateOfUsersWithRdvSeenInLessThanNDays.call(
-          users: @stat.users_with_orientation_category_sample, number_of_days: 15
+        ComputeRateOfRdvSeenInLessThanNDays.call(
+          rdv_contexts: @stat.users_first_orientation_rdv_context, number_of_days: 15
         ).value
       end
 
       def rate_of_users_oriented
         ComputeRateOfUsersWithRdvSeen.call(
-          rdv_contexts: @stat.orientation_rdv_contexts_sample
+          rdv_contexts: @stat.orientation_rdv_contexts_with_invitations
         ).value
       end
 
       def rate_of_autonomous_users
         ComputeRateOfAutonomousUsers.call(
-          users: @stat.invited_users_sample
+          users: @stat.invited_users_set
         ).value
       end
 
       def agents_count
-        @stat.agents_sample.count
+        @stat.agents_set.count
       end
     end
   end

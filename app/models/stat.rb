@@ -17,12 +17,12 @@ class Stat < ApplicationRecord
     statable.nil? ? Participation.all : statable.participations
   end
 
-  def invitations_sample
-    @invitations_sample ||= statable.nil? ? Invitation.all : statable.invitations
+  def invitations_set
+    @invitations_set ||= statable.nil? ? Invitation.all : statable.invitations
   end
 
   # We filter the participations to only keep the participations of the users in the scope
-  def participations_sample
+  def participations_set
     participations = all_participations
                      .where.not(user_id: archived_user_ids)
                      .joins(:user)
@@ -36,45 +36,45 @@ class Stat < ApplicationRecord
     participations
   end
 
-  def user_ids_with_rdv_sample
-    participations_sample.where(status: %w[seen unknown])
-                         .select(:user_id)
-                         .distinct
+  def user_ids_with_rdv_set
+    participations_set.where(status: %w[seen unknown])
+                      .select(:user_id)
+                      .distinct
   end
 
   # We filter participations to keep only convocations
-  def participations_with_notifications_sample
-    participations_sample.joins(:notifications).select("participations.id, participations.status").distinct
+  def participations_with_notifications_set
+    participations_set.joins(:notifications).select("participations.id, participations.status").distinct
   end
 
   # We filter participations to keep only invitations
-  def participations_after_invitations_sample
-    participations_sample.where.missing(:notifications)
-                         .joins(:rdv_context_invitations)
-                         .select("participations.id, participations.status")
-                         .distinct
+  def participations_after_invitations_set
+    participations_set.where.missing(:notifications)
+                      .joins(:rdv_context_invitations)
+                      .select("participations.id, participations.status")
+                      .distinct
   end
 
   # We exclude the rdvs collectifs motifs to correctly compute the rate of autonomous users
-  def rdvs_non_collectifs_sample
+  def rdvs_non_collectifs_set
     Rdv.where(motif: Motif.individuel).distinct
   end
 
-  def invited_users_sample
-    @invited_users_sample ||= users_sample.with_sent_invitations.distinct
+  def invited_users_set
+    @invited_users_set ||= users_set.with_sent_invitations.distinct
   end
 
   # We filter the rdv_contexts to keep those where the users were invited and created a rdv/participation
-  def rdv_contexts_with_invitations_and_participations_sample
+  def rdv_contexts_with_invitations_and_participations_set
     RdvContext.preload(:participations, :invitations)
-              .where(user_id: users_sample)
+              .where(user_id: users_set)
               .where.associated(:participations)
               .with_sent_invitations
               .distinct
   end
 
   # We filter the users by organisations and retrieve deleted or archived users
-  def users_sample
+  def users_set
     users = User.active.where.not(id: archived_user_ids).preload(:participations)
     users = users.joins(:organisations).where(organisations: all_organisations) if statable.present?
 
@@ -82,12 +82,12 @@ class Stat < ApplicationRecord
   end
 
   # We don't include in the stats the agents working for rdv-insertion
-  def agents_sample
-    @agents_sample ||= Agent.not_betagouv
-                            .joins(:organisations)
-                            .where(organisations: all_organisations)
-                            .where.not(last_sign_in_at: nil)
-                            .distinct
+  def agents_set
+    @agents_set ||= Agent.not_betagouv
+                         .joins(:organisations)
+                         .where(organisations: all_organisations)
+                         .where.not(last_sign_in_at: nil)
+                         .distinct
   end
 
   def all_organisations
@@ -98,20 +98,20 @@ class Stat < ApplicationRecord
                            end
   end
 
-  # We only consider specific contexts to focus on the first RSA rdv
-  def users_with_orientation_category_sample
-    @users_with_orientation_category_sample ||= users_sample.preload(:rdvs)
-                                                            .joins(:rdv_contexts)
-                                                            .joins(rdv_contexts: :motif_category)
-                                                            .where(motif_category: { leads_to_orientation: true })
-  end
-
   # To compute the rate of users oriented, we only consider the users who have been invited
   # because the users that are directly convocated do not benefit from our added value
-  def orientation_rdv_contexts_sample
+  def orientation_rdv_contexts_with_invitations
     RdvContext.orientation.preload(:participations, :invitations)
-              .where(user: users_sample)
+              .where(user: users_set)
               .with_sent_invitations
+              .distinct
+  end
+
+  def users_first_orientation_rdv_context
+    # we consider minimum(:id) being the same as minimum(:created_at) as the id increases with created_at
+    RdvContext.where(user: users_set)
+              .where(id: RdvContext.orientation.group(:user_id).minimum(:id).values)
+              .preload(participations: :rdv)
               .distinct
   end
 end

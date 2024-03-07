@@ -14,9 +14,10 @@ module Users
         .active
         .where(id: search_in_all_users.ids + search_in_department_organisations.ids)
         .preload(
-          :referents, :archives, :tags,
+          :referents, :archives,
           invitations: [rdv_context: :motif_category],
           rdv_contexts: [:participations],
+          tags: [:tag_organisations],
           organisations: [:motif_categories, :department, :configurations]
         ).distinct
     end

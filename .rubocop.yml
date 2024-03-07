@@ -166,3 +166,7 @@ Capybara/SpecificMatcher:
 
 Capybara/ClickLinkOrButtonStyle:
   Enabled: false
+
+Rails/InverseOf:
+  Exclude:
+    - "app/models/participation.rb"

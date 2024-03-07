@@ -6,11 +6,17 @@ class Participation < ApplicationRecord
   belongs_to :rdv
   belongs_to :rdv_context
   belongs_to :user
+  belongs_to :agent_prescripteur,
+             class_name: "Agent",
+             primary_key: "rdv_solidarites_agent_id",
+             foreign_key: "rdv_solidarites_agent_prescripteur_id",
+             optional: true
 
   has_many :notifications, dependent: :nullify
   has_many :rdv_context_invitations, through: :rdv_context, source: :invitations
 
   has_one :organisation, through: :rdv
+
   has_many :configurations, through: :organisation
 
   validates :status, presence: true
@@ -21,11 +27,12 @@ class Participation < ApplicationRecord
 
   enum created_by: { agent: "agent", user: "user", prescripteur: "prescripteur" }, _prefix: :created_by
 
-  delegate :department, :starts_at, :motif_name,
+  delegate :starts_at, :motif_name,
            :rdv_solidarites_url, :rdv_solidarites_rdv_id, :instruction_for_rdv,
            to: :rdv
+  delegate :department, :department_id, to: :organisation
   delegate :phone_number_is_mobile?, :email?, to: :user
-  delegate :motif_category, to: :rdv_context
+  delegate :motif_category, :orientation?, to: :rdv_context
 
   def notifiable?
     convocable? && in_the_future? && status.in?(%w[unknown revoked])

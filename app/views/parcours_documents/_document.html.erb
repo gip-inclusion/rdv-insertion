@@ -1,7 +1,7 @@
 <%= turbo_frame_tag document do %>
  <div class="d-flex mb-1 w-50">
   <div class="w-75">
-    <%= link_to rails_blob_path(document.file), target: :blank, class: "text-decoration-underline document-link" do %>
+    <%= link_to user_parcours_document_path(id: document.id, user_id: document.user_id), target: "_blank", class: "text-decoration-underline document-link" do %>
       <i class="fas fa-file-pdf mx-1"></i>
       <%= document.file.filename %>
       <i class="fas mx-1 fa-external-link-alt text-dark-blue"></i>
