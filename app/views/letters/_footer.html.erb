@@ -9,7 +9,7 @@
   </div>
   <% if display_department_logo %>
     <div id="department-logo">
-      <%= image_tag(rails_blob_path(department.logo)) %>
+      <%= image_tag(uploaded_logo_path(department.logo)) %>
     </div>
   <% end %>
   <% if display_france_travail_logo %>
