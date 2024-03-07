@@ -1,14 +1,7 @@
 class ParcoursDocument < ApplicationRecord
-  belongs_to :department
-  belongs_to :agent
-  belongs_to :user
+  MAX_ATTACHMENT_SIZE = 5.megabytes
 
-  has_one_attached :file
-
-  validates :file, presence: true
-
-  validate :file_size_validation
-  validate :file_format_validation
+  ACCEPTED_FORMATS = %w[PDF JPG PNG ODT DOC DOCX XLSX PPT ZIP].freeze
 
   MIME_TYPES = [
     "application/pdf",
@@ -27,19 +20,15 @@ class ParcoursDocument < ApplicationRecord
     "application/zip"
   ].freeze
 
-  MAX_FILE_SIZE = 5.megabytes
+  include AttachmentValidator
 
-  private
+  belongs_to :department
+  belongs_to :agent
+  belongs_to :user
 
-  def file_size_validation
-    return unless file.blob.byte_size > MAX_FILE_SIZE
+  has_one_attached :file
 
-    errors.add(:base, "Le fichier est trop volumineux (5mo maximum)")
-  end
+  validates :file, presence: true
 
-  def file_format_validation
-    return if MIME_TYPES.include?(file.blob.content_type)
-
-    errors.add(:base, "Seuls les formats PDF, JPG, PNG, ODT, DOCX, XLSX, PPT, DOC et ZIP sont acceptés.")
-  end
+  alias attachment file
 end

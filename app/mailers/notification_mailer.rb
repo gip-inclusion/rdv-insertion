@@ -4,7 +4,7 @@ class NotificationMailer < ApplicationMailer
   before_action :set_notification, :set_user, :set_rdv, :set_department, :set_rdv_subject,
                 :set_signature_lines, :set_rdv_title, :set_rdv_title_by_phone, :set_user_designation,
                 :set_mandatory_warning, :set_punishable_warning, :set_instruction_for_rdv,
-                :set_rdv_purpose, :verify_phone_number_presence, :set_organisation_logo_path, :set_department_logo_path
+                :set_rdv_purpose, :verify_phone_number_presence, :set_organisation_logo, :set_department_logo
 
   default to: -> { @user.email }, reply_to: -> { "rdv+#{@rdv.uuid}@reply.rdv-insertion.fr" }
 
@@ -113,12 +113,14 @@ class NotificationMailer < ApplicationMailer
     @rdv_purpose = @notification.rdv_purpose
   end
 
-  def set_organisation_logo_path
-    @organisation_logo_path = @rdv.organisation.logo_path(%w[png jpg])
+  def set_organisation_logo
+    return if @rdv.organisation.logo.blank?
+
+    @organisation_logo = @rdv.organisation.logo
   end
 
-  def set_department_logo_path
-    @department_logo_path = @department.logo_path(%w[png jpg])
+  def set_department_logo
+    @department_logo = @department.logo
   end
 
   def rdv_by_phone?

@@ -1,6 +1,6 @@
 <%= turbo_frame_tag "documents_list_#{type}" do %>
   <% if user.send(type.pluralize).empty? %>
-    <p class="text-dark-grey-alt mb-1">Taille maximale : <%= number_to_human_size(ParcoursDocument::MAX_FILE_SIZE) %></p>
+    <p class="text-dark-grey-alt mb-1">Taille maximale : <%= number_to_human_size(ParcoursDocument::MAX_ATTACHMENT_SIZE) %></p>
     <p>Aucun <%= t("activerecord.attributes.parcours_document.type.#{type}") %> renseigné.</p>
   <% else %>
     <% user.send(type.pluralize).each do |document| %>

@@ -80,9 +80,7 @@ module Previews
         punishable_warning: @notification.punishable_warning,
         custom_sentence: @notification.custom_sentence,
         signature_lines: @notification.signature_lines,
-        instruction_for_rdv: @notification.instruction_for_rdv,
-        organisation_logo_path: @organisation.logo_path(%w[png jpg]),
-        department_logo_path: @department.logo_path(%w[png jpg])
+        instruction_for_rdv: @notification.instruction_for_rdv
       }
     end
 

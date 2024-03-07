@@ -44,7 +44,6 @@ describe ConfigurationsController do
       expect(response.body).to match(/Indépendante du CD/)
       expect(response.body).to match(/Oui/)
       expect(response.body).to match(/Logo/)
-      expect(response.body).to match(%r{logos/pie-pantin})
       expect(response.body).to match(/Désignation dans le fichier usagers/)
       expect(response.body).to match(/pie-pantin/)
     end

@@ -9,3 +9,7 @@ fr:
         optional_rdv_subscription: "Si cochée, pas de rappels envoyés pour les invitations et les invitations ne sont pas invalidées"
       department:
         pronoun: "en minuscule - par exemple, \"la\" pour \"la Drôme\""
+    fields:
+      active_storage:
+        add: "Ajouter"
+        replace: "Remplacer"

@@ -1,7 +1,7 @@
 class Department < ApplicationRecord
   include HasLogo
 
-  validates :name, :capital, :number, :pronoun, :region, presence: true
+  validates :name, :capital, :number, :pronoun, :region, :logo, presence: true
 
   has_many :organisations, dependent: :nullify
   has_many :invitations, dependent: :nullify

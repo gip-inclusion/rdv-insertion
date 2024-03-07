@@ -1,11 +1,20 @@
 module HasLogo
-  delegate :path, to: :logo, prefix: true
+  extend ActiveSupport::Concern
 
-  def logo
-    Logo.new(logo_name)
-  end
+  MAX_ATTACHMENT_SIZE = 2.megabytes
 
-  def logo_name
-    respond_to?(:logo_filename) && logo_filename.present? ? logo_filename : name.parameterize
+  ACCEPTED_FORMATS = %w[PNG JPG].freeze
+
+  MIME_TYPES = [
+    "image/png",
+    "image/jpeg"
+  ].freeze
+
+  included do
+    include AttachmentValidator
+
+    has_one_attached :logo
+
+    alias attachment logo
   end
 end

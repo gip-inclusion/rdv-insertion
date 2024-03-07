@@ -6,4 +6,4 @@
 <%= tag.p tag.strong("En cas d'absence, #{@punishable_warning}.") if @punishable_warning.present? %>
 <p>En cas d'empêchement, merci d'appeler rapidement le <%= @rdv.phone_number %>.</p>
 <%= render 'common/organisation_signature', signature_lines: @signature_lines, department: @department %>
-<%= render 'mailers/logos', display_europe_logos: @notification.display_europe_logos, display_france_travail_logo: @notification.display_france_travail_logo, display_department_logo: @notification.display_department_logo, organisation_logo_path: @organisation_logo_path, department_logo_path: @department_logo_path %>
+<%= render 'mailers/logos', display_europe_logos: @notification.display_europe_logos, display_france_travail_logo: @notification.display_france_travail_logo, display_department_logo: @notification.display_department_logo, organisation_logo: @organisation_logo, department_logo: @department_logo %>
