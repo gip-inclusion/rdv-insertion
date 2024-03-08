@@ -45,7 +45,7 @@ class NotifyUnavailableCreneauJob < ApplicationJob
       string += " Référents (rdvsp_ids) : #{grouped_invitation_params[:referent_ids].join(', ')}\n"
     end
 
-    string += " **!! L'organisation n'a pas d'email configuré et n'a pas été notifiée !!**\n" if organisation.email.blank?
+    string += " ** L'organisation n'a pas d'email configuré et n'a pas été notifiée !**\n" if organisation.email.blank?
 
     string
   end
