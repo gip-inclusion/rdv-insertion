@@ -17,7 +17,7 @@ Rails.application.routes.draw do
   # 1) draw routes for logos uploaded on Scaleway
   get "uploaded_logos/:signed_id", to: "uploaded_logos#show", as: "uploaded_logo"
   # 2) administrate uses rails_blob_path under the hood, so we need to redirect the path to the correct route
-  direct :rails_blob do |blob|
+  direct :rails_blob do |blob, _options|
     { controller: "uploaded_logos", action: "show", signed_id: blob.signed_id, only_path: true }
   end
   # 3) this scope is used to display the assets locally, and avoid the "undefined method `rails_disk_service_url'" error
