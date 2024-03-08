@@ -14,10 +14,35 @@ describe Invitations::VerifyOrganisationCreneauxAvailability, type: :service do
   let!(:rdv_context_with_referent_without_creneau) do
     create(:rdv_context, motif_category: category_rsa_accompagnement_social)
   end
+  let!(:user1) do
+    create(
+      :user,
+      address: "1 Rue Test 75007 Paris"
+    )
+  end
+  let!(:user2) do
+    create(
+      :user,
+      address: "1b Rue Test 75015 Paris"
+    )
+  end
+  let!(:user3) do
+    create(
+      :user,
+      address: "2 Rue Test 75020 Paris"
+    )
+  end
+  let!(:user4) do
+    create(
+      :user,
+      address: "3 Rue Test 75010 Paris"
+    )
+  end
 
   let!(:invitation_with_no_creneau) do
     create(
       :invitation,
+      user: user1,
       organisations: [organisation],
       link: "https://www.rdv-solidarites.fr/prendre_rdv?address=1RueTest&city_code=12255&departement=12&invitation_token=XIXR0X2T&latitude=44.0&longitude=2.0&motif_category_short_name=rsa_orientation&organisation_ids%5B%5D=#{organisation_id}&street_ban_id=12255_0070",
       format: "email",
@@ -33,11 +58,13 @@ describe Invitations::VerifyOrganisationCreneauxAvailability, type: :service do
       :invitation_token => "XIXR0X2T",
       :motif_category_short_name => "rsa_orientation",
       :organisation_ids => [organisation_id.to_s],
-      :street_ban_id => "12255_0070" }
+      :street_ban_id => "12255_0070",
+      :zip_code => "75007" }
   end
   let!(:invitation2_with_no_creneau) do
     create(
       :invitation,
+      user: user2,
       organisations: [organisation],
       link: "https://www.rdv-solidarites.fr/prendre_rdv?address=1bRueTest&city_code=12255&departement=12&invitation_token=ZIXR0X2T&latitude=44.0&longitude=2.0&motif_category_short_name=rsa_orientation&organisation_ids%5B%5D=#{organisation_id}&street_ban_id=12255_0070",
       format: "email",
@@ -53,11 +80,13 @@ describe Invitations::VerifyOrganisationCreneauxAvailability, type: :service do
       :invitation_token => "ZIXR0X2T",
       :motif_category_short_name => "rsa_orientation",
       :organisation_ids => [organisation_id.to_s],
-      :street_ban_id => "12255_0070" }
+      :street_ban_id => "12255_0070",
+      :zip_code => "75015" }
   end
   let!(:invitation_with_creneau) do
     create(
       :invitation,
+      user: user3,
       organisations: [organisation],
       link: "https://www.rdv-solidarites.fr/prendre_rdv?address=2RueTest&city_code=12000&departement=12&invitation_token=JIXR0X2T&latitude=44.0&longitude=2.0&motif_category_short_name=rsa_accompagnement_sociopro&organisation_ids%5B%5D=#{organisation_id}&street_ban_id=12000_0000",
       format: "email",
@@ -73,11 +102,13 @@ describe Invitations::VerifyOrganisationCreneauxAvailability, type: :service do
       :invitation_token => "JIXR0X2T",
       :motif_category_short_name => "rsa_accompagnement_sociopro",
       :organisation_ids => [organisation_id.to_s],
-      :street_ban_id => "12000_0000" }
+      :street_ban_id => "12000_0000",
+      :zip_code => "75020" }
   end
   let!(:invitation_with_referent_without_creneau) do
     create(
       :invitation,
+      user: user4,
       organisations: [organisation],
       link: "https://www.rdv-solidarites.fr/prendre_rdv?address=3RueTest&city_code=10000&departement=12&invitation_token=UIXR0X2T&latitude=44.0&longitude=2.0&motif_category_short_name=rsa_accompagnement_sociopro&organisation_ids%5B%5D=#{organisation_id}&street_ban_id=12000_0000&referent_ids%5B%5D=1",
       format: "email",
@@ -94,7 +125,8 @@ describe Invitations::VerifyOrganisationCreneauxAvailability, type: :service do
       :motif_category_short_name => "rsa_accompagnement_sociopro",
       :organisation_ids => [organisation_id.to_s],
       :street_ban_id => "12000_0000",
-      :referent_ids => ["1"] }
+      :referent_ids => ["1"],
+      :zip_code => "75010" }
   end
 
   describe "#call" do
@@ -124,13 +156,13 @@ describe Invitations::VerifyOrganisationCreneauxAvailability, type: :service do
         excepted_result = [
           {
             motif_category_name: "RSA orientation",
-            city_codes: Set.new(["12255"]),
+            zip_codes: Set.new(%w[75007 75015]),
             referent_ids: Set.new([]),
             invitations_counter: 2
           },
           {
             motif_category_name: "RSA accompagnement socio-pro",
-            city_codes: Set.new(["10000"]),
+            zip_codes: Set.new(["75010"]),
             referent_ids: Set.new(["1"]),
             invitations_counter: 1
           }
