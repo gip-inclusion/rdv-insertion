@@ -84,13 +84,13 @@ class InvitationMailer < ApplicationMailer
   def set_organisation_logo_path
     return if @invitation.organisations.length != 1 || first_organisation.logo.blank?
 
-    @organisation_logo_path = uploaded_logo_path(first_organisation.logo)
+    @organisation_logo_path = uploaded_logo_path(first_organisation.logo.signed_id)
   end
 
   def set_department_logo_path
     return if @department.logo.blank?
 
-    @department_logo_path = uploaded_logo_path(@department.logo)
+    @department_logo_path = uploaded_logo_path(@department.logo.signed_id)
   end
 
   def set_rdv_title

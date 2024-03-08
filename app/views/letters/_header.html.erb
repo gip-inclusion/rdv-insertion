@@ -2,7 +2,7 @@
   <div class="header-left-col">
     <div>
       <div class="header-logo">
-        <%= image_tag(uploaded_logo_path(organisation.logo.attached? ? organisation.logo : department.logo)) %>
+        <%= image_tag(uploaded_logo_path(organisation.logo.attached? ? organisation.logo.signed_id : department.logo.signed_id)) %>
       </div>
     </div>
     <% if direction_names.blank? %>
