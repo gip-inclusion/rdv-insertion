@@ -1,8 +1,6 @@
 module RdvParticipationStatus
   extend ActiveSupport::Concern
 
-  # unknow status is replaced by pending for future rdvs and needs_status_update for past rdvs in the app
-  # we let it here for more clarity ; it is still the value stored in the database
   PENDING_STATUSES = %w[unknown].freeze
   CANCELLED_STATUSES = %w[excused revoked noshow].freeze
   CANCELLED_BY_USER_STATUSES = %w[excused noshow].freeze

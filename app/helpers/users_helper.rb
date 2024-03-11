@@ -88,9 +88,9 @@ module UsersHelper
     end
   end
 
-  def text_class_for_participation_status(status)
-    return "text-success" if status == "seen"
-    return "text-light" if status == "pending"
+  def text_class_for_participation_human_status(human_status)
+    return "text-success" if human_status == "seen"
+    return "text-light" if human_status == "pending"
 
     "text-danger"
   end
