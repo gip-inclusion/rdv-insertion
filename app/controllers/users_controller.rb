@@ -104,7 +104,7 @@ class UsersController < ApplicationController
     if params[:export_type] == "participations"
       Exporters::CreateUsersParticipationsCsvExportJob
     else
-      Exporters::CreateUsersCsvExportJobJob
+      Exporters::CreateUsersCsvExportJob
     end
   end
 
