@@ -35,7 +35,7 @@ class Participation < ApplicationRecord
   delegate :motif_category, :orientation?, to: :rdv_context
 
   def notifiable?
-    convocable? && in_the_future? && status.in?(%w[pending needs_status_update revoked])
+    convocable? && in_the_future? && status.in?(%w[unknown revoked])
   end
 
   private
@@ -45,7 +45,7 @@ class Participation < ApplicationRecord
   end
 
   def status_reloaded_from_cancelled?
-    status_previously_was.in?(CANCELLED_STATUSES) && status.in?(%w[pending needs_status_update])
+    status_previously_was.in?(CANCELLED_STATUSES) && status.in?(%w[unknown])
   end
 
   def participation_just_cancelled?

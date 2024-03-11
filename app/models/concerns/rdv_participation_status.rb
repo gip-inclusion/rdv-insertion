@@ -3,7 +3,7 @@ module RdvParticipationStatus
 
   # unknow status is replaced by pending for future rdvs and needs_status_update for past rdvs in the app
   # we let it here for more clarity ; it is still the value stored in the database
-  PENDING_STATUSES = %w[unknown pending needs_status_update].freeze
+  PENDING_STATUSES = %w[unknown].freeze
   CANCELLED_STATUSES = %w[excused revoked noshow].freeze
   CANCELLED_BY_USER_STATUSES = %w[excused noshow].freeze
 
@@ -48,11 +48,11 @@ module RdvParticipationStatus
     in_the_past? && status.in?(PENDING_STATUSES)
   end
 
-  def status
-    read_attribute(:status) == "unknown" ? unknown_status : read_attribute(:status)
+  def human_status
+    self[:status] == "unknown" ? human_unknown_status : self[:status]
   end
 
-  def unknown_status
+  def human_unknown_status
     in_the_future? ? "pending" : "needs_status_update"
   end
 end

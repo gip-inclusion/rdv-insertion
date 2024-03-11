@@ -6,6 +6,7 @@ fr:
       rdv:
         status: Statut du rdv
         statuses:
+          unknown: Non déterminé
           seen: Rendez-vous honoré
           excused: Annulé (excusé)
           revoked: Annulé (par le service)
@@ -13,6 +14,7 @@ fr:
           pending: RDV à venir
           needs_status_update: Statut du RDV à préciser
           detailed:
+            unknown: Statut du rendez-vous inconnu.
             seen: L’usager s’est présenté à son rendez-vous et a été reçu
             excused: L’usager a pu prévenir de son absence
             revoked: Le rendez-vous a du être annulé par le service
