@@ -131,7 +131,7 @@ module Exporters
     def human_last_participation_status(user)
       return "" if last_participation(user).blank?
 
-      I18n.t("activerecord.attributes.rdv.statuses.#{last_participation(user).status}")
+      I18n.t("activerecord.attributes.rdv.statuses.#{last_participation(user).human_status}")
     end
 
     def human_rdv_context_status(user)
