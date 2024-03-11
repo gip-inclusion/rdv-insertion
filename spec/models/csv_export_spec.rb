@@ -15,4 +15,14 @@ describe CsvExport do
       csv_export.save!
     end
   end
+
+  describe "purge!" do
+    it "purges the file and updates purged_at" do
+      csv_export = create(:csv_export)
+      expect(csv_export.file).to be_attached
+      csv_export.purge!
+      expect(csv_export.file).not_to be_attached
+      expect(csv_export.purged_at).to be_present
+    end
+  end
 end

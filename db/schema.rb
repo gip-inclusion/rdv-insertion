@@ -121,6 +121,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_05_094354) do
     t.string "structure_type", null: false
     t.bigint "structure_id", null: false
     t.integer "motif_category_id"
+    t.datetime "purged_at"
     t.integer "kind"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

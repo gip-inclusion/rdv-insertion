@@ -15,4 +15,9 @@ class CsvExport < ApplicationRecord
   def expired?
     created_at < VALIDITY_PERIOD.ago
   end
+
+  def purge!
+    file.purge
+    update!(purged_at: Time.zone.now)
+  end
 end
