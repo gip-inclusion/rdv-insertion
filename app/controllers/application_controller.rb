@@ -11,7 +11,7 @@ class ApplicationController < ActionController::Base
   include TurboStreamConcern
 
   # Needed to generate ActiveStorage urls locally, it sets the host and protocol
-  include ActiveStorage::SetCurrent if Rails.env.development?
+  include ActiveStorage::SetCurrent unless Rails.env.production?
 
   private
 

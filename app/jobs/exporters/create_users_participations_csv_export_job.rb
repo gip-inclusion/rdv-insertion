@@ -1,5 +1,5 @@
 module Exporters
-  class CreateUsersParticipationsCsvExportJob < CreateUsersCsvExportJobJob
+  class CreateUsersParticipationsCsvExportJob < CreateUsersCsvExportJob
     EXPORT_KIND = :users_participations_csv
 
     private
