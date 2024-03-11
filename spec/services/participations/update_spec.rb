@@ -33,7 +33,7 @@ describe Participations::Update, type: :service do
 
       it "doesn't update participation status" do
         subject
-        expect(participation.reload.status).to eq("unknown")
+        expect(participation.reload.status).to eq("pending")
       end
     end
   end

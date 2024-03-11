@@ -37,7 +37,7 @@ class Stat < ApplicationRecord
   end
 
   def user_ids_with_rdv_set
-    participations_set.where(status: %w[seen unknown])
+    participations_set.where(status: %w[seen pending needs_status_update])
                       .select(:user_id)
                       .distinct
   end

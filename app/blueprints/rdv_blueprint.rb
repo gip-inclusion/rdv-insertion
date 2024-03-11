@@ -1,7 +1,11 @@
 class RdvBlueprint < Blueprinter::Base
   identifier :id
   fields :starts_at, :duration_in_min, :cancelled_at, :address, :uuid, :created_by,
-         :status, :users_count, :max_participants_count, :rdv_solidarites_rdv_id
+         :users_count, :max_participants_count, :rdv_solidarites_rdv_id
+
+  field :status do |rdv|
+    rdv.read_attribute(:status)
+  end
 
   view :extended do
     association :agents, blueprint: AgentBlueprint

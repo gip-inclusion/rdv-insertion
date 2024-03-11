@@ -90,7 +90,7 @@ module UsersHelper
 
   def text_class_for_participation_status(status)
     return "text-success" if status == "seen"
-    return "text-light" if status == "unknown"
+    return "text-light" if status == "pending"
 
     "text-danger"
   end
@@ -100,10 +100,6 @@ module UsersHelper
 
     I18n.t("activerecord.attributes.rdv_context.statuses.#{context.status}") +
       display_context_status_notice(context, number_of_days_before_action_required)
-  end
-
-  def display_participation_status(participation)
-    participation.pending? ? "À venir" : I18n.t("activerecord.attributes.rdv.statuses.#{participation.status}")
   end
 
   def display_context_status_notice(context, number_of_days_before_action_required)

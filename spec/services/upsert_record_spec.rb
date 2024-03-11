@@ -50,7 +50,7 @@ describe UpsertRecord, type: :service do
         rdv.reload
         expect(rdv.starts_at).to eq(starts_at)
         expect(rdv.duration_in_min).to eq(duration_in_min)
-        expect(rdv.status).to eq(status)
+        expect(rdv.status).to eq("needs_status_update")
         expect(rdv.created_by).to eq("user")
         expect(rdv.user_ids).to include(*user_ids)
         expect(rdv.id).not_to eq(rdv_solidarites_rdv_id)
@@ -92,7 +92,7 @@ describe UpsertRecord, type: :service do
 
         expect(new_rdv.starts_at).to eq(starts_at)
         expect(new_rdv.duration_in_min).to eq(duration_in_min)
-        expect(new_rdv.status).to eq(status)
+        expect(new_rdv.status).to eq("needs_status_update")
         expect(new_rdv.user_ids).to include(*user_ids)
         expect(new_rdv.id).not_to eq(rdv_solidarites_rdv_id)
 

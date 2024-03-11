@@ -222,7 +222,7 @@ describe "Agents can invite from index page", :js do
         visit organisation_users_path(organisation, motif_category_id: motif_category.id)
         expect(page).to have_no_field("sms_invite_for_user_#{user.id}")
         expect(page).to have_no_field("email_invite_for_user_#{user.id}")
-        expect(page).to have_content("RDV pris")
+        expect(page).to have_content("RDV à venir")
       end
     end
   end

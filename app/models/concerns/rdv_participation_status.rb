@@ -1,7 +1,9 @@
 module RdvParticipationStatus
   extend ActiveSupport::Concern
 
-  PENDING_STATUSES = %w[unknown].freeze
+  # unknow status is replaced by pending for future rdvs and needs_status_update for past rdvs in the app
+  # we let it here for more clarity ; it is still the value stored in the database
+  PENDING_STATUSES = %w[unknown pending needs_status_update].freeze
   CANCELLED_STATUSES = %w[excused revoked noshow].freeze
   CANCELLED_BY_USER_STATUSES = %w[excused noshow].freeze
 
@@ -39,11 +41,18 @@ module RdvParticipationStatus
   end
 
   def available_statuses
-    available_list = in_the_future? ? %w[unknown revoked excused] : %w[seen revoked excused noshow]
-    self.class.statuses.slice(*available_list)
+    in_the_future? ? %w[pending revoked excused] : %w[seen revoked excused noshow]
   end
 
   def needs_status_update?
-    !in_the_future? && status.in?(PENDING_STATUSES)
+    in_the_past? && status.in?(PENDING_STATUSES)
+  end
+
+  def status
+    read_attribute(:status) == "unknown" ? unknown_status : read_attribute(:status)
+  end
+
+  def unknown_status
+    in_the_future? ? "pending" : "needs_status_update"
   end
 end

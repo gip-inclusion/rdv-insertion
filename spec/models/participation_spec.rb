@@ -35,13 +35,13 @@ describe Participation do
     context "when rdv is in the past" do
       let(:rdv) { create(:rdv, starts_at: DateTime.yesterday) }
 
-      it { expect(subject.keys.sort).to eq(%w[excused seen noshow revoked].sort) }
+      it { expect(subject.sort).to eq(%w[excused seen noshow revoked].sort) }
     end
 
     context "when rdv is in the future" do
       let(:rdv) { create(:rdv, starts_at: DateTime.tomorrow) }
 
-      it { expect(subject.keys.sort).to eq(%w[excused revoked unknown].sort) }
+      it { expect(subject.sort).to eq(%w[excused revoked pending].sort) }
     end
   end
 
