@@ -96,7 +96,7 @@ module Previews
       end
     end
 
-    def letter_locals
+    def letter_locals # rubocop:disable Metrics/AbcSize
       {
         department: @notification.department,
         user: @user,
