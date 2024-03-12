@@ -1,4 +1,4 @@
-<%= render "letters/header", direction_names: direction_names, sender_city: sender_city, department: department, organisation: organisation, user: user, department_logo_path: department_logo_path, organisation_logo_path: organisation_logo_path %>
+<%= render "letters/header", direction_names: direction_names, sender_city: sender_city, department: department, organisation: organisation, user: user %>
 
 <div class="mail-object">
   <p class="bold-blue"><span class="bold-blue">Objet : Convocation à un <%= rdv_title %> dans le cadre de votre <%= rdv_subject %></span></p>
@@ -25,7 +25,7 @@
   </div>
 </div>
 
-<%= render "letters/footer", display_europe_logos: display_europe_logos, display_france_travail_logo: display_france_travail_logo, display_department_logo: display_department_logo, department_logo_path: department_logo_path %>
+<%= render "letters/footer", display_europe_logos: display_europe_logos, display_france_travail_logo: display_france_travail_logo, display_department_logo: display_department_logo, department: department %>
 
 <div class="mail-object">
   <%= image_tag "illustrations/parcours-drome-courriers-footer.png", alt: "Mentions légales et protection de données du parcours du demandeur", class: 'w-100' if department.number == "26" && motif_category&.name == "RSA Main Tendue" %>

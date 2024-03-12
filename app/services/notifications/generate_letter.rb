@@ -24,7 +24,7 @@ module Notifications
       )
     end
 
-    def locals # rubocop:disable Metrics/AbcSize
+    def locals
       {
         department: @notification.department,
         user: @notification.user,
@@ -35,10 +35,8 @@ module Notifications
         signature_lines: @notification.signature_lines,
         organisation: @notification.organisation,
         display_europe_logos: @notification.display_europe_logos,
-        display_france_travail_logo: @notification.display_france_travail_logo,
         display_department_logo: @notification.display_department_logo,
-        department_logo_path: @notification.department.logo.url,
-        organisation_logo_path: @notification.organisation.logo.url,
+        display_france_travail_logo: @notification.display_france_travail_logo,
         sender_city: @notification.sender_city,
         rdv_title: @notification.rdv_title,
         rdv_title_by_phone: @notification.rdv_title_by_phone,

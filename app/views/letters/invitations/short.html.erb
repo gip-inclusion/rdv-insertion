@@ -1,4 +1,4 @@
-<%= render "letters/header", direction_names: direction_names, sender_city: sender_city, department: department, organisation: organisation, user: user, department_logo_path: department_logo_path, organisation_logo_path: organisation_logo_path %>
+<%= render "letters/header", direction_names: direction_names, sender_city: sender_city, department: department, organisation: organisation, user: user %>
 
 <div class="mail-object">
   <p class="bold-blue"><span class="bold-blue">Objet : <%= rdv_title.slice(0,1).capitalize + rdv_title.slice(1..-1) %></span></p>
@@ -23,4 +23,4 @@
   </div>
 </div>
 
-<%= render "letters/footer", display_europe_logos: display_europe_logos, display_france_travail_logo: display_france_travail_logo, display_department_logo: display_department_logo, department_logo_path: department_logo_path %>
+<%= render "letters/footer", display_europe_logos: display_europe_logos, display_france_travail_logo: display_france_travail_logo, display_department_logo: display_department_logo, department: department %>
