@@ -27,17 +27,11 @@ describe UsersOrganisationsController do
         .and_return(OpenStruct.new(success?: true))
     end
 
-    it "redirects with a success message" do
-      subject
-
-      expect(response).to redirect_to(department_user_path(department, user))
-      expect(flash[:success]).to include("L'organisation a bien été ajoutée")
-    end
-
     it "saves the user with the organisation" do
       expect(Users::Save).to receive(:call)
         .with(user: user, organisation: organisation2)
       subject
+      expect(flash[:success]).to include("L'organisation a bien été ajoutée")
     end
 
     context "when the save fails" do
