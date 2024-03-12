@@ -8,6 +8,10 @@ module AttachmentValidator
 
   extend ActiveSupport::Concern
 
+  def attachment
+    raise NoMethodError
+  end
+
   included do
     validate :attachment_size_validation, if: -> { attachment.present? }
     validate :attachment_format_validation, if: -> { attachment.present? }
