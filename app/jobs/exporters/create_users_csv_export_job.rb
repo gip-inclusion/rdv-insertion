@@ -19,8 +19,10 @@ module Exporters
     private
 
     def create_export
-      @export = CsvExport.create!(agent:, structure:, kind: EXPORT_KIND)
-      @export.file.attach(io: StringIO.new(generate_csv.csv), filename: generate_csv.filename, content_type: "text/csv")
+      ActiveRecord::Base.transaction do
+        @export = CsvExport.create!(agent:, structure:, kind: EXPORT_KIND)
+        @export.file.attach(io: StringIO.new(generate_csv.csv), filename: generate_csv.filename, content_type: "text/csv")
+      end
     end
 
     def send_email
