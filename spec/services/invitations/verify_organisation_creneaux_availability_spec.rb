@@ -9,6 +9,7 @@ describe Invitations::VerifyOrganisationCreneauxAvailability, type: :service do
   let!(:organisation_id) { organisation.id }
   let!(:agent) { create(:agent, admin_role_in_organisations: [organisation]) }
   let!(:rdv_context_without_creneau) { create(:rdv_context, motif_category: category_rsa_orientation) }
+  let!(:rdv_context_without_creneau_for_user_without_address) { create(:rdv_context, motif_category: category_rsa_orientation) }
   let!(:rdv_context2_without_creneau) { create(:rdv_context, motif_category: category_rsa_orientation) }
   let!(:rdv_context_with_creneau) { create(:rdv_context, motif_category: category_rsa_accompagnement_sociopro) }
   let!(:rdv_context_with_referent_without_creneau) do
@@ -38,7 +39,35 @@ describe Invitations::VerifyOrganisationCreneauxAvailability, type: :service do
       address: "3 Rue Test 75010 Paris"
     )
   end
+  let!(:user_with_no_address) do
+    create(
+      :user,
+      address: nil
+    )
+  end
 
+  let!(:invitation_with_no_creneau_no_user_address) do
+    create(
+      :invitation,
+      user: user_with_no_address,
+      organisations: [organisation],
+      link: "https://www.rdv-solidarites.fr/prendre_rdv?address=1RueTest&city_code=12255&departement=12&invitation_token=AIXR0X2T&latitude=44.0&longitude=2.0&motif_category_short_name=rsa_orientation&organisation_ids%5B%5D=#{organisation_id}&street_ban_id=12255_0070",
+      format: "email",
+      rdv_context: rdv_context_without_creneau_for_user_without_address
+    )
+  end
+  let!(:invitation_with_no_creneau_no_user_address_relevant_params) do
+    { :city_code => "12255",
+      :address => "1RueTest",
+      :latitude => "44.0",
+      :longitude => "2.0",
+      :departement => "12",
+      :invitation_token => "AIXR0X2T",
+      :motif_category_short_name => "rsa_orientation",
+      :organisation_ids => [organisation_id.to_s],
+      :street_ban_id => "12255_0070",
+      :zip_code => nil }
+  end
   let!(:invitation_with_no_creneau) do
     create(
       :invitation,
@@ -131,19 +160,21 @@ describe Invitations::VerifyOrganisationCreneauxAvailability, type: :service do
 
   describe "#call" do
     before do
-      allow(RdvSolidaritesApi::RetrieveCreneauAvailability).to receive(:call)
-        .with(link_params: invitation_with_referent_without_creneau_relevant_params)
-        .and_return(OpenStruct.new(success?: true, creneau_availability: false))
-      allow(RdvSolidaritesApi::RetrieveCreneauAvailability).to receive(:call)
-        .with(link_params: invitation_with_creneau_relevant_params)
-        .and_return(OpenStruct.new(success?: true, creneau_availability: true))
-      allow(RdvSolidaritesApi::RetrieveCreneauAvailability).to receive(:call)
-        .with(link_params: invitation2_with_no_creneau_relevant_params)
-        .and_return(OpenStruct.new(success?: true, creneau_availability: false))
-      allow(RdvSolidaritesApi::RetrieveCreneauAvailability).to receive(:call)
-        .with(link_params: invitation_with_no_creneau_relevant_params)
-        .and_return(OpenStruct.new(success?: true, creneau_availability: false))
+      allow(RdvSolidaritesApi::RetrieveCreneauAvailability).to receive(:call) do |link_params:|
+        case link_params
+        when invitation_with_no_creneau_no_user_address_relevant_params,
+          invitation_with_no_creneau_relevant_params,
+          invitation2_with_no_creneau_relevant_params,
+          invitation_with_referent_without_creneau_relevant_params
+          OpenStruct.new(success?: true, creneau_availability: false)
+        when invitation_with_creneau_relevant_params
+          OpenStruct.new(success?: true, creneau_availability: true)
+        else
+          OpenStruct.new(success?: false)
+        end
+      end
     end
+
 
     it "is a success" do
       is_a_success
@@ -158,7 +189,7 @@ describe Invitations::VerifyOrganisationCreneauxAvailability, type: :service do
             motif_category_name: "RSA orientation",
             zip_codes: Set.new(%w[75007 75015]),
             referent_ids: Set.new([]),
-            invitations_counter: 2
+            invitations_counter: 3
           },
           {
             motif_category_name: "RSA accompagnement socio-pro",
