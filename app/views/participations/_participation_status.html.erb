@@ -4,13 +4,13 @@
       <%= f.input :status, as: :hidden %>
       <div class="btn-group">
         <button id="toggle-rdv-status" type="button" class="btn <%= background_class_for_participation_status(participation) %> dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <%= t("activerecord.attributes.rdv.statuses.#{participation.human_status}") %>
+          <%= participation.human_status %>
         </button>
         <div class="dropdown-menu">
           <% participation.available_statuses.map do |status, _| %>
             <%= link_to "#", class: "dropdown-item", data: { value: status } do %>
               <span class="bold">
-                <i class="fa fa-circle mr-1 <%= text_class_for_participation_human_status(status) %>"></i>
+                <i class="fa fa-circle mr-1 <%= text_class_for_participation_status(status) %>"></i>
                 <%= t("activerecord.attributes.rdv.statuses.#{status}") %>
               </span><br>
               <span><%= t("activerecord.attributes.rdv.statuses.detailed.#{status}") %></span>

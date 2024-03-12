@@ -14,7 +14,7 @@ fr:
           pending: RDV à venir
           needs_status_update: Statut du RDV à préciser
           detailed:
-            unknown: Statut du rendez-vous inconnu.
+            unknown: Statut du rendez-vous inconnu
             seen: L’usager s’est présenté à son rendez-vous et a été reçu
             excused: L’usager a pu prévenir de son absence
             revoked: Le rendez-vous a du être annulé par le service

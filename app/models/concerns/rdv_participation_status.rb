@@ -47,10 +47,10 @@ module RdvParticipationStatus
   end
 
   def human_status
-    self[:status] == "unknown" ? human_unknown_status : self[:status]
+    status == "unknown" ? human_unknown_status : I18n.t("activerecord.attributes.rdv.statuses.#{status}")
   end
 
   def human_unknown_status
-    in_the_future? ? "pending" : "needs_status_update"
+    I18n.t("activerecord.attributes.rdv.statuses.#{in_the_future? ? 'pending' : 'needs_status_update'}")
   end
 end
