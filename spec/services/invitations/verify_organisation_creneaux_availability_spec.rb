@@ -9,7 +9,9 @@ describe Invitations::VerifyOrganisationCreneauxAvailability, type: :service do
   let!(:organisation_id) { organisation.id }
   let!(:agent) { create(:agent, admin_role_in_organisations: [organisation]) }
   let!(:rdv_context_without_creneau) { create(:rdv_context, motif_category: category_rsa_orientation) }
-  let!(:rdv_context_without_creneau_for_user_without_address) { create(:rdv_context, motif_category: category_rsa_orientation) }
+  let!(:rdv_context_without_creneau_for_user_without_address) do
+    create(:rdv_context, motif_category: category_rsa_orientation)
+  end
   let!(:rdv_context2_without_creneau) { create(:rdv_context, motif_category: category_rsa_orientation) }
   let!(:rdv_context_with_creneau) { create(:rdv_context, motif_category: category_rsa_accompagnement_sociopro) }
   let!(:rdv_context_with_referent_without_creneau) do
@@ -174,7 +176,6 @@ describe Invitations::VerifyOrganisationCreneauxAvailability, type: :service do
         end
       end
     end
-
 
     it "is a success" do
       is_a_success
