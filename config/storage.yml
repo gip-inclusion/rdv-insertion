@@ -5,9 +5,6 @@ test:
 local:
   service: Disk
   root: <%= Rails.root.join("storage") %>
-  url_options:
-    host: 'localhost'
-    port: '8000'
 
 scaleway:
   service: S3
