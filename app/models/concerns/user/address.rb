@@ -14,7 +14,7 @@ module User::Address
   end
 
   def zipcode
-    zipcode_and_city&.match(/^(\d{5})/)&.captures&.first
+    address&.match(/\d{5}/)&.to_s
   end
 
   private

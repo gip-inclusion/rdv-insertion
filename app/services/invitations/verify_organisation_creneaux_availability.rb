@@ -25,7 +25,7 @@ module Invitations
     end
 
     def invitations_params
-      organisation_valid_invitations.select("DISTINCT ON (rdv_context_id) *").to_a.map do |invitation|
+      organisation_valid_invitations.includes(:user).select("DISTINCT ON (rdv_context_id) *").to_a.map do |invitation|
         invitation.link_params.merge(zip_code: invitation.user.zipcode).symbolize_keys
       end
     end
