@@ -12,21 +12,6 @@ def check_auth(username, password, service)
 end
 
 Rails.application.routes.draw do
-  # active_storage.draw_routes is set to false on this app to avoid all the uploaded assets to be publicly accessible
-  # the following routes are a consequence of this setting
-  # 1) draw routes for logos uploaded on Scaleway
-  get "uploaded_logos/:signed_id", to: "uploaded_logos#show", as: "uploaded_logo"
-  # 2) administrate uses rails_blob_path under the hood, so we need to redirect the path to the correct route
-  direct :rails_blob do |blob, _options|
-    { controller: "uploaded_logos", action: "show", signed_id: blob.signed_id, only_path: true }
-  end
-  # 3) this scope is used to display the assets locally, and avoid the "undefined method `rails_disk_service_url'" error
-  # solution suggested in https://github.com/rails/rails/issues/42043
-  scope ActiveStorage.routes_prefix do
-    get "/disk/:encoded_key/*filename" => "active_storage/disk#show", as: :rails_disk_service
-    put "/disk/:encoded_token" => "active_storage/disk#update", as: :update_rails_disk_service
-  end
-
   namespace :super_admins do
     resources :departments, only: [:index, :show, :new, :create, :edit, :update]
     resources :organisations, only: [:index, :show, :new, :create, :edit, :update]
