@@ -9,8 +9,6 @@ class UsersOrganisationsController < ApplicationController
   def create
     if save_user.success?
       flash.now[:success] = "L'organisation a bien été ajoutée"
-      # in this case we need to refresh the page in case there are new rdv contexts
-      redirect_to_department_user_path if department_level?
     else
       flash.now[:error] = "Une erreur s'est produite lors de l'ajout de l'organisation: #{save_user.errors}"
     end
