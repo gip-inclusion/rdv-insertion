@@ -1,4 +1,4 @@
-<%= render "letters/header", direction_names: direction_names, sender_city: sender_city, department: department, organisation: organisation, user: user %>
+<%= render "letters/header", direction_names: direction_names, sender_city: sender_city, department: department, organisation: organisation, user: user, department_logo_path: department_logo_path, organisation_logo_path: organisation_logo_path %>
 
 <div class="mail-object">
   <p class="bold-blue"><span class="bold-blue">Objet : Participation à un atelier dans le cadre de votre <%= rdv_subject %></span></p>
@@ -23,4 +23,4 @@
   </div>
 </div>
 
-<%= render "letters/footer", department: department, organisation: organisation, display_europe_logos: display_europe_logos, display_france_travail_logo: display_france_travail_logo, display_department_logo: display_department_logo %>
+<%= render "letters/footer", display_europe_logos: display_europe_logos, display_france_travail_logo: display_france_travail_logo, display_department_logo: display_department_logo, department_logo_path: department_logo_path %>

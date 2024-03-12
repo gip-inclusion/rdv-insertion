@@ -1,6 +1,4 @@
 class ApplicationMailer < ActionMailer::Base
-  include Rails.application.routes.url_helpers
-
   # Needed to generate ActiveStorage urls locally and for the tests
   before_action :set_active_storage_url_options unless Rails.env.production?
 
