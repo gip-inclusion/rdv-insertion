@@ -10,7 +10,7 @@
           <% participation.available_statuses.map do |status, _| %>
             <%= link_to "#", class: "dropdown-item", data: { value: status } do %>
               <span class="bold">
-                <i class="fa fa-circle mr-1 <%= text_class_for_participation_status(status) %>"></i>
+                <i class="fa fa-circle me-1 <%= text_class_for_participation_status(status) %>"></i>
                 <%= t("activerecord.attributes.rdv.statuses.#{status}") %>
               </span><br>
               <span><%= t("activerecord.attributes.rdv.statuses.detailed.#{status}") %></span>

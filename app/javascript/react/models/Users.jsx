@@ -144,7 +144,7 @@ class Users {
         )
       },
       {
-        name: "Date d&apos;entrée flux",
+        name: "Date entrée flux",
         key: "rightsOpeningDate",
         isInContactFile: true,
         visible: this.fileColumnNames?.rights_opening_date_column,
