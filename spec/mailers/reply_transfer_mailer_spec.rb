@@ -44,7 +44,7 @@ RSpec.describe ReplyTransferMailer do
     end
 
     it "renders the content" do
-      expect(mail.body.encoded).to match("Vous trouverez ci-dessous une réponse d'un.e bénéficiaire à une invitation :")
+      expect(mail.body.encoded).to match("Vous trouverez ci-dessous une réponse d'un usager à une invitation :")
       expect(mail.body.encoded).to match("<h4>coucou</h4>")
       expect(mail.body.encoded).to match("Je souhaite annuler mon RDV")
       expect(mail.body.encoded).to match("Merci de ne pas répondre à cet e-mail. Pour contacter la personne, ")
@@ -87,7 +87,7 @@ RSpec.describe ReplyTransferMailer do
     end
 
     it "renders the content" do
-      expect(mail.body.encoded).to match("Vous trouverez ci-dessous une réponse d'un.e bénéficiaire à une invitation :")
+      expect(mail.body.encoded).to match("Vous trouverez ci-dessous une réponse d'un usager à une invitation :")
       expect(mail.body.encoded).to match("<h4>coucou</h4>")
       expect(mail.body.encoded).to match("Je souhaite annuler mon RDV")
       expect(mail.body.encoded).to match("Merci de ne pas répondre à cet e-mail. Pour contacter la personne, ")
@@ -121,7 +121,7 @@ RSpec.describe ReplyTransferMailer do
     end
 
     it "renders the content" do
-      expect(mail.body.encoded).to match("Vous trouverez ci-dessous une réponse d'un.e bénéficiaire à une convocation")
+      expect(mail.body.encoded).to match("Vous trouverez ci-dessous une réponse d'un usager à une convocation")
       expect(mail.body.encoded).to match("<h4>coucou</h4>")
       expect(mail.body.encoded).to match("Je souhaite annuler mon RDV")
       expect(mail.body.encoded).to match("Merci de ne pas répondre à cet e-mail. Pour contacter la personne, ")
@@ -145,7 +145,7 @@ RSpec.describe ReplyTransferMailer do
       let!(:lieu) { nil }
 
       it "renders the content without the lieu" do
-        expect(mail.body.encoded).to match("Vous trouverez ci-dessous une réponse d'un.e bénéficiaire")
+        expect(mail.body.encoded).to match("Vous trouverez ci-dessous une réponse d'un usager")
         expect(mail.body.encoded).to match("<h4>coucou</h4>")
         expect(mail.body.encoded).to match("Je souhaite annuler mon RDV")
         expect(mail.body.encoded).to match("Merci de ne pas répondre à cet e-mail. Pour contacter la personne, ")
@@ -182,7 +182,7 @@ RSpec.describe ReplyTransferMailer do
     end
 
     it "renders the content" do
-      expect(mail.body.encoded).to match("Vous trouverez ci-dessous une réponse d'un.e bénéficiaire")
+      expect(mail.body.encoded).to match("Vous trouverez ci-dessous une réponse d'un usager")
       expect(mail.body.encoded).to match("<h4>coucou</h4>")
       expect(mail.body.encoded).to match("Je souhaite annuler mon RDV")
       expect(mail.body.encoded).to match("Vous trouverez ci-dessous les informations nécessaires pour contacter")
@@ -211,7 +211,7 @@ RSpec.describe ReplyTransferMailer do
       end
 
       it "renders the content" do
-        expect(mail.body.encoded).to match("Vous trouverez ci-dessous une réponse d'un.e bénéficiaire")
+        expect(mail.body.encoded).to match("Vous trouverez ci-dessous une réponse d'un usager")
         expect(mail.body.encoded).to match("<h4>coucou</h4>")
         expect(mail.body.encoded).to match("Je souhaite annuler mon RDV")
         expect(mail.body.encoded).to match("Vous trouverez ci-dessous les informations nécessaires pour contacter")

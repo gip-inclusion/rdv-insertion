@@ -74,7 +74,7 @@
       <%= image_tag("maps/#{@department.name.parameterize}.svg", alt: @department.name.parameterize, width: 50, height: 50) %>
     <% end %>
     <% if @organisations.length > 1 %>
-      <div class="dropdown">
+      <div class="dropdown text-center">
         <a class="dropdown-toggle text-center department-map-title mb-0" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
           <%= department_level? ? @department.name : @organisation.name %>
         </a>

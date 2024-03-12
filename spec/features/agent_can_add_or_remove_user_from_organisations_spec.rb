@@ -185,7 +185,7 @@ describe "Agents can add or remove user from organisations", :js do
       expect(page).to have_button("- Retirer", disabled: false)
 
       accept_confirm(
-        "Cette action va supprimer définitivement la fiche du bénéficiaire, êtes-vous sûr de vouloir la supprimer ?"
+        "Cette action va supprimer définitivement la fiche de l'usager, êtes-vous sûr de vouloir la supprimer ?"
       ) do
         click_button("- Retirer")
       end

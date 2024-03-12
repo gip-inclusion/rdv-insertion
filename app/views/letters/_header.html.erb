@@ -17,7 +17,7 @@
     <p><%= sender_city || department.capital %>, le <%= Date.today.strftime('%d/%m/%Y') %></p>
     <br/>
     <p>À l'attention de</p>
-    <br/><br/>
+    <br/><br/><br/>
     <p><%= user.title.upcase %> <%= user.first_name.upcase %> <%= user.last_name.upcase %><br/>
     <%= simple_format(user.street_address.upcase, {}, wrapper_tag: "span") %><br/>
     <%= user.zipcode_and_city.upcase %></p>
