@@ -1,3 +1,5 @@
+require "csv"
+
 describe "Agents can download csv from index page", :js do
   let!(:agent) { create(:agent, admin_role_in_organisations: [organisation]) }
   let!(:organisation) { create(:organisation) }
@@ -32,16 +34,16 @@ describe "Agents can download csv from index page", :js do
     stub_geo_api_request(user.address)
   end
 
-  shared_examples "downloading csv" do
-    it "can download participation csv" do
-      expect(Exporters::SendUsersParticipationsCsvJob).to receive(:perform_async).once
+  shared_examples "triggering csv creation" do
+    it "can trigger participation csv" do
+      expect(Exporters::CreateUsersParticipationsCsvExportJob).to receive(:perform_async).once
       find_by_id("csvExportButton").click
 
       click_link("Export des rendez-vous des usagers")
     end
 
-    it "can download users csv" do
-      expect(Exporters::SendUsersCsvJob).to receive(:perform_async).once
+    it "can trigger users csv" do
+      expect(Exporters::CreateUsersCsvExportJob).to receive(:perform_async).once
       find_by_id("csvExportButton").click
 
       click_link("Export des usagers")
@@ -53,7 +55,7 @@ describe "Agents can download csv from index page", :js do
       visit organisation_users_path(organisation, motif_category_id: motif_category.id)
     end
 
-    it_behaves_like "downloading csv"
+    it_behaves_like "triggering csv creation"
   end
 
   context "when viewing the whole department" do
@@ -61,6 +63,45 @@ describe "Agents can download csv from index page", :js do
       visit department_users_path(organisation.department)
     end
 
-    it_behaves_like "downloading csv"
+    it_behaves_like "triggering csv creation"
+  end
+
+  context "when clicking on email link" do
+    let!(:export) do
+      create(:csv_export, agent:, structure: organisation, kind: "users_csv")
+    end
+
+    it "redirects to actual csv path" do
+      visit csv_export_path(id: export.id)
+
+      wait_for_download
+      expect(downloads.length).to eq(1)
+      expect(download_content).not_to eq(nil)
+    end
+
+    context "when agent is not the creator of the export" do
+      let!(:another_agent) { create(:agent, admin_role_in_organisations: [organisation]) }
+      let!(:export) do
+        create(:csv_export, agent: another_agent, structure: organisation, kind: "users_csv")
+      end
+
+      it "does not download the file" do
+        visit csv_export_path(id: export.id)
+
+        expect(page).to have_current_path(organisation_users_path(organisation))
+      end
+    end
+
+    context "when export is expired" do
+      let!(:export) do
+        create(:csv_export, agent:, structure: organisation, kind: "users_csv", created_at: 3.days.ago)
+      end
+
+      it "does not download the file" do
+        visit csv_export_path(id: export.id)
+
+        expect(page).to have_current_path(organisation_users_path(organisation))
+      end
+    end
   end
 end

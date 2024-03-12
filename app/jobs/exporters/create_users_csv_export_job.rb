@@ -1,5 +1,9 @@
+require "stringio"
+
 module Exporters
-  class SendUsersCsvJob < ApplicationJob
+  class CreateUsersCsvExportJob < ApplicationJob
+    EXPORT_KIND = :users_csv
+
     attr_reader :user_ids, :structure, :motif_category, :agent
 
     def perform(user_ids, structure_type, structure_id, motif_category_id, agent_id)
@@ -8,15 +12,22 @@ module Exporters
       @motif_category = motif_category_id.present? ? MotifCategory.find(motif_category_id) : nil
       @agent = Agent.find(agent_id)
 
-      ZipFile.new(generate_csv.csv, generate_csv.filename).zip do |file|
-        send_email(file)
-      end
+      create_export
+      send_email
     end
 
     private
 
-    def send_email(file)
-      CsvExportMailer.users_csv_export(agent.email, file).deliver_now
+    def create_export
+      ActiveRecord::Base.transaction do
+        @export = CsvExport.create!(agent:, structure:, kind: EXPORT_KIND)
+        @export.file.attach(io: StringIO.new(generate_csv.csv), filename: generate_csv.filename,
+                            content_type: "text/csv")
+      end
+    end
+
+    def send_email
+      CsvExportMailer.notify_csv_export(agent.email, @export).deliver_now
     end
 
     def generate_csv

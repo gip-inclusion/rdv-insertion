@@ -82,6 +82,8 @@ Rails.application.routes.draw do
     get :redirect, on: :collection
   end
 
+  resources :csv_exports, only: :show
+
   resources :convocations, only: [:new]
 
   resources :participations, only: [:update]

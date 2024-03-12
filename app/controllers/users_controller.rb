@@ -102,9 +102,9 @@ class UsersController < ApplicationController
 
   def csv_exporter
     if params[:export_type] == "participations"
-      Exporters::SendUsersParticipationsCsvJob
+      Exporters::CreateUsersParticipationsCsvExportJob
     else
-      Exporters::SendUsersCsvJob
+      Exporters::CreateUsersCsvExportJob
     end
   end
 
