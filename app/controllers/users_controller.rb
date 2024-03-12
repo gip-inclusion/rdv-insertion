@@ -40,7 +40,7 @@ class UsersController < ApplicationController
         flash[:success] = "Le fichier CSV est en train d'être généré." \
                           " Il sera envoyé à l'adresse email #{current_agent.email}." \
                           " Pensez à vérifier vos spams."
-        redirect_to url_for(request.query_parameters.except("format"))
+        redirect_to url_for(request.query_parameters.except(:format, :export_type))
       end
     end
   end
