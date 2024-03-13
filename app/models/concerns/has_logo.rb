@@ -1,8 +1,5 @@
 module HasLogo
   extend ActiveSupport::Concern
-
-  MAX_ATTACHMENT_SIZE = 2.megabytes
-
   ACCEPTED_FORMATS = %w[PNG JPG].freeze
 
   MIME_TYPES = [
@@ -11,10 +8,8 @@ module HasLogo
   ].freeze
 
   included do
-    include AttachmentValidator
-
     has_one_attached :logo
-
-    alias attachment logo
+    validates :logo, max_size: 1.megabytes,
+                     accepted_formats: { formats: ACCEPTED_FORMATS, mime_types: MIME_TYPES }
   end
 end

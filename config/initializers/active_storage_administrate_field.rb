@@ -1,4 +1,5 @@
-# as draw_routes is set to false in production, we need to override the calls to the url and blob_url methods
+# as draw_routes is set to false in production, we need to redirect the calls to the url and blob_url methods
+# because administrate use them
 
 module Administrate
   module Field

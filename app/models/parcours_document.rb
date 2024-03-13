@@ -1,6 +1,4 @@
 class ParcoursDocument < ApplicationRecord
-  MAX_ATTACHMENT_SIZE = 5.megabytes
-
   ACCEPTED_FORMATS = %w[PDF JPG PNG ODT DOC DOCX XLSX PPT ZIP].freeze
 
   MIME_TYPES = [
@@ -20,15 +18,12 @@ class ParcoursDocument < ApplicationRecord
     "application/zip"
   ].freeze
 
-  include AttachmentValidator
-
   belongs_to :department
   belongs_to :agent
   belongs_to :user
 
   has_one_attached :file
 
-  validates :file, presence: true
-
-  alias attachment file
+  validates :file, presence: true, max_size: 5.megabytes,
+                   accepted_formats: { formats: ACCEPTED_FORMATS, mime_types: MIME_TYPES }
 end
