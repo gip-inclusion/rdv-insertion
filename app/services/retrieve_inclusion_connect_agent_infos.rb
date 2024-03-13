@@ -8,7 +8,7 @@ class RetrieveInclusionConnectAgentInfos < BaseService
     request_token!
     request_agent_info!
     retrieve_agent!
-    # TODO : when we will have update endoint on rdvsp : update agent from rdvi
+    # TODO : when we will have update endoint on rdvsp : update agent in rdvi and rdvsp
     retrieve_token_id
   end
 
