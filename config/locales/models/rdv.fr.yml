@@ -11,13 +11,15 @@ fr:
           excused: Annulé (excusé)
           revoked: Annulé (par le service)
           noshow: Absence non excusée
-          pending: RDV à venir
-          needs_status_update: Statut du RDV à préciser
           detailed:
             unknown: Statut du rendez-vous inconnu
             seen: L’usager s’est présenté à son rendez-vous et a été reçu
             excused: L’usager a pu prévenir de son absence
             revoked: Le rendez-vous a du être annulé par le service
             noshow: L’usager ne s’est pas présenté a son rendez-vous
+        unknown_statuses:
+          pending: RDV à venir
+          needs_status_update: Statut du RDV à préciser
+          detailed:
             pending: L'uasger a pris rendez-vous mais le rendez-vous n'a pas encore eu lieu
             needs_status_update: Le rendez-vous a eu lieu mais le statut n'a pas été renseigné par un agent

@@ -39,7 +39,7 @@ module RdvParticipationStatus
   end
 
   def available_statuses
-    in_the_future? ? %w[pending revoked excused] : %w[seen revoked excused noshow]
+    in_the_future? ? %w[unknown revoked excused] : %w[seen revoked excused noshow]
   end
 
   def needs_status_update?
@@ -51,6 +51,6 @@ module RdvParticipationStatus
   end
 
   def human_unknown_status
-    I18n.t("activerecord.attributes.rdv.statuses.#{in_the_future? ? 'pending' : 'needs_status_update'}")
+    I18n.t("activerecord.attributes.rdv.unknown_statuses.#{in_the_future? ? 'pending' : 'needs_status_update'}")
   end
 end
