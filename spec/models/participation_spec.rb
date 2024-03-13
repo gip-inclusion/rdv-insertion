@@ -41,7 +41,7 @@ describe Participation do
     context "when rdv is in the future" do
       let(:rdv) { create(:rdv, starts_at: DateTime.tomorrow) }
 
-      it { expect(subject.sort).to eq(%w[excused revoked pending].sort) }
+      it { expect(subject.sort).to eq(%w[excused revoked unknown].sort) }
     end
   end
 
