@@ -58,7 +58,8 @@ RSpec.configure do |config|
 
   config.before do
     ActiveSupport::CurrentAttributes.reset_all
-    ActiveStorage::Current.url_options = { host: "localhost:8000" }
+    # ensure that ActiveStorage::Current.url_options is set for all requests
+    ActiveStorage::Current.url_options = { host: ENV["HOST"] }
   end
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
