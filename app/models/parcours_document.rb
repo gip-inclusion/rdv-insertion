@@ -1,4 +1,6 @@
 class ParcoursDocument < ApplicationRecord
+  MAX_SIZE = 5.megabytes
+
   ACCEPTED_FORMATS = %w[PDF JPG PNG ODT DOC DOCX XLSX PPT ZIP].freeze
 
   MIME_TYPES = [
@@ -24,6 +26,6 @@ class ParcoursDocument < ApplicationRecord
 
   has_one_attached :file
 
-  validates :file, presence: true, max_size: 5.megabytes,
+  validates :file, presence: true, max_size: MAX_SIZE,
                    accepted_formats: { formats: ACCEPTED_FORMATS, mime_types: MIME_TYPES }
 end
