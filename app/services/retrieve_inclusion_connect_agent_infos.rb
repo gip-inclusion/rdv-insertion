@@ -8,6 +8,7 @@ class RetrieveInclusionConnectAgentInfos < BaseService
     request_token!
     request_agent_info!
     retrieve_agent!
+    # TODO : when we will have update endoint on rdvsp : update agent in rdvi and rdvsp
     retrieve_token_id
   end
 
@@ -46,7 +47,41 @@ class RetrieveInclusionConnectAgentInfos < BaseService
   end
 
   def retrieve_agent!
-    result.agent = Agent.find_by(email: agent_info_body["email"])
+    fail!("Inclusion Connect sub and email mismatch") if agent_mismatch?
+
+    result.agent = found_by_sub || found_by_email
     result.agent.presence || fail!("Agent doesn't exist in rdv-insertion")
+  end
+
+  def found_by_email
+    fail!("Inclusion connect info has a nil mail") if agent_info_body["email"].nil?
+
+    return @found_by_email if defined?(@found_by_email)
+
+    @found_by_email = Agent.find_by(email: agent_info_body["email"])
+
+    unless @found_by_email
+      # Les domaines francetravail.fr et pole-emploi.fr sont équivalents
+      # Enlever cette condition après la dernière vague de migration le 12 avril
+      # Les agents seront mis à jour dans rdvi depuis RDVSP quand ils se connecteront sur rdvsp,
+      # si il reste des agents avec des emails pole-emploi.fr aprés le 12/04 il faudra les mettre à jour manuellement
+      name, domain = agent_info_body["email"].split("@")
+      if domain.in?(["francetravail.fr", "pole-emploi.fr"])
+        acceptable_emails = ["#{name}@francetravail.fr", "#{name}@pole-emploi.fr"]
+        @found_by_email = Agent.find_by(email: acceptable_emails)
+      end
+    end
+
+    @found_by_email
+  end
+
+  def found_by_sub
+    fail!("Inclusion connect info has a nil sub") if agent_info_body["sub"].nil?
+
+    @found_by_sub ||= Agent.find_by(inclusion_connect_open_id_sub: agent_info_body["sub"])
+  end
+
+  def agent_mismatch?
+    found_by_sub && found_by_email && found_by_sub != found_by_email
   end
 end

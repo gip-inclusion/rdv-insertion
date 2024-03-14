@@ -1,6 +1,14 @@
 describe InclusionConnectController do
   let(:base_url) { "https://test.inclusion.connect.fr" }
-  let!(:agent) { create(:agent, last_name: "Leponge", first_name: "Bob", email: "bob@gmail.com") }
+  let!(:agent) do
+    create(
+      :agent,
+      last_name: "Leponge",
+      first_name: "Bob",
+      email: "bob@gmail.com"
+    )
+  end
+  let!(:agent_with_sub) { create(:agent, inclusion_connect_open_id_sub: "agent_with_sub") }
   let(:payload) do
     {
       id: agent.rdv_solidarites_agent_id,
@@ -64,10 +72,29 @@ describe InclusionConnectController do
         status: 200, body: {
           given_name: "Patrick",
           family_name: "Letoile",
-          email: "patrick@gmail.com"
+          email: "patrick@gmail.com",
+          sub: "patrick"
         }.to_json, headers: {}
       )
       expect(Sentry).to receive(:capture_message).with("Agent doesn't exist in rdv-insertion")
+      get :callback, params: { state: "a state", code: code }
+      expect(response).to redirect_to(sign_in_path)
+      expect_flash_error
+    end
+
+    it "redirect and returns an error if agent mismatch with email and sub" do
+      stub_token_request.to_return(
+        status: 200, body: { access_token: "valid_token", scopes: "openid" }.to_json, headers: {}
+      )
+      stub_agent_info_request.to_return(
+        status: 200, body: {
+          given_name: "Bob",
+          family_name: "Leponge",
+          email: "bob@gmail.com",
+          sub: "agent_with_sub"
+        }.to_json, headers: {}
+      )
+      expect(Sentry).to receive(:capture_message).with("Inclusion Connect sub and email mismatch")
       get :callback, params: { state: "a state", code: code }
       expect(response).to redirect_to(sign_in_path)
       expect_flash_error
@@ -87,7 +114,8 @@ describe InclusionConnectController do
         status: 200, body: {
           given_name: "Bob",
           family_name: "Leponge",
-          email: "bob@gmail.com"
+          email: "bob@gmail.com",
+          sub: "Bob"
         }.to_json, headers: {}
       )
       get :callback, params: { state: "a state", code: code }
