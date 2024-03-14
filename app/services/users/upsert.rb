@@ -31,19 +31,3 @@ module Users
     end
   end
 end
-
-
-organisation = Organisation.find(190)
-organisations = Organisation.find([190, 191, 192, 236])
-rsa_orientation = MotifCategory.find_by(short_name: "rsa_orientation")
-rsa_accompagnement = MotifCategory.find_by(short_name: "rsa_accompagnement")
-
-organisations.each do |organisation|
-  users_with_only_one_organisation = organisation.users.group(:id).having('COUNT(organisation_id) = 1').pluck(:id)
-
-  rdv_contexts = RdvContext.where(user_id: users_with_only_one_organisation, motif_category: rsa_orientation)
-  rdv_contexts.each do |rdv_context|
-    rdv_context.motif_category = rsa_accompagnement
-    rdv_context.save!
-  end
-end
