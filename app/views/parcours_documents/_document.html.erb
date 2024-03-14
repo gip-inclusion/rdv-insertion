@@ -1,6 +1,6 @@
 <%= turbo_frame_tag document do %>
- <div class="d-flex mb-1 w-50">
-  <div class="w-75">
+ <div class="d-flex mb-1 w-75 justify-content-between" data-controller="parcours-documents">
+  <div class="">
     <%= link_to user_parcours_document_path(id: document.id, user_id: document.user_id), target: "_blank", class: "text-decoration-underline document-link" do %>
       <i class="fas fa-file-pdf mx-1"></i>
       <%= document.file.filename %>
@@ -8,7 +8,22 @@
     <% end %>
   </div>
 
-  <div class="w-25 text-end">
+  <div class="d-flex align-items-center">
+    <span class="d-block me-1">Date du document : </span>
+    <div class="document-date-value">
+      <% if document.document_date.present? %>
+        <%= document.document_date.strftime("%d/%m/%Y") %>
+      <% else %>
+        Non renseignée
+      <% end %>
+    </div>
+    <%= date_field_tag "document_date", document.document_date, class: "form-control d-none", data: { action: "change->parcours-documents#updateDate" } %>
+    <%= button_tag type: "button", class: "btn btn-link edit-date-button text-dark-blue", data: { action: "click->parcours-documents#editDate" } do %>
+      <i class="fas fa-edit"></i>
+    <% end %>
+  </div>
+
+  <div class=" text-end">
     <%= 
       link_to(
         user_parcours_document_path(id: document.id, user_id: document.user_id),
