@@ -8,7 +8,7 @@ fr:
         statuses:
           not_invited: Non invité
           invitation_pending: Invitation en attente de réponse
-          rdv_pending: RDV pris
+          rdv_pending: RDV à venir
           rdv_needs_status_update: Statut du RDV à préciser
           rdv_noshow: Absence non excusée au RDV
           rdv_revoked: RDV annulé à l'initative du Service

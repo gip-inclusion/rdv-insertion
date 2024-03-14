@@ -131,14 +131,13 @@ module Exporters
     def human_last_participation_status(user)
       return "" if last_participation(user).blank?
 
-      I18n.t("activerecord.attributes.rdv.statuses.#{last_participation(user).status}")
+      last_participation(user).human_status
     end
 
     def human_rdv_context_status(user)
       return "" if @motif_category.nil? || rdv_context_for_export(user).nil?
 
-      I18n.t("activerecord.attributes.rdv_context.statuses.#{rdv_context_for_export(user).status}") +
-        display_context_status_notice(rdv_context_for_export(user))
+      rdv_context_for_export(user).human_status + display_context_status_notice(rdv_context_for_export(user))
     end
 
     def display_context_status_notice(rdv_context)

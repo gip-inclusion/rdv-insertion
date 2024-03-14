@@ -95,15 +95,24 @@ module UsersHelper
     "text-danger"
   end
 
+  def human_available_status(participation, status)
+    return I18n.t("activerecord.attributes.rdv.statuses.#{status}") unless status == "unknown"
+
+    participation.human_status
+  end
+
+  def human_available_detailed_status(participation, status)
+    return I18n.t("activerecord.attributes.rdv.statuses.detailed.#{status}") unless status == "unknown"
+
+    temporal_unknown_status = participation.in_the_future? ? "pending" : "needs_status_update"
+    I18n.t("activerecord.attributes.rdv.unknown_statuses.detailed.#{temporal_unknown_status}")
+  end
+
   def display_context_status(context, number_of_days_before_action_required)
     return "Non rattaché" if context.nil?
 
     I18n.t("activerecord.attributes.rdv_context.statuses.#{context.status}") +
       display_context_status_notice(context, number_of_days_before_action_required)
-  end
-
-  def display_participation_status(participation)
-    participation.pending? ? "À venir" : I18n.t("activerecord.attributes.rdv.statuses.#{participation.status}")
   end
 
   def display_context_status_notice(context, number_of_days_before_action_required)
