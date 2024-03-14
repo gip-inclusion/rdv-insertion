@@ -19,6 +19,7 @@ class DepartmentDashboard < Administrate::BaseDashboard
     email: Field::String,
     file_configurations: Field::HasMany,
     invitations: Field::HasMany,
+    logo: Field::ActiveStorage.with_options(show_preview_variant: false),
     motif_categories: Field::HasMany,
     name: Field::String,
     number: Field::String,
@@ -64,6 +65,7 @@ class DepartmentDashboard < Administrate::BaseDashboard
     organisations
     created_at
     updated_at
+    logo
   ].freeze
 
   # FORM_ATTRIBUTES
@@ -79,6 +81,7 @@ class DepartmentDashboard < Administrate::BaseDashboard
     phone_number
     carnet_de_bord_deploiement_id
     display_in_stats
+    logo
   ].freeze
 
   # COLLECTION_FILTERS

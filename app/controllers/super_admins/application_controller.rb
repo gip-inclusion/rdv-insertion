@@ -8,6 +8,9 @@ module SuperAdmins
   class ApplicationController < Administrate::ApplicationController
     include AuthenticatedControllerConcern
     include SuperAdmins::RedirectAndRenderConcern
+    # Needed to generate ActiveStorage urls locally, it sets the host and protocol
+    include ActiveStorage::SetCurrent unless Rails.env.production?
+
     before_action :authenticate_super_admin!
 
     def authenticate_super_admin!
