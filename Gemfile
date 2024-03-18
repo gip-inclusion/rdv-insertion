@@ -98,11 +98,14 @@ gem "blueprinter"
 # A Rails engine for creating super-flexible admin dashboards
 gem "administrate", git: "https://github.com/thoughtbot/administrate.git"
 
-# Required for ActiveStorage for S3 compatible storage
-gem "aws-sdk-s3", require: false
+# manage attachments from administrate dashboards
+gem "administrate-field-active_storage"
 
 # Use Active Storage variant
-gem "image_processing", "~> 1.2"
+gem "image_processing"
+
+# Required for ActiveStorage for S3 compatible storage
+gem "aws-sdk-s3", require: false
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", ">= 1.4.2", require: false

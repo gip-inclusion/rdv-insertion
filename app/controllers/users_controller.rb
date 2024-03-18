@@ -38,9 +38,9 @@ class UsersController < ApplicationController
       format.csv do
         generate_csv
         flash[:success] = "Le fichier CSV est en train d'être généré." \
-                          " Il sera envoyé l'adresse email #{current_agent.email}." \
+                          " Il sera envoyé à l'adresse email #{current_agent.email}." \
                           " Pensez à vérifier vos spams."
-        redirect_to structure_users_path(**params.to_unsafe_h.except(:format))
+        redirect_to url_for(request.query_parameters.except(:format, :export_type))
       end
     end
   end

@@ -124,6 +124,7 @@ describe "Super admin can manage departments" do
       fill_in "department_capital", with: "Versailles"
       fill_in "department_number", with: "78"
       fill_in "department_region", with: "Ile-de-France"
+      attach_file("department[logo]", Rails.root.join("spec/fixtures/logo.png"))
 
       click_button("Enregistrer")
 
@@ -140,9 +141,10 @@ describe "Super admin can manage departments" do
 
         click_button("Enregistrer")
 
-        expect(page).to have_content("2 erreur ont empêché Département d'être sauvegardé(e)")
+        expect(page).to have_content("3 erreur ont empêché Département d'être sauvegardé(e)")
         expect(page).to have_content("Numéro doit être rempli(e)")
         expect(page).to have_content("Région doit être rempli(e)")
+        expect(page).to have_content("Logo doit être rempli(e)")
         expect(page).to have_no_content("Détails Yvelines")
       end
     end

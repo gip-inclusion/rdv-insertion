@@ -114,11 +114,13 @@ class NotificationMailer < ApplicationMailer
   end
 
   def set_organisation_logo_path
-    @organisation_logo_path = @rdv.organisation.logo_path(%w[png jpg])
+    return if @rdv.organisation.logo.blank?
+
+    @organisation_logo_path = @rdv.organisation.logo.url
   end
 
   def set_department_logo_path
-    @department_logo_path = @department.logo_path(%w[png jpg])
+    @department_logo_path = @department.logo.url
   end
 
   def rdv_by_phone?

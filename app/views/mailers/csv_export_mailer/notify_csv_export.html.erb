@@ -2,7 +2,7 @@
 <p>Voici l'export CSV que vous avez demandé sur notre plateforme.</p>
 <p>Ce lien de téléchargement n'est valable que pendant <%= CsvExport::VALIDITY_PERIOD.in_hours.to_i %> heures à partir de l'envoi de ce mail.</p>
 <p class="btn-wrapper">
-  <%= link_to csv_export_url(id: @export.id), class: "btn btn-primary" do %>
+  <%= link_to csv_export_url(id: @export.signed_id), class: "btn btn-primary" do %>
     Télécharger le fichier
   <% end %>
 </p>

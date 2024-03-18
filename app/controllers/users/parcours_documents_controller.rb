@@ -52,7 +52,7 @@ module Users
     end
 
     def set_parcours_document
-      @parcours_document = ParcoursDocument.find(params[:id])
+      @parcours_document = ParcoursDocument.find_signed!(params[:id].to_s)
     end
 
     def set_user

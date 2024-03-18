@@ -72,7 +72,7 @@ describe "Agents can download csv from index page", :js do
     end
 
     it "redirects to actual csv path" do
-      visit csv_export_path(id: export.id)
+      visit csv_export_path(id: export.signed_id)
 
       wait_for_download
       expect(downloads.length).to eq(1)
@@ -86,7 +86,7 @@ describe "Agents can download csv from index page", :js do
       end
 
       it "does not download the file" do
-        visit csv_export_path(id: export.id)
+        visit csv_export_path(id: export.signed_id)
 
         expect(page).to have_current_path(organisation_users_path(organisation))
       end
@@ -98,7 +98,7 @@ describe "Agents can download csv from index page", :js do
       end
 
       it "does not download the file" do
-        visit csv_export_path(id: export.id)
+        visit csv_export_path(id: export.signed_id)
 
         expect(page).to have_current_path(organisation_users_path(organisation))
       end

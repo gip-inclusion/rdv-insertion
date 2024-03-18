@@ -20,6 +20,7 @@ class OrganisationDashboard < Administrate::BaseDashboard
     invitations: Field::HasMany,
     last_webhook_update_received_at: Field::DateTime,
     lieux: Field::HasMany,
+    logo: Field::ActiveStorage.with_options(show_preview_variant: false),
     logo_filename: Field::String,
     messages_configuration: Field::HasOne,
     motif_categories: Field::HasMany,
@@ -63,13 +64,13 @@ class OrganisationDashboard < Administrate::BaseDashboard
     email
     safir_code
     independent_from_cd
-    logo_filename
     agent_roles
     lieux
     motif_categories
     created_at
     updated_at
     last_webhook_update_received_at
+    logo
   ].freeze
 
   # FORM_ATTRIBUTES
@@ -84,12 +85,13 @@ class OrganisationDashboard < Administrate::BaseDashboard
     email
     safir_code
     independent_from_cd
-    logo_filename
+    logo
   ].freeze
 
   FORM_ATTRIBUTES_NEW = %i[
     rdv_solidarites_organisation_id
     department
+    logo
   ].freeze
 
   # COLLECTION_FILTERS

@@ -37,15 +37,15 @@ class NotifyUnavailableCreneauJob < ApplicationJob
       " Motif : #{grouped_invitation_params[:motif_category_name]}\n" \
       " Nombre d'invitations concernées : #{grouped_invitation_params[:invitations_counter]}\n"
 
-    if grouped_invitation_params[:city_codes].present?
-      string += " Codes postaux : #{grouped_invitation_params[:city_codes].join(', ')}\n"
+    if grouped_invitation_params[:zip_codes].present?
+      string += " Codes postaux : #{grouped_invitation_params[:zip_codes].join(', ')}\n"
     end
 
     if grouped_invitation_params[:referent_ids].present?
       string += " Référents (rdvsp_ids) : #{grouped_invitation_params[:referent_ids].join(', ')}\n"
     end
 
-    string += " !! L'organisation n'a pas d'email configuré et n'a pas été notifiée !!\n" if organisation.email.blank?
+    string += " ** L'organisation n'a pas d'email configuré et n'a pas été notifiée !**\n" if organisation.email.blank?
 
     string
   end
