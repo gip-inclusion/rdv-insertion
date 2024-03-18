@@ -26,7 +26,7 @@ module Users
       authorize @parcours_document
       @parcours_document.update!(parcours_document_params)
       turbo_stream_replace(
-        "parcours_document_#{@parcours_document.id}",
+        @parcours_document,
         "parcours_documents/document",
         { document: @parcours_document }
       )

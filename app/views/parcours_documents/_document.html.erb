@@ -1,4 +1,4 @@
-<%= turbo_frame_tag "parcours_document_#{document.id}" do %>
+<%= turbo_frame_tag document do %>
  <div class="d-flex mb-1 align-items-center" data-controller="parcours-documents">
   <div style="width: 350px" class="me-5 mb-1">
     <%= link_to user_parcours_document_path(id: document.signed_id(expires_in: 1.hour), user_id: document.user_id), target: "_blank", class: "text-decoration-underline document-link" do %>
