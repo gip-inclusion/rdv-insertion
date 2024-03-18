@@ -1,6 +1,6 @@
 <div class="d-flex align-items-center me-5" style="width: 400px">
   <span class="d-block me-1">Date du document : </span>
-  <div class="document-date-value" style="width: 120px">
+  <div class="document-date-value" style="width: 115px">
     <% if document.document_date.present? %>
       <strong><%= document.document_date.strftime("%d/%m/%Y") %></strong>
     <% else %>
@@ -19,7 +19,7 @@
       <% end %>
     </div>
     <%= button_tag type: "button", class: "btn btn-link edit-date-button text-dark-blue", data: { action: "click->parcours-documents#toggleEditDate" } do %>
-      <i class="fas fa-edit"></i>
+      <i class="fas fa-pencil-alt"></i>
     <% end %>
   <% end %>
 </div>
