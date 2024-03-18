@@ -79,7 +79,7 @@ describe "Agents can upload documents for users", :js do
       expect(user.diagnostics.count).to eq(0)
     end
 
-    context "when a document has be uploaded" do
+    context "when a document has been uploaded" do
       let!(:document) { create(:parcours_document, user:, agent:, type: "Diagnostic") }
 
       it "can update the date" do
