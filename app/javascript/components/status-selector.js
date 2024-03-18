@@ -22,11 +22,13 @@ class StatusSelector {
   }
 
   refreshQuery(selectedStatus) {
+    const url = new URL(window.location.href);
     if (selectedStatus) {
-      const url = new URL(window.location.href);
       url.searchParams.set("status", selectedStatus);
-      window.location.href = url;
+    } else {
+      url.searchParams.delete("status");
     }
+    window.location.href = url;
   }
 }
 

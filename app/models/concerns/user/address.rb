@@ -13,6 +13,10 @@ module User::Address
     split_address.present? ? split_address[2].strip : nil
   end
 
+  def zipcode
+    address&.match(/\d{5}/)&.to_s
+  end
+
   private
 
   def split_address

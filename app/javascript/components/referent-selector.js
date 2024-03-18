@@ -22,11 +22,13 @@ class ReferentSelector {
   }
 
   refreshQuery(selectedReferentId) {
+    const url = new URL(window.location.href);
     if (selectedReferentId) {
-      const url = new URL(window.location.href);
       url.searchParams.set("referent_id", selectedReferentId);
-      window.location.href = url;
+    } else {
+      url.searchParams.delete("referent_id");
     }
+    window.location.href = url;
   }
 }
 

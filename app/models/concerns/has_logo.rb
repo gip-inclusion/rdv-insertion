@@ -1,11 +1,15 @@
 module HasLogo
-  delegate :path, to: :logo, prefix: true
+  extend ActiveSupport::Concern
+  ACCEPTED_FORMATS = %w[PNG JPG].freeze
 
-  def logo
-    Logo.new(logo_name)
-  end
+  MIME_TYPES = [
+    "image/png",
+    "image/jpeg"
+  ].freeze
 
-  def logo_name
-    respond_to?(:logo_filename) && logo_filename.present? ? logo_filename : name.parameterize
+  included do
+    has_one_attached :logo
+    validates :logo, max_size: 2.megabytes,
+                     accepted_formats: { formats: ACCEPTED_FORMATS, mime_types: MIME_TYPES }
   end
 end

@@ -22,7 +22,7 @@ module Stats
       @rdv_contexts_with_rdv_seen_in_less_than_n_days ||= begin
         rdv_contexts = []
 
-        rdv_contexts_with_rdvs_seen_created_more_than_n_days_ago.find_in_batches(batch_size: 100) do |batch|
+        rdv_contexts_with_rdvs_seen_created_more_than_n_days_ago.find_in_batches(batch_size: 1000) do |batch|
           rdv_contexts += batch.select { |record| record.rdv_seen_delay_in_days < @number_of_days }
         end
 
@@ -32,13 +32,17 @@ module Stats
 
     def rdv_contexts_with_rdvs_seen_created_more_than_n_days_ago
       @rdv_contexts_with_rdvs_seen_created_more_than_n_days_ago ||=
-        rdv_contexts_created_more_than_n_days_ago.joins(:participations).where(participations: { status: "seen" })
-                                                 .distinct
+        # we load the ids of rdv_contexts_created_more_than_n_days_ago to simplify the request
+        # that is triggered in each batch in the find_in_batches block above
+        RdvContext.where(id: rdv_contexts_created_more_than_n_days_ago)
+                  .joins(:participations)
+                  .where(participations: { status: "seen" })
+                  .distinct
     end
 
     def rdv_contexts_created_more_than_n_days_ago
       @rdv_contexts_created_more_than_n_days_ago ||= @rdv_contexts.where("rdv_contexts.created_at < ?",
-                                                                         @number_of_days.days.ago)
+                                                                         @number_of_days.days.ago).to_a
     end
   end
 end

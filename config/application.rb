@@ -11,6 +11,7 @@ module RdvInsertion
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.1
 
+    config.autoload_paths += Dir[Rails.root.join("app/models/concerns/validators")]
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading
@@ -40,5 +41,7 @@ module RdvInsertion
     # Temporary support for unencrypted data during the migration process
     # Must be disabled once the migration is complete
     config.active_record.encryption.support_unencrypted_data = true
+
+    config.active_storage.variant_processor = :image_processing
   end
 end

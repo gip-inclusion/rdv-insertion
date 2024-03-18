@@ -57,12 +57,6 @@ export default class extends Controller {
     });
   }
 
-  logoFilenameAttribute() {
-    tippy(this.element, {
-      content: "Renseigner le nom du logo sans l'extension du fichier (.png, .svg, .jpg)",
-    });
-  }
-
   senderCityAttribute() {
     tippy(this.element, {
       content:
