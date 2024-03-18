@@ -21,17 +21,10 @@ export default class extends Controller {
     this.element.querySelector("button i").classList.remove("d-none")
   }
 
-  editDate() {
-    this.element.querySelector("input[type=date]").classList.remove("d-none")
-    this.element.querySelector(".edit-date-button").classList.add("d-none")
-    this.element.querySelector(".document-date-value").classList.add("d-none")
-  }
-
-  updateDate() {
-    const date = this.element.querySelector("input[type=date]").value
-    this.element.querySelector(".document-date-value").innerText = date
-    this.element.querySelector("input[type=date]").classList.add("d-none")
-    this.element.querySelector(".edit-date-button").classList.remove("d-none")
-    this.element.querySelector(".document-date-value").classList.remove("d-none")
+  toggleEditDate() {
+    this.element.querySelector(".date-update").classList.toggle("d-none")
+    this.element.querySelector(".edit-date-button").classList.toggle("d-none")
+    this.element.querySelector(".document-date-value").classList.toggle("d-none")
+    this.element.querySelector("input[type=date]").focus()
   }
 }

@@ -312,6 +312,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_05_094354) do
     t.string "type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "document_date"
     t.index ["agent_id"], name: "index_parcours_documents_on_agent_id"
     t.index ["department_id"], name: "index_parcours_documents_on_department_id"
     t.index ["type"], name: "index_parcours_documents_on_type"
