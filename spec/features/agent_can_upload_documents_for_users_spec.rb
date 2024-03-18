@@ -88,7 +88,7 @@ describe "Agents can upload documents for users", :js do
 
         click_link("Parcours")
         find(".edit-date-button").click
-        fill_in("parcours_document_document_date", with: "20032024")
+        fill_in("parcours_document_document_date", with: Time.zone.local(2024, 3, 20))
         find(".validate-date-button").click
         expect(find(".document-date-value")).to have_content("20/03/2024")
         expect(document.reload.document_date).to eq(Time.zone.parse("2024-03-20"))
