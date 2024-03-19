@@ -32,45 +32,31 @@
   <div class="form-group text-center">
     <label><%= Orientation.human_attribute_name(:orientation_type) %></label>
     <%=
-      form.input(
+      form.select(
         :orientation_type,
-        as: :select,
-        collection: Orientation.orientation_types.keys,
-        label_method: -> { I18n.t("activerecord.attributes.orientation.orientation_types.#{_1}") },
-        input_html: { class: "form-control w-75 text-center mx-auto" }
+        Orientation.orientation_types.keys,
+        { label_method: -> { I18n.t("activerecord.attributes.orientation.orientation_types.#{_1}") } },
+        class: "form-control w-75 text-center mx-auto"
       )
     %>
   </div>
   <div class="form-group text-center">
    <label><%= Orientation.human_attribute_name(:organisation) %></label>
     <%=
-      form.input(
+      form.select(
         :organisation_id,
-        as: :select,
-        collection: organisations,
-        label_method: -> { _1.name },
-        input_html: {
-          class: "form-control w-75 text-center mx-auto",
-          data: { orientation_form_target: "organisationsList", action: "change->orientation-form#setAgentsList" }
-        }
+        organisations,
+        { label_method: -> { _1.name } },
+        class: "form-control w-75 text-center mx-auto",
+        data: { orientation_form_target: "organisationsList", action: "change->orientation-form#setAgentsList" }
       )
     %>
   </div>
   <div class="form-group text-center">
     <label><%= Orientation.human_attribute_name(:agent) %><span class="fw-lighter"> (optionel)</p></label>
-    <%=
-      form.input(
-        :agent_id,
-        as: :select,
-        collection: agents,
-        input_html: {
-          class: "form-control w-75 text-center mx-auto",
-          data: { orientation_form_target: "agentsList" }
-        }
-      )
-    %>
+    <%= form.select(:agent_id, agents, {}, class: "form-control w-75 text-center mx-auto", data: { orientation_form_target: "agentsList" }) %>
   </div>
   <div class="form-group text-center">
-    <%= form.button :submit, "Enregistrer", class: "btn btn-blue mt-3" %>
+    <%= form.submit "Enregistrer", class: "btn btn-blue mt-3" %>
   </div>
 </div>

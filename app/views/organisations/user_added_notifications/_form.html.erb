@@ -1,48 +1,30 @@
 <%= render "common/remote_modal", title: "Envoyez un email à l'organisation si vous le souhaitez" do %>
-  <%= simple_form_for(:email, url: organisations_user_added_notifications_path, html: { method: :post }) do |f| %>
+  <%= form_for(:email, url: organisations_user_added_notifications_path, method: :post) do |f| %>
       <div class="form-group">
         <div class="mb-3">
           <h5 class="text-dark-blue h4-as-labels">Destinataire</h5>
-            <%= f.input :to,
-                        as: :select,
-                        collection: emails,
-                        include_blank: false,
-                        input_html: { class: "form-control" }
+            <%= f.select :to,
+                        emails,
+                        { include_blank: false },
+                        class: "form-control"
             %>
         </div>
         <div class="mb-3">
           <h5 class="text-dark-blue h4-as-labels">Objet</h5>
-            <%= f.input :subject,
-                        input_html: {
-                          class: "form-control",
-                          value: "[RDV-Insertion] Un usager a été ajouté à votre organisation"
-                        }
-            %>
+            <%= f.text_field :subject, class: "form-control", value: "[RDV-Insertion] Un usager a été ajouté à votre organisation" %>
         </div>
         <div class="mb-3">
           <h5 class="text-dark-blue h4-as-labels">Message</h5>
-            <%= f.input :content,
-                    as: :text,
-                    input_html: {
-                      class: "form-control",
-                      cols: 15,
-                      rows: 15,
-                      value: "L'usager #{user} a été ajouté à votre organisation #{organisation.name}.\nVous pouvez consulter son profil à l'adresse suivante :\n #{organisation_user_url(id: user.id, organisation_id: organisation.id, host: ENV['HOST'])}"
-                    }
-
-            %>
+            <%= f.text_field :content, class: "form-control", cols: 15, rows: 15, value: "L'usager #{user} a été ajouté à votre organisation #{organisation.name}.\nVous pouvez consulter son profil à l'adresse suivante :\n #{organisation_user_url(id: user.id, organisation_id: organisation.id, host: ENV['HOST'])}" %>
         </div>
         <div class="mb-3">
           <h5 class="text-dark-blue h4-as-labels">Pièces jointes</h5>
-            <%= f.input :attachments,
-                        as: :file,
-                        input_html: { class: "form-control", multiple: true }
-            %>
+            <%= f.file_field :attachments, class: "form-control", multiple: true %>
         </div>
 
       </div>
       <div class="form-group text-center">
-        <%= f.button :submit, "Envoyer", class: "btn btn-blue" %>
+        <%= f.submit "Envoyer", class: "btn btn-blue" %>
       </div>
     </div>
   <% end %>

@@ -28,27 +28,39 @@
     <% end %>
   </h4>
   <% if local_assigns[:as] == :select %>
-    <p><%= f.input attribute, as: :select, collection: collection, selected: f.object[attribute], include_blank: local_assigns[:include_blank] %></p>
+    <%= f.select attribute, collection, { include_blank: local_assigns[:include_blank] }, { selected: f.object[attribute], class: "mb-3" } %>
   <% elsif local_assigns[:as] == :date %>
-    <p><%= f.input attribute,
-                    input_html: { class: "date-select" },
-                    as: :date, start_year: start_year,
-                    end_year: Date.today.year,
-                    include_blank: true,
-                    order: [:day, :month, :year] %></p>
+    <p><%= f.date_select attribute, { start_year: start_year, end_year: Date.today.year, include_blank: true, order: [:day, :month, :year] }, { class: "date-select" } %></p>
   <% elsif local_assigns[:as] == :association %>
-    <p><%= f.association attribute %></p>
+    <p><%= f.collection_select attribute, collection, :id, :name, { include_blank: true } %></p>
   <% elsif local_assigns[:as] == :collection_check_boxes %>
-    <p class="checkboxes"><%= f.collection_check_boxes :invitation_formats, collection, :first, :last, include_hidden: false %></p>
+    <p class="checkboxes d-flex">
+      <%= f.collection_check_boxes attribute, collection, ->(element) { element[0] }, ->(element) { element[1] }, include_hidden: false do |b| %>
+        <%=  b.label(class: "check_box text-center") { b.check_box(class: "check_box") + b.text  } %>
+      <% end %>
+    </p>
   <% elsif local_assigns[:as] == :array %>
-    <p><%= f.input attribute, as: :array %></p>
+    <p><%= f.text_field attribute %></p>
   <% elsif local_assigns[:as] == :boolean %>
-    <p><%= f.input attribute, as: :radio_buttons %></p>
+    <div class="mt-3 mb-4 input radio_buttons optional configuration_convene_user field_without_errors">
+      <span class="radio">
+        <%= f.label attribute do %>
+          <%= f.radio_button attribute, true, class: "radio_buttons" %>
+          Oui
+        <% end %>
+      </span>
+      <span class="radio">
+        <%= f.label attribute do %>
+          <%= f.radio_button attribute, false, class: "radio_buttons" %>
+          Non
+        <% end %>
+      </span>
+    </div>
   <% else %>
     <% if local_assigns[:value] %>
-      <p><%= f.input attribute, input_html: { value: local_assigns[:value] } %></p>
+      <div class="mt-3 mb-2"><%= f.text_field attribute, value: local_assigns[:value] %></div>
     <% else %>
-      <p><%= f.input attribute %></p>
+      <div class="mt-3 mb-2"><%= f.text_field attribute %></div>
     <% end %>
   <% end %>
 </div>
