@@ -1,6 +1,6 @@
 <div class="d-flex align-items-center me-5" style="width: 400px">
   <span class="d-block me-1">Date du document : </span>
-  <div class="document-date-value" style="width: 110px">
+  <div class="document-date-value" style="width: 115px">
     <% if document.document_date.present? %>
       <strong><%= document.document_date.strftime("%d/%m/%Y") %></strong>
     <% else %>
@@ -8,7 +8,6 @@
     <% end %>
   </div>
   <%= form_for(document, as: :parcours_document, url: user_parcours_document_path(id: document.signed_id), remote: true, html: { class: "d-inline" }) do |f| %>
-    <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
     <div class="date-update d-flex d-none">
       <%= f.date_field :document_date, class: "form-control me-1" %>
       <%= button_tag type: "submit", class: "btn btn-link validate-date-button text-dark-blue" do %>
