@@ -239,13 +239,8 @@ html,
 }
 
 .structure-logo {
-  max-width: 150px;
-  max-height: 70px;
-  margin-left: 10px;
-  margin-right: 10px;
-  &:first-child {
-    margin-left: 0px !important;
-  }
+  margin-right: 20px;
+  margin-top: 10px;
   &:last-child {
     margin-right: 0px !important;
   }
