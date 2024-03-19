@@ -24,12 +24,15 @@ module Users
 
     def update
       authorize @parcours_document
-      @parcours_document.update!(parcours_document_params)
-      turbo_stream_replace(
-        @parcours_document,
-        "parcours_documents/document",
-        { document: @parcours_document }
-      )
+      if @parcours_document.update(parcours_document_params)
+        turbo_stream_replace(
+          @parcours_document,
+          "parcours_documents/document",
+          { document: @parcours_document }
+        )
+      else
+        turbo_stream_prepend_flash_message(error: @parcours_document.errors.full_messages.join(". "))
+      end
     end
 
     def destroy
