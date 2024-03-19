@@ -18,7 +18,12 @@
   <tbody class="align-middle">
     <% @users.each do |user| %>
       <% rdv_context = user.rdv_context_for(@current_motif_category) %>
-      <tr>
+      <tr
+        class="clickable"
+        data-controller="user-link"
+        data-user-link-path="<%= structure_user_path(user.id) %>"
+        data-action="click->user-link#navigate"
+      >
         <td><%= display_attribute user.last_name %></td>
         <td><%= display_attribute user.first_name %></td>
         <% @current_configuration.invitation_formats.each do |invitation_format| %>
