@@ -34,8 +34,8 @@
     <%=
       form.select(
         :orientation_type,
-        Orientation.orientation_types.keys,
-        { label_method: -> { I18n.t("activerecord.attributes.orientation.orientation_types.#{_1}") } },
+        Orientation.orientation_types.map { |k, v| [I18n.t("activerecord.attributes.orientation.orientation_types.#{k}"), k]},
+        { include_blank: true },
         class: "form-control w-75 text-center mx-auto"
       )
     %>
@@ -45,8 +45,8 @@
     <%=
       form.select(
         :organisation_id,
-        organisations,
-        { label_method: -> { _1.name } },
+        organisations.pluck(:name, :id),
+        { include_blank: true },
         class: "form-control w-75 text-center mx-auto",
         data: { orientation_form_target: "organisationsList", action: "change->orientation-form#setAgentsList" }
       )
@@ -54,7 +54,7 @@
   </div>
   <div class="form-group text-center">
     <label><%= Orientation.human_attribute_name(:agent) %><span class="fw-lighter"> (optionel)</p></label>
-    <%= form.select(:agent_id, agents, {}, class: "form-control w-75 text-center mx-auto", data: { orientation_form_target: "agentsList" }) %>
+    <%= form.select(:agent_id, agents.map { |a| [a.to_s, a.id] }, { include_blank: true }, class: "form-control w-75 text-center mx-auto", data: { orientation_form_target: "agentsList" }) %>
   </div>
   <div class="form-group text-center">
     <%= form.submit "Enregistrer", class: "btn btn-blue mt-3" %>
