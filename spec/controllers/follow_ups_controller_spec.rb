@@ -59,7 +59,7 @@ describe FollowUpsController do
 
         expect(response).to redirect_to(
           organisation_user_follow_ups_path(organisation_id: organisation.id, user_id: user.id,
-                                              anchor: "follow_up_#{FollowUp.last.id}")
+                                            anchor: "follow_up_#{FollowUp.last.id}")
         )
       end
 
@@ -77,7 +77,7 @@ describe FollowUpsController do
 
           expect(response).to redirect_to(
             department_user_follow_ups_path(department_id: department.id, user_id: user.id,
-                                              anchor: "follow_up_#{FollowUp.last.id}")
+                                            anchor: "follow_up_#{FollowUp.last.id}")
           )
         end
       end

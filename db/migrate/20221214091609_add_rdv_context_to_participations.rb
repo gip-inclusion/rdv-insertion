@@ -1,4 +1,4 @@
-class AddFollowUpToParticipations < ActiveRecord::Migration[7.0]
+class AddRdvContextToParticipations < ActiveRecord::Migration[7.0]
   def up
     add_reference :participations, :follow_up, foreign_key: true
     execute(<<-SQL.squish

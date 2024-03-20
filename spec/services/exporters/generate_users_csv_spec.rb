@@ -57,9 +57,9 @@ describe Exporters::GenerateUsersCsv, type: :service do
   let!(:follow_up) do
     create(
       :follow_up, invitations: [first_invitation, last_invitation],
-                    motif_category: motif_category, participations: [participation_rdv],
-                    user: user1, status: "rdv_needs_status_update",
-                    created_at: Time.zone.parse("2022-05-08")
+                  motif_category: motif_category, participations: [participation_rdv],
+                  user: user1, status: "rdv_needs_status_update",
+                  created_at: Time.zone.parse("2022-05-08")
     )
   end
   let!(:referent) do

@@ -69,8 +69,8 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
   let!(:follow_up) do
     create(
       :follow_up, invitations: [first_invitation, last_invitation],
-                    motif_category: motif_category, participations: [participation_rdv],
-                    user: user1, status: "rdv_needs_status_update"
+                  motif_category: motif_category, participations: [participation_rdv],
+                  user: user1, status: "rdv_needs_status_update"
     )
   end
   let!(:referent) do

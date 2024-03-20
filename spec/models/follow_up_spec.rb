@@ -307,7 +307,7 @@ describe FollowUp do
         let!(:invitation3) { create(:invitation, created_at: 1.day.ago) }
         let!(:follow_up) do
           create(:follow_up, status: "invitation_pending", user: user,
-                               invitations: [invitation, invitation2, invitation3])
+                             invitations: [invitation, invitation2, invitation3])
         end
 
         context "when there is a participation" do

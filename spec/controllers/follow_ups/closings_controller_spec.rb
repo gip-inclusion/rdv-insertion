@@ -32,7 +32,7 @@ describe FollowUps::ClosingsController do
       it "redirects to user follow_ups" do
         post :create, params: create_params
         expect(response).to redirect_to(department_user_follow_ups_path(department_id: department.id,
-                                                                          user_id: user.id))
+                                                                        user_id: user.id))
       end
     end
 
@@ -46,7 +46,7 @@ describe FollowUps::ClosingsController do
         it "redirects to user show at organisation level" do
           post :create, params: create_params
           expect(response).to redirect_to(organisation_user_follow_ups_path(organisation_id: organisation.id,
-                                                                              user_id: user.id))
+                                                                            user_id: user.id))
         end
       end
     end
@@ -59,7 +59,7 @@ describe FollowUps::ClosingsController do
     end
     let!(:follow_up) do
       create(:follow_up, user: user, motif_category: motif_category,
-                           status: "closed", closed_at: Time.zone.now)
+                         status: "closed", closed_at: Time.zone.now)
     end
 
     it "updates the follow_up closed_at" do
@@ -71,7 +71,7 @@ describe FollowUps::ClosingsController do
       it "redirects to user show" do
         post :destroy, params: destroy_params
         expect(response).to redirect_to(department_user_follow_ups_path(department_id: department.id,
-                                                                          user_id: user.id))
+                                                                        user_id: user.id))
       end
     end
 
@@ -85,7 +85,7 @@ describe FollowUps::ClosingsController do
         it "redirects to user show at organisation level" do
           post :destroy, params: destroy_params
           expect(response).to redirect_to(organisation_user_follow_ups_path(organisation_id: organisation.id,
-                                                                              user_id: user.id))
+                                                                            user_id: user.id))
         end
       end
     end

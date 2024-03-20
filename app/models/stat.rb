@@ -67,10 +67,10 @@ class Stat < ApplicationRecord
   # We filter the follow_ups to keep those where the users were invited and created a rdv/participation
   def follow_ups_with_invitations_and_participations_set
     FollowUp.preload(:participations, :invitations)
-              .where(user_id: users_set)
-              .where.associated(:participations)
-              .with_sent_invitations
-              .distinct
+            .where(user_id: users_set)
+            .where.associated(:participations)
+            .with_sent_invitations
+            .distinct
   end
 
   # We filter the users by organisations and retrieve deleted or archived users
@@ -102,16 +102,16 @@ class Stat < ApplicationRecord
   # because the users that are directly convocated do not benefit from our added value
   def orientation_follow_ups_with_invitations
     FollowUp.orientation.preload(:participations, :invitations)
-              .where(user: users_set)
-              .with_sent_invitations
-              .distinct
+            .where(user: users_set)
+            .with_sent_invitations
+            .distinct
   end
 
   def users_first_orientation_follow_up
     # we consider minimum(:id) being the same as minimum(:created_at) as the id increases with created_at
     FollowUp.where(user: users_set)
-              .where(id: FollowUp.orientation.group(:user_id).minimum(:id).values)
-              .preload(participations: :rdv)
-              .distinct
+            .where(id: FollowUp.orientation.group(:user_id).minimum(:id).values)
+            .preload(participations: :rdv)
+            .distinct
   end
 end

@@ -1,4 +1,4 @@
-class CreateFollowUps < ActiveRecord::Migration[6.1]
+class CreateRdvContexts < ActiveRecord::Migration[6.1]
   def change # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     create_table :follow_ups do |t|
       t.integer :context

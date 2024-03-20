@@ -29,7 +29,7 @@ describe "Agents can close or reopen follow_up", :js do
       expect(page).to have_content("Traité le")
       expect(follow_up.reload.status).to eq("closed")
       expect(page).to have_current_path(department_user_follow_ups_path(department_id: department.id,
-                                                                          user_id: user.id))
+                                                                        user_id: user.id))
 
       click_button("Rouvrir")
       expect(page).to have_content("RSA orientation")
@@ -39,7 +39,7 @@ describe "Agents can close or reopen follow_up", :js do
       expect(follow_up.reload.status).to eq("not_invited")
       expect(follow_up.reload.closed_at).to eq(nil)
       expect(page).to have_current_path(department_user_follow_ups_path(department_id: department.id,
-                                                                          user_id: user.id))
+                                                                        user_id: user.id))
     end
   end
 
@@ -55,7 +55,7 @@ describe "Agents can close or reopen follow_up", :js do
       expect(page).to have_content("Traité le")
       expect(follow_up.reload.status).to eq("closed")
       expect(page).to have_current_path(organisation_user_follow_ups_path(organisation_id: organisation.id,
-                                                                            user_id: user.id))
+                                                                          user_id: user.id))
 
       click_button("Rouvrir")
       expect(page).to have_content("RSA orientation")
@@ -64,7 +64,7 @@ describe "Agents can close or reopen follow_up", :js do
       expect(page).to have_content("Non invité")
       expect(follow_up.reload.closed_at).to eq(nil)
       expect(page).to have_current_path(organisation_user_follow_ups_path(organisation_id: organisation.id,
-                                                                            user_id: user.id))
+                                                                          user_id: user.id))
     end
   end
 end

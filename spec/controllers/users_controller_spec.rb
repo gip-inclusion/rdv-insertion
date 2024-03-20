@@ -390,8 +390,8 @@ describe UsersController do
       before do
         FollowUp.statuses.each_key do |status|
           create(:follow_up, motif_category: category_orientation,
-                               status: status,
-                               user: create(:user, organisations: [organisation]))
+                             status: status,
+                             user: create(:user, organisations: [organisation]))
         end
       end
 

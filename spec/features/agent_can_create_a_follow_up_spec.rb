@@ -64,7 +64,7 @@ describe "Agents can create a follow_up", :js do
         expect(FollowUp.last.motif_category).to eq(category_orientation)
         expect(FollowUp.last.user).to eq(user)
         expect(page).to have_current_path(department_user_follow_ups_path(department_id: department.id,
-                                                                            user_id: user.id))
+                                                                          user_id: user.id))
       end
     end
 
@@ -81,7 +81,7 @@ describe "Agents can create a follow_up", :js do
         expect(FollowUp.last.motif_category).to eq(category_orientation)
         expect(FollowUp.last.user).to eq(user)
         expect(page).to have_current_path(organisation_user_follow_ups_path(organisation_id: organisation.id,
-                                                                              user_id: user.id))
+                                                                            user_id: user.id))
       end
     end
   end

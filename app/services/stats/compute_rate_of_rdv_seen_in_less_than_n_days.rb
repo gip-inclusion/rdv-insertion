@@ -35,14 +35,14 @@ module Stats
         # we load the ids of follow_ups_created_more_than_n_days_ago to simplify the request
         # that is triggered in each batch in the find_in_batches block above
         FollowUp.where(id: follow_ups_created_more_than_n_days_ago)
-                  .joins(:participations)
-                  .where(participations: { status: "seen" })
-                  .distinct
+                .joins(:participations)
+                .where(participations: { status: "seen" })
+                .distinct
     end
 
     def follow_ups_created_more_than_n_days_ago
       @follow_ups_created_more_than_n_days_ago ||= @follow_ups.where("follow_ups.created_at < ?",
-                                                                         @number_of_days.days.ago).to_a
+                                                                     @number_of_days.days.ago).to_a
     end
   end
 end
