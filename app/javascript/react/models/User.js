@@ -271,7 +271,7 @@ export default class User {
       this.currentFollowUp = upToDateUser.follow_ups.find(
         (rc) => rc.motif_category_id === this.currentConfiguration.motif_category_id
       );
-      this.currentContextStatus = this.currentFollowUp && this.currentFollowUp.status;
+      this.currentFollowUpStatus = this.currentFollowUp && this.currentFollowUp.status;
       this.participations = this.currentFollowUp?.participations || [];
       this.lastSmsInvitationSentAt = retrieveLastInvitationDate(
         upToDateUser.invitations,
