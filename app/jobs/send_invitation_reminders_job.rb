@@ -1,7 +1,5 @@
 class SendInvitationRemindersJob < ApplicationJob
   def perform
-    return if staging_env?
-
     @sent_reminders_user_ids = []
 
     rdv_contexts_with_reminder_needed.find_each do |rdv_context|
