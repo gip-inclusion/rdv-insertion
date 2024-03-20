@@ -53,9 +53,7 @@ module Stats
       end
 
       def average_time_between_invitation_and_rdv_in_days
-        ComputeAverageTimeBetweenInvitationAndRdvInDays.call(
-          rdv_contexts: @stat.rdv_contexts_with_invitations_and_participations_set
-        ).value
+        ComputeAverageTimeBetweenInvitationAndRdvInDays.call(stat: @stat).value
       end
 
       def rate_of_users_oriented_in_less_than_30_days

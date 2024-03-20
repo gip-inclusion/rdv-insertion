@@ -61,9 +61,7 @@ module Stats
       end
 
       def average_time_between_invitation_and_rdv_in_days_for_focused_month
-        ComputeAverageTimeBetweenInvitationAndRdvInDays.call(
-          rdv_contexts: created_during_focused_month(@stat.rdv_contexts_with_invitations_and_participations_set)
-        ).value.round
+        ComputeAverageTimeBetweenInvitationAndRdvInDays.call(stat: @stat, range: @date.all_month).value.round
       end
 
       def rate_of_users_oriented_in_less_than_30_days_for_focused_month

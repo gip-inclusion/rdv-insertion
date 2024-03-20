@@ -1,7 +1,8 @@
 module Stats
   class ComputeAverageTimeBetweenInvitationAndRdvInDays < BaseService
-    def initialize(rdv_contexts:)
-      @rdv_contexts = rdv_contexts
+    def initialize(stat:, range: nil)
+      @stat = stat
+      @range = range
     end
 
     def call
@@ -10,22 +11,61 @@ module Stats
 
     private
 
-    # Delays between the first invitation and the first rdv
-    def compute_average_time_between_invitation_and_rdv_in_days
-      invitation_delays = []
+    def structure_filter
+      return "" if @stat.statable_id.nil?
 
-      @rdv_contexts.find_each do |rdv_context|
-        # Some rdv_contexts might have negative values when users have had
-        # rdvs on Rdv-Solidarités prior to being imported in the app.
-        # We don't want to take those values into account.
-        next if rdv_context.time_between_invitation_and_rdv_in_days.negative?
-
-        invitation_delays << rdv_context.time_between_invitation_and_rdv_in_days
+      if @stat.statable_type == "Department"
+        "WHERE invitations.department_id = #{@stat.statable_id}"
+      else
+        <<-SQL.squish
+          JOIN invitations_organisations io ON invitations.id = io.invitation_id
+          WHERE io.organisation_id = #{@stat.statable_id}
+        SQL
       end
+    end
 
-      return 0.0 if invitation_delays.empty?
+    def date_filter
+      return "" if @range.nil?
 
-      invitation_delays.sum / invitation_delays.size.to_f
+      "HAVING MIN(created_at) >= '#{@range.begin}' AND MIN(created_at) <= '#{@range.end}'"
+    end
+
+    def query
+      <<-SQL.squish
+      WITH first_invitations AS (
+          SELECT
+              rdv_context_id,
+              MIN(created_at) AS first_invitation_at
+          FROM invitations
+          #{structure_filter}
+          GROUP BY rdv_context_id
+          #{date_filter}
+      ),
+      first_participations AS (
+          SELECT
+              rdv_context_id,
+              MIN(created_at) AS first_participation_at
+          FROM participations
+          GROUP BY rdv_context_id
+      )
+      SELECT
+          AVG(duration_in_days) AS average_duration_in_days
+      FROM (
+          SELECT
+              fi.rdv_context_id,
+              fi.first_invitation_at,
+              DATE_PART('days', fp.first_participation_at - fi.first_invitation_at) AS duration_in_days
+          FROM first_invitations fi
+          LEFT JOIN first_participations fp ON fi.rdv_context_id = fp.rdv_context_id
+          WHERE fp.rdv_context_id IS NOT NULL
+              AND fi.first_invitation_at IS NOT NULL
+              AND fp.first_participation_at >= fi.first_invitation_at
+      ) as subquery
+      SQL
+    end
+
+    def compute_average_time_between_invitation_and_rdv_in_days
+      ActiveRecord::Base.connection.execute(query)[0]["average_duration_in_days"] || 0
     end
   end
 end
