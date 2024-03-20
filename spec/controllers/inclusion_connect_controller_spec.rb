@@ -79,7 +79,13 @@ describe InclusionConnectController do
       expect(Sentry).to receive(:capture_message).with("Agent doesn't exist in rdv-insertion")
       get :callback, params: { state: "a state", code: code }
       expect(response).to redirect_to(sign_in_path)
-      expect_flash_error
+      expect(flash[:error]).to eq(
+        "Il n'y a pas de compte agent pour l'adresse mail patrick@gmail.com. " \
+        "Vous devez utiliser Inclusion Connect avec l'adresse mail " \
+        "à laquelle vous avez reçu votre invitation sur RDV Solidarites. " \
+        "Vous pouvez contacter le support à l'adresse " \
+        "<rdv-insertion@beta.gouv.fr> si le problème persiste."
+      )
     end
 
     it "redirect and returns an error if agent mismatch with email and sub" do

@@ -29,6 +29,10 @@ class InclusionConnectController < ApplicationController
     retrieve_inclusion_connect_infos.agent
   end
 
+  def inclusion_connect_agent_info
+    retrieve_inclusion_connect_infos.inclusion_connect_agent_info
+  end
+
   def inclusion_connect_token_id
     retrieve_inclusion_connect_infos.inclusion_connect_token_id
   end
@@ -60,8 +64,17 @@ class InclusionConnectController < ApplicationController
 
   def handle_failed_authentication(errors)
     Sentry.capture_message(errors)
-    flash[:error] = "Nous n'avons pas pu vous authentifier. Contacter le support à l'adresse" \
-                    "<rdv-insertion@beta.gouv.fr> si le problème persiste."
+    flash[:error] = case errors
+                    when "Agent doesn't exist in rdv-insertion"
+                      "Il n'y a pas de compte agent pour l'adresse mail #{inclusion_connect_agent_info['email']}. " \
+                      "Vous devez utiliser Inclusion Connect avec l'adresse mail " \
+                      "à laquelle vous avez reçu votre invitation sur RDV Solidarites. " \
+                      "Vous pouvez contacter le support à l'adresse " \
+                      "<rdv-insertion@beta.gouv.fr> si le problème persiste."
+                    else
+                      "Nous n'avons pas pu vous authentifier. Contacter le support à l'adresse" \
+                      "<rdv-insertion@beta.gouv.fr> si le problème persiste."
+                    end
     redirect_to sign_in_path
   end
 
