@@ -45,7 +45,7 @@ class Participation < ApplicationRecord
   end
 
   def status_reloaded_from_cancelled?
-    status_previously_was.in?(CANCELLED_STATUSES) && status == "unknown"
+    status_previously_was.in?(CANCELLED_STATUSES) && status.in?(%w[unknown])
   end
 
   def participation_just_cancelled?

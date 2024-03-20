@@ -68,7 +68,7 @@ describe RetrieveFranceTravailAccessToken, type: :service do
         end
 
         it "outputs the error" do
-          expect(subject.errors.first).to eq(
+          expect(subject.errors).to contain_exactly(
             "la requête d'authentification à FT n'a pas pu aboutir.\n" \
             "Status: 400\n Body: something wrong happened"
           )

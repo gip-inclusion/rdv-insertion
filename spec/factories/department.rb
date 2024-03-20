@@ -5,5 +5,6 @@ FactoryBot.define do
     sequence(:capital) { |n| "Capitale n°#{n}" }
     sequence(:region) { |n| "Région n°#{n}" }
     pronoun { "le" }
+    logo { Rack::Test::UploadedFile.new(Rails.root.join("spec/fixtures/logo.png")) }
   end
 end

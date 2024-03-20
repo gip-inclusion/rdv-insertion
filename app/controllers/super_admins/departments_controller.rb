@@ -42,6 +42,10 @@ module SuperAdmins
 
     private
 
+    def scoped_resource
+      resource_class.with_attached_logo
+    end
+
     def default_sorting_attribute
       :number
     end

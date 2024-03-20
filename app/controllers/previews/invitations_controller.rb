@@ -81,9 +81,7 @@ module Previews
         mandatory_warning: @invitation.mandatory_warning,
         punishable_warning: @invitation.punishable_warning,
         custom_sentence: @invitation.custom_sentence,
-        signature_lines: @organisation.messages_configuration&.signature_lines,
-        organisation_logo_path: @organisation.logo_path(%w[png jpg]),
-        department_logo_path: @department.logo_path(%w[png jpg])
+        signature_lines: @organisation.messages_configuration&.signature_lines
       }
     end
 

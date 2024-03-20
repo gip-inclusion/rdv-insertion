@@ -34,6 +34,9 @@ Style/ClassAndModuleChildren:
 Style/ParallelAssignment:
   Enabled: false
 
+Style/Alias:
+  Enabled: false
+
 Style/RegexpLiteral:
   Enabled: false
 

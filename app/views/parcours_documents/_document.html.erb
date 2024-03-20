@@ -1,17 +1,19 @@
 <%= turbo_frame_tag document do %>
- <div class="d-flex mb-1 w-50">
-  <div class="w-75">
-    <%= link_to user_parcours_document_path(id: document.id, user_id: document.user_id), target: "_blank", class: "text-decoration-underline document-link" do %>
+ <div class="d-flex mb-1 align-items-center" data-controller="parcours-documents">
+  <div style="width: 350px" class="me-5 mb-1">
+    <%= link_to user_parcours_document_path(id: document.signed_id(expires_in: 1.hour), user_id: document.user_id), target: "_blank", class: "text-decoration-underline document-link" do %>
       <i class="fas fa-file-pdf mx-1"></i>
-      <%= document.file.filename %>
+      <span class="text-truncate d-table-cell" style="max-width: 300px"><%= document.file.filename %></span>
       <i class="fas mx-1 fa-external-link-alt text-dark-blue"></i>
     <% end %>
   </div>
 
-  <div class="w-25 text-end">
+  <%= render "parcours_documents/document_date_form", document: document %>
+
+  <div class="text-end">
     <%= 
       link_to(
-        user_parcours_document_path(id: document.id, user_id: document.user_id),
+        user_parcours_document_path(id: document.signed_id(expires_in: 1.hour), user_id: document.user_id),
         data: {
           turbo_confirm: "Êtes-vous sûr de vouloir supprimer ce document ?",
           turbo_method: :delete,

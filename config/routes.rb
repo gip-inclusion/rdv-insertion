@@ -72,7 +72,7 @@ Rails.application.routes.draw do
   resources :users, module: :users, only: [] do
     resource :parcours, only: [:show]
     resources :orientations, only: [:new, :create, :edit, :update, :destroy]
-    resources :parcours_documents, only: [:show, :create, :destroy]
+    resources :parcours_documents, only: [:show, :update, :create, :destroy]
     resources :rdvs, only: [:new]
   end
 

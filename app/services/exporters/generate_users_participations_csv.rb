@@ -119,12 +119,11 @@ module Exporters
     end
 
     def human_status(participation)
-      I18n.t("activerecord.attributes.rdv.statuses.#{participation.status}")
+      participation.human_status
     end
 
     def human_rdv_context_status(participation)
-      I18n.t("activerecord.attributes.rdv_context.statuses.#{participation.rdv_context.status}") +
-        display_context_status_notice(participation.rdv_context)
+      participation.rdv_context.human_status + display_context_status_notice(participation.rdv_context)
     end
   end
 end

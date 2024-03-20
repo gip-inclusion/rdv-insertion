@@ -6,7 +6,8 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentJob do
   let!(:data) do
     {
       "id" => rdv_solidarites_agent_id,
-      "email" => "linus@linux.com"
+      "email" => "linus@linux.com",
+      "inclusion_connect_open_id_sub" => "1234"
     }.deep_symbolize_keys
   end
 
