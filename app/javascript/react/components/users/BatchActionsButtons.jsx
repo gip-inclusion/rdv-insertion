@@ -12,25 +12,30 @@ export default observer(({ users }) => {
     users.setUsers(users.list.filter((user) => !user.selected));
   };
 
-  const inviteBy = async (format) => {
+  const batchActions = async (actionName, actionArguments = []) => {
     toggle();
     // We need a synchronous loop with await here to avoid sending too many requests at the same time
     // eslint-disable-next-line no-restricted-syntax
     for (const user of users.selectedUsers) {
       // eslint-disable-next-line no-await-in-loop
-      await user.inviteBy(format, { raiseError: false });
+      await user[actionName](...actionArguments, { raiseError: false });
     }
-  };
+  }
 
   const createAccounts = async () => {
     toggle();
-    // We need a synchronous loop here to avoid sending too many requests at the same time
+    // We need a synchronous loop with await here to avoid sending too many requests at the same time
     // eslint-disable-next-line no-restricted-syntax
     for (const user of users.selectedUsers) {
-      // eslint-disable-next-line no-await-in-loop
-      await user.createAccount({ raiseError: false });
+      if (user.isArchivedInCurrentDepartment()) {
+        // eslint-disable-next-line no-await-in-loop
+        await user.unarchive({ raiseError: false });
+      } else {
+        // eslint-disable-next-line no-await-in-loop
+        await user.createAccount({ raiseError: false });
+      }
     }
-  };
+  }
 
   const noUserSelected = !users.list.some((user) => user.selected);
 
@@ -55,13 +60,23 @@ export default observer(({ users }) => {
             <i className="fas fa-user" />
           </button>
         )}
+        {users.showReferentColumn && (
+          <button
+            type="button"
+            className="dropdown-item d-flex justify-content-between align-items-center"
+            onClick={() => batchActions("assignReferent")}
+          >
+            <span>Assigner référent</span>
+            <i className="fas fa-user-friends" />
+          </button>
+        )}
         {users.canBeInvitedBy("sms") && (
           <button
             type="button"
             className="dropdown-item d-flex justify-content-between align-items-center"
-            onClick={() => inviteBy("sms")}
+            onClick={() => batchActions("inviteBy", ["sms"])}
           >
-            <span>Invitation par sms</span>
+            <span>Inviter par sms</span>
             <i className="fas fa-comment" />
           </button>
         )}
@@ -69,9 +84,9 @@ export default observer(({ users }) => {
           <button
             type="button"
             className="dropdown-item d-flex justify-content-between align-items-center"
-            onClick={() => inviteBy("email")}
+            onClick={() => batchActions("inviteBy", ["email"])}
           >
-            <span>Invitation par mail</span>
+            <span>Inviter par mail</span>
             <i className="fas fa-inbox" />
           </button>
         )}
@@ -79,9 +94,9 @@ export default observer(({ users }) => {
           <button
             type="button"
             className="dropdown-item d-flex justify-content-between align-items-center"
-            onClick={() => inviteBy("postal")}
+            onClick={() => batchActions("inviteBy", ["postal"])}
           >
-            <span>Invitation par courrier &nbsp;</span>
+            <span>Inviter par courrier &nbsp;</span>
             <i className="fas fa-envelope" />
           </button>
         )}

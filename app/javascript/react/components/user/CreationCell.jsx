@@ -2,39 +2,29 @@ import React from "react";
 import { observer } from "mobx-react-lite";
 import Tippy from "@tippyjs/react";
 
-import handleArchiveDelete from "../../lib/handleArchiveDelete";
-
 import { getFrenchFormatDateString } from "../../../lib/datesHelper";
 
 export default observer(({ user }) => {
   const handleFileReopen = async () => {
-    user.triggers.unarchive = true;
-
-    await handleArchiveDelete(user);
-
-    user.triggers.unarchive = false;
+    user.unarchive();
   };
 
   const handleCreationClick = async () => {
     user.createAccount();
   };
 
-  if (user.errors.includes("createAccount")) {
-    return (
+  return user.errors.includes("createAccount") ? (
       <button type="submit" className="btn btn-danger" onClick={() => handleCreationClick()}>
-        Résoudre les erreurs
+        Afficher les erreurs
       </button>
-    );
-  }
-
-  return user.isArchivedInCurrentDepartment() ? (
+  ) : user.isArchivedInCurrentDepartment() ? (
     <button
       type="submit"
       disabled={user.triggers.unarchive}
       className="btn btn-primary btn-blue"
       onClick={() => handleFileReopen()}
     >
-      Rouvrir le dossier
+      {user.errors.includes("deleteArchive") ? "Afficher les erreurs" : "Rouvrir le dossier"}
     </button>
   ) : user.createdAt ? (
     !user.belongsToCurrentOrg() ? (
