@@ -29,7 +29,7 @@ export default function InvitationCells({ user }) {
       </td>
     ) : user.currentContextStatus === "rdv_pending" ? (
       <>
-        <td colSpan={user.list.invitationsColspan}>{user.currentRdvContext.human_status}</td>
+        <td colSpan={user.list.invitationsColspan}>{user.currentFollowUp.human_status}</td>
       </>
     ) : (
       /* ----------------------------- Enabled invitations cases --------------------------- */

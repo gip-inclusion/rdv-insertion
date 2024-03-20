@@ -13,9 +13,9 @@ send_periodic_invites_job:
 send_invitation_reminders_job:
   cron: "0 11 * * *" # we send reminders once a day, at 11:00
   class: "SendInvitationRemindersJob"
-refresh_out_of_date_rdv_context_statuses_job:
+refresh_out_of_date_follow_up_statuses_job:
   cron: "0 21 * * *" # we refresh out of date statuses once a day, at 21:00
-  class: "RefreshOutOfDateRdvContextStatusesJob"
+  class: "RefreshOutOfDatefollowUpStatusesJob"
 send_convocation_reminders_job:
   cron: "0 10 * * *" # we send reminders once a day, at 10:00
   class: "SendConvocationRemindersJob"

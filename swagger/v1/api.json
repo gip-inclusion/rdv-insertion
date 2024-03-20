@@ -49,11 +49,7 @@
           },
           "created_by": {
             "type": "string",
-            "enum": [
-              "agent",
-              "user",
-              "prescripteur"
-            ]
+            "enum": ["agent", "user", "prescripteur"]
           },
           "duration_in_min": {
             "type": "integer"
@@ -78,13 +74,7 @@
           },
           "status": {
             "type": "string",
-            "enum": [
-              "unknown",
-              "seen",
-              "excused",
-              "revoked",
-              "noshow"
-            ]
+            "enum": ["unknown", "seen", "excused", "revoked", "noshow"]
           },
           "users": {
             "type": "array",
@@ -128,9 +118,7 @@
             "$ref": "#/components/schemas/rdv"
           }
         },
-        "required": [
-          "rdv"
-        ]
+        "required": ["rdv"]
       },
       "agents": {
         "type": "object",
@@ -142,9 +130,7 @@
             }
           }
         },
-        "required": [
-          "agents"
-        ]
+        "required": ["agents"]
       },
       "agent": {
         "type": "object",
@@ -167,13 +153,7 @@
             "type": "integer"
           }
         },
-        "required": [
-          "id",
-          "email",
-          "first_name",
-          "last_name",
-          "rdv_solidarites_agent_id"
-        ]
+        "required": ["id", "email", "first_name", "last_name", "rdv_solidarites_agent_id"]
       },
       "user_with_root": {
         "type": "object",
@@ -182,9 +162,7 @@
             "$ref": "#/components/schemas/user"
           }
         },
-        "required": [
-          "user"
-        ]
+        "required": ["user"]
       },
       "users": {
         "type": "object",
@@ -196,9 +174,7 @@
             }
           }
         },
-        "required": [
-          "users"
-        ]
+        "required": ["users"]
       },
       "user": {
         "type": "object",
@@ -251,10 +227,7 @@
           },
           "title": {
             "type": "string",
-            "enum": [
-              "monsieur",
-              "madame"
-            ]
+            "enum": ["monsieur", "madame"]
           },
           "uid": {
             "type": "string",
@@ -263,10 +236,7 @@
           "role": {
             "type": "string",
             "nullable": true,
-            "enum": [
-              "demandeur",
-              "conjoint"
-            ]
+            "enum": ["demandeur", "conjoint"]
           },
           "nir": {
             "type": "string",
@@ -357,10 +327,7 @@
           },
           "title": {
             "type": "string",
-            "enum": [
-              "monsieur",
-              "madame"
-            ]
+            "enum": ["monsieur", "madame"]
           },
           "uid": {
             "type": "string",
@@ -369,10 +336,7 @@
           "role": {
             "type": "string",
             "nullable": true,
-            "enum": [
-              "demandeur",
-              "conjoint"
-            ]
+            "enum": ["demandeur", "conjoint"]
           },
           "nir": {
             "type": "string",
@@ -462,18 +426,12 @@
           },
           "title": {
             "type": "string",
-            "enum": [
-              "monsieur",
-              "madame"
-            ]
+            "enum": ["monsieur", "madame"]
           },
           "role": {
             "type": "string",
             "nullable": true,
-            "enum": [
-              "demandeur",
-              "conjoint"
-            ]
+            "enum": ["demandeur", "conjoint"]
           },
           "nir": {
             "type": "string",
@@ -515,11 +473,7 @@
             }
           }
         },
-        "required": [
-          "first_name",
-          "last_name",
-          "title"
-        ]
+        "required": ["first_name", "last_name", "title"]
       },
       "organisation_with_root": {
         "type": "object",
@@ -528,9 +482,7 @@
             "$ref": "#/components/schemas/organisation"
           }
         },
-        "required": [
-          "organisation"
-        ]
+        "required": ["organisation"]
       },
       "organisations": {
         "type": "object",
@@ -542,9 +494,7 @@
             }
           }
         },
-        "required": [
-          "organisations"
-        ]
+        "required": ["organisations"]
       },
       "organisation": {
         "type": "object",
@@ -585,7 +535,7 @@
           "motif_categories"
         ]
       },
-      "rdv_context": {
+      "follow_up": {
         "type": "object",
         "properties": {
           "id": {
@@ -639,9 +589,7 @@
             }
           }
         },
-        "required": [
-          "invitations"
-        ]
+        "required": ["invitations"]
       },
       "invitation": {
         "type": "object",
@@ -651,11 +599,7 @@
           },
           "format": {
             "type": "string",
-            "enum": [
-              "sms",
-              "postal",
-              "email"
-            ]
+            "enum": ["sms", "postal", "email"]
           },
           "clicked": {
             "type": "boolean"
@@ -696,12 +640,7 @@
             "type": "integer"
           }
         },
-        "required": [
-          "address",
-          "name",
-          "phone_number",
-          "rdv_solidarites_lieu_id"
-        ]
+        "required": ["address", "name", "phone_number", "rdv_solidarites_lieu_id"]
       },
       "motifs": {
         "type": "object",
@@ -713,9 +652,7 @@
             }
           }
         },
-        "required": [
-          "motifs"
-        ]
+        "required": ["motifs"]
       },
       "motif": {
         "type": "object",
@@ -725,11 +662,7 @@
           },
           "location_type": {
             "type": "string",
-            "enum": [
-              "public_office",
-              "phone",
-              "home"
-            ]
+            "enum": ["public_office", "phone", "home"]
           },
           "name": {
             "type": "string"
@@ -766,11 +699,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "name",
-          "short_name"
-        ]
+        "required": ["id", "name", "short_name"]
       },
       "department": {
         "type": "object",
@@ -806,13 +735,7 @@
             }
           }
         },
-        "required": [
-          "id",
-          "number",
-          "capital",
-          "region",
-          "organisations"
-        ]
+        "required": ["id", "number", "capital", "region", "organisations"]
       },
       "department_with_root": {
         "type": "object",
@@ -821,9 +744,7 @@
             "$ref": "#/components/schemas/department"
           }
         },
-        "required": [
-          "department"
-        ]
+        "required": ["department"]
       },
       "success_response": {
         "type": "object",
@@ -848,14 +769,10 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "error_details"
-              ]
+              "required": ["error_details"]
             }
           },
-          "required": [
-            "errors"
-          ]
+          "required": ["errors"]
         }
       },
       "error_authentication": {
@@ -868,9 +785,7 @@
             }
           }
         },
-        "required": [
-          "errors"
-        ]
+        "required": ["errors"]
       },
       "error_forbidden": {
         "type": "object",
@@ -882,9 +797,7 @@
             }
           }
         },
-        "required": [
-          "errors"
-        ]
+        "required": ["errors"]
       },
       "error_not_found": {
         "type": "object",
@@ -893,9 +806,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "not_found"
-        ]
+        "required": ["not_found"]
       }
     }
   },
@@ -917,9 +828,7 @@
     "api/v1/departments/{number}": {
       "get": {
         "summary": "Retrieves a department",
-        "tags": [
-          "Departement"
-        ],
+        "tags": ["Departement"],
         "description": "Renvoie les organisations, lieux et motifs du département",
         "parameters": [
           {
@@ -962,15 +871,9 @@
         ],
         "security": [
           {
-            "access_token": [
-
-            ],
-            "uid": [
-
-            ],
-            "client": [
-
-            ]
+            "access_token": [],
+            "uid": [],
+            "client": []
           }
         ],
         "responses": {
@@ -1043,9 +946,7 @@
                 "examples": {
                   "Renvoie 'forbidden' quand l'agent n'a pas les droits pour effectuer cette action": {
                     "value": {
-                      "errors": [
-                        "Votre compte ne vous permet pas d'effectuer cette action"
-                      ]
+                      "errors": ["Votre compte ne vous permet pas d'effectuer cette action"]
                     }
                   }
                 },
@@ -1062,9 +963,7 @@
                 "examples": {
                   "Renvoie 'unauthorized' quand l'authentification est impossible": {
                     "value": {
-                      "errors": [
-                        "Les identifiants de session RDV-Solidarités sont invalides"
-                      ]
+                      "errors": ["Les identifiants de session RDV-Solidarités sont invalides"]
                     }
                   }
                 },
@@ -1097,9 +996,7 @@
     "api/v1/rdvs/{uuid}": {
       "get": {
         "summary": "Retrieves a rdv",
-        "tags": [
-          "Rdv"
-        ],
+        "tags": ["Rdv"],
         "description": "Renvoie les détails du rdv",
         "parameters": [
           {
@@ -1142,15 +1039,9 @@
         ],
         "security": [
           {
-            "access_token": [
-
-            ],
-            "uid": [
-
-            ],
-            "client": [
-
-            ]
+            "access_token": [],
+            "uid": [],
+            "client": []
           }
         ],
         "responses": {
@@ -1255,9 +1146,7 @@
                 "examples": {
                   "Renvoie 'forbidden' quand l'agent n'a pas les droits pour effectuer cette action": {
                     "value": {
-                      "errors": [
-                        "Votre compte ne vous permet pas d'effectuer cette action"
-                      ]
+                      "errors": ["Votre compte ne vous permet pas d'effectuer cette action"]
                     }
                   }
                 },
@@ -1274,9 +1163,7 @@
                 "examples": {
                   "Renvoie 'unauthorized' quand l'authentification est impossible": {
                     "value": {
-                      "errors": [
-                        "Les identifiants de session RDV-Solidarités sont invalides"
-                      ]
+                      "errors": ["Les identifiants de session RDV-Solidarités sont invalides"]
                     }
                   }
                 },
@@ -1309,9 +1196,7 @@
     "api/v1/organisations/{rdv_solidarites_organisation_id}/users/create_and_invite_many": {
       "post": {
         "summary": "create and invite users",
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "description": "Créé et invite une liste d'usagers à prendre rdv.\n      La création et l'invitation se font de manière asynchrone.",
         "parameters": [
           {
@@ -1354,15 +1239,9 @@
         ],
         "security": [
           {
-            "access_token": [
-
-            ],
-            "uid": [
-
-            ],
-            "client": [
-
-            ]
+            "access_token": [],
+            "uid": [],
+            "client": []
           }
         ],
         "responses": {
@@ -1390,9 +1269,7 @@
                 "examples": {
                   "Renvoie 'forbidden' quand l'agent n'a pas les droits pour effectuer cette action": {
                     "value": {
-                      "errors": [
-                        "Votre compte ne vous permet pas d'effectuer cette action"
-                      ]
+                      "errors": ["Votre compte ne vous permet pas d'effectuer cette action"]
                     }
                   }
                 },
@@ -1409,9 +1286,7 @@
                 "examples": {
                   "Renvoie 'unauthorized' quand l'authentification est impossible": {
                     "value": {
-                      "errors": [
-                        "Les identifiants de session RDV-Solidarités sont invalides"
-                      ]
+                      "errors": ["Les identifiants de session RDV-Solidarités sont invalides"]
                     }
                   }
                 },
@@ -1510,9 +1385,7 @@
                       "$ref": "#/components/schemas/user_params"
                     }
                   },
-                  "required": [
-                    "users"
-                  ]
+                  "required": ["users"]
                 }
               },
               "examples": {
@@ -2400,9 +2273,7 @@
       ],
       "post": {
         "summary": "create and invite user",
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "description": "Créé et invite une liste d'usagers à prendre rdv.\n      La création et l'invitation se font de manière synchrone.",
         "parameters": [
           {
@@ -2435,15 +2306,9 @@
         ],
         "security": [
           {
-            "access_token": [
-
-            ],
-            "uid": [
-
-            ],
-            "client": [
-
-            ]
+            "access_token": [],
+            "uid": [],
+            "client": []
           }
         ],
         "responses": {
@@ -2530,11 +2395,7 @@
                       }
                     }
                   },
-                  "required": [
-                    "success",
-                    "user",
-                    "invitations"
-                  ]
+                  "required": ["success", "user", "invitations"]
                 }
               }
             }
@@ -2546,9 +2407,7 @@
                 "examples": {
                   "Renvoie 'forbidden' quand l'agent n'a pas les droits pour effectuer cette action": {
                     "value": {
-                      "errors": [
-                        "Votre compte ne vous permet pas d'effectuer cette action"
-                      ]
+                      "errors": ["Votre compte ne vous permet pas d'effectuer cette action"]
                     }
                   }
                 },
@@ -2565,9 +2424,7 @@
                 "examples": {
                   "Renvoie 'unauthorized' quand l'authentification est impossible": {
                     "value": {
-                      "errors": [
-                        "Les identifiants de session RDV-Solidarités sont invalides"
-                      ]
+                      "errors": ["Les identifiants de session RDV-Solidarités sont invalides"]
                     }
                   }
                 },
@@ -2673,9 +2530,7 @@
                   "user": {
                     "$ref": "#/components/schemas/user_params"
                   },
-                  "required": [
-                    "users"
-                  ]
+                  "required": ["users"]
                 }
               },
               "examples": {
