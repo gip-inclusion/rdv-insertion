@@ -2,18 +2,26 @@ import React from "react";
 import { observer } from "mobx-react-lite";
 
 export default observer(({ users }) => {
-  const toggle = () => {
-    const dropdown = document.getElementById("batch-actions");
+  const toggleDropdown = (event) => {
+    event.stopPropagation();
+    const dropdown = document.getElementById("batch-actions-menu");
     dropdown.classList.toggle("show");
+    if (dropdown.classList.contains("show")) {
+      window.addEventListener("click", closeDropdown);
+    }
+  };
+
+  const closeDropdown = () => {
+    const dropdown = document.getElementById("batch-actions-menu");
+    dropdown.classList.remove("show");
+    window.removeEventListener("click", closeDropdown);
   };
 
   const deleteAll = () => {
-    toggle();
     users.setUsers(users.list.filter((user) => !user.selected));
   };
 
   const batchActions = async (actionName, actionArguments = []) => {
-    toggle();
     // We need a synchronous loop with await here to avoid sending too many requests at the same time
     // eslint-disable-next-line no-restricted-syntax
     for (const user of users.selectedUsers) {
@@ -23,7 +31,6 @@ export default observer(({ users }) => {
   }
 
   const createAccounts = async () => {
-    toggle();
     // We need a synchronous loop with await here to avoid sending too many requests at the same time
     // eslint-disable-next-line no-restricted-syntax
     for (const user of users.selectedUsers) {
@@ -43,13 +50,14 @@ export default observer(({ users }) => {
     <div style={{ marginRight: 20, position: "relative" }}>
       <button
         type="button"
+        id="batch-actions-button"
         className="btn btn-primary dropdown-toggle"
-        onClick={toggle}
+        onClick={toggleDropdown}
         disabled={noUserSelected}
       >
         Actions pour toute la sélection
       </button>
-      <div className="dropdown-menu" id="batch-actions">
+      <div className="dropdown-menu" id="batch-actions-menu">
         {users.sourcePage === "upload" && (
           <button
             type="button"
