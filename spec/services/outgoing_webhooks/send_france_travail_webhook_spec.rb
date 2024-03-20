@@ -23,7 +23,6 @@ describe OutgoingWebhooks::SendFranceTravailWebhook, type: :service do
   end
 
   before do
-    ENV["FRANCE_TRAVAIL_RDV_API_URL"] = "https://francetravailfakerdvurl.fr"
     allow(RetrieveFranceTravailAccessToken).to receive(:call)
       .and_return(OpenStruct.new(success?: true, access_token:))
     allow(Faraday).to receive(:post).and_return(OpenStruct.new(success?: true))
