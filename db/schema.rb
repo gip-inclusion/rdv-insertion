@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_12_170449) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_13_154309) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -314,6 +314,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_12_170449) do
     t.string "type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "document_date"
     t.index ["agent_id"], name: "index_parcours_documents_on_agent_id"
     t.index ["department_id"], name: "index_parcours_documents_on_department_id"
     t.index ["type"], name: "index_parcours_documents_on_type"
