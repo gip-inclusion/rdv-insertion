@@ -32,7 +32,6 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
         invitations_set: Invitation.where(id: [invitation1, invitation2]),
         participations_after_invitations_set: Participation.where(id: [participation1]),
         participations_with_notifications_set: Participation.where(id: [participation2]),
-        rdv_contexts_with_invitations_and_participations_set: RdvContext.where(id: [rdv_context1, rdv_context2]),
         users_set: User.where(id: [user1, user2]),
         users_first_orientation_rdv_context: RdvContext.where(id: [rdv_context2]),
         orientation_rdv_contexts_with_invitations: RdvContext.where(id: [rdv_context1, rdv_context2]),
@@ -125,9 +124,8 @@ describe Stats::MonthlyStats::ComputeForFocusedMonth, type: :service do
     end
 
     it "computes the average time between first invitation and first rdv in days" do
-      expect(stat).to receive(:rdv_contexts_with_invitations_and_participations_set)
       expect(Stats::ComputeAverageTimeBetweenInvitationAndRdvInDays).to receive(:call)
-        .with(stat: stat)
+        .with(stat: stat, range: date.all_month)
       subject
     end
 
