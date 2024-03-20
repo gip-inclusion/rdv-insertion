@@ -16,7 +16,7 @@
           <div>
             Envoyer une nouvelle invitation
           </div>
-          <%= number_field :configuration, :number_of_days_between_periodic_invites, placeholder: 'X', min: 1, max: 365, class: "mx-1", data: { 'periodic-invites-form-target': 'numberOfDays', action: 'periodic-invites-form#numberOfDaysInputChanged' }, value: @configuration.number_of_days_between_periodic_invites %>
+          <%= f.number_field :number_of_days_between_periodic_invites, placeholder: 'X', min: 1, max: 365, class: "mx-1", data: { 'periodic-invites-form-target': 'numberOfDays', action: 'periodic-invites-form#numberOfDaysInputChanged' }, value: @configuration.number_of_days_between_periodic_invites %>
           <div> jours après la dernière invitation</div>
         </div>
       </div>
@@ -26,7 +26,7 @@
           <div>
             Envoyer une nouvelle invitation le 
           </div>
-          <%= number_field :configuration, :day_of_the_month_periodic_invites, placeholder: 'X', min: 1, max: 28, class: "mx-1", data: { 'periodic-invites-form-target': 'dayOfTheMonth', action: 'periodic-invites-form#dayOfTheMonthInputChanged' }, value: @configuration.day_of_the_month_periodic_invites %>
+          <%= f.number_field :day_of_the_month_periodic_invites, placeholder: 'X', min: 1, max: 28, class: "mx-1", data: { 'periodic-invites-form-target': 'dayOfTheMonth', action: 'periodic-invites-form#dayOfTheMonthInputChanged' }, value: @configuration.day_of_the_month_periodic_invites %>
           <div>du mois</div>
         </div>
       </div>
