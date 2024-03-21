@@ -1,7 +1,5 @@
 class SendPeriodicInvitesJob < ApplicationJob
   def perform
-    return if staging_env?
-
     @sent_invites_user_ids = []
 
     FollowUp

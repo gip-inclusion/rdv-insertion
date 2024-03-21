@@ -1,6 +1,8 @@
 monitor_webhook_activity_job:
   cron: "0 0-1,6-23 * * 1-5" # Monitor webhooks activity every hour from Monday to Friday except between 1:00 and 6:00
   class: "MonitorWebhookActivityJob"
+  run_only_in_env:
+    - production
 upsert_global_stats_job:
   cron: "0 22 * * 6" # we compute global stats once a week, the saturday at 22:00
   class: "Stats::GlobalStats::UpsertStatsJob"
@@ -10,21 +12,31 @@ upsert_monthly_stats_job:
 send_periodic_invites_job:
   cron: "0 14 * * *" # we send recurrent invitations X days after the previous one, at 14:00
   class: "SendPeriodicInvitesJob"
+  run_only_in_env:
+    - production
 send_invitation_reminders_job:
   cron: "0 11 * * *" # we send reminders once a day, at 11:00
   class: "SendInvitationRemindersJob"
+  run_only_in_env:
+    - production
 refresh_out_of_date_follow_up_statuses_job:
   cron: "0 21 * * *" # we refresh out of date statuses once a day, at 21:00
   class: "RefreshOutOfDatefollowUpStatusesJob"
 send_convocation_reminders_job:
   cron: "0 10 * * *" # we send reminders once a day, at 10:00
   class: "SendConvocationRemindersJob"
+  run_only_in_env:
+    - production
 destroy_old_ressources_job:
   cron: "0 0 * * *" # we destroy inactive users and useless ressources once a day, at 00:00
   class: "DestroyOldRessourcesJob"
 designate_on_watch_developer_job:
   cron: "0 10 * * mon" # we designate an on watch developer once a week, monday at 10:00
   class: "DesignateOnWatchDeveloperJob"
+  run_only_in_env:
+    - production
 send_creneau_availability_alert_job:
   cron: "0 01 * * *" # we verify organisations creneaux availability once a day, at 01:00
   class: "SendCreneauAvailabilityAlertJob"
+  run_only_in_env:
+    - production
