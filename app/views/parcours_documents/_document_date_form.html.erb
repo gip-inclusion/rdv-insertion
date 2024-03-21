@@ -7,18 +7,20 @@
       <span class="text-dark-grey-alt">Non renseignée</span>
     <% end %>
   </div>
-  <%= form_for(document, as: :parcours_document, url: user_parcours_document_path(id: document.signed_id), remote: true, html: { class: "d-inline" }) do |f| %>
-    <div class="date-update d-flex d-none">
-      <%= f.date_field :document_date, class: "form-control me-1" %>
-      <%= button_tag type: "submit", class: "btn btn-link validate-date-button text-dark-blue" do %>
-        <i class="fas fa-check"></i>
+  <% if policy(document).edit? %>
+    <%= form_for(document, as: :parcours_document, url: user_parcours_document_path(id: document.signed_id), remote: true, html: { class: "d-inline" }) do |f| %>
+      <div class="date-update d-flex d-none">
+        <%= f.date_field :document_date, class: "form-control me-1" %>
+        <%= button_tag type: "submit", class: "btn btn-link validate-date-button text-dark-blue" do %>
+          <i class="fas fa-check"></i>
+        <% end %>
+        <%= button_tag type: "button", class: "btn btn-link text-dark-blue", data: { action: "click->parcours-documents#toggleEditDate" } do %>
+          <i class="fas fa-times"></i>
+        <% end %>
+      </div>
+      <%= button_tag type: "button", class: "btn btn-link edit-date-button text-dark-blue", data: { action: "click->parcours-documents#toggleEditDate" } do %>
+        <i class="fas fa-pencil-alt"></i>
       <% end %>
-      <%= button_tag type: "button", class: "btn btn-link text-dark-blue", data: { action: "click->parcours-documents#toggleEditDate" } do %>
-        <i class="fas fa-times"></i>
-      <% end %>
-    </div>
-    <%= button_tag type: "button", class: "btn btn-link edit-date-button text-dark-blue", data: { action: "click->parcours-documents#toggleEditDate" } do %>
-      <i class="fas fa-pencil-alt"></i>
     <% end %>
-  <% end if policy(document).edit? %>
+  <% end %>
 </div>
