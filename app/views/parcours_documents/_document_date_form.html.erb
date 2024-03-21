@@ -20,5 +20,5 @@
     <%= button_tag type: "button", class: "btn btn-link edit-date-button text-dark-blue", data: { action: "click->parcours-documents#toggleEditDate" } do %>
       <i class="fas fa-pencil-alt"></i>
     <% end %>
-  <% end %>
+  <% end if policy(document).edit? %>
 </div>
