@@ -1,13 +1,13 @@
-module Configurations
+module CategoryConfigurations
   class Create < BaseService
-    def initialize(configuration:)
-      @configuration = configuration
+    def initialize(category_configuration:)
+      @category_configuration = category_configuration
     end
 
     def call
-      Configuration.transaction do
+      CategoryConfiguration.transaction do
         activate_motif_category_on_rdvs_territory
-        save_record!(@configuration)
+        save_record!(@category_configuration)
       end
     end
 
@@ -16,8 +16,8 @@ module Configurations
     def activate_motif_category_on_rdvs_territory
       @activate_motif_category_on_rdvs_territory ||= call_service!(
         RdvSolidaritesApi::CreateMotifCategoryTerritory,
-        motif_category_short_name: @configuration.motif_category_short_name,
-        organisation_id: @configuration.rdv_solidarites_organisation_id
+        motif_category_short_name: @category_configuration.motif_category_short_name,
+        organisation_id: @category_configuration.rdv_solidarites_organisation_id
       )
     end
   end

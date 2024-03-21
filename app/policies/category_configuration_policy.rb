@@ -1,7 +1,7 @@
-class ConfigurationPolicy < ApplicationPolicy
+class CategoryConfigurationPolicy < ApplicationPolicy
   class Scope < Scope
     def resolve
-      Configuration.where(organisation: pundit_user.organisations)
+      CategoryConfiguration.where(organisation: pundit_user.organisations)
     end
   end
 end
