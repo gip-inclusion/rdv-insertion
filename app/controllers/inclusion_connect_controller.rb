@@ -63,7 +63,7 @@ class InclusionConnectController < ApplicationController
   end
 
   def handle_failed_authentication(errors)
-    Sentry.capture_message(errors)
+    Sentry.capture_message(errors) unless errors == "Agent doesn't exist in rdv-insertion"
     flash[:error] = case errors
                     when "Agent doesn't exist in rdv-insertion"
                       "Il n'y a pas de compte agent pour l'adresse mail #{inclusion_connect_agent_info['email']}. " \

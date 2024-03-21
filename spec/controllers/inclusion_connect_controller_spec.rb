@@ -76,7 +76,6 @@ describe InclusionConnectController do
           sub: "patrick"
         }.to_json, headers: {}
       )
-      expect(Sentry).to receive(:capture_message).with("Agent doesn't exist in rdv-insertion")
       get :callback, params: { state: "a state", code: code }
       expect(response).to redirect_to(sign_in_path)
       expect(flash[:error]).to eq(
