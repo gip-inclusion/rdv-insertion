@@ -95,7 +95,9 @@ describe "Agents can upload documents for users", :js do
       end
 
       context "agent is not the owner" do
-        let!(:document) { create(:parcours_document, user:, agent: other_organisation_agents.first, type: "Diagnostic") }
+        let!(:document) do
+          create(:parcours_document, user:, agent: other_organisation_agents.first, type: "Diagnostic")
+        end
 
         it "cannot update the date" do
           visit organisation_user_path(organisation_id: organisation.id, id: user.id)
