@@ -1,7 +1,7 @@
 module Stats
   class ComputeAverageTimeBetweenInvitationAndRdvInDays < BaseService
-    def initialize(stat:, range: nil)
-      @stat = stat
+    def initialize(structure: nil, range: nil)
+      @structure = structure
       @range = range
     end
 
@@ -12,14 +12,14 @@ module Stats
     private
 
     def structure_filter
-      return "" if @stat.statable_id.nil?
+      return "" if @structure.nil?
 
-      if @stat.statable_type == "Department"
-        "WHERE invitations.department_id = #{@stat.statable_id}"
+      if @structure.is_a?(Department)
+        "WHERE invitations.department_id = #{@structure.id}"
       else
         <<-SQL.squish
           JOIN invitations_organisations io ON invitations.id = io.invitation_id
-          WHERE io.organisation_id = #{@stat.statable_id}
+          WHERE io.organisation_id = #{@structure.id}
         SQL
       end
     end

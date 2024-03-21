@@ -1,5 +1,5 @@
 describe Stats::ComputeAverageTimeBetweenInvitationAndRdvInDays, type: :service do
-  subject { described_class.call(stat: stat) }
+  subject { described_class.call(structure: stat.statable) }
 
   let(:date) { Time.zone.parse("17/03/2022 12:00") }
 
@@ -71,7 +71,7 @@ describe Stats::ComputeAverageTimeBetweenInvitationAndRdvInDays, type: :service 
     end
 
     context "when given range" do
-      subject { described_class.call(stat: stat, range: invitation1.created_at.all_month) }
+      subject { described_class.call(structure: stat.statable, range: invitation1.created_at.all_month) }
 
       # Off range, must not be taken into account
       let!(:invitation2) { create(:invitation, created_at: 2.days.ago, rdv_context: rdv_context2) }

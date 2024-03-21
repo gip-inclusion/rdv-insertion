@@ -123,7 +123,7 @@ describe Stats::GlobalStats::Compute, type: :service do
 
     it "computes the average time between first invitation and first rdv in days" do
       expect(Stats::ComputeAverageTimeBetweenInvitationAndRdvInDays).to receive(:call)
-        .with(stat:)
+        .with(structure: stat.statable)
       subject
     end
 
