@@ -12,7 +12,7 @@
   <tbody class="align-middle">
     <% @users.each do |user| %>
       <tr
-        class="table-danger clickable"
+        class="table-archived clickable"
         data-controller="user-link"
         data-user-link-path="<%= structure_user_path(user.id) %>"
         data-action="click->user-link#navigate"

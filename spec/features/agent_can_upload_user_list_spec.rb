@@ -781,7 +781,7 @@ describe "Agents can upload user list", :js do
             expect(page).to have_no_css("td i.fas.fa-check")
 
             click_button("Invitation par sms")
-            expect(page).to have_css("tr.table-danger")
+            expect(page).to have_css("tr.table-secondary")
           end
         end
 
@@ -793,10 +793,10 @@ describe "Agents can upload user list", :js do
                         make_visible: true)
 
             click_button("Actions pour toute la sélection")
-            expect(page).to have_no_css("tr.table-danger")
+            expect(page).to have_no_css("tr.table-secondary")
 
             click_button("Créer comptes")
-            expect(page).to have_css("tr.table-danger")
+            expect(page).to have_css("tr.table-secondary")
           end
         end
       end
