@@ -16,9 +16,13 @@ Sidekiq.configure_server do |config|
   ActiveRecord::Base.logger = Sidekiq.logger
 
   config.on(:startup) do
-    schedule_file = "config/schedule.yml"
+    schedule = YAML.load_file("config/schedule.yml")
 
-    Sidekiq::Cron::Job.load_from_hash YAML.load_file(schedule_file) if File.exist?(schedule_file)
+    schedule.each do |task, args|
+      schedule.delete(task) if args["run_only_in_env"]&.exclude?(ENV["SENTRY_ENVIRONMENT"])
+    end
+
+    Sidekiq::Cron::Job.load_from_hash(schedule)
   end
 end
 

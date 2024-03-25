@@ -13,7 +13,8 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentRoleJob do
   end
 
   let!(:agent_attributes) do
-    { id: rdv_solidarites_agent_id, first_name: "Josiane", last_name: "balasko" }
+    { id: rdv_solidarites_agent_id, first_name: "Josiane", last_name: "balasko", email: "josiane.balasko@gmail.com",
+      inclusion_connect_open_id_sub: "1234" }
   end
   let!(:rdv_solidarites_agent_role_id) { 17 }
   let!(:rdv_solidarites_organisation_id) { 222 }
@@ -22,7 +23,11 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentRoleJob do
   let!(:organisation) do
     create(:organisation, rdv_solidarites_organisation_id:, id: 923, name: "Pôle Parcours")
   end
-  let!(:agent) { create(:agent, rdv_solidarites_agent_id: rdv_solidarites_agent_id) }
+  let!(:agent) do
+    create(:agent, rdv_solidarites_agent_id: rdv_solidarites_agent_id, first_name: "Josiane", last_name: "balasko",
+                   email: "josiane.balasko@gmail.com",
+                   inclusion_connect_open_id_sub: "1234")
+  end
   let!(:agent_role) do
     create(:agent_role, organisation: organisation, agent: agent, rdv_solidarites_agent_role_id: nil)
   end
@@ -142,6 +147,9 @@ describe InboundWebhooks::RdvSolidarites::ProcessAgentRoleJob do
             { organisation_id: organisation.id, agent_id: agent.id, last_webhook_update_received_at: meta[:timestamp] }
           )
         subject
+        expect(agent).to have_attributes(
+          agent_attributes.except(:id).merge(rdv_solidarites_agent_id: rdv_solidarites_agent_id)
+        )
       end
 
       context "when the agent upsert fails" do

@@ -414,7 +414,7 @@ export default class User {
   }
 
   get tagsAsJson() {
-    const matchingTags = this.availableTags.filter((tag) => this.tags.includes(tag.value));
+    const matchingTags = this.availableTags.filter((tag) => this.tags.includes(tag.value.toLowerCase()));
 
     return matchingTags.map((tag) => ({ tag_id: tag.id }));
   }

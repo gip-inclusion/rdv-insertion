@@ -78,5 +78,35 @@ describe "Agents can upload documents for users", :js do
       expect(user.contracts.count).to eq(0)
       expect(user.diagnostics.count).to eq(0)
     end
+
+    context "when a document has been uploaded" do
+      let!(:document) { create(:parcours_document, user:, agent:, type: "Diagnostic") }
+
+      it "can update the date" do
+        visit organisation_user_path(organisation_id: organisation.id, id: user.id)
+        expect(page).to have_content("Parcours")
+
+        click_link("Parcours")
+        find(".edit-date-button").click
+        fill_in("parcours_document_document_date", with: Time.zone.local(2024, 3, 20))
+        find(".validate-date-button").click
+        expect(find(".document-date-value")).to have_content("20/03/2024")
+        expect(document.reload.document_date).to eq(Time.zone.parse("2024-03-20"))
+      end
+
+      context "agent is not the owner" do
+        let!(:document) do
+          create(:parcours_document, user:, agent: other_organisation_agents.first, type: "Diagnostic")
+        end
+
+        it "cannot update the date" do
+          visit organisation_user_path(organisation_id: organisation.id, id: user.id)
+          expect(page).to have_content("Parcours")
+
+          click_link("Parcours")
+          expect(page).to have_no_css(".edit-date-button")
+        end
+      end
+    end
   end
 end
