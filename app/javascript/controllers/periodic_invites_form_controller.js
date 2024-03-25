@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus";
+import tippy from "tippy.js";
 
 export default class extends Controller {
   static targets = [
@@ -40,7 +41,15 @@ export default class extends Controller {
   }
 
   numberOfDaysInputChanged() {
-    if (this.numberOfDaysTarget.value < this.constructor.minValueForNumberOfDays) this.numberOfDaysTarget.value = this.constructor.minValueForNumberOfDays
+    if (this.numberOfDaysTarget.value < this.constructor.minValueForNumberOfDays) {
+      const tooltip = tippy(this.numberOfDaysTarget, { content: "Le délai minimal entre 2 invitations est de 14 jours.", showOnCreate: true })
+
+      // We destroy the tooltip so that it won't show up again unless the 
+      // user intentionnaly sets another value under the threshold
+      setTimeout(() => tooltip.destroy(), 2000)
+
+      this.numberOfDaysTarget.value = this.constructor.minValueForNumberOfDays
+    }
     this.dayOfTheMonthTarget.value = null
     this.typeRadioTargets[0].checked = true
     this.typeRadioTargets[1].checked = false
