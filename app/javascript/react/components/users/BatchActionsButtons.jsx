@@ -2,35 +2,47 @@ import React from "react";
 import { observer } from "mobx-react-lite";
 
 export default observer(({ users }) => {
-  const toggle = () => {
-    const dropdown = document.getElementById("batch-actions");
+  const toggleDropdown = (event) => {
+    event.stopPropagation();
+    const dropdown = document.getElementById("batch-actions-menu");
     dropdown.classList.toggle("show");
+    if (dropdown.classList.contains("show")) {
+      window.addEventListener("click", closeDropdown);
+    }
+  };
+
+  const closeDropdown = () => {
+    const dropdown = document.getElementById("batch-actions-menu");
+    dropdown.classList.remove("show");
+    window.removeEventListener("click", closeDropdown);
   };
 
   const deleteAll = () => {
-    toggle();
     users.setUsers(users.list.filter((user) => !user.selected));
   };
 
-  const inviteBy = async (format) => {
-    toggle();
+  const batchActions = async (actionName, actionArguments = []) => {
     // We need a synchronous loop with await here to avoid sending too many requests at the same time
     // eslint-disable-next-line no-restricted-syntax
     for (const user of users.selectedUsers) {
       // eslint-disable-next-line no-await-in-loop
-      await user.inviteBy(format, { raiseError: false });
+      await user[actionName](...actionArguments, { raiseError: false });
     }
-  };
+  }
 
   const createAccounts = async () => {
-    toggle();
-    // We need a synchronous loop here to avoid sending too many requests at the same time
+    // We need a synchronous loop with await here to avoid sending too many requests at the same time
     // eslint-disable-next-line no-restricted-syntax
     for (const user of users.selectedUsers) {
-      // eslint-disable-next-line no-await-in-loop
-      await user.createAccount({ raiseError: false });
+      if (user.isArchivedInCurrentDepartment()) {
+        // eslint-disable-next-line no-await-in-loop
+        await user.unarchive({ raiseError: false });
+      } else {
+        // eslint-disable-next-line no-await-in-loop
+        await user.createAccount({ raiseError: false });
+      }
     }
-  };
+  }
 
   const noUserSelected = !users.list.some((user) => user.selected);
 
@@ -38,13 +50,14 @@ export default observer(({ users }) => {
     <div style={{ marginRight: 20, position: "relative" }}>
       <button
         type="button"
+        id="batch-actions-button"
         className="btn btn-primary dropdown-toggle"
-        onClick={toggle}
+        onClick={toggleDropdown}
         disabled={noUserSelected}
       >
         Actions pour toute la sélection
       </button>
-      <div className="dropdown-menu" id="batch-actions">
+      <div className="dropdown-menu" id="batch-actions-menu">
         {users.sourcePage === "upload" && (
           <button
             type="button"
@@ -55,13 +68,23 @@ export default observer(({ users }) => {
             <i className="fas fa-user" />
           </button>
         )}
+        {users.showReferentColumn && (
+          <button
+            type="button"
+            className="dropdown-item d-flex justify-content-between align-items-center"
+            onClick={() => batchActions("assignReferent")}
+          >
+            <span>Assigner référent</span>
+            <i className="fas fa-user-friends" />
+          </button>
+        )}
         {users.canBeInvitedBy("sms") && (
           <button
             type="button"
             className="dropdown-item d-flex justify-content-between align-items-center"
-            onClick={() => inviteBy("sms")}
+            onClick={() => batchActions("inviteBy", ["sms"])}
           >
-            <span>Invitation par sms</span>
+            <span>Inviter par sms</span>
             <i className="fas fa-comment" />
           </button>
         )}
@@ -69,9 +92,9 @@ export default observer(({ users }) => {
           <button
             type="button"
             className="dropdown-item d-flex justify-content-between align-items-center"
-            onClick={() => inviteBy("email")}
+            onClick={() => batchActions("inviteBy", ["email"])}
           >
-            <span>Invitation par mail</span>
+            <span>Inviter par mail</span>
             <i className="fas fa-inbox" />
           </button>
         )}
@@ -79,9 +102,9 @@ export default observer(({ users }) => {
           <button
             type="button"
             className="dropdown-item d-flex justify-content-between align-items-center"
-            onClick={() => inviteBy("postal")}
+            onClick={() => batchActions("inviteBy", ["postal"])}
           >
-            <span>Invitation par courrier &nbsp;</span>
+            <span>Inviter par courrier &nbsp;</span>
             <i className="fas fa-envelope" />
           </button>
         )}
