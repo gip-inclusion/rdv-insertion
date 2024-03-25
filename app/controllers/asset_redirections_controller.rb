@@ -12,8 +12,8 @@ class AssetRedirectionsController < ApplicationController
     return if logo_name.blank?
 
     blob = ActiveStorage::Blob.find_by(filename: "#{logo_name}.#{logo_format}")
-    return unless blob&.attachments&.any?
+    return unless blob
 
-    redirect_to blob.attachments.first.url, status: :moved_permanently
+    redirect_to blob.url, status: :moved_permanently
   end
 end
