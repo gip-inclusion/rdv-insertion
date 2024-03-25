@@ -28,9 +28,9 @@
     <% end %>
   </h4>
   <% if local_assigns[:as] == :select %>
-    <%= f.select attribute, collection, { include_blank: local_assigns[:include_blank] }, { selected: f.object[attribute], class: "mb-3" } %>
+    <%= f.select attribute, collection, { include_blank: local_assigns[:include_blank] }, { selected: f.object[attribute], class: "mb-3 mt-2" } %>
   <% elsif local_assigns[:as] == :date %>
-    <p><%= f.date_select attribute, { start_year: start_year, end_year: Date.today.year, include_blank: true, order: [:day, :month, :year] }, { class: "date-select" } %></p>
+    <p><%= f.date_select attribute, { start_year: start_year, end_year: Date.today.year, include_blank: true, order: [:day, :month, :year] }, { class: "date-select mt-2" } %></p>
   <% elsif local_assigns[:as] == :association %>
     <p><%= f.collection_select attribute, collection, :id, :name, { include_blank: true } %></p>
   <% elsif local_assigns[:as] == :collection_check_boxes %>
@@ -58,9 +58,9 @@
     </div>
   <% else %>
     <% if local_assigns[:value] %>
-      <div class="mt-3 mb-2"><%= f.text_field attribute, value: local_assigns[:value] %></div>
+      <div class="my-3"><%= f.text_field attribute, value: local_assigns[:value] %></div>
     <% else %>
-      <div class="mt-3 mb-2"><%= f.text_field attribute %></div>
+      <div class="my-3"><%= f.text_field attribute %></div>
     <% end %>
   <% end %>
 </div>

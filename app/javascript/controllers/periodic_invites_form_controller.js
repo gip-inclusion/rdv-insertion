@@ -12,7 +12,6 @@ export default class extends Controller {
   static minValueForNumberOfDays = 14
 
   connect() {
-    this.togglePeriodicInvites()
     this.periodicityTypeChanged()
   }
 
