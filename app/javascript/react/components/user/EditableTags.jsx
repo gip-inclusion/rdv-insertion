@@ -14,7 +14,9 @@ export default observer(({ user, cell, values, setIsEditingTags }) => {
     user.updateAttribute(cell, [...user[cell].filter((t) => t !== tag)]);
   };
 
-  const availableValues = values.filter((value) => !user[cell].includes(value));
+  const availableValues = values.filter((value) => !user[cell].map(el => el.toLowerCase()).includes(value.toLowerCase()));
+
+  const tagExists = (aTag) => values.map(tag => tag.toLowerCase()).includes((aTag.toLowerCase()));
 
   return (
     <div className="modal d-block" style={{ backgroundColor: "rgba(0,0,0, 0.3)" }} role="dialog">
@@ -42,13 +44,13 @@ export default observer(({ user, cell, values, setIsEditingTags }) => {
                   <Tippy
                     placement="top"
                     key={tag}
-                    disabled={values.includes(tag)}
+                    disabled={tagExists(tag)}
                     content="Ce tag ne sera pas pris en compte, il doit d'abord être créé dans la configuration de l'organisation."
                   >
                     <div
                       className={`badge w-auto d-flex justify-content-between bg-${
-                        values.includes(tag) ? "primary" : "warning text-white"
-                      } mb-1`}
+                        tagExists(tag) ? "primary" : "warning text-white"
+                      } mb-1 me-1`}
                     >
                       {tag}
                       <button type="button" onClick={() => removeTag(tag)} className="text-white">
