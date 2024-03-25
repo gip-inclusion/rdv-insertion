@@ -1,10 +1,14 @@
 import { makeAutoObservable } from "mobx";
+
+import handleUserCreation from "../lib/handleUserCreation";
+import handleUserInvitation from "../lib/handleUserInvitation";
+import handleArchiveDelete from "../lib/handleArchiveDelete";
+import handleUserUpdate from "../lib/handleUserUpdate";
+import handleReferentAssignation from "../lib/handleReferentAssignation";
+
 import formatPhoneNumber from "../../lib/formatPhoneNumber";
 import retrieveLastInvitationDate from "../../lib/retrieveLastInvitationDate";
-import handleUserCreation from "../lib/handleUserCreation";
 import retrieveRelevantOrganisation from "../../lib/retrieveRelevantOrganisation";
-import handleUserInvitation from "../lib/handleUserInvitation";
-import handleUserUpdate from "../lib/handleUserUpdate";
 import { getFrenchFormatDateString } from "../../lib/datesHelper";
 
 const ROLES = {
@@ -204,6 +208,41 @@ export default class User {
     return success;
   }
 
+  async unarchive(options = { raiseError: true }) {
+    this.triggers.unarchive = true;
+
+    const { success } = await handleArchiveDelete(this, { raiseError: options.raiseError });
+    if (!success && !options.raiseError) {
+      this.errors = ["deleteArchive"];
+    } else if (success) {
+      this.resetErrors();
+    }
+
+    this.triggers.unarchive = false;
+  }
+
+  async assignReferent(options = { raiseError: true }) {
+    if (this.referentAlreadyAssigned()) return true;
+
+    if (!this.createdAt || !this.belongsToCurrentOrg()) {
+      const success = await this.createAccount(options);
+      if (!success) return false;
+    }
+
+    this.triggers.referentAssignation = true;
+
+    const { success } = await handleReferentAssignation(this, { raiseError: options.raiseError });
+    if (!success && !options.raiseError) {
+      this.errors = ["referentAssignation"];
+    } else if (success) {
+      this.resetErrors();
+    }
+
+    this.triggers.referentAssignation = false;
+
+    return success;
+  }
+
   resetErrors() {
     this.errors = [];
   }
@@ -393,6 +432,14 @@ export default class User {
       this.referents &&
       this.referents.some((referent) => referent.email === this.referentEmail)
     );
+  }
+
+  referentFullName() {
+    if (this.referentAlreadyAssigned()) {
+      const referent = this.referents.find((agent) => agent.email === this.referentEmail);
+      return `${referent.first_name} ${referent.last_name}`
+    }
+    return "";
   }
 
   archiveInCurrentDepartment() {

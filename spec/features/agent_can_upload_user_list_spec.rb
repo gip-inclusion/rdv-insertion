@@ -756,7 +756,7 @@ describe "Agents can upload user list", :js do
           click_button("Actions pour toute la sélection")
           expect(page).to have_no_button("Réinviter par SMS")
 
-          click_button("Invitation par sms")
+          click_button("Inviter par sms")
           expect(page).to have_css("i.fas.fa-check")
           expect(page).to have_css("i.fas.fa-redo-alt")
         end
@@ -780,7 +780,7 @@ describe "Agents can upload user list", :js do
             click_button("Actions pour toute la sélection")
             expect(page).to have_no_css("td i.fas.fa-check")
 
-            click_button("Invitation par sms")
+            click_button("Inviter par sms")
             expect(page).to have_css("tr.table-danger")
           end
         end
