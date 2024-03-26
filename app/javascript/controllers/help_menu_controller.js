@@ -16,7 +16,7 @@ export default class extends Controller {
 
   toggle() {
     this.dropdownTarget.classList.toggle("d-block")
-    this.element.ariaExpanded = this.isOpen()
+    this.buttonTarget.ariaExpanded = this.isOpen()
   }
 
   isOpen() {
