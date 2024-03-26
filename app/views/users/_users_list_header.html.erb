@@ -61,7 +61,7 @@
       <% if display_back_to_list_button? %>
         <div>
           <%= link_to structure_users_path(motif_category_id: @current_motif_category&.id, users_scope: @users_scope), class: "btn btn-blue-out" do %>
-            Retour à la liste
+            <i class="fas fa-undo"></i> Réinitialiser les filtres
           <% end %>
         </div>
       <% end %>

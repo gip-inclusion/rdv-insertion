@@ -11,7 +11,7 @@
   <tbody class="align-middle">
     <% @users.each do |user| %>
       <tr
-        class="clickable <%= "table-danger" if user.archived_in?(@department) %>"
+        class="clickable <%= "table-archived" if user.archived_in?(@department) %>"
         data-controller="user-link"
         data-user-link-path="<%= structure_user_path(user.id) %>"
         data-action="click->user-link#navigate"
