@@ -43,7 +43,7 @@ export default class extends Controller {
   displaySortingArrow() {
     const element = document.querySelector(`#${this.sortBy}_header`);
     if (element) {
-      const html = `<i class="fas fa-sort-${this.sortDirection === "asc" ? "up mt-2" : "down mb-2"}"></i>`;
+      const html = ` <i class="fas fa-sort-${this.sortDirection === "asc" ? "up mt-2" : "down mb-2"}"></i>`;
       element.insertAdjacentHTML("beforeend", html);
     }
   }
