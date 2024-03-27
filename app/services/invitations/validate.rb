@@ -5,6 +5,7 @@ module Invitations
     delegate :user,
              :organisations,
              :motif_category,
+             :rdv_context,
              :valid_until,
              :motif_category_name,
              :department_id,
@@ -19,6 +20,7 @@ module Invitations
       validate_user_title_presence
       validate_help_phone_number_presence
       validate_organisations_are_not_from_different_departments
+      validate_no_rdv_pending_taken_today
       validate_it_expires_in_more_than_5_days if @invitation.format_postal?
       validate_user_belongs_to_an_org_linked_to_motif_category
       validate_motif_of_this_category_is_defined_in_organisations
@@ -38,6 +40,12 @@ module Invitations
       return if organisations.map(&:department_id).uniq == [department_id]
 
       result.errors << "Les organisations ne peuvent pas être liés à des départements différents de l'invitation"
+    end
+
+    def validate_no_rdv_pending_taken_today
+      return if rdv_context.rdvs.where(rdvs: { status: 0 }).where("rdvs.created_at > ?", Time.zone.today).blank?
+
+      result.errors << "Cet usager a déjà pris un rendez-vous aujourd'hui"
     end
 
     def validate_it_expires_in_more_than_5_days
