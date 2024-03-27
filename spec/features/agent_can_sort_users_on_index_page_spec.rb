@@ -12,50 +12,13 @@ describe "Agents can sort users on index page", :js do
     setup_agent_session(agent)
   end
 
-  def check_sorted_table(column_index, expected_order)
-    rows = page.all("tbody tr")
-    rows.each_with_index do |row, index|
-      cells = row.all("td")
-      second_cell = cells[column_index]
-      expect(second_cell).to have_content(expected_order[index])
-    end
-  end
-
   shared_examples "a table with a working sorting" do |last_name_default_order, first_name_default_order|
     it "can sort by first name" do
-      check_sorted_table(1, first_name_default_order)
-
-      find_by_id("first_name_header").click
-      expect(page).to have_current_path(/sort_by=first_name/)
-      expect(page).to have_current_path(/sort_direction=asc/)
-      check_sorted_table(1, first_name_default_order.sort)
-
-      find_by_id("first_name_header").click
-      expect(page).to have_current_path(/sort_by=first_name/)
-      expect(page).to have_current_path(/sort_direction=desc/)
-      check_sorted_table(1, first_name_default_order.sort.reverse)
-
-      find_by_id("first_name_header").click
-      expect(page).to have_no_current_path(/sort_by/)
-      check_sorted_table(1, first_name_default_order)
+      test_ordering_for("first_name", 1, first_name_default_order)
     end
 
     it "can sort by last name" do
-      check_sorted_table(0, last_name_default_order)
-
-      find_by_id("last_name_header").click
-      expect(page).to have_current_path(/sort_by=last_name/)
-      expect(page).to have_current_path(/sort_direction=asc/)
-      check_sorted_table(0, last_name_default_order.sort)
-
-      find_by_id("last_name_header").click
-      expect(page).to have_current_path(/sort_by=last_name/)
-      expect(page).to have_current_path(/sort_direction=desc/)
-      check_sorted_table(0, last_name_default_order.sort.reverse)
-
-      find_by_id("last_name_header").click
-      expect(page).to have_no_current_path(/sort_by/)
-      check_sorted_table(0, last_name_default_order)
+      test_ordering_for("last_name", 0, last_name_default_order)
     end
   end
 
