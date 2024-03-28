@@ -43,7 +43,7 @@ module Invitations
     end
 
     def validate_no_rdv_pending_taken_today
-      return if rdv_context.rdvs.where(rdvs: { status: 0 }).where("rdvs.created_at > ?", Time.zone.today).blank?
+      return if rdv_context.rdvs.unknown.where("rdvs.created_at > ?", Time.zone.today).blank?
 
       result.errors << "Cet usager a déjà pris un rendez-vous aujourd'hui"
     end
