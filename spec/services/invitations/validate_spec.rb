@@ -22,7 +22,9 @@ describe Invitations::Validate, type: :service do
 
   let!(:participation) { create(:participation, rdv_context: rdv_context, user: user) }
 
-  let!(:rdv) { create(:rdv, participations: [participation], status: "unknown", created_at: 3.days.ago) }
+  let!(:rdv) do
+    create(:rdv, participations: [participation], status: "unknown", created_at: 3.days.ago, starts_at: 2.days.ago)
+  end
 
   let!(:organisation) do
     create(:organisation, motifs: [motif])
