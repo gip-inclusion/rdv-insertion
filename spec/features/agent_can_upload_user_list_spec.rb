@@ -19,6 +19,8 @@ describe "Agents can upload user list", :js do
     create(:configuration, motif_category: motif_category, file_configuration: file_configuration)
   end
 
+  let(:role) { "demandeur" }
+
   let!(:other_org_from_same_department) { create(:organisation, department: department) }
   let!(:other_department) { create(:department) }
   let!(:other_org_from_other_department) { create(:organisation, department: other_department) }
@@ -215,7 +217,7 @@ describe "Agents can upload user list", :js do
             create(
               :user,
               nir: "180333147687266", address: "20 avenue de ségur 75007 Paris", last_name: "Crespa",
-              phone_number: "+33782605941", email: "hernan@crespa.com",
+              phone_number: "+33782605941", email: "hernan@crespa.com", role:,
               organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
@@ -244,7 +246,7 @@ describe "Agents can upload user list", :js do
           let!(:user) do
             create(
               :user,
-              nir: "180333147687266", last_name: "Crespa",
+              nir: "180333147687266", last_name: "Crespa", role:,
               organisations: [other_org_from_other_department], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
@@ -283,7 +285,7 @@ describe "Agents can upload user list", :js do
           let!(:user) do
             create(
               :user,
-              role: "demandeur", affiliation_number: "ISQCJQO", last_name: "Crespa",
+              role:, affiliation_number: "ISQCJQO", last_name: "Crespa",
               organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
@@ -307,7 +309,7 @@ describe "Agents can upload user list", :js do
             let!(:user) do
               create(
                 :user,
-                role: "demandeur", affiliation_number: "ISQCJQO",
+                role:, affiliation_number: "ISQCJQO",
                 address: "20 avenue de ségur 75007 Paris", last_name: "Crespa",
                 phone_number: "+33782605941", email: "hernan@crespa.com",
                 organisations: [other_org_from_same_department], rdv_solidarites_user_id: rdv_solidarites_user_id
@@ -354,7 +356,7 @@ describe "Agents can upload user list", :js do
             let!(:user) do
               create(
                 :user,
-                role: "demandeur", affiliation_number: "ISQCJQO",
+                role:, affiliation_number: "ISQCJQO",
                 address: "20 avenue de ségur 75007 Paris", last_name: "Crespa",
                 phone_number: "+33782605941", email: "hernan@crespa.com", nir: generate_random_nir,
                 organisations: [other_org_from_same_department], rdv_solidarites_user_id: rdv_solidarites_user_id
@@ -393,7 +395,7 @@ describe "Agents can upload user list", :js do
           let!(:user) do
             create(
               :user,
-              role: "demandeur", affiliation_number: "ISQCJQO", last_name: "Crespa",
+              role:, affiliation_number: "ISQCJQO", last_name: "Crespa",
               organisations: [other_org_from_other_department], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
@@ -438,7 +440,7 @@ describe "Agents can upload user list", :js do
             let!(:user) do
               create(
                 :user,
-                department_internal_id: "8383", last_name: "Crespa",
+                department_internal_id: "8383", last_name: "Crespa", role:,
                 organisations: [other_org_from_same_department], rdv_solidarites_user_id: rdv_solidarites_user_id
               )
             end
@@ -476,7 +478,7 @@ describe "Agents can upload user list", :js do
           let!(:user) do
             create(
               :user,
-              department_internal_id: "8383", last_name: "Crespa",
+              department_internal_id: "8383", last_name: "Crespa", role:,
               organisations: [other_org_from_other_department], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
@@ -496,7 +498,7 @@ describe "Agents can upload user list", :js do
         context "when the user is in the same org" do
           let!(:user) do
             create(
-              :user, email: "hernan@crespo.com", first_name: "hernan",
+              :user, email: "hernan@crespo.com", first_name: "hernan", role:,
                      organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
@@ -520,7 +522,8 @@ describe "Agents can upload user list", :js do
             create(
               :user, email: "hernan@crespo.com", first_name: "hernan",
                      organisations: [other_org_from_other_department],
-                     rdv_solidarites_user_id: rdv_solidarites_user_id
+                     rdv_solidarites_user_id: rdv_solidarites_user_id,
+                     role:
             )
           end
 
@@ -557,7 +560,7 @@ describe "Agents can upload user list", :js do
         context "when the user is in the same org" do
           let!(:user) do
             create(
-              :user, phone_number: "0620022002", first_name: "hernan",
+              :user, phone_number: "0620022002", first_name: "hernan", role:,
                      organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
@@ -580,7 +583,7 @@ describe "Agents can upload user list", :js do
           let!(:user) do
             create(
               :user,
-              phone_number: "0620022002", first_name: "hernan",
+              phone_number: "0620022002", first_name: "hernan", role:,
               organisations: [other_org_from_other_department], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
@@ -866,7 +869,7 @@ describe "Agents can upload user list", :js do
           let!(:user) do
             create(
               :user,
-              nir: "180333147687266", last_name: "Crespa",
+              nir: "180333147687266", last_name: "Crespa", role:,
               organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
@@ -889,7 +892,7 @@ describe "Agents can upload user list", :js do
           let!(:user) do
             create(
               :user,
-              nir: "180333147687266", last_name: "Crespa",
+              nir: "180333147687266", last_name: "Crespa", role:,
               organisations: [other_org_from_other_department], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
@@ -928,7 +931,7 @@ describe "Agents can upload user list", :js do
           let!(:user) do
             create(
               :user,
-              role: "demandeur", affiliation_number: "ISQCJQO", last_name: "Crespa",
+              role:, affiliation_number: "ISQCJQO", last_name: "Crespa",
               organisations: [organisation], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
@@ -952,7 +955,7 @@ describe "Agents can upload user list", :js do
             let!(:user) do
               create(
                 :user,
-                role: "demandeur", affiliation_number: "ISQCJQO", last_name: "Crespa",
+                role:, affiliation_number: "ISQCJQO", last_name: "Crespa",
                 organisations: [other_org_from_same_department], rdv_solidarites_user_id: rdv_solidarites_user_id
               )
             end
@@ -990,7 +993,7 @@ describe "Agents can upload user list", :js do
           let!(:user) do
             create(
               :user,
-              role: "demandeur", affiliation_number: "ISQCJQO", last_name: "Crespa",
+              role:, affiliation_number: "ISQCJQO", last_name: "Crespa",
               organisations: [other_org_from_other_department], rdv_solidarites_user_id: rdv_solidarites_user_id
             )
           end
@@ -1035,7 +1038,7 @@ describe "Agents can upload user list", :js do
             let!(:user) do
               create(
                 :user,
-                department_internal_id: "8383", last_name: "Crespa",
+                department_internal_id: "8383", last_name: "Crespa", role:,
                 organisations: [other_org_from_same_department], rdv_solidarites_user_id: rdv_solidarites_user_id
               )
             end
@@ -1117,7 +1120,8 @@ describe "Agents can upload user list", :js do
             create(
               :user, email: "hernan@crespo.com", first_name: "hernan",
                      organisations: [other_org_from_other_department],
-                     rdv_solidarites_user_id: rdv_solidarites_user_id
+                     rdv_solidarites_user_id: rdv_solidarites_user_id,
+                     role:
             )
           end
 
@@ -1196,7 +1200,8 @@ describe "Agents can upload user list", :js do
             create(
               :user, phone_number: "0620022002", first_name: "hernan",
                      organisations: [other_org_from_other_department],
-                     rdv_solidarites_user_id: rdv_solidarites_user_id
+                     rdv_solidarites_user_id: rdv_solidarites_user_id,
+                     role:
             )
           end
 
