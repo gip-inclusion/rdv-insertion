@@ -14,11 +14,11 @@ describe "Agents can sort users on index page", :js do
 
   shared_examples "a table with a working sorting" do |last_name_default_order, first_name_default_order|
     it "can sort by first name" do
-      test_ordering_for("first_name", 1, first_name_default_order)
+      test_ordering_for(column_name: "first_name", column_index: 1, default_order: first_name_default_order)
     end
 
     it "can sort by last name" do
-      test_ordering_for("last_name", 0, last_name_default_order)
+      test_ordering_for(column_name: "last_name", column_index: 0, default_order: last_name_default_order)
     end
   end
 

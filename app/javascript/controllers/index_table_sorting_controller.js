@@ -20,7 +20,7 @@ export default class extends Controller {
 
   changeUrlParams(event) {
     const url = new URL(window.location.href);
-    this.newSortBy = event.currentTarget.id.replace("_header", "");
+    this.newSortBy = event.currentTarget.id.replace("js_", "").replace("_header", "");
     // if a column is clicked for the third time, we remove the sorting
     if (this.sortDirection === undefined || this.sortBy !== this.newSortBy) {
       this.newSortDirection = "asc";
@@ -41,7 +41,7 @@ export default class extends Controller {
   }
 
   displaySortingArrow() {
-    const element = document.querySelector(`#${this.sortBy}_header`);
+    const element = document.querySelector(`js_#${this.sortBy}_header`);
     if (element) {
       const html = ` <i class="fas fa-sort-${this.sortDirection === "asc" ? "up mt-2" : "down mb-2"}"></i>`;
       element.insertAdjacentHTML("beforeend", html);

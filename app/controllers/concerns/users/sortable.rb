@@ -2,7 +2,7 @@ module Users::Sortable
   private
 
   def order_users
-    if sort_by && sort_direction
+    if sort_params? && sort_params_valid?
       custom_order
     else
       default_order
@@ -10,8 +10,6 @@ module Users::Sortable
   end
 
   def custom_order
-    return default_order unless sort_direction.in?(%w[asc desc]) && sort_by.in?(%w[first_name last_name])
-
     @users = @users.order("#{sort_by} #{sort_direction}")
   end
 
@@ -25,12 +23,20 @@ module Users::Sortable
     end
   end
 
+  def sort_by
+    params[:sort_by]
+  end
+
   def sort_direction
     params[:sort_direction]
   end
 
-  def sort_by
-    params[:sort_by]
+  def sort_params?
+    sort_by && sort_direction
+  end
+
+  def sort_params_valid?
+    sort_by.in?(%w[first_name last_name]) && sort_direction.in?(%w[asc desc])
   end
 
   def archived_order
