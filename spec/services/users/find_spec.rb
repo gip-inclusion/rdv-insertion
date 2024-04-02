@@ -45,9 +45,7 @@ describe Users::Find, type: :service do
     context "when an user with the same department internal id exists" do
       context "when the user is in the same department" do
         let!(:user) do
-          create(
-            :user, department_internal_id: department_internal_id, organisations: [other_org_inside_the_department], role:
-          )
+          create(:user, department_internal_id:, organisations: [other_org_inside_the_department], role:)
         end
 
         it "returns the found user" do
