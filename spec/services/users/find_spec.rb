@@ -150,5 +150,25 @@ describe Users::Find, type: :service do
         expect(subject.user).to be_nil
       end
     end
+
+    context "role matching" do
+      let!(:user) do
+        create(:user, nir:, role: "demandeur")
+      end
+
+      context "when role is different" do
+        let(:role) { "conjoint" }
+
+        it "does not match" do
+          expect(subject.user).to be_nil
+        end
+      end
+
+      context "when role is missing" do
+        it "matches" do
+          expect(subject.user).to eq(user)
+        end
+      end
+    end
   end
 end

@@ -65,6 +65,7 @@ class User < ApplicationRecord
     where.not(id: joins(:rdv_contexts).where(rdv_contexts: { motif_category: motif_categories }).ids)
   }
   scope :with_sent_invitations, -> { where.associated(:invitations) }
+  scope :with_matching_role, ->(role) { where(role:) if role.present? }
 
   def participation_for(rdv)
     participations.to_a.find { |participation| participation.rdv_id == rdv.id }
