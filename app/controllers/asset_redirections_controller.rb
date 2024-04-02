@@ -14,6 +14,6 @@ class AssetRedirectionsController < ApplicationController
     blob = ActiveStorage::Blob.find_by(filename: "#{logo_name}.#{logo_format}")
     return unless blob
 
-    redirect_to blob.url, status: :moved_permanently
+    redirect_to blob.url, status: :moved_permanently, allow_other_host: true
   end
 end
