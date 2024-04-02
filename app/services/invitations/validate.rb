@@ -43,7 +43,7 @@ module Invitations
     end
 
     def validate_no_rdv_pending_taken_today
-      return if rdv_context.participations.status("unknown").joins(:rdv).where("starts_at > ?", Time.zone.now).blank?
+      return if rdv_context.reload.participations.none?(&:pending?)
 
       result.errors << "Cet usager a déjà un rendez-vous à venir pour ce motif"
     end

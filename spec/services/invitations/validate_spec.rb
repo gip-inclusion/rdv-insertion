@@ -74,7 +74,11 @@ describe Invitations::Validate, type: :service do
       end
     end
 
-    context "when a rdv pending has been taken today" do
+    context "when a participation is pending" do
+      before do
+        rdv_context.reload
+      end
+
       let!(:rdv) { create(:rdv, participations: [participation], status: "unknown", starts_at: 2.days.from_now) }
 
       it("is a failure") { is_a_failure }
