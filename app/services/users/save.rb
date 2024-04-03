@@ -13,7 +13,7 @@ module Users
     private
 
     def save_user
-      User.with_advisory_lock "saving_user_#{@user}" do
+      User.with_advisory_lock "saving_user_#{lock_key}" do
         User.transaction do
           assign_organisation if @organisation.present?
           validate_user!
@@ -21,6 +21,10 @@ module Users
           sync_with_rdv_solidarites
         end
       end
+    end
+
+    def lock_key
+      @user.to_s.presence || SecureRandom.uuid
     end
 
     def assign_organisation
