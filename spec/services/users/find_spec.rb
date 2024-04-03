@@ -151,8 +151,12 @@ describe Users::Find, type: :service do
     end
 
     context "role matching" do
+      let!(:attributes) do
+        { email:, phone_number:, role:, first_name: }
+      end
+
       let!(:user) do
-        create(:user, nir:, role: "demandeur")
+        create(:user, first_name:, email:, phone_number:, role: "demandeur")
       end
 
       context "when role is different" do
