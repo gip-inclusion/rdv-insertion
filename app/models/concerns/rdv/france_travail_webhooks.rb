@@ -79,6 +79,12 @@ module Rdv::FranceTravailWebhooks
     }
   end
 
+  # Liste des IDs de modalités FT (on ne prend en compte que le physique et le telephone):
+  # 1 => PHYSIQUE
+  # 2 => PHYSIQUE COLLECTIF
+  # 3 => TELEPHONE
+  # 5 => VISIO
+  # 7 => VISIO-CONFERENCE COLLECTIVE
   def france_travail_id_modalite
     motif.phone? ? 1 : 3
   end
