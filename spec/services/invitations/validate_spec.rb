@@ -22,7 +22,9 @@ describe Invitations::Validate, type: :service do
 
   let!(:participation) { create(:participation, rdv_context: rdv_context, user: user) }
 
-  let!(:rdv) { create(:rdv, participations: [participation], status: "unknown", created_at: 3.days.ago) }
+  let!(:rdv) do
+    create(:rdv, participations: [participation], status: "unknown", created_at: 3.days.ago, starts_at: 2.days.ago)
+  end
 
   let!(:organisation) do
     create(:organisation, motifs: [motif])
@@ -72,14 +74,18 @@ describe Invitations::Validate, type: :service do
       end
     end
 
-    context "when a rdv pending has been taken today" do
-      let!(:rdv) { create(:rdv, participations: [participation], status: "unknown", created_at: Time.zone.now) }
+    context "when a participation is pending" do
+      before do
+        rdv_context.reload
+      end
+
+      let!(:rdv) { create(:rdv, participations: [participation], status: "unknown", starts_at: 2.days.from_now) }
 
       it("is a failure") { is_a_failure }
 
       it "stores an error message" do
         expect(subject.errors).to include(
-          "Cet usager a déjà pris un rendez-vous aujourd'hui"
+          "Cet usager a déjà un rendez-vous à venir pour ce motif"
         )
       end
     end
