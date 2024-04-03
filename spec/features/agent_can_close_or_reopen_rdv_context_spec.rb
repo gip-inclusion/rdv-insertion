@@ -20,9 +20,9 @@ describe "Agents can close or reopen rdv_context", :js do
   context "from department user page" do
     it "can close and reopen a rdv_context" do
       visit department_user_rdv_contexts_path(department_id: department.id, user_id: user.id)
-      expect(page).to have_content("Clôturer")
+      expect(page).to have_content("Fermer le suivi")
 
-      click_button("Clôturer")
+      click_button("Fermer le suivi")
       expect(page).to have_content("RSA orientation")
 
       expect(page).to have_content("Rouvrir")
@@ -34,7 +34,7 @@ describe "Agents can close or reopen rdv_context", :js do
       click_button("Rouvrir")
       expect(page).to have_content("RSA orientation")
 
-      expect(page).to have_content("Clôturer")
+      expect(page).to have_content("Fermer le suivi")
       expect(page).to have_content("Non invité")
       expect(rdv_context.reload.status).to eq("not_invited")
       expect(rdv_context.reload.closed_at).to eq(nil)
@@ -46,9 +46,9 @@ describe "Agents can close or reopen rdv_context", :js do
   context "from organisation user page" do
     it "can close and reopen rdv_context" do
       visit organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id)
-      expect(page).to have_content("Clôturer")
+      expect(page).to have_content("Fermer le suivi")
 
-      click_button("Clôturer")
+      click_button("Fermer le suivi")
       expect(page).to have_content("RSA orientation")
 
       expect(page).to have_content("Rouvrir")
@@ -60,7 +60,7 @@ describe "Agents can close or reopen rdv_context", :js do
       click_button("Rouvrir")
       expect(page).to have_content("RSA orientation")
 
-      expect(page).to have_content("Clôturer")
+      expect(page).to have_content("Fermer le suivi")
       expect(page).to have_content("Non invité")
       expect(rdv_context.reload.closed_at).to eq(nil)
       expect(page).to have_current_path(organisation_user_rdv_contexts_path(organisation_id: organisation.id,

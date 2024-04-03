@@ -43,7 +43,7 @@ class RetrieveInclusionConnectAgentInfos < BaseService
   end
 
   def agent_info_body
-    JSON.parse(agent_info_response.body)
+    result.inclusion_connect_agent_info = JSON.parse(agent_info_response.body)
   end
 
   def retrieve_agent!

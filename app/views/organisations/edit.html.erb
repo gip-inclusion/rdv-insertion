@@ -1,5 +1,5 @@
 <%= turbo_frame_tag @organisation do %>
-  <%= simple_form_for(@organisation, html: { method: :patch }) do |f| %>
+  <%= form_for(@organisation, method: :patch) do |f| %>
     <div class="row card-white rdv-insertion-form justify-content-center mb-2">
       <div class="mb-4">
         <div class="row d-flex justify-content-start flex-wrap">

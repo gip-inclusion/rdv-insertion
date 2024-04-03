@@ -1,6 +1,13 @@
 .dropdown-menu {
   top: 40px;
+  &#batch-actions-dropdown {
+    width: 260px;
+  }
 }
-.dropdown-toggle:focus {
+.dropdown-toggle:not(.accessible):focus {
   box-shadow: none !important;
+}
+
+#batch-actions-menu {
+  width: 260px;
 }

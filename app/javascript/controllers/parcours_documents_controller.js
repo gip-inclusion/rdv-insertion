@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus";
+import Swal from "sweetalert2";
 
 export default class extends Controller {
   fetchFile() {
@@ -6,8 +7,17 @@ export default class extends Controller {
   }
 
   submit(event) {
-    if (event.target.value.length > 0) {
+    const file = event.target.files[0]
+    const maxSize = Number(this.element.dataset.maxSize)
+
+    if (file && file.size < maxSize) {
       window.Turbo.navigator.submitForm(this.element)
+    } else if (file) {
+      Swal.fire({
+        title: "Ce fichier est trop lourd",
+        text: `Veuillez sélectionner un fichier dont la taille ne dépasse pas ${(maxSize / 1000000).toFixed()} Mo`,
+        icon: "warning",
+      })
     }
   }
 

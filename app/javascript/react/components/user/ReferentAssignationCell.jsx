@@ -1,32 +1,20 @@
-import React, { useState } from "react";
+import React from "react";
 import { observer } from "mobx-react-lite";
-import Swal from "sweetalert2";
-
-import assignReferent from "../../actions/assignReferent";
+import Tippy from "@tippyjs/react";
 
 export default observer(({ user }) => {
-  const [assignationDone, setAssignationDone] = useState(false);
-
   const handleReferentAssignationClick = async () => {
-    user.triggers.referentAssignation = true;
-
-    const result = await assignReferent(user.id, user.referentEmail);
-    if (result.success) {
-      setAssignationDone(true);
-    } else {
-      Swal.fire(
-        `Impossible d'assigner le référent ${user.referentEmail}`,
-        result.errors[0],
-        "error"
-      );
-    }
-    user.triggers.referentAssignation = false;
+    user.assignReferent();
   };
 
   return (
     <>
-      {assignationDone || user.referentAlreadyAssigned() ? (
-        <i className="fas fa-check" />
+      {user.referentAlreadyAssigned() ? (
+        <Tippy
+          content={`Référent: ${user.referentFullName()}`}
+        >
+          <i className="fas fa-check" />
+        </Tippy>
       ) : (
         <button
           type="submit"

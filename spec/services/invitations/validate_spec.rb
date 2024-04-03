@@ -12,18 +12,17 @@ describe Invitations::Validate, type: :service do
     create(:motif_category, name: "RSA accompagnement", short_name: "rsa_accompagnement")
   end
 
-  let!(:invitation) do
-    build(
-      :invitation,
-      user: user,
-      rdv_context: build(:rdv_context, motif_category: category_orientation),
-      organisations: [organisation]
-    )
-  end
+  let!(:invitation) { build(:invitation, user: user, rdv_context: rdv_context, organisations: [organisation]) }
 
   let!(:user) do
     create(:user, organisations: [organisation])
   end
+
+  let!(:rdv_context) { create(:rdv_context, user: user, motif_category: category_orientation) }
+
+  let!(:participation) { create(:participation, rdv_context: rdv_context, user: user) }
+
+  let!(:rdv) { create(:rdv, participations: [participation], status: "unknown", created_at: 3.days.ago) }
 
   let!(:organisation) do
     create(:organisation, motifs: [motif])
@@ -69,6 +68,18 @@ describe Invitations::Validate, type: :service do
       it "stores an error message" do
         expect(subject.errors).to include(
           "Les organisations ne peuvent pas être liés à des départements différents de l'invitation"
+        )
+      end
+    end
+
+    context "when a rdv pending has been taken today" do
+      let!(:rdv) { create(:rdv, participations: [participation], status: "unknown", created_at: Time.zone.now) }
+
+      it("is a failure") { is_a_failure }
+
+      it "stores an error message" do
+        expect(subject.errors).to include(
+          "Cet usager a déjà pris un rendez-vous aujourd'hui"
         )
       end
     end
