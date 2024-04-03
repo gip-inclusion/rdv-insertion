@@ -2,7 +2,7 @@ class RdvSolidaritesCredentialsFactory
   class << self
     def create_with(**credentials)
       credentials = credentials.deep_symbolize_keys
-      if credentials[:inclusion_connected] == true
+      if credentials[:inclusion_connected] == true || credentials[:super_admin_id].present?
         build_credentials_with_shared_secret(credentials)
       else
         build_credentials_with_access_token(credentials)

@@ -45,4 +45,10 @@ module ApplicationHelper
   def render_turbo_stream_flash_messages
     turbo_stream.prepend "flashes", partial: "common/flash"
   end
+
+  def super_admin_acts_as_another_agent?
+    session[:rdv_solidarites_credentials].present? &&
+    session[:rdv_solidarites_credentials]["super_admin_id"].present? &&
+    session[:rdv_solidarites_credentials]["super_admin_id"].to_i != current_agent.id
+  end
 end

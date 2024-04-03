@@ -6,10 +6,21 @@
         <%= image_tag "logos/rdv-insertion.svg", class: "rdvi-logo", alt: "Logo rdv insertion" %>
       <% end %>
     </div>
-    <div class="nav justify-content-around align-items-center">
-      <% if current_agent %>
+    <div class="nav col justify-content-end align-items-center">
+      <% if current_agent&.super_admin? || super_admin_acts_as_another_agent? %>
+        <div class="text-center ">
+          <%= link_to super_admins_root_path do %>
+            <button class="btn btn-default btn-logout w-100">
+              <span class="d-none d-sm-inline">Super admin</span>
+              <span class="d-inline d-sm-none"><i class="fas fa-sign-out-alt"></i></span>
+            </button>
+          <% end %>
+        </div>
+      <% elsif current_agent %>
         <%= render "common/header_help_menu" %>
-        <div class="text-center mx-3 col">
+      <% end %>
+      <% if current_agent %>
+        <div class="text-center mx-3">
           <%= link_to sign_out_path, method: :delete do %>
             <button class="btn btn-default btn-logout w-100">
               <span class="d-none d-sm-inline">Se déconnecter</span>
@@ -42,6 +53,13 @@
           <p class="mb-0">Statistiques d'utilisation</p>
         <% end %>
         <%= link_to "Contacter l'équipe", "mailto:rdv-insertion@beta.gouv.fr", class: "nav-link optional-link" %>
+      </div>
+    </div>
+  <% end %>
+  <% if super_admin_acts_as_another_agent? %>
+    <div class="sub-header d-flex marianne">
+      <div class="container d-flex justify-content-center">
+        <p class="mb-0"><i class="fas fa-info-circle"></i> Vous êtes connecté.e en tant que <%= current_agent.to_s %></p>
       </div>
     </div>
   <% end %>
