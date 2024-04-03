@@ -4,7 +4,7 @@ class CsvExport < ApplicationRecord
 
   has_one_attached :file
 
-  enum kind: { users_csv: 0, users_participations_csv: 1 }
+  enum kind: { users_csv: "users_csv", users_participations_csv: "users_participations_csv" }
 
   VALIDITY_PERIOD = 2.days
 
