@@ -324,7 +324,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_03_125856) do
   create_table "participations", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "rdv_id", null: false
-    t.string "status"
+    t.string "status", default: "unknown"
     t.bigint "rdv_solidarites_participation_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -472,7 +472,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_03_125856) do
     t.string "nir"
     t.string "france_travail_id"
     t.string "carnet_de_bord_carnet_id"
-    t.string "created_through"
+    t.string "created_through", default: "rdv_insertion"
     t.bigint "old_rdv_solidarites_user_id"
     t.index ["department_internal_id"], name: "index_users_on_department_internal_id"
     t.index ["email"], name: "index_users_on_email"
@@ -496,7 +496,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_03_125856) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "subscriptions", array: true
-    t.string "signature_type"
+    t.string "signature_type", default: "hmac"
   end
 
   create_table "webhook_receipts", force: :cascade do |t|

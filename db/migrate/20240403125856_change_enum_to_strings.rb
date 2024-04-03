@@ -3,7 +3,7 @@ class ChangeEnumToStrings < ActiveRecord::Migration[7.1]
     {
       table: :agent_roles,
       column: :access_level,
-      default: [0, :basic],
+      default: :basic,
       values: { basic: 0, admin: 1 }
     },
     {
@@ -59,11 +59,13 @@ class ChangeEnumToStrings < ActiveRecord::Migration[7.1]
     {
       table: :users,
       column: :created_through,
+      default: :rdv_insertion,
       values: { rdv_insertion: 0, rdv_solidarites: 1 }
     },
     {
       table: :webhook_endpoints,
       column: :signature_type,
+      default: :hmac,
       values: { hmac: 0, jwt: 1 }
     },
     {
@@ -79,13 +81,14 @@ class ChangeEnumToStrings < ActiveRecord::Migration[7.1]
     {
       table: :participations,
       column: :status,
+      default: :unknown,
       values: { unknown: 0, seen: 2, excused: 3, revoked: 4, noshow: 5 }
     }
   ].freeze
 
   def up
     ENUMS.each do |enum|
-      change_column enum[:table], enum[:column], :string, default: enum[:default] ? enum[:default][1] : nil
+      change_column enum[:table], enum[:column], :string, default: enum[:default]
 
       values = enum[:values].map do |k,v|
         "WHEN '#{v}' THEN '#{k}' "
@@ -109,7 +112,9 @@ class ChangeEnumToStrings < ActiveRecord::Migration[7.1]
         SET #{enum[:column]} = CASE #{enum[:column]} #{values.join} END
       SQL
 
-      change_column enum[:table], enum[:column], :integer, using: "#{enum[:column]}::integer", default: enum[:default] ? enum[:default][0] : nil
+      change_column_default enum[:table], enum[:column], nil
+      change_column enum[:table], enum[:column], :integer, using: "#{enum[:column]}::integer"
+      change_column_default enum[:table], enum[:column], enum[:values][enum[:default]] if enum[:default].present?
     end
   end
 end
