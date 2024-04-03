@@ -9,12 +9,12 @@ class ChangeEnumToStrings < ActiveRecord::Migration[7.1]
     {
       table: :csv_exports,
       column: :kind,
-      values: { users_csv: 0, users_participations_csv: 1 },
+      values: { users_csv: 0, users_participations_csv: 1 }
     },
     {
       table: :invitations,
       column: :format,
-      values: { sms: 0, email: 1, postal: 2 },
+      values: { sms: 0, email: 1, postal: 2 }
     },
     {
       table: :motifs,
@@ -24,7 +24,8 @@ class ChangeEnumToStrings < ActiveRecord::Migration[7.1]
     {
       table: :notifications,
       column: :event,
-      values: { participation_created: 0, participation_updated: 1, participation_cancelled: 2, participation_reminder: 3 }
+      values: { participation_created: 0, participation_updated: 1, participation_cancelled: 2,
+                participation_reminder: 3 }
     },
     {
       table: :notifications,
@@ -71,7 +72,8 @@ class ChangeEnumToStrings < ActiveRecord::Migration[7.1]
     {
       table: :rdv_contexts,
       column: :status,
-      values: { not_invited: 0, invitation_pending: 1, rdv_pending: 2, rdv_needs_status_update: 3, rdv_noshow: 4, rdv_revoked: 5, rdv_excused: 6, rdv_seen: 7, multiple_rdvs_cancelled: 8, closed: 9 }
+      values: { not_invited: 0, invitation_pending: 1, rdv_pending: 2, rdv_needs_status_update: 3, rdv_noshow: 4,
+                rdv_revoked: 5, rdv_excused: 6, rdv_seen: 7, multiple_rdvs_cancelled: 8, closed: 9 }
     },
     {
       table: :rdvs,
@@ -90,7 +92,7 @@ class ChangeEnumToStrings < ActiveRecord::Migration[7.1]
     ENUMS.each do |enum|
       change_column enum[:table], enum[:column], :string, default: enum[:default]
 
-      values = enum[:values].map do |k,v|
+      values = enum[:values].map do |k, v|
         "WHEN '#{v}' THEN '#{k}' "
       end
 
@@ -101,9 +103,10 @@ class ChangeEnumToStrings < ActiveRecord::Migration[7.1]
     end
   end
 
+  # rubocop:disable Metrics/AbcSize
   def down
     ENUMS.each do |enum|
-      values = enum[:values].map do |k,v|
+      values = enum[:values].map do |k, v|
         "WHEN '#{k}' THEN #{v} "
       end
 
@@ -117,4 +120,5 @@ class ChangeEnumToStrings < ActiveRecord::Migration[7.1]
       change_column_default enum[:table], enum[:column], enum[:values][enum[:default]] if enum[:default].present?
     end
   end
+  # rubocop:enable Metrics/AbcSize
 end
