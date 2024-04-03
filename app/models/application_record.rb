@@ -3,7 +3,7 @@ class ApplicationRecord < ActiveRecord::Base
 
   include Serializable
 
-  def self.squish_normalizes(*attributes)
+  def self.squishes(*attributes)
     attributes.each do |attribute|
       class_eval { normalizes attribute, with: ->(a) { a.squish } }
     end

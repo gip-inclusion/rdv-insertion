@@ -66,7 +66,7 @@ class User < ApplicationRecord
   }
   scope :with_sent_invitations, -> { where.associated(:invitations) }
 
-  squish_normalizes :department_internal_id, :affiliation_number
+  squishes :department_internal_id, :affiliation_number
 
   def participation_for(rdv)
     participations.to_a.find { |participation| participation.rdv_id == rdv.id }

@@ -2,7 +2,7 @@ module User::Address
   extend ActiveSupport::Concern
 
   included do
-    squish_normalizes :address
+    squishes :address
   end
 
   def street_address
