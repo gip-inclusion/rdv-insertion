@@ -70,7 +70,7 @@ module Users
 
     def users_with_same_email_and_first_name
       @users_with_same_email_and_first_name ||=
-        User.active.where(email: @user.email).select do |user|
+        User.active.with_matching_role(@user.role).where(email: @user.email).select do |user|
           user.id != @user.id &&
             user.first_name.split.first.downcase == @user.first_name.split.first.downcase
         end
@@ -78,7 +78,7 @@ module Users
 
     def users_with_same_phone_number_and_first_name
       @users_with_same_phone_number_and_first_name ||=
-        User.active.where(phone_number: @user.phone_number_formatted).select do |user|
+        User.active.with_matching_role(@user.role).where(phone_number: @user.phone_number_formatted).select do |user|
           user.id != @user.id &&
             user.first_name.split.first.downcase == @user.first_name.split.first.downcase
         end

@@ -96,7 +96,7 @@ describe Users::Validate, type: :service do
     context "when an user shares the same email" do
       context "with the same first name" do
         let!(:other_user) do
-          create(:user, id: 1395, first_name: "ramses", email: "ramses2@caramail.com")
+          create(:user, id: 1395, role: "demandeur", first_name: "ramses", email: "ramses2@caramail.com")
         end
 
         it("is a failure") { is_a_failure }
@@ -106,11 +106,19 @@ describe Users::Validate, type: :service do
             "Un usager avec le même email et même prénom est déjà enregistré: [1395]"
           )
         end
+
+        context "with a different role" do
+          let!(:other_user) do
+            create(:user, id: 1395, first_name: "toutankhamon", email: "ramses2@caramail.com", role: "conjoint")
+          end
+
+          it("is a success") { is_a_success }
+        end
       end
 
       context "with a different first name" do
         let!(:other_user) do
-          create(:user, id: 1395, first_name: "toutankhamon", email: "ramses2@caramail.com")
+          create(:user, id: 1395, role: "demandeur", first_name: "toutankhamon", email: "ramses2@caramail.com")
         end
 
         it("is a success") { is_a_success }
@@ -120,7 +128,7 @@ describe Users::Validate, type: :service do
     context "when an user shares the same phone number" do
       context "with the same first name" do
         let!(:other_user) do
-          create(:user, id: 1395, first_name: "ramses", phone_number: "0782605941")
+          create(:user, id: 1395, role: "demandeur", first_name: "ramses", phone_number: "0782605941")
         end
 
         it("is a failure") { is_a_failure }
@@ -130,11 +138,19 @@ describe Users::Validate, type: :service do
             "Un usager avec le même numéro de téléphone et même prénom est déjà enregistré: [1395]"
           )
         end
+
+        context "with a different role" do
+          let!(:other_user) do
+            create(:user, id: 1395, first_name: "toutankhamon", phone_number: "0782605941", role: "conjoint")
+          end
+
+          it("is a success") { is_a_success }
+        end
       end
 
       context "with a different first name" do
         let!(:other_user) do
-          create(:user, id: 1395, first_name: "toutankhamon", phone_number: "0782605941")
+          create(:user, id: 1395, role: "demandeur", first_name: "toutankhamon", phone_number: "0782605941")
         end
 
         it("is a success") { is_a_success }
