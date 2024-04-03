@@ -3,6 +3,7 @@ class ChangeEnumToStrings < ActiveRecord::Migration[7.1]
     {
       table: :agent_roles,
       column: :access_level,
+      default: [0, :basic],
       values: { basic: 0, admin: 1 }
     },
     {
@@ -84,7 +85,7 @@ class ChangeEnumToStrings < ActiveRecord::Migration[7.1]
 
   def up
     ENUMS.each do |enum|
-      change_column enum[:table], enum[:column], :string
+      change_column enum[:table], enum[:column], :string, default: enum[:default] ? enum[:default][1] : nil
 
       values = enum[:values].map do |k,v|
         "WHEN '#{v}' THEN '#{k}' "
@@ -108,7 +109,7 @@ class ChangeEnumToStrings < ActiveRecord::Migration[7.1]
         SET #{enum[:column]} = CASE #{enum[:column]} #{values.join} END
       SQL
 
-      change_column enum[:table], enum[:column], :integer, using: "#{enum[:column]}::integer"
+      change_column enum[:table], enum[:column], :integer, using: "#{enum[:column]}::integer", default: enum[:default] ? enum[:default][0] : nil
     end
   end
 end
