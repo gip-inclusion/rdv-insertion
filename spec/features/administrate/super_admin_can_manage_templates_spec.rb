@@ -68,7 +68,7 @@ describe "Super admin can manage templates" do
     end
 
     it "cannot edit a template" do
-      expect(page).to have_no_link("Modifier")
+      expect(page).to have_no_link("Modifier #{template.name}")
     end
 
     it "cannot delete a template" do

@@ -57,6 +57,12 @@ class MotifCategoryDashboard < Administrate::BaseDashboard
     optional_rdv_subscription
   ].freeze
 
+  FORM_ATTRIBUTES_EDIT = %i[
+    template
+    leads_to_orientation
+    optional_rdv_subscription
+  ].freeze
+
   # COLLECTION_FILTERS
   # a hash that defines filters that can be used while searching via the search
   # field of the dashboard.
