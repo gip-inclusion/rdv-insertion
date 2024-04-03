@@ -5,7 +5,7 @@
         <% if params[:creation_date_after].present? %>
           Créés entre le <%= params[:creation_date_after].to_date.strftime("%d/%m/%Y") %> et le <%= (params[:creation_date_before]&.to_date || Time.zone.now).strftime("%d/%m/%Y") %>
         <% elsif params[:creation_date_before].present? %>
-          Créés après le <%= params[:creation_date_before].to_date.strftime("%d/%m/%Y") %>
+          Créés avant le <%= params[:creation_date_before].to_date.strftime("%d/%m/%Y") %>
         <% else %>
           Filtrer par date de création
         <% end %>
