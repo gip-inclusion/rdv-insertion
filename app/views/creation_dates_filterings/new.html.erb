@@ -9,6 +9,7 @@
       <%= form.text_field :creation_date_after,
         class: "w-50 form-control bg-white text-center",
         placeholder: "du",
+        value: params[:creation_date_after],
         data: {
           controller: "flatpickr",
           flatpickr_date_format: "d-m-Y",
@@ -18,6 +19,7 @@
       <%= form.text_field :creation_date_before,
         class: "w-50 form-control bg-white text-center",
         placeholder: "au",
+        value: params[:creation_date_before],
         data: {
           controller: "flatpickr",
           flatpickr_date_format: "d-m-Y",
