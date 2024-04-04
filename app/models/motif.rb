@@ -4,7 +4,7 @@ class Motif < ApplicationRecord
     :follow_up, :instruction_for_rdv
   ].freeze
 
-  enum location_type: { public_office: 0, phone: 1, home: 2 }
+  enum location_type: { public_office: "public_office", phone: "phone", home: "home" }
 
   belongs_to :organisation
   belongs_to :motif_category, optional: true
