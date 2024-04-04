@@ -7,8 +7,9 @@ class Rdv < ApplicationRecord
   include Notificable
   include RdvParticipationStatus
   include WebhookDeliverable
+  include Rdv::FranceTravailWebhooks
 
-  after_commit :notify_participations, on: :update, if: :should_notify?
+  after_commit :notify_participations_to_users, on: :update, if: :should_notify_users?
   after_commit :refresh_context_status, on: [:create, :update]
 
   belongs_to :organisation
@@ -32,7 +33,8 @@ class Rdv < ApplicationRecord
 
   validate :rdv_contexts_motif_categories_are_uniq
 
-  enum created_by: { agent: 0, user: 1, file_attente: 2, prescripteur: 3 }, _prefix: :created_by
+  enum created_by: { agent: "agent", user: "user", file_attente: "file_attente", prescripteur: "prescripteur" },
+       _prefix: :created_by
 
   delegate :presential?, :by_phone?, :collectif?, to: :motif
   delegate :department, :rdv_solidarites_organisation_id, to: :organisation
@@ -80,17 +82,21 @@ class Rdv < ApplicationRecord
       "#{rdv_solidarites_rdv_id}/edit?#{params.to_query}"
   end
 
+  def ends_at
+    starts_at + duration_in_min.minutes
+  end
+
   private
 
   def refresh_context_status
     RefreshRdvContextStatusesJob.perform_async(rdv_context_ids)
   end
 
-  def notify_participations
-    NotifyParticipationsJob.perform_async(notifiable_participations.map(&:id), :updated)
+  def notify_participations_to_users
+    NotifyParticipationsToUsersJob.perform_async(notifiable_participations.map(&:id), :updated)
   end
 
-  def should_notify?
+  def should_notify_users?
     in_the_future? && notifiable_participations.any? && reason_to_notify?
   end
 

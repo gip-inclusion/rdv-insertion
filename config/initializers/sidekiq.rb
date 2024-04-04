@@ -14,16 +14,6 @@ Sidekiq.configure_server do |config|
 
   Rails.logger = Sidekiq.logger
   ActiveRecord::Base.logger = Sidekiq.logger
-
-  config.on(:startup) do
-    schedule = YAML.load_file("config/schedule.yml")
-
-    schedule.each do |task, args|
-      schedule.delete(task) if args["run_only_in_env"]&.exclude?(ENV["SENTRY_ENVIRONMENT"])
-    end
-
-    Sidekiq::Cron::Job.load_from_hash(schedule)
-  end
 end
 
 Sidekiq.logger.level = Logger::WARN if Rails.env.test?

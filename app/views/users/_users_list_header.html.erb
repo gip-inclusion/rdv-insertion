@@ -16,7 +16,7 @@
         select(
           "user",
           "referent_id",
-          @referents_list.map { |agent| [agent.to_s, agent.id]},
+          @referents_list.map { |agent| ["Suivis par #{agent.to_s}", agent.id] },
           { prompt: "Filtrer par référent" },
           class: "text-center form-select js-referent-selector"
         )

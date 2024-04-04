@@ -19,7 +19,7 @@ Rails.application.routes.draw do
     resources :departments, only: [:index, :show, :new, :create, :edit, :update]
     resources :organisations, only: [:index, :show, :new, :create, :edit, :update]
     resources :users, only: [:index, :show, :edit, :update]
-    resources :motif_categories, only: [:index, :show, :new, :create]
+    resources :motif_categories, only: [:index, :show, :new, :create, :edit, :update]
     resources :templates, only: [:index, :show]
 
     root to: "agents#index"
