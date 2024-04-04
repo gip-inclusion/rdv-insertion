@@ -4,7 +4,7 @@ FactoryBot.define do
     sequence(:rdv_solidarites_user_id)
     sequence(:affiliation_number) { |n| "numero_#{n}" }
     department_internal_id { rand(4000..5000).to_s }
-    role { "demandeur" }
+    role { 1 }
     title { "monsieur" }
     sequence(:first_name) { |n| "john#{n}" }
     sequence(:last_name) { |n| "doe#{n}" }

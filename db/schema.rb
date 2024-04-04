@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_03_125856) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_20_170445) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -43,7 +43,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_03_125856) do
   end
 
   create_table "agent_roles", force: :cascade do |t|
-    t.string "access_level", default: "basic", null: false
+    t.integer "access_level", default: 0, null: false
     t.bigint "agent_id", null: false
     t.bigint "organisation_id", null: false
     t.bigint "rdv_solidarites_agent_role_id"
@@ -122,7 +122,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_03_125856) do
     t.bigint "structure_id", null: false
     t.integer "motif_category_id"
     t.datetime "purged_at"
-    t.string "kind"
+    t.integer "kind"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["agent_id"], name: "index_csv_exports_on_agent_id"
@@ -171,7 +171,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_03_125856) do
   end
 
   create_table "invitations", force: :cascade do |t|
-    t.string "format"
+    t.integer "format"
     t.string "link"
     t.string "rdv_solidarites_token"
     t.bigint "user_id", null: false
@@ -247,7 +247,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_03_125856) do
     t.datetime "deleted_at"
     t.bigint "rdv_solidarites_service_id"
     t.boolean "collectif"
-    t.string "location_type"
+    t.integer "location_type"
     t.datetime "last_webhook_update_received_at"
     t.bigint "organisation_id", null: false
     t.datetime "created_at", null: false
@@ -261,11 +261,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_03_125856) do
   end
 
   create_table "notifications", force: :cascade do |t|
-    t.string "event"
+    t.integer "event"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "rdv_solidarites_rdv_id"
-    t.string "format"
+    t.integer "format"
     t.bigint "participation_id"
     t.index ["participation_id"], name: "index_notifications_on_participation_id"
   end
@@ -297,7 +297,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_03_125856) do
     t.bigint "user_id", null: false
     t.bigint "organisation_id", null: false
     t.bigint "agent_id"
-    t.string "orientation_type"
+    t.integer "orientation_type"
     t.date "starts_at"
     t.date "ends_at"
     t.datetime "created_at", null: false
@@ -324,7 +324,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_03_125856) do
   create_table "participations", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "rdv_id", null: false
-    t.string "status", default: "unknown"
+    t.integer "status", default: 0
     t.bigint "rdv_solidarites_participation_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -338,7 +338,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_03_125856) do
   end
 
   create_table "rdv_contexts", force: :cascade do |t|
-    t.string "status"
+    t.integer "status"
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -356,8 +356,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_03_125856) do
     t.datetime "cancelled_at", precision: nil
     t.string "uuid"
     t.string "address"
-    t.string "created_by"
-    t.string "status"
+    t.integer "created_by"
+    t.integer "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "organisation_id"
@@ -437,7 +437,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_03_125856) do
   end
 
   create_table "templates", force: :cascade do |t|
-    t.string "model"
+    t.integer "model"
     t.string "rdv_title"
     t.string "rdv_title_by_phone"
     t.string "rdv_purpose"
@@ -454,7 +454,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_03_125856) do
     t.string "uid"
     t.bigint "rdv_solidarites_user_id"
     t.string "affiliation_number"
-    t.string "role"
+    t.integer "role"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "department_internal_id"
@@ -463,7 +463,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_03_125856) do
     t.string "address"
     t.string "phone_number"
     t.string "email"
-    t.string "title"
+    t.integer "title"
     t.date "birth_date"
     t.date "rights_opening_date"
     t.string "birth_name"
@@ -472,7 +472,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_03_125856) do
     t.string "nir"
     t.string "france_travail_id"
     t.string "carnet_de_bord_carnet_id"
-    t.string "created_through", default: "rdv_insertion"
+    t.integer "created_through", default: 0
     t.bigint "old_rdv_solidarites_user_id"
     t.index ["department_internal_id"], name: "index_users_on_department_internal_id"
     t.index ["email"], name: "index_users_on_email"
@@ -496,7 +496,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_03_125856) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "subscriptions", array: true
-    t.string "signature_type", default: "hmac"
+    t.integer "signature_type", default: 0
   end
 
   create_table "webhook_receipts", force: :cascade do |t|
