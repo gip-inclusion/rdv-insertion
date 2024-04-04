@@ -46,10 +46,10 @@ class CreateMotifCategories < ActiveRecord::Migration[7.0]
     add_index "motif_categories", ["rdv_solidarites_motif_category_id"], unique: true
 
     rename_column :configurations, :motif_category, :old_motif_category
-    rename_column :follow_ups, :motif_category, :old_motif_category
+    rename_column :rdv_contexts, :motif_category, :old_motif_category
 
     add_reference :configurations, :motif_category, foreign_key: true
-    add_reference :follow_ups, :motif_category, foreign_key: true
+    add_reference :rdv_contexts, :motif_category, foreign_key: true
     add_reference :motifs, :motif_category, foreign_key: true
 
     CATEGORIES_ENUM.each do |short_name, enum_value|
@@ -67,13 +67,13 @@ class CreateMotifCategories < ActiveRecord::Migration[7.0]
     end
 
     remove_column :configurations, :old_motif_category
-    remove_column :follow_ups, :old_motif_category
+    remove_column :rdv_contexts, :old_motif_category
     remove_column :motifs, :category
   end
 
   def down
     add_column :configurations, :old_motif_category, :integer
-    add_column :follow_ups, :old_motif_category, :integer
+    add_column :rdv_contexts, :old_motif_category, :integer
     add_column :motifs, :category, :integer
 
     CATEGORIES_ENUM.each do |short_name, enum_value|
@@ -88,14 +88,14 @@ class CreateMotifCategories < ActiveRecord::Migration[7.0]
     end
 
     remove_reference :configurations, :motif_category
-    remove_reference :follow_ups, :motif_category
+    remove_reference :rdv_contexts, :motif_category
     remove_reference :motifs, :motif_category
 
     rename_column :configurations, :old_motif_category, :motif_category
-    rename_column :follow_ups, :old_motif_category, :motif_category
+    rename_column :rdv_contexts, :old_motif_category, :motif_category
 
     add_index "configurations", "motif_category"
-    add_index "follow_ups", "motif_category"
+    add_index "rdv_contexts", "motif_category"
     add_index "motifs", "category"
 
     drop_table :motif_categories
