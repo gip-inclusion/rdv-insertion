@@ -9,6 +9,7 @@
       <%= form.text_field :first_invitation_date_after,
         class: "w-50 form-control bg-white text-center",
         placeholder: "du",
+        value: params[:first_invitation_date_after],
         data: {
           controller: "flatpickr",
           flatpickr_date_format: "d-m-Y",
@@ -18,6 +19,7 @@
       <%= form.text_field :first_invitation_date_before,
         class: "w-50 form-control bg-white text-center",
         placeholder: "au",
+        value: params[:first_invitation_date_before],
         data: {
           controller: "flatpickr",
           flatpickr_date_format: "d-m-Y",
@@ -30,6 +32,7 @@
       <%= form.text_field :last_invitation_date_after,
         class: "w-50 form-control bg-white text-center",
         placeholder: "du",
+        value: params[:last_invitation_date_after],
         data: {
           controller: "flatpickr",
           flatpickr_date_format: "d-m-Y",
@@ -39,6 +42,7 @@
       <%= form.text_field :last_invitation_date_before,
         class: "w-50 form-control bg-white text-center",
         placeholder: "au",
+        value: params[:last_invitation_date_before],
         data: {
           controller: "flatpickr",
           flatpickr_date_format: "d-m-Y",

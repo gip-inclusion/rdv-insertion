@@ -106,7 +106,7 @@ describe "Agents can invite from index page", :js do
   end
 
   context "when there are rdvs" do
-    let!(:rdv) { create(:rdv) }
+    let!(:rdv) { create(:rdv, created_at: 4.days.ago) }
     let!(:participation) do
       create(
         :participation,

@@ -33,8 +33,12 @@ describe "Super admin can manage motif categories" do
       expect(page).to have_current_path(new_super_admins_motif_category_path)
     end
 
-    it "cannot edit a motif_category" do
-      expect(page).to have_no_link("Modifier")
+    it "can navigate to a motif category edit page" do
+      expect(page).to have_link("Modifier", href: edit_super_admins_motif_category_path(motif_category))
+
+      click_link(href: edit_super_admins_motif_category_path(motif_category))
+
+      expect(page).to have_current_path(edit_super_admins_motif_category_path(motif_category))
     end
 
     it "cannot delete a motif_category" do
@@ -65,8 +69,12 @@ describe "Super admin can manage motif categories" do
       expect(page).to have_css("dd", class: "attribute-data", text: motif_category.optional_rdv_subscription)
     end
 
-    it "cannot edit a motif_category" do
-      expect(page).to have_no_link("Modifier")
+    it "can navigate to a motif category edit page" do
+      expect(page).to have_link("Modifier", href: edit_super_admins_motif_category_path(motif_category))
+
+      click_link(href: edit_super_admins_motif_category_path(motif_category))
+
+      expect(page).to have_current_path(edit_super_admins_motif_category_path(motif_category))
     end
 
     it "cannot delete a motif_category" do

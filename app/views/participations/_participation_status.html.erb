@@ -1,7 +1,7 @@
 <%= turbo_frame_tag dom_id(participation, :status) do %>
   <div class="d-flex h-100 px-2 justify-content-center align-items-center">
-    <%= simple_form_for(participation, html: { method: :patch, data: { controller: "dropdown", remote: true } }) do |f| %>
-      <%= f.input :status, as: :hidden %>
+    <%= form_for(participation, method: :patch, data: { controller: "dropdown", remote: true }) do |f| %>
+      <%= f.hidden_field :status %>
       <div class="btn-group">
         <button id="toggle-rdv-status" type="button" class="btn <%= background_class_for_participation_status(participation) %> dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <%= participation.human_status %>

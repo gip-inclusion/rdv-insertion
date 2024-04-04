@@ -502,7 +502,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_20_195747) do
   create_table "webhook_receipts", force: :cascade do |t|
     t.bigint "resource_id"
     t.datetime "timestamp"
-    t.bigint "webhook_endpoint_id", null: false
+    t.bigint "webhook_endpoint_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "resource_model"

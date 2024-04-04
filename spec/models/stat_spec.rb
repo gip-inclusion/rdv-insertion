@@ -156,41 +156,6 @@ describe Stat do
         end
       end
 
-      describe "#follow_ups_with_invitations_and_participations_set" do
-        let!(:user3) { create(:user, organisations: [organisation]) }
-        let!(:rdv3) { create(:rdv, organisation: organisation) }
-        let!(:participation3) { create(:participation, rdv: rdv3, follow_up: follow_up3) }
-        let!(:follow_up3) { create(:follow_up, user: user3) }
-        let!(:user4) { create(:user, organisations: [organisation]) }
-        let!(:invitation4) { create(:invitation, follow_up: follow_up4) }
-        let!(:rdv4) { create(:rdv, organisation: organisation) }
-        let!(:participation4) { create(:participation, rdv: rdv4, follow_up: follow_up4) }
-        let!(:follow_up4) { create(:follow_up, user: user4) }
-        let!(:user5) { create(:user, organisations: [organisation]) }
-        let!(:invitation5) { create(:invitation, follow_up: follow_up5) }
-        let!(:follow_up5) { create(:follow_up, user: user5) }
-        let!(:user6) do
-          create(:user, organisations: [organisation_with_no_configuration])
-        end
-        let!(:invitation6) { create(:invitation, created_at: date, follow_up: follow_up6) }
-        let!(:rdv6) { create(:rdv, organisation: organisation) }
-        let!(:participation6) { create(:participation, rdv: rdv6, follow_up: follow_up6) }
-        let!(:follow_up6) { create(:follow_up, user: user6) }
-
-        it "scopes the collection to the department" do
-          expect(stat.follow_ups_with_invitations_and_participations_set).to include(follow_up1)
-          expect(stat.follow_ups_with_invitations_and_participations_set).not_to include(follow_up2)
-        end
-
-        it "does not include follow_ups with no invitations" do
-          expect(stat.follow_ups_with_invitations_and_participations_set).not_to include(follow_up3)
-        end
-
-        it "does not include follow_ups with no rdvs" do
-          expect(stat.follow_ups_with_invitations_and_participations_set).not_to include(follow_up5)
-        end
-      end
-
       describe "#rdvs_non_collectifs_set" do
         let!(:user3) do
           create(:user, organisations: [organisation])
@@ -387,45 +352,6 @@ describe Stat do
         end
       end
 
-      describe "#follow_ups_with_invitations_and_participations_set" do
-        let!(:user3) { create(:user, organisations: [organisation]) }
-        let!(:rdv3) { create(:rdv, organisation: organisation) }
-        let!(:participation3) { create(:participation, rdv: rdv3, follow_up: follow_up3) }
-        let!(:follow_up3) { create(:follow_up, user: user3) }
-        let!(:user4) { create(:user, organisations: [organisation]) }
-        let!(:invitation4) { create(:invitation, follow_up: follow_up4) }
-        let!(:rdv4) { create(:rdv, organisation: organisation) }
-        let!(:participation4) { create(:participation, rdv: rdv4, follow_up: follow_up4) }
-        let!(:follow_up4) { create(:follow_up, user: user4) }
-        let!(:user5) { create(:user, organisations: [organisation]) }
-        let!(:invitation5) { create(:invitation, follow_up: follow_up5) }
-        let!(:follow_up5) { create(:follow_up, user: user5) }
-        let!(:user6) do
-          create(:user, organisations: [organisation_with_no_configuration])
-        end
-        let!(:invitation6) { create(:invitation, created_at: date, follow_up: follow_up6) }
-        let!(:rdv6) { create(:rdv, organisation: organisation) }
-        let!(:participation6) { create(:participation, rdv: rdv6, follow_up: follow_up6) }
-        let!(:follow_up6) { create(:follow_up, user: user6) }
-
-        it "scopes the collection to the organisation" do
-          expect(stat.follow_ups_with_invitations_and_participations_set).to include(follow_up1)
-          expect(stat.follow_ups_with_invitations_and_participations_set).not_to include(follow_up2)
-        end
-
-        it "does not include follow_ups with no invitations" do
-          expect(stat.follow_ups_with_invitations_and_participations_set).not_to include(follow_up3)
-        end
-
-        it "does not include follow_ups with no rdvs" do
-          expect(stat.follow_ups_with_invitations_and_participations_set).not_to include(follow_up5)
-        end
-
-        it "does not include the follow_ups of users from irrelevant organisations" do
-          expect(stat.follow_ups_with_invitations_and_participations_set).not_to include(follow_up6)
-        end
-      end
-
       describe "#rdvs_non_collectifs_set" do
         let!(:user3) do
           create(:user, organisations: [organisation])
@@ -549,12 +475,6 @@ describe Stat do
         it "does not scope the collection to the department" do
           expect(stat.agents_set).to include(agent1)
           expect(stat.agents_set).to include(agent2)
-        end
-      end
-
-      describe "#follow_ups_with_invitations_and_participations_set" do
-        it "does not scope the collection to the department" do
-          expect(stat.follow_ups_with_invitations_and_participations_set).to include(follow_up2)
         end
       end
 

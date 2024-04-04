@@ -20,9 +20,9 @@ describe "Agents can close or reopen follow_up", :js do
   context "from department user page" do
     it "can close and reopen a follow_up" do
       visit department_user_follow_ups_path(department_id: department.id, user_id: user.id)
-      expect(page).to have_content("Clôturer")
+      expect(page).to have_content("Fermer le suivi")
 
-      click_button("Clôturer")
+      click_button("Fermer le suivi")
       expect(page).to have_content("RSA orientation")
 
       expect(page).to have_content("Rouvrir")
@@ -34,7 +34,7 @@ describe "Agents can close or reopen follow_up", :js do
       click_button("Rouvrir")
       expect(page).to have_content("RSA orientation")
 
-      expect(page).to have_content("Clôturer")
+      expect(page).to have_content("Fermer le suivi")
       expect(page).to have_content("Non invité")
       expect(follow_up.reload.status).to eq("not_invited")
       expect(follow_up.reload.closed_at).to eq(nil)
@@ -46,9 +46,9 @@ describe "Agents can close or reopen follow_up", :js do
   context "from organisation user page" do
     it "can close and reopen follow_up" do
       visit organisation_user_follow_ups_path(organisation_id: organisation.id, user_id: user.id)
-      expect(page).to have_content("Clôturer")
+      expect(page).to have_content("Fermer le suivi")
 
-      click_button("Clôturer")
+      click_button("Fermer le suivi")
       expect(page).to have_content("RSA orientation")
 
       expect(page).to have_content("Rouvrir")
@@ -60,7 +60,7 @@ describe "Agents can close or reopen follow_up", :js do
       click_button("Rouvrir")
       expect(page).to have_content("RSA orientation")
 
-      expect(page).to have_content("Clôturer")
+      expect(page).to have_content("Fermer le suivi")
       expect(page).to have_content("Non invité")
       expect(follow_up.reload.closed_at).to eq(nil)
       expect(page).to have_current_path(organisation_user_follow_ups_path(organisation_id: organisation.id,
