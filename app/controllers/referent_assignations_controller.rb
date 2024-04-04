@@ -11,7 +11,7 @@ class ReferentAssignationsController < ApplicationController
     respond_to do |format|
       format.turbo_stream { render_result_in_flash }
       format.json do
-        render json: { success: @success, errors: @errors }, status: @success ? :ok : :unprocessable_entity
+        render json: { success: @success, errors: @errors, user: @user }, status: @success ? :ok : :unprocessable_entity
       end
     end
   end

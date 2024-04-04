@@ -68,9 +68,6 @@ gem "sentry-sidekiq"
 # JSON web token
 gem "jwt"
 
-# Forms
-gem "simple_form"
-
 # Phone validator
 gem "phonelib"
 

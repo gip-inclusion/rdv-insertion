@@ -86,7 +86,7 @@ describe "Agent can invite users by batch from index" do
       expect(page).to have_no_css("i.fas.fa-redo-alt")
 
       click_button("Actions pour toute la sélection", wait: 10)
-      click_button("Invitation par sms", wait: 10)
+      click_button("Inviter par sms", wait: 10)
 
       expect(page).to have_no_content("Inviter par SMS")
       expect(page).to have_css("i.fas.fa-check").exactly(2).times
@@ -146,7 +146,7 @@ describe "Agent can invite users by batch from index" do
       expect(page).to have_no_css("i.fas.fa-redo-alt")
 
       click_button("Actions pour toute la sélection", wait: 10)
-      click_button("Invitation par sms", wait: 10)
+      click_button("Inviter par sms", wait: 10)
 
       expect(page).to have_no_content("Inviter par SMS")
       expect(page).to have_css("i.fas.fa-check").exactly(2).times

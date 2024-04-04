@@ -108,7 +108,6 @@ describe Users::RdvContextsController do
         it "show the open rdv_context button" do
           get :index, params: index_params
 
-          expect(unescaped_response_body).to match("class=\"simple_form rdv_context\"")
           expect(unescaped_response_body).to match("input value=\"#{user.id}\"")
           expect(unescaped_response_body).to match("input value=\"#{category_accompagnement.id}\"")
           expect(unescaped_response_body).to match(/Ouvrir un suivi/)

@@ -64,15 +64,6 @@ class Stat < ApplicationRecord
     @invited_users_set ||= users_set.with_sent_invitations.distinct
   end
 
-  # We filter the rdv_contexts to keep those where the users were invited and created a rdv/participation
-  def rdv_contexts_with_invitations_and_participations_set
-    RdvContext.preload(:participations, :invitations)
-              .where(user_id: users_set)
-              .where.associated(:participations)
-              .with_sent_invitations
-              .distinct
-  end
-
   # We filter the users by organisations and retrieve deleted or archived users
   def users_set
     users = User.active.where.not(id: archived_user_ids).preload(:participations)

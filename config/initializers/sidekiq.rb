@@ -14,12 +14,6 @@ Sidekiq.configure_server do |config|
 
   Rails.logger = Sidekiq.logger
   ActiveRecord::Base.logger = Sidekiq.logger
-
-  config.on(:startup) do
-    schedule_file = "config/schedule.yml"
-
-    Sidekiq::Cron::Job.load_from_hash YAML.load_file(schedule_file) if File.exist?(schedule_file)
-  end
 end
 
 Sidekiq.logger.level = Logger::WARN if Rails.env.test?

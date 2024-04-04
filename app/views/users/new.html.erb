@@ -1,4 +1,4 @@
-<%= simple_form_for(@user, url: structure_users_path, html: { method: :post }) do |f| %>
+<%= form_for(@user, url: structure_users_path, method: :post) do |f| %>
   <%= render 'user_form', f: f, return_path: structure_users_path %>
 <% end %>
 

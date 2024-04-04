@@ -60,8 +60,9 @@ function EditableCell({ user, cell, type, values }) {
     );
     label = values.find((el) => el.value === user[cell])?.key || " - ";
   } else if (type === "tags") {
-    const existingTags = values.filter((tag) => user[cell].includes(tag));
-    newTags = user[cell].filter((tag) => !values.includes(tag));
+    const userTags = user[cell].map(tag => tag.toLowerCase())
+    const existingTags = values.filter((tag) => userTags.includes(tag.toLowerCase()));
+    newTags = user[cell].filter((tag) => !values.map(v => v.toLowerCase()).includes(tag.toLowerCase()));
 
     label = (
       <div className="text-center w-100">

@@ -33,6 +33,7 @@ describe "Agents can upload user list", :js do
     setup_agent_session(agent)
     stub_user_creation(rdv_solidarites_user_id)
     organisation.tags << create(:tag, value: "Gentils")
+    organisation.tags << create(:tag, value: "cool")
   end
 
   context "at organisation level" do
@@ -68,7 +69,7 @@ describe "Agents can upload user list", :js do
           modal.click_button("Ajouter")
           modal.click_button("Fermer")
 
-          expect(column).to have_content("Gentils")
+          expect(column).to have_content("Gentils, cool")
         else
           column
             .double_click
@@ -82,6 +83,7 @@ describe "Agents can upload user list", :js do
 
       expect(User.last.first_name).to eq("hello")
       expect(User.last.last_name).to eq("hello")
+      expect(User.last.tags.pluck(:value)).to eq(%w[Gentils cool])
     end
   end
 end
