@@ -9,7 +9,7 @@ class Orientation < ApplicationRecord
 
   validate :ends_at_after_starts_at, :starts_at_in_the_past
 
-  enum orientation_type: { social: "social", pro: "pro", socio_pro: "socio_pro" }
+  enum orientation_type: { social: 0, pro: 1, socio_pro: 2 }
 
   def time_range
     starts_at...(ends_at.presence || Time.zone.today)
