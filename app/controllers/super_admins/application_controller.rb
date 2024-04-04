@@ -30,13 +30,13 @@ module SuperAdmins
       clear_session
       set_new_session_credentials
       set_new_current_agent
-      flash[:alert] = "#{@new_agent.first_name} #{@new_agent.last_name}, vous avez été reconnecté.e à votre compte"
+      flash[:alert] = "#{@new_agent.first_name} #{@new_agent.last_name}, vous avez été reconnecté.e à votre compte" # rubocop:disable Rails/ActionControllerFlashBeforeRender
     end
 
     def super_admin_acts_as_another_agent?
       session[:rdv_solidarites_credentials].present? &&
-      session[:rdv_solidarites_credentials]["super_admin_id"].present? &&
-      session[:rdv_solidarites_credentials]["super_admin_id"].to_i != current_agent.id
+        session[:rdv_solidarites_credentials]["super_admin_id"].present? &&
+        session[:rdv_solidarites_credentials]["super_admin_id"].to_i != current_agent.id
     end
   end
 end
