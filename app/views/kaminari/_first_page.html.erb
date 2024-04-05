@@ -1,15 +1,15 @@
-<%# Link to the "Previous" page
+<%# Link to the "First" page
   - available local variables
-    url:           url to the previous page
+    url:           url to the first page
     current_page:  a page object for the currently displayed page
     total_pages:   total number of pages
     per_page:      number of items to fetch per page
     remote:        data-remote
 -%>
 <% unless current_page.first? %>
-  <%= link_to t('views.pagination.previous').html_safe, url, rel: 'prev', remote: remote, class: "prev" %>
+  <%= link_to t('views.pagination.first').html_safe, url, remote: remote, class: "first" %>
 <% else %>
-  <span class="prev disabled">
-    <%= t('views.pagination.previous').html_safe %>
+  <span class="first disabled">
+    <%= t('views.pagination.first').html_safe %>
   </span>
 <% end %>

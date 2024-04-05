@@ -2,4 +2,42 @@
   a {
     color: $dark-blue;
   }
+  .page.current {
+    background-color: $dark-blue;
+    border-color: $dark-blue;
+    color: white;
+    min-width: 30px;
+    border-radius: 0.25rem;
+  }
+  .page {
+    min-width: 30px;
+    border-radius: 0.25rem;
+
+    &:not(.current):hover {
+      background-color: #F6F6F6;
+    }
+  }
+  .disabled {
+    color: grey;
+    pointer-events: none;
+    cursor: default;
+  }
+
+  .next, .prev {
+    min-width: 140px;
+
+    &:not(.disabled):hover {
+      background-color: #F6F6F6;
+      border-radius: 0.25rem;
+    }
+  }
+
+  .first, .last {
+    min-width: 30px;
+
+    &:not(.disabled):hover {
+      background-color: #F6F6F6;
+      border-radius: 0.25rem;
+    }
+  }
 }
