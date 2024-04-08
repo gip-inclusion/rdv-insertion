@@ -9,7 +9,8 @@ class Template < ApplicationRecord
 
   validates :display_mandatory_warning, inclusion: [true, false]
 
-  enum model: { standard: 0, atelier: 1, phone_platform: 2, short: 3, atelier_enfants_ados: 4 }
+  enum model: { standard: "standard", atelier: "atelier", phone_platform: "phone_platform", short: "short",
+                atelier_enfants_ados: "atelier_enfants_ados" }
 
   def mandatory_warning
     if display_mandatory_warning && phone_platform?

@@ -55,9 +55,9 @@ class User < ApplicationRecord
 
   delegate :name, :number, to: :department, prefix: true
 
-  enum role: { demandeur: 0, conjoint: 1 }
-  enum title: { monsieur: 0, madame: 1 }
-  enum created_through: { rdv_insertion: 0, rdv_solidarites: 1 }, _prefix: true
+  enum role: { demandeur: "demandeur", conjoint: "conjoint" }
+  enum title: { monsieur: "monsieur", madame: "madame" }
+  enum created_through: { rdv_insertion: "rdv_insertion", rdv_solidarites: "rdv_solidarites" }, _prefix: true
 
   scope :active, -> { where(deleted_at: nil) }
   scope :deleted, -> { where.not(deleted_at: nil) }
