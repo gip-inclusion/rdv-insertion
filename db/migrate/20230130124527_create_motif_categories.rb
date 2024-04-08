@@ -60,7 +60,7 @@ class CreateMotifCategories < ActiveRecord::Migration[7.0]
       Configuration.where(old_motif_category: enum_value).find_each do |c|
         c.update! motif_category_id: motif_category.id
       end
-      FollowUp.where(old_motif_category: enum_value).find_each do |rdvc|
+      RdvContext.where(old_motif_category: enum_value).find_each do |rdvc|
         rdvc.update! motif_category_id: motif_category.id
       end
       Motif.where(category: enum_value).find_each { |m| m.update! motif_category_id: motif_category.id }
@@ -81,7 +81,7 @@ class CreateMotifCategories < ActiveRecord::Migration[7.0]
       Configuration.where(motif_category_id: motif_category.id).find_each do |c|
         c.update! old_motif_category: enum_value
       end
-      FollowUp.where(motif_category_id: motif_category.id).find_each do |rdvc|
+      RdvContext.where(motif_category_id: motif_category.id).find_each do |rdvc|
         rdvc.update! old_motif_category: enum_value
       end
       Motif.where(motif_category_id: motif_category.id).find_each { |m| m.update! category: enum_value }

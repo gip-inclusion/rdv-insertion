@@ -7,5 +7,5 @@ class AgentRole < ApplicationRecord
   validates :rdv_solidarites_agent_role_id, uniqueness: true, allow_nil: true
   validates :agent, uniqueness: { scope: :organisation, message: "est déjà relié à l'organisation" }
 
-  enum access_level: { basic: 0, admin: 1 }
+  enum access_level: { basic: "basic", admin: "admin" }
 end

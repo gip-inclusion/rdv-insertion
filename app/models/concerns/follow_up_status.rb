@@ -3,9 +3,16 @@ module FollowUpStatus
 
   included do
     enum status: {
-      not_invited: 0, invitation_pending: 1, rdv_pending: 2,
-      rdv_needs_status_update: 3, rdv_noshow: 4, rdv_revoked: 5, rdv_excused: 6,
-      rdv_seen: 7, multiple_rdvs_cancelled: 8, closed: 9
+      not_invited: "not_invited",
+      invitation_pending: "invitation_pending",
+      rdv_pending: "rdv_pending",
+      rdv_needs_status_update: "rdv_needs_status_update",
+      rdv_noshow: "rdv_noshow",
+      rdv_revoked: "rdv_revoked",
+      rdv_excused: "rdv_excused",
+      rdv_seen: "rdv_seen",
+      multiple_rdvs_cancelled: "multiple_rdvs_cancelled",
+      closed: "closed"
     }
     before_save :set_status
   end
