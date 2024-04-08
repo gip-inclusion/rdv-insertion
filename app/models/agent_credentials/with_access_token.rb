@@ -1,4 +1,4 @@
-module RdvSolidaritesCredentials
+module AgentCredentials
   class WithAccessToken < Base
     def initialize(uid:, client:, access_token:)
       super(uid:)
@@ -33,7 +33,7 @@ module RdvSolidaritesCredentials
     end
 
     def rdv_solidarites_client
-      @rdv_solidarites_client ||= RdvSolidaritesClient.new(rdv_solidarites_credentials: to_h)
+      @rdv_solidarites_client ||= RdvSolidaritesClient.new(agent_credentials: to_h)
     end
   end
 end

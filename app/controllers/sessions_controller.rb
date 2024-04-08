@@ -28,7 +28,7 @@ class SessionsController < ApplicationController
   end
 
   def logged_with_inclusion_connect?
-    session.dig(:rdv_solidarites_credentials, "inclusion_connected") == true
+    session.dig(:agent_credentials, "inclusion_connected") == true
   end
 
   def handle_inclusion_connect_logout

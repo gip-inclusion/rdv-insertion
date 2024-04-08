@@ -27,13 +27,13 @@ describe SessionsController do
 
       before do
         request.headers.merge(session_headers)
-        allow(RdvSolidaritesCredentialsFactory).to receive(:create_with)
+        allow(AgentCredentialsFactory).to receive(:create_with)
           .with(
             uid: session_headers["uid"], access_token: session_headers["access-token"],
             client: session_headers["client"]
           )
-          .and_return(rdv_solidarites_credentials)
-        allow(rdv_solidarites_credentials).to receive_messages(valid?: true, uid: agent_email)
+          .and_return(agent_credentials)
+        allow(agent_credentials).to receive_messages(valid?: true, uid: agent_email)
       end
 
       it "is a success" do
@@ -50,9 +50,9 @@ describe SessionsController do
       it "sets a session" do
         post :create
         expect(request.session[:agent_id]).to eq(agent.id)
-        expect(request.session[:rdv_solidarites_credentials][:client]).to eq(session_headers["client"])
-        expect(request.session[:rdv_solidarites_credentials][:uid]).to eq(session_headers["uid"])
-        expect(request.session[:rdv_solidarites_credentials][:access_token]).to eq(session_headers["access-token"])
+        expect(request.session[:agent_credentials][:client]).to eq(session_headers["client"])
+        expect(request.session[:agent_credentials][:uid]).to eq(session_headers["uid"])
+        expect(request.session[:agent_credentials][:access_token]).to eq(session_headers["access-token"])
       end
 
       context "when a redirect path is in the session" do
@@ -87,7 +87,7 @@ describe SessionsController do
 
       context "when credentials are invalid" do
         before do
-          allow(rdv_solidarites_credentials).to receive(:valid?)
+          allow(agent_credentials).to receive(:valid?)
             .and_return(false)
         end
 

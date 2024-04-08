@@ -1,4 +1,4 @@
-describe RdvSolidaritesCredentials::WithAccessToken do
+describe AgentCredentials::WithAccessToken do
   subject do
     described_class.new(
       uid: uid, client: client, access_token: access_token

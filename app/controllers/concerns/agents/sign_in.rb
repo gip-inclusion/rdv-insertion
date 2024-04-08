@@ -10,11 +10,11 @@ module Agents::SignIn
   private
 
   def validate_credentials!
-    raise RdvSolidarites::InvalidCredentialsError unless rdv_solidarites_credentials_from_request_headers.valid?
+    raise RdvSolidarites::InvalidCredentialsError unless agent_credentials_from_request_headers.valid?
   end
 
-  def rdv_solidarites_credentials_from_request_headers
-    @rdv_solidarites_credentials_from_request_headers ||= RdvSolidaritesCredentialsFactory.create_with(
+  def agent_credentials_from_request_headers
+    @agent_credentials_from_request_headers ||= AgentCredentialsFactory.create_with(
       uid: request.headers["uid"],
       client: request.headers["client"],
       access_token: request.headers["access-token"]
@@ -42,12 +42,12 @@ module Agents::SignIn
   end
 
   def authenticated_agent
-    @authenticated_agent ||= Agent.find_by(email: rdv_solidarites_credentials_from_request_headers.uid)
+    @authenticated_agent ||= Agent.find_by(email: agent_credentials_from_request_headers.uid)
   end
 
   def set_session_credentials
     session[:agent_id] = authenticated_agent.id
-    session[:rdv_solidarites_credentials] = {
+    session[:agent_credentials] = {
       client: request.headers["client"],
       uid: request.headers["uid"],
       access_token: request.headers["access-token"]

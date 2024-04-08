@@ -10,7 +10,7 @@ module SuperAdmins
 
     def set_new_session_credentials
       session[:agent_id] = @new_agent.id
-      session[:rdv_solidarites_credentials] = {
+      session[:agent_credentials] = {
         uid: @new_agent.email,
         x_agent_auth_signature: @new_agent.signature_auth_with_shared_secret,
         super_admin_id: @super_admin_id
