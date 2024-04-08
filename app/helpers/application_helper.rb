@@ -47,8 +47,7 @@ module ApplicationHelper
   end
 
   def super_admin_acts_as_another_agent?
-    session[:rdv_solidarites_credentials].present? &&
-      session[:rdv_solidarites_credentials]["super_admin_id"].present? &&
-      session[:rdv_solidarites_credentials]["super_admin_id"].to_i != current_agent.id
+    super_admin_credentials = session.dig(:rdv_solidarites_credentials, "super_admin_id")
+    super_admin_credentials.present? && super_admin_credentials.to_i != current_agent.id
   end
 end

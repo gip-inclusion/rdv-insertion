@@ -17,11 +17,8 @@ module AuthenticatedControllerConcern
   end
 
   def clear_session
-    session.delete(:inclusion_connect_token_id)
-    session.delete(:ic_state)
-    session.delete(:agent_id)
-    session.delete(:rdv_solidarites_credentials)
-    @current_agent = nil
+    reset_session
+    Current.agent = nil
   end
 
   def logged_in?

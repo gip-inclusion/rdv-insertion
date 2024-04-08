@@ -15,28 +15,25 @@ module SuperAdmins
     before_action :authenticate_super_admin!
 
     def authenticate_super_admin!
-      return if current_agent.super_admin?
+      switch_back_to_super_admin_account if super_admin_acts_as_another_agent?
 
-      return switch_agent_to_super_admin_account if super_admin_acts_as_another_agent?
+      return if current_agent.super_admin?
 
       redirect_to root_path, alert: "Vous n'avez pas accès à cette page"
     end
 
     private
 
-    def switch_agent_to_super_admin_account
+    def switch_back_to_super_admin_account
       @super_admin_id = session[:rdv_solidarites_credentials]["super_admin_id"].to_i
       @new_agent = Agent.find(@super_admin_id)
-      clear_session
-      set_new_session_credentials
-      set_new_current_agent
+      switch_accounts
       flash[:alert] = "#{@new_agent.first_name} #{@new_agent.last_name}, vous avez été reconnecté.e à votre compte" # rubocop:disable Rails/ActionControllerFlashBeforeRender
     end
 
     def super_admin_acts_as_another_agent?
-      session[:rdv_solidarites_credentials].present? &&
-        session[:rdv_solidarites_credentials]["super_admin_id"].present? &&
-        session[:rdv_solidarites_credentials]["super_admin_id"].to_i != current_agent.id
+      super_admin_credentials = session.dig(:rdv_solidarites_credentials, "super_admin_id")
+      super_admin_credentials.present? && super_admin_credentials.to_i != current_agent.id
     end
   end
 end

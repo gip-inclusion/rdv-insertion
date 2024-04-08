@@ -2,11 +2,10 @@ module SuperAdmins
   module SessionsConcern
     private
 
-    def clear_session
-      session.delete(:inclusion_connect_token_id)
-      session.delete(:ic_state)
-      session.delete(:agent_id)
-      session.delete(:rdv_solidarites_credentials)
+    def switch_accounts
+      reset_session
+      set_new_session_credentials
+      set_new_current_agent
     end
 
     def set_new_session_credentials
@@ -19,7 +18,7 @@ module SuperAdmins
     end
 
     def set_new_current_agent
-      Current.agent ||= @new_agent
+      Current.agent = @new_agent
     end
   end
 end

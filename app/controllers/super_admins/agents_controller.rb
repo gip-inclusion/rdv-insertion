@@ -4,9 +4,7 @@ module SuperAdmins
 
     def sign_in_as
       # only super admins can impersonate agents ; this is ensured in the parent controller
-      clear_session
-      set_new_session_credentials
-      set_new_current_agent
+      switch_accounts
       redirect_to root_url
     end
 
