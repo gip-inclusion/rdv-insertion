@@ -5,7 +5,11 @@
   <% user.organisations.each do |organisation|  %>
     <p class="mb-2">
       <%= organisation %>
-      <small><%= "(Organisation d'un autre départment : #{organisation.department.number} - #{organisation.department.name})" if @department != organisation.department %></small>
+      <% if @department != organisation.department %>
+        <small>
+          (Organisation d'un autre départment : <%= organisation.department.number %> - <%= organisation.department.name %>)
+        </small>
+      <% end %>
     </p>
   <% end %>
   <%= link_to(users_organisations_path(user_id: user.id), data: { turbo_frame: 'remote_modal' }) do %>
