@@ -22,7 +22,7 @@ class Invitation < ApplicationRecord
   delegate :motif_category, :motif_category_name, to: :rdv_context
   delegate :model, to: :template, prefix: true
 
-  enum format: { sms: 0, email: 1, postal: 2 }, _prefix: :format
+  enum format: { sms: "sms", email: "email", postal: "postal" }, _prefix: :format
 
   before_create :assign_uuid
   after_commit :set_rdv_context_status

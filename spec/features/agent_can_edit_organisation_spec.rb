@@ -2,7 +2,7 @@ describe "Agents can edit organisation", :js do
   let!(:agent) { create(:agent) }
   let!(:organisation) { create(:organisation) }
   let!(:configuration) { create(:configuration, organisation: organisation) }
-  let!(:agent_role) { create(:agent_role, organisation: organisation, agent: agent, access_level: 1) }
+  let!(:agent_role) { create(:agent_role, organisation: organisation, agent: agent, access_level: "admin") }
 
   let(:tag_value) { "prout" }
 
