@@ -1,10 +1,10 @@
 fr:
   views:
     pagination:
-      first: "&laquo;"
-      last: "&raquo;"
-      previous: "&lsaquo;  Page précédente"
-      next: "Page suivante  &rsaquo;"
+      first: "<i class='fas fa-step-backward'></i>"
+      last: "<i class='fas fa-step-forward'></i>"
+      previous: "<i class='fas fa-backward'></i><span class='ms-3'>Page précédente</span>"
+      next: "<span class='me-3'>Page suivante</span><i class='fas fa-forward'></i>"
       truncate: "&hellip;"
   helpers:
     page_entries_info:

@@ -6,11 +6,10 @@
     per_page:      number of items to fetch per page
     remote:        data-remote
 -%>
-
-<% unless current_page.last? %>
-  <%= link_to t('views.pagination.last').html_safe, url, remote: remote, class: "last" %>
-<% else %>
+<% if current_page.last? %>
   <span class="last disabled">
     <%= t('views.pagination.last').html_safe %>
   </span>
+<% else %>
+  <%= link_to t('views.pagination.last').html_safe, url, remote: remote, class: "last" %>
 <% end %>
