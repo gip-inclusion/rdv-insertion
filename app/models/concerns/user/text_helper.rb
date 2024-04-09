@@ -4,9 +4,7 @@ module User::TextHelper
   end
 
   def to_s
-    return "" if first_name.blank? || last_name.blank?
-
-    "#{first_name.capitalize} #{last_name.capitalize}"
+    "#{first_name&.capitalize} #{last_name&.capitalize}".strip
   end
 
   def short_title
