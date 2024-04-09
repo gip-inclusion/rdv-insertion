@@ -1,4 +1,4 @@
-module RdvSolidaritesCredentials
+module AgentCredentials
   class Base
     attr_reader :uid
 

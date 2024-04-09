@@ -35,31 +35,24 @@ class AgentDashboard < Administrate::BaseDashboard
   # By default, it's limited to four items to reduce clutter on index pages.
   # Feel free to add, remove, or rearrange items.
   COLLECTION_ATTRIBUTES = %i[
-    id
     first_name
     last_name
+    email
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
   # an array of attributes that will be displayed on the model's show page.
   SHOW_PAGE_ATTRIBUTES = %i[
     id
-    agent_roles
-    agents_rdvs
-    configurations
-    departments
-    email
     first_name
-    last_sign_in_at
     last_name
-    last_webhook_update_received_at
-    motif_categories
+    email
+    departments
     organisations
+    agent_roles
+    last_sign_in_at
     rdv_solidarites_agent_id
-    rdvs
-    referent_assignations
     super_admin
-    users
     created_at
     updated_at
   ].freeze

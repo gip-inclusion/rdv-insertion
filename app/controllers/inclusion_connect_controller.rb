@@ -49,7 +49,7 @@ class InclusionConnectController < ApplicationController
   def set_session_credentials
     session[:inclusion_connect_token_id] = inclusion_connect_token_id
     session[:agent_id] = agent.id
-    session[:rdv_solidarites_credentials] = {
+    session[:agent_credentials] = {
       uid: agent.email,
       x_agent_auth_signature: agent.signature_auth_with_shared_secret,
       inclusion_connected: true

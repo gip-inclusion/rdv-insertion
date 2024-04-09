@@ -1,4 +1,4 @@
-describe RdvSolidaritesCredentials::WithSharedSecret do
+describe AgentCredentials::WithSharedSecret do
   subject do
     described_class.new(
       uid: uid, x_agent_auth_signature: x_agent_auth_signature

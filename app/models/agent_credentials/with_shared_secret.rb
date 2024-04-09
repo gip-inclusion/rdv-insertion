@@ -1,4 +1,4 @@
-module RdvSolidaritesCredentials
+module AgentCredentials
   class WithSharedSecret < Base
     def initialize(uid:, x_agent_auth_signature:)
       super(uid:)

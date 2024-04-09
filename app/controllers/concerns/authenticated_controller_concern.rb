@@ -17,23 +17,20 @@ module AuthenticatedControllerConcern
   end
 
   def clear_session
-    session.delete(:inclusion_connect_token_id)
-    session.delete(:ic_state)
-    session.delete(:agent_id)
-    session.delete(:rdv_solidarites_credentials)
-    @current_agent = nil
+    reset_session
+    Current.agent = nil
   end
 
   def logged_in?
-    current_agent.present? && session[:rdv_solidarites_credentials].present? && rdv_solidarites_credentials.valid?
+    current_agent.present? && session[:agent_credentials].present? && agent_credentials.valid?
   end
 
   def current_agent
     Current.agent ||= Agent.find_by(id: session[:agent_id])
   end
 
-  def rdv_solidarites_credentials
-    @rdv_solidarites_credentials ||=
-      RdvSolidaritesCredentialsFactory.create_with(**session[:rdv_solidarites_credentials])
+  def agent_credentials
+    @agent_credentials ||=
+      AgentCredentialsFactory.create_with(**session[:agent_credentials])
   end
 end

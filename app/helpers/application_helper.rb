@@ -45,4 +45,9 @@ module ApplicationHelper
   def render_turbo_stream_flash_messages
     turbo_stream.prepend "flashes", partial: "common/flash"
   end
+
+  def super_admin_acts_as_another_agent?
+    super_admin_credentials = session.dig(:agent_credentials, "super_admin_id")
+    super_admin_credentials.present? && super_admin_credentials.to_i != current_agent.id
+  end
 end

@@ -1,9 +1,9 @@
 module Agent::RdvSolidaritesClient
   def rdv_solidarites_client
-    RdvSolidaritesClient.new(rdv_solidarites_credentials:)
+    RdvSolidaritesClient.new(agent_credentials:)
   end
 
-  def rdv_solidarites_credentials
+  def agent_credentials
     { uid: email, x_agent_auth_signature: signature_auth_with_shared_secret }
   end
 
