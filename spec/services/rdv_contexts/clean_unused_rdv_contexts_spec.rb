@@ -10,8 +10,8 @@ describe RdvContexts::CleanUnusedRdvContexts do
   let!(:configuration3) { create(:configuration, motif_category: rsa_orientation) }
   let!(:rsa_accompagnement) { create(:motif_category) }
   let!(:rsa_orientation) { create(:motif_category, short_name: "rsa_orientation") }
-  let!(:rdv_context) { create(:rdv_context, user: user, motif_category: rsa_accompagnement) }
-  let!(:rdv_context2) { create(:rdv_context, user: user, motif_category: rsa_orientation) }
+  let!(:rdv_context) { create(:rdv_context, user: user, motif_category: rsa_accompagnement, status: "not_invited") }
+  let!(:rdv_context2) { create(:rdv_context, user: user, motif_category: rsa_orientation, status: "not_invited") }
 
   describe "#call" do
     it "is a success" do
