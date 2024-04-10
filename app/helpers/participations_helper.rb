@@ -1,15 +1,15 @@
 module ParticipationsHelper
-  def human_new_status(participation, new_status)
+  def human_new_status(rdv_starts_at, new_status)
     if new_status == "unknown"
-      I18n.t("activerecord.attributes.rdv.unknown_statuses.#{temporal_unknown_status(participation)}")
+      I18n.t("activerecord.attributes.rdv.unknown_statuses.#{temporal_unknown_status(rdv_starts_at)}")
     else
       I18n.t("activerecord.attributes.rdv.statuses.#{new_status}")
     end
   end
 
-  def human_new_status_detailed(participation, new_status)
+  def human_new_status_detailed(rdv_starts_at, new_status)
     if new_status == "unknown"
-      I18n.t("activerecord.attributes.rdv.unknown_statuses.detailed.#{temporal_unknown_status(participation)}")
+      I18n.t("activerecord.attributes.rdv.unknown_statuses.detailed.#{temporal_unknown_status(rdv_starts_at)}")
     else
       I18n.t("activerecord.attributes.rdv.statuses.detailed.#{new_status}")
     end
@@ -53,7 +53,7 @@ module ParticipationsHelper
 
   private
 
-  def temporal_unknown_status(participation)
-    participation.in_the_future? ? "pending" : "needs_status_update"
+  def temporal_unknown_status(rdv_starts_at)
+    rdv_starts_at > Time.zone.now ? "pending" : "needs_status_update"
   end
 end

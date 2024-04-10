@@ -11,9 +11,9 @@
             <%= link_to "#", class: "dropdown-item", data: { value: status } do %>
               <span class="bold">
                 <i class="fa fa-circle me-1 <%= text_class_for_participation_status(status) %>"></i>
-                <%= human_new_status(participation, status) %>
+                <%= human_new_status(participation.starts_at, status) %>
               </span><br>
-              <span><%= human_new_status_detailed(participation, status) %>.</span>
+              <span><%= human_new_status_detailed(participation.starts_at, status) %>.</span>
               <% if could_notify_status_change?(participation, status) %>
                 <br>
                 <span>Si les notifications sont activées, une alerte sera envoyée à l'usager.</span>
