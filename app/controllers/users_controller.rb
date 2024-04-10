@@ -281,7 +281,8 @@ class UsersController < ApplicationController
 
   def set_current_agent_roles
     @current_agent_roles = AgentRole.where(
-      department_level? ? { organisation: @organisations } : { organisation: @organisation }, agent: current_agent
+      agent: current_agent,
+      organisation: department_level? ? @organisations : @organisation
     )
   end
 
