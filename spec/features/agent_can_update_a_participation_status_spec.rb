@@ -1,24 +1,23 @@
 describe "Agents can update a participation status", :js do
+  include_context "with all existing categories"
+
   let(:department) { create(:department) }
   let(:organisation) { create(:organisation, department: department) }
   let(:agent) { create(:agent, organisations: [organisation]) }
-  let(:motif_category) do
-    create(:motif_category, configurations: [configuration])
-  end
-  let(:configuration) { create(:configuration, organisation: organisation) }
+  let!(:configuration) { create(:configuration, organisation:, motif_category: category_rsa_orientation) }
   let(:user) do
     create(:user, organisations: [organisation])
   end
 
-  let(:rdv_context) do
-    create(:rdv_context, user:, motif_category:)
+  let!(:rdv_context) do
+    create(:rdv_context, user:, motif_category: category_rsa_orientation)
   end
   let(:rdv) do
     create(:rdv, organisation: organisation)
   end
 
   let(:participation) do
-    create(:participation, rdv_context: rdv_context, user: user, rdv: rdv, status: "unknown")
+    create(:participation, rdv_context:, user:, rdv:, status: "unknown")
   end
 
   let(:rdvs_participation_id) { participation.rdv_solidarites_participation_id }
