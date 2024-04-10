@@ -11,6 +11,8 @@ module Users
         delete_rdv_solidarites_user_profile
         @user.soft_delete if @user.organisations.empty?
       end
+
+      call_service!(RdvContexts::CleanUnusedRdvContexts, user: @user)
     end
 
     private

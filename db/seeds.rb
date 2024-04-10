@@ -24,6 +24,7 @@ drome = Department.create!(
   capital: "Valence",
   region: "Auvergne-Rhône-Alpes",
   pronoun: "la",
+  logo: Rack::Test::UploadedFile.new(Rails.root.join("spec/fixtures/logo.png"))
 )
 
 # Dans l'Yonne, pas de système d'invitation : les bénéficiaires sont directement convoqués (convene_user: true)
@@ -33,6 +34,7 @@ yonne = Department.create!(
   capital: "Auxerre",
   region: "Bourgogne-Franche-Comté",
   pronoun: "l'",
+  logo: Rack::Test::UploadedFile.new(Rails.root.join("spec/fixtures/logo.png"))
 )
 
 # --------------------------------------------------------------------------------------------------------------------
