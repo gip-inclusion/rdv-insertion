@@ -4,8 +4,6 @@ describe "Agents can edit organisation", :js do
   let!(:configuration) { create(:configuration, organisation: organisation) }
   let!(:agent_role) { create(:agent_role, organisation: organisation, agent: agent, access_level: "admin") }
 
-  let(:tag_value) { "prout" }
-
   before do
     setup_agent_session(agent)
     stub_request(:patch,

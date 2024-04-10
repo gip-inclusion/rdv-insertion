@@ -42,11 +42,11 @@ describe "Agents can sort users on index page", :js do
   end
 
   context "on motif_category tab" do
-    # on motif_category tab, users are sorted by rdv_contexts creation date by default
+    # on motif_category tab, users are sorted by follow_ups creation date by default
     let!(:organisation) { create(:organisation, users: [user1, user2, user3]) }
-    let!(:rdv_context1) { create(:rdv_context, user: user1, motif_category: motif_category, created_at: Time.zone.now) }
-    let!(:rdv_context2) { create(:rdv_context, user: user2, motif_category: motif_category, created_at: 1.day.ago) }
-    let!(:rdv_context3) { create(:rdv_context, user: user3, motif_category: motif_category, created_at: 2.days.ago) }
+    let!(:follow_up1) { create(:follow_up, user: user1, motif_category: motif_category, created_at: Time.zone.now) }
+    let!(:follow_up2) { create(:follow_up, user: user2, motif_category: motif_category, created_at: 1.day.ago) }
+    let!(:follow_up3) { create(:follow_up, user: user3, motif_category: motif_category, created_at: 2.days.ago) }
 
     before do
       visit organisation_users_path(organisation, motif_category_id: motif_category.id)
