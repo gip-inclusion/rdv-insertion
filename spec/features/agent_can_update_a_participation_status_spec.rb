@@ -10,7 +10,7 @@ describe "Agents can update a participation status", :js do
   end
 
   let!(:rdv_context) do
-    create(:rdv_context, user:, motif_category: category_rsa_orientation)
+    create(:rdv_context, user:, status: "rdv_pending", motif_category: category_rsa_orientation)
   end
   let(:rdv) do
     create(:rdv, organisation: organisation)
