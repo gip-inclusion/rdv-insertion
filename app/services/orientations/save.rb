@@ -10,7 +10,7 @@ module Orientations
         update_previous_orientation_ends_at if previous_orientation_without_end_date.present?
         fill_current_orientation_ends_at if @orientation.ends_at.nil? && posterior_orientations.any?
         validate_no_orientations_overlap
-        add_user_to_organisation if @orientation.user.organisation_ids.exclude?(@orientation.organisation)
+        add_user_to_organisation if @orientation.user.organisation_ids.exclude?(@orientation.organisation_id)
         save_record!(@orientation)
       end
     end
