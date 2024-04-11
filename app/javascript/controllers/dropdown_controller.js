@@ -5,6 +5,7 @@ export default class extends Controller {
     this.button = this.element.querySelector("button")
     this.menu = this.element.querySelector(".dropdown-menu")
     this.input = this.element.querySelector("#participation_status")
+    this.clickOutsideHandlerListener = this.clickOutsideHandler.bind(this)
     this.visible = false
 
     this.button.addEventListener("click", () => {
@@ -26,9 +27,9 @@ export default class extends Controller {
     this.visible = !this.visible
 
     if (this.visible) {
-      document.addEventListener("click", (e) => this.clickOutsideHandler(e))
+      document.addEventListener("click", this.clickOutsideHandlerListener)
     } else {
-      document.removeEventListener("click", (e) => this.clickOutsideHandler(e))
+      document.removeEventListener("click", this.clickOutsideHandlerListener)
     }
   }
 
