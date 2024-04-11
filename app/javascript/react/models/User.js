@@ -265,8 +265,9 @@ export default class User {
 
       this.triggers[`${attribute}Update`] = false;
       return result.success;
-    } 
-      this.resetErrors();
+    }
+
+    this.resetErrors();
     
     return true;
   }
