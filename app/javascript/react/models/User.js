@@ -257,13 +257,17 @@ export default class User {
       this.triggers[`${attribute}Update`] = true;
       const result = await handleUserUpdate(this.currentOrganisation.id, this, this.asJson());
 
-      if (!result.success) {
+      if (result.success) {
+        this.resetErrors();
+      } else {
         this[attribute] = previousValue;
       }
 
       this.triggers[`${attribute}Update`] = false;
       return result.success;
-    }
+    } 
+      this.resetErrors();
+    
     return true;
   }
 
