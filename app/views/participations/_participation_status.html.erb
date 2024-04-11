@@ -11,9 +11,9 @@
             <%= link_to "#", class: "dropdown-item", data: { value: status } do %>
               <span class="bold">
                 <i class="fa fa-circle me-1 <%= text_class_for_participation_status(status) %>"></i>
-                <%= human_available_status(participation, status) %>
+                <%= human_available_status(status) %>
               </span><br>
-              <span><%= human_available_detailed_status(participation, status) %></span>
+              <span><%= human_available_detailed_status(status) %></span>
             <% end %>
           <% end %>
         </div>
