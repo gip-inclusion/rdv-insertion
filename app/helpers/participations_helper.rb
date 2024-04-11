@@ -30,7 +30,7 @@ module ParticipationsHelper
   end
 
   def background_class_for_participation_status(participation)
-    return "" if participation.rdv_context.closed?
+    return "" if participation.follow_up.closed?
 
     if participation.seen?
       "bg-success border-success"

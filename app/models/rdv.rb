@@ -10,7 +10,7 @@ class Rdv < ApplicationRecord
   include Rdv::FranceTravailWebhooks
 
   after_commit :notify_participations_to_users, on: :update, if: :should_notify_users?
-  after_commit :refresh_context_status, on: [:create, :update]
+  after_commit :refresh_follow_up_statuses, on: [:create, :update]
 
   belongs_to :organisation
   belongs_to :motif
@@ -20,7 +20,7 @@ class Rdv < ApplicationRecord
   has_many :agents_rdvs, dependent: :destroy
 
   has_many :notifications, through: :participations
-  has_many :rdv_contexts, through: :participations
+  has_many :follow_ups, through: :participations
   has_many :agents, through: :agents_rdvs
   has_many :users, through: :participations
   has_many :webhook_endpoints, through: :organisation
@@ -31,7 +31,7 @@ class Rdv < ApplicationRecord
   validates :starts_at, :duration_in_min, presence: true
   validates :rdv_solidarites_rdv_id, uniqueness: true, allow_nil: true
 
-  validate :rdv_contexts_motif_categories_are_uniq
+  validate :follow_ups_motif_categories_are_uniq
 
   enum created_by: { agent: "agent", user: "user", file_attente: "file_attente", prescripteur: "prescripteur" },
        _prefix: :created_by
@@ -88,8 +88,8 @@ class Rdv < ApplicationRecord
 
   private
 
-  def refresh_context_status
-    RefreshRdvContextStatusesJob.perform_async(rdv_context_ids)
+  def refresh_follow_up_statuses
+    RefreshFollowUpStatusesJob.perform_async(follow_up_ids)
   end
 
   def notify_participations_to_users
@@ -108,8 +108,8 @@ class Rdv < ApplicationRecord
     participations.select(&:notifiable?)
   end
 
-  def rdv_contexts_motif_categories_are_uniq
-    return if rdv_contexts.map(&:motif_category).uniq.length < 2
+  def follow_ups_motif_categories_are_uniq
+    return if follow_ups.map(&:motif_category).uniq.length < 2
 
     errors.add(:base, "Un RDV ne peut pas être lié à deux catégories de motifs différents")
   end
