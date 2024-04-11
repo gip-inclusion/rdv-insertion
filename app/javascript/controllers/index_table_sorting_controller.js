@@ -6,7 +6,7 @@ export default class extends Controller {
       if (window.location.href.includes("sort_by") && window.location.href.includes("sort_direction")) {
         this.sortBy = new URL(window.location.href).searchParams.get("sort_by");
         this.sortDirection = new URL(window.location.href).searchParams.get("sort_direction");
-        this.displaySortingArrow();
+        this.changeSortingArrow();
       }
   }
 
@@ -40,10 +40,12 @@ export default class extends Controller {
     window.location.href = url;
   }
 
-  displaySortingArrow() {
-    const element = document.querySelector(`js_#${this.sortBy}_header`);
-    if (element) {
+  changeSortingArrow() {
+    const element = document.querySelector(`#js_${this.sortBy}_header`);
+    if (element && this.sortDirection) {
+      const initialArrows = element.querySelector("i.fa-sort");
       const html = ` <i class="fas fa-sort-${this.sortDirection === "asc" ? "up mt-2" : "down mb-2"}"></i>`;
+      initialArrows.remove();
       element.insertAdjacentHTML("beforeend", html);
     }
   }

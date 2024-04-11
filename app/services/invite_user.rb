@@ -10,8 +10,8 @@ class InviteUser < BaseService
   end
 
   def call
-    set_current_category_configuration
-    find_or_create_rdv_context
+    set_current_configuration
+    find_or_create_follow_up
     set_invitation_organisations
     set_invitation
     result.invitation = @invitation
@@ -26,12 +26,12 @@ class InviteUser < BaseService
       user: @user,
       department: department,
       organisations: @invitation_organisations,
-      rdv_context: @rdv_context,
+      follow_up: @follow_up,
       # the validity of an invitation is equal to the number of days before an action is required,
       # then the organisation usually convene the user
-      valid_until: @current_category_configuration.number_of_days_before_action_required.days.from_now,
-      help_phone_number: @current_category_configuration.phone_number,
-      rdv_with_referents: @current_category_configuration.rdv_with_referents,
+      valid_until: @current_configuration.number_of_days_before_action_required.days.from_now,
+      help_phone_number: @current_configuration.phone_number,
+      rdv_with_referents: @current_configuration.rdv_with_referents,
       **@invitation_attributes
     )
   end
@@ -42,7 +42,7 @@ class InviteUser < BaseService
 
   def set_invitation_organisations
     @invitation_organisations =
-      if @current_category_configuration.invite_to_user_organisations_only?
+      if @current_configuration.invite_to_user_organisations_only?
         @organisations & @user.organisations
       else
         @organisations
@@ -56,13 +56,12 @@ class InviteUser < BaseService
   end
 
   def invitation_already_sent_today?
-    @rdv_context.invitations.where(format: @invitation.format).where("created_at > ?", 24.hours.ago).present?
+    @follow_up.invitations.where(format: @invitation.format).where("created_at > ?", 24.hours.ago).present?
   end
 
-  def find_or_create_rdv_context
-    RdvContext.with_advisory_lock "setting_rdv_context_for_user_#{@user.id}" do
-      @rdv_context = RdvContext.find_or_create_by!(motif_category: @current_category_configuration.motif_category,
-                                                   user: @user)
+  def find_or_create_follow_up
+    FollowUp.with_advisory_lock "setting_follow_up_for_user_#{@user.id}" do
+      @follow_up = FollowUp.find_or_create_by!(motif_category: @current_configuration.motif_category, user: @user)
     end
   end
 
@@ -74,8 +73,8 @@ class InviteUser < BaseService
     @all_configurations ||= CategoryConfiguration.where(organisation: @organisations & @user.organisations).to_a
   end
 
-  def set_current_category_configuration
-    @current_category_configuration =
+  def set_current_configuration
+    @current_configuration =
       if motif_category.nil?
 
         if all_configurations.length != 1

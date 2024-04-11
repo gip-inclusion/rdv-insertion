@@ -35,11 +35,11 @@ describe Invitations::SendSms, type: :service do
       :invitation,
       user: user, department: department, rdv_solidarites_token: "123", help_phone_number: help_phone_number,
       organisations: [organisation],
-      link: "https://www.rdv-solidarites.fr/lieux?invitation_token=123", format: "sms", rdv_context: rdv_context
+      link: "https://www.rdv-solidarites.fr/lieux?invitation_token=123", format: "sms", follow_up: follow_up
     )
   end
 
-  let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_orientation) }
+  let!(:follow_up) { build(:follow_up, motif_category: category_rsa_orientation) }
   let!(:content) do
     "M. John DOE,\nVous êtes bénéficiaire du RSA et êtes #{user.conjugate('invité')} à participer" \
       " à un rendez-vous d'orientation. " \
@@ -146,7 +146,7 @@ describe Invitations::SendSms, type: :service do
     end
 
     context "for rsa accompagnement" do
-      let!(:rdv_context) { build(:rdv_context) }
+      let!(:follow_up) { build(:follow_up) }
       let!(:category_configuration) { create(:category_configuration, organisation: organisation) }
       let!(:content) do
         "M. John DOE,\nVous êtes bénéficiaire du RSA et êtes #{user.conjugate('invité')} à " \
@@ -161,7 +161,7 @@ describe Invitations::SendSms, type: :service do
       %w[category_rsa_accompagnement category_rsa_accompagnement_social category_rsa_accompagnement_sociopro]
         .each do |motif_category|
         before do
-          rdv_context.motif_category = send(motif_category)
+          follow_up.motif_category = send(motif_category)
           category_configuration.motif_category = send(motif_category)
         end
 
@@ -204,7 +204,7 @@ describe Invitations::SendSms, type: :service do
     end
 
     context "for rsa orientation on phone platform" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_orientation_on_phone_platform) }
+      let!(:follow_up) { build(:follow_up, motif_category: category_rsa_orientation_on_phone_platform) }
       let!(:category_configuration) do
         create(:category_configuration, organisation: organisation,
                                         motif_category: category_rsa_orientation_on_phone_platform)
@@ -251,7 +251,7 @@ describe Invitations::SendSms, type: :service do
     end
 
     context "for rsa cer signature" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_cer_signature) }
+      let!(:follow_up) { build(:follow_up, motif_category: category_rsa_cer_signature) }
       let!(:category_configuration) do
         create(:category_configuration, organisation: organisation, motif_category: category_rsa_cer_signature)
       end
@@ -303,7 +303,7 @@ describe Invitations::SendSms, type: :service do
     end
 
     context "for rsa_main_tendue" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_main_tendue) }
+      let!(:follow_up) { build(:follow_up, motif_category: category_rsa_main_tendue) }
       let!(:category_configuration) do
         create(:category_configuration, organisation: organisation, motif_category: category_rsa_main_tendue)
       end
@@ -354,7 +354,7 @@ describe Invitations::SendSms, type: :service do
     end
 
     context "for rsa_atelier_collectif_mandatory" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_atelier_collectif_mandatory) }
+      let!(:follow_up) { build(:follow_up, motif_category: category_rsa_atelier_collectif_mandatory) }
       let!(:category_configuration) do
         create(:category_configuration, organisation: organisation,
                                         motif_category: category_rsa_atelier_collectif_mandatory)
@@ -405,7 +405,7 @@ describe Invitations::SendSms, type: :service do
     end
 
     context "for rsa_spie" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_spie) }
+      let!(:follow_up) { build(:follow_up, motif_category: category_rsa_spie) }
       let!(:category_configuration) do
         create(:category_configuration, organisation: organisation, motif_category: category_rsa_spie)
       end
@@ -457,7 +457,7 @@ describe Invitations::SendSms, type: :service do
     end
 
     context "for siae_interview" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: category_siae_interview) }
+      let!(:follow_up) { build(:follow_up, motif_category: category_siae_interview) }
       let!(:category_configuration) do
         create(:category_configuration, organisation: organisation, motif_category: category_siae_interview)
       end
@@ -507,7 +507,7 @@ describe Invitations::SendSms, type: :service do
     end
 
     context "for siae_collective_information" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: category_siae_collective_information) }
+      let!(:follow_up) { build(:follow_up, motif_category: category_siae_collective_information) }
       let!(:category_configuration) do
         create(:category_configuration, organisation: organisation,
                                         motif_category: category_siae_collective_information)
@@ -558,7 +558,7 @@ describe Invitations::SendSms, type: :service do
     end
 
     context "for siae_follow_up" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: category_siae_follow_up) }
+      let!(:follow_up) { build(:follow_up, motif_category: category_siae_follow_up) }
       let!(:category_configuration) do
         create(:category_configuration, organisation: organisation, motif_category: category_siae_follow_up)
       end
@@ -608,7 +608,7 @@ describe Invitations::SendSms, type: :service do
     end
 
     context "for psychologue" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: category_psychologue) }
+      let!(:follow_up) { build(:follow_up, motif_category: category_psychologue) }
       let!(:category_configuration) do
         create(:category_configuration, organisation: organisation, motif_category: category_psychologue)
       end
@@ -632,7 +632,7 @@ describe Invitations::SendSms, type: :service do
     end
 
     context "for rsa_orientation_france_travail" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_orientation_france_travail) }
+      let!(:follow_up) { build(:follow_up, motif_category: category_rsa_orientation_france_travail) }
       let!(:category_configuration) do
         create(:category_configuration, organisation: organisation,
                                         motif_category: category_rsa_orientation_france_travail)
@@ -660,7 +660,7 @@ describe Invitations::SendSms, type: :service do
     end
 
     context "for atelier_enfants_ados" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: category_atelier_enfants_ados) }
+      let!(:follow_up) { build(:follow_up, motif_category: category_atelier_enfants_ados) }
       let!(:category_configuration) do
         create(:category_configuration, organisation: organisation, motif_category: category_atelier_enfants_ados)
       end
@@ -685,7 +685,7 @@ describe Invitations::SendSms, type: :service do
     end
 
     context "for rsa_integration_information" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_integration_information) }
+      let!(:follow_up) { build(:follow_up, motif_category: category_rsa_integration_information) }
       let!(:category_configuration) do
         create(:category_configuration, organisation: organisation,
                                         motif_category: category_rsa_integration_information)
@@ -736,7 +736,7 @@ describe Invitations::SendSms, type: :service do
     end
 
     context "for rsa insertion offer" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_insertion_offer) }
+      let!(:follow_up) { build(:follow_up, motif_category: category_rsa_insertion_offer) }
       let!(:category_configuration) do
         create(:category_configuration, organisation: organisation, motif_category: category_rsa_insertion_offer)
       end
@@ -761,7 +761,7 @@ describe Invitations::SendSms, type: :service do
     end
 
     context "for rsa_atelier_competences" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_atelier_competences) }
+      let!(:follow_up) { build(:follow_up, motif_category: category_rsa_atelier_competences) }
       let!(:category_configuration) do
         create(:category_configuration, organisation: organisation, motif_category: category_rsa_atelier_competences)
       end
@@ -786,7 +786,7 @@ describe Invitations::SendSms, type: :service do
     end
 
     context "for rsa_atelier_rencontres_pro" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_atelier_rencontres_pro) }
+      let!(:follow_up) { build(:follow_up, motif_category: category_rsa_atelier_rencontres_pro) }
       let!(:category_configuration) do
         create(:category_configuration, organisation: organisation, motif_category: category_rsa_atelier_rencontres_pro)
       end
@@ -811,7 +811,7 @@ describe Invitations::SendSms, type: :service do
     end
 
     context "for rsa follow up" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_follow_up) }
+      let!(:follow_up) { build(:follow_up, motif_category: category_rsa_follow_up) }
       let!(:category_configuration) do
         create(:category_configuration, organisation: organisation, motif_category: category_rsa_follow_up)
       end

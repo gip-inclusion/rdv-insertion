@@ -10,11 +10,11 @@ describe Invitations::GenerateLetter, type: :service do
   let!(:address) { "20 avenue de Segur, 75007 Paris" }
   let!(:user) { create(:user, organisations: [organisation], address: address) }
   let!(:department) { create(:department) }
-  let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_orientation) }
+  let!(:follow_up) { create(:follow_up, motif_category: category_rsa_orientation) }
   let!(:invitation) do
     create(
       :invitation, content: nil, user: user, organisations: [organisation],
-                   department: department, format: "postal", rdv_context: rdv_context
+                   department: department, format: "postal", follow_up: follow_up
     )
   end
   let!(:organisation) { create(:organisation, department: department) }
@@ -144,7 +144,7 @@ describe Invitations::GenerateLetter, type: :service do
       let!(:invitation) do
         create(
           :invitation, content: nil, user: user, organisations: [organisation],
-                       department: department, format: "postal", rdv_context: rdv_context, rdv_with_referents: true
+                       department: department, format: "postal", follow_up: follow_up, rdv_with_referents: true
         )
       end
       let!(:agent) do
@@ -159,7 +159,7 @@ describe Invitations::GenerateLetter, type: :service do
     end
 
     context "when the context is orientation" do
-      let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_orientation) }
+      let!(:follow_up) { create(:follow_up, motif_category: category_rsa_orientation) }
 
       it "generates the pdf with the right content" do
         subject
@@ -202,7 +202,7 @@ describe Invitations::GenerateLetter, type: :service do
     end
 
     context "when the context is orientation_france_travail" do
-      let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_orientation_france_travail) }
+      let!(:follow_up) { create(:follow_up, motif_category: category_rsa_orientation_france_travail) }
 
       it "generates the pdf with the right content" do
         subject
@@ -225,7 +225,7 @@ describe Invitations::GenerateLetter, type: :service do
     end
 
     context "when the context is accompagnement" do
-      let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_accompagnement) }
+      let!(:follow_up) { create(:follow_up, motif_category: category_rsa_accompagnement) }
 
       it "generates the pdf with the right content" do
         subject
@@ -244,7 +244,7 @@ describe Invitations::GenerateLetter, type: :service do
     end
 
     context "when the context is rsa_cer_signature" do
-      let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_cer_signature) }
+      let!(:follow_up) { create(:follow_up, motif_category: category_rsa_cer_signature) }
 
       it "generates the pdf with the right content" do
         subject
@@ -265,7 +265,7 @@ describe Invitations::GenerateLetter, type: :service do
     end
 
     context "when the context is rsa_follow_up" do
-      let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_follow_up) }
+      let!(:follow_up) { create(:follow_up, motif_category: category_rsa_follow_up) }
 
       it "generates the pdf with the right content" do
         subject
@@ -286,7 +286,7 @@ describe Invitations::GenerateLetter, type: :service do
     end
 
     context "when the context is siae_interview" do
-      let!(:rdv_context) { create(:rdv_context, motif_category: category_siae_interview) }
+      let!(:follow_up) { create(:follow_up, motif_category: category_siae_interview) }
 
       it "generates the pdf with the right content" do
         subject
@@ -308,7 +308,7 @@ describe Invitations::GenerateLetter, type: :service do
     end
 
     context "when the context is siae_follow_up" do
-      let!(:rdv_context) { create(:rdv_context, motif_category: category_siae_follow_up) }
+      let!(:follow_up) { create(:follow_up, motif_category: category_siae_follow_up) }
 
       it "generates the pdf with the right content" do
         subject
@@ -330,7 +330,7 @@ describe Invitations::GenerateLetter, type: :service do
     end
 
     context "when the context is siae_collective_information" do
-      let!(:rdv_context) { create(:rdv_context, motif_category: category_siae_collective_information) }
+      let!(:follow_up) { create(:follow_up, motif_category: category_siae_collective_information) }
 
       it "generates the pdf with the right content" do
         subject
@@ -352,7 +352,7 @@ describe Invitations::GenerateLetter, type: :service do
     end
 
     context "when the context is rsa_insertion_offer" do
-      let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_insertion_offer) }
+      let!(:follow_up) { create(:follow_up, motif_category: category_rsa_insertion_offer) }
 
       it "generates the pdf with the right content" do
         subject
@@ -372,7 +372,7 @@ describe Invitations::GenerateLetter, type: :service do
     end
 
     context "when the context is rsa_atelier_competences" do
-      let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_atelier_competences) }
+      let!(:follow_up) { create(:follow_up, motif_category: category_rsa_atelier_competences) }
 
       it "generates the pdf with the right content" do
         subject
@@ -392,7 +392,7 @@ describe Invitations::GenerateLetter, type: :service do
     end
 
     context "when the context is rsa_atelier_rencontres_pro" do
-      let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_atelier_rencontres_pro) }
+      let!(:follow_up) { create(:follow_up, motif_category: category_rsa_atelier_rencontres_pro) }
 
       it "generates the pdf with the right content" do
         subject
@@ -412,7 +412,7 @@ describe Invitations::GenerateLetter, type: :service do
     end
 
     context "when the context is rsa_orientation_on_phone_platform" do
-      let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_orientation_on_phone_platform) }
+      let!(:follow_up) { create(:follow_up, motif_category: category_rsa_orientation_on_phone_platform) }
 
       it "generates the pdf with the right content" do
         subject
@@ -430,7 +430,7 @@ describe Invitations::GenerateLetter, type: :service do
     end
 
     context "when the context is atelier_enfants_ados" do
-      let!(:rdv_context) { create(:rdv_context, motif_category: category_atelier_enfants_ados) }
+      let!(:follow_up) { create(:follow_up, motif_category: category_atelier_enfants_ados) }
 
       it "generates the pdf with the right content" do
         subject

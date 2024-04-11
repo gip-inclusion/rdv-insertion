@@ -5,7 +5,7 @@ module Invitations
     delegate :user,
              :organisations,
              :motif_category,
-             :rdv_context,
+             :follow_up,
              :valid_until,
              :motif_category_name,
              :department_id,
@@ -43,7 +43,7 @@ module Invitations
     end
 
     def validate_no_rdv_pending_taken_today
-      return if rdv_context.reload.participations.none?(&:pending?)
+      return if follow_up.participations.none?(&:pending?)
 
       result.errors << "Cet usager a déjà un rendez-vous à venir pour ce motif"
     end

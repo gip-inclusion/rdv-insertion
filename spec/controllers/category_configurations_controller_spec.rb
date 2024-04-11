@@ -420,7 +420,7 @@ describe CategoryConfigurationsController do
       it "is a success" do
         delete :destroy, params: destroy_params
         expect(unescaped_response_body).to match(/flashes/)
-        expect(unescaped_response_body).to match(/Le contexte a été supprimé avec succès/)
+        expect(unescaped_response_body).to match(/La configuration a été supprimée avec succès/)
       end
     end
 
