@@ -5,7 +5,8 @@ class ChangeConfigurationOrganisationAssociation < ActiveRecord::Migration[6.1]
     Organisation.find_each do |organisation|
       configuration = Configuration.find_by(organisation_id: organisation.id)
       if configuration.blank?
-        configuration = Configuration.new(organisation_id: organisation.id, invitation_format: "sms_and_email")
+        configuration = Configuration.new(organisation_id: organisation.id,
+                                          invitation_format: "sms_and_email")
         configuration.save!
       end
 
