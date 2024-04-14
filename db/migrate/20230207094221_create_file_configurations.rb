@@ -11,10 +11,10 @@ class CreateFileConfigurations < ActiveRecord::Migration[7.0]
 
     ::Configuration.find_each do |_configuration|
       file_configuration = FileConfiguration.find_or_create_by!(
-        sheet_name: category_configuration.sheet_name,
-        column_names: category_configuration.column_names
+        sheet_name: configuration.sheet_name,
+        column_names: configuration.column_names
       )
-      category_configuration.update! file_configuration_id: file_configuration.id
+      configuration.update! file_configuration_id: file_configuration.id
     end
 
     remove_column :configurations, :sheet_name
@@ -27,7 +27,7 @@ class CreateFileConfigurations < ActiveRecord::Migration[7.0]
 
     ::Configuration.find_each do |configuration|
       file_configuration = FileConfiguration.find(configuration.file_configuration_id)
-      category_configuration.update!(
+      configuration.update!(
         sheet_name: file_configuration.sheet_name,
         column_names: file_configuration.column_names
       )

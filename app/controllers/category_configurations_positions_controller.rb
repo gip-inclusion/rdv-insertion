@@ -1,6 +1,6 @@
 class CategoryConfigurationsPositionsController < ApplicationController
   def update
-    params.require(:category_configuration_ids_and_positions).each do |_configuration_id_and_position|
+    params.require(:category_configuration_ids_and_positions).each do |category_configuration_id_and_position|
       # We update all category_configurations with similar motif_category because updating only the given one would
       # break department level ordering (since we have multiple category_configurations with the same motif_category)
       category_configurations
