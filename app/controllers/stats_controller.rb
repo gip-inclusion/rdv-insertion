@@ -1,6 +1,6 @@
 class StatsController < ApplicationController
   skip_before_action :authenticate_agent!, only: [:index, :show, :deployment_map]
-  before_action :set_organisation, :set_department, :set_stat, :set_display_all_stats, only: [:show]
+  before_action :set_organisation, :set_department, :set_stat, only: [:show]
 
   def index
     @department_count = Department.displayed_in_stats.count
@@ -23,11 +23,5 @@ class StatsController < ApplicationController
 
   def set_stat
     @stat = Stat.find_by(statable: @organisation || @department)
-  end
-
-  def set_display_all_stats
-    @display_all_stats = @department.category_configurations.none? do |category_configuration|
-      category_configuration.invitation_formats.blank?
-    end
   end
 end
