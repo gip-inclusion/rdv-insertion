@@ -1,26 +1,37 @@
-<div class="d-flex justify-content-between align-items-center my-4" id="<%= dom_id(orientation) %>">
-  <div class="w-100">
+<tr id="<%= dom_id(orientation) %>">
+  <td>
     <% if orientation.current? %>
-      Du <%= format_date(orientation.starts_at) %> à <strong>aujourd'hui</strong>&nbsp;:
+      Du <%= format_date(orientation.starts_at) %> à <strong>aujourd'hui</strong>
     <% else %>
-      Du <%= format_date(orientation.starts_at) %> au <%= format_date(orientation.ends_at) %>&nbsp;:
+      Du <%= format_date(orientation.starts_at) %> au <%= format_date(orientation.ends_at) %>
     <% end %>
-  </div>
-  <div class="w-100">
-    Orientation <strong><%= I18n.t("activerecord.attributes.orientation.orientation_types.#{orientation.orientation_type}") %></strong>
-  </div>
-  <div class="w-100">Structure <strong><%= orientation.organisation.name %></strong></div>
-  <% if orientation.agent_id? %>
-    <div class="w-100">Référent unique <strong><%= orientation.agent.to_s %></strong></div>
-  <% else %>
-    <div class="w-100">Référent unique <em>non renseigné</em></div>
-  <% end %>
-  <div class="w-100 text-end">
+  </td>
+
+  <td>
+    <strong><%= I18n.t("activerecord.attributes.orientation.orientation_types.#{orientation.orientation_type}") %></strong>
+  </td>
+
+  <td>
+    <%= orientation.organisation.name %>
+  </td>
+
+  <td>
+    <% if orientation.agent_id? %>
+      <%= orientation.agent.to_s %>
+    <% else %>
+      <em>non renseigné</em>
+    <% end %>
+  </td>
+
+  <td>
     <%= link_to edit_user_orientation_path(id: orientation.id, user_id: orientation.user_id), data: { turbo_frame: 'remote_modal' } do %>
       <i class="fas fa-pencil-alt text-dark-blue"></i>
     <% end %>
-    <%= link_to user_orientation_path(id: orientation.id, user_id: orientation.user_id), method: :delete do %>
+  </td>
+
+  <td>
+    <%= link_to user_orientation_path(id: orientation.id, user_id: orientation.user_id), method: :delete, data: { confirm: "Êtes-vous sûr de vouloir supprimer cette orientation ?" } do %>
       <i class="fas fa-trash text-dark-blue"></i>
     <% end %>
-  </div>
-</div>
+  </td>
+</tr>

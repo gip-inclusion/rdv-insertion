@@ -4,7 +4,9 @@ describe "Agents can update a participation status", :js do
   let(:department) { create(:department) }
   let(:organisation) { create(:organisation, department: department) }
   let(:agent) { create(:agent, organisations: [organisation]) }
-  let!(:configuration) { create(:configuration, organisation:, motif_category: category_rsa_orientation) }
+  let!(:category_configuration) do
+    create(:category_configuration, organisation:, motif_category: category_rsa_orientation)
+  end
   let(:user) do
     create(:user, organisations: [organisation])
   end

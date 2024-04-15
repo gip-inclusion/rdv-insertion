@@ -1,10 +1,10 @@
 module UsersHelper
-  def show_convocation?(configuration)
-    configuration.convene_user?
+  def show_convocation?(category_configuration)
+    category_configuration.convene_user?
   end
 
-  def show_invitations?(configuration)
-    configuration.invitation_formats.present?
+  def show_invitations?(category_configuration)
+    category_configuration.invitation_formats.present?
   end
 
   def no_search_results?(users)
