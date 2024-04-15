@@ -40,9 +40,9 @@ export default class User {
     });
     this.uniqueKey = Math.random().toString(36).substring(7);
 
-    this._id = formattedAttributes.id;
-    this._createdAt = formattedAttributes.createdAt;
-    this._organisations = formattedAttributes.organisations || [];
+    this.id = formattedAttributes.id;
+    this.createdAt = formattedAttributes.createdAt;
+    this.organisations = formattedAttributes.organisations || [];
     this.phoneNumberNew = null;
     this.rightsOpeningDateNew = null;
     this.emailNew = null;
@@ -103,30 +103,6 @@ export default class User {
 
   get uid() {
     return this.generateUid();
-  }
-
-  get createdAt() {
-    return this._createdAt;
-  }
-
-  get id() {
-    return this._id;
-  }
-
-  get organisations() {
-    return this._organisations;
-  }
-
-  set createdAt(createdAt) {
-    this._createdAt = createdAt;
-  }
-
-  set id(id) {
-    this._id = id;
-  }
-
-  set organisations(organisations) {
-    this._organisations = organisations;
   }
 
   formatTitle(title) {
@@ -307,11 +283,11 @@ export default class User {
     }
     this.tags = upToDateUser.tags.map((tag) => tag.value);
     if (this.currentConfiguration) {
-      this.currentRdvContext = upToDateUser.rdv_contexts.find(
+      this.currentFollowUp = upToDateUser.follow_ups.find(
         (rc) => rc.motif_category_id === this.currentConfiguration.motif_category_id
       );
-      this.currentContextStatus = this.currentRdvContext && this.currentRdvContext.status;
-      this.participations = this.currentRdvContext?.participations || [];
+      this.currentFollowUpStatus = this.currentFollowUp && this.currentFollowUp.status;
+      this.participations = this.currentFollowUp?.participations || [];
       this.lastSmsInvitationSentAt = retrieveLastInvitationDate(
         upToDateUser.invitations,
         "sms",
@@ -484,9 +460,7 @@ export default class User {
       ...(this.nir && { nir: this.nir }),
       ...(this.franceTravailId && { france_travail_id: this.franceTravailId }),
       ...(this.currentConfiguration && {
-        rdv_contexts_attributes: [
-          { motif_category_id: this.currentConfiguration.motif_category_id },
-        ],
+        follow_ups_attributes: [{ motif_category_id: this.currentConfiguration.motif_category_id }],
       }),
     };
   }

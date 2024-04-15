@@ -25,9 +25,9 @@ upsert_global_stats_job:
 upsert_monthly_stats_job:
   cron: "0 22 * * 7" # we compute monthly stats once a week, the sunday at 22:00
   class: "Stats::MonthlyStats::UpsertStatsJob"
-refresh_out_of_date_rdv_context_statuses_job:
+refresh_out_of_date_follow_up_statuses_job:
   cron: "0 21 * * *" # we refresh out of date statuses once a day, at 21:00
-  class: "RefreshOutOfDateRdvContextStatusesJob"
+  class: "RefreshOutOfDateFollowUpStatusesJob"
 destroy_old_ressources_job:
   cron: "0 0 * * *" # we destroy inactive users and useless ressources once a day, at 00:00
   class: "DestroyOldRessourcesJob"

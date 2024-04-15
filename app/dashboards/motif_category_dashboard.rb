@@ -9,12 +9,12 @@ class MotifCategoryDashboard < Administrate::BaseDashboard
   # on pages throughout the dashboard.
   ATTRIBUTE_TYPES = {
     id: Field::Number,
-    configurations: Field::HasMany,
+    category_configurations: Field::HasMany,
     leads_to_orientation: Field::Boolean,
     motifs: Field::HasMany,
     name: Field::String,
     optional_rdv_subscription: Field::Boolean,
-    rdv_contexts: Field::HasMany,
+    follow_ups: Field::HasMany,
     rdv_solidarites_motif_category_id: Field::Number,
     short_name: Field::String,
     template: Field::BelongsTo,

@@ -8,14 +8,16 @@ describe "Agents can generate convocation pdf", :js do
   let!(:motif) do
     create(:motif, organisation: organisation, motif_category: motif_category, location_type: "public_office")
   end
-  let!(:rdv_context) do
-    create(:rdv_context, motif_category: motif_category, user: user, status: "rdv_pending")
+  let!(:follow_up) do
+    create(:follow_up, motif_category: motif_category, user: user, status: "rdv_pending")
   end
-  let!(:configuration) { create(:configuration, organisation: organisation, motif_category: motif_category) }
+  let!(:category_configuration) do
+    create(:category_configuration, organisation: organisation, motif_category: motif_category)
+  end
   let!(:participation) do
     create(
       :participation,
-      rdv_context: rdv_context, rdv: rdv, user: user, status: "unknown", convocable: true
+      follow_up: follow_up, rdv: rdv, user: user, status: "unknown", convocable: true
     )
   end
   let!(:rdv) do
@@ -33,7 +35,7 @@ describe "Agents can generate convocation pdf", :js do
   end
 
   it "can generate a pdf" do
-    visit organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id)
+    visit organisation_user_follow_ups_path(organisation_id: organisation.id, user_id: user.id)
 
     expect(page).to have_button "Courrier"
 
@@ -54,7 +56,7 @@ describe "Agents can generate convocation pdf", :js do
     before { motif.update! location_type: "phone" }
 
     it "generates the matching pdf" do
-      visit organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id)
+      visit organisation_user_follow_ups_path(organisation_id: organisation.id, user_id: user.id)
 
       expect(page).to have_button "Courrier"
 
@@ -77,7 +79,7 @@ describe "Agents can generate convocation pdf", :js do
     before { rdv.update! starts_at: 2.days.ago }
 
     it "cannot generate a pdf" do
-      visit organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id)
+      visit organisation_user_follow_ups_path(organisation_id: organisation.id, user_id: user.id)
 
       expect(page).to have_no_button "Courrier"
     end
@@ -87,7 +89,7 @@ describe "Agents can generate convocation pdf", :js do
     before { participation.update! status: "excused" }
 
     it "cannot generate a pdf" do
-      visit organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id)
+      visit organisation_user_follow_ups_path(organisation_id: organisation.id, user_id: user.id)
 
       expect(page).to have_no_button "Courrier"
     end
@@ -97,7 +99,7 @@ describe "Agents can generate convocation pdf", :js do
     before { user.update! title: nil }
 
     it "cannot generate a pdf" do
-      visit organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id)
+      visit organisation_user_follow_ups_path(organisation_id: organisation.id, user_id: user.id)
 
       expect(page).to have_no_button "Courrier"
     end
@@ -107,7 +109,7 @@ describe "Agents can generate convocation pdf", :js do
     before { participation.update! status: "revoked" }
 
     it "can generate a revoked participation pdf" do
-      visit organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id)
+      visit organisation_user_follow_ups_path(organisation_id: organisation.id, user_id: user.id)
 
       expect(page).to have_button "Courrier"
 
@@ -127,7 +129,7 @@ describe "Agents can generate convocation pdf", :js do
     before { user.update! address: "format invalide" }
 
     it "returns an error" do
-      visit organisation_user_rdv_contexts_path(organisation_id: organisation.id, user_id: user.id)
+      visit organisation_user_follow_ups_path(organisation_id: organisation.id, user_id: user.id)
 
       expect(page).to have_button "Courrier"
 
