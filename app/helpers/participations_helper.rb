@@ -1,15 +1,17 @@
 module ParticipationsHelper
-  def human_new_status(rdv_starts_at, new_status)
+  def human_new_status(new_status)
     if new_status == "unknown"
-      I18n.t("activerecord.attributes.rdv.unknown_statuses.#{temporal_unknown_status(rdv_starts_at)}")
+      # the status can only be re-set to "unknown" if the rdv is pending
+      I18n.t("activerecord.attributes.rdv.unknown_statuses.pending")
     else
       I18n.t("activerecord.attributes.rdv.statuses.#{new_status}")
     end
   end
 
-  def human_new_status_detailed(rdv_starts_at, new_status)
+  def human_new_status_detailed(new_status)
     if new_status == "unknown"
-      I18n.t("activerecord.attributes.rdv.unknown_statuses.detailed.#{temporal_unknown_status(rdv_starts_at)}")
+      # the status can only be re-set to "unknown" if the rdv is pending
+      I18n.t("activerecord.attributes.rdv.unknown_statuses.detailed.pending")
     else
       I18n.t("activerecord.attributes.rdv.statuses.detailed.#{new_status}")
     end
@@ -49,11 +51,5 @@ module ParticipationsHelper
     else
       convocation_formats.map { |format| format == "sms" ? "SMS 📱" : "Email 📧" }.join("\n")
     end
-  end
-
-  private
-
-  def temporal_unknown_status(rdv_starts_at)
-    rdv_starts_at > Time.zone.now ? "pending" : "needs_status_update"
   end
 end

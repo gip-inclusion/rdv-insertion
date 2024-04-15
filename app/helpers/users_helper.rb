@@ -23,7 +23,7 @@ module UsersHelper
     ordered_statuses_count(statuses_count).map do |status, count|
       next if count.nil?
 
-      ["#{I18n.t("activerecord.attributes.follow_up.statuses.#{status}")} (#{count})", status]
+      ["Statut : \"#{I18n.t("activerecord.attributes.follow_up.statuses.#{status}")}\" (#{count})", status]
     end.compact
   end
 
