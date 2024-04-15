@@ -1,5 +1,7 @@
 describe Exporters::GenerateUsersParticipationsCsv, type: :service do
-  subject { described_class.call(user_ids: users.ids, structure: structure, motif_category_id: motif_category.id, agent:) }
+  subject do
+    described_class.call(user_ids: users.ids, structure: structure, motif_category_id: motif_category.id, agent:)
+  end
 
   let!(:now) { Time.zone.parse("22/06/2022") }
   let!(:timestamp) { now.to_i }
