@@ -1,8 +1,9 @@
 describe CategoryConfigurations::Create, type: :service do
   subject do
-    described_class.call(category_configuration:)
+    described_class.call(category_configuration:, motif_category:)
   end
 
+  let!(:motif_category) { create(:motif_category) }
   let!(:category_configuration) { build(:category_configuration) }
 
   describe "#call" do
@@ -18,7 +19,7 @@ describe CategoryConfigurations::Create, type: :service do
     it "tries to create a motif category territory on rdvs" do
       expect(RdvSolidaritesApi::CreateMotifCategoryTerritory).to receive(:call)
         .with(
-          motif_category_short_name: category_configuration.motif_category_short_name,
+          motif_category_short_name: motif_category.short_name,
           organisation_id: category_configuration.rdv_solidarites_organisation_id
         )
       subject

@@ -264,7 +264,7 @@ describe CategoryConfigurationsController do
 
     it "tries to create the category_configuration" do
       expect(CategoryConfigurations::Create).to receive(:call)
-        .with(category_configuration: category_configuration)
+        .with(category_configuration: category_configuration, motif_category:)
       post :create, params: create_params
     end
 
