@@ -1,5 +1,5 @@
 describe Exporters::GenerateUsersParticipationsCsv, type: :service do
-  subject { described_class.call(user_ids: users.ids, structure: structure, motif_category: motif_category, agent:) }
+  subject { described_class.call(user_ids: users.ids, structure: structure, motif_category_id: motif_category.id, agent:) }
 
   let!(:now) { Time.zone.parse("22/06/2022") }
   let!(:timestamp) { now.to_i }
@@ -189,7 +189,7 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
       end
 
       context "when no motif category is passed" do
-        subject { described_class.call(user_ids: users.ids, structure: structure, motif_category: nil, agent:) }
+        subject { described_class.call(user_ids: users.ids, structure: structure, motif_category_id: nil, agent:) }
 
         it "is a success" do
           expect(subject.success?).to eq(true)

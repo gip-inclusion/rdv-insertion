@@ -3,7 +3,7 @@ class CsvExportMailer < ApplicationMailer
     @export = export
     @request_params = request_params
     set_filters
-    mail(to: email, subject: "[rdv-insertion] Voici l'export CSV que vous avez demandé")
+    mail(to: email, subject: "[rdv-insertion] Export CSV")
   end
 
   private
@@ -22,7 +22,7 @@ class CsvExportMailer < ApplicationMailer
 
   def set_organisations_filter
     @organisations_filter =
-      if @export.structure_type == "organisation"
+      if @export.structure_type == "Organisation"
         [Organisation.find(@export.structure_id)]
       else
         Agent.find(@export.agent_id).organisations.where(department: @export.structure_id)
