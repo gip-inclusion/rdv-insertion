@@ -110,8 +110,7 @@ RSpec.describe InvitationMailer do
           expect(body_string).not_to match(
             "votre RSA pourra être suspendu ou réduit."
           )
-          expect(body_string).to match("/invitations/redirect")
-          expect(body_string).to match("uuid=#{invitation.uuid}")
+          expect(body_string).to match("/i/r/#{invitation.uuid}")
           expect(body_string).to match("dans un délai de 3 jours")
           expect(body_string).to match("Logo du département")
           expect(body_string).to match("Logo de l'Union européene")
@@ -149,8 +148,7 @@ RSpec.describe InvitationMailer do
           expect(body_string).to match(
             "votre RSA pourra être suspendu ou réduit."
           )
-          expect(body_string).to match("/invitations/redirect")
-          expect(body_string).to match("uuid=#{invitation.uuid}")
+          expect(body_string).to match("/i/r/#{invitation.uuid}")
           expect(body_string).to match("dans un délai de 3 jours")
           expect(body_string).to match("Logo du département")
           expect(body_string).to match("Logo de l'Union européene")
@@ -731,8 +729,7 @@ RSpec.describe InvitationMailer do
         "atelier\\(s\\) et formation\\(s\\) proposé\\(s\\)</span> sur la plateforme " \
         "RDV-Solidarités et vous y inscrire directement et librement, dans la limite des places disponibles."
       )
-      expect(body_string).to match("/invitations/redirect")
-      expect(body_string).to match("uuid=#{invitation.uuid}")
+      expect(body_string).to match("/i/r/#{invitation.uuid}")
       expect(body_string).not_to match("dans un délai de 3 jours")
       expect(body_string).to match("Logo du département")
       expect(body_string).to match("Logo de l'Union européene")
@@ -1017,8 +1014,7 @@ RSpec.describe InvitationMailer do
           expect(body_string).to match(
             "votre RSA pourra être suspendu ou réduit."
           )
-          expect(body_string).to match("/invitations/redirect")
-          expect(body_string).to match("uuid=#{invitation.uuid}")
+          expect(body_string).to match("/i/r/#{invitation.uuid}")
           expect(body_string).to match(
             "Il ne vous reste plus que <span class=\"font-weight-bold\">" \
             "#{invitation.number_of_days_before_expiration}" \
