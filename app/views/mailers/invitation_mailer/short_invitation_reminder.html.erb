@@ -2,7 +2,7 @@
 <p>Vous avez reçu un premier mail il y a 3 jours vous invitant à prendre un <%= @rdv_title %>.</p>
 <p>Il ne vous reste plus que <span class="font-weight-bold"><%= @invitation.number_of_days_before_expiration %> jours</span> pour prendre rendez-vous à la date et l'horaire de votre choix en cliquant sur le bouton suivant.</p>
 <p class="btn-wrapper">
-  <%= link_to redirect_invitations_url(params: { uuid: @invitation.uuid }, host: ENV['HOST']), class: "btn btn-primary" do %>
+  <%= link_to rdv_solidarites_invitations_url(@invitation), class: "btn btn-primary" do %>
     Choisir un créneau
   <% end %>
 </p>
