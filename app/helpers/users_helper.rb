@@ -62,4 +62,12 @@ module UsersHelper
   def show_parcours?(department)
     department.number.in?(ENV["DEPARTMENTS_WHERE_PARCOURS_ENABLED"].split(","))
   end
+
+  def show_rdv_organisation_selection_for?(user, agent, department)
+    mutual_department_organisations(user, agent, department).length > 1
+  end
+
+  def mutual_department_organisations(user, agent, department)
+    (agent.organisations & user.organisations).select { |o| o.department_id == department.id }
+  end
 end
