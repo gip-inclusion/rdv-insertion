@@ -11,7 +11,6 @@ class CategoryConfigurationsController < ApplicationController
 
   before_action :set_organisation, :authorize_organisation_category_configuration,
                 only: [:index, :new, :create, :show, :edit, :update, :destroy]
-  before_action :set_motif_category, only: [:create]
   before_action :set_category_configuration, :set_file_configuration, :set_template,
                 only: [:show, :edit, :update, :destroy]
   before_action :set_department, :set_file_configurations, only: [:new, :create, :edit, :update]
@@ -70,13 +69,7 @@ class CategoryConfigurationsController < ApplicationController
   end
 
   def create_configuration
-    @create_configuration ||= CategoryConfigurations::Create.call(
-      category_configuration: @category_configuration, motif_category: @motif_category
-    )
-  end
-
-  def set_motif_category
-    @motif_category = MotifCategory.find(category_configuration_params[:motif_category_id])
+    @create_configuration ||= CategoryConfigurations::Create.call(category_configuration: @category_configuration)
   end
 
   def set_category_configuration
