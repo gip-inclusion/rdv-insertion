@@ -51,8 +51,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).not_to match(
           "votre RSA pourra être suspendu ou réduit."
         )
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match("dans un délai de 3 jours")
         expect(body_string).to match("Logo du département")
         expect(body_string).to match("Logo de l'Union européene")
@@ -204,8 +203,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).not_to match(
           "votre RSA pourra être suspendu ou réduit."
         )
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match("dans un délai de 3 jours")
         expect(body_string).to match("Logo du département")
         expect(body_string).to match("Logo de l'Union européene")
@@ -255,8 +253,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).not_to match(
           "votre RSA pourra être suspendu ou réduit."
         )
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match("dans un délai de 3 jours")
         expect(body_string).to match("Logo du département")
         expect(body_string).to match("Logo de l'Union européene")
@@ -306,8 +303,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).not_to match(
           "votre RSA pourra être suspendu ou réduit."
         )
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match("dans un délai de 3 jours")
         expect(body_string).to match("Logo du département")
         expect(body_string).to match("Logo de l'Union européene")
@@ -359,8 +355,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).not_to match(
           "votre RSA pourra être suspendu ou réduit."
         )
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match("dans un délai de 3 jours")
         expect(body_string).to match("Logo du département")
         expect(body_string).to match("Logo de l'Union européene")
@@ -411,8 +406,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match(
           "votre RSA pourra être suspendu ou réduit."
         )
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match("dans un délai de 3 jours")
         expect(body_string).to match("Logo du département")
         expect(body_string).to match("Logo de l'Union européene")
@@ -461,8 +455,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).not_to match(
           "votre RSA pourra être suspendu ou réduit."
         )
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match("dans un délai de 3 jours")
         expect(body_string).to match("Logo du département")
         expect(body_string).to match("Logo de l'Union européene")
@@ -512,8 +505,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).not_to match(
           "votre RSA pourra être suspendu ou réduit."
         )
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match("dans un délai de 3 jours")
         expect(body_string).to match("Logo du département")
         expect(body_string).to match("Logo de l'Union européene")
@@ -563,8 +555,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).not_to match(
           "votre RSA pourra être suspendu ou réduit."
         )
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match("dans un délai de 3 jours")
       end
     end
@@ -597,8 +588,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).not_to match(
           "votre RSA pourra être suspendu ou réduit."
         )
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match("dans un délai de 3 jours")
       end
     end
@@ -626,8 +616,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("01 39 39 39 39")
         expect(body_string).to match("Dans le cadre du projet 'France Travail'")
         expect(body_string).to match("afin de démarrer un parcours d'accompagnement.")
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match("Logo du département")
         expect(body_string).to match("Logo de l'Union européene")
         expect(body_string).to match("Logo de France Travail")
@@ -802,8 +791,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")
         expect(body_string).to match("Vous êtes invité à participer à un rendez-vous de suivi psychologue.")
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match("Logo du département")
         expect(body_string).to match("Logo de l'Union européene")
         expect(body_string).to match("Logo de France Travail")
@@ -852,8 +840,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")
         expect(body_string).to match("Tu es invité à participer à un atelier organisé par le Département.")
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match("Logo du département")
         expect(body_string).to match("Logo de l'Union européene")
         expect(body_string).to match("Logo de France Travail")
@@ -900,8 +887,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match(
           "Vous avez reçu un premier mail il y a 3 jours vous invitant à prendre un rendez-vous de suivi psychologue."
         )
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match(
           "Il ne vous reste plus que <span class=\"font-weight-bold\">#{invitation.number_of_days_before_expiration}" \
           " jours</span> pour prendre rendez-vous"
@@ -968,8 +954,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).not_to match(
           "votre RSA pourra être suspendu ou réduit."
         )
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match(
           "Il ne vous reste plus que <span class=\"font-weight-bold\">#{invitation.number_of_days_before_expiration}" \
           " jours</span> pour prendre rendez-vous"
@@ -1090,8 +1075,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).not_to match(
           "votre RSA pourra être suspendu ou réduit."
         )
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match(
           "Il ne vous reste plus que <span class=\"font-weight-bold\">#{invitation.number_of_days_before_expiration}" \
           " jours</span> pour prendre rendez-vous"
@@ -1144,8 +1128,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).not_to match(
           "votre RSA pourra être suspendu ou réduit."
         )
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match(
           "Il ne vous reste plus que <span class=\"font-weight-bold\">#{invitation.number_of_days_before_expiration}" \
           " jours</span> pour prendre rendez-vous"
@@ -1259,8 +1242,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match(
           "Tu as reçu un premier mail il y a 3 jours t'invitant à un atelier destiné aux jeunes de ton âge."
         )
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match(
           "Il ne te reste plus que <span class=\"font-weight-bold\">#{invitation.number_of_days_before_expiration}" \
           " jours</span> pour prendre rendez-vous à la date et l'horaire de ton choix en cliquant" \
