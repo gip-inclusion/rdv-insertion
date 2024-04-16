@@ -3,7 +3,7 @@
 <p>Nous te proposons de cliquer ci-dessous pour découvrir le programme.</p>
 <p><span class="font-weight-bold">Si tu es <%= @user.conjugate('intéressé') %> pour participer, tu n’auras qu’à cliquer ci-dessous et t’inscrire en ligne.</p>
 <p class="btn-wrapper">
-  <%= link_to rdv_solidarites_invitations_url(@invitation), class: "btn btn-primary" do %>
+  <%= link_to rdv_solidarites_invitations_url(@invitation.uuid), class: "btn btn-primary" do %>
     Découvrir
   <% end %>
 </p>

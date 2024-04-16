@@ -2,7 +2,7 @@
 <p>Vous êtes <%= @user.conjugate('invité') %> à participer à un <%= @rdv_title %>.</p>
 <p><span class="font-weight-bold">Pour pouvoir choisir la date et l'horaire de votre rendez-vous</span>, vous pouvez accéder au service RDV-Solidarités en cliquant sur le bouton suivant :</p>
 <p class="btn-wrapper">
-  <%= link_to rdv_solidarites_invitations_url(@invitation), class: "btn btn-primary" do %>
+  <%= link_to rdv_solidarites_invitations_url(@invitation.uuid), class: "btn btn-primary" do %>
     Choisir un créneau
   <% end %>
 </p>
