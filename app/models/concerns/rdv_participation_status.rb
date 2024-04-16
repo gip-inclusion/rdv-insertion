@@ -38,8 +38,9 @@ module RdvParticipationStatus
     status.in?(%w[seen excused revoked noshow])
   end
 
-  def available_statuses
-    in_the_future? ? %w[unknown revoked excused] : %w[seen revoked excused noshow]
+  def possible_new_statuses
+    possible_statuses = in_the_future? ? %w[unknown revoked excused] : %w[seen revoked excused noshow]
+    possible_statuses - [status]
   end
 
   def needs_status_update?
@@ -49,6 +50,8 @@ module RdvParticipationStatus
   def human_status
     status == "unknown" ? human_unknown_status : I18n.t("activerecord.attributes.rdv.statuses.#{status}")
   end
+
+  private
 
   def human_unknown_status
     I18n.t("activerecord.attributes.rdv.unknown_statuses.#{in_the_future? ? 'pending' : 'needs_status_update'}")
