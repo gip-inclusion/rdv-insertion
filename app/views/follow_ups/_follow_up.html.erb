@@ -95,7 +95,7 @@
             }
           ) %>
 
-         <%= render "follow_ups/invitation_block", user: user, organisation: organisation, department: department, invitations: invitations, category_configuration: category_configuration, follow_up: follow_up, motif_category: follow_up.motif_category %>
+         <%= render "follow_ups/invitation_block", user: user, organisation: organisation, department: department, invitations: invitations, category_configuration: category_configuration, follow_up: follow_up, motif_category: follow_up.motif_category, invitation_formats: category_configuration.invitation_formats %>
         <% end %>
       </div>
     </div>

@@ -9,7 +9,7 @@ export default function InvitationsDatesRow({
   console.log(invitationsDatesByFormat);
   console.log(invitationFormats);
   return (
-    <tr>
+    <>
       {invitationFormats.map((format) => (
         <td className="px-4 py-3" key={format + index}>
           {invitationsDatesByFormat[format][index]
@@ -19,6 +19,6 @@ export default function InvitationsDatesRow({
             : ""}
         </td>
       ))}
-    </tr>
+    </>
   );
 }

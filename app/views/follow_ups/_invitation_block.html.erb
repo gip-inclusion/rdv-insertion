@@ -2,17 +2,17 @@
   <table class="card-white text-center align-middle m-3 shadow-sm">
     <thead>
       <tr>
-        <% if show_invitation?("sms", category_configuration) %>
+        <% if show_invitation?("sms", invitation_formats) %>
           <th class="px-4 py-3">
             <h4>Invitation SMS</h4>
           </th>
         <% end %>
-        <% if show_invitation?("email", category_configuration) %>
+        <% if show_invitation?("email", invitation_formats) %>
           <th class="px-4 py-3">
             <h4>Invitation mail</h4>
           </th>
         <% end %>
-        <% if show_invitation?("postal", category_configuration) %>
+        <% if show_invitation?("postal", invitation_formats) %>
           <th class="px-4 py-3">
             <h4>Invitation courrier</h4>
           </th>
@@ -20,27 +20,29 @@
       </tr>
     </thead>
     <tbody>
-      <% number_of_invitations_dates_row_needed(invitations, category_configuration).times do |idx| %>
-      <%= react_component(
-          "components/followUp/InvitationsDatesRow", {
-            invitationsDatesByFormat: { sms: [], email: [], postal: [] }.merge(invitations.group_by(&:format).transform_values { |invitations| invitations.map(&:created_at).sort.reverse }.to_h),
-            invitationFormats: category_configuration.invitation_formats,
-            index: idx
-          }
-        ) %>
+      <% invitation_dates_by_format = invitation_dates_by_format(invitations, invitation_formats) %>
+      <% invitation_dates_by_format.values.map(&:length).max.times do |idx| %>
+        <tr>
+          <% invitation_formats.map do |format| %>
+            <td class="px-4 py-3">
+              <%= format_date(invitation_dates_by_format[format]&.fetch(idx, nil)) %>
+            </td>
+          <% end %>
+        </tr>
       <% end %>
       <tr>
-        <% if show_invitation?("sms", category_configuration) %>
+        <% if show_invitation?("sms", invitation_formats) %>
+          <% invitation_disabled = !user.phone_number_is_mobile? || user.archived_in?(department) || follow_up.rdv_pending? || follow_up.closed? %>
           <td class="px-4 py-3">
             <%= form_for :invitation, url: structure_user_invitations_path(user.id), html: { method: :post } do |f| %>
               <%= f.hidden_field :format, value: "sms" %>
-              <%= f.hidden_field :motif_category_id, value: motif_category.id %>
+              <%= f.fields_for :motif_category do |ff| %>
+                <%= ff.hidden_field :id, value: motif_category.id %>
+              <% end %>
               <button
                 data-controller="invitation-button"
                 data-action="click->invitation-button#setAsPending"
-                type="button"
-                disabled="<%= !user.phone_number_is_mobile? || user.archived_in?(department) || follow_up.rdv_pending? || follow_up.closed?  %>"
-                class="btn btn-blue"
+                class="btn btn-blue<%= invitation_disabled ? ' disabled' : '' %>"
                 type="submit"
               >
                 <% if invitations.any?(&:format_sms?) %>
@@ -57,17 +59,18 @@
             <% end %>
           </td>
         <% end %>
-        <% if show_invitation?("email", category_configuration) %>
+        <% if show_invitation?("email", invitation_formats) %>
+          <% invitation_disabled = !user.email? || user.archived_in?(department) || follow_up.rdv_pending? || follow_up.closed? %>
           <td class="px-4 py-3">
             <%= form_for :invitation, url: structure_user_invitations_path(user.id), html: { method: :post } do |f| %>
               <%= f.hidden_field :format, value: "email" %>
-              <%= f.hidden_field :motif_category_id, value: motif_category.id %>
+              <%= f.fields_for :motif_category do |ff| %>
+                <%= ff.hidden_field :id, value: motif_category.id %>
+              <% end %>
               <button
                 data-controller="invitation-button"
                 data-action="click->invitation-button#setAsPending"
-                type="button"
-                disabled="<%= !user.email? || user.archived_in?(department) || follow_up.rdv_pending? || follow_up.closed?  %>"
-                class="btn btn-blue"
+                class="btn btn-blue<%= invitation_disabled ? ' disabled' : '' %>"
                 type="submit"
               >
                 <% if invitations.any?(&:format_email?) %>
@@ -84,17 +87,19 @@
             <% end %>
           </td>
         <% end %>
-        <% if show_invitation?("postal", category_configuration) %>
+        <% if show_invitation?("postal", invitation_formats) %>
+          <% invitation_disabled = !user.address.present? || user.archived_in?(department) || follow_up.rdv_pending? || follow_up.closed?  %>
           <td class="px-4 py-3">
-            <%= form_for :invitation, url: structure_user_invitations_path(user.id), html: { method: :post } do |f| %>
+            <%= form_for :invitation, url: structure_user_invitations_path(user.id, format: "pdf"), html: { method: :post } do |f| %>
               <%= f.hidden_field :format, value: "postal" %>
-              <%= f.hidden_field :motif_category_id, value: motif_category.id %>
+              <%= f.fields_for :motif_category do |ff| %>
+                <%= ff.hidden_field :id, value: motif_category.id %>
+              <% end %>
+
               <button
                 data-controller="invitation-button"
                 data-action="click->invitation-button#setAsPending"
-                type="button"
-                disabled="<%= !user.address.present? || user.archived_in?(department) || follow_up.rdv_pending? || follow_up.closed?  %>"
-                class="btn btn-blue"
+                class="btn btn-blue<%= invitation_disabled ? ' disabled' : '' %>"
                 type="submit"
               >
                 <% if invitations.any?(&:format_postal?) %>

@@ -7,13 +7,18 @@ module UsersHelper
     category_configuration.invitation_formats.present?
   end
 
-  def show_invitation?(format, category_configuration)
-    category_configuration.invitation_formats.include?(format)
+  def show_invitation?(format, invitation_formats)
+    invitation_formats.include?(format)
   end
 
-  def number_of_invitations_dates_row_needed(invitations, category_configuration)
-    invitations.select { |invitation| category_configuration.invitation_formats.include?(invitation.format) }
-               .group_by(&:format).values.map(&:length).max
+  def invitation_dates_by_format(invitations, invitation_formats)
+    invitation_dates_by_formats = invitation_formats.index_with { |_invitation_format| [] }
+    invitation_dates_by_formats.merge!(
+      invitations.group_by(&:format)
+                 .delete_if { |format, _| !format.in?(invitation_formats) }
+                 .transform_values { |invites| invites.map(&:created_at).sort.reverse }.to_h
+    )
+    invitation_dates_by_formats
   end
 
   def no_search_results?(users)
