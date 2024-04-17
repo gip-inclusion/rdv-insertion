@@ -2,7 +2,7 @@
 <% if attribute_list.blank? %>
     <div class="text-array">
       <div class="text-array__row d-flex justify-content-between">
-        <%= f.text_field attribute_name, class: "array-input", name: "#{f.object.class.name.underscore}[#{attribute_name}][]" %>
+        <%= f.text_field attribute_name, class: "array-input", name: field_name(f.object.class.name.underscore, attribute_name, multiple: true) %>
         <div class="text-array__remove"
           data-controller="array-fields-input"
           data-action="click->array-fields-input#remove">
@@ -14,7 +14,7 @@
   <div class="text-array">
     <% attribute_list.each_with_index do |attribute, index| %>
       <div class="text-array__row d-flex justify-content-between">
-        <%= f.text_field attribute_name, class: "array-input", name: "#{f.object.class.name.underscore}[#{attribute_name}][]", value: attribute %>
+        <%= f.text_field attribute_name, class: "array-input", name: field_name(f.object.class.name.underscore, attribute_name, multiple: true), value: attribute %>
         <div class="text-array__remove"
           data-controller="array-fields-input"
           data-action="click->array-fields-input#remove">
