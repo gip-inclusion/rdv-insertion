@@ -81,7 +81,7 @@
           </div>
         <% end %>
         <% if category_configuration.invitation_formats.any? %>
-          <%= react_component(
+          <%# <%= react_component(
             "components/followUp/InvitationBlock", {
               user: user,
               organisation: organisation,
@@ -94,6 +94,8 @@
               isArchived: user.archived_in?(department)
             }
           ) %>
+
+         <%= render "follow_ups/invitation_block", user: user, organisation: organisation, department: department, invitations: invitations, category_configuration: category_configuration, follow_up: follow_up, motif_category: follow_up.motif_category %>
         <% end %>
       </div>
     </div>
