@@ -13,6 +13,9 @@ class InvitationsController < ApplicationController
     else
       respond_to do |format|
         format.json { render json: { success: false, errors: invite_user.errors }, status: :unprocessable_entity }
+        format.turbo_stream do
+          turbo_stream_display_error_modal(invite_user.errors)
+        end
       end
     end
   end
