@@ -1,0 +1,135 @@
+<div class="d-flex justify-content-center">
+  <table class="card-white text-center align-middle m-3 shadow-sm">
+    <thead>
+      <tr>
+        <% if show_invitation?("sms", category_configuration) %>
+          <th class="px-4 py-3">
+            <h4>Invitation SMS</h4>
+          </th>
+        <% end %>
+        <% if show_invitation?("email", category_configuration) %>
+          <th class="px-4 py-3">
+            <h4>Invitation mail</h4>
+          </th>
+        <% end %>
+        <% if show_invitation?("postal", category_configuration) %>
+          <th class="px-4 py-3">
+            <h4>Invitation courrier</h4>
+          </th>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% number_of_invitations_dates_row_needed(invitations, category_configuration).times do |idx| %>
+      <%= react_component(
+          "components/followUp/InvitationsDatesRow", {
+            invitationsDatesByFormat: invitations.group_by(&:format).transform_values { |invitations| invitations.map(&:created_at).sort.reverse }.to_h,
+            invitationFormats: category_configuration.invitation_formats,
+            index: idx,
+            key: "#{category_configuration.motif_category}#{idx}"
+          }
+        ) %>
+      <% end %>
+      <tr>
+        <% if show_invitation?("sms", category_configuration) %>
+          <td class="px-4 py-3">
+            <button
+              type="button"
+              disabled={
+                isLoading.sms ||
+                !user.phone_number ||
+                isArchived ||
+                status === "rdv_pending" ||
+                status === "closed"
+              }
+              class="btn btn-blue"
+              onClick={() => handleInvitationClick("sms")}
+            >
+              {isLoading.sms && "Invitation..."}
+              {!isLoading.sms && invitationsDatesByFormat.sms[0] && (
+                <Tippy
+                  content="Réinviter remettra les compteurs à 0 vis à vis des délais"
+                  placement="bottom"
+                >
+                  <span>Réinviter</span>
+                </Tippy>
+              )}
+              {!isLoading.sms && !invitationsDatesByFormat.sms[0] && "Inviter"}
+            </button>
+          </td>
+        <% end %>
+        <% if show_invitation?("email", category_configuration) %>
+          <td class="px-4 py-3">
+            <button
+              type="button"
+              disabled={
+                isLoading.email ||
+                !user.email ||
+                isArchived ||
+                status === "rdv_pending" ||
+                status === "closed"
+              }
+              class="btn btn-blue"
+              onClick={() => handleInvitationClick("email")}
+            >
+              {isLoading.email && "Invitation..."}
+              {!isLoading.email && invitationsDatesByFormat.email[0] && (
+                <Tippy
+                  content="Réinviter remettra les compteurs à 0 vis à vis des délais"
+                  placement="bottom"
+                >
+                  <span>Réinviter</span>
+                </Tippy>
+              )}
+              {!isLoading.email && !invitationsDatesByFormat.email[0] && "Inviter"}
+            </button>
+          </td>
+        <% end %>
+        <% if show_invitation?("postal", category_configuration) %>
+          <td class="px-4 py-3">
+            <button
+              type="button"
+              disabled={
+                isLoading.postal ||
+                !user.address ||
+                isArchived ||
+                status === "rdv_pending" ||
+                status === "closed"
+              }
+              class="btn btn-blue"
+              onClick={() => handleInvitationClick("postal")}
+            >
+              {isLoading.postal && "Invitation..."}
+              {!isLoading.postal && invitationsDatesByFormat.postal[0] && (
+                <Tippy
+                  content="Réinviter remettra les compteurs à 0 vis à vis des délais"
+                  placement="bottom"
+                >
+                  <span>Réinviter</span>
+                </Tippy>
+              )}
+              {!isLoading.postal && !invitationsDatesByFormat.postal[0] && "Inviter"}
+            </button>
+          </td>
+        <% end %>
+      </tr>
+      {showInvitationsHistoryButton && (
+        <tr>
+          <td class="px-4 py-2" colSpan={3} style={{ cursor: "pointer" }}>
+            {!showInvitationsHistory && (
+              <button onClick={handleShowInvitationsHistory} type="button">
+                <i class="fas fa-angle-down" /> Voir l&apos;historique{" "}
+                <i class="fas fa-angle-down" />
+              </button>
+            )}
+            {showInvitationsHistory && (
+              <button onClick={handleHideInvitationsHistory} type="button">
+                <i class="fas fa-angle-up" /> Voir moins <i class="fas fa-angle-up" />
+              </button>
+            )}
+          </td>
+        </tr>
+      )}
+    </tbody>
+  </table>
+</div>

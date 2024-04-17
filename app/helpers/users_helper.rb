@@ -7,6 +7,15 @@ module UsersHelper
     category_configuration.invitation_formats.present?
   end
 
+  def show_invitation?(format, category_configuration)
+    category_configuration.invitation_formats.include?(format)
+  end
+
+  def number_of_invitations_dates_row_needed(invitations, category_configuration)
+    invitations.select { |invitation| category_configuration.invitation_formats.include?(invitation.format) }
+               .group_by(&:format).values.map(&:length).max
+  end
+
   def no_search_results?(users)
     users.empty? && params[:search_query].present?
   end
