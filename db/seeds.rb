@@ -24,6 +24,7 @@ drome = Department.create!(
   capital: "Valence",
   region: "Auvergne-Rhône-Alpes",
   pronoun: "la",
+  logo: Rack::Test::UploadedFile.new(Rails.root.join("spec/fixtures/logo.png"))
 )
 
 # Dans l'Yonne, pas de système d'invitation : les bénéficiaires sont directement convoqués (convene_user: true)
@@ -33,6 +34,7 @@ yonne = Department.create!(
   capital: "Auxerre",
   region: "Bourgogne-Franche-Comté",
   pronoun: "l'",
+  logo: Rack::Test::UploadedFile.new(Rails.root.join("spec/fixtures/logo.png"))
 )
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -220,7 +222,7 @@ MotifCategory.create!(
 )
 
 # --------------------------------------------------------------------------------------------------------------------
-puts "Creating file configurations..."
+puts "Creating file category_configurations..."
 file_config_drome = FileConfiguration.create(
   sheet_name: "ENTRETIENS PHYSIQUES",
   address_first_field_column: "Adresse",
@@ -251,7 +253,7 @@ file_config_yonne = FileConfiguration.create(
 )
 
 # --------------------------------------------------------------------------------------------------------------------
-puts "Creating organisations and configurations..."
+puts "Creating organisations and category_configurations..."
 drome1_organisation = Organisation.create!(
   name: "Plateforme mutualisée d'orientation",
   phone_number: "0475796991",
@@ -260,7 +262,7 @@ drome1_organisation = Organisation.create!(
   department_id: drome.id
 )
 
-Configuration.create!(
+CategoryConfiguration.create!(
   file_configuration: file_config_drome,
   convene_user: false,
   invitation_formats: ["sms", "email", "postal"],
@@ -269,7 +271,7 @@ Configuration.create!(
   organisation: drome1_organisation
 )
 
-Configuration.create!(
+CategoryConfiguration.create!(
   file_configuration: file_config_drome,
   convene_user: false,
   invitation_formats: ["sms", "email", "postal"],
@@ -294,7 +296,7 @@ drome2_organisation = Organisation.create!(
   department_id: drome.id
 )
 
-Configuration.create!(
+CategoryConfiguration.create!(
   file_configuration: file_config_drome,
   convene_user: false,
   invitation_formats: ["sms", "email", "postal"],
@@ -303,7 +305,7 @@ Configuration.create!(
   organisation: drome2_organisation
 )
 
-Configuration.create!(
+CategoryConfiguration.create!(
   file_configuration: file_config_drome,
   convene_user: false,
   invitation_formats: ["sms", "email", "postal"],
@@ -328,7 +330,7 @@ yonne_organisation = Organisation.create!(
   department_id: yonne.id
 )
 
-Configuration.create!(
+CategoryConfiguration.create!(
   file_configuration: file_config_yonne,
   convene_user: true,
   invitation_formats: [],

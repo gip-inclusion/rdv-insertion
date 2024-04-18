@@ -1,7 +1,7 @@
 describe "Agents can edit organisation", :js do
   let!(:agent) { create(:agent) }
   let!(:organisation) { create(:organisation) }
-  let!(:configuration) { create(:configuration, organisation: organisation) }
+  let!(:category_configuration) { create(:category_configuration, organisation: organisation) }
   let!(:agent_role) { create(:agent_role, organisation: organisation, agent: agent, access_level: "admin") }
 
   before do
@@ -13,7 +13,7 @@ describe "Agents can edit organisation", :js do
 
   context "organisation edit" do
     it "allows to set a code safir" do
-      visit organisation_configurations_path(organisation)
+      visit organisation_category_configurations_path(organisation)
       click_link("Modifier", href: edit_organisation_path(organisation))
 
       page.fill_in "organisation_safir_code", with: "153425"

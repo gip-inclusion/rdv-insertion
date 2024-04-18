@@ -70,7 +70,7 @@ class InviteUser < BaseService
   end
 
   def all_configurations
-    @all_configurations ||= Configuration.where(organisation: @organisations & @user.organisations).to_a
+    @all_configurations ||= CategoryConfiguration.where(organisation: @organisations & @user.organisations).to_a
   end
 
   def set_current_configuration

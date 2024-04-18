@@ -39,7 +39,7 @@ module Users::Filterable
     return unless params[:action_required] == "true"
 
     @users = @users.joins(:follow_ups).where(
-      follow_ups: @follow_ups.action_required(@current_configuration.number_of_days_before_action_required)
+      follow_ups: @follow_ups.action_required(@current_category_configuration.number_of_days_before_action_required)
     )
   end
 

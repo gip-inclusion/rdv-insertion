@@ -2,7 +2,7 @@ module User::Address
   extend ActiveSupport::Concern
 
   included do
-    normalizes :address, with: ->(address) { address.squish }
+    squishes :address
   end
 
   def street_address

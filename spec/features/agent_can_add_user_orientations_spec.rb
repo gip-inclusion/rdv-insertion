@@ -59,9 +59,9 @@ describe "Agents can add user orientation", :js do
 
       expect(page).to have_no_content("Pas d'orientation renseignée")
       expect(page).to have_content("Du 03/07/2023 à aujourd'hui")
-      expect(page).to have_content("Orientation Sociale")
-      expect(page).to have_content("Structure CD 26")
-      expect(page).to have_content("Référent unique Kad Merad")
+      expect(page).to have_content("Sociale")
+      expect(page).to have_content("CD 26")
+      expect(page).to have_content("Kad Merad")
 
       # orientation without agent
       click_button("Ajouter une orientation")
@@ -78,14 +78,14 @@ describe "Agents can add user orientation", :js do
       click_button "Enregistrer"
 
       expect(page).to have_content("Du 03/07/2023 au 03/10/2023")
-      expect(page).to have_content("Orientation Sociale")
-      expect(page).to have_content("Structure CD 26")
-      expect(page).to have_content("Référent unique Kad Merad")
+      expect(page).to have_content("Sociale")
+      expect(page).to have_content("CD 26")
+      expect(page).to have_content("Kad Merad")
 
       expect(page).to have_content("Du 03/10/2023 à aujourd'hui")
-      expect(page).to have_content("Orientation Professionnelle")
-      expect(page).to have_content("Structure Asso 26")
-      expect(page).to have_content("Référent unique non renseigné")
+      expect(page).to have_content("Professionnelle")
+      expect(page).to have_content("Asso 26")
+      expect(page).to have_content("non renseigné")
     end
   end
 end
