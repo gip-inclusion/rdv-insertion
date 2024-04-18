@@ -4,13 +4,15 @@ class FollowUp < ApplicationRecord
   include Notificable
   include HasParticipationsToRdvs
 
-  belongs_to :user
+  belongs_to :user, touch: true
   belongs_to :motif_category
   has_many :invitations, dependent: :destroy
   has_many :participations, dependent: :nullify
 
   has_many :rdvs, through: :participations
   has_many :notifications, through: :participations
+
+  broadcasts_refreshes
 
   validates :user, uniqueness: { scope: :motif_category,
                                  message: "est déjà suivi pour cette catégorie de motif" }

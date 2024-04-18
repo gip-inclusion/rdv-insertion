@@ -1,17 +1,17 @@
 <ul class="nav nav-tabs m-3">
   <li class="nav-item">
-    <%= link_to structure_user_path(user.id), class: "nav-link d-flex align-items-center #{tab == "infos" ? 'active' : ''}" do %>
+    <%= link_to structure_user_path(user.id), class: "nav-link d-flex align-items-center #{tab == "infos" ? "active" : ""}" do %>
       Informations
     <% end %>
   </li>
   <li class="nav-item">
-    <%= link_to structure_user_follow_ups_path(user.id), class: "nav-link d-flex align-items-center #{tab == "rdvs" ? 'active' : ''}" do %>
+    <%= link_to structure_user_follow_ups_path(user.id), class: "nav-link d-flex align-items-center #{tab == "rdvs" ? "active" : ""}" do %>
       Rendez-vous
     <% end %>
   </li>
   <% if show_parcours?(@department) %>
     <li class="nav-item">
-      <%= link_to user_parcours_path(user_id: user.id), class: "nav-link d-flex align-items-center #{tab == "parcours" ? 'active' : ''}" do %>
+      <%= link_to user_parcours_path(user_id: user.id), class: "nav-link d-flex align-items-center #{tab == "parcours" ? "active" : ""}" do %>
         Parcours
       <% end %>
     </li>

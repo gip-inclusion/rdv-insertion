@@ -16,6 +16,7 @@
   </thead>
   <tbody class="align-middle">
     <% @users.each do |user| %>
+      <%= turbo_stream_from user %>
       <tr
         class="clickable <%= "table-archived" if user.archived_in?(@department) %>"
         data-controller="user-link"
@@ -33,7 +34,7 @@
               <%= render "follow_ups/follow_up_status_cell", follow_up: follow_up, category_configuration: %>
             <% else %>
               <td id=<%= dom_id(category_configuration.motif_category, "user_#{user.id}") %>>
-                <%= render "follow_ups/new_button", user:, category_configuration:, organisation: @organisation, department: @department, turbo: true, button_text: "Ajouter" %>
+                <%= render "follow_ups/new_button", user:, category_configuration:, organisation: @organisation, department: @department, button_text: "Ajouter" %>
               </td>
             <% end %>
           <% end %>

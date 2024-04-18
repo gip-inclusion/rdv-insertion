@@ -6,8 +6,6 @@ export default function InvitationsDatesRow({
   invitationFormats,
   index,
 }) {
-  console.log(invitationsDatesByFormat);
-  console.log(invitationFormats);
   return (
     <>
       {invitationFormats.map((format) => (

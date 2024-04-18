@@ -1,3 +1,5 @@
+<%= turbo_stream_from @user %>
+
 <%= render 'users/archive_banner' if @user.archived_in?(@department) %>
 
 <div class="container text-dark-blue h4-as-labels mt-4">
@@ -28,7 +30,7 @@
                   </h5>
                 </div>
                 <div>
-                  <%= render "follow_ups/new_button", user: @user, category_configuration:, turbo: false, button_text: "Ouvrir un suivi" %>
+                  <%= render "follow_ups/new_button", user: @user, category_configuration:, button_text: "Ouvrir un suivi" %>
                 </div>
               </div>
             </div>

@@ -4,7 +4,7 @@ class Participation < ApplicationRecord
   include RdvParticipationStatus
 
   belongs_to :rdv
-  belongs_to :follow_up
+  belongs_to :follow_up, touch: true
   belongs_to :user
   belongs_to :agent_prescripteur,
              class_name: "Agent",

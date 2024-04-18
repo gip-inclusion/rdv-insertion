@@ -1,54 +1,53 @@
+<%= turbo_stream_from @user %>
+
 <%= render 'archive_banner' if @archive.present? %>
 
 <div class="container text-dark-blue h4-as-labels mt-4">
   <%= render "user_page_header" %>
 
-  <%= turbo_frame_tag "user_page_body", data: { turbo_action: "advance" } do %>
+  <%= render "user_tabs", user: @user, tab: "infos" %>
 
-    <%= render "user_tabs", user: @user, tab: "infos" %>
-
-    <div class="mb-4">
-      <div class="row">
-        <div class="col-md-6"></div>
-        <div class="col-md-6 text-end">
-          <%= link_to edit_structure_user_path(@user.id), class: "px-4" do %>
-            <button class="btn btn-blue mx-2"><i class="fas fa-pencil-alt me-3"></i>Modifier</button>
-          <% end %>
-        </div>
-      </div>
-      <div class="row d-flex justify-content-start flex-wrap">
-        <%= render "common/attribute_display", record: @user, attribute: :first_name %>
-        <%= render "common/attribute_display", record: @user, attribute: :last_name %>
-        <%= render "common/attribute_display", record: @user, attribute: :title %>
-        <%= render "common/attribute_display", record: @user, attribute: :role %>
-        <%= render "common/attribute_display", record: @user, attribute: :affiliation_number %>
-        <%= render "common/attribute_display", record: @user, attribute: :department_internal_id, tooltip: true %>
-        <%= render "common/attribute_display", record: @user, attribute: :nir %>
-        <%= render "common/attribute_display", record: @user, attribute: :france_travail_id %>
-        <%= render "common/attribute_display", record: @user, attribute: :email %>
-        <%= render "common/attribute_display", record: @user, attribute: :birth_date, as: :date %>
-        <%= render "common/attribute_display", record: @user, attribute: :address %>
-        <%= render "common/attribute_display", record: @user, attribute: :phone_number %>
-        <%= render "common/attribute_display", record: @user, attribute: :rights_opening_date, as: :date %>
-        <%= render "common/attribute_display", record: @user, attribute: :created_at, as: :date %>
-        <% if @archive.present? %>
-          <%= render "common/attribute_display", record: @archive, attribute: :archiving_reason %>
-          <%= render "common/attribute_display", record: @archive, attribute: :created_at, as: :date %>
+  <div class="mb-4">
+    <div class="row">
+      <div class="col-md-6"></div>
+      <div class="col-md-6 text-end">
+        <%= link_to edit_structure_user_path(@user.id), class: "px-4" do %>
+          <button class="btn btn-blue mx-2"><i class="fas fa-pencil-alt me-3"></i>Modifier</button>
         <% end %>
       </div>
-      <div class="row d-flex justify-content-start flex-wrap mt-5">
-        <div class="col-12 col-md-6 px-5">
-          <h4> Tags </h4>
-          <%= render "user_tags", tags: @tags %>
-
-          <%= link_to(structure_user_tag_assignations_path(@user.id), data: { turbo_frame: 'remote_modal' }) do %>
-            <button class="btn btn-blue mb-3"><i class="fas fa-pen"></i> Ajouter ou retirer un tag </button>
-          <% end %>
-        </div>
-
-        <%= render "users/user_organisations_list", user: @user %>
-        <%= render "users/user_referents_list", user: @user %>
-      </div>
     </div>
-  <% end %>
+    <div class="row d-flex justify-content-start flex-wrap">
+      <%= render "common/attribute_display", record: @user, attribute: :first_name %>
+      <%= render "common/attribute_display", record: @user, attribute: :last_name %>
+      <%= render "common/attribute_display", record: @user, attribute: :title %>
+      <%= render "common/attribute_display", record: @user, attribute: :role %>
+      <%= render "common/attribute_display", record: @user, attribute: :affiliation_number %>
+      <%= render "common/attribute_display", record: @user, attribute: :department_internal_id, tooltip: true %>
+      <%= render "common/attribute_display", record: @user, attribute: :nir %>
+      <%= render "common/attribute_display", record: @user, attribute: :france_travail_id %>
+      <%= render "common/attribute_display", record: @user, attribute: :email %>
+      <%= render "common/attribute_display", record: @user, attribute: :birth_date, as: :date %>
+      <%= render "common/attribute_display", record: @user, attribute: :address %>
+      <%= render "common/attribute_display", record: @user, attribute: :phone_number %>
+      <%= render "common/attribute_display", record: @user, attribute: :rights_opening_date, as: :date %>
+      <%= render "common/attribute_display", record: @user, attribute: :created_at, as: :date %>
+      <% if @archive.present? %>
+        <%= render "common/attribute_display", record: @archive, attribute: :archiving_reason %>
+        <%= render "common/attribute_display", record: @archive, attribute: :created_at, as: :date %>
+      <% end %>
+    </div>
+    <div class="row d-flex justify-content-start flex-wrap mt-5">
+      <div class="col-12 col-md-6 px-5">
+        <h4> Tags </h4>
+        <%= render "user_tags", tags: @tags %>
+
+        <%= link_to(structure_user_tag_assignations_path(@user.id), data: { turbo_frame: 'remote_modal' }) do %>
+          <button class="btn btn-blue mb-3"><i class="fas fa-pen"></i> Ajouter ou retirer un tag </button>
+        <% end %>
+      </div>
+
+      <%= render "users/user_organisations_list", user: @user %>
+      <%= render "users/user_referents_list", user: @user %>
+    </div>
+  </div>
 </div>

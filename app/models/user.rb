@@ -44,6 +44,8 @@ class User < ApplicationRecord
   has_many :departments, -> { distinct }, through: :organisations
   has_many :tags, through: :tag_users
 
+  broadcasts_refreshes
+
   accepts_nested_attributes_for :follow_ups, reject_if: :follow_up_category_handled_already?
   accepts_nested_attributes_for :tag_users
 
