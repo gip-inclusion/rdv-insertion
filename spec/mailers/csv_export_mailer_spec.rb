@@ -5,13 +5,13 @@ RSpec.describe CsvExportMailer do
   let!(:agent) { create(:agent, organisations: [organisation1, organisation2]) }
   let!(:export) do
     create(:csv_export, structure_type: "Organisation", structure_id: organisation1.id, kind: "users_csv",
-                        agent_id: agent.id)
+                        agent_id: agent.id, request_params: request_params)
   end
   let!(:request_params) { { organisation_id: organisation1.id } }
 
   describe "#notify_csv_export" do
     subject do
-      described_class.notify_csv_export(agent.email, export, request_params)
+      described_class.notify_csv_export(agent.email, export)
     end
 
     it "renders the headers" do
@@ -36,7 +36,7 @@ RSpec.describe CsvExportMailer do
     context "when the export is for a department" do
       let!(:export) do
         create(:csv_export, structure_type: "Department", structure_id: department.id, kind: "users_csv",
-                            agent_id: agent.id)
+                            agent_id: agent.id, request_params: request_params)
       end
 
       it "renders the body" do

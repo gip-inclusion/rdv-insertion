@@ -124,6 +124,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_12_105200) do
     t.string "kind"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.json "request_params"
     t.index ["agent_id"], name: "index_csv_exports_on_agent_id"
     t.index ["structure_type", "structure_id"], name: "index_csv_exports_on_structure"
   end

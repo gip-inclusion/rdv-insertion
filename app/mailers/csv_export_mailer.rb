@@ -1,15 +1,15 @@
 class CsvExportMailer < ApplicationMailer
-  def notify_csv_export(email, export, request_params)
+  def notify_csv_export(email, export)
     @export = export
-    @request_params = request_params
-    set_filters
+    @request_params = @export.request_params&.deep_symbolize_keys
+    set_organisations_filter
+    set_request_filters if @request_params.present?
     mail(to: email, subject: "[rdv-insertion] Export CSV")
   end
 
   private
 
-  def set_filters
-    set_organisations_filter
+  def set_request_filters
     set_status_filter
     set_referent_filter
     set_creation_dates_filter
