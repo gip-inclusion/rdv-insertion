@@ -12,7 +12,7 @@ module Users
         @user.soft_delete if @user.organisations.empty?
       end
 
-      call_service!(RdvContexts::CleanUnusedRdvContexts, user: @user)
+      CleanUnusedFollowUpsJob.perform_async(@user.id)
     end
 
     private

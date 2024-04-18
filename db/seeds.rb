@@ -262,7 +262,7 @@ drome1_organisation = Organisation.create!(
   department_id: drome.id
 )
 
-Configuration.create!(
+CategoryConfiguration.create!(
   file_configuration: file_config_drome,
   convene_user: false,
   invitation_formats: ["sms", "email", "postal"],
@@ -271,7 +271,7 @@ Configuration.create!(
   organisation: drome1_organisation
 )
 
-Configuration.create!(
+CategoryConfiguration.create!(
   file_configuration: file_config_drome,
   convene_user: false,
   invitation_formats: ["sms", "email", "postal"],
@@ -296,7 +296,7 @@ drome2_organisation = Organisation.create!(
   department_id: drome.id
 )
 
-Configuration.create!(
+CategoryConfiguration.create!(
   file_configuration: file_config_drome,
   convene_user: false,
   invitation_formats: ["sms", "email", "postal"],
@@ -305,7 +305,7 @@ Configuration.create!(
   organisation: drome2_organisation
 )
 
-Configuration.create!(
+CategoryConfiguration.create!(
   file_configuration: file_config_drome,
   convene_user: false,
   invitation_formats: ["sms", "email", "postal"],
@@ -330,7 +330,7 @@ yonne_organisation = Organisation.create!(
   department_id: yonne.id
 )
 
-Configuration.create!(
+CategoryConfiguration.create!(
   file_configuration: file_config_yonne,
   convene_user: true,
   invitation_formats: [],
