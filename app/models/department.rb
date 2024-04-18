@@ -8,13 +8,13 @@ class Department < ApplicationRecord
   has_many :archives, dependent: :restrict_with_error
 
   has_many :users, through: :organisations
-  has_many :configurations, through: :organisations
-  has_many :motif_categories, -> { distinct }, through: :configurations
-  has_many :file_configurations, through: :configurations
+  has_many :category_configurations, through: :organisations
+  has_many :motif_categories, -> { distinct }, through: :category_configurations
+  has_many :file_configurations, through: :category_configurations
   has_many :agents, through: :organisations
   has_many :rdvs, through: :organisations
   has_many :participations, through: :rdvs
-  has_many :rdv_contexts, through: :users
+  has_many :follow_ups, through: :users
   has_many :archived_users, through: :archives, source: :user
   has_many :tags, through: :organisations
   has_one :stat, as: :statable, dependent: :destroy

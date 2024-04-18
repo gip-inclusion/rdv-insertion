@@ -14,12 +14,12 @@ RSpec.describe InvitationMailer do
   let!(:invitation) do
     create(
       :invitation,
-      rdv_context: rdv_context, user: user, department: department,
+      follow_up: follow_up, user: user, department: department,
       format: "email", help_phone_number: help_phone_number,
       organisations: [organisation]
     )
   end
-  let!(:rdv_context) { build(:rdv_context) }
+  let!(:follow_up) { build(:follow_up) }
 
   describe "#standard_invitation" do
     subject do
@@ -27,7 +27,7 @@ RSpec.describe InvitationMailer do
     end
 
     context "for rsa_orientation" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_orientation) }
+      let!(:follow_up) { build(:follow_up, motif_category: category_rsa_orientation) }
 
       it "renders the headers" do
         expect(subject.to).to eq([user.email])
@@ -51,8 +51,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).not_to match(
           "votre RSA pourra être suspendu ou réduit."
         )
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match("dans un délai de 3 jours")
         expect(body_string).to match("Logo du département")
         expect(body_string).to match("Logo de l'Union européene")
@@ -83,10 +82,10 @@ RSpec.describe InvitationMailer do
         end
       end
 
-      context "when template attributes are overriden by configuration attributes" do
-        let!(:configuration) do
+      context "when template attributes are overriden by category_configuration attributes" do
+        let!(:category_configuration) do
           create(
-            :configuration,
+            :category_configuration,
             motif_category: category_rsa_orientation, organisation:,
             template_rdv_title_override: "nouveau type de rendez-vous",
             template_rdv_purpose_override: "tester une nouvelle fonctionnalité"
@@ -111,8 +110,7 @@ RSpec.describe InvitationMailer do
           expect(body_string).not_to match(
             "votre RSA pourra être suspendu ou réduit."
           )
-          expect(body_string).to match("/invitations/redirect")
-          expect(body_string).to match("uuid=#{invitation.uuid}")
+          expect(body_string).to match("/i/r/#{invitation.uuid}")
           expect(body_string).to match("dans un délai de 3 jours")
           expect(body_string).to match("Logo du département")
           expect(body_string).to match("Logo de l'Union européene")
@@ -122,11 +120,11 @@ RSpec.describe InvitationMailer do
     end
 
     context "for rsa_accompagnement" do
-      let!(:rdv_context) { build(:rdv_context) }
+      let!(:follow_up) { build(:follow_up) }
 
       %w[category_rsa_accompagnement category_rsa_accompagnement_social category_rsa_accompagnement_sociopro]
         .each do |motif_category|
-        before { rdv_context.motif_category = send(motif_category) }
+        before { follow_up.motif_category = send(motif_category) }
 
         it "renders the headers" do
           expect(subject.to).to eq([user.email])
@@ -150,8 +148,7 @@ RSpec.describe InvitationMailer do
           expect(body_string).to match(
             "votre RSA pourra être suspendu ou réduit."
           )
-          expect(body_string).to match("/invitations/redirect")
-          expect(body_string).to match("uuid=#{invitation.uuid}")
+          expect(body_string).to match("/i/r/#{invitation.uuid}")
           expect(body_string).to match("dans un délai de 3 jours")
           expect(body_string).to match("Logo du département")
           expect(body_string).to match("Logo de l'Union européene")
@@ -175,8 +172,8 @@ RSpec.describe InvitationMailer do
     end
 
     context "for rsa_cer_signature" do
-      let!(:rdv_context) do
-        build(:rdv_context, motif_category: category_rsa_cer_signature)
+      let!(:follow_up) do
+        build(:follow_up, motif_category: category_rsa_cer_signature)
       end
 
       it "renders the headers" do
@@ -204,8 +201,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).not_to match(
           "votre RSA pourra être suspendu ou réduit."
         )
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match("dans un délai de 3 jours")
         expect(body_string).to match("Logo du département")
         expect(body_string).to match("Logo de l'Union européene")
@@ -228,7 +224,7 @@ RSpec.describe InvitationMailer do
     end
 
     context "for rsa_follow_up" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_follow_up) }
+      let!(:follow_up) { build(:follow_up, motif_category: category_rsa_follow_up) }
 
       it "renders the headers" do
         expect(subject.to).to eq([user.email])
@@ -255,8 +251,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).not_to match(
           "votre RSA pourra être suspendu ou réduit."
         )
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match("dans un délai de 3 jours")
         expect(body_string).to match("Logo du département")
         expect(body_string).to match("Logo de l'Union européene")
@@ -279,7 +274,7 @@ RSpec.describe InvitationMailer do
     end
 
     context "for rsa_main_tendue" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_main_tendue) }
+      let!(:follow_up) { build(:follow_up, motif_category: category_rsa_main_tendue) }
 
       it "renders the headers" do
         expect(subject.to).to eq([user.email])
@@ -306,8 +301,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).not_to match(
           "votre RSA pourra être suspendu ou réduit."
         )
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match("dans un délai de 3 jours")
         expect(body_string).to match("Logo du département")
         expect(body_string).to match("Logo de l'Union européene")
@@ -330,8 +324,8 @@ RSpec.describe InvitationMailer do
     end
 
     context "for rsa_atelier_collectif_mandatory" do
-      let!(:rdv_context) do
-        build(:rdv_context, motif_category: category_rsa_atelier_collectif_mandatory)
+      let!(:follow_up) do
+        build(:follow_up, motif_category: category_rsa_atelier_collectif_mandatory)
       end
 
       it "renders the headers" do
@@ -359,8 +353,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).not_to match(
           "votre RSA pourra être suspendu ou réduit."
         )
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match("dans un délai de 3 jours")
         expect(body_string).to match("Logo du département")
         expect(body_string).to match("Logo de l'Union européene")
@@ -383,8 +376,8 @@ RSpec.describe InvitationMailer do
     end
 
     context "for rsa_spie" do
-      let!(:rdv_context) do
-        build(:rdv_context, motif_category: category_rsa_spie)
+      let!(:follow_up) do
+        build(:follow_up, motif_category: category_rsa_spie)
       end
 
       it "renders the headers" do
@@ -411,8 +404,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match(
           "votre RSA pourra être suspendu ou réduit."
         )
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match("dans un délai de 3 jours")
         expect(body_string).to match("Logo du département")
         expect(body_string).to match("Logo de l'Union européene")
@@ -435,8 +427,8 @@ RSpec.describe InvitationMailer do
     end
 
     context "for rsa integration information" do
-      let!(:rdv_context) do
-        build(:rdv_context, motif_category: category_rsa_integration_information)
+      let!(:follow_up) do
+        build(:follow_up, motif_category: category_rsa_integration_information)
       end
 
       it "renders the headers" do
@@ -461,8 +453,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).not_to match(
           "votre RSA pourra être suspendu ou réduit."
         )
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match("dans un délai de 3 jours")
         expect(body_string).to match("Logo du département")
         expect(body_string).to match("Logo de l'Union européene")
@@ -485,7 +476,7 @@ RSpec.describe InvitationMailer do
     end
 
     context "for siae_interview" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: category_siae_interview) }
+      let!(:follow_up) { build(:follow_up, motif_category: category_siae_interview) }
 
       it "renders the headers" do
         expect(subject.to).to eq([user.email])
@@ -512,8 +503,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).not_to match(
           "votre RSA pourra être suspendu ou réduit."
         )
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match("dans un délai de 3 jours")
         expect(body_string).to match("Logo du département")
         expect(body_string).to match("Logo de l'Union européene")
@@ -536,7 +526,7 @@ RSpec.describe InvitationMailer do
     end
 
     context "for siae_collective_information" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: category_siae_collective_information) }
+      let!(:follow_up) { build(:follow_up, motif_category: category_siae_collective_information) }
 
       it "renders the headers" do
         expect(subject.to).to eq([user.email])
@@ -563,14 +553,13 @@ RSpec.describe InvitationMailer do
         expect(body_string).not_to match(
           "votre RSA pourra être suspendu ou réduit."
         )
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match("dans un délai de 3 jours")
       end
     end
 
     context "for siae_follow_up" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: category_siae_follow_up) }
+      let!(:follow_up) { build(:follow_up, motif_category: category_siae_follow_up) }
 
       it "renders the headers" do
         expect(subject.to).to eq([user.email])
@@ -597,15 +586,14 @@ RSpec.describe InvitationMailer do
         expect(body_string).not_to match(
           "votre RSA pourra être suspendu ou réduit."
         )
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match("dans un délai de 3 jours")
       end
     end
 
     context "for rsa_orientation_france_travail" do
-      let!(:rdv_context) do
-        build(:rdv_context, motif_category: category_rsa_orientation_france_travail)
+      let!(:follow_up) do
+        build(:follow_up, motif_category: category_rsa_orientation_france_travail)
       end
 
       it "renders the headers" do
@@ -626,8 +614,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("01 39 39 39 39")
         expect(body_string).to match("Dans le cadre du projet 'France Travail'")
         expect(body_string).to match("afin de démarrer un parcours d'accompagnement.")
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match("Logo du département")
         expect(body_string).to match("Logo de l'Union européene")
         expect(body_string).to match("Logo de France Travail")
@@ -656,8 +643,8 @@ RSpec.describe InvitationMailer do
         .phone_platform_invitation
     end
 
-    let!(:rdv_context) do
-      build(:rdv_context, motif_category: category_rsa_orientation_on_phone_platform)
+    let!(:follow_up) do
+      build(:follow_up, motif_category: category_rsa_orientation_on_phone_platform)
     end
 
     it "renders the headers" do
@@ -716,8 +703,8 @@ RSpec.describe InvitationMailer do
         .atelier_invitation
     end
 
-    let!(:rdv_context) do
-      build(:rdv_context, motif_category: category_rsa_atelier_rencontres_pro)
+    let!(:follow_up) do
+      build(:follow_up, motif_category: category_rsa_atelier_rencontres_pro)
     end
 
     it "renders the headers" do
@@ -742,8 +729,7 @@ RSpec.describe InvitationMailer do
         "atelier\\(s\\) et formation\\(s\\) proposé\\(s\\)</span> sur la plateforme " \
         "RDV-Solidarités et vous y inscrire directement et librement, dans la limite des places disponibles."
       )
-      expect(body_string).to match("/invitations/redirect")
-      expect(body_string).to match("uuid=#{invitation.uuid}")
+      expect(body_string).to match("/i/r/#{invitation.uuid}")
       expect(body_string).not_to match("dans un délai de 3 jours")
       expect(body_string).to match("Logo du département")
       expect(body_string).to match("Logo de l'Union européene")
@@ -783,8 +769,8 @@ RSpec.describe InvitationMailer do
     end
 
     context "for psychologue" do
-      let!(:rdv_context) do
-        build(:rdv_context, motif_category: category_psychologue)
+      let!(:follow_up) do
+        build(:follow_up, motif_category: category_psychologue)
       end
 
       it "renders the headers" do
@@ -802,8 +788,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")
         expect(body_string).to match("Vous êtes invité à participer à un rendez-vous de suivi psychologue.")
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match("Logo du département")
         expect(body_string).to match("Logo de l'Union européene")
         expect(body_string).to match("Logo de France Travail")
@@ -833,8 +818,8 @@ RSpec.describe InvitationMailer do
     end
 
     context "for atelier_enfants_ados" do
-      let!(:rdv_context) do
-        build(:rdv_context, motif_category: category_atelier_enfants_ados)
+      let!(:follow_up) do
+        build(:follow_up, motif_category: category_atelier_enfants_ados)
       end
 
       it "renders the headers" do
@@ -852,8 +837,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match("Le département de la Drôme.")
         expect(body_string).to match("01 39 39 39 39")
         expect(body_string).to match("Tu es invité à participer à un atelier organisé par le Département.")
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match("Logo du département")
         expect(body_string).to match("Logo de l'Union européene")
         expect(body_string).to match("Logo de France Travail")
@@ -881,7 +865,7 @@ RSpec.describe InvitationMailer do
     end
 
     context "for psychologue" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: category_psychologue) }
+      let!(:follow_up) { build(:follow_up, motif_category: category_psychologue) }
 
       it "renders the headers" do
         expect(subject.to).to eq([user.email])
@@ -900,8 +884,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match(
           "Vous avez reçu un premier mail il y a 3 jours vous invitant à prendre un rendez-vous de suivi psychologue."
         )
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match(
           "Il ne vous reste plus que <span class=\"font-weight-bold\">#{invitation.number_of_days_before_expiration}" \
           " jours</span> pour prendre rendez-vous"
@@ -927,7 +910,7 @@ RSpec.describe InvitationMailer do
     end
 
     context "when the signature is configured" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: category_psychologue) }
+      let!(:follow_up) { build(:follow_up, motif_category: category_psychologue) }
       let!(:messages_configuration) do
         create(:messages_configuration, organisation: organisation, signature_lines: ["Fabienne Bouchet"])
       end
@@ -944,7 +927,7 @@ RSpec.describe InvitationMailer do
     end
 
     context "for rsa_orientation" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_orientation) }
+      let!(:follow_up) { build(:follow_up, motif_category: category_rsa_orientation) }
 
       it "renders the headers" do
         expect(subject.to).to eq([user.email])
@@ -968,8 +951,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).not_to match(
           "votre RSA pourra être suspendu ou réduit."
         )
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match(
           "Il ne vous reste plus que <span class=\"font-weight-bold\">#{invitation.number_of_days_before_expiration}" \
           " jours</span> pour prendre rendez-vous"
@@ -995,7 +977,7 @@ RSpec.describe InvitationMailer do
     end
 
     context "when the signature is configured" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_orientation) }
+      let!(:follow_up) { build(:follow_up, motif_category: category_rsa_orientation) }
       let!(:messages_configuration) do
         create(:messages_configuration, organisation: organisation, signature_lines: ["Fabienne Bouchet"])
       end
@@ -1008,7 +990,7 @@ RSpec.describe InvitationMailer do
     context "for rsa_accompagnement" do
       %w[category_rsa_accompagnement category_rsa_accompagnement_social category_rsa_accompagnement_sociopro]
         .each do |motif_category|
-        before { rdv_context.motif_category = send(motif_category) }
+        before { follow_up.motif_category = send(motif_category) }
 
         it "renders the headers" do
           expect(subject.to).to eq([user.email])
@@ -1032,8 +1014,7 @@ RSpec.describe InvitationMailer do
           expect(body_string).to match(
             "votre RSA pourra être suspendu ou réduit."
           )
-          expect(body_string).to match("/invitations/redirect")
-          expect(body_string).to match("uuid=#{invitation.uuid}")
+          expect(body_string).to match("/i/r/#{invitation.uuid}")
           expect(body_string).to match(
             "Il ne vous reste plus que <span class=\"font-weight-bold\">" \
             "#{invitation.number_of_days_before_expiration}" \
@@ -1061,8 +1042,8 @@ RSpec.describe InvitationMailer do
     end
 
     context "for rsa_cer_signature" do
-      let!(:rdv_context) do
-        build(:rdv_context, motif_category: category_rsa_cer_signature)
+      let!(:follow_up) do
+        build(:follow_up, motif_category: category_rsa_cer_signature)
       end
 
       it "renders the headers" do
@@ -1090,8 +1071,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).not_to match(
           "votre RSA pourra être suspendu ou réduit."
         )
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match(
           "Il ne vous reste plus que <span class=\"font-weight-bold\">#{invitation.number_of_days_before_expiration}" \
           " jours</span> pour prendre rendez-vous"
@@ -1117,7 +1097,7 @@ RSpec.describe InvitationMailer do
     end
 
     context "for rsa_follow_up" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: category_rsa_follow_up) }
+      let!(:follow_up) { build(:follow_up, motif_category: category_rsa_follow_up) }
 
       it "renders the headers" do
         expect(subject.to).to eq([user.email])
@@ -1144,8 +1124,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).not_to match(
           "votre RSA pourra être suspendu ou réduit."
         )
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match(
           "Il ne vous reste plus que <span class=\"font-weight-bold\">#{invitation.number_of_days_before_expiration}" \
           " jours</span> pour prendre rendez-vous"
@@ -1178,8 +1157,8 @@ RSpec.describe InvitationMailer do
         .phone_platform_invitation_reminder
     end
 
-    let!(:rdv_context) do
-      build(:rdv_context, motif_category: category_rsa_orientation_on_phone_platform)
+    let!(:follow_up) do
+      build(:follow_up, motif_category: category_rsa_orientation_on_phone_platform)
     end
 
     it "renders the headers" do
@@ -1240,7 +1219,7 @@ RSpec.describe InvitationMailer do
     end
 
     context "for atelier_enfants_ados" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: category_atelier_enfants_ados) }
+      let!(:follow_up) { build(:follow_up, motif_category: category_atelier_enfants_ados) }
 
       it "renders the headers" do
         expect(subject.to).to eq([user.email])
@@ -1259,8 +1238,7 @@ RSpec.describe InvitationMailer do
         expect(body_string).to match(
           "Tu as reçu un premier mail il y a 3 jours t'invitant à un atelier destiné aux jeunes de ton âge."
         )
-        expect(body_string).to match("/invitations/redirect")
-        expect(body_string).to match("uuid=#{invitation.uuid}")
+        expect(body_string).to match("/i/r/#{invitation.uuid}")
         expect(body_string).to match(
           "Il ne te reste plus que <span class=\"font-weight-bold\">#{invitation.number_of_days_before_expiration}" \
           " jours</span> pour prendre rendez-vous à la date et l'horaire de ton choix en cliquant" \
@@ -1287,7 +1265,7 @@ RSpec.describe InvitationMailer do
     end
 
     context "when the signature is configured" do
-      let!(:rdv_context) { build(:rdv_context, motif_category: category_psychologue) }
+      let!(:follow_up) { build(:follow_up, motif_category: category_psychologue) }
       let!(:messages_configuration) do
         create(:messages_configuration, organisation: organisation, signature_lines: ["Fabienne Bouchet"])
       end

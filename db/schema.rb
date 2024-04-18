@@ -91,7 +91,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_03_125856) do
     t.index ["user_id"], name: "index_archives_on_user_id"
   end
 
-  create_table "configurations", force: :cascade do |t|
+  create_table "category_configurations", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "invitation_formats", default: ["sms", "email", "postal"], null: false, array: true
@@ -111,9 +111,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_03_125856) do
     t.integer "position", default: 0
     t.integer "department_position", default: 0
     t.string "phone_number"
-    t.index ["file_configuration_id"], name: "index_configurations_on_file_configuration_id"
-    t.index ["motif_category_id"], name: "index_configurations_on_motif_category_id"
-    t.index ["organisation_id"], name: "index_configurations_on_organisation_id"
+    t.index ["file_configuration_id"], name: "index_category_configurations_on_file_configuration_id"
+    t.index ["motif_category_id"], name: "index_category_configurations_on_motif_category_id"
+    t.index ["organisation_id"], name: "index_category_configurations_on_organisation_id"
   end
 
   create_table "csv_exports", force: :cascade do |t|
@@ -170,6 +170,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_03_125856) do
     t.string "tags_column"
   end
 
+  create_table "follow_ups", force: :cascade do |t|
+    t.string "status"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "motif_category_id"
+    t.datetime "closed_at"
+    t.index ["motif_category_id"], name: "index_follow_ups_on_motif_category_id"
+    t.index ["status"], name: "index_follow_ups_on_status"
+    t.index ["user_id"], name: "index_follow_ups_on_user_id"
+  end
+
   create_table "invitations", force: :cascade do |t|
     t.string "format"
     t.string "link"
@@ -181,13 +193,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_03_125856) do
     t.string "help_phone_number"
     t.bigint "department_id"
     t.bigint "rdv_solidarites_lieu_id"
-    t.bigint "rdv_context_id"
+    t.bigint "follow_up_id"
     t.datetime "valid_until"
     t.boolean "reminder", default: false
     t.string "uuid"
     t.boolean "rdv_with_referents", default: false
     t.index ["department_id"], name: "index_invitations_on_department_id"
-    t.index ["rdv_context_id"], name: "index_invitations_on_rdv_context_id"
+    t.index ["follow_up_id"], name: "index_invitations_on_follow_up_id"
     t.index ["user_id"], name: "index_invitations_on_user_id"
     t.index ["uuid"], name: "index_invitations_on_uuid", unique: true
   end
@@ -328,25 +340,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_03_125856) do
     t.bigint "rdv_solidarites_participation_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "rdv_context_id"
+    t.bigint "follow_up_id"
     t.string "created_by", null: false
     t.boolean "convocable", default: false, null: false
     t.integer "rdv_solidarites_agent_prescripteur_id"
-    t.index ["rdv_context_id"], name: "index_participations_on_rdv_context_id"
+    t.index ["follow_up_id"], name: "index_participations_on_follow_up_id"
     t.index ["status"], name: "index_participations_on_status"
     t.index ["user_id", "rdv_id"], name: "index_participations_on_user_id_and_rdv_id", unique: true
-  end
-
-  create_table "rdv_contexts", force: :cascade do |t|
-    t.string "status"
-    t.bigint "user_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "motif_category_id"
-    t.datetime "closed_at"
-    t.index ["motif_category_id"], name: "index_rdv_contexts_on_motif_category_id"
-    t.index ["status"], name: "index_rdv_contexts_on_status"
-    t.index ["user_id"], name: "index_rdv_contexts_on_user_id"
   end
 
   create_table "rdvs", force: :cascade do |t|
@@ -516,12 +516,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_03_125856) do
   add_foreign_key "agent_roles", "organisations"
   add_foreign_key "archives", "departments"
   add_foreign_key "archives", "users"
-  add_foreign_key "configurations", "file_configurations"
-  add_foreign_key "configurations", "motif_categories"
-  add_foreign_key "configurations", "organisations"
+  add_foreign_key "category_configurations", "file_configurations"
+  add_foreign_key "category_configurations", "motif_categories"
+  add_foreign_key "category_configurations", "organisations"
   add_foreign_key "csv_exports", "agents"
+  add_foreign_key "follow_ups", "motif_categories"
+  add_foreign_key "follow_ups", "users"
   add_foreign_key "invitations", "departments"
-  add_foreign_key "invitations", "rdv_contexts"
+  add_foreign_key "invitations", "follow_ups"
   add_foreign_key "invitations", "users"
   add_foreign_key "lieux", "organisations"
   add_foreign_key "messages_configurations", "organisations"
@@ -536,9 +538,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_03_125856) do
   add_foreign_key "parcours_documents", "agents"
   add_foreign_key "parcours_documents", "departments"
   add_foreign_key "parcours_documents", "users"
-  add_foreign_key "participations", "rdv_contexts"
-  add_foreign_key "rdv_contexts", "motif_categories"
-  add_foreign_key "rdv_contexts", "users"
+  add_foreign_key "participations", "follow_ups"
   add_foreign_key "rdvs", "lieux"
   add_foreign_key "rdvs", "motifs"
   add_foreign_key "rdvs", "organisations"

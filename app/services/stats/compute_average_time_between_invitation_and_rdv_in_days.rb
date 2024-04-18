@@ -34,30 +34,30 @@ module Stats
       <<-SQL.squish
       WITH first_invitations AS (
           SELECT
-              rdv_context_id,
+              follow_up_id,
               MIN(created_at) AS first_invitation_at
           FROM invitations
           #{structure_filter}
-          GROUP BY rdv_context_id
+          GROUP BY follow_up_id
           #{date_filter}
       ),
       first_participations AS (
           SELECT
-              rdv_context_id,
+              follow_up_id,
               MIN(created_at) AS first_participation_at
           FROM participations
-          GROUP BY rdv_context_id
+          GROUP BY follow_up_id
       )
       SELECT
           AVG(duration_in_days) AS average_duration_in_days
       FROM (
           SELECT
-              fi.rdv_context_id,
+              fi.follow_up_id,
               fi.first_invitation_at,
               DATE_PART('days', fp.first_participation_at - fi.first_invitation_at) AS duration_in_days
           FROM first_invitations fi
-          LEFT JOIN first_participations fp ON fi.rdv_context_id = fp.rdv_context_id
-          WHERE fp.rdv_context_id IS NOT NULL
+          LEFT JOIN first_participations fp ON fi.follow_up_id = fp.follow_up_id
+          WHERE fp.follow_up_id IS NOT NULL
               AND fi.first_invitation_at IS NOT NULL
               AND fp.first_participation_at >= fi.first_invitation_at
       ) as subquery

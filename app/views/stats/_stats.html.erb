@@ -12,71 +12,69 @@
       <%= line_chart exclude_current_month(@stat.rdvs_count_grouped_by_month), title: "Nouveaux rdvs par mois", colors: ["#083b66"] %>
     </div>
   </div>
-  <% if current_page?(action: 'index') || @display_all_stats %>
-    <div class="row d-flex justify-content-center flex-wrap-reverse">
-      <div class="col-12 col-md-6 px-5 pb-5 background-blue-light">
-        <p class="highlight-stat big margin-left"><%= @stat.sent_invitations_count %></p>
-        <p class="highlight-stat margin-left">invitations envoyées par mail, SMS, et courrier</p>
-        <%= line_chart exclude_current_month(@stat.sent_invitations_count_grouped_by_month), title: "Invitations envoyées par mois", colors: ["#083b66"] %>
-      </div>
-      <div class="col-12 col-md-6 px-5 pb-5">
-        <p class="highlight-stat big margin-left"><%= @stat.average_time_between_invitation_and_rdv_in_days&.round %> jours</p>
-        <p class="highlight-stat margin-left">délai moyen entre l'invitation et la prise de rendez-vous</p>
-        <%= line_chart @stat.average_time_between_invitation_and_rdv_in_days_by_month, title: "Délai moyen d'invitation par mois", ytitle: "jours", colors: ["#083b66"] %>
-      </div>
+  <div class="row d-flex justify-content-center flex-wrap-reverse">
+    <div class="col-12 col-md-6 px-5 pb-5 background-blue-light">
+      <p class="highlight-stat big margin-left"><%= @stat.sent_invitations_count %></p>
+      <p class="highlight-stat margin-left">invitations envoyées par mail, SMS, et courrier</p>
+      <%= line_chart exclude_current_month(@stat.sent_invitations_count_grouped_by_month), title: "Invitations envoyées par mois", colors: ["#083b66"] %>
     </div>
-    <div class="row d-flex justify-content-center flex-wrap">
-      <div class="col-12 col-md-6 px-5 pb-5">
-        <p class="highlight-stat big margin-left"><%= @stat.rate_of_no_show_for_invitations&.round %> %</p>
-        <p class="highlight-stat margin-left">de rendez-vous non honorés avec rdv-insertion <strong>après invitation</strong></p>
-        <%= line_chart exclude_current_month(@stat.rate_of_no_show_for_invitations_grouped_by_month), title: "Taux de rdvs non honorés après invitation par mois", suffix: "%", colors: ["#083b66"] %>
-      </div>
-      <div class="col-12 col-md-6 px-5 pb-5 background-blue-light">
-        <p class="highlight-stat big margin-left"><%= @stat.rate_of_no_show_for_convocations&.round %> %</p>
-        <p class="highlight-stat margin-left">de rendez-vous non honorés avec rdv-insertion <strong>après convocation</strong></p>
-        <%= line_chart exclude_current_month(@stat.rate_of_no_show_for_convocations_grouped_by_month), title: "Taux de rdvs non honorés après convocation par mois", suffix: "%", colors: ["#083b66"] %>
-      </div>
+    <div class="col-12 col-md-6 px-5 pb-5">
+      <p class="highlight-stat big margin-left"><%= @stat.average_time_between_invitation_and_rdv_in_days&.round %> jours</p>
+      <p class="highlight-stat margin-left">délai moyen entre l'invitation et la prise de rendez-vous</p>
+      <%= line_chart @stat.average_time_between_invitation_and_rdv_in_days_by_month, title: "Délai moyen d'invitation par mois", ytitle: "jours", colors: ["#083b66"] %>
     </div>
-    <div class="row d-flex justify-content-center flex-wrap-reverse">
-      <div class="col-12 col-md-6 px-5 pb-5">
-        <p class="highlight-stat big margin-left"><%= @stat.rate_of_users_oriented_in_less_than_30_days&.round %> %</p>
-        <p class="highlight-stat margin-left">d'usagers <strong>ayant honoré un 1er rendez-vous RSA en - de 30 jours</strong></p>
-        <%= line_chart @stat.rate_of_users_oriented_in_less_than_30_days_by_month, title: "Taux rdv en - de 30 jours par mois", suffix: "%", colors: ["#083b66"] %>
-      </div>
-      <div class="col-12 col-md-6 px-5 pb-5">
-        <p class="highlight-stat big margin-left"><%= @stat.rate_of_users_oriented_in_less_than_15_days&.round %> %</p>
-        <p class="highlight-stat margin-left">d'usagers <strong>ayant honoré un 1er rendez-vous RSA en - de 15 jours</strong></p>
-        <%= line_chart @stat.rate_of_users_oriented_in_less_than_15_days_by_month, title: "Taux rdv en - de 15 jours par mois", suffix: "%", colors: ["#083b66"] %>
-      </div>
+  </div>
+  <div class="row d-flex justify-content-center flex-wrap">
+    <div class="col-12 col-md-6 px-5 pb-5">
+      <p class="highlight-stat big margin-left"><%= @stat.rate_of_no_show_for_invitations&.round %> %</p>
+      <p class="highlight-stat margin-left">de rendez-vous non honorés avec rdv-insertion <strong>après invitation</strong></p>
+      <%= line_chart exclude_current_month(@stat.rate_of_no_show_for_invitations_grouped_by_month), title: "Taux de rdvs non honorés après invitation par mois", suffix: "%", colors: ["#083b66"] %>
     </div>
-    <div class="row d-flex justify-content-center flex-wrap-reverse">
-      <div class="col-12 col-md-6 px-5 pb-5 background-blue-light">
-        <p class="highlight-stat big margin-left"><%= @stat.rate_of_autonomous_users&.round %> %</p>
-        <p class="highlight-stat margin-left">d'usagers invités ayant pris au moins <strong>un rendez-vous en autonomie</strong></p>
-        <%= line_chart exclude_current_month(@stat.rate_of_autonomous_users_grouped_by_month), title: "Taux d'usagers autonomes par mois", suffix: "%", colors: ["#083b66"] %>
-      </div>
-      <div class="col-12 col-md-6 px-5 pb-5">
-        <p class="highlight-stat big margin-left"><%= @stat.rate_of_users_oriented&.round %> %</p>
-        <p class="highlight-stat margin-left">d'usagers ajoutés dans l'outil pour un RDV d'orientation <strong>ont eu leur orientation réalisée via rdv-insertion</strong></p>
-        <%= line_chart exclude_current_month(@stat.rate_of_users_oriented_grouped_by_month), title: "Taux d'usagers orientés via l'outil par mois", suffix: "%", colors: ["#083b66"] %>
-      </div>
+    <div class="col-12 col-md-6 px-5 pb-5 background-blue-light">
+      <p class="highlight-stat big margin-left"><%= @stat.rate_of_no_show_for_convocations&.round %> %</p>
+      <p class="highlight-stat margin-left">de rendez-vous non honorés avec rdv-insertion <strong>après convocation</strong></p>
+      <%= line_chart exclude_current_month(@stat.rate_of_no_show_for_convocations_grouped_by_month), title: "Taux de rdvs non honorés après convocation par mois", suffix: "%", colors: ["#083b66"] %>
     </div>
-    <div class="row d-flex justify-content-center flex-wrap-reverse">
-      <div class="col-12 col-md-6 px-5 pb-5">
-        <p class="highlight-stat big margin-left"><%= @stat.users_with_rdv_count&.round %></p>
-        <p class="highlight-stat margin-left">usagers <strong>ont été mis en relation via rdv-insertion</strong></p>
-        <%= line_chart exclude_current_month(@stat.users_with_rdv_count_grouped_by_month), title: "Nombre d'usagers ayant eu un rendez-vous par mois", colors: ["#083b66"] %>
-      </div>
+  </div>
+  <div class="row d-flex justify-content-center flex-wrap-reverse">
+    <div class="col-12 col-md-6 px-5 pb-5">
+      <p class="highlight-stat big margin-left"><%= @stat.rate_of_users_oriented_in_less_than_30_days&.round %> %</p>
+      <p class="highlight-stat margin-left">d'usagers <strong>ayant honoré un 1er rendez-vous RSA en - de 30 jours</strong></p>
+      <%= line_chart @stat.rate_of_users_oriented_in_less_than_30_days_by_month, title: "Taux rdv en - de 30 jours par mois", suffix: "%", colors: ["#083b66"] %>
     </div>
-    <div class="row d-flex justify-content-center flex-wrap">
-      <div class="col-12 col-md-6 px-5 pb-5 d-flex flex-column justify-content-center align-items-center">
-        <p class="highlight-stat big margin-left"><%= @stat.agents_count %> agents</p>
-        <% if current_page?(action: 'index') %>
-          <p class="highlight-stat margin-left">travaillant dans <strong><%= @department_count %> territoires départementaux</strong>  utilisent rdv-insertion</p>
-        <% else %>
-          <p class="highlight-stat margin-left">utilisent rdv-insertion</p>
-        <% end %>
-      </div>
+    <div class="col-12 col-md-6 px-5 pb-5">
+      <p class="highlight-stat big margin-left"><%= @stat.rate_of_users_oriented_in_less_than_15_days&.round %> %</p>
+      <p class="highlight-stat margin-left">d'usagers <strong>ayant honoré un 1er rendez-vous RSA en - de 15 jours</strong></p>
+      <%= line_chart @stat.rate_of_users_oriented_in_less_than_15_days_by_month, title: "Taux rdv en - de 15 jours par mois", suffix: "%", colors: ["#083b66"] %>
     </div>
-  <% end %>
+  </div>
+  <div class="row d-flex justify-content-center flex-wrap-reverse">
+    <div class="col-12 col-md-6 px-5 pb-5 background-blue-light">
+      <p class="highlight-stat big margin-left"><%= @stat.rate_of_autonomous_users&.round %> %</p>
+      <p class="highlight-stat margin-left">d'usagers invités ayant pris au moins <strong>un rendez-vous en autonomie</strong></p>
+      <%= line_chart exclude_current_month(@stat.rate_of_autonomous_users_grouped_by_month), title: "Taux d'usagers autonomes par mois", suffix: "%", colors: ["#083b66"] %>
+    </div>
+    <div class="col-12 col-md-6 px-5 pb-5">
+      <p class="highlight-stat big margin-left"><%= @stat.rate_of_users_oriented&.round %> %</p>
+      <p class="highlight-stat margin-left">d'usagers ajoutés dans l'outil pour un RDV d'orientation <strong>ont eu leur orientation réalisée via rdv-insertion</strong></p>
+      <%= line_chart exclude_current_month(@stat.rate_of_users_oriented_grouped_by_month), title: "Taux d'usagers orientés via l'outil par mois", suffix: "%", colors: ["#083b66"] %>
+    </div>
+  </div>
+  <div class="row d-flex justify-content-center flex-wrap-reverse">
+    <div class="col-12 col-md-6 px-5 pb-5">
+      <p class="highlight-stat big margin-left"><%= @stat.users_with_rdv_count&.round %></p>
+      <p class="highlight-stat margin-left">usagers <strong>ont été mis en relation via rdv-insertion</strong></p>
+      <%= line_chart exclude_current_month(@stat.users_with_rdv_count_grouped_by_month), title: "Nombre d'usagers ayant eu un rendez-vous par mois", colors: ["#083b66"] %>
+    </div>
+  </div>
+  <div class="row d-flex justify-content-center flex-wrap">
+    <div class="col-12 col-md-6 px-5 pb-5 d-flex flex-column justify-content-center align-items-center">
+      <p class="highlight-stat big margin-left"><%= @stat.agents_count %> agents</p>
+      <% if current_page?(action: 'index') %>
+        <p class="highlight-stat margin-left">travaillant dans <strong><%= @department_count %> territoires départementaux</strong>  utilisent rdv-insertion</p>
+      <% else %>
+        <p class="highlight-stat margin-left">utilisent rdv-insertion</p>
+      <% end %>
+    </div>
+  </div>
 </div>

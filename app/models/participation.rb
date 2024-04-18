@@ -1,10 +1,10 @@
 class Participation < ApplicationRecord
   include Notificable
-  include HasCurrentConfiguration
+  include HasCurrentCategoryConfiguration
   include RdvParticipationStatus
 
   belongs_to :rdv
-  belongs_to :rdv_context
+  belongs_to :follow_up
   belongs_to :user
   belongs_to :agent_prescripteur,
              class_name: "Agent",
@@ -13,16 +13,16 @@ class Participation < ApplicationRecord
              optional: true
 
   has_many :notifications, dependent: :nullify
-  has_many :rdv_context_invitations, through: :rdv_context, source: :invitations
+  has_many :follow_up_invitations, through: :follow_up, source: :invitations
 
   has_one :organisation, through: :rdv
 
-  has_many :configurations, through: :organisation
+  has_many :category_configurations, through: :organisation
 
   validates :status, presence: true
   validates :rdv_solidarites_participation_id, uniqueness: true, allow_nil: true
 
-  after_commit :refresh_user_context_statuses
+  after_commit :refresh_follow_up_status
   after_commit :notify_user, if: :should_notify?, on: [:create, :update]
 
   enum created_by: { agent: "agent", user: "user", prescripteur: "prescripteur" }, _prefix: :created_by
@@ -32,7 +32,7 @@ class Participation < ApplicationRecord
            to: :rdv
   delegate :department, :department_id, to: :organisation
   delegate :phone_number_is_mobile?, :email?, to: :user
-  delegate :motif_category, :orientation?, to: :rdv_context
+  delegate :motif_category, :orientation?, to: :follow_up
 
   def notifiable?
     convocable? && in_the_future? && status.in?(%w[unknown revoked])
@@ -40,8 +40,8 @@ class Participation < ApplicationRecord
 
   private
 
-  def refresh_user_context_statuses
-    RefreshRdvContextStatusesJob.perform_async(rdv_context_id)
+  def refresh_follow_up_status
+    RefreshFollowUpStatusesJob.perform_async(follow_up_id)
   end
 
   def status_reloaded_from_cancelled?

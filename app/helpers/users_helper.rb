@@ -1,12 +1,10 @@
-# rubocop:disable Metrics/ModuleLength
-
 module UsersHelper
-  def show_convocation?(configuration)
-    configuration.convene_user?
+  def show_convocation?(category_configuration)
+    category_configuration.convene_user?
   end
 
-  def show_invitations?(configuration)
-    configuration.invitation_formats.present?
+  def show_invitations?(category_configuration)
+    category_configuration.invitation_formats.present?
   end
 
   def no_search_results?(users)
@@ -25,7 +23,7 @@ module UsersHelper
     ordered_statuses_count(statuses_count).map do |status, count|
       next if count.nil?
 
-      ["Statut : \"#{I18n.t("activerecord.attributes.rdv_context.statuses.#{status}")}\" (#{count})", status]
+      ["Statut : \"#{I18n.t("activerecord.attributes.follow_up.statuses.#{status}")}\" (#{count})", status]
     end.compact
   end
 
@@ -42,96 +40,6 @@ module UsersHelper
       ["rdv_seen", statuses_count["rdv_seen"]],
       ["closed", statuses_count["closed"]]
     ]
-  end
-
-  def background_class_for_context_status(context, number_of_days_before_action_required)
-    return "" if context.nil?
-
-    if context.action_required_status?
-      "bg-danger border-danger"
-    elsif number_of_days_before_action_required &&
-          context.time_to_accept_invitation_exceeded?(number_of_days_before_action_required)
-      "bg-warning border-warning"
-    elsif context.rdv_seen? || context.closed?
-      "bg-success border-success"
-    else
-      ""
-    end
-  end
-
-  def badge_background_class(context, number_of_days_before_action_required)
-    return "blue-out border border-blue" if context.nil?
-
-    if context.action_required_status?
-      "bg-danger border-danger"
-    elsif number_of_days_before_action_required &&
-          context.time_to_accept_invitation_exceeded?(number_of_days_before_action_required)
-      "bg-warning border-warning"
-    elsif context.rdv_seen? || context.closed?
-      "bg-success border-success"
-    else
-      "blue-out border border-blue"
-    end
-  end
-
-  def background_class_for_participation_status(participation)
-    return "" if participation.rdv_context.closed?
-
-    if participation.seen?
-      "bg-success border-success"
-    elsif participation.cancelled?
-      "bg-danger border-danger"
-    elsif participation.needs_status_update?
-      "bg-warning border-warning"
-    else
-      ""
-    end
-  end
-
-  def text_class_for_participation_status(status)
-    return "text-success" if status == "seen"
-    return "text-light" if status == "unknown"
-
-    "text-danger"
-  end
-
-  def human_available_status(participation, status)
-    return I18n.t("activerecord.attributes.rdv.statuses.#{status}") unless status == "unknown"
-
-    participation.human_status
-  end
-
-  def human_available_detailed_status(participation, status)
-    return I18n.t("activerecord.attributes.rdv.statuses.detailed.#{status}") unless status == "unknown"
-
-    temporal_unknown_status = participation.in_the_future? ? "pending" : "needs_status_update"
-    I18n.t("activerecord.attributes.rdv.unknown_statuses.detailed.#{temporal_unknown_status}")
-  end
-
-  def display_context_status(context, number_of_days_before_action_required)
-    return "Non rattaché" if context.nil?
-
-    I18n.t("activerecord.attributes.rdv_context.statuses.#{context.status}") +
-      display_context_status_notice(context, number_of_days_before_action_required)
-  end
-
-  def display_context_status_notice(context, number_of_days_before_action_required)
-    return if context.nil?
-
-    if number_of_days_before_action_required &&
-       context.time_to_accept_invitation_exceeded?(number_of_days_before_action_required)
-      " (Délai dépassé)"
-    else
-      ""
-    end
-  end
-
-  def display_convocation_formats(convocation_formats)
-    if convocation_formats.empty?
-      "❌#{content_tag(:br)}SMS et Email non envoyés#{content_tag(:br)}❌"
-    else
-      convocation_formats.map { |format| format == "sms" ? "SMS 📱" : "Email 📧" }.join("\n")
-    end
   end
 
   def archived_scope?(scope)
@@ -151,16 +59,7 @@ module UsersHelper
       "agent_searches?#{params.to_query}"
   end
 
-  def should_convene_for?(rdv_context, configuration)
-    return false unless configuration.convene_user?
-
-    rdv_context.convocable_status? ||
-      rdv_context.time_to_accept_invitation_exceeded?(configuration.number_of_days_before_action_required)
-  end
-
   def show_parcours?(department)
     department.number.in?(ENV["DEPARTMENTS_WHERE_PARCOURS_ENABLED"].split(","))
   end
 end
-
-# rubocop:enable Metrics/ModuleLength

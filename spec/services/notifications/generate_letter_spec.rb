@@ -12,8 +12,8 @@ describe Notifications::GenerateLetter, type: :service do
     create(:user, title: "monsieur", organisations: [organisation], address: address, phone_number: "+33607070707")
   end
   let!(:department) { create(:department) }
-  let!(:rdv_context) { create(:rdv_context, motif_category: category_rsa_orientation) }
-  let!(:participation) { create(:participation, rdv_context: rdv_context, rdv: rdv, user: user) }
+  let!(:follow_up) { create(:follow_up, motif_category: category_rsa_orientation) }
+  let!(:participation) { create(:participation, follow_up: follow_up, rdv: rdv, user: user) }
   let!(:notification) do
     create(:notification, participation: participation, event: "participation_created", format: "postal")
   end
@@ -33,7 +33,9 @@ describe Notifications::GenerateLetter, type: :service do
     create(:messages_configuration, organisation: organisation,
                                     direction_names: ["Direction départemental"], display_department_logo: false)
   end
-  let!(:configuration) { create(:configuration, motif_category: category_rsa_orientation, organisation: organisation) }
+  let!(:category_configuration) do
+    create(:category_configuration, motif_category: category_rsa_orientation, organisation: organisation)
+  end
 
   describe "#call" do
     it("is a success") { is_a_success }
@@ -101,9 +103,11 @@ describe Notifications::GenerateLetter, type: :service do
         end
       end
 
-      context "when the template attribute are overriden by the configuration attributes" do
+      context "when the template attribute are overriden by the category_configuration attributes" do
         before do
-          configuration.update!(template_rdv_title_by_phone_override: "nouveau type de rendez-vous téléphonique")
+          category_configuration.update!(
+            template_rdv_title_by_phone_override: "nouveau type de rendez-vous téléphonique"
+          )
         end
 
         it "generates the content with the overriden attributes" do

@@ -5,16 +5,21 @@ module Orientations
     end
 
     def call
-      Orientation.transaction do
+      ActiveRecord::Base.transaction do
         validate_starts_at_presence
         update_previous_orientation_ends_at if previous_orientation_without_end_date.present?
         fill_current_orientation_ends_at if @orientation.ends_at.nil? && posterior_orientations.any?
         validate_no_orientations_overlap
+        add_user_to_organisation if @orientation.user.organisation_ids.exclude?(@orientation.organisation_id)
         save_record!(@orientation)
       end
     end
 
     private
+
+    def add_user_to_organisation
+      @orientation.user.organisations << @orientation.organisation
+    end
 
     def other_user_orientations
       @other_user_orientations ||= @orientation.user.orientations.reject do |orientation|

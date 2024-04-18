@@ -6,11 +6,11 @@ describe "Agents can create user through form", :js do
       :organisation,
       department: department,
       rdv_solidarites_organisation_id: rdv_solidarites_organisation_id,
-      configurations: [configuration]
+      category_configurations: [category_configuration]
     )
   end
 
-  let!(:configuration) { create(:configuration) }
+  let!(:category_configuration) { create(:category_configuration) }
 
   let!(:rdv_solidarites_user_id) { 2323 }
   let!(:rdv_solidarites_organisation_id) { 3234 }
@@ -21,9 +21,9 @@ describe "Agents can create user through form", :js do
       stub_rdv_solidarites_create_user(rdv_solidarites_user_id)
       stub_sync_with_rdv_solidarites_user(rdv_solidarites_user_id)
       # Somehow the tests fail on CI if we do not put this line, the before_save :set_status callback is not
-      # triggered on the rdv contexts when we create them (in Users::Save) and so there is an error when redirected
+      # triggered on the follow-ups when we create them (in Users::Save) and so there is an error when redirected
       # to show page after creation
-      allow_any_instance_of(RdvContext).to receive(:status).and_return("not_invited")
+      allow_any_instance_of(FollowUp).to receive(:status).and_return("not_invited")
     end
 
     it "creates an user" do

@@ -114,9 +114,8 @@ module Invitations
     end
 
     def redirect_sms_link
-      host = ENV["HOST"].gsub("www.", "").gsub("https://", "")
-      path = Rails.application.routes.url_helpers.redirect_invitation_shortcut_path(uuid: @invitation.uuid)
-      host + path
+      host = ENV["RDV_SOLIDARITES_URL"].gsub("www.", "").gsub("https://", "")
+      host << "/i/r/#{@invitation.uuid}"
     end
 
     def formatted_phone_number

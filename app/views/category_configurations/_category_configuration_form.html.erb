@@ -1,0 +1,65 @@
+<div class="container rdv-insertion-form text-dark-blue h4-as-labels mt-4">
+  <div class="d-flex justify-content-between mb-4">
+    <div>
+      <%= link_to(return_path) do %>
+        <button class="btn btn-blue-out" type="button">Annuler</button>
+      <% end %>
+    </div>
+    <h1 class="h1-form-title d-none d-sm-inline"><%= title %></h1>
+    <div>
+      <button type="submit" class="btn btn-blue">Enregistrer</button>
+    </div>
+  </div>
+  <div class="mb-4">
+    <div class="row d-flex justify-content-start flex-wrap">
+      <% unless category_configuration.persisted? %>
+        <div class="d-flex flex-column align-items-center col-12 px-5 mb-4">
+          <h4>Configuration pour : *</h4>
+          <div class="select">
+            <select
+              name="category_configuration[motif_category_id]"
+              id="motif_category_id"
+              required="true"
+            >
+              <option value=""> - </option>
+              <% MotifCategory.all.each do |motif_category| %>
+                <option value="<%= motif_category.id %>"><%= motif_category.name %></option>
+              <% end %>
+            </select>
+          </div>
+        </div>
+      <% end %>
+      <%= render "common/attribute_input", f:f, attribute: :invitation_formats, as: :collection_check_boxes, collection: [["sms", "SMS"], ["email", "Email"], ["postal", "Courrier"]], mandatory: true %>
+      <%= render "common/attribute_input", f:f, attribute: :convene_user, as: :boolean, mandatory: true %>
+      <%= render "common/attribute_input", f:f, attribute: :number_of_days_before_action_required, mandatory: true %>
+      <%= render "common/attribute_input", f:f, attribute: :rdv_with_referents, as: :boolean, mandatory: true %>
+      <%= render "common/attribute_input", f:f, attribute: :invite_to_user_organisations_only, as: :boolean, mandatory: true %>
+      <%= render "common/attribute_input", f:f, attribute: :phone_number, mandatory: false %>
+    </div>
+
+    <div class="row my-4">
+      <%= render "category_configurations/periodic_invites_form", f: f, category_configuration: category_configuration %>
+    </div>
+
+    <% if category_configuration.persisted? %>
+      <div class="row my-4">
+        <h3>Contenu des messages</h3>
+        <%= render "category_configurations/messages_contents/messages_content_form", f: f, template: template, category_configuration: category_configuration %>
+      </div>
+    <% end %>
+
+    <div class="row my-4">
+      <h3 class="px-5">Fichier d'import</h3>
+      <div class="mb-4 px-5">
+        <%= turbo_frame_tag "file_configurations_list" do %>
+          <% @file_configurations.each do |file_configuration| %>
+            <%= render "file_configurations/file_configuration_list_item", file_configuration: file_configuration, current_file_configuration: current_file_configuration, organisation: organisation %>
+          <% end %>
+        <% end %>
+      </div>
+      <%= link_to new_organisation_file_configuration_path(organisation), class: "d-flex justify-content-center mb-4", data: { turbo_frame: 'remote_modal' } do %>
+        <button class="btn btn-blue">Créer et utiliser un nouveau fichier d'import</button>
+      <% end %>
+    </div>
+  </div>
+</div>

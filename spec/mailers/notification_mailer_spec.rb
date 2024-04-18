@@ -2,7 +2,7 @@ RSpec.describe NotificationMailer do
   include_context "with all existing categories"
 
   let!(:notification) { create(:notification, participation: participation) }
-  let!(:participation) { create(:participation, user: user, rdv: rdv, rdv_context: rdv_context) }
+  let!(:participation) { create(:participation, user: user, rdv: rdv, follow_up: follow_up) }
   let!(:user) { create(:user, email: "someone@gmail.com", title: "monsieur", phone_number: "0607070707") }
   let!(:motif) do
     create(
@@ -16,14 +16,14 @@ RSpec.describe NotificationMailer do
             starts_at: Time.zone.parse("20/12/2021 12:00"), organisation: organisation
     )
   end
-  let!(:organisation) { create(:organisation, configurations: [configuration]) }
-  let!(:configuration) { create(:configuration, motif_category:) }
+  let!(:organisation) { create(:organisation, category_configurations: [category_configuration]) }
+  let!(:category_configuration) { create(:category_configuration, motif_category:) }
   let!(:messages_configuration) do
     create(:messages_configuration, organisation: organisation, signature_lines: signature_lines)
   end
   let!(:lieu) { create(:lieu, name: "DINUM", address: "20 avenue de ségur 75007 Paris", phone_number: "0101010101") }
   let!(:signature_lines) { ["Signé par la DINUM"] }
-  let!(:rdv_context) { create(:rdv_context, motif_category: motif_category) }
+  let!(:follow_up) { create(:follow_up, motif_category: motif_category) }
   let!(:motif_category) { category_rsa_orientation }
 
   describe "#presential_participation_created" do
@@ -32,7 +32,7 @@ RSpec.describe NotificationMailer do
     end
 
     it "renders the headers" do
-      expect(mail[:from].to_s).to eq("rdv-insertion <support@rdv-insertion.fr>")
+      expect(mail[:from].to_s).to eq("rdv-solidarites <support-insertion@rdv-solidarites.fr>")
       expect(mail.to).to eq(["someone@gmail.com"])
     end
 
@@ -79,9 +79,9 @@ RSpec.describe NotificationMailer do
         end
       end
 
-      context "when template attributes are overriden by configuration attributes" do
+      context "when template attributes are overriden by category_configuration attributes" do
         before do
-          configuration.update!(
+          category_configuration.update!(
             template_rdv_title_override: "nouveau type de rendez-vous",
             template_user_designation_override: "une nouvelle désignation de personne"
           )
@@ -247,7 +247,7 @@ RSpec.describe NotificationMailer do
     end
 
     it "renders the headers" do
-      expect(mail[:from].to_s).to eq("rdv-insertion <support@rdv-insertion.fr>")
+      expect(mail[:from].to_s).to eq("rdv-solidarites <support-insertion@rdv-solidarites.fr>")
       expect(mail.to).to eq(["someone@gmail.com"])
     end
 
@@ -411,7 +411,7 @@ RSpec.describe NotificationMailer do
     end
 
     it "renders the headers" do
-      expect(mail[:from].to_s).to eq("rdv-insertion <support@rdv-insertion.fr>")
+      expect(mail[:from].to_s).to eq("rdv-solidarites <support-insertion@rdv-solidarites.fr>")
       expect(mail.to).to eq(["someone@gmail.com"])
     end
 
@@ -603,7 +603,7 @@ RSpec.describe NotificationMailer do
     end
 
     it "renders the headers" do
-      expect(mail[:from].to_s).to eq("rdv-insertion <support@rdv-insertion.fr>")
+      expect(mail[:from].to_s).to eq("rdv-solidarites <support-insertion@rdv-solidarites.fr>")
       expect(mail.to).to eq(["someone@gmail.com"])
     end
 
@@ -791,7 +791,7 @@ RSpec.describe NotificationMailer do
     end
 
     it "renders the headers" do
-      expect(mail[:from].to_s).to eq("rdv-insertion <support@rdv-insertion.fr>")
+      expect(mail[:from].to_s).to eq("rdv-solidarites <support-insertion@rdv-solidarites.fr>")
       expect(mail.to).to eq(["someone@gmail.com"])
     end
 
@@ -925,7 +925,7 @@ RSpec.describe NotificationMailer do
     end
 
     it "renders the headers" do
-      expect(mail[:from].to_s).to eq("rdv-insertion <support@rdv-insertion.fr>")
+      expect(mail[:from].to_s).to eq("rdv-solidarites <support-insertion@rdv-solidarites.fr>")
       expect(mail.to).to eq(["someone@gmail.com"])
     end
 
@@ -964,7 +964,7 @@ RSpec.describe NotificationMailer do
     end
 
     it "renders the headers" do
-      expect(mail[:from].to_s).to eq("rdv-insertion <support@rdv-insertion.fr>")
+      expect(mail[:from].to_s).to eq("rdv-solidarites <support-insertion@rdv-solidarites.fr>")
       expect(mail.to).to eq(["someone@gmail.com"])
     end
 

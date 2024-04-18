@@ -260,7 +260,7 @@ RSpec.configure do |config|
             },
             required: %w[id name email phone_number department_number rdv_solidarites_organisation_id motif_categories]
           },
-          rdv_context: {
+          follow_up: {
             type: "object",
             properties: {
               id: { type: "integer" },
@@ -447,7 +447,7 @@ RSpec.configure do |config|
   }
 
   # Specify the format of the output Swagger file when running 'rswag:specs:swaggerize'.
-  # The swagger_docs configuration option has the filename including format in
+  # The swagger_docs category_configuration option has the filename including format in
   # the key, this may want to be changed to avoid putting yaml in json files.
   # Defaults to json. Accepts ':json' and ':yaml'.
   config.swagger_format = :json
