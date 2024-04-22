@@ -47,7 +47,7 @@ if (process.env.RAILS_ENV === "production") {
 
     // We recommend adjusting this value in production, or using tracesSampler
     // for finer control
-    tracesSampleRate: 0.5,
+    tracesSampleRate: 0.1,
   });
 }
 
