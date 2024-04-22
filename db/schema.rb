@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_03_125856) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_12_105200) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -120,11 +120,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_03_125856) do
     t.bigint "agent_id", null: false
     t.string "structure_type", null: false
     t.bigint "structure_id", null: false
-    t.integer "motif_category_id"
     t.datetime "purged_at"
     t.string "kind"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.json "request_params"
     t.index ["agent_id"], name: "index_csv_exports_on_agent_id"
     t.index ["structure_type", "structure_id"], name: "index_csv_exports_on_structure"
   end
