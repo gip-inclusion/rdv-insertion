@@ -14,8 +14,8 @@ Rails.application.config.content_security_policy do |policy|
   policy.media_src :self, s3_bucket
   policy.frame_src :self
   policy.object_src  :none
-  policy.script_src  :self, :https
-  policy.style_src   :self, :unsafe_inline
+  policy.script_src  :self, :https, :unsafe_inline
+  policy.style_src   :self, :https, :unsafe_inline
   policy.connect_src :self, rdv_solidarites
   # Specify URI for violation reports
   # policy.report_uri "/csp-violation-report-endpoint"
