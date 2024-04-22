@@ -24,6 +24,7 @@ drome = Department.create!(
   capital: "Valence",
   region: "Auvergne-Rhône-Alpes",
   pronoun: "la",
+  logo: Rack::Test::UploadedFile.new(Rails.root.join("spec/fixtures/logo.png"))
 )
 
 # Dans l'Yonne, pas de système d'invitation : les bénéficiaires sont directement convoqués (convene_user: true)
@@ -33,6 +34,7 @@ yonne = Department.create!(
   capital: "Auxerre",
   region: "Bourgogne-Franche-Comté",
   pronoun: "l'",
+  logo: Rack::Test::UploadedFile.new(Rails.root.join("spec/fixtures/logo.png"))
 )
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -260,7 +262,7 @@ drome1_organisation = Organisation.create!(
   department_id: drome.id
 )
 
-Configuration.create!(
+CategoryConfiguration.create!(
   file_configuration: file_config_drome,
   convene_user: false,
   invitation_formats: ["sms", "email", "postal"],
@@ -269,7 +271,7 @@ Configuration.create!(
   organisation: drome1_organisation
 )
 
-Configuration.create!(
+CategoryConfiguration.create!(
   file_configuration: file_config_drome,
   convene_user: false,
   invitation_formats: ["sms", "email", "postal"],
@@ -294,7 +296,7 @@ drome2_organisation = Organisation.create!(
   department_id: drome.id
 )
 
-Configuration.create!(
+CategoryConfiguration.create!(
   file_configuration: file_config_drome,
   convene_user: false,
   invitation_formats: ["sms", "email", "postal"],
@@ -303,7 +305,7 @@ Configuration.create!(
   organisation: drome2_organisation
 )
 
-Configuration.create!(
+CategoryConfiguration.create!(
   file_configuration: file_config_drome,
   convene_user: false,
   invitation_formats: ["sms", "email", "postal"],
@@ -328,7 +330,7 @@ yonne_organisation = Organisation.create!(
   department_id: yonne.id
 )
 
-Configuration.create!(
+CategoryConfiguration.create!(
   file_configuration: file_config_yonne,
   convene_user: true,
   invitation_formats: [],

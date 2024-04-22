@@ -1,8 +1,31 @@
-<div class="text-array__row d-flex justify-content-between">
-  <input class="array-input" type="text" value="<%= array_el %>" name="<%= object_name %>[<%= attribute_name %>][]" id="<%= object_name %>_">
-  <div class="text-array__remove"
-       data-controller="array-fields-input"
-       data-action="click->array-fields-input#remove">
-    <i class="fas fa-trash" ></i>
+<% attribute_list = f.object.send(attribute_name) %>
+<% if attribute_list.blank? %>
+    <div class="text-array">
+      <div class="text-array__row d-flex justify-content-between">
+        <%= f.text_field attribute_name, class: "array-input", name: field_name(f.object.class.name.underscore, attribute_name, multiple: true) %>
+        <div class="text-array__remove"
+          data-controller="array-fields-input"
+          data-action="click->array-fields-input#remove">
+          <i class="fas fa-trash" ></i>
+        </div>
+      </div>
+    </div>
+<% else %>
+  <div class="text-array">
+    <% attribute_list.each_with_index do |attribute, index| %>
+      <div class="text-array__row d-flex justify-content-between">
+        <%= f.text_field attribute_name, class: "array-input", name: field_name(f.object.class.name.underscore, attribute_name, multiple: true), value: attribute %>
+        <div class="text-array__remove"
+          data-controller="array-fields-input"
+          data-action="click->array-fields-input#remove">
+          <i class="fas fa-trash" ></i>
+        </div>
+      </div>
+    <% end %>
   </div>
-</div>
+<% end %>
+<button class="btn-sm btn-blue px-2 text-array__add"
+        data-controller="array-fields-input"
+        data-action="click->array-fields-input#add">
+  Ajouter une ligne
+</button>
