@@ -70,4 +70,8 @@ module UsersHelper
   def mutual_department_organisations(user, agent, department)
     (agent.organisations & user.organisations).select { |o| o.department_id == department.id }
   end
+
+  def current_or_mutual_organisation_id(user, agent, department)
+    Current.organisation_id || mutual_department_organisations(user, agent, department).first.id
+  end
 end
