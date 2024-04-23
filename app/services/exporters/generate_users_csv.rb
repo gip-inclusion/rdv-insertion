@@ -3,10 +3,10 @@ module Exporters
   class GenerateUsersCsv < Csv
     attr_reader :agent
 
-    def initialize(user_ids:, agent:, structure: nil, motif_category: nil)
+    def initialize(user_ids:, agent:, structure: nil, motif_category_id: nil)
       @user_ids = user_ids
       @structure = structure
-      @motif_category = motif_category
+      @motif_category = motif_category_id.present? ? MotifCategory.find(motif_category_id) : nil
       @agent = agent
     end
 

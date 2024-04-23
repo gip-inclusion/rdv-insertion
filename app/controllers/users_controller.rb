@@ -113,8 +113,8 @@ class UsersController < ApplicationController
       @users.map(&:id),
       department_level? ? "Department" : "Organisation",
       department_level? ? @department.id : @organisation.id,
-      @current_motif_category&.id,
-      current_agent.id
+      current_agent.id,
+      request.query_parameters
     )
   end
 

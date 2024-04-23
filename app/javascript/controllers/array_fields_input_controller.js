@@ -13,12 +13,15 @@ export default class extends Controller {
   add(event) {
     event.preventDefault();
     // if there was only one row, we reactivate the remove button
-    this.element.previousElementSibling.childNodes[3].removeAttribute("style");
-    // we duplicate the last array input field
-    const newRow = this.element.previousElementSibling.cloneNode(true);
-    // we clear the field value
-    newRow.childNodes[1].value = "";
-    this.element.before(newRow);
+    this.element.previousElementSibling
+      .querySelector(".text-array__remove")
+      .classList.remove("d-none");
+    const newRow = this.element.previousElementSibling
+      .querySelector(".text-array__row")
+      .cloneNode(true);
+
+    newRow.querySelector(".array-input").value = "";
+    this.element.previousElementSibling.appendChild(newRow);
   }
 
   // We need to hide the remove button when there's only one row, otherwise there would be nothing to clone
@@ -26,7 +29,7 @@ export default class extends Controller {
     document.querySelectorAll(".text-array").forEach((el) => {
       const rows = el.querySelectorAll(".text-array__row");
       if (rows.length === 1) {
-        rows[0].querySelector(".text-array__remove").style.display = "none";
+        rows[0].querySelector(".text-array__remove").classList.add("d-none");
       }
     });
   }
