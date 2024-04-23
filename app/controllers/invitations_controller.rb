@@ -3,20 +3,17 @@ class InvitationsController < ApplicationController
   before_action :set_invitation, :verify_invitation_validity, only: [:redirect]
   skip_before_action :authenticate_agent!, only: [:invitation_code, :redirect, :redirect_shortcut]
 
-  def create
+  def create # rubocop:disable Metrics/AbcSize
     if invite_user.success?
       respond_to do |format|
         format.json { render json: { success: true, invitation: invitation } }
         format.pdf { send_data pdf, filename: pdf_filename, layout: "application/pdf" }
-        format.html { redirect_to structure_user_follow_ups_path(@user.id) }
+        format.turbo_stream { redirect_to structure_user_follow_ups_path(@user.id) }
       end
     else
-      respond_to do |format|
-        format.json { render json: { success: false, errors: invite_user.errors }, status: :unprocessable_entity }
-        format.turbo_stream do
-          turbo_stream_display_error_modal(invite_user.errors)
-        end
-      end
+      return turbo_stream_display_error_modal(invite_user.errors) if request.format.turbo_stream?
+
+      render json: { success: false, errors: invite_user.errors }, status: :unprocessable_entity
     end
   end
 

@@ -53,4 +53,16 @@ module FollowUpsHelper
     follow_up.convocable_status? ||
       follow_up.time_to_accept_invitation_exceeded?(configuration.number_of_days_before_action_required)
   end
+
+  def sms_invitation_disabled_for?(user, follow_up, department)
+    !user.phone_number_is_mobile? || user.archived_in?(department) || follow_up.rdv_pending? || follow_up.closed?
+  end
+
+  def email_invitation_disabled_for?(user, follow_up, department)
+    !user.email? || user.archived_in?(department) || follow_up.rdv_pending? || follow_up.closed?
+  end
+
+  def postal_invitation_disabled_for?(user, follow_up, department)
+    !user.address? || user.archived_in?(department) || follow_up.rdv_pending? || follow_up.closed?
+  end
 end

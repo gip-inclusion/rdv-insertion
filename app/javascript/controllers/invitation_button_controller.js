@@ -1,11 +1,39 @@
 import { Controller } from "@hotwired/stimulus";
+import createInvitationLetter from "../react/lib/createInvitationLetter";
 
 export default class extends Controller {
-  setAsPending() {
-    this.element.innerText = "Invitation...";
-    // 10ms timeout to delay the disabling of the button for the form to submit before
-    setTimeout(() => {
-      this.element.disabled = true;
-    }, 10);
+  connect() {
+    this.button = this.element.querySelector("button");
+    this.initialButtonText = this.button.innerText;
+  }
+
+  submit() {
+    this.element.addEventListener("turbo:submit-end", this.handleSubmitEnd.bind(this));
+    this.button.innerText = "Invitation...";
+    this.button.disabled = true;
+    window.Turbo.navigator.submitForm(this.element);
+  }
+
+  generatePostalInvitation() {
+    return createInvitationLetter(
+      this.element.dataset.userId,
+      this.element.dataset.departmentId,
+      this.element.dataset.organisationId,
+      this.element.dataset.isDepartmentLevel,
+      this.element.dataset.motifCategoryId
+    );
+  }
+
+  disconnect() {
+    this.element.removeEventListener("turbo:submit-end", this.handleSubmitEnd.bind(this))
+  }
+
+  handleSubmitEnd(event) {
+    const response = event.detail
+    // If the response is successful, the necessary changes are made in the DOM
+    if (response.success === false) {
+      this.button.innerText = this.initialButtonText;
+      this.button.disabled = false;
+    }
   }
 }
