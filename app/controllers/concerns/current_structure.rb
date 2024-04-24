@@ -8,7 +8,14 @@ module CurrentStructure
     helper_method :department_level?, :current_organisation_ids, :current_structure_name
 
     delegate :id, to: :current_department, prefix: true
-    delegate :name, to: :current_structure, prefix: true
+  end
+
+  def current_structure_name
+    if department_level?
+      "Toutes les organisations : #{current_department.name}"
+    else
+      Organisation.find(Current.organisation_id).name
+    end
   end
 
   def set_structure_type_in_session
