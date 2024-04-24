@@ -21,14 +21,23 @@
     </thead>
     <tbody>
       <% invitation_dates_by_format = invitation_dates_by_format(invitations, invitation_formats) %>
-      <% invitation_dates_by_format.values.map(&:length).max.times do |idx| %>
+      <% max_invitation_dates_for_a_format = max_invitation_dates_for_a_format(invitation_dates_by_format) %>
+      <% if max_invitation_dates_for_a_format == 0 %>
         <tr>
           <% invitation_formats.map do |format| %>
-            <td class="px-4 py-3">
-              <%= format_date(invitation_dates_by_format[format]&.fetch(idx, nil)) %>
-            </td>
+            <td class="px-4 py-3">-</td>
           <% end %>
         </tr>
+      <% else %>
+        <% max_invitation_dates_for_a_format.times do |idx| %>
+          <tr class="<%= idx == 0 ? "motif-category-#{motif_category.id}-last-invitations" : "d-none motif-category-#{motif_category.id}-other-invitations" %>">
+            <% invitation_formats.map do |format| %>
+              <td class="px-4 py-3">
+                <%= format_date(invitation_dates_by_format[format]&.fetch(idx, nil)) %>
+              </td>
+            <% end %>
+          </tr>
+        <% end %>
       <% end %>
       <tr>
         <%= render "follow_ups/invitation_column_by_format", invitation_format: "sms", invitation_formats:, user:, motif_category:, invitations:, invitation_disabled: sms_invitation_disabled_for?(user, follow_up, department) %>
@@ -39,7 +48,7 @@
               data-controller="invitation-button"
               data-user-id="<%= user.id %>"
               data-department-id="<%= department.id %>"
-              data-organisation-id="<%= organisation.id %>"
+              data-organisation-id="<%= organisation&.id %>"
               data-is-department-level="<%= department_level? %>"
               data-motif-category-id="<%= motif_category.id %>"
           >
@@ -62,23 +71,18 @@
           </td>
         <% end %>
       </tr>
-      <%# {showInvitationsHistoryButton && (
+      <% if max_invitation_dates_for_a_format > 1 %>
         <tr>
-          <td class="px-4 py-2" colSpan={3} style={{ cursor: "pointer" }}>
-            {!showInvitationsHistory && (
-              <button onClick={handleShowInvitationsHistory} type="button">
-                <i class="fas fa-angle-down" /> Voir l&apos;historique{" "}
-                <i class="fas fa-angle-down" />
+          <td class="px-4 py-2" colspan="3" style="cursor='pointer'" data-controller="invitation-dates" data-action="click->invitation-dates#toggleHistory" data-motif-category-id="<%= motif_category.id %>">
+              <button type="button">
+                <i class="fas fa-angle-down"></i> Voir l'historique <i class="fas fa-angle-down"></i>
               </button>
-            )}
-            {showInvitationsHistory && (
-              <button onClick={handleHideInvitationsHistory} type="button">
-                <i class="fas fa-angle-up" /> Voir moins <i class="fas fa-angle-up" />
+              <button type="button" class="d-none">
+                <i class="fas fa-angle-up"></i> Voir moins <i class="fas fa-angle-up"></i>
               </button>
-            )}
           </td>
         </tr>
-      )} %>
+      <% end %>
     </tbody>
   </table>
 </div>
