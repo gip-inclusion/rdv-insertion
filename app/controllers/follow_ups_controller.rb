@@ -7,8 +7,10 @@ class FollowUpsController < ApplicationController
     @follow_up = FollowUp.new(**follow_up_params)
     authorize @follow_up
     if save_follow_up.success?
+      # when coming from the follow_ups index page
       return redirect_to structure_user_follow_ups_path(@user.id) if request.referer.include?("/follow_ups")
 
+      # when coming from the all_users_table index page
       replace_new_button_cell_by_follow_up_status_cell
     else
       turbo_stream_display_error_modal(save_follow_up.errors)

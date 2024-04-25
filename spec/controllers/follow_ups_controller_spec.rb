@@ -21,6 +21,7 @@ describe FollowUpsController do
   describe "#create" do
     before do
       sign_in(agent)
+      request.env["HTTP_REFERER"] = organisation_user_follow_ups_url(organisation_id: organisation.id, user_id: user.id)
     end
 
     it "creates a new follow_up" do
@@ -53,7 +54,7 @@ describe FollowUpsController do
       end
     end
 
-    context "when html request" do
+    context "when request comes from user show page" do
       it "redirects to the user show page" do
         post :create, params: follow_up_params, format: :html
 
@@ -81,7 +82,11 @@ describe FollowUpsController do
       end
     end
 
-    context "when turbo request" do
+    context "when the request comes from the users index page" do
+      before do
+        request.env["HTTP_REFERER"] = organisation_users_url(organisation_id: organisation.id)
+      end
+
       it "replace the create follow_up button" do
         post :create, params: follow_up_params, format: :turbo_stream
 

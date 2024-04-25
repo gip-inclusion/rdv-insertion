@@ -54,6 +54,10 @@ module FollowUpsHelper
       follow_up.time_to_accept_invitation_exceeded?(configuration.number_of_days_before_action_required)
   end
 
+  def show_invitation?(format, invitation_formats)
+    invitation_formats.include?(format)
+  end
+
   def sms_invitation_disabled_for?(user, follow_up, department)
     !user.phone_number_is_mobile? || user.archived_in?(department) || follow_up.rdv_pending? || follow_up.closed?
   end

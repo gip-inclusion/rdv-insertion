@@ -7,10 +7,6 @@ module UsersHelper
     category_configuration.invitation_formats.present?
   end
 
-  def show_invitation?(format, invitation_formats)
-    invitation_formats.include?(format)
-  end
-
   def no_search_results?(users)
     users.empty? && params[:search_query].present?
   end
