@@ -80,7 +80,7 @@
         </a>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
           <%= link_to department_users_path(@department) do %>
-            <li><div class="dropdown-item">⭐ Toutes les organisations : <%= @department.name %> ⭐</div></li>
+            <li><div class="dropdown-item">⭐ Toutes les organisations ⭐</div></li>
           <% end %>
           <% @organisations.sort_by(&:name).each do |organisation| %>
             <%= link_to organisation_users_path(organisation) do %>
