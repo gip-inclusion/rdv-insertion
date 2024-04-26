@@ -1,7 +1,7 @@
 # rubocop:disable Metrics/ClassLength
 class RdvSolidaritesClient
-  def initialize(agent_credentials:)
-    @agent_credentials = agent_credentials
+  def initialize(rdv_solidarites_credentials:)
+    @rdv_solidarites_credentials = rdv_solidarites_credentials
     @url = ENV["RDV_SOLIDARITES_URL"]
   end
 
@@ -171,7 +171,7 @@ class RdvSolidaritesClient
   private
 
   def request_headers
-    @agent_credentials.merge("Content-Type" => "application/json")
+    @rdv_solidarites_credentials.merge("Content-Type" => "application/json")
   end
 end
 # rubocop:enable Metrics/ClassLength

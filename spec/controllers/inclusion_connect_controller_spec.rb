@@ -17,6 +17,7 @@ describe InclusionConnectController do
       email: agent.email
     }
   end
+  let!(:timestamp) { Time.zone.now }
 
   before do
     stub_const("InclusionConnectClient::CLIENT_ID", "truc")
@@ -33,20 +34,22 @@ describe InclusionConnectController do
 
     it "redirect and returns an error if state doesn't match" do
       session[:ic_state] = "AZEERT"
-      expect(Sentry).to receive(:capture_message).with(
-        "Failed to authenticate agent with InclusionConnect : Invalid State"
-      )
+      error_message = "Failed to authenticate agent with InclusionConnect : Invalid State"
+      expect(Sentry).to receive(:capture_message).with(error_message)
       get :callback, params: { state: "zefjzelkf", code: code }
       expect(response).to redirect_to(sign_in_path)
-      expect_flash_error
+      expect_flash_error_with(error_message)
+      expect(request.session[:agent_auth]).to be_nil
     end
 
     it "redirect and returns an error if token request failed" do
       stub_token_request.to_return(status: 500, body: { error: "an error occurs" }.to_json, headers: {})
+      error_message = "Inclusion Connect API Error : Failed to retrieve token"
       expect(Sentry).to receive(:capture_message).with("Inclusion Connect API Error : Failed to retrieve token")
       get :callback, params: { state: "a state", code: code }
       expect(response).to redirect_to(sign_in_path)
-      expect_flash_error
+      expect_flash_error_with(error_message)
+      expect(request.session[:agent_auth]).to be_nil
     end
 
     it "redirect and returns an error if userinfo request failed" do
@@ -56,12 +59,12 @@ describe InclusionConnectController do
       stub_agent_info_request.to_return(
         status: 500, body: {}.to_json, headers: {}
       )
-      expect(Sentry).to receive(:capture_message).with(
-        "Inclusion Connect API Error : Failed to retrieve user informations"
-      )
+      error_message = "Inclusion Connect API Error : Failed to retrieve user informations"
+      expect(Sentry).to receive(:capture_message).with(error_message)
       get :callback, params: { state: "a state", code: code }
       expect(response).to redirect_to(sign_in_path)
-      expect_flash_error
+      expect_flash_error_with(error_message)
+      expect(request.session[:agent_auth]).to be_nil
     end
 
     it "redirect and returns an error if agent email doesnt exist in rdv-i" do
@@ -77,6 +80,8 @@ describe InclusionConnectController do
         }.to_json, headers: {}
       )
       get :callback, params: { state: "a state", code: code }
+
+      expect(Sentry).not_to receive(:capture_message)
       expect(response).to redirect_to(sign_in_path)
       expect(flash[:error]).to eq(
         "Il n'y a pas de compte agent pour l'adresse mail patrick@gmail.com. " \
@@ -85,6 +90,7 @@ describe InclusionConnectController do
         "Vous pouvez contacter le support à l'adresse " \
         "<rdv-insertion@beta.gouv.fr> si le problème persiste."
       )
+      expect(request.session[:agent_auth]).to be_nil
     end
 
     it "redirect and returns an error if agent mismatch with email and sub" do
@@ -99,10 +105,13 @@ describe InclusionConnectController do
           sub: "agent_with_sub"
         }.to_json, headers: {}
       )
-      expect(Sentry).to receive(:capture_message).with("Inclusion Connect sub and email mismatch")
+      error_message = "Inclusion Connect sub and email mismatch"
+      expect(Sentry).to receive(:capture_message).with(error_message)
       get :callback, params: { state: "a state", code: code }
       expect(response).to redirect_to(sign_in_path)
-      expect_flash_error
+      expect_flash_error_with(error_message)
+
+      expect(request.session[:agent_auth]).to be_nil
     end
 
     it "redirect and assign session variables if everything is ok (with stub request)" do
@@ -125,13 +134,14 @@ describe InclusionConnectController do
       )
       get :callback, params: { state: "a state", code: code }
       expect(response).to redirect_to(root_path)
-      expect(request.session[:inclusion_connect_token_id]).to eq("123")
-      expect(request.session[:agent_id]).to eq(agent.id)
-      expect(request.session[:agent_credentials]).to eq(
+
+      expect(request.session[:agent_auth]).to eq(
         {
-          uid: agent.email,
-          x_agent_auth_signature: OpenSSL::HMAC.hexdigest("SHA256", "S3cr3T", payload.to_json),
-          inclusion_connected: true
+          id: agent.id,
+          origin: "inclusion_connect",
+          signature: agent.sign_with(timestamp.to_i),
+          created_at: timestamp.to_i,
+          inclusion_connect_token_id: "123"
         }
       )
     end
@@ -143,24 +153,29 @@ describe InclusionConnectController do
       ).and_return(
         OpenStruct.new(success?: true, agent: agent, inclusion_connect_token_id: "123", errors: [])
       )
+
       get :callback, params: { state: "a state", code: code }
       expect(response).to redirect_to(root_path)
-      expect(request.session[:inclusion_connect_token_id]).to eq("123")
-      expect(request.session[:agent_id]).to eq(agent.id)
-      expect(request.session[:agent_credentials]).to eq(
+
+      expect(request.session[:agent_auth]).to eq(
         {
-          uid: agent.email,
-          x_agent_auth_signature: OpenSSL::HMAC.hexdigest("SHA256", "S3cr3T", payload.to_json),
-          inclusion_connected: true
+          id: agent.id,
+          origin: "inclusion_connect",
+          signature: agent.sign_with(timestamp.to_i),
+          created_at: timestamp.to_i,
+          inclusion_connect_token_id: "123"
         }
       )
     end
   end
 
-  def expect_flash_error
+  private
+
+  def expect_flash_error_with(error_message)
     expect(flash[:error]).to eq(
-      "Nous n'avons pas pu vous authentifier. Contacter le support à l'adresse" \
-      "<rdv-insertion@beta.gouv.fr> si le problème persiste."
+      "Nous n'avons pas pu vous authentifier.\n" \
+      "Erreur: #{error_message}\n" \
+      "Contacter le support à l'adresse <rdv-insertion@beta.gouv.fr> si le problème persiste."
     )
   end
 

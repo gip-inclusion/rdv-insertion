@@ -7,17 +7,26 @@
       <% end %>
     </div>
     <div class="nav col justify-content-end align-items-center">
-      <% if current_agent&.super_admin? || super_admin_acts_as_another_agent? %>
-        <div class="text-center ">
-          <%= link_to super_admins_root_path do %>
+      <% if current_agent %>
+        <% if current_agent.super_admin? %>
+          <div class="text-center ">
+            <%= link_to super_admins_root_path do %>
+              <button class="btn btn-default btn-logout w-100">
+                <span class="d-none d-sm-inline">Super admin</span>
+                <span class="d-inline d-sm-none"><i class="fas fa-sign-out-alt"></i></span>
+              </button>
+            <% end %>
+          </div>
+        <% elsif agent_impersonating? %>
+          <%= link_to super_admins_agent_impersonation_path(agent_id: current_agent.id), method: :delete do %>
             <button class="btn btn-default btn-logout w-100">
-              <span class="d-none d-sm-inline">Super admin</span>
+              <span class="d-none d-sm-inline">Revenir à ma session</span>
               <span class="d-inline d-sm-none"><i class="fas fa-sign-out-alt"></i></span>
             </button>
           <% end %>
-        </div>
-      <% elsif current_agent %>
-        <%= render "common/header_help_menu" %>
+        <% else %>
+          <%= render "common/header_help_menu" %>
+        <% end %>
       <% end %>
       <% if current_agent %>
         <div class="text-center mx-3">
@@ -56,7 +65,7 @@
       </div>
     </div>
   <% end %>
-  <% if super_admin_acts_as_another_agent? %>
+  <% if current_agent && agent_impersonating? %>
     <div class="sub-header d-flex marianne">
       <div class="container d-flex justify-content-center">
         <p class="mb-0"><i class="fas fa-info-circle"></i> Vous êtes connecté.e en tant que <%= current_agent.to_s %></p>

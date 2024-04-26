@@ -1,40 +1,42 @@
 module AuthenticationSpecHelper
   def sign_in(agent)
-    setup_request_session(agent)
-    mock_agent_credentials(agent.email)
+    request.session["agent_auth"] = agent_auth_hash_from_sign_in_form(agent)
   end
 
-  def credentials_hash(agent_email)
-    { "client" => "someclient", "uid" => agent_email, "access_token" => "sometoken" }.symbolize_keys
+  def sign_in_with_inclusion_connect(agent, inclusion_connect_token_id)
+    request.session["agent_auth"] = agent_auth_hash_from_inclusion_connect(agent, inclusion_connect_token_id)
   end
 
-  def shared_secret_credentials_hash(agent)
-    { "uid" => agent.email, "x_agent_auth_signature" => agent.signature_auth_with_shared_secret }.symbolize_keys
+  def agent_auth_hash_from_inclusion_connect(agent, inclusion_connect_token_id)
+    timestamp = Time.zone.now.to_i
+    {
+      id: agent.id,
+      origin: "inclusion_connect",
+      signature: agent.sign_with(timestamp),
+      created_at: timestamp,
+      inclusion_connect_token_id:
+    }
   end
 
-  def setup_request_session(agent)
-    request.session["agent_id"] = agent.id
-    request.session["agent_credentials"] = credentials_hash(agent.email)
+  def agent_auth_hash_from_sign_in_form(agent)
+    timestamp = Time.zone.now.to_i
+    {
+      id: agent.id,
+      created_at: timestamp,
+      origin: "sign_in_form",
+      signature: agent.sign_with(timestamp)
+    }
+  end
+
+  def setup_request_session(agent_auth_hash)
+    request.session["agent_auth"] = agent_auth_hash
   end
 
   def setup_agent_session(agent)
-    page.set_rack_session(agent_id: agent.id, agent_credentials: credentials_hash(agent.email))
+    page.set_rack_session(agent_auth: agent_auth_hash_from_sign_in_form(agent))
 
-    stub_request(:get, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/auth/validate_token")
-      .with(headers: { "Content-Type" => "application/json" }.merge(credentials_hash(agent.email)))
-      .to_return(body: { "data" => { "uid" => agent.email } }.to_json)
-  end
-
-  def mock_agent_credentials(agent_email)
-    allow(AgentCredentialsFactory).to receive(:create_with)
-      .with(**credentials_hash(agent_email))
-      .and_return(agent_credentials)
-    allow(agent_credentials).to receive_messages(
-      valid?: true, uid: agent_email, to_h: credentials_hash(agent_email)
-    )
-  end
-
-  def agent_credentials
-    @agent_credentials ||= instance_double(AgentCredentials::WithAccessToken)
+    # stub_request(:get, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/auth/validate_token")
+    #   .with(headers: { "Content-Type" => "application/json" }.merge(agent_auth_hash(agent.email)))
+    #   .to_return(body: { "data" => { "uid" => agent.email } }.to_json)
   end
 end

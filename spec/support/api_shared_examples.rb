@@ -2,7 +2,9 @@ module ApiSpecSharedExamples
   shared_context "an endpoint that returns 401 - unauthorized" do
     response 401, "Renvoie 'unauthorized' quand l'authentification est impossible" do
       before do
-        allow(agent_credentials).to receive(:valid?).and_return(false)
+        stub_request(:get, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/auth/validate_token")
+          .with(headers: auth_headers.merge({ "Content-Type" => "application/json" }))
+          .to_return(status: 401)
       end
 
       schema "$ref" => "#/components/schemas/error_authentication"

@@ -14,7 +14,7 @@ end
 Rails.application.routes.draw do
   namespace :super_admins do
     resources :agents, only: [:index, :show] do
-      get "sign_in_as", on: :member
+      resource :impersonation, only: [:create, :destroy]
     end
     resources :departments, only: [:index, :show, :new, :create, :edit, :update]
     resources :organisations, only: [:index, :show, :new, :create, :edit, :update]
