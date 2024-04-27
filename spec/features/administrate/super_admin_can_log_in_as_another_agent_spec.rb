@@ -1,4 +1,4 @@
-describe "Super admin can log in as another agent" do
+describe "Super admin can log in as another agent", :js do
   let!(:super_admin_department) { create(:department) }
   let!(:super_admin_organisation1) { create(:organisation, department: super_admin_department) }
   let!(:super_admin_organisation2) { create(:organisation, department: super_admin_department) }
@@ -21,7 +21,8 @@ describe "Super admin can log in as another agent" do
       expect(page).to have_content(super_admin.last_name)
       click_link(agent.last_name)
 
-      expect(page).to have_link("Se logger en tant que", href: sign_in_as_super_admins_agent_path(agent))
+      expect(page).to have_link("Se logger en tant que",
+                                href: super_admins_agent_impersonation_path(agent_id: agent.id))
       click_link("Se logger en tant que")
 
       # Verify that the super admin is now logged in as the agent
@@ -36,15 +37,12 @@ describe "Super admin can log in as another agent" do
       expect(page).to have_no_content(super_admin_organisation2.name)
 
       # Verify that the super admin can switch back to its account by clicking on the Super admin button
-      click_link("Super admin")
-      expect(page).to have_current_path(super_admins_root_path)
-      expect(page).to have_content(
-        "#{super_admin.first_name} #{super_admin.last_name}, vous avez été reconnecté.e à votre compte"
-      )
+      expect(page).to have_link("Revenir à ma session",
+                                href: super_admins_agent_impersonation_path(agent_id: agent.id))
+      click_link("Revenir à ma session")
+      expect(page).to have_current_path(organisations_path)
 
       # Verify it's really the super admin account by checking the organisations displayed
-      click_link("Retour à l'app")
-      expect(page).to have_current_path(organisations_path)
       expect(page).to have_content(super_admin_department.name)
       expect(page).to have_content(super_admin_organisation1.name)
       expect(page).to have_content(super_admin_organisation2.name)

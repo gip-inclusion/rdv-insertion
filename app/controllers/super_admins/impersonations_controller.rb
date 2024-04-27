@@ -8,13 +8,13 @@ module SuperAdmins
     def create
       # only super admins can impersonate agents ; this is ensured in the parent controller
       impersonate_agent
-      redirect_to root_url
+      redirect_to root_path
     end
 
     def destroy
       unimpersonate_agent
-      flash[:alert] = "Vous avez été reconnecté.e à votre compte"
-      redirect_to root_url
+      flash[:alert] = "Vous avez bien été reconnecté.e à votre compte"
+      redirect_to root_path
     end
 
     private

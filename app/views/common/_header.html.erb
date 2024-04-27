@@ -8,7 +8,14 @@
     </div>
     <div class="nav col justify-content-end align-items-center">
       <% if current_agent %>
-        <% if current_agent.super_admin? %>
+        <% if agent_impersonating? %>
+          <%= link_to super_admins_agent_impersonation_path(agent_id: current_agent.id), method: :delete do %>
+            <button class="btn btn-default btn-logout w-100">
+              <span class="d-none d-sm-inline">Revenir à ma session</span>
+              <span class="d-inline d-sm-none"><i class="fas fa-sign-out-alt"></i></span>
+            </button>
+          <% end %>
+        <% elsif current_agent.super_admin? %>
           <div class="text-center ">
             <%= link_to super_admins_root_path do %>
               <button class="btn btn-default btn-logout w-100">
@@ -17,13 +24,6 @@
               </button>
             <% end %>
           </div>
-        <% elsif agent_impersonating? %>
-          <%= link_to super_admins_agent_impersonation_path(agent_id: current_agent.id), method: :delete do %>
-            <button class="btn btn-default btn-logout w-100">
-              <span class="d-none d-sm-inline">Revenir à ma session</span>
-              <span class="d-inline d-sm-none"><i class="fas fa-sign-out-alt"></i></span>
-            </button>
-          <% end %>
         <% else %>
           <%= render "common/header_help_menu" %>
         <% end %>
