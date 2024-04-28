@@ -1,6 +1,6 @@
 class InclusionConnectController < ApplicationController
   skip_before_action :authenticate_agent!
-  before_action :handle_invalid_state, only: [:callback], unless: :valid_state?
+  before_action :handle_invalid_state, :set_agent_return_to_url, only: [:callback]
 
   def auth
     state = set_session_state
@@ -11,7 +11,7 @@ class InclusionConnectController < ApplicationController
     if retrieve_inclusion_connect_infos.success?
       set_session_credentials
       mark_agent_as_logged_in!
-      redirect_to root_path
+      redirect_to @agent_return_to_url || root_path
     else
       if retrieve_inclusion_connect_infos.errors.include?("Agent doesn't exist in rdv-insertion")
         return agent_does_not_exist_error
@@ -22,6 +22,10 @@ class InclusionConnectController < ApplicationController
   end
 
   private
+
+  def set_agent_return_to_url
+    @agent_return_to_url = session[:agent_return_to]
+  end
 
   def retrieve_inclusion_connect_infos
     @retrieve_inclusion_connect_infos ||= RetrieveInclusionConnectAgentInfos.call(
@@ -43,11 +47,6 @@ class InclusionConnectController < ApplicationController
 
   def set_session_state
     session[:ic_state] = Digest::SHA1.hexdigest("InclusionConnect - #{SecureRandom.hex(13)}")
-  end
-
-  def valid_state?
-    params[:state].present? && session[:ic_state].present? &&
-      ActiveSupport::SecurityUtils.secure_compare(params[:state], session[:ic_state])
   end
 
   def set_session_credentials
@@ -88,6 +87,13 @@ class InclusionConnectController < ApplicationController
   end
 
   def handle_invalid_state
+    return if valid_state?
+
     handle_failed_authentication("Failed to authenticate agent with InclusionConnect : Invalid State")
+  end
+
+  def valid_state?
+    params[:state].present? && session[:ic_state].present? &&
+      ActiveSupport::SecurityUtils.secure_compare(params[:state], session[:ic_state])
   end
 end

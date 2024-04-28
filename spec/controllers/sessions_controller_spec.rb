@@ -65,10 +65,34 @@ describe SessionsController do
         )
       end
 
-      it "returns the redirection path" do
-        post :create
-        expect(response).to be_successful
-        expect(response.parsed_body["redirect_path"]).to eq("/")
+      context "when a redirect path is in the session" do
+        before do
+          request.session[:agent_return_to] = "/some_path"
+        end
+
+        it "returns the redirection path" do
+          post :create
+          expect(response).to be_successful
+          expect(response.parsed_body["redirect_path"]).to eq("/some_path")
+        end
+
+        it "deletes the path from the session" do
+          post :create
+          expect(response).to be_successful
+          expect(request.session[:agent_return_to]).to be_nil
+        end
+      end
+
+      context "when no redirect path is in the session" do
+        before do
+          request.session[:agent_return_to] = nil
+        end
+
+        it "returns the organisations path" do
+          post :create
+          expect(response).to be_successful
+          expect(response.parsed_body["redirect_path"]).to eq(root_path)
+        end
       end
 
       context "when credentials are invalid" do

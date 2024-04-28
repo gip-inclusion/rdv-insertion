@@ -5,6 +5,7 @@ class SessionsController < ApplicationController
 
   include Agents::SignInWithRdvSolidarites
   before_action :validate_rdv_solidarites_credentials!, :retrieve_agent!, :mark_agent_as_logged_in!,
+                :set_agent_return_to_url,
                 only: [:create]
 
   before_action :handle_inclusion_connect_logout, only: [:destroy], if: :logged_with_inclusion_connect?
@@ -13,7 +14,7 @@ class SessionsController < ApplicationController
 
   def create
     set_session_credentials
-    render json: { success: true, redirect_path: root_path }
+    render json: { success: true, redirect_path: @agent_return_to_url || root_path }
   end
 
   def destroy
@@ -33,6 +34,10 @@ class SessionsController < ApplicationController
       origin: "sign_in_form",
       signature: authenticated_agent.sign_with(timestamp)
     }
+  end
+
+  def set_agent_return_to_url
+    @agent_return_to_url = session[:agent_return_to]
   end
 
   def handle_inclusion_connect_logout
