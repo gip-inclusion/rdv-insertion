@@ -135,6 +135,7 @@ GEM
       xpath (~> 3.2)
     chartkick (5.0.5)
     choice (0.2.0)
+    chunky_png (1.4.0)
     concurrent-ruby (1.2.3)
     connection_pool (2.4.1)
     crack (0.4.5)
@@ -365,6 +366,10 @@ GEM
       actionpack (>= 5.2)
       railties (>= 5.2)
     rexml (3.2.6)
+    rqrcode (2.2.0)
+      chunky_png (~> 1.0)
+      rqrcode_core (~> 1.0)
+    rqrcode_core (1.2.0)
     rspec-core (3.12.2)
       rspec-support (~> 3.12.0)
     rspec-expectations (3.12.3)
@@ -562,6 +567,7 @@ DEPENDENCIES
   redis (~> 4.0)
   responders
   rexml
+  rqrcode (~> 2.0)
   rspec-rails
   rswag
   rubocop

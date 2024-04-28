@@ -13,8 +13,8 @@
   <p>Vous êtes <%= user_designation %> et à ce titre vous êtes <%= user.conjugate('invité') %> à participer à un <%= rdv_title %> afin de <%= rdv_purpose %>.</p>
   <%= tag.p(custom_sentence) if custom_sentence %>
   <p>Pour faciliter votre prise de rendez-vous, <%= sender_name %> a mis en place <span class="bold-blue">une plateforme vous permettant de prendre rendez-vous vous-même.</span></p>
-  <p>Pour choisir un créneau à votre convenance, saisissez dans un délai de <%= Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER %> jours à réception de ce courrier le code d’invitation ci-dessous <span class="bold-blue">sur <u><%= ENV['HOST'] %>/invitation</u></span>, puis suivez les instructions présentes à l'écran :</p>
-  <div class="invitation-token">Mon code d'invitation<br/><%= invitation.uuid %></div>
+  <p>Pour choisir un créneau à votre convenance, rendez-vous dans un délai de <%= Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER %> jours à réception de ce courrier à l'adresse <span class="bold-blue">sur <u><%= invitation_url %></u></span> ou scannez le QR code ci-dessous&nbsp;:</p>
+  <div class="img-wrapper"><%= image_tag(qr_code.to_data_url) %></div>
   <%= tag.p tag.span(mandatory_warning, class: "bold-blue") if mandatory_warning %>
   <%= tag.p tag.span("En l'absence d'action de votre part, #{punishable_warning}.", class: "bold-blue") if punishable_warning.present? %>
   <%= render "letters/invitations/help_message", invitation: invitation, help_address: help_address %>

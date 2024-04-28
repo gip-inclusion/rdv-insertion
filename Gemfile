@@ -75,6 +75,9 @@ gem "phonelib"
 gem "groupdate"
 gem "chartkick"
 
+# generate QR codes
+gem "rqrcode", "~> 2.0"
+
 # gem needed to be defined explicitely with ruby 3
 gem "rexml"
 gem "addressable"

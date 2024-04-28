@@ -1,5 +1,7 @@
 module Invitations
   class GenerateLetter < BaseService
+    require "rqrcode"
+
     include Messengers::GenerateLetter
 
     def initialize(invitation:)
@@ -42,12 +44,22 @@ module Invitations
         punishable_warning: @invitation.punishable_warning,
         rdv_purpose: @invitation.rdv_purpose,
         rdv_subject: @invitation.rdv_subject,
-        custom_sentence: @invitation.custom_sentence
+        custom_sentence: @invitation.custom_sentence,
+        invitation_url: invitation_url,
+        qr_code: qr_code
       }
     end
 
     def organisation
       (@invitation.user.organisations & @invitation.organisations).last
+    end
+
+    def qr_code
+      RQRCode::QRCode.new(invitation_url).as_png
+    end
+
+    def invitation_url
+      "#{ENV['RDV_SOLIDARITES_URL'].gsub('https://', '')}/i/r/#{@invitation.uuid}"
     end
   end
 end
