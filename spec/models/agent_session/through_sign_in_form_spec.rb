@@ -39,16 +39,16 @@ describe AgentSession::ThroughSignInForm do
     end
   end
 
-  context "15 days after its creation" do
-    before { travel_to(15.days.from_now) }
+  context "8 days after its creation" do
+    before { travel_to(8.days.from_now) }
 
     it "is not valid" do
       expect(subject).not_to be_valid
     end
   end
 
-  context "13 days after its creation" do
-    before { travel_to(13.days.from_now) }
+  context "6 days after its creation" do
+    before { travel_to(6.days.from_now) }
 
     it "is valid" do
       expect(subject).to be_valid
