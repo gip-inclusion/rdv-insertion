@@ -34,9 +34,5 @@ module AuthenticationSpecHelper
 
   def setup_agent_session(agent)
     page.set_rack_session(agent_auth: agent_auth_hash_from_sign_in_form(agent))
-
-    # stub_request(:get, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/auth/validate_token")
-    #   .with(headers: { "Content-Type" => "application/json" }.merge(agent_auth_hash(agent.email)))
-    #   .to_return(body: { "data" => { "uid" => agent.email } }.to_json)
   end
 end

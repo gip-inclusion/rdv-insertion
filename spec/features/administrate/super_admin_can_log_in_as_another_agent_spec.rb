@@ -50,5 +50,60 @@ describe "Super admin can log in as another agent", :js do
       expect(page).to have_no_content(agent_organisation1.name)
       expect(page).to have_no_content(agent_organisation2.name)
     end
+
+    it "cannot impersonate himself" do
+      visit super_admins_agent_path(super_admin.id)
+      expect(page).to have_content(super_admin.first_name)
+      expect(page).to have_content(super_admin.last_name)
+      expect(page).to have_no_content("Se logger en tant que")
+    end
+
+    it "cannot visit super_admins while impersonating a non super_adminn" do
+      visit super_admins_agent_path(agent.id)
+
+      click_link("Se logger en tant que")
+
+      expect(page).to have_current_path(organisations_path)
+      expect(page).to have_content("Vous êtes connecté.e en tant que #{agent.first_name} #{agent.last_name}")
+
+      visit super_admins_root_path
+      expect(page).to have_current_path(organisations_path)
+    end
+
+    context "when the agent impersonated is a super_admin" do
+      let!(:agent) { create(:agent, :super_admin, organisations: [agent_organisation1, agent_organisation2]) }
+      let!(:other_agent) { create(:agent) }
+
+      it "cannot impersonate while impersonating" do
+        visit super_admins_agent_path(agent.id)
+        click_link("Se logger en tant que")
+
+        expect(page).to have_current_path(organisations_path)
+        expect(page).to have_content("Vous êtes connecté.e en tant que #{agent.first_name} #{agent.last_name}")
+
+        visit super_admins_agent_path(other_agent.id)
+
+        expect(page).to have_link("Se logger en tant que",
+                                  href: super_admins_agent_impersonation_path(agent_id: other_agent.id))
+        click_link("Se logger en tant que")
+        # it disconnects the agent
+        expect(page).to have_current_path(sign_in_path)
+      end
+    end
+  end
+
+  context "when the agent is not a super admin" do
+    let!(:not_super_admin) { create(:agent, super_admin: false) }
+
+    before do
+      setup_agent_session(not_super_admin)
+    end
+
+    it "can log in as another agent" do
+      visit super_admins_agent_path(agent.id)
+
+      expect(page).to have_no_content("Se logger en tant que")
+      expect(page).to have_current_path(organisations_path)
+    end
   end
 end

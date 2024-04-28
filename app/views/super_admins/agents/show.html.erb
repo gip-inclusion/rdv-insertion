@@ -17,13 +17,14 @@ original file : https://github.com/thoughtbot/administrate/blob/main/app/views/a
   </h1>
 
   <div>
-    <%= link_to(
-      "Se logger en tant que",
-      super_admins_agent_impersonation_path(agent_id: page.resource.id),
-      method: :post,
-      class: "button",
-    ) %>
-
+    <% if current_agent != page.resource %>
+      <%= link_to(
+        "Se logger en tant que",
+        super_admins_agent_impersonation_path(agent_id: page.resource.id),
+        method: :post,
+        class: "button",
+      ) %>
+    <% end %>
     <%= link_to(
       t("administrate.actions.edit_resource", name: page.page_title),
       [:edit, namespace, page.resource],
