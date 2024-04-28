@@ -1,11 +1,11 @@
 module Agent::RdvSolidaritesClient
   def rdv_solidarites_client
-    RdvSolidaritesClient.new(auth_headers:)
+    RdvSolidaritesClient.new(auth_headers: rdv_solidarites_auth_headers_with_shared_secret)
   end
 
   private
 
-  def auth_headers
+  def rdv_solidarites_auth_headers_with_shared_secret
     { uid: email, x_agent_auth_signature: rdv_solidarites_signature }
   end
 
