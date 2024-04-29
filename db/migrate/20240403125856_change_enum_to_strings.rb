@@ -70,7 +70,7 @@ class ChangeEnumToStrings < ActiveRecord::Migration[7.1]
       values: { hmac: 0, jwt: 1 }
     },
     {
-      table: :rdv_contexts,
+      table: :follow_ups,
       column: :status,
       values: { not_invited: 0, invitation_pending: 1, rdv_pending: 2, rdv_needs_status_update: 3, rdv_noshow: 4,
                 rdv_revoked: 5, rdv_excused: 6, rdv_seen: 7, multiple_rdvs_cancelled: 8, closed: 9 }

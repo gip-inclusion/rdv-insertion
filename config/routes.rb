@@ -47,16 +47,16 @@ Rails.application.routes.draw do
         end
       end
       scope module: :users do
-        resources :rdv_contexts, only: [:index]
+        resources :follow_ups, only: [:index]
       end
       resources :invitations, only: [:create]
       resources :tag_assignations, only: [:index, :create] do
         delete :destroy, on: :collection
       end
     end
-    # we need to nest in organisations the different configurations record to correctly authorize them
-    resources :configurations, only: [:index, :show, :new, :create, :edit, :update, :destroy]
-    patch "configurations_positions/update", to: "configurations_positions#update"
+    # we need to nest in organisations the different category_configurations record to correctly authorize them
+    resources :category_configurations, only: [:index, :show, :new, :create, :edit, :update, :destroy]
+    patch "category_configurations_positions/update", to: "category_configurations_positions#update"
     resources :tags, only: [:create, :destroy]
     resources :file_configurations, only: [:show, :new, :create, :edit, :update] do
       get :confirm_update
@@ -87,9 +87,9 @@ Rails.application.routes.draw do
   resources :convocations, only: [:new]
 
   resources :participations, only: [:update]
-  resources :rdv_contexts, only: [:create]
+  resources :follow_ups, only: [:create]
 
-  resources :rdv_contexts, module: :rdv_contexts, only: [] do
+  resources :follow_ups, module: :follow_ups, only: [] do
     resource :closings, only: [:create, :destroy]
   end
 
@@ -122,7 +122,7 @@ Rails.application.routes.draw do
   resource :referent_assignations, only: [:destroy]
 
   resources :departments, only: [] do
-    patch "configurations_positions/update", to: "configurations_positions#update"
+    patch "category_configurations_positions/update", to: "category_configurations_positions#update"
     resources :department_organisations, only: [:index], as: :organisations, path: "/organisations"
     resources :users, only: [:index, :new, :create, :show, :edit, :update] do
       collection do
@@ -134,7 +134,7 @@ Rails.application.routes.draw do
         get :default_list
       end
       scope module: :users do
-        resources :rdv_contexts, only: [:index]
+        resources :follow_ups, only: [:index]
       end
       resources :invitations, only: [:create]
       resources :tag_assignations, only: [:index, :create] do

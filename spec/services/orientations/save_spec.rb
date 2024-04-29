@@ -4,7 +4,9 @@ describe Orientations::Save, type: :service do
   end
 
   let!(:user) { create(:user) }
-  let!(:orientation) { build(:orientation, user:, starts_at:, ends_at:) }
+  let!(:orientation) { build(:orientation, user:, starts_at:, ends_at:, organisation:) }
+
+  let(:organisation) { create(:organisation) }
 
   let!(:starts_at) { Date.parse("12/12/2022") }
   let!(:ends_at) { Date.parse("22/12/2022") }
@@ -151,6 +153,14 @@ describe Orientations::Save, type: :service do
         it "does not set the previous ends_at" do
           subject
           expect(second_orientation.reload.ends_at).to be_nil
+        end
+      end
+
+      context "when user is not part of the organisation" do
+        it "adds the user to the organisation" do
+          expect(user.organisations).not_to include(organisation)
+          subject
+          expect(user.organisations.reload).to include(orientation.organisation)
         end
       end
 

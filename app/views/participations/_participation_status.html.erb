@@ -1,19 +1,23 @@
 <%= turbo_frame_tag dom_id(participation, :status) do %>
   <div class="d-flex h-100 px-2 justify-content-center align-items-center">
-    <%= form_for(participation, method: :patch, data: { controller: "dropdown", remote: true }) do |f| %>
+    <%= form_for(participation, method: :patch, data: { controller: "participation-status-dropdown", remote: true }) do |f| %>
       <%= f.hidden_field :status %>
       <div class="btn-group">
         <button id="toggle-rdv-status" type="button" class="btn <%= background_class_for_participation_status(participation) %> dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <%= participation.human_status %>
         </button>
         <div class="dropdown-menu">
-          <% participation.available_statuses.map do |status, _| %>
+          <% participation.possible_new_statuses.map do |status| %>
             <%= link_to "#", class: "dropdown-item", data: { value: status } do %>
               <span class="bold">
                 <i class="fa fa-circle me-1 <%= text_class_for_participation_status(status) %>"></i>
-                <%= human_available_status(participation, status) %>
+                <%= human_new_status(status) %>
               </span><br>
-              <span><%= human_available_detailed_status(participation, status) %></span>
+              <span><%= human_new_status_detailed(status) %>.</span>
+              <% if could_notify_status_change?(participation, status) %>
+                <br>
+                <span>Si les notifications sont activées, une alerte sera envoyée à l'usager.</span>
+              <% end %>
             <% end %>
           <% end %>
         </div>

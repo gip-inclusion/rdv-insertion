@@ -285,3 +285,12 @@ blockquote {
     margin: 0
   }
 }
+
+body.rdv-solidarites {
+  .btn-primary{
+    background-color: $rdv_solidarites_blue;
+  }
+  table {
+    border-color: $rdv_solidarites_blue !important;
+  }
+}

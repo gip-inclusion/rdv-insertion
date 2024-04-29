@@ -8,7 +8,9 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
   let!(:organisation) { create(:organisation, name: "Drome RSA", department: department) }
   let!(:organisation_prescripteur) { create(:organisation, name: "Ailleurs", department: department) }
   let!(:structure) { organisation }
-  let!(:configuration) { create(:configuration, organisation: organisation, motif_category: motif_category) }
+  let!(:category_configuration) do
+    create(:category_configuration, organisation: organisation, motif_category: motif_category)
+  end
   let!(:nir) { generate_random_nir }
   let!(:user1) do
     create(
@@ -66,11 +68,11 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
   let!(:notification) do
     create(:notification, participation: participation_rdv, format: "email", created_at: Time.zone.parse("2022-06-22"))
   end
-  let!(:rdv_context) do
+  let!(:follow_up) do
     create(
-      :rdv_context, invitations: [first_invitation, last_invitation],
-                    motif_category: motif_category, participations: [participation_rdv],
-                    user: user1, status: "rdv_needs_status_update"
+      :follow_up, invitations: [first_invitation, last_invitation],
+                  motif_category: motif_category, participations: [participation_rdv],
+                  user: user1, status: "rdv_needs_status_update"
     )
   end
   let!(:referent) do

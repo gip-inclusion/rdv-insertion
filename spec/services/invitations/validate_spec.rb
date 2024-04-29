@@ -12,15 +12,15 @@ describe Invitations::Validate, type: :service do
     create(:motif_category, name: "RSA accompagnement", short_name: "rsa_accompagnement")
   end
 
-  let!(:invitation) { build(:invitation, user: user, rdv_context: rdv_context, organisations: [organisation]) }
+  let!(:invitation) { build(:invitation, user: user, follow_up: follow_up, organisations: [organisation]) }
 
   let!(:user) do
     create(:user, organisations: [organisation])
   end
 
-  let!(:rdv_context) { create(:rdv_context, user: user, motif_category: category_orientation) }
+  let!(:follow_up) { create(:follow_up, user: user, motif_category: category_orientation) }
 
-  let!(:participation) { create(:participation, rdv_context: rdv_context, user: user) }
+  let!(:participation) { create(:participation, follow_up: follow_up, user: user) }
 
   let!(:rdv) do
     create(:rdv, participations: [participation], status: "unknown", created_at: 3.days.ago, starts_at: 2.days.ago)
@@ -30,8 +30,8 @@ describe Invitations::Validate, type: :service do
     create(:organisation, motifs: [motif])
   end
 
-  let!(:configuration) do
-    create(:configuration, organisation: organisation, motif_category: category_orientation)
+  let!(:category_configuration) do
+    create(:category_configuration, organisation: organisation, motif_category: category_orientation)
   end
 
   let!(:motif) do
@@ -76,7 +76,7 @@ describe Invitations::Validate, type: :service do
 
     context "when a participation is pending" do
       before do
-        rdv_context.reload
+        follow_up.reload
       end
 
       let!(:rdv) { create(:rdv, participations: [participation], status: "unknown", starts_at: 2.days.from_now) }
@@ -115,8 +115,8 @@ describe Invitations::Validate, type: :service do
     end
 
     context "when the user does not belong to an org for that category" do
-      let!(:configuration) do
-        create(:configuration, organisation: organisation, motif_category: category_accompagnement)
+      let!(:category_configuration) do
+        create(:category_configuration, organisation: organisation, motif_category: category_accompagnement)
       end
 
       it("is a failure") { is_a_failure }

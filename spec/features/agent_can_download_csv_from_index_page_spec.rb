@@ -12,17 +12,17 @@ describe "Agents can download csv from index page", :js do
   let!(:motif_category) { create(:motif_category, short_name: "rsa_follow_up") }
   let!(:motif_category2) { create(:motif_category, short_name: "rsa_insertion_offer") }
   let!(:rdv_solidarites_token) { "123456" }
-  let!(:rdv_context) { create(:rdv_context, user: user, motif_category: motif_category, status: "rdv_seen") }
-  let!(:rdv_context2) { create(:rdv_context, user: user, motif_category: motif_category2, status: "rdv_seen") }
-  let!(:configuration) do
+  let!(:follow_up) { create(:follow_up, user: user, motif_category: motif_category, status: "rdv_seen") }
+  let!(:follow_up2) { create(:follow_up, user: user, motif_category: motif_category2, status: "rdv_seen") }
+  let!(:category_configuration) do
     create(
-      :configuration,
+      :category_configuration,
       motif_category: motif_category, organisation: organisation, invitation_formats: %w[sms email]
     )
   end
-  let!(:configuration2) do
+  let!(:category_configuration2) do
     create(
-      :configuration,
+      :category_configuration,
       motif_category: motif_category2, organisation: organisation, invitation_formats: %w[sms email]
     )
   end
