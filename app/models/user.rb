@@ -136,7 +136,23 @@ class User < ApplicationRecord
     organisations.map(&:department_id).uniq.length > 1
   end
 
+  def belongs_to_org?(organisation_id)
+    organisation_ids.include?(organisation_id)
+  end
+
+  def partner
+    return if role.blank? || affiliation_number.blank?
+
+    User.find_by(role: opposite_role, affiliation_number:)
+  end
+
   private
+
+  def opposite_role
+    return if role.blank?
+
+    role == "demandeur" ? "conjoint" : "demandeur"
+  end
 
   def follow_up_category_handled_already?(follow_up_attributes)
     follow_up_attributes.deep_symbolize_keys[:motif_category_id]&.to_i.in?(motif_categories.map(&:id))
