@@ -6,6 +6,8 @@
 
 s3_bucket = "rdv-insertion-medias-production.s3.fr-par.scw.cloud"
 rdv_solidarites = ENV["RDV_SOLIDARITES_URL"]
+matomo = "matomo.inclusion.beta.gouv.fr"
+sentry = "sentry.incubateur.net"
 
 Rails.application.config.content_security_policy do |policy|
   policy.default_src :self, :https
@@ -16,7 +18,7 @@ Rails.application.config.content_security_policy do |policy|
   policy.object_src  :none
   policy.script_src  :self, :https, :unsafe_inline
   policy.style_src   :self, :https, :unsafe_inline
-  policy.connect_src :self, rdv_solidarites
+  policy.connect_src :self, rdv_solidarites, sentry, matomo
   # Specify URI for violation reports
   # policy.report_uri "/csp-violation-report-endpoint"
 end
