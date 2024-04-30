@@ -1,6 +1,7 @@
 class StatusSelector {
   constructor() {
     this.selectElt = document.querySelector(".js-status-selector");
+    this.altLabel = document.querySelector(".status-label-alt");
     if (this.selectElt === null) return;
 
     this.setInitialValue();
@@ -12,20 +13,18 @@ class StatusSelector {
     const selectedStatus = url.searchParams.get("status");
     if (selectedStatus) {
       this.selectElt.value = selectedStatus;
-      this.setAlternativeLabel();
     }
   }
 
   setAlternativeLabel() {
-    this.selectElt.options[this.selectElt.selectedIndex].innerText = `Statut : ${this.selectElt.options[this.selectElt.selectedIndex].innerText}`;
+    if (this.selectElt.value) {
+      this.altLabel.innerText = `Statut : ${this.selectElt.options[this.selectElt.selectedIndex].text}`;
+    } else {
+      this.altLabel.innerText = "Filtrer par statut";
+    }
   }
 
   attachListener() {
-    this.selectElt.addEventListener("focus", () => {
-      if (this.selectElt.value) {
-        this.selectElt.options[this.selectElt.selectedIndex].innerText = this.selectElt.options[this.selectElt.selectedIndex].innerText.replace("Statut : ", "")
-      }
-    })
     this.selectElt.addEventListener("change", (event) => {
       this.setAlternativeLabel();
       this.refreshQuery(event.target.value);
