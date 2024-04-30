@@ -15,6 +15,14 @@ class OrganisationDashboard < Administrate::BaseDashboard
     category_configurations: Field::HasMany,
     department: Field::BelongsTo,
     email: Field::String,
+    organisation_type: Field::Select.with_options(
+      searchable: false,
+      collection: lambda { |field|
+        field.resource.class.send(field.attribute.to_s.pluralize).keys.map do |key|
+          [I18n.t("activerecord.attributes.organisation.organisation_types.#{key}"), key]
+        end
+      }
+    ),
     safir_code: Field::String,
     independent_from_cd: Field::Boolean,
     invitations: Field::HasMany,
@@ -62,6 +70,7 @@ class OrganisationDashboard < Administrate::BaseDashboard
     slug
     department
     email
+    organisation_type
     safir_code
     independent_from_cd
     agent_roles
@@ -83,6 +92,7 @@ class OrganisationDashboard < Administrate::BaseDashboard
     slug
     department
     email
+    organisation_type
     safir_code
     independent_from_cd
     logo
@@ -91,6 +101,7 @@ class OrganisationDashboard < Administrate::BaseDashboard
   FORM_ATTRIBUTES_NEW = %i[
     rdv_solidarites_organisation_id
     department
+    organisation_type
     logo
   ].freeze
 

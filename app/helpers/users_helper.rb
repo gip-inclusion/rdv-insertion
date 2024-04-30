@@ -59,8 +59,11 @@ module UsersHelper
       "agent_searches?#{params.to_query}"
   end
 
-  def show_parcours?(department)
-    department.number.in?(ENV["DEPARTMENTS_WHERE_PARCOURS_ENABLED"].split(","))
+  def show_parcours?(department, organisation)
+    department.number.in?(ENV["DEPARTMENTS_WHERE_PARCOURS_ENABLED"].split(",")) &&
+      (organisation.blank? ||
+        organisation.organisation_type.in?(%w[delegataire_rsa conseil_departemental france_travail])
+      )
   end
 
   def show_rdv_organisation_selection_for?(user, agent, department)

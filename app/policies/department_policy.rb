@@ -10,7 +10,9 @@ class DepartmentPolicy < ApplicationPolicy
   def batch_actions? = upload?
 
   def parcours?
-    record.number.in?(ENV["DEPARTMENTS_WHERE_PARCOURS_ENABLED"].split(","))
+    record.number.in?(ENV["DEPARTMENTS_WHERE_PARCOURS_ENABLED"].split(",")) &&
+      pundit_user.organisations.pluck(:organisation_type).intersect?(%w[delegataire_rsa conseil_departemental
+                                                                        france_travail])
   end
 
   class Scope < Scope
