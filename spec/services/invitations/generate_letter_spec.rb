@@ -404,7 +404,7 @@ describe Invitations::GenerateLetter, type: :service do
           "Pour en profiter au mieux, nous vous invitons à vous inscrire directement" \
           " et librement aux ateliers et formations de votre choix"
         )
-        expect(content).not_to include("Choisissez un créneau à votre convenance dans un délai de 3 jours à réception de")
+        expect(content).not_to include("Choisissez un créneau à votre convenance dans un délai de 3 jours à réception")
         expect(content).not_to include(
           "En l'absence d'action de votre part, votre RSA pourra être suspendu ou réduit."
         )
