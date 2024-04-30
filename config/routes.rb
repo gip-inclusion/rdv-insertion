@@ -173,7 +173,7 @@ Rails.application.routes.draw do
 
   resources :sessions, only: [:create]
   get '/sign_in', to: "sessions#new"
-  delete '/sign_out', to: "sessions#destroy"
+  get '/sign_out', to: "sessions#destroy"
 
   get "inclusion_connect/auth" => "inclusion_connect#auth"
   get "inclusion_connect/callback" => "inclusion_connect#callback"

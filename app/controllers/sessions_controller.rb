@@ -7,8 +7,6 @@ class SessionsController < ApplicationController
   before_action :validate_credentials!, :retrieve_agent!, :mark_agent_as_logged_in!, :set_session_credentials,
                 only: [:create]
 
-  before_action :handle_inclusion_connect_logout, only: [:destroy], if: :logged_with_inclusion_connect?
-
   def new; end
 
   def create
@@ -16,26 +14,19 @@ class SessionsController < ApplicationController
   end
 
   def destroy
+    logout_url = logged_with_inclusion_connect? ? logout_path_inclusion_connect : root_path
     clear_session
     flash[:notice] = "Déconnexion réussie"
-    redirect_to root_path
+    redirect_to logout_url, allow_other_host: true
   end
 
   private
 
-  def logout_inclusion_connect
-    InclusionConnectClient.logout(session[:inclusion_connect_token_id])
+  def logout_path_inclusion_connect
+    InclusionConnectClient.logout_path(session[:inclusion_connect_token_id], session[:ic_state])
   end
 
   def logged_with_inclusion_connect?
     session.dig(:rdv_solidarites_credentials, "inclusion_connected") == true
-  end
-
-  def handle_inclusion_connect_logout
-    return if logout_inclusion_connect.success?
-
-    flash[:error] = "Nous n'avons pas pu vous déconnecter d'Inclusion Connect. Contacter le support à l'adresse
-                    <rdv-insertion@beta.gouv.fr> si le problème persiste."
-    redirect_to root_path
   end
 end

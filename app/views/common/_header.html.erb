@@ -10,7 +10,7 @@
       <% if current_agent %>
         <%= render "common/header_help_menu" %>
         <div class="text-center mx-3 col">
-          <%= link_to sign_out_path, method: :delete do %>
+          <%= link_to sign_out_path do %>
             <button class="btn btn-default btn-logout w-100">
               <span class="d-none d-sm-inline">Se déconnecter</span>
               <span class="d-inline d-sm-none"><i class="fas fa-sign-out-alt"></i></span>
