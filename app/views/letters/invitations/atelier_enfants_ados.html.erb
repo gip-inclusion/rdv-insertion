@@ -11,8 +11,18 @@
   <p><%= sender_name.capitalize %> a mis en place <span class="bold-blue">une plateforme te permettant de t'inscrire.</span></p>
   <p>Pour choisir ton créneau, saisis le code d’invitation ci-dessous <span class="bold-blue">sur <u><%= ENV["RDV_SOLIDARITES_URL"] %>/i/r/<%= invitation.uuid %></u></span>, puis suis les instructions présentes à l'écran :</p>
   <div class="invitation-token">Mon code d'invitation<br/><%= invitation.uuid %></div>
-  <p>Pour choisir ton créneau, va <span class="bold-blue">sur <u><%= invitation_url %></u></span> ou scanne le QR code ci-dessous&nbsp;:</p>
-  <div class="img-wrapper"><%= image_tag(qr_code.to_data_url) %></div>
+  <p>Choisis ton créneau&nbsp;:</p>
+  <div>
+    <div class="pdf-left-col-2 pdf-align-center">
+      <div>soit en scannant ce QR code</div>
+      <div class="qr-code"><%= image_tag(qr_code.to_data_url) %></div>
+    </div>
+    <div class="pdf-right-col-2 pdf-align-center">
+      <div>soit en vous rendant à l'adresse</div>
+      <div class="invitation-token"><%= invitation_url %> </div>
+    </div>
+  </div>
+  <br style="clear:both"/>
 
   <div class="letter-signature">
     <%= render "common/organisation_signature", signature_lines: signature_lines, department: department %>

@@ -77,6 +77,10 @@ class Invitation < ApplicationRecord
     Rack::Utils.parse_nested_query(uri.query)
   end
 
+  def rdv_solidarites_url
+    "#{ENV['RDV_SOLIDARITES_URL'].gsub('https://', '')}/i/r/#{@invitation.uuid}"
+  end
+
   private
 
   def assign_uuid
