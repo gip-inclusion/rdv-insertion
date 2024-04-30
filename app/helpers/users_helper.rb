@@ -27,6 +27,10 @@ module UsersHelper
     end.compact
   end
 
+  def options_for_select_referent(referents)
+    referents.map { |agent| [agent, agent.id] }
+  end
+
   def ordered_statuses_count(statuses_count)
     [
       ["not_invited", statuses_count["not_invited"]],

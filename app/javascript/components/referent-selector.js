@@ -1,6 +1,7 @@
 class ReferentSelector {
   constructor() {
     this.selectElt = document.querySelector(".js-referent-selector");
+    this.altLabel = document.querySelector(".referent-label-alt");
     if (this.selectElt === null) return;
 
     this.setInitialValue();
@@ -12,23 +13,21 @@ class ReferentSelector {
     const selectedReferentId = url.searchParams.get("referent_id");
     if (selectedReferentId) {
       this.selectElt.value = selectedReferentId;
-      this.setAlternativeLabel();
     }
   }
 
   setAlternativeLabel() {
-    this.selectElt.options[this.selectElt.selectedIndex].innerText = `Suivis par : ${this.selectElt.options[this.selectElt.selectedIndex].innerText}`
+    if (this.selectElt.value) {
+      this.altLabel.innerText = `Suivis par : ${this.selectElt.options[this.selectElt.selectedIndex].text}`;
+    } else {
+      this.altLabel.innerText = "Filtrer par référent";
+    }
   }
 
   attachListener() {
-    this.selectElt.addEventListener("focus", () => {
-      if (this.selectElt.value) {
-        this.selectElt.options[this.selectElt.selectedIndex].innerText = this.selectElt.options[this.selectElt.selectedIndex].innerText.replace("Suivi par : ", "")
-      }
-    })
     this.selectElt.addEventListener("change", (event) => {
-      this.refreshQuery(event.target.value);
       this.setAlternativeLabel();
+      this.refreshQuery(event.target.value);
     });
   }
 
