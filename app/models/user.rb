@@ -143,7 +143,9 @@ class User < ApplicationRecord
   def partner
     return if role.blank? || affiliation_number.blank?
 
-    User.find_by(role: opposite_role, affiliation_number:)
+    User.joins(:organisations).find_by(
+      role: opposite_role, affiliation_number:, organisations:
+    )
   end
 
   private
