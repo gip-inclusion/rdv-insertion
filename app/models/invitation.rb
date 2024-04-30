@@ -78,7 +78,7 @@ class Invitation < ApplicationRecord
   end
 
   def rdv_solidarites_url
-    "#{ENV['RDV_SOLIDARITES_URL'].gsub('https://', '')}/i/r/#{@invitation.uuid}"
+    "#{ENV['RDV_SOLIDARITES_URL'].gsub('https://', '')}/i/r/#{uuid}"
   end
 
   private

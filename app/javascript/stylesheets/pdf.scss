@@ -60,12 +60,12 @@ u {
   width: 100%;
 }
 
-.invitation-left-col-2 {
+.invitation-left-col {
   float: left;
   width: 42%;
 }
 
-.invitation-right-col-2 {
+.invitation-right-col {
   float: right;
   width: 42%;
 }
@@ -88,7 +88,7 @@ u {
   text-align: center;
   padding: 10px;
   border-radius: 3px;
-  margin: 20px auto 30px;
+  margin: 40px auto 0 auto;
   font-weight: bold;
   font-size: 1.1rem;
 }

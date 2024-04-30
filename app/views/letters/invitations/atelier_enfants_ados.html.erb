@@ -13,11 +13,11 @@
   <div class="invitation-token">Mon code d'invitation<br/><%= invitation.uuid %></div>
   <p>Choisis ton créneau&nbsp;:</p>
   <div>
-    <div class="pdf-left-col-2 pdf-align-center">
+    <div class="invitation-left-col pdf-align-center">
       <div>soit en scannant ce QR code</div>
       <div class="qr-code"><%= image_tag(qr_code.to_data_url) %></div>
     </div>
-    <div class="pdf-right-col-2 pdf-align-center">
+    <div class="invitation-right-col pdf-align-center">
       <div>soit en vous rendant à l'adresse</div>
       <div class="invitation-token"><%= invitation_url %> </div>
     </div>
