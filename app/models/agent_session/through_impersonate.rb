@@ -1,6 +1,6 @@
 module AgentSession
   class ThroughImpersonate < Base
-    def duration
+    def max_duration
       30.minutes
     end
 

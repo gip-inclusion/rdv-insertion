@@ -1,6 +1,6 @@
 module AgentSession
   class ThroughSignInForm < Base
-    def duration
+    def max_duration
       7.days
     end
   end

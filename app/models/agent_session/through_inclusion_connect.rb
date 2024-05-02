@@ -1,6 +1,6 @@
 module AgentSession
   class ThroughInclusionConnect < Base
-    def duration
+    def max_duration
       7.days
     end
 

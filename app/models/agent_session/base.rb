@@ -41,15 +41,15 @@ module AgentSession
     end
 
     def expires_at
-      if duration > 1.day
-        # we expire at the end of the day because we don't want the agent to be logged out in the middle of an action
-        (created_at + duration).end_of_day
+      if max_duration > 1.day
+        # we expire at the beginning of the day because we don't want the agent to be logged out in the middle of an action
+        (created_at + max_duration).beginning_of_day
       else
-        created_at + duration
+        created_at + max_duration
       end
     end
 
-    def duration
+    def max_duration
       raise NoMethodError
     end
 
