@@ -60,10 +60,9 @@ module UsersHelper
   end
 
   def show_parcours?(department, organisation)
-    department.number.in?(ENV["DEPARTMENTS_WHERE_PARCOURS_ENABLED"].split(",")) &&
-      (organisation.blank? ||
-        organisation.organisation_type.in?(%w[delegataire_rsa conseil_departemental france_travail])
-      )
+    return DepartmentPolicy.new(current_agent, department).parcours? if organisation.blank?
+
+    OrganisationPolicy.new(current_agent, organisation).parcours?
   end
 
   def show_rdv_organisation_selection_for?(user, agent, department)
