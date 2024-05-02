@@ -23,8 +23,12 @@ module UsersHelper
     ordered_statuses_count(statuses_count).map do |status, count|
       next if count.nil?
 
-      ["Statut : \"#{I18n.t("activerecord.attributes.follow_up.statuses.#{status}")}\" (#{count})", status]
+      ["#{I18n.t("activerecord.attributes.follow_up.statuses.#{status}")} (#{count})", status]
     end.compact
+  end
+
+  def options_for_select_referent(referents)
+    referents.map { |agent| [agent, agent.id] }
   end
 
   def ordered_statuses_count(statuses_count)
