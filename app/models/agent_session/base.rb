@@ -42,7 +42,7 @@ module AgentSession
 
     def expires_at
       if max_duration > 1.day
-        # we expire at the beginning of the day because we don't want the agent to be logged out in the middle of an action
+        # we expire at the beginning of day because we don't want the agent to be logged out in the middle of an action
         (created_at + max_duration).beginning_of_day
       else
         created_at + max_duration
