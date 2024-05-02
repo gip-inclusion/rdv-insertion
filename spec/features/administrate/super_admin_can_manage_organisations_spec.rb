@@ -85,8 +85,6 @@ describe "Super admin can manage organisations" do
       expect(page).to have_css("dd", class: "attribute-data", text: organisation1.email)
       expect(page).to have_css("dt", id: "safir_code", text: "CODE SAFIR")
       expect(page).to have_css("dd", class: "attribute-data", text: organisation1.safir_code)
-      expect(page).to have_css("dt", id: "independent_from_cd", text: "INDÉPENDANTE DU CD")
-      expect(page).to have_css("dd", class: "attribute-data", text: organisation1.independent_from_cd)
       expect(page).to have_css("dt", id: "agent_roles", text: "AGENT ROLES")
       expect(page).to have_css("td", class: "cell-data--belongs-to", text: agent1.to_s)
       expect(page).to have_no_css("td", class: "cell-data--belongs-to", text: agent2.to_s)
@@ -282,8 +280,6 @@ describe "Super admin can manage organisations" do
       expect(page).to have_field("organisation[email]", with: organisation1.email)
       expect(page).to have_css("label[for=\"organisation_safir_code\"]", text: "Code SAFIR")
       expect(page).to have_field("organisation[safir_code]", with: organisation1.safir_code)
-      expect(page).to have_css("label[for=\"organisation_independent_from_cd\"]", text: "Indépendante du CD")
-      expect(page).to have_field("organisation[independent_from_cd]")
       expect(page).to have_button("Enregistrer")
 
       fill_in "organisation_name", with: "Some other name"
