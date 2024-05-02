@@ -60,9 +60,7 @@ module UsersHelper
   end
 
   def show_parcours?(department, organisation)
-    DepartmentPolicy.new(current_agent, department).parcours? && (
-      organisation.blank? || OrganisationPolicy.new(current_agent, organisation).parcours?
-    )
+    policy(department).parcours? && (organisation.blank? || policy(organisation).parcours?)
   end
 
   def show_rdv_organisation_selection_for?(user, agent, department)

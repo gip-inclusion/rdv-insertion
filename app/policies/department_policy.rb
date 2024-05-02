@@ -11,8 +11,7 @@ class DepartmentPolicy < ApplicationPolicy
 
   def parcours?
     record.number.in?(ENV["DEPARTMENTS_WHERE_PARCOURS_ENABLED"].split(",")) &&
-      pundit_user.organisations.pluck(:organisation_type).intersect?(%w[delegataire_rsa conseil_departemental
-                                                                        france_travail])
+      pundit_user.organisations.pluck(:organisation_type).intersect?(Organisation::ORGANISATION_TYPES_WITH_PARCOURS_ACCESS)
   end
 
   class Scope < Scope
