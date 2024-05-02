@@ -24,7 +24,6 @@ class OrganisationDashboard < Administrate::BaseDashboard
       }
     ),
     safir_code: Field::String,
-    independent_from_cd: Field::Boolean,
     invitations: Field::HasMany,
     last_webhook_update_received_at: Field::DateTime,
     lieux: Field::HasMany,
@@ -72,7 +71,6 @@ class OrganisationDashboard < Administrate::BaseDashboard
     email
     organisation_type
     safir_code
-    independent_from_cd
     agent_roles
     lieux
     motif_categories
@@ -94,7 +92,6 @@ class OrganisationDashboard < Administrate::BaseDashboard
     email
     organisation_type
     safir_code
-    independent_from_cd
     logo
   ].freeze
 
