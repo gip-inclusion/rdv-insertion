@@ -1,5 +1,5 @@
 class TagAssignationsController < ApplicationController
-  before_action :set_available_tags, :set_user
+  before_action :set_available_tags, :set_user, :set_user_tags
 
   def index; end
 

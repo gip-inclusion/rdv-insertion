@@ -3,5 +3,5 @@
 <% end %>
 
 <%= turbo_stream.replace "tag_form" do %>
-  <%= render "form", tags: @available_tags %>
+  <%= render "form", tags: @available_tags - @user_tags %>
 <% end %>
