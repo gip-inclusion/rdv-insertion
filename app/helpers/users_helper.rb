@@ -63,8 +63,8 @@ module UsersHelper
       "agent_searches?#{params.to_query}"
   end
 
-  def show_parcours?(department)
-    department.number.in?(ENV["DEPARTMENTS_WHERE_PARCOURS_ENABLED"].split(","))
+  def show_parcours?(department, organisation)
+    policy(department).parcours? && (organisation.blank? || policy(organisation).parcours?)
   end
 
   def show_rdv_organisation_selection_for?(user, agent, department)

@@ -294,6 +294,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_092936) do
     t.string "slug"
     t.string "logo_filename"
     t.string "safir_code"
+    t.string "organisation_type"
     t.index ["department_id"], name: "index_organisations_on_department_id"
     t.index ["rdv_solidarites_organisation_id"], name: "index_organisations_on_rdv_solidarites_organisation_id", unique: true
   end
