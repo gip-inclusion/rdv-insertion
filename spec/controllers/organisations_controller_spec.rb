@@ -2,7 +2,7 @@ describe OrganisationsController do
   let!(:department) { create(:department) }
   let!(:organisation) do
     create(:organisation, name: "PIE Pantin", slug: "pie-pantin", email: "pie@pantin.fr", phone_number: "0102030405",
-                          independent_from_cd: true, department: department)
+                          department: department)
   end
   let!(:organisation2) { create(:organisation, department: department) }
   let!(:agent) { create(:agent, admin_role_in_organisations: [organisation]) }
@@ -56,7 +56,6 @@ describe OrganisationsController do
       expect(response.body).to match(/pie@pantin.fr/)
       expect(response.body).to match(/Numéro de téléphone/)
       expect(response.body).to match(/0102030405/)
-      expect(response.body).to match(/Indépendante du CD/)
       expect(response.body).to match(/Oui/)
       expect(response.body).to match(/Logo/)
       expect(response.body).to match(/Désignation dans le fichier usagers/)
@@ -105,7 +104,6 @@ describe OrganisationsController do
       expect(response.body).to match(/pie@pantin.fr/)
       expect(response.body).to match(/Numéro de téléphone/)
       expect(response.body).to match(/0102030405/)
-      expect(response.body).to match(/Indépendante du CD/)
       expect(response.body).to match(/Oui/)
       expect(response.body).to match(/Logo/)
       expect(response.body).to match(/Désignation dans le fichier usagers/)
@@ -144,8 +142,7 @@ describe OrganisationsController do
   describe "#update" do
     let!(:update_organisation_attributes) do
       {
-        name: "PIE Romainville", slug: "pie-romainville", email: "pie@romainville.fr", phone_number: "0105040302",
-        independent_from_cd: false
+        name: "PIE Romainville", slug: "pie-romainville", email: "pie@romainville.fr", phone_number: "0105040302"
       }
     end
     let!(:update_params) { { id: organisation.id, organisation: update_organisation_attributes } }
