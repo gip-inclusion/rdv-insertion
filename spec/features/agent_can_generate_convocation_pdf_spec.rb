@@ -11,7 +11,9 @@ describe "Agents can generate convocation pdf", :js do
   let!(:follow_up) do
     create(:follow_up, motif_category: motif_category, user: user, status: "rdv_pending")
   end
-  let!(:configuration) { create(:configuration, organisation: organisation, motif_category: motif_category) }
+  let!(:category_configuration) do
+    create(:category_configuration, organisation: organisation, motif_category: motif_category)
+  end
   let!(:participation) do
     create(
       :participation,

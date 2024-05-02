@@ -18,7 +18,7 @@ module Users
           invitations: [follow_up: :motif_category],
           follow_ups: [:participations],
           tags: [:tag_organisations],
-          organisations: [:motif_categories, :department, :configurations]
+          organisations: [:motif_categories, :department, :category_configurations]
         ).distinct
     end
 

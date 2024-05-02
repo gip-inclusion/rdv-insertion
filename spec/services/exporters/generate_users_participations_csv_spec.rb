@@ -1,5 +1,7 @@
 describe Exporters::GenerateUsersParticipationsCsv, type: :service do
-  subject { described_class.call(user_ids: users.ids, structure: structure, motif_category: motif_category, agent:) }
+  subject do
+    described_class.call(user_ids: users.ids, structure: structure, motif_category_id: motif_category.id, agent:)
+  end
 
   let!(:now) { Time.zone.parse("22/06/2022") }
   let!(:timestamp) { now.to_i }
@@ -8,7 +10,9 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
   let!(:organisation) { create(:organisation, name: "Drome RSA", department: department) }
   let!(:organisation_prescripteur) { create(:organisation, name: "Ailleurs", department: department) }
   let!(:structure) { organisation }
-  let!(:configuration) { create(:configuration, organisation: organisation, motif_category: motif_category) }
+  let!(:category_configuration) do
+    create(:category_configuration, organisation: organisation, motif_category: motif_category)
+  end
   let!(:nir) { generate_random_nir }
   let!(:user1) do
     create(
@@ -189,7 +193,7 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
       end
 
       context "when no motif category is passed" do
-        subject { described_class.call(user_ids: users.ids, structure: structure, motif_category: nil, agent:) }
+        subject { described_class.call(user_ids: users.ids, structure: structure, motif_category_id: nil, agent:) }
 
         it "is a success" do
           expect(subject.success?).to eq(true)

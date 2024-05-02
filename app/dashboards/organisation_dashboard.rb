@@ -12,11 +12,10 @@ class OrganisationDashboard < Administrate::BaseDashboard
     agent_roles: Field::HasMany,
     agents: Field::HasMany,
     archived_users: Field::HasMany,
-    configurations: Field::HasMany,
+    category_configurations: Field::HasMany,
     department: Field::BelongsTo,
     email: Field::String,
     safir_code: Field::String,
-    independent_from_cd: Field::Boolean,
     invitations: Field::HasMany,
     last_webhook_update_received_at: Field::DateTime,
     lieux: Field::HasMany,
@@ -63,7 +62,6 @@ class OrganisationDashboard < Administrate::BaseDashboard
     department
     email
     safir_code
-    independent_from_cd
     agent_roles
     lieux
     motif_categories
@@ -84,7 +82,6 @@ class OrganisationDashboard < Administrate::BaseDashboard
     department
     email
     safir_code
-    independent_from_cd
     logo
   ].freeze
 

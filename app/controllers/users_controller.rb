@@ -14,7 +14,7 @@ class UsersController < ApplicationController
 
   before_action :set_organisation, :set_department, :set_organisations, :set_all_configurations,
                 :set_current_agent_roles, :set_users_scope,
-                :set_current_configuration, :set_current_motif_category,
+                :set_current_category_configuration, :set_current_motif_category,
                 :set_users, :set_follow_ups, :set_filterable_tags, :set_referents_list,
                 :filter_users, :order_users,
                 for: :index
@@ -113,8 +113,8 @@ class UsersController < ApplicationController
       @users.map(&:id),
       department_level? ? "Department" : "Organisation",
       department_level? ? @department.id : @organisation.id,
-      @current_motif_category&.id,
-      current_agent.id
+      current_agent.id,
+      request.query_parameters
     )
   end
 
@@ -203,23 +203,23 @@ class UsersController < ApplicationController
 
   def set_all_configurations
     @all_configurations =
-      policy_scope(::Configuration).joins(:organisation)
-                                   .includes(:motif_category)
-                                   .where(current_organisation_filter)
-                                   .uniq(&:motif_category_id)
+      policy_scope(CategoryConfiguration).joins(:organisation)
+                                         .includes(:motif_category)
+                                         .where(current_organisation_filter)
+                                         .uniq(&:motif_category_id)
     @all_configurations.sort_by! { |c| department_level? ? c.department_position : c.position }
   end
 
-  def set_current_configuration
+  def set_current_category_configuration
     return if archived_scope?
     return unless params[:motif_category_id]
 
-    @current_configuration =
+    @current_category_configuration =
       @all_configurations.find { |c| c.motif_category_id == params[:motif_category_id].to_i }
   end
 
   def set_current_motif_category
-    @current_motif_category = @current_configuration&.motif_category
+    @current_motif_category = @current_category_configuration&.motif_category
   end
 
   def set_user_archive

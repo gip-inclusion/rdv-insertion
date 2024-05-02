@@ -3,10 +3,10 @@ module Exporters
   class GenerateUsersCsv < Csv
     attr_reader :agent
 
-    def initialize(user_ids:, agent:, structure: nil, motif_category: nil)
+    def initialize(user_ids:, agent:, structure: nil, motif_category_id: nil)
       @user_ids = user_ids
       @structure = structure
-      @motif_category = motif_category
+      @motif_category = motif_category_id.present? ? MotifCategory.find(motif_category_id) : nil
       @agent = agent
     end
 
@@ -150,9 +150,10 @@ module Exporters
     end
 
     def number_of_days_before_action_required
-      @number_of_days_before_action_required ||= @structure.configurations.includes(:motif_category).find do |c|
-        c.motif_category == @motif_category
-      end.number_of_days_before_action_required
+      @number_of_days_before_action_required ||=
+        @structure.category_configurations.includes(:motif_category).find do |c|
+          c.motif_category == @motif_category
+        end.number_of_days_before_action_required
     end
 
     def display_date(date)

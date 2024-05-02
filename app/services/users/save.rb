@@ -6,16 +6,26 @@ module Users
     end
 
     def call
-      User.transaction do
-        assign_organisation if @organisation.present?
-        validate_user!
-        save_record!(@user)
-        sync_with_rdv_solidarites
-      end
+      save_user
       result.user = @user
     end
 
     private
+
+    def save_user
+      User.with_advisory_lock "saving_user_#{lock_key}" do
+        User.transaction do
+          assign_organisation if @organisation.present?
+          validate_user!
+          save_record!(@user)
+          sync_with_rdv_solidarites
+        end
+      end
+    end
+
+    def lock_key
+      @user.to_s.presence || SecureRandom.uuid
+    end
 
     def assign_organisation
       @user.organisations = (@user.organisations.to_a + [@organisation]).uniq

@@ -1,6 +1,58 @@
 <h1>Bonjour</h1>
 <p>Voici l'export CSV que vous avez demandé sur notre plateforme.</p>
 <p>Ce lien de téléchargement n'est valable que pendant <%= CsvExport::VALIDITY_PERIOD.in_hours.to_i %> heures à partir de l'envoi de ce mail.</p>
+<p>L'export a été réalisé à partir des critères suivants&nbsp;:</p>
+<ul>
+  <li><strong>Type d'export</strong>&nbsp;:
+    <%= @export.kind == "users_csv" ? "export des usagers" : "export des rendez-vous des usagers" %>
+  </li>
+  <li><strong>Périmètre</strong>&nbsp;: <%= @organisations_filter.map(&:name).join(", ") %></li>
+  <% if @motif_category_filter %>
+    <li><strong>Catégorie</strong>&nbsp;: <%= @motif_category_filter.name %></li>
+  <% end %>
+  <% if @status_filter %>
+    <li><strong>Statut</strong>&nbsp;: <%= I18n.t("activerecord.attributes.follow_up.statuses.#{@status_filter}") %></li>
+  <% end %>
+  <% if @referent_filter %>
+    <li><strong>Référent</strong>&nbsp;: <%= @referent_filter.to_s %></li>
+  <% end %>
+  <% if @creation_dates_before || @creation_dates_after %>
+    <li><strong>Date de création</strong>&nbsp;:
+      <% if @creation_dates_after %>
+        entre <%= @creation_dates_after.to_date&.strftime("%d/%m/%Y") %> et le <%= (@creation_dates_before&.to_date&.strftime("%d/%m/%Y") || Time.zone.now&.strftime("%d/%m/%Y")) %>
+      <% else %>
+        avant le <%= @creation_dates_before.to_date&.strftime("%d/%m/%Y") %>
+      <% end %>
+    </li>
+  <% end %>
+  <% if @first_invitation_date_after || @first_invitation_date_before %>
+    <li><strong>Date de première invitation</strong>&nbsp;:
+      <% if @first_invitation_date_after %>
+        entre <%= @first_invitation_date_after.to_date&.strftime("%d/%m/%Y") %> et le <%= (@first_invitation_date_before&.to_date&.strftime("%d/%m/%Y") || Time.zone.now&.strftime("%d/%m/%Y")) %>
+      <% else %>
+        avant le <%= @first_invitation_date_before.to_date&.strftime("%d/%m/%Y") %>
+      <% end %>
+    </li>
+  <% end %>
+  <% if @last_invitation_date_after || @last_invitation_date_before %>
+    <li><strong>Date de dernière invitation</strong>&nbsp;:
+      <% if @last_invitation_date_after %>
+        entre <%= @last_invitation_date_after.to_date&.strftime("%d/%m/%Y") %> et le <%= (@last_invitation_date_before&.to_date&.strftime("%d/%m/%Y") || Time.zone.now&.strftime("%d/%m/%Y")) %>
+      <% elsif @last_invitation_date_before %>
+        avant le <%= @last_invitation_date_before.to_date&.strftime("%d/%m/%Y") %>
+      <% end %>
+    </li>
+  <% end %>
+  <% if @action_required_filter %>
+    <li><strong>Usagers avec intervention nécessaire</strong>&nbsp;: Oui</li>
+  <% end %>
+  <% if @search_query_filter %>
+    <li><strong>Champ de recherche libre</strong>&nbsp;: <%= @search_query_filter %></li>
+  <% end %>
+  <% if @tags_filter %>
+    <li><strong>Tags</strong>&nbsp;: <%= @tags_filter.join(", ") %></li>
+  <% end %>
+</ul>
 <p class="btn-wrapper">
   <%= link_to csv_export_url(id: @export.signed_id), class: "btn btn-primary" do %>
     Télécharger le fichier

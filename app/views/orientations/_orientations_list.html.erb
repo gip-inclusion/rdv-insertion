@@ -2,8 +2,18 @@
   <% if orientations.empty? %>
     <p id="no-orientation-text">Pas d'orientation renseignée</p>
   <% else %>
-    <% orientations.each do |orientation| %>
-      <%= render "orientations/orientation", orientation:  %>
-    <% end %>
+    <table class="table table-hover table-responsive my-4">
+        <thead class="text-dark-blue">
+          <th scope="col">Dates</th>
+          <th scope="col">Type d'orientation</th>
+          <th scope="col">Structure</th>
+          <th scope="col">Référent unique</th>
+        </thead>
+        <tbody class="align-middle">
+          <% orientations.each do |orientation| %>
+            <%= render "orientations/orientation", orientation: %>
+          <% end %>
+        </tbody>
+    </table>
   <% end %>
 <% end %>

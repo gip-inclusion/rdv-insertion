@@ -22,7 +22,7 @@ module Users
     end
 
     def set_organisation
-      @organisation = policy_scope(Organisation).find_by(id: current_organisation_ids & @user.organisation_ids)
+      @organisation = policy_scope(Organisation).find(params[:organisation_id])
     end
   end
 end

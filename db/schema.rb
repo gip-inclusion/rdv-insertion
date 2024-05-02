@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_03_125856) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_02_092936) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -91,7 +91,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_03_125856) do
     t.index ["user_id"], name: "index_archives_on_user_id"
   end
 
-  create_table "configurations", force: :cascade do |t|
+  create_table "category_configurations", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "invitation_formats", default: ["sms", "email", "postal"], null: false, array: true
@@ -111,20 +111,20 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_03_125856) do
     t.integer "position", default: 0
     t.integer "department_position", default: 0
     t.string "phone_number"
-    t.index ["file_configuration_id"], name: "index_configurations_on_file_configuration_id"
-    t.index ["motif_category_id"], name: "index_configurations_on_motif_category_id"
-    t.index ["organisation_id"], name: "index_configurations_on_organisation_id"
+    t.index ["file_configuration_id"], name: "index_category_configurations_on_file_configuration_id"
+    t.index ["motif_category_id"], name: "index_category_configurations_on_motif_category_id"
+    t.index ["organisation_id"], name: "index_category_configurations_on_organisation_id"
   end
 
   create_table "csv_exports", force: :cascade do |t|
     t.bigint "agent_id", null: false
     t.string "structure_type", null: false
     t.bigint "structure_id", null: false
-    t.integer "motif_category_id"
     t.datetime "purged_at"
     t.string "kind"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.json "request_params"
     t.index ["agent_id"], name: "index_csv_exports_on_agent_id"
     t.index ["structure_type", "structure_id"], name: "index_csv_exports_on_structure"
   end
@@ -292,7 +292,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_03_125856) do
     t.bigint "department_id"
     t.datetime "last_webhook_update_received_at"
     t.string "slug"
-    t.boolean "independent_from_cd", default: false
     t.string "logo_filename"
     t.string "safir_code"
     t.index ["department_id"], name: "index_organisations_on_department_id"
@@ -516,9 +515,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_03_125856) do
   add_foreign_key "agent_roles", "organisations"
   add_foreign_key "archives", "departments"
   add_foreign_key "archives", "users"
-  add_foreign_key "configurations", "file_configurations"
-  add_foreign_key "configurations", "motif_categories"
-  add_foreign_key "configurations", "organisations"
+  add_foreign_key "category_configurations", "file_configurations"
+  add_foreign_key "category_configurations", "motif_categories"
+  add_foreign_key "category_configurations", "organisations"
   add_foreign_key "csv_exports", "agents"
   add_foreign_key "follow_ups", "motif_categories"
   add_foreign_key "follow_ups", "users"

@@ -39,7 +39,7 @@ class User < ApplicationRecord
   has_many :rdvs, through: :participations
   has_many :organisations, through: :users_organisations
   has_many :notifications, through: :participations
-  has_many :configurations, through: :organisations
+  has_many :category_configurations, through: :organisations
   has_many :motif_categories, through: :follow_ups
   has_many :departments, -> { distinct }, through: :organisations
   has_many :tags, through: :tag_users
@@ -65,6 +65,8 @@ class User < ApplicationRecord
     where.not(id: joins(:follow_ups).where(follow_ups: { motif_category: motif_categories }).ids)
   }
   scope :with_sent_invitations, -> { where.associated(:invitations) }
+
+  squishes :first_name, :last_name, :department_internal_id, :affiliation_number
 
   def participation_for(rdv)
     participations.to_a.find { |participation| participation.rdv_id == rdv.id }

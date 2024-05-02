@@ -8,7 +8,12 @@ class ParticipationsController < ApplicationController
     )
 
     @success = participation_update.success?
-    flash.now[:error] = participation_update.errors.join(" ") unless @success
+    if @success
+      flash.now[:success] = "Le statut du rdv a bien été modifié."
+    else
+      flash.now[:error] = participation_update.errors.join(", ")
+    end
+    respond_to :turbo_stream
   end
 
   private

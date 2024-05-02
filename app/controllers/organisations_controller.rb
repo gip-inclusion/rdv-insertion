@@ -1,13 +1,14 @@
 class OrganisationsController < ApplicationController
   PERMITTED_PARAMS = [
-    :name, :phone_number, :email, :slug, :independent_from_cd, :logo_filename, :rdv_solidarites_organisation_id,
+    :name, :phone_number, :email, :slug, :logo_filename, :rdv_solidarites_organisation_id,
     :department_id, :safir_code
   ].freeze
 
-  before_action :set_organisation, :set_department, :authorize_organisation_configuration, only: [:show, :edit, :update]
+  before_action :set_organisation, :set_department, :authorize_organisation_category_configuration,
+                only: [:show, :edit, :update]
 
   def index
-    @organisations = policy_scope(Organisation).includes(:department, :configurations)
+    @organisations = policy_scope(Organisation).includes(:department, :category_configurations)
     @organisations_by_department = @organisations.sort_by(&:department_number).group_by(&:department)
     return unless @organisations.to_a.length == 1
 
@@ -116,7 +117,7 @@ class OrganisationsController < ApplicationController
     @update_organisation ||= Organisations::Update.call(organisation: @organisation)
   end
 
-  def authorize_organisation_configuration
+  def authorize_organisation_category_configuration
     authorize @organisation, :configure?
   end
 end

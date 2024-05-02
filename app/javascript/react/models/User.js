@@ -40,9 +40,9 @@ export default class User {
     });
     this.uniqueKey = Math.random().toString(36).substring(7);
 
-    this._id = formattedAttributes.id;
-    this._createdAt = formattedAttributes.createdAt;
-    this._organisations = formattedAttributes.organisations || [];
+    this.id = formattedAttributes.id;
+    this.createdAt = formattedAttributes.createdAt;
+    this.organisations = formattedAttributes.organisations || [];
     this.phoneNumberNew = null;
     this.rightsOpeningDateNew = null;
     this.emailNew = null;
@@ -103,30 +103,6 @@ export default class User {
 
   get uid() {
     return this.generateUid();
-  }
-
-  get createdAt() {
-    return this._createdAt;
-  }
-
-  get id() {
-    return this._id;
-  }
-
-  get organisations() {
-    return this._organisations;
-  }
-
-  set createdAt(createdAt) {
-    this._createdAt = createdAt;
-  }
-
-  set id(id) {
-    this._id = id;
-  }
-
-  set organisations(organisations) {
-    this._organisations = organisations;
   }
 
   formatTitle(title) {

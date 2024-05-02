@@ -37,7 +37,7 @@ class FollowUpsController < ApplicationController
     turbo_stream_replace(
       "user_#{@user.id}_motif_category_#{follow_up_params[:motif_category_id]}",
       "follow_up_status_cell",
-      { follow_up: @follow_up, configuration: nil }
+      { follow_up: @follow_up, category_configuration: nil }
     )
   end
 
