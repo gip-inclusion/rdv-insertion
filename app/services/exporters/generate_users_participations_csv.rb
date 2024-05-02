@@ -50,7 +50,6 @@ module Exporters
        User.human_attribute_name(:first_name),
        User.human_attribute_name(:affiliation_number),
        User.human_attribute_name(:department_internal_id),
-       User.human_attribute_name(:nir),
        User.human_attribute_name(:france_travail_id),
        User.human_attribute_name(:email),
        User.human_attribute_name(:address),
@@ -76,13 +75,12 @@ module Exporters
        rdv_taken_in_autonomy?(participation),
        human_status(participation),
        user.referents.map(&:email).join(", "),
-       participation.organisation.name,
+       display_organisation_name(participation.organisation),
        user.title,
        user.last_name,
        user.first_name,
        user.affiliation_number,
        user.department_internal_id,
-       user.nir,
        user.france_travail_id,
        user.email,
        user.address,
@@ -95,7 +93,7 @@ module Exporters
        participation.agent_prescripteur&.first_name,
        participation.agent_prescripteur&.last_name,
        participation.agent_prescripteur&.email,
-       user.tags.pluck(:value).join(", ")]
+       scoped_user_tags(user.tags).pluck(:value).join(", ")]
     end
 
     def resource_human_name
