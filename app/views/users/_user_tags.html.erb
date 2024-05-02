@@ -1,7 +1,14 @@
-<p class="mb-2" id="tags_list">
+<p class="mb-3 mt-3 flex-wrap d-flex" id="tags_list">
   <% if tags.blank? %>
     -
   <% else %>
-    <%= tags.join(', ') %>
+    <% tags.each do |tag| %>
+      <span class="badge badge-tag justify-content-between background-blue-light text-dark-blue me-2 d-flex">
+        <%= tag.value %>
+        <%= link_to structure_user_tag_assignation_path(user.id, tag.id), method: :delete, class: 'text-dark-grey-alt ms-2' do %>
+          <i class="fas fa-times"></i>
+        <% end %>
+      </span>
+    <% end %>
   <% end %>
 </p>

@@ -45,6 +45,6 @@ class TagAssignationsController < ApplicationController
   end
 
   def tag
-    @available_tags.find(tag_assignation_params[:tag_id])
+    @available_tags.find(params[:id] || tag_assignation_params[:tag_id])
   end
 end
