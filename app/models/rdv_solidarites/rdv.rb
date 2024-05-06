@@ -13,7 +13,7 @@ module RdvSolidarites
     end
 
     def users
-      @attributes[:users].map { RdvSolidarites::User.new(_1) }
+      @attributes[:users].map { RdvSolidarites::User.new(_1) }.reject(&:deleted?)
     end
 
     def participations
