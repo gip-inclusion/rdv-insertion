@@ -1,9 +1,19 @@
 <div id="tag_form">
-  <% tags.each do |tag| %>
-    <%= render "tag_assignation", tag: tag, assigned: @user.tag_ids.include?(tag.id) %>
-  <% end %>
-
-  <% if tags.empty? %>
-    <p>Aucun tag disponible. Vous pouvez créer des tags depuis la configuration d'une organisation.</p>
+  <%= form_for(:tag_assignation, url: structure_user_tag_assignations_path(@user.id), method: :post) do |f| %>
+    <div class="w-100">
+        <% tags.each do |tag| %>
+          <%= render "tag_assignation", tag: tag, f: f %>
+        <% end %>
+      <% if tags.empty? %>
+        <p>Aucun tag disponible. Vous pouvez créer des tags depuis la configuration d'une organisation.</p>
+      <% end %>
+    </div>
+    <% if tags.any? %>
+      <div class="d-flex justify-content-end align-items-center px-3">
+        <%= button_tag type: 'submit', class: "btn btn-primary" do %>
+          Ajouter
+        <% end %>
+      </div>
+    <% end %>
   <% end %>
 </div>

@@ -5,7 +5,9 @@
         organisation_tag_path(organisation_id: @organisation.id, id: tag.id),
         data: {
           turbo_method: :delete,
-          turbo_confirm: "Supprimer ce tag le désaffectera également des usagers qui y sont associés, êtes-vous sur de vouloir le supprimer ?"
+          turbo_confirm: "Supprimer ce tag ?",
+          turbo_confirm_content: "Supprimer ce tag le désaffectera également des usagers qui y sont associés, êtes-vous sur de vouloir le supprimer ?"
+          turbo_confirm_action: "Supprimer",
         },
         class: 'text-white'
       ) do
