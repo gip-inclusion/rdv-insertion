@@ -89,7 +89,7 @@
     <% if asset_exists?("maps/#{@department.name.parameterize}.svg") %>
       <%= image_tag("maps/#{@department.name.parameterize}.svg", alt: @department.name.parameterize, width: 50, height: 50) %>
     <% end %>
-    <% if @organisations.length > 1 %>
+    <% if @department_organisations.length > 1 %>
       <div class="dropdown text-center">
         <a class="dropdown-toggle text-center department-map-title mb-0" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
           <%= current_structure_name %>
@@ -98,7 +98,7 @@
           <%= link_to department_users_path(@department) do %>
             <li><div class="dropdown-item">⭐ Toutes les organisations ⭐</div></li>
           <% end %>
-          <% @organisations.sort_by(&:name).each do |organisation| %>
+          <% @department_organisations.sort_by(&:name).each do |organisation| %>
             <%= link_to organisation_users_path(organisation) do %>
               <li><div class="dropdown-item"><%= organisation.name %></div></li>
             <% end %>
@@ -136,30 +136,34 @@
           <% end %>
         </li>
       </ul>
-      <% if department_level? && @current_agent_roles.any?(&:admin?) %>
-        <%= link_to(department_organisations_path(@department), data: { turbo_frame: 'remote_modal' }, class: "mb-2") do %>
-          <button class="btn btn-blue-out">Configurer une organisation</button>
-        <% end %>
-      <% elsif !department_level? && @current_agent_roles.any?(&:admin?) %>
-        <%= link_to(organisation_category_configurations_path(@organisation), class: "btn btn-blue-out mb-2") do %>
-          Configurer l'organisation
+      <% if authorized_any?(@current_organisations, :configure) %>
+        <% if department_level? %>
+          <%= link_to(department_organisations_path(@department), data: { turbo_frame: 'remote_modal' }, class: "mb-2") do %>
+            <button class="btn btn-blue-out">Configurer une organisation</button>
+          <% end %>
+        <% else %>
+          <%= link_to(organisation_category_configurations_path(@organisation), class: "btn btn-blue-out mb-2") do %>
+            Configurer l'organisation
+          <% end %>
         <% end %>
       <% end %>
-      <a class="btn btn-blue-out dropdown-toggle mb-2" href="#" role="button" id="csvExportButton" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="fas fa-download"></i> Exporter au format CSV
-      </a>
-      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="csvExportButton">
-        <li>
-          <%= link_to(structure_users_path(**params.to_unsafe_h.merge(format: "csv", export_type: nil)), class: "dropdown-item", data: { controller: "tooltip", action: "mouseover->tooltip#csvExportUsers"}) do %>
-            Export des usagers
-          <% end %>
-        </li>
-        <li>
-          <%= link_to(structure_users_path(**params.to_unsafe_h.merge(format: "csv", export_type: "participations")), class: "dropdown-item", data: { controller: "tooltip", action: "mouseover->tooltip#csvExportParticipations"}) do %>
-            Export des rendez-vous des usagers
-          <% end %>
-        </li>
-      </ul>
+      <% if authorized_all?(@current_organisations, :export_csv) %>
+        <a class="btn btn-blue-out dropdown-toggle mb-2" href="#" role="button" id="csvExportButton" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="fas fa-download"></i> Exporter au format CSV
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="csvExportButton">
+          <li>
+            <%= link_to(structure_users_path(**params.to_unsafe_h.merge(format: "csv", export_type: nil)), class: "dropdown-item", data: { controller: "tooltip", action: "mouseover->tooltip#csvExportUsers"}) do %>
+              Export des usagers
+            <% end %>
+          </li>
+          <li>
+            <%= link_to(structure_users_path(**params.to_unsafe_h.merge(format: "csv", export_type: "participations")), class: "dropdown-item", data: { controller: "tooltip", action: "mouseover->tooltip#csvExportParticipations"}) do %>
+              Export des rendez-vous des usagers
+            <% end %>
+          </li>
+        </ul>
+      <% end %>
     </div>
     <% if @current_category_configuration.present? %>
       <div class="d-flex flex-column align-items-end dropdown">

@@ -5,7 +5,7 @@
   <% user.organisations.each do |organisation|  %>
     <p class="mb-2">
       <%= organisation %>
-      <% if @department != organisation.department %>
+      <% if @department.id != organisation.department_id %>
         <small>
           (Organisation d'un autre départment : <%= organisation.department.number %> - <%= organisation.department.name %>)
         </small>

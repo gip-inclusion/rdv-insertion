@@ -821,37 +821,64 @@ describe UsersController do
     context "when csv request" do
       before do
         allow(Exporters::CreateUsersCsvExportJob).to receive(:perform_async)
-          .and_return(OpenStruct.new)
       end
 
-      it "calls the service" do
-        expect(Exporters::CreateUsersCsvExportJob).to receive(:perform_async)
-        get :index, params: index_params.merge(format: :csv)
-      end
+      context "at department level" do
+        let!(:index_params) { { department_id: department.id, format: :csv } }
+        let!(:other_organisation) { create(:organisation, department:) }
+        let!(:agent) { create(:agent, admin_role_in_organisations: [organisation, other_organisation]) }
 
-      context "when not authorized" do
-        let!(:another_organisation) { create(:organisation) }
-        let!(:another_agent) { create(:agent, organisations: [another_organisation]) }
-
-        before do
-          sign_in(another_agent)
-        end
-
-        it "does not call the service" do
-          expect do
-            get :index, params: index_params.merge(format: :csv)
-          end.to raise_error(ActiveRecord::RecordNotFound)
-        end
-      end
-
-      context "when the csv creation succeeds" do
-        before do
-          allow(Exporters::CreateUsersCsvExportJob).to receive(:perform_async)
+        it "calls the service" do
+          expect(Exporters::CreateUsersCsvExportJob).to receive(:perform_async)
+          get :index, params: index_params
         end
 
         it "redirects to users page" do
-          get :index, params: index_params.merge(format: :csv)
-          expect(response).to redirect_to(/#{organisation_users_path(organisation)}/)
+          get :index, params: index_params
+          expect(response).to redirect_to(department_users_path(department))
+        end
+
+        context "when not admin in all organisations" do
+          let!(:agent) do
+            create(:agent, admin_role_in_organisations: [organisation], basic_role_in_organisations: [other_organisation])
+          end
+
+          it "does not call the service" do
+            expect(Exporters::CreateUsersCsvExportJob).not_to receive(:perform_async)
+
+            get :index, params: index_params
+            expect(response).to redirect_to(root_path)
+            expect(flash[:alert]).to eq("Votre compte ne vous permet pas d'effectuer cette action")
+          end
+        end
+      end
+
+      context "at organisation level" do
+        let!(:index_params) { { organisation_id: organisation.id, format: :csv } }
+        let!(:agent) { create(:agent, admin_role_in_organisations: [organisation]) }
+
+        it "calls the service" do
+          expect(Exporters::CreateUsersCsvExportJob).to receive(:perform_async)
+          get :index, params: index_params
+        end
+
+        it "redirects to users page" do
+          get :index, params: index_params
+          expect(response).to redirect_to(organisation_users_path(organisation))
+        end
+
+        context "when the agent is not admin in the org" do
+          let!(:agent) do
+            create(:agent, basic_role_in_organisations: [organisation])
+          end
+
+          it "does not call the service" do
+            expect(Exporters::CreateUsersCsvExportJob).not_to receive(:perform_async)
+
+            get :index, params: index_params
+            expect(response).to redirect_to(root_path)
+            expect(flash[:alert]).to eq("Votre compte ne vous permet pas d'effectuer cette action")
+          end
         end
       end
     end
