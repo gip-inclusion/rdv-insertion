@@ -840,7 +840,9 @@ describe UsersController do
 
         context "when not admin in all organisations" do
           let!(:agent) do
-            create(:agent, admin_role_in_organisations: [organisation], basic_role_in_organisations: [other_organisation])
+            create(
+              :agent, admin_role_in_organisations: [organisation], basic_role_in_organisations: [other_organisation]
+            )
           end
 
           it "does not call the service" do
