@@ -27,7 +27,7 @@ describe "Agents can edit users tags", :js do
   context "the user page" do
     it "allows to edit tags" do
       visit organisation_user_path(organisation, user)
-      click_button("Ajouter ou retirer un tag")
+      click_button("Ajouter un tag")
       modal = find(".modal")
       tag_list = find_by_id("tags_list")
 
@@ -35,11 +35,10 @@ describe "Agents can edit users tags", :js do
       expect(tag_list).to have_content("prout")
       expect(user.reload.tags.first.value).to eq("prout")
 
-      modal.click_button("- Retirer")
+      find(".btn-close").click
+      find(".badge a").click
       expect(tag_list).to have_content("-")
       expect(user.reload.tags).to be_empty
-
-      find(".btn-close").click
     end
   end
 end
