@@ -41,6 +41,7 @@ RSpec.configure do |config|
   config.include MotifCategoriesHelper
   config.include NirHelper
   config.include SortingHelper
+  config.include ConfirmModalHelper
   config.include StubHelper
   config.include UploadHelper
   config.include DownloadHelper

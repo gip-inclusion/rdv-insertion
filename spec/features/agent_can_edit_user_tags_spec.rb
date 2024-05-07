@@ -31,12 +31,14 @@ describe "Agents can edit users tags", :js do
       modal = find(".modal")
       tag_list = find_by_id("tags_list")
 
-      modal.click_button("+ Assigner")
+      modal.find("input").check
+      modal.click_button("Ajouter")
       expect(tag_list).to have_content("prout")
       expect(user.reload.tags.first.value).to eq("prout")
 
-      find(".btn-close").click
       find(".badge a").click
+      modal = find(".modal")
+      modal.click_button("Retirer")
       expect(tag_list).to have_content("-")
       expect(user.reload.tags).to be_empty
     end
