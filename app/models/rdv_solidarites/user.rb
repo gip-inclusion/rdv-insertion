@@ -7,7 +7,7 @@ module RdvSolidarites
     attr_reader(*RECORD_ATTRIBUTES)
 
     def deleted?
-      email&.end_with?("@deleted.rdv-solidarites.fr")
+      email&.ends_with?("@deleted.rdv-solidarites.fr")
     end
   end
 end
