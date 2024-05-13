@@ -3,6 +3,10 @@ module SuperAdmins
     private
 
     def impersonate_agent
+      set_session_credentials
+    end
+
+    def set_session_credentials
       super_admin_auth = session[:agent_auth]
       clear_session
 

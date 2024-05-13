@@ -11,14 +11,14 @@ module AgentSession
     end
 
     def valid?
-      origin_valid? && credentials_valid? && !expired?
+      origin_valid? && signature_valid? && !expired?
     end
 
     def agent
       @agent ||= Agent.find_by(id: @agent_id)
     end
 
-    def impersonate?
+    def impersonated?
       origin == "impersonate"
     end
 
@@ -28,7 +28,7 @@ module AgentSession
 
     private
 
-    def credentials_valid?
+    def signature_valid?
       agent.present? && agent.signature_valid?(@signature, @created_at)
     end
 
