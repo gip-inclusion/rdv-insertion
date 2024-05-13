@@ -5,18 +5,14 @@ module AgentSession
     end
 
     def valid?
-      super && agent != super_admin_agent
+      super && agent != super_admin_agent && super_admin_session_coherent?
     end
 
     private
 
-    def credentials_valid?
-      super && super_admin_session.valid? && super_admin_agent.super_admin?
-    end
-
-    def origin_valid?
-      # we cannot impersonate while impersonating
-      super && !super_admin_session.impersonate?
+    def super_admin_session_coherent?
+      super_admin_session.valid? && super_admin_agent.super_admin? &&
+        !super_admin_session.impersonated? # we cannot impersonate while impersonating
     end
 
     def super_admin_session
