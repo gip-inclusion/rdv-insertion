@@ -4,7 +4,7 @@ class FollowUp < ApplicationRecord
   include Notificable
   include HasParticipationsToRdvs
 
-  belongs_to :user, touch: true
+  belongs_to :user
   belongs_to :motif_category
   has_many :invitations, dependent: :destroy
   has_many :participations, dependent: :nullify

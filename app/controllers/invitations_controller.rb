@@ -11,10 +11,12 @@ class InvitationsController < ApplicationController
         format.turbo_stream { redirect_to structure_user_follow_ups_path(@user.id) }
       end
     else
-      return turbo_stream_display_error_modal(invite_user.errors) if request.format.turbo_stream?
-
-      # we want to render json when the request is json but also when the request is pdf
-      render json: { success: false, errors: invite_user.errors }, status: :unprocessable_entity
+      respond_to do |format|
+        format.any(:json, :pdf) do
+          render json: { success: false, errors: invite_user.errors }, status: :unprocessable_entity
+        end
+        format.turbo_stream { turbo_stream_display_error_modal(invite_user.errors) }
+      end
     end
   end
 

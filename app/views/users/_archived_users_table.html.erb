@@ -17,6 +17,7 @@
   </thead>
   <tbody class="align-middle">
     <% @users.each do |user| %>
+      <%= turbo_stream_from user %>
       <tr
         class="table-archived clickable"
         data-controller="user-link"

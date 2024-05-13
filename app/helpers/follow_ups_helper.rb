@@ -80,7 +80,7 @@ module FollowUpsHelper
     invitation_dates_by_formats
   end
 
-  def max_invitation_dates_for_a_format(invitation_dates_by_formats)
+  def max_number_of_invitations_for_a_format(invitation_dates_by_formats)
     invitation_dates_by_formats.values.map(&:count).max
   end
 end

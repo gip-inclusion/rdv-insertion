@@ -4,7 +4,7 @@ class Participation < ApplicationRecord
   include RdvParticipationStatus
 
   belongs_to :rdv
-  belongs_to :follow_up, touch: true
+  belongs_to :follow_up
   belongs_to :user
   belongs_to :agent_prescripteur,
              class_name: "Agent",
@@ -18,6 +18,8 @@ class Participation < ApplicationRecord
   has_one :organisation, through: :rdv
 
   has_many :category_configurations, through: :organisation
+
+  broadcasts_refreshes
 
   validates :status, presence: true
   validates :rdv_solidarites_participation_id, uniqueness: true, allow_nil: true

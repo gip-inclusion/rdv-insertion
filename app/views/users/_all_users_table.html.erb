@@ -16,7 +16,6 @@
   </thead>
   <tbody class="align-middle">
     <% @users.each do |user| %>
-      <%= turbo_stream_from user %>
       <tr
         class="clickable <%= "table-archived" if user.archived_in?(@department) %>"
         data-controller="user-link"
