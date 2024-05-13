@@ -15,15 +15,15 @@ describe TagsController do
   describe "#create" do
     it "affects created tag to the organisation" do
       expect do
-        post :create, params: { organisation_id: organisation.id, tag: { value: "prout" } }
+        post :create, params: { organisation_id: organisation.id, tag: { value: "coucou" } }
       end.to change(Tag, :count).by(1)
-      expect(organisation.reload.tags.last.value).to eq("prout")
+      expect(organisation.reload.tags.last.value).to eq("coucou")
     end
 
     it "does not create the same tag twice" do
       expect do
         2.times do
-          post :create, params: { organisation_id: organisation.id, tag: { value: "prout" } }
+          post :create, params: { organisation_id: organisation.id, tag: { value: "coucou" } }
         end
       end.to change(Tag, :count).by(1)
     end

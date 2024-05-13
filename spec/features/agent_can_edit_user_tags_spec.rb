@@ -21,7 +21,7 @@ describe "Agents can edit users tags", :js do
   before do
     setup_agent_session(agent)
     stub_rdv_solidarites_update_user(rdv_solidarites_user_id)
-    organisation.tags << Tag.create!(value: "prout")
+    organisation.tags << Tag.create!(value: "coucou")
   end
 
   context "the user page" do
@@ -33,10 +33,10 @@ describe "Agents can edit users tags", :js do
 
       modal.find("input").check
       modal.click_button("Ajouter")
-      expect(tag_list).to have_content("prout")
-      expect(user.reload.tags.first.value).to eq("prout")
+      expect(tag_list).to have_content("coucou")
+      expect(user.reload.tags.first.value).to eq("coucou")
 
-      find(".badge", text: "prout").find("a").click
+      find(".badge", text: "coucou").find("a").click
       modal = find(".modal")
       modal.click_button("Retirer")
       expect(tag_list).to have_content("-")
