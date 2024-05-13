@@ -3,8 +3,9 @@ FactoryBot.define do
     sequence(:email) { |n| "agent#{n}@gouv.fr" }
     sequence(:first_name) { |n| "jane#{n}" }
     sequence(:last_name) { |n| "doe#{n}" }
-    sequence(:inclusion_connect_open_id_sub) { SecureRandom.uuid }
-    sequence(:rdv_solidarites_agent_id)
+
+    rdv_solidarites_agent_id { rand(1..10_000_000_000) }
+    inclusion_connect_open_id_sub { SecureRandom.uuid }
 
     transient do
       basic_role_in_organisations { [] }

@@ -1,26 +1,44 @@
 <div class="row mb-4 card-white justify-content-center">
   <div class="col-4 justify-content-center">
     <% if @current_category_configuration.present? %>
-      <div class="mb-1">
+      <div class="mb-1 position-relative text-center d-flex align-items-center justify-content-center">
         <%=
           select(
             "user", "status", options_for_select_status(@statuses_count),
             { prompt: "Filtrer par statut" },
-            class: "text-center form-select js-status-selector"
+            class: "form-select js-status-selector"
           )
         %>
+        <% selected_status = options_for_select_status(@statuses_count).find { |statut| statut[1] == params[:status] }%>
+        <span class="label-alt status-label-alt position-absolute bg-white pe-none">
+          <% if selected_status.present? %>
+            Statut : <%= selected_status[0] %>
+          <% else %>
+            Filtrer par statut
+          <% end %>
+          <i class="fas fa-angle-down"></i>
+        </span>
       </div>
     <% end %>
-    <div class="mb-1">
+    <div class="mb-1 position-relative text-center d-flex align-items-center justify-content-center">
       <%=
         select(
           "user",
           "referent_id",
-          @referents_list.map { |agent| ["Suivis par #{agent.to_s}", agent.id] },
+          options_for_select_referent(@referents_list),
           { prompt: "Filtrer par référent" },
-          class: "text-center form-select js-referent-selector"
+          class: "form-select js-referent-selector"
         )
       %>
+      <% selected_referent = @referents_list.find { |referent| referent.id == params[:referent_id].to_i }%>
+      <span class="label-alt referent-label-alt position-absolute bg-white pe-none">
+        <% if selected_referent.present? %>
+          Suivis par : <%= selected_referent %>
+        <% else %>
+          Filtrer par référent
+        <% end %>
+        <i class="fas fa-angle-down"></i>
+      </span>
     </div>
     <%= render "filter_by_creation_dates_button" if @current_category_configuration.nil? %>
     <%= render "filter_by_invitations_dates_button" if @current_category_configuration.present? || archived_scope?(@users_scope) %>
@@ -76,7 +94,7 @@
     <% if @organisations.length > 1 %>
       <div class="dropdown text-center">
         <a class="dropdown-toggle text-center department-map-title mb-0" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-          <%= department_level? ? @department.name : @organisation.name %>
+          <%= current_structure_name %>
         </a>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
           <%= link_to department_users_path(@department) do %>
@@ -91,7 +109,7 @@
       </div>
     <% else %>
       <h4 class="text-center department-map-title mb-0">
-        <%= department_level? ? @department.name : @organisation.name %>
+        <%= current_structure_name %>
       </h4>
     <% end %>
     <% unless department_level? %>
