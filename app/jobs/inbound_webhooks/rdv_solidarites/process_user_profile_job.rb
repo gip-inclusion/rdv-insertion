@@ -49,11 +49,11 @@ module InboundWebhooks
       end
 
       def attach_user_to_org
-        user.organisations << organisation unless user.reload.organisation_ids.include?(organisation.id)
+        user.organisations << organisation unless user.reload.belongs_to_org?(organisation.id)
       end
 
       def remove_user_from_organisation
-        user.delete_organisation(organisation) if user.reload.organisation_ids.include?(organisation.id)
+        user.delete_organisation(organisation) if user.reload.belongs_to_org?(organisation.id)
         SoftDeleteUserJob.perform_async(rdv_solidarites_user_id) if user.reload.organisations.empty?
       end
     end

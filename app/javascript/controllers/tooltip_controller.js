@@ -39,14 +39,6 @@ export default class extends Controller {
     });
   }
 
-  independentFromCdAttribute() {
-    tippy(this.element, {
-      content:
-        "Si l'organisation n'est pas une émanation du CD, certaines phrases des invitations sont différentes. " +
-        "Pour plus de détails, demandez à l'équipe de rdv-insertion.",
-    });
-  }
-
   slugAttribute() {
     tippy(this.element, {
       content:

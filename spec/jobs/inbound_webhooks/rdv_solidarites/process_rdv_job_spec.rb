@@ -282,6 +282,50 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
             subject
           end
         end
+
+        context "when a user is deleted" do
+          let!(:users) do
+            [
+              { id: 213_123, first_name: "Usager supprimé", last_name: "Usager supprimé",
+                phone_number: "0755929249", email: "user@deleted.rdv-solidarites.fr" },
+              { id: user_id2, first_name: "Jane", last_name: "Campion", created_at: "2021-05-29 14:20:20 +0200",
+                email: "jane@campion.com", phone_number: nil, birth_date: nil, address: nil }
+            ]
+          end
+
+          before { user.update! rdv_solidarites_user_id: nil }
+
+          it "discards the deleted user participation" do
+            expect(UpsertRecordJob).to receive(:perform_async)
+              .with(
+                "Rdv",
+                data,
+                {
+                  participations_attributes: [{
+                    id: nil,
+                    status: "unknown",
+                    created_by: "user",
+                    user_id: user2.id,
+                    rdv_solidarites_participation_id: 999,
+                    follow_up_id: follow_up2.id,
+                    convocable: false,
+                    rdv_solidarites_agent_prescripteur_id: nil
+                  }],
+                  agent_ids: [agent.id],
+                  organisation_id: organisation.id,
+                  motif_id: motif.id,
+                  lieu_id: lieu.id,
+                  last_webhook_update_received_at: timestamp
+                }
+              )
+            subject
+          end
+
+          it "does not create a user" do
+            expect(User).not_to receive(:create!)
+            subject
+          end
+        end
       end
 
       context "for a participation update and destroy" do

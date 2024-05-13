@@ -23,6 +23,10 @@ class OrganisationPolicy < ApplicationPolicy
     upload?
   end
 
+  def parcours?
+    upload? && record.organisation_type.in?(Organisation::ORGANISATION_TYPES_WITH_PARCOURS_ACCESS)
+  end
+
   def configure?
     pundit_user.admin_organisations_ids.include?(record.id)
   end
