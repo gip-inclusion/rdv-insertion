@@ -8,13 +8,14 @@ s3_bucket = "rdv-insertion-medias-production.s3.fr-par.scw.cloud"
 rdv_solidarites = ENV["RDV_SOLIDARITES_URL"]
 matomo = "matomo.inclusion.beta.gouv.fr"
 sentry = "sentry.incubateur.net"
+flourish = "flo.uri.sh" # for deployment map
 
 Rails.application.config.content_security_policy do |policy|
   policy.default_src :self, :https
   policy.font_src    :self, :https, :data
   policy.img_src     :self, :https, :data, s3_bucket
   policy.media_src :self, s3_bucket
-  policy.frame_src :self
+  policy.frame_src :self, flourish
   policy.object_src  :none
   policy.script_src  :self, :https, :unsafe_inline
   policy.style_src   :self, :https, :unsafe_inline
