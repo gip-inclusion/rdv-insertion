@@ -81,6 +81,10 @@ class Invitation < ApplicationRecord
     "#{ENV['RDV_SOLIDARITES_URL'].gsub('https://', '')}/i/r/#{uuid}"
   end
 
+  def qr_code
+    RQRCode::QRCode.new(rdv_solidarites_url).as_png
+  end
+
   private
 
   def assign_uuid
