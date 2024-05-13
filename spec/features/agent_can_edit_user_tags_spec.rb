@@ -36,7 +36,7 @@ describe "Agents can edit users tags", :js do
       expect(tag_list).to have_content("prout")
       expect(user.reload.tags.first.value).to eq("prout")
 
-      find(".badge a").click
+      find(".badge", text: "prout").find("a").click
       modal = find(".modal")
       modal.click_button("Retirer")
       expect(tag_list).to have_content("-")
