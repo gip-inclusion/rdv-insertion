@@ -23,7 +23,7 @@ class User < ApplicationRecord
 
   attr_accessor :skip_uniqueness_validations
 
-  before_validation :generate_uid
+  before_validation :format_affiliation_number, :generate_uid
   before_save :format_phone_number
 
   has_many :follow_ups, dependent: :destroy
@@ -149,6 +149,18 @@ class User < ApplicationRecord
   end
 
   private
+
+  def format_affiliation_number
+    return unless affiliation_number
+
+    # we remove leading zeros
+    formated_number = affiliation_number.gsub(/\A0+/, "")
+    self.affiliation_number = truncate_if_only_trailing_zeros(formated_number)
+  end
+
+  def truncate_if_only_trailing_zeros(str)
+    str.length > 7 && str[7..].gsub("0", "").empty? ? str[0...7] : str
+  end
 
   def opposite_role
     return if role.blank?
