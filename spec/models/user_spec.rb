@@ -144,6 +144,32 @@ describe User do
     end
   end
 
+  describe "affiliation number format validation" do
+    context "valid affiliation number" do
+      let(:user) { create(:user, affiliation_number: "1234567") }
+
+      it { expect(user.affiliation_number).to eq("1234567") }
+    end
+
+    context "nil affiliation number" do
+      let(:user) { create(:user, affiliation_number: nil) }
+
+      it { expect(user.affiliation_number).to be_nil }
+    end
+
+    context "valid affiliation number with more than 7 characters" do
+      let(:user) { create(:user, affiliation_number: "12345670008") }
+
+      it { expect(user.affiliation_number).to eq("12345670008") }
+    end
+
+    context "valid affiliation number with leading and trailing zeros" do
+      let(:user) { create(:user, affiliation_number: "00012345670000") }
+
+      it { expect(user.affiliation_number).to eq("1234567") }
+    end
+  end
+
   describe "nir validity" do
     context "when no nir" do
       let(:user) { build(:user, nir: nil) }
