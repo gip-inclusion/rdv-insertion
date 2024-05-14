@@ -64,6 +64,10 @@ describe FollowUpsController do
       end
 
       context "when department level" do
+        before do
+          request.env["HTTP_REFERER"] = department_user_follow_ups_path(department_id: department.id, user_id: user.id)
+        end
+
         let(:follow_up_params) do
           {
             follow_up: { user_id: user.id, motif_category_id: category_orientation.id },
@@ -90,9 +94,7 @@ describe FollowUpsController do
       it "replace the create follow_up button" do
         post :create, params: follow_up_params, format: :turbo_stream
 
-        expect(response.media_type).to eq Mime[:turbo_stream]
-        expect(response.body).to match(/replace/)
-        expect(response.body).to match(/target="user_#{user.id}_motif_category_#{category_orientation.id}"/)
+        expect(response).to redirect_to(organisation_users_url(organisation_id: organisation.id))
       end
     end
   end
