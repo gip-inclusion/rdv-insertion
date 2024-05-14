@@ -7,7 +7,6 @@
     <%= render "users/user_tabs", user: @user, tab: "rdvs" %>
     <% @all_configurations.each do |category_configuration| %>
       <% follow_up = @follow_ups.find { |rc| rc.motif_category_id == category_configuration.motif_category_id } %>
-      <%= turbo_stream_from follow_up %>
       <% if follow_up %>
         <%=
           render(
