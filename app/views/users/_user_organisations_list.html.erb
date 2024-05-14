@@ -1,17 +1,44 @@
+
 <div id="organisations_list" class="col-12 col-md-6 px-5">
   <h4>
     <%= User.human_attribute_name(:organisations) %>
   </h4>
-  <% user.organisations.each do |organisation|  %>
-    <p class="mb-2">
-      <%= organisation %>
-      <% if @department != organisation.department %>
-        <small>
-          (Organisation d'un autre départment : <%= organisation.department.number %> - <%= organisation.department.name %>)
-        </small>
+  
+  <p class="mb-3 mt-3 flex-wrap d-flex" id="tags_list">
+    <% if user.organisations.blank? %>
+      -
+    <% else %>
+      <% user.organisations.each do |organisation| %>
+        <span class="badge badge-tag justify-content-between background-blue-light text-dark-blue me-2 d-flex">
+          <%= organisation.name %>
+          <% if @department != organisation.department %>
+            <small>
+              (Organisation d'un autre départment : <%= organisation.department.number %> - <%= organisation.department.name %>)
+            </small>
+          <% end %>
+          <%
+            if user.organisations.count > 1
+              data = {
+                turbo_confirm: "Retirer l'usager de cette organisation ?",
+                turbo_confirm_text_content: "Êtes-vous sûr de vouloir retirer l'usager <b>#{user}</b> de l'organisation <b>#{organisation.name}</b> ?",
+                turbo_confirm_text_action: "Retirer",
+                turbo_method: :delete,
+              }
+            else
+              data = {
+                turbo_confirm: true,
+                turbo_confirm_template: raw(render("users/user_remove_from_last_organisation_confirm", user: user, organisation: organisation)),
+                turbo_method: :delete,
+              }
+            end
+          %>
+          <%= link_to(users_organisations_path(users_organisation: { user_id: user.id, organisation_id: organisation.id }), data:, class: 'text-dark-grey-alt ms-2' ) do %>
+            <i class="fas fa-times"></i>
+          <% end %>
+        </span>
       <% end %>
-    </p>
-  <% end %>
+    <% end %>
+  </p>
 
   <%= link_to(users_organisations_path(user_id: user.id), data: { turbo_frame: 'remote_modal' }) do %>
     <button class="btn btn-blue"><i class="fas fa-pen"></i> Ajouter ou retirer une organisation </button>
