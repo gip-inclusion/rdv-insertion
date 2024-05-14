@@ -31,6 +31,10 @@ class OrganisationPolicy < ApplicationPolicy
     pundit_user.admin_organisations_ids.include?(record.id)
   end
 
+  def export_csv?
+    configure?
+  end
+
   class Scope < Scope
     def resolve
       pundit_user.organisations

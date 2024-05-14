@@ -25,7 +25,7 @@
       <%= render "common/attribute_input", f:f, attribute: :phone_number %>
       <%= render "common/attribute_input", f:f, attribute: :rights_opening_date, as: :date, start_year: Date.today.year - 10 %>
       <% if department_level? && !@user.persisted? %>
-        <%= render "common/attribute_input", f:f, attribute: :organisation_ids, as: :select, collection: @organisations.map { |o| [o.name, o.id] }, mandatory: true %>
+        <%= render "common/attribute_input", f:f, attribute: :organisation_ids, as: :select, collection: @department_organisations.map { |o| [o.name, o.id] }, mandatory: true %>
       <% end %>
     </div>
   </div>
