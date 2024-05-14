@@ -10,7 +10,7 @@
       <% invitation_formats.each do |format| %>
         <td class="px-4 py-3">
           <% if invitation_dates_by_format[format]&.fetch(idx, nil).present? %>
-            <%= format_date(invitation_dates_by_format[format]&.fetch(idx, nil)) %>
+            <%= format_date(invitation_dates_by_format[format].fetch(idx, nil)) %>
           <% elsif idx == 0 %>
             -
           <% end %>

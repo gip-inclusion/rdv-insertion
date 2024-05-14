@@ -29,7 +29,6 @@ export default class extends Controller {
       this.button.innerText = "Révinviter";
     }
     this.button.disabled = false;
-    return true;
   }
 
   disconnect() {

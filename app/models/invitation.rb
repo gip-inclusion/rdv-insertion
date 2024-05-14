@@ -15,8 +15,6 @@ class Invitation < ApplicationRecord
   has_many :category_configurations, through: :organisations
   has_many :webhook_endpoints, through: :organisations
 
-  broadcasts_refreshes
-
   attr_accessor :content
 
   validates :help_phone_number, :rdv_solidarites_token, :organisations, :link, :valid_until, presence: true

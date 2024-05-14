@@ -19,8 +19,6 @@ class Participation < ApplicationRecord
 
   has_many :category_configurations, through: :organisation
 
-  broadcasts_refreshes
-
   validates :status, presence: true
   validates :rdv_solidarites_participation_id, uniqueness: true, allow_nil: true
 
