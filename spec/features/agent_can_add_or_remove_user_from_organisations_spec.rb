@@ -199,6 +199,30 @@ describe "Agents can add or remove user from organisations", :js do
       expect(user.reload.organisation_ids).to eq([])
       expect(user.deleted?).to eq(true)
     end
+
+    it "can remove from org (outside modal)" do
+      stub_delete_user_profile = stub_request(
+        :delete, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/user_profiles"
+      ).with(
+        headers: { "Content-Type" => "application/json" }.merge(shared_secret_credentials_hash(agent)),
+        query: {
+          "user_id" => rdv_solidarites_user_id, "organisation_id" => organisation.rdv_solidarites_organisation_id
+        }
+      ).to_return(status: 204)
+
+      visit department_user_path(department, user)
+      expect(page).to have_content(organisation.name)
+      expect(page).to have_no_content(other_org.name)
+
+      find(".badge", text: organisation.name).find("a").click
+      expect(page).to have_content("L'usager sera définitivement supprimé")
+      click_button("Supprimer")
+
+      expect(page).to have_current_path(department_users_path(department))
+      expect(stub_delete_user_profile).to have_been_requested
+      expect(user.reload.organisation_ids).to eq([])
+      expect(user.deleted?).to eq(true)
+    end
   end
 
   context "from organisation page" do
