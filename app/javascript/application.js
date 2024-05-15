@@ -17,6 +17,7 @@ import StatusSelector from "./components/status-selector";
 import ReferentSelector from "./components/referent-selector";
 import DepartmentSelector from "./components/department-selector";
 import OrganisationSelector from "./components/organisation-selector";
+import ConfirmModal from "./components/confirm-modal";
 import MatomoScriptTag from "./components/matomo-script-tag";
 
 require("@rails/ujs").start();
@@ -60,4 +61,5 @@ document.addEventListener("turbo:load", () => {
   if (process.env.RAILS_ENV === "production") {
     new MatomoScriptTag();
   }
+  new ConfirmModal();
 });
