@@ -1,4 +1,4 @@
-<div id="<%= dom_id(tag) %>" class="d-flex my-4">
+<div id="<%= dom_id(tag) %>" class="d-flex my-2">
   <%= f.check_box :tag_ids, { multiple: true, class: "form-check-input" }, tag.id, nil %>
   <%= f.label nil, class: "ms-3" do %>
     <%= tag.value %>
