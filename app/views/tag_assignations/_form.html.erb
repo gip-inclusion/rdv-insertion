@@ -5,7 +5,7 @@
           <p class="mb-2"> <%= "Tag".pluralize(assigned_tags.size) %> déjà <%= "sélectionné".pluralize(assigned_tags.size) %></p> 
           <div class="flex-wrap d-flex">
             <% assigned_tags.each do |tag| %>
-              <span class="badge badge-tag justify-content-between background-blue-light text-dark-blue me-2 d-flex">
+              <span class="badge badge-tag justify-content-between background-blue-light text-dark-grey-alt me-2 d-flex">
                 <%= tag.value %>
               </span>
             <% end %>
@@ -18,7 +18,7 @@
           <%= render "tag_assignation", tag: tag, f: f %>
         <% end %>
       <% if assignable_tags.empty? %>
-        <p class="text-dark-blue">Aucun <%= "autre" if assigned_tags.any? %> tag disponible.</p>
+        <small class="text-dark-blue">Aucun <%= "autre" if assigned_tags.any? %> tag disponible.</small>
       <% end %>
     </div>
     <% if assignable_tags.any? %>
