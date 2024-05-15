@@ -9,6 +9,7 @@ class Invitation < ApplicationRecord
   belongs_to :user
   belongs_to :department
   belongs_to :follow_up
+
   has_and_belongs_to_many :organisations
 
   has_many :category_configurations, through: :organisations

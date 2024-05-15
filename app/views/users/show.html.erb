@@ -4,8 +4,8 @@
   <%= render "user_page_header" %>
 
   <%= turbo_frame_tag "user_page_body", data: { turbo_action: "advance" } do %>
-
     <%= render "user_tabs", user: @user, tab: "infos" %>
+    <%= turbo_stream_from @user %>
 
     <div class="mb-4">
       <div class="row">

@@ -157,4 +157,12 @@ export default class extends Controller {
         "Vous pouvez réorganiser l'ordre d'affichage des catégories en les faisant glisser-déposer.",
     });
   }
+
+  reinviteButton() {
+    tippy(this.element, {
+      content:
+       "Réinviter remettra les compteurs à 0 vis à vis des délais",
+      placement: "bottom",
+    });
+  }
 }
