@@ -1,10 +1,10 @@
 <div id="tag_form">
   <%= form_for(:tag_assignation, url: structure_user_tag_assignations_path(@user.id), method: :post) do |f| %>
     <div class="w-100 px-2">
-        <% if user_tags.any? %>
-          <p class="mb-2"> <%= "Tag".pluralize(user_tags.size) %> déjà <%= "sélectionné".pluralize(user_tags.size) %></p> 
+        <% if assigned_tags.any? %>
+          <p class="mb-2"> <%= "Tag".pluralize(assigned_tags.size) %> déjà <%= "sélectionné".pluralize(assigned_tags.size) %></p> 
           <div class="flex-wrap d-flex">
-            <% user_tags.each do |tag| %>
+            <% assigned_tags.each do |tag| %>
               <span class="badge badge-tag justify-content-between background-blue-light text-dark-blue me-2 d-flex">
                 <%= tag.value %>
               </span>
@@ -12,21 +12,16 @@
           </div>
         <% end %>
 
-        <% if user_tags.any? && tags.any? %>
-          <p class="mb-1 mt-3"> Ajouter des tags </p>
-        <% end %>
+        <p class="mb-1 mt-3"> Ajouter des tags </p>
 
-        <% tags.each do |tag| %>
+        <% assignable_tags.each do |tag| %>
           <%= render "tag_assignation", tag: tag, f: f %>
         <% end %>
-      <% if tags.empty? %>
-        <% if user_tags.any? %>
-          <hr />
-        <% end %>
-        <p>Aucun <%= "autre" if user_tags.any? %> tag disponible. Vous pouvez créer des tags depuis la configuration d'une organisation.</p>
+      <% if assignable_tags.empty? %>
+        <p class="text-dark-blue">Aucun <%= "autre" if assigned_tags.any? %> tag disponible.</p>
       <% end %>
     </div>
-    <% if tags.any? %>
+    <% if assignable_tags.any? %>
       <div class="d-flex justify-content-end align-items-center px-3">
         <button type="button" class="btn btn-blue-out border-0 me-2" data-bs-dismiss="modal">
           Annuler
@@ -36,6 +31,12 @@
           <i class="fas fa-plus"></i>
           Ajouter
         <% end %>
+      </div>
+    <% else %>
+      <div class="d-flex justify-content-end align-items-center px-3">
+        <button type="button" class="btn btn-blue border-0 me-2" data-bs-dismiss="modal">
+          Ok
+        </button>
       </div>
     <% end %>
   <% end %>
