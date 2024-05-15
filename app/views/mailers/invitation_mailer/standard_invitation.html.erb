@@ -3,7 +3,7 @@
 <%= tag.p(@custom_sentence) if @custom_sentence %>
 <p><span class="font-weight-bold">Pour pouvoir choisir la date et l'horaire de votre rendez-vous</span>, vous pouvez accéder au service RDV-Solidarités en cliquant sur le bouton suivant <span class="font-weight-bold">dans un délai de <%= Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER %> jours</span>:</p>
 <p class="btn-wrapper">
-  <%= link_to @invitation.link, class: "btn btn-primary" do %>
+  <%= link_to @invitation.rdv_solidarites_public_url, class: "btn btn-primary" do %>
     Choisir un créneau
   <% end %>
 </p>

@@ -76,7 +76,7 @@ gem "groupdate"
 gem "chartkick"
 
 # generate QR codes
-gem "rqrcode", "~> 2.0"
+gem "rqrcode", "~> 2.0", require: false
 
 # gem needed to be defined explicitely with ruby 3
 gem "rexml"

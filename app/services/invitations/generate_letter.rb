@@ -1,5 +1,7 @@
 module Invitations
   class GenerateLetter < BaseService
+    require "rqrcode"
+
     include Messengers::GenerateLetter
 
     def initialize(invitation:)

@@ -1,5 +1,7 @@
 module Previews
   class InvitationsController < Previews::BaseController
+    require "rqrcode"
+
     before_action :set_user_example, :set_invitation_example, only: [:index]
 
     attr_reader :user, :invitation
