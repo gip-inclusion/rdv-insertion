@@ -96,27 +96,27 @@ describe "Agents can add or remove user from organisations", :js do
             user: { id: rdv_solidarites_user_id }
           }.to_json
         )
-  
+
         visit department_user_path(department, user)
-  
+
         expect(page).to have_content(organisation.name)
         expect(page).to have_no_content(other_org.name)
-  
+
         click_link("Ajouter une organisation")
-  
+
         expect(page).to have_content(other_org.name)
         expect(page).to have_select(
           "users_organisation[motif_category_id_#{other_org.id}]", options: ["Ouvrir un suivi", "RSA suivi"]
         )
         select "RSA suivi", from: "users_organisation[motif_category_id_#{other_org.id}]"
         choose "users_organisation[organisation_id]", option: other_org.id
-  
+
         click_button("Ajouter")
-  
+
         expect(page).to have_content(organisation.name)
         expect(page).to have_content(other_org.name)
         expect(page).to have_content(user.last_name)
-  
+
         expect(stub_create_user_profiles).to have_been_requested
         expect(stub_update_user).to have_been_requested
         expect(user.reload.organisation_ids).to contain_exactly(organisation.id, other_org.id)
