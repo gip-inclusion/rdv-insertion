@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
   include AuthenticatedControllerConcern
   include CurrentStructure
   include NavigationHelper
+  include PolicyHelper
   include BeforeActionOverride
   include EnvironmentsHelper
   include TurboStreamConcern

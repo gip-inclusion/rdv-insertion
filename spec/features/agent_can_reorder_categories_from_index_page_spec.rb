@@ -7,8 +7,8 @@ describe "Agents can reorder categories from index page", :js do
       organisations: [organisation], email: "someemail@somecompany.com", phone_number: "0607070707"
     )
   end
-  let!(:motif_category) { create(:motif_category, short_name: "rsa_follow_up") }
-  let!(:motif_category2) { create(:motif_category, short_name: "rsa_insertion_offer") }
+  let!(:motif_category) { create(:motif_category, name: "RSA Follow up", short_name: "rsa_follow_up") }
+  let!(:motif_category2) { create(:motif_category, name: "RSA Insertion", short_name: "rsa_insertion_offer") }
   let!(:rdv_solidarites_token) { "123456" }
   let!(:follow_up) { create(:follow_up, user: user, motif_category: motif_category, status: "rdv_seen") }
   let!(:follow_up2) { create(:follow_up, user: user, motif_category: motif_category2, status: "rdv_seen") }
@@ -42,7 +42,10 @@ describe "Agents can reorder categories from index page", :js do
 
       first_configuration.drag_to(last_configuration)
 
-      visit current_path
+      expect(find(".draggable li:last-child").text).to eq(first_configuration_text)
+      expect(find(".draggable li:first-child").text).to eq(last_configuration_text)
+
+      refresh
 
       # Ensure that the category_configuration order has changed even after a page refresh
       expect(find(".draggable li:last-child").text).to eq(first_configuration_text)

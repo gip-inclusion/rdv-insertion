@@ -12,8 +12,8 @@ class UsersController < ApplicationController
   include Users::Filterable
   include Users::Sortable
 
-  before_action :set_organisation, :set_department, :set_organisations, :set_all_configurations,
-                :set_current_agent_roles, :set_users_scope,
+  before_action :set_organisation, :set_department, :set_department_organisations, :set_all_configurations,
+                :set_current_organisations, :set_users_scope,
                 :set_current_category_configuration, :set_current_motif_category,
                 :set_users, :set_follow_ups, :set_filterable_tags, :set_referents_list,
                 :filter_users, :order_users,
@@ -21,8 +21,10 @@ class UsersController < ApplicationController
   before_action :set_user, :set_organisation, :set_department, :set_all_configurations,
                 :set_user_archive, :set_user_tags, :set_back_to_users_list_url,
                 for: :show
-  before_action :set_organisation, :set_department, :set_organisations,
-                for: [:new, :create]
+  before_action :set_organisation, :set_department, :set_department_organisations,
+                for: :new
+  before_action :set_organisation, :set_department,
+                for: :create
   before_action :set_user, :set_organisation, :set_department,
                 for: [:edit, :update]
   before_action :reset_tag_users, only: :update
@@ -36,6 +38,7 @@ class UsersController < ApplicationController
     respond_to do |format|
       format.html
       format.csv do
+        authorize_all @current_organisations, :export_csv
         generate_csv
         flash[:success] = "Le fichier CSV est en train d'être généré." \
                           " Il sera envoyé à l'adresse email #{current_agent.email}." \
@@ -181,7 +184,7 @@ class UsersController < ApplicationController
   def set_user_tags
     @tags = policy_scope(@user.tags)
             .joins(:organisations)
-            .where(organisations: department_level? ? @department.organisations : @organisation)
+            .where(current_organisations_filter)
             .order(:value)
             .distinct
   end
@@ -193,8 +196,12 @@ class UsersController < ApplicationController
     )
   end
 
-  def set_organisations
-    @organisations = policy_scope(Organisation).where(department: @department)
+  def set_department_organisations
+    @department_organisations = policy_scope(Organisation).where(department: @department).to_a
+  end
+
+  def set_current_organisations
+    @current_organisations = department_level? ? @department_organisations : [@organisation]
   end
 
   def set_department
@@ -203,11 +210,14 @@ class UsersController < ApplicationController
 
   def set_all_configurations
     @all_configurations =
-      policy_scope(CategoryConfiguration).joins(:organisation)
-                                         .includes(:motif_category)
+      policy_scope(CategoryConfiguration).preload(:motif_category)
+                                         .joins(:organisation)
                                          .where(current_organisation_filter)
                                          .uniq(&:motif_category_id)
-    @all_configurations.sort_by! { |c| department_level? ? c.department_position : c.position }
+
+    @all_configurations.sort_by! do |c|
+      department_level? ? c.department_position : c.position
+    end
   end
 
   def set_current_category_configuration
@@ -239,7 +249,7 @@ class UsersController < ApplicationController
   def set_all_users
     @users = policy_scope(User)
              .active.distinct
-             .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
+             .where(organisations: @current_organisations)
     return if request.format == "csv"
 
     @users = @users.preload(:archives, follow_ups: [:invitations])
@@ -249,7 +259,7 @@ class UsersController < ApplicationController
     @users = policy_scope(User)
              .preload(:organisations, follow_ups: [:notifications, :invitations])
              .active.distinct
-             .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
+             .where(organisations: @current_organisations)
              .where.not(id: @department.archived_users.ids)
              .joins(:follow_ups)
              .where(follow_ups: { motif_category: @current_motif_category })
@@ -262,7 +272,7 @@ class UsersController < ApplicationController
              .preload(:invitations, :participations)
              .active.distinct
              .where(id: @department.archived_users)
-             .where(department_level? ? { organisations: @organisations } : { organisations: @organisation })
+             .where(organisations: @current_organisations)
   end
 
   def set_follow_ups
@@ -277,13 +287,6 @@ class UsersController < ApplicationController
   def set_referents_list
     @referents_list = current_structure.agents.where.not(last_name: nil).distinct.order(:last_name)
     @referents_list = @referents_list.where(super_admin: false) if production_env?
-  end
-
-  def set_current_agent_roles
-    @current_agent_roles = AgentRole.where(
-      agent: current_agent,
-      organisation: department_level? ? @organisations : @organisation
-    )
   end
 
   def set_users_scope
