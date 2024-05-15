@@ -12,7 +12,7 @@ module Invitations
       "#{user.full_name},\nVous êtes #{user.conjugate('invité')} à prendre un #{rdv_title}." \
         " Pour choisir la date du RDV, " \
         "cliquez sur ce lien: " \
-        "#{@invitation.rdv_solidarites_public_url}\n" \
+        "#{@invitation.short_rdv_solidarites_public_url}\n" \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
         "En cas de problème, contactez le #{formatted_phone_number}."
@@ -22,7 +22,7 @@ module Invitations
       "#{user.full_name},\nVous êtes #{user_designation} et êtes #{user.conjugate('invité')} à" \
         " participer à un #{rdv_title}. Pour choisir la date du RDV, " \
         "cliquez sur ce lien dans les #{Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER} jours: " \
-        "#{@invitation.rdv_solidarites_public_url}\n" \
+        "#{@invitation.short_rdv_solidarites_public_url}\n" \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
         "En cas de problème, contactez le #{formatted_phone_number}."
@@ -40,7 +40,7 @@ module Invitations
       "#{user.full_name},\nVous êtes #{user_designation} et bénéficiez d'un accompagnement. " \
         "Vous pouvez consulter le(s) atelier(s) et formation(s) proposé(s) et vous y inscrire directement et " \
         "librement, dans la limite des places disponibles, en cliquant sur ce lien:" \
-        " #{@invitation.rdv_solidarites_public_url}\n" \
+        " #{@invitation.short_rdv_solidarites_public_url}\n" \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
         "En cas de problème, contactez le #{formatted_phone_number}."
@@ -50,7 +50,7 @@ module Invitations
       "#{user},\nTu es #{user.conjugate('invité')} à participer à un atelier organisé par le département. " \
         "Nous te proposons de cliquer ci-dessous pour découvrir le programme. " \
         "Si tu es #{user.conjugate('intéressé')} pour participer, tu n’auras qu’à cliquer et t’inscrire en ligne" \
-        " avec le lien suivant: #{@invitation.rdv_solidarites_public_url}\n" \
+        " avec le lien suivant: #{@invitation.short_rdv_solidarites_public_url}\n" \
         "En cas de problème, tu peux contacter le #{formatted_phone_number}."
     end
 
@@ -61,7 +61,7 @@ module Invitations
         "vous invitant à prendre un #{rdv_title}." \
         " Ce lien de prise de RDV expire dans #{number_of_days_before_expiration} " \
         "jours: " \
-        "#{@invitation.rdv_solidarites_public_url}\n" \
+        "#{@invitation.short_rdv_solidarites_public_url}\n" \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
         "En cas de problème, contactez le #{formatted_phone_number}."
@@ -72,7 +72,7 @@ module Invitations
         "vous invitant à prendre RDV au créneau de votre choix afin de #{rdv_purpose}." \
         " Ce lien de prise de RDV expire dans #{number_of_days_before_expiration} " \
         "jours: " \
-        "#{@invitation.rdv_solidarites_public_url}\n" \
+        "#{@invitation.short_rdv_solidarites_public_url}\n" \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
         "En cas de problème, contactez le #{formatted_phone_number}."
@@ -92,7 +92,7 @@ module Invitations
         "t'invitant à participer à un #{rdv_title}." \
         " Le lien de prise de RDV suivant expire dans #{number_of_days_before_expiration} " \
         "jours: " \
-        "#{@invitation.rdv_solidarites_public_url}\n" \
+        "#{@invitation.short_rdv_solidarites_public_url}\n" \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
         "En cas de problème, tu peux contacter le #{formatted_phone_number}."
