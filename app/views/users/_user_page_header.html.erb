@@ -1,4 +1,4 @@
-<div class="d-flex justify-content-between my-5">
+<div class="d-flex justify-content-between my-5 align-items-center">
   <div class="col-sm-4">
     <%= link_to(@back_to_users_list_url || structure_users_path) do %>
       <button class="btn btn-blue-out">Retour</button>
@@ -12,9 +12,12 @@
       <% end %>
     <% end %>
   </div>
-  <h4 class="col-sm-4 text-center">
-    <%= render "users/user_icon", user: @user %> <%= "#{@user.first_name} #{@user.last_name.upcase}" %>
-  </h4>
+  <div class="col-sm-4 text-center">
+    <h4 class="mb-1"><%= render "users/user_icon", user: @user %> <%= "#{@user.first_name} #{@user.last_name.upcase}" %></h4>
+    <p class="m-0 text-darker-grey font-14">
+      <%= department_level? ? "Toutes les organisations : #{current_structure_name}" : current_structure_name %>
+    </p>
+  </div>
   <div class="col-sm-4 text-end">
     <%= render "users/archiving_button", user: @user, department: @department, archive: @user.archive_for(@department.id) %>
   </div>

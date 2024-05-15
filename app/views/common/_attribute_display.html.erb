@@ -39,7 +39,7 @@
   <% elsif record[attribute].in? [true, false] %>
     <p><%= display_attribute I18n.t("boolean.#{record[attribute]}") %></p>
   <% else %>
-    <p><%= display_attribute record[attribute] %></p>
+    <p class="<%= local_assigns[:html_class] %>"><%= display_attribute record[attribute] %></p>
   <% end %>
 
   <%= yield if block_given? %>

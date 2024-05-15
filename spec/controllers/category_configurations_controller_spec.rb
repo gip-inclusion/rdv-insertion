@@ -2,7 +2,7 @@ describe CategoryConfigurationsController do
   let!(:department) { create(:department) }
   let!(:organisation) do
     create(:organisation, name: "PIE Pantin", slug: "pie-pantin", email: "pie@pantin.fr", phone_number: "0102030405",
-                          independent_from_cd: true, department: department)
+                          department: department)
   end
   let!(:another_organisation) { create(:organisation, department: department) }
   let!(:file_configuration) { create(:file_configuration) }
@@ -41,7 +41,6 @@ describe CategoryConfigurationsController do
       expect(response.body).to match(/pie@pantin.fr/)
       expect(response.body).to match(/Numéro de téléphone/)
       expect(response.body).to match(/0102030405/)
-      expect(response.body).to match(/Indépendante du CD/)
       expect(response.body).to match(/Oui/)
       expect(response.body).to match(/Logo/)
       expect(response.body).to match(/Désignation dans le fichier usagers/)
