@@ -48,16 +48,16 @@ describe AgentSession::ThroughImpersonate do
     end
   end
 
-  context "40 minutes after its creation" do
-    before { travel_to(40.minutes.from_now) }
+  context "70 minutes after its creation" do
+    before { travel_to(70.minutes.from_now) }
 
     it "is not valid" do
       expect(subject).not_to be_valid
     end
   end
 
-  context "20 minutes after its creation" do
-    before { travel_to(20.minutes.from_now) }
+  context "50 minutes after its creation" do
+    before { travel_to(50.minutes.from_now) }
 
     it "is valid" do
       expect(subject).to be_valid

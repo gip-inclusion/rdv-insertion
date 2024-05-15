@@ -40,9 +40,10 @@ describe "Super admin can log in as another agent", :js do
       expect(page).to have_link("Revenir à ma session",
                                 href: super_admins_agent_impersonation_path(agent_id: agent.id))
       click_link("Revenir à ma session")
-      expect(page).to have_current_path(organisations_path)
+      expect(page).to have_current_path(super_admins_root_path)
 
       # Verify it's really the super admin account by checking the organisations displayed
+      visit organisations_path
       expect(page).to have_content(super_admin_department.name)
       expect(page).to have_content(super_admin_organisation1.name)
       expect(page).to have_content(super_admin_organisation2.name)

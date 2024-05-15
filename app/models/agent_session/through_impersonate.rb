@@ -1,7 +1,7 @@
 module AgentSession
   class ThroughImpersonate < Base
     def max_duration
-      30.minutes
+      1.hour
     end
 
     def valid?
