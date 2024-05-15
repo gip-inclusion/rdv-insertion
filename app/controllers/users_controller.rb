@@ -257,7 +257,7 @@ class UsersController < ApplicationController
 
   def set_users_for_motif_category
     @users = policy_scope(User)
-             .preload(:organisations, follow_ups: [:notifications, :invitations])
+             .preload(:organisations, follow_ups: [:notifications, :invitations, :rdvs])
              .active.distinct
              .where(organisations: @current_organisations)
              .where.not(id: @department.archived_users.ids)

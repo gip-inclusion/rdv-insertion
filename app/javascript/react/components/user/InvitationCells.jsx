@@ -31,9 +31,6 @@ export default function InvitationCells({ user }) {
       </td>
     ) : user.currentFollowUpStatus === "rdv_pending" ? (
       <>
-        {console.log(user.list)}
-        {console.log(user.list.columns)}
-        {console.log(user.list.invitationsColSpan)}
         <td colSpan={user.list.invitationsColSpan}>
           {user.currentFollowUp.human_status} (le {getFrenchFormatDateString(user.currentPendingRdv.starts_at)})
         </td>
