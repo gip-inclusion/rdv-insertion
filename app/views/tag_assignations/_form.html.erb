@@ -1,16 +1,39 @@
 <div id="tag_form">
   <%= form_for(:tag_assignation, url: structure_user_tag_assignations_path(@user.id), method: :post) do |f| %>
-    <div class="w-100">
+    <div class="w-100 px-2">
+        <% if user_tags.any? %>
+          <p class="mb-2"> <%= "Tag".pluralize(user_tags.size) %> déjà <%= "sélectionné".pluralize(user_tags.size) %></p> 
+          <div class="flex-wrap d-flex">
+            <% user_tags.each do |tag| %>
+              <span class="badge badge-tag justify-content-between background-blue-light text-dark-blue me-2 d-flex">
+                <%= tag.value %>
+              </span>
+            <% end %>
+          </div>
+        <% end %>
+
+        <% if user_tags.any? && tags.any? %>
+          <p class="mb-1 mt-3"> Ajouter des tags </p>
+        <% end %>
+
         <% tags.each do |tag| %>
           <%= render "tag_assignation", tag: tag, f: f %>
         <% end %>
       <% if tags.empty? %>
-        <p>Aucun tag disponible. Vous pouvez créer des tags depuis la configuration d'une organisation.</p>
+        <% if user_tags.any? %>
+          <hr />
+        <% end %>
+        <p>Aucun <%= "autre" if user_tags.any? %> tag disponible. Vous pouvez créer des tags depuis la configuration d'une organisation.</p>
       <% end %>
     </div>
     <% if tags.any? %>
       <div class="d-flex justify-content-end align-items-center px-3">
+        <button type="button" class="btn btn-blue-out border-0 me-2" data-bs-dismiss="modal">
+          Annuler
+        </button>
+
         <%= button_tag type: 'submit', class: "btn btn-primary" do %>
+          <i class="fas fa-plus"></i>
           Ajouter
         <% end %>
       </div>
