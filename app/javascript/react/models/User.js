@@ -9,7 +9,7 @@ import handleReferentAssignation from "../lib/handleReferentAssignation";
 import formatPhoneNumber from "../../lib/formatPhoneNumber";
 import retrieveLastInvitationDate from "../../lib/retrieveLastInvitationDate";
 import retrieveRelevantOrganisation from "../../lib/retrieveRelevantOrganisation";
-import { getFrenchFormatDateString } from "../../lib/datesHelper";
+import { getFrenchFormatDateString, todaysDateString } from "../../lib/datesHelper";
 
 const ROLES = {
   usager: "demandeur",
@@ -287,6 +287,7 @@ export default class User {
         (rc) => rc.motif_category_id === this.currentConfiguration.motif_category_id
       );
       this.currentFollowUpStatus = this.currentFollowUp && this.currentFollowUp.status;
+      this.currentPendingRdv = this.currentPendingRdv();
       this.participations = this.currentFollowUp?.participations || [];
       this.lastSmsInvitationSentAt = retrieveLastInvitationDate(
         upToDateUser.invitations,
@@ -304,6 +305,15 @@ export default class User {
         this.currentConfiguration.motif_category_id
       );
     }
+  }
+
+  currentPendingRdv() {
+    return (
+      // we select the next rdv in the future
+      this.currentFollowUpStatus === "rdv_pending" &&
+      this.currentFollowUp.rdvs.filter((rdv) => new Date(rdv.starts_at) > new Date(todaysDateString()))
+                               .sort((a, b) => new Date(a.starts_at) - new Date(b.starts_at))[0]
+    );
   }
 
   updatePhoneNumber(phoneNumber) {

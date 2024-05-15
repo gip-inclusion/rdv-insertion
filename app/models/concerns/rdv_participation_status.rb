@@ -12,6 +12,7 @@ module RdvParticipationStatus
     scope :not_cancelled, -> { where.not(status: CANCELLED_STATUSES) }
     scope :status, ->(status) { where(status: status) }
     scope :resolved, -> { where(status: %w[seen excused revoked noshow]) }
+    scope :pending, -> { where(status: PENDING_STATUSES).where("starts_at > ?", Time.zone.now) }
   end
 
   def pending?

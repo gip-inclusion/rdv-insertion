@@ -3,18 +3,20 @@ import Tippy from "@tippyjs/react";
 
 import InvitationCell from "./InvitationCell";
 
+import { getFrenchFormatDateString } from "../../../lib/datesHelper";
+
 export default function InvitationCells({ user }) {
   return (
     /* ----------------------------- Disabled invitations cases -------------------------- */
     user.isArchivedInCurrentDepartment() ? (
-      <td colSpan={user.list.invitationsColspan}>
+      <td colSpan={user.list.invitationsColSpan}>
         Dossier archivé
         {user.archiveInCurrentDepartment().archiving_reason && (
           <>&nbsp;: {user.archiveInCurrentDepartment().archiving_reason}</>
         )}
       </td>
     ) : user.createdAt && user.list.isDepartmentLevel && !user.linkedToCurrentCategory() ? (
-      <td colSpan={user.list.invitationsColspan}>
+      <td colSpan={user.list.invitationsColSpan}>
         L'usager n'appartient pas à une organisation qui gère ce type de rdv{" "}
         <Tippy
           content={
@@ -29,7 +31,12 @@ export default function InvitationCells({ user }) {
       </td>
     ) : user.currentFollowUpStatus === "rdv_pending" ? (
       <>
-        <td colSpan={user.list.invitationsColspan}>{user.currentFollowUp.human_status}</td>
+        {console.log(user.list)}
+        {console.log(user.list.columns)}
+        {console.log(user.list.invitationsColSpan)}
+        <td colSpan={user.list.invitationsColSpan}>
+          {user.currentFollowUp.human_status} (le {getFrenchFormatDateString(user.currentPendingRdv.starts_at)})
+        </td>
       </>
     ) : (
       /* ----------------------------- Enabled invitations cases --------------------------- */

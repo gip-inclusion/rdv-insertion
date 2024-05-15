@@ -66,4 +66,8 @@ class FollowUp < ApplicationRecord
   def human_status
     I18n.t("activerecord.attributes.follow_up.statuses.#{status}")
   end
+
+  def current_pending_rdv
+    rdvs.pending.order(starts_at: :asc).first
+  end
 end
