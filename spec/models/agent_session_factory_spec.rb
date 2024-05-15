@@ -49,14 +49,9 @@ describe AgentSessionFactory do
 
       context "when the origin is none of the above" do
         let!(:origin) { nil }
-        let!(:invalid_session) { instance_double(AgentSession::Invalid) }
 
-        before do
-          allow(AgentSession::Invalid).to receive(:new).and_return(invalid_session)
-        end
-
-        it "returns an instance of session through impersonate" do
-          expect(described_class.create_with(**agent_auth)).to eq(invalid_session)
+        it "returns nothing" do
+          expect(described_class.create_with(**agent_auth)).to be_nil
         end
       end
     end
