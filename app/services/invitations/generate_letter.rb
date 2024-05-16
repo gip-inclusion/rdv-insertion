@@ -45,7 +45,7 @@ module Invitations
         rdv_purpose: @invitation.rdv_purpose,
         rdv_subject: @invitation.rdv_subject,
         custom_sentence: @invitation.custom_sentence,
-        invitation_url: @invitation.rdv_solidarites_public_url,
+        invitation_url: @invitation.rdv_solidarites_public_url(with_protocol: false),
         qr_code: @invitation.qr_code
       }
     end
