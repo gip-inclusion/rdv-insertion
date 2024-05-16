@@ -135,6 +135,7 @@ GEM
       xpath (~> 3.2)
     chartkick (5.0.5)
     choice (0.2.0)
+    chunky_png (1.4.0)
     concurrent-ruby (1.2.3)
     connection_pool (2.4.1)
     crack (0.4.5)
@@ -365,6 +366,10 @@ GEM
       actionpack (>= 5.2)
       railties (>= 5.2)
     rexml (3.2.6)
+    rqrcode (2.2.0)
+      chunky_png (~> 1.0)
+      rqrcode_core (~> 1.0)
+    rqrcode_core (1.2.0)
     rspec-core (3.12.2)
       rspec-support (~> 3.12.0)
     rspec-expectations (3.12.3)
@@ -482,13 +487,10 @@ GEM
     tilt (2.3.0)
     timeout (0.4.1)
     ttfunk (1.7.0)
-    turbo-rails (1.5.0)
+    turbo-rails (2.0.5)
       actionpack (>= 6.0.0)
       activejob (>= 6.0.0)
       railties (>= 6.0.0)
-    turbolinks (5.2.1)
-      turbolinks-source (~> 5.2)
-    turbolinks-source (5.2.0)
     typhoeus (1.4.1)
       ethon (>= 0.9.0)
     tzinfo (2.0.6)
@@ -562,6 +564,7 @@ DEPENDENCIES
   redis (~> 4.0)
   responders
   rexml
+  rqrcode (~> 2.0)
   rspec-rails
   rswag
   rubocop
@@ -579,7 +582,6 @@ DEPENDENCIES
   skylight
   spring (~> 3.0.0)
   turbo-rails
-  turbolinks (~> 5)
   tzinfo-data
   web-console (>= 3.3.0)
   webmock

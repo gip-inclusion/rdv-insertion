@@ -12,6 +12,8 @@ class FollowUp < ApplicationRecord
   has_many :rdvs, through: :participations
   has_many :notifications, through: :participations
 
+  broadcasts_refreshes
+
   validates :user, uniqueness: { scope: :motif_category,
                                  message: "est déjà suivi pour cette catégorie de motif" }
 

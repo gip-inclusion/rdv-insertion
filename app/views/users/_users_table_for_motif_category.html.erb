@@ -10,7 +10,7 @@
     </th>
     <% @current_category_configuration.invitation_formats.each do |invitation_format| %>
       <th scope="col" class="d-none d-lg-table-cell"><%= t(".#{invitation_format}_column_title") %></th>
-    <% end  %>
+    <% end %>
     <% if show_invitations?(@current_category_configuration) %>
       <th scope="col">Première invitation</th>
       <th scope="col">Dernière invitation</th>
@@ -24,6 +24,7 @@
   <tbody class="align-middle">
     <% @users.each do |user| %>
       <% follow_up = user.follow_up_for(@current_motif_category) %>
+      <%= turbo_stream_from follow_up %>
       <tr
         class="clickable"
         data-controller="user-link"
