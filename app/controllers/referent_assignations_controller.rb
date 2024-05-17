@@ -6,7 +6,7 @@ class ReferentAssignationsController < ApplicationController
   def index; end
 
   def create
-    if false && assign_referent.success?
+    if assign_referent.success?
       respond_to do |format|
         format.turbo_stream { redirect_to structure_user_path(@user.id) }
         format.json { render json: { success: true, user: @user } }
@@ -64,7 +64,7 @@ class ReferentAssignationsController < ApplicationController
   def set_agents
     @agents = Agent.joins(:organisations).where(
       organisations: @user.organisations.where(department: @department)
-    ).distinct.order(:email)
+    ).with_last_name.distinct.order(:email)
     @agents = @agents.not_betagouv if production_env?
   end
 

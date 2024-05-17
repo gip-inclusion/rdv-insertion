@@ -192,7 +192,7 @@ class UsersController < ApplicationController
   def set_user_referents
     @user_referents = policy_scope(@user.referents)
                       .joins(:departments)
-                      .where(current_departments_filter)
+                      .where(departments: { id: current_department_id })
                       .distinct
   end
 

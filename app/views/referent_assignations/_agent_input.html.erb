@@ -1,6 +1,6 @@
 <div class="d-flex my-2">
   <%= f.radio_button :agent_id, agent.id, class: "form-check-input"  %>
-  <%= f.label agent.id, class: "ms-3" do %>
+  <%= f.label "agent_id_#{agent.id}", class: "ms-3" do %>
       <%= agent %>
       <span class="text-dark-grey-alt ms-2 float-end"><%= agent.email %></span>
   <% end %>
