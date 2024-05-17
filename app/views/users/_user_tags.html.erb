@@ -9,7 +9,7 @@
           <%= tag.value %>
           <%=
             link_to(
-              structure_user_tag_assignation_path(user.id, tag.id),
+              tag_assignations_path(user_id: user.id, tag_id: tag.id),
               data: {
                 turbo_confirm: "Retirer le tag de cet usager ?",
                 turbo_confirm_text_content: "Êtes-vous sûr de vouloir retirer le tag <b>#{tag.value}</b> de l'usager <b>#{user}</b> ?",
@@ -25,7 +25,7 @@
       <% end %>
     <% end %>
   </p>
-  <%= link_to(structure_user_tag_assignations_path(@user.id), data: { turbo_frame: 'remote_modal' }) do %>
+  <%= link_to(tag_assignations_path(user_id: @user.id), data: { turbo_frame: 'remote_modal' }) do %>
     <button class="btn btn-blue mb-3"><i class="fas fa-plus"></i> Ajouter un tag </button>
   <% end %>
 </div>

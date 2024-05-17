@@ -37,14 +37,14 @@ class TagAssignationsController < ApplicationController
   end
 
   def department
-    @department ||= policy_scope(Department).find(params[:department_id])
+    @department ||= policy_scope(Department).find(current_department_id)
   end
 
   def organisation
-    @organisation ||= policy_scope(Organisation).find(params[:organisation_id])
+    @organisation ||= policy_scope(Organisation).find(current_organisation_id)
   end
 
   def tag
-    @available_tags.find(params[:id] || tag_assignation_params[:tag_id])
+    @available_tags.find(params[:tag_id] || tag_assignation_params[:tag_id])
   end
 end
