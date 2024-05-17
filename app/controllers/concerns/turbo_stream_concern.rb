@@ -24,8 +24,7 @@ module TurboStreamConcern
 
   def turbo_stream_display_error_modal(errors)
     render(
-      turbo_stream: turbo_stream.replace("remote_modal", partial: "common/error_modal", locals: { errors: }),
-      status: :unprocessable_entity
+      turbo_stream: turbo_stream.replace("remote_modal", partial: "common/error_modal", locals: { errors: })
     )
   end
 end

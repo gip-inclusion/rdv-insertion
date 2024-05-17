@@ -58,6 +58,10 @@ module CurrentStructure
       department_level? ? current_department.organisation_ids : [Current.organisation_id]
   end
 
+  def current_departments_filter
+    { departments: { id: Current.department_id } }
+  end
+
   def current_organisations_filter
     if department_level?
       { organisations: { department_id: Current.department_id } }
