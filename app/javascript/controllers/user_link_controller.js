@@ -6,7 +6,17 @@ export default class extends Controller {
       return;
     }
 
-    this.userLinkUrl = new URL(window.location.protocol + window.location.host + this.data.get("path"));
-    window.location.href = this.userLinkUrl;
+    const userLinkUrl = new URL(window.location.protocol + window.location.host + this.resolvePathFromTarget(event.target));
+    window.location.href = userLinkUrl;
+  }
+
+  resolvePathFromTarget(target) {
+    let path = this.data.get("path");
+
+    if (target.dataset.linkPath || target.parentElement.dataset.linkPath) {
+      path = target.dataset.linkPath || target.parentElement.dataset.linkPath;
+    }
+
+    return path
   }
 }
