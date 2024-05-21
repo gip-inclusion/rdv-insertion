@@ -7,6 +7,7 @@ import handleUserUpdate from "../lib/handleUserUpdate";
 import handleReferentAssignation from "../lib/handleReferentAssignation";
 
 import formatPhoneNumber from "../../lib/formatPhoneNumber";
+import formatAffiliationNumber from "../../lib/formatAffiliationNumber";
 import retrieveLastInvitationDate from "../../lib/retrieveLastInvitationDate";
 import retrieveRelevantOrganisation from "../../lib/retrieveRelevantOrganisation";
 import { getFrenchFormatDateString } from "../../lib/datesHelper";
@@ -63,7 +64,7 @@ export default class User {
     this.nir = formattedAttributes.nir;
     this.franceTravailId = formattedAttributes.franceTravailId;
     this.rightsOpeningDate = formattedAttributes.rightsOpeningDate;
-    this.affiliationNumber = this.formatAffiliationNumber(formattedAttributes.affiliationNumber);
+    this.affiliationNumber = formatAffiliationNumber(formattedAttributes.affiliationNumber);
     this.phoneNumber = formatPhoneNumber(formattedAttributes.phoneNumber);
     this.role = this.formatRole(formattedAttributes.role);
     this.shortRole = this.role ? (this.role === "demandeur" ? "DEM" : "CJT") : null;
@@ -110,18 +111,6 @@ export default class User {
     title = TITLES[title] || title;
     if (!Object.values(TITLES).includes(title)) return null;
     return title;
-  }
-
-  formatAffiliationNumber(affiliationNumber) {
-    if (!affiliationNumber) return null;
-
-    // we remove leading zeros
-    const formattedNumber = affiliationNumber.replace(/^0+/, "");
-    return this.truncateIfOnlyTrailingZeros(formattedNumber);
-  }
-
-  truncateIfOnlyTrailingZeros(str) {
-    return str.length > 7 && str.slice(7).replace(/0/g, "").length === 0 ? str.slice(0, 7) : str;
   }
 
   formatRole(role) {
