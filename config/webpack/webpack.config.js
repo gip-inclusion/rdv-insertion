@@ -50,6 +50,8 @@ module.exports = {
       "process.env.CARNET_DE_BORD_URL": JSON.stringify(process.env.CARNET_DE_BORD_URL),
       "process.env.RAILS_ENV": JSON.stringify(process.env.RAILS_ENV),
       "process.env.MATOMO_CONTAINER_ID": JSON.stringify(process.env.MATOMO_CONTAINER_ID),
+      "process.env.SENTRY_DSN": JSON.stringify(process.env.SENTRY_DSN),
+      "process.env.SENTRY_ENVIRONMENT": JSON.stringify(process.env.SENTRY_ENVIRONMENT),
     }),
     // Include plugins
     new RemoveEmptyScriptsPlugin(),
