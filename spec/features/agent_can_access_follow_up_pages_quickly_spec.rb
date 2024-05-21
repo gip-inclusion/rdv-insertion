@@ -26,7 +26,8 @@ describe "Agents can access follow up pages quickly", :js do
 
     it "redirects to the follow up page" do
       find("td", text: "Non invité").click
-      expect(page).to have_current_path(organisation_user_follow_ups_path(user_id: user1.id, organisation_id: organisation.id))
+      expect(page).to have_current_path(organisation_user_follow_ups_path(user_id: user1.id,
+                                                                          organisation_id: organisation.id))
     end
   end
 
@@ -39,7 +40,8 @@ describe "Agents can access follow up pages quickly", :js do
 
     it "redirects to the follow up page" do
       find("td", text: "Non invité").click
-      expect(page).to have_current_path(organisation_user_follow_ups_path(user_id: user1.id, organisation_id: organisation.id))
+      expect(page).to have_current_path(organisation_user_follow_ups_path(user_id: user1.id,
+                                                                          organisation_id: organisation.id))
     end
   end
 end
