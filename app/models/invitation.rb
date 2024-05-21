@@ -78,8 +78,10 @@ class Invitation < ApplicationRecord
     Rack::Utils.parse_nested_query(uri.query)
   end
 
-  def rdv_solidarites_public_url
-    "#{ENV['RDV_SOLIDARITES_URL'].gsub('www.', '').gsub('https://', '')}/i/r/#{uuid}"
+  def rdv_solidarites_public_url(with_protocol: true)
+    url = "#{ENV['RDV_SOLIDARITES_URL']}/i/r/#{uuid}"
+
+    with_protocol ? url : url.gsub("https://", "").gsub("www.", "")
   end
 
   def qr_code

@@ -13,13 +13,16 @@ end
 
 Rails.application.routes.draw do
   namespace :super_admins do
+    resources :agents, only: [:index, :show] do
+      resource :impersonation, only: [:create, :destroy]
+    end
     resources :departments, only: [:index, :show, :new, :create, :edit, :update]
     resources :organisations, only: [:index, :show, :new, :create, :edit, :update]
     resources :users, only: [:index, :show, :edit, :update]
     resources :motif_categories, only: [:index, :show, :new, :create, :edit, :update]
     resources :templates, only: [:index, :show]
 
-    root to: "organisations#index"
+    root to: "agents#index"
   end
   mount Rswag::Api::Engine => '/api-docs'
   mount Rswag::Ui::Engine => '/api-docs'
