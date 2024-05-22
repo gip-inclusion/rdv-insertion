@@ -13,7 +13,7 @@
         <div class="w-50">
           <%= f.select "motif_category_id_#{organisation.id}", organisation.motif_categories.map { |mc| [mc.name, mc.id] },
                       { include_blank: "Ouvrir un suivi" },
-                      { class: "form-control" }
+                      { class: "form-select" }
           %>
         </div>
       </div>

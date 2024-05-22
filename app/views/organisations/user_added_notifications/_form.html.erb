@@ -1,6 +1,7 @@
-<%= render "common/remote_modal", title: "Envoyez un email à l'organisation si vous le souhaitez" do %>
+<%= render "common/remote_modal", title: "Informer l’organisation par email" do %>
   <%= form_for(:email, url: organisations_user_added_notifications_path, method: :post) do |f| %>
-      <div class="form-group">
+      <div class="p-3 pt-0">
+        <p>Prévenir l’organisation que l’usager a été ajouté à leur liste </p>
         <div class="mb-3">
           <h5 class="text-dark-blue h4-as-labels">Destinataire</h5>
             <%= f.select :to,
@@ -17,14 +18,20 @@
           <h5 class="text-dark-blue h4-as-labels">Message</h5>
             <%= f.text_field :content, class: "form-control", cols: 15, rows: 15, value: "L'usager #{user} a été ajouté à votre organisation #{organisation.name}.\nVous pouvez consulter son profil à l'adresse suivante :\n #{organisation_user_url(id: user.id, organisation_id: organisation.id, host: ENV['HOST'])}" %>
         </div>
-        <div class="mb-3">
+        <div class="mb-4">
           <h5 class="text-dark-blue h4-as-labels">Pièces jointes</h5>
             <%= f.file_field :attachments, class: "form-control", multiple: true %>
         </div>
 
-      </div>
-      <div class="form-group text-center">
-        <%= f.submit "Envoyer", class: "btn btn-blue" %>
+        <div class="d-flex justify-content-end align-items-center pt-2">
+          <button type="button" class="btn btn-blue-out border-0 me-2" data-bs-dismiss="modal">
+            Annuler
+          </button>
+          <button type="submit" class="btn btn-blue">
+            <i class="fas fa-paper-plane me-2"></i>
+            Envoyer
+          </button>
+        </div>
       </div>
     </div>
   <% end %>
