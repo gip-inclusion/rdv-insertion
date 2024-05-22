@@ -1,11 +1,11 @@
 const formatAffiliationNumber = (affiliationNumber) => {
   if (!affiliationNumber) return null;
 
-  if (affiliationNumber.length <= 7) return truncateIfOnlyTrailingZeros(affiliationNumber);
+  affiliationNumber = truncateIfOnlyTrailingZeros(affiliationNumber);
+  if (affiliationNumber.length <= 7) return affiliationNumber;
 
-  // we remove leading zeros
-  const formattedNumber = affiliationNumber.replace(/^0+/, "");
-  return truncateIfOnlyTrailingZeros(formattedNumber);
+  // if affilation number is still longer than 7 characters, we remove leading zeros then try to truncate again
+  return truncateIfOnlyTrailingZeros(affiliationNumber.replace(/^0+/, ""));
 }
 
 const truncateIfOnlyTrailingZeros = (str) =>
