@@ -42,6 +42,7 @@ module Exporters
        "Motif du RDV",
        "Nature du RDV",
        "RDV pris en autonomie ?",
+       "RDV pris le",
        Rdv.human_attribute_name(:status),
        User.human_attribute_name(:referents),
        "Organisation du rendez-vous",
@@ -68,12 +69,13 @@ module Exporters
     def csv_row(participation) # rubocop:disable Metrics/AbcSize
       user = participation.user
 
-      [display_date(rdv_date(participation)),
-       display_time(rdv_date(participation)),
+      [display_date(participation.starts_at),
+       display_time(participation.starts_at),
        rdv_motif(participation),
        rdv_type(participation),
        rdv_taken_in_autonomy?(participation),
-       human_status(participation),
+       display_date(participation.created_at),
+       participation.human_status,
        user.referents.map(&:email).join(", "),
        display_organisation_name(participation.organisation),
        user.title,
@@ -100,10 +102,6 @@ module Exporters
       "rdvs"
     end
 
-    def rdv_date(participation)
-      participation.rdv.starts_at
-    end
-
     def rdv_motif(participation)
       participation.rdv.motif&.name || ""
     end
@@ -114,10 +112,6 @@ module Exporters
 
     def rdv_type(participation)
       participation.rdv.collectif? ? "collectif" : "individuel"
-    end
-
-    def human_status(participation)
-      participation.human_status
     end
 
     def human_follow_up_status(participation)
