@@ -21,33 +21,33 @@ describe "Agents can assign referents", :js do
     it "allows to assign referents" do
       visit organisation_user_path(organisation, user)
 
-      expect(page).to have_no_content("Derek Sheperd")
-      expect(page).to have_no_content("Meredith Grey")
+      expect(page).to have_no_content("Derek SHEPERD")
+      expect(page).to have_no_content("Meredith GREY")
       click_button("Ajouter un référent")
 
       expect(page).to have_content("Ajoutez un agent référent")
       expect(page).to have_no_content("Référent déjà assigné")
 
-      expect(page).to have_content("Derek Sheperd")
-      find("label", text: "Derek Sheperd").click
+      expect(page).to have_content("Derek SHEPERD")
+      find("label", text: "Derek SHEPERD").click
 
       click_button("Ajouter")
 
-      expect(page).to have_css(".badge", text: "Derek Sheperd")
-      expect(page).to have_no_content("Meredith Grey")
+      expect(page).to have_css(".badge", text: "Derek SHEPERD")
+      expect(page).to have_no_content("Meredith GREY")
 
       expect(user.reload.referents).to contain_exactly(first_agent)
 
       click_button("Ajouter un référent")
       expect(page).to have_content("Référent déjà assigné")
-      expect(page).to have_css(".badge", text: "Derek Sheperd")
+      expect(page).to have_css(".badge", text: "Derek SHEPERD")
 
-      find("label", text: "Meredith Grey").click
+      find("label", text: "Meredith GREY").click
 
       click_button("Ajouter")
 
-      expect(page).to have_css(".badge", text: "Derek Sheperd")
-      expect(page).to have_css(".badge", text: "Meredith Grey")
+      expect(page).to have_css(".badge", text: "Derek SHEPERD")
+      expect(page).to have_css(".badge", text: "Meredith GREY")
 
       expect(user.reload.referents).to contain_exactly(first_agent, second_agent)
 
@@ -56,12 +56,12 @@ describe "Agents can assign referents", :js do
       expect(page).to have_content("Aucun autre référent disponible.")
       click_button("Ok")
 
-      find(".badge", text: "Derek Sheperd").find("a").click
+      find(".badge", text: "Derek SHEPERD").find("a").click
       modal = find(".modal")
       modal.click_button("Retirer")
 
       expect(page).to have_no_css(".badge", text: "Derek Sheperd")
-      expect(page).to have_css(".badge", text: "Meredith Grey")
+      expect(page).to have_css(".badge", text: "Meredith GREY")
       expect(user.reload.referents).to contain_exactly(second_agent)
     end
   end
