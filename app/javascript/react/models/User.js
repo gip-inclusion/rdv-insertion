@@ -287,7 +287,8 @@ export default class User {
         (rc) => rc.motif_category_id === this.currentConfiguration.motif_category_id
       );
       this.currentFollowUpStatus = this.currentFollowUp && this.currentFollowUp.status;
-      this.currentPendingRdv = this.currentPendingRdv();
+      this.currentPendingRdv = this.currentFollowUpStatus === "rdv_pending" &&
+        this.currentPendingRdv();
       this.participations = this.currentFollowUp?.participations || [];
       this.lastSmsInvitationSentAt = retrieveLastInvitationDate(
         upToDateUser.invitations,
@@ -310,7 +311,6 @@ export default class User {
   currentPendingRdv() {
     return (
       // we select the next rdv in the future
-      this.currentFollowUpStatus === "rdv_pending" &&
       this.currentFollowUp.rdvs.filter((rdv) => new Date(rdv.starts_at) > new Date(todaysDateString()))
                                .sort((a, b) => new Date(a.starts_at) - new Date(b.starts_at))[0]
     );
