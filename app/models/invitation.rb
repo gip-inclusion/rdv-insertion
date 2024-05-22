@@ -9,6 +9,7 @@ class Invitation < ApplicationRecord
   belongs_to :user
   belongs_to :department
   belongs_to :follow_up
+
   has_and_belongs_to_many :organisations
 
   has_many :category_configurations, through: :organisations
@@ -75,6 +76,16 @@ class Invitation < ApplicationRecord
   def link_params
     uri = URI.parse(link)
     Rack::Utils.parse_nested_query(uri.query)
+  end
+
+  def rdv_solidarites_public_url(with_protocol: true)
+    url = "#{ENV['RDV_SOLIDARITES_URL']}/i/r/#{uuid}"
+
+    with_protocol ? url : url.gsub("https://", "").gsub("www.", "")
+  end
+
+  def qr_code
+    RQRCode::QRCode.new(rdv_solidarites_public_url).as_png
   end
 
   private

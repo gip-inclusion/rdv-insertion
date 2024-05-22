@@ -1,0 +1,45 @@
+<div class="d-flex justify-content-center">
+  <table class="card-white text-center align-middle m-3 shadow-sm">
+    <thead>
+      <tr>
+        <% if show_invitation?("sms", invitation_formats) %>
+          <th class="px-4 py-3">
+            <h4>Invitation SMS</h4>
+          </th>
+        <% end %>
+        <% if show_invitation?("email", invitation_formats) %>
+          <th class="px-4 py-3">
+            <h4>Invitation mail</h4>
+          </th>
+        <% end %>
+        <% if show_invitation?("postal", invitation_formats) %>
+          <th class="px-4 py-3">
+            <h4>Invitation courrier</h4>
+          </th>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% invitation_dates_by_format = invitation_dates_by_format(invitations, invitation_formats) %>
+      <% max_number_of_invitations_for_a_format = max_number_of_invitations_for_a_format(invitation_dates_by_format) %>
+      <%= render "follow_ups/invitation_dates_rows", invitation_dates_by_format:, max_number_of_invitations_for_a_format:, invitation_formats:, motif_category: %>
+      <tr>
+        <%= render "follow_ups/invitation_button", invitation_format: "sms", invitation_formats:, user:, motif_category:, invitations:, invitation_disabled: sms_invitation_disabled_for?(user, follow_up, department) %>
+        <%= render "follow_ups/invitation_button", invitation_format: "email", invitation_formats:, user:, motif_category:, invitations:, invitation_disabled: email_invitation_disabled_for?(user, follow_up, department) %>
+        <%= render "follow_ups/postal_invitation_button", invitation_formats:, user:, motif_category:, invitations:, follow_up:, department:, organisation: %>
+      </tr>
+      <% if max_number_of_invitations_for_a_format > 1 %>
+        <tr>
+          <td class="px-4 py-2" colspan="3" style="cursor='pointer'" data-controller="invitation-dates" data-action="click->invitation-dates#toggleHistory" data-motif-category-id="<%= motif_category.id %>">
+              <button type="button">
+                <i class="fas fa-angle-down"></i> Voir l'historique <i class="fas fa-angle-down"></i>
+              </button>
+              <button type="button" class="d-none">
+                <i class="fas fa-angle-up"></i> Voir moins <i class="fas fa-angle-up"></i>
+              </button>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

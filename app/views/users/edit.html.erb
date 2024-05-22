@@ -1,8 +1,7 @@
 <div class="container text-dark-blue h4-as-labels mt-4">
-  <%= turbo_frame_tag "user_page_body" do %>
+  <%= turbo_frame_tag "user_page_body", data: { turbo_action: "advance" } do %>
     <%= form_for(@user, url: structure_user_path(@user.id), method: :patch) do |f| %>
       <%= render 'user_form', f: f, title: "Modifier usager", return_path: structure_user_path(@user.id) %>
     <% end %>
   <% end %>
 </div>
-

@@ -100,13 +100,11 @@ describe "Agents can upload documents for users", :js do
       visit organisation_user_path(organisation_id: organisation.id, id: user.id)
       click_link("Parcours")
 
-      accept_alert do
-        find_by_id("delete-button-#{user.contracts.first.id}").click
-      end
+      find_by_id("delete-button-#{user.contracts.first.id}").click
+      confirm_modal
 
-      accept_alert do
-        find_by_id("delete-button-#{user.diagnostics.first.id}").click
-      end
+      find_by_id("delete-button-#{user.diagnostics.first.id}").click
+      confirm_modal
 
       expect(page).to have_no_css(".document-link")
 

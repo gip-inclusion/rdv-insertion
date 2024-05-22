@@ -3,8 +3,9 @@ class SessionsController < ApplicationController
   wrap_parameters false
   respond_to :json, only: :create
 
-  include Agents::SignIn
-  before_action :validate_credentials!, :retrieve_agent!, :mark_agent_as_logged_in!, :set_session_credentials,
+  include Agents::SignInWithRdvSolidarites
+  before_action :validate_rdv_solidarites_credentials!, :retrieve_agent!, :mark_agent_as_logged_in!,
+                :set_agent_return_to_url,
                 only: [:create]
 
   before_action :handle_inclusion_connect_logout, only: [:destroy], if: :logged_with_inclusion_connect?
@@ -12,7 +13,8 @@ class SessionsController < ApplicationController
   def new; end
 
   def create
-    render json: { success: true, redirect_path: session.delete(:agent_return_to) || organisations_path }
+    set_session_credentials
+    render json: { success: true, redirect_path: @agent_return_to_url || root_path }
   end
 
   def destroy
@@ -23,16 +25,24 @@ class SessionsController < ApplicationController
 
   private
 
-  def logout_inclusion_connect
-    InclusionConnectClient.logout(session[:inclusion_connect_token_id])
+  def set_session_credentials
+    clear_session
+    timestamp = Time.zone.now.to_i
+    session[:agent_auth] = {
+      id: authenticated_agent.id,
+      created_at: timestamp,
+      origin: "sign_in_form",
+      signature: authenticated_agent.sign_with(timestamp)
+    }
   end
 
-  def logged_with_inclusion_connect?
-    session.dig(:rdv_solidarites_credentials, "inclusion_connected") == true
+  def set_agent_return_to_url
+    @agent_return_to_url = session[:agent_return_to]
   end
 
   def handle_inclusion_connect_logout
-    return if logout_inclusion_connect.success?
+    logout = InclusionConnectClient.logout(agent_session.inclusion_connect_token_id)
+    return if logout.success?
 
     flash[:error] = "Nous n'avons pas pu vous déconnecter d'Inclusion Connect. Contacter le support à l'adresse
                     <rdv-insertion@beta.gouv.fr> si le problème persiste."
