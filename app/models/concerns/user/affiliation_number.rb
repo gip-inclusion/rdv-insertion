@@ -9,6 +9,7 @@ module User::AffiliationNumber
 
   def format_affiliation_number
     remove_whitespaces
+    truncate_if_only_trailing_zeros
     return unless affiliation_number.length > 7
 
     remove_leading_zeros
@@ -25,6 +26,6 @@ module User::AffiliationNumber
 
   def truncate_if_only_trailing_zeros
     self.affiliation_number =
-      affiliation_number[7..].gsub("0", "").empty? ? affiliation_number[0...7] : affiliation_number
+      affiliation_number[7..]&.gsub("0", "")&.empty? ? affiliation_number[0...7] : affiliation_number
   end
 end

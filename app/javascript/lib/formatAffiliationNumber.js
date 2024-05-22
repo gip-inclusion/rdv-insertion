@@ -1,7 +1,7 @@
 const formatAffiliationNumber = (affiliationNumber) => {
   if (!affiliationNumber) return null;
 
-  if (affiliationNumber.length <= 7) return affiliationNumber;
+  if (affiliationNumber.length <= 7) return truncateIfOnlyTrailingZeros(affiliationNumber);
 
   // we remove leading zeros
   const formattedNumber = affiliationNumber.replace(/^0+/, "");
