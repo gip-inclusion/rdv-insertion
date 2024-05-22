@@ -2,7 +2,7 @@
 
 <div class="mail-object">
   <p class="bold-blue">Objet : Convocation à un <%= rdv_title_by_phone %> dans le cadre de votre <%= rdv_subject %></p>
-  <%= tag.p("N° CAF : #{user.affiliation_number}") if user.affiliation_number %>
+  <%= tag.p("N° CAF / MSA : #{user.affiliation_number}") if user.affiliation_number %>
 </div>
 
 <div class="main-content">
