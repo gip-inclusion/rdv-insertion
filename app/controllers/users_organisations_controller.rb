@@ -63,7 +63,7 @@ class UsersOrganisationsController < ApplicationController
   end
 
   def redirect_to_users_list
-    redirect_to session[:back_to_users_list_url] || structure_users_path
+    redirect_to session[:back_to_users_list_url] || structure_users_path, status: :see_other
   end
 
   def redirect_to_department_user_path
