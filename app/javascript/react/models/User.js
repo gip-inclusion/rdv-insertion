@@ -311,8 +311,9 @@ export default class User {
   currentPendingRdv() {
     return (
       // we select the next rdv in the future
-      this.currentFollowUp.rdvs.filter((rdv) => new Date(rdv.starts_at) > new Date(todaysDateString()))
-                               .sort((a, b) => new Date(a.starts_at) - new Date(b.starts_at))[0]
+      this.currentFollowUp.participations
+          .filter((participation) => new Date(participation.starts_at) > new Date(todaysDateString()))
+          .sort((a, b) => new Date(a.starts_at) - new Date(b.starts_at))[0]
     );
   }
 
