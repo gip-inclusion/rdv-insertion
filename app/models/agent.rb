@@ -2,6 +2,7 @@ class Agent < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [:email, :first_name, :last_name, :inclusion_connect_open_id_sub].freeze
 
   include Agent::RdvSolidaritesClient
+  include Agent::Signature
 
   has_many :agent_roles, dependent: :destroy
   has_many :referent_assignations, dependent: :destroy

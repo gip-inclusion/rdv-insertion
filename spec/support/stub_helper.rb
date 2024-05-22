@@ -49,7 +49,9 @@ module StubHelper
 
   def stub_rdv_solidarites_invitation_requests(rdv_solidarites_user_id, rdv_solidarites_token = "123456")
     stub_request(:post, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/users/#{rdv_solidarites_user_id}/rdv_invitation_token")
-      .with(headers: { "Content-Type" => "application/json" }.merge(shared_secret_credentials_hash(agent)))
+      .with(
+        headers: { "Content-Type" => "application/json" }.merge(rdv_solidarites_auth_headers_with_shared_secret(agent))
+      )
       .to_return(body: { "invitation_token" => rdv_solidarites_token }.to_json)
   end
 
@@ -79,5 +81,9 @@ module StubHelper
     stub_rdv_solidarites_assign_organisations(rdv_solidarites_user_id)
     stub_rdv_solidarites_assign_many_referents(rdv_solidarites_user_id)
     stub_rdv_solidarites_update_user(rdv_solidarites_user_id)
+  end
+
+  def rdv_solidarites_auth_headers_with_shared_secret(agent)
+    agent.send(:rdv_solidarites_auth_headers_with_shared_secret)
   end
 end
