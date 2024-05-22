@@ -3,7 +3,7 @@
     <%= User.human_attribute_name(:organisations) %>
   </h4>
   
-  <p class="mb-3 mt-3 flex-wrap d-flex">
+  <p class="mb-2 mt-3 flex-wrap d-flex">
     <% user.organisations.each do |organisation| %>
       <span class="badge badge-tag justify-content-between background-blue-light text-dark-blue me-2 mb-2 d-flex">
         <%= organisation.name %>
