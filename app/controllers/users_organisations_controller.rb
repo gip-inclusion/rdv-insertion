@@ -5,7 +5,7 @@ class UsersOrganisationsController < ApplicationController
   before_action :set_organisation_to_remove, :verify_user_is_sync_with_rdv_solidarites, only: [:destroy]
 
   def index
-    @organisations = @organisations.where.not(id: @user.organisations.ids)
+    @assignable_organisations = @organisations.where.not(id: @user.organisations.ids)
   end
 
   def create

@@ -1,33 +1,42 @@
 <%= render "common/remote_modal", title: "Ajouter l'usager à une organisation" do %>
-  <%= form_for(:users_organisation, url: users_organisations_path, method: :post, data: { controller: "user-organisations" }) do |f| %>
+  <%= form_for(:users_organisation, url: users_organisations_path, method: :post) do |f| %>
     <%= f.hidden_field :user_id, value: @user.id %>
 
-    <% @organisations.each do |organisation| %>
-      <div class="d-flex align-items-center mb-3">
-        <div class="w-50 d-flex align-items-center">
-          <div class="me-3 align-items-center">
-            <%= f.radio_button :organisation_id, organisation.id, class: "form-check-input", id: "organisation_#{organisation.id}" %>
+    <% if @assignable_organisations.empty? %>
+      <p>Aucune autre organisation disponible.</p>
+
+      <div class="d-flex justify-content-end align-items-center">
+        <button type="button" class="btn btn-blue" data-bs-dismiss="modal">
+          Ok
+        </button>
+      </div>
+    <% else %>
+      <% @assignable_organisations.each do |organisation| %>
+        <div class="d-flex align-items-center mb-3">
+          <div class="w-50 d-flex align-items-center">
+            <div class="me-3 align-items-center">
+              <%= f.radio_button :organisation_id, organisation.id, class: "form-check-input", id: "organisation_#{organisation.id}" %>
+            </div>
+            <%= label_tag "organisation_#{organisation.id}", organisation.name, class: "form-check-label" %>
           </div>
-          <%= label_tag "organisation_#{organisation.id}", organisation.name, class: "form-check-label" %>
+          <div class="w-50">
+            <%= f.select "motif_category_id_#{organisation.id}", organisation.motif_categories.map { |mc| [mc.name, mc.id] },
+                        { include_blank: "Ouvrir un suivi" },
+                        { class: "form-select" }
+            %>
+          </div>
         </div>
-        <div class="w-50">
-          <%= f.select "motif_category_id_#{organisation.id}", organisation.motif_categories.map { |mc| [mc.name, mc.id] },
-                      { include_blank: "Ouvrir un suivi" },
-                      { class: "form-select" }
-          %>
-        </div>
+      <% end %>
+      <div class="d-flex justify-content-end align-items-center">
+        <button type="button" class="btn btn-blue-out border-0 me-2" data-bs-dismiss="modal">
+          Annuler
+        </button>
+        <button type="submit" class="btn btn-blue">
+          <i class="fas fa-plus me-2"></i>
+          Ajouter
+        </button>
       </div>
     <% end %>
-
-    <div class="d-flex justify-content-end align-items-center">
-      <button type="button" class="btn btn-blue-out border-0 me-2" data-bs-dismiss="modal">
-        Annuler
-      </button>
-      <button type="submit" class="btn btn-blue">
-        <i class="fas fa-plus me-2"></i>
-        Ajouter
-      </button>
-    </div>
   <% end %>
 <% end %>
 
