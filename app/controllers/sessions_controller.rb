@@ -3,14 +3,16 @@ class SessionsController < ApplicationController
   wrap_parameters false
   respond_to :json, only: :create
 
-  include Agents::SignIn
-  before_action :validate_credentials!, :retrieve_agent!, :mark_agent_as_logged_in!, :set_session_credentials,
+  include Agents::SignInWithRdvSolidarites
+  before_action :validate_rdv_solidarites_credentials!, :retrieve_agent!, :mark_agent_as_logged_in!,
+                :set_agent_return_to_url,
                 only: [:create]
 
   def new; end
 
   def create
-    render json: { success: true, redirect_path: session.delete(:agent_return_to) || organisations_path }
+    set_session_credentials
+    render json: { success: true, redirect_path: @agent_return_to_url || root_path }
   end
 
   def destroy
@@ -26,7 +28,18 @@ class SessionsController < ApplicationController
     InclusionConnectClient.logout_path(session[:inclusion_connect_token_id], session[:ic_state])
   end
 
-  def logged_with_inclusion_connect?
-    session.dig(:rdv_solidarites_credentials, "inclusion_connected") == true
+  def set_session_credentials
+    clear_session
+    timestamp = Time.zone.now.to_i
+    session[:agent_auth] = {
+      id: authenticated_agent.id,
+      created_at: timestamp,
+      origin: "sign_in_form",
+      signature: authenticated_agent.sign_with(timestamp)
+    }
+  end
+
+  def set_agent_return_to_url
+    @agent_return_to_url = session[:agent_return_to]
   end
 end

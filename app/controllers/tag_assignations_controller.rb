@@ -1,10 +1,10 @@
 class TagAssignationsController < ApplicationController
-  before_action :set_available_tags, :set_user
+  before_action :set_available_tags, :set_user, :set_user_tags
 
   def index; end
 
   def create
-    @user.tags << tag
+    @user.tags << @available_tags.where(id: tag_assignation_params[:tag_ids])
     set_user_tags
   end
 
@@ -33,7 +33,7 @@ class TagAssignationsController < ApplicationController
   end
 
   def tag_assignation_params
-    params.require(:tag_assignation).permit(:tag_id, :user_id)
+    params.require(:tag_assignation).permit(:user_id, tag_ids: [])
   end
 
   def department
@@ -45,6 +45,6 @@ class TagAssignationsController < ApplicationController
   end
 
   def tag
-    @available_tags.find(tag_assignation_params[:tag_id])
+    @available_tags.find(params[:id] || tag_assignation_params[:tag_id])
   end
 end

@@ -1,14 +1,15 @@
 class ApplicationController < ActionController::Base
-  protect_from_forgery with: :exception
-  before_action :set_sentry_context
-
-  include AuthorizationConcern
   include AuthenticatedControllerConcern
+  include AuthorizationConcern
   include CurrentStructure
   include NavigationHelper
+  include PolicyHelper
   include BeforeActionOverride
   include EnvironmentsHelper
   include TurboStreamConcern
+
+  protect_from_forgery with: :exception
+  before_action :set_sentry_context
 
   # Needed to generate ActiveStorage urls locally, it sets the host and protocol
   include ActiveStorage::SetCurrent unless Rails.env.production?

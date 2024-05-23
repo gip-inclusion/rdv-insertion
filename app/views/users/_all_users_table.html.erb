@@ -33,7 +33,7 @@
               <%= render "follow_ups/follow_up_status_cell", follow_up: follow_up, category_configuration: %>
             <% else %>
               <td id=<%= dom_id(category_configuration.motif_category, "user_#{user.id}") %>>
-                <%= render "follow_ups/new_button", user:, category_configuration:, organisation: @organisation, department: @department, turbo: true, button_text: "Ajouter" %>
+                <%= render "follow_ups/new_button", user:, category_configuration:, organisation: @organisation, department: @department, button_text: "Ajouter" %>
               </td>
             <% end %>
           <% end %>

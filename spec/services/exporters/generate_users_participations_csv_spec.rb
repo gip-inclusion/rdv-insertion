@@ -1,5 +1,7 @@
 describe Exporters::GenerateUsersParticipationsCsv, type: :service do
-  subject { described_class.call(user_ids: users.ids, structure: structure, motif_category: motif_category, agent:) }
+  subject do
+    described_class.call(user_ids: users.ids, structure: structure, motif_category_id: motif_category.id, agent:)
+  end
 
   let!(:now) { Time.zone.parse("22/06/2022") }
   let!(:timestamp) { now.to_i }
@@ -110,7 +112,6 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
         expect(csv).to include("Prénom")
         expect(csv).to include("Numéro CAF")
         expect(csv).to include("ID interne au département")
-        expect(csv).to include("Numéro de sécurité sociale")
         expect(csv).to include("ID France Travail")
         expect(csv).to include("ID interne au département")
         expect(csv).to include("Email")
@@ -147,7 +148,6 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
           expect(csv).to include("Jane")
           expect(csv).to include("12345") # affiliation_number
           expect(csv).to include("33333") # department_internal_id
-          expect(csv).to include(nir)
           expect(csv).to include("DDAAZZ") # france_travail_id
           expect(csv).to include("20 avenue de Ségur 75OO7 Paris")
           expect(csv).to include("jane@doe.com")
@@ -175,6 +175,11 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
         it "displays the referent emails" do
           expect(csv).to include("monreferent@gouv.fr")
         end
+
+        it "does not display the user nir" do
+          expect(subject.csv).not_to include("Numéro de sécurité sociale")
+          expect(csv).not_to include(user1.nir)
+        end
       end
 
       context "it displays the right attributes for a prescribed participation row" do
@@ -191,7 +196,7 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
       end
 
       context "when no motif category is passed" do
-        subject { described_class.call(user_ids: users.ids, structure: structure, motif_category: nil, agent:) }
+        subject { described_class.call(user_ids: users.ids, structure: structure, motif_category_id: nil, agent:) }
 
         it "is a success" do
           expect(subject.success?).to eq(true)
@@ -204,6 +209,76 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
         it "generates headers" do
           expect(csv).to start_with("\uFEFF")
           expect(csv).not_to include("Statut de la catégorie de motifs")
+        end
+      end
+    end
+
+    context "when the user has multiple rdvs in multiple orgs" do
+      let!(:other_organisation) { create(:organisation, department:, users: [user1]) }
+      let!(:other_rdv) do
+        create(:rdv, starts_at: Time.zone.parse("2022-01-22"),
+                     created_by: "user",
+                     organisation: other_organisation)
+      end
+      let!(:other_participation) { create(:participation, rdv: other_rdv, user: user1) }
+
+      context "when the agent belongs to the other org" do
+        before do
+          agent.organisations << other_organisation
+        end
+
+        it "displays the rdv" do
+          expect(subject.csv).to include("22/01/2022")
+        end
+
+        context "when the org is in a different department" do
+          let!(:other_organisation) do
+            create(:organisation, department: other_department, name: "CD 01", users: [user1])
+          end
+          let!(:other_department) { create(:department, name: "Ain", number: "01") }
+
+          it "displays the rdv" do
+            expect(subject.csv).to include("22/01/2022")
+          end
+
+          it "precises the org is in another department" do
+            expect(subject.csv).to include("CD 01 (Organisation d'un autre départment : 01 - Ain)")
+          end
+        end
+      end
+
+      context "when the agent does not belong to the other org" do
+        it "does not display the rdv" do
+          expect(subject.csv).not_to include("22/08/2022")
+        end
+      end
+    end
+
+    context "when the user has multiple tags in different organisations" do
+      let!(:tag) { create(:tag, value: "cacahuète", users: [user1], organisations: [organisation]) }
+      let!(:other_tag) { create(:tag, value: "pistache", users: [user1], organisations: [other_organisation]) }
+      let!(:other_organisation) { create(:organisation, department:, users: [user1]) }
+
+      context "at organisation level" do
+        it "displays the user organisation tags" do
+          expect(subject.csv).to include("cacahuète")
+          expect(subject.csv).not_to include("pistache")
+        end
+      end
+
+      context "at department level" do
+        let!(:structure) { department }
+        let!(:other_organisation_with_agent) { create(:organisation, department:, users: [user1]) }
+        let!(:new_tag) do
+          create(:tag, value: "chips", users: [user1], organisations: [other_organisation_with_agent])
+        end
+
+        before { agent.organisations << other_organisation_with_agent }
+
+        it "displays the tags the agent has access to" do
+          expect(subject.csv).to include("cacahuète")
+          expect(subject.csv).not_to include("pistache")
+          expect(subject.csv).to include("chips")
         end
       end
     end

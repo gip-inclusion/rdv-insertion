@@ -3,10 +3,10 @@ module Exporters
   class GenerateUsersCsv < Csv
     attr_reader :agent
 
-    def initialize(user_ids:, agent:, structure: nil, motif_category: nil)
+    def initialize(user_ids:, agent:, structure: nil, motif_category_id: nil)
       @user_ids = user_ids
       @structure = structure
-      @motif_category = motif_category
+      @motif_category = motif_category_id.present? ? MotifCategory.find(motif_category_id) : nil
       @agent = agent
     end
 
@@ -56,13 +56,12 @@ module Exporters
         end
     end
 
-    def headers # rubocop:disable Metrics/AbcSize
+    def headers
       [User.human_attribute_name(:title),
        User.human_attribute_name(:last_name),
        User.human_attribute_name(:first_name),
        User.human_attribute_name(:affiliation_number),
        User.human_attribute_name(:department_internal_id),
-       User.human_attribute_name(:nir),
        User.human_attribute_name(:france_travail_id),
        User.human_attribute_name(:email),
        User.human_attribute_name(:address),
@@ -98,7 +97,6 @@ module Exporters
        user.first_name,
        user.affiliation_number,
        user.department_internal_id,
-       user.nir,
        user.france_travail_id,
        user.email,
        user.address,
@@ -124,8 +122,8 @@ module Exporters
        user.archive_for(department_id)&.archiving_reason,
        user.referents.map(&:email).join(", "),
        user.organisations.to_a.count,
-       user.organisations.map(&:name).join(", "),
-       user.tags.pluck(:value).join(", ")]
+       display_organisation_names(user.organisations),
+       scoped_user_tags(user.tags).pluck(:value).join(", ")]
     end
 
     def human_last_participation_status(user)
@@ -209,6 +207,29 @@ module Exporters
       return "" if last_rdv(user).blank?
 
       last_rdv(user).collectif? ? "collectif" : "individuel"
+    end
+
+    def display_organisation_names(organisations)
+      organisations.map do |organisation|
+        display_organisation_name(organisation)
+      end.join(", ")
+    end
+
+    def display_organisation_name(organisation)
+      if organisation.department_id == department_id
+        organisation.name
+      else
+        "#{organisation.name} (Organisation d'un autre départment : " \
+          "#{organisation.department.number} - #{organisation.department.name})"
+      end
+    end
+
+    def scoped_user_tags(tags)
+      if department_level?
+        tags.joins(:organisations).where(organisations: { id: @agent.organisation_ids, department_id: })
+      else
+        tags.joins(:organisations).where(organisations: @structure)
+      end
     end
 
     def orientation_date(user)

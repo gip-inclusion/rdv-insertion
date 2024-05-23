@@ -179,7 +179,7 @@ describe Users::FollowUpsController do
           get :index, params: index_params
 
           expect(response).to be_successful
-          expect(response.body).to match(/InvitationBlock/)
+          expect(response.body).to include("id=follow_up")
           expect(response.body).not_to match(/RSA orientation/)
         end
       end

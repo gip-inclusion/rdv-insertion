@@ -11,6 +11,8 @@ module Users
         delete_rdv_solidarites_user_profile
         @user.soft_delete if @user.organisations.empty?
       end
+
+      CleanUnusedFollowUpsJob.perform_async(@user.id)
     end
 
     private

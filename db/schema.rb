@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_03_125856) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_02_092936) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -120,11 +120,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_03_125856) do
     t.bigint "agent_id", null: false
     t.string "structure_type", null: false
     t.bigint "structure_id", null: false
-    t.integer "motif_category_id"
     t.datetime "purged_at"
     t.string "kind"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.json "request_params"
     t.index ["agent_id"], name: "index_csv_exports_on_agent_id"
     t.index ["structure_type", "structure_id"], name: "index_csv_exports_on_structure"
   end
@@ -292,9 +292,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_03_125856) do
     t.bigint "department_id"
     t.datetime "last_webhook_update_received_at"
     t.string "slug"
-    t.boolean "independent_from_cd", default: false
     t.string "logo_filename"
     t.string "safir_code"
+    t.string "organisation_type"
     t.index ["department_id"], name: "index_organisations_on_department_id"
     t.index ["rdv_solidarites_organisation_id"], name: "index_organisations_on_rdv_solidarites_organisation_id", unique: true
   end

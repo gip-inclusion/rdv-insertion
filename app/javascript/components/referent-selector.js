@@ -1,13 +1,14 @@
 class ReferentSelector {
   constructor() {
     this.selectElt = document.querySelector(".js-referent-selector");
+    this.altLabel = document.querySelector(".referent-label-alt");
     if (this.selectElt === null) return;
 
-    this.setIntialValue();
+    this.setInitialValue();
     this.attachListener();
   }
 
-  setIntialValue() {
+  setInitialValue() {
     const url = new URL(window.location.href);
     const selectedReferentId = url.searchParams.get("referent_id");
     if (selectedReferentId) {
@@ -15,8 +16,17 @@ class ReferentSelector {
     }
   }
 
+  setAlternativeLabel() {
+    if (this.selectElt.value) {
+      this.altLabel.innerText = `Suivis par : ${this.selectElt.options[this.selectElt.selectedIndex].text}`;
+    } else {
+      this.altLabel.innerText = "Filtrer par référent";
+    }
+  }
+
   attachListener() {
     this.selectElt.addEventListener("change", (event) => {
+      this.setAlternativeLabel();
       this.refreshQuery(event.target.value);
     });
   }

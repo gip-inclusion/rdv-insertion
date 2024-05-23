@@ -14,22 +14,14 @@ module Users
       if @parcours_document.errors.any?
         turbo_stream_prepend_flash_message(error: @parcours_document.errors.full_messages.join(". "))
       else
-        turbo_stream_replace(
-          "documents_list_#{@parcours_document.type.downcase}",
-          "parcours_documents/documents_list",
-          { user: @user, type: @parcours_document.type.downcase }
-        )
+        redirect_to department_user_parcours_path(user_id: @user.id, department_id: current_department_id)
       end
     end
 
     def update
       authorize @parcours_document
       if @parcours_document.update(parcours_document_params)
-        turbo_stream_replace(
-          @parcours_document,
-          "parcours_documents/document",
-          { document: @parcours_document }
-        )
+        redirect_to department_user_parcours_path(user_id: @user.id, department_id: current_department_id)
       else
         turbo_stream_prepend_flash_message(error: @parcours_document.errors.full_messages.join(". "))
       end
@@ -39,7 +31,7 @@ module Users
       authorize @parcours_document
 
       if @parcours_document.destroy
-        turbo_stream_remove(@parcours_document)
+        redirect_to department_user_parcours_path(user_id: @user.id, department_id: current_department_id)
       else
         turbo_stream_prepend_flash_message(error: @parcours_document.errors.full_messages.join(". "))
       end

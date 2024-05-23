@@ -39,14 +39,6 @@ export default class extends Controller {
     });
   }
 
-  independentFromCdAttribute() {
-    tippy(this.element, {
-      content:
-        "Si l'organisation n'est pas une émanation du CD, certaines phrases des invitations sont différentes. " +
-        "Pour plus de détails, demandez à l'équipe de rdv-insertion.",
-    });
-  }
-
   slugAttribute() {
     tippy(this.element, {
       content:
@@ -163,6 +155,14 @@ export default class extends Controller {
     tippy(this.element, {
       content:
         "Vous pouvez réorganiser l'ordre d'affichage des catégories en les faisant glisser-déposer.",
+    });
+  }
+
+  reinviteButton() {
+    tippy(this.element, {
+      content:
+       "Réinviter remettra les compteurs à 0 vis à vis des délais",
+      placement: "bottom",
     });
   }
 }

@@ -21,6 +21,7 @@ describe FollowUpsController do
   describe "#create" do
     before do
       sign_in(agent)
+      request.env["HTTP_REFERER"] = organisation_user_follow_ups_url(organisation_id: organisation.id, user_id: user.id)
     end
 
     it "creates a new follow_up" do
@@ -53,17 +54,20 @@ describe FollowUpsController do
       end
     end
 
-    context "when html request" do
-      it "redirects to the user show page with the right anchor" do
+    context "when request comes from user show page" do
+      it "redirects to the user show page" do
         post :create, params: follow_up_params, format: :html
 
         expect(response).to redirect_to(
-          organisation_user_follow_ups_path(organisation_id: organisation.id, user_id: user.id,
-                                            anchor: "follow_up_#{FollowUp.last.id}")
+          organisation_user_follow_ups_path(organisation_id: organisation.id, user_id: user.id)
         )
       end
 
       context "when department level" do
+        before do
+          request.env["HTTP_REFERER"] = department_user_follow_ups_path(department_id: department.id, user_id: user.id)
+        end
+
         let(:follow_up_params) do
           {
             follow_up: { user_id: user.id, motif_category_id: category_orientation.id },
@@ -76,20 +80,21 @@ describe FollowUpsController do
           post :create, params: follow_up_params, format: :html
 
           expect(response).to redirect_to(
-            department_user_follow_ups_path(department_id: department.id, user_id: user.id,
-                                            anchor: "follow_up_#{FollowUp.last.id}")
+            department_user_follow_ups_path(department_id: department.id, user_id: user.id)
           )
         end
       end
     end
 
-    context "when turbo request" do
+    context "when the request comes from the users index page" do
+      before do
+        request.env["HTTP_REFERER"] = organisation_users_url(organisation_id: organisation.id)
+      end
+
       it "replace the create follow_up button" do
         post :create, params: follow_up_params, format: :turbo_stream
 
-        expect(response.media_type).to eq Mime[:turbo_stream]
-        expect(response.body).to match(/replace/)
-        expect(response.body).to match(/target="user_#{user.id}_motif_category_#{category_orientation.id}"/)
+        expect(response).to redirect_to(organisation_users_url(organisation_id: organisation.id))
       end
     end
   end

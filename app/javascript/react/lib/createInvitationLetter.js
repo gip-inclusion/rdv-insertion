@@ -32,6 +32,7 @@ const createInvitationLetter = async (
     }
     return result;
   }
+
   const blob = await response.blob();
   if (blob) {
     const headerParts = response.headers.get("Content-Disposition").split(";");
