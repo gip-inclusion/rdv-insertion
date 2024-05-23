@@ -1,13 +1,13 @@
 <div class="col-12 col-md-6 px-5">
   <h4> <%= User.human_attribute_name(:tags) %> </h4>
-  <p class="mb-3 mt-3 flex-wrap d-flex">
+  <p class="mb-3 mt-3 flex-wrap d-flex" id="tags_list">
     <% if tags.blank? %>
       -
     <% else %>
       <% tags.each do |tag| %>
         <span class="badge badge-tag justify-content-between background-blue-light text-dark-blue me-2 d-flex">
           <%= tag.value %>
-          <%=
+          <%= 
             link_to(
               tag_assignations_path(user_id: user.id, tag_id: tag.id),
               data: {
@@ -17,7 +17,7 @@
                 turbo_method: :delete,
               },
               class: 'text-dark-grey-alt ms-2'
-            ) do
+            ) do 
           %>
             <i class="fas fa-times"></i>
           <% end %>

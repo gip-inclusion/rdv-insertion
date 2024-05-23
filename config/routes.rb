@@ -70,7 +70,6 @@ Rails.application.routes.draw do
   end
 
   resources :users, module: :users, only: [] do
-    resource :parcours, only: [:show]
     resources :orientations, only: [:new, :create, :edit, :update, :destroy]
     resources :parcours_documents, only: [:show, :update, :create, :destroy]
     resources :rdvs, only: [:new]
@@ -137,6 +136,7 @@ Rails.application.routes.draw do
       end
       scope module: :users do
         resources :follow_ups, only: [:index]
+        resource :parcours, only: [:show]
       end
       resources :invitations, only: [:create]
     end
