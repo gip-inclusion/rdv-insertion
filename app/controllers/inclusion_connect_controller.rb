@@ -23,8 +23,7 @@ class InclusionConnectController < ApplicationController
 
   def destroy
     logout_path_inclusion_connect =
-      InclusionConnectClient.logout_path(session.dig("agent_auth", "inclusion_connect_token_id"),
-                                         session.dig("agent_auth", "ic_state"))
+      InclusionConnectClient.logout_path(session.dig("agent_auth", "inclusion_connect_token_id"), session[:ic_state])
     clear_session
     flash[:notice] = "Déconnexion réussie"
     redirect_to logout_path_inclusion_connect, allow_other_host: true
@@ -59,6 +58,7 @@ class InclusionConnectController < ApplicationController
   end
 
   def set_session_credentials
+    # we need to maintain the ic_state in the session
     ic_state = session[:ic_state]
     clear_session
 
@@ -68,9 +68,9 @@ class InclusionConnectController < ApplicationController
       origin: "inclusion_connect",
       signature: agent.sign_with(timestamp),
       created_at: timestamp,
-      inclusion_connect_token_id: inclusion_connect_token_id,
-      ic_state: ic_state
+      inclusion_connect_token_id: inclusion_connect_token_id
     }
+    session[:ic_state] = ic_state
   end
 
   def mark_agent_as_logged_in!
