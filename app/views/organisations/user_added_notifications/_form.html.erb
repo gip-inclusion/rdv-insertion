@@ -16,7 +16,7 @@
         </div>
         <div class="mb-3">
           <h5 class="text-dark-blue h4-as-labels">Message</h5>
-            <%= f.text_field :content, class: "form-control", cols: 15, rows: 15, value: "L'usager #{user} a été ajouté à votre organisation #{organisation.name}.\nVous pouvez consulter son profil à l'adresse suivante :\n #{organisation_user_url(id: user.id, organisation_id: organisation.id, host: ENV['HOST'])}" %>
+            <%= f.text_area :content, class: "form-control", cols: 15, rows: 6, value: "L'usager #{user} a été ajouté à votre organisation #{organisation.name}.\nVous pouvez consulter son profil à l'adresse suivante :\n #{organisation_user_url(id: user.id, organisation_id: organisation.id, host: ENV['HOST'])}" %>
         </div>
         <div class="mb-4">
           <h5 class="text-dark-blue h4-as-labels">Pièces jointes</h5>
@@ -25,7 +25,7 @@
 
         <div class="d-flex justify-content-end align-items-center pt-2">
           <button type="button" class="btn btn-blue-out border-0 me-2" data-bs-dismiss="modal">
-            Annuler
+            Ignorer cette étape
           </button>
           <button type="submit" class="btn btn-blue">
             <i class="fas fa-paper-plane me-2"></i>

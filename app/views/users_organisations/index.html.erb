@@ -2,8 +2,22 @@
   <%= form_for(:users_organisation, url: users_organisations_path, method: :post) do |f| %>
     <%= f.hidden_field :user_id, value: @user.id %>
 
+    <div class="mb-3">
+      <% if @user_organisations.any? %>
+        <p class="mb-2"> <%= "Organisation".pluralize(@user_organisations.size) %> déjà <%= "sélectionnée".pluralize(@user_organisations.size) %></p> 
+        <div class="flex-wrap d-flex">
+          <% @user_organisations.each do |organisation| %>
+            <span class="badge badge-tag justify-content-between background-blue-light text-dark-grey-alt me-2 d-flex">
+              <%= organisation %>
+            </span>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <p class="mb-1 mt-3"> Ajouter une organisation </p>
     <% if @assignable_organisations.empty? %>
-      <p>Aucune autre organisation disponible.</p>
+      <small class="text-dark-blue">Aucune autre organisation disponible.</small>
 
       <div class="d-flex justify-content-end align-items-center">
         <button type="button" class="btn btn-blue" data-bs-dismiss="modal">
