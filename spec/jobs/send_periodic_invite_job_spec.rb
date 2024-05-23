@@ -37,7 +37,8 @@ describe SendPeriodicInviteJob do
           follow_up: invitation.follow_up,
           motif_category: invitation.motif_category,
           user: invitation.user,
-          format: "email"
+          format: "email",
+          trigger: "periodic"
         )
 
         expect(invitation.valid_until.end_of_day).to eq(
