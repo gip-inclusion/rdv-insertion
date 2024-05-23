@@ -70,6 +70,6 @@ class FollowUp < ApplicationRecord
   end
 
   def current_pending_rdv
-    rdvs.select(&:pending?).min_by(&:starts_at)
+    participations.select(&:pending?).min_by(&:starts_at)
   end
 end
