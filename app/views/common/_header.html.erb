@@ -1,5 +1,5 @@
 <header>
-  <nav class="container marianne navbar px-3 navbar-expand-lg">
+  <nav class="container navbar px-3 navbar-expand-lg">
     <div class="d-flex justify-content-start">
       <%= link_to root_path do %>
         <%= image_tag "logos/republique-francaise-logo.svg", height: 80, alt: "République francaise", class: "d-none d-sm-inline navbar-france-logo" %>
@@ -53,7 +53,7 @@
     </div>
   </nav>
   <% if show_guide_banner? %>
-    <div class="sub-header d-none d-md-flex marianne">
+    <div class="sub-header d-none d-md-flex">
       <div class="container d-none d-md-flex ">
         <%= link_to "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/", target: :blank, class: "nav-link optional-link" do %>
           <p class="mb-0">Guide d'utilisation&nbsp;<i class="fas fa-external-link-alt"></i></p>
@@ -66,7 +66,7 @@
     </div>
   <% end %>
   <% if current_agent && agent_impersonated? %>
-    <div class="sub-header d-flex marianne">
+    <div class="sub-header d-flex">
       <div class="container d-flex justify-content-center">
         <p class="mb-0"><i class="fas fa-info-circle"></i> Vous êtes connecté.e en tant que <%= current_agent.to_s %></p>
       </div>
