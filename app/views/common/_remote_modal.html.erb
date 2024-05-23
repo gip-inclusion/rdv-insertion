@@ -1,5 +1,5 @@
 <%= turbo_frame_tag "remote_modal" do %>
-  <%= tag.div data: { controller: "remote-modal", action: "turbo:before-render@document->remote-modal#hideBeforeRender turbo:submit-end->remote-modal#submitEnd", auto_dismiss: !defined?(auto_dismiss) || auto_dismiss != false }, class: "modal fade", tabindex: "-1" do %>
+  <%= tag.div data: { controller: "remote-modal", action: "turbo:before-render@document->remote-modal#hideBeforeRender turbo:submit-end->remote-modal#submitEnd" }, class: "modal fade", tabindex: "-1" do %>
     <div class="modal-dialog <%= "large-modal-card" if local_assigns[:size] == :large %>">
       <div class="modal-content">
         <div class="modal-header">

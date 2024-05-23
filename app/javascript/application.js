@@ -40,6 +40,10 @@ ReactRailsUJS.handleEvent("turbo:before-render", ReactRailsUJS.handleUnmount);
 ReactRailsUJS.handleEvent("turbo:frame-load", ReactRailsUJS.handleMount);
 ReactRailsUJS.handleEvent("turbo:frame-render", ReactRailsUJS.handleUnmount);
 
+Turbo.StreamActions.redirect = function() {
+  Turbo.visit(this.target);
+}
+
 if (process.env.RAILS_ENV === "production") {
   Sentry.init({
     dsn: process.env.SENTRY_DSN,

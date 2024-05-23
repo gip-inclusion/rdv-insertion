@@ -53,7 +53,7 @@ module Users
     end
 
     def set_agents
-      @agents = current_department.agents.distinct
+      @agents = current_department.agents.with_last_name.distinct
     end
 
     def set_agent_ids_by_organisation_id
