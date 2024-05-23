@@ -50,13 +50,12 @@ module ApiSpecHelper
       description: "Identifiant d'accès (authentification)", example: "amine.dhobb@beta.gouv.fr"
     )
 
-    let(:rdv_solidarites_credentials) { instance_double(RdvSolidaritesCredentials::WithAccessToken) }
+    let(:rdv_solidarites_credentials) { instance_double(RdvSolidaritesCredentials) }
 
     before do
-      allow(RdvSolidaritesCredentialsFactory).to receive(:create_with)
-        .with(uid:, client:, access_token: auth_headers["access-token"])
-        .and_return(rdv_solidarites_credentials)
-      allow(rdv_solidarites_credentials).to receive_messages(to_h: auth_headers, valid?: true, uid:)
+      stub_request(:get, "#{ENV['RDV_SOLIDARITES_URL']}/api/v1/auth/validate_token")
+        .with(headers: auth_headers.merge({ "Content-Type" => "application/json" }))
+        .to_return(body: { "data" => { "uid" => agent.email } }.to_json)
     end
   end
   # rubocop:enable Metrics/AbcSize

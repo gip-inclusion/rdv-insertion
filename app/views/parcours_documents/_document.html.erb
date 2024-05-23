@@ -1,5 +1,4 @@
-<%= turbo_frame_tag document do %>
- <div class="d-flex mb-1 align-items-center" data-controller="parcours-documents">
+<div class="d-flex mb-1 align-items-center" data-controller="parcours-documents">
   <div style="width: 350px" class="me-5 mb-1">
     <%= link_to user_parcours_document_path(id: document.signed_id(expires_in: 1.hour), user_id: document.user_id), target: "_blank", class: "text-decoration-underline document-link" do %>
       <i class="fas fa-file-pdf mx-1"></i>
@@ -11,7 +10,7 @@
   <%= render "parcours_documents/document_date_form", document: document %>
 
   <div class="text-end">
-    <%= 
+    <%=
       link_to(
         user_parcours_document_path(id: document.signed_id(expires_in: 1.hour), user_id: document.user_id),
         data: {
@@ -21,10 +20,9 @@
           turbo_method: :delete,
         },
         id: "delete-button-#{document.id}"
-    ) do 
+    ) do
     %>
       <i class="fas fa-trash text-dark-blue"></i>
     <% end if policy(document).destroy? %>
   </div>
- </div>
-<% end %>
+</div>

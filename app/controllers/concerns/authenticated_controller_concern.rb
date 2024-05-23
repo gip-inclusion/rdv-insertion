@@ -3,7 +3,7 @@ module AuthenticatedControllerConcern
 
   included do
     before_action :authenticate_agent!
-    helper_method :current_agent
+    helper_method :current_agent, :agent_impersonated?
   end
 
   private
@@ -17,23 +17,29 @@ module AuthenticatedControllerConcern
   end
 
   def clear_session
-    session.delete(:inclusion_connect_token_id)
-    session.delete(:ic_state)
-    session.delete(:agent_id)
-    session.delete(:rdv_solidarites_credentials)
-    @current_agent = nil
+    reset_session
+    Current.agent = nil
   end
 
   def logged_in?
-    current_agent.present? && session[:rdv_solidarites_credentials].present? && rdv_solidarites_credentials.valid?
+    current_agent.present? && agent_session.valid?
   end
 
   def current_agent
-    Current.agent ||= Agent.find_by(id: session[:agent_id])
+    Current.agent ||= agent_session&.agent
   end
 
-  def rdv_solidarites_credentials
-    @rdv_solidarites_credentials ||=
-      RdvSolidaritesCredentialsFactory.create_with(**session[:rdv_solidarites_credentials])
+  def agent_session
+    return if session[:agent_auth].blank?
+
+    AgentSessionFactory.create_with(**session[:agent_auth])
+  end
+
+  def agent_impersonated?
+    agent_session&.impersonated?
+  end
+
+  def logged_with_inclusion_connect?
+    agent_session&.inclusion_connect?
   end
 end

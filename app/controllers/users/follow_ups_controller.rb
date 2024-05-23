@@ -33,8 +33,8 @@ module Users
     end
 
     def set_organisation
-      # needed for now even if department level to retrieve the help_phone_number and to compute the invitation path in
-      # the InvitationBlock react component
+      return if department_level?
+
       @organisation = policy_scope(Organisation).includes(:department, :motif_categories)
                                                 .find_by(id: current_organisation_ids & @user.organisation_ids)
     end
