@@ -19,7 +19,7 @@ class SendInvitationReminderJob < ApplicationJob
 
   def invitation
     @invitation ||= Invitation.new(
-      reminder: true,
+      trigger: "reminder",
       user: @user,
       department: first_invitation.department,
       organisations: first_invitation.organisations,

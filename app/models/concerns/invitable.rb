@@ -53,7 +53,9 @@ module Invitable
   end
 
   def last_invitation_sent_manually
-    invitations.reject(&:reminder?).max_by(&:created_at)
+    invitations.select do |invitation|
+      invitation.trigger == "manual" || invitation.trigger == "periodic"
+    end.max_by(&:created_at)
   end
 
   def invited_before_time_window?(number_of_days_before_action_required)

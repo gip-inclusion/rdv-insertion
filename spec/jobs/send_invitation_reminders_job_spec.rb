@@ -89,7 +89,7 @@ describe SendInvitationRemindersJob do
         :invitation,
         user: user1, follow_up: follow_up7,
         created_at: 3.days.ago, valid_until: 4.days.from_now,
-        reminder: true
+        trigger: "reminder"
       )
     end
 

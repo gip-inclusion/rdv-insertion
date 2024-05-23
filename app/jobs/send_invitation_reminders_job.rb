@@ -39,7 +39,7 @@ class SendInvitationRemindersJob < ApplicationJob
                 .where(
                   format: %w[email sms],
                   created_at: Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER.days.ago.all_day,
-                  reminder: false
+                  trigger: %w[manual periodic]
                 )
   end
 
