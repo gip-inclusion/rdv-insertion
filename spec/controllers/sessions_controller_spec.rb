@@ -162,22 +162,5 @@ describe SessionsController do
       expect(response).to redirect_to(root_path)
       expect(flash[:notice]).to include("Déconnexion réussie")
     end
-
-    context "when it is an inclusion connect session" do
-      let!(:inclusion_connect_token_id) { "1234" }
-
-      before do
-        sign_in_with_inclusion_connect(agent, inclusion_connect_token_id)
-        allow(InclusionConnectClient).to receive(:logout).and_return(OpenStruct.new(success?: true))
-      end
-
-      it "logouts from inclusion connect" do
-        expect(InclusionConnectClient).to receive(:logout).with(inclusion_connect_token_id)
-        delete :destroy
-
-        expect(response).to redirect_to(root_path)
-        expect(flash[:notice]).to include("Déconnexion réussie")
-      end
-    end
   end
 end

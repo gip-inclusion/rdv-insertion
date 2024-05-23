@@ -169,6 +169,36 @@ describe InclusionConnectController do
     end
   end
 
+  describe "#destroy" do
+    let!(:inclusion_connect_token_id) { "1234" }
+    let!(:ic_state) { "a state" }
+    let(:base_url) { "https://test.inclusion.logout.fr" }
+
+    before do
+      sign_in_with_inclusion_connect(agent, inclusion_connect_token_id)
+    end
+
+    it "clears the session" do
+      delete :destroy
+      expect(request.session[:agent_auth]).to be_nil
+    end
+
+    it "redirect to inclusion connect logout_path" do
+      session[:ic_state] = ic_state
+      delete :destroy
+
+      query = {
+        id_token_hint: inclusion_connect_token_id,
+        state: ic_state,
+        post_logout_redirect_uri: "#{ENV['HOST']}/sign_in"
+      }
+      redirect_path = "#{base_url}/logout?#{query.to_query}"
+
+      expect(response).to redirect_to(redirect_path)
+      expect(flash[:notice]).to include("Déconnexion réussie")
+    end
+  end
+
   private
 
   def expect_flash_error_with(error_message)
