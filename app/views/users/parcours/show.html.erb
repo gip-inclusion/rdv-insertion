@@ -1,3 +1,5 @@
+<%= render "users/page_title", user: @user %>
+
 <%= render 'users/archive_banner' if @user.archived_in?(@department) %>
 
 <div class="container text-dark-blue h4-as-labels mt-4">
