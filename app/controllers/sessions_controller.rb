@@ -16,17 +16,12 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    logout_url = logged_with_inclusion_connect? ? logout_path_inclusion_connect : root_path
     clear_session
     flash[:notice] = "Déconnexion réussie"
-    redirect_to logout_url, allow_other_host: true
+    redirect_to root_path
   end
 
   private
-
-  def logout_path_inclusion_connect
-    InclusionConnectClient.logout_path(session[:inclusion_connect_token_id], session[:ic_state])
-  end
 
   def set_session_credentials
     clear_session

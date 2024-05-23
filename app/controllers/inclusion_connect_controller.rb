@@ -1,5 +1,5 @@
 class InclusionConnectController < ApplicationController
-  skip_before_action :authenticate_agent!
+  skip_before_action :authenticate_agent!, only: [:auth, :callback]
   before_action :handle_invalid_state, :set_agent_return_to_url, only: [:callback]
 
   def auth
@@ -19,6 +19,15 @@ class InclusionConnectController < ApplicationController
 
       handle_failed_authentication(retrieve_inclusion_connect_infos.errors.join(", "))
     end
+  end
+
+  def destroy
+    logout_path_inclusion_connect =
+      InclusionConnectClient.logout_path(session.dig("agent_auth", "inclusion_connect_token_id"),
+                                         session.dig("agent_auth", "ic_state"))
+    clear_session
+    flash[:notice] = "Déconnexion réussie"
+    redirect_to logout_path_inclusion_connect, allow_other_host: true
   end
 
   private
@@ -50,6 +59,7 @@ class InclusionConnectController < ApplicationController
   end
 
   def set_session_credentials
+    ic_state = session[:ic_state]
     clear_session
 
     timestamp = Time.zone.now.to_i
@@ -58,7 +68,8 @@ class InclusionConnectController < ApplicationController
       origin: "inclusion_connect",
       signature: agent.sign_with(timestamp),
       created_at: timestamp,
-      inclusion_connect_token_id: inclusion_connect_token_id
+      inclusion_connect_token_id: inclusion_connect_token_id,
+      ic_state: ic_state
     }
   end
 

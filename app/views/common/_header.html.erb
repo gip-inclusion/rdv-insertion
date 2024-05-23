@@ -30,11 +30,20 @@
       <% end %>
       <% if current_agent %>
         <div class="text-center mx-3">
-          <%= link_to sign_out_path do %>
-            <button class="btn btn-default btn-logout w-100">
-              <span class="d-none d-sm-inline">Se déconnecter</span>
-              <span class="d-inline d-sm-none"><i class="fas fa-sign-out-alt"></i></span>
-            </button>
+          <% if logged_with_inclusion_connect? %>
+            <%= link_to inclusion_connect_sign_out_path, data: { turbo: false } do %>
+              <button class="btn btn-default btn-logout w-100">
+                <span class="d-none d-sm-inline">Se déconnecter</span>
+                <span class="d-inline d-sm-none"><i class="fas fa-sign-out-alt"></i></span>
+              </button>
+            <% end %>
+          <% else %>
+            <%= link_to sign_out_path, method: :delete do %>
+              <button class="btn btn-default btn-logout w-100">
+                <span class="d-none d-sm-inline">Se déconnecter</span>
+                <span class="d-inline d-sm-none"><i class="fas fa-sign-out-alt"></i></span>
+              </button>
+            <% end %>
           <% end %>
         </div>
       <% end %>
