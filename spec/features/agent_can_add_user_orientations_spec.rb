@@ -40,7 +40,7 @@ describe "Agents can add user orientation", :js do
     page.select "CD 26", from: "orientation_organisation_id"
     expect(page).to have_select("orientation_agent_id", with_options: organisation_agents.map(&:to_s))
 
-    page.select "Kad Merad", from: "orientation_agent_id"
+    page.select "Kad MERAD", from: "orientation_agent_id"
 
     click_button "Enregistrer"
 
@@ -48,7 +48,7 @@ describe "Agents can add user orientation", :js do
     expect(page).to have_content("Du 03/07/2023 à aujourd'hui")
     expect(page).to have_content("Sociale")
     expect(page).to have_content("CD 26")
-    expect(page).to have_content("Kad Merad")
+    expect(page).to have_content("Kad MERAD")
 
     # orientation without agent
     click_button("Ajouter une orientation")
@@ -67,7 +67,7 @@ describe "Agents can add user orientation", :js do
     expect(page).to have_content("Du 03/07/2023 au 03/10/2023")
     expect(page).to have_content("Sociale")
     expect(page).to have_content("CD 26")
-    expect(page).to have_content("Kad Merad")
+    expect(page).to have_content("Kad MERAD")
 
     expect(page).to have_content("Du 03/10/2023 à aujourd'hui")
     expect(page).to have_content("Professionnelle")
