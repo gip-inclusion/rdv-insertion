@@ -5,12 +5,12 @@ class TagAssignationsController < ApplicationController
 
   def create
     @user.tags << @available_tags.where(id: tag_assignation_params[:tag_ids])
-    redirect_to structure_user_path(@user.id)
+    redirect_to structure_user_path(@user.id), status: :see_other
   end
 
   def destroy
     @user.tags.delete(tag)
-    redirect_to structure_user_path(@user.id)
+    redirect_to structure_user_path(@user.id), status: :see_other
   end
 
   private
