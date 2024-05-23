@@ -1,10 +1,13 @@
 class UsersOrganisationsController < ApplicationController
   before_action :set_user, :set_department, :set_organisations,
                 only: [:index, :create, :destroy]
-  before_action :assign_motif_category, :set_organisation_to_add, only: [:create]
+  before_action :set_user_organisations, only: [:index]
+  before_action :set_organisation_to_add, :assign_motif_category, only: [:create]
   before_action :set_organisation_to_remove, :verify_user_is_sync_with_rdv_solidarites, only: [:destroy]
 
-  def index; end
+  def index
+    @assignable_organisations = @organisations.where.not(id: @user.organisations.ids)
+  end
 
   def create
     if save_user.success?
@@ -31,7 +34,7 @@ class UsersOrganisationsController < ApplicationController
   private
 
   def users_organisation_params
-    params.require(:users_organisation).permit(:organisation_id, :user_id, :motif_category_id)
+    params.require(:users_organisation).permit(:organisation_id, :user_id)
   end
 
   def user_id
@@ -74,9 +77,9 @@ class UsersOrganisationsController < ApplicationController
   end
 
   def assign_motif_category
-    return if users_organisation_params[:motif_category_id].blank?
+    return if params[:users_organisation]["motif_category_id_#{@organisation_to_add.id}"].blank?
 
-    @user.assign_motif_category(users_organisation_params[:motif_category_id])
+    @user.assign_motif_category(params[:users_organisation]["motif_category_id_#{@organisation_to_add.id}"])
   end
 
   def verify_user_is_sync_with_rdv_solidarites
