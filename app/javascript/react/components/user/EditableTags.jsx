@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { observer } from "mobx-react-lite";
 
 export default observer(({ user, cell, values, setIsEditingTags }) => {
+  const [temporarySelection, setTemporarySelection] = useState([...user[cell]]);
+
   const addOrRemoveTagFromTemporarySelection = (tag) => {
     if (temporarySelection.includes(tag)) setTemporarySelection(temporarySelection.filter((t) => t !== tag))
     else setTemporarySelection([...temporarySelection, tag]);
   }
-
-  const [temporarySelection, setTemporarySelection] = useState([...user[cell]]);
 
   const saveTemporarySelection = () => {
     user.updateAttribute(cell, temporarySelection);
