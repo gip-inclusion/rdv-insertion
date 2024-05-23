@@ -19,7 +19,7 @@ class UsersOrganisationsController < ApplicationController
       flash.now[:success] = "L'organisation a bien été retirée"
 
       if user_deleted_or_removed_from_current_org?
-        redirect_to_users_list
+        turbo_stream_redirect(session[:back_to_users_list_url] || structure_users_path)
       else
         redirect_to(structure_user_path(@user.id), status: :see_other)
       end
@@ -60,10 +60,6 @@ class UsersOrganisationsController < ApplicationController
 
   def set_user_organisations
     @user_organisations = @user.reload.organisations
-  end
-
-  def redirect_to_users_list
-    render turbo_stream: turbo_stream.action(:redirect, session[:back_to_users_list_url] || structure_users_path)
   end
 
   def redirect_to_department_user_path

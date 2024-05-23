@@ -7,7 +7,11 @@ class ConfirmModal {
   }
 
   confirm(message, triggerElement) {
+    // We use cloneNode to avoid modifying the original modalPartial
+    // this allows to avoid issues when showing up multiple modals in a row.
+    // More info https://github.com/betagouv/rdv-insertion/pull/2022#discussion_r1608532748
     const modalContent = this.modalPartial.cloneNode(true);
+
     const sourceLink = this.getSourceLinkFrom(message, triggerElement)
 
     if (sourceLink.getAttribute("data-turbo-confirm-template")) {
