@@ -44,6 +44,8 @@ class User < ApplicationRecord
   has_many :departments, -> { distinct }, through: :organisations
   has_many :tags, through: :tag_users
 
+  broadcasts_refreshes
+
   accepts_nested_attributes_for :follow_ups, reject_if: :follow_up_category_handled_already?
   accepts_nested_attributes_for :tag_users
 
@@ -136,7 +138,25 @@ class User < ApplicationRecord
     organisations.map(&:department_id).uniq.length > 1
   end
 
+  def belongs_to_org?(organisation_id)
+    organisation_ids.include?(organisation_id)
+  end
+
+  def partner
+    return if role.blank? || affiliation_number.blank?
+
+    User.joins(:organisations).find_by(
+      role: opposite_role, affiliation_number:, organisations:
+    )
+  end
+
   private
+
+  def opposite_role
+    return if role.blank?
+
+    role == "demandeur" ? "conjoint" : "demandeur"
+  end
 
   def follow_up_category_handled_already?(follow_up_attributes)
     follow_up_attributes.deep_symbolize_keys[:motif_category_id]&.to_i.in?(motif_categories.map(&:id))

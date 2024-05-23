@@ -25,6 +25,10 @@ u {
   width: 40%;
 }
 
+.pdf-align-center {
+  text-align: center;
+}
+
 .header-logo {
   position: absolute;
   top: 0;
@@ -56,6 +60,27 @@ u {
   width: 100%;
 }
 
+.invitation-left-col {
+  float: left;
+  width: 42%;
+}
+
+.invitation-right-col {
+  float: right;
+  width: 42%;
+}
+
+.qr-code {
+  vertical-align: middle;
+  width: 42%;
+  img {
+    display: block;
+    height: 120px;
+    border: none;
+    margin: 0 0 0 100px;
+  }
+}
+
 .invitation-token {
   background-color: #083b66;
   color: white;
@@ -63,11 +88,11 @@ u {
   text-align: center;
   padding: 10px;
   border-radius: 3px;
-  width: 35%;
-  margin: 0 auto 30px;
+  margin: 40px auto 0 auto;
   font-weight: bold;
-  font-size: 1.5rem;
+  font-size: 1.1rem;
 }
+
 
 .rdv-address {
   padding: 10px;

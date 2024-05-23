@@ -23,8 +23,12 @@ module UsersHelper
     ordered_statuses_count(statuses_count).map do |status, count|
       next if count.nil?
 
-      ["Statut : \"#{I18n.t("activerecord.attributes.follow_up.statuses.#{status}")}\" (#{count})", status]
+      ["#{I18n.t("activerecord.attributes.follow_up.statuses.#{status}")} (#{count})", status]
     end.compact
+  end
+
+  def options_for_select_referent(referents)
+    referents.map { |agent| [agent, agent.id] }
   end
 
   def ordered_statuses_count(statuses_count)
@@ -59,8 +63,10 @@ module UsersHelper
       "agent_searches?#{params.to_query}"
   end
 
-  def show_parcours?(department)
-    department.number.in?(ENV["DEPARTMENTS_WHERE_PARCOURS_ENABLED"].split(","))
+  def show_parcours?(department, organisation)
+    return policy(department).parcours? if department_level?
+
+    policy(department).parcours? && (organisation.blank? || policy(organisation).parcours?)
   end
 
   def show_rdv_organisation_selection_for?(user, agent, department)

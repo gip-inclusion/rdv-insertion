@@ -5,7 +5,7 @@
 <%= tag.p tag.strong(@mandatory_warning) if @mandatory_warning %>
 <%= tag.p tag.strong("En l'absence d'action de votre part, #{@punishable_warning}.") if @punishable_warning.present? %>
 <p class="btn-wrapper">
-  <%= link_to rdv_solidarites_invitations_url(@invitation.uuid), class: "btn btn-primary" do %>
+  <%= link_to @invitation.rdv_solidarites_public_url, class: "btn btn-primary" do %>
     Choisir un créneau
   <% end %>
 </p>

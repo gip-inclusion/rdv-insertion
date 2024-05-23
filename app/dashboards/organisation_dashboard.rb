@@ -15,6 +15,14 @@ class OrganisationDashboard < Administrate::BaseDashboard
     category_configurations: Field::HasMany,
     department: Field::BelongsTo,
     email: Field::String,
+    organisation_type: Field::Select.with_options(
+      searchable: false,
+      collection: lambda { |field|
+        field.resource.class.send(field.attribute.to_s.pluralize).keys.map do |key|
+          [I18n.t("activerecord.attributes.organisation.organisation_types.#{key}"), key]
+        end
+      }
+    ),
     safir_code: Field::String,
     invitations: Field::HasMany,
     last_webhook_update_received_at: Field::DateTime,
@@ -61,6 +69,7 @@ class OrganisationDashboard < Administrate::BaseDashboard
     slug
     department
     email
+    organisation_type
     safir_code
     agent_roles
     lieux
@@ -81,6 +90,7 @@ class OrganisationDashboard < Administrate::BaseDashboard
     slug
     department
     email
+    organisation_type
     safir_code
     logo
   ].freeze
@@ -88,6 +98,7 @@ class OrganisationDashboard < Administrate::BaseDashboard
   FORM_ATTRIBUTES_NEW = %i[
     rdv_solidarites_organisation_id
     department
+    organisation_type
     logo
   ].freeze
 

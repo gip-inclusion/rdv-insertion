@@ -1,0 +1,21 @@
+<% if max_number_of_invitations_for_a_format == 0 %>
+  <tr>
+    <% invitation_formats.each do |format| %>
+      <td class="px-4 py-3">-</td>
+    <% end %>
+  </tr>
+<% else %>
+  <% max_number_of_invitations_for_a_format.times do |idx| %>
+    <tr class="<%= idx == 0 ? "motif-category-#{motif_category.id}-last-invitations" : "d-none motif-category-#{motif_category.id}-other-invitations" %>">
+      <% invitation_formats.each do |format| %>
+        <td class="px-4 py-3">
+          <% if invitation_dates_by_format[format]&.fetch(idx, nil).present? %>
+            <%= format_date(invitation_dates_by_format[format].fetch(idx, nil)) %>
+          <% elsif idx == 0 %>
+            -
+          <% end %>
+        </td>
+      <% end %>
+    </tr>
+  <% end %>
+<% end %>

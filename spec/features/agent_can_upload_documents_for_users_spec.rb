@@ -20,7 +20,42 @@ describe "Agents can upload documents for users", :js do
 
   before { setup_agent_session(agent) }
 
+  context "when accessing the parcours url manually" do
+    before do
+      visit organisation_user_path(organisation_id: organisation.id, id: user.id)
+    end
+
+    context "on an organisation that is not authorized to see the parcours" do
+      let!(:organisation) do
+        create(:organisation, organisation_type: "siae", name: "CD 26", agents: organisation_agents,
+                              department: department)
+      end
+
+      it "redirects right away" do
+        visit user_parcours_path(user_id: user.id)
+        expect(page).to have_current_path(organisation_users_path(organisation))
+      end
+    end
+
+    it "renders the page" do
+      visit user_parcours_path(user_id: user.id)
+      expect(page).to have_content("Aucun diagnostic renseigné.")
+    end
+  end
+
   context "when on a user profile" do
+    context "on an organisation that is not authorized to see the parcours" do
+      let!(:organisation) do
+        create(:organisation, organisation_type: "siae", name: "CD 26", agents: organisation_agents,
+                              department: department)
+      end
+
+      it "cannot see the parcours tab" do
+        visit organisation_user_path(organisation_id: organisation.id, id: user.id)
+        expect(page).to have_no_content("Parcours")
+      end
+    end
+
     it "can upload a file" do
       visit organisation_user_path(organisation_id: organisation.id, id: user.id)
       expect(page).to have_content("Parcours")
@@ -65,13 +100,11 @@ describe "Agents can upload documents for users", :js do
       visit organisation_user_path(organisation_id: organisation.id, id: user.id)
       click_link("Parcours")
 
-      accept_alert do
-        find_by_id("delete-button-#{user.contracts.first.id}").click
-      end
+      find_by_id("delete-button-#{user.contracts.first.id}").click
+      confirm_modal
 
-      accept_alert do
-        find_by_id("delete-button-#{user.diagnostics.first.id}").click
-      end
+      find_by_id("delete-button-#{user.diagnostics.first.id}").click
+      confirm_modal
 
       expect(page).to have_no_css(".document-link")
 

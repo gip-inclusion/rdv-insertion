@@ -1,13 +1,14 @@
 class StatusSelector {
   constructor() {
     this.selectElt = document.querySelector(".js-status-selector");
+    this.altLabel = document.querySelector(".status-label-alt");
     if (this.selectElt === null) return;
 
-    this.setIntialValue();
+    this.setInitialValue();
     this.attachListener();
   }
 
-  setIntialValue() {
+  setInitialValue() {
     const url = new URL(window.location.href);
     const selectedStatus = url.searchParams.get("status");
     if (selectedStatus) {
@@ -15,8 +16,17 @@ class StatusSelector {
     }
   }
 
+  setAlternativeLabel() {
+    if (this.selectElt.value) {
+      this.altLabel.innerText = `Statut : ${this.selectElt.options[this.selectElt.selectedIndex].text}`;
+    } else {
+      this.altLabel.innerText = "Filtrer par statut";
+    }
+  }
+
   attachListener() {
     this.selectElt.addEventListener("change", (event) => {
+      this.setAlternativeLabel();
       this.refreshQuery(event.target.value);
     });
   }

@@ -4,8 +4,8 @@
   <%= render "user_page_header" %>
 
   <%= turbo_frame_tag "user_page_body", data: { turbo_action: "advance" } do %>
-
     <%= render "user_tabs", user: @user, tab: "infos" %>
+    <%= turbo_stream_from @user %>
 
     <div class="mb-4">
       <div class="row">
@@ -20,7 +20,15 @@
         <%= render "common/attribute_display", record: @user, attribute: :first_name %>
         <%= render "common/attribute_display", record: @user, attribute: :last_name %>
         <%= render "common/attribute_display", record: @user, attribute: :title %>
-        <%= render "common/attribute_display", record: @user, attribute: :role %>
+        <%= render "common/attribute_display", record: @user, attribute: :role, html_class: "m-0 p-0" do %>
+          <% if @user.partner && @user.partner.belongs_to_org?(@organisation.id) %>
+            <div class="mb-3 mt-1">
+              <%= link_to structure_user_path(@user.partner.id), target: "_blank", class: "text-dark-blue text-underline small" do %>
+                <p>Voir le <%= @user.partner.role %>  <i class="fas ms-2 fa-external-link-alt"></i></p>
+              <% end %>
+            </div>
+          <% end %>
+        <% end %>
         <%= render "common/attribute_display", record: @user, attribute: :affiliation_number %>
         <%= render "common/attribute_display", record: @user, attribute: :department_internal_id, tooltip: true %>
         <%= render "common/attribute_display", record: @user, attribute: :nir %>
@@ -39,10 +47,10 @@
       <div class="row d-flex justify-content-start flex-wrap mt-5">
         <div class="col-12 col-md-6 px-5">
           <h4> Tags </h4>
-          <%= render "user_tags", tags: @tags %>
+          <%= render "user_tags", tags: @tags, user: @user %>
 
           <%= link_to(structure_user_tag_assignations_path(@user.id), data: { turbo_frame: 'remote_modal' }) do %>
-            <button class="btn btn-blue mb-3"><i class="fas fa-pen"></i> Ajouter ou retirer un tag </button>
+            <button class="btn btn-blue mb-3"><i class="fas fa-plus"></i> Ajouter un tag </button>
           <% end %>
         </div>
 

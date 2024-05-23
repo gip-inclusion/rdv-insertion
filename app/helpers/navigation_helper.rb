@@ -31,12 +31,16 @@ module NavigationHelper
     send(:"uploads_category_selection_#{Current.structure_type}_users_path", { **structure_id_param, **params })
   end
 
-  def structure_user_invitations_path(user_id)
-    send(:"#{Current.structure_type}_user_invitations_path", { user_id:, **structure_id_param })
+  def structure_user_invitations_path(user_id, **params)
+    send(:"#{Current.structure_type}_user_invitations_path", { user_id:, **structure_id_param, **params })
   end
 
   def structure_user_tag_assignations_path(user_id)
     send(:"#{Current.structure_type}_user_tag_assignations_path", { user_id:, **structure_id_param })
+  end
+
+  def structure_user_tag_assignation_path(user_id, tag_id)
+    send(:"#{Current.structure_type}_user_tag_assignation_path", { user_id:, id: tag_id, **structure_id_param })
   end
 
   def structure_user_follow_ups_path(user_id, **params)

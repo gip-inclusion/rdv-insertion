@@ -24,8 +24,6 @@ gem "jsbundling-rails"
 # Easy use of react with rails
 gem "react-rails"
 
-# Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
-gem "turbolinks", "~> 5"
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem "jbuilder", "~> 2.7"
 
@@ -74,6 +72,9 @@ gem "phonelib"
 # Stats graphs
 gem "groupdate"
 gem "chartkick"
+
+# generate QR codes
+gem "rqrcode", "~> 2.0", require: false
 
 # gem needed to be defined explicitely with ruby 3
 gem "rexml"

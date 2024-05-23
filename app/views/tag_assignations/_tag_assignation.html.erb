@@ -1,10 +1,6 @@
-<div id="<%= dom_id(tag) %>" class="d-flex justify-content-between my-4">
-  <div><p><%= "#{tag.value}" %></p></div>
-  <div>
-    <%= form_for(:tag_assignation, url: structure_user_tag_assignations_path(@user.id), method: assigned ? :delete : :post) do |f| %>
-      <%= f.hidden_field :user_id, value: @user.id %>
-      <%= f.hidden_field :tag_id, value: tag.id %>
-      <%= f.submit assigned ? "- Retirer" : "+ Assigner", class: "btn #{assigned ? 'btn-danger' : 'btn-blue'} text-white" %>
-    <% end %>
-  </div>
+<div id="<%= dom_id(tag) %>" class="d-flex my-2">
+  <%= f.check_box :tag_ids, { multiple: true, class: "form-check-input" }, tag.id, nil %>
+  <%= f.label nil, class: "ms-3" do %>
+    <%= tag.value %>
+  <% end %>
 </div>

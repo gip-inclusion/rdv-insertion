@@ -4,7 +4,7 @@ describe "Agents can edit organisation tags", :js do
   let!(:category_configuration) { create(:category_configuration, organisation: organisation) }
   let!(:agent_role) { create(:agent_role, organisation: organisation, agent: agent, access_level: "admin") }
 
-  let(:tag_value) { "prout" }
+  let(:tag_value) { "coucou" }
 
   before do
     setup_agent_session(agent)

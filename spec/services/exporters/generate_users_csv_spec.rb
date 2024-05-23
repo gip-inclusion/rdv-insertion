@@ -89,7 +89,6 @@ describe Exporters::GenerateUsersCsv, type: :service do
         expect(subject.csv).to include("Prénom")
         expect(subject.csv).to include("Numéro CAF")
         expect(subject.csv).to include("ID interne au département")
-        expect(subject.csv).to include("Numéro de sécurité sociale")
         expect(subject.csv).to include("ID France Travail")
         expect(subject.csv).to include("ID interne au département")
         expect(subject.csv).to include("Email")
@@ -140,7 +139,6 @@ describe Exporters::GenerateUsersCsv, type: :service do
           expect(subject.csv).to include("Jane")
           expect(subject.csv).to include("12345") # affiliation_number
           expect(subject.csv).to include("33333") # department_internal_id
-          expect(subject.csv).to include(nir)
           expect(subject.csv).to include("DDAAZZ") # france_travail_id
           expect(subject.csv).to include("20 avenue de Ségur 75OO7 Paris")
           expect(subject.csv).to include("jane@doe.com")
@@ -183,6 +181,11 @@ describe Exporters::GenerateUsersCsv, type: :service do
           expect(subject.csv).to include("monreferent@gouv.fr")
         end
 
+        it "does not display the user nir" do
+          expect(subject.csv).not_to include("Numéro de sécurité sociale")
+          expect(subject.csv).not_to include(user1.nir)
+        end
+
         context "when the user is archived" do
           let!(:user1) do
             create(
@@ -220,6 +223,45 @@ describe Exporters::GenerateUsersCsv, type: :service do
 
         it "does not take the other department rdvs into account" do
           expect(subject.csv).not_to include("03/06/2022")
+        end
+      end
+
+      context "when the user belongs to organisations in different departments" do
+        let!(:other_department) do
+          create(:department, name: "Ain", number: "01")
+        end
+        let!(:other_organisation) { create(:organisation, name: "CD 01", department: other_department, users: [user1]) }
+
+        it "displays the name of the organisations saying it is another department" do
+          expect(subject.csv).to include("CD 01 (Organisation d'un autre départment : 01 - Ain)")
+        end
+      end
+
+      context "when the user has multiple tags in different organisations" do
+        let!(:tag) { create(:tag, value: "cacahuète", users: [user1], organisations: [organisation]) }
+        let!(:other_tag) { create(:tag, value: "pistache", users: [user1], organisations: [other_organisation]) }
+        let!(:other_organisation) { create(:organisation, department:, users: [user1]) }
+
+        context "at organisation level" do
+          it "displays the user organisation tags" do
+            expect(subject.csv).to include("cacahuète")
+            expect(subject.csv).not_to include("pistache")
+          end
+        end
+
+        context "at department level" do
+          let!(:structure) { department }
+          let!(:other_organisation_with_agent) { create(:organisation, department:, users: [user1]) }
+          let!(:new_tag) do
+            create(:tag, value: "chips", users: [user1], organisations: [other_organisation_with_agent])
+          end
+          let!(:agent) { create(:agent, organisations: [organisation, other_organisation_with_agent]) }
+
+          it "displays the tags the agent has access to" do
+            expect(subject.csv).to include("cacahuète")
+            expect(subject.csv).not_to include("pistache")
+            expect(subject.csv).to include("chips")
+          end
         end
       end
 

@@ -11,3 +11,11 @@ fr:
         rdv_solidarites_organisation_id: ID de l'organisation dans RDV-Solidarités
         department: Département
         safir_code: Code SAFIR
+        organisation_type: "Type d'organisation"
+        organisation_types:
+          conseil_departemental: "Conseil départemental"
+          delegataire_rsa: "Délégataire RSA"
+          france_travail: "France Travail"
+          siae: "SIAE"
+          autre: "Autre"
+
