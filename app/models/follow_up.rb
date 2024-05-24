@@ -68,4 +68,8 @@ class FollowUp < ApplicationRecord
   def human_status
     I18n.t("activerecord.attributes.follow_up.statuses.#{status}")
   end
+
+  def current_pending_rdv
+    participations.select(&:pending?).min_by(&:starts_at)
+  end
 end
