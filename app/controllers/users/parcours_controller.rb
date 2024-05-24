@@ -5,7 +5,11 @@ module Users
     include BackToListConcern
 
     def show
-      @orientations = @user.orientations.includes(:agent, :organisation).order(starts_at: :asc)
+      @orientations = policy_scope(@user.orientations)
+                      .where(organisation: { department_id: current_department_id })
+                      .includes(:agent, :organisation).order(starts_at: :asc)
+      @diagnostics = @user.diagnostics.where(department: @department).order(document_date: :desc, id: :desc)
+      @contracts = @user.contracts.where(department: @department).order(document_date: :desc, id: :desc)
     end
 
     private

@@ -50,7 +50,7 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
                  organisation: organisation,
                  participations: [participation_rdv])
   end
-  let!(:participation_rdv) { create(:participation, user: user1, status: "seen") }
+  let!(:participation_rdv) { create(:participation, user: user1, status: "seen", created_at: "2022-05-20") }
 
   let!(:rdv_prescrit) do
     create(:rdv, starts_at: Time.zone.parse("2022-05-25"),
@@ -105,6 +105,7 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
         expect(csv).to include("Motif du RDV")
         expect(csv).to include("Nature du RDV")
         expect(csv).to include("RDV pris en autonomie ?")
+        expect(csv).to include("RDV pris le")
         expect(csv).to include("Référent(s)")
         expect(csv).to include("Organisation du rendez-vous")
         expect(csv).to include("Civilité")
@@ -164,6 +165,7 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
           expect(csv).to include("RSA orientation sur site") # rdv motif
           expect(csv).to include("individuel") # rdv type
           expect(csv).to include("individuel;Oui") # rdv taken in autonomy ?
+          expect(csv).to include("Oui;20/05/2022") # participation created_at
           expect(csv).to include("Rendez-vous honoré") # rdv status
         end
 

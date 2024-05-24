@@ -1,0 +1,33 @@
+<div class="modal-header border-0 pb-0">
+  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body pt-0">
+  <div id="custom-body" class="w-100 mb-4">
+    <div class="w-100 text-center mb-3">
+      <%= image_tag "illustrations/error-warning-line.svg", alt: "Illustration d'un message d'avertissement", class: "mb-3" %>
+      <h5 class="mt-2">L'usager sera définitivement supprimé</h5>
+    </div>
+    <p>Si vous retirez cet usager de l’organisation <b><%= organisation %></b>, sa fiche usager sera définitivement supprimée.</p>
+
+    <% motif_categories_in_this_org = user.motif_categories & organisation.motif_categories %>
+    <% if motif_categories_in_this_org.any? %>
+      <p>Cet utilisateur a des suivis en cours dans cette organisation :</p>
+      <ul class="mt-2">
+        <% motif_categories_in_this_org.each do |motif_category| %>
+          <li><b><%= motif_category.name %></b> - <%= I18n.t("activerecord.attributes.follow_up.statuses.#{user.follow_up_for(motif_category).status}") %></li>
+        <% end %>
+      </ul>
+    <% end %>
+
+    <p>Êtes-vous sur de vouloir retirer <b><%= user %></b> de l’organisation <b><%= organisation %></b> ?</p>
+  </div>
+  <div class="d-flex justify-content-end align-items-center px-3">
+    <button type="button" class="btn btn-blue-out border-0 me-2" data-bs-dismiss="modal">
+      Annuler
+    </button>
+    <button type="button" id="confirm-button" class="btn btn-danger me-2" data-bs-dismiss="modal">
+      <i class="fas fa-trash-alt me-2"></i>
+      Supprimer
+    </button>
+  </div>
+</div>

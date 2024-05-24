@@ -32,18 +32,18 @@ class LoginForm {
       return;
     }
 
-    const loginRdvResult = await this.loginToRdv();
+    const rdvSolidaritesResponse = await this.loginToRdvSolidarites();
 
-    if (loginRdvResult.body.success === false) {
-      Swal.fire("Impossible de s'authentifier", `${loginRdvResult.body.errors[0]}`, "warning");
+    if (rdvSolidaritesResponse.body.success === false) {
+      Swal.fire("Impossible de s'authentifier", `${rdvSolidaritesResponse.body.errors[0]}`, "warning");
       this.resetButton();
       return;
     }
 
     this.rdvSolidaritesCredentials = {
-      accessToken: loginRdvResult.headers.get("access-token"),
-      uid: loginRdvResult.headers.get("uid"),
-      client: loginRdvResult.headers.get("client"),
+      accessToken: rdvSolidaritesResponse.headers.get("access-token"),
+      uid: rdvSolidaritesResponse.headers.get("uid"),
+      client: rdvSolidaritesResponse.headers.get("client"),
     };
 
     const signInResult = await this.createSession();
@@ -86,7 +86,7 @@ class LoginForm {
     this.buttonForm.value = "Se connecter";
   }
 
-  async loginToRdv() {
+  async loginToRdvSolidarites() {
     const response = await fetch(`${process.env.RDV_SOLIDARITES_URL}/api/v1/auth/sign_in`, {
       method: "POST",
       headers: {
