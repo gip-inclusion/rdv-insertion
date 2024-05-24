@@ -1,17 +1,16 @@
-<%= turbo_frame_tag tag, class: "badge badge-tag w-auto d-flex justify-content-between bg-primary mb-2" do %>
+<%= turbo_frame_tag tag, class: "badge badge-tag justify-content-between background-blue-light text-dark-blue me-2 d-flex" do %>
     <%= tag.value %>
     <%=
       link_to(
         organisation_tag_path(organisation_id: @organisation.id, id: tag.id),
         data: {
+          turbo_confirm: true,
+          turbo_confirm_template: raw(render("tags/tag_remove_from_organisation_confirm", tag: tag, organisation: @organisation)),
           turbo_method: :delete,
-          turbo_confirm: "Supprimer ce tag ?",
-          turbo_confirm_text_content: "Supprimer ce tag le désaffectera également des usagers qui y sont associés, êtes-vous sur de vouloir le supprimer ?",
-          turbo_confirm_text_action: "Supprimer",
         },
-        class: 'text-white'
+        class: 'text-dark-grey-alt ms-2'
       ) do
     %>
-      <i class="fas fa-minus icon-sm"></i>
+      <i class="fas fa-times"></i>
     <% end%>
 <% end %>
