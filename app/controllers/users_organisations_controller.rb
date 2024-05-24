@@ -1,10 +1,13 @@
 class UsersOrganisationsController < ApplicationController
   before_action :set_user, :set_department, :set_organisations,
                 only: [:index, :create, :destroy]
-  before_action :assign_motif_category, :set_organisation_to_add, only: [:create]
+  before_action :set_user_organisations, only: [:index]
+  before_action :set_organisation_to_add, :assign_motif_category, only: [:create]
   before_action :set_organisation_to_remove, :verify_user_is_sync_with_rdv_solidarites, only: [:destroy]
 
-  def index; end
+  def index
+    @assignable_organisations = @organisations.where.not(id: @user.organisations.ids)
+  end
 
   def create
     if save_user.success?
@@ -18,17 +21,20 @@ class UsersOrganisationsController < ApplicationController
     if remove_user_from_org.success?
       flash.now[:success] = "L'organisation a bien été retirée"
 
-      redirect_to_users_list if user_deleted_or_removed_from_current_org?
+      if user_deleted_or_removed_from_current_org?
+        turbo_stream_redirect(session[:back_to_users_list_url] || structure_users_path)
+      else
+        redirect_to(structure_user_path(@user.id), status: :see_other)
+      end
     else
-      flash.now[:error] = "Une erreur s'est produite lors du retrait de " \
-                          "l'organisation: #{remove_user_from_org.errors}"
+      turbo_stream_display_error_modal(remove_user_from_org.errors)
     end
   end
 
   private
 
   def users_organisation_params
-    params.require(:users_organisation).permit(:organisation_id, :user_id, :motif_category_id)
+    params.require(:users_organisation).permit(:organisation_id, :user_id)
   end
 
   def user_id
@@ -59,10 +65,6 @@ class UsersOrganisationsController < ApplicationController
     @user_organisations = @user.reload.organisations
   end
 
-  def redirect_to_users_list
-    redirect_to session[:back_to_users_list_url] || structure_users_path
-  end
-
   def redirect_to_department_user_path
     redirect_to(
       department_user_path(@department, @user),
@@ -75,9 +77,9 @@ class UsersOrganisationsController < ApplicationController
   end
 
   def assign_motif_category
-    return if users_organisation_params[:motif_category_id].blank?
+    return if params[:users_organisation]["motif_category_id_#{@organisation_to_add.id}"].blank?
 
-    @user.assign_motif_category(users_organisation_params[:motif_category_id])
+    @user.assign_motif_category(params[:users_organisation]["motif_category_id_#{@organisation_to_add.id}"])
   end
 
   def verify_user_is_sync_with_rdv_solidarites

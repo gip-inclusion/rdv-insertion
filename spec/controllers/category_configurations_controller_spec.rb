@@ -90,7 +90,7 @@ describe CategoryConfigurationsController do
       get :show, params: show_params
 
       expect(response).to be_successful
-      expect(response.body).to match(/Contexte/)
+      expect(response.body).to match(/Catégorie/)
       expect(response.body).to match(/Formats d&#39;invitations/)
       expect(response.body).to match(/Fichier d'import/)
     end

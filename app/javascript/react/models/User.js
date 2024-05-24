@@ -7,6 +7,7 @@ import handleUserUpdate from "../lib/handleUserUpdate";
 import handleReferentAssignation from "../lib/handleReferentAssignation";
 
 import formatPhoneNumber from "../../lib/formatPhoneNumber";
+import formatAffiliationNumber from "../../lib/formatAffiliationNumber";
 import retrieveLastInvitationDate from "../../lib/retrieveLastInvitationDate";
 import retrieveRelevantOrganisation from "../../lib/retrieveRelevantOrganisation";
 import { getFrenchFormatDateString, todaysDateString } from "../../lib/datesHelper";
@@ -63,7 +64,7 @@ export default class User {
     this.nir = formattedAttributes.nir;
     this.franceTravailId = formattedAttributes.franceTravailId;
     this.rightsOpeningDate = formattedAttributes.rightsOpeningDate;
-    this.affiliationNumber = formattedAttributes.affiliationNumber;
+    this.affiliationNumber = formatAffiliationNumber(formattedAttributes.affiliationNumber);
     this.phoneNumber = formatPhoneNumber(formattedAttributes.phoneNumber);
     this.role = this.formatRole(formattedAttributes.role);
     this.shortRole = this.role ? (this.role === "demandeur" ? "DEM" : "CJT") : null;

@@ -24,6 +24,7 @@ class Agent < ApplicationRecord
 
   scope :not_betagouv, -> { where.not("agents.email LIKE ?", "%beta.gouv.fr") }
   scope :super_admins, -> { where(super_admin: true) }
+  scope :with_last_name, -> { where.not(last_name: nil) }
 
   def delete_organisation(organisation)
     organisations.delete(organisation)
@@ -35,7 +36,7 @@ class Agent < ApplicationRecord
   end
 
   def to_s
-    "#{first_name} #{last_name}"
+    "#{first_name} #{last_name.upcase}"
   end
 
   private

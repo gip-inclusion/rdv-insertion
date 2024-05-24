@@ -20,7 +20,7 @@ export default class extends Controller {
   }
 
   submitEnd(e) {
-    if (e.detail.success && this.element.dataset.autoDismiss === "true") {
+    if (e.detail.success) {
       this.modal.hide();
     }
   }

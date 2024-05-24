@@ -1,4 +1,0 @@
-<%= turbo_stream.replace "referents_list" do %>
-  <%= render partial: "users/user_referents_list", locals: { user: @user.reload } %>
-<% end %>
-<%= render_turbo_stream_flash_messages %>

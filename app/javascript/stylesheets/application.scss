@@ -28,6 +28,11 @@
 @import "./fontawesome_imports";
 @import "tippy.js/dist/tippy.css";
 
+@font-face {
+   font-family: 'Marianne';
+   src: url('../fonts/Marianne/Marianne-Regular.woff');
+}
+
 html {
   position: relative;
   min-height: 100%;
@@ -46,6 +51,7 @@ body {
   display:flex;
   flex-direction:column;
   min-height:100vh;
+  font-family: 'Marianne', Arial, Helvetica, sans-serif;
 }
 
 .wrapper {

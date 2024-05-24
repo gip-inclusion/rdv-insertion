@@ -94,7 +94,7 @@
     <% if @department_organisations.length > 1 %>
       <div class="dropdown text-center">
         <a class="dropdown-toggle text-center department-map-title mb-0" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-          <%= current_structure_name %>
+          <%= department_level? ? @department.name : @organisation.name %>
         </a>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
           <%= link_to department_users_path(@department) do %>
@@ -109,7 +109,7 @@
       </div>
     <% else %>
       <h4 class="text-center department-map-title mb-0">
-        <%= current_structure_name %>
+        <%= department_level? ? @department.name : @organisation.name %>
       </h4>
     <% end %>
     <% unless department_level? %>

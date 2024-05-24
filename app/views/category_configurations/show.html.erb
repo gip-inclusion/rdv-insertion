@@ -1,3 +1,5 @@
+<%= content_for :title, "Configurer la catégorie \"#{@category_configuration.motif_category_name}\" - #{@organisation.name} - rdv-insertion" %>
+
 <div class="container text-dark-blue h4-as-labels mt-4">
   <div class="d-flex justify-content-between mb-4">
     <div>
@@ -5,7 +7,7 @@
         <button class="btn btn-blue-out">Retour</button>
       <% end %>
     </div>
-    <h1 class="h1-form-title d-none d-sm-inline">Contexte "<%= @category_configuration.motif_category_name %>"</h1>
+    <h1 class="h1-form-title d-none d-sm-inline">Catégorie "<%= @category_configuration.motif_category_name %>"</h1>
     <div>
       <%= link_to edit_organisation_category_configuration_path(@organisation, @category_configuration) do %>
         <button class="btn btn-blue">Modifier</button>
