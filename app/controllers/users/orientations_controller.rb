@@ -13,8 +13,7 @@ module Users
     def create
       @orientation = Orientation.new(user: @user, **orientation_params)
       if save_orientation.success?
-        turbo_stream_replace("orientations_list", "orientations/orientations_list",
-                             { orientations: reloaded_user_orientations.sort_by(&:starts_at) })
+        redirect_to department_user_parcours_path(user_id: @user.id, department_id: current_department_id)
       else
         turbo_stream_replace_error_list_with(save_orientation.errors)
       end
@@ -23,8 +22,7 @@ module Users
     def update
       @orientation.assign_attributes(**orientation_params)
       if save_orientation.success?
-        turbo_stream_replace("orientations_list", "orientations/orientations_list",
-                             { orientations: reloaded_user_orientations.sort_by(&:starts_at) })
+        redirect_to department_user_parcours_path(user_id: @user.id, department_id: current_department_id)
       else
         turbo_stream_replace_error_list_with(save_orientation.errors)
       end
@@ -32,7 +30,7 @@ module Users
 
     def destroy
       if @orientation.destroy
-        turbo_stream_remove(helpers.dom_id(@orientation))
+        redirect_to department_user_parcours_path(user_id: @user.id, department_id: current_department_id)
       else
         turbo_stream_prepend_flash_message(
           error: "Impossible de supprimer l'orientation: #{@orientation.errors.full_messages}"
@@ -55,7 +53,7 @@ module Users
     end
 
     def set_agents
-      @agents = current_department.agents.distinct
+      @agents = current_department.agents.with_last_name.distinct
     end
 
     def set_agent_ids_by_organisation_id

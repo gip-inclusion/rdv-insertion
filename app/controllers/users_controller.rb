@@ -19,7 +19,7 @@ class UsersController < ApplicationController
                 :filter_users, :order_users,
                 for: :index
   before_action :set_user, :set_organisation, :set_department, :set_all_configurations,
-                :set_user_archive, :set_user_tags, :set_back_to_users_list_url,
+                :set_user_archive, :set_user_tags, :set_user_referents, :set_back_to_users_list_url,
                 for: :show
   before_action :set_organisation, :set_department, :set_department_organisations,
                 for: :new
@@ -182,11 +182,18 @@ class UsersController < ApplicationController
   end
 
   def set_user_tags
-    @tags = policy_scope(@user.tags)
-            .joins(:organisations)
-            .where(current_organisations_filter)
-            .order(:value)
-            .distinct
+    @user_tags = policy_scope(@user.tags)
+                 .joins(:organisations)
+                 .where(current_organisations_filter)
+                 .order(:value)
+                 .distinct
+  end
+
+  def set_user_referents
+    @user_referents = policy_scope(@user.referents)
+                      .joins(:departments)
+                      .where(departments: { id: current_department_id })
+                      .distinct
   end
 
   def set_organisation_through_form

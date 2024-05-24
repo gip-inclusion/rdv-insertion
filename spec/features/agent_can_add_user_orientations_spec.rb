@@ -20,72 +20,103 @@ describe "Agents can add user orientation", :js do
 
   before { setup_agent_session(agent) }
 
-  context "when the department is not listed with parcours enabled" do
-    let!(:department) { create(:department, number: "22") }
+  it "shows the pacours and enables to add orientations" do
+    visit organisation_user_path(organisation_id: organisation.id, id: user.id)
+    expect(page).to have_content("Parcours")
 
-    it "does not show the parcours" do
-      visit organisation_user_path(organisation_id: organisation.id, id: user.id)
-      expect(page).to have_no_content("Parcours")
+    click_link("Parcours")
 
-      visit user_parcours_path(user_id: user.id)
-      expect(page).to have_no_content("Ajouter une orientation")
-    end
+    expect(page).to have_content("Pas d'orientation renseignée")
+    expect(page).to have_button("Ajouter une orientation")
+
+    click_button("Ajouter une orientation")
+
+    page.select "Sociale", from: "orientation_orientation_type"
+    # need to use js for flatpickr input
+    page.execute_script("document.querySelector('#orientation_starts_at').value = '2023-07-03'")
+
+    expect(page).to have_css("select#orientation_agent_id[disabled]")
+
+    page.select "CD 26", from: "orientation_organisation_id"
+    expect(page).to have_select("orientation_agent_id", with_options: organisation_agents.map(&:to_s))
+
+    page.select "Kad MERAD", from: "orientation_agent_id"
+
+    click_button "Enregistrer"
+
+    expect(page).to have_no_content("Pas d'orientation renseignée")
+    expect(page).to have_content("Du 03/07/2023 à aujourd'hui")
+    expect(page).to have_content("Sociale")
+    expect(page).to have_content("CD 26")
+    expect(page).to have_content("Kad MERAD")
+
+    # orientation without agent
+    click_button("Ajouter une orientation")
+
+    page.select "Professionnelle", from: "orientation_orientation_type"
+    # need to use js for flatpickr input
+    page.execute_script("document.querySelector('#orientation_starts_at').value = '2023-10-03'")
+
+    expect(page).to have_css("select#orientation_agent_id[disabled]")
+
+    page.select "Asso 26", from: "orientation_organisation_id"
+    expect(page).to have_select("orientation_agent_id", with_options: other_organisation_agents.map(&:to_s))
+
+    click_button "Enregistrer"
+
+    expect(page).to have_content("Du 03/07/2023 au 03/10/2023")
+    expect(page).to have_content("Sociale")
+    expect(page).to have_content("CD 26")
+    expect(page).to have_content("Kad MERAD")
+
+    expect(page).to have_content("Du 03/10/2023 à aujourd'hui")
+    expect(page).to have_content("Professionnelle")
+    expect(page).to have_content("Asso 26")
+    expect(page).to have_content("non renseigné")
   end
 
-  context "when the department is enabled" do
-    it "shows the pacours and enables to add orientations" do
-      visit organisation_user_path(organisation_id: organisation.id, id: user.id)
-      expect(page).to have_content("Parcours")
+  describe "department scoped orientations" do
+    let!(:other_department) { create(:department, number: "13") }
+    let!(:other_department_agent) { create(:agent) }
+    let!(:other_department_organisation) do
+      create(:organisation, department: other_department, name: "CD 13", users: [user],
+                            agents: [other_department_agent])
+    end
+    let!(:first_department_orientation) do
+      create(:orientation, user:, starts_at: "20/12/2022", ends_at: "03/01/2023", orientation_type: "social",
+                           organisation:)
+    end
+    let!(:second_department_orientation) do
+      create(:orientation, user:, starts_at: "12/01/2023", ends_at: "07/02/2023", orientation_type: "pro",
+                           organisation: other_department_organisation)
+    end
 
-      click_link("Parcours")
+    it "shows only the department scoped orientation" do
+      visit department_user_parcours_path(user_id: user.id, department_id: department.id)
 
-      expect(page).to have_content("Pas d'orientation renseignée")
-      expect(page).to have_button("Ajouter une orientation")
-
-      click_button("Ajouter une orientation")
-
-      page.select "Sociale", from: "orientation_orientation_type"
-      # need to use js for flatpickr input
-      page.execute_script("document.querySelector('#orientation_starts_at').value = '2023-07-03'")
-
-      expect(page).to have_css("select#orientation_agent_id[disabled]")
-
-      page.select "CD 26", from: "orientation_organisation_id"
-      expect(page).to have_select("orientation_agent_id", with_options: organisation_agents.map(&:to_s))
-
-      page.select "Kad Merad", from: "orientation_agent_id"
-
-      click_button "Enregistrer"
-
-      expect(page).to have_no_content("Pas d'orientation renseignée")
-      expect(page).to have_content("Du 03/07/2023 à aujourd'hui")
-      expect(page).to have_content("Sociale")
+      expect(page).to have_content("Du 20/12/2022 au 03/01/2023")
       expect(page).to have_content("CD 26")
-      expect(page).to have_content("Kad Merad")
-
-      # orientation without agent
-      click_button("Ajouter une orientation")
-
-      page.select "Professionnelle", from: "orientation_orientation_type"
-      # need to use js for flatpickr input
-      page.execute_script("document.querySelector('#orientation_starts_at').value = '2023-10-03'")
-
-      expect(page).to have_css("select#orientation_agent_id[disabled]")
-
-      page.select "Asso 26", from: "orientation_organisation_id"
-      expect(page).to have_select("orientation_agent_id", with_options: other_organisation_agents.map(&:to_s))
-
-      click_button "Enregistrer"
-
-      expect(page).to have_content("Du 03/07/2023 au 03/10/2023")
       expect(page).to have_content("Sociale")
-      expect(page).to have_content("CD 26")
-      expect(page).to have_content("Kad Merad")
 
-      expect(page).to have_content("Du 03/10/2023 à aujourd'hui")
-      expect(page).to have_content("Professionnelle")
-      expect(page).to have_content("Asso 26")
-      expect(page).to have_content("non renseigné")
+      expect(page).to have_no_content("Du 12/01/2023 au 07/02/2023")
+      expect(page).to have_no_content("CD 13")
+      expect(page).to have_no_content("Professionnelle")
+    end
+
+    context "for another agent" do
+      before { setup_agent_session(other_department_agent) }
+
+      it "shows only the department scoped orientation" do
+        visit department_user_parcours_path(user_id: user.id, department_id: other_department.id)
+
+        expect(page).to have_content("Du 12/01/2023 au 07/02/2023")
+        expect(page).to have_content("CD 13")
+        expect(page).to have_content("Professionnelle")
+
+        expect(page).to have_no_content("Du 20/12/2022 au 03/01/2023")
+        expect(page).to have_no_content("CD 26")
+        expect(page).to have_no_content("Sociale")
+      end
     end
   end
 end

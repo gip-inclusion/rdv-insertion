@@ -1,3 +1,5 @@
+<%= render "users/page_title", user: @user %>
+
 <%= render 'users/archive_banner' if @user.archived_in?(@department) %>
 
 <div class="container text-dark-blue h4-as-labels mt-4">
@@ -17,12 +19,12 @@
 
     <div class="mx-3 my-4">
       <h4>Diagnostics</h4>
-      <%= render "parcours_documents/documents_list", user: @user, type: "diagnostic" %>
+      <%= render "parcours_documents/documents_list", parcours_documents: @diagnostics, type: "diagnostic" %>
       <%= render "parcours_documents/document_form", user: @user, type: "diagnostic" %>
     </div>
     <div class="mx-3 my-4">
       <h4>Contrats</h4>
-      <%= render "parcours_documents/documents_list", user: @user, type: "contract" %>
+      <%= render "parcours_documents/documents_list", parcours_documents: @contracts, type: "contract" %>
       <%= render "parcours_documents/document_form", user: @user, type: "contract" %>
     </div>
   <% end %>

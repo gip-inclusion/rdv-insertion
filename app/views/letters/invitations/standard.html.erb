@@ -2,7 +2,7 @@
 
 <div class="mail-object">
   <p class="bold-blue"><span class="bold-blue">Objet : <%= rdv_title.slice(0,1).capitalize + rdv_title.slice(1..-1) %> dans le cadre de votre <%= rdv_subject %></span></p>
-  <%= tag.p("N° CAF : #{user.affiliation_number}") if user.affiliation_number %>
+  <%= tag.p("N° CAF / MSA : #{user.affiliation_number}") if user.affiliation_number %>
   <% if invitation.rdv_with_referents? %>
     <p><%= "Référent".pluralize(user.referents.count) %> de parcours : <%= user.referents.order(:last_name).map(&:to_s).join(", ") %></p>
   <% end %>

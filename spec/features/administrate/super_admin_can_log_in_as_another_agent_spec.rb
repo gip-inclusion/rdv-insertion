@@ -27,7 +27,7 @@ describe "Super admin can log in as another agent", :js do
 
       # Verify that the super admin is now logged in as the agent
       expect(page).to have_current_path(organisations_path)
-      expect(page).to have_content("Vous êtes connecté.e en tant que #{agent.first_name} #{agent.last_name}")
+      expect(page).to have_content("Vous êtes connecté.e en tant que #{agent.first_name} #{agent.last_name.upcase}")
       # We check the organisations displayed to check that it is really the agent's account
       expect(page).to have_content(agent_department.name)
       expect(page).to have_content(agent_organisation1.name)
@@ -65,7 +65,7 @@ describe "Super admin can log in as another agent", :js do
       click_link("Se logger en tant que")
 
       expect(page).to have_current_path(organisations_path)
-      expect(page).to have_content("Vous êtes connecté.e en tant que #{agent.first_name} #{agent.last_name}")
+      expect(page).to have_content("Vous êtes connecté.e en tant que #{agent.first_name} #{agent.last_name.upcase}")
 
       visit super_admins_root_path
       expect(page).to have_current_path(organisations_path)
@@ -80,7 +80,7 @@ describe "Super admin can log in as another agent", :js do
         click_link("Se logger en tant que")
 
         expect(page).to have_current_path(organisations_path)
-        expect(page).to have_content("Vous êtes connecté.e en tant que #{agent.first_name} #{agent.last_name}")
+        expect(page).to have_content("Vous êtes connecté.e en tant que #{agent.first_name} #{agent.last_name.upcase}")
 
         visit super_admins_agent_path(other_agent.id)
 

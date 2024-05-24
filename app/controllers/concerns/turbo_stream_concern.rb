@@ -22,10 +22,13 @@ module TurboStreamConcern
     render turbo_stream: turbo_stream.replace(element_id, partial:, locals:)
   end
 
+  def turbo_stream_redirect(path)
+    render turbo_stream: turbo_stream.action(:redirect, path)
+  end
+
   def turbo_stream_display_error_modal(errors)
     render(
-      turbo_stream: turbo_stream.replace("remote_modal", partial: "common/error_modal", locals: { errors: }),
-      status: :unprocessable_entity
+      turbo_stream: turbo_stream.replace("remote_modal", partial: "common/error_modal", locals: { errors: })
     )
   end
 end

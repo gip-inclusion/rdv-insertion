@@ -154,7 +154,7 @@ describe Invitations::GenerateLetter, type: :service do
 
       it "displays the name of the referent" do
         subject
-        expect(invitation.content).to include("Référent de parcours : Kylian Mbappé")
+        expect(invitation.content).to include("Référent de parcours : Kylian MBAPPÉ")
       end
     end
 

@@ -1,3 +1,5 @@
+<% content_for :title, "Envoyer des invitations aux usagers non-invités - #{@organisation&.name || @department.name} - #{@motif_category_name} - rdv-insertion" %>
+
 <%= react_component(
   "pages/users/BatchActions", {
     usersFromApp: @users,
