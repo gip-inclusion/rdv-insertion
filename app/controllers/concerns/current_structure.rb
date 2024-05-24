@@ -3,7 +3,8 @@ module CurrentStructure
 
   included do
     before_action :set_structure_type_in_session, :set_session_organisation_id, :set_session_department_id,
-                  :set_current_structure_attributes
+                  :set_current_structure_attributes, :set_current_structure,
+                  :set_current_department, :set_current_department_organisations
 
     helper_method :department_level?, :current_organisation_ids
 
@@ -38,18 +39,30 @@ module CurrentStructure
     Current.department_id = session[:department_id]
   end
 
+  def set_current_structure
+    Current.structure ||= current_structure
+  end
+
+  def set_current_department
+    Current.department ||= current_department
+  end
+
+  def set_current_department_organisations
+    Current.department_organisations ||= current_department.organisations && current_agent.organisations
+  end
+
   def department_level?
     Current.structure_type == "department"
   end
 
   def current_structure
-    Current.structure ||=
+    @current_structure ||=
       department_level? ? Department.find(Current.department_id) : Organisation.find(Current.organisation_id)
   end
 
   def current_department
     @current_department ||=
-      department_level? ? current_structure : current_structure.department
+      department_level? ? current_structure : current_structure&.department
   end
 
   def current_organisation_ids

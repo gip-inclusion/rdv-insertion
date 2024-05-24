@@ -292,7 +292,7 @@ class UsersController < ApplicationController
   end
 
   def set_referents_list
-    @referents_list = current_structure.agents.where.not(last_name: nil).distinct.order(:last_name)
+    @referents_list = Current.structure.agents.where.not(last_name: nil).distinct.order(:last_name)
     @referents_list = @referents_list.where(super_admin: false) if production_env?
   end
 
@@ -312,8 +312,8 @@ class UsersController < ApplicationController
 
   def default_list_path
     motif_category_param =
-      if current_structure.motif_categories.length == 1
-        { motif_category_id: current_structure.motif_categories.first.id }
+      if Current.structure.motif_categories.length == 1
+        { motif_category_id: Current.structure.motif_categories.first.id }
       else
         {}
       end

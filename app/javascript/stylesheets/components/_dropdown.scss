@@ -1,9 +1,13 @@
 .dropdown-menu {
-  top: 40px;
   &#batch-actions-dropdown {
     width: 260px;
   }
+  &.dropdown-menu-end {
+    right: -165px;
+    max-width: 400px;
+  }
 }
+
 .dropdown-toggle:not(.accessible):focus {
   box-shadow: none !important;
 }

@@ -10,7 +10,7 @@
       <% if current_agent %>
         <% if agent_impersonated? %>
           <%= link_to super_admins_agent_impersonation_path(agent_id: current_agent.id), method: :delete do %>
-            <button class="btn btn-default btn-logout w-100">
+            <button class="btn btn-header border-light-grey w-100">
               <span class="d-none d-sm-inline">Revenir à ma session</span>
               <span class="d-inline d-sm-none"><i class="fas fa-sign-out-alt"></i></span>
             </button>
@@ -18,7 +18,7 @@
         <% elsif current_agent.super_admin? %>
           <div class="text-center ">
             <%= link_to super_admins_root_path do %>
-              <button class="btn btn-default btn-logout w-100">
+              <button class="btn btn-header border-light-grey w-100">
                 <span class="d-none d-sm-inline">Super admin</span>
                 <span class="d-inline d-sm-none"><i class="fas fa-sign-out-alt"></i></span>
               </button>
@@ -27,11 +27,12 @@
         <% else %>
           <%= render "common/header_help_menu" %>
         <% end %>
-      <% end %>
-      <% if current_agent %>
-        <div class="text-center mx-3">
+        <% if Current.department_organisations.length > 1 %>
+          <%= render "common/header_navigation_button" %>
+        <% end %>
+        <div class="text-center ms-3">
           <%= link_to sign_out_path, method: :delete do %>
-            <button class="btn btn-default btn-logout w-100">
+            <button class="btn btn-header border-light-grey w-100">
               <span class="d-none d-sm-inline">Se déconnecter</span>
               <span class="d-inline d-sm-none"><i class="fas fa-sign-out-alt"></i></span>
             </button>
@@ -42,7 +43,7 @@
         <% if show_login_button? %>
           <div class="text-center mx-3 col">
             <%= link_to sign_in_path do %>
-              <button class="btn btn-default btn-blue w-100">
+              <button class="btn btn-blue w-100">
                 <span class="d-none d-sm-inline">Connexion agent</span>
                 <span class="d-inline d-sm-none">Connexion</span>
               </button>

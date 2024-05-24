@@ -14,13 +14,30 @@
   color: white;
 }
 
+.text-white {
+  color: white;
+}
+
+.navigation-selected-item {
+  @extend .background-dark-blue;
+  @extend .text-white;
+  &:hover {
+    background-color: $dark-blue;
+  }
+}
+
 .text-dark-grey-alt {
+  color: $dark-grey-alt;
+}
+
+.text-dark-grey {
   color: $dark-grey-alt;
 }
 
 .text-purple {
   color: $purple;
 }
+
 
 .link-blue-light {
   color: $light-blue-alt;
