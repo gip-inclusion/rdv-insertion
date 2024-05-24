@@ -59,7 +59,7 @@ describe "Agents can add or remove user from organisations", :js do
 
       expect(page).to have_content(other_org.name)
       expect(page).to have_select(
-        "users_organisation[motif_category_id_#{other_org.id}]", options: ["Ouvrir un suivi", "RSA suivi"]
+        "users_organisation[motif_category_id_#{other_org.id}]", options: ["Aucun suivi", "RSA suivi"]
       )
       choose "users_organisation[organisation_id]", option: other_org.id
 
@@ -106,7 +106,7 @@ describe "Agents can add or remove user from organisations", :js do
 
         expect(page).to have_content(other_org.name)
         expect(page).to have_select(
-          "users_organisation[motif_category_id_#{other_org.id}]", options: ["Ouvrir un suivi", "RSA suivi"]
+          "users_organisation[motif_category_id_#{other_org.id}]", options: ["Aucun suivi", "RSA suivi"]
         )
         select "RSA suivi", from: "users_organisation[motif_category_id_#{other_org.id}]"
         choose "users_organisation[organisation_id]", option: other_org.id
@@ -146,7 +146,7 @@ describe "Agents can add or remove user from organisations", :js do
 
         expect(page).to have_content(other_org.name)
         expect(page).to have_select(
-          "users_organisation[motif_category_id_#{other_org.id}]", options: ["Ouvrir un suivi", "RSA suivi"]
+          "users_organisation[motif_category_id_#{other_org.id}]", options: ["Aucun suivi", "RSA suivi"]
         )
         choose "users_organisation[organisation_id]", option: other_org.id
 
