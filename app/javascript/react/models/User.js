@@ -153,7 +153,7 @@ export default class User {
   }
 
   async createAccount(options = { raiseError: true }) {
-    if (this.createdAt) return true;
+    if (this.createdAt && this.belongsToCurrentOrg()) return true;
 
     this.triggers.creation = true;
 
