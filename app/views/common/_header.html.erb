@@ -27,7 +27,7 @@
         <% else %>
           <%= render "common/header_help_menu" %>
         <% end %>
-        <% if Current.department_organisations.length > 1 %>
+        <% if Current.department_organisations && Current.department_organisations.length > 1 %>
           <%= render "common/header_navigation_button" %>
         <% end %>
         <div class="text-center ms-3">

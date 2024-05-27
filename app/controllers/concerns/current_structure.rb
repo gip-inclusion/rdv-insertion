@@ -40,15 +40,15 @@ module CurrentStructure
   end
 
   def set_current_structure
-    Current.structure ||= current_structure
+    Current.structure = current_structure
   end
 
   def set_current_department
-    Current.department ||= current_department
+    Current.department = current_department
   end
 
   def set_current_department_organisations
-    Current.department_organisations ||= current_department.organisations && current_agent.organisations
+    Current.department_organisations ||= current_department&.organisations & current_agent&.organisations
   end
 
   def department_level?
@@ -56,13 +56,17 @@ module CurrentStructure
   end
 
   def current_structure
+    return unless Current.department_id || Current.organisation_id
+
     @current_structure ||=
       department_level? ? Department.find(Current.department_id) : Organisation.find(Current.organisation_id)
   end
 
   def current_department
+    return unless current_structure
+
     @current_department ||=
-      department_level? ? current_structure : current_structure&.department
+      department_level? ? current_structure : current_structure.department
   end
 
   def current_organisation_ids
