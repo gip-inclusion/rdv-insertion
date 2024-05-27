@@ -9,7 +9,8 @@ button, input[type="button"] {
   outline: inherit;
 }
 
-.btn-navigation-dropdown {
+#btn-organisation-navigation {
+  @extend .btn;
   @extend .btn-header;
   @extend .btn-blue-out;
   min-width: 200px;

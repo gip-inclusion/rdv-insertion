@@ -42,4 +42,8 @@ module NavigationHelper
   def new_structure_batch_action_path(motif_category_id)
     send(:"new_#{Current.structure_type}_batch_action_path", { **structure_id_param, motif_category_id: })
   end
+
+  def structure_parcours_path(user_id)
+    send(:"#{Current.structure_type}_user_parcours_path", { user_id:, **structure_id_param })
+  end
 end

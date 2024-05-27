@@ -13,7 +13,7 @@ module Users
     def create
       @orientation = Orientation.new(user: @user, **orientation_params)
       if save_orientation.success?
-        redirect_to department_user_parcours_path(user_id: @user.id, department_id: current_department_id)
+        redirect_to structure_parcours_path(@user.id)
       else
         turbo_stream_replace_error_list_with(save_orientation.errors)
       end
@@ -22,7 +22,7 @@ module Users
     def update
       @orientation.assign_attributes(**orientation_params)
       if save_orientation.success?
-        redirect_to department_user_parcours_path(user_id: @user.id, department_id: current_department_id)
+        redirect_to structure_parcours_path(@user.id)
       else
         turbo_stream_replace_error_list_with(save_orientation.errors)
       end
@@ -30,7 +30,7 @@ module Users
 
     def destroy
       if @orientation.destroy
-        redirect_to department_user_parcours_path(user_id: @user.id, department_id: current_department_id)
+        redirect_to structure_parcours_path(@user.id)
       else
         turbo_stream_prepend_flash_message(
           error: "Impossible de supprimer l'orientation: #{@orientation.errors.full_messages}"

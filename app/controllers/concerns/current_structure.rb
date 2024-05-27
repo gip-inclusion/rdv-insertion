@@ -12,9 +12,14 @@ module CurrentStructure
   end
 
   def set_structure_type_in_session
-    return if params[:department_id].nil? && params[:organisation_id].nil?
-
-    session[:structure_type] = params[:organisation_id].present? ? "organisation" : "department"
+    session[:structure_type] =
+      if params[:department_id].nil? && params[:organisation_id].nil?
+        nil
+      elsif params[:department_id].nil?
+        "organisation"
+      else
+        "department"
+      end
   end
 
   def set_session_organisation_id
@@ -48,7 +53,9 @@ module CurrentStructure
   end
 
   def set_current_department_organisations
-    Current.department_organisations ||= current_department&.organisations & current_agent&.organisations
+    return unless current_agent && current_department
+
+    Current.department_organisations ||= current_department.organisations & current_agent.organisations
   end
 
   def department_level?
