@@ -21,7 +21,7 @@ export default observer(({ user, format }) => {
     user.list.canBeInvitedBy(format) && (
       <>
         <td>
-          {user.errors.includes(actionType) ? (
+          {user.activeErrors.includes(actionType) ? (
             <button
               type="submit"
               className="btn btn-danger"

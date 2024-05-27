@@ -153,6 +153,8 @@ export default class User {
   }
 
   async createAccount(options = { raiseError: true }) {
+    if (this.createdAt) return true;
+
     this.triggers.creation = true;
 
     if (!this.currentOrganisation) {
@@ -222,6 +224,7 @@ export default class User {
 
   resetErrors() {
     this.errors = [];
+    this.errorsMayNoLongerBeRelevant = false;
   }
 
   async updateAttribute(attribute, value) {
@@ -235,7 +238,7 @@ export default class User {
       const result = await handleUserUpdate(this.currentOrganisation.id, this, this.asJson());
 
       if (result.success) {
-        this.resetErrors();
+        this.errorsMayNoLongerBeRelevant = true;
       } else {
         this[attribute] = previousValue;
       }
@@ -244,9 +247,14 @@ export default class User {
       return result.success;
     }
 
-    this.resetErrors();
+    this.errorsMayNoLongerBeRelevant = true;
     
     return true;
+  }
+
+  get activeErrors() {
+    if (this.errorsMayNoLongerBeRelevant) return [];
+    return this.errors;
   }
 
   get isValid() {

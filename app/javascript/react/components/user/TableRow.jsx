@@ -7,7 +7,7 @@ import InvitationCells from "./InvitationCells";
 function TableRow({ user }) {
   return (
     <>
-      <tr className={user.isArchivedInCurrentDepartment() || !user.isValid ? "table-danger" : ""}>
+      <tr className={user.isArchivedInCurrentDepartment() || (!user.isValid && !user.errorsMayNoLongerBeRelevant) ? "table-danger" : ""}>
         {user.list.columns.map((column) => {
           if (!column.visible || !column.content) return null
 
