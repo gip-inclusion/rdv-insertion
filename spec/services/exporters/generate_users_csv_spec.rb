@@ -45,7 +45,7 @@ describe Exporters::GenerateUsersCsv, type: :service do
                  participations: [participation_rdv])
   end
 
-  let!(:participation_rdv) { create(:participation, user: user1, status: "seen") }
+  let!(:participation_rdv) { create(:participation, user: user1, status: "seen", created_at: "2022-05-20") }
 
   let!(:first_invitation) do
     create(:invitation, user: user1, format: "email", created_at: Time.zone.parse("2022-05-21"))
@@ -109,6 +109,7 @@ describe Exporters::GenerateUsersCsv, type: :service do
         expect(subject.csv).to include("Motif du dernier RDV")
         expect(subject.csv).to include("Nature du dernier RDV")
         expect(subject.csv).to include("Dernier RDV pris en autonomie ?")
+        expect(subject.csv).to include("Dernier RDV pris le")
         expect(subject.csv).to include("Rendez-vous d'orientation (RSA) honoré en - moins de 30 jours?")
         expect(subject.csv).to include("Rendez-vous d'orientation (RSA) honoré en - moins de 15 jours?")
         expect(subject.csv).to include("Date d'orientation")
@@ -165,6 +166,7 @@ describe Exporters::GenerateUsersCsv, type: :service do
           expect(subject.csv).to include("RSA orientation sur site") # last rdv motif
           expect(subject.csv).to include("individuel") # last rdv type
           expect(subject.csv).to include("individuel;Oui") # last rdv taken in autonomy ?
+          expect(subject.csv).to include("Oui;20/05/2022") # participation creation date
           expect(subject.csv).to include("Rendez-vous honoré") # rdv status
           expect(subject.csv).to include("Statut du RDV à préciser") # follow_up status
           # oriented in less than 30 days ?; oriented in less than 15 days?

@@ -13,13 +13,16 @@ end
 
 Rails.application.routes.draw do
   namespace :super_admins do
+    resources :agents, only: [:index, :show] do
+      resource :impersonation, only: [:create, :destroy]
+    end
     resources :departments, only: [:index, :show, :new, :create, :edit, :update]
     resources :organisations, only: [:index, :show, :new, :create, :edit, :update]
     resources :users, only: [:index, :show, :edit, :update]
     resources :motif_categories, only: [:index, :show, :new, :create, :edit, :update]
     resources :templates, only: [:index, :show]
 
-    root to: "organisations#index"
+    root to: "agents#index"
   end
   mount Rswag::Api::Engine => '/api-docs'
   mount Rswag::Ui::Engine => '/api-docs'
@@ -50,7 +53,6 @@ Rails.application.routes.draw do
         resources :follow_ups, only: [:index]
       end
       resources :invitations, only: [:create]
-      resources :tag_assignations, only: [:index, :create, :destroy]
     end
     # we need to nest in organisations the different category_configurations record to correctly authorize them
     resources :category_configurations, only: [:index, :show, :new, :create, :edit, :update, :destroy]
@@ -68,7 +70,6 @@ Rails.application.routes.draw do
   end
 
   resources :users, module: :users, only: [] do
-    resource :parcours, only: [:show]
     resources :orientations, only: [:new, :create, :edit, :update, :destroy]
     resources :parcours_documents, only: [:show, :update, :create, :destroy]
     resources :rdvs, only: [:new]
@@ -118,6 +119,8 @@ Rails.application.routes.draw do
   resource :users_organisations, only: [:destroy]
   resources :referent_assignations, only: [:index, :create]
   resource :referent_assignations, only: [:destroy]
+  resources :tag_assignations, only: [:index, :create]
+  resource :tag_assignations, only: [:destroy]
 
   resources :departments, only: [] do
     patch "category_configurations_positions/update", to: "category_configurations_positions#update"
@@ -133,9 +136,9 @@ Rails.application.routes.draw do
       end
       scope module: :users do
         resources :follow_ups, only: [:index]
+        resource :parcours, only: [:show]
       end
       resources :invitations, only: [:create]
-      resources :tag_assignations, only: [:index, :create, :destroy]
     end
     resource :stats, only: [:show]
   end

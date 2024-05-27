@@ -5,10 +5,9 @@ module CurrentStructure
     before_action :set_structure_type_in_session, :set_session_organisation_id, :set_session_department_id,
                   :set_current_structure_attributes
 
-    helper_method :department_level?, :current_organisation_ids, :current_structure_name
+    helper_method :department_level?, :current_organisation_ids
 
     delegate :id, to: :current_department, prefix: true
-    delegate :name, to: :current_structure, prefix: true
   end
 
   def set_structure_type_in_session
@@ -56,6 +55,10 @@ module CurrentStructure
   def current_organisation_ids
     @current_organisation_ids ||=
       department_level? ? current_department.organisation_ids : [Current.organisation_id]
+  end
+
+  def current_organisation_id
+    Current.organisation_id
   end
 
   def current_organisations_filter

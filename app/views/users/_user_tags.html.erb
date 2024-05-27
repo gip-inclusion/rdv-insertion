@@ -1,25 +1,31 @@
-<p class="mb-3 mt-3 flex-wrap d-flex" id="tags_list">
-  <% if tags.blank? %>
-    -
-  <% else %>
-    <% tags.each do |tag| %>
-      <span class="badge badge-tag justify-content-between background-blue-light text-dark-blue me-2 d-flex">
-        <%= tag.value %>
-        <%= 
-          link_to(
-            structure_user_tag_assignation_path(user.id, tag.id),
-            data: {
-              turbo_confirm: "Retirer le tag de cet usager ?",
-              turbo_confirm_text_content: "Êtes-vous sûr de vouloir retirer le tag <b>#{tag.value}</b> de l'usager <b>#{user}</b> ?",
-              turbo_confirm_text_action: "Retirer",
-              turbo_method: :delete,
-            },
-            class: 'text-dark-grey-alt ms-2'
-          ) do 
-        %>
-          <i class="fas fa-times"></i>
-        <% end %>
-      </span>
+<div class="col-12 col-md-6 px-5">
+  <h4> <%= User.human_attribute_name(:tags) %> </h4>
+  <p class="mb-3 mt-3 flex-wrap d-flex" id="tags_list">
+    <% if tags.blank? %>
+      -
+    <% else %>
+      <% tags.each do |tag| %>
+        <span class="badge badge-tag justify-content-between background-blue-light text-dark-blue me-2 d-flex">
+          <%= tag.value %>
+          <%= 
+            link_to(
+              tag_assignations_path(user_id: user.id, tag_id: tag.id),
+              data: {
+                turbo_confirm: "Retirer le tag de cet usager ?",
+                turbo_confirm_text_content: "Êtes-vous sûr de vouloir retirer le tag <b>#{tag.value}</b> de l'usager <b>#{user}</b> ?",
+                turbo_confirm_text_action: "- Retirer",
+                turbo_method: :delete,
+              },
+              class: 'text-dark-grey-alt ms-2'
+            ) do 
+          %>
+            <i class="fas fa-times"></i>
+          <% end %>
+        </span>
+      <% end %>
     <% end %>
+  </p>
+  <%= link_to(tag_assignations_path(user_id: @user.id), data: { turbo_frame: 'remote_modal' }) do %>
+    <button class="btn btn-blue mb-3"><i class="fas fa-plus"></i> Ajouter un tag </button>
   <% end %>
-</p>
+</div>

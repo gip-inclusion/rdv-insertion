@@ -1,6 +1,7 @@
 <td
   id="follow-up-status-<%= follow_up.id %>"
   class="<%= background_class_for_follow_up_status(follow_up, category_configuration&.number_of_days_before_action_required) %>"
+  data-link-path="<%= structure_user_follow_ups_path(follow_up.user_id) %>"
 >
   <%= display_follow_up_status(follow_up, category_configuration&.number_of_days_before_action_required) %>
 </td>

@@ -2,6 +2,7 @@ class Agent < ApplicationRecord
   SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES = [:email, :first_name, :last_name, :inclusion_connect_open_id_sub].freeze
 
   include Agent::RdvSolidaritesClient
+  include Agent::Signature
 
   has_many :agent_roles, dependent: :destroy
   has_many :referent_assignations, dependent: :destroy
@@ -23,6 +24,7 @@ class Agent < ApplicationRecord
 
   scope :not_betagouv, -> { where.not("agents.email LIKE ?", "%beta.gouv.fr") }
   scope :super_admins, -> { where(super_admin: true) }
+  scope :with_last_name, -> { where.not(last_name: nil) }
 
   def delete_organisation(organisation)
     organisations.delete(organisation)
@@ -34,7 +36,7 @@ class Agent < ApplicationRecord
   end
 
   def to_s
-    "#{first_name} #{last_name}"
+    "#{first_name} #{last_name.upcase}"
   end
 
   private

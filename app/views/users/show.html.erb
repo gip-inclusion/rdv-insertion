@@ -1,3 +1,5 @@
+<%= render "users/page_title", user: @user %>
+
 <%= render 'archive_banner' if @archive.present? %>
 
 <div class="container text-dark-blue h4-as-labels mt-4">
@@ -5,7 +7,6 @@
 
   <%= turbo_frame_tag "user_page_body", data: { turbo_action: "advance" } do %>
     <%= render "user_tabs", user: @user, tab: "infos" %>
-    <%= turbo_stream_from @user %>
 
     <div class="mb-4">
       <div class="row">
@@ -45,17 +46,9 @@
         <% end %>
       </div>
       <div class="row d-flex justify-content-start flex-wrap mt-5">
-        <div class="col-12 col-md-6 px-5">
-          <h4> Tags </h4>
-          <%= render "user_tags", tags: @tags, user: @user %>
-
-          <%= link_to(structure_user_tag_assignations_path(@user.id), data: { turbo_frame: 'remote_modal' }) do %>
-            <button class="btn btn-blue mb-3"><i class="fas fa-plus"></i> Ajouter un tag </button>
-          <% end %>
-        </div>
-
-        <%= render "users/user_organisations_list", user: @user %>
-        <%= render "users/user_referents_list", user: @user %>
+        <%= render "user_tags", tags: @user_tags, user: @user %>
+        <%= render "user_organisations_list", user: @user %>
+        <%= render "user_referents_list", referents: @user_referents, user: @user %>
       </div>
     </div>
   <% end %>
