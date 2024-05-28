@@ -21,7 +21,7 @@ class MotifCategory < ApplicationRecord
   }
 
   def selected_template_allows_mandatory_rdv_subscription
-    return unless template.model.include?("atelier") && !optional_rdv_subscription?
+    return unless template&.model&.include?("atelier") && !optional_rdv_subscription?
 
     errors.add(:base, "La participation doit être facultative pour un template de type atelier")
   end
