@@ -8,9 +8,9 @@
       <span class="badge badge-tag justify-content-between background-blue-light text-dark-blue me-2 mb-2 d-flex">
         <%= organisation.name %>
         <% if @department.id != organisation.department_id %>
-          <small>
-            (<%= organisation.department.number %> - <%= organisation.department.name %>)
-          </small>
+          <span class="text-dark-grey-alt">
+            &nbsp;(<%= organisation.department.number %> - <%= organisation.department.name %>)
+          </span>
         <% end %>
         <%
           if user.organisations.count > 1

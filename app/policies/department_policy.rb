@@ -10,6 +10,8 @@ class DepartmentPolicy < ApplicationPolicy
   def batch_actions? = upload?
 
   def parcours?
+    return false if record.number.in?(ENV.fetch("DEPARTMENTS_WHERE_PARCOURS_DISABLED", "").split(","))
+
     pundit_user
       .organisations
       .pluck(:organisation_type)
