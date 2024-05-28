@@ -64,7 +64,7 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
 
   let!(:agent) { create(:agent) }
 
-  let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation") }
+  let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation", optional_rdv_subscription: false) }
   let!(:category_configuration) do
     create(:category_configuration, organisation: organisation, convene_user: false, motif_category: motif_category)
   end
