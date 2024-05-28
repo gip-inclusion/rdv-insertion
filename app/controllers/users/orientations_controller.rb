@@ -29,6 +29,7 @@ module Users
     end
 
     def destroy
+      @user = @orientation.user
       if @orientation.destroy
         redirect_to structure_parcours_path(@user.id)
       else

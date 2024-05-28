@@ -1,8 +1,9 @@
 describe "Agents can sort users on index page", :js do
-  let!(:agent) { create(:agent, organisations: [organisation, organisation2]) }
   let!(:department) { create(:department) }
   let!(:organisation) { create(:organisation, department: department) }
   let!(:organisation2) { create(:organisation, department: department) }
+  let!(:agent) { create(:agent, organisations: [organisation2]) }
+  let!(:admin_agent_role) { create(:agent_role, organisation: organisation, agent: agent, access_level: "admin") }
   let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation") }
   let!(:motif_category2) { create(:motif_category, short_name: "rsa_accompagnement", name: "RSA accompagnement") }
   let!(:category_configuration) do
@@ -45,7 +46,6 @@ describe "Agents can sort users on index page", :js do
     end
 
     context "on stats page" do
-
       it "does not show the organisation navigation button in header" do
         visit stats_path
 
@@ -218,6 +218,18 @@ describe "Agents can sort users on index page", :js do
 
       context "on batch actions page" do
         let!(:page_path) { new_organisation_batch_action_path(organisation, motif_category_id: motif_category.id) }
+
+        include_examples "a page with an organisation navigation button"
+      end
+
+      context "on configure organisation page" do
+        let!(:page_path) { organisation_category_configurations_path(organisation) }
+
+        include_examples "a page with an organisation navigation button"
+      end
+
+      context "on configure category configuration page" do
+        let!(:page_path) { organisation_category_configuration_path(organisation, category_configuration) }
 
         include_examples "a page with an organisation navigation button"
       end

@@ -29,7 +29,7 @@ describe Orientations::Save, type: :service do
       end
 
       it "outputs the error" do
-        expect(subject.errors).to eq(["une date de début doit être indiquée"])
+        expect(subject.errors).to eq(["Une date de début doit être indiquée"])
       end
     end
 
@@ -88,7 +88,7 @@ describe Orientations::Save, type: :service do
           end
 
           it "outputs an error" do
-            expect(subject.errors).to eq(["les dates se chevauchent avec une autre orientation"])
+            expect(subject.errors).to eq(["Les dates se chevauchent avec une autre orientation"])
           end
         end
 
@@ -112,7 +112,7 @@ describe Orientations::Save, type: :service do
         end
 
         it "outputs an error" do
-          expect(subject.errors).to eq(["les dates se chevauchent avec une autre orientation"])
+          expect(subject.errors).to eq(["Les dates se chevauchent avec une autre orientation"])
         end
 
         it "does not set the previous ends_at" do
@@ -129,7 +129,7 @@ describe Orientations::Save, type: :service do
         end
 
         it "outputs an error" do
-          expect(subject.errors).to eq(["les dates se chevauchent avec une autre orientation"])
+          expect(subject.errors).to eq(["Les dates se chevauchent avec une autre orientation"])
         end
 
         it "does not set the previous ends_at" do
@@ -147,7 +147,7 @@ describe Orientations::Save, type: :service do
         end
 
         it "outputs an error" do
-          expect(subject.errors).to eq(["les dates se chevauchent avec une autre orientation"])
+          expect(subject.errors).to eq(["Les dates se chevauchent avec une autre orientation"])
         end
 
         it "does not set the previous ends_at" do
@@ -173,7 +173,7 @@ describe Orientations::Save, type: :service do
         end
 
         it "outputs an error" do
-          expect(subject.errors).to eq(["les dates se chevauchent avec une autre orientation"])
+          expect(subject.errors).to eq(["Les dates se chevauchent avec une autre orientation"])
         end
 
         it "does not set the previous ends_at" do
