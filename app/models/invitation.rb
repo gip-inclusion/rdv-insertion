@@ -1,6 +1,5 @@
 class Invitation < ApplicationRecord
   NUMBER_OF_DAYS_BEFORE_REMINDER = 3
-  NOT_REMINDER_TRIGGERS = %w[manual periodic].freeze
 
   include HasCurrentCategoryConfiguration
   include Templatable

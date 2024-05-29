@@ -11,7 +11,7 @@ class AddTriggerToInvitations < ActiveRecord::Migration[7.1]
   def down
     add_column :invitations, :reminder, :boolean, default: false
 
-    Invitation.where(trigger: "reminder").update_all(reminder: true)
+    Invitation.reminder.update_all(reminder: true)
 
     remove_column :invitations, :trigger, :string
   end
