@@ -96,7 +96,7 @@ Rails.application.routes.draw do
     resources :searches, only: :create
   end
 
-  resources :archives, only: [:create, :destroy]
+  resources :archives, only: [:new, :create, :destroy]
 
   namespace :organisations do
     resources :user_added_notifications, only: [:create]
