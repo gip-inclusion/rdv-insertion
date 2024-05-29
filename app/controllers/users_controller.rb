@@ -11,6 +11,7 @@ class UsersController < ApplicationController
   include BackToListConcern
   include Users::Filterable
   include Users::Sortable
+  include Users::Taggable
 
   before_action :set_organisation, :set_department, :set_department_organisations, :set_all_configurations,
                 :set_current_organisations, :set_users_scope,
@@ -91,18 +92,6 @@ class UsersController < ApplicationController
     end
   end
 
-  def reset_tag_users
-    return unless user_params[:tag_users_attributes]
-
-    @user
-      .tags
-      .joins(:organisations)
-      .where(organisations: department_level? ? @department.organisations : @organisation)
-      .find_each do |tag|
-      @user.tags.delete(tag)
-    end
-  end
-
   def csv_exporter
     if params[:export_type] == "participations"
       Exporters::CreateUsersParticipationsCsvExportJob
@@ -175,18 +164,6 @@ class UsersController < ApplicationController
 
     @organisation = policy_scope(Organisation)
                     .find_by(id: @user.organisation_ids, department_id: params[:department_id])
-  end
-
-  def set_filterable_tags
-    @tags = policy_scope((@organisation || @department).tags).order(:value).distinct
-  end
-
-  def set_user_tags
-    @user_tags = policy_scope(@user.tags)
-                 .joins(:organisations)
-                 .where(current_organisations_filter)
-                 .order(:value)
-                 .distinct
   end
 
   def set_user_referents

@@ -1,5 +1,7 @@
-<%= turbo_frame_tag tag, class: "badge badge-tag w-auto d-flex justify-content-between bg-primary mb-2" do %>
-    <%= tag.value %>
+<%= turbo_frame_tag tag, class: "badge badge-tag w-auto d-flex justify-content-between bg-primary mb-2 text-truncate" do %>
+    <span class="text-truncate">
+      <%= tag.value %>
+    </span>
     <%=
       link_to(
         organisation_tag_path(organisation_id: @organisation.id, id: tag.id),

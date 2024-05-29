@@ -5,8 +5,10 @@
       -
     <% else %>
       <% referents.each do |referent| %>
-        <span class="badge badge-tag justify-content-between background-blue-light text-dark-blue me-2 d-flex">
-          <%= referent %>
+        <span class="badge badge-tag justify-content-between background-blue-light text-dark-blue me-2 d-flex text-truncate">
+          <span class="text-truncate">
+            <%= referent %>
+          </span>
           <%=
             link_to(
              referent_assignations_path(agent_id: referent.id, user_id: user.id),

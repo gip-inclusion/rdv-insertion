@@ -1,8 +1,9 @@
 module Users
   class ParcoursController < ApplicationController
-    before_action :set_user, :set_department, :set_back_to_users_list_url, only: [:show]
+    before_action :set_user, :set_department, :set_user_tags, :set_back_to_users_list_url, only: [:show]
 
     include BackToListConcern
+    include Users::Taggable
 
     def show
       @orientations = policy_scope(@user.orientations)
