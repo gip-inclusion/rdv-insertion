@@ -235,7 +235,10 @@ export default class User {
 
     if (this.createdAt) {
       this.triggers[`${attribute}Update`] = true;
-      const result = await handleUserUpdate(this.currentOrganisation.id, this, this.asJson());
+      // No need to resetErrors as we are updating only a single attribute
+      // If any error occurs within handleUserUpdate it will be displayed as a modal anyway.
+      // Storing and resetting errors is only useful for batch actions 
+      const result = await handleUserUpdate(this.currentOrganisation.id, this, this.asJson(), { resetErrors: false });
 
       if (result.success) {
         this.errorsMayNoLongerBeRelevant = true;
@@ -261,8 +264,8 @@ export default class User {
     return !this.errors || this.errors.length === 0;
   }
 
-  updateWith(upToDateUser) {
-    this.resetErrors();
+  updateWith(upToDateUser, options = { resetErrors: true }) {
+    if (options.resetErrors) this.resetErrors();
     this.createdAt = upToDateUser.created_at;
     this.id = upToDateUser.id;
     this.archives = upToDateUser.archives;
