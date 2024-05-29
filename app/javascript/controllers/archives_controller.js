@@ -56,7 +56,6 @@ export default class extends Controller {
   }
 
   handleResult(result) {
-    console.log(result)
     if (result.success) {
       window.location.replace(result.redirect_path);
     } else {
