@@ -24,7 +24,8 @@ class OrganisationPolicy < ApplicationPolicy
   end
 
   def parcours?
-    upload? && record.organisation_type.in?(Organisation::ORGANISATION_TYPES_WITH_PARCOURS_ACCESS)
+    upload? && record.organisation_type.in?(Organisation::ORGANISATION_TYPES_WITH_PARCOURS_ACCESS) &&
+      !record.department.number.in?(ENV.fetch("DEPARTMENTS_WHERE_PARCOURS_DISABLED", "").split(","))
   end
 
   def configure?
