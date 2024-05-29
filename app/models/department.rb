@@ -18,6 +18,7 @@ class Department < ApplicationRecord
   has_many :archived_users, through: :archives, source: :user
   has_many :tags, through: :organisations
   has_one :stat, as: :statable, dependent: :destroy
+  has_many :csv_exports, as: :structure, dependent: :destroy
 
   scope :displayed_in_stats, -> { where(display_in_stats: true) }
 
