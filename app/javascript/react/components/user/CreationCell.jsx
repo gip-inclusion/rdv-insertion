@@ -13,7 +13,7 @@ export default observer(({ user }) => {
     user.createAccount();
   };
 
-  return user.errors.includes("createAccount") ? (
+  return user.activeErrors.includes("createAccount") ? (
       <button type="submit" className="btn btn-danger" onClick={() => handleCreationClick()}>
         Afficher les erreurs
       </button>
@@ -24,7 +24,7 @@ export default observer(({ user }) => {
       className="btn btn-primary btn-blue"
       onClick={() => handleFileReopen()}
     >
-      {user.errors.includes("deleteArchive") ? "Afficher les erreurs" : "Rouvrir le dossier"}
+      {user.activeErrors.includes("deleteArchive") ? "Afficher les erreurs" : "Rouvrir le dossier"}
     </button>
   ) : user.createdAt ? (
     !user.belongsToCurrentOrg() ? (
