@@ -32,13 +32,21 @@
 
   <h4>Gestion des tags associés</h4>
   <div class="row card-white mb-4">
+    <h6 class="px-0 mb-3">Tags utilisés dans cette organisation</h6>
+
+    <div class="mb-3">
+      <%= turbo_frame_tag "tags", class: "d-flex flex-wrap px-0" do %>
+        <%= render @organisation.tags %>
+      <% end %>
+    </div>
+
     <h6 class="px-0 mb-3">Créer un nouveau tag*</h6>
 
     <%= turbo_frame_tag "new_tag", class: "px-0" do %>
       <%= render "tags/tag_form" %>
     <% end %>
 
-    <div class="text-light-blue px-0 mt-3 mb-4">
+    <div class="text-light-blue px-0 mt-3 mb-2">
       <small>
         *Ce champ est une zone de commentaires libres : veillez à utiliser des termes objectifs, pertinents, non excessifs et/ou insultants.
         <br>
@@ -49,12 +57,6 @@
         de suppression des informations qui seraient considérées comme sensibles.
       </small>
     </div>
-
-    <h6 class="px-0 mb-3">Tags utilisés dans cette organisation</h6>
-
-    <%= turbo_frame_tag "tags", class: "d-flex flex-wrap px-0" do %>
-      <%= render @organisation.tags %>
-    <% end %>
   </div>
 
   <h4>Configuration des messages</h4>

@@ -1,5 +1,8 @@
-<%= turbo_frame_tag tag, class: "badge badge-tag justify-content-between background-blue-light text-dark-blue me-2 d-flex" do %>
+<%= turbo_frame_tag tag, class: "badge badge-tag text-truncate justify-content-between background-blue-light text-dark-blue me-2 d-flex" do %>
+  <div class="text-truncate">
     <%= tag.value %>
+  </div>
+  <div>
     <%=
       link_to(
         organisation_tag_path(organisation_id: @organisation.id, id: tag.id),
@@ -13,4 +16,5 @@
     %>
       <i class="fas fa-times"></i>
     <% end%>
+  </div>
 <% end %>

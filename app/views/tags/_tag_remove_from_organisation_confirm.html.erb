@@ -7,7 +7,7 @@
       <%= image_tag "illustrations/error-warning-line.svg", alt: "Illustration d'un message d'avertissement", class: "mb-3" %>
       <h5 class="mt-2">Le tag sera définitivement supprimé</h5>
     </div>
-    <p>Si vous supprimez le tag <b><%= tag.value %></b> de l’organisation <b><%= organisation %></b>, celui-ci sera retiré de tous les usagers comportant ce tag dans cette organisation.</p>
+    <p>Si vous supprimez le tag <b class="text-large text-truncate d-block"><i><%= tag.value %></i></b> de l’organisation <b><%= organisation %></b>, celui-ci sera retiré de tous les usagers comportant ce tag dans cette organisation.</p>
     <ul class="mt-2">
         <% user_count = User.joins(:tags, :organisations)
                 .where(tags: { id: tag.id })
@@ -17,7 +17,7 @@
         %>
         <li><b>Nombre d'usager concernés :</b> <%= user_count %> </li>
     </ul>
-    <p>Êtes-vous sur  vouloir supprimer le tag <b><%= tag.value %></b> de l’organisation <b><%= organisation %></b> ?</p>
+    <p>Êtes-vous sur  vouloir supprimer le tag <b class="text-large text-truncate d-block"><i><%= tag.value %></i></b> de l’organisation <b><%= organisation %></b> ?</p>
   </div>
   <div class="d-flex justify-content-end align-items-center px-3">
     <button type="button" class="btn btn-blue-out border-0 me-2" data-bs-dismiss="modal">
