@@ -35,7 +35,7 @@ describe FollowUp do
       context "when the user has been last invited manually more than 3 days ago in this context" do
         let!(:invitation) { create(:invitation, follow_up: follow_up, created_at: 5.days.ago) }
         let!(:invitation2) { create(:invitation, follow_up: follow_up, created_at: 4.days.ago) }
-        let!(:invitation3) { create(:invitation, reminder: true, follow_up: follow_up, created_at: 1.day.ago) }
+        let!(:invitation3) { create(:invitation, trigger: "reminder", follow_up: follow_up, created_at: 1.day.ago) }
 
         it "retrieve the follow_up" do
           expect(subject).to include(follow_up)
@@ -287,7 +287,7 @@ describe FollowUp do
           end
 
           context "when there is a reminder" do
-            let!(:invitation3) { create(:invitation, follow_up: follow_up, reminder: true, created_at: 1.day.ago) }
+            let!(:invitation3) { create(:invitation, follow_up: follow_up, trigger: "reminder", created_at: 1.day.ago) }
 
             it "is not taken into account" do
               expect(follow_up.invited_before_time_window?(number_of_days_before_action_required)).to eq(true)
