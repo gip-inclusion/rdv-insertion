@@ -1,11 +1,11 @@
 <%= render "common/remote_modal", title: "Ajouter l'usager à une organisation" do %>
-  <%= form_for(:users_organisation, url: users_organisations_path, method: :post) do |f| %>
+  <%= form_for(:users_organisation, url: structure_users_organisations_path(@user.id), method: :post) do |f| %>
     <%= f.hidden_field :user_id, value: @user.id %>
 
     <div class="mb-3">
       <% if @user_organisations.any? %>
         <p class="mb-2"> <%= "Organisation".pluralize(@user_organisations.size) %> déjà <%= "sélectionnée".pluralize(@user_organisations.size) %></p>
-        <div class="flex-wrap d-flex">
+        <div class="flex-wrap d-flex text-truncate">
           <% @user_organisations.each do |organisation| %>
             <span class="badge badge-tag justify-content-between background-blue-light text-dark-grey-alt me-2 d-flex">
               <%= organisation %>

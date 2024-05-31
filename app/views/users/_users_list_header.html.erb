@@ -91,27 +91,9 @@
     <% if asset_exists?("maps/#{@department.name.parameterize}.svg") %>
       <%= image_tag("maps/#{@department.name.parameterize}.svg", alt: @department.name.parameterize, width: 50, height: 50) %>
     <% end %>
-    <% if @department_organisations.length > 1 %>
-      <div class="dropdown text-center">
-        <a class="dropdown-toggle text-center department-map-title mb-0" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-          <%= department_level? ? @department.name : @organisation.name %>
-        </a>
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-          <%= link_to department_users_path(@department) do %>
-            <li><div class="dropdown-item">⭐ Toutes les organisations ⭐</div></li>
-          <% end %>
-          <% @department_organisations.sort_by(&:name).each do |organisation| %>
-            <%= link_to organisation_users_path(organisation) do %>
-              <li><div class="dropdown-item"><%= organisation.name %></div></li>
-            <% end %>
-          <% end %>
-        </ul>
-      </div>
-    <% else %>
-      <h4 class="text-center department-map-title mb-0">
-        <%= department_level? ? @department.name : @organisation.name %>
-      </h4>
-    <% end %>
+    <h4 class="text-center department-map-title mb-0">
+      <%= department_level? ? @department.name : @organisation.name %>
+    </h4>
     <% unless department_level? %>
       <div class="mt-2">
         <%= link_to @organisation.rdv_solidarites_url, target: "_blank" do %>
