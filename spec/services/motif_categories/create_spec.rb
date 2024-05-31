@@ -46,6 +46,23 @@ describe MotifCategories::Create do
       end
     end
 
+    context "when the motif category is for an atelier template and is not optional" do
+      let!(:template) { create(:template, model: "atelier") }
+
+      before do
+        motif_category.template = template
+        motif_category.optional_rdv_subscription = false
+      end
+
+      it "is a failure" do
+        is_a_failure
+      end
+
+      it "stores the error" do
+        expect(subject.errors[0]).to include("facultative")
+      end
+    end
+
     context "when the motif category creation fails" do
       before do
         allow(RdvSolidaritesApi::CreateMotifCategory).to receive(:call)
