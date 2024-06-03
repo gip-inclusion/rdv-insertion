@@ -8,6 +8,7 @@ module Users::Filterable
     filter_users_by_action_required
     filter_users_by_referent
     filter_users_by_status
+    filter_users_by_orientation_type
     filter_users_by_creation_date_after
     filter_users_by_creation_date_before
     filter_users_by_first_invitations
@@ -33,6 +34,12 @@ module Users::Filterable
     return if params[:status].blank?
 
     @users = @users.joins(:follow_ups).where(follow_ups: @follow_ups.status(params[:status]))
+  end
+
+  def filter_users_by_orientation_type
+    return if params[:orientation_type].blank?
+
+    @users = @users.joins(:orientations).where(orientations: { orientation_type: params[:orientation_type] })
   end
 
   def filter_users_by_action_required
