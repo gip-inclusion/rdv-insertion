@@ -82,7 +82,8 @@ describe "Agents can upload user list", :js do
 
       expect(User.last.first_name).to eq("hello")
       expect(User.last.last_name).to eq("hello")
-      expect(User.last.tags.reload.pluck(:value)).to eq(%w[Gentils cool])
+      expect(User.last.role).to eq("conjoint")
+      expect(User.last.tags.pluck(:value)).to eq(%w[Gentils cool])
     end
   end
 end

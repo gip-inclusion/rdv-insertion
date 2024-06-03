@@ -42,4 +42,47 @@ module NavigationHelper
   def new_structure_batch_action_path(motif_category_id)
     send(:"new_#{Current.structure_type}_batch_action_path", { **structure_id_param, motif_category_id: })
   end
+
+  def structure_parcours_path(user_id)
+    send(:"#{Current.structure_type}_user_parcours_path", { user_id:, **structure_id_param })
+  end
+
+  def edit_structure_user_orientation_path(user_id, orientation_id)
+    send(
+      :"edit_#{Current.structure_type}_user_orientation_path", { user_id:, id: orientation_id, **structure_id_param }
+    )
+  end
+
+  def structure_user_orientation_path(user_id, orientation_id)
+    send(:"#{Current.structure_type}_user_orientation_path", { user_id:, id: orientation_id, **structure_id_param })
+  end
+
+  def structure_user_orientations_path(user_id)
+    send(:"#{Current.structure_type}_user_orientations_path", { user_id:, **structure_id_param })
+  end
+
+  def new_structure_user_orientation_path(user_id)
+    send(:"new_#{Current.structure_type}_user_orientation_path", { user_id:, **structure_id_param })
+  end
+
+  def structure_user_parcours_document_path(user_id, parcours_document_id)
+    send(:"#{Current.structure_type}_user_parcours_document_path",
+         { user_id:, id: parcours_document_id, **structure_id_param })
+  end
+
+  def structure_user_parcours_documents_path(user_id)
+    send(:"#{Current.structure_type}_user_parcours_documents_path", { user_id:, **structure_id_param })
+  end
+
+  def structure_tag_assignations_path(user_id, **params)
+    send(:"#{Current.structure_type}_tag_assignations_path", { user_id:, **structure_id_param, **params })
+  end
+
+  def structure_users_organisations_path(user_id, **params)
+    send(:"#{Current.structure_type}_users_organisations_path", { user_id:, **structure_id_param, **params })
+  end
+
+  def structure_referent_assignations_path(user_id, **params)
+    send(:"#{Current.structure_type}_referent_assignations_path", { user_id:, **structure_id_param, **params })
+  end
 end
