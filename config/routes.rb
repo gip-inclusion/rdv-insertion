@@ -52,6 +52,7 @@ Rails.application.routes.draw do
       scope module: :users do
         resources :follow_ups, only: [:index]
       end
+      resources :archives, only: [:new, :create]
       resources :invitations, only: [:create]
     end
     # we need to nest in organisations the different category_configurations record to correctly authorize them
@@ -96,7 +97,7 @@ Rails.application.routes.draw do
     resources :searches, only: :create
   end
 
-  resources :archives, only: [:new, :create, :destroy]
+  resources :archives, only: [:destroy]
 
   namespace :organisations do
     resources :user_added_notifications, only: [:create]
@@ -139,6 +140,7 @@ Rails.application.routes.draw do
         resource :parcours, only: [:show]
       end
       resources :invitations, only: [:create]
+      resources :archives, only: [:new, :create]
     end
     resource :stats, only: [:show]
   end

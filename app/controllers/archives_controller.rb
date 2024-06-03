@@ -1,5 +1,5 @@
 class ArchivesController < ApplicationController
-  before_action :set_user, :set_department, only: %i[new]
+  before_action :set_user, :set_department, only: %i[new create]
 
   def new
     @archive = Archive.new(user: @user, department: @department)
@@ -7,7 +7,7 @@ class ArchivesController < ApplicationController
   end
 
   def create
-    @archive = Archive.new(**archive_params)
+    @archive = Archive.new(archive_params.merge(user: @user, department: @department))
     authorize @archive
     if @archive.save
       turbo_stream_redirect(structure_user_path(@archive.user.id))
@@ -37,6 +37,6 @@ class ArchivesController < ApplicationController
   end
 
   def archive_params
-    params.require(:archive).permit(:archiving_reason, :user_id, :department_id).to_h.symbolize_keys
+    params.require(:archive).permit(:archiving_reason)
   end
 end

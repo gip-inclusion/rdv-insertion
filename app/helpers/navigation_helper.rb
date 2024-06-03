@@ -19,12 +19,20 @@ module NavigationHelper
     send(:"#{Current.structure_type}_user_path", { id: user_id, **structure_id_param, **params })
   end
 
+  def structure_user_archives_path(user_id)
+    send(:"#{Current.structure_type}_user_archives_path", { user_id: user_id, **structure_id_param })
+  end
+
   def new_structure_user_path
     send(:"new_#{Current.structure_type}_user_path", **structure_id_param)
   end
 
   def new_structure_upload_path(**params)
     send(:"new_#{Current.structure_type}_upload_path", { **structure_id_param, **params })
+  end
+
+  def new_structure_user_archive_path(**params)
+    send(:"new_#{Current.structure_type}_user_archive_path", { **structure_id_param, **params })
   end
 
   def uploads_category_selection_structure_users_path(**params)
