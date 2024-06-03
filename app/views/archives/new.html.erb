@@ -1,4 +1,4 @@
-<%= render "common/remote_modal", no_header: true do %>
+<%= render "common/remote_modal" do %>
   <div class="modal-body pt-0">
     <%= form_for(:archive, url: structure_user_archives_path(@user.id), method: :post) do |f| %>
       <div id="custom-body" class="w-100 mb-4">
