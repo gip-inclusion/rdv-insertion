@@ -10,7 +10,7 @@ class ArchivesController < ApplicationController
     @archive = Archive.new(archive_params.merge(user: @user, department: @department))
     authorize @archive
     if @archive.save
-      turbo_stream_redirect(structure_user_path(@archive.user.id))
+      turbo_stream_redirect(request.referer)
     else
       turbo_stream_display_error_modal(@archive.errors.full_messages)
     end
@@ -20,7 +20,7 @@ class ArchivesController < ApplicationController
     @archive = Archive.find(params[:id])
     authorize @archive
     if @archive.destroy
-      render json: { success: true, archive: @archive, redirect_path: structure_user_path(@archive.user_id) }
+      render json: { success: true, archive: @archive, redirect_path: request.referer }
     else
       render json: { success: false, errors: @archive.errors.full_messages }, status: :unprocessable_entity
     end

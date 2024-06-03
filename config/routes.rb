@@ -51,6 +51,9 @@ Rails.application.routes.draw do
       end
       scope module: :users do
         resources :follow_ups, only: [:index]
+        resource :parcours, only: [:show]
+        resources :orientations, only: [:new, :create, :edit, :update, :destroy]
+        resources :parcours_documents, only: [:show, :update, :create, :destroy]
       end
       resources :archives, only: [:new, :create]
       resources :invitations, only: [:create]
@@ -59,6 +62,12 @@ Rails.application.routes.draw do
     resources :category_configurations, only: [:index, :show, :new, :create, :edit, :update, :destroy]
     patch "category_configurations_positions/update", to: "category_configurations_positions#update"
     resources :tags, only: [:create, :destroy]
+    resources :users_organisations, only: [:index, :create]
+    resource :users_organisations, only: [:destroy]
+    resources :referent_assignations, only: [:index, :create]
+    resource :referent_assignations, only: [:destroy]
+    resources :tag_assignations, only: [:index, :create]
+    resource :tag_assignations, only: [:destroy]
     resources :file_configurations, only: [:show, :new, :create, :edit, :update] do
       get :confirm_update
     end
@@ -71,8 +80,6 @@ Rails.application.routes.draw do
   end
 
   resources :users, module: :users, only: [] do
-    resources :orientations, only: [:new, :create, :edit, :update, :destroy]
-    resources :parcours_documents, only: [:show, :update, :create, :destroy]
     resources :rdvs, only: [:new]
   end
 
@@ -116,13 +123,6 @@ Rails.application.routes.draw do
     resources :carnets, only: [:create]
   end
 
-  resources :users_organisations, only: [:index, :create]
-  resource :users_organisations, only: [:destroy]
-  resources :referent_assignations, only: [:index, :create]
-  resource :referent_assignations, only: [:destroy]
-  resources :tag_assignations, only: [:index, :create]
-  resource :tag_assignations, only: [:destroy]
-
   resources :departments, only: [] do
     patch "category_configurations_positions/update", to: "category_configurations_positions#update"
     resources :department_organisations, only: [:index], as: :organisations, path: "/organisations"
@@ -138,11 +138,19 @@ Rails.application.routes.draw do
       scope module: :users do
         resources :follow_ups, only: [:index]
         resource :parcours, only: [:show]
+        resources :orientations, only: [:new, :create, :edit, :update, :destroy]
+        resources :parcours_documents, only: [:show, :update, :create, :destroy]
       end
       resources :invitations, only: [:create]
       resources :archives, only: [:new, :create]
     end
     resource :stats, only: [:show]
+    resources :users_organisations, only: [:index, :create]
+    resource :users_organisations, only: [:destroy]
+    resources :referent_assignations, only: [:index, :create]
+    resource :referent_assignations, only: [:destroy]
+    resources :tag_assignations, only: [:index, :create]
+    resource :tag_assignations, only: [:destroy]
   end
   resources :invitation_dates_filterings, :creation_dates_filterings, only: [:new]
 

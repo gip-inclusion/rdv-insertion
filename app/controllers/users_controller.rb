@@ -12,7 +12,7 @@ class UsersController < ApplicationController
   include Users::Filterable
   include Users::Sortable
 
-  before_action :set_organisation, :set_department, :set_department_organisations, :set_all_configurations,
+  before_action :set_organisation, :set_department, :set_all_configurations,
                 :set_current_organisations, :set_users_scope,
                 :set_current_category_configuration, :set_current_motif_category,
                 :set_users, :set_follow_ups, :set_filterable_tags, :set_referents_list,
@@ -21,7 +21,7 @@ class UsersController < ApplicationController
   before_action :set_user, :set_organisation, :set_department, :set_all_configurations,
                 :set_user_archive, :set_user_tags, :set_user_referents, :set_back_to_users_list_url,
                 for: :show
-  before_action :set_organisation, :set_department, :set_department_organisations,
+  before_action :set_organisation, :set_department,
                 for: :new
   before_action :set_organisation, :set_department,
                 for: :create
@@ -203,12 +203,8 @@ class UsersController < ApplicationController
     )
   end
 
-  def set_department_organisations
-    @department_organisations = policy_scope(Organisation).where(department: @department).to_a
-  end
-
   def set_current_organisations
-    @current_organisations = department_level? ? @department_organisations : [@organisation]
+    @current_organisations = department_level? ? Current.department_organisations : [@organisation]
   end
 
   def set_department
@@ -292,7 +288,7 @@ class UsersController < ApplicationController
   end
 
   def set_referents_list
-    @referents_list = current_structure.agents.where.not(last_name: nil).distinct.order(:last_name)
+    @referents_list = Current.structure.agents.where.not(last_name: nil).distinct.order(:last_name)
     @referents_list = @referents_list.where(super_admin: false) if production_env?
   end
 
@@ -312,8 +308,8 @@ class UsersController < ApplicationController
 
   def default_list_path
     motif_category_param =
-      if current_structure.motif_categories.length == 1
-        { motif_category_id: current_structure.motif_categories.first.id }
+      if Current.structure.motif_categories.length == 1
+        { motif_category_id: Current.structure.motif_categories.first.id }
       else
         {}
       end

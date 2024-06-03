@@ -11,7 +11,7 @@
   </li>
   <% if show_parcours?(@department, @organisation) %>
     <li class="nav-item">
-      <%= link_to department_user_parcours_path(user_id: user.id, department_id: @department.id), class: "nav-link d-flex align-items-center #{tab == "parcours" ? "active" : ""}" do %>
+      <%= link_to structure_parcours_path(user.id), class: "nav-link d-flex align-items-center #{tab == "parcours" ? "active" : ""}" do %>
         Parcours
       <% end %>
     </li>
