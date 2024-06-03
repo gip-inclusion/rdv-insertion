@@ -5,11 +5,11 @@ class LoginForm {
     this.loginForm = document.getElementById("js-login-form");
     if (this.loginForm === null) return;
 
-    this.attachSumbitListner();
-    this.attachPasswordVisibilityListner();
+    this.attachSubmitListener();
+    this.attachPasswordVisibilityListener();
   }
 
-  attachSumbitListner() {
+  attachSubmitListener() {
     this.loginForm.addEventListener("submit", (event) => {
       event.preventDefault();
       event.stopPropagation();
@@ -17,7 +17,7 @@ class LoginForm {
     });
   }
 
-  attachPasswordVisibilityListner() {
+  attachPasswordVisibilityListener() {
     this.passwordInput = document.getElementById("password");
     this.passwordVisibilityIcon = document.querySelector(".input-group-text i");
 
