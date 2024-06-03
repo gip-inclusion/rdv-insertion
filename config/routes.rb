@@ -57,6 +57,9 @@ Rails.application.routes.draw do
       end
       resources :invitations, only: [:create]
     end
+    resources :follow_ups, module: :follow_ups, only: [] do
+      resource :closings, only: [:create, :destroy]
+    end
     # we need to nest in organisations the different category_configurations record to correctly authorize them
     resources :category_configurations, only: [:index, :show, :new, :create, :edit, :update, :destroy]
     patch "category_configurations_positions/update", to: "category_configurations_positions#update"
@@ -94,10 +97,6 @@ Rails.application.routes.draw do
 
   resources :participations, only: [:update]
   resources :follow_ups, only: [:create]
-
-  resources :follow_ups, module: :follow_ups, only: [] do
-    resource :closings, only: [:create, :destroy]
-  end
 
   namespace :users do
     resources :searches, only: :create
@@ -141,6 +140,9 @@ Rails.application.routes.draw do
         resources :parcours_documents, only: [:show, :update, :create, :destroy]
       end
       resources :invitations, only: [:create]
+    end
+    resources :follow_ups, module: :follow_ups, only: [] do
+      resource :closings, only: [:create, :destroy]
     end
     resource :stats, only: [:show]
     resources :users_organisations, only: [:index, :create]

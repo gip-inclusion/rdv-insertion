@@ -85,4 +85,8 @@ module NavigationHelper
   def structure_referent_assignations_path(user_id, **params)
     send(:"#{Current.structure_type}_referent_assignations_path", { user_id:, **structure_id_param, **params })
   end
+
+  def structure_follow_up_closings_path(follow_up_id)
+    send(:"#{Current.structure_type}_follow_up_closings_path", { follow_up_id:, **structure_id_param })
+  end
 end
