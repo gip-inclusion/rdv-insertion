@@ -10,7 +10,7 @@ class ArchivesController < ApplicationController
     @archive = Archive.new(archive_params.merge(user: @user, department: @department))
     authorize @archive
     if @archive.save
-      turbo_stream_redirect(request.referer)
+      redirect_to request.referer
     else
       turbo_stream_display_error_modal(@archive.errors.full_messages)
     end
