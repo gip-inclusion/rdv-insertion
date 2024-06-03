@@ -21,8 +21,13 @@ class MotifCategory < ApplicationRecord
   }
 
   def selected_template_allows_mandatory_rdv_subscription
-    return unless template&.model&.include?("atelier") && !optional_rdv_subscription?
+    return if
+      optional_rdv_subscription? ||
+      Rails
+      .root
+      .join("app", "views", "mailers", "invitation_mailer", "#{template.model}_invitation_reminder.html.erb")
+      .exist?
 
-    errors.add(:base, "La participation doit être facultative pour un template de type atelier")
+    errors.add(:base, "Ce modèle de RDV n'est pas compatible avec un suivi obligatoire (email de rappel non configuré)")
   end
 end
