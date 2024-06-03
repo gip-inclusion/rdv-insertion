@@ -25,7 +25,7 @@ class MotifCategory < ApplicationRecord
       optional_rdv_subscription? ||
       Rails
       .root
-      .join("app", "views", "mailers", "invitation_mailer", "#{template.model}_invitation_reminder.html.erb")
+      .join("app", "views", "mailers", "invitation_mailer", "#{template&.model}_invitation_reminder.html.erb")
       .exist?
 
     errors.add(:base, "Ce modèle de RDV n'est pas compatible avec un suivi obligatoire (email de rappel non configuré)")
