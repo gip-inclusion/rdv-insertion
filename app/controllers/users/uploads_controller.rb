@@ -16,12 +16,12 @@ module Users
     def set_organisation
       return if department_level?
 
-      @organisation = Current.structure
+      @organisation = @current_structure
       authorize @organisation, :upload?
     end
 
     def set_department
-      @department = department_level? ? Current.structure : @organisation.department
+      @department = department_level? ? @current_structure : @organisation.department
       authorize @department, :upload? if department_level?
     end
 

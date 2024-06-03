@@ -37,11 +37,11 @@ class TagAssignationsController < ApplicationController
   end
 
   def department
-    @department ||= policy_scope(Department).find(current_department_id)
+    @department ||= @current_department
   end
 
   def organisation
-    @organisation ||= policy_scope(Organisation).find(current_organisation_id)
+    @organisation ||= @current_organisation
   end
 
   def tag

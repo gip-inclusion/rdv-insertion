@@ -22,6 +22,6 @@ class StatsController < ApplicationController
   end
 
   def set_stat
-    @stat = Stat.find_by(statable: Current.structure)
+    @stat = Stat.find_by(statable: @current_structure)
   end
 end

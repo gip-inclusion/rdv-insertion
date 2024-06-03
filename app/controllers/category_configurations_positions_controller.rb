@@ -18,8 +18,8 @@ class CategoryConfigurationsPositionsController < ApplicationController
   end
 
   def category_configurations
-    @category_configurations ||= Current.structure.category_configurations
-                                        .includes([:motif_category])
-                                        .order(position: :asc)
+    @category_configurations ||= @current_structure.category_configurations
+                                                   .includes([:motif_category])
+                                                   .order(position: :asc)
   end
 end

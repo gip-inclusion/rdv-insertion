@@ -24,7 +24,7 @@ class TagsController < ApplicationController
   private
 
   def set_organisation
-    @organisation = policy_scope(Organisation).find(params[:organisation_id])
+    @organisation = @current_organisation
   end
 
   def tag_params

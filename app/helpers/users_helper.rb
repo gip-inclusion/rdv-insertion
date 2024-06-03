@@ -78,6 +78,6 @@ module UsersHelper
   end
 
   def current_or_mutual_organisation_id(user, agent, department)
-    Current.organisation_id || mutual_department_organisations(user, agent, department).first.id
+    current_organisation_id || mutual_department_organisations(user, agent, department).first.id
   end
 end

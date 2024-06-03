@@ -56,7 +56,7 @@ class MessagesConfigurationsController < ApplicationController
   end
 
   def set_organisation
-    @organisation = policy_scope(Organisation).find(params[:organisation_id])
+    @organisation = @current_organisation
     authorize @organisation, :configure?
   end
 end
