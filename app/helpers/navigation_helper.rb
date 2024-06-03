@@ -1,4 +1,3 @@
-
 module NavigationHelper
   def structure_id_param
     department_level? ? { department_id: current_department_id } : { organisation_id: current_organisation_id }
