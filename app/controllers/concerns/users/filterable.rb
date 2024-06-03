@@ -39,7 +39,11 @@ module Users::Filterable
   def filter_users_by_orientation_type
     return if params[:orientation_type].blank?
 
-    @users = @users.joins(:orientations).where(orientations: { orientation_type: params[:orientation_type] })
+    @users = @users
+             .joins(:orientations)
+             .where(orientations: { orientation_type: params[:orientation_type] })
+             .where("orientations.starts_at <= ?", Time.zone.now)
+             .where("orientations.ends_at >= ?", Time.zone.now)
   end
 
   def filter_users_by_action_required
