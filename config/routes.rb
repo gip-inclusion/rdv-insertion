@@ -70,6 +70,7 @@ Rails.application.routes.draw do
     resource :referent_assignations, only: [:destroy]
     resources :tag_assignations, only: [:index, :create]
     resource :tag_assignations, only: [:destroy]
+    resources :invitation_dates_filterings, :creation_dates_filterings, only: [:new]
     resources :file_configurations, only: [:show, :new, :create, :edit, :update] do
       get :confirm_update
     end
@@ -151,8 +152,8 @@ Rails.application.routes.draw do
     resource :referent_assignations, only: [:destroy]
     resources :tag_assignations, only: [:index, :create]
     resource :tag_assignations, only: [:destroy]
+    resources :invitation_dates_filterings, :creation_dates_filterings, only: [:new]
   end
-  resources :invitation_dates_filterings, :creation_dates_filterings, only: [:new]
 
   namespace :api do
     namespace :v1 do

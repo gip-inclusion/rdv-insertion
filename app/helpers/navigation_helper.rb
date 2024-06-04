@@ -89,4 +89,12 @@ module NavigationHelper
   def structure_follow_up_closings_path(follow_up_id)
     send(:"#{current_structure_type}_follow_up_closings_path", { follow_up_id:, **structure_id_param })
   end
+
+  def new_structure_creation_dates_filtering_path(url_params)
+    send(:"new_#{current_structure_type}_creation_dates_filtering_path", { **structure_id_param, **url_params })
+  end
+
+  def new_structure_invitation_dates_filtering_path(url_params)
+    send(:"new_#{current_structure_type}_invitation_dates_filtering_path", { **structure_id_param, **url_params })
+  end
 end
