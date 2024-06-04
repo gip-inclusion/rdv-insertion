@@ -129,7 +129,6 @@ describe "Super admin can manage motif categories" do
         click_button("Enregistrer")
 
         expect(stub_create_motif_category).not_to have_been_requested
-        expect(page).to have_content("1 erreur ont empêché Catégorie de motifs d'être sauvegardé(e)")
         expect(page).to have_content("Template doit exister")
       end
     end

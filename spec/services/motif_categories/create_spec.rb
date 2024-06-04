@@ -46,7 +46,7 @@ describe MotifCategories::Create do
       end
     end
 
-    context "when the motif category is for an atelier template and is not optional" do
+    context "when the template model does not support reminders and subscription is mandatory" do
       let!(:template) { create(:template, model: "atelier") }
 
       before do
@@ -59,7 +59,20 @@ describe MotifCategories::Create do
       end
 
       it "stores the error" do
-        expect(subject.errors[0]).to include("facultative")
+        expect(subject.errors[0]).to include("compatible")
+      end
+    end
+
+    context "when the template model supports reminders and subscription is mandatory" do
+      let!(:template) { create(:template, model: "atelier_enfants_ados") }
+
+      before do
+        motif_category.template = template
+        motif_category.optional_rdv_subscription = false
+      end
+
+      it "is a success" do
+        is_a_success
       end
     end
 
