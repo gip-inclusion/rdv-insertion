@@ -30,11 +30,11 @@ module CurrentStructure
   end
 
   def current_department_id
-    @current_department_id ||= params[:department_id].to_i if current_structure_type == "department"
+    @current_department_id ||= department_level? ? params[:department_id].to_i : current_department&.id
   end
 
   def current_structure
-    return unless current_department_id || current_organisation_id
+    return unless params[:department_id] || params[:organisation_id]
 
     @current_structure ||=
       department_level? ? Department.find(current_department_id) : Organisation.find(current_organisation_id)

@@ -43,10 +43,10 @@ describe FileConfigurationsController do
         sign_in(unauthorized_agent)
       end
 
-      it "raises an error" do
-        expect do
-          get :show, params: show_params
-        end.to raise_error(ActiveRecord::RecordNotFound)
+      it "redirects the agent" do
+        get :show, params: show_params
+        expect(response).to redirect_to(root_path)
+        expect(flash[:alert]).to include("Votre compte ne vous permet pas d'effectuer cette action")
       end
     end
   end
@@ -83,10 +83,10 @@ describe FileConfigurationsController do
         sign_in(unauthorized_agent)
       end
 
-      it "raises an error" do
-        expect do
-          get :new, params: new_params
-        end.to raise_error(ActiveRecord::RecordNotFound)
+      it "redirects the agent" do
+        get :new, params: new_params
+        expect(response).to redirect_to(root_path)
+        expect(flash[:alert]).to include("Votre compte ne vous permet pas d'effectuer cette action")
       end
     end
   end
@@ -123,10 +123,10 @@ describe FileConfigurationsController do
         sign_in(unauthorized_agent)
       end
 
-      it "raises an error" do
-        expect do
-          get :edit, params: edit_params
-        end.to raise_error(ActiveRecord::RecordNotFound)
+      it "redirects the agent" do
+        get :edit, params: edit_params
+        expect(response).to redirect_to(root_path)
+        expect(flash[:alert]).to include("Votre compte ne vous permet pas d'effectuer cette action")
       end
     end
   end
@@ -210,10 +210,10 @@ describe FileConfigurationsController do
         sign_in(unauthorized_agent)
       end
 
-      it "raises an error" do
-        expect do
-          post :create, params: create_params, format: :turbo_stream
-        end.to raise_error(ActiveRecord::RecordNotFound)
+      it "redirects the agent" do
+        post :create, params: create_params, format: :turbo_stream
+        expect(response).to redirect_to(root_path)
+        expect(flash[:alert]).to include("Votre compte ne vous permet pas d'effectuer cette action")
       end
     end
   end
@@ -290,10 +290,10 @@ describe FileConfigurationsController do
         sign_in(unauthorized_agent)
       end
 
-      it "raises an error" do
-        expect do
-          patch :update, params: update_params, format: :turbo_stream
-        end.to raise_error(ActiveRecord::RecordNotFound)
+      it "redirects the agent" do
+        patch :update, params: update_params, format: :turbo_stream
+        expect(response).to redirect_to(root_path)
+        expect(flash[:alert]).to include("Votre compte ne vous permet pas d'effectuer cette action")
       end
     end
   end
