@@ -37,11 +37,9 @@ module CurrentStructure
     return unless current_department_id || current_organisation_id
 
     @current_structure ||=
-      if department_level?
-        policy_scope(Department).find(current_department_id)
-      else
-        policy_scope(Organisation).find(current_organisation_id)
-      end
+      department_level? ? Department.find(current_department_id) : Organisation.find(current_organisation_id)
+
+    authorize @current_structure, :access? if current_agent
   end
 
   def current_department
