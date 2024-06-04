@@ -15,7 +15,7 @@ module Users
     private
 
     def set_department
-      @department = @current_department
+      @department = current_department
       authorize(@department, :parcours?)
     end
 

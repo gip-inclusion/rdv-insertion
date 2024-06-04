@@ -37,11 +37,11 @@ class TagAssignationsController < ApplicationController
   end
 
   def department
-    @department ||= @current_department
+    @department ||= current_department
   end
 
   def organisation
-    @organisation ||= @current_organisation
+    @organisation ||= current_organisation
   end
 
   def tag

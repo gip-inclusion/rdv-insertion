@@ -101,7 +101,7 @@ class CategoryConfigurationsController < ApplicationController
   end
 
   def set_organisation
-    @organisation = @current_organisation
+    @organisation = current_organisation
   end
 
   def authorize_organisation_category_configuration

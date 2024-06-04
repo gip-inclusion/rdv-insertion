@@ -58,7 +58,7 @@ class ReferentAssignationsController < ApplicationController
   end
 
   def set_department
-    @department = @current_department
+    @department = current_department
   end
 
   def set_agents

@@ -93,7 +93,7 @@ class FileConfigurationsController < ApplicationController
   end
 
   def set_organisation
-    @organisation = @current_organisation
+    @organisation = current_organisation
     authorize @organisation, :configure?
   end
 

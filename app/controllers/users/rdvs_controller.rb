@@ -22,7 +22,7 @@ module Users
     end
 
     def set_organisation
-      @organisation = @current_organisation
+      @organisation = current_organisation
     end
   end
 end

@@ -24,7 +24,7 @@ class TagsController < ApplicationController
   private
 
   def set_organisation
-    @organisation = @current_organisation
+    @organisation = current_organisation
   end
 
   def tag_params
