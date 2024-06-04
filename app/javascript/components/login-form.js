@@ -5,10 +5,11 @@ class LoginForm {
     this.loginForm = document.getElementById("js-login-form");
     if (this.loginForm === null) return;
 
-    this.attachListeners();
+    this.attachSubmitListener();
+    this.attachPasswordVisibilityListener();
   }
 
-  attachListeners() {
+  attachSubmitListener() {
     this.loginForm.addEventListener("submit", (event) => {
       event.preventDefault();
       event.stopPropagation();
@@ -16,11 +17,20 @@ class LoginForm {
     });
   }
 
+  attachPasswordVisibilityListener() {
+    this.passwordInput = document.getElementById("password");
+    this.passwordVisibilityIcon = document.querySelector(".input-group-text i");
+
+    this.passwordVisibilityIcon.addEventListener("click", () => {
+      this.togglePasswordVisibility();
+    });
+  }
+
   async signIn() {
     this.buttonForm = this.loginForm.querySelector("input[type=submit]");
     this.setButtonPending();
     this.email = this.loginForm.querySelector("input[type=email]").value;
-    this.password = this.loginForm.querySelector("input[type=password]").value;
+    this.password = this.passwordInput.value;
     this.formAuthenticityToken = this.loginForm.querySelector(
       "input[name=authenticity_token]"
     ).value;
@@ -102,6 +112,18 @@ class LoginForm {
       body: await response.json(),
       headers: response.headers,
     };
+  }
+
+  togglePasswordVisibility() {
+      if (this.passwordInput.type === "password") {
+        this.passwordInput.type = "text";
+        this.passwordVisibilityIcon.classList.remove("fa-eye");
+        this.passwordVisibilityIcon.classList.add("fa-eye-slash");
+      } else {
+        this.passwordInput.type = "password";
+        this.passwordVisibilityIcon.classList.remove("fa-eye-slash");
+        this.passwordVisibilityIcon.classList.add("fa-eye");
+      }
   }
 }
 
