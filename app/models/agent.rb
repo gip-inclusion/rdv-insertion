@@ -37,7 +37,7 @@ class Agent < ApplicationRecord
   end
 
   def to_s
-    "#{first_name} #{last_name&.upcase}"
+    "#{first_name} #{last_name&.upcase}".strip
   end
 
   private
