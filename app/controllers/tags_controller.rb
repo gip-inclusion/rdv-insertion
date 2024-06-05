@@ -9,7 +9,7 @@ class TagsController < ApplicationController
 
     @organisation.tags << tag
 
-    render turbo_stream: turbo_stream.append("tags", partial: "tags/tag", locals: { tag: tag })
+    redirect_to organisation_category_configurations_path(@organisation)
   end
 
   def destroy
