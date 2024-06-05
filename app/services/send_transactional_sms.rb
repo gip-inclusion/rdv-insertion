@@ -1,8 +1,9 @@
 class SendTransactionalSms < BaseService
-  def initialize(phone_number:, sender_name:, content:)
+  def initialize(phone_number:, sender_name:, content:, invitation_id: nil)
     @sender_name = sender_name
     @phone_number = phone_number
     @content = content
+    @invitation_id = invitation_id
   end
 
   def call
@@ -27,12 +28,19 @@ class SendTransactionalSms < BaseService
   end
 
   def transactional_sms
-    SibApiV3Sdk::SendTransacSms.new(
+    opts = {
       sender: @sender_name,
       recipient: @phone_number,
       content: formatted_content,
       type: "transactional"
-    )
+    }
+    if @invitation_id
+      # Used to track the SMS invitation status with the brevo webhooks
+      opts[:webUrl] =
+        Rails.application.routes.url_helpers.brevo_sms_webhooks_url(@invitation_id, host: ENV["HOST"])
+    end
+
+    SibApiV3Sdk::SendTransacSms.new(opts)
   end
 
   def formatted_content

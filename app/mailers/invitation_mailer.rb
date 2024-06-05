@@ -7,6 +7,10 @@ class InvitationMailer < ApplicationMailer
   before_action :set_rdv_title, :set_user_designation, :set_mandatory_warning, :set_punishable_warning,
                 :set_rdv_purpose, :set_rdv_subject, :set_custom_sentence
 
+  before_action :set_x_mailin_custom_header,
+                only: %i[standard_invitation short_invitation phone_platform_invitation atelier_invitation
+                         atelier_enfants_ados_invitation]
+
   default to: -> { @user.email }, reply_to: -> { "invitation+#{@invitation.uuid}@reply.rdv-insertion.fr" }
 
   def standard_invitation
@@ -66,6 +70,10 @@ class InvitationMailer < ApplicationMailer
   end
 
   private
+
+  def set_x_mailin_custom_header
+    headers["X-Mailin-custom"] = { invitation_id: @invitation.id, environment: Rails.env }.to_json
+  end
 
   def set_invitation
     @invitation = params[:invitation]

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_23_142208) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_31_140628) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -198,6 +198,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_23_142208) do
     t.string "uuid"
     t.boolean "rdv_with_referents", default: false
     t.string "trigger", default: "manual", null: false
+    t.string "delivery_status"
+    t.datetime "delivery_status_received_at"
     t.index ["department_id"], name: "index_invitations_on_department_id"
     t.index ["follow_up_id"], name: "index_invitations_on_follow_up_id"
     t.index ["user_id"], name: "index_invitations_on_user_id"
