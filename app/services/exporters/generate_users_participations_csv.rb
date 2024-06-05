@@ -2,38 +2,39 @@ module Exporters
   class GenerateUsersParticipationsCsv < GenerateUsersCsv
     private
 
-    def each_element(&block)
-      @users.each do |user|
-        user.participations
-            .joins(:rdv)
-            .order("rdvs.starts_at desc")
-            .where(rdvs: { organisation_id: @agent.organisation_ids })
-            .to_a.each(&block)
+    def each_element(&)
+      filtered_participations.each(&)
+    end
+
+    def filtered_participations
+      if @motif_category
+        @participations.where(user_id: @user_ids)
+                       .joins(rdv: { motif: :motif_category })
+                       .where(motif_categories: { id: @motif_category.id })
+      else
+        @participations.where(user_id: @user_ids)
+                       .joins(:rdv)
       end
+        .where(rdvs: { organisation_id: @agent.organisation_ids })
+        .order("rdvs.starts_at desc")
     end
 
     def preload_associations
-      @users =
+      @participations =
         if @motif_category
-          User.preload(:tags, :referents, :organisations)
+          Participation.preload(user: [:tags, :referents, :organisations])
         else
-          User.preload(:invitations, :notifications, :organisations, :tags, :referents)
+          Participation.preload(user: [:tags, :referents, :organisations, :invitations, :notifications])
         end
 
-      @users = @users.preload(
-        participations: [
-          :agent_prescripteur,
-          :organisation,
-          {
-            follow_up: [
-              :invitations,
-              :notifications,
-              { rdvs: [:motif, :organisation, :participations, :users] }
-            ]
-          }
+      @participations = @participations.preload(
+        rdv: [:motif, :organisation],
+        follow_up: [
+          :invitations,
+          :notifications,
+          { rdvs: [:motif, :organisation, :participations, :users] }
         ]
       )
-      @users = @users.find(@user_ids)
     end
 
     def headers
