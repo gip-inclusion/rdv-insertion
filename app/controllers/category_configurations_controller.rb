@@ -102,7 +102,7 @@ class CategoryConfigurationsController < ApplicationController
   end
 
   def set_organisation
-    @organisation = policy_scope(Organisation).find(params[:organisation_id])
+    @organisation = current_organisation
   end
 
   def user_count_by_tag_id

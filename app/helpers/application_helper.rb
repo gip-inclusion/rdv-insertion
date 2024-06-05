@@ -34,6 +34,11 @@ module ApplicationHelper
     current_agent.nil? && controller_name.include?("static_pages")
   end
 
+  def show_organisation_navigation_button?
+    current_agent_department_organisations && current_agent_department_organisations.length > 1 &&
+      controller_name.exclude?("stats")
+  end
+
   def show_guide_banner?
     show_login_button?
   end
