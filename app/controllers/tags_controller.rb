@@ -9,9 +9,7 @@ class TagsController < ApplicationController
 
     @organisation.tags << tag
 
-    @user_count_by_tag_id = user_count_by_tag_id
-
-    render turbo_stream: turbo_stream.append("tags", partial: "tags/tag", locals: { tag: tag })
+    redirect_to organisation_category_configurations_path(@organisation)
   end
 
   def destroy
@@ -27,16 +25,6 @@ class TagsController < ApplicationController
 
   def set_organisation
     @organisation = policy_scope(Organisation).find(params[:organisation_id])
-  end
-
-  def user_count_by_tag_id
-    User.joins(:tags,
-               :organisations)
-        .where(tags: { id: @organisation.department.tags.distinct.pluck(:id) })
-        .where(organisations: { id: @organisation.id })
-        .distinct
-        .group(:tag_id)
-        .count
   end
 
   def tag_params
