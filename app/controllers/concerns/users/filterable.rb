@@ -42,7 +42,7 @@ module Users::Filterable
     @users = @users
              .joins(:orientations)
              .where(orientations: { orientation_type: params[:orientation_type] })
-             .where(orientations: { organisation_id: @current_organisations.ids })
+             .where(orientations: { organisation: @current_organisations })
              .where("orientations.starts_at <= ?", Time.zone.now)
              .where("orientations.ends_at >= ?", Time.zone.now)
   end
