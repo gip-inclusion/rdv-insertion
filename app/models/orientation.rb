@@ -1,15 +1,14 @@
 class Orientation < ApplicationRecord
   belongs_to :user
   belongs_to :organisation
+  belongs_to :orientation_type
   belongs_to :agent, optional: true
 
-  validates :starts_at, :orientation_type, presence: true
+  validates :starts_at, presence: true
 
   validates :starts_at, :ends_at, uniqueness: { scope: :user_id }
 
   validate :ends_at_after_starts_at, :starts_at_in_the_past
-
-  enum orientation_type: { social: "social", pro: "pro", socio_pro: "socio_pro" }
 
   def time_range
     starts_at...(ends_at.presence || Time.zone.today)
