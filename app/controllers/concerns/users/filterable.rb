@@ -44,7 +44,7 @@ module Users::Filterable
              .where(orientations: { orientation_type: params[:orientation_type] })
              .where(orientations: { organisation: @current_organisations })
              .where("orientations.starts_at <= ?", Time.zone.now)
-             .where("orientations.ends_at >= ?", Time.zone.now)
+             .where("orientations.ends_at IS NULL OR orientations.ends_at >= ?", Time.zone.now)
   end
 
   def filter_users_by_action_required
