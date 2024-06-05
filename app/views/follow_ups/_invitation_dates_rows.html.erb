@@ -11,6 +11,11 @@
         <td class="px-4 py-3">
           <% if invitation_dates_by_format[format]&.fetch(idx, nil).present? %>
             <%= format_date(invitation_dates_by_format[format].fetch(idx, nil)) %>
+            <div>
+              <span><%= invitation_delivery_status_by_format[format].fetch(idx, nil) %></span>
+              <br>
+              <span><%= format_delivery_datetime(invitation_delivery_status_received_at_by_format[format].fetch(idx, nil)) %></span>
+            </div>
           <% elsif idx == 0 %>
             -
           <% end %>
