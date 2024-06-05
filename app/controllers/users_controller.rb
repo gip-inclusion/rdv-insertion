@@ -110,6 +110,22 @@ class UsersController < ApplicationController
     )
   end
 
+  def set_filterable_tags
+    @tags = policy_scope((@organisation || @department).tags).order(Arel.sql("LOWER(tags.value)")).group("tags.id")
+  end
+
+  def reset_tag_users
+    return unless user_params[:tag_users_attributes]
+
+    @user
+      .tags
+      .joins(:organisations)
+      .where(organisations: department_level? ? @department.organisations : @organisation)
+      .find_each do |tag|
+      @user.tags.delete(tag)
+    end
+  end
+
   def render_errors(errors)
     respond_to do |format|
       format.turbo_stream { turbo_stream_replace_flash_message(error: errors.join(", ")) }

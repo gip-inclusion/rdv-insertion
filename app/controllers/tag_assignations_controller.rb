@@ -17,6 +17,15 @@ class TagAssignationsController < ApplicationController
 
   private
 
+  def set_available_tags
+    @available_tags =
+      if department_level?
+        policy_scope(department.tags).order(Arel.sql("LOWER(tags.value)")).group("tags.id")
+      else
+        organisation.tags.order(Arel.sql("LOWER(tags.value)"))
+      end
+  end
+
   def set_user
     @user = policy_scope(User).includes(:tags).find(params[:user_id] || tag_assignation_params[:user_id])
   end
