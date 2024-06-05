@@ -3,6 +3,6 @@ FactoryBot.define do
     user
     organisation
     agent
-    orientation_type { "social" }
+    orientation_type
   end
 end
