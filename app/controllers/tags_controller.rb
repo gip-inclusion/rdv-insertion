@@ -9,7 +9,7 @@ class TagsController < ApplicationController
 
     @organisation.tags << tag
 
-    render turbo_stream: turbo_stream.append("tags", partial: "tags/tag", locals: { tag: tag })
+    redirect_to organisation_category_configurations_path(@organisation)
   end
 
   def destroy
@@ -24,7 +24,7 @@ class TagsController < ApplicationController
   private
 
   def set_organisation
-    @organisation = policy_scope(Organisation).find(params[:organisation_id])
+    @organisation = current_organisation
   end
 
   def tag_params

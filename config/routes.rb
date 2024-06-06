@@ -58,6 +58,9 @@ Rails.application.routes.draw do
       end
       resources :invitations, only: [:create]
     end
+    resources :follow_ups, module: :follow_ups, only: [] do
+      resource :closings, only: [:create, :destroy]
+    end
     # we need to nest in organisations the different category_configurations record to correctly authorize them
     resources :category_configurations, only: [:index, :show, :new, :create, :edit, :update, :destroy]
     patch "category_configurations_positions/update", to: "category_configurations_positions#update"
@@ -68,6 +71,7 @@ Rails.application.routes.draw do
     resource :referent_assignations, only: [:destroy]
     resources :tag_assignations, only: [:index, :create]
     resource :tag_assignations, only: [:destroy]
+    resources :invitation_dates_filterings, :creation_dates_filterings, only: [:new]
     resources :file_configurations, only: [:show, :new, :create, :edit, :update] do
       get :confirm_update
     end
@@ -95,10 +99,6 @@ Rails.application.routes.draw do
 
   resources :participations, only: [:update]
   resources :follow_ups, only: [:create]
-
-  resources :follow_ups, module: :follow_ups, only: [] do
-    resource :closings, only: [:create, :destroy]
-  end
 
   namespace :users do
     resources :searches, only: :create
@@ -143,6 +143,9 @@ Rails.application.routes.draw do
       end
       resources :invitations, only: [:create]
     end
+    resources :follow_ups, module: :follow_ups, only: [] do
+      resource :closings, only: [:create, :destroy]
+    end
     resource :stats, only: [:show]
     resources :users_organisations, only: [:index, :create]
     resource :users_organisations, only: [:destroy]
@@ -150,8 +153,8 @@ Rails.application.routes.draw do
     resource :referent_assignations, only: [:destroy]
     resources :tag_assignations, only: [:index, :create]
     resource :tag_assignations, only: [:destroy]
+    resources :invitation_dates_filterings, :creation_dates_filterings, only: [:new]
   end
-  resources :invitation_dates_filterings, :creation_dates_filterings, only: [:new]
 
   namespace :api do
     namespace :v1 do

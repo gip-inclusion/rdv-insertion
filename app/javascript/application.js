@@ -14,6 +14,7 @@ import "chartkick/chart.js";
 
 import LoginForm from "./components/login-form";
 import StatusSelector from "./components/status-selector";
+import OrientationSelector from "./components/orientation-selector";
 import ReferentSelector from "./components/referent-selector";
 import DepartmentSelector from "./components/department-selector";
 import OrganisationSelector from "./components/organisation-selector";
@@ -59,6 +60,7 @@ if (process.env.RAILS_ENV === "production") {
 document.addEventListener("turbo:load", () => {
   new LoginForm();
   new StatusSelector();
+  new OrientationSelector();
   new ReferentSelector();
   new DepartmentSelector();
   new OrganisationSelector();
