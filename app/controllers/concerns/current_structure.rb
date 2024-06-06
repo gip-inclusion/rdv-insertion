@@ -39,7 +39,9 @@ module CurrentStructure
     @current_structure ||=
       department_level? ? Department.find(current_department_id) : Organisation.find(current_organisation_id)
 
-    authorize @current_structure, :access? if current_agent
+    return @current_structure unless current_agent
+
+    authorize @current_structure, :access?
   end
 
   def current_department
