@@ -2,16 +2,11 @@
   <!-- We must set a wrapper to trigger a tooltip on a disabled element -->
   <span class="tooltip-wrapper" data-controller="tooltip" data-action="mouseover->tooltip#archivingDisabled">
     <%=
-      button_tag(
+      link_to(
         "Archiver le dossier",
-        class: "btn btn-blue", id: "archive-button",
-        disabled: !policy(Archive.new(department: department, user: user)).create?,
-        data: {
-          controller: "archives",
-          action: "click->archives#create",
-          user_id: user.id,
-          department_id: department.id,
-        }
+        new_structure_user_archive_path(user_id: user.id),
+        class: "btn btn-blue #{"disabled" if !policy(Archive.new(department: department, user: user)).create?}", id: "archive-button",
+        data: { turbo_frame: 'remote_modal' },
       )
     %>
   </span>
