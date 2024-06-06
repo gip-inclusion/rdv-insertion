@@ -40,7 +40,7 @@ class SendTransactionalSms < BaseService
         Rails.application.routes.url_helpers.brevo_sms_webhooks_url(@invitation_id, host: ENV["HOST"])
     end
 
-    SibApiV3Sdk::SendTransacSms.new(opts)
+    SibApiV3Sdk::SendTransacSms.new(**opts)
   end
 
   def formatted_content
