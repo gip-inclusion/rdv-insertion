@@ -1,12 +1,11 @@
 module Invitations
   class AssignDeliveryStatusAndDate < BaseService
-    def initialize(brevo_webhook_params:, invitation_id:)
-      @brevo_webhook_params = brevo_webhook_params
-      @invitation_id = invitation_id
+    def initialize(brevo_webhook_params:, invitation:)
+      @brevo_webhook_params = brevo_webhook_params.deep_symbolize_keys
+      @invitation = invitation
     end
 
     def call
-      return unless invitation_present?
       return if @invitation.delivery_status == "delivered"
       return if old_update?
       return if a_mail_webhook? && email_mismatch?
@@ -33,17 +32,6 @@ module Invitations
       return false if @invitation.delivery_status_received_at.blank?
 
       @invitation.delivery_status_received_at.to_datetime > @brevo_webhook_params[:date].to_datetime
-    end
-
-    def invitation
-      @invitation ||= Invitation.find_by(id: @invitation_id)
-    end
-
-    def invitation_present?
-      return true if invitation.present?
-
-      Sentry.capture_message("Invitation not found", extra: { brevo_webhook_params: @brevo_webhook_params })
-      false
     end
 
     def a_mail_webhook?

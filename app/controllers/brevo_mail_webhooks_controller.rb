@@ -13,8 +13,7 @@ class BrevoMailWebhooksController < ApplicationController
     # On défini l'environnement dans le headers["X-Mailin-custom"] du mail envoyé par Brevo
     return if (environment != Rails.env) || params[:"X-Mailin-custom"].blank?
 
-    Invitations::AssignDeliveryStatusAndDate.call(brevo_webhook_params: brevo_webhook_params,
-                                                  invitation_id: invitation_id)
+    InboundWebhooks::Brevo::ProcessDeliveryJob.perform_async(brevo_webhook_params, invitation_id)
   end
 
   private

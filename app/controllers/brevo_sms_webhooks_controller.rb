@@ -8,11 +8,14 @@ class BrevoSmsWebhooksController < ApplicationController
   ].freeze
 
   def create
-    Invitations::AssignDeliveryStatusAndDate.call(brevo_webhook_params: brevo_webhook_params,
-                                                  invitation_id: params[:invitation_id])
+    InboundWebhooks::Brevo::ProcessDeliveryJob.perform_async(brevo_webhook_params, invitation_id)
   end
 
   private
+
+  def invitation_id
+    params[:invitation_id]
+  end
 
   def brevo_webhook_params
     params.permit(*PERMITTED_PARAMS).to_h.deep_symbolize_keys
