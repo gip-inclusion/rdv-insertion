@@ -40,8 +40,8 @@ module Users::Filterable
     return if params[:orientation_type].blank?
 
     @users = @users
-             .joins(:orientations)
-             .where(orientations: { orientation_type: params[:orientation_type] })
+             .joins(orientations: :orientation_type)
+             .where(orientation_types: { name: params[:orientation_type] })
              .where(orientations: { organisation: @current_organisations })
              .where("orientations.starts_at <= ?", Time.zone.now)
              .where("orientations.ends_at IS NULL OR orientations.ends_at >= ?", Time.zone.now)

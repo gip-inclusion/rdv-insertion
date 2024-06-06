@@ -15,7 +15,7 @@ class UsersController < ApplicationController
   before_action :set_organisation, :set_department, :set_all_configurations,
                 :set_current_organisations, :set_users_scope,
                 :set_current_category_configuration, :set_current_motif_category,
-                :set_users, :set_follow_ups, :set_structure_orientations, :set_filterable_tags,
+                :set_users, :set_follow_ups, :set_structure_orientations, :set_orientation_types, :set_filterable_tags,
                 :set_referents_list, :filter_users, :order_users,
                 for: :index
   before_action :set_user, :set_organisation, :set_department, :set_all_configurations,
@@ -183,6 +183,10 @@ class UsersController < ApplicationController
 
   def set_structure_orientations
     @structure_orientations = Orientation.where(organisation: @current_organisations)
+  end
+
+  def set_orientation_types
+    @orientation_types = OrientationType.for_department(@current_department).pluck(:name)
   end
 
   def set_user_tags
