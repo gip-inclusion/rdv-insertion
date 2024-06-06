@@ -35,12 +35,6 @@ module InvitationsHelper
     end
   end
 
-  def format_delivery_datetime(delivery_status_received_at)
-    # Revoir ca, faire de delivery_status un enum avec un hash de traduction
-    # Gérer les cas d'erreurs en bounce
-    delivery_status_received_at&.strftime("%d/%m/%Y %H:%M")
-  end
-
   def max_number_of_invitations_for_a_format(invitation_dates_by_formats)
     invitation_dates_by_formats.values.map(&:count).max
   end

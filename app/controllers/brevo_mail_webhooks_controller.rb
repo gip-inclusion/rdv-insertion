@@ -8,11 +8,11 @@ class BrevoMailWebhooksController < ApplicationController
   ].freeze
 
   def create
-    # Pour l'historique et en dev, temporaire
-    return if params[:"X-Mailin-custom"].blank?
+    # Pour l'historique tant que tout les mails n'ont pas le header X-Mailin-custom
+    return if params[:"X-Mailin-custom"].nil?
     # On utilise le même compte Brevo et les mêmes définitions de webhooks sur staging et production
     # On ne veut pas que les webhooks de staging soient traités en production et inversement
-    # On défini l'environnement dans le headers["X-Mailin-custom"] du mail envoyé par Brevo
+    # On défini l'environnement dans le headers["X-Mailin-custom"] du mail envoyé par Brevo et on le récupère ici
     return if environment != Rails.env
 
     InboundWebhooks::Brevo::ProcessDeliveryJob.perform_async(brevo_webhook_params, invitation_id)
