@@ -32,7 +32,7 @@ module NavigationHelper
   end
 
   def new_structure_user_archive_path(**params)
-    send(:"new_#{Current.structure_type}_user_archive_path", { **structure_id_param, **params })
+    send(:"new_#{current_structure_type}_user_archive_path", { **structure_id_param, **params })
   end
 
   def uploads_category_selection_structure_users_path(**params)
