@@ -210,7 +210,13 @@ export default class User {
 
     this.triggers.referentAssignation = true;
 
-    const { success } = await handleReferentAssignation(this, { raiseError: options.raiseError });
+    const { success } = await handleReferentAssignation(
+      this,
+      this.department.id,
+      this.currentOrganisation.id,
+      this.list.isDepartmentLevel,
+      { raiseError: options.raiseError }
+    );
     if (!success && !options.raiseError) {
       this.errors = ["referentAssignation"];
     } else if (success) {
@@ -237,7 +243,7 @@ export default class User {
       this.triggers[`${attribute}Update`] = true;
       // No need to resetErrors as we are updating only a single attribute
       // If any error occurs within handleUserUpdate it will be displayed as a modal anyway.
-      // Storing and resetting errors is only useful for batch actions 
+      // Storing and resetting errors is only useful for batch actions
       const result = await handleUserUpdate(this.currentOrganisation.id, this, this.asJson(), { resetErrors: false });
 
       if (result.success) {
@@ -251,7 +257,7 @@ export default class User {
     }
 
     this.errorsMayNoLongerBeRelevant = true;
-    
+
     return true;
   }
 
