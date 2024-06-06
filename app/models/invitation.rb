@@ -34,6 +34,30 @@ class Invitation < ApplicationRecord
   }
   scope :valid, -> { where("valid_until > ?", Time.zone.now) }
 
+  def human_delivery_status_and_date
+    if delivery_status == "delivered"
+      if delivery_date == invitation_date
+        "Délivrée à #{delivery_hour}"
+      else
+        "Délivrée à #{delivery_hour} (le #{delivery_date})"
+      end
+    elsif delivery_status.in?(%w[soft_bounce hard_bounce blocked])
+      "Non délivrée"
+    end
+  end
+
+  def delivery_date
+    delivery_status_received_at&.strftime("%d/%m/%Y")
+  end
+
+  def delivery_hour
+    delivery_status_received_at&.strftime("%H:%M")
+  end
+
+  def invitation_date
+    created_at.strftime("%d/%m/%Y")
+  end
+
   def send_to_user
     case self.format
     when "sms"

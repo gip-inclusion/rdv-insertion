@@ -11,10 +11,23 @@
         <td class="px-4 py-3">
           <% if invitation_dates_by_format[format]&.fetch(idx, nil).present? %>
             <%= format_date(invitation_dates_by_format[format].fetch(idx, nil)) %>
+            <% delivery_status = invitation_delivery_status_by_format[format].fetch(idx, nil)%>
             <div>
-              <span><%= invitation_delivery_status_by_format[format].fetch(idx, nil) %></span>
-              <br>
-              <span><%= format_delivery_datetime(invitation_delivery_status_received_at_by_format[format].fetch(idx, nil)) %></span>
+              <span class="small">
+                <% if delivery_status == "Non délivrée" %>
+                <span class="text-danger">
+                  Non délivrée
+                  <i
+                    class="fas fa-exclamation-circle"
+                    data-controller="tooltip"
+                    data-action="mouseover->tooltip#invitationNotDelivered"
+                    data-invitation-format="<%= format %>">
+                  </i>
+                </span>
+                <% else %>
+                  <%= delivery_status %>
+                <% end %>
+              </span>
             </div>
           <% elsif idx == 0 %>
             -

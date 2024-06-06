@@ -15,36 +15,24 @@ module InvitationsHelper
     !user.address? || user.archived_in?(department) || follow_up.rdv_pending? || follow_up.closed?
   end
 
-  def invitation_dates_by_format(invitations, invitation_formats)
-    invitation_dates_by_formats = invitation_formats.index_with { |_invitation_format| [] }
-    invitation_dates_by_formats.merge!(
+  def invitation_attribute_by_format(invitations, invitation_formats, &block)
+    invitation_formats.index_with { |_invitation_format| [] }.merge!(
       invitations.group_by(&:format)
                  .select { |format| invitation_formats.include?(format) }
-                 .transform_values { |invites| invites.map(&:created_at).sort.reverse }.to_h
+                 .transform_values(&block).to_h
     )
-    invitation_dates_by_formats
+  end
+
+  def invitation_dates_by_format(invitations, invitation_formats)
+    invitation_attribute_by_format(invitations, invitation_formats) do |invites|
+      invites.map(&:created_at).sort.reverse
+    end
   end
 
   def invitation_delivery_status_by_format(invitations, invitation_formats)
-    # Revoir ca
-    invitation_delivery_status_by_formats = invitation_formats.index_with { |_invitation_format| [] }
-    invitation_delivery_status_by_formats.merge!(
-      invitations.group_by(&:format)
-                 .select { |format| invitation_formats.include?(format) }
-                 .transform_values { |invites| invites.map(&:delivery_status) }.to_h
-    )
-    invitation_delivery_status_by_formats
-  end
-
-  def invitation_delivery_status_received_at_by_format(invitations, invitation_formats)
-    # Revoir ca
-    invitation_delivery_status_received_at_by_formats = invitation_formats.index_with { |_invitation_format| [] }
-    invitation_delivery_status_received_at_by_formats.merge!(
-      invitations.group_by(&:format)
-                 .select { |format| invitation_formats.include?(format) }
-                 .transform_values { |invites| invites.map(&:delivery_status_received_at) }.to_h
-    )
-    invitation_delivery_status_received_at_by_formats
+    invitation_attribute_by_format(invitations, invitation_formats) do |invites|
+      invites.map(&:human_delivery_status_and_date)
+    end
   end
 
   def format_delivery_datetime(delivery_status_received_at)
