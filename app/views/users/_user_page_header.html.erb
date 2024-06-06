@@ -1,6 +1,6 @@
-<div class="d-flex justify-content-between mt-5 mb-3">
-  <div class="col-sm-4">
-    <%= link_to(@back_to_users_list_url || structure_users_path) do %>
+<div class="d-flex justify-content-between mt-5 <%= @user_tags.any? ? "mb-3" : "mb-5" %>">
+  <div class="col-sm-4 d-flex justify-content-start align-items-center">
+    <%= link_to (@back_to_users_list_url || structure_users_path), data: { turbo_frame: :_top }, class: "me-2" do %>
       <button class="btn btn-blue-out">Retour</button>
     <% end %>
     <%= render "users/find_rdv_button" %>
@@ -12,10 +12,11 @@
       <% end %>
     <% end %>
   </div>
-  <div class="col-sm-4">
-      <h4 class="text-center">
-        <%= render "users/user_icon", user: @user %> <%= "#{@user.first_name} #{@user.last_name.upcase}" %>
-      </h4>
+  <div class="col-sm-4 d-flex justify-content-center align-items-center flex-column">
+    <h4 class="text-center">
+      <%= render "users/user_icon", user: @user %> <%= "#{@user.first_name} #{@user.last_name.upcase}" %>
+    </h4>
+    <% if @user_tags.any? %>
       <div class="mb-3 mt-3 flex-wrap d-flex justify-content-center" id="header_tags_list">
         <% @user_tags.each do |tag| %>
           <%= link_to(structure_user_path(@user.id, anchor: "tags_list"), class: "d-flex text-truncate", target: "_top") do %>
@@ -25,8 +26,9 @@
           <% end %>
         <% end %>
       </div>
+    <% end %>
   </div>
-  <div class="col-sm-4 text-end">
+  <div class="col-sm-4 d-flex align-items-center justify-content-end">
     <%= render "users/archiving_button", user: @user, department: @department, archive: @user.archive_for(@department.id) %>
   </div>
 </div>
