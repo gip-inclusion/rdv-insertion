@@ -91,10 +91,10 @@ describe UsersController do
       context "when not authorized" do
         let!(:another_organisation) { create(:organisation) }
 
-        it "raises an error" do
-          expect do
-            post :create, params: user_params.merge(organisation_id: another_organisation.id)
-          end.to raise_error(ActiveRecord::RecordNotFound)
+        it "redirects the agent" do
+          post :create, params: user_params.merge(organisation_id: another_organisation.id)
+          expect(response).to redirect_to(root_path)
+          expect(flash[:alert]).to include("Votre compte ne vous permet pas d'effectuer cette action")
         end
       end
 
@@ -137,10 +137,11 @@ describe UsersController do
       context "when not authorized" do
         let!(:another_organisation) { create(:organisation) }
 
-        it "raises an error" do
-          expect do
-            post :create, params: user_params.merge(organisation_id: another_organisation.id)
-          end.to raise_error(ActiveRecord::RecordNotFound)
+        it "renders the errors" do
+          post :create, params: user_params.merge(organisation_id: another_organisation.id)
+          expect(response).not_to be_successful
+          expect(response).to have_http_status(:forbidden)
+          expect(response.parsed_body["errors"]).to eq(["Votre compte ne vous permet pas d'effectuer cette action"])
         end
       end
 
