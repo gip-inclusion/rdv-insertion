@@ -1,0 +1,24 @@
+<div class="mb-1 position-relative text-center d-flex align-items-center justify-content-center">
+  <%=
+    select(
+      "user",
+      "orientation_type",
+      Orientation.orientation_types.values.map do |orientation_type|
+        [I18n.t("activerecord.attributes.orientation.orientation_types.#{orientation_type}"), orientation_type]
+      end,
+      { prompt: "Filtrer par type d'orientation" },
+      class: "form-select js-orientation-selector"
+    )
+  %>
+  <% selected_orientation = Orientation.orientation_types.values.find { |orientation| orientation == params[:orientation_type] }%>
+  <span class="label-alt position-absolute bg-white pe-none">
+    <span class="orientation-label-alt">
+      <% if selected_orientation.present? %>
+        Type d'orientation : <%= I18n.t("activerecord.attributes.orientation.orientation_types.#{selected_orientation}") %>
+      <% else %>
+        Filtrer par type d'orientation
+      <% end %>
+    </span>
+    <i class="fas fa-angle-down"></i>
+  </span>
+</div>

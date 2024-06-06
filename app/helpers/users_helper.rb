@@ -15,7 +15,8 @@ module UsersHelper
     [
       params[:search_query], params[:status], params[:action_required], params[:first_invitation_date_before],
       params[:last_invitation_date_before], params[:first_invitation_date_after], params[:last_invitation_date_after],
-      params[:referent_id], params[:creation_date_after], params[:creation_date_before], params[:tag_ids]
+      params[:referent_id], params[:creation_date_after], params[:creation_date_before], params[:tag_ids],
+      params[:orientation_type]
     ].any?(&:present?)
   end
 
@@ -78,6 +79,6 @@ module UsersHelper
   end
 
   def current_or_mutual_organisation_id(user, agent, department)
-    Current.organisation_id || mutual_department_organisations(user, agent, department).first.id
+    current_organisation_id || mutual_department_organisations(user, agent, department).first.id
   end
 end
