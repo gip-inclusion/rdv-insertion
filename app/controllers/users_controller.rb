@@ -16,8 +16,8 @@ class UsersController < ApplicationController
   before_action :set_organisation, :set_department, :set_all_configurations,
                 :set_current_organisations, :set_users_scope,
                 :set_current_category_configuration, :set_current_motif_category,
-                :set_users, :set_follow_ups, :set_filterable_tags, :set_referents_list,
-                :filter_users, :order_users,
+                :set_users, :set_follow_ups, :set_structure_orientations, :set_filterable_tags,
+                :set_referents_list, :filter_users, :order_users,
                 for: :index
   before_action :set_user, :set_organisation, :set_department, :set_all_configurations,
                 :set_user_archive, :set_user_tags, :set_user_referents, :set_back_to_users_list_url,
@@ -170,7 +170,7 @@ class UsersController < ApplicationController
       if department_level?
         set_organisation_at_department_level
       else
-        policy_scope(Organisation).find(params[:organisation_id])
+        current_organisation
       end
   end
 
@@ -180,6 +180,10 @@ class UsersController < ApplicationController
 
     @organisation = policy_scope(Organisation)
                     .find_by(id: @user.organisation_ids, department_id: params[:department_id])
+  end
+
+  def set_structure_orientations
+    @structure_orientations = Orientation.where(organisation: @current_organisations)
   end
 
   def set_user_referents
@@ -197,11 +201,11 @@ class UsersController < ApplicationController
   end
 
   def set_current_organisations
-    @current_organisations = department_level? ? Current.department_organisations : [@organisation]
+    @current_organisations = department_level? ? current_agent_department_organisations : [@organisation]
   end
 
   def set_department
-    @department = policy_scope(Department).find(current_department_id)
+    @department = current_department
   end
 
   def set_all_configurations
@@ -281,7 +285,7 @@ class UsersController < ApplicationController
   end
 
   def set_referents_list
-    @referents_list = Current.structure.agents.where.not(last_name: nil).distinct.order(:last_name)
+    @referents_list = current_structure.agents.where.not(last_name: nil).distinct.order(:last_name)
     @referents_list = @referents_list.where(super_admin: false) if production_env?
   end
 
@@ -301,8 +305,8 @@ class UsersController < ApplicationController
 
   def default_list_path
     motif_category_param =
-      if Current.structure.motif_categories.length == 1
-        { motif_category_id: Current.structure.motif_categories.first.id }
+      if current_structure.motif_categories.length == 1
+        { motif_category_id: current_structure.motif_categories.first.id }
       else
         {}
       end

@@ -14,7 +14,7 @@
               structure_tag_assignations_path(user.id, tag_id: tag.id),
               data: {
                 turbo_confirm: "Retirer le tag de cet usager ?",
-                turbo_confirm_text_content: "Êtes-vous sûr de vouloir retirer le tag <b>#{tag.value}</b> de l'usager <b>#{user}</b> ?",
+                turbo_confirm_text_content: "Êtes-vous sûr de vouloir retirer le tag <b class='text-large text-truncate d-block'><i>#{tag.value}</i></b> de l'usager <b>#{user}</b> ?",
                 turbo_confirm_text_action: "- Retirer",
                 turbo_method: :delete,
               },
