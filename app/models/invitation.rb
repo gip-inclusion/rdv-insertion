@@ -1,5 +1,7 @@
 class Invitation < ApplicationRecord
   NUMBER_OF_DAYS_BEFORE_REMINDER = 3
+  FINAL_DELIVERY_STATUS = %w[delivered soft_bounce hard_bounce blocked invalid_email error].freeze
+  FAILED_DELIVERY_STATUS = %w[soft_bounce hard_bounce blocked invalid_email error].freeze
 
   include HasCurrentCategoryConfiguration
   include Templatable
@@ -41,7 +43,7 @@ class Invitation < ApplicationRecord
       else
         "Délivrée à #{delivery_hour} (le #{delivery_date})"
       end
-    elsif delivery_status.in?(%w[soft_bounce hard_bounce blocked])
+    elsif delivery_status.in?(FAILED_DELIVERY_STATUS)
       "Non délivrée"
     end
   end

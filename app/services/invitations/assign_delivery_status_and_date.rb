@@ -6,7 +6,7 @@ module Invitations
     end
 
     def call
-      return if @invitation.delivery_status == "delivered"
+      return if @invitation.delivery_status.in?(Invitation::FINAL_DELIVERY_STATUS)
       return if old_update?
       return if a_mail_webhook? && email_mismatch?
       return if a_sms_webhook? && phone_number_mismatch?
