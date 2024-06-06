@@ -7,16 +7,15 @@ module Exporters
     end
 
     def filtered_participations
-      if @motif_category
-        @participations.where(user_id: @user_ids)
-                       .joins(rdv: { motif: :motif_category })
-                       .where(motif_categories: { id: @motif_category.id })
-      else
-        @participations.where(user_id: @user_ids)
-                       .joins(:rdv)
-      end
-        .where(rdvs: { organisation_id: @agent.organisation_ids })
-        .order("rdvs.starts_at desc")
+      filtered_participations =
+        if @motif_category
+          @participations.where(user_id: @user_ids)
+                         .joins(rdv: { motif: :motif_category })
+                         .where(motif_categories: { id: @motif_category.id })
+        else
+          @participations.where(user_id: @user_ids).joins(:rdv)
+        end
+      filtered_participations.where(rdvs: { organisation_id: @agent.organisation_ids }).order("rdvs.starts_at desc")
     end
 
     def preload_associations
