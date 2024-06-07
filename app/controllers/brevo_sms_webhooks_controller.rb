@@ -8,7 +8,7 @@ class BrevoSmsWebhooksController < ApplicationController
   ].freeze
 
   def create
-    InboundWebhooks::Brevo::ProcessDeliveryJob.perform_async(brevo_webhook_params, invitation_id)
+    InboundWebhooks::Brevo::ProcessSmsDeliveryStatusJob.perform_async(brevo_webhook_params, invitation_id)
   end
 
   private
