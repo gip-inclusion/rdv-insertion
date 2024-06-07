@@ -9,8 +9,9 @@ module Invitations
     def webhook_mismatch?
       return false if @invitation.email == @webhook_params[:email]
 
-      Sentry.capture_message("Invitation email and webhook email do not match",
+      Sentry.capture_message("Invitation email and webhook email does not match",
                              extra: { invitation: @invitation, webhook: @webhook_params })
+      true
     end
   end
 end

@@ -9,8 +9,9 @@ module Invitations
     def webhook_mismatch?
       return false if @invitation.user.phone_number == PhoneNumberHelper.format_phone_number(@webhook_params[:to])
 
-      Sentry.capture_message("Invitation mobile phone and webhook mobile phone do not match",
+      Sentry.capture_message("Invitation mobile phone and webhook mobile phone does not match",
                              extra: { invitation: @invitation, webhook: @webhook_params })
+      true
     end
   end
 end

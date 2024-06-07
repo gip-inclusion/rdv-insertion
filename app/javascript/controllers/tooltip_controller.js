@@ -171,7 +171,7 @@ export default class extends Controller {
       content(reference) {
         const { invitationFormat } = reference.dataset;
         if (invitationFormat === "sms") {
-          return "Le SMS n'a pas pu être délivré. Causes possibles : numéro incorrect, téléphone éteint ou sans réseau, problème de l'opérateur, etc. Nous vous invitons à vérifier le format du numéro et à le modifier si nécessaire.";
+          return "Le SMS n'a pas pu être délivré. Causes possibles : numéro incorrect, problème de l'opérateur, etc. Nous vous invitons à vérifier le format du numéro et à le modifier si nécessaire.";
         }
         return "L’email n'a pas pu être remis. Causes possibles : boîte de réception pleine ou indisponible, adresse email incorrecte ou inexistante, filtre anti-spams, etc. Nous vous invitons à vérifier le format de l’adresse email et de réessayer d'envoyer l'invitation.";
       },
