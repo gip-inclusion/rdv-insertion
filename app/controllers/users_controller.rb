@@ -11,6 +11,7 @@ class UsersController < ApplicationController
   include BackToListConcern
   include Users::Filterable
   include Users::Sortable
+  include Users::Taggable
 
   before_action :set_organisation, :set_department, :set_all_configurations,
                 :set_current_organisations, :set_users_scope,
@@ -91,18 +92,6 @@ class UsersController < ApplicationController
     end
   end
 
-  def reset_tag_users
-    return unless user_params[:tag_users_attributes]
-
-    @user
-      .tags
-      .joins(:organisations)
-      .where(organisations: department_level? ? @department.organisations : @organisation)
-      .find_each do |tag|
-      @user.tags.delete(tag)
-    end
-  end
-
   def csv_exporter
     if params[:export_type] == "participations"
       Exporters::CreateUsersParticipationsCsvExportJob
@@ -119,6 +108,22 @@ class UsersController < ApplicationController
       current_agent.id,
       request.query_parameters
     )
+  end
+
+  def set_filterable_tags
+    @tags = policy_scope((@organisation || @department).tags).order(Arel.sql("LOWER(tags.value)")).group("tags.id")
+  end
+
+  def reset_tag_users
+    return unless user_params[:tag_users_attributes]
+
+    @user
+      .tags
+      .joins(:organisations)
+      .where(organisations: department_level? ? @department.organisations : @organisation)
+      .find_each do |tag|
+      @user.tags.delete(tag)
+    end
   end
 
   def render_errors(errors)
@@ -175,10 +180,6 @@ class UsersController < ApplicationController
 
     @organisation = policy_scope(Organisation)
                     .find_by(id: @user.organisation_ids, department_id: params[:department_id])
-  end
-
-  def set_filterable_tags
-    @tags = policy_scope((@organisation || @department).tags).order(:value).distinct
   end
 
   def set_structure_orientations
