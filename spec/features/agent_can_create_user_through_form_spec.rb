@@ -69,7 +69,9 @@ describe "Agents can create user through form", :js do
         let!(:city_code) { "26323" }
         let!(:street_ban_id) { "26444" }
         let!(:rdv_solidarites_id) { 999 }
-        let!(:rdv_solidarites_organisation) { RdvSolidarites::Organisation.new(id: organisation.rdv_solidarites_organisation_id) }
+        let!(:rdv_solidarites_organisation) do
+          RdvSolidarites::Organisation.new(id: organisation.rdv_solidarites_organisation_id)
+        end
 
         it "creates user directly" do
           expect(RetrieveGeolocalisation).to receive(:call)
