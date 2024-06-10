@@ -44,14 +44,16 @@ module Exporters
           User.preload(
             :archives, :organisations, :tags, :referents, :rdvs,
             participations: [:organisation, :follow_up],
-            follow_ups: [:invitations, :motif_category, :notifications, { rdvs: [:motif, :participations, :users] }]
+            follow_ups: [:invitations, :motif_category, :notifications, { rdvs: [:motif, :participations, :users] }],
+            orientations: [:orientation_type, :organisation]
           ).find(@user_ids)
         else
           User.preload(
             :invitations, :notifications, :archives, :organisations, :tags, :referents,
             follow_ups: [:motif_category, :participations, :rdvs],
             participations: [:organisation, :rdv, { follow_up: :motif_category }],
-            rdvs: [:motif, :participations]
+            rdvs: [:motif, :participations],
+            orientations: [:orientation_type, :organisation]
           ).find(@user_ids)
         end
     end
@@ -84,6 +86,10 @@ module Exporters
        "Rendez-vous d'orientation (RSA) honoré en - moins de 30 jours?",
        "Rendez-vous d'orientation (RSA) honoré en - moins de 15 jours?",
        "Date d'orientation",
+       "Type d'orientation",
+       "Date de début d'orientation",
+       "Date de fin d'orientation",
+       "Structure d'orientation",
        Archive.human_attribute_name(:created_at),
        Archive.human_attribute_name(:archiving_reason),
        User.human_attribute_name(:referents),
@@ -120,6 +126,10 @@ module Exporters
        oriented_in_less_than_n_days?(user, 30),
        oriented_in_less_than_n_days?(user, 15),
        orientation_date(user),
+       orientation_type(user),
+       orientation_starts_at(user),
+       orientation_ends_at(user),
+       orientation_structure(user),
        display_date(user.archive_for(department_id)&.created_at),
        user.archive_for(department_id)&.archiving_reason,
        user.referents.map(&:email).join(", "),
@@ -244,6 +254,26 @@ module Exporters
       end.min_by(&:starts_at)
 
       display_date(orientation&.starts_at)
+    end
+
+    def orientation(user)
+      user.orientations.to_a.find(&:active?)
+    end
+
+    def orientation_type(user)
+      orientation(user)&.orientation_type&.name
+    end
+
+    def orientation_starts_at(user)
+      orientation(user)&.starts_at
+    end
+
+    def orientation_ends_at(user)
+      orientation(user)&.ends_at
+    end
+
+    def orientation_structure(user)
+      orientation(user)&.organisation&.name
     end
 
     def rdv_taken_in_autonomy?(user)

@@ -18,6 +18,10 @@ class Orientation < ApplicationRecord
     ends_at.nil?
   end
 
+  def active?
+    time_range.cover?(Time.zone.today)
+  end
+
   private
 
   def ends_at_after_starts_at
