@@ -32,7 +32,7 @@ export default class extends Controller {
   }
 
   disconnect() {
-    this.element.removeEventListener("turbo:submit-end", this.handleSubmitEnd.bind(this))
+    this.element.removeEventListener("turbo:submit-end", this.handleSubmitEnd.bind(this));
   }
 
   displayButtonAsLoading() {

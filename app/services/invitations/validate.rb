@@ -17,18 +17,30 @@ module Invitations
     end
 
     def call
+      validate_invitation_not_already_sent_today
       validate_user_title_presence
       validate_help_phone_number_presence
       validate_organisations_are_not_from_different_departments
       validate_no_rdv_pending_taken_today
-      validate_it_expires_in_more_than_5_days if @invitation.format_postal?
+      validate_it_expires_in_more_than_5_days if invitation.format_postal?
       validate_user_belongs_to_an_org_linked_to_motif_category
       validate_motif_of_this_category_is_defined_in_organisations
-      validate_referents_are_assigned if @invitation.rdv_with_referents?
-      validate_follow_up_motifs_are_defined if @invitation.rdv_with_referents?
+      validate_referents_are_assigned if invitation.rdv_with_referents?
+      validate_follow_up_motifs_are_defined if invitation.rdv_with_referents?
     end
 
     private
+
+    def validate_invitation_not_already_sent_today
+      return if invitation.format_postal?
+      return unless invitation_already_sent_today?
+
+      result.errors << "Une invitation #{invitation.format} a déjà été envoyée aujourd'hui à cet usager"
+    end
+
+    def invitation_already_sent_today?
+      follow_up.invitations.where(format: invitation.format).where("created_at > ?", 24.hours.ago).any?
+    end
 
     def validate_user_title_presence
       return if user.title?
