@@ -44,6 +44,58 @@ describe "Agents can create user through form", :js do
       expect(page).to have_content("bob@kelso.com")
     end
 
+    context "from department page" do
+      context "no organisation found for this address" do
+        it "asks to choose organisation" do
+          visit new_department_user_path(organisation.department.id)
+
+          page.fill_in "user_first_name", with: "Bob"
+          page.fill_in "user_last_name", with: "Kelso"
+          page.fill_in "user_email", with: "bob@kelso.com"
+
+          click_button("Enregistrer")
+
+          expect(page).to have_content("Veuillez choisir une organisation")
+          click_button("Sélectionner")
+
+          expect(page).to have_content("Informations")
+          expect(page).to have_content("Bob")
+          expect(page).to have_content(organisation.name)
+        end
+      end
+
+      context "an organisation has been found for this address" do
+        let!(:address) { "20 avenue de la résistance 26150 Die" }
+        let!(:city_code) { "26323" }
+        let!(:street_ban_id) { "26444" }
+        let!(:rdv_solidarites_id) { 999 }
+        let!(:rdv_solidarites_organisation) { RdvSolidarites::Organisation.new(id: organisation.rdv_solidarites_organisation_id) }
+
+        it "creates user directly" do
+          expect(RetrieveGeolocalisation).to receive(:call)
+            .with(address:, department_number: organisation.department.number)
+            .once
+            .and_return(OpenStruct.new(success?: true, city_code:, street_ban_id:))
+
+          expect(RdvSolidaritesApi::RetrieveOrganisations).to receive(:call)
+            .once
+            .and_return(OpenStruct.new(success?: true, organisations: [rdv_solidarites_organisation]))
+
+          visit new_department_user_path(organisation.department.id)
+
+          page.fill_in "user_first_name", with: "Bob"
+          page.fill_in "user_last_name", with: "Kelso"
+          page.fill_in "user_email", with: "bob@kelso.com"
+          page.fill_in "user_address", with: address
+
+          click_button("Enregistrer")
+          expect(page).to have_content("Informations")
+          expect(page).to have_content("Bob")
+          expect(page).to have_content(organisation.name)
+        end
+      end
+    end
+
     context "when data is missing" do
       context "when a required attribute is missing" do
         it "returns an error" do
