@@ -13,8 +13,4 @@ module StatsHelper
   def exclude_current_month(stat)
     stat&.delete_if { |key, _value| key == Time.zone.now.strftime("%m/%Y") }
   end
-
-  def structure_name_and_department_number(organisation, departement)
-    "#{(organisation || department).name} (#{departement.number})"
-  end
 end
