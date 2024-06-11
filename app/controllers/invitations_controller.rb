@@ -1,7 +1,7 @@
 class InvitationsController < ApplicationController
   before_action :set_organisations, :set_user, :verify_user_is_sync_with_rdv_solidarites, only: [:create]
   before_action :set_invitation, :verify_invitation_validity, only: [:redirect]
-  skip_before_action :authenticate_agent!, only: [:invitation_code, :redirect, :redirect_shortcut]
+  skip_before_action :authenticate_agent!, only: [:redirect, :redirect_shortcut]
 
   def create # rubocop:disable Metrics/AbcSize
     if invite_user.success?
@@ -19,8 +19,6 @@ class InvitationsController < ApplicationController
       end
     end
   end
-
-  def invitation_code; end
 
   def redirect_shortcut
     redirect_to redirect_invitations_path(params: { uuid: params[:uuid] })
@@ -78,7 +76,7 @@ class InvitationsController < ApplicationController
     @invitation = Invitation.find_by(uuid: params[:uuid])
     return if @invitation.present?
 
-    redirect_to(:invitation_landing, flash: { error: "Ce code n'existe pas dans notre système." })
+    redirect_to root_path, flash: { error: "Ce code n'existe pas dans notre système." }
   end
 
   def verify_invitation_validity
