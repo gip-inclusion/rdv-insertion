@@ -56,6 +56,7 @@ Rails.application.routes.draw do
         resources :orientations, only: [:new, :create, :edit, :update, :destroy]
         resources :parcours_documents, only: [:show, :update, :create, :destroy]
       end
+      resources :archives, only: [:new, :create]
       resources :invitations, only: [:create]
     end
     resources :follow_ups, module: :follow_ups, only: [] do
@@ -104,7 +105,7 @@ Rails.application.routes.draw do
     resources :searches, only: :create
   end
 
-  resources :archives, only: [:create, :destroy]
+  resources :archives, only: [:destroy]
 
   namespace :organisations do
     resources :user_added_notifications, only: [:create]
@@ -142,6 +143,7 @@ Rails.application.routes.draw do
         resources :parcours_documents, only: [:show, :update, :create, :destroy]
       end
       resources :invitations, only: [:create]
+      resources :archives, only: [:new, :create]
     end
     resources :follow_ups, module: :follow_ups, only: [] do
       resource :closings, only: [:create, :destroy]

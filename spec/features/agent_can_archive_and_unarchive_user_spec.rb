@@ -11,20 +11,22 @@ describe "Agents can archive and unarchive user", :js do
   describe "from show page" do
     it "can archive and unarchive the user" do
       visit organisation_user_path(organisation, user)
-      expect(page).to have_button("Archiver le dossier")
+      expect(page).to have_link("Archiver le dossier")
 
-      click_button("Archiver le dossier")
+      click_link("Archiver le dossier")
 
       expect(page).to have_content("Le dossier sera archivé sur toutes les organisations")
-      fill_in "Motif d'archivage:", with: "déménagement"
+      fill_in "archive_archiving_reason", with: "déménagement"
 
-      click_button "Oui"
+      click_button "Archiver"
 
       expect(page).to have_content "Dossier archivé"
       expect(page).to have_content "Motif d'archivage"
       expect(page).to have_content "déménagement"
 
       expect(Archive.count).to eq(1)
+      expect(Archive.first.user).to eq(user)
+      expect(Archive.first.archiving_reason).to eq("déménagement")
 
       expect(page).to have_button "Rouvrir le dossier"
       click_button "Rouvrir le dossier"
@@ -47,14 +49,14 @@ describe "Agents can archive and unarchive user", :js do
 
       it "can still archive in agent department" do
         visit department_user_path(department, user)
-        expect(page).to have_button("Archiver le dossier")
+        expect(page).to have_link("Archiver le dossier")
 
-        click_button("Archiver le dossier")
+        click_link("Archiver le dossier")
 
         expect(page).to have_content("Le dossier sera archivé sur toutes les organisations")
-        fill_in "Motif d'archivage:", with: "déménagement"
+        fill_in "archive_archiving_reason", with: "déménagement"
 
-        click_button "Oui"
+        click_button "Archiver"
 
         expect(page).to have_content "Dossier archivé"
         expect(page).to have_content "Motif d'archivage"
@@ -83,7 +85,7 @@ describe "Agents can archive and unarchive user", :js do
       it "is not allowed to archive the user" do
         visit organisation_user_path(organisation, user)
 
-        expect(page).to have_button("Archiver le dossier", disabled: true)
+        expect(page).to have_css("a.disabled", text: "Archiver le dossier")
       end
     end
   end
