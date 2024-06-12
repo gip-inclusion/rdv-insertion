@@ -190,14 +190,6 @@ class UsersController < ApplicationController
     @orientation_types = OrientationType.where(id: @structure_orientations.pluck(:orientation_type_id).uniq)
   end
 
-  def set_user_tags
-    @user_tags = policy_scope(@user.tags)
-                 .joins(:organisations)
-                 .where(current_organisations_filter)
-                 .order(:value)
-                 .distinct
-  end
-
   def set_user_referents
     @user_referents = policy_scope(@user.referents)
                       .joins(:departments)
