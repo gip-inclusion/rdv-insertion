@@ -183,11 +183,11 @@ class UsersController < ApplicationController
   end
 
   def set_structure_orientations
-    @structure_orientations = Orientation.where(organisation: @current_organisations)
+    @structure_orientations = Orientation.active.where(organisation: @current_organisations)
   end
 
   def set_orientation_types
-    @orientation_types = OrientationType.where(orientation: @structure_orientations).distinct
+    @orientation_types = OrientationType.where(id: @structure_orientations.pluck(:orientation_type_id).uniq)
   end
 
   def set_user_tags
