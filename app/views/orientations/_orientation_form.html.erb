@@ -34,7 +34,7 @@
     <%=
       form.collection_select(
         :orientation_type_id,
-        OrientationType.for_department(@current_department),
+        @orientation_types,
         :id,
         :name,
         { include_blank: true },

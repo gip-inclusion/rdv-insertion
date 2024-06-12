@@ -186,7 +186,7 @@ class UsersController < ApplicationController
   end
 
   def set_orientation_types
-    @orientation_types = OrientationType.for_department(@current_department).pluck(:name)
+    @orientation_types = OrientationType.where(orientation: @structure_orientations).distinct
   end
 
   def set_user_tags

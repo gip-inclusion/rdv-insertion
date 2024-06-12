@@ -13,5 +13,8 @@ class CleanUpOldOrientationTypes < ActiveRecord::Migration[7.1]
 
   def down
     add_column :orientations, :orientation_type, :string
+    Orientation.find_each do |orientation|
+      orientation.update_column(:orientation_type, orientation.orientation_type.casf_category)
+    end
   end
 end
