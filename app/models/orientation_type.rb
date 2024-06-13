@@ -18,10 +18,16 @@ class OrientationType < ApplicationRecord
     name
   end
 
+  def self.default_for_category(casf_category)
+    find_by!(department: nil, casf_category:)
+  end
+
   private
 
+  def default_type? = department.nil?
+
   def prevent_deleting_default_orientation_types
-    return unless department.nil?
+    return unless default_type?
 
     errors.add(:base, "Impossible de supprimer un type d'orientation par défaut")
     throw :abort
@@ -29,6 +35,6 @@ class OrientationType < ApplicationRecord
 
   def reassign_orientations
     Orientation.where(orientation_type: self)
-               .update_all(orientation_type_id: self.class.find_by!(department: nil, casf_category:).id)
+               .update_all(orientation_type_id: self.class.default_for_category(casf_category).id)
   end
 end
