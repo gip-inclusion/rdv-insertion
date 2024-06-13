@@ -16,7 +16,7 @@
     <div>
       <%=
         select(
-          "department", "id", options_for_department_select,
+          "department", "id", options_for_department_select(@departments),
           { },
           class: "text-center form-select js-department-selector"
         )
