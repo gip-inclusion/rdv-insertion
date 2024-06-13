@@ -33,6 +33,10 @@ describe Invitations::ComputeLink, type: :service do
     )
   end
 
+  let!(:geocoding) do
+    create(:geocoding, user:, longitude: 2.308628, latitude: 48.850699, city_code: "75107", street_ban_id: "75107_8909")
+  end
+
   let!(:organisation1) { create(:organisation, department: department, rdv_solidarites_organisation_id: 333) }
   let!(:organisation2) { create(:organisation, department: department, rdv_solidarites_organisation_id: 444) }
 
@@ -40,15 +44,6 @@ describe Invitations::ComputeLink, type: :service do
 
   describe "#call" do
     before do
-      allow(RetrieveGeolocalisation).to receive(:call)
-        .with(address: address, department_number: department_number)
-        .and_return(
-          OpenStruct.new(
-            success?: true, longitude: 2.308628, latitude: 48.850699, city_code: "75107",
-            street_ban_id: "75107_8909"
-          )
-        )
-
       ENV["RDV_SOLIDARITES_URL"] = "https://www.rdv-solidarites.fr"
     end
 
@@ -67,35 +62,17 @@ describe Invitations::ComputeLink, type: :service do
       )
     end
 
-    context "retrieves geolocalisation" do
-      it "tries to retrieve the geolocalisation" do
-        expect(RetrieveGeolocalisation).to receive(:call)
-          .with(
-            address: address,
-            department_number: department_number
-          )
-        subject
-      end
+    context "when the user address has not been geocoded" do
+      let!(:geocoding) { nil }
 
-      context "when it fails" do
-        before do
-          allow(RetrieveGeolocalisation).to receive(:call)
-            .with(
-              address: address,
-              department_number: department_number
-            )
-            .and_return(OpenStruct.new(success?: false))
-        end
+      it("still succeeds") { is_a_success }
 
-        it("still succeeds") { is_a_success }
-
-        it "does not add the attributes to the link" do
-          expect(subject.invitation_link).to eq(
-            "https://www.rdv-solidarites.fr/prendre_rdv?address=20+avenue+de+s%C3%A9gur+75007+Paris&" \
-            "departement=75&invitation_token=sometoken&motif_category_short_name=rsa_accompagnement&" \
-            "organisation_ids%5B%5D=333&organisation_ids%5B%5D=444"
-          )
-        end
+      it "does not add the attributes to the link" do
+        expect(subject.invitation_link).to eq(
+          "https://www.rdv-solidarites.fr/prendre_rdv?address=20+avenue+de+s%C3%A9gur+75007+Paris&" \
+          "departement=75&invitation_token=sometoken&motif_category_short_name=rsa_accompagnement&" \
+          "organisation_ids%5B%5D=333&organisation_ids%5B%5D=444"
+        )
       end
     end
 
@@ -110,11 +87,6 @@ describe Invitations::ComputeLink, type: :service do
           rdv_solidarites_token: rdv_solidarites_token,
           rdv_solidarites_lieu_id: 5
         )
-      end
-
-      it "does not retrieve the geolocalisation" do
-        expect(RetrieveGeolocalisation).not_to receive(:call)
-        subject
       end
 
       it "adds the lieu id instead of the geo attributes in the url" do

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_23_142208) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_18_091652) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -180,6 +180,22 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_23_142208) do
     t.index ["motif_category_id"], name: "index_follow_ups_on_motif_category_id"
     t.index ["status"], name: "index_follow_ups_on_status"
     t.index ["user_id"], name: "index_follow_ups_on_user_id"
+  end
+
+  create_table "geocodings", force: :cascade do |t|
+    t.string "post_code"
+    t.string "city_code"
+    t.float "latitude"
+    t.float "longitude"
+    t.string "city"
+    t.string "department_number"
+    t.bigint "user_id", null: false
+    t.string "street"
+    t.string "house_number"
+    t.string "street_ban_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_geocodings_on_user_id"
   end
 
   create_table "invitations", force: :cascade do |t|
@@ -522,6 +538,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_23_142208) do
   add_foreign_key "csv_exports", "agents"
   add_foreign_key "follow_ups", "motif_categories"
   add_foreign_key "follow_ups", "users"
+  add_foreign_key "geocodings", "users"
   add_foreign_key "invitations", "departments"
   add_foreign_key "invitations", "follow_ups"
   add_foreign_key "invitations", "users"

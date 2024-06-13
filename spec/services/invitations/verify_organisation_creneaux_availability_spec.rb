@@ -68,7 +68,7 @@ describe Invitations::VerifyOrganisationCreneauxAvailability, type: :service do
       :motif_category_short_name => "rsa_orientation",
       :organisation_ids => [organisation_id.to_s],
       :street_ban_id => "12255_0070",
-      :zip_code => nil }
+      :post_code => nil }
   end
   let!(:invitation_with_no_creneau) do
     create(
@@ -90,7 +90,7 @@ describe Invitations::VerifyOrganisationCreneauxAvailability, type: :service do
       :motif_category_short_name => "rsa_orientation",
       :organisation_ids => [organisation_id.to_s],
       :street_ban_id => "12255_0070",
-      :zip_code => "75007" }
+      :post_code => "75007" }
   end
   let!(:invitation2_with_no_creneau) do
     create(
@@ -112,7 +112,7 @@ describe Invitations::VerifyOrganisationCreneauxAvailability, type: :service do
       :motif_category_short_name => "rsa_orientation",
       :organisation_ids => [organisation_id.to_s],
       :street_ban_id => "12255_0070",
-      :zip_code => "75015" }
+      :post_code => "75015" }
   end
   let!(:invitation_with_creneau) do
     create(
@@ -134,7 +134,7 @@ describe Invitations::VerifyOrganisationCreneauxAvailability, type: :service do
       :motif_category_short_name => "rsa_accompagnement_sociopro",
       :organisation_ids => [organisation_id.to_s],
       :street_ban_id => "12000_0000",
-      :zip_code => "75020" }
+      :post_code => "75020" }
   end
   let!(:invitation_with_referent_without_creneau) do
     create(
@@ -157,7 +157,7 @@ describe Invitations::VerifyOrganisationCreneauxAvailability, type: :service do
       :organisation_ids => [organisation_id.to_s],
       :street_ban_id => "12000_0000",
       :referent_ids => ["1"],
-      :zip_code => "75010" }
+      :post_code => "75010" }
   end
 
   describe "#call" do
@@ -188,13 +188,13 @@ describe Invitations::VerifyOrganisationCreneauxAvailability, type: :service do
         excepted_result = [
           {
             motif_category_name: "RSA orientation",
-            zip_codes: Set.new(%w[75007 75015]),
+            post_codes: Set.new(%w[75007 75015]),
             referent_ids: Set.new([]),
             invitations_counter: 3
           },
           {
             motif_category_name: "RSA accompagnement socio-pro",
-            zip_codes: Set.new(["75010"]),
+            post_codes: Set.new(["75010"]),
             referent_ids: Set.new(["1"]),
             invitations_counter: 1
           }

@@ -53,6 +53,7 @@ describe Invitations::SendSms, type: :service do
       allow(SendTransactionalSms).to receive(:call).and_return(OpenStruct.new(success?: true))
       allow(invitation).to receive(:sms_sender_name).and_return(sms_sender_name)
       ENV["HOST"] = "www.rdv-insertion.fr"
+      ENV["RDV_SOLIDARITES_URL"] = "www.rdv-solidarites.fr"
     end
 
     it("is a success") { is_a_success }

@@ -66,17 +66,19 @@ class CarnetDeBord::CreateCarnet < BaseService
 
   def address_attributes
     return {} if @user.address.blank?
-    return {} if retrieve_geolocalisation.failure?
+    return {} if retrieve_geocoding.failure?
+
+    geocoding = Geocoding.new(retrieve_geocoding.geocoding_params)
 
     {
-      address1: retrieve_geolocalisation.name,
-      postalCode: retrieve_geolocalisation.postcode,
-      city: retrieve_geolocalisation.city
+      address1: geocoding.street_address,
+      postalCode: geocoding.post_code,
+      city: geocoding.city
     }
   end
 
-  def retrieve_geolocalisation
-    @retrieve_geolocalisation ||= RetrieveGeolocalisation.call(
+  def retrieve_geocoding
+    @retrieve_geocoding ||= RetrieveGeocoding.call(
       address: @user.address, department_number: @department.number
     )
   end

@@ -5,35 +5,27 @@ module Invitations
     end
 
     def call
-      # we don't need or want to geolocalise when we invite for a precise place
-      retrieve_geolocalisation unless @invitation.rdv_solidarites_lieu_id?
-      result.invitation_link = redirect_link
+      result.invitation_link = compute_rdv_solidarites_link
     end
 
     private
 
-    def user
-      @invitation.user
-    end
+    def user = @invitation.user
 
-    def retrieve_geolocalisation
-      @retrieve_geolocalisation ||= RetrieveGeolocalisation.call(
-        address: user.address, department_number: @invitation.department.number
-      )
-    end
+    def geocoding = user.geocoding
 
     def geo_attributes
-      return {} unless retrieve_geolocalisation.success?
+      return {} unless geocoding
 
       {
-        longitude: retrieve_geolocalisation.longitude,
-        latitude: retrieve_geolocalisation.latitude,
-        city_code: retrieve_geolocalisation.city_code,
-        street_ban_id: retrieve_geolocalisation.street_ban_id
+        longitude: geocoding.longitude,
+        latitude: geocoding.latitude,
+        city_code: geocoding.city_code,
+        street_ban_id: geocoding.street_ban_id
       }
     end
 
-    def redirect_link
+    def compute_rdv_solidarites_link
       "#{ENV['RDV_SOLIDARITES_URL']}/prendre_rdv?#{link_params.to_query}"
     end
 
