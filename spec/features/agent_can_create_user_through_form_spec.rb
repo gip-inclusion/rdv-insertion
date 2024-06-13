@@ -1,5 +1,5 @@
 describe "Agents can create user through form", :js do
-  let!(:agent) { create(:agent, organisations: [organisation]) }
+  let!(:agent) { create(:agent, organisations: [organisation, organisation2]) }
   let!(:department) { create(:department) }
   let!(:organisation) do
     create(
@@ -10,10 +10,20 @@ describe "Agents can create user through form", :js do
     )
   end
 
+  let!(:organisation2) do
+    create(
+      :organisation,
+      department: department,
+      rdv_solidarites_organisation_id: rdv_solidarites_organisation_id2,
+      category_configurations: [category_configuration]
+    )
+  end
+
   let!(:category_configuration) { create(:category_configuration) }
 
   let!(:rdv_solidarites_user_id) { 2323 }
   let!(:rdv_solidarites_organisation_id) { 3234 }
+  let!(:rdv_solidarites_organisation_id2) { 3233 }
 
   describe "#create" do
     before do
@@ -56,11 +66,12 @@ describe "Agents can create user through form", :js do
           click_button("Enregistrer")
 
           expect(page).to have_content("Veuillez choisir une organisation")
+          find("select.swal2-select").select(organisation2.name)
           click_button("Sélectionner")
 
           expect(page).to have_content("Informations")
           expect(page).to have_content("Bob")
-          expect(page).to have_content(organisation.name)
+          expect(page).to have_content(organisation2.name)
         end
       end
 
