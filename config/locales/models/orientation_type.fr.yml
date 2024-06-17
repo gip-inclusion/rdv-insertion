@@ -1,0 +1,11 @@
+fr:
+  activerecord:
+    models:
+      orientation_type: Types d'orientations
+    attributes:
+      orientation_type:
+        name: Nom
+        casf_category: Catégorie CASF
+        department: Département
+        created_at: Créé le
+        updated_at: Mis à jour le
