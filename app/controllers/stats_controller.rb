@@ -1,9 +1,10 @@
 class StatsController < ApplicationController
   skip_before_action :authenticate_agent!, only: [:index, :show, :deployment_map]
   before_action :set_organisation, :set_department, :set_stat, only: [:show]
+  before_action :set_departments, only: [:index, :show]
 
   def index
-    @department_count = Department.displayed_in_stats.count
+    @department_count = @departments.count
     @stat = Stat.find_by(statable_type: "Department", statable_id: nil)
   end
 
@@ -13,6 +14,10 @@ class StatsController < ApplicationController
 
   private
 
+  def set_departments
+    @departments = Department.displayed_in_stats.order(:number)
+  end
+
   def set_organisation
     @organisation = Organisation.find(params[:organisation_id]) if params[:organisation_id]
   end
@@ -21,7 +26,9 @@ class StatsController < ApplicationController
     @department = @organisation&.department || Department.find(params[:department_id])
   end
 
+  def structure = @organisation || @department
+
   def set_stat
-    @stat = Stat.find_by(statable: current_structure)
+    @stat = structure.stat
   end
 end
