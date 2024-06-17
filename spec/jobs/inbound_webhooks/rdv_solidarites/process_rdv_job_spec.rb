@@ -492,30 +492,34 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
 
           it "sets the convocable attribute when upserting the rdv" do
             expect(UpsertRecordJob).to receive(:perform_async) do |_, _, args|
-              expect(args[:participations_attributes].sort_by { |h| h[:user_id] }).to eq(
-                [
-                  {
-                    id: nil,
-                    status: "unknown",
-                    created_by: "user",
-                    user_id: 3,
-                    rdv_solidarites_participation_id: 998,
-                    follow_up_id: follow_up.id,
-                    convocable: false,
-                    rdv_solidarites_agent_prescripteur_id: nil
-                  },
-                  {
-                    id: nil,
-                    status: "unknown",
-                    created_by: "user",
-                    user_id: 4,
-                    rdv_solidarites_participation_id: 999,
-                    follow_up_id: follow_up2.id,
-                    convocable: false,
-                    rdv_solidarites_agent_prescripteur_id: nil
-                  }
-                ].sort_by { |h| h[:user_id] }
-              )
+              expected_participation_attributes = [
+                {
+                  id: nil,
+                  status: "unknown",
+                  created_by: "user",
+                  user_id: 3,
+                  rdv_solidarites_participation_id: 998,
+                  follow_up_id: follow_up.id,
+                  convocable: false,
+                  rdv_solidarites_agent_prescripteur_id: nil
+                },
+                {
+                  id: nil,
+                  status: "unknown",
+                  created_by: "user",
+                  user_id: 4,
+                  rdv_solidarites_participation_id: 999,
+                  follow_up_id: follow_up2.id,
+                  convocable: false,
+                  rdv_solidarites_agent_prescripteur_id: nil
+                }
+              ]
+              # Here we sort the participations by user_id to ensure the test doesn't get flaky and matches
+              # the expected attributes above
+              result_sorted_by_user_id = args[:participations_attributes].sort_by { |h| h[:user_id] }
+
+              expect(result_sorted_by_user_id).to eq(expected_participation_attributes)
+
               expect(args[:organisation_id]).to eq(organisation.id)
               expect(args[:agent_ids]).to eq([agent.id])
               expect(args[:motif_id]).to eq(motif.id)
