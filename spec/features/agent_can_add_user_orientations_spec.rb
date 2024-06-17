@@ -28,7 +28,10 @@ describe "Agents can add user orientation", :js do
 
   let!(:other_organisation_agents) { [create(:agent, first_name: "Jean-Paul", last_name: "Rouve")] }
 
-  before { setup_agent_session(agent) }
+  before do
+    setup_agent_session(agent)
+    allow(RdvSolidaritesApi::CreateUserProfiles).to receive(:call).and_return(OpenStruct.new(success?: true))
+  end
 
   it "shows the pacours and enables to add orientations" do
     visit organisation_user_path(organisation_id: organisation.id, id: user.id)
