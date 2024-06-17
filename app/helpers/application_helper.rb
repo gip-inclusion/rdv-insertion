@@ -35,8 +35,8 @@ module ApplicationHelper
   end
 
   def show_organisation_navigation_button?
-    current_agent_department_organisations && current_agent_department_organisations.length > 1 &&
-      controller_name.exclude?("stats")
+    controller_name.exclude?("stats") && current_agent_department_organisations &&
+      current_agent_department_organisations.length > 1
   end
 
   def show_guide_banner?
