@@ -4,7 +4,9 @@ describe InvitationsController do
     let!(:organisation_id) { "22232" }
     let!(:department) { create(:department) }
     let!(:organisation) { create(:organisation, id: organisation_id, department: department) }
+    let!(:category_configuration) { create(:category_configuration, organisation:, motif_category:) }
     let!(:other_org) { create(:organisation, department: department) }
+    let!(:other_category_configuration) { create(:category_configuration, organisation: other_org, motif_category:) }
 
     let!(:organisations) { Organisation.where(id: organisation.id) }
     let!(:agent) { create(:agent, organisations: organisations) }
@@ -74,6 +76,19 @@ describe InvitationsController do
         expect(InviteUser).to receive(:call)
           .with(user:, organisations:, invitation_attributes:, motif_category_attributes:)
         post :create, params: create_params
+      end
+
+      context "when an org does not have a configuration for this category" do
+        let!(:other_category_configuration) do
+          create(:category_configuration, organisation: other_org, motif_category: create(:motif_category))
+        end
+        let!(:organisations) { Organisation.where(id: [organisation.id]) }
+
+        it "calls the service with only the orgs handling the category" do
+          expect(InviteUser).to receive(:call)
+            .with(user:, organisations:, invitation_attributes:, motif_category_attributes:)
+          post :create, params: create_params
+        end
       end
     end
 
