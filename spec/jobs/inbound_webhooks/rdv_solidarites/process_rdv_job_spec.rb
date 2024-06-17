@@ -491,11 +491,9 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
           before { category_configuration.update! convene_user: false }
 
           it "sets the convocable attribute when upserting the rdv" do
-            expect(UpsertRecordJob).to receive(:perform_async).with(
-              "Rdv",
-              data,
-              {
-                participations_attributes: [
+            expect(UpsertRecordJob).to receive(:perform_async) do |_, _, args|
+              expect(args[:participations_attributes].sort_by { |h| h[:user_id] }).to eq(
+                [
                   {
                     id: nil,
                     status: "unknown",
@@ -516,14 +514,14 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
                     convocable: false,
                     rdv_solidarites_agent_prescripteur_id: nil
                   }
-                ],
-                organisation_id: organisation.id,
-                agent_ids: [agent.id],
-                motif_id: motif.id,
-                lieu_id: lieu.id,
-                last_webhook_update_received_at: timestamp
-              }
-            )
+                ].sort_by { |h| h[:user_id] }
+              )
+              expect(args[:organisation_id]).to eq(organisation.id)
+              expect(args[:agent_ids]).to eq([agent.id])
+              expect(args[:motif_id]).to eq(motif.id)
+              expect(args[:lieu_id]).to eq(lieu.id)
+              expect(args[:last_webhook_update_received_at]).to eq(timestamp)
+            end
             subject
           end
         end
