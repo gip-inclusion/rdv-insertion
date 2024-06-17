@@ -6,7 +6,11 @@ class OrientationType < ApplicationRecord
   scope :for_department, lambda { |department|
     custom_orientation_types = where(department:)
     missing_categories = casf_categories.keys - custom_orientation_types.pluck(:casf_category)
-    custom_orientation_types.or(where(department: nil, casf_category: missing_categories))
+    custom_orientation_types.or(default_for_categories(missing_categories))
+  }
+
+  scope :default_for_categories, lambda { |categories|
+    where(department: nil, casf_category: categories)
   }
 
   validates :name, presence: true
