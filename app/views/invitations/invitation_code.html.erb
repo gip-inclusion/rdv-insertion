@@ -1,0 +1,40 @@
+<div class="container">
+  <div class="row my-5 justify-content-center">
+    <div class="col-11 welcome-title justify-content-center">
+      <h1 class="text-center">Je prends rendez-vous</h1>
+    </div>
+    <div class="col-sm-10 col-md-8 justify-content-center">
+      <p>Vous avez reçu par courrier une invitation à prendre rendez-vous d'orientation dans le cadre de votre parcours d'insertion. </p>
+      <p>Vous pouvez choisir de scanner votre courrier, ou de taper votre code d'invitation à la main.</p>
+      <h3 class="mt-5">Scanner mon courrier</h3>
+      <div data-controller="qr-code-scanner" class="qr-code-scanner position-fixed d-none w-100 h-100">
+        <video class="w-100 h-100"></video>
+        <div class="qr-code-scanner-overlay"></div>
+        <div class="qr-code-scanner-center position-absolute">
+          <div class="text-center w-100">
+            <i class="fas fa-qrcode fa-3x text-white"></i>
+          </div>
+          <h3 class="text-white mt-5">Détection en cours...</h3>
+          <p class="text-white">Placez votre courrier et notamment le QR code d'invitation dans le champ de vision de la caméra.</p>
+          <p class="text-white">Nous essayons de trouver votre code...</p>
+        </div>
+        <button id="close" class="btn btn-primary position-absolute" style="top: 30px; right: 30px;">Fermer</button>
+      </div>
+      <p> Placez votre courrier sous la camera de votre téléphone ou de votre ordinateur afin de scanner le QR code d'invitation.</p>
+      <button id="scanner" class="btn btn-primary mb-5 w-100">Scanner mon courrier</button>
+      <h4>Ou, rentrer mon code à la main</h4>
+      <p>
+        Saisissez ci-dessous votre code d'invitation, il s'agit des 8 caractères situés à la fin de l'URL / adresse web indiqué sur votre courrier (ex : XXXXXXX).
+      </p>
+    </div>
+    <div class="d-flex flex-column card-white col-sm-10 col-md-8 align-items-center mt-3 rdv-insertion-form text-dark-blue h4-as-labels">
+      <%= form_with url: :redirect_invitations, method: :get, local: :true, data: { turbo: false } do |f| %>
+        <h4 class="text-dark-blue h4-as-labels">Code d'invitation</h4>
+        <p><%= f.text_field :uuid, placeholder: "DKC92JX7" %></p>
+        <div class="d-flex justify-content-center">
+          <button type="submit" class="btn btn-blue">Valider</button>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

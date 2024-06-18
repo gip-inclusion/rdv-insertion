@@ -21,6 +21,7 @@ Rails.application.routes.draw do
     resources :users, only: [:index, :show, :edit, :update]
     resources :motif_categories, only: [:index, :show, :new, :create, :edit, :update]
     resources :templates, only: [:index, :show]
+    resources :orientation_types, only: [:index, :show, :new, :create, :edit, :update, :destroy]
 
     root to: "agents#index"
   end
@@ -87,6 +88,7 @@ Rails.application.routes.draw do
     resources :rdvs, only: [:new]
   end
 
+  get "invitation", to: "invitations#invitation_code", as: :invitation_landing
   get '/r/:uuid', to: "invitations#redirect_shortcut", as: :redirect_invitation_shortcut
   resources :invitations, only: [] do
     get :redirect, on: :collection

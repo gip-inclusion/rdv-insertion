@@ -20,6 +20,7 @@ Rails.application.config.content_security_policy do |policy|
   policy.script_src  :self, :https, :unsafe_inline
   policy.style_src   :self, :https, :unsafe_inline
   policy.connect_src :self, rdv_solidarites, sentry, matomo
+  policy.worker_src :self, :blob
   # Specify URI for violation reports
   # policy.report_uri "/csp-violation-report-endpoint"
 end

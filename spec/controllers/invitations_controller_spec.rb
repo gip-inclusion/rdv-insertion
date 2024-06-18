@@ -151,6 +151,16 @@ describe InvitationsController do
     end
   end
 
+  describe "GET #invitation_code" do
+    render_views
+
+    it "returns a success response" do
+      get :invitation_code
+      expect(response).to be_successful
+      expect(response.body).to match(/Je prends rendez-vous/)
+    end
+  end
+
   describe "#redirect_shortcut" do
     subject { get :redirect_shortcut, params: { uuid: invitation.uuid } }
 
@@ -192,6 +202,11 @@ describe InvitationsController do
 
       context "when the uuid cannot be found" do
         let!(:invite_params) { { uuid: "some_wrong_uuid" } }
+
+        it "redirects back to the invitation page" do
+          subject
+          expect(response).to redirect_to :invitation_landing
+        end
 
         it "displays an error message" do
           subject
