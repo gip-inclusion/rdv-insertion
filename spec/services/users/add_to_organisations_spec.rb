@@ -27,6 +27,7 @@ describe Users::AddToOrganisations, type: :service do
     it "is idempotent" do
       2.times { described_class.call(organisations: [organisation], user:) }
       expect(user.reload.organisations).to include(organisation)
+      expect(user.reload.organisations.size).to eq(1)
     end
 
     context "when it fails it remove the added org" do
