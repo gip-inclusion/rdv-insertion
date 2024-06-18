@@ -20,11 +20,12 @@ describe "Agents can sort users by orientation on index page", :js do
     create(:users_organisation, user: user3, organisation: organisation, created_at: 2.days.ago)
   end
 
-  let!(:orientation) { create(:orientation, organisation: organisation, user: user1, orientation_type: "social") }
+  let(:orientation_type) { create(:orientation_type, name: "Sociale", casf_category: "social") }
+  let!(:orientation) { create(:orientation, organisation: organisation, user: user1, orientation_type:) }
 
   before do
     setup_agent_session(agent)
-    visit organisation_users_path(organisation, orientation_type: "social")
+    visit organisation_users_path(organisation, orientation_type: "Sociale")
   end
 
   it "filters users" do

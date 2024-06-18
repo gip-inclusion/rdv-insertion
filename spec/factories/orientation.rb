@@ -3,7 +3,7 @@ FactoryBot.define do
     user
     organisation
     agent
-    orientation_type { "social" }
+    orientation_type
     starts_at { Time.zone.now.yesterday }
     ends_at { Time.zone.now.tomorrow }
   end

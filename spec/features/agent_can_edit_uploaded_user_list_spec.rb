@@ -67,6 +67,7 @@ describe "Agents can upload user list", :js do
 
           modal.find("input[value='Gentils']").check
           modal.click_button("Enregistrer")
+          expect(page).to have_no_content("Modifier les tags")
 
           expect(column).to have_content("Gentils, cool")
         else
