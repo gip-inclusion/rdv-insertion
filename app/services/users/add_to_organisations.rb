@@ -7,7 +7,7 @@ module Users
 
     def call
       UsersOrganisation.transaction do
-        @user.organisations << @organisations
+        @user.organisations |= @organisations
 
         call_service!(
           RdvSolidaritesApi::CreateUserProfiles,

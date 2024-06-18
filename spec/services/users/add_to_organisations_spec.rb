@@ -24,6 +24,11 @@ describe Users::AddToOrganisations, type: :service do
       expect(user.reload.organisations).to include(organisation)
     end
 
+    it "is idempotent" do
+      2.times { described_class.call(organisations: [organisation], user:) }
+      expect(user.reload.organisations).to include(organisation)
+    end
+
     context "when it fails it remove the added org" do
       before do
         allow(RdvSolidaritesApi::CreateUserProfiles).to receive(:call)
