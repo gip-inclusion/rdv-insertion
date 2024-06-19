@@ -8,49 +8,26 @@
     </div>
     <div class="nav col justify-content-end align-items-center">
       <% if current_agent %>
-        <% if agent_impersonated? %>
-          <%= link_to super_admins_agent_impersonation_path(agent_id: current_agent.id), method: :delete do %>
+        <% if current_agent.super_admin? %>
+          <%= link_to super_admins_root_path do %>
             <button class="btn btn-header border-light-grey w-100">
-              <span class="d-none d-sm-inline">Revenir à ma session</span>
+              <span class="d-none d-sm-inline">Super admin</span>
               <span class="d-inline d-sm-none"><i class="fas fa-sign-out-alt"></i></span>
             </button>
           <% end %>
-        <% elsif current_agent.super_admin? %>
-          <div class="text-center ">
-            <%= link_to super_admins_root_path do %>
-              <button class="btn btn-header border-light-grey w-100">
-                <span class="d-none d-sm-inline">Super admin</span>
-                <span class="d-inline d-sm-none"><i class="fas fa-sign-out-alt"></i></span>
-              </button>
-            <% end %>
-          </div>
         <% else %>
           <%= render "common/header_help_menu" %>
         <% end %>
         <% if show_organisation_navigation_button? %>
           <%= render "common/header_organisation_navigation_button" %>
         <% end %>
-        <div class="text-center mx-3">
-          <% if logged_with_inclusion_connect? %>
-            <%= link_to inclusion_connect_sign_out_path, data: { turbo: false } do %>
-              <button class="btn btn-header border-light-grey w-100">
-                <span class="d-none d-sm-inline">Se déconnecter</span>
-                <span class="d-inline d-sm-none"><i class="fas fa-sign-out-alt"></i></span>
-              </button>
-            <% end %>
-          <% else %>
-            <%= link_to sign_out_path, method: :delete do %>
-              <button class="btn btn-header border-light-grey w-100">
-                <span class="d-none d-sm-inline">Se déconnecter</span>
-                <span class="d-inline d-sm-none"><i class="fas fa-sign-out-alt"></i></span>
-              </button>
-            <% end %>
-          <% end %>
+        <div class="mx-3">
+        <%= render "common/sign_out_button" %>
         </div>
       <% end %>
       <div class="d-flex align-items-center">
         <% if show_login_button? %>
-          <div class="text-center mx-3 col">
+          <div class="mx-3">
             <%= link_to sign_in_path do %>
               <button class="btn btn-blue w-100">
                 <span class="d-none d-sm-inline">Connexion agent</span>
