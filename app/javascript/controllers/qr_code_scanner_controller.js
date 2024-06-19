@@ -5,7 +5,6 @@ export default class extends Controller {
   connect() {
     this.isScanning = false;
     this.qrScanner = null;
-    document.querySelector("#scanner").addEventListener("click", () => this.scan());
   }
 
   scan() {
@@ -16,7 +15,6 @@ export default class extends Controller {
     );
     this.isScanning = true;
     this.qrScanner.start();
-    document.querySelector("#close").addEventListener("click", () => this.stopScan());
   }
 
   stopScan() {
