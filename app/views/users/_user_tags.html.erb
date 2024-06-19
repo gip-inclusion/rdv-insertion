@@ -5,8 +5,10 @@
       -
     <% else %>
       <% tags.each do |tag| %>
-        <span class="badge badge-tag justify-content-between background-blue-light text-dark-blue me-2 d-flex">
-          <%= tag.value %>
+        <span class="badge badge-tag justify-content-between background-blue-light text-dark-blue me-2 d-flex text-truncate">
+          <span class="text-truncate">
+            <%= tag.value %>
+          </span>
           <%=
             link_to(
               structure_tag_assignations_path(user.id, tag_id: tag.id),

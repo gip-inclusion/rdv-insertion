@@ -8,7 +8,7 @@
       class: "form-select js-orientation-selector"
     )
   %>
-  <% selected_orientation = @orientation_types.find { |orientation| orientation == params[:orientation_type] }%>
+  <% selected_orientation = @orientation_types.find { |orientation_type| orientation_type.name == params[:orientation_type] }%>
   <span class="label-alt position-absolute bg-white pe-none">
     <span class="orientation-label-alt">
       <% if selected_orientation.present? %>

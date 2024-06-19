@@ -62,8 +62,9 @@ class InvitationsController < ApplicationController
   def set_organisations
     @organisations =
       policy_scope(Organisation)
-      .includes(:motif_categories, :department, :messages_configuration)
+      .preload(:motif_categories, :department, :messages_configuration)
       .where(department_level? ? { department_id: params[:department_id] } : { id: params[:organisation_id] })
+      .joins(:motif_categories).where(motif_categories: { id: invitation_params.dig(:motif_category, :id) })
   end
 
   def set_user

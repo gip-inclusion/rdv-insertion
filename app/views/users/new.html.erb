@@ -1,6 +1,16 @@
 <% content_for :title, "Créer un usager - #{current_structure.name} - rdv-insertion" %>
 
-<%= form_for(@user, url: structure_users_path, method: :post) do |f| %>
+<%= 
+  form_for(
+    @user, 
+    url: structure_users_path, 
+    method: :post, 
+    data: department_level? ? { 
+      controller: "new-user-form", 
+      action: "submit->new-user-form#submit",
+      department_number: current_department.number
+    } : {}
+  ) do |f| %>
   <%= render "user_form", f: f, return_path: structure_users_path %>
 <% end %>
 
