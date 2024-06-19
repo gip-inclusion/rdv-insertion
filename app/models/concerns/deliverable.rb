@@ -6,10 +6,10 @@ module Deliverable
 
   included do
     # https://developers.brevo.com/docs/transactional-webhooks
-    enum delivery_status: { accepted: "accepted", sent: "sent", request: "request", click: "click", deferred: "deferred",
-                            delivered: "delivered", hard_bounce: "hard_bounce", soft_bounce: "soft_bounce",
-                            spam: "spam", unique_opened: "unique_opened", opened: "opened", reply: "reply",
-                            invalid_email: "invalid_email", blocked: "blocked", error: "error",
+    enum delivery_status: { accepted: "accepted", sent: "sent", request: "request", click: "click",
+                            deferred: "deferred", delivered: "delivered", hard_bounce: "hard_bounce",
+                            soft_bounce: "soft_bounce", spam: "spam", unique_opened: "unique_opened", opened: "opened",
+                            reply: "reply", invalid_email: "invalid_email", blocked: "blocked", error: "error",
                             unsubscribe: "unsubscribe", proxy_open: "proxy_open" }
 
     validates :delivered_at, presence: true, if: -> { delivery_status.present? }
