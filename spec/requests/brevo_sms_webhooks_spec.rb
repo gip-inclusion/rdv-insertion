@@ -17,12 +17,12 @@ RSpec.describe "BrevoSmsWebhooks" do
   end
 
   it "processes the webhook and updates the invitation" do
-    post "/brevo_sms_webhooks/#{invitation.id}", params: webhook_params, as: :json
+    post "/brevo/sms_webhooks/#{invitation.id}", params: webhook_params, as: :json
     expect(response).to be_successful
 
     invitation.reload
     expect(invitation.delivery_status).to eq("delivered")
-    expect(invitation.delivery_status_received_at).to eq(Time.zone.parse("2023-06-07T12:34:56Z"))
+    expect(invitation.delivered_at).to eq(Time.zone.parse("2023-06-07T12:34:56Z"))
   end
 
   context "with invalid data" do
@@ -35,12 +35,12 @@ RSpec.describe "BrevoSmsWebhooks" do
     end
 
     it "does not update the invitation and captures an error" do
-      post "/brevo_sms_webhooks/#{invitation.id}", params: invalid_webhook_params, as: :json
+      post "/brevo/sms_webhooks/#{invitation.id}", params: invalid_webhook_params, as: :json
       expect(response).to be_successful
 
       invitation.reload
       expect(invitation.delivery_status).to be_nil
-      expect(invitation.delivery_status_received_at).to be_nil
+      expect(invitation.delivered_at).to be_nil
       expect(Sentry).to have_received(:capture_message).with(
         "Invitation mobile phone and webhook mobile phone does not match", any_args
       )
@@ -57,7 +57,7 @@ RSpec.describe "BrevoSmsWebhooks" do
     end
 
     it "captures an error for missing invitation" do
-      post "/brevo_sms_webhooks/999", params: invalid_webhook_params, as: :json
+      post "/brevo/sms_webhooks/999", params: invalid_webhook_params, as: :json
       expect(response).to be_successful
 
       expect(Sentry).to have_received(:capture_message).with("Invitation not found", any_args)

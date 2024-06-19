@@ -1,4 +1,4 @@
-describe Invitations::AssignMailDeliveryStatusAndDate do
+describe InboundWebhooks::Brevo::AssignMailDeliveryStatusAndDate do
   subject { described_class.call(webhook_params: webhook_params, invitation: invitation) }
 
   let(:webhook_params) { { email: "test@example.com", event: "opened", date: "2023-06-07T12:34:56Z" } }
@@ -8,11 +8,11 @@ describe Invitations::AssignMailDeliveryStatusAndDate do
   context "when the invitation has a final delivery status" do
     Invitation::FINAL_DELIVERY_STATUS.each do |status|
       it "does not update the invitation if delivery status is #{status}" do
-        invitation.update(delivery_status: status, delivery_status_received_at: Time.zone.parse("2023-06-07T12:00:00Z"))
+        invitation.update(delivery_status: status, delivered_at: Time.zone.parse("2023-06-07T12:00:00Z"))
         subject
         invitation.reload
         expect(invitation.delivery_status).to eq(status)
-        expect(invitation.delivery_status_received_at).to eq(Time.zone.parse("2023-06-07T12:00:00Z"))
+        expect(invitation.delivered_at).to eq(Time.zone.parse("2023-06-07T12:00:00Z"))
       end
     end
   end
@@ -21,14 +21,14 @@ describe Invitations::AssignMailDeliveryStatusAndDate do
     let(:old_date) { "2022-06-07T12:34:56Z" }
 
     before do
-      invitation.update(delivery_status_received_at: Time.zone.parse("2023-06-08T12:34:56Z"))
+      invitation.update(delivered_at: Time.zone.parse("2023-06-08T12:34:56Z"))
     end
 
     it "does not update the invitation" do
       subject
       invitation.reload
       expect(invitation.delivery_status).to be_nil
-      expect(invitation.delivery_status_received_at).not_to eq(old_date)
+      expect(invitation.delivered_at).not_to eq(old_date)
     end
   end
 
@@ -39,7 +39,7 @@ describe Invitations::AssignMailDeliveryStatusAndDate do
       expect(Sentry).to receive(:capture_message).with("Invitation email and webhook email does not match", any_args)
       subject
       expect(invitation.delivery_status).to be_nil
-      expect(invitation.delivery_status_received_at).to be_nil
+      expect(invitation.delivered_at).to be_nil
     end
   end
 
@@ -47,6 +47,6 @@ describe Invitations::AssignMailDeliveryStatusAndDate do
     subject
     invitation.reload
     expect(invitation.delivery_status).to eq("opened")
-    expect(invitation.delivery_status_received_at).to eq(Time.zone.parse("2023-06-07T12:34:56Z"))
+    expect(invitation.delivered_at).to eq(Time.zone.parse("2023-06-07T12:34:56Z"))
   end
 end

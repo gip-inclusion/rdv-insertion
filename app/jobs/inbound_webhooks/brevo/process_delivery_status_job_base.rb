@@ -7,12 +7,12 @@ module InboundWebhooks
 
         return unless invitation_present?
 
-        process_invitation
+        assign_delivery_status_and_date
       end
 
       private
 
-      def process_invitation
+      def assign_delivery_status_and_date
         raise NoMethodError
       end
 

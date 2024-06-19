@@ -178,8 +178,10 @@ Rails.application.routes.draw do
   get "inclusion_connect/callback" => "inclusion_connect#callback"
 
   post "/inbound_emails/brevo", to: "inbound_emails#brevo"
-  post "/brevo_mail_webhooks", to: "brevo_mail_webhooks#create"
-  post "/brevo_sms_webhooks/:invitation_id", to: "brevo_sms_webhooks#create", as: :brevo_sms_webhooks
+  namespace :brevo do
+    post "mail_webhooks", to: "mail_webhooks#create"
+    post "sms_webhooks/:invitation_id", to: "sms_webhooks#create", as: :sms_webhooks
+  end
 
   if ENV["SIDEKIQ_USERNAME"] && ENV["SIDEKIQ_PASSWORD"]
     Sidekiq::Web.use Rack::Auth::Basic do |username, password|

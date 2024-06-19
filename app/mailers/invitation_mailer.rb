@@ -7,9 +7,7 @@ class InvitationMailer < ApplicationMailer
   before_action :set_rdv_title, :set_user_designation, :set_mandatory_warning, :set_punishable_warning,
                 :set_rdv_purpose, :set_rdv_subject, :set_custom_sentence
 
-  before_action :set_x_mailin_custom_header,
-                only: %i[standard_invitation short_invitation phone_platform_invitation atelier_invitation
-                         atelier_enfants_ados_invitation]
+  before_action :set_x_mailin_custom_header
 
   default to: -> { @user.email }, reply_to: -> { "invitation+#{@invitation.uuid}@reply.rdv-insertion.fr" }
 

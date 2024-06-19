@@ -199,7 +199,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_31_140628) do
     t.boolean "rdv_with_referents", default: false
     t.string "trigger", default: "manual", null: false
     t.string "delivery_status"
-    t.datetime "delivery_status_received_at"
+    t.datetime "delivered_at"
     t.index ["department_id"], name: "index_invitations_on_department_id"
     t.index ["follow_up_id"], name: "index_invitations_on_follow_up_id"
     t.index ["user_id"], name: "index_invitations_on_user_id"

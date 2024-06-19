@@ -15,27 +15,15 @@ module InvitationsHelper
     !user.address? || user.archived_in?(department) || follow_up.rdv_pending? || follow_up.closed?
   end
 
-  def invitation_attribute_by_format(invitations, invitation_formats, &block)
+  def invitations_by_format(invitations, invitation_formats)
     invitation_formats.index_with { |_invitation_format| [] }.merge!(
       invitations.group_by(&:format)
                  .select { |format| invitation_formats.include?(format) }
-                 .transform_values(&block).to_h
+                 .transform_values { |invites| invites.sort_by(&:created_at).reverse }
     )
   end
 
-  def invitation_dates_by_format(invitations, invitation_formats)
-    invitation_attribute_by_format(invitations, invitation_formats) do |invites|
-      invites.map(&:created_at).sort.reverse
-    end
-  end
-
-  def invitation_delivery_status_by_format(invitations, invitation_formats)
-    invitation_attribute_by_format(invitations, invitation_formats) do |invites|
-      invites.map(&:human_delivery_status_and_date)
-    end
-  end
-
-  def max_number_of_invitations_for_a_format(invitation_dates_by_formats)
-    invitation_dates_by_formats.values.map(&:count).max
+  def max_number_of_invitations_for_a_format(invitations_by_format)
+    invitations_by_format.values.map(&:count).max
   end
 end

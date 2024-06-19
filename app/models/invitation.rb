@@ -1,12 +1,11 @@
 class Invitation < ApplicationRecord
   NUMBER_OF_DAYS_BEFORE_REMINDER = 3
-  FINAL_DELIVERY_STATUS = %w[delivered soft_bounce hard_bounce blocked invalid_email error].freeze
-  FAILED_DELIVERY_STATUS = %w[soft_bounce hard_bounce blocked invalid_email error].freeze
 
   include HasCurrentCategoryConfiguration
   include Templatable
   include Sendable
   include WebhookDeliverable
+  include Deliverable
 
   belongs_to :user
   belongs_to :department
@@ -35,26 +34,6 @@ class Invitation < ApplicationRecord
     where("created_at > ?", number_of_days_before_action_required.days.ago)
   }
   scope :valid, -> { where("valid_until > ?", Time.zone.now) }
-
-  def human_delivery_status_and_date
-    if delivery_status == "delivered"
-      if delivery_date == invitation_date
-        "Délivrée à #{delivery_hour}"
-      else
-        "Délivrée à #{delivery_hour} (le #{delivery_date})"
-      end
-    elsif delivery_status.in?(FAILED_DELIVERY_STATUS)
-      "Non délivrée"
-    end
-  end
-
-  def delivery_date
-    delivery_status_received_at&.strftime("%d/%m/%Y")
-  end
-
-  def delivery_hour
-    delivery_status_received_at&.strftime("%H:%M")
-  end
 
   def invitation_date
     created_at.strftime("%d/%m/%Y")

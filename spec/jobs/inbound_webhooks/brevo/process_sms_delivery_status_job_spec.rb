@@ -10,7 +10,7 @@ describe InboundWebhooks::Brevo::ProcessSmsDeliveryStatusJob do
   end
 
   it "processes SMS delivery status" do
-    expect(Invitations::AssignSmsDeliveryStatusAndDate).to receive(:call)
+    expect(InboundWebhooks::Brevo::AssignSmsDeliveryStatusAndDate).to receive(:call)
       .with(webhook_params: webhook_params, invitation: invitation)
     subject
   end

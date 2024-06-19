@@ -1,4 +1,4 @@
-describe BrevoSmsWebhooksController do
+describe Brevo::SmsWebhooksController do
   describe "#create" do
     before do
       allow(InboundWebhooks::Brevo::ProcessSmsDeliveryStatusJob).to receive(:perform_async)
