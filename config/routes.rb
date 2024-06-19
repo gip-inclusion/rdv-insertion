@@ -21,6 +21,7 @@ Rails.application.routes.draw do
     resources :users, only: [:index, :show, :edit, :update]
     resources :motif_categories, only: [:index, :show, :new, :create, :edit, :update]
     resources :templates, only: [:index, :show]
+    resources :orientation_types, only: [:index, :show, :new, :create, :edit, :update, :destroy]
 
     root to: "agents#index"
   end

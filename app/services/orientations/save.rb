@@ -20,7 +20,11 @@ module Orientations
     def add_user_to_organisation
       fail!("Une organisation doit être renseignée") if @orientation.organisation.nil?
 
-      @orientation.user.organisations << @orientation.organisation
+      call_service!(
+        Users::AddToOrganisations,
+        user: @orientation.user,
+        organisations: [@orientation.organisation]
+      )
     end
 
     def other_user_orientations

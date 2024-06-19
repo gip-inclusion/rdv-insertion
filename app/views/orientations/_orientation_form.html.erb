@@ -32,9 +32,11 @@
   <div class="form-group text-center">
     <label><%= Orientation.human_attribute_name(:orientation_type) %></label>
     <%=
-      form.select(
-        :orientation_type,
-        Orientation.orientation_types.map { |k, v| [I18n.t("activerecord.attributes.orientation.orientation_types.#{k}"), k]},
+      form.collection_select(
+        :orientation_type_id,
+        @orientation_types,
+        :id,
+        :name,
         { include_blank: true },
         class: "form-control w-75 text-center mx-auto"
       )

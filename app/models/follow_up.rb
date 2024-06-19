@@ -34,7 +34,7 @@ class FollowUp < ApplicationRecord
   scope :invited_before_time_window, lambda { |number_of_days_before_action_required|
     where.not(
       id: joins(:invitations).where("invitations.created_at > ?", number_of_days_before_action_required.days.ago)
-                             .where.not(invitations: Invitation.reminder)
+                             .where(invitations: { trigger: "manual" })
                              .pluck(:follow_up_id)
     )
   }

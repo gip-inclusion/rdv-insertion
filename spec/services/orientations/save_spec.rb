@@ -11,6 +11,12 @@ describe Orientations::Save, type: :service do
   let!(:starts_at) { Date.parse("12/12/2022") }
   let!(:ends_at) { Date.parse("22/12/2022") }
 
+  before do
+    allow(Users::AddToOrganisations).to receive(:call)
+      .with(user: user, organisations: [organisation])
+      .and_return(OpenStruct.new(success?: true))
+  end
+
   describe "#call" do
     it "is a success" do
       is_a_success
@@ -158,9 +164,12 @@ describe Orientations::Save, type: :service do
 
       context "when user is not part of the organisation" do
         it "adds the user to the organisation" do
-          expect(user.organisations).not_to include(organisation)
+          expect(Users::AddToOrganisations).to receive(:call)
+            .with(user: user, organisations: [organisation])
+            .once
+            .and_return(OpenStruct.new(success?: true))
+
           subject
-          expect(user.organisations.reload).to include(orientation.organisation)
         end
       end
 
