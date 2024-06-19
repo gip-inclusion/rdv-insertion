@@ -26,10 +26,8 @@ export default class extends Controller {
   handleScan(result) {
     if (result.includes("/i/r") && this.isScanning) {
       this.stopScan();
-      const code = new URL(result).pathname.split("/").pop();
-      console.log("Found QR code: ", code);
-      
-      window.location.replace(`/invitations/redirect?uuid=${code}`);
+      const uuid = new URL(result).pathname.split("/").pop();
+      window.location.replace(`/invitations/redirect?uuid=${uuid}`);
     }
   }
 }
