@@ -1,15 +1,17 @@
 class DepartmentPolicy < ApplicationPolicy
-  def upload?
+  def access?
     pundit_user.organisation_ids.intersect?(record.organisation_ids)
   end
 
-  def show? = upload?
+  def show? = access?
 
-  def index? = upload?
+  def index? = access?
 
-  def batch_actions? = upload?
+  def batch_actions? = access?
 
   def parcours?
+    return false if record.number.in?(ENV.fetch("DEPARTMENTS_WHERE_PARCOURS_DISABLED", "").split(","))
+
     pundit_user
       .organisations
       .pluck(:organisation_type)

@@ -7,9 +7,10 @@ import handleUserUpdate from "../lib/handleUserUpdate";
 import handleReferentAssignation from "../lib/handleReferentAssignation";
 
 import formatPhoneNumber from "../../lib/formatPhoneNumber";
+import formatAffiliationNumber from "../../lib/formatAffiliationNumber";
 import retrieveLastInvitationDate from "../../lib/retrieveLastInvitationDate";
 import retrieveRelevantOrganisation from "../../lib/retrieveRelevantOrganisation";
-import { getFrenchFormatDateString } from "../../lib/datesHelper";
+import { getFrenchFormatDateString, todaysDateString } from "../../lib/datesHelper";
 
 const ROLES = {
   usager: "demandeur",
@@ -63,7 +64,7 @@ export default class User {
     this.nir = formattedAttributes.nir;
     this.franceTravailId = formattedAttributes.franceTravailId;
     this.rightsOpeningDate = formattedAttributes.rightsOpeningDate;
-    this.affiliationNumber = formattedAttributes.affiliationNumber;
+    this.affiliationNumber = formatAffiliationNumber(formattedAttributes.affiliationNumber);
     this.phoneNumber = formatPhoneNumber(formattedAttributes.phoneNumber);
     this.role = this.formatRole(formattedAttributes.role);
     this.shortRole = this.role ? (this.role === "demandeur" ? "DEM" : "CJT") : null;
@@ -152,6 +153,8 @@ export default class User {
   }
 
   async createAccount(options = { raiseError: true }) {
+    if (this.createdAt && this.belongsToCurrentOrg()) return true;
+
     this.triggers.creation = true;
 
     if (!this.currentOrganisation) {
@@ -207,7 +210,13 @@ export default class User {
 
     this.triggers.referentAssignation = true;
 
-    const { success } = await handleReferentAssignation(this, { raiseError: options.raiseError });
+    const { success } = await handleReferentAssignation(
+      this,
+      this.department.id,
+      this.currentOrganisation.id,
+      this.list.isDepartmentLevel,
+      { raiseError: options.raiseError }
+    );
     if (!success && !options.raiseError) {
       this.errors = ["referentAssignation"];
     } else if (success) {
@@ -221,6 +230,7 @@ export default class User {
 
   resetErrors() {
     this.errors = [];
+    this.errorsMayNoLongerBeRelevant = false;
   }
 
   async updateAttribute(attribute, value) {
@@ -231,24 +241,37 @@ export default class User {
 
     if (this.createdAt) {
       this.triggers[`${attribute}Update`] = true;
-      const result = await handleUserUpdate(this.currentOrganisation.id, this, this.asJson());
+      // No need to resetErrors as we are updating only a single attribute
+      // If any error occurs within handleUserUpdate it will be displayed as a modal anyway.
+      // Storing and resetting errors is only useful for batch actions
+      const result = await handleUserUpdate(this.currentOrganisation.id, this, this.asJson(), { resetErrors: false });
 
-      if (!result.success) {
+      if (result.success) {
+        this.errorsMayNoLongerBeRelevant = true;
+      } else {
         this[attribute] = previousValue;
       }
 
       this.triggers[`${attribute}Update`] = false;
       return result.success;
     }
+
+    this.errorsMayNoLongerBeRelevant = true;
+
     return true;
+  }
+
+  get activeErrors() {
+    if (this.errorsMayNoLongerBeRelevant) return [];
+    return this.errors;
   }
 
   get isValid() {
     return !this.errors || this.errors.length === 0;
   }
 
-  updateWith(upToDateUser) {
-    this.resetErrors();
+  updateWith(upToDateUser, options = { resetErrors: true }) {
+    if (options.resetErrors) this.resetErrors();
     this.createdAt = upToDateUser.created_at;
     this.id = upToDateUser.id;
     this.archives = upToDateUser.archives;
@@ -287,6 +310,8 @@ export default class User {
         (rc) => rc.motif_category_id === this.currentConfiguration.motif_category_id
       );
       this.currentFollowUpStatus = this.currentFollowUp && this.currentFollowUp.status;
+      this.currentPendingRdv = this.currentFollowUpStatus === "rdv_pending" &&
+        this.currentPendingRdv();
       this.participations = this.currentFollowUp?.participations || [];
       this.lastSmsInvitationSentAt = retrieveLastInvitationDate(
         upToDateUser.invitations,
@@ -304,6 +329,15 @@ export default class User {
         this.currentConfiguration.motif_category_id
       );
     }
+  }
+
+  currentPendingRdv() {
+    return (
+      // we select the next rdv in the future
+      this.currentFollowUp.participations
+          .filter((participation) => new Date(participation.starts_at) > new Date(todaysDateString()))
+          .sort((a, b) => new Date(a.starts_at) - new Date(b.starts_at))[0]
+    );
   }
 
   updatePhoneNumber(phoneNumber) {

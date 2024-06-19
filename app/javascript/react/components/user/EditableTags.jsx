@@ -1,86 +1,54 @@
-import React from "react";
+import React, { useState } from "react";
 import { observer } from "mobx-react-lite";
-import Tippy from "@tippyjs/react";
 
 export default observer(({ user, cell, values, setIsEditingTags }) => {
-  const addTag = () => {
-    const newValue = document.getElementById("editable-tags").value;
+  const [temporarySelection, setTemporarySelection] = useState([...user[cell]]);
 
-    if (!newValue) return;
-    user.updateAttribute(cell, [...user[cell], newValue]);
+  const addOrRemoveTagFromTemporarySelection = (tag) => {
+    if (temporarySelection.includes(tag)) setTemporarySelection(temporarySelection.filter((t) => t !== tag))
+    else setTemporarySelection([...temporarySelection, tag]);
+  }
+
+  const saveTemporarySelection = async () => {
+    await user.updateAttribute(cell, temporarySelection);
+    setIsEditingTags(false);
   };
-
-  const removeTag = (tag) => {
-    user.updateAttribute(cell, [...user[cell].filter((t) => t !== tag)]);
-  };
-
-  const availableValues = values.filter((value) => !user[cell].map(el => el.toLowerCase()).includes(value.toLowerCase()));
-
-  const tagExists = (aTag) => values.map(tag => tag.toLowerCase()).includes((aTag.toLowerCase()));
 
   return (
     <div className="modal d-block" style={{ backgroundColor: "rgba(0,0,0, 0.3)" }} role="dialog">
       <div className="modal-dialog" role="document">
         <div className="modal-content">
           <div className="modal-header">
-            <h5 className="modal-title">Édition des Tags</h5>
+            <h5 className="modal-title">Modifier les tags</h5>
             <button
               type="button"
-              className="btn btn-blue-out"
               onClick={() => setIsEditingTags(false)}
             >
-              Fermer
+              <i className="fas fa-times" />
             </button>
           </div>
-          <div className="modal-body d-flex flex-wrap">
-            {availableValues.length && !user[cell].length
-              ? "Choisissez un élement ci-dessous."
-              : null}
-            {!availableValues.length && !user[cell].length
-              ? "Vous pouvez créer des tags depuis la configuration de l'organisation."
-              : null}
-            {user[cell].length
-              ? user[cell].slice().sort().map((tag) => (
-                  <Tippy
-                    placement="top"
-                    key={tag}
-                    disabled={tagExists(tag)}
-                    content="Ce tag ne sera pas pris en compte, il doit d'abord être créé dans la configuration de l'organisation."
-                  >
-                    <div
-                      className={`badge w-auto d-flex justify-content-between bg-${
-                        tagExists(tag) ? "primary" : "warning text-white"
-                      } mb-1 me-1`}
-                    >
-                      {tag}
-                      <button type="button" onClick={() => removeTag(tag)} className="text-white">
-                        <i className="fas fa-minus icon-sm" />
-                      </button>
-                    </div>
-                  </Tippy>
-                ))
-              : null}
+          <div className="modal-body d-flex flex-column">
+            {values.map(tag => (
+              <div key={tag} className="tag-container text-start ms-3 mb-2">
+                <input
+                  type="checkbox"
+                  className="form-check-input me-3"
+                  name="selectedTags"
+                  value={tag}
+                  checked={temporarySelection.includes(tag)}
+                  onChange={(e) => addOrRemoveTagFromTemporarySelection(e.target.value)}
+                />
+                <label htmlFor={tag}>{tag}</label>
+              </div>
+            ))}
           </div>
-          <div className="modal-footer d-flex">
-            {availableValues.length ? (
-              <>
-                <select id="editable-tags" className="form-control w-50">
-                  <option value=""> Choisir un tag </option>
-                  {availableValues.map((value) => (
-                    <option key={value} value={value}>
-                      {value}
-                    </option>
-                  ))}
-                </select>
-                <button type="button" onClick={addTag} className="btn btn-primary">
-                  Ajouter
-                </button>
-              </>
-            ) : (
-              <p>
-                Aucun {user[cell].length ? "autre" : ""} tag disponible pour cette organisation.
-              </p>
-            )}
+          <div className="modal-footer border-0 d-flex">
+            <button type="button" className="btn btn-blue-out border-0" onClick={() => setIsEditingTags(false)}>
+              Annuler
+            </button>
+            <button type="button" className="btn btn-blue" onClick={saveTemporarySelection}>
+              Enregistrer
+            </button>
           </div>
         </div>
       </div>

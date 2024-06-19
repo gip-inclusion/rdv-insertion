@@ -1,3 +1,5 @@
+<% content_for :title, "#{current_structure.name} - #{@current_motif_category.name} - rdv-insertion" %>
+
 <table class="table table-hover table-responsive">
   <thead class="text-dark-blue" data-controller="index-table-sorting">
     <th scope="col" class="sortable-table-header" id="js_last_name_header">
@@ -60,8 +62,11 @@
             <td><%= display_attribute format_date(follow_up.last_convocation_created_at) %></td>
           <% end %>
         <% end %>
-        <td id="follow-up-status-<%= follow_up.id %>" class="<%= background_class_for_follow_up_status(follow_up, @current_category_configuration.number_of_days_before_action_required) %>">
+        <td data-link-path="<%= structure_user_follow_ups_path(follow_up.user_id) %>" id="follow-up-status-<%= follow_up.id %>" class="<%= background_class_for_follow_up_status(follow_up, @current_category_configuration.number_of_days_before_action_required) %>">
           <%= display_follow_up_status(follow_up, @current_category_configuration.number_of_days_before_action_required) %>
+          <% if follow_up.rdv_pending? && follow_up.current_pending_rdv.present? %>
+            <span class="text-darker-grey"><em><%= " (le #{format_date(follow_up.current_pending_rdv.starts_at)})" %></em></span>
+          <% end %>
         </td>
         <td class="padding-left-15">
           <%= link_to structure_user_path(user.id) do %>

@@ -78,6 +78,7 @@ module Exporters
        "Motif du dernier RDV",
        "Nature du dernier RDV",
        "Dernier RDV pris en autonomie ?",
+       "Dernier RDV pris le",
        Rdv.human_attribute_name(:status),
        *(FollowUp.human_attribute_name(:status) if @motif_category),
        "Rendez-vous d'orientation (RSA) honoré en - moins de 30 jours?",
@@ -108,11 +109,12 @@ module Exporters
        display_date(first_invitation_date(user)),
        display_date(last_invitation_date(user)),
        display_date(last_notification_date(user)),
-       display_date(last_rdv_date(user)),
-       display_time(last_rdv_date(user)),
+       display_date(last_rdv_starts_at(user)),
+       display_time(last_rdv_starts_at(user)),
        last_rdv_motif(user),
        last_rdv_type(user),
        rdv_taken_in_autonomy?(user),
+       display_date(last_participation_created_at(user)),
        human_last_participation_status(user),
        *(human_follow_up_status(user) if @motif_category),
        oriented_in_less_than_n_days?(user, 30),
@@ -184,8 +186,12 @@ module Exporters
       user.last_convocation_created_at
     end
 
-    def last_rdv_date(user)
+    def last_rdv_starts_at(user)
       last_rdv(user)&.starts_at
+    end
+
+    def last_participation_created_at(user)
+      last_participation(user)&.created_at
     end
 
     def last_rdv(user)
@@ -196,7 +202,7 @@ module Exporters
     end
 
     def last_participation(user)
-      last_rdv(user).present? ? last_rdv(user).participation_for(user) : ""
+      last_rdv(user)&.participation_for(user)
     end
 
     def last_rdv_motif(user)

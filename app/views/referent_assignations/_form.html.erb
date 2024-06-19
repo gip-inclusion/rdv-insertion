@@ -1,0 +1,46 @@
+<div>
+  <%= form_for(:referent_assignation, url: structure_referent_assignations_path(user_id), method: :post) do |f| %>
+    <div class="w-100 px-2">
+        <% if assigned_referents.any? %>
+          <p class="mb-2"> <%= "Référent".pluralize(assigned_referents.size) %> déjà <%= "assigné".pluralize(assigned_referents.size) %></p>
+          <div class="flex-wrap d-flex">
+            <% assigned_referents.each do |referent| %>
+              <span class="badge badge-tag justify-content-between background-blue-light text-dark-grey-alt me-2 d-flex text-truncate">
+                <span class="text-truncate">
+                  <%= referent %>
+                </span>
+              </span>
+            <% end %>
+          </div>
+
+          <p class="mb-1 mt-3"> Ajouter un agent référent </p>
+        <% end %>
+
+        <% assignable_referents.each do |agent| %>
+          <%= render "agent_input", agent:, f: f %>
+        <% end %>
+        <%= f.hidden_field :user_id, value: user_id %>
+      <% if assignable_referents.empty? %>
+        <small class="text-dark-blue">Aucun <%= "autre" if assigned_referents.any? %> référent disponible.</small>
+      <% end %>
+    </div>
+    <% if assignable_referents.any? %>
+      <div class="d-flex justify-content-end align-items-center px-3 mt-3">
+        <button type="button" class="btn btn-blue-out border-0 me-2" data-bs-dismiss="modal">
+          Annuler
+        </button>
+
+        <%= button_tag type: 'submit', class: "btn btn-primary" do %>
+          <i class="fas fa-plus"></i>
+          Ajouter
+        <% end %>
+      </div>
+    <% else %>
+      <div class="d-flex justify-content-end align-items-center px-3">
+        <button type="button" class="btn btn-blue border-0 me-2" data-bs-dismiss="modal">
+          Ok
+        </button>
+      </div>
+    <% end %>
+  <% end %>
+</div>

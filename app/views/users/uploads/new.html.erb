@@ -1,3 +1,5 @@
+<% content_for :title, "Importer des usagers - #{current_structure.name} - #{@motif_category_name || "Aucune catégorie de suivi"} - rdv-insertion" %>
+
 <%= react_component(
   "pages/users/Uploads", {
     organisation: @organisation,

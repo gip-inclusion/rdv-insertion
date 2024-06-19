@@ -38,6 +38,11 @@ describe Invitations::SaveAndSend, type: :service do
 
     it "saves an invitation" do
       expect { subject }.to change(Invitation, :count).by(1)
+      expect(Invitation.last).to have_attributes(
+        user: user,
+        format: "sms",
+        trigger: "manual"
+      )
     end
 
     it "sends the invitation" do

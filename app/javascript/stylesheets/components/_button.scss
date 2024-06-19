@@ -9,18 +9,16 @@ button, input[type="button"] {
   outline: inherit;
 }
 
-.btn-logout {
-  height: 50px;
-  width: 150px;
-  border: 1px solid $light-grey;
-  border-radius: 5px;
-  a {
-    color: $dark-grey;
-  }
+#btn-organisation-navigation {
+  @extend .btn;
+  @extend .btn-header;
+  @extend .btn-blue-out;
+  min-width: 200px;
 }
 
-.btn-logout:hover {
-  background-color: $light-grey;
+.btn-header {
+  height: 50px;
+  max-width: 350px;
 }
 
 .btn-blue {
@@ -83,6 +81,7 @@ button, input[type="button"] {
 .badge-tag {
   padding: 0.75em 1em;
   margin-right: 0.25rem;
+  margin-bottom: 0.5em;
   font-size: 0.85em;
   font-weight: 600;
 }

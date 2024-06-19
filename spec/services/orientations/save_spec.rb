@@ -11,6 +11,12 @@ describe Orientations::Save, type: :service do
   let!(:starts_at) { Date.parse("12/12/2022") }
   let!(:ends_at) { Date.parse("22/12/2022") }
 
+  before do
+    allow(Users::AddToOrganisations).to receive(:call)
+      .with(user: user, organisations: [organisation])
+      .and_return(OpenStruct.new(success?: true))
+  end
+
   describe "#call" do
     it "is a success" do
       is_a_success
@@ -29,7 +35,7 @@ describe Orientations::Save, type: :service do
       end
 
       it "outputs the error" do
-        expect(subject.errors).to eq(["une date de début doit être indiquée"])
+        expect(subject.errors).to eq(["Une date de début doit être indiquée"])
       end
     end
 
@@ -88,7 +94,7 @@ describe Orientations::Save, type: :service do
           end
 
           it "outputs an error" do
-            expect(subject.errors).to eq(["les dates se chevauchent avec une autre orientation"])
+            expect(subject.errors).to eq(["Les dates se chevauchent avec une autre orientation"])
           end
         end
 
@@ -112,7 +118,7 @@ describe Orientations::Save, type: :service do
         end
 
         it "outputs an error" do
-          expect(subject.errors).to eq(["les dates se chevauchent avec une autre orientation"])
+          expect(subject.errors).to eq(["Les dates se chevauchent avec une autre orientation"])
         end
 
         it "does not set the previous ends_at" do
@@ -129,7 +135,7 @@ describe Orientations::Save, type: :service do
         end
 
         it "outputs an error" do
-          expect(subject.errors).to eq(["les dates se chevauchent avec une autre orientation"])
+          expect(subject.errors).to eq(["Les dates se chevauchent avec une autre orientation"])
         end
 
         it "does not set the previous ends_at" do
@@ -147,7 +153,7 @@ describe Orientations::Save, type: :service do
         end
 
         it "outputs an error" do
-          expect(subject.errors).to eq(["les dates se chevauchent avec une autre orientation"])
+          expect(subject.errors).to eq(["Les dates se chevauchent avec une autre orientation"])
         end
 
         it "does not set the previous ends_at" do
@@ -158,9 +164,12 @@ describe Orientations::Save, type: :service do
 
       context "when user is not part of the organisation" do
         it "adds the user to the organisation" do
-          expect(user.organisations).not_to include(organisation)
+          expect(Users::AddToOrganisations).to receive(:call)
+            .with(user: user, organisations: [organisation])
+            .once
+            .and_return(OpenStruct.new(success?: true))
+
           subject
-          expect(user.organisations.reload).to include(orientation.organisation)
         end
       end
 
@@ -173,7 +182,7 @@ describe Orientations::Save, type: :service do
         end
 
         it "outputs an error" do
-          expect(subject.errors).to eq(["les dates se chevauchent avec une autre orientation"])
+          expect(subject.errors).to eq(["Les dates se chevauchent avec une autre orientation"])
         end
 
         it "does not set the previous ends_at" do

@@ -68,9 +68,8 @@ describe UsersOrganisationsController do
     it "shows with a success message" do
       subject
 
-      expect(response).to be_successful
-      expect(response.body).to match(/flashes/)
-      expect(unescaped_response_body).to match(/L'organisation a bien été retirée/)
+      expect(response).to have_http_status(:see_other)
+      expect(response.location).to eq(department_user_url(department, user))
     end
 
     it "saves the user with the organisation" do
@@ -89,7 +88,6 @@ describe UsersOrganisationsController do
       it "shows with an error message" do
         subject
 
-        expect(response.body).to match(/flashes/)
         expect(unescaped_response_body).to match(/something failed/)
       end
     end
@@ -103,13 +101,11 @@ describe UsersOrganisationsController do
           .and_return(OpenStruct.new(success?: false, errors: ["Something went wrong"]))
       end
 
-      it "displays an error message" do
+      it "redirects with errors" do
         subject
 
-        expect(response).to be_successful
-        expect(unescaped_response_body).to match(/flashes/)
-        expect(unescaped_response_body).to match(/Something went wrong/)
-        expect(unescaped_response_body).to match(/L'utilisateur n'est plus lié à rdv-solidarités/)
+        expect(response).to have_http_status(:see_other)
+        expect(response.location).to eq(department_user_url(department, user))
       end
     end
   end

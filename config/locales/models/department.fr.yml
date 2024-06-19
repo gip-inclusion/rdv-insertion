@@ -13,3 +13,4 @@ fr:
         phone_number: Téléphone
         carnet_de_bord_deploiement_id: ID du territoire Carnet de bord
         display_in_stats: Afficher dans les statistiques
+        orientation_types: Types d'orientations

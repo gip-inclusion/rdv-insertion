@@ -38,9 +38,9 @@ class SendInvitationRemindersJob < ApplicationJob
       Invitation.where("valid_until > ?", 2.days.from_now)
                 .where(
                   format: %w[email sms],
-                  created_at: Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER.days.ago.all_day,
-                  reminder: false
+                  created_at: Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER.days.ago.all_day
                 )
+                .not_reminder
   end
 
   def invitation_sent_3_days_ago?(invitation)

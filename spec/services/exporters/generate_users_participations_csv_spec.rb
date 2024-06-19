@@ -6,12 +6,18 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
   let!(:now) { Time.zone.parse("22/06/2022") }
   let!(:timestamp) { now.to_i }
   let!(:motif_category) { create(:motif_category, short_name: "rsa_orientation", name: "RSA orientation") }
+  let!(:motif) { create(:motif, motif_category: motif_category) }
+  let!(:other_motif_category) { create(:motif_category, short_name: "rsa_accompagnement", name: "RSA accompagnement") }
+  let!(:other_motif) { create(:motif, motif_category: other_motif_category) }
   let!(:department) { create(:department, name: "Drôme", number: "26") }
   let!(:organisation) { create(:organisation, name: "Drome RSA", department: department) }
   let!(:organisation_prescripteur) { create(:organisation, name: "Ailleurs", department: department) }
   let!(:structure) { organisation }
   let!(:category_configuration) do
     create(:category_configuration, organisation: organisation, motif_category: motif_category)
+  end
+  let!(:other_category_configuration) do
+    create(:category_configuration, organisation: organisation, motif_category: other_motif_category)
   end
   let!(:nir) { generate_random_nir }
   let!(:user1) do
@@ -48,14 +54,25 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
     create(:rdv, starts_at: Time.zone.parse("2022-05-25"),
                  created_by: "user",
                  organisation: organisation,
+                 motif: motif,
                  participations: [participation_rdv])
   end
-  let!(:participation_rdv) { create(:participation, user: user1, status: "seen") }
+  let!(:participation_rdv) { create(:participation, user: user1, status: "seen", created_at: "2022-05-20") }
+
+  let!(:rdv_other_motif_category) do
+    create(:rdv, starts_at: Time.zone.parse("2022-05-30"),
+                 created_by: "user",
+                 organisation: organisation,
+                 motif: other_motif,
+                 participations: [participation_rdv_other_motif_category])
+  end
+  let!(:participation_rdv_other_motif_category) { create(:participation, user: user3, status: "seen") }
 
   let!(:rdv_prescrit) do
     create(:rdv, starts_at: Time.zone.parse("2022-05-25"),
                  created_by: "agent",
                  organisation: organisation,
+                 motif: motif,
                  participations: [participation_rdv_prescrit])
   end
   let!(:participation_rdv_prescrit) do
@@ -105,6 +122,7 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
         expect(csv).to include("Motif du RDV")
         expect(csv).to include("Nature du RDV")
         expect(csv).to include("RDV pris en autonomie ?")
+        expect(csv).to include("RDV pris le")
         expect(csv).to include("Référent(s)")
         expect(csv).to include("Organisation du rendez-vous")
         expect(csv).to include("Civilité")
@@ -135,6 +153,7 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
         it "displays all participations" do
           expect(csv).to include("Doe")
           expect(csv).to include("Casubolo")
+          expect(csv).not_to include("Blanc")
         end
       end
 
@@ -164,6 +183,7 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
           expect(csv).to include("RSA orientation sur site") # rdv motif
           expect(csv).to include("individuel") # rdv type
           expect(csv).to include("individuel;Oui") # rdv taken in autonomy ?
+          expect(csv).to include("Oui;20/05/2022") # participation created_at
           expect(csv).to include("Rendez-vous honoré") # rdv status
         end
 
@@ -210,6 +230,18 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
           expect(csv).to start_with("\uFEFF")
           expect(csv).not_to include("Statut de la catégorie de motifs")
         end
+
+        context "it exports all the concerned users" do
+          it "generates one line for each participation" do
+            expect(csv.scan(/(?=\n)/).count).to eq(4) # one line per participation + 1 line of headers
+          end
+
+          it "displays all participations" do
+            expect(csv).to include("Doe")
+            expect(csv).to include("Casubolo")
+            expect(csv).to include("Blanc")
+          end
+        end
       end
     end
 
@@ -218,6 +250,7 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
       let!(:other_rdv) do
         create(:rdv, starts_at: Time.zone.parse("2022-01-22"),
                      created_by: "user",
+                     motif: motif,
                      organisation: other_organisation)
       end
       let!(:other_participation) { create(:participation, rdv: other_rdv, user: user1) }

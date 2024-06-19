@@ -1,10 +1,11 @@
 module Users
   class UploadsController < ApplicationController
+    before_action :set_organisation, :set_department, only: [:new, :category_selection]
+
     before_action :set_all_configurations, for: [:category_selection]
 
-    before_action :set_organisation, :set_department, :check_if_category_is_selected, :set_all_configurations,
-                  :set_current_category_configuration, :set_motif_category_name, :set_file_configuration,
-                  for: [:new]
+    before_action :check_if_category_is_selected, :set_all_configurations, :set_current_category_configuration,
+                  :set_motif_category_name, :set_file_configuration, for: [:new]
 
     def new; end
 
@@ -15,13 +16,11 @@ module Users
     def set_organisation
       return if department_level?
 
-      @organisation = Organisation.find(params[:organisation_id])
-      authorize @organisation, :upload?
+      @organisation = current_organisation
     end
 
     def set_department
-      @department = department_level? ? Department.find(params[:department_id]) : @organisation.department
-      authorize @department, :upload? if department_level?
+      @department = current_department
     end
 
     def set_all_configurations

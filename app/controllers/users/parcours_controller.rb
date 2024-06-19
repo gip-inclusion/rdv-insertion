@@ -1,13 +1,14 @@
 module Users
   class ParcoursController < ApplicationController
-    before_action :set_user, :set_department, :set_back_to_users_list_url, only: [:show]
+    before_action :set_user, :set_department, :set_user_tags, :set_back_to_users_list_url, only: [:show]
 
     include BackToListConcern
+    include Users::Taggable
 
     def show
       @orientations = policy_scope(@user.orientations)
                       .where(organisation: { department_id: current_department_id })
-                      .includes(:agent, :organisation).order(starts_at: :asc)
+                      .includes(:agent, :organisation, :orientation_type).order(starts_at: :asc)
       @diagnostics = @user.diagnostics.where(department: @department).order(document_date: :desc, id: :desc)
       @contracts = @user.contracts.where(department: @department).order(document_date: :desc, id: :desc)
     end
@@ -15,7 +16,7 @@ module Users
     private
 
     def set_department
-      @department = policy_scope(Department).find(current_department_id)
+      @department = current_department
       authorize(@department, :parcours?)
     end
 

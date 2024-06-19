@@ -34,7 +34,7 @@ class FollowUp < ApplicationRecord
   scope :invited_before_time_window, lambda { |number_of_days_before_action_required|
     where.not(
       id: joins(:invitations).where("invitations.created_at > ?", number_of_days_before_action_required.days.ago)
-                             .where(invitations: { reminder: false })
+                             .where(invitations: { trigger: "manual" })
                              .pluck(:follow_up_id)
     )
   }
@@ -67,5 +67,9 @@ class FollowUp < ApplicationRecord
 
   def human_status
     I18n.t("activerecord.attributes.follow_up.statuses.#{status}")
+  end
+
+  def current_pending_rdv
+    participations.select(&:pending?).min_by(&:starts_at)
   end
 end

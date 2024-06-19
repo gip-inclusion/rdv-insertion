@@ -18,6 +18,7 @@ class CategoryConfigurationsController < ApplicationController
 
   def index
     @available_tags = (@department || @organisation.department).tags.distinct
+    @user_count_by_tag_id = user_count_by_tag_id
   end
 
   def show; end
@@ -101,7 +102,17 @@ class CategoryConfigurationsController < ApplicationController
   end
 
   def set_organisation
-    @organisation = policy_scope(Organisation).find(params[:organisation_id])
+    @organisation = current_organisation
+  end
+
+  def user_count_by_tag_id
+    User.joins(:tags,
+               :organisations)
+        .where(tags: { id: @available_tags.pluck(:id) })
+        .where(organisations: { id: @organisation.id })
+        .distinct
+        .group(:tag_id)
+        .count
   end
 
   def authorize_organisation_category_configuration

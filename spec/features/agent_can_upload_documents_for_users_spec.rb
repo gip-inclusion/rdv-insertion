@@ -37,6 +37,19 @@ describe "Agents can upload documents for users", :js do
       end
     end
 
+    context "on a department that is not authorized to see the parcours" do
+      let!(:department) { create(:department, number: "75") }
+
+      before do
+        stub_const "ENV", ENV.to_h.merge("DEPARTMENTS_WHERE_PARCOURS_DISABLED" => "75")
+      end
+
+      it "redirects right away" do
+        visit department_user_parcours_path(user_id: user.id, department_id: department.id)
+        expect(page).to have_current_path(organisation_users_path(organisation))
+      end
+    end
+
     it "renders the page" do
       visit department_user_parcours_path(user_id: user.id, department_id: department.id)
       expect(page).to have_content("Aucun diagnostic renseigné.")
@@ -48,6 +61,19 @@ describe "Agents can upload documents for users", :js do
       let!(:organisation) do
         create(:organisation, organisation_type: "siae", name: "CD 26", agents: organisation_agents,
                               department: department)
+      end
+
+      it "cannot see the parcours tab" do
+        visit organisation_user_path(organisation_id: organisation.id, id: user.id)
+        expect(page).to have_no_content("Parcours")
+      end
+    end
+
+    context "on a department that is not authorized to see the parcours" do
+      let!(:department) { create(:department, number: "75") }
+
+      before do
+        stub_const "ENV", ENV.to_h.merge("DEPARTMENTS_WHERE_PARCOURS_DISABLED" => "75")
       end
 
       it "cannot see the parcours tab" do

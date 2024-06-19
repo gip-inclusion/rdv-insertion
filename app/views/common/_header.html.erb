@@ -1,5 +1,5 @@
 <header>
-  <nav class="container marianne navbar px-3 navbar-expand-lg">
+  <nav class="container navbar px-3 navbar-expand-lg">
     <div class="d-flex justify-content-start">
       <%= link_to root_path do %>
         <%= image_tag "logos/republique-francaise-logo.svg", height: 80, alt: "République francaise", class: "d-none d-sm-inline navbar-france-logo" %>
@@ -10,7 +10,7 @@
       <% if current_agent %>
         <% if agent_impersonated? %>
           <%= link_to super_admins_agent_impersonation_path(agent_id: current_agent.id), method: :delete do %>
-            <button class="btn btn-default btn-logout w-100">
+            <button class="btn btn-header border-light-grey w-100">
               <span class="d-none d-sm-inline">Revenir à ma session</span>
               <span class="d-inline d-sm-none"><i class="fas fa-sign-out-alt"></i></span>
             </button>
@@ -18,7 +18,7 @@
         <% elsif current_agent.super_admin? %>
           <div class="text-center ">
             <%= link_to super_admins_root_path do %>
-              <button class="btn btn-default btn-logout w-100">
+              <button class="btn btn-header border-light-grey w-100">
                 <span class="d-none d-sm-inline">Super admin</span>
                 <span class="d-inline d-sm-none"><i class="fas fa-sign-out-alt"></i></span>
               </button>
@@ -27,19 +27,20 @@
         <% else %>
           <%= render "common/header_help_menu" %>
         <% end %>
-      <% end %>
-      <% if current_agent %>
+        <% if show_organisation_navigation_button? %>
+          <%= render "common/header_organisation_navigation_button" %>
+        <% end %>
         <div class="text-center mx-3">
           <% if logged_with_inclusion_connect? %>
             <%= link_to inclusion_connect_sign_out_path, data: { turbo: false } do %>
-              <button class="btn btn-default btn-logout w-100">
+              <button class="btn btn-header border-light-grey w-100">
                 <span class="d-none d-sm-inline">Se déconnecter</span>
                 <span class="d-inline d-sm-none"><i class="fas fa-sign-out-alt"></i></span>
               </button>
             <% end %>
           <% else %>
             <%= link_to sign_out_path, method: :delete do %>
-              <button class="btn btn-default btn-logout w-100">
+              <button class="btn btn-header border-light-grey w-100">
                 <span class="d-none d-sm-inline">Se déconnecter</span>
                 <span class="d-inline d-sm-none"><i class="fas fa-sign-out-alt"></i></span>
               </button>
@@ -51,7 +52,7 @@
         <% if show_login_button? %>
           <div class="text-center mx-3 col">
             <%= link_to sign_in_path do %>
-              <button class="btn btn-default btn-blue w-100">
+              <button class="btn btn-blue w-100">
                 <span class="d-none d-sm-inline">Connexion agent</span>
                 <span class="d-inline d-sm-none">Connexion</span>
               </button>
@@ -62,7 +63,7 @@
     </div>
   </nav>
   <% if show_guide_banner? %>
-    <div class="sub-header d-none d-md-flex marianne">
+    <div class="sub-header d-none d-md-flex">
       <div class="container d-none d-md-flex ">
         <%= link_to "https://rdv-insertion.gitbook.io/guide-dutilisation-rdv-insertion/", target: :blank, class: "nav-link optional-link" do %>
           <p class="mb-0">Guide d'utilisation&nbsp;<i class="fas fa-external-link-alt"></i></p>
@@ -75,7 +76,7 @@
     </div>
   <% end %>
   <% if current_agent && agent_impersonated? %>
-    <div class="sub-header d-flex marianne">
+    <div class="sub-header d-flex">
       <div class="container d-flex justify-content-center">
         <p class="mb-0"><i class="fas fa-info-circle"></i> Vous êtes connecté.e en tant que <%= current_agent.to_s %></p>
       </div>

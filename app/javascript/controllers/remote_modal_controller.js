@@ -20,8 +20,12 @@ export default class extends Controller {
   }
 
   submitEnd(e) {
-    if (e.detail.success && this.element.dataset.autoDismiss === "true") {
-      this.modal.hide();
-    }
+    if (!e.detail.success && this.displayErrorsInsideModal()) return;
+
+    this.modal.hide();
+  }
+
+  displayErrorsInsideModal() {
+    return !!this.element.querySelector("#error_list");
   }
 }

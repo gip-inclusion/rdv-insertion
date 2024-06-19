@@ -11,6 +11,7 @@ describe FollowUps::ClosingsController do
 
   before do
     sign_in(agent)
+    request.env["HTTP_REFERER"] = department_user_follow_ups_url(department_id: department.id, user_id: user.id)
   end
 
   describe "#create" do
@@ -38,7 +39,12 @@ describe FollowUps::ClosingsController do
       end
     end
 
-    context "when not department_level" do
+    context "when organisation level" do
+      before do
+        request.env["HTTP_REFERER"] =
+          organisation_user_follow_ups_url(organisation_id: organisation.id, user_id: user.id)
+      end
+
       let(:create_params) do
         { follow_up_id: follow_up.id, user_id: user.id,
           organisation_id: organisation.id }
@@ -77,7 +83,12 @@ describe FollowUps::ClosingsController do
       end
     end
 
-    context "when not department_level" do
+    context "when organisation level" do
+      before do
+        request.env["HTTP_REFERER"] =
+          organisation_user_follow_ups_url(organisation_id: organisation.id, user_id: user.id)
+      end
+
       let(:destroy_params) do
         { follow_up_id: follow_up.id, user_id: user.id,
           organisation_id: organisation.id }

@@ -24,6 +24,7 @@ class Invitation < ApplicationRecord
   delegate :model, to: :template, prefix: true
 
   enum format: { sms: "sms", email: "email", postal: "postal" }, _prefix: :format
+  enum trigger: { manual: "manual", reminder: "reminder", periodic: "periodic" }
 
   before_create :assign_uuid
   after_commit :set_follow_up_status
@@ -31,7 +32,6 @@ class Invitation < ApplicationRecord
   scope :sent_in_time_window, lambda { |number_of_days_before_action_required|
     where("created_at > ?", number_of_days_before_action_required.days.ago)
   }
-  scope :reminder, ->(reminder = true) { where(reminder: reminder) }
   scope :valid, -> { where("valid_until > ?", Time.zone.now) }
 
   def send_to_user

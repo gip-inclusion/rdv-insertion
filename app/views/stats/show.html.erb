@@ -1,1 +1,3 @@
-<%= render 'stats' %>
+<% content_for :title, "Statistiques - #{@stat.statable.name} (#{@department.number}) - rdv-insertion" %>
+
+<%= render "stats" %>

@@ -11,7 +11,8 @@ describe SessionsController do
     it "renders the login form" do
       get :new
       expect(response).to be_successful
-      expect(response.body).to match(/Identifiez-vous avec votre compte Agent de RDV-Solidarités/)
+      expect(response.body).to match(/Identifiez-vous avec votre email et mot de passe RDV-Solidarités/)
+      expect(response.body).to match(/Mot de passe oublié ?/)
     end
   end
 

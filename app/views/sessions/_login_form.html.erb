@@ -1,26 +1,33 @@
-<div class="form-container">
-  <%= form_with action:"#", id: "js-login-form" do |form| %>
-    <%= render 'common/inclusion_connect_button' %>
-    <hr>
-    <div class="text-center m-auto">
-      <h4 class="text-center mb-3 font-weight-bold">OU</h4>
-    </div>
+<% content_for :title, "Connexion agent - rdv-insertion" %>
 
-    <h5 class="text-center mb-4 mx-1">Identifiez-vous avec votre compte Agent de RDV-Solidarités</h5>
-    <div class="form-group">
+<div class="form-container">
+  <div class="mb-3">
+    <h1 class="login-title">Connexion agent</h1>
+  </div>
+  <%= form_with action:"#", id: "js-login-form" do |form| %>
+    <h5 class="text-center mb-4 mx-1">Identifiez-vous avec votre email et mot de passe RDV-Solidarités</h5>
+    <div class="login-form-group">
       <%= form.label :email, "Adresse email" %>
-      <%= form.email_field :email , class: "form-control"%>
+      <%= form.email_field :email , class: "form-control", placeholder: "prénom.nom@email.com" %>
     </div>
-    <div class="form-group">
+    <div class="login-form-group">
       <%= form.label :password, "Mot de Passe" %>
-      <%= form.password_field :password, class: "form-control" %>
+      <div class="input-group">
+        <%= form.password_field :password, class: "form-control", placeholder: "*************" %>
+        <div class="input-group-append">
+          <span class="input-group-text">
+            <i class="fas fa-eye"></i>
+          </span>
+        </div>
+      </div>
+      <div class="mt-3 text-decoration-underline">
+        <%= link_to "Mot de passe oublié ?", "#{ENV["RDV_SOLIDARITES_URL"]}/users/password/new", target: :blank %>
+      </div>
     </div>
     <div class=text-center>
       <%= form.submit "Se connecter", class: "btn btn-blue" %>
     </div>
+    <h4 class="text-center my-4 font-weight-bold">OU</h4>
+    <%= render 'common/inclusion_connect_button' %>
   <% end %>
-  <div class="form-notice mt-4">
-    <h5>Je suis bénéficiaire du RSA ?</h5>
-    <p>J'ai reçu une invitation à prendre rendez-vous. Je me réfère aux instructions fournies dans le message reçu pour accéder à la prise de rendez-vous (qui s'effectuera sur le site RDV-Solidarités).</p>
-  </div>
 </div>

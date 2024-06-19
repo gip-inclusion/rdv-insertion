@@ -11,17 +11,18 @@ class UsersController < ApplicationController
   include BackToListConcern
   include Users::Filterable
   include Users::Sortable
+  include Users::Taggable
 
-  before_action :set_organisation, :set_department, :set_department_organisations, :set_all_configurations,
+  before_action :set_organisation, :set_department, :set_all_configurations,
                 :set_current_organisations, :set_users_scope,
                 :set_current_category_configuration, :set_current_motif_category,
-                :set_users, :set_follow_ups, :set_filterable_tags, :set_referents_list,
-                :filter_users, :order_users,
+                :set_users, :set_follow_ups, :set_structure_orientations, :set_orientation_types, :set_filterable_tags,
+                :set_referents_list, :filter_users, :order_users,
                 for: :index
   before_action :set_user, :set_organisation, :set_department, :set_all_configurations,
-                :set_user_archive, :set_user_tags, :set_back_to_users_list_url,
+                :set_user_archive, :set_user_tags, :set_user_referents, :set_back_to_users_list_url,
                 for: :show
-  before_action :set_organisation, :set_department, :set_department_organisations,
+  before_action :set_organisation, :set_department,
                 for: :new
   before_action :set_organisation, :set_department,
                 for: :create
@@ -91,18 +92,6 @@ class UsersController < ApplicationController
     end
   end
 
-  def reset_tag_users
-    return unless user_params[:tag_users_attributes]
-
-    @user
-      .tags
-      .joins(:organisations)
-      .where(organisations: department_level? ? @department.organisations : @organisation)
-      .find_each do |tag|
-      @user.tags.delete(tag)
-    end
-  end
-
   def csv_exporter
     if params[:export_type] == "participations"
       Exporters::CreateUsersParticipationsCsvExportJob
@@ -119,6 +108,22 @@ class UsersController < ApplicationController
       current_agent.id,
       request.query_parameters
     )
+  end
+
+  def set_filterable_tags
+    @tags = policy_scope((@organisation || @department).tags).order(Arel.sql("LOWER(tags.value)")).group("tags.id")
+  end
+
+  def reset_tag_users
+    return unless user_params[:tag_users_attributes]
+
+    @user
+      .tags
+      .joins(:organisations)
+      .where(organisations: department_level? ? @department.organisations : @organisation)
+      .find_each do |tag|
+      @user.tags.delete(tag)
+    end
   end
 
   def render_errors(errors)
@@ -165,7 +170,7 @@ class UsersController < ApplicationController
       if department_level?
         set_organisation_at_department_level
       else
-        policy_scope(Organisation).find(params[:organisation_id])
+        current_organisation
       end
   end
 
@@ -177,16 +182,19 @@ class UsersController < ApplicationController
                     .find_by(id: @user.organisation_ids, department_id: params[:department_id])
   end
 
-  def set_filterable_tags
-    @tags = policy_scope((@organisation || @department).tags).order(:value).distinct
+  def set_structure_orientations
+    @structure_orientations = Orientation.active.where(organisation: @current_organisations)
   end
 
-  def set_user_tags
-    @tags = policy_scope(@user.tags)
-            .joins(:organisations)
-            .where(current_organisations_filter)
-            .order(:value)
-            .distinct
+  def set_orientation_types
+    @orientation_types = OrientationType.where(id: @structure_orientations.pluck(:orientation_type_id).uniq)
+  end
+
+  def set_user_referents
+    @user_referents = policy_scope(@user.referents)
+                      .joins(:departments)
+                      .where(departments: { id: current_department_id })
+                      .distinct
   end
 
   def set_organisation_through_form
@@ -196,16 +204,12 @@ class UsersController < ApplicationController
     )
   end
 
-  def set_department_organisations
-    @department_organisations = policy_scope(Organisation).where(department: @department).to_a
-  end
-
   def set_current_organisations
-    @current_organisations = department_level? ? @department_organisations : [@organisation]
+    @current_organisations = department_level? ? current_agent_department_organisations : [@organisation]
   end
 
   def set_department
-    @department = policy_scope(Department).find(current_department_id)
+    @department = current_department
   end
 
   def set_all_configurations
@@ -257,7 +261,7 @@ class UsersController < ApplicationController
 
   def set_users_for_motif_category
     @users = policy_scope(User)
-             .preload(:organisations, follow_ups: [:notifications, :invitations])
+             .preload(:organisations, follow_ups: [:notifications, :invitations, { participations: :rdv }])
              .active.distinct
              .where(organisations: @current_organisations)
              .where.not(id: @department.archived_users.ids)

@@ -18,6 +18,7 @@ class User < ApplicationRecord
   include User::TextHelper
   include User::Address
   include User::Nir
+  include User::AffiliationNumber
   include User::Archivable
   include User::Referents
 

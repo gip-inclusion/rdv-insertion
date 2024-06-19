@@ -11,6 +11,7 @@
 @import "./components/card";
 @import "./components/form";
 @import "./components/button";
+@import "./components/border";
 @import "./components/color";
 @import "./components/pagination";
 @import "./components/image";
@@ -27,6 +28,11 @@
 @import "./components/rdv_insertion_instance_name";
 @import "./fontawesome_imports";
 @import "tippy.js/dist/tippy.css";
+
+@font-face {
+   font-family: 'Marianne';
+   src: url('../fonts/Marianne/Marianne-Regular.woff');
+}
 
 html {
   position: relative;
@@ -46,6 +52,7 @@ body {
   display:flex;
   flex-direction:column;
   min-height:100vh;
+  font-family: 'Marianne', Arial, Helvetica, sans-serif;
 }
 
 .wrapper {

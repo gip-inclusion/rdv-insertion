@@ -43,7 +43,7 @@ describe SendInvitationReminderJob do
   it "instanciates an invitation with attributes from the first one" do
     expect(Invitation).to receive(:new)
       .with(
-        reminder: true,
+        trigger: "reminder",
         user: user,
         department: department,
         organisations: [organisation],
