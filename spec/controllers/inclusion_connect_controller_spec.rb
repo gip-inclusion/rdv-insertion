@@ -169,7 +169,7 @@ describe InclusionConnectController do
     end
   end
 
-  describe "#destroy" do
+  describe "#sign_out" do
     let!(:inclusion_connect_token_id) { "1234" }
     let!(:ic_state) { "a state" }
     let(:base_url) { "https://test.inclusion.logout.fr" }
@@ -179,13 +179,13 @@ describe InclusionConnectController do
     end
 
     it "clears the session" do
-      delete :destroy
+      delete :sign_out
       expect(request.session[:agent_auth]).to be_nil
     end
 
     it "redirect to inclusion connect logout_path" do
       session[:ic_state] = ic_state
-      delete :destroy
+      delete :sign_out
 
       query = {
         id_token_hint: inclusion_connect_token_id,

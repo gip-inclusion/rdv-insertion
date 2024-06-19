@@ -21,7 +21,7 @@ class InclusionConnectController < ApplicationController
     end
   end
 
-  def destroy
+  def sign_out
     logout_path_inclusion_connect =
       InclusionConnectClient.logout_path(session.dig("agent_auth", "inclusion_connect_token_id"), session[:ic_state])
     clear_session
