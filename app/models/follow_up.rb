@@ -71,6 +71,6 @@ class FollowUp < ApplicationRecord
 
   def current_pending_rdv
     # if rdv is the same day, it is not in the future therefore not considered "pending", but the follow-up is still
-    participations.select(&:pending?).min_by(&:starts_at) || participations.select(&:unknown?).min_by(&:starts_at)
+    participations.select(&:pending?).min_by(&:starts_at) || participations.select(&:unknown?).max_by(&:starts_at)
   end
 end
