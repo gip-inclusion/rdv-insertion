@@ -1,11 +1,11 @@
 module SignOutHelper
   def sign_out_link
     if agent_impersonated?
-      [super_admins_agent_impersonation_path(agent_id: current_agent.id), { method: :delete }]
+      { url: super_admins_agent_impersonation_path(agent_id: current_agent.id), options: { method: :delete } }
     elsif logged_with_inclusion_connect?
-      [inclusion_connect_sign_out_path, { data: { turbo: false } }]
+      { url: inclusion_connect_sign_out_path, options: { data: { turbo: false } } }
     else
-      [sign_out_path, { method: :delete }]
+      { url: sign_out_path, options: { method: :delete } }
     end
   end
 

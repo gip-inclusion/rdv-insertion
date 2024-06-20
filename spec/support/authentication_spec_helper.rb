@@ -14,7 +14,7 @@ module AuthenticationSpecHelper
       origin: "inclusion_connect",
       signature: agent.sign_with(timestamp),
       created_at: timestamp,
-      "inclusion_connect_token_id" => inclusion_connect_token_id
+      inclusion_connect_token_id:
     }
   end
 
