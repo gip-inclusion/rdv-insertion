@@ -35,7 +35,8 @@ RSpec.describe "BrevoMailWebhooks" do
           email: "mismatch@example.com",
           event: "opened",
           date: "2023-06-07T12:34:56Z",
-          :"X-Mailin-custom" => "{\"environment\": \"test\", \"record_identifier\": \"#{invitation.record_identifier}\"}"
+          :"X-Mailin-custom" =>
+            "{\"environment\": \"test\", \"record_identifier\": \"#{invitation.record_identifier}\"}"
         }
       end
 
