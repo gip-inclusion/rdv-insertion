@@ -20,7 +20,7 @@ describe SendTransactionalSms, type: :service do
           recipient: phone_number,
           content: content,
           type: "transactional",
-          webUrl: "#{ENV['HOST']}/brevo/sms_webhooks/invitation_123"
+          webUrl: Rails.application.routes.url_helpers.brevo_sms_webhooks_url("invitation_123", host: ENV["HOST"])
         )
         .and_return(send_transac_mock)
     end
