@@ -1278,7 +1278,7 @@ RSpec.describe InvitationMailer do
 
   def expecting_mail_to_have_correct_headers
     expect(subject.to).to eq([user.email])
-    expect(subject.header["X-Mailin-custom"].value).to eq({ invitation_id: invitation.id,
+    expect(subject.header["X-Mailin-custom"].value).to eq({ record_identifier: invitation.record_identifier,
                                                             environment: Rails.env }.to_json)
   end
 end

@@ -9,14 +9,14 @@ describe Brevo::MailWebhooksController do
         email: "test@example.com",
         event: "delivered",
         date: "2023-06-07T12:34:56Z",
-        :"X-Mailin-custom" => '{"environment": "test", "invitation_id": "1"}'
+        :"X-Mailin-custom" => '{"environment": "test", "record_identifier": "invitation_1"}'
       }
     end
 
     context "when X-Mailin-custom header is present and environment matches" do
       it "enqueues the job for processing mail delivery status" do
         expect(InboundWebhooks::Brevo::ProcessMailDeliveryStatusJob).to receive(:perform_async)
-          .with({ email: "test@example.com", event: "delivered", date: "2023-06-07T12:34:56Z" }, "1")
+          .with({ email: "test@example.com", event: "delivered", date: "2023-06-07T12:34:56Z" }, "invitation_1")
         post :create, params: valid_mail_params, as: :json
         expect(response).to be_successful
       end
@@ -44,7 +44,7 @@ describe Brevo::MailWebhooksController do
           email: "test@example.com",
           event: "delivered",
           date: "2023-06-07T12:34:56Z",
-          :"X-Mailin-custom" => '{"environment": "production", "invitation_id": "1"}'
+          :"X-Mailin-custom" => '{"environment": "production", "record_identifier": "invitation_1"}'
         }
       end
 

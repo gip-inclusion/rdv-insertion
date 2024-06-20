@@ -15,7 +15,7 @@ module Brevo
       # On défini l'environnement dans le headers["X-Mailin-custom"] du mail envoyé par Brevo et on le récupère ici
       return if environment != Rails.env
 
-      InboundWebhooks::Brevo::ProcessMailDeliveryStatusJob.perform_async(brevo_webhook_params, invitation_id)
+      InboundWebhooks::Brevo::ProcessMailDeliveryStatusJob.perform_async(brevo_webhook_params, record_identifier)
     end
 
     private
@@ -24,8 +24,8 @@ module Brevo
       JSON.parse(params[:"X-Mailin-custom"])["environment"]
     end
 
-    def invitation_id
-      JSON.parse(params[:"X-Mailin-custom"])["invitation_id"]
+    def record_identifier
+      JSON.parse(params[:"X-Mailin-custom"])["record_identifier"]
     end
 
     def brevo_webhook_params

@@ -5,7 +5,7 @@ module InboundWebhooks
 
       def assign_delivery_status_and_date
         InboundWebhooks::Brevo::AssignMailDeliveryStatusAndDate.call(webhook_params: @webhook_params,
-                                                                     invitation: @invitation)
+                                                                     record: @record)
       end
     end
   end
