@@ -34,4 +34,8 @@ module Deliverable
   def delivery_hour
     delivered_at&.strftime("%H:%M")
   end
+
+  def record_identifier
+    "#{self.class.name.underscore}_#{id}"
+  end
 end

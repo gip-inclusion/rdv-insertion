@@ -9,13 +9,13 @@ module Brevo
     ].freeze
 
     def create
-      InboundWebhooks::Brevo::ProcessSmsDeliveryStatusJob.perform_async(brevo_webhook_params, invitation_id)
+      InboundWebhooks::Brevo::ProcessSmsDeliveryStatusJob.perform_async(brevo_webhook_params, record_identifier)
     end
 
     private
 
-    def invitation_id
-      params[:invitation_id]
+    def record_identifier
+      params[:record_identifier]
     end
 
     def brevo_webhook_params

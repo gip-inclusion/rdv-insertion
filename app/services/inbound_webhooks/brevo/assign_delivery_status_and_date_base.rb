@@ -1,27 +1,31 @@
 module InboundWebhooks
   module Brevo
     class AssignDeliveryStatusAndDateBase < BaseService
-      def initialize(webhook_params:, invitation:)
+      def initialize(webhook_params:, record:)
         @webhook_params = webhook_params.deep_symbolize_keys
-        @invitation = invitation
+        @record = record
       end
 
       def call
-        return if @invitation.delivery_status.in?(Invitation::FINAL_DELIVERY_STATUS)
+        return if @record.delivery_status.in?(record_class::FINAL_DELIVERY_STATUS)
         return if old_update?
         return if webhook_mismatch?
 
-        @invitation.delivery_status = delivery_status
-        @invitation.delivered_at = @webhook_params[:date]
-        save_record!(@invitation)
+        @record.delivery_status = delivery_status
+        @record.delivered_at = @webhook_params[:date]
+        save_record!(@record)
       end
 
       private
 
       def old_update?
-        return false if @invitation.delivered_at.blank?
+        return false if @record.delivered_at.blank?
 
-        @invitation.delivered_at.to_datetime > @webhook_params[:date].to_datetime
+        @record.delivered_at.to_datetime > @webhook_params[:date].to_datetime
+      end
+
+      def record_class
+        @record_class ||= @record.class
       end
 
       def webhook_mismatch?

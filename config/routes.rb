@@ -180,7 +180,7 @@ Rails.application.routes.draw do
   post "/inbound_emails/brevo", to: "inbound_emails#brevo"
   namespace :brevo do
     post "mail_webhooks", to: "mail_webhooks#create"
-    post "sms_webhooks/:invitation_id", to: "sms_webhooks#create", as: :sms_webhooks
+    post "sms_webhooks/:record_identifier", to: "sms_webhooks#create", as: :sms_webhooks
   end
 
   if ENV["SIDEKIQ_USERNAME"] && ENV["SIDEKIQ_PASSWORD"]

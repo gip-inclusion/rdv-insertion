@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_31_140628) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_20_085209) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -281,6 +281,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_31_140628) do
     t.bigint "rdv_solidarites_rdv_id"
     t.string "format"
     t.bigint "participation_id"
+    t.string "delivery_status"
+    t.datetime "delivered_at"
     t.index ["participation_id"], name: "index_notifications_on_participation_id"
   end
 

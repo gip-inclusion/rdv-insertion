@@ -1,11 +1,11 @@
 module InboundWebhooks
   module Brevo
     class ProcessDeliveryStatusJobBase < ApplicationJob
-      def perform(webhook_params, invitation_id)
+      def perform(webhook_params, record_identifier)
         @webhook_params = webhook_params
-        @invitation_id = invitation_id
+        @record_identifier = record_identifier
 
-        return unless invitation_present?
+        return unless record_present?
 
         assign_delivery_status_and_date
       end
@@ -16,14 +16,23 @@ module InboundWebhooks
         raise NoMethodError
       end
 
-      def invitation
-        @invitation ||= Invitation.find_by(id: @invitation_id)
+      def record
+        # record_identifier : notification_123 or invitation_123
+        @record ||= record_class.find_by(id: record_id)
       end
 
-      def invitation_present?
-        return true if invitation.present?
+      def record_class
+        @record_class ||= @record_identifier.split("_").first.classify.constantize
+      end
 
-        Sentry.capture_message("Invitation not found", extra: { webhook_params: @webhook_params })
+      def record_id
+        @record_id ||= @record_identifier.split("_").last
+      end
+
+      def record_present?
+        return true if record.present?
+
+        Sentry.capture_message("#{record_class} not found", extra: { webhook_params: @webhook_params })
         false
       end
     end
