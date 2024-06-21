@@ -4,7 +4,7 @@ RSpec.describe "BrevoMailWebhooks" do
       email: "test@example.com",
       event: "opened",
       date: "2023-06-07T12:34:56Z",
-      :"X-Mailin-custom" => "{\"environment\": \"test\", \"record_identifier\": \"#{record_identifier}\"}"
+      :"X-Mailin-custom" => "{\"record_identifier\": \"#{record_identifier}\"}"
     }
   end
   let!(:user) { create(:user, email: "test@example.com", invitations: []) }
@@ -35,8 +35,7 @@ RSpec.describe "BrevoMailWebhooks" do
           email: "mismatch@example.com",
           event: "opened",
           date: "2023-06-07T12:34:56Z",
-          :"X-Mailin-custom" =>
-            "{\"environment\": \"test\", \"record_identifier\": \"#{invitation.record_identifier}\"}"
+          :"X-Mailin-custom" => "{\"record_identifier\": \"#{invitation.record_identifier}\"}"
         }
       end
 
@@ -58,7 +57,7 @@ RSpec.describe "BrevoMailWebhooks" do
           email: "test@example.com",
           event: "opened",
           date: "2023-06-07T12:34:56Z",
-          :"X-Mailin-custom" => '{"environment": "test", "record_identifier": "invitation_9999"}'
+          :"X-Mailin-custom" => '{"record_identifier": "invitation_9999"}'
         }
       end
 
@@ -91,7 +90,7 @@ RSpec.describe "BrevoMailWebhooks" do
           email: "test@example.com",
           event: "opened",
           date: "2023-06-07T12:34:56Z",
-          :"X-Mailin-custom" => '{"environment": "test", "record_identifier": "notification_9999"}'
+          :"X-Mailin-custom" => '{"record_identifier": "notification_9999"}'
         }
       end
 

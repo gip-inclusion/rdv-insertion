@@ -9,7 +9,7 @@ describe Brevo::MailWebhooksController do
         email: "test@example.com",
         event: "delivered",
         date: "2023-06-07T12:34:56Z",
-        :"X-Mailin-custom" => '{"environment": "test", "record_identifier": "invitation_1"}'
+        :"X-Mailin-custom" => '{"record_identifier": "invitation_1"}'
       }
     end
 
@@ -34,23 +34,6 @@ describe Brevo::MailWebhooksController do
       it "does not enqueue any job" do
         expect(InboundWebhooks::Brevo::ProcessMailDeliveryStatusJob).not_to receive(:perform_async)
         post :create, params: invalid_mail_params, as: :json
-        expect(response).to be_successful
-      end
-    end
-
-    context "when environment does not match" do
-      let(:mismatched_env_params) do
-        {
-          email: "test@example.com",
-          event: "delivered",
-          date: "2023-06-07T12:34:56Z",
-          :"X-Mailin-custom" => '{"environment": "production", "record_identifier": "invitation_1"}'
-        }
-      end
-
-      it "does not enqueue any job" do
-        expect(InboundWebhooks::Brevo::ProcessMailDeliveryStatusJob).not_to receive(:perform_async)
-        post :create, params: mismatched_env_params, as: :json
         expect(response).to be_successful
       end
     end

@@ -10,19 +10,11 @@ module Brevo
 
     def create
       return if params[:"X-Mailin-custom"].nil?
-      # On utilise le même compte Brevo et les mêmes définitions de webhooks sur staging et production
-      # On ne veut pas que les webhooks de staging soient traités en production et inversement
-      # On défini l'environnement dans le headers["X-Mailin-custom"] du mail envoyé par Brevo et on le récupère ici
-      return if environment != Rails.env
 
       InboundWebhooks::Brevo::ProcessMailDeliveryStatusJob.perform_async(brevo_webhook_params, record_identifier)
     end
 
     private
-
-    def environment
-      JSON.parse(params[:"X-Mailin-custom"])["environment"]
-    end
 
     def record_identifier
       JSON.parse(params[:"X-Mailin-custom"])["record_identifier"]

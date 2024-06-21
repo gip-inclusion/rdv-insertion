@@ -67,7 +67,7 @@ class InvitationMailer < ApplicationMailer
   private
 
   def set_x_mailin_custom_header
-    headers["X-Mailin-custom"] = { record_identifier: @invitation.record_identifier, environment: Rails.env }.to_json
+    headers["X-Mailin-custom"] = { record_identifier: @invitation.record_identifier }.to_json
   end
 
   def set_invitation

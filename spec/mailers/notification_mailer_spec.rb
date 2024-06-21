@@ -999,7 +999,6 @@ RSpec.describe NotificationMailer do
   end
 
   def expecting_x_mailin_custom
-    expect(mail.header["X-Mailin-custom"].value).to eq({ record_identifier: notification.record_identifier,
-                                                         environment: Rails.env }.to_json)
+    expect(mail.header["X-Mailin-custom"].value).to eq({ record_identifier: notification.record_identifier }.to_json)
   end
 end
