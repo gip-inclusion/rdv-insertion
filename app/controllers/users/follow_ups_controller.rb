@@ -1,9 +1,10 @@
 module Users
   class FollowUpsController < ApplicationController
     before_action :set_user, :set_department, :set_organisation, :set_user_organisations, :set_all_configurations,
-                  :set_back_to_users_list_url, only: [:index]
+                  :set_user_tags, :set_back_to_users_list_url, only: [:index]
 
     include BackToListConcern
+    include Users::Taggable
 
     def index
       @follow_ups =

@@ -1,9 +1,17 @@
 .dropdown-menu {
-  top: 40px;
   &#batch-actions-dropdown {
     width: 260px;
   }
+  &#organisation-navigation-dropdown {
+    right: -165px;
+    max-width: 515px;
+    min-width: 300px;
+    max-height: 500px;
+    overflow-y: auto;
+    z-index: 9999;
+  }
 }
+
 .dropdown-toggle:not(.accessible):focus {
   box-shadow: none !important;
 }

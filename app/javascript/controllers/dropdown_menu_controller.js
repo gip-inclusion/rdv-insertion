@@ -7,7 +7,7 @@ export default class extends Controller {
   ]
 
   connect() {
-    window.addEventListener("click", (e) => {   
+    window.addEventListener("click", (e) => {
       if (e.target !== this.buttonTarget && this.isOpen()){
         this.toggle()
       }

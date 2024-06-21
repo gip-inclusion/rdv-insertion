@@ -58,7 +58,7 @@ class ReferentAssignationsController < ApplicationController
   end
 
   def set_department
-    @department = policy_scope(Department).find(current_department_id)
+    @department = current_department
   end
 
   def set_agents

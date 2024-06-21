@@ -4,7 +4,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 20px 20px 105px;
+  margin: 20px 20px 60px;
 
   form, .form-notice {
     padding: 30px;
@@ -21,6 +21,21 @@
 
 .form-group {
   padding: 20px;
+}
+
+.login-form-group {
+  padding-bottom: 30px;
+  label {
+    margin-bottom: 10px;
+  }
+  ::placeholder {
+    opacity: 0.5;
+  }
+}
+
+.input-group-text {
+  padding: 0.75rem;
+  cursor: pointer;
 }
 
 .invitation-checkbox {

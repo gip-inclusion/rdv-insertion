@@ -2,7 +2,7 @@ module Users
   class OrientationsController < ApplicationController
     before_action :set_user, :set_organisations, :set_agents, only: [:new, :edit, :create, :update]
     before_action :set_orientation, only: [:edit, :update, :destroy]
-    before_action :set_agent_ids_by_organisation_id, only: [:new, :edit]
+    before_action :set_agent_ids_by_organisation_id, :set_orientation_types, only: [:new, :edit]
 
     def new
       @orientation = Orientation.new(user: @user)
@@ -13,7 +13,7 @@ module Users
     def create
       @orientation = Orientation.new(user: @user, **orientation_params)
       if save_orientation.success?
-        redirect_to department_user_parcours_path(user_id: @user.id, department_id: current_department_id)
+        redirect_to structure_parcours_path(@user.id)
       else
         turbo_stream_replace_error_list_with(save_orientation.errors)
       end
@@ -22,15 +22,16 @@ module Users
     def update
       @orientation.assign_attributes(**orientation_params)
       if save_orientation.success?
-        redirect_to department_user_parcours_path(user_id: @user.id, department_id: current_department_id)
+        redirect_to structure_parcours_path(@user.id)
       else
         turbo_stream_replace_error_list_with(save_orientation.errors)
       end
     end
 
     def destroy
+      @user = @orientation.user
       if @orientation.destroy
-        redirect_to department_user_parcours_path(user_id: @user.id, department_id: current_department_id)
+        redirect_to structure_parcours_path(@user.id)
       else
         turbo_stream_prepend_flash_message(
           error: "Impossible de supprimer l'orientation: #{@orientation.errors.full_messages}"
@@ -41,7 +42,7 @@ module Users
     private
 
     def orientation_params
-      params.require(:orientation).permit(:starts_at, :ends_at, :orientation_type, :organisation_id, :agent_id)
+      params.require(:orientation).permit(:starts_at, :ends_at, :orientation_type_id, :organisation_id, :agent_id)
     end
 
     def set_user
@@ -65,6 +66,10 @@ module Users
     def set_orientation
       @orientation = Orientation.find(params[:id])
       authorize @orientation
+    end
+
+    def set_orientation_types
+      @orientation_types = OrientationType.for_department(@current_department)
     end
 
     def reloaded_user_orientations

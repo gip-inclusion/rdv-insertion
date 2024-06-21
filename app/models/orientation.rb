@@ -1,15 +1,16 @@
 class Orientation < ApplicationRecord
   belongs_to :user
   belongs_to :organisation
+  belongs_to :orientation_type
   belongs_to :agent, optional: true
 
-  validates :starts_at, :orientation_type, presence: true
+  validates :starts_at, presence: true
 
   validates :starts_at, :ends_at, uniqueness: { scope: :user_id }
 
   validate :ends_at_after_starts_at, :starts_at_in_the_past
 
-  enum orientation_type: { social: "social", pro: "pro", socio_pro: "socio_pro" }
+  scope :active, -> { where("starts_at <= ? AND (ends_at IS NULL OR ends_at >= ?)", Time.zone.today, Time.zone.today) }
 
   def time_range
     starts_at...(ends_at.presence || Time.zone.today)
@@ -17,6 +18,10 @@ class Orientation < ApplicationRecord
 
   def current?
     ends_at.nil?
+  end
+
+  def active?
+    time_range.cover?(Time.zone.today)
   end
 
   private

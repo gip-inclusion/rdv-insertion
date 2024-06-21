@@ -24,6 +24,7 @@ class DepartmentDashboard < Administrate::BaseDashboard
     name: Field::String,
     number: Field::String,
     organisations: Field::HasMany,
+    orientation_types: Field::HasMany,
     participations: Field::HasMany,
     phone_number: Field::String,
     pronoun: Field::String,
@@ -63,6 +64,7 @@ class DepartmentDashboard < Administrate::BaseDashboard
     carnet_de_bord_deploiement_id
     display_in_stats
     organisations
+    orientation_types
     created_at
     updated_at
     logo

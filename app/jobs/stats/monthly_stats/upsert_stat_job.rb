@@ -1,7 +1,7 @@
 module Stats
   module MonthlyStats
     class UpsertStatJob < ApplicationJob
-      sidekiq_options retry: 1
+      sidekiq_options retry: 3
 
       def perform(structure_type, structure_id, until_date_string)
         # to do : add timeout as a global concern for all jobs and remove it here

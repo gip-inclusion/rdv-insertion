@@ -1,4 +1,4 @@
-<% content_for :title, "#{Current.structure.name} - Tous les contacts - rdv-insertion" %>
+<% content_for :title, "#{current_structure.name} - Tous les contacts - rdv-insertion" %>
 
 <table class="table table-hover table-responsive">
   <thead class="text-dark-blue" data-controller="index-table-sorting">
@@ -32,7 +32,7 @@
         <% else %>
           <% @all_configurations.each do |category_configuration| %>
             <% if follow_up = user.follow_up_for(category_configuration.motif_category) %>
-              <%= render "follow_ups/follow_up_status_cell", follow_up: follow_up, category_configuration: %>
+              <%= render "follow_ups/follow_up_status_cell", follow_up:, number_of_days_before_action_required: category_configuration&.number_of_days_before_action_required %>
             <% else %>
               <td id=<%= dom_id(category_configuration.motif_category, "user_#{user.id}") %>>
                 <%= render "follow_ups/new_button", user:, category_configuration:, organisation: @organisation, department: @department, button_text: "Ajouter" %>
