@@ -34,7 +34,7 @@ class FollowUp < ApplicationRecord
   scope :invited_before_time_window, lambda { |number_of_days_before_action_required|
     where.not(
       id: joins(:invitations).where("invitations.created_at > ?", number_of_days_before_action_required.days.ago)
-                             .where.not(invitations: Invitation.reminder)
+                             .where(invitations: { trigger: "manual" })
                              .pluck(:follow_up_id)
     )
   }
@@ -70,6 +70,7 @@ class FollowUp < ApplicationRecord
   end
 
   def current_pending_rdv
-    participations.select(&:pending?).min_by(&:starts_at)
+    # if rdv is the same day, it is not in the future therefore not considered "pending", but the follow-up is still
+    participations.select(&:pending?).min_by(&:starts_at) || participations.select(&:unknown?).max_by(&:starts_at)
   end
 end

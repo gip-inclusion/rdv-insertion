@@ -11,7 +11,8 @@ describe SessionsController do
     it "renders the login form" do
       get :new
       expect(response).to be_successful
-      expect(response.body).to match(/Identifiez-vous avec votre compte Agent de RDV-Solidarités/)
+      expect(response.body).to match(/Identifiez-vous avec votre email et mot de passe RDV-Solidarités/)
+      expect(response.body).to match(/Mot de passe oublié ?/)
     end
   end
 
@@ -161,23 +162,6 @@ describe SessionsController do
       delete :destroy
       expect(response).to redirect_to(root_path)
       expect(flash[:notice]).to include("Déconnexion réussie")
-    end
-
-    context "when it is an inclusion connect session" do
-      let!(:inclusion_connect_token_id) { "1234" }
-
-      before do
-        sign_in_with_inclusion_connect(agent, inclusion_connect_token_id)
-        allow(InclusionConnectClient).to receive(:logout).and_return(OpenStruct.new(success?: true))
-      end
-
-      it "logouts from inclusion connect" do
-        expect(InclusionConnectClient).to receive(:logout).with(inclusion_connect_token_id)
-        delete :destroy
-
-        expect(response).to redirect_to(root_path)
-        expect(flash[:notice]).to include("Déconnexion réussie")
-      end
     end
   end
 end

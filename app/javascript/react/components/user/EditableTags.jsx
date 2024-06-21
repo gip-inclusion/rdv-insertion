@@ -9,8 +9,8 @@ export default observer(({ user, cell, values, setIsEditingTags }) => {
     else setTemporarySelection([...temporarySelection, tag]);
   }
 
-  const saveTemporarySelection = () => {
-    user.updateAttribute(cell, temporarySelection);
+  const saveTemporarySelection = async () => {
+    await user.updateAttribute(cell, temporarySelection);
     setIsEditingTags(false);
   };
 

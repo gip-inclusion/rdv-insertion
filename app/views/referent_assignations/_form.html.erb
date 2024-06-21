@@ -1,12 +1,14 @@
 <div>
-  <%= form_for(:referent_assignation, url: referent_assignations_path, method: :post) do |f| %>
+  <%= form_for(:referent_assignation, url: structure_referent_assignations_path(user_id), method: :post) do |f| %>
     <div class="w-100 px-2">
         <% if assigned_referents.any? %>
           <p class="mb-2"> <%= "Référent".pluralize(assigned_referents.size) %> déjà <%= "assigné".pluralize(assigned_referents.size) %></p>
           <div class="flex-wrap d-flex">
             <% assigned_referents.each do |referent| %>
-              <span class="badge badge-tag justify-content-between background-blue-light text-dark-grey-alt me-2 d-flex">
-                <%= referent %>
+              <span class="badge badge-tag justify-content-between background-blue-light text-dark-grey-alt me-2 d-flex text-truncate">
+                <span class="text-truncate">
+                  <%= referent %>
+                </span>
               </span>
             <% end %>
           </div>

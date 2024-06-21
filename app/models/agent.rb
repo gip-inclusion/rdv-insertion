@@ -7,7 +7,7 @@ class Agent < ApplicationRecord
   has_many :agent_roles, dependent: :destroy
   has_many :referent_assignations, dependent: :destroy
   has_many :agents_rdvs, dependent: :destroy
-  has_many :orientations, dependent: :restrict_with_error
+  has_many :orientations, dependent: :nullify
   has_many :csv_exports, dependent: :destroy
 
   has_many :organisations, through: :agent_roles
@@ -37,7 +37,7 @@ class Agent < ApplicationRecord
   end
 
   def to_s
-    "#{first_name} #{last_name.upcase}"
+    "#{first_name} #{last_name&.upcase}".strip
   end
 
   private

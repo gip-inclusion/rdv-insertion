@@ -67,6 +67,7 @@ describe "Agents can upload user list", :js do
 
           modal.find("input[value='Gentils']").check
           modal.click_button("Enregistrer")
+          expect(page).to have_no_content("Modifier les tags")
 
           expect(column).to have_content("Gentils, cool")
         else
@@ -82,7 +83,8 @@ describe "Agents can upload user list", :js do
 
       expect(User.last.first_name).to eq("hello")
       expect(User.last.last_name).to eq("hello")
-      expect(User.last.tags.reload.pluck(:value)).to eq(%w[Gentils cool])
+      expect(User.last.role).to eq("conjoint")
+      expect(User.last.tags.pluck(:value)).to eq(%w[Gentils cool])
     end
   end
 end

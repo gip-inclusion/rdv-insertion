@@ -1,0 +1,22 @@
+<div class="mb-1 position-relative text-center d-flex align-items-center justify-content-center">
+  <%=
+    select(
+      :user,
+      :orientation_type,
+      @orientation_types,
+      { prompt: "Filtrer par type d'orientation" },
+      class: "form-select js-orientation-selector"
+    )
+  %>
+  <% selected_orientation = @orientation_types.find { |orientation_type| orientation_type.name == params[:orientation_type] }%>
+  <span class="label-alt position-absolute bg-white pe-none">
+    <span class="orientation-label-alt">
+      <% if selected_orientation.present? %>
+        Type d'orientation : <%= selected_orientation %>
+      <% else %>
+        Filtrer par type d'orientation
+      <% end %>
+    </span>
+    <i class="fas fa-angle-down"></i>
+  </span>
+</div>

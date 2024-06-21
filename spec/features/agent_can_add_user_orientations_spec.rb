@@ -12,13 +12,26 @@ describe "Agents can add user orientation", :js do
      create(:agent, first_name: "Olivier", last_name: "Barroux")]
   end
 
+  let!(:orientation_type_social) do
+    create(:orientation_type, name: "Sociale", casf_category: "social", department: nil)
+  end
+  let!(:orientation_type_pro) do
+    create(:orientation_type, name: "Professionnelle", casf_category: "pro", department: nil)
+  end
+  let!(:orientation_type_socio_pro) do
+    create(:orientation_type, name: "Socio-professionnelle", casf_category: "socio_pro", department: nil)
+  end
+
   let!(:other_organisation) do
     create(:organisation, name: "Asso 26", agents: other_organisation_agents, department:)
   end
 
   let!(:other_organisation_agents) { [create(:agent, first_name: "Jean-Paul", last_name: "Rouve")] }
 
-  before { setup_agent_session(agent) }
+  before do
+    setup_agent_session(agent)
+    allow(RdvSolidaritesApi::CreateUserProfiles).to receive(:call).and_return(OpenStruct.new(success?: true))
+  end
 
   it "shows the pacours and enables to add orientations" do
     visit organisation_user_path(organisation_id: organisation.id, id: user.id)
@@ -31,7 +44,7 @@ describe "Agents can add user orientation", :js do
 
     click_button("Ajouter une orientation")
 
-    page.select "Sociale", from: "orientation_orientation_type"
+    page.select orientation_type_social.name, from: "orientation[orientation_type_id]"
     # need to use js for flatpickr input
     page.execute_script("document.querySelector('#orientation_starts_at').value = '2023-07-03'")
 
@@ -53,7 +66,7 @@ describe "Agents can add user orientation", :js do
     # orientation without agent
     click_button("Ajouter une orientation")
 
-    page.select "Professionnelle", from: "orientation_orientation_type"
+    page.select "Professionnelle", from: "orientation[orientation_type_id]"
     # need to use js for flatpickr input
     page.execute_script("document.querySelector('#orientation_starts_at').value = '2023-10-03'")
 
@@ -82,13 +95,23 @@ describe "Agents can add user orientation", :js do
       create(:organisation, department: other_department, name: "CD 13", users: [user],
                             agents: [other_department_agent])
     end
+
     let!(:first_department_orientation) do
-      create(:orientation, user:, starts_at: "20/12/2022", ends_at: "03/01/2023", orientation_type: "social",
-                           organisation:)
+      create(:orientation,
+             user:,
+             starts_at: "20/12/2022",
+             ends_at: "03/01/2023",
+             orientation_type: orientation_type_social,
+             organisation:)
     end
+
     let!(:second_department_orientation) do
-      create(:orientation, user:, starts_at: "12/01/2023", ends_at: "07/02/2023", orientation_type: "pro",
-                           organisation: other_department_organisation)
+      create(:orientation,
+             user:,
+             starts_at: "12/01/2023",
+             ends_at: "07/02/2023",
+             orientation_type: orientation_type_pro,
+             organisation: other_department_organisation)
     end
 
     it "shows only the department scoped orientation" do

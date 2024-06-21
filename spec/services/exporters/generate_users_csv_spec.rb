@@ -113,6 +113,10 @@ describe Exporters::GenerateUsersCsv, type: :service do
         expect(subject.csv).to include("Rendez-vous d'orientation (RSA) honoré en - moins de 30 jours?")
         expect(subject.csv).to include("Rendez-vous d'orientation (RSA) honoré en - moins de 15 jours?")
         expect(subject.csv).to include("Date d'orientation")
+        expect(subject.csv).to include("Type d'orientation")
+        expect(subject.csv).to include("Date de début d'accompagnement")
+        expect(subject.csv).to include("Date de fin d'accompagnement")
+        expect(subject.csv).to include("Structure d'orientation")
         expect(subject.csv).to include("Référent(s)")
         expect(subject.csv).to include("Nombre d'organisations")
         expect(subject.csv).to include("Nom des organisations")
@@ -290,6 +294,45 @@ describe Exporters::GenerateUsersCsv, type: :service do
         context "if it is the orientation date" do
           it "is still displayed as the orientation date" do
             expect(subject.csv).to include("31/05/2022")
+          end
+        end
+      end
+
+      context "user has an orientation" do
+        before do
+          travel_to(Time.zone.parse("2024-06-10 11:00"))
+        end
+
+        let(:other_organisation) { create(:organisation, name: "Autre drome RSA", department:) }
+
+        let!(:orientation) do
+          create(:orientation,
+                 user: user1,
+                 orientation_type: create(:orientation_type, name: "Remobilisation renforcée"),
+                 starts_at:,
+                 ends_at:,
+                 organisation: other_organisation)
+        end
+
+        let(:starts_at) { Time.zone.parse("2024-06-01") }
+        let(:ends_at) { Time.zone.parse("2024-06-30") }
+
+        it "displays the orientation infos" do
+          expect(subject.csv).to include("Remobilisation renforcée") # orientation type
+          expect(subject.csv).to include("01/06/2024") # orientation starts_at
+          expect(subject.csv).to include("30/06/2024") # orientation ends_at
+          expect(subject.csv).to include("Autre drome RSA") # orientation structure
+        end
+
+        context "orientation is inactive" do
+          let(:starts_at) { Time.zone.parse("2022-06-01") }
+          let(:ends_at) { Time.zone.parse("2022-06-30") }
+
+          it "does not display the orientation infos" do
+            expect(subject.csv).not_to include("Remobilisation renforcée")
+            expect(subject.csv).not_to include("01/06/2022")
+            expect(subject.csv).not_to include("30/06/2022")
+            expect(subject.csv).not_to include("Autre drome RSA")
           end
         end
       end

@@ -1,6 +1,6 @@
 <div class="mb-1">
   <div class="w-100">
-    <%= link_to(new_creation_dates_filtering_path(url_params), data: { turbo_frame: 'remote_modal' }) do %>
+    <%= link_to(new_structure_creation_dates_filtering_path(url_params), data: { turbo_frame: 'remote_modal' }) do %>
       <button class="btn btn-grey w-100">
         <% if params[:creation_date_after].present? %>
           Créés entre le <%= params[:creation_date_after].to_date.strftime("%d/%m/%Y") %> et le <%= (params[:creation_date_before]&.to_date || Time.zone.now).strftime("%d/%m/%Y") %>

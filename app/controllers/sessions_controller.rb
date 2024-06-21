@@ -8,8 +8,6 @@ class SessionsController < ApplicationController
                 :set_agent_return_to_url,
                 only: [:create]
 
-  before_action :handle_inclusion_connect_logout, only: [:destroy], if: :logged_with_inclusion_connect?
-
   def new; end
 
   def create
@@ -38,14 +36,5 @@ class SessionsController < ApplicationController
 
   def set_agent_return_to_url
     @agent_return_to_url = session[:agent_return_to]
-  end
-
-  def handle_inclusion_connect_logout
-    logout = InclusionConnectClient.logout(agent_session.inclusion_connect_token_id)
-    return if logout.success?
-
-    flash[:error] = "Nous n'avons pas pu vous déconnecter d'Inclusion Connect. Contacter le support à l'adresse
-                    <rdv-insertion@beta.gouv.fr> si le problème persiste."
-    redirect_to root_path
   end
 end

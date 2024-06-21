@@ -491,39 +491,41 @@ describe InboundWebhooks::RdvSolidarites::ProcessRdvJob do
           before { category_configuration.update! convene_user: false }
 
           it "sets the convocable attribute when upserting the rdv" do
-            expect(UpsertRecordJob).to receive(:perform_async).with(
-              "Rdv",
-              data,
-              {
-                participations_attributes: [
-                  {
-                    id: nil,
-                    status: "unknown",
-                    created_by: "user",
-                    user_id: 3,
-                    rdv_solidarites_participation_id: 998,
-                    follow_up_id: follow_up.id,
-                    convocable: false,
-                    rdv_solidarites_agent_prescripteur_id: nil
-                  },
-                  {
-                    id: nil,
-                    status: "unknown",
-                    created_by: "user",
-                    user_id: 4,
-                    rdv_solidarites_participation_id: 999,
-                    follow_up_id: follow_up2.id,
-                    convocable: false,
-                    rdv_solidarites_agent_prescripteur_id: nil
-                  }
-                ],
-                organisation_id: organisation.id,
-                agent_ids: [agent.id],
-                motif_id: motif.id,
-                lieu_id: lieu.id,
-                last_webhook_update_received_at: timestamp
-              }
-            )
+            expect(UpsertRecordJob).to receive(:perform_async) do |_, _, args|
+              expected_participation_attributes = [
+                {
+                  id: nil,
+                  status: "unknown",
+                  created_by: "user",
+                  user_id: 3,
+                  rdv_solidarites_participation_id: 998,
+                  follow_up_id: follow_up.id,
+                  convocable: false,
+                  rdv_solidarites_agent_prescripteur_id: nil
+                },
+                {
+                  id: nil,
+                  status: "unknown",
+                  created_by: "user",
+                  user_id: 4,
+                  rdv_solidarites_participation_id: 999,
+                  follow_up_id: follow_up2.id,
+                  convocable: false,
+                  rdv_solidarites_agent_prescripteur_id: nil
+                }
+              ]
+              # Here we sort the participations by user_id to ensure the test doesn't get flaky and matches
+              # the expected attributes above
+              result_sorted_by_user_id = args[:participations_attributes].sort_by { |h| h[:user_id] }
+
+              expect(result_sorted_by_user_id).to eq(expected_participation_attributes)
+
+              expect(args[:organisation_id]).to eq(organisation.id)
+              expect(args[:agent_ids]).to eq([agent.id])
+              expect(args[:motif_id]).to eq(motif.id)
+              expect(args[:lieu_id]).to eq(lieu.id)
+              expect(args[:last_webhook_update_received_at]).to eq(timestamp)
+            end
             subject
           end
         end

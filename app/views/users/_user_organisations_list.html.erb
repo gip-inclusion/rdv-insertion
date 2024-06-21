@@ -5,13 +5,15 @@
 
   <p class="mb-2 mt-3 flex-wrap d-flex">
     <% user.organisations.each do |organisation| %>
-      <span class="badge badge-tag justify-content-between background-blue-light text-dark-blue me-2 mb-2 d-flex">
-        <%= organisation.name %>
-        <% if @department.id != organisation.department_id %>
-          <span class="text-dark-grey-alt">
-            &nbsp;(<%= organisation.department.number %> - <%= organisation.department.name %>)
-          </span>
-        <% end %>
+      <span class="badge badge-tag justify-content-between background-blue-light text-dark-blue me-2 mb-2 d-flex text-truncate">
+        <span class="text-truncate">
+          <%= organisation.name %>
+          <% if @department.id != organisation.department_id %>
+            <span class="text-dark-grey-alt">
+              &nbsp;(<%= organisation.department.number %> - <%= organisation.department.name %>)
+            </span>
+          <% end %>
+        </span>
         <%
           if user.organisations.count > 1
             data = {
@@ -28,14 +30,14 @@
             }
           end
         %>
-        <%= link_to(users_organisations_path(users_organisation: { user_id: user.id, organisation_id: organisation.id }), data:, class: 'text-dark-grey-alt ms-2' ) do %>
+        <%= link_to(structure_users_organisations_path(user.id, users_organisation: { user_id: user.id, organisation_id: organisation.id }), data:, class: 'text-dark-grey-alt ms-2' ) do %>
           <i class="fas fa-times"></i>
         <% end %>
       </span>
     <% end %>
   </p>
 
-  <%= link_to(users_organisations_path(user_id: user.id), data: { turbo_frame: 'remote_modal' }) do %>
+  <%= link_to(structure_users_organisations_path(user.id), data: { turbo_frame: 'remote_modal' }) do %>
     <button class="btn btn-blue"><i class="fas fa-plus"></i> Ajouter une organisation </button>
   <% end %>
 </div>

@@ -18,7 +18,13 @@ module Orientations
     private
 
     def add_user_to_organisation
-      @orientation.user.organisations << @orientation.organisation
+      fail!("Une organisation doit être renseignée") if @orientation.organisation.nil?
+
+      call_service!(
+        Users::AddToOrganisations,
+        user: @orientation.user,
+        organisations: [@orientation.organisation]
+      )
     end
 
     def other_user_orientations
@@ -56,7 +62,7 @@ module Orientations
     # We want to validate this before saving the record.
     # We cannot launch the AR validation before assigning ends_at values
     def validate_starts_at_presence
-      fail!("une date de début doit être indiquée") unless @orientation.starts_at?
+      fail!("Une date de début doit être indiquée") unless @orientation.starts_at?
     end
 
     def validate_no_orientations_overlap
@@ -64,7 +70,7 @@ module Orientations
         other_orientation.time_range.to_a.intersect?(@orientation.time_range.to_a)
       end
 
-      fail!("les dates se chevauchent avec une autre orientation")
+      fail!("Les dates se chevauchent avec une autre orientation")
     end
   end
 end
