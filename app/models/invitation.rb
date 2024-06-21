@@ -35,10 +35,6 @@ class Invitation < ApplicationRecord
   }
   scope :valid, -> { where("valid_until > ?", Time.zone.now) }
 
-  def invitation_date
-    created_at.strftime("%d/%m/%Y")
-  end
-
   def send_to_user
     case self.format
     when "sms"
