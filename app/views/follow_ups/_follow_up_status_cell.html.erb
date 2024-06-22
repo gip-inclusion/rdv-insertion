@@ -1,7 +1,10 @@
 <td
   id="follow-up-status-<%= follow_up.id %>"
-  class="<%= background_class_for_follow_up_status(follow_up, category_configuration&.number_of_days_before_action_required) %>"
+  class="<%= background_class_for_follow_up_status(follow_up, number_of_days_before_action_required) %>"
   data-link-path="<%= structure_user_follow_ups_path(follow_up.user_id) %>"
 >
-  <%= display_follow_up_status(follow_up, category_configuration&.number_of_days_before_action_required) %>
+  <%= display_follow_up_status(follow_up, number_of_days_before_action_required) %>
+  <% if follow_up.rdv_pending? && follow_up.current_pending_rdv.present? %>
+    <span class="text-darker-grey"><em><%= " (le #{format_date(follow_up.current_pending_rdv.starts_at)})" %></em></span>
+  <% end %>
 </td>

@@ -43,18 +43,18 @@ describe InclusionConnectClient, type: :model do
     end
   end
 
-  describe ".logout" do
-    it "makes a GET request to the logout endpoint with the correct data" do
-      allow(Faraday).to receive(:get).with(
-        "#{base_url}/logout/",
-        {
-          id_token_hint: id_token
-        }
-      ).and_return(instance_double("Faraday::Response", status: 200, body: "response_body"))
+  describe ".logout_path" do
+    let(:logout_path) { described_class.logout_path(id_token, ic_state) }
 
-      response = described_class.logout(id_token)
-      expect(response.status).to eq(200)
-      expect(response.body).to eq("response_body")
+    it "returns the correct logout URL" do
+      query = {
+        id_token_hint: id_token,
+        state: ic_state,
+        post_logout_redirect_uri: "#{ENV['HOST']}/sign_in"
+      }
+      expect(logout_path).to eq(
+        "#{base_url}/logout?#{query.to_query}"
+      )
     end
   end
 
