@@ -72,6 +72,7 @@ Rails.application.routes.draw do
     resource :referent_assignations, only: [:destroy]
     resources :tag_assignations, only: [:index, :create]
     resource :tag_assignations, only: [:destroy]
+    resources :agent_roles, only: [:index, :create]
     resources :invitation_dates_filterings, :creation_dates_filterings, only: [:new]
     resources :file_configurations, only: [:show, :new, :create, :edit, :update] do
       get :confirm_update
