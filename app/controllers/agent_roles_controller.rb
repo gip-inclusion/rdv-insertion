@@ -30,6 +30,8 @@ class AgentRolesController < ApplicationController
                                        .basic
                                        .joins(:agent)
                                        .where.not(agent: { last_name: nil })
+                                       .select("agent_roles.*, agent.email")
+                                       .order("agent.email desc")
   end
 
   def set_authorized_agent_role_ids
