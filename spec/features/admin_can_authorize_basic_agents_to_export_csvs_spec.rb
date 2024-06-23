@@ -55,4 +55,3 @@ describe "Admins can authorize basic agents to export csvs", :js do
     end
   end
 end
-
