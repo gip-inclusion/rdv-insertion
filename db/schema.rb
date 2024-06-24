@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_11_225639) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_20_124203) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -111,6 +111,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_11_225639) do
     t.integer "position", default: 0
     t.integer "department_position", default: 0
     t.string "phone_number"
+    t.boolean "notify_rdv_taken", default: false
+    t.string "notify_rdv_taken_email"
+    t.boolean "notify_out_of_slots", default: false
+    t.string "notify_out_of_slots_email"
     t.index ["file_configuration_id"], name: "index_category_configurations_on_file_configuration_id"
     t.index ["motif_category_id"], name: "index_category_configurations_on_motif_category_id"
     t.index ["organisation_id"], name: "index_category_configurations_on_organisation_id"
