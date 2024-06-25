@@ -11,6 +11,10 @@ class OrganisationMailer < ApplicationMailer
     )
   end
 
+  def rdv_added(to:, subject:, content:, user_attachements:, reply_to:)
+    
+  end
+
   def creneau_unavailable(organisation:, grouped_invitation_params_by_category:)
     return if organisation.email.blank?
 

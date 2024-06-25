@@ -8,14 +8,14 @@
       <div class="d-flex mb-2">
         <div class="w-75 d-flex">
           <div class="form-check form-switch mx-2 d-flex align-items-center">
-            <%= f.check_box :notify_rdv_taken, class: "form-check-input" %>
+            <%= f.check_box :notify_rdv_changes, class: "form-check-input" %>
           </div>
           <div class="align-items-center">
             Notifier l'adresse email suivante de toutes les prises de rendez-vous ayant lieu pour cette catégorie de motifs : 
           </div>
         </div>
         <div class="w-25 ps-2">
-          <%= f.text_field :notify_rdv_taken_email, placeholder: "email@email.fr" %>
+          <%= f.text_field :notify_rdv_changes_email, placeholder: "email@email.fr" %>
         </div>
       </div>
       <div class="d-flex mb-2">
