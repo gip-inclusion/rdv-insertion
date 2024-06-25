@@ -69,21 +69,21 @@ module Stats
 
       def rate_of_users_oriented_in_less_than_30_days_for_focused_month
         ComputeRateOfRdvSeenInLessThanNDays.call(
-          follow_ups: created_during_focused_mont(@stat.users_first_orientation_follow_up),
+          follow_ups: created_during_focused_month(@stat.users_first_orientation_follow_up),
           number_of_days: 30
         ).value.round
       end
 
       def rate_of_users_oriented_in_less_than_15_days_for_focused_month
         ComputeRateOfRdvSeenInLessThanNDays.call(
-          follow_ups: created_during_focused_mont(@stat.users_first_orientation_follow_up),
+          follow_ups: created_during_focused_month(@stat.users_first_orientation_follow_up),
           number_of_days: 15
         ).value.round
       end
 
       def rate_of_users_oriented_for_focused_month
         ComputeRateOfUsersWithRdvSeen.call(
-          follow_ups: created_during_focused_mont(@stat.orientation_follow_ups_with_invitations)
+          follow_ups: created_during_focused_month(@stat.orientation_follow_ups_with_invitations)
         ).value.round
       end
 
