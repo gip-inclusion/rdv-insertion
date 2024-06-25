@@ -24,6 +24,7 @@ class Participation < ApplicationRecord
 
   after_commit :refresh_follow_up_status
   after_commit :notify_user, if: :should_notify?, on: [:create, :update]
+  after_commit :notify_external, if: :should_notify_external?, on: [:create, :update]
 
   enum created_by: { agent: "agent", user: "user", prescripteur: "prescripteur" }, _prefix: :created_by
 
