@@ -21,7 +21,7 @@ module Invitations
     def standard_content
       "#{user.full_name},\nVous êtes #{user_designation} et êtes #{user.conjugate('invité')} à" \
         " participer à un #{rdv_title}. Pour choisir la date du RDV, " \
-        "cliquez sur ce lien#{display_delay_if_reminder}: " \
+        "cliquez sur ce lien#{display_time_to_accept_invitation}: " \
         "#{@invitation.rdv_solidarites_public_url(with_protocol: false)}\n" \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}" \
@@ -31,7 +31,7 @@ module Invitations
     def phone_platform_content
       "#{user.full_name},\nVous êtes #{user_designation} et devez contacter la plateforme " \
         "départementale afin de #{rdv_purpose}. Pour cela, merci d'appeler le " \
-        "#{formatted_phone_number}#{display_delay_if_reminder}. " \
+        "#{formatted_phone_number}#{display_time_to_accept_invitation}. " \
         "#{mandatory_warning_message}" \
         "#{punishable_warning_message}"
     end
@@ -99,7 +99,7 @@ module Invitations
 
     ###
 
-    def display_delay_if_reminder
+    def display_time_to_accept_invitation
       " dans les #{Invitation::NUMBER_OF_DAYS_BEFORE_REMINDER} jours" unless motif_category.optional_rdv_subscription?
     end
 
