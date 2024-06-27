@@ -188,8 +188,9 @@ Rails.application.routes.draw do
   get '/sign_in', to: "sessions#new"
   delete '/sign_out', to: "sessions#destroy"
 
-  get "inclusion_connect/auth" => "inclusion_connect#auth"
-  get "inclusion_connect/callback" => "inclusion_connect#callback"
+  get "inclusion_connect/auth", to: "inclusion_connect#auth"
+  get "inclusion_connect/callback", to: "inclusion_connect#callback"
+  get "inclusion_connect/sign_out", to: "inclusion_connect#sign_out"
 
   post "/inbound_emails/brevo", to: "inbound_emails#brevo"
 

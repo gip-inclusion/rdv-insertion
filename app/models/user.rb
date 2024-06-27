@@ -51,7 +51,8 @@ class User < ApplicationRecord
   accepts_nested_attributes_for :tag_users
 
   validates :last_name, :first_name, presence: true
-  validates :email, allow_blank: true, format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/ }
+  validates :email, allow_blank: true,
+                    format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}\z/ }
   validate :birth_date_validity
   validates :rdv_solidarites_user_id, :nir, :france_travail_id,
             uniqueness: true, allow_nil: true, unless: :skip_uniqueness_validations
