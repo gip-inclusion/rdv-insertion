@@ -37,7 +37,7 @@ class Agent < ApplicationRecord
   end
 
   def export_organisations_ids
-    agent_roles.select(&:export_authorization?).map(&:organisation_id)
+    agent_roles.select(&:authorized_to_export_csv?).map(&:organisation_id)
   end
 
   def to_s

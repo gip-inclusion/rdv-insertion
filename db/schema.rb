@@ -50,7 +50,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_22_164616) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "last_webhook_update_received_at"
-    t.boolean "export_authorization", default: false
+    t.boolean "authorized_to_export_csv", default: false
     t.index ["access_level"], name: "index_agent_roles_on_access_level"
     t.index ["agent_id", "organisation_id"], name: "index_agent_roles_on_agent_id_and_organisation_id", unique: true
     t.index ["agent_id"], name: "index_agent_roles_on_agent_id"
@@ -83,11 +83,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_22_164616) do
   end
 
   create_table "archives", force: :cascade do |t|
-    t.bigint "department_id", null: false
     t.bigint "user_id", null: false
     t.string "archiving_reason"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "department_id"
     t.index ["department_id"], name: "index_archives_on_department_id"
     t.index ["user_id"], name: "index_archives_on_user_id"
   end

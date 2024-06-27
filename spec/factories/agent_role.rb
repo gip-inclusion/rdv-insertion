@@ -4,6 +4,6 @@ FactoryBot.define do
     agent
     access_level { "basic" }
     sequence(:rdv_solidarites_agent_role_id)
-    export_authorization { false }
+    authorized_to_export_csv { false }
   end
 end

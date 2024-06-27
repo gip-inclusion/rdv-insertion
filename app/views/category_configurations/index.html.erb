@@ -35,9 +35,9 @@
     <h6 class="px-0 mb-3">Exports CSV</h6>
 
     <div class="text-light-blue px-0 mt-3 mb-2">
-      Sélectionner les agents non-administrateurs de votre organisation qui peuvent avoir accès à la fonctionnalité d'export. Un agent autorisé l'est automatiquement pour toutes ses organisations.
+      Sélectionner les agents non-administrateurs de votre organisation qui peuvent avoir accès à la fonctionnalité d'export.
     </div>
-    <%= link_to(organisation_agent_roles_path(@organisation.id), class: "ps-0 my-2", data: { turbo_frame: 'remote_modal' }) do %>
+    <%= link_to(organisation_authorized_to_export_csv_index_path(@organisation.id), class: "ps-0 my-2", data: { turbo_frame: 'remote_modal' }) do %>
       <button class="btn btn-blue">Gérer les autorisations</button>
     <% end %>
   </div>

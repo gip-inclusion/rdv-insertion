@@ -67,7 +67,7 @@ describe "Agents can download csv from index page", :js do
       end
 
       context "when agent has export authorization" do
-        let!(:agent_role) { create(:agent_role, agent:, organisation:, export_authorization: true) }
+        let!(:agent_role) { create(:agent_role, agent:, organisation:, authorized_to_export_csv: true) }
 
         it "displays the csv export button" do
           visit organisation_users_path(organisation, motif_category_id: motif_category.id)
@@ -93,7 +93,7 @@ describe "Agents can download csv from index page", :js do
       end
 
       context "when agent has export authorization" do
-        let!(:agent_role) { create(:agent_role, agent:, organisation:, export_authorization: true) }
+        let!(:agent_role) { create(:agent_role, agent:, organisation:, authorized_to_export_csv: true) }
 
         it "displays the csv export button" do
           visit department_users_path(organisation.department)

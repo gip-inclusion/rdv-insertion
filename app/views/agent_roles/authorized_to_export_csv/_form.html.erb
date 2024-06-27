@@ -1,5 +1,5 @@
 <div>
-  <%= form_for(:export_authorization, url: organisation_agent_roles_path(organisation_id), method: :post) do |f| %>
+  <%= form_for(:authorized_to_export_csv, url: authorized_to_export_csv_batch_update_organisation_agent_roles_path(organisation_id), method: :patch) do |f| %>
     <div class="w-100 px-2">
       <p>Sélectionnez les agents non-administrateurs de votre organisation qui peuvent avoir accès à la fonctionnalité d'export&nbsp;:</p>
     </div>

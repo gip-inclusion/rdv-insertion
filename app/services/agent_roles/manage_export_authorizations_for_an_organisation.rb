@@ -2,66 +2,42 @@ module AgentRoles
   class ManageExportAuthorizationsForAnOrganisation < BaseService
     def initialize(organisation:, agent_roles:)
       @organisation = organisation
-      @agent_roles_checked_to_be_authorized = agent_roles
+      @agent_roles_to_authorize = agent_roles
     end
 
     def call
       AgentRole.transaction do
-        open_new_export_authorizations
-        close_export_authorizations
+        authorize_agent_roles_to_export
+        unauthorize_agent_roles_to_export
       end
     end
 
     private
 
-    def open_new_export_authorizations
-      return if agent_roles_to_set_export_authorization_to_true.empty?
+    def authorize_agent_roles_to_export
+      return if agent_roles_to_authorize_to_export_csv.empty?
 
-      agent_roles_to_set_export_authorization_to_true.update_all(export_authorization: true)
+      agent_roles_to_authorize_to_export_csv.update_all(authorized_to_export_csv: true)
     end
 
-    def close_export_authorizations
-      return if agent_roles_to_set_export_authorization_to_false.empty?
+    def unauthorize_agent_roles_to_export
+      return if agent_roles_to_unauthorize_to_export_csv.empty?
 
-      agent_roles_to_set_export_authorization_to_false.update_all(export_authorization: false)
+      agent_roles_to_unauthorize_to_export_csv.update_all(authorized_to_export_csv: false)
     end
 
-    def agent_roles_to_set_export_authorization_to_true
-      @agent_roles_to_set_export_authorization_to_true ||=
-        AgentRole.where(
-          agent_id: agent_ids_to_authorize_in_department,
-          organisation_id: organisation_ids
-        )
+    def agent_roles_to_authorize_to_export_csv
+      @agent_roles_to_authorize_to_export_csv ||=
+        @agent_roles_to_authorize.where.not(id: basic_agent_roles_authorized_in_organisation.select(:id))
     end
 
-    def agent_roles_to_set_export_authorization_to_false
-      @agent_roles_to_set_export_authorization_to_false ||=
-        AgentRole.where(
-          agent_id: agent_ids_to_set_export_authorization_to_false_in_department,
-          organisation_id: organisation_ids
-        )
-    end
-
-    def agent_ids_to_authorize_in_department
-      @agent_ids_to_authorize_in_department ||=
-        (@agent_roles_checked_to_be_authorized - basic_agent_roles_authorized_in_organisation).map(&:agent_id)
-    end
-
-    def agent_ids_to_set_export_authorization_to_false_in_department
-      @agent_ids_to_set_export_authorization_to_false_in_department ||=
-        (basic_agent_roles_authorized_in_organisation - @agent_roles_checked_to_be_authorized).map(&:agent_id)
+    def agent_roles_to_unauthorize_to_export_csv
+      @agent_roles_to_unauthorize_to_export_csv ||=
+        basic_agent_roles_authorized_in_organisation.where.not(id: @agent_roles_to_authorize.select(:id))
     end
 
     def basic_agent_roles_authorized_in_organisation
-      @basic_agent_roles_authorized_in_organisation ||= @organisation.agent_roles.basic.with_export_authorization
-    end
-
-    def organisation_ids
-      @organisation_ids ||= department.organisations.map(&:id)
-    end
-
-    def department
-      @department ||= @organisation.department
+      @basic_agent_roles_authorized_in_organisation ||= @organisation.agent_roles.basic.authorized_to_export_csv
     end
   end
 end
