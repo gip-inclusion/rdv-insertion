@@ -30,14 +30,13 @@ class InclusionConnectClient
       )
     end
 
-    def logout(id_token)
-      data = {
-        id_token_hint: id_token
+    def logout_path(id_token, ic_state)
+      query = {
+        id_token_hint: id_token,
+        state: ic_state,
+        post_logout_redirect_uri: "#{ENV['HOST']}/sign_in"
       }
-      Faraday.get(
-        "#{BASE_URL}/logout/",
-        data
-      )
+      "#{BASE_URL}/logout?#{query.to_query}"
     end
 
     def get_agent_info(access_token)

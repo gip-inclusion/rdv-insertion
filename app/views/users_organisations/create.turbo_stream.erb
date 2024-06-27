@@ -8,4 +8,8 @@
   <%= turbo_stream.replace "remote_modal" do %>
     <%= render partial: "organisations/user_added_notifications/form", locals: { emails: [@organisation_to_add.email], user: @user, organisation: @organisation_to_add } %>
   <% end %>
+<% else %>
+  <%= turbo_stream.replace "remote_modal" do %>
+    <%= render partial: "organisations/user_added_notifications/no_email", locals: { organisation: @organisation_to_add } %>
+  <% end %>
 <% end %>
