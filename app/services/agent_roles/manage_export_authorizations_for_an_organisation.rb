@@ -2,7 +2,7 @@ module AgentRoles
   class ManageExportAuthorizationsForAnOrganisation < BaseService
     def initialize(organisation:, agent_roles:)
       @organisation = organisation
-      @agent_roles_to_authorize = agent_roles
+      @agent_roles_with_authorization_granted = agent_roles
     end
 
     def call
@@ -28,12 +28,12 @@ module AgentRoles
 
     def agent_roles_to_authorize_to_export_csv
       @agent_roles_to_authorize_to_export_csv ||=
-        @agent_roles_to_authorize.where.not(id: basic_agent_roles_authorized_in_organisation.select(:id))
+        @agent_roles_with_authorization_granted.where.not(id: basic_agent_roles_authorized_in_organisation.select(:id))
     end
 
     def agent_roles_to_unauthorize_to_export_csv
       @agent_roles_to_unauthorize_to_export_csv ||=
-        basic_agent_roles_authorized_in_organisation.where.not(id: @agent_roles_to_authorize.select(:id))
+        basic_agent_roles_authorized_in_organisation.where.not(id: @agent_roles_with_authorization_granted.select(:id))
     end
 
     def basic_agent_roles_authorized_in_organisation
