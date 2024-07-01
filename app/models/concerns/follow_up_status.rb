@@ -11,7 +11,6 @@ module FollowUpStatus
       rdv_revoked: "rdv_revoked",
       rdv_excused: "rdv_excused",
       rdv_seen: "rdv_seen",
-      multiple_rdvs_cancelled: "multiple_rdvs_cancelled",
       closed: "closed"
     }
     before_save :set_status
@@ -49,10 +48,6 @@ module FollowUpStatus
     last_invitation_created_at > participation_date_to_compare
   end
 
-  def multiple_cancelled_participations?
-    participations.select(&:cancelled_by_user?).length > 1
-  end
-
   def seen_rdv_after_last_created_participation?
     seen_participations.present? &&
       seen_participations.max_by(&:starts_at).starts_at > last_created_participation.created_at
@@ -63,8 +58,6 @@ module FollowUpStatus
       :rdv_pending
     elsif last_created_participation.seen? || seen_rdv_after_last_created_participation?
       :rdv_seen
-    elsif multiple_cancelled_participations?
-      :multiple_rdvs_cancelled
     elsif last_created_participation.cancelled?
       :"rdv_#{last_created_participation.status}"
     else

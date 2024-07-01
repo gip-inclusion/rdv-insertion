@@ -20,10 +20,10 @@ class FollowUp < ApplicationRecord
   delegate :name, :short_name, to: :motif_category, prefix: true
 
   STATUSES_WITH_ACTION_REQUIRED = %w[
-    rdv_needs_status_update rdv_noshow rdv_revoked rdv_excused multiple_rdvs_cancelled
+    rdv_needs_status_update rdv_noshow rdv_revoked rdv_excused
   ].freeze
   CONVOCABLE_STATUSES = %w[
-    rdv_noshow rdv_excused multiple_rdvs_cancelled
+    rdv_noshow rdv_excused
   ].freeze
 
   scope :status, ->(status) { where(status: status) }
