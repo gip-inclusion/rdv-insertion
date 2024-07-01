@@ -11,7 +11,7 @@ class NotifyUnavailableCreneauJob < ApplicationJob
     # },...]
     organisation = Organisation.find(organisation_id)
     deliver_general_email(organisation, result.grouped_invitation_params_by_category)
-    deliver_per_category_email(organisation, result.grouped_invitation_params_by_category)
+    deliver_per_category_notify_out_of_slots_email(organisation, result.grouped_invitation_params_by_category)
     notify_on_mattermost(organisation, result.grouped_invitation_params_by_category)
   end
 
