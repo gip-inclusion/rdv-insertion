@@ -28,7 +28,7 @@ class NotifyUnavailableCreneauJob < ApplicationJob
     grouped_invitation_params_by_category.each do |grouped_invitation_params|
       next unless grouped_invitation_params[:matching_category_configuration].notify_out_of_slots?
 
-      OrganisationMailer.creneau_unavailable_for_single_category(
+      OrganisationMailer.notify_out_of_slots(
         organisation: organisation,
         recipient: grouped_invitation_params[:matching_category_configuration].notify_out_of_slots_email,
         grouped_invitation_params_by_category: grouped_invitation_params_by_category

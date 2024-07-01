@@ -51,7 +51,8 @@ module Invitations
 
       zip_code = invitation_params[:zip_code]
       referent_ids = invitation_params[:referent_ids]
-      category_params_group = find_or_initialize_category_params_group(motif_category_name, matching_category_configuration)
+      category_params_group = find_or_initialize_category_params_group(motif_category_name,
+                                                                       matching_category_configuration)
       category_params_group[:invitations_counter] += 1
       category_params_group[:zip_codes].add(zip_code) if zip_code.present?
       category_params_group[:referent_ids].merge(referent_ids) if referent_ids.present?

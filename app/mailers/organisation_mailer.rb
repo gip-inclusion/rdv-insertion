@@ -11,10 +11,6 @@ class OrganisationMailer < ApplicationMailer
     )
   end
 
-  def rdv_added(to:, subject:, content:, user_attachements:, reply_to:)
-    
-  end
-
   def creneau_unavailable(organisation:, grouped_invitation_params_by_category:)
     return if organisation.email.blank?
 
@@ -28,9 +24,28 @@ class OrganisationMailer < ApplicationMailer
     )
   end
 
-  def creneau_unavailable_for_single_category(organisation:, recipient:, grouped_invitation_params:)
-    return if organisation.email.blank?
+  def notify_rdv_changes(to:, organisation:, participation:, event:)
+    @organisation = organisation
+    @participation = participation
+    @motif_category = participation.follow_up.motif_category
+    @event = event
 
+    translated_event = if event == "updated"
+                         "modifié"
+                       elsif event == "cancelled"
+                         "annulé"
+                       else
+                         "créé"
+                       end
+
+    mail(
+      to:,
+      subject: "[Notification de RDV] Un rendez-vous a été #{translated_event}",
+      reply_to: "rdv-insertion@beta.gouv.fr"
+    )
+  end
+
+  def notify_out_of_slots(organisation:, recipient:, grouped_invitation_params:)
     @organisation = organisation
     @grouped_invitation_params = grouped_invitation_params
     mail(
