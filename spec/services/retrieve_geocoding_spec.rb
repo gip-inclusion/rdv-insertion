@@ -4,9 +4,9 @@ describe RetrieveGeocoding, type: :service do
   end
 
   let!(:department_number) { "75" }
-  let!(:address) { "20 Avenue de Ségur, 75007 Paris" }
-  let!(:parsed_post_code_and_city) { "75007 Paris" }
-  let!(:parsed_city) { "Paris" }
+  let!(:address) { "20 av de Ségur 75007 paris" }
+  let!(:parsed_post_code_and_city) { "75007 paris" }
+  let!(:parsed_city) { "paris" }
   let(:response_body) do
     {
       "type" => "FeatureCollection",
@@ -22,15 +22,12 @@ describe RetrieveGeocoding, type: :service do
             ]
           },
           "properties" => {
-            "label" => "20 Avenue de Ségur 75007 Paris",
-            "score" => 0.8470354545454546,
             "housenumber" => "20",
             "id" => "75107_8909_00020",
             "name" => "20 Avenue de Ségur",
             "postcode" => "75007",
             "citycode" => "75107",
             "city" => "Paris",
-            "district" => "Paris 7e Arrondissement",
             "context" => "75, Paris, Île-de-France",
             "type" => "housenumber",
             "importance" => 0.69239,

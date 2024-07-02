@@ -66,6 +66,8 @@ class CarnetDeBord::CreateCarnet < BaseService
 
   def address_attributes
     return {} if @user.address.blank?
+    # since carnet creation is used very rarely, we call the RetrieveGeocoding service directrly instead of retrieving
+    # the geocoding record to be sure we have a geocoding up to date (since the record is saved asynchronously)
     return {} if retrieve_geocoding.failure?
 
     geocoding = Geocoding.new(retrieve_geocoding.geocoding_params)

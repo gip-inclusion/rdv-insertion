@@ -131,7 +131,7 @@ describe CarnetDeBord::CreateCarnet, type: :service do
 
     context "when the geolocalisation retrieval fails" do
       before do
-        allow(RetrieveGeolocalisation).to receive(:call).with(
+        allow(RetrieveGeocoding).to receive(:call).with(
           address: "20 avenue ségur", department_number: "93"
         ).and_return(OpenStruct.new(failure?: true))
       end
