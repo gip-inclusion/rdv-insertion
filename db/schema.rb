@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_18_091652) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_27_145505) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -216,6 +216,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_18_091652) do
     t.string "trigger", default: "manual", null: false
     t.index ["department_id"], name: "index_invitations_on_department_id"
     t.index ["follow_up_id"], name: "index_invitations_on_follow_up_id"
+    t.index ["trigger"], name: "index_invitations_on_trigger"
     t.index ["user_id"], name: "index_invitations_on_user_id"
     t.index ["uuid"], name: "index_invitations_on_uuid", unique: true
   end
@@ -321,17 +322,27 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_18_091652) do
     t.index ["organisation_id", "webhook_endpoint_id"], name: "index_webhook_orgas_on_orga_id_and_webhook_id", unique: true
   end
 
+  create_table "orientation_types", force: :cascade do |t|
+    t.string "casf_category"
+    t.string "name"
+    t.bigint "department_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["department_id"], name: "index_orientation_types_on_department_id"
+  end
+
   create_table "orientations", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "organisation_id", null: false
     t.bigint "agent_id"
-    t.string "orientation_type"
     t.date "starts_at"
     t.date "ends_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "orientation_type_id"
     t.index ["agent_id"], name: "index_orientations_on_agent_id"
     t.index ["organisation_id"], name: "index_orientations_on_organisation_id"
+    t.index ["orientation_type_id"], name: "index_orientations_on_orientation_type_id"
     t.index ["user_id"], name: "index_orientations_on_user_id"
   end
 
@@ -549,8 +560,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_18_091652) do
   add_foreign_key "motifs", "organisations"
   add_foreign_key "notifications", "participations"
   add_foreign_key "organisations", "departments"
+  add_foreign_key "orientation_types", "departments"
   add_foreign_key "orientations", "agents"
   add_foreign_key "orientations", "organisations"
+  add_foreign_key "orientations", "orientation_types"
   add_foreign_key "orientations", "users"
   add_foreign_key "parcours_documents", "agents"
   add_foreign_key "parcours_documents", "departments"

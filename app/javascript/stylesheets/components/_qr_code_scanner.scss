@@ -1,0 +1,24 @@
+.qr-code-scanner {
+  left: 0px;
+  top: 0px;
+  background: white;
+
+  .qr-code-scanner-overlay {
+    background: rgba(0, 0, 0, 0.4);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  
+  .qr-code-scanner-center {
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    padding: 10%; 
+    border: 5px dashed #fff; 
+    border-radius: 30px;
+    min-width: 360px;
+  }
+}

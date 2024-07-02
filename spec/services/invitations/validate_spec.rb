@@ -12,7 +12,7 @@ describe Invitations::Validate, type: :service do
     create(:motif_category, name: "RSA accompagnement", short_name: "rsa_accompagnement")
   end
 
-  let!(:invitation) { build(:invitation, user: user, follow_up: follow_up, organisations: [organisation]) }
+  let!(:invitation) { build(:invitation, user: user, follow_up: follow_up, organisations: [organisation], department:) }
 
   let!(:user) do
     create(:user, organisations: [organisation])
@@ -39,7 +39,7 @@ describe Invitations::Validate, type: :service do
   end
 
   let!(:department) do
-    create(:department, organisations: [organisation], invitations: [invitation])
+    create(:department, organisations: [organisation])
   end
 
   describe "#call" do
@@ -50,7 +50,7 @@ describe Invitations::Validate, type: :service do
     context "when the organisation phone number is missing" do
       before do
         organisation.update!(phone_number: nil)
-        invitation.update(help_phone_number: nil)
+        invitation.assign_attributes(help_phone_number: nil)
       end
 
       it("is a failure") { is_a_failure }
@@ -137,6 +137,26 @@ describe Invitations::Validate, type: :service do
         expect(subject.errors).to include(
           "Aucun motif de la catégorie RSA orientation n'est défini sur RDV-Solidarités"
         )
+      end
+    end
+
+    context "when there is already a sent invitation today" do
+      let!(:existing_invitation) { create(:invitation, format: "sms", created_at: 4.hours.ago, follow_up:) }
+
+      it "is a failure" do
+        is_a_failure
+      end
+
+      it "stores the error" do
+        expect(subject.errors).to include("Une invitation sms a déjà été envoyée aujourd'hui à cet usager")
+      end
+
+      context "when the format is postal" do
+        let!(:existing_invitation) { create(:invitation, format: "postal", created_at: 4.hours.ago, follow_up:) }
+
+        it "is a success" do
+          is_a_success
+        end
       end
     end
 

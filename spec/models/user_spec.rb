@@ -117,6 +117,17 @@ describe User do
           .to include("Email n'est pas valide")
       end
     end
+
+    context "almost perfect but incorrect email format" do
+      let(:user) { build(:user, email: "abc@abc..fr") }
+
+      it "add errors" do
+        expect(user).not_to be_valid
+        expect(user.errors.details).to eq({ email: [{ error: :invalid, value: "abc@abc..fr" }] })
+        expect(user.errors.full_messages.to_sentence)
+          .to include("Email n'est pas valide")
+      end
+    end
   end
 
   describe "phone format validation" do

@@ -21,6 +21,7 @@ Rails.application.routes.draw do
     resources :users, only: [:index, :show, :edit, :update]
     resources :motif_categories, only: [:index, :show, :new, :create, :edit, :update]
     resources :templates, only: [:index, :show]
+    resources :orientation_types, only: [:index, :show, :new, :create, :edit, :update, :destroy]
 
     root to: "agents#index"
   end
@@ -187,8 +188,9 @@ Rails.application.routes.draw do
   get '/sign_in', to: "sessions#new"
   delete '/sign_out', to: "sessions#destroy"
 
-  get "inclusion_connect/auth" => "inclusion_connect#auth"
-  get "inclusion_connect/callback" => "inclusion_connect#callback"
+  get "inclusion_connect/auth", to: "inclusion_connect#auth"
+  get "inclusion_connect/callback", to: "inclusion_connect#callback"
+  get "inclusion_connect/sign_out", to: "inclusion_connect#sign_out"
 
   post "/inbound_emails/brevo", to: "inbound_emails#brevo"
 
