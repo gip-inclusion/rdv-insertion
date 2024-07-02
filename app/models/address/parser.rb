@@ -25,7 +25,7 @@ module Address
     end
 
     def parsed_post_code_and_city
-      [parsed_post_code, parsed_city].compact_blank.join(" ")
+      [parsed_post_code, parsed_city].compact_blank.join(" ").presence
     end
 
     private

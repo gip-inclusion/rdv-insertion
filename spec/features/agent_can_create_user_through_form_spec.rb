@@ -85,10 +85,10 @@ describe "Agents can create user through form", :js do
         end
 
         it "creates user directly" do
-          expect(RetrieveGeolocalisation).to receive(:call)
+          expect(RetrieveGeocoding).to receive(:call)
             .with(address:, department_number: organisation.department.number)
             .once
-            .and_return(OpenStruct.new(success?: true, city_code:, street_ban_id:))
+            .and_return(OpenStruct.new(success?: true, geocoding_params: { city_code:, street_ban_id: }))
 
           expect(RdvSolidaritesApi::RetrieveOrganisations).to receive(:call)
             .once
