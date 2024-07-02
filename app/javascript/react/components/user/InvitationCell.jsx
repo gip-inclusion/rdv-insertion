@@ -17,6 +17,19 @@ export default observer(({ user, format }) => {
 
   const actionType = `${format}Invitation`;
 
+  const inviteButtonContent = () => {
+    if (user.triggers[actionType]) {
+      if (user.lastInvitationDate(format)) return <i className="fas fa-spinner fa-spin" />;
+      return "Invitation...";
+    }
+
+    if (user.lastInvitationDate(format)) return (
+      <i className="fas fa-redo-alt small-wheel d-block p-1" />
+    )
+
+    return CTA_BY_FORMAT[format];
+  };
+
   return (
     user.list.canBeInvitedBy(format) && (
       <>
@@ -57,17 +70,11 @@ export default observer(({ user, format }) => {
                     !user.belongsToCurrentOrg()
                   }
                     className={
-                      user.lastInvitationDate(format) === undefined || user.triggers[actionType] ? `btn btn-primary btn-blue invitation-${format}` : `reinvitation-${format}`
+                      user.lastInvitationDate(format) === undefined ? `btn btn-primary btn-blue invitation-${format}` : `reinvitation-${format}`
                     }
                   onClick={() => handleInvitationClick()}
                 >
-                    {user.triggers[actionType] ? "Invitation..."
-                      : user.lastInvitationDate(format) === undefined ? (
-                        CTA_BY_FORMAT[format]
-                      ) : (
-                        < i className="fas fa-redo-alt small-wheel d-block p-1" />
-                      )
-                    }
+                    {inviteButtonContent()}
                 </button>
               </div>
             </Tippy>

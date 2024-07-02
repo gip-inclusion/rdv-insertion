@@ -8,6 +8,7 @@ s3_bucket = "rdv-insertion-medias-production.s3.fr-par.scw.cloud"
 rdv_solidarites = ENV["RDV_SOLIDARITES_URL"]
 matomo = "matomo.inclusion.beta.gouv.fr"
 sentry = "sentry.incubateur.net"
+inclusion_connect = ENV["INCLUSION_CONNECT_BASE_URL"]
 flourish = "flo.uri.sh" # for deployment map
 
 Rails.application.config.content_security_policy do |policy|
@@ -19,7 +20,7 @@ Rails.application.config.content_security_policy do |policy|
   policy.object_src  :none
   policy.script_src  :self, :https, :unsafe_inline
   policy.style_src   :self, :https, :unsafe_inline
-  policy.connect_src :self, rdv_solidarites, sentry, matomo
+  policy.connect_src :self, rdv_solidarites, sentry, matomo, inclusion_connect
   policy.worker_src :self, :blob
   # Specify URI for violation reports
   # policy.report_uri "/csp-violation-report-endpoint"
