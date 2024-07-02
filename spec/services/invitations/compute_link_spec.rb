@@ -48,8 +48,6 @@ describe Invitations::ComputeLink, type: :service do
             street_ban_id: "75107_8909"
           )
         )
-
-      ENV["RDV_SOLIDARITES_URL"] = "https://www.rdv-solidarites.fr"
     end
 
     it("is a success") { is_a_success }
