@@ -4,6 +4,7 @@ class NotifyParticipationToExternalOrganisationEmailJob < ApplicationJob
     @category_configuration = @participation.category_configurations.find_by!(
       motif_category_id: @participation.follow_up.motif_category_id
     )
+    @event = event
 
     return if !@category_configuration.notify_rdv_changes? || already_notified?
 

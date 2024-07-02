@@ -1,20 +1,20 @@
 <p>Bonjour,</p>
 
-<p>Vous avez demandé à être notifié sur cette adresse email de tous les événements liés aux rendez-vous (nouveaux rendez-vous, modifications et annulations de rendez-vous) de la catégorie <b>“<%= @motif_category.name %>”</b> de l’organisation <b>“<%= @organisation %>”.</b></p>
+<p>Vous avez demandé à être notifié sur cette adresse email de tous les évènements liés aux rendez-vous (nouveaux rendez-vous, modifications et annulations de rendez-vous) de la catégorie <b>“<%= @motif_category.name %>”</b> de l’organisation <b>“<%= @organisation %>”.</b></p>
 
-<p>Voici un nouvel événement :</p>
+<p>Voici un nouvel évènement :</p>
 
 <%
   translated_event = if @event == "updated"
-    "Modification" 
+    "Modification de rendez-vous" 
   elsif @event == "created"
-    "Création"
+    "Prise de rendez-vous"
   elsif @event == "cancelled"
-    "Annulation"
+    "Annulation de rendez-vous"
   end
 %>
 <p>
-Événement : <%= translated_event %><br />
+Évènement : <%= translated_event %><br />
 Date : <%= I18n.l(@participation.rdv.starts_at, format: :human) %><br />
 Usager : <%= @participation.user %><br />
 <% if @participation.agent_prescripteur&.name %><%= "Professionel :" %><br /><% end %>
