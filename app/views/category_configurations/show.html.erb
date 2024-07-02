@@ -27,6 +27,17 @@
     <%= render "common/attribute_display", record: @category_configuration, attribute: :phone_number %>
   </div>
 
+  <h3>Notifications tierces</h3>
+  <% if @category_configuration.notify_out_of_slots? %>
+    <p>L'email suivant sera notifié en cas d'absence de créneaux disponibles : <%= @category_configuration.notify_out_of_slots_email %>
+  <% end %>
+  <% if @category_configuration.notify_rdv_changes? %>
+    <p>L'email suivant sera notifié en cas de création, modification, ou annulation de rendez-vous : <%= @category_configuration.notify_rdv_changes_email %>
+  <% end %>
+  <% if !@category_configuration.notify_out_of_slots? && !@category_configuration.notify_rdv_changes? %>
+    <p>Aucune notification tierce n'est configurée.</p>
+  <% end %>
+
   <h3>Invitations périodiques</h3>
   <p>
     <% if @category_configuration.periodic_invites_activated? %>
