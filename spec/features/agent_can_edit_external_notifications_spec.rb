@@ -25,7 +25,7 @@ describe "Agents can edit organisation", :js do
 
       click_button "Enregistrer"
 
-      expect(page).to have_content("L'email suivant sera notifié")
+      expect(page).to have_content("L'email suivant est notifié")
       expect(page).to have_content("test@test.com")
       expect(page).to have_content("test1@test.com")
     end
