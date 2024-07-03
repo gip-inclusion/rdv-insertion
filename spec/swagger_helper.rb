@@ -301,7 +301,13 @@ RSpec.configure do |config|
               clicked: { type: "boolean" },
               rdv_with_referents: { type: "boolean" },
               created_at: { type: "string" },
-              motif_category: { "$ref" => "#/components/schemas/motif_category" }
+              motif_category: { "$ref" => "#/components/schemas/motif_category" },
+              delivery_status: { type: "string",
+                                 enum: %w[accepted sent request click deferred delivered hard_bounce soft_bounce
+                                          spam unique_opened opened reply invalid_email blocked error unsubscribe
+                                          proxy_open],
+                                 nullable: true },
+              delivered_at: { type: "string", format: "date", nullable: true }
             },
             required: %w[id format clicked rdv_with_referents created_at motif_category]
           },
