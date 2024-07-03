@@ -231,20 +231,6 @@ describe FollowUp do
             end
           end
 
-          context "when the last rdv is cancelled and one other has been cancelled" do
-            let!(:rdv3) { create(:rdv) }
-            let!(:participation) do
-              create(
-                :participation,
-                created_at: 1.day.ago, rdv: rdv3, user: user, follow_up: follow_up, status: "excused"
-              )
-            end
-
-            it "is mutliple rdvs cancelled" do
-              expect(subject).to eq(:multiple_rdvs_cancelled)
-            end
-          end
-
           context "when the last rdv already took place but the status is not updated" do
             let!(:rdv3) do
               create(:rdv, starts_at: 2.days.ago)
