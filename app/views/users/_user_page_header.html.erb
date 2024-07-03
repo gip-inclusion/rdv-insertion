@@ -29,6 +29,6 @@
     <% end %>
   </div>
   <div class="col-sm-4 d-flex align-items-center justify-content-end">
-    <%= render "users/archiving_button", user: @user, department: @department, archive: @user.archive_for(@department.id) %>
+    <%= render "users/archiving_button", user: @user, organisation: @organisation, user_archived_for_current_organisations: @user_archived_for_current_organisations %>
   </div>
 </div>

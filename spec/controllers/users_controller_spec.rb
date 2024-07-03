@@ -372,7 +372,7 @@ describe UsersController do
         organisations: [organisation], last_name: "Barthelemy", follow_ups: [follow_up4]
       )
     end
-    let!(:archive) { create(:archive, user: archived_user, department: department) }
+    let!(:archive) { create(:archive, user: archived_user, organisations: [organisation]) }
     let!(:follow_up4) { build(:follow_up, motif_category: category_orientation, status: "invitation_pending") }
 
     let!(:index_params) { { organisation_id: organisation.id, motif_category_id: category_orientation.id } }

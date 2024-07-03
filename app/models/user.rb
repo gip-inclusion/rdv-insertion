@@ -19,7 +19,6 @@ class User < ApplicationRecord
   include User::Address
   include User::Nir
   include User::AffiliationNumber
-  include User::Archivable
   include User::Referents
 
   attr_accessor :skip_uniqueness_validations
@@ -150,6 +149,14 @@ class User < ApplicationRecord
     User.joins(:organisations).find_by(
       role: opposite_role, affiliation_number:, organisations:
     )
+  end
+
+  def organisations_for(department)
+    organisations.where(department: department)
+  end
+
+  def archive_for(organisation)
+    archives.find { |a| a.organisation_id == organisation.id }
   end
 
   private

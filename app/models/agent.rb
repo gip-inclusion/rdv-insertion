@@ -40,6 +40,10 @@ class Agent < ApplicationRecord
     "#{first_name} #{last_name&.upcase}".strip
   end
 
+  def organisations_for(department)
+    department.organisations & organisations
+  end
+
   private
 
   # This is to make sure an agent can't be set as super_admin through an agent creation or update in the app.

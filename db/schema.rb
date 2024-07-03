@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_11_225639) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_12_171109) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -82,12 +82,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_11_225639) do
   end
 
   create_table "archives", force: :cascade do |t|
-    t.bigint "department_id", null: false
     t.bigint "user_id", null: false
     t.string "archiving_reason"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["department_id"], name: "index_archives_on_department_id"
+    t.bigint "organisation_id", null: false
+    t.index ["organisation_id"], name: "index_archives_on_organisation_id"
     t.index ["user_id"], name: "index_archives_on_user_id"
   end
 
@@ -525,7 +525,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_11_225639) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "agent_roles", "agents"
   add_foreign_key "agent_roles", "organisations"
-  add_foreign_key "archives", "departments"
+  add_foreign_key "archives", "organisations"
   add_foreign_key "archives", "users"
   add_foreign_key "category_configurations", "file_configurations"
   add_foreign_key "category_configurations", "motif_categories"

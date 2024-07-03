@@ -1,16 +1,20 @@
 class Archive < ApplicationRecord
   belongs_to :user
-  belongs_to :department
+  belongs_to :organisation
 
-  validates :user, uniqueness: { scope: :department }
+  validates :user, uniqueness: { scope: :organisation }
 
-  after_save :invalidate_related_invitations
+  after_create :invalidate_related_invitations
 
   private
 
   def invalidate_related_invitations
-    user.invitations.where(department: department).find_each do |invitation|
-      InvalidateInvitationJob.perform_async(invitation.id)
+    organisation.invitations.where(id: user.invitations.pluck(:id)).includes(:organisations).find_each do |invitation|
+      if invitation.organisations.count > 1
+        invitation.organisations.delete(organisation)
+      else
+        InvalidateInvitationJob.perform_async(invitation.id)
+      end
     end
   end
 end

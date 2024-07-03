@@ -17,6 +17,20 @@ export default class extends Controller {
     });
   }
 
+  organisationArchiveInformations() {
+    tippy(this.element, {
+      content(reference) {
+        const { archiveCreationDate, archiveReason } = reference.dataset;
+        return (
+          `Archivé le ${archiveCreationDate}` +
+          "<br/>" +
+          `Motif: ${archiveReason || "Aucun motif renseigné"}`
+        );
+      },
+      allowHTML: true,
+    });
+  }
+
   csvExportUsers() {
     tippy(this.element, {
       content: "Les usagers correspondant aux filtres actuels seront exportés",
@@ -134,10 +148,10 @@ export default class extends Controller {
   archivingDisabled() {
     // the button is in a wrapper because we cannot set a tooltip on a disabled element
     const archiveButton = document.getElementById("archive-button");
-    if (archiveButton.disabled) {
+    if (archiveButton.classList.contains("disabled")) {
       tippy(this.element, {
         content:
-          "Vous devez appartenir à toutes les organisations auxquelles appartient le bénéficiaire au sein de votre département pour pouvoir l'archiver",
+          "L'usager est archivé dans toutes vos organisations. Pour rouvrir son dossier, naviguez au sein d'une organisation où il est archivé.",
       });
     }
   }

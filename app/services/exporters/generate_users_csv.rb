@@ -59,6 +59,10 @@ module Exporters
     end
 
     def headers
+      department_level? ? base_headers : base_headers.concat(organisation_level_headers)
+    end
+
+    def base_headers
       [User.human_attribute_name(:title),
        User.human_attribute_name(:last_name),
        User.human_attribute_name(:first_name),
@@ -90,15 +94,22 @@ module Exporters
        "Date de début d'accompagnement",
        "Date de fin d'accompagnement",
        "Structure d'orientation",
-       Archive.human_attribute_name(:created_at),
-       Archive.human_attribute_name(:archiving_reason),
        User.human_attribute_name(:referents),
        "Nombre d'organisations",
        "Nom des organisations",
        User.human_attribute_name(:tags)]
     end
 
-    def csv_row(user) # rubocop:disable Metrics/AbcSize
+    def organisation_level_headers
+      [Archive.human_attribute_name(:created_at),
+       Archive.human_attribute_name(:archiving_reason)]
+    end
+
+    def csv_row(user)
+      department_level? ? base_csv_row(user) : base_csv_row(user).concat(organisation_level_csv_row(user))
+    end
+
+    def base_csv_row(user) # rubocop:disable Metrics/AbcSize
       [user.title,
        user.last_name,
        user.first_name,
@@ -130,12 +141,15 @@ module Exporters
        display_date(orientation_starts_at(user)),
        display_date(orientation_ends_at(user)),
        orientation_structure(user),
-       display_date(user.archive_for(department_id)&.created_at),
-       user.archive_for(department_id)&.archiving_reason,
        user.referents.map(&:email).join(", "),
        user.organisations.to_a.count,
        display_organisation_names(user.organisations),
        scoped_user_tags(user.tags).pluck(:value).join(", ")]
+    end
+
+    def organisation_level_csv_row(user)
+      [display_date(user.archive_for(@structure)&.created_at),
+       user.archive_for(@structure)&.archiving_reason]
     end
 
     def human_last_participation_status(user)
