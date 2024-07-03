@@ -18,10 +18,8 @@ describe "Agents can edit organisation", :js do
         click_link("Modifier")
       end
 
-      check "category_configuration[notify_rdv_changes]"
-      fill_in "category_configuration[notify_rdv_changes_email]", with: "test@test.com"
-      check "category_configuration[notify_out_of_slots]"
-      fill_in "category_configuration[notify_out_of_slots_email]", with: "test1@test.com"
+      fill_in "category_configuration[email_to_notify_rdv_changes]", with: "test@test.com"
+      fill_in "category_configuration[email_to_notify_no_available_slots]", with: "test1@test.com"
 
       click_button "Enregistrer"
 

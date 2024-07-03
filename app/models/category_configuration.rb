@@ -9,16 +9,11 @@ class CategoryConfiguration < ApplicationRecord
                                          message: "a déjà une category_configuration pour cette catégorie de motif" }
   validate :delays_validity, :invitation_formats_validity
 
-  validates :notify_out_of_slots_email,
-            presence: true,
-            format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}\z/ },
-            if: -> { notify_out_of_slots? }
-
-  validates :notify_rdv_changes_email,
-            presence: true,
-            format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}\z/ },
-            if: -> { notify_rdv_changes? }
-
+  validates :email_to_notify_no_available_slots, :email_to_notify_rdv_changes,
+            format: {
+              with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}\z/,
+              allow_blank: true
+            }
   validates :number_of_days_between_periodic_invites, numericality: { only_integer: true, greater_than: 13 },
                                                       allow_nil: true
 
@@ -40,6 +35,9 @@ class CategoryConfiguration < ApplicationRecord
   def phone_number
     attributes["phone_number"].presence || organisation.phone_number
   end
+
+  def notify_no_available_slots? = email_to_notify_no_available_slots.present?
+  def notify_rdv_changes? = email_to_notify_rdv_changes.present?
 
   private
 

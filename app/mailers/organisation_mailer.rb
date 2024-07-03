@@ -45,7 +45,7 @@ class OrganisationMailer < ApplicationMailer
     )
   end
 
-  def notify_out_of_slots(organisation:, recipient:, grouped_invitation_params:)
+  def notify_no_available_slots(organisation:, recipient:, grouped_invitation_params:)
     @organisation = organisation
     @grouped_invitation_params = grouped_invitation_params
     mail(
