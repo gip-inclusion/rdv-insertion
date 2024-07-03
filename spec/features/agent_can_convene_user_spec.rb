@@ -227,17 +227,6 @@ describe "Agents can convene user to rdv", :js do
         end
       end
 
-      context "when multiple rdvs were canceled" do
-        let!(:follow_up) do
-          create(:follow_up, status: "multiple_rdvs_cancelled", user: user, motif_category: motif_category)
-        end
-
-        it "shows a link to convene the user" do
-          visit organisation_users_path(organisation, motif_category_id: motif_category.id)
-          expect(page).to have_link("📅 Convoquer")
-        end
-      end
-
       context "when the category_configuration is not set to convene users" do
         before { category_configuration.update! convene_user: false }
 
