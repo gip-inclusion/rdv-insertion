@@ -9,7 +9,7 @@ class NotifyParticipationToExternalOrganisationEmailJob < ApplicationJob
     return if !@category_configuration.notify_rdv_changes? || already_notified?
 
     OrganisationMailer.notify_rdv_changes(
-      to: @category_configuration.notify_rdv_changes_email,
+      to: @category_configuration.email_to_notify_rdv_changes,
       organisation: @participation.organisation,
       participation: @participation,
       event:

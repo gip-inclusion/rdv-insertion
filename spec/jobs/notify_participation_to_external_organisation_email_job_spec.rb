@@ -5,7 +5,7 @@ describe NotifyParticipationToExternalOrganisationEmailJob do
 
   let(:organisation) { create(:organisation) }
   let(:category_configuration) do
-    create(:category_configuration, organisation:, notify_rdv_changes: true, notify_rdv_changes_email: "test@test.com")
+    create(:category_configuration, organisation:, email_to_notify_rdv_changes: "test@test.com")
   end
   let(:follow_up) { create(:follow_up, motif_category_id: category_configuration.motif_category_id) }
   let(:participation) { create(:participation, organisation:, follow_up:) }
@@ -15,7 +15,7 @@ describe NotifyParticipationToExternalOrganisationEmailJob do
 
   describe "#perform" do
     context "category_configuration does not notify_rdv_changes" do
-      let(:category_configuration) { create(:category_configuration, organisation:, notify_rdv_changes: false) }
+      let(:category_configuration) { create(:category_configuration, organisation:, email_to_notify_rdv_changes: nil) }
 
       it "does not send the notification" do
         expect(OrganisationMailer).not_to receive(:notify_rdv_changes)
@@ -43,7 +43,7 @@ describe NotifyParticipationToExternalOrganisationEmailJob do
         expect(OrganisationMailer).to receive(:notify_rdv_changes)
           .once
           .with(
-            to: category_configuration.notify_rdv_changes_email,
+            to: category_configuration.email_to_notify_rdv_changes,
             organisation: participation.organisation,
             participation: participation,
             event: event
