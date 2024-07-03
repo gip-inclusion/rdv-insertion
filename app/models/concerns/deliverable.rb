@@ -22,9 +22,13 @@ module Deliverable
       else
         "Délivrée à #{delivery_hour} (le #{delivery_date})"
       end
-    elsif delivery_status.in?(FAILED_DELIVERY_STATUS)
+    elsif delivery_failed?
       "Non délivrée"
     end
+  end
+
+  def delivery_failed?
+    delivery_status.in?(FAILED_DELIVERY_STATUS)
   end
 
   def creation_date

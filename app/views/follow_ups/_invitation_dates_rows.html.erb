@@ -14,7 +14,7 @@
             <%= format_date(invitation.created_at) %>
             <div>
               <span class="small">
-                <% if invitation.human_delivery_status_and_date == "Non délivrée" %>
+                <% if invitation.delivery_failed? %>
                   <span class="text-danger">
                     Non délivrée
                     <i
