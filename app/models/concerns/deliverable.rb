@@ -1,7 +1,7 @@
 module Deliverable
   extend ActiveSupport::Concern
 
-  FINAL_DELIVERY_STATUS = %w[delivered soft_bounce hard_bounce blocked invalid_email error].freeze
+  FINAL_DELIVERY_STATUS = %w[delivered hard_bounce blocked invalid_email error].freeze
   FAILED_DELIVERY_STATUS = %w[soft_bounce hard_bounce blocked invalid_email error].freeze
 
   included do
