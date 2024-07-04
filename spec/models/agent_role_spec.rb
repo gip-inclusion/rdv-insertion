@@ -62,4 +62,43 @@ describe AgentRole do
       end
     end
   end
+
+  describe "authorized to export csv when admin" do
+    context "on record creation" do
+      let!(:agent_role) { build(:agent_role, access_level: "admin", authorized_to_export_csv: false) }
+
+      it "marks as authorized to export csv when admin" do
+        agent_role.save!
+        expect(agent_role.reload.authorized_to_export_csv).to eq(true)
+      end
+
+      it "does not mark as authorized when not admin" do
+        agent_role.access_level = "basic"
+        agent_role.save!
+        expect(agent_role.reload.authorized_to_export_csv).to eq(false)
+      end
+    end
+
+    context "on record update" do
+      context "from basic to admin" do
+        let!(:agent_role) { create(:agent_role, access_level: "basic", authorized_to_export_csv: false) }
+
+        it "marks as authorized to export csv when admin" do
+          agent_role.access_level = "admin"
+          agent_role.save!
+          expect(agent_role.reload.authorized_to_export_csv).to eq(true)
+        end
+      end
+
+      context "from admin to basic" do
+        let!(:agent_role) { create(:agent_role, access_level: "admin", authorized_to_export_csv: true) }
+
+        it "does not mark as authorized when not admin" do
+          agent_role.access_level = "basic"
+          agent_role.save!
+          expect(agent_role.reload.authorized_to_export_csv).to eq(false)
+        end
+      end
+    end
+  end
 end
