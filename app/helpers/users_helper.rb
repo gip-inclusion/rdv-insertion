@@ -40,7 +40,6 @@ module UsersHelper
       ["rdv_needs_status_update", statuses_count["rdv_needs_status_update"]],
       ["rdv_excused", statuses_count["rdv_excused"]],
       ["rdv_revoked", statuses_count["rdv_revoked"]],
-      ["multiple_rdvs_cancelled", statuses_count["multiple_rdvs_cancelled"]],
       ["rdv_noshow", statuses_count["rdv_noshow"]],
       ["rdv_seen", statuses_count["rdv_seen"]],
       ["closed", statuses_count["closed"]]
