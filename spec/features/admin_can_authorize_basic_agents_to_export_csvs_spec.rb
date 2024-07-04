@@ -16,12 +16,12 @@ describe "Admins can authorize basic agents to export csvs", :js do
   context "from configure organisation page" do
     before do
       visit organisation_category_configurations_path(organisation)
-      click_link("Gérer les autorisations", href: organisation_authorized_to_export_csv_index_path(organisation))
+      click_link("Gérer les autorisations", href: organisation_csv_export_authorizations_index_path(organisation))
     end
 
     it "displays the export authorizations of basic agents" do
       expect(page).to have_field(
-        "authorized_to_export_csv_agent_role_ids_#{agent_role_for_organisation.id}", checked: false
+        "csv_export_authorizations_agent_role_ids_#{agent_role_for_organisation.id}", checked: false
       )
       expect(page).to have_content(basic_agent.email)
       expect(page).to have_content(basic_agent.to_s)
@@ -29,12 +29,12 @@ describe "Admins can authorize basic agents to export csvs", :js do
     end
 
     it "can toggle authorization to export csvs for basic agents" do
-      find(:css, "#authorized_to_export_csv_agent_role_ids_#{agent_role_for_organisation.id}").click
+      find(:css, "#csv_export_authorizations_agent_role_ids_#{agent_role_for_organisation.id}").click
       click_button("Confirmer")
 
-      click_link("Gérer les autorisations", href: organisation_authorized_to_export_csv_index_path(organisation))
+      click_link("Gérer les autorisations", href: organisation_csv_export_authorizations_index_path(organisation))
       expect(page).to have_field(
-        "authorized_to_export_csv_agent_role_ids_#{agent_role_for_organisation.id}", checked: true
+        "csv_export_authorizations_agent_role_ids_#{agent_role_for_organisation.id}", checked: true
       )
       basic_agent.reload.agent_roles.where(organisation: department.organisations)
       agent_roles_for_organisation = basic_agent.reload.agent_roles.where(organisation: organisation)
@@ -42,12 +42,12 @@ describe "Admins can authorize basic agents to export csvs", :js do
       expect(agent_roles_for_organisation).to all(have_attributes(authorized_to_export_csv: true))
       expect(agent_roles_for_other_organisations).to all(have_attributes(authorized_to_export_csv: false))
 
-      find(:css, "#authorized_to_export_csv_agent_role_ids_#{agent_role_for_organisation.id}").click
+      find(:css, "#csv_export_authorizations_agent_role_ids_#{agent_role_for_organisation.id}").click
       click_button("Confirmer")
 
-      click_link("Gérer les autorisations", href: organisation_authorized_to_export_csv_index_path(organisation))
+      click_link("Gérer les autorisations", href: organisation_csv_export_authorizations_index_path(organisation))
       expect(page).to have_field(
-        "authorized_to_export_csv_agent_role_ids_#{agent_role_for_organisation.id}", checked: false
+        "csv_export_authorizations_agent_role_ids_#{agent_role_for_organisation.id}", checked: false
       )
       expect(basic_agent.reload.agent_roles).to all(have_attributes(authorized_to_export_csv: false))
 

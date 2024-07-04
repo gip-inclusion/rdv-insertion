@@ -1,5 +1,5 @@
 module AgentRoles
-  class AuthorizedToExportCsvController < ApplicationController
+  class CsvExportAuthorizationsController < ApplicationController
     before_action :set_organisation, :set_agent_roles, :set_authorized_agent_role_ids, only: [:index]
 
     def index; end
@@ -23,7 +23,7 @@ module AgentRoles
     end
 
     def agent_roles_to_authorize
-      @agent_roles_to_authorize ||= AgentRole.where(id: authorized_to_export_csv_params[:agent_role_ids])
+      @agent_roles_to_authorize ||= AgentRole.where(id: csv_export_authorizations_params[:agent_role_ids])
     end
 
     def set_agent_roles
@@ -39,8 +39,8 @@ module AgentRoles
       @authorized_agent_role_ids = @agent_roles.authorized_to_export_csv.distinct.map(&:id)
     end
 
-    def authorized_to_export_csv_params
-      params.require(:authorized_to_export_csv).permit(:organisation_id, agent_role_ids: [])
+    def csv_export_authorizations_params
+      params.require(:csv_export_authorizations).permit(:organisation_id, agent_role_ids: [])
     end
 
     def set_organisation
