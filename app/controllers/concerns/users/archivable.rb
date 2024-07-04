@@ -15,7 +15,8 @@ module Users::Archivable
         .having(
           "COUNT(DISTINCT archives.organisation_id) = " \
           "(SELECT organisation_count FROM (#{user_organisation_count_subquery.to_sql}) " \
-          "AS user_organisation_counts WHERE user_organisation_counts.user_id = users.id)")
+          "AS user_organisation_counts WHERE user_organisation_counts.user_id = users.id)"
+        )
   end
 
   def user_organisation_count_subquery(organisation_ids)
