@@ -284,7 +284,12 @@ class UsersController < ApplicationController
 
   def set_user_archive_status
     @user_archived_for_current_organisations =
-      @user.archives.where(organisation: @current_organisations).count == @current_organisations.count
+      @user.archives.where(organisation: current_organisations_for(@user)).count ==
+      current_organisations_for(@user).count
+  end
+
+  def current_organisations_for(user)
+    @current_organisations_for ||= user.organisations & @current_organisations
   end
 
   def set_follow_ups

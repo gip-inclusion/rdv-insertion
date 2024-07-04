@@ -17,7 +17,7 @@ export default observer(({ user }) => {
       <button type="submit" className="btn btn-danger" onClick={() => handleCreationClick()}>
         Afficher les erreurs
       </button>
-  ) : user.isArchivedInCurrentDepartment() ? (
+  ) : user.isArchived() ? (
     <button
       type="submit"
       disabled={user.triggers.unarchive}

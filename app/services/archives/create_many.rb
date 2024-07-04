@@ -1,7 +1,7 @@
 module Archives
   class CreateMany < BaseService
-    def initialize(user:, archiving_reason:, organisation_ids:)
-      @user = user
+    def initialize(user_id:, archiving_reason:, organisation_ids:)
+      @user_id = user_id
       @archiving_reason = archiving_reason
       @organisation_ids = organisation_ids
     end
@@ -19,7 +19,7 @@ module Archives
     end
 
     def create_archive(organisation_id)
-      Archive.create(user: @user, organisation_id: organisation_id, archiving_reason: @archiving_reason)
+      Archive.create(user_id: @user_id, organisation_id: organisation_id, archiving_reason: @archiving_reason)
     end
   end
 end

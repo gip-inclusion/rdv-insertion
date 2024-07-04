@@ -72,6 +72,7 @@ export default class User {
     this.referentEmail = formattedAttributes.referentEmail || currentAgent?.email;
     this.tags = attributes.tags || [];
 
+    this.currentAgent = currentAgent;
     this.department = department;
     this.departmentNumber = department.number;
     // when creating/inviting we always consider an user in the scope of only one organisation
@@ -190,6 +191,22 @@ export default class User {
   async unarchive(options = { raiseError: true }) {
     this.triggers.unarchive = true;
 
+    if (!this.currentOrganisation) {
+      this.currentOrganisation = await retrieveRelevantOrganisation(
+        this.departmentNumber,
+        this.linkedOrganisationSearchTerms,
+        this.fullAddress,
+        { raiseError: options.raiseError }
+      );
+
+      // If there is still no organisation it means the assignation was cancelled by agent
+      if (!this.currentOrganisation) {
+        this.triggers.creation = false;
+        if (!options.raiseError) this.errors.push("createAccount");
+        return false;
+      }
+    }
+
     const { success } = await handleArchiveDelete(this, { raiseError: options.raiseError });
     if (!success && !options.raiseError) {
       this.errors = ["deleteArchive"];
@@ -198,6 +215,8 @@ export default class User {
     }
 
     this.triggers.unarchive = false;
+
+    return success;
   }
 
   async assignReferent(options = { raiseError: true }) {
@@ -452,12 +471,35 @@ export default class User {
     return "";
   }
 
-  archiveInCurrentDepartment() {
-    return this.archives.find((archive) => archive.department_id === this.department.id);
+  isArchived() {
+    if (this.list.isDepartmentLevel) {
+      return this.isArchivedInCurrentDepartment();
+    }
+    return this.isArchivedInCurrentOrganisation();
+  }
+
+  archiveInCurrentOrganisation() {
+    return this.archives.find((archive) => archive.organisation_id === this.currentOrganisation.id);
+  }
+
+  isArchivedInCurrentOrganisation() {
+    return this.archives && this.archiveInCurrentOrganisation();
   }
 
   isArchivedInCurrentDepartment() {
-    return this.archives && this.archiveInCurrentDepartment();
+    return this.archives && this.isArchivedInAllAgentUserOrganisations();
+  }
+
+  isArchivedInAllAgentUserOrganisations() {
+    return this.archivesInAgentUserOrganisations().length === this.agentUserOrganisations().length;
+  }
+
+  archivesInAgentUserOrganisations() {
+    return this.archives.filter((archive) => this.agentUserOrganisations().map((o) => o.id).includes(archive.organisation_id));
+  }
+
+  agentUserOrganisations() {
+    return this.organisations.filter((organisation) => this.currentAgent.organisations.map((o) => o.id).includes(organisation.id));
   }
 
   generateUid() {

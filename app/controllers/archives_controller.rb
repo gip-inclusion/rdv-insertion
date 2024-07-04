@@ -54,7 +54,7 @@ class ArchivesController < ApplicationController
 
   def create_archives
     @create_archives ||= Archives::CreateMany.call(
-      user: policy_scope(User).find(create_many_archives_params[:user_id]),
+      user_id: create_many_archives_params[:user_id],
       archiving_reason: create_many_archives_params[:archiving_reason],
       organisation_ids: create_many_archives_params[:organisation_ids]
     )
