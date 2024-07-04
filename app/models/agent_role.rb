@@ -12,5 +12,5 @@ class AgentRole < ApplicationRecord
   scope :authorized_to_export_csv, -> { where(authorized_to_export_csv: true) }
   scope :with_last_name, -> { joins(:agent).where.not(agents: { last_name: nil }) }
 
-  before_save -> { self.authorized_to_export_csv = true }, if: -> { admin? && !authorized_to_export_csv? }
+  before_save -> { self.authorized_to_export_csv = admin? }, if: :access_level_changed?
 end

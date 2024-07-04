@@ -6,6 +6,7 @@ module AgentRoles
 
     def batch_update
       if manage_export_authorizations_for_an_organisation.success?
+        flash[:success] = "Les autorisations ont bien été mises à jour"
         redirect_to(organisation_category_configurations_path(current_organisation))
       else
         turbo_stream_display_error_modal(manage_export_authorizations_for_an_organisation.errors)
