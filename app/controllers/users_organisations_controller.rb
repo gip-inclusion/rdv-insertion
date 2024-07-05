@@ -1,7 +1,7 @@
 class UsersOrganisationsController < ApplicationController
-  before_action :set_user, :set_department, :set_organisations,
+  before_action :set_user, :set_department, :set_organisations, :set_user_archives,
                 only: [:index, :create, :destroy]
-  before_action :set_user_organisations, :set_user_archives, only: [:index]
+  before_action :set_user_organisations, only: [:index]
   before_action :set_organisation_to_add, :assign_motif_category, only: [:create]
   before_action :set_organisation_to_remove, :verify_user_is_sync_with_rdv_solidarites, only: [:destroy]
 
