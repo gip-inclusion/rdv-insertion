@@ -7,7 +7,7 @@ module InboundWebhooks
       end
 
       def call
-        return if @record.delivery_status.in?(record_class::FINAL_DELIVERY_STATUS)
+        return if record_has_a_failed_delivery_status? && !delivered?
         return if old_update?
         return if webhook_mismatch?
 
@@ -17,6 +17,10 @@ module InboundWebhooks
       end
 
       private
+
+      def record_has_a_failed_delivery_status?
+        @record.delivery_status.in?(record_class::FAILED_DELIVERY_STATUS)
+      end
 
       def old_update?
         return false if @record.delivered_at.blank?
@@ -34,6 +38,10 @@ module InboundWebhooks
 
       def delivery_status
         raise NoMethodError
+      end
+
+      def delivered?
+        delivery_status.in?(record_class::DELIVERED_STATUS)
       end
     end
   end

@@ -1,8 +1,8 @@
 module Deliverable
   extend ActiveSupport::Concern
 
-  FINAL_DELIVERY_STATUS = %w[delivered hard_bounce blocked invalid_email error].freeze
   FAILED_DELIVERY_STATUS = %w[soft_bounce hard_bounce blocked invalid_email error].freeze
+  DELIVERED_STATUS = %w[delivered].freeze
 
   included do
     # https://developers.brevo.com/docs/transactional-webhooks
@@ -16,7 +16,7 @@ module Deliverable
   end
 
   def human_delivery_status_and_date
-    if delivery_status == "delivered"
+    if delivery_status.in?(DELIVERED_STATUS)
       if delivery_date == creation_date
         "Délivrée à #{delivery_hour}"
       else
