@@ -60,7 +60,7 @@ describe Invitations::SendSms, type: :service do
       expect(SendTransactionalSms).to receive(:call)
         .with(
           phone_number: phone_number, content: content,
-          sender_name: sms_sender_name
+          sender_name: sms_sender_name, record_identifier: invitation.record_identifier
         )
       subject
     end
@@ -112,7 +112,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -138,7 +138,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -170,7 +170,7 @@ describe Invitations::SendSms, type: :service do
           expect(SendTransactionalSms).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
-              sender_name: sms_sender_name
+              sender_name: sms_sender_name, record_identifier: invitation.record_identifier
             )
           subject
         end
@@ -194,7 +194,7 @@ describe Invitations::SendSms, type: :service do
             expect(SendTransactionalSms).to receive(:call)
               .with(
                 phone_number: phone_number, content: content,
-                sender_name: sms_sender_name
+                sender_name: sms_sender_name, record_identifier: invitation.record_identifier
               )
             subject
           end
@@ -221,7 +221,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -242,7 +242,7 @@ describe Invitations::SendSms, type: :service do
           expect(SendTransactionalSms).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
-              sender_name: sms_sender_name
+              sender_name: sms_sender_name, record_identifier: invitation.record_identifier
             )
           subject
         end
@@ -270,7 +270,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -294,7 +294,7 @@ describe Invitations::SendSms, type: :service do
           expect(SendTransactionalSms).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
-              sender_name: sms_sender_name
+              sender_name: sms_sender_name, record_identifier: invitation.record_identifier
             )
           subject
         end
@@ -322,7 +322,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -345,7 +345,7 @@ describe Invitations::SendSms, type: :service do
           expect(SendTransactionalSms).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
-              sender_name: sms_sender_name
+              sender_name: sms_sender_name, record_identifier: invitation.record_identifier
             )
           subject
         end
@@ -373,7 +373,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -396,7 +396,7 @@ describe Invitations::SendSms, type: :service do
           expect(SendTransactionalSms).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
-              sender_name: sms_sender_name
+              sender_name: sms_sender_name, record_identifier: invitation.record_identifier
             )
           subject
         end
@@ -424,7 +424,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -448,7 +448,7 @@ describe Invitations::SendSms, type: :service do
           expect(SendTransactionalSms).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
-              sender_name: sms_sender_name
+              sender_name: sms_sender_name, record_identifier: invitation.record_identifier
             )
           subject
         end
@@ -474,7 +474,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -498,7 +498,7 @@ describe Invitations::SendSms, type: :service do
           expect(SendTransactionalSms).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
-              sender_name: sms_sender_name
+              sender_name: sms_sender_name, record_identifier: invitation.record_identifier
             )
           subject
         end
@@ -525,7 +525,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -549,7 +549,7 @@ describe Invitations::SendSms, type: :service do
           expect(SendTransactionalSms).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
-              sender_name: sms_sender_name
+              sender_name: sms_sender_name, record_identifier: invitation.record_identifier
             )
           subject
         end
@@ -575,7 +575,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -599,7 +599,7 @@ describe Invitations::SendSms, type: :service do
           expect(SendTransactionalSms).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
-              sender_name: sms_sender_name
+              sender_name: sms_sender_name, record_identifier: invitation.record_identifier
             )
           subject
         end
@@ -624,7 +624,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -652,7 +652,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -677,7 +677,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -704,7 +704,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -727,7 +727,7 @@ describe Invitations::SendSms, type: :service do
           expect(SendTransactionalSms).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
-              sender_name: sms_sender_name
+              sender_name: sms_sender_name, record_identifier: invitation.record_identifier
             )
           subject
         end
@@ -753,7 +753,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -778,7 +778,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -803,7 +803,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -829,7 +829,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -853,7 +853,7 @@ describe Invitations::SendSms, type: :service do
           expect(SendTransactionalSms).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
-              sender_name: sms_sender_name
+              sender_name: sms_sender_name, record_identifier: invitation.record_identifier
             )
           subject
         end
