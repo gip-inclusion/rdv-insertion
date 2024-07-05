@@ -8,7 +8,7 @@ describe InboundWebhooks::Brevo::AssignSmsDeliveryStatusAndDate do
     let(:invitation) { create(:invitation, user: user) }
     let(:record) { invitation }
 
-    context "when the invitation had a failed delivery status and the delivery status is now opened" do
+    context "when the invitation had a failed delivery status and the delivery status is now sent" do
       Invitation::FAILED_DELIVERY_STATUS.each do |status|
         it "does not update the failed invitation (#{status})" do
           invitation.update(delivery_status: status, delivered_at: Time.zone.parse("2023-06-07T12:00:00Z"))
@@ -84,7 +84,7 @@ describe InboundWebhooks::Brevo::AssignSmsDeliveryStatusAndDate do
     let(:notification) { create(:notification, participation: participation) }
     let(:record) { notification }
 
-    context "when the notification had a failed delivery status and the delivery status is now opened" do
+    context "when the notification had a failed delivery status and the delivery status is now sent" do
       Notification::FAILED_DELIVERY_STATUS.each do |status|
         it "does not update the failed notification (#{status})" do
           notification.update(delivery_status: status, delivered_at: Time.zone.parse("2023-06-07T12:00:00Z"))
