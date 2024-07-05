@@ -7,25 +7,19 @@ module InboundWebhooks
       end
 
       def call
-        return if record_has_a_failed_delivery_status? && !delivered?
-        return if old_update?
+        set_last_brevo_webhook_received_at
+        return unless delivery_status.in?(record_class.delivery_statuses.keys)
         return if webhook_mismatch?
 
         @record.delivery_status = delivery_status
-        @record.delivered_at = @webhook_params[:date]
         save_record!(@record)
       end
 
       private
 
-      def record_has_a_failed_delivery_status?
-        @record.delivery_status.in?(record_class::FAILED_DELIVERY_STATUS)
-      end
-
-      def old_update?
-        return false if @record.delivered_at.blank?
-
-        @record.delivered_at.to_datetime > @webhook_params[:date].to_datetime
+      def set_last_brevo_webhook_received_at
+        @record.last_brevo_webhook_received_at = @webhook_params[:date]
+        save_record!(@record)
       end
 
       def record_class

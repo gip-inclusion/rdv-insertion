@@ -5,18 +5,12 @@ module Deliverable
   DELIVERED_STATUS = %w[delivered].freeze
 
   included do
-    # https://developers.brevo.com/docs/transactional-webhooks
-    enum delivery_status: { accepted: "accepted", sent: "sent", request: "request", click: "click",
-                            deferred: "deferred", delivered: "delivered", hard_bounce: "hard_bounce",
-                            soft_bounce: "soft_bounce", spam: "spam", unique_opened: "unique_opened", opened: "opened",
-                            reply: "reply", invalid_email: "invalid_email", blocked: "blocked", error: "error",
-                            unsubscribe: "unsubscribe", proxy_open: "proxy_open" }
-
-    validates :delivered_at, presence: true, if: -> { delivery_status.present? }
+    enum delivery_status: (FAILED_DELIVERY_STATUS + DELIVERED_STATUS).index_by(&:itself)
+    validates :last_brevo_webhook_received_at, presence: true, if: -> { delivery_status.present? }
   end
 
   def human_delivery_status_and_date
-    if delivery_status.in?(DELIVERED_STATUS)
+    if delivered?
       if delivery_date == creation_date
         "Délivrée à #{delivery_hour}"
       else
@@ -29,6 +23,10 @@ module Deliverable
 
   def delivery_failed?
     delivery_status.in?(FAILED_DELIVERY_STATUS)
+  end
+
+  def delivered?
+    delivery_status.in?(DELIVERED_STATUS)
   end
 
   def creation_date
@@ -45,5 +43,9 @@ module Deliverable
 
   def record_identifier
     "#{self.class.name.underscore}_#{id}"
+  end
+
+  def delivered_at
+    last_brevo_webhook_received_at if delivered?
   end
 end
