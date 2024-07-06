@@ -57,3 +57,8 @@
   width: 80%;
   max-width: 1000px;
 }
+
+.scrollable {
+  overflow-y: auto;
+  max-height: 70vh;
+}
