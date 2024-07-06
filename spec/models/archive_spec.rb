@@ -1,7 +1,8 @@
 describe Archive do
   subject { build(:archive, organisation: organisation, user: user) }
 
-  let!(:organisation) { create(:organisation) }
+  let!(:department) { create(:department) }
+  let!(:organisation) { create(:organisation, department:) }
   let!(:user) { create(:user) }
 
   describe "no collision" do
@@ -29,13 +30,17 @@ describe Archive do
   end
 
   describe "invitation invalidations" do
-    let!(:other_organisation) { create(:organisation) }
+    let!(:other_organisation) { create(:organisation, department:) }
     let!(:invitation_for_organisation) do
-      create(:invitation, user: user, department: organisation.department, organisations: [organisation])
+      create(:invitation, user:, department:, organisations: [organisation])
     end
 
     let!(:invitation_for_other_organisation) do
-      create(:invitation, user: user, department: other_organisation.department, organisations: [other_organisation])
+      create(:invitation, user:, department:, organisations: [other_organisation])
+    end
+
+    let!(:invitation_for_two_organisations) do
+      create(:invitation, user:, department:, organisations: [organisation, other_organisation])
     end
 
     it "invalidates the user organisation invitations" do
@@ -43,7 +48,10 @@ describe Archive do
         .with(invitation_for_organisation.id)
       expect(InvalidateInvitationJob).not_to receive(:perform_async)
         .with(invitation_for_other_organisation.id)
+      expect(InvalidateInvitationJob).not_to receive(:perform_async)
+        .with(invitation_for_two_organisations.id)
       subject.save
+      expect(invitation_for_two_organisations.reload.organisations).to eq([other_organisation])
     end
   end
 end

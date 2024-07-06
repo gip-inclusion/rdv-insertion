@@ -1,10 +1,8 @@
 describe "Agents can archive and unarchive user", :js do
   let!(:agent) { create(:agent) }
   let!(:department) { create(:department) }
-  let!(:organisation) { create(:organisation, agents: [agent], department: department) }
-  let!(:user) do
-    create(:user, organisations: [organisation])
-  end
+  let!(:organisation) { create(:organisation, agents: [agent], department:) }
+  let!(:user) { create(:user, organisations: [organisation]) }
 
   before { setup_agent_session(agent) }
 
@@ -78,9 +76,7 @@ describe "Agents can archive and unarchive user", :js do
   describe "from upload page" do
     include_context "with file configuration"
 
-    let!(:category_configuration) do
-      create(:category_configuration, file_configuration: file_configuration, organisation: organisation)
-    end
+    let!(:category_configuration) { create(:category_configuration, file_configuration:, organisation:) }
     let!(:user) { create(:user, email: "hernan@crespo.com", first_name: "hernan", organisations: [organisation]) }
     let!(:archive) { create(:archive, user:, organisation:, archiving_reason: "CDI") }
 
@@ -89,7 +85,7 @@ describe "Agents can archive and unarchive user", :js do
 
       attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"), make_visible: true)
 
-      # expect(page).to have_button "Rouvrir le dossier"
+      expect(page).to have_button "Rouvrir le dossier"
       expect(page).to have_content "Dossier archivé"
 
       expect(page).to have_no_button "Inviter par SMS"
@@ -105,7 +101,7 @@ describe "Agents can archive and unarchive user", :js do
     context "when the archive is in another organisation" do
       let!(:other_org) { create(:organisation, department: department, users: [user]) }
       let!(:archive) do
-        create(:archive, user: user, organisation: other_org)
+        create(:archive, user:, organisation: other_org)
       end
 
       it "does not show the user as archived" do
@@ -117,6 +113,37 @@ describe "Agents can archive and unarchive user", :js do
 
         expect(page).to have_no_button "Rouvrir le dossier"
         expect(page).to have_no_content "Dossier archivé"
+      end
+    end
+
+    context "when department level" do
+      let!(:other_org) { create(:organisation, department: department, users: [user]) }
+      let!(:archive) { create(:archive, user:, organisation:, archiving_reason: "CDI") }
+
+      context "when the user is archived in all organisations of department" do
+        let!(:archive2) { create(:archive, user:, organisation: other_org, archiving_reason: "CDI") }
+
+        it "displays the user as archived" do
+          visit new_organisation_upload_path(organisation, category_configuration_id: category_configuration.id)
+
+          attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"), make_visible: true)
+
+          expect(page).to have_button "Rouvrir le dossier"
+          expect(page).to have_content "Dossier archivé"
+        end
+      end
+
+      context "when the user is partially archived in the department" do
+        it "does not display the user as archived" do
+          visit new_organisation_upload_path(organisation, category_configuration_id: category_configuration.id)
+
+          attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"), make_visible: true)
+
+          expect(page).to have_button "Inviter par SMS"
+
+          expect(page).to have_no_button "Rouvrir le dossier"
+          expect(page).to have_no_content "Dossier archivé"
+        end
       end
     end
   end
