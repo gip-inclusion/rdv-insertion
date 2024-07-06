@@ -124,9 +124,11 @@ describe "Agents can archive and unarchive user", :js do
         let!(:archive2) { create(:archive, user:, organisation: other_org, archiving_reason: "CDI") }
 
         it "displays the user as archived" do
-          visit new_organisation_upload_path(organisation, category_configuration_id: category_configuration.id)
+          visit new_department_upload_path(department, category_configuration_id: category_configuration.id)
 
-          attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"), make_visible: true)
+          attach_file(
+            "users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"), make_visible: true
+          )
 
           expect(page).to have_button "Rouvrir le dossier"
           expect(page).to have_content "Dossier archivé"
@@ -135,9 +137,11 @@ describe "Agents can archive and unarchive user", :js do
 
       context "when the user is partially archived in the department" do
         it "does not display the user as archived" do
-          visit new_organisation_upload_path(organisation, category_configuration_id: category_configuration.id)
+          visit new_department_upload_path(department, category_configuration_id: category_configuration.id)
 
-          attach_file("users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"), make_visible: true)
+          attach_file(
+            "users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"), make_visible: true
+          )
 
           expect(page).to have_button "Inviter par SMS"
 
