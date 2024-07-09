@@ -24,11 +24,11 @@ RSpec.describe "BrevoSmsWebhooks" do
 
       invitation.reload
       expect(invitation.delivery_status).to eq("delivered")
-      expect(invitation.delivered_at).to eq(Time.zone.parse("2023-06-07T12:34:56Z"))
+      expect(invitation.last_brevo_webhook_received_at).to eq(Time.zone.parse("2023-06-07T12:34:56Z"))
     end
 
-    context "with invalid data" do
-      let(:invalid_webhook_params) do
+    context "when phones doesnt match" do
+      let(:mismatched_webhook_params) do
         {
           to: "0987654321",
           msg_status: "delivered",
@@ -36,16 +36,35 @@ RSpec.describe "BrevoSmsWebhooks" do
         }
       end
 
-      it "does not update the invitation and captures an error" do
-        post "/brevo/sms_webhooks/#{invitation.record_identifier}", params: invalid_webhook_params, as: :json
+      it "update the invitation but captures an error" do
+        post "/brevo/sms_webhooks/#{invitation.record_identifier}", params: mismatched_webhook_params, as: :json
+        expect(response).to be_successful
+
+        invitation.reload
+        expect(invitation.delivery_status).to eq("delivered")
+        expect(invitation.last_brevo_webhook_received_at).to eq(Time.zone.parse("2023-06-07T12:34:56Z"))
+        expect(Sentry).to have_received(:capture_message).with(
+          "Invitation mobile phone and webhook mobile phone does not match", any_args
+        )
+      end
+    end
+
+    context "when event is not in enum" do
+      let(:unprocessed_event_webhook_params) do
+        {
+          to: "0601010101",
+          msg_status: "sent",
+          date: "2023-06-07T12:34:56Z"
+        }
+      end
+
+      it "does not update the invitation but save last_brevo_webhook_received_at date" do
+        post "/brevo/sms_webhooks/#{invitation.record_identifier}", params: unprocessed_event_webhook_params, as: :json
         expect(response).to be_successful
 
         invitation.reload
         expect(invitation.delivery_status).to be_nil
-        expect(invitation.delivered_at).to be_nil
-        expect(Sentry).to have_received(:capture_message).with(
-          "Invitation mobile phone and webhook mobile phone does not match", any_args
-        )
+        expect(invitation.last_brevo_webhook_received_at).to eq(Time.zone.parse("2023-06-07T12:34:56Z"))
       end
     end
 
@@ -77,7 +96,7 @@ RSpec.describe "BrevoSmsWebhooks" do
 
       notification.reload
       expect(notification.delivery_status).to eq("delivered")
-      expect(notification.delivered_at).to eq(Time.zone.parse("2023-06-07T12:34:56Z"))
+      expect(notification.last_brevo_webhook_received_at).to eq(Time.zone.parse("2023-06-07T12:34:56Z"))
     end
 
     context "when notification is not found" do
