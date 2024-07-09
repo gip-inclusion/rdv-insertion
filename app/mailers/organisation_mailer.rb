@@ -15,8 +15,11 @@ class OrganisationMailer < ApplicationMailer
     return if organisation.email.blank?
 
     @organisation = organisation
-    @grouped_invitation_params_by_category = grouped_invitation_params_by_category
-    @referent_emails = Agent.where(rdv_solidarites_agent_id: @grouped_invitation_params[:referent_ids] || []).pluck(:email)
+    @grouped_invitation_params_by_category = grouped_invitation_params_by_category.map do |grouped_invitation_params|
+      grouped_invitation_params.merge(
+        referent_emails: Agent.where(rdv_solidarites_agent_id: grouped_invitation_params[:referent_ids] || []).pluck(:email)
+      )
+    end
 
     mail(
       to: organisation.email,

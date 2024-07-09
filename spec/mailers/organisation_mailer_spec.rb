@@ -44,4 +44,28 @@ RSpec.describe OrganisationMailer do
       expect(mail.body.encoded).to include("Évènement : Prise de rendez-vous")
     end
   end
+
+  describe "#creneau_unavailable" do
+    let(:organisation) { create(:organisation) }
+    let(:category_configuration) { create(:category_configuration, organisation:) }
+    let(:agent) { create(:agent) }
+    let(:grouped_invitation_params) do
+      {
+        motif_category_id: category_configuration.motif_category_id,
+        motif_category_name: category_configuration.motif_category.name,
+        referent_ids: [agent.rdv_solidarites_agent_id],
+        invitations_counter: 3
+      }
+    end
+
+    it "sends the email" do
+      mail = described_class.creneau_unavailable(
+        organisation: organisation,
+        grouped_invitation_params_by_category: [grouped_invitation_params]
+      )
+
+      expect(mail.to).to eq([organisation.email])
+      expect(mail.body.encoded).to include("Les email des référents concernés sont : #{agent.email}")
+    end
+  end
 end
