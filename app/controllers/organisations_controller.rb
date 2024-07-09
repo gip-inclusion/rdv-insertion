@@ -32,7 +32,7 @@ class OrganisationsController < ApplicationController
 
   def geolocated
     @department_organisations = policy_scope(Organisation).where(department: department)
-    return render_impossible_to_geolocate if retrieve_address_geocoding.failure?
+    return render_impossible_to_geolocate if retrieve_address_geocoding_params.geocoding_params.nil?
 
     if retrieve_relevant_organisations.success?
       render json: {
