@@ -7,8 +7,9 @@ module InboundWebhooks
       end
 
       def call
-        set_last_brevo_webhook_received_at
         return if @record.delivered?
+
+        set_last_brevo_webhook_received_at
         return unless delivery_status.in?(record_class.delivery_statuses.keys)
         return if webhook_mismatch?
 
