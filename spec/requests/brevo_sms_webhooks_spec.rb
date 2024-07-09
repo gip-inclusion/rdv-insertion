@@ -50,7 +50,7 @@ RSpec.describe "BrevoSmsWebhooks" do
     end
 
     context "when event is not in enum" do
-      let(:invalid_webhook_params) do
+      let(:unprocessed_event_webhook_params) do
         {
           to: "0601010101",
           msg_status: "sent",
@@ -59,7 +59,7 @@ RSpec.describe "BrevoSmsWebhooks" do
       end
 
       it "does not update the invitation but save last_brevo_webhook_received_at date" do
-        post "/brevo/sms_webhooks/#{invitation.record_identifier}", params: invalid_webhook_params, as: :json
+        post "/brevo/sms_webhooks/#{invitation.record_identifier}", params: unprocessed_event_webhook_params, as: :json
         expect(response).to be_successful
 
         invitation.reload
