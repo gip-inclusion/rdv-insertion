@@ -10,9 +10,9 @@ module InboundWebhooks
         return if old_update?
         return if @record.delivered?
 
+        alert_sentry_if_webhook_mismatch
         set_last_brevo_webhook_received_at
         return unless delivery_status.in?(record_class.delivery_statuses.keys)
-        return if webhook_mismatch?
 
         @record.delivery_status = delivery_status
         save_record!(@record)
@@ -29,7 +29,7 @@ module InboundWebhooks
         @record_class ||= @record.class
       end
 
-      def webhook_mismatch?
+      def alert_sentry_if_webhook_mismatch
         raise NoMethodError
       end
 
@@ -40,7 +40,7 @@ module InboundWebhooks
       def old_update?
         return false if @record.last_brevo_webhook_received_at.blank?
 
-        record_datetime = Time.zone.parse(@record.last_brevo_webhook_received_at.to_s)
+        record_datetime = @record.last_brevo_webhook_received_at
         webhook_datetime = Time.zone.parse(@webhook_params[:date].to_s)
 
         record_datetime > webhook_datetime

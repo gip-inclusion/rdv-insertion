@@ -29,22 +29,22 @@ RSpec.describe "BrevoMailWebhooks" do
       expect(invitation.last_brevo_webhook_received_at).to eq(Time.zone.parse("2023-06-07T12:34:56Z"))
     end
 
-    context "with invalid data" do
-      let(:invalid_webhook_params) do
+    context "when emails doesnt match" do
+      let(:mismatched_webhook_params) do
         {
-          email: "mismatch@example.com",
+          email: "email_changed@example.com",
           event: "delivered",
           date: "2023-06-07T12:34:56Z",
           :"X-Mailin-custom" => "{\"record_identifier\": \"#{invitation.record_identifier}\"}"
         }
       end
 
-      it "does not update the invitation and captures an error" do
-        post "/brevo/mail_webhooks", params: invalid_webhook_params, as: :json
+      it "update the invitation but captures an error" do
+        post "/brevo/mail_webhooks", params: mismatched_webhook_params, as: :json
         expect(response).to be_successful
 
         invitation.reload
-        expect(invitation.delivery_status).to be_nil
+        expect(invitation.delivery_status).to eq("delivered")
         expect(invitation.last_brevo_webhook_received_at).to eq(Time.zone.parse("2023-06-07T12:34:56Z"))
         expect(Sentry).to have_received(:capture_message).with("Invitation email and webhook email does not match",
                                                                any_args)

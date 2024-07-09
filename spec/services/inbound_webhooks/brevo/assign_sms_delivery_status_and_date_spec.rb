@@ -22,15 +22,15 @@ describe InboundWebhooks::Brevo::AssignSmsDeliveryStatusAndDate do
         end
       end
 
-      context "when the phone number does not match" do
+      context "when phone numbers does not match" do
         let(:webhook_params) { { to: "0987654321", msg_status: "delivered", date: "2023-06-07T12:34:56Z" } }
 
-        it "does not update the #{record_type}" do
+        it "update the #{record_type} but capture an error" do
           expect(Sentry).to receive(:capture_message).with(
             "#{record_type.capitalize} mobile phone and webhook mobile phone does not match", any_args
           )
           subject
-          expect(record.delivery_status).to be_nil
+          expect(record.delivery_status).to eq("delivered")
           expect(record.last_brevo_webhook_received_at).to eq(Time.zone.parse("2023-06-07T12:34:56Z"))
         end
       end
