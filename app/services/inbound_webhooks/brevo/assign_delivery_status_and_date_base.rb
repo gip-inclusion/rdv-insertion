@@ -7,6 +7,7 @@ module InboundWebhooks
       end
 
       def call
+        return if old_update?
         return if @record.delivered?
 
         set_last_brevo_webhook_received_at
@@ -36,8 +37,13 @@ module InboundWebhooks
         raise NoMethodError
       end
 
-      def delivered?
-        delivery_status.in?(record_class::DELIVERED_STATUS)
+      def old_update?
+        return false if @record.last_brevo_webhook_received_at.blank?
+
+        record_datetime = Time.zone.parse(@record.last_brevo_webhook_received_at.to_s)
+        webhook_datetime = Time.zone.parse(@webhook_params[:date].to_s)
+
+        record_datetime > webhook_datetime
       end
     end
   end

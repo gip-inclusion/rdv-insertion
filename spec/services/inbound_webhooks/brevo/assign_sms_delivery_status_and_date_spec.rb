@@ -65,6 +65,20 @@ describe InboundWebhooks::Brevo::AssignSmsDeliveryStatusAndDate do
           expect(record.last_brevo_webhook_received_at).to eq(Time.zone.parse("2023-06-07T12:00:00Z"))
         end
       end
+
+      context "when the update is old" do
+        let!(:old_date) { "2022-06-07T12:34:56Z" }
+        let!(:webhook_params) { { email: "test@example.com", event: "error", date: old_date } }
+
+        it "does not update the #{record_type}" do
+          record.update(last_brevo_webhook_received_at: Time.zone.parse("2023-06-08T12:34:56Z"),
+                        delivery_status: "blocked")
+          subject
+          record.reload
+          expect(record.delivery_status).to eq("blocked")
+          expect(record.delivered_at).not_to eq(old_date)
+        end
+      end
     end
   end
 end
