@@ -17,7 +17,7 @@ module MotifCategories
       @create_rdvs_motif_category ||= call_service!(
         RdvSolidaritesApi::CreateMotifCategory,
         motif_category_attributes:
-          @motif_category.attributes.symbolize_keys.slice(*MotifCategory::SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES)
+          @motif_category.symbolized_attributes.slice(*MotifCategory::SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES)
       )
     end
   end

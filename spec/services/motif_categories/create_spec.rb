@@ -19,7 +19,7 @@ describe MotifCategories::Create do
       expect(RdvSolidaritesApi::CreateMotifCategory).to receive(:call)
         .with(
           motif_category_attributes:
-            motif_category.attributes.symbolize_keys.slice(*MotifCategory::SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES)
+            motif_category.symbolized_attributes.slice(*MotifCategory::SHARED_ATTRIBUTES_WITH_RDV_SOLIDARITES)
         )
       subject
     end
