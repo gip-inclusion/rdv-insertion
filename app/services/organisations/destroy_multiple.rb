@@ -1,6 +1,6 @@
 # This class is intented to be used manually via a console
 module Organisations
-  class DestroyMultiple
+  class DestroyMultiple < BaseService
     # rubocop:disable Rails/Output
     def initialize(organisation_ids:, confirm: true)
       @organisation_ids = organisation_ids
@@ -8,15 +8,15 @@ module Organisations
     end
 
     def call
-      @organisation_ids.each do |organisation|
-        organisation = Organisation.find_by(id: organisation)
+      @organisation_ids.each do |organisation_id|
+        organisation = Organisation.find_by(id: organisation_id)
 
         if organisation.nil?
-          p "Organisation with id #{organisation} not found"
+          p "Organisation with id #{organisation_id} not found"
           next
         end
 
-        Organisation::DestroyJob.perform_later(organisation.id) if confirmed?(organisation)
+        Organisations::DestroyJob.perform_async(organisation.id) if confirmed?(organisation)
       end
     end
 
@@ -28,7 +28,7 @@ module Organisations
       display_organisation_info(organisation)
 
       puts "Are you sure you want to destroy this organisation? (y/n)"
-      gets.chomp == "y"
+      $stdin.gets.chomp == "y"
     end
 
     def display_organisation_info(organisation)
