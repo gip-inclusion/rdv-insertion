@@ -33,8 +33,9 @@ describe Invitations::ComputeLink, type: :service do
     )
   end
 
-  let!(:geocoding) do
-    create(:geocoding, user:, longitude: 2.308628, latitude: 48.850699, city_code: "75107", street_ban_id: "75107_8909")
+  let!(:address_geocoding) do
+    create(:address_geocoding, user:, longitude: 2.308628, latitude: 48.850699, city_code: "75107",
+                               street_ban_id: "75107_8909")
   end
 
   let!(:organisation1) { create(:organisation, department: department, rdv_solidarites_organisation_id: 333) }
@@ -59,7 +60,7 @@ describe Invitations::ComputeLink, type: :service do
     end
 
     context "when the user address has not been geocoded" do
-      let!(:geocoding) { nil }
+      let!(:address_geocoding) { nil }
 
       it("still succeeds") { is_a_success }
 

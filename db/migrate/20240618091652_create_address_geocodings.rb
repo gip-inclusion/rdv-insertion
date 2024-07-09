@@ -1,6 +1,6 @@
-class CreateGeocodings < ActiveRecord::Migration[7.1]
+class CreateAddressGeocodings < ActiveRecord::Migration[7.1]
   def change
-    create_table :geocodings do |t|
+    create_table :address_geocodings do |t|
       t.string :post_code
       t.string :city_code
       t.float :latitude

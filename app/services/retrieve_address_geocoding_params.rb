@@ -1,4 +1,4 @@
-class RetrieveGeocoding < BaseService
+class RetrieveAddressGeocodingParams < BaseService
   def initialize(address:, department_number:)
     @address = address
     @department_number = department_number
@@ -6,7 +6,8 @@ class RetrieveGeocoding < BaseService
   end
 
   def call
-    fail!("l'addresse doit être renseignée") if @address.blank?
+    return if @address.blank?
+
     result.geocoding_params =
       geocoding_params_matching_city || geocoding_params_matching_post_code || geocoding_params_matching_department
   end
@@ -14,8 +15,7 @@ class RetrieveGeocoding < BaseService
   private
 
   def geocoding_params_matching_city
-    matching_feature = nil
-    [@address, parsed_post_code_and_city, parsed_city].each do |query|
+    [@address, parsed_post_code_and_city, parsed_city].find do |query|
       next if query.blank?
 
       response = ApiAdresseClient.get_geocoding(query)
@@ -27,10 +27,8 @@ class RetrieveGeocoding < BaseService
       matching_feature = feature_collection.find_matching_city_feature(
         address: @address, department_number: @department_number
       )
-      break if matching_feature.present?
+      break matching_feature.to_h if matching_feature.present?
     end
-
-    matching_feature&.to_geocoding_params
   end
 
   def geocoding_params_matching_post_code
@@ -46,13 +44,11 @@ class RetrieveGeocoding < BaseService
   end
 
   def retrieve_matching_geo_params_from_collections(&)
-    matching_feature = nil
-    @feature_collections.each do |feature_collection|
+    @feature_collections.find do |feature_collection|
       matching_feature = yield(feature_collection)
 
-      break if matching_feature.present?
+      break matching_feature.to_h if matching_feature.present?
     end
-    matching_feature&.to_geocoding_params
   end
 
   def parsed_post_code_and_city = address_parser.parsed_post_code_and_city

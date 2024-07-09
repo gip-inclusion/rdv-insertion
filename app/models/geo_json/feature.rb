@@ -68,7 +68,7 @@ class GeoJson::Feature
     department_number == matching_department_number
   end
 
-  def to_geocoding_params
+  def to_h
     { city:, city_code:, post_code:, latitude:, longitude:, street_ban_id:, house_number:, street:, department_number: }
   end
 

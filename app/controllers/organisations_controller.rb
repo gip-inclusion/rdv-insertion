@@ -32,7 +32,7 @@ class OrganisationsController < ApplicationController
 
   def geolocated
     @department_organisations = policy_scope(Organisation).where(department: department)
-    return render_impossible_to_geolocate if retrieve_geocoding.failure?
+    return render_impossible_to_geolocate if retrieve_address_geocoding.failure?
 
     if retrieve_relevant_organisations.success?
       render json: {
@@ -77,8 +77,8 @@ class OrganisationsController < ApplicationController
     @department ||= Department.find_by!(number: params[:department_number])
   end
 
-  def retrieve_geocoding
-    @retrieve_geocoding ||= RetrieveGeocoding.call(
+  def retrieve_address_geocoding_params
+    @retrieve_address_geocoding_params ||= RetrieveAddressGeocodingParams.call(
       address: params[:address],
       department_number: department.number
     )
@@ -97,8 +97,8 @@ class OrganisationsController < ApplicationController
       RdvSolidaritesApi::RetrieveOrganisations.call(
         geo_attributes: {
           departement_number: department.number,
-          city_code: retrieve_geocoding.geocoding_params[:city_code],
-          street_ban_id: retrieve_geocoding.geocoding_params[:street_ban_id]
+          city_code: retrieve_address_geocoding_params.geocoding_params[:city_code],
+          street_ban_id: retrieve_address_geocoding_params.geocoding_params[:street_ban_id]
         }
       )
   end

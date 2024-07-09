@@ -1,4 +1,4 @@
-describe RetrieveGeocoding, type: :service do
+describe RetrieveAddressGeocodingParams, type: :service do
   subject do
     described_class.call(address: address, department_number: department_number)
   end
@@ -69,10 +69,15 @@ describe RetrieveGeocoding, type: :service do
     context "when no address is passed" do
       let(:address) { "" }
 
-      it("is a failure") { is_a_failure }
+      it("is a success") { is_a_success }
 
-      it "returns the error message" do
-        expect(subject.errors).to eq(["l'addresse doit être renseignée"])
+      it "returns no geocoding params" do
+        expect(subject.geocoding_params).to be_nil
+      end
+
+      it "does not call the api adresse" do
+        expect(Faraday).not_to receive(:get)
+        subject
       end
     end
 

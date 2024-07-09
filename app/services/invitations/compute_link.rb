@@ -12,17 +12,12 @@ module Invitations
 
     def user = @invitation.user
 
-    def geocoding = user.geocoding
+    def address_geocoding = user.address_geocoding
 
     def geo_attributes
-      return {} unless geocoding
+      return {} unless address_geocoding
 
-      {
-        longitude: geocoding.longitude,
-        latitude: geocoding.latitude,
-        city_code: geocoding.city_code,
-        street_ban_id: geocoding.street_ban_id
-      }
+      address_geocoding.symbolized_attributes.slice(*%i[longitude latitude city_code street_ban_id])
     end
 
     def compute_rdv_solidarites_link

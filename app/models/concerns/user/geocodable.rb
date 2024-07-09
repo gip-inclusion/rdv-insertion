@@ -2,9 +2,9 @@ module User::Geocodable
   extend ActiveSupport::Concern
 
   included do
-    has_one :geocoding, dependent: :destroy
+    has_one :address_geocoding, dependent: :destroy
     before_save :track_address_changed
-    after_commit :assign_geocoding, if: :should_assign_geocoding?
+    after_commit :assign_address_geocoding, if: :should_assign_address_geocoding?
     after_commit :nullify_address_changed
   end
 
@@ -19,7 +19,7 @@ module User::Geocodable
     @address_changed = address_changed?
   end
 
-  def should_assign_geocoding?
+  def should_assign_address_geocoding?
     @address_changed
   end
 
@@ -27,7 +27,7 @@ module User::Geocodable
     @address_changed = nil
   end
 
-  def assign_geocoding
-    RetrieveAndAssignUserGeocodingJob.perform_async(id)
+  def assign_address_geocoding
+    RetrieveAndAssignUserAddressGeocodingJob.perform_async(id)
   end
 end

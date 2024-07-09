@@ -1,4 +1,4 @@
-class Geocoding < ApplicationRecord
+class AddressGeocoding < ApplicationRecord
   belongs_to :user
 
   def street_address

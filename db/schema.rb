@@ -42,6 +42,22 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_27_145505) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "address_geocodings", force: :cascade do |t|
+    t.string "post_code"
+    t.string "city_code"
+    t.float "latitude"
+    t.float "longitude"
+    t.string "city"
+    t.string "department_number"
+    t.bigint "user_id", null: false
+    t.string "street"
+    t.string "house_number"
+    t.string "street_ban_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_address_geocodings_on_user_id"
+  end
+
   create_table "agent_roles", force: :cascade do |t|
     t.string "access_level", default: "basic", null: false
     t.bigint "agent_id", null: false
@@ -180,22 +196,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_27_145505) do
     t.index ["motif_category_id"], name: "index_follow_ups_on_motif_category_id"
     t.index ["status"], name: "index_follow_ups_on_status"
     t.index ["user_id"], name: "index_follow_ups_on_user_id"
-  end
-
-  create_table "geocodings", force: :cascade do |t|
-    t.string "post_code"
-    t.string "city_code"
-    t.float "latitude"
-    t.float "longitude"
-    t.string "city"
-    t.string "department_number"
-    t.bigint "user_id", null: false
-    t.string "street"
-    t.string "house_number"
-    t.string "street_ban_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_geocodings_on_user_id"
   end
 
   create_table "invitations", force: :cascade do |t|
@@ -539,6 +539,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_27_145505) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "address_geocodings", "users"
   add_foreign_key "agent_roles", "agents"
   add_foreign_key "agent_roles", "organisations"
   add_foreign_key "archives", "departments"
@@ -549,7 +550,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_27_145505) do
   add_foreign_key "csv_exports", "agents"
   add_foreign_key "follow_ups", "motif_categories"
   add_foreign_key "follow_ups", "users"
-  add_foreign_key "geocodings", "users"
   add_foreign_key "invitations", "departments"
   add_foreign_key "invitations", "follow_ups"
   add_foreign_key "invitations", "users"

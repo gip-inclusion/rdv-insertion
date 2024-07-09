@@ -146,13 +146,15 @@ class User < ApplicationRecord
   end
 
   def current_department
-    if in_many_departments?
-      return if parsed_post_code.blank?
+    return if in_many_departments?
 
-      departments.find { |d| parsed_post_code.include?(d.number) }
-    else
-      departments.first
-    end
+    departments.first
+  end
+
+  def address_department
+    return if parsed_post_code.blank?
+
+    departments.find { |d| parsed_post_code.include?(d.number) }
   end
 
   def belongs_to_org?(organisation_id)

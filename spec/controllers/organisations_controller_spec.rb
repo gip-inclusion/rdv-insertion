@@ -229,7 +229,7 @@ describe OrganisationsController do
 
     before do
       sign_in(agent)
-      allow(RetrieveGeocoding).to receive(:call)
+      allow(RetrieveAddressGeocodingParams).to receive(:call)
         .with(address: address, department_number: department.number)
         .and_return(
           OpenStruct.new(
@@ -303,7 +303,7 @@ describe OrganisationsController do
 
     context "when it fails to geolocate" do
       before do
-        allow(RetrieveGeocoding).to receive(:call)
+        allow(RetrieveAddressGeocodingParams).to receive(:call)
           .and_return(OpenStruct.new(success?: false, failure?: true))
       end
 

@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :geocoding do
+  factory :address_geocoding do
     user
   end
 end
