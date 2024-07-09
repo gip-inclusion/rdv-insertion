@@ -56,7 +56,7 @@ module Invitations
       category_params_group[:referent_ids].merge(referent_ids) if referent_ids.present?
     end
 
-    def find_or_initialize_category_params_group(motif_category, matching_category_configuration)
+    def find_or_initialize_category_params_group(motif_category)
       category_params_group = @grouped_invitation_params_by_category.find do |m|
         m[:motif_category_name] == motif_category.name
       end
@@ -65,7 +65,6 @@ module Invitations
       category_params_group = {
         motif_category_name: motif_category.name,
         motif_category_id: motif_category.id,
-        matching_category_configuration:,
         zip_codes: Set.new,
         referent_ids: Set.new,
         invitations_counter: 0

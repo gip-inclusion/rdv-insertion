@@ -20,7 +20,9 @@ RSpec.describe OrganisationMailer do
       )
 
       expect(mail.to).to eq(["test@test.com"])
-      expect(ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)).to include("Nombre d'invitations concernées : 3")
+      expect(ActionView::Base.full_sanitizer.sanitize(mail.body.encoded)).to(
+        include("Nombre d'invitations concernées : 3")
+      )
     end
   end
 

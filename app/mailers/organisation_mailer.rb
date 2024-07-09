@@ -17,7 +17,8 @@ class OrganisationMailer < ApplicationMailer
     @organisation = organisation
     @grouped_invitation_params_by_category = grouped_invitation_params_by_category.map do |grouped_invitation_params|
       grouped_invitation_params.merge(
-        referent_emails: Agent.where(rdv_solidarites_agent_id: grouped_invitation_params[:referent_ids] || []).pluck(:email)
+        referent_emails: Agent.where(rdv_solidarites_agent_id: grouped_invitation_params[:referent_ids] || [])
+          .pluck(:email)
       )
     end
 
@@ -45,7 +46,9 @@ class OrganisationMailer < ApplicationMailer
   def notify_no_available_slots(organisation:, recipient:, grouped_invitation_params:)
     @organisation = organisation
     @grouped_invitation_params = grouped_invitation_params
-    @referent_emails = Agent.where(rdv_solidarites_agent_id: @grouped_invitation_params[:referent_ids] || []).pluck(:email)
+    @referent_emails = Agent
+                       .where(rdv_solidarites_agent_id: @grouped_invitation_params[:referent_ids] || [])
+                       .pluck(:email)
 
     mail(
       to: recipient,
