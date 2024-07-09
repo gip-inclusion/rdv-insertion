@@ -4,17 +4,8 @@
 
 <p>Voici un nouvel évènement :</p>
 
-<%
-  translated_event = if @event == "updated"
-    "Modification de rendez-vous" 
-  elsif @event == "created"
-    "Prise de rendez-vous"
-  elsif @event == "cancelled"
-    "Annulation de rendez-vous"
-  end
-%>
 <p>
-Évènement : <%= translated_event %><br />
+Évènement : <%= I18n.t("external_notifications.events_description.#{@event}") %><br />
 Date : <%= I18n.l(@participation.rdv.starts_at, format: :human) %><br />
 Usager : <%= @participation.user %><br />
 <% if @participation.agent_prescripteur&.name %><%= "Professionel :" %><br /><% end %>

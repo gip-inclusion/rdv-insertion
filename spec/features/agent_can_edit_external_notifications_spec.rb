@@ -12,7 +12,7 @@ describe "Agents can edit organisation", :js do
   end
 
   context "organisation edit" do
-    it "allows to set a code safir" do
+    it "allows to activate external notifications" do
       visit organisation_category_configurations_path(organisation)
       within "#category_configuration_#{category_configuration.id}" do
         click_link("Modifier")

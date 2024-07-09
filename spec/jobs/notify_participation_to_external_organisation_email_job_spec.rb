@@ -24,13 +24,21 @@ describe NotifyParticipationToExternalOrganisationEmailJob do
     end
 
     context "already notified" do
+      let(:memory_store) { ActiveSupport::Cache.lookup_store(:memory_store) }
+      let(:cache) { Rails.cache }
+
       before do
-        allow_any_instance_of(described_class).to receive(:already_notified?).and_return(true)
+        allow(Rails).to receive(:cache).and_return(memory_store)
+        Rails.cache.clear
       end
 
       it "does not send the notification" do
-        expect(OrganisationMailer).not_to receive(:notify_rdv_changes)
-        subject
+        expect(OrganisationMailer).to receive(:notify_rdv_changes).once.and_return(OpenStruct.new(deliver_now: false))
+        2.times { described_class.new.perform(participation_id, event) }
+
+        travel 3.hours # cache expires after 1 hour
+        expect(OrganisationMailer).to receive(:notify_rdv_changes).once.and_return(OpenStruct.new(deliver_now: false))
+        2.times { described_class.new.perform(participation_id, event) }
       end
     end
 

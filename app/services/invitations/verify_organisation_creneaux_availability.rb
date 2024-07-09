@@ -47,25 +47,24 @@ module Invitations
 
     def group_invitation_params_by_category(invitation_params)
       motif_category = MotifCategory.find_by(short_name: invitation_params[:motif_category_short_name])
-      matching_category_configuration = @organisation.category_configurations.find_by(motif_category:)
 
       zip_code = invitation_params[:zip_code]
       referent_ids = invitation_params[:referent_ids]
-      category_params_group = find_or_initialize_category_params_group(motif_category.name,
-                                                                       matching_category_configuration)
+      category_params_group = find_or_initialize_category_params_group(motif_category)
       category_params_group[:invitations_counter] += 1
       category_params_group[:zip_codes].add(zip_code) if zip_code.present?
       category_params_group[:referent_ids].merge(referent_ids) if referent_ids.present?
     end
 
-    def find_or_initialize_category_params_group(motif_category_name, matching_category_configuration)
+    def find_or_initialize_category_params_group(motif_category, matching_category_configuration)
       category_params_group = @grouped_invitation_params_by_category.find do |m|
-        m[:motif_category_name] == motif_category_name
+        m[:motif_category_name] == motif_category.name
       end
       return category_params_group if category_params_group.present?
 
       category_params_group = {
-        motif_category_name:,
+        motif_category_name: motif_category.name,
+        motif_category_id: motif_category.id,
         matching_category_configuration:,
         zip_codes: Set.new,
         referent_ids: Set.new,

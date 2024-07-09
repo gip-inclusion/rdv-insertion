@@ -16,6 +16,8 @@ class OrganisationMailer < ApplicationMailer
 
     @organisation = organisation
     @grouped_invitation_params_by_category = grouped_invitation_params_by_category
+    @referent_emails = Agent.where(rdv_solidarites_agent_id: @grouped_invitation_params[:referent_ids] || []).pluck(:email)
+
     mail(
       to: organisation.email,
       subject: "[Alerte créneaux] Vérifier qu'il y a suffisamment de créneaux" \
@@ -30,17 +32,9 @@ class OrganisationMailer < ApplicationMailer
     @motif_category = participation.follow_up.motif_category
     @event = event
 
-    translated_event = if event == "updated"
-                         "modifié"
-                       elsif event == "cancelled"
-                         "annulé"
-                       else
-                         "créé"
-                       end
-
     mail(
       to:,
-      subject: "[Notification de RDV] Un rendez-vous a été #{translated_event}",
+      subject: "[Notification de RDV] Un rendez-vous a été #{I18n.t("external_notifications.events.#{event}")}",
       reply_to: "rdv-insertion@beta.gouv.fr"
     )
   end
@@ -48,6 +42,8 @@ class OrganisationMailer < ApplicationMailer
   def notify_no_available_slots(organisation:, recipient:, grouped_invitation_params:)
     @organisation = organisation
     @grouped_invitation_params = grouped_invitation_params
+    @referent_emails = Agent.where(rdv_solidarites_agent_id: @grouped_invitation_params[:referent_ids] || []).pluck(:email)
+
     mail(
       to: recipient,
       subject: "[Alerte créneaux] Vérifier qu'il y a suffisamment de créneaux" \

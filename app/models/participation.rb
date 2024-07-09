@@ -23,8 +23,8 @@ class Participation < ApplicationRecord
   validates :rdv_solidarites_participation_id, uniqueness: true, allow_nil: true
 
   after_commit :refresh_follow_up_status
-  after_commit :notify_user, if: :should_notify?, on: [:create, :update]
-  after_commit :notify_external, on: [:create, :update, :destroy]
+  after_commit :notify_user, if: :should_notify_user?, on: [:create, :update]
+  after_commit :notify_external, if: :should_notify_external?, on: [:create, :update, :destroy]
 
   enum created_by: { agent: "agent", user: "user", prescripteur: "prescripteur" }, _prefix: :created_by
 
@@ -54,9 +54,11 @@ class Participation < ApplicationRecord
     status.in?(CANCELLED_STATUSES) && !status_previously_was.in?(CANCELLED_STATUSES)
   end
 
-  def should_notify?
+  def should_notify_user?
     notifiable? && event_to_notify
   end
+
+  def should_notify_external? = current_category_configuration&.notify_rdv_changes?
 
   def notify_user
     if phone_number_is_mobile?

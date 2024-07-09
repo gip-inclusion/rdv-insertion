@@ -1,9 +1,7 @@
 class NotifyParticipationToExternalOrganisationEmailJob < ApplicationJob
   def perform(participation_id, event)
     @participation = Participation.find(participation_id)
-    @category_configuration = @participation.category_configurations.find_by!(
-      motif_category_id: @participation.follow_up.motif_category_id
-    )
+    @category_configuration = @participation.current_category_configuration
     @event = event
 
     return if !@category_configuration.notify_rdv_changes? || already_notified?
