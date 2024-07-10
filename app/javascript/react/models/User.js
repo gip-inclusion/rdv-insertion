@@ -483,11 +483,11 @@ export default class User {
   }
 
   isArchivedInCurrentOrganisation() {
-    return this.archives && this.archiveInCurrentOrganisation();
+    return this.archives.length > 0 && this.archiveInCurrentOrganisation();
   }
 
   isArchivedInCurrentDepartment() {
-    return this.archives && this.isArchivedInAllAgentUserOrganisations();
+    return this.archives.length > 0 && this.isArchivedInAllAgentUserOrganisations();
   }
 
   isArchivedInAllAgentUserOrganisations() {
