@@ -1,10 +1,9 @@
-# This class is intented to be used manually via a console
+require Rails.root.join("app/services/base_service")
+
 module Organisations
   class DestroyMultiple < BaseService
-    # rubocop:disable Rails/Output
-    def initialize(organisation_ids:, confirm: true)
+    def initialize(organisation_ids:)
       @organisation_ids = organisation_ids
-      @confirm = confirm
     end
 
     def call
@@ -23,8 +22,6 @@ module Organisations
     private
 
     def confirmed?(organisation)
-      return true unless @confirm
-
       display_organisation_info(organisation)
 
       puts "Are you sure you want to destroy this organisation? (y/n)"
@@ -43,13 +40,18 @@ module Organisations
       puts "Number of users : #{users_count}"
       puts "Number of rdvs : #{rdvs_count}"
       puts "Last rdv created : #{last_rdv_created_at}" if any_rdvs
-      puts "⚠️ This organisation is still present in RDV-Solidarités" if organisation_exists
+
+      if organisation_exists
+        puts "⚠️ This organisation is still present in RDV-Solidarités" 
+        exit
+      end
     end
 
     def organisation_exists_in_rdv_solidarites?(organisation)
       with_faked_agent_auth(organisation) do
         RdvSolidaritesApi::RetrieveOrganisation
           .call(rdv_solidarites_organisation_id: organisation.rdv_solidarites_organisation_id)
+          .success?
       end
     end
 
@@ -62,6 +64,5 @@ module Organisations
 
       result
     end
-    # rubocop:enable Rails/Output
   end
 end
