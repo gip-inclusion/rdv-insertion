@@ -1,7 +1,7 @@
 describe InboundWebhooks::Brevo::AssignMailDeliveryStatusAndDate do
   subject { described_class.call(webhook_params: webhook_params, record: record) }
 
-  let(:webhook_params) { { email: "test@example.com", event: "delivered", date: "2023-06-07T12:34:56Z" } }
+  let(:webhook_params) { { email: "Test@example.com", event: "delivered", date: "2023-06-07T12:34:56Z" } }
   let!(:user) { create(:user, email: "test@example.com", invitations: []) }
   let!(:participation) { create(:participation, user: user) }
   let(:notification) { create(:notification, participation: participation) }
@@ -40,6 +40,7 @@ describe InboundWebhooks::Brevo::AssignMailDeliveryStatusAndDate do
 
       it "updates the #{record_type} with the correct delivery status and date" do
         subject
+        expect(Sentry).not_to receive(:capture_message).with(any_args)
         record.reload
         expect(record.delivery_status).to eq("delivered")
         expect(record.last_brevo_webhook_received_at).to eq(Time.zone.parse("2023-06-07T12:34:56Z"))
