@@ -1,7 +1,5 @@
-require Rails.root.join("app/services/base_service")
-
 module Organisations
-  class DestroyMultiple < BaseService
+  class DestroyMultiple
     def initialize(organisation_ids:)
       @organisation_ids = organisation_ids
     end

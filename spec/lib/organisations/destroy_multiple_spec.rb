@@ -2,7 +2,7 @@ require Rails.root.join("lib/organisations/destroy_multiple")
 
 describe Organisations::DestroyMultiple do
   subject do
-    described_class.call(organisation_ids:)
+    described_class.new(organisation_ids:).call
   end
 
   let(:agent) { create(:agent) }
