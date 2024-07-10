@@ -1,7 +1,7 @@
 describe "Agents can archive and unarchive user", :js do
-  let!(:agent) { create(:agent) }
+  let!(:agent) { create(:agent, organisations: [organisation]) }
   let!(:department) { create(:department) }
-  let!(:organisation) { create(:organisation, agents: [agent], department:) }
+  let!(:organisation) { create(:organisation, department:) }
   let!(:user) { create(:user, organisations: [organisation]) }
 
   before { setup_agent_session(agent) }
@@ -117,7 +117,8 @@ describe "Agents can archive and unarchive user", :js do
     end
 
     context "when department level" do
-      let!(:other_org) { create(:organisation, department: department, users: [user]) }
+      let!(:other_org) { create(:organisation, department:, users: [user]) }
+      let!(:agent) { create(:agent, organisations: [organisation, other_org]) }
       let!(:archive) { create(:archive, user:, organisation:, archiving_reason: "CDI") }
 
       context "when the user is archived in all organisations of department" do
