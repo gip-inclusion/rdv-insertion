@@ -2,7 +2,7 @@ RSpec.describe "BrevoMailWebhooks" do
   let(:webhook_params) do
     {
       email: "test@example.com",
-      event: "opened",
+      event: "delivered",
       date: "2023-06-07T12:34:56Z",
       :"X-Mailin-custom" => "{\"record_identifier\": \"#{record_identifier}\"}"
     }
@@ -25,29 +25,49 @@ RSpec.describe "BrevoMailWebhooks" do
       expect(response).to be_successful
 
       invitation.reload
-      expect(invitation.delivery_status).to eq("opened")
-      expect(invitation.delivered_at).to eq(Time.zone.parse("2023-06-07T12:34:56Z"))
+      expect(invitation.delivery_status).to eq("delivered")
+      expect(invitation.last_brevo_webhook_received_at).to eq(Time.zone.parse("2023-06-07T12:34:56Z"))
     end
 
-    context "with invalid data" do
-      let(:invalid_webhook_params) do
+    context "when emails doesnt match" do
+      let(:mismatched_webhook_params) do
         {
-          email: "mismatch@example.com",
-          event: "opened",
+          email: "email_changed@example.com",
+          event: "delivered",
           date: "2023-06-07T12:34:56Z",
           :"X-Mailin-custom" => "{\"record_identifier\": \"#{invitation.record_identifier}\"}"
         }
       end
 
-      it "does not update the invitation and captures an error" do
-        post "/brevo/mail_webhooks", params: invalid_webhook_params, as: :json
+      it "update the invitation but captures an error" do
+        post "/brevo/mail_webhooks", params: mismatched_webhook_params, as: :json
+        expect(response).to be_successful
+
+        invitation.reload
+        expect(invitation.delivery_status).to eq("delivered")
+        expect(invitation.last_brevo_webhook_received_at).to eq(Time.zone.parse("2023-06-07T12:34:56Z"))
+        expect(Sentry).to have_received(:capture_message).with("Invitation email and webhook email does not match",
+                                                               any_args)
+      end
+    end
+
+    context "with an event not in enum" do
+      let(:unprocessed_event_webhook_params) do
+        {
+          email: "test@example.com",
+          event: "request",
+          date: "2023-06-07T12:34:56Z",
+          :"X-Mailin-custom" => "{\"record_identifier\": \"#{invitation.record_identifier}\"}"
+        }
+      end
+
+      it "does not update the invitation but save last_brevo_webhook_received_at date" do
+        post "/brevo/mail_webhooks", params: unprocessed_event_webhook_params, as: :json
         expect(response).to be_successful
 
         invitation.reload
         expect(invitation.delivery_status).to be_nil
-        expect(invitation.delivered_at).to be_nil
-        expect(Sentry).to have_received(:capture_message).with("Invitation email and webhook email does not match",
-                                                               any_args)
+        expect(invitation.last_brevo_webhook_received_at).to eq(Time.zone.parse("2023-06-07T12:34:56Z"))
       end
     end
 
@@ -55,7 +75,7 @@ RSpec.describe "BrevoMailWebhooks" do
       let(:invalid_webhook_params) do
         {
           email: "test@example.com",
-          event: "opened",
+          event: "delivered",
           date: "2023-06-07T12:34:56Z",
           :"X-Mailin-custom" => '{"record_identifier": "invitation_9999"}'
         }
@@ -80,15 +100,15 @@ RSpec.describe "BrevoMailWebhooks" do
       expect(response).to be_successful
 
       notification.reload
-      expect(notification.delivery_status).to eq("opened")
-      expect(notification.delivered_at).to eq(Time.zone.parse("2023-06-07T12:34:56Z"))
+      expect(notification.delivery_status).to eq("delivered")
+      expect(notification.last_brevo_webhook_received_at).to eq(Time.zone.parse("2023-06-07T12:34:56Z"))
     end
 
     context "when notification is not found" do
       let(:invalid_webhook_params) do
         {
           email: "test@example.com",
-          event: "opened",
+          event: "delivered",
           date: "2023-06-07T12:34:56Z",
           :"X-Mailin-custom" => '{"record_identifier": "notification_9999"}'
         }
