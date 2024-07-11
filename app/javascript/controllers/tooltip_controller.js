@@ -17,6 +17,16 @@ export default class extends Controller {
     });
   }
 
+  tagCreationDate() {
+    tippy(this.element, {
+      content(reference) {
+        const { tagCreationDate } = reference.dataset;
+        return (`Tag ajouté le ${tagCreationDate}`);
+      },
+      allowHTML: true,
+    });
+  }
+
   csvExportUsers() {
     tippy(this.element, {
       content: "Les usagers correspondant aux filtres actuels seront exportés",
@@ -163,6 +173,19 @@ export default class extends Controller {
       content:
        "Réinviter remettra les compteurs à 0 vis à vis des délais",
       placement: "bottom",
+    });
+  }
+
+  invitationNotDelivered() {
+    tippy(this.element, {
+      content(reference) {
+        const { invitationFormat } = reference.dataset;
+        if (invitationFormat === "sms") {
+          return "Le SMS n'a pas pu être délivré. Causes possibles : numéro incorrect, problème de l'opérateur, etc. Nous vous invitons à vérifier le format du numéro et à le modifier si nécessaire.";
+        }
+        return "L’email n'a pas pu être remis. Causes possibles : boîte de réception pleine ou indisponible, adresse email incorrecte ou inexistante, filtre anti-spams, etc. Nous vous invitons à vérifier le format de l’adresse email et de réessayer d'envoyer l'invitation.";
+      },
+      placement: "top",
     });
   }
 }

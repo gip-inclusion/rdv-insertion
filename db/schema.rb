@@ -50,6 +50,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_11_083143) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "last_webhook_update_received_at"
+    t.boolean "authorized_to_export_csv", default: false
     t.index ["access_level"], name: "index_agent_roles_on_access_level"
     t.index ["agent_id", "organisation_id"], name: "index_agent_roles_on_agent_id_and_organisation_id", unique: true
     t.index ["agent_id"], name: "index_agent_roles_on_agent_id"
@@ -200,6 +201,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_11_083143) do
     t.string "uuid"
     t.boolean "rdv_with_referents", default: false
     t.string "trigger", default: "manual", null: false
+    t.string "delivery_status"
+    t.datetime "last_brevo_webhook_received_at"
     t.index ["department_id"], name: "index_invitations_on_department_id"
     t.index ["follow_up_id"], name: "index_invitations_on_follow_up_id"
     t.index ["trigger"], name: "index_invitations_on_trigger"
@@ -282,6 +285,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_11_083143) do
     t.bigint "rdv_solidarites_rdv_id"
     t.string "format"
     t.bigint "participation_id"
+    t.string "delivery_status"
+    t.datetime "last_brevo_webhook_received_at"
     t.index ["participation_id"], name: "index_notifications_on_participation_id"
   end
 

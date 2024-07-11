@@ -35,7 +35,7 @@ describe Invitations::SendSms, type: :service do
       :invitation,
       user: user, department: department, rdv_solidarites_token: "123", help_phone_number: help_phone_number,
       organisations: [organisation],
-      link: "https://www.rdv-solidarites.fr/lieux?invitation_token=123", format: "sms", follow_up: follow_up
+      link: "https://www.rdv-solidarites-test.localhost/lieux?invitation_token=123", format: "sms", follow_up: follow_up
     )
   end
 
@@ -44,7 +44,7 @@ describe Invitations::SendSms, type: :service do
     "M. John DOE,\nVous êtes bénéficiaire du RSA et êtes #{user.conjugate('invité')} à participer" \
       " à un rendez-vous d'orientation. " \
       "Pour choisir la date du RDV, cliquez sur ce lien " \
-      "dans les 3 jours: rdv-solidarites.fr/i/r/#{invitation.uuid}\n" \
+      "dans les 3 jours: rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
       "Ce RDV est obligatoire. En cas de problème, contactez le 0147200001."
   end
 
@@ -52,7 +52,6 @@ describe Invitations::SendSms, type: :service do
     before do
       allow(SendTransactionalSms).to receive(:call).and_return(OpenStruct.new(success?: true))
       allow(invitation).to receive(:sms_sender_name).and_return(sms_sender_name)
-      ENV["HOST"] = "www.rdv-insertion.fr"
     end
 
     it("is a success") { is_a_success }
@@ -61,7 +60,7 @@ describe Invitations::SendSms, type: :service do
       expect(SendTransactionalSms).to receive(:call)
         .with(
           phone_number: phone_number, content: content,
-          sender_name: sms_sender_name
+          sender_name: sms_sender_name, record_identifier: invitation.record_identifier
         )
       subject
     end
@@ -101,7 +100,7 @@ describe Invitations::SendSms, type: :service do
         "M. John DOE,\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours vous " \
           "invitant à prendre RDV au créneau de votre choix afin de démarrer un parcours d'accompagnement. " \
           "Ce lien de prise de RDV expire dans 5 jours: " \
-          "rdv-solidarites.fr/i/r/#{invitation.uuid}\n" \
+          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
           "Ce RDV est obligatoire. En cas de problème, contactez le 0147200001."
       end
 
@@ -113,7 +112,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -131,7 +130,7 @@ describe Invitations::SendSms, type: :service do
         "M. John DOE,\nVous êtes nouveau et êtes #{user.conjugate('invité')} à participer" \
           " à un nouveau type de rendez-vous. " \
           "Pour choisir la date du RDV, cliquez sur ce lien " \
-          "dans les 3 jours: rdv-solidarites.fr/i/r/#{invitation.uuid}\n" \
+          "dans les 3 jours: rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
           "Ce RDV est obligatoire. En cas de problème, contactez le 0147200001."
       end
 
@@ -139,7 +138,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -152,7 +151,7 @@ describe Invitations::SendSms, type: :service do
         "M. John DOE,\nVous êtes bénéficiaire du RSA et êtes #{user.conjugate('invité')} à " \
           "participer à un rendez-vous d'accompagnement." \
           " Pour choisir la date du RDV, cliquez sur ce lien " \
-          "dans les 3 jours: rdv-solidarites.fr/i/r/#{invitation.uuid}\n" \
+          "dans les 3 jours: rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
           "Ce RDV est obligatoire. En l'absence d'action de votre part, " \
           "votre RSA pourra être suspendu ou réduit. " \
           "En cas de problème, contactez le 0147200001."
@@ -171,7 +170,7 @@ describe Invitations::SendSms, type: :service do
           expect(SendTransactionalSms).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
-              sender_name: sms_sender_name
+              sender_name: sms_sender_name, record_identifier: invitation.record_identifier
             )
           subject
         end
@@ -181,7 +180,7 @@ describe Invitations::SendSms, type: :service do
             "M. John DOE,\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours vous " \
               "invitant à prendre RDV au créneau de votre choix afin de démarrer un parcours d'accompagnement. " \
               "Ce lien de prise de RDV expire dans 5 jours: " \
-              "rdv-solidarites.fr/i/r/#{invitation.uuid}\n" \
+              "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
               "Ce RDV est obligatoire. En l'absence d'action de votre part, " \
               "votre RSA pourra être suspendu ou réduit. En cas de problème, contactez le " \
               "0147200001."
@@ -195,7 +194,7 @@ describe Invitations::SendSms, type: :service do
             expect(SendTransactionalSms).to receive(:call)
               .with(
                 phone_number: phone_number, content: content,
-                sender_name: sms_sender_name
+                sender_name: sms_sender_name, record_identifier: invitation.record_identifier
               )
             subject
           end
@@ -212,7 +211,7 @@ describe Invitations::SendSms, type: :service do
       let!(:content) do
         "M. John DOE,\nVous êtes bénéficiaire du RSA et devez contacter la plateforme départementale " \
           "afin de démarrer un parcours d'accompagnement. Pour cela, merci d'appeler le " \
-          "0147200001 dans un délai de 3 jours. " \
+          "0147200001 dans les 3 jours. " \
           "Cet appel est obligatoire pour le traitement de votre dossier. "
       end
 
@@ -222,7 +221,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -243,7 +242,7 @@ describe Invitations::SendSms, type: :service do
           expect(SendTransactionalSms).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
-              sender_name: sms_sender_name
+              sender_name: sms_sender_name, record_identifier: invitation.record_identifier
             )
           subject
         end
@@ -260,7 +259,7 @@ describe Invitations::SendSms, type: :service do
           " à un rendez-vous de signature de CER." \
           " Pour choisir la date du RDV, cliquez sur ce lien dans les " \
           "3 jours: " \
-          "rdv-solidarites.fr/i/r/#{invitation.uuid}\n" \
+          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
           "Ce RDV est obligatoire. " \
           "En cas de problème, contactez le 0147200001."
       end
@@ -271,7 +270,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -282,7 +281,7 @@ describe Invitations::SendSms, type: :service do
             "vous invitant à prendre RDV au créneau de votre choix afin de construire et signer " \
             "votre Contrat d'Engagement Réciproque. " \
             "Ce lien de prise de RDV expire dans 5 jours: " \
-            "rdv-solidarites.fr/i/r/#{invitation.uuid}\n" \
+            "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
             "Ce RDV est obligatoire. En cas de problème, contactez le " \
             "0147200001."
         end
@@ -295,7 +294,7 @@ describe Invitations::SendSms, type: :service do
           expect(SendTransactionalSms).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
-              sender_name: sms_sender_name
+              sender_name: sms_sender_name, record_identifier: invitation.record_identifier
             )
           subject
         end
@@ -312,7 +311,7 @@ describe Invitations::SendSms, type: :service do
           " à un entretien de main tendue." \
           " Pour choisir la date du RDV, cliquez sur ce lien dans les " \
           "3 jours: " \
-          "rdv-solidarites.fr/i/r/#{invitation.uuid}\n" \
+          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
           "Ce RDV est obligatoire. " \
           "En cas de problème, contactez le 0147200001."
       end
@@ -323,7 +322,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -333,7 +332,7 @@ describe Invitations::SendSms, type: :service do
           "M. John DOE,\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours " \
             "vous invitant à prendre RDV au créneau de votre choix afin de faire le point sur votre situation." \
             " Ce lien de prise de RDV expire dans 5 jours: " \
-            "rdv-solidarites.fr/i/r/#{invitation.uuid}\n" \
+            "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
             "Ce RDV est obligatoire. En cas de problème, contactez le " \
             "0147200001."
         end
@@ -346,7 +345,7 @@ describe Invitations::SendSms, type: :service do
           expect(SendTransactionalSms).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
-              sender_name: sms_sender_name
+              sender_name: sms_sender_name, record_identifier: invitation.record_identifier
             )
           subject
         end
@@ -363,7 +362,7 @@ describe Invitations::SendSms, type: :service do
         "M. John DOE,\nVous êtes bénéficiaire du RSA et êtes #{user.conjugate('invité')} à participer" \
           " à un atelier collectif. Pour choisir la date du RDV, cliquez sur ce lien dans les " \
           "3 jours: " \
-          "rdv-solidarites.fr/i/r/#{invitation.uuid}\n" \
+          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
           "Ce RDV est obligatoire. " \
           "En cas de problème, contactez le 0147200001."
       end
@@ -374,7 +373,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -384,7 +383,7 @@ describe Invitations::SendSms, type: :service do
           "M. John DOE,\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours " \
             "vous invitant à prendre RDV au créneau de votre choix afin de vous aider dans votre parcours d'insertion" \
             ". Ce lien de prise de RDV expire dans 5 jours: " \
-            "rdv-solidarites.fr/i/r/#{invitation.uuid}\n" \
+            "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
             "Ce RDV est obligatoire. En cas de problème, contactez le " \
             "0147200001."
         end
@@ -397,7 +396,7 @@ describe Invitations::SendSms, type: :service do
           expect(SendTransactionalSms).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
-              sender_name: sms_sender_name
+              sender_name: sms_sender_name, record_identifier: invitation.record_identifier
             )
           subject
         end
@@ -413,7 +412,7 @@ describe Invitations::SendSms, type: :service do
         "M. John DOE,\nVous êtes demandeur d'emploi et êtes #{user.conjugate('invité')} à participer" \
           " à un rendez-vous d'accompagnement." \
           " Pour choisir la date du RDV, cliquez sur ce lien " \
-          "dans les 3 jours: rdv-solidarites.fr/i/r/#{invitation.uuid}\n" \
+          "dans les 3 jours: rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
           "Ce RDV est obligatoire. En l'absence d'action de votre part, " \
           "votre RSA pourra être suspendu ou réduit. " \
           "En cas de problème, contactez le 0147200001."
@@ -425,7 +424,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -435,7 +434,7 @@ describe Invitations::SendSms, type: :service do
           "M. John DOE,\nEn tant que demandeur d'emploi, vous avez reçu un message il y a 3 jours vous " \
             "invitant à prendre RDV au créneau de votre choix afin de démarrer un parcours d'accompagnement. " \
             "Ce lien de prise de RDV expire dans 5 jours: " \
-            "rdv-solidarites.fr/i/r/#{invitation.uuid}\n" \
+            "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
             "Ce RDV est obligatoire. En l'absence d'action de votre part, " \
             "votre RSA pourra être suspendu ou réduit. En cas de problème, contactez le " \
             "0147200001."
@@ -449,7 +448,7 @@ describe Invitations::SendSms, type: :service do
           expect(SendTransactionalSms).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
-              sender_name: sms_sender_name
+              sender_name: sms_sender_name, record_identifier: invitation.record_identifier
             )
           subject
         end
@@ -465,7 +464,7 @@ describe Invitations::SendSms, type: :service do
         "M. John DOE,\nVous êtes candidat.e dans une Structure d’Insertion par l’Activité Economique (SIAE)" \
           " et êtes #{user.conjugate('invité')} à participer à un entretien d'embauche." \
           " Pour choisir la date du RDV, cliquez sur ce lien " \
-          "dans les 3 jours: rdv-solidarites.fr/i/r/#{invitation.uuid}\n" \
+          "dans les 3 jours: rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
           "En cas de problème, contactez le 0147200001."
       end
 
@@ -475,7 +474,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -486,7 +485,7 @@ describe Invitations::SendSms, type: :service do
             "(SIAE), vous avez reçu un message il y a 3 jours vous " \
             "invitant à prendre RDV au créneau de votre choix afin de poursuivre le processus de recrutement. " \
             "Ce lien de prise de RDV expire dans 5 jours: " \
-            "rdv-solidarites.fr/i/r/#{invitation.uuid}\n" \
+            "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
             "En cas de problème, contactez le " \
             "0147200001."
         end
@@ -499,7 +498,7 @@ describe Invitations::SendSms, type: :service do
           expect(SendTransactionalSms).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
-              sender_name: sms_sender_name
+              sender_name: sms_sender_name, record_identifier: invitation.record_identifier
             )
           subject
         end
@@ -516,7 +515,7 @@ describe Invitations::SendSms, type: :service do
         "M. John DOE,\nVous êtes candidat.e dans une Structure d’Insertion par l’Activité Economique (SIAE)" \
           " et êtes #{user.conjugate('invité')} à participer à un rendez-vous collectif d'information." \
           " Pour choisir la date du RDV, cliquez sur ce lien " \
-          "dans les 3 jours: rdv-solidarites.fr/i/r/#{invitation.uuid}\n" \
+          "dans les 3 jours: rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
           "En cas de problème, contactez le 0147200001."
       end
 
@@ -526,7 +525,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -537,7 +536,7 @@ describe Invitations::SendSms, type: :service do
             "(SIAE), vous avez reçu un message il y a 3 jours vous " \
             "invitant à prendre RDV au créneau de votre choix afin de découvrir cette structure. " \
             "Ce lien de prise de RDV expire dans 5 jours: " \
-            "rdv-solidarites.fr/i/r/#{invitation.uuid}\n" \
+            "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
             "En cas de problème, contactez le " \
             "0147200001."
         end
@@ -550,7 +549,7 @@ describe Invitations::SendSms, type: :service do
           expect(SendTransactionalSms).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
-              sender_name: sms_sender_name
+              sender_name: sms_sender_name, record_identifier: invitation.record_identifier
             )
           subject
         end
@@ -566,7 +565,7 @@ describe Invitations::SendSms, type: :service do
         "M. John DOE,\nVous êtes salarié.e au sein de notre structure" \
           " et êtes #{user.conjugate('invité')} à participer à un rendez-vous de suivi." \
           " Pour choisir la date du RDV, cliquez sur ce lien " \
-          "dans les 3 jours: rdv-solidarites.fr/i/r/#{invitation.uuid}\n" \
+          "dans les 3 jours: rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
           "En cas de problème, contactez le 0147200001."
       end
 
@@ -576,7 +575,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -587,7 +586,7 @@ describe Invitations::SendSms, type: :service do
             "vous avez reçu un message il y a 3 jours vous " \
             "invitant à prendre RDV au créneau de votre choix afin de faire un point avec votre référent. " \
             "Ce lien de prise de RDV expire dans 5 jours: " \
-            "rdv-solidarites.fr/i/r/#{invitation.uuid}\n" \
+            "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
             "En cas de problème, contactez le " \
             "0147200001."
         end
@@ -600,7 +599,7 @@ describe Invitations::SendSms, type: :service do
           expect(SendTransactionalSms).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
-              sender_name: sms_sender_name
+              sender_name: sms_sender_name, record_identifier: invitation.record_identifier
             )
           subject
         end
@@ -615,7 +614,7 @@ describe Invitations::SendSms, type: :service do
       let!(:content) do
         "M. John DOE,\nVous êtes invité à prendre un rendez-vous de suivi psychologue." \
           " Pour choisir la date du RDV, cliquez sur ce lien: " \
-          "rdv-solidarites.fr/i/r/#{invitation.uuid}\n" \
+          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
           "En cas de problème, contactez le 0147200001."
       end
 
@@ -625,7 +624,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -642,7 +641,7 @@ describe Invitations::SendSms, type: :service do
           "un rendez-vous d'orientation." \
           " Pour choisir la date du RDV, cliquez sur ce lien dans les " \
           "3 jours: " \
-          "rdv-solidarites.fr/i/r/#{invitation.uuid}\n" \
+          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
           "Ce RDV est obligatoire. " \
           "En cas de problème, contactez le 0147200001."
       end
@@ -653,7 +652,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -668,7 +667,7 @@ describe Invitations::SendSms, type: :service do
         "John Doe,\nTu es invité à participer à un atelier organisé par le département. " \
           "Nous te proposons de cliquer ci-dessous pour découvrir le programme. " \
           "Si tu es intéressé pour participer, tu n’auras qu’à cliquer et t’inscrire en ligne avec le lien suivant: " \
-          "rdv-solidarites.fr/i/r/#{invitation.uuid}\n" \
+          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
           "En cas de problème, tu peux contacter le 0147200001."
       end
 
@@ -678,7 +677,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -694,7 +693,7 @@ describe Invitations::SendSms, type: :service do
         "M. John DOE,\nVous êtes bénéficiaire du RSA et êtes #{user.conjugate('invité')} à participer" \
           " à un rendez-vous d'information." \
           " Pour choisir la date du RDV, cliquez sur ce lien " \
-          "dans les 3 jours: rdv-solidarites.fr/i/r/#{invitation.uuid}\n" \
+          "dans les 3 jours: rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
           "Ce RDV est obligatoire. " \
           "En cas de problème, contactez le 0147200001."
       end
@@ -705,7 +704,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -715,7 +714,7 @@ describe Invitations::SendSms, type: :service do
           "M. John DOE,\nEn tant que bénéficiaire du RSA, vous avez reçu un message il y a 3 jours vous " \
             "invitant à prendre RDV au créneau de votre choix afin de vous renseigner sur vos droits et vos devoirs. " \
             "Ce lien de prise de RDV expire dans 5 jours: " \
-            "rdv-solidarites.fr/i/r/#{invitation.uuid}\n" \
+            "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
             "Ce RDV est obligatoire. En cas de problème, contactez le " \
             "0147200001."
         end
@@ -728,7 +727,7 @@ describe Invitations::SendSms, type: :service do
           expect(SendTransactionalSms).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
-              sender_name: sms_sender_name
+              sender_name: sms_sender_name, record_identifier: invitation.record_identifier
             )
           subject
         end
@@ -744,7 +743,7 @@ describe Invitations::SendSms, type: :service do
         "M. John DOE,\nVous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement. " \
           "Vous pouvez consulter le(s) atelier(s) et formation(s) proposé(s) et vous y inscrire directement et " \
           "librement, dans la limite des places disponibles, en cliquant sur ce lien: " \
-          "rdv-solidarites.fr/i/r/#{invitation.uuid}\n" \
+          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
           "En cas de problème, contactez le 0147200001."
       end
 
@@ -754,7 +753,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -769,7 +768,7 @@ describe Invitations::SendSms, type: :service do
         "M. John DOE,\nVous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement. " \
           "Vous pouvez consulter le(s) atelier(s) et formation(s) proposé(s) et vous y inscrire directement et " \
           "librement, dans la limite des places disponibles, en cliquant sur ce lien: " \
-          "rdv-solidarites.fr/i/r/#{invitation.uuid}\n" \
+          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
           "En cas de problème, contactez le 0147200001."
       end
 
@@ -779,7 +778,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -794,7 +793,7 @@ describe Invitations::SendSms, type: :service do
         "M. John DOE,\nVous êtes bénéficiaire du RSA et bénéficiez d'un accompagnement. " \
           "Vous pouvez consulter le(s) atelier(s) et formation(s) proposé(s) et vous y inscrire directement et " \
           "librement, dans la limite des places disponibles, en cliquant sur ce lien: " \
-          "rdv-solidarites.fr/i/r/#{invitation.uuid}\n" \
+          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
           "En cas de problème, contactez le 0147200001."
       end
 
@@ -804,7 +803,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -820,7 +819,7 @@ describe Invitations::SendSms, type: :service do
           " à un rendez-vous de suivi. " \
           "Pour choisir la date du RDV, cliquez sur ce lien dans les " \
           "3 jours: " \
-          "rdv-solidarites.fr/i/r/#{invitation.uuid}\n" \
+          "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
           "En cas de problème, contactez le 0147200001."
       end
 
@@ -830,7 +829,7 @@ describe Invitations::SendSms, type: :service do
         expect(SendTransactionalSms).to receive(:call)
           .with(
             phone_number: phone_number, content: content,
-            sender_name: sms_sender_name
+            sender_name: sms_sender_name, record_identifier: invitation.record_identifier
           )
         subject
       end
@@ -841,7 +840,7 @@ describe Invitations::SendSms, type: :service do
             "vous invitant à prendre RDV au créneau de votre choix afin de faire un point avec votre référent" \
             " de parcours. " \
             "Ce lien de prise de RDV expire dans 5 jours: " \
-            "rdv-solidarites.fr/i/r/#{invitation.uuid}\n" \
+            "rdv-solidarites-test.localhost/i/r/#{invitation.uuid}\n" \
             "En cas de problème, contactez le " \
             "0147200001."
         end
@@ -854,7 +853,7 @@ describe Invitations::SendSms, type: :service do
           expect(SendTransactionalSms).to receive(:call)
             .with(
               phone_number: phone_number, content: content,
-              sender_name: sms_sender_name
+              sender_name: sms_sender_name, record_identifier: invitation.record_identifier
             )
           subject
         end

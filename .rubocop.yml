@@ -8,6 +8,7 @@ AllCops:
   Exclude:
     - "vendor/bundle/**/*"
     - "bin/*"
+    - "lib/**/*"
     - "node_modules/**/*"
     - "db/schema.rb"
     - "db/seeds.rb"
