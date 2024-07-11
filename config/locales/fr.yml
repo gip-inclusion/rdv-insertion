@@ -250,12 +250,3 @@ fr:
     postal: Courrier
     sms: SMS
     email: Email
-  external_notifications:
-    events_description: 
-      created: "Prise de rendez-vous"
-      cancelled: "Annulation de rendez-vous"
-      updated: "Modification de rendez-vous"
-    events:
-      created: "créé"
-      cancelled: "annulé"
-      updated: "mis à jour"
