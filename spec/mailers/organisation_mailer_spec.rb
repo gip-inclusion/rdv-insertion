@@ -32,7 +32,7 @@ RSpec.describe OrganisationMailer do
       create(:category_configuration, organisation:, email_to_notify_rdv_changes: "test@test.com")
     end
     let(:follow_up) { create(:follow_up, motif_category_id: category_configuration.motif_category_id) }
-    let(:agent_prescripteur) { create(:agent, first_name: "Jean", last_name: "Pierre", rdv_solidarites_agent_id: 123) }
+    let(:agent_prescripteur) { create(:agent, first_name: "Jean", last_name: "Pierre") }
     let(:participation) { create(:participation, organisation:, follow_up:, agent_prescripteur:) }
 
     it "sends the email" do
