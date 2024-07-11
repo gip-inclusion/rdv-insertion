@@ -20,7 +20,10 @@ module Api
           motif_category_attributes = attrs.dig(:invitation, :motif_category) || {}
 
           CreateAndInviteUserJob.perform_async(
-            @organisation.id, user_attributes.merge(creation_source_attributes), invitation_attributes, motif_category_attributes
+            @organisation.id,
+            user_attributes.merge(creation_source_attributes),
+            invitation_attributes,
+            motif_category_attributes
           )
         end
         render json: { success: true }
