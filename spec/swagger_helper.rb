@@ -284,7 +284,7 @@ RSpec.configure do |config|
               status: { type: "string", enum: %w[unknown seen excused revoked noshow] },
               created_by: { type: "string", enum: %w[agent user prescripteur] },
               created_at: { type: "string", format: "date" },
-              user: { "$ref" => "#/components/schemas/user" },
+              user: { "$ref" => "#/components/schemas/user" }
             },
             required: %w[status created_by created_at]
           },
