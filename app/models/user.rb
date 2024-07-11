@@ -61,7 +61,13 @@ class User < ApplicationRecord
 
   enum role: { demandeur: "demandeur", conjoint: "conjoint" }
   enum title: { monsieur: "monsieur", madame: "madame" }
-  enum created_through: { rdv_insertion: "rdv_insertion", rdv_solidarites: "rdv_solidarites" }, _prefix: true
+  enum created_through: {
+    rdv_insertion_upload: "rdv_insertion_upload",
+    rdv_insertion_form: "rdv_insertion_form",
+    api: "external_api",
+    rdv_solidarites: "rdv_solidarites"
+  }, _prefix: true
+  enum creation_structure_level: { organisation: "organisation", department: "department" }
 
   scope :active, -> { where(deleted_at: nil) }
   scope :deleted, -> { where.not(deleted_at: nil) }

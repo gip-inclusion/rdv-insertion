@@ -20,7 +20,7 @@ module Api
           motif_category_attributes = attrs.dig(:invitation, :motif_category) || {}
 
           CreateAndInviteUserJob.perform_async(
-            @organisation.id, user_attributes, invitation_attributes, motif_category_attributes
+            @organisation.id, user_attributes.merge(creation_source_attributes), invitation_attributes, motif_category_attributes
           )
         end
         render json: { success: true }
@@ -48,7 +48,7 @@ module Api
 
       def upsert_user
         @upsert_user ||= Users::Upsert.call(
-          user_attributes: user_attributes, organisation: @organisation
+          user_attributes: user_attributes.merge(creation_source_attributes), organisation: @organisation
         )
       end
 
@@ -77,6 +77,14 @@ module Api
 
       def user_attributes
         user_params.except(:invitation)
+      end
+
+      def creation_source_attributes
+        {
+          created_through: "external_api",
+          creation_structure_level: "organisation",
+          creation_structure_id: @organisation.id
+        }
       end
 
       def invitation_attributes

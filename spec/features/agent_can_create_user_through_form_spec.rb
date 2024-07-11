@@ -52,6 +52,11 @@ describe "Agents can create user through form", :js do
       expect(page).to have_content("Bob")
       expect(page).to have_content("Kelso")
       expect(page).to have_content("bob@kelso.com")
+
+      user = User.last
+      expect(user.created_through).to eq("rdv_insertion_form")
+      expect(user.creation_structure_level).to eq("organisation")
+      expect(user.creation_structure_id).to eq(organisation.id)
     end
 
     context "from department page" do

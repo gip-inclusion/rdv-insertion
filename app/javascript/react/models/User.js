@@ -496,6 +496,9 @@ export default class User {
       ...(this.currentConfiguration && {
         follow_ups_attributes: [{ motif_category_id: this.currentConfiguration.motif_category_id }],
       }),
+      ...({ created_through: "rdv_insertion_upload" }),
+      ...({ creation_structure_level: this.list.isDepartmentLevel ? "department" : "organisation" }),
+      ...({ creation_structure_id: this.list.isDepartmentLevel ? this.department.id : this.currentOrganisation.id }),
     };
   }
 }

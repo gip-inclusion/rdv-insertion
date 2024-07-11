@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_05_140428) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_10_165307) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -83,11 +83,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_05_140428) do
   end
 
   create_table "archives", force: :cascade do |t|
-    t.bigint "department_id", null: false
     t.bigint "user_id", null: false
     t.string "archiving_reason"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "department_id", null: false
     t.index ["department_id"], name: "index_archives_on_department_id"
     t.index ["user_id"], name: "index_archives_on_user_id"
   end
@@ -488,8 +488,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_05_140428) do
     t.string "nir"
     t.string "france_travail_id"
     t.string "carnet_de_bord_carnet_id"
-    t.string "created_through", default: "rdv_insertion"
+    t.string "created_through", default: "rdv_insertion_upload"
     t.bigint "old_rdv_solidarites_user_id"
+    t.string "creation_structure_level", default: "organisation"
+    t.bigint "creation_structure_id"
     t.index ["department_internal_id"], name: "index_users_on_department_internal_id"
     t.index ["email"], name: "index_users_on_email"
     t.index ["nir"], name: "index_users_on_nir"

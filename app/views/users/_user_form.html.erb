@@ -12,6 +12,9 @@
   <div class="mb-4">
     <div class="row d-flex justify-content-start flex-wrap">
       <%= f.hidden_field :organisation_ids if !@user.persisted? && department_level? %>
+      <%= f.hidden_field :created_through, value: "rdv_insertion_form" %>
+      <%= f.hidden_field :creation_structure_level, value: department_level? ? "department" : "organisation" %>
+      <%= f.hidden_field :creation_structure_id, value: department_level? ? current_department_id : current_organisation_id %>
       <%= render "common/attribute_input", f:f, attribute: :first_name, mandatory: true %>
       <%= render "common/attribute_input", f:f, attribute: :last_name, mandatory: true %>
       <%= render "common/attribute_input", f:f, attribute: :title, mandatory: true, as: :select, collection: ["monsieur", "madame"] %>
