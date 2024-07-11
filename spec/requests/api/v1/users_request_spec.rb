@@ -41,6 +41,9 @@ describe "Users API", swagger_doc: "v1/api.json" do
           address: "13 rue de la République 13001 MARSEILLE",
           department_internal_id: "11111444",
           nir: generate_random_nir,
+          created_through: "external_api",
+          creation_structure_level: "organisation",
+          creation_structure_id: organisation.id,
           referents_to_add: [
             { email: "agentreferent@nomdedomaine.fr" }
           ]
@@ -64,6 +67,9 @@ describe "Users API", swagger_doc: "v1/api.json" do
           department_internal_id: "22221111",
           france_travail_id: "22233333",
           nir: generate_random_nir,
+          created_through: "external_api",
+          creation_structure_level: "organisation",
+          creation_structure_id: organisation.id,
           invitation: {
             motif_category: { name: "RSA orientation" }
           }
@@ -180,6 +186,9 @@ describe "Users API", swagger_doc: "v1/api.json" do
           address: "13 rue de la République 13001 MARSEILLE",
           department_internal_id: "11111444",
           nir: generate_random_nir,
+          created_through: "external_api",
+          creation_structure_level: "organisation",
+          creation_structure_id: organisation.id,
           referents_to_add: [
             { email: "agentreferent@nomdedomaine.fr" }
           ]
@@ -209,7 +218,7 @@ describe "Users API", swagger_doc: "v1/api.json" do
 
       before do
         allow(Users::Upsert).to receive(:call)
-          .with(user_attributes:, organisation:)
+          .with(user_attributes: user_attributes, organisation:)
           .and_return(OpenStruct.new(success?: true, user:))
         allow(InviteUser).to receive(:call)
           .with(
