@@ -9,5 +9,6 @@ class RdvBlueprint < Blueprinter::Base
     association :motif, blueprint: MotifBlueprint
     association :users, blueprint: UserBlueprint
     association :organisation, blueprint: OrganisationBlueprint
+    association :participations, blueprint: ParticipationBlueprint
   end
 end

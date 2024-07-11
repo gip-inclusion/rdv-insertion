@@ -50,6 +50,10 @@ RSpec.configure do |config|
                 type: "array",
                 items: { "$ref" => "#/components/schemas/agent" }
               },
+              participations: {
+                type: "array",
+                items: { "$ref" => "#/components/schemas/participation" }
+              },
               cancelled_at: { type: "string", format: "date", nullable: true },
               collectif: { type: "boolean" },
               created_by: { type: "string", enum: %w[agent user prescripteur] },
@@ -277,11 +281,12 @@ RSpec.configure do |config|
             type: "object",
             properties: {
               id: { type: "integer" },
-              status: { type: "string" },
-              created_by: { type: "string" },
+              status: { type: "string", enum: %w[unknown seen excused revoked noshow] },
+              created_by: { type: "string", enum: %w[agent user prescripteur] },
               created_at: { type: "string", format: "date" },
-              user: { "$ref" => "#/components/schemas/user" }
-            }
+              user: { "$ref" => "#/components/schemas/user" },
+            },
+            required: %w[status created_by created_at]
           },
           invitations: {
             type: "object",
