@@ -25,17 +25,17 @@ class NotifyUnavailableCreneauJob < ApplicationJob
   end
 
   def deliver_per_category_email_to_notify_no_available_slots(organisation, grouped_invitation_params_by_category)
-    grouped_invitation_params_by_category.each do |grouped_invitation_params|
+    grouped_invitation_params_by_category.each do |invitation_params|
       matching_category_configuration = organisation
                                         .category_configurations
-                                        .find_by(motif_category_id: grouped_invitation_params[:motif_category_id])
+                                        .find_by(motif_category_id: invitation_params[:motif_category_id])
 
       next unless matching_category_configuration&.notify_no_available_slots?
 
       OrganisationMailer.notify_no_available_slots(
-        organisation: organisation,
+        organisation:,
         recipient: matching_category_configuration.email_to_notify_no_available_slots,
-        grouped_invitation_params_by_category: grouped_invitation_params_by_category
+        invitation_params:
       ).deliver_now
     end
   end

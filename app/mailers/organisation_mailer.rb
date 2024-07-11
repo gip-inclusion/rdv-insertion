@@ -43,11 +43,11 @@ class OrganisationMailer < ApplicationMailer
     )
   end
 
-  def notify_no_available_slots(organisation:, recipient:, grouped_invitation_params:)
+  def notify_no_available_slots(organisation:, recipient:, invitation_params:)
     @organisation = organisation
-    @grouped_invitation_params = grouped_invitation_params
+    @invitation_params = invitation_params
     @referent_emails = Agent
-                       .where(rdv_solidarites_agent_id: @grouped_invitation_params[:referent_ids] || [])
+                       .where(rdv_solidarites_agent_id: @invitation_params[:referent_ids] || [])
                        .pluck(:email)
 
     mail(

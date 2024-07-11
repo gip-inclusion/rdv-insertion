@@ -5,17 +5,17 @@
 <p>Voici un nouvel évènement :</p>
 
 <p>
-Évènement : <%= I18n.t("external_notifications.events_description.#{@event}") %><br />
-Date : <%= I18n.l(@participation.rdv.starts_at, format: :human) %><br />
-Usager : <%= @participation.user %><br />
-<% if @participation.agent_prescripteur&.name %><%= "Professionel :" %><br /><% end %>
-Motif : <%= @participation.rdv.motif_name %><br />
-<% if @participation.rdv.lieu.present? %> <%= "Lieu : #{@participation.rdv.lieu.name}"%><br /> <% end %>
-<% if @participation.rdv.lieu.present? %> <%= "Adresse : #{@participation.rdv.lieu.address}" %><br /><% end %>
-Durée : <%= @participation.rdv.duration_in_min %> minutes<br />
+  Évènement : <%= I18n.t("external_notifications.events_description.#{@event}") %><br />
+  Date : <%= I18n.l(@participation.rdv.starts_at, format: :human) %><br />
+  Usager : <%= @participation.user %><br />
+  <% if @participation.agent_prescripteur %><%= "Professionel : #{@participation.agent_prescripteur}" %><br /><% end %>
+  Motif : <%= @participation.rdv.motif_name %><br />
+  <% if @participation.rdv.lieu.present? %> <%= "Lieu : #{@participation.rdv.lieu.name}"%><br /> <% end %>
+  <% if @participation.rdv.lieu.present? %> <%= "Adresse : #{@participation.rdv.lieu.address}" %><br /><% end %>
+  Durée : <%= @participation.rdv.duration_in_min %> minutes<br />
 </p>
 <p class="btn-wrapper">
-<%= link_to "Voir sur RDV-Insertion", organisation_user_follow_ups_url(@organisation.id, @participation.user.id), class: "btn btn-primary" %>
+  <%= link_to "Voir sur RDV-Insertion", organisation_user_follow_ups_url(@organisation.id, @participation.user.id), class: "btn btn-primary" %>
 </p>
 <p>À bientôt,</p>
 

@@ -32,7 +32,8 @@ RSpec.describe OrganisationMailer do
       create(:category_configuration, organisation:, email_to_notify_rdv_changes: "test@test.com")
     end
     let(:follow_up) { create(:follow_up, motif_category_id: category_configuration.motif_category_id) }
-    let(:participation) { create(:participation, organisation:, follow_up:) }
+    let(:agent_prescripteur) { create(:agent, first_name: "Jean", last_name: "Pierre") }
+    let(:participation) { create(:participation, organisation:, follow_up:, agent_prescripteur:) }
 
     it "sends the email" do
       mail = described_class.notify_rdv_changes(
@@ -44,6 +45,7 @@ RSpec.describe OrganisationMailer do
 
       expect(mail.to).to eq(["test@test.com"])
       expect(mail.body.encoded).to include("Évènement : Prise de rendez-vous")
+      expect(mail.body.encoded).to include("Professionel : Jean PIERRE")
     end
   end
 
