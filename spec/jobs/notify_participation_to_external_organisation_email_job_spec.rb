@@ -32,11 +32,11 @@ describe NotifyParticipationToExternalOrganisationEmailJob do
 
     context "already notified" do
       it "does not send the notification" do
-        expect(OrganisationMailer).to receive(:notify_rdv_changes).once.and_return(OpenStruct.new(deliver_now: false))
+        expect(OrganisationMailer).to receive(:notify_rdv_changes).once.and_return(OpenStruct.new(deliver_now: nil))
         2.times { described_class.new.perform(participation_id, event) }
 
         travel 3.hours # cache expires after 1 hour
-        expect(OrganisationMailer).to receive(:notify_rdv_changes).once.and_return(OpenStruct.new(deliver_now: false))
+        expect(OrganisationMailer).to receive(:notify_rdv_changes).once.and_return(OpenStruct.new(deliver_now: nil))
         2.times { described_class.new.perform(participation_id, event) }
       end
     end
@@ -50,7 +50,7 @@ describe NotifyParticipationToExternalOrganisationEmailJob do
             organisation: participation.organisation,
             participation: participation,
             event: event
-          ).and_return(OpenStruct.new(deliver_now: false))
+          ).and_return(OpenStruct.new(deliver_now: nil))
         subject
       end
     end
