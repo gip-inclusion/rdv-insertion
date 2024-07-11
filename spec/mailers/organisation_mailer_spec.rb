@@ -4,7 +4,7 @@ RSpec.describe OrganisationMailer do
     let(:category_configuration) do
       create(:category_configuration, organisation:, email_to_notify_no_available_slots: "test@test.com")
     end
-    let(:grouped_invitation_params) do
+    let(:invitation_params) do
       {
         motif_category_id: category_configuration.motif_category_id,
         motif_category_name: category_configuration.motif_category.name,
@@ -16,7 +16,7 @@ RSpec.describe OrganisationMailer do
       mail = described_class.notify_no_available_slots(
         organisation:,
         recipient: category_configuration.email_to_notify_no_available_slots,
-        grouped_invitation_params:
+        invitation_params:
       )
 
       expect(mail.to).to eq(["test@test.com"])
@@ -32,7 +32,7 @@ RSpec.describe OrganisationMailer do
       create(:category_configuration, organisation:, email_to_notify_rdv_changes: "test@test.com")
     end
     let(:follow_up) { create(:follow_up, motif_category_id: category_configuration.motif_category_id) }
-    let(:agent_prescripteur) { create(:agent, first_name: "Jean", last_name: "Pierre") }
+    let(:agent_prescripteur) { create(:agent, first_name: "Jean", last_name: "Pierre", rdv_solidarites_agent_id: 123) }
     let(:participation) { create(:participation, organisation:, follow_up:, agent_prescripteur:) }
 
     it "sends the email" do
