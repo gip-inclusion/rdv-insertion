@@ -191,22 +191,6 @@ export default class User {
   async unarchive(options = { raiseError: true }) {
     this.triggers.unarchive = true;
 
-    if (!this.currentOrganisation) {
-      this.currentOrganisation = await retrieveRelevantOrganisation(
-        this.departmentNumber,
-        this.linkedOrganisationSearchTerms,
-        this.fullAddress,
-        { raiseError: options.raiseError }
-      );
-
-      // If there is still no organisation it means the assignation was cancelled by agent
-      if (!this.currentOrganisation) {
-        this.triggers.creation = false;
-        if (!options.raiseError) this.errors.push("createAccount");
-        return false;
-      }
-    }
-
     const { success } = await handleArchiveDelete(this, { raiseError: options.raiseError });
     if (!success && !options.raiseError) {
       this.errors = ["deleteArchive"];
@@ -479,7 +463,7 @@ export default class User {
   }
 
   archiveInCurrentOrganisation() {
-    return this.archives.find((archive) => archive.organisation_id === this.currentOrganisation.id);
+    return this.currentOrganisation && this.archives.find((archive) => archive.organisation_id === this.currentOrganisation.id);
   }
 
   isArchivedInCurrentOrganisation() {
@@ -499,7 +483,11 @@ export default class User {
   }
 
   agentUserOrganisations() {
-    return this.organisations.filter((organisation) => this.currentAgent.organisations.map((o) => o.id).includes(organisation.id));
+    return this.organisations.filter((organisation) => this.currentAgentDepartmentOrganisationIds().includes(organisation.id));
+  }
+
+  currentAgentDepartmentOrganisationIds() {
+    return this.currentAgent.organisations.filter((organisation) => this.department.id === organisation.department_id).map((o) => o.id)
   }
 
   generateUid() {

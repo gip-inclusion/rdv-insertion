@@ -4,7 +4,7 @@ module CurrentStructure
   included do
     helper_method :current_structure_type, :department_level?, :current_organisation_id, :current_department_id,
                   :current_structure, :current_department, :current_department_name, :current_structure_name,
-                  :current_agent_department_organisations
+                  :current_agent_department_organisations, :current_organisation
 
     delegate :name, to: :current_structure, prefix: true
     delegate :name, to: :current_department, prefix: true
@@ -58,7 +58,7 @@ module CurrentStructure
   def current_agent_department_organisations
     return unless current_agent && current_department
 
-    @current_agent_department_organisations ||= current_agent.organisations_for(current_department)
+    @current_agent_department_organisations ||= current_agent.department_organisations(current_department)
   end
 
   def current_organisation_ids

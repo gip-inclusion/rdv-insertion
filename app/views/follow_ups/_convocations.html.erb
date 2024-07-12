@@ -4,7 +4,9 @@
 <% if email_convocations.any? %>
   <div>Email 📧</div>
 <% end %>
-<% if participation.notifiable? && user.notifiable? %>
+<% if postal_convocations.any? && user_archived? %>
+  <div>Courrier</div>
+<% elsif participation.notifiable? && user.notifiable? %>
   <%= form_for(:notification, url: participation_notifications_path(participation, format: "pdf"), method: :post) do |f| %>
     <%= f.hidden_field :format, value: "postal" %>
     <%= f.hidden_field :event, value: participation.revoked? ? "participation_cancelled" : "participation_created" %>

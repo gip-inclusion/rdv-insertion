@@ -236,11 +236,6 @@ describe UsersController do
         let!(:user) { create(:user, organisations: [organisation, other_organisation]) }
         let!(:archive) { create(:archive, user: user, organisation: organisation) }
         let!(:archive2) { create(:archive, user: user, organisation: other_organisation) }
-        # let!(:partially_archived_user) do
-        #   create(:user, organisations: [organisation, other_organisation], last_name: "Rouve")
-        # end
-        # # user is archived in only one of his organisations
-        # let!(:archive3) { create(:archive, user: partially_archived_user, organisation: organisation) }
 
         it "the user is displayed as archived" do
           get :show, params: show_params

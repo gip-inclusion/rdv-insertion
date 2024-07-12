@@ -1,12 +1,10 @@
 class ArchivesController < ApplicationController
-  before_action :set_user, :set_organisation, only: %i[new create]
-  before_action :set_department, :set_user_archives, :set_archivable_organisations,
-                only: %i[new], if: -> { department_level? }
+  before_action :set_user, :set_organisation, for: [:new, :create]
+  before_action :set_user, :set_department, :set_user_archives, :set_archivable_organisations, for: :many_new
 
-  def new
-    @archive = Archive.new(user: @user, organisation: @organisation)
-    authorize @archive
-  end
+  def new; end
+
+  def many_new; end
 
   def create
     @archive = Archive.new(archive_params.merge(user: @user, organisation: @organisation))
@@ -65,12 +63,9 @@ class ArchivesController < ApplicationController
   end
 
   def set_organisation
-    @organisation =
-      if department_level?
-        (@user.organisations & current_agent_department_organisations).first
-      else
-        policy_scope(Organisation).find(current_organisation_id)
-      end
+    return if department_level?
+
+    @organisation = policy_scope(Organisation).find(current_organisation_id)
   end
 
   def set_department

@@ -1,7 +1,7 @@
 module Users
   class ParcoursController < ApplicationController
-    before_action :set_user, :set_department, :set_organisation, :set_user_tags, :set_back_to_users_list_url,
-                  :set_current_organisations, :set_user_archives, :set_user_archive_status, only: [:show]
+    before_action :set_user, :set_department, :set_user_tags, :set_back_to_users_list_url,
+                  :set_current_organisations, :set_user_archives, :set_user_is_archived, only: [:show]
 
     include BackToListConcern
     include Users::Taggable
@@ -22,13 +22,6 @@ module Users
       authorize(@department, :parcours?)
     end
 
-    def set_organisation
-      return if department_level?
-
-      @organisation = current_organisation
-      authorize(@organisation, :parcours?)
-    end
-
     def set_user
       @user = policy_scope(User).preload(:archives).find(params[:user_id])
     end
@@ -37,13 +30,18 @@ module Users
       @user_archives = @user.archives
     end
 
-    def set_user_archive_status
-      @user_archived_for_current_organisations =
-        @user.archives.where(organisation: @current_organisations).count == @current_organisations.count
+    def set_user_is_archived
+      @user_is_archived =
+        @user.archives.where(organisation: user_agent_department_organisations).count ==
+        user_agent_department_organisations.count
+    end
+
+    def user_agent_department_organisations
+      @user_agent_department_organisations ||= @user.organisations & @current_organisations
     end
 
     def set_current_organisations
-      @current_organisations = department_level? ? current_agent_department_organisations : [@organisation]
+      @current_organisations = department_level? ? current_agent_department_organisations : [current_organisation]
     end
   end
 end

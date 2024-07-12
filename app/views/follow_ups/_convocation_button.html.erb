@@ -4,7 +4,7 @@
     data: { turbo_frame: 'remote_modal' }
   ) do
 %>
-  <button class="btn btn-blue">
+  <button class="btn btn-blue" <%= "disabled" if user_archived %>>
     📅 Convoquer <i class="fas fa-external-link-alt icon-sm"></i>
   </button>
 <% end %>

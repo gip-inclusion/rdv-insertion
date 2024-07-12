@@ -67,7 +67,7 @@ module Invitations
     end
 
     def validate_user_belongs_to_an_org_linked_to_motif_category
-      return if user.organisations.flat_map(&:motif_categories).include?(motif_category)
+      return if user.unarchived_organisations.flat_map(&:motif_categories).include?(motif_category)
 
       result.errors << "L'usager n'appartient pas à une organisation qui gère la catégorie #{motif_category_name}"
     end

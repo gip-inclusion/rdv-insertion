@@ -1,5 +1,1 @@
-<% if department_level? %>
-  <%= render "department_level_form", user: @user, department: @department, archives: @user.archives, archivable_organisations: @archivable_organisations %>
-<% else %>
-  <%= render "organisation_level_form", user: @user, organisation: @organisation %>
-<% end %>
+<%= render "organisation_level_form", user: @user, organisation: @organisation %>

@@ -7,7 +7,9 @@ module Archives
     end
 
     def call
-      create_archives
+      Archive.transaction do
+        create_archives
+      end
     end
 
     private
@@ -19,7 +21,8 @@ module Archives
     end
 
     def create_archive(organisation_id)
-      Archive.create(user_id: @user_id, organisation_id: organisation_id, archiving_reason: @archiving_reason)
+      archive = Archive.new(user_id: @user_id, organisation_id: organisation_id, archiving_reason: @archiving_reason)
+      save_record!(archive)
     end
   end
 end

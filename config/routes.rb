@@ -148,7 +148,8 @@ Rails.application.routes.draw do
         resources :parcours_documents, only: [:show, :update, :create, :destroy]
       end
       resources :invitations, only: [:create]
-      resources :archives, only: [:new] do
+      resources :archives, only: [] do
+        get :many_new, on: :collection
         post :create_many, on: :collection
       end
     end

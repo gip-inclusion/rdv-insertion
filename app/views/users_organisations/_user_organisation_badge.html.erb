@@ -1,4 +1,4 @@
-<span class="<%= classes_for_organisation_badge(archive) %>" <%= tooltip_for_organisation_badge(archive, organisation, department) %>>
+<span class="<%= css_classes_for_organisation_badge(archive) %>" <%= tooltip_for_organisation_badge(archive, organisation, department) %>>
   <span class="text-truncate">
     <%= organisation.name %>
     <% if department.id != organisation.department_id %>

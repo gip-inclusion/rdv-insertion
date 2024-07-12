@@ -9,10 +9,9 @@ class Archive < ApplicationRecord
   private
 
   def invalidate_related_invitations
-    organisation.invitations.where(id: user.invitations.pluck(:id)).includes(:organisations).find_each do |invitation|
-      if invitation.organisations.count > 1
-        invitation.organisations.delete(organisation)
-      else
+    organisation.invitations.where(user_id: user.id).includes(:organisations).find_each do |invitation|
+      invitation_archives = Archive.where(organisation_id: invitation.organisations, user_id: user.id)
+      if invitation_archives.count == invitation.organisations.count
         InvalidateInvitationJob.perform_async(invitation.id)
       end
     end

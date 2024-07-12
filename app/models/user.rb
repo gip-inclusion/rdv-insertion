@@ -79,6 +79,10 @@ class User < ApplicationRecord
     organisations.where(id: rdvs.pluck(:organisation_id))
   end
 
+  def unarchived_organisations
+    organisations.where.not(id: archives.pluck(:organisation_id))
+  end
+
   def delete_organisation(organisation)
     organisations.delete(organisation)
   end
@@ -151,11 +155,7 @@ class User < ApplicationRecord
     )
   end
 
-  def organisations_for(department)
-    organisations.where(department: department)
-  end
-
-  def archive_for(organisation)
+  def organisation_archives(organisation)
     archives.find { |a| a.organisation_id == organisation.id }
   end
 
