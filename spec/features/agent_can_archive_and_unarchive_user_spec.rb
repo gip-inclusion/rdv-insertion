@@ -144,9 +144,8 @@ describe "Agents can archive and unarchive user", :js do
             "users-list-upload", Rails.root.join("spec/fixtures/fichier_usager_test.xlsx"), make_visible: true
           )
 
-          expect(page).to have_button "Inviter par SMS"
-
           expect(page).to have_no_button "Rouvrir le dossier"
+          expect(page).to have_button "Inviter par SMS"
           expect(page).to have_no_content "Dossier archivé"
         end
       end

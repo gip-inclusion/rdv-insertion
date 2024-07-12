@@ -4,7 +4,7 @@
 <% if email_convocations.any? %>
   <div>Email 📧</div>
 <% end %>
-<% if postal_convocations.any? && user_archived? %>
+<% if postal_convocations.any? && user_is_archived %>
   <div>Courrier</div>
 <% elsif participation.notifiable? && user.notifiable? %>
   <%= form_for(:notification, url: participation_notifications_path(participation, format: "pdf"), method: :post) do |f| %>

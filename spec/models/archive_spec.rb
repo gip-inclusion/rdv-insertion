@@ -31,6 +31,8 @@ describe Archive do
 
   describe "invitation invalidations" do
     let!(:other_organisation) { create(:organisation, department:) }
+    let!(:other_archived_organisation) { create(:organisation, department:) }
+    let!(:archive) { create(:archive, user:, organisation: other_archived_organisation) }
     let!(:invitation_for_organisation) do
       create(:invitation, user:, department:, organisations: [organisation])
     end
@@ -43,6 +45,10 @@ describe Archive do
       create(:invitation, user:, department:, organisations: [organisation, other_organisation])
     end
 
+    let!(:invitation_for_two_archived_organisations) do
+      create(:invitation, user:, department:, organisations: [organisation, other_archived_organisation])
+    end
+
     it "invalidates the user organisation invitations" do
       expect(InvalidateInvitationJob).to receive(:perform_async)
         .with(invitation_for_organisation.id)
@@ -50,8 +56,10 @@ describe Archive do
         .with(invitation_for_other_organisation.id)
       expect(InvalidateInvitationJob).not_to receive(:perform_async)
         .with(invitation_for_two_organisations.id)
+      expect(InvalidateInvitationJob).to receive(:perform_async)
+        .with(invitation_for_two_archived_organisations.id)
+
       subject.save
-      expect(invitation_for_two_organisations.reload.organisations).to eq([other_organisation])
     end
   end
 end

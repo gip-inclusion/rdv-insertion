@@ -44,11 +44,12 @@ module Users
 
     def set_all_configurations
       @all_configurations =
-        policy_scope(CategoryConfiguration).joins(:organisation)
-                                           .where(current_organisation_filter)
-                                           .where({ organisation: @user.department_organisations(@department).map(&:id) })
-                                           .preload(:motif_category)
-                                           .uniq(&:motif_category_id)
+        policy_scope(CategoryConfiguration)
+        .joins(:organisation)
+        .where(current_organisation_filter)
+        .where({ organisation: @user.department_organisations(@department).map(&:id) })
+        .preload(:motif_category)
+        .uniq(&:motif_category_id)
 
       @all_configurations =
         department_level? ? @all_configurations.sort_by(&:department_position) : @all_configurations.sort_by(&:position)

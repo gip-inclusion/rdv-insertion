@@ -28,9 +28,9 @@ module NavigationHelper
   end
 
   def new_structure_user_archive_path(**params)
-    return send(:"many_new_department_user_archives_path", { **structure_id_param, **params }) if department_level?
+    return send(:many_new_department_user_archives_path, { **structure_id_param, **params }) if department_level?
 
-    send(:"new_organisation_user_archive_path", { **structure_id_param, **params })
+    send(:new_organisation_user_archive_path, { **structure_id_param, **params })
   end
 
   def uploads_category_selection_structure_users_path(**params)

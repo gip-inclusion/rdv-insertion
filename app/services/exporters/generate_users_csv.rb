@@ -58,7 +58,7 @@ module Exporters
         end
     end
 
-    def headers
+    def headers # rubocop:disable Metrics/AbcSize
       [User.human_attribute_name(:title),
        User.human_attribute_name(:last_name),
        User.human_attribute_name(:first_name),
@@ -94,8 +94,8 @@ module Exporters
        "Nombre d'organisations",
        "Nom des organisations",
        User.human_attribute_name(:tags),
-       *(Archive.human_attribute_name(:created_at) if !department_level?),
-       *(Archive.human_attribute_name(:archiving_reason) if !department_level?)]
+       *(Archive.human_attribute_name(:created_at) unless department_level?),
+       *(Archive.human_attribute_name(:archiving_reason) unless department_level?)]
     end
 
     def csv_row(user) # rubocop:disable Metrics/AbcSize
@@ -134,8 +134,8 @@ module Exporters
        user.organisations.to_a.count,
        display_organisation_names(user.organisations),
        scoped_user_tags(user.tags).pluck(:value).join(", "),
-       *(display_date(user.organisation_archives(@structure)&.created_at) if !department_level?),
-       *(user.organisation_archives(@structure)&.archiving_reason if !department_level?)]
+       *(display_date(user.organisation_archives(@structure)&.created_at) unless department_level?),
+       *(user.organisation_archives(@structure)&.archiving_reason unless department_level?)]
     end
 
     def human_last_participation_status(user)

@@ -467,11 +467,11 @@ export default class User {
   }
 
   isArchivedInCurrentOrganisation() {
-    return this.archives.length > 0 && this.archiveInCurrentOrganisation();
+    return !this.list.isDepartmentLevel && this.archives.length > 0 && this.archiveInCurrentOrganisation();
   }
 
   isArchivedInCurrentDepartment() {
-    return this.archives.length > 0 && this.isArchivedInAllAgentUserOrganisations();
+    return this.list.isDepartmentLevel && this.archives.length > 0 && this.isArchivedInAllAgentUserOrganisations();
   }
 
   isArchivedInAllAgentUserOrganisations() {

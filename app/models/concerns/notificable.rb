@@ -28,7 +28,7 @@ module Notificable
   end
 
   def postal_convocations
-    convocations.select(&:postal?)
+    convocations.select(&:format_postal?)
   end
 
   def last_convocation
