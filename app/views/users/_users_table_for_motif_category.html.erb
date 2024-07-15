@@ -33,8 +33,8 @@
         data-user-link-path="<%= structure_user_path(user.id) %>"
         data-action="click->user-link#navigate"
       >
-        <td data-matomo-mask><%= display_attribute user.last_name %></td>
-        <td data-matomo-mask><%= display_attribute user.first_name %></td>
+        <td><%= display_attribute user.last_name %></td>
+        <td><%= display_attribute user.first_name %></td>
         <% @current_category_configuration.invitation_formats.each do |invitation_format| %>
           <td class="d-none d-lg-table-cell">
             <% if follow_up.rdv_pending? || follow_up.closed? %>

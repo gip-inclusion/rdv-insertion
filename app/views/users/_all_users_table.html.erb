@@ -24,9 +24,9 @@
         data-user-link-path="<%= structure_user_path(user.id) %>"
         data-action="click->user-link#navigate"
       >
-        <td data-matomo-mask><%= display_attribute user.last_name %></td>
-        <td data-matomo-mask><%= display_attribute user.first_name %></td>
-        <td data-matomo-mask><%= display_attribute format_date(user.created_at) %></td>
+        <td><%= display_attribute user.last_name %></td>
+        <td><%= display_attribute user.first_name %></td>
+        <td><%= display_attribute format_date(user.created_at) %></td>
         <% if user.archived_in?(@department) %>
           <td colspan=<%= @all_configurations.count %>>Archivé</td>
         <% else %>
