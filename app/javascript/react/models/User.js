@@ -239,7 +239,7 @@ export default class User {
     const previousValue = this[attribute];
     this[attribute] = value;
 
-    if (this.createdAt) {
+    if (this.createdAt && this.belongsToCurrentOrg()) {
       this.triggers[`${attribute}Update`] = true;
       // No need to resetErrors as we are updating only a single attribute
       // If any error occurs within handleUserUpdate it will be displayed as a modal anyway.
