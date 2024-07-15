@@ -58,7 +58,12 @@
   max-width: 1000px;
 }
 
-.scrollable {
+.scrollable-list {
   overflow-y: auto;
-  max-height: 70vh;
+  max-height: 60vh;
+}
+
+.fully-scrollable-modal {
+  @extend .scrollable-list;
+  max-height: 80vh;
 }
