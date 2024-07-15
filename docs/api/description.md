@@ -373,7 +373,37 @@ Ci-dessous un exemple de payload envoyé lorsqu'un rdv est créé:
           "name": "Psychologue"
         }
       ]
-    }
+    }, 
+    "participations": [
+      {
+        "id": 291,
+        "status": "unknown",
+        "created_by": "agent",
+        "created_at": "2023-11-09T09:25:05.356+01:00",
+        "starts_at": "2023-11-14T09:00:00.000+01:00",
+        "user": {
+          "id": 722,
+          "uid": "Nzg2NzY4NyAtIGRlbWFuZGV1cg==",
+          "affiliation_number": "7867687",
+          "role": "demandeur",
+          "created_at": "2023-07-26T12:19:08.522+02:00",
+          "department_internal_id": null,
+          "first_name": "Andreas",
+          "last_name": "Kopke",
+          "title": "monsieur",
+          "address": "165 rue saint maur 75011 Paris",
+          "phone_number": "+33664891033",
+          "email": "andreas@kopke.com",
+          "birth_date": "1987-12-20",
+          "rights_opening_date": null,
+          "birth_name": null,
+          "rdv_solidarites_user_id": 468,
+          "nir": null,
+          "carnet_de_bord_carnet_id": null,
+          "france_travail_id": null
+        }
+      }
+    ]
   },
   "meta": {
     "model": "Rdv",
