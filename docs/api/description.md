@@ -49,7 +49,7 @@ Pour récupérer le token d'accès d'un agent il faut faire une première requê
 
 ```httpie
 http --json POST 'https://www.rdv-solidarites.fr/api/v1/auth/sign_in' \
-  email='amine.dhobb@beta.gouv.fr' password='123456'
+  email='amine.dhobb@beta.gouv.fr' password='SOME_FAKE_PASSWORD_123456'
 ```
 
 En cas de succès d'authentification, la réponse à cette requête contiendra dans le corps le détail de l'agent, et dans les headers les token d'accès à l'API. Par exemple :
@@ -63,8 +63,8 @@ X-Download-Options: noopen
 X-Permitted-Cross-Domain-Policies: none
 Referrer-Policy: strict-origin-when-cross-origin
 Content-Type: application/json; charset=utf-8
-access-token: SFYBngO55ImjD1HOcv-ivQ< token-type: Bearer
-client: Z6EihQAY9NWsZByfZ47i_Q< expiry: 1605600758
+access-token: SOME_FAKE_ACCESS_TOKEN_12345 token-type: Bearer
+client: SOME_FAKE_CLIENT_12345 expiry: 1605600758
 uid: amine.dhobb@beta.gouv.fr
 ETag: W/"0fe52663d6745c922160384e13afe1e1"
 Cache-Control: max-age=0, private, must-revalidate
@@ -105,8 +105,8 @@ X-Runtime: 0.194743< Transfer-Encoding: chunked
 Les 3 headers essentiels pour l'authentification sont les suivants :
 
 ```http
-access-token: SFYBngO55ImjD1HOcv-ivQ
-client: Z6EihQAY9NWsZByfZ47i_Q
+access-token: SOME_FAKE_ACCESS_TOKEN_12345
+client: SOME_FAKE_ACCESS_CLIENT_12345
 uid: amine.dhobb@beta.gouv.fr
 ```
 
