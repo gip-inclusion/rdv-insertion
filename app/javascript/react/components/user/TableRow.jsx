@@ -11,7 +11,7 @@ function TableRow({ user }) {
         {user.list.columns.map((column) => {
           if (!column.visible || !column.content) return null
 
-          return <td key={column.name} className={user[`${column.key}Updated`] ? "table-success" : ""}>{column.content({ user })}</td>
+          return <td key={column.name} className={user[`${column.key}Updated`] ? "table-success" : ""} data-matomo-mask>{column.content({ user })}</td>
         })}
 
         {user.currentConfiguration && <InvitationCells user={user} />}
