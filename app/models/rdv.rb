@@ -10,6 +10,7 @@ class Rdv < ApplicationRecord
   include Rdv::FranceTravailWebhooks
 
   after_commit :notify_participations_to_users, on: :update, if: :should_notify_users?
+  after_commit :notify_changes_to_external, on: :update, if: :should_notify_external?
   after_commit :refresh_follow_up_statuses, on: [:create, :update]
 
   belongs_to :organisation
@@ -96,8 +97,20 @@ class Rdv < ApplicationRecord
     NotifyParticipationsToUsersJob.perform_async(notifiable_participations.map(&:id), :updated)
   end
 
+  def notify_changes_to_external
+    participations.includes(:category_configurations).find_each do |participation|
+      next unless participation.current_category_configuration&.notify_rdv_changes?
+
+      NotifyParticipationToExternalOrganisationEmailJob.perform_async(participation.id, :updated)
+    end
+  end
+
   def should_notify_users?
     in_the_future? && notifiable_participations.any? && reason_to_notify?
+  end
+
+  def should_notify_external?
+    in_the_future? && reason_to_notify?
   end
 
   def reason_to_notify?
