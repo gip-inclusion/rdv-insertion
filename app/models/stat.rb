@@ -1,4 +1,33 @@
 class Stat < ApplicationRecord
+  GLOBAL_STAT_ATTRIBUTES = %w[
+    users_count
+    users_with_rdv_count
+    rdvs_count
+    sent_invitations_count
+    rate_of_no_show_for_invitations
+    rate_of_no_show_for_convocations
+    average_time_between_invitation_and_rdv_in_days
+    rate_of_users_oriented_in_less_than_30_days
+    rate_of_users_oriented_in_less_than_15_days
+    rate_of_users_oriented
+    rate_of_autonomous_users
+    agents_count
+  ].freeze
+
+  MONTHLY_STAT_ATTRIBUTES = %w[
+    users_count_grouped_by_month
+    users_with_rdv_count_grouped_by_month
+    rdvs_count_grouped_by_month
+    sent_invitations_count_grouped_by_month
+    rate_of_no_show_for_invitations_grouped_by_month
+    rate_of_no_show_for_convocations_grouped_by_month
+    average_time_between_invitation_and_rdv_in_days_by_month
+    rate_of_users_oriented_in_less_than_30_days_by_month
+    rate_of_users_oriented_in_less_than_15_days_by_month
+    rate_of_users_oriented_grouped_by_month
+    rate_of_autonomous_users_grouped_by_month
+  ].freeze
+
   belongs_to :statable, polymorphic: true, optional: true
 
   def all_users
