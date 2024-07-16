@@ -181,6 +181,20 @@ describe User do
     end
   end
 
+  describe "created_through validation" do
+    context "valid created_through" do
+      let(:user) { build(:user, created_through: "rdv_insertion_upload") }
+
+      it { expect(user).to be_valid }
+    end
+
+    context "nil created_through" do
+      let(:user) { build(:user, created_through: nil) }
+
+      it { expect(user).not_to be_valid }
+    end
+  end
+
   describe "nir validity" do
     context "when no nir" do
       let(:user) { build(:user, nir: nil) }
