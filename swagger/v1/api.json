@@ -288,18 +288,18 @@
             "enum": [
               "rdv_insertion_upload",
               "rdv_insertion_form",
-              "external_api",
+              "rdv_insertion_api",
               "rdv_solidarites"
             ]
           },
-          "creation_structure_level": {
+          "created_from_type": {
             "type": "string",
             "enum": [
-              "organisation",
-              "department"
+              "Organisation",
+              "Department"
             ]
           },
-          "creation_structure_id": {
+          "created_from_id": {
             "type": "integer"
           }
         },
@@ -413,18 +413,18 @@
             "enum": [
               "rdv_insertion_upload",
               "rdv_insertion_form",
-              "external_api",
+              "rdv_insertion_api",
               "rdv_solidarites"
             ]
           },
-          "creation_structure_level": {
+          "created_from_type": {
             "type": "string",
             "enum": [
-              "organisation",
-              "department"
+              "Organisation",
+              "Department"
             ]
           },
-          "creation_structure_id": {
+          "created_from_id": {
             "type": "integer"
           },
           "referents": {
@@ -530,18 +530,18 @@
             "enum": [
               "rdv_insertion_upload",
               "rdv_insertion_form",
-              "external_api",
+              "rdv_insertion_api",
               "rdv_solidarites"
             ]
           },
-          "creation_structure_level": {
+          "created_from_type": {
             "type": "string",
             "enum": [
-              "organisation",
-              "department"
+              "Organisation",
+              "Department"
             ]
           },
-          "creation_structure_id": {
+          "created_from_id": {
             "type": "integer"
           },
           "invitation": {
@@ -1617,9 +1617,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180444545568502",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 676,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 676,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -1640,9 +1640,9 @@
                         "department_internal_id": "22221111",
                         "france_travail_id": "22233333",
                         "nir": "180788479321409",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 676,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 676,
                         "invitation": {
                           "motif_category": {
                             "name": "RSA orientation"
@@ -1668,9 +1668,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180798632441566",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 677,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 677,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -1691,9 +1691,9 @@
                         "department_internal_id": "22221111",
                         "france_travail_id": "22233333",
                         "nir": "180646195639687",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 677,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 677,
                         "invitation": {
                           "motif_category": {
                             "name": "RSA orientation"
@@ -1719,9 +1719,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180644534852110",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 678,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 678,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -1742,9 +1742,9 @@
                         "department_internal_id": "22221111",
                         "france_travail_id": "22233333",
                         "nir": "180957145561787",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 678,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 678,
                         "invitation": {
                           "motif_category": {
                             "name": "RSA orientation"
@@ -1770,9 +1770,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180782749736790",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 679,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 679,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -1793,9 +1793,9 @@
                         "department_internal_id": "22221111",
                         "france_travail_id": "22233333",
                         "nir": "180261498814935",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 679,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 679,
                         "invitation": {
                           "motif_category": {
                             "name": "RSA orientation"
@@ -1821,9 +1821,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180475777843286",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 680,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 680,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -1844,9 +1844,9 @@
                         "department_internal_id": "22221111",
                         "france_travail_id": "22233333",
                         "nir": "180463422914585",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 680,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 680,
                         "invitation": {
                           "motif_category": {
                             "name": "RSA orientation"
@@ -1872,9 +1872,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180111163363945",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 681,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 681,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -1895,9 +1895,9 @@
                         "department_internal_id": "22221111",
                         "france_travail_id": "22233333",
                         "nir": "180234892683945",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 681,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 681,
                         "invitation": {
                           "motif_category": {
                             "name": "RSA orientation"
@@ -1923,9 +1923,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180191314824330",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 682,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 682,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -1944,9 +1944,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180191314824330",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 682,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 682,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -1965,9 +1965,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180191314824330",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 682,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 682,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -1986,9 +1986,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180191314824330",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 682,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 682,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2007,9 +2007,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180191314824330",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 682,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 682,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2028,9 +2028,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180191314824330",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 682,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 682,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2049,9 +2049,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180191314824330",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 682,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 682,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2070,9 +2070,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180191314824330",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 682,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 682,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2091,9 +2091,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180191314824330",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 682,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 682,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2112,9 +2112,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180191314824330",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 682,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 682,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2133,9 +2133,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180191314824330",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 682,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 682,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2154,9 +2154,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180191314824330",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 682,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 682,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2175,9 +2175,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180191314824330",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 682,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 682,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2196,9 +2196,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180191314824330",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 682,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 682,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2217,9 +2217,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180191314824330",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 682,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 682,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2238,9 +2238,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180191314824330",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 682,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 682,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2259,9 +2259,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180191314824330",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 682,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 682,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2280,9 +2280,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180191314824330",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 682,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 682,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2301,9 +2301,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180191314824330",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 682,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 682,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2322,9 +2322,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180191314824330",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 682,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 682,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2343,9 +2343,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180191314824330",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 682,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 682,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2364,9 +2364,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180191314824330",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 682,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 682,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2385,9 +2385,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180191314824330",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 682,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 682,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2406,9 +2406,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180191314824330",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 682,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 682,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2427,9 +2427,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180191314824330",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 682,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 682,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2448,9 +2448,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180191314824330",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 682,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 682,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2469,9 +2469,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180191314824330",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 682,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 682,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2490,9 +2490,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180191314824330",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 682,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 682,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2511,9 +2511,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180191314824330",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 682,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 682,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2532,9 +2532,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180191314824330",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 682,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 682,
                         "referents_to_add": [
                           {
                             "email": "agentreferent@nomdedomaine.fr"
@@ -2560,9 +2560,9 @@
                         "address": "13 rue de la République 13001 MARSEILLE",
                         "department_internal_id": "11111444",
                         "nir": "180779418638313",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 683,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 683,
                         "referents_to_add": [
                           {
                             "email": "agentnontrouve@nomdedomaine.fr"
@@ -2583,9 +2583,9 @@
                         "department_internal_id": "22221111",
                         "france_travail_id": "22233333",
                         "nir": "180477717474488",
-                        "created_through": "external_api",
-                        "creation_structure_level": "organisation",
-                        "creation_structure_id": 683,
+                        "created_through": "rdv_insertion_api",
+                        "created_from_type": "Organisation",
+                        "created_from_id": 683,
                         "invitation": {
                           "motif_category": {
                             "name": "RSA orientation"
@@ -2915,9 +2915,9 @@
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
                       "nir": "180489151237345",
-                      "created_through": "external_api",
-                      "creation_structure_level": "organisation",
-                      "creation_structure_id": 684,
+                      "created_through": "rdv_insertion_api",
+                      "created_from_type": "Organisation",
+                      "created_from_id": 684,
                       "referents_to_add": [
                         {
                           "email": "agentreferent@nomdedomaine.fr"
@@ -2946,9 +2946,9 @@
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
                       "nir": "180253173318494",
-                      "created_through": "external_api",
-                      "creation_structure_level": "organisation",
-                      "creation_structure_id": 687,
+                      "created_through": "rdv_insertion_api",
+                      "created_from_type": "Organisation",
+                      "created_from_id": 687,
                       "referents_to_add": [
                         {
                           "email": "agentreferent@nomdedomaine.fr"
@@ -2977,9 +2977,9 @@
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
                       "nir": "180384631342831",
-                      "created_through": "external_api",
-                      "creation_structure_level": "organisation",
-                      "creation_structure_id": 690,
+                      "created_through": "rdv_insertion_api",
+                      "created_from_type": "Organisation",
+                      "created_from_id": 690,
                       "referents_to_add": [
                         {
                           "email": "agentreferent@nomdedomaine.fr"
@@ -3008,9 +3008,9 @@
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
                       "nir": "180484668572484",
-                      "created_through": "external_api",
-                      "creation_structure_level": "organisation",
-                      "creation_structure_id": 693,
+                      "created_through": "rdv_insertion_api",
+                      "created_from_type": "Organisation",
+                      "created_from_id": 693,
                       "referents_to_add": [
                         {
                           "email": "agentreferent@nomdedomaine.fr"
@@ -3039,9 +3039,9 @@
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
                       "nir": "180818224927970",
-                      "created_through": "external_api",
-                      "creation_structure_level": "organisation",
-                      "creation_structure_id": 696,
+                      "created_through": "rdv_insertion_api",
+                      "created_from_type": "Organisation",
+                      "created_from_id": 696,
                       "referents_to_add": [
                         {
                           "email": "agentreferent@nomdedomaine.fr"
@@ -3070,9 +3070,9 @@
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
                       "nir": "180262719249436",
-                      "created_through": "external_api",
-                      "creation_structure_level": "organisation",
-                      "creation_structure_id": 699,
+                      "created_through": "rdv_insertion_api",
+                      "created_from_type": "Organisation",
+                      "created_from_id": 699,
                       "referents_to_add": [
                         {
                           "email": "agentreferent@nomdedomaine.fr"
@@ -3101,9 +3101,9 @@
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
                       "nir": "180455882657989",
-                      "created_through": "external_api",
-                      "creation_structure_level": "organisation",
-                      "creation_structure_id": 702,
+                      "created_through": "rdv_insertion_api",
+                      "created_from_type": "Organisation",
+                      "created_from_id": 702,
                       "referents_to_add": [
                         {
                           "email": "agentreferent@nomdedomaine.fr"
@@ -3132,9 +3132,9 @@
                       "address": "13 rue de la République 13001 MARSEILLE",
                       "department_internal_id": "11111444",
                       "nir": "180659652134438",
-                      "created_through": "external_api",
-                      "creation_structure_level": "organisation",
-                      "creation_structure_id": 705,
+                      "created_through": "rdv_insertion_api",
+                      "created_from_type": "Organisation",
+                      "created_from_id": 705,
                       "referents_to_add": [
                         {
                           "email": "agentreferent@nomdedomaine.fr"

@@ -142,9 +142,9 @@ RSpec.configure do |config|
               carnet_de_bord_carnet_id: { type: "string", nullable: true },
               rdv_solidarites_user_id: { type: "integer" },
               created_through: { type: "string",
-                                 enum: %w[rdv_insertion_upload rdv_insertion_form external_api rdv_solidarites] },
-              creation_structure_level: { type: "string", enum: %w[organisation department] },
-              creation_structure_id: { type: "integer" }
+                                 enum: %w[rdv_insertion_upload rdv_insertion_form rdv_insertion_api rdv_solidarites] },
+              created_from_type: { type: "string", enum: %w[0rganisation Department] },
+              created_from_id: { type: "integer" }
             },
             required: %w[
               id uid affiliation_number role created_at department_internal_id
@@ -176,9 +176,9 @@ RSpec.configure do |config|
               carnet_de_bord_carnet_id: { type: "string", nullable: true },
               rdv_solidarites_user_id: { type: "integer" },
               created_through: { type: "string",
-                                 enum: %w[rdv_insertion_upload rdv_insertion_form external_api rdv_solidarites] },
-              creation_structure_level: { type: "string", enum: %w[organisation department] },
-              creation_structure_id: { type: "integer" },
+                                 enum: %w[rdv_insertion_upload rdv_insertion_form rdv_insertion_api rdv_solidarites] },
+              created_from_type: { type: "string", enum: %w[Organisation Department] },
+              created_from_id: { type: "integer" },
               referents: {
                 type: "array",
                 items: { "$ref" => "#/components/schemas/agent" }
@@ -210,9 +210,9 @@ RSpec.configure do |config|
               france_travail_id: { type: "string", nullable: true },
               carnet_de_bord_carnet_id: { type: "string", nullable: true },
               created_through: { type: "string",
-                                 enum: %w[rdv_insertion_upload rdv_insertion_form external_api rdv_solidarites] },
-              creation_structure_level: { type: "string", enum: %w[organisation department] },
-              creation_structure_id: { type: "integer" },
+                                 enum: %w[rdv_insertion_upload rdv_insertion_form rdv_insertion_api rdv_solidarites] },
+              created_from_type: { type: "string", enum: %w[Organisation Department] },
+              created_from_id: { type: "integer" },
               invitation: {
                 type: "object",
                 properties: {

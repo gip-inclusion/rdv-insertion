@@ -4,7 +4,7 @@ class UsersController < ApplicationController
   PERMITTED_PARAMS = [
     :uid, :role, :first_name, :last_name, :nir, :france_travail_id, :birth_date, :email, :phone_number,
     :birth_name, :address, :affiliation_number, :department_internal_id, :title,
-    :status, :rights_opening_date, :created_through, :creation_structure_level, :creation_structure_id,
+    :status, :rights_opening_date, :created_through, :created_from_type, :created_from_id,
     { follow_ups_attributes: [:motif_category_id], tag_users_attributes: [:tag_id] }
   ].freeze
 

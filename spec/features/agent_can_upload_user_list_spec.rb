@@ -99,8 +99,8 @@ describe "Agents can upload user list", :js do
       expect(user.department_internal_id).to eq("8383")
       expect(user.address).to eq("127 RUE DE GRENELLE 75007 PARIS")
       expect(user.created_through).to eq("rdv_insertion_upload")
-      expect(user.creation_structure_level).to eq("organisation")
-      expect(user.creation_structure_id).to eq(organisation.id)
+      expect(user.created_from_type).to eq("Organisation")
+      expect(user.created_from_id).to eq(organisation.id)
       # It added the user to the category
       expect(user.motif_categories).to include(motif_category)
 
