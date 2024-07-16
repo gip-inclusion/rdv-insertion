@@ -12,6 +12,6 @@
   </div>
 <% else %>
   <%= link_to new_user_rdv_path(@user, organisation_id: current_or_mutual_organisation_id(@user, current_agent, @department)), target: "_blank" do %>
-    <button class="btn btn-blue">Trouver un RDV<i class="fas fa-external-link-alt icon-sm"></i></button>
+    <button class="btn btn-blue me-2">Trouver un RDV<i class="fas fa-external-link-alt icon-sm"></i></button>
   <% end %>
 <% end %>

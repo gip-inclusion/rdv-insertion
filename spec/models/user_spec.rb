@@ -331,4 +331,54 @@ describe User do
       end
     end
   end
+
+  describe "#as_json" do
+    subject { user.as_json }
+
+    before do
+      allow(Current).to receive(:agent).and_return(agent)
+    end
+
+    let!(:agent) { create(:agent, organisations: [organisation]) }
+    let!(:department) { create(:department) }
+    let!(:organisation) do
+      create(
+        :organisation,
+        category_configurations: [create(:category_configuration, motif_category:)],
+        department:
+      )
+    end
+    let!(:other_organisation) do
+      create(
+        :organisation,
+        category_configurations: [create(:category_configuration, motif_category: other_motif_category)],
+        department:
+      )
+    end
+
+    let!(:user) do
+      create(
+        :user,
+        organisations: [organisation, other_organisation]
+      )
+    end
+
+    let!(:motif_category) { create(:motif_category) }
+    let!(:other_motif_category) { create(:motif_category) }
+
+    let!(:invitation) { create(:invitation, user:, follow_up:) }
+    let!(:other_invitation) { create(:invitation, user:, follow_up: other_follow_up) }
+
+    let!(:follow_up) { create(:follow_up, user:, motif_category:) }
+    let!(:other_follow_up) { create(:follow_up, user:, motif_category: other_motif_category) }
+
+    let!(:tag) { create(:tag, users: [user], organisations: [organisation]) }
+    let!(:other_tag) { create(:tag, users: [user], organisations: [other_organisation]) }
+
+    it "restricts the visible ressources" do
+      expect(subject["follow_ups"].pluck("id")).to contain_exactly(follow_up.id)
+      expect(subject["invitations"].pluck("id")).to contain_exactly(invitation.id)
+      expect(subject["tags"].pluck("id")).to contain_exactly(tag.id)
+    end
+  end
 end

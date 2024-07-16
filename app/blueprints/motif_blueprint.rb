@@ -1,4 +1,4 @@
-class MotifBlueprint < Blueprinter::Base
+class MotifBlueprint < ApplicationBlueprint
   identifier :rdv_solidarites_motif_id
   fields :name, :collectif, :location_type, :follow_up
   association :motif_category, blueprint: MotifCategoryBlueprint

@@ -49,7 +49,7 @@ Pour récupérer le token d'accès d'un agent il faut faire une première requê
 
 ```httpie
 http --json POST 'https://www.rdv-solidarites.fr/api/v1/auth/sign_in' \
-  email='amine.dhobb@beta.gouv.fr' password='123456'
+  email='amine.dhobb@beta.gouv.fr' password='SOME_FAKE_PASSWORD_123456'
 ```
 
 En cas de succès d'authentification, la réponse à cette requête contiendra dans le corps le détail de l'agent, et dans les headers les token d'accès à l'API. Par exemple :
@@ -63,8 +63,8 @@ X-Download-Options: noopen
 X-Permitted-Cross-Domain-Policies: none
 Referrer-Policy: strict-origin-when-cross-origin
 Content-Type: application/json; charset=utf-8
-access-token: SFYBngO55ImjD1HOcv-ivQ< token-type: Bearer
-client: Z6EihQAY9NWsZByfZ47i_Q< expiry: 1605600758
+access-token: SOME_FAKE_ACCESS_TOKEN_12345 token-type: Bearer
+client: SOME_FAKE_CLIENT_12345 expiry: 1605600758
 uid: amine.dhobb@beta.gouv.fr
 ETag: W/"0fe52663d6745c922160384e13afe1e1"
 Cache-Control: max-age=0, private, must-revalidate
@@ -105,8 +105,8 @@ X-Runtime: 0.194743< Transfer-Encoding: chunked
 Les 3 headers essentiels pour l'authentification sont les suivants :
 
 ```http
-access-token: SFYBngO55ImjD1HOcv-ivQ
-client: Z6EihQAY9NWsZByfZ47i_Q
+access-token: SOME_FAKE_ACCESS_TOKEN_12345
+client: SOME_FAKE_ACCESS_CLIENT_12345
 uid: amine.dhobb@beta.gouv.fr
 ```
 
@@ -373,7 +373,37 @@ Ci-dessous un exemple de payload envoyé lorsqu'un rdv est créé:
           "name": "Psychologue"
         }
       ]
-    }
+    }, 
+    "participations": [
+      {
+        "id": 291,
+        "status": "unknown",
+        "created_by": "agent",
+        "created_at": "2023-11-09T09:25:05.356+01:00",
+        "starts_at": "2023-11-14T09:00:00.000+01:00",
+        "user": {
+          "id": 722,
+          "uid": "Nzg2NzY4NyAtIGRlbWFuZGV1cg==",
+          "affiliation_number": "7867687",
+          "role": "demandeur",
+          "created_at": "2023-07-26T12:19:08.522+02:00",
+          "department_internal_id": null,
+          "first_name": "Andreas",
+          "last_name": "Kopke",
+          "title": "monsieur",
+          "address": "165 rue saint maur 75011 Paris",
+          "phone_number": "+33664891033",
+          "email": "andreas@kopke.com",
+          "birth_date": "1987-12-20",
+          "rights_opening_date": null,
+          "birth_name": null,
+          "rdv_solidarites_user_id": 468,
+          "nir": null,
+          "carnet_de_bord_carnet_id": null,
+          "france_travail_id": null
+        }
+      }
+    ]
   },
   "meta": {
     "model": "Rdv",
