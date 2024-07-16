@@ -1,7 +1,7 @@
 describe Stats::GlobalStats::UpsertStatJob, type: :service do
-  subject {
+  subject do
     described_class.new.perform(structure_type, structure_id, stat_name)
-  }
+  end
 
   let(:stat_name) { "users_count" }
   let!(:department) { create(:department) }
