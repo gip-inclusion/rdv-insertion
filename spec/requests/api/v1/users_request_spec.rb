@@ -41,9 +41,6 @@ describe "Users API", swagger_doc: "v1/api.json" do
           address: "13 rue de la République 13001 MARSEILLE",
           department_internal_id: "11111444",
           nir: generate_random_nir,
-          created_through: "rdv_insertion_api",
-          created_from_type: "Organisation",
-          created_from_id: organisation.id,
           referents_to_add: [
             { email: "agentreferent@nomdedomaine.fr" }
           ]
@@ -67,9 +64,6 @@ describe "Users API", swagger_doc: "v1/api.json" do
           department_internal_id: "22221111",
           france_travail_id: "22233333",
           nir: generate_random_nir,
-          created_through: "rdv_insertion_api",
-          created_from_type: "Organisation",
-          created_from_id: organisation.id,
           invitation: {
             motif_category: { name: "RSA orientation" }
           }
@@ -81,6 +75,13 @@ describe "Users API", swagger_doc: "v1/api.json" do
       let!(:organisation) { create(:organisation, rdv_solidarites_organisation_id:) }
       let!(:rdv_solidarites_organisation_id) { 422 }
       let!(:agent) { create(:agent, organisations: [organisation]) }
+      let!(:creation_source_attributes) do
+        {
+          created_through: "rdv_insertion_api",
+          created_from_type: "Organisation",
+          created_from_id: organisation.id
+        }
+      end
 
       before { allow(CreateAndInviteUserJob).to receive(:perform_async) }
 
@@ -93,14 +94,14 @@ describe "Users API", swagger_doc: "v1/api.json" do
           expect(CreateAndInviteUserJob).to have_received(:perform_async)
             .with(
               organisation.id,
-              user1_params,
+              user1_params.merge(creation_source_attributes),
               {},
               {}
             )
           expect(CreateAndInviteUserJob).to have_received(:perform_async)
             .with(
               organisation.id,
-              user2_params.except(:invitation),
+              user2_params.except(:invitation).merge(creation_source_attributes),
               {},
               { name: "RSA orientation" }
             )

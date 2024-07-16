@@ -67,7 +67,7 @@ class User < ApplicationRecord
   enum created_through: {
     rdv_insertion_upload: "rdv_insertion_upload",
     rdv_insertion_form: "rdv_insertion_form",
-    api: "rdv_insertion_api",
+    rdv_insertion_api: "rdv_insertion_api",
     rdv_solidarites: "rdv_solidarites"
   }, _prefix: true
   attribute :created_from_type, :string
