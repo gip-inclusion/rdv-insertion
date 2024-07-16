@@ -1,35 +1,47 @@
-describe Stats::GlobalStats::UpsertStatJob do
-  subject do
-    described_class.new.perform("Department", department.id)
-  end
+describe Stats::GlobalStats::UpsertStatJob, type: :service do
+  subject {
+    described_class.new.perform(structure_type, structure_id, stat_name)
+  }
 
+  let(:stat_name) { "users_count" }
   let!(:department) { create(:department) }
+  let!(:stat_attributes) do
+    { users_count: 3 }
+  end
+  let!(:stat) { create(:stat, statable_type: "Department", statable_id: department.id) }
+  let!(:structure_type) { "Department" }
+  let!(:structure_id) { department.id }
 
-  describe "#perform" do
+  describe "#call" do
     before do
-      allow(Stats::GlobalStats::UpsertStat).to receive(:call)
-        .and_return(OpenStruct.new(success?: true))
+      allow(Stats::GlobalStats::Compute).to receive(:new)
+        .and_return(OpenStruct.new(stat_attributes))
+      allow(Stat).to receive(:find_or_initialize_by)
+        .and_return(stat)
     end
 
-    it "calls the appropriate service" do
-      expect(Stats::GlobalStats::UpsertStat).to receive(:call)
-        .with(structure_type: "Department", structure_id: department.id)
-      subject
+    context "when department" do
+      it "finds or initializes stat record" do
+        expect(Stat).to receive(:find_or_initialize_by)
+          .with(statable_type: "Department", statable_id: department.id)
+        subject
+      end
     end
 
-    context "when the service fails" do
-      before do
-        allow(Stats::GlobalStats::UpsertStat).to receive(:call)
-          .and_return(OpenStruct.new(success?: false, errors: ["something happened"]))
-      end
+    context "when organisation" do
+      let!(:organisation) { create(:organisation) }
+      let!(:structure_type) { "Organisation" }
+      let!(:structure_id) { organisation.id }
 
-      it "raises an error" do
-        expect { subject }.to raise_error(
-          ApplicationJob::FailedServiceError,
-          "Calling service Stats::GlobalStats::UpsertStat failed in Stats::GlobalStats::UpsertStatJob:" \
-          "\nErrors: [\"something happened\"]"
-        )
+      it "finds or initializes stat record" do
+        expect(Stat).to receive(:find_or_initialize_by)
+          .with(statable_type: "Organisation", statable_id: organisation.id)
+        subject
       end
+    end
+
+    it "saves the stat record" do
+      expect { subject }.to change { stat.reload.users_count }.from(0).to(3)
     end
   end
 end
