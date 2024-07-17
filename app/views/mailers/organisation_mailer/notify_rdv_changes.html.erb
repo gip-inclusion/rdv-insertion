@@ -13,7 +13,7 @@
   <% @rdv.participations.each do |participation| %>
     <li>
       <%= link_to participation.user, organisation_user_follow_ups_url(@rdv.organisation.id, participation.user.id) %>
-      <%= "(professionel : #{participation.agent_prescripteur}" if participation.agent_prescripteur %>
+      <%= "(professionel : #{participation.agent_prescripteur})" if participation.agent_prescripteur %>
     </li>
   <% end %>
 </ul>
