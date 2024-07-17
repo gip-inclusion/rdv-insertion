@@ -8,9 +8,10 @@ class Rdv < ApplicationRecord
   include RdvParticipationStatus
   include WebhookDeliverable
   include Rdv::FranceTravailWebhooks
+  include HasCurrentCategoryConfiguration
 
   after_commit :notify_participations_to_users, on: :update, if: :should_notify_users?
-  after_commit :notify_changes_to_external, on: :update, if: :should_notify_external?
+  after_commit :notify_changes_to_external, on: [:update], if: :should_notify_external?
   after_commit :refresh_follow_up_statuses, on: [:create, :update]
 
   belongs_to :organisation
@@ -25,6 +26,7 @@ class Rdv < ApplicationRecord
   has_many :agents, through: :agents_rdvs
   has_many :users, through: :participations
   has_many :webhook_endpoints, through: :organisation
+  has_many :category_configurations, through: :organisation
 
   # Needed to build participations in process_rdv_job
   accepts_nested_attributes_for :participations, allow_destroy: true, reject_if: :new_participation_already_created?
@@ -37,7 +39,7 @@ class Rdv < ApplicationRecord
   enum created_by: { agent: "agent", user: "user", file_attente: "file_attente", prescripteur: "prescripteur" },
        _prefix: :created_by
 
-  delegate :presential?, :by_phone?, :collectif?, to: :motif
+  delegate :presential?, :by_phone?, :collectif?, :motif_category, to: :motif
   delegate :department, :rdv_solidarites_organisation_id, to: :organisation
   delegate :name, to: :motif, prefix: true
   delegate :instruction_for_rdv, to: :motif
@@ -98,11 +100,7 @@ class Rdv < ApplicationRecord
   end
 
   def notify_changes_to_external
-    participations.includes(:category_configurations).find_each do |participation|
-      next unless participation.current_category_configuration&.notify_rdv_changes?
-
-      NotifyParticipationToExternalOrganisationEmailJob.perform_async(participation.id, :updated)
-    end
+    NotifyRdvChangesToExternalOrganisationEmailJob.perform_async(participation_ids, id, :updated)
   end
 
   def should_notify_users?
@@ -110,7 +108,7 @@ class Rdv < ApplicationRecord
   end
 
   def should_notify_external?
-    in_the_future? && reason_to_notify?
+    in_the_future? && reason_to_notify? && current_category_configuration&.notify_rdv_changes?
   end
 
   def reason_to_notify?
