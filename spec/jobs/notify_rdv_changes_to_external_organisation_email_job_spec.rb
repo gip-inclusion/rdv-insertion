@@ -1,6 +1,6 @@
-describe NotifyParticipationToExternalOrganisationEmailJob do
+describe NotifyRdvChangesToExternalOrganisationEmailJob do
   subject do
-    described_class.new.perform(participation_id, event)
+    described_class.new.perform([participation_id], participation.rdv.id, event)
   end
 
   let(:organisation) { create(:organisation) }
@@ -8,7 +8,16 @@ describe NotifyParticipationToExternalOrganisationEmailJob do
     create(:category_configuration, organisation:, email_to_notify_rdv_changes: "test@test.com")
   end
   let(:follow_up) { create(:follow_up, motif_category_id: category_configuration.motif_category_id) }
-  let(:participation) { create(:participation, organisation:, follow_up:) }
+  let(:participation) { create(:participation, organisation:, follow_up:, rdv:) }
+  let(:rdv) do
+    create(
+      :rdv,
+      organisation:,
+      address: "some place",
+      starts_at: 2.days.from_now,
+      motif_id: create(:motif, motif_category_id: category_configuration.motif_category_id).id
+    )
+  end
   let(:participation_id) { participation.id }
 
   let(:event) { "created" }
@@ -33,11 +42,11 @@ describe NotifyParticipationToExternalOrganisationEmailJob do
     context "already notified" do
       it "does not send the notification" do
         expect(OrganisationMailer).to receive(:notify_rdv_changes).once.and_return(OpenStruct.new(deliver_now: nil))
-        2.times { described_class.new.perform(participation_id, event) }
+        2.times { described_class.new.perform([participation_id], rdv.id, event) }
 
         travel 3.hours # cache expires after 1 hour
         expect(OrganisationMailer).to receive(:notify_rdv_changes).once.and_return(OpenStruct.new(deliver_now: nil))
-        2.times { described_class.new.perform(participation_id, event) }
+        2.times { described_class.new.perform([participation_id], rdv.id, event) }
       end
     end
 
@@ -47,8 +56,8 @@ describe NotifyParticipationToExternalOrganisationEmailJob do
           .once
           .with(
             to: category_configuration.email_to_notify_rdv_changes,
-            organisation: participation.organisation,
-            participation: participation,
+            participations: [participation],
+            rdv: rdv,
             event: event
           ).and_return(OpenStruct.new(deliver_now: nil))
         subject

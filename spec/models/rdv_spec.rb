@@ -28,18 +28,24 @@ describe Rdv do
     end
     let(:follow_up) { create(:follow_up, motif_category: category_configuration.motif_category) }
     let!(:participation) { create(:participation, convocable: true, follow_up:) }
+    let(:motif) { create(:motif, motif_category: category_configuration.motif_category) }
 
     context "when the lieu is updated" do
       let!(:rdv) do
-        create(:rdv, organisation:, participations: [participation], address: "some place", starts_at: 2.days.from_now)
+        create(:rdv,
+               organisation:,
+               participations: [participation],
+               address: "some place",
+               starts_at: 2.days.from_now,
+               motif:)
       end
 
       it "enqueues a job to notify rdv users" do
         rdv.address = "some other place"
         expect(NotifyParticipationsToUsersJob).to receive(:perform_async)
           .with([participation.id], :updated)
-        expect(NotifyParticipationToExternalOrganisationEmailJob).to receive(:perform_async)
-          .with(participation.id, :updated)
+        expect(NotifyRdvChangesToExternalOrganisationEmailJob).to receive(:perform_async)
+          .with([participation.id], rdv.id, :updated)
         subject
       end
 
@@ -61,8 +67,8 @@ describe Rdv do
         rdv.starts_at = 3.days.from_now
         expect(NotifyParticipationsToUsersJob).to receive(:perform_async)
           .with([participation.id], :updated)
-        expect(NotifyParticipationToExternalOrganisationEmailJob).to receive(:perform_async)
-          .with(participation.id, :updated)
+        expect(NotifyRdvChangesToExternalOrganisationEmailJob).to receive(:perform_async)
+          .with([participation.id], rdv.id, :updated)
         subject
       end
 
@@ -71,7 +77,7 @@ describe Rdv do
 
         it "does not enqueue a notify external job" do
           rdv.starts_at = 3.days.from_now
-          expect(NotifyParticipationToExternalOrganisationEmailJob).not_to receive(:perform_async)
+          expect(NotifyRdvChangesToExternalOrganisationEmailJob).not_to receive(:perform_async)
           subject
         end
       end
