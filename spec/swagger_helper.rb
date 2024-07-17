@@ -144,11 +144,7 @@ RSpec.configure do |config|
               nir: { type: "string", nullable: true },
               france_travail_id: { type: "string", nullable: true },
               carnet_de_bord_carnet_id: { type: "string", nullable: true },
-              rdv_solidarites_user_id: { type: "integer" },
-              created_through: { type: "string",
-                                 enum: %w[rdv_insertion_upload rdv_insertion_form rdv_insertion_api rdv_solidarites] },
-              created_from_type: { type: "string", enum: %w[0rganisation Department] },
-              created_from_id: { type: "integer" }
+              rdv_solidarites_user_id: { type: "integer" }
             },
             required: %w[
               id uid affiliation_number role created_at department_internal_id
@@ -179,10 +175,6 @@ RSpec.configure do |config|
               france_travail_id: { type: "string", nullable: true },
               carnet_de_bord_carnet_id: { type: "string", nullable: true },
               rdv_solidarites_user_id: { type: "integer" },
-              created_through: { type: "string",
-                                 enum: %w[rdv_insertion_upload rdv_insertion_form rdv_insertion_api rdv_solidarites] },
-              created_from_type: { type: "string", enum: %w[Organisation Department] },
-              created_from_id: { type: "integer" },
               referents: {
                 type: "array",
                 items: { "$ref" => "#/components/schemas/agent" }
@@ -213,10 +205,6 @@ RSpec.configure do |config|
               nir: { type: "string", nullable: true },
               france_travail_id: { type: "string", nullable: true },
               carnet_de_bord_carnet_id: { type: "string", nullable: true },
-              created_through: { type: "string",
-                                 enum: %w[rdv_insertion_upload rdv_insertion_form rdv_insertion_api rdv_solidarites] },
-              created_from_type: { type: "string", enum: %w[Organisation Department] },
-              created_from_id: { type: "integer" },
               invitation: {
                 type: "object",
                 properties: {
@@ -320,9 +308,7 @@ RSpec.configure do |config|
               created_at: { type: "string" },
               motif_category: { "$ref" => "#/components/schemas/motif_category" },
               delivery_status: { type: "string",
-                                 enum: %w[accepted sent request click deferred delivered hard_bounce soft_bounce
-                                          spam unique_opened opened reply invalid_email blocked error unsubscribe
-                                          proxy_open],
+                                 enum: %w[soft_bounce hard_bounce blocked invalid_email error delivered],
                                  nullable: true },
               delivered_at: { type: "string", format: "date", nullable: true }
             },
