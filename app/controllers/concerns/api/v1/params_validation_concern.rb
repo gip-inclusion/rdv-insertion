@@ -51,7 +51,7 @@ module Api
       end
 
       def validate_user_attributes(user_attributes, idx = nil)
-        user = User.new(user_attributes.merge(created_through: "rdv_insertion_api"))
+        user = User.new(user_attributes)
         # since it is an upsert we don't check the uniqueness validations
         user.skip_uniqueness_validations = true
 

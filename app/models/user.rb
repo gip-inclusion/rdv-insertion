@@ -21,13 +21,12 @@ class User < ApplicationRecord
   include User::AffiliationNumber
   include User::Archivable
   include User::Referents
+  include User::CreationOrigin
 
   attr_accessor :skip_uniqueness_validations
 
   before_validation :generate_uid
   before_save :format_phone_number
-
-  belongs_to :created_from, polymorphic: true, optional: true
 
   has_many :follow_ups, dependent: :destroy
   has_many :invitations, dependent: :destroy
@@ -55,7 +54,6 @@ class User < ApplicationRecord
   validates :last_name, :first_name, presence: true
   validates :email, allow_blank: true,
                     format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}\z/ }
-  validates :created_through, presence: true, on: :create
   validate :birth_date_validity
   validates :rdv_solidarites_user_id, :nir, :france_travail_id,
             uniqueness: true, allow_nil: true, unless: :skip_uniqueness_validations
@@ -64,14 +62,6 @@ class User < ApplicationRecord
 
   enum role: { demandeur: "demandeur", conjoint: "conjoint" }
   enum title: { monsieur: "monsieur", madame: "madame" }
-  enum created_through: {
-    rdv_insertion_upload: "rdv_insertion_upload",
-    rdv_insertion_form: "rdv_insertion_form",
-    rdv_insertion_api: "rdv_insertion_api",
-    rdv_solidarites: "rdv_solidarites"
-  }, _prefix: true
-  attribute :created_from_type, :string
-  enum created_from_type: { Organisation: "Organisation", Department: "Department" }
 
   scope :active, -> { where(deleted_at: nil) }
   scope :deleted, -> { where.not(deleted_at: nil) }

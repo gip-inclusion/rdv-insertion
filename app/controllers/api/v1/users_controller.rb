@@ -21,7 +21,7 @@ module Api
 
           CreateAndInviteUserJob.perform_async(
             @organisation.id,
-            user_attributes.merge(creation_source_attributes),
+            user_attributes.merge(creation_origin_attributes),
             invitation_attributes,
             motif_category_attributes
           )
@@ -51,7 +51,7 @@ module Api
 
       def upsert_user
         @upsert_user ||= Users::Upsert.call(
-          user_attributes: user_attributes.merge(creation_source_attributes), organisation: @organisation
+          user_attributes: user_attributes.merge(creation_origin_attributes), organisation: @organisation
         )
       end
 
@@ -82,11 +82,11 @@ module Api
         user_params.except(:invitation)
       end
 
-      def creation_source_attributes
+      def creation_origin_attributes
         {
           created_through: "rdv_insertion_api",
-          created_from_type: "Organisation",
-          created_from_id: @organisation.id
+          created_from_structure_type: "Organisation",
+          created_from_structure_id: @organisation.id
         }
       end
 

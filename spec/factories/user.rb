@@ -12,7 +12,8 @@ FactoryBot.define do
     address { "27 avenue de Ségur 75007 Paris" }
     phone_number { "+33782605941" }
     created_at { Time.zone.parse("24/12/2O22 22:22") }
-    created_through { "rdv_insertion_upload" }
+    created_through { "rdv_insertion_upload_page" }
+    created_from_structure { association :organisation }
     trait :skip_validate do
       to_create { |instance| instance.save(validate: false) }
     end

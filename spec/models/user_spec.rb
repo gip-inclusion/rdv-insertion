@@ -183,7 +183,7 @@ describe User do
 
   describe "created_through validation" do
     context "valid created_through" do
-      let(:user) { build(:user, created_through: "rdv_insertion_upload") }
+      let(:user) { build(:user, created_through: "rdv_insertion_upload_page") }
 
       it { expect(user).to be_valid }
     end

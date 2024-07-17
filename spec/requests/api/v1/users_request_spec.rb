@@ -78,8 +78,8 @@ describe "Users API", swagger_doc: "v1/api.json" do
       let!(:creation_source_attributes) do
         {
           created_through: "rdv_insertion_api",
-          created_from_type: "Organisation",
-          created_from_id: organisation.id
+          created_from_structure_type: "Organisation",
+          created_from_structure_id: organisation.id
         }
       end
 

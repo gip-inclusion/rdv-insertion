@@ -19,6 +19,7 @@ class UserDashboard < Administrate::BaseDashboard
     created_through: Field::Select.with_options(
       searchable: false, collection: ->(field) { field.resource.class.send(field.attribute.to_s.pluralize).keys }
     ),
+    created_from_structure: Field::BelongsTo,
     deleted_at: Field::DateTime,
     department_internal_id: Field::String,
     departments: Field::HasMany,
