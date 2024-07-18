@@ -1,6 +1,6 @@
 module Stats
   module GlobalStats
-    class Compute < BaseService
+    class Compute
       def initialize(stat:)
         @stat = stat
       end

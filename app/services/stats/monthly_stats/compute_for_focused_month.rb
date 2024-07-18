@@ -1,6 +1,6 @@
 module Stats
   module MonthlyStats
-    class ComputeForFocusedMonth < BaseService
+    class ComputeForFocusedMonth
       def initialize(stat:, date:)
         @stat = stat
         @date = date
