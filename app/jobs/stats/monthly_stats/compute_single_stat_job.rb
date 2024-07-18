@@ -12,7 +12,7 @@ module Stats
           Stat.transaction do
             stat.reload(lock: true)
             stat.update!(
-              stat_name => stat.send(stat_name).merge({ date.strftime("%m/%Y") => result })
+              stat_name => (stat.send(stat_name) || {}).merge({ date.strftime("%m/%Y") => result })
             )
           end
         end
