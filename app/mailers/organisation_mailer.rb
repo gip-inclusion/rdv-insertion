@@ -30,10 +30,9 @@ class OrganisationMailer < ApplicationMailer
     )
   end
 
-  def notify_rdv_changes(to:, organisation:, participation:, event:)
-    @organisation = organisation
-    @participation = participation
-    @motif_category = participation.follow_up.motif_category
+  def notify_rdv_changes(to:, rdv:, participations:, event:)
+    @rdv = rdv
+    @participations = participations
     @event = event
 
     mail(

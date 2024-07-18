@@ -19,20 +19,33 @@ describe Rdv do
     end
   end
 
-  describe "#notify_users" do
+  describe "notifications" do
     subject { rdv.save }
 
-    let!(:participation) { create(:participation, convocable: true) }
+    let(:organisation) { create(:organisation) }
+    let!(:category_configuration) do
+      create(:category_configuration, organisation:, email_to_notify_rdv_changes: "test@test.com")
+    end
+    let(:follow_up) { create(:follow_up, motif_category: category_configuration.motif_category) }
+    let!(:participation) { create(:participation, convocable: true, follow_up:) }
+    let(:motif) { create(:motif, motif_category: category_configuration.motif_category) }
 
     context "when the lieu is updated" do
       let!(:rdv) do
-        create(:rdv, participations: [participation], address: "some place", starts_at: 2.days.from_now)
+        create(:rdv,
+               organisation:,
+               participations: [participation],
+               address: "some place",
+               starts_at: 2.days.from_now,
+               motif:)
       end
 
       it "enqueues a job to notify rdv users" do
         rdv.address = "some other place"
         expect(NotifyParticipationsToUsersJob).to receive(:perform_async)
           .with([participation.id], :updated)
+        expect(NotifyRdvChangesToExternalOrganisationEmailJob).to receive(:perform_async)
+          .with([participation.id], rdv.id, :updated)
         subject
       end
 
@@ -48,13 +61,25 @@ describe Rdv do
     end
 
     context "when the start time is updated" do
-      let!(:rdv) { create(:rdv, participations: [participation], starts_at: 2.days.from_now) }
+      let!(:rdv) { create(:rdv, organisation:, participations: [participation], starts_at: 2.days.from_now) }
 
       it "enqueues a job to notify rdv users" do
         rdv.starts_at = 3.days.from_now
         expect(NotifyParticipationsToUsersJob).to receive(:perform_async)
           .with([participation.id], :updated)
+        expect(NotifyRdvChangesToExternalOrganisationEmailJob).to receive(:perform_async)
+          .with([participation.id], rdv.id, :updated)
         subject
+      end
+
+      context "when the category configuration does not notify rdv changes" do
+        before { rdv.organisation.category_configurations.update_all(email_to_notify_rdv_changes: nil) }
+
+        it "does not enqueue a notify external job" do
+          rdv.starts_at = 3.days.from_now
+          expect(NotifyRdvChangesToExternalOrganisationEmailJob).not_to receive(:perform_async)
+          subject
+        end
       end
 
       context "when the rdv is not convocable" do
