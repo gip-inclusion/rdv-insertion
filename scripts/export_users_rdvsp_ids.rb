@@ -16,7 +16,7 @@ users_data = User.active.where.not(rdv_solidarites_user_id: nil).includes(:organ
     rdv_solidarites_user_id: user.rdv_solidarites_user_id,
     rdv_solidarites_organisation_ids: rdv_solidarites_organisation_ids
   }
-end
+end.compact
 
 json_data = JSON.pretty_generate(users_data)
 file_path = Rails.root.join("rdvsp_users_ids.json")
