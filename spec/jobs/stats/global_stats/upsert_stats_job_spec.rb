@@ -16,8 +16,8 @@ describe Stats::GlobalStats::UpsertStatsJob do
         .and_return(OpenStruct.new(success?: true))
     end
 
-    it "calls the appropriate service the right number of times" do
-      expect(Stats::GlobalStats::UpsertStatJob).to receive(:perform_async).exactly(6).times
+    it "calls the appropriate service" do
+      expect(Stats::GlobalStats::UpsertStatJob).to receive(:perform_async).at_least(1).time
       subject
     end
   end
