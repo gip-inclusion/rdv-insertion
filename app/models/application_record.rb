@@ -8,4 +8,6 @@ class ApplicationRecord < ActiveRecord::Base
       class_eval { normalizes attribute, with: ->(a) { a.squish } }
     end
   end
+
+  def self.symbolized_attribute_names = attribute_names.map(&:to_sym)
 end

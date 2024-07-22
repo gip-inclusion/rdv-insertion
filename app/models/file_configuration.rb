@@ -13,6 +13,11 @@ class FileConfiguration < ApplicationRecord
     attribute_names.select { |attribute_name| attribute_name.end_with?("column") }
   end
 
+  def self.matching_user_attribute_name(attribute_name)
+    user_attribute_name = attribute_name.gsub("_column", "")
+    user_attribute_name if User.attribute_names.include?(user_attribute_name)
+  end
+
   private
 
   def column_names_uniqueness

@@ -80,4 +80,16 @@ module UsersHelper
   def current_or_mutual_organisation_id(user, agent, department)
     current_organisation_id || mutual_department_organisations(user, agent, department).first.id
   end
+
+  def show_user_attribute?(user, attribute_name)
+    UserPolicy.show_user_attribute?(user:, attribute_name:)
+  end
+
+  def assignable_user_attribute?(user, attribute_name)
+    organisation_to_be_assigned =
+      current_organisation || current_agent_department_organisations.min_by do |organisation|
+        UserPolicy.authorized_user_attributes_by_organisation_type[organisation.organisation_type.to_sym].length
+      end
+    UserPolicy.assignable_user_attribute?(user:, attribute_name:, organisation_to_be_assigned:)
+  end
 end

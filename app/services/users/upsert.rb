@@ -1,14 +1,14 @@
 module Users
   class Upsert < BaseService
     def initialize(user_attributes:, organisation:)
-      @user_attributes = user_attributes
+      @user_attributes = user_attributes.compact_blank
       @organisation = organisation
     end
 
     def call
       @user = find_or_initialize_user.user
       result.user = @user
-      @user.assign_attributes(**@user_attributes.compact_blank)
+      @user.assign_authorized_attributes(organisation_to_be_assigned: @organisation, **@user_attributes)
       save_user!
     end
 

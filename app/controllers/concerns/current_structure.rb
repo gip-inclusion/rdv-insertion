@@ -2,8 +2,10 @@ module CurrentStructure
   extend ActiveSupport::Concern
 
   included do
-    helper_method :current_structure_type, :department_level?, :current_organisation_id, :current_department_id,
-                  :current_structure, :current_department, :current_department_name, :current_structure_name,
+    helper_method :current_structure_type, :department_level?,
+                  :current_structure, :current_structure_name,
+                  :current_department, :current_department_name, :current_department_id,
+                  :current_organisation, :current_organisation_id,
                   :current_agent_department_organisations
 
     delegate :name, to: :current_structure, prefix: true

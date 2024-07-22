@@ -70,7 +70,7 @@ class UsersController < ApplicationController
   end
 
   def update
-    @user.assign_attributes(**formatted_attributes)
+    @user.assign_authorized_attributes(**formatted_attributes)
     authorize @user
     if save_user.success?
       render_save_user_success
