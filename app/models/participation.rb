@@ -33,7 +33,8 @@ class Participation < ApplicationRecord
            to: :rdv
   delegate :department, :department_id, to: :organisation
   delegate :phone_number_is_mobile?, :email?, to: :user
-  delegate :motif_category, :orientation?, to: :follow_up
+  delegate :orientation?, to: :follow_up
+  delegate :motif_category, to: :follow_up, allow_nil: true
 
   def notifiable?
     convocable? && in_the_future? && status.in?(%w[unknown revoked])
