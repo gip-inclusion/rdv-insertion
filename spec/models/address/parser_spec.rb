@@ -46,4 +46,12 @@ describe Address::Parser do
       expect(subject.parsed_city).to eq("Paris Avenue de ségur")
     end
   end
+
+  context "when the post code is followed by commas" do
+    let!(:address) { "20 avenue de ségur, Pyrénées-Atlantiques, 64460, Labatut" }
+
+    it "parses the city accordingly" do
+      expect(subject.parsed_city).to eq("Labatut")
+    end
+  end
 end
