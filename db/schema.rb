@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_27_145505) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_11_083143) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -66,6 +66,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_27_145505) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "last_webhook_update_received_at"
+    t.boolean "authorized_to_export_csv", default: false
     t.index ["access_level"], name: "index_agent_roles_on_access_level"
     t.index ["agent_id", "organisation_id"], name: "index_agent_roles_on_agent_id_and_organisation_id", unique: true
     t.index ["agent_id"], name: "index_agent_roles_on_agent_id"
@@ -127,6 +128,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_27_145505) do
     t.integer "position", default: 0
     t.integer "department_position", default: 0
     t.string "phone_number"
+    t.string "email_to_notify_no_available_slots"
+    t.string "email_to_notify_rdv_changes"
     t.index ["file_configuration_id"], name: "index_category_configurations_on_file_configuration_id"
     t.index ["motif_category_id"], name: "index_category_configurations_on_motif_category_id"
     t.index ["organisation_id"], name: "index_category_configurations_on_organisation_id"
@@ -214,6 +217,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_27_145505) do
     t.string "uuid"
     t.boolean "rdv_with_referents", default: false
     t.string "trigger", default: "manual", null: false
+    t.string "delivery_status"
+    t.datetime "last_brevo_webhook_received_at"
     t.index ["department_id"], name: "index_invitations_on_department_id"
     t.index ["follow_up_id"], name: "index_invitations_on_follow_up_id"
     t.index ["trigger"], name: "index_invitations_on_trigger"
@@ -296,6 +301,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_27_145505) do
     t.bigint "rdv_solidarites_rdv_id"
     t.string "format"
     t.bigint "participation_id"
+    t.string "delivery_status"
+    t.datetime "last_brevo_webhook_received_at"
     t.index ["participation_id"], name: "index_notifications_on_participation_id"
   end
 
@@ -370,7 +377,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_27_145505) do
     t.bigint "follow_up_id"
     t.string "created_by", null: false
     t.boolean "convocable", default: false, null: false
-    t.integer "rdv_solidarites_agent_prescripteur_id"
+    t.bigint "rdv_solidarites_agent_prescripteur_id"
     t.index ["follow_up_id"], name: "index_participations_on_follow_up_id"
     t.index ["status"], name: "index_participations_on_status"
     t.index ["user_id", "rdv_id"], name: "index_participations_on_user_id_and_rdv_id", unique: true

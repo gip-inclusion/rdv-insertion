@@ -72,6 +72,12 @@ Rails.application.routes.draw do
     resource :referent_assignations, only: [:destroy]
     resources :tag_assignations, only: [:index, :create]
     resource :tag_assignations, only: [:destroy]
+    resources :agent_roles, module: :agent_roles, only: [] do
+      collection do
+        resources :csv_export_authorizations, only: [:index]
+        patch "csv_export_authorizations/batch_update", to: "csv_export_authorizations#batch_update"
+      end
+    end
     resources :invitation_dates_filterings, :creation_dates_filterings, only: [:new]
     resources :file_configurations, only: [:show, :new, :create, :edit, :update] do
       get :confirm_update
@@ -193,6 +199,10 @@ Rails.application.routes.draw do
   get "inclusion_connect/sign_out", to: "inclusion_connect#sign_out"
 
   post "/inbound_emails/brevo", to: "inbound_emails#brevo"
+  namespace :brevo do
+    post "mail_webhooks", to: "mail_webhooks#create"
+    post "sms_webhooks/:record_identifier", to: "sms_webhooks#create", as: :sms_webhooks
+  end
 
   if ENV["SIDEKIQ_USERNAME"] && ENV["SIDEKIQ_PASSWORD"]
     Sidekiq::Web.use Rack::Auth::Basic do |username, password|

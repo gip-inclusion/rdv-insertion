@@ -1,0 +1,30 @@
+<p>Bonjour,</p>
+
+<p>Vous avez demandé à être notifié sur cette adresse email de tous les évènements liés aux rendez-vous (nouveaux rendez-vous, modifications et annulations de rendez-vous) de la catégorie <b>“<%= @rdv.motif_category.name %>”</b> de l’organisation <b>“<%= @rdv.organisation %>”.</b></p>
+
+<p>Voici un nouvel évènement :</p>
+
+<p>
+  <b>Évènement : <%= I18n.t("external_notifications.events_description.#{@event}") %></b><br />
+  Date du rdv : <%= I18n.l(@rdv.starts_at, format: :human) %><br />
+  Usager(s) concerné(s) :
+</p>
+<ul>
+  <% @participations.each do |participation| %>
+    <li>
+      <%= link_to participation.user, organisation_user_follow_ups_url(@rdv.organisation.id, participation.user.id) %>
+      <%= "(professionel : #{participation.agent_prescripteur})" if participation.agent_prescripteur %>
+    </li>
+  <% end %>
+</ul>
+<p>
+  Motif : <%= @rdv.motif_name %><br />
+  <% if @rdv.lieu.present? %> <%= "Lieu : #{@rdv.lieu.name}"%><br /> <% end %>
+  <% if @rdv.lieu.present? %> <%= "Adresse : #{@rdv.lieu.address}" %><br /><% end %>
+  Durée : <%= @rdv.duration_in_min %> minutes<br />
+</p>
+
+<p>À bientôt,</p>
+
+<p>L’équipe rdv-insertion</p>
+<p>PS : Si vous n'avez pas demandé à être notifié(e), veuillez répondre à ce mail ou contacter l'organisation <%= @organisation %> à l'adresse suivante <%= mail_to @rdv.organisation.email %> pour ne plus recevoir ces emails.</p>

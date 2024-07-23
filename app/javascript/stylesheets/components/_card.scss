@@ -47,7 +47,23 @@
   box-shadow: 0 0 1px rgba(0,0,0,0.1);
 }
 
+@media (min-width: 576px) {
+  .modal-dialog {
+    max-width: 600px;
+  }
+}
+
 .large-modal-card {
   width: 80%;
   max-width: 1000px;
+}
+
+.scrollable-list {
+  overflow-y: auto;
+  max-height: 60vh;
+}
+
+.fully-scrollable-modal {
+  @extend .scrollable-list;
+  max-height: 80vh;
 }

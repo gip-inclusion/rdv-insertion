@@ -1,4 +1,4 @@
-class DepartmentBlueprint < Blueprinter::Base
+class DepartmentBlueprint < ApplicationBlueprint
   identifier :id
   fields :number, :capital, :region, :carnet_de_bord_deploiement_id
 
