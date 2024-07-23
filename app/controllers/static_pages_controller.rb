@@ -1,6 +1,8 @@
 class StaticPagesController < ApplicationController
   skip_before_action :authenticate_agent!
 
+  layout "website"
+
   def welcome
     redirect_to(organisations_path) if current_agent
   end

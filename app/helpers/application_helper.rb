@@ -30,17 +30,8 @@ module ApplicationHelper
     AssetHelper.asset_exists?(asset_path)
   end
 
-  def show_login_button?
-    current_agent.nil? && controller_name.include?("static_pages")
-  end
-
   def show_organisation_navigation_button?
-    controller_name.exclude?("stats") && current_agent_department_organisations &&
-      current_agent_department_organisations.length > 1
-  end
-
-  def show_guide_banner?
-    show_login_button?
+    current_agent_department_organisations && current_agent_department_organisations.length > 1
   end
 
   def url_params

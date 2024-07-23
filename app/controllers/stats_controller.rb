@@ -3,6 +3,8 @@ class StatsController < ApplicationController
   before_action :set_organisation, :set_department, :set_stat, only: [:show]
   before_action :set_departments, only: [:index, :show]
 
+  layout "website"
+
   def index
     @department_count = @departments.count
     @stat = Stat.find_by(statable_type: "Department", statable_id: nil)
