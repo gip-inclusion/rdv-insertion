@@ -14,7 +14,7 @@
             </span>
           <% end %>
         </span>
-        <% if policy(organisation).access? %>
+        <% if policy(organisation).unassign? %>
           <%
             if user.organisations.count > 1
               data = {
