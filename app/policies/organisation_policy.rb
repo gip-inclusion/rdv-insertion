@@ -28,6 +28,10 @@ class OrganisationPolicy < ApplicationPolicy
       !record.department.number.in?(ENV.fetch("DEPARTMENTS_WHERE_PARCOURS_DISABLED", "").split(","))
   end
 
+  def unassign?
+    access?
+  end
+
   def configure?
     pundit_user.admin_organisations_ids.include?(record.id)
   end
