@@ -21,6 +21,7 @@ class User < ApplicationRecord
   include User::AffiliationNumber
   include User::Archivable
   include User::Referents
+  include User::Geocodable
 
   attr_accessor :skip_uniqueness_validations
 
@@ -88,6 +89,10 @@ class User < ApplicationRecord
     follow_ups.to_a.find { |rc| rc.motif_category_id == motif_category.id }
   end
 
+  def department_numbers
+    departments.map(&:number)
+  end
+
   def deleted?
     deleted_at.present?
   end
@@ -138,6 +143,18 @@ class User < ApplicationRecord
 
   def in_many_departments?
     organisations.map(&:department_id).uniq.length > 1
+  end
+
+  def current_department
+    return if in_many_departments?
+
+    departments.first
+  end
+
+  def address_department
+    return if parsed_post_code.blank?
+
+    departments.find { |d| parsed_post_code.include?(d.number) }
   end
 
   def belongs_to_org?(organisation_id)

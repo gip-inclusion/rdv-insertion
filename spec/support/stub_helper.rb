@@ -56,7 +56,7 @@ module StubHelper
   end
 
   def stub_geo_api_request(address)
-    stub_request(:get, RetrieveGeolocalisation::API_ADRESSE_URL).with(
+    stub_request(:get, ApiAdresseClient::URL).with(
       headers: { "Content-Type" => "application/json" },
       query: { "q" => address }
     ).to_return(body: { "features" => [] }.to_json)

@@ -8,4 +8,8 @@ class ApplicationRecord < ActiveRecord::Base
       class_eval { normalizes attribute, with: ->(a) { a.squish } }
     end
   end
+
+  def symbolized_attributes
+    attributes.deep_symbolize_keys
+  end
 end

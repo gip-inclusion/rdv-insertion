@@ -16,7 +16,7 @@ describe "Agents can create a carnet", :js do
         mobileNumber: "+33620022002",
         email: "hernan@crespo.com",
         cafNumber: "ISQCJQO",
-        address1: "127 avenue de Ségur",
+        address1: "127 rue de grenelle",
         postalCode: "75007",
         city: "Paris"
       }
@@ -25,7 +25,7 @@ describe "Agents can create a carnet", :js do
 
   before do
     setup_agent_session(agent)
-    stub_request(:get, RetrieveGeolocalisation::API_ADRESSE_URL).with(
+    stub_request(:get, ApiAdresseClient::URL).with(
       headers: { "Content-Type" => "application/json" },
       query: { "q" => "127 RUE DE GRENELLE 75007 PARIS" }
     ).to_return(
@@ -33,7 +33,8 @@ describe "Agents can create a carnet", :js do
         "features" => [
           {
             "properties" => {
-              "name" => "127 avenue de Ségur",
+              "housenumber" => "127",
+              "street" => "rue de grenelle",
               "postcode" => "75007",
               "city" => "Paris",
               "context" => "75",

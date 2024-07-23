@@ -38,9 +38,13 @@ describe CarnetDeBord::CreateCarnet, type: :service do
 
   describe "#call" do
     before do
-      allow(RetrieveGeolocalisation).to receive(:call).with(
+      allow(RetrieveAddressGeocodingParams).to receive(:call).with(
         address: "20 avenue ségur", department_number: "93"
-      ).and_return(OpenStruct.new(name: "20 avenue de Ségur", postcode: "75007", city: "Paris"))
+      ).and_return(
+        OpenStruct.new(
+          geocoding_params: { street: "avenue de Ségur", house_number: "20", post_code: "75007", city: "Paris" }
+        )
+      )
       allow(CarnetDeBordClient).to receive(:create_carnet)
         .with(expected_payload)
         .and_return(OpenStruct.new(success?: true, body: { notebookId: "92119" }.to_json))
@@ -127,7 +131,7 @@ describe CarnetDeBord::CreateCarnet, type: :service do
 
     context "when the geolocalisation retrieval fails" do
       before do
-        allow(RetrieveGeolocalisation).to receive(:call).with(
+        allow(RetrieveAddressGeocodingParams).to receive(:call).with(
           address: "20 avenue ségur", department_number: "93"
         ).and_return(OpenStruct.new(failure?: true))
       end
