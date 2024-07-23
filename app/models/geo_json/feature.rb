@@ -61,7 +61,7 @@ class GeoJson::Feature
   end
 
   def matches_post_code?(address:, department_number:)
-    address.include?(post_code) && matches_department?(department_number)
+    post_code.present? && address.include?(post_code) && matches_department?(department_number)
   end
 
   def matches_department?(matching_department_number)
