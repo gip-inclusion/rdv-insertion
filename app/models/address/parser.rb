@@ -21,8 +21,7 @@ module Address
     def parsed_city
       return if split_address_from_post_code.blank?
 
-      city = split_address_from_post_code[3].strip
-      city.gsub(/\A[\s,]+/, "") # This removes leading spaces and commas
+      split_address_from_post_code[3].strip.gsub(/\A[\s,]+/, "")
     end
 
     def parsed_post_code_and_city
