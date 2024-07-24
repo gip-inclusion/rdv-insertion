@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_11_083143) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_23_171205) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -531,6 +531,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_11_083143) do
     t.datetime "updated_at", null: false
     t.string "subscriptions", array: true
     t.string "signature_type", default: "hmac"
+    t.bigint "organisation_id"
+    t.integer "old_webhook_endpoint_id"
+    t.index ["organisation_id"], name: "index_webhook_endpoints_on_organisation_id"
   end
 
   create_table "webhook_receipts", force: :cascade do |t|
