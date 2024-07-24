@@ -1,5 +1,5 @@
 module Serializable
-  def as_json(**opts)
+  def as_json(opts = {})
     if blueprint_class
       blueprint_class.render_as_json(self, opts.merge(blueprint_view_opts))
     else
