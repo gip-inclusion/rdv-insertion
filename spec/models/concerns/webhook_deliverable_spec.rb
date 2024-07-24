@@ -1,31 +1,24 @@
 describe WebhookDeliverable, type: :concern do
-  let!(:organisation) { create(:organisation) }
+  let!(:organisation) { create(:organisation, organisation_type:) }
+  let!(:organisation_type) { "conseil_departemental" }
   let!(:webhook_endpoint) do
     create(
       :webhook_endpoint,
-      organisations: [organisation],
+      organisation:,
       subscriptions: %w[rdv invitation]
     )
   end
   let!(:now) { Time.zone.parse("21/01/2023 23:42:11") }
-  let!(:data) do
-    {
-      id: 294,
-      address: "20 avenue de Ségur 75007 Paris",
-      starts_at: Time.zone.parse("21/01/2023 10:00:00")
-    }
-  end
 
   before do
     travel_to now
-    allow_any_instance_of(Rdv).to receive(:as_json).and_return(data)
     allow(OutgoingWebhooks::SendWebhookJob).to receive(:perform_async)
   end
 
   describe "#send_webhook" do
     context "when the webhook endpoint is triggered by the model changes" do
       let!(:webhook_payload) do
-        { meta:, data: rdv.as_json }
+        { meta:, data: rdv.as_json(organisation_type:) }
       end
       let!(:meta) do
         { event:, timestamp: now, model: "Rdv" }
@@ -37,7 +30,7 @@ describe WebhookDeliverable, type: :concern do
 
         it "notifies the creation" do
           expect(OutgoingWebhooks::SendWebhookJob).to receive(:perform_async)
-            .with(webhook_endpoint.id, webhook_payload)
+          # we don't put the arguments because it is difficult since the rdv is not created yet
           rdv.save
         end
       end
@@ -101,7 +94,7 @@ describe WebhookDeliverable, type: :concern do
       let!(:webhook_endpoint) do
         create(
           :webhook_endpoint,
-          organisations: [organisation],
+          organisation:,
           subscriptions: %w[invitation]
         )
       end
@@ -130,6 +123,42 @@ describe WebhookDeliverable, type: :concern do
         it "does not send webhook on deletion" do
           expect(OutgoingWebhooks::SendWebhookJob).not_to receive(:perform_async)
           rdv.destroy
+        end
+      end
+    end
+
+    context "payload changes depending on organisations" do
+      let!(:rdv) { create(:rdv, organisation: organisation, participations: [create(:participation, user:)]) }
+      let!(:user) { create(:user, nir:, department_internal_id:) }
+      let!(:nir) { generate_random_nir }
+      let!(:department_internal_id) { SecureRandom.uuid }
+
+      let!(:webhook_payload) do
+        { meta:, data: rdv.as_json(organisation_type:) }
+      end
+      let!(:meta) do
+        { event: :updated, timestamp: now, model: "Rdv" }
+      end
+
+      context "when conseil departemental" do
+        it "sends the nir and department id" do
+          expect(webhook_payload.to_json).to include(nir)
+          expect(webhook_payload.to_json).to include(department_internal_id)
+          expect(OutgoingWebhooks::SendWebhookJob).to receive(:perform_async)
+            .with(webhook_endpoint.id, webhook_payload)
+          rdv.save
+        end
+      end
+
+      context "when siae" do
+        let!(:organisation_type) { "siae" }
+
+        it "does not send the nir or the department internal id" do
+          expect(webhook_payload.to_json).not_to include(nir)
+          expect(webhook_payload.to_json).not_to include(department_internal_id)
+          expect(OutgoingWebhooks::SendWebhookJob).to receive(:perform_async)
+            .with(webhook_endpoint.id, webhook_payload)
+          rdv.save
         end
       end
     end

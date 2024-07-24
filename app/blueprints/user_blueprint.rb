@@ -8,8 +8,14 @@ class UserBlueprint < ApplicationBlueprint
   identifier :id
 
   FIELD_NAMES.each do |field_name|
-    field field_name, if: lambda { |attribute_name, user, _options|
-                            UserPolicy.show_user_attribute?(user:, attribute_name:)
+    field field_name, if: lambda { |attribute_name, user, options|
+                            if options[:organisation_type]
+                              UserPolicy.show_user_attribute_for_organisation_type?(
+                                attribute_name:, organisation_type: options[:organisation_type]
+                              )
+                            else
+                              UserPolicy.show_user_attribute?(user:, attribute_name:)
+                            end
                           }
   end
 
