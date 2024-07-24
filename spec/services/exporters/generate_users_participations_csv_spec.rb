@@ -31,7 +31,7 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
       nir: nir,
       france_travail_id: "DDAAZZ",
       email: "jane@doe.com",
-      address: "20 avenue de Ségur 75OO7 Paris",
+      address: "20 avenue de Ségur paris",
       phone_number: "+33610101010",
       birth_date: "20/12/1977",
       rights_opening_date: "18/05/2022",
@@ -41,6 +41,7 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
       referents: [referent]
     )
   end
+  let!(:address_geocoding) { create(:address_geocoding, user: user1, post_code: "75007", city: "Paris") }
   let(:user2) { create(:user, last_name: "Casubolo", organisations: [organisation]) }
   let(:user3) { create(:user, last_name: "Blanc", organisations: [organisation]) }
   let!(:agent) { create(:agent, organisations: [organisation]) }
@@ -134,6 +135,8 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
         expect(csv).to include("ID interne au département")
         expect(csv).to include("Email")
         expect(csv).to include("Téléphone")
+        expect(csv).to include("CP")
+        expect(csv).to include("Ville")
         expect(csv).to include("Date de naissance")
         expect(csv).to include("Date de création")
         expect(csv).to include("Date d'entrée flux")
@@ -168,7 +171,9 @@ describe Exporters::GenerateUsersParticipationsCsv, type: :service do
           expect(csv).to include("12345") # affiliation_number
           expect(csv).to include("33333") # department_internal_id
           expect(csv).to include("DDAAZZ") # france_travail_id
-          expect(csv).to include("20 avenue de Ségur 75OO7 Paris")
+          expect(csv).to include("20 avenue de Ségur paris")
+          expect(csv).to include("75007")
+          expect(csv).to include("Paris")
           expect(csv).to include("jane@doe.com")
           expect(csv).to include("+33610101010")
           expect(csv).to include("20/12/1977") # birth_date

@@ -21,9 +21,10 @@ module Exporters
     def preload_associations
       @participations =
         if @motif_category
-          Participation.preload(user: [:tags, :referents, :organisations])
+          Participation.preload(user: [:tags, :referents, :organisations, :address_geocoding])
         else
-          Participation.preload(user: [:tags, :referents, :organisations, :invitations, :notifications])
+          Participation.preload(user: [:tags, :referents, :organisations, :invitations, :notifications,
+                                       :address_geocoding])
         end
 
       @participations = @participations.preload(
@@ -54,6 +55,8 @@ module Exporters
        User.human_attribute_name(:france_travail_id),
        User.human_attribute_name(:email),
        User.human_attribute_name(:address),
+       User.human_attribute_name(:post_code),
+       User.human_attribute_name(:city),
        User.human_attribute_name(:phone_number),
        User.human_attribute_name(:birth_date),
        User.human_attribute_name(:created_at),
@@ -86,6 +89,8 @@ module Exporters
        user.france_travail_id,
        user.email,
        user.address,
+       user.geocoded_post_code,
+       user.geocoded_city,
        user.phone_number,
        display_date(user.birth_date),
        display_date(user.created_at),
